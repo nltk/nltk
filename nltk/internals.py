@@ -427,7 +427,7 @@ class Counter:
 # Search for files/binaries
 ##########################################################################
 
-def find_file(filename, env_vars=(), searchpath=(),
+def find_file_iter(filename, env_vars=(), searchpath=(),
         file_names=None, url=None, verbose=True):
     """
     Search for a file to be used by nltk.
@@ -445,22 +445,29 @@ def find_file(filename, env_vars=(), searchpath=(),
     assert not isinstance(searchpath, compat.string_types)
     if isinstance(env_vars, compat.string_types):
         env_vars = env_vars.split()
+    yielded = False
 
     # File exists, no magic
     for alternative in file_names:
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
-            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
-            return path_to_file
+            if verbose:
+                print('[Found %s: %s]' % (filename, path_to_file))
+            yielded = True
+            yield path_to_file
         # Check the bare alternatives
         if os.path.isfile(alternative):
-            if verbose: print('[Found %s: %s]' % (filename, alternative))
-            return alternative
+            if verbose:
+                print('[Found %s: %s]' % (filename, alternative))
+            yielded = True
+            yield alternative
         # Check if the alternative is inside a 'file' directory
         path_to_file = os.path.join(filename, 'file', alternative)
         if os.path.isfile(path_to_file):
-            if verbose: print('[Found %s: %s]' % (filename, path_to_file))
-            return path_to_file
+            if verbose:
+                print('[Found %s: %s]' % (filename, path_to_file))
+            yielded = True
+            yield path_to_file
 
     # Check environment variables
     for env_var in env_vars:
@@ -468,26 +475,33 @@ def find_file(filename, env_vars=(), searchpath=(),
             for env_dir in os.environ[env_var].split(os.pathsep):
                 # Check if the environment variable contains a direct path to the bin
                 if os.path.isfile(env_dir):
-                    if verbose: print('[Found %s: %s]'%(filename, env_dir))
-                    return env_dir
+                    if verbose:
+                        print('[Found %s: %s]'%(filename, env_dir))
+                    yielded = True
+                    yield env_dir
                 # Check if the possible bin names exist inside the environment variable directories
                 for alternative in file_names:
                     path_to_file = os.path.join(env_dir, alternative)
                     if os.path.isfile(path_to_file):
-                        if verbose: print('[Found %s: %s]'%(filename, path_to_file))
-                        return path_to_file
+                        if verbose:
+                            print('[Found %s: %s]'%(filename, path_to_file))
+                        yielded = True
+                        yield path_to_file
                     # Check if the alternative is inside a 'file' directory
                     path_to_file = os.path.join(env_dir, 'file', alternative)
                     if os.path.isfile(path_to_file):
-                        if verbose: print('[Found %s: %s]' % (filename, path_to_file))
-                        return path_to_file
+                        if verbose:
+                            print('[Found %s: %s]' % (filename, path_to_file))
+                        yielded = True
+                        yield path_to_file
 
     # Check the path list.
     for directory in searchpath:
         for alternative in file_names:
             path_to_file = os.path.join(directory, alternative)
             if os.path.isfile(path_to_file):
-                return path_to_file
+                yielded = True
+                yield path_to_file
 
     # If we're on a POSIX system, then try using the 'which' command
     # to find the file.
@@ -498,26 +512,34 @@ def find_file(filename, env_vars=(), searchpath=(),
                 stdout, stderr = p.communicate()
                 path = stdout.decode(sys.stdout.encoding).strip()
                 if path.endswith(alternative) and os.path.exists(path):
-                    if verbose: print('[Found %s: %s]' % (filename, path))
-                    return path
+                    if verbose:
+                        print('[Found %s: %s]' % (filename, path))
+                    yielded = True
+                    yield path
             except (KeyboardInterrupt, SystemExit):
                 raise
             except:
                 pass
 
-    msg = ("NLTK was unable to find the %s file!" "\nUse software specific "
-           "configuration paramaters" % filename)
-    if env_vars: msg += ' or set the %s environment variable' % env_vars[0]
-    msg += '.'
-    if searchpath:
-        msg += '\n\n  Searched in:'
-        msg += ''.join('\n    - %s' % d for d in searchpath)
-    if url: msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
-                    (filename, url))
-    div = '='*75
-    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+    if not yielded:
+        msg = ("NLTK was unable to find the %s file!" "\nUse software specific "
+               "configuration paramaters" % filename)
+        if env_vars: msg += ' or set the %s environment variable' % env_vars[0]
+        msg += '.'
+        if searchpath:
+            msg += '\n\n  Searched in:'
+            msg += ''.join('\n    - %s' % d for d in searchpath)
+        if url: msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
+                        (filename, url))
+        div = '='*75
+        raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
 
-def find_binary(name, path_to_bin=None, env_vars=(), searchpath=(),
+def find_file(filename, env_vars=(), searchpath=(),
+        file_names=None, url=None, verbose=True):
+    return next(find_file_iter(filename, env_vars, searchpath,
+                               file_names, url, verbose))
+
+def find_binary_iter(name, path_to_bin=None, env_vars=(), searchpath=(),
                 binary_names=None, url=None, verbose=True):
     """
     Search for a file to be used by nltk.
@@ -530,10 +552,16 @@ def find_binary(name, path_to_bin=None, env_vars=(), searchpath=(),
     :param url: URL presented to user for download help.
     :param verbose: Whether or not to print path when a file is found.
     """
-    return find_file(path_to_bin or name, env_vars, searchpath, binary_names,
-                     url, verbose)
+    for file in  find_file_iter(path_to_bin or name, env_vars, searchpath, binary_names,
+                     url, verbose):
+        yield file
 
-def find_jar(name_pattern, path_to_jar=None, env_vars=(),
+def find_binary(name, path_to_bin=None, env_vars=(), searchpath=(),
+                binary_names=None, url=None, verbose=True):
+    return next(find_binary_iter(name, path_to_bin, env_vars, searchpath,
+                                 binary_names, url, verbose))
+
+def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
         searchpath=(), url=None, verbose=True, is_regex=False):
     """
     Search for a jar that is used by nltk.
@@ -551,15 +579,16 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
     assert not isinstance(searchpath, compat.string_types)
     if isinstance(env_vars, compat.string_types):
         env_vars = env_vars.split()
+    yielded = False
 
     # Make sure we check the CLASSPATH first
     env_vars = ['CLASSPATH'] + list(env_vars)
 
-    # If an explicit location was given, then check it, and return it if
+    # If an explicit location was given, then check it, and yield it if
     # it's present; otherwise, complain.
     if path_to_jar is not None:
         if os.path.isfile(path_to_jar):
-            return path_to_jar
+            yield path_to_jar
         raise ValueError('Could not find %s jar file at %s' %
                          (name_pattern, path_to_jar))
 
@@ -575,7 +604,8 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
                                 (not is_regex and filename == name_pattern):
                             if verbose:
                                 print('[Found %s: %s]' % (name_pattern, cp))
-                            return cp
+                            yielded = True
+                            yield cp
             else:
                 path_to_jar = os.environ[env_var]
                 if os.path.isfile(path_to_jar):
@@ -584,7 +614,8 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
                             (not is_regex and filename == name_pattern):
                         if verbose:
                             print('[Found %s: %s]' % (name_pattern, path_to_jar))
-                        return path_to_jar
+                        yielded = True
+                        yield path_to_jar
 
     # Check the path list.
     for directory in searchpath:
@@ -595,27 +626,35 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
                     if re.match(name_pattern, filename):
                         if verbose:
                             print('[Found %s: %s]' % (filename, path_to_jar))
-                return path_to_jar
+                yielded = True
+                yield path_to_jar
         else:
             path_to_jar = os.path.join(directory, name_pattern)
             if os.path.isfile(path_to_jar):
                 if verbose:
                     print('[Found %s: %s]' % (name_pattern, path_to_jar))
-                return path_to_jar
+                yielded = True
+                yield path_to_jar
 
-    # If nothing was found, raise an error
-    msg = ("NLTK was unable to find %s!" % name_pattern)
-    if env_vars: msg += ' Set the %s environment variable' % env_vars[0]
-    msg = textwrap.fill(msg+'.', initial_indent='  ',
-                        subsequent_indent='  ')
-    if searchpath:
-        msg += '\n\n  Searched in:'
-        msg += ''.join('\n    - %s' % d for d in searchpath)
-    if url:
-        msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
-                (name_pattern, url))
-    div = '='*75
-    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+    if not yielded:
+        # If nothing was found, raise an error
+        msg = ("NLTK was unable to find %s!" % name_pattern)
+        if env_vars: msg += ' Set the %s environment variable' % env_vars[0]
+        msg = textwrap.fill(msg+'.', initial_indent='  ',
+                            subsequent_indent='  ')
+        if searchpath:
+            msg += '\n\n  Searched in:'
+            msg += ''.join('\n    - %s' % d for d in searchpath)
+        if url:
+            msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
+                    (name_pattern, url))
+        div = '='*75
+        raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+
+def find_jar(name_pattern, path_to_jar=None, env_vars=(),
+        searchpath=(), url=None, verbose=True, is_regex=False):
+    return next(find_jar_iter(name_pattern, path_to_jar, env_vars,
+                         searchpath, url, verbose, is_regex))
 
 ##########################################################################
 # Import Stdlib Module
