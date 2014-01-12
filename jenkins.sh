@@ -3,7 +3,7 @@
 cd `dirname $0`
 
 python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
-./pip-install.py
+pip install --requirements pip-req.txt
 coverage erase
 coverage run --source=nltk nltk/test/runtests.py --with-xunit
 coverage xml --omit=nltk/test/*
