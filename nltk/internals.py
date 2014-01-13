@@ -47,6 +47,8 @@ def compile_regexp_to_nongrouping(pattern, flags=0):
             if key == sre_constants.SUBPATTERN:
                 index, subpattern = value
                 value = (None, convert_regexp_to_nongrouping_parsed(subpattern))
+            elif key == sre_constants.GROUPREF:
+                raise ValueError('Regular expressions with back-references are not supported: {0}'.format(pattern))
             res_data.append((key, value))
         parsed_pattern.data = res_data
         parsed_pattern.pattern.groups = 1
