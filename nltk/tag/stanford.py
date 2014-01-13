@@ -80,8 +80,6 @@ class StanfordTagger(TaggerI):
         stanpos_output, _stderr = java(self._cmd,classpath=self._stanford_jar,
                                                        stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
-        if (not compat.PY3) and encoding == 'ascii':
-            stanpos_output = str(stanpos_output)
 
         # Delete the temporary file
         os.unlink(self._input_file_path)
