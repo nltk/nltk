@@ -32,6 +32,7 @@ class StanfordParser(ParserI):
 
         self._stanford_jar = find_jar(
                 self._JAR, path_to_jar,
+                env_vars=('STANFORD_PARSER',),
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 

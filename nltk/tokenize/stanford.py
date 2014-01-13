@@ -39,6 +39,7 @@ class StanfordTokenizer(TokenizerI):
     def __init__(self, path_to_jar=None, encoding='UTF-8', options=None, verbose=False, java_options='-mx1000m'):
         self._stanford_jar = find_jar(
                 self._JAR, path_to_jar,
+                env_vars=('STANFORD_POSTAGGER',),
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 
