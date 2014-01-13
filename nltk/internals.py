@@ -607,15 +607,18 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
                             yielded = True
                             yield cp
             else:
-                path_to_jar = os.environ[env_var]
-                if os.path.isfile(path_to_jar):
-                    filename=os.path.basename(path_to_jar)
-                    if is_regex and re.match(name_pattern, filename) or \
-                            (not is_regex and filename == name_pattern):
-                        if verbose:
-                            print('[Found %s: %s]' % (name_pattern, path_to_jar))
-                        yielded = True
-                        yield path_to_jar
+                jar_env = os.environ[env_var]
+                jar_iter = ((os.path.join(jar_env, path_to_jar) for path_to_jar in os.listdir(jar_env))
+                            if os.path.isdir(jar_env) else (jar_env,))
+                for path_to_jar in jar_iter:
+                    if os.path.isfile(path_to_jar):
+                        filename=os.path.basename(path_to_jar)
+                        if is_regex and re.match(name_pattern, filename) or \
+                                (not is_regex and filename == name_pattern):
+                            if verbose:
+                                print('[Found %s: %s]' % (name_pattern, path_to_jar))
+                            yielded = True
+                            yield path_to_jar
 
     # Check the path list.
     for directory in searchpath:
