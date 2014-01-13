@@ -70,7 +70,7 @@ from __future__ import unicode_literals
 import re
 import sre_constants
 
-from nltk.internals import convert_regexp_to_nongrouping
+from nltk.internals import compile_regexp_to_nongrouping
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
 from nltk.compat import python_2_unicode_compatible
@@ -115,10 +115,8 @@ class RegexpTokenizer(TokenizerI):
         # Remove grouping parentheses -- if the regexp contains any
         # grouping parentheses, then the behavior of re.findall and
         # re.split will change.
-        nongrouping_pattern = convert_regexp_to_nongrouping(pattern)
-
         try:
-            self._regexp = re.compile(nongrouping_pattern, flags)
+            self._regexp = compile_regexp_to_nongrouping(pattern, flags)
         except re.error as e:
             raise ValueError('Error in regular expression %r: %s' %
                              (pattern, e))

@@ -29,13 +29,13 @@ from nltk import compat
 # Regular Expression Processing
 ######################################################################
 
-def convert_regexp_to_nongrouping(pattern):
+def compile_regexp_to_nongrouping(pattern, flags=0):
     """
     Convert all grouping parentheses in the given regexp pattern to
     non-grouping parentheses, and return the result.  E.g.:
 
-        >>> from nltk.internals import convert_regexp_to_nongrouping
-        >>> convert_regexp_to_nongrouping('ab(c(x+)(z*))?d')
+        >>> from nltk.internals import compile_regexp_to_nongrouping
+        >>> compile_regexp_to_nongrouping('ab(c(x+)(z*))?d')
         'ab(?:c(?:x+)(?:z*))?d'
 
     :type pattern: str
