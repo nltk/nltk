@@ -49,6 +49,8 @@ def compile_regexp_to_nongrouping(pattern, flags=0):
                 value = (None, convert_regexp_to_nongrouping_parsed(subpattern))
             res_data.append((key, value))
         parsed_pattern.data = res_data
+        parsed_pattern.pattern.groups = 1
+        parsed_pattern.pattern.groupdict = {}
         return parsed_pattern
 
     return sre_compile.compile(convert_regexp_to_nongrouping_parsed(sre_parse.parse(pattern)))
