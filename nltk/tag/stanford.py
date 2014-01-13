@@ -47,7 +47,7 @@ class StanfordTagger(TaggerI):
                 verbose=verbose)
 
         self._stanford_model = find_file(path_to_model,
-                env_vars=('STANFORD_MODELS'), verbose=verbose)
+                env_vars=('STANFORD_MODELS',), verbose=verbose)
         self._encoding = encoding
         self.java_options = java_options
 
@@ -77,11 +77,9 @@ class StanfordTagger(TaggerI):
         _input_fh.close()
 
         # Run the tagger and get the output
-        stanpos_output, _stderr = java(self._cmd,classpath=self._stanford_jar, \
+        stanpos_output, _stderr = java(self._cmd,classpath=self._stanford_jar,
                                                        stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
-        if (not compat.PY3) and encoding == 'ascii':
-            stanpos_output = str(stanpos_output)
 
         # Delete the temporary file
         os.unlink(self._input_file_path)
@@ -127,8 +125,8 @@ class POSTagger(StanfordTagger):
 
     @property
     def _cmd(self):
-        return ['edu.stanford.nlp.tagger.maxent.MaxentTagger', \
-                '-model', self._stanford_model, '-textFile', \
+        return ['edu.stanford.nlp.tagger.maxent.MaxentTagger',
+                '-model', self._stanford_model, '-textFile',
                 self._input_file_path, '-tokenize', 'false']
 
 class NERTagger(StanfordTagger):
@@ -160,8 +158,8 @@ class NERTagger(StanfordTagger):
 
     @property
     def _cmd(self):
-        return ['edu.stanford.nlp.ie.crf.CRFClassifier', \
-                '-loadClassifier', self._stanford_model, '-textFile', \
+        return ['edu.stanford.nlp.ie.crf.CRFClassifier',
+                '-loadClassifier', self._stanford_model, '-textFile',
                 self._input_file_path, '-outputFormat', self._FORMAT]
 
     def parse_output(self, text):
