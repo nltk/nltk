@@ -23,6 +23,52 @@ from nltk.tree import Tree
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 class StanfordParser(ParserI):
+    '''
+    Interface to the Stanford Parser
+
+    >>> parser=StanfordParser(
+    ...     path_to_jar='../third/stanford-parser/stanford-parser.jar',
+    ...     model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
+    ... )
+    >>> parser.raw_batch_parse((
+    ...     'the quick brown fox jumps over the lazy dog',
+    ...     'the quick grey wolf jumps over the lazy fox'
+    ... )))
+    [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
+    Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
+    Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree(
+    'NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['grey']), Tree('NN', ['wolf'])]),
+    Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), Tree('NP',
+    [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
+
+    >>> parser.batch_parse((
+    ...     'I \'m a dog'.split(),
+    ...     'This is my friends \' cat ( the tabby )'.split(),
+    ... ))
+    [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
+    Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
+    [Tree('DT', ['This'])]), Tree('VP', [Tree('VBZ', ['is']), Tree('NP', [Tree('NP', [Tree('NP', [Tree('PRP$', ['my']),
+    Tree('NNS', ['friends']), Tree('POS', ["'"])]), Tree('NN', ['cat'])]), Tree('PRN', [Tree('-LRB-', ['-LRB-']),
+    Tree('NP', [Tree('DT', ['the']), Tree('NN', ['tabby'])]), Tree('-RRB-', ['-RRB-'])])])])])])]
+
+    >>> parser.tagged_batch_parse((
+    ...     (
+    ...         ('The', 'DT'),
+    ...         ('quick', 'JJ'),
+    ...         ('brown', 'JJ'),
+    ...         ('fox', 'NN'),
+    ...         ('jumped', 'VBD'),
+    ...         ('over', 'IN'),
+    ...         ('the', 'DT'),
+    ...         ('lazy', 'JJ'),
+    ...         ('dog', 'NN'),
+    ...         ('.', '.'),
+    ...     ),
+    ... ))
+    [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
+    Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
+    [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
+    '''
     _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)\.(\d+)\.(\d+)-models\.jar'
     _JAR = 'stanford-parser.jar'
 
