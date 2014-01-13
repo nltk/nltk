@@ -8,6 +8,9 @@ python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed
 #download nltk python dependencies
 pip install --requirements pip-req.txt
 
+#download external dependencies
+pushd 'third'
+
 #download nltk stanford dependencies
 stanford_parser_package=$(curl 'http://nlp.stanford.edu/software/lex-parser.shtml' | grep -o 'stanford-parser-full-.*\.zip' | head -n1)
 wget "http://nlp.stanford.edu/software/$stanford_parser_package"
@@ -18,6 +21,8 @@ stanford_tagger_package=$(curl 'http://nlp.stanford.edu/downloads/tagger.shtml' 
 wget "http://nlp.stanford.edu/downloads/$stanford_tagger_package"
 unzip "$stanford_tagger_package"
 mv $(echo "$stanford_tagger_package" | egrep -o 'stanford-postagger-[0-9]+-[0-9]+-[0-9]+') 'stanford-postagger'
+
+popd
 
 #coverage
 coverage erase
