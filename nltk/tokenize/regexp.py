@@ -70,7 +70,7 @@ from __future__ import unicode_literals
 import re
 import sre_constants
 
-from nltk.internals import compile_regexp_to_nongrouping
+from nltk.internals import compile_regexp_to_noncapturing
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
 from nltk.compat import python_2_unicode_compatible
@@ -85,7 +85,7 @@ class RegexpTokenizer(TokenizerI):
 
     :type pattern: str
     :param pattern: The pattern used to build this tokenizer.
-        (This pattern may safely contain grouping parentheses.)
+        (This pattern may safely contain capturing parentheses.)
     :type gaps: bool
     :param gaps: True if this tokenizer's pattern should be used
         to find separators between tokens; False if this
@@ -112,11 +112,11 @@ class RegexpTokenizer(TokenizerI):
         self._flags = flags
         self._regexp = None
 
-        # Remove grouping parentheses -- if the regexp contains any
-        # grouping parentheses, then the behavior of re.findall and
+        # Remove capturing parentheses -- if the regexp contains any
+        # capturing parentheses, then the behavior of re.findall and
         # re.split will change.
         try:
-            self._regexp = compile_regexp_to_nongrouping(pattern, flags)
+            self._regexp = compile_regexp_to_noncapturing(pattern, flags)
         except re.error as e:
             raise ValueError('Error in regular expression %r: %s' %
                              (pattern, e))

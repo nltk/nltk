@@ -29,24 +29,24 @@ from nltk import compat
 # Regular Expression Processing
 ######################################################################
 
-def compile_regexp_to_nongrouping(pattern, flags=0):
+def compile_regexp_to_noncapturing(pattern, flags=0):
     """
     Convert all grouping parentheses in the given regexp pattern to
-    non-grouping parentheses, and return the result.  E.g.:
+    non-capturing parentheses, and return the result.  E.g.:
 
-        >>> from nltk.internals import compile_regexp_to_nongrouping
-        >>> compile_regexp_to_nongrouping('ab(c(x+)(z*))?d')
+        >>> from nltk.internals import compile_regexp_to_noncapturing
+        >>> compile_regexp_to_noncapturing('ab(c(x+)(z*))?d')
         'ab(?:c(?:x+)(?:z*))?d'
 
     :type pattern: str
     :rtype: str
     """
-    def convert_regexp_to_nongrouping_parsed(parsed_pattern):
+    def convert_regexp_to_noncapturing_parsed(parsed_pattern):
         res_data = []
         for key, value in parsed_pattern.data:
             if key == sre_constants.SUBPATTERN:
                 index, subpattern = value
-                value = (None, convert_regexp_to_nongrouping_parsed(subpattern))
+                value = (None, convert_regexp_to_noncapturing(subpattern))
             elif key == sre_constants.GROUPREF:
                 raise ValueError('Regular expressions with back-references are not supported: {0}'.format(pattern))
             res_data.append((key, value))
@@ -55,7 +55,7 @@ def compile_regexp_to_nongrouping(pattern, flags=0):
         parsed_pattern.pattern.groupdict = {}
         return parsed_pattern
 
-    return sre_compile.compile(convert_regexp_to_nongrouping_parsed(sre_parse.parse(pattern)))
+    return sre_compile.compile(convert_regexp_to_noncapturing_parsed(sre_parse.parse(pattern)))
 
 
 ##########################################################################
