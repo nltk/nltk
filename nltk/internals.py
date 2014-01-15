@@ -10,7 +10,7 @@ from __future__ import print_function
 
 import subprocess
 import os
-import re
+import re, sre_constants, sre_parse, sre_compile
 import warnings
 import textwrap
 import types
@@ -29,40 +29,33 @@ from nltk import compat
 # Regular Expression Processing
 ######################################################################
 
-def convert_regexp_to_nongrouping(pattern):
+def compile_regexp_to_nongrouping(pattern, flags=0):
     """
     Convert all grouping parentheses in the given regexp pattern to
     non-grouping parentheses, and return the result.  E.g.:
 
-        >>> from nltk.internals import convert_regexp_to_nongrouping
-        >>> convert_regexp_to_nongrouping('ab(c(x+)(z*))?d')
+        >>> from nltk.internals import compile_regexp_to_nongrouping
+        >>> compile_regexp_to_nongrouping('ab(c(x+)(z*))?d')
         'ab(?:c(?:x+)(?:z*))?d'
 
     :type pattern: str
     :rtype: str
     """
-    # Sanity check: back-references are not allowed!
-    for s in re.findall(r'\\.|\(\?P=', pattern):
-        if s[1] in '0123456789' or s == '(?P=':
-            raise ValueError('Regular expressions with back-references '
-                             'are not supported: %r' % pattern)
+    def convert_regexp_to_nongrouping_parsed(parsed_pattern):
+        res_data = []
+        for key, value in parsed_pattern.data:
+            if key == sre_constants.SUBPATTERN:
+                index, subpattern = value
+                value = (None, convert_regexp_to_nongrouping_parsed(subpattern))
+            elif key == sre_constants.GROUPREF:
+                raise ValueError('Regular expressions with back-references are not supported: {0}'.format(pattern))
+            res_data.append((key, value))
+        parsed_pattern.data = res_data
+        parsed_pattern.pattern.groups = 1
+        parsed_pattern.pattern.groupdict = {}
+        return parsed_pattern
 
-    # This regexp substitution function replaces the string '('
-    # with the string '(?:', but otherwise makes no changes.
-    def subfunc(m):
-        return re.sub('^\((\?P<[^>]*>)?$', '(?:', m.group())
-
-    # Scan through the regular expression.  If we see any backslashed
-    # characters, ignore them.  If we see a named group, then
-    # replace it with "(?:".  If we see any open parens that are part
-    # of an extension group, ignore those too.  But if we see
-    # any other open paren, replace it with "(?:")
-    return re.sub(r'''(?x)
-        \\.           |  # Backslashed character
-        \(\?P<[^>]*>  |  # Named group
-        \(\?          |  # Extension group
-        \(               # Grouping parenthesis
-        ''', subfunc, pattern)
+    return sre_compile.compile(convert_regexp_to_nongrouping_parsed(sre_parse.parse(pattern)))
 
 
 ##########################################################################
