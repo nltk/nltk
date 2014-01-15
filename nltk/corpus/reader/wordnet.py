@@ -350,7 +350,7 @@ class Synset(_WordNetObject):
         self._definition = None
         self._examples = []
         self._lexname = None # lexicographer name
-        self._allHypernymsSet = None
+        self._all_hypernyms = None
 
         self._pointers = defaultdict(set)
         self._lemma_pointers = defaultdict(set)
@@ -499,15 +499,15 @@ class Synset(_WordNetObject):
         :param other: other input synset.
         :return: The synsets that are hypernyms of both synsets.
         """
-        if not self._allHypernymsSet:
-            self._allHypernymsSet = set(self_synset
+        if not self._all_hypernyms:
+            self._all_hypernyms = set(self_synset
                                        for self_synsets in self._iter_hypernym_lists()
                                        for self_synset in self_synsets)
-        if not other._allHypernymsSet:
-            other._allHypernymsSet = set(other_synset
+        if not other._all_hypernyms:
+            other._all_hypernyms = set(other_synset
                                         for other_synsets in other._iter_hypernym_lists()
                                         for other_synset in other_synsets)
-        return list(self._allHypernymsSet.intersection(other._allHypernymsSet))
+        return list(self._all_hypernyms.intersection(other._all_hypernyms))
 
     def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
         """
