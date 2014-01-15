@@ -32,7 +32,7 @@ from nltk import compat
 def compile_regexp_to_noncapturing(pattern, flags=0):
     """
     Convert all grouping parentheses in the given regexp pattern to
-    non-capturing parentheses, and return the result.  E.g.:
+    non-capturing groups, and return the result.  E.g.:
 
         >>> from nltk.internals import compile_regexp_to_noncapturing
         >>> compile_regexp_to_noncapturing('ab(c(x+)(z*))?d')
