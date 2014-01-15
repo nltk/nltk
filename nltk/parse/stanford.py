@@ -1,12 +1,21 @@
-from __future__ import print_function
+# -*- coding: utf-8 -*-
+# Natural Language Toolkit: Interface to the Stanford Parser
+#
+# Copyright (C) 2001-2013 NLTK Project
+# Author: Steven Xu <xxu@student.unimelb.edu.au>
+#
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+
+from __future__ import unicode_literals
 
 import tempfile
 import os
+import re
 from subprocess import PIPE
 
 from nltk import compat
-from nltk.tokenize import word_tokenize
-from nltk.internals import find_file, find_jar, config_java, java, _java_options
+from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
 from nltk.tree import Tree
@@ -14,7 +23,53 @@ from nltk.tree import Tree
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 class StanfordParser(ParserI):
-    _MODEL_JAR = 'stanford-parser-3.3.0-models.jar'
+    '''
+    Interface to the Stanford Parser
+
+    >>> parser=StanfordParser(
+    ...     path_to_jar='../third/stanford-parser/stanford-parser.jar',
+    ...     model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
+    ... )
+    >>> parser.raw_batch_parse((
+    ...     'the quick brown fox jumps over the lazy dog',
+    ...     'the quick grey wolf jumps over the lazy fox'
+    ... )))
+    [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
+    Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
+    Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree(
+    'NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['grey']), Tree('NN', ['wolf'])]),
+    Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), Tree('NP',
+    [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
+
+    >>> parser.batch_parse((
+    ...     'I \'m a dog'.split(),
+    ...     'This is my friends \' cat ( the tabby )'.split(),
+    ... ))
+    [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
+    Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
+    [Tree('DT', ['This'])]), Tree('VP', [Tree('VBZ', ['is']), Tree('NP', [Tree('NP', [Tree('NP', [Tree('PRP$', ['my']),
+    Tree('NNS', ['friends']), Tree('POS', ["'"])]), Tree('NN', ['cat'])]), Tree('PRN', [Tree('-LRB-', ['-LRB-']),
+    Tree('NP', [Tree('DT', ['the']), Tree('NN', ['tabby'])]), Tree('-RRB-', ['-RRB-'])])])])])])]
+
+    >>> parser.tagged_batch_parse((
+    ...     (
+    ...         ('The', 'DT'),
+    ...         ('quick', 'JJ'),
+    ...         ('brown', 'JJ'),
+    ...         ('fox', 'NN'),
+    ...         ('jumped', 'VBD'),
+    ...         ('over', 'IN'),
+    ...         ('the', 'DT'),
+    ...         ('lazy', 'JJ'),
+    ...         ('dog', 'NN'),
+    ...         ('.', '.'),
+    ...     ),
+    ... ))
+    [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
+    Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
+    [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
+    '''
+    _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)\.(\d+)\.(\d+)-models\.jar'
     _JAR = 'stanford-parser.jar'
 
     def __init__(self, path_to_jar=None, path_to_models_jar=None,
@@ -23,19 +78,25 @@ class StanfordParser(ParserI):
 
         self._stanford_jar = find_jar(
                 self._JAR, path_to_jar,
+                env_vars=('STANFORD_PARSER',),
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 
-        self._model_jar = find_jar(
-                self._MODEL_JAR, path_to_models_jar,
+        # find the most recent model
+        self._model_jar=max(find_jar_iter(
+                self._MODEL_JAR_PATTERN, path_to_models_jar,
+                env_vars=('STANFORD_MODELS',),
                 searchpath=(), url=_stanford_url,
-                verbose=verbose)
+                verbose=verbose, is_regex=True),
+            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
+        )
 
         self.model_path = model_path
         self._encoding = encoding
         self.java_options = java_options
 
-    def _parse_trees_output(self, output_):
+    @staticmethod
+    def _parse_trees_output(output_):
         res = []
         cur_lines = []
         for line in output_.splitlines(False):
@@ -68,7 +129,7 @@ class StanfordParser(ParserI):
         separate tokens.
 
         :param sentences: Input sentences to parse
-        :type sentence: list(list(str))
+        :type sentences: list(list(str))
         :rtype: list(Tree)
         """
         cmd = [
@@ -134,20 +195,20 @@ class StanfordParser(ParserI):
         :type sentences: list(list(tuple(str, str)))
         :rtype: Tree
         """
-        tagSeparator = '/'
+        tag_separator = '/'
         cmd = [
             'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
             '-model', self.model_path,
             '-sentences', 'newline',
             '-outputFormat', 'penn',
             '-tokenized',
-            '-tagSeparator', tagSeparator,
+            '-tagSeparator', tag_separator,
             '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer',
             '-tokenizerMethod', 'newCoreLabelTokenizerFactory',
         ]
         # We don't need to escape slashes as "splitting is done on the last instance of the character in the token"
         return self._parse_trees_output(self._execute(
-            cmd, '\n'.join(' '.join(tagSeparator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
+            cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
 
     def _execute(self, cmd, input_, verbose=False):
         encoding = self._encoding
@@ -172,8 +233,6 @@ class StanfordParser(ParserI):
             stdout, stderr = java(cmd, classpath=(self._stanford_jar, self._model_jar),
                                   stdout=PIPE, stderr=PIPE)
             stdout = stdout.decode(encoding)
-            if (not compat.PY3) and encoding == 'ascii':
-                stdout = str(stdout)
 
         os.unlink(input_file.name)
 

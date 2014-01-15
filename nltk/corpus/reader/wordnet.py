@@ -350,6 +350,7 @@ class Synset(_WordNetObject):
         self._definition = None
         self._examples = []
         self._lexname = None # lexicographer name
+        self._all_hypernyms = None
 
         self._pointers = defaultdict(set)
         self._lemma_pointers = defaultdict(set)
@@ -498,13 +499,15 @@ class Synset(_WordNetObject):
         :param other: other input synset.
         :return: The synsets that are hypernyms of both synsets.
         """
-        self_synsets = set(self_synset
-                           for self_synsets in self._iter_hypernym_lists()
-                           for self_synset in self_synsets)
-        other_synsets = set(other_synset
-                           for other_synsets in other._iter_hypernym_lists()
-                           for other_synset in other_synsets)
-        return list(self_synsets.intersection(other_synsets))
+        if not self._all_hypernyms:
+            self._all_hypernyms = set(self_synset
+                                       for self_synsets in self._iter_hypernym_lists()
+                                       for self_synset in self_synsets)
+        if not other._all_hypernyms:
+            other._all_hypernyms = set(other_synset
+                                        for other_synsets in other._iter_hypernym_lists()
+                                        for other_synset in other_synsets)
+        return list(self._all_hypernyms.intersection(other._all_hypernyms))
 
     def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
         """
@@ -542,22 +545,13 @@ class Synset(_WordNetObject):
             (eg: 'chef.n.01', 'fireman.n.01') but is retained for backwards compatibility
         :return: The synsets that are the lowest common hypernyms of both synsets
         """
-
-        fake_synset = Synset(None)
-        fake_synset._name = '*ROOT*'
-        fake_synset.hypernyms = lambda: []
-        fake_synset.instance_hypernyms = lambda: []
-
+        synsets = self.common_hypernyms(other)
         if simulate_root:
-            self_hypernyms = chain(self._iter_hypernym_lists(), [[fake_synset]])
-            other_hypernyms = chain(other._iter_hypernym_lists(), [[fake_synset]])
-        else:
-            self_hypernyms = self._iter_hypernym_lists()
-            other_hypernyms = other._iter_hypernym_lists()
-
-        synsets = set(s for synsets in self_hypernyms for s in synsets)
-        others = set(s for synsets in other_hypernyms for s in synsets)
-        synsets.intersection_update(others)
+            fake_synset = Synset(None)
+            fake_synset._name = '*ROOT*'
+            fake_synset.hypernyms = lambda: []
+            fake_synset.instance_hypernyms = lambda: []
+            synsets.append(fake_synset)
 
         try:
             if use_min_depth:

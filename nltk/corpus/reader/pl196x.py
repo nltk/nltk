@@ -15,7 +15,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
-# (?:something) -- non-grouping parentheses!
+# (?:something) -- non-capturing parentheses!
 
 PARA = re.compile(r'<p(?: [^>]*){0,1}>(.*?)</p>')
 SENT = re.compile(r'<s(?: [^>]*){0,1}>(.*?)</s>')

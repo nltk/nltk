@@ -210,7 +210,7 @@ class TokenSearcher(object):
     string where tokens are marked with angle brackets -- e.g.,
     ``'<the><window><is><still><open>'``.  The regular expression
     passed to the ``findall()`` method is modified to treat angle
-    brackets as nongrouping parentheses, in addition to matching the
+    brackets as non-capturing parentheses, in addition to matching the
     token boundaries; and to have ``'.'`` not match the angle brackets.
     """
     def __init__(self, tokens):
