@@ -46,7 +46,7 @@ def compile_regexp_to_noncapturing(pattern, flags=0):
         for key, value in parsed_pattern.data:
             if key == sre_constants.SUBPATTERN:
                 index, subpattern = value
-                value = (None, convert_regexp_to_noncapturing(subpattern))
+                value = (None, convert_regexp_to_noncapturing_parsed(subpattern))
             elif key == sre_constants.GROUPREF:
                 raise ValueError('Regular expressions with back-references are not supported: {0}'.format(pattern))
             res_data.append((key, value))
