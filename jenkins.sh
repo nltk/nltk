@@ -6,7 +6,7 @@ cd `dirname $0`
 python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
 
 #download nltk python dependencies
-pip install --upgrade -r pip-req.txt
+pip install --upgrade -r pip-req.txt --allow-external matplotlib --allow-unverified matplotlib
 
 #download external dependencies
 [[ ! -d 'third' ]] && mkdir 'third'
