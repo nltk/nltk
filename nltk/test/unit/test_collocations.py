@@ -29,12 +29,12 @@ class TestBigram(unittest2.TestCase):
 
         #python 2.6 does not have assertItemsEqual
         self.assertItemsEqual(
-            sorted(b.ngram_fd.items()),
-            sorted([(('a', 'a'), 1), (('a', 'test'), 1), (('is', 'a'), 1), (('is', 'is'), 1), (('test', 'test'), 1), (('this', 'is'), 1), (('this', 'this'), 1)])
+            b.ngram_fd.items(),
+            [(('a', 'a'), 1), (('a', 'test'), 1), (('is', 'a'), 1), (('is', 'is'), 1), (('test', 'test'), 1), (('this', 'is'), 1), (('this', 'this'), 1)]
         )
         self.assertItemsEqual(
-            sorted(b.word_fd.items()),
-            sorted([('a', 2), ('is', 2), ('test', 2), ('this', 2)])
+            b.word_fd.items(),
+            [('a', 2), ('is', 2), ('test', 2), ('this', 2)]
         )
         self.assertTrue(len(sent) == sum(b.word_fd.values()) == sum(b.ngram_fd.values()) + 1)
         self.assertTrue(close_enough(
@@ -47,12 +47,12 @@ class TestBigram(unittest2.TestCase):
 
         b = BigramCollocationFinder.from_words(sent, window_size=3)
         self.assertItemsEqual(
-            sorted(b.ngram_fd.items()),
-            sorted([(('a', 'test'), 3), (('is', 'a'), 3), (('this', 'is'), 3), (('a', 'a'), 1), (('is', 'is'), 1), (('test', 'test'), 1), (('this', 'this'), 1)])
+            b.ngram_fd.items(),
+            [(('a', 'test'), 3), (('is', 'a'), 3), (('this', 'is'), 3), (('a', 'a'), 1), (('is', 'is'), 1), (('test', 'test'), 1), (('this', 'this'), 1)]
         )
         self.assertItemsEqual(
-            sorted(b.word_fd.items()),
-            sorted([('a', 2), ('is', 2), ('test', 2), ('this', 2)])
+            b.word_fd.items(),
+            [('a', 2), ('is', 2), ('test', 2), ('this', 2)]
         )
         self.assertTrue(len(sent) == sum(b.word_fd.values()) == (sum(b.ngram_fd.values()) + 2 + 1) / 2.0)
         self.assertTrue(close_enough(
@@ -65,8 +65,8 @@ class TestBigram(unittest2.TestCase):
 
         b = BigramCollocationFinder.from_words(sent, window_size=5)
         self.assertItemsEqual(
-            sorted(b.ngram_fd.items()),
-            sorted([(('a', 'test'), 4), (('is', 'a'), 4), (('this', 'is'), 4), (('is', 'test'), 3), (('this', 'a'), 3), (('a', 'a'), 1), (('is', 'is'), 1), (('test', 'test'), 1), (('this', 'this'), 1)])
+            b.ngram_fd.items(),
+            [(('a', 'test'), 4), (('is', 'a'), 4), (('this', 'is'), 4), (('is', 'test'), 3), (('this', 'a'), 3), (('a', 'a'), 1), (('is', 'is'), 1), (('test', 'test'), 1), (('this', 'this'), 1)]
         )
         self.assertItemsEqual(
             sorted(b.word_fd.items()),
