@@ -9,7 +9,7 @@ python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed
 pip install -r pip-req.txt
 
 #download external dependencies
-mkdir 'third'
+[[ ! -d 'third' ]] && mkdir 'third'
 pushd 'third'
 
 #download nltk stanford dependencies
