@@ -1,8 +1,8 @@
-nose==1.2.1
-tox==1.4.2
-coverage==3.5.3
-hg+https://bitbucket.org/hleeldc/pylint@5fd3997
-numpy==1.6.2
-scipy==0.11.0
-matplotlib==1.2.0
-scikit-learn==0.12.1
+nose>=1.3.0
+tox>=1.6.1
+coverage>=3.7.1
+pylint>=1.1.0
+numpy>=1.8.0
+scipy>=0.13.2
+matplotlib>=1.3.1
+scikit-learn>=0.14.1
