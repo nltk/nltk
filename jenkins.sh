@@ -6,7 +6,7 @@ cd `dirname $0`
 python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
 
 #download nltk python dependencies
-pip install --requirements pip-req.txt
+pip install -r pip-req.txt
 
 #download external dependencies
 mkdir 'third'
