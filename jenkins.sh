@@ -9,6 +9,7 @@ python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed
 pip install --upgrade -r pip-req.txt --allow-external matplotlib --allow-unverified matplotlib
 
 #download external dependencies
+pushd ${HOME}
 [[ ! -d 'third' ]] && mkdir 'third'
 pushd 'third'
 
@@ -33,6 +34,7 @@ if [[ ! -d ${stanford_parser_package_name} ]]; then
 	ln -s ${stanford_parser_package_name} 'stanford-postagger'
 fi
 
+popd
 popd
 
 #coverage
