@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 cd `dirname $0`
 
@@ -13,15 +13,25 @@ pip install -r pip-req.txt
 pushd 'third'
 
 #download nltk stanford dependencies
-stanford_parser_package=$(curl 'http://nlp.stanford.edu/software/lex-parser.shtml' | grep -o 'stanford-parser-full-.*\.zip' | head -n1)
-wget "http://nlp.stanford.edu/software/$stanford_parser_package"
-unzip "$stanford_parser_package"
-mv $(echo "$stanford_parser_package" | egrep -o 'stanford-parser-full-[0-9]+-[0-9]+-[0-9]+') 'stanford-parser'
+stanford_parser_package_zip_name=$(curl 'http://nlp.stanford.edu/software/lex-parser.shtml' | grep -o 'stanford-parser-full-.*\.zip' | head -n1)
+[[ ${stanford_parser_package_zip_name} =~ (.+)\.zip ]]
+stanford_parser_package_name=${BASH_REMATCH[1]}
+if [[ ! -d ${stanford_parser_package_name} ]]; then
+	wget -nv "http://nlp.stanford.edu/software/$stanford_parser_package_zip_name"
+	unzip ${stanford_parser_package_zip_name}
+	rm ${stanford_parser_package_name}
+	ln -s ${stanford_parser_package_name} 'stanford-parser'
+fi
 
-stanford_tagger_package=$(curl 'http://nlp.stanford.edu/downloads/tagger.shtml' | grep -o 'stanford-postagger-.*\.zip' | head -n1)
-wget "http://nlp.stanford.edu/downloads/$stanford_tagger_package"
-unzip "$stanford_tagger_package"
-mv $(echo "$stanford_tagger_package" | egrep -o 'stanford-postagger-[0-9]+-[0-9]+-[0-9]+') 'stanford-postagger'
+stanford_parser_package_zip_name=$(curl 'http://nlp.stanford.edu/downloads/tagger.shtml' | grep -o 'stanford-parser-full-.*\.zip' | head -n1)
+[[ ${stanford_parser_package_zip_name} =~ (.+)\.zip ]]
+stanford_parser_package_name=${BASH_REMATCH[1]}
+if [[ ! -d ${stanford_parser_package_name} ]]; then
+	wget -nv "http://nlp.stanford.edu/software/$stanford_parser_package_zip_name"
+	unzip ${stanford_parser_package_zip_name}
+	rm ${stanford_parser_package_name}
+	ln -s ${stanford_parser_package_name} 'stanford-postagger'
+fi
 
 popd
 
@@ -31,4 +41,6 @@ coverage run --source=nltk nltk/test/runtests.py --with-xunit
 coverage xml --omit=nltk/test/*
 iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
 pylint -f parseable nltk > pylintoutput
-true   # script always succeeds
+
+#script always succeeds
+true
