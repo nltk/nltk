@@ -86,17 +86,20 @@ class StanfordParser(ParserI):
                  encoding='UTF-8', verbose=False, java_options='-mx1000m'):
 
         self._stanford_jar = find_jar(
-                self._JAR, path_to_jar,
-                env_vars=('STANFORD_PARSER',),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
+            self._JAR, path_to_jar,
+            env_vars=('STANFORD_PARSER',),
+            searchpath=(), url=_stanford_url,
+            verbose=verbose
+        )
 
         # find the most recent model
-        self._model_jar=max(find_jar_iter(
+        self._model_jar=max(
+            find_jar_iter(
                 self._MODEL_JAR_PATTERN, path_to_models_jar,
                 env_vars=('STANFORD_MODELS',),
                 searchpath=(), url=_stanford_url,
-                verbose=verbose, is_regex=True),
+                verbose=verbose, is_regex=True
+            ),
             key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
         )
 
