@@ -51,7 +51,7 @@ def compile_regexp_to_noncapturing(pattern, flags=0):
         parsed_pattern.pattern.groupdict = {}
         return parsed_pattern
 
-    return sre_compile.compile(convert_regexp_to_noncapturing_parsed(sre_parse.parse(pattern)))
+    return sre_compile.compile(convert_regexp_to_noncapturing_parsed(sre_parse.parse(pattern)), flags=flags)
 
 
 ##########################################################################
