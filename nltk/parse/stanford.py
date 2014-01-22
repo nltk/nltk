@@ -33,7 +33,7 @@ class StanfordParser(ParserI):
     >>> parser.raw_batch_parse((
     ...     'the quick brown fox jumps over the lazy dog',
     ...     'the quick grey wolf jumps over the lazy fox'
-    ... )))
+    ... ))
     [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
     Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree(
@@ -42,8 +42,8 @@ class StanfordParser(ParserI):
     [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
 
     >>> parser.batch_parse((
-    ...     'I \'m a dog'.split(),
-    ...     'This is my friends \' cat ( the tabby )'.split(),
+    ...     'I \\\'m a dog'.split(),
+    ...     'This is my friends \\\' cat ( the tabby )'.split(),
     ... ))
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
     Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
