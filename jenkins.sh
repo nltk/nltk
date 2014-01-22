@@ -20,7 +20,7 @@ stanford_parser_package_name=${BASH_REMATCH[1]}
 if [[ ! -d ${stanford_parser_package_name} ]]; then
 	wget -nv "http://nlp.stanford.edu/software/$stanford_parser_package_zip_name"
 	unzip ${stanford_parser_package_zip_name}
-	rm ${stanford_parser_package_name}
+	rm ${stanford_parser_package_zip_name}
 	ln -s ${stanford_parser_package_name} 'stanford-parser'
 fi
 
@@ -30,7 +30,7 @@ stanford_tagger_package_name=${BASH_REMATCH[1]}
 if [[ ! -d ${stanford_tagger_package_name} ]]; then
 	wget -nv "http://nlp.stanford.edu/software/$stanford_tagger_package_zip_name"
 	unzip ${stanford_tagger_package_zip_name}
-	rm ${stanford_tagger_package_name}
+	rm ${stanford_tagger_package_zip_name}
 	ln -s ${stanford_tagger_package_name} 'stanford-postagger'
 fi
 
