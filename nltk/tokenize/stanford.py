@@ -21,20 +21,28 @@ from nltk.tokenize.api import TokenizerI
 
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordTokenizer()
+    except LookupError:
+        raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
+
 class StanfordTokenizer(TokenizerI):
     """
     Interface to the Stanford Tokenizer
 
     >>> from nltk.tokenize.stanford import StanfordTokenizer
-    >>> s = 'Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'
+    >>> s = 'Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'
     >>> StanfordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     >>> s = 'The colour of the wall is blue.'
-    >>> StanfordTokenizer().tokenize(s, options={'americanize': True})
+    >>> StanfordTokenizer(options={'americanize': True}).tokenize(s)
     ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
     """
 
-    _JAR = 'stanford-parser.jar'
+    _JAR = 'stanford-postagger.jar'
 
     def __init__(self, path_to_jar=None, encoding='UTF-8', options=None, verbose=False, java_options='-mx1000m'):
         self._stanford_jar = find_jar(
@@ -47,7 +55,7 @@ class StanfordTokenizer(TokenizerI):
         self._encoding = encoding
         self.java_options = java_options
         options = {} if options is None else options
-        self._options_cmd = ','.join('{}={}'.format(key, json.dumps(val)) for key, val in options.items())
+        self._options_cmd = ','.join('{0}={1}'.format(key, json.dumps(val)) for key, val in options.items())
 
     @staticmethod
     def _parse_tokenized_output(s):

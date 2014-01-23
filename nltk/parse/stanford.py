@@ -30,7 +30,7 @@ def setup_module(module):
             model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
         )
     except LookupError:
-        raise SkipTest('doctests from nltk.parse.stanford are skipped because the stanford parser jar doesn\\\'t exist')
+        raise SkipTest('doctests from nltk.parse.stanford are skipped because the stanford parser jar doesn\'t exist')
 
 class StanfordParser(ParserI):
     '''
