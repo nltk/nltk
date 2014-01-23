@@ -22,28 +22,37 @@ from nltk.tree import Tree
 
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordParser(
+            model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
+        )
+    except LookupError:
+        raise SkipTest('doctests from nltk.parse.stanford are skipped because the stanford parser jar doesn\\\'t exist')
+
 class StanfordParser(ParserI):
     '''
     Interface to the Stanford Parser
 
     >>> parser=StanfordParser(
-    ...     path_to_jar='../third/stanford-parser/stanford-parser.jar',
     ...     model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
     ... )
     >>> parser.raw_batch_parse((
     ...     'the quick brown fox jumps over the lazy dog',
     ...     'the quick grey wolf jumps over the lazy fox'
-    ... )))
+    ... ))
     [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
-    Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree(
-    'NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['grey']), Tree('NN', ['wolf'])]),
-    Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), Tree('NP',
-    [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
+    Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree('NP',
+    [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['grey']), Tree('NN', ['wolf'])]), Tree('NP',
+    [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), Tree('NP', [Tree('DT', ['the']),
+    Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
 
     >>> parser.batch_parse((
-    ...     'I \'m a dog'.split(),
-    ...     'This is my friends \' cat ( the tabby )'.split(),
+    ...     'I \\\'m a dog'.split(),
+    ...     'This is my friends \\\' cat ( the tabby )'.split(),
     ... ))
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
     Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
@@ -77,17 +86,20 @@ class StanfordParser(ParserI):
                  encoding='UTF-8', verbose=False, java_options='-mx1000m'):
 
         self._stanford_jar = find_jar(
-                self._JAR, path_to_jar,
-                env_vars=('STANFORD_PARSER',),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
+            self._JAR, path_to_jar,
+            env_vars=('STANFORD_PARSER',),
+            searchpath=(), url=_stanford_url,
+            verbose=verbose
+        )
 
         # find the most recent model
-        self._model_jar=max(find_jar_iter(
+        self._model_jar=max(
+            find_jar_iter(
                 self._MODEL_JAR_PATTERN, path_to_models_jar,
                 env_vars=('STANFORD_MODELS',),
                 searchpath=(), url=_stanford_url,
-                verbose=verbose, is_regex=True),
+                verbose=verbose, is_regex=True
+            ),
             key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
         )
 

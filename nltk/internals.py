@@ -578,7 +578,7 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
     if path_to_jar is not None:
         if os.path.isfile(path_to_jar):
             yield path_to_jar
-        raise ValueError('Could not find %s jar file at %s' %
+        raise LookupError('Could not find %s jar file at %s' %
                          (name_pattern, path_to_jar))
 
     # Check environment variables
