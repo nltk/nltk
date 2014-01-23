@@ -22,16 +22,6 @@ from nltk.tree import Tree
 
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        StanfordParser(
-            model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
-        )
-    except LookupError:
-        raise SkipTest('doctests from nltk.parse.stanford are skipped because the stanford parser jar doesn\'t exist')
-
 class StanfordParser(ParserI):
     '''
     Interface to the Stanford Parser
@@ -253,3 +243,13 @@ class StanfordParser(ParserI):
 
         return stdout
 
+
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordParser(
+            model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
+        )
+    except LookupError:
+        raise SkipTest('doctests from nltk.parse.stanford are skipped because the stanford parser jar doesn\'t exist')

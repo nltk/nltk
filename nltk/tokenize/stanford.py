@@ -21,14 +21,6 @@ from nltk.tokenize.api import TokenizerI
 
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        StanfordTokenizer()
-    except LookupError:
-        raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
-
 class StanfordTokenizer(TokenizerI):
     """
     Interface to the Stanford Tokenizer
@@ -104,3 +96,11 @@ class StanfordTokenizer(TokenizerI):
 
         return stdout
 
+
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordTokenizer()
+    except LookupError:
+        raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
