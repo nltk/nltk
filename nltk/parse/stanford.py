@@ -22,26 +22,16 @@ from nltk.tree import Tree
 
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        StanfordParser(
-            model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
-        )
-    except LookupError:
-        raise SkipTest('doctests from nltk.parse.stanford are skipped because the stanford parser jar doesn\\\'t exist')
-
 class StanfordParser(ParserI):
-    '''
+    r"""
     Interface to the Stanford Parser
 
     >>> parser=StanfordParser(
-    ...     model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
+    ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
     ... )
     >>> parser.raw_batch_parse((
-    ...     'the quick brown fox jumps over the lazy dog',
-    ...     'the quick grey wolf jumps over the lazy fox'
+    ...     "the quick brown fox jumps over the lazy dog",
+    ...     "the quick grey wolf jumps over the lazy fox"
     ... ))
     [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
@@ -51,8 +41,8 @@ class StanfordParser(ParserI):
     Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
 
     >>> parser.batch_parse((
-    ...     'I \\\'m a dog'.split(),
-    ...     'This is my friends \\\' cat ( the tabby )'.split(),
+    ...     "I 'm a dog".split(),
+    ...     "This is my friends ' cat ( the tabby )".split(),
     ... ))
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
     Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
@@ -62,22 +52,22 @@ class StanfordParser(ParserI):
 
     >>> parser.tagged_batch_parse((
     ...     (
-    ...         ('The', 'DT'),
-    ...         ('quick', 'JJ'),
-    ...         ('brown', 'JJ'),
-    ...         ('fox', 'NN'),
-    ...         ('jumped', 'VBD'),
-    ...         ('over', 'IN'),
-    ...         ('the', 'DT'),
-    ...         ('lazy', 'JJ'),
-    ...         ('dog', 'NN'),
-    ...         ('.', '.'),
+    ...         ("The", "DT"),
+    ...         ("quick", "JJ"),
+    ...         ("brown", "JJ"),
+    ...         ("fox", "NN"),
+    ...         ("jumped", "VBD"),
+    ...         ("over", "IN"),
+    ...         ("the", "DT"),
+    ...         ("lazy", "JJ"),
+    ...         ("dog", "NN"),
+    ...         (".", "."),
     ...     ),
     ... ))
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
     [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
-    '''
+    """
     _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)\.(\d+)\.(\d+)-models\.jar'
     _JAR = 'stanford-parser.jar'
 
@@ -253,3 +243,13 @@ class StanfordParser(ParserI):
 
         return stdout
 
+
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordParser(
+            model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
+        )
+    except LookupError:
+        raise SkipTest('doctests from nltk.parse.stanford are skipped because the stanford parser jar doesn\'t exist')
