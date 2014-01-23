@@ -14,7 +14,7 @@ Tokenizers divide strings into lists of substrings.  For example,
 tokenizers can be used to find the list of sentences or words in a
 string.
 
-    >>> from nltk.tokenize import word_tokenize, wordpunct_tokenize, sent_tokenize, tokenize
+    >>> from nltk.tokenize import word_tokenize, wordpunct_tokenize, sent_tokenize
     >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
     ... two of them.\n\nThanks.'''
     >>> wordpunct_tokenize(s)

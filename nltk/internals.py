@@ -31,12 +31,8 @@ from nltk import compat
 
 def compile_regexp_to_noncapturing(pattern, flags=0):
     """
-    Convert all grouping parentheses in the given regexp pattern to
-    non-capturing groups, and return the result.  E.g.:
-
-        >>> from nltk.internals import compile_regexp_to_noncapturing
-        >>> compile_regexp_to_noncapturing('ab(c(x+)(z*))?d')
-        'ab(?:c(?:x+)(?:z*))?d'
+    Compile the regexp pattern after switching all grouping parentheses
+    in the given regexp pattern to non-capturing groups.
 
     :type pattern: str
     :rtype: str
@@ -46,7 +42,7 @@ def compile_regexp_to_noncapturing(pattern, flags=0):
         for key, value in parsed_pattern.data:
             if key == sre_constants.SUBPATTERN:
                 index, subpattern = value
-                value = (None, convert_regexp_to_noncapturing(subpattern))
+                value = (None, convert_regexp_to_noncapturing_parsed(subpattern))
             elif key == sre_constants.GROUPREF:
                 raise ValueError('Regular expressions with back-references are not supported: {0}'.format(pattern))
             res_data.append((key, value))
@@ -55,7 +51,7 @@ def compile_regexp_to_noncapturing(pattern, flags=0):
         parsed_pattern.pattern.groupdict = {}
         return parsed_pattern
 
-    return sre_compile.compile(convert_regexp_to_noncapturing_parsed(sre_parse.parse(pattern)))
+    return sre_compile.compile(convert_regexp_to_noncapturing_parsed(sre_parse.parse(pattern)), flags=flags)
 
 
 ##########################################################################
@@ -582,7 +578,7 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
     if path_to_jar is not None:
         if os.path.isfile(path_to_jar):
             yield path_to_jar
-        raise ValueError('Could not find %s jar file at %s' %
+        raise LookupError('Could not find %s jar file at %s' %
                          (name_pattern, path_to_jar))
 
     # Check environment variables
