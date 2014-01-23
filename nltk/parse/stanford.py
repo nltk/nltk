@@ -23,7 +23,7 @@ from nltk.tree import Tree
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 class StanfordParser(ParserI):
-    '''
+    r"""
     Interface to the Stanford Parser
 
     >>> parser=StanfordParser(
@@ -41,8 +41,8 @@ class StanfordParser(ParserI):
     Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
 
     >>> parser.batch_parse((
-    ...     'I \\\'m a dog'.split(),
-    ...     'This is my friends \\\' cat ( the tabby )'.split(),
+    ...     'I \'m a dog'.split(),
+    ...     'This is my friends \' cat ( the tabby )'.split(),
     ... ))
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
     Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
@@ -67,7 +67,7 @@ class StanfordParser(ParserI):
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
     [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
-    '''
+    """
     _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)\.(\d+)\.(\d+)-models\.jar'
     _JAR = 'stanford-parser.jar'
 

@@ -22,11 +22,11 @@ from nltk.tokenize.api import TokenizerI
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 class StanfordTokenizer(TokenizerI):
-    """
+    r"""
     Interface to the Stanford Tokenizer
 
     >>> from nltk.tokenize.stanford import StanfordTokenizer
-    >>> s = 'Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'
+    >>> s = 'Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'
     >>> StanfordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     >>> s = 'The colour of the wall is blue.'
