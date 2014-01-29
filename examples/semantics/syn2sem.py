@@ -4,7 +4,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_statement
+from __future__ import print_function
 
 """
 Demo of how to combine the output of parsing with evaluation in a model.
