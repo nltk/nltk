@@ -7,7 +7,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_statement
+from __future__ import print_function
 
 """
 This command-line tool takes a list of python files or directories,
@@ -214,10 +214,10 @@ def main():
                 deprecated_classes[name]).union(
                 deprecated_methods[name])
             for msg, prefix, suffix in msgs:
-                print(textwrap.fill(term.RED+prefix+name+suffix+)
+                print(textwrap.fill(term.RED+prefix+name+suffix+
                                     term.NORMAL+': '+msg,
                                     width=75, initial_indent=' '*2,
-                                    subsequent_indent=' '*6)
+                                    subsequent_indent=' '*6))
 
 
 
