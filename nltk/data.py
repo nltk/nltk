@@ -150,8 +150,8 @@ def normalize_resource_url(resource_url):
     True
     >>> normalize_resource_url('nltk:home/nltk')
     'nltk:home/nltk'
-    >>> normalize_resource_url('nltk:/home/nltk')
-    'file:///home/nltk'
+    >>> windows or normalize_resource_url('nltk:/home/nltk') == 'file:///home/nltk'
+    True
     >>> normalize_resource_url('http://example.com/dir/file')
     'http://example.com/dir/file'
     >>> normalize_resource_url('dir/file')
@@ -165,21 +165,22 @@ def normalize_resource_url(resource_url):
         name = resource_url
     # use file protocol if the path is an absolute path
     if protocol == 'nltk' and os.path.isabs(name):
-        protocol = 'file'
-    if protocol == 'file':
-        protocol = 'file:///'
+        protocol = 'file://'
+        name = normalize_resource_name(name, False, None)
+    elif protocol == 'file':
+        protocol = 'file://'
         # name is absolute
-        name = normalize_resource_name(name, False).lstrip('/')
+        name = normalize_resource_name(name, False, None)
     elif protocol == 'nltk':
         protocol = 'nltk:'
-        name = normalize_resource_name(name, False).lstrip('/')
+        name = normalize_resource_name(name, True).lstrip('/')
     else:
         # handled by urllib
         protocol += '://'
         name = name.lstrip('/')
-    return ''.join([protocol,name])
+    return ''.join([protocol, name])
 
-def normalize_resource_name(resource_name, allow_relative = True):
+def normalize_resource_name(resource_name, allow_relative=True, relative_path=None):
     """
     :type resource_name: str or unicode
     :param resource_name: The name of the resource to search for.
@@ -193,30 +194,25 @@ def normalize_resource_name(resource_name, allow_relative = True):
     './'
     >>> normalize_resource_name('./', True)
     './'
-    >>> windows or normalize_resource_name('dir/file', False) == '/dir/file'
+    >>> windows or normalize_resource_name('dir/file', False, '/') == '/dir/file'
     True
-    >>> not windows or normalize_resource_name('C:/file', False) == 'C:/file'
+    >>> not windows or normalize_resource_name('C:/file', False, '/') == '/C:/file'
     True
-    >>> windows or normalize_resource_name('/dir/file', False) == '/dir/file'
+    >>> windows or normalize_resource_name('/dir/file', False, '/') == '/dir/file'
     True
-    >>> windows or normalize_resource_name('../dir/file', False) == '/dir/file'
-    True
-    >>> not windows or normalize_resource_name('/C:/file', False) == 'C:/file'
-    True
-    >>> not windows or normalize_resource_name('../C:/file', False) == 'C:/file'
+    >>> windows or normalize_resource_name('../dir/file', False, '/') == '/dir/file'
     True
     """
-    is_dir = bool(re.search(r'[\\/]$',resource_name)) or resource_name.endswith(os.path.sep)
-    resource_name = os.path.normpath(resource_name).replace('\\','/').replace(os.path.sep,'/')
+    is_dir = bool(re.search(r'[\\/.]$', resource_name)) or resource_name.endswith(os.path.sep)
     if allow_relative:
-        if resource_name == '.':
-            is_dir = True
+        resource_name = os.path.normpath(resource_name)
     else:
-        if resource_name[0] == '.':
-            resource_name = re.sub('^[./]+', '', resource_name)
-        resource_name = resource_name.lstrip('/')
-        if not sys.platform.startswith('win'):
-            resource_name = '/' + resource_name
+        if relative_path is None:
+            relative_path = os.curdir
+        resource_name = os.path.abspath(os.path.join(relative_path, resource_name))
+    resource_name = resource_name.replace('\\', '/').replace(os.path.sep, '/')
+    if sys.platform.startswith('win') and os.path.isabs(resource_name):
+        resource_name = '/' + resource_name
     if is_dir and not resource_name.endswith('/'):
         resource_name += '/'
     return resource_name
