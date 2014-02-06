@@ -37,7 +37,6 @@ import sys
 import io
 import os
 import textwrap
-import weakref
 import re
 import zipfile
 import codecs
@@ -111,7 +110,7 @@ def split_resource_url(resource_url):
     >>> windows = sys.platform.startswith('win')
     >>> windows or split_resource_url('file:///home/nltk') == ('file', '/home/nltk')
     True
-    >>> not windows or split_resource_url('file:///C:/home/nltk') == ('file', 'C:/home/nltk')
+    >>> not windows or split_resource_url('file:///C:/home/nltk') == ('file', '/C:/home/nltk')
     True
     >>> split_resource_url('nltk:home/nltk')
     ('nltk', 'home/nltk')
@@ -121,31 +120,28 @@ def split_resource_url(resource_url):
     protocol, path = resource_url.split(':', 1)
     if protocol == 'nltk':
         pass
-    elif protocol == 'file':
-        path = path.lstrip('/')
-        if not sys.platform.startswith('win'):
-            path = '/' + path
     else:
         path = re.sub(r'^/{0,2}', '', path)
     return protocol, path
 
 def normalize_resource_url(resource_url):
-    """
+    r"""
     Normalizes a resource url
 
     >>> windows = sys.platform.startswith('win')
-    >>> os.path.normpath(split_resource_url(normalize_resource_url('file:grammar.fcfg'))[1]) == os.path.abspath(os.path.join(os.curdir, 'grammar.fcfg'))
+    >>> os.path.normpath(split_resource_url(normalize_resource_url('file:grammar.fcfg'))[1]) == \
+    ... ('\\' if windows else '') + os.path.abspath(os.path.join(os.curdir, 'grammar.fcfg'))
     True
-    >>> normalize_resource_url('file:C:/dir/file')
-    'file:///C:/dir/file'
-    >>> normalize_resource_url('file:C:\\\\dir\\\\file')
-    'file:///C:/dir/file'
-    >>> normalize_resource_url('file:C:\\\\dir/file')
-    'file:///C:/dir/file'
-    >>> normalize_resource_url('file://C:/dir/file')
-    'file:///C:/dir/file'
-    >>> normalize_resource_url('file:////C:/dir/file')
-    'file:///C:/dir/file'
+    >>> not windows or normalize_resource_url('file:C:/dir/file') == 'file:///C:/dir/file'
+    True
+    >>> not windows or normalize_resource_url('file:C:\\\\dir\\\\file') == 'file:///C:/dir/file'
+    True
+    >>> not windows or normalize_resource_url('file:C:\\\\dir/file') == 'file:///C:/dir/file'
+    True
+    >>> not windows or normalize_resource_url('file://C:/dir/file') == 'file:///C:/dir/file'
+    True
+    >>> not windows or normalize_resource_url('file:////C:/dir/file') == 'file:///C:/dir/file'
+    True
     >>> not windows or normalize_resource_url('nltk:C:/dir/file') == 'file:///C:/dir/file'
     True
     >>> not windows or normalize_resource_url('nltk:C:\\\\dir\\\\file') == 'file:///C:/dir/file'
@@ -175,11 +171,10 @@ def normalize_resource_url(resource_url):
         name = normalize_resource_name(name, False, None)
     elif protocol == 'nltk':
         protocol = 'nltk:'
-        name = normalize_resource_name(name, True).lstrip('/')
+        name = normalize_resource_name(name, True)
     else:
         # handled by urllib
         protocol += '://'
-        name = name.lstrip('/')
     return ''.join([protocol, name])
 
 def normalize_resource_name(resource_name, allow_relative=True, relative_path=None):
@@ -206,6 +201,10 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     True
     """
     is_dir = bool(re.search(r'[\\/.]$', resource_name)) or resource_name.endswith(os.path.sep)
+    if sys.platform.startswith('win'):
+        resource_name = resource_name.lstrip('/')
+    else:
+        resource_name = re.sub(r'^/+', '/', resource_name)
     if allow_relative:
         resource_name = os.path.normpath(resource_name)
     else:
