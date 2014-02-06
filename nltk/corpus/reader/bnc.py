@@ -10,13 +10,10 @@ Corpus reader for the XML version of the British National Corpus.
 """
 __docformat__ = 'epytext en'
 
-import re
-
-import xml.etree.ElementTree as ET
-
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.xmldocs import *
+
 
 class BNCCorpusReader(XMLCorpusReader):
     """
@@ -61,8 +58,10 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        if c5: tag = 'c5'
-        else: tag = 'pos'
+        if c5:
+            tag = 'c5'
+        else:
+            tag = 'pos'
         if self._lazy:
             return concat([BNCWordView(fileid, False, tag, strip_space, stem)
                            for fileid in self.abspaths(fileids)])
@@ -101,8 +100,10 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        if c5: tag = 'c5'
-        else: tag = 'pos'
+        if c5:
+            tag = 'c5'
+        else:
+            tag = 'pos'
         if self._lazy:
             return concat([BNCWordView(fileid, True, tag, strip_space, stem)
                            for fileid in self.abspaths(fileids)])
@@ -129,9 +130,11 @@ class BNCCorpusReader(XMLCorpusReader):
             for xmlword in _all_xmlwords_in(xmlsent):
                 word = xmlword.text
                 if not word:
-                    word = "" # fixes issue 337?
-                if strip_space or stem: word = word.strip()
-                if stem: word = xmlword.get('hw', word)
+                    word = ""  # fixes issue 337?
+                if strip_space or stem:
+                    word = word.strip()
+                if stem:
+                    word = xmlword.get('hw', word)
                 if tag == 'c5':
                     word = (word, xmlword.get('c5'))
                 elif tag == 'pos':
@@ -145,12 +148,17 @@ class BNCCorpusReader(XMLCorpusReader):
         assert None not in result
         return result
 
+
 def _all_xmlwords_in(elt, result=None):
-    if result is None: result = []
+    if result is None:
+        result = []
     for child in elt:
-        if child.tag in ('c', 'w'): result.append(child)
-        else: _all_xmlwords_in(child, result)
+        if child.tag in ('c', 'w'):
+            result.append(child)
+        else:
+            _all_xmlwords_in(child, result)
     return result
+
 
 class BNCSentence(list):
     """
@@ -160,6 +168,7 @@ class BNCSentence(list):
     def __init__(self, num, items):
         self.num = num
         list.__init__(self, items)
+
 
 class BNCWordView(XMLCorpusView):
     """
@@ -173,8 +182,10 @@ class BNCWordView(XMLCorpusView):
         :param strip_space: If true, strip spaces from word tokens.
         :param stem: If true, then substitute stems for words.
         """
-        if sent: tagspec = '.*/s'
-        else: tagspec = '.*/s/(.*/)?(c|w)'
+        if sent:
+            tagspec = '.*/s'
+        else:
+            tagspec = '.*/s/(.*/)?(c|w)'
         self._sent = sent
         self._tag = tag
         self._strip_space = strip_space
@@ -190,39 +201,43 @@ class BNCWordView(XMLCorpusView):
         # Reset tag context.
         self._tag_context = {0: ()}
 
-
-    title = None #: Title of the document.
-    author = None #: Author of the document.
-    editor = None #: Editor
-    resps = None #: Statement of responsibility
+    title = None  #: Title of the document.
+    author = None  #: Author of the document.
+    editor = None  #: Editor
+    resps = None  #: Statement of responsibility
 
     def handle_header(self, elt, context):
         # Set up some metadata!
         titles = elt.findall('titleStmt/title')
-        if titles: self.title = '\n'.join(
-            [title.text.strip() for title in titles])
+        if titles:
+            self.title = '\n'.join(title.text.strip() for title in titles)
 
         authors = elt.findall('titleStmt/author')
-        if authors: self.author = '\n'.join(
-            [author.text.strip() for author in authors])
+        if authors:
+            self.author = '\n'.join(author.text.strip() for author in authors)
 
         editors = elt.findall('titleStmt/editor')
-        if editors: self.editor = '\n'.join(
-            [editor.text.strip() for editor in editors])
+        if editors:
+            self.editor = '\n'.join(editor.text.strip() for editor in editors)
 
         resps = elt.findall('titleStmt/respStmt')
-        if resps: self.resps = '\n\n'.join(
-            '\n'.join(resp_elt.text.strip() for resp_elt in resp)
-            for resp in resps)
+        if resps:
+            self.resps = '\n\n'.join(
+                '\n'.join(
+                    resp_elt.text.strip() for resp_elt in resp
+                ) for resp in resps
+            )
 
     def handle_elt(self, elt, context):
-        if self._sent: return self.handle_sent(elt)
-        else: return self.handle_word(elt)
+        if self._sent:
+            return self.handle_sent(elt)
+        else:
+            return self.handle_word(elt)
 
     def handle_word(self, elt):
         word = elt.text
         if not word:
-            word = "" # fixes issue 337?
+            word = ""  # fixes issue 337?
         if self._strip_space or self._stem:
             word = word.strip()
         if self._stem:
@@ -238,9 +253,8 @@ class BNCWordView(XMLCorpusView):
         for child in elt:
             if child.tag == 'mw':
                 sent += [self.handle_word(w) for w in child]
-            elif child.tag in ('w','c'):
+            elif child.tag in ('w', 'c'):
                 sent.append(self.handle_word(child))
             else:
                 raise ValueError('Unexpected element %s' % child.tag)
         return BNCSentence(elt.attrib['n'], sent)
-
