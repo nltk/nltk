@@ -134,6 +134,8 @@ def normalize_resource_url(resource_url):
     Normalizes a resource url
 
     >>> windows = sys.platform.startswith('win')
+    >>> os.path.normpath(split_resource_url(normalize_resource_url('file:grammar.fcfg'))[1]) == os.path.abspath(os.path.join(os.curdir, 'grammar.fcfg'))
+    True
     >>> normalize_resource_url('file:C:/dir/file')
     'file:///C:/dir/file'
     >>> normalize_resource_url('file:C:\\\\dir\\\\file')
