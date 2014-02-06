@@ -116,13 +116,18 @@ def split_resource_url(resource_url):
     ('nltk', 'home/nltk')
     >>> split_resource_url('nltk:/home/nltk')
     ('nltk', '/home/nltk')
+    >>> split_resource_url('file:/home/nltk')
+    ('file', '/home/nltk')
     """
-    protocol, path = resource_url.split(':', 1)
+    protocol, path_ = resource_url.split(':', 1)
     if protocol == 'nltk':
         pass
+    elif protocol == 'file':
+        if path_.startswith('/'):
+            path_ = '/' + path_.lstrip('/')
     else:
-        path = re.sub(r'^/{0,2}', '', path)
-    return protocol, path
+        path_ = re.sub(r'^/{0,2}', '', path_)
+    return protocol, path_
 
 def normalize_resource_url(resource_url):
     r"""
@@ -145,6 +150,8 @@ def normalize_resource_url(resource_url):
     >>> not windows or normalize_resource_url('nltk:C:/dir/file') == 'file:///C:/dir/file'
     True
     >>> not windows or normalize_resource_url('nltk:C:\\\\dir\\\\file') == 'file:///C:/dir/file'
+    True
+    >>> windows or normalize_resource_url('file:/dir/file/toy.cfg') == 'file:///dir/file/toy.cfg'
     True
     >>> normalize_resource_url('nltk:home/nltk')
     'nltk:home/nltk'
