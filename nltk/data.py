@@ -450,7 +450,7 @@ class ZipFilePathPointer(PathPointer):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
         # Normalize the entry string, it should be absolute:
-        entry = normalize_resource_name(entry, False).lstrip('/')
+        entry = normalize_resource_name(entry, False, '/').lstrip('/')
 
         # Check that the entry exists:
         if entry:
@@ -568,26 +568,26 @@ def find(resource_name, paths=None):
     zipfile, zipentry = m.groups()
 
     # Check each item in our path
-    for _path in paths:
+    for path_ in paths:
         # Is the path item a zipfile?
-        if _path and (os.path.isfile(_path) and _path.endswith('.zip')):
+        if path_ and (os.path.isfile(path_) and path_.endswith('.zip')):
             try:
-                return ZipFilePathPointer(_path, resource_name)
+                return ZipFilePathPointer(path_, resource_name)
             except IOError:
                 # resource not in zipfile
                 continue
 
         # Is the path item a directory or is resource_name an absolute path?
-        elif not _path or os.path.isdir(_path):
+        elif not path_ or os.path.isdir(path_):
             if zipfile is None:
-                p = os.path.join(_path, resource_name)
+                p = os.path.join(path_, resource_name)
                 if os.path.exists(p):
                     if p.endswith('.gz'):
                         return GzipFileSystemPathPointer(p)
                     else:
                         return FileSystemPathPointer(p)
             else:
-                p = os.path.join(_path, zipfile)
+                p = os.path.join(path_, zipfile)
                 if os.path.exists(p):
                     try:
                         return ZipFilePathPointer(p, zipentry)
