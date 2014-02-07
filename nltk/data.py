@@ -108,16 +108,16 @@ def split_resource_url(resource_url):
     Splits a resource url into "<protocol>:<path>".
 
     >>> windows = sys.platform.startswith('win')
-    >>> windows or split_resource_url('file:///home/nltk') == ('file', '/home/nltk')
-    True
-    >>> not windows or split_resource_url('file:///C:/home/nltk') == ('file', '/C:/home/nltk')
-    True
     >>> split_resource_url('nltk:home/nltk')
     ('nltk', 'home/nltk')
     >>> split_resource_url('nltk:/home/nltk')
     ('nltk', '/home/nltk')
     >>> split_resource_url('file:/home/nltk')
     ('file', '/home/nltk')
+    >>> split_resource_url('file:///home/nltk')
+    ('file', '/home/nltk')
+    >>> split_resource_url('file:///C:/home/nltk')
+    ('file', '/C:/home/nltk')
     """
     protocol, path_ = resource_url.split(':', 1)
     if protocol == 'nltk':
