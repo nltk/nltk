@@ -139,9 +139,9 @@ def normalize_resource_url(resource_url):
     True
     >>> not windows or normalize_resource_url('file:C:/dir/file') == 'file:///C:/dir/file'
     True
-    >>> not windows or normalize_resource_url('file:C:\\\\dir\\\\file') == 'file:///C:/dir/file'
+    >>> not windows or normalize_resource_url('file:C:\\dir\\file') == 'file:///C:/dir/file'
     True
-    >>> not windows or normalize_resource_url('file:C:\\\\dir/file') == 'file:///C:/dir/file'
+    >>> not windows or normalize_resource_url('file:C:\\dir/file') == 'file:///C:/dir/file'
     True
     >>> not windows or normalize_resource_url('file://C:/dir/file') == 'file:///C:/dir/file'
     True
@@ -149,7 +149,7 @@ def normalize_resource_url(resource_url):
     True
     >>> not windows or normalize_resource_url('nltk:C:/dir/file') == 'file:///C:/dir/file'
     True
-    >>> not windows or normalize_resource_url('nltk:C:\\\\dir\\\\file') == 'file:///C:/dir/file'
+    >>> not windows or normalize_resource_url('nltk:C:\\dir\\file') == 'file:///C:/dir/file'
     True
     >>> windows or normalize_resource_url('file:/dir/file/toy.cfg') == 'file:///dir/file/toy.cfg'
     True
