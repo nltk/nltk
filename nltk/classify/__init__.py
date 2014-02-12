@@ -83,7 +83,6 @@ as lists of ``(featuredict, label)`` tuples.
 """
 
 from nltk.classify.api import ClassifierI, MultiClassifierI
-from nltk.classify.mallet import config_mallet, call_mallet
 from nltk.classify.megam import config_megam, call_megam
 from nltk.classify.weka import WekaClassifier, config_weka
 from nltk.classify.naivebayes import NaiveBayesClassifier

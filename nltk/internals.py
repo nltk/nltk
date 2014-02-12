@@ -142,7 +142,6 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
         classpaths=[classpath]
     else:
         classpaths=list(classpath)
-    classpaths.append(NLTK_JAR)
     classpath=os.path.pathsep.join(classpaths)
 
     # Construct the full command string.
@@ -161,12 +160,6 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
         raise OSError('Java command failed!')
 
     return (stdout, stderr)
-
-#: The location of the NLTK jar file, which is used to communicate
-#: with external Java packages (such as Mallet) that do not have
-#: a sufficiently powerful native command-line interface.
-NLTK_JAR = os.path.abspath(os.path.join(os.path.split(__file__)[0],
-                                        'nltk.jar'))
 
 if 0:
     #config_java(options='-Xmx512m')
