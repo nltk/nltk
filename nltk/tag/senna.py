@@ -1,7 +1,7 @@
 # encoding: utf-8
 # Natural Language Toolkit: Interface to the Senna tagger
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

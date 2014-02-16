@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Aligned Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org/>
 # Author: Steven Bird <stevenbird1@gmail.com>
 # For license information, see LICENSE.TXT

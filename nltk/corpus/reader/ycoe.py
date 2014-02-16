@@ -2,7 +2,7 @@
 
 # Natural Language Toolkit: York-Toronto-Helsinki Parsed Corpus of Old English Prose (YCOE)
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Selina Dennis <selina@tranzfusion.net>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

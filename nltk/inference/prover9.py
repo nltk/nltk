@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the Prover9 Theorem Prover
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 #

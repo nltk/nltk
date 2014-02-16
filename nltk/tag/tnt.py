@@ -1,6 +1,6 @@
 # Natural Language Toolkit: TnT Tagger
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Sam Huston <sjh900@gmail.com>
 #
 # URL: <http://nltk.org/>

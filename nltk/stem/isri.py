@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: The ISRI Arabic Stemmer
 #
-# Copyright (C) 2001-2013 NLTK Proejct
+# Copyright (C) 2001-2014 NLTK Proejct
 # Algorithm: Kazem Taghva, Rania Elkhoury, and Jeffrey Coombs (2005)
 # Author: Hosam Algasaier <hosam_hme@yahoo.com>
 # URL: <http://nltk.org/>
