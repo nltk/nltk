@@ -257,13 +257,14 @@ class TrigramAssocMeasures(NgramAssocMeasures):
     _n = 3
 
     @staticmethod
-    def _contingency(n_iii, n_iix_tuple, n_ixx_tuple,
-                 n_xxx):
-        """Calculates values of a trigram contingency table (or cube) from marginal
-        values.
+    def _contingency(n_iii, n_iix_tuple, n_ixx_tuple, n_xxx):
+        """Calculates values of a trigram contingency table (or cube) from
+        marginal values.
+        >>> TrigramAssocMeasures._contingency(1, (1, 1, 1), (1, 73, 1), 2000)
+        (1, 0, 0, 0, 0, 72, 0, 1927)
         """
         (n_iix, n_ixi, n_xii) = n_iix_tuple
-        (n_ixx, n_xix, n_xxi) = n_iix_tuple
+        (n_ixx, n_xix, n_xxi) = n_ixx_tuple
         n_oii = n_xii - n_iii
         n_ioi = n_ixi - n_iii
         n_iio = n_iix - n_iii
@@ -277,7 +278,10 @@ class TrigramAssocMeasures(NgramAssocMeasures):
 
     @staticmethod
     def _marginals(*contingency):
-        """Calculates values of contingency table marginals from its values."""
+        """Calculates values of contingency table marginals from its values.
+        >>> TrigramAssocMeasures._marginals(1, 0, 0, 0, 0, 72, 0, 1927)
+        (1, (1, 1, 1), (1, 73, 1), 2000)
+        """
         n_iii, n_oii, n_ioi, n_ooi, n_iio, n_oio, n_ioo, n_ooo = contingency
         return (n_iii,
                 (n_iii + n_iio, n_iii + n_ioi, n_iii + n_oii),
