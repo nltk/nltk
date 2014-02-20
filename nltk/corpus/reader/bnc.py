@@ -5,10 +5,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""
-Corpus reader for the XML version of the British National Corpus.
-"""
-__docformat__ = 'epytext en'
+"""Corpus reader for the XML version of the British National Corpus."""
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
@@ -16,11 +13,20 @@ from nltk.corpus.reader.xmldocs import *
 
 
 class BNCCorpusReader(XMLCorpusReader):
-    """
-    Corpus reader for the XML version of the British National Corpus.
+    """Corpus reader for the XML version of the British National Corpus.
+
     For access to the complete XML data structure, use the ``xml()``
     method.  For access to simple word lists and tagged word lists, use
     ``words()``, ``sents()``, ``tagged_words()``, and ``tagged_sents()``.
+
+    You can obtain the full version of the BNC corpus at
+    http://www.ota.ox.ac.uk/desc/2554
+
+    If you extracted the archive to a directory called `BNC`, then you can
+    instantiate the reder as::
+
+        BNCCorpusReader(root='BNC/Texts/', fileids=r'[A-K]/\w*/\w*\.xml')
+
     """
     def __init__(self, root, fileids, lazy=True):
         XMLCorpusReader.__init__(self, root, fileids)
@@ -174,6 +180,16 @@ class BNCWordView(XMLCorpusView):
     """
     A stream backed corpus view specialized for use with the BNC corpus.
     """
+
+    tags_to_ignore = set(
+        ['pb', 'gap', 'vocal', 'event', 'unclear', 'shift', 'pause', 'align']
+    )
+    """These tags are ignored. For their description refer to the
+    technical documentation, for example,
+    http://www.natcorp.ox.ac.uk/docs/URG/ref-vocal.html
+
+    """
+
     def __init__(self, fileid, sent, tag, strip_space, stem):
         """
         :param fileid: The name of the underlying file.
@@ -251,10 +267,10 @@ class BNCWordView(XMLCorpusView):
     def handle_sent(self, elt):
         sent = []
         for child in elt:
-            if child.tag == 'mw':
+            if child.tag in ('mw', 'hi', 'corr', 'trunc'):
                 sent += [self.handle_word(w) for w in child]
             elif child.tag in ('w', 'c'):
                 sent.append(self.handle_word(child))
-            else:
+            elif child.tag not in self.tags_to_ignore:
                 raise ValueError('Unexpected element %s' % child.tag)
         return BNCSentence(elt.attrib['n'], sent)
