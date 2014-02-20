@@ -41,7 +41,7 @@ is then created with domain and valuation as parameters.
     >>> m = Model(dom, val)
 """
 
-from nltk.sem.util import (batch_parse, batch_interpret, batch_evaluate,
+from nltk.sem.util import (parse_sents, interpret_sents, evaluate_sents,
                            root_semrep, parse_valuation)
 from nltk.sem.evaluate import (Valuation, Assignment, Model, Undefined,
                                is_rel, set2rel, arity)

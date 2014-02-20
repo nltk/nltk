@@ -1340,7 +1340,7 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
         for rule in brill_tagger.rules():
             print(rule)
 
-    testing_data = brill_tagger.batch_tag(testing_data)
+    testing_data = brill_tagger.tag_sents(testing_data)
     error_file = open(error_output, 'w')
     error_file.write('Errors for Brill Tagger \n\n')
     for e in error_list(gold_data, testing_data):
