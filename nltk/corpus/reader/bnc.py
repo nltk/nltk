@@ -7,9 +7,8 @@
 
 """Corpus reader for the XML version of the British National Corpus."""
 
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.xmldocs import *
+from nltk.corpus.reader.util import concat
+from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView, ElementTree
 
 
 class BNCCorpusReader(XMLCorpusReader):
@@ -28,6 +27,7 @@ class BNCCorpusReader(XMLCorpusReader):
         BNCCorpusReader(root='BNC/Texts/', fileids=r'[A-K]/\w*/\w*\.xml')
 
     """
+
     def __init__(self, root, fileids, lazy=True):
         XMLCorpusReader.__init__(self, root, fileids)
         self._lazy = lazy
@@ -42,14 +42,7 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        if self._lazy:
-            return concat([BNCWordView(fileid, False, None,
-                                       strip_space, stem)
-                           for fileid in self.abspaths(fileids)])
-        else:
-            return concat([self._words(fileid, False, None,
-                                       strip_space, stem)
-                           for fileid in self.abspaths(fileids)])
+        return self._views(fileids, False, None, strip_space, stem)
 
     def tagged_words(self, fileids=None, c5=False, strip_space=True, stem=False):
         """
@@ -64,16 +57,8 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        if c5:
-            tag = 'c5'
-        else:
-            tag = 'pos'
-        if self._lazy:
-            return concat([BNCWordView(fileid, False, tag, strip_space, stem)
-                           for fileid in self.abspaths(fileids)])
-        else:
-            return concat([self._words(fileid, False, tag, strip_space, stem)
-                           for fileid in self.abspaths(fileids)])
+        tag = 'c5' if c5 else 'pos'
+        return self._views(fileids, False, tag, strip_space, stem)
 
     def sents(self, fileids=None, strip_space=True, stem=False):
         """
@@ -86,15 +71,9 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        if self._lazy:
-            return concat([BNCWordView(fileid, True, None, strip_space, stem)
-                           for fileid in self.abspaths(fileids)])
-        else:
-            return concat([self._words(fileid, True, None, strip_space, stem)
-                           for fileid in self.abspaths(fileids)])
+        return self._views(fileids, True, None, strip_space, stem)
 
-    def tagged_sents(self, fileids=None, c5=False, strip_space=True,
-                     stem=False):
+    def tagged_sents(self, fileids=None, c5=False, strip_space=True, stem=False):
         """
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
@@ -106,16 +85,13 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        if c5:
-            tag = 'c5'
-        else:
-            tag = 'pos'
-        if self._lazy:
-            return concat([BNCWordView(fileid, True, tag, strip_space, stem)
-                           for fileid in self.abspaths(fileids)])
-        else:
-            return concat([self._words(fileid, True, tag, strip_space, stem)
-                           for fileid in self.abspaths(fileids)])
+        tag = 'c5' if c5 else 'pos'
+        return self._views(fileids, sent=True, tag=tag, strip_space=strip_space, stem=stem)
+
+    def _views(self, fileids=None, sent=False, tag=False, strip_space=True, stem=False):
+        """A helper function that instantiates BNCWordViews or the list of words/sentences."""
+        f = BNCWordView if self._lazy else self._words
+        return concat([f(fileid, sent, tag, strip_space, stem) for fileid in self.abspaths(fileids)])
 
     def _words(self, fileid, bracket_sent, tag, strip_space, stem):
         """
@@ -207,6 +183,11 @@ class BNCWordView(XMLCorpusView):
         self._strip_space = strip_space
         self._stem = stem
 
+        self.title = None  #: Title of the document.
+        self.author = None  #: Author of the document.
+        self.editor = None  #: Editor
+        self.resps = None  #: Statement of responsibility
+
         XMLCorpusView.__init__(self, fileid, tagspec)
 
         # Read in a tasty header.
@@ -216,11 +197,6 @@ class BNCWordView(XMLCorpusView):
 
         # Reset tag context.
         self._tag_context = {0: ()}
-
-    title = None  #: Title of the document.
-    author = None  #: Author of the document.
-    editor = None  #: Editor
-    resps = None  #: Statement of responsibility
 
     def handle_header(self, elt, context):
         # Set up some metadata!
