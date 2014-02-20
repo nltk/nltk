@@ -129,7 +129,7 @@ class NgramAssocMeasures(object):
         """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
         """
         cont = cls._contingency(*marginals)
-        return (cls._n * 2 *
+        return (cls._n *
                 sum(obs * _ln(float(obs) / (exp + _SMALL) + _SMALL)
                     for obs, exp in zip(cont, cls._expected_values(cont))))
 
@@ -137,7 +137,7 @@ class NgramAssocMeasures(object):
     def poisson_stirling(cls, *marginals):
         """Scores ngrams using the Poisson-Stirling measure."""
         exp = (_product(marginals[UNIGRAMS]) /
-              float(marginals[TOTAL] ** (cls._n - 1)))
+               float(marginals[TOTAL] ** (cls._n - 1)))
         return marginals[NGRAM] * (_log2(marginals[NGRAM] / exp) - 1)
 
     @classmethod

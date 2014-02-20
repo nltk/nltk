@@ -201,3 +201,70 @@ Confusion Matrix
          9: T
         10: h
     <BLANKLINE>
+
+
+--------------------
+Association measures
+--------------------
+
+These measures are useful to determine whether the coocurrence of two random
+events is meaningful. They are used, for instance, to distinguish collocations
+from other pairs of adjacent words.
+
+We bring some examples of bigram association calculations from Manning and
+Schutze's SNLP, 2nd Ed. chapter 5.
+
+    >>> n_new_companies, n_new, n_companies, N = 8, 15828, 4675, 14307668
+    >>> bam = BigramAssocMeasures
+    >>> bam.raw_freq(20, (42, 20), N) == 20. / N
+    True
+    >>> bam.student_t(n_new_companies, (n_new, n_companies), N)
+    0.999...
+    >>> bam.chi_sq(n_new_companies, (n_new, n_companies), N)
+    1.54...
+    >>> bam.likelihood_ratio(150, (12593, 932), N)
+    1291...
+
+For other associations, we ensure the ordering of the measures:
+
+    >>> bam.mi_like(20, (42, 20), N) > bam.mi_like(20, (41, 27), N)
+    True
+    >>> bam.pmi(20, (42, 20), N) > bam.pmi(20, (41, 27), N)
+    True
+    >>> bam.phi_sq(20, (42, 20), N) > bam.phi_sq(20, (41, 27), N)
+    True
+    >>> bam.poisson_stirling(20, (42, 20), N) > bam.poisson_stirling(20, (41, 27), N)
+    True
+    >>> bam.jaccard(20, (42, 20), N) > bam.jaccard(20, (41, 27), N)
+    True
+    >>> bam.dice(20, (42, 20), N) > bam.dice(20, (41, 27), N)
+    True
+    >>> bam.fisher(20, (42, 20), N) > bam.fisher(20, (41, 27), N)
+    False
+
+For trigrams, we have to provide more count information:
+
+    >>> n_w1_w2_w3 = 20
+    >>> n_w1_w2, n_w1_w3, n_w2_w3 = 35, 60, 40
+    >>> pair_counts = (n_w1_w2, n_w1_w3, n_w2_w3)
+    >>> n_w1, n_w2, n_w3 = 100, 200, 300
+    >>> uni_counts = (n_w1, n_w2, n_w3)
+    >>> N = 14307668
+    >>> tam = TrigramAssocMeasures
+    >>> tam.raw_freq(n_w1_w2_w3, pair_counts, uni_counts, N) == 1. * n_w1_w2_w3 / N
+    True
+    >>> uni_counts2 = (n_w1, n_w2, 100)
+    >>> tam.student_t(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.student_t(n_w1_w2_w3, pair_counts, uni_counts, N)
+    True
+    >>> tam.chi_sq(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.chi_sq(n_w1_w2_w3, pair_counts, uni_counts, N)
+    True
+    >>> tam.mi_like(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.mi_like(n_w1_w2_w3, pair_counts, uni_counts, N)
+    True
+    >>> tam.pmi(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.pmi(n_w1_w2_w3, pair_counts, uni_counts, N)
+    True
+    >>> tam.likelihood_ratio(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.likelihood_ratio(n_w1_w2_w3, pair_counts, uni_counts, N)
+    True
+    >>> tam.poisson_stirling(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.poisson_stirling(n_w1_w2_w3, pair_counts, uni_counts, N)
+    True
+    >>> tam.jaccard(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.jaccard(n_w1_w2_w3, pair_counts, uni_counts, N)
+    True
