@@ -94,12 +94,12 @@ recognize pairs *(o, l)* of these kinds of entities such that *o* is
 located in *l*.
 
 The `sem.relextract` module provides some tools to help carry out a
-simple version of this task. The `_tree2semi_rel()` function splits a chunk
+simple version of this task. The `tree2semi_rel()` function splits a chunk
 document into a list of two-member lists, each of which consists of a
 (possibly empty) string followed by a `Tree` (i.e., a Named Entity):
 
     >>> from nltk.sem import relextract
-    >>> pairs = relextract._tree2semi_rel(tree)
+    >>> pairs = relextract.tree2semi_rel(tree)
     >>> for s, tree in pairs[18:22]:
     ...     print('("...%s", %s)' % (" ".join(s[-5:]),tree))
     ("...about first-level questions,'' said Ms.", (PERSON Cohn))
