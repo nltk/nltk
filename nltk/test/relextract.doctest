@@ -126,6 +126,7 @@ stored as left and right context respectively.
     subjclass => CARDINAL
     subjsym => hundreds
     subjtext => hundreds
+    untagged_filler => of messages to their own ``Cyberia'' ...
 
 The next example shows some of the values for two `reldict`\ s
 corresponding to the ``'NYT_19980315'`` text extract shown earlier.
