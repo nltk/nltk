@@ -183,11 +183,11 @@ class ISRIStemmer(StemmerI):
             self.stm = self.re_short_vowels.sub('', self.stm)
             return self.stm
         elif self.k == 2:
-            self.stm = self.re_intial_hamza.sub(r'\u0627',self.stm)
+            self.stm = self.re_intial_hamza.sub('\u0627',self.stm)
             return self.stm
         elif self.k == 3:
             self.stm = self.re_short_vowels.sub('', self.stm)
-            self.stm = self.re_intial_hamza.sub(r'\u0627',self.stm)
+            self.stm = self.re_intial_hamza.sub('\u0627',self.stm)
             return self.stm
 
     def pre32(self):
