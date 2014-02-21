@@ -22,11 +22,11 @@ class ParserI(object):
 
     Subclasses must define:
       - at least one of: ``parse()``, ``nbest_parse()``, ``iter_parse()``,
-        ``batch_parse()``, ``batch_nbest_parse()``, ``batch_iter_parse()``.
+        ``parse_sents()``, ``nbest_parse_sents()``, ``iter_parse_sents()``.
 
     Subclasses may define:
       - ``grammar()``
-      - either ``prob_parse()`` or ``batch_prob_parse()`` (or both)
+      - either ``prob_parse()`` or ``prob_parse_sents()`` (or both)
     """
     def grammar(self):
         """
@@ -44,8 +44,8 @@ class ParserI(object):
         :type sent: list(str)
         :rtype: Tree
         """
-        if overridden(self.batch_parse):
-            return self.batch_parse([sent])[0]
+        if overridden(self.parse_sents):
+            return self.parse_sents([sent])[0]
         else:
             trees = self.nbest_parse(sent, 1)
             if trees: return trees[0]
@@ -65,9 +65,9 @@ class ParserI(object):
         :type n: int
         :rtype: list(Tree)
         """
-        if overridden(self.batch_nbest_parse):
-            return self.batch_nbest_parse([sent],n)[0]
-        elif overridden(self.parse) or overridden(self.batch_parse):
+        if overridden(self.nbest_parse_sents):
+            return self.nbest_parse_sents([sent],n)[0]
+        elif overridden(self.parse) or overridden(self.parse_sents):
             tree = self.parse(sent)
             if tree: return [tree]
             else: return []
@@ -84,11 +84,11 @@ class ParserI(object):
         :type sent: list(str)
         :rtype: iter(Tree)
         """
-        if overridden(self.batch_iter_parse):
-            return self.batch_iter_parse([sent])[0]
-        elif overridden(self.nbest_parse) or overridden(self.batch_nbest_parse):
+        if overridden(self.iter_parse_sents):
+            return self.iter_parse_sents([sent])[0]
+        elif overridden(self.nbest_parse) or overridden(self.nbest_parse_sents):
             return iter(self.nbest_parse(sent))
-        elif overridden(self.parse) or overridden(self.batch_parse):
+        elif overridden(self.parse) or overridden(self.parse_sents):
             tree = self.parse(sent)
             if tree: return iter([tree])
             else: return iter([])
@@ -106,12 +106,12 @@ class ParserI(object):
         :type sent: list(str)
         :rtype: ProbDistI(Tree)
         """
-        if overridden(self.batch_prob_parse):
-            return self.batch_prob_parse([sent])[0]
+        if overridden(self.prob_parse_sents):
+            return self.prob_parse_sents([sent])[0]
         else:
             raise NotImplementedError
 
-    def batch_parse(self, sents):
+    def parse_sents(self, sents):
         """
         Apply ``self.parse()`` to each element of ``sents``.  I.e.:
 
@@ -121,7 +121,7 @@ class ParserI(object):
         """
         return [self.parse(sent) for sent in sents]
 
-    def batch_nbest_parse(self, sents, n=None):
+    def nbest_parse_sents(self, sents, n=None):
         """
         Apply ``self.nbest_parse()`` to each element of ``sents``.  I.e.:
 
@@ -131,7 +131,7 @@ class ParserI(object):
         """
         return [self.nbest_parse(sent,n ) for sent in sents]
 
-    def batch_iter_parse(self, sents):
+    def iter_parse_sents(self, sents):
         """
         Apply ``self.iter_parse()`` to each element of ``sents``.  I.e.:
 
@@ -141,7 +141,7 @@ class ParserI(object):
         """
         return [self.iter_parse(sent) for sent in sents]
 
-    def batch_prob_parse(self, sents):
+    def prob_parse_sents(self, sents):
         """
         Apply ``self.prob_parse()`` to each element of ``sents``.  I.e.:
 

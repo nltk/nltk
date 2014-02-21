@@ -29,7 +29,7 @@ class StanfordParser(ParserI):
     >>> parser=StanfordParser(
     ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
     ... )
-    >>> parser.raw_batch_parse((
+    >>> parser.raw_parse_sents((
     ...     "the quick brown fox jumps over the lazy dog",
     ...     "the quick grey wolf jumps over the lazy fox"
     ... ))
@@ -40,7 +40,7 @@ class StanfordParser(ParserI):
     [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), Tree('NP', [Tree('DT', ['the']),
     Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
 
-    >>> parser.batch_parse((
+    >>> parser.parse_sents((
     ...     "I 'm a dog".split(),
     ...     "This is my friends ' cat ( the tabby )".split(),
     ... ))
@@ -50,7 +50,7 @@ class StanfordParser(ParserI):
     Tree('NNS', ['friends']), Tree('POS', ["'"])]), Tree('NN', ['cat'])]), Tree('PRN', [Tree('-LRB-', ['-LRB-']),
     Tree('NP', [Tree('DT', ['the']), Tree('NN', ['tabby'])]), Tree('-RRB-', ['-RRB-'])])])])])])]
 
-    >>> parser.tagged_batch_parse((
+    >>> parser.tagged_parse_sents((
     ...     (
     ...         ("The", "DT"),
     ...         ("quick", "JJ"),
@@ -119,9 +119,9 @@ class StanfordParser(ParserI):
         :type sentence: list(str)
         :rtype: Tree
         """
-        return self.batch_parse([sentence], verbose)[0]
+        return self.parse_sents([sentence], verbose)[0]
 
-    def batch_parse(self, sentences, verbose=False):
+    def parse_sents(self, sentences, verbose=False):
         """
         Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
         list where each sentence is a list of words.
@@ -155,9 +155,9 @@ class StanfordParser(ParserI):
         :type sentence: str
         :rtype: Tree
         """
-        return self.raw_batch_parse((sentence,), verbose)
+        return self.raw_parse_sents((sentence,), verbose)
 
-    def raw_batch_parse(self, sentences, verbose=False):
+    def raw_parse_sents(self, sentences, verbose=False):
         """
         Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
         list of strings.
@@ -185,9 +185,9 @@ class StanfordParser(ParserI):
         :type sentence: list(tuple(str, str))
         :rtype: Tree
         """
-        return self.tagged_batch_parse([sentence], verbose)[0]
+        return self.tagged_parse_sents([sentence], verbose)[0]
 
-    def tagged_batch_parse(self, sentences, verbose=False):
+    def tagged_parse_sents(self, sentences, verbose=False):
         """
         Use StanfordParser to parse multiple sentences. Takes multiple sentences
         where each sentence is a list of (word, tag) tuples.

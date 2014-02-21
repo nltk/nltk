@@ -80,13 +80,13 @@ class WekaClassifier(ClassifierI):
         self._formatter = formatter
         self._model = model_filename
 
-    def batch_prob_classify(self, featuresets):
-        return self._batch_classify(featuresets, ['-p', '0', '-distribution'])
+    def prob_classify_many(self, featuresets):
+        return self._classify_many(featuresets, ['-p', '0', '-distribution'])
 
-    def batch_classify(self, featuresets):
-        return self._batch_classify(featuresets, ['-p', '0'])
+    def classify_many(self, featuresets):
+        return self._classify_many(featuresets, ['-p', '0'])
 
-    def _batch_classify(self, featuresets, options):
+    def _classify_many(self, featuresets, options):
         # Make sure we can find java & weka.
         config_weka()
 

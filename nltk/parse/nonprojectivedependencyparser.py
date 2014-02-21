@@ -140,7 +140,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         edge_scores = []
         row = []
         count = 0
-        for pdist in self.classifier.batch_prob_classify(edges):
+        for pdist in self.classifier.prob_classify_many(edges):
             print('%.4f %.4f' % (pdist.prob('T'), pdist.prob('F')))
             row.append([math.log(pdist.prob("T"))])
             count += 1
