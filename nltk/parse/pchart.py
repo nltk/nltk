@@ -67,7 +67,7 @@ class ProbabilisticTreeEdge(TreeEdge):
 # Rules using probabilistic edges
 class ProbabilisticBottomUpInitRule(AbstractChartRule):
     NUM_EDGES=0
-    def apply_iter(self, chart, grammar):
+    def apply(self, chart, grammar):
         for index in range(chart.num_leaves()):
             new_edge = ProbabilisticLeafEdge(chart.leaf(index), index)
             if chart.insert(new_edge, ()):
@@ -75,7 +75,7 @@ class ProbabilisticBottomUpInitRule(AbstractChartRule):
 
 class ProbabilisticBottomUpPredictRule(AbstractChartRule):
     NUM_EDGES=1
-    def apply_iter(self, chart, grammar, edge):
+    def apply(self, chart, grammar, edge):
         if edge.is_incomplete(): return
         for prod in grammar.productions():
             if edge.lhs() == prod.rhs()[0]:
@@ -85,7 +85,7 @@ class ProbabilisticBottomUpPredictRule(AbstractChartRule):
 
 class ProbabilisticFundamentalRule(AbstractChartRule):
     NUM_EDGES=2
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         # Make sure the rule is applicable.
         if not (left_edge.end() == right_edge.start() and
                 left_edge.nextsym() == right_edge.lhs() and
@@ -114,19 +114,19 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
 
     _fundamental_rule = ProbabilisticFundamentalRule()
 
-    def apply_iter(self, chart, grammar, edge1):
+    def apply(self, chart, grammar, edge1):
         fr = self._fundamental_rule
         if edge1.is_incomplete():
             # edge1 = left_edge; edge2 = right_edge
             for edge2 in chart.select(start=edge1.end(), is_complete=True,
                                      lhs=edge1.nextsym()):
-                for new_edge in fr.apply_iter(chart, grammar, edge1, edge2):
+                for new_edge in fr.apply(chart, grammar, edge1, edge2):
                     yield new_edge
         else:
             # edge2 = left_edge; edge1 = right_edge
             for edge2 in chart.select(end=edge1.start(), is_complete=False,
                                       nextsym=edge1.lhs()):
-                for new_edge in fr.apply_iter(chart, grammar, edge2, edge1):
+                for new_edge in fr.apply(chart, grammar, edge2, edge1):
                     yield new_edge
 
     def __str__(self):
@@ -196,7 +196,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         self._trace = trace
 
     # TODO: change this to conform more with the standard ChartParser
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         self._grammar.check_coverage(tokens)
         chart = Chart(list(tokens))
         grammar = self._grammar
@@ -206,11 +206,11 @@ class BottomUpProbabilisticChartParser(ParserI):
         bu = ProbabilisticBottomUpPredictRule()
         fr = SingleEdgeProbabilisticFundamentalRule()
 
-        # Our queue!
+        # Our queue
         queue = []
 
         # Initialize the chart.
-        for edge in bu_init.apply_iter(chart, grammar):
+        for edge in bu_init.apply(chart, grammar):
             if self._trace > 1:
                 print('  %-50s [%s]' % (chart.pp_edge(edge,width=2),
                                         edge.prob()))
@@ -247,7 +247,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         # Sort by probability
         parses.sort(reverse=True, key=lambda tree: tree.prob())
 
-        return parses[:n]
+        return iter(parses)
 
     def _setprob(self, tree, prod_probs):
         if tree.prob() is not None: return
@@ -441,7 +441,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         print('\ns: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar))
         parser.trace(3)
         t = time.time()
-        parses = parser.nbest_parse(tokens)
+        parses = list(parser.parse(tokens))
         times.append(time.time()-t)
         p = (reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses) if parses else 0)
         average_p.append(p)

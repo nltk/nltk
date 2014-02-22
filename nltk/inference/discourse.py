@@ -113,7 +113,7 @@ class CfgReadingCommand(ReadingCommand):
         """:see: ReadingCommand.parse_to_readings()"""
         from nltk.sem import root_semrep
         tokens = sentence.split()
-        trees = self._parser.nbest_parse(tokens)
+        trees = self._parser.parse(tokens)
         return [root_semrep(tree) for tree in trees]
 
     def combine_readings(self, readings):

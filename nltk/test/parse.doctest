@@ -66,11 +66,11 @@ and unambiguous sentence.
     >>> sentence1 = 'the cat chased the dog'.split()
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
-    >>> for t in rd.nbest_parse(sentence1):
+    >>> for t in rd.parse(sentence1):
     ...     print(t)
     (S (NP the (N cat)) (VP (V chased) (NP the (N dog))))
 
-    >>> for t in rd.nbest_parse(sentence2):
+    >>> for t in rd.parse(sentence2):
     ...     print(t)
     (S
       (NP the (N cat))
@@ -101,7 +101,7 @@ and only one parse is ever returned.
     >>> sentence1 = 'the cat chased the dog'.split()
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
-    >>> for t in sr.nbest_parse(sentence1):
+    >>> for t in sr.parse(sentence1):
     ...     print(t)
     (S (NP the (N cat)) (VP (V chased) (NP the (N dog))))
 
@@ -110,7 +110,7 @@ The shift reduce parser uses heuristics to decide what to do when there are
 multiple possible shift or reduce operations available - for the supplied
 grammar clearly the wrong operation is selected.
 
-    >>> for t in sr.nbest_parse(sentence2):
+    >>> for t in sr.parse(sentence2):
     ...     print(t)
 
 
@@ -124,7 +124,7 @@ We must turn off showing of times.
 
 First we test tracing with a short sentence
 
-    >>> nltk.parse.chart.demo(2, should_print_times=False, trace=1,
+    >>> nltk.parse.chart.demo(2, print_times=False, trace=1,
     ...                       sent='I saw a dog', numparses=1)
     * Sentence:
     I saw a dog
@@ -175,7 +175,7 @@ Note that the number of edges differ between the strategies.
 
 Top-down
 
-    >>> nltk.parse.chart.demo(1, should_print_times=False, trace=0,
+    >>> nltk.parse.chart.demo(1, print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -194,7 +194,7 @@ Top-down
 
 Bottom-up
 
-    >>> nltk.parse.chart.demo(2, should_print_times=False, trace=0,
+    >>> nltk.parse.chart.demo(2, print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -213,7 +213,7 @@ Bottom-up
 
 Bottom-up Left-Corner
 
-    >>> nltk.parse.chart.demo(3, should_print_times=False, trace=0,
+    >>> nltk.parse.chart.demo(3, print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -232,7 +232,7 @@ Bottom-up Left-Corner
 
 Left-Corner with Bottom-Up Filter
 
-    >>> nltk.parse.chart.demo(4, should_print_times=False, trace=0,
+    >>> nltk.parse.chart.demo(4, print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -251,7 +251,7 @@ Left-Corner with Bottom-Up Filter
 
 The stepping chart parser
 
-    >>> nltk.parse.chart.demo(5, should_print_times=False, trace=1,
+    >>> nltk.parse.chart.demo(5, print_times=False, trace=1,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -352,7 +352,7 @@ We use the demo() function for testing. We must turn off showing of times.
 
 Earley Chart Parser
 
-    >>> nltk.parse.earleychart.demo(should_print_times=False, trace=1,
+    >>> nltk.parse.earleychart.demo(print_times=False, trace=1,
     ...                             sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -609,7 +609,7 @@ resulting parses.
     >>> from nltk.parse import pchart
 
     >>> parser = pchart.InsideChartParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -625,7 +625,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.RandomChartParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -641,7 +641,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.UnsortedChartParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -657,7 +657,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.LongestChartParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -673,7 +673,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.InsideChartParser(grammar, beam_size = len(tokens)+1)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
 
 
@@ -687,7 +687,7 @@ Unit tests for the Viterbi Parse classes
 Parse the tokenized sentence.
 
     >>> parser = ViterbiParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -715,8 +715,8 @@ Tracing the Feature Chart Parser
 
 We use the featurechart.demo() function for tracing the Feature Chart Parser.
 
-    >>> nltk.parse.featurechart.demo(should_print_times=False,
-    ...                              should_print_grammar=True,
+    >>> nltk.parse.featurechart.demo(print_times=False,
+    ...                              print_grammar=True,
     ...                              parser=nltk.parse.featurechart.FeatureChartParser,
     ...                              sent='I saw John with a dog')
     <BLANKLINE>
@@ -819,7 +819,7 @@ return the same trees. Otherwise an error is printed.
     ...     sentence = sentence.split()
     ...     trees = None
     ...     for P in parsers:
-    ...         result = P(grammar).nbest_parse(sentence)
+    ...         result = P(grammar).parse(sentence)
     ...         result = set(tree.freeze() for tree in result)
     ...         if len(result) != nr_trees:
     ...             print("Wrong nr of trees:", len(result))

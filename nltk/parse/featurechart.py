@@ -237,7 +237,7 @@ class FeatureFundamentalRule(FundamentalRule):
 
     assuming that B1 and B2 can be unified to generate B3.
     """
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         # Make sure the rule is applicable.
         if not (left_edge.end() == right_edge.start() and
                 left_edge.is_incomplete() and
@@ -284,7 +284,7 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
         for left_edge in chart.select(end=right_edge.start(),
                                       is_complete=False,
                                       nextsym=right_edge.lhs()):
-            for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
+            for new_edge in fr.apply(chart, grammar, left_edge, right_edge):
                 yield new_edge
 
     def _apply_incomplete(self, chart, grammar, left_edge):
@@ -292,7 +292,7 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
         for right_edge in chart.select(start=left_edge.end(),
                                        is_complete=True,
                                        lhs=left_edge.nextsym()):
-            for new_edge in fr.apply_iter(chart, grammar, left_edge, right_edge):
+            for new_edge in fr.apply(chart, grammar, left_edge, right_edge):
                 yield new_edge
 
 
@@ -301,7 +301,7 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
 #////////////////////////////////////////////////////////////
 
 class FeatureTopDownInitRule(TopDownInitRule):
-    def apply_iter(self, chart, grammar):
+    def apply(self, chart, grammar):
         for prod in grammar.productions(lhs=grammar.start()):
             new_edge = FeatureTreeEdge.from_production(prod, 0)
             if chart.insert(new_edge, ()):
@@ -325,7 +325,7 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
     for each grammar production ``B2 -> gamma``, assuming that B1
     and B2 can be unified.
     """
-    def apply_iter(self, chart, grammar, edge):
+    def apply(self, chart, grammar, edge):
         if edge.is_complete(): return
         nextsym, index = edge.nextsym(), edge.end()
         if not is_nonterminal(nextsym): return
@@ -361,7 +361,7 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
 #////////////////////////////////////////////////////////////
 
 class FeatureBottomUpPredictRule(BottomUpPredictRule):
-    def apply_iter(self, chart, grammar, edge):
+    def apply(self, chart, grammar, edge):
         if edge.is_incomplete(): return
         for prod in grammar.productions(rhs=edge.lhs()):
             if isinstance(edge, FeatureTreeEdge):
@@ -373,7 +373,7 @@ class FeatureBottomUpPredictRule(BottomUpPredictRule):
                 yield new_edge
 
 class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
-    def apply_iter(self, chart, grammar, edge):
+    def apply(self, chart, grammar, edge):
         if edge.is_incomplete(): return
         found = edge.lhs()
         for prod in grammar.productions(rhs=found):
@@ -397,7 +397,7 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
                 yield new_edge
 
 class FeatureEmptyPredictRule(EmptyPredictRule):
-    def apply_iter(self, chart, grammar):
+    def apply(self, chart, grammar):
         for prod in grammar.productions(empty=True):
             for index in xrange(chart.num_leaves() + 1):
                 new_edge = FeatureTreeEdge.from_production(prod, index)
@@ -571,6 +571,6 @@ if __name__ == '__main__':
     cp = FeatureChartParser(grammar, trace=2)
     sent = 'Kim likes children'
     tokens = sent.split()
-    trees = cp.nbest_parse(tokens)
+    trees = cp.parse(tokens)
     for tree in trees:
         print(tree)
