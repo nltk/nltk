@@ -35,12 +35,12 @@ class ParserI(object):
 
     def parse(self, sent):
         """
-        :return: An iterator that generates parse trees for the sentence.
+        :return: A list of parse trees for the sentence.
         When possible this list is sorted from most likely to least likely.
 
         :param sent: The sentence to be parsed
         :type sent: list(str)
-        :rtype: iter(Tree)
+        :rtype: list(Tree)
         """
         if overridden(self.parse_sents):
             return self.parse_sents([sent])[0]

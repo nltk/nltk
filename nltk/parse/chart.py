@@ -1344,7 +1344,7 @@ class ChartParser(ParserI):
         if self._use_agenda:
             # Use an agenda-based algorithm.
             for axiom in self._axioms:
-                new_edges = axiom.apply(chart, grammar)
+                new_edges = list(axiom.apply(chart, grammar))
                 trace_new_edges(chart, axiom, new_edges, trace, trace_edge_width)
 
             inference_rules = self._inference_rules
@@ -1355,9 +1355,8 @@ class ChartParser(ParserI):
             while agenda:
                 edge = agenda.pop()
                 for rule in inference_rules:
-                    new_edges = rule.apply(chart, grammar, edge)
+                    new_edges = list(rule.apply(chart, grammar, edge))
                     if trace:
-                        new_edges = list(new_edges)
                         trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
                     agenda += new_edges
 
@@ -1367,7 +1366,7 @@ class ChartParser(ParserI):
             while edges_added:
                 edges_added = False
                 for rule in self._strategy:
-                    new_edges = rule.apply_everywhere(chart, grammar)
+                    new_edges = list(rule.apply_everywhere(chart, grammar))
                     edges_added = len(new_edges)
                     trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
 
@@ -1376,8 +1375,7 @@ class ChartParser(ParserI):
 
     def parse(self, tokens, tree_class=Tree):
         chart = self.chart_parse(tokens)
-        parses = chart.parses(self._grammar.start(), tree_class=tree_class)
-        return iter(parses)
+        return chart.parses(self._grammar.start(), tree_class=tree_class)
 
 class TopDownChartParser(ChartParser):
     """
@@ -1570,7 +1568,7 @@ class SteppingChartParser(ChartParser):
             if e is None: break
 
         # Return a list of complete parses.
-        return iter(self.parses(tree_class=tree_class))
+        return self.parses(tree_class=tree_class)
 
 ########################################################################
 ##  Demo Code

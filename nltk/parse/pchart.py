@@ -247,7 +247,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         # Sort by probability
         parses.sort(reverse=True, key=lambda tree: tree.prob())
 
-        return iter(parses)
+        return parses
 
     def _setprob(self, tree, prod_probs):
         if tree.prob() is not None: return
@@ -441,7 +441,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         print('\ns: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar))
         parser.trace(3)
         t = time.time()
-        parses = list(parser.parse(tokens))
+        parses = parser.parse(tokens)
         times.append(time.time()-t)
         p = (reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses) if parses else 0)
         average_p.append(p)

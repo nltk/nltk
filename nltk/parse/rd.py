@@ -86,7 +86,7 @@ class RecursiveDescentParser(ParserI):
         parses = self._parse(tokens, initial_tree, frontier)
 
         # Return the parses.
-        return iter(parses)
+        return parses
 
     def _parse(self, remaining_text, tree, frontier):
         """
@@ -377,7 +377,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         self.initialize(tokens)
         while self.step() is not None:
             pass
-        return iter(self.parses())
+        return self.parses()
 
     def initialize(self, tokens):
         """

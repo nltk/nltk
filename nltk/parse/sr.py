@@ -305,7 +305,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self.initialize(tokens)
         while self.step():
             pass
-        return iter(self.parses())
+        return self.parses()
 
     def stack(self):
         """
