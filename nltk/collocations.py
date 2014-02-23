@@ -188,24 +188,29 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         self.bigram_fd = bigram_fd
 
     @classmethod
-    def from_words(cls, words):
+    def from_words(cls, words, window_size=3):
         """Construct a TrigramCollocationFinder for all trigrams in the given
         sequence.
         """
+        if window_size < 3:
+            raise ValueError("Specify window_size at least 3")
+
         wfd = FreqDist()
         wildfd = FreqDist()
         bfd = FreqDist()
         tfd = FreqDist()
 
-        for w1, w2, w3 in ngrams(words, 3, pad_right=True):
-            wfd[w1] += 1
-            if w2 is None:
-                continue
-            bfd[(w1, w2)] += 1
-            if w3 is None:
-                continue
-            wildfd[(w1, w3)] += 1
-            tfd[(w1, w2, w3)] += 1
+        for window in ngrams(words, window_size, pad_right=True):
+            w_words = window
+            for w1, w2, w3 in _itertools.combinations(w_words, 3):
+                wfd[w1] += 1
+                if w2 is None:
+                    continue
+                bfd[(w1, w2)] += 1
+                if w3 is None:
+                    continue
+                wildfd[(w1, w3)] += 1
+                tfd[(w1, w2, w3)] += 1
         return cls(wfd, bfd, wildfd, tfd)
 
     def bigram_finder(self):
