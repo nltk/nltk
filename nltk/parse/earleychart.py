@@ -312,7 +312,7 @@ class IncrementalChartParser(ChartParser):
         if trace: print(chart.pp_leaves(trace_edge_width))
 
         for axiom in self._axioms:
-            new_edges = axiom.apply(chart, grammar)
+            new_edges = list(axiom.apply(chart, grammar))
             trace_new_edges(chart, axiom, new_edges, trace, trace_edge_width)
 
         inference_rules = self._inference_rules
@@ -322,10 +322,8 @@ class IncrementalChartParser(ChartParser):
             while agenda:
                 edge = agenda.pop()
                 for rule in inference_rules:
-                    new_edges = rule.apply(chart, grammar, edge)
-                    if trace:
-                        new_edges = list(new_edges)
-                        trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
+                    new_edges = list(rule.apply(chart, grammar, edge))
+                    trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
                     for new_edge in new_edges:
                         if new_edge.end()==end:
                             agenda.append(new_edge)

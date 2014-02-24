@@ -1356,8 +1356,7 @@ class ChartParser(ParserI):
                 edge = agenda.pop()
                 for rule in inference_rules:
                     new_edges = list(rule.apply(chart, grammar, edge))
-                    if trace:
-                        trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
+                    trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
                     agenda += new_edges
 
         else:
