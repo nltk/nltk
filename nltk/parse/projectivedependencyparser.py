@@ -166,8 +166,8 @@ class ProjectiveDependencyParser(object):
 
         :param tokens: The list of input tokens.
         :type tokens: list(str)
-        :return: A list of parse trees.
-        :rtype: list(Tree)
+        :return: An iterator over parse trees.
+        :rtype: iter(Tree)
         """
         self._tokens = list(tokens)
         chart = []
@@ -186,8 +186,6 @@ class ProjectiveDependencyParser(object):
                             for newspan in self.concatenate(span1, span2):
                                 chart[i][j].add(newspan)
 
-        trees = []
-
         for parse in chart[len(self._tokens)][0]._entries:
             conll_format = ""
 #            malt_format = ""
@@ -196,9 +194,7 @@ class ProjectiveDependencyParser(object):
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'null', '-', '-')
             dg = DependencyGraph(conll_format)
 #           if self.meets_arity(dg):
-            trees.append(dg.tree())
-
-        return trees
+            yield dg.tree()
 
 
     def concatenate(self, span1, span2):
@@ -300,7 +296,7 @@ class ProbabilisticProjectiveDependencyParser(object):
             score = self.compute_prob(dg)
             trees.append((score, dg.tree()))
         trees.sort()
-        return [tree for (score, tree) in trees]
+        return (tree for (score, tree) in trees)
 
 
     def concatenate(self, span1, span2):

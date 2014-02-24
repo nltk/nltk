@@ -108,7 +108,7 @@ class TestGrammar(object):
             for key in ['accept', 'reject']:
                 for sent in test[key]:
                     tokens = sent.split()
-                    trees = self.cp.parse(tokens)
+                    trees = list(self.cp.parse(tokens))
                     if show_trees and trees:
                         print()
                         print(sent)

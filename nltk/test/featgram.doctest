@@ -382,6 +382,8 @@ things become really interesting.
     |. . [---------]| [2:7] S[-INV]/NP[] -> NP[] VP[]/NP[] *
     |. [-----------]| [1:7] S[+INV]/NP[] -> V[+AUX] NP[] VP[]/NP[] *
     |[=============]| [0:7] S[-INV] -> NP[] S[]/NP[] *
+
+    >>> trees = list(trees)
     >>> for tree in trees: print(tree)
     (S[-INV]
       (NP[+WH] who)
@@ -471,6 +473,7 @@ A different parser should give the same parse trees, but perhaps in a different 
     |. . . [-------]| [3:7] VP[]/NP[] -> V[-AUX, SUBCAT='clause'] SBar[]/NP[] *
     |. [-----------]| [1:7] S[+INV]/NP[] -> V[+AUX] NP[] VP[]/NP[] *
     |[=============]| [0:7] S[-INV] -> NP[] S[]/NP[] *
+
     >>> sorted(trees) == sorted(trees2)
     True
 

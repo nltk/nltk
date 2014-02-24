@@ -97,14 +97,10 @@ class ShiftReduceParser(ParserI):
             while self._reduce(stack, remaining_text): pass
 
         # Did we reduce everything?
-        if len(stack) != 1: return []
-
-        # Did we end up with the right category?
-        if stack[0].label() != self._grammar.start().symbol():
-            return []
-
-        # We parsed successfully!
-        return [stack[0]]
+        if len(stack) == 1: 
+            # Did we end up with the right category?
+            if stack[0].label() == self._grammar.start().symbol():
+                yield stack[0]
 
     def _shift(self, stack, remaining_text):
         """
@@ -305,7 +301,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self.initialize(tokens)
         while self.step():
             pass
-        return self.parses()
+        return iter(self.parses())
 
     def stack(self):
         """
