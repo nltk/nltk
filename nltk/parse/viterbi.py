@@ -141,7 +141,8 @@ class ViterbiParser(ParserI):
                                                 tokens)
 
         # Return the tree that spans the entire text & have the right cat
-        return constituents.get((0, len(tokens), self._grammar.start()))
+        tree = constituents.get((0, len(tokens), self._grammar.start()))
+        return [] if tree is None else [tree]
 
     def _add_constituents_spanning(self, span, constituents, tokens):
         """

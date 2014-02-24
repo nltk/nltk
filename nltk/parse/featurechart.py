@@ -529,28 +529,28 @@ Prep -> "with"
 Prep -> "under"
 """)
 
-def demo(should_print_times=True, should_print_grammar=True,
-         should_print_trees=True, should_print_sentence=True,
+def demo(print_times=True, print_grammar=True,
+         print_trees=True, print_sentence=True,
          trace=1,
          parser=FeatureChartParser,
          sent='I saw John with a dog with my cookie'):
     import sys, time
     print()
     grammar = demo_grammar()
-    if should_print_grammar:
+    if print_grammar:
         print(grammar)
         print()
     print("*", parser.__name__)
-    if should_print_sentence:
+    if print_sentence:
         print("Sentence:", sent)
     tokens = sent.split()
     t = time.clock()
     cp = parser(grammar, trace=trace)
     chart = cp.chart_parse(tokens)
     trees = chart.parses(grammar.start())
-    if should_print_times:
+    if print_times:
         print("Time: %s" % (time.clock() - t))
-    if should_print_trees:
+    if print_trees:
         for tree in trees: print(tree)
     else:
         print("Nr trees:", len(trees))

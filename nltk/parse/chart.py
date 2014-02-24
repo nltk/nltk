@@ -1356,8 +1356,7 @@ class ChartParser(ParserI):
                 edge = agenda.pop()
                 for rule in inference_rules:
                     new_edges = list(rule.apply(chart, grammar, edge))
-                    if trace:
-                        trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
+                    trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
                     agenda += new_edges
 
         else:
@@ -1375,7 +1374,8 @@ class ChartParser(ParserI):
 
     def parse(self, tokens, tree_class=Tree):
         chart = self.chart_parse(tokens)
-        return chart.parses(self._grammar.start(), tree_class=tree_class)
+        parses = chart.parses(self._grammar.start(), tree_class=tree_class)
+        return iter(parses)
 
 class TopDownChartParser(ChartParser):
     """
@@ -1568,7 +1568,7 @@ class SteppingChartParser(ChartParser):
             if e is None: break
 
         # Return a list of complete parses.
-        return self.parses(tree_class=tree_class)
+        return iter(self.parses(tree_class=tree_class))
 
 ########################################################################
 ##  Demo Code
