@@ -5,6 +5,7 @@
 # Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+
 from __future__ import print_function
 
 from nltk.parse.api import ParserI
@@ -16,9 +17,9 @@ try:
 
     def _check_bllip_import_success():
         pass
-except ImportError, ie:
+except ImportError as ie:
     def _check_bllip_import_success(ie=ie):
-        raise RuntimeError("Couldn't import bllipparser module: %s" % ie)
+        raise ImportError("Couldn't import bllipparser module: %s" % ie)
 
 
 def _nbest_list_item_to_tree(nbest_list_item):
@@ -32,22 +33,118 @@ def _get_top_parse(nbest_list):
         return None
 
 
+def _ensure_ascii(words):
+    try:
+        for i, word in enumerate(words):
+            word.decode('ascii')
+    except UnicodeDecodeError:
+        raise ValueError("Token %d (%r) is non-ASCII. BLLIP Parser currently doesn't support non-ASCII inputs." % (i, word))
+
+
 class BllipParser(ParserI):
 
     """
-    An interface for parsing with the BLLIP Parser using a
-    SWIG wrapper.  Parsers can be constructed manually (using the
-    constructor) or with the ``BllipParser.from_unified_model_dir``
-    class method. The latter is generally easier if you have
-    a unified model directory which can be obtained with the
-    ``bllipparser.ModelFetcher.download_and_install_model`` function or
-    the command-line utility ``python -mbllipparser.ModelFetcher``.
+    Interface for parsing with BLLIP Parser using a SWIG wrapper.
+    BllipParser objects can be constructed manually using their
+    constructor or with the ``BllipParser.from_unified_model_dir``
+    class method. The latter is generally easier if you have a unified
+    model directory. Unified model directories can be obtained with the
+    command-line utility ``python -m bllipparser.ModelFetcher`` or the
+    ``bllipparser.ModelFetcher.download_and_install_model`` function
+    in Python.
 
     Note that BLLIP Parser is not currently threadsafe. Since this module
     uses a SWIG interface, it is potentially unsafe to create multiple
-    ``BllipParser`` objects in the same process.
+    ``BllipParser`` objects in the same process. BLLIP Parser may have
+    issues with non-ASCII text currently and will raise an error if
+    given any.
 
-    See http://pypi.python.org/pypi/bllipparser/ for more information.
+    See http://pypi.python.org/pypi/bllipparser/ for more information
+    on BLLIP Parser's Python interface.
+
+    References:
+
+    Charniak, Eugene. "A maximum-entropy-inspired parser." Proceedings of
+    the 1st North American chapter of the Association for Computational
+    Linguistics conference. Association for Computational Linguistics,
+    2000.
+
+    Charniak, Eugene, and Mark Johnson. "Coarse-to-fine n-best parsing
+    and MaxEnt discriminative reranking." Proceedings of the 43rd Annual
+    Meeting on Association for Computational Linguistics. Association
+    for Computational Linguistics, 2005.
+
+    Basic usage:
+
+    >>> from bllipparser.ModelFetcher import download_and_install_model
+    >>> model_dir = download_and_install_model('WSJ', '/tmp/models', verbose=False)
+    >>> bllip = BllipParser.from_unified_model_dir(model_dir)
+
+    # 1-best parsing
+    >>> print(bllip.parse('British left waffles on Falklands .'.split()))
+    (S1
+      (S
+        (NP (JJ British) (NN left))
+        (VP (VBZ waffles) (PP (IN on) (NP (NNP Falklands))))
+        (. .)))
+    >>> print(bllip.parse('I saw the man with the telescope .'.split()))
+    (S1
+      (S
+        (NP (PRP I))
+        (VP
+          (VBD saw)
+          (NP (DT the) (NN man))
+          (PP (IN with) (NP (DT the) (NN telescope))))
+        (. .)))
+
+    # n-best parsing (default n=50)
+    >>> for parse in bllip.nbest_parse('Hey Jude'.split())[:5]:
+    ...     print(parse)
+    (S1 (NP (NNP Hey) (NNP Jude)))
+    (S1 (S (NP (NNP Hey) (NNP Jude))))
+    (S1 (ADJP (NNP Hey) (NNP Jude)))
+    (S1 (NP (NP (NNP Hey)) (NP (NNP Jude))))
+    (S1 (X (NP (NNP Hey) (NNP Jude))))
+
+    # n-best parsing with a smaller n
+    >>> for i, parse in enumerate(bllip.nbest_parse('Just 10 parses'.split(), n=3)):
+    ...     print(i, parse)
+    0 (S1 (NP (QP (RB Just) (CD 10)) (NNS parses)))
+    1 (S1 (NP (RB Just) (CD 10) (NNS parses)))
+    2 (S1 (NP (QP (RB Just) (CD 10)) (NN parses)))
+
+    # this "sentence" is known to fail under the WSJ model
+    >>> print(bllip.parse('# ! ? : -'.split()))
+    None
+    >>> print(bllip.nbest_parse('# ! ? : -'.split()))
+    []
+
+    # using external POS tag constraints to force tree to be 'NN'
+    >>> print(bllip.tagged_parse([('A', None), ('tree', 'NN')]))
+    (S1 (NP (DT A) (NN tree)))
+
+    # forcing 'A' to be 'DT' and 'tree' to be 'NNP'
+    >>> print(bllip.tagged_parse([('A', 'DT'), ('tree', 'NNP')]))
+    (S1 (NP (DT A) (NNP tree)))
+
+    # forcing 'A' to be 'NNP'
+    >>> print(bllip.tagged_parse([('A', 'NNP'), ('tree', None)]))
+    (S1 (NP (NNP A) (NN tree)))
+
+    # using tag constraints with n-best parsing
+    >>> for parse in bllip.tagged_nbest_parse([('A', 'NNP'), ('tree', None)])[:5]:
+    ...     print(parse)
+    (S1 (NP (NNP A) (NN tree)))
+    (S1 (FRAG (NP (NNP A) (NN tree))))
+    (S1 (S (NP (NNP A) (NN tree))))
+    (S1 (NP (NP (NNP A)) (NP (NN tree))))
+    (S1 (S (NP (NNP A)) (VP (NN tree))))
+
+    >>> for parse in bllip.tagged_nbest_parse([('A', 'DT'), ('tree', 'NN')], n=3):
+    ...     print(parse)
+    (S1 (NP (DT A) (NN tree)))
+    (S1 (FRAG (NP (DT A) (NN tree))))
+    (S1 (S (NP (DT A) (NN tree))))
     """
 
     def __init__(self, parser_model=None, reranker_features=None,
@@ -102,6 +199,7 @@ class BllipParser(ParserI):
         :type sentence: list(str)
         :rtype: Tree
         """
+        _ensure_ascii(sentence)
         nbest_list = self.rrp.parse(sentence, rerank=self.rerank)
         return _get_top_parse(nbest_list)
 
@@ -123,6 +221,7 @@ class BllipParser(ParserI):
         :type n: int
         :rtype: list(Tree)
         """
+        _ensure_ascii(sentence)
         nbest_list = self.rrp.parse(sentence, rerank=self.rerank)
         if n is not None:
             nbest_list = nbest_list[:n]
@@ -137,6 +236,7 @@ class BllipParser(ParserI):
             if tag is not None:
                 tag_map[i] = tag
 
+        _ensure_ascii(words)
         nbest_list = self.rrp.parse_tagged(words, tag_map, rerank=self.rerank)
         return nbest_list
 
@@ -219,12 +319,17 @@ class BllipParser(ParserI):
 
 
 def demo():
-    _check_bllip_import_success()
-
-    from bllipparser import ModelFetcher
+    """This assumes bllipparser is installed."""
+    import nltk
     # download and install a basic unified parsing model
-    model_dir = ModelFetcher.download_and_install_model('WSJ', '/tmp/models',
-                                                        verbose=True)
+    try:
+        nltk.downloader('bllip-wsj', download_dir='/tmp', raise_on_error=True)
+        model_dir = '/tmp/models/bllip-wsj'
+    except:
+        # this is just here temporarily until nltk_data has the BLLIP WSJ model
+        from bllipparser.ModelFetcher import download_and_install_model
+        model_dir = download_and_install_model('WSJ', '/tmp/models',
+                                               verbose=True)
 
     print('Loading models...')
     # the easiest way to get started is to use a unified model
@@ -250,8 +355,8 @@ def demo():
 
     # using external POS tag constraints
     print("forcing 'tree' to be 'NN'",
-          bllip.tagged_parse([('A', 'DT'), ('tree', 'NN')]))
-    print("forcing 'tree' to be 'NNP'",
+          bllip.tagged_parse([('A', None), ('tree', 'NN')]))
+    print("forcing 'A' to be 'DT' and 'tree' to be 'NNP'",
           bllip.tagged_parse([('A', 'DT'), ('tree', 'NNP')]))
     print("forcing 'A' to be 'NNP'",
           bllip.tagged_parse([('A', 'NNP'), ('tree', None)]))
@@ -265,6 +370,16 @@ def demo():
     for i, parse in enumerate(bllip.tagged_nbest_parse([('A', 'DT'),
                                                         ('tree', 'NN')], n=3)):
         print('tagged 3best parse', i, parse)
+
+
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        _check_bllip_import_success()
+    except ImportError:
+        raise SkipTest('doctests from nltk.parse.bllip are skipped because the bllipparser module is not installed')
+
 
 if __name__ == '__main__':
     demo()
