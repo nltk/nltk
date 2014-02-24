@@ -201,8 +201,7 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         tfd = FreqDist()
 
         for window in ngrams(words, window_size, pad_right=True):
-            w_words = window
-            for w1, w2, w3 in _itertools.combinations(w_words, 3):
+            for w1, w2, w3 in _itertools.combinations(window, 3):
                 wfd[w1] += 1
                 if w2 is None:
                     continue
