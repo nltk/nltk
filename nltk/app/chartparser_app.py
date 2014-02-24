@@ -1601,10 +1601,10 @@ class EdgeRule(object):
         super = self.__class__.__bases__[1]
         self._edge = edge
         self.NUM_EDGES = super.NUM_EDGES-1
-    def apply_iter(self, chart, grammar, *edges):
+    def apply(self, chart, grammar, *edges):
         super = self.__class__.__bases__[1]
         edges += (self._edge,)
-        for e in super.apply_iter(self, chart, grammar, *edges): yield e
+        for e in super.apply(self, chart, grammar, *edges): yield e
     def __str__(self):
         super = self.__class__.__bases__[1]
         return super.__str__(self)

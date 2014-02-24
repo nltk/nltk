@@ -1448,7 +1448,7 @@ def pcfg_demo():
 
     sent = treebank.parsed_sents(item)[0].leaves()
     print(sent)
-    for parse in parser.nbest_parse(sent):
+    for parse in parser.parse(sent):
         print(parse)
 
 def fcfg_demo():

@@ -17,7 +17,7 @@ The parser can then be constructed by calling, for example:
 ``parser = chart.CCGChartParser(<lexicon>, <ruleset>)``
 
 Parsing is then performed by running
-``parser.nbest_parse(<sentence>.split())``.
+``parser.parse(<sentence>.split())``.
 
 While this returns a list of trees, the default representation
 of the produced trees is not very enlightening, particularly
@@ -103,7 +103,7 @@ class BinaryCombinatorRule(AbstractChartRule):
         self._combinator = combinator
 
     # Apply a combinator
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         # The left & right edges must be touching.
         if not (left_edge.end() == right_edge.start()):
             return
@@ -131,7 +131,7 @@ class ForwardTypeRaiseRule(AbstractChartRule):
 
     def __init__(self):
        self._combinator = ForwardT
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
 
@@ -152,7 +152,7 @@ class BackwardTypeRaiseRule(AbstractChartRule):
 
     def __init__(self):
        self._combinator = BackwardT
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
 
@@ -193,7 +193,7 @@ class CCGChartParser(ParserI):
         return self._lexicon
 
    # Implements the CYK algorithm
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         tokens = list(tokens)
         chart = CCGChart(list(tokens))
         lex = self._lexicon
@@ -220,11 +220,11 @@ class CCGChartParser(ParserI):
                             # Generate all possible combinations of the two edges
                             for rule in self._rules:
                                 edges_added_by_rule = 0
-                                for newedge in rule.apply_iter(chart,lex,left,right):
+                                for newedge in rule.apply(chart,lex,left,right):
                                     edges_added_by_rule += 1
 
         # Output the resulting parses
-        return chart.parses(lex.start())[:n]
+        return iter(chart.parses(lex.start()))
 
 class CCGChart(Chart):
     def __init__(self, tokens):
@@ -352,7 +352,7 @@ lex = parseLexicon('''
 
 def demo():
     parser = CCGChartParser(lex, DefaultRuleSet)
-    for parse in parser.nbest_parse("I might cook and eat the bacon".split(), 3):
+    for parse in parser.parse("I might cook and eat the bacon".split()):
         printCCGDerivation(parse)
 
 if __name__ == '__main__':

@@ -316,7 +316,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
     # Parse the sentence.
     tokens = sentence.split()
-    trees = parser.nbest_parse(tokens)
+    trees = list(parser.parse(tokens))
     if verbose: print('Got %d different parses' % len(trees))
 
     all_readings = []

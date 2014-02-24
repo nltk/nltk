@@ -82,7 +82,7 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
     parser = load_parser(grammar, trace=trace, chart_class=InstantiateVarsChart)
     # Parse the sentence.
     tokens = sentence.split()
-    return parser.nbest_parse(tokens)
+    return list(parser.parse(tokens))
 
 
 def demo():

@@ -70,7 +70,7 @@ class RecursiveDescentParser(ParserI):
     def grammar(self):
         return self._grammar
 
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         # Inherit docs from ParserI
 
         tokens = list(tokens)
@@ -86,7 +86,7 @@ class RecursiveDescentParser(ParserI):
         parses = self._parse(tokens, initial_tree, frontier)
 
         # Return the parses.
-        return parses[:n]
+        return iter(parses)
 
     def _parse(self, remaining_text, tree, frontier):
         """
@@ -372,12 +372,12 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
 #            c[pos] = c[pos].freeze()
         return ImmutableTree.convert(c)
 
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         tokens = list(tokens)
         self.initialize(tokens)
-        while self.step() is not None: pass
-
-        return self.parses()[:n]
+        while self.step() is not None:
+            pass
+        return iter(self.parses())
 
     def initialize(self, tokens):
         """
@@ -653,7 +653,7 @@ def demo():
 
     sent = 'I saw a man in the park'.split()
     parser = parse.RecursiveDescentParser(grammar, trace=2)
-    for p in parser.nbest_parse(sent):
+    for p in parser.parse(sent):
         print(p)
 
 if __name__ == '__main__':

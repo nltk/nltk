@@ -360,7 +360,7 @@ def demo():
     print('\nsent: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar))
     parser.trace(3)
     t = time.time()
-    parses = parser.nbest_parse(tokens)
+    parses = parser.parse(tokens)
     time = time.time()-t
     average = (reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
                if parses else 0)

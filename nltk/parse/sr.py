@@ -97,14 +97,14 @@ class ShiftReduceParser(ParserI):
             while self._reduce(stack, remaining_text): pass
 
         # Did we reduce everything?
-        if len(stack) != 1: return None
+        if len(stack) != 1: return []
 
         # Did we end up with the right category?
         if stack[0].label() != self._grammar.start().symbol():
-            return None
+            return []
 
         # We parsed successfully!
-        return stack[0]
+        return [stack[0]]
 
     def _shift(self, stack, remaining_text):
         """
@@ -172,8 +172,10 @@ class ShiftReduceParser(ParserI):
         :param remaining_text: The portion of the text that is not yet
             covered by ``stack``.
         """
-        if production is None: productions = self._grammar.productions()
-        else: productions = [production]
+        if production is None:
+            productions = self._grammar.productions()
+        else:
+            productions = [production]
 
         # Try each production, in order.
         for production in productions:
@@ -298,12 +300,12 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self._remaining_text = None
         self._history = []
 
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         tokens = list(tokens)
         self.initialize(tokens)
-        while self.step(): pass
-
-        return self.parses()[:n]
+        while self.step():
+            pass
+        return iter(self.parses())
 
     def stack(self):
         """
@@ -411,11 +413,14 @@ class SteppingShiftReduceParser(ShiftReduceParser):
             parser so far.
         :rtype: list of Tree
         """
-        if len(self._remaining_text) != 0: return []
-        if len(self._stack) != 1: return []
-        if self._stack[0].label() != self._grammar.start().symbol():
+        if len(self._remaining_text) != 0:
             return []
-        return self._stack
+        elif len(self._stack) != 1:
+            return []
+        elif self._stack[0].label() != self._grammar.start().symbol():
+            return []
+        else:
+            return self._stack
 
 # copied from nltk.parser
 
@@ -454,7 +459,7 @@ def demo():
     sent = 'I saw a man in the park'.split()
 
     parser = parse.ShiftReduceParser(grammar, trace=2)
-    for p in parser.nbest_parse(sent):
+    for p in parser.parse(sent):
         print(p)
 
 if __name__ == '__main__':
