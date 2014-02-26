@@ -37,6 +37,7 @@ defines three chart parsers:
 """
 from __future__ import print_function, division, unicode_literals
 
+import itertools
 import re
 import warnings
 
@@ -658,25 +659,24 @@ class Chart(object):
         if edge in memo:
             return memo[edge]
 
-        trees = []
-
         # when we're reading trees off the chart, don't use incomplete edges
         if complete and edge.is_incomplete():
-            return trees
+            return []
+
+        # Leaf edges.
+        if isinstance(edge, LeafEdge):
+            leaf = self._tokens[edge.start()]
+            memo[edge] = [leaf]
+            return [leaf]
 
         # Until we're done computing the trees for edge, set
         # memo[edge] to be empty.  This has the effect of filtering
         # out any cyclic trees (i.e., trees that contain themselves as
         # descendants), because if we reach this edge via a cycle,
-        # then it will appear that the edge doesn't generate any
-        # trees.
+        # then it will appear that the edge doesn't generate any trees.
         memo[edge] = []
-
-        # Leaf edges.
-        if isinstance(edge, LeafEdge):
-            leaf = self._tokens[edge.start()]
-            memo[edge] = leaf
-            return [leaf]
+        trees = []
+        lhs = edge.lhs().symbol()
 
         # Each child pointer list can be used to form trees.
         for cpl in self.child_pointer_lists(edge):
@@ -687,8 +687,7 @@ class Chart(object):
                              for cp in cpl]
 
             # For each combination of children, add a tree.
-            for children in self._choose_children(child_choices):
-                lhs = edge.lhs().symbol()
+            for children in itertools.product(*child_choices):
                 trees.append(tree_class(lhs, children))
 
         # If the edge is incomplete, then extend it with "partial trees":
@@ -703,31 +702,6 @@ class Chart(object):
 
         # Return the list of trees.
         return trees
-
-    def _choose_children(self, child_choices):
-        """
-        A helper function for ``_trees`` that finds the possible sets
-        of subtrees for a new tree.
-
-        :param child_choices: A list that specifies the options for
-            each child.  In particular, ``child_choices[i]`` is a list of
-            tokens and subtrees that can be used as the ``i``th child.
-        """
-        children_lists = [[]]
-        for child_choice in child_choices:
-            if hasattr(child_choice, '__iter__') and \
-                    not isinstance(child_choice, compat.string_types):
-                # Only iterate over the child trees
-                # if child_choice is iterable and NOT a string
-                children_lists = [child_list+[child]
-                                  for child in child_choice
-                                  for child_list in children_lists]
-            else:
-                # If child_choice is a string (or non-iterable)
-                # then it is a leaf
-                children_lists = [child_list+[child_choice]
-                                  for child_list in children_lists]
-        return children_lists
 
     def child_pointer_lists(self, edge):
         """

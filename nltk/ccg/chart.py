@@ -31,6 +31,8 @@ python chart.py
 """
 from __future__ import print_function, division, unicode_literals
 
+import itertools
+
 from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
 from nltk.tree import Tree
@@ -234,25 +236,25 @@ class CCGChart(Chart):
     # constructed slightly differently to those in the default Chart class, so it has to
     # be reimplemented
     def _trees(self, edge, complete, memo, tree_class):
+        assert complete, "CCGChart cannot build incomplete trees"
+
         if edge in memo:
             return memo[edge]
 
-        trees = []
-        memo[edge] = []
-
         if isinstance(edge,CCGLeafEdge):
-            word = tree_class(edge.lhs(),[self._tokens[edge.start()]])
-            leaf = tree_class((edge.lhs(),"Leaf"),[word])
-            memo[edge] = leaf
-            return leaf
+            word = tree_class(edge.lhs(), [self._tokens[edge.start()]])
+            leaf = tree_class((edge.lhs(), "Leaf"), [word])
+            memo[edge] = [leaf]
+            return [leaf]
+
+        memo[edge] = []
+        trees = []
+        lhs = (edge.lhs(), "%s" % edge.rule())
 
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class)
-                                for cp in cpl]
-            if len(child_choices) > 0 and isinstance(child_choices[0], string_types):
-                child_choices = [child_choices]
-            for children in self._choose_children(child_choices):
-                lhs = (edge.lhs(), "%s" % edge.rule())
+                             for cp in cpl]
+            for children in itertools.product(*child_choices):
                 trees.append(tree_class(lhs, children))
 
         memo[edge] = trees
