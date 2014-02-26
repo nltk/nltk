@@ -374,7 +374,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         self.initialize(tokens)
         while self.step() is not None:
             pass
-        return iter(self.parses())
+        return self.parses()
 
     def initialize(self, tokens):
         """
@@ -606,11 +606,11 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
 
     def parses(self):
         """
-        :return: A list of the parses that have been found by this
+        :return: An iterator of the parses that have been found by this
             parser so far.
         :rtype: list of Tree
         """
-        return self._parses
+        return iter(self._parses)
 
     def set_grammar(self, grammar):
         """

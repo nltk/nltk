@@ -226,7 +226,7 @@ class CCGChartParser(ParserI):
                                     edges_added_by_rule += 1
 
         # Output the resulting parses
-        return iter(chart.parses(lex.start()))
+        return chart.parses(lex.start())
 
 class CCGChart(Chart):
     def __init__(self, tokens):

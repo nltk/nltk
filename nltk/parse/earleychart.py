@@ -435,7 +435,7 @@ def demo(print_times=True, print_grammar=False,
     earley = EarleyChartParser(grammar, trace=trace)
     t = time.clock()
     chart = earley.chart_parse(tokens)
-    parses = chart.parses(grammar.start())
+    parses = list(chart.parses(grammar.start()))
     t = time.clock()-t
 
     # Print results.

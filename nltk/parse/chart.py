@@ -622,17 +622,16 @@ class Chart(object):
 
     def parses(self, root, tree_class=Tree):
         """
-        Return a list of the complete tree structures that span
+        Return an iterator of the complete tree structures that span
         the entire chart, and whose root node is ``root``.
         """
-        trees = []
         for edge in self.select(start=0, end=self._num_leaves, lhs=root):
-            trees += self.trees(edge, tree_class=tree_class, complete=True)
-        return trees
+            for tree in self.trees(edge, tree_class=tree_class, complete=True):
+                yield tree
 
     def trees(self, edge, tree_class=Tree, complete=False):
         """
-        Return a list of the tree structures that are associated
+        Return an iterator of the tree structures that are associated
         with ``edge``.
 
         If ``edge`` is incomplete, then the unexpanded children will be
@@ -645,7 +644,7 @@ class Chart(object):
             both trees.  If you need to eliminate this subtree
             sharing, then create a deep copy of each tree.
         """
-        return self._trees(edge, complete, memo={}, tree_class=tree_class)
+        return iter(self._trees(edge, complete, memo={}, tree_class=tree_class))
 
     def _trees(self, edge, complete, memo, tree_class):
         """
@@ -1348,8 +1347,7 @@ class ChartParser(ParserI):
 
     def parse(self, tokens, tree_class=Tree):
         chart = self.chart_parse(tokens)
-        parses = chart.parses(self._grammar.start(), tree_class=tree_class)
-        return iter(parses)
+        return chart.parses(self._grammar.start(), tree_class=tree_class)
 
 class TopDownChartParser(ChartParser):
     """
@@ -1541,8 +1539,8 @@ class SteppingChartParser(ChartParser):
         for e in self.step():
             if e is None: break
 
-        # Return a list of complete parses.
-        return iter(self.parses(tree_class=tree_class))
+        # Return an iterator of complete parses.
+        return self.parses(tree_class=tree_class)
 
 ########################################################################
 ##  Demo Code
@@ -1630,7 +1628,7 @@ def demo(choice=None,
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
         chart = cp.chart_parse(tokens)
-        parses = chart.parses(grammar.start())
+        parses = list(chart.parses(grammar.start()))
         times[strategies[strategy][0]] = time.time()-t
         print("Nr edges in chart:", len(chart.edges()))
         if numparses:
@@ -1660,11 +1658,11 @@ def demo(choice=None,
         times['Stepping'] = time.time()-t
         print("Nr edges in chart:", len(cp.chart().edges()))
         if numparses:
-            assert len(cp.parses())==numparses, 'Not all parses found'
+            assert len(list(cp.parses()))==numparses, 'Not all parses found'
         if print_trees:
             for tree in cp.parses(): print(tree)
         else:
-            print("Nr trees:", len(cp.parses()))
+            print("Nr trees:", len(list(cp.parses())))
         print()
 
     # Print the times of all parsers:

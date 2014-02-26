@@ -301,7 +301,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self.initialize(tokens)
         while self.step():
             pass
-        return iter(self.parses())
+        return self.parses()
 
     def stack(self):
         """
@@ -405,18 +405,15 @@ class SteppingShiftReduceParser(ShiftReduceParser):
 
     def parses(self):
         """
-        :return: A list of the parses that have been found by this
+        :return: An iterator of the parses that have been found by this
             parser so far.
-        :rtype: list of Tree
+        :rtype: iter(Tree)
         """
-        if len(self._remaining_text) != 0:
-            return []
-        elif len(self._stack) != 1:
-            return []
-        elif self._stack[0].label() != self._grammar.start().symbol():
-            return []
-        else:
-            return self._stack
+        if (len(self._remaining_text) == 0 and
+            len(self._stack) == 1 and
+            self._stack[0].label() == self._grammar.start().symbol()
+            ):
+            yield self._stack[0]
 
 # copied from nltk.parser
 

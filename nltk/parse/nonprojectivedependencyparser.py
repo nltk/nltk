@@ -368,6 +368,8 @@ class ProbabilisticNonprojectiveParser(object):
         :param tokens: A list of words or punctuation to be parsed.
         :type tags: list(str)
         :param tags: A list of tags corresponding by index to the words in the tokens list.
+        :return: An iterator of non-projective parses.
+        :rtype: iter(DependencyGraph)
         """
         self.inner_nodes = {}
         # Initialize g_graph
@@ -457,8 +459,8 @@ class ProbabilisticNonprojectiveParser(object):
 #           print i, betas[i]
             original_graph.add_arc(betas[i][0], betas[i][1])
 #       print original_graph
-        return original_graph
         print('Done.')
+        yield original_graph
 
 
 
@@ -497,8 +499,8 @@ class NonprojectiveDependencyParser(object):
 
         param tokens: A list of tokens to parse.
         type tokens: list(str)
-        return: A set of non-projective parses.
-        rtype: list(DependencyGraph)
+        return: An iterator of non-projective parses.
+        rtype: iter(DependencyGraph)
         """
         # Create graph representation of tokens
         self._graph = DependencyGraph()
@@ -525,7 +527,7 @@ class NonprojectiveDependencyParser(object):
         # Set roots to attempt
         if len(roots) > 1:
             print("No parses found.")
-            return False
+            return
         elif len(roots) == 0:
             for i in range(len(tokens)):
                 roots.append(i)
@@ -574,9 +576,9 @@ class NonprojectiveDependencyParser(object):
                     i += 1
                 else:
                     i -= 1
+
         # Filter parses
-        graphs = []
-        #ensure 1 root, every thing has 1 head
+        # ensure 1 root, every thing has 1 head
         for analysis in analyses:
             root_count = 0
             root = []
@@ -593,8 +595,7 @@ class NonprojectiveDependencyParser(object):
                     graph.nodelist.append(node)
 #                cycle = graph.contains_cycle()
 #                if not cycle:
-                graphs.append(graph)
-        return graphs
+                yield graph
 
 
 #################################################################
@@ -610,16 +611,16 @@ def demo():
 def hall_demo():
     npp = ProbabilisticNonprojectiveParser()
     npp.train([], DemoScorer())
-    parse_graph = npp.parse(['v1', 'v2', 'v3'], [None, None, None])
-    print(parse_graph)
+    for parse_graph in npp.parse(['v1', 'v2', 'v3'], [None, None, None]):
+        print(parse_graph)
 
 def nonprojective_conll_parse_demo():
     graphs = [DependencyGraph(entry)
               for entry in conll_data2.split('\n\n') if entry]
     npp = ProbabilisticNonprojectiveParser()
     npp.train(graphs, NaiveBayesDependencyScorer())
-    parse_graph = npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc'])
-    print(parse_graph)
+    for parse_graph in npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc']):
+        print(parse_graph)
 
 def rule_based_demo():
     grammar = parse_dependency_grammar("""
