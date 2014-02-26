@@ -25,7 +25,6 @@ class ParserI(object):
 
     Subclasses may define:
       - ``grammar()``
-      - either ``prob_parse()`` or ``prob_parse_sents()`` (or both)
     """
     def grammar(self):
         """
@@ -49,22 +48,6 @@ class ParserI(object):
         else:
             raise NotImplementedError()
 
-    def prob_parse(self, sent):
-        """
-        :return: A probability distribution over the possible parse
-        trees for the given sentence.  If there are no possible parse
-        trees for the given sentence, return a probability distribution
-        that assigns a probability of 1.0 to None.
-
-        :param sent: The sentence to be parsed
-        :type sent: list(str)
-        :rtype: ProbDistI(Tree)
-        """
-        if overridden(self.prob_parse_sents):
-            return self.prob_parse_sents([sent])[0]
-        else:
-            raise NotImplementedError()
-
     def parse_sents(self, sents):
         """
         Apply ``self.parse()`` to each element of ``sents``.
@@ -72,13 +55,4 @@ class ParserI(object):
         """
         return [self.parse(sent) for sent in sents]
 
-    def prob_parse_sents(self, sents):
-        """
-        Apply ``self.prob_parse()`` to each element of ``sents``.  I.e.:
-
-            return [self.prob_parse(sent) for sent in sents]
-
-        :rtype: list(ProbDistI(Tree))
-        """
-        return [self.prob_parse(sent) for sent in sents]
 
