@@ -203,13 +203,13 @@ class FeatureChart(Chart):
             return item
 
     def parses(self, start, tree_class=Tree):
-        trees = []
         for edge in self.select(start=0, end=self._num_leaves):
-            if ( (isinstance(edge, FeatureTreeEdge)) and
-                 (edge.lhs()[TYPE] == start[TYPE]) and
-                 (unify(edge.lhs(), start, rename_vars=True)) ):
-                trees += self.trees(edge, complete=True, tree_class=tree_class)
-        return trees
+            if ((isinstance(edge, FeatureTreeEdge)) and
+                (edge.lhs()[TYPE] == start[TYPE]) and
+                (unify(edge.lhs(), start, rename_vars=True)) 
+                ):
+                for tree in self.trees(edge, complete=True, tree_class=tree_class):
+                    yield tree
 
 
 #////////////////////////////////////////////////////////////
@@ -547,7 +547,7 @@ def demo(print_times=True, print_grammar=True,
     t = time.clock()
     cp = parser(grammar, trace=trace)
     chart = cp.chart_parse(tokens)
-    trees = chart.parses(grammar.start())
+    trees = list(chart.parses(grammar.start()))
     if print_times:
         print("Time: %s" % (time.clock() - t))
     if print_trees:

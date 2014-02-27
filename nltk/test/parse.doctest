@@ -448,7 +448,7 @@ Bottom-up parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     7661
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Bottom-up Left-corner parsing.
@@ -457,7 +457,7 @@ Bottom-up Left-corner parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     4986
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Left-corner parsing with bottom-up filter.
@@ -466,7 +466,7 @@ Left-corner parsing with bottom-up filter.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     1342
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Top-down parsing.
@@ -475,7 +475,7 @@ Top-down parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     28352
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Incremental Bottom-up parsing.
@@ -484,7 +484,7 @@ Incremental Bottom-up parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     7661
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Incremental Bottom-up Left-corner parsing.
@@ -493,7 +493,7 @@ Incremental Bottom-up Left-corner parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     4986
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Incremental Left-corner parsing with bottom-up filter.
@@ -502,7 +502,7 @@ Incremental Left-corner parsing with bottom-up filter.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     1342
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Incremental Top-down parsing.
@@ -511,7 +511,7 @@ Incremental Top-down parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     28352
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Earley parsing. This is similar to the incremental top-down algorithm.
@@ -520,7 +520,7 @@ Earley parsing. This is similar to the incremental top-down algorithm.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     28352
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 

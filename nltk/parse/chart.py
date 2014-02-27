@@ -37,6 +37,7 @@ defines three chart parsers:
 """
 from __future__ import print_function, division, unicode_literals
 
+import itertools
 import re
 import warnings
 
@@ -621,17 +622,16 @@ class Chart(object):
 
     def parses(self, root, tree_class=Tree):
         """
-        Return a list of the complete tree structures that span
+        Return an iterator of the complete tree structures that span
         the entire chart, and whose root node is ``root``.
         """
-        trees = []
         for edge in self.select(start=0, end=self._num_leaves, lhs=root):
-            trees += self.trees(edge, tree_class=tree_class, complete=True)
-        return trees
+            for tree in self.trees(edge, tree_class=tree_class, complete=True):
+                yield tree
 
     def trees(self, edge, tree_class=Tree, complete=False):
         """
-        Return a list of the tree structures that are associated
+        Return an iterator of the tree structures that are associated
         with ``edge``.
 
         If ``edge`` is incomplete, then the unexpanded children will be
@@ -644,7 +644,7 @@ class Chart(object):
             both trees.  If you need to eliminate this subtree
             sharing, then create a deep copy of each tree.
         """
-        return self._trees(edge, complete, memo={}, tree_class=tree_class)
+        return iter(self._trees(edge, complete, memo={}, tree_class=tree_class))
 
     def _trees(self, edge, complete, memo, tree_class):
         """
@@ -658,25 +658,24 @@ class Chart(object):
         if edge in memo:
             return memo[edge]
 
-        trees = []
-
         # when we're reading trees off the chart, don't use incomplete edges
         if complete and edge.is_incomplete():
-            return trees
+            return []
+
+        # Leaf edges.
+        if isinstance(edge, LeafEdge):
+            leaf = self._tokens[edge.start()]
+            memo[edge] = [leaf]
+            return [leaf]
 
         # Until we're done computing the trees for edge, set
         # memo[edge] to be empty.  This has the effect of filtering
         # out any cyclic trees (i.e., trees that contain themselves as
         # descendants), because if we reach this edge via a cycle,
-        # then it will appear that the edge doesn't generate any
-        # trees.
+        # then it will appear that the edge doesn't generate any trees.
         memo[edge] = []
-
-        # Leaf edges.
-        if isinstance(edge, LeafEdge):
-            leaf = self._tokens[edge.start()]
-            memo[edge] = leaf
-            return [leaf]
+        trees = []
+        lhs = edge.lhs().symbol()
 
         # Each child pointer list can be used to form trees.
         for cpl in self.child_pointer_lists(edge):
@@ -687,8 +686,7 @@ class Chart(object):
                              for cp in cpl]
 
             # For each combination of children, add a tree.
-            for children in self._choose_children(child_choices):
-                lhs = edge.lhs().symbol()
+            for children in itertools.product(*child_choices):
                 trees.append(tree_class(lhs, children))
 
         # If the edge is incomplete, then extend it with "partial trees":
@@ -703,31 +701,6 @@ class Chart(object):
 
         # Return the list of trees.
         return trees
-
-    def _choose_children(self, child_choices):
-        """
-        A helper function for ``_trees`` that finds the possible sets
-        of subtrees for a new tree.
-
-        :param child_choices: A list that specifies the options for
-            each child.  In particular, ``child_choices[i]`` is a list of
-            tokens and subtrees that can be used as the ``i``th child.
-        """
-        children_lists = [[]]
-        for child_choice in child_choices:
-            if hasattr(child_choice, '__iter__') and \
-                    not isinstance(child_choice, compat.string_types):
-                # Only iterate over the child trees
-                # if child_choice is iterable and NOT a string
-                children_lists = [child_list+[child]
-                                  for child in child_choice
-                                  for child_list in children_lists]
-            else:
-                # If child_choice is a string (or non-iterable)
-                # then it is a leaf
-                children_lists = [child_list+[child_choice]
-                                  for child_list in children_lists]
-        return children_lists
 
     def child_pointer_lists(self, edge):
         """
@@ -1374,8 +1347,7 @@ class ChartParser(ParserI):
 
     def parse(self, tokens, tree_class=Tree):
         chart = self.chart_parse(tokens)
-        parses = chart.parses(self._grammar.start(), tree_class=tree_class)
-        return iter(parses)
+        return chart.parses(self._grammar.start(), tree_class=tree_class)
 
 class TopDownChartParser(ChartParser):
     """
@@ -1567,8 +1539,8 @@ class SteppingChartParser(ChartParser):
         for e in self.step():
             if e is None: break
 
-        # Return a list of complete parses.
-        return iter(self.parses(tree_class=tree_class))
+        # Return an iterator of complete parses.
+        return self.parses(tree_class=tree_class)
 
 ########################################################################
 ##  Demo Code
@@ -1656,7 +1628,7 @@ def demo(choice=None,
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
         chart = cp.chart_parse(tokens)
-        parses = chart.parses(grammar.start())
+        parses = list(chart.parses(grammar.start()))
         times[strategies[strategy][0]] = time.time()-t
         print("Nr edges in chart:", len(chart.edges()))
         if numparses:
@@ -1686,11 +1658,11 @@ def demo(choice=None,
         times['Stepping'] = time.time()-t
         print("Nr edges in chart:", len(cp.chart().edges()))
         if numparses:
-            assert len(cp.parses())==numparses, 'Not all parses found'
+            assert len(list(cp.parses()))==numparses, 'Not all parses found'
         if print_trees:
             for tree in cp.parses(): print(tree)
         else:
-            print("Nr trees:", len(cp.parses()))
+            print("Nr trees:", len(list(cp.parses())))
         print()
 
     # Print the times of all parsers:

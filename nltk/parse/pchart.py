@@ -235,7 +235,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             queue.extend(fr.apply(chart, grammar, edge))
 
         # Get a list of complete parses.
-        parses = chart.parses(grammar.start(), ProbabilisticTree)
+        parses = list(chart.parses(grammar.start(), ProbabilisticTree))
 
         # Assign probabilities to the trees.
         prod_probs = {}
