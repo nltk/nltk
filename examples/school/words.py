@@ -1,4 +1,4 @@
-from __future__ import print_statement
+from __future__ import print_function
 
 import re, random
 
@@ -101,5 +101,5 @@ def generate(model, num=100):
         prev1 = word
     print()
 
-        
+
 

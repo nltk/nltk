@@ -1,9 +1,9 @@
 # Natural Language Toolkit: String Category Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -22,8 +22,8 @@ NUM:date When did Hawaii become a state ?
 import os
 
 from nltk import compat
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 # [xx] Should the order of the tuple be reversed -- in most other places
 # in nltk, we use the form (data, tag) -- e.g., tagged words and

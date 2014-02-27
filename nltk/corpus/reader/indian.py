@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Indian Language POS-Tagged Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -21,10 +21,10 @@ Contents:
 import codecs
 
 from nltk import compat
-from nltk.tag.util import str2tuple
+from nltk.tag import str2tuple, map_tag
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class IndianCorpusReader(CorpusReader):
     """
@@ -35,9 +35,9 @@ class IndianCorpusReader(CorpusReader):
                                         False, False)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def tagged_words(self, fileids=None, simplify_tags=False):
-        if simplify_tags:
-            tag_mapping_function = self._tag_mapping_function
+    def tagged_words(self, fileids=None, tagset=None):
+        if tagset and tagset != self._tagset:
+            tag_mapping_function = lambda t: map_tag(self._tagset, tagset, t)
         else:
             tag_mapping_function = None
         return concat([IndianCorpusView(fileid, enc,
@@ -49,9 +49,9 @@ class IndianCorpusReader(CorpusReader):
                                         False, True)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def tagged_sents(self, fileids=None, simplify_tags=False):
-        if simplify_tags:
-            tag_mapping_function = self._tag_mapping_function
+    def tagged_sents(self, fileids=None, tagset=None):
+        if tagset and tagset != self._tagset:
+            tag_mapping_function = lambda t: map_tag(self._tagset, tagset, t)
         else:
             tag_mapping_function = None
         return concat([IndianCorpusView(fileid, enc,

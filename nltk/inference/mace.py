@@ -3,7 +3,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -63,29 +63,32 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         for line in valuation_standard_format.splitlines(False):
             l = line.strip()
 
-            if l.startswith('interpretation'):
+            if l.startswith(b'interpretation'):
                 # find the number of entities in the model
-                num_entities = int(l[l.index('(')+1:l.index(',')].strip())
+                num_entities = int(l[l.index(b'(')+1:l.index(b',')].strip())
 
-            elif l.startswith('function') and l.find('_') == -1:
+            elif l.startswith(b'function') and l.find(b'_') == -1:
                 # replace the integer identifier with a corresponding alphabetic character
-                name = l[l.index('(')+1:l.index(',')].strip()
+                name = l[l.index(b'(')+1:l.index(b',')].strip()
+                name = name.decode("utf8")
                 if is_indvar(name):
                     name = name.upper()
-                value = int(l[l.index('[')+1:l.index(']')].strip())
+                value = int(l[l.index(b'[')+1:l.index(b']')].strip())
                 val.append((name, MaceCommand._make_model_var(value)))
 
-            elif l.startswith('relation'):
-                l = l[l.index('(')+1:]
-                if '(' in l:
+            elif l.startswith(b'relation'):
+                l = l[l.index(b'(')+1:]
+                if b'(' in l:
                     #relation is not nullary
-                    name = l[:l.index('(')].strip()
-                    values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
+                    name = l[:l.index(b'(')].strip()
+                    name = name.decode("utf8")
+                    values = [int(v.strip()) for v in l[l.index(b'[')+1:l.index(b']')].split(b',')]
                     val.append((name, MaceCommand._make_relation_set(num_entities, values)))
                 else:
                     #relation is nullary
-                    name = l[:l.index(',')].strip()
-                    value = int(l[l.index('[')+1:l.index(']')].strip())
+                    name = l[:l.index(b',')].strip()
+                    name = name.decode("utf8")
+                    value = int(l[l.index(b'[')+1:l.index(b']')].strip())
                     val.append((name, value == 1))
 
         return Valuation(val)
@@ -110,9 +113,9 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         if len(values) == 1:
             return []
         else:
-            sublist_size = len(values) / num_entities
-            sublist_start = position / sublist_size
-            sublist_position = position % sublist_size
+            sublist_size = len(values) // num_entities
+            sublist_start = position // sublist_size
+            sublist_position = int(position % sublist_size)
 
             sublist = values[sublist_start*sublist_size:(sublist_start+1)*sublist_size]
             return [MaceCommand._make_model_var(sublist_start)] + \
@@ -130,7 +133,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         letter = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
                   'o','p','q','r','s','t','u','v','w','x','y','z'][value]
-        num = int(value) / 26
+        num = value // 26
         return (letter + str(num) if num > 0 else letter)
 
     def _decorate_model(self, valuation_str, format):
@@ -242,7 +245,7 @@ def test_model_found(arguments):
     for (goal, assumptions) in arguments:
         g = lp.parse(goal)
         alist = [lp.parse(a) for a in assumptions]
-        m = MaceCommand(g, assumptions=alist, end_size=50)
+        m = MaceCommand(g, assumptions=alist, max_models=50)
         found = m.build_model()
         for a in alist:
             print('   %s' % a)

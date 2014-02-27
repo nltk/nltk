@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Recursive Descent Parser
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
 
@@ -215,7 +215,7 @@ class RecursiveDescentParser(ParserI):
         parses = []
         for production in productions:
             lhs = production.lhs().symbol()
-            if lhs == tree[frontier[0]].node:
+            if lhs == tree[frontier[0]].label():
                 subtree = self._production_to_tree(production)
                 if frontier[0] == ():
                     newtree = subtree
@@ -280,7 +280,7 @@ class RecursiveDescentParser(ParserI):
         if treeloc == (): print("*", end=' ')
         if isinstance(tree, Tree):
             if len(tree) == 0:
-                print(unicode_repr(Nonterminal(tree.node)), end=' ')
+                print(unicode_repr(Nonterminal(tree.label())), end=' ')
             for i in range(len(tree)):
                 if treeloc is not None and i == treeloc[0]:
                     self._trace_fringe(tree[i], treeloc[1:])
@@ -549,7 +549,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
             return []
 
         return [p for p in self._grammar.productions()
-                if p.lhs().symbol() == frontier_child.node]
+                if p.lhs().symbol() == frontier_child.label()]
 
     def untried_expandable_productions(self):
         """

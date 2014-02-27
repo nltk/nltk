@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Decision Tree Classifiers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -178,7 +178,7 @@ class DecisionTreeClassifier(ClassifierI):
         freqs = defaultdict(FreqDist) # freq(label|value)
         for featureset, label in labeled_featuresets:
             feature_value = featureset.get(feature_name)
-            freqs[feature_value].inc(label)
+            freqs[feature_value][label] += 1
 
         decisions = dict((val, DecisionTreeClassifier(freqs[val].max()))
                          for val in freqs)
@@ -238,9 +238,9 @@ class DecisionTreeClassifier(ClassifierI):
         neg_fdist = FreqDist()
         for featureset, label in labeled_featuresets:
             if featureset.get(feature_name) == feature_value:
-                pos_fdist.inc(label)
+                pos_fdist[label] += 1
             else:
-                neg_fdist.inc(label)
+                neg_fdist[label] += 1
 
 
         decisions = {}

@@ -1,8 +1,8 @@
 # Natural Language Toolkit: RTE Classifier
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -19,7 +19,7 @@ TO DO: add lemmatization
 from __future__ import print_function
 
 import nltk
-from .util import accuracy
+from nltk.classify.util import accuracy
 
 def ne(token):
     """

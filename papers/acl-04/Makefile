@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Technical report Makefile
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 ##############################################

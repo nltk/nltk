@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =======
@@ -194,7 +194,7 @@ to SQL:
     Det[SEM='SELECT'] -> 'Which' | 'What'
     N[SEM='City FROM city_table'] -> 'cities'
     IV[SEM=''] -> 'are'
-    A -> 'located'
+    A[SEM=''] -> 'located'
     P[SEM=''] -> 'in'
 
 Given this grammar, we can express, and then execute, queries in English.
@@ -202,7 +202,7 @@ Given this grammar, we can express, and then execute, queries in English.
     >>> cp = nltk.parse.load_parser('grammars/book_grammars/sql0.fcfg')
     >>> query = 'What cities are in China'
     >>> trees = cp.nbest_parse(query.split())
-    >>> answer = trees[0].node['SEM']
+    >>> answer = trees[0].label()['SEM']
     >>> q = " ".join(answer)
     >>> print(q)
     SELECT City FROM city_table WHERE   Country="china"

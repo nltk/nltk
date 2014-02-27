@@ -3,8 +3,8 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -84,12 +84,12 @@ class Boxer(object):
         :return: ``drt.AbstractDrs``
         """
         discourse_ids = ([discourse_id] if discourse_id is not None else None)
-        d, = self.batch_interpret_multisentence([[input]], discourse_ids, question, verbose)
+        d, = self.interpret_multi_sents([[input]], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
         return d
 
-    def interpret_multisentence(self, input, discourse_id=None, question=False, verbose=False):
+    def interpret_multi(self, input, discourse_id=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
 
@@ -99,12 +99,12 @@ class Boxer(object):
         :return: ``drt.AbstractDrs``
         """
         discourse_ids = ([discourse_id] if discourse_id is not None else None)
-        d, = self.batch_interpret_multisentence([input], discourse_ids, question, verbose)
+        d, = self.interpret_multi_sents([input], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
         return d
 
-    def batch_interpret(self, inputs, discourse_ids=None, question=False, verbose=False):
+    def interpret_sents(self, inputs, discourse_ids=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
 
@@ -113,9 +113,9 @@ class Boxer(object):
         :param discourse_ids: list of str Identifiers to be inserted to each occurrence-indexed predicate.
         :return: list of ``drt.AbstractDrs``
         """
-        return self.batch_interpret_multisentence([[input] for input in inputs], discourse_ids, question, verbose)
+        return self.interpret_multi_sents([[input] for input in inputs], discourse_ids, question, verbose)
 
-    def batch_interpret_multisentence(self, inputs, discourse_ids=None, question=False, verbose=False):
+    def interpret_multi_sents(self, inputs, discourse_ids=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
 
@@ -238,20 +238,20 @@ class Boxer(object):
                 line = lines[i]
                 assert line.startswith('sem(%s,' % drs_id)
                 assert line.endswith(').')
-                
+
                 search_start = len('sem(%s,[' % drs_id)
                 brace_count = 1
                 drs_start = -1
                 for j,c in enumerate(line[search_start:]):
-                    if(c == '['): 
+                    if(c == '['):
                         brace_count += 1
-                    if(c == ']'): 
+                    if(c == ']'):
                         brace_count -= 1
-                        if(brace_count == 0): 
+                        if(brace_count == 0):
                             drs_start = search_start + j + 2
                             break
                 assert drs_start > -1
-                    
+
                 drs_input = line[drs_start:-2].strip()
                 parsed = self._parse_drs(drs_input, discourse_id, use_disc_id)
                 drs_dict[discourse_id] = self._boxer_drs_interpreter.interpret(parsed)
@@ -1215,7 +1215,7 @@ if __name__ == '__main__':
         opts.error("incorrect number of arguments")
 
     interpreter = NltkDrtBoxerDrsInterpreter(occur_index=options.occur_index)
-    drs = Boxer(interpreter).interpret_multisentence(args[0].split(r'\n'), question=options.question, verbose=options.verbose)
+    drs = Boxer(interpreter).interpret_multi(args[0].split(r'\n'), question=options.question, verbose=options.verbose)
     if drs is None:
         print(None)
     else:

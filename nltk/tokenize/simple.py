@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Simple Tokenizers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -71,7 +71,7 @@ class CharTokenizer(StringTokenizer):
         return list(s)
 
     def span_tokenize(self, s):
-        for i, j in enumerate(range(1, len(s+1))):
+        for i, j in enumerate(range(1, len(s) + 1)):
             yield i, j
 
 class LineTokenizer(TokenizerI):

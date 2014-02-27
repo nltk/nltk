@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Collocations and Association Measures
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -35,7 +35,7 @@ import itertools as _itertools
 from operator import itemgetter as _itemgetter
 
 from nltk.probability import FreqDist
-from nltk.util import ingrams
+from nltk.util import ngrams
 from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures
 from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 
@@ -70,7 +70,8 @@ class AbstractCollocationFinder(object):
         """Generic filter removes ngrams from the frequency distribution
         if the function returns True when passed an ngram tuple.
         """
-        for ngram, freq in self.ngram_fd.items():
+        items = list(self.ngram_fd.items())
+        for ngram, freq in items:
             if fn(ngram, freq):
                 try:
                     del self.ngram_fd[ngram]
@@ -149,17 +150,17 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         if window_size < 2:
             raise ValueError("Specify window_size at least 2")
 
-        for window in ingrams(words, window_size, pad_right=True):
+        for window in ngrams(words, window_size, pad_right=True):
             w1 = window[0]
-            wfd.inc(w1)
+            wfd[w1] += 1
             for w2 in window[1:]:
                 if w2 is not None:
-                    bfd.inc((w1, w2))
+                    bfd[(w1, w2)] += 1
         return cls(wfd, bfd, window_size=window_size)
 
     def score_ngram(self, score_fn, w1, w2):
         """Returns the score for a given bigram using the given scoring
-        function.  Following Church and Hanks (1990), counts are scaled by 
+        function.  Following Church and Hanks (1990), counts are scaled by
         a factor of 1/(window_size - 1).
         """
         n_all = self.word_fd.N()
@@ -172,7 +173,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
 
 class TrigramCollocationFinder(AbstractCollocationFinder):
-    """A tool for the finding and ranking of bigram collocations or other
+    """A tool for the finding and ranking of trigram collocations or other
     association measures. It is often useful to use from_words() rather than
     constructing an instance directly.
     """
@@ -196,15 +197,15 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         bfd = FreqDist()
         tfd = FreqDist()
 
-        for w1, w2, w3 in ingrams(words, 3, pad_right=True):
-            wfd.inc(w1)
+        for w1, w2, w3 in ngrams(words, 3, pad_right=True):
+            wfd[w1] += 1
             if w2 is None:
                 continue
-            bfd.inc((w1, w2))
+            bfd[(w1, w2)] += 1
             if w3 is None:
                 continue
-            wildfd.inc((w1, w3))
-            tfd.inc((w1, w2, w3))
+            wildfd[(w1, w3)] += 1
+            tfd[(w1, w2, w3)] += 1
         return cls(wfd, bfd, wildfd, tfd)
 
     def bigram_finder(self):

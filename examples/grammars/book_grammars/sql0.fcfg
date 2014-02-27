@@ -25,7 +25,7 @@ Det[SEM='SELECT'] -> 'Which' | 'What'
 N[SEM='City FROM city_table'] -> 'cities'
 
 IV[SEM=''] -> 'are'
-A -> 'located'
+A[SEM=''] -> 'located'
 P[SEM=''] -> 'in'
 
 

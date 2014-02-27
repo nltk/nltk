@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Teen Chatbot
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Selina Dennis <sjmd@csse.unimelb.edu.au>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -12,7 +12,7 @@ All spelling mistakes and flawed grammar are intentional.
 """
 from __future__ import print_function
 
-from .util import Chat
+from nltk.chat.util import Chat
 
 reflections = {
     "am"     : "r",

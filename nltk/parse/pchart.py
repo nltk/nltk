@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Probabilistic Chart Parsers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -253,11 +253,11 @@ class BottomUpProbabilisticChartParser(ParserI):
         if tree.prob() is not None: return
 
         # Get the prob of the CFG production.
-        lhs = Nonterminal(tree.node)
+        lhs = Nonterminal(tree.label())
         rhs = []
         for child in tree:
             if isinstance(child, Tree):
-                rhs.append(Nonterminal(child.node))
+                rhs.append(Nonterminal(child.label()))
             else:
                 rhs.append(child)
         prob = prod_probs[lhs, tuple(rhs)]

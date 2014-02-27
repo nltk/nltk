@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Viterbi Probabilistic Parser
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
 
@@ -58,7 +58,7 @@ class ViterbiParser(ParserI):
     |   For start in 1...len(text)-width:
     |     For prod in grammar.productions:
     |       For each sequence of subtrees [t[1], t[2], ..., t[n]] in MLC,
-    |         where t[i].node==prod.rhs[i],
+    |         where t[i].label()==prod.rhs[i],
     |         and the sequence covers [start:start+width]:
     |           old_p = MLC[start, start+width, prod.lhs]
     |           new_p = P(t[1])P(t[1])...P(t[n])P(prod)

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===============================
@@ -19,7 +19,7 @@ This method generally returns a single result, but in some cases, more than one
 valid LCH is possible:
 
     >>> wn.synset('body.n.09').lowest_common_hypernyms(wn.synset('sidereal_day.n.01'))
-    [Synset('measure.n.02'), Synset('attribute.n.02')]
+    [Synset('attribute.n.02'), Synset('measure.n.02')]
 
 In some cases, lowest_common_hypernyms() can return one of the synsets which was 
 passed to it as an argument:
@@ -43,11 +43,11 @@ behavior:
     >>> wn.synset('woman.n.01').lowest_common_hypernyms(wn.synset('girlfriend.n.02'))
     [Synset('woman.n.01')]
     >>> wn.synset('woman.n.01').lowest_common_hypernyms(wn.synset('girlfriend.n.02'), use_min_depth=True)
-    [Synset('woman.n.01'), Synset('organism.n.01')]
+    [Synset('organism.n.01'), Synset('woman.n.01')]
 
 In the general case, however, they tend to return the same results:
 
     >>> wn.synset('body.n.09').lowest_common_hypernyms(wn.synset('sidereal_day.n.01'))
-    [Synset('measure.n.02'), Synset('attribute.n.02')]
+    [Synset('attribute.n.02'), Synset('measure.n.02')]
     >>> wn.synset('body.n.09').lowest_common_hypernyms(wn.synset('sidereal_day.n.01'), use_min_depth=True)
-    [Synset('measure.n.02'), Synset('attribute.n.02')]
+    [Synset('attribute.n.02'), Synset('measure.n.02')]

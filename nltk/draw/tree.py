@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Graphical Representations for Trees
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -56,12 +56,12 @@ class TreeSegmentWidget(CanvasWidget):
         branch downwards).
       - ``draggable``: whether the widget can be dragged by the user.
     """
-    def __init__(self, canvas, node, subtrees, **attribs):
+    def __init__(self, canvas, label, subtrees, **attribs):
         """
         :type node:
         :type subtrees: list(CanvasWidgetI)
         """
-        self._node = node
+        self._label = label
         self._subtrees = subtrees
 
         # Attributes
@@ -77,8 +77,8 @@ class TreeSegmentWidget(CanvasWidget):
         self._polygon = canvas.create_polygon(0,0, fill='', state='hidden',
                                               outline='#006060')
 
-        # Register child widgets (node + subtrees)
-        self._add_child_widget(node)
+        # Register child widgets (label + subtrees)
+        self._add_child_widget(label)
         for subtree in subtrees:
             self._add_child_widget(subtree)
 
@@ -117,7 +117,7 @@ class TreeSegmentWidget(CanvasWidget):
         elif attr in ('xspace', 'yspace'):
             if attr == 'xspace': self._xspace = value
             elif attr == 'yspace': self._yspace = value
-            self.update(self._node)
+            self.update(self._label)
         elif attr == 'ordered':
             self._ordered = value
         else:
@@ -142,20 +142,20 @@ class TreeSegmentWidget(CanvasWidget):
         else:
             return CanvasWidget.__getitem__(self, attr)
 
-    def node(self):
-        return self._node
+    def label(self):
+        return self._label
 
     def subtrees(self):
         return self._subtrees[:]
 
-    def set_node(self, node):
+    def set_label(self, label):
         """
-        Set the node to ``node``.
+        Set the node label to ``label``.
         """
-        self._remove_child_widget(self._node)
-        self._add_child_widget(node)
-        self._node = node
-        self.update(self._node)
+        self._remove_child_widget(self._label)
+        self._add_child_widget(label)
+        self._label = label
+        self.update(self._label)
 
     def replace_child(self, oldchild, newchild):
         """
@@ -172,13 +172,13 @@ class TreeSegmentWidget(CanvasWidget):
         del self._subtrees[index]
         self._remove_child_widget(child)
         self.canvas().delete(self._lines.pop())
-        self.update(self._node)
+        self.update(self._label)
 
     def insert_child(self, index, child):
         self._subtrees.insert(index, child)
         self._add_child_widget(child)
         self._lines.append(canvas.create_line(0,0,0,0, fill='#006060'))
-        self.update(self._node)
+        self.update(self._label)
 
     # but.. lines???
 
@@ -190,7 +190,7 @@ class TreeSegmentWidget(CanvasWidget):
 
     def _subtree_top(self, child):
         if isinstance(child, TreeSegmentWidget):
-            bbox = child.node().bbox()
+            bbox = child.label().bbox()
         else:
             bbox = child.bbox()
         if self._horizontal:
@@ -199,7 +199,7 @@ class TreeSegmentWidget(CanvasWidget):
             return ((bbox[0]+bbox[2])/2.0, bbox[1])
 
     def _node_bottom(self):
-        bbox = self._node.bbox()
+        bbox = self._label.bbox()
         if self._horizontal:
             return (bbox[2], (bbox[1]+bbox[3])/2.0)
         else:
@@ -207,10 +207,10 @@ class TreeSegmentWidget(CanvasWidget):
 
     def _update(self, child):
         if len(self._subtrees) == 0: return
-        if self._node.bbox() is None: return # [XX] ???
+        if self._label.bbox() is None: return # [XX] ???
 
         # Which lines need to be redrawn?
-        if child is self._node: need_update = self._subtrees
+        if child is self._label: need_update = self._subtrees
         else: need_update = [child]
 
         if self._ordered and not self._managing:
@@ -249,7 +249,7 @@ class TreeSegmentWidget(CanvasWidget):
     def _maintain_order_vertical(self, child):
         (left, top, right, bot) = child.bbox()
 
-        if child is self._node:
+        if child is self._label:
             # Check all the leaves
             for subtree in self._subtrees:
                 (x1, y1, x2, y2) = subtree.bbox()
@@ -280,9 +280,9 @@ class TreeSegmentWidget(CanvasWidget):
                     moved.append(self._subtrees[i])
 
             # Check the node
-            (x1, y1, x2, y2) = self._node.bbox()
+            (x1, y1, x2, y2) = self._label.bbox()
             if y2 > top-self._yspace:
-                self._node.move(0, top-self._yspace-y2)
+                self._label.move(0, top-self._yspace-y2)
                 moved = self._subtrees
 
         # Return a list of the nodes we moved
@@ -291,7 +291,7 @@ class TreeSegmentWidget(CanvasWidget):
     def _maintain_order_horizontal(self, child):
         (left, top, right, bot) = child.bbox()
 
-        if child is self._node:
+        if child is self._label:
             # Check all the leaves
             for subtree in self._subtrees:
                 (x1, y1, x2, y2) = subtree.bbox()
@@ -322,9 +322,9 @@ class TreeSegmentWidget(CanvasWidget):
                     moved.append(self._subtrees[i])
 
             # Check the node
-            (x1, y1, x2, y2) = self._node.bbox()
+            (x1, y1, x2, y2) = self._label.bbox()
             if x2 > left-self._xspace:
-                self._node.move(left-self._xspace-x2, 0)
+                self._label.move(left-self._xspace-x2, 0)
                 moved = self._subtrees
 
         # Return a list of the nodes we moved
@@ -388,18 +388,18 @@ class TreeSegmentWidget(CanvasWidget):
         self._managing = False
 
     def __repr__(self):
-        return '[TreeSeg %s: %s]' % (self._node, self._subtrees)
+        return '[TreeSeg %s: %s]' % (self._label, self._subtrees)
 
 def _tree_to_treeseg(canvas, t, make_node, make_leaf,
                      tree_attribs, node_attribs,
                      leaf_attribs, loc_attribs):
     if isinstance(t, Tree):
-        node = make_node(canvas, t.node, **node_attribs)
+        label = make_node(canvas, t.label(), **node_attribs)
         subtrees = [_tree_to_treeseg(canvas, child, make_node, make_leaf,
                                      tree_attribs, node_attribs,
                                      leaf_attribs, loc_attribs)
                     for child in t]
-        return TreeSegmentWidget(canvas, node, subtrees, **tree_attribs)
+        return TreeSegmentWidget(canvas, label, subtrees, **tree_attribs)
     else:
         return make_leaf(canvas, t, **leaf_attribs)
 
@@ -592,7 +592,7 @@ class TreeWidget(CanvasWidget):
         make_node = self._make_node
         make_leaf = self._make_leaf
 
-        node = make_node(canvas, t.node, **self._nodeattribs)
+        node = make_node(canvas, t.label(), **self._nodeattribs)
         self._nodes.append(node)
         leaves = [make_leaf(canvas, l, **self._leafattribs)
                   for l in t.leaves()]
@@ -617,7 +617,7 @@ class TreeWidget(CanvasWidget):
         make_leaf = self._make_leaf
 
         if isinstance(t, Tree):
-            node = make_node(canvas, t.node, **self._nodeattribs)
+            node = make_node(canvas, t.label(), **self._nodeattribs)
             self._nodes.append(node)
             children = t
             subtrees = [self._make_expanded_tree(canvas, children[i], key+(i,))
@@ -735,8 +735,8 @@ class TreeWidget(CanvasWidget):
         # Move the new tree to where the old tree was.  Show it first,
         # so we can find its bounding box.
         new_treeseg.show()
-        (newx, newy) = new_treeseg.node().bbox()[:2]
-        (oldx, oldy) = old_treeseg.node().bbox()[:2]
+        (newx, newy) = new_treeseg.label().bbox()[:2]
+        (oldx, oldy) = old_treeseg.label().bbox()[:2]
         new_treeseg.move(oldx-newx, oldy-newy)
 
         # Hide the old tree
@@ -901,8 +901,8 @@ def demo():
     def color(node):
         node['color'] = '#%04d00' % random.randint(0,9999)
     def color2(treeseg):
-        treeseg.node()['fill'] = '#%06d' % random.randint(0,9999)
-        treeseg.node().child()['color'] = 'white'
+        treeseg.label()['fill'] = '#%06d' % random.randint(0,9999)
+        treeseg.label().child()['color'] = 'white'
 
     tc.bind_click_trees(tc.toggle_collapsed)
     tc2.bind_click_trees(tc2.toggle_collapsed)

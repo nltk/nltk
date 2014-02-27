@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Applications package
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -29,14 +29,14 @@ except ImportError:
     warnings.warn("nltk.app package not loaded "
                   "(please install Tkinter library).")
 else:
-    from .chartparser_app import app as chartparser
-    from .chunkparser_app import app as chunkparser
-    from .collocations_app import app as collocations
-    from .concordance_app import app as concordance
-    from .nemo_app import app as nemo
-    from .rdparser_app import app as rdparser
-    from .srparser_app import app as srparser
-    from .wordnet_app import app as wordnet
+    from nltk.app.chartparser_app import app as chartparser
+    from nltk.app.chunkparser_app import app as chunkparser
+    from nltk.app.collocations_app import app as collocations
+    from nltk.app.concordance_app import app as concordance
+    from nltk.app.nemo_app import app as nemo
+    from nltk.app.rdparser_app import app as rdparser
+    from nltk.app.srparser_app import app as srparser
+    from nltk.app.wordnet_app import app as wordnet
 
     try:
         import pylab
@@ -45,7 +45,7 @@ else:
         warnings.warn("nltk.app.wordfreq not loaded "
                       "(requires the pylab library).")
     else:
-        from .wordfreq_app import app as wordfreq
+        from nltk.app.wordfreq_app import app as wordfreq
 
 # skip doctests from this package
 def setup_module(module):

@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -94,7 +94,7 @@ from nltk.corpus.reader.udhr import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
-from . import bracket_parse
+from nltk.corpus.reader import bracket_parse
 
 __all__ = [
     'CorpusReader', 'CategorizedCorpusReader',

@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Text Segmentation Metrics
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         David Doukhan <david.doukhan@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -211,7 +211,7 @@ def pk(ref, hyp, k=None, boundary='1'):
 
     if k is None:
         k = int(round(len(ref) / (ref.count(boundary) * 2.)))
-    
+
     err = 0
     for i in xrange(len(ref)-k +1):
         r = ref[i:i+k].count(boundary) > 0

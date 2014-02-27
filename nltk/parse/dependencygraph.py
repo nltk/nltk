@@ -1,18 +1,17 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
 """
 Tools for reading and writing dependency trees.
 The input is assumed to be in Malt-TAB format
-(http://w3.msi.vxu.se/~nivre/research/MaltXML.html).
-Currently only reads the first tree in a file.
+(http://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
 from __future__ import print_function, unicode_literals
 
@@ -121,9 +120,11 @@ class DependencyGraph(object):
     def load(file):
         """
         :param file: a file in Malt-TAB format
+        :return: a list of DependencyGraphs
         """
-        with open(file) as f:
-            return DependencyGraph(f.read())
+        with open(file) as infile:
+            return [DependencyGraph(tree_str) for tree_str in
+                                                  infile.read().split('\n\n')]
 
     @staticmethod
     def _normalize(line):

@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Eliza
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
-#          Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+#          Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 # Based on an Eliza implementation by Joe Strout <joe@strout.net>,
@@ -13,7 +13,7 @@
 # computer says back, e.g. "I am" --> "you are"
 
 from __future__ import print_function
-from .util import Chat, reflections
+from nltk.chat.util import Chat, reflections
 
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,

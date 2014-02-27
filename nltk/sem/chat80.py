@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Chat-80 KB Reader
 # See http://www.w3.org/TR/swbp-skos-core-guide/
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -412,8 +412,8 @@ def sql_query(dbname, query):
     :param query: SQL query
     :type rel_name: str
     """
+    import sqlite3
     try:
-        import sqlite3
         path = nltk.data.find(dbname)
         connection =  sqlite3.connect(str(path))
         cur = connection.cursor()
@@ -626,7 +626,8 @@ def label_indivs(valuation, lexicon=False):
     pairs = [(e, e) for e in domain]
     if lexicon:
         lex = make_lex(domain)
-        open("chat_pnames.cfg", mode='w').writelines(lex)
+        with open("chat_pnames.cfg", 'w') as outfile:
+            outfile.writelines(lex)
     # read the pairs into the valuation
     valuation.update(pairs)
     return valuation

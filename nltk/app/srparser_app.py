@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Shift-Reduce Parser Application
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -389,7 +389,7 @@ class ShiftReduceApp(object):
                            'leaf_color': '#006060', 'leaf_font':self._font}
                 widget = tree_to_treesegment(self._canvas, tok,
                                              **attribs)
-                widget.node()['color'] = '#000000'
+                widget.label()['color'] = '#000000'
             else:
                 widget = TextWidget(self._canvas, tok,
                                     color='#000000', font=self._font)
@@ -665,7 +665,7 @@ class ShiftReduceApp(object):
 
         # How far are we moving?
         if isinstance(widgets[0], TreeSegmentWidget):
-            ydist = 15 + widgets[0].node().height()
+            ydist = 15 + widgets[0].label().height()
         else:
             ydist = 15 + widgets[0].height()
 
@@ -686,7 +686,7 @@ class ShiftReduceApp(object):
                 self._cframe.remove_widget(widget)
             tok = self._parser.stack()[-1]
             if not isinstance(tok, Tree): raise ValueError()
-            label = TextWidget(self._canvas, str(tok.node), color='#006060',
+            label = TextWidget(self._canvas, str(tok.label()), color='#006060',
                                font=self._boldfont)
             widget = TreeSegmentWidget(self._canvas, label, widgets,
                                        width=2)
@@ -748,7 +748,7 @@ class ShiftReduceApp(object):
             rhslen = len(self._productions[index].rhs())
             for stackwidget in self._stackwidgets[-rhslen:]:
                 if isinstance(stackwidget, TreeSegmentWidget):
-                    stackwidget.node()['color'] = '#00a000'
+                    stackwidget.label()['color'] = '#00a000'
                 else:
                     stackwidget['color'] = '#00a000'
 
@@ -761,7 +761,7 @@ class ShiftReduceApp(object):
         self._hover = -1
         for stackwidget in self._stackwidgets:
             if isinstance(stackwidget, TreeSegmentWidget):
-                stackwidget.node()['color'] = 'black'
+                stackwidget.label()['color'] = 'black'
             else:
                 stackwidget['color'] = 'black'
 

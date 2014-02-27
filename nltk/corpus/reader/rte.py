@@ -1,8 +1,8 @@
 # Natural Language Toolkit: RTE Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author:  Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -34,9 +34,9 @@ challenge number and 'n' is the pair ID.
 """
 from __future__ import unicode_literals
 from nltk import compat
-from .util import *
-from .api import *
-from .xmldocs import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.xmldocs import *
 
 
 def norm(value_string):

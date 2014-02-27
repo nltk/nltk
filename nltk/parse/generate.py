@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Generating from a CFG
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 from __future__ import print_function
@@ -13,33 +13,28 @@ import itertools
 import sys
 from nltk.grammar import Nonterminal, parse_cfg
 
+
 def generate(grammar, start=None, depth=None, n=None):
-    """
-    Generates a list of sentences from a CFG.
-
-    :param grammar: The Grammar used to generate sentences.
-    :param start: The Nonterminal from which to start generate sentences.
-    :param depth: The maximal depth of the generated tree.
-    :param n: The maximum number of sentences to return.
-    :return: A list of lists of terminal tokens.
-    """
-    sentences = generate_iter(grammar, start, depth)
-    return list(itertools.islice(sentences, n))
-
-def generate_iter(grammar, start=None, depth=None):
     """
     Generates an iterator of all sentences from a CFG.
 
     :param grammar: The Grammar used to generate sentences.
     :param start: The Nonterminal from which to start generate sentences.
     :param depth: The maximal depth of the generated tree.
+    :param n: The maximum number of sentences to return.
     :return: An iterator of lists of terminal tokens.
     """
     if not start:
         start = grammar.start()
     if depth is None:
         depth = sys.maxsize
-    return _generate_all(grammar, [start], depth)
+
+    iter = _generate_all(grammar, [start], depth)
+
+    if n:
+        iter = itertools.islice(iter, n)
+
+    return iter
 
 def _generate_all(grammar, items, depth):
     if items:
@@ -59,7 +54,7 @@ def _generate_one(grammar, item, depth):
             yield [item]
 
 demo_grammar = """
-  S -> NP VP 
+  S -> NP VP
   NP -> Det N
   PP -> P NP
   VP -> 'slept' | 'saw' NP | 'walked' PP

@@ -1,9 +1,9 @@
 # Natural Language Toolkit: WordNet Browser Application
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
 #         Paul Bone <pbone@students.csse.unimelb.edu.au>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -50,6 +50,7 @@ from __future__ import print_function
 from sys import path
 
 import os
+import sys
 from sys import argv
 from collections import defaultdict
 import webbrowser
@@ -117,7 +118,8 @@ class MyServerHandler(BaseHTTPRequestHandler):
             if usp == 'NLTK Wordnet Browser Database Info.html':
                 word = '* Database Info *'
                 if os.path.isfile(usp):
-                    page = open(usp).read()
+                    with open(usp, 'r') as infile:
+                        page = infile.read()
                 else:
                     page = (html_header % word) + \
                         '<p>The database info file:'\
@@ -228,6 +230,10 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
 
     # Compute URL and start web browser
     url = 'http://localhost:' + str(port)
+
+    server_ready = None
+    browser_thread = None
+
     if runBrowser:
         server_ready = threading.Event()
         browser_thread = startBrowser(url, server_ready)
@@ -247,6 +253,9 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
 
     if runBrowser:
         browser_thread.join()
+
+    if logfile:
+        logfile.close()
 
 
 def startBrowser(url, server_ready):
@@ -355,7 +364,7 @@ def get_relations_data(word, synset):
     Get synset relations data for a synset.  Note that this doesn't
     yet support things such as full hyponym vs direct hyponym.
     """
-    if synset.pos == wn.NOUN:
+    if synset.pos() == wn.NOUN:
         return ((HYPONYM, 'Hyponyms',
                    synset.hyponyms()),
                 (INSTANCE_HYPONYM , 'Instance hyponyms',
@@ -386,7 +395,7 @@ def get_relations_data(word, synset):
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
-    elif synset.pos == wn.VERB:
+    elif synset.pos() == wn.VERB:
         return ((ANTONYM, 'Antonym',
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (HYPONYM, 'Hyponym',
@@ -405,7 +414,7 @@ def get_relations_data(word, synset):
                    synset.verb_groups()),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
                    lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
-    elif synset.pos == wn.ADJ or synset.pos == wn.ADJ_SAT:
+    elif synset.pos() == wn.ADJ or synset.pos == wn.ADJ_SAT:
         return ((ANTONYM, 'Antonym',
                    lemma_property(word, synset, lambda l: l.antonyms())),
                 (SIMILAR, 'Similar to',
@@ -417,14 +426,14 @@ def get_relations_data(word, synset):
                    synset.attributes()),
                 (ALSO_SEE, 'Also see',
                    synset.also_sees()))
-    elif synset.pos == wn.ADV:
+    elif synset.pos() == wn.ADV:
         # This is weird. adverbs such as 'quick' and 'fast' don't seem
         # to have antonyms returned by the corpus.a
         return ((ANTONYM, 'Antonym',
                    lemma_property(word, synset, lambda l: l.antonyms())),)
                 # Derived from adjective - not supported by corpus
     else:
-        raise TypeError("Unhandles synset POS type: " + str(synset.pos))
+        raise TypeError("Unhandles synset POS type: " + str(synset.pos()))
 
 
 html_header = '''
@@ -506,7 +515,7 @@ full_hyponym_cont_text = \
 def _get_synset(synset_key):
     """
     The synset key is the unique name of the synset, this can be
-    retrived via synset.name
+    retrived via synset.name()
     """
     return wn.synset(synset_key)
 
@@ -528,13 +537,13 @@ def _collect_one_synset(word, synset, synset_relations):
         raise NotImplementedError("word not supported by _collect_one_synset")
 
     typ = 'S'
-    pos_tuple = _pos_match((synset.pos, None, None))
-    assert pos_tuple is not None, "pos_tuple is null: synset.pos: %s" % synset.pos
+    pos_tuple = _pos_match((synset.pos(), None, None))
+    assert pos_tuple is not None, "pos_tuple is null: synset.pos(): %s" % synset.pos()
     descr = pos_tuple[2]
     ref = copy.deepcopy(Reference(word, synset_relations))
     ref.toggle_synset(synset)
     synset_label = typ + ";"
-    if synset.name in synset_relations:
+    if synset.name() in synset_relations:
         synset_label = _bold(synset_label)
     s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr)
     def format_lemma(w):
@@ -545,11 +554,11 @@ def _collect_one_synset(word, synset, synset_relations):
             ref = Reference(w)
             return make_lookup_link(ref, w)
 
-    s += ', '.join(format_lemma(l.name) for l in synset.lemmas)
+    s += ', '.join(format_lemma(l.name()) for l in synset.lemmas())
 
     gl = " (%s) <i>%s</i> " % \
-        (synset.definition,
-         "; ".join("\"%s\"" % e for e in synset.examples))
+        (synset.definition(),
+         "; ".join("\"%s\"" % e for e in synset.examples()))
     return s + gl + _synset_relations(word, synset, synset_relations) + '</li>\n'
 
 def _collect_all_synsets(word, pos, synset_relations=dict()):
@@ -576,15 +585,15 @@ def _synset_relations(word, synset, synset_relations):
     :rtype: str
     '''
 
-    if not synset.name in synset_relations:
+    if not synset.name() in synset_relations:
         return ""
     ref = Reference(word, synset_relations)
 
     def relation_html(r):
         if isinstance(r, Synset):
-            return make_lookup_link(Reference(r.lemma_names[0]), r.lemma_names[0])
+            return make_lookup_link(Reference(r.lemma_names()[0]), r.lemma_names()[0])
         elif isinstance(r, Lemma):
-            return relation_html(r.synset)
+            return relation_html(r.synset())
         elif isinstance(r, tuple):
             # It's probably a tuple containing a Synset and a list of
             # similar tuples.  This forms a tree of synsets.
@@ -600,7 +609,7 @@ def _synset_relations(word, synset, synset_relations):
                 copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
                 disp_name)
 
-        if db_name in ref.synset_relations[synset.name]:
+        if db_name in ref.synset_relations[synset.name()]:
              synset_html += '<ul>%s</ul>\n' % \
                 ''.join("<li>%s</li>\n" % relation_html(r) for r in rels)
 
@@ -642,7 +651,16 @@ class Reference(object):
         # pickle representation is much smaller and there is no need
         # to represent the complete object.
         string = pickle.dumps((self.word, self.synset_relations), -1)
-        return base64.urlsafe_b64encode(string)
+        return base64.urlsafe_b64encode(string).decode()
+
+    @staticmethod
+    def decode(string):
+        """
+        Decode a reference encoded with Reference.encode
+        """
+        string = base64.urlsafe_b64decode(string.encode())
+        word, synset_relations = pickle.loads(string)
+        return Reference(word, synset_relations)
 
     def toggle_synset_relation(self, synset, relation):
         """
@@ -652,10 +670,10 @@ class Reference(object):
         This function will throw a KeyError if the synset is currently
         not being displayed.
         """
-        if relation in self.synset_relations[synset.name]:
-            self.synset_relations[synset.name].remove(relation)
+        if relation in self.synset_relations[synset.name()]:
+            self.synset_relations[synset.name()].remove(relation)
         else:
-            self.synset_relations[synset.name].add(relation)
+            self.synset_relations[synset.name()].add(relation)
 
         return self
 
@@ -663,21 +681,13 @@ class Reference(object):
         """
         Toggle displaying of the relation types for the given synset
         """
-        if synset.name in self.synset_relations:
-            del self.synset_relations[synset.name]
+        if synset.name() in self.synset_relations:
+            del self.synset_relations[synset.name()]
         else:
-            self.synset_relations[synset.name] = set()
+            self.synset_relations[synset.name()] = set()
 
         return self
 
-
-def decode_reference(string):
-    """
-    Decode a reference encoded with Reference.encode
-    """
-    string = base64.urlsafe_b64decode(string)
-    word, synset_relations = pickle.loads(string)
-    return Reference(word, synset_relations)
 
 def make_lookup_link(ref, label):
     return '<a href="lookup_%s">%s</a>' % (ref.encode(), label)
@@ -707,7 +717,7 @@ def page_from_href(href):
              word is the new current word
     :rtype: A tuple (str,str)
     '''
-    return page_from_reference(decode_reference(href))
+    return page_from_reference(Reference.decode(href))
 
 def page_from_reference(href):
     '''
@@ -779,11 +789,6 @@ def get_static_page_by_path(path):
     else:
         return "Internal error: Path for static page '%s' is unknown" % path
 
-    f = open(path)
-    page = f.read()
-    f.close()
-    return page
-
 
 def get_static_web_help_page():
     """
@@ -794,9 +799,9 @@ def get_static_web_help_page():
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2013 NLTK Project
+            Copyright (C) 2001-2014 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://www.nltk.org/>
+            URL: <http://nltk.org/>
             For license information, see LICENSE.TXT -->
      <head>
           <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
@@ -865,9 +870,9 @@ def get_static_index_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
 <HTML>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2013 NLTK Project
+            Copyright (C) 2001-2014 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://www.nltk.org/>
+            URL: <http://nltk.org/>
             For license information, see LICENSE.TXT -->
      <HEAD>
          <TITLE>NLTK Wordnet Browser</TITLE>
@@ -899,9 +904,9 @@ def get_static_upper_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-        Copyright (C) 2001-2013 NLTK Project
+        Copyright (C) 2001-2014 NLTK Project
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-        URL: <http://www.nltk.org/>
+        URL: <http://nltk.org/>
         For license information, see LICENSE.TXT -->
     <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />

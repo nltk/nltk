@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =========================================
@@ -60,7 +60,8 @@ currently supported by the data module are described by the dictionary
     cfg     A context free grammar, parsed by nltk.parse_cfg().
     fcfg    A feature CFG, parsed by nltk.parse_fcfg().
     fol     A list of first order logic expressions, parsed by nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.
-    logic   A list of first order logic expressions, parsed by nltk.sem.parse_logic().  Requires an additional logic_parser parameter
+    json    A serialized python object, stored using the json module.
+	logic   A list of first order logic expressions, parsed by nltk.sem.parse_logic().  Requires an additional logic_parser parameter
     pcfg    A probabilistic CFG, parsed by nltk.parse_pcfg().
     pickle  A serialized python object, stored using the pickle module.
     raw     The raw (byte string) contents of a file.
@@ -85,6 +86,7 @@ to format names is specified by `nltk.data.AUTO_FORMATS`:
     .cfg     -> cfg
     .fcfg    -> fcfg
     .fol     -> fol
+	.json    -> json
     .logic   -> logic
     .pcfg    -> pcfg
     .pickle  -> pickle
@@ -288,10 +290,6 @@ Clean up the temp dir:
     ...     os.remove(os.path.join(tempdir, f))
     >>> os.rmdir(tempdir)
 
-.. note:: load(..., format='yaml') is not currently tested, because we
-    do not have any yaml files in our data distribution yet.  We should
-    probably have a trained brill tagger there.
-
 Lazy Loader
 -----------
 A lazy loader is a wrapper object that defers loading a resource until
@@ -348,4 +346,29 @@ provides.
     >>> import os
     >>> os.unlink('testbuf.gz')
 
+JSON Encoding and Decoding
+--------------------------
+JSON serialization is used instead of pickle for some classes.
+
+    >>> from nltk import jsontags
+    >>> from nltk.jsontags import JSONTaggedEncoder, JSONTaggedDecoder, register_tag
+    >>> @jsontags.register_tag
+    ... class JSONSerializable:
+    ...     json_tag = 'JSONSerializable'
+    ...
+    ...     def __init__(self, n):
+    ...         self.n = n
+    ...
+    ...     def encode_json_obj(self):
+    ...         return self.n
+    ...
+    ...     @classmethod
+    ...     def decode_json_obj(cls, obj):
+    ...         n = obj
+    ...         return cls(n)
+    ...
+    >>> JSONTaggedEncoder().encode(JSONSerializable(1))
+    '{"!JSONSerializable": 1}'
+    >>> JSONTaggedDecoder().decode('{"!JSONSerializable": 1}').n
+    1
 

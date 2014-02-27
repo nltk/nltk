@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Brill Tagger
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Authors: Christopher Maloof <cjmaloof@gradient.cis.upenn.edu>
-#          Edward Loper <edloper@gradient.cis.upenn.edu>
+#          Edward Loper <edloper@gmail.com>
 #          Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -72,7 +72,6 @@ from __future__ import print_function, unicode_literals
 
 import bisect        # for binary search through a subset of indices
 import random        # for shuffling WSJ files
-import yaml          # to save and load taggers in files
 import textwrap
 from collections import defaultdict
 
@@ -84,7 +83,7 @@ from nltk.compat import python_2_unicode_compatible
 ## The Brill Tagger
 ######################################################################
 
-class BrillTagger(TaggerI, yaml.YAMLObject):
+class BrillTagger(TaggerI):
     """
     Brill's transformational rule-based tagger.  Brill taggers use an
     initial tagger (such as ``tag.DefaultTagger``) to assign an initial
@@ -99,7 +98,6 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
     ``BrillTaggerTrainer`` or ``FastBrillTaggerTrainer``.
     """
 
-    yaml_tag = '!nltk.BrillTagger'
     def __init__(self, initial_tagger, rules):
         """
         :param initial_tagger: The initial tagger
@@ -145,7 +143,7 @@ class BrillTagger(TaggerI, yaml.YAMLObject):
 ## Brill Rules
 ######################################################################
 
-class BrillRule(yaml.YAMLObject):
+class BrillRule(object):
     """
     An interface for tag transformations on a tagged corpus, as
     performed by brill taggers.  Each transformation finds all tokens
@@ -212,10 +210,13 @@ class BrillRule(yaml.YAMLObject):
         assert False, "Brill rules must define applies()"
 
     # Rules must be comparable and hashable for the algorithm to work
-    def __eq__(self):
+
+    def __eq__(self, other):
         assert False, "Brill rules must be comparable"
-    def __ne__(self):
+
+    def __ne__(self, other):
         assert False, "Brill rules must be comparable"
+
     def __hash__(self):
         assert False, "Brill rules must be hashable"
 
@@ -264,21 +265,6 @@ class ProximateTokensRule(BrillRule):
             if s>e:
                 raise ValueError('Condition %s has an invalid range' %
                                  ((s,e,v),))
-
-    # Make Brill rules look nice in YAML.
-    @classmethod
-    def to_yaml(cls, dumper, data):
-        node = dumper.represent_mapping(cls.yaml_tag, dict(
-            description="%s" % data,
-            conditions=list(list(x) for x in data._conditions),
-            original=data.original_tag,
-            replacement=data.replacement_tag))
-        return node
-    @classmethod
-    def from_yaml(cls, loader, node):
-        map = loader.construct_mapping(node, deep=True)
-        return cls(map['original'], map['replacement'],
-        *(tuple(x) for x in map['conditions']))
 
     @staticmethod
     def extract_property(token):
@@ -336,7 +322,7 @@ class ProximateTokensRule(BrillRule):
         # Cache our hash value (justified by profiling.)
         try:
             return self.__hash
-        except:
+        except AttributeError:
             self.__hash = hash( (self.original_tag, self.replacement_tag,
                                  self._conditions, self.__class__.__name__) )
             return self.__hash
@@ -346,7 +332,7 @@ class ProximateTokensRule(BrillRule):
         # a sort key when deterministic=True.)
         try:
             return self.__repr
-        except Exception:
+        except AttributeError:
             conditions = ' and '.join('%s in %d...%d' % (v,s,e)
                                       for (s,e,v) in self._conditions)
             self.__repr = ('<%s: %s->%s if %s>' %
@@ -401,7 +387,7 @@ class ProximateTagsRule(ProximateTokensRule):
     Also see ``SymmetricProximateTokensTemplate`` which generates these rules.
     """
     PROPERTY_NAME = 'tag' # for printing.
-    yaml_tag = '!ProximateTagsRule'
+
     @staticmethod
     def extract_property(token):
         """:return: The given token's tag."""
@@ -414,7 +400,7 @@ class ProximateWordsRule(ProximateTokensRule):
     Also see ``SymmetricProximateTokensTemplate`` which generates these rules.
     """
     PROPERTY_NAME = 'text' # for printing.
-    yaml_tag = '!ProximateWordsRule'
+
     @staticmethod
     def extract_property(token):
         """:return: The given token's text."""
@@ -433,7 +419,7 @@ class BrillTemplateI(object):
     def __init__(self):
         raise NotImplementedError()
 
-    def applicable_rules(self, tokens, i, correctTag):
+    def applicable_rules(self, tokens, i, correct_tag):
         """
         Return a list of the transformational rules that would correct
         the *i*th subtoken's tag in the given token.  In particular,
@@ -448,8 +434,8 @@ class BrillTemplateI(object):
         :type tokens: list(tuple)
         :param i: The index of the token whose tag should be corrected.
         :type i: int
-        :param correctTag: The correct tag for the *i*th token.
-        :type correctTag: any
+        :param correct_tag: The correct tag for the *i*th token.
+        :type correct_tag: any
         :rtype: list(BrillRule)
         """
         raise NotImplementedError()
@@ -597,18 +583,18 @@ class SymmetricProximateTokensTemplate(BrillTemplateI):
 
     def __init__(self, rule_class, *boundaries):
         self._ptt1 = ProximateTokensTemplate(rule_class, *boundaries)
-        reversed = [(-e,-s) for (s,e) in boundaries]
-        self._ptt2 = ProximateTokensTemplate(rule_class, *reversed)
+        reversed_ = [(-e,-s) for (s,e) in boundaries]
+        self._ptt2 = ProximateTokensTemplate(rule_class, *reversed_)
 
     # Generates lists of a subtype of ProximateTokensRule.
-    def applicable_rules(self, tokens, index, correctTag):
+    def applicable_rules(self, tokens, index, correct_tag):
         """
         See ``BrillTemplateI`` for full specifications.
 
         :rtype: list of ProximateTokensRule
         """
-        return (self._ptt1.applicable_rules(tokens, index, correctTag) +
-                self._ptt2.applicable_rules(tokens, index, correctTag))
+        return (self._ptt1.applicable_rules(tokens, index, correct_tag) +
+                self._ptt2.applicable_rules(tokens, index, correct_tag))
 
     def get_neighborhood(self, tokens, index):
         # inherit docs from BrillTemplateI
@@ -1270,8 +1256,7 @@ def error_list (train_sents, test_sents, radius=2):
 ######################################################################
 
 def demo(num_sents=2000, max_rules=200, min_score=3,
-         error_output="errors.out", rule_output="rules.yaml",
-         randomize=False, train=.8, trace=3):
+         error_output="errors.out", randomize=False, train=.8, trace=3):
     """
     Brill Tagger Demonstration
 
@@ -1308,8 +1293,8 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
     print("Loading tagged data... ")
     tagged_data = treebank.tagged_sents()
     if randomize:
-        random.seed(len(sents))
-        random.shuffle(sents)
+        random.seed(len(tagged_data))
+        random.shuffle(tagged_data)
     cutoff = int(num_sents*train)
     training_data = tagged_data[:cutoff]
     gold_data = tagged_data[cutoff:num_sents]
@@ -1342,7 +1327,7 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
       brill.SymmetricProximateTokensTemplate(brill.ProximateWordsRule, (1,3)),
       brill.ProximateTokensTemplate(brill.ProximateTagsRule, (-1, -1), (1,1)),
       brill.ProximateTokensTemplate(brill.ProximateWordsRule, (-1, -1), (1,1)),
-      ]
+    ]
     trainer = brill.FastBrillTaggerTrainer(bigram_tagger, templates, trace)
     #trainer = brill.BrillTaggerTrainer(u, templates, trace)
     brill_tagger = trainer.train(training_data, max_rules, min_score)
@@ -1355,21 +1340,16 @@ def demo(num_sents=2000, max_rules=200, min_score=3,
         for rule in brill_tagger.rules():
             print(rule)
 
-    print_rules = file(rule_output, 'w')
-    yaml.dump(brill_tagger, print_rules)
-    print_rules.close()
-
-    testing_data = brill_tagger.batch_tag(testing_data)
-    error_file = file(error_output, 'w')
-    error_file.write('Errors for Brill Tagger %r\n\n' % rule_output)
+    testing_data = brill_tagger.tag_sents(testing_data)
+    error_file = open(error_output, 'w')
+    error_file.write('Errors for Brill Tagger \n\n')
     for e in error_list(gold_data, testing_data):
         error_file.write(e+'\n')
     error_file.close()
-    print(("Done; rules and errors saved to %s and %s." %
-           (rule_output, error_output)))
+    print(("Done; errors saved to %s." %
+           error_output))
 
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
-

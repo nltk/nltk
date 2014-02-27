@@ -1,9 +1,9 @@
 # Natural Language Toolkit: WordNet stemmer interface
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
 
@@ -45,7 +45,7 @@ class WordNetLemmatizer(object):
 
 
 # unload wordnet
-def teardown_module(module):
+def teardown_module(module=None):
     from nltk.corpus import wordnet
     wordnet._unload()
 

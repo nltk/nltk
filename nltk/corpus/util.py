@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Corpus Reader Utility Functions
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 ######################################################################
@@ -20,10 +20,16 @@ TRY_ZIPFILE_FIRST = False
 @python_2_unicode_compatible
 class LazyCorpusLoader(object):
     """
-    A proxy object which is used to stand in for a corpus object
-    before the corpus is loaded.  This allows NLTK to create an object
-    for each corpus, but defer the costs associated with loading those
-    corpora until the first time that they're actually accessed.
+    ==================================================================
+    To see the API documentation for this lazily loaded corpus, first
+    run corpus.ensure_loaded(), and then run help(this_corpus).
+    ==================================================================
+    
+    LazyCorpusLoader is a proxy object which is used to stand in for a
+    corpus object before the corpus is loaded.  This allows NLTK to
+    create an object for each corpus, but defer the costs associated
+    with loading those corpora until the first time that they're
+    actually accessed.
 
     The first time this object is accessed in any way, it will load
     the corresponding corpus, and transform itself into that corpus

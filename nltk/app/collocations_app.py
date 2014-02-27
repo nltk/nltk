@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Collocations Application
 # Much of the GUI code is imported from concordance.py; We intend to merge these tools together
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -12,7 +12,7 @@ import threading
 import tkinter.font
 if nltk.compat.PY3:
     import queue as q
-else:    
+else:
     import Queue as q
 from tkinter import (Button, END, Frame, IntVar, LEFT, Label, Menu,
                      OptionMenu, SUNKEN, Scrollbar, StringVar,
@@ -171,7 +171,7 @@ class CollocationsView:
     def reset_current_page(self):
         self.current_page = -1
 
-    def _poll(self):   
+    def _poll(self):
         try:
             event = self.queue.get(block=False)
         except q.Empty:

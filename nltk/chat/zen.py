@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Zen Chatbot
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Amy Holland <amyrh@csse.unimelb.edu.au>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -37,7 +37,7 @@ as Eliza.
 """
 from __future__ import print_function
 
-from .util import Chat, reflections
+from nltk.chat.util import Chat, reflections
 
 # responses are matched top to bottom, so non-specific matches occur later
 # for each match, a list of possible responses is provided

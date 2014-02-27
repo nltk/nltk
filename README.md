@@ -5,7 +5,7 @@ NLTK -- the Natural Language Toolkit -- is a suite of open source
 Python modules, data sets and tutorials supporting research and
 development in Natural Language Processing.
 
-Copyright (C) 2001-2013 NLTK Project
+Copyright (C) 2001-2014 NLTK Project
 
 For license information, see LICENSE.txt
 

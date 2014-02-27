@@ -2,9 +2,9 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Edward Loper <edloper@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -12,15 +12,15 @@
 # python2.5 compatibility
 from __future__ import with_statement
 
-# Work around mbcs bug in distutils. 
+# Work around mbcs bug in distutils.
 # http://bugs.python.org/issue10945
-import codecs 
-try: 
-    codecs.lookup('mbcs') 
-except LookupError: 
-    ascii = codecs.lookup('ascii') 
-    func = lambda name, enc=ascii: {True: enc}.get(name=='mbcs') 
-    codecs.register(func) 
+import codecs
+try:
+    codecs.lookup('mbcs')
+except LookupError:
+    ascii = codecs.lookup('ascii')
+    func = lambda name, enc=ascii: {True: enc}.get(name=='mbcs')
+    codecs.register(func)
 
 import os
 
@@ -79,5 +79,4 @@ natural language processing.  NLTK requires Python 2.5 or higher.""",
     package_data = {'nltk': ['nltk.jar', 'test/*.doctest', 'VERSION']},
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
-    install_requires=['PyYAML>=3.09'],
     )

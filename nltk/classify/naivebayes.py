@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Naive Bayes Classifiers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -34,7 +34,7 @@ from __future__ import print_function, unicode_literals
 from collections import defaultdict
 
 from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist, sum_logs
-from .api import ClassifierI
+from nltk.classify.api import ClassifierI
 
 ##//////////////////////////////////////////////////////
 ##  Naive Bayes Classifier
@@ -189,10 +189,10 @@ class NaiveBayesClassifier(ClassifierI):
         # Count up how many times each feature value occurred, given
         # the label and featurename.
         for featureset, label in labeled_featuresets:
-            label_freqdist.inc(label)
+            label_freqdist[label] += 1
             for fname, fval in featureset.items():
                 # Increment freq(fval|label, fname)
-                feature_freqdist[label, fname].inc(fval)
+                feature_freqdist[label, fname][fval] += 1
                 # Record that fname can take the value fval.
                 feature_values[fname].add(fval)
                 # Keep a list of all feature names.
@@ -207,7 +207,7 @@ class NaiveBayesClassifier(ClassifierI):
             num_samples = label_freqdist[label]
             for fname in fnames:
                 count = feature_freqdist[label, fname].N()
-                feature_freqdist[label, fname].inc(None, num_samples-count)
+                feature_freqdist[label, fname][None] += num_samples - count
                 feature_values[fname].add(None)
 
         # Create the P(label) distribution

@@ -2,11 +2,11 @@
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -24,7 +24,7 @@ from nltk import compat
 from nltk.corpus import stopwords
 from nltk.stem import porter
 
-from .api import StemmerI
+from nltk.stem.api import StemmerI
 
 class SnowballStemmer(StemmerI):
 

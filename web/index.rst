@@ -2,7 +2,8 @@ Natural Language Toolkit
 ========================
 
 NLTK is a leading platform for building Python programs to work with human language data.
-It provides easy-to-use interfaces to over 50 corpora and lexical resources such as WordNet,
+It provides easy-to-use interfaces to `over 50 corpora and lexical
+resources <http://nltk.org/nltk_data/>`_ such as WordNet,
 along with a suite of text processing libraries for classification, tokenization, stemming, tagging, parsing, and semantic reasoning.
 
 Thanks to a hands-on guide introducing programming fundamentals alongside topics in computational linguistics,
@@ -17,6 +18,7 @@ introduction to programming for language processing.
 Written by the creators of NLTK, it guides the reader through the fundamentals
 of writing Python programs, working with corpora, categorizing text, analyzing linguistic structure,
 and more.
+A `new version <http://nltk.org/book3>`_ with updates for Python 3 and NLTK 3 is in preparation.
 
 Some simple things you can do with NLTK
 ---------------------------------------
@@ -47,32 +49,29 @@ Identify named entities:
 
 Display a parse tree:
 
-.. doctest::
-    :options: +SKIP
-
     >>> from nltk.corpus import treebank
     >>> t = treebank.parsed_sents('wsj_0001.mrg')[0]
     >>> t.draw()
 
 .. image:: images/tree.gif
 
-NB. If you publish work that uses NLTK, please cite the NLTK book as follows:
-Bird, Steven, Edward Loper and Ewan Klein (2009).
-Natural Language Processing with Python.  O'Reilly Media Inc.
+NB. If you publish work that uses NLTK, please cite the NLTK book as
+follows:
 
-Links
------
+	Bird, Steven, Edward Loper and Ewan Klein (2009), *Natural Language Processing with Python*.  O'Reilly Media Inc.
 
-* `NLTK mailing list <http://groups.google.com/group/nltk>`_ - release announcements only, very low volume
-* `NLTK-Users mailing list <http://groups.google.com/group/nltk-users>`_ - user discussions
-* `NLTK-Dev mailing list <http://groups.google.com/group/nltk-dev>`_ - developers only
-* `NLTK-Translation mailing list <http://groups.google.com/group/nltk-translation>`_ - discussions about translating the NLTK book
-* `NLTK's previous website <https://sites.google.com/site/naturallanguagetoolkit>`_
-* `NLTK development at GitHub <https://github.com/nltk>`_
-* `Publications about NLTK <http://scholar.google.com.au/scholar?q=NLTK>`_
+Community
+---------
+
+* `NLTK mailing list <http://groups.google.com/group/nltk>`_ -- release announcements only, very low volume
+* `NLTK-Users mailing list <http://groups.google.com/group/nltk-users>`_ -- user discussions
+* `NLTK-Dev mailing list <http://groups.google.com/group/nltk-dev>`_ -- developers only
+* `NLTK-Translation mailing list <http://groups.google.com/group/nltk-translation>`_ -- discussions about translating the NLTK book
+
 
 Contents
 ========
+
 
 .. toctree::
    :maxdepth: 1
@@ -80,8 +79,10 @@ Contents
    news
    install
    data
-   howto
-   api/nltk
+   Wiki <https://github.com/nltk/nltk/wiki> 
+   API <api/nltk>
+   HOWTO <http://nltk.org/howto>
+   NLTK Development <https://github.com/nltk>
    team
 
 * :ref:`genindex`

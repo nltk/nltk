@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2012 NLTK Project
 # Author: Alessandro Presta <alessandro.presta@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -79,7 +79,7 @@ from collections import defaultdict
 
 from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist
 
-from .naivebayes import NaiveBayesClassifier
+from nltk.classify.naivebayes import NaiveBayesClassifier
 
 ##//////////////////////////////////////////////////////
 ##  Positive Naive Bayes Classifier
@@ -106,14 +106,14 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
         # Count up how many times each feature value occurred in positive examples.
         for featureset in positive_featuresets:
             for fname, fval in featureset.items():
-                positive_feature_freqdist[fname].inc(fval)
+                positive_feature_freqdist[fname][fval] += 1
                 feature_values[fname].add(fval)
                 fnames.add(fname)
 
         # Count up how many times each feature value occurred in unlabeled examples.
         for featureset in unlabeled_featuresets:
             for fname, fval in featureset.items():
-                unlabeled_feature_freqdist[fname].inc(fval)
+                unlabeled_feature_freqdist[fname][fval] += 1
                 feature_values[fname].add(fval)
                 fnames.add(fname)
 
@@ -122,13 +122,13 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
         num_positive_examples = len(positive_featuresets)
         for fname in fnames:
             count = positive_feature_freqdist[fname].N()
-            positive_feature_freqdist[fname].inc(None, num_positive_examples-count)
+            positive_feature_freqdist[fname][None] += num_positive_examples - count
             feature_values[fname].add(None)
 
         num_unlabeled_examples = len(unlabeled_featuresets)
         for fname in fnames:
             count = unlabeled_feature_freqdist[fname].N()
-            unlabeled_feature_freqdist[fname].inc(None, num_unlabeled_examples-count)
+            unlabeled_feature_freqdist[fname][None] += num_unlabeled_examples - count
             feature_values[fname].add(None)
 
         negative_prob_prior = 1.0 - positive_prob_prior

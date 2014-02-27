@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Dependency Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Kepa Sarasola <kepa.sarasola@ehu.es>
 #         Iker Manterola <returntothehangar@hotmail.com>
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import codecs
@@ -12,8 +12,8 @@ import codecs
 from nltk.parse import DependencyGraph
 from nltk.tokenize import *
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class DependencyCorpusReader(SyntaxCorpusReader):
 

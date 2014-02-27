@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 from __future__ import print_function
@@ -13,7 +13,7 @@ import math
 from nltk.compat import xrange
 from nltk.grammar import parse_dependency_grammar
 
-from .dependencygraph import DependencyGraph, conll_data2
+from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 
 #################################################################
 # DependencyScorerI - Interface for Graph-Edge Weight Calculation
@@ -140,7 +140,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         edge_scores = []
         row = []
         count = 0
-        for pdist in self.classifier.batch_prob_classify(edges):
+        for pdist in self.classifier.prob_classify_many(edges):
             print('%.4f %.4f' % (pdist.prob('T'), pdist.prob('F')))
             row.append([math.log(pdist.prob("T"))])
             count += 1

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Ngram Association Measures
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -24,7 +24,7 @@ try:
     from scipy.stats import fisher_exact
 except ImportError:
     pass
-    
+
 ### Indices to marginals arguments:
 
 NGRAM = 0
@@ -77,8 +77,10 @@ class NgramAssocMeasures(object):
         # For each contingency table cell
         for i in range(len(cont)):
             # Yield the expected value
-            yield (_product(cont[i] + cont[i ^ j] for j in bits) /
-                   float(n_all ** 2))
+            yield (_product(sum(cont[x] for x in range(2 ** cls._n)
+                                if (x & j) == (i & j))
+                            for j in bits) /
+                   float(n_all ** (cls._n - 1)))
 
     @staticmethod
     def raw_freq(*marginals):
@@ -127,7 +129,7 @@ class NgramAssocMeasures(object):
         """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
         """
         cont = cls._contingency(*marginals)
-        return (cls._n * 2 *
+        return (cls._n *
                 sum(obs * _ln(float(obs) / (exp + _SMALL) + _SMALL)
                     for obs, exp in zip(cont, cls._expected_values(cont))))
 
@@ -135,7 +137,7 @@ class NgramAssocMeasures(object):
     def poisson_stirling(cls, *marginals):
         """Scores ngrams using the Poisson-Stirling measure."""
         exp = (_product(marginals[UNIGRAMS]) /
-              float(marginals[TOTAL] ** (cls._n - 1)))
+               float(marginals[TOTAL] ** (cls._n - 1)))
         return marginals[NGRAM] * (_log2(marginals[NGRAM] / exp) - 1)
 
     @classmethod
@@ -255,13 +257,14 @@ class TrigramAssocMeasures(NgramAssocMeasures):
     _n = 3
 
     @staticmethod
-    def _contingency(n_iii, n_iix_tuple, n_ixx_tuple,
-                 n_xxx):
-        """Calculates values of a trigram contingency table (or cube) from marginal
-        values.
+    def _contingency(n_iii, n_iix_tuple, n_ixx_tuple, n_xxx):
+        """Calculates values of a trigram contingency table (or cube) from
+        marginal values.
+        >>> TrigramAssocMeasures._contingency(1, (1, 1, 1), (1, 73, 1), 2000)
+        (1, 0, 0, 0, 0, 72, 0, 1927)
         """
         (n_iix, n_ixi, n_xii) = n_iix_tuple
-        (n_ixx, n_xix, n_xxi) = n_iix_tuple
+        (n_ixx, n_xix, n_xxi) = n_ixx_tuple
         n_oii = n_xii - n_iii
         n_ioi = n_ixi - n_iii
         n_iio = n_iix - n_iii
@@ -275,7 +278,10 @@ class TrigramAssocMeasures(NgramAssocMeasures):
 
     @staticmethod
     def _marginals(*contingency):
-        """Calculates values of contingency table marginals from its values."""
+        """Calculates values of contingency table marginals from its values.
+        >>> TrigramAssocMeasures._marginals(1, 0, 0, 0, 0, 72, 0, 1927)
+        (1, (1, 1, 1), (1, 73, 1), 2000)
+        """
         n_iii, n_oii, n_ioi, n_ooi, n_iio, n_oio, n_ioo, n_ooo = contingency
         return (n_iii,
                 (n_iii + n_iio, n_iii + n_ioi, n_iii + n_oii),

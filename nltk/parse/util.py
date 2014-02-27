@@ -2,8 +2,8 @@
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# Copyright (C) 2001-2013 NLTK Project
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -141,7 +141,7 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
         and a result is None, or bool, or int
 
     :param comment_chars: ``str`` of possible comment characters.
-    :param encoding: the encoding of the string, if it is binary 
+    :param encoding: the encoding of the string, if it is binary
     """
     if encoding is not None:
         string = string.decode(encoding)
@@ -163,6 +163,6 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
             continue
         sentences += [(tokens, result)]
     return sentences
-    
+
 # nose thinks it is a test
 extract_test_sentences.__test__ = False

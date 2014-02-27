@@ -3,8 +3,8 @@
 # Author:     Peter Wang
 # Updated by: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
-# URL: <http://www.nltk.org>
+# Copyright (C) 2001-2014 NLTK Project
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 """
@@ -124,7 +124,7 @@ class HoleSemantics(object):
                 assert label not in self.fragments
                 self.fragments[label] = (func, args[1:])
         else:
-            raise ValueError(usr.node)
+            raise ValueError(usr.label())
 
     def _find_top_nodes(self, node_list):
         top_nodes = node_list.copy()
@@ -322,7 +322,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
     all_readings = []
     for tree in trees:
         # Get the semantic feature from the top of the parse tree.
-        sem = tree.node['SEM'].simplify()
+        sem = tree.label()['SEM'].simplify()
 
         # Print the raw semantic representation.
         if verbose: print('Raw:       ', sem)

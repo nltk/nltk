@@ -2,8 +2,8 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, division, unicode_literals
 
@@ -17,8 +17,8 @@ from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
 from nltk.sem.logic import (LogicParser, Expression, Variable, VariableExpression,
                             LambdaExpression, AbstractVariableExpression)
 from nltk.compat import python_2_unicode_compatible
-from . import drt
-from . import linearlogic
+from nltk.sem import drt
+from nltk.sem import linearlogic
 
 SPEC_SEMTYPES = {'a'       : 'ex_quant',
                  'an'      : 'ex_quant',
@@ -144,7 +144,7 @@ class GlueDict(dict):
             parts = line.split(' : ', 2)            # ['verb', '(\\x.(<word> x), ( subj -o f ))', '[subj]']
 
             glue_formulas = []
-            parenCount = 0
+            paren_count = 0
             tuple_start = 0
             tuple_comma = 0
 
@@ -153,36 +153,36 @@ class GlueDict(dict):
             if len(parts) > 1:
                 for (i, c) in enumerate(parts[1]):
                     if c == '(':
-                        if parenCount == 0:             # if it's the first '(' of a tuple
+                        if paren_count == 0:             # if it's the first '(' of a tuple
                             tuple_start = i+1           # then save the index
-                        parenCount += 1
+                        paren_count += 1
                     elif c == ')':
-                        parenCount -= 1
-                        if parenCount == 0:             # if it's the last ')' of a tuple
+                        paren_count -= 1
+                        if paren_count == 0:             # if it's the last ')' of a tuple
                             meaning_term =  parts[1][tuple_start:tuple_comma]   # '\\x.(<word> x)'
                             glue_term =     parts[1][tuple_comma+1:i]           # '(v-r)'
                             glue_formulas.append([meaning_term, glue_term])     # add the GlueFormula to the list
                     elif c == ',':
-                        if parenCount == 1:             # if it's a comma separating the parts of the tuple
+                        if paren_count == 1:             # if it's a comma separating the parts of the tuple
                             tuple_comma = i             # then save the index
                     elif c == '#':                      # skip comments at the ends of lines
-                        if parenCount != 0:             # if the line hasn't parsed correctly so far
+                        if paren_count != 0:             # if the line hasn't parsed correctly so far
                             raise RuntimeError('Formula syntax is incorrect for entry ' + line)
                         break                           # break to the next line
 
             if len(parts) > 2:                      #if there is a relationship entry at the end
-                relStart = parts[2].index('[')+1
-                relEnd   = parts[2].index(']')
-                if relStart == relEnd:
+                rel_start = parts[2].index('[')+1
+                rel_end   = parts[2].index(']')
+                if rel_start == rel_end:
                     relationships = frozenset()
                 else:
-                    relationships = frozenset(r.strip() for r in parts[2][relStart:relEnd].split(','))
+                    relationships = frozenset(r.strip() for r in parts[2][rel_start:rel_end].split(','))
 
             try:
-                startInheritance = parts[0].index('(')
-                endInheritance = parts[0].index(')')
-                sem = parts[0][:startInheritance].strip()
-                supertype = parts[0][startInheritance+1:endInheritance]
+                start_inheritance = parts[0].index('(')
+                end_inheritance = parts[0].index(')')
+                sem = parts[0][:start_inheritance].strip()
+                supertype = parts[0][start_inheritance+1:end_inheritance]
             except:
                 sem = parts[0].strip()
                 supertype = None
@@ -304,8 +304,6 @@ class GlueDict(dict):
         Based on the node, return a list of plausible semtypes in order of
         plausibility.
         """
-        semtype_name = None
-
         rel = node['rel'].lower()
         word = node['word'].lower()
 
@@ -424,7 +422,7 @@ class Glue(object):
         if semtype_file:
             self.semtype_file = semtype_file
         else:
-            self.semtype_file = 'glue.semtype'
+            self.semtype_file = os.path.join('grammars', 'sample_grammars','glue.semtype')
 
     def train_depparser(self, depgraphs=None):
         if depgraphs:
@@ -507,7 +505,7 @@ class Glue(object):
                 try:
                     if reading.equiv(glueformula.meaning, self.prover):
                         add_reading = False
-                        break;
+                        break
                 except Exception as e:
                     #if there is an exception, the syntax of the formula
                     #may not be understandable by the prover, so don't
@@ -517,11 +515,11 @@ class Glue(object):
         if add_reading:
             reading_list.append(glueformula.meaning)
 
-    def parse_to_compiled(self, sentence='a man sees Mary'.split()):
+    def parse_to_compiled(self, sentence='a man sees Mary'):
         gfls = [self.depgraph_to_glue(dg) for dg in self.dep_parse(sentence)]
         return [self.gfl_to_compiled(gfl) for gfl in gfls]
 
-    def dep_parse(self, sentence='every cat leaves'.split()):
+    def dep_parse(self, sentence='every cat leaves'):
         #Lazy-initialize the depparser
         if self.depparser is None:
             from nltk.parse import MaltParser
@@ -529,7 +527,8 @@ class Glue(object):
         if not self.depparser._trained:
             self.train_depparser()
 
-        return [self.depparser.parse(sentence, verbose=self.verbose)]
+        tokens = sentence.split()
+        return [self.depparser.parse(tokens, verbose=self.verbose)]
 
     def depgraph_to_glue(self, depgraph):
         return self.get_glue_dict().to_glueformula_list(depgraph)
@@ -611,7 +610,7 @@ class DrtGlue(Glue):
     def __init__(self, semtype_file=None, remove_duplicates=False,
                  depparser=None, verbose=False):
         if not semtype_file:
-            semtype_file = 'drt_glue.semtype'
+            semtype_file = os.path.join('grammars', 'sample_grammars','drt_glue.semtype')
         Glue.__init__(self, semtype_file, remove_duplicates, depparser, verbose)
 
     def get_glue_dict(self):

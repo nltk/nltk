@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
+#         Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """

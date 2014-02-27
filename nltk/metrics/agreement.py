@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -344,7 +344,7 @@ if __name__ == '__main__':
 
     import re
     import optparse
-    from . import distance
+    from nltk.metrics import distance
 
     # process command-line arguments
     parser = optparse.OptionParser()
@@ -378,13 +378,14 @@ if __name__ == '__main__':
 
     # read in data from the specified file
     data = []
-    for l in open(options.file):
-        toks = l.split(options.columnsep)
-        coder, object, labels = toks[0], str(toks[1:-1]), frozenset(toks[-1].strip().split(options.labelsep))
-        if ((options.include == options.exclude) or
-            (len(options.include) > 0 and coder in options.include) or
-            (len(options.exclude) > 0 and coder not in options.exclude)):
-            data.append((coder, object, labels))
+    with open(options.file, 'r') as infile:
+        for l in infile:
+            toks = l.split(options.columnsep)
+            coder, object_, labels = toks[0], str(toks[1:-1]), frozenset(toks[-1].strip().split(options.labelsep))
+            if ((options.include == options.exclude) or
+                (len(options.include) > 0 and coder in options.include) or
+                (len(options.exclude) > 0 and coder not in options.exclude)):
+                data.append((coder, object_, labels))
 
     if options.presence:
         task = AnnotationTask(data, getattr(distance, options.distance)(options.presence))

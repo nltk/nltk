@@ -2,9 +2,9 @@
 
 # Natural Language Toolkit: RSLP Stemmer
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Tiago Tresoldi <tresoldi@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 # This code is based on the algorithm presented in the paper "A Stemming
@@ -33,7 +33,7 @@
 from __future__ import print_function, unicode_literals
 from nltk.data import load
 
-from .api import StemmerI
+from nltk.stem.api import StemmerI
 
 class RSLPStemmer(StemmerI):
     """

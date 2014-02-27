@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Texts
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -24,7 +24,6 @@ import re
 from nltk.probability import FreqDist, LidstoneProbDist
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
-from nltk.model import NgramModel
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
 from nltk.compat import python_2_unicode_compatible, text_type
@@ -210,7 +209,7 @@ class TokenSearcher(object):
     string where tokens are marked with angle brackets -- e.g.,
     ``'<the><window><is><still><open>'``.  The regular expression
     passed to the ``findall()`` method is modified to treat angle
-    brackets as nongrouping parentheses, in addition to matching the
+    brackets as non-capturing parentheses, in addition to matching the
     token boundaries; and to have ``'.'`` not match the angle brackets.
     """
     def __init__(self, tokens):
@@ -374,21 +373,6 @@ class Text(object):
     def readability(self, method):
         # code from nltk_contrib.readability
         raise NotImplementedError
-
-    def generate(self, length=100):
-        """
-        Print random text, generated using a trigram language model.
-
-        :param length: The length of text to generate (default=100)
-        :type length: int
-        :seealso: NgramModel
-        """
-        if '_trigram_model' not in self.__dict__:
-            print("Building ngram index...")
-            estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-            self._trigram_model = NgramModel(3, self, estimator=estimator)
-        text = self._trigram_model.generate(length)
-        print(tokenwrap(text))
 
     def similar(self, word, num=20):
         """

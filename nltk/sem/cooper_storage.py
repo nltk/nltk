@@ -1,12 +1,12 @@
 # Natural Language Toolkit: Cooper storage for Quantifier Ambiguity
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function
 
-from .logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
+from nltk.sem.logic import LambdaExpression, ApplicationExpression, Variable, LogicParser
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
 
@@ -94,7 +94,7 @@ def demo():
     print("=" * 50)
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
-        semrep = cs.CooperStore(tree.node['SEM'])
+        semrep = cs.CooperStore(tree.label()['SEM'])
         print()
         print("Binding operators:")
         print("-" * 15)

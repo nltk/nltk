@@ -1,9 +1,9 @@
 # Natural Language Toolkit: TnT Tagger
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Sam Huston <sjh900@gmail.com>
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 '''
@@ -155,10 +155,10 @@ class TnT(TaggerI):
                 # set local flag C to True
                 if self._C and w[0].isupper(): C=True
 
-                self._wd[w].inc(t)
-                self._uni.inc((t,C))
-                self._bi[history[1]].inc((t,C))
-                self._tri[tuple(history)].inc((t,C))
+                self._wd[w][t] += 1
+                self._uni[(t,C)] += 1
+                self._bi[history[1]][(t,C)] += 1
+                self._tri[tuple(history)][(t,C)] += 1
 
                 history.append((t,C))
                 history.pop(0)
@@ -166,7 +166,7 @@ class TnT(TaggerI):
                 # set local flag C to false for the next word
                 C = False
 
-            self._eos[t].inc('EOS')
+            self._eos[t]['EOS'] += 1
 
 
         # compute lambda values from the trained frequency distributions
@@ -209,7 +209,7 @@ class TnT(TaggerI):
             # for each t3 given t1,t2 in system
             # (NOTE: tag actually represents (tag,C))
             # However no effect within this function
-            for tag in self._tri[history].samples():
+            for tag in self._tri[history].keys():
 
                 # if there has only been 1 occurrence of this tag in the data
                 # then ignore this trigram.
@@ -363,7 +363,7 @@ class TnT(TaggerI):
             for (history, curr_sent_logprob) in current_states:
                 logprobs = []
 
-                for t in self._wd[word].samples():
+                for t in self._wd[word].keys():
                     p_uni = self._uni.freq((t,C))
                     p_bi = self._bi[history[-1]].freq((t,C))
                     p_tri = self._tri[tuple(history[-2:])].freq((t,C))

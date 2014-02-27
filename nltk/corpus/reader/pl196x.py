@@ -1,8 +1,8 @@
 # Natural Language Toolkit:
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Piotr Kasprzyk <p.j.kasprzyk@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os
@@ -11,11 +11,11 @@ import re
 from nltk import compat
 from nltk import tokenize, tree
 
-from .util import *
-from .api import *
-from .xmldocs import XMLCorpusReader
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
-# (?:something) -- non-grouping parentheses!
+# (?:something) -- non-capturing parentheses!
 
 PARA = re.compile(r'<p(?: [^>]*){0,1}>(.*?)</p>')
 SENT = re.compile(r'<s(?: [^>]*){0,1}>(.*?)</s>')
@@ -32,8 +32,7 @@ TEXTID = re.compile(r'text id="(.*?)"')
 class TEICorpusView(StreamBackedCorpusView):
 	def __init__(self, corpus_file,
 					tagged, group_by_sent, group_by_para,
-					tag_mapping_function=None, headLen=0,
-					textids=None):
+					tagset=None, headLen=0, textids=None):
 		self._tagged = tagged
 		self._textids = textids
 

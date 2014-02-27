@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===============================================
@@ -7,7 +7,7 @@ Generating sentences from context-free grammars
 
 An example grammar:
 
-    >>> from nltk.parse.generate import generate, generate_iter, demo_grammar
+    >>> from nltk.parse.generate import generate, demo_grammar
     >>> from nltk import parse_cfg
     >>> grammar = parse_cfg(demo_grammar)
     >>> print(grammar)
@@ -43,7 +43,7 @@ The first 10 generated sentences:
 
 All sentences of max depth 4:
 
-    >>> for sentence in generate_iter(grammar, depth=4):
+    >>> for sentence in generate(grammar, depth=4):
     ...     print(' '.join(sentence))
     the man slept
     the park slept
@@ -54,14 +54,14 @@ All sentences of max depth 4:
 
 The number of sentences of different max depths:
 
-    >>> len(generate(grammar, depth=3))
+    >>> len(list(generate(grammar, depth=3)))
     0
-    >>> len(generate(grammar, depth=4))
+    >>> len(list(generate(grammar, depth=4)))
     6
-    >>> len(generate(grammar, depth=5))
+    >>> len(list(generate(grammar, depth=5)))
     42
-    >>> len(generate(grammar, depth=6))
+    >>> len(list(generate(grammar, depth=6)))
     114
-    >>> len(generate(grammar))
+    >>> len(list(generate(grammar)))
     114
 

@@ -2,8 +2,8 @@
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# Copyright (C) 2001-2013 NLTK Project
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,

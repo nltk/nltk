@@ -1,8 +1,8 @@
 # NLTK: Documentation Makefile
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 DATADIR =  ../../../nltk_data
@@ -30,7 +30,7 @@ clean:
 
 %.zip: %
 	$(ZIP) -r $< $<
-	git add *zip
+#	git add *zip
 
 publish: zip
 	cp $(PACKAGES) $(PUBLISH)

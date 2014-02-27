@@ -2,10 +2,10 @@
 #
 ## Natural Language Toolkit: substitute a pattern with a replacement in every file
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 # NB Should work on all platforms, http://www.python.org/doc/2.5.2/lib/os-file-dir.html

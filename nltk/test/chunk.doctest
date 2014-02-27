@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==========
@@ -33,7 +33,7 @@ Construct some new chunking rules.
 
 Create and score a series of chunk parsers, successively more complex.
 
-    >>> chunk_parser = RegexpChunkParser([chunk_rule], chunk_node='NP')
+    >>> chunk_parser = RegexpChunkParser([chunk_rule], chunk_label='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text)
     >>> print(chunked_text)
     (S
@@ -79,7 +79,7 @@ Create and score a series of chunk parsers, successively more complex.
       ./.)
 
     >>> chunk_parser = RegexpChunkParser([chunk_rule, chink_rule],
-    ...                                  chunk_node='NP')
+    ...                                  chunk_label='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text)
     >>> print(chunked_text)
     (S
@@ -110,7 +110,7 @@ Create and score a series of chunk parsers, successively more complex.
     (NP the/DT mat/NN the/DT dog/NN)
 
     >>> chunk_parser = RegexpChunkParser([chunk_rule, chink_rule, split_rule],
-    ...                                  chunk_node='NP')
+    ...                                  chunk_label='NP')
     >>> chunked_text = chunk_parser.parse(unchunked_text, trace=True)
     # Input:
      <DT>  <NN>  <VBD>  <IN>  <DT>  <NN>  <DT>  <NN>  <VBD>  <.>

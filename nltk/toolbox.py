@@ -1,7 +1,7 @@
 # coding: utf-8
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -15,7 +15,7 @@ from __future__ import print_function
 import os, re, codecs
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
 
-from nltk.compat import StringIO, u
+from nltk.compat import StringIO, u, PY3
 from nltk.data import PathPointer, ZipFilePathPointer, find
 
 
@@ -113,7 +113,7 @@ class StandardFormat(object):
             raise ValueError('unicode_fields is set but not encoding.')
         unwrap_pat = re.compile(r'\n+')
         for mkr, val in self.raw_fields():
-            if encoding:
+            if encoding and not PY3: # kludge - already decoded in PY3?
                 if unicode_fields is not None and mkr in unicode_fields:
                     val = val.decode('utf8', errors)
                 else:
@@ -219,7 +219,7 @@ class ToolboxData(StandardFormat):
     def _tree2etree(self, parent):
         from nltk.tree import Tree
 
-        root = Element(parent.node)
+        root = Element(parent.label())
         for child in parent:
             if isinstance(child, Tree):
                 root.append(self._tree2etree(child))
@@ -229,7 +229,7 @@ class ToolboxData(StandardFormat):
                 e.text = text
         return root
 
-    def _chunk_parse(self, grammar=None, top_node='record', trace=0, **kwargs):
+    def _chunk_parse(self, grammar=None, root_label='record', trace=0, **kwargs):
         """
         Returns an element tree structure corresponding to a toolbox data file
         parsed according to the chunk grammar.
@@ -237,8 +237,8 @@ class ToolboxData(StandardFormat):
         :type grammar: str
         :param grammar: Contains the chunking rules used to parse the
             database.  See ``chunk.RegExp`` for documentation.
-        :type top_node: str
-        :param top_node: The node value that should be used for the
+        :type root_label: str
+        :param root_label: The node value that should be used for the
             top node of the chunk structure.
         :type trace: int
         :param trace: The level of tracing that should be used when
@@ -252,7 +252,7 @@ class ToolboxData(StandardFormat):
         from nltk import chunk
         from nltk.tree import Tree
 
-        cp = chunk.RegexpParser(grammar, top_node=top_node, trace=trace)
+        cp = chunk.RegexpParser(grammar, root_label=root_label, trace=trace)
         db = self.parse(**kwargs)
         tb_etree = Element('toolbox_data')
         header = db.find('header')

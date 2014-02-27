@@ -13,7 +13,7 @@
 ## by unique new variables) whenever they are used.  This can be
 ## accomplished by using the InstantiateVarsChart class when parsing.
 ## 
-## Author: Edward Loper <edloper@gradient.cis.upenn.edu>,
+## Author: Edward Loper <edloper@gmail.com>,
 ##         Ewan Klein <ewan@inf.ed.ac.uk>
 ##         Robin Cooper <robin.cooper@ling.gu.se>
 ## URL: <http://nltk.sourceforge.net>

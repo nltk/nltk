@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Taggers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """
 NLTK Taggers
@@ -61,9 +61,6 @@ from __future__ import print_function
 
 from nltk.tag.api        import TaggerI
 from nltk.tag.util       import str2tuple, tuple2str, untag
-from nltk.tag.simplify   import (simplify_brown_tag, simplify_wsj_tag,
-                                 simplify_indian_tag, simplify_alpino_tag,
-                                 simplify_tag)
 from nltk.tag.sequential import (SequentialBackoffTagger, ContextTagger,
                                  DefaultTagger, NgramTagger, UnigramTagger,
                                  BigramTagger, TrigramTagger, AffixTagger,
@@ -73,8 +70,8 @@ from nltk.tag.brill      import BrillTagger, BrillTaggerTrainer, FastBrillTagger
 from nltk.tag.tnt        import TnT
 from nltk.tag.hunpos     import HunposTagger
 from nltk.tag.stanford   import StanfordTagger
-from nltk.tag.crf        import MalletCRF
 from nltk.tag.hmm        import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
+from nltk.tag.mapping    import tagset_mapping, map_tag
 
 from nltk.data import load
 
@@ -101,13 +98,13 @@ def pos_tag(tokens):
     tagger = load(_POS_TAGGER)
     return tagger.tag(tokens)
 
-def batch_pos_tag(sentences):
+def pos_tag_sents(sentences):
     """
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
     """
     tagger = load(_POS_TAGGER)
-    return tagger.batch_tag(sentences)
+    return tagger.tag_sents(sentences)
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
 # Natural Language Toolkit: IEER Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 
 import nltk
 from nltk import compat
-from .api import *
+from nltk.corpus.reader.api import *
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.
@@ -86,7 +86,7 @@ class IEERCorpusReader(CorpusReader):
                 if self._parse(doc).docno is not None]
 
     def _parse(self, doc):
-        val = nltk.chunk.ieerstr2tree(doc, top_node="DOCUMENT")
+        val = nltk.chunk.ieerstr2tree(doc, root_label="DOCUMENT")
         if isinstance(val, dict):
             return IEERDocument(**val)
         else:

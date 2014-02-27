@@ -3,8 +3,8 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 from nltk import compat  # this fixes tkinter imports for Python 2.x

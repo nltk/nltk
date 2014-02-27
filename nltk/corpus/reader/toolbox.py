@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 #         Stuart Robinson <Stuart.Robinson@mpi.nl>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -19,8 +19,8 @@ import codecs
 from nltk import compat
 from nltk.toolbox import ToolboxData
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class ToolboxCorpusReader(CorpusReader):
     def xml(self, fileids, key=None):

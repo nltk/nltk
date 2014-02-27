@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -166,7 +166,7 @@ try:
     TKINTER = True
     from tkinter import (Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar,
                          TclError)
-    from tkMessageBox import showerror
+    from tkinter.messagebox import showerror
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
 except:
@@ -1133,7 +1133,7 @@ class DownloaderGUI(object):
     COLUMNS = ['', 'Identifier', 'Name', 'Size', 'Status',
                'Unzipped Size',
                'Copyright', 'Contact', 'License', 'Author',
-               'SVN Revision', 'Subdir', 'Checksum']
+               'Subdir', 'Checksum']
     """A list of the names of columns.  This controls the order in
        which the columns will appear.  If this is edited, then
        ``_package_to_columns()`` may need to be edited to match."""
@@ -1956,8 +1956,8 @@ def md5_hexdigest(file):
     ``file`` may either be a filename or an open stream.
     """
     if isinstance(file, compat.string_types):
-        with open(file, 'rb') as fp:
-            return _md5_hexdigest(fp)
+        with open(file, 'rb') as infile:
+            return _md5_hexdigest(infile)
     return _md5_hexdigest(file)
 
 def _md5_hexdigest(fp):
@@ -2020,13 +2020,13 @@ def _unzip_iter(filename, root, verbose=True):
     for i, filename in enumerate(filelist):
         filepath = os.path.join(root, *filename.split('/'))
 
-        with open(filepath, 'wb') as out:
+        with open(filepath, 'wb') as outfile:
             try:
                 contents = zf.read(filename)
             except Exception as e:
                 yield ErrorMessage(filename, e)
                 return
-            out.write(contents)
+            outfile.write(contents)
 
         if verbose and (i*10/len(filelist) > (i-1)*10/len(filelist)):
             sys.stdout.write('.')

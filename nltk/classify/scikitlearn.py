@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Interface to scikit-learn classifiers
 #
 # Author: Lars Buitinck <L.J.Buitinck@uva.nl>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """
 scikit-learn (http://scikit-learn.org) is a machine learning library for
@@ -12,7 +12,7 @@ This package implement a wrapper around scikit-learn classifiers. To use this
 wrapper, construct a scikit-learn estimator object, then use that to construct
 a SklearnClassifier. E.g., to wrap a linear SVM with default settings:
 
->>> from sklearn.svm.sparse import LinearSVC
+>>> from sklearn.svm import LinearSVC
 >>> from nltk.classify.scikitlearn import SklearnClassifier
 >>> classif = SklearnClassifier(LinearSVC())
 
@@ -35,12 +35,15 @@ from __future__ import print_function, unicode_literals
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 from nltk import compat
+from warnings import warn
 
 try:
     from sklearn.feature_extraction import DictVectorizer
     from sklearn.preprocessing import LabelEncoder
 except ImportError:
     pass
+
+__all__ = ['SklearnClassifier']
 
 
 @compat.python_2_unicode_compatible
@@ -70,7 +73,7 @@ class SklearnClassifier(ClassifierI):
     def __repr__(self):
         return "<SklearnClassifier(%r)>" % self._clf
 
-    def batch_classify(self, featuresets):
+    def classify_many(self, featuresets):
         """Classify a batch of samples.
 
         :param featuresets: An iterable over featuresets, each a dict mapping
@@ -82,7 +85,7 @@ class SklearnClassifier(ClassifierI):
         classes = self._encoder.classes_
         return [classes[i] for i in self._clf.predict(X)]
 
-    def batch_prob_classify(self, featuresets):
+    def prob_classify_many(self, featuresets):
         """Compute per-class probabilities for a batch of samples.
 
         :param featuresets: An iterable over featuresets, each a dict mapping

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se> (additions)
@@ -10,7 +10,7 @@
 #         Geoffrey Sampson <sampson@cantab.net> (additions)
 #         Ilia Kurenkov <ilia.kurenkov@gmail.com> (additions)
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -48,6 +48,7 @@ from itertools import islice
 from collections import defaultdict
 from functools import reduce
 from nltk import compat
+from nltk.compat import Counter
 
 from nltk.internals import raise_unorderable_types
 
@@ -57,11 +58,8 @@ _NINF = float('-1e300')
 ##  Frequency Distributions
 ##//////////////////////////////////////////////////////
 
-# [SB] inherit from defaultdict?
-# [SB] for NLTK 3.0, inherit from collections.Counter?
-
 @compat.python_2_unicode_compatible
-class FreqDist(dict):
+class FreqDist(Counter):
     """
     A frequency distribution for the outcomes of an experiment.  A
     frequency distribution records the number of times each outcome of
@@ -82,15 +80,13 @@ class FreqDist(dict):
         >>> sent = 'This is an example sentence'
         >>> fdist = FreqDist()
         >>> for word in word_tokenize(sent):
-        ...    fdist.inc(word.lower())
+        ...    fdist[word.lower()] += 1
 
     An equivalent way to do this is with the initializer:
 
         >>> fdist = FreqDist(word.lower() for word in word_tokenize(sent))
 
     """
-
-    _N = 0
 
     def __init__(self, samples=None):
         """
@@ -108,43 +104,7 @@ class FreqDist(dict):
             distribution with.
         :type samples: Sequence
         """
-        dict.__init__(self)
-        self._reset_caches()
-        if samples:
-            self.update(samples)
-
-    def inc(self, sample, count=1):
-        """
-        Increment this FreqDist's count for the given sample.
-
-        :param sample: The sample whose count should be incremented.
-        :type sample: any
-        :param count: The amount to increment the sample's count by.
-        :type count: int
-        :rtype: None
-        :raise NotImplementedError: If ``sample`` is not a
-               supported sample type.
-        """
-        if count == 0: return
-        self[sample] = self.get(sample,0) + count
-
-    def __setitem__(self, sample, value):
-        """
-        Set this FreqDist's count for the given sample.
-
-        :param sample: The sample whose count should be incremented.
-        :type sample: any hashable object
-        :param value: The new value for the sample's count
-        :type value: int
-        :rtype: None
-        :raise TypeError: If ``sample`` is not a supported sample type.
-        """
-
-        self._N += (value - self.get(sample, 0))
-        dict.__setitem__(self, sample, value)
-
-        # Invalidate the caches
-        self._reset_caches()
+        Counter.__init__(self, samples)
 
     def N(self):
         """
@@ -155,7 +115,7 @@ class FreqDist(dict):
 
         :rtype: int
         """
-        return self._N
+        return sum(self.values())
 
     def B(self):
         """
@@ -168,16 +128,6 @@ class FreqDist(dict):
         """
         return len(self)
 
-    def samples(self):
-        """
-        Return a list (or an iterator under Python 3.x) of all samples
-        that have been recorded as outcomes by this frequency distribution.
-        Use ``fd[sample]`` to determine the count for each sample.
-
-        :rtype: list
-        """
-        return self.keys()
-
     def hapaxes(self):
         """
         Return a list of all samples that occur once (hapax legomena)
@@ -186,12 +136,14 @@ class FreqDist(dict):
         """
         return [item for item in self if self[item] == 1]
 
-    def Nr(self, r, bins=None):
-        """
-        Return the number of samples with count r.
 
-        :type r: int
-        :param r: A sample count.
+    def Nr(self, r, bins=None):
+        return self.r_Nr(bins)[r]
+
+    def r_Nr(self, bins=None):
+        """
+        Return the dictionary mapping r to Nr, the number of samples with frequency r, where Nr > 0.
+
         :type bins: int
         :param bins: The number of possible sample outcomes.  ``bins``
             is used to calculate Nr(0).  In particular, Nr(0) is
@@ -199,36 +151,15 @@ class FreqDist(dict):
             defaults to ``self.B()`` (so Nr(0) will be 0).
         :rtype: int
         """
-        if r < 0: raise IndexError('FreqDist.Nr(): r must be non-negative')
 
-        # Special case for Nr(0):
-        if r == 0:
-            return (bins-self.B() if bins is not None else 0)
+        _r_Nr = defaultdict(int)
+        for count in self.values():
+            _r_Nr[count] += 1
 
-        # We have to search the entire distribution to find Nr.  Since
-        # this is an expensive operation, and is likely to be used
-        # repeatedly, cache the results.
-        if self._Nr_cache is None:
-            self._cache_Nr_values()
+        # Special case for Nr[0]:
+        _r_Nr[0] = bins - self.B() if bins is not None else 0
 
-        return self._Nr_cache.get(r, 0)
-
-    def _Nr_nonzero(self):
-        """
-        Return (r, Nr(r)) tuples for all r such as Nr(r) > 0 (sorted by r).
-        """
-        if self._Nr_cache is None:
-            self._cache_Nr_values()
-        return sorted(self._Nr_cache.items())
-
-    def _cache_Nr_values(self):
-        Nr = defaultdict(int)
-        for sample in self:
-            c = self.get(sample, 0)
-            if c == 0 and c not in Nr:
-                continue
-            Nr[c] += 1
-        self._Nr_cache = Nr
+        return _r_Nr
 
     def _cumulative_frequencies(self, samples=None):
         """
@@ -237,7 +168,7 @@ class FreqDist(dict):
         with the largest.
 
         :param samples: the samples whose frequencies should be returned.
-        :type sample: any
+        :type samples: any
         :rtype: list(float)
         """
         cf = 0.0
@@ -264,9 +195,9 @@ class FreqDist(dict):
         :type sample: any
         :rtype: float
         """
-        if self._N == 0:
+        if self.N() == 0:
             return 0
-        return float(self[sample]) / self._N
+        return float(self[sample]) / self.N()
 
     def max(self):
         """
@@ -280,11 +211,9 @@ class FreqDist(dict):
                 frequency distribution.
         :rtype: any or None
         """
-        if self._max_cache is None:
-            if len(self) == 0:
-                raise ValueError('A FreqDist must have at least one sample before max is defined.')
-            self._max_cache = max((a,b) for (b,a) in self.items())[1]
-        return self._max_cache
+        if len(self) == 0:
+            raise ValueError('A FreqDist must have at least one sample before max is defined.')
+        return self.most_common(1)[0][0]
 
     def plot(self, *args, **kwargs):
         """
@@ -362,68 +291,6 @@ class FreqDist(dict):
             print("%4d" % freqs[i], end=' ')
         print()
 
-    def _sort_keys_by_value(self):
-        if not self._item_cache:
-            self._item_cache = sorted(dict.items(self), key=lambda x:(-x[1], x[0]))
-
-    def keys(self):
-        """
-        Return the samples sorted in decreasing order of frequency.
-        Returns a list in Python 2.x, and an iterator in Python 3.x.
-        """
-        self._sort_keys_by_value()
-        return map(itemgetter(0), self._item_cache)
-
-    def values(self):
-        """
-        Return the samples sorted in decreasing order of frequency.
-        Returns a list in Python 2.x, and an iterator in Python 3.x.
-        """
-        self._sort_keys_by_value()
-        return map(itemgetter(1), self._item_cache)
-
-    def items(self):
-        """
-        Return the items sorted in decreasing order of frequency.
-
-        :rtype: list(tuple)
-        """
-        self._sort_keys_by_value()
-        return self._item_cache[:]
-
-    def __iter__(self):
-        """
-        Return the samples sorted in decreasing order of frequency.
-
-        :rtype: iter
-        """
-        return iter(self.keys())
-
-    def iterkeys(self):
-        """
-        Return the samples sorted in decreasing order of frequency.
-
-        :rtype: iter
-        """
-        return iter(self.keys())
-
-    def itervalues(self):
-        """
-        Return the values sorted in decreasing order.
-
-        :rtype: iter
-        """
-        return iter(self.values())
-
-    def iteritems(self):
-        """
-        Return the items sorted in decreasing order of frequency.
-
-        :rtype: iter of any
-        """
-        self._sort_keys_by_value()
-        return iter(self._item_cache)
-
     def copy(self):
         """
         Create a copy of this frequency distribution.
@@ -431,46 +298,6 @@ class FreqDist(dict):
         :rtype: FreqDist
         """
         return self.__class__(self)
-
-    def update(self, samples):
-        """
-        Update the frequency distribution with the provided list of samples.
-        This is a faster way to add multiple samples to the distribution.
-
-        :param samples: The samples to add.
-        :type samples: list
-        """
-        try:
-            sample_iter = compat.iteritems(samples)
-        except:
-            sample_iter = ((x, 1) for x in samples)
-        for sample, count in sample_iter:
-            self.inc(sample, count=count)
-
-    def pop(self, other):
-        self._N -= 1
-        self._reset_caches()
-        return dict.pop(self, other)
-
-    def popitem(self):
-        self._N -= 1
-        self._reset_caches()
-        return dict.popitem(self)
-
-    def clear(self):
-        self._N = 0
-        self._reset_caches()
-        dict.clear(self)
-
-    def _reset_caches(self):
-        self._Nr_cache = None
-        self._max_cache = None
-        self._item_cache = None
-
-    def __add__(self, other):
-        clone = self.copy()
-        clone.update(other)
-        return clone
 
     def __le__(self, other):
         if not isinstance(other, FreqDist):
@@ -490,19 +317,27 @@ class FreqDist(dict):
         """
         return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
 
+    def pprint(self, maxlen=10):
+        """
+        Return a string representation of this FreqDist.
+
+        :param maxlen: The maximum number of items to display
+        :type maxlen: int
+        :rtype: string
+        """
+        items = ['{0!r}: {1!r}'.format(*item) for item in self.most_common(maxlen)]
+        if len(self) > maxlen:
+            items.append('...')
+        return 'FreqDist({{{0}}})'.format(', '.join(items))
+
     def __str__(self):
         """
         Return a string representation of this FreqDist.
 
         :rtype: string
         """
-        items = ['%r: %r' % (s, self[s]) for s in self.keys()[:10]]
-        if len(self) > 10:
-            items.append('...')
-        return '<FreqDist: %s>' % ', '.join(items)
+        return self.pprint()
 
-    def __getitem__(self, sample):
-        return self.get(sample, 0)
 
 ##//////////////////////////////////////////////////////
 ##  Probability Distributions
@@ -591,6 +426,7 @@ class ProbDistI(object):
         ``self.prob(samp)``.
         """
         p = random.random()
+        p_init = p
         for sample in self.samples():
             p -= self.prob(sample)
             if p <= 0: return sample
@@ -600,7 +436,7 @@ class ProbDistI(object):
         # we *should* never get here
         if self.SUM_TO_ONE:
             warnings.warn("Probability distribution %r sums to %r; generate()"
-                          " is returning an arbitrary sample." % (self, 1-p))
+                          " is returning an arbitrary sample." % (self, p_init-p))
         return random.choice(list(self.samples()))
 
 
@@ -1041,7 +877,8 @@ class HeldoutProbDist(ProbDistI):
 
         # Calculate Tr, Nr, and N.
         Tr = self._calculate_Tr()
-        Nr = [base_fdist.Nr(r, bins) for r in range(self._max_r+1)]
+        r_Nr = base_fdist.r_Nr(bins)
+        Nr = [r_Nr[r] for r in range(self._max_r+1)]
         N = heldout_fdist.N()
 
         # Use Tr, Nr, and N to compute the probability estimate for
@@ -1179,7 +1016,7 @@ class CrossValidationProbDist(ProbDistI):
 
     def samples(self):
         # [xx] nb: this is not too efficient
-        return set(sum([fd.keys() for fd in self._freqdists], []))
+        return set(sum([list(fd) for fd in self._freqdists], []))
 
     def prob(self, sample):
         # Find the average probability estimate returned by each
@@ -1245,7 +1082,7 @@ class WittenBellProbDist(ProbDistI):
         :type bins: int
         """
         assert bins is None or bins >= freqdist.B(),\
-               'Bins parameter must not be less than freqdist.B()'
+               'bins parameter must not be less than %d=freqdist.B()' % freqdist.B()
         if bins is None:
             bins = freqdist.B()
         self._freqdist = freqdist
@@ -1363,6 +1200,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
     - slope: b = sigma ((xi-E(x)(yi-E(y))) / sigma ((xi-E(x))(xi-E(x)))
     - intercept: a = E(y) - b.E(x)
     """
+    SUM_TO_ONE = False
     def __init__(self, freqdist, bins=None):
         """
         :param freqdist: The frequency counts upon which to base the
@@ -1374,7 +1212,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         :type bins: int
         """
         assert bins is None or bins > freqdist.B(),\
-               'Bins parameter must not be less than freqdist.B() + 1'
+               'bins parameter must not be less than %d=freqdist.B()+1' % (freqdist.B()+1)
         if bins is None:
             bins = freqdist.B() + 1
         self._freqdist = freqdist
@@ -1384,14 +1222,20 @@ class SimpleGoodTuringProbDist(ProbDistI):
         self._switch(r, nr)
         self._renormalize(r, nr)
 
+    def _r_Nr_non_zero(self):
+        r_Nr = self._freqdist.r_Nr()
+        del r_Nr[0]
+        return r_Nr
+ 
     def _r_Nr(self):
         """
         Split the frequency distribution in two list (r, Nr), where Nr(r) > 0
         """
-        nonzero = self._freqdist._Nr_nonzero()
+        nonzero = self._r_Nr_non_zero()
+
         if not nonzero:
             return [], []
-        return zip(*nonzero)
+        return zip(*sorted(nonzero.items()))
 
     def find_best_fit(self, r, nr):
         """
@@ -1816,7 +1660,7 @@ class ConditionalFreqDist(defaultdict):
         >>> cfdist = ConditionalFreqDist()
         >>> for word in word_tokenize(sent):
         ...     condition = len(word)
-        ...     cfdist[condition].inc(word)
+        ...     cfdist[condition][word] += 1
 
     An equivalent way to do this is with the initializer:
 
@@ -1851,7 +1695,7 @@ class ConditionalFreqDist(defaultdict):
         defaultdict.__init__(self, FreqDist)
         if cond_samples:
             for (cond, sample) in cond_samples:
-                self[cond].inc(sample)
+                self[cond][sample] += 1
 
     def __reduce__(self):
         kv_pairs = ((cond, self[cond]) for cond in self.conditions())
@@ -1867,7 +1711,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: list
         """
-        return sorted(self.keys())
+        return list(self.keys())
 
     def N(self):
         """
@@ -1898,7 +1742,7 @@ class ConditionalFreqDist(defaultdict):
                              'See http://matplotlib.sourceforge.net/')
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
-        conditions = _get_kwarg(kwargs, 'conditions', self.conditions())
+        conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(kwargs, 'samples',
                              sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
@@ -1940,7 +1784,7 @@ class ConditionalFreqDist(defaultdict):
         """
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
-        conditions = _get_kwarg(kwargs, 'conditions', self.conditions())
+        conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         samples = _get_kwarg(kwargs, 'samples',
                              sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
 
@@ -2013,7 +1857,7 @@ class ConditionalProbDistI(dict):
 
         :rtype: list
         """
-        return self.keys()
+        return list(self.keys())
 
     def __repr__(self):
         """
@@ -2264,9 +2108,9 @@ def _create_rand_fdist(numsamples, numoutcomes):
     import random
     fdist = FreqDist()
     for x in range(numoutcomes):
-        y = (random.randint(1, (1+numsamples)/2) +
-             random.randint(0, numsamples/2))
-        fdist.inc(y)
+        y = (random.randint(1, (1 + numsamples) // 2) +
+             random.randint(0, numsamples // 2))
+        fdist[y] += 1
     return fdist
 
 def _create_sum_pdist(numsamples):
@@ -2275,9 +2119,9 @@ def _create_sum_pdist(numsamples):
     ``_create_rand_fdist(numsamples, x)``.
     """
     fdist = FreqDist()
-    for x in range(1, (1+numsamples)/2+1):
-        for y in range(0, numsamples/2+1):
-            fdist.inc(x+y)
+    for x in range(1, (1 + numsamples) // 2 + 1):
+        for y in range(0, numsamples // 2 + 1):
+            fdist[x+y] += 1
     return MLEProbDist(fdist)
 
 def demo(numsamples=6, numoutcomes=500):
@@ -2361,12 +2205,12 @@ def gt_demo():
     emma_words = corpus.gutenberg.words('austen-emma.txt')
     fd = FreqDist(emma_words)
     sgt = SimpleGoodTuringProbDist(fd)
-    katz = SimpleGoodTuringProbDist(fd, 7)
-    print('%18s %8s  %14s  %12s' \
-        % ("word", "freqency", "SimpleGoodTuring", "Katz-cutoff" ))
-    for key in fd:
-        print('%18s %8d  %12e   %14e   %12e' \
-            % (key, fd[key], sgt.prob(key), katz.prob(key)))
+    print('%18s %8s  %14s' \
+        % ("word", "freqency", "SimpleGoodTuring"))
+    fd_keys_sorted=(key for key, value in sorted(fd.items(), key=lambda item: item[1], reverse=True))
+    for key in fd_keys_sorted:
+        print('%18s %8d  %14e' \
+            % (key, fd[key], sgt.prob(key)))
 
 if __name__ == '__main__':
     demo(6, 10)

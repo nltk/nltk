@@ -1,12 +1,12 @@
 # Natural Language Toolkit: Hidden Markov Model
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Trevor Cohn <tacohn@csse.unimelb.edu.au>
 #         Philip Blunsom <pcbl@csse.unimelb.edu.au>
 #         Tiago Tresoldi <tiago@tresoldi.pro.br> (fixes)
 #         Steven Bird <stevenbird1@gmail.com> (fixes)
 #         Joseph Frazee <jfrazee@mail.utexas.edu> (fixes)
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -1067,10 +1067,10 @@ class HiddenMarkovModelTrainer(object):
                 state = token[_TAG]
                 symbol = token[_TEXT]
                 if lasts is None:
-                    starting.inc(state)
+                    starting[state] += 1
                 else:
-                    transitions[lasts].inc(state)
-                outputs[state].inc(symbol)
+                    transitions[lasts][state] += 1
+                outputs[state][symbol] += 1
                 lasts = state
 
                 # update the state and symbol lists

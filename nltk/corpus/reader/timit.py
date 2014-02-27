@@ -2,9 +2,9 @@
 #
 # Copyright (C) 2001-2007 NLTK Project
 # Author: Haejoong Lee <haejoong@ldc.upenn.edu>
-#         Steven Bird <sb@ldc.upenn.edu>
+#         Steven Bird <stevenbird1@gmail.com>
 #         Jacob Perkins <japerk@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 # [xx] this docstring is out-of-date:
@@ -130,8 +130,8 @@ from nltk import compat
 from nltk.tree import Tree
 from nltk.internals import import_from_stdlib
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class TimitCorpusReader(CorpusReader):
     """

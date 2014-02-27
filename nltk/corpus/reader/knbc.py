@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # KNB Corpus reader
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
@@ -60,7 +60,8 @@ class KNBCorpusReader(SyntaxCorpusReader):
 
         return res
 
-    def _tag(self, t, simplify_tags=False):
+    # ignores tagset argument
+    def _tag(self, t, tagset=None):
         res = []
         for line in t.splitlines():
             # ignore the Bunsets headers

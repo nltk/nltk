@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Feature Structures
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>,
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>,
 #         Rob Speer,
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
@@ -62,7 +62,7 @@ Python ``dicts`` and ``lists`` can be used as "light-weight" feature
 structures.
 
     >>> from nltk.featstruct import unify
-    >>> unify(dict(x=1, y=dict()), dict(a='a', y=dict(b='b')))
+    >>> unify(dict(x=1, y=dict()), dict(a='a', y=dict(b='b')))  # doctest: +SKIP
     {'y': {'b': 'b'}, 'x': 1, 'a': 'a'}
 
 However, you should keep in mind the following caveats:
@@ -2321,8 +2321,8 @@ class FeatStructParser(object):
 
             # Comma or looking at close paren
             m = re.compile(r'\s*(,|\+|(?=%s))\s*' % cp).match(s, position)
-            if m.group(1) == '+': seen_plus = True
             if not m: raise ValueError("',' or '+' or '%s'" % cp, position)
+            if m.group(1) == '+': seen_plus = True
             position = m.end()
 
 ######################################################################
