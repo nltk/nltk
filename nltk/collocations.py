@@ -64,7 +64,7 @@ class AbstractCollocationFinder(object):
 
     @staticmethod
     def _ngram_freqdist(words, n):
-        return FreqDist(tuple(words[i:i+n]) for i in range(len(words)-1))
+        return FreqDist(tuple(words[i:i + n]) for i in range(len(words) - 1))
 
     def _apply_filter(self, fn=lambda ngram, freq: False):
         """Generic filter removes ngrams from the frequency distribution
@@ -112,7 +112,7 @@ class AbstractCollocationFinder(object):
 
     def nbest(self, score_fn, n):
         """Returns the top n ngrams when scored by the given function."""
-        return [p for p,s in self.score_ngrams(score_fn)[:n]]
+        return [p for p, s in self.score_ngrams(score_fn)[:n]]
 
     def above_score(self, score_fn, min_score):
         """Returns a sequence of ngrams, ordered by decreasing score, whose
@@ -334,9 +334,9 @@ def demo(scorer=None, compare_scorer=None):
         print(file)
         print('\t', [' '.join(tup) for tup in cf.nbest(scorer, 15)])
         print('\t Correlation to %s: %0.4f' % (compare_scorer.__name__,
-                spearman_correlation(
-                    ranks_from_scores(cf.score_ngrams(scorer)),
-                    ranks_from_scores(cf.score_ngrams(compare_scorer)))))
+                                               spearman_correlation(
+                                                   ranks_from_scores(cf.score_ngrams(scorer)),
+                                                   ranks_from_scores(cf.score_ngrams(compare_scorer)))))
 
 # Slows down loading too much
 # bigram_measures = BigramAssocMeasures()
@@ -345,6 +345,7 @@ def demo(scorer=None, compare_scorer=None):
 if __name__ == '__main__':
     import sys
     from nltk.metrics import BigramAssocMeasures
+
     try:
         scorer = eval('BigramAssocMeasures.' + sys.argv[1])
     except IndexError:

@@ -111,6 +111,19 @@ Alternatively, we can select those above a minimum score value:
     ...                           1.0 / len(nltk.trigrams(tokens))))
     [('I', 'do', 'not'), ('do', 'not', 'like')]
 
+Consider the sentence with a slight change:
+    >>> text = "I do not like green eggs and ham, I do not like them green Sam I am!"
+    >>> tokens = nltk.wordpunct_tokenize(text)
+    >>> finder = TrigramCollocationFinder.from_words(tokens)
+    >>> sorted(finder.nbest(trigram_measures.raw_freq, 4))
+    [('do', 'not', 'like'), ('I', 'do', 'not'), ('green', 'Sam', 'I'), ('like', 'them', 'green')]
+
+Now spanning intervening words:
+    >>> finder = TrigramCollocationFinder.from_words(tokens)
+    >>> finder = TrigramCollocationFinder.from_words(tokens, window_size=5)
+    >>> sorted(finder.nbest(trigram_measures.likelihood_ratio, 4))
+    [('I', 'do', 'not'), ('do', 'not', 'like'), ('green', 'Sam', 'I'), ('not', 'like', 'green')]
+
 Filtering candidates
 ~~~~~~~~~~~~~~~~~~~~
 
