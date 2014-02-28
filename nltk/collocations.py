@@ -239,6 +239,76 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
                         n_all)
 
 
+class QuadgramCollocationFinder(AbstractCollocationFinder):
+    """A tool for the finding and ranking of quadgram collocations or other association measures.
+    It is often useful to use from_words() rather thanconstructing an instance directly.
+    """
+
+    def __init__(self, word_fd, quadgram_fd, trigram_fd, bigram_fd, wildcard_bfd, wildcard_tfd):
+        """Construct a TrigramCollocationFinder, given FreqDists for appearances of words,
+        bigrams, two words with any word between them,and trigrams.
+        """
+        AbstractCollocationFinder.__init__(self, word_fd, quadgram_fd)
+        self.trigram_fd = trigram_fd
+        self.bigram_fd = bigram_fd
+        self.wildcard_bfd = wildcard_bfd
+        self.wildcard_tfd = wildcard_tfd
+
+    @classmethod
+    def from_words(cls, words):
+        wfd = FreqDist()
+        bfd = FreqDist()
+        tfd = FreqDist()
+        qfd = FreqDist()
+        wildbfd = FreqDist()
+        wildtfd = FreqDist()
+
+        for w1, w2, w3, w4 in ngrams(words, 4, pad_right=True):
+            wfd[w1] += 1
+            if w2 is None:
+                continue
+            bfd[(w1, w2)] += 1
+            if w3 is None:
+                continue
+            tfd[(w1, w2, w3)] += 1
+            wildbfd[(w1, w3)] += 1
+            if w4 is None:
+                continue
+            qfd[(w1, w2, w3, w4)] += 1
+            wildbfd[(w1, w4)] += 1
+            wildtfd[(w1, w3, w4)] += 1
+            wildtfd[(w1, w2, w4)] += 1
+
+        return cls(wfd, qfd, tfd, bfd, wildbfd, wildtfd)
+
+    def score_ngram(self, score_fn, w1, w2, w3, w4):
+        n_all = self.word_fd.N()
+        n_iiii = self.ngram_fd[(w1, w2, w3, w4)]
+        if not n_iiii:
+            return
+        n_iiix = self.trigram_fd[(w1, w2, w3)]
+        n_xiii = self.trigram_fd[(w2, w3, w4)]
+        n_iixi = self.wildcard_tfd[(w1, w2, w4)]
+        n_ixii = self.wildcard_tfd[(w1, w3, w4)]
+
+        n_iixx = self.bigram_fd[(w1, w2)]
+        n_xxii = self.bigram_fd[(w3, w4)]
+        n_xiix = self.bigram_fd[(w2, w3)]
+        n_ixix = self.wildcard_bfd[(w1, w3)]
+        n_ixxi = self.wildcard_bfd[(w1, w4)]
+        n_xixi = self.wildcard_bfd[(w2, w4)]
+
+        n_ixxx = self.word_fd[w1]
+        n_xixx = self.word_fd[w2]
+        n_xxix = self.word_fd[w3]
+        n_xxxi = self.word_fd[w4]
+        return score_fn(n_iiii,
+                        (n_iiix, n_iixi, n_ixii, n_xiii),
+                        (n_iixx, n_ixix, n_ixxi, n_xixi, n_xxii, n_xiix),
+                        (n_ixxx, n_xixx, n_xxix, n_xxxi),
+                        n_all)
+
+
 def demo(scorer=None, compare_scorer=None):
     """Finds bigram collocations in the files of the WebText corpus."""
     from nltk.metrics import BigramAssocMeasures, spearman_correlation, ranks_from_scores
@@ -286,5 +356,4 @@ if __name__ == '__main__':
 
     demo(scorer, compare_scorer)
 
-
-__all__ = ['BigramCollocationFinder', 'TrigramCollocationFinder']
+__all__ = ['BigramCollocationFinder', 'TrigramCollocationFinder', 'QuadgramCollocationFinder']
