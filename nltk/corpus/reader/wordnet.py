@@ -11,7 +11,9 @@
 """
 An NLTK interface for WordNet
 
-WordNet is a lexical database of English. Using synsets, helps find conceptual relationships between words such as hypernyms, hyponyms, synonyms, antonyms etc.
+WordNet is a lexical database of English.
+Using synsets, helps find conceptual relationships between words
+such as hypernyms, hyponyms, synonyms, antonyms etc.
 
 For details about WordNet see:
 http://wordnet.princeton.edu/
