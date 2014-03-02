@@ -257,7 +257,9 @@ class QuadgramCollocationFinder(AbstractCollocationFinder):
         self.ixii = ixii
 
     @classmethod
-    def from_words(cls, words):
+    def from_words(cls, words, window_size=4):
+        if window_size < 4:
+            raise ValueError("Specify window_size at least 4")
         ixxx = FreqDist()
         iiii = FreqDist()
         ii = FreqDist()
@@ -267,21 +269,23 @@ class QuadgramCollocationFinder(AbstractCollocationFinder):
         iixi = FreqDist()
         ixii = FreqDist()
 
-        for w1, w2, w3, w4 in ngrams(words, 4, pad_right=True):
-            ixxx[w1] += 1
-            if w2 is None:
-                continue
-            ii[(w1, w2)] += 1
-            if w3 is None:
-                continue
-            iii[(w1, w2, w3)] += 1
-            ixi[(w1, w3)] += 1
-            if w4 is None:
-                continue
-            iiii[(w1, w2, w3, w4)] += 1
-            ixxi[(w1, w4)] += 1
-            ixii[(w1, w3, w4)] += 1
-            iixi[(w1, w2, w4)] += 1
+        for window in ngrams(words, window_size, pad_right=True):
+            w1 = window[0]
+            for w2, w3, w4 in _itertools.combinations(window[1:], 3):
+                ixxx[w1] += 1
+                if w2 is None:
+                    continue
+                ii[(w1, w2)] += 1
+                if w3 is None:
+                    continue
+                iii[(w1, w2, w3)] += 1
+                ixi[(w1, w3)] += 1
+                if w4 is None:
+                    continue
+                iiii[(w1, w2, w3, w4)] += 1
+                ixxi[(w1, w4)] += 1
+                ixii[(w1, w3, w4)] += 1
+                iixi[(w1, w2, w4)] += 1
 
         return cls(ixxx, iiii, ii, iii, ixi, ixxi, iixi, ixii)
 
