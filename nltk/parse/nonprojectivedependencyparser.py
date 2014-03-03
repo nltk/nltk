@@ -328,7 +328,7 @@ class ProbabilisticNonprojectiveParser(object):
         for row_index in range(len(self.scores)):
             for col_index in range(len(self.scores[row_index])):
 #               print self.scores[row_index][col_index]
-                if col_index in originals and self.scores[row_index][col_index] > max_score:
+                if col_index in originals and (max_score is None or self.scores[row_index][col_index] > max_score):
                     max_score = self.scores[row_index][col_index]
                     max_arc = row_index
                     print(row_index, ',', col_index)
@@ -349,7 +349,7 @@ class ProbabilisticNonprojectiveParser(object):
         max_orig = None
         for row_index in range(len(self.scores)):
             for col_index in range(len(self.scores[row_index])):
-                if col_index in originals and self.scores[row_index][col_index] > max_score:
+                if col_index in originals and (max_score is None or self.scores[row_index][col_index] > max_score):
                     max_score = self.scores[row_index][col_index]
                     max_arc = row_index
                     max_orig = col_index
@@ -396,7 +396,7 @@ class ProbabilisticNonprojectiveParser(object):
         # Iterate over unvisited vertices
         nr_vertices = len(tokens)
         betas = {}
-        while(len(unvisited_vertices) > 0):
+        while len(unvisited_vertices) > 0:
             # Mark current node as visited
             current_vertex = unvisited_vertices.pop(0)
             print('current_vertex:', current_vertex)
