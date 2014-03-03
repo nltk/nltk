@@ -108,7 +108,6 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
                         label = "T"
                     else:
                         label = "F"
-                    features = [head_node['word'], head_node['tag'], child_node['word'], child_node['tag']]
                     labeled_examples.append((dict(a=head_node['word'],b=head_node['tag'],c=child_node['word'],d=child_node['tag']), label))
         # Train the classifier
         import nltk
@@ -155,8 +154,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
 # A Scorer for Demo Purposes
 #################################################################
 # A short class necessary to show parsing example from paper
-class DemoScorer:
-
+class DemoScorer(DependencyScorerI):
     def train(self, graphs):
         print('Training...')
 
@@ -272,12 +270,12 @@ class ProbabilisticNonprojectiveParser(object):
         takes a list of node addresses and replaces any collapsed
         node addresses with their original addresses.
 
-        :type new_address: A list of integers.
-        :param new_addresses: A list of node addresses to check for
+        :type new_indexes: A list of integers.
+        :param new_indexes: A list of node addresses to check for
         subsumed nodes.
         """
         swapped = True
-        while(swapped):
+        while swapped:
             originals = []
             swapped = False
             for new_index in new_indexes:
@@ -450,7 +448,6 @@ class ProbabilisticNonprojectiveParser(object):
         for i in range(len(tokens) + 1, nr_vertices + 1):
             betas[betas[i][1]] = betas[i]
         print('Betas: ', betas)
-        new_graph = DependencyGraph()
         for node in original_graph.nodelist:
             node['deps'] = []
         for i in range(1, len(tokens) + 1):
@@ -481,7 +478,7 @@ class NonprojectiveDependencyParser(object):
         Creates a new ``NonprojectiveDependencyParser``.
 
         :param dependency_grammar: a grammar of word-to-word relations.
-        :type depenedncy_grammar: DependencyGrammar
+        :type dependency_grammar: DependencyGrammar
 	    """
         self._grammar = dependency_grammar
 
@@ -525,7 +522,7 @@ class NonprojectiveDependencyParser(object):
         # Set roots to attempt
         if len(roots) > 1:
             print("No parses found.")
-            return False
+            return []
         elif len(roots) == 0:
             for i in range(len(tokens)):
                 roots.append(i)
@@ -536,7 +533,7 @@ class NonprojectiveDependencyParser(object):
             analysis = [[] for i in range(len(possible_heads))]
             i = 0
             forward = True
-            while(i >= 0):
+            while i >= 0:
                 if forward:
                     if len(possible_heads[i]) == 1:
                         analysis[i] = possible_heads[i][0]
@@ -588,7 +585,7 @@ class NonprojectiveDependencyParser(object):
                 graph = DependencyGraph()
                 graph.nodelist[0]['deps'] = root + 1
                 for i in range(len(tokens)):
-                    node = {'word':tokens[i], 'address':i+1}
+                    node = {'word': tokens[i], 'address': i+1}
                     node['deps'] = [j+1 for j in range(len(tokens)) if analysis[j] == i]
                     graph.nodelist.append(node)
 #                cycle = graph.contains_cycle()
