@@ -247,27 +247,21 @@ class Lemma(_WordNetObject):
 
         self._key = None # gets set later.
 
-    @property
     def name(self):
         return self._name
 
-    @property
     def syntactic_marker(self):
         return self._syntactic_marker
 
-    @property
     def synset(self):
         return self._synset
 
-    @property
     def frame_strings(self):
         return self._frame_strings
 
-    @property
     def frame_ids(self):
         return self._frame_ids
 
-    @property
     def key(self):
         return self._key
 
@@ -374,39 +368,30 @@ class Synset(_WordNetObject):
         self._pointers = defaultdict(set)
         self._lemma_pointers = defaultdict(set)
 
-    @property
     def pos(self):
         return self._pos
 
-    @property
     def offset(self):
         return self._offset
 
-    @property
     def name(self):
         return self._name
 
-    @property
     def frame_ids(self):
         return self._frame_ids
 
-    @property
     def lemmas(self):
         return self._lemmas
 
-    @property
     def lemma_names(self):
         return self._lemma_names
 
-    @property
     def definition(self):
         return self._definition
 
-    @property
     def examples(self):
         return self._examples
 
-    @property
     def lexname(self):
         return self._lexname
 
