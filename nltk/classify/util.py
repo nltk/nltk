@@ -79,12 +79,12 @@ def attested_labels(tokens):
     return tuple(set(label for (tok,label) in tokens))
 
 def log_likelihood(classifier, gold):
-    results = classifier.batch_prob_classify([fs for (fs,l) in gold])
+    results = classifier.prob_classify_many([fs for (fs,l) in gold])
     ll = [pdist.prob(l) for ((fs,l), pdist) in zip(gold, results)]
     return math.log(float(sum(ll))/len(ll))
 
 def accuracy(classifier, gold):
-    results = classifier.batch_classify([fs for (fs,l) in gold])
+    results = classifier.classify_many([fs for (fs,l) in gold])
     correct = [l==r for ((fs,l), r) in zip(gold, results)]
     if correct:
         return float(sum(correct))/len(correct)
@@ -192,7 +192,7 @@ def names_demo(trainer, features=names_demo_features):
     # likelihood and some sample probability distributions.
     try:
         test_featuresets = [features(n) for (n,g) in test]
-        pdists = classifier.batch_prob_classify(test_featuresets)
+        pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
         print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))
@@ -246,7 +246,7 @@ def partial_names_demo(trainer, features=names_demo_features):
     # likelihood and some sample probability distributions.
     try:
         test_featuresets = [features(n) for (n,m) in test]
-        pdists = classifier.batch_prob_classify(test_featuresets)
+        pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
         print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))
@@ -299,7 +299,7 @@ def wsd_demo(trainer, word, features, n=1000):
     # likelihood and some sample probability distributions.
     try:
         test_featuresets = [features(i) for (i,n) in test]
-        pdists = classifier.batch_prob_classify(test_featuresets)
+        pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
         print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))

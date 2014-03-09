@@ -23,7 +23,7 @@ from nltk.sem import evaluate
 ## Utility functions for connecting parse output to semantics
 ##############################################################
 
-def batch_parse(inputs, grammar, trace=0):
+def parse_sents(inputs, grammar, trace=0):
     """
     Convert input sentences into syntactic trees.
 
@@ -69,7 +69,7 @@ def root_semrep(syntree, semkey='SEM'):
         print("has no specification for the feature %s" % semkey)
     raise
 
-def batch_interpret(inputs, grammar, semkey='SEM', trace=0):
+def interpret_sents(inputs, grammar, semkey='SEM', trace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
@@ -80,9 +80,9 @@ def batch_interpret(inputs, grammar, semkey='SEM', trace=0):
     :rtype: dict
     """
     return [[(syn, root_semrep(syn, semkey)) for syn in syntrees]
-            for syntrees in batch_parse(inputs, grammar, trace=trace)]
+            for syntrees in parse_sents(inputs, grammar, trace=trace)]
 
-def batch_evaluate(inputs, grammar, model, assignment, trace=0):
+def evaluate_sents(inputs, grammar, model, assignment, trace=0):
     """
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
@@ -94,7 +94,7 @@ def batch_evaluate(inputs, grammar, model, assignment, trace=0):
     """
     return [[(syn, sem, model.evaluate("%s" % sem, assignment, trace=trace))
             for (syn, sem) in interpretations]
-            for interpretations in batch_interpret(inputs, grammar)]
+            for interpretations in interpret_sents(inputs, grammar)]
 
 
 ##########################################
@@ -208,7 +208,7 @@ def read_sents(filename, encoding='utf8'):
 
 def demo_legacy_grammar():
     """
-    Check that batch_interpret() is compatible with legacy grammars that use
+    Check that interpret_sents() is compatible with legacy grammars that use
     a lowercase 'sem' feature.
 
     Define 'test.fcfg' to be the following
@@ -222,7 +222,7 @@ def demo_legacy_grammar():
     """)
     print("Reading grammar: %s" % g)
     print("*" * 20)
-    for reading in batch_interpret(['hello'], g, semkey='sem'):
+    for reading in interpret_sents(['hello'], g, semkey='sem'):
         syn, sem = reading[0]
         print()
         print("output: ", sem)
@@ -289,10 +289,10 @@ def demo():
 
     if options.evaluate:
         evaluations = \
-            batch_evaluate(sents, gramfile, model, g, trace=options.semtrace)
+            evaluate_sents(sents, gramfile, model, g, trace=options.semtrace)
     else:
         semreps = \
-            batch_interpret(sents, gramfile, trace=options.syntrace)
+            interpret_sents(sents, gramfile, trace=options.syntrace)
 
     for i, sent in enumerate(sents):
         n = 1

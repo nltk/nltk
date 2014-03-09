@@ -98,13 +98,13 @@ def pos_tag(tokens):
     tagger = load(_POS_TAGGER)
     return tagger.tag(tokens)
 
-def batch_pos_tag(sentences):
+def pos_tag_sents(sentences):
     """
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
     """
     tagger = load(_POS_TAGGER)
-    return tagger.batch_tag(sentences)
+    return tagger.tag_sents(sentences)
 
 
 if __name__ == "__main__":

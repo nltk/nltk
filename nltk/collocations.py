@@ -173,7 +173,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
 
 class TrigramCollocationFinder(AbstractCollocationFinder):
-    """A tool for the finding and ranking of bigram collocations or other
+    """A tool for the finding and ranking of trigram collocations or other
     association measures. It is often useful to use from_words() rather than
     constructing an instance directly.
     """

@@ -24,7 +24,6 @@ import re
 from nltk.probability import FreqDist, LidstoneProbDist
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
-from nltk.model import NgramModel
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
 from nltk.compat import python_2_unicode_compatible, text_type
@@ -374,21 +373,6 @@ class Text(object):
     def readability(self, method):
         # code from nltk_contrib.readability
         raise NotImplementedError
-
-    def generate(self, length=100):
-        """
-        Print random text, generated using a trigram language model.
-
-        :param length: The length of text to generate (default=100)
-        :type length: int
-        :seealso: NgramModel
-        """
-        if '_trigram_model' not in self.__dict__:
-            print("Building ngram index...")
-            estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-            self._trigram_model = NgramModel(3, self, estimator=estimator)
-        text = self._trigram_model.generate(length)
-        print(tokenwrap(text))
 
     def similar(self, word, num=20):
         """
