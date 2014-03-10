@@ -240,12 +240,13 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
 
 class QuadgramCollocationFinder(AbstractCollocationFinder):
     """A tool for the finding and ranking of quadgram collocations or other association measures.
-    It is often useful to use from_words() rather thanconstructing an instance directly.
+    It is often useful to use from_words() rather than constructing an instance directly.
     """
 
     def __init__(self, word_fd, quadgram_fd, ii, iii, ixi, ixxi, iixi, ixii):
-        """Construct a TrigramCollocationFinder, given FreqDists for appearances of words,
-        bigrams, two words with any word between them,and trigrams.
+        """Construct a QuadgramCollocationFinder, given FreqDists for appearances of words,
+        bigrams, trigrams, two words with one word and two words between them, three words
+        with a word between them in both variations.
         """
         AbstractCollocationFinder.__init__(self, word_fd, quadgram_fd)
         self.iii = iii
