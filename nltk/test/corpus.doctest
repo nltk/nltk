@@ -696,7 +696,7 @@ distribution of part-of-speech tags for reduplicated words.
     >>> for record in rotokas[1:]:
     ...     lexeme = record.find('lx').text
     ...     if re.match(r'(.*)\1$', lexeme):
-    ...         redup_pos_freqdist.inc(record.find('ps').text)
+    ...         redup_pos_freqdist[record.find('ps').text] += 1
     >>> for item in redup_pos_freqdist.keys():
     ...     print(item, redup_pos_freqdist[item])
     V 41
