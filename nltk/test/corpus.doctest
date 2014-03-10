@@ -696,7 +696,7 @@ distribution of part-of-speech tags for reduplicated words.
     >>> for record in rotokas[1:]:
     ...     lexeme = record.find('lx').text
     ...     if re.match(r'(.*)\1$', lexeme):
-    ...         redup_pos_freqdist.inc(record.find('ps').text)
+    ...         redup_pos_freqdist[record.find('ps').text] += 1
     >>> for item in redup_pos_freqdist.keys():
     ...     print(item, redup_pos_freqdist[item])
     V 41
@@ -945,10 +945,10 @@ and ``p.attrib['user']``.  They also have text content, accessed using ``p.text`
     >>> print(nltk.corpus.nps_chat.xml_posts()) # doctest: +ELLIPSIS
     [<Element 'Post' at 0...>, <Element 'Post' at 0...>, ...]
     >>> posts = nltk.corpus.nps_chat.xml_posts()
-    >>> list(nltk.FreqDist(p.attrib['class'] for p in posts).keys())
-    ['Statement', 'System', 'Greet', 'Emotion', 'ynQuestion',
-    'whQuestion', 'Accept', 'Bye', 'Emphasis', 'Continuer',
-    'Reject', 'yAnswer', 'nAnswer', 'Clarify', 'Other']
+    >>> sorted(nltk.FreqDist(p.attrib['class'] for p in posts).keys())
+    ['Accept', 'Bye', 'Clarify', 'Continuer', 'Emotion', 'Emphasis',
+    'Greet', 'Other', 'Reject', 'Statement', 'System', 'nAnswer',
+    'whQuestion', 'yAnswer', 'ynQuestion']
     >>> posts[0].text
     'now im left with this gay name'
 

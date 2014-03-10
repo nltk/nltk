@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
-from nltk import hmm
+from nltk.tag import hmm
 
 def _wikipedia_example_hmm():
     # Example from wikipedia
