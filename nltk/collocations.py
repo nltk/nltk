@@ -33,6 +33,7 @@ from __future__ import print_function
 
 import itertools as _itertools
 from operator import itemgetter as _itemgetter
+from nltk.compat import iteritems
 
 from nltk.probability import FreqDist
 from nltk.util import ngrams
@@ -71,7 +72,7 @@ class AbstractCollocationFinder(object):
         if the function returns True when passed an ngram tuple.
         """
         tmp_ngram = FreqDist()
-        for ngram, freq in self.ngram_fd.items():
+        for ngram, freq in iteritems(self.ngram_fd):
             if not fn(ngram, freq):
                 tmp_ngram[ngram] = freq
         self.ngram_fd = tmp_ngram
