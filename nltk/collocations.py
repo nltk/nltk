@@ -64,7 +64,7 @@ class AbstractCollocationFinder(object):
 
     @staticmethod
     def _ngram_freqdist(words, n):
-        return FreqDist(tuple(words[i:i + n]) for i in range(len(words) - 1))
+        return FreqDist(tuple(words[i:i+n]) for i in range(len(words)-1))
 
     def _apply_filter(self, fn=lambda ngram, freq: False):
         """Generic filter removes ngrams from the frequency distribution
