@@ -42,7 +42,7 @@ import nltk.tree
 import pyparsing
 import re
 
-def _ancestors(node):
+def ancestors(node):
     '''
     Returns the list of all nodes dominating the given tree node.
     This method will not work with leaf nodes, since there is no way
@@ -58,7 +58,7 @@ def _ancestors(node):
         current = current.parent()
     return results
 
-def _unique_ancestors(node):
+def unique_ancestors(node):
     '''
     Returns the list of all nodes dominating the given node, where
     there is only a single path of descent.
@@ -354,7 +354,7 @@ def _tgrep_relation_action(_s, _l, tokens):
                                 any(predicate(x) for x in _descendants(n)))
         # A >> B      A is dominated by B (A is a descendant of B).
         elif operator == '>>':
-            retval = lambda n: any(predicate(x) for x in _ancestors(n))
+            retval = lambda n: any(predicate(x) for x in ancestors(n))
         # A <<, B     B is a left-most descendant of A.
         elif operator == '<<,' or operator == '<<1':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
@@ -364,7 +364,7 @@ def _tgrep_relation_action(_s, _l, tokens):
         elif operator == '>>,':
             retval = lambda n: any((predicate(x) and
                                     n in _leftmost_descendants(x))
-                                   for x in _ancestors(n))
+                                   for x in ancestors(n))
         # A <<' B     B is a right-most descendant of A.
         elif operator == '<<\'':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
@@ -374,7 +374,7 @@ def _tgrep_relation_action(_s, _l, tokens):
         elif operator == '>>\'':
             retval = lambda n: any((predicate(x) and
                                     n in _rightmost_descendants(x))
-                                   for x in _ancestors(n))
+                                   for x in ancestors(n))
         # A <<: B     There is a single path of descent from A and B is on it.
         elif operator == '<<:':
             retval = lambda n: (isinstance(n, nltk.tree.Tree) and
@@ -382,7 +382,7 @@ def _tgrep_relation_action(_s, _l, tokens):
                                     for x in _unique_descendants(n)))
         # A >>: B     There is a single path of descent from B and A is on it.
         elif operator == '>>:':
-            retval = lambda n: any(predicate(x) for x in _unique_ancestors(n))
+            retval = lambda n: any(predicate(x) for x in unique_ancestors(n))
         # A . B       A immediately precedes B.
         elif operator == '.':
             retval = lambda n: any(predicate(x)
