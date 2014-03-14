@@ -168,7 +168,7 @@ tags are collapsed to a single category ``NOUN``:
      [('The', 'DET'), ('jury', 'NOUN'), ('further', 'ADV'), ('said', 'VERB'), ('in', 'ADP'), ...]...]
     >>> from nltk.corpus import conll2000, switchboard
     >>> print(conll2000.tagged_words(tagset='universal')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [('Confidence', 'NOUN'), ('in', 'ADP'), ('the', 'DET'), ...]
+    [('Confidence', 'NOUN'), ('in', 'ADP'), ...]
 
 Use ``nltk.app.pos_concordance()`` to access a GUI for searching tagged corpora.
 
