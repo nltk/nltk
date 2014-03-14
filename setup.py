@@ -76,7 +76,7 @@ natural language processing.  NLTK requires Python 2.5 or higher.""",
     'Topic :: Text Processing :: Indexing',
     'Topic :: Text Processing :: Linguistic',
     ],
-    package_data = {'nltk': ['nltk.jar', 'test/*.doctest', 'VERSION']},
+    package_data = {'nltk': ['test/*.doctest', 'VERSION']},
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
     )

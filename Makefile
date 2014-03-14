@@ -36,17 +36,6 @@ demotest:
         -exec echo ==== '{}' ==== \; -exec python '{}' \;
 
 ########################################################################
-# JAVA
-########################################################################
-
-jar: nltk/nltk.jar
-
-JAVA_SRC = $(shell find javasrc/org/nltk -name '*.java')
-nltk/nltk.jar: $(JAVA_SRC)
-	$(MAKE) -C javasrc jar
-	cp javasrc/nltk.jar nltk/nltk.jar
-
-########################################################################
 # DISTRIBUTIONS
 ########################################################################
 
@@ -65,8 +54,6 @@ windist: clean_code
 
 clean: clean_code
 	rm -rf build iso dist api MANIFEST nltk-$(VERSION) nltk.egg-info
-	$(MAKE) -C javasrc clean
-#	rm -f nltk/nltk.jar
 
 clean_code:
 	rm -f `find nltk -name '*.pyc'`
