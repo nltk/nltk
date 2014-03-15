@@ -1052,7 +1052,6 @@ def induce_pcfg(start, productions):
     :param productions: The list of productions that defines the grammar
     :type productions: list(Production)
     """
-
     # Production count: the number of times a given production occurs
     pcount = {}
 
