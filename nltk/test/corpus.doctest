@@ -697,11 +697,11 @@ distribution of part-of-speech tags for reduplicated words.
     ...     lexeme = record.find('lx').text
     ...     if re.match(r'(.*)\1$', lexeme):
     ...         redup_pos_freqdist[record.find('ps').text] += 1
-    >>> for item in sorted(redup_pos_freqdist.keys()):
-    ...     print(item, redup_pos_freqdist[item])
-    ??? 4
-    N 14
+    >>> for item, count in redup_pos_freqdist.most_common():
+    ...     print(item, count)
     V 41
+    N 14
+    ??? 4
 
 This example displays some records from a Rotokas text:
 
