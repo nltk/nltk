@@ -111,6 +111,22 @@ Alternatively, we can select those above a minimum score value:
     ...                           1.0 / len(nltk.trigrams(tokens))))
     [('I', 'do', 'not'), ('do', 'not', 'like')]
 
+Now spanning intervening words:
+
+    >>> finder = TrigramCollocationFinder.from_words(tokens)
+    >>> finder = TrigramCollocationFinder.from_words(tokens, window_size=4)
+    >>> sorted(finder.nbest(trigram_measures.raw_freq, 4))
+    [('I', 'do', 'like'), ('I', 'do', 'not'), ('I', 'not', 'like'), ('do', 'not', 'like')]
+    
+A closer look at the finder's ngram frequencies:
+
+    >>> finder.ngram_fd
+    FreqDist({('do', 'not', 'like'): 2, ('I', 'do', 'like'): 2, ('I', 'do', 'not'): 2, 
+    ('I', 'not', 'like'): 2, ('and', 'ham', ','): 1, ('do', 'not', 'green'): 1, 
+    ('Sam', 'I', 'am'): 1, ('them', 'Sam', 'am'): 1, ('like', 'green', 'and'): 1, 
+    ('do', 'like', 'green'): 1, ...})
+
+
 Filtering candidates
 ~~~~~~~~~~~~~~~~~~~~
 
