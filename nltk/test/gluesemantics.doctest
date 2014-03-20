@@ -351,10 +351,10 @@ Dependency Graph to Glue Formulas
     \x.dog(x) : (iv -o ir)
     \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I5) -o I5))
     >>> glue = Glue()
-    >>> for r in glue.get_readings(glue.gfl_to_compiled(gfl)):
-    ...     print(r.simplify().normalize())
-    exists z1.(dog(z1) & exists z2.(John(z2) & sees(z2,z1)))
+    >>> for r in sorted([r.simplify().normalize() for r in glue.get_readings(glue.gfl_to_compiled(gfl))], key=str):
+    ...     print(r)
     exists z1.(John(z1) & exists z2.(dog(z2) & sees(z1,z2)))
+    exists z1.(dog(z1) & exists z2.(John(z2) & sees(z2,z1)))
 
 -----------------------------------
 Dependency Graph to LFG f-structure
@@ -370,7 +370,7 @@ Dependency Graph to LFG f-structure
 ---------------------------------
 LFG f-structure to Glue
 ---------------------------------
-    >>> for gf in fstruct.to_glueformula_list(GlueDict('nltk:grammars/sample_grammars/glue.semtype')):
+    >>> for gf in fstruct.to_glueformula_list(GlueDict('nltk:grammars/sample_grammars/glue.semtype')): # doctest: +SKIP
     ...     print(gf)
     \x y.sees(x,y) : (i -o (g -o f))
     \x.dog(x) : (gv -o gr)

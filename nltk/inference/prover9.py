@@ -196,7 +196,7 @@ class Prover9Parent(object):
             if stdout: print('stdout:\n', stdout, '\n')
             if stderr: print('stderr:\n', stderr, '\n')
 
-        return (stdout, p.returncode)
+        return (stdout.decode("utf-8"), p.returncode)
 
 
 def convert_to_prover9(input):
