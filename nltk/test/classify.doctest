@@ -66,17 +66,17 @@ Test the Naive Bayes classifier:
     ['y', 'x', 'y', 'x']
     >>> for pdist in classifier.prob_classify_many(test):
     ...     print('%.4f %.4f' % (pdist.prob('x'), pdist.prob('y')))
-    0.3104 0.6896
-    0.5746 0.4254
-    0.3685 0.6315
-    0.6365 0.3635
+    0.3203 0.6797
+    0.5857 0.4143
+    0.3792 0.6208
+    0.6470 0.3530
     >>> classifier.show_most_informative_features()
     Most Informative Features
                            c = 0                   x : y      =      2.0 : 1.0
                            c = 1                   y : x      =      1.5 : 1.0
                            a = 1                   y : x      =      1.4 : 1.0
-                           a = 0                   x : y      =      1.2 : 1.0
                            b = 0                   x : y      =      1.2 : 1.0
+                           a = 0                   x : y      =      1.2 : 1.0
                            b = 1                   y : x      =      1.1 : 1.0
 
 Test the Decision Tree classifier:
