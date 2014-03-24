@@ -172,7 +172,8 @@ class NaiveBayesClassifier(ClassifierI):
 
         # Convert features to a list, & sort it by how informative
         # features are.
-        features = sorted(features, key=lambda feature_: minprob[feature_]/maxprob[feature_])
+        features = sorted(features,
+            key=lambda feature_: minprob[feature_]/maxprob[feature_])
         return features[:n]
 
     @staticmethod
@@ -207,6 +208,8 @@ class NaiveBayesClassifier(ClassifierI):
             num_samples = label_freqdist[label]
             for fname in fnames:
                 count = feature_freqdist[label, fname].N()
+                # Only add a None key when necessary, i.e. if there are
+                # any samples with feature 'fname' missing.
                 if num_samples - count > 0:
                     feature_freqdist[label, fname][None] += num_samples - count
                     feature_values[fname].add(None)
