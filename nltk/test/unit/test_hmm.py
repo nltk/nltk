@@ -69,7 +69,7 @@ def test_backward_probability():
     wikipedia_results = [
         # Forward-backward algorithm doesn't need b0_5,
         # so .backward_probability doesn't compute it.
-        # [0.3531, 0.6469],
+        # [0.6469, 0.3531],
         [0.5923, 0.4077],
         [0.3763, 0.6237],
         [0.6533, 0.3467],
