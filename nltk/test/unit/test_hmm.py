@@ -27,8 +27,8 @@ def test_forward_probability():
     model, states, symbols = hmm._market_hmm_example()
     seq = [('up', None), ('up', None)]
     expected = [
-        [0.09, 0.02, 0.35],
-        [0.0357, 0.0085, 0.1792]
+        [0.35, 0.02, 0.09],
+        [0.1792, 0.0085, 0.0357]
     ]
 
     fp = 2**model._forward_probability(seq)
@@ -45,14 +45,12 @@ def test_forward_probability2():
     # examples in wikipedia are normalized
     fp = (fp.T / fp.sum(axis=1)).T
 
-    # results are swapped to match our states order
-    # FIXME: is it possible to make order stable?
     wikipedia_results = [
-        [0.1818, 0.8182],
-        [0.1166, 0.8834],
-        [0.8093, 0.1907],
-        [0.2692, 0.7308],
-        [0.1327, 0.8673],
+        [0.8182, 0.1818],
+        [0.8834, 0.1166],
+        [0.1907, 0.8093],
+        [0.7308, 0.2692],
+        [0.8673, 0.1327],
     ]
 
     assert_array_almost_equal(wikipedia_results, fp, 4)
@@ -71,11 +69,11 @@ def test_backward_probability():
     wikipedia_results = [
         # Forward-backward algorithm doesn't need b0_5,
         # so .backward_probability doesn't compute it.
-        # [0.3531, 0.6469],
-        [0.4077, 0.5923],
-        [0.6237, 0.3763],
-        [0.3467, 0.6533],
-        [0.3727, 0.6273],
+        # [0.6469, 0.3531],
+        [0.5923, 0.4077],
+        [0.3763, 0.6237],
+        [0.6533, 0.3467],
+        [0.6273, 0.3727],
         [0.5, 0.5],
     ]
 
