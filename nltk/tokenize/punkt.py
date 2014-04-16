@@ -49,7 +49,7 @@ flag.
     >>> text = '''
     ... (How does it deal with this parenthesis?)  "It should be part of the
     ... previous sentence." "(And the same with this one.)" ('And this one!')
-    ... "('(And (this)) '?)" [(and this.)]
+    ... "('(And (this)) '?)" [(and this. )]
     ... '''
     >>> print('\n-----\n'.join(
     ...     sent_detector.tokenize(text.strip())))
@@ -64,7 +64,7 @@ flag.
     -----
     "('(And (this)) '?)"
     -----
-    [(and this.)]
+    [(and this. )]
     >>> print('\n-----\n'.join(
     ...     sent_detector.tokenize(text.strip(), realign_boundaries=False)))
     (How does it deal with this parenthesis?
