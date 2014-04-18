@@ -14,15 +14,15 @@ from collections import defaultdict
 import textwrap
 
 from nltk.tag.util import untag
-from nltk.tag.tbl.tagger import BrillTagger
+from nltk.tag.brill import BrillTagger
 
 ######################################################################
-## Brill Tagger Trainer
+## Original Brill Tagger Trainer
 ######################################################################
 
-class TaggerTrainer(object):
+class BrillTaggerTrainer(object):
     """
-    A trainer for tbl taggers.
+    A trainer for tbl taggers, superseded by nltk.tag.brill_trainer.BrillTaggerTrainer
 
     :param deterministic: If true, then choose between rules that
         have the same score by picking the one whose __repr__
@@ -407,5 +407,3 @@ class TaggerTrainer(object):
         else:
             print(rulestr)
 
-#backwards compatibility
-BrillTaggerTrainer = TaggerTrainer

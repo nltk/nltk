@@ -60,19 +60,20 @@ For more information, please consult chapter 5 of the NLTK Book.
 """
 from __future__ import print_function
 
-from nltk.tag.api        import TaggerI
-from nltk.tag.util       import str2tuple, tuple2str, untag
-from nltk.tag.sequential import (SequentialBackoffTagger, ContextTagger,
-                                 DefaultTagger, NgramTagger, UnigramTagger,
-                                 BigramTagger, TrigramTagger, AffixTagger,
-                                 RegexpTagger, ClassifierBasedTagger,
-                                 ClassifierBasedPOSTagger)
-from nltk.tag.tbl      import BrillTagger, BrillTaggerTrainer, FastBrillTaggerTrainer
-from nltk.tag.tnt        import TnT
-from nltk.tag.hunpos     import HunposTagger
-from nltk.tag.stanford   import StanfordTagger
-from nltk.tag.hmm        import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
-from nltk.tag.mapping    import tagset_mapping, map_tag
+from nltk.tag.api           import TaggerI
+from nltk.tag.util          import str2tuple, tuple2str, untag
+from nltk.tag.sequential    import (SequentialBackoffTagger, ContextTagger,
+                                    DefaultTagger, NgramTagger, UnigramTagger,
+                                    BigramTagger, TrigramTagger, AffixTagger,
+                                    RegexpTagger, ClassifierBasedTagger,
+                                    ClassifierBasedPOSTagger)
+from nltk.tag.brill         import BrillTagger
+from nltk.tag.brill_trainer import BrillTaggerTrainer
+from nltk.tag.tnt           import TnT
+from nltk.tag.hunpos        import HunposTagger
+from nltk.tag.stanford      import StanfordTagger
+from nltk.tag.hmm           import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
+from nltk.tag.mapping       import tagset_mapping, map_tag
 
 from nltk.data import load
 

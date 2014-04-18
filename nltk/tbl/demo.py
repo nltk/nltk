@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
@@ -15,11 +15,11 @@ import pickle
 import random
 import time
 
-from nltk import tag
 from nltk.corpus import treebank
 
-from nltk.tag.tbl import error_list, Template, TaggerTrainer
-from nltk.tag.tbl.task.postagging import Word, Pos
+from nltk.tbl import error_list, Template
+from nltk.tbl.task.postagging import Word, Pos
+from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 
 def demo():
     """
@@ -222,7 +222,7 @@ def postag(
     # python versions
     if cache_baseline_tagger:
         if not os.path.exists(cache_baseline_tagger):
-            baseline_tagger = tag.UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
+            baseline_tagger = UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
             with open(cache_baseline_tagger, 'w') as print_rules:
                 pickle.dump(baseline_tagger, print_rules)
             print("Trained baseline tagger, pickled it to {0}".format(cache_baseline_tagger))
@@ -230,14 +230,14 @@ def postag(
             baseline_tagger= pickle.load(print_rules)
             print("Reloaded pickled tagger from {0}".format(cache_baseline_tagger))
     else:
-        baseline_tagger = tag.UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
+        baseline_tagger = UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
         print("Trained baseline tagger")
     if gold_data:
         print("    Accuracy on test set: {0:0.4f}".format(baseline_tagger.evaluate(gold_data)))
 
     # creating a Brill tagger
     tbrill = time.time()
-    trainer = TaggerTrainer(baseline_tagger, templates, trace, ruleformat=ruleformat)
+    trainer = BrillTaggerTrainer(baseline_tagger, templates, trace, ruleformat=ruleformat)
     print("Training tbl tagger...")
     brill_tagger = trainer.train(training_data, max_rules, min_score, min_acc)
     print("Trained tbl tagger in {0:0.2f} seconds".format(time.time() - tbrill))
@@ -343,11 +343,11 @@ def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
    plt.savefig(learning_curve_output)
 
 
-NN_CD_TAGGER = tag.RegexpTagger(
+NN_CD_TAGGER = RegexpTagger(
     [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
      (r'.*', 'NN')])
 
-REGEXP_TAGGER = tag.RegexpTagger(
+REGEXP_TAGGER = RegexpTagger(
     [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
      (r'(The|the|A|a|An|an)$', 'AT'),   # articles
      (r'.*able$', 'JJ'),                # adjectives

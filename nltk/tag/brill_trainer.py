@@ -17,15 +17,15 @@ from codecs import open
 import textwrap
 
 from nltk.tag.util import untag
-from nltk.tag.tbl.tagger import BrillTagger
+from nltk.tag.brill import BrillTagger
 
 ######################################################################
-## Fast Brill Tagger Trainer
+## Brill Tagger Trainer
 ######################################################################
 
-class TaggerTrainer(object):
+class BrillTaggerTrainer(object):
     """
-    A faster trainer for tbl taggers.
+    A trainer for tbl taggers.
     """
     def __init__(self, initial_tagger, templates, trace=0,
                  deterministic=None, ruleformat="str"):
@@ -106,10 +106,10 @@ class TaggerTrainer(object):
         *min_acc*.
 
         #imports
-        >>> from nltk.tag.tbl.template import Template
-        >>> from nltk.tag.tbl.task.postagging import Pos, Word
+        >>> from nltk.tbl.template import Template
+        >>> from nltk.tbl.task.postagging import Pos, Word
         >>> from nltk.tag import RegexpTagger
-        >>> from nltk.tag.tbl.trainer.fast import TaggerTrainer
+        >>> from nltk.tag import BrillTaggerTrainer
 
         #some data
         >>> from nltk.corpus import treebank
@@ -139,8 +139,8 @@ class TaggerTrainer(object):
         >>> Template._cleartemplates() #clear any templates created in earlier tests
         >>> templates = [Template(Pos([-1])), Template(Pos([-1]), Word([0]))]
 
-        #construct a TaggerTrainer
-        >>> tt = TaggerTrainer(baseline, templates, trace=3)
+        #construct a BrillTaggerTrainer
+        >>> tt = BrillTaggerTrainer(baseline, templates, trace=3)
         >>> tagger1 = tt.train(training_data, max_rules=10)
         TBL train (fast) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: None)
         Finding initial useful rules...
@@ -624,7 +624,4 @@ class TaggerTrainer(object):
         print(prefix, ('  - %d rule applications added (%d novel)' %
                        (num_new, num_unseen)))
         print(prefix)
-
-#backwards compatibility
-FastBrillTaggerTrainer = TaggerTrainer
 

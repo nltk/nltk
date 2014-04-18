@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
@@ -115,7 +115,7 @@ class Rule(BrillRule):
 
     """
 
-    json_tag='nltk.tag.tbl.Rule'
+    json_tag='nltk.tbl.Rule'
 
     def __init__(self, templateid, original_tag, replacement_tag, conditions):
         """
@@ -232,8 +232,8 @@ class Rule(BrillRule):
         """
         Return a string representation of this rule.
 
-        >>> from nltk.tag.tbl.rule import Rule
-        >>> from nltk.tag.tbl.task.postagging import Pos
+        >>> from nltk.tbl.rule import Rule
+        >>> from nltk.tag.brill import Pos
 
         >>> r = Rule(23, "VB", "NN", [(Pos([-2,-1]), 'DT')])
 
@@ -251,7 +251,7 @@ class Rule(BrillRule):
         >>> r.format("not_found")
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-          File "nltk/tag/tbl/rule.py", line 256, in format
+          File "nltk/tbl/rule.py", line 256, in format
             raise ValueError("unknown rule format spec: {0}".format(fmt))
         ValueError: unknown rule format spec: not_found
         >>>

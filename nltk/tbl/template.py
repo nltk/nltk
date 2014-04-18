@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
@@ -10,7 +10,7 @@
 
 from __future__ import print_function
 import itertools as it
-from nltk.tag.tbl.task.api import Feature
+from nltk.tbl.feature import Feature
 
 
 class BrillTemplateI(object):
@@ -60,7 +60,7 @@ class BrillTemplateI(object):
         raise NotImplementedError
 
 
-from nltk.tag.tbl.rule import Rule
+from nltk.tbl.rule import Rule
 
 
 class Template(BrillTemplateI):
@@ -85,7 +85,7 @@ class Template(BrillTemplateI):
 
         Takes a list of Features. A C{Feature} is a combination
         of a specific property and its relative positions and should be
-        a subclass of L{nltk.tag.tbl.template.Feature}.
+        a subclass of L{nltk.tbl.feature.Feature}.
 
         An alternative calling convention (kept for backwards compatibility,
         but less expressive as it only permits one feature type) is
@@ -94,8 +94,8 @@ class Template(BrillTemplateI):
         Template(Feature(start1, end1), Feature(start2, end2), ...)
 
         #For instance, importing some features
-        >>> from nltk.tag.tbl.template import Template
-        >>> from nltk.tag.tbl.task.postagging import Word, Pos
+        >>> from nltk.tbl.template import Template
+        >>> from nltk.tag.brill import Word, Pos
 
         #create some features
 
@@ -205,8 +205,8 @@ class Template(BrillTemplateI):
         The feature lists may have been specified
         manually, or generated from Feature.expand(). For instance,
 
-        >>> from nltk.tag.tbl.task.postagging import Word, Pos
-        >>> from nltk.tag.tbl.template import Template
+        >>> from nltk.tbl.template import Template
+        >>> from nltk.tag.brill import Word, Pos
 
         #creating some features
         >>> (wd_0, wd_01) = (Word([0]), Word([0,1]))
