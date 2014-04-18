@@ -138,6 +138,9 @@ mac_morpho = LazyCorpusLoader(
 machado = LazyCorpusLoader(
     'machado', PortugueseCategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*', encoding='latin-1')
+masc_tagged = LazyCorpusLoader(
+    'masc_tagged', CategorizedTaggedCorpusReader, r'(spoken|written)/.*\.txt',
+    cat_file='categories.txt', tagset='wsj', encoding="ascii", sep="_")
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*',
