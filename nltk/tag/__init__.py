@@ -71,7 +71,6 @@ from nltk.tag.tbl      import BrillTagger, BrillTaggerTrainer, FastBrillTaggerTr
 from nltk.tag.tnt        import TnT
 from nltk.tag.hunpos     import HunposTagger
 from nltk.tag.stanford   import StanfordTagger
-from nltk.tag.crf        import MalletCRF
 from nltk.tag.hmm        import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
 from nltk.tag.mapping    import tagset_mapping, map_tag
 
