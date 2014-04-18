@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Jason Narad <jason.narad@gmail.com>
@@ -1052,7 +1052,6 @@ def induce_pcfg(start, productions):
     :param productions: The list of productions that defines the grammar
     :type productions: list(Production)
     """
-
     # Production count: the number of times a given production occurs
     pcount = {}
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford NER-tagger
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
@@ -56,9 +56,9 @@ class StanfordTagger(TaggerI):
       raise NotImplementedError
 
     def tag(self, tokens):
-        return self.batch_tag([tokens])[0]
+        return self.tag_sents([tokens])[0]
 
-    def batch_tag(self, sentences):
+    def tag_sents(self, sentences):
         encoding = self._encoding
         default_options = ' '.join(_java_options)
         config_java(options=self.java_options, verbose=False)

@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -530,7 +530,7 @@ class Expression(SubstituteBindingsI):
                                                          replace_bound, alpha_convert),
                                      self.__class__)
 
-    def normalize(self):
+    def normalize(self, newvars=None):
         """Rename auto-generated unique variables"""
         def get_indiv_vars(e):
             if isinstance(e, IndividualVariableExpression):

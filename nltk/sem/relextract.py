@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Relation Extraction
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -112,7 +112,7 @@ def list2sym(lst):
     sym = sym.replace('.', '')
     return sym
 
-def _tree2semi_rel(tree):
+def tree2semi_rel(tree):
     """
     Group a chunk structure into a list of 'semi-relations' of the form (list(str), ``Tree``). 
 
@@ -211,9 +211,9 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
             raise ValueError("your value for the object type has not been recognized: %s" % objclass)
         
     if corpus == 'ace' or corpus == 'conll2002':
-        pairs = _tree2semi_rel(doc)
+        pairs = tree2semi_rel(doc)
     elif corpus == 'ieer':
-        pairs = _tree2semi_rel(doc.text) + _tree2semi_rel(doc.headline)
+        pairs = tree2semi_rel(doc.text) + tree2semi_rel(doc.headline)
     else:
         raise ValueError("corpus type not recognized")
 

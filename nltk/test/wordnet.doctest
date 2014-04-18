@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =================
@@ -270,7 +270,7 @@ information content was created.
     >>> dog.res_similarity(cat, brown_ic)  # doctest: +ELLIPSIS
     7.911...
     >>> dog.res_similarity(cat, genesis_ic)  # doctest: +ELLIPSIS
-    7.467...
+    7.204...
 
 ``synset1.jcn_similarity(synset2, ic):``
 Jiang-Conrath Similarity
@@ -282,7 +282,7 @@ given by the equation 1 / (IC(s1) + IC(s2) - 2 * IC(lcs)).
     >>> dog.jcn_similarity(cat, brown_ic)  # doctest: +ELLIPSIS
     0.449...
     >>> dog.jcn_similarity(cat, genesis_ic)  # doctest: +ELLIPSIS
-    0.280...
+    0.285...
 
 ``synset1.lin_similarity(synset2, ic):``
 Lin Similarity:

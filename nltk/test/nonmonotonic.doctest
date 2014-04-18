@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ======================
@@ -27,7 +27,7 @@ with "P(A) & P(B)".
     >>> prover.prove()
     True
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print(a)
+    >>> for a in cdp.assumptions(): print(a) # doctest: +SKIP
     (man(Socrates) -> mortal(Socrates))
     man(Socrates)
     >>> cdp.prove()
@@ -40,7 +40,7 @@ with "P(A) & P(B)".
     >>> prover.prove()
     False
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print(a)
+    >>> for a in cdp.assumptions(): print(a) # doctest: +SKIP
     walk(Socrates)
     man(Socrates)
     >>> cdp.prove()
@@ -54,7 +54,7 @@ with "P(A) & P(B)".
     >>> prover.prove()
     False
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print(a)
+    >>> for a in cdp.assumptions(): print(a) # doctest: +SKIP
     (walk(Socrates) | walk(Bill))
     man(Socrates)
     -walk(Bill)
@@ -68,10 +68,10 @@ with "P(A) & P(B)".
     >>> prover.prove()
     False
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print(a)
+    >>> for a in cdp.assumptions(): print(a) # doctest: +SKIP
     walk(Socrates)
     walk(Bill)
-    >>> print(cdp.goal())
+    >>> print(cdp.goal()) # doctest: +SKIP
     (walk(Socrates) & walk(Bill))
     >>> cdp.prove()
     True
@@ -86,13 +86,13 @@ with "P(A) & P(B)".
     >>> print(prover.prove())
     False
     >>> cdp = ClosedDomainProver(prover)
-    >>> for a in cdp.assumptions(): print(a)
+    >>> for a in cdp.assumptions(): print(a) # doctest: +SKIP
     girl(mary)
     dog(rover)
     ((girl(rover) -> -dog(rover)) & (girl(mary) -> -dog(mary)))
     ((dog(rover) -> -girl(rover)) & (dog(mary) -> -girl(mary)))
     chase(mary,rover)
-    >>> print(cdp.goal())
+    >>> print(cdp.goal()) # doctest: +SKIP
     ((dog(rover) & (girl(rover) -> chase(rover,rover)) & (girl(mary) -> chase(mary,rover))) | (dog(mary) & (girl(rover) -> chase(rover,mary)) & (girl(mary) -> chase(mary,mary))))
     >>> print(cdp.prove())
     True
@@ -113,7 +113,7 @@ then add the assumption "-(A = B)" if it is not the case that
     >>> prover.prove()
     False
     >>> unp = UniqueNamesProver(prover)
-    >>> for a in unp.assumptions(): print(a)
+    >>> for a in unp.assumptions(): print(a) # doctest: +SKIP
     man(Socrates)
     man(Bill)
     -(Socrates = Bill)
@@ -128,7 +128,7 @@ then add the assumption "-(A = B)" if it is not the case that
     >>> prover.prove()
     False
     >>> unp = UniqueNamesProver(prover)
-    >>> for a in unp.assumptions(): print(a)
+    >>> for a in unp.assumptions(): print(a) # doctest: +SKIP
     all x.(walk(x) -> (x = Socrates))
     (Bill = William)
     (Bill = Billy)
@@ -158,7 +158,7 @@ completion of "P".
     >>> prover.prove()
     False
     >>> cwp = ClosedWorldProver(prover)
-    >>> for a in cwp.assumptions(): print(a)
+    >>> for a in cwp.assumptions(): print(a) # doctest: +SKIP
     walk(Socrates)
     -(Socrates = Bill)
     all z1.(walk(z1) -> (z1 = Socrates))
@@ -174,7 +174,7 @@ completion of "P".
     >>> prover.prove()
     False
     >>> cwp = ClosedWorldProver(prover)
-    >>> for a in cwp.assumptions(): print(a)
+    >>> for a in cwp.assumptions(): print(a) # doctest: +SKIP
     see(Socrates,John)
     see(John,Mary)
     -(Socrates = John)
@@ -192,7 +192,7 @@ completion of "P".
     >>> prover.prove()
     False
     >>> cwp = ClosedWorldProver(prover)
-    >>> for a in cwp.assumptions(): print(a)
+    >>> for a in cwp.assumptions(): print(a) # doctest: +SKIP
     all x.(ostrich(x) -> bird(x))
     bird(Tweety)
     -ostrich(Sam)
@@ -249,7 +249,7 @@ define entities
 print the augmented assumptions list
     >>> prover = Prover9Command(None, premises)
     >>> command = UniqueNamesProver(ClosedWorldProver(prover))
-    >>> for a in command.assumptions(): print(a)
+    >>> for a in command.assumptions(): print(a) # doctest: +SKIP
     all x.(elephant(x) -> animal(x))
     all x.(bird(x) -> animal(x))
     all x.(dove(x) -> bird(x))

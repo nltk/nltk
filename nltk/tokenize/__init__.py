@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -11,29 +11,34 @@ r"""
 NLTK Tokenizer Package
 
 Tokenizers divide strings into lists of substrings.  For example,
-tokenizers can be used to find the list of sentences or words in a
-string.
+tokenizers can be used to find the words and punctuation in a string:
 
-    >>> from nltk.tokenize import word_tokenize, wordpunct_tokenize, sent_tokenize
+    >>> from nltk.tokenize import word_tokenize
     >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
     ... two of them.\n\nThanks.'''
+    >>> word_tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+This particular tokenizer requires the Punkt sentence tokenization
+models to be installed. NLTK also provides a simpler,
+regular-expression based tokenizer, which splits text on whitespace
+and punctuation:
+
+    >>> from nltk.tokenize import wordpunct_tokenize
     >>> wordpunct_tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
-This is a simple regular-expression based tokenizer which does not handle
-periods very well. We can also use a sentence tokenizer (Punkt) and followed
-by a good sentence-internal word tokenizer (Treebank). The `tokenize()`
-function combines both of these.
+We can also operate at the level of sentences, using the sentence
+tokenizer directly as follows:
 
+    >>> from nltk.tokenize import sent_tokenize, word_tokenize
     >>> sent_tokenize(s)
     ['Good muffins cost $3.88\nin New York.', 'Please buy me\ntwo of them.', 'Thanks.']
     >>> [word_tokenize(t) for t in sent_tokenize(s)]
     [['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.'],
     ['Please', 'buy', 'me', 'two', 'of', 'them', '.'], ['Thanks', '.']]
-    >>> word_tokenize(s)
-    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.',
-    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
 Caution: when tokenizing a Unicode string, make sure you are not
 using an encoded version of the string (it may be necessary to
@@ -82,8 +87,8 @@ def word_tokenize(text):
     """
     Return a tokenized copy of *text*,
     using NLTK's recommended word tokenizer
-    (currently :class:`.TreebankWordTokenizer`).
-    This tokenizer is designed to work on a sentence at a time.
+    (currently :class:`.TreebankWordTokenizer`
+    along with :class:`.PunktSentenceTokenizer`).
     """
     return [token for sent in sent_tokenize(text)
             for token in _treebank_word_tokenize(sent)]

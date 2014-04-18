@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function
@@ -97,9 +97,9 @@ class MaltParser(ParserI):
         :type sentence: list(str)
         :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
-        return self.batch_parse([sentence], verbose)[0]
+        return self.parse_sents([sentence], verbose)[0]
 
-    def batch_parse(self, sentences, verbose=False):
+    def parse_sents(self, sentences, verbose=False):
         """
         Use MaltParser to parse multiple sentence. Takes multiple sentences as a
         list where each sentence is a list of words.
@@ -112,7 +112,7 @@ class MaltParser(ParserI):
                  of each sentence
         """
         tagged_sentences = [self.tagger.tag(sentence) for sentence in sentences]
-        return self.tagged_batch_parse(tagged_sentences, verbose)
+        return self.tagged_parse_sents(tagged_sentences, verbose)
 
     def raw_parse(self, sentence, verbose=False):
         """
@@ -137,9 +137,9 @@ class MaltParser(ParserI):
         :type sentence: list(tuple(str, str))
         :return: ``DependencyGraph`` the dependency graph representation of the sentence
         """
-        return self.tagged_batch_parse([sentence], verbose)[0]
+        return self.tagged_parse_sents([sentence], verbose)[0]
 
-    def tagged_batch_parse(self, sentences, verbose=False):
+    def tagged_parse_sents(self, sentences, verbose=False):
         """
         Use MaltParser to parse multiple sentences. Takes multiple sentences
         where each sentence is a list of (word, tag) tuples.

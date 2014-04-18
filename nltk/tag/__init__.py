@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Taggers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -54,7 +54,7 @@ of ``None``.
 We evaluate a tagger on data that was not seen during training:
 
     >>> tagger.evaluate(brown.tagged_sents(categories='news')[500:600])
-    0.734...
+    0.73...
 
 For more information, please consult chapter 5 of the NLTK Book.
 """
@@ -100,13 +100,13 @@ def pos_tag(tokens):
     tagger = load(_POS_TAGGER)
     return tagger.tag(tokens)
 
-def batch_pos_tag(sentences):
+def pos_tag_sents(sentences):
     """
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
     """
     tagger = load(_POS_TAGGER)
-    return tagger.batch_tag(sentences)
+    return tagger.tag_sents(sentences)
 
 
 if __name__ == "__main__":

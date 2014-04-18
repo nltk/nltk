@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifier Interface
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -33,10 +33,10 @@ class ClassifierI(object):
 
     Subclasses must define:
       - ``labels()``
-      - either ``classify()`` or ``batch_classify()`` (or both)
+      - either ``classify()`` or ``classify_many()`` (or both)
 
     Subclasses may define:
-      - either ``prob_classify()`` or ``batch_prob_classify()`` (or both)
+      - either ``prob_classify()`` or ``prob_classify_many()`` (or both)
     """
     def labels(self):
         """
@@ -50,8 +50,8 @@ class ClassifierI(object):
         :return: the most appropriate label for the given featureset.
         :rtype: label
         """
-        if overridden(self.batch_classify):
-            return self.batch_classify([featureset])[0]
+        if overridden(self.classify_many):
+            return self.classify_many([featureset])[0]
         else:
             raise NotImplementedError()
 
@@ -61,12 +61,12 @@ class ClassifierI(object):
             featureset.
         :rtype: ProbDistI
         """
-        if overridden(self.batch_prob_classify):
-            return self.batch_prob_classify([featureset])[0]
+        if overridden(self.prob_classify_many):
+            return self.prob_classify_many([featureset])[0]
         else:
             raise NotImplementedError()
 
-    def batch_classify(self, featuresets):
+    def classify_many(self, featuresets):
         """
         Apply ``self.classify()`` to each element of ``featuresets``.  I.e.:
 
@@ -76,7 +76,7 @@ class ClassifierI(object):
         """
         return [self.classify(fs) for fs in featuresets]
 
-    def batch_prob_classify(self, featuresets):
+    def prob_classify_many(self, featuresets):
         """
         Apply ``self.prob_classify()`` to each element of ``featuresets``.  I.e.:
 
@@ -96,10 +96,10 @@ class MultiClassifierI(object):
 
     Subclasses must define:
       - ``labels()``
-      - either ``classify()`` or ``batch_classify()`` (or both)
+      - either ``classify()`` or ``classify_many()`` (or both)
 
     Subclasses may define:
-      - either ``prob_classify()`` or ``batch_prob_classify()`` (or both)
+      - either ``prob_classify()`` or ``prob_classify_many()`` (or both)
     """
     def labels(self):
         """
@@ -113,8 +113,8 @@ class MultiClassifierI(object):
         :return: the most appropriate set of labels for the given featureset.
         :rtype: set(label)
         """
-        if overridden(self.batch_classify):
-            return self.batch_classify([featureset])[0]
+        if overridden(self.classify_many):
+            return self.classify_many([featureset])[0]
         else:
             raise NotImplementedError()
 
@@ -124,12 +124,12 @@ class MultiClassifierI(object):
             given featureset.
         :rtype: ProbDistI
         """
-        if overridden(self.batch_prob_classify):
-            return self.batch_prob_classify([featureset])[0]
+        if overridden(self.prob_classify_many):
+            return self.prob_classify_many([featureset])[0]
         else:
             raise NotImplementedError()
 
-    def batch_classify(self, featuresets):
+    def classify_many(self, featuresets):
         """
         Apply ``self.classify()`` to each element of ``featuresets``.  I.e.:
 
@@ -139,7 +139,7 @@ class MultiClassifierI(object):
         """
         return [self.classify(fs) for fs in featuresets]
 
-    def batch_prob_classify(self, featuresets):
+    def prob_classify_many(self, featuresets):
         """
         Apply ``self.prob_classify()`` to each element of ``featuresets``.  I.e.:
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -1133,7 +1133,7 @@ class DownloaderGUI(object):
     COLUMNS = ['', 'Identifier', 'Name', 'Size', 'Status',
                'Unzipped Size',
                'Copyright', 'Contact', 'License', 'Author',
-               'SVN Revision', 'Subdir', 'Checksum']
+               'Subdir', 'Checksum']
     """A list of the names of columns.  This controls the order in
        which the columns will appear.  If this is edited, then
        ``_package_to_columns()`` may need to be edited to match."""

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ====================================
@@ -484,7 +484,7 @@ Show the model in 'tabular' format.
 The property ``valuation`` accesses the stored ``Valuation``.
 
     >>> print(mb.valuation)
-    {'john': 'a', 'mary': 'b', 'see': set([('b', 'a')])}
+    {'john': 'a', 'mary': 'b', 'see': {('b', 'a')}}
 
 We can return to our earlier example and inspect the model:
 
@@ -527,5 +527,7 @@ Mace can also be used with propositional logic.
     >>> mb = MaceCommand(q, [p, p>-q])
     >>> mb.build_model()
     True
-    >>> mb.valuation
-    {'Q': False, 'P': True}
+    >>> mb.valuation['P']
+    True
+    >>> mb.valuation['Q']
+    False

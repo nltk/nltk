@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sun Tsu-Bot
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Sam Huston 2007
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: The ISRI Arabic Stemmer
 #
-# Copyright (C) 2001-2013 NLTK Proejct
+# Copyright (C) 2001-2014 NLTK Proejct
 # Algorithm: Kazem Taghva, Rania Elkhoury, and Jeffrey Coombs (2005)
 # Author: Hosam Algasaier <hosam_hme@yahoo.com>
 # URL: <http://nltk.org/>
@@ -34,6 +34,7 @@ import re
 
 from nltk.stem.api import StemmerI
 
+
 class ISRIStemmer(StemmerI):
     '''
     ISRI Arabic stemmer based on algorithm: Arabic Stemming without a root dictionary.
@@ -50,39 +51,50 @@ class ISRIStemmer(StemmerI):
     '''
 
     def __init__(self):
-        self.stm = 'defult none'
-
+        # length three prefixes
         self.p3 = ['\u0643\u0627\u0644', '\u0628\u0627\u0644',
-                   '\u0648\u0644\u0644', '\u0648\u0627\u0644']    # length three prefixes
-        self.p2 = ['\u0627\u0644', '\u0644\u0644']    # length two prefixes
-        self.p1 = ['\u0644', '\u0628', '\u0641', '\u0633', '\u0648',
-                   '\u064a', '\u062a', '\u0646', '\u0627']   # length one prefixes
+                   '\u0648\u0644\u0644', '\u0648\u0627\u0644']
 
-        self.s3 =  ['\u062a\u0645\u0644', '\u0647\u0645\u0644',
-                    '\u062a\u0627\u0646', '\u062a\u064a\u0646',
-                    '\u0643\u0645\u0644']  # length three suffixes
+        # length two prefixes
+        self.p2 = ['\u0627\u0644', '\u0644\u0644']
+
+        # length one prefixes
+        self.p1 = ['\u0644', '\u0628', '\u0641', '\u0633', '\u0648',
+                   '\u064a', '\u062a', '\u0646', '\u0627']
+
+        # length three suffixes
+        self.s3 = ['\u062a\u0645\u0644', '\u0647\u0645\u0644',
+                   '\u062a\u0627\u0646', '\u062a\u064a\u0646',
+                   '\u0643\u0645\u0644']
+
+        # length two suffixes
         self.s2 = ['\u0648\u0646', '\u0627\u062a', '\u0627\u0646',
                    '\u064a\u0646', '\u062a\u0646', '\u0643\u0645',
                    '\u0647\u0646', '\u0646\u0627', '\u064a\u0627',
                    '\u0647\u0627', '\u062a\u0645', '\u0643\u0646',
                    '\u0646\u064a', '\u0648\u0627', '\u0645\u0627',
-                   '\u0647\u0645']   # length two suffixes
-        self.s1 = ['\u0629', '\u0647', '\u064a', '\u0643', '\u062a',
-                   '\u0627', '\u0646']   # length one suffixes
+                   '\u0647\u0645']
 
-        self.pr4 = {0: ['\u0645'], 1:['\u0627'],
-                    2: ['\u0627', '\u0648', '\u064A'], 3:['\u0629']}   # groups of length four patterns
+        # length one suffixes
+        self.s1 = ['\u0629', '\u0647', '\u064a', '\u0643', '\u062a',
+                   '\u0627', '\u0646']
+
+        # groups of length four patterns
+        self.pr4 = {0: ['\u0645'], 1: ['\u0627'],
+                    2: ['\u0627', '\u0648', '\u064A'], 3: ['\u0629']}
+
+        # Groups of length five patterns and length three roots
         self.pr53 = {0: ['\u0627', '\u062a'],
                      1: ['\u0627', '\u064a', '\u0648'],
                      2: ['\u0627', '\u062a', '\u0645'],
                      3: ['\u0645', '\u064a', '\u062a'],
                      4: ['\u0645', '\u062a'],
                      5: ['\u0627', '\u0648'],
-                     6: ['\u0627', '\u0645']}   # Groups of length five patterns and length three roots
+                     6: ['\u0627', '\u0645']}
 
         self.re_short_vowels = re.compile(r'[\u064B-\u0652]')
         self.re_hamza = re.compile(r'[\u0621\u0624\u0626]')
-        self.re_intial_hamza = re.compile(r'^[\u0622\u0623\u0625]')
+        self.re_initial_hamza = re.compile(r'^[\u0622\u0623\u0625]')
 
         self.stop_words = ['\u064a\u0643\u0648\u0646',
                            '\u0648\u0644\u064a\u0633',
@@ -134,248 +146,201 @@ class ISRIStemmer(StemmerI):
                            '\u0628\u0647\u0630\u0627',
                            '\u0627\u0644\u0630\u0649']
 
-
     def stem(self, token):
         """
         Stemming a word token using the ISRI stemmer.
         """
+        token = self.norm(token, 1)   # remove diacritics which representing Arabic short vowels
+        if token in self.stop_words:
+            return token              # exclude stop words from being processed
+        token = self.pre32(token)     # remove length three and length two prefixes in this order
+        token = self.suf32(token)     # remove length three and length two suffixes in this order
+        token = self.waw(token)       # remove connective ‘و’ if it precedes a word beginning with ‘و’
+        token = self.norm(token, 2)   # normalize initial hamza to bare alif
+        # if 4 <= word length <= 7, then stem; otherwise, no stemming
+        if len(token) == 4:           # length 4 word
+            token = self.pro_w4(token)
+        elif len(token) == 5:         # length 5 word
+            token = self.pro_w53(token)
+            token = self.end_w5(token)
+        elif len(token) == 6:         # length 6 word
+            token = self.pro_w6(token)
+            token = self.end_w6(token)
+        elif len(token) == 7:         # length 7 word
+            token = self.suf1(token)
+            if len(token) == 7:
+                token = self.pre1(token)
+            if len(token) == 6:
+                token = self.pro_w6(token)
+                token = self.end_w6(token)
+        return token
 
-        self.stm = token
-        self.norm(1)       #  remove diacritics which representing Arabic short vowels
-        if self.stm in self.stop_words: return self.stm     # exclude stop words from being processed
-        self.pre32()        # remove length three and length two prefixes in this order
-        self.suf32()        # remove length three and length two suffixes in this order
-        self.waw()          # remove connective ‘و’ if it precedes a word beginning with ‘و’
-        self.norm(2)       # normalize initial hamza to bare alif
-        if len(self.stm)<=3: return self.stm     # return stem if less than or equal to three
-
-        if len(self.stm)==4:       # length 4 word
-            self.pro_w4()
-            return self.stm
-        elif len(self.stm)==5:     # length 5 word
-            self.pro_w53()
-            self.end_w5()
-            return self.stm
-        elif len(self.stm)==6:     # length 6 word
-            self.pro_w6()
-            self.end_w6()
-            return self.stm
-        elif len(self.stm)==7:     # length 7 word
-            self.suf1()
-            if len(self.stm)==7:
-                self.pre1()
-            if len(self.stm)==6:
-                self.pro_w6()
-                self.end_w6()
-                return self.stm
-        return self.stm              # if word length >7 , then no stemming
-
-    def norm(self, num):
+    def norm(self, word, num=3):
         """
         normalization:
         num=1  normalize diacritics
         num=2  normalize initial hamza
         num=3  both 1&2
         """
-        self.k = num
+        if num == 1:
+            word = self.re_short_vowels.sub('', word)
+        elif num == 2:
+            word = self.re_initial_hamza.sub('\u0627', word)
+        elif num == 3:
+            word = self.re_short_vowels.sub('', word)
+            word = self.re_initial_hamza.sub('\u0627', word)
+        return word
 
-        if self.k == 1:
-            self.stm = self.re_short_vowels.sub('', self.stm)
-            return self.stm
-        elif self.k == 2:
-            self.stm = self.re_intial_hamza.sub(r'\u0627',self.stm)
-            return self.stm
-        elif self.k == 3:
-            self.stm = self.re_short_vowels.sub('', self.stm)
-            self.stm = self.re_intial_hamza.sub(r'\u0627',self.stm)
-            return self.stm
-
-    def pre32(self):
+    def pre32(self, word):
         """remove length three and length two prefixes in this order"""
-        if len(self.stm)>=6:
+        if len(word) >= 6:
             for pre3 in self.p3:
-                if self.stm.startswith(pre3):
-                    self.stm = self.stm[3:]
-                    return self.stm
-                elif len(self.stm)>=5:
-                    for pre2 in self.p2:
-                        if self.stm.startswith(pre2):
-                            self.stm = self.stm[2:]
-                            return self.stm
+                if word.startswith(pre3):
+                    return word[3:]
+        if len(word) >= 5:
+            for pre2 in self.p2:
+                if word.startswith(pre2):
+                    return word[2:]
+        return word
 
-    def suf32(self):
+    def suf32(self, word):
         """remove length three and length two suffixes in this order"""
-        if len(self.stm)>=6:
+        if len(word) >= 6:
             for suf3 in self.s3:
-                if self.stm.endswith(suf3):
-                    self.stm = self.stm[:-3]
-                    return self.stm
-                elif len(self.stm)>=5:
-                    for suf2 in self.s2:
-                        if self.stm.endswith(suf2):
-                            self.stm = self.stm[:-2]
-                            return self.stm
+                if word.endswith(suf3):
+                    return word[:-3]
+        if len(word) >= 5:
+            for suf2 in self.s2:
+                if word.endswith(suf2):
+                    return word[:-2]
+        return word
 
-
-    def waw(self):
+    def waw(self, word):
         """remove connective ‘و’ if it precedes a word beginning with ‘و’ """
-        if (len(self.stm)>=4)&(self.stm[:2] == '\u0648\u0648'):
-            self.stm = self.stm[1:]
-            return self.stm
+        if len(word) >= 4 and word[:2] == '\u0648\u0648':
+            word = word[1:]
+        return word
 
-    def pro_w4(self):
+    def pro_w4(self, word):
         """process length four patterns and extract length three roots"""
-        if self.stm[0] in self.pr4[0]:      #  مفعل
-            self.stm = self.stm[1:]
-            return self.stm
-        elif self.stm[1] in self.pr4[1]:      #   فاعل
-            self.stm = self.stm[0]+self.stm[2:]
-            return self.stm
-        elif self.stm[2] in self.pr4[2]:     #    فعال   -   فعول    - فعيل
-            self.stm = self.stm[:2]+self.stm[3]
-            return self.stm
-        elif self.stm[3] in self.pr4[3]:      #     فعلة
-            self.stm = self.stm[:-1]
-            return self.stm
+        if word[0] in self.pr4[0]:      # مفعل
+            word = word[1:]
+        elif word[1] in self.pr4[1]:    # فاعل
+            word = word[:1] + word[2:]
+        elif word[2] in self.pr4[2]:    # فعال - فعول - فعيل
+            word = word[:2] + word[3]
+        elif word[3] in self.pr4[3]:    # فعلة
+            word = word[:-1]
         else:
-            self.suf1()   # do - normalize short sufix
-            if len(self.stm)==4:
-                self.pre1()    # do - normalize short prefix
-            return self.stm
+            word = self.suf1(word)      # do - normalize short sufix
+            if len(word) == 4:
+                word = self.pre1(word)  # do - normalize short prefix
+        return word
 
-    def pro_w53(self):
+    def pro_w53(self, word):
         """process length five patterns and extract length three roots"""
-        if ((self.stm[2] in self.pr53[0]) & (self.stm[0] == '\u0627')):    #  افتعل   -  افاعل
-            self.stm = self.stm[1]+self.stm[3:]
-            return self.stm
-        elif ((self.stm[3] in self.pr53[1]) & (self.stm[0] == '\u0645')):     # مفعول  -   مفعال  -   مفعيل
-            self.stm = self.stm[1:3]+self.stm[4]
-            return self.stm
-        elif ((self.stm[0] in self.pr53[2]) & (self.stm[4] == '\u0629')):      #  مفعلة  -    تفعلة   -  افعلة
-            self.stm = self.stm[1:4]
-            return self.stm
-        elif ((self.stm[0] in self.pr53[3]) & (self.stm[2] == '\u062a')):        #  مفتعل  -    يفتعل   -  تفتعل
-            self.stm = self.stm[1]+self.stm[3:]
-            return self.stm
-        elif ((self.stm[0] in self.pr53[4]) & (self.stm[2] == '\u0627')):      #مفاعل  -  تفاعل
-            self.stm = self.stm[1]+self.stm[3:]
-            return self.stm
-        elif ((self.stm[2] in self.pr53[5]) & (self.stm[4] == '\u0629')):    #     فعولة  -   فعالة
-            self.stm = self.stm[:2]+self.stm[3]
-            return self.stm
-        elif ((self.stm[0] in self.pr53[6]) & (self.stm[1] == '\u0646')):     #     انفعل   -   منفعل
-            self.stm = self.stm[2:]
-            return self.stm
-        elif ((self.stm[3] == '\u0627') & (self.stm[0] == '\u0627')):     #   افعال
-            self.stm = self.stm[1:3]+self.stm[4]
-            return self.stm
-        elif ((self.stm[4] == '\u0646') & (self.stm[3] == '\u0627')):      #   فعلان
-            self.stm = self.stm[:3]
-            return self.stm
-        elif ((self.stm[3] == '\u064a') & (self.stm[0] == '\u062a')):        #    تفعيل
-            self.stm = self.stm[1:3]+self.stm[4]
-            return self.stm
-        elif ((self.stm[3] == '\u0648') & (self.stm[1] == '\u0627')):       #     فاعول
-            self.stm = self.stm[0]+self.stm[2]+self.stm[4]
-            return self.stm
-        elif ((self.stm[2] == '\u0627') & (self.stm[1] == '\u0648')):             #     فواعل
-            self.stm = self.stm[0]+self.stm[3:]
-            return self.stm
-        elif ((self.stm[3] == '\u0626') & (self.stm[2] == '\u0627')):     #  فعائل
-            self.stm = self.stm[:2]+self.stm[4]
-            return self.stm
-        elif ((self.stm[4] == '\u0629') & (self.stm[1] == '\u0627')):           #   فاعلة
-            self.stm = self.stm[0]+self.stm[2:4]
-            return self.stm
-        elif ((self.stm[4] == '\u064a') & (self.stm[2] == '\u0627')):     # فعالي
-            self.stm = self.stm[:2]+self.stm[3]
-            return self.stm
+        if word[2] in self.pr53[0] and word[0] == '\u0627':    # افتعل - افاعل
+            word = word[1] + word[3:]
+        elif word[3] in self.pr53[1] and word[0] == '\u0645':  # مفعول - مفعال - مفعيل
+            word = word[1:3] + word[4]
+        elif word[0] in self.pr53[2] and word[4] == '\u0629':  # مفعلة - تفعلة - افعلة
+            word = word[1:4]
+        elif word[0] in self.pr53[3] and word[2] == '\u062a':  # مفتعل - يفتعل - تفتعل
+            word = word[1] + word[3:]
+        elif word[0] in self.pr53[4] and word[2] == '\u0627':  # مفاعل - تفاعل
+            word = word[1] + word[3:]
+        elif word[2] in self.pr53[5] and word[4] == '\u0629':  # فعولة - فعالة
+            word = word[:2] + word[3]
+        elif word[0] in self.pr53[6] and word[1] == '\u0646':  # انفعل - منفعل
+            word = word[2:]
+        elif word[3] == '\u0627' and word[0] == '\u0627':      # افعال
+            word = word[1:3] + word[4]
+        elif word[4] == '\u0646' and word[3] == '\u0627':      # فعلان
+            word = word[:3]
+        elif word[3] == '\u064a' and word[0] == '\u062a':      # تفعيل
+            word = word[1:3] + word[4]
+        elif word[3] == '\u0648' and word[1] == '\u0627':      # فاعول
+            word = word[0] + word[2] + word[4]
+        elif word[2] == '\u0627' and word[1] == '\u0648':      # فواعل
+            word = word[0] + word[3:]
+        elif word[3] == '\u0626' and word[2] == '\u0627':      # فعائل
+            word = word[:2] + word[4]
+        elif word[4] == '\u0629' and word[1] == '\u0627':      # فاعلة
+            word = word[0] + word[2:4]
+        elif word[4] == '\u064a' and word[2] == '\u0627':      # فعالي
+            word = word[:2] + word[3]
         else:
-            self.suf1()   # do - normalize short sufix
-            if len(self.stm)==5:
-                self.pre1()   # do - normalize short prefix
-            return self.stm
+            word = self.suf1(word)      # do - normalize short sufix
+            if len(word) == 5:
+                word = self.pre1(word)  # do - normalize short prefix
+        return word
 
-    def pro_w54(self):
+    def pro_w54(self, word):
         """process length five patterns and extract length four roots"""
-        if (self.stm[0] in self.pr53[2]):       #تفعلل - افعلل - مفعلل
-            self.stm = self.stm[1:]
-            return self.stm
-        elif (self.stm[4] == '\u0629'):      # فعللة
-            self.stm = self.stm[:4]
-            return self.stm
-        elif (self.stm[2] == '\u0627'):     # فعالل
-            self.stm = self.stm[:2]+self.stm[3:]
-            return self.stm
+        if word[0] in self.pr53[2]:  # تفعلل - افعلل - مفعلل
+            word = word[1:]
+        elif word[4] == '\u0629':    # فعللة
+            word = word[:4]
+        elif word[2] == '\u0627':    # فعالل
+            word = word[:2] + word[3:]
+        return word
 
-    def end_w5(self):
+    def end_w5(self, word):
         """ending step (word of length five)"""
-        if len(self.stm)==3:
-            return self.stm
-        elif len(self.stm)==4:
-            self.pro_w4()
-            return self.stm
-        elif len(self.stm)==5:
-            self.pro_w54()
-            return self.stm
+        if len(word) == 4:
+            word = self.pro_w4(word)
+        elif len(word) == 5:
+            word = self.pro_w54(word)
+        return word
 
-    def pro_w6(self):
+    def pro_w6(self, word):
         """process length six patterns and extract length three roots"""
-        if ((self.stm.startswith('\u0627\u0633\u062a')) or (self.stm.startswith('\u0645\u0633\u062a'))):   #   مستفعل   -    استفعل
-            self.stm= self.stm[3:]
-            return self.stm
-        elif (self.stm[0]== '\u0645' and self.stm[3]== '\u0627' and self.stm[5]== '\u0629'):      #     مفعالة
-            self.stm = self.stm[1:3]+self.stm[4]
-            return self.stm
-        elif (self.stm[0]== '\u0627' and self.stm[2]== '\u062a' and self.stm[4]== '\u0627'):      #     افتعال
-            self.stm = self.stm[1]+self.stm[3]+self.stm[5]
-            return self.stm
-        elif (self.stm[0]== '\u0627' and self.stm[3]== '\u0648' and self.stm[2]==self.stm[4]):      #    افعوعل
-            self.stm = self.stm[1]+self.stm[4:]
-            return self.stm
-        elif (self.stm[0]== '\u062a' and self.stm[2]== '\u0627' and self.stm[4]== '\u064a'):      #     تفاعيل    new pattern
-            self.stm = self.stm[1]+self.stm[3]+self.stm[5]
-            return self.stm
+        if word.startswith('\u0627\u0633\u062a') or word.startswith('\u0645\u0633\u062a'):  # مستفعل - استفعل
+            word = word[3:]
+        elif word[0] == '\u0645' and word[3] == '\u0627' and word[5] == '\u0629':           # مفعالة
+            word = word[1:3] + word[4]
+        elif word[0] == '\u0627' and word[2] == '\u062a' and word[4] == '\u0627':           # افتعال
+            word = word[1] + word[3] + word[5]
+        elif word[0] == '\u0627' and word[3] == '\u0648' and word[2] == word[4]:            # افعوعل
+            word = word[1] + word[4:]
+        elif word[0] == '\u062a' and word[2] == '\u0627' and word[4] == '\u064a':           # تفاعيل   new pattern
+            word = word[1] + word[3] + word[5]
         else:
-            self.suf1()    # do - normalize short sufix
-            if len(self.stm)==6:
-                self.pre1()    # do - normalize short prefix
-            return self.stm
+            word = self.suf1(word)      # do - normalize short sufix
+            if len(word) == 6:
+                word = self.pre1(word)  # do - normalize short prefix
+        return word
 
-    def pro_w64(self):
+    def pro_w64(self, word):
         """process length six patterns and extract length four roots"""
-        if (self.stm[0] and self.stm[4])=='\u0627':      #  افعلال
-            self.stm=self.stm[1:4]+self.stm[5]
-            return self.stm
-        elif (self.stm.startswith('\u0645\u062a')):     #   متفعلل
-            self.stm = self.stm[2:]
-            return self.stm
+        if word[0] == '\u0627' and word[4] == '\u0627':  # افعلال
+            word = word[1:4] + word[5]
+        elif word.startswith('\u0645\u062a'):            # متفعلل
+            word = word[2:]
+        return word
 
-    def end_w6(self):
+    def end_w6(self, word):
         """ending step (word of length six)"""
-        if len(self.stm)==3:
-            return self.stm
-        elif len(self.stm)==5:
-            self.pro_w53()
-            self.end_w5()
-            return self.stm
-        elif len (self.stm)==6:
-            self.pro_w64()
-            return self.stm
+        if len(word) == 5:
+            word = self.pro_w53(word)
+            word = self.end_w5(word)
+        elif len(word) == 6:
+            word = self.pro_w64(word)
+        return word
 
-    def suf1(self):
+    def suf1(self, word):
         """normalize short sufix"""
         for sf1 in self.s1:
-            if self.stm.endswith(sf1):
-                self.stm = self.stm[:-1]
-                return self.stm
+            if word.endswith(sf1):
+                return word[:-1]
+        return word
 
-    def pre1(self):
+    def pre1(self, word):
         """normalize short prefix"""
         for sp1 in self.p1:
-            if self.stm.startswith(sp1):
-                self.stm = self.stm[1:]
-                return self.stm
+            if word.startswith(sp1):
+                return word[1:]
+        return word
 
 
 if __name__ == "__main__":

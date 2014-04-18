@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===========
@@ -20,8 +20,10 @@ FreqDist
 
 Note that items are sorted in order of decreasing frequency; two items of the same frequency appear in indeterminate order.
 
+    >>> import itertools
     >>> both = nltk.FreqDist(text1 + text2)
-    >>> both.most_common()
+    >>> both_most_common = both.most_common()
+    >>> list(itertools.chain(*(sorted(ys) for k, ys in itertools.groupby(both_most_common, key=lambda t: t[1]))))
     [('fish', 3), ('anywhere', 2), ('good', 2), ('no', 2), ('porpoise', 2), ('!', 1), ('.', 1), ('a', 1), ('goes', 1), ('likes', 1), ('to', 1), ('without', 1)]
 
     >>> both == fd1 + nltk.FreqDist(text2)

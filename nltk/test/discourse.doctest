@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==================
@@ -59,13 +59,13 @@ that sentence is given an identifier `s`\ :sub:`i`-`r`\ :sub:`j`.
     <BLANKLINE>
     s0 readings:
     <BLANKLINE>
-    s0-r0: exists x.(boxer(x) & walk(x))
-    s0-r1: exists x.(boxerdog(x) & walk(x))
+    s0-r0: exists z1.(boxer(z1) & walk(z1))
+    s0-r1: exists z1.(boxerdog(z1) & walk(z1))
     <BLANKLINE>
     s1 readings:
     <BLANKLINE>
-    s1-r0: all x.(boxer(x) -> exists z1.(girl(z1) & chase(x,z1)))
-    s1-r1: all x.(boxerdog(x) -> exists z2.(girl(z2) & chase(x,z2)))
+    s1-r0: all z2.(boxer(z2) -> exists z3.(girl(z3) & chase(z2,z3)))
+    s1-r1: all z1.(boxerdog(z1) -> exists z2.(girl(z2) & chase(z1,z2)))
 
 
 In this case, the only source of ambiguity lies in the word *boxer*,
@@ -141,8 +141,8 @@ current discourse. However, we can also specify just one thread, say ``d1``.
     - chase(1,1).
     <BLANKLINE>
     Consistent discourse: d1 ['s0-r0', 's1-r1']:
-        s0-r0: exists x.(boxer(x) & walk(x))
-        s1-r1: all x.(boxerdog(x) -> exists z8.(girl(z8) & chase(x,z8)))
+        s0-r0: exists z1.(boxer(z1) & walk(z1))
+        s1-r1: all z1.(boxerdog(z1) -> exists z2.(girl(z2) & chase(z1,z2)))
     <BLANKLINE>
 
 There are various formats for rendering **Mace4** models --- here,
@@ -180,13 +180,13 @@ couple of them.
     <BLANKLINE>
     s0 readings:
     <BLANKLINE>
-    s0-r0: exists x.(boxer(x) & walk(x))
-    s0-r1: exists x.(boxerdog(x) & walk(x))
+    s0-r0: exists z1.(boxer(z1) & walk(z1))
+    s0-r1: exists z1.(boxerdog(z1) & walk(z1))
     <BLANKLINE>
     s1 readings:
     <BLANKLINE>
-    s1-r0: all x.(boxer(x) -> exists z9.(girl(z9) & chase(x,z9)))
-    s1-r1: all x.(boxerdog(x) -> exists z10.(girl(z10) & chase(x,z10)))
+    s1-r0: all z1.(boxer(z1) -> exists z2.(girl(z2) & chase(z1,z2)))
+    s1-r1: all z1.(boxerdog(z1) -> exists z2.(girl(z2) & chase(z1,z2)))
     <BLANKLINE>
     s2 readings:
     <BLANKLINE>
@@ -207,9 +207,9 @@ method will remind you of what readings it consists of:
 
     >>> thread = dt.expand_threads('d1')
     >>> for rid, reading in thread:
-    ...     print(rid, str(reading))
-    s0-r0 exists x.(boxer(x) & walk(x))
-    s1-r0 all x.(boxer(x) -> exists z11.(girl(z11) & chase(x,z11)))
+    ...     print(rid, str(reading.normalize()))
+    s0-r0 exists z1.(boxer(z1) & walk(z1))
+    s1-r0 all z1.(boxer(z1) -> exists z2.(girl(z2) & chase(z1,z2)))
     s2-r1 boxerdog(John)
 
 Suppose we have already defined a discourse, as follows:
@@ -222,23 +222,23 @@ us to check:
 
     >>> dt.add_sentence('No person dances', consistchk=True)
     Inconsistent discourse: d0 ['s0-r0', 's1-r0', 's2-r0']:
-        s0-r0: exists x.(student(x) & dance(x))
-        s1-r0: all x.(student(x) -> person(x))
-        s2-r0: -exists x.(person(x) & dance(x))
+        s0-r0: exists z1.(student(z1) & dance(z1))
+        s1-r0: all z1.(student(z1) -> person(z1))
+        s2-r0: -exists z1.(person(z1) & dance(z1))
     <BLANKLINE>
     >>> dt.readings()
     <BLANKLINE>
     s0 readings:
     <BLANKLINE>
-    s0-r0: exists x.(student(x) & dance(x))
+    s0-r0: exists z1.(student(z1) & dance(z1))
     <BLANKLINE>
     s1 readings:
     <BLANKLINE>
-    s1-r0: all x.(student(x) -> person(x))
+    s1-r0: all z1.(student(z1) -> person(z1))
     <BLANKLINE>
     s2 readings:
     <BLANKLINE>
-    s2-r0: -exists x.(person(x) & dance(x))
+    s2-r0: -exists z1.(person(z1) & dance(z1))
 
 So let's retract the inconsistent sentence:
 
@@ -270,8 +270,8 @@ We can now verify that result is consistent.
     - student(1).
     <BLANKLINE>
     Consistent discourse: d0 ['s0-r0', 's1-r0']:
-        s0-r0: exists x.(student(x) & dance(x))
-        s1-r0: all x.(student(x) -> person(x))
+        s0-r0: exists z1.(student(z1) & dance(z1))
+        s1-r0: all z1.(student(z1) -> person(z1))
     <BLANKLINE>
 
 Checking Informativity
@@ -312,9 +312,9 @@ the preceding discourse.
     - student(1).
     <BLANKLINE>
     Consistent discourse: d0 ['s0-r0', 's1-r0', 's2-r0']:
-        s0-r0: exists x.(student(x) & dance(x))
-        s1-r0: all x.(student(x) -> person(x))
-        s2-r0: exists x.(person(x) & dance(x))
+        s0-r0: exists z1.(student(z1) & dance(z1))
+        s1-r0: all z1.(student(z1) -> person(z1))
+        s2-r0: exists z1.(person(z1) & dance(z1))
     <BLANKLINE>
 
 
@@ -485,7 +485,7 @@ In order to play around with your own version of background knowledge,
 you might want to start off with a local copy of ``background.fol``:
 
     >>> nltk.data.retrieve('grammars/book_grammars/background.fol')
-    Retrieving 'grammars/book_grammars/background.fol', saving to 'background.fol'
+    Retrieving 'nltk:grammars/book_grammars/background.fol', saving to 'background.fol'
 
 After you have modified the file, the ``parse_logic()`` function will parse
 the strings in the file into expressions of ``nltk.logic``.
@@ -523,17 +523,17 @@ Regression Testing from book
     <BLANKLINE>
     s0 readings:
     <BLANKLINE>
-    s0-r0: ([],[(([x],[dog(x)]) -> ([z1],[boy(z1), chases(x,z1)]))])
-    s0-r1: ([x],[boy(x), (([z2],[dog(z2)]) -> ([],[chases(z2,x)]))])
+    s0-r0: ([z2],[boy(z2), (([z5],[dog(z5)]) -> ([],[chases(z5,z2)]))])
+    s0-r1: ([],[(([z1],[dog(z1)]) -> ([z2],[boy(z2), chases(z1,z2)]))])
     <BLANKLINE>
     s1 readings:
     <BLANKLINE>
-    s1-r0: ([x],[PRO(x), runs(x)])
+    s1-r0: ([z1],[PRO(z1), runs(z1)])
     >>> dt.readings(show_thread_readings=True)
-    d0: ['s0-r0', 's1-r0'] : INVALID: AnaphoraResolutionException
-    d1: ['s0-r1', 's1-r0'] : ([x,z10],[boy(x), (([z6],[dog(z6)]) -> ([],[chases(z6,x)])), (z10 = x), runs(z10)])
+    d0: ['s0-r0', 's1-r0'] : ([z1,z2],[boy(z1), (([z3],[dog(z3)]) -> ([],[chases(z3,z1)])), (z2 = z1), runs(z2)])
+    d1: ['s0-r1', 's1-r0'] : INVALID: AnaphoraResolutionException
     >>> dt.readings(filter=True, show_thread_readings=True)
-    d1: ['s0-r1', 's1-r0'] : ([x,z15],[boy(x), (([z12],[dog(z12)]) -> ([],[chases(z12,x)])), (z15 = x), runs(z15)])
+    d0: ['s0-r0', 's1-r0'] : ([z1,z3],[boy(z1), (([z2],[dog(z2)]) -> ([],[chases(z2,z1)])), (z3 = z1), runs(z3)])
 
     >>> logic._counter._value = 0
 
@@ -542,5 +542,5 @@ Regression Testing from book
     >>> grammar = nltk.data.load('grammars/book_grammars/drt.fcfg', logic_parser=DrtParser())
     >>> parser = FeatureEarleyChartParser(grammar, trace=0)
     >>> trees = parser.nbest_parse('Angus owns a dog'.split())
-    >>> print(trees[0].label()['SEM'].simplify())
-    ([x,z2],[Angus(x), dog(z2), own(x,z2)])
+    >>> print(trees[0].label()['SEM'].simplify().normalize())
+    ([z1,z2],[Angus(z1), dog(z2), own(z1,z2)])
