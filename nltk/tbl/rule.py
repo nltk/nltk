@@ -14,11 +14,11 @@ from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk import jsontags
 
 ######################################################################
-## Brill Rules
+## Tag Rules
 ######################################################################
 
 
-class BrillRule(object):
+class TagRule(object):
     """
     An interface for tag transformations on a tagged corpus, as
     performed by tbl taggers.  Each transformation finds all tokens
@@ -29,16 +29,16 @@ class BrillRule(object):
     depend on the token under consideration, as well as any other
     tokens in the corpus.
 
-    Brill rules must be comparable and hashable.
+    Tag rules must be comparable and hashable.
     """
 
     def __init__(self, original_tag, replacement_tag):
 
         self.original_tag = original_tag
-        """The tag which this BrillRule may cause to be replaced."""
+        """The tag which this TagRule may cause to be replaced."""
 
         self.replacement_tag = replacement_tag
-        """The tag with which this BrillRule may replace another tag."""
+        """The tag with which this TagRule may replace another tag."""
 
     def apply(self, tokens, positions=None):
         """
@@ -96,7 +96,7 @@ class BrillRule(object):
 
 @python_2_unicode_compatible
 @jsontags.register_tag
-class Rule(BrillRule):
+class Rule(TagRule):
     """
     A Rule checks the current corpus position for a certain set of conditions;
     if they are all fulfilled, the Rule is triggered, meaning that it
@@ -134,7 +134,7 @@ class Rule(BrillRule):
             token in M{n} + p in positions is C{value}.
 
         """
-        BrillRule.__init__(self, original_tag, replacement_tag)
+        TagRule.__init__(self, original_tag, replacement_tag)
         self._conditions = conditions
         self.templateid = templateid
 
@@ -151,7 +151,7 @@ class Rule(BrillRule):
         return cls(obj['templateid'], obj['original'], obj['replacement'], obj['conditions'])
 
     def applies(self, tokens, index):
-        # Inherit docs from BrillRule
+        # Inherit docs from TagRule
 
         # Does the given token have this Rule's "original tag"?
         if tokens[index][1] != self.original_tag:

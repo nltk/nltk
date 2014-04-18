@@ -10,8 +10,8 @@ import glob, sys, subprocess, os.path
 from os.path import abspath
 
 currdir = os.getcwd()
-if not currdir.endswith("nltk/tag/tbl"):
-    raise RuntimeError("run me in /<PATH/TO/NLTK>/nltk/tag/tbl/")
+if not currdir.endswith("nltk/tbl"):
+    raise RuntimeError("run me in /<PATH/TO/NLTK>/nltk/tbl/")
 sys.path.insert(0, "../../..")
 
 #a list of all the python files in this dir and two levels of subdirs

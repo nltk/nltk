@@ -18,7 +18,7 @@ import time
 from nltk.corpus import treebank
 
 from nltk.tbl import error_list, Template
-from nltk.tbl.task.postagging import Word, Pos
+from nltk.tag.brill import Word, Pos
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 
 def demo():

@@ -15,14 +15,10 @@ A general purpose package for Transformation Based Learning,
 currently used by nltk.tag.BrillTagger.
 """
 
-
-#here goes imports which are re-exported for convenient top-level import
-#(as nltk.tag.tbl.*)
-
 from nltk.tbl.template import Template
 #API: Template(...), Template.expand(...)
 
-from nltk.tbl.task.api import Feature
+from nltk.tbl.feature import Feature
 #API: Feature(...), Feature.expand(...)
 
 from nltk.tbl.rule import Rule

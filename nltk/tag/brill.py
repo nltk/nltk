@@ -192,7 +192,7 @@ class BrillTagger(TaggerI):
     initial tagger (such as ``tag.DefaultTagger``) to assign an initial
     tag sequence to a text; and then apply an ordered list of
     transformational rules to correct the tags of individual tokens.
-    These transformation rules are specified by the ``BrillRule``
+    These transformation rules are specified by the ``TagRule``
     interface.
 
     Brill taggers can be created directly, from an initial tagger and
@@ -210,7 +210,7 @@ class BrillTagger(TaggerI):
 
         :param rules: An ordered list of transformation rules that
             should be used to correct the initial tagging.
-        :type rules: list(BrillRule)
+        :type rules: list(TagRule)
 
         :param training_stats: A dictionary of statistics collected
             during training, for possible later use
