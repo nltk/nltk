@@ -307,3 +307,8 @@ class Rule(TagRule):
         conditions = (' if ' if self._conditions else "") + ', and '.join(
             [condition_to_str(f,v) for (f,v) in self._conditions])
         return replacement + conditions
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

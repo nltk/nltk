@@ -60,7 +60,7 @@ class Feature(object):
         >>> Pos(2, 1)
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
-          File "nltk/tag/tbl/template.py", line 306, in __init__
+          File "nltk/tbl/template.py", line 306, in __init__
             raise TypeError
         ValueError: illegal interval specification: (start=2, end=1)
 
@@ -258,3 +258,8 @@ class Feature(object):
         :rtype: any (but usually scalar)
         """
         raise NotImplementedError
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

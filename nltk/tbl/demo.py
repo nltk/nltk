@@ -209,11 +209,11 @@ def postag(
     # defaults
     baseline_backoff_tagger = baseline_backoff_tagger or REGEXP_TAGGER
     if templates is None:
-        from nltk.tag.tbl.task import postagging
+        from nltk.tag.brill import describe_template_sets, brill24
         # some pre-built template sets taken from typical systems or publications are
-        # available. Print a list with postagging.describe_template_sets()
+        # available. Print a list with describe_template_sets()
         # for instance:
-        templates = postagging.brill24()
+        templates = brill24()
     (training_data, baseline_data, gold_data, testing_data) = \
        _demo_prepare_data(tagged_data, train, num_sents, randomize, separate_baseline_data)
 
