@@ -42,17 +42,25 @@ class ParserI(object):
         :rtype: iter(Tree)
         """
         if overridden(self.parse_sents):
-            return self.parse_sents([sent])[0]
-        elif overridden(self.parse):
-            return self.parse(sent)
+            return next(self.parse_sents([sent]))
+        elif overridden(self.parse_one):
+            return (tree for tree in [self.parse_one(sent)] if tree is not None)
+        elif overridden(self.parse_all):
+            return iter(self.parse_all(sent))
         else:
             raise NotImplementedError()
 
     def parse_sents(self, sents):
         """
         Apply ``self.parse()`` to each element of ``sents``.
-        :rtype: list(iter(Tree))
+        :rtype: iter(iter(Tree))
         """
-        return [self.parse(sent) for sent in sents]
+        return (self.parse(sent) for sent in sents)
 
+    def parse_all(self, sent):
+        """:rtype: list(Tree)"""
+        return list(self.parse(sent))
 
+    def parse_one(self, sent):
+        """:rtype: Tree or None"""
+        return next(self.parse(sent), None)
