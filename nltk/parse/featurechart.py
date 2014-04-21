@@ -14,7 +14,7 @@ feature structures as nodes.
 from __future__ import print_function, unicode_literals
 
 from nltk.compat import xrange, python_2_unicode_compatible
-from nltk.featstruct import FeatStruct, unify, FeatStructParser, TYPE, find_variables
+from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
 from nltk.sem import logic
 from nltk.tree import Tree
 from nltk.grammar import (Nonterminal, Production, ContextFreeGrammar,

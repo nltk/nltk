@@ -192,7 +192,7 @@ class ParseError(ValueError):
         return 'Expected %s at %s' % (self.expected, self.position)
 
 _STRING_START_RE = re.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
-def parse_str(s, start_position):
+def read_str(s, start_position):
     """
     If a Python string literal begins at the specified position in the
     given string, then return a tuple ``(val, end_position)``

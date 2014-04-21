@@ -78,7 +78,7 @@ from nltk.compat import (string_types, total_ordering, text_type,
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
-from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
+from nltk.featstruct import FeatStruct, FeatDict, FeatStructReader, SLASH, TYPE
 
 #################################################################
 # Nonterminal
@@ -1136,7 +1136,7 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None,
         features = (SLASH, TYPE)
 
     if fstruct_parser is None:
-        fstruct_parser = FeatStructParser(features, FeatStructNonterminal,
+        fstruct_parser = FeatStructReader(features, FeatStructNonterminal,
                                           logic_parser=logic_parser)
     elif logic_parser is not None:
         raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
