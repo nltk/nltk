@@ -98,7 +98,7 @@ class Tree(list):
             if not isinstance(node_or_str, string_types):
                 raise TypeError("%s: Expected a node value and child list "
                                 "or a single string" % type(self).__name__)
-            tree = type(self)._read(node_or_str)
+            tree = type(self).read(node_or_str)
             list.__init__(self, tree)
             self._label = tree._label
         elif isinstance(children, string_types):
@@ -543,7 +543,7 @@ class Tree(list):
     #////////////////////////////////////////////////////////////
 
     @classmethod
-    def _read(cls, s, brackets='()', read_node=None, read_leaf=None,
+    def read(cls, s, brackets='()', read_node=None, read_leaf=None,
               node_pattern=None, leaf_pattern=None,
               remove_empty_top_bracketing=False):
         """
@@ -665,7 +665,7 @@ class Tree(list):
             pos, token = len(s), 'end-of-string'
         else:
             pos, token = match.start(), match.group()
-        msg = '%s._read(): expected %r but got %r\n%sat index %d.' % (
+        msg = '%s.read(): expected %r but got %r\n%sat index %d.' % (
             cls.__name__, expecting, token, ' '*12, pos)
         # Add a display showing the error token itsels:
         s = s.replace('\n', ' ').replace('\t', ' ')
@@ -1434,9 +1434,9 @@ def _child_names(tree):
 
 def bracket_parse(s):
     """
-    Use Tree._read(s, remove_empty_top_bracketing=True) instead.
+    Use Tree.read(s, remove_empty_top_bracketing=True) instead.
     """
-    raise NameError("Use Tree._read(s, remove_empty_top_bracketing=True) instead.")
+    raise NameError("Use Tree.read(s, remove_empty_top_bracketing=True) instead.")
 
 def sinica_parse(s):
     """
@@ -1463,7 +1463,7 @@ def sinica_parse(s):
             tokens[i] = ''
 
     treebank_string = " ".join(tokens)
-    return Tree._read(treebank_string, remove_empty_top_bracketing=True)
+    return Tree.read(treebank_string, remove_empty_top_bracketing=True)
 
 #    s = re.sub(r'^#[^\s]*\s', '', s)  # remove leading identifier
 #    s = re.sub(r'\w+:', '', s)       # remove role tags
