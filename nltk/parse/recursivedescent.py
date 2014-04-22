@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
 
-from nltk.grammar import Nonterminal, parse_cfg
+from nltk.grammar import Nonterminal
 from nltk.tree import Tree, ImmutableTree
 from nltk.compat import unicode_repr
 
@@ -630,9 +630,9 @@ def demo():
     A demonstration of the recursive descent parser.
     """
 
-    from nltk import parse, parse_cfg
+    from nltk import parse, read_cfg
 
-    grammar = parse_cfg("""
+    grammar = read_cfg("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP

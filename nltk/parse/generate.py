@@ -11,7 +11,7 @@ from __future__ import print_function
 
 import itertools
 import sys
-from nltk.grammar import Nonterminal, parse_cfg
+from nltk.grammar import Nonterminal
 
 
 def generate(grammar, start=None, depth=None, n=None):
@@ -64,9 +64,11 @@ demo_grammar = """
 """
 
 def demo(N=23):
+    from nltk.grammar import read_cfg
+
     print('Generating the first %d sentences for demo grammar:' % (N,))
     print(demo_grammar)
-    grammar = parse_cfg(demo_grammar)
+    grammar = read_cfg(demo_grammar)
     for n, sent in enumerate(generate(grammar, n=N), 1):
         print('%3d. %s' % (n, ' '.join(sent)))
 

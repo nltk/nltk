@@ -435,9 +435,9 @@ def demo():
     A demonstration of the shift-reduce parser.
     """
 
-    from nltk import parse, parse_cfg
+    from nltk import parse, read_cfg
 
-    grammar = parse_cfg("""
+    grammar = read_cfg("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP

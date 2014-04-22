@@ -11,7 +11,7 @@ from __future__ import print_function, unicode_literals
 from collections import defaultdict
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
-                          StatisticalDependencyGrammar, parse_dependency_grammar)
+                          StatisticalDependencyGrammar, read_dependency_grammar)
 from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 from nltk.internals import raise_unorderable_types
 from nltk.compat import total_ordering, python_2_unicode_compatible

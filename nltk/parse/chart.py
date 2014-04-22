@@ -1547,8 +1547,8 @@ class SteppingChartParser(ChartParser):
 ########################################################################
 
 def demo_grammar():
-    from nltk.grammar import parse_cfg
-    return parse_cfg("""
+    from nltk.grammar import read_cfg
+    return read_cfg("""
 S  -> NP VP
 PP -> "with" NP
 NP -> NP PP
@@ -1627,6 +1627,7 @@ def demo(choice=None,
         print()
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
+        # parses = cp.parse_all(tokens)
         chart = cp.chart_parse(tokens)
         parses = list(chart.parses(grammar.start()))
         times[strategies[strategy][0]] = time.time()-t
@@ -1675,4 +1676,5 @@ def demo(choice=None,
     for (parser, t) in sorted(times_items, key=lambda a:a[1]):
         print(format % (parser, t))
 
-if __name__ == '__main__': demo()
+if __name__ == '__main__':
+    demo()
