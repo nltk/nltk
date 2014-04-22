@@ -1133,7 +1133,7 @@ class DownloaderGUI(object):
     COLUMNS = ['', 'Identifier', 'Name', 'Size', 'Status',
                'Unzipped Size',
                'Copyright', 'Contact', 'License', 'Author',
-               'Subdir', 'Checksum']
+               'SVN Revision', 'Subdir', 'Checksum']
     """A list of the names of columns.  This controls the order in
        which the columns will appear.  If this is edited, then
        ``_package_to_columns()`` may need to be edited to match."""

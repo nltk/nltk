@@ -17,7 +17,7 @@ The parser can then be constructed by calling, for example:
 ``parser = chart.CCGChartParser(<lexicon>, <ruleset>)``
 
 Parsing is then performed by running
-``parser.nbest_parse(<sentence>.split())``.
+``parser.parse(<sentence>.split())``.
 
 While this returns a list of trees, the default representation
 of the produced trees is not very enlightening, particularly
@@ -30,6 +30,8 @@ This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
 from __future__ import print_function, division, unicode_literals
+
+import itertools
 
 from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
@@ -103,7 +105,7 @@ class BinaryCombinatorRule(AbstractChartRule):
         self._combinator = combinator
 
     # Apply a combinator
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         # The left & right edges must be touching.
         if not (left_edge.end() == right_edge.start()):
             return
@@ -131,7 +133,7 @@ class ForwardTypeRaiseRule(AbstractChartRule):
 
     def __init__(self):
        self._combinator = ForwardT
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
 
@@ -152,7 +154,7 @@ class BackwardTypeRaiseRule(AbstractChartRule):
 
     def __init__(self):
        self._combinator = BackwardT
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
 
@@ -193,7 +195,7 @@ class CCGChartParser(ParserI):
         return self._lexicon
 
    # Implements the CYK algorithm
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         tokens = list(tokens)
         chart = CCGChart(list(tokens))
         lex = self._lexicon
@@ -220,11 +222,11 @@ class CCGChartParser(ParserI):
                             # Generate all possible combinations of the two edges
                             for rule in self._rules:
                                 edges_added_by_rule = 0
-                                for newedge in rule.apply_iter(chart,lex,left,right):
+                                for newedge in rule.apply(chart,lex,left,right):
                                     edges_added_by_rule += 1
 
         # Output the resulting parses
-        return chart.parses(lex.start())[:n]
+        return chart.parses(lex.start())
 
 class CCGChart(Chart):
     def __init__(self, tokens):
@@ -234,25 +236,25 @@ class CCGChart(Chart):
     # constructed slightly differently to those in the default Chart class, so it has to
     # be reimplemented
     def _trees(self, edge, complete, memo, tree_class):
+        assert complete, "CCGChart cannot build incomplete trees"
+
         if edge in memo:
             return memo[edge]
 
-        trees = []
-        memo[edge] = []
-
         if isinstance(edge,CCGLeafEdge):
-            word = tree_class(edge.lhs(),[self._tokens[edge.start()]])
-            leaf = tree_class((edge.lhs(),"Leaf"),[word])
-            memo[edge] = leaf
-            return leaf
+            word = tree_class(edge.lhs(), [self._tokens[edge.start()]])
+            leaf = tree_class((edge.lhs(), "Leaf"), [word])
+            memo[edge] = [leaf]
+            return [leaf]
+
+        memo[edge] = []
+        trees = []
+        lhs = (edge.lhs(), "%s" % edge.rule())
 
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class)
-                                for cp in cpl]
-            if len(child_choices) > 0 and isinstance(child_choices[0], string_types):
-                child_choices = [child_choices]
-            for children in self._choose_children(child_choices):
-                lhs = (edge.lhs(), "%s" % edge.rule())
+                             for cp in cpl]
+            for children in itertools.product(*child_choices):
                 trees.append(tree_class(lhs, children))
 
         memo[edge] = trees
@@ -352,7 +354,7 @@ lex = parseLexicon('''
 
 def demo():
     parser = CCGChartParser(lex, DefaultRuleSet)
-    for parse in parser.nbest_parse("I might cook and eat the bacon".split(), 3):
+    for parse in parser.parse("I might cook and eat the bacon".split()):
         printCCGDerivation(parse)
 
 if __name__ == '__main__':

@@ -11,7 +11,6 @@ from __future__ import print_function
 import math
 
 from nltk.compat import xrange
-from nltk.grammar import parse_dependency_grammar
 
 from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 
@@ -366,6 +365,8 @@ class ProbabilisticNonprojectiveParser(object):
         :param tokens: A list of words or punctuation to be parsed.
         :type tags: list(str)
         :param tags: A list of tags corresponding by index to the words in the tokens list.
+        :return: An iterator of non-projective parses.
+        :rtype: iter(DependencyGraph)
         """
         self.inner_nodes = {}
         # Initialize g_graph
@@ -454,8 +455,8 @@ class ProbabilisticNonprojectiveParser(object):
 #           print i, betas[i]
             original_graph.add_arc(betas[i][0], betas[i][1])
 #       print original_graph
-        return original_graph
         print('Done.')
+        yield original_graph
 
 
 
@@ -494,8 +495,8 @@ class NonprojectiveDependencyParser(object):
 
         param tokens: A list of tokens to parse.
         type tokens: list(str)
-        return: A set of non-projective parses.
-        rtype: list(DependencyGraph)
+        return: An iterator of non-projective parses.
+        rtype: iter(DependencyGraph)
         """
         # Create graph representation of tokens
         self._graph = DependencyGraph()
@@ -519,18 +520,18 @@ class NonprojectiveDependencyParser(object):
             if len(heads) == 0:
                 roots.append(i)
             possible_heads.append(heads)
+
         # Set roots to attempt
-        if len(roots) > 1:
-            print("No parses found.")
-            return []
-        elif len(roots) == 0:
-            for i in range(len(tokens)):
-                roots.append(i)
-        # Traverse lattice
-        analyses = []
-        for root in roots:
-            stack = []
-            analysis = [[] for i in range(len(possible_heads))]
+        if len(roots) < 2:
+            if len(roots) == 0:
+                for i in range(len(tokens)):
+                    roots.append(i)
+
+            # Traverse lattice
+            analyses = []
+            for root in roots:
+                stack = []
+                analysis = [[] for i in range(len(possible_heads))]
             i = 0
             forward = True
             while i >= 0:
@@ -550,13 +551,13 @@ class NonprojectiveDependencyParser(object):
                         if stack_item[0] == i:
                             index_on_stack = True
                     orig_length = len(possible_heads[i])
-#                    print len(possible_heads[i])
+#                   print len(possible_heads[i])
                     if index_on_stack and orig_length == 0:
                         for j in xrange(len(stack) -1, -1, -1):
                             stack_item = stack[j]
                             if stack_item[0] == i:
                                 possible_heads[i].append(stack.pop(j)[1])
-#                        print stack
+#                       print stack
                     elif index_on_stack and orig_length > 0:
                         head = possible_heads[i].pop()
                         analysis[i] = head
@@ -571,9 +572,9 @@ class NonprojectiveDependencyParser(object):
                     i += 1
                 else:
                     i -= 1
+
         # Filter parses
-        graphs = []
-        #ensure 1 root, every thing has 1 head
+        # ensure 1 root, every thing has 1 head
         for analysis in analyses:
             root_count = 0
             root = []
@@ -588,10 +589,9 @@ class NonprojectiveDependencyParser(object):
                     node = {'word': tokens[i], 'address': i+1}
                     node['deps'] = [j+1 for j in range(len(tokens)) if analysis[j] == i]
                     graph.nodelist.append(node)
-#                cycle = graph.contains_cycle()
-#                if not cycle:
-                graphs.append(graph)
-        return graphs
+#               cycle = graph.contains_cycle()
+#               if not cycle:
+                yield graph
 
 
 #################################################################
@@ -607,19 +607,21 @@ def demo():
 def hall_demo():
     npp = ProbabilisticNonprojectiveParser()
     npp.train([], DemoScorer())
-    parse_graph = npp.parse(['v1', 'v2', 'v3'], [None, None, None])
-    print(parse_graph)
+    for parse_graph in npp.parse(['v1', 'v2', 'v3'], [None, None, None]):
+        print(parse_graph)
 
 def nonprojective_conll_parse_demo():
     graphs = [DependencyGraph(entry)
               for entry in conll_data2.split('\n\n') if entry]
     npp = ProbabilisticNonprojectiveParser()
     npp.train(graphs, NaiveBayesDependencyScorer())
-    parse_graph = npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc'])
-    print(parse_graph)
+    for parse_graph in npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc']):
+        print(parse_graph)
 
 def rule_based_demo():
-    grammar = parse_dependency_grammar("""
+    from nltk.grammar import DependencyGrammar
+
+    grammar = DependencyGrammar.read("""
     'taught' -> 'play' | 'man'
     'man' -> 'the' | 'in'
     'in' -> 'corner'

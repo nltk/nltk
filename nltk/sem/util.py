@@ -45,7 +45,7 @@ def parse_sents(inputs, grammar, trace=0):
     parses = []
     for sent in inputs:
         tokens = sent.split() # use a tokenizer?
-        syntrees = cp.nbest_parse(tokens)
+        syntrees = list(cp.parse(tokens))
         parses.append(syntrees)
     return parses
 

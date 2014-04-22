@@ -44,11 +44,11 @@ by ``i`` raises an ``Undefined`` exception; this is caught by
 Batch Processing
 ----------------
 
-The utility functions ``interpret_sents()`` and ``evaluate_sents()`` are intended to
+The utility functions ``batch_interpret()`` and ``batch_evaluate()`` are intended to
 help with processing multiple sentences. Here's an example of the first of these:
 
     >>> sents = ['Mary walks']
-    >>> results = nltk.sem.interpret_sents(sents, 'grammars/sample_grammars/sem2.fcfg')
+    >>> results = nltk.sem.batch_interpret(sents, 'grammars/sample_grammars/sem2.fcfg')
     >>> for result in results:
     ...     for (synrep, semrep) in result:
     ...         print(synrep)
@@ -68,13 +68,13 @@ is specified with a lowercase
     ... % start S
     ... S[sem=<raining>] -> 'raining'
     ... """)
-    >>> results = nltk.sem.interpret_sents(sents, g, semkey='sem')
+    >>> results = nltk.sem.batch_interpret(sents, g, semkey='sem')
     >>> for result in results:
     ...     for (synrep, semrep) in result:
     ...         print(semrep)
     raining
 
-The function ``evaluate_sents()`` works in a similar manner, but also needs to be
+The function ``batch_evaluate()`` works in a similar manner, but also needs to be
 passed a ``Model`` against which the semantic representations are evaluated.
 
 Unit Tests
@@ -547,7 +547,7 @@ Load a valuation from a file.
     >>> g = Assignment(dom)
     >>> gramfile = 'grammars/sample_grammars/sem2.fcfg'
     >>> inputs = ['John sees a girl', 'every dog barks']
-    >>> parses = nltk.sem.parse_sents(inputs, gramfile)
+    >>> parses = batch_parse(inputs, gramfile)
     >>> for sent, trees in zip(inputs, parses):
     ...     print()
     ...     print("Sentence: %s" % sent)
@@ -580,7 +580,7 @@ Load a valuation from a file.
     Semantics: all x.(dog(x) -> bark(x))
 
     >>> sent = "every dog barks"
-    >>> result = nltk.sem.interpret_sents([sent], gramfile)[0]
+    >>> result = nltk.sem.batch_interpret([sent], gramfile)[0]
     >>> for (syntree, semrep) in result:
     ...     print(syntree)
     ...     print()
@@ -595,7 +595,7 @@ Load a valuation from a file.
     <BLANKLINE>
     all x.(dog(x) -> bark(x))
 
-    >>> result = nltk.sem.evaluate_sents([sent], gramfile, m, g)[0]
+    >>> result = nltk.sem.batch_evaluate([sent], gramfile, m, g)[0]
     >>> for (syntree, semrel, value) in result:
     ...     print(syntree)
     ...     print()
@@ -615,7 +615,7 @@ Load a valuation from a file.
     True
 
     >>> sents = ['Mary walks', 'John sees a dog']
-    >>> results = nltk.sem.interpret_sents(sents, 'grammars/sample_grammars/sem2.fcfg')
+    >>> results = nltk.sem.batch_interpret(sents, 'grammars/sample_grammars/sem2.fcfg')
     >>> for result in results:
     ...     for (synrep, semrep) in result:
     ...         print(synrep)

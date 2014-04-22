@@ -468,7 +468,7 @@ class ShiftReduceApp(object):
         if self.reduce(): return 1
         elif self.shift(): return 1
         else:
-            if len(self._parser.parses()) > 0:
+            if list(self._parser.parses()):
                 self._lastoper1['text'] = 'Finished:'
                 self._lastoper2['text'] = 'Success'
             else:

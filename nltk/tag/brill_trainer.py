@@ -107,9 +107,8 @@ class BrillTaggerTrainer(object):
 
         #imports
         >>> from nltk.tbl.template import Template
-        >>> from nltk.tbl.task.postagging import Pos, Word
-        >>> from nltk.tag import RegexpTagger
-        >>> from nltk.tag import BrillTaggerTrainer
+        >>> from nltk.tag.brill import Pos, Word
+        >>> from nltk.tag import RegexpTagger, BrillTaggerTrainer
 
         #some data
         >>> from nltk.corpus import treebank
@@ -625,3 +624,7 @@ class BrillTaggerTrainer(object):
                        (num_new, num_unseen)))
         print(prefix)
 
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

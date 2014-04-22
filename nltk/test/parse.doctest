@@ -8,7 +8,7 @@
 Unit tests for the Context Free Grammar class
 ---------------------------------------------
 
-    >>> from nltk import Nonterminal, nonterminals, Production, parse_cfg, ContextFreeGrammar
+    >>> from nltk import Nonterminal, nonterminals, Production, read_cfg, ContextFreeGrammar
 
     >>> nt1 = Nonterminal('NP')
     >>> nt2 = Nonterminal('VP')
@@ -40,7 +40,7 @@ Unit tests for the Context Free Grammar class
     >>> prod1 == prod2
     False
 
-    >>> grammar = parse_cfg("""
+    >>> grammar = read_cfg("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> 'the' N | N PP | 'the' N PP
@@ -66,11 +66,11 @@ and unambiguous sentence.
     >>> sentence1 = 'the cat chased the dog'.split()
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
-    >>> for t in rd.nbest_parse(sentence1):
+    >>> for t in rd.parse(sentence1):
     ...     print(t)
     (S (NP the (N cat)) (VP (V chased) (NP the (N dog))))
 
-    >>> for t in rd.nbest_parse(sentence2):
+    >>> for t in rd.parse(sentence2):
     ...     print(t)
     (S
       (NP the (N cat))
@@ -101,7 +101,7 @@ and only one parse is ever returned.
     >>> sentence1 = 'the cat chased the dog'.split()
     >>> sentence2 = 'the cat chased the dog on the rug'.split()
 
-    >>> for t in sr.nbest_parse(sentence1):
+    >>> for t in sr.parse(sentence1):
     ...     print(t)
     (S (NP the (N cat)) (VP (V chased) (NP the (N dog))))
 
@@ -110,7 +110,7 @@ The shift reduce parser uses heuristics to decide what to do when there are
 multiple possible shift or reduce operations available - for the supplied
 grammar clearly the wrong operation is selected.
 
-    >>> for t in sr.nbest_parse(sentence2):
+    >>> for t in sr.parse(sentence2):
     ...     print(t)
 
 
@@ -124,7 +124,7 @@ We must turn off showing of times.
 
 First we test tracing with a short sentence
 
-    >>> nltk.parse.chart.demo(2, should_print_times=False, trace=1,
+    >>> nltk.parse.chart.demo(2, print_times=False, trace=1,
     ...                       sent='I saw a dog', numparses=1)
     * Sentence:
     I saw a dog
@@ -175,7 +175,7 @@ Note that the number of edges differ between the strategies.
 
 Top-down
 
-    >>> nltk.parse.chart.demo(1, should_print_times=False, trace=0,
+    >>> nltk.parse.chart.demo(1, print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -194,7 +194,7 @@ Top-down
 
 Bottom-up
 
-    >>> nltk.parse.chart.demo(2, should_print_times=False, trace=0,
+    >>> nltk.parse.chart.demo(2, print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -213,7 +213,7 @@ Bottom-up
 
 Bottom-up Left-Corner
 
-    >>> nltk.parse.chart.demo(3, should_print_times=False, trace=0,
+    >>> nltk.parse.chart.demo(3, print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -232,7 +232,7 @@ Bottom-up Left-Corner
 
 Left-Corner with Bottom-Up Filter
 
-    >>> nltk.parse.chart.demo(4, should_print_times=False, trace=0,
+    >>> nltk.parse.chart.demo(4, print_times=False, trace=0,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -251,7 +251,7 @@ Left-Corner with Bottom-Up Filter
 
 The stepping chart parser
 
-    >>> nltk.parse.chart.demo(5, should_print_times=False, trace=1,
+    >>> nltk.parse.chart.demo(5, print_times=False, trace=1,
     ...                       sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -352,7 +352,7 @@ We use the demo() function for testing. We must turn off showing of times.
 
 Earley Chart Parser
 
-    >>> nltk.parse.earleychart.demo(should_print_times=False, trace=1,
+    >>> nltk.parse.earleychart.demo(print_times=False, trace=1,
     ...                             sent='I saw John with a dog', numparses=2)
     * Sentence:
     I saw John with a dog
@@ -448,7 +448,7 @@ Bottom-up parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     7661
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Bottom-up Left-corner parsing.
@@ -457,7 +457,7 @@ Bottom-up Left-corner parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     4986
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Left-corner parsing with bottom-up filter.
@@ -466,7 +466,7 @@ Left-corner parsing with bottom-up filter.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     1342
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Top-down parsing.
@@ -475,7 +475,7 @@ Top-down parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     28352
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Incremental Bottom-up parsing.
@@ -484,7 +484,7 @@ Incremental Bottom-up parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     7661
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Incremental Bottom-up Left-corner parsing.
@@ -493,7 +493,7 @@ Incremental Bottom-up Left-corner parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     4986
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Incremental Left-corner parsing with bottom-up filter.
@@ -502,7 +502,7 @@ Incremental Left-corner parsing with bottom-up filter.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     1342
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Incremental Top-down parsing.
@@ -511,7 +511,7 @@ Incremental Top-down parsing.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     28352
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 Earley parsing. This is similar to the incremental top-down algorithm.
@@ -520,7 +520,7 @@ Earley parsing. This is similar to the incremental top-down algorithm.
     >>> chart = parser.chart_parse(sentence)
     >>> print((chart.num_edges()))
     28352
-    >>> print((len(chart.parses(grammar.start()))))
+    >>> print((len(list(chart.parses(grammar.start())))))
     17
 
 
@@ -529,11 +529,11 @@ Unit tests for the Probabilistic CFG class
 
     >>> from nltk.corpus import treebank
     >>> from itertools import islice
-    >>> from nltk import parse_pcfg, induce_pcfg, toy_pcfg1, toy_pcfg2
+    >>> from nltk import read_pcfg, induce_pcfg, toy_pcfg1, toy_pcfg2
 
 Create a set of probabilistic CFG productions.
 
-    >>> grammar = parse_pcfg("""
+    >>> grammar = read_pcfg("""
     ... A -> B B [.3] | C B C [.7]
     ... B -> B D [.5] | C [.5]
     ... C -> 'a' [.1] | 'b' [0.9]
@@ -615,7 +615,7 @@ resulting parses.
     >>> from nltk.parse import pchart
 
     >>> parser = pchart.InsideChartParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -631,7 +631,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.RandomChartParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -647,7 +647,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.UnsortedChartParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -663,7 +663,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.LongestChartParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -679,7 +679,7 @@ resulting parses.
         (PP (P with) (NP (Det my) (N cookie))))) (p=2.03744e-07)
 
     >>> parser = pchart.InsideChartParser(grammar, beam_size = len(tokens)+1)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
 
 
@@ -693,7 +693,7 @@ Unit tests for the Viterbi Parse classes
 Parse the tokenized sentence.
 
     >>> parser = ViterbiParser(grammar)
-    >>> for t in parser.nbest_parse(tokens):
+    >>> for t in parser.parse(tokens):
     ...     print(t)
     (S
       (NP (Name Jack))
@@ -721,8 +721,8 @@ Tracing the Feature Chart Parser
 
 We use the featurechart.demo() function for tracing the Feature Chart Parser.
 
-    >>> nltk.parse.featurechart.demo(should_print_times=False,
-    ...                              should_print_grammar=True,
+    >>> nltk.parse.featurechart.demo(print_times=False,
+    ...                              print_grammar=True,
     ...                              parser=nltk.parse.featurechart.FeatureChartParser,
     ...                              sent='I saw John with a dog')
     <BLANKLINE>
@@ -825,7 +825,7 @@ return the same trees. Otherwise an error is printed.
     ...     sentence = sentence.split()
     ...     trees = None
     ...     for P in parsers:
-    ...         result = P(grammar).nbest_parse(sentence)
+    ...         result = P(grammar).parse(sentence)
     ...         result = set(tree.freeze() for tree in result)
     ...         if len(result) != nr_trees:
     ...             print("Wrong nr of trees:", len(result))
@@ -842,7 +842,7 @@ The demo grammar from before, with an ambiguous sentence.
 This grammar tests that variables in different grammar rules are renamed
 before unification. (The problematic variable is in this case ?X).
 
-    >>> whatwasthat = nltk.parse_fcfg('''
+    >>> whatwasthat = nltk.read_fcfg('''
     ... S[] -> NP[num=?N] VP[num=?N, slash=?X]
     ... NP[num=?X] -> "what"
     ... NP[num=?X] -> "that"
@@ -854,7 +854,7 @@ before unification. (The problematic variable is in this case ?X).
 This grammar tests that the same rule can be used in different places
 in another rule, and that the variables are properly renamed.
 
-    >>> thislovesthat = nltk.parse_fcfg('''
+    >>> thislovesthat = nltk.read_fcfg('''
     ... S[] -> NP[case=nom] V[] NP[case=acc]
     ... NP[case=?X] -> Pron[case=?X]
     ... Pron[] -> "this"

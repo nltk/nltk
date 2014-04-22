@@ -97,14 +97,10 @@ class ShiftReduceParser(ParserI):
             while self._reduce(stack, remaining_text): pass
 
         # Did we reduce everything?
-        if len(stack) != 1: return None
-
-        # Did we end up with the right category?
-        if stack[0].label() != self._grammar.start().symbol():
-            return None
-
-        # We parsed successfully!
-        return stack[0]
+        if len(stack) == 1: 
+            # Did we end up with the right category?
+            if stack[0].label() == self._grammar.start().symbol():
+                yield stack[0]
 
     def _shift(self, stack, remaining_text):
         """
@@ -172,8 +168,10 @@ class ShiftReduceParser(ParserI):
         :param remaining_text: The portion of the text that is not yet
             covered by ``stack``.
         """
-        if production is None: productions = self._grammar.productions()
-        else: productions = [production]
+        if production is None:
+            productions = self._grammar.productions()
+        else:
+            productions = [production]
 
         # Try each production, in order.
         for production in productions:
@@ -298,12 +296,12 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self._remaining_text = None
         self._history = []
 
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         tokens = list(tokens)
         self.initialize(tokens)
-        while self.step(): pass
-
-        return self.parses()[:n]
+        while self.step():
+            pass
+        return self.parses()
 
     def stack(self):
         """
@@ -407,15 +405,15 @@ class SteppingShiftReduceParser(ShiftReduceParser):
 
     def parses(self):
         """
-        :return: A list of the parses that have been found by this
+        :return: An iterator of the parses that have been found by this
             parser so far.
-        :rtype: list of Tree
+        :rtype: iter(Tree)
         """
-        if len(self._remaining_text) != 0: return []
-        if len(self._stack) != 1: return []
-        if self._stack[0].label() != self._grammar.start().symbol():
-            return []
-        return self._stack
+        if (len(self._remaining_text) == 0 and
+            len(self._stack) == 1 and
+            self._stack[0].label() == self._grammar.start().symbol()
+            ):
+            yield self._stack[0]
 
 # copied from nltk.parser
 
@@ -437,9 +435,9 @@ def demo():
     A demonstration of the shift-reduce parser.
     """
 
-    from nltk import parse, parse_cfg
+    from nltk import parse, ContextFreeGrammar
 
-    grammar = parse_cfg("""
+    grammar = ContextFreeGrammar.read("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP
@@ -454,7 +452,7 @@ def demo():
     sent = 'I saw a man in the park'.split()
 
     parser = parse.ShiftReduceParser(grammar, trace=2)
-    for p in parser.nbest_parse(sent):
+    for p in parser.parse(sent):
         print(p)
 
 if __name__ == '__main__':

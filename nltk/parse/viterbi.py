@@ -141,7 +141,9 @@ class ViterbiParser(ParserI):
                                                 tokens)
 
         # Return the tree that spans the entire text & have the right cat
-        return constituents.get((0, len(tokens), self._grammar.start()))
+        tree = constituents.get((0, len(tokens), self._grammar.start()))
+        if tree is not None:
+            yield tree
 
     def _add_constituents_spanning(self, span, constituents, tokens):
         """
@@ -329,13 +331,13 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    import nltk
     from nltk import tokenize
     from nltk.parse import ViterbiParser
+    from nltk.grammar import toy_pcfg1, toy_pcfg2
 
     # Define two demos.  Each demo has a sentence and a grammar.
-    demos = [('I saw the man with my telescope', nltk.toy_pcfg1),
-             ('the boy saw Jack with Bob under the table with a telescope', nltk.toy_pcfg2)]
+    demos = [('I saw the man with my telescope', toy_pcfg1),
+             ('the boy saw Jack with Bob under the table with a telescope', toy_pcfg2)]
 
     # Ask the user which demo they want to use.
     print()
@@ -360,7 +362,7 @@ def demo():
     print('\nsent: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar))
     parser.trace(3)
     t = time.time()
-    parses = parser.nbest_parse(tokens)
+    parses = parser.parse_all(tokens)
     time = time.time()-t
     average = (reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
                if parses else 0)
