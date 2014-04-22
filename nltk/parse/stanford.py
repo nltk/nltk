@@ -109,7 +109,7 @@ class StanfordParser(ParserI):
                 cur_lines.append(line)
         return res
 
-    def parse(self, sentence, verbose=False):
+    def parse_all(self, sentence, verbose=False):
         """
         Use StanfordParser to parse a sentence. Takes a sentence as a list of
         words; it will be automatically tagged with this StanfordParser instance's
@@ -119,7 +119,7 @@ class StanfordParser(ParserI):
         :type sentence: list(str)
         :rtype: Tree
         """
-        return self.parse_sents([sentence], verbose)[0]
+        return self.parse_sents([sentence], verbose)
 
     def parse_sents(self, sentences, verbose=False):
         """

@@ -87,7 +87,7 @@ class MaltParser(ParserI):
             url='http://www.maltparser.org/',
             verbose=verbose)
 
-    def parse(self, sentence, verbose=False):
+    def parse_all(self, sentence, verbose=False):
         """
         Use MaltParser to parse a sentence. Takes a sentence as a list of
         words; it will be automatically tagged with this MaltParser instance's

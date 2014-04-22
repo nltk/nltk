@@ -1345,7 +1345,7 @@ class ChartParser(ParserI):
         # Return the final chart.
         return chart
 
-    def parse(self, tokens, tree_class=Tree):
+    def parse_all(self, tokens, tree_class=Tree):
         chart = self.chart_parse(tokens)
         return chart.parses(self._grammar.start(), tree_class=tree_class)
 
