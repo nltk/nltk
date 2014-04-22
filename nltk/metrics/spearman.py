@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Spearman Rank Correlation
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT

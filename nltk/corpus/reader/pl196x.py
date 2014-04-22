@@ -1,6 +1,6 @@
 # Natural Language Toolkit:
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Piotr Kasprzyk <p.j.kasprzyk@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -15,7 +15,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
-# (?:something) -- non-grouping parentheses!
+# (?:something) -- non-capturing parentheses!
 
 PARA = re.compile(r'<p(?: [^>]*){0,1}>(.*?)</p>')
 SENT = re.compile(r'<s(?: [^>]*){0,1}>(.*?)</s>')

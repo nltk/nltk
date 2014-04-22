@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Yoav Goldberg <yoavg@cs.bgu.ac.il>
 #         Steven Bird <stevenbird1@gmail.com> (minor edits)
 # URL: <http://nltk.sourceforge.net>

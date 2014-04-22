@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sequential Backoff Taggers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 #         Tiago Tresoldi <tresoldi@users.sf.net> (original affix tagger)
@@ -21,7 +21,7 @@ from __future__ import print_function, unicode_literals
 
 import re
 
-from nltk.probability import FreqDist, ConditionalFreqDist
+from nltk.probability import ConditionalFreqDist
 from nltk.classify.naivebayes import NaiveBayesClassifier
 from nltk.compat import python_2_unicode_compatible
 
@@ -52,7 +52,7 @@ class SequentialBackoffTagger(TaggerI):
     @property
     def backoff(self):
         """The backoff tagger for this tagger."""
-        return (self._taggers[1] if len(self._taggers) > 1 else None)
+        return self._taggers[1] if len(self._taggers) > 1 else None
 
     def tag(self, tokens):
         # docs inherited from TaggerI
@@ -229,7 +229,7 @@ class DefaultTagger(SequentialBackoffTagger):
     :type tag: str
     """
 
-    json_tag = 'nltk.DefaultTagger'
+    json_tag = 'nltk.tag.sequential.DefaultTagger'
 
     def __init__(self, tag):
         self._tag = tag
@@ -274,7 +274,7 @@ class NgramTagger(ContextTagger):
         fewer than *cutoff* times, then exclude it from the
         context-to-tag table for the new tagger.
     """
-    json_tag = 'nltk.NgramTagger'
+    json_tag = 'nltk.tag.sequential.NgramTagger'
 
     def __init__(self, n, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
@@ -287,12 +287,12 @@ class NgramTagger(ContextTagger):
             self._train(train, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._n, self._context_to_tag
+        return self._n, self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _n, _context_to_tag = obj
-        return cls(_n, model=_context_to_tag)
+        _n, _context_to_tag, backoff = obj
+        return cls(_n, model=_context_to_tag, backoff=backoff)
 
     def context(self, tokens, index, history):
         tag_context = tuple(history[max(0,index-self._n+1):index])
@@ -332,7 +332,7 @@ class UnigramTagger(NgramTagger):
     :type cutoff: int
     """
 
-    json_tag = 'nltk.UnigramTagger'
+    json_tag = 'nltk.tag.sequential.UnigramTagger'
 
     def __init__(self, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
@@ -340,12 +340,12 @@ class UnigramTagger(NgramTagger):
                              backoff, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._context_to_tag
+        return self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _context_to_tag = obj
-        return cls(model=_context_to_tag)
+        _context_to_tag, backoff = obj
+        return cls(model=_context_to_tag, backoff=backoff)
 
     def context(self, tokens, index, history):
         return tokens[index]
@@ -370,7 +370,7 @@ class BigramTagger(NgramTagger):
         in order not to use the backoff tagger
     :type cutoff: int
     """
-    json_tag = 'nltk.BigramTagger'
+    json_tag = 'nltk.tag.sequential.BigramTagger'
 
     def __init__(self, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
@@ -378,12 +378,12 @@ class BigramTagger(NgramTagger):
                              backoff, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._context_to_tag
+        return self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _context_to_tag = obj
-        return cls(model=_context_to_tag)
+        _context_to_tag, backoff = obj
+        return cls(model=_context_to_tag, backoff=backoff)
 
 
 @jsontags.register_tag
@@ -405,7 +405,7 @@ class TrigramTagger(NgramTagger):
         in order not to use the backoff tagger
     :type cutoff: int
     """
-    json_tag = 'nltk.TrigramTagger'
+    json_tag = 'nltk.tag.sequential.TrigramTagger'
 
     def __init__(self, train=None, model=None,
                  backoff=None, cutoff=0, verbose=False):
@@ -413,12 +413,12 @@ class TrigramTagger(NgramTagger):
                              backoff, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._context_to_tag
+        return self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _context_to_tag = obj
-        return cls(model=_context_to_tag)
+        _context_to_tag, backoff = obj
+        return cls(model=_context_to_tag, backoff=backoff)
 
 
 @jsontags.register_tag
@@ -441,7 +441,7 @@ class AffixTagger(ContextTagger):
         tag of None by this tagger.
     """
 
-    json_tag = 'nltk.AffixTagger'
+    json_tag = 'nltk.tag.sequential.AffixTagger'
 
     def __init__(self, train=None, model=None, affix_length=-3,
                  min_stem_length=2, backoff=None, cutoff=0, verbose=False):
@@ -457,15 +457,16 @@ class AffixTagger(ContextTagger):
             self._train(train, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._affix_length, self._min_word_length, self._context_to_tag
+        return self._affix_length, self._min_word_length, self._context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _affix_length, _min_word_length, _context_to_tag = obj
+        _affix_length, _min_word_length, _context_to_tag, backoff = obj
         return cls(
             affix_length=_affix_length,
             min_stem_length=_min_word_length - abs(_affix_length),
-            model=_context_to_tag
+            model=_context_to_tag,
+            backoff=backoff
         )
 
     def context(self, tokens, index, history):
@@ -522,7 +523,7 @@ class RegexpTagger(SequentialBackoffTagger):
         assigned the tag None.
     """
 
-    json_tag = 'nltk.RegexpTagger'
+    json_tag = 'nltk.tag.sequential.RegexpTagger'
 
     def __init__(self, regexps, backoff=None):
         """
@@ -536,15 +537,16 @@ class RegexpTagger(SequentialBackoffTagger):
         self._size=len(regexps)
 
     def encode_json_obj(self):
-        return self._map, self._regexs.pattern, self._size
+        return self._map, self._regexs.pattern, self._size, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _map, _regexs, _size = obj
+        _map, _regexs, _size, backoff = obj
         self = cls(())
         self._map = _map
         self._regexs = re.compile(_regexs)
         self._size = _size
+        SequentialBackoffTagger.__init__(self, backoff)
         return self
 
     def choose_tag(self, tokens, index, history):
@@ -639,7 +641,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         pdist = self._classifier.prob_classify(featureset)
         tag = pdist.max()
-        return (tag if pdist.prob(tag) >= self._cutoff_prob else None)
+        return tag if pdist.prob(tag) >= self._cutoff_prob else None
 
     def _train(self, tagged_corpus, classifier_builder, verbose):
         """

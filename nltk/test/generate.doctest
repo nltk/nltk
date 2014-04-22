@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===============================================
@@ -8,8 +8,8 @@ Generating sentences from context-free grammars
 An example grammar:
 
     >>> from nltk.parse.generate import generate, demo_grammar
-    >>> from nltk import parse_cfg
-    >>> grammar = parse_cfg(demo_grammar)
+    >>> from nltk import read_cfg
+    >>> grammar = read_cfg(demo_grammar)
     >>> print(grammar)
     Grammar with 13 productions (start state = S)
         S -> NP VP

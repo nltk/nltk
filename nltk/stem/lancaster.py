@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Tomcavage <stomcava@law.upenn.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

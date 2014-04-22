@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =========================
@@ -181,10 +181,10 @@ One answer
     >>> tp = ResolutionProverCommand(None, [p1,p2,p3,c])
     >>> sorted(tp.find_answers())
     [<ConstantExpression art>]
-    >>> print(tp.proof())
+    >>> print(tp.proof()) # doctest: +SKIP
     [1] {father_of(art,john)}                  A
     [2] {father_of(bob,kim)}                   A
-    [3] {-father_of(z4,z3), parent_of(z4,z3)}  A
+    [3] {-father_of(z3,z4), parent_of(z3,z4)}  A
     [4] {-parent_of(z6,john), ANSWER(z6)}      A
     [5] {parent_of(art,john)}                  (1, 3)
     [6] {parent_of(bob,kim)}                   (2, 3)
@@ -203,11 +203,11 @@ Multiple answers
     >>> tp = ResolutionProverCommand(None, [p1,p2,p3,p4,c])
     >>> sorted(tp.find_answers())
     [<ConstantExpression ann>, <ConstantExpression art>]
-    >>> print(tp.proof())
+    >>> print(tp.proof()) # doctest: +SKIP
     [ 1] {father_of(art,john)}                  A
     [ 2] {mother_of(ann,john)}                  A
-    [ 3] {-father_of(z4,z3), parent_of(z4,z3)}  A
-    [ 4] {-mother_of(z8,z7), parent_of(z8,z7)}  A
+    [ 3] {-father_of(z3,z4), parent_of(z3,z4)}  A
+    [ 4] {-mother_of(z7,z8), parent_of(z7,z8)}  A
     [ 5] {-parent_of(z10,john), ANSWER(z10)}    A
     [ 6] {parent_of(art,john)}                  (1, 3)
     [ 7] {parent_of(ann,john)}                  (2, 4)

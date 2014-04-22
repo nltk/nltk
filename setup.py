@@ -2,7 +2,7 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
@@ -76,7 +76,7 @@ natural language processing.  NLTK requires Python 2.5 or higher.""",
     'Topic :: Text Processing :: Indexing',
     'Topic :: Text Processing :: Linguistic',
     ],
-    package_data = {'nltk': ['nltk.jar', 'test/*.doctest', 'VERSION']},
+    package_data = {'nltk': ['test/*.doctest', 'VERSION']},
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
     )

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 .. see also: gluesemantics.doctest
@@ -8,6 +8,7 @@
 ==============================================================================
 
     >>> from nltk.sem.glue import *
+    >>> nltk.sem.logic._counter._value = 0
 
 --------------------------------
 Initialize the Dependency Parser
@@ -27,14 +28,16 @@ Initialize the Dependency Parser
 Automated Derivation
 --------------------
     >>> glue = Glue(depparser=depparser)
-    >>> for reading in glue.parse_to_meaning('every girl chases a dog'.split()):
-    ...     print(reading.simplify().normalize())
+    >>> readings = glue.parse_to_meaning('every girl chases a dog'.split())
+    >>> for reading in sorted([r.simplify().normalize() for r in readings], key=str):
+    ...     print(reading.normalize())
     all z1.(girl(z1) -> exists z2.(dog(z2) & chases(z1,z2)))
     exists z1.(dog(z1) & all z2.(girl(z2) -> chases(z2,z1)))
 
     >>> drtglue = DrtGlue(depparser=depparser)
-    >>> for reading in drtglue.parse_to_meaning('every girl chases a dog'.split()):
-    ...     print(reading.simplify().normalize())
+    >>> readings = drtglue.parse_to_meaning('every girl chases a dog'.split())
+    >>> for reading in sorted([r.simplify().normalize() for r in readings], key=str):
+    ...     print(reading)
     ([],[(([z1],[girl(z1)]) -> ([z2],[dog(z2), chases(z1,z2)]))])
     ([z1],[dog(z1), (([z2],[girl(z2)]) -> ([],[chases(z2,z1)]))])
 
@@ -48,8 +51,8 @@ For example, the ``glue`` module generates two readings for the sentence
 
     >>> from nltk.sem.glue import DrtGlue
     >>> readings = drtglue.parse_to_meaning('John sees Mary'.split())
-    >>> for drs in readings:
-    ...     print(drs.simplify().normalize())
+    >>> for drs in sorted([r.simplify().normalize() for r in readings], key=str):
+    ...     print(drs)
     ([z1,z2],[John(z1), Mary(z2), sees(z1,z2)])
     ([z1,z2],[Mary(z1), John(z2), sees(z2,z1)])
 

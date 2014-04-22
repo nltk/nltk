@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Feature Structures
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>,
 #         Rob Speer,
 #         Steven Bird <stevenbird1@gmail.com>
@@ -93,7 +93,7 @@ from __future__ import print_function, unicode_literals, division
 import re
 import copy
 
-from nltk.internals import parse_str, raise_unorderable_types
+from nltk.internals import read_str, raise_unorderable_types
 from nltk.sem.logic import (Variable, Expression, SubstituteBindingsI,
                             LogicParser, ParseException)
 from nltk.compat import (string_types, integer_types, total_ordering,
@@ -156,7 +156,7 @@ class FeatStruct(SubstituteBindingsI):
 
         :param features: The initial feature values for this feature
             structure:
-              - FeatStruct(string) -> FeatStructParser().parse(string)
+              - FeatStruct(string) -> FeatStructReader().read(string)
               - FeatStruct(mapping) -> FeatDict(mapping)
               - FeatStruct(sequence) -> FeatList(sequence)
               - FeatStruct() -> FeatDict()
@@ -176,7 +176,7 @@ class FeatStruct(SubstituteBindingsI):
                 raise TypeError('Keyword arguments may only be specified '
                                 'if features is None or is a mapping.')
             if isinstance(features, string_types):
-                if FeatStructParser._START_FDICT_RE.match(features):
+                if FeatStructReader._START_FDICT_RE.match(features):
                     return FeatDict.__new__(FeatDict, features, **morefeatures)
                 else:
                     return FeatList.__new__(FeatList, features, **morefeatures)
@@ -594,7 +594,7 @@ class FeatDict(FeatStruct, dict):
             features are copied (shallow copy).  If ``features`` is a
             dict, then a feature is created for each item, mapping its
             key to its value.  If ``features`` is a string, then it is
-            parsed using ``FeatStructParser``.  If ``features`` is a list of
+            processed using ``FeatStructReader``.  If ``features`` is a list of
             tuples ``(name, val)``, then a feature is created for each tuple.
         :param morefeatures: Additional features for the new feature
             dictionary.  If a feature is listed under both ``features`` and
@@ -602,7 +602,7 @@ class FeatDict(FeatStruct, dict):
             used.
         """
         if isinstance(features, string_types):
-            FeatStructParser().parse(features, self)
+            FeatStructReader().read(features, self)
             self.update(**morefeatures)
         else:
             # update() checks the types of features.
@@ -897,11 +897,11 @@ class FeatList(FeatStruct, list):
 
         :param features: The initial list of features for this feature
             list.  If ``features`` is a string, then it is paresd using
-            ``FeatStructParser``.  Otherwise, it should be a sequence
+            ``FeatStructReader``.  Otherwise, it should be a sequence
             of basic values and nested feature structures.
         """
         if isinstance(features, string_types):
-            FeatStructParser().parse(features, self)
+            FeatStructReader().read(features, self)
         else:
             list.__init__(self, features)
 
@@ -1859,8 +1859,8 @@ class Feature(object):
     # These can be overridden by subclasses:
     #////////////////////////////////////////////////////////////
 
-    def parse_value(self, s, position, reentrances, parser):
-        return parser.parse_value(s, position, reentrances)
+    def read_value(self, s, position, reentrances, parser):
+        return parser.read_value(s, position, reentrances)
 
     def unify_base_values(self, fval1, fval2, bindings):
         """
@@ -1872,12 +1872,12 @@ class Feature(object):
 
 
 class SlashFeature(Feature):
-    def parse_value(self, s, position, reentrances, parser):
-        return parser.partial_parse(s, position, reentrances)
+    def read_value(self, s, position, reentrances, parser):
+        return parser.read_partial(s, position, reentrances)
 
 class RangeFeature(Feature):
     RANGE_RE = re.compile('(-?\d+):(-?\d+)')
-    def parse_value(self, s, position, reentrances, parser):
+    def read_value(self, s, position, reentrances, parser):
         m = self.RANGE_RE.match(s, position)
         if not m: raise ValueError('range', position)
         return (int(m.group(1)), int(m.group(2))), m.end()
@@ -1935,10 +1935,10 @@ class CustomFeatureValue(object):
         raise TypeError('%s objects or unhashable' % self.__class__.__name__)
 
 ######################################################################
-# Feature Structure Parser
+# Feature Structure Reader
 ######################################################################
 
-class FeatStructParser(object):
+class FeatStructReader(object):
     def __init__(self, features=(SLASH, TYPE), fdict_class=FeatStruct,
                  flist_class=FeatList, logic_parser=None):
         self._features = dict((f.name,f) for f in features)
@@ -1961,10 +1961,10 @@ class FeatStructParser(object):
             logic_parser = LogicParser()
         self._logic_parser = logic_parser
 
-    def parse(self, s, fstruct=None):
+    def read(self, s, fstruct=None):
         """
         Convert a string representation of a feature structure (as
-        displayed by repr) into a ``FeatStruct``.  This parse
+        displayed by repr) into a ``FeatStruct``.  This process
         imposes the following restrictions on the string
         representation:
 
@@ -1981,7 +1981,7 @@ class FeatStructParser(object):
           reentrance identifier.
         """
         s = s.strip()
-        value, position = self.partial_parse(s, 0, {}, fstruct)
+        value, position = self.read_partial(s, 0, {}, fstruct)
         if position != len(s):
             self._error(s, 'end of string', position)
         return value
@@ -2000,11 +2000,11 @@ class FeatStructParser(object):
         _BARE_PREFIX_RE.pattern, _START_FSTRUCT_RE.pattern,
         _FEATURE_NAME_RE.pattern, _FEATURE_NAME_RE.pattern))
 
-    def partial_parse(self, s, position=0, reentrances=None, fstruct=None):
+    def read_partial(self, s, position=0, reentrances=None, fstruct=None):
         """
-        Helper function that parses a feature structure.
+        Helper function that reads in a feature structure.
 
-        :param s: The string to parse.
+        :param s: The string to read.
         :param position: The position in the string to start parsing.
         :param reentrances: A dictionary from reentrance ids to values.
             Defaults to an empty dictionary.
@@ -2014,12 +2014,12 @@ class FeatStructParser(object):
         """
         if reentrances is None: reentrances = {}
         try:
-            return self._partial_parse(s, position, reentrances, fstruct)
+            return self._read_partial(s, position, reentrances, fstruct)
         except ValueError as e:
             if len(e.args) != 2: raise
             self._error(s, *e.args)
 
-    def _partial_parse(self, s, position, reentrances, fstruct=None):
+    def _read_partial(self, s, position, reentrances, fstruct=None):
         # Create the new feature structure
         if fstruct is None:
             if self._START_FDICT_RE.match(s, position):
@@ -2044,14 +2044,14 @@ class FeatStructParser(object):
 
         if isinstance(fstruct, FeatDict):
             fstruct.clear()
-            return self._partial_parse_featdict(s, position, match,
+            return self._read_partial_featdict(s, position, match,
                                                 reentrances, fstruct)
         else:
             del fstruct[:]
-            return self._partial_parse_featlist(s, position, match,
+            return self._read_partial_featlist(s, position, match,
                                                 reentrances, fstruct)
 
-    def _partial_parse_featlist(self, s, position, match,
+    def _read_partial_featlist(self, s, position, match,
                                 reentrances, fstruct):
         # Prefix features are not allowed:
         if match.group(2): raise ValueError('open bracket')
@@ -2080,7 +2080,7 @@ class FeatStructParser(object):
             # Anything else is a value.
             else:
                 value, position = (
-                    self._parse_value(0, s, position, reentrances))
+                    self._read_value(0, s, position, reentrances))
                 fstruct.append(value)
 
             # If there's a close bracket, handle it at the top of the loop.
@@ -2095,7 +2095,7 @@ class FeatStructParser(object):
         # We never saw a close bracket.
         raise ValueError('close bracket', position)
 
-    def _partial_parse_featdict(self, s, position, match,
+    def _read_partial_featdict(self, s, position, match,
                                 reentrances, fstruct):
         # If there was a prefix feature, record it.
         if match.group(2):
@@ -2166,7 +2166,7 @@ class FeatStructParser(object):
                 if match:
                     position = match.end()
                     value, position = (
-                        self._parse_value(name, s, position, reentrances))
+                        self._read_value(name, s, position, reentrances))
                 # None of the above: error.
                 else:
                     raise ValueError('equals sign', position)
@@ -2195,7 +2195,7 @@ class FeatStructParser(object):
         match = self._SLASH_RE.match(s, pos)
         if match:
             name = self._slash_feature
-            v, pos = self._parse_value(name, s, match.end(), reentrances)
+            v, pos = self._read_value(name, s, match.end(), reentrances)
             fstruct[name] = v
         ## Add any default features.  -- handle in unficiation instead?
         #for feature in self._features_with_defaults:
@@ -2203,13 +2203,13 @@ class FeatStructParser(object):
         # Return the value.
         return fstruct, pos
 
-    def _parse_value(self, name, s, position, reentrances):
+    def _read_value(self, name, s, position, reentrances):
         if isinstance(name, Feature):
-            return name.parse_value(s, position, reentrances, self)
+            return name.read_value(s, position, reentrances, self)
         else:
-            return self.parse_value(s, position, reentrances)
+            return self.read_value(s, position, reentrances)
 
-    def parse_value(self, s, position, reentrances):
+    def read_value(self, s, position, reentrances):
         for (handler, regexp) in self.VALUE_HANDLERS:
             match = regexp.match(s, position)
             if match:
@@ -2227,10 +2227,10 @@ class FeatStructParser(object):
         raise ValueError(estr)
 
     #////////////////////////////////////////////////////////////
-    #{ Value Parsers
+    #{ Value Readers
     #////////////////////////////////////////////////////////////
 
-    #: A table indicating how feature values should be parsed.  Each
+    #: A table indicating how feature values should be processed.  Each
     #: entry in the table is a pair (handler, regexp).  The first entry
     #: with a matching regexp will have its handler called.  Handlers
     #: should have the following signature::
@@ -2241,43 +2241,43 @@ class FeatStructParser(object):
     #: the string position where the value ended.  (n.b.: order is
     #: important here!)
     VALUE_HANDLERS = [
-        ('parse_fstruct_value', _START_FSTRUCT_RE),
-        ('parse_var_value', re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*')),
-        ('parse_str_value', re.compile("[uU]?[rR]?(['\"])")),
-        ('parse_int_value', re.compile(r'-?\d+')),
-        ('parse_sym_value', re.compile(r'[a-zA-Z_][a-zA-Z0-9_]*')),
-        ('parse_app_value', re.compile(r'<(app)\((\?[a-z][a-z]*)\s*,'
+        ('read_fstruct_value', _START_FSTRUCT_RE),
+        ('read_var_value', re.compile(r'\?[a-zA-Z_][a-zA-Z0-9_]*')),
+        ('read_str_value', re.compile("[uU]?[rR]?(['\"])")),
+        ('read_int_value', re.compile(r'-?\d+')),
+        ('read_sym_value', re.compile(r'[a-zA-Z_][a-zA-Z0-9_]*')),
+        ('read_app_value', re.compile(r'<(app)\((\?[a-z][a-z]*)\s*,'
                                        r'\s*(\?[a-z][a-z]*)\)>')),
-#       ('parse_logic_value', re.compile(r'<([^>]*)>')),
+#       ('read_logic_value', re.compile(r'<([^>]*)>')),
         #lazily match any character after '<' until we hit a '>' not preceded by '-'
-        ('parse_logic_value', re.compile(r'<(.*?)(?<!-)>')),
-        ('parse_set_value', re.compile(r'{')),
-        ('parse_tuple_value', re.compile(r'\(')),
+        ('read_logic_value', re.compile(r'<(.*?)(?<!-)>')),
+        ('read_set_value', re.compile(r'{')),
+        ('read_tuple_value', re.compile(r'\(')),
         ]
 
-    def parse_fstruct_value(self, s, position, reentrances, match):
-        return self.partial_parse(s, position, reentrances)
+    def read_fstruct_value(self, s, position, reentrances, match):
+        return self.read_partial(s, position, reentrances)
 
-    def parse_str_value(self, s, position, reentrances, match):
-        return parse_str(s, position)
+    def read_str_value(self, s, position, reentrances, match):
+        return read_str(s, position)
 
-    def parse_int_value(self, s, position, reentrances, match):
+    def read_int_value(self, s, position, reentrances, match):
         return int(match.group()), match.end()
 
     # Note: the '?' is included in the variable name.
-    def parse_var_value(self, s, position, reentrances, match):
+    def read_var_value(self, s, position, reentrances, match):
         return Variable(match.group()), match.end()
 
     _SYM_CONSTS = {'None':None, 'True':True, 'False':False}
-    def parse_sym_value(self, s, position, reentrances, match):
+    def read_sym_value(self, s, position, reentrances, match):
         val, end = match.group(), match.end()
         return self._SYM_CONSTS.get(val, val), end
 
-    def parse_app_value(self, s, position, reentrances, match):
+    def read_app_value(self, s, position, reentrances, match):
         """Mainly included for backwards compat."""
         return self._logic_parser.parse('%s(%s)' % match.group(2,3)), match.end()
 
-    def parse_logic_value(self, s, position, reentrances, match):
+    def read_logic_value(self, s, position, reentrances, match):
         try:
             try:
                 expr = self._logic_parser.parse(match.group(1))
@@ -2287,18 +2287,18 @@ class FeatStructParser(object):
         except ValueError:
             raise ValueError('logic expression', match.start(1))
 
-    def parse_tuple_value(self, s, position, reentrances, match):
-        return self._parse_seq_value(s, position, reentrances, match, ')',
+    def read_tuple_value(self, s, position, reentrances, match):
+        return self._read_seq_value(s, position, reentrances, match, ')',
                                      FeatureValueTuple, FeatureValueConcat)
 
-    def parse_set_value(self, s, position, reentrances, match):
-        return self._parse_seq_value(s, position, reentrances, match, '}',
+    def read_set_value(self, s, position, reentrances, match):
+        return self._read_seq_value(s, position, reentrances, match, '}',
                                      FeatureValueSet, FeatureValueUnion)
 
-    def _parse_seq_value(self, s, position, reentrances, match,
+    def _read_seq_value(self, s, position, reentrances, match,
                          close_paren, seq_class, plus_class):
         """
-        Helper function used by parse_tuple_value and parse_set_value.
+        Helper function used by read_tuple_value and read_set_value.
         """
         cp = re.escape(close_paren)
         position = match.end()
@@ -2316,7 +2316,7 @@ class FeatStructParser(object):
                 else: return seq_class(values), m.end()
 
             # Read the next value.
-            val, position = self.parse_value(s, position, reentrances)
+            val, position = self.read_value(s, position, reentrances)
             values.append(val)
 
             # Comma or looking at close paren
@@ -2466,7 +2466,7 @@ def demo(trace=False):
     """
     #import random
 
-    # parser breaks with values like '3rd'
+    # processor breaks with values like '3rd'
     fstruct_strings = [
         '[agr=[number=sing, gender=masc]]',
         '[agr=[gender=masc, person=3]]',
@@ -2497,4 +2497,4 @@ if __name__ == '__main__':
 
 __all__ = ['FeatStruct', 'FeatDict', 'FeatList', 'unify', 'subsumes', 'conflicts',
            'Feature', 'SlashFeature', 'RangeFeature', 'SLASH', 'TYPE',
-           'FeatStructParser']
+           'FeatStructReader']

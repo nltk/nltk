@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Semantic Interpretation
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -41,7 +41,7 @@ is then created with domain and valuation as parameters.
     >>> m = Model(dom, val)
 """
 
-from nltk.sem.util import (batch_parse, batch_interpret, batch_evaluate,
+from nltk.sem.util import (parse_sents, interpret_sents, evaluate_sents,
                            root_semrep, parse_valuation)
 from nltk.sem.evaluate import (Valuation, Assignment, Model, Undefined,
                                is_rel, set2rel, arity)

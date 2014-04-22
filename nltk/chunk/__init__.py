@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunkers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -176,7 +176,7 @@ def ne_chunk(tagged_tokens, binary=False):
     chunker = load(chunker_pickle)
     return chunker.parse(tagged_tokens)
 
-def batch_ne_chunk(tagged_sentences, binary=False):
+def ne_chunk_sents(tagged_sentences, binary=False):
     """
     Use NLTK's currently recommended named entity chunker to chunk the
     given list of tagged sentences, each consisting of a list of tagged tokens.
@@ -186,5 +186,5 @@ def batch_ne_chunk(tagged_sentences, binary=False):
     else:
         chunker_pickle = _MULTICLASS_NE_CHUNKER
     chunker = load(chunker_pickle)
-    return chunker.batch_parse(tagged_sentences)
+    return chunker.parse_sents(tagged_sentences)
 

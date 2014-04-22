@@ -1,7 +1,7 @@
 # encoding: utf-8
 # Natural Language Toolkit: Interface to the Senna tagger
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -115,9 +115,9 @@ class SennaTagger(TaggerI):
         """
         Applies the specified operation(s) on a list of tokens.
         """
-        return self.batch_tag([tokens])[0]
+        return self.tag_sents([tokens])[0]
 
-    def batch_tag(self, sentences):
+    def tag_sents(self, sentences):
         """
         Applies the tag method over a list of sentences. This method will return a
         list of dictionaries. Every dictionary will contain a word with its
@@ -198,12 +198,12 @@ class POSTagger(SennaTagger):
     def __init__(self, path, encoding='utf-8'):
         super(POSTagger, self).__init__(path, ['pos'], encoding)
 
-    def batch_tag(self, sentences):
+    def tag_sents(self, sentences):
         """
         Applies the tag method over a list of sentences. This method will return
         for each sentence a list of tuples of (word, tag).
         """
-        tagged_sents = super(POSTagger, self).batch_tag(sentences)
+        tagged_sents = super(POSTagger, self).tag_sents(sentences)
         for i in range(len(tagged_sents)):
             for j in range(len(tagged_sents[i])):
                 annotations = tagged_sents[i][j]
@@ -233,12 +233,12 @@ class NERTagger(SennaTagger):
     def __init__(self, path, encoding='utf-8'):
         super(NERTagger, self).__init__(path, ['ner'], encoding)
 
-    def batch_tag(self, sentences):
+    def tag_sents(self, sentences):
         """
         Applies the tag method over a list of sentences. This method will return
         for each sentence a list of tuples of (word, tag).
         """
-        tagged_sents = super(NERTagger, self).batch_tag(sentences)
+        tagged_sents = super(NERTagger, self).tag_sents(sentences)
         for i in range(len(tagged_sents)):
             for j in range(len(tagged_sents[i])):
                 annotations = tagged_sents[i][j]
@@ -266,12 +266,12 @@ class CHKTagger(SennaTagger):
     def __init__(self, path, encoding='utf-8'):
         super(CHKTagger, self).__init__(path, ['chk'], encoding)
 
-    def batch_tag(self, sentences):
+    def tag_sents(self, sentences):
         """
         Applies the tag method over a list of sentences. This method will return
         for each sentence a list of tuples of (word, tag).
         """
-        tagged_sents = super(CHKTagger, self).batch_tag(sentences)
+        tagged_sents = super(CHKTagger, self).tag_sents(sentences)
         for i in range(len(tagged_sents)):
             for j in range(len(tagged_sents[i])):
                 annotations = tagged_sents[i][j]

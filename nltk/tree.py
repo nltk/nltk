@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Text Trees
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
@@ -92,14 +92,13 @@ class Tree(list):
         specified label and list of children.
 
     - ``Tree(s)`` constructs a new tree by parsing the string ``s``.
-        It is equivalent to calling the class method ``Tree.parse(s)``.
     """
     def __init__(self, node_or_str, children=None):
         if children is None:
             if not isinstance(node_or_str, string_types):
                 raise TypeError("%s: Expected a node value and child list "
                                 "or a single string" % type(self).__name__)
-            tree = type(self).parse(node_or_str)
+            tree = type(self).read(node_or_str)
             list.__init__(self, tree)
             self._label = tree._label
         elif isinstance(children, string_types):
@@ -544,33 +543,33 @@ class Tree(list):
     #////////////////////////////////////////////////////////////
 
     @classmethod
-    def parse(cls, s, brackets='()', parse_node=None, parse_leaf=None,
+    def read(cls, s, brackets='()', read_node=None, read_leaf=None,
               node_pattern=None, leaf_pattern=None,
               remove_empty_top_bracketing=False):
         """
-        Parse a bracketed tree string and return the resulting tree.
+        Read a bracketed tree string and return the resulting tree.
         Trees are represented as nested brackettings, such as::
 
           (S (NP (NNP John)) (VP (V runs)))
 
         :type s: str
-        :param s: The string to parse
+        :param s: The string to read
 
         :type brackets: str (length=2)
         :param brackets: The bracket characters used to mark the
             beginning and end of trees and subtrees.
 
-        :type parse_node: function
-        :type parse_leaf: function
-        :param parse_node, parse_leaf: If specified, these functions
+        :type read_node: function
+        :type read_leaf: function
+        :param read_node, read_leaf: If specified, these functions
             are applied to the substrings of ``s`` corresponding to
             nodes and leaves (respectively) to obtain the values for
             those nodes and leaves.  They should have the following
             signature:
 
-               parse_node(str) -> value
+               read_node(str) -> value
 
-            For example, these functions could be used to parse nodes
+            For example, these functions could be used to process nodes
             and leaves whose values should be some type other than
             string (such as ``FeatStruct``).
             Note that by default, node strings and leaf strings are
@@ -618,7 +617,7 @@ class Tree(list):
                 if len(stack) == 1 and len(stack[0][1]) > 0:
                     cls._parse_error(s, match, 'end-of-string')
                 label = token[1:].lstrip()
-                if parse_node is not None: label = parse_node(label)
+                if read_node is not None: label = read_node(label)
                 stack.append((label, []))
             # End of a tree/subtree
             elif token == close_b:
@@ -633,7 +632,7 @@ class Tree(list):
             else:
                 if len(stack) == 1:
                     cls._parse_error(s, match, open_b)
-                if parse_leaf is not None: token = parse_leaf(token)
+                if read_leaf is not None: token = read_leaf(token)
                 stack[-1][1].append(token)
 
         # check that we got exactly one complete tree.
@@ -666,7 +665,7 @@ class Tree(list):
             pos, token = len(s), 'end-of-string'
         else:
             pos, token = match.start(), match.group()
-        msg = '%s.parse(): expected %r but got %r\n%sat index %d.' % (
+        msg = '%s.read(): expected %r but got %r\n%sat index %d.' % (
             cls.__name__, expecting, token, ' '*12, pos)
         # Add a display showing the error token itsels:
         s = s.replace('\n', ' ').replace('\t', ' ')
@@ -738,7 +737,7 @@ class Tree(list):
         r"""
         Returns a representation of the tree compatible with the
         LaTeX qtree package. This consists of the string ``\Tree``
-        followed by the parse tree represented in bracketed notation.
+        followed by the tree represented in bracketed notation.
 
         For example, the following result was generated from a parse tree of
         the sentence ``The announcement astounded us``::
@@ -855,7 +854,7 @@ class AbstractParentedTree(Tree):
 
     def __init__(self, node_or_str, children=None):
         super(AbstractParentedTree, self).__init__(node_or_str, children)
-        # If children is None, the tree is parsed from node_or_str, and
+        # If children is None, the tree is read from node_or_str, and
         # all parents will be set during parsing.
         if children is not None:
             # Otherwise we have to set the parent of the children.
@@ -1079,7 +1078,7 @@ class ParentedTree(AbstractParentedTree):
         """The parent of this Tree, or None if it has no parent."""
         super(ParentedTree, self).__init__(node_or_str, children)
         if children is None:
-            # If children is None, the tree is parsed from node_or_str.
+            # If children is None, the tree is read from node_or_str.
             # After parsing, the parent of the immediate children
             # will point to an intermediate tree, not self.
             # We fix this by brute force:
@@ -1200,7 +1199,7 @@ class MultiParentedTree(AbstractParentedTree):
            multiple times."""
         super(MultiParentedTree, self).__init__(node_or_str, children)
         if children is None:
-            # If children is None, the tree is parsed from node_or_str.
+            # If children is None, the tree is read from node_or_str.
             # After parsing, the parent(s) of the immediate children
             # will point to an intermediate tree, not self.
             # We fix this by brute force:
@@ -1435,9 +1434,9 @@ def _child_names(tree):
 
 def bracket_parse(s):
     """
-    Use Tree.parse(s, remove_empty_top_bracketing=True) instead.
+    Use Tree.read(s, remove_empty_top_bracketing=True) instead.
     """
-    raise NameError("Use Tree.parse(s, remove_empty_top_bracketing=True) instead.")
+    raise NameError("Use Tree.read(s, remove_empty_top_bracketing=True) instead.")
 
 def sinica_parse(s):
     """
@@ -1464,7 +1463,7 @@ def sinica_parse(s):
             tokens[i] = ''
 
     treebank_string = " ".join(tokens)
-    return Tree.parse(treebank_string, remove_empty_top_bracketing=True)
+    return Tree.read(treebank_string, remove_empty_top_bracketing=True)
 
 #    s = re.sub(r'^#[^\s]*\s', '', s)  # remove leading identifier
 #    s = re.sub(r'\w+:', '', s)       # remove role tags
@@ -1504,10 +1503,10 @@ def demo():
 
     # Demonstrate tree modification.
     the_cat = t[0]
-    the_cat.insert(1, tree.Tree.parse('(JJ big)'))
+    the_cat.insert(1, tree.Tree('(JJ big)'))
     print("Tree modification:")
     print(t)
-    t[1,1,1] = tree.Tree.parse('(NN cake)')
+    t[1,1,1] = tree.Treed('(NN cake)')
     print(t)
     print()
 
@@ -1527,7 +1526,7 @@ def demo():
     print()
 
     # Demonstrate parsing of treebank output format.
-    t = tree.Tree.parse(t.pprint())
+    t = tree.Tree(t.pprint())
     print("Convert tree to bracketed string and back again:")
     print(t)
     print()

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =========================
@@ -26,10 +26,10 @@ Grammars can be parsed from strings.
     ... N[AGR=[NUM='sg']] -> 'student'
     ... N[AGR=[NUM='pl']] -> 'students'
     ... """
-    >>> grammar = grammar.parse_fcfg(g)
+    >>> grammar = grammar.read_fcfg(g)
     >>> tokens = 'these girls'.split()
     >>> parser = parse.FeatureEarleyChartParser(grammar)
-    >>> trees = parser.nbest_parse(tokens)
+    >>> trees = parser.parse(tokens)
     >>> for tree in trees: print(tree)
     (DP[AGR=[GND='f', NUM='pl', PERS=3]]
       (D[AGR=[NUM='pl', PERS=3]] these)
@@ -84,7 +84,7 @@ read the grammar into NLTK, ready for use in parsing.
     >>> tokens = sent.split()
     >>> tokens
     ['Kim', 'likes', 'children']
-    >>> trees = cp.nbest_parse(tokens)
+    >>> trees = cp.parse(tokens)
     |.Kim .like.chil.|
     |[----]    .    .| [0:1] 'Kim'
     |.    [----]    .| [1:2] 'likes'
@@ -330,7 +330,7 @@ things become really interesting.
     >>> sent = 'who do you claim that you like'
     >>> tokens = sent.split()
     >>> cp = parse.load_parser('grammars/book_grammars/feat1.fcfg', trace=1)
-    >>> trees = cp.nbest_parse(tokens)
+    >>> trees = cp.parse(tokens)
     |.w.d.y.c.t.y.l.|
     |[-] . . . . . .| [0:1] 'who'
     |. [-] . . . . .| [1:2] 'do'
@@ -382,6 +382,8 @@ things become really interesting.
     |. . [---------]| [2:7] S[-INV]/NP[] -> NP[] VP[]/NP[] *
     |. [-----------]| [1:7] S[+INV]/NP[] -> V[+AUX] NP[] VP[]/NP[] *
     |[=============]| [0:7] S[-INV] -> NP[] S[]/NP[] *
+
+    >>> trees = list(trees)
     >>> for tree in trees: print(tree)
     (S[-INV]
       (NP[+WH] who)
@@ -400,7 +402,7 @@ A different parser should give the same parse trees, but perhaps in a different 
 
     >>> cp2 = parse.load_parser('grammars/book_grammars/feat1.fcfg', trace=1,
     ...                         parser=parse.FeatureEarleyChartParser)
-    >>> trees2 = cp2.nbest_parse(tokens)
+    >>> trees2 = cp2.parse(tokens)
     |.w.d.y.c.t.y.l.|
     |[-] . . . . . .| [0:1] 'who'
     |. [-] . . . . .| [1:2] 'do'
@@ -471,6 +473,7 @@ A different parser should give the same parse trees, but perhaps in a different 
     |. . . [-------]| [3:7] VP[]/NP[] -> V[-AUX, SUBCAT='clause'] SBar[]/NP[] *
     |. [-----------]| [1:7] S[+INV]/NP[] -> V[+AUX] NP[] VP[]/NP[] *
     |[=============]| [0:7] S[-INV] -> NP[] S[]/NP[] *
+
     >>> sorted(trees) == sorted(trees2)
     True
 
@@ -480,7 +483,7 @@ Let's load a German grammar:
     >>> cp = parse.load_parser('grammars/book_grammars/german.fcfg', trace=0)
     >>> sent = 'die Katze sieht den Hund'
     >>> tokens = sent.split()
-    >>> trees = cp.nbest_parse(tokens)
+    >>> trees = cp.parse(tokens)
     >>> for tree in trees: print(tree)
     (S[]
       (NP[AGR=[GND='fem', NUM='sg', PER=3], CASE='nom']
@@ -532,7 +535,7 @@ A simple intransitive sentence:
     >>> from nltk.sem import logic
     >>> logic._counter._value = 100
 
-    >>> trees = cp.nbest_parse('john barks'.split())
+    >>> trees = cp.parse('john barks'.split())
     |. john.barks.|
     |[-----]     .| [0:1] 'john'
     |.     [-----]| [1:2] 'barks'
@@ -549,7 +552,7 @@ A simple intransitive sentence:
 
 A transitive sentence:
 
-    >>> trees = cp.nbest_parse('john feeds a dog'.split())
+    >>> trees = cp.parse('john feeds a dog'.split())
     |.joh.fee. a .dog.|
     |[---]   .   .   .| [0:1] 'john'
     |.   [---]   .   .| [1:2] 'feeds'
@@ -583,7 +586,7 @@ Turn down the verbosity:
 
 Reuse the same lexical item twice:
 
-    >>> trees = cp.nbest_parse('john feeds john'.split())
+    >>> trees = cp.parse('john feeds john'.split())
     >>> for tree in trees: print(tree)
     (S[SEM=[BO={bo(\P.P(John),z2), bo(\P.P(John),z3)}, CORE=<feed(z2,z3)>]]
       (NP[SEM=[BO={bo(\P.P(John),z104)}, CORE=<z104>]] john)
@@ -591,7 +594,7 @@ Reuse the same lexical item twice:
         (TV[SEM=[BO={/}, CORE=<\x y.feed(y,x)>]] feeds)
         (NP[SEM=[BO={bo(\P.P(John),z105)}, CORE=<z105>]] john)))
 
-    >>> trees = cp.nbest_parse('a dog feeds a dog'.split())
+    >>> trees = cp.parse('a dog feeds a dog'.split())
     >>> for tree in trees: print(tree)
     (S[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z2), bo(\P.exists x.(dog(x) & P(x)),z3)}, CORE=<feed(z2,z3)>]]
       (NP[SEM=[BO={bo(\P.exists x.(dog(x) & P(x)),z106)}, CORE=<z106>]]

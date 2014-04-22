@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -37,7 +37,6 @@ import sys
 import io
 import os
 import textwrap
-import weakref
 import re
 import zipfile
 import codecs
@@ -109,49 +108,55 @@ def split_resource_url(resource_url):
     Splits a resource url into "<protocol>:<path>".
 
     >>> windows = sys.platform.startswith('win')
-    >>> windows or split_resource_url('file:///home/nltk') == ('file', '/home/nltk')
-    True
-    >>> not windows or split_resource_url('file:///C:/home/nltk') == ('file', 'C:/home/nltk')
-    True
     >>> split_resource_url('nltk:home/nltk')
     ('nltk', 'home/nltk')
     >>> split_resource_url('nltk:/home/nltk')
     ('nltk', '/home/nltk')
+    >>> split_resource_url('file:/home/nltk')
+    ('file', '/home/nltk')
+    >>> split_resource_url('file:///home/nltk')
+    ('file', '/home/nltk')
+    >>> split_resource_url('file:///C:/home/nltk')
+    ('file', '/C:/home/nltk')
     """
-    protocol, path = resource_url.split(':', 1)
+    protocol, path_ = resource_url.split(':', 1)
     if protocol == 'nltk':
         pass
     elif protocol == 'file':
-        path = path.lstrip('/')
-        if not sys.platform.startswith('win'):
-            path = '/' + path
+        if path_.startswith('/'):
+            path_ = '/' + path_.lstrip('/')
     else:
-        path = re.sub(r'^/{0,2}', '', path)
-    return protocol, path
+        path_ = re.sub(r'^/{0,2}', '', path_)
+    return protocol, path_
 
 def normalize_resource_url(resource_url):
-    """
+    r"""
     Normalizes a resource url
 
     >>> windows = sys.platform.startswith('win')
-    >>> normalize_resource_url('file:C:/dir/file')
-    'file:///C:/dir/file'
-    >>> normalize_resource_url('file:C:\\\\dir\\\\file')
-    'file:///C:/dir/file'
-    >>> normalize_resource_url('file:C:\\\\dir/file')
-    'file:///C:/dir/file'
-    >>> normalize_resource_url('file://C:/dir/file')
-    'file:///C:/dir/file'
-    >>> normalize_resource_url('file:////C:/dir/file')
-    'file:///C:/dir/file'
+    >>> os.path.normpath(split_resource_url(normalize_resource_url('file:grammar.fcfg'))[1]) == \
+    ... ('\\' if windows else '') + os.path.abspath(os.path.join(os.curdir, 'grammar.fcfg'))
+    True
+    >>> not windows or normalize_resource_url('file:C:/dir/file') == 'file:///C:/dir/file'
+    True
+    >>> not windows or normalize_resource_url('file:C:\\dir\\file') == 'file:///C:/dir/file'
+    True
+    >>> not windows or normalize_resource_url('file:C:\\dir/file') == 'file:///C:/dir/file'
+    True
+    >>> not windows or normalize_resource_url('file://C:/dir/file') == 'file:///C:/dir/file'
+    True
+    >>> not windows or normalize_resource_url('file:////C:/dir/file') == 'file:///C:/dir/file'
+    True
     >>> not windows or normalize_resource_url('nltk:C:/dir/file') == 'file:///C:/dir/file'
     True
-    >>> not windows or normalize_resource_url('nltk:C:\\\\dir\\\\file') == 'file:///C:/dir/file'
+    >>> not windows or normalize_resource_url('nltk:C:\\dir\\file') == 'file:///C:/dir/file'
+    True
+    >>> windows or normalize_resource_url('file:/dir/file/toy.cfg') == 'file:///dir/file/toy.cfg'
     True
     >>> normalize_resource_url('nltk:home/nltk')
     'nltk:home/nltk'
-    >>> normalize_resource_url('nltk:/home/nltk')
-    'file:///home/nltk'
+    >>> windows or normalize_resource_url('nltk:/home/nltk') == 'file:///home/nltk'
+    True
     >>> normalize_resource_url('http://example.com/dir/file')
     'http://example.com/dir/file'
     >>> normalize_resource_url('dir/file')
@@ -165,21 +170,21 @@ def normalize_resource_url(resource_url):
         name = resource_url
     # use file protocol if the path is an absolute path
     if protocol == 'nltk' and os.path.isabs(name):
-        protocol = 'file'
-    if protocol == 'file':
-        protocol = 'file:///'
+        protocol = 'file://'
+        name = normalize_resource_name(name, False, None)
+    elif protocol == 'file':
+        protocol = 'file://'
         # name is absolute
-        name = normalize_resource_name(name, False).lstrip('/')
+        name = normalize_resource_name(name, False, None)
     elif protocol == 'nltk':
         protocol = 'nltk:'
-        name = normalize_resource_name(name, False).lstrip('/')
+        name = normalize_resource_name(name, True)
     else:
         # handled by urllib
         protocol += '://'
-        name = name.lstrip('/')
-    return ''.join([protocol,name])
+    return ''.join([protocol, name])
 
-def normalize_resource_name(resource_name, allow_relative = True):
+def normalize_resource_name(resource_name, allow_relative=True, relative_path=None):
     """
     :type resource_name: str or unicode
     :param resource_name: The name of the resource to search for.
@@ -193,30 +198,29 @@ def normalize_resource_name(resource_name, allow_relative = True):
     './'
     >>> normalize_resource_name('./', True)
     './'
-    >>> windows or normalize_resource_name('dir/file', False) == '/dir/file'
+    >>> windows or normalize_resource_name('dir/file', False, '/') == '/dir/file'
     True
-    >>> not windows or normalize_resource_name('C:/file', False) == 'C:/file'
+    >>> not windows or normalize_resource_name('C:/file', False, '/') == '/C:/file'
     True
-    >>> windows or normalize_resource_name('/dir/file', False) == '/dir/file'
+    >>> windows or normalize_resource_name('/dir/file', False, '/') == '/dir/file'
     True
-    >>> windows or normalize_resource_name('../dir/file', False) == '/dir/file'
-    True
-    >>> not windows or normalize_resource_name('/C:/file', False) == 'C:/file'
-    True
-    >>> not windows or normalize_resource_name('../C:/file', False) == 'C:/file'
+    >>> windows or normalize_resource_name('../dir/file', False, '/') == '/dir/file'
     True
     """
-    is_dir = bool(re.search(r'[\\/]$',resource_name)) or resource_name.endswith(os.path.sep)
-    resource_name = os.path.normpath(resource_name).replace('\\','/').replace(os.path.sep,'/')
-    if allow_relative:
-        if resource_name == '.':
-            is_dir = True
-    else:
-        if resource_name[0] == '.':
-            resource_name = re.sub('^[./]+', '', resource_name)
+    is_dir = bool(re.search(r'[\\/.]$', resource_name)) or resource_name.endswith(os.path.sep)
+    if sys.platform.startswith('win'):
         resource_name = resource_name.lstrip('/')
-        if not sys.platform.startswith('win'):
-            resource_name = '/' + resource_name
+    else:
+        resource_name = re.sub(r'^/+', '/', resource_name)
+    if allow_relative:
+        resource_name = os.path.normpath(resource_name)
+    else:
+        if relative_path is None:
+            relative_path = os.curdir
+        resource_name = os.path.abspath(os.path.join(relative_path, resource_name))
+    resource_name = resource_name.replace('\\', '/').replace(os.path.sep, '/')
+    if sys.platform.startswith('win') and os.path.isabs(resource_name):
+        resource_name = '/' + resource_name
     if is_dir and not resource_name.endswith('/'):
         resource_name += '/'
     return resource_name
@@ -446,7 +450,7 @@ class ZipFilePathPointer(PathPointer):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
         # Normalize the entry string, it should be absolute:
-        entry = normalize_resource_name(entry, False).lstrip('/')
+        entry = normalize_resource_name(entry, False, '/').lstrip('/')
 
         # Check that the entry exists:
         if entry:
@@ -564,26 +568,26 @@ def find(resource_name, paths=None):
     zipfile, zipentry = m.groups()
 
     # Check each item in our path
-    for _path in paths:
+    for path_ in paths:
         # Is the path item a zipfile?
-        if _path and (os.path.isfile(_path) and _path.endswith('.zip')):
+        if path_ and (os.path.isfile(path_) and path_.endswith('.zip')):
             try:
-                return ZipFilePathPointer(_path, resource_name)
+                return ZipFilePathPointer(path_, resource_name)
             except IOError:
                 # resource not in zipfile
                 continue
 
         # Is the path item a directory or is resource_name an absolute path?
-        elif not _path or os.path.isdir(_path):
+        elif not path_ or os.path.isdir(path_):
             if zipfile is None:
-                p = os.path.join(_path, resource_name)
+                p = os.path.join(path_, resource_name)
                 if os.path.exists(p):
                     if p.endswith('.gz'):
                         return GzipFileSystemPathPointer(p)
                     else:
                         return FileSystemPathPointer(p)
             else:
-                p = os.path.join(_path, zipfile)
+                p = os.path.join(path_, zipfile)
                 if os.path.exists(p):
                     try:
                         return ZipFilePathPointer(p, zipentry)
@@ -657,9 +661,9 @@ FORMATS = {
     'pickle': "A serialized python object, stored using the pickle module.",
     'json': "A serialized python object, stored using the json module.",
     'yaml': "A serialized python object, stored using the yaml module.",
-    'cfg': "A context free grammar, parsed by nltk.parse_cfg().",
-    'pcfg': "A probabilistic CFG, parsed by nltk.parse_pcfg().",
-    'fcfg': "A feature CFG, parsed by nltk.parse_fcfg().",
+    'cfg': "A context free grammar.",
+    'pcfg': "A probabilistic CFG.",
+    'fcfg': "A feature CFG.",
     'fol': "A list of first order logic expressions, parsed by "
             "nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.",
     'logic': "A list of first order logic expressions, parsed by "
@@ -688,7 +692,7 @@ AUTO_FORMATS = {
 }
 
 def load(resource_url, format='auto', cache=True, verbose=False,
-         logic_parser=None, fstruct_parser=None, encoding=None):
+         logic_parser=None, fstruct_reader=None, encoding=None):
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
@@ -731,8 +735,8 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     :type logic_parser: LogicParser
     :param logic_parser: The parser that will be used to parse logical
         expressions.
-    :type fstruct_parser: FeatStructParser
-    :param fstruct_parser: The parser that will be used to parse the
+    :type fstruct_reader: FeatStructReader
+    :param fstruct_reader: The parser that will be used to parse the
         feature structure of an fcfg.
     :type encoding: str
     :param encoding: the encoding of the input; only used for text formats.
@@ -799,15 +803,15 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         if format == 'text':
             resource_val = string_data
         elif format == 'cfg':
-            resource_val = nltk.grammar.parse_cfg(
+            resource_val = nltk.grammar.ContextFreeGrammar.read(
                 string_data, encoding=encoding)
         elif format == 'pcfg':
-            resource_val = nltk.grammar.parse_pcfg(
+            resource_val = nltk.grammar.WeightedGrammar.read(
                 string_data, encoding=encoding)
         elif format == 'fcfg':
-            resource_val = nltk.grammar.parse_fcfg(
+            resource_val = nltk.grammar.FeatureGrammar.read(
                 string_data, logic_parser=logic_parser,
-                fstruct_parser=fstruct_parser, encoding=encoding)
+                fstruct_reader=fstruct_reader, encoding=encoding)
         elif format == 'fol':
             resource_val = nltk.sem.parse_logic(
                 string_data, logic_parser=nltk.sem.logic.LogicParser(),

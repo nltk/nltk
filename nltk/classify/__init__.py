@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifiers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -83,7 +83,6 @@ as lists of ``(featuredict, label)`` tuples.
 """
 
 from nltk.classify.api import ClassifierI, MultiClassifierI
-from nltk.classify.mallet import config_mallet, call_mallet
 from nltk.classify.megam import config_megam, call_megam
 from nltk.classify.weka import WekaClassifier, config_weka
 from nltk.classify.naivebayes import NaiveBayesClassifier

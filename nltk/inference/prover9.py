@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the Prover9 Theorem Prover
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 #
@@ -196,7 +196,7 @@ class Prover9Parent(object):
             if stdout: print('stdout:\n', stdout, '\n')
             if stderr: print('stderr:\n', stderr, '\n')
 
-        return (stdout, p.returncode)
+        return (stdout.decode("utf-8"), p.returncode)
 
 
 def convert_to_prover9(input):

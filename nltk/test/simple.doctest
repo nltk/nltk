@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =================
@@ -73,7 +73,7 @@ Parsing
     ... """)
     >>> rd = RecursiveDescentParser(grammar)
     >>> sent = 'the cat chased the dog on the rug'.split()
-    >>> for t in rd.nbest_parse(sent):
+    >>> for t in rd.parse(sent):
     ...     print(t)
     (S
       (NP the (N cat))

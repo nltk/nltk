@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

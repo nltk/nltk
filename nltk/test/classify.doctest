@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =============
@@ -13,11 +13,11 @@ implement the `ClassifyI` interface:
     >>> import nltk
     >>> nltk.usage(nltk.classify.ClassifierI)
     ClassifierI supports the following operations:
-      - self.batch_classify(featuresets)
-      - self.batch_prob_classify(featuresets)
       - self.classify(featureset)
+      - self.classify_many(featuresets)
       - self.labels()
       - self.prob_classify(featureset)
+      - self.prob_classify_many(featuresets)
 
 NLTK defines several classifier classes:
 
@@ -62,21 +62,21 @@ Test the Naive Bayes classifier:
     >>> classifier = nltk.classify.NaiveBayesClassifier.train(train)
     >>> sorted(classifier.labels())
     ['x', 'y']
-    >>> classifier.batch_classify(test)
+    >>> classifier.classify_many(test)
     ['y', 'x', 'y', 'x']
-    >>> for pdist in classifier.batch_prob_classify(test):
+    >>> for pdist in classifier.prob_classify_many(test):
     ...     print('%.4f %.4f' % (pdist.prob('x'), pdist.prob('y')))
-    0.3104 0.6896
-    0.5746 0.4254
-    0.3685 0.6315
-    0.6365 0.3635
+    0.3203 0.6797
+    0.5857 0.4143
+    0.3792 0.6208
+    0.6470 0.3530
     >>> classifier.show_most_informative_features()
     Most Informative Features
                            c = 0                   x : y      =      2.0 : 1.0
                            c = 1                   y : x      =      1.5 : 1.0
                            a = 1                   y : x      =      1.4 : 1.0
-                           a = 0                   x : y      =      1.2 : 1.0
                            b = 0                   x : y      =      1.2 : 1.0
+                           a = 0                   x : y      =      1.2 : 1.0
                            b = 1                   y : x      =      1.1 : 1.0
 
 Test the Decision Tree classifier:
@@ -92,9 +92,9 @@ Test the Decision Tree classifier:
       a=1? ................................................ y
     c=1? .................................................. y
     <BLANKLINE>
-    >>> classifier.batch_classify(test)
+    >>> classifier.classify_many(test)
     ['y', 'y', 'y', 'x']
-    >>> for pdist in classifier.batch_prob_classify(test):
+    >>> for pdist in classifier.prob_classify_many(test):
     ...     print('%.4f %.4f' % (pdist.prob('x'), pdist.prob('y')))
     Traceback (most recent call last):
       . . .
@@ -113,10 +113,10 @@ Test SklearnClassifier, which requires the scikit-learn package.
     >>> classif = SklearnClassifier(BernoulliNB()).train(train_data)
     >>> test_data = [{"a": 3, "b": 2, "c": 1},
     ...              {"a": 0, "b": 3, "c": 7}]
-    >>> classif.batch_classify(test_data)
+    >>> classif.classify_many(test_data)
     ['ham', 'spam']
     >>> classif = SklearnClassifier(SVC(), sparse=False).train(train_data)
-    >>> classif.batch_classify(test_data)
+    >>> classif.classify_many(test_data)
     ['ham', 'spam']
 
 Test the Maximum Entropy classifier training algorithms; they should all
@@ -179,7 +179,7 @@ Regression tests for TypedMaxentFeatureEncoding
     >>> classifier = maxent.MaxentClassifier.train(
     ...     train, bernoulli=False, encoding=encoding, trace=0)
 
-    >>> classifier.batch_classify(test)
+    >>> classifier.classify_many(test)
     ['y', 'x']
 
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Shift-Reduce Parser Application
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -468,7 +468,7 @@ class ShiftReduceApp(object):
         if self.reduce(): return 1
         elif self.shift(): return 1
         else:
-            if len(self._parser.parses()) > 0:
+            if list(self._parser.parses()):
                 self._lastoper1['text'] = 'Finished:'
                 self._lastoper2['text'] = 'Success'
             else:

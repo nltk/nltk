@@ -1,6 +1,6 @@
 # Natural Language Toolkit: IPI PAN Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Konrad Goluchowski <kodie@mimuw.edu.pl>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

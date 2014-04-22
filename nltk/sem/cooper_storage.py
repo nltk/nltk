@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Cooper storage for Quantifier Ambiguity
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -82,7 +82,7 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
     parser = load_parser(grammar, trace=trace, chart_class=InstantiateVarsChart)
     # Parse the sentence.
     tokens = sentence.split()
-    return parser.nbest_parse(tokens)
+    return list(parser.parse(tokens))
 
 
 def demo():

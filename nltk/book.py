@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Some texts for exploration in chapter 1 of the book
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #
 # URL: <http://nltk.org/>

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Concordance Application
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Regular Expression Chunkers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -335,7 +335,7 @@ class RegexpChunkRule(object):
                 '->'+unicode_repr(self._repl)+'>')
 
     @staticmethod
-    def parse(s):
+    def read(s):
         """
         Create a RegexpChunkRule from a string description.
         Currently, the following formats are supported::
@@ -350,7 +350,7 @@ class RegexpChunkRule(object):
         the rule's description:
 
         >>> from nltk.chunk.regexp import RegexpChunkRule
-        >>> RegexpChunkRule.parse('{<DT>?<NN.*>+}')
+        >>> RegexpChunkRule.read('{<DT>?<NN.*>+}')
         <ChunkRule: '<DT>?<NN.*>+'>
         """
         # Split off the comment (but don't split on '\#')
@@ -1127,7 +1127,7 @@ class RegexpParser(ChunkParserI):
         self._loop = loop
 
         if isinstance(grammar, string_types):
-            self._parse_grammar(grammar, root_label, trace)
+            self._read_grammar(grammar, root_label, trace)
         else:
             # Make sur the grammar looks like it has the right type:
             type_err = ('Expected string or list of RegexpChunkParsers '
@@ -1139,9 +1139,9 @@ class RegexpParser(ChunkParserI):
                     raise TypeError(type_err)
             self._stages = grammar
 
-    def _parse_grammar(self, grammar, root_label, trace):
+    def _read_grammar(self, grammar, root_label, trace):
         """
-        Helper function for __init__: parse the grammar if it is a
+        Helper function for __init__: read the grammar if it is a
         string.
         """
         rules = []
@@ -1163,7 +1163,7 @@ class RegexpParser(ChunkParserI):
             if line=='' or line.startswith('#'): continue
 
             # Add the rule
-            rules.append(RegexpChunkRule.parse(line))
+            rules.append(RegexpChunkRule.read(line))
 
         # Record the final stage
         self._add_stage(rules, lhs, root_label, trace)

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
 # URL: <http://nltk.org/>
@@ -11,7 +11,7 @@ from __future__ import print_function, unicode_literals
 from collections import defaultdict
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
-                          StatisticalDependencyGrammar, parse_dependency_grammar)
+                          StatisticalDependencyGrammar)
 from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 from nltk.internals import raise_unorderable_types
 from nltk.compat import total_ordering, python_2_unicode_compatible
@@ -166,8 +166,8 @@ class ProjectiveDependencyParser(object):
 
         :param tokens: The list of input tokens.
         :type tokens: list(str)
-        :return: A list of parse trees.
-        :rtype: list(Tree)
+        :return: An iterator over parse trees.
+        :rtype: iter(Tree)
         """
         self._tokens = list(tokens)
         chart = []
@@ -177,6 +177,7 @@ class ProjectiveDependencyParser(object):
                 chart[i].append(ChartCell(i,j))
                 if i==j+1:
                     chart[i][j].add(DependencySpan(i-1,i,i-1,[-1], ['null']))
+
         for i in range(1,len(self._tokens)+1):
             for j in range(i-2,-1,-1):
                 for k in range(i-1,j,-1):
@@ -184,8 +185,7 @@ class ProjectiveDependencyParser(object):
                         for span2 in chart[i][k]._entries:
                             for newspan in self.concatenate(span1, span2):
                                 chart[i][j].add(newspan)
-        graphs = []
-        trees = []
+
         for parse in chart[len(self._tokens)][0]._entries:
             conll_format = ""
 #            malt_format = ""
@@ -194,9 +194,7 @@ class ProjectiveDependencyParser(object):
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'null', '-', '-')
             dg = DependencyGraph(conll_format)
 #           if self.meets_arity(dg):
-            graphs.append(dg)
-            trees.append(dg.tree())
-        return trees
+            yield dg.tree()
 
 
     def concatenate(self, span1, span2):
@@ -285,7 +283,6 @@ class ProbabilisticProjectiveDependencyParser(object):
                             for span2 in chart[i][k]._entries:
                                 for newspan in self.concatenate(span1, span2):
                                     chart[i][j].add(newspan)
-        graphs = []
         trees = []
         max_parse = None
         max_score = 0
@@ -297,10 +294,9 @@ class ProbabilisticProjectiveDependencyParser(object):
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'null', '-', '-')
             dg = DependencyGraph(conll_format)
             score = self.compute_prob(dg)
-            if score > max_score:
-                max_parse = dg.tree()
-                max_score = score
-        return [max_parse, max_score]
+            trees.append((score, dg.tree()))
+        trees.sort()
+        return (tree for (score, tree) in trees)
 
 
     def concatenate(self, span1, span2):
@@ -466,7 +462,7 @@ def projective_rule_parse_demo():
     ``DependencyGrammar`` to perform a projective dependency
     parse.
     """
-    grammar = parse_dependency_grammar("""
+    grammar = DependencyGrammar.read("""
     'scratch' -> 'cats' | 'walls'
     'walls' -> 'the'
     'cats' -> 'the'
@@ -488,7 +484,7 @@ def arity_parse_demo():
     print('A grammar with no arity constraints. Each DependencyProduction')
     print('specifies a relationship between one head word and only one')
     print('modifier word.')
-    grammar = parse_dependency_grammar("""
+    grammar = DependencyGrammar.read("""
     'fell' -> 'price' | 'stock'
     'price' -> 'of' | 'the'
     'of' -> 'stock'
@@ -509,7 +505,7 @@ def arity_parse_demo():
     print('DependencyProduction that specifies a relationship')
     print('between a single head word, \'price\', and two modifier')
     print('words, \'of\' and \'the\'.')
-    grammar = parse_dependency_grammar("""
+    grammar = DependencyGrammar.read("""
     'fell' -> 'price' | 'stock'
     'price' -> 'of' 'the'
     'of' -> 'stock'
@@ -536,10 +532,9 @@ def projective_prob_parse_demo():
     ppdp.train(graphs)
     sent = ['Cathy', 'zag', 'hen', 'wild', 'zwaaien', '.']
     print('Parsing \'', " ".join(sent), '\'...')
-    parse = ppdp.parse(sent)
     print('Parse:')
-    print(parse[0])
-
+    for tree in ppdp.parse(sent):
+    	print(tree)
 
 if __name__ == '__main__':
     demo()

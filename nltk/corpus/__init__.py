@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -138,6 +138,9 @@ mac_morpho = LazyCorpusLoader(
 machado = LazyCorpusLoader(
     'machado', PortugueseCategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*', encoding='latin-1')
+masc_tagged = LazyCorpusLoader(
+    'masc_tagged', CategorizedTaggedCorpusReader, r'(spoken|written)/.*\.txt',
+    cat_file='categories.txt', tagset='wsj', encoding="ascii", sep="_")
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*',
