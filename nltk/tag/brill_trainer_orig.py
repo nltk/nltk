@@ -89,8 +89,8 @@ class BrillTaggerTrainer(object):
         >>> Template._cleartemplates() #clear any templates created in earlier tests
         >>> templates = [Template(Pos([-1])), Template(Pos([-1]), Word([0]))]
 
-        #construct a TaggerTrainer
-        >>> tt = TaggerTrainer(baseline, templates, trace=3)
+        #construct a BrillTaggerTrainer
+        >>> tt = BrillTaggerTrainer(baseline, templates, trace=3)
         >>> tagger1 = tt.train(training_data, max_rules=10)
         TBL train (orig) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: None)
         <BLANKLINE>
@@ -406,4 +406,9 @@ class BrillTaggerTrainer(object):
                                 subsequent_indent=' '*18+'|   ').strip())
         else:
             print(rulestr)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

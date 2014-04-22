@@ -80,11 +80,11 @@ logic parser needs be passed as a parameter to ``load_earley()``
     ...
     ([x],[dog(x), bark(x)])
 
-Alternatively, a ``FeatStructParser`` can be passed with the ``logic_parser`` set on it
+Alternatively, a ``FeatStructReader`` can be passed with the ``logic_parser`` set on it
 
-    >>> from nltk.featstruct import FeatStructParser
+    >>> from nltk.featstruct import FeatStructReader
     >>> from nltk.grammar import FeatStructNonterminal
-    >>> parser = load_parser('grammars/book_grammars/drt.fcfg', trace=0, fstruct_parser=FeatStructParser(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
+    >>> parser = load_parser('grammars/book_grammars/drt.fcfg', trace=0, fstruct_parser=FeatStructReader(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
     >>> for tree in parser.parse('every girl chases a dog'.split()):
     ...     print(tree.label()['SEM'].simplify().normalize())
     ...

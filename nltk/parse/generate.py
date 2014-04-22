@@ -64,11 +64,11 @@ demo_grammar = """
 """
 
 def demo(N=23):
-    from nltk.grammar import read_cfg
+    from nltk.grammar import ContextFreeGrammar
 
     print('Generating the first %d sentences for demo grammar:' % (N,))
     print(demo_grammar)
-    grammar = read_cfg(demo_grammar)
+    grammar = ContextFreeGrammar.read(demo_grammar)
     for n, sent in enumerate(generate(grammar, n=N), 1):
         print('%3d. %s' % (n, ' '.join(sent)))
 

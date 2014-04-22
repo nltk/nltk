@@ -661,9 +661,9 @@ FORMATS = {
     'pickle': "A serialized python object, stored using the pickle module.",
     'json': "A serialized python object, stored using the json module.",
     'yaml': "A serialized python object, stored using the yaml module.",
-    'cfg': "A context free grammar, parsed by nltk.read_cfg().",
-    'pcfg': "A probabilistic CFG, parsed by nltk.read_pcfg().",
-    'fcfg': "A feature CFG, parsed by nltk.read_fcfg().",
+    'cfg': "A context free grammar.",
+    'pcfg': "A probabilistic CFG.",
+    'fcfg': "A feature CFG.",
     'fol': "A list of first order logic expressions, parsed by "
             "nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.",
     'logic': "A list of first order logic expressions, parsed by "
@@ -803,13 +803,13 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         if format == 'text':
             resource_val = string_data
         elif format == 'cfg':
-            resource_val = nltk.grammar.read_cfg(
+            resource_val = nltk.grammar.ContextFreeGrammar.read(
                 string_data, encoding=encoding)
         elif format == 'pcfg':
-            resource_val = nltk.grammar.read_pcfg(
+            resource_val = nltk.grammar.WeightedGrammar.read(
                 string_data, encoding=encoding)
         elif format == 'fcfg':
-            resource_val = nltk.grammar.read_fcfg(
+            resource_val = nltk.grammar.FeatureGrammar.read(
                 string_data, logic_parser=logic_parser,
                 fstruct_reader=fstruct_reader, encoding=encoding)
         elif format == 'fol':

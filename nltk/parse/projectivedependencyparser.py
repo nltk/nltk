@@ -11,7 +11,7 @@ from __future__ import print_function, unicode_literals
 from collections import defaultdict
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
-                          StatisticalDependencyGrammar, read_dependency_grammar)
+                          StatisticalDependencyGrammar)
 from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 from nltk.internals import raise_unorderable_types
 from nltk.compat import total_ordering, python_2_unicode_compatible
@@ -462,7 +462,7 @@ def projective_rule_parse_demo():
     ``DependencyGrammar`` to perform a projective dependency
     parse.
     """
-    grammar = parse_dependency_grammar("""
+    grammar = DependencyGrammar.read("""
     'scratch' -> 'cats' | 'walls'
     'walls' -> 'the'
     'cats' -> 'the'
@@ -484,7 +484,7 @@ def arity_parse_demo():
     print('A grammar with no arity constraints. Each DependencyProduction')
     print('specifies a relationship between one head word and only one')
     print('modifier word.')
-    grammar = parse_dependency_grammar("""
+    grammar = DependencyGrammar.read("""
     'fell' -> 'price' | 'stock'
     'price' -> 'of' | 'the'
     'of' -> 'stock'
@@ -505,7 +505,7 @@ def arity_parse_demo():
     print('DependencyProduction that specifies a relationship')
     print('between a single head word, \'price\', and two modifier')
     print('words, \'of\' and \'the\'.')
-    grammar = parse_dependency_grammar("""
+    grammar = DependencyGrammar.read("""
     'fell' -> 'price' | 'stock'
     'price' -> 'of' 'the'
     'of' -> 'stock'

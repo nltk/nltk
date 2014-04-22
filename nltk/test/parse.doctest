@@ -8,7 +8,7 @@
 Unit tests for the Context Free Grammar class
 ---------------------------------------------
 
-    >>> from nltk import Nonterminal, nonterminals, Production, parse_cfg, ContextFreeGrammar
+    >>> from nltk import Nonterminal, nonterminals, Production, read_cfg, ContextFreeGrammar
 
     >>> nt1 = Nonterminal('NP')
     >>> nt2 = Nonterminal('VP')
@@ -40,7 +40,7 @@ Unit tests for the Context Free Grammar class
     >>> prod1 == prod2
     False
 
-    >>> grammar = parse_cfg("""
+    >>> grammar = read_cfg("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> 'the' N | N PP | 'the' N PP
@@ -529,11 +529,11 @@ Unit tests for the Probabilistic CFG class
 
     >>> from nltk.corpus import treebank
     >>> from itertools import islice
-    >>> from nltk import parse_pcfg, induce_pcfg, toy_pcfg1, toy_pcfg2
+    >>> from nltk import read_pcfg, induce_pcfg, toy_pcfg1, toy_pcfg2
 
 Create a set of probabilistic CFG productions.
 
-    >>> grammar = parse_pcfg("""
+    >>> grammar = read_pcfg("""
     ... A -> B B [.3] | C B C [.7]
     ... B -> B D [.5] | C [.5]
     ... C -> 'a' [.1] | 'b' [0.9]
@@ -842,7 +842,7 @@ The demo grammar from before, with an ambiguous sentence.
 This grammar tests that variables in different grammar rules are renamed
 before unification. (The problematic variable is in this case ?X).
 
-    >>> whatwasthat = nltk.parse_fcfg('''
+    >>> whatwasthat = nltk.read_fcfg('''
     ... S[] -> NP[num=?N] VP[num=?N, slash=?X]
     ... NP[num=?X] -> "what"
     ... NP[num=?X] -> "that"
@@ -854,7 +854,7 @@ before unification. (The problematic variable is in this case ?X).
 This grammar tests that the same rule can be used in different places
 in another rule, and that the variables are properly renamed.
 
-    >>> thislovesthat = nltk.parse_fcfg('''
+    >>> thislovesthat = nltk.read_fcfg('''
     ... S[] -> NP[case=nom] V[] NP[case=acc]
     ... NP[case=?X] -> Pron[case=?X]
     ... Pron[] -> "this"

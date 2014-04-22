@@ -630,9 +630,9 @@ def demo():
     A demonstration of the recursive descent parser.
     """
 
-    from nltk import parse, read_cfg
+    from nltk import parse, ContextFreeGrammar
 
-    grammar = read_cfg("""
+    grammar = ContextFreeGrammar.read("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP

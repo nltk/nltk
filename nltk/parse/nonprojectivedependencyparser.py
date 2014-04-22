@@ -11,7 +11,6 @@ from __future__ import print_function
 import math
 
 from nltk.compat import xrange
-from nltk.grammar import read_dependency_grammar
 
 from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 
@@ -620,7 +619,9 @@ def nonprojective_conll_parse_demo():
         print(parse_graph)
 
 def rule_based_demo():
-    grammar = read_dependency_grammar("""
+    from nltk.grammar import DependencyGrammar
+
+    grammar = DependencyGrammar.read("""
     'taught' -> 'play' | 'man'
     'man' -> 'the' | 'in'
     'in' -> 'corner'

@@ -415,3 +415,7 @@ class BrillTagger(TaggerI):
         testing_stats['finalacc'] = 1 - testing_stats['finalerrors']/testing_stats['tokencount']
         return (tagged_tokenses, testing_stats)
 
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
