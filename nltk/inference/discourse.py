@@ -279,7 +279,7 @@ class DiscourseTester(object):
             sentence = self._sentences[sid]
             readings = self._get_readings(sentence)
             self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading.simplify())
-                                                        for rid, reading in enumerate(readings)])
+                                                        for rid, reading in enumerate(sorted(readings, key=str))])
 
     def _construct_threads(self):
         """
@@ -314,8 +314,7 @@ class DiscourseTester(object):
                 print() #'-' * 30
                 for rid in sorted(self._readings[sid]):
                     lf = self._readings[sid][rid]
-                    #TODO lf = lf.normalize('[xyz]\d*', 'z%d')
-                    print("%s: %s" % (rid, lf))
+                    print("%s: %s" % (rid, lf.normalize()))
 
     def _show_threads(self, filter=False, show_thread_readings=False):
         """
@@ -328,7 +327,7 @@ class DiscourseTester(object):
                             for rid in self._threads[tid]]
                 try:
                     thread_reading = ": %s" % \
-                              self._reading_command.combine_readings(readings)
+                              self._reading_command.combine_readings(readings).normalize()
                 except Exception as e:
                     thread_reading = ': INVALID: %s' % e.__class__.__name__
             else:
@@ -403,7 +402,7 @@ class DiscourseTester(object):
                         print(a)
                     spacer(80)
                 if modelfound:
-                    print(mb.model(format='cooked').decode('utf8'))
+                    print(mb.model(format='cooked'))
                 else:
                     print("No model found!\n")
         return results
@@ -425,13 +424,13 @@ class DiscourseTester(object):
 
             if not modelfound:
                 print("Inconsistent discourse: %s %s:" % (tid, idlist))
-                for  rid, reading in [(rid, str(reading))  for (rid, reading) in self.expand_threads(tid)]:
-                    print("    %s: %s" % (rid, reading))
+                for rid, reading in self.expand_threads(tid):
+                    print("    %s: %s" % (rid, reading.normalize()))
                 print()
             else:
                 print("Consistent discourse: %s %s:" % (tid, idlist))
-                for  rid, reading in [(rid, str(reading))  for (rid, reading) in self.expand_threads(tid)]:
-                    print("    %s: %s" % (rid, reading))
+                for rid, reading in self.expand_threads(tid):
+                    print("    %s: %s" % (rid, reading.normalize()))
                 print()
 
     def add_background(self, background, verbose=False):

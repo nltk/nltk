@@ -6,6 +6,7 @@
 #         Tiago Tresoldi <tiago@tresoldi.pro.br> (fixes)
 #         Steven Bird <stevenbird1@gmail.com> (fixes)
 #         Joseph Frazee <jfrazee@mail.utexas.edu> (fixes)
+#         Steven Xu <xxu@student.unimelb.edu.au> (fixes)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -94,6 +95,10 @@ _TAG = 1   # index of tag in a tuple
 def _identity(labeled_symbols):
     return labeled_symbols
 
+def _unique_list(xs):
+    seen = set()
+    # not seen.add(x) here acts to make the code shorter without using if statements, seen.add(x) always returns None.
+    return [x for x in xs if x not in seen and not seen.add(x)]
 
 @python_2_unicode_compatible
 class HiddenMarkovModelTagger(TaggerI):
@@ -133,8 +138,8 @@ class HiddenMarkovModelTagger(TaggerI):
     """
     def __init__(self, symbols, states, transitions, outputs, priors,
                  transform=_identity, **kwargs):
-        self._symbols = list(set(symbols))
-        self._states = list(set(states))
+        self._symbols = _unique_list(symbols)
+        self._states = _unique_list(states)
         self._transitions = transitions
         self._outputs = outputs
         self._priors = priors

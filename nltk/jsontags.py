@@ -41,8 +41,13 @@ class JSONTaggedDecoder(json.JSONDecoder):
     def decode(self, s):
         return self.decode_obj(super(JSONTaggedDecoder, self).decode(s))
 
-    @staticmethod
-    def decode_obj(obj):
+    @classmethod
+    def decode_obj(cls, obj):
+        #Decode nested objects first.
+        if isinstance(obj, dict):
+            obj=dict((key, cls.decode_obj(val)) for (key, val) in obj.items())
+        elif isinstance(obj, list):
+            obj=list(cls.decode_obj(val) for val in obj)
         #Check if we have a tagged object.
         if not isinstance(obj, dict) or len(obj) != 1:
             return obj
@@ -51,8 +56,8 @@ class JSONTaggedDecoder(json.JSONDecoder):
             return obj
         if not obj_tag in json_tags:
             raise ValueError('Unknown tag', obj_tag)
-        cls = json_tags[obj_tag]
-        return cls.decode_json_obj(obj[obj_tag])
+        obj_cls = json_tags[obj_tag]
+        return obj_cls.decode_json_obj(obj[obj_tag])
 
 __all__ = ['register_tag', 'json_tags',
            'JSONTaggedEncoder', 'JSONTaggedDecoder']

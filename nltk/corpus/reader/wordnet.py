@@ -7,6 +7,18 @@
 #         Nitin Madnani <nmadnani@ets.org>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+
+"""
+An NLTK interface for WordNet
+
+WordNet is a lexical database of English.
+Using synsets, helps find conceptual relationships between words
+such as hypernyms, hyponyms, synonyms, antonyms etc.
+
+For details about WordNet see:
+http://wordnet.princeton.edu/
+"""
+
 from __future__ import print_function, unicode_literals
 
 import math
@@ -185,7 +197,7 @@ class Lemma(_WordNetObject):
     'salt.n.03' has the Lemmas 'salt.n.03.salt', 'salt.n.03.saltiness' and
     'salt.n.03.salinity'.
 
-    Lemma attributes:
+    Lemma attributes, accessible via methods with the same name::
 
     - name: The canonical name of this lemma.
     - synset: The synset that this lemma belongs to.
@@ -193,6 +205,7 @@ class Lemma(_WordNetObject):
       syntactic position relative modified noun. See:
       http://wordnet.princeton.edu/man/wninput.5WN.html#sect10
       For all other parts of speech, this attribute is None.
+    - count: The frequency of this lemma in wordnet.
 
     Lemma methods:
 
@@ -283,7 +296,7 @@ class Synset(_WordNetObject):
     <pos> is one of the module attributes ADJ, ADJ_SAT, ADV, NOUN or VERB
     <number> is the sense number, counting from 0.
 
-    Synset attributes:
+    Synset attributes, accessible via methods with the same name:
 
     - name: The canonical name of this synset, formed using the first lemma
       of this synset. Note that this may be different from the name
@@ -295,7 +308,7 @@ class Synset(_WordNetObject):
     - definition: The definition for this synset.
     - examples: A list of example strings for this synset.
     - offset: The offset in the WordNet dict file of this synset.
-    - #lexname: The name of the lexicographer file containing this synset.
+    - lexname: The name of the lexicographer file containing this synset.
 
     Synset methods:
 

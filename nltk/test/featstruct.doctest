@@ -610,8 +610,9 @@ Feature paths can also be used with `get()`, `has_key()`, and
 ..
     >>> del fs1, fs2 # clean-up
 
-Parsing
--------
+Reading Feature Structures
+--------------------------
+
 Empty feature struct:
 
     >>> FeatStruct('[]')
@@ -695,12 +696,12 @@ Here the slash feature gets coerced:
 
 Playing with ranges:
 
-    >>> from nltk.featstruct import RangeFeature, FeatStructParser
+    >>> from nltk.featstruct import RangeFeature, FeatStructReader
     >>> width = RangeFeature('width')
-    >>> parser = FeatStructParser([width])
-    >>> fs1 = parser.parse('[*width*=-5:12]')
-    >>> fs2 = parser.parse('[*width*=2:123]')
-    >>> fs3 = parser.parse('[*width*=-7:-2]')
+    >>> reader = FeatStructReader([width])
+    >>> fs1 = reader.read('[*width*=-5:12]')
+    >>> fs2 = reader.read('[*width*=2:123]')
+    >>> fs3 = reader.read('[*width*=-7:-2]')
     >>> fs1.unify(fs2)
     [*width*=(2, 12)]
     >>> fs1.unify(fs3)

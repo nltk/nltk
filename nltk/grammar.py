@@ -78,7 +78,7 @@ from nltk.compat import (string_types, total_ordering, text_type,
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
-from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
+from nltk.featstruct import FeatStruct, FeatDict, FeatStructReader, SLASH, TYPE
 
 #################################################################
 # Nonterminal
@@ -1052,7 +1052,6 @@ def induce_pcfg(start, productions):
     :param productions: The list of productions that defines the grammar
     :type productions: list(Production)
     """
-
     # Production count: the number of times a given production occurs
     pcount = {}
 
@@ -1075,32 +1074,32 @@ def induce_pcfg(start, productions):
 
 # Parsing CFGs
 
-def parse_cfg_production(input):
+def read_cfg_production(input):
     """
     Return a list of context-free ``Productions``.
     """
-    return parse_production(input, standard_nonterm_parser)
+    return read_production(input, standard_nonterm_parser)
 
-def parse_cfg(input, encoding=None):
+def read_cfg(input, encoding=None):
     """
     Return the ``ContextFreeGrammar`` corresponding to the input string(s).
 
     :param input: a grammar, either in the form of a string or
         as a list of strings.
     """
-    start, productions = parse_grammar(input, standard_nonterm_parser,
+    start, productions = read_grammar(input, standard_nonterm_parser,
                                        encoding=encoding)
     return ContextFreeGrammar(start, productions)
 
 # Parsing Probabilistic CFGs
 
-def parse_pcfg_production(input):
+def read_pcfg_production(input):
     """
     Return a list of PCFG ``WeightedProductions``.
     """
-    return parse_production(input, standard_nonterm_parser, probabilistic=True)
+    return read_production(input, standard_nonterm_parser, probabilistic=True)
 
-def parse_pcfg(input, encoding=None):
+def read_pcfg(input, encoding=None):
     """
     Return a probabilistic ``WeightedGrammar`` corresponding to the
     input string(s).
@@ -1108,19 +1107,19 @@ def parse_pcfg(input, encoding=None):
     :param input: a grammar, either in the form of a string or else
         as a list of strings.
     """
-    start, productions = parse_grammar(input, standard_nonterm_parser,
+    start, productions = read_grammar(input, standard_nonterm_parser,
                                        probabilistic=True, encoding=encoding)
     return WeightedGrammar(start, productions)
 
 # Parsing Feature-based CFGs
 
-def parse_fcfg_production(input, fstruct_parser):
+def read_fcfg_production(input, fstruct_reader):
     """
     Return a list of feature-based ``Productions``.
     """
-    return parse_production(input, fstruct_parser)
+    return read_production(input, fstruct_reader)
 
-def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None,
+def read_fcfg(input, features=None, logic_parser=None, fstruct_reader=None,
                encoding=None):
     """
     Return a feature structure based ``FeatureGrammar``.
@@ -1130,20 +1129,20 @@ def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None,
     :param features: a tuple of features (default: SLASH, TYPE)
     :param logic_parser: a parser for lambda-expressions,
         by default, ``LogicParser()``
-    :param fstruct_parser: a feature structure parser
+    :param fstruct_reader: a feature structure parser
         (only if features and logic_parser is None)
     """
     if features is None:
         features = (SLASH, TYPE)
 
-    if fstruct_parser is None:
-        fstruct_parser = FeatStructParser(features, FeatStructNonterminal,
+    if fstruct_reader is None:
+        fstruct_reader = FeatStructReader(features, FeatStructNonterminal,
                                           logic_parser=logic_parser)
     elif logic_parser is not None:
-        raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
+        raise Exception('\'logic_parser\' and \'fstruct_reader\' must '
                         'not both be set')
 
-    start, productions = parse_grammar(input, fstruct_parser.partial_parse,
+    start, productions = read_grammar(input, fstruct_reader.read_partial,
                                        encoding=encoding)
     return FeatureGrammar(start, productions)
 
@@ -1154,7 +1153,7 @@ _PROBABILITY_RE = re.compile(r'( \[ [\d\.]+ \] ) \s*', re.VERBOSE)
 _TERMINAL_RE = re.compile(r'( "[^"]+" | \'[^\']+\' ) \s*', re.VERBOSE)
 _DISJUNCTION_RE = re.compile(r'\| \s*', re.VERBOSE)
 
-def parse_production(line, nonterm_parser, probabilistic=False):
+def read_production(line, nonterm_parser, probabilistic=False):
     """
     Parse a grammar rule, given as a string, and return
     a list of productions.
@@ -1209,7 +1208,7 @@ def parse_production(line, nonterm_parser, probabilistic=False):
         return [Production(lhs, rhs) for rhs in rhsides]
 
 
-def parse_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
+def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     """
     Return a pair consisting of a starting category and a list of
     ``Productions``.
@@ -1252,7 +1251,7 @@ def parse_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                     raise ValueError('Bad directive')
             else:
                 # expand out the disjunctions on the RHS
-                productions += parse_production(line, nonterm_parser, probabilistic)
+                productions += read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
             raise ValueError('Unable to parse line %s: %s\n%s' %
                              (linenum+1, line, e))
@@ -1276,7 +1275,7 @@ def standard_nonterm_parser(string, pos):
 # Parsing Dependency Grammars
 #################################################################
 
-_PARSE_DG_RE = re.compile(r'''^\s*                # leading whitespace
+_READ_DG_RE = re.compile(r'''^\s*                # leading whitespace
                               ('[^']+')\s*        # single-quoted lhs
                               (?:[-=]+>)\s*        # arrow
                               (?:(                 # rhs:
@@ -1289,20 +1288,20 @@ _PARSE_DG_RE = re.compile(r'''^\s*                # leading whitespace
                              re.VERBOSE)
 _SPLIT_DG_RE = re.compile(r'''('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)''')
 
-def parse_dependency_grammar(s):
+def read_dependency_grammar(s):
     productions = []
     for linenum, line in enumerate(s.split('\n')):
         line = line.strip()
         if line.startswith('#') or line=='': continue
-        try: productions += parse_dependency_production(line)
+        try: productions += read_dependency_production(line)
         except ValueError:
             raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     if len(productions) == 0:
         raise ValueError('No productions found!')
     return DependencyGrammar(productions)
 
-def parse_dependency_production(s):
-    if not _PARSE_DG_RE.match(s):
+def read_dependency_production(s):
+    if not _READ_DG_RE.match(s):
         raise ValueError('Bad production string')
     pieces = _SPLIT_DG_RE.split(s)
     pieces = [p for i,p in enumerate(pieces) if i%2==1]
@@ -1325,7 +1324,7 @@ def cfg_demo():
     A demonstration showing how ``ContextFreeGrammars`` can be created and used.
     """
 
-    from nltk import nonterminals, Production, parse_cfg
+    from nltk import nonterminals, Production, read_cfg
 
     # Create some nonterminals
     S, NP, VP, PP = nonterminals('S, NP, VP, PP')
@@ -1339,7 +1338,7 @@ def cfg_demo():
     print(Production(S, [NP]))
 
     # Create some Grammar Productions
-    grammar = parse_cfg("""
+    grammar = read_cfg("""
       S -> NP VP
       PP -> P NP
       NP -> Det N | NP PP
@@ -1357,7 +1356,7 @@ def cfg_demo():
     print(repr(grammar.productions()).replace(',', ',\n'+' '*25))
     print()
 
-toy_pcfg1 = parse_pcfg("""
+toy_pcfg1 = read_pcfg("""
     S -> NP VP [1.0]
     NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
     Det -> 'the' [0.8] | 'my' [0.2]
@@ -1368,7 +1367,7 @@ toy_pcfg1 = parse_pcfg("""
     P -> 'with' [0.61] | 'under' [0.39]
     """)
 
-toy_pcfg2 = parse_pcfg("""
+toy_pcfg2 = read_pcfg("""
     S    -> NP VP         [1.0]
     VP   -> V NP          [.59]
     VP   -> V             [.40]
@@ -1462,7 +1461,7 @@ def dg_demo():
     A demonstration showing the creation and inspection of a
     ``DependencyGrammar``.
     """
-    grammar = parse_dependency_grammar("""
+    grammar = read_dependency_grammar("""
     'scratch' -> 'cats' | 'walls'
     'walls' -> 'the'
     'cats' -> 'the'
@@ -1508,11 +1507,11 @@ __all__ = ['Nonterminal', 'nonterminals',
            'Production', 'DependencyProduction', 'WeightedProduction',
            'ContextFreeGrammar', 'WeightedGrammar', 'DependencyGrammar',
            'StatisticalDependencyGrammar',
-           'induce_pcfg', 'parse_cfg', 'parse_cfg_production',
-           'parse_pcfg', 'parse_pcfg_production',
-           'parse_fcfg', 'parse_fcfg_production',
-           'parse_grammar', 'parse_production',
-           'parse_dependency_grammar', 'parse_dependency_production',
+           'induce_pcfg', 'read_cfg', 'read_cfg_production',
+           'read_pcfg', 'read_pcfg_production',
+           'read_fcfg', 'read_fcfg_production',
+           'read_grammar', 'read_production',
+           'read_dependency_grammar', 'read_dependency_production',
            'demo', 'cfg_demo', 'pcfg_demo', 'dg_demo', 'sdg_demo',
            'toy_pcfg1', 'toy_pcfg2']
 

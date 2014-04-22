@@ -569,12 +569,14 @@ Induce some productions using parsed Treebank data.
     >>> grammar
     <Grammar with 71 productions>
 
-    >>> sorted(grammar.productions(lhs=grammar.start()))
-    [S -> NP-SBJ NP-PRD [0.25], S -> NP-SBJ VP . [0.5], S -> NP-SBJ-1 VP . [0.25]]
-
-    >>> sorted(grammar.productions(lhs=Nonterminal('NP')))[:3]
-    [NP -> CD NNS [0.133333], NP -> DT JJ JJ NN [0.0666667], NP -> DT JJ NN [0.133333]]
-
+    >>> sorted(grammar.productions(lhs=Nonterminal('PP')))[:2]
+    [PP -> IN NP [1]]
+    >>> sorted(grammar.productions(lhs=Nonterminal('NNP')))[:2]
+    [NNP -> 'Agnew' [0.0714286], NNP -> 'Consolidated' [0.0714286]]
+    >>> sorted(grammar.productions(lhs=Nonterminal('JJ')))[:2]
+    [JJ -> 'British' [0.142857], JJ -> 'former' [0.142857]]
+    >>> sorted(grammar.productions(lhs=Nonterminal('NP')))[:2]
+    [NP -> CD NNS [0.133333], NP -> DT JJ JJ NN [0.0666667]]
 
 Unit tests for the Probabilistic Chart Parse classes
 ----------------------------------------------------

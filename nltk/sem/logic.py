@@ -530,7 +530,7 @@ class Expression(SubstituteBindingsI):
                                                          replace_bound, alpha_convert),
                                      self.__class__)
 
-    def normalize(self):
+    def normalize(self, newvars=None):
         """Rename auto-generated unique variables"""
         def get_indiv_vars(e):
             if isinstance(e, IndividualVariableExpression):

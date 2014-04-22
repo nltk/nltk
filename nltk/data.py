@@ -692,7 +692,7 @@ AUTO_FORMATS = {
 }
 
 def load(resource_url, format='auto', cache=True, verbose=False,
-         logic_parser=None, fstruct_parser=None, encoding=None):
+         logic_parser=None, fstruct_reader=None, encoding=None):
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
@@ -735,8 +735,8 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     :type logic_parser: LogicParser
     :param logic_parser: The parser that will be used to parse logical
         expressions.
-    :type fstruct_parser: FeatStructParser
-    :param fstruct_parser: The parser that will be used to parse the
+    :type fstruct_reader: FeatStructReader
+    :param fstruct_reader: The parser that will be used to parse the
         feature structure of an fcfg.
     :type encoding: str
     :param encoding: the encoding of the input; only used for text formats.
@@ -811,7 +811,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         elif format == 'fcfg':
             resource_val = nltk.grammar.parse_fcfg(
                 string_data, logic_parser=logic_parser,
-                fstruct_parser=fstruct_parser, encoding=encoding)
+                fstruct_reader=fstruct_reader, encoding=encoding)
         elif format == 'fol':
             resource_val = nltk.sem.parse_logic(
                 string_data, logic_parser=nltk.sem.logic.LogicParser(),

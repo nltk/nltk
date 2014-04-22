@@ -106,12 +106,12 @@ class Valuation(dict):
     just behave like a standard  dictionary) if indexed with an expression that
     is not in its list of symbols.
     """
-    def __init__(self, iter):
+    def __init__(self, xs):
         """
-        :param iter: a list of (symbol, value) pairs.
+        :param xs: a list of (symbol, value) pairs.
         """
-        dict.__init__(self)
-        for (sym, val) in iter:
+        super(Valuation, self).__init__()
+        for (sym, val) in xs:
             if isinstance(val, string_types) or isinstance(val, bool):
                 self[sym] = val
             elif isinstance(val, set):
@@ -139,7 +139,7 @@ class Valuation(dict):
             if isinstance(val, string_types):
                 dom.append(val)
             elif not isinstance(val, bool):
-                dom.extend([elem for tuple in val for elem in tuple if elem is not None])
+                dom.extend([elem for tuple_ in val for elem in tuple_ if elem is not None])
         return set(dom)
 
     @property
@@ -174,14 +174,14 @@ class Assignment(dict):
         >>> from nltk.sem.evaluate import Assignment
         >>> dom = set(['u1', 'u2', 'u3', 'u4'])
         >>> g3 = Assignment(dom, [('x', 'u1'), ('y', 'u2')])
-        >>> g3
-        {'y': 'u2', 'x': 'u1'}
+        >>> g3 == {'x': 'u1', 'y': 'u2'}
+        True
 
     There is also a ``print`` format for assignments which uses a notation
     closer to that in logic textbooks:
 
         >>> print(g3)
-        g[u2/y][u1/x]
+        g[u1/x][u2/y]
 
     It is also possible to update an assignment using the ``add`` method:
 
@@ -203,7 +203,7 @@ class Assignment(dict):
     """
 
     def __init__(self, domain, assign=None):
-        dict.__init__(self)
+        super(Assignment, self).__init__()
         self.domain = domain
         if assign:
             for (var, val) in assign:
@@ -212,6 +212,7 @@ class Assignment(dict):
                 assert is_indvar(var),\
                        "Wrong format for an Individual Variable: '%s'" % var
                 self[var] = val
+        self.variant = None
         self._addvariant()
 
     def __getitem__(self, key):
@@ -233,7 +234,6 @@ class Assignment(dict):
         :param var: a Variable acting as a key for the assignment.
         """
         if var:
-            val = self[var]
             del self[var]
         else:
             self.clear()
@@ -245,7 +245,9 @@ class Assignment(dict):
         Pretty printing for assignments. {'x', 'u'} appears as 'g[u/x]'
         """
         gstring = "g"
-        for (val, var) in self.variant:
+        # Deterministic output for unit testing.
+        variant = sorted(self.variant)
+        for (val, var) in variant:
             gstring += "[%s/%s]" % (val, var)
         return gstring
 
@@ -253,11 +255,11 @@ class Assignment(dict):
         """
         Create a more pretty-printable version of the assignment.
         """
-        list = []
+        list_ = []
         for item in self.items():
             pair = (item[1], item[0])
-            list.append(pair)
-        self.variant = list
+            list_.append(pair)
+        self.variant = list_
         return None
 
     def add(self, var, val):

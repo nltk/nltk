@@ -145,7 +145,7 @@ class FStructure(dict):
         except NameError:
             pass
 
-        for feature in self:
+        for feature in sorted(self):
             for item in self[feature]:
                 if isinstance(item, FStructure):
                     next_indent = indent+len(feature)+3+len(self.label)

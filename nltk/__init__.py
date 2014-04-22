@@ -111,12 +111,6 @@ from nltk.util import *
 from nltk.jsontags import *
 from nltk.align import *
 
-# don't import contents into top-level namespace:
-
-from nltk import ccg
-from nltk import data
-from nltk import help
-
 ###########################################################
 # PACKAGES
 ###########################################################
@@ -170,9 +164,9 @@ else:
 # from a subpackage)
 
 from nltk import align, ccg, chunk, classify, collocations
-from nltk import data, featstruct, grammar, inference, metrics
+from nltk import data, featstruct, grammar, help, inference, metrics
 from nltk import misc, parse, probability, sem, stem
-from nltk import tag, text, tokenize, tree, treetransforms, util
+from nltk import tag, tbl, text, tokenize, tree, treetransforms, util
 
 # override any accidentally imported demo
 def demo():

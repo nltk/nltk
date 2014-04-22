@@ -128,6 +128,7 @@ class NaiveBayesClassifier(ClassifierI):
         for (fname, fval) in self.most_informative_features(n):
             def labelprob(l):
                 return cpdist[l,fname].prob(fval)
+
             labels = sorted([l for l in self._labels
                              if fval in cpdist[l,fname].samples()],
                             key=labelprob)
@@ -172,7 +173,7 @@ class NaiveBayesClassifier(ClassifierI):
         # Convert features to a list, & sort it by how informative
         # features are.
         features = sorted(features,
-            key=lambda feature: minprob[feature]/maxprob[feature])
+            key=lambda feature_: minprob[feature_]/maxprob[feature_])
         return features[:n]
 
     @staticmethod
@@ -207,8 +208,11 @@ class NaiveBayesClassifier(ClassifierI):
             num_samples = label_freqdist[label]
             for fname in fnames:
                 count = feature_freqdist[label, fname].N()
-                feature_freqdist[label, fname][None] += num_samples - count
-                feature_values[fname].add(None)
+                # Only add a None key when necessary, i.e. if there are
+                # any samples with feature 'fname' missing.
+                if num_samples - count > 0:
+                    feature_freqdist[label, fname][None] += num_samples - count
+                    feature_values[fname].add(None)
 
         # Create the P(label) distribution
         label_probdist = estimator(label_freqdist)
