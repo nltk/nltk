@@ -56,10 +56,10 @@ class BrillTaggerTrainer(object):
         *min_acc*.
 
         #imports
-        >>> from nltk.tag.tbl.template import Template
-        >>> from nltk.tag.tbl.task.postagging import Pos, Word
+        >>> from nltk.tbl.template import Template
+        >>> from nltk.tag.brill import Pos, Word
         >>> from nltk.tag import RegexpTagger
-        >>> from nltk.tag.tbl.trainer.brillorig import TaggerTrainer
+        >>> from nltk.tag.brill_trainer_orig import BrillTaggerTrainer
 
         #some data
         >>> from nltk.corpus import treebank
