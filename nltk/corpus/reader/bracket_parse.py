@@ -78,7 +78,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
 
     def _parse(self, t):
         try:
-            return Tree.read(self._normalize(t))
+            return Tree.fromstring(self._normalize(t))
 
         except ValueError as e:
             sys.stderr.write("Bad tree detected; trying to recover...\n")

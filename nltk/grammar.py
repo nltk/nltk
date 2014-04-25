@@ -508,7 +508,7 @@ class ContextFreeGrammar(object):
                 lc.update(self._immediate_leftcorner_words.get(left, set()))
 
     @classmethod
-    def read(cls, input, encoding=None):
+    def fromstring(cls, input, encoding=None):
         """
         Return the ``ContextFreeGrammar`` corresponding to the input string(s).
 
@@ -768,7 +768,7 @@ class FeatureGrammar(ContextFreeGrammar):
                     self._lexical_index.setdefault(token, set()).add(prod)
 
     @classmethod
-    def read(cls, input, features=None, logic_parser=None, fstruct_reader=None,
+    def fromstring(cls, input, features=None, logic_parser=None, fstruct_reader=None,
                encoding=None):
         """
         Return a feature structure based ``FeatureGrammar``.
@@ -905,7 +905,7 @@ class DependencyGrammar(object):
         self._productions = productions
 
     @classmethod
-    def read(cls, input):
+    def fromstring(cls, input):
         productions = []
         for linenum, line in enumerate(input.split('\n')):
             line = line.strip()
@@ -1084,7 +1084,7 @@ class WeightedGrammar(ContextFreeGrammar):
 
 
     @classmethod
-    def read(cls, input, encoding=None):
+    def fromstring(cls, input, encoding=None):
         """
         Return a probabilistic ``WeightedGrammar`` corresponding to the
         input string(s).
@@ -1341,7 +1341,7 @@ def cfg_demo():
     print(Production(S, [NP]))
 
     # Create some Grammar Productions
-    grammar = ContextFreeGrammar.read("""
+    grammar = ContextFreeGrammar.fromstring("""
       S -> NP VP
       PP -> P NP
       NP -> Det N | NP PP
@@ -1359,7 +1359,7 @@ def cfg_demo():
     print(repr(grammar.productions()).replace(',', ',\n'+' '*25))
     print()
 
-toy_pcfg1 = WeightedGrammar.read("""
+toy_pcfg1 = WeightedGrammar.fromstring("""
     S -> NP VP [1.0]
     NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
     Det -> 'the' [0.8] | 'my' [0.2]
@@ -1370,7 +1370,7 @@ toy_pcfg1 = WeightedGrammar.read("""
     P -> 'with' [0.61] | 'under' [0.39]
     """)
 
-toy_pcfg2 = WeightedGrammar.read("""
+toy_pcfg2 = WeightedGrammar.fromstring("""
     S    -> NP VP         [1.0]
     VP   -> V NP          [.59]
     VP   -> V             [.40]
@@ -1464,7 +1464,7 @@ def dg_demo():
     A demonstration showing the creation and inspection of a
     ``DependencyGrammar``.
     """
-    grammar = DependencyGrammar.read("""
+    grammar = DependencyGrammar.fromstring("""
     'scratch' -> 'cats' | 'walls'
     'walls' -> 'the'
     'cats' -> 'the'

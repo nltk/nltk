@@ -335,7 +335,7 @@ class RegexpChunkRule(object):
                 '->'+unicode_repr(self._repl)+'>')
 
     @staticmethod
-    def read(s):
+    def fromstring(s):
         """
         Create a RegexpChunkRule from a string description.
         Currently, the following formats are supported::
@@ -350,7 +350,7 @@ class RegexpChunkRule(object):
         the rule's description:
 
         >>> from nltk.chunk.regexp import RegexpChunkRule
-        >>> RegexpChunkRule.read('{<DT>?<NN.*>+}')
+        >>> RegexpChunkRule.fromstring('{<DT>?<NN.*>+}')
         <ChunkRule: '<DT>?<NN.*>+'>
         """
         # Split off the comment (but don't split on '\#')
@@ -1163,7 +1163,7 @@ class RegexpParser(ChunkParserI):
             if line=='' or line.startswith('#'): continue
 
             # Add the rule
-            rules.append(RegexpChunkRule.read(line))
+            rules.append(RegexpChunkRule.fromstring(line))
 
         # Record the final stage
         self._add_stage(rules, lhs, root_label, trace)

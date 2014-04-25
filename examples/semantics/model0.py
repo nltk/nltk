@@ -33,7 +33,7 @@ v = [('john', 'b1'),
 
 
 #Read in the data from C{v}
-val.read(v)
+val.fromstring(v)
 
 #Bind C{dom} to the C{domain} property of C{val}
 dom = val.domain
