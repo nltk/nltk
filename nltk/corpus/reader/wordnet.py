@@ -953,7 +953,7 @@ class Synset(_WordNetObject):
             yield todo
             todo = [hypernym
                     for synset in todo
-                    for hypernym in (synset.hypernyms() + \
+                    for hypernym in (synset.hypernyms() +
                         synset.instance_hypernyms())
                     if hypernym not in seen]
 
@@ -1051,7 +1051,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def ss2of(self, ss):
         ''' return the ILI of the synset '''
-        return ( "0"*8 + str(ss.offset) +"-"+ str(ss.pos))[-10:]
+        return ( "0"*8 + str(ss.offset()) +"-"+ str(ss.pos()))[-10:]
     
     def _load_lang_data(self, lang):
         ''' load the wordnet data of the requested language from the file to the cache, _lang_data '''
@@ -1953,10 +1953,10 @@ def teardown_module(module=None):
 def demo():
     import nltk
     print('loading wordnet')
-    wn = WordNetCorpusReader(nltk.data.find('corpora/wordnet'))
+    wn = WordNetCorpusReader(nltk.data.find('corpora/wordnet'), None)
     print('done loading')
-    S = wn.synset()
-    L = wn.lemma()
+    S = wn.synset
+    L = wn.lemma
 
     print('getting a synset for go')
     move_synset = S('go.v.21')
@@ -1973,7 +1973,6 @@ def demo():
 
     zap_n_synsets = _get_synsets(zap_n)
     zap_v_synsets = _get_synsets(zap_v)
-    zap_synsets = set(zap_n_synsets + zap_v_synsets)
 
     print(zap_n_synsets)
     print(zap_v_synsets)
