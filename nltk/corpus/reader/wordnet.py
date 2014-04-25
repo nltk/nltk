@@ -30,7 +30,7 @@ from collections import defaultdict
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
-from nltk.compat import xrange, python_2_unicode_compatible, total_ordering
+from nltk.compat import xrange, python_2_unicode_compatible, total_ordering, string_types
 
 ######################################################################
 ## Table of Contents
@@ -401,7 +401,7 @@ class Synset(_WordNetObject):
 
     def lemma_names(self, lang='en'):
         ''' return all the lemma_names associated with the synset (multiple lanuages supported) '''
-        if isinstance(lang, str):
+        if isinstance(lang, string_types):
             if lang=='en':
                 return self._lemma_names
             else:
@@ -419,7 +419,7 @@ class Synset(_WordNetObject):
                 
     def lemmas(self, lang='en'):
         ''' return all the lemma objects associated with the synset (multiple lanuages supported) '''
-        if isinstance(lang, str):
+        if isinstance(lang, string_types):
             if lang=='en':
                 return self._lemmas
             else:
@@ -997,7 +997,7 @@ class WordNetCorpusReader(CorpusReader):
               'data.adj', 'data.adv', 'data.noun', 'data.verb',
               'adj.exc', 'adv.exc', 'noun.exc', 'verb.exc', )
 
-    def __init__(self, root):
+    def __init__(self, root, omw_reader):
         """
         Construct a new wordnet corpus reader, with the given root
         directory.
@@ -1005,25 +1005,23 @@ class WordNetCorpusReader(CorpusReader):
         super(WordNetCorpusReader, self).__init__(root, self._FILES,
                                                   encoding=self._ENCODING)
 
+        # A index that provides the file offset
+        # Map from lemma -> pos -> synset_index -> offset
         self._lemma_pos_offset_map = defaultdict(dict)
-        """A index that provides the file offset
 
-        Map from lemma -> pos -> synset_index -> offset"""
-
+        # A cache so we don't have to reconstuct synsets
+        # Map from pos -> offset -> synset
         self._synset_offset_cache = defaultdict(dict)
-        """A cache so we don't have to reconstuct synsets
 
-        Map from pos -> offset -> synset"""
-
+        # A lookup for the maximum depth of each part of speech.  Useful for
+        # the lch similarity metric.
         self._max_depth = defaultdict(dict)
-        """A lookup for the maximum depth of each part of speech.  Useful for
-        the lch similarity metric.
-        """
 
+        # Corpus reader containing omw data.
+        self._omw_reader = omw_reader
+
+        # A cache to store the wordnet data of multiple languages
         self._lang_data = defaultdict(list)
-        '''
-        A cache to store the wordnet data of multiple languages
-        '''
 
         self._data_file_map = {}
         self._exception_map = {}
@@ -1064,9 +1062,7 @@ class WordNetCorpusReader(CorpusReader):
         if lang in self._lang_data.keys():
             return
 
-        tab_files_path = self._get_tab_files_path()
-
-        f = open(tab_files_path.join('/wn-data-%s.tab'%lang), 'r')
+        f = self._omw_reader.open('{0:}/wn-data-{0:}.tab'.format(lang))
 
         self._lang_data[lang].append(defaultdict(list))
         self._lang_data[lang].append(defaultdict(list))
@@ -1084,19 +1080,13 @@ class WordNetCorpusReader(CorpusReader):
         ''' return a list of languages supported by Multilingual Wordnet '''
         import os
         langs = []
-        tab_files_path = self._get_tab_files_path()
-        
-        for i in os.listdir(tab_files_path):
-            if os.path.isfile(tab_files_path + '/' + i):
-                file_name, file_extension = os.path.splitext(i)
-                if file_extension == '.tab':
-                    langs.append(file_name.split('-')[-1])
+        fileids = self._omw_reader.fileids()
+        for fileid in fileids:
+            file_name, file_extension = os.path.splitext(fileid)
+            if file_extension == '.tab':
+                langs.append(file_name.split('-')[-1])
             
         return langs
-
-    def _get_tab_files_path(self):
-        ''' return the path where the wordnet data for multiple datas are stored '''
-        return self._get_root().join('/tab_files')
 
     #//////////////////////////////////////////////////////////
     #     End of Multilanguage Wordnet Support Functions
@@ -1462,7 +1452,7 @@ class WordNetCorpusReader(CorpusReader):
         part of speech tag and langauge or languages. If pos is not specified, all synsets
         for all parts of speech will be used. (multiple languages supported)
         """
-        if isinstance(lang, str):
+        if isinstance(lang, string_types):
             if lang == 'en':
                 if pos is None:
                     return iter(self._lemma_pos_offset_map)
