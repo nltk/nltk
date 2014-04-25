@@ -244,6 +244,7 @@ class Lemma(_WordNetObject):
         self._frame_ids = []
         self._lexname_index = lexname_index
         self._lex_id = lex_id
+        self.lang = "en" # Lynn
 
         self._key = None # gets set later.
 
@@ -404,6 +405,45 @@ class Synset(_WordNetObject):
         elif self._pos == VERB:
             return True
 
+    def lemma_names(self, lang='en'):
+        ''' return all the lemma_names associated with the synset (multiple lanuages supported) '''
+        if type(lang) == str or type(lang) == unicode:
+            if lang=='en':
+                return self._lemma_names
+            else:
+                self._wordnet_corpus_reader._load_lang_data(lang)
+        
+                i = self._wordnet_corpus_reader.ss2of(self)
+                for x in self._wordnet_corpus_reader._lang_data[lang][0].keys():
+                    if x == i:
+                        return self._wordnet_corpus_reader._lang_data[lang][0][x]
+        elif type(lang) == list:
+            lemma_names_by_langs = defaultdict(list)
+            for l in lang:
+                lemma_names_by_langs[l] = self.lemma_names(l)
+            return lemma_names_by_langs
+                
+    def lemmas(self, lang='en'):
+        ''' return all the lemma objects associated with the synset (multiple lanuages supported) '''
+        if type(lang) == unicode or type(lang) == str:
+            if lang=='en':
+                return self._lemmas
+            else:
+                self._wordnet_corpus_reader._load_lang_data(lang)
+                lemmark = []
+                lemmy = self.lemma_names(lang)
+                for lem in lemmy:
+                    temp= Lemma(wordnet, self, lem, wordnet._lexnames.index(self.lexname), 0, None)
+                    temp.lang=lang
+                    lemmark.append(temp)
+                return lemmark
+        elif type(lang) == list:
+            lemmas_by_langs = defaultdict(list)
+            for l in lang:
+                lemmas_by_langs[l] = self.lemmas(l)
+
+            return lemmas_by_langs
+    
     def root_hypernyms(self):
         """Get the topmost hypernyms of this synset in WordNet."""
 
@@ -986,6 +1026,11 @@ class WordNetCorpusReader(CorpusReader):
         the lch similarity metric.
         """
 
+        self._lang_data = defaultdict(list)
+        '''
+        A cache to store the wordnet data of multiple languages
+        '''
+
         self._data_file_map = {}
         self._exception_map = {}
         self._lexnames = []
@@ -1004,7 +1049,68 @@ class WordNetCorpusReader(CorpusReader):
         # load the exception file data into memory
         self._load_exception_map()
 
+    #//////////////////////////////////////////////////////////
+    #         Multilanguage Wordnet Support Functions
+    #//////////////////////////////////////////////////////////
 
+    def of2ss(self, of):
+        ''' take an id and return the synsets '''
+        return self._synset_from_pos_and_offset(of[-1], int(of[:8]))      
+
+    def ss2of(self, ss):
+        ''' return the ILI of the synset '''
+        return ( "0"*8 + str(ss.offset) +"-"+ str(ss.pos))[-10:]
+    
+    def _load_lang_data(self, lang):
+        ''' load the wordnet data of the requested language from the file to the cache, _lang_data '''
+        import os
+
+        if lang not in self.languageids():
+            raise WordNetError("Language is not supported.")
+            return
+
+        if lang in self._lang_data.keys():
+            return
+
+        tab_files_path = self._get_tab_files_path()
+
+        f = open(tab_files_path.join('/wn-data-%s.tab'%lang), 'r')
+
+        self._lang_data[lang].append(defaultdict(list))
+        self._lang_data[lang].append(defaultdict(list))
+            
+        for l in f.readlines():
+            l = l.decode('utf-8')
+            l = l.replace('\n', '')
+            l = l.replace(' ', '_')
+            if l[0] != '#':                
+                word = l.split('\t')
+                self._lang_data[lang][0][word[0]].append(word[2])
+                self._lang_data[lang][1][word[2]].append(word[0])
+        f.close()
+
+    def languageids(self):
+        ''' return a list of languages supported by Multilingual Wordnet '''
+        import os
+        langs = []
+        tab_files_path = self._get_tab_files_path()
+        
+        for i in os.listdir(tab_files_path):
+            if os.path.isfile(tab_files_path + '/' + i):
+                file_name, file_extension = os.path.splitext(i)
+                if file_extension == '.tab':
+                    langs.append(file_name.split('-')[-1])
+            
+        return langs
+
+    def _get_tab_files_path(self):
+        ''' return the path where the wordnet data for multiple datas are stored '''
+        return self._get_root().join('/tab_files')
+
+    #//////////////////////////////////////////////////////////
+    #     End of Multilanguage Wordnet Support Functions
+    #//////////////////////////////////////////////////////////
+    
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
 
@@ -1085,12 +1191,12 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     # Loading Lemmas
     #////////////////////////////////////////////////////////////
-    def lemma(self, name):
-        # e.g.: '.45_caliber.a.01..45_caliber'
-        separator = SENSENUM_RE.search(name).start()
-        synset_name, lemma_name = name[:separator+3], name[separator+4:]
+
+    def lemma(self, name, lang='en'):
+        ''' return lemma object that match with the name (multiple language supported) '''
+        synset_name, lemma_name = name.rsplit('.', 1)
         synset = self.synset(synset_name)
-        for lemma in synset._lemmas:
+        for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
                 return lemma
         raise WordNetError('no lemma %r in %r' % (lemma_name, synset_name))
@@ -1304,45 +1410,93 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     # Retrieve synsets and lemmas.
     #////////////////////////////////////////////////////////////
-    def synsets(self, lemma, pos=None):
+
+    def synsets(self, lemma, pos=None, lang='en'):
         """Load all synsets with a given lemma and part of speech tag.
         If no pos is specified, all synsets for all parts of speech
-        will be loaded.
+        will be loaded. 
+        If lang is specified, all the synsets associated with the lemma name
+        of that language will be returned.
+        (multiple languages supported)
         """
         lemma = lemma.lower()
-        get_synset = self._synset_from_pos_and_offset
-        index = self._lemma_pos_offset_map
+        
+        if lang == 'en':
+            get_synset = self._synset_from_pos_and_offset
+            index = self._lemma_pos_offset_map
 
-        if pos is None:
-            pos = POS_LIST
+            if pos is None:
+                pos = POS_LIST
 
-        return [get_synset(p, offset)
-                for p in pos
-                for form in self._morphy(lemma, p)
-                for offset in index[form].get(p, [])]
+            return [get_synset(p, offset)
+                    for p in pos
+                    for form in self._morphy(lemma, p)
+                    for offset in index[form].get(p, [])]
+        else:
+            self._load_lang_data(lang)
+            
+            synset_list = []
+ 
+            for l in self._lang_data[lang][1][lemma]:
+                if pos is not None:
+                    if not lemma_pos == pos:
+                        continue
+                synset_list.append(self.of2ss(l))
 
-    def lemmas(self, lemma, pos=None):
+            return synset_list
+
+    def lemmas(self, lemma, pos=None, lang='en'):
         """Return all Lemma objects with a name matching the specified lemma
         name and part of speech tag. Matches any part of speech tag if none is
-        specified."""
-        lemma = lemma.lower()
-        return [lemma_obj
-                for synset in self.synsets(lemma, pos)
-                for lemma_obj in synset._lemmas
-                if lemma_obj._name.lower() == lemma]
-
-    def all_lemma_names(self, pos=None):
-        """Return all lemma names for all synsets for the given
-        part of speech tag. If pos is not specified, all synsets
-        for all parts of speech will be used.
-        """
-        if pos is None:
-            return iter(self._lemma_pos_offset_map)
+        specified. (multiple languages supported) """
+        if lang == 'en':
+            lemma = lemma.lower()
+            return [lemma_obj
+                    for synset in self.synsets(lemma, pos)
+                    for lemma_obj in synset.lemmas()
+                    if lemma_obj.name.lower() == lemma]
         else:
-            return (lemma
-                for lemma in self._lemma_pos_offset_map
-                if pos in self._lemma_pos_offset_map[lemma])
+            self._load_lang_data(lang)
+            lemmas = []
+            syn = self.synsets(lemma, lang=lang)
+            for s in syn:
+                if pos != None and s.pos != pos:
+                    continue
+                a = Lemma(self, s, lemma, self._lexnames.index(s.lexname), 0, None)
+                a.lang = lang
+                lemmas.append(a)
+            return lemmas
 
+    def all_lemma_names(self, pos=None, lang='en'):
+        """Return all lemma names for all synsets for the given
+        part of speech tag and langauge or languages. If pos is not specified, all synsets
+        for all parts of speech will be used. (multiple languages supported)
+        """
+        if type(lang) == unicode or type(lang) == str:
+            if lang == 'en':
+                if pos is None:
+                    return iter(self._lemma_pos_offset_map)
+                else:
+                    return (lemma
+                        for lemma in self._lemma_pos_offset_map
+                        if pos in self._lemma_pos_offset_map[lemma])
+            else:
+                self._load_lang_data(lang)
+                lemma = []
+                for i in self._lang_data[lang][0]:
+                    if pos != None and i[-1] != pos:
+                        continue
+                    lemma.extend(self._lang_data[lang][0][i])
+                        
+                lemma = list(set(lemma))
+                return lemma
+        elif type(lang) == list:
+            all_lemma_names_by_lang = defaultdict(list)
+            for l in lang:
+                all_lemma_names_by_lang[l] = self.all_lemma_names(pos, l)
+
+            return all_lemma_names_by_lang
+        
     def all_synsets(self, pos=None):
         """Iterate over all synsets with a given part of speech tag.
         If no pos is specified, all synsets for all parts of speech
@@ -1680,6 +1834,65 @@ jcn_similarity.__doc__ = Synset.jcn_similarity.__doc__
 def lin_similarity(synset1, synset2, ic, verbose=False):
     return synset1.lin_similarity(synset2, verbose)
 lin_similarity.__doc__ = Synset.lin_similarity.__doc__
+
+
+def _lcs_by_depth(synset1, synset2, verbose=False):
+    """
+    Finds the least common subsumer of two synsets in a WordNet taxonomy,
+    where the least common subsumer is defined as the ancestor node common
+    to both input synsets whose shortest path to the root node is the longest.
+
+    :type synset1: Synset
+    :param synset1: First input synset.
+    :type synset2: Synset
+    :param synset2: Second input synset.
+    :return: The ancestor synset common to both input synsets which is also the
+    LCS.
+    """
+    subsumer = None
+    max_min_path_length = -1
+
+    subsumers = synset1.common_hypernyms(synset2)
+
+    if verbose:
+        print("> Subsumers1:", subsumers)
+
+    # Eliminate those synsets which are ancestors of other synsets in the
+    # set of subsumers.
+
+    eliminated = set()
+    hypernym_relation = lambda s: s.hypernyms() + s.instance_hypernyms()
+    for s1 in subsumers:
+        for s2 in subsumers:
+            if s2 in s1.closure(hypernym_relation):
+                eliminated.add(s2)
+    if verbose:
+        print("> Eliminated:", eliminated)
+
+    subsumers = [s for s in subsumers if s not in eliminated]
+
+    if verbose:
+        print("> Subsumers2:", subsumers)
+
+    # Calculate the length of the shortest path to the root for each
+    # subsumer. Select the subsumer with the longest of these.
+
+    for candidate in subsumers:
+
+        paths_to_root = candidate.hypernym_paths()
+        min_path_length = -1
+
+        for path in paths_to_root:
+            if min_path_length < 0 or len(path) < min_path_length:
+                min_path_length = len(path)
+
+        if min_path_length > max_min_path_length:
+            max_min_path_length = min_path_length
+            subsumer = candidate
+
+    if verbose:
+        print("> LCS Subsumer by depth:", subsumer)
+    return subsumer
 
 
 def _lcs_ic(synset1, synset2, ic, verbose=False):
