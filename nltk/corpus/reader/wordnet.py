@@ -427,7 +427,7 @@ class Synset(_WordNetObject):
                 lemmark = []
                 lemmy = self.lemma_names(lang)
                 for lem in lemmy:
-                    temp= Lemma(wordnet, self, lem, wordnet._lexnames.index(self.lexname), 0, None)
+                    temp= Lemma(self._wordnet_corpus_reader, self, lem, self._wordnet_corpus_reader._lexnames.index(self.lexname), 0, None)
                     temp.lang=lang
                     lemmark.append(temp)
                 return lemmark
