@@ -1548,7 +1548,7 @@ class SteppingChartParser(ChartParser):
 
 def demo_grammar():
     from nltk.grammar import ContextFreeGrammar
-    return ContextFreeGrammar.read("""
+    return ContextFreeGrammar.fromstring("""
 S  -> NP VP
 PP -> "with" NP
 NP -> NP PP
