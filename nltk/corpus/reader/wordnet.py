@@ -381,12 +381,6 @@ class Synset(_WordNetObject):
     def frame_ids(self):
         return self._frame_ids
 
-    def lemmas(self):
-        return self._lemmas
-
-    def lemma_names(self):
-        return self._lemma_names
-
     def definition(self):
         return self._definition
 
@@ -407,7 +401,7 @@ class Synset(_WordNetObject):
 
     def lemma_names(self, lang='en'):
         ''' return all the lemma_names associated with the synset (multiple lanuages supported) '''
-        if type(lang) == str or type(lang) == unicode:
+        if isinstance(lang, str):
             if lang=='en':
                 return self._lemma_names
             else:
@@ -425,7 +419,7 @@ class Synset(_WordNetObject):
                 
     def lemmas(self, lang='en'):
         ''' return all the lemma objects associated with the synset (multiple lanuages supported) '''
-        if type(lang) == unicode or type(lang) == str:
+        if isinstance(lang, str):
             if lang=='en':
                 return self._lemmas
             else:
@@ -1063,11 +1057,9 @@ class WordNetCorpusReader(CorpusReader):
     
     def _load_lang_data(self, lang):
         ''' load the wordnet data of the requested language from the file to the cache, _lang_data '''
-        import os
 
         if lang not in self.languageids():
             raise WordNetError("Language is not supported.")
-            return
 
         if lang in self._lang_data.keys():
             return
@@ -1080,7 +1072,6 @@ class WordNetCorpusReader(CorpusReader):
         self._lang_data[lang].append(defaultdict(list))
             
         for l in f.readlines():
-            l = l.decode('utf-8')
             l = l.replace('\n', '')
             l = l.replace(' ', '_')
             if l[0] != '#':                
@@ -1436,11 +1427,10 @@ class WordNetCorpusReader(CorpusReader):
             self._load_lang_data(lang)
             
             synset_list = []
- 
+
             for l in self._lang_data[lang][1][lemma]:
-                if pos is not None:
-                    if not lemma_pos == pos:
-                        continue
+                if pos is not None and l[-1] != pos:
+                    continue
                 synset_list.append(self.of2ss(l))
 
             return synset_list
@@ -1460,7 +1450,7 @@ class WordNetCorpusReader(CorpusReader):
             lemmas = []
             syn = self.synsets(lemma, lang=lang)
             for s in syn:
-                if pos != None and s.pos != pos:
+                if pos is not None and s.pos != pos:
                     continue
                 a = Lemma(self, s, lemma, self._lexnames.index(s.lexname), 0, None)
                 a.lang = lang
@@ -1472,7 +1462,7 @@ class WordNetCorpusReader(CorpusReader):
         part of speech tag and langauge or languages. If pos is not specified, all synsets
         for all parts of speech will be used. (multiple languages supported)
         """
-        if type(lang) == unicode or type(lang) == str:
+        if isinstance(lang, str):
             if lang == 'en':
                 if pos is None:
                     return iter(self._lemma_pos_offset_map)
@@ -1484,7 +1474,7 @@ class WordNetCorpusReader(CorpusReader):
                 self._load_lang_data(lang)
                 lemma = []
                 for i in self._lang_data[lang][0]:
-                    if pos != None and i[-1] != pos:
+                    if pos is not None and i[-1] != pos:
                         continue
                     lemma.extend(self._lang_data[lang][0][i])
                         
