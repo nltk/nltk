@@ -98,7 +98,7 @@ class Tree(list):
             if not isinstance(node_or_str, string_types):
                 raise TypeError("%s: Expected a node value and child list "
                                 "or a single string" % type(self).__name__)
-            tree = type(self).read(node_or_str)
+            tree = type(self).fromstring(node_or_str)
             list.__init__(self, tree)
             self._label = tree._label
         elif isinstance(children, string_types):
@@ -543,7 +543,7 @@ class Tree(list):
     #////////////////////////////////////////////////////////////
 
     @classmethod
-    def read(cls, s, brackets='()', read_node=None, read_leaf=None,
+    def fromstring(cls, s, brackets='()', read_node=None, read_leaf=None,
               node_pattern=None, leaf_pattern=None,
               remove_empty_top_bracketing=False):
         """
@@ -1463,7 +1463,7 @@ def sinica_parse(s):
             tokens[i] = ''
 
     treebank_string = " ".join(tokens)
-    return Tree.read(treebank_string, remove_empty_top_bracketing=True)
+    return Tree.fromstring(treebank_string, remove_empty_top_bracketing=True)
 
 #    s = re.sub(r'^#[^\s]*\s', '', s)  # remove leading identifier
 #    s = re.sub(r'\w+:', '', s)       # remove role tags

@@ -437,7 +437,7 @@ def demo():
 
     from nltk import parse, ContextFreeGrammar
 
-    grammar = ContextFreeGrammar.read("""
+    grammar = ContextFreeGrammar.fromstring("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP

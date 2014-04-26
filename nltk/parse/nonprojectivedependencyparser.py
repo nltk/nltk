@@ -621,7 +621,7 @@ def nonprojective_conll_parse_demo():
 def rule_based_demo():
     from nltk.grammar import DependencyGrammar
 
-    grammar = DependencyGrammar.read("""
+    grammar = DependencyGrammar.fromstring("""
     'taught' -> 'play' | 'man'
     'man' -> 'the' | 'in'
     'in' -> 'corner'

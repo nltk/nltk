@@ -602,7 +602,7 @@ class FeatDict(FeatStruct, dict):
             used.
         """
         if isinstance(features, string_types):
-            FeatStructReader().read(features, self)
+            FeatStructReader().fromstring(features, self)
             self.update(**morefeatures)
         else:
             # update() checks the types of features.
@@ -901,7 +901,7 @@ class FeatList(FeatStruct, list):
             of basic values and nested feature structures.
         """
         if isinstance(features, string_types):
-            FeatStructReader().read(features, self)
+            FeatStructReader().fromstring(features, self)
         else:
             list.__init__(self, features)
 
@@ -1961,7 +1961,7 @@ class FeatStructReader(object):
             logic_parser = LogicParser()
         self._logic_parser = logic_parser
 
-    def read(self, s, fstruct=None):
+    def fromstring(self, s, fstruct=None):
         """
         Convert a string representation of a feature structure (as
         displayed by repr) into a ``FeatStruct``.  This process
