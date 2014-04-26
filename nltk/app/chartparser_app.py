@@ -1091,7 +1091,7 @@ class ChartView(object):
 
     def _edge_conflict(self, edge, lvl):
         """
-        Return 1 if the given edge overlaps with any edge on the given
+        Return True if the given edge overlaps with any edge on the given
         level.  This is used by _add_edge to figure out what level a
         new edge should be added to.
         """
@@ -1099,8 +1099,8 @@ class ChartView(object):
         for otheredge in self._edgelevels[lvl]:
             (s2, e2) = otheredge.span()
             if (s1 <= s2 < e1) or (s2 <= s1 < e2) or (s1==s2==e1==e2):
-                return 1
-        return 0
+                return True
+        return False
 
     def _analyze_edge(self, edge):
         """

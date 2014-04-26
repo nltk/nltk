@@ -137,15 +137,15 @@ class ShiftReduceParser(ParserI):
             stack.
         """
 
-        if len(rightmost_stack) != len(rhs): return 0
+        if len(rightmost_stack) != len(rhs): return False
         for i in range(len(rightmost_stack)):
             if isinstance(rightmost_stack[i], Tree):
-                if not isinstance(rhs[i], Nonterminal): return 0
-                if rightmost_stack[i].label() != rhs[i].symbol(): return 0
+                if not isinstance(rhs[i], Nonterminal): return False
+                if rightmost_stack[i].label() != rhs[i].symbol(): return False
             else:
-                if isinstance(rhs[i], Nonterminal): return 0
-                if rightmost_stack[i] != rhs[i]: return 0
-        return 1
+                if isinstance(rhs[i], Nonterminal): return False
+                if rightmost_stack[i] != rhs[i]: return False
+        return True
 
     def _reduce(self, stack, remaining_text, production=None):
         """
@@ -332,10 +332,10 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         Perform a single parsing operation.  If a reduction is
         possible, then perform that reduction, and return the
         production that it is based on.  Otherwise, if a shift is
-        possible, then perform it, and return 1.  Otherwise,
-        return 0.
+        possible, then perform it, and return True.  Otherwise,
+        return False.
 
-        :return: 0 if no operation was performed; 1 if a shift was
+        :return: False if no operation was performed; True if a shift was
             performed; and the CFG production used to reduce if a
             reduction was performed.
         :rtype: Production or bool
@@ -351,10 +351,10 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         :return: True if the shift operation was successful.
         :rtype: bool
         """
-        if len(self._remaining_text) == 0: return 0
+        if len(self._remaining_text) == 0: return False
         self._history.append( (self._stack[:], self._remaining_text[:]) )
         self._shift(self._stack, self._remaining_text)
-        return 1
+        return True
 
     def reduce(self, production=None):
         """
@@ -386,9 +386,9 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         :return: true if an operation was successfully undone.
         :rtype: bool
         """
-        if len(self._history) == 0: return 0
+        if len(self._history) == 0: return False
         (self._stack, self._remaining_text) = self._history.pop()
-        return 1
+        return True
 
     def reducible_productions(self):
         """
