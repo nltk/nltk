@@ -19,7 +19,8 @@ def compare_overlaps_greedy(context, synsets_signatures, pos=None):
     :param pos: ``pos`` A specified Part-of-Speech (POS).
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
     """
-    max_overlaps = 0; lesk_sense = None
+    max_overlaps = 0
+    lesk_sense = None
     for ss in synsets_signatures:
         if pos and str(ss.pos()) != pos: # Skips different POS.
             continue
@@ -42,8 +43,9 @@ def wsd(context_sentence, ambiguous_word, pos=None, dictionary=None):
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
     """
     if not dictionary:
-        dictionary = {ss:ss.definition().split() \
-                  for ss in wn.synsets(ambiguous_word)}
+        dictionary = {}
+        for ss in wn.synsets(ambiguous_word):
+            dictionary[ss] = ss.definition().split()
     best_sense = compare_overlaps_greedy(word_tokenize(context_sentence), \
                                        dictionary, pos)
     return best_sense
