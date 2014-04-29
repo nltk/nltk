@@ -9,12 +9,12 @@ This is a sample model to accompany the U{sem2.cfg} grammar, and is
 intended to be imported as a module.
 """
 
-from nltk.semantics import *
+from nltk.sem import *
 
-val = Valuation()
 #Initialize a valuation of non-logical constants."""
 
-v = [('john', 'b1'),
+v = [
+    ('john', 'b1'),
     ('mary', 'g1'),
     ('suzie', 'g2'),
     ('fido', 'd1'),
@@ -29,11 +29,10 @@ v = [('john', 'b1'),
     ('see', set([('b1', 'g1'), ('b2', 'd2'), ('g1', 'b1'),('d2', 'b1'), ('g2', 'n')])),
     ('in', set([('b1', 'n'), ('b2', 'n'), ('d2', 'n')])),
     ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')]))
- ]
-
+]
 
 #Read in the data from C{v}
-val.read(v)
+val = Valuation(v)
 
 #Bind C{dom} to the C{domain} property of C{val}
 dom = val.domain

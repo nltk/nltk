@@ -68,7 +68,7 @@ def demo(N=23):
 
     print('Generating the first %d sentences for demo grammar:' % (N,))
     print(demo_grammar)
-    grammar = ContextFreeGrammar.read(demo_grammar)
+    grammar = ContextFreeGrammar.fromstring(demo_grammar)
     for n, sent in enumerate(generate(grammar, n=N), 1):
         print('%3d. %s' % (n, ' '.join(sent)))
 

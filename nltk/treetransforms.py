@@ -277,7 +277,7 @@ def demo():
     (NP (DT the) (NN yuppie) (NNS dealers))
     (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right))))
     (. .)))"""
-    t = tree.Tree.read(sentence, remove_empty_top_bracketing=True)
+    t = tree.Tree.fromstring(sentence, remove_empty_top_bracketing=True)
 
     # collapse subtrees with only one child
     collapsedTree = deepcopy(t)
