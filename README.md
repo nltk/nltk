@@ -21,7 +21,13 @@ NLTK may be freely redistributed, subject to the provisions of these licenses.
 Testing
 -------
 
-https://jenkins.shiningpanda.com/nltk/
+The CI test suite previously running at [Shining Panda](http://shiningpanda.com)
+is down due to them having taken their Clap de Fin. There have been some
+investigations into moving to other CI, but no official build is running right
+now. This may change in the near future.
+
+nltk/test/runtests.py is a good starting point for running tests locally, but
+note that the suite is currently failing.
 
 Contributing
 ------------------
