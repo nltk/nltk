@@ -232,7 +232,7 @@ class Lemma(_WordNetObject):
 
     __slots__ = ['_wordnet_corpus_reader', '_name', '_syntactic_marker',
                  '_synset', '_frame_strings', '_frame_ids',
-                 '_lexname_index', '_lex_id', '_key']
+                 '_lexname_index', '_lex_id', '_lang', '_key']
 
     def __init__(self, wordnet_corpus_reader, synset, name,
                  lexname_index, lex_id, syntactic_marker):
@@ -244,7 +244,7 @@ class Lemma(_WordNetObject):
         self._frame_ids = []
         self._lexname_index = lexname_index
         self._lex_id = lex_id
-        self.lang = "en" # Lynn
+        self._lang = "en"
 
         self._key = None # gets set later.
 
@@ -262,6 +262,9 @@ class Lemma(_WordNetObject):
 
     def frame_ids(self):
         return self._frame_ids
+
+    def lang(self):
+        return self._lang
 
     def key(self):
         return self._key
@@ -348,7 +351,7 @@ class Synset(_WordNetObject):
                  '_lemmas', '_lemma_names',
                  '_definition', '_examples', '_lexname',
                  '_pointers', '_lemma_pointers', '_max_depth',
-                 '_min_depth', ]
+                 '_min_depth']
 
     def __init__(self, wordnet_corpus_reader):
         self._wordnet_corpus_reader = wordnet_corpus_reader
@@ -400,7 +403,7 @@ class Synset(_WordNetObject):
             return True
 
     def lemma_names(self, lang='en'):
-        ''' return all the lemma_names associated with the synset (multiple lanuages supported) '''
+        ''' return all the lemma_names associated with the synset (multiple languages supported)'''
         if isinstance(lang, string_types):
             if lang=='en':
                 return self._lemma_names
@@ -418,7 +421,7 @@ class Synset(_WordNetObject):
             return lemma_names_by_langs
                 
     def lemmas(self, lang='en'):
-        ''' return all the lemma objects associated with the synset (multiple lanuages supported) '''
+        ''' return all the lemma objects associated with the synset (multiple languages supported) '''
         if isinstance(lang, string_types):
             if lang=='en':
                 return self._lemmas
@@ -427,8 +430,8 @@ class Synset(_WordNetObject):
                 lemmark = []
                 lemmy = self.lemma_names(lang)
                 for lem in lemmy:
-                    temp= Lemma(self._wordnet_corpus_reader, self, lem, self._wordnet_corpus_reader._lexnames.index(self.lexname), 0, None)
-                    temp.lang=lang
+                    temp= Lemma(self._wordnet_corpus_reader, self, lem, self._wordnet_corpus_reader._lexnames.index(self.lexname()), 0, None)
+                    temp._lang=lang
                     lemmark.append(temp)
                 return lemmark
         elif type(lang) == list:
@@ -1041,9 +1044,8 @@ class WordNetCorpusReader(CorpusReader):
         # load the exception file data into memory
         self._load_exception_map()
 
-    #//////////////////////////////////////////////////////////
-    #         Multilanguage Wordnet Support Functions
-    #//////////////////////////////////////////////////////////
+# Open Multilingual WordNet functions, contributed by
+# Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
 
     def of2ss(self, of):
         ''' take an id and return the synsets '''
@@ -1056,7 +1058,7 @@ class WordNetCorpusReader(CorpusReader):
     def _load_lang_data(self, lang):
         ''' load the wordnet data of the requested language from the file to the cache, _lang_data '''
 
-        if lang not in self.languageids():
+        if lang not in self.langs():
             raise WordNetError("Language is not supported.")
 
         if lang in self._lang_data.keys():
@@ -1076,7 +1078,7 @@ class WordNetCorpusReader(CorpusReader):
                 self._lang_data[lang][1][word[2]].append(word[0])
         f.close()
 
-    def languageids(self):
+    def langs(self):
         ''' return a list of languages supported by Multilingual Wordnet '''
         import os
         langs = []
@@ -1088,9 +1090,6 @@ class WordNetCorpusReader(CorpusReader):
             
         return langs
 
-    #//////////////////////////////////////////////////////////
-    #     End of Multilanguage Wordnet Support Functions
-    #//////////////////////////////////////////////////////////
     
     def _load_lemma_pos_offset_map(self):
         for suffix in self._FILEMAP.values():
@@ -1174,7 +1173,7 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
 
     def lemma(self, name, lang='en'):
-        ''' return lemma object that match with the name (multiple language supported) '''
+        ''' return lemma object that matches with the name (multiple languages supported) '''
         synset_name, lemma_name = name.rsplit('.', 1)
         synset = self.synset(synset_name)
         for lemma in synset.lemmas(lang):
@@ -1434,16 +1433,16 @@ class WordNetCorpusReader(CorpusReader):
             return [lemma_obj
                     for synset in self.synsets(lemma, pos)
                     for lemma_obj in synset.lemmas()
-                    if lemma_obj.name.lower() == lemma]
+                    if lemma_obj.name().lower() == lemma]
         else:
             self._load_lang_data(lang)
             lemmas = []
             syn = self.synsets(lemma, lang=lang)
             for s in syn:
-                if pos is not None and s.pos != pos:
+                if pos is not None and s.pos() != pos:
                     continue
-                a = Lemma(self, s, lemma, self._lexnames.index(s.lexname), 0, None)
-                a.lang = lang
+                a = Lemma(self, s, lemma, self._lexnames.index(s.lexname()), 0, None)
+                a._lang = lang
                 lemmas.append(a)
             return lemmas
 
