@@ -507,8 +507,8 @@ class InstantiateVarsChart(FeatureChart):
 #////////////////////////////////////////////////////////////
 
 def demo_grammar():
-    from nltk.grammar import parse_fcfg
-    return parse_fcfg("""
+    from nltk.grammar import FeatureGrammar
+    return FeatureGrammar.fromstring("""
 S  -> NP VP
 PP -> Prep NP
 NP -> NP PP

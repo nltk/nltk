@@ -51,7 +51,7 @@ from nltk.parse.chart import (BottomUpPredictCombineRule, BottomUpPredictRule,
                               SteppingChartParser, TopDownInitRule, TopDownPredictRule,
                               TreeEdge)
 from nltk.tree import Tree
-from nltk.grammar import Nonterminal, parse_cfg
+from nltk.grammar import Nonterminal, ContextFreeGrammar
 from nltk.util import in_idle
 from nltk.draw.util import (CanvasFrame, ColorizedList,
                             EntryDialog, MutableOptionMenu,
@@ -2038,7 +2038,7 @@ class ChartParserApp(object):
                     grammar = pickle.load(infile)
             else:
                 with open(filename, 'r') as infile:
-                    grammar = parse_cfg(infile.read())
+                    grammar = ContextFreeGrammar.fromstring(infile.read())
             self.set_grammar(grammar)
         except Exception as e:
             tkinter.messagebox.showerror('Error Loading Grammar',
@@ -2230,7 +2230,7 @@ class ChartParserApp(object):
         self.apply_strategy(self._TD_STRATEGY, TopDownPredictEdgeRule)
 
 def app():
-    grammar = parse_cfg("""
+    grammar = ContextFreeGrammar.fromstring("""
     # Grammatical productions.
         S -> NP VP
         VP -> VP PP | V NP | V
