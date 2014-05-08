@@ -5,7 +5,7 @@
 Dependency Grammars
 ===================
 
-    >>> from nltk.grammar import parse_dependency_grammar
+    >>> from nltk.grammar import DependencyGrammar
     >>> from nltk.parse import *
 
 CoNLL Data
@@ -65,7 +65,7 @@ Using the dependency-parsed version of the Penn Treebank corpus sample.
 Projective Dependency Parsing
 -----------------------------
 
-    >>> grammar = parse_dependency_grammar("""
+    >>> grammar = DependencyGrammar.fromstring("""
     ... 'fell' -> 'price' | 'stock'
     ... 'price' -> 'of' 'the'
     ... 'of' -> 'stock'
@@ -89,7 +89,7 @@ Projective Dependency Parsing
 Non-Projective Dependency Parsing
 ---------------------------------
 
-    >>> grammar = parse_dependency_grammar("""
+    >>> grammar = DependencyGrammar.fromstring("""
     ... 'taught' -> 'play' | 'man'
     ... 'man' -> 'the'
     ... 'play' -> 'golf' | 'dog' | 'to'

@@ -702,12 +702,12 @@ def demo2():
 ######################################################################
 
 def demo():
-    from nltk import Nonterminal, parse_cfg
+    from nltk import Nonterminal, ContextFreeGrammar
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
 
-    grammar = parse_cfg("""
+    grammar = ContextFreeGrammar.fromstring("""
     S -> NP VP
     PP -> P NP
     NP -> Det N
