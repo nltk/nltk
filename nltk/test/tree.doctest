@@ -75,17 +75,17 @@ Trees can be compared for equality:
 Tree Parsing
 ============
 
-The class method `Tree.read()` can be used to parse trees, and it
+The class method `Tree.fromstring()` can be used to parse trees, and it
 provides some additional options.
 
-    >>> tree = Tree.read('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
+    >>> tree = Tree.fromstring('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
     >>> print(tree)
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 When called on a subclass of `Tree`, it will create trees of that
 type:
 
-    >>> tree = ImmutableTree.read('(VP (V enjoyed) (NP my cookie))')
+    >>> tree = ImmutableTree.fromstring('(VP (V enjoyed) (NP my cookie))')
     >>> print(tree)
     (VP (V enjoyed) (NP my cookie))
     >>> print(type(tree))
@@ -102,29 +102,29 @@ type:
 The ``brackets`` parameter can be used to specify two characters that
 should be used as brackets:
 
-    >>> print(Tree.read('[S [NP I] [VP [V enjoyed] [NP my cookie]]]',
+    >>> print(Tree.fromstring('[S [NP I] [VP [V enjoyed] [NP my cookie]]]',
     ...                  brackets='[]'))
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
-    >>> print(Tree.read('<S <NP I> <VP <V enjoyed> <NP my cookie>>>',
+    >>> print(Tree.fromstring('<S <NP I> <VP <V enjoyed> <NP my cookie>>>',
     ...                  brackets='<>'))
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 If ``brackets`` is not a string, or is not exactly two characters,
-then `Tree.read` raises an exception:
+then `Tree.fromstring` raises an exception:
 
-    >>> Tree.read('<VP <V enjoyed> <NP my cookie>>', brackets='')
+    >>> Tree.fromstring('<VP <V enjoyed> <NP my cookie>>', brackets='')
     Traceback (most recent call last):
       . . .
     TypeError: brackets must be a length-2 string
-    >>> Tree.read('<VP <V enjoyed> <NP my cookie>>', brackets='<<>>')
+    >>> Tree.fromstring('<VP <V enjoyed> <NP my cookie>>', brackets='<<>>')
     Traceback (most recent call last):
       . . .
     TypeError: brackets must be a length-2 string
-    >>> Tree.read('<VP <V enjoyed> <NP my cookie>>', brackets=12)
+    >>> Tree.fromstring('<VP <V enjoyed> <NP my cookie>>', brackets=12)
     Traceback (most recent call last):
       . . .
     TypeError: brackets must be a length-2 string
-    >>> Tree.read('<<NP my cookie>>', brackets=('<<','>>'))
+    >>> Tree.fromstring('<<NP my cookie>>', brackets=('<<','>>'))
     Traceback (most recent call last):
       . . .
     TypeError: brackets must be a length-2 string
@@ -134,85 +134,85 @@ which case the ``brackets=('<<','>>')`` example would start working.)
 
 Whitespace brackets are not permitted:
 
-    >>> Tree.read('(NP my cookie\n', brackets='(\n')
+    >>> Tree.fromstring('(NP my cookie\n', brackets='(\n')
     Traceback (most recent call last):
       . . .
     TypeError: whitespace brackets not allowed
 
-If an invalid tree is given to Tree.read, then it raises a
+If an invalid tree is given to Tree.fromstring, then it raises a
 ValueError, with a description of the problem:
 
-    >>> Tree.read('(NP my cookie) (NP my milk)')
+    >>> Tree.fromstring('(NP my cookie) (NP my milk)')
     Traceback (most recent call last):
       . . .
-    ValueError: Tree.read(): expected 'end-of-string' but got '(NP'
+    ValueError: Tree.fromstring(): expected 'end-of-string' but got '(NP'
                 at index 15.
                     "...y cookie) (NP my mil..."
                                   ^
-    >>> Tree.read(')NP my cookie(')
+    >>> Tree.fromstring(')NP my cookie(')
     Traceback (most recent call last):
       . . .
-    ValueError: Tree.read(): expected '(' but got ')'
+    ValueError: Tree.fromstring(): expected '(' but got ')'
                 at index 0.
                     ")NP my coo..."
                      ^
-    >>> Tree.read('(NP my cookie))')
+    >>> Tree.fromstring('(NP my cookie))')
     Traceback (most recent call last):
       . . .
-    ValueError: Tree.read(): expected 'end-of-string' but got ')'
+    ValueError: Tree.fromstring(): expected 'end-of-string' but got ')'
                 at index 14.
                     "...my cookie))"
                                   ^
-    >>> Tree.read('my cookie)')
+    >>> Tree.fromstring('my cookie)')
     Traceback (most recent call last):
       . . .
-    ValueError: Tree.read(): expected '(' but got 'my'
+    ValueError: Tree.fromstring(): expected '(' but got 'my'
                 at index 0.
                     "my cookie)"
                      ^
-    >>> Tree.read('(NP my cookie')
+    >>> Tree.fromstring('(NP my cookie')
     Traceback (most recent call last):
       . . .
-    ValueError: Tree.read(): expected ')' but got 'end-of-string'
+    ValueError: Tree.fromstring(): expected ')' but got 'end-of-string'
                 at index 13.
                     "... my cookie"
                                   ^
-    >>> Tree.read('')
+    >>> Tree.fromstring('')
     Traceback (most recent call last):
       . . .
-    ValueError: Tree.read(): expected '(' but got 'end-of-string'
+    ValueError: Tree.fromstring(): expected '(' but got 'end-of-string'
                 at index 0.
                     ""
                      ^
 
 Trees with no children are supported:
 
-    >>> print(Tree.read('(S)'))
+    >>> print(Tree.fromstring('(S)'))
     (S )
-    >>> print(Tree.read('(X (Y) (Z))'))
+    >>> print(Tree.fromstring('(X (Y) (Z))'))
     (X (Y ) (Z ))
 
 Trees with an empty node label and no children are supported:
 
-    >>> print(Tree.read('()'))
+    >>> print(Tree.fromstring('()'))
     ( )
-    >>> print(Tree.read('(X () ())'))
+    >>> print(Tree.fromstring('(X () ())'))
     (X ( ) ( ))
 
 Trees with an empty node label and children are supported, but only if the
 first child is not a leaf (otherwise, it will be treated as the node label).
 
-    >>> print(Tree.read('((A) (B) (C))'))
+    >>> print(Tree.fromstring('((A) (B) (C))'))
     ( (A ) (B ) (C ))
-    >>> print(Tree.read('((A) leaf)'))
+    >>> print(Tree.fromstring('((A) leaf)'))
     ( (A ) leaf)
-    >>> print(Tree.read('(((())))'))
+    >>> print(Tree.fromstring('(((())))'))
     ( ( ( ( ))))
 
 The optional arguments `read_node` and `read_leaf` may be used to
 transform the string values of nodes or leaves.
 
-    >>> print(Tree.read('(A b (C d e) (F (G h i)))',
+    >>> print(Tree.fromstring('(A b (C d e) (F (G h i)))',
     ...                  read_node=lambda s: '<%s>' % s,
     ...                  read_leaf=lambda s: '"%s"' % s))
     (<A> "b" (<C> "d" "e") (<F> (<G> "h" "i")))
@@ -224,7 +224,7 @@ whitespace, then you must also use the optional `node_pattern` and
 `leaf_pattern` arguments.
 
     >>> from nltk.featstruct import FeatStruct
-    >>> tree = Tree.read('([cat=NP] [lex=the] [lex=dog])',
+    >>> tree = Tree.fromstring('([cat=NP] [lex=the] [lex=dog])',
     ...                   read_node=FeatStruct, read_leaf=FeatStruct)
     >>> tree.set_label(tree.label().unify(FeatStruct('[num=singular]')))
     >>> print(tree)
@@ -233,13 +233,13 @@ whitespace, then you must also use the optional `node_pattern` and
 The optional argument ``remove_empty_top_bracketing`` can be used to
 remove any top-level empty bracketing that occurs.
 
-    >>> print(Tree.read('((S (NP I) (VP (V enjoyed) (NP my cookie))))',
+    >>> print(Tree.fromstring('((S (NP I) (VP (V enjoyed) (NP my cookie))))',
     ...                  remove_empty_top_bracketing=True))
     (S (NP I) (VP (V enjoyed) (NP my cookie)))
 
 It will not remove a top-level empty bracketing with multiple children:
 
-    >>> print(Tree.read('((A a) (B b))'))
+    >>> print(Tree.fromstring('((A a) (B b))'))
     ( (A a) (B b))
 
 Parented Trees
@@ -258,9 +258,9 @@ created directly from a node label and a list of children:
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
 
 Parented trees can be created from strings using the classmethod
-`ParentedTree.read`:
+`ParentedTree.fromstring`:
 
-    >>> ptree = ParentedTree.read('(VP (VERB saw) (NP (DET the) (NOUN dog)))')
+    >>> ptree = ParentedTree.fromstring('(VP (VERB saw) (NP (DET the) (NOUN dog)))')
     >>> print(ptree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
     >>> print(type(ptree))
@@ -270,7 +270,7 @@ Parented trees can also be created by using the classmethod
 `ParentedTree.convert` to convert another type of tree to a parented
 tree:
 
-    >>> tree = Tree.read('(VP (VERB saw) (NP (DET the) (NOUN dog)))')
+    >>> tree = Tree.fromstring('(VP (VERB saw) (NP (DET the) (NOUN dog)))')
     >>> ptree = ParentedTree.convert(tree)
     >>> print(ptree)
     (VP (VERB saw) (NP (DET the) (NOUN dog)))
@@ -464,7 +464,7 @@ variable:
 Define a helper funciton to create new parented trees:
 
     >>> def make_ptree(s):
-    ...     ptree = ParentedTree.convert(Tree.read(s))
+    ...     ptree = ParentedTree.convert(Tree.fromstring(s))
     ...     all_ptrees.extend(t for t in ptree.subtrees()
     ...                       if isinstance(t, Tree))
     ...     return ptree
@@ -748,7 +748,7 @@ variable:
 Define a helper funciton to create new parented trees:
 
     >>> def make_mptree(s):
-    ...     mptree = MultiParentedTree.convert(Tree.read(s))
+    ...     mptree = MultiParentedTree.convert(Tree.fromstring(s))
     ...     all_mptrees.extend(t for t in mptree.subtrees()
     ...                       if isinstance(t, Tree))
     ...     return mptree
@@ -1072,7 +1072,7 @@ Squashed Bugs
 
 This used to discard the ``(B b)`` subtree (fixed in svn 6270):
 
-    >>> print(Tree.read('((A a) (B b))'))
+    >>> print(Tree.fromstring('((A a) (B b))'))
     ( (A a) (B b))
 
 
