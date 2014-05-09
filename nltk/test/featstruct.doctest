@@ -699,9 +699,9 @@ Playing with ranges:
     >>> from nltk.featstruct import RangeFeature, FeatStructReader
     >>> width = RangeFeature('width')
     >>> reader = FeatStructReader([width])
-    >>> fs1 = reader.read('[*width*=-5:12]')
-    >>> fs2 = reader.read('[*width*=2:123]')
-    >>> fs3 = reader.read('[*width*=-7:-2]')
+    >>> fs1 = reader.fromstring('[*width*=-5:12]')
+    >>> fs2 = reader.fromstring('[*width*=2:123]')
+    >>> fs3 = reader.fromstring('[*width*=-7:-2]')
     >>> fs1.unify(fs2)
     [*width*=(2, 12)]
     >>> fs1.unify(fs3)
