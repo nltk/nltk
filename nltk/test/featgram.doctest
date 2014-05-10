@@ -26,7 +26,7 @@ Grammars can be parsed from strings.
     ... N[AGR=[NUM='sg']] -> 'student'
     ... N[AGR=[NUM='pl']] -> 'students'
     ... """
-    >>> grammar = grammar.read_fcfg(g)
+    >>> grammar = grammar.FeatureGrammar.fromstring(g)
     >>> tokens = 'these girls'.split()
     >>> parser = parse.FeatureEarleyChartParser(grammar)
     >>> trees = parser.parse(tokens)
