@@ -48,27 +48,29 @@ The WordNet corpus reader gives access to the Open Multilingual
 WordNet, using ISO-639 language codes.
 
     >>> sorted(wn.langs())
-    [u'als', u'arb', u'cat', u'cmn', u'dan', u'eng', u'eus', u'fas',
-    u'fin', u'fra', u'fre', u'glg', u'heb', u'ind', u'ita', u'jpn', u'nno',
-    u'nob', u'pol', u'por', u'spa', u'tha', u'zsm']
-    >>> wn.synsets('犬', lang='jpn')
+    ['als', 'arb', 'cat', 'cmn', 'dan', 'eng', 'eus', 'fas',
+    'fin', 'fra', 'fre', 'glg', 'heb', 'ind', 'ita', 'jpn', 'nno',
+    'nob', 'pol', 'por', 'spa', 'tha', 'zsm']
+    >>> wn.synsets(b'\xe7\x8a\xac'.decode('utf-8'), lang='jpn')
     [Synset('dog.n.01'), Synset('spy.n.01')]
     >>> wn.synset('spy.n.01').lemma_names('jpn')
-    ['いぬ', 'まわし者', 'スパイ', '回し者', '回者', '密偵', '工作員', '廻し者', '廻者',
-    '探', '探り', '犬', '秘密捜査員', '諜報員', '諜者', '間者', '間諜', '隠密']
+    ['\u3044\u306c', '\u307e\u308f\u3057\u8005', '\u30b9\u30d1\u30a4', '\u56de\u3057\u8005',
+    '\u56de\u8005', '\u5bc6\u5075', '\u5de5\u4f5c\u54e1', '\u5efb\u3057\u8005',
+    '\u5efb\u8005', '\u63a2', '\u63a2\u308a', '\u72ac', '\u79d8\u5bc6\u635c\u67fb\u54e1',
+    '\u8adc\u5831\u54e1', '\u8adc\u8005', '\u9593\u8005', '\u9593\u8adc', '\u96a0\u5bc6']
     >>> wn.synset('dog.n.01').lemma_names('ita')
     ['cane', 'Canis_familiaris']
     >>> wn.lemmas('cane', lang='ita')
     [Lemma('dog.n.01.cane'), Lemma('hammer.n.01.cane'), Lemma('cramp.n.02.cane'),
     Lemma('bad_person.n.01.cane'), Lemma('incompetent.n.01.cane')]
     >>> sorted(wn.synset('dog.n.01').lemmas(['dan', 'por']).items())
-    [('dan', [Lemma('dog.n.01.hund'), Lemma('dog.n.01.køter'),
+    [('dan', [Lemma('dog.n.01.hund'), Lemma('dog.n.01.k\xf8ter'),
     Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]),
-    ('por', [Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.cão'),
-    Lemma('dog.n.01.cão'), Lemma('dog.n.01.cães')])]
-    >>> dog_lemma = wn.lemma('dog.n.01.cão', lang='por')
+    ('por', [Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.c\xe3o'),
+    Lemma('dog.n.01.c\xe3o'), Lemma('dog.n.01.c\xe3es')])]
+    >>> dog_lemma = wn.lemma(b'dog.n.01.c\xc3\xa3o'.decode('utf-8'), lang='por')
     >>> dog_lemma
-    Lemma('dog.n.01.cão')
+    Lemma('dog.n.01.c\xe3o')
     >>> dog_lemma.lang()
     'por'
     >>> len(wordnet.all_lemma_names(pos='n', lang='jpn'))
