@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: WordNet
 #
 # Copyright (C) 2001-2014 NLTK Project
