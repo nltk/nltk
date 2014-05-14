@@ -47,9 +47,9 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
 The WordNet corpus reader gives access to the Open Multilingual
 WordNet, using ISO-639 language codes.
 
-    >>> wn.langs()
+    >>> sorted(wn.langs())
     [u'als', u'arb', u'cat', u'cmn', u'dan', u'eng', u'eus', u'fas',
-    u'fin', u'fre', u'glg', u'heb', u'ind', u'ita', u'jpn', u'nno',
+    u'fin', u'fra', u'fre', u'glg', u'heb', u'ind', u'ita', u'jpn', u'nno',
     u'nob', u'pol', u'por', u'spa', u'tha', u'zsm']
     >>> wn.synsets('犬', lang='jpn')
     [Synset('dog.n.01'), Synset('spy.n.01')]
