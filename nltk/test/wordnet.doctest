@@ -51,22 +51,21 @@ WordNet, using ISO-639 language codes.
     [u'als', u'arb', u'cat', u'cmn', u'dan', u'eng', u'eus', u'fas',
     u'fin', u'fre', u'glg', u'heb', u'ind', u'ita', u'jpn', u'nno',
     u'nob', u'pol', u'por', u'spa', u'tha', u'zsm']
-    >>> wn.synsets('ç', lang='jpn')
+    >>> wn.synsets('犬', lang='jpn')
     [Synset('dog.n.01'), Synset('spy.n.01')]
     >>> wn.synset('spy.n.01').lemma_names('jpn')
-    ['いぬ', 'まわしè', 'スパイ', 'åしè', 'åè', 'åå', 'åäå', 'åしè', 'åè', 'æ', 'æり
-    ', 'ç', 'çåææå', 'èåå', 'èè', 'éè', 'éè', 'éå']
+    ['いぬ', 'まわし者', 'スパイ', '回し者', '回者', '密偵', '工作員', '廻し者', '廻者',
+    '探', '探り', '犬', '秘密捜査員', '諜報員', '諜者', '間者', '間諜', '隠密']
     >>> wn.synset('dog.n.01').lemma_names('ita')
     ['cane', 'Canis_familiaris']
     >>> wn.lemmas('cane', lang='ita')
     [Lemma('dog.n.01.cane'), Lemma('hammer.n.01.cane'), Lemma('cramp.n.02.cane'),
     Lemma('bad_person.n.01.cane'), Lemma('incompetent.n.01.cane')]
-    >>> wn.synset('dog.n.01').lemmas(['dan', 'por'])
-    defaultdict(<class 'list'>, {'dan': [Lemma('dog.n.01.hund'),
-    Lemma('dog.n.01.køter'), Lemma('dog.n.01.vovhund'),
-    Lemma('dog.n.01.vovse')], 'por': [Lemma('dog.n.01.cachorro'),
-    Lemma('dog.n.01.cão'), Lemma('dog.n.01.cão'),
-    Lemma('dog.n.01.cães')]}
+    >>> sorted(wn.synset('dog.n.01').lemmas(['dan', 'por']).items())
+    [('dan', [Lemma('dog.n.01.hund'), Lemma('dog.n.01.køter'),
+    Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]),
+    ('por', [Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.cão'),
+    Lemma('dog.n.01.cão'), Lemma('dog.n.01.cães')])]
     >>> dog_lemma = wn.lemma('dog.n.01.cão', lang='por')
     >>> dog_lemma
     Lemma('dog.n.01.cão')
