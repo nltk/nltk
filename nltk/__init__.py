@@ -109,12 +109,12 @@ from nltk.text import *
 from nltk.tree import *
 from nltk.util import *
 from nltk.jsontags import *
-from nltk.align import *
 
 ###########################################################
 # PACKAGES
 ###########################################################
 
+from nltk.align import *
 from nltk.chunk import *
 from nltk.classify import *
 from nltk.inference import *
