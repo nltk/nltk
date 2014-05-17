@@ -76,54 +76,44 @@ Alignment Algorithms
 EM for IBM Model 1
 ~~~~~~~~~~~~~~~~~~
 
-Here is an example from Kohn, 2010:
+Here is an example from Koehn, 2010:
 
-    >>> from nltk.align import IBMModel1
+    >>> from nltk.align.ibm1 import IBMModel1
     >>> corpus = [AlignedSent(['the', 'house'], ['das', 'Haus']),
     ...           AlignedSent(['the', 'book'], ['das', 'Buch']),
     ...           AlignedSent(['a', 'book'], ['ein', 'Buch'])]
-    >>> em_ibm1 = IBMModel1(corpus, 1e-3)
-    >>> print(round(em_ibm1.probabilities['the', 'das'], 1))
+    >>> em_ibm1 = IBMModel1(corpus, 20)
+    >>> print(round(em_ibm1.probabilities['the']['das'], 1))
     1.0
-    >>> print(round(em_ibm1.probabilities['book', 'das'], 1))
+    >>> print(round(em_ibm1.probabilities['book']['das'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['house', 'das'], 1))
+    >>> print(round(em_ibm1.probabilities['house']['das'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['the', 'Buch'], 1))
+    >>> print(round(em_ibm1.probabilities['the']['Buch'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['book', 'Buch'], 1))
+    >>> print(round(em_ibm1.probabilities['book']['Buch'], 1))
     1.0
-    >>> print(round(em_ibm1.probabilities['a', 'Buch'], 1))
+    >>> print(round(em_ibm1.probabilities['a']['Buch'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['book', 'ein'], 1))
+    >>> print(round(em_ibm1.probabilities['book']['ein'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['a', 'ein'], 1))
+    >>> print(round(em_ibm1.probabilities['a']['ein'], 1))
     1.0
-    >>> print(round(em_ibm1.probabilities['the', 'Haus'], 1))
+    >>> print(round(em_ibm1.probabilities['the']['Haus'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['house', 'Haus'], 1))
+    >>> print(round(em_ibm1.probabilities['house']['Haus'], 1))
     1.0
-    >>> print(round(em_ibm1.probabilities['book', None], 1))
+    >>> print(round(em_ibm1.probabilities['book'][None], 1))
     0.5
 
 And using an NLTK corpus. We train on only 10 sentences, since it is so incredibly slow:
 
     >>> from nltk.corpus import comtrans
-    >>> com_ibm1 = IBMModel1(comtrans.aligned_sents() [:10])
-    >>> print(round(com_ibm1.probabilities['bitte', 'Please'], 1))
+    >>> com_ibm1 = IBMModel1(comtrans.aligned_sents()[:10], 20)
+    >>> print(round(com_ibm1.probabilities['bitte']['Please'], 1))
     0.2
-    >>> print(round(com_ibm1.probabilities['Sitzungsperiode', 'session'], 1))
+    >>> print(round(com_ibm1.probabilities['Sitzungsperiode']['session'], 1))
     1.0
-
-Get the alignments:
-
-    >>> em_ibm1.aligned() # doctest: +NORMALIZE_WHITESPACE
-    [AlignedSent(['the', 'house'], ['das', 'Haus'],
-            Alignment([(0, 0), (1, 1)])),
-     AlignedSent(['the', 'book'], ['das', 'Buch'],
-            Alignment([(0, 0), (1, 1)])),
-     AlignedSent(['a', 'book'], ['ein', 'Buch'],
-            Alignment([(0, 0), (1, 1)]))]
 
 
 Evaluation
