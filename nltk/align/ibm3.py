@@ -384,7 +384,7 @@ class IBMModel3(object):
         for j, en_word in enumerate(align_sent.words):
             
             # Initialize the maximum probability with Null token
-            max_align_prob = (self.probabilities[en_word][None]*self.distortion[j+1][0][l_e][l_f], None)
+            max_align_prob = (self.probabilities[en_word][None]*self.distortion[j+1][0][l_e][l_f], 0)
             for i, fr_word in enumerate(align_sent.mots):
                 # Find out the maximum probability
                 max_align_prob = max(max_align_prob,
