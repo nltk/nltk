@@ -12,3 +12,8 @@ These interfaces are prone to change.
 """
 
 from nltk.align.api  import AlignedSent, Alignment
+from nltk.align.ibm1 import IBMModel1
+from nltk.align.ibm2 import IBMModel2
+from nltk.align.ibm3 import IBMModel3
+
+
