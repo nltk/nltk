@@ -89,8 +89,8 @@ class BLEU(object):
     @staticmethod
     def compute(candidate, references, weights):
 
-        candidate = map(lambda x: x.lower(), candidate) 
-        references = map(lambda x: [c.lower() for c in x], references)
+        candidate = list(map(lambda x: x.lower(), candidate))
+        references = list(map(lambda x: [c.lower() for c in x], references))
 
         n = len(weights)
 
@@ -109,7 +109,7 @@ class BLEU(object):
     @staticmethod
     def modified_precision(candidate, references, n):
 
-        candidate_ngrams = ngrams(candidate, n)
+        candidate_ngrams = list(ngrams(candidate, n))
 
         if len(candidate_ngrams) == 0:
             return 0
@@ -121,7 +121,7 @@ class BLEU(object):
 
             count_max = 0
             for reference in references:
-                reference_ngrams = ngrams(reference, n)
+                reference_ngrams = list(ngrams(reference, n))
 
                 count = reference_ngrams.count(word) + 1
                 if count > count_max:
