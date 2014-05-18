@@ -17,22 +17,20 @@ a the definitions of the ambiguous word.
 
 Given an ambiguous word and the context in which the word occurs, Lesk returns 
 a Synset with the highest number of overlapping words between the context 
-sentence and different definitions form each Synset.
+sentence and different definitions from each Synset.
 
-        >>> from nltk.wsd import lesk
+    >>> from nltk.wsd import lesk
 	>>> sent = "I went to the bank to deposit money."
 	>>> word = "bank"
 	>>> pos = "n"
-	>>> print lesk(sent, word, pos)
+	>>> print(lesk(sent, word, pos))
 	Synset('depository_financial_institution.n.01')
 
 The definitions for "bank" are:
 
 	>>> from nltk.corpus import wordnet as wn
 	>>> for ss in wn.synsets('bank'):
-	...     print ss, ss.definition()
-	... 
-	
+	...     print(ss, ss.definition())
 	Synset('bank.n.01') sloping land (especially the slope beside a body of water)
 	Synset('depository_financial_institution.n.01') a financial institution that accepts deposits and channels the money into lending activities
 	Synset('bank.n.03') a long ridge or pile
