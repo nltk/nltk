@@ -161,7 +161,7 @@ class FreqDist(Counter):
 
         return _r_Nr
 
-    def _cumulative_frequencies(self, samples=None):
+    def _cumulative_frequencies(self, samples):
         """
         Return the cumulative frequencies of the specified samples.
         If no samples are specified, all counts are returned, starting
@@ -172,8 +172,6 @@ class FreqDist(Counter):
         :rtype: list(float)
         """
         cf = 0.0
-        if not samples:
-            samples = self.keys()
         for sample in samples:
             cf += self[sample]
             yield cf
