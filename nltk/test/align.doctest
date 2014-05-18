@@ -78,7 +78,7 @@ EM for IBM Model 1
 
 Here is an example from Koehn, 2010:
 
-    >>> from nltk.align.ibm1 import IBMModel1
+    >>> from nltk.align import IBMModel1
     >>> corpus = [AlignedSent(['the', 'house'], ['das', 'Haus']),
     ...           AlignedSent(['the', 'book'], ['das', 'Buch']),
     ...           AlignedSent(['a', 'book'], ['ein', 'Buch'])]
@@ -106,7 +106,7 @@ Here is an example from Koehn, 2010:
     >>> print(round(em_ibm1.probabilities['book'][None], 1))
     0.5
 
-And using an NLTK corpus. We train on only 10 sentences, since it is so incredibly slow:
+And using an NLTK corpus. We train on only 10 sentences, since it is so slow:
 
     >>> from nltk.corpus import comtrans
     >>> com_ibm1 = IBMModel1(comtrans.aligned_sents()[:10], 20)
