@@ -54,7 +54,7 @@ import re
 from tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
                      Scrollbar, Text, Tk, Toplevel)
 
-from nltk.grammar import (ContextFreeGrammar, parse_cfg_production,
+from nltk.grammar import (ContextFreeGrammar, _read_cfg_production,
                           Nonterminal, nonterminals)
 from nltk.tree import Tree
 from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
@@ -451,7 +451,7 @@ class CFGEditor(object):
         for line in lines:
             line = line.strip()
             if line=='': continue
-            productions += parse_cfg_production(line)
+            productions += _read_cfg_production(line)
             #if line.strip() == '': continue
             #if not CFGEditor._PRODUCTION_RE.match(line):
             #    raise ValueError('Bad production string %r' % line)
