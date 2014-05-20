@@ -430,7 +430,7 @@ class Tree(list):
     # Transforms
     #////////////////////////////////////////////////////////////
 
-    def chomsky_normal_form(self, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
+    def chomsky_normal_form(self, factor="right", horzMarkov=None, vertMarkov=0, childChar="|", parentChar="^"):
         """
         This method can modify a tree in three ways:
 

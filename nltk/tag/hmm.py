@@ -1029,7 +1029,7 @@ class HiddenMarkovModelTrainer(object):
 
         return model
 
-    def train_supervised(self, labelled_sequences, estimator = None):
+    def train_supervised(self, labelled_sequences, estimator=None):
         """
         Supervised training maximising the joint probability of the symbol and
         state sequences. This is done via collecting frequencies of
