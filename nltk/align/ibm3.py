@@ -50,11 +50,11 @@ class IBMModel3(object):
 
     >>> ibm3 = IBMModel3(align_sents, 5)
 
-    >>> round(ibm3.probabilities['Buch']['book'], 1)
+    >>> print('{0:.1f}'.format(ibm3.probabilities['Buch']['book']))
     1.0
-    >>> round(ibm3.probabilities['das']['book'], 1)
+    >>> print('{0:.1f}'.format(ibm3.probabilities['das']['book']))
     0.0
-    >>> round(ibm3.probabilities[None]['book'], 1)
+    >>> print('{0:.1f}'.format(ibm3.probabilities[None]['book']))
     0.0
 
     >>> aligned_sent = ibm3.align(align_sents[0])

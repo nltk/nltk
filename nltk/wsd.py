@@ -43,11 +43,11 @@ def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
         >>> sent = word_tokenize("I went to the bank to deposit money.")
         >>> word = "bank"
         >>> pos = "n"
-        >>> wsd(sent, word, pos)
+        >>> lesk(sent, word, pos)
         Synset('depository_financial_institution.n.01')
     
     :param context_sentence: The context sentence where the ambiguous word occurs.
-    :param ambiguous: The ambiguous word that requires WSD.
+    :param ambiguous_word: The ambiguous word that requires WSD.
     :param pos: A specified Part-of-Speech (POS).
     :param dictionary: A list of words that 'signifies' the ambiguous word.
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
@@ -56,7 +56,7 @@ def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
         dictionary = {}
         for ss in wn.synsets(ambiguous_word):
             dictionary[ss] = ss.definition().split()
-    best_sense = _compare_overlaps_greedy(context_sentence, \
+    best_sense = _compare_overlaps_greedy(context_sentence,
                                        dictionary, pos)
     return best_sense
 

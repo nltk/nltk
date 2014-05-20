@@ -34,11 +34,11 @@ class IBMModel1(object):
     >>> aligned_sent = ibm.align(bitexts[6])
     >>> aligned_sent.alignment
     Alignment([(0, 0), (1, 1), (2, 2), (3, 7), (4, 7), (5, 8)])
-    >>> round(bitexts[6].precision(aligned_sent), 3)
+    >>> print('{0:.3f}'.format(bitexts[6].precision(aligned_sent)))
     0.556
-    >>> round(bitexts[6].recall(aligned_sent), 3)
+    >>> print('{0:.3f}'.format(bitexts[6].recall(aligned_sent)))
     0.833
-    >>> round(bitexts[6].alignment_error_rate(aligned_sent), 3)
+    >>> print('{0:.3f}'.format(bitexts[6].alignment_error_rate(aligned_sent)))
     0.333
     
     """

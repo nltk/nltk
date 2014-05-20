@@ -56,16 +56,16 @@ currently supported by the data module are described by the dictionary
 `nltk.data.FORMATS`:
 
     >>> for format, descr in sorted(nltk.data.FORMATS.items()):
-    ...     print('%-7s %s' % (format, descr)) # doctest: +NORMALIZE_WHITESPACE
-    cfg     A context free grammar, parsed by nltk.parse_cfg().
-    fcfg    A feature CFG, parsed by nltk.parse_fcfg().
+    ...     print('{0:<7} {1:}'.format(format, descr)) # doctest: +NORMALIZE_WHITESPACE
+    cfg     A context free grammar.
+    fcfg    A feature CFG.
     fol     A list of first order logic expressions, parsed by nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.
     json    A serialized python object, stored using the json module.
-	logic   A list of first order logic expressions, parsed by nltk.sem.parse_logic().  Requires an additional logic_parser parameter
-    pcfg    A probabilistic CFG, parsed by nltk.parse_pcfg().
+    logic   A list of first order logic expressions, parsed by nltk.sem.parse_logic().  Requires an additional logic_parser parameter
+    pcfg    A probabilistic CFG.
     pickle  A serialized python object, stored using the pickle module.
     raw     The raw (byte string) contents of a file.
-    text    The raw (unicode string) contents of a file. 
+    text    The raw (unicode string) contents of a file.
     val     A semantic valuation, parsed by nltk.sem.parse_valuation().
     yaml    A serialized python object, stored using the yaml module.
 

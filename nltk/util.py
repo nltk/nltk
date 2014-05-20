@@ -257,6 +257,15 @@ def guess_encoding(data):
 
 
 ##########################################################################
+# Remove repeated elements from a list deterministcally
+##########################################################################
+
+def unique_list(xs):
+    seen = set()
+    # not seen.add(x) here acts to make the code shorter without using if statements, seen.add(x) always returns None.
+    return [x for x in xs if x not in seen and not seen.add(x)]
+
+##########################################################################
 # Invert a dictionary
 ##########################################################################
 
