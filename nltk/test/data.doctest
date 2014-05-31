@@ -309,7 +309,7 @@ internal use by NLTK's corpus readers.
 
     >>> # Show that it's now been loaded:
     >>> object.__repr__(ll) # doctest: +ELLIPSIS
-    '<nltk.grammar.ContextFreeGrammar object at ...>'
+    '<nltk.grammar.CFG object at ...>'
 
 
     >>> # Test that accessing an attribute also loads it:
@@ -317,7 +317,7 @@ internal use by NLTK's corpus readers.
     >>> ll.start()
     S
     >>> object.__repr__(ll) # doctest: +ELLIPSIS
-    '<nltk.grammar.ContextFreeGrammar object at ...>'
+    '<nltk.grammar.CFG object at ...>'
 
 Buffered Gzip Reading and Writing
 ---------------------------------

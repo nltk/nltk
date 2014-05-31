@@ -17,7 +17,7 @@ from nltk.compat import xrange, python_2_unicode_compatible
 from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
 from nltk.sem import logic
 from nltk.tree import Tree
-from nltk.grammar import (Nonterminal, Production, ContextFreeGrammar,
+from nltk.grammar import (Nonterminal, Production, CFG,
                           FeatStructNonterminal, is_nonterminal,
                           is_terminal)
 from nltk.parse.chart import (TreeEdge, Chart, ChartParser, EdgeI,

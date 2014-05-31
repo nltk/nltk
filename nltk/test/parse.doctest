@@ -8,7 +8,7 @@
 Unit tests for the Context Free Grammar class
 ---------------------------------------------
 
-    >>> from nltk import Nonterminal, nonterminals, Production, ContextFreeGrammar
+    >>> from nltk import Nonterminal, nonterminals, Production, CFG
 
     >>> nt1 = Nonterminal('NP')
     >>> nt2 = Nonterminal('VP')
@@ -40,7 +40,7 @@ Unit tests for the Context Free Grammar class
     >>> prod1 == prod2
     False
 
-    >>> grammar = ContextFreeGrammar.fromstring("""
+    >>> grammar = CFG.fromstring("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> 'the' N | N PP | 'the' N PP
@@ -529,11 +529,11 @@ Unit tests for the Probabilistic CFG class
 
     >>> from nltk.corpus import treebank
     >>> from itertools import islice
-    >>> from nltk.grammar import WeightedGrammar, induce_pcfg, toy_pcfg1, toy_pcfg2
+    >>> from nltk.grammar import PCFG, induce_pcfg, toy_pcfg1, toy_pcfg2
 
-Create a set of probabilistic CFG productions.
+Create a set of PCFG productions.
 
-    >>> grammar = WeightedGrammar.fromstring("""
+    >>> grammar = PCFG.fromstring("""
     ... A -> B B [.3] | C B C [.7]
     ... B -> B D [.5] | C [.5]
     ... C -> 'a' [.1] | 'b' [0.9]

@@ -8,8 +8,8 @@ Generating sentences from context-free grammars
 An example grammar:
 
     >>> from nltk.parse.generate import generate, demo_grammar
-    >>> from nltk import ContextFreeGrammar
-    >>> grammar = ContextFreeGrammar.fromstring(demo_grammar)
+    >>> from nltk import CFG
+    >>> grammar = CFG.fromstring(demo_grammar)
     >>> print(grammar)
     Grammar with 13 productions (start state = S)
         S -> NP VP
