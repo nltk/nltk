@@ -51,21 +51,10 @@ class Tree(list):
         (VP (V saw) (NP him))
         >>> print(s[1,1])
         (NP him)
-        >>> t = Tree("(S (NP I) (VP (V saw) (NP him)))")
-        >>> s == t
-        True
-        >>> t[1][1].set_label('X')
-        >>> t[1][1].label()
-        'X'
-        >>> print(t)
-        (S (NP I) (VP (V saw) (X him)))
-        >>> t[0], t[1,1] = t[1,1], t[0]
-        >>> print(t)
-        (S (X him) (VP (V saw) (NP I)))
 
     The length of a tree is the number of children it has.
 
-        >>> len(t)
+        >>> len(s)
         2
 
     The set_label() and label() methods allow individual constituents
@@ -85,28 +74,21 @@ class Tree(list):
     specifying ``tree[i]``; or a sequence *i1, i2, ..., iN*,
     specifying ``tree[i1][i2]...[iN]``.
 
-    Construct a new tree.  This constructor can be called in one
-    of two ways:
+    Construct a new tree.  This constructor can be called in the following way:
 
     - ``Tree(label, children)`` constructs a new tree with the
         specified label and list of children.
-
-    - ``Tree(s)`` constructs a new tree by parsing the string ``s``.
     """
-    def __init__(self, node_or_str, children=None):
+    def __init__(self, node, children=None):
         if children is None:
-            if not isinstance(node_or_str, string_types):
-                raise TypeError("%s: Expected a node value and child list "
-                                "or a single string" % type(self).__name__)
-            tree = type(self).fromstring(node_or_str)
-            list.__init__(self, tree)
-            self._label = tree._label
+            raise TypeError("%s: argument 2 should be a list, not "
+                            "None" % type(self).__name__)
         elif isinstance(children, string_types):
             raise TypeError("%s() argument 2 should be a list, not a "
                             "string" % type(self).__name__)
         else:
             list.__init__(self, children)
-            self._label = node_or_str
+            self._label = node
 
     #////////////////////////////////////////////////////////////
     # Comparison operators
