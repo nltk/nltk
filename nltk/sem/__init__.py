@@ -45,8 +45,9 @@ from nltk.sem.util import (parse_sents, interpret_sents, evaluate_sents,
                            root_semrep, parse_valuation)
 from nltk.sem.evaluate import (Valuation, Assignment, Model, Undefined,
                                is_rel, set2rel, arity)
-from nltk.sem.logic import (LogicParser, boolean_ops, binding_ops,
-                            equality_preds, parse_logic, Variable, ApplicationExpression)
+from nltk.sem.logic import (boolean_ops, binding_ops, equality_preds,
+                           parse_logic, Variable, Expression,
+                           ApplicationExpression, LogicalExpressionException)
 from nltk.sem.skolemize import skolemize
 from nltk.sem.lfg import FStructure
 from nltk.sem.relextract import (extract_rels, rtuple, clause)

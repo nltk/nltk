@@ -17,7 +17,7 @@ from functools import reduce
 
 from nltk.sem import skolemize
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
-                            ApplicationExpression, LogicParser,
+                            ApplicationExpression, Expression,
                             NegatedExpression, Variable,
                             AndExpression, unique_variable, OrExpression,
                             is_indvar, IndividualVariableExpression, Expression)
@@ -629,49 +629,49 @@ def testResolutionProver():
     resolution_test('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')
     resolution_test('some x.all y.sees(x,y)')
 
-    p1 = LogicParser().parse(r'all x.(man(x) -> mortal(x))')
-    p2 = LogicParser().parse(r'man(Socrates)')
-    c = LogicParser().parse(r'mortal(Socrates)')
+    p1 = Expression.fromstring(r'all x.(man(x) -> mortal(x))')
+    p2 = Expression.fromstring(r'man(Socrates)')
+    c = Expression.fromstring(r'mortal(Socrates)')
     print('%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2])))
 
-    p1 = LogicParser().parse(r'all x.(man(x) -> walks(x))')
-    p2 = LogicParser().parse(r'man(John)')
-    c = LogicParser().parse(r'some y.walks(y)')
+    p1 = Expression.fromstring(r'all x.(man(x) -> walks(x))')
+    p2 = Expression.fromstring(r'man(John)')
+    c = Expression.fromstring(r'some y.walks(y)')
     print('%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1,p2])))
 
-    p = LogicParser().parse(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
-    c = LogicParser().parse(r'some e0.walk(e0,mary)')
+    p = Expression.fromstring(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
+    c = Expression.fromstring(r'some e0.walk(e0,mary)')
     print('%s |- %s: %s' % (p, c, ResolutionProver().prove(c, [p])))
 
 def resolution_test(e):
-    f = LogicParser().parse(e)
+    f = Expression.fromstring(e)
     t = ResolutionProver().prove(f)
     print('|- %s: %s' % (f, t))
 
 def test_clausify():
-    lp = LogicParser()
+    lexpr = Expression.fromstring
 
-    print(clausify(lp.parse('P(x) | Q(x)')))
-    print(clausify(lp.parse('(P(x) & Q(x)) | R(x)')))
-    print(clausify(lp.parse('P(x) | (Q(x) & R(x))')))
-    print(clausify(lp.parse('(P(x) & Q(x)) | (R(x) & S(x))')))
+    print(clausify(lexpr('P(x) | Q(x)')))
+    print(clausify(lexpr('(P(x) & Q(x)) | R(x)')))
+    print(clausify(lexpr('P(x) | (Q(x) & R(x))')))
+    print(clausify(lexpr('(P(x) & Q(x)) | (R(x) & S(x))')))
 
-    print(clausify(lp.parse('P(x) | Q(x) | R(x)')))
-    print(clausify(lp.parse('P(x) | (Q(x) & R(x)) | S(x)')))
+    print(clausify(lexpr('P(x) | Q(x) | R(x)')))
+    print(clausify(lexpr('P(x) | (Q(x) & R(x)) | S(x)')))
 
-    print(clausify(lp.parse('exists x.P(x) | Q(x)')))
+    print(clausify(lexpr('exists x.P(x) | Q(x)')))
 
-    print(clausify(lp.parse('-(-P(x) & Q(x))')))
-    print(clausify(lp.parse('P(x) <-> Q(x)')))
-    print(clausify(lp.parse('-(P(x) <-> Q(x))')))
-    print(clausify(lp.parse('-(all x.P(x))')))
-    print(clausify(lp.parse('-(some x.P(x))')))
+    print(clausify(lexpr('-(-P(x) & Q(x))')))
+    print(clausify(lexpr('P(x) <-> Q(x)')))
+    print(clausify(lexpr('-(P(x) <-> Q(x))')))
+    print(clausify(lexpr('-(all x.P(x))')))
+    print(clausify(lexpr('-(some x.P(x))')))
 
-    print(clausify(lp.parse('some x.P(x)')))
-    print(clausify(lp.parse('some x.all y.P(x,y)')))
-    print(clausify(lp.parse('all y.some x.P(x,y)')))
-    print(clausify(lp.parse('all z.all y.some x.P(x,y,z)')))
-    print(clausify(lp.parse('all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))')))
+    print(clausify(lexpr('some x.P(x)')))
+    print(clausify(lexpr('some x.all y.P(x,y)')))
+    print(clausify(lexpr('all y.some x.P(x,y)')))
+    print(clausify(lexpr('all z.all y.some x.P(x,y,z)')))
+    print(clausify(lexpr('all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))')))
 
 
 def demo():
@@ -680,7 +680,7 @@ def demo():
     testResolutionProver()
     print()
 
-    p = LogicParser().parse('man(x)')
+    p = Expression.fromstring('man(x)')
     print(ResolutionProverCommand(p, [p]).prove())
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ from __future__ import print_function, unicode_literals
 
 from nltk.internals import Counter
 from nltk.compat import string_types, python_2_unicode_compatible
-from nltk.sem.logic import LogicParser, APP
+from nltk.sem.logic import _LogicParser, APP
 
 _counter = Counter()
 
@@ -380,10 +380,10 @@ class Tokens(object):
     TOKENS = PUNCT + [IMP]
 
 
-class LinearLogicParser(LogicParser):
+class LinearLogicParser(_LogicParser):
     """A linear logic expression parser."""
     def __init__(self):
-        LogicParser.__init__(self)
+        _LogicParser.__init__(self)
 
         self.operator_precedence = {APP: 1, Tokens.IMP: 2, None: 3}
         self.right_associated_operations += [Tokens.IMP]

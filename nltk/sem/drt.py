@@ -17,7 +17,7 @@ from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
                             EventVariableExpression, ExistsExpression, Expression,
                             FunctionVariableExpression, ImpExpression,
                             IndividualVariableExpression, LambdaExpression, Tokens,
-                            LogicParser, NegatedExpression, OrExpression, Variable,
+                            _LogicParser, NegatedExpression, OrExpression, Variable,
                             is_eventvar, is_funcvar, is_indvar, unique_variable)
 
 # Import Tkinter-based modules if they are available
@@ -1062,10 +1062,10 @@ class DrsDrawer(object):
         return top + (full_height - item_height) / 2
 
 
-class DrtParser(LogicParser):
+class DrtParser(_LogicParser):
     """A lambda calculus expression parser."""
     def __init__(self):
-        LogicParser.__init__(self)
+        _LogicParser.__init__(self)
 
         self.operator_precedence = dict(
                                [(x,1) for x in DrtTokens.LAMBDA_LIST]             + \

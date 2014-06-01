@@ -15,7 +15,7 @@ import os
 import tempfile
 
 from nltk.sem.logic import is_indvar
-from nltk.sem import Valuation, LogicParser
+from nltk.sem import Valuation, Expression
 
 from nltk.inference.api import ModelBuilder, BaseModelBuilderCommand
 from nltk.inference.prover9 import Prover9CommandParent, Prover9Parent
@@ -238,9 +238,8 @@ def test_model_found(arguments):
     """
     Try some proofs and exhibit the results.
     """
-    lp = LogicParser()
     for (goal, assumptions) in arguments:
-        g = lp.parse(goal)
+        g = Expression.fromstring(goal)
         alist = [lp.parse(a) for a in assumptions]
         m = MaceCommand(g, assumptions=alist, max_models=50)
         found = m.build_model()
@@ -253,9 +252,8 @@ def test_build_model(arguments):
     """
     Try to build a ``nltk.sem.Valuation``.
     """
-    lp = LogicParser()
-    g = lp.parse('all x.man(x)')
-    alist = [lp.parse(a) for a in ['man(John)',
+    g = Expression.fromstring('all x.man(x)')
+    alist = [Expression.fromstring(a) for a in ['man(John)',
                                    'man(Socrates)',
                                    'man(Bill)',
                                    'some x.(-(x = John) & man(x) & sees(John,x))',
@@ -281,8 +279,7 @@ def test_transform_output(argument_pair):
     """
     Transform the model into various Mace4 ``interpformat`` formats.
     """
-    lp = LogicParser()
-    g = lp.parse(argument_pair[0])
+    g = Expression.fromstring(argument_pair[0])
     alist = [lp.parse(a) for a in argument_pair[1]]
     m = MaceCommand(g, assumptions=alist)
     m.build_model()

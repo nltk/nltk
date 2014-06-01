@@ -294,6 +294,7 @@ Propositional Model Test
 Test of i Function
 ------------------
 
+    >>> from nltk.sem import Expression
     >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
     ...      ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
     ...      ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
@@ -302,8 +303,7 @@ Test of i Function
     >>> m = Model(dom, val)
     >>> g = Assignment(dom, [('x', 'b1'), ('y', 'g2')])
     >>> exprs = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
-    >>> lp = LogicParser()
-    >>> parsed_exprs = [lp.parse(e) for e in exprs]
+    >>> parsed_exprs = [Expression.fromstring(e) for e in exprs]
     >>> sorted_set = lambda x: sorted(x) if isinstance(x, set) else x
     >>> for parsed in parsed_exprs:
     ...     try:
@@ -419,9 +419,9 @@ Satisfier Tests
     '- exists y. love(y, x)' gets value: False
     'exists y. (love(adam, y) & love(y, x))' gets value: True
 
-    >>> lp = LogicParser()
+    >>> from nltk.sem import Expression
     >>> for fmla in formulas: # doctest: +NORMALIZE_WHITESPACE
-    ...     p = lp.parse(fmla)
+    ...     p = Expression.fromstring(fmla)
     ...     g.purge()
     ...     print("Satisfiers of '%s':\n\t%s" % (p, sorted(m.satisfiers(p, 'x', g))))
     Satisfiers of 'boy(x)':

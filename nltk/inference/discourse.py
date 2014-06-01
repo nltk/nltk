@@ -54,6 +54,7 @@ from nltk.parse import load_parser
 from nltk.parse.malt import MaltParser
 from nltk.sem.drt import resolve_anaphora, AnaphoraResolutionException
 from nltk.sem.glue import DrtGlue
+from nltk.sem.logic import Expression
 
 from nltk.inference.mace import MaceCommand
 from nltk.inference.prover9 import Prover9Command
@@ -501,14 +502,12 @@ def parse_fol(s):
     :return: a list of parsed formulas.
     :rtype: list(Expression)
     """
-    from nltk.sem import LogicParser
     statements = []
-    lp = LogicParser()
     for linenum, line in enumerate(s.splitlines()):
         line = line.strip()
         if line.startswith('#') or line=='': continue
         try:
-            statements.append(lp.parse(line))
+            statements.append(Expression.fromstring(line))
         except Exception:
             raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     return statements

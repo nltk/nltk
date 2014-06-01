@@ -14,7 +14,7 @@ from __future__ import print_function, unicode_literals
 from nltk.internals import Counter
 
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
-                            ApplicationExpression, LogicParser,
+                            ApplicationExpression, Expression,
                             AbstractVariableExpression, AllExpression,
                             NegatedExpression,
                             ExistsExpression, Variable, ImpExpression,
@@ -550,8 +550,6 @@ def testTableauProver():
 #    tableau_test('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')
 #    tableau_test('some x.all y.sees(x,y)')
 
-    parse = LogicParser().parse
-
     p1 = 'all x.(man(x) -> mortal(x))'
     p2 = 'man(Socrates)'
     c = 'mortal(Socrates)'
@@ -594,9 +592,8 @@ def testHigherOrderTableauProver():
 
 
 def tableau_test(c, ps=None, verbose=False):
-    lp = LogicParser()
-    pc = lp.parse(c)
-    pps = ([lp.parse(p) for p in ps] if ps else [])
+    pc = Expression.fromstring(c)
+    pps = ([Expression.fromstring(p) for p in ps] if ps else [])
     if not ps:
         ps = []
     print('%s |- %s: %s' % (', '.join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose)))

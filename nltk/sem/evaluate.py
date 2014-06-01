@@ -22,11 +22,11 @@ import textwrap
 from nltk.decorators import decorator # this used in code that is commented out
 from nltk.compat import string_types, python_2_unicode_compatible
 
-from nltk.sem.logic import (AbstractVariableExpression, AllExpression,
+from nltk.sem.logic import (AbstractVariableExpression, AllExpression, Expression,
                             AndExpression, ApplicationExpression, EqualityExpression,
                             ExistsExpression, IffExpression, ImpExpression,
                             IndividualVariableExpression, LambdaExpression,
-                            LogicParser, NegatedExpression, OrExpression,
+                            NegatedExpression, OrExpression,
                             Variable, is_indvar)
 
 
@@ -312,8 +312,7 @@ class Model(object):
 
     def evaluate(self, expr, g, trace=None):
         """
-        Call the ``LogicParser`` to parse input expressions, and
-        provide a handler for ``satisfy``
+        Read input expressions, and provide a handler for ``satisfy``
         that blocks further propagation of the ``Undefined`` error.
         :param expr: An ``Expression`` of ``logic``.
         :type g: Assignment
@@ -321,8 +320,7 @@ class Model(object):
         :rtype: bool or 'Undefined'
         """
         try:
-            lp = LogicParser()
-            parsed = lp.parse(expr)
+            parsed = Expression.fromstring(expr)
             value = self.satisfy(parsed, g, trace=trace)
             if trace:
                 print()
@@ -572,8 +570,7 @@ def folmodel(quiet=False, trace=None):
         print("Variable assignment = ", g2)
 
         exprs = ['adam', 'boy', 'love', 'walks', 'x', 'y', 'z']
-        lp = LogicParser()
-        parsed_exprs = [lp.parse(e) for e in exprs]
+        parsed_exprs = [Expression.fromstring(e) for e in exprs]
 
         print()
         for parsed in parsed_exprs:
@@ -587,8 +584,8 @@ def folmodel(quiet=False, trace=None):
 
         for (fun, args) in applications:
             try:
-                funval = m2.i(lp.parse(fun), g2)
-                argsval = tuple(m2.i(lp.parse(arg), g2) for arg in args)
+                funval = m2.i(Expression.fromstring(fun), g2)
+                argsval = tuple(m2.i(Expression.fromstring(arg), g2) for arg in args)
                 print("%s(%s) evaluates to %s" % (fun, args, argsval in funval))
             except Undefined:
                 print("%s(%s) evaluates to Undefined" % (fun, args))
@@ -675,12 +672,11 @@ def satdemo(trace=None):
     if trace:
         print(m2)
 
-    lp = LogicParser()
     for fmla in formulas:
         print(fmla)
-        lp.parse(fmla)
+        Expression.fromstring(fmla)
 
-    parsed = [lp.parse(fmla) for fmla in formulas]
+    parsed = [Expression.fromstring(fmla) for fmla in formulas]
 
     for p in parsed:
         g2.purge()

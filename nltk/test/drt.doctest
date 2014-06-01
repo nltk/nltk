@@ -413,7 +413,7 @@ Parse errors
 
     >>> def parse_error(drtstring):
     ...     try: dp.parse(drtstring)
-    ...     except logic.ParseException as e: print(e)
+    ...     except logic.LogicalExpressionException as e: print(e)
 
     >>> parse_error(r'')
     End of input found.  Expression expected.
