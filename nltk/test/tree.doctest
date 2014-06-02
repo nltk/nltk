@@ -39,6 +39,39 @@ tree object to one of several standard tree encodings:
             [.dp [.d the ] [.np dog ] ]
             [.vp [.v chased ] [.dp [.d the ] [.np cat ] ] ] ]
 
+Trees can be initialized from treebank strings:
+
+    >>> tree2 = Tree.fromstring('(S (NP I) (VP (V enjoyed) (NP my cookie)))')
+    >>> print(tree2)
+    (S (NP I) (VP (V enjoyed) (NP my cookie)))
+
+Trees can be compared for equality:
+
+    >>> tree == Tree.fromstring(str(tree))
+    True
+    >>> tree2 == Tree.fromstring(str(tree2))
+    True
+    >>> tree == tree2
+    False
+    >>> tree == Tree.fromstring(str(tree2))
+    False
+    >>> tree2 == Tree.fromstring(str(tree))
+    False
+
+    >>> tree != Tree.fromstring(str(tree))
+    False
+    >>> tree2 != Tree.fromstring(str(tree2))
+    False
+    >>> tree != tree2
+    True
+    >>> tree != Tree.fromstring(str(tree2))
+    True
+    >>> tree2 != Tree.fromstring(str(tree))
+    True
+
+    >>> tree < tree2 or tree > tree2
+    True
+
 Tree Parsing
 ============
 
