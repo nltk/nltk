@@ -32,7 +32,6 @@ from __future__ import print_function
 #   and unigram counts (raw_freq, pmi, student_t)
 
 import itertools as _itertools
-from operator import itemgetter as _itemgetter
 from nltk.compat import iteritems
 
 from nltk.probability import FreqDist
@@ -106,8 +105,7 @@ class AbstractCollocationFinder(object):
         """Returns a sequence of (ngram, score) pairs ordered from highest to
         lowest score, as determined by the scoring function provided.
         """
-        return sorted(self._score_ngrams(score_fn),
-                      key=_itemgetter(1), reverse=True)
+        return sorted(self._score_ngrams(score_fn), key=lambda t: (-t[1], t[0]))
 
     def nbest(self, score_fn, n):
         """Returns the top n ngrams when scored by the given function."""
