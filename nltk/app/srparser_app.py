@@ -772,7 +772,7 @@ def app():
     text.
     """
 
-    from nltk.grammar import Nonterminal, Production, ContextFreeGrammar
+    from nltk.grammar import Nonterminal, Production, CFG
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
@@ -796,7 +796,7 @@ def app():
         Production(Det, ['my']),
         )
 
-    grammar = ContextFreeGrammar(S, productions)
+    grammar = CFG(S, productions)
 
     # tokenize the sentence
     sent = 'my dog saw a man in the park with a statue'.split()

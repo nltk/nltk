@@ -62,8 +62,8 @@ Parsing
 -------
 
     >>> from nltk.parse.recursivedescent import RecursiveDescentParser
-    >>> from nltk.grammar import ContextFreeGrammar
-    >>> grammar = ContextFreeGrammar.fromstring("""
+    >>> from nltk.grammar import CFG
+    >>> grammar = CFG.fromstring("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> 'the' N | N PP | 'the' N PP

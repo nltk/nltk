@@ -54,7 +54,7 @@ import re
 from tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
                      Scrollbar, Text, Tk, Toplevel)
 
-from nltk.grammar import (ContextFreeGrammar, _read_cfg_production,
+from nltk.grammar import (CFG, _read_cfg_production,
                           Nonterminal, nonterminals)
 from nltk.tree import Tree
 from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
@@ -157,7 +157,7 @@ class CFGEditor(object):
     def __init__(self, parent, cfg=None, set_cfg_callback=None):
         self._parent = parent
         if cfg is not None: self._cfg = cfg
-        else: self._cfg = ContextFreeGrammar(Nonterminal('S'), [])
+        else: self._cfg = CFG(Nonterminal('S'), [])
         self._set_cfg_callback = set_cfg_callback
 
         self._highlight_matching_nonterminals = 1
@@ -482,7 +482,7 @@ class CFGEditor(object):
     def _apply(self, *e):
         productions = self._parse_productions()
         start = Nonterminal(self._start.get())
-        cfg = ContextFreeGrammar(start, productions)
+        cfg = CFG(start, productions)
         if self._set_cfg_callback is not None:
             self._set_cfg_callback(cfg)
 
@@ -666,7 +666,7 @@ class CFGDemo(object):
         self._top.mainloop(*args, **kwargs)
 
 def demo2():
-    from nltk import Nonterminal, Production, ContextFreeGrammar
+    from nltk import Nonterminal, Production, CFG
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
@@ -691,7 +691,7 @@ def demo2():
         Production(N, ['dog']),  Production(N, ['statue']),
         Production(Det, ['my']),
         )
-    grammar = ContextFreeGrammar(S, productions)
+    grammar = CFG(S, productions)
 
     text = 'I saw a man in the park'.split()
     d=CFGDemo(grammar, text)
@@ -702,12 +702,12 @@ def demo2():
 ######################################################################
 
 def demo():
-    from nltk import Nonterminal, ContextFreeGrammar
+    from nltk import Nonterminal, CFG
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
 
-    grammar = ContextFreeGrammar.fromstring("""
+    grammar = CFG.fromstring("""
     S -> NP VP
     PP -> P NP
     NP -> Det N
