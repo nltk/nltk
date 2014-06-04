@@ -63,11 +63,12 @@ WordNet, using ISO-639 language codes.
     >>> wn.lemmas('cane', lang='ita')
     [Lemma('dog.n.01.cane'), Lemma('hammer.n.01.cane'), Lemma('cramp.n.02.cane'),
     Lemma('bad_person.n.01.cane'), Lemma('incompetent.n.01.cane')]
-    >>> sorted(wn.synset('dog.n.01').lemmas(['dan', 'por']).items())
-    [('dan', [Lemma('dog.n.01.hund'), Lemma('dog.n.01.k\xf8ter'),
-    Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]),
-    ('por', [Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.c\xe3o'),
-    Lemma('dog.n.01.c\xe3o'), Lemma('dog.n.01.c\xe3es')])]
+    >>> sorted(wn.synset('dog.n.01').lemmas('dan'))
+    [Lemma('dog.n.01.hund'), Lemma('dog.n.01.k\xf8ter'),
+    Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]
+    >>> sorted(wn.synset('dog.n.01').lemmas('por'))
+    [Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.c\xe3es'),
+    Lemma('dog.n.01.c\xe3o'), Lemma('dog.n.01.c\xe3o')]
     >>> dog_lemma = wn.lemma(b'dog.n.01.c\xc3\xa3o'.decode('utf-8'), lang='por')
     >>> dog_lemma
     Lemma('dog.n.01.c\xe3o')
