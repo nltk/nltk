@@ -1,3 +1,10 @@
+Version 3.0b1 2013-06-??
+* Fixed support for 10-column dependency file format
+* Changed Tree initialization to use fromstring
+
+Thanks to the following contributors to 3.0b1:
+Alireza Nourian, Zhe Wang
+
 Version 3.0a4 2013-05-25
 * IBM Models 1-3, BLEU, Gale-Church aligner
 * Lesk algorithm for WSD
