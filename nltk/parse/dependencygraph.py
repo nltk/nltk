@@ -37,7 +37,7 @@ class DependencyGraph(object):
         as its head. This also means that the indexing of the nodelist
         corresponds directly to the Malt-TAB format, which starts at 1.
         """
-        top = {'word':None, 'deps':[], 'rel': 'TOP', 'tag': 'TOP', 'address': 0}
+        top = {'word': None, 'lemma': None, 'ctag': 'TOP', 'tag': 'TOP', 'feats': None, 'rel': 'TOP', 'deps': [], 'address': 0}
         self.nodelist = [top]
         self.root = None
         self.stream = None
@@ -166,17 +166,17 @@ class DependencyGraph(object):
                 nrCells = len(cells)
                 if nrCells == 3:
                     word, tag, head = cells
-                    rel = ''
+                    lemma, ctag, feats, rel = word, tag, '', ''
                 elif nrCells == 4:
                     word, tag, head, rel = cells
+                    lemma, ctag, feats = word, tag, ''
                 elif nrCells == 10:
-                    _, word, _, _, tag, _, head, rel, _, _ = cells
+                    _, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
                 else:
                     raise ValueError('Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (nrCells))
 
                 head = int(head)
-                self.nodelist.append({'address': index+1, 'word': word, 'tag': tag,
-                                      'head': head, 'rel': rel,
+                self.nodelist.append({'address': index+1, 'word': word, 'lemma': lemma, 'ctag': ctag, 'tag': tag, 'feats': feats, 'head': head, 'rel': rel,
                                       'deps': [d for (d,h) in temp if h == index+1]})
 
                 try:
@@ -278,13 +278,13 @@ class DependencyGraph(object):
 
         lines = []
         for i, node in enumerate(self.nodelist[1:]):
-            word, tag, head, rel = node['word'], node['tag'], node['head'], node['rel']
+            word, lemma, ctag, tag, feats, head, rel = node['word'], node['lemma'], node['ctag'], node['tag'], node['feats'], node['head'], node['rel']
             if style == 3:
                 lines.append('%s\t%s\t%s\n' % (word, tag, head))
             elif style == 4:
                 lines.append('%s\t%s\t%s\t%s\n' % (word, tag, head, rel))
             elif style == 10:
-                lines.append('%s\t%s\t_\t%s\t%s\t_\t%s\t%s\t_\t_\n' % (i+1, word, tag, tag, head, rel))
+                lines.append('%s\t%s\t%s\t%s\t%s\%s\t%s\t%s\t_\t_\n' % (i+1, word, lemma, ctag, tag, feats, head, rel))
             else:
                 raise ValueError('Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (style))
         return ''.join(lines)
