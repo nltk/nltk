@@ -348,7 +348,7 @@ Test Parser
     x(john)
     ^
 
-    >>> lpq = LogicParser()
+    >>> lpq = _LogicParser()
     >>> lpq.quote_chars = [("'", "'", "\\", False)]
     >>> print(lpq.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )"))
     (man(x) & tall's,(x) & walks(x))

@@ -17,7 +17,7 @@ set-theoretic models.
 
 The package has two main components:
 
- - ``logic`` provides a parser for analyzing expressions of First
+ - ``logic`` provides support for analyzing expressions of First
    Order Logic (FOL).
  - ``evaluate`` allows users to recursively determine truth in a
    model for formulas of FOL.
