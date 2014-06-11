@@ -53,7 +53,6 @@ from nltk.sem.lfg import FStructure
 from nltk.sem.relextract import (extract_rels, rtuple, clause)
 from nltk.sem.boxer import Boxer
 from nltk.sem.drt import DrtExpression, DRS
-from nltk.sem.linearlogic import LinearLogicParser
 
 # from nltk.sem.glue import Glue
 # from nltk.sem.hole import HoleSemantics
