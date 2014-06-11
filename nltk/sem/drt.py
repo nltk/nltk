@@ -47,11 +47,141 @@ class DrtTokens(Tokens):
     TOKENS = Tokens.TOKENS + [DRS] + PUNCT
 
 
-class AbstractDrs(object):
+class _DrtParser(_LogicParser):
+    """A lambda calculus expression parser."""
+    def __init__(self):
+        _LogicParser.__init__(self)
+
+        self.operator_precedence = dict(
+                               [(x,1) for x in DrtTokens.LAMBDA_LIST]             + \
+                               [(x,2) for x in DrtTokens.NOT_LIST]                + \
+                               [(APP,3)]                                          + \
+                               [(x,4) for x in DrtTokens.EQ_LIST+Tokens.NEQ_LIST] + \
+                               [(DrtTokens.COLON,5)]                              + \
+                               [(DrtTokens.DRS_CONC,6)]                           + \
+                               [(x,7) for x in DrtTokens.OR_LIST]                 + \
+                               [(x,8) for x in DrtTokens.IMP_LIST]                + \
+                               [(None,9)])
+
+    def get_all_symbols(self):
+        """This method exists to be overridden"""
+        return DrtTokens.SYMBOLS
+
+    def isvariable(self, tok):
+        return tok not in DrtTokens.TOKENS
+
+    def handle(self, tok, context):
+        """This method is intended to be overridden for logics that
+        use different operators or expressions"""
+        if tok in DrtTokens.NOT_LIST:
+            return self.handle_negation(tok, context)
+
+        elif tok in DrtTokens.LAMBDA_LIST:
+            return self.handle_lambda(tok, context)
+
+        elif tok == DrtTokens.OPEN:
+            if self.inRange(0) and self.token(0) == DrtTokens.OPEN_BRACKET:
+                return self.handle_DRS(tok, context)
+            else:
+                return self.handle_open(tok, context)
+
+        elif tok.upper() == DrtTokens.DRS:
+            self.assertNextToken(DrtTokens.OPEN)
+            return self.handle_DRS(tok, context)
+
+        elif self.isvariable(tok):
+            if self.inRange(0) and self.token(0) == DrtTokens.COLON:
+                return self.handle_prop(tok, context)
+            else:
+                return self.handle_variable(tok, context)
+
+    def make_NegatedExpression(self, expression):
+        return DrtNegatedExpression(expression)
+
+    def handle_DRS(self, tok, context):
+        # a DRS
+        refs = self.handle_refs()
+        if self.inRange(0) and self.token(0) == DrtTokens.COMMA: #if there is a comma (it's optional)
+            self.token() # swallow the comma
+        conds = self.handle_conds(context)
+        self.assertNextToken(DrtTokens.CLOSE)
+        return DRS(refs, conds, None)
+
+    def handle_refs(self):
+        self.assertNextToken(DrtTokens.OPEN_BRACKET)
+        refs = []
+        while self.inRange(0) and self.token(0) != DrtTokens.CLOSE_BRACKET:
+        # Support expressions like: DRS([x y],C) == DRS([x,y],C)
+            if refs and self.token(0) == DrtTokens.COMMA:
+                self.token() # swallow the comma
+            refs.append(self.get_next_token_variable('quantified'))
+        self.assertNextToken(DrtTokens.CLOSE_BRACKET)
+        return refs
+
+    def handle_conds(self, context):
+        self.assertNextToken(DrtTokens.OPEN_BRACKET)
+        conds = []
+        while self.inRange(0) and self.token(0) != DrtTokens.CLOSE_BRACKET:
+            # Support expressions like: DRS([x y],C) == DRS([x, y],C)
+            if conds and self.token(0) == DrtTokens.COMMA:
+                self.token() # swallow the comma
+            conds.append(self.parse_Expression(context))
+        self.assertNextToken(DrtTokens.CLOSE_BRACKET)
+        return conds
+
+    def handle_prop(self, tok, context):
+        variable = self.make_VariableExpression(tok)
+        self.assertNextToken(':')
+        drs = self.parse_Expression(DrtTokens.COLON)
+        return DrtProposition(variable, drs)
+
+    def make_EqualityExpression(self, first, second):
+        """This method serves as a hook for other logic parsers that
+        have different equality expression classes"""
+        return DrtEqualityExpression(first, second)
+
+    def get_BooleanExpression_factory(self, tok):
+        """This method serves as a hook for other logic parsers that
+        have different boolean operators"""
+        if tok == DrtTokens.DRS_CONC:
+            return lambda first, second: DrtConcatenation(first, second, None)
+        elif tok in DrtTokens.OR_LIST:
+            return DrtOrExpression
+        elif tok in DrtTokens.IMP_LIST:
+            def make_imp_expression(first, second):
+                if isinstance(first, DRS):
+                    return DRS(first.refs, first.conds, second)
+                if isinstance(first, DrtConcatenation):
+                    return DrtConcatenation(first.first, first.second, second)
+                raise Exception('Antecedent of implication must be a DRS')
+            return make_imp_expression
+        else:
+            return None
+
+    def make_BooleanExpression(self, factory, first, second):
+        return factory(first, second)
+
+    def make_ApplicationExpression(self, function, argument):
+        return DrtApplicationExpression(function, argument)
+
+    def make_VariableExpression(self, name):
+        return DrtVariableExpression(Variable(name))
+
+    def make_LambdaExpression(self, variables, term):
+        return DrtLambdaExpression(variables, term)
+
+
+class DrtExpression(object):
     """
     This is the base abstract DRT Expression from which every DRT
     Expression extends.
     """
+
+    _drt_parser = _DrtParser()
+
+    @classmethod
+    def fromstring(cls, s):
+        return cls._drt_parser.parse(s)
 
     def applyto(self, other):
         return DrtApplicationExpression(self, other)
@@ -63,11 +193,11 @@ class AbstractDrs(object):
         raise NotImplementedError()
 
     def __or__(self, other):
-        assert isinstance(other, AbstractDrs)
+        assert isinstance(other, DrtExpression)
         return DrtOrExpression(self, other)
 
     def __gt__(self, other):
-        assert isinstance(other, AbstractDrs)
+        assert isinstance(other, DrtExpression)
         if isinstance(self, DRS):
             return DRS(self.refs, self.conds, other)
         if isinstance(self, DrtConcatenation):
@@ -80,10 +210,10 @@ class AbstractDrs(object):
         Pass the expression (self <-> other) to the theorem prover.
         If the prover says it is valid, then the self and other are equal.
 
-        :param other: an ``AbstractDrs`` to check equality against
+        :param other: an ``DrtExpression`` to check equality against
         :param prover: a ``nltk.inference.api.Prover``
         """
-        assert isinstance(other, AbstractDrs)
+        assert isinstance(other, DrtExpression)
 
         f1 = self.simplify().fol();
         f2 = other.simplify().fol();
@@ -146,7 +276,7 @@ class AbstractDrs(object):
 
 
 @python_2_unicode_compatible
-class DRS(AbstractDrs, Expression):
+class DRS(DrtExpression, Expression):
     """A Discourse Representation Structure."""
     def __init__(self, refs, conds, consequent=None):
         """
@@ -367,7 +497,7 @@ def DrtVariableExpression(variable):
         return DrtConstantExpression(variable)
 
 
-class DrtAbstractVariableExpression(AbstractDrs, AbstractVariableExpression):
+class DrtAbstractVariableExpression(DrtExpression, AbstractVariableExpression):
     def fol(self):
         return self
 
@@ -397,7 +527,7 @@ class DrtConstantExpression(DrtAbstractVariableExpression, ConstantExpression):
 
 
 @python_2_unicode_compatible
-class DrtProposition(AbstractDrs, Expression):
+class DrtProposition(DrtExpression, Expression):
     def __init__(self, variable, drs):
         self.variable = variable
         self.drs = drs
@@ -447,7 +577,7 @@ class DrtProposition(AbstractDrs, Expression):
         return 'prop(%s, %s)' % (self.variable, self.drs)
 
 
-class DrtNegatedExpression(AbstractDrs, NegatedExpression):
+class DrtNegatedExpression(DrtExpression, NegatedExpression):
     def fol(self):
         return NegatedExpression(self.term.fol())
 
@@ -462,7 +592,7 @@ class DrtNegatedExpression(AbstractDrs, NegatedExpression):
                 ['  | ' + line for line in term_lines[3:4]] +
                 ['    ' + line for line in term_lines[4:]])
 
-class DrtLambdaExpression(AbstractDrs, LambdaExpression):
+class DrtLambdaExpression(DrtExpression, LambdaExpression):
     def alpha_convert(self, newvar):
         """Rename all occurrences of the variable introduced by this variable
         binder in the expression to ``newvar``.
@@ -488,7 +618,7 @@ class DrtLambdaExpression(AbstractDrs, LambdaExpression):
                 [' /\ ' + var_string + line for line in term_lines[2:3]] +
                 ['    ' + blank      + line for line in term_lines[3:]])
 
-class DrtBinaryExpression(AbstractDrs, BinaryExpression):
+class DrtBinaryExpression(DrtExpression, BinaryExpression):
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
         return self.first.get_refs(True) + self.second.get_refs(True) if recursive else []
@@ -662,7 +792,7 @@ class DrtConcatenation(DrtBooleanExpression):
         return s
 
 
-class DrtApplicationExpression(AbstractDrs, ApplicationExpression):
+class DrtApplicationExpression(DrtExpression, ApplicationExpression):
     def fol(self):
         return ApplicationExpression(self.function.fol(), self.argument.fol())
 
@@ -690,7 +820,7 @@ def _pad_vertically(lines, max_lines):
 
 
 @python_2_unicode_compatible
-class PossibleAntecedents(list, AbstractDrs, Expression):
+class PossibleAntecedents(list, DrtExpression, Expression):
     def free(self):
         """Set of free variables."""
         return set(self)
@@ -798,7 +928,7 @@ class DrsDrawer(object):
 
     def __init__(self, drs, size_canvas=True, canvas=None):
         """
-        :param drs: ``AbstractDrs``, The DRS to be drawn
+        :param drs: ``DrtExpression``, The DRS to be drawn
         :param size_canvas: bool, True if the canvas size should be the exact size of the DRS
         :param canvas: ``Canvas`` The canvas on which to draw the DRS.  If none is given, create a new canvas.
         """
@@ -1062,164 +1192,40 @@ class DrsDrawer(object):
         return top + (full_height - item_height) / 2
 
 
-class DrtParser(_LogicParser):
-    """A lambda calculus expression parser."""
-    def __init__(self):
-        _LogicParser.__init__(self)
-
-        self.operator_precedence = dict(
-                               [(x,1) for x in DrtTokens.LAMBDA_LIST]             + \
-                               [(x,2) for x in DrtTokens.NOT_LIST]                + \
-                               [(APP,3)]                                          + \
-                               [(x,4) for x in DrtTokens.EQ_LIST+Tokens.NEQ_LIST] + \
-                               [(DrtTokens.COLON,5)]                              + \
-                               [(DrtTokens.DRS_CONC,6)]                           + \
-                               [(x,7) for x in DrtTokens.OR_LIST]                 + \
-                               [(x,8) for x in DrtTokens.IMP_LIST]                + \
-                               [(None,9)])
-
-    def get_all_symbols(self):
-        """This method exists to be overridden"""
-        return DrtTokens.SYMBOLS
-
-    def isvariable(self, tok):
-        return tok not in DrtTokens.TOKENS
-
-    def handle(self, tok, context):
-        """This method is intended to be overridden for logics that
-        use different operators or expressions"""
-        if tok in DrtTokens.NOT_LIST:
-            return self.handle_negation(tok, context)
-
-        elif tok in DrtTokens.LAMBDA_LIST:
-            return self.handle_lambda(tok, context)
-
-        elif tok == DrtTokens.OPEN:
-            if self.inRange(0) and self.token(0) == DrtTokens.OPEN_BRACKET:
-                return self.handle_DRS(tok, context)
-            else:
-                return self.handle_open(tok, context)
-
-        elif tok.upper() == DrtTokens.DRS:
-            self.assertNextToken(DrtTokens.OPEN)
-            return self.handle_DRS(tok, context)
-
-        elif self.isvariable(tok):
-            if self.inRange(0) and self.token(0) == DrtTokens.COLON:
-                return self.handle_prop(tok, context)
-            else:
-                return self.handle_variable(tok, context)
-
-    def make_NegatedExpression(self, expression):
-        return DrtNegatedExpression(expression)
-
-    def handle_DRS(self, tok, context):
-        # a DRS
-        refs = self.handle_refs()
-        if self.inRange(0) and self.token(0) == DrtTokens.COMMA: #if there is a comma (it's optional)
-            self.token() # swallow the comma
-        conds = self.handle_conds(context)
-        self.assertNextToken(DrtTokens.CLOSE)
-        return DRS(refs, conds, None)
-
-    def handle_refs(self):
-        self.assertNextToken(DrtTokens.OPEN_BRACKET)
-        refs = []
-        while self.inRange(0) and self.token(0) != DrtTokens.CLOSE_BRACKET:
-        # Support expressions like: DRS([x y],C) == DRS([x,y],C)
-            if refs and self.token(0) == DrtTokens.COMMA:
-                self.token() # swallow the comma
-            refs.append(self.get_next_token_variable('quantified'))
-        self.assertNextToken(DrtTokens.CLOSE_BRACKET)
-        return refs
-
-    def handle_conds(self, context):
-        self.assertNextToken(DrtTokens.OPEN_BRACKET)
-        conds = []
-        while self.inRange(0) and self.token(0) != DrtTokens.CLOSE_BRACKET:
-            # Support expressions like: DRS([x y],C) == DRS([x, y],C)
-            if conds and self.token(0) == DrtTokens.COMMA:
-                self.token() # swallow the comma
-            conds.append(self.parse_Expression(context))
-        self.assertNextToken(DrtTokens.CLOSE_BRACKET)
-        return conds
-
-    def handle_prop(self, tok, context):
-        variable = self.make_VariableExpression(tok)
-        self.assertNextToken(':')
-        drs = self.parse_Expression(DrtTokens.COLON)
-        return DrtProposition(variable, drs)
-
-    def make_EqualityExpression(self, first, second):
-        """This method serves as a hook for other logic parsers that
-        have different equality expression classes"""
-        return DrtEqualityExpression(first, second)
-
-    def get_BooleanExpression_factory(self, tok):
-        """This method serves as a hook for other logic parsers that
-        have different boolean operators"""
-        if tok == DrtTokens.DRS_CONC:
-            return lambda first, second: DrtConcatenation(first, second, None)
-        elif tok in DrtTokens.OR_LIST:
-            return DrtOrExpression
-        elif tok in DrtTokens.IMP_LIST:
-            def make_imp_expression(first, second):
-                if isinstance(first, DRS):
-                    return DRS(first.refs, first.conds, second)
-                if isinstance(first, DrtConcatenation):
-                    return DrtConcatenation(first.first, first.second, second)
-                raise Exception('Antecedent of implication must be a DRS')
-            return make_imp_expression
-        else:
-            return None
-
-    def make_BooleanExpression(self, factory, first, second):
-        return factory(first, second)
-
-    def make_ApplicationExpression(self, function, argument):
-        return DrtApplicationExpression(function, argument)
-
-    def make_VariableExpression(self, name):
-        return DrtVariableExpression(Variable(name))
-
-    def make_LambdaExpression(self, variables, term):
-        return DrtLambdaExpression(variables, term)
-
-
 def demo():
     print('='*20 + 'TEST PARSE' + '='*20)
-    parser = DrtParser()
-    print(parser.parse(r'([x,y],[sees(x,y)])'))
-    print(parser.parse(r'([x],[man(x), walks(x)])'))
-    print(parser.parse(r'\x.\y.([],[sees(x,y)])'))
-    print(parser.parse(r'\x.([],[walks(x)])(john)'))
-    print(parser.parse(r'(([x],[walks(x)]) + ([y],[runs(y)]))'))
-    print(parser.parse(r'(([],[walks(x)]) -> ([],[runs(x)]))'))
-    print(parser.parse(r'([x],[PRO(x), sees(John,x)])'))
-    print(parser.parse(r'([x],[man(x), -([],[walks(x)])])'))
-    print(parser.parse(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])'))
+    dexpr = DrtExpression.fromstring
+    print(dexpr(r'([x,y],[sees(x,y)])'))
+    print(dexpr(r'([x],[man(x), walks(x)])'))
+    print(dexpr(r'\x.\y.([],[sees(x,y)])'))
+    print(dexpr(r'\x.([],[walks(x)])(john)'))
+    print(dexpr(r'(([x],[walks(x)]) + ([y],[runs(y)]))'))
+    print(dexpr(r'(([],[walks(x)]) -> ([],[runs(x)]))'))
+    print(dexpr(r'([x],[PRO(x), sees(John,x)])'))
+    print(dexpr(r'([x],[man(x), -([],[walks(x)])])'))
+    print(dexpr(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])'))
 
     print('='*20 + 'Test fol()' + '='*20)
-    print(parser.parse(r'([x,y],[sees(x,y)])').fol())
+    print(dexpr(r'([x,y],[sees(x,y)])').fol())
 
     print('='*20 + 'Test alpha conversion and lambda expression equality' + '='*20)
-    e1 = parser.parse(r'\x.([],[P(x)])')
+    e1 = dexpr(r'\x.([],[P(x)])')
     print(e1)
     e2 = e1.alpha_convert(Variable('z'))
     print(e2)
     print(e1 == e2)
 
     print('='*20 + 'Test resolve_anaphora()' + '='*20)
-    print(resolve_anaphora(parser.parse(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])')))
-    print(resolve_anaphora(parser.parse(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])')))
-    print(resolve_anaphora(parser.parse(r'(([x,y],[]) + ([],[PRO(x)]))')))
+    print(resolve_anaphora(dexpr(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])')))
+    print(resolve_anaphora(dexpr(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])')))
+    print(resolve_anaphora(dexpr(r'(([x,y],[]) + ([],[PRO(x)]))')))
 
     print('='*20 + 'Test pprint()' + '='*20)
-    parser.parse(r"([],[])").pprint()
-    parser.parse(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pprint()
-    parser.parse(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pprint()
-    parser.parse(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pprint()
-    parser.parse(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pprint()
+    dexpr(r"([],[])").pprint()
+    dexpr(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pprint()
+    dexpr(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pprint()
+    dexpr(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pprint()
+    dexpr(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pprint()
 
 
 def test_draw():
@@ -1240,7 +1246,7 @@ def test_draw():
             ]
 
     for e in expressions:
-        d = DrtParser().parse(e)
+        d = DrtExpression.fromstring(e)
         d.draw()
 
 

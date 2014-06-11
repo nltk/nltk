@@ -40,7 +40,7 @@ from nltk.sem.logic import (ExpectedMoreTokensException, LogicalExpressionExcept
                             UnexpectedTokenException, Variable)
 
 from nltk.sem.drt import (DRS, DrtApplicationExpression, DrtEqualityExpression,
-                          DrtNegatedExpression, DrtOrExpression, DrtParser,
+                          DrtNegatedExpression, DrtOrExpression, _DrtParser,
                           DrtProposition, DrtTokens, DrtVariableExpression)
 
 from nltk.compat import python_2_unicode_compatible
@@ -262,13 +262,13 @@ class Boxer(object):
         return BoxerOutputDrsParser([None,discourse_id][use_disc_id]).parse(drs_string)
 
 
-class BoxerOutputDrsParser(DrtParser):
+class BoxerOutputDrsParser(_DrtParser):
     def __init__(self, discourse_id=None):
         """
         This class is used to parse the Prolog DRS output from Boxer into a
         hierarchy of python objects.
         """
-        DrtParser.__init__(self)
+        _DrtParser.__init__(self)
         self.discourse_id = discourse_id
         self.sentence_id_offset = None
         self.quote_chars = [("'", "'", "\\", False)]
@@ -276,7 +276,7 @@ class BoxerOutputDrsParser(DrtParser):
 
     def parse(self, data, signature=None):
         self._label_counter = Counter(-1)
-        return DrtParser.parse(self, data, signature)
+        return _DrtParser.parse(self, data, signature)
 
     def get_all_symbols(self):
         return ['(', ')', ',', '[', ']',':']
@@ -615,12 +615,12 @@ class BoxerOutputDrsParser(DrtParser):
             return [(None, word_indices)]
 
 
-class BoxerDrsParser(DrtParser):
+class BoxerDrsParser(_DrtParser):
     """
     Reparse the str form of subclasses of ``AbstractBoxerDrs``
     """
     def __init__(self, discourse_id=None):
-        DrtParser.__init__(self)
+        _DrtParser.__init__(self)
         self.discourse_id = discourse_id
 
     def get_all_symbols(self):

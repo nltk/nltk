@@ -52,7 +52,7 @@ from nltk.sem.skolemize import skolemize
 from nltk.sem.lfg import FStructure
 from nltk.sem.relextract import (extract_rels, rtuple, clause)
 from nltk.sem.boxer import Boxer
-from nltk.sem.drt import DrtParser, DRS
+from nltk.sem.drt import DrtExpression, DRS
 from nltk.sem.linearlogic import LinearLogicParser
 
 # from nltk.sem.glue import Glue

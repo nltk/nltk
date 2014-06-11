@@ -579,7 +579,7 @@ class DrtGlueFormula(GlueFormula):
             indices = set()
 
         if isinstance(meaning, string_types):
-            self.meaning = drt.DrtParser().parse(meaning)
+            self.meaning = drt.DrtExpression.fromstring(meaning)
         elif isinstance(meaning, drt.AbstractDrs):
             self.meaning = meaning
         else:
