@@ -868,7 +868,7 @@ class Expression(SubstituteBindingsI):
 
     @classmethod
     def fromstring(cls, s):
-        return _logic_parser.parse(s)
+        return cls._logic_parser.parse(s)
 
     def __call__(self, other, *additional):
         accum = self.applyto(other)
