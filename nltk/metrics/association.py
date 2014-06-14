@@ -23,7 +23,8 @@ _SMALL = 1e-20
 try:
     from scipy.stats import fisher_exact
 except ImportError:
-    pass
+    def fisher_exact(*_args, **_kwargs):
+        raise NotImplementedError
 
 ### Indices to marginals arguments:
 
@@ -55,6 +56,8 @@ class NgramAssocMeasures(object):
     which calculates contingency values from marginals in order for all
     association measures defined here to be usable.
     """
+
+    _n = 0
 
     @staticmethod
     def _contingency(*marginals):
@@ -157,7 +160,7 @@ class BigramAssocMeasures(NgramAssocMeasures):
     The arguments constitute the marginals of a contingency table, counting
     the occurrences of particular events in a corpus. The letter i in the
     suffix refers to the appearance of the word in question, while x indicates
-    the appearance of any word. Thus, for example::
+    the appearance of any word. Thus, for example:
 
         n_ii counts (w1, w2), i.e. the bigram being scored
         n_ix counts (w1, *)

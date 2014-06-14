@@ -435,9 +435,9 @@ def demo():
     A demonstration of the shift-reduce parser.
     """
 
-    from nltk import parse, ContextFreeGrammar
+    from nltk import parse, CFG
 
-    grammar = ContextFreeGrammar.fromstring("""
+    grammar = CFG.fromstring("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP

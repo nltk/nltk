@@ -31,7 +31,7 @@ from collections import defaultdict
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
-from nltk.compat import xrange, python_2_unicode_compatible, total_ordering, string_types
+from nltk.compat import xrange, python_2_unicode_compatible, total_ordering
 
 ######################################################################
 ## Table of Contents
@@ -404,43 +404,30 @@ class Synset(_WordNetObject):
             return True
 
     def lemma_names(self, lang='en'):
-        ''' return all the lemma_names associated with the synset (multiple languages supported)'''
-        if isinstance(lang, string_types):
-            if lang=='en':
-                return self._lemma_names
-            else:
-                self._wordnet_corpus_reader._load_lang_data(lang)
-        
-                i = self._wordnet_corpus_reader.ss2of(self)
-                for x in self._wordnet_corpus_reader._lang_data[lang][0].keys():
-                    if x == i:
-                        return self._wordnet_corpus_reader._lang_data[lang][0][x]
-        elif type(lang) == list:
-            lemma_names_by_langs = defaultdict(list)
-            for l in lang:
-                lemma_names_by_langs[l] = self.lemma_names(l)
-            return lemma_names_by_langs
+        '''Return all the lemma_names associated with the synset'''
+        if lang=='en':
+            return self._lemma_names
+        else:
+            self._wordnet_corpus_reader._load_lang_data(lang)
+
+            i = self._wordnet_corpus_reader.ss2of(self)
+            for x in self._wordnet_corpus_reader._lang_data[lang][0].keys():
+                if x == i:
+                    return self._wordnet_corpus_reader._lang_data[lang][0][x]
                 
     def lemmas(self, lang='en'):
-        ''' return all the lemma objects associated with the synset (multiple languages supported) '''
-        if isinstance(lang, string_types):
-            if lang=='en':
-                return self._lemmas
-            else:
-                self._wordnet_corpus_reader._load_lang_data(lang)
-                lemmark = []
-                lemmy = self.lemma_names(lang)
-                for lem in lemmy:
-                    temp= Lemma(self._wordnet_corpus_reader, self, lem, self._wordnet_corpus_reader._lexnames.index(self.lexname()), 0, None)
-                    temp._lang=lang
-                    lemmark.append(temp)
-                return lemmark
-        elif type(lang) == list:
-            lemmas_by_langs = defaultdict(list)
-            for l in lang:
-                lemmas_by_langs[l] = self.lemmas(l)
-
-            return lemmas_by_langs
+        '''Return all the lemma objects associated with the synset'''
+        if lang=='en':
+            return self._lemmas
+        else:
+            self._wordnet_corpus_reader._load_lang_data(lang)
+            lemmark = []
+            lemmy = self.lemma_names(lang)
+            for lem in lemmy:
+                temp= Lemma(self._wordnet_corpus_reader, self, lem, self._wordnet_corpus_reader._lexnames.index(self.lexname()), 0, None)
+                temp._lang=lang
+                lemmark.append(temp)
+            return lemmark
     
     def root_hypernyms(self):
         """Get the topmost hypernyms of this synset in WordNet."""
@@ -1174,7 +1161,7 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
 
     def lemma(self, name, lang='en'):
-        ''' return lemma object that matches with the name (multiple languages supported) '''
+        '''Return lemma object that matches the name'''
         synset_name, lemma_name = name.rsplit('.', 1)
         synset = self.synset(synset_name)
         for lemma in synset.lemmas(lang):
@@ -1398,43 +1385,40 @@ class WordNetCorpusReader(CorpusReader):
         will be loaded. 
         If lang is specified, all the synsets associated with the lemma name
         of that language will be returned.
-        (multiple languages supported)
         """
         lemma = lemma.lower()
         
         if lang == 'en':
             get_synset = self._synset_from_pos_and_offset
             index = self._lemma_pos_offset_map
-
             if pos is None:
                 pos = POS_LIST
-
             return [get_synset(p, offset)
                     for p in pos
                     for form in self._morphy(lemma, p)
                     for offset in index[form].get(p, [])]
+
         else:
             self._load_lang_data(lang)
-            
             synset_list = []
-
             for l in self._lang_data[lang][1][lemma]:
                 if pos is not None and l[-1] != pos:
                     continue
                 synset_list.append(self.of2ss(l))
-
             return synset_list
 
     def lemmas(self, lemma, pos=None, lang='en'):
         """Return all Lemma objects with a name matching the specified lemma
         name and part of speech tag. Matches any part of speech tag if none is
-        specified. (multiple languages supported) """
+        specified."""
+
         if lang == 'en':
             lemma = lemma.lower()
             return [lemma_obj
                     for synset in self.synsets(lemma, pos)
                     for lemma_obj in synset.lemmas()
                     if lemma_obj.name().lower() == lemma]
+
         else:
             self._load_lang_data(lang)
             lemmas = []
@@ -1450,32 +1434,25 @@ class WordNetCorpusReader(CorpusReader):
     def all_lemma_names(self, pos=None, lang='en'):
         """Return all lemma names for all synsets for the given
         part of speech tag and langauge or languages. If pos is not specified, all synsets
-        for all parts of speech will be used. (multiple languages supported)
-        """
-        if isinstance(lang, string_types):
-            if lang == 'en':
-                if pos is None:
-                    return iter(self._lemma_pos_offset_map)
-                else:
-                    return (lemma
-                        for lemma in self._lemma_pos_offset_map
-                        if pos in self._lemma_pos_offset_map[lemma])
-            else:
-                self._load_lang_data(lang)
-                lemma = []
-                for i in self._lang_data[lang][0]:
-                    if pos is not None and i[-1] != pos:
-                        continue
-                    lemma.extend(self._lang_data[lang][0][i])
-                        
-                lemma = list(set(lemma))
-                return lemma
-        elif type(lang) == list:
-            all_lemma_names_by_lang = defaultdict(list)
-            for l in lang:
-                all_lemma_names_by_lang[l] = self.all_lemma_names(pos, l)
+        for all parts of speech will be used."""
 
-            return all_lemma_names_by_lang
+        if lang == 'en':
+            if pos is None:
+                return iter(self._lemma_pos_offset_map)
+            else:
+                return (lemma
+                    for lemma in self._lemma_pos_offset_map
+                    if pos in self._lemma_pos_offset_map[lemma])
+        else:
+            self._load_lang_data(lang)
+            lemma = []
+            for i in self._lang_data[lang][0]:
+                if pos is not None and i[-1] != pos:
+                    continue
+                lemma.extend(self._lang_data[lang][0][i])
+                       
+            lemma = list(set(lemma))
+            return lemma
         
     def all_synsets(self, pos=None):
         """Iterate over all synsets with a given part of speech tag.

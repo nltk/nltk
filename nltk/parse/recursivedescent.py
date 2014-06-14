@@ -56,7 +56,7 @@ class RecursiveDescentParser(ParserI):
         Create a new ``RecursiveDescentParser``, that uses ``grammar``
         to parse texts.
 
-        :type grammar: ContextFreeGrammar
+        :type grammar: CFG
         :param grammar: The grammar used to parse texts.
         :type trace: int
         :param trace: The level of tracing that should be used when
@@ -630,9 +630,9 @@ def demo():
     A demonstration of the recursive descent parser.
     """
 
-    from nltk import parse, ContextFreeGrammar
+    from nltk import parse, CFG
 
-    grammar = ContextFreeGrammar.fromstring("""
+    grammar = CFG.fromstring("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP

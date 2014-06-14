@@ -11,7 +11,7 @@ from __future__ import print_function, unicode_literals
 from collections import defaultdict
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
-                          StatisticalDependencyGrammar)
+                          ProbabilisticDependencyGrammar)
 from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 from nltk.internals import raise_unorderable_types
 from nltk.compat import total_ordering, python_2_unicode_compatible
@@ -334,7 +334,7 @@ class ProbabilisticProjectiveDependencyParser(object):
 
     def train(self, graphs):
         """
-        Trains a StatisticalDependencyGrammar based on the list of input
+        Trains a ProbabilisticDependencyGrammar based on the list of input
         DependencyGraphs.  This model is an implementation of Eisner's (1996)
         Model C, which derives its statistics from head-word, head-tag,
         child-word, and child-tag relationships.
@@ -390,7 +390,7 @@ class ProbabilisticProjectiveDependencyParser(object):
                         mod_event = '(mods (%s, %s, %s) right))' % (prev_tag, head_word, head_tag)
                         events[head_event] += 1
                         events[mod_event] += 1
-        self._grammar = StatisticalDependencyGrammar(productions, events, tags)
+        self._grammar = ProbabilisticDependencyGrammar(productions, events, tags)
 #        print self._grammar
 
     def compute_prob(self, dg):

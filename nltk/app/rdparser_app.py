@@ -867,8 +867,8 @@ def app():
     Create a recursive descent parser demo, using a simple grammar and
     text.
     """
-    from nltk.grammar import ContextFreeGrammar
-    grammar = ContextFreeGrammar.fromstring("""
+    from nltk.grammar import CFG
+    grammar = CFG.fromstring("""
     # Grammatical productions.
         S -> NP VP
         NP -> Det N PP | Det N
