@@ -1,3 +1,31 @@
+Version 3.0b1 2013-06-??
+* Fixed support for 10-column dependency file format
+* Changed Tree initialization to use fromstring
+
+Thanks to the following contributors to 3.0b1:
+Alireza Nourian, Zhe Wang
+
+Version 3.0a4 2013-05-25
+* IBM Models 1-3, BLEU, Gale-Church aligner
+* Lesk algorithm for WSD
+* Open Multilingual WordNet
+* New implementation of Brill Tagger
+* Extend BNCCorpusReader to parse the whole BNC
+* MASC Tagged Corpus and corpus reader
+* Interface to Stanford Parser
+* Code speed-ups and clean-ups
+* API standardisation, including fromstring method for many objects
+* Improved regression testing setup
+* Removed PyYAML dependency
+
+Thanks to the following contributors to 3.0a4:
+Ivan Barria, Ingolf Becker, Francis Bond, Arthur Darcet, Dan Garrette,
+Ofer Helman, Dougal Graham, Nancy Ide, Ewan Klein, Mikhail Korobov,
+Chris Liechti, Peter Ljunglof, Joseph Lynch, Rob Malouf, Thorsten Marek,
+Dmitrijs Milajevs, Shari A’aidil Nasruddin, Lance Nathan, Joel Nothman,
+Jacob Perkins, Lynn Soe, Liling Tan, Louis Tiao, Marcus Uneson, Steven Xu,
+Geraldine Sim Wei Ying
+
 Version 3.0a3 2013-11-02
 * support for FrameNet contributed by Chuck Wooters
 * support for Universal Declaration of Human Rights Corpus (udhr2)

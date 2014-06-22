@@ -84,7 +84,7 @@ from nltk.probability import (FreqDist, ConditionalFreqDist,
                               LidstoneProbDist, MutableProbDist,
                               MLEProbDist, RandomProbDist)
 from nltk.metrics import accuracy
-from nltk.util import LazyMap
+from nltk.util import LazyMap, unique_list
 from nltk.compat import python_2_unicode_compatible, izip, imap
 from nltk.tag.api import TaggerI
 
@@ -94,11 +94,6 @@ _TAG = 1   # index of tag in a tuple
 
 def _identity(labeled_symbols):
     return labeled_symbols
-
-def _unique_list(xs):
-    seen = set()
-    # not seen.add(x) here acts to make the code shorter without using if statements, seen.add(x) always returns None.
-    return [x for x in xs if x not in seen and not seen.add(x)]
 
 @python_2_unicode_compatible
 class HiddenMarkovModelTagger(TaggerI):
@@ -137,9 +132,9 @@ class HiddenMarkovModelTagger(TaggerI):
     :type transform: callable
     """
     def __init__(self, symbols, states, transitions, outputs, priors,
-                 transform=_identity, **kwargs):
-        self._symbols = _unique_list(symbols)
-        self._states = _unique_list(states)
+                 transform=_identity):
+        self._symbols = unique_list(symbols)
+        self._states = unique_list(states)
         self._transitions = transitions
         self._outputs = outputs
         self._priors = priors
@@ -156,10 +151,10 @@ class HiddenMarkovModelTagger(TaggerI):
                 return LidstoneProbDist(fd, 0.1, bins)
 
         labeled_sequence = LazyMap(transform, labeled_sequence)
-        symbols = list(set(word for sent in labeled_sequence
-            for word, tag in sent))
-        tag_set = list(set(tag for sent in labeled_sequence
-            for word, tag in sent))
+        symbols = unique_list(word for sent in labeled_sequence
+            for word, tag in sent)
+        tag_set = unique_list(tag for sent in labeled_sequence
+            for word, tag in sent)
 
         trainer = HiddenMarkovModelTrainer(tag_set, symbols)
         hmm = trainer.train_supervised(labeled_sequence, estimator=estimator)
@@ -1034,7 +1029,7 @@ class HiddenMarkovModelTrainer(object):
 
         return model
 
-    def train_supervised(self, labelled_sequences, **kwargs):
+    def train_supervised(self, labelled_sequences, estimator=None):
         """
         Supervised training maximising the joint probability of the symbol and
         state sequences. This is done via collecting frequencies of
@@ -1048,13 +1043,12 @@ class HiddenMarkovModelTrainer(object):
         :param labelled_sequences: the training data, a set of
             labelled sequences of observations
         :type labelled_sequences: list
-        :param kwargs: may include an 'estimator' parameter, a function taking
+        :param estimator: a function taking
             a FreqDist and a number of bins and returning a CProbDistI;
             otherwise a MLE estimate is used
         """
 
         # default to the MLE estimate
-        estimator = kwargs.get('estimator')
         if estimator is None:
             estimator = lambda fdist, bins: MLEProbDist(fdist)
 

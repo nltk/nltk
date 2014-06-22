@@ -61,8 +61,9 @@ Feature Structures
 Parsing
 -------
 
-    >>> from nltk.parse.rd import RecursiveDescentParser, parse_cfg
-    >>> grammar = parse_cfg("""
+    >>> from nltk.parse.recursivedescent import RecursiveDescentParser
+    >>> from nltk.grammar import CFG
+    >>> grammar = CFG.fromstring("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> 'the' N | N PP | 'the' N PP

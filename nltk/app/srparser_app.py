@@ -465,8 +465,8 @@ class ShiftReduceApp(object):
         self._redraw()
 
     def step(self, *e):
-        if self.reduce(): return 1
-        elif self.shift(): return 1
+        if self.reduce(): return True
+        elif self.shift(): return True
         else:
             if list(self._parser.parses()):
                 self._lastoper1['text'] = 'Finished:'
@@ -485,8 +485,8 @@ class ShiftReduceApp(object):
                 self._animate_shift()
             else:
                 self._redraw()
-            return 1
-        return 0
+            return True
+        return False
 
     def reduce(self, *e):
         if self._animating_lock: return
@@ -772,7 +772,7 @@ def app():
     text.
     """
 
-    from nltk.grammar import Nonterminal, Production, ContextFreeGrammar
+    from nltk.grammar import Nonterminal, Production, CFG
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
@@ -796,7 +796,7 @@ def app():
         Production(Det, ['my']),
         )
 
-    grammar = ContextFreeGrammar(S, productions)
+    grammar = CFG(S, productions)
 
     # tokenize the sentence
     sent = 'my dog saw a man in the park with a statue'.split()

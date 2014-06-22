@@ -50,7 +50,7 @@ class CCGLexicon(object):
         self._entries = entries
 
     # Returns all the possible categories for a word
-    def categories(self,word):
+    def categories(self, word):
         return self._entries[word]
 
     # Returns the target category for the parser
@@ -89,13 +89,13 @@ def matchBrackets(string):
 
     while rest != "" and not rest.startswith(')'):
         if rest.startswith('('):
-            (part,rest) = matchBrackets(rest)
+            (part, rest) = matchBrackets(rest)
             inside = inside + part
         else:
             inside = inside + rest[0]
             rest = rest[1:]
     if rest.startswith(')'):
-        return (inside + ')',rest[1:])
+        return (inside + ')', rest[1:])
     raise AssertionError('Unmatched bracket in string \'' + string + '\'')
 
 # Separates the string for the next portion of the category
@@ -107,7 +107,7 @@ def nextCategory(string):
 
 # Parses an application operator
 def parseApplication(app):
-    return Direction(app[0],app[1:])
+    return Direction(app[0], app[1:])
 
 # Parses the subscripts for a primitive category
 def parseSubscripts(subscr):
@@ -116,14 +116,14 @@ def parseSubscripts(subscr):
     return []
 
 # Parse a primitive category
-def parsePrimitiveCategory(chunks,primitives,families,var):
+def parsePrimitiveCategory(chunks, primitives, families, var):
     # If the primitive is the special category 'var',
     # replace it with the correct CCGVar
     if chunks[0] == "var":
         if chunks[1] is None:
             if var is None:
                 var = CCGVar()
-            return (var,var)
+            return (var, var)
 
     catstr = chunks[0]
     if catstr in families:
@@ -131,43 +131,44 @@ def parsePrimitiveCategory(chunks,primitives,families,var):
         if var is None:
             var = cvar
         else:
-            cat = cat.substitute([(cvar,var)])
-        return (cat,var)
+            cat = cat.substitute([(cvar, var)])
+        return (cat, var)
 
     if catstr in primitives:
         subscrs = parseSubscripts(chunks[1])
-        return (PrimitiveCategory(catstr,subscrs),var)
+        return (PrimitiveCategory(catstr, subscrs), var)
     raise AssertionError('String \'' + catstr + '\' is neither a family nor primitive category.')
 
 # parseCategory drops the 'var' from the tuple
-def parseCategory(line,primitives,families):
-    return augParseCategory(line,primitives,families)[0]
+def parseCategory(line, primitives, families):
+    return augParseCategory(line, primitives, families)[0]
 
 # Parses a string representing a category, and returns
 # a tuple with (possibly) the CCG variable for the category
-def augParseCategory(line,primitives,families,var = None):
-    (str,rest) = nextCategory(line)
+def augParseCategory(line, primitives, families, var=None):
+    (str, rest) = nextCategory(line)
 
     if str.startswith('('):
-        (res,var) = augParseCategory(str[1:-1],primitives,families,var)
+        (res, var) = augParseCategory(str[1:-1], primitives, families, var)
 
     else:
 #        print rePrim.match(str).groups()
-        (res,var) = parsePrimitiveCategory(rePrim.match(str).groups(),primitives,families,var)
+        (res, var) = parsePrimitiveCategory(rePrim.match(str).groups(),
+	                                    primitives, families, var)
 
     while rest != "":
         app = reApp.match(rest).groups()
         dir = parseApplication(app[0:3])
         rest = app[3]
 
-        (str,rest) = nextCategory(rest)
+        (str, rest) = nextCategory(rest)
         if str.startswith('('):
-            (arg,var) = augParseCategory(str[1:-1],primitives,families,var)
+            (arg, var) = augParseCategory(str[1:-1], primitives, families, var)
         else:
-            (arg,var) = parsePrimitiveCategory(rePrim.match(str).groups(),primitives,families,var)
-        res = FunctionalCategory(res,arg,dir)
+            (arg, var) = parsePrimitiveCategory(rePrim.match(str).groups(), primitives, families, var)
+        res = FunctionalCategory(res, arg, dir)
 
-    return (res,var)
+    return (res, var)
 
 # Takes an input string, and converts it into a lexicon for CCGs.
 def parseLexicon(lex_str):
@@ -188,16 +189,16 @@ def parseLexicon(lex_str):
         else:
             # Either a family definition, or a word definition
             (ident, sep, catstr) = reLex.match(line).groups()
-            (cat,var) = augParseCategory(catstr,primitives,families)
+            (cat, var) = augParseCategory(catstr, primitives, families)
             if sep == '::':
                 # Family definition
                 # ie, Det :: NP/N
-                families[ident] = (cat,var)
+                families[ident] = (cat, var)
             else:
                 # Word definition
                 # ie, which => (N\N)/(S/NP)
                 entries[ident].append(cat)
-    return CCGLexicon(primitives[0],primitives,families,entries)
+    return CCGLexicon(primitives[0], primitives, families, entries)
 
 
 openccg_tinytiny = parseLexicon('''

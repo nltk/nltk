@@ -110,7 +110,7 @@ from __future__ import print_function
 
 from nltk.tree import Tree
 
-def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
+def chomsky_normal_form(tree, factor="right", horzMarkov=None, vertMarkov=0, childChar="|", parentChar="^"):
     # assume all subtrees have homogeneous children
     # assume all terminals have no siblings
 

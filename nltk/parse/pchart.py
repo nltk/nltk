@@ -40,7 +40,7 @@ from __future__ import print_function, unicode_literals
 
 from functools import reduce
 from nltk.tree import Tree, ProbabilisticTree
-from nltk.grammar import Nonterminal, WeightedGrammar
+from nltk.grammar import Nonterminal, PCFG
 
 from nltk.parse.api import ParserI
 from nltk.parse.chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
@@ -173,8 +173,8 @@ class BottomUpProbabilisticChartParser(ParserI):
             and higher numbers will produce more verbose tracing
             output.
         """
-        if not isinstance(grammar, WeightedGrammar):
-            raise ValueError("The grammar must be probabilistic WeightedGrammar")
+        if not isinstance(grammar, PCFG):
+            raise ValueError("The grammar must be probabilistic PCFG")
         self._grammar = grammar
         self.beam_size = beam_size
         self._trace = trace

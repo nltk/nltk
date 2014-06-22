@@ -803,13 +803,13 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         if format == 'text':
             resource_val = string_data
         elif format == 'cfg':
-            resource_val = nltk.grammar.ContextFreeGrammar.read(
+            resource_val = nltk.grammar.CFG.fromstring(
                 string_data, encoding=encoding)
         elif format == 'pcfg':
-            resource_val = nltk.grammar.WeightedGrammar.read(
+            resource_val = nltk.grammar.PCFG.fromstring(
                 string_data, encoding=encoding)
         elif format == 'fcfg':
-            resource_val = nltk.grammar.FeatureGrammar.read(
+            resource_val = nltk.grammar.FeatureGrammar.fromstring(
                 string_data, logic_parser=logic_parser,
                 fstruct_reader=fstruct_reader, encoding=encoding)
         elif format == 'fol':

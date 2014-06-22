@@ -15,7 +15,7 @@ import os
 import subprocess
 
 import nltk
-from nltk.sem.logic import LogicParser, ExistsExpression, AllExpression, \
+from nltk.sem.logic import Expression, ExistsExpression, AllExpression, \
     NegatedExpression, AndExpression, IffExpression, OrExpression, \
     EqualityExpression, ImpExpression
 from nltk.inference.api import BaseProverCommand, Prover
@@ -348,8 +348,8 @@ class Prover9LimitExceededException(Prover9Exception):
 
 def test_config():
 
-    a = LogicParser().parse('(walk(j) & sing(j))')
-    g = LogicParser().parse('walk(j)')
+    a = Expression.fromstring('(walk(j) & sing(j))')
+    g = Expression.fromstring('walk(j)')
     p = Prover9Command(g, assumptions=[a])
     p._executable_path = None
     p.prover9_search=[]
@@ -363,7 +363,7 @@ def test_convert_to_prover9(expr):
     Test that parsing works OK.
     """
     for t in expr:
-        e = LogicParser().parse(t)
+        e = Expression.fromstring(t)
         print(convert_to_prover9(e))
 
 def test_prove(arguments):
@@ -371,8 +371,8 @@ def test_prove(arguments):
     Try some proofs and exhibit the results.
     """
     for (goal, assumptions) in arguments:
-        g = LogicParser().parse(goal)
-        alist = [LogicParser().parse(a) for a in assumptions]
+        g = Expression.fromstring(goal)
+        alist = [Expression.fromstring(a) for a in assumptions]
         p = Prover9Command(g, assumptions=alist).prove()
         for a in alist:
             print('   %s' % a)

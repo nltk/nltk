@@ -240,15 +240,15 @@ class PorterStemmer(StemmerI):
                cav(e), lov(e), hop(e), crim(e), but
                snow, box, tray.
         """
-        if i == 0: return 0  # i == 0 never happens perhaps
+        if i == 0: return False  # i == 0 never happens perhaps
         if i == 1: return (not self._cons(word, 0) and self._cons(word, 1))
-        if not self._cons(word, i) or self._cons(word, i-1) or not self._cons(word, i-2): return 0
+        if not self._cons(word, i) or self._cons(word, i-1) or not self._cons(word, i-2): return False
 
         ch = word[i]
         if ch == 'w' or ch == 'x' or ch == 'y':
-            return 0
+            return False
 
-        return 1
+        return True
 
     def _step1ab(self, word):
         """step1ab() gets rid of plurals and -ed or -ing. e.g.

@@ -51,7 +51,7 @@ from nltk.parse.chart import (BottomUpPredictCombineRule, BottomUpPredictRule,
                               SteppingChartParser, TopDownInitRule, TopDownPredictRule,
                               TreeEdge)
 from nltk.tree import Tree
-from nltk.grammar import Nonterminal, parse_cfg
+from nltk.grammar import Nonterminal, CFG
 from nltk.util import in_idle
 from nltk.draw.util import (CanvasFrame, ColorizedList,
                             EntryDialog, MutableOptionMenu,
@@ -1091,7 +1091,7 @@ class ChartView(object):
 
     def _edge_conflict(self, edge, lvl):
         """
-        Return 1 if the given edge overlaps with any edge on the given
+        Return True if the given edge overlaps with any edge on the given
         level.  This is used by _add_edge to figure out what level a
         new edge should be added to.
         """
@@ -1099,8 +1099,8 @@ class ChartView(object):
         for otheredge in self._edgelevels[lvl]:
             (s2, e2) = otheredge.span()
             if (s1 <= s2 < e1) or (s2 <= s1 < e2) or (s1==s2==e1==e2):
-                return 1
-        return 0
+                return True
+        return False
 
     def _analyze_edge(self, edge):
         """
@@ -2038,7 +2038,7 @@ class ChartParserApp(object):
                     grammar = pickle.load(infile)
             else:
                 with open(filename, 'r') as infile:
-                    grammar = parse_cfg(infile.read())
+                    grammar = CFG.fromstring(infile.read())
             self.set_grammar(grammar)
         except Exception as e:
             tkinter.messagebox.showerror('Error Loading Grammar',
@@ -2230,7 +2230,7 @@ class ChartParserApp(object):
         self.apply_strategy(self._TD_STRATEGY, TopDownPredictEdgeRule)
 
 def app():
-    grammar = parse_cfg("""
+    grammar = CFG.fromstring("""
     # Grammatical productions.
         S -> NP VP
         VP -> VP PP | V NP | V

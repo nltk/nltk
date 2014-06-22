@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Lesk Algorithm
+# Natural Language Toolkit: Word Sense Disambiguation Algorithms
 #
 # Author: Liling Tan <alvations@gmail.com>
 #
@@ -6,10 +6,13 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk import word_tokenize
 from nltk.corpus import wordnet as wn
 
-def compare_overlaps_greedy(context, synsets_signatures, pos=None):
+############################################################
+# Lesk Algorithm
+############################################################
+
+def _compare_overlaps_greedy(context, synsets_signatures, pos=None):
     """
     Calculate overlaps between the context sentence and the synset_signature
     and returns the synset with the highest overlap.
@@ -30,14 +33,21 @@ def compare_overlaps_greedy(context, synsets_signatures, pos=None):
             max_overlaps = len(overlaps)  
     return lesk_sense
 
-def wsd(context_sentence, ambiguous_word, pos=None, dictionary=None):
+def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
     """
     This function is the implementation of the original Lesk algorithm (1986).
     It requires a dictionary which contains the definition of the different
     sense of each word. See http://goo.gl/8TB15w
+
+        >>> from nltk import word_tokenize
+        >>> sent = word_tokenize("I went to the bank to deposit money.")
+        >>> word = "bank"
+        >>> pos = "n"
+        >>> lesk(sent, word, pos)
+        Synset('depository_financial_institution.n.01')
     
     :param context_sentence: The context sentence where the ambiguous word occurs.
-    :param ambiguous: The ambiguous word that requires WSD.
+    :param ambiguous_word: The ambiguous word that requires WSD.
     :param pos: A specified Part-of-Speech (POS).
     :param dictionary: A list of words that 'signifies' the ambiguous word.
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
@@ -46,16 +56,11 @@ def wsd(context_sentence, ambiguous_word, pos=None, dictionary=None):
         dictionary = {}
         for ss in wn.synsets(ambiguous_word):
             dictionary[ss] = ss.definition().split()
-    best_sense = compare_overlaps_greedy(word_tokenize(context_sentence), \
+    best_sense = _compare_overlaps_greedy(context_sentence,
                                        dictionary, pos)
     return best_sense
 
 
-def demo():
-    sent = "I went to the bank to deposit money."
-    word = "bank"
-    pos = "n"
-    print wsd(sent, word, pos)
-    
-if __name__ == '__main__':
-    demo()
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

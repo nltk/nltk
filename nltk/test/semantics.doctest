@@ -44,11 +44,11 @@ by ``i`` raises an ``Undefined`` exception; this is caught by
 Batch Processing
 ----------------
 
-The utility functions ``batch_interpret()`` and ``batch_evaluate()`` are intended to
+The utility functions ``interpret_sents()`` and ``evaluate_sents()`` are intended to
 help with processing multiple sentences. Here's an example of the first of these:
 
     >>> sents = ['Mary walks']
-    >>> results = nltk.sem.batch_interpret(sents, 'grammars/sample_grammars/sem2.fcfg')
+    >>> results = nltk.sem.util.interpret_sents(sents, 'grammars/sample_grammars/sem2.fcfg')
     >>> for result in results:
     ...     for (synrep, semrep) in result:
     ...         print(synrep)
@@ -64,17 +64,17 @@ is specified with a lowercase
 ``semkey`` parameter, as shown here:
 
     >>> sents = ['raining']
-    >>> g = nltk.parse_fcfg("""
+    >>> g = nltk.grammar.FeatureGrammar.fromstring("""
     ... % start S
     ... S[sem=<raining>] -> 'raining'
     ... """)
-    >>> results = nltk.sem.batch_interpret(sents, g, semkey='sem')
+    >>> results = nltk.sem.util.interpret_sents(sents, g, semkey='sem')
     >>> for result in results:
     ...     for (synrep, semrep) in result:
     ...         print(semrep)
     raining
 
-The function ``batch_evaluate()`` works in a similar manner, but also needs to be
+The function ``evaluate_sents()`` works in a similar manner, but also needs to be
 passed a ``Model`` against which the semantic representations are evaluated.
 
 Unit Tests
@@ -294,6 +294,7 @@ Propositional Model Test
 Test of i Function
 ------------------
 
+    >>> from nltk.sem import Expression
     >>> v = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),
     ...      ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
     ...      ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
@@ -302,8 +303,7 @@ Test of i Function
     >>> m = Model(dom, val)
     >>> g = Assignment(dom, [('x', 'b1'), ('y', 'g2')])
     >>> exprs = ['adam', 'girl', 'love', 'walks', 'x', 'y', 'z']
-    >>> lp = LogicParser()
-    >>> parsed_exprs = [lp.parse(e) for e in exprs]
+    >>> parsed_exprs = [Expression.fromstring(e) for e in exprs]
     >>> sorted_set = lambda x: sorted(x) if isinstance(x, set) else x
     >>> for parsed in parsed_exprs:
     ...     try:
@@ -419,9 +419,9 @@ Satisfier Tests
     '- exists y. love(y, x)' gets value: False
     'exists y. (love(adam, y) & love(y, x))' gets value: True
 
-    >>> lp = LogicParser()
+    >>> from nltk.sem import Expression
     >>> for fmla in formulas: # doctest: +NORMALIZE_WHITESPACE
-    ...     p = lp.parse(fmla)
+    ...     p = Expression.fromstring(fmla)
     ...     g.purge()
     ...     print("Satisfiers of '%s':\n\t%s" % (p, sorted(m.satisfiers(p, 'x', g))))
     Satisfiers of 'boy(x)':
@@ -541,13 +541,14 @@ Tests for mapping from syntax to semantics
 Load a valuation from a file.
 
     >>> import nltk.data
+    >>> from nltk.sem.util import parse_sents
     >>> val = nltk.data.load('grammars/sample_grammars/valuation1.val')
     >>> dom = val.domain
     >>> m = Model(dom, val)
     >>> g = Assignment(dom)
     >>> gramfile = 'grammars/sample_grammars/sem2.fcfg'
     >>> inputs = ['John sees a girl', 'every dog barks']
-    >>> parses = batch_parse(inputs, gramfile)
+    >>> parses = parse_sents(inputs, gramfile)
     >>> for sent, trees in zip(inputs, parses):
     ...     print()
     ...     print("Sentence: %s" % sent)
@@ -580,7 +581,7 @@ Load a valuation from a file.
     Semantics: all x.(dog(x) -> bark(x))
 
     >>> sent = "every dog barks"
-    >>> result = nltk.sem.batch_interpret([sent], gramfile)[0]
+    >>> result = nltk.sem.util.interpret_sents([sent], gramfile)[0]
     >>> for (syntree, semrep) in result:
     ...     print(syntree)
     ...     print()
@@ -595,7 +596,7 @@ Load a valuation from a file.
     <BLANKLINE>
     all x.(dog(x) -> bark(x))
 
-    >>> result = nltk.sem.batch_evaluate([sent], gramfile, m, g)[0]
+    >>> result = nltk.sem.util.evaluate_sents([sent], gramfile, m, g)[0]
     >>> for (syntree, semrel, value) in result:
     ...     print(syntree)
     ...     print()
@@ -615,7 +616,7 @@ Load a valuation from a file.
     True
 
     >>> sents = ['Mary walks', 'John sees a dog']
-    >>> results = nltk.sem.batch_interpret(sents, 'grammars/sample_grammars/sem2.fcfg')
+    >>> results = nltk.sem.util.interpret_sents(sents, 'grammars/sample_grammars/sem2.fcfg')
     >>> for result in results:
     ...     for (synrep, semrep) in result:
     ...         print(synrep)

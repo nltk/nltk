@@ -56,7 +56,7 @@ class RecursiveDescentParser(ParserI):
         Create a new ``RecursiveDescentParser``, that uses ``grammar``
         to parse texts.
 
-        :type grammar: ContextFreeGrammar
+        :type grammar: CFG
         :param grammar: The grammar used to parse texts.
         :type trace: int
         :param trace: The level of tracing that should be used when
@@ -426,12 +426,12 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         possible, then perform the match, and return the matched
         token.  If an untried expansion is possible, then perform the
         expansion, and return the production that it is based on.  If
-        backtracking is possible, then backtrack, and return 1.
-        Otherwise, return 0.
+        backtracking is possible, then backtrack, and return True.
+        Otherwise, return None.
 
-        :return: 0 if no operation was performed; a token if a match
+        :return: None if no operation was performed; a token if a match
             was performed; a production if an expansion was performed;
-            and 1 if a backtrack operation was performed.
+            and True if a backtrack operation was performed.
         :rtype: Production or String or bool
         """
         # Try matching (if we haven't already)
@@ -446,7 +446,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         # Try backtracking
         if self.backtrack():
             self._trace_backtrack(self._tree, self._frontier)
-            return 1
+            return True
 
         # Nothing left to do.
         return None
@@ -527,9 +527,9 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         :return: true if an operation was successfully undone.
         :rtype: bool
         """
-        if len(self._history) == 0: return 0
+        if len(self._history) == 0: return False
         (self._rtext, self._tree, self._frontier) = self._history.pop()
-        return 1
+        return True
 
     def expandable_productions(self):
         """
@@ -565,7 +565,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
         :rtype: bool
         """
 
-        if len(self._rtext) == 0: return 0
+        if len(self._rtext) == 0: return False
         tried_matches = self._tried_m.get(self._freeze(self._tree), [])
         return (self._rtext[0] not in tried_matches)
 
@@ -630,9 +630,9 @@ def demo():
     A demonstration of the recursive descent parser.
     """
 
-    from nltk import parse, ContextFreeGrammar
+    from nltk import parse, CFG
 
-    grammar = ContextFreeGrammar.fromstring("""
+    grammar = CFG.fromstring("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP

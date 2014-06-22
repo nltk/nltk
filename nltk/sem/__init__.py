@@ -17,7 +17,7 @@ set-theoretic models.
 
 The package has two main components:
 
- - ``logic`` provides a parser for analyzing expressions of First
+ - ``logic`` provides support for analyzing expressions of First
    Order Logic (FOL).
  - ``evaluate`` allows users to recursively determine truth in a
    model for formulas of FOL.
@@ -45,14 +45,14 @@ from nltk.sem.util import (parse_sents, interpret_sents, evaluate_sents,
                            root_semrep, parse_valuation)
 from nltk.sem.evaluate import (Valuation, Assignment, Model, Undefined,
                                is_rel, set2rel, arity)
-from nltk.sem.logic import (LogicParser, boolean_ops, binding_ops,
-                            equality_preds, parse_logic, Variable, ApplicationExpression)
+from nltk.sem.logic import (boolean_ops, binding_ops, equality_preds,
+                           parse_logic, Variable, Expression,
+                           ApplicationExpression, LogicalExpressionException)
 from nltk.sem.skolemize import skolemize
 from nltk.sem.lfg import FStructure
 from nltk.sem.relextract import (extract_rels, rtuple, clause)
 from nltk.sem.boxer import Boxer
-from nltk.sem.drt import DrtParser, DRS
-from nltk.sem.linearlogic import LinearLogicParser
+from nltk.sem.drt import DrtExpression, DRS
 
 # from nltk.sem.glue import Glue
 # from nltk.sem.hole import HoleSemantics

@@ -43,7 +43,7 @@ import warnings
 
 from nltk import compat
 from nltk.tree import Tree
-from nltk.grammar import WeightedGrammar, is_nonterminal, is_terminal
+from nltk.grammar import PCFG, is_nonterminal, is_terminal
 from nltk.util import OrderedDict
 from nltk.internals import raise_unorderable_types
 from nltk.compat import (total_ordering, python_2_unicode_compatible,
@@ -1242,7 +1242,7 @@ class ChartParser(ParserI):
         Create a new chart parser, that uses ``grammar`` to parse
         texts.
 
-        :type grammar: ContextFreeGrammar
+        :type grammar: CFG
         :param grammar: The grammar used to parse texts.
         :type strategy: list(ChartRuleI)
         :param strategy: A list of rules that should be used to decide
@@ -1329,7 +1329,8 @@ class ChartParser(ParserI):
                 edge = agenda.pop()
                 for rule in inference_rules:
                     new_edges = list(rule.apply(chart, grammar, edge))
-                    trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
+                    if trace:
+                        trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
                     agenda += new_edges
 
         else:
@@ -1363,8 +1364,8 @@ class BottomUpChartParser(ChartParser):
     See ``ChartParser`` for more information.
     """
     def __init__(self, grammar, **parser_args):
-        if isinstance(grammar, WeightedGrammar):
-            warnings.warn("BottomUpChartParser only works for ContextFreeGrammar, "
+        if isinstance(grammar, PCFG):
+            warnings.warn("BottomUpChartParser only works for CFG, "
                           "use BottomUpProbabilisticChartParser instead",
                           category=DeprecationWarning)
         ChartParser.__init__(self, grammar, BU_STRATEGY, **parser_args)
@@ -1547,8 +1548,8 @@ class SteppingChartParser(ChartParser):
 ########################################################################
 
 def demo_grammar():
-    from nltk.grammar import ContextFreeGrammar
-    return ContextFreeGrammar.fromstring("""
+    from nltk.grammar import CFG
+    return CFG.fromstring("""
 S  -> NP VP
 PP -> "with" NP
 NP -> NP PP
@@ -1577,7 +1578,7 @@ def demo(choice=None,
     A demonstration of the chart parsers.
     """
     import sys, time
-    from nltk import nonterminals, Production, ContextFreeGrammar
+    from nltk import nonterminals, Production, CFG
 
     # The grammar for ChartParser and SteppingChartParser:
     grammar = demo_grammar()

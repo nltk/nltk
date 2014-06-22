@@ -7,8 +7,8 @@ Grammar Parsing
 
 Grammars can be parsed from strings:
 
-    >>> from nltk import read_cfg
-    >>> grammar = read_cfg("""
+    >>> from nltk import CFG
+    >>> grammar = CFG.fromstring("""
     ... S -> NP VP
     ... PP -> P NP
     ... NP -> Det N | NP PP
@@ -29,8 +29,8 @@ Grammars can be parsed from strings:
 
 Probabilistic CFGs:
    
-    >>> from nltk import read_pcfg
-    >>> toy_pcfg1 = read_pcfg("""
+    >>> from nltk import PCFG
+    >>> toy_pcfg1 = PCFG.fromstring("""
     ... S -> NP VP [1.0]
     ... NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
     ... Det -> 'the' [0.8] | 'my' [0.2]
@@ -43,6 +43,6 @@ Probabilistic CFGs:
 
 Chomsky Normal Form grammar (Test for bug 474)
 
-    >>> g = read_cfg("VP^<TOP> -> VBP NP^<VP-TOP>")
+    >>> g = CFG.fromstring("VP^<TOP> -> VBP NP^<VP-TOP>")
     >>> g.productions()[0].lhs()
     VP^<TOP>
