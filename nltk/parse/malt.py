@@ -113,6 +113,18 @@ class MaltParser(ParserI):
         tagged_sentences = [self.tagger.tag(sentence) for sentence in sentences]
         return self.tagged_parse_sents(tagged_sentences, verbose)
 
+    def parse(self, sentence, verbose=False):
+        """
+        Use MaltParser to parse a sentence. Takes a sentence as a list of words.
+        The sentence will be automatically tagged with this MaltParser instance's
+        tagger.
+
+        :param sentence: Input sentence to parse
+        :type sentence: list(str)
+        :return: ``DependencyGraph`` the dependency graph representation of the sentence
+        """
+        return self.parse_sents([sentence], verbose)[0]
+
     def raw_parse(self, sentence, verbose=False):
         """
         Use MaltParser to parse a sentence. Takes a sentence as a string;
