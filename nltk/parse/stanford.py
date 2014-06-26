@@ -103,7 +103,7 @@ class StanfordParser(ParserI):
         cur_lines = []
         for line in output_.splitlines(False):
             if line == '':
-                res.append(Tree('\n'.join(cur_lines)))
+                res.append(Tree.fromstring('\n'.join(cur_lines)))
                 cur_lines = []
             else:
                 cur_lines.append(line)
