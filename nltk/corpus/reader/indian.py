@@ -1,9 +1,12 @@
+# got rid of codecs because codecs not needed
+
+# coding=utf-8
 # Natural Language Toolkit: Indian Language POS-Tagged Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -18,13 +21,9 @@ Contents:
   - Telugu: IIIT Hyderabad
 """
 
-import codecs
-
-from nltk import compat
+from nltk.corpus.reader.api import *
 from nltk.tag import str2tuple, map_tag
 
-from .util import *
-from .api import *
 
 class IndianCorpusReader(CorpusReader):
     """
@@ -78,8 +77,8 @@ class IndianCorpusView(StreamBackedCorpusView):
             return []
         sent = [str2tuple(word, sep='_') for word in line.split()]
         if self._tag_mapping_function:
-            sent = [(w, self._tag_mapping_function(t)) for (w,t) in sent]
-        if not self._tagged: sent = [w for (w,t) in sent]
+            sent = [(w, self._tag_mapping_function(t)) for (w, t) in sent]
+        if not self._tagged: sent = [w for (w, t) in sent]
         if self._group_by_sent:
             return [sent]
         else:
