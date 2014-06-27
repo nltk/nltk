@@ -1,8 +1,9 @@
+# coding=utf-8
 # Natural Language Toolkit: Interface to Megam Classifier
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -24,19 +25,19 @@ for details.
 """
 from __future__ import print_function
 
-import os
-import os.path
 import subprocess
 
 from nltk import compat
 from nltk.internals import find_binary
+
+
 try:
     import numpy
 except ImportError:
     numpy = None
 
 ######################################################################
-#{ Configuration
+# { Configuration
 ######################################################################
 
 _megam_bin = None
@@ -53,12 +54,12 @@ def config_megam(bin=None):
     global _megam_bin
     _megam_bin = find_binary(
         'megam', bin,
-        env_vars=['MEGAM',  'MEGAMHOME'],
+        env_vars=['MEGAM', 'MEGAMHOME'],
         binary_names=['megam.opt', 'megam', 'megam_686', 'megam_i686.opt'],
         url='http://www.umiacs.umd.edu/~hal/megam/index.html')
 
 ######################################################################
-#{ Megam Interface Functions
+# { Megam Interface Functions
 ######################################################################
 
 def write_megam_file(train_toks, encoding, stream,
@@ -99,7 +100,7 @@ def write_megam_file(train_toks, encoding, stream,
     # Write the file, which contains one line per instance.
     for featureset, label in train_toks:
         # First, the instance number (or, in the weighted multiclass case, the cost of each label).
-        if hasattr(encoding,'cost'):
+        if hasattr(encoding, 'cost'):
             stream.write(':'.join(str(encoding.cost(featureset, label, l)) for l in labels))
         else:
             stream.write('%d' % labelnum[label])
@@ -135,7 +136,7 @@ def parse_megam_weights(s, features_count, explicit=True):
     for line in lines:
         if line.strip():
             fid, weight = line.split()
-            weights[int(fid)] = float(weight)
+            weights[int(fid)] = float()
     return weights
 
 def _write_megam_features(vector, stream, bernoulli):
