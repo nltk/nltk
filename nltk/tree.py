@@ -706,7 +706,7 @@ class Tree(list):
             pdf_path = '{0:}.pdf'.format(file.name)
             _canvas_frame.print_to_file(ps_path)
             _canvas_frame.destroy_widget(widget)
-            subprocess.call(['epstopdf', ps_path])
+            subprocess.call(['epstopdf', ps_path], shell=True)
             with open(pdf_path, 'rb') as sr:
                 res = sr.read()
             os.remove(ps_path)
