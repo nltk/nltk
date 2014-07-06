@@ -689,6 +689,30 @@ class Tree(list):
         childstr = ", ".join(unicode_repr(c) for c in self)
         return '%s(%s, [%s])' % (type(self).__name__, unicode_repr(self._label), childstr)
 
+    def _repr_pdf_(self):
+        import os
+        import subprocess
+        import tempfile
+        from nltk.draw.tree import tree_to_treesegment
+        from nltk.draw.util import CanvasFrame
+        _canvas_frame = CanvasFrame()
+        widget = tree_to_treesegment(_canvas_frame.canvas(), self)
+        _canvas_frame.add_widget(widget)
+        x, y, w, h = widget.bbox()
+        # print_to_file uses scrollregion to set the width and height of the pdf.
+        _canvas_frame.canvas()['scrollregion'] = (0, 0, w, h)
+        with tempfile.NamedTemporaryFile() as file:
+            ps_path = '{0:}.ps'.format(file.name)
+            pdf_path = '{0:}.pdf'.format(file.name)
+            _canvas_frame.print_to_file(ps_path)
+            _canvas_frame.destroy_widget(widget)
+            subprocess.call(['epstopdf', ps_path])
+            with open(pdf_path, 'rb') as sr:
+                res = sr.read()
+            os.remove(ps_path)
+            os.remove(pdf_path)
+            return res.decode('utf-8', 'ignore')
+
     def __str__(self):
         return self.pprint()
 
