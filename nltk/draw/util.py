@@ -69,8 +69,8 @@ class CanvasWidget(object):
     constructor, using keyword arguments of the form
     ``attribute=value``:
 
-        >>> from nltk.draw.util import CanvasText
-        >>> cn = CanvasText(c, 'test', color='red')
+        >>> from nltk.draw.util import TextWidget
+        >>> cn = TextWidget(c, 'test', color='red')
 
     Attribute values can also be changed after a canvas widget has
     been constructed, using the ``__setitem__`` operator:
