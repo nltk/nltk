@@ -691,6 +691,7 @@ class Tree(list):
 
     def _repr_pdf_(self):
         import os
+        import base64
         import subprocess
         import tempfile
         from nltk.draw.tree import tree_to_treesegment
@@ -711,7 +712,7 @@ class Tree(list):
                 res = sr.read()
             os.remove(ps_path)
             os.remove(pdf_path)
-            return res.decode('utf-8', 'ignore')
+            return base64.b64encode(res).decode()
 
     def __str__(self):
         return self.pprint()
