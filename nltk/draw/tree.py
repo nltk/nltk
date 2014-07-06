@@ -175,6 +175,7 @@ class TreeSegmentWidget(CanvasWidget):
         self.update(self._label)
 
     def insert_child(self, index, child):
+        canvas = self.canvas()
         self._subtrees.insert(index, child)
         self._add_child_widget(child)
         self._lines.append(canvas.create_line(0,0,0,0, fill='#006060'))
