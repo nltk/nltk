@@ -1,13 +1,10 @@
 NLTK News
 =========
 
-NLTK 3.0a3 released : November 2013
+NLTK 3.0a4 released : June 2014
    FrameNet, universal tagset, misc efficiency improvements and bugfixes
-   Several API changes:
-     Tree: node -> label()
-     Relextract: show_raw_rtuple() -> rtuple(), show_clause() -> clause()
-     WordNet: definition -> definition(), lemmas -> lemmas() etc
-   for details see:
+   Several API changes, see https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
+   For full details see:
    https://raw.github.com/nltk/nltk/master/ChangeLog
    http://nltk.org/nltk3-alpha/
 

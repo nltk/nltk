@@ -74,7 +74,7 @@ NLTK is under active development! Please join in:
 
 * `subscribe to the nltk-dev mailing list <http://groups.google.com/group/nltk-dev>`_
 * `contribute highly desired enhancements <https://github.com/nltk/nltk/issues?labels=enhancement&page=1&state=open>`_
-* `fork NLTK on GitHub <https://github.com/nltk/nltk>` (and submit a pull request)
+* `fork NLTK on GitHub and submit pull requests <https://github.com/nltk/nltk>`_
 
 Contents
 ========
@@ -89,7 +89,7 @@ Contents
    Wiki <https://github.com/nltk/nltk/wiki> 
    API <api/nltk>
    HOWTO <http://nltk.org/howto>
-   NLTK Development <https://github.com/nltk>
+   GitHub Project <https://github.com/nltk/nltk>
    team
 
 * :ref:`genindex`
