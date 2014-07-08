@@ -689,6 +689,40 @@ class Tree(list):
         childstr = ", ".join(unicode_repr(c) for c in self)
         return '%s(%s, [%s])' % (type(self).__name__, unicode_repr(self._label), childstr)
 
+    def _repr_png_(self):
+        """
+        Draws and outputs in PNG for ipython.
+        PNG is used instead of PDF, since it can be displayed in the qt console and
+        has wider browser support.
+        """
+        import os
+        import base64
+        import subprocess
+        import tempfile
+        from nltk.draw.tree import tree_to_treesegment
+        from nltk.draw.util import CanvasFrame
+        from nltk.internals import find_binary
+        _canvas_frame = CanvasFrame()
+        widget = tree_to_treesegment(_canvas_frame.canvas(), self)
+        _canvas_frame.add_widget(widget)
+        x, y, w, h = widget.bbox()
+        # print_to_file uses scrollregion to set the width and height of the pdf.
+        _canvas_frame.canvas()['scrollregion'] = (0, 0, w, h)
+        with tempfile.NamedTemporaryFile() as file:
+            in_path = '{0:}.ps'.format(file.name)
+            out_path = '{0:}.png'.format(file.name)
+            _canvas_frame.print_to_file(in_path)
+            _canvas_frame.destroy_widget(widget)
+            subprocess.call([find_binary('gs', binary_names=['gswin32c.exe', 'gswin64c.exe'], env_vars=['PATH'], verbose=False)] +
+                            '-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={0:} {1:}'
+                            .format(out_path, in_path).split(),
+                            shell=True)
+            with open(out_path, 'rb') as sr:
+                res = sr.read()
+            os.remove(in_path)
+            os.remove(out_path)
+            return base64.b64encode(res).decode()
+
     def __str__(self):
         return self.pprint()
 
@@ -1482,7 +1516,7 @@ def demo():
 
     # Demonstrate tree parsing.
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
-    t = Tree.fromstring(s)
+    t = tree.Tree.fromstring(s)
     print("Convert bracketed string into tree:")
     print(t)
     print(t.__repr__())
