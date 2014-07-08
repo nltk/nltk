@@ -10,13 +10,13 @@
 # For license information, see LICENSE.TXT
 
 """
-Snowball stemmers and appendant demo function
+Snowball stemmers
 
 This module provides a port of the Snowball stemmers
 developed by Martin Porter.
-There is also a demo function demonstrating the different
-algorithms. It can be invoked directly on the command line.
-For more information take a look into the class SnowballStemmer.
+
+There is also a demo function: `snowball.demo()`.
+
 """
 from __future__ import unicode_literals, print_function
 
@@ -31,18 +31,18 @@ class SnowballStemmer(StemmerI):
     """
     Snowball Stemmer
 
-    At the moment, this port is able to stem words from fourteen
-    languages: Danish, Dutch, English, Finnish, French, German,
+    The following languages are supported:
+    Danish, Dutch, English, Finnish, French, German,
     Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian,
     Spanish and Swedish.
 
-    Furthermore, there is also the original English Porter algorithm:
+    The algorithm for English is documented here:
 
         Porter, M. \"An algorithm for suffix stripping.\"
         Program 14.3 (1980): 130-137.
 
     The algorithms have been developed by Martin Porter.
-    These stemmers are called Snowball, because he invented
+    These stemmers are called Snowball, because Porter created
     a programming language with this name for creating
     new stemming algorithms. There is more information available
     at http://snowball.tartarus.org/
@@ -66,8 +66,6 @@ class SnowballStemmer(StemmerI):
     >>> stemmer = GermanStemmer()
     >>> stemmer.stem("Autobahnen")
     'autobahn'
-
-    Create a language specific instance of the Snowball stemmer.
 
     :param language: The language whose subclass is instantiated.
     :type language: str or unicode
