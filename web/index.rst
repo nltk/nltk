@@ -67,15 +67,6 @@ Next Steps
 * `sign up for release announcements <http://groups.google.com/group/nltk>`_
 * `join in the discussion <http://groups.google.com/group/nltk-users>`_
 
-NLTK Development
-----------------
-
-NLTK is under active development! Please join in:
-
-* `subscribe to the nltk-dev mailing list <http://groups.google.com/group/nltk-dev>`_
-* `contribute highly desired enhancements <https://github.com/nltk/nltk/issues?labels=enhancement&page=1&state=open>`_
-* `fork NLTK on GitHub and submit pull requests <https://github.com/nltk/nltk>`_
-
 Contents
 ========
 
@@ -86,11 +77,11 @@ Contents
    news
    install
    data
+   contribute
+   FAQ <https://github.com/nltk/nltk/wiki/FAQ>
    Wiki <https://github.com/nltk/nltk/wiki> 
    API <api/nltk>
-   HOWTO <http://nltk.org/howto>
-   GitHub Project <https://github.com/nltk/nltk>
-   team
+   HOWTO <http://www.nltk.org/howto>
 
 * :ref:`genindex`
 * :ref:`modindex`
