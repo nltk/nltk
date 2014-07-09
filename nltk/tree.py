@@ -1512,11 +1512,11 @@ def demo():
     and shows the results of calling several of their methods.
     """
 
-    from nltk import tree
+    from nltk import Tree
 
     # Demonstrate tree parsing.
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
-    t = tree.Tree.fromstring(s)
+    t = Tree.fromstring(s)
     print("Convert bracketed string into tree:")
     print(t)
     print(t.__repr__())
@@ -1533,10 +1533,10 @@ def demo():
 
     # Demonstrate tree modification.
     the_cat = t[0]
-    the_cat.insert(1, tree.Tree.fromstring('(JJ big)'))
+    the_cat.insert(1, Tree.fromstring('(JJ big)'))
     print("Tree modification:")
     print(t)
-    t[1,1,1] = tree.Tree.fromstring('(NN cake)')
+    t[1,1,1] = Tree.fromstring('(NN cake)')
     print(t)
     print()
 
@@ -1556,7 +1556,7 @@ def demo():
     print()
 
     # Demonstrate parsing of treebank output format.
-    t = tree.Tree.fromstring(t.pprint())
+    t = Tree.fromstring(t.pprint())
     print("Convert tree to bracketed string and back again:")
     print(t)
     print()
