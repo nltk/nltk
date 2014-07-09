@@ -1,9 +1,9 @@
-Contributing to the Natural Language Toolkit
-============================================
+Contribute to NLTK
+==================
 
-NLTK exists thanks to the efforts of hundreds of voluntary developers
-who have contributed functionality and bugfixes since the project
-began in 2000.
+The Natural Language Toolkit exists thanks to the efforts of dozens
+of voluntary developers who have contributed functionality and
+bugfixes since the project began in 2000 (`contributors <https://github.com/nltk/nltk#contributing>`).
 
 In 2014 we are especially keen to improve NLTK coverage for:
 `dependency parsing <https://github.com/nltk/nltk/wiki/Dependency-Parsing>`_,
