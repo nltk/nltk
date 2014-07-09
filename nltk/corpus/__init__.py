@@ -166,6 +166,8 @@ rte = LazyCorpusLoader(
     'rte', RTECorpusReader, r'(?!\.).*\.xml')
 senseval = LazyCorpusLoader(
     'senseval', SensevalCorpusReader, r'(?!\.).*\.pos')
+sentiwordnet = LazyCorpusLoader(
+    'sentiwordnet', SentiWordNetCorpusReader, r'SentiWordNet_3.0.0')
 shakespeare = LazyCorpusLoader(
     'shakespeare', XMLCorpusReader, r'(?!\.).*\.xml')
 sinica_treebank = LazyCorpusLoader(
