@@ -30,8 +30,9 @@ nltk/test/runtests.py is a good starting point for running tests locally, but
 note that the suite is currently failing.
 
 Contributing
-------------------
-If you would like to contribute to NLTK, please post your ideas to [nltk-dev](http://groups.google.com/group/nltk-dev), or [fork nltk on github](https://github.com/nltk/nltk).
+------------
+
+[How to contribute to NLTK](http://www.nltk.org/contribute.html).
 
 The following people have contributed to NLTK:
 
