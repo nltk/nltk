@@ -13,8 +13,8 @@ A reader for corpora that consist of plaintext documents.
 
 import codecs
 
-from nltk import compat
 import nltk.data
+from nltk.compat import string_types
 from nltk.tokenize import *
 
 from nltk.corpus.reader.util import *
@@ -70,7 +70,7 @@ class PlaintextCorpusReader(CorpusReader):
         :rtype: str
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):

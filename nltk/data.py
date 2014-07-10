@@ -53,11 +53,10 @@ try:
 except ImportError:
     import pickle
 
-# these imports should be more specific:
+# this import should be more specific:
 import nltk
-from nltk import compat
 
-from nltk.compat import py3_data
+from nltk.compat import py3_data, text_type, string_types, BytesIO, urlopen
 
 ######################################################################
 # Search Path
@@ -270,7 +269,7 @@ class PathPointer(object):
         raise NotImplementedError('abstract base class')
 
 
-class FileSystemPathPointer(PathPointer,compat.text_type):
+class FileSystemPathPointer(PathPointer, text_type):
     """
     A path pointer that identifies a file which can be accessed
     directly via a given absolute path.
@@ -356,14 +355,14 @@ class BufferedGzipFile(GzipFile):
         """
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
-        self._buffer = compat.BytesIO()
+        self._buffer = BytesIO()
         # cStringIO does not support len.
         self._len = 0
 
     def _reset_buffer(self):
         # For some reason calling BytesIO.truncate() here will lead to
         # inconsistent writes so just set _buffer to a new BytesIO object.
-        self._buffer = compat.BytesIO()
+        self._buffer = BytesIO()
         self._len = 0
 
     def _write_buffer(self, data):
@@ -393,7 +392,7 @@ class BufferedGzipFile(GzipFile):
     def read(self, size=None):
         if not size:
             size = self._size
-            contents = compat.BytesIO()
+            contents = BytesIO()
             while True:
                 blocks = GzipFile.read(self, size)
                 if not blocks:
@@ -446,7 +445,7 @@ class ZipFilePathPointer(PathPointer):
         :raise IOError: If the given zipfile does not exist, or if it
         does not contain the specified entry.
         """
-        if isinstance(zipfile, compat.string_types):
+        if isinstance(zipfile, string_types):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
         # Normalize the entry string, it should be absolute:
@@ -489,7 +488,7 @@ class ZipFilePathPointer(PathPointer):
 
     def open(self, encoding=None):
         data = self._zipfile.read(self._entry)
-        stream = compat.BytesIO(data)
+        stream = BytesIO(data)
         if self._entry.endswith('.gz'):
             stream = BufferedGzipFile(self._entry, fileobj=stream)
         elif encoding is not None:
@@ -665,7 +664,7 @@ FORMATS = {
     'pcfg': "A probabilistic CFG.",
     'fcfg': "A feature CFG.",
     'fol': "A list of first order logic expressions, parsed with "
-            nltk.sem.logic.Expression.fromstring.",
+            "nltk.sem.logic.Expression.fromstring.",
     'logic': "A list of first order logic expressions, parsed by "
             "nltk.sem.logic._LogicParser.  Requires an additional logic_parser "
             "parameter",
@@ -891,7 +890,7 @@ def _open(resource_url):
         # urllib might not use mode='rb', so handle this one ourselves:
         return find(_path, ['']).open()
     else:
-        return compat.urlopen(resource_url)
+        return urlopen(resource_url)
 
 ######################################################################
 # Lazy Resource Loader
@@ -942,7 +941,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     """
     @py3_data
     def __init__(self, filename):
-        if not isinstance(filename, compat.string_types):
+        if not isinstance(filename, string_types):
             raise TypeError('ReopenableZipFile filename must be a string')
         zipfile.ZipFile.__init__(self, filename)
         assert self.filename == filename

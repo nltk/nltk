@@ -9,10 +9,10 @@
 
 from __future__ import print_function, unicode_literals
 
-from nltk import compat
+from nltk.compat import python_2_unicode_compatible, string_types
 from nltk.metrics import precision, recall
 
-@compat.python_2_unicode_compatible
+@python_2_unicode_compatible
 class AlignedSent(object):
     """
     Return an aligned sentence object, which encapsulates two sentences
@@ -200,7 +200,7 @@ class AlignedSent(object):
                 float(len(align) + len(sure)))
 
 
-@compat.python_2_unicode_compatible
+@python_2_unicode_compatible
 class Alignment(frozenset):
     """
     A storage class for representing alignment between two sequences, s1, s2.
@@ -228,7 +228,7 @@ class Alignment(frozenset):
     """
 
     def __new__(cls, string_or_pairs):
-        if isinstance(string_or_pairs, compat.string_types):
+        if isinstance(string_or_pairs, string_types):
             string_or_pairs = [_giza2pair(p) for p in string_or_pairs.split()]
         self = frozenset.__new__(cls, string_or_pairs)
         self._len = (max(p[0] for p in self) if self != frozenset([]) else 0)
