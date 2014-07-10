@@ -28,10 +28,10 @@ SentiSynsets
 Lookup
 ------
 
-    >>> list(swn.senti_synsets('slow'))
-    [SentiSynset('decelerate.v.01'), SentiSynset('slow.v.02'),\
-    SentiSynset('slow.v.03'), SentiSynset('slow.a.01'),\
-    SentiSynset('slow.a.02'), SentiSynset('slow.a.04'),\
+    >>> list(swn.senti_synsets('slow')) # doctest: +NORMALIZE_WHITESPACE
+    [SentiSynset('decelerate.v.01'), SentiSynset('slow.v.02'),
+    SentiSynset('slow.v.03'), SentiSynset('slow.a.01'),
+    SentiSynset('slow.a.02'), SentiSynset('slow.a.04'),
     SentiSynset('slowly.r.01'), SentiSynset('behind.r.03')]
 
     >>> happy = swn.senti_synsets('happy', 'a')

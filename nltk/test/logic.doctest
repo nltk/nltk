@@ -348,6 +348,7 @@ Test Parser
     x(john)
     ^
 
+    >>> from nltk.sem.logic import _LogicParser # hack to give access to custom quote chars
     >>> lpq = _LogicParser()
     >>> lpq.quote_chars = [("'", "'", "\\", False)]
     >>> print(lpq.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )"))
