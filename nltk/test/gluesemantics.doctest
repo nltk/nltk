@@ -13,55 +13,55 @@ Linear logic
 ======================
 
     >>> from nltk.sem import logic
-    >>> from nltk.sem.linearlogic import *
-    >>> from nltk.sem import linearlogic as linlog
     >>> from nltk.sem.glue import *
+    >>> from nltk.sem.linearlogic import *
 
-    >>> llp = LinearLogicParser()
+    >>> from nltk.sem.linearlogic import Expression
+    >>> llexpr = Expression.fromstring
 
 Parser
 
-    >>> print(llp.parse(r'f'))
+    >>> print(llexpr(r'f'))
     f
-    >>> print(llp.parse(r'(g -o f)'))
+    >>> print(llexpr(r'(g -o f)'))
     (g -o f)
-    >>> print(llp.parse(r'(g -o (h -o f))'))
+    >>> print(llexpr(r'(g -o (h -o f))'))
     (g -o (h -o f))
-    >>> print(llp.parse(r'((g -o G) -o G)'))
+    >>> print(llexpr(r'((g -o G) -o G)'))
     ((g -o G) -o G)
-    >>> print(llp.parse(r'(g -o f)(g)'))
+    >>> print(llexpr(r'(g -o f)(g)'))
     (g -o f)(g)
-    >>> print(llp.parse(r'((g -o G) -o G)((g -o f))'))
+    >>> print(llexpr(r'((g -o G) -o G)((g -o f))'))
     ((g -o G) -o G)((g -o f))
 
 Simplify
 
-    >>> print(llp.parse(r'f').simplify())
+    >>> print(llexpr(r'f').simplify())
     f
-    >>> print(llp.parse(r'(g -o f)').simplify())
+    >>> print(llexpr(r'(g -o f)').simplify())
     (g -o f)
-    >>> print(llp.parse(r'((g -o G) -o G)').simplify())
+    >>> print(llexpr(r'((g -o G) -o G)').simplify())
     ((g -o G) -o G)
-    >>> print(llp.parse(r'(g -o f)(g)').simplify())
+    >>> print(llexpr(r'(g -o f)(g)').simplify())
     f
-    >>> try: llp.parse(r'(g -o f)(f)').simplify()
+    >>> try: llexpr(r'(g -o f)(f)').simplify()
     ... except LinearLogicApplicationException as e: print(e)
     ...
     Cannot apply (g -o f) to f. Cannot unify g with f given {}
-    >>> print(llp.parse(r'(G -o f)(g)').simplify())
+    >>> print(llexpr(r'(G -o f)(g)').simplify())
     f
-    >>> print(llp.parse(r'((g -o G) -o G)((g -o f))').simplify())
+    >>> print(llexpr(r'((g -o G) -o G)((g -o f))').simplify())
     f
 
 Test BindingDict
 
-    >>> h = linlog.ConstantExpression('h')
-    >>> g = linlog.ConstantExpression('g')
-    >>> f = linlog.ConstantExpression('f')
+    >>> h = ConstantExpression('h')
+    >>> g = ConstantExpression('g')
+    >>> f = ConstantExpression('f')
 
-    >>> H = linlog.VariableExpression('H')
-    >>> G = linlog.VariableExpression('G')
-    >>> F = linlog.VariableExpression('F')
+    >>> H = VariableExpression('H')
+    >>> G = VariableExpression('G')
+    >>> F = VariableExpression('F')
 
     >>> d1 = BindingDict({H: h})
     >>> d2 = BindingDict({F: f, G: F})
@@ -121,11 +121,11 @@ Test Unify
 
 Test Compile
 
-    >>> print(llp.parse('g').compile_pos(Counter(), GlueFormula))
+    >>> print(llexpr('g').compile_pos(Counter(), GlueFormula))
     (<ConstantExpression g>, [])
-    >>> print(llp.parse('(g -o f)').compile_pos(Counter(), GlueFormula))
+    >>> print(llexpr('(g -o f)').compile_pos(Counter(), GlueFormula))
     (<ImpExpression (g -o f)>, [])
-    >>> print(llp.parse('(g -o (h -o f))').compile_pos(Counter(), GlueFormula))
+    >>> print(llexpr('(g -o (h -o f))').compile_pos(Counter(), GlueFormula))
     (<ImpExpression (g -o (h -o f))>, [])
 
 

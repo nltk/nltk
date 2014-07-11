@@ -6,7 +6,7 @@
 ==================================
     >>> from __future__ import print_function
     >>> from nltk.featstruct import FeatStruct
-    >>> from nltk.sem.logic import Variable, VariableExpression, LogicParser
+    >>> from nltk.sem.logic import Variable, VariableExpression, Expression
 
 .. note:: For now, featstruct uses the older lambdalogic semantics
    module.  Eventually, it should be updated to use the new first
@@ -984,7 +984,8 @@ Unification Bindings
 
 Expressions
 -----------
-    >>> e=LogicParser().parse('\\P y.P(z,y)')
+
+    >>> e = Expression.fromstring('\\P y.P(z,y)')
     >>> fs1 = FeatStruct(x=e, y=Variable('z'))
     >>> fs2 = FeatStruct(y=VariableExpression(Variable('John')))
     >>> fs1.unify(fs2)
