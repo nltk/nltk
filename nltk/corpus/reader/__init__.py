@@ -91,6 +91,7 @@ from nltk.corpus.reader.lin import *
 from nltk.corpus.reader.semcor import *
 from nltk.corpus.reader.framenet import *
 from nltk.corpus.reader.udhr import *
+from nltk.corpus.reader.bnc import *
 from nltk.corpus.reader.sentiwordnet import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
@@ -126,5 +127,5 @@ __all__ = [
     'CHILDESCorpusReader', 'AlignedCorpusReader',
     'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader',
     'SemcorCorpusReader', 'FramenetCorpusReader', 'UdhrCorpusReader',
-    'SentiWordNetCorpusReader', 'SentiSynset'
+    'BNCCorpusReader', 'SentiWordNetCorpusReader', 'SentiSynset'
 ]

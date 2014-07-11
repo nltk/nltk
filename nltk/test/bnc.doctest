@@ -1,7 +1,7 @@
 .. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
-    >>> from nltk.corpus.reader.bnc import BNCCorpusReader
+    >>> from nltk.corpus.reader import BNCCorpusReader
     >>> bnc = BNCCorpusReader(root='.', fileids=r'FX8.xml')
 
 Checking the word access.
