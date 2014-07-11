@@ -1,6 +1,12 @@
 NLTK News
 =========
 
+NLTK 3.0b1 released : July 2014
+   FrameNet, SentiWordNet, universal tagset, misc efficiency improvements and bugfixes
+   Several API changes, see https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
+   For full details see:
+   https://raw.github.com/nltk/nltk/master/ChangeLog
+
 NLTK 3.0a4 released : June 2014
    FrameNet, universal tagset, misc efficiency improvements and bugfixes
    Several API changes, see https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0

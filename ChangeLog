@@ -1,10 +1,21 @@
-Version 3.0b1 2013-06-??
+Version 3.0b1 2013-07-11
+* Added SentiWordNet corpus and corpus reader
 * Fixed support for 10-column dependency file format
 * Changed Tree initialization to use fromstring
 
-Thanks to the following contributors to 3.0b1:
-Alireza Nourian, Zhe Wang
-
+Thanks to the following contributors to 3.0b1: Mark Amery, Ivan
+Barria, Ingolf Becker, Francis Bond, Lars Buitinck, Arthur Darcet,
+Michelle Fullwood, Dan Garrette, Dougal Graham, Dan Garrette, Dougal
+Graham, Tyler Hartley, Ofer Helman, Bruce Hill, Marcus Huderle, Nancy
+Ide, Nick Johnson, Angelos Katharopoulos, Ewan Klein, Mikhail Korobov,
+Chris Liechti, Peter Ljunglof, Joseph Lynch, Haejoong Lee, Peter
+Ljunglöf, Dean Malmgren, Rob Malouf, Thorsten Marek, Dmitrijs
+Milajevs, Shari A’aidil Nasruddin, Lance Nathan, Joel Nothman, Alireza
+Nourian, Alexander Oleynikov, Ted Pedersen, Jacob Perkins, Will
+Roberts, Alex Rudnick, Nathan Schneider, Geraldine Sim Wei Ying, Lynn
+Soe, Liling Tan, Louis Tiao, Marcus Uneson, Yu Usami, Steven Xu, Zhe
+Wang, Chuck Wooters, isnowfy, onesandzeros, pquentin, wvanlint
+	
 Version 3.0a4 2013-05-25
 * IBM Models 1-3, BLEU, Gale-Church aligner
 * Lesk algorithm for WSD
