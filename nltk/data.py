@@ -56,7 +56,7 @@ except ImportError:
 # this import should be more specific:
 import nltk
 
-from nltk.compat import py3_data, text_type, string_types, BytesIO, urlopen
+from nltk.compat import py3_data, text_type, string_types, BytesIO, urlopen, url2pathname
 
 ######################################################################
 # Search Path
@@ -579,14 +579,14 @@ def find(resource_name, paths=None):
         # Is the path item a directory or is resource_name an absolute path?
         elif not path_ or os.path.isdir(path_):
             if zipfile is None:
-                p = os.path.join(path_, resource_name)
+                p = os.path.join(path_, url2pathname(resource_name))
                 if os.path.exists(p):
                     if p.endswith('.gz'):
                         return GzipFileSystemPathPointer(p)
                     else:
                         return FileSystemPathPointer(p)
             else:
-                p = os.path.join(path_, zipfile)
+                p = os.path.join(path_, url2pathname(zipfile))
                 if os.path.exists(p):
                     try:
                         return ZipFilePathPointer(p, zipentry)
@@ -882,13 +882,13 @@ def _open(resource_url):
         for the file in the the NLTK data package.
     """
     resource_url = normalize_resource_url(resource_url)
-    protocol, _path = split_resource_url(resource_url)
+    protocol, path_ = split_resource_url(resource_url)
 
     if protocol is None or protocol.lower() == 'nltk':
-        return find(_path, path + ['']).open()
+        return find(path_, path + ['']).open()
     elif protocol.lower() == 'file':
         # urllib might not use mode='rb', so handle this one ourselves:
-        return find(_path, ['']).open()
+        return find(path_, ['']).open()
     else:
         return urlopen(resource_url)
 
