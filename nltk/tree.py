@@ -1512,7 +1512,7 @@ def demo():
     and shows the results of calling several of their methods.
     """
 
-    from nltk import Tree
+    from nltk import Tree, ProbabilisticTree
 
     # Demonstrate tree parsing.
     s = '(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))'
@@ -1550,7 +1550,7 @@ def demo():
     print()
 
     # Demonstrate probabilistic trees.
-    pt = tree.ProbabilisticTree('x', ['y', 'z'], prob=0.5)
+    pt = ProbabilisticTree('x', ['y', 'z'], prob=0.5)
     print("Probabilistic Tree:")
     print(pt)
     print()
