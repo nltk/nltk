@@ -81,7 +81,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         for trial in range(self._repeats):
             if trace: print('k-means trial', trial)
             if not self._means or trial > 1:
-                self._means = self._rng.sample(vectors, self._num_means)
+                self._means = self._rng.sample(list(vectors), self._num_means)
             self._cluster_vectorspace(vectors, trace)
             meanss.append(self._means)
 
