@@ -59,9 +59,9 @@ currently supported by the data module are described by the dictionary
     ...     print('{0:<7} {1:}'.format(format, descr)) # doctest: +NORMALIZE_WHITESPACE
     cfg     A context free grammar.
     fcfg    A feature CFG.
-    fol     A list of first order logic expressions, parsed by nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.
+    fol     A list of first order logic expressions, parsed with nltk.sem.logic.Expression.fromstring.
     json    A serialized python object, stored using the json module.
-    logic   A list of first order logic expressions, parsed by nltk.sem.parse_logic().  Requires an additional logic_parser parameter
+    logic   A list of first order logic expressions, parsed by nltk.sem.logic._LogicParser.  Requires an additional logic_parser parameter
     pcfg    A probabilistic CFG.
     pickle  A serialized python object, stored using the pickle module.
     raw     The raw (byte string) contents of a file.
