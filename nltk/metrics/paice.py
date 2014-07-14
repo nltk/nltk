@@ -8,7 +8,7 @@ When these are given, Understemming Index (UI), Overstemming Index (OI),
 Stemming Weight (SW) and Error-rate relative to truncation (ERRT) are counted.
 
 References:
-Chris D. Paice: An Evaluation Method for Stemming Algorithms.
+Chris D. Paice (1994). An evaluation method for stemming algorithms. In Proceedings of SIGIR, 42--50.
 """
 
 import math
