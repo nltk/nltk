@@ -1,6 +1,6 @@
 # Natural Language Toolkit: IEER Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 
 import nltk
 from nltk import compat
-from .api import *
+from nltk.corpus.reader.api import *
 
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.

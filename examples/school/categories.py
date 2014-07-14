@@ -1,4 +1,4 @@
-from __future__ import print_statement
+from __future__ import print_function
 
 from words import *
 from nltk.wordnet import *

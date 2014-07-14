@@ -2,15 +2,12 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-
-# python2.5 compatibility
-from __future__ import with_statement
 
 # Work around mbcs bug in distutils.
 # http://bugs.python.org/issue10945
@@ -46,7 +43,7 @@ setup(
     url = "http://nltk.org/",
     long_description = """\
 The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 2.5 or higher.""",
+natural language processing.  NLTK requires Python 2.6, 2.7, or 3.2+.""",
     license = "Apache License, Version 2.0",
     keywords = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
@@ -66,6 +63,9 @@ natural language processing.  NLTK requires Python 2.5 or higher.""",
     'Operating System :: OS Independent',
     'Programming Language :: Python :: 2.6',
     'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3.2',
+    'Programming Language :: Python :: 3.3',
+    'Programming Language :: Python :: 3.4',
     'Topic :: Scientific/Engineering',
     'Topic :: Scientific/Engineering :: Artificial Intelligence',
     'Topic :: Scientific/Engineering :: Human Machine Interfaces',
@@ -76,8 +76,7 @@ natural language processing.  NLTK requires Python 2.5 or higher.""",
     'Topic :: Text Processing :: Indexing',
     'Topic :: Text Processing :: Linguistic',
     ],
-    package_data = {'nltk': ['nltk.jar', 'test/*.doctest', 'VERSION']},
+    package_data = {'nltk': ['test/*.doctest', 'VERSION']},
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
-    install_requires=['PyYAML>=3.09'],
     )

@@ -5,7 +5,7 @@ NLTK -- the Natural Language Toolkit -- is a suite of open source
 Python modules, data sets and tutorials supporting research and
 development in Natural Language Processing.
 
-Copyright (C) 2001-2013 NLTK Project
+Copyright (C) 2001-2014 NLTK Project
 
 For license information, see LICENSE.txt
 
@@ -21,11 +21,18 @@ NLTK may be freely redistributed, subject to the provisions of these licenses.
 Testing
 -------
 
-https://jenkins.shiningpanda.com/nltk/
+The CI test suite previously running at [Shining Panda](http://shiningpanda.com)
+is down due to them having taken their Clap de Fin. There have been some
+investigations into moving to other CI, but no official build is running right
+now. This may change in the near future.
+
+nltk/test/runtests.py is a good starting point for running tests locally, but
+note that the suite is currently failing.
 
 Contributing
-------------------
-If you would like to contribute to NLTK, please post your ideas to [nltk-dev](http://groups.google.com/group/nltk-dev), or [fork nltk on github](https://github.com/nltk/nltk).
+------------
+
+[How to contribute to NLTK](http://www.nltk.org/contribute.html).
 
 The following people have contributed to NLTK:
 

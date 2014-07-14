@@ -4,7 +4,7 @@ import unittest
 from nltk.corpus import (sinica_treebank, conll2007, indian, cess_cat, cess_esp,
                          floresta, ptb, udhr)
 from nltk.tree import Tree
-from .utils import skipIf
+from nltk.test.unit.utils import skipIf
 
 
 class TestUdhr(unittest.TestCase):

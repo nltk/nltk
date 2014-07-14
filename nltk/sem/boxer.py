@@ -3,7 +3,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -36,11 +36,11 @@ from functools import reduce
 
 from nltk.internals import Counter, find_binary
 
-from nltk.sem.logic import (ExpectedMoreTokensException, ParseException,
+from nltk.sem.logic import (ExpectedMoreTokensException, LogicalExpressionException,
                             UnexpectedTokenException, Variable)
 
 from nltk.sem.drt import (DRS, DrtApplicationExpression, DrtEqualityExpression,
-                          DrtNegatedExpression, DrtOrExpression, DrtParser,
+                          DrtNegatedExpression, DrtOrExpression, _DrtParser,
                           DrtProposition, DrtTokens, DrtVariableExpression)
 
 from nltk.compat import python_2_unicode_compatible
@@ -84,12 +84,12 @@ class Boxer(object):
         :return: ``drt.AbstractDrs``
         """
         discourse_ids = ([discourse_id] if discourse_id is not None else None)
-        d, = self.batch_interpret_multisentence([[input]], discourse_ids, question, verbose)
+        d, = self.interpret_multi_sents([[input]], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
         return d
 
-    def interpret_multisentence(self, input, discourse_id=None, question=False, verbose=False):
+    def interpret_multi(self, input, discourse_id=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
 
@@ -99,12 +99,12 @@ class Boxer(object):
         :return: ``drt.AbstractDrs``
         """
         discourse_ids = ([discourse_id] if discourse_id is not None else None)
-        d, = self.batch_interpret_multisentence([input], discourse_ids, question, verbose)
+        d, = self.interpret_multi_sents([input], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "%s"' % input)
         return d
 
-    def batch_interpret(self, inputs, discourse_ids=None, question=False, verbose=False):
+    def interpret_sents(self, inputs, discourse_ids=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
 
@@ -113,9 +113,9 @@ class Boxer(object):
         :param discourse_ids: list of str Identifiers to be inserted to each occurrence-indexed predicate.
         :return: list of ``drt.AbstractDrs``
         """
-        return self.batch_interpret_multisentence([[input] for input in inputs], discourse_ids, question, verbose)
+        return self.interpret_multi_sents([[input] for input in inputs], discourse_ids, question, verbose)
 
-    def batch_interpret_multisentence(self, inputs, discourse_ids=None, question=False, verbose=False):
+    def interpret_multi_sents(self, inputs, discourse_ids=None, question=False, verbose=False):
         """
         Use Boxer to give a first order representation.
 
@@ -262,13 +262,13 @@ class Boxer(object):
         return BoxerOutputDrsParser([None,discourse_id][use_disc_id]).parse(drs_string)
 
 
-class BoxerOutputDrsParser(DrtParser):
+class BoxerOutputDrsParser(_DrtParser):
     def __init__(self, discourse_id=None):
         """
         This class is used to parse the Prolog DRS output from Boxer into a
         hierarchy of python objects.
         """
-        DrtParser.__init__(self)
+        _DrtParser.__init__(self)
         self.discourse_id = discourse_id
         self.sentence_id_offset = None
         self.quote_chars = [("'", "'", "\\", False)]
@@ -276,7 +276,7 @@ class BoxerOutputDrsParser(DrtParser):
 
     def parse(self, data, signature=None):
         self._label_counter = Counter(-1)
-        return DrtParser.parse(self, data, signature)
+        return _DrtParser.parse(self, data, signature)
 
     def get_all_symbols(self):
         return ['(', ')', ',', '[', ']',':']
@@ -615,12 +615,12 @@ class BoxerOutputDrsParser(DrtParser):
             return [(None, word_indices)]
 
 
-class BoxerDrsParser(DrtParser):
+class BoxerDrsParser(_DrtParser):
     """
     Reparse the str form of subclasses of ``AbstractBoxerDrs``
     """
     def __init__(self, discourse_id=None):
-        DrtParser.__init__(self)
+        _DrtParser.__init__(self)
         self.discourse_id = discourse_id
 
     def get_all_symbols(self):
@@ -775,7 +775,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerWhq(disc_id, sent_id, word_ids, ans_types, drs1, var, drs2)
         except Exception as e:
-            raise ParseException(self._currentIndex, str(e))
+            raise LogicalExpressionException(self._currentIndex, str(e))
         assert False, repr(tok)
 
     def nullableIntToken(self):
@@ -1215,7 +1215,7 @@ if __name__ == '__main__':
         opts.error("incorrect number of arguments")
 
     interpreter = NltkDrtBoxerDrsInterpreter(occur_index=options.occur_index)
-    drs = Boxer(interpreter).interpret_multisentence(args[0].split(r'\n'), question=options.question, verbose=options.verbose)
+    drs = Boxer(interpreter).interpret_multi(args[0].split(r'\n'), question=options.question, verbose=options.verbose)
     if drs is None:
         print(None)
     else:

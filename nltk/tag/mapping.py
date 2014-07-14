@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagset Mapping
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Nathan Schneider <nathan@cmu.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -44,8 +44,12 @@ _MAPPINGS = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 'UNK')))
 
 
 def _load_universal_map(fileid):
-    mapping = {}
     contents = load(join(_UNIVERSAL_DATA, fileid+'.map'), format="text")
+
+    # When mapping to the Universal Tagset,
+    # map unknown inputs to 'X' not 'UNK'
+    _MAPPINGS[fileid]['universal'].default_factory = lambda: 'X'
+
     for line in contents.splitlines():
         line = line.strip()
         if line == '':

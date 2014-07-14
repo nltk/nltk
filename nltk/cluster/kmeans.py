@@ -1,6 +1,6 @@
 # Natural Language Toolkit: K-Means Clusterer
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -81,7 +81,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         for trial in range(self._repeats):
             if trace: print('k-means trial', trial)
             if not self._means or trial > 1:
-                self._means = self._rng.sample(vectors, self._num_means)
+                self._means = self._rng.sample(list(vectors), self._num_means)
             self._cluster_vectorspace(vectors, trace)
             meanss.append(self._means)
 
@@ -121,7 +121,7 @@ class KMeansClusterer(VectorSpaceClusterer):
                     #print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
 
                 # recalculate cluster means by computing the centroid of each cluster
-                new_means = map(self._centroid, clusters, self._means)
+                new_means = list(map(self._centroid, clusters, self._means))
 
                 # measure the degree of change from the previous step for convergence
                 difference = self._sum_distances(self._means, new_means)

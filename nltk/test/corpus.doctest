@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ================
@@ -168,7 +168,7 @@ tags are collapsed to a single category ``NOUN``:
      [('The', 'DET'), ('jury', 'NOUN'), ('further', 'ADV'), ('said', 'VERB'), ('in', 'ADP'), ...]...]
     >>> from nltk.corpus import conll2000, switchboard
     >>> print(conll2000.tagged_words(tagset='universal')) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [('Confidence', 'NOUN'), ('in', 'ADP'), ('the', 'DET'), ...]
+    [('Confidence', 'NOUN'), ('in', 'ADP'), ...]
 
 Use ``nltk.app.pos_concordance()`` to access a GUI for searching tagged corpora.
 
@@ -234,10 +234,11 @@ to the entire chunk).
     [[['The'], ['Fulton', 'County', 'Grand', 'Jury'], ['said'], ...
     ['.']], [['The'], ['jury'], ['further'], ['said'], ... ['.']], ...]
     >>> list(map(str, semcor.tagged_chunks(tag='both')[:3]))
-    ['(DT The)', '(group.01 (NE (NNP Fulton County Grand Jury)))', '(say.01 (VB said))']
-    >>> [[str(c) for c in s] for s in semcor.tagged_sents(tag='both')[:2]] # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [['(DT The)', '(group.01 (NE (NNP Fulton County Grand Jury)))', '(say.01 (VB said))', ...
+    ['(DT The)', "(Lemma('group.n.01.group') (NE (NNP Fulton County Grand Jury)))", "(Lemma('state.v.01.say') (VB said))"]
+    >>> [[str(c) for c in s] for s in semcor.tagged_sents(tag='both')[:2]]
+    [['(DT The)', "(Lemma('group.n.01.group') (NE (NNP Fulton County Grand Jury)))", ...
      '(None .)'], ['(DT The)', ... '(None .)']]
+    
 
 The IEER corpus is another chunked corpus.  This corpus is unusual in
 that each corpus item contains multiple documents.  (This reflects the
@@ -478,6 +479,11 @@ PropBank
 
 Please see the separate PropBank howto.
 
+SentiWordNet
+============
+
+Please see the separate SentiWordNet howto.
+
 Categorized Corpora
 ===================
 
@@ -695,9 +701,9 @@ distribution of part-of-speech tags for reduplicated words.
     >>> for record in rotokas[1:]:
     ...     lexeme = record.find('lx').text
     ...     if re.match(r'(.*)\1$', lexeme):
-    ...         redup_pos_freqdist.inc(record.find('ps').text)
-    >>> for item in redup_pos_freqdist.keys():
-    ...     print(item, redup_pos_freqdist[item])
+    ...         redup_pos_freqdist[record.find('ps').text] += 1
+    >>> for item, count in redup_pos_freqdist.most_common():
+    ...     print(item, count)
     V 41
     N 14
     ??? 4
@@ -944,10 +950,10 @@ and ``p.attrib['user']``.  They also have text content, accessed using ``p.text`
     >>> print(nltk.corpus.nps_chat.xml_posts()) # doctest: +ELLIPSIS
     [<Element 'Post' at 0...>, <Element 'Post' at 0...>, ...]
     >>> posts = nltk.corpus.nps_chat.xml_posts()
-    >>> list(nltk.FreqDist(p.attrib['class'] for p in posts).keys())
-    ['Statement', 'System', 'Greet', 'Emotion', 'ynQuestion',
-    'whQuestion', 'Accept', 'Bye', 'Emphasis', 'Continuer',
-    'Reject', 'yAnswer', 'nAnswer', 'Clarify', 'Other']
+    >>> sorted(nltk.FreqDist(p.attrib['class'] for p in posts).keys())
+    ['Accept', 'Bye', 'Clarify', 'Continuer', 'Emotion', 'Emphasis',
+    'Greet', 'Other', 'Reject', 'Statement', 'System', 'nAnswer',
+    'whQuestion', 'yAnswer', 'ynQuestion']
     >>> posts[0].text
     'now im left with this gay name'
 

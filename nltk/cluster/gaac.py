@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Group Average Agglomerative Clusterer
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -50,8 +50,8 @@ class GAAClusterer(VectorSpaceClusterer):
         # construct the similarity matrix
         dims = (N, N)
         dist = numpy.ones(dims, dtype=numpy.float)*numpy.inf
-        for i in xrange(N):
-            for j in xrange(i+1, N):
+        for i in range(N):
+            for j in range(i+1, N):
                 dist[i, j] = cosine_distance(vectors[i], vectors[j])
 
         while cluster_count > max(self._num_clusters, 1):

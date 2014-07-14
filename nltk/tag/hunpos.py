@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the HunPos POS-tagger
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         David Nemeskey <nemeskeyd@gmail.com> (modifications)
 #         Attila Zseder <zseder@gmail.com> (modifications)
@@ -58,7 +58,7 @@ class HunposTagger(TaggerI):
         :param path_to_model: The model file.
         :param path_to_bin: The hunpos-tag binary.
         :param encoding: The encoding used by the model. Unicode tokens
-            passed to the tag() and batch_tag() methods are converted to
+            passed to the tag() and tag_sents() methods are converted to
             this charset when they are sent to hunpos-tag.
             The default is ISO-8859-1 (Latin-1).
 

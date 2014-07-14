@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Lin's Thesaurus
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Dan Blanchard <dblanchard@ets.org>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.txt

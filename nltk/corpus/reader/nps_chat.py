@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NPS Chat Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -13,9 +13,9 @@ from nltk.util import LazyConcatenation
 from nltk.internals import ElementWrapper
 from nltk.tag import map_tag
 
-from .util import *
-from .api import *
-from .xmldocs import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.xmldocs import *
 
 class NPSChatCorpusReader(XMLCorpusReader):
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Shift-Reduce Parser
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -97,14 +97,10 @@ class ShiftReduceParser(ParserI):
             while self._reduce(stack, remaining_text): pass
 
         # Did we reduce everything?
-        if len(stack) != 1: return None
-
-        # Did we end up with the right category?
-        if stack[0].label() != self._grammar.start().symbol():
-            return None
-
-        # We parsed successfully!
-        return stack[0]
+        if len(stack) == 1: 
+            # Did we end up with the right category?
+            if stack[0].label() == self._grammar.start().symbol():
+                yield stack[0]
 
     def _shift(self, stack, remaining_text):
         """
@@ -141,15 +137,15 @@ class ShiftReduceParser(ParserI):
             stack.
         """
 
-        if len(rightmost_stack) != len(rhs): return 0
+        if len(rightmost_stack) != len(rhs): return False
         for i in range(len(rightmost_stack)):
             if isinstance(rightmost_stack[i], Tree):
-                if not isinstance(rhs[i], Nonterminal): return 0
-                if rightmost_stack[i].label() != rhs[i].symbol(): return 0
+                if not isinstance(rhs[i], Nonterminal): return False
+                if rightmost_stack[i].label() != rhs[i].symbol(): return False
             else:
-                if isinstance(rhs[i], Nonterminal): return 0
-                if rightmost_stack[i] != rhs[i]: return 0
-        return 1
+                if isinstance(rhs[i], Nonterminal): return False
+                if rightmost_stack[i] != rhs[i]: return False
+        return True
 
     def _reduce(self, stack, remaining_text, production=None):
         """
@@ -172,8 +168,10 @@ class ShiftReduceParser(ParserI):
         :param remaining_text: The portion of the text that is not yet
             covered by ``stack``.
         """
-        if production is None: productions = self._grammar.productions()
-        else: productions = [production]
+        if production is None:
+            productions = self._grammar.productions()
+        else:
+            productions = [production]
 
         # Try each production, in order.
         for production in productions:
@@ -298,12 +296,12 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         self._remaining_text = None
         self._history = []
 
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         tokens = list(tokens)
         self.initialize(tokens)
-        while self.step(): pass
-
-        return self.parses()[:n]
+        while self.step():
+            pass
+        return self.parses()
 
     def stack(self):
         """
@@ -334,10 +332,10 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         Perform a single parsing operation.  If a reduction is
         possible, then perform that reduction, and return the
         production that it is based on.  Otherwise, if a shift is
-        possible, then perform it, and return 1.  Otherwise,
-        return 0.
+        possible, then perform it, and return True.  Otherwise,
+        return False.
 
-        :return: 0 if no operation was performed; 1 if a shift was
+        :return: False if no operation was performed; True if a shift was
             performed; and the CFG production used to reduce if a
             reduction was performed.
         :rtype: Production or bool
@@ -353,10 +351,10 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         :return: True if the shift operation was successful.
         :rtype: bool
         """
-        if len(self._remaining_text) == 0: return 0
+        if len(self._remaining_text) == 0: return False
         self._history.append( (self._stack[:], self._remaining_text[:]) )
         self._shift(self._stack, self._remaining_text)
-        return 1
+        return True
 
     def reduce(self, production=None):
         """
@@ -388,9 +386,9 @@ class SteppingShiftReduceParser(ShiftReduceParser):
         :return: true if an operation was successfully undone.
         :rtype: bool
         """
-        if len(self._history) == 0: return 0
+        if len(self._history) == 0: return False
         (self._stack, self._remaining_text) = self._history.pop()
-        return 1
+        return True
 
     def reducible_productions(self):
         """
@@ -407,15 +405,15 @@ class SteppingShiftReduceParser(ShiftReduceParser):
 
     def parses(self):
         """
-        :return: A list of the parses that have been found by this
+        :return: An iterator of the parses that have been found by this
             parser so far.
-        :rtype: list of Tree
+        :rtype: iter(Tree)
         """
-        if len(self._remaining_text) != 0: return []
-        if len(self._stack) != 1: return []
-        if self._stack[0].label() != self._grammar.start().symbol():
-            return []
-        return self._stack
+        if (len(self._remaining_text) == 0 and
+            len(self._stack) == 1 and
+            self._stack[0].label() == self._grammar.start().symbol()
+            ):
+            yield self._stack[0]
 
 # copied from nltk.parser
 
@@ -437,9 +435,9 @@ def demo():
     A demonstration of the shift-reduce parser.
     """
 
-    from nltk import parse, parse_cfg
+    from nltk import parse, CFG
 
-    grammar = parse_cfg("""
+    grammar = CFG.fromstring("""
     S -> NP VP
     NP -> Det N | Det N PP
     VP -> V NP | V NP PP
@@ -454,7 +452,7 @@ def demo():
     sent = 'I saw a man in the park'.split()
 
     parser = parse.ShiftReduceParser(grammar, trace=2)
-    for p in parser.nbest_parse(sent):
+    for p in parser.parse(sent):
         print(p)
 
 if __name__ == '__main__':

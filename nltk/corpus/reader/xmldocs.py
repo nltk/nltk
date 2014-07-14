@@ -1,6 +1,6 @@
 # Natural Language Toolkit: XML Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -209,7 +209,7 @@ class XMLCorpusView(StreamBackedCorpusView):
           ((<!--.*?-->)                         |  # comment
            (<![CDATA[.*?]])                     |  # raw character data
            (<!DOCTYPE\s+[^\[]*(\[[^\]]*])?\s*>) |  # doctype decl
-           (<[^>]*>))                              # tag or PI
+           (<[^!>][^>]*>))                         # tag or PI
           [^<]*)*
         \Z""",
         re.DOTALL|re.VERBOSE)
@@ -245,9 +245,9 @@ class XMLCorpusView(StreamBackedCorpusView):
         """
         fragment = ''
 
+        if isinstance(stream, SeekableUnicodeStreamReader):
+            startpos = stream.tell()
         while True:
-            if isinstance(stream, SeekableUnicodeStreamReader):
-                startpos = stream.tell()
             # Read a block and add it to the fragment.
             xml_block = stream.read(self._BLOCK_SIZE)
             fragment += xml_block

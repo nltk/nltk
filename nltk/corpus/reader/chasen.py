@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,7 +9,7 @@ from __future__ import print_function
 
 import sys
 
-from . import util
+from nltk.corpus.reader import util
 
 from nltk import compat
 from nltk.corpus.reader.util import *

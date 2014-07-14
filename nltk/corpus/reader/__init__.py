@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -91,10 +91,12 @@ from nltk.corpus.reader.lin import *
 from nltk.corpus.reader.semcor import *
 from nltk.corpus.reader.framenet import *
 from nltk.corpus.reader.udhr import *
+from nltk.corpus.reader.bnc import *
+from nltk.corpus.reader.sentiwordnet import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
-from . import bracket_parse
+from nltk.corpus.reader import bracket_parse
 
 __all__ = [
     'CorpusReader', 'CategorizedCorpusReader',
@@ -125,4 +127,5 @@ __all__ = [
     'CHILDESCorpusReader', 'AlignedCorpusReader',
     'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader',
     'SemcorCorpusReader', 'FramenetCorpusReader', 'UdhrCorpusReader',
+    'BNCCorpusReader', 'SentiWordNetCorpusReader', 'SentiSynset'
 ]

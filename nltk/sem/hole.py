@@ -3,7 +3,7 @@
 # Author:     Peter Wang
 # Updated by: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -316,7 +316,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
     # Parse the sentence.
     tokens = sentence.split()
-    trees = parser.nbest_parse(tokens)
+    trees = list(parser.parse(tokens))
     if verbose: print('Got %d different parses' % len(trees))
 
     all_readings = []

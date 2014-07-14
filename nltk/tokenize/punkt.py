@@ -1,11 +1,12 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Edward Loper <edloper@gmail.com> (rewrite)
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
+#         Arthur Darcet <arthur@darcet.fr> (fixes)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -49,7 +50,7 @@ flag.
     >>> text = '''
     ... (How does it deal with this parenthesis?)  "It should be part of the
     ... previous sentence." "(And the same with this one.)" ('And this one!')
-    ... "('(And (this)) '?)" [(and this.)]
+    ... "('(And (this)) '?)" [(and this. )]
     ... '''
     >>> print('\n-----\n'.join(
     ...     sent_detector.tokenize(text.strip())))
@@ -64,7 +65,7 @@ flag.
     -----
     "('(And (this)) '?)"
     -----
-    [(and this.)]
+    [(and this. )]
     >>> print('\n-----\n'.join(
     ...     sent_detector.tokenize(text.strip(), realign_boundaries=False)))
     (How does it deal with this parenthesis?
@@ -775,7 +776,7 @@ class PunktTrainer(PunktBaseClass):
         # strip off final periods.)  Also keep track of the number of
         # tokens that end in periods.
         for aug_tok in tokens:
-            self._type_fdist.inc(aug_tok.type)
+            self._type_fdist[aug_tok.type] += 1
             if aug_tok.period_final:
                 self._num_period_toks += 1
 
@@ -820,12 +821,12 @@ class PunktTrainer(PunktBaseClass):
 
             # Does second token have a high likelihood of starting a sentence?
             if self._is_potential_sent_starter(aug_tok2, aug_tok1):
-                self._sent_starter_fdist.inc(aug_tok2.type)
+                self._sent_starter_fdist[aug_tok2.type] += 1
 
             # Is this bigram a potential collocation?
             if self._is_potential_collocation(aug_tok1, aug_tok2):
-                self._collocation_fdist.inc(
-                    (aug_tok1.type_no_period, aug_tok2.type_no_sentperiod))
+                self._collocation_fdist[
+                    (aug_tok1.type_no_period, aug_tok2.type_no_sentperiod)] += 1
 
     def _unique_types(self, tokens):
         return set(aug_tok.type for aug_tok in tokens)
@@ -890,8 +891,8 @@ class PunktTrainer(PunktBaseClass):
             if count < threshold:
                 num_removed += 1
             else:
-                res.inc(tok, count)
-        res.inc(None, num_removed)
+                res[tok] += count
+        res[None] += num_removed
         return res
 
     #////////////////////////////////////////////////////////////
@@ -1297,12 +1298,15 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                 break_decision=tokens[0].sentbreak,
             )
 
-    def span_tokenize(self, text):
+    def span_tokenize(self, text, realign_boundaries=True):
         """
         Given a text, returns a list of the (start, end) spans of sentences
         in the text.
         """
-        return [(sl.start, sl.stop) for sl in self._slices_from_text(text)]
+        slices = self._slices_from_text(text)
+        if realign_boundaries:
+            slices = self._realign_boundaries(text, slices)
+        return [(sl.start, sl.stop) for sl in slices]
 
     def sentences_from_text(self, text, realign_boundaries=True):
         """
@@ -1311,10 +1315,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         True, includes in the sentence closing punctuation that
         follows the period.
         """
-        sents = [text[sl] for sl in self._slices_from_text(text)]
-        if realign_boundaries:
-            sents = self._realign_boundaries(sents)
-        return sents
+        return [text[s:e] for s, e in self.span_tokenize(text, realign_boundaries)]
 
     def _slices_from_text(self, text):
         last_break = 0
@@ -1330,7 +1331,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                     last_break = match.end()
         yield slice(last_break, len(text))
 
-    def _realign_boundaries(self, sents):
+    def _realign_boundaries(self, text, slices):
         """
         Attempts to realign punctuation that falls after the period but
         should otherwise be included in the same sentence.
@@ -1344,21 +1345,21 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
             ["(Sent1.)", "Sent2."].
         """
         realign = 0
-        for s1, s2 in _pair_iter(sents):
-            s1 = s1[realign:]
-            if not s2:
-                if s1:
-                    yield s1
+        for sl1, sl2 in _pair_iter(slices):
+            sl1 = slice(sl1.start + realign, sl1.stop)
+            if not sl2:
+                if text[sl1]:
+                    yield sl1
                 continue
 
-            m = self._lang_vars.re_boundary_realignment.match(s2)
+            m = self._lang_vars.re_boundary_realignment.match(text[sl2])
             if m:
-                yield s1 + m.group(0).strip()
+                yield slice(sl1.start, sl2.start + len(m.group(0).rstrip()))
                 realign = m.end()
             else:
                 realign = 0
-                if s1:
-                    yield s1
+                if text[sl1]:
+                    yield sl1
 
     def text_contains_sentbreak(self, text):
         """

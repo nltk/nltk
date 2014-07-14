@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Jason Narad <jason.narad@gmail.com>
@@ -22,8 +22,8 @@ sentences.  In this context, the leaves of a parse tree are word
 tokens; and the node values are phrasal categories, such as ``NP``
 and ``VP``.
 
-The ``ContextFreeGrammar`` class is used to encode context free grammars.  Each
-``ContextFreeGrammar`` consists of a start symbol and a set of productions.
+The ``CFG`` class is used to encode context free grammars.  Each
+``CFG`` consists of a start symbol and a set of productions.
 The "start symbol" specifies the root node value for parse trees.  For example,
 the start symbol for syntactic parsing is usually ``S``.  Start
 symbols are encoded using the ``Nonterminal`` class, which is discussed
@@ -48,7 +48,7 @@ corresponding child may be a ``Token`` with the with that type.
 The ``Nonterminal`` class is used to distinguish node values from leaf
 values.  This prevents the grammar from accidentally using a leaf
 value (such as the English word "A") as the node of a subtree.  Within
-a ``ContextFreeGrammar``, all node values are wrapped in the ``Nonterminal``
+a ``CFG``, all node values are wrapped in the ``Nonterminal``
 class. Note, however, that the trees that are specified by the grammar do
 *not* include these ``Nonterminal`` wrappers.
 
@@ -78,7 +78,7 @@ from nltk.compat import (string_types, total_ordering, text_type,
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
-from nltk.featstruct import FeatStruct, FeatDict, FeatStructParser, SLASH, TYPE
+from nltk.featstruct import FeatStruct, FeatDict, FeatStructReader, SLASH, TYPE
 
 #################################################################
 # Nonterminal
@@ -99,7 +99,7 @@ class Nonterminal(object):
     hashable.  Two ``Nonterminals`` are considered equal if their
     symbols are equal.
 
-    :see: ``ContextFreeGrammar``, ``Production``
+    :see: ``CFG``, ``Production``
     :type _symbol: any
     :ivar _symbol: The node value corresponding to this
         ``Nonterminal``.  This value must be immutable and hashable.
@@ -244,7 +244,7 @@ class Production(object):
     not a ``Nonterminal``.  Typically, terminals are strings
     representing words, such as ``"dog"`` or ``"under"``.
 
-    :see: ``ContextFreeGrammar``
+    :see: ``CFG``
     :see: ``DependencyGrammar``
     :see: ``Nonterminal``
     :type _lhs: Nonterminal
@@ -373,26 +373,26 @@ class DependencyProduction(Production):
 
 
 @python_2_unicode_compatible
-class WeightedProduction(Production, ImmutableProbabilisticMixIn):
+class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
-    A PCFG ``WeightedProduction`` is essentially just a ``Production`` that
+    A PCFG ``ProbabilisticProduction`` is essentially just a ``Production`` that
     has an associated probability, which represents how likely it is that
     this production will be used.  In particular, the probability of a
-    ``WeightedProduction`` records the likelihood that its right-hand side is
+    ``ProbabilisticProduction`` records the likelihood that its right-hand side is
     the correct instantiation for any given occurrence of its left-hand side.
 
     :see: ``Production``
     """
     def __init__(self, lhs, rhs, **prob):
         """
-        Construct a new ``WeightedProduction``.
+        Construct a new ``ProbabilisticProduction``.
 
-        :param lhs: The left-hand side of the new ``WeightedProduction``.
+        :param lhs: The left-hand side of the new ``ProbabilisticProduction``.
         :type lhs: Nonterminal
-        :param rhs: The right-hand side of the new ``WeightedProduction``.
+        :param rhs: The right-hand side of the new ``ProbabilisticProduction``.
         :type rhs: sequence(Nonterminal and terminal)
-        :param prob: Probability parameters of the new ``WeightedProduction``.
+        :param prob: Probability parameters of the new ``ProbabilisticProduction``.
         """
         ImmutableProbabilisticMixIn.__init__(self, **prob)
         Production.__init__(self, lhs, rhs)
@@ -417,7 +417,7 @@ class WeightedProduction(Production, ImmutableProbabilisticMixIn):
 #################################################################
 
 @python_2_unicode_compatible
-class ContextFreeGrammar(object):
+class CFG(object):
     """
     A context-free grammar.  A grammar consists of a start state and
     a set of productions.  The set of terminals and nonterminals is
@@ -507,6 +507,16 @@ class ContextFreeGrammar(object):
             for left in lefts:
                 lc.update(self._immediate_leftcorner_words.get(left, set()))
 
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        """
+        Return the ``CFG`` corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        """
+        start, productions = read_grammar(input, standard_nonterm_parser,
+                                          encoding=encoding)
+        return CFG(start, productions)
 
     def start(self):
         """
@@ -702,10 +712,10 @@ class ContextFreeGrammar(object):
         return result
 
 
-class FeatureGrammar(ContextFreeGrammar):
+class FeatureGrammar(CFG):
     """
     A feature-based grammar.  This is equivalent to a
-    ``ContextFreeGrammar`` whose nonterminals are all
+    ``CFG`` whose nonterminals are all
     ``FeatStructNonterminal``.
 
     A grammar consists of a start state and a set of
@@ -722,7 +732,7 @@ class FeatureGrammar(ContextFreeGrammar):
         :param productions: The list of productions that defines the grammar
         :type productions: list(Production)
         """
-        ContextFreeGrammar.__init__(self, start, productions)
+        CFG.__init__(self, start, productions)
 
     # The difference with CFG is that the productions are
     # indexed on the TYPE feature of the nonterminals.
@@ -756,6 +766,35 @@ class FeatureGrammar(ContextFreeGrammar):
             for token in prod._rhs:
                 if is_terminal(token):
                     self._lexical_index.setdefault(token, set()).add(prod)
+
+    @classmethod
+    def fromstring(cls, input, features=None, logic_parser=None, fstruct_reader=None,
+               encoding=None):
+        """
+        Return a feature structure based ``FeatureGrammar``.
+
+        :param input: a grammar, either in the form of a string or else
+        as a list of strings.
+        :param features: a tuple of features (default: SLASH, TYPE)
+        :param logic_parser: a parser for lambda-expressions,
+        by default, ``LogicParser()``
+        :param fstruct_reader: a feature structure parser
+        (only if features and logic_parser is None)
+        """
+        if features is None:
+            features = (SLASH, TYPE)
+
+        if fstruct_reader is None:
+            fstruct_reader = FeatStructReader(features, FeatStructNonterminal,
+                                              logic_parser=logic_parser)
+        elif logic_parser is not None:
+            raise Exception('\'logic_parser\' and \'fstruct_reader\' must '
+                            'not both be set')
+
+        start, productions = read_grammar(input, fstruct_reader.read_partial,
+                                          encoding=encoding)
+        return FeatureGrammar(start, productions)
+
 
     def productions(self, lhs=None, rhs=None, empty=False):
         """
@@ -865,6 +904,19 @@ class DependencyGrammar(object):
         """
         self._productions = productions
 
+    @classmethod
+    def fromstring(cls, input):
+        productions = []
+        for linenum, line in enumerate(input.split('\n')):
+            line = line.strip()
+            if line.startswith('#') or line=='': continue
+            try: productions += _read_dependency_production(line)
+            except ValueError:
+                raise ValueError('Unable to parse line %s: %s' % (linenum, line))
+        if len(productions) == 0:
+            raise ValueError('No productions found!')
+        return DependencyGrammar(productions)
+
     def contains(self, head, mod):
         """
         :param head: A head word.
@@ -930,7 +982,7 @@ class DependencyGrammar(object):
 
 
 @python_2_unicode_compatible
-class StatisticalDependencyGrammar(object):
+class ProbabilisticDependencyGrammar(object):
     """
 
     """
@@ -959,7 +1011,7 @@ class StatisticalDependencyGrammar(object):
 
     def __str__(self):
         """
-        Return a verbose string representation of the ``StatisticalDependencyGrammar``
+        Return a verbose string representation of the ``ProbabilisticDependencyGrammar``
 
         :rtype: str
         """
@@ -976,21 +1028,21 @@ class StatisticalDependencyGrammar(object):
 
     def __repr__(self):
         """
-        Return a concise string representation of the ``StatisticalDependencyGrammar``
+        Return a concise string representation of the ``ProbabilisticDependencyGrammar``
         """
         return 'Statistical Dependency grammar with %d productions' % len(self._productions)
 
 
-class WeightedGrammar(ContextFreeGrammar):
+class PCFG(CFG):
     """
-    A probabilistic context-free grammar.  A Weighted Grammar consists
-    of a start state and a set of weighted productions.  The set of
+    A probabilistic context-free grammar.  A PCFG consists of a
+    start state and a set of productions with probabilities.  The set of
     terminals and nonterminals is implicitly specified by the productions.
 
-    PCFG productions should be ``WeightedProductions``.
-    ``WeightedGrammars`` impose the constraint that the set of
-    productions with any given left-hand-side must have probabilities
-    that sum to 1.
+    PCFG productions use the ``ProbabilisticProduction`` class.
+    ``PCFGs`` impose the constraint that the set of productions with
+    any given left-hand-side must have probabilities that sum to 1
+    (allowing for a small margin of error).
 
     If you need efficient key-based access to productions, you can use
     a subclass to implement it.
@@ -1005,7 +1057,7 @@ class WeightedGrammar(ContextFreeGrammar):
     def __init__(self, start, productions, calculate_leftcorners=True):
         """
         Create a new context-free grammar, from the given start state
-        and set of ``WeightedProductions``.
+        and set of ``ProbabilisticProductions``.
 
         :param start: The start symbol
         :type start: Nonterminal
@@ -1018,7 +1070,7 @@ class WeightedGrammar(ContextFreeGrammar):
             leftcorner relation. In that case, some optimized chart parsers won't work.
         :type calculate_leftcorners: bool
         """
-        ContextFreeGrammar.__init__(self, start, productions, calculate_leftcorners)
+        CFG.__init__(self, start, productions, calculate_leftcorners)
 
         # Make sure that the probabilities sum to one.
         probs = {}
@@ -1026,9 +1078,23 @@ class WeightedGrammar(ContextFreeGrammar):
             probs[production.lhs()] = (probs.get(production.lhs(), 0) +
                                        production.prob())
         for (lhs, p) in probs.items():
-            if not ((1-WeightedGrammar.EPSILON) < p <
-                    (1+WeightedGrammar.EPSILON)):
+            if not ((1-PCFG.EPSILON) < p <
+                    (1+PCFG.EPSILON)):
                 raise ValueError("Productions for %r do not sum to 1" % lhs)
+
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        """
+        Return a probabilistic ``PCFG`` corresponding to the
+        input string(s).
+
+        :param input: a grammar, either in the form of a string or else
+             as a list of strings.
+        """
+        start, productions = read_grammar(input, standard_nonterm_parser,
+                                          probabilistic=True, encoding=encoding)
+        return PCFG(start, productions)
 
 
 #################################################################
@@ -1052,7 +1118,6 @@ def induce_pcfg(start, productions):
     :param productions: The list of productions that defines the grammar
     :type productions: list(Production)
     """
-
     # Production count: the number of times a given production occurs
     pcount = {}
 
@@ -1063,89 +1128,34 @@ def induce_pcfg(start, productions):
         lcount[prod.lhs()] = lcount.get(prod.lhs(), 0) + 1
         pcount[prod]       = pcount.get(prod,       0) + 1
 
-    prods = [WeightedProduction(p.lhs(), p.rhs(),
+    prods = [ProbabilisticProduction(p.lhs(), p.rhs(),
                                 prob=float(pcount[p]) / lcount[p.lhs()])
              for p in pcount]
-    return WeightedGrammar(start, prods)
+    return PCFG(start, prods)
 
 
 #################################################################
-# Parsing Grammars
+# Helper functions for reading productions
 #################################################################
 
-# Parsing CFGs
-
-def parse_cfg_production(input):
+def _read_cfg_production(input):
     """
     Return a list of context-free ``Productions``.
     """
-    return parse_production(input, standard_nonterm_parser)
+    return _read_production(input, standard_nonterm_parser)
 
-def parse_cfg(input, encoding=None):
+def _read_pcfg_production(input):
     """
-    Return the ``ContextFreeGrammar`` corresponding to the input string(s).
-
-    :param input: a grammar, either in the form of a string or
-        as a list of strings.
+    Return a list of PCFG ``ProbabilisticProductions``.
     """
-    start, productions = parse_grammar(input, standard_nonterm_parser,
-                                       encoding=encoding)
-    return ContextFreeGrammar(start, productions)
+    return _read_production(input, standard_nonterm_parser, probabilistic=True)
 
-# Parsing Probabilistic CFGs
-
-def parse_pcfg_production(input):
-    """
-    Return a list of PCFG ``WeightedProductions``.
-    """
-    return parse_production(input, standard_nonterm_parser, probabilistic=True)
-
-def parse_pcfg(input, encoding=None):
-    """
-    Return a probabilistic ``WeightedGrammar`` corresponding to the
-    input string(s).
-
-    :param input: a grammar, either in the form of a string or else
-        as a list of strings.
-    """
-    start, productions = parse_grammar(input, standard_nonterm_parser,
-                                       probabilistic=True, encoding=encoding)
-    return WeightedGrammar(start, productions)
-
-# Parsing Feature-based CFGs
-
-def parse_fcfg_production(input, fstruct_parser):
+def _read_fcfg_production(input, fstruct_reader):
     """
     Return a list of feature-based ``Productions``.
     """
-    return parse_production(input, fstruct_parser)
+    return _read_production(input, fstruct_reader)
 
-def parse_fcfg(input, features=None, logic_parser=None, fstruct_parser=None,
-               encoding=None):
-    """
-    Return a feature structure based ``FeatureGrammar``.
-
-    :param input: a grammar, either in the form of a string or else
-        as a list of strings.
-    :param features: a tuple of features (default: SLASH, TYPE)
-    :param logic_parser: a parser for lambda-expressions,
-        by default, ``LogicParser()``
-    :param fstruct_parser: a feature structure parser
-        (only if features and logic_parser is None)
-    """
-    if features is None:
-        features = (SLASH, TYPE)
-
-    if fstruct_parser is None:
-        fstruct_parser = FeatStructParser(features, FeatStructNonterminal,
-                                          logic_parser=logic_parser)
-    elif logic_parser is not None:
-        raise Exception('\'logic_parser\' and \'fstruct_parser\' must '
-                        'not both be set')
-
-    start, productions = parse_grammar(input, fstruct_parser.partial_parse,
-                                       encoding=encoding)
-    return FeatureGrammar(start, productions)
 
 # Parsing generic grammars
 
@@ -1154,7 +1164,7 @@ _PROBABILITY_RE = re.compile(r'( \[ [\d\.]+ \] ) \s*', re.VERBOSE)
 _TERMINAL_RE = re.compile(r'( "[^"]+" | \'[^\']+\' ) \s*', re.VERBOSE)
 _DISJUNCTION_RE = re.compile(r'\| \s*', re.VERBOSE)
 
-def parse_production(line, nonterm_parser, probabilistic=False):
+def _read_production(line, nonterm_parser, probabilistic=False):
     """
     Parse a grammar rule, given as a string, and return
     a list of productions.
@@ -1203,13 +1213,17 @@ def parse_production(line, nonterm_parser, probabilistic=False):
             rhsides[-1].append(nonterm)
 
     if probabilistic:
-        return [WeightedProduction(lhs, rhs, prob=probability)
+        return [ProbabilisticProduction(lhs, rhs, prob=probability)
                 for (rhs, probability) in zip(rhsides, probabilities)]
     else:
         return [Production(lhs, rhs) for rhs in rhsides]
 
 
-def parse_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
+#################################################################
+# Reading Phrase Structure Grammars
+#################################################################
+
+def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     """
     Return a pair consisting of a starting category and a list of
     ``Productions``.
@@ -1252,7 +1266,7 @@ def parse_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                     raise ValueError('Bad directive')
             else:
                 # expand out the disjunctions on the RHS
-                productions += parse_production(line, nonterm_parser, probabilistic)
+                productions += _read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
             raise ValueError('Unable to parse line %s: %s\n%s' %
                              (linenum+1, line, e))
@@ -1273,10 +1287,10 @@ def standard_nonterm_parser(string, pos):
 
 
 #################################################################
-# Parsing Dependency Grammars
+# Reading Dependency Grammars
 #################################################################
 
-_PARSE_DG_RE = re.compile(r'''^\s*                # leading whitespace
+_READ_DG_RE = re.compile(r'''^\s*                # leading whitespace
                               ('[^']+')\s*        # single-quoted lhs
                               (?:[-=]+>)\s*        # arrow
                               (?:(                 # rhs:
@@ -1289,20 +1303,8 @@ _PARSE_DG_RE = re.compile(r'''^\s*                # leading whitespace
                              re.VERBOSE)
 _SPLIT_DG_RE = re.compile(r'''('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)''')
 
-def parse_dependency_grammar(s):
-    productions = []
-    for linenum, line in enumerate(s.split('\n')):
-        line = line.strip()
-        if line.startswith('#') or line=='': continue
-        try: productions += parse_dependency_production(line)
-        except ValueError:
-            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
-    if len(productions) == 0:
-        raise ValueError('No productions found!')
-    return DependencyGrammar(productions)
-
-def parse_dependency_production(s):
-    if not _PARSE_DG_RE.match(s):
+def _read_dependency_production(s):
+    if not _READ_DG_RE.match(s):
         raise ValueError('Bad production string')
     pieces = _SPLIT_DG_RE.split(s)
     pieces = [p for i,p in enumerate(pieces) if i%2==1]
@@ -1322,10 +1324,10 @@ def parse_dependency_production(s):
 
 def cfg_demo():
     """
-    A demonstration showing how ``ContextFreeGrammars`` can be created and used.
+    A demonstration showing how ``CFGs`` can be created and used.
     """
 
-    from nltk import nonterminals, Production, parse_cfg
+    from nltk import nonterminals, Production, CFG
 
     # Create some nonterminals
     S, NP, VP, PP = nonterminals('S, NP, VP, PP')
@@ -1339,7 +1341,7 @@ def cfg_demo():
     print(Production(S, [NP]))
 
     # Create some Grammar Productions
-    grammar = parse_cfg("""
+    grammar = CFG.fromstring("""
       S -> NP VP
       PP -> P NP
       NP -> Det N | NP PP
@@ -1357,7 +1359,7 @@ def cfg_demo():
     print(repr(grammar.productions()).replace(',', ',\n'+' '*25))
     print()
 
-toy_pcfg1 = parse_pcfg("""
+toy_pcfg1 = PCFG.fromstring("""
     S -> NP VP [1.0]
     NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
     Det -> 'the' [0.8] | 'my' [0.2]
@@ -1368,7 +1370,7 @@ toy_pcfg1 = parse_pcfg("""
     P -> 'with' [0.61] | 'under' [0.39]
     """)
 
-toy_pcfg2 = parse_pcfg("""
+toy_pcfg2 = PCFG.fromstring("""
     S    -> NP VP         [1.0]
     VP   -> V NP          [.59]
     VP   -> V             [.40]
@@ -1396,7 +1398,7 @@ toy_pcfg2 = parse_pcfg("""
 
 def pcfg_demo():
     """
-    A demonstration showing how a ``WeightedGrammar`` can be created and used.
+    A demonstration showing how a ``PCFG`` can be created and used.
     """
 
     from nltk.corpus import treebank
@@ -1448,7 +1450,7 @@ def pcfg_demo():
 
     sent = treebank.parsed_sents(item)[0].leaves()
     print(sent)
-    for parse in parser.nbest_parse(sent):
+    for parse in parser.parse(sent):
         print(parse)
 
 def fcfg_demo():
@@ -1462,7 +1464,7 @@ def dg_demo():
     A demonstration showing the creation and inspection of a
     ``DependencyGrammar``.
     """
-    grammar = parse_dependency_grammar("""
+    grammar = DependencyGrammar.fromstring("""
     'scratch' -> 'cats' | 'walls'
     'walls' -> 'the'
     'cats' -> 'the'
@@ -1505,14 +1507,9 @@ if __name__ == '__main__':
     demo()
 
 __all__ = ['Nonterminal', 'nonterminals',
-           'Production', 'DependencyProduction', 'WeightedProduction',
-           'ContextFreeGrammar', 'WeightedGrammar', 'DependencyGrammar',
-           'StatisticalDependencyGrammar',
-           'induce_pcfg', 'parse_cfg', 'parse_cfg_production',
-           'parse_pcfg', 'parse_pcfg_production',
-           'parse_fcfg', 'parse_fcfg_production',
-           'parse_grammar', 'parse_production',
-           'parse_dependency_grammar', 'parse_dependency_production',
-           'demo', 'cfg_demo', 'pcfg_demo', 'dg_demo', 'sdg_demo',
-           'toy_pcfg1', 'toy_pcfg2']
+           'CFG', 'Production',
+	   'PCFG', 'ProbabilisticProduction',
+	   'DependencyGrammar', 'DependencyProduction',
+           'ProbabilisticDependencyGrammar',
+	   'induce_pcfg', 'read_grammar']
 

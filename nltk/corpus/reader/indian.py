@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Indian Language POS-Tagged Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -23,8 +23,8 @@ import codecs
 from nltk import compat
 from nltk.tag import str2tuple, map_tag
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class IndianCorpusReader(CorpusReader):
     """

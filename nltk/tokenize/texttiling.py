@@ -1,6 +1,6 @@
 # Natural Language Toolkit: TextTiling
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: George Boutsioukis
 #
 # URL: <http://nltk.org/>
@@ -274,13 +274,13 @@ class TextTilingTokenizer(TokenizerI):
         boundaries = [0 for x in depth_scores]
 
         avg = sum(depth_scores)/len(depth_scores)
-        numpy.stdev = numpy.std(depth_scores)
+        stdev = numpy.std(depth_scores)
 
         #SB: what is the purpose of this conditional?
         if self.cutoff_policy == LC:
-            cutoff = avg-numpy.stdev/2.0
+            cutoff = avg-stdev/2.0
         else:
-            cutoff = avg-numpy.stdev/2.0
+            cutoff = avg-stdev/2.0
 
         depth_tuples = sorted(zip(depth_scores, range(len(depth_scores))))
         depth_tuples.reverse()

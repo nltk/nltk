@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Switchboard Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,8 +10,8 @@ import re
 from nltk.tag import str2tuple, map_tag
 from nltk import compat
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 
 @compat.python_2_unicode_compatible

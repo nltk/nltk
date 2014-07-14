@@ -2,7 +2,7 @@
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -12,7 +12,7 @@ Utility functions for parsers.
 """
 from __future__ import print_function
 
-from nltk.grammar import ContextFreeGrammar, FeatureGrammar, WeightedGrammar
+from nltk.grammar import CFG, FeatureGrammar, PCFG
 from nltk.data import load
 
 from nltk.parse.chart import Chart, ChartParser
@@ -28,9 +28,9 @@ def load_parser(grammar_url, trace=0,
     on properties of the grammar itself.
 
     The following grammar formats are currently supported:
-      - ``'cfg'``  (CFGs: ``ContextFreeGrammar``)
-      - ``'pcfg'`` (probabilistic CFGs: ``WeightedGrammar``)
-      - ``'fcfg'`` (feature-based CFGs: ``ContextFreeGrammar``)
+      - ``'cfg'``  (CFGs: ``CFG``)
+      - ``'pcfg'`` (probabilistic CFGs: ``PCFG``)
+      - ``'fcfg'`` (feature-based CFGs: ``CFG``)
 
     :type grammar_url: str
     :param grammar_url: A URL specifying where the grammar is located.
@@ -54,10 +54,10 @@ def load_parser(grammar_url, trace=0,
         See ``data.load`` for more information.
     """
     grammar = load(grammar_url, **load_args)
-    if not isinstance(grammar, ContextFreeGrammar):
-        raise ValueError("The grammar must be a ContextFreeGrammar, "
+    if not isinstance(grammar, CFG):
+        raise ValueError("The grammar must be a CFG, "
                          "or a subclass thereof.")
-    if isinstance(grammar, WeightedGrammar):
+    if isinstance(grammar, PCFG):
         if parser is None:
             parser = InsideChartParser
         return parser(grammar, trace=trace, beam_size=beam_size)
@@ -69,7 +69,7 @@ def load_parser(grammar_url, trace=0,
             chart_class = FeatureChart
         return parser(grammar, trace=trace, chart_class=chart_class)
 
-    else: # Plain ContextFreeGrammar.
+    else: # Plain CFG.
         if parser is None:
             parser = ChartParser
         if chart_class is None:
@@ -108,7 +108,7 @@ class TestGrammar(object):
             for key in ['accept', 'reject']:
                 for sent in test[key]:
                     tokens = sent.split()
-                    trees = self.cp.parse(tokens)
+                    trees = list(self.cp.parse(tokens))
                     if show_trees and trees:
                         print()
                         print(sent)

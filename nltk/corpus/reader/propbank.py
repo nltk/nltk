@@ -1,6 +1,6 @@
 # Natural Language Toolkit: PropBank Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -14,8 +14,8 @@ from nltk.tree import Tree
 from nltk.internals import raise_unorderable_types
 from nltk.compat import total_ordering
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class PropbankCorpusReader(CorpusReader):
     """

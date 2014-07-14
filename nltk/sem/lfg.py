@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, division, unicode_literals
@@ -145,7 +145,7 @@ class FStructure(dict):
         except NameError:
             pass
 
-        for feature in self:
+        for feature in sorted(self):
             for item in self[feature]:
                 if isinstance(item, FStructure):
                     next_indent = indent+len(feature)+3+len(self.label)

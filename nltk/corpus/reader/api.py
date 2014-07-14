@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for Corpus Readers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -18,7 +18,7 @@ from collections import defaultdict
 from nltk import compat
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
-from .util import *
+from nltk.corpus.reader.util import *
 
 @compat.python_2_unicode_compatible
 class CorpusReader(object):
