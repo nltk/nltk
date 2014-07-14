@@ -1,3 +1,11 @@
+# Natural Language Toolkit: Agreement Metrics
+#
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Lauri Hallila <laurihallila@gmail.com>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+#
+
 """Counts Paice's performance statistics for evaluating stemming algorithms.
 
 What is required:
@@ -8,10 +16,11 @@ When these are given, Understemming Index (UI), Overstemming Index (OI),
 Stemming Weight (SW) and Error-rate relative to truncation (ERRT) are counted.
 
 References:
-Chris D. Paice (1994). An evaluation method for stemming algorithms. In Proceedings of SIGIR, 42--50.
+Chris D. Paice (1994). An evaluation method for stemming algorithms.
+In Proceedings of SIGIR, 42--50.
 """
 
-import math
+from math import sqrt
 
 
 def get_words_from_dictionary(lemmas):
@@ -33,18 +42,17 @@ def _truncate(words, cutlength):
             stems[stem] = set([word])
     return stems
 
-
+# Reference: http://en.wikipedia.org/wiki/Line-line_intersection
 def _count_intersection(l1, l2):
-    '''Count intersection between two line segments defined by coordinate pairs.'''
+    '''Count intersections between two line segments defined by coordinate pairs.'''
     x1, y1 = l1[0]
     x2, y2 = l1[1]
     x3, y3 = l2[0]
     x4, y4 = l2[1]
-    # Count the intersection point
-    # Reference: http://en.wikipedia.org/wiki/Line-line_intersection
+
     denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
-    if denominator == 0.0:
-        # When denominator is 0.0, lines are parallel
+
+    if denominator == 0.0: # lines are parallel
         if x1 == x2 == x3 == x4 == 0.0:
             # When lines are parallel, they must be on the y-axis.
             # We can ignore x-axis because we stop counting the
@@ -52,22 +60,24 @@ def _count_intersection(l1, l2):
             # There are no other options as UI grows and OI diminishes
             # when we go along the truncation line.
             return (0.0, y4)
+
     x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denominator
     y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denominator
     return (x, y)
 
 
-def _get_derivative((x, y)):
-    '''Get derivative of the line from (0,0) to (x, y).'''
+def _get_derivative(coordinates):
+    '''Get derivative of the line from (0,0) to the point defined by
+    the coordinates.'''
     try:
-        return y / x
+        return coordinates[1] / coordinates[0]
     except ZeroDivisionError:
         return float('inf')
 
 
 def _calculate_cut(lemmawords, stems):
     '''Count understemmed and overstemmed pairs for (lemma, stem) pair with common words.'''
-    umt, wmt = (0.0, 0.0)
+    umt, wmt = 0.0, 0.0
     for stem in stems:
         cut = set(lemmawords) & set(stems[stem])
         if cut:
@@ -82,27 +92,28 @@ def _calculate_cut(lemmawords, stems):
 
 def _calculate(lemmas, stems):
     '''Calculate actual and maximum possible amounts of understemmed and overstemmed word pairs.'''
-    # Count total amount of words
-    n = sum([len(lemmas[word]) for word in lemmas])
-    # Go through lemmas and stems
+
+    n = sum(len(lemmas[word]) for word in lemmas)
+
     gdmt, gdnt, gumt, gwmt = (0.0, 0.0, 0.0, 0.0)
+
     for lemma in lemmas:
-        # Words are divided in groups by their lemmas.
-        # For each lemma, count how many possibilities
-        # there are for understemming and overstemming.
         lemmacount = len(lemmas[lemma])
+
         # Desired merge total
-        dmt = lemmacount * (lemmacount - 1)
-        gdmt += dmt
+        gdmt += lemmacount * (lemmacount - 1)
+
         # Desired non-merge total
-        dnt = lemmacount * (n - lemmacount)
-        gdnt += dnt
+        gdnt += lemmacount * (n - lemmacount)
+
         # For each (lemma, stem) pair with common words, count how many
         # pairs are understemmed and overstemmed.
         umt, wmt = _calculate_cut(lemmas[lemma], stems)
+
         # Add to total undesired and wrongly-merged totals
         gumt += umt
         gwmt += wmt
+
     # Each object is counted twice, so divide by two
     return (gumt / 2, gdmt / 2, gwmt / 2, gdnt / 2)
 
@@ -159,6 +170,7 @@ class Paice(object):
 
     def _get_truncation_indexes(self, words, cutlength):
         '''Count (UI, OI) when stemming is done by truncating words at \'cutlength\'.'''
+
         truncated = _truncate(words, cutlength)
         gumt, gdmt, gwmt, gdnt = _calculate(self.lemmas, truncated)
         ui, oi = _indexes(gumt, gdmt, gwmt, gdnt)[:2]
@@ -166,15 +178,15 @@ class Paice(object):
 
     def _get_truncation_coordinates(self, cutlength=0):
         '''Count (UI, OI) pairs for truncation points until we find the segment where (ui, oi) crosses the truncation line.'''
-        # Find original set of words used for stemming
         words = get_words_from_dictionary(self.lemmas)
-        # Find length of the longest word in the set
-        maxlength = max([len(word) for word in words])
+        maxlength = max(len(word) for word in words)
+
         # Truncate words from different points until (0, 0) - (ui, oi) segment crosses the truncation line
         coords = []
         while cutlength <= maxlength:
             # Get (UI, OI) pair of current truncation point
             pair = self._get_truncation_indexes(words, cutlength)
+
             # Store only new coordinates so we'll have an actual
             # line segment when counting the intersection point
             if pair not in coords:
@@ -214,9 +226,9 @@ class Paice(object):
                                            self.coords[-2:]
                                            )
         # Count OP (length of the line from origo to (ui, oi))
-        op = math.sqrt(self.ui ** 2 + self.oi ** 2)
+        op = sqrt(self.ui ** 2 + self.oi ** 2)
         # Count OT (length of the line from origo to truncation line that goes through (ui, oi))
-        ot = math.sqrt(intersection[0] ** 2 + intersection[1] ** 2)
+        ot = sqrt(intersection[0] ** 2 + intersection[1] ** 2)
         # OP / OT tells how well the stemming algorithm works compared to just truncating words
         return op / ot
 
@@ -239,28 +251,28 @@ def demo():
              'kneel': ['kneel'],
              'knelt': ['knelt']
              }
-    print 'Words grouped by their lemmas:'
+    print('Words grouped by their lemmas:')
     for lemma in sorted(lemmas):
-        print '%s => %s' % (lemma, ' '.join(lemmas[lemma]))
-    print
-    print 'Same words grouped by a stemming algorithm:'
+        print('%s => %s' % (lemma, ' '.join(lemmas[lemma])))
+    print()
+    print('Same words grouped by a stemming algorithm:')
     for stem in sorted(stems):
-        print '%s => %s' % (stem, ' '.join(stems[stem]))
-    print
+        print('%s => %s' % (stem, ' '.join(stems[stem])))
+    print()
     p = Paice(lemmas, stems)
-    print p
-    print
+    print(p)
+    print()
     # Let's "change" results from a stemming algorithm
     stems = {'consol': ['consol', 'consoled', 'consoles', 'consoling', 'consols'],
              'kne': ['kneel', 'knelt'],
              }
-    print 'Counting stats after changing stemming results:'
+    print('Counting stats after changing stemming results:')
     for stem in sorted(stems):
-        print '%s => %s' % (stem, ' '.join(stems[stem]))
-    print
+        print('%s => %s' % (stem, ' '.join(stems[stem])))
+    print()
     p.stems = stems
     p.update()
-    print p
+    print(p)
 
 
 if __name__ == '__main__':
