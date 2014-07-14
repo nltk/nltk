@@ -4,7 +4,8 @@ Natural Language Toolkit
 NLTK is a leading platform for building Python programs to work with human language data.
 It provides easy-to-use interfaces to `over 50 corpora and lexical
 resources <http://nltk.org/nltk_data/>`_ such as WordNet,
-along with a suite of text processing libraries for classification, tokenization, stemming, tagging, parsing, and semantic reasoning.
+along with a suite of text processing libraries for classification, tokenization, stemming, tagging, parsing, and semantic reasoning,
+and an active `discussion forum <http://groups.google.com/group/nltk-users>`_.
 
 Thanks to a hands-on guide introducing programming fundamentals alongside topics in computational linguistics,
 NLTK is suitable for linguists, engineers, students, educators, researchers, and industry users alike.
@@ -60,14 +61,11 @@ follows:
 
 	Bird, Steven, Edward Loper and Ewan Klein (2009), *Natural Language Processing with Python*.  O'Reilly Media Inc.
 
-Community
----------
+Next Steps
+----------
 
-* `NLTK mailing list <http://groups.google.com/group/nltk>`_ -- release announcements only, very low volume
-* `NLTK-Users mailing list <http://groups.google.com/group/nltk-users>`_ -- user discussions
-* `NLTK-Dev mailing list <http://groups.google.com/group/nltk-dev>`_ -- developers only
-* `NLTK-Translation mailing list <http://groups.google.com/group/nltk-translation>`_ -- discussions about translating the NLTK book
-
+* `sign up for release announcements <http://groups.google.com/group/nltk>`_
+* `join in the discussion <http://groups.google.com/group/nltk-users>`_
 
 Contents
 ========
@@ -79,11 +77,11 @@ Contents
    news
    install
    data
+   contribute
+   FAQ <https://github.com/nltk/nltk/wiki/FAQ>
    Wiki <https://github.com/nltk/nltk/wiki> 
    API <api/nltk>
-   HOWTO <http://nltk.org/howto>
-   NLTK Development <https://github.com/nltk>
-   team
+   HOWTO <http://www.nltk.org/howto>
 
 * :ref:`genindex`
 * :ref:`modindex`

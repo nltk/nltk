@@ -20,9 +20,11 @@ from collections import defaultdict, deque
 from sys import version_info
 
 from nltk.internals import slice_bounds, raise_unorderable_types
-from nltk import compat
 from nltk.compat import (class_types, text_type, string_types, total_ordering,
-                         python_2_unicode_compatible)
+                         python_2_unicode_compatible, getproxies,
+			 ProxyHandler, build_opener, install_opener,
+			 HTTPPasswordMgrWithDefaultRealm,
+			 ProxyBasicAuthHandler, ProxyDigestAuthHandler)
 
 ######################################################################
 # Short usage message
@@ -1078,21 +1080,21 @@ def set_proxy(proxy, user=None, password=''):
     if proxy is None:
         # Try and find the system proxy settings
         try:
-            proxy = compat.getproxies()['http']
+            proxy = getproxies()['http']
         except KeyError:
             raise ValueError('Could not detect default proxy settings')
 
     # Set up the proxy handler
-    proxy_handler = compat.ProxyHandler({'http': proxy})
-    opener = compat.build_opener(proxy_handler)
+    proxy_handler = ProxyHandler({'http': proxy})
+    opener = build_opener(proxy_handler)
 
     if user is not None:
         # Set up basic proxy authentication if provided
-        password_manager = compat.HTTPPasswordMgrWithDefaultRealm()
+        password_manager = HTTPPasswordMgrWithDefaultRealm()
         password_manager.add_password(realm=None, uri=proxy, user=user,
                 passwd=password)
-        opener.add_handler(compat.ProxyBasicAuthHandler(password_manager))
-        opener.add_handler(compat.ProxyDigestAuthHandler(password_manager))
+        opener.add_handler(ProxyBasicAuthHandler(password_manager))
+        opener.add_handler(ProxyDigestAuthHandler(password_manager))
 
     # Overide the existing url opener
-    compat.install_opener(opener)
+    install_opener(opener)

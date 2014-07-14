@@ -20,10 +20,8 @@ TRY_ZIPFILE_FIRST = False
 @python_2_unicode_compatible
 class LazyCorpusLoader(object):
     """
-    ==================================================================
     To see the API documentation for this lazily loaded corpus, first
     run corpus.ensure_loaded(), and then run help(this_corpus).
-    ==================================================================
     
     LazyCorpusLoader is a proxy object which is used to stand in for a
     corpus object before the corpus is loaded.  This allows NLTK to

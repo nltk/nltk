@@ -284,7 +284,7 @@ class DependencyGraph(object):
             elif style == 4:
                 lines.append('%s\t%s\t%s\t%s\n' % (word, tag, head, rel))
             elif style == 10:
-                lines.append('%s\t%s\t%s\t%s\t%s\%s\t%s\t%s\t_\t_\n' % (i+1, word, lemma, ctag, tag, feats, head, rel))
+                lines.append('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t_\t_\n' % (i+1, word, lemma, ctag, tag, feats, head, rel))
             else:
                 raise ValueError('Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (style))
         return ''.join(lines)

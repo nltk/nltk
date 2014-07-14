@@ -40,24 +40,6 @@ Test the stemmer on various pluralised words.
      u'humbl', u'size', u'meet', u'state', u'siez', u'item', u'sensat',
      u'tradit', u'refer', u'colon', u'plot']
 
-Unit tests for Regexp stemmer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    >>> patterns = "ed$|ing$|able$|s$"
-
-    >>> stemmer = RegexpStemmer(patterns, 4)
-
-    >>> stemmer.stem("red")
-    'red'
-
-    >>> stemmer.stem("hurried")
-    'hurri'
-
-    >>> stemmer.stem("advisable")
-    'advis'
-
-    >>> stemmer.stem("impossible")
-    'impossible'
 
 Unit tests for Snowball stemmer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

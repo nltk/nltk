@@ -60,17 +60,15 @@ class CanvasWidget(object):
     is specified as the first argument to the ``CanvasWidget``'s
     constructor.
 
-    Attributes
-    ==========
-    Each canvas widget can support a variety of "attributes", which
-    control how the canvas widget is displayed.  Some typical examples
-    attributes are ``color``, ``font``, and ``radius``.  Each attribute
-    has a default value.  This default value can be overridden in the
-    constructor, using keyword arguments of the form
-    ``attribute=value``:
+    Attributes.  Each canvas widget can support a variety of
+    "attributes", which control how the canvas widget is displayed.
+    Some typical examples attributes are ``color``, ``font``, and
+    ``radius``.  Each attribute has a default value.  This default
+    value can be overridden in the constructor, using keyword
+    arguments of the form ``attribute=value``:
 
-        >>> from nltk.draw.util import CanvasText
-        >>> cn = CanvasText(c, 'test', color='red')
+        >>> from nltk.draw.util import TextWidget
+        >>> cn = TextWidget(c, 'test', color='red')
 
     Attribute values can also be changed after a canvas widget has
     been constructed, using the ``__setitem__`` operator:
@@ -86,11 +84,9 @@ class CanvasWidget(object):
     For a list of the attributes supported by a type of canvas widget,
     see its class documentation.
 
-    Interaction
-    ===========
-    The attribute ``'draggable'`` controls whether the user can drag a
-    canvas widget around the canvas.  By default, canvas widgets
-    are not draggable.
+    Interaction.  The attribute ``'draggable'`` controls whether the
+    user can drag a canvas widget around the canvas.  By default,
+    canvas widgets are not draggable.
 
     ``CanvasWidget`` provides callback support for two types of user
     interaction: clicking and dragging.  The method ``bind_click``
@@ -104,10 +100,8 @@ class CanvasWidget(object):
     can be deregistered with the ``unbind_click`` and ``unbind_drag``
     methods.
 
-    Subclassing
-    ===========
-    ``CanvasWidget`` is an abstract class.  Subclasses are required to
-    implement the following methods:
+    Subclassing.  ``CanvasWidget`` is an abstract class.  Subclasses
+    are required to implement the following methods:
 
       - ``__init__``: Builds a new canvas widget.  It must perform the
         following three tasks (in order):

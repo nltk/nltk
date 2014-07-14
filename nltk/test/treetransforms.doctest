@@ -9,9 +9,9 @@ Unit tests for the TreeTransformation class
     >>> from nltk.tree import *
     >>> from nltk.treetransforms import *
 
-    >>> sentence = "(TOP (S (S (VP (VBN Turned) (ADVP (RB loose)) (PP (IN in) (NP (NP (NNP Shane) (NNP Longman) (POS 's)) (NN trading) (NN room))))) (, ,) (NP (DT the) (NN yuppie) (NNS dealers)) (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right)))) (. .)))"
+    >>> tree_string = "(TOP (S (S (VP (VBN Turned) (ADVP (RB loose)) (PP (IN in) (NP (NP (NNP Shane) (NNP Longman) (POS 's)) (NN trading) (NN room))))) (, ,) (NP (DT the) (NN yuppie) (NNS dealers)) (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right)))) (. .)))"
 
-    >>> tree = Tree(sentence)
+    >>> tree = Tree.fromstring(tree_string)
     >>> print(tree)
     (TOP
       (S

@@ -107,7 +107,7 @@ Non-Projective Dependency Parsing
 
     >>> dp = NonprojectiveDependencyParser(grammar)
     >>> for g in dp.parse(['the', 'man', 'taught', 'his', 'dog', 'to', 'play', 'golf']):
-    ...     print(g)
+    ...     print(g)  # doctest: +NORMALIZE_WHITESPACE
     [{'address': 0, 'deps': 3, 'rel': 'TOP', 'tag': 'TOP', 'word': None},
      {'address': 1, 'deps': [], 'word': 'the'},
      {'address': 2, 'deps': [1], 'word': 'man'},

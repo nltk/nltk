@@ -313,7 +313,7 @@ class FreqDist(Counter):
 
         :rtype: string
         """
-        return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
+        return self.pprint()
 
     def pprint(self, maxlen=10):
         """
@@ -334,7 +334,7 @@ class FreqDist(Counter):
 
         :rtype: string
         """
-        return self.pprint()
+        return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
 
 
 ##//////////////////////////////////////////////////////
