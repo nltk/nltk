@@ -44,7 +44,6 @@ _MAPPINGS = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 'UNK')))
 
 
 def _load_universal_map(fileid):
-    mapping = {}
     contents = load(join(_UNIVERSAL_DATA, fileid+'.map'), format="text")
     for line in contents.splitlines():
         line = line.strip()
