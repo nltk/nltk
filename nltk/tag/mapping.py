@@ -45,6 +45,11 @@ _MAPPINGS = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 'UNK')))
 
 def _load_universal_map(fileid):
     contents = load(join(_UNIVERSAL_DATA, fileid+'.map'), format="text")
+
+    # When mapping to the Universal Tagset,
+    # map unknown inputs to 'X' not 'UNK'
+    _MAPPINGS[fileid]['universal'].default_factory = lambda: 'X'
+
     for line in contents.splitlines():
         line = line.strip()
         if line == '':
