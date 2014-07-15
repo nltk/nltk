@@ -1,9 +1,7 @@
 language: python
 # command to install dependencies
 install:
-  - sudo apt-get install python-software-properties
-  - sudo add-apt-repository ppa:saltstack/salt -y
-  - sudo apt-get install salt-minion
+  - curl -L https://bootstrap.saltstack.com | sudo sh -s
   - salt-call state.highstate --local --config-dir=./salt
 # command to run tests
 script: tox
