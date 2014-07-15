@@ -1,8 +1,8 @@
 language: python
 # command to install dependencies
 install:
-  - sudo apt-get install python-software-properties -y
-  - sudo add-apt-repository ppa:saltstack/salt
+  - sudo apt-get install python-software-properties
+  - sudo add-apt-repository ppa:saltstack/salt -y
   - sudo apt-get install salt-minion
   - salt-call state.highstate --local --config-dir=./salt
 # command to run tests
