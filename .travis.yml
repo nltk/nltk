@@ -4,6 +4,7 @@ install:
   - deactivate
   - curl -L https://bootstrap.saltstack.com | sudo sh -s
   - sudo ln -s /srv `pwd`/salt
+  - ls -l /
   - sudo salt-call state.highstate --local
 
 script:
