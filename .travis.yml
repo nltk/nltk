@@ -3,8 +3,8 @@ language: python
 install:
   - deactivate
   - curl -L https://bootstrap.saltstack.com | sudo sh -s
-  - pwd
-  - sudo salt-call state.highstate --local --config-dir=./salt
+  - sudo ln -s /srv `pwd`/salt
+  - sudo salt-call state.highstate --local
 
 script:
     - tox
