@@ -4,7 +4,9 @@ install:
   - curl -L https://bootstrap.saltstack.com | sudo sh -s
   - sudo salt-call state.highstate --local --config-dir=./salt
 
-script: tox
+script:
+    - deactivate
+    - tox
 
 after_success:
   - coveralls
