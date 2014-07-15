@@ -1,17 +1,3 @@
-base:
-  pkgrepo.managed:
-    - humanname: Deadsnakes PPA
-    - name: ppa:fkrull/deadsnakes
-    - dist: precise
-    - file: /etc/apt/sources.list.d/deadsnakes.list
-    - keyid: 1024R
-    - keyserver: keyserver.ubuntu.com
-    - require_in:
-      - pkg: python3.4
-
-python3.4:
-  pkg.installed
-
 packges:
   pkg.installed:
     - pkgs:
@@ -24,26 +10,20 @@ packges:
       - liblapack-dev
       - mercurial
       - prover9
-      - python-dev
-      - python-numpy
-      - python-pip
-      - python-scipy
-      - python-sklearn
-      - python-yaml
-      - python2.6
-      - python3-numpy
-      - python3-yaml
-      - python3.2
-      - python3.3
+      # - python-dev
+      # - python-numpy
+      # - python-scipy
+      # - python-sklearn
+      # - python-yaml
 
 python-pip:
   pkg.installed
 
-pip:
-  pip.installed:
-    - name: pip >= 1.4
-    - require:
-      - pkg: python-pip
+# pip:
+#   pip.installed:
+#     - name: pip >= 1.4
+#     - require:
+#       - pkg: python-pip
 
 nose:
   pip.installed:
@@ -78,25 +58,6 @@ malt:
 /opt/maltparser-1.8/malt.jar:
   file.symlink:
     - target: /opt/maltparser-1.8/maltparser-1.8.jar
-
-# LADR-2009-11A:
-#   archive:
-#     - extracted
-#     - name: /opt/
-#     - source: http://www.cs.unm.edu/~mccune/prover9/download/LADR-2009-11A.tar.gz
-#     - archive_format: tar
-#     - tar_options: z
-#     - source_hash: sha512=f26d3713eb2ba809fb3d55ce179e9d91555ab9166e075aa0843bafe57ce00f153cfed178b61993d4fd471655840e4f40775d75dac9fb5242a67e5d59c970dfc7
-#     - if_missing: /opt/LADR-2009-11A
-
-# make_prover9:
-#   cmd.run:
-#     - name: make all
-#     - cwd: /opt/LADR-2009-11A
-
-# /opt/prover9:
-#   file.symlink:
-#     - target: /opt/LADR-2009-11A
 
 hunpos:
   archive:
