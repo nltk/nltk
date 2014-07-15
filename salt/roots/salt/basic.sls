@@ -15,6 +15,7 @@ python3.4:
 packges:
   pkg.installed:
     - pkgs:
+      - gfortran
       - git
       - htop
       - libatlas-base-dev
@@ -23,12 +24,13 @@ packges:
       - liblapack-dev
       - mercurial
       - prover9
+      - python-dev
       - python-numpy
       - python-pip
+      - python-scipy
       - python-sklearn
       - python-yaml
       - python2.6
-      - python-dev
       - python3-numpy
       - python3-yaml
       - python3.2
