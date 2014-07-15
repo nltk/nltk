@@ -24,6 +24,7 @@ _hunpos_url = 'http://code.google.com/p/hunpos/'
 _hunpos_charset = 'ISO-8859-1'
 """The default encoding used by hunpos: ISO-8859-1."""
 
+
 class HunposTagger(TaggerI):
     """
     A class for pos tagging with HunPos. The input is the paths to:
@@ -66,19 +67,31 @@ class HunposTagger(TaggerI):
             The caller must ensure that tokens are encoded in the right charset.
         """
         self._closed = True
-        hunpos_paths = ['.', '/usr/bin', '/usr/local/bin', '/opt/local/bin',
-                        '/Applications/bin', '~/bin', '~/Applications/bin']
+        hunpos_paths = [
+            '.',
+            '/usr/bin',
+            '/usr/local/bin',
+            '/opt/local/bin',
+            '/Applications/bin',
+            '~/bin',
+            '~/Applications/bin',
+            '/opt/hunpos-1.0*/',
+        ]
         hunpos_paths = list(map(os.path.expanduser, hunpos_paths))
 
         self._hunpos_bin = find_binary(
-                'hunpos-tag', path_to_bin,
-                env_vars=('HUNPOS', 'HUNPOS_HOME'),
-                searchpath=hunpos_paths,
-                url=_hunpos_url,
-                verbose=verbose)
+            'hunpos-tag', path_to_bin,
+            env_vars=('HUNPOS', 'HUNPOS_HOME'),
+            searchpath=hunpos_paths,
+            url=_hunpos_url,
+            verbose=verbose,
+        )
 
-        self._hunpos_model = find_file(path_to_model,
-                env_vars=('HUNPOS', 'HUNPOS_HOME'), verbose=verbose)
+        self._hunpos_model = find_file(
+            path_to_model,
+            env_vars=('HUNPOS', 'HUNPOS_HOME'),
+            verbose=verbose,
+        )
         self._encoding = encoding
         self._hunpos = Popen([self._hunpos_bin, self._hunpos_model],
                              shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -95,6 +108,7 @@ class HunposTagger(TaggerI):
 
     def __enter__(self):
         return self
+
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
@@ -120,6 +134,7 @@ class HunposTagger(TaggerI):
         self._hunpos.stdout.readline()
 
         return tagged_tokens
+
 
 # skip doctests if Hunpos tagger is not installed
 def setup_module(module):

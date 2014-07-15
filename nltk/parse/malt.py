@@ -69,14 +69,17 @@ class MaltParser(ParserI):
         #: A list of directories that should be searched for the malt
         #: executables.  This list is used by ``config_malt`` when searching
         #: for the malt executables.
-        _malt_path = ['.',
-                     '/usr/lib/malt-1*',
-                     '/usr/share/malt-1*',
-                     '/usr/local/bin',
-                     '/usr/local/malt-1*',
-                     '/usr/local/bin/malt-1*',
-                     '/usr/local/malt-1*',
-                     '/usr/local/share/malt-1*']
+        _malt_path = [
+            '.',
+            '/usr/lib/malt-1*',
+            '/usr/share/malt-1*',
+            '/usr/local/bin',
+            '/usr/local/malt-1*',
+            '/usr/local/bin/malt-1*',
+            '/usr/local/malt-1*',
+            '/usr/local/share/malt-1*',
+            '/opt/malt-1*',
+        ]
 
         # Expand wildcards in _malt_path:
         malt_path = reduce(add, map(glob.glob, _malt_path))
