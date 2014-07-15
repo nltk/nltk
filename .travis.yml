@@ -9,4 +9,5 @@ script:
     - tox
 
 after_success:
+  - cd nltk/test
   - coveralls
