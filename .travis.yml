@@ -1,9 +1,10 @@
 language: python
-# command to install dependencies
+
 install:
   - curl -L https://bootstrap.saltstack.com | sudo sh -s
-  - salt-call state.highstate --local --config-dir=./salt
-# command to run tests
+  - sudo salt-call state.highstate --local --config-dir=./salt
+
 script: tox
+
 after_success:
   - coveralls
