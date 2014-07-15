@@ -44,6 +44,7 @@ nltk_data:
   cmd.run:
     - name: python -m nltk.downloader -d /usr/share/nltk_data all
     - cwd: /vagrant
+    - onlyif: ls /vagrant
 
 malt:
   archive:
