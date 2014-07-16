@@ -12,7 +12,9 @@
 A module for interfacing with the HunPos open-source POS-tagger.
 """
 
+import glob
 import os
+import itertools
 from subprocess import Popen, PIPE
 
 from nltk.internals import find_binary, find_file
@@ -67,7 +69,7 @@ class HunposTagger(TaggerI):
             The caller must ensure that tokens are encoded in the right charset.
         """
         self._closed = True
-        hunpos_paths = [
+        hunpos_patterns = [
             '.',
             '/usr/bin',
             '/usr/local/bin',
@@ -77,7 +79,7 @@ class HunposTagger(TaggerI):
             '~/Applications/bin',
             '/opt/hunpos-1.0*/',
         ]
-        hunpos_paths = list(map(os.path.expanduser, hunpos_paths))
+        hunpos_paths = itertools.chain.from_iterable(glob.glob(os.path.expanduser(p))for p in hunpos_patterns)
 
         self._hunpos_bin = find_binary(
             'hunpos-tag', path_to_bin,
