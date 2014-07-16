@@ -32,21 +32,24 @@ packges:
       - python3.3
       - python3.3-dev
       - python3.4-dev
+      - python-pip
+
+tox:
+  pip.installed
+
+coveralls:
+  pip.installed
 
 {% for py in '3.4', '3.3', '3.2', '2.7', '2.6' %}
 pip{{ py }}:
   cmd.run:
-    - name: curl https://bootstrap.pypa.io/get-pip.py | python{{ py }}
+    - name: curl https://bootstrap.pypa.io/get-pip.py | python{{ py }} - -I
 
 {% for pkg in 'numpy', 'scipy', 'scikit-learn' %}
 {{pkg}}{{ py }}:
   cmd.run:
     - name: pip{{ py }} install --use-wheel --no-index --find-links=https://dl.dropboxusercontent.com/u/50040986/index/index.html {{pkg}}
 {% endfor %}
-
-tox{{ py }}:
-  cmd.run:
-    - name: pip{{ py }} install tox coveralls
 
 {% endfor %}
 
