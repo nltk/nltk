@@ -46,7 +46,7 @@ pip{{ py }}:
 
 tox{{ py }}:
   cmd.run:
-    - name: pip{{ tox }} install tox coveralls
+    - name: pip{{ py }} install tox coveralls
 
 nltk_data:
   cmd.run:
