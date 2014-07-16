@@ -15,6 +15,8 @@ web/_build
 *.errs
 .noseids
 .coverage
+coverage-py*
+junit-*
 
 # editor temporary files
 *.*.sw[op]
@@ -22,3 +24,5 @@ web/_build
 
 # git mergetools backups
 *.orig
+
+.DS_Store
