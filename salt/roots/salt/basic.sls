@@ -48,6 +48,8 @@ tox{{ py }}:
   cmd.run:
     - name: pip{{ py }} install tox coveralls
 
+{% endfor %}
+
 nltk_data:
   cmd.run:
     - name: python -m nltk.downloader -d /usr/share/nltk_data all
