@@ -38,18 +38,15 @@ pip{{ py }}:
   cmd.run:
     - name: curl https://bootstrap.pypa.io/get-pip.py | python{{ py }}
 
-{%for pkg in 'numpy', 'scipy', 'scikit-learn' %}
+{% for pkg in 'numpy', 'scipy', 'scikit-learn' %}
 {{pkg}}{{ py }}:
   cmd.run:
     - name: pip{{ py }} install --use-wheel --no-index --find-links=https://dl.dropboxusercontent.com/u/50040986/index/index.html {{pkg}}
 {% endfor %}
-{% endfor %}
 
-tox_coveralls:
+tox{{ py }}:
   cmd.run:
-    - name: pip2.7 install tox coveralls
-    - require:
-      - cmd: pip2.7
+    - name: pip{{ tox }} install tox coveralls
 
 nltk_data:
   cmd.run:
