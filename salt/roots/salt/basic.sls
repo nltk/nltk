@@ -41,7 +41,7 @@ pip{{ py }}:
 {%for pkg in 'numpy', 'scipy', 'scikit-learn' %}
 {{pkg}}{{ py }}:
   cmd.run:
-    - name: pip install --use-wheel --no-index --find-links=https://dl.dropboxusercontent.com/u/50040986/index/index.html {{pkg}}
+    - name: pip{{ py }} install --use-wheel --no-index --find-links=https://dl.dropboxusercontent.com/u/50040986/index/index.html {{pkg}}
 {% endfor %}
 {% endfor %}
 

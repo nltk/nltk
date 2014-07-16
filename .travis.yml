@@ -1,8 +1,9 @@
 language: python
 
-python:
-    - 2.7
-    - 3.4
+env:
+  - TOXENV=py26
+  - TOXENV=py27
+  - TOXENV=py34
 
 install:
   - deactivate
@@ -10,7 +11,7 @@ install:
   - sudo salt-call state.highstate --local  --file-root salt/roots/salt
   - python -m nltk.downloader all
 script:
-    - tox -e py$TRAVIS_PYTHON_VERSION
+    - tox -e $TRAVIS_PYTHON_VERSION
 
 after_script:
   - cd nltk/test
