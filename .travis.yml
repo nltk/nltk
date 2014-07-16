@@ -3,6 +3,8 @@ language: python
 env:
   - TOXENV=py26
   - TOXENV=py27
+  - TOXENV=py32
+  - TOXENV=py33
   - TOXENV=py34
 
 install:
@@ -11,7 +13,7 @@ install:
   - sudo salt-call state.highstate --local  --file-root salt/roots/salt
   - python -m nltk.downloader all
 script:
-    - tox -e $TOXENV
+    - tox -e $TOXENV -c tox-travis.ini
 
 after_script:
   - cd nltk/test
