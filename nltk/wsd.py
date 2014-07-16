@@ -12,11 +12,12 @@ from nltk.corpus import wordnet as wn
 # Lesk Algorithm
 ############################################################
 
+
 def _compare_overlaps_greedy(context, synsets_signatures, pos=None):
     """
     Calculate overlaps between the context sentence and the synset_signature
     and returns the synset with the highest overlap.
-    
+
     :param context: ``context_sentence`` The context sentence where the ambiguous word occurs.
     :param synsets_signatures: ``dictionary`` A list of words that 'signifies' the ambiguous word.
     :param pos: ``pos`` A specified Part-of-Speech (POS).
@@ -30,8 +31,9 @@ def _compare_overlaps_greedy(context, synsets_signatures, pos=None):
         overlaps = set(synsets_signatures[ss]).intersection(context)
         if len(overlaps) > max_overlaps:
             lesk_sense = ss
-            max_overlaps = len(overlaps)  
+            max_overlaps = len(overlaps)
     return lesk_sense
+
 
 def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
     """
@@ -44,8 +46,8 @@ def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
         >>> word = "bank"
         >>> pos = "n"
         >>> lesk(sent, word, pos)
-        Synset('bank.n.07')
-    
+        Synset('depository_financial_institution.n.01')
+
     :param context_sentence: The context sentence where the ambiguous word occurs.
     :param ambiguous_word: The ambiguous word that requires WSD.
     :param pos: A specified Part-of-Speech (POS).
@@ -56,8 +58,7 @@ def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
         dictionary = {}
         for ss in wn.synsets(ambiguous_word):
             dictionary[ss] = ss.definition().split()
-    best_sense = _compare_overlaps_greedy(context_sentence,
-                                       dictionary, pos)
+    best_sense = _compare_overlaps_greedy(context_sentence, dictionary, pos)
     return best_sense
 
 
