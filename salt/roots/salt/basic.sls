@@ -33,7 +33,7 @@ packges:
       - python3.3-dev
       - python3.4-dev
 
-{% for py in '3.4', '3.3', '2.7' %}
+{% for py in '3.4', '3.3', '3.2', '2.7' %}
 pip{{ py }}:
   cmd.run:
     - name: curl https://bootstrap.pypa.io/get-pip.py | python{{ py }}
@@ -48,12 +48,12 @@ pip{{ py }}:
 tox:
   pip.installed:
     - require:
-      - pkg: python-pip
+      - cmd: pip2.7
 
 coveralls:
   pip.installed:
     - require:
-      - pkg: python-pip
+      - cmd: pip2.7
 
 nltk_data:
   cmd.run:
