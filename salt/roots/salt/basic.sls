@@ -22,8 +22,10 @@ packges:
       - libblas-dev
       - liblapack-dev
       - mercurial
+      - openjdk-7-jre-headless
       - prover9
       - python-dev
+      - python-pip
       - python2.6
       - python2.6-dev
       - python3.2
@@ -31,12 +33,14 @@ packges:
       - python3.3
       - python3.3-dev
       - python3.4-dev
-      - python-pip
 
 tox:
   pip.installed
 
 coveralls:
+  pip.installed
+
+nose:
   pip.installed
 
 {% for py in '3.4', '3.3', '3.2', '2.7', '2.6' %}
