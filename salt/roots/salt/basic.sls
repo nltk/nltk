@@ -35,7 +35,7 @@ tox:
     - require:
       - pkg: python-pip
 
-python-coveralls:
+coveralls:
   pip.installed:
     - require:
       - pkg: python-pip
