@@ -25,7 +25,7 @@ def _compare_overlaps_greedy(context, synsets_signatures, pos=None):
     max_overlaps = 0
     lesk_sense = None
     for ss in synsets_signatures:
-        if pos and str(ss.pos()) != pos: # Skips different POS.
+        if pos and str(ss.pos()) != pos:  # Skips different POS.
             continue
         overlaps = set(synsets_signatures[ss]).intersection(context)
         if len(overlaps) > max_overlaps:

@@ -43,7 +43,7 @@ class GlueFormula(object):
             raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
 
         if isinstance(glue, string_types):
-            self.glue = linearlogic.LinearLogicParser().parse(glue)
+            self.glue = linearlogic._LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue
         else:
@@ -580,13 +580,13 @@ class DrtGlueFormula(GlueFormula):
 
         if isinstance(meaning, string_types):
             self.meaning = drt.DrtExpression.fromstring(meaning)
-        elif isinstance(meaning, drt.AbstractDrs):
+        elif isinstance(meaning, drt.DrtExpression):
             self.meaning = meaning
         else:
             raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
 
         if isinstance(glue, string_types):
-            self.glue = linearlogic.LinearLogicParser().parse(glue)
+            self.glue = linearlogic._LinearLogicParser().parse(glue)
         elif isinstance(glue, linearlogic.Expression):
             self.glue = glue
         else:

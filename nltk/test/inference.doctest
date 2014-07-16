@@ -6,7 +6,7 @@ Logical Inference and Model Building
 ====================================
 
     >>> from nltk import *
-    >>> from nltk.sem.drt import DrtParser
+    >>> from nltk.sem.drt import _DrtParser
     >>> from nltk.sem import logic
     >>> logic._counter._value = 0
 
@@ -35,7 +35,7 @@ included with NLTK: ``Prover9``, ``TableauProver``, and
 ``ResolutionProver``.  The first is an off-the-shelf prover, while the other
 two are written in Python and included in the ``nltk.inference`` package.
 
-    >>> lp = LogicParser()
+    >>> lp = logic._LogicParser()
     >>> p1 = lp.parse('man(socrates)')
     >>> p2 = lp.parse('all x.(man(x) -> mortal(x))')
     >>> c  = lp.parse('mortal(socrates)')
@@ -311,8 +311,8 @@ statements as new assumptions.
     % Proof 1 at ... seconds.
     % Length of proof is 13.
     % Level of proof is 4.
-    % Maximum clause weight is 0.000.
-    % Given clauses 0.
+    % Maximum clause weight is ....
+    % Given clauses ....
     <BLANKLINE>
     <BLANKLINE>
     1 (all x (boxerdog(x) -> dog(x))).  [assumption].
@@ -349,7 +349,7 @@ The same method can be used on Discourse Representation Structures (DRSs).
 In this case, each DRS is converted to a first order logic form, and then
 passed to the theorem prover.
 
-    >>> dp = DrtParser()
+    >>> dp = _DrtParser()
     >>> a = dp.parse(r'([x],[man(x), walks(x)])')
     >>> b = dp.parse(r'([x],[walks(x), man(x)])')
     >>> print(a.equiv(b))
@@ -484,7 +484,7 @@ Show the model in 'tabular' format.
 The property ``valuation`` accesses the stored ``Valuation``.
 
     >>> print(mb.valuation)
-    {'john': 'a', 'mary': 'b', 'see': {('b', 'a')}}
+    {u'see': set([('b', 'a')]), u'john': 'a', u'mary': 'b'}
 
 We can return to our earlier example and inspect the model:
 

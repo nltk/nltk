@@ -78,7 +78,7 @@ class MaltParser(ParserI):
             '/usr/local/bin/malt-1*',
             '/usr/local/malt-1*',
             '/usr/local/share/malt-1*',
-            '/opt/malt-1*',
+            '/opt/maltparser-1*',
         ]
 
         # Expand wildcards in _malt_path:

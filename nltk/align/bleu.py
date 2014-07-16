@@ -68,20 +68,20 @@ class BLEU(object):
     an output from translation system:
 
     >>> weights = [0.25, 0.25, 0.25, 0.25]
-    >>> ref_file = open('newstest2012-ref.en')
-    >>> candidate_file = open('newstest2012.fr-en.cmu-avenue')
+    >>> ref_file = open('newstest2012-ref.en')  # doctest: +SKIP
+    >>> candidate_file = open('newstest2012.fr-en.cmu-avenue')  # doctest: +SKIP
 
     >>> total = 0.0
     >>> count = 0
 
-    >>> for candi_raw in candidate_file:
+    >>> for candi_raw in candidate_file:  # doctest: +SKIP
     ...		ref_raw = ref_file.readline()
     ...		ref_tokens = word_tokenize(ref_raw)
     ...		candi_tokens = word_tokenize(candi_raw)
     ...		total = BLEU.compute(candi_tokens, [ref_tokens], weights)
     ...		count += 1
 
-    >>> total/count
+    >>> total/count  # doctest: +SKIP
     2.787504437460048e-05
 
     """
