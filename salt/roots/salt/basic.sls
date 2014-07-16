@@ -15,7 +15,6 @@ python3.4:
 packges:
   pkg.installed:
     - pkgs:
-      - gfortran
       - git
       - htop
       - libatlas-base-dev
