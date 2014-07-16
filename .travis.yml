@@ -1,13 +1,17 @@
 language: python
 
+python:
+    - 2.7
+    - 3.4
+
 install:
   - deactivate
   - curl -L https://bootstrap.saltstack.com | sudo sh -s
   - sudo salt-call state.highstate --local  --file-root salt/roots/salt
   - python -m nltk.downloader all
 script:
-    - tox
+    - tox -e py$TRAVIS_PYTHON_VERSION
 
-after_success:
+after_script:
   - cd nltk/test
   - coveralls
