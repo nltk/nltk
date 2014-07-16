@@ -25,4 +25,5 @@ junit-*
 # git mergetools backups
 *.orig
 
+.vagrant
 .DS_Store

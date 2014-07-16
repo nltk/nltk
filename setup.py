@@ -19,6 +19,7 @@ except LookupError:
     func = lambda name, enc=ascii: {True: enc}.get(name=='mbcs')
     codecs.register(func)
 
+
 import os
 
 # Use the VERSION file to get NLTK version
@@ -35,6 +36,12 @@ from setuptools import setup, find_packages
 #
 from setuptools.command import sdist
 del sdist.finders[:]
+
+
+# if you are not using vagrant, just delete os.link directly,
+# The hard link only saves a little disk space, so you should not care
+if os.environ.get('USER','') == 'vagrant':
+    del os.link
 
 setup(
     name = "nltk",
