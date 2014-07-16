@@ -33,7 +33,7 @@ packges:
       - python3.3-dev
       - python3.4-dev
 
-{% for py in '3.4', '3.3', '3.2', '2.7' %}
+{% for py in '3.4', '3.3', '3.2', '2.7', '2.6' %}
 pip{{ py }}:
   cmd.run:
     - name: curl https://bootstrap.pypa.io/get-pip.py | python{{ py }}
@@ -45,13 +45,9 @@ pip{{ py }}:
 {% endfor %}
 {% endfor %}
 
-tox:
-  pip.installed:
-    - require:
-      - cmd: pip2.7
-
-coveralls:
-  pip.installed:
+tox_coveralls:
+  cmd.run:
+    - name: pip2.7 install tox coveralls
     - require:
       - cmd: pip2.7
 
