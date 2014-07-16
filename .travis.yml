@@ -11,7 +11,7 @@ install:
   - sudo salt-call state.highstate --local  --file-root salt/roots/salt
   - python -m nltk.downloader all
 script:
-    - tox -e $TRAVIS_PYTHON_VERSION
+    - tox -e $TOXENV
 
 after_script:
   - cd nltk/test
