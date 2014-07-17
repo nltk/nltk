@@ -8,10 +8,11 @@
 
 from __future__ import division
 
+import math
+
 from nltk.util import ngrams
 from nltk import word_tokenize
 
-import math
 
 class BLEU(object):
     """
@@ -23,14 +24,14 @@ class BLEU(object):
     Part 1 - modified n-gram precision
 
     The normal precision method may lead to some wrong translations with
-    high-precision, e.g., the translation, in which a word of reference 
-    repeats several times, has very high precision. So in the modified 
+    high-precision, e.g., the translation, in which a word of reference
+    repeats several times, has very high precision. So in the modified
     n-gram precision, a reference word will be considered exhausted after
-    a matching candidate word is identified. 
+    a matching candidate word is identified.
 
     Part 2 - brevity penalty
 
-    As the modified n-gram precision stil has the problem from the short 
+    As the modified n-gram precision stil has the problem from the short
     length sentence, brevity penalty is used to modify the overall BLEU
     score according to length.
 
@@ -38,50 +39,50 @@ class BLEU(object):
 
     >>> weights = [0.25, 0.25, 0.25, 0.25]
     >>> candidate1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
-    ...				  'ensures', 'that', 'the', 'military', 'always', 
+    ...				  'ensures', 'that', 'the', 'military', 'always',
     ...				  'obeys', 'the', 'commands', 'of', 'the', 'party', '.']
 
-    >>> candidate2 = ['It', 'is', 'to', 'insure', 'the', 'troops',  
-    ...               'forever', 'hearing', 'the', 'activity', 'guidebook', 
+    >>> candidate2 = ['It', 'is', 'to', 'insure', 'the', 'troops',
+    ...               'forever', 'hearing', 'the', 'activity', 'guidebook',
     ...               'that', 'party', 'direct', '.']
 
-    >>> reference1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'that', 
-    ...               'ensures', 'that', 'the', 'military', 'will', 'forever', 
-    ...               'heed', 'Party', 'commands', '.'] 
+    >>> reference1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'that',
+    ...               'ensures', 'that', 'the', 'military', 'will', 'forever',
+    ...               'heed', 'Party', 'commands', '.']
 
-    >>> reference2 = ['It', 'is', 'the', 'guiding', 'principle', 'which',  
-    ...               'guarantees', 'the', 'military', 'forces', 'always', 
-    ...               'being', 'under', 'the', 'command', 'of', 'the', 
+    >>> reference2 = ['It', 'is', 'the', 'guiding', 'principle', 'which',
+    ...               'guarantees', 'the', 'military', 'forces', 'always',
+    ...               'being', 'under', 'the', 'command', 'of', 'the',
     ...               'Party', '.']
 
-    >>> reference3 = ['It', 'is', 'the', 'practical', 'guide', 'for', 'the', 
-    ...     'army', 'always', 'to', 'heed', 'the', 'directions', 
-    ...     'of', 'the', 'party', '.']
+    >>> reference3 = ['It', 'is', 'the', 'practical', 'guide', 'for', 'the',
+    ...               'army', 'always', 'to', 'heed', 'the', 'directions',
+    ...               'of', 'the', 'party', '.']
 
     >>> BLEU.compute(candidate1, [reference1, reference2, reference3], weights)
-    0.0555662774619807
+    0.0555...
 
     >>> BLEU.compute(candidate2, [reference1, reference2, reference3], weights)
-    0.04211415110983725
+    0.0421...
 
-    2. Test with two corpus that one is a reference and another is 
+    2. Test with two corpus that one is a reference and another is
     an output from translation system:
 
     >>> weights = [0.25, 0.25, 0.25, 0.25]
-    >>> ref_file = open('newstest2012-ref.en')
-    >>> candidate_file = open('newstest2012.fr-en.cmu-avenue')
+    >>> ref_file = open('newstest2012-ref.en')  # doctest: +SKIP
+    >>> candidate_file = open('newstest2012.fr-en.cmu-avenue')  # doctest: +SKIP
 
     >>> total = 0.0
     >>> count = 0
 
-    >>> for candi_raw in candidate_file:
+    >>> for candi_raw in candidate_file:  # doctest: +SKIP
     ...		ref_raw = ref_file.readline()
     ...		ref_tokens = word_tokenize(ref_raw)
     ...		candi_tokens = word_tokenize(candi_raw)
     ...		total = BLEU.compute(candi_tokens, [ref_tokens], weights)
     ...		count += 1
 
-    >>> total/count
+    >>> total / count  # doctest: +SKIP
     2.787504437460048e-05
 
     """
