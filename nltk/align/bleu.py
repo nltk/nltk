@@ -189,7 +189,7 @@ class BLEU(object):
             for ngram in counts:
                 max_counts[ngram] = max(max_counts.get(ngram, 0), reference_counts[ngram])
 
-        clipped_counts = {ngram: min(count, max_counts[ngram]) for ngram, count in counts.items()}
+        clipped_counts = dict((ngram, min(count, max_counts[ngram])) for ngram, count in counts.items())
 
         return sum(clipped_counts.values()) / sum(counts.values())
 
