@@ -24,7 +24,7 @@ try:
     from scipy.stats import fisher_exact
 except ImportError:
     def fisher_exact(*_args, **_kwargs):
-        raise NotImplementedError
+        raise NotImplementedError('SciPy is not available, install it to get this functionality!')
 
 ### Indices to marginals arguments:
 
