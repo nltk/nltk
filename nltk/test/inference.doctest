@@ -483,8 +483,8 @@ Show the model in 'tabular' format.
 
 The property ``valuation`` accesses the stored ``Valuation``.
 
-    >>> print(mb.valuation)
-    {u'see': set([('b', 'a')]), u'john': 'a', u'mary': 'b'}
+    >>> mb.valuation == {u'see': set([('b', 'a')]), u'john': 'a', u'mary': 'b'}
+    True
 
 We can return to our earlier example and inspect the model:
 
