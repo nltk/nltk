@@ -22,6 +22,7 @@ def _compare_overlaps_greedy(context, synsets_signatures, pos=None):
     :param synsets_signatures: ``dictionary`` A list of words that 'signifies' the ambiguous word.
     :param pos: ``pos`` A specified Part-of-Speech (POS).
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
+
     """
     max_overlaps = 0
     lesk_sense = None
@@ -37,15 +38,13 @@ def _compare_overlaps_greedy(context, synsets_signatures, pos=None):
 
 def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
     """
-    This function is the implementation of the original Lesk algorithm (1986).
-    It requires a dictionary which contains the definition of the different
-    sense of each word. See http://goo.gl/8TB15w
+    This function is the implementation of the original Lesk algorithm (1986)
+    [1]. It requires a dictionary which contains the definition of the
+    different sense of each word.
 
         >>> from nltk import word_tokenize
         >>> sent = word_tokenize("I went to the bank to deposit money.")
-        >>> word = "bank"
-        >>> pos = "n"
-        >>> lesk(sent, word, pos)
+        >>> lesk(sent, "bank", "n")  # doctest: +SKIP
         Synset('depository_financial_institution.n.01')
 
     :param context_sentence: The context sentence where the ambiguous word occurs.
@@ -53,6 +52,12 @@ def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
     :param pos: A specified Part-of-Speech (POS).
     :param dictionary: A list of words that 'signifies' the ambiguous word.
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
+
+    [1] Lesk, Michael. "Automatic sense disambiguation using machine readable
+    dictionaries: how to tell a pine cone from an ice cream cone." Proceedings
+    of the 5th annual international conference on Systems documentation. ACM,
+    1986. http://dl.acm.org/citation.cfm?id=318728
+
     """
     if not dictionary:
         dictionary = {}
