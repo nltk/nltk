@@ -96,3 +96,10 @@ senna:
     - source_hash: sha512= a98cf218b9a059ac70b9ef36a28d6c9c68b76e95c2cd7facfb21bc8e5787a91f2c47022f3a36cbb8c5abf5e2962bc5db58effabf04fc69f9caa23be3827de92d
     - if_missing: /usr/share/senna-v2.0
 
+/bin/megam:
+  file.managed:
+    - source: https://dl.dropboxusercontent.com/u/50040986/index/megam
+    - user: root
+    - group: root
+    - mode: '0755'
+    - source_hash: sha512=32999071f2365972022b78659d4135cd45897a15b4361d49b570876956b41d8f063b9bb351c18ac010b399edd9a616ccf2fe538e1d3e38eb5a763b6be6046466
