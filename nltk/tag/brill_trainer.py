@@ -91,7 +91,6 @@ class BrillTaggerTrainer(object):
            if the rule applies.  This records the next position we
            need to check to see if the rule messed anything up."""
 
-
     #////////////////////////////////////////////////////////////
     # Training
     #////////////////////////////////////////////////////////////
@@ -163,40 +162,32 @@ class BrillTaggerTrainer(object):
           22  27   5  24  | NN->-NONE- if Pos:VBD@[-1]
           17  17   0   0  | NN->CC if Pos:NN@[-1] & Word:and@[0]
 
-
-
         >>> tagger1.rules()[1:3]
         (Rule('001', 'NN', ',', [(Pos([-1]),'NN'), (Word([0]),',')]), Rule('001', 'NN', '.', [(Pos([-1]),'NN'), (Word([0]),'.')]))
-
 
         >>> train_stats = tagger1.train_stats()
         >>> [train_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
         [1775, 1269, [132, 85, 69, 51, 47, 33, 26, 24, 22, 17]]
 
-
-        ##FIXME: the following test fails -- why?
-        #
-        #>>> tagger1.print_template_statistics(printunused=False)
-        #TEMPLATE STATISTICS (TRAIN)  2 templates, 10 rules)
-        #TRAIN (   3163 tokens) initial  2358 0.2545 final:  1719 0.4565
-        ##ID | Score (train) |  #Rules     | Template
-        #--------------------------------------------
-        #001 |   404   0.632 |   7   0.700 | Template(Pos([-1]),Word([0]))
-        #000 |   235   0.368 |   3   0.300 | Template(Pos([-1]))
-        #<BLANKLINE>
-        #<BLANKLINE>
+        >>> tagger1.print_template_statistics(printunused=False)
+        TEMPLATE STATISTICS (TRAIN)  2 templates, 10 rules)
+        TRAIN (   2417 tokens) initial  1775 0.2656 final:  1269 0.4750
+        #ID | Score (train) |  #Rules     | Template
+        --------------------------------------------
+        001 |   305   0.603 |   7   0.700 | Template(Pos([-1]),Word([0]))
+        000 |   201   0.397 |   3   0.300 | Template(Pos([-1]))
+        <BLANKLINE>
+        <BLANKLINE>
 
         >>> tagger1.evaluate(gold_data) # doctest: +ELLIPSIS
         0.43996...
 
         >>> (tagged, test_stats) = tagger1.batch_tag_incremental(testing_data, gold_data)
 
-
         >>> tagged[33][12:] == [('foreign', 'IN'), ('debt', 'NN'), ('of', 'IN'), ('$', 'NN'), ('64', 'CD'),
         ... ('billion', 'NN'), ('*U*', 'NN'), ('--', 'NN'), ('the', 'DT'), ('third-highest', 'NN'), ('in', 'NN'),
         ... ('the', 'DT'), ('developing', 'VBG'), ('world', 'NN'), ('.', '.')]
         True
-
 
         >>> [test_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
         [1855, 1376, [100, 85, 67, 58, 27, 36, 27, 16, 31, 32]]
