@@ -105,9 +105,11 @@ class SennaTagger(TaggerI):
         will output the tags into. This depends on the operations being ordered.
         """
         _map = {}
-        for i, operation in enumerate(SennaTagger.SUPPORTED_OPERATIONS, start=1):
+        i = 1
+        for operation in SennaTagger.SUPPORTED_OPERATIONS:
             if operation in self.operations:
                 _map[operation] = i
+                i += 1
         return _map
 
     def tag(self, tokens):
