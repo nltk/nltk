@@ -85,3 +85,14 @@ hunpos:
     - tar_options: z
     - source_hash: sha512=2b15136e5f5b8bb4cf5c38715cab3e810d60192e9404d15d329fb788b95b92c582ffe982892a7d2d470b061e6f1bea3fa051138dc820d19280234275cbd9ddeb
     - if_missing: /opt/hunpos-1.0-linux/
+
+senna:
+  archive:
+    - extracted
+    - name: /usr/share
+    - source: http://ml.nec-labs.com/senna/senna-v2.0/senna-v2.0.tgz
+    - archive_format: tar
+    - tar_options: z
+    - source_hash: sha512= a98cf218b9a059ac70b9ef36a28d6c9c68b76e95c2cd7facfb21bc8e5787a91f2c47022f3a36cbb8c5abf5e2962bc5db58effabf04fc69f9caa23be3827de92d
+    - if_missing: /usr/share/senna-v2.0
+
