@@ -77,14 +77,14 @@ class Feature(object):
         :param end: end of range (NOTE: inclusive!) where this feature should apply
 
         """
-        self.positions = None #to avoid warnings
+        self.positions = None  # to avoid warnings
         if end is None:
             self.positions = tuple(sorted(set([int(i) for i in positions])))
-        else:                #positions was actually not a list, but only the start index
+        else:  # positions was actually not a list, but only the start index
             try:
                 if positions > end:
                     raise TypeError
-                self.positions = tuple(range(positions, end+1))
+                self.positions = tuple(range(positions, end + 1))
             except TypeError:
                 #let any kind of erroneous spec raise ValueError
                 raise ValueError("illegal interval specification: (start={0}, end={1})".format(positions, end))
@@ -155,8 +155,8 @@ class Feature(object):
         :raises ValueError: for non-positive window lengths
         """
         if not all(x > 0 for x in winlens):
-            raise ValueError("non-positive window length in {0:s}".format(winlens))
-        xs = (starts[i:i+w] for w in winlens for i in range(len(starts)-w+1))
+            raise ValueError("non-positive window length in {0}".format(winlens))
+        xs = (starts[i:i + w] for w in winlens for i in range(len(starts) - w + 1))
         return [cls(x) for x in xs if not (excludezero and 0 in x)]
 
     def issuperset(self, other):
@@ -187,8 +187,7 @@ class Feature(object):
 
 
         """
-        return (self.__class__ is other.__class__ and
-               set(self.positions) >= set(other.positions))
+        return (self.__class__ is other.__class__ and set(self.positions) >= set(other.positions))
 
     def intersects(self, other):
         """
@@ -219,19 +218,19 @@ class Feature(object):
         :rtype: bool
         """
 
-        return bool((self.__class__ is other.__class__ and
-               set(self.positions) & set(other.positions)))
+        return bool((self.__class__ is other.__class__ and set(self.positions) & set(other.positions)))
 
     #Rich comparisons for Features. With @functools.total_ordering (Python 2.7+),
     # it will be enough to define __lt__ and __eq__
     def __eq__(self, other):
-        return (self.__class__ is other.__class__ and
-               self.positions == other.positions)
+        return (self.__class__ is other.__class__ and self.positions == other.positions)
 
     def __lt__(self, other):
-        return (self.__class__.__name__ < other.__class__.__name__ or
-               #self.positions is a sorted tuple of ints
-               self.positions < other.positions)
+        return (
+            self.__class__.__name__ < other.__class__.__name__ or
+            #self.positions is a sorted tuple of ints
+            self.positions < other.positions
+        )
 
     def __ne__(self, other):
         return not (self == other)

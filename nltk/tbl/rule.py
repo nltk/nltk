@@ -248,7 +248,7 @@ class Rule(TagRule):
 
         #r.format("repr") == repr(r)
         >>> r.format("repr")
-        "Rule(23, 'VB', 'NN', [(Pos([-2, -1]),'DT')])"
+        "Rule('23', 'VB', 'NN', [(Pos([-2, -1]),'DT')])"
 
         >>> r.format("verbose")
         'VB -> NN if the Pos of words i-2...i-1 is "DT"'
