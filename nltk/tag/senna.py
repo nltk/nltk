@@ -305,7 +305,7 @@ class CHKTagger(SennaTagger):
 
 
 def setup_module(module):
-    from nltk.compat import PY3
+    import sys
 
     from nose import SkipTest
 
@@ -314,5 +314,5 @@ def setup_module(module):
     if not path.isfile(tagger.executable):
         raise SkipTest("Senna executable expected at /usr/share/senna-v2.0/senna-osx but not found")
 
-    if not PY3:
-        raise SkipTest('Tests requrire Python 3.')
+    if sys.version_info < (3, 3):
+        raise SkipTest('Tests requrire at least Python 3.3')
