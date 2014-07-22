@@ -43,19 +43,6 @@ coveralls:
 nose:
   pip.installed
 
-{% for py in '3.4', '3.3', '3.2', '2.7', '2.6' %}
-pip{{ py }}:
-  cmd.run:
-    - name: curl https://bootstrap.pypa.io/get-pip.py | python{{ py }} - -I
-
-{% for pkg in 'numpy', 'scipy', 'scikit-learn' %}
-{{pkg}}{{ py }}:
-  cmd.run:
-    - name: pip{{ py }} install --use-wheel --no-index --find-links=https://dl.dropboxusercontent.com/u/50040986/index/index.html {{pkg}}
-{% endfor %}
-
-{% endfor %}
-
 nltk_data:
   cmd.run:
     - name: python -m nltk.downloader -d /usr/share/nltk_data all
