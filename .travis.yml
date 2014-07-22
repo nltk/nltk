@@ -12,7 +12,7 @@ install:
   - curl -L https://bootstrap.saltstack.com | sudo sh -s
   - sudo salt-call state.highstate --local  --file-root salt/roots/salt
   - python -m nltk.downloader all
-  - install --use-wheel --no-index --find-links=https://dl.dropboxusercontent.com/u/50040986/index/index.html numpy scipy scikit-learn
+  - pip install --use-wheel --no-index --find-links=https://dl.dropboxusercontent.com/u/50040986/index/index.html numpy scipy scikit-learn
 script:
     - tox -e $TOXENV -c tox-travis.ini -- --with-coverage --cover-inclusive --cover-package=nltk
 
