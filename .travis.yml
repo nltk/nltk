@@ -1,18 +1,24 @@
 language: python
 
 env:
-  - TOXENV=py26
-  - TOXENV=py27
-  - TOXENV=py32
-  - TOXENV=py33
-  - TOXENV=py34
+  matrix:
+    - TOXENV=py26
+    - TOXENV=py27
+    - TOXENV=py32
+    - TOXENV=py33
+    - TOXENV=py34
+    - COVERAGE=''
+    - COVERAGE=--with-coverage --cover-inclusive --cover-package=nltk
+  allow_failures:
+    - COVERAGE=--with-coverage --cover-inclusive --cover-package=nltk
+  fast_finish: true
 
 install:
   - curl -L https://bootstrap.saltstack.com | sudo sh -s
   - sudo salt-call state.highstate --local  --file-root salt/roots/salt
   - python -m nltk.downloader all
 script:
-    - tox -e $TOXENV -c tox-travis.ini -- --with-coverage --cover-inclusive --cover-package=nltk
+    - tox -e $TOXENV -c tox-travis.ini -- $COVERAGE
 
 after_script:
   - cd nltk/test
