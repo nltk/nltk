@@ -9,13 +9,13 @@ NLTK 3.0b1 released : July 2014
    FrameNet, SentiWordNet, universal tagset, misc efficiency improvements and bugfixes
    Several API changes, see https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
    For full details see:
-   https://raw.github.com/nltk/nltk/master/ChangeLog
+   https://github.com/nltk/nltk/blob/develop/ChangeLog
 
 NLTK 3.0a4 released : June 2014
    FrameNet, universal tagset, misc efficiency improvements and bugfixes
    Several API changes, see https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
    For full details see:
-   https://raw.github.com/nltk/nltk/master/ChangeLog
+   https://github.com/nltk/nltk/blob/develop/ChangeLog
    http://nltk.org/nltk3-alpha/
 
 NLTK Book Updates : October 2013
@@ -24,7 +24,7 @@ NLTK Book Updates : October 2013
 
 NLTK 3.0a2 released : July 2013
    Misc efficiency improvements and bugfixes; for details see
-   https://raw.github.com/nltk/nltk/master/ChangeLog
+   https://github.com/nltk/nltk/blob/develop/ChangeLog
    http://nltk.org/nltk3-alpha/
 
 NLTK 3.0a1 released : February 2013
@@ -46,13 +46,13 @@ NLTK 2.0.4 released : November 2012
     Minor fix to remove numpy dependency.
 
 NLTK 2.0.3 released : September 2012
-    This release contains minor improvements and bugfixes.  This is the final release compatible with Python 2.5.  For details see https://raw.github.com/nltk/nltk/master/ChangeLog
+    This release contains minor improvements and bugfixes.  This is the final release compatible with Python 2.5.  For details see https://github.com/nltk/nltk/blob/develop/ChangeLog
 
 NLTK 2.0.2 released : July 2012
-    This release contains minor improvements and bugfixes.  For details see https://raw.github.com/nltk/nltk/master/ChangeLog
+    This release contains minor improvements and bugfixes.  For details see https://github.com/nltk/nltk/blob/develop/ChangeLog
 
 NLTK 2.0.1 released : May 2012
-    The final release of NLTK 2.  For details see https://raw.github.com/nltk/nltk/master/ChangeLog
+    The final release of NLTK 2.  For details see https://github.com/nltk/nltk/blob/develop/ChangeLog
 
 NLTK 2.0.1rc4 released : February 2012
     The fourth release candidate for NLTK 2.
