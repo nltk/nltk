@@ -1,4 +1,4 @@
-Version 3.0b1 2013-07-11
+Version 3.0b1 2014-07-11
 * Added SentiWordNet corpus and corpus reader
 * Fixed support for 10-column dependency file format
 * Changed Tree initialization to use fromstring
@@ -16,7 +16,7 @@ Roberts, Alex Rudnick, Nathan Schneider, Geraldine Sim Wei Ying, Lynn
 Soe, Liling Tan, Louis Tiao, Marcus Uneson, Yu Usami, Steven Xu, Zhe
 Wang, Chuck Wooters, isnowfy, onesandzeros, pquentin, wvanlint
 	
-Version 3.0a4 2013-05-25
+Version 3.0a4 2014-05-25
 * IBM Models 1-3, BLEU, Gale-Church aligner
 * Lesk algorithm for WSD
 * Open Multilingual WordNet
