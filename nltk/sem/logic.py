@@ -865,10 +865,14 @@ class Expression(SubstituteBindingsI):
     """This is the base abstract object for all logical expressions"""
 
     _logic_parser = _LogicParser()
+    _type_checking_logic_parser = _LogicParser((type_check=True)
 
     @classmethod
-    def fromstring(cls, s):
-        return cls._logic_parser.parse(s)
+    def fromstring(cls, s, type_check=False):
+        if type_check:
+            return cls._type_checking_logic_parser.parse(s)
+        else:
+            return cls._logic_parser.parse(s)
 
     def __call__(self, other, *additional):
         accum = self.applyto(other)
