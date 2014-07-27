@@ -26,7 +26,7 @@ import math
 import re
 from itertools import islice, chain
 from operator import itemgetter, attrgetter
-from collections import defaultdict
+from collections import defaultdict, deque
 
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
@@ -116,8 +116,14 @@ class _WordNetObject(object):
     def hypernyms(self):
         return self._related('@')
 
+    def _hypernyms(self):
+        return self._related('@', sort=False)
+
     def instance_hypernyms(self):
         return self._related('@i')
+
+    def _instance_hypernyms(self):
+        return self._related('@i', sort=False)
 
     def hyponyms(self):
         return self._related('~')
@@ -616,7 +622,7 @@ class Synset(_WordNetObject):
            a hypernym of the first ``Synset``.
         """
         distances = set([(self, distance)])
-        for hypernym in self.hypernyms() + self.instance_hypernyms():
+        for hypernym in self._hypernyms() + self._instance_hypernyms():
             distances |= hypernym.hypernym_distances(distance+1, simulate_root=False)
         if simulate_root:
             fake_synset = Synset(None)
@@ -624,6 +630,30 @@ class Synset(_WordNetObject):
             fake_synset_distance = max(distances, key=itemgetter(1))[1]
             distances.add((fake_synset, fake_synset_distance+1))
         return distances
+
+    def _shortest_hypernym_paths(self, simulate_root):
+        if self._name == '*ROOT*':
+            return {self: 0}
+
+        queue = deque([(self, 0)])
+        path = {}
+
+        while queue:
+            s, depth = queue.popleft()
+            if s in path:
+                continue
+            path[s] = depth
+
+            depth += 1
+            queue.extend((hyp, depth) for hyp in s._hypernyms())
+            queue.extend((hyp, depth) for hyp in s._instance_hypernyms())
+
+        if simulate_root:
+            fake_synset = Synset(None)
+            fake_synset._name = '*ROOT*'
+            path[fake_synset] = max(path.values()) + 1
+
+        return path
 
     def shortest_path_distance(self, other, simulate_root=False):
         """
@@ -643,24 +673,8 @@ class Synset(_WordNetObject):
         if self == other:
             return 0
 
-        dist_list1 = self.hypernym_distances(simulate_root=simulate_root)
-        dist_dict1 = {}
-
-        dist_list2 = other.hypernym_distances(simulate_root=simulate_root)
-        dist_dict2 = {}
-
-        # Transform each distance list into a dictionary. In cases where
-        # there are duplicate nodes in the list (due to there being multiple
-        # paths to the root) the duplicate with the shortest distance from
-        # the original node is entered.
-
-        for (l, d) in [(dist_list1, dist_dict1), (dist_list2, dist_dict2)]:
-            for (key, value) in l:
-                if key in d:
-                    if value < d[key]:
-                        d[key] = value
-                else:
-                    d[key] = value
+        dist_dict1 = self._shortest_hypernym_paths(simulate_root)
+        dist_dict2 = other._shortest_hypernym_paths(simulate_root)
 
         # For each ancestor synset common to both subject synsets, find the
         # connecting path length. Return the shortest of these.
@@ -949,10 +963,13 @@ class Synset(_WordNetObject):
     def __repr__(self):
         return "%s('%s')" % (type(self).__name__, self._name)
 
-    def _related(self, relation_symbol):
+    def _related(self, relation_symbol, sort=True):
         get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
         pointer_tuples = self._pointers[relation_symbol]
-        return sorted([get_synset(pos, offset) for pos, offset in pointer_tuples])
+        r = [get_synset(pos, offset) for pos, offset in pointer_tuples]
+        if sort:
+            r.sort()
+        return r
 
 
 ######################################################################
