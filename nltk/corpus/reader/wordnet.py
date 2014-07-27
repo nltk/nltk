@@ -31,7 +31,8 @@ from collections import defaultdict
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
-from nltk.compat import xrange, python_2_unicode_compatible, total_ordering
+from nltk.compat import (iteritems, python_2_unicode_compatible,
+                         total_ordering, xrange)
 
 ######################################################################
 ## Table of Contents
@@ -642,8 +643,6 @@ class Synset(_WordNetObject):
         if self == other:
             return 0
 
-        path_distance = None
-
         dist_list1 = self.hypernym_distances(simulate_root=simulate_root)
         dist_dict1 = {}
 
@@ -666,14 +665,13 @@ class Synset(_WordNetObject):
         # For each ancestor synset common to both subject synsets, find the
         # connecting path length. Return the shortest of these.
 
-        for synset1 in dist_dict1.keys():
-            for synset2 in dist_dict2.keys():
-                if synset1 == synset2:
-                    new_distance = dist_dict1[synset1] + dist_dict2[synset2]
-                    if path_distance is None or path_distance < 0 or new_distance < path_distance:
-                        path_distance = new_distance
+        inf = float('inf')
+        path_distance = inf
+        for synset, d1 in iteritems(dist_dict1):
+            d2 = dist_dict2.get(synset, inf)
+            path_distance = min(path_distance, d1 + d2)
 
-        return path_distance
+        return None if math.isinf(path_distance) else path_distance
 
     def tree(self, rel, depth=-1, cut_mark=None):
         """
