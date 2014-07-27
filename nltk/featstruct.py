@@ -95,7 +95,7 @@ import copy
 
 from nltk.internals import read_str, raise_unorderable_types
 from nltk.sem.logic import (Variable, Expression, SubstituteBindingsI,
-                            _LogicParser, LogicalExpressionException)
+                            LogicParser, LogicalExpressionException)
 from nltk.compat import (string_types, integer_types, total_ordering,
                          python_2_unicode_compatible, unicode_repr)
 
@@ -1958,7 +1958,7 @@ class FeatStructReader(object):
         self._features_with_defaults = [feature for feature in features
                                         if feature.default is not None]
         if logic_parser is None:
-            logic_parser = _LogicParser()
+            logic_parser = LogicParser()
         self._logic_parser = logic_parser
 
     def fromstring(self, s, fstruct=None):

@@ -17,7 +17,7 @@ from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
                             EventVariableExpression, ExistsExpression, Expression,
                             FunctionVariableExpression, ImpExpression,
                             IndividualVariableExpression, LambdaExpression, Tokens,
-                            _LogicParser, NegatedExpression, OrExpression, Variable,
+                            LogicParser, NegatedExpression, OrExpression, Variable,
                             is_eventvar, is_funcvar, is_indvar, unique_variable)
 
 # Import Tkinter-based modules if they are available
@@ -47,10 +47,10 @@ class DrtTokens(Tokens):
     TOKENS = Tokens.TOKENS + [DRS] + PUNCT
 
 
-class _DrtParser(_LogicParser):
+class DrtParser(LogicParser):
     """A lambda calculus expression parser."""
     def __init__(self):
-        _LogicParser.__init__(self)
+        LogicParser.__init__(self)
 
         self.operator_precedence = dict(
                                [(x,1) for x in DrtTokens.LAMBDA_LIST]             + \
@@ -177,7 +177,7 @@ class DrtExpression(object):
     Expression extends.
     """
 
-    _drt_parser = _DrtParser()
+    _drt_parser = DrtParser()
 
     @classmethod
     def fromstring(cls, s):

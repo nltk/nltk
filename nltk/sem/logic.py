@@ -84,7 +84,7 @@ def binding_ops():
 
 
 @python_2_unicode_compatible
-class _LogicParser(object):
+class LogicParser(object):
     """A lambda calculus expression parser."""
 
     def __init__(self, type_check=False):
@@ -532,7 +532,7 @@ def parse_logic(s, logic_parser=None, encoding=None):
     :param s: the contents of the file
     :type s: str
     :param logic_parser: The parser to be used to parse the logical expression
-    :type logic_parser: _LogicParser
+    :type logic_parser: LogicParser
     :param encoding: the encoding of the input string, if it is binary
     :type encoding: str
     :return: a list of parsed formulas.
@@ -541,7 +541,7 @@ def parse_logic(s, logic_parser=None, encoding=None):
     if encoding is not None:
         s = s.decode(encoding)
     if logic_parser is None:
-        logic_parser = _LogicParser()
+        logic_parser = LogicParser()
 
     statements = []
     for linenum, line in enumerate(s.splitlines()):
@@ -864,8 +864,8 @@ class SubstituteBindingsI(object):
 class Expression(SubstituteBindingsI):
     """This is the base abstract object for all logical expressions"""
 
-    _logic_parser = _LogicParser()
-    _type_checking_logic_parser = _LogicParser((type_check=True)
+    _logic_parser = LogicParser()
+    _type_checking_logic_parser = LogicParser(type_check=True)
 
     @classmethod
     def fromstring(cls, s, type_check=False):
