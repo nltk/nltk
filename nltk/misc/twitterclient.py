@@ -94,8 +94,8 @@ class TweetHandler:
         subdir = self.subdir
         fprefix = self.fprefix
         if subdir:
-                if not os.path.exists(subdir):
-                    os.mkdir(subdir)
+            if not os.path.exists(subdir):
+                os.mkdir(subdir)
                    
         fname = os.path.join(subdir, fprefix)
         fmt = '%Y%m%d-%H%M%S'
@@ -129,7 +129,6 @@ class TweetHandler:
         if verbose:
             print('Writing to {}'.format(self.fname))           
             
-        
         if self.counter >= self.limit:
             self.output.close()
             if not self.repeat:
@@ -139,7 +138,7 @@ class TweetHandler:
                 self.counter = 0
                 if verbose:
                     print('Writing to new file {}'.format(self.fname))           
-                    #print(self.counter)                    
+                         
 
 
 ################################
@@ -223,7 +222,6 @@ def streamtoscreen_demo(limit=20):
     client.statuses.sample()
     
 def streamtofile_demo(limit=20):
-    #client = Streamer(*credentials('creds.json'))
     oauth = authenticate('credentials1.txt') 
     client = Streamer(**oauth)
     handler = TweetHandler(client, limit=limit)    
