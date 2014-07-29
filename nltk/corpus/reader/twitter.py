@@ -106,12 +106,7 @@ class TwitterCorpusReader(CorpusReader):
         elif isinstance(fileids, compat.string_types): 
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids]) 
-    
-    
-
-        
-        
-
+       
 
     #def words(self, fileid=None):
         #"""
@@ -131,18 +126,4 @@ class TwitterCorpusReader(CorpusReader):
             #out.extend(toks)
         #return out
             
-
-    #def sents(self, fileids=None):
-        #"""
-        #:return: the given file(s) as a list of
-            #sentences or utterances, each encoded as a list of word
-            #strings.
-        #:rtype: list(list(str))
-        #"""
-        #if self._sent_tokenizer is None:
-            #raise ValueError('No sentence tokenizer for this corpus')
-
-        #return concat([self.CorpusView(path, self._read_sent_block, encoding=enc)
-                       #for (path, enc, fileid)
-                       #in self.abspaths(fileids, True, True)])
 
