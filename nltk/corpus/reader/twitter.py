@@ -18,7 +18,7 @@ from nltk.tokenize import *
 from nltk.corpus.reader.util import StreamBackedCorpusView
 from nltk.corpus.reader.api import CorpusReader
 
-from potts import TweetTokenizer
+from nltk.tokenizer.twitter import TweetTokenizer
 
 class TwitterCorpusReader(CorpusReader):
     """
@@ -29,9 +29,11 @@ class TwitterCorpusReader(CorpusReader):
     """
 
     CorpusView = StreamBackedCorpusView
-    """The corpus view class used by this reader.  Subclasses of
-       ``PlaintextCorpusReader`` may specify alternative corpus view
-       classes (e.g., to skip the preface sections of documents.)"""
+    """
+    The corpus view class used by this reader. Subclasses of
+    ``PlaintextCorpusReader`` may specify alternative corpus view classes
+    (e.g., to skip the preface sections of documents.)
+    """
 
     def __init__(self, root, fileids,
                  word_tokenizer=TweetTokenizer(),                
@@ -85,12 +87,20 @@ class TwitterCorpusReader(CorpusReader):
     
     
     def tokenised_tweets(self, fileid=None):
+        """
+        Return a list of Tweets as lists of words.
+        
+        :rtype: list(list(str))
+        """
         tweets = self.tweets(fileid)
         tokenizer = self._word_tokenizer
         return [tokenizer.tokenize(t) for t in tweets]
     
     
     def raw(self, fileids=None):
+        """
+        Return the corpora in their raw form.
+        """
         if fileids is None: 
             fileids = self._fileids
         elif isinstance(fileids, compat.string_types): 
