@@ -178,9 +178,10 @@ class TweetTokenizer:
 
     def tokenize(self, s):
         """
-        :parameter s: str :rtype: list(str) :returns: a tokenized list of
-        strings; concatenating this list returns the original string if
-        preserve_case=False
+        :param s: str 
+        :rtype: list(str)         
+        :return: a tokenized list of strings; concatenating this list returns
+        the original string if preserve_case=False
         """        
         # Try to ensure unicode:
         try:
