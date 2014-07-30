@@ -13,10 +13,10 @@ Lesk Algorithm
 
 
 Performs the classic Lesk algorithm for Word Sense Disambiguation (WSD) using
-a the definitions of the ambiguous word. 
+a the definitions of the ambiguous word.
 
-Given an ambiguous word and the context in which the word occurs, Lesk returns 
-a Synset with the highest number of overlapping words between the context 
+Given an ambiguous word and the context in which the word occurs, Lesk returns
+a Synset with the highest number of overlapping words between the context
 sentence and different definitions from each Synset.
 
     >>> from nltk.wsd import lesk
@@ -24,7 +24,7 @@ sentence and different definitions from each Synset.
 	>>> sent = word_tokenize("I went to the bank to deposit money.")
 	>>> word = "bank"
 	>>> pos = "n"
-	>>> print(lesk(sent, word, pos))
+	>>> print(lesk(sent, word, pos))  # doctest: +SKIP
 	Synset('depository_financial_institution.n.01')
 
 The definitions for "bank" are:

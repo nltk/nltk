@@ -115,7 +115,7 @@ class Rule(TagRule):
 
     """
 
-    json_tag='nltk.tbl.Rule'
+    json_tag = 'nltk.tbl.Rule'
 
     def __init__(self, templateid, original_tag, replacement_tag, conditions):
         """
@@ -140,10 +140,10 @@ class Rule(TagRule):
 
     def encode_json_obj(self):
         return {
-            'templateid':   self.templateid,
-            'original':     self.original_tag,
-            'replacement':  self.replacement_tag,
-            'conditions':   self._conditions,
+            'templateid': self.templateid,
+            'original': self.original_tag,
+            'replacement': self.replacement_tag,
+            'conditions': self._conditions,
         }
 
     @classmethod
@@ -164,7 +164,7 @@ class Rule(TagRule):
             for pos in feature.positions:
                 if not (0 <= index + pos < len(tokens)):
                     continue
-                if feature.extract_property(tokens, index+pos) == val:
+                if feature.extract_property(tokens, index + pos) == val:
                     break
             else:
                 # No token satisfied the condition; return false.
@@ -182,7 +182,7 @@ class Rule(TagRule):
                  self._conditions == other._conditions))
 
     def __ne__(self, other):
-        return not (self==other)
+        return self != other
 
     def __hash__(self):
 
@@ -199,15 +199,19 @@ class Rule(TagRule):
         try:
             return self.__repr
         except:
-            self.__repr = ('%s(%r, %s, %s, [%s])' % (
-                self.__class__.__name__,
-                self.templateid,
-                unicode_repr(self.original_tag),
-                unicode_repr(self.replacement_tag),
-
-                # list(self._conditions) would be simpler but will not generate
-                # the same Rule.__repr__ in python 2 and 3 and thus break some tests
-                ", ".join("({0:s},{1:s})".format(f,unicode_repr(v)) for (f,v) in self._conditions)))
+            self.__repr = (
+                "{0}('{1}', {2}, {3}, [{4}])".format(
+                    self.__class__.__name__,
+                    self.templateid,
+                    unicode_repr(self.original_tag),
+                    unicode_repr(self.replacement_tag),
+                    # list(self._conditions) would be simpler but will not generate
+                    # the same Rule.__repr__ in python 2 and 3 and thus break some tests
+                    ", ".join(
+                        "({0},{1})".format(f, unicode_repr(v)) for f, v in self._conditions
+                    )
+                )
+            )
 
             return self.__repr
 
@@ -217,16 +221,17 @@ class Rule(TagRule):
             Return a compact, predicate-logic styled string representation
             of the given condition.
             """
-            return ('%s:%s@[%s]' %
-                (feature.PROPERTY_NAME, value, ",".join(str(w) for w in feature.positions)))
+            return (
+                '%s:%s@[%s]' %
+                (feature.PROPERTY_NAME, value, ",".join(str(w) for w in feature.positions))
+            )
 
-        conditions = ' & '.join([_condition_to_logic(f,v) for (f,v) in self._conditions])
+        conditions = ' & '.join([_condition_to_logic(f, v) for f, v in self._conditions])
         s = ('%s->%s if %s' % (
             self.original_tag,
             self.replacement_tag,
             conditions))
         return s
-
 
     def format(self, fmt):
         """
@@ -243,7 +248,7 @@ class Rule(TagRule):
 
         #r.format("repr") == repr(r)
         >>> r.format("repr")
-        "Rule(23, 'VB', 'NN', [(Pos([-2, -1]),'DT')])"
+        "Rule('23', 'VB', 'NN', [(Pos([-2, -1]),'DT')])"
 
         >>> r.format("verbose")
         'VB -> NN if the Pos of words i-2...i-1 is "DT"'
@@ -305,7 +310,7 @@ class Rule(TagRule):
 
         replacement = '%s -> %s' % (self.original_tag, self.replacement_tag)
         conditions = (' if ' if self._conditions else "") + ', and '.join(
-            [condition_to_str(f,v) for (f,v) in self._conditions])
+            [condition_to_str(f, v) for f, v in self._conditions])
         return replacement + conditions
 
 

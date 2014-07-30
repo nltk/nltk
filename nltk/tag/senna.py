@@ -60,16 +60,17 @@ class SennaTagger(TaggerI):
 
     Example:
 
+        >>> from pprint import pprint
         >>> from nltk.tag.senna import SennaTagger
         >>> pipeline = SennaTagger('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
         >>> sent = u'Düsseldorf is an international business center'.split()
-        >>> pipeline.tag(sent)
-        [{'word': u'D\xfcsseldorf', 'chk': u'B-NP', 'ner': u'B-PER', 'pos': u'NNP'},
-        {'word': u'is', 'chk': u'B-VP', 'ner': u'O', 'pos': u'VBZ'},
-        {'word': u'an', 'chk': u'B-NP', 'ner': u'O', 'pos': u'DT'},
-        {'word': u'international', 'chk': u'I-NP', 'ner': u'O', 'pos': u'JJ'},
-        {'word': u'business', 'chk': u'I-NP', 'ner': u'O', 'pos': u'NN'},
-        {'word': u'center', 'chk': u'I-NP', 'ner': u'O','pos': u'NN'}]
+        >>> pprint(pipeline.tag(sent))
+        [{'chk': 'B-NP', 'ner': 'B-PER', 'pos': 'NNP', 'word': 'Düsseldorf'},
+         {'chk': 'B-VP', 'ner': 'O', 'pos': 'VBZ', 'word': 'is'},
+         {'chk': 'B-NP', 'ner': 'O', 'pos': 'DT', 'word': 'an'},
+         {'chk': 'I-NP', 'ner': 'O', 'pos': 'JJ', 'word': 'international'},
+         {'chk': 'I-NP', 'ner': 'O', 'pos': 'NN', 'word': 'business'},
+         {'chk': 'I-NP', 'ner': 'O', 'pos': 'NN', 'word': 'center'}]
     """
 
     SUPPORTED_OPERATIONS = ['pos', 'chk', 'ner']
@@ -108,7 +109,7 @@ class SennaTagger(TaggerI):
         for operation in SennaTagger.SUPPORTED_OPERATIONS:
             if operation in self.operations:
                 _map[operation] = i
-                i+= 1
+                i += 1
         return _map
 
     def tag(self, tokens):
@@ -127,15 +128,14 @@ class SennaTagger(TaggerI):
 
         # Verifies the existence of the executable
         if not path.isfile(self.executable):
-          raise ExecutableNotFound("Senna executable expected at %s but not found" %
-                                   self.executable)
+            raise ExecutableNotFound("Senna executable expected at {0} but not found".format(self.executable))
 
         # Build the senna command to run the tagger
         _senna_cmd = [self.executable, '-path', self._path, '-usrtokens', '-iobtags']
-        _senna_cmd.extend(['-'+op for op in self.operations])
+        _senna_cmd.extend(['-' + op for op in self.operations])
 
         # Serialize the actual sentences to a temporary string
-        _input = '\n'.join((' '.join(x) for x in sentences))+'\n'
+        _input = '\n'.join((' '.join(x) for x in sentences)) + '\n'
         if isinstance(_input, compat.text_type) and encoding:
             _input = _input.encode(encoding)
 
@@ -165,15 +165,16 @@ class SennaTagger(TaggerI):
             tags = tagged_word.split('\t')
             result = {}
             for tag in map_:
-              result[tag] = tags[map_[tag]].strip()
+                result[tag] = tags[map_[tag]].strip()
             try:
-              result['word'] = sentences[sentence_index][token_index]
+                result['word'] = sentences[sentence_index][token_index]
             except IndexError:
-              raise SentenceMisalignment(
-                "Misalignment error occurred at sentence number %d. Possible reason"
-                " is that the sentence size exceeded the maximum size. Check the "
-                "documentation of SennaTagger class for more information."
-                % sentence_index)
+                raise SentenceMisalignment(
+                    "Misalignment error occurred at sentence number {0}. Possible reason"
+                    " is that the sentence size exceeded the maximum size. Check the "
+                    "documentation of SennaTagger class for more information."
+                    "".format(sentence_index)
+                )
             tagged_sentences[-1].append(result)
             token_index += 1
         return tagged_sentences
@@ -189,11 +190,22 @@ class POSTagger(SennaTagger):
 
     Example:
 
-        >>> from nltk.tag.senna import POSTagger
-        >>> postagger = POSTagger('/usr/share/senna-v2.0')
-        >>> postagger.tag('What is the airspeed of an unladen swallow ?'.split())
-        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
-        ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
+    >>> from pprint import pprint
+    >>> from nltk.tag.senna import POSTagger
+
+    >>> postagger = POSTagger('/usr/share/senna-v2.0')
+
+    >>> pprint(postagger.tag('What is the airspeed of an unladen swallow ?'.split()))
+    [('What', 'WP'),
+     ('is', 'VBZ'),
+     ('the', 'DT'),
+     ('airspeed', 'NN'),
+     ('of', 'IN'),
+     ('an', 'DT'),
+     ('unladen', 'NN'),
+     ('swallow', 'NN'),
+     ('?', '.')]
+
     """
     def __init__(self, path, encoding='utf-8'):
         super(POSTagger, self).__init__(path, ['pos'], encoding)
@@ -221,14 +233,18 @@ class NERTagger(SennaTagger):
 
     Example:
 
+        >>> from pprint import pprint
         >>> from nltk.tag.senna import NERTagger
+
         >>> nertagger = NERTagger('/usr/share/senna-v2.0')
-        >>> nertagger.tag('Shakespeare theatre was in London .'.split())
+
+        >>> pprint(nertagger.tag('Shakespeare theatre was in London .'.split()))
         [('Shakespeare', u'B-PER'), ('theatre', u'O'), ('was', u'O'), ('in', u'O'),
         ('London', u'B-LOC'), ('.', u'O')]
         >>> nertagger.tag('UN headquarters are in NY , USA .'.split())
         [('UN', u'B-ORG'), ('headquarters', u'O'), ('are', u'O'), ('in', u'O'),
         ('NY', u'B-LOC'), (',', u'O'), ('USA', u'B-LOC'), ('.', u'O')]
+
     """
     def __init__(self, path, encoding='utf-8'):
         super(NERTagger, self).__init__(path, ['ner'], encoding)
@@ -247,8 +263,7 @@ class NERTagger(SennaTagger):
 
 
 class CHKTagger(SennaTagger):
-    """
-    A chunker.
+    """A chunker.
 
     The input is:
     - path to the directory that contains SENNA executables.
@@ -256,12 +271,22 @@ class CHKTagger(SennaTagger):
 
     Example:
 
-        >>> from nltk.tag.senna import CHKTagger
-        >>> chktagger = CHKTagger('/usr/share/senna-v2.0')
-        >>> chktagger.tag('What is the airspeed of an unladen swallow ?'.split())
-        [('What', u'B-NP'), ('is', u'B-VP'), ('the', u'B-NP'), ('airspeed', u'I-NP'),
-        ('of', u'B-PP'), ('an', u'B-NP'), ('unladen', u'I-NP'), ('swallow',u'I-NP'),
-        ('?', u'O')]
+    >>> from pprint import pprint
+    >>> from nltk.tag.senna import CHKTagger
+
+    >>> chktagger = CHKTagger('/usr/share/senna-v2.0')
+
+    >>> pprint(chktagger.tag('What is the airspeed of an unladen swallow ?'.split()))
+    [('What', 'B-NP'),
+    ('is', 'B-VP'),
+    ('the', 'B-NP'),
+    ('airspeed', 'I-NP'),
+    ('of', 'B-PP'),
+    ('an', 'B-NP'),
+    ('unladen', 'I-NP'),
+    ('swallow', 'I-NP'),
+    ('?', 'O')]
+
     """
     def __init__(self, path, encoding='utf-8'):
         super(CHKTagger, self).__init__(path, ['chk'], encoding)
@@ -278,9 +303,16 @@ class CHKTagger(SennaTagger):
                 tagged_sents[i][j] = (annotations['word'], annotations['chk'])
         return tagged_sents
 
-# skip doctests if Senna is not installed
+
 def setup_module(module):
+    import sys
+
     from nose import SkipTest
+
     tagger = POSTagger('/usr/share/senna-v2.0')
+
     if not path.isfile(tagger.executable):
         raise SkipTest("Senna executable expected at /usr/share/senna-v2.0/senna-osx but not found")
+
+    if sys.version_info < (3, 3):
+        raise SkipTest('Tests requrire at least Python 3.3')

@@ -25,7 +25,6 @@ from functools import reduce
 
 from nltk import compat
 from nltk.parse import load_parser
-from nltk.draw.tree import draw_trees
 from nltk.sem.skolemize import skolemize
 from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,
                             ExistsExpression, IffExpression, ImpExpression,

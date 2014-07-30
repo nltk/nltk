@@ -1667,8 +1667,10 @@ class ConditionalFreqDist(defaultdict):
     The frequency distribution for each condition is accessed using
     the indexing operator:
 
-        >>> cfdist[3]
+        >>> print(cfdist[3])
         <FreqDist with 3 samples and 6 outcomes>
+        >>> cfdist[3]
+        FreqDist({u'the': 3, u'dog': 2, u'not': 1})
         >>> cfdist[3].freq('the')
         0.5
         >>> cfdist[3]['dog']
