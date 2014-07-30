@@ -1,0 +1,26 @@
+.. Copyright (C) 2001-2014 NLTK Project
+.. For license information, see LICENSE.TXT
+
+====================
+ Processing Twitter
+====================
+
+
+Overview
+========
+
+Although there is widespread interest in processing and analysing
+Twitter data, restrictions imposed by Twitter make it awkward to use
+standard NLP approaches for storing and distributing reusable tweet
+corpora. More specifically, according to
+<https://dev.twitter.com/terms/api-terms>:
+
+| If you provide downloadable datasets of Twitter Content or an API that returns Twitter Content, you may only return IDs (including tweet IDs and user IDs).
+
+NLTK support for Twitter processing is intended the following cases:
+
+* building a corpus of Tweets
+
+
+
+
