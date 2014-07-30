@@ -12,10 +12,80 @@ Overview
 Although there is widespread interest in processing and analysing
 Twitter data, restrictions imposed by Twitter make it awkward to use
 standard NLP approaches for storing and distributing reusable tweet
-corpora. More specifically, according to
-<https://dev.twitter.com/terms/api-terms>:
+corpora. More specifically, according to Twitter's `Terms of Service <https://dev.twitter.com/terms/api-terms>`_:
 
-| If you provide downloadable datasets of Twitter Content or an API that returns Twitter Content, you may only return IDs (including tweet IDs and user IDs).
+	 If you provide downloadable datasets of Twitter Content or an
+	 API that returns Twitter Content, you may only return IDs
+	 (including Tweet IDs and user IDs).
+
+This is motivated, at least in part, by the need to honour
+the right of users to delete their tweets; deletion would not be truly
+possible if the tweets in question survived in corpora redistributed
+by third parties.
+
+Consequently, it is not possible for NLTK to include a corpus of
+Tweets within its collection of downloadable resources. However, we
+can adopt the standard
+workaround [McReadie21012]_ of distributing a corpus of Tweet IDs, and leave
+it to individuals to retrive the full Tweets corresponding to those
+IDs. Although this is a workable alternative, it should be be borne in
+mind that there are two potential problems:
+
+* The reconstructed corpus is not guaranteed, or even likely, to be
+  identical to the original Tweet corpus, due to Tweets having been deleted
+  in the intervening time.
+
+* If the corpus is large, then Twitter's rate limiting policy might
+  make the process of reconstructing the corpus excessively
+  time-consuming. 
+
+Twitter Client
+==============
+
+In order to gain access to the Twitter API, it is necessary to first
+register your application with
+`<https://dev.twitter.com/apps>`_. There are two main options. OAuth 1
+is for user authenticated API calls, and allows sending status
+updates, etc, whereas OAuth 2 is for application authenticated calls,
+where read-only access is sufficient. Although OAuth 2 sounds more
+appropriate for the kind of tasks envisaged within NLTK, it turns out
+that access to Twitter's streaming API requires OAuth 1, so the
+following discussion assumes that after logging into Twitter via a
+user account, you have obtained **Read and Write**
+access for your application (as specified on the *Permissions* tab of
+Twitter's Application Management screen). This will give you four
+distinct keys, which you should store in a text file with the
+following structure::
+
+  API key=YOUR API KEY
+  API secret=YOUR API SECRET
+  Access token=YOUR ACCESS TOKEN
+  Access token secret=YOUR ACCESS TOKEN SECRET
+
+By default, this data will looked for in a file `credentials.txt`
+located in ...
+
+.. note:: `credentials.txt` is currently expected to be in the same directory as
+  `twitterclient.py`, but looking for it in a user directory would make more sense.
+
+>>> from nltk.misc.twitterclient import authenticate, Streamer,  TweetHandler
+>>> from unittest.mock import MagicMock
+>>> oauth = authenticate('/Users/ewan/twitter/credentials.txt') 
+>>> client = Streamer(**oauth)        
+>>> handler = TweetHandler(client, limit=3)
+>>> method = handler.render
+>>> client.register(method)
+>>> tweets = """
+... Як потрапити у #Київ зі #Львов'а! Передавай дальше)
+... (إلا على أزواجهم أو ما ملكت أيمانهم فإنهم غير ملومين) [المعارج:30] #غرد_الاسلامي
+... O quizás después se puede vengar
+... """
+>>> client.statuses.sample = MagicMock(return_value=tweets)
+>>> client.statuses.sample()
+Як потрапити у #Київ зі #Львов'а! Передавай дальше)
+(إلا على أزواجهم أو ما ملكت أيمانهم فإنهم غير ملومين) [المعارج:30] #غرد_الاسلامي
+O quizás después se puede vengar
+
 
 NLTK support for Twitter processing is intended the following cases:
 
@@ -23,4 +93,7 @@ NLTK support for Twitter processing is intended the following cases:
 
 
 
-
+.. [McReadie21012] *On Building a Reusable Twitter Corpus*, Richard
+   McCreadie, Ian Soboroff, Jimmy Lin, Craig Macdonald, Iadh Ounis,
+   Dean McCullough,
+   `PDF <http://www.dcs.gla.ac.uk/~craigm/publications/mccreadie12tweets.pdf>_`
