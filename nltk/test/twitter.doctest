@@ -93,25 +93,12 @@ dealing with Tweets are provided by the `TweetHandler` class, which
 takes the relevant client instance as an initialisation
 parameter. Initialisation can also set a limit to the number of Tweets received.
         
->>> handler = TweetHandler(client, limit=3)
+>>> handler = TweetHandler(client, limit=10)
 >>> method = handler.stdout
 >>> client.register(method)
-
-
->>> tweets = """
-... Як потрапити у #Київ зі #Львов'а! Передавай дальше)
-... (إلا على أزواجهم أو ما ملكت أيمانهم فإنهم غير ملومين) [المعارج:30] #غرد_الاسلامي
-... O quizás después se puede vengar
-... """
->>> from unittest.mock import MagicMock
->>> client.statuses.sample = MagicMock(return_value=tweets)
->>> res = client.statuses.sample()
+>>> client.statuses.sample()
 >>> print(res)
-<BLANKLINE>
-Як потрапити у #Київ зі #Львов'а! Передавай дальше)
-(إلا على أزواجهم أو ما ملكت أيمانهم فإنهم غير ملومين) [المعارج:30] #غرد_الاسلامي
-O quizás después se puede vengar
-<BLANKLINE>
+
 
 NLTK support for Twitter processing is intended the following cases:
 
