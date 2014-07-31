@@ -66,26 +66,52 @@ By default, this data will looked for in a file `credentials.txt`
 located in ...
 
 .. note:: `credentials.txt` is currently expected to be in the same directory as
-  `twitterclient.py`, but looking for it in a user directory would make more sense.
+  `twitterclient.py`, but looking for it in a user directory would
+  make more sense. Maybe via an env variable?
+
+The module `nltk.misc.twitterclient` is a wrapper around a third party Python
+Twitter client, namely `Twython
+<https://pypi.python.org/pypi/twython>`_. Although there are a number
+of Python packages for calling the Twitter API, I chose Twython on the
+basis of its functionality, Python 3 support, and `good documentation <https://twython.readthedocs.org>`_.
+
+The following example illustrates taking the API keys from a file, and
+passing them to the streaming client class `Streamer`.
 
 >>> from nltk.misc.twitterclient import authenticate, Streamer,  TweetHandler
->>> from unittest.mock import MagicMock
 >>> oauth = authenticate('/Users/ewan/twitter/credentials.txt') 
->>> client = Streamer(**oauth)        
+>>> client = Streamer(**oauth)
+
+The authentication steps are the same when using `Query`, a class
+which wraps calls to Twitter's REST API. 
+
+When Tweets are received, via either the streaming or the REST API,
+they can be passed to the terminal for casual inspection or stored in
+one or more files. (In principle, they could also be stored in a
+database, though this has not been implemented yet.) The methods for
+dealing with Tweets are provided by the `TweetHandler` class, which
+takes the relevant client instance as an initialisation
+parameter. Initialisation can also set a limit to the number of Tweets received.
+        
 >>> handler = TweetHandler(client, limit=3)
->>> method = handler.render
+>>> method = handler.stdout
 >>> client.register(method)
+
+
 >>> tweets = """
 ... Як потрапити у #Київ зі #Львов'а! Передавай дальше)
 ... (إلا على أزواجهم أو ما ملكت أيمانهم فإنهم غير ملومين) [المعارج:30] #غرد_الاسلامي
 ... O quizás después se puede vengar
 ... """
+>>> from unittest.mock import MagicMock
 >>> client.statuses.sample = MagicMock(return_value=tweets)
->>> client.statuses.sample()
+>>> res = client.statuses.sample()
+>>> print(res)
+<BLANKLINE>
 Як потрапити у #Київ зі #Львов'а! Передавай дальше)
 (إلا على أزواجهم أو ما ملكت أيمانهم فإنهم غير ملومين) [المعارج:30] #غرد_الاسلامي
 O quizás después se puede vengar
-
+<BLANKLINE>
 
 NLTK support for Twitter processing is intended the following cases:
 
