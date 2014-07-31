@@ -12,6 +12,16 @@ import datetime
 
 from twython import Twython, TwythonStreamer
 
+"""
+>>> from nltk.misc.twitterclient import authenticate, Streamer, TweetHandler
+>>> oauth = authenticate('credentials1.txt') 
+>>> client = Streamer(**oauth)        
+>>> handler = TweetHandler(client, limit=limit)
+>>> method = handler.render
+>>> client.register(method)
+>>> client.statuses.sample()
+"""
+
 class Streamer(TwythonStreamer):
     """
     Retrieve data from the Twitter streaming API.
@@ -103,9 +113,9 @@ class TweetHandler:
         outfile = '{0}.{1}.json'.format(fname, ts)
         return outfile    
         
-    def render(self, data, encoding=None):
+    def stdout(self, data, encoding=None):
         """
-        Print data to `sys.stdout`
+        Direct data to `sys.stdout`
         
         :param data: Tweet object returned by Twitter API
         """
@@ -119,9 +129,9 @@ class TweetHandler:
             self.client.disconnect()
 
         
-    def dump(self, data, verbose=True):
+    def write(self, data, verbose=True):
         """
-        Dump Twitter data as line-delimited JSON into one or more files.
+        Write Twitter data as line-delimited JSON into one or more files.
         """
         json_data = json.dumps(data)
         self.output.write(json_data + "\n")        
@@ -217,7 +227,7 @@ def streamtoscreen_demo(limit=20):
     oauth = authenticate('credentials1.txt') 
     client = Streamer(**oauth)        
     handler = TweetHandler(client, limit=limit)
-    method = handler.render
+    method = handler.stdout
     client.register(method)
     client.statuses.sample()
     
@@ -225,7 +235,7 @@ def streamtofile_demo(limit=20):
     oauth = authenticate('credentials1.txt') 
     client = Streamer(**oauth)
     handler = TweetHandler(client, limit=limit)    
-    method = handler.dump    
+    method = handler.write    
     client.register(method)
     client.statuses.sample()    
     
@@ -263,17 +273,19 @@ def corpusreader_demo():
 demos = [0]
 
 if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)    
 
-    if 0 in demos:
-        streamtoscreen_demo()    
-    if 1 in demos:
-        streamtofile_demo()
-    if 2 in demos:
-        dehydrate_demo('ids.txt')
-    if 3 in demos:
-        hydrate_demo('ids.txt', 'tmp.json')
-    if 4 in demos:
-        corpusreader_demo()
+    #if 0 in demos:
+        #streamtoscreen_demo()    
+    #if 1 in demos:
+        #streamtofile_demo()
+    #if 2 in demos:
+        #dehydrate_demo('ids.txt')
+    #if 3 in demos:
+        #hydrate_demo('ids.txt', 'tmp.json')
+    #if 4 in demos:
+        #corpusreader_demo()
 
 
     
