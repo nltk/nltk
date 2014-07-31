@@ -91,13 +91,25 @@ one or more files. (In principle, they could also be stored in a
 database, though this has not been implemented yet.) The methods for
 dealing with Tweets are provided by the `TweetHandler` class, which
 takes the relevant client instance as an initialisation
-parameter. Initialisation can also set a limit to the number of Tweets received.
+parameter. Initialisation can also set a limit to the number of Tweets
+received (e.g., ``limit=10``). The API endpoint ``statuses.sample()``
+returns at most a 1% sample of the public Twitter stream [Morstatter2013]_. 
         
 >>> handler = TweetHandler(client, limit=10)
 >>> method = handler.stdout
 >>> client.register(method)
->>> client.statuses.sample()
->>> print(res)
+>>> client.statuses.sample() # doctest: +SKIP
+Be alright #MTVHottest Justin Bieber
+RT @PriceRunner: RT to show your support for the Brits at the #CommonwealthGames @weRengland @TeamWales @Team_Scotland @Glasgow2014
+iki yüzlü dostlar :)
+@colgadosfutbol Ni en Vallecas hizo nada
+I do have a period of time when I do dream of the girls like every night but then I have another period of time without, &amp; I'm in that rn.
+Wag mo na kase ipagsiksikan sarili mo boy.
+I wish I can Vote TT _ TT #인피니트
+RT @Engabdallahelha: انا قليل الكلام... وده بيخلي الناس تخاف مني
+Hi @JaiBrooks1 !🐷How are you sunshine?☀Pls, follow @rockingchadwick !😄She loves you so much!😍😘♥(DON'T IGNORE THAT TWEET) 😡😡x32
+RT @ka3am_al3ayel: @Bander65861835 http://t.co/qP9vuhIac5
+
 
 
 NLTK support for Twitter processing is intended the following cases:
@@ -106,7 +118,14 @@ NLTK support for Twitter processing is intended the following cases:
 
 
 
-.. [McReadie21012] *On Building a Reusable Twitter Corpus*, Richard
-   McCreadie, Ian Soboroff, Jimmy Lin, Craig Macdonald, Iadh Ounis,
-   Dean McCullough,
-   `PDF <http://www.dcs.gla.ac.uk/~craigm/publications/mccreadie12tweets.pdf>_`
+.. [McReadie21012]Richard
+   McCreadie, Ian Soboroff, Jimmy Lin, Craig Macdonald, Iadh Ounis and
+   Dean McCullough (2012) *On Building a Reusable Twitter Corpus*
+   `PDF <http://www.dcs.gla.ac.uk/~craigm/publications/mccreadie12tweets.pdf>`__
+
+.. [Morstatter2013] Fred Morstatter, Juergen Pfeffer, Huan Liu and Kathleen
+   M. Carley (2013)
+   *Is the Sample Good Enough? Comparing Data from Twitter’s
+   Streaming API with Twitter’s Firehose*
+   `PDF <http://www.public.asu.edu/~fmorstat/paperpdfs/icwsm2013.pdf>`__
+
