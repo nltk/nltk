@@ -1124,7 +1124,7 @@ def elementtree_indent(elem, level=0):
         if not elem.text or not elem.text.strip():
             elem.text = i + "  "
         for elem in elem:
-            indent(elem, level+1)
+            elementtree_indent(elem, level+1)
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
     else:
