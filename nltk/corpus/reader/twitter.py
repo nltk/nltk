@@ -18,7 +18,7 @@ from nltk.tokenize import *
 from nltk.corpus.reader.util import StreamBackedCorpusView
 from nltk.corpus.reader.api import CorpusReader
 
-from nltk.tokenizer.twitter import TweetTokenizer
+from nltk.tokenize.twitter import TweetTokenizer
 
 class TwitterCorpusReader(CorpusReader):
     """
