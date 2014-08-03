@@ -31,7 +31,7 @@ def phrase_extraction(srctext, trgtext, alignment):
                     break
             fs-=1 # fe--
             # -until fs aligned
-            if fs in f_aligned or fs < -1:
+            if fs in f_aligned or fs < 0:
                 break
         return phrases
 
