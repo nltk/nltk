@@ -72,13 +72,13 @@ class HunposTagger(TaggerI):
 
         self._hunpos_bin = find_binary(
                 'hunpos-tag', path_to_bin,
-                env_vars=('HUNPOS', 'HUNPOS_HOME'),
+                env_vars=('HUNPOS_TAGGER',),
                 searchpath=hunpos_paths,
                 url=_hunpos_url,
                 verbose=verbose)
 
         self._hunpos_model = find_file(path_to_model,
-                env_vars=('HUNPOS', 'HUNPOS_HOME'), verbose=verbose)
+                env_vars=('HUNPOS_TAGGER',), verbose=verbose)
         self._encoding = encoding
         self._hunpos = Popen([self._hunpos_bin, self._hunpos_model],
                              shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)

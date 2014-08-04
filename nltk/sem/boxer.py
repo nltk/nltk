@@ -14,7 +14,7 @@ This interface relies on the latest version of the development (subversion) vers
 C&C and Boxer.
 
 Usage:
-  Set the environment variable CANDCHOME to the bin directory of your CandC installation.
+  Set the environment variable CANDC to the bin directory of your CandC installation.
   The models directory should be in the CandC root directory.
   For example:
      /path/to/candc/
@@ -184,7 +184,7 @@ class Boxer(object):
     def _find_binary(self, name, bin_dir, verbose=False):
         return find_binary(name,
             path_to_bin=bin_dir,
-            env_vars=['CANDCHOME'],
+            env_vars=['CANDC'],
             url='http://svn.ask.it.usyd.edu.au/trac/candc/',
             binary_names=[name, name + '.exe'],
             verbose=verbose)
