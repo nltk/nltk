@@ -492,7 +492,7 @@ class DiscourseTester(object):
 #L2 = ['a', 'b', 'c']
 #print multiply(L1,L2)
 
-def parse_fol(s):
+def load_fol(s):
     """
     Temporarily duplicated from ``nltk.sem.util``.
     Convert a  file of first order formulas into a list of ``Expression`` objects.

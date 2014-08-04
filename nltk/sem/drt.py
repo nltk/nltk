@@ -125,14 +125,14 @@ class DrtParser(LogicParser):
             # Support expressions like: DRS([x y],C) == DRS([x, y],C)
             if conds and self.token(0) == DrtTokens.COMMA:
                 self.token() # swallow the comma
-            conds.append(self.parse_Expression(context))
+            conds.append(self.process_next_expression(context))
         self.assertNextToken(DrtTokens.CLOSE_BRACKET)
         return conds
 
     def handle_prop(self, tok, context):
         variable = self.make_VariableExpression(tok)
         self.assertNextToken(':')
-        drs = self.parse_Expression(DrtTokens.COLON)
+        drs = self.process_next_expression(DrtTokens.COLON)
         return DrtProposition(variable, drs)
 
     def make_EqualityExpression(self, first, second):

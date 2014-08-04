@@ -17,40 +17,40 @@ Linear logic
     >>> from nltk.sem.linearlogic import *
 
     >>> from nltk.sem.linearlogic import Expression
-    >>> llexpr = Expression.fromstring
+    >>> read_expr = Expression.fromstring
 
 Parser
 
-    >>> print(llexpr(r'f'))
+    >>> print(read_expr(r'f'))
     f
-    >>> print(llexpr(r'(g -o f)'))
+    >>> print(read_expr(r'(g -o f)'))
     (g -o f)
-    >>> print(llexpr(r'(g -o (h -o f))'))
+    >>> print(read_expr(r'(g -o (h -o f))'))
     (g -o (h -o f))
-    >>> print(llexpr(r'((g -o G) -o G)'))
+    >>> print(read_expr(r'((g -o G) -o G)'))
     ((g -o G) -o G)
-    >>> print(llexpr(r'(g -o f)(g)'))
+    >>> print(read_expr(r'(g -o f)(g)'))
     (g -o f)(g)
-    >>> print(llexpr(r'((g -o G) -o G)((g -o f))'))
+    >>> print(read_expr(r'((g -o G) -o G)((g -o f))'))
     ((g -o G) -o G)((g -o f))
 
 Simplify
 
-    >>> print(llexpr(r'f').simplify())
+    >>> print(read_expr(r'f').simplify())
     f
-    >>> print(llexpr(r'(g -o f)').simplify())
+    >>> print(read_expr(r'(g -o f)').simplify())
     (g -o f)
-    >>> print(llexpr(r'((g -o G) -o G)').simplify())
+    >>> print(read_expr(r'((g -o G) -o G)').simplify())
     ((g -o G) -o G)
-    >>> print(llexpr(r'(g -o f)(g)').simplify())
+    >>> print(read_expr(r'(g -o f)(g)').simplify())
     f
-    >>> try: llexpr(r'(g -o f)(f)').simplify()
+    >>> try: read_expr(r'(g -o f)(f)').simplify()
     ... except LinearLogicApplicationException as e: print(e)
     ...
     Cannot apply (g -o f) to f. Cannot unify g with f given {}
-    >>> print(llexpr(r'(G -o f)(g)').simplify())
+    >>> print(read_expr(r'(G -o f)(g)').simplify())
     f
-    >>> print(llexpr(r'((g -o G) -o G)((g -o f))').simplify())
+    >>> print(read_expr(r'((g -o G) -o G)((g -o f))').simplify())
     f
 
 Test BindingDict
@@ -121,11 +121,11 @@ Test Unify
 
 Test Compile
 
-    >>> print(llexpr('g').compile_pos(Counter(), GlueFormula))
+    >>> print(read_expr('g').compile_pos(Counter(), GlueFormula))
     (<ConstantExpression g>, [])
-    >>> print(llexpr('(g -o f)').compile_pos(Counter(), GlueFormula))
+    >>> print(read_expr('(g -o f)').compile_pos(Counter(), GlueFormula))
     (<ImpExpression (g -o f)>, [])
-    >>> print(llexpr('(g -o (h -o f))').compile_pos(Counter(), GlueFormula))
+    >>> print(read_expr('(g -o (h -o f))').compile_pos(Counter(), GlueFormula))
     (<ImpExpression (g -o (h -o f))>, [])
 
 
