@@ -348,8 +348,8 @@ Test Parser
     x(john)
     ^
 
-    >>> from nltk.sem.logic import _LogicParser # hack to give access to custom quote chars
-    >>> lpq = _LogicParser()
+    >>> from nltk.sem.logic import LogicParser # hack to give access to custom quote chars
+    >>> lpq = LogicParser()
     >>> lpq.quote_chars = [("'", "'", "\\", False)]
     >>> print(lpq.parse(r"(man(x) & 'tall\'s,' (x) & walks (x) )"))
     (man(x) & tall's,(x) & walks(x))
@@ -538,8 +538,8 @@ Variables / Free
 Typed Logic
 +++++++++++
 
-    >>> from nltk.sem.logic import _LogicParser
-    >>> tlp = _LogicParser(True)
+    >>> from nltk.sem.logic import LogicParser
+    >>> tlp = LogicParser(True)
     >>> print(tlp.parse(r'man(x)').type)
     ?
     >>> print(tlp.parse(r'walk(angus)').type)
