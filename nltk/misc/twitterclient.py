@@ -24,12 +24,6 @@ class Streamer(TwythonStreamer):
         self.do_continue = True
         super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
 
-    #def register(self, handler):
-        #"""
-        #Register a method of :py:class:`TweetHandler`.
-        #"""
-        #self.handler = handler
-
     def on_success(self, data):
         """
         :param data: response from Twitter API
@@ -47,8 +41,8 @@ class Streamer(TwythonStreamer):
         :param data: response from Twitter API
         """        
         print(status_code)
-        
-    
+
+
 
 class Query(Twython):
     """
@@ -74,20 +68,66 @@ class Query(Twython):
 
 class TweetHandler:
     """
-    A group of methods for handling the Tweets returned by the Twitter API.
-    Each method processes its input on a per-item basis.
-
-    The handler needs to be able to signal a disconnect to the client.
+    Abstract class whose subclasses should implement a handle method that
+    Twitter clients can delegate to.    
     """
-    def __init__(self, limit=2000, repeat=False, fprefix='tweets', subdir='streamed_data', ):
-        #self.client = client
-        self.limit = limit
-        self.repeat = repeat
+    def __init__(self, limit=20):
+        """
+        :param limit: number of data items to process in the current round of
+        processing
+
+        :param startingup: flag to indicate whether this is the first data
+        item to be processed in the current round of processing.
+
+        :param counter: keep track of number of data items processed
+
+        """
+        self.limit = limit        
+        self.startingup = True
         self.counter = 0
-        self.subdir = subdir
+
+    def handle(self, data):
+        raise NotImplementedError
+
+
+
+class TweetViewer(TweetHandler):
+    """
+    Handle data by sending it to the terminal.
+    """
+    def handle(self, data):
+        """
+        Direct data to `sys.stdout`
+
+        :return: return False if processing should cease, otherwise return
+        True.
+        :rtype: boolean
+        :param data: Tweet object returned by Twitter API
+        """
+        text = data['text']            
+        print(text)            
+        self.counter += 1
+        if self.counter >= self.limit:
+            # Tell the client to disconnect
+            return False
+        return True
+
+
+class TweetWriter(TweetHandler):
+    """
+    Handle data by writing it to a file.
+    """
+    def __init__(self, limit=2000, repeat=True, fprefix='tweets', subdir='streamed_data'):
+        """
+        :param limit: number of data items to process in the current round of processing
+
+        """
+        self.repeat = repeat
         self.fprefix = fprefix
+        self.subdir = subdir        
         self.fname = self.timestamped_file()
         self.startingup = True
+        super().__init__(limit)
 
 
     def timestamped_file(self):
@@ -105,93 +145,41 @@ class TweetHandler:
         fmt = '%Y%m%d-%H%M%S'
         timestamp = datetime.datetime.now().strftime(fmt)
         outfile = '{0}.{1}.json'.format(fname, timestamp)
-        return outfile    
-
-    #def stdout(self, data, encoding=None):
-        #"""
-        #Direct data to `sys.stdout`
-
-        #:param data: Tweet object returned by Twitter API
-        #"""
-        #text = data['text']
-        #if encoding is None:            
-            #print(text)            
-        #else:
-            #print(text.encode(encoding))
-        #self.counter += 1
-        #if self.counter >= self.limit:
-            ##self.client.disconnect()
-            #return False
-        #return True
+        return outfile
 
 
-    #def write(self, data, verbose=True):
-        #"""
-        #Write Twitter data as line-delimited JSON into one or more files.
-        #"""
-        #if self.startingup:
-            #self.output = open(self.fname, 'w')
-            #if verbose:
-                #print('Writing to {}'.format(self.fname))            
-        #json_data = json.dumps(data)
-        #self.output.write(json_data + "\n")
-        #self.startingup = False
-        #self.counter += 1
-
-        #if self.counter >= self.limit:
-            #self.output.close()
-            #if not self.repeat:
-                ##self.client.disconnect()
-                #return False
-            #else:
-                #self.output = open(self.timestamped_file(), 'w')               
-                #self.counter = 0
-                #if verbose:
-                    #print('Writing to new file {}'.format(self.fname))
-        #return True
-    
-class TweetViewer(TweetHandler):
-    
-    def handle(self, data):
-        """
-        Direct data to `sys.stdout`
-
-        :param data: Tweet object returned by Twitter API
-        """
-        text = data['text']            
-        print(text)            
-        self.counter += 1
-        if self.counter >= self.limit:
-            #self.client.disconnect()
-            return False
-        return True
-    
-class TweetWriter(TweetHandler):
-    
     def handle(self, data):
         """
         Write Twitter data as line-delimited JSON into one or more files.
+
+        :return: return False if processing should cease, otherwise return True.
+        :param data: Tweet object returned by Twitter API
         """
         if self.startingup:
             self.output = open(self.fname, 'w')
-            if verbose:
-                print('Writing to {}'.format(self.fname))            
+            print('Writing to {}'.format(self.fname))            
         json_data = json.dumps(data)
         self.output.write(json_data + "\n")
+        
         self.startingup = False
         self.counter += 1
-    
-        if self.counter >= self.limit:
+        if self.counter < self.limit:
+            return True                    
+        else:
+            print('Written {} tweets'.format(self.counter))
             self.output.close()
             if not self.repeat:
-                #self.client.disconnect()
+                # Tell the client to disconnect
                 return False
-            else:
+            else:          
                 self.output = open(self.timestamped_file(), 'w')               
-                self.counter = 0
-                if verbose:
-                    print('Writing to new file {}'.format(self.fname))
-        return True        
+                self.counter = 0              
+                print('\nWriting to new file {}'.format(self.fname))
+                return True
+
+ 
+
+
 
 ################################
 # Utility functions
@@ -276,18 +264,12 @@ def streamtoscreen_demo(limit=20):
     oauth = authenticate(CREDS)
     handler = TweetViewer(limit=limit)
     client = Streamer(handler, **oauth)        
-    
-    #method = handler.stdout
-    #client.register(method)
-    #client.stdout()
     client.statuses.sample()
 
 def streamtofile_demo(limit=20):
-    oauth = authenticate(CREDS) 
-    client = Streamer(**oauth)
-    handler = TweetHandler(client, limit=limit, subdir=TWITTERHOME)    
-    method = handler.write    
-    client.register(method)
+    oauth = authenticate(CREDS)
+    handler = TweetWriter(limit=limit, repeat=True, subdir=TWITTERHOME)
+    client = Streamer(handler, **oauth)
     client.statuses.sample()    
 
 def dehydrate_demo(infile, outfile):
@@ -308,7 +290,6 @@ def hydrate_demo(infile, outfile):
 
 
 def corpusreader_demo():
-    #from nltk.corpus import twitter 
     from nltk.corpus import TwitterCorpusReader
     root = 'streamed_data/'
     reader = TwitterCorpusReader(root, '.*\.json')
@@ -321,7 +302,7 @@ def corpusreader_demo():
 
 
 
-DEMOS = [0]
+DEMOS = [1]
 
 if __name__ == "__main__":
     #import doctest
@@ -337,7 +318,6 @@ if __name__ == "__main__":
         hydrate_demo(IDS, REHYDE)
     if 4 in DEMOS:
         corpusreader_demo()
-
 
 
 
