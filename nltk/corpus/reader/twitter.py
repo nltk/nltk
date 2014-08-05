@@ -22,10 +22,10 @@ from nltk.tokenize.twitter import TweetTokenizer
 
 class TwitterCorpusReader(CorpusReader):
     """
-    Reader for corpora that consist of Tweets represented as a list of line-delimited JSON. 
-    
+    Reader for corpora that consist of Tweets represented as a list of line-delimited JSON.
+
     Individual Tweets can be tokenized using the default tokenizers, or by
-    custom tokenizers specificed as parameters to the constructor    
+    custom tokenizers specificed as parameters to the constructor
     """
 
     CorpusView = StreamBackedCorpusView
@@ -36,7 +36,7 @@ class TwitterCorpusReader(CorpusReader):
     """
 
     def __init__(self, root, fileids,
-                 word_tokenizer=TweetTokenizer(),                
+                 word_tokenizer=TweetTokenizer(),
                  encoding='utf8'):
         """
         Construct a new plaintext corpus reader for a set of documents
@@ -53,30 +53,42 @@ class TwitterCorpusReader(CorpusReader):
         """
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
-        
-       
+
+
 
     def jsonlist(self, fileid=None):
         """
         Return the contents of the file as a list of JSON-style dictionaries.
         """
-        
-        if fileid is None and len(self._fileids) == 1:
-            fileid = self._fileids[0]
-        if not isinstance(fileid, compat.string_types):
-            raise TypeError('Expected a single file identifier string')
-        return (json.loads(l.decode(self.encoding(fileid))) for l in self.abspath(fileid).open())
-    
+        return concat([self.CorpusView(path, self._read_tweets, encoding=enc)
+                               for (path, enc, fileid)
+                               in self.abspaths(fileids, True, True)])
+
+
+
+    def _read_tweets(self, stream):
+        tweets = []
+        for i in range(10):
+            line = stream.readline()
+            if not line:
+                return tweets
+            tweet = json.loads(line)
+            tweets.append(tweet)
+        return tweets
+
+
+
+
 
     def tweets(self, fileid=None):
         """
         Returns a list of Tweets as strings.
-        
+
         :return: the given file(s) as a list of strings.
         :rtype: list(str)
         """
         jsonlist = self.jsonlist(fileid)
-        encoding = self.encoding(fileid)    
+        encoding = self.encoding(fileid)
         out = []
         for jsono in jsonlist:
             text = jsono['text']
@@ -84,29 +96,29 @@ class TwitterCorpusReader(CorpusReader):
                 text = text.decode(encoding)
             out.append(text)
         return out
-    
-    
+
+
     def tokenised_tweets(self, fileid=None):
         """
         Return a list of Tweets as lists of words.
-        
+
         :rtype: list(list(str))
         """
         tweets = self.tweets(fileid)
         tokenizer = self._word_tokenizer
         return [tokenizer.tokenize(t) for t in tweets]
-    
-    
+
+
     def raw(self, fileids=None):
         """
         Return the corpora in their raw form.
         """
-        if fileids is None: 
+        if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): 
+        elif isinstance(fileids, compat.string_types):
             fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids]) 
-       
+        return concat([self.open(f).read() for f in fileids])
+
 
     #def words(self, fileid=None):
         #"""
@@ -125,5 +137,5 @@ class TwitterCorpusReader(CorpusReader):
             #toks = tokenizer.tokenize(text)
             #out.extend(toks)
         #return out
-            
+
 
