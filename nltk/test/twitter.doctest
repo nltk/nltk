@@ -6,8 +6,8 @@
 ====================
 
 
-Overview
-========
+Twitter Corpora
+===============
 
 Although there is widespread interest in processing and analysing
 Twitter data, restrictions imposed by Twitter make it awkward to use
@@ -39,8 +39,38 @@ mind that there are two potential problems:
   make the process of reconstructing the corpus excessively
   time-consuming. 
 
-Twitter Client
-==============
+Twitter provides two APIs, namely the REST API
+and the Streaming API. If we are primarily interested in collecting
+Tweets for analysis (rather, say, than publishing Tweets), then the
+two approaches both have limitations. The REST API allows us to search
+past Tweets, but only in a severely limited manner
+[***Amplify***]. The Streaming API will allow us to collect an
+unlimited volume of Tweets, but with two caveats: 
+
+* We can only collect Tweets as they are published, not search
+  retrospectively; and
+
+* we can only access at most 1% of the public Twitter stream (unless
+  we somehow have priviliged access to the Twitter 'firehose').
+
+One option of the Streaming API is to take a 1% sample of the public
+stream (using the API endpoint ``statuses.sample()``). Little
+information is available however about what the sampling methods is,
+or how representative it is; see [Morstatter2013]_ for a discussion
+of these issues.
+
+
+The Twitter Client
+==================
+
+NLTK supports access to Twitter via the module
+`nltk.misc.twitterclient`. This is in turn depends on a third party
+Python Twitter client, namely `Twython
+<https://pypi.python.org/pypi/twython>`_. Although there are a number
+of Python packages for calling the Twitter API, Twython has
+appropriate functionality, is actively maintained, has Python 3
+support, and has `good documentation
+<https://twython.readthedocs.org>`_.
 
 In order to gain access to the Twitter API, it is necessary to first
 register your application with
@@ -51,11 +81,10 @@ where read-only access is sufficient. Although OAuth 2 sounds more
 appropriate for the kind of tasks envisaged within NLTK, it turns out
 that access to Twitter's streaming API requires OAuth 1, so the
 following discussion assumes that after logging into Twitter via a
-user account, you have obtained **Read and Write**
-access for your application (as specified on the *Permissions* tab of
-Twitter's Application Management screen). This will give you four
-distinct keys, which you should store in a text file with the
-following structure::
+user account, you have obtained **Read and Write** access for your
+application (as specified on the *Permissions* tab of Twitter's
+Application Management screen). This will give you four distinct keys,
+which you should store in a text file with the following structure::
 
   API key=YOUR API KEY
   API secret=YOUR API SECRET
@@ -63,42 +92,31 @@ following structure::
   Access token secret=YOUR ACCESS TOKEN SECRET
 
 By default, this data will looked for in a file `credentials.txt`
-located in ...
-
-.. note:: `credentials.txt` is currently expected to be in the same directory as
-  `twitterclient.py`, but looking for it in a user directory would
-  make more sense. Maybe via an env variable?
-
-The module `nltk.misc.twitterclient` is a wrapper around a third party Python
-Twitter client, namely `Twython
-<https://pypi.python.org/pypi/twython>`_. Although there are a number
-of Python packages for calling the Twitter API, I chose Twython on the
-basis of its functionality, Python 3 support, and `good documentation <https://twython.readthedocs.org>`_.
-
-The following example illustrates taking the API keys from a file, and
-passing them to the streaming client class `Streamer`.
-
->>> from nltk.misc.twitterclient import authenticate, Streamer,  TweetHandler
->>> oauth = authenticate('/Users/ewan/twitter/credentials.txt') 
->>> client = Streamer(**oauth)
-
-The authentication steps are the same when using `Query`, a class
-which wraps calls to Twitter's REST API. 
+located in the directory specified by the environment variable
+TWITTERHOME. However, both of these choices can be overridden, namely
+by setting the parameters to `authenticate()`, which is introduced
+below.
 
 When Tweets are received, via either the streaming or the REST API,
 they can be passed to the terminal for casual inspection or stored in
 one or more files. (In principle, they could also be stored in a
 database, though this has not been implemented yet.) The methods for
-dealing with Tweets are provided by the `TweetHandler` class, which
-takes the relevant client instance as an initialisation
-parameter. Initialisation can also set a limit to the number of Tweets
-received (e.g., ``limit=10``). The API endpoint ``statuses.sample()``
-returns at most a 1% sample of the public Twitter stream [Morstatter2013]_. 
-        
->>> handler = TweetHandler(client, limit=10)
->>> method = handler.stdout
->>> client.register(method)
->>> client.statuses.sample() # doctest: +SKIP
+dealing with Tweets are provided by extensions of the `TweetHandler`
+class, such as `TweetViewer`: this displays the Tweets on the
+terminal. Initialisation can also set a limit to the number of Tweets
+received (e.g., ``limit=10``). The following example illustrates
+taking the API keys from a file, and passing them to the streaming
+client class `Streamer` together with an instance of `TweetViewer`.
+
+>>> from nltk.misc.twitterclient import authenticate, Streamer,
+    TweetHandler, TweetWriter
+>>> import os
+>>> os.environ[TWITTERHOME]
+/Users/ewan/twitter
+>>> oauth = authenticate('credentials.txt')
+>>> handler = TweetViewer(limit=10)
+>>> client = Streamer(handler, **oauth)
+>>> client.statuses.sample()  # doctest: +SKIP
 Be alright #MTVHottest Justin Bieber
 RT @PriceRunner: RT to show your support for the Brits at the #CommonwealthGames @weRengland @TeamWales @Team_Scotland @Glasgow2014
 iki yüzlü dostlar :)
@@ -110,15 +128,46 @@ RT @Engabdallahelha: انا قليل الكلام... وده بيخلي النا�
 Hi @JaiBrooks1 !🐷How are you sunshine?☀Pls, follow @rockingchadwick !😄She loves you so much!😍😘♥(DON'T IGNORE THAT TWEET) 😡😡x32
 RT @ka3am_al3ayel: @Bander65861835 http://t.co/qP9vuhIac5
 
+By setting a different handler, namely `TweetWriter`, we can get
+Tweets written to files of a given length, again using the ``limit``
+parameter. By default, the files will be written to the subdirectory
+specified by TWITTERHOME, but again this can be overriden. If the
+parameter ``repeat`` is set to ``False`` (default), Tweets will stop
+being collected once the limit is reached. Otherwise, `TweetWriter`
+will continue creating new files of the specified limit until the
+process is terminated externally.
+>>> handler = TweetWriter(limit=20, repeat=True)
+>>> client = Streamer(handler, **oauth)
+>>> client.statuses.sample() # doctest: +SKIP
+Writing to /Users/ewan/twitter/tweets.20140805-135210.json
+Written 20 tweets
 
+Writing to new file /Users/ewan/twitter/tweets.20140805-135212.json
+Written 20 tweets
 
-NLTK support for Twitter processing is intended the following cases:
+Writing to new file /Users/ewan/twitter/tweets.20140805-135213.json
+Written 20 tweets
 
-* building a corpus of Tweets
+Writing to new file /Users/ewan/twitter/tweets.20140805-135214.json
+Written 20 tweets
+...
 
+Corpus Reader
+=============
 
+Given a collection of Tweets, `TwitterCorpusReader` offers some
+standard methods for reading them.
 
-.. [McReadie21012]Richard
+>>> from nltk.corpus import TwitterCorpusReader
+>>> root = os.environ['TWITTERHOME']
+>>> reader = TwitterCorpusReader(root, '.*\.json')
+>>> for t in reader.tweets()[:10]:
+...   print(t)
+
+The authentication steps are the same when using `Query`, a class
+which wraps calls to Twitter's REST API. 
+
+.. [McReadie21012] Richard
    McCreadie, Ian Soboroff, Jimmy Lin, Craig Macdonald, Iadh Ounis and
    Dean McCullough (2012) *On Building a Reusable Twitter Corpus*
    `PDF <http://www.dcs.gla.ac.uk/~craigm/publications/mccreadie12tweets.pdf>`__
