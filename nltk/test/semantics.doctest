@@ -168,7 +168,7 @@ Parse a valuation from a string.
     ... in => {(b1, n), (b2, n), (d2, n)}
     ... with => {(b1, g1), (g1, b1), (d1, b1), (b1, d1)}
     ... """
-    >>> val = parse_valuation(v)
+    >>> val = Valuation.fromstring(v)
 
     >>> print(val) # doctest: +SKIP
     {'bark': set([('d1',), ('d2',)]),

@@ -74,8 +74,8 @@ based grammar. To specify that we want to use DRSs, the appropriate
 logic parser needs be passed as a parameter to ``load_earley()``
 
     >>> from nltk.parse import load_parser
-    >>> from nltk.sem.drt import _DrtParser
-    >>> parser = load_parser('grammars/book_grammars/drt.fcfg', trace=0, logic_parser=_DrtParser())
+    >>> from nltk.sem.drt import DrtParser
+    >>> parser = load_parser('grammars/book_grammars/drt.fcfg', trace=0, logic_parser=DrtParser())
     >>> for tree in parser.parse('a dog barks'.split()):
     ...     print(tree.label()['SEM'].simplify())
     ...
@@ -85,7 +85,7 @@ Alternatively, a ``FeatStructReader`` can be passed with the ``logic_parser`` se
 
     >>> from nltk.featstruct import FeatStructReader
     >>> from nltk.grammar import FeatStructNonterminal
-    >>> parser = load_parser('grammars/book_grammars/drt.fcfg', trace=0, fstruct_reader=FeatStructReader(fdict_class=FeatStructNonterminal, logic_parser=_DrtParser()))
+    >>> parser = load_parser('grammars/book_grammars/drt.fcfg', trace=0, fstruct_reader=FeatStructReader(fdict_class=FeatStructNonterminal, logic_parser=DrtParser()))
     >>> for tree in parser.parse('every girl chases a dog'.split()):
     ...     print(tree.label()['SEM'].simplify().normalize())
     ...

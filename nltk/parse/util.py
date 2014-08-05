@@ -30,7 +30,7 @@ def load_parser(grammar_url, trace=0,
     The following grammar formats are currently supported:
       - ``'cfg'``  (CFGs: ``CFG``)
       - ``'pcfg'`` (probabilistic CFGs: ``PCFG``)
-      - ``'fcfg'`` (feature-based CFGs: ``CFG``)
+      - ``'fcfg'`` (feature-based CFGs: ``FeatureGrammar``)
 
     :type grammar_url: str
     :param grammar_url: A URL specifying where the grammar is located.

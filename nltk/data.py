@@ -665,10 +665,10 @@ FORMATS = {
     'fcfg': "A feature CFG.",
     'fol': "A list of first order logic expressions, parsed with "
             "nltk.sem.logic.Expression.fromstring.",
-    'logic': "A list of first order logic expressions, parsed by "
-            "nltk.sem.logic._LogicParser.  Requires an additional logic_parser "
+    'logic': "A list of first order logic expressions, parsed with "
+            "nltk.sem.logic.LogicParser.  Requires an additional logic_parser "
             "parameter",
-    'val': "A semantic valuation, parsed by nltk.sem.parse_valuation().",
+    'val': "A semantic valuation, parsed by nltk.sem.Valuation.fromstring.",
     'raw': "The raw (byte string) contents of a file.",
     'text': "The raw (unicode string) contents of a file. "
 }
@@ -812,14 +812,14 @@ def load(resource_url, format='auto', cache=True, verbose=False,
                 string_data, logic_parser=logic_parser,
                 fstruct_reader=fstruct_reader, encoding=encoding)
         elif format == 'fol':
-            resource_val = nltk.sem.parse_logic(
-                string_data, logic_parser=nltk.sem.logic._LogicParser(),
+            resource_val = nltk.sem.read_logic(
+                string_data, logic_parser=nltk.sem.logic.LogicParser(),
                 encoding=encoding)
         elif format == 'logic':
-            resource_val = nltk.sem.parse_logic(
+            resource_val = nltk.sem.read_logic(
                 string_data, logic_parser=logic_parser, encoding=encoding)
         elif format == 'val':
-            resource_val = nltk.sem.parse_valuation(
+            resource_val = nltk.sem.read_valuation(
                 string_data, encoding=encoding)
         else:
             raise AssertionError("Internal NLTK error: Format %s isn't "

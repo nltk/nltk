@@ -14,7 +14,7 @@ This interface relies on the latest version of the development (subversion) vers
 C&C and Boxer.
 
 Usage:
-  Set the environment variable CANDCHOME to the bin directory of your CandC installation.
+  Set the environment variable CANDC to the bin directory of your CandC installation.
   The models directory should be in the CandC root directory.
   For example:
      /path/to/candc/
@@ -40,7 +40,7 @@ from nltk.sem.logic import (ExpectedMoreTokensException, LogicalExpressionExcept
                             UnexpectedTokenException, Variable)
 
 from nltk.sem.drt import (DRS, DrtApplicationExpression, DrtEqualityExpression,
-                          DrtNegatedExpression, DrtOrExpression, _DrtParser,
+                          DrtNegatedExpression, DrtOrExpression, DrtParser,
                           DrtProposition, DrtTokens, DrtVariableExpression)
 
 from nltk.compat import python_2_unicode_compatible
@@ -184,7 +184,7 @@ class Boxer(object):
     def _find_binary(self, name, bin_dir, verbose=False):
         return find_binary(name,
             path_to_bin=bin_dir,
-            env_vars=['CANDCHOME'],
+            env_vars=['CANDC'],
             url='http://svn.ask.it.usyd.edu.au/trac/candc/',
             binary_names=[name, name + '.exe'],
             verbose=verbose)
@@ -262,13 +262,13 @@ class Boxer(object):
         return BoxerOutputDrsParser([None,discourse_id][use_disc_id]).parse(drs_string)
 
 
-class BoxerOutputDrsParser(_DrtParser):
+class BoxerOutputDrsParser(DrtParser):
     def __init__(self, discourse_id=None):
         """
         This class is used to parse the Prolog DRS output from Boxer into a
         hierarchy of python objects.
         """
-        _DrtParser.__init__(self)
+        DrtParser.__init__(self)
         self.discourse_id = discourse_id
         self.sentence_id_offset = None
         self.quote_chars = [("'", "'", "\\", False)]
@@ -276,7 +276,7 @@ class BoxerOutputDrsParser(_DrtParser):
 
     def parse(self, data, signature=None):
         self._label_counter = Counter(-1)
-        return _DrtParser.parse(self, data, signature)
+        return DrtParser.parse(self, data, signature)
 
     def get_all_symbols(self):
         return ['(', ')', ',', '[', ']',':']
@@ -347,7 +347,7 @@ class BoxerOutputDrsParser(_DrtParser):
 
     def _handle_not(self):
         self.assertToken(self.token(), '(')
-        drs = self.parse_Expression(None)
+        drs = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
         return BoxerNot(drs)
 
@@ -484,7 +484,7 @@ class BoxerOutputDrsParser(_DrtParser):
         self.assertToken(self.token(), '(')
         variable = self.parse_variable()
         self.assertToken(self.token(), ',')
-        drs = self.parse_Expression(None)
+        drs = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
         return lambda sent_index, word_indices: BoxerProp(self.discourse_id, sent_index, word_indices, variable, drs)
 
@@ -528,9 +528,9 @@ class BoxerOutputDrsParser(_DrtParser):
 
     def _handle_binary_expression(self, make_callback):
         self.assertToken(self.token(), '(')
-        drs1 = self.parse_Expression(None)
+        drs1 = self.process_next_expression(None)
         self.assertToken(self.token(), ',')
-        drs2 = self.parse_Expression(None)
+        drs2 = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
         return lambda sent_index, word_indices: make_callback(sent_index, word_indices, drs1, drs2)
 
@@ -538,9 +538,9 @@ class BoxerOutputDrsParser(_DrtParser):
         self.assertToken(self.token(), '(')
         type = self.token()
         self.assertToken(self.token(), ',')
-        drs1 = self.parse_Expression(None)
+        drs1 = self.process_next_expression(None)
         self.assertToken(self.token(), ',')
-        drs2 = self.parse_Expression(None)
+        drs2 = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
         return lambda sent_index, word_indices: make_callback(sent_index, word_indices, drs1, drs2)
 
@@ -574,11 +574,11 @@ class BoxerOutputDrsParser(_DrtParser):
         self.token() #swallow the ']'
 
         self.assertToken(self.token(), ',')
-        d1 = self.parse_Expression(None)
+        d1 = self.process_next_expression(None)
         self.assertToken(self.token(), ',')
         ref = self.parse_variable()
         self.assertToken(self.token(), ',')
-        d2 = self.parse_Expression(None)
+        d2 = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
         return lambda sent_index, word_indices: BoxerWhq(self.discourse_id, sent_index, word_indices, ans_types, d1, ref, d2)
 
@@ -615,12 +615,12 @@ class BoxerOutputDrsParser(_DrtParser):
             return [(None, word_indices)]
 
 
-class BoxerDrsParser(_DrtParser):
+class BoxerDrsParser(DrtParser):
     """
     Reparse the str form of subclasses of ``AbstractBoxerDrs``
     """
     def __init__(self, discourse_id=None):
-        _DrtParser.__init__(self)
+        DrtParser.__init__(self)
         self.discourse_id = discourse_id
 
     def get_all_symbols(self):
@@ -701,19 +701,19 @@ class BoxerDrsParser(_DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 variable = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
-                drs = self.parse_Expression(None)
+                drs = self.process_next_expression(None)
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerProp(disc_id, sent_id, word_ids, variable, drs)
             elif tok == 'not':
                 self.assertNextToken(DrtTokens.OPEN)
-                drs = self.parse_Expression(None)
+                drs = self.process_next_expression(None)
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerNot(drs)
             elif tok == 'imp':
                 self.assertNextToken(DrtTokens.OPEN)
-                drs1 = self.parse_Expression(None)
+                drs1 = self.process_next_expression(None)
                 self.assertNextToken(DrtTokens.COMMA)
-                drs2 = self.parse_Expression(None)
+                drs2 = self.process_next_expression(None)
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerDrs(drs1.label, drs1.refs, drs1.conds, drs2)
             elif tok == 'or':
@@ -724,9 +724,9 @@ class BoxerDrsParser(_DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 word_ids = map(int, self.handle_refs())
                 self.assertNextToken(DrtTokens.COMMA)
-                drs1 = self.parse_Expression(None)
+                drs1 = self.process_next_expression(None)
                 self.assertNextToken(DrtTokens.COMMA)
-                drs2 = self.parse_Expression(None)
+                drs2 = self.process_next_expression(None)
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerOr(disc_id, sent_id, word_ids, drs1, drs2)
             elif tok == 'eq':
@@ -767,11 +767,11 @@ class BoxerDrsParser(_DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 ans_types = self.handle_refs()
                 self.assertNextToken(DrtTokens.COMMA)
-                drs1 = self.parse_Expression(None)
+                drs1 = self.process_next_expression(None)
                 self.assertNextToken(DrtTokens.COMMA)
                 var = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
-                drs2 = self.parse_Expression(None)
+                drs2 = self.process_next_expression(None)
                 self.assertNextToken(DrtTokens.CLOSE)
                 return BoxerWhq(disc_id, sent_id, word_ids, ans_types, drs1, var, drs2)
         except Exception as e:

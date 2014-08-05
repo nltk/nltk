@@ -114,7 +114,7 @@ class Prover9Parent(object):
             self._prover9_bin = nltk.internals.find_binary(
                                   name,
                                   path_to_bin=binary_location,
-                                  env_vars=['PROVER9HOME'],
+                                  env_vars=['PROVER9'],
                                   url='http://www.cs.unm.edu/~mccune/prover9/',
                                   binary_names=[name, name + '.exe'],
                                   verbose=verbose)
@@ -160,7 +160,7 @@ class Prover9Parent(object):
             binary_locations += [self._binary_location]
         return nltk.internals.find_binary(name,
             searchpath=binary_locations,
-            env_vars=['PROVER9HOME'],
+            env_vars=['PROVER9'],
             url='http://www.cs.unm.edu/~mccune/prover9/',
             binary_names=[name, name + '.exe'],
             verbose=verbose)

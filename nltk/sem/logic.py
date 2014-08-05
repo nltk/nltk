@@ -84,7 +84,7 @@ def binding_ops():
 
 
 @python_2_unicode_compatible
-class _LogicParser(object):
+class LogicParser(object):
     """A lambda calculus expression parser."""
 
     def __init__(self, type_check=False):
@@ -137,7 +137,7 @@ class _LogicParser(object):
         self._buffer, mapping = self.process(data)
 
         try:
-            result = self.parse_Expression(None)
+            result = self.process_next_expression(None)
             if self.inRange(0):
                 raise UnexpectedTokenException(self._currentIndex+1, self.token(0))
         except LogicalExpressionException as e:
@@ -261,7 +261,7 @@ class _LogicParser(object):
     def isvariable(self, tok):
         return tok not in Tokens.TOKENS
 
-    def parse_Expression(self, context):
+    def process_next_expression(self, context):
         """Parse the next complete expression from the stream and return it."""
         try:
             tok = self.token()
@@ -303,7 +303,7 @@ class _LogicParser(object):
         return expression
 
     def handle_negation(self, tok, context):
-        return self.make_NegatedExpression(self.parse_Expression(Tokens.NOT))
+        return self.make_NegatedExpression(self.process_next_expression(Tokens.NOT))
 
     def make_NegatedExpression(self, expression):
         return NegatedExpression(expression)
@@ -324,10 +324,10 @@ class _LogicParser(object):
             self.token() #swallow the Open Paren
 
             #curry the arguments
-            accum = self.make_ApplicationExpression(accum, self.parse_Expression(APP))
+            accum = self.make_ApplicationExpression(accum, self.process_next_expression(APP))
             while self.inRange(0) and self.token(0) == Tokens.COMMA:
                 self.token() #swallow the comma
-                accum = self.make_ApplicationExpression(accum, self.parse_Expression(APP))
+                accum = self.make_ApplicationExpression(accum, self.process_next_expression(APP))
             self.assertNextToken(Tokens.CLOSE)
         return accum
 
@@ -358,7 +358,7 @@ class _LogicParser(object):
         if self.inRange(0) and self.token(0) == Tokens.DOT:
             self.token() #swallow the dot
 
-        accum = self.parse_Expression(tok)
+        accum = self.process_next_expression(tok)
         while vars:
             accum = self.make_LambdaExpression(vars.pop(), accum)
         return accum
@@ -381,7 +381,7 @@ class _LogicParser(object):
         if self.inRange(0) and self.token(0) == Tokens.DOT:
             self.token() #swallow the dot
 
-        accum = self.parse_Expression(tok)
+        accum = self.process_next_expression(tok)
         while vars:
             accum = self.make_QuanifiedExpression(factory, vars.pop(), accum)
         return accum
@@ -401,7 +401,7 @@ class _LogicParser(object):
 
     def handle_open(self, tok, context):
         #Expression is in parens
-        accum = self.parse_Expression(None)
+        accum = self.process_next_expression(None)
         self.assertNextToken(Tokens.CLOSE)
         return accum
 
@@ -413,7 +413,7 @@ class _LogicParser(object):
             tok = self.token(0)
             if tok in Tokens.EQ_LIST + Tokens.NEQ_LIST and self.has_priority(tok, context):
                 self.token() #swallow the "=" or "!="
-                expression = self.make_EqualityExpression(expression, self.parse_Expression(tok))
+                expression = self.make_EqualityExpression(expression, self.process_next_expression(tok))
                 if tok in Tokens.NEQ_LIST:
                     expression = self.make_NegatedExpression(expression)
         return expression
@@ -433,7 +433,7 @@ class _LogicParser(object):
             if factory and self.has_priority(tok, context):
                 self.token() #swallow the operator
                 expression = self.make_BooleanExpression(factory, expression,
-                                                         self.parse_Expression(tok))
+                                                         self.process_next_expression(tok))
             else:
                 break
         return expression
@@ -474,10 +474,10 @@ class _LogicParser(object):
                                          "not take arguments.")
                 self.token() #swallow then open paren
                 #curry the arguments
-                accum = self.make_ApplicationExpression(expression, self.parse_Expression(APP))
+                accum = self.make_ApplicationExpression(expression, self.process_next_expression(APP))
                 while self.inRange(0) and self.token(0) == Tokens.COMMA:
                     self.token() #swallow the comma
-                    accum = self.make_ApplicationExpression(accum, self.parse_Expression(APP))
+                    accum = self.make_ApplicationExpression(accum, self.process_next_expression(APP))
                 self.assertNextToken(Tokens.CLOSE)
                 return accum
         return expression
@@ -525,14 +525,14 @@ class _LogicParser(object):
         return '<' + self.__class__.__name__ + ': ' + msg + '>'
 
 
-def parse_logic(s, logic_parser=None, encoding=None):
+def read_logic(s, logic_parser=None, encoding=None):
     """
     Convert a file of First Order Formulas into a list of {Expression}s.
 
     :param s: the contents of the file
     :type s: str
     :param logic_parser: The parser to be used to parse the logical expression
-    :type logic_parser: _LogicParser
+    :type logic_parser: LogicParser
     :param encoding: the encoding of the input string, if it is binary
     :type encoding: str
     :return: a list of parsed formulas.
@@ -541,7 +541,7 @@ def parse_logic(s, logic_parser=None, encoding=None):
     if encoding is not None:
         s = s.decode(encoding)
     if logic_parser is None:
-        logic_parser = _LogicParser()
+        logic_parser = LogicParser()
 
     statements = []
     for linenum, line in enumerate(s.splitlines()):
@@ -634,6 +634,10 @@ class Type(object):
 
     def __hash__(self):
         return hash("%s" % self)
+
+    @classmethod
+    def fromstring(cls, s):
+        return read_type(s)
 
 @python_2_unicode_compatible
 class ComplexType(Type):
@@ -767,7 +771,7 @@ EVENT_TYPE = EventType()
 ANY_TYPE = AnyType()
 
 
-def parse_type(type_string):
+def read_type(type_string):
     assert isinstance(type_string, string_types)
     type_string = type_string.replace(' ', '') #remove spaces
 
@@ -783,8 +787,8 @@ def parse_type(type_string):
             elif char == ',':
                 if paren_count == 1:
                     break
-        return ComplexType(parse_type(type_string[1  :i ]),
-                           parse_type(type_string[i+1:-1]))
+        return ComplexType(read_type(type_string[1  :i ]),
+                           read_type(type_string[i+1:-1]))
     elif type_string[0] == "%s" % ENTITY_TYPE:
         return ENTITY_TYPE
     elif type_string[0] == "%s" % TRUTH_TYPE:
@@ -864,11 +868,15 @@ class SubstituteBindingsI(object):
 class Expression(SubstituteBindingsI):
     """This is the base abstract object for all logical expressions"""
 
-    _logic_parser = _LogicParser()
+    _logic_parser = LogicParser()
+    _type_checking_logic_parser = LogicParser(type_check=True)
 
     @classmethod
-    def fromstring(cls, s):
-        return cls._logic_parser.parse(s)
+    def fromstring(cls, s, type_check=False, signature=None):
+        if type_check:
+            return cls._type_checking_logic_parser.parse(s, signature)
+        else:
+            return cls._logic_parser.parse(s, signature)
 
     def __call__(self, other, *additional):
         accum = self.applyto(other)
@@ -966,7 +974,7 @@ class Expression(SubstituteBindingsI):
                 if isinstance(val, Type):
                     varEx.type = val
                 else:
-                    varEx.type = parse_type(val)
+                    varEx.type = read_type(val)
                 sig[key].append(varEx)
 
         self._set_type(signature=sig)
@@ -1130,7 +1138,7 @@ class ApplicationExpression(Expression):
     with another Expression, such as a LambdaExpression, which would mean that
     the Predicate should be thought of as being applied to the arguments.
 
-    The logical expression parser will always curry arguments in a application expression.
+    The logical expression reader will always curry arguments in a application expression.
     So, "\x y.see(x,y)(john,mary)" will be represented internally as
     "((\x y.(see(x))(y))(john))(mary)".  This simplifies the internals since
     there will always be exactly one argument in an application.
@@ -1858,7 +1866,7 @@ def is_eventvar(expr):
 
 def demo():
     lexpr = Expression.fromstring
-    print('='*20 + 'Test parser' + '='*20)
+    print('='*20 + 'Test reader' + '='*20)
     print(lexpr(r'john'))
     print(lexpr(r'man(x)'))
     print(lexpr(r'-man(x)'))
@@ -1889,7 +1897,7 @@ def demo():
     print(e1 == e2)
 
 def demo_errors():
-    print('='*20 + 'Test parser errors' + '='*20)
+    print('='*20 + 'Test reader errors' + '='*20)
     demoException('(P(x) & Q(x)')
     demoException('((P(x) &) & Q(x))')
     demoException('P(x) -> ')

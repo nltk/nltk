@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: GDFA word alignment symmetrization
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Authors: Liling Tan
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -14,43 +14,58 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
     This module symmetrisatizes the source-to-target and target-to-source
     word alignment output and produces, aka. GDFA algorithm (Koehn, 2005).
     
-    Step 1 - Find the intersection of the bidirectional alignment.
+    Step 1: Find the intersection of the bidirectional alignment.
     
-    Step 2 - Search for additional neighbor alignment points to be added, 
-             given these criteria 
-            (i) neighbor alignments points are not in the intersection and 
-            (ii) neighbor alignments are in the union.
+    Step 2: Search for additional neighbor alignment points to be added, given
+            these criteria: (i) neighbor alignments points are not in the
+            intersection and (ii) neighbor alignments are in the union.
             
-    Step 3 - Adds all other alignment points thats not in the intersection,
-             not in the neighboring alignments that met the criteria but in the 
-             original foward/backward alignment outputs.
+    Step 3: Add all other alignment points thats not in the intersection, not in
+            the neighboring alignments that met the criteria but in the original
+            foward/backward alignment outputs.
     
-    [in]:
-    *e2f* is the forward word alignment outputs from source-to-target language.
-    *f2e* is the backward word alignment outputs from target-to-source langauge.
-    *srclen* is the number of tokens in the source language.
-    *trglen* is the number of tokens in the target language.
-    (Note: both *e2f* and *f2e* is in pharaoh output format) 
-    
-    [out]:
-    *alignment* is a symmetrized alignment points from GDFA algorithm.
-    
-    >>> forward = '0-0 2-1 9-2 21-3 10-4 7-5 11-6 9-7 12-8 1-9 3-10 4-11 17-12 17-13 25-14 13-15 24-16 11-17 28-18'
-    >>> backward = '0-0 1-9 2-9 3-10 4-11 5-12 6-6 7-5 8-6 9-7 10-4 11-6 12-8 13-12 15-12 17-13 18-13 19-12 20-13 21-3 22-12 23-14 24-17 25-15 26-17 27-18 28-18'
-    >>> srctext = "この よう な ハロー 白色 わい 星 の Ｌ 関数 は Ｌ と 共 に 不連続 に 増加 する こと が 期待 さ れる こと を 示し た 。"
-    >>> trgtext = "Therefore , we expect that the luminosity function of such halo white dwarfs increases discontinuously with the luminosity ."
-    >>> srclen = len(srctext.split())
-    >>> trglen = len(trgtext.split())
-    >>>
-    >>> gdfa = grow_diag_final_and(srclen, trglen, forward, backward)
-    >>> print gdfa
-    set([(28, 18), (6, 6), (24, 17), (2, 1), (15, 12), (13, 12), (2, 9), (3, 10), (26, 17), (25, 15), (8, 6), (9, 7), (20, 13), (18, 13), (0, 0), (10, 4), (13, 15), (23, 14), (7, 5), (25, 14), (1, 9), (17, 13), (4, 11), (11, 17), (9, 2), (22, 12), (27, 18), (24, 16), (21, 3), (19, 12), (17, 12), (5, 12), (11, 6), (12, 8)])
+        >>> forw = ('0-0 2-1 9-2 21-3 10-4 7-5 11-6 9-7 12-8 1-9 3-10 '
+        ...         '4-11 17-12 17-13 25-14 13-15 24-16 11-17 28-18')
+        >>> back = ('0-0 1-9 2-9 3-10 4-11 5-12 6-6 7-5 8-6 9-7 10-4 '
+        ...         '11-6 12-8 13-12 15-12 17-13 18-13 19-12 20-13 '
+        ...         '21-3 22-12 23-14 24-17 25-15 26-17 27-18 28-18')
+        >>> srctext = ("この よう な ハロー 白色 わい 星 の Ｌ 関数 "
+        ...            "は Ｌ と 共 に 不連続 に 増加 する こと が "
+        ...            "期待 さ れる こと を 示し た 。")
+        >>> trgtext = ("Therefore , we expect that the luminosity function "
+        ...            "of such halo white dwarfs increases discontinuously "
+        ...            "with the luminosity .")
+        >>> srclen = len(srctext.split())
+        >>> trglen = len(trgtext.split())
+        >>>
+        >>> gdfa = grow_diag_final_and(srclen, trglen, forw, back)
+        >>> gdfa == set([(28, 18), (6, 6), (24, 17), (2, 1), (15, 12), (13, 12),
+        ...         (2, 9), (3, 10), (26, 17), (25, 15), (8, 6), (9, 7), (20,
+        ...         13), (18, 13), (0, 0), (10, 4), (13, 15), (23, 14), (7, 5),
+        ...         (25, 14), (1, 9), (17, 13), (4, 11), (11, 17), (9, 2), (22,
+        ...         12), (27, 18), (24, 16), (21, 3), (19, 12), (17, 12), (5,
+        ...         12), (11, 6), (12, 8)])
+        True
     
     References:
     Koehn, P., A. Axelrod, A. Birch, C. Callison, M. Osborne, and D. Talbot. 
     2005. Edinburgh System Description for the 2005 IWSLT Speech 
     Translation Evaluation. In MT Eval Workshop.
+
+    :type srclen: int
+    :param srclen: the number of tokens in the source language
+    :type trglen: int
+    :param trglen: the number of tokens in the target language
+    :type e2f: str
+    :param e2f: the forward word alignment outputs from source-to-target
+                language (in pharaoh output format)
+    :type f2e: str
+    :param f2e: the backward word alignment outputs from target-to-source
+                language (in pharaoh output format)
+    :rtype: set(tuple(int))
+    :return: the symmetrized alignment points from the GDFA algorithm
     """
+
     # Converts pharaoh text format into list of tuples.
     e2f = [tuple(map(int,a.split('-'))) for a in e2f.split()]
     f2e = [tuple(map(int,a.split('-'))) for a in f2e.split()]
@@ -102,12 +117,16 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
             for f_new in range(trglen):
                 # if ( ( e-new not aligned and f-new not aligned) 
                 # and (e-new, f-new in union(e2f, f2e) )
-                if (e_new not in aligned and f_new not in aligned)\
-                and (e_new, f_new) in a:
+                if (e_new not in aligned
+                    and f_new not in aligned
+                    and (e_new, f_new) in a):
+
                     alignment.add((e_new, f_new))
                     aligned['e'].add(e_new); aligned['f'].add(f_new)
 
-    grow_diag(); final_and(e2f); final_and(f2e)
+    grow_diag()
+    final_and(e2f)
+    final_and(f2e)
     return alignment
 
 # run doctests
