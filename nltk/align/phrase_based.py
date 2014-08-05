@@ -47,11 +47,11 @@ def phrase_extraction(srctext, trgtext, alignment):
     
     >>> srctext = "michael assumes that he will stay in the house"
     >>> trgtext = "michael geht davon aus , dass er im haus bleibt"
-    >>> alignment = [(0,0), (1,1), (1,2), (1,3), (2,5), (3,6), (4,9), 
-    (5,9), (6,7), (7,7), (8,8)]
+    >>> alignment = [(0,0), (1,1), (1,2), (1,3), (2,5), (3,6), (4,9), (5,9), (6,7), (7,7), (8,8)]
     >>> phrases = phrase_extraction(srctext, trgtext, alignment)
     >>> for i in sorted(phrases):
-    >>>     print i
+    ...    print i
+    ...
     ((0, 1), 'michael', 'michael')
     ((0, 2), 'michael assumes', 'michael geht davon aus')
     ((0, 2), 'michael assumes', 'michael geht davon aus ,')
@@ -143,5 +143,7 @@ def phrase_extraction(srctext, trgtext, alignment):
                 bp.update(phrases)
     return bp
 
-
-
+# run doctests
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
