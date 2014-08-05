@@ -181,7 +181,8 @@ class TweetWriter(TweetHandler):
                 # Tell the client to disconnect
                 return False
             else:
-                self.output = open(self.timestamped_file(), 'w')
+                self.fname = self.timestamped_file()
+                self.output = open(self.fname, 'w')
                 self.counter = 0
                 print('\nWriting to new file {}'.format(self.fname))
                 return True
@@ -204,7 +205,7 @@ def dehydrate(infile):
         return ids
 
 
-def authenticate(creds_file=None):
+def authenticate(creds_file=None, subdir=None):
     """
     Read OAuth credentials from a text file.
 
@@ -225,11 +226,18 @@ def authenticate(creds_file=None):
     :param file_name: File containing credentials. None (default) reads
     data from "./credentials.txt"
     """
+    if subdir is None:
+        try:
+            subdir = os.environ['TWITTERHOME']
+        except KeyError:
+            print("""Supply a value to the 'subdir' parameter or set the
+            environment variable TWITTERHOME""")
     if creds_file is None:
-        path = os.path.dirname(__file__)
-        creds_file = os.path.join(path, 'credentials.txt')
+        creds_file = 'credentials.txt'
 
-    with open(creds_file) as f:
+    creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
+
+    with open(creds_fullpath) as f:
         oauth = {}
         for line in f:
             if '=' in line:
@@ -262,22 +270,22 @@ def add_access_token(creds_file=None):
 # Demos
 ################################
 
-
-TWITTERHOME = '/Users/ewan/twitter/'
-CREDS = TWITTERHOME + 'credentials.txt'
+import os
+TWITTERHOME = os.environ['TWITTERHOME']
+CREDS = None
 TWEETS = TWITTERHOME + 'tweets.20140801-150110.json'
 IDS = TWITTERHOME + 'tweet_ids.txt'
 REHYDE = TWITTERHOME + 'rehdrated.json'
 
 def streamtoscreen_demo(limit=20):
-    oauth = authenticate(CREDS)
+    oauth = authenticate()
     handler = TweetViewer(limit=limit)
     client = Streamer(handler, **oauth)
     client.statuses.sample()
 
 def streamtofile_demo(limit=20):
-    oauth = authenticate(CREDS)
-    handler = TweetWriter(limit=limit, repeat=True, subdir=TWITTERHOME)
+    oauth = authenticate()
+    handler = TweetWriter(limit=limit, repeat=True)
     client = Streamer(handler, **oauth)
     client.statuses.sample()
 
@@ -300,18 +308,21 @@ def hydrate_demo(infile, outfile):
 
 def corpusreader_demo():
     from nltk.corpus import TwitterCorpusReader
-    root = 'streamed_data/'
+    root = os.environ['TWITTERHOME']
     reader = TwitterCorpusReader(root, '.*\.json')
-    for t in reader.tweets()[:10]:
+    for t in reader.jsonlist()[:15]:
         print(t)
 
-    for t in reader.tokenised_tweets()[:10]:
-        print(t)
+    #for t in reader.tweets()[:10]:
+         #print(t)
+
+    #for t in reader.tokenised_tweets()[:10]:
+        #print(t)
 
 
 
 
-DEMOS = [1]
+DEMOS = [4]
 
 if __name__ == "__main__":
     #import doctest
