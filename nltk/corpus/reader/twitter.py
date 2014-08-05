@@ -15,7 +15,7 @@ from nltk import compat
 import nltk.data
 from nltk.tokenize import *
 
-from nltk.corpus.reader.util import StreamBackedCorpusView
+from nltk.corpus.reader.util import StreamBackedCorpusView, concat
 from nltk.corpus.reader.api import CorpusReader
 
 from nltk.tokenize.twitter import TweetTokenizer
@@ -56,7 +56,7 @@ class TwitterCorpusReader(CorpusReader):
 
 
 
-    def jsonlist(self, fileid=None):
+    def jsonlist(self, fileids=None):
         """
         Return the contents of the file as a list of JSON-style dictionaries.
         """
