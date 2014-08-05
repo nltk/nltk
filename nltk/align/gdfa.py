@@ -23,7 +23,7 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
             
     Step 3 - Adds all other alignment points thats not in the intersection,
              not in the neighboring alignments that met the criteria but in the 
-             original forward/backward alignment outputs.
+             original foward/backward alignment outputs.
     
     [in]:
     *e2f* is the forward word alignment outputs from source-to-target language.
