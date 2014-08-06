@@ -53,7 +53,7 @@ def config_megam(bin=None):
     global _megam_bin
     _megam_bin = find_binary(
         'megam', bin,
-        env_vars=['MEGAM',  'MEGAMHOME'],
+        env_vars=['MEGAM'],
         binary_names=['megam.opt', 'megam', 'megam_686', 'megam_i686.opt'],
         url='http://www.umiacs.umd.edu/~hal/megam/index.html')
 

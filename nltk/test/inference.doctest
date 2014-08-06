@@ -35,10 +35,11 @@ included with NLTK: ``Prover9``, ``TableauProver``, and
 ``ResolutionProver``.  The first is an off-the-shelf prover, while the other
 two are written in Python and included in the ``nltk.inference`` package.
 
-    >>> lp = LogicParser()
-    >>> p1 = lp.parse('man(socrates)')
-    >>> p2 = lp.parse('all x.(man(x) -> mortal(x))')
-    >>> c  = lp.parse('mortal(socrates)')
+    >>> from nltk.sem import Expression
+    >>> read_expr = Expression.fromstring
+    >>> p1 = read_expr('man(socrates)')
+    >>> p2 = read_expr('all x.(man(x) -> mortal(x))')
+    >>> c  = read_expr('mortal(socrates)')
     >>> Prover9().prove(c, [p1,p2])
     True
     >>> TableauProver().prove(c, [p1,p2])
@@ -105,7 +106,7 @@ The assumptions and goal may be accessed using the ``assumptions()`` and
 ``goal()`` methods, respectively.
 
     >>> prover.assumptions()
-    [<ApplicationExpression man(socrates)>, <AllExpression all x.(man(x) -> mortal(x))>]
+    [<ApplicationExpression man(socrates)>, <Alread_expression all x.(man(x) -> mortal(x))>]
     >>> prover.goal()
     <ApplicationExpression mortal(socrates)>
 
@@ -116,7 +117,7 @@ proof, the stored result is cleared when either of these methods are called.
 That means that ``proof()`` will be unavailable until ``prove()`` is called and
 a call to ``prove()`` will execute the theorem prover.
 
-    >>> prover.retract_assumptions([lp.parse('man(socrates)')])
+    >>> prover.retract_assumptions([read_expr('man(socrates)')])
     >>> print(prover.proof()) # doctest: +ELLIPSIS
     Traceback (most recent call last):
       File "...", line 1212, in __run
@@ -132,7 +133,7 @@ a call to ``prove()`` will execute the theorem prover.
     [2] {-man(z6), mortal(z6)}  A
     [3] {-man(socrates)}        (1, 2)
     <BLANKLINE>
-    >>> prover.add_assumptions([lp.parse('man(socrates)')])
+    >>> prover.add_assumptions([read_expr('man(socrates)')])
     >>> prover.prove()
     True
 
@@ -199,7 +200,7 @@ initialized with a proof goal and, possibly, some assumptions. The
 ``prove()`` method attempts to find a proof of the goal, given the
 list of assumptions (in this case, none).
 
-    >>> goal = lp.parse('(man(x) <-> --man(x))')
+    >>> goal = read_expr('(man(x) <-> --man(x))')
     >>> prover = Prover9Command(goal)
     >>> prover.prove()
     True
@@ -237,8 +238,8 @@ provided by Prover9, shown in abbreviated form here::
 As mentioned earlier, we may want to list some assumptions for
 the proof, as shown here.
 
-    >>> g = lp.parse('mortal(socrates)')
-    >>> a1 = lp.parse('all x.(man(x) -> mortal(x))')
+    >>> g = read_expr('mortal(socrates)')
+    >>> a1 = read_expr('all x.(man(x) -> mortal(x))')
     >>> prover = Prover9Command(g, assumptions=[a1])
     >>> prover.print_assumptions()
     all x.(man(x) -> mortal(x))
@@ -250,7 +251,7 @@ However, the assumptions are not sufficient to derive the goal:
 
 So let's add another assumption:
 
-    >>> a2 = lp.parse('man(socrates)')
+    >>> a2 = read_expr('man(socrates)')
     >>> prover.add_assumptions([a2])
     >>> prover.print_assumptions()
     all x.(man(x) -> mortal(x))
@@ -279,7 +280,7 @@ Assumptions can be retracted from the list of assumptions.
 Statements can be loaded from a file and parsed. We can then add these
 statements as new assumptions.
 
-    >>> g = lp.parse('all x.(boxer(x) -> -boxerdog(x))')
+    >>> g = read_expr('all x.(boxer(x) -> -boxerdog(x))')
     >>> prover = Prover9Command(g)
     >>> prover.prove()
     False
@@ -340,8 +341,8 @@ two Expressions have the same meaning.
 The ``equiv()`` method calls a theorem prover to determine whether two
 Expressions are logically equivalent.
 
-    >>> a = lp.parse(r'exists x.(man(x) & walks(x))')
-    >>> b = lp.parse(r'exists x.(walks(x) & man(x))')
+    >>> a = read_expr(r'exists x.(man(x) & walks(x))')
+    >>> b = read_expr(r'exists x.(walks(x) & man(x))')
     >>> print(a.equiv(b))
     True
 
@@ -373,9 +374,9 @@ Thus, the following interaction shows how both ``{a, c1}`` and ``{a, c2}``
 are consistent sets, since Mace succeeds in a building a
 model for each of them, while ``{c1, c2}`` is inconsistent.
 
-    >>> a3 = lp.parse('exists x.(man(x) and walks(x))')
-    >>> c1 = lp.parse('mortal(socrates)')
-    >>> c2 = lp.parse('-mortal(socrates)')
+    >>> a3 = read_expr('exists x.(man(x) and walks(x))')
+    >>> c1 = read_expr('mortal(socrates)')
+    >>> c2 = read_expr('-mortal(socrates)')
     >>> mace = Mace()
     >>> print(mace.build_model(None, [a3, c1]))
     True
@@ -400,10 +401,10 @@ the goal. That is, it succeeds in finding a model
 where there is a woman that every man loves; Adam is a man; Eve is a
 woman; but Adam does not love Eve.
 
-    >>> a4 = lp.parse('exists y. (woman(y) & all x. (man(x) -> love(x,y)))')
-    >>> a5 = lp.parse('man(adam)')
-    >>> a6 = lp.parse('woman(eve)')
-    >>> g = lp.parse('love(adam,eve)')
+    >>> a4 = read_expr('exists y. (woman(y) & all x. (man(x) -> love(x,y)))')
+    >>> a5 = read_expr('man(adam)')
+    >>> a6 = read_expr('woman(eve)')
+    >>> g = read_expr('love(adam,eve)')
     >>> print(mace.build_model(g, [a4, a5, a6]))
     True
 
@@ -412,9 +413,9 @@ the goal.  Mace will continue to look for models of ever-increasing sizes
 until the end_size number is reached.  By default, end_size is 500,
 but it can be set manually for quicker response time.
 
-    >>> a7 = lp.parse('all x.(man(x) -> mortal(x))')
-    >>> a8 = lp.parse('man(socrates)')
-    >>> g2 = lp.parse('mortal(socrates)')
+    >>> a7 = read_expr('all x.(man(x) -> mortal(x))')
+    >>> a8 = read_expr('man(socrates)')
+    >>> g2 = read_expr('mortal(socrates)')
     >>> print(Mace(end_size=50).build_model(g2, [a7, a8]))
     False
 
@@ -439,7 +440,7 @@ Using Mace4
 
 Check whether Mace4 can find a model.
 
-    >>> a = lp.parse('(see(mary,john) & -(mary = john))')
+    >>> a = read_expr('(see(mary,john) & -(mary = john))')
     >>> mb = MaceCommand(assumptions=[a])
     >>> mb.build_model()
     True
@@ -522,8 +523,8 @@ Adam doesn't love Eve.
 
 Mace can also be used with propositional logic.
 
-    >>> p = lp.parse('P')
-    >>> q = lp.parse('Q')
+    >>> p = read_expr('P')
+    >>> q = read_expr('Q')
     >>> mb = MaceCommand(q, [p, p>-q])
     >>> mb.build_model()
     True

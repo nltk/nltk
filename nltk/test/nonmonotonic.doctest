@@ -9,7 +9,7 @@ Nonmonotonic Reasoning
     >>> from nltk.inference.nonmonotonic import *
     >>> from nltk.sem import logic
     >>> logic._counter._value = 0
-    >>> lexpr = logic.Expression.fromstring
+    >>> read_expr = logic.Expression.fromstring
 
 ------------------------
 Closed Domain Assumption
@@ -20,9 +20,9 @@ If the domain only contains "A" and "B", then the expression "exists x.P(x)" can
 be replaced with "P(A) | P(B)" and an expression "all x.P(x)" can be replaced
 with "P(A) & P(B)".
 
-    >>> p1 = lexpr(r'all x.(man(x) -> mortal(x))')
-    >>> p2 = lexpr(r'man(Socrates)')
-    >>> c = lexpr(r'mortal(Socrates)')
+    >>> p1 = read_expr(r'all x.(man(x) -> mortal(x))')
+    >>> p2 = read_expr(r'man(Socrates)')
+    >>> c = read_expr(r'mortal(Socrates)')
     >>> prover = Prover9Command(c, [p1,p2])
     >>> prover.prove()
     True
@@ -33,9 +33,9 @@ with "P(A) & P(B)".
     >>> cdp.prove()
     True
 
-    >>> p1 = lexpr(r'exists x.walk(x)')
-    >>> p2 = lexpr(r'man(Socrates)')
-    >>> c = lexpr(r'walk(Socrates)')
+    >>> p1 = read_expr(r'exists x.walk(x)')
+    >>> p2 = read_expr(r'man(Socrates)')
+    >>> c = read_expr(r'walk(Socrates)')
     >>> prover = Prover9Command(c, [p1,p2])
     >>> prover.prove()
     False
@@ -46,10 +46,10 @@ with "P(A) & P(B)".
     >>> cdp.prove()
     True
 
-    >>> p1 = lexpr(r'exists x.walk(x)')
-    >>> p2 = lexpr(r'man(Socrates)')
-    >>> p3 = lexpr(r'-walk(Bill)')
-    >>> c = lexpr(r'walk(Socrates)')
+    >>> p1 = read_expr(r'exists x.walk(x)')
+    >>> p2 = read_expr(r'man(Socrates)')
+    >>> p3 = read_expr(r'-walk(Bill)')
+    >>> c = read_expr(r'walk(Socrates)')
     >>> prover = Prover9Command(c, [p1,p2,p3])
     >>> prover.prove()
     False
@@ -61,9 +61,9 @@ with "P(A) & P(B)".
     >>> cdp.prove()
     True
 
-    >>> p1 = lexpr(r'walk(Socrates)')
-    >>> p2 = lexpr(r'walk(Bill)')
-    >>> c = lexpr(r'all x.walk(x)')
+    >>> p1 = read_expr(r'walk(Socrates)')
+    >>> p2 = read_expr(r'walk(Bill)')
+    >>> c = read_expr(r'all x.walk(x)')
     >>> prover = Prover9Command(c, [p1,p2])
     >>> prover.prove()
     False
@@ -76,12 +76,12 @@ with "P(A) & P(B)".
     >>> cdp.prove()
     True
 
-    >>> p1 = lexpr(r'girl(mary)')
-    >>> p2 = lexpr(r'dog(rover)')
-    >>> p3 = lexpr(r'all x.(girl(x) -> -dog(x))')
-    >>> p4 = lexpr(r'all x.(dog(x) -> -girl(x))')
-    >>> p5 = lexpr(r'chase(mary, rover)')
-    >>> c = lexpr(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
+    >>> p1 = read_expr(r'girl(mary)')
+    >>> p2 = read_expr(r'dog(rover)')
+    >>> p3 = read_expr(r'all x.(girl(x) -> -dog(x))')
+    >>> p4 = read_expr(r'all x.(dog(x) -> -girl(x))')
+    >>> p5 = read_expr(r'chase(mary, rover)')
+    >>> c = read_expr(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
     >>> prover = Prover9Command(c, [p1,p2,p3,p4,p5])
     >>> print(prover.prove())
     False
@@ -106,9 +106,9 @@ explicitly proven that they do.  Therefore, if the domain contains "A" and "B",
 then add the assumption "-(A = B)" if it is not the case that
 "<assumptions> \|- (A = B)".
 
-    >>> p1 = lexpr(r'man(Socrates)')
-    >>> p2 = lexpr(r'man(Bill)')
-    >>> c = lexpr(r'exists x.exists y.-(x = y)')
+    >>> p1 = read_expr(r'man(Socrates)')
+    >>> p2 = read_expr(r'man(Bill)')
+    >>> c = read_expr(r'exists x.exists y.-(x = y)')
     >>> prover = Prover9Command(c, [p1,p2])
     >>> prover.prove()
     False
@@ -120,10 +120,10 @@ then add the assumption "-(A = B)" if it is not the case that
     >>> unp.prove()
     True
 
-    >>> p1 = lexpr(r'all x.(walk(x) -> (x = Socrates))')
-    >>> p2 = lexpr(r'Bill = William')
-    >>> p3 = lexpr(r'Bill = Billy')
-    >>> c = lexpr(r'-walk(William)')
+    >>> p1 = read_expr(r'all x.(walk(x) -> (x = Socrates))')
+    >>> p2 = read_expr(r'Bill = William')
+    >>> p3 = read_expr(r'Bill = Billy')
+    >>> c = read_expr(r'-walk(William)')
     >>> prover = Prover9Command(c, [p1,p2,p3])
     >>> prover.prove()
     False
@@ -151,9 +151,9 @@ of "P".  If the assumptions contain "all x.(ostrich(x) -> bird(x))", then
 assumptions don't contain anything that are "P", then "all x.-P(x)" is the
 completion of "P".
 
-    >>> p1 = lexpr(r'walk(Socrates)')
-    >>> p2 = lexpr(r'-(Socrates = Bill)')
-    >>> c = lexpr(r'-walk(Bill)')
+    >>> p1 = read_expr(r'walk(Socrates)')
+    >>> p2 = read_expr(r'-(Socrates = Bill)')
+    >>> c = read_expr(r'-walk(Bill)')
     >>> prover = Prover9Command(c, [p1,p2])
     >>> prover.prove()
     False
@@ -165,11 +165,11 @@ completion of "P".
     >>> cwp.prove()
     True
 
-    >>> p1 = lexpr(r'see(Socrates, John)')
-    >>> p2 = lexpr(r'see(John, Mary)')
-    >>> p3 = lexpr(r'-(Socrates = John)')
-    >>> p4 = lexpr(r'-(John = Mary)')
-    >>> c = lexpr(r'-see(Socrates, Mary)')
+    >>> p1 = read_expr(r'see(Socrates, John)')
+    >>> p2 = read_expr(r'see(John, Mary)')
+    >>> p3 = read_expr(r'-(Socrates = John)')
+    >>> p4 = read_expr(r'-(John = Mary)')
+    >>> c = read_expr(r'-see(Socrates, Mary)')
     >>> prover = Prover9Command(c, [p1,p2,p3,p4])
     >>> prover.prove()
     False
@@ -183,11 +183,11 @@ completion of "P".
     >>> cwp.prove()
     True
 
-    >>> p1 = lexpr(r'all x.(ostrich(x) -> bird(x))')
-    >>> p2 = lexpr(r'bird(Tweety)')
-    >>> p3 = lexpr(r'-ostrich(Sam)')
-    >>> p4 = lexpr(r'Sam != Tweety')
-    >>> c = lexpr(r'-bird(Sam)')
+    >>> p1 = read_expr(r'all x.(ostrich(x) -> bird(x))')
+    >>> p2 = read_expr(r'bird(Tweety)')
+    >>> p3 = read_expr(r'-ostrich(Sam)')
+    >>> p4 = read_expr(r'Sam != Tweety')
+    >>> c = read_expr(r'-bird(Sam)')
     >>> prover = Prover9Command(c, [p1,p2,p3,p4])
     >>> prover.prove()
     False
@@ -208,9 +208,9 @@ Multi-Decorator Example
 
 Decorators can be nested to utilize multiple assumptions.
 
-    >>> p1 = lexpr(r'see(Socrates, John)')
-    >>> p2 = lexpr(r'see(John, Mary)')
-    >>> c = lexpr(r'-see(Socrates, Mary)')
+    >>> p1 = read_expr(r'see(Socrates, John)')
+    >>> p2 = read_expr(r'see(John, Mary)')
+    >>> c = read_expr(r'-see(Socrates, Mary)')
     >>> prover = Prover9Command(c, [p1,p2])
     >>> print(prover.prove())
     False
@@ -225,26 +225,26 @@ Default Reasoning
     >>> premises = []
 
 define the taxonomy
-    >>> premises.append(lexpr(r'all x.(elephant(x)        -> animal(x))'))
-    >>> premises.append(lexpr(r'all x.(bird(x)            -> animal(x))'))
-    >>> premises.append(lexpr(r'all x.(dove(x)            -> bird(x))'))
-    >>> premises.append(lexpr(r'all x.(ostrich(x)         -> bird(x))'))
-    >>> premises.append(lexpr(r'all x.(flying_ostrich(x)  -> ostrich(x))'))
+    >>> premises.append(read_expr(r'all x.(elephant(x)        -> animal(x))'))
+    >>> premises.append(read_expr(r'all x.(bird(x)            -> animal(x))'))
+    >>> premises.append(read_expr(r'all x.(dove(x)            -> bird(x))'))
+    >>> premises.append(read_expr(r'all x.(ostrich(x)         -> bird(x))'))
+    >>> premises.append(read_expr(r'all x.(flying_ostrich(x)  -> ostrich(x))'))
 
 default the properties using abnormalities
-    >>> premises.append(lexpr(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')) #normal animals don't fly
-    >>> premises.append(lexpr(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))'))  #normal birds fly
-    >>> premises.append(lexpr(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')) #normal ostriches don't fly
+    >>> premises.append(read_expr(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')) #normal animals don't fly
+    >>> premises.append(read_expr(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))'))  #normal birds fly
+    >>> premises.append(read_expr(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')) #normal ostriches don't fly
 
 specify abnormal entities
-    >>> premises.append(lexpr(r'all x.(bird(x)           -> Ab1(x))')) #flight
-    >>> premises.append(lexpr(r'all x.(ostrich(x)        -> Ab2(x))')) #non-flying bird
-    >>> premises.append(lexpr(r'all x.(flying_ostrich(x) -> Ab3(x))')) #flying ostrich
+    >>> premises.append(read_expr(r'all x.(bird(x)           -> Ab1(x))')) #flight
+    >>> premises.append(read_expr(r'all x.(ostrich(x)        -> Ab2(x))')) #non-flying bird
+    >>> premises.append(read_expr(r'all x.(flying_ostrich(x) -> Ab3(x))')) #flying ostrich
 
 define entities
-    >>> premises.append(lexpr(r'elephant(el)'))
-    >>> premises.append(lexpr(r'dove(do)'))
-    >>> premises.append(lexpr(r'ostrich(os)'))
+    >>> premises.append(read_expr(r'elephant(el)'))
+    >>> premises.append(read_expr(r'dove(do)'))
+    >>> premises.append(read_expr(r'ostrich(os)'))
 
 print the augmented assumptions list
     >>> prover = Prover9Command(None, premises)
@@ -277,10 +277,10 @@ print the augmented assumptions list
     -(el = do)
     -(os = do)
 
-    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lexpr('-fly(el)'), premises))).prove()
+    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(read_expr('-fly(el)'), premises))).prove()
     True
-    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lexpr('fly(do)'), premises))).prove()
+    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(read_expr('fly(do)'), premises))).prove()
     True
-    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(lexpr('-fly(os)'), premises))).prove()
+    >>> UniqueNamesProver(ClosedWorldProver(Prover9Command(read_expr('-fly(os)'), premises))).prove()
     True
 

@@ -14,7 +14,6 @@ a first-order model.
 """
 from __future__ import print_function, unicode_literals
 
-import re
 import codecs
 from nltk.sem import evaluate
 
@@ -97,77 +96,6 @@ def evaluate_sents(inputs, grammar, model, assignment, trace=0):
             for interpretations in interpret_sents(inputs, grammar)]
 
 
-##########################################
-# REs used by the parse_valuation function
-##########################################
-_VAL_SPLIT_RE = re.compile(r'\s*=+>\s*')
-_ELEMENT_SPLIT_RE = re.compile(r'\s*,\s*')
-_TUPLES_RE = re.compile(r"""\s*
-                                (\([^)]+\))  # tuple-expression
-                                \s*""", re.VERBOSE)
-
-def parse_valuation_line(s, encoding=None):
-    """
-    Parse a line in a valuation file.
-
-    Lines are expected to be of the form::
-
-      noosa => n
-      girl => {g1, g2}
-      chase => {(b1, g1), (b2, g1), (g1, d1), (g2, d2)}
-
-    :param s: input line
-    :type s: str
-    :param encoding: the encoding of the input string, if it is binary
-    :type encoding: str
-    :return: a pair (symbol, value)
-    :rtype: tuple
-    """
-    if encoding is not None:
-        s = s.decode(encoding)
-    pieces = _VAL_SPLIT_RE.split(s)
-    symbol = pieces[0]
-    value = pieces[1]
-    # check whether the value is meant to be a set
-    if value.startswith('{'):
-        value = value[1:-1]
-        tuple_strings = _TUPLES_RE.findall(value)
-        # are the set elements tuples?
-        if tuple_strings:
-            set_elements = []
-            for ts in tuple_strings:
-                ts = ts[1:-1]
-                element = tuple(_ELEMENT_SPLIT_RE.split(ts))
-                set_elements.append(element)
-        else:
-            set_elements = _ELEMENT_SPLIT_RE.split(value)
-        value = set(set_elements)
-    return symbol, value
-
-def parse_valuation(s, encoding=None):
-    """
-    Convert a valuation file into a valuation.
-
-    :param s: the contents of a valuation file
-    :type s: str
-    :param encoding: the encoding of the input string, if it is binary
-    :type encoding: str
-    :return: a ``nltk.sem`` valuation
-    :rtype: Valuation
-    """
-    if encoding is not None:
-        s = s.decode(encoding)
-    statements = []
-    for linenum, line in enumerate(s.splitlines()):
-        line = line.strip()
-        if line.startswith('#') or line=='': continue
-        try: statements.append(parse_valuation_line(line))
-        except ValueError:
-            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
-    val = evaluate.Valuation(statements)
-    return val
-
-
 def demo_model0():
     global m0, g0
     #Initialize a valuation of non-logical constants."""
@@ -214,9 +142,9 @@ def demo_legacy_grammar():
     Define 'test.fcfg' to be the following
 
     """
-    from nltk.grammar import parse_fcfg
+    from nltk.grammar import FeatureGrammar
 
-    g = parse_fcfg("""
+    g = FeatureGrammar.fromstring("""
     % start S
     S[sem=<hello>] -> 'hello'
     """)

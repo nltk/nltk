@@ -58,7 +58,7 @@ class LinearLogicParser(LogicParser):
         if self.has_priority(APP, context):
             if self.inRange(0) and self.token(0) == Tokens.OPEN:
                 self.token() #swallow then open paren
-                argument = self.parse_Expression(APP)
+                argument = self.process_next_expression(APP)
                 self.assertNextToken(Tokens.CLOSE)
                 expression = ApplicationExpression(expression, argument, None)
         return expression

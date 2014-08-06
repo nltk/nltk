@@ -18,6 +18,7 @@ from __future__ import print_function, unicode_literals
 from pprint import pformat
 import inspect
 import textwrap
+import re
 
 from nltk.decorators import decorator # this used in code that is commented out
 from nltk.compat import string_types, python_2_unicode_compatible
@@ -146,6 +147,77 @@ class Valuation(dict):
     def symbols(self):
         """The non-logical constants which the Valuation recognizes."""
         return sorted(self.keys())
+
+    @classmethod
+    def fromstring(cls, s):
+        return read_valuation(s)
+
+
+##########################################
+# REs used by the _read_valuation function
+##########################################
+_VAL_SPLIT_RE = re.compile(r'\s*=+>\s*')
+_ELEMENT_SPLIT_RE = re.compile(r'\s*,\s*')
+_TUPLES_RE = re.compile(r"""\s*
+                                (\([^)]+\))  # tuple-expression
+                                \s*""", re.VERBOSE)
+
+def _read_valuation_line(s):
+    """
+    Read a line in a valuation file.
+
+    Lines are expected to be of the form::
+
+      noosa => n
+      girl => {g1, g2}
+      chase => {(b1, g1), (b2, g1), (g1, d1), (g2, d2)}
+
+    :param s: input line
+    :type s: str
+    :return: a pair (symbol, value)
+    :rtype: tuple
+    """
+    pieces = _VAL_SPLIT_RE.split(s)
+    symbol = pieces[0]
+    value = pieces[1]
+    # check whether the value is meant to be a set
+    if value.startswith('{'):
+        value = value[1:-1]
+        tuple_strings = _TUPLES_RE.findall(value)
+        # are the set elements tuples?
+        if tuple_strings:
+            set_elements = []
+            for ts in tuple_strings:
+                ts = ts[1:-1]
+                element = tuple(_ELEMENT_SPLIT_RE.split(ts))
+                set_elements.append(element)
+        else:
+            set_elements = _ELEMENT_SPLIT_RE.split(value)
+        value = set(set_elements)
+    return symbol, value
+
+def read_valuation(s, encoding=None):
+    """
+    Convert a valuation string into a valuation.
+
+    :param s: a valuation string
+    :type s: str
+    :param encoding: the encoding of the input string, if it is binary
+    :type encoding: str
+    :return: a ``nltk.sem`` valuation
+    :rtype: Valuation
+    """
+    if encoding is not None:
+        s = s.decode(encoding)
+    statements = []
+    for linenum, line in enumerate(s.splitlines()):
+        line = line.strip()
+        if line.startswith('#') or line=='': continue
+        try:
+            statements.append(_read_valuation_line(line))
+        except ValueError:
+            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
+    return Valuation(statements)
 
 
 @python_2_unicode_compatible

@@ -487,11 +487,11 @@ you might want to start off with a local copy of ``background.fol``:
     >>> nltk.data.retrieve('grammars/book_grammars/background.fol')
     Retrieving 'nltk:grammars/book_grammars/background.fol', saving to 'background.fol'
 
-After you have modified the file, the ``parse_logic()`` function will parse
-the strings in the file into expressions of ``nltk.logic``.
+After you have modified the file, the ``load_fol()`` function will parse
+the strings in the file into expressions of ``nltk.sem.logic``.
 
-    >>> from nltk.inference.discourse import parse_fol
-    >>> mybg = parse_fol(open('background.fol').read())
+    >>> from nltk.inference.discourse import load_fol
+    >>> mybg = load_fol(open('background.fol').read())
 
 The result can be loaded as an argument of ``add_background()`` in the
 manner shown earlier.
@@ -541,6 +541,6 @@ Regression Testing from book
     >>> from nltk.sem.drt import DrtParser
     >>> grammar = nltk.data.load('grammars/book_grammars/drt.fcfg', logic_parser=DrtParser())
     >>> parser = FeatureEarleyChartParser(grammar, trace=0)
-    >>> trees = parser.nbest_parse('Angus owns a dog'.split())
-    >>> print(trees[0].label()['SEM'].simplify().normalize())
+    >>> trees = parser.parse('Angus owns a dog'.split())
+    >>> print(list(trees)[0].label()['SEM'].simplify().normalize())
     ([z1,z2],[Angus(z1), dog(z2), own(z1,z2)])

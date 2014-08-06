@@ -59,14 +59,19 @@ currently supported by the data module are described by the dictionary
     ...     print('{0:<7} {1:}'.format(format, descr)) # doctest: +NORMALIZE_WHITESPACE
     cfg     A context free grammar.
     fcfg    A feature CFG.
-    fol     A list of first order logic expressions, parsed with nltk.sem.logic.Expression.fromstring.
+    fol     A list of first order logic expressions, parsed with
+    nltk.sem.logic.Expression.fromstring.
     json    A serialized python object, stored using the json module.
-    logic   A list of first order logic expressions, parsed by nltk.sem.logic._LogicParser.  Requires an additional logic_parser parameter
+    logic   A list of first order logic expressions, parsed with
+    nltk.sem.logic.LogicParser.  Requires an additional logic_parser
+    parameter
     pcfg    A probabilistic CFG.
-    pickle  A serialized python object, stored using the pickle module.
+    pickle  A serialized python object, stored using the pickle
+    module.
     raw     The raw (byte string) contents of a file.
-    text    The raw (unicode string) contents of a file.
-    val     A semantic valuation, parsed by nltk.sem.parse_valuation().
+    text    The raw (unicode string) contents of a file. 
+    val     A semantic valuation, parsed by
+    nltk.sem.Valuation.fromstring.
     yaml    A serialized python object, stored using the yaml module.
 
 `nltk.data.load()` will raise a ValueError if a bad format name is

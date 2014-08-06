@@ -1098,3 +1098,36 @@ def set_proxy(proxy, user=None, password=''):
 
     # Overide the existing url opener
     install_opener(opener)
+
+
+######################################################################
+# ElementTree pretty printing from http://www.effbot.org/zone/element-lib.htm
+######################################################################
+
+
+def elementtree_indent(elem, level=0):
+    """
+    Recursive function to indent an ElementTree._ElementInterface
+    used for pretty printing. Run indent on elem and then output
+    in the normal way. 
+    
+    :param elem: element to be indented. will be modified. 
+    :type elem: ElementTree._ElementInterface
+    :param level: level of indentation for this element
+    :type level: nonnegative integer
+    :rtype:   ElementTree._ElementInterface
+    :return:  Contents of elem indented to reflect its structure
+    """
+
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        for elem in elem:
+            elementtree_indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+
