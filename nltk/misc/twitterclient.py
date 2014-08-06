@@ -14,7 +14,11 @@ import json
 import os
 import datetime
 
-from twython import Twython, TwythonStreamer
+try:
+    from twython import Twython, TwythonStreamer
+except ImportError:
+    raise ValueError("""The twitterclient module requires the Twython package.
+    See https://twython.readthedocs.org/ for installation instructions.""")
 
 
 class Streamer(TwythonStreamer):
@@ -197,12 +201,16 @@ class TweetWriter(TweetHandler):
 
 def dehydrate(infile):
     """
-    Transform a file of serialized Tweet objects into a file of corresponding
-    Tweet IDs.
+    :return: given a file of Tweets serialised as line-delimited JSON, return
+    the corresponding Tweet IDs.
+
+    :rtype: iter(str)
+
     """
     with open(infile) as tweets:
-        ids = [json.loads(t)['id_str'] for t in tweets]
-        return ids
+        for t in tweets:
+            id_str = json.loads(t)['id_str']
+            yield id_str
 
 
 def authenticate(creds_file=None, subdir=None):
@@ -272,10 +280,9 @@ def add_access_token(creds_file=None):
 
 import os
 TWITTERHOME = os.environ['TWITTERHOME']
-CREDS = None
-TWEETS = TWITTERHOME + 'tweets.20140801-150110.json'
-IDS = TWITTERHOME + 'tweet_ids.txt'
-REHYDE = TWITTERHOME + 'rehdrated.json'
+TWEETS = os.path.join(TWITTERHOME, 'tweets.20140801-150110.json')
+IDS = os.path.join(TWITTERHOME, 'tweet_ids.txt')
+REHYDE = os.path.join(TWITTERHOME, 'rehydrated.json')
 
 def streamtoscreen_demo(limit=20):
     oauth = authenticate()
@@ -297,7 +304,7 @@ def dehydrate_demo(infile, outfile):
 
 
 def hydrate_demo(infile, outfile):
-    oauth = authenticate(CREDS)
+    oauth = authenticate()
     client = Query(**oauth)
     tweets = client.hydrate(infile)
     with open(outfile, 'w') as f:
@@ -310,19 +317,19 @@ def corpusreader_demo():
     from nltk.corpus import TwitterCorpusReader
     root = os.environ['TWITTERHOME']
     reader = TwitterCorpusReader(root, '.*\.json')
-    for t in reader.jsonlist()[:15]:
+    for t in reader.jsonlist()[:1]:
         print(t)
 
-    #for t in reader.tweets()[:10]:
-         #print(t)
+    for t in reader.tweets()[:15]:
+        print(t)
 
-    #for t in reader.tokenised_tweets()[:10]:
-        #print(t)
-
-
+    for t in reader.tokenised_tweets()[:15]:
+        print(t)
 
 
-DEMOS = [4]
+
+
+DEMOS = [3]
 
 if __name__ == "__main__":
     #import doctest
