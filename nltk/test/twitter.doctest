@@ -136,18 +136,19 @@ parameter ``repeat`` is set to ``False`` (default), Tweets will stop
 being collected once the limit is reached. Otherwise, `TweetWriter`
 will continue creating new files of the specified limit until the
 process is terminated externally.
+
 >>> handler = TweetWriter(limit=20, repeat=True)
 >>> client = Streamer(handler, **oauth)
 >>> client.statuses.sample() # doctest: +SKIP
 Writing to /Users/ewan/twitter/tweets.20140805-135210.json
 Written 20 tweets
-
+<BLANKLINE>
 Writing to new file /Users/ewan/twitter/tweets.20140805-135212.json
 Written 20 tweets
-
+<BLANKLINE>
 Writing to new file /Users/ewan/twitter/tweets.20140805-135213.json
 Written 20 tweets
-
+<BLANKLINE>
 Writing to new file /Users/ewan/twitter/tweets.20140805-135214.json
 Written 20 tweets
 ...
@@ -155,14 +156,73 @@ Written 20 tweets
 Corpus Reader
 =============
 
-Given a collection of Tweets, `TwitterCorpusReader` offers some
-standard methods for reading them.
+Given a collection of Tweets in one or more files,
+`TwitterCorpusReader` offers some standard methods for reading
+them. The method ``jsonlist()`` returns a list of the full Tweets as
+dictionaries derived by deserialising the JSON strings in the corpus
+file(s). We assume that each JSON string is on a line of its own in
+the file. 
 
 >>> from nltk.corpus import TwitterCorpusReader
 >>> root = os.environ['TWITTERHOME']
 >>> reader = TwitterCorpusReader(root, '.*\.json')
->>> for t in reader.tweets()[:10]:
+>>> for t in reader.jsonlist[:15]:  # doctest: +SKIP
 ...   print(t)
+{'place': None, 'entities': {'symbols': [], 'hashtags': [],
+'user_mentions': [], 'urls': [{'expanded_url':
+'http://www.visir.is/rolf-toft--var-godur-i-maganum-i-gaer/article/2014140809962',
+'indices': [37, 59], 'url': 'http://t.co/jIvWHkp2wk', 'display_url':
+...
+
+More immediately useful is the ``tweets()`` method, which just returns
+the text of each Tweet:
+
+>>> for t in reader.tweets[:15]:  # doctest: +SKIP
+...   print(t)
+Skoraði aftur en fékk ekki í magann. http://t.co/jIvWHkp2wk
+Ouch, likewise 👎
+@my_future_cat ээээ..нуууу...мне 17, гы
+@__foreignmarley can you bring the speakers please
+RT @goodhealth: Wake up to a healthy breakfast! Make your own granola, on-the-go bars, and parfaits with these #recipes --&gt; http://t.co/Q6R…
+#Almería #Trabajo Se necesita repartidores de publicidad: Almería Incorporamos 35 personas para distribuir pro... http://t.co/uvbPLNRNad
+@Nenenesssaaa ikaw yon, hindi ako. :p
+84x  #MTVHottest Justin Bieber #BestFandom2014 Beliebers
+日本史嫌いだわ☆彡.。
+with hulya..
+My life is so boring and sad😒
+RT @KUDUNEWS: Karrueche Posts Cryptic Gun Range Pics on IG (@Karrueche @Chrisbrown) - #celebrities #gossip #kudunews http://t.co/U4Ej91H63p
+RT @Malefica_1: El lobo siempre será el malo si Caperucita es quien cuenta la historia. #Malefica
+RT @miilkkk: 😒💯 http://t.co/GxXkjHV9KG
+Phumolo asks "How much for these apprenticeships? "...Is he  joking? http://t.co/nud7fYA3dP shows SCAM FREE things, you don't pay for jobs!
+
+The default tokeniser for Tweets is `TweetTokenizer`, which is called
+by the ``tokenised_tweets()`` method.
+
+>>> for t in reader.tokenised_tweets[:15]:  # doctest: +SKIP
+...   print(t)
+['Skora', 'ði', 'aftur', 'en', 'fékk', 'ekki', 'í', 'magann', '.', 'http://t.co/jIvWHkp2wk']
+['Ouch', ',', 'likewise', '👎']
+['@my_future_cat', 'ээээ', '..', 'нуууу', '...', 'мне', '17', ',', 'гы']
+['@__foreignmarley', 'can', 'you', 'bring', 'the', 'speakers', 'please']
+['RT', '@goodhealth', ':', 'Wake', 'up', 'to', 'a', 'healthy', 'breakfast', '!', 'Make', 'your', 'own', 'granola', ',', 'on-the-go', 'bars', ',', 'and', 'parfaits', 'with', 'these', '#recipes', '-->', 'http://t.co/Q6R…']
+['#Almería', '#Trabajo', 'Se', 'necesita', 'repartidores', 'de', 'publicidad', ':', 'Almer', 'ía', 'Incorporamos', '35', 'personas', 'para', 'distribuir', 'pro', '...', 'http://t.co/uvbPLNRNad']
+['@Nenenesssaaa', 'ikaw', 'yon', ',', 'hindi', 'ako', '.', ':p']
+['84x', '#MTVHottest', 'Justin', 'Bieber', '#BestFandom2014', 'Beliebers']
+['日本史嫌いだわ', '☆', '彡', '.', '。']
+['with', 'hulya', '..']
+['My', 'life', 'is', 'so', 'boring', 'and', 'sad', '😒']
+['RT', '@KUDUNEWS', ':', 'Karrueche', 'Posts', 'Cryptic', 'Gun', 'Range', 'Pics', 'on', 'IG', '(', '@Karrueche', '@Chrisbrown', ')', '-', '#celebrities', '#gossip', '#kudunews', 'http://t.co/U4Ej91H63p']
+['RT', '@Malefica_1', ':', 'El', 'lobo', 'siempre', 'ser', 'á', 'el', 'malo', 'si', 'Caperucita', 'es', 'quien', 'cuenta', 'la', 'historia', '.', '#Malefica']
+['RT', '@miilkkk', ':', '😒', '💯', 'http://t.co/GxXkjHV9KG']
+['Phumolo', 'asks', '"', 'How', 'much', 'for', 'these', 'apprenticeships', '?', '"', '...', 'Is', 'he', 'joking', '?', 'http://t.co/nud7fYA3dP', 'shows', 'SCAM', 'FREE', 'things', ',', 'you', "don't", 'pay', 'for', 'jobs', '!']
+
+Since this tokeniser assumes that words are delimited by
+whitespace, it fails to deal with writing systems such as Japanese
+that use different conventions for delimiting words.
+
+
+(De)Hydration
+=============
 
 The authentication steps are the same when using `Query`, a class
 which wraps calls to Twitter's REST API. 
