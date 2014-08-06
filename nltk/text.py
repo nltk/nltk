@@ -16,7 +16,7 @@ distributional similarity.
 from __future__ import print_function, division, unicode_literals
 
 from math import log
-from collections import defaultdict
+from collections import defaultdict, Counter
 from functools import reduce
 from itertools import islice
 import re
@@ -327,7 +327,7 @@ class Text(object):
         :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
-            print("Building index...")
+            #print("Building index...")
             self._concordance_index = ConcordanceIndex(self.tokens,
                                                        key=lambda s:s.lower())
 
@@ -347,7 +347,7 @@ class Text(object):
             self._num = num
             self._window_size = window_size
 
-            print("Building collocations list")
+            #print("Building collocations list")
             from nltk.corpus import stopwords
             ignored_words = stopwords.words('english')
             finder = BigramCollocationFinder.from_words(self.tokens, window_size)
@@ -386,7 +386,7 @@ class Text(object):
         :seealso: ContextIndex.similar_words()
         """
         if '_word_context_index' not in self.__dict__:
-            print('Building word-context index...')
+            #print('Building word-context index...')
             self._word_context_index = ContextIndex(self.tokens,
                                                     filter=lambda x:x.isalpha(),
                                                     key=lambda s:s.lower())
@@ -397,9 +397,9 @@ class Text(object):
         wci = self._word_context_index._word_to_contexts
         if word in wci.conditions():
             contexts = set(wci[word])
-            fd = FreqDist(w for w in wci.conditions() for c in wci[w]
+            fd = Counter(w for w in wci.conditions() for c in wci[w]
                           if c in contexts and not w == word)
-            words = islice(fd.keys(), num)
+            words = [w for w, _ in fd.most_common(num)]
             print(tokenwrap(words))
         else:
             print("No matches")
@@ -417,7 +417,7 @@ class Text(object):
         :seealso: ContextIndex.common_contexts()
         """
         if '_word_context_index' not in self.__dict__:
-            print('Building word-context index...')
+            #print('Building word-context index...')
             self._word_context_index = ContextIndex(self.tokens,
                                                     key=lambda s:s.lower())
 
@@ -426,7 +426,7 @@ class Text(object):
             if not fd:
                 print("No common contexts were found")
             else:
-                ranked_contexts = islice(fd.keys(), num)
+                ranked_contexts = [w for w, _ in fd.most_common(num)]
                 print(tokenwrap(w1+"_"+w2 for w1,w2 in ranked_contexts))
 
         except ValueError as e:
@@ -456,7 +456,7 @@ class Text(object):
         :seealso: nltk.prob.FreqDist
         """
         if "_vocab" not in self.__dict__:
-            print("Building vocabulary index...")
+            #print("Building vocabulary index...")
             self._vocab = FreqDist(self)
         return self._vocab
 
