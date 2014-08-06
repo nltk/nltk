@@ -14,12 +14,11 @@ import json
 
 from nltk import compat
 #import nltk.data
-from nltk.tokenize import *
+from nltk.tokenize import TweetTokenizer
 
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat
 from nltk.corpus.reader.api import CorpusReader
 
-from nltk.tokenize.twitter import TweetTokenizer
 
 class TwitterCorpusReader(CorpusReader):
     """
