@@ -70,6 +70,7 @@ from nltk.tokenize.punkt    import PunktSentenceTokenizer, PunktWordTokenizer
 from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
 from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.texttiling import TextTilingTokenizer
+from nltk.tokenize.twitter import TweetTokenizer
 
 # Standard sentence tokenizer.
 def sent_tokenize(text):
