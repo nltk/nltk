@@ -260,14 +260,16 @@ We can of course also save this list to a file.
 
 In order carry out hydration, we need to call the Twitter REST API,
 which we can do using the NLTK client `Query`. The authentication steps for this are the
-same as we saw above for the streaming API.
+same as we saw above for the streaming API. In order to write the
+result of hydrating Tweets from the list of Tweet IDs, we need to
+invoke ``json.dumps()``, which serialises the Tweets into JSON strings.
 
 >>> from nltk.misc.twitterclient import Query
->>> import json
->>> FULL = os.path.join(os.environ['TWITTERHOME'], 'rehydrated.json')
 >>> oauth = authenticate()
 >>> client = Query(**oauth)
 >>> tweets = client.hydrate(IDFILE)
+>>> FULL = os.path.join(os.environ['TWITTERHOME'], 'rehydrated.json')
+>>> import json
 >>> with open(FULL, 'w') as f:
 ...     for data in tweets:
 ...         json_data = json.dumps(data)
