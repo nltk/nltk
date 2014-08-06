@@ -5,39 +5,9 @@
  Processing Twitter
 ====================
 
+Introduction
+============
 
-Twitter Corpora
-===============
-
-Although there is widespread interest in processing and analysing
-Twitter data, restrictions imposed by Twitter make it awkward to use
-standard NLP approaches for storing and distributing reusable tweet
-corpora. More specifically, according to Twitter's `Terms of Service <https://dev.twitter.com/terms/api-terms>`_:
-
-	 If you provide downloadable datasets of Twitter Content or an
-	 API that returns Twitter Content, you may only return IDs
-	 (including Tweet IDs and user IDs).
-
-This is motivated, at least in part, by the need to honour
-the right of users to delete their tweets; deletion would not be truly
-possible if the tweets in question survived in corpora redistributed
-by third parties.
-
-Consequently, it is not possible for NLTK to include a corpus of
-Tweets within its collection of downloadable resources. However, we
-can adopt the standard
-workaround [McReadie21012]_ of distributing a corpus of Tweet IDs, and leave
-it to individuals to retrive the full Tweets corresponding to those
-IDs. Although this is a workable alternative, it should be be borne in
-mind that there are two potential problems:
-
-* The reconstructed corpus is not guaranteed, or even likely, to be
-  identical to the original Tweet corpus, due to Tweets having been deleted
-  in the intervening time.
-
-* If the corpus is large, then Twitter's rate limiting policy might
-  make the process of reconstructing the corpus excessively
-  time-consuming. 
 
 Twitter provides two APIs, namely the REST API
 and the Streaming API. If we are primarily interested in collecting
@@ -108,11 +78,10 @@ received (e.g., ``limit=10``). The following example illustrates
 taking the API keys from a file, and passing them to the streaming
 client class `Streamer` together with an instance of `TweetViewer`.
 
->>> from nltk.misc.twitterclient import authenticate, Streamer,
-    TweetHandler, TweetWriter
+>>> from nltk.misc.twitterclient import authenticate, Streamer, TweetViewer, TweetWriter
 >>> import os
->>> os.environ[TWITTERHOME]
-/Users/ewan/twitter
+>>> os.environ['TWITTERHOME']
+'/Users/ewan/twitter'
 >>> oauth = authenticate('credentials.txt')
 >>> handler = TweetViewer(limit=10)
 >>> client = Streamer(handler, **oauth)
@@ -221,11 +190,87 @@ whitespace, it fails to deal with writing systems such as Japanese
 that use different conventions for delimiting words.
 
 
-(De)Hydration
-=============
+Twitter Corpora
+===============
 
-The authentication steps are the same when using `Query`, a class
-which wraps calls to Twitter's REST API. 
+Although there is widespread interest in processing and analysing
+Twitter data, restrictions imposed by Twitter make it awkward to use
+standard NLP approaches for storing and distributing reusable tweet
+corpora. More specifically, according to Twitter's `Terms of Service <https://dev.twitter.com/terms/api-terms>`_:
+
+	 If you provide downloadable datasets of Twitter Content or an
+	 API that returns Twitter Content, you may only return IDs
+	 (including Tweet IDs and user IDs).
+
+This is motivated, at least in part, by the need to honour
+the right of users to delete their tweets; deletion would not be truly
+possible if the tweets in question survived in corpora redistributed
+by third parties.
+
+Consequently, it is not possible for NLTK to include a corpus of
+Tweets within its collection of downloadable resources. However, we
+can adopt the standard
+workaround [McReadie21012]_ of distributing a corpus of Tweet IDs, and leave
+it to individuals to retrive the full Tweets corresponding to those
+IDs. Although this is a workable alternative, it should be be borne in
+mind that there are two potential problems:
+
+* The reconstructed corpus is not guaranteed, or even likely, to be
+  identical to the original Tweet corpus, due to Tweets having been deleted
+  in the intervening time.
+
+* If the corpus is large, then Twitter's rate-limiting policy might
+  make the process of reconstructing the corpus excessively
+  time-consuming. 
+
+The `Twitter API
+<https://dev.twitter.com/docs/api/1.1/get/statuses/lookup>`_ refers to
+the process of "returning fully-hydrated tweet objects" from a list of
+Tweet IDs, so we've named the process of converting full Tweets into
+IDs as *dehydration*. The function ``dehydrate()`` returns an iterator
+over such IDs.
+
+>>> from nltk.misc.twitterclient import dehydrate
+>>> TWEETS = os.path.join(os.environ['TWITTERHOME'], 'tweets.20140801-150110.json')
+>>> for id_str in list(dehydrate(TWEETS))[:10]:
+...     print(id_str)
+    495207619507019776
+    495207619519582209
+    495207619523805184
+    495207619527966720
+    495207619498618881
+    495207619494424576
+    495207619523788800
+    495207619506601984
+    495207619527995392
+    495207619502833664
+
+We can of course also save this list to a file.
+
+>>> IDFILE = os.path.join(os.environ['TWITTERHOME'], 'tweet_ids2.txt')
+>>> with open(IDFILE, 'w') as f:
+...     for id_str in dehydrate(TWEETS):
+...         print(id_str, file=f)
+
+
+In order carry out hydration, we need to call the Twitter REST API,
+which we can do using the NLTK client `Query`. The authentication steps for this are the
+same as we saw above for the streaming API.
+
+>>> from nltk.misc.twitterclient import Query
+>>> import json
+>>> FULL = os.path.join(os.environ['TWITTERHOME'], 'rehydrated.json')
+>>> oauth = authenticate()
+>>> client = Query(**oauth)
+>>> tweets = client.hydrate(IDFILE)
+>>> with open(FULL, 'w') as f:
+...     for data in tweets:
+...         json_data = json.dumps(data)
+...         print(json_data, file=f)
+
+
+References
+==========
 
 .. [McReadie21012] Richard
    McCreadie, Ian Soboroff, Jimmy Lin, Craig Macdonald, Iadh Ounis and
