@@ -252,7 +252,7 @@ over such IDs.
 
 We can of course also save this list to a file.
 
->>> IDFILE = os.path.join(os.environ['TWITTERHOME'], 'tweet_ids2.txt')
+>>> IDFILE = os.path.join(os.environ['TWITTERHOME'], 'tweet_ids.txt')
 >>> with open(IDFILE, 'w') as f:
 ...     for id_str in dehydrate(TWEETS):
 ...         print(id_str, file=f)
@@ -271,7 +271,7 @@ same as we saw above for the streaming API.
 >>> with open(FULL, 'w') as f:
 ...     for data in tweets:
 ...         json_data = json.dumps(data)
-...         print(json_data, file=f)
+...         f.write(json_data + "\n")
 
 
 References
