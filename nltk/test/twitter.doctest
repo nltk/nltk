@@ -14,7 +14,7 @@ and the Streaming API. If we are primarily interested in collecting
 Tweets for analysis (rather, say, than publishing Tweets), then the
 two approaches both have limitations. The REST API allows us to search
 past Tweets, but only in a severely limited manner
-[***Amplify***]. The Streaming API will allow us to collect an
+[***Amplify***]. The streaming API will allow us to collect an
 unlimited volume of Tweets, but with two caveats: 
 
 * We can only collect Tweets as they are published, not search
@@ -23,15 +23,15 @@ unlimited volume of Tweets, but with two caveats:
 * we can only access at most 1% of the public Twitter stream (unless
   we somehow have priviliged access to the Twitter 'firehose').
 
-One option of the Streaming API is to take a 1% sample of the public
+One option of the streaming API is to take a 1% sample of the public
 stream (using the API endpoint ``statuses.sample()``). Little
 information is available however about what the sampling methods is,
 or how representative it is; see [Morstatter2013]_ for a discussion
 of these issues.
 
 
-The Twitter Client
-==================
+The NLTK Twitter Client
+=======================
 
 NLTK supports access to Twitter via the module
 `nltk.misc.twitterclient`. This is in turn depends on a third party
@@ -72,8 +72,13 @@ they can be passed to the terminal for casual inspection or stored in
 one or more files. (In principle, they could also be stored in a
 database, though this has not been implemented yet.) The methods for
 dealing with Tweets are provided by extensions of the `TweetHandler`
-class, such as `TweetViewer`: this displays the Tweets on the
-terminal. Initialisation can also set a limit to the number of Tweets
+class, such as `TweetViewer`: this displays the text of Tweets on the
+terminal. (While it would be possible of course to display the whole
+Tweet object, this contains more information than one typically needs
+for most purposes; see the `Twitter documentation on Tweets
+<https://dev.twitter.com/docs/platform-objects/tweets>`_ for an
+exhaustive description.)
+Initialisation can also set a limit to the number of Tweets
 received (e.g., ``limit=10``). The following example illustrates
 taking the API keys from a file, and passing them to the streaming
 client class `Streamer` together with an instance of `TweetViewer`.
