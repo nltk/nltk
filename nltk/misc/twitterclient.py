@@ -329,7 +329,7 @@ def corpusreader_demo():
 
 
 
-DEMOS = [3]
+DEMOS = [4]
 
 if __name__ == "__main__":
     #import doctest
