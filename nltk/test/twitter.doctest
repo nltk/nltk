@@ -40,7 +40,10 @@ Python Twitter client, namely `Twython
 of Python packages for calling the Twitter API, Twython has
 appropriate functionality, is actively maintained, has Python 3
 support, and has `good documentation
-<https://twython.readthedocs.org>`_.
+<https://twython.readthedocs.org>`_. Twitter exposes its API by means
+of a number of **endpoints**. A full endpoint might be a URL such as
+``https://stream.twitter.com/1.1/statuses/filter.json?delimited=length&track=twitterapi``;
+however, we can abbreviate this as 'statuses/filter'.
 
 In order to gain access to the Twitter API, it is necessary to first
 register your application with
@@ -101,6 +104,52 @@ I wish I can Vote TT _ TT #인피니트
 RT @Engabdallahelha: انا قليل الكلام... وده بيخلي الناس تخاف مني
 Hi @JaiBrooks1 !🐷How are you sunshine?☀Pls, follow @rockingchadwick !😄She loves you so much!😍😘♥(DON'T IGNORE THAT TWEET) 😡😡x32
 RT @ka3am_al3ayel: @Bander65861835 http://t.co/qP9vuhIac5
+
+The `'statuses/filter' endpoint
+<https://dev.twitter.com/docs/api/1/post/statuses/filter>`_ allows us
+to filter the stream to track keywords, user IDs and location. The
+following example illustrates the use of keywords:
+
+>>> keywords = "Pistorius, #OscarTrial, gerrie nel"
+>>> client.statuses.filter(track=keywords)   # doctest: +SKIP
+RT @DonadieuP: Roux à son tour critique les témoins de l'accusation et notamment les policiers dont les témoignages ont parfois été douteux…
+RT @OscarTrial199: #oscartrial Nel: defence would say 90% of the messages were 'boo boo Baba xxx kiss kiss'...that's true, but it's the 10%…
+Creo que soy la única persona en el mundo que siente pecaíto por Oscar #Pistorius
+RT @DonadieuP: Roux :" l'accusation a également laissé de côté des témoins-clés" comme H.Botha le policier qui avait détruit la scène de cr…
+RT @barrybateman: #OscarTrial Nel: his intention when he fired those shots was to kill a human being. BB
+Pistorius looking like he's starring in the hottest political thriller in the box-office http://t.co/pY2sYJuG1I
+Prosecutor Calls Pistorius 'Deceitful Witness' http://t.co/62MQ13qvoV #Case #CourtJudge #Murder #Shot
+Both lawyers in the #OscarTrial are brilliant. ..These closing arguments have got me confused.
+#urgent Afrique du Sud : le parquet requiert une condamnation pour meurtre contre Oscar Pistorius http://t.co/tTx2Lr2Rmx"
+"@RFI: #urgent Afrique du Sud : le parquet requiert une condamnation pour meurtre contre Oscar Pistorius http://t.co/tTx2Lr2Rmx"
+
+In order to filter the stream for users, we employ the ``follow``
+parameter key, followed by one or more user IDs. Somewhat confusingly,
+these are not the same as the 'screen names' that appear on
+Tweets. For example, the user ID corresponding to ``@BBCNews`` is
+612473. There are various websites that will map screen names into
+user IDs, but we can do this ourselves with a few lines of code using
+the Twitter REST API, via NLTK's ``twitter.Query`` class.
+
+>>> from nltk.misc.twitterclient import Query
+>>> def get_userid(screen_name):
+...    oauth = authenticate()
+...    client = Query(**oauth)
+...    info = client.show_user(screen_name=screen_name)
+...    return info['id_str']
+>>> get_userid('BBCNews')
+'612473'
+
+RT @ReutersUS: Virginia ex-governor's corruption trial resumes after revelations about wife http://t.co/vEyShBCpIg
+RT @ReutersUS: Americans worry that illegal migrants threaten their way of life and the economy, poll shots: http://t.co/43DY6Gcjg6 http://…
+@BBCNews how awesome !
+RT @BBCNewsUS: Alliance Boots says it expects there to be no UK job losses after US firm Walgreens takes over http://t.co/bxIDdQMT34
+RT @bbc5live: "I was in the ambulance with my epileptic son, checking my phone for bets": ex-gambling addict @JustynLarcombe admits http://…
+RT @BBCNews: Running track on 23rd floor? Firms' futuristic office plans http://t.co/AvvglAmPuP &amp; http://t.co/CLTFAlPTTl
+RT @BBCWalesNews: ► 'Fantastic' http://t.co/YABbt70PFb
+New Doctor Who Peter Capaldi on his experience filming latest series in Cardiff http…
+RT @bbc5live: "I was in the ambulance with my epileptic son, checking my phone for bets": ex-gambling addict @JustynLarcombe admits http://…
+@ReutersUS Ask a native American Indian about illegal immigration. We are ALL immigrants !
 
 By setting a different handler, namely `TweetWriter`, we can get
 Tweets written to files of a given length, again using the ``limit``
