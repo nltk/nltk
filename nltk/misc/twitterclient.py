@@ -284,11 +284,26 @@ TWEETS = os.path.join(TWITTERHOME, 'tweets.20140801-150110.json')
 IDS = os.path.join(TWITTERHOME, 'tweet_ids.txt')
 REHYDE = os.path.join(TWITTERHOME, 'rehydrated.json')
 
-def streamtoscreen_demo(limit=20):
+def sampletoscreen_demo(limit=20):
     oauth = authenticate()
     handler = TweetViewer(limit=limit)
     client = Streamer(handler, **oauth)
     client.statuses.sample()
+
+def tracktoscreen0_demo(limit=10):
+    oauth = authenticate()
+    handler = TweetViewer(limit=limit)
+    client = Streamer(handler, **oauth)
+    keywords = "Pistorius, #OscarTrial, gerrie nel"
+    client.statuses.filter(track=keywords)
+
+def tracktoscreen1_demo(limit=100):
+    oauth = authenticate()
+    handler = TweetViewer(limit=limit)
+    client = Streamer(handler, **oauth)
+    keywords = "Pistorius, #OscarTrial, gerrie nel"
+    client.statuses.filter(follow='612473,788524,15108530')
+    #client.statuses.filter(follow='759251,612473,788524,15108530')
 
 def streamtofile_demo(limit=20):
     oauth = authenticate()
@@ -312,6 +327,12 @@ def hydrate_demo(infile, outfile):
             json_data = json.dumps(data)
             f.write(json_data + "\n")
 
+def get_userid(screen_name):
+    oauth = authenticate()
+    client = Query(**oauth)
+    info = client.show_user(screen_name=screen_name)
+    return info['id_str']
+
 
 def corpusreader_demo():
     from nltk.corpus import TwitterCorpusReader
@@ -329,14 +350,14 @@ def corpusreader_demo():
 
 
 
-DEMOS = [4]
+DEMOS = [0]
 
 if __name__ == "__main__":
     #import doctest
     #doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
     if 0 in DEMOS:
-        streamtoscreen_demo()
+        tracktoscreen1_demo()
     if 1 in DEMOS:
         streamtofile_demo()
     if 2 in DEMOS:
@@ -345,6 +366,8 @@ if __name__ == "__main__":
         hydrate_demo(IDS, REHYDE)
     if 4 in DEMOS:
         corpusreader_demo()
+
+ #   print(get_userid('reutersus')) # 759251
 
 
 
