@@ -8,48 +8,55 @@
 Introduction
 ============
 
+There is widespread interest in processing and analysing Twitter data,
+not least by means of NLP, and although there are a variety of client
+libraries for accessing the Twitter APIs, it can be time-consuming to
+bring together the various modules for processing the data that they
+allow you to access. The NLTK Twitter package is intended to make it
+easier for you to get to the interesting part of analysing Tweets.
 
-Twitter provides two APIs, namely the REST API
-and the Streaming API. If we are primarily interested in collecting
-Tweets for analysis (rather, say, than publishing Tweets), then the
+
+Twitter provides two main APIs, namely the REST API
+and the streaming API. If we are primarily interested in collecting
+Tweets for analysis (rather than, say, publishing our own Tweets), then the
 two approaches both have limitations. The REST API allows us to search
-past Tweets, but only in a severely limited manner
-[***Amplify***]. The streaming API will allow us to collect an
+past Tweets, but only within the strict bounds allowed by `Twitter's rate-limit policy
+<https://dev.twitter.com/docs/rate-limiting/1.1>`_.\ [#]_ 
+The streaming API will allow us to collect an
 unlimited volume of Tweets, but with two caveats: 
 
 * We can only collect Tweets as they are published, not search
   retrospectively; and
 
 * we can only access at most 1% of the public Twitter stream (unless
-  we somehow have priviliged access to the Twitter 'firehose').
+  we somehow have obtained a higher level of access, which is hard to come by).
 
-One option of the streaming API is to take a 1% sample of the public
-stream (using the API endpoint ``statuses.sample()``). Little
-information is available however about what the sampling methods is,
-or how representative it is; see [Morstatter2013]_ for a discussion
-of these issues.
+
+
+.. [#] At the time of writing, the REST API limits searches to 180 queries per 15 minute window.
 
 
 The NLTK Twitter Client
 =======================
 
 NLTK supports access to Twitter via the module
-`nltk.misc.twitterclient`. This is in turn depends on a third party
+`nltk.twitter.twitterclient`. This is in turn depends on a third party
 Python Twitter client, namely `Twython
 <https://pypi.python.org/pypi/twython>`_. Although there are a number
 of Python packages for calling the Twitter API, Twython has
 appropriate functionality, is actively maintained, has Python 3
 support, and has `good documentation
-<https://twython.readthedocs.org>`_. Twitter exposes its API by means
-of a number of **endpoints**. A full endpoint might be a URL such as
+<https://twython.readthedocs.org>`_. 
+
+Twython provides a Pythonic way of accessing the **endpoints** that
+Twitter uses to expose its API. A full endpoint might be a URL such as
 ``https://stream.twitter.com/1.1/statuses/filter.json?delimited=length&track=twitterapi``;
-however, we can abbreviate this as 'statuses/filter'.
+however, we standardly abbreviate endpoints like this as 'statuses/filter'.
 
 In order to gain access to the Twitter API, it is necessary to first
-register your application with
-`<https://dev.twitter.com/apps>`_. There are two main options. OAuth 1
-is for user authenticated API calls, and allows sending status
-updates, etc, whereas OAuth 2 is for application authenticated calls,
+`register your application with Twitter <https://dev.twitter.com/apps>`_. There are two main options. OAuth 1
+is for user-authenticated API calls, and allows sending status
+updates, direct messages, etc, whereas OAuth 2 is for application-authenticated calls,
 where read-only access is sufficient. Although OAuth 2 sounds more
 appropriate for the kind of tasks envisaged within NLTK, it turns out
 that access to Twitter's streaming API requires OAuth 1, so the
@@ -64,16 +71,16 @@ which you should store in a text file with the following structure::
   Access token=YOUR ACCESS TOKEN
   Access token secret=YOUR ACCESS TOKEN SECRET
 
-By default, this data will looked for in a file `credentials.txt`
+By default, ``twitterclient`` will search for this data in a file `credentials.txt`
 located in the directory specified by the environment variable
-TWITTERHOME. However, both of these choices can be overridden, namely
+TWITTER. However, both of these choices can be overridden, namely
 by setting the parameters to `authenticate()`, which is introduced
 below.
 
 When Tweets are received, via either the streaming or the REST API,
-they can be passed to the terminal for casual inspection or stored in
+they can be passed to the terminal for casual inspection and debugging, or stored in
 one or more files. (In principle, they could also be stored in a
-database, though this has not been implemented yet.) The methods for
+database, though support for this has not been implemented yet.) The methods for
 dealing with Tweets are provided by extensions of the `TweetHandler`
 class, such as `TweetViewer`: this displays the text of Tweets on the
 terminal. (While it would be possible of course to display the whole
@@ -82,18 +89,22 @@ for most purposes; see the `Twitter documentation on Tweets
 <https://dev.twitter.com/docs/platform-objects/tweets>`_ for an
 exhaustive description.)
 Initialisation can also set a limit to the number of Tweets
-received (e.g., ``limit=10``). The following example illustrates
-taking the API keys from a file, and passing them to the streaming
-client class `Streamer` together with an instance of `TweetViewer`.
+received (e.g., by ``limit=10``). The following example illustrates
+loading the API keys from a file, and passing them to the streaming
+client class `Streamer` which is initialised with an instance of `TweetViewer`.
 
->>> from nltk.misc.twitterclient import authenticate, Streamer, TweetViewer, TweetWriter
+>>> from nltk.twitter.twitterclient import authenticate, Streamer, TweetViewer, TweetWriter
 >>> import os
->>> os.environ['TWITTERHOME']
+>>> os.environ['TWITTER']
 '/Users/ewan/twitter'
 >>> oauth = authenticate('credentials.txt')
 >>> handler = TweetViewer(limit=10)
 >>> client = Streamer(handler, **oauth)
->>> client.statuses.sample()  # doctest: +SKIP
+
+One option offered by the streaming API is to take a 1% sample of the public
+stream; we can send a request to the API endpoint ``statuses.sample()`` by delegating to Twython's ``statuses.sample()`` method:
+
+>>> client.statuses.sample()
 Be alright #MTVHottest Justin Bieber
 RT @PriceRunner: RT to show your support for the Brits at the #CommonwealthGames @weRengland @TeamWales @Team_Scotland @Glasgow2014
 iki yüzlü dostlar :)
@@ -105,9 +116,14 @@ RT @Engabdallahelha: انا قليل الكلام... وده بيخلي النا�
 Hi @JaiBrooks1 !🐷How are you sunshine?☀Pls, follow @rockingchadwick !😄She loves you so much!😍😘♥(DON'T IGNORE THAT TWEET) 😡😡x32
 RT @ka3am_al3ayel: @Bander65861835 http://t.co/qP9vuhIac5
 
+Although this approach seems on the face of it to give an interesting
+view on the Twitterverse, little information is available about the
+sampling method Twitter uses, or how representative it is; see
+[Morstatter2013]_ for a discussion of these issues.
+
 The `'statuses/filter' endpoint
 <https://dev.twitter.com/docs/api/1/post/statuses/filter>`_ allows us
-to filter the stream to track keywords, user IDs and location. The
+to filter the stream to track keywords, user IDs and locations. The
 following example illustrates the use of keywords:
 
 >>> keywords = "Pistorius, #OscarTrial, gerrie nel"
@@ -125,13 +141,13 @@ Both lawyers in the #OscarTrial are brilliant. ..These closing arguments have go
 
 In order to filter the stream for users, we employ the ``follow``
 parameter key, followed by one or more user IDs. Somewhat confusingly,
-these are not the same as the 'screen names' that appear on
+user IDs are *not* the same as the 'screen names' that appear on
 Tweets. For example, the user ID corresponding to ``@BBCNews`` is
 612473. There are various websites that will map screen names into
 user IDs, but we can do this ourselves with a few lines of code using
-the Twitter REST API, via NLTK's ``twitter.Query`` class.
+the Twitter REST API, via NLTK's ``twitterclient.Query`` class.
 
->>> from nltk.misc.twitterclient import Query
+>>> from nltk.twitter.twitterclient import Query
 >>> def get_userid(screen_name):
 ...    oauth = authenticate()
 ...    client = Query(**oauth)
@@ -140,21 +156,26 @@ the Twitter REST API, via NLTK's ``twitter.Query`` class.
 >>> get_userid('BBCNews')
 '612473'
 
-RT @ReutersUS: Virginia ex-governor's corruption trial resumes after revelations about wife http://t.co/vEyShBCpIg
+Using this technique to obtain user IDs for ``@BBCNews``,
+``@GuardianNews`` and ``@ReutersUS`` we can monitor Tweets that are
+from, or mention, these users:
+
+>>> client.statuses.filter(follow='612473,788524,15108530')
+RT @BBCScotlandNews: Much excitement in US town of Boring as it celebrates pairing with Perthshire village of Dull http://t.co/zVh6Lfx24i h…
+RT @BBCNews: "Left out in the cold to die"? High altitude suffering for Pakistan's little-known K2 mountain pioneer http://t.co/7UB3UNqkvB
+RT @BBCNews: Infested luggage &amp; Holy Grail relics: Test your knowledge in this week's @BBCNewsMagazine quiz http://t.co/badiwdRNxu http://t…
 RT @ReutersUS: Americans worry that illegal migrants threaten their way of life and the economy, poll shots: http://t.co/43DY6Gcjg6 http://…
 @BBCNews how awesome !
+RT @guardiannews: UK trade deficit widens as exports fall again http://t.co/mTnkeFT9eq
 RT @BBCNewsUS: Alliance Boots says it expects there to be no UK job losses after US firm Walgreens takes over http://t.co/bxIDdQMT34
-RT @bbc5live: "I was in the ambulance with my epileptic son, checking my phone for bets": ex-gambling addict @JustynLarcombe admits http://…
 RT @BBCNews: Running track on 23rd floor? Firms' futuristic office plans http://t.co/AvvglAmPuP &amp; http://t.co/CLTFAlPTTl
 RT @BBCWalesNews: ► 'Fantastic' http://t.co/YABbt70PFb
-New Doctor Who Peter Capaldi on his experience filming latest series in Cardiff http…
-RT @bbc5live: "I was in the ambulance with my epileptic son, checking my phone for bets": ex-gambling addict @JustynLarcombe admits http://…
 @ReutersUS Ask a native American Indian about illegal immigration. We are ALL immigrants !
 
-By setting a different handler, namely `TweetWriter`, we can get
+By calling a different handler, namely `TweetWriter`, we can get
 Tweets written to files of a given length, again using the ``limit``
 parameter. By default, the files will be written to the subdirectory
-specified by TWITTERHOME, but again this can be overriden. If the
+specified by TWITTER, but again this can be overriden. If the
 parameter ``repeat`` is set to ``False`` (default), Tweets will stop
 being collected once the limit is reached. Otherwise, `TweetWriter`
 will continue creating new files of the specified limit until the
@@ -187,9 +208,9 @@ file(s). We assume that each JSON string is on a line of its own in
 the file. 
 
 >>> from nltk.corpus import TwitterCorpusReader
->>> root = os.environ['TWITTERHOME']
+>>> root = os.environ['TWITTER']
 >>> reader = TwitterCorpusReader(root, '.*\.json')
->>> for t in reader.jsonlist[:15]:  # doctest: +SKIP
+>>> for t in reader.jsonlist[:15]:
 ...   print(t)
 {'place': None, 'entities': {'symbols': [], 'hashtags': [],
 'user_mentions': [], 'urls': [{'expanded_url':
@@ -247,9 +268,8 @@ that use different conventions for delimiting words.
 Twitter Corpora
 ===============
 
-Although there is widespread interest in processing and analysing
-Twitter data, restrictions imposed by Twitter make it awkward to use
-standard NLP approaches for storing and distributing reusable tweet
+Restrictions imposed by Twitter make it awkward to use
+standard approaches for storing and distributing Tweet
 corpora. More specifically, according to Twitter's `Terms of Service <https://dev.twitter.com/terms/api-terms>`_:
 
 	 If you provide downloadable datasets of Twitter Content or an
@@ -259,13 +279,11 @@ corpora. More specifically, according to Twitter's `Terms of Service <https://de
 This is motivated, at least in part, by the need to honour
 the right of users to delete their tweets; deletion would not be truly
 possible if the tweets in question survived in corpora redistributed
-by third parties.
-
-Consequently, it is not possible for NLTK to include a corpus of
+by third parties. Consequently, it is not possible for NLTK to include a corpus of
 Tweets within its collection of downloadable resources. However, we
-can adopt the standard
-workaround [McReadie21012]_ of distributing a corpus of Tweet IDs, and leave
-it to individuals to retrive the full Tweets corresponding to those
+can adopt the method suggested by Twitter above
+of distributing a corpus of Tweet IDs, and leave
+it to individuals to retrieve the full Tweets corresponding to those
 IDs. Although this is a workable alternative, it should be be borne in
 mind that there are two potential problems:
 
@@ -277,6 +295,8 @@ mind that there are two potential problems:
   make the process of reconstructing the corpus excessively
   time-consuming. 
 
+See [McReadie21012]_ for more discussion of these issues.
+
 The `Twitter API
 <https://dev.twitter.com/docs/api/1.1/get/statuses/lookup>`_ refers to
 the process of "returning fully-hydrated tweet objects" from a list of
@@ -284,8 +304,8 @@ Tweet IDs, so we've named the process of converting full Tweets into
 IDs as *dehydration*. The function ``dehydrate()`` returns an iterator
 over such IDs.
 
->>> from nltk.misc.twitterclient import dehydrate
->>> TWEETS = os.path.join(os.environ['TWITTERHOME'], 'tweets.20140801-150110.json')
+>>> from nltk.twitter.twitterclient import dehydrate
+>>> TWEETS = os.path.join(os.environ['TWITTER'], 'tweets.20140801-150110.json')
 >>> for id_str in list(dehydrate(TWEETS))[:10]:
 ...     print(id_str)
     495207619507019776
@@ -301,23 +321,25 @@ over such IDs.
 
 We can of course also save this list to a file.
 
->>> IDFILE = os.path.join(os.environ['TWITTERHOME'], 'tweet_ids.txt')
+>>> IDFILE = os.path.join(os.environ['TWITTER'], 'tweet_ids.txt')
 >>> with open(IDFILE, 'w') as f:
 ...     for id_str in dehydrate(TWEETS):
 ...         print(id_str, file=f)
 
 
-In order carry out hydration, we need to call the Twitter REST API,
-which we can do using the NLTK client `Query`. The authentication steps for this are the
-same as we saw above for the streaming API. In order to write the
+In order carry out hydration, i.e., converting Tweet IDs into full
+Tweet objects, we need to call the Twitter REST API, which we can do
+using the NLTK client `Query`. The authentication steps for this are
+the same as we saw above for the streaming API. In order to write the
 result of hydrating Tweets from the list of Tweet IDs, we need to
-invoke ``json.dumps()``, which serialises the Tweets into JSON strings.
+invoke ``json.dumps()``, which serialises the Tweets into JSON
+strings.
 
->>> from nltk.misc.twitterclient import Query
+>>> from nltk.twitter.twitterclient import Query
 >>> oauth = authenticate()
 >>> client = Query(**oauth)
 >>> tweets = client.hydrate(IDFILE)
->>> FULL = os.path.join(os.environ['TWITTERHOME'], 'rehydrated.json')
+>>> FULL = os.path.join(os.environ['TWITTER'], 'rehydrated.json')
 >>> import json
 >>> with open(FULL, 'w') as f:
 ...     for data in tweets:
