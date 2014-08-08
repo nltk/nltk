@@ -1,6 +1,10 @@
 .. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
+.. NB Doctests that depend on the Twitter streaming API are expected
+.. to fail. To adapt Heraclitus: No Twitter client steps into the same
+.. stream twice.
+
 ====================
  Processing Twitter
 ====================
@@ -78,20 +82,23 @@ by setting the parameters to `authenticate()`, which is introduced
 below.
 
 When Tweets are received, via either the streaming or the REST API,
-they can be passed to the terminal for casual inspection and debugging, or stored in
-one or more files. (In principle, they could also be stored in a
-database, though support for this has not been implemented yet.) The methods for
-dealing with Tweets are provided by extensions of the `TweetHandler`
-class, such as `TweetViewer`: this displays the text of Tweets on the
-terminal. (While it would be possible of course to display the whole
-Tweet object, this contains more information than one typically needs
-for most purposes; see the `Twitter documentation on Tweets
+they can be passed to the terminal for casual inspection and
+debugging, or stored in one or more files. (In principle, they could
+also be stored in a database, though support for this has not been
+implemented yet.) The methods for dealing with Tweets are provided by
+extensions of the `TweetHandler` class, such as `TweetViewer`: this
+displays the text of Tweets on the terminal. (While it would be
+possible of course to display the whole Tweet object, this contains
+more information than one typically needs for most purposes; see the
+`Twitter documentation on Tweets
 <https://dev.twitter.com/docs/platform-objects/tweets>`_ for an
-exhaustive description.)
-Initialisation can also set a limit to the number of Tweets
-received (e.g., by ``limit=10``). The following example illustrates
-loading the API keys from a file, and passing them to the streaming
-client class `Streamer` which is initialised with an instance of `TweetViewer`.
+exhaustive description.)  Initialisation can also set a limit to the
+number of Tweets received (e.g., by ``limit=10``). The following
+example illustrates loading the API keys from a file, and passing them
+to the streaming client class `Streamer` which is initialised with an
+instance of `TweetViewer`. The latter only shows the ``text`` field of
+Tweets, since that is usually the main focus of interest when we are
+doing a visual inspection of the Twitter stream.
 
 >>> from nltk.twitter.twitterclient import authenticate, Streamer, TweetViewer, TweetWriter
 >>> import os
@@ -173,7 +180,7 @@ RT @BBCWalesNews: ► 'Fantastic' http://t.co/YABbt70PFb
 @ReutersUS Ask a native American Indian about illegal immigration. We are ALL immigrants !
 
 By calling a different handler, namely `TweetWriter`, we can get
-Tweets written to files of a given length, again using the ``limit``
+full Tweets written to files of a given length, again using the ``limit``
 parameter. By default, the files will be written to the subdirectory
 specified by TWITTER, but again this can be overriden. If the
 parameter ``repeat`` is set to ``False`` (default), Tweets will stop
@@ -202,7 +209,7 @@ Corpus Reader
 
 Given a collection of Tweets in one or more files,
 `TwitterCorpusReader` offers some standard methods for reading
-them. The method ``jsonlist()`` returns a list of the full Tweets as
+them. The method ``full_tweets()`` returns a list of the full Tweets as
 dictionaries derived by deserialising the JSON strings in the corpus
 file(s). We assume that each JSON string is on a line of its own in
 the file. 
@@ -210,7 +217,7 @@ the file.
 >>> from nltk.corpus import TwitterCorpusReader
 >>> root = os.environ['TWITTER']
 >>> reader = TwitterCorpusReader(root, '.*\.json')
->>> for t in reader.jsonlist[:15]:
+>>> for t in reader.full_tweets()[:1]:
 ...   print(t)
 {'place': None, 'entities': {'symbols': [], 'hashtags': [],
 'user_mentions': [], 'urls': [{'expanded_url':
@@ -221,7 +228,7 @@ the file.
 More immediately useful is the ``tweets()`` method, which just returns
 the text of each Tweet:
 
->>> for t in reader.tweets[:15]:  # doctest: +SKIP
+>>> for t in reader.tweets()[:15]:  # doctest: +SKIP
 ...   print(t)
 Skoraði aftur en fékk ekki í magann. http://t.co/jIvWHkp2wk
 Ouch, likewise 👎
@@ -242,7 +249,7 @@ Phumolo asks "How much for these apprenticeships? "...Is he  joking? http://t.co
 The default tokeniser for Tweets is `TweetTokenizer`, which is called
 by the ``tokenised_tweets()`` method.
 
->>> for t in reader.tokenised_tweets[:15]:  # doctest: +SKIP
+>>> for t in reader.tokenised_tweets()[:15]:
 ...   print(t)
 ['Skora', 'ði', 'aftur', 'en', 'fékk', 'ekki', 'í', 'magann', '.', 'http://t.co/jIvWHkp2wk']
 ['Ouch', ',', 'likewise', '👎']
@@ -338,14 +345,10 @@ strings.
 >>> from nltk.twitter.twitterclient import Query
 >>> oauth = authenticate()
 >>> client = Query(**oauth)
->>> tweets = client.hydrate(IDFILE)
 >>> FULL = os.path.join(os.environ['TWITTER'], 'rehydrated.json')
->>> import json
->>> with open(FULL, 'w') as f:
-...     for data in tweets:
-...         json_data = json.dumps(data)
-...         f.write(json_data + "\n")
-
+>>> client.hydrate(IDFILE, FULL)
+Counted 20 Tweet IDs in /Users/ewan/twitter/tweet_ids.txt.
+Written 19 Tweets to file /Users/ewan/twitter/rehydrated.json of length 69053 bytes
 
 References
 ==========
