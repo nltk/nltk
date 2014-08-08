@@ -59,22 +59,53 @@ class Query(Twython):
     """
 
 
-    def hydrate(self, infile):
+    def _hydrate(self, infile, verbose=True):
         """
-        Given a file containing a list of Tweet IDs, fetch the corresponding
-        Tweets (if they haven't been deleted).
-
         :param infile: name of a file consisting of Tweet IDs, one to a line
         :return: iterable of Tweet objects
         """
         with open(infile) as f:
             ids = [line.rstrip() for line in f]
-            # The Twitter endpoint takes lists of up to 100 ids, so we chunk
-            # the ids
+        if verbose:
+            print("Counted {} Tweet IDs in {}.".format(len(ids), infile))
+
         id_chunks = [ids[i:i+100] for i in range(0, len(ids), 100)]
+        """
+        The Twitter endpoint takes lists of up to 100 ids, so we chunk
+        the ids.
+        """
+
         listoflists = [self.post('statuses/lookup', {'id': chunk}) for chunk
                        in id_chunks]
         return itertools.chain.from_iterable(listoflists)
+
+
+    def hydrate(self, infile, outfile, verbose=True):
+        """
+        Given a file containing a list of Tweet IDs, fetch the corresponding
+        Tweets (if they haven't been deleted) and dump them in a file.
+
+        :param infile: name of a file consisting of Tweet IDs, one to a line
+
+        :param outfile: name of file where JSON serialisations of fully
+        hydrated Tweets will be written.
+        """
+        tweets = self._hydrate(infile, verbose=verbose)
+        count = 0
+
+        if os.path.isfile(outfile):
+            os.remove(outfile)
+
+        with open(outfile, 'a') as f:
+            for data in tweets:
+                json.dump(data, f)
+                f.write("\n")
+                count += 1
+
+        if verbose:
+            print("""Written {} Tweets to file {} of length {}
+            bytes""".format(count, outfile, os.path.getsize( outfile)))
+
 
 
 class TweetHandler:
@@ -236,10 +267,10 @@ def authenticate(creds_file=None, subdir=None):
     """
     if subdir is None:
         try:
-            subdir = os.environ['TWITTERHOME']
+            subdir = os.environ['TWITTER']
         except KeyError:
             print("""Supply a value to the 'subdir' parameter or set the
-            environment variable TWITTERHOME""")
+            environment variable TWITTER""")
     if creds_file is None:
         creds_file = 'credentials.txt'
 
@@ -279,10 +310,11 @@ def add_access_token(creds_file=None):
 ################################
 
 import os
-TWITTERHOME = os.environ['TWITTERHOME']
-TWEETS = os.path.join(TWITTERHOME, 'tweets.20140801-150110.json')
-IDS = os.path.join(TWITTERHOME, 'tweet_ids.txt')
-REHYDE = os.path.join(TWITTERHOME, 'rehydrated.json')
+TWITTER = os.environ['TWITTER']
+TWEETS = os.path.join(TWITTER, 'tweets.20140801-150110.json')
+IDS = os.path.join(TWITTER, 'tweet_ids.txt')
+IDS2 = os.path.join(TWITTER, 'tweet_ids2.txt')
+REHYDE = os.path.join(TWITTER, 'rehydrated.json')
 
 def sampletoscreen_demo(limit=20):
     oauth = authenticate()
@@ -297,13 +329,11 @@ def tracktoscreen0_demo(limit=10):
     keywords = "Pistorius, #OscarTrial, gerrie nel"
     client.statuses.filter(track=keywords)
 
-def tracktoscreen1_demo(limit=100):
+def tracktoscreen1_demo(limit=50):
     oauth = authenticate()
     handler = TweetViewer(limit=limit)
     client = Streamer(handler, **oauth)
-    keywords = "Pistorius, #OscarTrial, gerrie nel"
-    client.statuses.filter(follow='612473,788524,15108530')
-    #client.statuses.filter(follow='759251,612473,788524,15108530')
+    client.statuses.filter(follow='759251,612473,788524,15108530')
 
 def streamtofile_demo(limit=20):
     oauth = authenticate()
@@ -317,28 +347,16 @@ def dehydrate_demo(infile, outfile):
         for id_str in ids:
             print(id_str, file=f)
 
-
 def hydrate_demo(infile, outfile):
     oauth = authenticate()
     client = Query(**oauth)
-    tweets = client.hydrate(infile)
-    with open(outfile, 'w') as f:
-        for data in tweets:
-            json_data = json.dumps(data)
-            f.write(json_data + "\n")
-
-def get_userid(screen_name):
-    oauth = authenticate()
-    client = Query(**oauth)
-    info = client.show_user(screen_name=screen_name)
-    return info['id_str']
-
+    client.hydrate(infile, outfile)
 
 def corpusreader_demo():
     from nltk.corpus import TwitterCorpusReader
-    root = os.environ['TWITTERHOME']
+    root = os.environ['TWITTER']
     reader = TwitterCorpusReader(root, '.*\.json')
-    for t in reader.jsonlist()[:1]:
+    for t in reader.full_tweets()[:2]:
         print(t)
 
     for t in reader.tweets()[:15]:
@@ -350,7 +368,7 @@ def corpusreader_demo():
 
 
 
-DEMOS = [0]
+DEMOS = [3]
 
 if __name__ == "__main__":
     #import doctest
@@ -366,8 +384,6 @@ if __name__ == "__main__":
         hydrate_demo(IDS, REHYDE)
     if 4 in DEMOS:
         corpusreader_demo()
-
- #   print(get_userid('reutersus')) # 759251
 
 
 
