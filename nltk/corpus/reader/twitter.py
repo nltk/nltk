@@ -11,6 +11,7 @@ have been serialised into line-delimited JSON.
 """
 
 import json
+import os
 
 from nltk import compat
 #import nltk.data
@@ -51,6 +52,10 @@ class TwitterCorpusReader(CorpusReader):
         smaller units, including but not limited to words.
 
         """
+        for path in self.abspaths(fileids):
+            if os.path.getsize(path) == 0:
+                raise ValueError("File {} is empty".format(path))
+
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
 
