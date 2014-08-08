@@ -14,7 +14,6 @@ import json
 import os
 
 from nltk import compat
-#import nltk.data
 from nltk.tokenize import TweetTokenizer
 
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat
@@ -41,8 +40,8 @@ class TwitterCorpusReader(CorpusReader):
         Construct a new Tweet corpus reader for a set of documents
         located at the given root directory.  Example usage:
 
-            >>> root = os.environ['TWITTERHOME']
-            >>> reader = YCorpusReader(root, '.*\.json') # doctest: +SKIP
+            >>> root = os.environ['TWITTER']
+            >>> reader = TwitterCorpusReader(root, '.*\.json') # doctest: +SKIP
 
         :param root: The root directory for this corpus.
 
@@ -52,17 +51,23 @@ class TwitterCorpusReader(CorpusReader):
         smaller units, including but not limited to words.
 
         """
-        for path in self.abspaths(fileids):
+        CorpusReader.__init__(self, root, fileids, encoding)
+
+        for path in self.abspaths(self._fileids):
             if os.path.getsize(path) == 0:
                 raise ValueError("File {} is empty".format(path))
+        """Check that all user-created corpus files are non-empty."""
 
-        CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
 
 
 
-    def jsonlist(self, fileids=None):
+    def full_tweets(self, fileids=None):
         """
+        Returns the full Tweet objects, as specified by `Twitter
+        documentation on Tweets
+        <https://dev.twitter.com/docs/platform-objects/tweets>`_
+
         :return: the given file(s) as a list of dictionaries deserialised
         from JSON.
         :rtype: list(dict)
@@ -79,9 +84,9 @@ class TwitterCorpusReader(CorpusReader):
         :return: the given file(s) as a list of Tweets.
         :rtype: list(str)
         """
-        jsonlist = self.jsonlist(fileids)
+        fulltweets = self.full_tweets(fileids)
         tweets = []
-        for jsono in jsonlist:
+        for jsono in fulltweets:
             try:
                 text = jsono['text']
                 if isinstance(text, bytes):
@@ -117,7 +122,7 @@ class TwitterCorpusReader(CorpusReader):
 
     def _read_tweets(self, stream):
         """
-        Assumes that each line in ``stream`` is JSON-serialised object.
+        Assumes that each line in ``stream`` is a JSON-serialised object.
         """
         tweets = []
         for i in range(10):
@@ -128,23 +133,5 @@ class TwitterCorpusReader(CorpusReader):
             tweets.append(tweet)
         return tweets
 
-
-    #def words(self, fileid=None):
-        #"""
-        #:return: the given file(s) as a list of words
-            #and punctuation symbols.
-        #:rtype: list(str)
-        #"""
-        #jsonlist = self.jsonlist(fileid)
-        #encoding = self.encoding(fileid)
-        #tokenizer = self._word_tokenizer
-        #out = []
-        #for jsono in jsonlist:
-            #text = jsono['text']
-            #if isinstance(text, bytes):
-                #text = text.decode(encoding)
-            #toks = tokenizer.tokenize(text)
-            #out.extend(toks)
-        #return out
 
 
