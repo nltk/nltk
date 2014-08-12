@@ -33,17 +33,22 @@ class Streamer(TwythonStreamer):
         self.do_continue = True
         super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
 
+    def register(self, handler):
+        self.handler = handler
+
     def on_success(self, data):
         """
         :param data: response from Twitter API
         """
         if self.do_continue:
-        #if self.handler is not None:
-            if 'text' in data:
-                self.do_continue = self.handler.handle(data)
+            if self.handler is not None:
+                if 'text' in data:
+                    self.do_continue = self.handler.handle(data)
+            else:
+                raise ValueError("No data handler has been registered.")
         else:
             self.disconnect()
-            #raise ValueError("No data handler has been registered.")
+
 
     def on_error(self, status_code, data):
         """
@@ -57,9 +62,16 @@ class Query(Twython):
     """
     Class for accessing the Twitter REST API.
     """
+    def __init__(self, handler, app_key, app_secret, oauth_token,
+                 oauth_token_secret):
+        self.handler = handler
+        self.do_continue = True
+        super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
 
+    def register(self, handler):
+        self.handler = handler
 
-    def _hydrate(self, infile, verbose=True):
+    def _lookup(self, infile, verbose=True):
         """
         :param infile: name of a file consisting of Tweet IDs, one to a line
         :return: iterable of Tweet objects
@@ -80,7 +92,7 @@ class Query(Twython):
         return itertools.chain.from_iterable(listoflists)
 
 
-    def hydrate(self, infile, outfile, verbose=True):
+    def lookup(self, infile, outfile, verbose=True):
         """
         Given a file containing a list of Tweet IDs, fetch the corresponding
         Tweets (if they haven't been deleted) and dump them in a file.
@@ -90,7 +102,7 @@ class Query(Twython):
         :param outfile: name of file where JSON serialisations of fully
         hydrated Tweets will be written.
         """
-        tweets = self._hydrate(infile, verbose=verbose)
+        tweets = self._lookup(infile, verbose=verbose)
         count = 0
 
         if os.path.isfile(outfile):
@@ -105,6 +117,47 @@ class Query(Twython):
         if verbose:
             print("""Written {} Tweets to file {} of length {}
             bytes""".format(count, outfile, os.path.getsize( outfile)))
+
+    def search(self, query, count=100, lang='en'):
+        """
+        Call the REST API 'search/tweets' endpoint with some plausible defaults.
+        """
+        results = self.search(q=query, count=100, lang='en')
+        return results['statuses']
+
+
+
+
+class Twitter:
+    """
+    Wrapper class with severely restricted functionality.
+    """
+    def __init__(self):
+        self._oauth = authenticate()
+        self.streamer = Streamer(None, **self._oauth)
+        self.query = Query(None, **self._oauth)
+
+
+    def tweets(self, keywords='', follow='', stream=True, limit=100):
+        handler = TweetViewer(limit=limit)
+        if stream:
+            self.streamer.register(handler)
+            if keywords=='' and follow=='':
+                self.streamer.statuses.sample()
+            else:
+                self.streamer.statuses.filter(track=keywords, follow=follow)
+        else:
+            self.query.register(handler)
+            if keywords != '':
+                tweets = self.query.search(keywords)
+                for t in tweets:
+                    print(t['text'])
+
+
+
+
+    def tofile(self, keywords='', track='', stream=True, limit=100):
+        pass
 
 
 
@@ -213,7 +266,7 @@ class TweetWriter(TweetHandler):
             print('Written {} tweets'.format(self.counter))
             self.output.close()
             if not self.repeat:
-                # Tell the client to disconnect
+                "Tell the client to disconnect"
                 return False
             else:
                 self.fname = self.timestamped_file()
@@ -350,7 +403,7 @@ def dehydrate_demo(infile, outfile):
 def hydrate_demo(infile, outfile):
     oauth = authenticate()
     client = Query(**oauth)
-    client.hydrate(infile, outfile)
+    client.lookup(infile, outfile)
 
 def corpusreader_demo():
     from nltk.corpus import TwitterCorpusReader
@@ -366,9 +419,20 @@ def corpusreader_demo():
         print(t)
 
 
+def search_demo():
+    oauth = authenticate()
+    client = Query(**oauth)
+    s = client.search(q='nltk', count=100)
+    for t in client.search(q='nltk', count=100)['statuses']:
+        print(t['text'])
 
 
-DEMOS = [3]
+def twitterclass_demo():
+    tw = Twitter()
+    tw.tweets()
+
+
+DEMOS = [6]
 
 if __name__ == "__main__":
     #import doctest
@@ -384,7 +448,10 @@ if __name__ == "__main__":
         hydrate_demo(IDS, REHYDE)
     if 4 in DEMOS:
         corpusreader_demo()
-
+    if 5 in DEMOS:
+        search_demo()
+    if 6 in DEMOS:
+        twitterclass_demo()
 
 
 
