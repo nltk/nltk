@@ -9,7 +9,10 @@
 """
 NLTK Twitter client.
 """
+
 import os
+import pprint
+import textwrap
 
 
 def dehydrate(infile):
@@ -60,7 +63,7 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
 
     creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
     if not os.path.isfile(creds_fullpath):
-        raise IOError('Cannot find file {}'.format(creds_fullpath))
+        raise OSError('Cannot find file {}'.format(creds_fullpath))
 
 
     with open(creds_fullpath) as f:
@@ -72,11 +75,11 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
                 name, value = line.split('=', 1)
                 oauth[name.strip()] = value.strip()
 
-    _validate_creds_file(oauth, verbose=verbose)
+    _validate_creds_file(creds_file, oauth, verbose=verbose)
 
     return oauth
 
-def _validate_creds_file(oauth, verbose=False):
+def _validate_creds_file(fn, oauth, verbose=False):
     oauth1 = False
     oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
     oauth2 = False
@@ -84,12 +87,14 @@ def _validate_creds_file(oauth, verbose=False):
     if all (k in oauth for k in oauth1_keys):
             oauth1 = True
     elif all (k in oauth for k in oauth1_keys):
-        oath2 = True
+        oauth2 = True
 
     if not (oauth1 or oauth2):
-        raise ValueError('Missing or incorrect entries in {}'.format(fn))
+        msg = 'Missing or incorrect entries in {}\n'.format(fn)
+        msg += pprint.pformat(oauth)
+        raise ValueError(msg)
     elif verbose:
-        print('Credentials file {} looks good'.format(fn))
+        print('Credentials file "{}" looks good'.format(fn))
 
 
 def add_access_token(creds_file=None):
