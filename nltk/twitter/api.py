@@ -7,9 +7,9 @@
 # For license information, see LICENSE.TXT
 
 
-class TweetHandler:
+class TweetHandlerI:
     """
-    Abstract class whose subclasses should implement a handle method that
+    Interface class whose subclasses should implement a handle method that
     Twitter clients can delegate to.
     """
     def __init__(self, limit=20):
