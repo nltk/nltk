@@ -9,6 +9,8 @@
 """
 NLTK Twitter client.
 """
+import os
+
 
 def dehydrate(infile):
     """
@@ -70,11 +72,11 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
                 name, value = line.split('=', 1)
                 oauth[name.strip()] = value.strip()
 
-    _validate_creds_file(creds_file, verbose=verbose)
+    _validate_creds_file(oauth, verbose=verbose)
 
     return oauth
 
-def _validate_creds_file(fn, verbose=False):
+def _validate_creds_file(oauth, verbose=False):
     oauth1 = False
     oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
     oauth2 = False
