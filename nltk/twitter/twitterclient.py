@@ -18,9 +18,9 @@ try:
     from twython import Twython, TwythonStreamer
 except ImportError as e:
     import textwrap
-    msg = """The NLTK twitterclient module requires the Twython package. See\
+    msg = """\nThe NLTK twitterclient module requires the Twython package. See\
     https://twython.readthedocs.org/ for installation instructions."""
-    e.msg = textwrap.fill(msg)
+    e.msg += textwrap.fill(msg)
     raise
 
 from api import TweetHandlerI
