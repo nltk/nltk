@@ -7,6 +7,9 @@ from nltk.twitter import Streamer, Query, Twitter, TweetViewer,\
 
 class TestInitClient(unittest.TestCase):
 
+    def test_Twitter(self):
+        tw = Twitter()
+
 
 class TestCredentials(unittest.TestCase):
 
