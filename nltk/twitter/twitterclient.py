@@ -14,11 +14,6 @@ import itertools
 import json
 import os
 
-try:
-    from twython import Twython, TwythonStreamer
-except ImportError:
-    raise ValueError("""The twitterclient module requires the Twython package.
-    See https://twython.readthedocs.org/ for installation instructions.""")
 
 from api import TweetHandlerI
 
