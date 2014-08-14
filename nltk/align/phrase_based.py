@@ -83,6 +83,22 @@ def phrase_extraction(srctext, trgtext, alignment):
     ((6, 8), (7, 8), 'in the', 'im')
     ((6, 9), (7, 9), 'in the house', 'im haus')
     ((8, 9), (8, 9), 'house', 'haus')
+    
+    :type srctext: str
+    :param srctext: The sentence string from the source language.
+    
+    :type trgtext: str
+    :param trgtext: The sentence string from the target language.
+    
+    :type alignment: str
+    :param srctext: The word alignment outputs in pharaoh output format
+    
+    :rtype: list(tuple)
+    :return: A list of tuples, each element in a list is a phrase and each 
+    phrase is a tuple made up of (i) its source location, (ii) its target 
+    location, (iii) the source phrase and (iii) the target phrase. The phrase
+    list of tuples represents all the possible phrases extracted from the 
+    word alignments. 
     """
     def extract(f_start, f_end, e_start, e_end):
         if f_end < 0:  # 0-based indexing.
@@ -149,7 +165,6 @@ def phrase_extraction(srctext, trgtext, alignment):
             if phrases:
                 bp.update(phrases)
     return bp
-
 
 # run doctests
 if __name__ == "__main__":
