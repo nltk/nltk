@@ -1,6 +1,14 @@
-################################
-# Utility functions
-################################
+# -*- coding: utf-8 -*-
+# Natural Language Toolkit: Twitter client
+#
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Ewan Klein <ewan@inf.ed.ac.uk>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+
+"""
+NLTK Twitter client.
+"""
 
 def dehydrate(infile):
     """
