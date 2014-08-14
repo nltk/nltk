@@ -125,7 +125,7 @@ class Query(Twython):
 
 
 
-class Twitter:
+class Twitter(object):
     """
     Wrapper class with severely restricted functionality.
     """

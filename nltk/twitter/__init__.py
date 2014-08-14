@@ -22,7 +22,7 @@ except ImportError as exc:
     raise
 
 from nltk.util import credsfromfile
-from nltk.twitter.twitterclient import Streamer, Query,Twitter, TweetViewer,\
+from nltk.twitter.twitterclient import Streamer, Query, Twitter, TweetViewer,\
      TweetWriter
 
 # skip doctests from this package
