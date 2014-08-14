@@ -91,7 +91,10 @@ def phrase_extraction(srctext, trgtext, alignment):
     :param trgtext: The sentence string from the target language.
     
     :type alignment: str
-    :param srctext: The word alignment outputs in pharaoh output format
+    :param alignment: The word alignment outputs as list of tuples, where
+    the first elements of tuples are the source words' indices and
+    second elements are the target words' indices. This is also the output
+    format of nltk/align/ibm1.py
     
     :rtype: list(tuple)
     :return: A list of tuples, each element in a list is a phrase and each 
