@@ -20,7 +20,7 @@ except ImportError:
     raise ValueError("""The twitterclient module requires the Twython package.
     See https://twython.readthedocs.org/ for installation instructions.""")
 
-from api import TweetHandler
+from api import TweetHandlerI
 
 
 class Streamer(TwythonStreamer):
@@ -164,7 +164,7 @@ class Twitter:
 
 
 
-class TweetViewer(TweetHandler):
+class TweetViewer(TweetHandlerI):
     """
     Handle data by sending it to the terminal.
     """
@@ -186,7 +186,7 @@ class TweetViewer(TweetHandler):
         return True
 
 
-class TweetWriter(TweetHandler):
+class TweetWriter(TweetHandlerI):
     """
     Handle data by writing it to a file.
     """
