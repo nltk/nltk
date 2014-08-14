@@ -182,7 +182,7 @@ class Rule(TagRule):
                  self._conditions == other._conditions))
 
     def __ne__(self, other):
-        return self != other
+        return not (self == other)
 
     def __hash__(self):
 
