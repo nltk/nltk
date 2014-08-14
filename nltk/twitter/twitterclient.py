@@ -17,9 +17,10 @@ import os
 try:
     from twython import Twython, TwythonStreamer
 except ImportError as e:
-    e.msg = """The twitterclient module requires the Twython
-    package. See https://twython.readthedocs.org/ for installation
-    instructions."""
+    import textwrap
+    msg = """The NLTK twitterclient module requires the Twython package. See\
+    https://twython.readthedocs.org/ for installation instructions."""
+    e.msg = textwrap.fill(msg)
     raise
 
 from api import TweetHandlerI
