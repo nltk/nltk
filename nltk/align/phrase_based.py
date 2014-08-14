@@ -42,40 +42,47 @@ def phrase_extraction(srctext, trgtext, alignment):
     *alignment* is the word alignment outputs in pharaoh format
     
     [out]:
-    *bp* is the phrases extracted from the algorithm, it's made up of a tuple of
-    triplet ((srctext_from, srctext_to), src_phrase, target_phrase)
+    *bp* is the phrases extracted from the algorithm, it's made up of a tuple 
+    that stores:
+        ( (src_from, src_to), (trg_from, trg_to), src_phrase, target_phrase )
     
+    (i)   the position of the source phrase
+    (ii)  the position of the target phrase
+    (iii) the source phrase
+    (iv)  the target phrase
+
     >>> srctext = "michael assumes that he will stay in the house"
     >>> trgtext = "michael geht davon aus , dass er im haus bleibt"
-    >>> alignment = [(0,0), (1,1), (1,2), (1,3), (2,5), (3,6), (4,9), (5,9), (6,7), (7,7), (8,8)]
+    >>> alignment = [(0,0), (1,1), (1,2), (1,3), (2,5), (3,6), (4,9), 
+    ... (5,9), (6,7), (7,7), (8,8)]
     >>> phrases = phrase_extraction(srctext, trgtext, alignment)
     >>> for i in sorted(phrases):
     ...    print i
     ...
-    ((0, 1), 'michael', 'michael')
-    ((0, 2), 'michael assumes', 'michael geht davon aus')
-    ((0, 2), 'michael assumes', 'michael geht davon aus ,')
-    ((0, 3), 'michael assumes that', 'michael geht davon aus , dass')
-    ((0, 4), 'michael assumes that he', 'michael geht davon aus , dass er')
-    ((0, 9), 'michael assumes that he will stay in the house', 'michael geht davon aus , dass er im haus bleibt')
-    ((1, 2), 'assumes', 'geht davon aus')
-    ((1, 2), 'assumes', 'geht davon aus ,')
-    ((1, 3), 'assumes that', 'geht davon aus , dass')
-    ((1, 4), 'assumes that he', 'geht davon aus , dass er')
-    ((1, 9), 'assumes that he will stay in the house', 'geht davon aus , dass er im haus bleibt')
-    ((2, 3), 'that', ', dass')
-    ((2, 3), 'that', 'dass')
-    ((2, 4), 'that he', ', dass er')
-    ((2, 4), 'that he', 'dass er')
-    ((2, 9), 'that he will stay in the house', ', dass er im haus bleibt')
-    ((2, 9), 'that he will stay in the house', 'dass er im haus bleibt')
-    ((3, 4), 'he', 'er')
-    ((3, 9), 'he will stay in the house', 'er im haus bleibt')
-    ((4, 6), 'will stay', 'bleibt')
-    ((4, 9), 'will stay in the house', 'im haus bleibt')
-    ((6, 8), 'in the', 'im')
-    ((6, 9), 'in the house', 'im haus')
-    ((8, 9), 'house', 'haus')
+    ((0, 1), (0, 1), 'michael', 'michael')
+    ((0, 2), (0, 4), 'michael assumes', 'michael geht davon aus')
+    ((0, 2), (0, 4), 'michael assumes', 'michael geht davon aus ,')
+    ((0, 3), (0, 6), 'michael assumes that', 'michael geht davon aus , dass')
+    ((0, 4), (0, 7), 'michael assumes that he', 'michael geht davon aus , dass er')
+    ((0, 9), (0, 10), 'michael assumes that he will stay in the house', 'michael geht davon aus , dass er im haus bleibt')
+    ((1, 2), (1, 4), 'assumes', 'geht davon aus')
+    ((1, 2), (1, 4), 'assumes', 'geht davon aus ,')
+    ((1, 3), (1, 6), 'assumes that', 'geht davon aus , dass')
+    ((1, 4), (1, 7), 'assumes that he', 'geht davon aus , dass er')
+    ((1, 9), (1, 10), 'assumes that he will stay in the house', 'geht davon aus , dass er im haus bleibt')
+    ((2, 3), (5, 6), 'that', ', dass')
+    ((2, 3), (5, 6), 'that', 'dass')
+    ((2, 4), (5, 7), 'that he', ', dass er')
+    ((2, 4), (5, 7), 'that he', 'dass er')
+    ((2, 9), (5, 10), 'that he will stay in the house', ', dass er im haus bleibt')
+    ((2, 9), (5, 10), 'that he will stay in the house', 'dass er im haus bleibt')
+    ((3, 4), (6, 7), 'he', 'er')
+    ((3, 9), (6, 10), 'he will stay in the house', 'er im haus bleibt')
+    ((4, 6), (9, 10), 'will stay', 'bleibt')
+    ((4, 9), (7, 10), 'will stay in the house', 'im haus bleibt')
+    ((6, 8), (7, 8), 'in the', 'im')
+    ((6, 9), (7, 9), 'in the house', 'im haus')
+    ((8, 9), (8, 9), 'house', 'haus')
     """
     def extract(f_start, f_end, e_start, e_end):
         if f_end < 0:  # 0-based indexing.
@@ -100,7 +107,7 @@ def phrase_extraction(srctext, trgtext, alignment):
                 src_phrase = " ".join(srctext[i] for i in range(e_start,e_end+1))
                 trg_phrase = " ".join(trgtext[i] for i in range(fs,fe+1))
                 # Include more data for later ordering.
-                phrases.add(((e_start, e_end+1), src_phrase, trg_phrase))
+                phrases.add(((e_start, e_end+1), (f_start, f_end+1), src_phrase, trg_phrase))
                 fe += 1 # fe++
                 # -until fe aligned or out-of-bounds
                 if fe in f_aligned or fe == trglen:
@@ -142,6 +149,7 @@ def phrase_extraction(srctext, trgtext, alignment):
             if phrases:
                 bp.update(phrases)
     return bp
+
 
 # run doctests
 if __name__ == "__main__":
