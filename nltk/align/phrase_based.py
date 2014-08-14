@@ -13,9 +13,9 @@ def phrase_extraction(srctext, trgtext, alignment):
     a word-aligned sentence pair.
 
     The idea is to loop over all possible source language (e) phrases and find 
-    the minimal foregin phrase (f) that matches each of them. Matching is done 
+    the minimal foreign phrase (f) that matches each of them. Matching is done 
     by identifying all alignment points for the source phrase and finding the 
-    shortest foreign phrase that includes all hte foreign counterparts for the 
+    shortest foreign phrase that includes all the foreign counterparts for the 
     source words.
 
     In short, a phrase alignment has to 
@@ -36,21 +36,6 @@ def phrase_extraction(srctext, trgtext, alignment):
             
             ∃e i ∈ e  ̄ , f j ∈ f  ̄ s.t. (e i , f j ) ∈ A
             
-    [in]:
-    *srctext* is the tokenized source sentence string.
-    *trgtext* is the tokenized target sentence string.
-    *alignment* is the word alignment outputs in pharaoh format
-    
-    [out]:
-    *bp* is the phrases extracted from the algorithm, it's made up of a tuple 
-    that stores:
-        ( (src_from, src_to), (trg_from, trg_to), src_phrase, target_phrase )
-    
-    (i)   the position of the source phrase
-    (ii)  the position of the target phrase
-    (iii) the source phrase
-    (iv)  the target phrase
-
     >>> srctext = "michael assumes that he will stay in the house"
     >>> trgtext = "michael geht davon aus , dass er im haus bleibt"
     >>> alignment = [(0,0), (1,1), (1,2), (1,3), (2,5), (3,6), (4,9), 
