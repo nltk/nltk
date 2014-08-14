@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
 # Copyright (C) 2001-2014 NLTK Project
@@ -8,17 +9,18 @@
 """
 NLTK Twitter client.
 """
-
+import datetime
 import itertools
 import json
 import os
-import datetime
 
 try:
     from twython import Twython, TwythonStreamer
 except ImportError:
     raise ValueError("""The twitterclient module requires the Twython package.
     See https://twython.readthedocs.org/ for installation instructions.""")
+
+from api import TweetHandler
 
 
 class Streamer(TwythonStreamer):
@@ -133,7 +135,7 @@ class Twitter:
     Wrapper class with severely restricted functionality.
     """
     def __init__(self):
-        self._oauth = authenticate()
+        self._oauth = credsfromfile()
         self.streamer = Streamer(None, **self._oauth)
         self.query = Query(None, **self._oauth)
 
@@ -159,30 +161,6 @@ class Twitter:
     def tofile(self, keywords='', track='', stream=True, limit=100):
         pass
 
-
-
-class TweetHandler:
-    """
-    Abstract class whose subclasses should implement a handle method that
-    Twitter clients can delegate to.
-    """
-    def __init__(self, limit=20):
-        """
-        :param limit: number of data items to process in the current round of
-        processing
-
-        :param startingup: flag to indicate whether this is the first data
-        item to be processed in the current round of processing.
-
-        :param counter: keep track of number of data items processed
-
-        """
-        self.limit = limit
-        self.startingup = True
-        self.counter = 0
-
-    def handle(self, data):
-        raise NotImplementedError
 
 
 
@@ -297,7 +275,7 @@ def dehydrate(infile):
             yield id_str
 
 
-def authenticate(creds_file=None, subdir=None):
+def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
     Read OAuth credentials from a text file.
 
@@ -318,6 +296,8 @@ def authenticate(creds_file=None, subdir=None):
     :param file_name: File containing credentials. None (default) reads
     data from "./credentials.txt"
     """
+
+
     if subdir is None:
         try:
             subdir = os.environ['TWITTER']
@@ -328,14 +308,37 @@ def authenticate(creds_file=None, subdir=None):
         creds_file = 'credentials.txt'
 
     creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
+    if not os.path.isfile(creds_fullpath):
+        raise IOError('Cannot find file {}'.format(creds_fullpath))
+
 
     with open(creds_fullpath) as f:
+        if verbose:
+            print('Reading credentials file {}'.format(creds_fullpath))
         oauth = {}
         for line in f:
             if '=' in line:
                 name, value = line.split('=', 1)
                 oauth[name.strip()] = value.strip()
+
+    _validate_creds_file(creds_file, verbose=verbose)
+
     return oauth
+
+def _validate_creds_file(fn, verbose=False):
+    oauth1 = False
+    oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
+    oauth2 = False
+    oauth2_keys = ['app_key', 'app_secret', 'access_token']
+    if all (k in oauth for k in oauth1_keys):
+            oauth1 = True
+    elif all (k in oauth for k in oauth1_keys):
+        oath2 = True
+
+    if not (oauth1 or oauth2):
+        raise ValueError('Missing or incorrect entries in {}'.format(fn))
+    elif verbose:
+        print('Credentials file {} looks good'.format(fn))
 
 
 def add_access_token(creds_file=None):
@@ -346,7 +349,7 @@ def add_access_token(creds_file=None):
     if creds_file is None:
         path = os.path.dirname(__file__)
         creds_file = os.path.join(path, 'credentials2.txt')
-    oauth2 = authenticate(creds_file=creds_file)
+    oauth2 = credsfromfile(creds_file=creds_file)
     APP_KEY = oauth2['app_key']
     APP_SECRET = oauth2['app_secret']
 
@@ -370,26 +373,26 @@ IDS2 = os.path.join(TWITTER, 'tweet_ids2.txt')
 REHYDE = os.path.join(TWITTER, 'rehydrated.json')
 
 def sampletoscreen_demo(limit=20):
-    oauth = authenticate()
+    oauth = credsfromfile()
     handler = TweetViewer(limit=limit)
     client = Streamer(handler, **oauth)
     client.statuses.sample()
 
 def tracktoscreen0_demo(limit=10):
-    oauth = authenticate()
+    oauth = credsfromfile()
     handler = TweetViewer(limit=limit)
     client = Streamer(handler, **oauth)
     keywords = "Pistorius, #OscarTrial, gerrie nel"
     client.statuses.filter(track=keywords)
 
 def tracktoscreen1_demo(limit=50):
-    oauth = authenticate()
+    oauth = credsfromfile()
     handler = TweetViewer(limit=limit)
     client = Streamer(handler, **oauth)
     client.statuses.filter(follow='759251,612473,788524,15108530')
 
 def streamtofile_demo(limit=20):
-    oauth = authenticate()
+    oauth = credsfromfile()
     handler = TweetWriter(limit=limit, repeat=True)
     client = Streamer(handler, **oauth)
     client.statuses.sample()
@@ -401,7 +404,7 @@ def dehydrate_demo(infile, outfile):
             print(id_str, file=f)
 
 def hydrate_demo(infile, outfile):
-    oauth = authenticate()
+    oauth = credsfromfile()
     client = Query(**oauth)
     client.lookup(infile, outfile)
 
@@ -420,7 +423,7 @@ def corpusreader_demo():
 
 
 def search_demo():
-    oauth = authenticate()
+    oauth = credsfromfile()
     client = Query(**oauth)
     s = client.search(q='nltk', count=100)
     for t in client.search(q='nltk', count=100)['statuses']:
