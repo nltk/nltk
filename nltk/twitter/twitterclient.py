@@ -20,7 +20,7 @@ except ImportError as e:
     import textwrap
     msg = """The NLTK twitterclient module requires the Twython package. See\
     https://twython.readthedocs.org/ for installation instructions."""
-    e.msg += "\n" + textwrap.fill(msg)
+    e.msg = textwrap.fill(msg)
     raise
 
 from api import TweetHandlerI

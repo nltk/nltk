@@ -2,16 +2,34 @@
 from __future__ import absolute_import, unicode_literals
 import unittest
 
+from nltk.twitter import credsfromfile
 from nltk.twitter import Streamer, Query, Twitter, TweetViewer,\
      TweetWriter
 
-class TestInitClient(unittest.TestCase):
 
-    def test_Twitter(self):
-        tw = Twitter()
 
 
 class TestCredentials(unittest.TestCase):
 
     def test_missingfile(self):
-        pass
+        self.assertRaises(OSError, credsfromfile, creds_file='foobar')
+
+    def test_missingdir(self):
+        self.assertRaises(OSError, credsfromfile, subdir='/nosuchdir')
+
+
+    def test_badfile1(self):
+        self.assertRaises(ValueError, credsfromfile, creds_file='bad_oauth1-1.txt',
+                      subdir='/Users/ewan/git/nltk/nltk/twitter')
+
+    def test_badfile2(self):
+        self.assertRaises(ValueError, credsfromfile, creds_file='bad_oauth1-2.txt',
+                      subdir='/Users/ewan/git/nltk/nltk/twitter')
+
+
+
+
+
+
+if __name__ == '__main__':
+    unittest.main()
