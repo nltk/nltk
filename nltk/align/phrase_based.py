@@ -6,6 +6,82 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+def extract(f_start, f_end, e_start, e_end, 
+            alignment, e_aligned, f_aligned,
+            srctext, trgtext, srclen, trglen):
+    """
+    This function checks for alignment point consistency and extracts 
+    phrases using the chunk of consistent phrases.
+    
+    A phrase pair (e, f ) is consistent with an alignment A if and only if:
+
+    (i) No English words in the phrase pair are aligned to words outside it.
+    
+           ∀e i ∈ e, (e i , f j ) ∈ A ⇒ f j ∈ f
+    
+    (ii) No Foreign words in the phrase pair are aligned to words outside it. 
+            
+            ∀f j ∈ f , (e i , f j ) ∈ A ⇒ e i ∈ e
+    
+    (iii) The phrase pair contains at least one alignment point. 
+            
+            ∃e i ∈ e  ̄ , f j ∈ f  ̄ s.t. (e i , f j ) ∈ A
+    
+    :type f_start: int
+    :param f_start: Starting index of the possible foreign language phrases
+    
+    :type f_end: int
+    :param f_end: Starting index of the possible foreign language phrases
+    
+    :type e_start: int
+    :param e_start: Starting index of the possible source language phrases
+    
+    :type e_end: int
+    :param e_end: Starting index of the possible source language phrases
+    
+    :type srctext: list
+    :param srctext: The source language tokens, a list of string.
+    
+    :type trgtext: list
+    :param trgtext: The target language tokens, a list of string.
+    
+    :type srclen: int
+    :param srclen: The number of tokens in the source language tokens.
+    
+    :type trglen: int
+    :param trglen: The number of tokens in the target language tokens.
+    """
+    if f_end < 0:  # 0-based indexing.
+        return {}
+    # Check if alignement points are consistent.
+    for e,f in alignment:
+        if ((f_start <= f <= f_end) and
+           (e < e_start or e > e_end)):
+            return {}
+
+    # Add phrase pairs (incl. additional unaligned f)
+    phrases = set()
+    fs = f_start
+    while True:
+        fe = f_end
+        while True:
+            # add phrase pair ([e_start, e_end], [fs, fe]) to set E
+            # Need to +1 in range  to include the end-point.
+            src_phrase = " ".join(srctext[i] for i in 
+                                  range(e_start,e_end+1))
+            trg_phrase = " ".join(trgtext[i] for i in range(fs,fe+1))
+            # Include more data for later ordering.
+            phrases.add(((e_start, e_end+1), (f_start, f_end+1), 
+                         src_phrase, trg_phrase))
+            fe += 1
+            # if fe is in word alignment or out-of-bounds
+            if fe in f_aligned or fe == trglen:
+                break
+        fs -=1 
+        # if fs is in word alignment or out-of-bounds
+        if fs in f_aligned or fs < 0:
+            break
+    return phrases
 
 def phrase_extraction(srctext, trgtext, alignment):
     """
@@ -21,20 +97,6 @@ def phrase_extraction(srctext, trgtext, alignment):
     In short, a phrase alignment has to 
     (a) contain all alignment points for all covered words
     (b) contain at least one alignment point
-
-    A phrase pair (e, f ) is consistent with an alignment A if and only if:
-    
-    (i) No English words in the phrase pair are aligned to words outside it.
-    
-           ∀e i ∈ e, (e i , f j ) ∈ A ⇒ f j ∈ f
-    
-    (ii) No Foreign words in the phrase pair are aligned to words outside it. 
-            
-            ∀f j ∈ f , (e i , f j ) ∈ A ⇒ e i ∈ e
-    
-    (iii) The phrase pair contains at least one alignment point. 
-            
-            ∃e i ∈ e  ̄ , f j ∈ f  ̄ s.t. (e i , f j ) ∈ A
             
     >>> srctext = "michael assumes that he will stay in the house"
     >>> trgtext = "michael geht davon aus , dass er im haus bleibt"
@@ -42,7 +104,7 @@ def phrase_extraction(srctext, trgtext, alignment):
     ... (5,9), (6,7), (7,7), (8,8)]
     >>> phrases = phrase_extraction(srctext, trgtext, alignment)
     >>> for i in sorted(phrases):
-    ...    print i
+    ...    print(i)
     ...
     ((0, 1), (0, 1), 'michael', 'michael')
     ((0, 2), (0, 4), 'michael assumes', 'michael geht davon aus')
@@ -88,45 +150,12 @@ def phrase_extraction(srctext, trgtext, alignment):
     list of tuples represents all the possible phrases extracted from the 
     word alignments. 
     """
-    def extract(f_start, f_end, e_start, e_end):
-        if f_end < 0:  # 0-based indexing.
-            return {}
-        # Check if alignement points are consistent.
-        for e,f in alignment:
-            if ((f_start <= f <= f_end) and
-               (e < e_start or e > e_end)):
-                return {}
-
-        # Add phrase pairs (incl. additional unaligned f)
-        phrases = set()
-        fs = f_start
-        while True:
-            fe = f_end
-            while True:
-                # add phrase pair ([e_start, e_end], [fs, fe]) to set E
-                # Need to +1 in range  to include the end-point.
-                src_phrase = " ".join(srctext[i] for i in 
-                                      range(e_start,e_end+1))
-                trg_phrase = " ".join(trgtext[i] for i in range(fs,fe+1))
-                # Include more data for later ordering.
-                phrases.add(((e_start, e_end+1), (f_start, f_end+1), 
-                             src_phrase, trg_phrase))
-                fe += 1
-                # if fe is in word alignment or out-of-bounds
-                if fe in f_aligned or fe == trglen:
-                    break
-            fs -=1 
-            # if fs is in word alignment or out-of-bounds
-            if fs in f_aligned or fs < 0:
-                break
-        return phrases
-
     # Calculate no. of tokens in source and target texts.
     srctext = srctext.split()   # e
     trgtext = trgtext.split()   # f
     srclen = len(srctext)       # len(e)
     trglen = len(trgtext)       # len(f)
-    # Keeps an index of which source/target words are aligned.
+    # Keeps an index of which source/target words that are aligned.
     e_aligned = [i for i,_ in alignment]
     f_aligned = [j for _,j in alignment]
 
@@ -145,7 +174,9 @@ def phrase_extraction(srctext, trgtext, alignment):
                     f_start = min(f, f_start)
                     f_end = max(f, f_end)
             # add extract (f start , f end , e start , e end ) to set BP
-            phrases = extract(f_start, f_end, e_start, e_end)
+            phrases = extract(f_start, f_end, e_start, e_end, 
+                              alignment, e_aligned, f_aligned,
+                              srctext, trgtext, srclen, trglen)
             if phrases:
                 bp.update(phrases)
     return bp
