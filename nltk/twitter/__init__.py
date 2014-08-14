@@ -15,11 +15,10 @@ Twitter API.
 """
 try:
     from twython import Twython, TwythonStreamer
-except ImportError as exc:
-    print("""The twitterclient module requires the Twython package.
-    See https://twython.readthedocs.org/ for installation instructions.""")
-
-    raise
+except ImportError:
+    raise ImportError("""The twitterclient module requires the Twython
+    package. See https://twython.readthedocs.org/ for installation
+    instructions.""")
 
 from nltk.util import credsfromfile
 from nltk.twitter.twitterclient import Streamer, Query, Twitter, TweetViewer,\
