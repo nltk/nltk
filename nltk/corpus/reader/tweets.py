@@ -62,7 +62,7 @@ class TwitterCorpusReader(CorpusReader):
 
 
 
-    def full_tweets(self, fileids=None):
+    def docs(self, fileids=None):
         """
         Returns the full Tweet objects, as specified by `Twitter
         documentation on Tweets
@@ -77,14 +77,14 @@ class TwitterCorpusReader(CorpusReader):
                                in self.abspaths(fileids, True, True)])
 
 
-    def tweets(self, fileids=None):
+    def strings(self, fileids=None):
         """
         Returns only the text content of Tweets in the file(s)
 
         :return: the given file(s) as a list of Tweets.
         :rtype: list(str)
         """
-        fulltweets = self.full_tweets(fileids)
+        fulltweets = self.docs(fileids)
         tweets = []
         for jsono in fulltweets:
             try:
@@ -97,14 +97,14 @@ class TwitterCorpusReader(CorpusReader):
         return tweets
 
 
-    def tokenised_tweets(self, fileids=None):
+    def tokenized(self, fileids=None):
         """
         :return: the given file(s) as a list of the text content of Tweets as
         as a list of words, screenanames, hashtags, URLs and punctuation symbols.
 
         :rtype: list(list(str))
         """
-        tweets = self.tweets(fileids)
+        tweets = self.strings(fileids)
         tokenizer = self._word_tokenizer
         return [tokenizer.tokenize(t) for t in tweets]
 

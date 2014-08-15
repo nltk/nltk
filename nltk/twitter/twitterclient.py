@@ -23,8 +23,9 @@ except ImportError as e:
     e.msg = textwrap.fill(msg)
     raise
 
-from api import TweetHandlerI
-from util import credsfromfile
+from nltk.twitter.util import credsfromfile
+from nltk.twitter.api import TweetHandlerI
+
 
 
 class Streamer(TwythonStreamer):
@@ -263,7 +264,6 @@ class TweetWriter(TweetHandlerI):
 # Demos
 ################################
 
-import os
 TWITTER = os.environ['TWITTER']
 TWEETS = os.path.join(TWITTER, 'tweets.20140801-150110.json')
 IDS = os.path.join(TWITTER, 'tweet_ids.txt')
@@ -280,7 +280,7 @@ def tracktoscreen0_demo(limit=10):
     oauth = credsfromfile()
     handler = TweetViewer(limit=limit)
     client = Streamer(handler, **oauth)
-    keywords = "Pistorius, #OscarTrial, gerrie nel"
+    keywords = "robin williams"
     client.statuses.filter(track=keywords)
 
 def tracktoscreen1_demo(limit=50):
@@ -333,14 +333,14 @@ def twitterclass_demo():
     tw.tweets()
 
 
-DEMOS = [6]
+DEMOS = [0]
 
 if __name__ == "__main__":
     #import doctest
     #doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
     if 0 in DEMOS:
-        tracktoscreen1_demo()
+        tracktoscreen0_demo()
     if 1 in DEMOS:
         streamtofile_demo()
     if 2 in DEMOS:
