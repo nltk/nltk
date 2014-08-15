@@ -49,7 +49,7 @@ import re
 
 # This particular element is used in a couple ways, so we define it
 # with a name:
-emoticon_string = r"""
+EMOTICONS = r"""
     (?:
       [<>]?
       [:;=8]                     # eyes
@@ -67,7 +67,7 @@ emoticon_string = r"""
 # URL pattern due to John Gruber, modified by Tom Winzig. See
 # https://gist.github.com/winzig/8894715
 
-url_string = r"""			# Capture 1: entire matched URL
+URLS = r"""			# Capture 1: entire matched URL
   (?:
   https?:				# URL protocol and colon
     (?:
@@ -110,8 +110,8 @@ url_string = r"""			# Capture 1: entire matched URL
 """
 
 # The components of the tokenizer:
-regex_strings = (
-    url_string,
+REGEXPS = (
+    URLS,
     # Phone numbers:
     r"""
     (?:
@@ -130,7 +130,7 @@ regex_strings = (
     )"""
     ,
     # ASCII Emoticons
-    emoticon_string
+    EMOTICONS
     ,
     # HTML tags:
      r"""<[^>\s]+>"""
@@ -162,11 +162,12 @@ regex_strings = (
 ######################################################################
 # This is the core tokenizing regex:
 
-word_re = re.compile(r"""(%s)""" % "|".join(regex_strings), re.VERBOSE | re.I
+word_re = re.compile(r"""(%s)""" % "|".join(REGEXPS), re.VERBOSE | re.I
                      | re.UNICODE)
 
-# The emoticon string gets its own regex so that we can preserve case for them as needed:
-emoticon_re = re.compile(emoticon_string, re.VERBOSE | re.I | re.UNICODE)
+# The emoticon string gets its own regex so that we can preserve case for
+# them as needed:
+emoticon_re = re.compile(EMOTICONS, re.VERBOSE | re.I | re.UNICODE)
 
 # These are for regularizing HTML entities to Unicode:
 html_entity_digit_re = re.compile(r"&#\d+;")
@@ -177,7 +178,7 @@ amp = "&amp;"
 
 class TweetTokenizer:
     def __init__(self, preserve_case=True):
-        self.preserve_case=preserve_case
+        self.preserve_case = preserve_case
 
     def tokenize(self, s):
         """
@@ -193,16 +194,17 @@ class TweetTokenizer:
             s = str(s).encode('string_escape')
             s = str(s)
         # Fix HTML character entities:
-        s = self.__html2unicode(s)
+        s = self._html2unicode(s)
         # Tokenize:
         words = word_re.findall(s)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
-            words = list(map((lambda x : x if emoticon_re.search(x) else x.lower()), words))
+            words = list(map((lambda x : x if emoticon_re.search(x) else
+                              x.lower()), words))
         return words
 
 
-    def __html2unicode(self, s):
+    def _html2unicode(self, s):
         """
         Try to replace all the HTML entities in `s` with their corresponding
         Unicode characters.
@@ -229,6 +231,13 @@ class TweetTokenizer:
             s = s.replace(amp, " and ")
         return s
 
+######################################################################
+#{ Tokenization Function
+######################################################################
+
+def casual_tokenize(text):
+    return TweetTokenizer().tokenize(text)
+
 ###############################################################################
 
 if __name__ == '__main__':
@@ -249,16 +258,16 @@ if __name__ == '__main__':
     tweets = [s0, s1, s2, s3, s4, s5]
     toks = [t0, t1, t2, t3, t4, t5]
 
-    def test(s, t):
+    def test(left, right):
         tokenizer = TweetTokenizer()
-        tokenised = tokenizer.tokenize(s)
-        if tokenised==t:
+        tokenised = tokenizer.tokenize(left)
+        if tokenised==right:
             return True
         else:
             return tokenised
 
-    for (s, t) in zip(tweets, toks):
-        print(test(s, t))
+    for (left, right) in zip(tweets, toks):
+        print(test(left, right))
 
 
 
