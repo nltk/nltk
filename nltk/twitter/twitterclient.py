@@ -15,7 +15,7 @@ import json
 import os
 
 try:
-    from twython import Twython, TwythonStreamer
+    from twython import Twython, TwythonStreamer, TwythonError
 except ImportError as e:
     import textwrap
     msg = """The NLTK twitterclient module requires the Twython package. See\
@@ -23,7 +23,7 @@ except ImportError as e:
     e.msg = textwrap.fill(msg)
     raise
 
-from nltk.twitter.util import credsfromfile
+from nltk.twitter.util import credsfromfile, guess_path
 from nltk.twitter.api import TweetHandlerI
 
 
@@ -34,8 +34,8 @@ class Streamer(TwythonStreamer):
 
     The streaming API requires OAuth 1.0 authentication.
     """
-    def __init__(self, handler, app_key, app_secret, oauth_token,
-                 oauth_token_secret):
+    def __init__(self, app_key, app_secret, oauth_token,
+                 oauth_token_secret, handler=None):
         self.handler = handler
         self.do_continue = True
         super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
@@ -69,8 +69,8 @@ class Query(Twython):
     """
     Class for accessing the Twitter REST API.
     """
-    def __init__(self, handler, app_key, app_secret, oauth_token,
-                 oauth_token_secret):
+    def __init__(self, app_key, app_secret, oauth_token,
+                 oauth_token_secret, handler=None):
         self.handler = handler
         self.do_continue = True
         super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
@@ -125,11 +125,13 @@ class Query(Twython):
             print("""Written {} Tweets to file {} of length {}
             bytes""".format(count, outfile, os.path.getsize( outfile)))
 
-    def search(self, query, count=100, lang='en'):
+    def search(self, keywords, count=100, lang='en'):
         """
         Call the REST API 'search/tweets' endpoint with some plausible defaults.
         """
-        results = self.search(q=query, count=100, lang='en')
+        results = self.get('search/tweets', {'q': keywords, 'count': 100,
+                                             'lang': 'en'})
+        #results = self.search(q=keywords, count=100, lang='en')
         return results['statuses']
 
 
@@ -137,12 +139,12 @@ class Query(Twython):
 
 class Twitter(object):
     """
-    Wrapper class with severely restricted functionality.
+    Wrapper class with restricted functionality.
     """
     def __init__(self):
         self._oauth = credsfromfile()
-        self.streamer = Streamer(None, **self._oauth)
-        self.query = Query(None, **self._oauth)
+        self.streamer = Streamer(**self._oauth)
+        self.query = Query(**self._oauth)
 
 
     def tweets(self, keywords='', follow='', stream=True, limit=100):
@@ -155,16 +157,15 @@ class Twitter(object):
                 self.streamer.statuses.filter(track=keywords, follow=follow)
         else:
             self.query.register(handler)
-            if keywords != '':
+            if keywords == '':
+                raise ValueError("Please supply at least one keyword to search for.")
+            else:
                 tweets = self.query.search(keywords)
                 for t in tweets:
                     print(t['text'])
 
-
-
-
-    def tofile(self, keywords='', track='', stream=True, limit=100):
-        pass
+    def tofile(self, subdir, keywords='', stream=True, limit=100):
+        handler = TweetWriter(limit=limit, repeat=False, subdir=subdir)
 
 
 
@@ -196,7 +197,7 @@ class TweetWriter(TweetHandlerI):
     Handle data by writing it to a file.
     """
     def __init__(self, limit=2000, repeat=True, fprefix='tweets',
-                 subdir='streamed_data'):
+                 subdir='twitter'):
         """
         :param limit: number of data items to process in the current round of
         processing
@@ -204,7 +205,7 @@ class TweetWriter(TweetHandlerI):
         """
         self.repeat = repeat
         self.fprefix = fprefix
-        self.subdir = subdir
+        self.subdir = guess_path(subdir)
         self.fname = self.timestamped_file()
         self.startingup = True
         super().__init__(limit)
@@ -310,30 +311,30 @@ def corpusreader_demo():
     from nltk.corpus import TwitterCorpusReader
     root = os.environ['TWITTER']
     reader = TwitterCorpusReader(root, '.*\.json')
-    for t in reader.full_tweets()[:2]:
+    for t in reader.docs()[:2]:
         print(t)
 
-    for t in reader.tweets()[:15]:
+    for t in reader.strings()[:15]:
         print(t)
 
-    for t in reader.tokenised_tweets()[:15]:
+    for t in reader.tokenized()[:15]:
         print(t)
 
 
 def search_demo():
     oauth = credsfromfile()
     client = Query(**oauth)
-    s = client.search(q='nltk', count=100)
-    for t in client.search(q='nltk', count=100)['statuses']:
+    for t in client.search(keywords='nltk', count=10):
         print(t['text'])
 
 
 def twitterclass_demo():
     tw = Twitter()
-    tw.tweets()
+    tw.tweets(keywords='love')
+    tw.tofile(keywords='', track='', stream=True, limit=100)
 
 
-DEMOS = [0]
+DEMOS = [6]
 
 if __name__ == "__main__":
     #import doctest

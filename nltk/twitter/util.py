@@ -114,3 +114,14 @@ def add_access_token(creds_file=None):
     s = 'access_token={}\n'.format(ACCESS_TOKEN)
     with open(creds_file, 'a') as f:
         print(s, file=f)
+
+
+def guess_path(pth):
+    """
+    If the path is not absolute, guess that it is a subdirectory of the
+    user's home directory.
+    """
+    if os.path.isabs(pth):
+        return pth
+    else:
+        return os.path.expanduser(os.path.join("~", subdir))
