@@ -19,8 +19,6 @@ NUM:date When did Hawaii become a state ?
 
 # based on PPAttachmentCorpusReader
 
-import os
-
 from nltk import compat
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
