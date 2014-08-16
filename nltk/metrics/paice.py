@@ -24,7 +24,15 @@ from math import sqrt
 
 
 def get_words_from_dictionary(lemmas):
-    '''Get original set of words used for analysis.'''
+    '''
+    Get original set of words used for analysis.
+
+    :param lemmas: A dictionary where keys are lemmas and values are sets
+    or lists of words corresponding to that lemma.
+    :type lemmas: dict
+    :return: Set of words that exist as values in the dictionary
+    :rtype: set
+    '''
     words = set()
     for lemma in lemmas:
         words.update(set(lemmas[lemma]))
@@ -32,7 +40,16 @@ def get_words_from_dictionary(lemmas):
 
 
 def _truncate(words, cutlength):
-    '''Group words by length truncating them at \'cutlength\'.'''
+    '''Group words by stems defined by truncating them at given length.
+
+    :param words: Set of words used for analysis
+    :param cutlength: Words are stemmed by cutting at this length.
+    :type words: set or list
+    :type cutlength: int
+    :return: Dictionary where keys are stems and values are sets of words
+    corresponding to that stem.
+    :rtype: dict
+    '''
     stems = {}
     for word in words:
         stem = word[:cutlength]
@@ -42,9 +59,18 @@ def _truncate(words, cutlength):
             stems[stem] = set([word])
     return stems
 
+
 # Reference: http://en.wikipedia.org/wiki/Line-line_intersection
 def _count_intersection(l1, l2):
-    '''Count intersections between two line segments defined by coordinate pairs.'''
+    '''Count intersection between two line segments defined by coordinate pairs.
+
+    :param l1: Tuple of two coordinate pairs defining the first line segment
+    :param l2: Tuple of two coordinate pairs defining the second line segment
+    :type l1: tuple
+    :type l2: tuple
+    :return: Coordinates of the intersection
+    :rtype: tuple
+    '''
     x1, y1 = l1[0]
     x2, y2 = l1[1]
     x3, y3 = l2[0]
@@ -57,8 +83,8 @@ def _count_intersection(l1, l2):
             # When lines are parallel, they must be on the y-axis.
             # We can ignore x-axis because we stop counting the
             # truncation line when we get there.
-            # There are no other options as UI grows and OI diminishes
-            # when we go along the truncation line.
+            # There are no other options as UI (x-axis) grows and
+            # OI (y-axis) diminishes when we go along the truncation line.
             return (0.0, y4)
 
     x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denominator
@@ -67,8 +93,13 @@ def _count_intersection(l1, l2):
 
 
 def _get_derivative(coordinates):
-    '''Get derivative of the line from (0,0) to the point defined by
-    the coordinates.'''
+    '''Get derivative of the line from (0,0) to given coordinates.
+
+    :param coordinates: A coordinate pair
+    :type coordinates: tuple
+    :return: Derivative; inf if x is zero
+    :rtype: float
+    '''
     try:
         return coordinates[1] / coordinates[0]
     except ZeroDivisionError:
@@ -76,7 +107,17 @@ def _get_derivative(coordinates):
 
 
 def _calculate_cut(lemmawords, stems):
-    '''Count understemmed and overstemmed pairs for (lemma, stem) pair with common words.'''
+    '''Count understemmed and overstemmed pairs for (lemma, stem) pair with common words.
+
+    :param lemmawords: Set or list of words corresponding to certain lemma.
+    :param stems: A dictionary where keys are stems and values are sets
+    or lists of words corresponding to that stem.
+    :type lemmawords: set or list
+    :type stems: dict
+    :return: Amount of understemmed and overstemmed pairs contributed by words
+    existing in both lemmawords and stems.
+    :rtype: tuple
+    '''
     umt, wmt = 0.0, 0.0
     for stem in stems:
         cut = set(lemmawords) & set(stems[stem])
@@ -91,7 +132,20 @@ def _calculate_cut(lemmawords, stems):
 
 
 def _calculate(lemmas, stems):
-    '''Calculate actual and maximum possible amounts of understemmed and overstemmed word pairs.'''
+    '''Calculate actual and maximum possible amounts of understemmed and overstemmed word pairs.
+
+    :param lemmas: A dictionary where keys are lemmas and values are sets
+    or lists of words corresponding to that lemma.
+    :param stems: A dictionary where keys are stems and values are sets
+    or lists of words corresponding to that stem.
+    :type lemmas: dict
+    :type stems: dict
+    :return: Global unachieved merge total (gumt),
+    global desired merge total (gdmt),
+    global wrongly merged total (gwmt) and
+    global desired non-merge total (gdnt).
+    :rtype: tuple
+    '''
 
     n = sum(len(lemmas[word]) for word in lemmas)
 
@@ -119,7 +173,18 @@ def _calculate(lemmas, stems):
 
 
 def _indexes(gumt, gdmt, gwmt, gdnt):
-    '''Count Understemming Index (UI), Overstemming Index (OI) and Stemming Weight (SW).'''
+    '''Count Understemming Index (UI), Overstemming Index (OI) and Stemming Weight (SW).
+
+    :param gumt, gdmt, gwmt, gdnt: Global unachieved merge total (gumt),
+    global desired merge total (gdmt),
+    global wrongly merged total (gwmt) and
+    global desired non-merge total (gdnt).
+    :type gumt, gdmt, gwmt, gdnt: float
+    :return: Understemming Index (UI),
+    Overstemming Index (OI) and
+    Stemming Weight (SW).
+    :rtype: tuple
+    '''
     # Calculate Understemming Index (UI),
     # Overstemming Index (OI) and Stemming Weight (SW)
     try:
@@ -147,6 +212,14 @@ def _indexes(gumt, gdmt, gwmt, gdnt):
 class Paice(object):
     '''Class for storing lemmas, stems and evaluation metrics.'''
     def __init__(self, lemmas, stems):
+        '''
+        :param lemmas: A dictionary where keys are lemmas and values are sets
+        or lists of words corresponding to that lemma.
+        :param stems: A dictionary where keys are stems and values are sets
+        or lists of words corresponding to that stem.
+        :type lemmas: dict
+        :type stems: dict
+        '''
         self.lemmas = lemmas
         self.stems = stems
         self.coords = []
@@ -169,7 +242,15 @@ class Paice(object):
         return ''.join(text)
 
     def _get_truncation_indexes(self, words, cutlength):
-        '''Count (UI, OI) when stemming is done by truncating words at \'cutlength\'.'''
+        '''Count (UI, OI) when stemming is done by truncating words at \'cutlength\'.
+
+        :param words: Words used for the analysis
+        :param cutlength: Words are stemmed by cutting them at this length
+        :type words: set or list
+        :type cutlength: int
+        :return: Understemming and overstemming indexes
+        :rtype: tuple
+        '''
 
         truncated = _truncate(words, cutlength)
         gumt, gdmt, gwmt, gdnt = _calculate(self.lemmas, truncated)
@@ -177,7 +258,16 @@ class Paice(object):
         return (ui, oi)
 
     def _get_truncation_coordinates(self, cutlength=0):
-        '''Count (UI, OI) pairs for truncation points until we find the segment where (ui, oi) crosses the truncation line.'''
+        '''Count (UI, OI) pairs for truncation points until we find the segment where (ui, oi) crosses the truncation line.
+
+        :param cutlength: Optional parameter to start counting from (ui, oi)
+        coordinates gotten by stemming at this length. Useful for speeding up
+        the calculations when you know the approximate location of the
+        intersection.
+        :type cutlength: int
+        :return: List of coordinate pairs that define the truncation line
+        :rtype: list
+        '''
         words = get_words_from_dictionary(self.lemmas)
         maxlength = max(len(word) for word in words)
 
@@ -207,7 +297,13 @@ class Paice(object):
         return coords
 
     def _errt(self):
-        '''Count Error-Rate Relative to Truncation (ERRT).'''
+        '''Count Error-Rate Relative to Truncation (ERRT).
+
+        :return: ERRT, length of the line from origo to (UI, OI) divided by
+        the length of the line from origo to the point defined by the same
+        line when extended until the truncation line.
+        :rtype: float
+        '''
         # Count (UI, OI) pairs for truncation points until we find the segment where (ui, oi) crosses the truncation line
         self.coords = self._get_truncation_coordinates()
         if (0.0, 0.0) in self.coords:
@@ -242,14 +338,16 @@ class Paice(object):
 def demo():
     '''Demonstration of the module.'''
     # Some words with their real lemmas
-    lemmas = {'consol': ['consol', 'consols'],
-              'console': ['consoled', 'consoles', 'consoling'],
-              'kneel': ['kneel', 'knelt']
+    lemmas = {'kneel': ['kneel', 'knelt'],
+              'range': ['range', 'ranged'],
+              'ring': ['ring', 'rang', 'rung']
               }
     # Same words with stems from a stemming algorithm
-    stems = {'consol': ['consol', 'consoled', 'consoles', 'consoling', 'consols'],
-             'kneel': ['kneel'],
-             'knelt': ['knelt']
+    stems = {'kneel': ['kneel'],
+             'knelt': ['knelt'],
+             'rang': ['rang', 'range', 'ranged'],
+             'ring': ['ring'],
+             'rung': ['rung']
              }
     print('Words grouped by their lemmas:')
     for lemma in sorted(lemmas):
@@ -263,8 +361,12 @@ def demo():
     print(p)
     print()
     # Let's "change" results from a stemming algorithm
-    stems = {'consol': ['consol', 'consoled', 'consoles', 'consoling', 'consols'],
-             'kne': ['kneel', 'knelt'],
+    stems = {'kneel': ['kneel'],
+             'knelt': ['knelt'],
+             'rang': ['rang'],
+             'range': ['range', 'ranged'],
+             'ring': ['ring'],
+             'rung': ['rung']
              }
     print('Counting stats after changing stemming results:')
     for stem in sorted(stems):
