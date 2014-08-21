@@ -1,4 +1,13 @@
-Version 3.0b1 2014-07-11
+Version 3.0b2 2014-08-21
+* minor bugfixes and clean-ups
+* renamed remaining parse_ methods to read_ or load_, cf issue #656
+* added Paice's method of evaluating stemming algorithms
+
+Thanks to the following contributors to 3.0.0b2: Lars Buitinck,
+Cristian Capdevila, Lauri Hallila, Ofer Helman, Dmitrijs Milajevs,
+lade, Liling Tan, Steven Xu
+
+Version 3.0.0b1 2014-07-11
 * Added SentiWordNet corpus and corpus reader
 * Fixed support for 10-column dependency file format
 * Changed Tree initialization to use fromstring
