@@ -1664,7 +1664,6 @@ class ConditionalFreqDist(defaultdict):
 
         >>> cfdist[3]
         FreqDist({'the': 3, 'dog': 2, 'not': 1})
-        <FreqDist with 3 samples and 6 outcomes>
         >>> cfdist[3].freq('the')
         0.5
         >>> cfdist[3]['dog']
