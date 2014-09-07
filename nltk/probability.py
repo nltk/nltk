@@ -44,7 +44,6 @@ import random
 import warnings
 import array
 from operator import itemgetter
-from itertools import islice
 from collections import defaultdict
 from functools import reduce
 from nltk import compat
@@ -218,9 +217,7 @@ class FreqDist(Counter):
         Plot samples from the frequency distribution
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
-        plotted.  If two integer parameters m, n are supplied, plot a
-        subset of the samples, beginning with m and stopping at n-1.
-        For a cumulative plot, specify cumulative=True.
+        plotted.  For a cumulative plot, specify cumulative=True.
         (Requires Matplotlib to be installed.)
 
         :param title: The title for the graph
@@ -236,7 +233,7 @@ class FreqDist(Counter):
 
         if len(args) == 0:
             args = [len(self)]
-        samples = list(islice(self, *args))
+        samples = [item for item, _ in self.most_common(*args)]
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         if cumulative:
@@ -264,16 +261,14 @@ class FreqDist(Counter):
         Tabulate the given samples from the frequency distribution (cumulative),
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
-        plotted.  If two integer parameters m, n are supplied, plot a
-        subset of the samples, beginning with m and stopping at n-1.
-        (Requires Matplotlib to be installed.)
+        plotted.
 
         :param samples: The samples to plot (default is all samples)
         :type samples: list
         """
         if len(args) == 0:
             args = [len(self)]
-        samples = list(islice(self, *args))
+        samples = [item for item, _ in self.most_common(*args)]
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         if cumulative:
