@@ -399,7 +399,7 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 
     def __str__(self):
         return Production.__unicode__(self) + \
-            (' [1.0]' if (self.prob() == 1.0) else ' [%.g]' % self.prob())
+            (' [1.0]' if (self.prob() == 1.0) else ' [%g]' % self.prob())
 
     def __eq__(self, other):
         return (type(self) == type(other) and
