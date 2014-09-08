@@ -13,21 +13,24 @@ counts Understemming Index (UI), Overstemming Index (OI), Stemming Weight (SW) a
 Understemming and Overstemming values
 -------------------------------------
 
-    >>> lemmas = {'consol': ['consol', 'consols'],
-    ...           'console': ['consoled', 'consoles', 'consoling'],
-    ...           'kneel': ['kneel', 'knelt']}
-    >>> stems = {'consol': ['consol', 'consoled', 'consoles', 'consoling', 'consols'],
-    ...          'kneel': ['kneel'],
-    ...          'knelt': ['knelt']}
+    >>> lemmas = {'kneel': ['kneel', 'knelt'],
+    ...           'range': ['range', 'ranged'],
+    ...           'ring': ['ring', 'rang', 'rung']}
+    >>> stems = {'kneel': ['kneel'],
+    ...          'knelt': ['knelt'],
+    ...          'rang': ['rang', 'range', 'ranged'],
+    ...          'ring': ['ring'],
+    ...          'rung': ['rung']}
     >>> p = Paice(lemmas, stems)
     >>> p.gumt, p.gdmt, p.gwmt, p.gdnt
-    (1.0, 5.0, 6.0, 16.0)
+    (4.0, 5.0, 2.0, 16.0)
 
     >>> p.ui, p.oi, p.sw
-    (0.2, 0.375, 1.875)
+    (0.8, 0.125, 0.15625)
 
     >>> p.errt
     1.0
 
     >>> p.coords
-    [(0.0, 1.0), (0.0, 0.375), (0.2, 0.375)]
+    [(0.0, 1.0), (0.0, 0.375), (0.6, 0.125), (0.8, 0.125)]
+	

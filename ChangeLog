@@ -1,4 +1,32 @@
-Version 3.0b1 2014-07-11
+Version 3.0.0 2014-09-07
+* minor bugfixes
+* added phrase extraction code by Liling Tan and Fredrik Hedman
+
+Thanks to the following contributors to 3.0.0:
+Mark Amery, Ivan Barria, Ingolf Becker, Francis Bond, Lars
+Buitinck, Cristian Capdevila, Arthur Darcet, Michelle Fullwood,
+Dan Garrette, Dougal Graham, Dan Garrette, Dougal Graham, Lauri
+Hallila, Tyler Hartley, Fredrik Hedman, Ofer Helman, Bruce Hill,
+Marcus Huderle, Nancy Ide, Nick Johnson, Angelos Katharopoulos,
+Ewan Klein, Mikhail Korobov, Chris Liechti, Peter Ljunglof,
+Joseph Lynch, Haejoong Lee, Peter Ljunglöf, Dean Malmgren, Rob
+Malouf, Thorsten Marek, Dmitrijs Milajevs, Shari A’aidil
+Nasruddin, Lance Nathan, Joel Nothman, Alireza Nourian, Alexander
+Oleynikov, Ted Pedersen, Jacob Perkins, Will Roberts, Alex
+Rudnick, Nathan Schneider, Geraldine Sim Wei Ying, Lynn Soe,
+Liling Tan, Louis Tiao, Marcus Uneson, Yu Usami, Steven Xu, Zhe
+Wang, Chuck Wooters, lade, isnowfy, onesandzeros, pquentin, wvanlint
+
+Version 3.0b2 2014-08-21
+* minor bugfixes and clean-ups
+* renamed remaining parse_ methods to read_ or load_, cf issue #656
+* added Paice's method of evaluating stemming algorithms
+
+Thanks to the following contributors to 3.0.0b2: Lars Buitinck,
+Cristian Capdevila, Lauri Hallila, Ofer Helman, Dmitrijs Milajevs,
+lade, Liling Tan, Steven Xu
+
+Version 3.0.0b1 2014-07-11
 * Added SentiWordNet corpus and corpus reader
 * Fixed support for 10-column dependency file format
 * Changed Tree initialization to use fromstring

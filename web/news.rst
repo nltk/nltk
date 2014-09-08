@@ -1,11 +1,19 @@
 NLTK News
 =========
 
+NLTK 3.0.0 released : September 2014
+   Minor bugfixes. For full details see:
+   https://github.com/nltk/nltk/blob/develop/ChangeLog
+
+NLTK 3.0.0b2 released : August 2014
+   Minor bugfixes and clean-ups. For full details see:
+   https://github.com/nltk/nltk/blob/develop/ChangeLog
+
 NLTK Book Updates : July 2014
    The NLTK book is being updated for Python 3 and NLTK 3 `here <http://nltk.org/book>`_.
    The original Python 2 edition is still available `here <http://nltk.org/book_1ed>`_.
 
-NLTK 3.0b1 released : July 2014
+NLTK 3.0.0b1 released : July 2014
    FrameNet, SentiWordNet, universal tagset, misc efficiency improvements and bugfixes
    Several API changes, see https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
    For full details see:
