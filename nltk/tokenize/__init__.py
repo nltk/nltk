@@ -66,7 +66,7 @@ from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
                                     BlanklineTokenizer, WordPunctTokenizer,
                                     wordpunct_tokenize, regexp_tokenize,
                                     blankline_tokenize)
-from nltk.tokenize.punkt    import PunktSentenceTokenizer, PunktWordTokenizer
+from nltk.tokenize.punkt    import PunktSentenceTokenizer
 from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
 from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.texttiling import TextTilingTokenizer
