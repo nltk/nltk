@@ -3,6 +3,7 @@ from __future__ import print_function, unicode_literals
 import unittest
 from nltk.stem.snowball import SnowballStemmer
 
+
 class SnowballTest(unittest.TestCase):
 
     def test_russian(self):
@@ -21,6 +22,11 @@ class SnowballTest(unittest.TestCase):
 
         assert stemmer_german.stem("keinen") == 'kein'
         assert stemmer_german2.stem("keinen") == 'keinen'
+
+    def test_spanish(self):
+        stemmer = SnowballStemmer('spanish')
+
+        assert stemmer.stem("Visionado") == 'vision'
 
     def test_short_strings_bug(self):
         stemmer = SnowballStemmer('english')
