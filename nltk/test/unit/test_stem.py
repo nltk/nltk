@@ -28,6 +28,9 @@ class SnowballTest(unittest.TestCase):
 
         assert stemmer.stem("Visionado") == 'vision'
 
+        # The word 'algue' was raising an IndexError
+        assert stemmer.stem("algue") == 'algu'
+
     def test_short_strings_bug(self):
         stemmer = SnowballStemmer('english')
         assert stemmer.stem("y's") == 'y'

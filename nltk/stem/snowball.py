@@ -26,6 +26,7 @@ from nltk.stem import porter
 
 from nltk.stem.api import StemmerI
 
+
 class SnowballStemmer(StemmerI):
 
     """
@@ -187,7 +188,6 @@ class _ScandinavianStemmer(_LanguageSpecificStemmer):
                 break
 
         return r1
-
 
 
 class _StandardStemmer(_LanguageSpecificStemmer):
@@ -3551,7 +3551,7 @@ class SpanishStemmer(_StandardStemmer):
                     word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
 
-                    if word[-2:] == "gu" and rv[-1] == "u":
+                    if word[-2:] == "gu" and rv[-1:] == "u":
                         word = word[:-1]
                 else:
                     word = word[:-len(suffix)]
@@ -3561,9 +3561,7 @@ class SpanishStemmer(_StandardStemmer):
                     .replace("\xED", "i").replace("\xF3", "o")
                     .replace("\xFA", "u"))
 
-
         return word
-
 
 
 class SwedishStemmer(_ScandinavianStemmer):
@@ -3644,9 +3642,7 @@ class SwedishStemmer(_ScandinavianStemmer):
                     word = word[:-1]
                 break
 
-
         return word
-
 
 
 def demo():
@@ -3720,8 +3716,6 @@ def demo():
         print("\n")
 
 
-
 if __name__ == "__main__":
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
-
