@@ -18,7 +18,7 @@ try:
     from nltk.draw.util import CanvasFrame, ShowText
 
 except ImportError:
-    pass
+    """Ignore ImportError because tkinter might not be available."""
 
 from nltk.util import in_idle
 from nltk.tag import RegexpTagger
