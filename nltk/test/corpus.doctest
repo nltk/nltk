@@ -9,7 +9,7 @@ The `nltk.corpus` package defines a collection of *corpus reader*
 classes, which can be used to access the contents of a diverse set of
 corpora.  The list of available corpora is given at:
 
-http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml
+http://www.nltk.org/nltk_data/
 
 Each corpus reader class is specialized to handle a specific
 corpus format.  In addition, the `nltk.corpus` package automatically
