@@ -149,7 +149,7 @@ than just bare word strings.
      [[('There', 'EX'), ('was', 'BEDZ'), ('about', 'IN'), ...],
       [('Not', '*'), ('the', 'AT'), ('noblest', 'JJT'), ...], ...], ...]
 
-Similarly, the Indian Langauge POS-Tagged Corpus includes samples of
+Similarly, the Indian Language POS-Tagged Corpus includes samples of
 Indian text annotated with part-of-speech tags:
 
     >>> from nltk.corpus import indian
@@ -555,7 +555,7 @@ senseval
 The Senseval 2 corpus is a word sense disambiguation corpus.  Each
 item in the corpus corresponds to a single ambiguous word.  For each
 of these words, the corpus contains a list of instances, corresponding
-to occurences of that word.  Each instance provides the word; a list
+to occurrences of that word.  Each instance provides the word; a list
 of word senses that apply to the word occurrence; and the word's
 context.
 
@@ -859,7 +859,7 @@ The VerbNet corpus is a lexicon that divides verbs into classes, based
 on their syntax-semantics linking behavior.  The basic elements in the
 lexicon are verb lemmas, such as 'abandon' and 'accept', and verb
 classes, which have identifiers such as 'remove-10.1' and
-'admire-31.2-1'.  These class identifiers consist of a representitive
+'admire-31.2-1'.  These class identifiers consist of a representative
 verb selected from the class, followed by a numerical identifier.  The
 list of verb lemmas, and the list of class identifiers, can be
 retrieved with the following methods:
@@ -904,7 +904,7 @@ list of thematic roles for a given Verbnet class:
 
 The Verbnet corpus also provides a variety of pretty printing
 functions that can be used to display the xml contents in a more
-consise form.  The simplest such method is `pprint()`:
+concise form.  The simplest such method is `pprint()`:
 
     >>> print(verbnet.pprint('57'))
     weather-57
@@ -980,7 +980,7 @@ parenthesis-delineated parse trees.
 Automatically Created Corpus Reader Instances
 =============================================
 
-When then `nltk.corpus` module is imported, it automatically creates a
+When the `nltk.corpus` module is imported, it automatically creates a
 set of corpus reader instances that can be used to access the corpora
 in the NLTK data distribution.  Here is a small sample of those
 corpus reader instances:
@@ -1107,7 +1107,7 @@ path to the root directory is stored in the ``root`` property:
 
 Each file within the corpus is identified by a platform-independent
 identifier, which is basically a path string that uses ``/`` as the
-path seperator.  I.e., this identifier can be converted to a relative
+path separator.  I.e., this identifier can be converted to a relative
 path as follows:
 
     >>> some_corpus_file_id = nltk.corpus.reuters.fileids()[0]
@@ -1247,7 +1247,7 @@ list), but does not store the data elements in memory; instead, data
 elements are read from the underlying data files on an as-needed
 basis.
 
-By only loading items from the file on an as-needesd basis, corpus
+By only loading items from the file on an as-needed basis, corpus
 views maintain both memory efficiency and responsiveness.  The memory
 efficiency of corpus readers is important because some corpora contain
 very large amounts of data, and storing the entire data set in memory
@@ -1270,7 +1270,7 @@ Writing New Corpus Readers
 
 In order to add support for new corpus formats, it is necessary to
 define new corpus reader classes.  For many corpus formats, writing
-new corpus readers is relatively streight-forward.  In this section,
+new corpus readers is relatively straight-forward.  In this section,
 we'll describe what's involved in creating a new corpus reader.  If
 you do create a new corpus reader, we encourage you to contribute it
 back to the NLTK project.
@@ -1332,11 +1332,12 @@ then you can often just inherit the base class's constructor.
 
 Data Access Methods
 ~~~~~~~~~~~~~~~~~~~
+
 The most common type of data access method takes an argument
 identifying which files to access, and returns a view covering those
-files.  This argument may be a a single file identifier string (to get
-a view for a specific file); a list of file identifier strings (to get
-a view for a specific list of files); or None (to get a view for the
+files.  This argument may be a single file identifier string (to get a
+view for a specific file); a list of file identifier strings (to get a
+view for a specific list of files); or None (to get a view for the
 entire corpus).  The method's implementation converts this argument to
 a list of path names using the `abspaths()` method, which handles all
 three value types (string, list, and None):
@@ -1402,7 +1403,7 @@ This simple block reader reads a single line at a time, and returns a
 single token (consisting of a string) for each whitespace-separated
 substring on the line.  A `StreamBackedCorpusView` built from this
 block reader will act like a read-only list of all the
-whitespace-seperated tokens in an underlying file.
+whitespace-separated tokens in an underlying file.
 
 When deciding how to define the block reader for a given corpus,
 careful consideration should be given to the size of blocks handled by
@@ -1470,7 +1471,7 @@ Plaintext Corpus Reader
 The plaintext corpus reader is used to access corpora that consist of
 unprocessed plaintext data.  It assumes that paragraph breaks are
 indicated by blank lines.  Sentences and words can be tokenized using
-the default tokenizers, or by custom tokenizers specificed as
+the default tokenizers, or by custom tokenizers specified as
 parameters to the constructor.
 
     >>> root = make_testcorpus(ext='.txt',
