@@ -29,9 +29,9 @@ class Feature(object):
     to the classname.
 
     """
-    #!!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
+    # !!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
     # and metaclass=abc.ABCMeta rather than NotImplementedError
-    #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
+    # http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
 
     json_tag = 'nltk.tbl.Feature'
     PROPERTY_NAME = None
@@ -77,19 +77,19 @@ class Feature(object):
         :param end: end of range (NOTE: inclusive!) where this feature should apply
 
         """
-        self.positions = None #to avoid warnings
+        self.positions = None  # to avoid warnings
         if end is None:
             self.positions = tuple(sorted(set([int(i) for i in positions])))
-        else:                #positions was actually not a list, but only the start index
+        else:                # positions was actually not a list, but only the start index
             try:
                 if positions > end:
                     raise TypeError
                 self.positions = tuple(range(positions, end+1))
             except TypeError:
-                #let any kind of erroneous spec raise ValueError
+                # let any kind of erroneous spec raise ValueError
                 raise ValueError("illegal interval specification: (start={0}, end={1})".format(positions, end))
 
-        #set property name given in subclass, or otherwise name of subclass
+        # set property name given in subclass, or otherwise name of subclass
         self.PROPERTY_NAME = self.__class__.PROPERTY_NAME or self.__class__.__name__
 
     def encode_json_obj(self):
@@ -113,11 +113,11 @@ class Feature(object):
         (many tbl trainers have a special representation for the
         target feature at [0])
 
-        #For instance, importing a concrete subclass (Feature is abstract)
+        For instance, importing a concrete subclass (Feature is abstract)
         >>> from nltk.tag.brill import Word
 
-        #First argument gives the possible start positions, second the
-        #possible window lengths
+        First argument gives the possible start positions, second the
+        possible window lengths
         >>> Word.expand([-3,-2,-1], [1])
         [Word([-3]), Word([-2]), Word([-1])]
 
@@ -130,14 +130,14 @@ class Feature(object):
         >>> Word.expand([-2,-1], [1])
         [Word([-2]), Word([-1])]
 
-        #a third optional argument excludes all Features whose positions contain zero
+        a third optional argument excludes all Features whose positions contain zero
         >>> Word.expand([-2,-1,0], [1,2], excludezero=False)
         [Word([-2]), Word([-1]), Word([0]), Word([-2, -1]), Word([-1, 0])]
 
         >>> Word.expand([-2,-1,0], [1,2], excludezero=True)
         [Word([-2]), Word([-1]), Word([-2, -1])]
 
-        #All window lengths must be positive
+        All window lengths must be positive
         >>> Word.expand([-2,-1], [0])
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
@@ -155,7 +155,7 @@ class Feature(object):
         :raises ValueError: for non-positive window lengths
         """
         if not all(x > 0 for x in winlens):
-            raise ValueError("non-positive window length in {0:s}".format(winlens))
+            raise ValueError("non-positive window length in {0}".format(winlens))
         xs = (starts[i:i+w] for w in winlens for i in range(len(starts)-w+1))
         return [cls(x) for x in xs if not (excludezero and 0 in x)]
 
@@ -187,8 +187,7 @@ class Feature(object):
 
 
         """
-        return (self.__class__ is other.__class__ and
-               set(self.positions) >= set(other.positions))
+        return self.__class__ is other.__class__ and set(self.positions) >= set(other.positions)
 
     def intersects(self, other):
         """
@@ -219,19 +218,19 @@ class Feature(object):
         :rtype: bool
         """
 
-        return bool((self.__class__ is other.__class__ and
-               set(self.positions) & set(other.positions)))
+        return bool((self.__class__ is other.__class__ and set(self.positions) & set(other.positions)))
 
-    #Rich comparisons for Features. With @functools.total_ordering (Python 2.7+),
+    # Rich comparisons for Features. With @functools.total_ordering (Python 2.7+),
     # it will be enough to define __lt__ and __eq__
     def __eq__(self, other):
-        return (self.__class__ is other.__class__ and
-               self.positions == other.positions)
+        return (self.__class__ is other.__class__ and self.positions == other.positions)
 
     def __lt__(self, other):
-        return (self.__class__.__name__ < other.__class__.__name__ or
-               #self.positions is a sorted tuple of ints
-               self.positions < other.positions)
+        return (
+            self.__class__.__name__ < other.__class__.__name__ or
+            #    self.positions is a sorted tuple of ints
+            self.positions < other.positions
+        )
 
     def __ne__(self, other):
         return not (self == other)

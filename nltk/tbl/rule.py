@@ -14,7 +14,7 @@ from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk import jsontags
 
 ######################################################################
-## Tag Rules
+# Tag Rules
 ######################################################################
 
 
@@ -115,7 +115,7 @@ class Rule(TagRule):
 
     """
 
-    json_tag='nltk.tbl.Rule'
+    json_tag = 'nltk.tbl.Rule'
 
     def __init__(self, templateid, original_tag, replacement_tag, conditions):
         """
@@ -182,14 +182,14 @@ class Rule(TagRule):
                  self._conditions == other._conditions))
 
     def __ne__(self, other):
-        return not (self==other)
+        return not (self == other)
 
     def __hash__(self):
 
         # Cache our hash value (justified by profiling.)
         try:
             return self.__hash
-        except:
+        except AttributeError:
             self.__hash = hash(repr(self))
             return self.__hash
 
@@ -198,16 +198,19 @@ class Rule(TagRule):
         # a sort key when deterministic=True.)
         try:
             return self.__repr
-        except:
-            self.__repr = ('%s(%r, %s, %s, [%s])' % (
-                self.__class__.__name__,
-                self.templateid,
-                unicode_repr(self.original_tag),
-                unicode_repr(self.replacement_tag),
+        except AttributeError:
+            self.__repr = (
+                "{0}('{1}', {2}, {3}, [{4}])".format(
+                    self.__class__.__name__,
+                    self.templateid,
+                    unicode_repr(self.original_tag),
+                    unicode_repr(self.replacement_tag),
 
-                # list(self._conditions) would be simpler but will not generate
-                # the same Rule.__repr__ in python 2 and 3 and thus break some tests
-                ", ".join("({0:s},{1:s})".format(f,unicode_repr(v)) for (f,v) in self._conditions)))
+                    # list(self._conditions) would be simpler but will not generate
+                    # the same Rule.__repr__ in python 2 and 3 and thus break some tests
+                    ', '.join("({0},{1})".format(f, unicode_repr(v)) for (f, v) in self._conditions)
+                )
+            )
 
             return self.__repr
 
@@ -217,16 +220,20 @@ class Rule(TagRule):
             Return a compact, predicate-logic styled string representation
             of the given condition.
             """
-            return ('%s:%s@[%s]' %
-                (feature.PROPERTY_NAME, value, ",".join(str(w) for w in feature.positions)))
+            return '{0}:{1}@[{2}]'.format(
+                feature.PROPERTY_NAME,
+                value,
+                ",".join(str(w) for w in feature.positions)
+            )
 
-        conditions = ' & '.join([_condition_to_logic(f,v) for (f,v) in self._conditions])
-        s = ('%s->%s if %s' % (
+        conditions = ' & '.join([_condition_to_logic(f, v) for (f, v) in self._conditions])
+        s = '{0}->{1} if {2}'.format(
             self.original_tag,
             self.replacement_tag,
-            conditions))
-        return s
+            conditions
+        )
 
+        return s
 
     def format(self, fmt):
         """
@@ -235,15 +242,17 @@ class Rule(TagRule):
         >>> from nltk.tbl.rule import Rule
         >>> from nltk.tag.brill import Pos
 
-        >>> r = Rule(23, "VB", "NN", [(Pos([-2,-1]), 'DT')])
+        >>> r = Rule("23", "VB", "NN", [(Pos([-2,-1]), 'DT')])
 
-        #r.format("str") == str(r)
+        r.format("str") == str(r)
+        True
         >>> r.format("str")
         'VB->NN if Pos:DT@[-2,-1]'
 
-        #r.format("repr") == repr(r)
+        r.format("repr") == repr(r)
+        True
         >>> r.format("repr")
-        "Rule(23, 'VB', 'NN', [(Pos([-2, -1]),'DT')])"
+        "Rule('23', 'VB', 'NN', [(Pos([-2, -1]),'DT')])"
 
         >>> r.format("verbose")
         'VB -> NN if the Pos of words i-2...i-1 is "DT"'
@@ -305,7 +314,8 @@ class Rule(TagRule):
 
         replacement = '%s -> %s' % (self.original_tag, self.replacement_tag)
         conditions = (' if ' if self._conditions else "") + ', and '.join(
-            [condition_to_str(f,v) for (f,v) in self._conditions])
+            condition_to_str(f, v) for (f, v) in self._conditions
+        )
         return replacement + conditions
 
 
