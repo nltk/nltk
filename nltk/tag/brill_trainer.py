@@ -12,16 +12,16 @@ from __future__ import print_function, division
 
 import bisect
 from collections import defaultdict
-import os.path
-from codecs import open
+
 import textwrap
 
 from nltk.tag.util import untag
 from nltk.tag.brill import BrillTagger
 
 ######################################################################
-## Brill Tagger Trainer
+#  Brill Tagger Trainer
 ######################################################################
+
 
 class BrillTaggerTrainer(object):
     """
@@ -91,13 +91,9 @@ class BrillTaggerTrainer(object):
            if the rule applies.  This records the next position we
            need to check to see if the rule messed anything up."""
 
-
-    #////////////////////////////////////////////////////////////
     # Training
-    #////////////////////////////////////////////////////////////
 
     def train(self, train_sents, max_rules=200, min_score=2, min_acc=None):
-
         """
         Trains the Brill tagger on the corpus *train_sents*,
         producing at most *max_rules* transformations, each of which
@@ -140,6 +136,7 @@ class BrillTaggerTrainer(object):
 
         #construct a BrillTaggerTrainer
         >>> tt = BrillTaggerTrainer(baseline, templates, trace=3)
+
         >>> tagger1 = tt.train(training_data, max_rules=10)
         TBL train (fast) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: None)
         Finding initial useful rules...
@@ -163,45 +160,37 @@ class BrillTaggerTrainer(object):
           22  27   5  24  | NN->-NONE- if Pos:VBD@[-1]
           17  17   0   0  | NN->CC if Pos:NN@[-1] & Word:and@[0]
 
-
-
         >>> tagger1.rules()[1:3]
         (Rule('001', 'NN', ',', [(Pos([-1]),'NN'), (Word([0]),',')]), Rule('001', 'NN', '.', [(Pos([-1]),'NN'), (Word([0]),'.')]))
-
 
         >>> train_stats = tagger1.train_stats()
         >>> [train_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
         [1775, 1269, [132, 85, 69, 51, 47, 33, 26, 24, 22, 17]]
 
-
-        ##FIXME: the following test fails -- why?
-        #
-        #>>> tagger1.print_template_statistics(printunused=False)
-        #TEMPLATE STATISTICS (TRAIN)  2 templates, 10 rules)
-        #TRAIN (   3163 tokens) initial  2358 0.2545 final:  1719 0.4565
-        ##ID | Score (train) |  #Rules     | Template
-        #--------------------------------------------
-        #001 |   404   0.632 |   7   0.700 | Template(Pos([-1]),Word([0]))
-        #000 |   235   0.368 |   3   0.300 | Template(Pos([-1]))
-        #<BLANKLINE>
-        #<BLANKLINE>
+        >>> tagger1.print_template_statistics(printunused=False)
+        TEMPLATE STATISTICS (TRAIN)  2 templates, 10 rules)
+        TRAIN (   2417 tokens) initial  1775 0.2656 final:  1269 0.4750
+        #ID | Score (train) |  #Rules     | Template
+        --------------------------------------------
+        001 |   305   0.603 |   7   0.700 | Template(Pos([-1]),Word([0]))
+        000 |   201   0.397 |   3   0.300 | Template(Pos([-1]))
+        <BLANKLINE>
+        <BLANKLINE>
 
         >>> tagger1.evaluate(gold_data) # doctest: +ELLIPSIS
         0.43996...
 
-        >>> (tagged, test_stats) = tagger1.batch_tag_incremental(testing_data, gold_data)
-
+        >>> tagged, test_stats = tagger1.batch_tag_incremental(testing_data, gold_data)
 
         >>> tagged[33][12:] == [('foreign', 'IN'), ('debt', 'NN'), ('of', 'IN'), ('$', 'NN'), ('64', 'CD'),
         ... ('billion', 'NN'), ('*U*', 'NN'), ('--', 'NN'), ('the', 'DT'), ('third-highest', 'NN'), ('in', 'NN'),
         ... ('the', 'DT'), ('developing', 'VBG'), ('world', 'NN'), ('.', '.')]
         True
 
-
         >>> [test_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
         [1855, 1376, [100, 85, 67, 58, 27, 36, 27, 16, 31, 32]]
 
-        ##a high-accuracy tagger
+        # a high-accuracy tagger
         >>> tagger2 = tt.train(training_data, max_rules=10, min_acc=0.99)
         TBL train (fast) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: 0.99)
         Finding initial useful rules...
@@ -225,20 +214,17 @@ class BrillTaggerTrainer(object):
           18  18   0   0  | CD->-NONE- if Pos:NN@[-1] & Word:0@[0]
           18  18   0   0  | NN->CC if Pos:NN@[-1] & Word:and@[0]
 
-
-        >>> tagger2.evaluate(gold_data) # doctest: +ELLIPSIS
+        >>> tagger2.evaluate(gold_data)  # doctest: +ELLIPSIS
         0.44159544...
-
         >>> tagger2.rules()[2:4]
         (Rule('001', 'NN', '.', [(Pos([-1]),'NN'), (Word([0]),'.')]), Rule('001', 'NN', 'IN', [(Pos([-1]),'NN'), (Word([0]),'of')]))
 
-        #NOTE1: (!!FIXME) A far better baseline uses nltk.tag.UnigramTagger,
-        #with a RegexpTagger only as backoff. For instance,
-        #>>> baseline = UnigramTagger(baseline_data, backoff=backoff)
-        #However, as of Nov 2013, nltk.tag.UnigramTagger does not yield consistent results
-        #between python versions. The simplistic backoff above is a workaround to make doctests
-        #get consistent input.
-
+        # NOTE1: (!!FIXME) A far better baseline uses nltk.tag.UnigramTagger,
+        # with a RegexpTagger only as backoff. For instance,
+        # >>> baseline = UnigramTagger(baseline_data, backoff=backoff)
+        # However, as of Nov 2013, nltk.tag.UnigramTagger does not yield consistent results
+        # between python versions. The simplistic backoff above is a workaround to make doctests
+        # get consistent input.
 
         :param train_sents: training data
         :type train_sents: list(list(tuple))
@@ -252,9 +238,8 @@ class BrillTaggerTrainer(object):
         :rtype: BrillTagger
 
         """
-        #!! FIXME: several tests are a bit too dependent on tracing format
-        #!! FIXME: tests in trainer.fast and trainer.brillorig are exact duplicates
-
+        # FIXME: several tests are a bit too dependent on tracing format
+        # FIXME: tests in trainer.fast and trainer.brillorig are exact duplicates
 
         # Basic idea: Keep track of the rules that apply at each position.
         # And keep track of the positions to which each rule applies.
@@ -273,9 +258,11 @@ class BrillTaggerTrainer(object):
         trainstats['sequencecount'] = len(test_sents)
         trainstats['templatecount'] = len(self._templates)
         trainstats['rulescores'] = []
-        trainstats['initialerrors'] = sum(tag[1] != truth[1]
-                                                    for paired in zip(test_sents, train_sents)
-                                                    for (tag, truth) in zip(*paired))
+        trainstats['initialerrors'] = sum(
+            tag[1] != truth[1]
+            for paired in zip(test_sents, train_sents)
+            for (tag, truth) in zip(*paired)
+        )
         trainstats['initialacc'] = 1 - trainstats['initialerrors']/trainstats['tokencount']
         if self._trace > 0:
             print("TBL train (fast) (seqs: {sequencecount}; tokens: {tokencount}; "
@@ -284,14 +271,17 @@ class BrillTaggerTrainer(object):
         # Initialize our mappings.  This will find any errors made
         # by the initial tagger, and use those to generate repair
         # rules, which are added to the rule mappings.
-        if self._trace > 0: print("Finding initial useful rules...")
+        if self._trace:
+            print("Finding initial useful rules...")
         self._init_mappings(test_sents, train_sents)
-        if self._trace > 0: print(("    Found %d useful rules." %
-                                   len(self._rule_scores)))
+        if self._trace:
+            print(("    Found %d useful rules." % len(self._rule_scores)))
 
         # Let the user know what we're up to.
-        if self._trace > 2: self._trace_header()
-        elif self._trace == 1: print("Selecting rules...")
+        if self._trace > 2:
+            self._trace_header()
+        elif self._trace == 1:
+            print("Selecting rules...")
 
         # Repeatedly select the best rule, and add it to `rules`.
         rules = []
@@ -304,10 +294,11 @@ class BrillTaggerTrainer(object):
                     score = self._rule_scores[rule]
                     trainstats['rulescores'].append(score)
                 else:
-                    break # No more good rules left!
+                    break  # No more good rules left!
 
                 # Report the rule that we found.
-                if self._trace > 1: self._trace_rule(rule)
+                if self._trace > 1:
+                    self._trace_rule(rule)
 
                 # Apply the new rule at the relevant sites
                 self._apply_rule(rule, test_sents)
@@ -349,7 +340,7 @@ class BrillTaggerTrainer(object):
             for wordnum, (word, tag) in enumerate(sent):
 
                 # Initialize tag_positions
-                self._tag_positions[tag].append( (sentnum,wordnum) )
+                self._tag_positions[tag].append((sentnum, wordnum))
 
                 # If it's an error token, update the rule-related mappings.
                 correct_tag = train_sents[sentnum][wordnum][1]
@@ -393,7 +384,7 @@ class BrillTaggerTrainer(object):
             self._positions_by_rule[rule][pos] = 1
         elif rule.original_tag == correct_tag:
             self._positions_by_rule[rule][pos] = -1
-        else: # was wrong, remains wrong
+        else:  # was wrong, remains wrong
             self._positions_by_rule[rule][pos] = 0
 
         # Update _rules_by_position
@@ -450,7 +441,7 @@ class BrillTaggerTrainer(object):
             for rule in best_rules:
                 positions = self._tag_positions[rule.original_tag]
 
-                unk = self._first_unknown_position.get(rule, (0,-1))
+                unk = self._first_unknown_position.get(rule, (0, -1))
                 start = bisect.bisect_left(positions, unk)
 
                 for i in range(start, len(positions)):
@@ -461,23 +452,23 @@ class BrillTaggerTrainer(object):
                         if self._rule_scores[rule] < max_score:
                             self._first_unknown_position[rule] = (sentnum,
                                                                   wordnum+1)
-                            break # The update demoted the rule.
+                            break  # The update demoted the rule.
 
                 if self._rule_scores[rule] == max_score:
-                    self._first_unknown_position[rule] = (len(train_sents)+1,0)
-                    #optimization: if no min_acc threshold given, don't bother computing accuracy
+                    self._first_unknown_position[rule] = (len(train_sents) + 1, 0)
+                    # optimization: if no min_acc threshold given, don't bother computing accuracy
                     if min_acc is None:
                         return rule
                     else:
                         changes = self._positions_by_rule[rule].values()
-                        num_fixed = len([c for c in changes if c==1])
-                        num_broken = len([c for c in changes if c==-1])
-                        #acc here is fixed/(fixed+broken); could also be
-                        #fixed/(fixed+broken+other) == num_fixed/len(changes)
+                        num_fixed = len([c for c in changes if c == 1])
+                        num_broken = len([c for c in changes if c == -1])
+                        # acc here is fixed/(fixed+broken); could also be
+                        # fixed/(fixed+broken+other) == num_fixed/len(changes)
                         acc = num_fixed/(num_fixed+num_broken)
                         if acc >= min_acc:
                             return rule
-                        #else: rule too inaccurate, discard and try next
+                        # else: rule too inaccurate, discard and try next
 
             # We demoted (or skipped due to < min_acc, if that was given)
             # all the rules with score==max_score.
@@ -486,19 +477,16 @@ class BrillTaggerTrainer(object):
             if not self._rules_by_score[max_score]:
                 del self._rules_by_score[max_score]
 
-
-
-
     def _apply_rule(self, rule, test_sents):
         """
         Update *test_sents* by applying *rule* everywhere where its
         conditions are met.
         """
         update_positions = set(self._positions_by_rule[rule])
-        old_tag = rule.original_tag
         new_tag = rule.replacement_tag
 
-        if self._trace > 3: self._trace_apply(len(update_positions))
+        if self._trace > 3:
+            self._trace_apply(len(update_positions))
 
         # Update test_sents.
         for (sentnum, wordnum) in update_positions:
@@ -549,7 +537,6 @@ class BrillTaggerTrainer(object):
 
             # Check if the change causes our templates to propose any
             # new rules for this position.
-            site_rules = set()
             for template in self._templates:
                 for new_rule in template.applicable_rules(test_sent, wordnum,
                                                           correct_tag):
@@ -577,9 +564,7 @@ class BrillTaggerTrainer(object):
         if self._trace > 3:
             self._trace_update_rules(num_obsolete, num_new, num_unseen)
 
-    #////////////////////////////////////////////////////////////
     # Tracing
-    #////////////////////////////////////////////////////////////
 
     def _trace_header(self):
         print("""
@@ -593,19 +578,17 @@ class BrillTaggerTrainer(object):
         """.rstrip())
 
     def _trace_rule(self, rule):
-        assert self._rule_scores[rule] == \
-               sum(self._positions_by_rule[rule].values())
+        assert self._rule_scores[rule] == sum(self._positions_by_rule[rule].values())
 
         changes = self._positions_by_rule[rule].values()
-        num_changed = len(changes)
-        num_fixed = len([c for c in changes if c==1])
-        num_broken = len([c for c in changes if c==-1])
-        num_other = len([c for c in changes if c==0])
+        num_fixed = len([c for c in changes if c == 1])
+        num_broken = len([c for c in changes if c == -1])
+        num_other = len([c for c in changes if c == 0])
         score = self._rule_scores[rule]
 
         rulestr = rule.format(self._ruleformat)
         if self._trace > 2:
-            print('%4d%4d%4d%4d  |' % (score,num_fixed,num_broken,num_other), end=' ')
+            print('%4d%4d%4d%4d  |' % (score, num_fixed, num_broken, num_other), end=' ')
             print(textwrap.fill(rulestr, initial_indent=' '*20, width=79,
                                 subsequent_indent=' '*18+'|   ').strip())
         else:
