@@ -8,7 +8,7 @@ counts Understemming Index (UI), Overstemming Index (OI), Stemming Weight (SW) a
 
    >>> from nltk.metrics import Paice
 
-  
+
 -------------------------------------
 Understemming and Overstemming values
 -------------------------------------
@@ -26,11 +26,10 @@ Understemming and Overstemming values
     (4.0, 5.0, 2.0, 16.0)
 
     >>> p.ui, p.oi, p.sw
-    (0.8, 0.125, 0.15625)
+    (0.8..., 0.125..., 0.15625...)
 
     >>> p.errt
     1.0
 
-    >>> p.coords
-    [(0.0, 1.0), (0.0, 0.375), (0.6, 0.125), (0.8, 0.125)]
-	
+    >>> [('{0:.3f}'.format(a), '{0:.3f}'.format(b)) for a, b in p.coords]
+    [('0.000', '1.000'), ('0.000', '0.375'), ('0.600', '0.125'), ('0.800', '0.125')]
