@@ -25,7 +25,7 @@ from functools import reduce
 
 from nltk import compat
 from nltk.parse import load_parser
-from nltk.draw.tree import draw_trees
+
 from nltk.sem.skolemize import skolemize
 from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,
                             ExistsExpression, IffExpression, ImpExpression,
@@ -53,14 +53,15 @@ class Constants(object):
     HOLE = 'HOLE'
     LABEL = 'LABEL'
 
-    MAP = {ALL: lambda v,e: AllExpression(v.variable, e),
-           EXISTS: lambda v,e: ExistsExpression(v.variable, e),
+    MAP = {ALL: lambda v, e: AllExpression(v.variable, e),
+           EXISTS: lambda v, e: ExistsExpression(v.variable, e),
            NOT: NegatedExpression,
            AND: AndExpression,
            OR: OrExpression,
            IMP: ImpExpression,
            IFF: IffExpression,
            PRED: ApplicationExpression}
+
 
 class HoleSemantics(object):
     """
@@ -90,8 +91,8 @@ class HoleSemantics(object):
         """
         self.holes = set()
         self.labels = set()
-        self.fragments = {}     # mapping of label -> formula fragment
-        self.constraints = set() # set of Constraints
+        self.fragments = {}  # mapping of label -> formula fragment
+        self.constraints = set()  # set of Constraints
         self._break_down(usr)
         self.top_most_labels = self._find_top_most_labels()
         self.top_hole = self._find_top_hole()
@@ -129,7 +130,7 @@ class HoleSemantics(object):
     def _find_top_nodes(self, node_list):
         top_nodes = node_list.copy()
         for f in compat.itervalues(self.fragments):
-            #the label is the first argument of the predicate
+            # the label is the first argument of the predicate
             args = f[1]
             for arg in args:
                 if arg in node_list:
@@ -149,7 +150,7 @@ class HoleSemantics(object):
         Return the hole that will be the top of the formula tree.
         """
         top_holes = self._find_top_nodes(self.holes)
-        assert len(top_holes) == 1   # it must be unique
+        assert len(top_holes) == 1  # it must be unique
         return top_holes.pop()
 
     def pluggings(self):
@@ -277,7 +278,7 @@ class HoleSemantics(object):
         if node in plugging:
             return self._formula_tree(plugging, plugging[node])
         elif node in self.fragments:
-            pred,args = self.fragments[node]
+            pred, args = self.fragments[node]
             children = [self._formula_tree(plugging, arg) for arg in args]
             return reduce(Constants.MAP[pred.variable.name], children)
         else:
@@ -293,15 +294,19 @@ class Constraint(object):
     def __init__(self, lhs, rhs):
         self.lhs = lhs
         self.rhs = rhs
+
     def __eq__(self, other):
         if self.__class__ == other.__class__:
             return self.lhs == other.lhs and self.rhs == other.rhs
         else:
             return False
+
     def __ne__(self, other):
         return not (self == other)
+
     def __hash__(self):
         return hash(repr(self))
+
     def __repr__(self):
         return '(%s < %s)' % (self.lhs, self.rhs)
 
@@ -310,14 +315,16 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
     if not grammar_filename:
         grammar_filename = 'grammars/sample_grammars/hole.fcfg'
 
-    if verbose: print('Reading grammar file', grammar_filename)
+    if verbose:
+        print('Reading grammar file', grammar_filename)
 
     parser = load_parser(grammar_filename)
 
     # Parse the sentence.
     tokens = sentence.split()
     trees = list(parser.parse(tokens))
-    if verbose: print('Got %d different parses' % len(trees))
+    if verbose:
+        print('Got %d different parses' % len(trees))
 
     all_readings = []
     for tree in trees:
@@ -325,14 +332,16 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         sem = tree.label()['SEM'].simplify()
 
         # Print the raw semantic representation.
-        if verbose: print('Raw:       ', sem)
+        if verbose:
+            print('Raw:       ', sem)
 
         # Skolemize away all quantifiers.  All variables become unique.
         while isinstance(sem, LambdaExpression):
             sem = sem.term
         skolemized = skolemize(sem)
 
-        if verbose: print('Skolemized:', skolemized)
+        if verbose:
+            print('Skolemized:', skolemized)
 
         # Break the hole semantics representation down into its components
         # i.e. holes, labels, formula fragments and constraints.
@@ -346,7 +355,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
             print('Top hole:    ', hole_sem.top_hole)
             print('Top labels:  ', hole_sem.top_most_labels)
             print('Fragments:')
-            for (l,f) in hole_sem.fragments.items():
+            for l, f in hole_sem.fragments.items():
                 print('\t%s: %s' % (l, f))
 
         # Find all the possible ways to plug the formulas together.
@@ -357,7 +366,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
         # Print out the formulas in a textual format.
         if verbose:
-            for i,r in enumerate(readings):
+            for i, r in enumerate(readings):
                 print()
                 print('%d. %s' % (i, r))
             print()
@@ -368,7 +377,8 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
 
 if __name__ == '__main__':
-    for r in hole_readings('a dog barks'): print(r)
+    for r in hole_readings('a dog barks'):
+        print(r)
     print()
-    for r in hole_readings('every girl chases a dog'): print(r)
-
+    for r in hole_readings('every girl chases a dog'):
+        print(r)
