@@ -2430,12 +2430,12 @@ class PortugueseStemmer(_StandardStemmer):
     """
 
     __vowels = "aeiou\xE1\xE9\xED\xF3\xFA\xE2\xEA\xF4"
-    __step1_suffixes = ('amentos', 'imentos', 'uciones', 'amento',
+    __step1_suffixes = ('amentos', 'imentos', 'uções', 'amento',
                         'imento', 'adoras', 'adores', 'a\xE7o~es',
-                        'log\xEDas', '\xEAncias', 'amente',
+                        'logias', '\xEAncias', 'amente',
                         'idades', 'ismos', 'istas', 'adora',
                         'a\xE7a~o', 'antes', '\xE2ncia',
-                        'log\xEDa', 'uci\xF3n', '\xEAncia',
+                        'logia', 'ução', '\xEAncia',
                         'mente', 'idade', 'ezas', 'icos', 'icas',
                         'ismo', '\xE1vel', '\xEDvel', 'ista',
                         'osos', 'osas', 'ador', 'ante', 'ivas',
@@ -2528,11 +2528,11 @@ class PortugueseStemmer(_StandardStemmer):
                 elif r2.endswith(suffix):
                     step1_success = True
 
-                    if suffix in ("log\xEDa", "log\xEDas"):
+                    if suffix in ("logia", "logias"):
                         word = word[:-2]
                         rv = rv[:-2]
 
-                    elif suffix in ("uci\xF3n", "uciones"):
+                    elif suffix in ("ução", "uções"):
                         word = "".join((word[:-len(suffix)], "u"))
                         rv = "".join((rv[:-len(suffix)], "u"))
 
@@ -3343,8 +3343,8 @@ class SpanishStemmer(_StandardStemmer):
                         "les", "los", "nos", "me", "se", "la", "le",
                         "lo")
     __step1_suffixes = ('amientos', 'imientos', 'amiento', 'imiento',
-                        'aciones', 'uciones', 'adoras', 'adores',
-                        'ancias', 'log\xEDas', 'encias', 'amente',
+                        'aciones', 'uções', 'adoras', 'adores',
+                        'ancias', 'logias', 'encias', 'amente',
                         'idades', 'anzas', 'ismos', 'ables', 'ibles',
                         'istas', 'adora', 'aci\xF3n', 'antes',
                         'ancia', 'log\xEDa', 'uci\xf3n', 'encia',
@@ -3475,11 +3475,11 @@ class SpanishStemmer(_StandardStemmer):
                             word = word[:-2]
                             rv = rv[:-2]
 
-                    elif suffix in ("log\xEDa", "log\xEDas"):
+                    elif suffix in ("logia", "logias"):
                         word = word.replace(suffix, "log")
                         rv = rv.replace(suffix, "log")
 
-                    elif suffix in ("uci\xF3n", "uciones"):
+                    elif suffix in ("ução", "uções"):
                         word = word.replace(suffix, "u")
                         rv = rv.replace(suffix, "u")
 
