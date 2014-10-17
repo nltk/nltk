@@ -162,7 +162,7 @@ Here are some examples:
 
 
 .. _nltk.metrics.scores.precision:
-    http://nltk.googlecode.com/svn/trunk/doc/api/nltk.metrics.scores-module.html#precision
+    http://www.nltk.org/api/nltk.metrics.html#nltk.metrics.scores.precision
 
 
 Recall
@@ -191,7 +191,7 @@ Here are some examples:
 
 
 .. _nltk.metrics.scores.recall:
-    http://nltk.googlecode.com/svn/trunk/doc/api/nltk.metrics.scores-module.html#recall
+    http://www.nltk.org/api/nltk.metrics.html#nltk.metrics.scores.recall
 
 
 Alignment Error Rate (AER)
