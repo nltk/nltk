@@ -54,9 +54,9 @@ NLTK Download Server
 Before downloading any packages, the corpus and module downloader
 contacts the NLTK download server, to retrieve an index file
 describing the available packages.  By default, this index file is
-loaded from ``http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml``.
-If necessary, it is possible to create a new ``Downloader`` object,
-specifying a different URL for the package index file.
+loaded from ``http://www.nltk.org/nltk_data/``.  If necessary, it is
+possible to create a new ``Downloader`` object, specifying a different
+URL for the package index file.
 
 Usage::
 
@@ -377,7 +377,6 @@ class Downloader(object):
        server index will be considered 'stale,' and will be
        re-downloaded."""
 
-    # DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml'
     DEFAULT_URL = 'http://nltk.github.com/nltk_data/'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new

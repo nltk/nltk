@@ -66,31 +66,39 @@ from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
                                     BlanklineTokenizer, WordPunctTokenizer,
                                     wordpunct_tokenize, regexp_tokenize,
                                     blankline_tokenize)
-from nltk.tokenize.punkt    import PunktSentenceTokenizer, PunktWordTokenizer
+from nltk.tokenize.punkt    import PunktSentenceTokenizer
 from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
 from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.texttiling import TextTilingTokenizer
 
 # Standard sentence tokenizer.
-def sent_tokenize(text):
+def sent_tokenize(text, language='english'):
     """
     Return a sentence-tokenized copy of *text*,
     using NLTK's recommended sentence tokenizer
-    (currently :class:`.PunktSentenceTokenizer`).
+    (currently :class:`.PunktSentenceTokenizer`
+    for the specified language).
+
+    :param text: text to split into sentences
+    :param language: the model name in the Punkt corpus
     """
-    tokenizer = load('tokenizers/punkt/english.pickle')
+    tokenizer = load('tokenizers/punkt/{0}.pickle'.format(language))
     return tokenizer.tokenize(text)
 
 # Standard word tokenizer.
 _treebank_word_tokenize = TreebankWordTokenizer().tokenize
-def word_tokenize(text):
+def word_tokenize(text, language='english'):
     """
     Return a tokenized copy of *text*,
     using NLTK's recommended word tokenizer
     (currently :class:`.TreebankWordTokenizer`
-    along with :class:`.PunktSentenceTokenizer`).
+    along with :class:`.PunktSentenceTokenizer`
+    for the specified language).
+
+    :param text: text to split into sentences
+    :param language: the model name in the Punkt corpus
     """
-    return [token for sent in sent_tokenize(text)
+    return [token for sent in sent_tokenize(text, language)
             for token in _treebank_word_tokenize(sent)]
 
 if __name__ == "__main__":

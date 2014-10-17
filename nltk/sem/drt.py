@@ -1229,6 +1229,12 @@ def demo():
 
 
 def test_draw():
+    try:
+        from tkinter import Tk
+    except ImportError:
+        from nose import SkipTest
+        raise SkipTest("tkinter is required, but it's not available.")
+
     expressions = [
             r'x',
             r'([],[])',
