@@ -154,7 +154,7 @@ class LanguageModel:
         :param state: the preceedings words before the word in concern. 
         
         :rtype: tuple
-        :return: a tuple of the new state that the 
+        :return: a tuple of the new state and its probabilistic score
         """
         # Converts a string into tuples as stored how language model was read.
         if isinstance(state, str):
