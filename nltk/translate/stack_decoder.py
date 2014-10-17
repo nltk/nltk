@@ -58,10 +58,23 @@ def monotone_stack_decode(sent, tm, lm, stack_size=10, nbest=1,
                           output2str=True):
     """
     Monotone stack decoding translate the input sentence sequentially from left
-    to right.
+    to right, see http://www.statmt.org/survey/Topic/StackDecoding
     
-    :type sent: str
-    :param sent: Sentence in the source language.
+    >>> phrasetablefile = 'phrase-table.gz'
+    >>> langmodelfile = 'europarl.srilm.gz'
+    >>>
+    >>> sent ='das ist ein kleines haus'
+    >>>
+    >>> tm = TranslationModel(phrasetablefile)
+    >>> lm = LanguageModel(langmodelfile)
+    >>> print "Decoding:", sent
+    Decoding: das ist ein kleines haus
+    >>> translation = monotone_stack_decode(sent.split(), tm, lm)
+    >>> print "Translation:", translation
+    Translation: this is a small house 
+    
+    :type sent: list
+    :param sent: list of tokens from the source language sentence.
 
     :type tm: 
     :param tm: Translation model from the phrase table.
@@ -116,19 +129,7 @@ def monotone_stack_decode(sent, tm, lm, stack_size=10, nbest=1,
     else: # Returns n no. of hypotheses.
         return sorted(stacks[-1].itervalues(), key=lambda h: h.logprob)[:nbest]
 
-
-phrasetablefile = 'phrase-table.gz'
-langmodelfile = 'europarl.srilm.gz'
-
-sent ='das ist ein kleines haus'.split()
-
-print "Loading phrase table...\n(you can grab a cup of coffee)\n"
-tm = TranslationModel(phrasetablefile)
-print "Loading language model... \n(you can go take a walk before coming back)\n"
-lm = LanguageModel(langmodelfile)
-print "Finish loading models\n"
-
-print "Decoding:", sent
-translation = monotone_stack_decode(sent, tm, lm)
-
-print translation
+# run doctests
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
