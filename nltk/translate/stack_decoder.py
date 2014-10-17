@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+# Natural Language Toolkit: Phrase Extraction Algorithm
+#
+# Copyright (C) 2001-2014 NLTK Project
+# Authors: Liling Tan
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
 
 import heapq
 from collections import namedtuple
