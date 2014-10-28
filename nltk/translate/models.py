@@ -113,7 +113,7 @@ def read_lang_model(arpafile):
 class LanguageModel:
     """
     This class implements an Ngram language model object that reads an ARPA 
-    language model file usinand allow users to retrieve the probability of a 
+    language model file and allow users to retrieve the probability of a 
     word given the current `state` of a word (i.e. the previous words prior to 
     the word). 
     

@@ -51,7 +51,7 @@ def hypothesis_to_translation(hypothesis):
     
     :rtype: str
     :return: the translation of the predecessor appended with the 
-    translation string that the current hypothesis stores
+    translation string that the current hypothesis stores.
     """
     if hypothesis.predecessor is None: # An empty hypothesis.
         return ''
@@ -82,10 +82,10 @@ def monotone_stack_decode(sent, tm, lm, stack_size=10, nbest=1,
     :type sent: list
     :param sent: list of tokens from the source language sentence.
 
-    :type tm: 
+    :type tm: TranslationModel
     :param tm: Translation model from the phrase table.
     
-    :type lm:
+    :type lm: LanguageModel
     :param lm: Ngram language model.
     """
     # Each stack is a k:v pair,  k=state , v=hypothosis
