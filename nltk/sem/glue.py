@@ -580,7 +580,7 @@ class DrtGlueFormula(GlueFormula):
 
         if isinstance(meaning, string_types):
             self.meaning = drt.DrtExpression.fromstring(meaning)
-        elif isinstance(meaning, drt.AbstractDrs):
+        elif isinstance(meaning, drt.DrtExpression):
             self.meaning = meaning
         else:
             raise RuntimeError('Meaning term neither string or expression: %s, %s' % (meaning, meaning.__class__))
