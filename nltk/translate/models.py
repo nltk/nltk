@@ -6,7 +6,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import gzip
+import gzip, mimetypes
 
 def read_phrase_table(phrasetablefile):
     """
@@ -36,14 +36,21 @@ def read_phrase_table(phrasetablefile):
     phrases and their values are a dictionary of the target language phrases 
     and its probability.
     
-    >>> x = read_phrase_table('phrase-table.gz')
+    >>> x = read_phrase_table('phrase-table')
     >>> print x
     {'es gibt': {'there is': 1.0}, 'klein': {'small': 0.8, 'little': 0.8}, 'die': {'the': 0.3}, 'der': {'the': 0.3}, 'haus': {'house': 1.0}, 'ist': {'is': 1.0, "'s": 1.0}, 'kleines': {'small': 0.2, 'little': 0.2}, 'gibt': {'gives': 1.0}, 'es ist': {'this is': 0.2, 'it is': 0.8}, 'das': {'this': 0.1, 'the': 0.4, 'it': 0.1}, 'alt': {'old': 0.8}, 'ein': {'a': 1.0, 'an': 1.0}, 'altes': {'old': 0.2}, 'das ist': {'this is': 0.8, 'it is': 0.2}}
     >>> print x['es gibt']
     {'there is': 1.0}
     """
     phrase_table = {}
-    with gzip.open(phrasetablefile, 'rb') as fin:
+    
+    # Checks if phrase table file is gzip file format.
+    if mimetypes.guess_type(phrasetablefile)[1] == 'gzip':
+        anyopen = gzip.open
+    else: 
+        anyopen = open
+    
+    with anyopen(phrasetablefile, 'rb') as fin:
         for line in fin:
             # Splits the tab separated file.
             line = line.strip().split(' ||| ')
@@ -52,6 +59,7 @@ def read_phrase_table(phrasetablefile):
             # Only the φ(f|e) is required.
             prob = float(probabilities.split( )[0])
             phrase_table.setdefault(src, {})[trg]= prob
+        
     return phrase_table
 
 def read_lang_model(arpafile):
@@ -181,7 +189,7 @@ class TranslationModel:
     This class implements an translation model object.
     To retrieve the possible translation of a phrase, use:
     
-    >>> tm = TranslationModel('phrase-table.gz')
+    >>> tm = TranslationModel('phrase-table')
     >>> tm.table['es gibt']
     {'there is': 1.0}
     
@@ -199,3 +207,4 @@ class TranslationModel:
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+
