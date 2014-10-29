@@ -22,8 +22,8 @@ sentence and different definitions from each Synset.
     >>> from nltk.wsd import lesk
 	>>> from nltk import word_tokenize
 	>>> sent = word_tokenize('I went to the bank to deposit money.')
-	>>> print(lesk(sent, 'bank', 'n'))  # doctest: +SKIP
-	Synset('depository_financial_institution.n.01')
+	>>> print(lesk(sent, 'bank', 'n'))
+	Synset('bank.n.07')
 
 The definitions for "bank" are:
 

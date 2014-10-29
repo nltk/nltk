@@ -19,19 +19,22 @@ def _compare_overlaps_greedy(context, synsets_signatures, pos=None):
     and returns the synset with the highest overlap.
 
     :param context: ``context_sentence`` The context sentence where the ambiguous word occurs.
-    :param synsets_signatures: ``dictionary`` A list of words that 'signifies' the ambiguous word.
+    :param iter synsets_signatures: An iterable of pairs of sysnsets and their definiitons.
     :param pos: ``pos`` A specified Part-of-Speech (POS).
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
     """
     max_overlaps = 0
     lesk_sense = None
-    for ss in synsets_signatures:
-        if pos and str(ss.pos()) != pos:  # Skips different POS.
-            continue
-        overlaps = set(synsets_signatures[ss]).intersection(context)
-        if len(overlaps) > max_overlaps:
-            lesk_sense = ss
-            max_overlaps = len(overlaps)
+    context = set(context)
+
+    for ss, definition in synsets_signatures:
+        if pos and str(ss.pos()) == pos:  # Skips different POS.
+
+            overlaps = len(context.intersection(definition))
+            if overlaps > max_overlaps:
+                lesk_sense = ss
+                max_overlaps = overlaps
+
     return lesk_sense
 
 
@@ -43,13 +46,13 @@ def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
 
         >>> from nltk import word_tokenize
         >>> sent = word_tokenize("I went to the bank to deposit money.")
-        >>> lesk(sent, 'bank', 'n')  # doctest: +SKIP
+        >>> lesk(sent, 'bank', 'n')
         Synset('bank.n.07')
 
     :param context_sentence: The context sentence where the ambiguous word occurs.
     :param ambiguous_word: The ambiguous word that requires WSD.
     :param pos: A specified Part-of-Speech (POS).
-    :param dictionary: A list of words that 'signifies' the ambiguous word.
+    :param dict dictionary: A mapping of synsets to their definitions.
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
 
     [1] Lesk, Michael. "Automatic sense disambiguation using machine readable
@@ -59,11 +62,11 @@ def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
 
     """
     if not dictionary:
-        dictionary = {}
-        for ss in wn.synsets(ambiguous_word):
-            dictionary[ss] = ss.definition().split()
-    best_sense = _compare_overlaps_greedy(context_sentence, dictionary, pos)
-    return best_sense
+        dictionary = dict((ss, ss.definition().split()) for ss in wn.synsets(ambiguous_word))
+
+    dictionary_items = sorted(dictionary.items())
+
+    return _compare_overlaps_greedy(context_sentence, dictionary_items, pos)
 
 
 if __name__ == "__main__":
