@@ -333,8 +333,18 @@ def twitterclass_demo():
     tw.tweets(keywords='love')
     tw.tofile(keywords='', track='', stream=True, limit=100)
 
+def temp():
+    from nltk.corpus import TwitterCorpusReader
+    root = os.environ['TWITTER']
+    root = os.path.join(root, 'robinwilliams')
+    reader = TwitterCorpusReader(root, 'tweets.20140815-160831.json')
+    #for t in reader.docs()[:1]:
+        #print(json.dumps(t, sort_keys=True, indent=4))
 
-DEMOS = [6]
+    for t in reader.strings():
+        print(t)
+
+DEMOS = []
 
 if __name__ == "__main__":
     #import doctest
@@ -354,6 +364,9 @@ if __name__ == "__main__":
         search_demo()
     if 6 in DEMOS:
         twitterclass_demo()
+
+    else:
+        temp()
 
 
 

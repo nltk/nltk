@@ -146,6 +146,8 @@ Both lawyers in the #OscarTrial are brilliant. ..These closing arguments have go
 #urgent Afrique du Sud : le parquet requiert une condamnation pour meurtre contre Oscar Pistorius http://t.co/tTx2Lr2Rmx"
 "@RFI: #urgent Afrique du Sud : le parquet requiert une condamnation pour meurtre contre Oscar Pistorius http://t.co/tTx2Lr2Rmx"
 
+https://dev.twitter.com/docs/using-search
+
 In order to filter the stream for users, we employ the ``follow``
 parameter key, followed by one or more user IDs. Somewhat confusingly,
 user IDs are *not* the same as the 'screen names' that appear on
