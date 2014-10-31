@@ -132,7 +132,13 @@ class BLEU(object):
         references = [[r.lower() for r in reference] for reference in references]
 
         p_ns = (BLEU.modified_precision(candidate, references, i) for i, _ in enumerate(weights, start=1))
-        s = math.fsum(w * math.log(p_n) for w, p_n in zip(weights, p_ns) if p_n)
+        p_ns_nonzero = list(filter(None, p_ns))
+
+        if not p_ns_nonzero:
+            # There is zero aliment, so the score is 0
+            return 0
+
+        s = math.fsum(w * math.log(p_n) for w, p_n in zip(weights, p_ns_nonzero))
 
         bp = BLEU.brevity_penalty(candidate, references)
         return bp * math.exp(s)
