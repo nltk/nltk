@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: BLEU
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2014 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
+# Contributors: Dmitrijs Milajevs
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -131,17 +132,16 @@ class BLEU(object):
         candidate = [c.lower() for c in candidate]
         references = [[r.lower() for r in reference] for reference in references]
 
-        p_ns = (BLEU.modified_precision(candidate, references, i) for i, _ in enumerate(weights, start=1))
+        p_ns = (BLEU.modified_precision(candidate, references, i)
+                for i, _ in enumerate(weights, start=1))
         p_ns_nonzero = list(filter(None, p_ns))
 
-        if not p_ns_nonzero:
-            # There is zero aliment, so the score is 0
+        if p_ns_nonzero:
+            s = math.fsum(w * math.log(p_n) for w, p_n in zip(weights, p_ns_nonzero))
+            bp = BLEU.brevity_penalty(candidate, references)
+            return bp * math.exp(s)
+        else: # no alignments
             return 0
-
-        s = math.fsum(w * math.log(p_n) for w, p_n in zip(weights, p_ns_nonzero))
-
-        bp = BLEU.brevity_penalty(candidate, references)
-        return bp * math.exp(s)
 
     @staticmethod
     def modified_precision(candidate, references, n):
