@@ -44,7 +44,7 @@ def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
         >>> word = "bank"
         >>> pos = "n"
         >>> lesk(sent, word, pos)
-        Synset('bank.n.07')
+        Synset('savings_bank.n.02')
     
     :param context_sentence: The context sentence where the ambiguous word occurs.
     :param ambiguous_word: The ambiguous word that requires WSD.
