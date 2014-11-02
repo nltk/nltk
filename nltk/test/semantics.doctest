@@ -425,43 +425,43 @@ Satisfier Tests
     ...     g.purge()
     ...     print("Satisfiers of '%s':\n\t%s" % (p, sorted(m.satisfiers(p, 'x', g))))
     Satisfiers of 'boy(x)':
-    	['b1', 'b2']
+    ['b1', 'b2']
     Satisfiers of '(x = x)':
-    	['b1', 'b2', 'd1', 'g1', 'g2']
+    ['b1', 'b2', 'd1', 'g1', 'g2']
     Satisfiers of '(boy(x) | girl(x))':
-    	['b1', 'b2', 'g1', 'g2']
+    ['b1', 'b2', 'g1', 'g2']
     Satisfiers of '(boy(x) & girl(x))':
-    	[]
+    []
     Satisfiers of 'love(adam,x)':
-    	['g1']
+    ['g1']
     Satisfiers of 'love(x,adam)':
-    	['g1', 'g2']
+    ['g1', 'g2']
     Satisfiers of '-(x = adam)':
-    	['b2', 'd1', 'g1', 'g2']
+    ['b2', 'd1', 'g1', 'g2']
     Satisfiers of 'exists z22.love(x,z22)':
-    	['b1', 'b2', 'g1', 'g2']
+    ['b1', 'b2', 'g1', 'g2']
     Satisfiers of 'exists y.love(y,x)':
-    	['b1', 'g1', 'g2']
+    ['b1', 'g1', 'g2']
     Satisfiers of 'all y.(girl(y) -> love(x,y))':
-    	[]
+    []
     Satisfiers of 'all y.(girl(y) -> love(y,x))':
-    	['b1']
+    ['b1']
     Satisfiers of 'all y.(girl(y) -> (boy(x) & love(y,x)))':
-    	['b1']
+    ['b1']
     Satisfiers of '(boy(x) & all y.(girl(y) -> love(x,y)))':
-    	[]
+    []
     Satisfiers of '(boy(x) & all y.(girl(y) -> love(y,x)))':
-    	['b1']
+    ['b1']
     Satisfiers of '(boy(x) & exists y.(girl(y) & love(y,x)))':
-    	['b1']
+    ['b1']
     Satisfiers of '(girl(x) -> dog(x))':
-    	['b1', 'b2', 'd1']
+    ['b1', 'b2', 'd1']
     Satisfiers of 'all y.(dog(y) -> (x = y))':
-    	['d1']
+    ['d1']
     Satisfiers of '-exists y.love(y,x)':
-    	['b2', 'd1']
+    ['b2', 'd1']
     Satisfiers of 'exists y.(love(adam,y) & love(y,x))':
-    	['b1']
+    ['b1']
 
 
 Tests based on the Blackburn & Bos testsuite
