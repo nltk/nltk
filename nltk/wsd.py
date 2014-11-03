@@ -40,6 +40,7 @@ def _compare_overlaps_greedy(context, synsets_signatures, pos=None):
 
 def lesk(context_sentence, ambiguous_word, pos=None, dictionary=None):
     """
+
     This function is the implementation of the original Lesk algorithm (1986) [1].
     It requires a dictionary which contains the definition of the different
     sense of each word.
