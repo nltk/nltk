@@ -20,10 +20,13 @@ a Synset with the highest number of overlapping words between the context
 sentence and different definitions from each Synset.
 
     >>> from nltk.wsd import lesk
-    >>> from nltk import word_tokenize
-	>>> sent = word_tokenize('I went to the bank to deposit money.')
+	>>> sent = ['I', 'went', 'to', 'the', 'bank', 'to', 'deposit', 'money', '.']
+
 	>>> print(lesk(sent, 'bank', 'n'))
-	Synset('bank.n.07')
+	Synset('savings_bank.n.02')
+
+    >>> print(lesk(sent, 'bank'))
+    Synset('savings_bank.n.02')
 
 The definitions for "bank" are:
 
