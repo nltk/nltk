@@ -1,6 +1,7 @@
 # Natural Language Toolkit: Word Sense Disambiguation Algorithms
 #
-# Author: Liling Tan <alvations@gmail.com>
+# Authors: Liling Tan <alvations@gmail.com>,
+#          Dmitrijs Milajevs <dimazest@gmail.com>
 #
 # Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org/>
@@ -15,7 +16,7 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     :param context_sentence: The context sentence where the ambiguous word occurs.
     :param ambiguous_word: The ambiguous word that requires WSD.
     :param pos: A specified Part-of-Speech (POS).
-    :param iter sysnsets: Possible synsets of the ambiguous word.
+    :param iter synsets: Possible synsets of the ambiguous word.
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
 
     This function is an implementation of the original Lesk algorithm (1986) [1].
@@ -25,12 +26,13 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
         >>> lesk(['I', 'went', 'to', 'the', 'bank', 'to', 'deposit', 'money', '.'], 'bank', 'n')
         Synset('savings_bank.n.02')
 
-    [1] Lesk, Michael. "Automatic sense disambiguation using machine readable
-    dictionaries: how to tell a pine cone from an ice cream cone." Proceedings
-    of the 5th annual international conference on Systems documentation. ACM,
-    1986. http://dl.acm.org/citation.cfm?id=318728
-
+    [1] Lesk, Michael. "Automatic sense disambiguation using machine
+    readable dictionaries: how to tell a pine cone from an ice cream
+    cone." Proceedings of the 5th Annual International Conference on
+    Systems Documentation. ACM, 1986.
+    http://dl.acm.org/citation.cfm?id=318728
     """
+
     context = set(context_sentence)
     if not synsets:
         synsets = wordnet.synsets(ambiguous_word)
