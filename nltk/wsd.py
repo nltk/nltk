@@ -11,11 +11,12 @@ from nltk.corpus import wordnet
 
 
 def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
-    """Return a synset for an ambigous word.
+    """Return a synset for an ambiguous word in a context.
 
-    :param context_sentence: The context sentence where the ambiguous word occurs.
-    :param ambiguous_word: The ambiguous word that requires WSD.
-    :param pos: A specified Part-of-Speech (POS).
+    :param iter context_sentence: The context sentence where the ambiguous word
+    occurs, passed as an iterable of words.
+    :param str ambiguous_word: The ambiguous word that requires WSD.
+    :param str pos: A specified Part-of-Speech (POS).
     :param iter synsets: Possible synsets of the ambiguous word.
     :return: ``lesk_sense`` The Synset() object with the highest signature overlaps.
 
@@ -34,12 +35,17 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     """
 
     context = set(context_sentence)
-    if not synsets:
+    if synsets is None:
         synsets = wordnet.synsets(ambiguous_word)
 
+    if pos:
+        synsets = [ss for ss in synsets if str(ss.pos()) == pos]
+
+    if not synsets:
+        return None
+
     _, sense = max(
-        (len(context.intersection(ss.definition().split())), ss)
-        for ss in synsets if pos is None or str(ss.pos()) == pos
+        (len(context.intersection(ss.definition().split())), ss) for ss in synsets
     )
 
     return sense

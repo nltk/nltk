@@ -52,3 +52,17 @@ The definitions for "bank" are:
     Synset('deposit.v.02') put into a bank account
     Synset('bank.v.07') cover with ashes so to control the rate of burning
     Synset('trust.v.01') have confidence or faith in
+
+Test disambiguation of POS tagged `able`.
+
+    >>> [(s, s.pos()) for s in wn.synsets('able')]
+    [(Synset('able.a.01'), 'a'), (Synset('able.s.02'), 's'), (Synset('able.s.03'), 's'), (Synset('able.s.04'), 's')]
+    >>> sent = 'people should be able to marry a person of their choice'.split()
+    >>> lesk(sent, 'able')
+    Synset('able.s.04')
+    >>> lesk(sent, 'able', pos='a')
+    Synset('able.a.01')
+
+Test behavior if there is are no matching senses.
+
+    >>> lesk('John loves Mary'.split(), 'loves', synsets=[])
