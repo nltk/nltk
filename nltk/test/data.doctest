@@ -91,7 +91,7 @@ to format names is specified by `nltk.data.AUTO_FORMATS`:
     .cfg     -> cfg
     .fcfg    -> fcfg
     .fol     -> fol
-	.json    -> json
+    .json    -> json
     .logic   -> logic
     .pcfg    -> pcfg
     .pickle  -> pickle

@@ -17,15 +17,15 @@ As metrics, they must satisfy the following three requirements:
 1. d(a, a) = 0
 2. d(a, b) >= 0
 3. d(a, c) <= d(a, b) + d(b, c)
-
 """
+
 from __future__ import print_function
 
 
 def _edit_dist_init(len1, len2):
     lev = []
     for i in range(len1):
-        lev.append([0] * len2)  # initialize 2-D array to zero
+        lev.append([0] * len2)  # initialize 2D array to zero
     for i in range(len1):
         lev[i][0] = i           # column 0: 0,1,2,3,4,...
     for j in range(len2):
@@ -114,11 +114,13 @@ def masi_distance(label1, label2):
     labels are assigned.
 
     >>> from nltk.metrics import masi_distance
-    >>> masi_distance(set([1,2]), set([1,2,3,4]))
+    >>> masi_distance(set([1, 2]), set([1, 2, 3, 4]))
     0.665...
 
-    Passonneau 2006, Measuring Agreement on Set-Valued Items (MASI) for Semantic and Pragmatic Annotation.
+    Passonneau 2006, Measuring Agreement on Set-Valued Items (MASI)
+    for Semantic and Pragmatic Annotation.
     """
+
     len_intersection = len(label1.intersection(label2))
     len_union = len(label1.union(label2))
     len_label1 = len(label1)
@@ -136,7 +138,7 @@ def masi_distance(label1, label2):
 
 
 def interval_distance(label1,label2):
-    """Krippendorff'1 interval distance metric
+    """Krippendorff's interval distance metric
 
     >>> from nltk.metrics import interval_distance
     >>> interval_distance(1,10)
@@ -144,8 +146,9 @@ def interval_distance(label1,label2):
 
     Krippendorff 1980, Content Analysis: An Introduction to its Methodology
     """
+
     try:
-        return pow(label1-label2,2)
+        return pow(label1 - label2, 2)
 #        return pow(list(label1)[0]-list(label2)[0],2)
     except:
         print("non-numeric labels not supported with interval distance")
@@ -153,13 +156,17 @@ def interval_distance(label1,label2):
 
 def presence(label):
     """Higher-order function to test presence of a given label
-
     """
-    return lambda x,y: 1.0*((label in x) == (label in y))
+
+    return lambda x, y: 1.0 * ((label in x) == (label in y))
 
 
 def fractional_presence(label):
-    return lambda x,y:abs((float(1.0/len(x)) - float(1.0/len(y))))*(label in x and label in y) or 0.0*(label not in x and label not in y) or abs((float(1.0/len(x))))*(label in x and label not in y) or ((float(1.0/len(y))))*(label not in x and label in y)
+    return lambda x, y:\
+        abs((float(1.0 / len(x)) - float(1.0 / len(y)))) * (label in x and label in y) \
+        or 0.0 * (label not in x and label not in y) \
+        or abs(float(1.0 / len(x))) * (label in x and label not in y) \
+        or (float(1.0 / len(y))) * (label not in x and label in y)
 
 
 def custom_distance(file):
@@ -174,7 +181,9 @@ def custom_distance(file):
 
 
 def demo():
-    edit_distance_examples = [("rain", "shine"), ("abcdef", "acbdef"), ("language", "lnaguaeg"), ("language", "lnaugage"), ("language", "lngauage")]
+    edit_distance_examples = [
+        ("rain", "shine"), ("abcdef", "acbdef"), ("language", "lnaguaeg"),
+        ("language", "lnaugage"), ("language", "lngauage")]
     for s1, s2 in edit_distance_examples:
         print("Edit distance between '%s' and '%s':" % (s1, s2), edit_distance(s1, s2))
     for s1, s2 in edit_distance_examples:

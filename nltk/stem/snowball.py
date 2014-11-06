@@ -3343,8 +3343,8 @@ class SpanishStemmer(_StandardStemmer):
                         "les", "los", "nos", "me", "se", "la", "le",
                         "lo")
     __step1_suffixes = ('amientos', 'imientos', 'amiento', 'imiento',
-                        'aciones', 'uções', 'adoras', 'adores',
-                        'ancias', 'logias', 'encias', 'amente',
+                        'aciones', 'uciones', 'adoras', 'adores',
+                        'ancias', 'log\xEDas', 'encias', 'amente',
                         'idades', 'anzas', 'ismos', 'ables', 'ibles',
                         'istas', 'adora', 'aci\xF3n', 'antes',
                         'ancia', 'log\xEDa', 'uci\xf3n', 'encia',
@@ -3475,11 +3475,11 @@ class SpanishStemmer(_StandardStemmer):
                             word = word[:-2]
                             rv = rv[:-2]
 
-                    elif suffix in ("logia", "logias"):
+                    elif suffix in ("log\xEDa", "log\xEDas"):
                         word = word.replace(suffix, "log")
                         rv = rv.replace(suffix, "log")
 
-                    elif suffix in ("ução", "uções"):
+                    elif suffix in ("uci\xF3n", "uciones"):
                         word = word.replace(suffix, "u")
                         rv = rv.replace(suffix, "u")
 
@@ -3551,7 +3551,7 @@ class SpanishStemmer(_StandardStemmer):
                     word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
 
-                    if word[-2:] == "gu" and rv[-1:] == "u":
+                    if word[-2:] == "gu" and rv.endswith("u"):
                         word = word[:-1]
                 else:
                     word = word[:-len(suffix)]
