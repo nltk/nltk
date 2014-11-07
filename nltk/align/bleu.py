@@ -20,11 +20,9 @@ from nltk.util import ngrams
 def bleu(candidate, references, weights):
     """Calculate BLEU score.
 
-    :param iter(str)) candidate: A candidate sentence.
-    :param iter(iter(str)): Reference sentiences.
+    :param list(str)) candidate: A candidate sentence.
+    :param list(list(str)) references: Reference sentiences.
     :param list(float) weights: Weights for unigrams, bigrams, trigrams and so on.
-
-    Note that words in candidate and reference sentences are lowercased!
 
     Consider an example:
 
@@ -62,9 +60,6 @@ def bleu(candidate, references, weights):
     http://www.aclweb.org/anthology/P02-1040.pdf
 
     """
-    candidate = [c.lower() for c in candidate]
-    references = [[r.lower() for r in reference] for reference in references]
-
     p_ns = (
         _modified_precision(candidate, references, i)
         for i, _ in enumerate(weights, start=1)
