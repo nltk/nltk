@@ -167,7 +167,7 @@ def _modified_precision(candidate, references, n):
     ... )
     0.57...
 
-    Bigrmas:
+    Bigrams:
 
     >>> _modified_precision(
     ...    candidate1,
