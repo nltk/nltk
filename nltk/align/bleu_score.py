@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: BLEU
+# Natural Language Toolkit: BLEU Score
 #
 # Copyright (C) 2001-2014 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
@@ -12,19 +12,20 @@ from __future__ import division
 
 import math
 
-from nltk import word_tokenize
+from nltk.tokenize import word_tokenize
 from nltk.compat import Counter
 from nltk.util import ngrams
 
 
 def bleu(candidate, references, weights):
-    """Calculate BLEU score.
+    """Calculate BLEU score (Bilingual Evaluation Understudy)
 
-    :param list(str)) candidate: A candidate sentence.
-    :param list(list(str)) references: Reference sentiences.
-    :param list(float) weights: Weights for unigrams, bigrams, trigrams and so on.
-
-    Consider an example:
+    :param candidate: a candidate sentence
+    :type candidate: list(str)
+    :param references: reference sentences
+    :type references: list(list(str))
+    :param weights: weights for unigrams, bigrams, trigrams and so on
+    :type weights: list(float)
 
     >>> weights = [0.25, 0.25, 0.25, 0.25]
     >>> candidate1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
@@ -54,7 +55,7 @@ def bleu(candidate, references, weights):
     >>> bleu(candidate2, [reference1, reference2, reference3], weights)
     0
 
-    Papineni, Kishore, et al. "BLEU: a method for automatic evaluation of
+    Papineni, Kishore, et al. "BLEU: A method for automatic evaluation of
     machine translation." Proceedings of the 40th annual meeting on association for
     computational linguistics. Association for Computational Linguistics, 2002.
     http://www.aclweb.org/anthology/P02-1040.pdf
@@ -215,4 +216,4 @@ def _brevity_penalty(candidate, references):
 # run doctests
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.ELLIPSIS)

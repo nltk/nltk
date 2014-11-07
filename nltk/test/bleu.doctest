@@ -2,7 +2,7 @@
 BLEU tests
 ==========
 
->>> from nltk.align.bleu import bleu
+>>> from nltk.align import bleu
 
 If the candidate has no alignment to any of the references, the BLEU score is 0.
 
