@@ -98,7 +98,7 @@ class BLEU(object):
     0.504...
 
     >>> BLEU.compute(candidate2, [reference1, reference2, reference3], weights)
-    0.457...
+    0
 
     2. Test with two corpus that one is a reference and another is
     an output from translation system:
@@ -123,7 +123,7 @@ class BLEU(object):
     [1] Papineni, Kishore, et al. "BLEU: a method for automatic evaluation of
     machine translation." Proceedings of the 40th annual meeting on
     association for computational linguistics. Association for Computational
-    Linguistics, 2002.
+    Linguistics, 2002. http://www.aclweb.org/anthology/P02-1040.pdf
 
     """
 
@@ -133,15 +133,18 @@ class BLEU(object):
         references = [[r.lower() for r in reference] for reference in references]
 
         p_ns = (BLEU.modified_precision(candidate, references, i)
-                for i, _ in enumerate(weights, start=1))
-        p_ns_nonzero = list(filter(None, p_ns))
+            for i, _ in enumerate(weights, start=1)
+        )
 
-        if p_ns_nonzero:
-            s = math.fsum(w * math.log(p_n) for w, p_n in zip(weights, p_ns_nonzero))
-            bp = BLEU.brevity_penalty(candidate, references)
-            return bp * math.exp(s)
-        else: # no alignments
+        bp = BLEU.brevity_penalty(candidate, references)
+
+        try:
+            s = math.fsum(w * math.log(p_n) for w, p_n in zip(weights, p_ns))
+        except ValueError:
+            # some p_ns is 0
             return 0
+        else:
+            return bp * math.exp(s)
 
     @staticmethod
     def modified_precision(candidate, references, n):
