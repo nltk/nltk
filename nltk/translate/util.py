@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Machine Translation Utilities
 #
 # Copyright (C) 2001-2013 NLTK Project

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Machine Translation
 #
 # Copyright (C) 2001-2014 NLTK Project
@@ -92,3 +93,9 @@ class TranslationModel:
     """
     def __init__(self, phrasetablefile):
         self.table = read_phrase_table(phrasetablefile)
+
+# run doctests
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+    
