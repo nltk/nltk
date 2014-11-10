@@ -25,7 +25,7 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     Usage example::
 
         >>> sent = ['I', 'went', 'to', 'the', 'bank', 'to', 'deposit', 'money', '.']
-        >>> lesk(, 'bank', 'n')
+        >>> lesk(sent, 'bank', 'n')
         Synset('savings_bank.n.02')
 
     [1] Lesk, Michael. "Automatic sense disambiguation using machine
