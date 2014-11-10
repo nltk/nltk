@@ -24,7 +24,8 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
 
     Usage example::
 
-        >>> lesk(['I', 'went', 'to', 'the', 'bank', 'to', 'deposit', 'money', '.'], 'bank', 'n')
+        >>> sent = ['I', 'went', 'to', 'the', 'bank', 'to', 'deposit', 'money', '.']
+        >>> lesk(, 'bank', 'n')
         Synset('savings_bank.n.02')
 
     [1] Lesk, Michael. "Automatic sense disambiguation using machine
@@ -32,6 +33,9 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     cone." Proceedings of the 5th Annual International Conference on
     Systems Documentation. ACM, 1986.
     http://dl.acm.org/citation.cfm?id=318728
+    
+    Note: Please note that the original Lesk algorithm does not have
+    part-of-speech restrictions.
     """
 
     context = set(context_sentence)
