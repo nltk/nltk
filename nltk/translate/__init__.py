@@ -12,5 +12,5 @@ Basic Machine Translation (MT) components.
 These interfaces are subjected to change.
 """
 
-from nltk.translate.model import *
+from nltk.translate.api import *
 from nltk.translate.stack_decoder import monotone_stack_decode

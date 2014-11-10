@@ -9,7 +9,7 @@
 import heapq
 from collections import namedtuple
 
-from models import TranslationModel, LanguageModel 
+from api import TranslationModel, LanguageModel 
 
 # A `Hypothesis` is a light weight object that holds (i) log probability of the
 # hypothesis, (ii) the language model state, (iii) the predecessor `Hypothesis`
