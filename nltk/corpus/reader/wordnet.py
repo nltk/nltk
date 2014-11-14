@@ -1615,6 +1615,8 @@ class WordNetCorpusReader(CorpusReader):
         ADJ: [('er', ''), ('est', ''), ('er', 'e'), ('est', 'e')],
         ADV: []}
 
+    MORPHOLOGICAL_SUBSTITUTIONS[ADJ_SAT] = MORPHOLOGICAL_SUBSTITUTIONS[ADJ]
+
     def _morphy(self, form, pos):
         # from jordanbg:
         # Given an original string x
