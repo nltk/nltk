@@ -438,7 +438,7 @@ class Text(object):
         Requires pylab to be installed.
 
         :param words: The words to be plotted
-        :type word: str
+        :type words: list(str)
         :seealso: nltk.draw.dispersion_plot()
         """
         from nltk.draw import dispersion_plot
