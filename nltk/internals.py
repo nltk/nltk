@@ -650,6 +650,8 @@ def _decode_stdoutdata(stdoutdata):
     if not isinstance(stdoutdata, bytes):
         return stdoutdata
     encoding = getattr(sys.stdout, "encoding", locale.getpreferredencoding())
+    if encoding is None:
+        return stdoutdata.decode()
     return stdoutdata.decode(encoding)
 
 ##########################################################################
