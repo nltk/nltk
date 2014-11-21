@@ -66,8 +66,9 @@ def monotone_stack_decode(sent, tm, lm, stack_size=10, nbest=1,
     Monotone stack decoding translate the input sentence sequentially from left
     to right, see http://www.statmt.org/survey/Topic/StackDecoding
     
-    >>> phrasetablefile = 'phrase-table.gz'
-    >>> langmodelfile = 'europarl.srilm.gz'
+    >>> from util import get_moses_sample_model
+    >>> phrasetablefile = get_moses_sample_model('phrase-model', 'phrase-table')
+    >>> langmodelfile = get_moses_sample_model('lm', 'europarl.srilm.gz') 
     >>>
     >>> sent ='das ist ein kleines haus'
     >>>
@@ -134,6 +135,7 @@ def monotone_stack_decode(sent, tm, lm, stack_size=10, nbest=1,
         return hypothesis_to_translation(nbest_stacks)
     else: # Returns n no. of hypotheses.
         return sorted(stacks[-1].itervalues(), key=lambda h: h.logprob)[:nbest]
+    
 
 # run doctests
 if __name__ == "__main__":
