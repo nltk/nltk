@@ -123,21 +123,44 @@ def read_lang_model(arpafile):
     return lang_model
 
 
-def get_moses_sample_model(approaches, model_name):
+def get_moses_sample_model(approach, filename):
     """
-    This module returns the nltk_data path that stores the moses sample models. 
+    This function returns the nltk_data path that stores the moses sample models. 
     
     >>> model_filename = get_moses_sample_model('lm', 'europarl.srilm.gz')
     >>> "/".join(model_filename.split('/')[-5:])
     'nltk_data/models/moses_sample/lm/europarl.srilm.gz'
+    
+    :type approach: str
+    :param approach: the approach that the model was built on 
+    
+    :type filename: str
+    :param filename: the name of the file that you want to access from 
+    the moses_sample directory 
+    
+    :rtype: str
+    :return: The full path of the file where nltk_data saves the moses
+    sample models.
+    
+    These *approach*es are available in the moses_sample directory:
+    - lm
+    - phrase-model
+    - string-to-tree
+    - tree-to-tree  
     """
     from nltk import data
     nltk_data_path = data.path[0]
     model_file = "/".join([nltk_data_path, 'models/moses_sample',
-                           approaches, model_name]) 
+                           approach, filename]) 
     return model_file
 
 def get_momo(approaches, model_name):
+    """
+    This is a duck-type function that for get_moses_sample_model().
+    This is just to shorted the function call. One could also use:
+    
+    >>> from util import get_moses_sample_model as get_momo
+    """
     return get_moses_sample_model(approaches, model_name)
 
 
