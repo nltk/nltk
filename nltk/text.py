@@ -16,7 +16,7 @@ distributional similarity.
 from __future__ import print_function, division, unicode_literals
 
 from math import log
-from collections import defaultdict, Counter
+from collections import defaultdict
 from functools import reduce
 from itertools import islice
 import re
@@ -26,7 +26,7 @@ from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
-from nltk.compat import python_2_unicode_compatible, text_type
+from nltk.compat import python_2_unicode_compatible, text_type, Counter
 
 
 class ContextIndex(object):
@@ -438,7 +438,7 @@ class Text(object):
         Requires pylab to be installed.
 
         :param words: The words to be plotted
-        :type word: str
+        :type words: list(str)
         :seealso: nltk.draw.dispersion_plot()
         """
         from nltk.draw import dispersion_plot
@@ -586,9 +586,9 @@ def demo():
     print("Collocations:")
     text.collocations()
     print()
-    print("Automatically generated text:")
-    text.generate()
-    print()
+    #print("Automatically generated text:")
+    #text.generate()
+    #print()
     print("Dispersion plot:")
     text.dispersion_plot(['news', 'report', 'said', 'announced'])
     print()

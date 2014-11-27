@@ -70,9 +70,9 @@ Test BindingDict
     >>> all12.sort()
     >>> print(all12)
     ['F: f', 'G: f', 'H: h']
-	
-	>>> BindingDict([(F,f),(G,g),(H,h)]) == BindingDict({F:f, G:g, H:h})
-	True
+
+    >>> BindingDict([(F,f),(G,g),(H,h)]) == BindingDict({F:f, G:g, H:h})
+    True
 
     >>> d4 = BindingDict({F: f})
     >>> try: d4[F] = g
@@ -87,37 +87,37 @@ Test Unify
     Cannot unify f with g given {}
 
     >>> f.unify(G, BindingDict()) == BindingDict({G: f})
-	True
+    True
     >>> try: f.unify(G, BindingDict({G: h}))
     ... except UnificationException as e: print(e)
     ...
     Cannot unify f with G given {G: h}
     >>> f.unify(G, BindingDict({G: f})) == BindingDict({G: f})
-	True
+    True
     >>> f.unify(G, BindingDict({H: f})) == BindingDict({G: f, H: f})
-	True
+    True
 
     >>> G.unify(f, BindingDict()) == BindingDict({G: f})
-	True
+    True
     >>> try: G.unify(f, BindingDict({G: h}))
     ... except UnificationException as e: print(e)
     ...
     Cannot unify G with f given {G: h}
     >>> G.unify(f, BindingDict({G: f})) == BindingDict({G: f})
-	True
+    True
     >>> G.unify(f, BindingDict({H: f})) == BindingDict({G: f, H: f})
-	True
+    True
 
     >>> G.unify(F, BindingDict()) == BindingDict({G: F})
-	True
+    True
     >>> try: G.unify(F, BindingDict({G: H}))
     ... except UnificationException as e: print(e)
     ...
     Cannot unify G with F given {G: H}
     >>> G.unify(F, BindingDict({G: F})) == BindingDict({G: F})
-	True
+    True
     >>> G.unify(F, BindingDict({H: F})) == BindingDict({G: F, H: F})
-	True
+    True
 
 Test Compile
 

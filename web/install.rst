@@ -25,3 +25,7 @@ These instructions assume that you do not already have Python installed on your 
 #. Install NLTK: http://pypi.python.org/pypi/nltk
 #. Test installation: ``Start>Python34``, then type ``import nltk``
 
+Installing Third-Party Software
+-------------------------------
+
+Please see: https://github.com/nltk/nltk/wiki/Installing-Third-Party-Software

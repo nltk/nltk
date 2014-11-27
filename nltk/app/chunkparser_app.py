@@ -902,7 +902,7 @@ class RegexpChunkApp(object):
         self.normalized_grammar = self.normalize_grammar(
             self._history[index][0])
         if self.normalized_grammar:
-            rules = [RegexpChunkRule.parse(line)
+            rules = [RegexpChunkRule.fromstring(line)
                      for line in self.normalized_grammar.split('\n')]
         else:
             rules = []
@@ -1035,7 +1035,7 @@ class RegexpChunkApp(object):
             line = line.strip()
             if line:
                 try:
-                    RegexpChunkRule.parse(line)
+                    RegexpChunkRule.fromstring(line)
                 except ValueError as e:
                     self.grammarbox.tag_add('error', '%s.0' % (lineno+1),
                                             '%s.0 lineend' % (lineno+1))
@@ -1068,7 +1068,7 @@ class RegexpChunkApp(object):
         try:
             # Note: the normalized grammar has no blank lines.
             if normalized_grammar:
-                rules = [RegexpChunkRule.parse(line)
+                rules = [RegexpChunkRule.fromstring(line)
                          for line in normalized_grammar.split('\n')]
             else:
                 rules = []

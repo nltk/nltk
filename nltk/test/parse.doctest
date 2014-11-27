@@ -556,7 +556,7 @@ Create a set of PCFG productions.
     A
 
     >>> grammar.productions()
-    [A -> B B [0.3], A -> C B C [0.7], B -> B D [0.5], B -> C [0.5], C -> 'a' [0.1], C -> 'b' [0.9], D -> 'b' [1]]
+    [A -> B B [0.3], A -> C B C [0.7], B -> B D [0.5], B -> C [0.5], C -> 'a' [0.1], C -> 'b' [0.9], D -> 'b' [1.0]]
 
 Induce some productions using parsed Treebank data.
 
@@ -570,7 +570,7 @@ Induce some productions using parsed Treebank data.
     <Grammar with 71 productions>
 
     >>> sorted(grammar.productions(lhs=Nonterminal('PP')))[:2]
-    [PP -> IN NP [1]]
+    [PP -> IN NP [1.0]]
     >>> sorted(grammar.productions(lhs=Nonterminal('NNP')))[:2]
     [NNP -> 'Agnew' [0.0714286], NNP -> 'Consolidated' [0.0714286]]
     >>> sorted(grammar.productions(lhs=Nonterminal('JJ')))[:2]
@@ -585,14 +585,14 @@ Unit tests for the Probabilistic Chart Parse classes
     >>> grammar = toy_pcfg2
     >>> print(grammar)
     Grammar with 23 productions (start state = S)
-        S -> NP VP [1]
+        S -> NP VP [1.0]
         VP -> V NP [0.59]
         VP -> V [0.4]
         VP -> VP PP [0.01]
         NP -> Det N [0.41]
         NP -> Name [0.28]
         NP -> NP PP [0.31]
-        PP -> P NP [1]
+        PP -> P NP [1.0]
         V -> 'saw' [0.21]
         V -> 'ate' [0.51]
         V -> 'ran' [0.28]

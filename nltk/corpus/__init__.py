@@ -5,7 +5,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-# [xx] this docstring isnt' up-to-date!
+# TODO this docstring isn't up-to-date!
 """
 NLTK corpus readers.  The modules in this package provide functions
 that can be used to read corpus files in a variety of formats.  These
@@ -16,8 +16,8 @@ of external corpora.
 Available Corpora
 =================
 
-Please see http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml
-for a complete list.  Install corpora using nltk.download().
+Please see http://www.nltk.org/nltk_data/ for a complete list.
+Install corpora using nltk.download().
 
 Corpus Reader Functions
 =======================

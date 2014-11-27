@@ -26,6 +26,7 @@ from nltk.stem import porter
 
 from nltk.stem.api import StemmerI
 
+
 class SnowballStemmer(StemmerI):
 
     """
@@ -187,7 +188,6 @@ class _ScandinavianStemmer(_LanguageSpecificStemmer):
                 break
 
         return r1
-
 
 
 class _StandardStemmer(_LanguageSpecificStemmer):
@@ -2430,12 +2430,12 @@ class PortugueseStemmer(_StandardStemmer):
     """
 
     __vowels = "aeiou\xE1\xE9\xED\xF3\xFA\xE2\xEA\xF4"
-    __step1_suffixes = ('amentos', 'imentos', 'uciones', 'amento',
+    __step1_suffixes = ('amentos', 'imentos', 'uções', 'amento',
                         'imento', 'adoras', 'adores', 'a\xE7o~es',
-                        'log\xEDas', '\xEAncias', 'amente',
+                        'logias', '\xEAncias', 'amente',
                         'idades', 'ismos', 'istas', 'adora',
                         'a\xE7a~o', 'antes', '\xE2ncia',
-                        'log\xEDa', 'uci\xF3n', '\xEAncia',
+                        'logia', 'ução', '\xEAncia',
                         'mente', 'idade', 'ezas', 'icos', 'icas',
                         'ismo', '\xE1vel', '\xEDvel', 'ista',
                         'osos', 'osas', 'ador', 'ante', 'ivas',
@@ -2528,11 +2528,11 @@ class PortugueseStemmer(_StandardStemmer):
                 elif r2.endswith(suffix):
                     step1_success = True
 
-                    if suffix in ("log\xEDa", "log\xEDas"):
+                    if suffix in ("logia", "logias"):
                         word = word[:-2]
                         rv = rv[:-2]
 
-                    elif suffix in ("uci\xF3n", "uciones"):
+                    elif suffix in ("ução", "uções"):
                         word = "".join((word[:-len(suffix)], "u"))
                         rv = "".join((rv[:-len(suffix)], "u"))
 
@@ -3551,7 +3551,7 @@ class SpanishStemmer(_StandardStemmer):
                     word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
 
-                    if word[-2:] == "gu" and rv[-1] == "u":
+                    if word[-2:] == "gu" and rv.endswith("u"):
                         word = word[:-1]
                 else:
                     word = word[:-len(suffix)]
@@ -3561,9 +3561,7 @@ class SpanishStemmer(_StandardStemmer):
                     .replace("\xED", "i").replace("\xF3", "o")
                     .replace("\xFA", "u"))
 
-
         return word
-
 
 
 class SwedishStemmer(_ScandinavianStemmer):
@@ -3644,9 +3642,7 @@ class SwedishStemmer(_ScandinavianStemmer):
                     word = word[:-1]
                 break
 
-
         return word
-
 
 
 def demo():
@@ -3720,8 +3716,6 @@ def demo():
         print("\n")
 
 
-
 if __name__ == "__main__":
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
-

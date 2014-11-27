@@ -18,8 +18,6 @@ Contents:
   - Telugu: IIIT Hyderabad
 """
 
-import codecs
-
 from nltk import compat
 from nltk.tag import str2tuple, map_tag
 

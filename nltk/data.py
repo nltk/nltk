@@ -1184,7 +1184,7 @@ class SeekableUnicodeStreamReader(object):
     def seek(self, offset, whence=0):
         """
         Move the stream to a new file position.  If the reader is
-        maintaining any buffers, tehn they will be cleared.
+        maintaining any buffers, then they will be cleared.
 
         :param offset: A byte count offset.
         :param whence: If 0, then the offset is from the start of the file

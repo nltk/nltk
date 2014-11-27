@@ -68,7 +68,7 @@ class StanfordParser(ParserI):
     Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
     [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
     """
-    _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)\.(\d+)\.(\d+)-models\.jar'
+    _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)(\.(\d+))+-models\.jar'
     _JAR = 'stanford-parser.jar'
 
     def __init__(self, path_to_jar=None, path_to_models_jar=None,

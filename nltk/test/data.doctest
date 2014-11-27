@@ -91,7 +91,7 @@ to format names is specified by `nltk.data.AUTO_FORMATS`:
     .cfg     -> cfg
     .fcfg    -> fcfg
     .fol     -> fol
-	.json    -> json
+    .json    -> json
     .logic   -> logic
     .pcfg    -> pcfg
     .pickle  -> pickle
@@ -277,13 +277,13 @@ Create a temp dir for tests that write files:
 
 The `retrieve()` function accepts all url types:
 
-    >>> urls = ['http://nltk.googlecode.com/svn/trunk/nltk/nltk/test/toy.cfg',
+    >>> urls = ['https://raw.githubusercontent.com/nltk/nltk/develop/nltk/test/toy.cfg',
     ...         'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg'),
     ...         'nltk:grammars/sample_grammars/toy.cfg',
     ...         'grammars/sample_grammars/toy.cfg']
     >>> for i, url in enumerate(urls):
     ...     nltk.data.retrieve(url, 'toy-%d.cfg' % i) # doctest: +ELLIPSIS
-    Retrieving 'http://nltk.googlecode.com/svn/trunk/nltk/nltk/test/toy.cfg', saving to 'toy-0.cfg'
+    Retrieving 'https://raw.githubusercontent.com/nltk/nltk/develop/nltk/test/toy.cfg', saving to 'toy-0.cfg'
     Retrieving 'file:...toy.cfg', saving to 'toy-1.cfg'
     Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy-2.cfg'
     Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy-3.cfg'
