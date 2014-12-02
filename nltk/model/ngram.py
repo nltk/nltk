@@ -102,17 +102,25 @@ class NgramModel(ModelI):
         if (train is not None) and isinstance(train[0], compat.string_types):
             train = [train]
 
+        # we need to keep track of the number of word types we encounter
+        words = set()
         for sent in train:
             for ngram in ngrams(chain(self._lpad, sent, self._rpad), n):
                 self._ngrams.add(ngram)
                 context = tuple(ngram[:-1])
                 token = ngram[-1]
                 cfd[context][token] += 1
+                words.add(token)
 
-        if not estimator_args and not estimator_kwargs:
-            self._model = ConditionalProbDist(cfd, estimator, len(cfd))
-        else:
-            self._model = ConditionalProbDist(cfd, estimator, *estimator_args, **estimator_kwargs)
+        # unless number of bins is explicitly passed, we should use the number
+        # of word types encountered during training as the bins value
+        if 'bins' not in estimator_kwargs:
+            estimator_kwargs['bins'] = len(words)
+
+        missed_words = (1 - int(pad_left) - int(pad_right)) * (n - 1)
+        estimator_kwargs['override_N'] = cfd.N() + missed_words
+
+        self._model = ConditionalProbDist(cfd, estimator, *estimator_args, **estimator_kwargs)
 
         # recursively construct the lower-order models
         if n > 1:
