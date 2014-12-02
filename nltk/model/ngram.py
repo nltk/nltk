@@ -10,21 +10,23 @@ from __future__ import unicode_literals
 from itertools import chain
 from math import log
 
-from nltk.probability import (ConditionalProbDist, ConditionalFreqDist,
-                              SimpleGoodTuringProbDist)
+from nltk.probability import (FreqDist,
+    ConditionalProbDist,
+    ConditionalFreqDist,
+    LidstoneProbDist)
 from nltk.util import ngrams
 from nltk.model.api import ModelI
 
 from nltk import compat
 
 
-def _estimator(fdist, bins):
+def _estimator(fdist, *estimator_args, **estimator_kwargs):
     """
     Default estimator function using a SimpleGoodTuringProbDist.
     """
     # can't be an instance method of NgramModel as they
     # can't be pickled either.
-    return SimpleGoodTuringProbDist(fdist)
+    return LidstoneProbDist(fdist, *estimator_args, **estimator_kwargs)
 
 
 @compat.python_2_unicode_compatible
