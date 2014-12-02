@@ -87,14 +87,17 @@ class NgramModel(ModelI):
         assert(isinstance(pad_left, bool))
         assert(isinstance(pad_right, bool))
 
+        # make sure n is greater than zero, otherwise print it
+        assert (n > 0), n
+        self._unigram_model = (n == 1)
         self._n = n
 
         if estimator is None:
             estimator = _estimator
 
         cfd = ConditionalFreqDist()
-        self._ngrams = set()
 
+        self._ngrams = set()
 
         # If given a list of strings instead of a list of lists, create enclosing list
         if (train is not None) and isinstance(train[0], compat.string_types):
@@ -121,9 +124,13 @@ class NgramModel(ModelI):
         self._model = ConditionalProbDist(cfd, estimator, *estimator_args, **estimator_kwargs)
 
         # recursively construct the lower-order models
-        if n > 1:
-            self._backoff = NgramModel(n-1, train, pad_left, pad_right,
-                                       estimator, *estimator_args, **estimator_kwargs)
+        if not self._unigram_model:
+            self._backoff = NgramModel(n-1, train,
+                                        pad_left, pad_right,
+                                        estimator,
+                                        *estimator_args,
+                                        **estimator_kwargs)
+
             self._backoff_alphas = dict()
             # For each condition (or context)
             for ctxt in cfd.conditions():
@@ -161,9 +168,8 @@ class NgramModel(ModelI):
         :param context: the context the word is in
         :type context: list(str)
         """
-
         context = tuple(context)
-        if (context + (word,) in self._ngrams) or (self._n == 1):
+        if (context + (word,) in self._ngrams) or (self._unigram_model):
             return self[context].prob(word)
         else:
             return self._alpha(context) * self._backoff.prob(word, context[1:])
