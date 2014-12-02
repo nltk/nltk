@@ -88,8 +88,6 @@ class NgramModel(ModelI):
         assert(isinstance(pad_right, bool))
 
         self._n = n
-        self._lpad = ('',) * (n - 1) if pad_left else ()
-        self._rpad = ('',) * (n - 1) if pad_right else ()
 
         if estimator is None:
             estimator = _estimator
@@ -105,7 +103,7 @@ class NgramModel(ModelI):
         # we need to keep track of the number of word types we encounter
         words = set()
         for sent in train:
-            for ngram in ngrams(chain(self._lpad, sent, self._rpad), n):
+            for ngram in ngrams(sent, n, pad_left, pad_right, pad_symbol=''):
                 self._ngrams.add(ngram)
                 context = tuple(ngram[:-1])
                 token = ngram[-1]
