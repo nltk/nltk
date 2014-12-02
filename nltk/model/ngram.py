@@ -118,6 +118,33 @@ class NgramModel(ModelI):
         if n > 1:
             self._backoff = NgramModel(n-1, train, pad_left, pad_right,
                                        estimator, *estimator_args, **estimator_kwargs)
+            self._backoff_alphas = dict()
+            # For each condition (or context)
+            for ctxt in cfd.conditions():
+                prdist = self._model[ctxt] # prob dist for this context
+
+                backoff_ctxt = ctxt[1:]
+                backoff_total_pr = 0.0
+                total_observed_pr = 0.0
+                for word in cfd[ctxt]:
+                    # this is the subset of words that we OBSERVED
+                    # following this context
+                    total_observed_pr += prdist.prob(word)
+                    # we normalize it by the total (n-1)-gram probability of
+                    # words that were observed in this n-gram context
+                    backoff_total_pr += self._backoff.prob(word, backoff_ctxt)
+
+                assert (0 < total_observed_pr <= 1), total_observed_pr
+                # beta is the remaining probability weight after we factor out
+                # the probability of observed words
+                beta = 1.0 - total_observed_pr
+
+                # backoff total has to be less than one, otherwise we get
+                # ZeroDivision error when we try subtracting it from 1 below
+                assert (0 < backoff_total_pr < 1), backoff_total_pr
+                alpha_ctxt = beta / (1.0 - backoff_total_pr)
+
+                self._backoff_alphas[ctxt] = alpha_ctxt
 
     def prob(self, word, context):
         """
@@ -135,11 +162,14 @@ class NgramModel(ModelI):
         else:
             return self._alpha(context) * self._backoff.prob(word, context[1:])
 
-    def _alpha(self, tokens):
-        return self._beta(tokens) / self._backoff._beta(tokens[1:])
-
-    def _beta(self, tokens):
-        return (self[tokens].discount() if tokens in self else 1)
+    # Updated _alpha function, discarded the _beta function
+    def _alpha(self, context):
+        """Get the backoff alpha value for the given context
+        """
+        if context in self._backoff_alphas:
+            return self._backoff_alphas[context]
+        else:
+            return 1
 
     def logprob(self, word, context):
         """
