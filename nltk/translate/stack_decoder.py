@@ -42,8 +42,9 @@ def pruning(stack, option=None, max_stack=10):
 
 def hypothesis_to_translation(hypothesis):
     """
-    This modules recursively iterates through the nodes in a `Hypothesis` 
-    object and returns and decoded translation string.
+    This module recursively retrieves the predecessor of the current hypothesis
+    and fetches the translated phrase from each recursion to form the final 
+    translated sentence.
     
     :type hypothesis: namedtuple
     :param hypothesis: A `Hypothesis` object
