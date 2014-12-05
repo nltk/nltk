@@ -9,7 +9,7 @@
 
 from util import read_phrase_table, read_lang_model
 
-class LanguageModel:
+class LanguageModel(object):
     """
     This class implements an Ngram language model object that reads an ARPA 
     language model file and allow users to retrieve the probability of a 
@@ -72,7 +72,7 @@ class LanguageModel:
                 ngram = ngram[1:]
         return ((), score + self.table[("<unk>",)][0])
 
-class TranslationModel:
+class TranslationModel(object):
     """
     This class implements an translation model object.
     To retrieve the possible translation of a phrase, use:
