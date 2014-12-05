@@ -1749,7 +1749,11 @@ class DownloaderGUI(object):
             from tkMessageBox import Message
             Message(message=ABOUT, title=TITLE).show()
         except ImportError:
-            ShowText(self._top, TITLE, ABOUT)
+            try:
+                from tkinter.messagebox import Message
+                Message(message=ABOUT, title=TITLE).show()
+            except ImportError:
+                ShowText(self.top, TITLE, ABOUT)
 
     #/////////////////////////////////////////////////////////////////
     # Progress Bar
