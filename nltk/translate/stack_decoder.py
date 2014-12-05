@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Phrase Extraction Algorithm
+# Natural Language Toolkit: Stack Decoder
 #
 # Copyright (C) 2001-2014 NLTK Project
 # Authors: Liling Tan
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+#
 
 import heapq
 from collections import namedtuple
@@ -25,10 +26,8 @@ def pruning(stack, option=None, max_stack=10):
     
     :type stack: list
     :para stack: a stack is a list of `Hypotheses`.
-    
     :type option: str
     :param option: pruning option, default is set to None
-    
     :type max_stack: int
     :param option: indicates the no. of stacks to keep after pruning 
     """
@@ -48,7 +47,6 @@ def hypothesis_to_translation(hypothesis):
     
     :type hypothesis: namedtuple
     :param hypothesis: A `Hypothesis` object
-    
     :rtype: str
     :return: the translation of the predecessor appended with the 
     translation string that the current hypothesis stores.
@@ -82,10 +80,8 @@ def monotone_stack_decode(sent, tm, lm, stack_size=10, nbest=1,
     
     :type sent: list
     :param sent: list of tokens from the source language sentence.
-
     :type tm: TranslationModel
     :param tm: Translation model from the phrase table.
-    
     :type lm: LanguageModel
     :param lm: Ngram language model.
     """

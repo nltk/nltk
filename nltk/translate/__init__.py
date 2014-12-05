@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Machine Translation
+# Natural Language Toolkit: Machine Translation package
 #
 # Copyright (C) 2001-2014 NLTK Project
 # Author: Liling Tan

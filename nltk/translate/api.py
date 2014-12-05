@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Machine Translation
+# Natural Language Toolkit: Machine Translation Interfaces
 #
 # Copyright (C) 2001-2014 NLTK Project
 # Author: Liling Tan
@@ -44,14 +44,11 @@ class LanguageModel:
         """
         This modules returns a score of a word given the state of word.
         If the full ngram (i.e. state+word) is in the language model, simply
-        retrieves the log probabilities from the table.
-        
-        Otherwise, calculates the sum of log prob from the possible ngrams,
-        e.g. if `state = '
+        retrieves the log probabilities from the table. Otherwise, calculates 
+        the sum of log prob from the possible ngrams,
         
         :type state: str
         :param state: the preceedings words before the word in concern. 
-        
         :rtype: tuple
         :return: a tuple of the new state and its probabilistic score
         """

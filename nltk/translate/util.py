@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Machine Translation Utilities
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: 
+# Copyright (C) 2001-2014 NLTK Project
+# Author: Liling Tan
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
+#
 
 import gzip, mimetypes
 
@@ -37,7 +38,6 @@ def read_phrase_table(phrasetablefile):
     
     :type phrasetablefile: str
     :param phrasetablefile: the filename for the phrase table .gz file. 
-    
     :rtype: dict
     :return: a dictionary of dictionary where the keys are the source language 
     phrases and their values are a dictionary of the target language phrases 
@@ -94,18 +94,17 @@ def read_lang_model(arpafile):
     For more information on the ARPA format, see
     http://www.speech.sri.com/projects/srilm/manpages/ngram-format.5.html
     
-    :type arpafile: str
-    :param arpafile: the filename for the phrase table .gz file. 
-    
-    :rtype: dict
-    :return: a dictionary of dictionary where the key is the source language 
-    phrase and its value is a dictionary of the target language phrase and its
-    probability.
-
     >>> model_file = get_moses_sample_model('lm','europarl.srilm.gz')
     >>> y = read_lang_model(model_file)
     >>> print y[('<s>',)]
     (-99.0, -1.750062)
+    
+    :type arpafile: str
+    :param arpafile: the filename for the phrase table .gz file. 
+    :rtype: dict
+    :return: a dictionary of dictionary where the key is the source language 
+    phrase and its value is a dictionary of the target language phrase and its
+    probability.
     """
     lang_model = {}
     with gzip.open(arpafile, 'rb') as fin:
@@ -131,22 +130,20 @@ def get_moses_sample_model(approach, filename):
     >>> "/".join(model_filename.split('/')[-5:])
     'nltk_data/models/moses_sample/lm/europarl.srilm.gz'
     
-    :type approach: str
-    :param approach: the approach that the model was built on 
-    
-    :type filename: str
-    :param filename: the name of the file that you want to access from 
-    the moses_sample directory 
-    
-    :rtype: str
-    :return: The full path of the file where nltk_data saves the moses
-    sample models.
-    
     These *approach*es are available in the moses_sample directory:
     - lm
     - phrase-model
     - string-to-tree
-    - tree-to-tree  
+    - tree-to-tree
+    
+    :type approach: str
+    :param approach: the approach that the model was built on 
+    :type filename: str
+    :param filename: the name of the file that you want to access from 
+    the moses_sample directory 
+    :rtype: str
+    :return: The full path of the file where nltk_data saves the moses
+    sample models. 
     """
     from nltk import data
     nltk_data_path = data.path[0]
