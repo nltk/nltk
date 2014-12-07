@@ -687,12 +687,12 @@ class Tree(list):
 
     def pretty_print(self, sentence=None, highlight=(), **viz_args):
         """
-        Visualize this tree as ASCII or Unicode art.
+        Pretty-print this tree as ASCII or Unicode art.
         For explanation of the arguments, see the documentation for
-        `nltk.treevisualize.TreeVisualizer`.
+        `nltk.treevisualize.TreePrettyPrinter`.
         """
-        from nltk.treevisualize import TreeVisualizer
-        print(TreeVisualizer(self, sentence, highlight).text(**viz_args))
+        from nltk.treevisualize import TreePrettyPrinter
+        print(TreePrettyPrinter(self, sentence, highlight).text(**viz_args))
         
     def __repr__(self):
         childstr = ", ".join(unicode_repr(c) for c in self)

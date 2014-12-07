@@ -47,12 +47,12 @@ ANSICOLOR = {
 
 
 @python_2_unicode_compatible
-class TreeVisualizer(object):
+class TreePrettyPrinter(object):
     """
-    Visualize a tree in text format, either as ASCII or Unicode.
+    Pretty-print a tree in text format, either as ASCII or Unicode.
     The tree can be a normal tree, or discontinuous.
 
-    ``TreeVisualizer(tree, sentence=None, highlight=())``
+    ``TreePrettyPrinter(tree, sentence=None, highlight=())``
     creates an object from which different visualizations can be created.
 
     :param tree: a Tree object.
@@ -66,7 +66,7 @@ class TreeVisualizer(object):
 
     >>> from nltk.tree import Tree
     >>> tree = Tree.fromstring('(S (NP Mary) (VP walks))')
-    >>> print(TreeVisualizer(tree).text())
+    >>> print(TreePrettyPrinter(tree).text())
     ... # doctest: +NORMALIZE_WHITESPACE
           S
       ____|____
@@ -102,7 +102,7 @@ class TreeVisualizer(object):
         return self.text()
 
     def __repr__(self):
-        return '<TreeVisualizer with %d nodes>' % len(self.nodes)
+        return '<TreePrettyPrinter with %d nodes>' % len(self.nodes)
 
 
     @staticmethod
@@ -535,7 +535,7 @@ def test():
         print('{}: "{}"'.format(n, ' '.join(sentence or tree.leaves())))
         print(tree)
         print()
-        drawtree = TreeVisualizer(tree, sentence)
+        drawtree = TreePrettyPrinter(tree, sentence)
         try:
             print(drawtree.text(unicodelines=ansi, ansi=ansi, **xargs))
         except (UnicodeDecodeError, UnicodeEncodeError):
@@ -547,7 +547,7 @@ def test():
         print_tree(n, tree, nodedist=2, maxwidth=8)
     print()
     print('ASCII version:')
-    print(TreeVisualizer(tree).text(nodedist=2))
+    print(TreePrettyPrinter(tree).text(nodedist=2))
 
     tree = Tree.fromstring(
         '(top (punct 8) (smain (noun 0) (verb 1) (inf (verb 5) (inf (verb 6) '
@@ -558,7 +558,7 @@ def test():
     print_tree('Discontinuous tree', tree, sentence, nodedist=2)
 
 
-__all__ = ['TreeVisualizer']
+__all__ = ['TreePrettyPrinter']
 
 if __name__ == '__main__':
     import doctest

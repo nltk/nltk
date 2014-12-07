@@ -1,20 +1,20 @@
 .. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
-==================================================
- Unit tests for nltk.treevisualize.TreeVisualizer
-==================================================
+====================================================
+ Unit tests for nltk.treevisualize.TreePrettyPrinter
+====================================================
 
     >>> from nltk.tree import Tree
-    >>> from nltk.treevisualize import TreeVisualizer
+    >>> from nltk.treevisualize import TreePrettyPrinter
 
 Tree nr 2170 from nltk.corpus.treebank:
 
     >>> tree = Tree.fromstring(
     ...     '(S (NP-SBJ (PRP I)) (VP (VBP feel) (ADJP-PRD (RB pretty) '
     ...     '(JJ good)) (PP-CLR (IN about) (NP (PRP it)))) (. .))')
-    >>> tviz = TreeVisualizer(tree)
-    >>> print(tviz.text())
+    >>> tpp = TreePrettyPrinter(tree)
+    >>> print(tpp.text())
                                  S                       
        __________________________|_____________________   
       |                          VP                    | 
@@ -27,7 +27,7 @@ Tree nr 2170 from nltk.corpus.treebank:
       |     |     |              |     |           |   |  
       I    feel pretty          good about         it  . 
 
-    >>> print(tviz.text(unicodelines=True))
+    >>> print(tpp.text(unicodelines=True))
                                  S                       
       ┌──────────────────────────┼─────────────────────┐  
       │                          VP                    │ 
@@ -46,8 +46,8 @@ A tree with long labels:
     ...     '(sentence (plural-noun-phrase (plural-noun Superconductors)) '
     ...     '(verb-phrase (plural-verb conduct) '
     ...     '(noun-phrase (singular-noun electricity))))')
-    >>> tviz = TreeVisualizer(tree)
-    >>> print(tviz.text(abbreviate=8, nodedist=2))
+    >>> tpp = TreePrettyPrinter(tree)
+    >>> print(tpp.text(abbreviate=8, nodedist=2))
                 sentence                      
          __________|__________                  
         |                 verb-phr.           
@@ -58,7 +58,7 @@ A tree with long labels:
         |          |                     |      
     Supercon.   conduct              electric.
 
-    >>> print(tviz.text(maxwidth=8, nodedist=2))
+    >>> print(tpp.text(maxwidth=8, nodedist=2))
               sentence                   
         _________|________                 
        |                verb-            
@@ -82,8 +82,8 @@ A discontinuous tree:
     ...     '(vg 10) (inf (verb 11)))))) (punct 12))', read_leaf=int)
     >>> sentence = ('Ze had met haar moeder kunnen gaan winkelen ,'
     ...             ' zwemmen of terrassen .'.split())
-    >>> tviz = TreeVisualizer(tree, sentence)
-    >>> print(tviz.text())
+    >>> tpp = TreePrettyPrinter(tree, sentence)
+    >>> print(tpp.text())
                                           top                                                
                                       _____|______________________________________________    
                                    smain                      |                           |  
@@ -104,7 +104,7 @@ A discontinuous tree:
      |    |    |    |         |      |     |          |       |      |     |      |       |   
      Ze  had  met  haar     moeder kunnen gaan     winkelen   ,   zwemmen  of terrassen   .  
 
-    >>> print(tviz.text(unicodelines=True))
+    >>> print(tpp.text(unicodelines=True))
                                           top                                                
                                      ┌─────┴──────────────────┬───────────────────────────┐   
                                    smain                      │                           │  
