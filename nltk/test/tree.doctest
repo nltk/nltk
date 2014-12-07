@@ -39,6 +39,30 @@ tree object to one of several standard tree encodings:
             [.dp [.d the ] [.np dog ] ]
             [.vp [.v chased ] [.dp [.d the ] [.np cat ] ] ] ]
 
+There is also a fancy ASCII art representation:
+
+    >>> tree.pretty_print()
+                  s               
+          ________|_____           
+         |              vp        
+         |         _____|___       
+         dp       |         dp    
+      ___|___     |      ___|___   
+     d       np   v     d       np
+     |       |    |     |       |  
+    the     dog chased the     cat
+
+    >>> tree.pretty_print(unicodelines=True, nodedist=4)
+                           s                        
+            ┌──────────────┴────────┐                   
+            │                       vp              
+            │              ┌────────┴──────┐            
+            dp             │               dp       
+     ┌──────┴──────┐       │        ┌──────┴──────┐     
+     d             np      v        d             np
+     │             │       │        │             │     
+    the           dog    chased    the           cat
+
 Trees can be initialized from treebank strings:
 
     >>> tree2 = Tree.fromstring('(S (NP I) (VP (V enjoyed) (NP my cookie)))')

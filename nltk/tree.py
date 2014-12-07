@@ -685,6 +685,15 @@ class Tree(list):
         from nltk.draw.tree import draw_trees
         draw_trees(self)
 
+    def pretty_print(self, sentence=None, highlight=(), **viz_args):
+        """
+        Pretty-print this tree as ASCII or Unicode art.
+        For explanation of the arguments, see the documentation for
+        `nltk.treeprettyprinter.TreePrettyPrinter`.
+        """
+        from nltk.treeprettyprinter import TreePrettyPrinter
+        print(TreePrettyPrinter(self, sentence, highlight).text(**viz_args))
+        
     def __repr__(self):
         childstr = ", ".join(unicode_repr(c) for c in self)
         return '%s(%s, [%s])' % (type(self).__name__, unicode_repr(self._label), childstr)
