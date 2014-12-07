@@ -685,7 +685,7 @@ class Tree(list):
         from nltk.draw.tree import draw_trees
         draw_trees(self)
 
-    def visualize(self, sentence=None, highlight=(), **viz_args):
+    def pretty_print(self, sentence=None, highlight=(), **viz_args):
         """
         Visualize this tree as ASCII or Unicode art.
         For explanation of the arguments, see the documentation for
