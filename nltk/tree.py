@@ -689,9 +689,9 @@ class Tree(list):
         """
         Pretty-print this tree as ASCII or Unicode art.
         For explanation of the arguments, see the documentation for
-        `nltk.treevisualize.TreePrettyPrinter`.
+        `nltk.treeprettyprinter.TreePrettyPrinter`.
         """
-        from nltk.treevisualize import TreePrettyPrinter
+        from nltk.treeprettyprinter import TreePrettyPrinter
         print(TreePrettyPrinter(self, sentence, highlight).text(**viz_args))
         
     def __repr__(self):

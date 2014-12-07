@@ -1,12 +1,12 @@
 .. Copyright (C) 2001-2014 NLTK Project
 .. For license information, see LICENSE.TXT
 
-====================================================
- Unit tests for nltk.treevisualize.TreePrettyPrinter
-====================================================
+========================================================
+ Unit tests for nltk.treeprettyprinter.TreePrettyPrinter
+========================================================
 
     >>> from nltk.tree import Tree
-    >>> from nltk.treevisualize import TreePrettyPrinter
+    >>> from nltk.treeprettyprinter import TreePrettyPrinter
 
 Tree nr 2170 from nltk.corpus.treebank:
 

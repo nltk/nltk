@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Discontinuous tree visualization. 
+Pretty-printing of discontinuous trees. 
 Adapted from the disco-dop project, by Andreas van Cranenburgh.
 https://github.com/andreasvc/disco-dop
 
