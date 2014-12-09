@@ -221,6 +221,23 @@ class DependencyGraph(object):
         deps = node['deps']
         return Tree(word, [self._tree(i) for i in deps])
 
+    def triples(self, node=None):
+        """
+        Extract dependency triples of the form: 
+        ((head word, head tag), rel, (dep word, dep tag))
+        """
+
+        if not node:
+            node = self.root
+
+        head = (node['word'], node['ctag'])
+        for i in node['deps']:
+            dep = self.get_by_address(i)
+            yield (head, dep['rel'], (dep['word'], dep['ctag']))
+            for triple in self.triples(node=dep):
+                yield triple
+
+
     def _hd(self, i):
         try:
             return self.nodelist[i]['head']
