@@ -448,8 +448,8 @@ class ZipFilePathPointer(PathPointer):
         if isinstance(zipfile, string_types):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
-        # Normalize the entry string, it should be absolute:
-        entry = normalize_resource_name(entry, False, '/').lstrip('/')
+        # Normalize the entry string, it should be relative:
+        entry = normalize_resource_name(entry, True, '/').lstrip('/')
 
         # Check that the entry exists:
         if entry:
