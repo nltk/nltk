@@ -120,14 +120,14 @@ class DependencyGraph(object):
         return "<DependencyGraph with %d nodes>" % len(self.nodelist)
 
     @staticmethod
-    def load(file, zero_based=False):
+    def load(filename, zero_based=False):
         """
-        :param file: a file in Malt-TAB format
-        :param zero_based: nodes in the input file are numbered starting from 0 rather 
+        :param filename: a name of a file in Malt-TAB format
+        :param zero_based: nodes in the input file are numbered starting from 0 rather
             than 1 (as produced by, e.g., zpar)
         :return: a list of DependencyGraphs
         """
-        with open(file) as infile:
+        with open(filename) as infile:
             return [DependencyGraph(tree_str, zero_based=zero_based) for tree_str in
                                                   infile.read().split('\n\n')]
 
@@ -230,7 +230,7 @@ class DependencyGraph(object):
 
     def triples(self, node=None):
         """
-        Extract dependency triples of the form: 
+        Extract dependency triples of the form:
         ((head word, head tag), rel, (dep word, dep tag))
         """
 
