@@ -30,19 +30,22 @@ class DependencyGraph(object):
     """
     A container for the nodes and labelled edges of a dependency structure.
     """
-    def __init__(self, tree_str=None):
+    def __init__(self, tree_str=None, zero_based=False):
         """
         We place a dummy 'top' node in the first position
         in the nodelist, since the root node is often assigned '0'
         as its head. This also means that the indexing of the nodelist
         corresponds directly to the Malt-TAB format, which starts at 1.
+
+        If zero-based is True, then Malt-TAB-like input with node numbers
+        starting at 0 and the root node assigned -1 (as produced by, e.g., zpar).
         """
         top = {'word': None, 'lemma': None, 'ctag': 'TOP', 'tag': 'TOP', 'feats': None, 'rel': 'TOP', 'deps': [], 'address': 0}
         self.nodelist = [top]
         self.root = None
         self.stream = None
         if tree_str:
-            self._parse(tree_str)
+            self._parse(tree_str, zero_based)
 
     def remove_by_address(self, address):
         """
@@ -117,13 +120,15 @@ class DependencyGraph(object):
         return "<DependencyGraph with %d nodes>" % len(self.nodelist)
 
     @staticmethod
-    def load(file):
+    def load(file, zero_based=False):
         """
         :param file: a file in Malt-TAB format
+        :param zero_based: nodes in the input file are numbered starting from 0 rather 
+            than 1 (as produced by, e.g., zpar)
         :return: a list of DependencyGraphs
         """
         with open(file) as infile:
-            return [DependencyGraph(tree_str) for tree_str in
+            return [DependencyGraph(tree_str, zero_based=zero_based) for tree_str in
                                                   infile.read().split('\n\n')]
 
     @staticmethod
@@ -156,7 +161,7 @@ class DependencyGraph(object):
         if not self.contains_address(node['address']):
             self.nodelist.append(node)
 
-    def _parse(self, input):
+    def _parse(self, input, zero_based):
         lines = [DependencyGraph._normalize(line) for line in input.split('\n') if line.strip()]
         temp = []
         for index, line in enumerate(lines):
@@ -176,6 +181,8 @@ class DependencyGraph(object):
                     raise ValueError('Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (nrCells))
 
                 head = int(head)
+                if zero_based:
+                    head += 1
                 self.nodelist.append({'address': index+1, 'word': word, 'lemma': lemma, 'ctag': ctag, 'tag': tag, 'feats': feats, 'head': head, 'rel': rel,
                                       'deps': [d for (d,h) in temp if h == index+1]})
 
