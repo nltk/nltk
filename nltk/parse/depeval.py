@@ -5,8 +5,7 @@
 # Copyright (C) 2001-2014 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-import string 
-import re 
+import unicodedata
 
 class DependencyEvaluator(object):
     """
@@ -39,11 +38,11 @@ class DependencyEvaluator(object):
 >>> parsed_sent = DependencyGraph(\"""
 ... Pierre  NNP     8       NMOD
 ... Vinken  NNP     1       SUB
-... ,       ,       2       P
+... ,       ,       3       P
 ... 61      CD      6       NMOD
 ... years   NNS     6       AMOD
 ... old     JJ      2       NMOD
-... ,       ,       2       P
+... ,       ,       3       AMOD
 ... will    MD      0       ROOT
 ... join    VB      8       VC
 ... the     DT      11      AMOD
@@ -71,6 +70,15 @@ class DependencyEvaluator(object):
         self._parsed_sents = parsed_sents
         self._gold_sents = gold_sents
     
+    def _remove_punct(self,inStr):
+        """
+        Function to remove punctuation from Unicode string. 
+        :param input: the input string 
+        :return: Unicode string after remove all punctuation  
+        """
+        punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
+        return "".join(x for x in inStr  if unicodedata.category(x) not in punc_cat)
+    
     def eval(self):
         """
         Return the Labeled Attachment Score (LAS) and Unlabeled Attachment Score (UAS)  
@@ -87,17 +95,17 @@ class DependencyEvaluator(object):
         for i in range(len(self._parsed_sents)):
             parsed_sent = self._parsed_sents[i].nodelist
             gold_sent = self._gold_sents[i].nodelist
-            if (len(parsed_sent) != len(gold_sent)):
+            if len(parsed_sent) != len(gold_sent):
                 raise ValueError(" Sentence length is not matched. ")
             
             for j in range(len(parsed_sent)):
-                if (parsed_sent[j]["word"] is None): 
+                if parsed_sent[j]["word"] is None: 
                     continue
-                if (parsed_sent[j]["word"] != gold_sent[j]["word"]):
+                if parsed_sent[j]["word"] != gold_sent[j]["word"]:
                     raise ValueError(" Sentence sequence is not matched. ")
                 
-                # Ignore if word is punctuation by default
-                if re.sub(ur"\p{P}+", "", parsed_sent[j]["word"]) == "":  # if this is punctuation the whole string  
+                # by default, ignore if word is punctuation 
+                if  self._remove_punct(parsed_sent[j]["word"]) == "":     
                 #if (parsed_sent[j]["word"] in string.punctuation):
                     continue  
                 
