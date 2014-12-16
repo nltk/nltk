@@ -202,6 +202,10 @@ udhr = LazyCorpusLoader(
     'udhr', UdhrCorpusReader)
 udhr2 = LazyCorpusLoader(
     'udhr2', PlaintextCorpusReader, r'.*\.txt', encoding='utf8')
+universal_treebanks = LazyCorpusLoader(
+    'universal_treebanks_v20', ConllCorpusReader, r'.*\.conll',
+    columntypes = ('ignore', 'words', 'ignore', 'ignore', 'pos',
+                   'ignore', 'ignore', 'ignore', 'ignore', 'ignore'))
 verbnet = LazyCorpusLoader(
     'verbnet', VerbnetCorpusReader, r'(?!\.).*\.xml')
 webtext = LazyCorpusLoader(
