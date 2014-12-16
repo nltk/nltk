@@ -75,3 +75,4 @@ from nltk.parse.nonprojectivedependencyparser import (NonprojectiveDependencyPar
                                                       NaiveBayesDependencyScorer,
                                                       ProbabilisticNonprojectiveParser)
 from nltk.parse.malt import MaltParser
+from nltk.parse.evaluate import DependencyEvaluator
