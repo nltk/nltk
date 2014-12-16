@@ -644,12 +644,12 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
     return next(find_jar_iter(name_pattern, path_to_jar, env_vars,
                          searchpath, url, verbose, is_regex))
 
-
 def _decode_stdoutdata(stdoutdata):
     """ Convert data read from stdout/stderr to unicode """
     if not isinstance(stdoutdata, bytes):
         return stdoutdata
-    encoding = getattr(sys.stdout, "encoding", locale.getpreferredencoding())
+    
+    encoding = getattr(sys.__stdout__, "encoding", locale.getpreferredencoding())
     if encoding is None:
         return stdoutdata.decode()
     return stdoutdata.decode(encoding)
