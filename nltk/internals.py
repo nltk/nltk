@@ -644,7 +644,6 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
     return next(find_jar_iter(name_pattern, path_to_jar, env_vars,
                          searchpath, url, verbose, is_regex))
 
-# Long Duong : Fix the encoding here 
 def _decode_stdoutdata(stdoutdata):
     """ Convert data read from stdout/stderr to unicode """
     if not isinstance(stdoutdata, bytes):

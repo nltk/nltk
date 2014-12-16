@@ -20,7 +20,7 @@ http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 
 from __future__ import division, print_function, unicode_literals
 
-from nltk.util import slice_bounds
+from nltk.util import slice_bounds, OrderedDict
 from nltk.compat import string_types, python_2_unicode_compatible, unicode_repr
 from nltk.internals import raise_unorderable_types
 from nltk.tree import Tree
@@ -29,7 +29,7 @@ import re
 import sys
 import codecs
 from cgi import escape
-from collections import defaultdict, OrderedDict
+from collections import defaultdict
 from operator import itemgetter
 from itertools import chain, islice
 
@@ -211,10 +211,10 @@ class TreePrettyPrinter(object):
         childcols = defaultdict(set)
         matrix = [[None] * (len(sentence) * scale)]
         nodes = {}
-        ids = {a: n for n, a in enumerate(positions)}
+        ids = dict((a, n) for n, a in enumerate(positions))
         highlighted_nodes = set(n for a, n in ids.items()
                                 if not highlight or tree[a] in highlight)
-        levels = {n: [] for n in range(maxdepth - 1)}
+        levels = dict((n, []) for n in range(maxdepth - 1))
         terminals = []
         for a in positions:
             node = tree[a]
@@ -251,10 +251,10 @@ class TreePrettyPrinter(object):
             for m in nodesatdepth:  # [::-1]:
                 if n < maxdepth - 1 and childcols[m]:
                     _, pivot = min(childcols[m], key=itemgetter(1))
-                    if ({a[:-1] for row in matrix[:-1] for a in row[:pivot]
-                            if isinstance(a, tuple)} &
-                        {a[:-1] for row in matrix[:-1] for a in row[pivot:]
-                            if isinstance(a, tuple)}):
+                    if (set(a[:-1] for row in matrix[:-1] for a in row[:pivot]
+                            if isinstance(a, tuple)) &
+                        set(a[:-1] for row in matrix[:-1] for a in row[pivot:]
+                            if isinstance(a, tuple))):
                         crossed.add(m)
 
                 rowidx, i = findcell(m, matrix, startoflevel, childcols)
@@ -325,14 +325,14 @@ class TreePrettyPrinter(object):
         if abbreviate == True:
             abbreviate = 5
         if unicodelines:
-            horzline = u'\u2500'
-            leftcorner = u'\u250c'
-            rightcorner = u'\u2510'
-            vertline = u' \u2502 '
-            tee = horzline + u'\u252C' + horzline
-            bottom = horzline + u'\u2534' + horzline
-            cross = horzline + u'\u253c' + horzline
-            ellipsis = u'\u2026'
+            horzline = '\u2500'
+            leftcorner = '\u250c'
+            rightcorner = '\u2510'
+            vertline = ' \u2502 '
+            tee = horzline + '\u252C' + horzline
+            bottom = horzline + '\u2534' + horzline
+            cross = horzline + '\u253c' + horzline
+            ellipsis = '\u2026'
         else:
             horzline = '_'
             leftcorner = rightcorner = ' '
@@ -532,7 +532,7 @@ def test():
     """Do some tree drawing tests."""
     def print_tree(n, tree, sentence=None, ansi=True, **xargs):
         print()
-        print('{}: "{}"'.format(n, ' '.join(sentence or tree.leaves())))
+        print('{0}: "{1}"'.format(n, ' '.join(sentence or tree.leaves())))
         print(tree)
         print()
         drawtree = TreePrettyPrinter(tree, sentence)

@@ -377,7 +377,7 @@ class Downloader(object):
        server index will be considered 'stale,' and will be
        re-downloaded."""
 
-    DEFAULT_URL = 'http://nltk.github.com/nltk_data/'
+    DEFAULT_URL = 'http://www.nltk.org/nltk_data/'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
        ``Downloader`` object."""
