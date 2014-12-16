@@ -8,8 +8,7 @@
 
 from __future__ import division
 
-import string 
-import re 
+import unicodedata
 
 class DependencyEvaluator(object):
     """
@@ -42,11 +41,11 @@ class DependencyEvaluator(object):
     >>> parsed_sent = DependencyGraph(\"""
     ... Pierre  NNP     8       NMOD
     ... Vinken  NNP     1       SUB
-    ... ,       ,       2       P
+    ... ,       ,       3       P
     ... 61      CD      6       NMOD
     ... years   NNS     6       AMOD
     ... old     JJ      2       NMOD
-    ... ,       ,       2       P
+    ... ,       ,       3       AMOD
     ... will    MD      0       ROOT
     ... join    VB      8       VC
     ... the     DT      11      AMOD
@@ -62,7 +61,7 @@ class DependencyEvaluator(object):
 
     >>> de = DependencyEvaluator([parsed_sent],[gold_sent])
     >>> de.eval()
-    (0.833..., 0.666...)
+    (0.8, 0.6)
 """
 
     def __init__(self, parsed_sents, gold_sents):
@@ -72,6 +71,15 @@ class DependencyEvaluator(object):
         """
         self._parsed_sents = parsed_sents
         self._gold_sents = gold_sents
+    
+    def _remove_punct(self,inStr):
+        """
+        Function to remove punctuation from Unicode string. 
+        :param input: the input string 
+        :return: Unicode string after remove all punctuation  
+        """
+        punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
+        return "".join(x for x in inStr  if unicodedata.category(x) not in punc_cat)
     
     def eval(self):
         """
@@ -100,7 +108,7 @@ class DependencyEvaluator(object):
                 
                 # Ignore if word is punctuation by default
                 #if (parsed_sent[j]["word"] in string.punctuation):
-                if re.sub(ur"\p{P}+", "", parsed_sent[j]["word"]) == "":  # if this is punctuation the whole string  
+                if  self._remove_punct(parsed_sent[j]["word"]) == "":     
                     continue  
                 
                 total += 1 
