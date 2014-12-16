@@ -86,6 +86,8 @@ class SennaTagger(TaggerI):
         used in the pipeline. In case, the system is not known the senna binary will
         be used.
         """
+        
+        # Long Duong : Fix here, should not concatenate the file like this 
         os_name = system()
         if os_name == 'Linux':
             bits = architecture()[0]
