@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 #
 from __future__ import print_function
-from util import read_phrase_table, read_lang_model
+from util import read_phrase_table, read_lang_model, get_moses_sample_model
 
 class LanguageModel(object):
     """
@@ -21,7 +21,8 @@ class LanguageModel(object):
     ('the', 'most') and we want to retrieve the logarithmic probability of the
     word 'rudimentary', given the state:
     
-    >>> lm = LanguageModel('europarl.srilm.gz')
+    >>> model_file = get_moses_sample_model('lm','europarl.srilm.gz')
+    >>> lm = LanguageModel(model_file)
     >>> state = 'the most'
     >>> word = 'rudimentary'
     >>> new_state, score = lm.score(state, word)
@@ -30,7 +31,8 @@ class LanguageModel(object):
     
     Another example, for the word 'opponent' coming after the word 'tough':
     
-    >>> lm = LanguageModel('europarl.srilm.gz')
+    >>> model_file = get_moses_sample_model('lm','europarl.srilm.gz')
+    >>> lm = LanguageModel(model_file)
     >>> state = 'tough'
     >>> word = 'opponent'
     >>> new_state, score = lm.score(state, word)
@@ -77,9 +79,10 @@ class TranslationModel(object):
     This class implements an translation model object.
     To retrieve the possible translation of a phrase, use:
     
-    >>> tm = TranslationModel('phrase-table')
-    >>> tm.table['es gibt']
-    {'there is': 1.0}
+    >>> model_file = get_moses_sample_model('phrase-model', 'phrase-table')
+    >>> tm = TranslationModel(model_file)
+    >>> tm.table['es gibt'] == {'there is': 1.0}
+    True
     
     Note:
     For now, the translation model object only retrieves the probabilities from
