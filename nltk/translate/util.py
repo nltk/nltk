@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 #
 from __future__ import print_function
-import gzip, mimetypes
+import io, gzip, mimetypes
 
 def read_phrase_table(phrasetablefile):
     """
@@ -32,7 +32,7 @@ def read_phrase_table(phrasetablefile):
     >>> model_file = get_moses_sample_model('phrase-model', 'phrase-table')
     >>> x = read_phrase_table(model_file)
     >>> print(x)
-    {'es gibt': {'there is': 1.0}, 'klein': {'small': 0.8, 'little': 0.8}, 'die': {'the': 0.3}, 'der': {'the': 0.3}, 'haus': {'house': 1.0}, 'ist': {'is': 1.0, "'s": 1.0}, 'kleines': {'small': 0.2, 'little': 0.2}, 'gibt': {'gives': 1.0}, 'es ist': {'this is': 0.2, 'it is': 0.8}, 'das': {'this': 0.1, 'the': 0.4, 'it': 0.1}, 'alt': {'old': 0.8}, 'ein': {'a': 1.0, 'an': 1.0}, 'altes': {'old': 0.2}, 'das ist': {'this is': 0.8, 'it is': 0.2}}
+    {'es gibt': {'there is': 1.0}, 'gibt': {'gives': 1.0}, 'klein': {'little': 0.8, 'small': 0.8}, 'ist': {'is': 1.0, "'s": 1.0}, 'alt': {'old': 0.8}, 'das ist': {'this is': 0.8, 'it is': 0.2}, 'ein': {'a': 1.0, 'an': 1.0}, 'altes': {'old': 0.2}, 'das': {'this': 0.1, 'it': 0.1, 'the': 0.4}, 'die': {'the': 0.3}, 'der': {'the': 0.3}, 'haus': {'house': 1.0}, 'kleines': {'little': 0.2, 'small': 0.2}, 'es ist': {'this is': 0.2, 'it is': 0.8}}
     >>> print(x['es gibt'])
     {'there is': 1.0}
     
@@ -49,12 +49,12 @@ def read_phrase_table(phrasetablefile):
     if mimetypes.guess_type(phrasetablefile)[1] == 'gzip':
         anyopen = gzip.open
     else: 
-        anyopen = open
+        anyopen = io.open
     
     with anyopen(phrasetablefile, 'rb') as fin:
         for line in fin:
             # Splits the tab separated file.
-            line = line.strip().split(' ||| ')
+            line = line.decode('latin-1').strip().split(' ||| ')
             # Only first three columns are necessary for phrase-based MT.
             src, trg, probabilities = line[:3]
             # Only the φ(f|e) is required.
@@ -107,9 +107,12 @@ def read_lang_model(arpafile):
     probability.
     """
     lang_model = {}
-    with gzip.open(arpafile, 'rb') as fin:
+    
+    with gzip.open(arpafile, 'r') as fin:
         for line in fin:
-            line = line.strip().split('\t')
+            # Splits the tab separated file.
+            line = line.decode('latin-1').strip()
+            line = line.split('\t')
             if len(line) > 1:
                 try: # When backoff is available.
                     prob, ngram, backoff = line[:3]
