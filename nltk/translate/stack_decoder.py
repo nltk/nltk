@@ -33,9 +33,9 @@ def pruning(stack, option=None, max_stack=10):
     :param option: indicates the no. of stacks to keep after pruning 
     """
     if option==None: # No pruning
-        return stack.itervalues()
+        return stack.values()
     elif option=='threshold': # threshold pruning, i.e. limiting stack size
-        return heapq.nlargest(max_stack, stack.itervalues(), 
+        return heapq.nlargest(max_stack, stack.values(), 
                               key=lambda h: h.logprob)
     elif option=='alpha': # TODO: add alpha pruning.
         pass
@@ -129,10 +129,10 @@ def monotone_stack_decode(sent, tm, lm, stack_size=10, nbest=1,
                     
     # Note: the last stack stores the hypotheses for all the input words.
     if nbest == 1 and output2str: # If only the top hypothesis is needed.
-        nbest_stacks = max(stacks[-1].itervalues(), key=lambda h: h.logprob)
+        nbest_stacks = max(stacks[-1].values(), key=lambda h: h.logprob)
         return hypothesis_to_translation(nbest_stacks)
     else: # Returns n no. of hypotheses.
-        return sorted(stacks[-1].itervalues(), key=lambda h: h.logprob)[:nbest]
+        return sorted(stacks[-1].values(), key=lambda h: h.logprob)[:nbest]
     
 
 # run doctests
