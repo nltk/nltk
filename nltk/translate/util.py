@@ -31,10 +31,10 @@ def read_phrase_table(phrasetablefile):
     
     >>> model_file = get_moses_sample_model('phrase-model', 'phrase-table')
     >>> x = read_phrase_table(model_file)
-    >>> print(x)
-    {'es gibt': {'there is': 1.0}, 'gibt': {'gives': 1.0}, 'klein': {'little': 0.8, 'small': 0.8}, 'ist': {'is': 1.0, "'s": 1.0}, 'alt': {'old': 0.8}, 'das ist': {'this is': 0.8, 'it is': 0.2}, 'ein': {'a': 1.0, 'an': 1.0}, 'altes': {'old': 0.2}, 'das': {'this': 0.1, 'it': 0.1, 'the': 0.4}, 'die': {'the': 0.3}, 'der': {'the': 0.3}, 'haus': {'house': 1.0}, 'kleines': {'little': 0.2, 'small': 0.2}, 'es ist': {'this is': 0.2, 'it is': 0.8}}
-    >>> print(x['es gibt'])
-    {'there is': 1.0}
+    >>> x == {u'es gibt': {u'there is': 1.0}, u'klein': {u'small': 0.8, u'little': 0.8}, u'die': {u'the': 0.3}, u'der': {u'the': 0.3}, u'haus': {u'house': 1.0}, u'ist': {u'is': 1.0, u"'s": 1.0}, u'kleines': {u'small': 0.2, u'little': 0.2}, u'gibt': {u'gives': 1.0}, u'es ist': {u'this is': 0.2, u'it is': 0.8}, u'das': {u'this': 0.1, u'the': 0.4, u'it': 0.1}, u'alt': {u'old': 0.8}, u'ein': {u'a': 1.0, u'an': 1.0}, u'altes': {u'old': 0.2}, u'das ist': {u'this is': 0.8, u'it is': 0.2}}
+    True
+    >>> x['es gibt'] == {u'there is': 1.0}
+    True
     
     :type phrasetablefile: str
     :param phrasetablefile: the filename for the phrase table .gz file. 
