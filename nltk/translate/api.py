@@ -6,7 +6,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
-
+from __future__ import print_function
 from util import read_phrase_table, read_lang_model
 
 class LanguageModel(object):

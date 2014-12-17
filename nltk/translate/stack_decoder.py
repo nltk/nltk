@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 #
 
+from __future__ import print_function
 import heapq
 from collections import namedtuple
 
@@ -73,10 +74,10 @@ def monotone_stack_decode(sent, tm, lm, stack_size=10, nbest=1,
     >>>
     >>> tm = TranslationModel(phrasetablefile)
     >>> lm = LanguageModel(langmodelfile)
-    >>> print "Decoding:", sent
+    >>> print("Decoding:", sent)
     Decoding: das ist ein kleines haus
     >>> translation = monotone_stack_decode(sent.split(), tm, lm)
-    >>> print "Translation:", translation
+    >>> print("Translation:", translation)
     Translation: this is a small house 
     
     :type sent: list
