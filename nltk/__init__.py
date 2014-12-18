@@ -119,6 +119,7 @@ from nltk.chunk import *
 from nltk.classify import *
 from nltk.inference import *
 from nltk.metrics import *
+from nltk.model import *
 from nltk.parse import *
 from nltk.tag import *
 from nltk.tokenize import *
@@ -165,7 +166,7 @@ else:
 
 from nltk import align, ccg, chunk, classify, collocations
 from nltk import data, featstruct, grammar, help, inference, metrics
-from nltk import misc, parse, probability, sem, stem, wsd
+from nltk import misc, model, parse, probability, sem, stem, wsd
 from nltk import tag, tbl, text, tokenize, tree, treetransforms, util
 
 # override any accidentally imported demo
