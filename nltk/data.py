@@ -205,6 +205,10 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     True
     >>> windows or normalize_resource_name('../dir/file', False, '/') == '/dir/file'
     True
+    >>> not windows or normalize_resource_name('/dir/file', True, '/') == 'dir/file'
+    True
+    >>> windows or normalize_resource_name('/dir/file', True, '/') == '/dir/file'
+    True
     """
     is_dir = bool(re.search(r'[\\/.]$', resource_name)) or resource_name.endswith(os.path.sep)
     if sys.platform.startswith('win'):
