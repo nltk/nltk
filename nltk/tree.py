@@ -724,8 +724,7 @@ class Tree(list):
             _canvas_frame.destroy_widget(widget)
             subprocess.call([find_binary('gs', binary_names=['gswin32c.exe', 'gswin64c.exe'], env_vars=['PATH'], verbose=False)] +
                             '-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={0:} {1:}'
-                            .format(out_path, in_path).split(),
-                            shell=True)
+                            .format(out_path, in_path).split())
             with open(out_path, 'rb') as sr:
                 res = sr.read()
             os.remove(in_path)
