@@ -10,7 +10,8 @@
 A module for interfacing with the SENNA pipeline.
 """
 
-from os import path, sep
+
+from os import path, sep, environ
 from subprocess import Popen, PIPE
 from platform import architecture, system
 from nltk.tag.api import TaggerI
@@ -79,27 +80,26 @@ class SennaTagger(TaggerI):
         self._path = path.normpath(senna_path) + sep
         self.operations = operations
 
-    @property
-    def executable(self):
+    #####@property
+    def executable(self, base_path):
         """
         A property that determines the system specific binary that should be
         used in the pipeline. In case, the system is not known the senna binary will
         be used.
         """
-        
         # Long Duong : Fix here, should not concatenate the file like this 
         os_name = system()
         if os_name == 'Linux':
             bits = architecture()[0]
             if bits == '64bit':
-                return path.join(self._path, 'senna-linux64')
-            return path.join(self._path, 'senna-linux32')
+                return path.join(base_path, 'senna-linux64')
+            return path.join(base_path, 'senna-linux32')
         if os_name == 'Windows':
-            return path.join(self._path, 'senna-win32.exe')
+            return path.join(base_path, 'senna-win32.exe')
         if os_name == 'Darwin':
-            return path.join(self._path, 'senna-osx')
-        return path.join(self._path, 'senna')
-
+            return path.join(base_path, 'senna-osx')
+        return path.join(base_path, 'senna')
+        
     def _map(self):
         """
         A method that calculates the order of the columns that SENNA pipeline
@@ -126,14 +126,23 @@ class SennaTagger(TaggerI):
         calculated annotations/tags.
         """
         encoding = self._encoding
-
-        # Verifies the existence of the executable
-        if not path.isfile(self.executable):
-          raise ExecutableNotFound("Senna executable expected at %s but not found" %
-                                   self.executable)
-
+        
+        # Long Duong : Fix bug #543 (looking for Senna executable 
+        
+        # Verifies the existence of the executable on the self._path first
+        senna_binary_file = self.executable(self._path)
+        
+        if not path.isfile(senna_binary_file):
+            # Check for the system environment 
+            if 'SENNA' in environ:
+                self._path = path.join(environ['SENNA'],'')  
+                senna_binary_file = self.executable(self._path)
+                if not path.isfile(senna_binary_file):
+                    raise ExecutableNotFound("Senna executable expected at %s but not found" %
+                                  senna_binary_file)
+                    
         # Build the senna command to run the tagger
-        _senna_cmd = [self.executable, '-path', self._path, '-usrtokens', '-iobtags']
+        _senna_cmd = [senna_binary_file, '-path', self._path, '-usrtokens', '-iobtags']
         _senna_cmd.extend(['-'+op for op in self.operations])
 
         # Serialize the actual sentences to a temporary string
@@ -284,5 +293,5 @@ class CHKTagger(SennaTagger):
 def setup_module(module):
     from nose import SkipTest
     tagger = POSTagger('/usr/share/senna-v2.0')
-    if not path.isfile(tagger.executable):
+    if not path.isfile(tagger.executable(tagger._path)):
         raise SkipTest("Senna executable expected at /usr/share/senna-v2.0/senna-osx but not found")
