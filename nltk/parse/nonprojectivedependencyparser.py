@@ -18,6 +18,7 @@ from nltk.parse.dependencygraph import DependencyGraph, conll_data2
 # DependencyScorerI - Interface for Graph-Edge Weight Calculation
 #################################################################
 
+
 class DependencyScorerI(object):
     """
     A scorer for calculated the weights on the edges of a weighted
@@ -584,11 +585,11 @@ class NonprojectiveDependencyParser(object):
                     root = i
             if root_count == 1:
                 graph = DependencyGraph()
-                graph.nodelist[0]['deps'] = root + 1
+                graph.nodes[0]['deps'] = root + 1
                 for i in range(len(tokens)):
                     node = {'word': tokens[i], 'address': i+1}
                     node['deps'] = [j+1 for j in range(len(tokens)) if analysis[j] == i]
-                    graph.nodelist.append(node)
+                    graph.nodes[i + 1] = node
 #               cycle = graph.contains_cycle()
 #               if not cycle:
                 yield graph
