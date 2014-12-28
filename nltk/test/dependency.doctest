@@ -6,7 +6,11 @@ Dependency Grammars
 ===================
 
     >>> from nltk.grammar import DependencyGrammar
-    >>> from nltk.parse import *
+    >>> from nltk.parse import (
+    ...     DependencyGraph,
+    ...     ProjectiveDependencyParser,
+    ...     NonprojectiveDependencyParser,
+    ... )
 
 CoNLL Data
 ----------
@@ -38,22 +42,22 @@ CoNLL Data
       (Vinken Pierre , (old (years 61)) ,)
       (join (board the) (as (director a nonexecutive)) (Nov. 29) .))
     >>> print(list(dg.triples()))
-    [((u'will', u'MD'), u'SUB', (u'Vinken', u'NNP')), 
+    [((u'will', u'MD'), u'SUB', (u'Vinken', u'NNP')),
      ((u'Vinken', u'NNP'), u'NMOD', (u'Pierre', u'NNP')),
      ((u'Vinken', u'NNP'), u'P', (u',', u',')),
      ((u'Vinken', u'NNP'), u'NMOD', (u'old', u'JJ')),
      ((u'old', u'JJ'), u'AMOD', (u'years', u'NNS')),
      ((u'years', u'NNS'), u'NMOD', (u'61', u'CD')),
      ((u'Vinken', u'NNP'), u'P', (u',', u',')),
-     ((u'will', u'MD'), u'VC', (u'join', u'VB')), 
+     ((u'will', u'MD'), u'VC', (u'join', u'VB')),
      ((u'join', u'VB'), u'OBJ', (u'board', u'NN')),
      ((u'board', u'NN'), u'NMOD', (u'the', u'DT')),
      ((u'join', u'VB'), u'VMOD', (u'as', u'IN')),
      ((u'as', u'IN'), u'PMOD', (u'director', u'NN')),
      ((u'director', u'NN'), u'NMOD', (u'a', u'DT')),
-     ((u'director', u'NN'), u'NMOD', (u'nonexecutive', u'JJ')), 
-     ((u'join', u'VB'), u'VMOD', (u'Nov.', u'NNP')), 
-     ((u'Nov.', u'NNP'), u'NMOD', (u'29', u'CD')), 
+     ((u'director', u'NN'), u'NMOD', (u'nonexecutive', u'JJ')),
+     ((u'join', u'VB'), u'VMOD', (u'Nov.', u'NNP')),
+     ((u'Nov.', u'NNP'), u'NMOD', (u'29', u'CD')),
      ((u'join', u'VB'), u'VMOD', (u'.', u'.'))]
 
 Using the dependency-parsed version of the Penn Treebank corpus sample.
@@ -102,7 +106,7 @@ Using the output of zpar (like Malt-TAB but with zero-based indexing)
     ... 29	CD	15	NMOD
     ... .	.	7	P
     ... """
-    
+
     >>> zdg = DependencyGraph(zpar_data, zero_based=True)
     >>> print(zdg.tree())
     (will

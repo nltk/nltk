@@ -19,11 +19,12 @@ import re
 from pprint import pformat
 
 from nltk.tree import Tree
-from nltk.compat import python_2_unicode_compatible
+from nltk.compat import python_2_unicode_compatible, string_types
 
 #################################################################
 # DependencyGraph Class
 #################################################################
+
 
 @python_2_unicode_compatible
 class DependencyGraph(object):
@@ -32,7 +33,7 @@ class DependencyGraph(object):
     """
 
     def __init__(self, tree_str=None, cell_extractor=None, zero_based=False):
-        """ Dependency graph.
+        """Dependency graph.
 
         We place a dummy 'top' node in the first position in the nodelist, since
         the root node is often assigned '0' as its head. This also means that
@@ -48,7 +49,11 @@ class DependencyGraph(object):
         self.root = None
         self.stream = None
         if tree_str:
-            self._parse(tree_str, cell_extractor=cell_extractor, zero_based=zero_based)
+            self._parse(
+                tree_str,
+                cell_extractor=cell_extractor,
+                zero_based=zero_based,
+            )
 
     def remove_by_address(self, address):
         """
@@ -131,8 +136,10 @@ class DependencyGraph(object):
         :return: a list of DependencyGraphs
         """
         with open(filename) as infile:
-            return [DependencyGraph(tree_str, zero_based=zero_based) for tree_str in
-                                                  infile.read().split('\n\n')]
+            return [
+                DependencyGraph(tree_str, zero_based=zero_based)
+                for tree_str in infile.read().split('\n\n')
+            ]
 
     @classmethod
     def _normalize(cls, line):
@@ -163,7 +170,7 @@ class DependencyGraph(object):
         if not self.contains_address(node['address']):
             self.nodelist.append(node)
 
-    def _parse(self, input, cell_extractor=None, zero_based=False):
+    def _parse(self, input_, cell_extractor=None, zero_based=False):
         """Parse a sentence.
 
         :param extractor: a function that given a tuple of cells returns a 7-tuple,
@@ -189,13 +196,15 @@ class DependencyGraph(object):
             10: extract_10_cells,
         }
 
-        # lines = [DependencyGraph._normalize(line) for line in input.split('\n') if line.strip()]
-        lines = (l.rstrip() for l in input)
+        if isinstance(input_, string_types):
+            input_ = (line for line in input_.split('\n'))
+
+        lines = (l.rstrip() for l in input_)
         lines = (l for l in lines if l)
 
         temp = []
         for index, line in enumerate(lines):
-            cells = line.split('\t')
+            cells = line.split()
             nrCells = len(cells)
 
             if cell_extractor is None:
@@ -238,7 +247,8 @@ class DependencyGraph(object):
     def _word(self, node, filter=True):
         w = node['word']
         if filter:
-            if w != ',': return w
+            if w != ',':
+                return w
         return w
 
     def _tree(self, i):
@@ -316,7 +326,6 @@ class DependencyGraph(object):
                     return path
         return False  # return []?
 
-
     def get_cycle_path(self, curr_node, goal_node_index):
         for dep in curr_node['deps']:
             if dep == goal_node_index:
@@ -370,11 +379,13 @@ def nx_graph(self):
 
     return g
 
+
 def demo():
     malt_demo()
     conll_demo()
     conll_file_demo()
     cycle_finding_demo()
+
 
 def malt_demo(nx=False):
     """
@@ -403,7 +414,7 @@ Nov.    NNP     9       VMOD
     tree = dg.tree()
     print(tree.pprint())
     if nx:
-        #currently doesn't work
+        # currently doesn't work
         import networkx as NX
         import pylab as P
 
@@ -411,7 +422,7 @@ Nov.    NNP     9       VMOD
         g.info()
         pos = NX.spring_layout(g, dim=1)
         NX.draw_networkx_nodes(g, pos, node_size=50)
-        #NX.draw_networkx_edges(g, pos, edge_color='k', width=8)
+        # NX.draw_networkx_edges(g, pos, edge_color='k', width=8)
         NX.draw_networkx_labels(g, pos, dg.nx_labels)
         P.xticks([])
         P.yticks([])
@@ -430,6 +441,7 @@ def conll_demo():
     print(dg)
     print(dg.to_conll(4))
 
+
 def conll_file_demo():
     print('Mass conll_read demo...')
     graphs = [DependencyGraph(entry)
@@ -438,15 +450,16 @@ def conll_file_demo():
         tree = graph.tree()
         print('\n' + tree.pprint())
 
+
 def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
     print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
-    top =    {'word':None, 'deps':[1], 'rel': 'TOP', 'address': 0}
-    child1 = {'word':None, 'deps':[2], 'rel': 'NTOP', 'address': 1}
-    child2 = {'word':None, 'deps':[4], 'rel': 'NTOP', 'address': 2}
-    child3 = {'word':None, 'deps':[1], 'rel': 'NTOP', 'address': 3}
-    child4 = {'word':None, 'deps':[3], 'rel': 'NTOP', 'address': 4}
+    top = {'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0}
+    child1 = {'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1}
+    child2 = {'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2}
+    child3 = {'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3}
+    child4 = {'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4}
     cyclic_dg.nodelist = [top, child1, child2, child3, child4]
     cyclic_dg.root = top
     print(cyclic_dg.contains_cycle())
