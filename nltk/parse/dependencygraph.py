@@ -30,19 +30,22 @@ class DependencyGraph(object):
     """
     A container for the nodes and labelled edges of a dependency structure.
     """
-    def __init__(self, tree_str=None):
-        """
-        We place a dummy 'top' node in the first position
-        in the nodelist, since the root node is often assigned '0'
-        as its head. This also means that the indexing of the nodelist
-        corresponds directly to the Malt-TAB format, which starts at 1.
+
+    def __init__(self, tree_str=None, cell_extractor=None):
+        """ Dependency graph.
+
+        We place a dummy 'top' node in the first position in the nodelist, since
+        the root node is often assigned '0' as its head. This also means that
+        the indexing of the nodelist corresponds directly to the Malt-TAB
+        format, which starts at 1.
+
         """
         top = {'word': None, 'lemma': None, 'ctag': 'TOP', 'tag': 'TOP', 'feats': None, 'rel': 'TOP', 'deps': [], 'address': 0}
         self.nodelist = [top]
         self.root = None
         self.stream = None
         if tree_str:
-            self._parse(tree_str)
+            self._parse(tree_str, cell_extractor=cell_extractor)
 
     def remove_by_address(self, address):
         """
@@ -123,16 +126,14 @@ class DependencyGraph(object):
         :return: a list of DependencyGraphs
         """
         with open(file) as infile:
-            return [DependencyGraph(tree_str) for tree_str in
-                                                  infile.read().split('\n\n')]
+            return [DependencyGraph(tree_str) for tree_str in infile.read().split('\n\n')]
 
-    @staticmethod
-    def _normalize(line):
+    @classmethod
+    def _normalize(cls, line):
         """
         Deal with lines in which spaces are used rather than tabs.
         """
-        SPC = re.compile(' +')
-        return re.sub(SPC, '\t', line).strip()
+        return re.sub(cls.SPC, '\t', line).strip()
 
     def left_children(self, node_index):
         """
@@ -156,36 +157,72 @@ class DependencyGraph(object):
         if not self.contains_address(node['address']):
             self.nodelist.append(node)
 
-    def _parse(self, input):
-        lines = [DependencyGraph._normalize(line) for line in input.split('\n') if line.strip()]
+    def _parse(self, input, cell_extractor=None):
+        """Parse a sentence.
+
+        :param extractor: a function that given a tuple of cells returns a 7-tuple,
+        where the values are ``word, lemma, ctag, tag, feats, head, rel``.
+
+        """
+
+        def extract_3_cells(cells):
+            word, tag, head = cells
+            return word, word, tag, tag, '', head, ''
+
+        def extract_4_cells(cells):
+            word, tag, head, rel = cells
+            return word, word, tag, tag, '', head, rel
+
+        def extract_10_cells(cells):
+            _, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
+            return word, lemma, ctag, tag, feats, head, rel
+
+        extractors = {
+            3: extract_3_cells,
+            4: extract_4_cells,
+            10: extract_10_cells,
+        }
+
+        # lines = [DependencyGraph._normalize(line) for line in input.split('\n') if line.strip()]
+        lines = (l.rstrip() for l in input)
+        lines = (l for l in lines if l)
         temp = []
+
         for index, line in enumerate(lines):
-#           print line
-            try:
-                cells = line.split('\t')
-                nrCells = len(cells)
-                if nrCells == 3:
-                    word, tag, head = cells
-                    lemma, ctag, feats, rel = word, tag, '', ''
-                elif nrCells == 4:
-                    word, tag, head, rel = cells
-                    lemma, ctag, feats = word, tag, ''
-                elif nrCells == 10:
-                    _, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
-                else:
-                    raise ValueError('Number of tab-delimited fields (%d) not supported by CoNLL(10) or Malt-Tab(4) format' % (nrCells))
 
-                head = int(head)
-                self.nodelist.append({'address': index+1, 'word': word, 'lemma': lemma, 'ctag': ctag, 'tag': tag, 'feats': feats, 'head': head, 'rel': rel,
-                                      'deps': [d for (d,h) in temp if h == index+1]})
+            cells = line.split('\t')
+            nrCells = len(cells)
 
+            if cell_extractor is None:
                 try:
-                    self.nodelist[head]['deps'].append(index+1)
-                except IndexError:
-                    temp.append((index+1, head))
+                    cell_extractor = extractors[nrCells]
+                except KeyError:
+                    raise ValueError(
+                        'Number of tab-delimited fields ({0}) not supported by '
+                        'CoNLL(10) or Malt-Tab(4) format'.format(nrCells)
+                    )
 
-            except ValueError:
-                break
+            word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
+
+            head = int(head)
+            self.nodelist.append(
+                {
+                    'address': index+1,
+                    'word': word,
+                    'lemma': lemma,
+                    'ctag': ctag,
+                    'tag': tag,
+                    'feats': feats,
+                    'head': head,
+                    'rel': rel,
+                    'deps': [d for d, h in temp if h == index+1],
+                }
+            )
+
+            try:
+                self.nodelist[head]['deps'].append(index + 1)
+            except IndexError:
+                temp.append((index + 1, head))
 
         root_address = self.nodelist[0]['deps'][0]
         self.root = self.nodelist[root_address]
