@@ -31,7 +31,7 @@ class DependencyGraph(object):
     A container for the nodes and labelled edges of a dependency structure.
     """
 
-    def __init__(self, tree_str=None, cell_extractor=None):
+    def __init__(self, tree_str=None, cell_extractor=None, zero_based=False):
         """ Dependency graph.
 
         We place a dummy 'top' node in the first position in the nodelist, since
@@ -39,13 +39,16 @@ class DependencyGraph(object):
         the indexing of the nodelist corresponds directly to the Malt-TAB
         format, which starts at 1.
 
+        If zero-based is True, then Malt-TAB-like input with node numbers
+        starting at 0 and the root node assigned -1 (as produced by, e.g., zpar).
+
         """
         top = {'word': None, 'lemma': None, 'ctag': 'TOP', 'tag': 'TOP', 'feats': None, 'rel': 'TOP', 'deps': [], 'address': 0}
         self.nodelist = [top]
         self.root = None
         self.stream = None
         if tree_str:
-            self._parse(tree_str, cell_extractor=cell_extractor)
+            self._parse(tree_str, cell_extractor=cell_extractor, zero_based=zero_based)
 
     def remove_by_address(self, address):
         """
@@ -120,13 +123,16 @@ class DependencyGraph(object):
         return "<DependencyGraph with %d nodes>" % len(self.nodelist)
 
     @staticmethod
-    def load(file):
+    def load(filename, zero_based=False):
         """
-        :param file: a file in Malt-TAB format
+        :param filename: a name of a file in Malt-TAB format
+        :param zero_based: nodes in the input file are numbered starting from 0 rather
+            than 1 (as produced by, e.g., zpar)
         :return: a list of DependencyGraphs
         """
-        with open(file) as infile:
-            return [DependencyGraph(tree_str) for tree_str in infile.read().split('\n\n')]
+        with open(filename) as infile:
+            return [DependencyGraph(tree_str, zero_based=zero_based) for tree_str in
+                                                  infile.read().split('\n\n')]
 
     @classmethod
     def _normalize(cls, line):
@@ -157,7 +163,7 @@ class DependencyGraph(object):
         if not self.contains_address(node['address']):
             self.nodelist.append(node)
 
-    def _parse(self, input, cell_extractor=None):
+    def _parse(self, input, cell_extractor=None, zero_based=False):
         """Parse a sentence.
 
         :param extractor: a function that given a tuple of cells returns a 7-tuple,
@@ -186,10 +192,9 @@ class DependencyGraph(object):
         # lines = [DependencyGraph._normalize(line) for line in input.split('\n') if line.strip()]
         lines = (l.rstrip() for l in input)
         lines = (l for l in lines if l)
+
         temp = []
-
         for index, line in enumerate(lines):
-
             cells = line.split('\t')
             nrCells = len(cells)
 
@@ -205,6 +210,9 @@ class DependencyGraph(object):
             word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
 
             head = int(head)
+            if zero_based:
+                head += 1
+
             self.nodelist.append(
                 {
                     'address': index+1,
@@ -257,6 +265,22 @@ class DependencyGraph(object):
         word = node['word']
         deps = node['deps']
         return Tree(word, [self._tree(i) for i in deps])
+
+    def triples(self, node=None):
+        """
+        Extract dependency triples of the form:
+        ((head word, head tag), rel, (dep word, dep tag))
+        """
+
+        if not node:
+            node = self.root
+
+        head = (node['word'], node['ctag'])
+        for i in node['deps']:
+            dep = self.get_by_address(i)
+            yield (head, dep['rel'], (dep['word'], dep['ctag']))
+            for triple in self.triples(node=dep):
+                yield triple
 
     def _hd(self, i):
         try:

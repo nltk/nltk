@@ -40,7 +40,7 @@ class StanfordTagger(TaggerI):
 
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
-                    'instanciated directly. Did you mean POS- or NERTagger?')
+                    'instantiated directly. Did you mean POS- or NERTagger?')
         self._stanford_jar = find_jar(
                 self._JAR, path_to_jar,
                 searchpath=(), url=_stanford_url,
@@ -67,7 +67,7 @@ class StanfordTagger(TaggerI):
         _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
 
         self._cmd.extend(['-encoding', encoding])
-
+        
         # Write the actual sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, 'wb')
         _input = '\n'.join((' '.join(x) for x in sentences))
@@ -75,18 +75,18 @@ class StanfordTagger(TaggerI):
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()
-
+        
         # Run the tagger and get the output
         stanpos_output, _stderr = java(self._cmd,classpath=self._stanford_jar,
                                                        stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
 
         # Delete the temporary file
-        os.unlink(self._input_file_path)
+        os.unlink(self._input_file_path) 
 
         # Return java configurations to their default values
         config_java(options=default_options, verbose=False)
-
+                
         return self.parse_output(stanpos_output)
 
     def parse_output(self, text):
@@ -125,9 +125,10 @@ class POSTagger(StanfordTagger):
 
     @property
     def _cmd(self):
+        # Long Duong : Add -outputFormatOptions option for keeping the empty sentences
         return ['edu.stanford.nlp.tagger.maxent.MaxentTagger',
                 '-model', self._stanford_model, '-textFile',
-                self._input_file_path, '-tokenize', 'false']
+                self._input_file_path, '-tokenize', 'false','-outputFormatOptions', 'keepEmptySentences']
 
 class NERTagger(StanfordTagger):
     """
