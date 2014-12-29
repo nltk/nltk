@@ -1098,7 +1098,7 @@ class DownloaderShell(object):
             if user_input == 's':
                 self._show_config()
             elif user_input == 'd':
-                new_dl_dir = compat.raw_input('  New Directory> ').strip().lower()
+                new_dl_dir = compat.raw_input('  New Directory> ').strip()
                 if new_dl_dir in ('', 'x', 'q'):
                     print('  Cancelled!')
                 elif os.path.isdir(new_dl_dir):
