@@ -107,7 +107,7 @@ class FStructure(dict):
             if not fstruct.pred:
                 fstruct.pred = (word, tag)
 
-            children = [depgraph.nodelist[idx] for idx in node['deps']]
+            children = [depgraph.nodes[idx] for idx in node['deps']]
             for child in children:
                 fstruct.safeappend(child['rel'], FStructure._read_depgraph(child, depgraph, label_counter, fstruct))
 
@@ -196,4 +196,3 @@ dog     NN      3       OBJ
 
 if __name__ == '__main__':
     demo_read_depgraph()
-
