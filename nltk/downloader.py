@@ -1099,7 +1099,7 @@ class DownloaderShell(object):
                 self._show_config()
             elif user_input == 'd':
                 new_dl_dir = compat.raw_input('  New Directory> ').strip()
-                if new_dl_dir in ('', 'x', 'q'):
+                if new_dl_dir in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 elif os.path.isdir(new_dl_dir):
                     self._ds.download_dir = new_dl_dir
@@ -1108,7 +1108,7 @@ class DownloaderShell(object):
                            new_dl_dir))
             elif user_input == 'u':
                 new_url = compat.raw_input('  New URL> ').strip()
-                if new_url in ('', 'x', 'q'):
+                if new_url in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 else:
                     if not new_url.startswith('http://'):
