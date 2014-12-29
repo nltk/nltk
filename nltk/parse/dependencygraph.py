@@ -15,7 +15,7 @@ The input is assumed to be in Malt-TAB format
 """
 from __future__ import print_function, unicode_literals
 
-import re
+from collections import defaultdict
 from pprint import pformat
 
 from nltk.tree import Tree
@@ -54,9 +54,11 @@ class DependencyGraph(object):
             'deps': [],
             'address': 0,
         }
-        self.nodes = {0: top}
+        self.nodes = defaultdict(lambda: {'deps': []})
+        self.nodes[0] = top
+
         self.root = None
-        self.stream = None
+
         if tree_str:
             self._parse(
                 tree_str,
