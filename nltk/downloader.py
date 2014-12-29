@@ -1107,7 +1107,7 @@ class DownloaderShell(object):
                     print(('Directory %r not found!  Create it first.' %
                            new_dl_dir))
             elif user_input == 'u':
-                new_url = compat.raw_input('  New URL> ').strip().lower()
+                new_url = compat.raw_input('  New URL> ').strip()
                 if new_url in ('', 'x', 'q'):
                     print('  Cancelled!')
                 else:
