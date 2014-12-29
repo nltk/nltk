@@ -129,7 +129,7 @@ class DependencyGraph(object):
         return pformat(self.nodes)
 
     def __repr__(self):
-        return "<DependencyGraph with %d nodes>" % len(self.nodelist)
+        return "<DependencyGraph with {0} nodes>".format(len(self.nodes))
 
     @staticmethod
     def load(filename, zero_based=False):
@@ -258,7 +258,7 @@ class DependencyGraph(object):
         word = node['word']
         deps = node['deps']
 
-        return (Tree(word, [self._tree(j) for j in deps]) if len(deps) != 0 else word)
+        return (Tree(word, [self._tree(j) for j in deps]) if deps else word)
 
     def tree(self):
         """
