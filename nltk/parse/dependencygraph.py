@@ -35,13 +35,13 @@ class DependencyGraph(object):
     def __init__(self, tree_str=None, cell_extractor=None, zero_based=False):
         """Dependency graph.
 
-        We place a dummy 'top' node in the first position in the nodelist, since
-        the root node is often assigned '0' as its head. This also means that
-        the indexing of the nodelist corresponds directly to the Malt-TAB
-        format, which starts at 1.
+        We place a dummy `TOP` node with the index 0, since the root node is
+        often assigned 0 as its head. This also means that the indexing of the
+        nodes corresponds directly to the Malt-TAB format, which starts at 1.
 
         If zero-based is True, then Malt-TAB-like input with node numbers
-        starting at 0 and the root node assigned -1 (as produced by, e.g., zpar).
+        starting at 0 and the root node assigned -1 (as produced by, e.g.,
+        zpar).
 
         """
         top = {
