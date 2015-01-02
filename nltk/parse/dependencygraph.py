@@ -44,18 +44,18 @@ class DependencyGraph(object):
         zpar).
 
         """
-        top = {
-            'word': None,
-            'lemma': None,
-            'ctag': 'TOP',
-            'tag': 'TOP',
-            'feats': None,
-            'rel': 'TOP',
-            'deps': [],
-            'address': 0,
-        }
         self.nodes = defaultdict(lambda: {'deps': []})
-        self.nodes[0] = top
+        self.nodes[0].update(
+            {
+                'word': None,
+                'lemma': None,
+                'ctag': 'TOP',
+                'tag': 'TOP',
+                'feats': None,
+                'rel': 'TOP',
+                'address': 0,
+            }
+        )
 
         self.root = None
 
@@ -71,19 +71,14 @@ class DependencyGraph(object):
         Removes the node with the given address.  References
         to this node in others will still exist.
         """
-        node_index = len(self.nodelist) - 1
-        while node_index:
-            node = self.nodelist[node_index]
-            if node['address'] == address:
-                self.nodelist.pop(node_index)
-            node_index -= 1
+        del self.nodes[address]
 
     def redirect_arcs(self, originals, redirect):
         """
         Redirects arcs to any of the nodes in the originals list
         to the redirect node address.
         """
-        for node in self.nodelist:
+        for node in self.nodes.values():
             new_deps = []
             for dep in node['deps']:
                 if dep in originals:
@@ -97,17 +92,15 @@ class DependencyGraph(object):
         Adds an arc from the node specified by head_address to the
         node specified by the mod address.
         """
-        for node in self.nodelist:
-            if node['address'] == head_address and (mod_address not in node['deps']):
-                node['deps'].append(mod_address)
+        self.nodes[head_address]['deps'].append(mod_address)
 
     def connect_graph(self):
         """
         Fully connects all non-root nodes.  All nodes are set to be dependents
         of the root node.
         """
-        for node1 in self.nodelist:
-            for node2 in self.nodelist:
+        for node1 in self.nodes.values():
+            for node2 in self.nodes.values():
                 if node1['address'] != node2['address'] and node2['rel'] != 'TOP':
                     node1['deps'].append(node2['address'])
 
@@ -120,10 +113,7 @@ class DependencyGraph(object):
         Returns true if the graph contains a node with the given node
         address, false otherwise.
         """
-        for node in self.nodelist:
-            if node['address'] == node_address:
-                return True
-        return False
+        return node_address in self.nodes
 
     def __str__(self):
         return pformat(self.nodes)
@@ -150,8 +140,8 @@ class DependencyGraph(object):
         Returns the number of left children under the node specified
         by the given address.
         """
-        children = self.nodelist[node_index]['deps']
-        index = self.nodelist[node_index]['address']
+        children = self.nodes[node_index]['deps']
+        index = self.nodes[node_index]['address']
         return sum(1 for c in children if c < index)
 
     def right_children(self, node_index):
@@ -159,13 +149,13 @@ class DependencyGraph(object):
         Returns the number of right children under the node specified
         by the given address.
         """
-        children = self.nodelist[node_index]['deps']
-        index = self.nodelist[node_index]['address']
+        children = self.nodes[node_index]['deps']
+        index = self.nodes[node_index]['address']
         return sum(1 for c in children if c > index)
 
     def add_node(self, node):
         if not self.contains_address(node['address']):
-            self.nodelist.append(node)
+            self.nodes[node['address']].update(node)
 
     def _parse(self, input_, cell_extractor=None, zero_based=False):
         """Parse a sentence.
@@ -218,9 +208,7 @@ class DependencyGraph(object):
             if zero_based:
                 head += 1
 
-            node = self.nodes.setdefault(index, {'deps': []})
-
-            node.update(
+            self.nodes[index].update(
                 {
                     'address': index,
                     'word': word,
@@ -233,7 +221,7 @@ class DependencyGraph(object):
                 }
             )
 
-            self.nodes.setdefault(head, {'deps': []})['deps'].append(index)
+            self.nodes[head]['deps'].append(index)
 
         root_address = self.nodes[0]['deps'][0]
         self.root = self.nodes[root_address]
@@ -246,19 +234,19 @@ class DependencyGraph(object):
         return w
 
     def _tree(self, i):
-        """
-        Recursive function for turning dependency graphs into
-        NLTK trees.
-        :type i: int
-        :param i: index of a node in ``nodelist``
-        :return: either a word (if the indexed node
-        is a leaf) or a ``Tree``.
+        """ Turn dependency graphs into NLTK trees.
+
+        :param int i: index of a node
+        :return: either a word (if the indexed node is a leaf) or a ``Tree``.
         """
         node = self.get_by_address(i)
         word = node['word']
         deps = node['deps']
 
-        return (Tree(word, [self._tree(j) for j in deps]) if deps else word)
+        if deps:
+            return Tree(word, [self._tree(dep) for dep in deps])
+        else:
+            return word
 
     def tree(self):
         """
@@ -288,36 +276,65 @@ class DependencyGraph(object):
 
     def _hd(self, i):
         try:
-            return self.nodelist[i]['head']
+            return self.nodes[i]['head']
         except IndexError:
             return None
 
     def _rel(self, i):
         try:
-            return self.nodelist[i]['rel']
+            return self.nodes[i]['rel']
         except IndexError:
             return None
 
     # what's the return type?  Boolean or list?
     def contains_cycle(self):
+        """Check whether there are cycles.
+
+        >>> dg = DependencyGraph(treebank_data)
+        >>> dg.contains_cycle()
+        False
+
+        >>> cyclic_dg = DependencyGraph()
+        >>> top = {'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0}
+        >>> child1 = {'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1}
+        >>> child2 = {'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2}
+        >>> child3 = {'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3}
+        >>> child4 = {'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4}
+        >>> cyclic_dg.nodes = {
+        ...     0: top,
+        ...     1: child1,
+        ...     2: child2,
+        ...     3: child3,
+        ...     4: child4,
+        ... }
+        >>> cyclic_dg.root = top
+
+        >>> cyclic_dg.contains_cycle()
+        [3, 1, 2, 4]
+
+        """
         distances = {}
-        for node in self.nodelist:
+
+        for node in self.nodes.values():
             for dep in node['deps']:
-                key = tuple([node['address'], dep]) #'%d -> %d' % (node['address'], dep)
+                key = tuple([node['address'], dep])
                 distances[key] = 1
-        for n in range(len(self.nodelist)):
+
+        for _ in self.nodes:
             new_entries = {}
+
             for pair1 in distances:
                 for pair2 in distances:
                     if pair1[1] == pair2[0]:
                         key = tuple([pair1[0], pair2[1]])
                         new_entries[key] = distances[pair1] + distances[pair2]
+
             for pair in new_entries:
                 distances[pair] = new_entries[pair]
                 if pair[0] == pair[1]:
-                    print(pair[0])
-                    path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0]) #self.nodelist[pair[0]], pair[0])
+                    path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0])
                     return path
+
         return False  # return []?
 
     def get_cycle_path(self, curr_node, goal_node_index):
@@ -325,7 +342,7 @@ class DependencyGraph(object):
             if dep == goal_node_index:
                 return [curr_node['address']]
         for dep in curr_node['deps']:
-            path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)#self.nodelist[dep], goal_node_index)
+            path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)
             if len(path) > 0:
                 path.insert(0, curr_node['address'])
                 return path
@@ -354,25 +371,24 @@ class DependencyGraph(object):
 
         return ''.join(template.format(i=i, **node) for i, node in sorted(self.nodes.items()) if node['tag'] != 'TOP')
 
+    def nx_graph(self):
+        """Convert the data in a ``nodelist`` into a networkx labeled directed graph."""
+        import networkx as NX
 
-def nx_graph(self):
-    """
-    Convert the data in a ``nodelist`` into a networkx
-    labeled directed graph.
-    :rtype: XDigraph
-    """
-    nx_nodelist = list(range(1, len(self.nodelist)))
-    nx_edgelist = [(n, self._hd(n), self._rel(n))
-                        for n in nx_nodelist if self._hd(n)]
-    self.nx_labels = {}
-    for n in nx_nodelist:
-        self.nx_labels[n] = self.nodelist[n]['word']
+        nx_nodelist = list(range(1, len(self.nodes)))
+        nx_edgelist = [
+            (n, self._hd(n), self._rel(n))
+            for n in nx_nodelist if self._hd(n)
+        ]
+        self.nx_labels = {}
+        for n in nx_nodelist:
+            self.nx_labels[n] = self.nodes[n]['word']
 
-    g = NX.XDiGraph()
-    g.add_nodes_from(nx_nodelist)
-    g.add_edges_from(nx_edgelist)
+        g = NX.XDiGraph()
+        g.add_nodes_from(nx_nodelist)
+        g.add_edges_from(nx_edgelist)
 
-    return g
+        return g
 
 
 def demo():
