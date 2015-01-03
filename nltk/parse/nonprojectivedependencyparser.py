@@ -91,25 +91,9 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
     >>> graphs = [DependencyGraph(entry) for entry in conll_data2.split('\\n\\n') if entry]
     >>> npp = ProbabilisticNonprojectiveParser()
     >>> npp.train(graphs, NaiveBayesDependencyScorer())
-    >>> for parse_graph in npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc']):
-    ...     print(parse_graph)
-    {0: {'address': 0,
-         'ctag': 'TOP',
-         'deps': [2],
-         'feats': None,
-         'lemma': None,
-         'rel': 'TOP',
-         'tag': 'TOP',
-         'word': None},
-     1: {'address': 1, 'deps': [], 'rel': 'NTOP', 'tag': 'N', 'word': 'Cathy'},
-     2: {'address': 2,
-         'deps': [1, 3, 4, 5],
-         'rel': 'NTOP',
-         'tag': 'V',
-         'word': 'zag'},
-     3: {'address': 3, 'deps': [], 'rel': 'NTOP', 'tag': 'Pron', 'word': 'hen'},
-     4: {'address': 4, 'deps': [], 'rel': 'NTOP', 'tag': 'Adj', 'word': 'zwaaien'},
-     5: {'address': 5, 'deps': [], 'rel': 'NTOP', 'tag': 'N', 'word': '.'}}
+    >>> parses = npp.parse(['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc'])
+    >>> len(list(parses))
+    1
 
     """
 
@@ -238,19 +222,9 @@ class ProbabilisticNonprojectiveParser(object):
     >>> npp = ProbabilisticNonprojectiveParser()
     >>> npp.train([], Scorer())
 
-    >>> for parse_graph in npp.parse(['v1', 'v2', 'v3'], [None, None, None]):
-    ...     print(parse_graph)
-    {0: {'address': 0,
-         'ctag': 'TOP',
-         'deps': [1],
-         'feats': None,
-         'lemma': None,
-         'rel': 'TOP',
-         'tag': 'TOP',
-         'word': None},
-     1: {'address': 1, 'deps': [2], 'rel': 'NTOP', 'tag': None, 'word': 'v1'},
-     2: {'address': 2, 'deps': [3], 'rel': 'NTOP', 'tag': None, 'word': 'v2'},
-     3: {'address': 3, 'deps': [], 'rel': 'NTOP', 'tag': None, 'word': 'v3'}}
+    >>> parses = npp.parse(['v1', 'v2', 'v3'], [None, None, None])
+    >>> len(list(parses))
+    1
 
     Rule based example
     ------------------
@@ -267,28 +241,9 @@ class ProbabilisticNonprojectiveParser(object):
     ... ''')
 
     >>> ndp = NonprojectiveDependencyParser(grammar)
-    >>> graphs = ndp.parse(['the', 'man', 'in', 'the', 'corner', 'taught', 'his', 'dachshund', 'to', 'play', 'golf'])
-
-    >>> print(next(graphs))
-    {0: {'address': 0,
-         'ctag': 'TOP',
-         'deps': 6,
-         'feats': None,
-         'lemma': None,
-         'rel': 'TOP',
-         'tag': 'TOP',
-         'word': None},
-     1: {'address': 1, 'deps': [], 'word': 'the'},
-     2: {'address': 2, 'deps': [3], 'word': 'man'},
-     3: {'address': 3, 'deps': [5], 'word': 'in'},
-     4: {'address': 4, 'deps': [], 'word': 'the'},
-     5: {'address': 5, 'deps': [1, 4], 'word': 'corner'},
-     6: {'address': 6, 'deps': [2, 10], 'word': 'taught'},
-     7: {'address': 7, 'deps': [], 'word': 'his'},
-     8: {'address': 8, 'deps': [7], 'word': 'dachshund'},
-     9: {'address': 9, 'deps': [], 'word': 'to'},
-     10: {'address': 10, 'deps': [8, 9, 11], 'word': 'play'},
-     11: {'address': 11, 'deps': [], 'word': 'golf'}}
+    >>> parses = ndp.parse(['the', 'man', 'in', 'the', 'corner', 'taught', 'his', 'dachshund', 'to', 'play', 'golf'])
+    >>> len(list(parses))
+    4
 
     """
     def __init__(self):

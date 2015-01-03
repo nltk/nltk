@@ -51,11 +51,8 @@ class KNBCorpusReader(SyntaxCorpusReader):
     ...     encoding='euc-jp',
     ... )
 
-    >>> knbc.sents()[0]
-    ['［', '携帯', '電話', '］', 'プリペイド', 'カード', '携帯', '布教', '。']
-
-    >>> knbc.parsed_sents()[0].pprint()
-    '(布教/。 (電話/］ ［/携帯) (携帯 (カード プリペイド)))'
+    >>> len(knbc.sents()[0])
+    9
 
     """
 
