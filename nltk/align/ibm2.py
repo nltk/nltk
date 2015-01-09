@@ -20,7 +20,7 @@ class IBMModel2(object):
     Step 1 - Run a number of iterations of IBM Model 1 and get the initial
              distribution of translation probability. 
 
-    Step 2 - Collect the evidence of a English word being translated by a 
+    Step 2 - Collect the evidence of an English word being translated by a 
              foreign language word.
 
     Step 3 - Estimate the probability of translation and alignment according 
