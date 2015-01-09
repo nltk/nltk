@@ -32,7 +32,7 @@ class DependencyGraph(object):
     A container for the nodes and labelled edges of a dependency structure.
     """
 
-    def __init__(self, tree_str=None, cell_extractor=None, zero_based=False):
+    def __init__(self, tree_str=None, cell_extractor=None, zero_based=False, cell_separator=None):
         """Dependency graph.
 
         We place a dummy `TOP` node with the index 0, since the root node is
@@ -42,6 +42,9 @@ class DependencyGraph(object):
         If zero-based is True, then Malt-TAB-like input with node numbers
         starting at 0 and the root node assigned -1 (as produced by, e.g.,
         zpar).
+
+        :param str cell_separator: the cell separator. If not provided, cells
+        are split by whitespace.
 
         """
         self.nodes = defaultdict(lambda: {'deps': []})
@@ -64,6 +67,7 @@ class DependencyGraph(object):
                 tree_str,
                 cell_extractor=cell_extractor,
                 zero_based=zero_based,
+                cell_separator=cell_separator,
             )
 
     def remove_by_address(self, address):
@@ -122,16 +126,24 @@ class DependencyGraph(object):
         return "<DependencyGraph with {0} nodes>".format(len(self.nodes))
 
     @staticmethod
-    def load(filename, zero_based=False):
+    def load(filename, zero_based=False, cell_separator=None):
         """
         :param filename: a name of a file in Malt-TAB format
-        :param zero_based: nodes in the input file are numbered starting from 0 rather
-            than 1 (as produced by, e.g., zpar)
+        :param zero_based: nodes in the input file are numbered starting from 0
+        rather than 1 (as produced by, e.g., zpar)
+        :param str cell_separator: the cell separator. If not provided, cells
+        are split by whitespace.
+
         :return: a list of DependencyGraphs
+
         """
         with open(filename) as infile:
             return [
-                DependencyGraph(tree_str, zero_based=zero_based)
+                DependencyGraph(
+                    tree_str,
+                    zero_based=zero_based,
+                    cell_separator=cell_separator,
+                )
                 for tree_str in infile.read().split('\n\n')
             ]
 
@@ -157,11 +169,15 @@ class DependencyGraph(object):
         if not self.contains_address(node['address']):
             self.nodes[node['address']].update(node)
 
-    def _parse(self, input_, cell_extractor=None, zero_based=False):
+    def _parse(self, input_, cell_extractor=None, zero_based=False, cell_separator=None):
         """Parse a sentence.
 
-        :param extractor: a function that given a tuple of cells returns a 7-tuple,
-        where the values are ``word, lemma, ctag, tag, feats, head, rel``.
+        :param extractor: a function that given a tuple of cells returns a
+        7-tuple, where the values are ``word, lemma, ctag, tag, feats, head,
+        rel``.
+
+        :param str cell_separator: the cell separator. If not provided, cells
+        are split by whitespace.
 
         """
 
@@ -190,7 +206,7 @@ class DependencyGraph(object):
         lines = (l for l in lines if l)
 
         for index, line in enumerate(lines, start=1):
-            cells = line.split()
+            cells = line.split(cell_separator)
             nrCells = len(cells)
 
             if cell_extractor is None:
