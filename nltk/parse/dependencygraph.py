@@ -21,6 +21,7 @@ from pprint import pformat
 from nltk.tree import Tree
 from nltk.compat import python_2_unicode_compatible, string_types
 
+
 #################################################################
 # DependencyGraph Class
 #################################################################
@@ -47,7 +48,7 @@ class DependencyGraph(object):
         are split by whitespace.
 
         """
-        self.nodes = defaultdict(lambda: {'deps': []})
+        self.nodes = defaultdict(lambda: {'deps': defaultdict(list)})
         self.nodes[0].update(
             {
                 'word': None,
@@ -237,9 +238,14 @@ class DependencyGraph(object):
                 }
             )
 
-            self.nodes[head]['deps'].append(index)
+            self.nodes[head]['deps'][rel].append(index)
 
-        root_address = self.nodes[0]['deps'][0]
+        if not self.nodes[0]['deps']['ROOT']:
+            raise DependencyGraphError(
+                "The graph does'n contain a node "
+                "that depends on the root element."
+            )
+        root_address = self.nodes[0]['deps']['ROOT'][0]
         self.root = self.nodes[root_address]
 
     def _word(self, node, filter=True):
@@ -405,6 +411,10 @@ class DependencyGraph(object):
         g.add_edges_from(nx_edgelist)
 
         return g
+
+
+class DependencyGraphError(Exception):
+    """Dependency graph exception."""
 
 
 def demo():
