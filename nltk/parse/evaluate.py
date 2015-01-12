@@ -99,28 +99,32 @@ class DependencyEvaluator(object):
         total = 0
 
         for i in range(len(self._parsed_sents)):
-            parsed_sent = self._parsed_sents[i].nodelist
-            gold_sent = self._gold_sents[i].nodelist
-            if (len(parsed_sent) != len(gold_sent)):
+            parsed_sent_nodes = self._parsed_sents[i].nodes
+            gold_sent_nodes = self._gold_sents[i].nodes
+
+            if (len(parsed_sent_nodes) != len(gold_sent_nodes)):
                 raise ValueError("Sentences must have equal length.")
 
-            for j in range(len(parsed_sent)):
-                if (parsed_sent[j]["word"] is None):
+            for parsed_node_address, parsed_node in parsed_sent_nodes.items():
+                gold_node = gold_sent_nodes[parsed_node_address]
+
+                if parsed_node["word"] is None:
                     continue
-                if (parsed_sent[j]["word"] != gold_sent[j]["word"]):
+                if parsed_node["word"] != gold_node["word"]:
                     raise ValueError("Sentence sequence is not matched.")
 
                 # Ignore if word is punctuation by default
-                #if (parsed_sent[j]["word"] in string.punctuation):
-                if self._remove_punct(parsed_sent[j]["word"]) == "":
+                # if (parsed_sent[j]["word"] in string.punctuation):
+                if self._remove_punct(parsed_node["word"]) == "":
                     continue
 
                 total += 1
-                if (parsed_sent[j]["head"] == gold_sent[j]["head"]):
+                if parsed_node["head"] == gold_node["head"]:
                     corr += 1
-                    if (parsed_sent[j]["rel"] == gold_sent[j]["rel"]):
+                    if parsed_node["rel"] == gold_node["rel"]:
                         corrL += 1
-        return (corr/total, corrL/total)
+
+        return corr / total, corrL / total
 
 
 if __name__ == '__main__':
