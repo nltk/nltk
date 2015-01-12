@@ -15,6 +15,7 @@ web/_build
 *.errs
 .noseids
 .coverage
+nltk/test/*.html
 
 # editor temporary files
 *.*.sw[op]
@@ -22,3 +23,15 @@ web/_build
 
 # git mergetools backups
 *.orig
+
+# emacs backups
+*#
+
+# spell-check backups
+*.bak
+
+# automatically built files for website
+web/api/*.rst
+
+
+
