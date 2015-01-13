@@ -3,7 +3,7 @@
 #
 # Author: Long Duong <longdt219@gmail.com>
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 '''
@@ -181,7 +181,7 @@ class Transition(object):
         """
         Note that the algorithm for left-arc is quite similar except for precondition for both arc-standard and arc-eager  
             :param configuration: is the current configuration 
-            :return : A new configuration or None if the pre-condition is not satisfied  
+            :return : A new configuration or -1 if the pre-condition is not satisfied  
         """
         if (len(conf.buffer) <= 0) or (len(conf.stack) <=0):
             return -1
@@ -207,7 +207,7 @@ class Transition(object):
         """
         Note that the algorithm for right-arc is DIFFERENT for arc-standard and arc-eager 
             :param configuration: is the current configuration 
-            :return : A new configuration or None if the pre-condition is not satisfied  
+            :return : A new configuration or -1 if the pre-condition is not satisfied  
         """
         if (len(conf.buffer) <= 0) or (len(conf.stack) <=0):
             return -1
@@ -223,6 +223,12 @@ class Transition(object):
             conf.arcs.append((idx_wi,relation,idx_wj))
             
     def reduce (self, conf):
+        """
+        Note that the algorithm for reduce is only available for arc-eager 
+            :param configuration: is the current configuration 
+            :return : A new configuration or -1 if the pre-condition is not satisfied  
+        """
+
         if self._algo != TransitionParser.ARC_EAGER: return -1 
         if len(conf.stack) <=0: return -1
 
@@ -237,7 +243,7 @@ class Transition(object):
         """
         Note that the algorithm for right-arc is the SAME for arc-standard and arc-eager 
             :param configuration: is the current configuration 
-            :return : A new configuration or None if the pre-condition is not satisfied  
+            :return : A new configuration or -1 if the pre-condition is not satisfied  
         """
         if len(conf.buffer) <=0 : return -1
         idx_wi = conf.buffer.pop(0)
@@ -468,10 +474,9 @@ class TransitionParser(ParserI):
             # Using the temporary file to train the libsvm classifier
             x_train, y_train = load_svmlight_file(input_file.name)
             # The parameter is set according to the paper : Algorithms for Deterministic Incremental Dependency Parsing by Joakim Nivre
-            # Todo : because of probability = True => very slow due to cross-validation  
+            # Todo : because of probability = True => very slow due to cross-validation. Need to improve the speed here  
             model = svm.SVC(kernel = 'poly', degree = 2, coef0 = 0, gamma=0.2, C=0.5,  verbose=True, probability=True)
             model.fit(x_train,y_train)
-            # print input_file.name
             # Save the model to file name (as pickle) 
             pickle.dump(model, open(modelfile,'wb'))
         finally: 
@@ -536,8 +541,7 @@ class TransitionParser(ParserI):
                 for i in range(len(predProb)):
                     probDict[i] =predProb[i] 
                 sorted_Prob = sorted(probDict.items(), key=operator.itemgetter(1), reverse=True)
-                #print sorted_Prob
-                #print model.classes_     
+
                 # Note that SHIFT is always a valid operation 
                 for (y_pred_idx, confidence) in sorted_Prob: 
                     #y_pred = model.predict(x_test)[0]
@@ -709,11 +713,13 @@ def demo():
     >>> print de.eval()
     (0.125, 0.0)
     
-    A. Check the ARC-EAGER parser
+    B. Check the ARC-EAGER parser
     >>> result = parserEager.parse([gold_sent], 'temp.arceager.model') 
     >>> de = DependencyEvaluator(result, [gold_sent])
     >>> print de.eval()
     (0.0, 0.0)      
+    
+    Note that result is very poor because of only 1 single training example. 
     """
 if __name__ == '__main__':
     import doctest
