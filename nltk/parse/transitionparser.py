@@ -363,14 +363,14 @@ class TransitionParser(ParserI):
         Reference : Page 32, Chapter 3. Dependency Parsing by Sandra Kubler, Ryan McDonal and Joakim Nivre (2009)
         """
         operation = Transition(self.ARC_STANDARD)
-        countProj = 0
+        count_proj = 0
         training_seq = []
 
         for depgraph in depgraphs:
             if not self._is_projective(depgraph):
                 continue
 
-            countProj += 1
+            count_proj += 1
             conf = Configuration(depgraph)
             while len(conf.buffer) > 0:
                 b0 = conf.buffer[0]
@@ -419,7 +419,7 @@ class TransitionParser(ParserI):
                 training_seq.append(key)
 
         print (" Number of training examples : " + str(len(depgraphs)))
-        print (" Number of valid (projective) examples : " + str(countProj))
+        print (" Number of valid (projective) examples : " + str(count_proj))
         return training_seq
 
     def _create_training_examples_arc_eager(self, depgraphs, input_file):
