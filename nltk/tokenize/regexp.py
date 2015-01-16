@@ -123,7 +123,6 @@ class RegexpTokenizer(TokenizerI):
                 raise ValueError('Error in regular expression %r: %s' % (self._pattern, e))
         
     def tokenize(self, text):
-        # Long Duong : Fix bug not serialized #784 
         self._check_regexp()
         # If our regexp matches gaps, use re.split:
         if self._gaps:
@@ -137,7 +136,6 @@ class RegexpTokenizer(TokenizerI):
             return self._regexp.findall(text)
 
     def span_tokenize(self, text):
-        # Long Duong : Fix bug not serialized #784 
         self._check_regexp()
 
         if self._gaps:
