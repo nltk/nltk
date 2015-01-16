@@ -84,14 +84,15 @@ class SennaTagger(TaggerI):
         
         # Verifies the existence of the executable on the self._path first    
         #senna_binary_file_1 = self.executable(self._path)
-        exeFile1 = self.executable(self._path)
-        if not path.isfile(exeFile1):
+        exe_file_1 = self.executable(self._path)
+        if not path.isfile(exe_file_1):
             # Check for the system environment 
             if 'SENNA' in environ:
-                self._path = path.join(environ['SENNA'],'')  
-                exeFile2 = self.executable(self._path)
-                if not path.isfile(exeFile2):
-                    raise ExecutableNotFound("Senna executable expected at %s or %s but not found" % (exeFile1,exeFile2))
+                #self._path = path.join(environ['SENNA'],'')  
+                self._path = path.normpath(environ['SENNA']) + sep 
+                exe_file_2 = self.executable(self._path)
+                if not path.isfile(exe_file_2):
+                    raise ExecutableNotFound("Senna executable expected at %s or %s but not found" % (exe_file_1,exe_file_2))
         
         self.operations = operations
 
@@ -140,6 +141,11 @@ class SennaTagger(TaggerI):
         calculated annotations/tags.
         """
         encoding = self._encoding
+        
+        # Long Duong : Add for checking but it is unlikely 
+        if not path.isfile(self.executable(self._path)):
+            raise ExecutableNotFound("Senna executable expected at %s but not found" % self.executable(self._path))
+        
          
         # Build the senna command to run the tagger
         _senna_cmd = [self.executable(self._path), '-path', self._path, '-usrtokens', '-iobtags']
