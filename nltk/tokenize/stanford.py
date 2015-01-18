@@ -47,8 +47,7 @@ class StanfordTokenizer(TokenizerI):
         self._encoding = encoding
         self.java_options = java_options
         #options = {} if options is None else options
-        
-        # Long Duong : fix bug #735 
+         
         options_str = options
         options = {} 
         if options_str is not None:
