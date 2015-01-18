@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Internal utility functions
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
@@ -491,7 +491,8 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
     if os.name == 'posix':
         for alternative in file_names:
             try:
-                p = subprocess.Popen(['which', alternative], stdout=subprocess.PIPE)
+                p = subprocess.Popen(['which', alternative],
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout, stderr = p.communicate()
                 path = _decode_stdoutdata(stdout).strip()
                 if path.endswith(alternative) and os.path.exists(path):

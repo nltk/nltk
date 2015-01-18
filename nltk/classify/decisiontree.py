@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Decision Tree Classifiers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -165,13 +165,13 @@ class DecisionTreeClassifier(ClassifierI):
 
     @staticmethod
     def leaf(labeled_featuresets):
-        label = FreqDist(label for (featureset,label)
+        label = FreqDist(label for (featureset, label)
                          in labeled_featuresets).max()
         return DecisionTreeClassifier(label)
 
     @staticmethod
     def stump(feature_name, labeled_featuresets):
-        label = FreqDist(label for (featureset,label)
+        label = FreqDist(label for (featureset, label)
                          in labeled_featuresets).max()
 
         # Find the best label for each value.
@@ -191,11 +191,11 @@ class DecisionTreeClassifier(ClassifierI):
         if self._fname is None: return
         if depth_cutoff <= 0: return
         for fval in self._decisions:
-            fval_featuresets = [(featureset,label) for (featureset,label)
+            fval_featuresets = [(featureset, label) for (featureset, label)
                                 in labeled_featuresets
                                 if featureset.get(self._fname) == fval]
 
-            label_freqs = FreqDist(label for (featureset,label)
+            label_freqs = FreqDist(label for (featureset, label)
                                    in fval_featuresets)
             if entropy(MLEProbDist(label_freqs)) > entropy_cutoff:
                 self._decisions[fval] = DecisionTreeClassifier.train(
@@ -206,7 +206,7 @@ class DecisionTreeClassifier(ClassifierI):
                                    in labeled_featuresets
                                    if featureset.get(self._fname) not in
                                    self._decisions]
-            label_freqs = FreqDist(label for (featureset,label)
+            label_freqs = FreqDist(label for (featureset, label)
                                    in default_featuresets)
             if entropy(MLEProbDist(label_freqs)) > entropy_cutoff:
                 self._default = DecisionTreeClassifier.train(

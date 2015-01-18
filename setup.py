@@ -2,7 +2,7 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
@@ -28,13 +28,6 @@ with open(version_file) as fh:
 
 # setuptools
 from setuptools import setup, find_packages
-
-#
-# Prevent setuptools from trying to add extra files to the source code
-# manifest by scanning the version control system for its contents.
-#
-from setuptools.command import sdist
-del sdist.finders[:]
 
 setup(
     name = "nltk",

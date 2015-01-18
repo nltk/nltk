@@ -1,7 +1,7 @@
 # encoding: utf-8
 # Natural Language Toolkit: Interface to the Senna tagger
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,7 +10,8 @@
 A module for interfacing with the SENNA pipeline.
 """
 
-from os import path, sep
+
+from os import path, sep, environ
 from subprocess import Popen, PIPE
 from platform import architecture, system
 from nltk.tag.api import TaggerI
@@ -54,7 +55,8 @@ class SennaTagger(TaggerI):
     misalignment errors.
 
     The input is:
-    - path to the directory that contains SENNA executables.
+    - path to the directory that contains SENNA executables. If the path is incorrect, 
+       SennaTagger will automatically search for executable file specified in SENNA environment variable
     - List of the operations needed to be performed.
     - (optionally) the encoding of the input data (default:utf-8)
 
@@ -77,29 +79,42 @@ class SennaTagger(TaggerI):
     def __init__(self, senna_path, operations, encoding='utf-8'):
         self._encoding = encoding
         self._path = path.normpath(senna_path) + sep
+        
+        # Long Duong : Fix bug #543 (looking for Senna executable) 
+        
+        # Verifies the existence of the executable on the self._path first    
+        #senna_binary_file_1 = self.executable(self._path)
+        exe_file_1 = self.executable(self._path)
+        if not path.isfile(exe_file_1):
+            # Check for the system environment 
+            if 'SENNA' in environ:
+                #self._path = path.join(environ['SENNA'],'')  
+                self._path = path.normpath(environ['SENNA']) + sep 
+                exe_file_2 = self.executable(self._path)
+                if not path.isfile(exe_file_2):
+                    raise ExecutableNotFound("Senna executable expected at %s or %s but not found" % (exe_file_1,exe_file_2))
+        
         self.operations = operations
 
-    @property
-    def executable(self):
+    
+    def executable(self, base_path):
         """
-        A property that determines the system specific binary that should be
-        used in the pipeline. In case, the system is not known the senna binary will
+        The function that determines the system specific binary that should be
+        used in the pipeline. In case, the system is not known the default senna binary will
         be used.
-        """
-        
-        # Long Duong : Fix here, should not concatenate the file like this 
+        """ 
         os_name = system()
         if os_name == 'Linux':
             bits = architecture()[0]
             if bits == '64bit':
-                return path.join(self._path, 'senna-linux64')
-            return path.join(self._path, 'senna-linux32')
+                return path.join(base_path, 'senna-linux64')
+            return path.join(base_path, 'senna-linux32')
         if os_name == 'Windows':
-            return path.join(self._path, 'senna-win32.exe')
+            return path.join(base_path, 'senna-win32.exe')
         if os_name == 'Darwin':
-            return path.join(self._path, 'senna-osx')
-        return path.join(self._path, 'senna')
-
+            return path.join(base_path, 'senna-osx')
+        return path.join(base_path, 'senna')
+        
     def _map(self):
         """
         A method that calculates the order of the columns that SENNA pipeline
@@ -126,14 +141,14 @@ class SennaTagger(TaggerI):
         calculated annotations/tags.
         """
         encoding = self._encoding
-
-        # Verifies the existence of the executable
-        if not path.isfile(self.executable):
-          raise ExecutableNotFound("Senna executable expected at %s but not found" %
-                                   self.executable)
-
+        
+        # Long Duong : Add for checking but it is unlikely 
+        if not path.isfile(self.executable(self._path)):
+            raise ExecutableNotFound("Senna executable expected at %s but not found" % self.executable(self._path))
+        
+         
         # Build the senna command to run the tagger
-        _senna_cmd = [self.executable, '-path', self._path, '-usrtokens', '-iobtags']
+        _senna_cmd = [self.executable(self._path), '-path', self._path, '-usrtokens', '-iobtags']
         _senna_cmd.extend(['-'+op for op in self.operations])
 
         # Serialize the actual sentences to a temporary string
@@ -186,7 +201,8 @@ class POSTagger(SennaTagger):
     A Part of Speech tagger.
 
     The input is:
-    - path to the directory that contains SENNA executables.
+    - path to the directory that contains SENNA executables. If the path is incorrect, 
+       SennaTagger will automatically search for executable file specified in SENNA environment variable 
     - (optionally) the encoding of the input data (default:utf-8)
 
     Example:
@@ -218,7 +234,8 @@ class NERTagger(SennaTagger):
     A named entity extractor.
 
     The input is:
-    - path to the directory that contains SENNA executables.
+    - path to the directory that contains SENNA executables. If the path is incorrect, 
+       SennaTagger will automatically search for executable file specified in SENNA environment variable
     - (optionally) the encoding of the input data (default:utf-8)
 
     Example:
@@ -253,7 +270,8 @@ class CHKTagger(SennaTagger):
     A chunker.
 
     The input is:
-    - path to the directory that contains SENNA executables.
+    - path to the directory that contains SENNA executables. If the path is incorrect, 
+       SennaTagger will automatically search for executable file specified in SENNA environment variable
     - (optionally) the encoding of the input data (default:utf-8)
 
     Example:
@@ -283,6 +301,7 @@ class CHKTagger(SennaTagger):
 # skip doctests if Senna is not installed
 def setup_module(module):
     from nose import SkipTest
-    tagger = POSTagger('/usr/share/senna-v2.0')
-    if not path.isfile(tagger.executable):
-        raise SkipTest("Senna executable expected at /usr/share/senna-v2.0/senna-osx but not found")
+    try:
+        tagger = POSTagger('/usr/share/senna-v2.0')
+    except ExecutableNotFound:
+        raise SkipTest("Senna executable not found")

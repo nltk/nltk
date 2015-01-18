@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -1098,8 +1098,8 @@ class DownloaderShell(object):
             if user_input == 's':
                 self._show_config()
             elif user_input == 'd':
-                new_dl_dir = compat.raw_input('  New Directory> ').strip().lower()
-                if new_dl_dir in ('', 'x', 'q'):
+                new_dl_dir = compat.raw_input('  New Directory> ').strip()
+                if new_dl_dir in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 elif os.path.isdir(new_dl_dir):
                     self._ds.download_dir = new_dl_dir
@@ -1107,8 +1107,8 @@ class DownloaderShell(object):
                     print(('Directory %r not found!  Create it first.' %
                            new_dl_dir))
             elif user_input == 'u':
-                new_url = compat.raw_input('  New URL> ').strip().lower()
-                if new_url in ('', 'x', 'q'):
+                new_url = compat.raw_input('  New URL> ').strip()
+                if new_url in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 else:
                     if not new_url.startswith('http://'):
