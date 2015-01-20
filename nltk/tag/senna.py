@@ -78,9 +78,7 @@ class SennaTagger(TaggerI):
 
     def __init__(self, senna_path, operations, encoding='utf-8'):
         self._encoding = encoding
-        self._path = path.normpath(senna_path) + sep
-        
-        # Long Duong : Fix bug #543 (looking for Senna executable) 
+        self._path = path.normpath(senna_path) + sep 
         
         # Verifies the existence of the executable on the self._path first    
         #senna_binary_file_1 = self.executable(self._path)

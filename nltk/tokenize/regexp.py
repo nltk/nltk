@@ -111,17 +111,19 @@ class RegexpTokenizer(TokenizerI):
         self._discard_empty = discard_empty
         self._flags = flags
         self._regexp = None
-
-        # Remove capturing parentheses -- if the regexp contains any
-        # capturing parentheses, then the behavior of re.findall and
-        # re.split will change.
-        try:
-            self._regexp = compile_regexp_to_noncapturing(pattern, flags)
-        except re.error as e:
-            raise ValueError('Error in regular expression %r: %s' %
-                             (pattern, e))
-
+        
+    def _check_regexp(self):
+        if self._regexp is None:
+            try:
+                # Remove capturing parentheses -- if the regexp contains any
+                # capturing parentheses, then the behavior of re.findall and
+                # re.split will change.                 
+                self._regexp = compile_regexp_to_noncapturing(self._pattern, self._flags)
+            except re.error as e:
+                raise ValueError('Error in regular expression %r: %s' % (self._pattern, e))
+        
     def tokenize(self, text):
+        self._check_regexp()
         # If our regexp matches gaps, use re.split:
         if self._gaps:
             if self._discard_empty:
@@ -134,6 +136,8 @@ class RegexpTokenizer(TokenizerI):
             return self._regexp.findall(text)
 
     def span_tokenize(self, text):
+        self._check_regexp()
+
         if self._gaps:
             for left, right in regexp_span_tokenize(text, self._regexp):
                 if not (self._discard_empty and left == right):
