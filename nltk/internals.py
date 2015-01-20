@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Internal utility functions
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
@@ -16,6 +16,7 @@ import textwrap
 import types
 import sys
 import stat
+import locale
 
 # Use the c version of ElementTree, which is faster, if possible:
 try:
@@ -31,12 +32,8 @@ from nltk import compat
 
 def compile_regexp_to_noncapturing(pattern, flags=0):
     """
-    Convert all grouping parentheses in the given regexp pattern to
-    non-capturing groups, and return the result.  E.g.:
-
-        >>> from nltk.internals import compile_regexp_to_noncapturing
-        >>> compile_regexp_to_noncapturing('ab(c(x+)(z*))?d')
-        'ab(?:c(?:x+)(?:z*))?d'
+    Compile the regexp pattern after switching all grouping parentheses
+    in the given regexp pattern to non-capturing groups.
 
     :type pattern: str
     :rtype: str
@@ -46,7 +43,7 @@ def compile_regexp_to_noncapturing(pattern, flags=0):
         for key, value in parsed_pattern.data:
             if key == sre_constants.SUBPATTERN:
                 index, subpattern = value
-                value = (None, convert_regexp_to_noncapturing(subpattern))
+                value = (None, convert_regexp_to_noncapturing_parsed(subpattern))
             elif key == sre_constants.GROUPREF:
                 raise ValueError('Regular expressions with back-references are not supported: {0}'.format(pattern))
             res_data.append((key, value))
@@ -55,7 +52,7 @@ def compile_regexp_to_noncapturing(pattern, flags=0):
         parsed_pattern.pattern.groupdict = {}
         return parsed_pattern
 
-    return sre_compile.compile(convert_regexp_to_noncapturing_parsed(sre_parse.parse(pattern)))
+    return sre_compile.compile(convert_regexp_to_noncapturing_parsed(sre_parse.parse(pattern)), flags=flags)
 
 
 ##########################################################################
@@ -146,7 +143,6 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
         classpaths=[classpath]
     else:
         classpaths=list(classpath)
-    classpaths.append(NLTK_JAR)
     classpath=os.path.pathsep.join(classpaths)
 
     # Construct the full command string.
@@ -161,16 +157,10 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
 
     # Check the return code.
     if p.returncode != 0:
-        print(stderr.decode(sys.stdout.encoding))
+        print(_decode_stdoutdata(stderr))
         raise OSError('Java command failed!')
 
     return (stdout, stderr)
-
-#: The location of the NLTK jar file, which is used to communicate
-#: with external Java packages (such as Mallet) that do not have
-#: a sufficiently powerful native command-line interface.
-NLTK_JAR = os.path.abspath(os.path.join(os.path.split(__file__)[0],
-                                        'nltk.jar'))
 
 if 0:
     #config_java(options='-Xmx512m')
@@ -189,9 +179,9 @@ if 0:
 # Parsing
 ######################################################################
 
-class ParseError(ValueError):
+class ReadError(ValueError):
     """
-    Exception raised by parse_* functions when they fail.
+    Exception raised by read_* functions when they fail.
     :param position: The index in the input string where an error occurred.
     :param expected: What was expected when an error occurred.
     """
@@ -203,16 +193,16 @@ class ParseError(ValueError):
         return 'Expected %s at %s' % (self.expected, self.position)
 
 _STRING_START_RE = re.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
-def parse_str(s, start_position):
+def read_str(s, start_position):
     """
     If a Python string literal begins at the specified position in the
     given string, then return a tuple ``(val, end_position)``
     containing the value of the string literal and the position where
-    it ends.  Otherwise, raise a ``ParseError``.
+    it ends.  Otherwise, raise a ``ReadError``.
     """
     # Read the open quote, and any modifiers.
     m = _STRING_START_RE.match(s, start_position)
-    if not m: raise ParseError('open quote', start_position)
+    if not m: raise ReadError('open quote', start_position)
     quotemark = m.group(1)
 
     # Find the close quote.
@@ -220,40 +210,40 @@ def parse_str(s, start_position):
     position = m.end()
     while True:
         match = _STRING_END_RE.search(s, position)
-        if not match: raise ParseError('close quote', position)
+        if not match: raise ReadError('close quote', position)
         if match.group(0) == '\\': position = match.end()+1
         else: break
 
-    # Parse it, using eval.  Strings with invalid escape sequences
+    # Process it, using eval.  Strings with invalid escape sequences
     # might raise ValueEerror.
     try:
         return eval(s[start_position:match.end()]), match.end()
     except ValueError as e:
-        raise ParseError('invalid string (%s)' % e)
+        raise ReadError('invalid string (%s)' % e)
 
-_PARSE_INT_RE = re.compile(r'-?\d+')
-def parse_int(s, start_position):
+_READ_INT_RE = re.compile(r'-?\d+')
+def read_int(s, start_position):
     """
     If an integer begins at the specified position in the given
     string, then return a tuple ``(val, end_position)`` containing the
     value of the integer and the position where it ends.  Otherwise,
-    raise a ``ParseError``.
+    raise a ``ReadError``.
     """
-    m = _PARSE_INT_RE.match(s, start_position)
-    if not m: raise ParseError('integer', start_position)
+    m = _READ_INT_RE.match(s, start_position)
+    if not m: raise ReadError('integer', start_position)
     return int(m.group()), m.end()
 
-_PARSE_NUMBER_VALUE = re.compile(r'-?(\d*)([.]?\d*)?')
-def parse_number(s, start_position):
+_READ_NUMBER_VALUE = re.compile(r'-?(\d*)([.]?\d*)?')
+def read_number(s, start_position):
     """
     If an integer or float begins at the specified position in the
     given string, then return a tuple ``(val, end_position)``
     containing the value of the number and the position where it ends.
-    Otherwise, raise a ``ParseError``.
+    Otherwise, raise a ``ReadError``.
     """
-    m = _PARSE_NUMBER_VALUE.match(s, start_position)
+    m = _READ_NUMBER_VALUE.match(s, start_position)
     if not m or not (m.group(1) or m.group(2)):
-        raise ParseError('number', start_position)
+        raise ReadError('number', start_position)
     if m.group(2): return float(m.group()), m.end()
     else: return int(m.group()), m.end()
 
@@ -501,9 +491,10 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
     if os.name == 'posix':
         for alternative in file_names:
             try:
-                p = subprocess.Popen(['which', alternative], stdout=subprocess.PIPE)
+                p = subprocess.Popen(['which', alternative],
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout, stderr = p.communicate()
-                path = stdout.decode(sys.stdout.encoding).strip()
+                path = _decode_stdoutdata(stdout).strip()
                 if path.endswith(alternative) and os.path.exists(path):
                     if verbose:
                         print('[Found %s: %s]' % (filename, path))
@@ -581,9 +572,11 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
     # it's present; otherwise, complain.
     if path_to_jar is not None:
         if os.path.isfile(path_to_jar):
+            yielded = True
             yield path_to_jar
-        raise ValueError('Could not find %s jar file at %s' %
-                         (name_pattern, path_to_jar))
+        else:
+            raise LookupError('Could not find %s jar file at %s' %
+                            (name_pattern, path_to_jar))
 
     # Check environment variables
     for env_var in env_vars:
@@ -651,6 +644,16 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
         searchpath=(), url=None, verbose=True, is_regex=False):
     return next(find_jar_iter(name_pattern, path_to_jar, env_vars,
                          searchpath, url, verbose, is_regex))
+
+def _decode_stdoutdata(stdoutdata):
+    """ Convert data read from stdout/stderr to unicode """
+    if not isinstance(stdoutdata, bytes):
+        return stdoutdata
+    
+    encoding = getattr(sys.__stdout__, "encoding", locale.getpreferredencoding())
+    if encoding is None:
+        return stdoutdata.decode()
+    return stdoutdata.decode(encoding)
 
 ##########################################################################
 # Import Stdlib Module

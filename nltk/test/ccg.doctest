@@ -1,12 +1,9 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==============================
 Combinatory Categorial Grammar
 ==============================
-
-For more information, please see:
-http://nltk.googlecode.com/svn/trunk/doc/contrib/ccg/ccg.pdf
 
 Relative Clauses
 ----------------
@@ -65,11 +62,11 @@ Construct a lexicon:
     ...
     ...     persuade => (VP/VP[to])/NP
     ...     ''')
+
     >>> parser = chart.CCGChartParser(lex, chart.DefaultRuleSet)
-    >>> for parse in parser.nbest_parse("you prefer that cake".split(),1):
-    ...    chart.printCCGDerivation(parse)
-    ...    for parse in parser.nbest_parse("that is the cake which you prefer".split(), 1):
-    ...        chart.printCCGDerivation(parse)
+    >>> for parse in parser.parse("you prefer that cake".split()):  # doctest: +SKIP
+    ...     chart.printCCGDerivation(parse)
+    ...     break
     ...
      you    prefer      that   cake
      NP   ((S\NP)/NP)  (NP/N)   N
@@ -79,6 +76,11 @@ Construct a lexicon:
                    (S\NP)
     --------------------------------<
                    S
+
+    >>> for parse in parser.parse("that is the cake which you prefer".split()):  # doctest: +SKIP
+    ...     chart.printCCGDerivation(parse)
+    ...     break
+    ...
      that      is        the    cake      which       you    prefer
       NP   ((S\NP)/NP)  (NP/N)   N    ((N\N)/(S/NP))  NP   ((S\NP)/NP)
                                                      ----->T
@@ -107,13 +109,15 @@ Some other sentences to try:
 
 Without Substitution (no output)
 
-    >>> for parse in nosub_parser.nbest_parse(sent,1):
+    >>> for parse in nosub_parser.parse(sent):
     ...     chart.printCCGDerivation(parse)
 
 With Substitution:
 
-    >>> for parse in parser.nbest_parse(sent,1):
+    >>> for parse in parser.parse(sent):  # doctest: +SKIP
     ...     chart.printCCGDerivation(parse)
+    ...     break
+    ...
      that      is        the    dough      which       you     will        eat          without           cooking
       NP   ((S\NP)/NP)  (NP/N)    N    ((N\N)/(S/NP))  NP   ((S\NP)/VP)  (VP/NP)  ((VP\VP)/VP['ing'])  (VP['ing']/NP)
                                                       ----->T
@@ -180,8 +184,8 @@ Note that while the two derivations are different, they are semantically equival
 
     >>> lex = lexicon.parseLexicon(test1_lex)
     >>> parser = CCGChartParser(lex, ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
-    >>> for parse in parser.nbest_parse("I will cook and might eat the mushrooms and parsnips".split()):
-    ...     printCCGDerivation(parse) # doctest: +NORMALIZE_WHITESPACE
+    >>> for parse in parser.parse("I will cook and might eat the mushrooms and parsnips".split()):
+    ...     printCCGDerivation(parse) # doctest: +NORMALIZE_WHITESPACE +SKIP
      I      will       cook               and                might       eat     the    mushrooms             and             parsnips
      NP  ((S\NP)/VP)  (VP/NP)  ((_var2\.,_var2)/.,_var2)  ((S\NP)/VP)  (VP/NP)  (NP/N)      N      ((_var2\.,_var2)/.,_var2)     N
         ---------------------->B
@@ -229,8 +233,8 @@ Interesting to point that the two parses are clearly semantically different.
 
     >>> lex = lexicon.parseLexicon(test2_lex)
     >>> parser = CCGChartParser(lex, ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
-    >>> for parse in parser.nbest_parse("articles which I will file and forget without reading".split()):
-    ...     printCCGDerivation(parse)  # doctest: +NORMALIZE_WHITESPACE
+    >>> for parse in parser.parse("articles which I will file and forget without reading".split()):
+    ...     printCCGDerivation(parse)  # doctest: +NORMALIZE_WHITESPACE +SKIP
      articles      which       I      will       file               and             forget         without           reading
         N      ((N\N)/(S/NP))  NP  ((S/VP)\NP)  (VP/NP)  ((_var3\.,_var3)/.,_var3)  (VP/NP)  ((VP\VP)/VP['ing'])  (VP['ing']/NP)
                               -----------------<
@@ -267,4 +271,3 @@ Interesting to point that the two parses are clearly semantically different.
                                                                      (N\N)
     -----------------------------------------------------------------------------------------------------------------------------<
                                                                   N
-

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
     >>> from __future__ import print_function
@@ -39,6 +39,21 @@ Some test strings.
     >>> s10 = "There were 300,000, but that wasn't enough."
     >>> word_tokenize(s10)
     ['There', 'were', '300,000', ',', 'but', 'that', 'was', "n't", 'enough', '.']
+
+Sentence tokenization in word_tokenize:
+
+    >>> s11 = "I called Dr. Jones. I called Dr. Jones."
+    >>> word_tokenize(s11)
+    ['I', 'called', 'Dr.', 'Jones', '.', 'I', 'called', 'Dr.', 'Jones', '.']
+    >>> s12 = ("Ich muss unbedingt daran denken, Mehl, usw. fur einen "
+    ...        "Kuchen einzukaufen. Ich muss.")
+    >>> word_tokenize(s12)
+    ['Ich', 'muss', 'unbedingt', 'daran', 'denken', ',', 'Mehl', ',', 'usw',
+     '.', 'fur', 'einen', 'Kuchen', 'einzukaufen', '.', 'Ich', 'muss', '.']
+    >>> word_tokenize(s12, 'german')
+    ['Ich', 'muss', 'unbedingt', 'daran', 'denken', ',', 'Mehl', ',', 'usw.',
+     'fur', 'einen', 'Kuchen', 'einzukaufen', '.', 'Ich', 'muss', '.']
+
 
 Regression Tests: Regexp Tokenizer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

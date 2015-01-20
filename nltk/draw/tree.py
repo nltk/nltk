@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Graphical Representations for Trees
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -175,6 +175,7 @@ class TreeSegmentWidget(CanvasWidget):
         self.update(self._label)
 
     def insert_child(self, index, child):
+        canvas = self.canvas()
         self._subtrees.insert(index, child)
         self._add_child_widget(child)
         self._lines.append(canvas.create_line(0,0,0,0, fill='#006060'))
@@ -876,7 +877,7 @@ def demo():
 
     cf = CanvasFrame(width=550, height=450, closeenough=2)
 
-    t = Tree.parse('''
+    t = Tree.fromstring('''
     (S (NP the very big cat)
        (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))''')
 
@@ -895,7 +896,7 @@ def demo():
         return OvalWidget(canvas, TextWidget(canvas, text),
                           fill='cyan')
 
-    treetok = Tree.parse('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
+    treetok = Tree.fromstring('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
 
     def color(node):
@@ -913,7 +914,7 @@ def demo():
     paren = ParenWidget(cf.canvas(), tc2)
     cf.add_widget(paren, tc.bbox()[2]+10, 10)
 
-    tree3 = Tree.parse('''
+    tree3 = Tree.fromstring('''
     (S (NP this tree) (AUX was)
        (VP (V built) (PP (P with) (NP (N tree_to_treesegment)))))''')
     tc3 = tree_to_treesegment(cf.canvas(), tree3, tree_color='green4',
@@ -948,7 +949,7 @@ built from tree_to_treesegment."""
     textbox = BoxWidget(cf.canvas(), twidget, fill='white', draggable=1)
     cf.add_widget(textbox, tc3.bbox()[2]+10, tc2.bbox()[3]+10)
 
-    tree4 = Tree.parse('(S (NP this tree) (VP (V is) (Adj horizontal)))')
+    tree4 = Tree.fromstring('(S (NP this tree) (VP (V is) (Adj horizontal)))')
     tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
                      line_color='brown2', roof_color='brown2',
                      node_font=('helvetica', -12, 'bold'),

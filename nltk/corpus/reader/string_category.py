@@ -1,6 +1,6 @@
 # Natural Language Toolkit: String Category Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -18,8 +18,6 @@ NUM:date When did Hawaii become a state ?
 """
 
 # based on PPAttachmentCorpusReader
-
-import os
 
 from nltk import compat
 from nltk.corpus.reader.util import *

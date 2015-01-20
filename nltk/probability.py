@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
@@ -161,7 +161,7 @@ class FreqDist(Counter):
 
         return _r_Nr
 
-    def _cumulative_frequencies(self, samples=None):
+    def _cumulative_frequencies(self, samples):
         """
         Return the cumulative frequencies of the specified samples.
         If no samples are specified, all counts are returned, starting
@@ -220,9 +220,7 @@ class FreqDist(Counter):
         Plot samples from the frequency distribution
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
-        plotted.  If two integer parameters m, n are supplied, plot a
-        subset of the samples, beginning with m and stopping at n-1.
-        For a cumulative plot, specify cumulative=True.
+        plotted.  For a cumulative plot, specify cumulative=True.
         (Requires Matplotlib to be installed.)
 
         :param title: The title for the graph
@@ -238,7 +236,7 @@ class FreqDist(Counter):
 
         if len(args) == 0:
             args = [len(self)]
-        samples = list(islice(self, *args))
+        samples = [item for item, _ in self.most_common(*args)]
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         if cumulative:
@@ -266,16 +264,14 @@ class FreqDist(Counter):
         Tabulate the given samples from the frequency distribution (cumulative),
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
-        plotted.  If two integer parameters m, n are supplied, plot a
-        subset of the samples, beginning with m and stopping at n-1.
-        (Requires Matplotlib to be installed.)
+        plotted.
 
         :param samples: The samples to plot (default is all samples)
         :type samples: list
         """
         if len(args) == 0:
             args = [len(self)]
-        samples = list(islice(self, *args))
+        samples = [item for item, _ in self.most_common(*args)]
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         if cumulative:
@@ -315,7 +311,7 @@ class FreqDist(Counter):
 
         :rtype: string
         """
-        return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
+        return self.pprint()
 
     def pprint(self, maxlen=10):
         """
@@ -336,7 +332,7 @@ class FreqDist(Counter):
 
         :rtype: string
         """
-        return self.pprint()
+        return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
 
 
 ##//////////////////////////////////////////////////////
@@ -688,7 +684,7 @@ class LidstoneProbDist(ProbDistI):
         self._freqdist = freqdist
         self._gamma = float(gamma)
 
-        # if user specifies a number of tokens explicitly, use that number
+        # if caller specifies a number of tokens, use that
         # instead of getting it from the frequency distribution
         if override_N:
             self._N = override_N
@@ -1676,7 +1672,7 @@ class ConditionalFreqDist(defaultdict):
     the indexing operator:
 
         >>> cfdist[3]
-        <FreqDist with 3 samples and 6 outcomes>
+        FreqDist({'the': 3, 'dog': 2, 'not': 1})
         >>> cfdist[3].freq('the')
         0.5
         >>> cfdist[3]['dog']

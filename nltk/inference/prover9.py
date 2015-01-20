@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the Prover9 Theorem Prover
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 #
@@ -15,7 +15,7 @@ import os
 import subprocess
 
 import nltk
-from nltk.sem.logic import LogicParser, ExistsExpression, AllExpression, \
+from nltk.sem.logic import Expression, ExistsExpression, AllExpression, \
     NegatedExpression, AndExpression, IffExpression, OrExpression, \
     EqualityExpression, ImpExpression
 from nltk.inference.api import BaseProverCommand, Prover
@@ -114,7 +114,7 @@ class Prover9Parent(object):
             self._prover9_bin = nltk.internals.find_binary(
                                   name,
                                   path_to_bin=binary_location,
-                                  env_vars=['PROVER9HOME'],
+                                  env_vars=['PROVER9'],
                                   url='http://www.cs.unm.edu/~mccune/prover9/',
                                   binary_names=[name, name + '.exe'],
                                   verbose=verbose)
@@ -160,7 +160,7 @@ class Prover9Parent(object):
             binary_locations += [self._binary_location]
         return nltk.internals.find_binary(name,
             searchpath=binary_locations,
-            env_vars=['PROVER9HOME'],
+            env_vars=['PROVER9'],
             url='http://www.cs.unm.edu/~mccune/prover9/',
             binary_names=[name, name + '.exe'],
             verbose=verbose)
@@ -196,7 +196,7 @@ class Prover9Parent(object):
             if stdout: print('stdout:\n', stdout, '\n')
             if stderr: print('stderr:\n', stderr, '\n')
 
-        return (stdout, p.returncode)
+        return (stdout.decode("utf-8"), p.returncode)
 
 
 def convert_to_prover9(input):
@@ -348,8 +348,8 @@ class Prover9LimitExceededException(Prover9Exception):
 
 def test_config():
 
-    a = LogicParser().parse('(walk(j) & sing(j))')
-    g = LogicParser().parse('walk(j)')
+    a = Expression.fromstring('(walk(j) & sing(j))')
+    g = Expression.fromstring('walk(j)')
     p = Prover9Command(g, assumptions=[a])
     p._executable_path = None
     p.prover9_search=[]
@@ -363,7 +363,7 @@ def test_convert_to_prover9(expr):
     Test that parsing works OK.
     """
     for t in expr:
-        e = LogicParser().parse(t)
+        e = Expression.fromstring(t)
         print(convert_to_prover9(e))
 
 def test_prove(arguments):
@@ -371,8 +371,8 @@ def test_prove(arguments):
     Try some proofs and exhibit the results.
     """
     for (goal, assumptions) in arguments:
-        g = LogicParser().parse(goal)
-        alist = [LogicParser().parse(a) for a in assumptions]
+        g = Expression.fromstring(goal)
+        alist = [Expression.fromstring(a) for a in assumptions]
         p = Prover9Command(g, assumptions=alist).prove()
         for a in alist:
             print('   %s' % a)

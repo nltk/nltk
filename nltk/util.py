@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -20,9 +20,11 @@ from collections import defaultdict, deque
 from sys import version_info
 
 from nltk.internals import slice_bounds, raise_unorderable_types
-from nltk import compat
 from nltk.compat import (class_types, text_type, string_types, total_ordering,
-                         python_2_unicode_compatible)
+                         python_2_unicode_compatible, getproxies,
+			 ProxyHandler, build_opener, install_opener,
+			 HTTPPasswordMgrWithDefaultRealm,
+			 ProxyBasicAuthHandler, ProxyDigestAuthHandler)
 
 ######################################################################
 # Short usage message
@@ -255,6 +257,15 @@ def guess_encoding(data):
     else:
          return (decoded, successful_encoding)
 
+
+##########################################################################
+# Remove repeated elements from a list deterministcally
+##########################################################################
+
+def unique_list(xs):
+    seen = set()
+    # not seen.add(x) here acts to make the code shorter without using if statements, seen.add(x) always returns None.
+    return [x for x in xs if x not in seen and not seen.add(x)]
 
 ##########################################################################
 # Invert a dictionary
@@ -1069,21 +1080,54 @@ def set_proxy(proxy, user=None, password=''):
     if proxy is None:
         # Try and find the system proxy settings
         try:
-            proxy = compat.getproxies()['http']
+            proxy = getproxies()['http']
         except KeyError:
             raise ValueError('Could not detect default proxy settings')
 
     # Set up the proxy handler
-    proxy_handler = compat.ProxyHandler({'http': proxy})
-    opener = compat.build_opener(proxy_handler)
+    proxy_handler = ProxyHandler({'http': proxy})
+    opener = build_opener(proxy_handler)
 
     if user is not None:
         # Set up basic proxy authentication if provided
-        password_manager = compat.HTTPPasswordMgrWithDefaultRealm()
+        password_manager = HTTPPasswordMgrWithDefaultRealm()
         password_manager.add_password(realm=None, uri=proxy, user=user,
                 passwd=password)
-        opener.add_handler(compat.ProxyBasicAuthHandler(password_manager))
-        opener.add_handler(compat.ProxyDigestAuthHandler(password_manager))
+        opener.add_handler(ProxyBasicAuthHandler(password_manager))
+        opener.add_handler(ProxyDigestAuthHandler(password_manager))
 
     # Overide the existing url opener
-    compat.install_opener(opener)
+    install_opener(opener)
+
+
+######################################################################
+# ElementTree pretty printing from http://www.effbot.org/zone/element-lib.htm
+######################################################################
+
+
+def elementtree_indent(elem, level=0):
+    """
+    Recursive function to indent an ElementTree._ElementInterface
+    used for pretty printing. Run indent on elem and then output
+    in the normal way. 
+    
+    :param elem: element to be indented. will be modified. 
+    :type elem: ElementTree._ElementInterface
+    :param level: level of indentation for this element
+    :type level: nonnegative integer
+    :rtype:   ElementTree._ElementInterface
+    :return:  Contents of elem indented to reflect its structure
+    """
+
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        for elem in elem:
+            elementtree_indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+

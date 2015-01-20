@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Parser
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>
@@ -23,27 +23,26 @@ from nltk.tree import Tree
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 class StanfordParser(ParserI):
-    '''
+    r"""
     Interface to the Stanford Parser
 
     >>> parser=StanfordParser(
-    ...     path_to_jar='../third/stanford-parser/stanford-parser.jar',
-    ...     model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
+    ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
     ... )
-    >>> parser.raw_batch_parse((
-    ...     'the quick brown fox jumps over the lazy dog',
-    ...     'the quick grey wolf jumps over the lazy fox'
-    ... )))
+    >>> parser.raw_parse_sents((
+    ...     "the quick brown fox jumps over the lazy dog",
+    ...     "the quick grey wolf jumps over the lazy fox"
+    ... ))
     [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
-    Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree(
-    'NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['grey']), Tree('NN', ['wolf'])]),
-    Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), Tree('NP',
-    [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
+    Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree('NP',
+    [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['grey']), Tree('NN', ['wolf'])]), Tree('NP',
+    [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), Tree('NP', [Tree('DT', ['the']),
+    Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
 
-    >>> parser.batch_parse((
-    ...     'I \'m a dog'.split(),
-    ...     'This is my friends \' cat ( the tabby )'.split(),
+    >>> parser.parse_sents((
+    ...     "I 'm a dog".split(),
+    ...     "This is my friends ' cat ( the tabby )".split(),
     ... ))
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
     Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
@@ -51,25 +50,25 @@ class StanfordParser(ParserI):
     Tree('NNS', ['friends']), Tree('POS', ["'"])]), Tree('NN', ['cat'])]), Tree('PRN', [Tree('-LRB-', ['-LRB-']),
     Tree('NP', [Tree('DT', ['the']), Tree('NN', ['tabby'])]), Tree('-RRB-', ['-RRB-'])])])])])])]
 
-    >>> parser.tagged_batch_parse((
+    >>> parser.tagged_parse_sents((
     ...     (
-    ...         ('The', 'DT'),
-    ...         ('quick', 'JJ'),
-    ...         ('brown', 'JJ'),
-    ...         ('fox', 'NN'),
-    ...         ('jumped', 'VBD'),
-    ...         ('over', 'IN'),
-    ...         ('the', 'DT'),
-    ...         ('lazy', 'JJ'),
-    ...         ('dog', 'NN'),
-    ...         ('.', '.'),
+    ...         ("The", "DT"),
+    ...         ("quick", "JJ"),
+    ...         ("brown", "JJ"),
+    ...         ("fox", "NN"),
+    ...         ("jumped", "VBD"),
+    ...         ("over", "IN"),
+    ...         ("the", "DT"),
+    ...         ("lazy", "JJ"),
+    ...         ("dog", "NN"),
+    ...         (".", "."),
     ...     ),
     ... ))
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
     [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
-    '''
-    _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)\.(\d+)\.(\d+)-models\.jar'
+    """
+    _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)(\.(\d+))+-models\.jar'
     _JAR = 'stanford-parser.jar'
 
     def __init__(self, path_to_jar=None, path_to_models_jar=None,
@@ -77,17 +76,20 @@ class StanfordParser(ParserI):
                  encoding='UTF-8', verbose=False, java_options='-mx1000m'):
 
         self._stanford_jar = find_jar(
-                self._JAR, path_to_jar,
-                env_vars=('STANFORD_PARSER',),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
+            self._JAR, path_to_jar,
+            env_vars=('STANFORD_PARSER',),
+            searchpath=(), url=_stanford_url,
+            verbose=verbose
+        )
 
         # find the most recent model
-        self._model_jar=max(find_jar_iter(
+        self._model_jar=max(
+            find_jar_iter(
                 self._MODEL_JAR_PATTERN, path_to_models_jar,
                 env_vars=('STANFORD_MODELS',),
                 searchpath=(), url=_stanford_url,
-                verbose=verbose, is_regex=True),
+                verbose=verbose, is_regex=True
+            ),
             key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
         )
 
@@ -101,13 +103,13 @@ class StanfordParser(ParserI):
         cur_lines = []
         for line in output_.splitlines(False):
             if line == '':
-                res.append(Tree.parse('\n'.join(cur_lines)))
+                res.append(Tree.fromstring('\n'.join(cur_lines)))
                 cur_lines = []
             else:
                 cur_lines.append(line)
         return res
 
-    def parse(self, sentence, verbose=False):
+    def parse_all(self, sentence, verbose=False):
         """
         Use StanfordParser to parse a sentence. Takes a sentence as a list of
         words; it will be automatically tagged with this StanfordParser instance's
@@ -117,9 +119,9 @@ class StanfordParser(ParserI):
         :type sentence: list(str)
         :rtype: Tree
         """
-        return self.batch_parse([sentence], verbose)[0]
+        return self.parse_sents([sentence], verbose)
 
-    def batch_parse(self, sentences, verbose=False):
+    def parse_sents(self, sentences, verbose=False):
         """
         Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
         list where each sentence is a list of words.
@@ -153,9 +155,9 @@ class StanfordParser(ParserI):
         :type sentence: str
         :rtype: Tree
         """
-        return self.raw_batch_parse((sentence,), verbose)
+        return self.raw_parse_sents((sentence,), verbose)
 
-    def raw_batch_parse(self, sentences, verbose=False):
+    def raw_parse_sents(self, sentences, verbose=False):
         """
         Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
         list of strings.
@@ -183,9 +185,9 @@ class StanfordParser(ParserI):
         :type sentence: list(tuple(str, str))
         :rtype: Tree
         """
-        return self.tagged_batch_parse([sentence], verbose)[0]
+        return self.tagged_parse_sents([sentence], verbose)[0]
 
-    def tagged_batch_parse(self, sentences, verbose=False):
+    def tagged_parse_sents(self, sentences, verbose=False):
         """
         Use StanfordParser to parse multiple sentences. Takes multiple sentences
         where each sentence is a list of (word, tag) tuples.
@@ -241,3 +243,13 @@ class StanfordParser(ParserI):
 
         return stdout
 
+
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordParser(
+            model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
+        )
+    except LookupError:
+        raise SkipTest('doctests from nltk.parse.stanford are skipped because the stanford parser jar doesn\'t exist')

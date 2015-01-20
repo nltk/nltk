@@ -110,7 +110,7 @@ from __future__ import print_function
 
 from nltk.tree import Tree
 
-def chomsky_normal_form(tree, factor = "right", horzMarkov = None, vertMarkov = 0, childChar = "|", parentChar = "^"):
+def chomsky_normal_form(tree, factor="right", horzMarkov=None, vertMarkov=0, childChar="|", parentChar="^"):
     # assume all subtrees have homogeneous children
     # assume all terminals have no siblings
 
@@ -277,7 +277,7 @@ def demo():
     (NP (DT the) (NN yuppie) (NNS dealers))
     (VP (AUX do) (NP (NP (RB little)) (ADJP (RB right))))
     (. .)))"""
-    t = tree.Tree.parse(sentence, remove_empty_top_bracketing=True)
+    t = tree.Tree.fromstring(sentence, remove_empty_top_bracketing=True)
 
     # collapse subtrees with only one child
     collapsedTree = deepcopy(t)

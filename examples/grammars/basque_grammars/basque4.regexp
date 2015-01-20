@@ -1,3 +1,0 @@
-  IS: {(<ADJ.*>*<DET.*>*<IZE.*>+<ADJ.*>*<DET.*>*)*} #noun phrase chunks
-  AS: {(<ADI.*|ADL.*|ADT.*>*)+} # verb phrase chunks
-  PS: {<POST.*>+} # prepositional phrase chunks

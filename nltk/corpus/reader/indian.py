@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Indian Language POS-Tagged Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -17,8 +17,6 @@ Contents:
   - Marathi: IIT Bombay
   - Telugu: IIIT Hyderabad
 """
-
-import codecs
 
 from nltk import compat
 from nltk.tag import str2tuple, map_tag
