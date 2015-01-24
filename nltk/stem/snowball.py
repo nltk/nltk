@@ -2544,7 +2544,7 @@ class PortugueseStemmer(_StandardStemmer):
                         r2 = r2[:-5]
                         rv = rv[:-5]
 
-                        if r2.endswith(("ante", "avel", "\xEDvel")):
+                        if r2.endswith(("ante", "avel", "ivel")):
                             word = word[:-4]
                             rv = rv[:-4]
 
