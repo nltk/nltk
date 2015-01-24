@@ -2528,8 +2528,8 @@ class PortugueseStemmer(_StandardStemmer):
                     step1_success = True
 
                     if suffix in ("logia", "logias"):
-                        word = word[:-2]
-                        rv = rv[:-2]
+                        word = suffix_replace(word, suffix, "log")
+                        rv = suffix_replace(rv, suffix, "log")
 
                     elif suffix in ("ução", "uções"):
                         word = suffix_replace(word, suffix, "u")
