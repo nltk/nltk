@@ -2429,12 +2429,12 @@ class PortugueseStemmer(_StandardStemmer):
     """
 
     __vowels = "aeiou\xE1\xE9\xED\xF3\xFA\xE2\xEA\xF4"
-    __step1_suffixes = ('amentos', 'imentos', 'uções', 'amento',
+    __step1_suffixes = ('amentos', 'imentos', 'uço~es', 'amento',
                         'imento', 'adoras', 'adores', 'a\xE7o~es',
                         'logias', '\xEAncias', 'amente',
                         'idades', 'an\xE7as', 'ismos', 'istas', 'adora',
                         'a\xE7a~o', 'antes', '\xE2ncia',
-                        'logia', 'ução', '\xEAncia',
+                        'logia', 'uça~o', '\xEAncia',
                         'mente', 'idade', 'an\xE7a', 'ezas', 'icos', 'icas',
                         'ismo', '\xE1vel', '\xEDvel', 'ista',
                         'osos', 'osas', 'ador', 'ante', 'ivas',
