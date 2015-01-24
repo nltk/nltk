@@ -273,7 +273,7 @@ class _StandardStemmer(_LanguageSpecificStemmer):
                         rv = word[i+1:]
                         break
 
-            elif word[:2] in vowels:
+            elif word[0] in vowels and word[1] in vowels:
                 for i in range(2, len(word)):
                     if word[i] not in vowels:
                         rv = word[i+1:]
