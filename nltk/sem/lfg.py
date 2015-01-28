@@ -141,9 +141,9 @@ class FStructure(dict):
         return self.__unicode__().replace('\n', '')
 
     def __str__(self):
-        return self.pprint()
+        return self.pretty_format()
 
-    def pprint(self, indent=3):
+    def pretty_format(self, indent=3):
         try:
             accum = '%s:[' % self.label
         except NameError:
@@ -157,7 +157,7 @@ class FStructure(dict):
             for item in self[feature]:
                 if isinstance(item, FStructure):
                     next_indent = indent+len(feature)+3+len(self.label)
-                    accum += '\n%s%s %s' % (' '*(indent), feature, item.pprint(next_indent))
+                    accum += '\n%s%s %s' % (' '*(indent), feature, item.pretty_format(next_indent))
                 elif isinstance(item, tuple):
                     accum += '\n%s%s \'%s\'' % (' '*(indent), feature, item[0])
                 elif isinstance(item, list):
