@@ -564,7 +564,7 @@ def find(resource_name, paths=None):
 
     # Resolve default paths at runtime in-case the user overrides nltk.data.path
     if paths is None:
-        paths=path
+        paths = path
 
     # Check if the resource name includes a zipfile name
     m = re.match(r'(.*\.zip)/?(.*)$|', resource_name)
