@@ -414,7 +414,7 @@ def smooth(x,window_len=11,window='flat'):
     if x.size < window_len:
         raise ValueError("Input vector needs to be bigger than window size.")
 
-    if window_len<3:
+    if window_len < 3:
         return x
 
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
@@ -424,11 +424,11 @@ def smooth(x,window_len=11,window='flat'):
 
     #print(len(s))
     if window == 'flat': #moving average
-        w=numpy.ones(window_len,'d')
+        w = numpy.ones(window_len,'d')
     else:
-        w=eval('numpy.'+window+'(window_len)')
+        w = eval('numpy.' + window + '(window_len)')
 
-    y=numpy.convolve(w/w.sum(),s,mode='same')
+    y = numpy.convolve(w/w.sum(), s, mode='same')
 
     return y[window_len-1:-window_len+1]
 
@@ -436,15 +436,15 @@ def smooth(x,window_len=11,window='flat'):
 def demo(text=None):
     from nltk.corpus import brown
     import pylab
-    tt=TextTilingTokenizer(demo_mode=True)
-    if text is None: text=brown.raw()[:10000]
-    s,ss,d,b=tt.tokenize(text)
+    tt = TextTilingTokenizer(demo_mode=True)
+    if text is None: text = brown.raw()[:10000]
+    s, ss, d, b = tt.tokenize(text)
     pylab.xlabel("Sentence Gap index")
     pylab.ylabel("Gap Scores")
     pylab.plot(range(len(s)), s, label="Gap Scores")
     pylab.plot(range(len(ss)), ss, label="Smoothed Gap scores")
     pylab.plot(range(len(d)), d, label="Depth scores")
-    pylab.stem(range(len(b)),b)
+    pylab.stem(range(len(b)), b)
     pylab.legend()
     pylab.show()
 
