@@ -302,4 +302,4 @@ def setup_module(module):
     try:
         tagger = POSTagger('/usr/share/senna-v2.0')
     except ExecutableNotFound:
-        raise SkipTest("Senna executable not found")
+        raise SkipTest("Senna executable not found") 
