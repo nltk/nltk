@@ -310,14 +310,15 @@ class FreqDist(Counter):
         """
         return self.pformat()
 
-    def pprint(self, maxlen=10):
+    def pprint(self, maxlen=10, stream=None):
         """
-        Print a string representation of this FreqDist
+        Print a string representation of this FreqDist to 'stream'
 
         :param maxlen: The maximum number of items to print
         :type maxlen: int
+        :param stream: The stream to print to. stdout by default
         """
-        print(self.pformat(maxlen=maxlen))
+        print(self.pformat(maxlen=maxlen), file=stream)
 
     def pformat(self, maxlen=10):
         """
