@@ -28,10 +28,10 @@ class StanfordTokenizer(TokenizerI):
     >>> from nltk.tokenize.stanford import StanfordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
     >>> StanfordTokenizer().tokenize(s)
-    [u'Good', u'muffins', u'cost', u'$', u'3.88', u'in', u'New', u'York', u'.', u'Please', u'buy', u'me', u'two', u'of', u'them', u'.', u'Thanks', u'.']
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     >>> s = "The colour of the wall is blue."
     >>> StanfordTokenizer(options={"americanize": True}).tokenize(s)
-    [u'The', u'color', u'of', u'the', u'wall', u'is', u'blue', u'.']
+    ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
     """
 
     _JAR = 'stanford-postagger.jar'
@@ -106,6 +106,3 @@ def setup_module(module):
     except LookupError:
         raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
     
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
