@@ -303,3 +303,8 @@ def setup_module(module):
         tagger = POSTagger('/usr/share/senna-v2.0')
     except ExecutableNotFound:
         raise SkipTest("Senna executable not found")
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
+
