@@ -28,10 +28,10 @@ class StanfordTokenizer(TokenizerI):
     >>> from nltk.tokenize.stanford import StanfordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
     >>> StanfordTokenizer().tokenize(s)
-    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+    [u'Good', u'muffins', u'cost', u'$', u'3.88', u'in', u'New', u'York', u'.', u'Please', u'buy', u'me', u'two', u'of', u'them', u'.', u'Thanks', u'.']
     >>> s = "The colour of the wall is blue."
     >>> StanfordTokenizer(options={"americanize": True}).tokenize(s)
-    ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
+    [u'The', u'color', u'of', u'the', u'wall', u'is', u'blue', u'.']
     """
 
     _JAR = 'stanford-postagger.jar'
@@ -46,27 +46,10 @@ class StanfordTokenizer(TokenizerI):
 
         self._encoding = encoding
         self.java_options = java_options
-        #options = {} if options is None else options
-         
-        options_str = options
-        options = {} 
-        if options_str is not None:
-            tokens = options_str.split()
-            if len(tokens) % 2 !=0:
-                    raise ValueError("Must be in set of (argument,value) pair")
-            
-            for i in range(len(tokens)/2):
-                key = tokens[2*i]
-                # Work the case when key might contain -  as in -tokenizeNLs
-                temp = list(key)
-                if temp[0] == '-':
-                    key = "".join(temp[1:])
-                
-                value = tokens[2*i+1]
-                options[key] = value 
-                
+        
+        options = {} if options is None else options
         self._options_cmd = ','.join('{0}={1}'.format(key, val) for key, val in options.items())
-         
+
     @staticmethod
     def _parse_tokenized_output(s):
         return s.splitlines()
@@ -122,3 +105,7 @@ def setup_module(module):
         StanfordTokenizer()
     except LookupError:
         raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
+    
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
