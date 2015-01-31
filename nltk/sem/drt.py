@@ -265,6 +265,9 @@ class DrtExpression(object):
         """
         return '\n'.join(self._pretty())
 
+    def pretty_print(self):
+        print(self.pretty_format())
+
     def draw(self):
         DrsDrawer(self).draw()
 

@@ -1571,7 +1571,7 @@ def demo():
 
     # Demonstrate LaTeX output
     print("LaTeX output:")
-    print(t.pprint_latex_qtree())
+    print(t.pformat_latex_qtree())
     print()
 
     # Demonstrate Productions
