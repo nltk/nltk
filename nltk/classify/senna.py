@@ -50,23 +50,6 @@ from nltk.compat import text_type, python_2_unicode_compatible
 _senna_url = 'http://ml.nec-labs.com/senna/'
 
 
-class Error(Exception):
-    """Basic error handling class to be extended by the module specific
-    exceptions"""
-
-
-class ExecutableNotFound(Error):
-    """Raised if the senna executable does not exist"""
-
-
-class RunFailure(Error):
-    """Raised if the pipeline fails to execute"""
-
-
-class SentenceMisalignment(Error):
-    """Raised if the new sentence is shorter than the original one or the number
-    of sentences in the result is less than the input."""
-
 @python_2_unicode_compatible
 class Senna(TaggerI):
 
@@ -86,7 +69,7 @@ class Senna(TaggerI):
                 self._path = path.normpath(environ['SENNA']) + sep 
                 exe_file_2 = self.executable(self._path)
                 if not path.isfile(exe_file_2):
-                    raise ExecutableNotFound("Senna executable expected at %s or %s but not found" % (exe_file_1,exe_file_2))
+                    raise OSError("Senna executable expected at %s or %s but not found" % (exe_file_1,exe_file_2))
         
         self.operations = operations
 
@@ -156,7 +139,7 @@ class Senna(TaggerI):
 
         # Check the return code.
         if p.returncode != 0:
-            raise RunFailure('Senna command failed! Details: %s' % stderr)
+            raise RuntimeError('Senna command failed! Details: %s' % stderr)
 
         if encoding:
             senna_output = stdout.decode(encoding)
@@ -179,7 +162,7 @@ class Senna(TaggerI):
             try:
               result['word'] = sentences[sentence_index][token_index]
             except IndexError:
-              raise SentenceMisalignment(
+              raise IndexError(
                 "Misalignment error occurred at sentence number %d. Possible reason"
                 " is that the sentence size exceeded the maximum size. Check the "
                 "documentation of Senna class for more information."
