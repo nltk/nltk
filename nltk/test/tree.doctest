@@ -41,7 +41,7 @@ tree object to one of several standard tree encodings:
 
 There is also a fancy ASCII art representation:
 
-    >>> tree.pretty_print()
+    >>> tree.pprint()
                   s               
           ________|_____           
          |              vp        
@@ -52,7 +52,7 @@ There is also a fancy ASCII art representation:
      |       |    |     |       |  
     the     dog chased the     cat
 
-    >>> tree.pretty_print(unicodelines=True, nodedist=4)
+    >>> tree.pprint(unicodelines=True, nodedist=4)
                            s                        
             ┌──────────────┴────────┐                   
             │                       vp              
