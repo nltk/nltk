@@ -59,6 +59,7 @@ class AlignedSent(object):
 
     def _get_alignment(self):
         return self._alignment
+        
     def _set_alignment(self, alignment):
         if not isinstance(alignment, Alignment):
             alignment = Alignment(alignment)
