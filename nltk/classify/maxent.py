@@ -225,7 +225,7 @@ class MaxentClassifier(ClassifierI):
 
     @classmethod
     def train(cls, train_toks, algorithm=None, trace=3, encoding=None,
-              labels=None, sparse=None, gaussian_prior_sigma=0, **cutoffs):
+              labels=None, gaussian_prior_sigma=0, **cutoffs):
         """
         Train a new maxent classifier based on the given corpus of
         training samples.  This classifier will have its weights

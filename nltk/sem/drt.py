@@ -258,18 +258,15 @@ class DrtExpression(object):
         return self.visit_structured(lambda e: e.eliminate_equality(),
                                      self.__class__)
 
-    def pprint(self):
-        """
-        Draw the DRS
-        """
-        print(self.pretty())
-
-    def pretty(self):
+    def pretty_format(self):
         """
         Draw the DRS
         :return: the pretty print string
         """
         return '\n'.join(self._pretty())
+
+    def pretty_print(self):
+        print(self.pretty_format())
 
     def draw(self):
         DrsDrawer(self).draw()

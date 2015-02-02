@@ -309,7 +309,7 @@ class IncrementalChartParser(ChartParser):
 
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
-        if trace: print(chart.pp_leaves(trace_edge_width))
+        if trace: print(chart.pretty_format_leaves(trace_edge_width))
 
         for axiom in self._axioms:
             new_edges = list(axiom.apply(chart, grammar))

@@ -273,7 +273,7 @@ class _StandardStemmer(_LanguageSpecificStemmer):
                         rv = word[i+1:]
                         break
 
-            elif word[:2] in vowels:
+            elif word[0] in vowels and word[1] in vowels:
                 for i in range(2, len(word)):
                     if word[i] not in vowels:
                         rv = word[i+1:]
@@ -2432,10 +2432,10 @@ class PortugueseStemmer(_StandardStemmer):
     __step1_suffixes = ('amentos', 'imentos', 'uções', 'amento',
                         'imento', 'adoras', 'adores', 'a\xE7o~es',
                         'logias', '\xEAncias', 'amente',
-                        'idades', 'ismos', 'istas', 'adora',
+                        'idades', 'an\xE7as', 'ismos', 'istas', 'adora',
                         'a\xE7a~o', 'antes', '\xE2ncia',
                         'logia', 'ução', '\xEAncia',
-                        'mente', 'idade', 'ezas', 'icos', 'icas',
+                        'mente', 'idade', 'an\xE7a', 'ezas', 'icos', 'icas',
                         'ismo', '\xE1vel', '\xEDvel', 'ista',
                         'osos', 'osas', 'ador', 'ante', 'ivas',
                         'ivos', 'iras', 'eza', 'ico', 'ica',
@@ -2528,8 +2528,8 @@ class PortugueseStemmer(_StandardStemmer):
                     step1_success = True
 
                     if suffix in ("logia", "logias"):
-                        word = word[:-2]
-                        rv = rv[:-2]
+                        word = suffix_replace(word, suffix, "log")
+                        rv = suffix_replace(rv, suffix, "log")
 
                     elif suffix in ("ução", "uções"):
                         word = suffix_replace(word, suffix, "u")
@@ -2544,7 +2544,7 @@ class PortugueseStemmer(_StandardStemmer):
                         r2 = r2[:-5]
                         rv = rv[:-5]
 
-                        if r2.endswith(("ante", "avel", "\xEDvel")):
+                        if r2.endswith(("ante", "avel", "ivel")):
                             word = word[:-4]
                             rv = rv[:-4]
 
