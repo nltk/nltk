@@ -49,6 +49,17 @@ export STANFORD_MODELS=$(pwd)'/stanford-parser'
 export STANFORD_POSTAGGER=$(pwd)'/stanford-postagger'
 export SENNA=$(pwd)'/senna'
 
+echo '####################### TESTING STANFORD PACKAGE #############################'
+which java 
+/opt/jdk/latest/bin/java -version 
+echo 'Good muffins cost $3.88 in New York.  Please buy me two of them. Thanks.' > temp.txt
+/opt/jdk/latest/bin/java -mx1000m -cp /home/jenkins/third/stanford-postagger/stanford-postagger.jar edu.stanford.nlp.process.PTBTokenizer -charset UTF-8  temp.txt
+
+
+echo'####################### END TESTING ##########################################'
+
+
+
 popd
 popd
 
