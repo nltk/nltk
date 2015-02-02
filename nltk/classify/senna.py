@@ -176,7 +176,7 @@ class Senna(TaggerI):
 def setup_module(module):
     from nose import SkipTest
     try:
-        tagger = Senna('/usr/share/senna-v2.0')
+        tagger = Senna('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
     except OSError:
         raise SkipTest("Senna executable not found")
 
