@@ -16,6 +16,7 @@ The input is assumed to be in Malt-TAB format
 from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
+from itertools import chain
 from pprint import pformat
 
 from nltk.tree import Tree
@@ -263,7 +264,7 @@ class DependencyGraph(object):
         """
         node = self.get_by_address(i)
         word = node['word']
-        deps = node['deps']
+        deps = list(chain.from_iterable(node['deps'].values()))
 
         if deps:
             return Tree(word, [self._tree(dep) for dep in deps])
@@ -276,9 +277,10 @@ class DependencyGraph(object):
         ``Tree`` constructor. Dependency labels are omitted.
         """
         node = self.root
+
         word = node['word']
-        deps = node['deps']
-        return Tree(word, [self._tree(i) for i in deps])
+        deps = chain.from_iterable(node['deps'].values())
+        return Tree(word, [self._tree(dep) for dep in deps])
 
     def triples(self, node=None):
         """
