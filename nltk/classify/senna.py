@@ -177,7 +177,7 @@ def setup_module(module):
     from nose import SkipTest
     try:
         tagger = Senna('/usr/share/senna-v2.0')
-    except ExecutableNotFound:
+    except OSError:
         raise SkipTest("Senna executable not found")
 
 if __name__ == '__main__':
