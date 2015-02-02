@@ -120,7 +120,7 @@ class Senna(TaggerI):
         encoding = self._encoding
         
         if not path.isfile(self.executable(self._path)):
-            raise ExecutableNotFound("Senna executable expected at %s but not found" % self.executable(self._path))
+            raise OSError("Senna executable expected at %s but not found" % self.executable(self._path))
         
          
         # Build the senna command to run the tagger
@@ -177,7 +177,7 @@ def setup_module(module):
     from nose import SkipTest
     try:
         tagger = Senna('/usr/share/senna-v2.0')
-    except ExecutableNotFound:
+    except OSError:
         raise SkipTest("Senna executable not found")
 
 if __name__ == '__main__':
