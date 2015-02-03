@@ -98,7 +98,11 @@ class DependencyGraph(object):
         Adds an arc from the node specified by head_address to the
         node specified by the mod address.
         """
-        self.nodes[head_address]['deps'].append(mod_address)
+        relation = self.nodes[mod_address]['rel']
+        self.nodes[head_address]['deps'].setdefault(relation,[])
+        self.nodes[head_address]['deps'][relation].append(mod_address)
+        #self.nodes[head_address]['deps'].append(mod_address)
+        
 
     def connect_graph(self):
         """
@@ -108,7 +112,10 @@ class DependencyGraph(object):
         for node1 in self.nodes.values():
             for node2 in self.nodes.values():
                 if node1['address'] != node2['address'] and node2['rel'] != 'TOP':
-                    node1['deps'].append(node2['address'])
+                    relation = node2['rel']
+                    node1['deps'].setdefault(relation,[]) 
+                    node1['deps'][relation].append(node2['address'])
+                    #node1['deps'].append(node2['address'])
 
     def get_by_address(self, node_address):
         """Return the node with the given address."""
