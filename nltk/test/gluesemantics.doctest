@@ -370,7 +370,7 @@ Dependency Graph to LFG f-structure
        subj g:[pred 'John']]
 
     >>> fstruct.to_depgraph().tree().pprint()
-    '(sees (dog a) John)'
+    (sees (dog a) John)
 
 ---------------------------------
 LFG f-structure to Glue

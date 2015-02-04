@@ -458,7 +458,7 @@ Nov.    NNP     9       VMOD
 .       .       9       VMOD
 """)
     tree = dg.tree()
-    print(tree.pprint())
+    tree.pprint()
     if nx:
         # currently doesn't work
         import networkx as NX
@@ -483,7 +483,7 @@ def conll_demo():
     """
     dg = DependencyGraph(conll_data1)
     tree = dg.tree()
-    print(tree.pprint())
+    tree.pprint()
     print(dg)
     print(dg.to_conll(4))
 
@@ -494,7 +494,8 @@ def conll_file_demo():
               for entry in conll_data2.split('\n\n') if entry]
     for graph in graphs:
         tree = graph.tree()
-        print('\n' + tree.pprint())
+        print('\n')
+        tree.pprint()
 
 
 def cycle_finding_demo():
