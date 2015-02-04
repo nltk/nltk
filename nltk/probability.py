@@ -681,15 +681,15 @@ class LidstoneProbDist(ProbDistI):
                              'the number of bins in the FreqDist used ' +
                              'to create it (%d).' % freqdist.B())
 
+        # the frequency distribution used to generate this probability
+        # distribution (read-only)
         self._freqdist = freqdist
-        self._gamma = float(gamma)
 
-        # if caller specifies a number of tokens, use that
-        # instead of getting it from the frequency distribution
-        if override_N:
-            self._N = override_N
-        else:
-            self._N = self._freqdist.N()
+        # Gamma used for computing probabilities (can be modified after
+        # instance has been initialized)
+        self.Gamma = float(gamma)
+
+        self._N = self._freqdist.N()
 
         if bins is None:
             bins = freqdist.B()
@@ -699,9 +699,10 @@ class LidstoneProbDist(ProbDistI):
         if self._divisor == 0.0:
             # In extreme cases we force the probability to be 0,
             # which it will be, since the count will be 0:
-            self._gamma = 0
+            self.Gamma = 0
             self._divisor = 1
 
+    @property
     def freqdist(self):
         """
         Return the frequency distribution that this probability
@@ -711,9 +712,13 @@ class LidstoneProbDist(ProbDistI):
         """
         return self._freqdist
 
+    @property
+    def N(self):
+        return self._N
+
     def prob(self, sample):
         c = self._freqdist[sample]
-        return (c + self._gamma) / self._divisor
+        return (c + self.Gamma) / self._divisor
 
     def max(self):
         # For Lidstone distributions, probability is monotonic with
@@ -725,7 +730,7 @@ class LidstoneProbDist(ProbDistI):
         return self._freqdist.keys()
 
     def discount(self):
-        gb = self._gamma * self._bins
+        gb = self.Gamma * self._bins
         return gb / (self._N + gb)
 
     def __repr__(self):
