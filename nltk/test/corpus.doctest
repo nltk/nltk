@@ -1033,7 +1033,7 @@ we can create a customized corpus reader for the genesis corpus that
 uses a different sentence tokenizer as follows:
 
     >>> # Find the directory where the corpus lives.
-    >>> genesis_dir = nltk.data.find('corpora/genesis.zip').join('genesis/')
+    >>> genesis_dir = nltk.data.find('corpora/genesis')
     >>> # Create our custom sentence tokenizer.
     >>> my_sent_tokenizer = nltk.RegexpTokenizer('[^.!?]+')
     >>> # Create the new corpus reader object.

@@ -191,7 +191,9 @@ class ProjectiveDependencyParser(object):
 #            malt_format = ""
             for i in range(len(tokens)):
 #                malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
-                conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'null', '-', '-')
+                #conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'null', '-', '-')
+                # Modify to comply with the new Dependency Graph requirement (at least must have an root elements) 
+                conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'ROOT', '-', '-')
             dg = DependencyGraph(conll_format)
 #           if self.meets_arity(dg):
             yield dg.tree()
@@ -306,7 +308,9 @@ class ProbabilisticProjectiveDependencyParser(object):
             malt_format = ""
             for i in range(len(tokens)):
                 malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
-                conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'null', '-', '-')
+                #conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'null', '-', '-')
+                # Modify to comply with recent change in dependency graph such that there must be a ROOT element. 
+                conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'ROOT', '-', '-')
             dg = DependencyGraph(conll_format)
             score = self.compute_prob(dg)
             trees.append((score, dg.tree()))
@@ -362,7 +366,10 @@ class ProbabilisticProjectiveDependencyParser(object):
         tags = {}
         for dg in graphs:
             for node_index in range(1, len(dg.nodes)):
-                children = dg.nodes[node_index]['deps']
+                #children = dg.nodes[node_index]['deps']
+                # Put list so that in will work in python 3
+                children = sum(list(dg.nodes[node_index]['deps'].values()), [])
+                
                 nr_left_children = dg.left_children(node_index)
                 nr_right_children = dg.right_children(node_index)
                 nr_children = nr_left_children + nr_right_children
@@ -420,7 +427,9 @@ class ProbabilisticProjectiveDependencyParser(object):
         """
         prob = 1.0
         for node_index in range(1, len(dg.nodes)):
-            children = dg.nodes[node_index]['deps']
+            #children = dg.nodes[node_index]['deps']
+            children = sum(list(dg.nodes[node_index]['deps'].values()), [])
+            
             nr_left_children = dg.left_children(node_index)
             nr_right_children = dg.right_children(node_index)
             nr_children = nr_left_children + nr_right_children

@@ -1,12 +1,11 @@
-'''
-# Natural Language Toolkit: Implement Arc-Standard and Arc-eager transition based parser
+# Natural Language Toolkit: Arc-Standard and Arc-eager Transition Based Parsers
 #
 # Author: Long Duong <longdt219@gmail.com>
 #
 # Copyright (C) 2001-2015 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-'''
+
 import tempfile
 import pickle
 import os
@@ -22,24 +21,23 @@ from evaluate import DependencyEvaluator
 
 
 class Configuration(object):
-
     """
-        Class for holding configuration which is the partial analysis of the input sentence.
-        The transition based parser aims at finding set of operators that transfer the initial
-        configuration to the terminal configuration.
+    Class for holding configuration which is the partial analysis of the input sentence.
+    The transition based parser aims at finding set of operators that transfer the initial
+    configuration to the terminal configuration.
 
-        The configuration include
-            - Stack  : for storing partially proceeded words
-            - Buffer : for storing remaining input words
-            - Set of arcs : for storing partially built dependency tree
+    The configuration includes:
+        - Stack: for storing partially proceeded words
+        - Buffer: for storing remaining input words
+        - Set of arcs: for storing partially built dependency tree
 
-        This class also provide method to represent a configuration as list of features.
+    This class also provides a method to represent a configuration as list of features.
     """
 
     def __init__(self, dep_graph):
         """
         :param dep_graph: the representation of an input in the form of dependency graph.
-        :type dep_graph: DependencyGraph where the dependencies is not specified.
+        :type dep_graph: DependencyGraph where the dependencies are not specified.
         """
         # dep_graph.nodes contain list of token for a sentence
         self.stack = [0]  # The root element
@@ -172,10 +170,9 @@ class Configuration(object):
 
 
 class Transition(object):
-
     """
-        This class define a set of transition which is applied to a configuration to get another configuration
-        Note that for different parsing algorithm, the transition is different.
+    This class defines a set of transition which is applied to a configuration to get another configuration
+    Note that for different parsing algorithm, the transition is different.
     """
     # Define set of transitions
     LEFT_ARC = 'LEFTARC'
@@ -418,8 +415,8 @@ class TransitionParser(ParserI):
                 operation.shift(conf)
                 training_seq.append(key)
 
-        print (" Number of training examples : " + str(len(depgraphs)))
-        print (" Number of valid (projective) examples : " + str(count_proj))
+        print(" Number of training examples : " + str(len(depgraphs)))
+        print(" Number of valid (projective) examples : " + str(count_proj))
         return training_seq
 
     def _create_training_examples_arc_eager(self, depgraphs, input_file):
@@ -482,8 +479,8 @@ class TransitionParser(ParserI):
                 operation.shift(conf)
                 training_seq.append(key)
 
-        print (" Number of training examples : " + str(len(depgraphs)))
-        print (" Number of valid (projective) examples : " + str(countProj))
+        print(" Number of training examples : " + str(len(depgraphs)))
+        print(" Number of valid (projective) examples : " + str(countProj))
         return training_seq
 
     def train(self, depgraphs, modelfile):
@@ -505,11 +502,11 @@ class TransitionParser(ParserI):
             else:
                 self._create_training_examples_arc_eager(depgraphs, input_file)
 
-            # print input_file.name
             input_file.close()
             # Using the temporary file to train the libsvm classifier
             x_train, y_train = load_svmlight_file(input_file.name)
-            # The parameter is set according to the paper : Algorithms for Deterministic Incremental Dependency Parsing by Joakim Nivre
+            # The parameter is set according to the paper:
+            # Algorithms for Deterministic Incremental Dependency Parsing by Joakim Nivre
             # Todo : because of probability = True => very slow due to
             # cross-validation. Need to improve the speed here
             model = svm.SVC(
@@ -529,11 +526,11 @@ class TransitionParser(ParserI):
 
     def parse(self, depgraphs, modelFile):
         """
-            :param depgraphs: the list of test sentence, each sentence is represented as a dependency graph where the 'head' information is dummy
-            :type depgraphs: list(DependencyGraph)
-            :param modelfile : the model file
-            :type modelfile : str
-            :return : list (DependencyGraph) with the 'head' and 'rel' information
+        :param depgraphs: the list of test sentence, each sentence is represented as a dependency graph where the 'head' information is dummy
+        :type depgraphs: list(DependencyGraph)
+        :param modelfile: the model file
+        :type modelfile: str
+        :return: list (DependencyGraph) with the 'head' and 'rel' information
         """
         result = []
         # First load the model
@@ -541,7 +538,6 @@ class TransitionParser(ParserI):
         operation = Transition(self._algorithm)
 
         for depgraph in depgraphs:
-
             conf = Configuration(depgraph)
             while len(conf.buffer) > 0:
                 features = conf.extract_features()
@@ -557,7 +553,6 @@ class TransitionParser(ParserI):
                 np_row = np.array(row)
                 np_data = np.array(data)
 
-                # print str(npCol)  + '   ' + str (len(self._dictionary))
                 x_test = sparse.csr_matrix((np_data, (np_row, np_col)), shape=(1, len(self._dictionary)))
 
                 # It's best to use decision function as follow BUT it's not supported yet for sparse SVM
@@ -649,12 +644,12 @@ def demo():
 
     ###################### Check the Initial Feature ########################
 
-    >>> print conf.extract_features()
+    >>> print(conf.extract_features())
     [u'STK_0_POS_TOP', u'BUF_0_FORM_Economic', u'BUF_0_LEMMA_Economic', u'BUF_0_POS_JJ', u'BUF_1_FORM_news', u'BUF_1_POS_NN', u'BUF_2_POS_VBD', u'BUF_3_POS_JJ']
 
     ###################### Check The Transition #######################
     Check the Initialized Configuration
-    >>> print conf
+    >>> print(conf)
     Stack : [0]  Buffer : [1, 2, 3, 4, 5, 6, 7, 8, 9]   Arcs : []
 
     A. Do some transition checks for ARC-STANDARD
@@ -673,10 +668,10 @@ def demo():
     >>> operation.left_arc(conf, "ATT")
 
     Middle Configuration and Features Check
-    >>> print conf
+    >>> print(conf)
     Stack : [0, 3, 5, 6]  Buffer : [8, 9]   Arcs : [(2, 'ATT', 1), (3, 'SBJ', 2), (5, 'ATT', 4), (8, 'ATT', 7)]
 
-    >>> print conf.extract_features()
+    >>> print(conf.extract_features())
     [u'STK_0_FORM_on', u'STK_0_LEMMA_on', u'STK_0_POS_IN', u'STK_1_POS_NN', u'BUF_0_FORM_markets', u'BUF_0_LEMMA_markets', u'BUF_0_POS_NNS', u'BUF_1_FORM_.', u'BUF_1_POS_.', 'BUF_0_LDEP_ATT']
 
     >>> operation.right_arc(conf, "PC")
@@ -688,7 +683,7 @@ def demo():
     >>> operation.shift(conf)
 
     Terminated Configuration Check
-    >>> print conf
+    >>> print(conf)
     Stack : [0]  Buffer : []   Arcs : [(2, 'ATT', 1), (3, 'SBJ', 2), (5, 'ATT', 4), (8, 'ATT', 7), (6, 'PC', 8), (5, 'ATT', 6), (3, 'OBJ', 5), (3, 'PU', 9), (0, 'ROOT', 3)]
 
 
@@ -712,7 +707,7 @@ def demo():
     >>> operation.reduce(conf)
     >>> operation.reduce(conf)
     >>> operation.right_arc(conf,'PU')
-    >>> print conf
+    >>> print(conf)
     Stack : [0, 3, 9]  Buffer : []   Arcs : [(2, 'ATT', 1), (3, 'SBJ', 2), (0, 'ROOT', 3), (5, 'ATT', 4), (3, 'OBJ', 5), (5, 'ATT', 6), (8, 'ATT', 7), (6, 'PC', 8), (3, 'PU', 9)]
 
     ###################### Check The Training Function #######################
@@ -756,16 +751,16 @@ def demo():
 
     >>> result = parser_std.parse([gold_sent], 'temp.arcstd.model')
     >>> de = DependencyEvaluator(result, [gold_sent])
-    >>> print de.eval()
+    >>> print(de.eval())
     (0.125, 0.0)
 
     B. Check the ARC-EAGER parser
     >>> result = parser_eager.parse([gold_sent], 'temp.arceager.model')
     >>> de = DependencyEvaluator(result, [gold_sent])
-    >>> print de.eval()
+    >>> print(de.eval())
     (0.0, 0.0)
 
-    Note that result is very poor because of only 1 single training example.
+    Note that result is very poor because of only one training example.
     """
 if __name__ == '__main__':
     import doctest

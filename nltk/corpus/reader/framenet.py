@@ -1206,17 +1206,17 @@ class FramenetCorpusReader(XMLCorpusReader):
         consistent across frames.)
         
         >>> from nltk.corpus import framenet as fn
-        >>> fn.fes('sound')
-        [<fe ID=328 name=Sound>, <fe ID=323 name=Sound_source>, ...]
-        >>> [(fe.frame.name,fe.name) for fe in fn.fes('sound')]
-        [('Make_noise', 'Sound'), ('Make_noise', 'Sound_source'), 
-         ('Cause_to_make_noise', 'Sound_maker'), ('Sounds', 'Sound_source'), 
-         ('Sounds', 'Location_of_sound_source'), ('Sounds', 'Component_sound'), 
+        >>> fn.fes('Noise_maker')
+        [<fe ID=6043 name=Noise_maker>]
+        >>> sorted([(fe.frame.name,fe.name) for fe in fn.fes('sound')])
+        [('Cause_to_make_noise', 'Sound_maker'), ('Make_noise', 'Sound'), 
+         ('Make_noise', 'Sound_source'), ('Sound_movement', 'Location_of_sound_source'), 
          ('Sound_movement', 'Sound'), ('Sound_movement', 'Sound_source'), 
-         ('Sound_movement', 'Location_of_sound_source'), ('Vocalizations', 'Sound_source'), 
-         ('Vocalizations', 'Location_of_sound_source')]
-        >>> set(fe.name for fe in fn.fes('^sound'))
-        set(['Sound', 'Sound_source', 'Sound_maker'])
+         ('Sounds', 'Component_sound'), ('Sounds', 'Location_of_sound_source'), 
+         ('Sounds', 'Sound_source'), ('Vocalizations', 'Location_of_sound_source'), 
+         ('Vocalizations', 'Sound_source')]
+        >>> sorted(set(fe.name for fe in fn.fes('^sound')))
+        ['Sound', 'Sound_maker', 'Sound_source']
         >>> len(fn.fes('^sound$'))
         2
         

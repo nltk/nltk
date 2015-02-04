@@ -16,6 +16,7 @@ The input is assumed to be in Malt-TAB format
 from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
+from itertools import chain
 from pprint import pformat
 
 from nltk.tree import Tree
@@ -97,7 +98,11 @@ class DependencyGraph(object):
         Adds an arc from the node specified by head_address to the
         node specified by the mod address.
         """
-        self.nodes[head_address]['deps'].append(mod_address)
+        relation = self.nodes[mod_address]['rel']
+        self.nodes[head_address]['deps'].setdefault(relation,[])
+        self.nodes[head_address]['deps'][relation].append(mod_address)
+        #self.nodes[head_address]['deps'].append(mod_address)
+        
 
     def connect_graph(self):
         """
@@ -107,7 +112,10 @@ class DependencyGraph(object):
         for node1 in self.nodes.values():
             for node2 in self.nodes.values():
                 if node1['address'] != node2['address'] and node2['rel'] != 'TOP':
-                    node1['deps'].append(node2['address'])
+                    relation = node2['rel']
+                    node1['deps'].setdefault(relation,[]) 
+                    node1['deps'][relation].append(node2['address'])
+                    #node1['deps'].append(node2['address'])
 
     def get_by_address(self, node_address):
         """Return the node with the given address."""
@@ -263,7 +271,7 @@ class DependencyGraph(object):
         """
         node = self.get_by_address(i)
         word = node['word']
-        deps = node['deps']
+        deps = list(chain.from_iterable(node['deps'].values()))
 
         if deps:
             return Tree(word, [self._tree(dep) for dep in deps])
@@ -276,9 +284,10 @@ class DependencyGraph(object):
         ``Tree`` constructor. Dependency labels are omitted.
         """
         node = self.root
+
         word = node['word']
-        deps = node['deps']
-        return Tree(word, [self._tree(i) for i in deps])
+        deps = chain.from_iterable(node['deps'].values())
+        return Tree(word, [self._tree(dep) for dep in deps])
 
     def triples(self, node=None):
         """
