@@ -115,7 +115,7 @@ class FreqDist(Counter):
 
         :rtype: int
         """
-        return sum(self.values())
+        return sum(compat.itervalues(self))
 
     def B(self):
         """
@@ -160,23 +160,6 @@ class FreqDist(Counter):
         _r_Nr[0] = bins - self.B() if bins is not None else 0
 
         return _r_Nr
-
-    def _cumulative_frequencies(self, samples):
-        """
-        Return the cumulative frequencies of the specified samples.
-        If no samples are specified, all counts are returned, starting
-        with the largest.
-
-        :param samples: the samples whose frequencies should be returned.
-        :type samples: any
-        :rtype: list(float)
-        """
-        cf = 0.0
-        if not samples:
-            samples = self.keys()
-        for sample in samples:
-            cf += self[sample]
-            yield cf
 
     # slightly odd nomenclature freq() if FreqDist does counts and ProbDist does probs,
     # here, freq() does probs
@@ -254,7 +237,7 @@ class FreqDist(Counter):
             pylab.title(kwargs["title"])
             del kwargs["title"]
         pylab.plot(freqs, **kwargs)
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples])
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
@@ -286,6 +269,23 @@ class FreqDist(Counter):
         for i in range(len(samples)):
             print("%4d" % freqs[i], end=' ')
         print()
+
+    def _cumulative_frequencies(self, samples):
+        """
+        Return the cumulative frequencies of the specified samples.
+        If no samples are specified, all counts are returned, starting
+        with the largest.
+
+        :param samples: the samples whose frequencies should be returned.
+        :type samples: any
+        :rtype: list(float)
+        """
+        cf = 0.0
+        if not samples:
+            samples = self.keys()
+        for sample in samples:
+            cf += self[sample]
+            yield cf
 
     def copy(self):
         """
