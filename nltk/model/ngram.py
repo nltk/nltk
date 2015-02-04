@@ -36,7 +36,6 @@ class NgramModel(ModelI):
     A processing interface for assigning a probability to the next word.
     """
 
-    # add cutoff
     def __init__(self, n, train, pad_left=True, pad_right=False,
                  estimator=None, *estimator_args, **estimator_kwargs):
         """
@@ -90,14 +89,21 @@ class NgramModel(ModelI):
 
         # make sure n is greater than zero, otherwise print it
         assert (n > 0), n
-        self._unigram_model = (n == 1)
+
+        # For explicitness save the check whether this is a unigram model
+        self.is_unigram_model = (n == 1)
+        # save the ngram order number
         self._n = n
+        # save left and right padding
+        self._lpad = ('',) * (n - 1) if pad_left else ()
+        self._rpad = ('',) * (n - 1) if pad_right else ()
 
         if estimator is None:
             estimator = _estimator
 
         cfd = ConditionalFreqDist()
 
+        # set read-only ngrams set (see property declaration below to reconfigure)
         self._ngrams = set()
 
         # If given a list of strings instead of a list of lists, create enclosing list
@@ -125,7 +131,7 @@ class NgramModel(ModelI):
         self._model = ConditionalProbDist(cfd, estimator, *estimator_args, **estimator_kwargs)
 
         # recursively construct the lower-order models
-        if not self._unigram_model:
+        if not self.is_unigram_model:
             self._backoff = NgramModel(n-1, train,
                                         pad_left, pad_right,
                                         estimator,
@@ -170,15 +176,17 @@ class NgramModel(ModelI):
         :type context: list(str)
         """
         context = tuple(context)
-        if (context + (word,) in self._ngrams) or (self._unigram_model):
+        if (context + (word,) in self._ngrams) or (self.is_unigram_model):
             return self[context].prob(word)
         else:
             return self._alpha(context) * self._backoff.prob(word, context[1:])
 
-    # Updated _alpha function, discarded the _beta function
     def _alpha(self, context):
         """Get the backoff alpha value for the given context
         """
+        error_message = "Alphas and backoff are not defined for unigram models"
+        assert not self.is_unigram_model, error_message
+
         if context in self._backoff_alphas:
             return self._backoff_alphas[context]
         else:
@@ -224,8 +232,7 @@ class NgramModel(ModelI):
         return text
 
     def _generate_one(self, context):
-        context = (self._lpad + tuple(context))[-self._n+1:]
-        # print "Context (%d): <%s>" % (self._n, ','.join(context))
+        context = (self._lpad + tuple(context))[- self._n + 1:]
         if context in self:
             return self[context].generate()
         elif self._n > 1:
@@ -245,11 +252,11 @@ class NgramModel(ModelI):
 
         e = 0.0
         text = list(self._lpad) + text + list(self._rpad)
-        for i in range(self._n-1, len(text)):
-            context = tuple(text[i-self._n+1:i])
+        for i in range(self._n - 1, len(text)):
+            context = tuple(text[i - self._n + 1:i])
             token = text[i]
             e += self.logprob(token, context)
-        return e / float(len(text) - (self._n-1))
+        return e / float(len(text) - (self._n - 1))
 
     def perplexity(self, text):
         """
