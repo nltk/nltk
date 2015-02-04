@@ -1637,7 +1637,7 @@ def entropy(pdist):
 ##//////////////////////////////////////////////////////
 
 @compat.python_2_unicode_compatible
-class ConditionalFreqDist(defaultdict):
+class ConditionalFreqDist(FreqDist):
     """
     A collection of frequency distributions for a single experiment
     run under different conditions.  Conditional frequency
@@ -1694,14 +1694,32 @@ class ConditionalFreqDist(defaultdict):
             frequency distribution with
         :type cond_samples: Sequence of (condition, sample) tuples
         """
-        defaultdict.__init__(self, FreqDist)
-        if cond_samples:
-            for (cond, sample) in cond_samples:
-                self[cond][sample] += 1
 
-    def __reduce__(self):
-        kv_pairs = ((cond, self[cond]) for cond in self.conditions())
-        return (self.__class__, (), None, None, kv_pairs)
+        self.condition_counts = defaultdict(int)
+        self.sample_counts = defaultdict(int)
+        super(ConditionalFreqDist, self).__init__(cond_samples)
+
+    def __setitem__(self, key, value):
+        difference_in_value = value - self[key]
+        condition, item = key
+        self.sample_counts[item] += difference_in_value
+        self.condition_counts[condition] += difference_in_value
+
+        super(ConditionalFreqDist, self).__setitem__(key, value)
+
+    def __delitem__(self, key):
+        old_value = self[key]
+        super(ConditionalFreqDist, self).__delitem__(key)
+        condition, item = key
+        self.__decrement_internal(self.sample_counts, item, old_value)
+        self.__decrement_internal(self.condition_counts, condition, old_value)
+
+    def __decrement_internal(self, internal_dict, key, value):
+        new_value = internal_dict[key] - value
+        if new_value > 0:
+            internal_dict[key] = new_value
+        else:
+            del internal_dict[key]
 
     def conditions(self):
         """
@@ -1713,16 +1731,14 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: list
         """
-        return list(self.keys())
+        return self.condition_counts.keys()
 
-    def N(self):
-        """
-        Return the total number of sample outcomes that have been
-        recorded by this ``ConditionalFreqDist``.
+    def B(self):
+        return len(self.sample_counts)
 
-        :rtype: int
-        """
-        return sum(fdist.N() for fdist in compat.itervalues(self))
+    def __reduce__(self):
+        kv_pairs = ((cond, self[cond]) for cond in self.conditions())
+        return (self.__class__, (), None, None, kv_pairs)
 
     def plot(self, *args, **kwargs):
         """
@@ -1747,17 +1763,18 @@ class ConditionalFreqDist(defaultdict):
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(kwargs, 'samples',
-                             sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
+                             sorted(set(v for c, v in self.iterkeys())))  # this computation could be wasted
         if not "linewidth" in kwargs:
             kwargs["linewidth"] = 2
 
         for condition in conditions:
             if cumulative:
-                freqs = list(self[condition]._cumulative_frequencies(samples))
+                cond_samples = ((condition, sample) for sample in samples)
+                freqs = list(self._cumulative_frequencies(cond_samples))
                 ylabel = "Cumulative Counts"
                 legend_loc = 'lower right'
             else:
-                freqs = [self[condition][sample] for sample in samples]
+                freqs = [self[(condition, sample)] for sample in samples]
                 ylabel = "Counts"
                 legend_loc = 'upper right'
             # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
@@ -1766,7 +1783,7 @@ class ConditionalFreqDist(defaultdict):
 
         pylab.legend(loc=legend_loc)
         pylab.grid(True, color="silver")
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples])
         if title:
             pylab.title(title)
         pylab.xlabel("Samples")
@@ -1788,7 +1805,7 @@ class ConditionalFreqDist(defaultdict):
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         samples = _get_kwarg(kwargs, 'samples',
-                             sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
+                             sorted(set(v for c, v in self.iterkeys())))  # this computation could be wasted
 
         condition_size = max(len("%s" % c) for c in conditions)
         print(' ' * condition_size, end=' ')
@@ -1798,9 +1815,10 @@ class ConditionalFreqDist(defaultdict):
         for c in conditions:
             print("%*s" % (condition_size, c), end=' ')
             if cumulative:
-                freqs = list(self[c]._cumulative_frequencies(samples))
+                cond_samples = ((c, sample) for sample in samples)
+                freqs = list(self._cumulative_frequencies(cond_samples))
             else:
-                freqs = [self[c][sample] for sample in samples]
+                freqs = [self[(c, sample)] for sample in samples]
 
             for f in freqs:
                 print("%4d" % f, end=' ')
@@ -1810,16 +1828,21 @@ class ConditionalFreqDist(defaultdict):
     def __le__(self, other):
         if not isinstance(other, ConditionalFreqDist):
             raise_unorderable_types("<=", self, other)
-        return set(self.conditions()).issubset(other.conditions()) \
-               and all(self[c] <= other[c] for c in self.conditions())
+
+        conditions_subset = set(self.conditions()).issubset(other.conditions())
+        comparing_counts = all(self[s] <= other[s] for s in self)
+        return conditions_subset and comparing_counts
+
     def __lt__(self, other):
         if not isinstance(other, ConditionalFreqDist):
             raise_unorderable_types("<", self, other)
         return self <= other and self != other
+
     def __ge__(self, other):
         if not isinstance(other, ConditionalFreqDist):
             raise_unorderable_types(">=", self, other)
         return other <= self
+
     def __gt__(self, other):
         if not isinstance(other, ConditionalFreqDist):
             raise_unorderable_types(">", self, other)
@@ -1831,7 +1854,8 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: str
         """
-        return '<ConditionalFreqDist with %d conditions>' % len(self)
+        message = '<ConditionalFreqDist with {0} conditions and {1} outcomes>'
+        return message.format(len(self.condition_counts), self.N())
 
 
 @compat.python_2_unicode_compatible
