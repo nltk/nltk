@@ -110,25 +110,15 @@ class NgramModel(ModelI):
         if (train is not None) and isinstance(train[0], compat.string_types):
             train = [train]
 
-        # we need to keep track of the number of word types we encounter
-        words = set()
         for sent in train:
-            for ngram in ngrams(sent, n, pad_left, pad_right, pad_symbol=''):
+            raw_ngrams = ngrams(sent, n, pad_left, pad_right, pad_symbol='')
+            for ngram in raw_ngrams:
                 self._ngrams.add(ngram)
                 context = tuple(ngram[:-1])
                 token = ngram[-1]
-                cfd[context][token] += 1
-                words.add(token)
+                cfd[(context, token)] += 1
 
-        # unless number of bins is explicitly passed, we should use the number
-        # of word types encountered during training as the bins value
-        if 'bins' not in estimator_kwargs:
-            estimator_kwargs['bins'] = len(words)
-
-        missed_words = (1 - int(pad_left) - int(pad_right)) * (n - 1)
-        estimator_kwargs['override_N'] = cfd.N() + missed_words
-
-        self._model = ConditionalProbDist(cfd, estimator, *estimator_args, **estimator_kwargs)
+        self._probdist = estimator(cfd, *estimator_args, **estimator_kwargs)
 
         # recursively construct the lower-order models
         if not self.is_unigram_model:
@@ -141,30 +131,37 @@ class NgramModel(ModelI):
             self._backoff_alphas = dict()
             # For each condition (or context)
             for ctxt in cfd.conditions():
-                prdist = self._model[ctxt] # prob dist for this context
-
                 backoff_ctxt = ctxt[1:]
                 backoff_total_pr = 0.0
                 total_observed_pr = 0.0
-                for word in cfd[ctxt]:
-                    # this is the subset of words that we OBSERVED
-                    # following this context
-                    total_observed_pr += prdist.prob(word)
-                    # we normalize it by the total (n-1)-gram probability of
-                    # words that were observed in this n-gram context
+
+                # this is the subset of words that we OBSERVED following
+                # this context.
+                # i.e. Count(word | context) > 0
+                for word in self._words_following(ctxt, cfd):
+                    total_observed_pr += self.prob(word, ctxt)
+                    # we also need the total (n-1)-gram probability of
+                    # words observed in this n-gram context
                     backoff_total_pr += self._backoff.prob(word, backoff_ctxt)
 
-                assert (0 < total_observed_pr <= 1), total_observed_pr
+                assert (0 <= total_observed_pr <= 1), total_observed_pr
                 # beta is the remaining probability weight after we factor out
-                # the probability of observed words
+                # the probability of observed words.
+                # As a sanity check, both total_observed_pr and backoff_total_pr
+                # must be GE 0, since probabilities are never negative
                 beta = 1.0 - total_observed_pr
 
                 # backoff total has to be less than one, otherwise we get
-                # ZeroDivision error when we try subtracting it from 1 below
-                assert (0 < backoff_total_pr < 1), backoff_total_pr
+                # an error when we try subtracting it from 1 in the denominator
+                assert (0 <= backoff_total_pr < 1), backoff_total_pr
                 alpha_ctxt = beta / (1.0 - backoff_total_pr)
 
                 self._backoff_alphas[ctxt] = alpha_ctxt
+
+    def _words_following(self, context, cond_freq_dist):
+        for ctxt, word in cond_freq_dist.iterkeys():
+            if ctxt == context:
+                yield word
 
     def prob(self, word, context):
         """
@@ -177,7 +174,7 @@ class NgramModel(ModelI):
         """
         context = tuple(context)
         if (context + (word,) in self._ngrams) or (self.is_unigram_model):
-            return self[context].prob(word)
+            return self._probdist.prob((context, word))
         else:
             return self._alpha(context) * self._backoff.prob(word, context[1:])
 
@@ -201,8 +198,19 @@ class NgramModel(ModelI):
         :param context: the context the word is in
         :type context: list(str)
         """
-
         return -log(self.prob(word, context), 2)
+
+    @property
+    def ngrams(self):
+        return self._ngrams
+
+    @property
+    def backoff(self):
+        return self._backoff
+
+    @property
+    def probdist(self):
+        return self._probdist
 
     def choose_random_word(self, context):
         '''
@@ -270,10 +278,10 @@ class NgramModel(ModelI):
         return pow(2.0, self.entropy(text))
 
     def __contains__(self, item):
-        return tuple(item) in self._model
+        return tuple(item) in self._probdist.freqdist
 
     def __getitem__(self, item):
-        return self._model[tuple(item)]
+        return self._probdist[tuple(item)]
 
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
