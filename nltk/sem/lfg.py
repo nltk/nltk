@@ -46,7 +46,9 @@ class FStructure(dict):
         for address, node in nodes.items():
             for n2 in (n for n in nodes.values() if n['rel'] != 'TOP'):
                 if n2['head'] == address:
-                    node['deps'].append(n2['address'])
+                    relation = n2['rel']
+                    node['deps'].setdefault(relation,[])
+                    node['deps'][relation].append(n2['address'])
 
         depgraph.root = nodes[1]
 
@@ -115,7 +117,7 @@ class FStructure(dict):
             if not fstruct.pred:
                 fstruct.pred = (word, tag)
 
-            children = [depgraph.nodes[idx] for idx in node['deps']]
+            children = [depgraph.nodes[idx] for idx in sum(list(node['deps'].values()), [])]
             for child in children:
                 fstruct.safeappend(child['rel'], FStructure._read_depgraph(child, depgraph, label_counter, fstruct))
 
