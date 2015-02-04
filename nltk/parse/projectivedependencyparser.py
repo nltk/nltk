@@ -401,10 +401,6 @@ class ProbabilisticProjectiveDependencyParser(object):
                     elif child_index > 0:
                         array_index = child_index + nr_left_children - 1
                         if array_index < nr_children:
-                            # Long Duong : test 
-                            print (children)
-                            print (children[array_index])
-                            
                             child = dg.nodes[children[array_index]]['word']
                             child_tag = dg.nodes[children[array_index]]['tag']
                         if child_index != 1:
