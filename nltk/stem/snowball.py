@@ -3407,36 +3407,13 @@ class SpanishStemmer(_StandardStemmer):
             if not (word.endswith(suffix) and rv.endswith(suffix)):
                 continue
 
-            if rv[:-len(suffix)].endswith(("i\xE9ndo",
-                                           "\xE1ndo",
-                                           "\xE1r", "\xE9r",
-                                           "\xEDr")):
-                word = (word[:-len(suffix)].replace("\xE1", "a")
-                                           .replace("\xE9", "e")
-                                           .replace("\xED", "i"))
-                r1 = (r1[:-len(suffix)].replace("\xE1", "a")
-                                       .replace("\xE9", "e")
-                                       .replace("\xED", "i"))
-                r2 = (r2[:-len(suffix)].replace("\xE1", "a")
-                                       .replace("\xE9", "e")
-                                       .replace("\xED", "i"))
-                rv = (rv[:-len(suffix)].replace("\xE1", "a")
-                                       .replace("\xE9", "e")
-                                       .replace("\xED", "i"))
-
-            elif rv[:-len(suffix)].endswith(("ando", "iendo",
-                                             "ar", "er", "ir")):
-                word = word[:-len(suffix)]
-                r1 = r1[:-len(suffix)]
-                r2 = r2[:-len(suffix)]
-                rv = rv[:-len(suffix)]
-
-            elif (rv[:-len(suffix)].endswith("yendo") and
-                  word[:-len(suffix)].endswith("uyendo")):
-                word = word[:-len(suffix)]
-                r1 = r1[:-len(suffix)]
-                r2 = r2[:-len(suffix)]
-                rv = rv[:-len(suffix)]
+            if ((rv[:-len(suffix)].endswith(("ando", "\xE1ndo",
+                                             "ar", "\xE1r",
+                                             "er", "\xE9r",
+                                             "iendo", "i\xE9ndo",
+                                             "ir", "\xEDr"))) or
+                (rv[:-len(suffix)].endswith("yendo") and
+                    word[:-len(suffix)].endswith("uyendo"))):
 
                 word = self.__replace_accented(word[:-len(suffix)])
                 r1 = self.__replace_accented(r1[:-len(suffix)])
