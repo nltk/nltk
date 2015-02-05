@@ -2489,7 +2489,9 @@ class PortugueseStemmer(_StandardStemmer):
         step2_success = False
 
         word = (word.replace("\xE3", "a~")
-                    .replace("\xF5", "o~"))
+                    .replace("\xF5", "o~")
+                    .replace("q\xFC", "qu")
+                    .replace("g\xFC", "gu"))
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
