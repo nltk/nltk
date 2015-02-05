@@ -3437,6 +3437,11 @@ class SpanishStemmer(_StandardStemmer):
                 r1 = r1[:-len(suffix)]
                 r2 = r2[:-len(suffix)]
                 rv = rv[:-len(suffix)]
+
+                word = self.__replace_accented(word[:-len(suffix)])
+                r1 = self.__replace_accented(r1[:-len(suffix)])
+                r2 = self.__replace_accented(r2[:-len(suffix)])
+                rv = self.__replace_accented(rv[:-len(suffix)])
             break
 
         # STEP 1: Standard suffix removal
@@ -3552,11 +3557,16 @@ class SpanishStemmer(_StandardStemmer):
                         word = word[:-1]
                 break
 
-        word = (word.replace("\xE1", "a").replace("\xE9", "e")
-                    .replace("\xED", "i").replace("\xF3", "o")
-                    .replace("\xFA", "u"))
+        word = self.__replace_accented(word)
 
         return word
+
+    def __replace_accented(self, word):
+        return (word.replace("\xE1", "a")
+                .replace("\xE9", "e")
+                .replace("\xED", "i")
+                .replace("\xF3", "o")
+                .replace("\xFA", "u"))
 
 
 class SwedishStemmer(_ScandinavianStemmer):
