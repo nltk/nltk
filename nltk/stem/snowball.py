@@ -3313,7 +3313,6 @@ class RussianStemmer(_LanguageSpecificStemmer):
         return word
 
 
-
 class SpanishStemmer(_StandardStemmer):
 
     """
@@ -3521,7 +3520,7 @@ class SpanishStemmer(_StandardStemmer):
         if not step1_success:
             for suffix in self.__step2a_suffixes:
                 if (rv.endswith(suffix) and
-                    word[-len(suffix)-1:-len(suffix)] == "u"):
+                        word[-len(suffix)-1:-len(suffix)] == "u"):
                     word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
                     break
