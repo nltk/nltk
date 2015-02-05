@@ -3471,9 +3471,9 @@ class SpanishStemmer(_StandardStemmer):
                     rv = suffix_replace(rv, suffix, "ente")
 
                 elif suffix == "mente":
-                    word = word[:-5]
-                    r2 = r2[:-5]
-                    rv = rv[:-5]
+                    word = word[:-len(suffix)]
+                    r2 = r2[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
 
                     if r2.endswith(("ante", "able", "ible")):
                         word = word[:-4]
