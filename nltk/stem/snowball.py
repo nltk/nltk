@@ -3404,38 +3404,37 @@ class SpanishStemmer(_StandardStemmer):
 
         # STEP 0: Attached pronoun
         for suffix in self.__step0_suffixes:
-            if word.endswith(suffix):
-                if rv.endswith(suffix):
-                    if rv[:-len(suffix)].endswith(("i\xE9ndo",
-                                                   "\xE1ndo",
-                                                   "\xE1r", "\xE9r",
-                                                   "\xEDr")):
-                        word = (word[:-len(suffix)].replace("\xE1", "a")
-                                                   .replace("\xE9", "e")
-                                                   .replace("\xED", "i"))
-                        r1 = (r1[:-len(suffix)].replace("\xE1", "a")
+            if word.endswith(suffix) and rv.endswith(suffix):
+                if rv[:-len(suffix)].endswith(("i\xE9ndo",
+                                               "\xE1ndo",
+                                               "\xE1r", "\xE9r",
+                                               "\xEDr")):
+                    word = (word[:-len(suffix)].replace("\xE1", "a")
                                                .replace("\xE9", "e")
                                                .replace("\xED", "i"))
-                        r2 = (r2[:-len(suffix)].replace("\xE1", "a")
-                                               .replace("\xE9", "e")
-                                               .replace("\xED", "i"))
-                        rv = (rv[:-len(suffix)].replace("\xE1", "a")
-                                               .replace("\xE9", "e")
-                                               .replace("\xED", "i"))
+                    r1 = (r1[:-len(suffix)].replace("\xE1", "a")
+                                           .replace("\xE9", "e")
+                                           .replace("\xED", "i"))
+                    r2 = (r2[:-len(suffix)].replace("\xE1", "a")
+                                           .replace("\xE9", "e")
+                                           .replace("\xED", "i"))
+                    rv = (rv[:-len(suffix)].replace("\xE1", "a")
+                                           .replace("\xE9", "e")
+                                           .replace("\xED", "i"))
 
-                    elif rv[:-len(suffix)].endswith(("ando", "iendo",
-                                                     "ar", "er", "ir")):
-                        word = word[:-len(suffix)]
-                        r1 = r1[:-len(suffix)]
-                        r2 = r2[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
+                elif rv[:-len(suffix)].endswith(("ando", "iendo",
+                                                 "ar", "er", "ir")):
+                    word = word[:-len(suffix)]
+                    r1 = r1[:-len(suffix)]
+                    r2 = r2[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
 
-                    elif (rv[:-len(suffix)].endswith("yendo") and
-                          word[:-len(suffix)].endswith("uyendo")):
-                        word = word[:-len(suffix)]
-                        r1 = r1[:-len(suffix)]
-                        r2 = r2[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
+                elif (rv[:-len(suffix)].endswith("yendo") and
+                      word[:-len(suffix)].endswith("uyendo")):
+                    word = word[:-len(suffix)]
+                    r1 = r1[:-len(suffix)]
+                    r2 = r2[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
                 break
 
         # STEP 1: Standard suffix removal
