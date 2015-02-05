@@ -3527,31 +3527,25 @@ class SpanishStemmer(_StandardStemmer):
         # STEP 2b: Other verb suffixes
             for suffix in self.__step2b_suffixes:
                 if rv.endswith(suffix):
+                    word = word[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
                     if suffix in ("en", "es", "\xE9is", "emos"):
-                        word = word[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
-
                         if word.endswith("gu"):
                             word = word[:-1]
 
                         if rv.endswith("gu"):
                             rv = rv[:-1]
-                    else:
-                        word = word[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
                     break
 
         # STEP 3: Residual suffix
         for suffix in self.__step3_suffixes:
             if rv.endswith(suffix):
+                word = word[:-len(suffix)]
                 if suffix in ("e", "\xE9"):
-                    word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
 
                     if word[-2:] == "gu" and rv.endswith("u"):
                         word = word[:-1]
-                else:
-                    word = word[:-len(suffix)]
                 break
 
         word = (word.replace("\xE1", "a").replace("\xE9", "e")
