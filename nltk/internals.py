@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Internal utility functions
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
@@ -158,7 +158,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
     # Check the return code.
     if p.returncode != 0:
         print(_decode_stdoutdata(stderr))
-        raise OSError('Java command failed!')
+        raise OSError('Java command failed : ' + str(cmd))
 
     return (stdout, stderr)
 
@@ -491,7 +491,8 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
     if os.name == 'posix':
         for alternative in file_names:
             try:
-                p = subprocess.Popen(['which', alternative], stdout=subprocess.PIPE)
+                p = subprocess.Popen(['which', alternative],
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout, stderr = p.communicate()
                 path = _decode_stdoutdata(stdout).strip()
                 if path.endswith(alternative) and os.path.exists(path):
@@ -644,12 +645,14 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
     return next(find_jar_iter(name_pattern, path_to_jar, env_vars,
                          searchpath, url, verbose, is_regex))
 
-
 def _decode_stdoutdata(stdoutdata):
     """ Convert data read from stdout/stderr to unicode """
     if not isinstance(stdoutdata, bytes):
         return stdoutdata
-    encoding = getattr(sys.stdout, "encoding", locale.getpreferredencoding())
+    
+    encoding = getattr(sys.__stdout__, "encoding", locale.getpreferredencoding())
+    if encoding is None:
+        return stdoutdata.decode()
     return stdoutdata.decode(encoding)
 
 ##########################################################################

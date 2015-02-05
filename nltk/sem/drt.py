@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
@@ -258,18 +258,15 @@ class DrtExpression(object):
         return self.visit_structured(lambda e: e.eliminate_equality(),
                                      self.__class__)
 
-    def pprint(self):
-        """
-        Draw the DRS
-        """
-        print(self.pretty())
-
-    def pretty(self):
+    def pretty_format(self):
         """
         Draw the DRS
         :return: the pretty print string
         """
         return '\n'.join(self._pretty())
+
+    def pretty_print(self):
+        print(self.pretty_format())
 
     def draw(self):
         DrsDrawer(self).draw()

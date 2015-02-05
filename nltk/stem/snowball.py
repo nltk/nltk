@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
@@ -23,6 +23,7 @@ from __future__ import unicode_literals, print_function
 from nltk import compat
 from nltk.corpus import stopwords
 from nltk.stem import porter
+from nltk.stem.util import suffix_replace
 
 from nltk.stem.api import StemmerI
 
@@ -272,7 +273,7 @@ class _StandardStemmer(_LanguageSpecificStemmer):
                         rv = word[i+1:]
                         break
 
-            elif word[:2] in vowels:
+            elif word[0] in vowels and word[1] in vowels:
                 for i in range(2, len(word)):
                     if word[i] not in vowels:
                         rv = word[i+1:]
@@ -281,8 +282,6 @@ class _StandardStemmer(_LanguageSpecificStemmer):
                 rv = word[3:]
 
         return rv
-
-
 
 class DanishStemmer(_ScandinavianStemmer):
 
@@ -477,10 +476,10 @@ class DutchStemmer(_StandardStemmer):
         for suffix in self.__step1_suffixes:
             if r1.endswith(suffix):
                 if suffix == "heden":
-                    word = "".join((word[:-5], "heid"))
-                    r1 = "".join((r1[:-5], "heid"))
+                    word = suffix_replace(word, suffix, "heid")
+                    r1 = suffix_replace(r1, suffix, "heid")
                     if r2.endswith("heden"):
-                        r2 = "".join((r2[:-5], "heid"))
+                        r2 = suffix_replace(r2, suffix, "heid")
 
                 elif (suffix in ("ene", "en") and
                       not word.endswith("heden") and
@@ -769,15 +768,15 @@ class EnglishStemmer(_StandardStemmer):
                 if suffix in ("eed", "eedly"):
 
                     if r1.endswith(suffix):
-                        word = "".join((word[:-len(suffix)], "ee"))
+                        word = suffix_replace(word, suffix, "ee")
 
                         if len(r1) >= len(suffix):
-                            r1 = "".join((r1[:-len(suffix)], "ee"))
+                            r1 = suffix_replace(r1, suffix, "ee")
                         else:
                             r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = "".join((r2[:-len(suffix)], "ee"))
+                            r2 = suffix_replace(r2, suffix, "ee")
                         else:
                             r2 = ""
                 else:
@@ -863,41 +862,41 @@ class EnglishStemmer(_StandardStemmer):
                         r2 = r2[:-2]
 
                     elif suffix in ("izer", "ization"):
-                        word = "".join((word[:-len(suffix)], "ize"))
+                        word = suffix_replace(word, suffix, "ize")
 
                         if len(r1) >= len(suffix):
-                            r1 = "".join((r1[:-len(suffix)], "ize"))
+                            r1 = suffix_replace(r1, suffix, "ize")
                         else:
                             r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = "".join((r2[:-len(suffix)], "ize"))
+                            r2 = suffix_replace(r2, suffix, "ize")
                         else:
                             r2 = ""
 
                     elif suffix in ("ational", "ation", "ator"):
-                        word = "".join((word[:-len(suffix)], "ate"))
+                        word = suffix_replace(word, suffix, "ate")
 
                         if len(r1) >= len(suffix):
-                            r1 = "".join((r1[:-len(suffix)], "ate"))
+                            r1 = suffix_replace(r1, suffix, "ate")
                         else:
                             r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = "".join((r2[:-len(suffix)], "ate"))
+                            r2 = suffix_replace(r2, suffix, "ate")
                         else:
                             r2 = "e"
 
                     elif suffix in ("alism", "aliti", "alli"):
-                        word = "".join((word[:-len(suffix)], "al"))
+                        word = suffix_replace(word, suffix, "al")
 
                         if len(r1) >= len(suffix):
-                            r1 = "".join((r1[:-len(suffix)], "al"))
+                            r1 = suffix_replace(r1, suffix, "al")
                         else:
                             r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = "".join((r2[:-len(suffix)], "al"))
+                            r2 = suffix_replace(r2, suffix, "al")
                         else:
                             r2 = ""
 
@@ -907,41 +906,41 @@ class EnglishStemmer(_StandardStemmer):
                         r2 = r2[:-4]
 
                     elif suffix in ("ousli", "ousness"):
-                        word = "".join((word[:-len(suffix)], "ous"))
+                        word = suffix_replace(word, suffix, "ous")
 
                         if len(r1) >= len(suffix):
-                            r1 = "".join((r1[:-len(suffix)], "ous"))
+                            r1 = suffix_replace(r1, suffix, "ous")
                         else:
                             r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = "".join((r2[:-len(suffix)], "ous"))
+                            r2 = suffix_replace(r2, suffix, "ous")
                         else:
                             r2 = ""
 
                     elif suffix in ("iveness", "iviti"):
-                        word = "".join((word[:-len(suffix)], "ive"))
+                        word = suffix_replace(word, suffix, "ive")
 
                         if len(r1) >= len(suffix):
-                            r1 = "".join((r1[:-len(suffix)], "ive"))
+                            r1 = suffix_replace(r1, suffix, "ive")
                         else:
                             r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = "".join((r2[:-len(suffix)], "ive"))
+                            r2 = suffix_replace(r2, suffix, "ive")
                         else:
                             r2 = "e"
 
                     elif suffix in ("biliti", "bli"):
-                        word = "".join((word[:-len(suffix)], "ble"))
+                        word = suffix_replace(word, suffix, "ble")
 
                         if len(r1) >= len(suffix):
-                            r1 = "".join((r1[:-len(suffix)], "ble"))
+                            r1 = suffix_replace(r1, suffix, "ble")
                         else:
                             r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = "".join((r2[:-len(suffix)], "ble"))
+                            r2 = suffix_replace(r2, suffix, "ble")
                         else:
                             r2 = ""
 
@@ -971,15 +970,15 @@ class EnglishStemmer(_StandardStemmer):
                         r2 = r2[:-2]
 
                     elif suffix == "ational":
-                        word = "".join((word[:-len(suffix)], "ate"))
+                        word = suffix_replace(word, suffix, "ate")
 
                         if len(r1) >= len(suffix):
-                            r1 = "".join((r1[:-len(suffix)], "ate"))
+                            r1 = suffix_replace(r1, suffix, "ate")
                         else:
                             r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = "".join((r2[:-len(suffix)], "ate"))
+                            r2 = suffix_replace(r2, suffix, "ate")
                         else:
                             r2 = ""
 
@@ -989,15 +988,15 @@ class EnglishStemmer(_StandardStemmer):
                         r2 = r2[:-3]
 
                     elif suffix in ("icate", "iciti", "ical"):
-                        word = "".join((word[:-len(suffix)], "ic"))
+                        word = suffix_replace(word, suffix, "ic")
 
                         if len(r1) >= len(suffix):
-                            r1 = "".join((r1[:-len(suffix)], "ic"))
+                            r1 = suffix_replace(r1, suffix, "ic")
                         else:
                             r1 = ""
 
                         if len(r2) >= len(suffix):
-                            r2 = "".join((r2[:-len(suffix)], "ic"))
+                            r2 = suffix_replace(r2, suffix, "ic")
                         else:
                             r2 = ""
 
@@ -1146,13 +1145,13 @@ class FinnishStemmer(_StandardStemmer):
                     r1 = r1[:-2]
                     r2 = r2[:-2]
                     if word.endswith("kse"):
-                        word = "".join((word[:-3], "ksi"))
+                        word = suffix_replace(word, "kse", "ksi")
 
                     if r1.endswith("kse"):
-                        r1 = "".join((r1[:-3], "ksi"))
+                        r1 = suffix_replace(r1, "kse", "ksi")
 
                     if r2.endswith("kse"):
-                        r2 = "".join((r2[:-3], "ksi"))
+                        r2 = suffix_replace(r2, "kse", "ksi")
 
                 elif suffix == "an":
                     if (word[-4:-2] in ("ta", "na") or
@@ -1421,7 +1420,7 @@ class FrenchStemmer(_StandardStemmer):
                         step1_success = True
 
                     elif suffix in r1:
-                        word = "".join((word[:-len(suffix)], "eux"))
+                        word = suffix_replace(word, suffix, "eux")
                         step1_success = True
 
                 elif suffix in ("ement", "ements") and suffix in rv:
@@ -1449,12 +1448,12 @@ class FrenchStemmer(_StandardStemmer):
                             word = "".join((word[:-3], "i"))
 
                 elif suffix == "amment" and suffix in rv:
-                    word = "".join((word[:-6], "ant"))
-                    rv = "".join((rv[:-6], "ant"))
+                    word = suffix_replace(word, "amment", "ant")
+                    rv = suffix_replace(rv, "amment", "ant")
                     rv_ending_found = True
 
                 elif suffix == "emment" and suffix in rv:
-                    word = "".join((word[:-6], "ent"))
+                    word = suffix_replace(word, "emment", "ent")
                     rv_ending_found = True
 
                 elif (suffix in ("ment", "ments") and suffix in rv and
@@ -1491,16 +1490,16 @@ class FrenchStemmer(_StandardStemmer):
                             word = "".join((word[:-2], "iqU"))
 
                 elif suffix in ("logie", "logies") and suffix in r2:
-                    word = "".join((word[:-len(suffix)], "log"))
+                    word = suffix_replace(word, suffix, "log")
                     step1_success = True
 
                 elif (suffix in ("usion", "ution", "usions", "utions") and
                       suffix in r2):
-                    word = "".join((word[:-len(suffix)], "u"))
+                    word = suffix_replace(word, suffix, "u")
                     step1_success = True
 
                 elif suffix in ("ence", "ences") and suffix in r2:
-                    word = "".join((word[:-len(suffix)], "ent"))
+                    word = suffix_replace(word, suffix, "ent")
                     step1_success = True
 
                 elif suffix in ("it\xE9", "it\xE9s") and suffix in r2:
@@ -1600,7 +1599,7 @@ class FrenchStemmer(_StandardStemmer):
 
                         elif suffix in ("ier", "i\xE8re", "Ier",
                                         "I\xE8re"):
-                            word = "".join((word[:-len(suffix)], "i"))
+                            word = suffix_replace(word, suffix, "i")
 
                         elif suffix == "e":
                             word = word[:-1]
@@ -1931,34 +1930,34 @@ class HungarianStemmer(_LanguageSpecificStemmer):
 
                     if r1.endswith("\xE1"):
                         word = "".join((word[:-1], "a"))
-                        r1 = "".join((r1[:-1], "a"))
+                        r1 = suffix_replace(r1, "\xE1", "a")
 
                     elif r1.endswith("\xE9"):
                         word = "".join((word[:-1], "e"))
-                        r1 = "".join((r1[:-1], "e"))
+                        r1 = suffix_replace(r1, "\xE9", "e")
                 break
 
         # STEP 3: Remove special cases
         for suffix in self.__step3_suffixes:
             if r1.endswith(suffix):
                 if suffix == "\xE9n":
-                    word = "".join((word[:-2], "e"))
-                    r1 = "".join((r1[:-2], "e"))
+                    word = suffix_replace(word, suffix, "e")
+                    r1 = suffix_replace(r1, suffix, "e")
                 else:
-                    word = "".join((word[:-len(suffix)], "a"))
-                    r1 = "".join((r1[:-len(suffix)], "a"))
+                    word = suffix_replace(word, suffix, "a")
+                    r1 = suffix_replace(r1, suffix, "a")
                 break
 
         # STEP 4: Remove other cases
         for suffix in self.__step4_suffixes:
             if r1.endswith(suffix):
                 if suffix == "\xE1stul":
-                    word = "".join((word[:-5], "a"))
-                    r1 = "".join((r1[:-5], "a"))
+                    word = suffix_replace(word, suffix, "a")
+                    r1 = suffix_replace(r1, suffix, "a")
 
                 elif suffix == "\xE9st\xFCl":
-                    word = "".join((word[:-5], "e"))
-                    r1 = "".join((r1[:-5], "e"))
+                    word = suffix_replace(word, suffix, "e")
+                    r1 = suffix_replace(r1, suffix, "e")
                 else:
                     word = word[:-len(suffix)]
                     r1 = r1[:-len(suffix)]
@@ -1979,13 +1978,13 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         for suffix in self.__step6_suffixes:
             if r1.endswith(suffix):
                 if suffix in ("\xE1k\xE9", "\xE1\xE9i"):
-                    word = "".join((word[:-3], "a"))
-                    r1 = "".join((r1[:-3], "a"))
+                    word = suffix_replace(word, suffix, "a")
+                    r1 = suffix_replace(r1, suffix, "a")
 
                 elif suffix in ("\xE9k\xE9", "\xE9\xE9i",
                                 "\xE9\xE9"):
-                    word = "".join((word[:-len(suffix)], "e"))
-                    r1 = "".join((r1[:-len(suffix)], "e"))
+                    word = suffix_replace(word, suffix, "e")
+                    r1 = suffix_replace(r1, suffix, "e")
                 else:
                     word = word[:-len(suffix)]
                     r1 = r1[:-len(suffix)]
@@ -1997,13 +1996,13 @@ class HungarianStemmer(_LanguageSpecificStemmer):
                 if r1.endswith(suffix):
                     if suffix in ("\xE1nk", "\xE1juk", "\xE1m",
                                   "\xE1d", "\xE1"):
-                        word = "".join((word[:-len(suffix)], "a"))
-                        r1 = "".join((r1[:-len(suffix)], "a"))
+                        word = suffix_replace(word, suffix, "a")
+                        r1 = suffix_replace(r1, suffix, "a")
 
                     elif suffix in ("\xE9nk", "\xE9j\xFCk",
                                     "\xE9m", "\xE9d", "\xE9"):
-                        word = "".join((word[:-len(suffix)], "e"))
-                        r1 = "".join((r1[:-len(suffix)], "e"))
+                        word = suffix_replace(word, suffix, "e")
+                        r1 = suffix_replace(r1, suffix, "e")
                     else:
                         word = word[:-len(suffix)]
                         r1 = r1[:-len(suffix)]
@@ -2015,13 +2014,13 @@ class HungarianStemmer(_LanguageSpecificStemmer):
                 if r1.endswith(suffix):
                     if suffix in ("\xE1im", "\xE1id", "\xE1i",
                                   "\xE1ink", "\xE1itok", "\xE1ik"):
-                        word = "".join((word[:-len(suffix)], "a"))
-                        r1 = "".join((r1[:-len(suffix)], "a"))
+                        word = suffix_replace(word, suffix, "a")
+                        r1 = suffix_replace(r1, suffix, "a")
 
                     elif suffix in ("\xE9im", "\xE9id", "\xE9i",
                                     "\xE9ink", "\xE9itek", "\xE9ik"):
-                        word = "".join((word[:-len(suffix)], "e"))
-                        r1 = "".join((r1[:-len(suffix)], "e"))
+                        word = suffix_replace(word, suffix, "e")
+                        r1 = suffix_replace(r1, suffix, "e")
                     else:
                         word = word[:-len(suffix)]
                         r1 = r1[:-len(suffix)]
@@ -2032,9 +2031,9 @@ class HungarianStemmer(_LanguageSpecificStemmer):
             if word.endswith(suffix):
                 if r1.endswith(suffix):
                     if suffix == "\xE1k":
-                        word = "".join((word[:-2], "a"))
+                        word = suffix_replace(word, suffix, "a")
                     elif suffix == "\xE9k":
-                        word = "".join((word[:-2], "e"))
+                        word = suffix_replace(word, suffix, "e")
                     else:
                         word = word[:-len(suffix)]
                 break
@@ -2201,10 +2200,10 @@ class ItalianStemmer(_StandardStemmer):
 
                 elif (rv[-len(suffix)-2:-len(suffix)] in
                       ("ar", "er", "ir")):
-                    word = "".join((word[:-len(suffix)], "e"))
-                    r1 = "".join((r1[:-len(suffix)], "e"))
-                    r2 = "".join((r2[:-len(suffix)], "e"))
-                    rv = "".join((rv[:-len(suffix)], "e"))
+                    word = suffix_replace(word, suffix, "e")
+                    r1 = suffix_replace(r1, suffix, "e")
+                    r2 = suffix_replace(r2, suffix, "e")
+                    rv = suffix_replace(rv, suffix, "e")
                 break
 
         # STEP 1: Standard suffix removal
@@ -2261,8 +2260,8 @@ class ItalianStemmer(_StandardStemmer):
                         rv = rv[:-5]
 
                     elif suffix in ("enza", "enze"):
-                        word = "".join((word[:-2], "te"))
-                        rv = "".join((rv[:-2], "te"))
+                        word = suffix_replace(word, suffix, "te")
+                        rv = suffix_replace(rv, suffix, "te")
 
                     elif suffix == "it\xE0":
                         word = word[:-3]
@@ -2379,8 +2378,8 @@ class NorwegianStemmer(_ScandinavianStemmer):
         for suffix in self.__step1_suffixes:
             if r1.endswith(suffix):
                 if suffix in ("erte", "ert"):
-                    word = "".join((word[:-len(suffix)], "er"))
-                    r1 = "".join((r1[:-len(suffix)], "er"))
+                    word = suffix_replace(word, suffix, "er")
+                    r1 = suffix_replace(r1, suffix, "er")
 
                 elif suffix == "s":
                     if (word[-2] in self.__s_ending or
@@ -2430,13 +2429,13 @@ class PortugueseStemmer(_StandardStemmer):
     """
 
     __vowels = "aeiou\xE1\xE9\xED\xF3\xFA\xE2\xEA\xF4"
-    __step1_suffixes = ('amentos', 'imentos', 'uções', 'amento',
+    __step1_suffixes = ('amentos', 'imentos', 'uço~es', 'amento',
                         'imento', 'adoras', 'adores', 'a\xE7o~es',
                         'logias', '\xEAncias', 'amente',
-                        'idades', 'ismos', 'istas', 'adora',
+                        'idades', 'an\xE7as', 'ismos', 'istas', 'adora',
                         'a\xE7a~o', 'antes', '\xE2ncia',
-                        'logia', 'ução', '\xEAncia',
-                        'mente', 'idade', 'ezas', 'icos', 'icas',
+                        'logia', 'uça~o', '\xEAncia',
+                        'mente', 'idade', 'an\xE7a', 'ezas', 'icos', 'icas',
                         'ismo', '\xE1vel', '\xEDvel', 'ista',
                         'osos', 'osas', 'ador', 'ante', 'ivas',
                         'ivos', 'iras', 'eza', 'ico', 'ica',
@@ -2490,7 +2489,9 @@ class PortugueseStemmer(_StandardStemmer):
         step2_success = False
 
         word = (word.replace("\xE3", "a~")
-                    .replace("\xF5", "o~"))
+                    .replace("\xF5", "o~")
+                    .replace("q\xFC", "qu")
+                    .replace("g\xFC", "gu"))
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
@@ -2522,30 +2523,30 @@ class PortugueseStemmer(_StandardStemmer):
                       word[-len(suffix)-1:-len(suffix)] == "e"):
                     step1_success = True
 
-                    word = "".join((word[:-len(suffix)], "ir"))
-                    rv = "".join((rv[:-len(suffix)], "ir"))
+                    word = suffix_replace(word, suffix, "ir")
+                    rv = suffix_replace(rv, suffix, "ir")
 
                 elif r2.endswith(suffix):
                     step1_success = True
 
                     if suffix in ("logia", "logias"):
-                        word = word[:-2]
-                        rv = rv[:-2]
+                        word = suffix_replace(word, suffix, "log")
+                        rv = suffix_replace(rv, suffix, "log")
 
                     elif suffix in ("ução", "uções"):
-                        word = "".join((word[:-len(suffix)], "u"))
-                        rv = "".join((rv[:-len(suffix)], "u"))
+                        word = suffix_replace(word, suffix, "u")
+                        rv = suffix_replace(rv, suffix, "u")
 
                     elif suffix in ("\xEAncia", "\xEAncias"):
-                        word = "".join((word[:-len(suffix)], "ente"))
-                        rv = "".join((rv[:-len(suffix)], "ente"))
+                        word = suffix_replace(word, suffix, "ente")
+                        rv = suffix_replace(rv, suffix, "ente")
 
                     elif suffix == "mente":
                         word = word[:-5]
                         r2 = r2[:-5]
                         rv = rv[:-5]
 
-                        if r2.endswith(("ante", "avel", "\xEDvel")):
+                        if r2.endswith(("ante", "avel", "ivel")):
                             word = word[:-4]
                             rv = rv[:-4]
 
@@ -2609,7 +2610,7 @@ class PortugueseStemmer(_StandardStemmer):
                 word = word[:-1]
 
         elif word.endswith("\xE7"):
-            word = "".join((word[:-1], "c"))
+            word = suffix_replace(word, "\xE7", "c")
 
         word = word.replace("a~", "\xE3").replace("o~", "\xF5")
 
@@ -2745,19 +2746,19 @@ class RomanianStemmer(_StandardStemmer):
                         word = word[:-2]
 
                     elif suffix in ("ea", "ele", "elor"):
-                        word = "".join((word[:-len(suffix)], "e"))
+                        word = suffix_replace(word, suffix, "e")
 
                         if suffix in rv:
-                            rv = "".join((rv[:-len(suffix)], "e"))
+                            rv = suffix_replace(rv, suffix, "e")
                         else:
                             rv = ""
 
                     elif suffix in ("ii", "iua", "iei",
                                     "iile", "iilor", "ilor"):
-                        word = "".join((word[:-len(suffix)], "i"))
+                        word = suffix_replace(word, suffix, "i")
 
                         if suffix in rv:
-                            rv = "".join((rv[:-len(suffix)], "i"))
+                            rv = suffix_replace(rv, suffix, "i")
                         else:
                             rv = ""
 
@@ -2779,7 +2780,7 @@ class RomanianStemmer(_StandardStemmer):
                         if suffix in ("abilitate", "abilitati",
                                       "abilit\u0103i",
                                       "abilit\u0103\u0163i"):
-                            word = "".join((word[:-len(suffix)], "abil"))
+                            word = suffix_replace(word, suffix, "abil")
 
                         elif suffix == "ibilitate":
                             word = word[:-5]
@@ -2787,7 +2788,7 @@ class RomanianStemmer(_StandardStemmer):
                         elif suffix in ("ivitate", "ivitati",
                                         "ivit\u0103i",
                                         "ivit\u0103\u0163i"):
-                            word = "".join((word[:-len(suffix)], "iv"))
+                            word = suffix_replace(word, suffix, "iv")
 
                         elif suffix in ("icitate", "icitati", "icit\u0103i",
                                         "icit\u0103\u0163i", "icator",
@@ -2795,25 +2796,25 @@ class RomanianStemmer(_StandardStemmer):
                                         "icive", "icivi", "iciv\u0103",
                                         "ical", "icala", "icale", "icali",
                                         "ical\u0103"):
-                            word = "".join((word[:-len(suffix)], "ic"))
+                            word = suffix_replace(word, suffix, "ic")
 
                         elif suffix in ("ativ", "ativa", "ative", "ativi",
                                         "ativ\u0103", "a\u0163iune",
                                         "atoare", "ator", "atori",
                                         "\u0103toare",
                                         "\u0103tor", "\u0103tori"):
-                            word = "".join((word[:-len(suffix)], "at"))
+                            word = suffix_replace(word, suffix, "at")
 
                             if suffix in r2:
-                                r2 = "".join((r2[:-len(suffix)], "at"))
+                                r2 = suffix_replace(r2, suffix, "at")
 
                         elif suffix in ("itiv", "itiva", "itive", "itivi",
                                         "itiv\u0103", "i\u0163iune",
                                         "itoare", "itor", "itori"):
-                            word = "".join((word[:-len(suffix)], "it"))
+                            word = suffix_replace(word, suffix, "it")
 
                             if suffix in r2:
-                                r2 = "".join((r2[:-len(suffix)], "it"))
+                                r2 = suffix_replace(r2, suffix, "it")
                     else:
                         step1_success = False
                     break
@@ -2833,7 +2834,7 @@ class RomanianStemmer(_StandardStemmer):
 
                     elif suffix in ("ism", "isme", "ist", "ista", "iste",
                                     "isti", "ist\u0103", "i\u015Fti"):
-                        word = "".join((word[:-len(suffix)], "ist"))
+                        word = suffix_replace(word, suffix, "ist")
 
                     else:
                         word = word[:-len(suffix)]
@@ -3476,16 +3477,16 @@ class SpanishStemmer(_StandardStemmer):
                             rv = rv[:-2]
 
                     elif suffix in ("log\xEDa", "log\xEDas"):
-                        word = word.replace(suffix, "log")
-                        rv = rv.replace(suffix, "log")
+                        word = suffix_replace(word, suffix, "log")
+                        rv = suffix_replace(rv, suffix, "log")
 
                     elif suffix in ("uci\xF3n", "uciones"):
-                        word = word.replace(suffix, "u")
-                        rv = rv.replace(suffix, "u")
+                        word = suffix_replace(word, suffix, "u")
+                        rv = suffix_replace(rv, suffix, "u")
 
                     elif suffix in ("encia", "encias"):
-                        word = word.replace(suffix, "ente")
-                        rv = rv.replace(suffix, "ente")
+                        word = suffix_replace(word, suffix, "ente")
+                        rv = suffix_replace(rv, suffix, "ente")
 
                     elif suffix == "mente":
                         word = word[:-5]

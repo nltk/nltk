@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2014 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =======
@@ -128,7 +128,7 @@ Confusion Matrix
     <BLANKLINE>
 
     >>> cm = ConfusionMatrix(reference, test)
-    >>> print(cm.pp(sort_by_count=True))
+    >>> print(cm.pretty_format(sort_by_count=True))
       |   e a i o s t . T h n r 1 2 3 c d f g _ z |
     --+-------------------------------------------+
       |<8>. . . . . . . . . . . . . . . . . . 1 . |
@@ -156,7 +156,7 @@ Confusion Matrix
     (row = reference; col = test)
     <BLANKLINE>
 
-    >>> print(cm.pp(sort_by_count=True, truncate=10))
+    >>> print(cm.pretty_format(sort_by_count=True, truncate=10))
       |   e a i o s t . T h |
     --+---------------------+
       |<8>. . . . . . . . . |
@@ -173,7 +173,7 @@ Confusion Matrix
     (row = reference; col = test)
     <BLANKLINE>
 
-    >>> print(cm.pp(sort_by_count=True, truncate=10, values_in_chart=False))
+    >>> print(cm.pretty_format(sort_by_count=True, truncate=10, values_in_chart=False))
        |                   1 |
        | 1 2 3 4 5 6 7 8 9 0 |
     ---+---------------------+

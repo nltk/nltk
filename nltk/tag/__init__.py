@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Taggers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -73,13 +73,20 @@ from nltk.tag.tnt           import TnT
 from nltk.tag.hunpos        import HunposTagger
 from nltk.tag.stanford      import StanfordTagger
 from nltk.tag.hmm           import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
+from nltk.tag.senna         import SennaTagger, SennaChunkTagger, SennaNERTagger
 from nltk.tag.mapping       import tagset_mapping, map_tag
 
 from nltk.data import load
+from nltk.compat import PY3
 
 
 # Standard treebank POS tagger
-_POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
+
+if PY3:
+    _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/PY3/english.pickle'
+else:
+    _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
+
 def pos_tag(tokens):
     """
     Use NLTK's currently recommended part of speech tagger to

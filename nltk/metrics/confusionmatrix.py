@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Confusion Matrices
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -93,9 +93,9 @@ class ConfusionMatrix(object):
                                                      self._total)
 
     def __str__(self):
-        return self.pp()
+        return self.pretty_format()
 
-    def pp(self, show_percents=False, values_in_chart=True,
+    def pretty_format(self, show_percents=False, values_in_chart=True,
            truncate=None, sort_by_count=False):
         """
         :return: A multi-line string representation of this confusion matrix.
@@ -200,7 +200,7 @@ def demo():
     print('Test    =', test)
     print('Confusion matrix:')
     print(ConfusionMatrix(reference, test))
-    print(ConfusionMatrix(reference, test).pp(sort_by_count=True))
+    print(ConfusionMatrix(reference, test).pretty_format(sort_by_count=True))
 
 if __name__ == '__main__':
     demo()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Chart Parser for Feature-Based Grammars
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Rob Speer <rspeer@mit.edu>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <http://nltk.org/>
@@ -333,10 +333,12 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
         # If we've already applied this rule to an edge with the same
         # next & end, and the chart & grammar have not changed, then
         # just return (no new edges to add).
-        done = self._done.get((nextsym, index), (None,None))
-        if done[0] is chart and done[1] is grammar: return
+        nextsym_with_bindings = edge.next_with_bindings()
+        done = self._done.get((nextsym_with_bindings, index), (None, None))
+        if done[0] is chart and done[1] is grammar:
+            return
 
-        for prod in grammar.productions(lhs=edge.nextsym()):
+        for prod in grammar.productions(lhs=nextsym):
             # If the left corner in the predicted production is
             # leaf, it must match with the input.
             if prod.rhs():
@@ -347,13 +349,13 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
 
             # We rename vars here, because we don't want variables
             # from the two different productions to match.
-            if unify(prod.lhs(), edge.next_with_bindings(), rename_vars=True):
+            if unify(prod.lhs(), nextsym_with_bindings, rename_vars=True):
                 new_edge = FeatureTreeEdge.from_production(prod, edge.end())
                 if chart.insert(new_edge, ()):
                     yield new_edge
 
         # Record the fact that we've applied this rule.
-        self._done[nextsym, index] = (chart, grammar)
+        self._done[nextsym_with_bindings, index] = (chart, grammar)
 
 
 #////////////////////////////////////////////////////////////
