@@ -3539,6 +3539,16 @@ class SpanishStemmer(_StandardStemmer):
         return word
 
     def __replace_accented(self, word):
+        """
+        Replaces all accented letters on a word with their non-accented
+        counterparts.
+
+        :param word: A spanish word, with or without accents
+        :type word: str or unicode
+        :return: a word with the accented letters (á, é, í, ó, ú) replaced with
+                 their non-accented counterparts (a, e, i, o, u)
+        :rtype: str or unicode
+        """
         return (word.replace("\xE1", "a")
                 .replace("\xE9", "e")
                 .replace("\xED", "i")
