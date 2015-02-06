@@ -118,8 +118,7 @@ class NgramModel(ModelI):
                 token = ngram[-1]
                 cfd[(context, token)] += 1
 
-        if estimator:
-            self._probdist = estimator(cfd, *estimator_args, **estimator_kwargs)
+        self._probdist = estimator(cfd, *estimator_args, **estimator_kwargs)
 
         # recursively construct the lower-order models
         if not self.is_unigram_model:
