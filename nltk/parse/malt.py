@@ -87,56 +87,19 @@ class MaltParser(ParserI):
             url='http://www.maltparser.org/',
             verbose=verbose)
 
-    def parse_all(self, sentence, verbose=False):
-        """
-        Use MaltParser to parse a sentence. Takes a sentence as a list of
-        words; it will be automatically tagged with this MaltParser instance's
-        tagger.
-
-        :param sentence: Input sentence to parse
-        :type sentence: list(str)
-        :return: list(DependencyGraph)
-        """
-        return self.parse_sents([sentence], verbose)
-
     def parse_sents(self, sentences, verbose=False):
         """
-        Use MaltParser to parse multiple sentence. Takes multiple sentences as a
+        Use MaltParser to parse multiple sentences. Takes multiple sentences as a
         list where each sentence is a list of words.
         Each sentence will be automatically tagged with this MaltParser instance's
         tagger.
 
         :param sentences: Input sentences to parse
         :type sentence: list(list(str))
-        :return: list(DependencyGraph)
+        :return: iter(DependencyGraph)
         """
         tagged_sentences = [self.tagger.tag(sentence) for sentence in sentences]
-        return self.tagged_parse_sents(tagged_sentences, verbose)
-
-    def parse(self, sentence, verbose=False):
-        """
-        Use MaltParser to parse a sentence. Takes a sentence as a list of words.
-        The sentence will be automatically tagged with this MaltParser instance's
-        tagger.
-
-        :param sentence: Input sentence to parse
-        :type sentence: list(str)
-        :return: ``DependencyGraph`` the dependency graph representation of the sentence
-        """
-        return self.parse_sents([sentence], verbose)[0]
-
-    def raw_parse(self, sentence, verbose=False):
-        """
-        Use MaltParser to parse a sentence. Takes a sentence as a string;
-        before parsing, it will be automatically tokenized and tagged with this
-        MaltParser instance's tagger.
-
-        :param sentence: Input sentence to parse
-        :type sentence: str
-        :return: list(DependencyGraph)
-        """
-        words = word_tokenize(sentence)
-        return self.parse(words, verbose)
+        return iter(self.tagged_parse_sents(tagged_sentences, verbose))
 
     def tagged_parse(self, sentence, verbose=False):
         """
@@ -158,7 +121,7 @@ class MaltParser(ParserI):
 
         :param sentences: Input sentences to parse
         :type sentence: list(list(tuple(str, str)))
-        :return: list(``DependencyGraph``) the dependency graph representation
+        :return: iter(iter(``DependencyGraph``)) the dependency graph representation
                  of each sentence
         """
 
@@ -193,7 +156,7 @@ class MaltParser(ParserI):
                 raise Exception("MaltParser parsing (%s) failed with exit "
                                 "code %d" % (' '.join(cmd), ret))
 
-            return DependencyGraph.load(output_file.name)
+            return iter(DependencyGraph.load(output_file.name))
         finally:
             input_file.close()
             os.remove(input_file.name)
@@ -276,8 +239,8 @@ def demo():
     maltParser = MaltParser()
     maltParser.train([dg1,dg2], verbose=verbose)
 
-    print(maltParser.raw_parse('John sees Mary', verbose=verbose).tree().pprint())
-    print(maltParser.raw_parse('a man runs', verbose=verbose).tree().pprint())
+    maltParser.parse_one(['John','sees','Mary'], verbose=verbose).tree().pprint()
+    maltParser.parse_one(['a','man','runs'], verbose=verbose).tree().pprint()
 
 if __name__ == '__main__':
     demo()

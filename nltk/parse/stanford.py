@@ -109,18 +109,6 @@ class StanfordParser(ParserI):
                 cur_lines.append(line)
         return res
 
-    def parse_all(self, sentence, verbose=False):
-        """
-        Use StanfordParser to parse a sentence. Takes a sentence as a list of
-        words; it will be automatically tagged with this StanfordParser instance's
-        tagger.
-
-        :param sentence: Input sentence to parse
-        :type sentence: list(str)
-        :rtype: Tree
-        """
-        return self.parse_sents([sentence], verbose)
-
     def parse_sents(self, sentences, verbose=False):
         """
         Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
