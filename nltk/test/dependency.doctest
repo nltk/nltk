@@ -179,6 +179,5 @@ Non-Projective Dependency Parsing
     7 play: [5, 6, 8]
     8 golf: []
 
-    >>> for g in dp.parse(['the', 'man', 'taught', 'his', 'dog', 'to', 'play', 'golf']):
-    ...     print(g.tree())
+    >>> print(g.tree())
     (taught (man the) (play (dog his) to golf))
