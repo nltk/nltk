@@ -228,7 +228,7 @@ class DependencyGraph(object):
                 except KeyError:
                     raise ValueError(
                         'Number of tab-delimited fields ({0}) not supported by '
-                        'CoNLL(10) or Malt-Tab(4) format'.format(len(cells))
+                        'CoNLL(10) or Malt-Tab(4) format'.format(cell_number)
                     )
 
             word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
