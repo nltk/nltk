@@ -1,6 +1,9 @@
 NLTK News
 =========
 
+NLTK 3.0.1 released : January 2015
+   Minor packaging update.
+
 NLTK 3.0.0 released : September 2014
    Minor bugfixes. For full details see:
    https://github.com/nltk/nltk/blob/develop/ChangeLog
