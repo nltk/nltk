@@ -17,7 +17,7 @@ import numpy as np
 from sklearn.datasets import load_svmlight_file
 from sklearn import svm
 from nltk.parse import DependencyGraph
-from evaluate import DependencyEvaluator
+from nltk.parse.evaluate import DependencyEvaluator
 
 
 class Configuration(object):
