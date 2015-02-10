@@ -34,8 +34,8 @@ class Streamer(TwythonStreamer):
 
     The streaming API requires OAuth 1.0 authentication.
     """
-    def __init__(self, app_key, app_secret, oauth_token,
-                 oauth_token_secret, handler=None):
+    def __init__(self, handler, app_key, app_secret, oauth_token,
+                 oauth_token_secret):
         self.handler = handler
         self.do_continue = True
         super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
@@ -344,14 +344,18 @@ def temp():
     for t in reader.strings():
         print(t)
 
-DEMOS = []
+
+
+
+DEMOS = [0]
 
 if __name__ == "__main__":
     #import doctest
     #doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
     if 0 in DEMOS:
-        tracktoscreen0_demo()
+        sampletoscreen_demo()
+        #tracktoscreen0_demo()
     if 1 in DEMOS:
         streamtofile_demo()
     if 2 in DEMOS:
