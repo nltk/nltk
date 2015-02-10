@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # KNB Corpus reader
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -8,17 +8,21 @@
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
 from __future__ import print_function
 
-import sys
+import re
 
-from nltk import compat
-from nltk.tree import bracket_parse, Tree
+from nltk.compat import string_types
 from nltk.parse import DependencyGraph
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import (
+    FileSystemPathPointer,
+    find_corpus_fileids,
+    read_blankline_block,
+)
+from nltk.corpus.reader.api import SyntaxCorpusReader, CorpusReader
 
 # default function to convert morphlist to str for tree representation
 _morphs2str_default = lambda morphs: '/'.join(m[0] for m in morphs if m[0] != 'EOS')
+
 
 class KNBCorpusReader(SyntaxCorpusReader):
     """
@@ -35,6 +39,21 @@ class KNBCorpusReader(SyntaxCorpusReader):
     The structure of tagged words:
       tagged_word = (word(str), tags(tuple))
       tags = (surface, reading, lemma, pos1, posid1, pos2, posid2, pos3, posid3, others ...)
+
+    Usage example
+    -------------
+
+    >>> from nltk.corpus.util import LazyCorpusLoader
+    >>> knbc = LazyCorpusLoader(
+    ...     'knbc/corpus1',
+    ...     KNBCorpusReader,
+    ...     r'.*/KN.*',
+    ...     encoding='euc-jp',
+    ... )
+
+    >>> len(knbc.sents()[0])
+    9
+
     """
 
     def __init__(self, root, fileids, encoding='utf8', morphs2str=_morphs2str_default):
@@ -68,7 +87,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
             if not re.match(r"EOS|\*|\#|\+", line):
                 cells = line.strip().split(" ")
                 # convert cells to morph tuples
-                res.append( (cells[0], ' '.join(cells[1:])) )
+                res.append((cells[0], ' '.join(cells[1:])))
 
         return res
 
@@ -76,7 +95,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
         dg = DependencyGraph()
         i = 0
         for line in t.splitlines():
-            if line.startswith("*") or line.startswith("+"):
+            if line[0] in '*+':
                 # start of bunsetsu or tag
 
                 cells = line.strip().split(" ", 3)
@@ -84,32 +103,32 @@ class KNBCorpusReader(SyntaxCorpusReader):
 
                 assert m is not None
 
-                node = dg.nodelist[i]
-                node['address'] = i
-                node['rel'] = m.group(2)  # dep_type
-
-                node['word'] = []
+                node = dg.nodes[i]
+                node.update(
+                    {
+                        'address': i,
+                        'rel': m.group(2),
+                        'word': [],
+                    }
+                )
 
                 dep_parent = int(m.group(1))
-
-                while len(dg.nodelist) < i+1 or len(dg.nodelist) < dep_parent+1:
-                    dg.nodelist.append({'word':[], 'deps':[]})
 
                 if dep_parent == -1:
                     dg.root = node
                 else:
-                    dg.nodelist[dep_parent]['deps'].append(i)
+                    dg.nodes[dep_parent]['deps'].append(i)
 
                 i += 1
-            elif not line.startswith("#"):
+            elif line[0] != '#':
                 # normal morph
                 cells = line.strip().split(" ")
                 # convert cells to morph tuples
-                morph = ( cells[0], ' '.join(cells[1:]) )
-                dg.nodelist[i-1]['word'].append(morph)
+                morph = cells[0], ' '.join(cells[1:])
+                dg.nodes[i - 1]['word'].append(morph)
 
         if self.morphs2str:
-            for node in dg.nodelist:
+            for node in dg.nodes.values():
                 node['word'] = self.morphs2str(node['word'])
 
         return dg.tree()
@@ -117,6 +136,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
 ######################################################################
 # Demo
 ######################################################################
+
 
 def demo():
 
@@ -135,30 +155,33 @@ def demo():
                             sorted(fileids, key=_knbc_fileids_sort), encoding='euc-jp')
 
     print(knbc.fileids()[:10])
-    print(''.join( knbc.words()[:100] ))
+    print(''.join(knbc.words()[:100]))
 
-    print('\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:2] ))
+    print('\n\n'.join(str(tree) for tree in knbc.parsed_sents()[:2]))
 
     knbc.morphs2str = lambda morphs: '/'.join(
-        "%s(%s)"%(m[0], m[1].split(' ')[2]) for m in morphs if m[0] != 'EOS'
-        ).encode('utf-8')
+        "%s(%s)" % (m[0], m[1].split(' ')[2]) for m in morphs if m[0] != 'EOS'
+    ).encode('utf-8')
 
-    print('\n\n'.join( '%s' % tree for tree in knbc.parsed_sents()[:2] ))
+    print('\n\n'.join('%s' % tree for tree in knbc.parsed_sents()[:2]))
 
-    print('\n'.join( ' '.join("%s/%s"%(w[0], w[1].split(' ')[2]) for w in sent)
-                     for sent in knbc.tagged_sents()[0:2] ))
+    print(
+        '\n'.join(
+            ' '.join("%s/%s" % (w[0], w[1].split(' ')[2]) for w in sent)
+            for sent in knbc.tagged_sents()[0:2]
+        )
+    )
+
 
 def test():
 
     from nltk.corpus.util import LazyCorpusLoader
-
     knbc = LazyCorpusLoader(
         'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
-    assert isinstance(knbc.words()[0], compat.string_types)
-    assert isinstance(knbc.sents()[0][0], compat.string_types)
+    assert isinstance(knbc.words()[0], string_types)
+    assert isinstance(knbc.sents()[0][0], string_types)
     assert isinstance(knbc.tagged_words()[0], tuple)
     assert isinstance(knbc.tagged_sents()[0][0], tuple)
 
 if __name__ == '__main__':
     demo()
-    # test()

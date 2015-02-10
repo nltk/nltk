@@ -5,14 +5,14 @@ The Natural Language Toolkit exists thanks to the efforts of dozens
 of voluntary developers who have contributed functionality and
 bugfixes since the project began in 2000 (`contributors <https://github.com/nltk/nltk#contributing>`_).
 
-In 2014 we are especially keen to improve NLTK coverage for:
+In 2015 we are especially keen to improve NLTK coverage for:
 `dependency parsing <https://github.com/nltk/nltk/wiki/Dependency-Parsing>`_,
 `machine translation <https://github.com/nltk/nltk/wiki/Machine-Translation>`_,
 `sentiment analysis <https://github.com/nltk/nltk/wiki/Sentiment-Analysis>`_,
 `twitter processing <https://github.com/nltk/nltk/wiki/Twitter-Processing>`_.
 
 New material in these areas will be covered in the second edition of
-the NLTK book, anticipated in 2015.
+the NLTK book, anticipated in early 2016.
 
 * `desired enhancements <https://github.com/nltk/nltk/issues?labels=enhancement&page=1&state=open>`_
 * `contribute a corpus <https://github.com/nltk/nltk/wiki/Adding-a-Corpus>`_
@@ -29,7 +29,6 @@ Individual packages are maintained by the following people:
 :Parsing: `Peter Ljunglöf <http://www.cse.chalmers.se/~peb/>`_, Gothenburg, Sweden (``nltk.parse, nltk.featstruct``)
 :Metrics: `Joel Nothman <http://joelnothman.com/>`_, Sydney, Australia (``nltk.metrics, nltk.tokenize.punkt``)
 :Python 3: `Mikhail Korobov <http://kmike.ru/>`_, Ekaterinburg, Russia
-:Integration: `Morten Minde Neergaard <http://8d.no/>`_, Oslo, Norway
 :Releases: `Steven Bird <http://estive.net>`_, Melbourne, Australia
 
 

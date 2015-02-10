@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, division, unicode_literals
@@ -210,7 +210,6 @@ class GlueDict(dict):
                     self[sem][relationships].extend(self[supertype][relationships])
                 self[sem][relationships].extend(glue_formulas) # add the glue entry to the dictionary
 
-
     def __str__(self):
         accum = ''
         for pos in self:
@@ -218,12 +217,12 @@ class GlueDict(dict):
             for relset in self[pos]:
                 i = 1
                 for gf in self[pos][relset]:
-                    if i==1:
+                    if i == 1:
                         accum += str_pos + ': '
                     else:
                         accum += ' '*(len(str_pos)+2)
                     accum += "%s" % gf
-                    if relset and i==len(self[pos][relset]):
+                    if relset and i == len(self[pos][relset]):
                         accum += ' : %s' % relset
                     accum += '\n'
                     i += 1
@@ -231,13 +230,15 @@ class GlueDict(dict):
 
     def to_glueformula_list(self, depgraph, node=None, counter=None, verbose=False):
         if node is None:
-            top = depgraph.nodelist[0]
-            root = depgraph.nodelist[top['deps'][0]]
+            top = depgraph.nodes[0]
+            depList = sum(list(top['deps'].values()), [])
+            root = depgraph.nodes[depList[0]]
+            #print (root) 
             return self.to_glueformula_list(depgraph, root, Counter(), verbose)
 
         glueformulas = self.lookup(node, depgraph, counter)
-        for dep_idx in node['deps']:
-            dep = depgraph.nodelist[dep_idx]
+        for dep_idx in sum(list(node['deps'].values()), []):
+            dep = depgraph.nodes[dep_idx]
             glueformulas.extend(self.to_glueformula_list(depgraph, dep, counter, verbose))
         return glueformulas
 
@@ -250,7 +251,7 @@ class GlueDict(dict):
                 semtype = self[name]
                 break
         if semtype is None:
-#            raise KeyError, "There is no GlueDict entry for sem type '%s' (for '%s')" % (sem, word)
+            # raise KeyError, "There is no GlueDict entry for sem type '%s' (for '%s')" % (sem, word)
             return []
 
         self.add_missing_dependencies(node, depgraph)
@@ -258,9 +259,11 @@ class GlueDict(dict):
         lookup = self._lookup_semtype_option(semtype, node, depgraph)
 
         if not len(lookup):
-            raise KeyError("There is no GlueDict entry for sem type of '%s'"\
-                    " with tag '%s', and rel '%s'" %\
-                    (node['word'], node['tag'], node['rel']))
+            raise KeyError(
+                "There is no GlueDict entry for sem type of '%s' "
+                "with tag '%s', and rel '%s'" %
+                (node['word'], node['tag'], node['rel'])
+                )
 
         return self.get_glueformulas_from_semtype_entry(lookup, node['word'], node, depgraph, counter)
 
@@ -268,15 +271,19 @@ class GlueDict(dict):
         rel = node['rel'].lower()
 
         if rel == 'main':
-            headnode = depgraph.nodelist[node['head']]
+            headnode = depgraph.nodes[node['head']]
             subj = self.lookup_unique('subj', headnode, depgraph)
-            node['deps'].append(subj['address'])
+            relation = subj['rel']
+            node['deps'].setdefault(relation,[])
+            node['deps'][relation].append(subj['address'])
+            #node['deps'].append(subj['address'])
 
     def _lookup_semtype_option(self, semtype, node, depgraph):
-        relationships = frozenset(depgraph.nodelist[dep]['rel'].lower()
-                                   for dep in node['deps']
-                                   if depgraph.nodelist[dep]['rel'].lower()
-                                       not in OPTIONAL_RELATIONSHIPS)
+        relationships = frozenset(
+            depgraph.nodes[dep]['rel'].lower()
+            for dep in sum(list(node['deps'].values()), [])
+            if depgraph.nodes[dep]['rel'].lower() not in OPTIONAL_RELATIONSHIPS
+        )
 
         try:
             lookup = semtype[relationships]
@@ -351,8 +358,9 @@ class GlueDict(dict):
                 return linearlogic.ConstantExpression(name)
         else:
             return linearlogic.ImpExpression(
-                       self.initialize_labels(expr.antecedent, node, depgraph, unique_index),
-                       self.initialize_labels(expr.consequent, node, depgraph, unique_index))
+                self.initialize_labels(expr.antecedent, node, depgraph, unique_index),
+                self.initialize_labels(expr.consequent, node, depgraph, unique_index)
+            )
 
     def find_label_name(self, name, node, depgraph, unique_index):
         try:
@@ -361,19 +369,27 @@ class GlueDict(dict):
             before_dot = name[:dot]
             after_dot = name[dot+1:]
             if before_dot == 'super':
-                return self.find_label_name(after_dot, depgraph.nodelist[node['head']], depgraph, unique_index)
+                return self.find_label_name(after_dot, depgraph.nodes[node['head']], depgraph, unique_index)
             else:
                 return self.find_label_name(after_dot, self.lookup_unique(before_dot, node, depgraph), depgraph, unique_index)
         except ValueError:
             lbl = self.get_label(node)
-            if   name=='f':     return lbl
-            elif name=='v':     return '%sv' % lbl
-            elif name=='r':     return '%sr' % lbl
-            elif name=='super': return self.get_label(depgraph.nodelist[node['head']])
-            elif name=='var':   return '%s%s' % (lbl.upper(), unique_index)
-            elif name=='a':     return self.get_label(self.lookup_unique('conja', node, depgraph))
-            elif name=='b':     return self.get_label(self.lookup_unique('conjb', node, depgraph))
-            else:               return self.get_label(self.lookup_unique(name, node, depgraph))
+            if name == 'f':
+                return lbl
+            elif name == 'v':
+                return '%sv' % lbl
+            elif name == 'r':
+                return '%sr' % lbl
+            elif name == 'super':
+                return self.get_label(depgraph.nodes[node['head']])
+            elif name == 'var':
+                return '%s%s' % (lbl.upper(), unique_index)
+            elif name == 'a':
+                return self.get_label(self.lookup_unique('conja', node, depgraph))
+            elif name == 'b':
+                return self.get_label(self.lookup_unique('conjb', node, depgraph))
+            else:
+                return self.get_label(self.lookup_unique(name, node, depgraph))
 
     def get_label(self, node):
         """
@@ -396,8 +412,11 @@ class GlueDict(dict):
         """
         Lookup 'key'. There should be exactly one item in the associated relation.
         """
-        deps = [depgraph.nodelist[dep] for dep in node['deps']
-                if depgraph.nodelist[dep]['rel'].lower() == rel.lower()]
+        deps = [
+            depgraph.nodes[dep]
+            for dep in sum(list(node['deps'].values()), [])
+            if depgraph.nodes[dep]['rel'].lower() == rel.lower()
+        ]
 
         if len(deps) == 0:
             raise KeyError("'%s' doesn't contain a feature '%s'" % (node['word'], rel))
@@ -408,6 +427,7 @@ class GlueDict(dict):
 
     def get_GlueFormula_factory(self):
         return GlueFormula
+
 
 class Glue(object):
     def __init__(self, semtype_file=None, remove_duplicates=False,

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunk format conversions
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -548,7 +548,7 @@ def demo():
     s = "[ Pierre/NNP Vinken/NNP ] ,/, [ 61/CD years/NNS ] old/JJ ,/, will/MD join/VB [ the/DT board/NN ] ./."
     import nltk
     t = nltk.chunk.tagstr2tree(s, chunk_label='NP')
-    print(t.pprint())
+    t.pprint()
     print()
 
     s = """
@@ -582,7 +582,7 @@ better JJR I-ADJP
 """
 
     conll_tree = conllstr2tree(s, chunk_types=('NP', 'PP'))
-    print(conll_tree.pprint())
+    conll_tree.pprint()
 
     # Demonstrate CoNLL output
     print("CoNLL output:")

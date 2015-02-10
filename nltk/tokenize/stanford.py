@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Tokenizer
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>
@@ -46,8 +46,9 @@ class StanfordTokenizer(TokenizerI):
 
         self._encoding = encoding
         self.java_options = java_options
+
         options = {} if options is None else options
-        self._options_cmd = ','.join('{0}={1}'.format(key, json.dumps(val)) for key, val in options.items())
+        self._options_cmd = ','.join('{0}={1}'.format(key, val) for key, val in options.items())
 
     @staticmethod
     def _parse_tokenized_output(s):
@@ -104,3 +105,8 @@ def setup_module(module):
         StanfordTokenizer()
     except LookupError:
         raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)

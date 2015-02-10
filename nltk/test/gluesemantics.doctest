@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2014 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==============================================================================
@@ -360,12 +360,17 @@ Dependency Graph to Glue Formulas
 Dependency Graph to LFG f-structure
 -----------------------------------
     >>> from nltk.sem.lfg import FStructure
+
     >>> fstruct = FStructure.read_depgraph(depgraph)
+
     >>> print(fstruct)
     f:[pred 'sees'
        obj h:[pred 'dog'
               spec 'a']
        subj g:[pred 'John']]
+
+    >>> fstruct.to_depgraph().tree().pprint()
+    (sees (dog a) John)
 
 ---------------------------------
 LFG f-structure to Glue

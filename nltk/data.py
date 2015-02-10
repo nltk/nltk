@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -204,6 +204,10 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     >>> windows or normalize_resource_name('/dir/file', False, '/') == '/dir/file'
     True
     >>> windows or normalize_resource_name('../dir/file', False, '/') == '/dir/file'
+    True
+    >>> not windows or normalize_resource_name('/dir/file', True, '/') == 'dir/file'
+    True
+    >>> windows or normalize_resource_name('/dir/file', True, '/') == '/dir/file'
     True
     """
     is_dir = bool(re.search(r'[\\/.]$', resource_name)) or resource_name.endswith(os.path.sep)
@@ -448,8 +452,8 @@ class ZipFilePathPointer(PathPointer):
         if isinstance(zipfile, string_types):
             zipfile = OpenOnDemandZipFile(os.path.abspath(zipfile))
 
-        # Normalize the entry string, it should be absolute:
-        entry = normalize_resource_name(entry, False, '/').lstrip('/')
+        # Normalize the entry string, it should be relative:
+        entry = normalize_resource_name(entry, True, '/').lstrip('/')
 
         # Check that the entry exists:
         if entry:
@@ -560,7 +564,7 @@ def find(resource_name, paths=None):
 
     # Resolve default paths at runtime in-case the user overrides nltk.data.path
     if paths is None:
-        paths=path
+        paths = path
 
     # Check if the resource name includes a zipfile name
     m = re.match(r'(.*\.zip)/?(.*)$|', resource_name)

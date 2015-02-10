@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
@@ -308,9 +308,19 @@ class FreqDist(Counter):
 
         :rtype: string
         """
-        return self.pprint()
+        return self.pformat()
 
-    def pprint(self, maxlen=10):
+    def pprint(self, maxlen=10, stream=None):
+        """
+        Print a string representation of this FreqDist to 'stream'
+
+        :param maxlen: The maximum number of items to print
+        :type maxlen: int
+        :param stream: The stream to print to. stdout by default
+        """
+        print(self.pformat(maxlen=maxlen), file=stream)
+
+    def pformat(self, maxlen=10):
         """
         Return a string representation of this FreqDist.
 
@@ -1219,7 +1229,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         r_Nr = self._freqdist.r_Nr()
         del r_Nr[0]
         return r_Nr
- 
+
     def _r_Nr(self):
         """
         Split the frequency distribution in two list (r, Nr), where Nr(r) > 0

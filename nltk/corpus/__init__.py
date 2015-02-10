@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -204,6 +204,10 @@ udhr = LazyCorpusLoader(
     'udhr', UdhrCorpusReader)
 udhr2 = LazyCorpusLoader(
     'udhr2', PlaintextCorpusReader, r'.*\.txt', encoding='utf8')
+universal_treebanks = LazyCorpusLoader(
+    'universal_treebanks_v20', ConllCorpusReader, r'.*\.conll',
+    columntypes = ('ignore', 'words', 'ignore', 'ignore', 'pos',
+                   'ignore', 'ignore', 'ignore', 'ignore', 'ignore'))
 verbnet = LazyCorpusLoader(
     'verbnet', VerbnetCorpusReader, r'(?!\.).*\.xml')
 webtext = LazyCorpusLoader(

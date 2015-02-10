@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Incremental Earley Chart Parser
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Rob Speer <rspeer@mit.edu>
 #         Edward Loper <edloper@gmail.com>
@@ -309,7 +309,7 @@ class IncrementalChartParser(ChartParser):
 
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
-        if trace: print(chart.pp_leaves(trace_edge_width))
+        if trace: print(chart.pretty_format_leaves(trace_edge_width))
 
         for axiom in self._axioms:
             new_edges = list(axiom.apply(chart, grammar))

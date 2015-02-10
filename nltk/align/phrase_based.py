@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Phrase Extraction Algorithm
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Authors: Liling Tan and Fredrik Hedman
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

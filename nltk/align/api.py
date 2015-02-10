@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Aligned Sentences
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
 #         Steven Bird <stevenbird1@gmail.com>
@@ -59,6 +59,7 @@ class AlignedSent(object):
 
     def _get_alignment(self):
         return self._alignment
+        
     def _set_alignment(self, alignment):
         if not isinstance(alignment, Alignment):
             alignment = Alignment(alignment)

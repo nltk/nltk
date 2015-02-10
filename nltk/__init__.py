@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -41,7 +41,7 @@ if __doc__ is not None: # fix for the ``python -OO``
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2014 NLTK Project.
+Copyright (C) 2001-2015 NLTK Project.
 
 Distributed and Licensed under the Apache License, Version 2.0,
 which is included by reference.
@@ -144,7 +144,7 @@ try:
 except ImportError:
     pass
 else:
-    from nltk import cluster; from .cluster import *
+    from nltk import cluster
 
 from nltk.downloader import download, download_shell
 try:

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Decision Tree Classifiers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -71,7 +71,7 @@ class DecisionTreeClassifier(ClassifierI):
                 errors += 1
         return float(errors)/len(labeled_featuresets)
 
-    def pp(self, width=70, prefix='', depth=4):
+    def pretty_format(self, width=70, prefix='', depth=4):
         """
         Return a string containing a pretty-printed version of this
         decision tree.  Each line in this string corresponds to a
@@ -88,12 +88,12 @@ class DecisionTreeClassifier(ClassifierI):
             n = width-15-len(hdr)
             s += '%s%s %s\n' % (hdr, '.'*(n), result._label)
             if result._fname is not None and depth>1:
-                s += result.pp(width, prefix+'  ', depth-1)
+                s += result.pretty_format(width, prefix+'  ', depth-1)
         if self._default is not None:
             n = width-len(prefix)-21
             s += '%selse: %s %s\n' % (prefix, '.'*n, self._default._label)
             if self._default._fname is not None and depth>1:
-                s += self._default.pp(width, prefix+'  ', depth-1)
+                s += self._default.pretty_format(width, prefix+'  ', depth-1)
         return s
 
     def pseudocode(self, prefix='', depth=4):
@@ -124,7 +124,7 @@ class DecisionTreeClassifier(ClassifierI):
         return s
 
     def __str__(self):
-        return self.pp()
+        return self.pretty_format()
 
     @staticmethod
     def train(labeled_featuresets, entropy_cutoff=0.05, depth_cutoff=100,
@@ -165,13 +165,13 @@ class DecisionTreeClassifier(ClassifierI):
 
     @staticmethod
     def leaf(labeled_featuresets):
-        label = FreqDist(label for (featureset,label)
+        label = FreqDist(label for (featureset, label)
                          in labeled_featuresets).max()
         return DecisionTreeClassifier(label)
 
     @staticmethod
     def stump(feature_name, labeled_featuresets):
-        label = FreqDist(label for (featureset,label)
+        label = FreqDist(label for (featureset, label)
                          in labeled_featuresets).max()
 
         # Find the best label for each value.
@@ -191,11 +191,11 @@ class DecisionTreeClassifier(ClassifierI):
         if self._fname is None: return
         if depth_cutoff <= 0: return
         for fval in self._decisions:
-            fval_featuresets = [(featureset,label) for (featureset,label)
+            fval_featuresets = [(featureset, label) for (featureset, label)
                                 in labeled_featuresets
                                 if featureset.get(self._fname) == fval]
 
-            label_freqs = FreqDist(label for (featureset,label)
+            label_freqs = FreqDist(label for (featureset, label)
                                    in fval_featuresets)
             if entropy(MLEProbDist(label_freqs)) > entropy_cutoff:
                 self._decisions[fval] = DecisionTreeClassifier.train(
@@ -206,7 +206,7 @@ class DecisionTreeClassifier(ClassifierI):
                                    in labeled_featuresets
                                    if featureset.get(self._fname) not in
                                    self._decisions]
-            label_freqs = FreqDist(label for (featureset,label)
+            label_freqs = FreqDist(label for (featureset, label)
                                    in default_featuresets)
             if entropy(MLEProbDist(label_freqs)) > entropy_cutoff:
                 self._default = DecisionTreeClassifier.train(
