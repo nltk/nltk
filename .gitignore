@@ -33,5 +33,10 @@ nltk/test/*.html
 # automatically built files for website
 web/api/*.rst
 
+# just for Twitter branch
+
+.ipynb_checkpoints
+twitter.html
+nltk-main
 
 
