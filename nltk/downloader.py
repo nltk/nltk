@@ -840,8 +840,11 @@ class Downloader(object):
             for i, child_id in enumerate(collection.children):
                 if child_id in self._packages:
                     collection.children[i] = self._packages[child_id]
-                if child_id in self._collections:
+                elif child_id in self._collections:
                     collection.children[i] = self._collections[child_id]
+                else:
+                    print('removing collection member with no package: {}'.format(child_id))
+                    del collection.children[i]
 
         # Fill in collection.packages for each collection.
         for collection in self._collections.values():
