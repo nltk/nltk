@@ -65,6 +65,8 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.corpus.util import LazyCorpusLoader
 from nltk.corpus.reader import *
 
+crubadan = LazyCorpusLoader(
+    'crubadan', CrubadanCorpusReader, '.*\.txt')
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding=[
             ('science', 'latin_1'),
