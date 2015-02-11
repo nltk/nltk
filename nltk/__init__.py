@@ -145,7 +145,7 @@ try:
 except ImportError:
     pass
 else:
-    from nltk import cluster; from .cluster import *
+    from nltk import cluster
 
 from nltk.downloader import download, download_shell
 try:

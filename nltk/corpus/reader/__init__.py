@@ -127,5 +127,6 @@ __all__ = [
     'CHILDESCorpusReader', 'AlignedCorpusReader',
     'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader',
     'SemcorCorpusReader', 'FramenetCorpusReader', 'UdhrCorpusReader',
-    'BNCCorpusReader', 'SentiWordNetCorpusReader', 'SentiSynset'
+    'BNCCorpusReader', 'SentiWordNetCorpusReader', 'SentiSynset',
+    'NKJPCorpusReader'
 ]
