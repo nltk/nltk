@@ -65,8 +65,6 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.corpus.util import LazyCorpusLoader
 from nltk.corpus.reader import *
 
-crubadan = LazyCorpusLoader(
-    'crubadan', CrubadanCorpusReader, '.*\.txt')
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding=[
             ('science', 'latin_1'),
@@ -97,6 +95,8 @@ conll2007 = LazyCorpusLoader(
     'conll2007', DependencyCorpusReader, '.*\.(test|train).*', encoding=[
         ('eus', 'ISO-8859-2'),
         ('esp', 'utf8')])
+crubadan = LazyCorpusLoader(
+    'crubadan', CrubadanCorpusReader, '.*\.txt')
 dependency_treebank = LazyCorpusLoader(
     'dependency_treebank', DependencyCorpusReader, '.*\.dp',
     encoding='ascii')
