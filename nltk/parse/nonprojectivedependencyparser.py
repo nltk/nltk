@@ -167,7 +167,8 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         count = 0
         for pdist in self.classifier.prob_classify_many(edges):
             logger.debug('%.4f %.4f', pdist.prob('T'), pdist.prob('F'))
-            row.append([math.log(pdist.prob("T"))])
+            # smoothing in case the probability = 0
+            row.append([math.log(pdist.prob("T")+0.00000000001)])
             count += 1
             if count == len(graph.nodes):
                 edge_scores.append(row)
@@ -460,6 +461,8 @@ class ProbabilisticNonprojectiveParser(object):
                     'address': index + 1,
                 }
             )
+        #print (g_graph.nodes)
+
 
         # Fully connect non-root nodes in g_graph
         g_graph.connect_graph()
@@ -564,8 +567,11 @@ class ProbabilisticNonprojectiveParser(object):
 
         logger.debug('Betas: %s', betas)
         for node in original_graph.nodes.values():
-            node['deps'] = []
-
+            # TODO: It's dangerous to assume that deps it a dictionary
+            # because it's a default dictionary. Ideally, here we should not
+            # be concerned how dependencies are stored inside of a dependency
+            # graph.
+            node['deps'] = {}
         for i in range(1, len(tokens) + 1):
             original_graph.add_arc(betas[i][0], betas[i][1])
 
@@ -697,22 +703,32 @@ class NonprojectiveDependencyParser(object):
         # Filter parses
         # ensure 1 root, every thing has 1 head
         for analysis in analyses:
-            root_count = 0
-            root = []
-            for i, cell in enumerate(analysis):
-                if cell == -1:
-                    root_count += 1
-                    root = i
-            if root_count == 1:
-                graph = DependencyGraph()
-                graph.nodes[0]['deps'] = root + 1
-                for i in range(len(tokens)):
-                    node = {'word': tokens[i], 'address': i+1}
-                    node['deps'] = [j+1 for j in range(len(tokens)) if analysis[j] == i]
-                    graph.nodes[i + 1] = node
-#               cycle = graph.contains_cycle()
-#               if not cycle:
-                yield graph
+            if analysis.count(-1) > 1:
+                # there are several root elements!
+                continue
+
+            graph = DependencyGraph()
+            graph.root = graph.nodes[analysis.index(-1) + 1]
+
+            for address, (token, head_index) in enumerate(zip(tokens, analysis), start=1):
+                head_address = head_index + 1
+
+                node = graph.nodes[address]
+                node.update(
+                    {
+                        'word': token,
+                        'address': address,
+                    }
+                )
+
+                if head_address == 0:
+                    rel = 'ROOT'
+                else:
+                    rel = ''
+                graph.nodes[head_index + 1]['deps'][rel].append(address)
+
+            # TODO: check for cycles
+            yield graph
 
 
 #################################################################

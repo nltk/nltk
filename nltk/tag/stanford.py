@@ -125,7 +125,6 @@ class POSTagger(StanfordTagger):
 
     @property
     def _cmd(self):
-        # Long Duong : Add -outputFormatOptions option for keeping the empty sentences
         return ['edu.stanford.nlp.tagger.maxent.MaxentTagger',
                 '-model', self._stanford_model, '-textFile',
                 self._input_file_path, '-tokenize', 'false','-outputFormatOptions', 'keepEmptySentences']

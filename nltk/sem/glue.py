@@ -231,11 +231,13 @@ class GlueDict(dict):
     def to_glueformula_list(self, depgraph, node=None, counter=None, verbose=False):
         if node is None:
             top = depgraph.nodes[0]
-            root = depgraph.nodes[top['deps'][0]]
+            depList = sum(list(top['deps'].values()), [])
+            root = depgraph.nodes[depList[0]]
+            #print (root) 
             return self.to_glueformula_list(depgraph, root, Counter(), verbose)
 
         glueformulas = self.lookup(node, depgraph, counter)
-        for dep_idx in node['deps']:
+        for dep_idx in sum(list(node['deps'].values()), []):
             dep = depgraph.nodes[dep_idx]
             glueformulas.extend(self.to_glueformula_list(depgraph, dep, counter, verbose))
         return glueformulas
@@ -271,12 +273,15 @@ class GlueDict(dict):
         if rel == 'main':
             headnode = depgraph.nodes[node['head']]
             subj = self.lookup_unique('subj', headnode, depgraph)
-            node['deps'].append(subj['address'])
+            relation = subj['rel']
+            node['deps'].setdefault(relation,[])
+            node['deps'][relation].append(subj['address'])
+            #node['deps'].append(subj['address'])
 
     def _lookup_semtype_option(self, semtype, node, depgraph):
         relationships = frozenset(
             depgraph.nodes[dep]['rel'].lower()
-            for dep in node['deps']
+            for dep in sum(list(node['deps'].values()), [])
             if depgraph.nodes[dep]['rel'].lower() not in OPTIONAL_RELATIONSHIPS
         )
 
@@ -409,7 +414,7 @@ class GlueDict(dict):
         """
         deps = [
             depgraph.nodes[dep]
-            for dep in node['deps']
+            for dep in sum(list(node['deps'].values()), [])
             if depgraph.nodes[dep]['rel'].lower() == rel.lower()
         ]
 

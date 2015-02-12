@@ -273,7 +273,7 @@ class _StandardStemmer(_LanguageSpecificStemmer):
                         rv = word[i+1:]
                         break
 
-            elif word[:2] in vowels:
+            elif word[0] in vowels and word[1] in vowels:
                 for i in range(2, len(word)):
                     if word[i] not in vowels:
                         rv = word[i+1:]
@@ -2429,13 +2429,13 @@ class PortugueseStemmer(_StandardStemmer):
     """
 
     __vowels = "aeiou\xE1\xE9\xED\xF3\xFA\xE2\xEA\xF4"
-    __step1_suffixes = ('amentos', 'imentos', 'uções', 'amento',
+    __step1_suffixes = ('amentos', 'imentos', 'uço~es', 'amento',
                         'imento', 'adoras', 'adores', 'a\xE7o~es',
                         'logias', '\xEAncias', 'amente',
-                        'idades', 'ismos', 'istas', 'adora',
+                        'idades', 'an\xE7as', 'ismos', 'istas', 'adora',
                         'a\xE7a~o', 'antes', '\xE2ncia',
-                        'logia', 'ução', '\xEAncia',
-                        'mente', 'idade', 'ezas', 'icos', 'icas',
+                        'logia', 'uça~o', '\xEAncia',
+                        'mente', 'idade', 'an\xE7a', 'ezas', 'icos', 'icas',
                         'ismo', '\xE1vel', '\xEDvel', 'ista',
                         'osos', 'osas', 'ador', 'ante', 'ivas',
                         'ivos', 'iras', 'eza', 'ico', 'ica',
@@ -2489,7 +2489,9 @@ class PortugueseStemmer(_StandardStemmer):
         step2_success = False
 
         word = (word.replace("\xE3", "a~")
-                    .replace("\xF5", "o~"))
+                    .replace("\xF5", "o~")
+                    .replace("q\xFC", "qu")
+                    .replace("g\xFC", "gu"))
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
@@ -2528,8 +2530,8 @@ class PortugueseStemmer(_StandardStemmer):
                     step1_success = True
 
                     if suffix in ("logia", "logias"):
-                        word = word[:-2]
-                        rv = rv[:-2]
+                        word = suffix_replace(word, suffix, "log")
+                        rv = suffix_replace(rv, suffix, "log")
 
                     elif suffix in ("ução", "uções"):
                         word = suffix_replace(word, suffix, "u")
@@ -2544,7 +2546,7 @@ class PortugueseStemmer(_StandardStemmer):
                         r2 = r2[:-5]
                         rv = rv[:-5]
 
-                        if r2.endswith(("ante", "avel", "\xEDvel")):
+                        if r2.endswith(("ante", "avel", "ivel")):
                             word = word[:-4]
                             rv = rv[:-4]
 
@@ -3313,7 +3315,6 @@ class RussianStemmer(_LanguageSpecificStemmer):
         return word
 
 
-
 class SpanishStemmer(_StandardStemmer):
 
     """
@@ -3405,123 +3406,108 @@ class SpanishStemmer(_StandardStemmer):
 
         # STEP 0: Attached pronoun
         for suffix in self.__step0_suffixes:
-            if word.endswith(suffix):
-                if rv.endswith(suffix):
-                    if rv[:-len(suffix)].endswith(("i\xE9ndo",
-                                                   "\xE1ndo",
-                                                   "\xE1r", "\xE9r",
-                                                   "\xEDr")):
-                        word = (word[:-len(suffix)].replace("\xE1", "a")
-                                                   .replace("\xE9", "e")
-                                                   .replace("\xED", "i"))
-                        r1 = (r1[:-len(suffix)].replace("\xE1", "a")
-                                               .replace("\xE9", "e")
-                                               .replace("\xED", "i"))
-                        r2 = (r2[:-len(suffix)].replace("\xE1", "a")
-                                               .replace("\xE9", "e")
-                                               .replace("\xED", "i"))
-                        rv = (rv[:-len(suffix)].replace("\xE1", "a")
-                                               .replace("\xE9", "e")
-                                               .replace("\xED", "i"))
+            if not (word.endswith(suffix) and rv.endswith(suffix)):
+                continue
 
-                    elif rv[:-len(suffix)].endswith(("ando", "iendo",
-                                                     "ar", "er", "ir")):
-                        word = word[:-len(suffix)]
-                        r1 = r1[:-len(suffix)]
-                        r2 = r2[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
+            if ((rv[:-len(suffix)].endswith(("ando", "\xE1ndo",
+                                             "ar", "\xE1r",
+                                             "er", "\xE9r",
+                                             "iendo", "i\xE9ndo",
+                                             "ir", "\xEDr"))) or
+                (rv[:-len(suffix)].endswith("yendo") and
+                    word[:-len(suffix)].endswith("uyendo"))):
 
-                    elif (rv[:-len(suffix)].endswith("yendo") and
-                          word[:-len(suffix)].endswith("uyendo")):
-                        word = word[:-len(suffix)]
-                        r1 = r1[:-len(suffix)]
-                        r2 = r2[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
-                break
+                word = self.__replace_accented(word[:-len(suffix)])
+                r1 = self.__replace_accented(r1[:-len(suffix)])
+                r2 = self.__replace_accented(r2[:-len(suffix)])
+                rv = self.__replace_accented(rv[:-len(suffix)])
+            break
 
         # STEP 1: Standard suffix removal
         for suffix in self.__step1_suffixes:
-            if word.endswith(suffix):
-                if suffix == "amente" and r1.endswith(suffix):
-                    step1_success = True
-                    word = word[:-6]
-                    r2 = r2[:-6]
-                    rv = rv[:-6]
+            if not word.endswith(suffix):
+                continue
 
-                    if r2.endswith("iv"):
-                        word = word[:-2]
-                        r2 = r2[:-2]
-                        rv = rv[:-2]
+            if suffix == "amente" and r1.endswith(suffix):
+                step1_success = True
+                word = word[:-6]
+                r2 = r2[:-6]
+                rv = rv[:-6]
 
-                        if r2.endswith("at"):
-                            word = word[:-2]
-                            rv = rv[:-2]
+                if r2.endswith("iv"):
+                    word = word[:-2]
+                    r2 = r2[:-2]
+                    rv = rv[:-2]
 
-                    elif r2.endswith(("os", "ic", "ad")):
+                    if r2.endswith("at"):
                         word = word[:-2]
                         rv = rv[:-2]
 
-                elif r2.endswith(suffix):
-                    step1_success = True
-                    if suffix in ("adora", "ador", "aci\xF3n", "adoras",
-                                  "adores", "aciones", "ante", "antes",
-                                  "ancia", "ancias"):
-                        word = word[:-len(suffix)]
-                        r2 = r2[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
+                elif r2.endswith(("os", "ic", "ad")):
+                    word = word[:-2]
+                    rv = rv[:-2]
 
-                        if r2.endswith("ic"):
-                            word = word[:-2]
-                            rv = rv[:-2]
+            elif r2.endswith(suffix):
+                step1_success = True
+                if suffix in ("adora", "ador", "aci\xF3n", "adoras",
+                              "adores", "aciones", "ante", "antes",
+                              "ancia", "ancias"):
+                    word = word[:-len(suffix)]
+                    r2 = r2[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
 
-                    elif suffix in ("log\xEDa", "log\xEDas"):
-                        word = suffix_replace(word, suffix, "log")
-                        rv = suffix_replace(rv, suffix, "log")
+                    if r2.endswith("ic"):
+                        word = word[:-2]
+                        rv = rv[:-2]
 
-                    elif suffix in ("uci\xF3n", "uciones"):
-                        word = suffix_replace(word, suffix, "u")
-                        rv = suffix_replace(rv, suffix, "u")
+                elif suffix in ("log\xEDa", "log\xEDas"):
+                    word = suffix_replace(word, suffix, "log")
+                    rv = suffix_replace(rv, suffix, "log")
 
-                    elif suffix in ("encia", "encias"):
-                        word = suffix_replace(word, suffix, "ente")
-                        rv = suffix_replace(rv, suffix, "ente")
+                elif suffix in ("uci\xF3n", "uciones"):
+                    word = suffix_replace(word, suffix, "u")
+                    rv = suffix_replace(rv, suffix, "u")
 
-                    elif suffix == "mente":
-                        word = word[:-5]
-                        r2 = r2[:-5]
-                        rv = rv[:-5]
+                elif suffix in ("encia", "encias"):
+                    word = suffix_replace(word, suffix, "ente")
+                    rv = suffix_replace(rv, suffix, "ente")
 
-                        if r2.endswith(("ante", "able", "ible")):
-                            word = word[:-4]
-                            rv = rv[:-4]
+                elif suffix == "mente":
+                    word = word[:-len(suffix)]
+                    r2 = r2[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
 
-                    elif suffix in ("idad", "idades"):
-                        word = word[:-len(suffix)]
-                        r2 = r2[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
+                    if r2.endswith(("ante", "able", "ible")):
+                        word = word[:-4]
+                        rv = rv[:-4]
 
-                        for pre_suff in ("abil", "ic", "iv"):
-                            if r2.endswith(pre_suff):
-                                word = word[:-len(pre_suff)]
-                                rv = rv[:-len(pre_suff)]
+                elif suffix in ("idad", "idades"):
+                    word = word[:-len(suffix)]
+                    r2 = r2[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
 
-                    elif suffix in ("ivo", "iva", "ivos", "ivas"):
-                        word = word[:-len(suffix)]
-                        r2 = r2[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
-                        if r2.endswith("at"):
-                            word = word[:-2]
-                            rv = rv[:-2]
-                    else:
-                        word = word[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
-                break
+                    for pre_suff in ("abil", "ic", "iv"):
+                        if r2.endswith(pre_suff):
+                            word = word[:-len(pre_suff)]
+                            rv = rv[:-len(pre_suff)]
+
+                elif suffix in ("ivo", "iva", "ivos", "ivas"):
+                    word = word[:-len(suffix)]
+                    r2 = r2[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
+                    if r2.endswith("at"):
+                        word = word[:-2]
+                        rv = rv[:-2]
+                else:
+                    word = word[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
+            break
 
         # STEP 2a: Verb suffixes beginning 'y'
         if not step1_success:
             for suffix in self.__step2a_suffixes:
                 if (rv.endswith(suffix) and
-                    word[-len(suffix)-1:-len(suffix)] == "u"):
+                        word[-len(suffix)-1:-len(suffix)] == "u"):
                     word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
                     break
@@ -3529,38 +3515,47 @@ class SpanishStemmer(_StandardStemmer):
         # STEP 2b: Other verb suffixes
             for suffix in self.__step2b_suffixes:
                 if rv.endswith(suffix):
+                    word = word[:-len(suffix)]
+                    rv = rv[:-len(suffix)]
                     if suffix in ("en", "es", "\xE9is", "emos"):
-                        word = word[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
-
                         if word.endswith("gu"):
                             word = word[:-1]
 
                         if rv.endswith("gu"):
                             rv = rv[:-1]
-                    else:
-                        word = word[:-len(suffix)]
-                        rv = rv[:-len(suffix)]
                     break
 
         # STEP 3: Residual suffix
         for suffix in self.__step3_suffixes:
             if rv.endswith(suffix):
+                word = word[:-len(suffix)]
                 if suffix in ("e", "\xE9"):
-                    word = word[:-len(suffix)]
                     rv = rv[:-len(suffix)]
 
                     if word[-2:] == "gu" and rv.endswith("u"):
                         word = word[:-1]
-                else:
-                    word = word[:-len(suffix)]
                 break
 
-        word = (word.replace("\xE1", "a").replace("\xE9", "e")
-                    .replace("\xED", "i").replace("\xF3", "o")
-                    .replace("\xFA", "u"))
+        word = self.__replace_accented(word)
 
         return word
+
+    def __replace_accented(self, word):
+        """
+        Replaces all accented letters on a word with their non-accented
+        counterparts.
+
+        :param word: A spanish word, with or without accents
+        :type word: str or unicode
+        :return: a word with the accented letters (á, é, í, ó, ú) replaced with
+                 their non-accented counterparts (a, e, i, o, u)
+        :rtype: str or unicode
+        """
+        return (word.replace("\xE1", "a")
+                .replace("\xE9", "e")
+                .replace("\xED", "i")
+                .replace("\xF3", "o")
+                .replace("\xFA", "u"))
 
 
 class SwedishStemmer(_ScandinavianStemmer):

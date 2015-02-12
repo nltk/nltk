@@ -76,3 +76,4 @@ from nltk.parse.nonprojectivedependencyparser import (NonprojectiveDependencyPar
                                                       ProbabilisticNonprojectiveParser)
 from nltk.parse.malt import MaltParser
 from nltk.parse.evaluate import DependencyEvaluator
+from nltk.parse.transitionparser import TransitionParser
