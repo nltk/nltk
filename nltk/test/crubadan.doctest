@@ -1,0 +1,166 @@
+.. Copyright (C) 2001-2015 NLTK Project
+.. For license information, see LICENSE.TXT
+
+Crubadan Corpus Reader
+======================
+
+Crubadan is just an NLTK corpus reader for n-gram files provided by
+the Crubadan project, and can be imported like this:
+
+    >>> import nltk
+    >>> from nltk.corpus import crubadan
+
+The name can be hard to remember so for more compact
+and easy to remember code, try:
+
+    >>> from nltk.corpus import crubadan as cb
+
+
+------------------------
+Language support methods
+------------------------
+    To get a list of supported languages in human-friendly form:
+    
+    >>> crubadan.supported_langs() # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+    [u'Abkhaz', u'Abua', u'Aceh', u'Acholi', ..., u'Lachiguiri Zapotec', u'Zulu']
+    
+    To check if a single specific language is supported pass in 
+    its ISO 639-3 code and receive a boolean back:
+    >>> crubadan.lang_supported('eng')
+    True
+    >>> crubadan.lang_supported('fra')
+    True
+
+    Unsupported language, Ghotuo ('aaa' in ISO 639-3):
+    >>> crubadan.lang_supported('aaa')
+    False
+
+----------------------------------------
+Language code mapping and helper methods
+----------------------------------------
+    Print human-friendly name for a lanuage based on ISO 639-3 code.
+    
+    For reference, a combined view of the language code tables of 
+    ISO 639 parts 1, 2, and 3 may be viewed at:
+    http://www-01.sil.org/iso639-3/codes.asp
+
+    >>> crubadan.iso_to_friendly('eng')
+    u'English'
+    >>> crubadan.iso_to_friendly('fra')    
+    u'French'
+
+    Unsupported language returns None, Ghotuo:
+    >>> name_found = crubadan.iso_to_friendly('aaa')
+    >>> name_found is None
+    True
+
+    Now, backwards; print ISO 639-3 code if have the human-friendly name.
+    >>> crubadan.friendly_to_iso('English')
+    u'eng'
+
+    >>> crubadan.friendly_to_iso('French')
+    u'fra'
+
+    Unsupported language returns None, using Ghotuo again:
+    >>> code_found = crubadan.friendly_to_iso('Ghotuo')
+    >>> code_found is None
+    True
+
+    The web crawler that generated the 3-gram frequencies
+    actually works at the level of "writing systems" rather
+    than "languages". It assigned internal 2-3 letter 
+    "writing system codes" that require mapping to the standard
+    ISO 639-3 codes. 
+    
+    For more info, please refer to the README in nltk/nltk_data/crubadan
+    folder after installing it.
+    
+    To translate ISO 639-3 codes to "Crubadan Code":
+    >>> crubadan.iso_to_crubadan('eng')
+    u'en'
+
+    >>> crubadan.iso_to_crubadan('fra')
+    u'fr'
+    
+    Unsupported language returns None, using Ghotuo again:
+    >>> code_found = crubadan.iso_to_crubadan('aaa')
+    >>> code_found is None
+    True
+
+    In reverse; print ISO 639-3 code if we have Crubadan Code:
+    >>> crubadan.crubadan_to_iso('en')
+    u'eng'
+    >>> crubadan.crubadan_to_iso('fr')
+    u'fra'
+
+    Unsupported language returns None. Say the theoretical
+    Crubadan Code for the Ghotuo language would have been 'aa':
+    >>> code_found = crubadan.crubadan_to_iso('aa')
+    >>> code_found is None
+    True
+
+------------------------------------
+N-gram and their frequencies methods
+------------------------------------
+
+    To get a dictionary of every supported language mapping 
+    the ISO 639-3 language code to its corresponding n-gram
+    frequency:
+    
+    >>> crubadan.load_all_ngrams()
+
+    This can be rather slow and may take several seconds but the
+    end result is a FreqDist which can be accessed via "all_lang_freq":
+    
+    >>> crubadan.all_lang_freq # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+    {u'roh': FreqDist({u'<da': 33783, ...})}
+
+    Each of these FreqDist can further be accessed for any n-gram, for instance,
+    if you're interested in knowing the frequency of the n-gram 'the' in English:
+
+    >>> english_fd = crubadan.load_lang_ngrams('eng')
+    >>> english_fd['the']
+    728135
+
+    If, instead, you're interested only in a particular language and
+    don't want to load all the language files, you may use 
+    "load_lang_ngrams" method. The takes an ISO 639-3 code to 
+    identify the language you're interested in:
+
+    >>> crubadan.load_lang_ngrams('eng') # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+    FreqDist({u'<th': 954187, u'the': 728135, u'he>': 655273, u'ing': 360758, u'nd>': 359481, u'ng>': 351373,
+    u'<an': 345633, u'<to': 333091, u'ed>': 329517, u'<of': 316431, ...})
+
+    If you've used the "load_all_ngrams" method and want to
+    retrieve a FreqDist for a specific language anytime after,
+    pass the ISO 639-3 code for the language you're interested 
+    to the "lang_freq" method:
+    
+    >>> crubadan.lang_freq('eng') # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+    FreqDist({u'<th': 954187, u'the': 728135, u'he>': 655273, u'ing': 360758, u'nd>': 359481, u'ng>':
+    351373, u'<an': 345633, u'<to': 333091, u'ed>': 329517, u'<of': 316431, ...})
+
+    Note: this method will call the "load_lang_ngrams" method automatically
+    if you've not done so yourself and maybe slow on first run as a result.
+
+    Finally, although may always use the FreqDist directly
+    to retrieve a specific n-gram frequecy, you may use the
+    following convenience method instead:
+    
+    >>> crubadan.ngram_freq('eng', 'the')
+    728135
+
+    The above returns the frequency of the n-gram 'the' for English.
+    As usual, pass in the language of interest by its ISO 639-3 code
+    and the n-gram of interest.
+    
+    A n-gram that isn't found within the language will return 0:
+    >>> crubadan.ngram_freq('eng', 'test')
+    0
+
+    A language that isn't supported will throw an exception:
+    >>> crubadan.ngram_freq('elvish', 'test')
+    Traceback (most recent call last):
+    ...
+    KeyError: 'elvish'
+

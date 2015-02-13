@@ -24,6 +24,7 @@ from __future__ import print_function, unicode_literals
 
 from nltk.corpus.reader import CorpusReader
 from nltk.probability import FreqDist
+from nltk.data import ZipFilePathPointer
 
 import re
 from re import escape, search
@@ -104,7 +105,9 @@ class CrubadanCorpusReader(CorpusReader):
     def ngram_freq(self, lang, ngram):
         ''' Return n-gram frequency as integer given
             an ISO 639-3 language code and n-gram '''
-        
+        if lang not in self.all_lang_freq:
+            raise CrubadanError("Unsupproted language [" + lang + "].")
+            
         lf = self.all_lang_freq[lang]
         return lf[ngram]
         
@@ -152,6 +155,8 @@ class CrubadanCorpusReader(CorpusReader):
     
     def _load_lang_mapping_data(self):
         ''' Load language mappings between codes and description from table.txt '''
+        if isinstance(self.root, ZipFilePathPointer):
+            raise CrubadanError("Please install the 'crubadan' corpus first, use nltk.download()")
         
         mapper_file = self.root + '/' + self._LANG_MAPPER_FILE
         if self._LANG_MAPPER_FILE not in self.fileids():
