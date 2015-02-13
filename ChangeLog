@@ -1,3 +1,17 @@
+Version 3.0.2 2015-02-08
+* make pretty-printing method names consistent
+* improvements to Portuguese stemmer
+* transition-based dependency parsers
+* code clean ups, minor bug fixes
+
+Thanks to the following contributors to 3.0.2:
+Long Duong, Saimadhav Heblikar, Helder, Denis Krusko,
+Felipe Madrigal, Dmitrijs Milajevs, Nathan Schneider,
+0ssifrage, kiwipi.
+
+Version 3.0.1 2015-01-12
+* fix setup.py for new version of setuptools
+	
 Version 3.0.0 2014-09-07
 * minor bugfixes
 * added phrase extraction code by Liling Tan and Fredrik Hedman

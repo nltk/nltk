@@ -1,6 +1,15 @@
 NLTK News
 =========
 
+2015
+----
+
+NLTK 3.0.1 released : January 2015
+   Minor packaging update.
+
+2014
+----
+
 NLTK 3.0.0 released : September 2014
    Minor bugfixes. For full details see:
    https://github.com/nltk/nltk/blob/develop/ChangeLog
@@ -25,6 +34,9 @@ NLTK 3.0a4 released : June 2014
    For full details see:
    https://github.com/nltk/nltk/blob/develop/ChangeLog
    http://nltk.org/nltk3-alpha/
+
+2013
+----
 
 NLTK Book Updates : October 2013
    We are updating the NLTK book for Python 3 and NLTK 3; please see
