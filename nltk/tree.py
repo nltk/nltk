@@ -685,7 +685,7 @@ class Tree(list):
         from nltk.draw.tree import draw_trees
         draw_trees(self)
 
-    def pprint(self, sentence=None, highlight=(), **viz_args):
+    def pretty_print(self, sentence=None, highlight=(), **viz_args):
         """
         Pretty-print this tree as ASCII or Unicode art.
         For explanation of the arguments, see the documentation for
@@ -734,6 +734,17 @@ class Tree(list):
     def __str__(self):
         return self.pformat()
 
+    def pprint(self, **args):
+        """
+        Print a string representation of this Tree to 'stream'
+        """
+
+        if "stream" in args:
+            stream = args["stream"]
+        else:
+            stream = None
+        print(self.pformat(**args), file=stream)
+
     def pformat(self, margin=70, indent=0, nodesep='', parens='()', quotes=False):
         """
         :return: A pretty-printed string representation of this tree.
@@ -751,7 +762,7 @@ class Tree(list):
 
         # Try writing it on one line.
         s = self._pformat_flat(nodesep, parens, quotes)
-        if len(s)+indent < margin:
+        if len(s) + indent < margin:
             return s
 
         # If it doesn't fit on one line, then write it on multi-lines.

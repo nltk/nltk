@@ -44,7 +44,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'NLTK'
-copyright = '2013, NLTK Project'
+copyright = '2015, NLTK Project'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
