@@ -3,24 +3,30 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+
 from nltk import compat  # this fixes tkinter imports for Python 2.x
 
-from tkinter.font import Font
+try:
+    from tkinter.font import Font
 
-from tkinter import (Button, Frame, IntVar, Label,
-                     Listbox, Menu, Scrollbar, Tk)
+    from tkinter import (Button, Frame, IntVar, Label,
+                         Listbox, Menu, Scrollbar, Tk)
+    from nltk.draw.util import CanvasFrame, ShowText
 
-from nltk.draw.util import CanvasFrame, ShowText
+except ImportError:
+    """Ignore ImportError because tkinter might not be available."""
+
 from nltk.util import in_idle
 from nltk.tag import RegexpTagger
 from nltk.parse import MaltParser
 from nltk.sem.logic import Variable
 from nltk.sem.drt import DrsDrawer, DrtVariableExpression
 from nltk.sem.glue import DrtGlue
+
 
 class DrtGlueDemo(object):
     def __init__(self, examples):

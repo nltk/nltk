@@ -2,7 +2,7 @@
 #
 ## Natural Language Toolkit: substitute a pattern with a replacement in every file
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -12,26 +12,31 @@
 
 import os, stat, sys
 
-def update(file, pattern, replacement, verbose=False):
-    if verbose:
-        print("Updating:", file)
+def update(file, pattern, replacement):
 
-    # make sure we can write the file
-    old_perm = os.stat(file)[0]
-    if not os.access(file, os.W_OK):
-        os.chmod(file, old_perm | stat.S_IWRITE)
+    try:
+        # make sure we can write the file
+        old_perm = os.stat(file)[0]
+        if not os.access(file, os.W_OK):
+            os.chmod(file, old_perm | stat.S_IWRITE)
 
-    # write the file
-    s = open(file, 'rb').read()
-    t = s.replace(pattern, replacement)
-    out = open(file, 'wb')
-    out.write(t)
-    out.close()
+        # write the file
+        s = open(file, 'rb').read().decode('utf-8')
+        t = s.replace(pattern, replacement)
+        out = open(file, 'wb')
+        out.write(t.encode('utf-8'))
+        out.close()
 
-    # restore permissions
-    os.chmod(file, old_perm)
+        # restore permissions
+        os.chmod(file, old_perm)
 
-    return s != t
+        return s != t
+
+    except Exception:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        print('Unable to check {0:s} {1:s}'.format(file, str(exc_type)))
+        return 0
+
 
 if __name__ == '__main__':
 
@@ -51,3 +56,6 @@ if __name__ == '__main__':
                     count += 1
 
     print("Updated %d files" % count)
+
+
+

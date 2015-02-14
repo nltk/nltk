@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Semantic Interpretation
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -17,7 +17,7 @@ set-theoretic models.
 
 The package has two main components:
 
- - ``logic`` provides a parser for analyzing expressions of First
+ - ``logic`` provides support for analyzing expressions of First
    Order Logic (FOL).
  - ``evaluate`` allows users to recursively determine truth in a
    model for formulas of FOL.
@@ -41,18 +41,18 @@ is then created with domain and valuation as parameters.
     >>> m = Model(dom, val)
 """
 
-from nltk.sem.util import (batch_parse, batch_interpret, batch_evaluate,
-                           root_semrep, parse_valuation)
+from nltk.sem.util import (parse_sents, interpret_sents, evaluate_sents,
+                           root_semrep)
 from nltk.sem.evaluate import (Valuation, Assignment, Model, Undefined,
-                               is_rel, set2rel, arity)
-from nltk.sem.logic import (LogicParser, boolean_ops, binding_ops,
-                            equality_preds, parse_logic, Variable, ApplicationExpression)
+                               is_rel, set2rel, arity, read_valuation)
+from nltk.sem.logic import (boolean_ops, binding_ops, equality_preds,
+                           read_logic, Variable, Expression,
+                           ApplicationExpression, LogicalExpressionException)
 from nltk.sem.skolemize import skolemize
 from nltk.sem.lfg import FStructure
 from nltk.sem.relextract import (extract_rels, rtuple, clause)
 from nltk.sem.boxer import Boxer
-from nltk.sem.drt import DrtParser, DRS
-from nltk.sem.linearlogic import LinearLogicParser
+from nltk.sem.drt import DrtExpression, DRS
 
 # from nltk.sem.glue import Glue
 # from nltk.sem.hole import HoleSemantics

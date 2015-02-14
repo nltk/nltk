@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
@@ -44,7 +44,6 @@ import random
 import warnings
 import array
 from operator import itemgetter
-from itertools import islice
 from collections import defaultdict
 from functools import reduce
 from nltk import compat
@@ -161,7 +160,7 @@ class FreqDist(Counter):
 
         return _r_Nr
 
-    def _cumulative_frequencies(self, samples=None):
+    def _cumulative_frequencies(self, samples):
         """
         Return the cumulative frequencies of the specified samples.
         If no samples are specified, all counts are returned, starting
@@ -172,8 +171,6 @@ class FreqDist(Counter):
         :rtype: list(float)
         """
         cf = 0.0
-        if not samples:
-            samples = self.keys()
         for sample in samples:
             cf += self[sample]
             yield cf
@@ -220,9 +217,7 @@ class FreqDist(Counter):
         Plot samples from the frequency distribution
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
-        plotted.  If two integer parameters m, n are supplied, plot a
-        subset of the samples, beginning with m and stopping at n-1.
-        For a cumulative plot, specify cumulative=True.
+        plotted.  For a cumulative plot, specify cumulative=True.
         (Requires Matplotlib to be installed.)
 
         :param title: The title for the graph
@@ -238,7 +233,7 @@ class FreqDist(Counter):
 
         if len(args) == 0:
             args = [len(self)]
-        samples = list(islice(self, *args))
+        samples = [item for item, _ in self.most_common(*args)]
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         if cumulative:
@@ -266,16 +261,14 @@ class FreqDist(Counter):
         Tabulate the given samples from the frequency distribution (cumulative),
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
-        plotted.  If two integer parameters m, n are supplied, plot a
-        subset of the samples, beginning with m and stopping at n-1.
-        (Requires Matplotlib to be installed.)
+        plotted.
 
         :param samples: The samples to plot (default is all samples)
         :type samples: list
         """
         if len(args) == 0:
             args = [len(self)]
-        samples = list(islice(self, *args))
+        samples = [item for item, _ in self.most_common(*args)]
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         if cumulative:
@@ -315,9 +308,19 @@ class FreqDist(Counter):
 
         :rtype: string
         """
-        return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
+        return self.pformat()
 
-    def pprint(self, maxlen=10):
+    def pprint(self, maxlen=10, stream=None):
+        """
+        Print a string representation of this FreqDist to 'stream'
+
+        :param maxlen: The maximum number of items to print
+        :type maxlen: int
+        :param stream: The stream to print to. stdout by default
+        """
+        print(self.pformat(maxlen=maxlen), file=stream)
+
+    def pformat(self, maxlen=10):
         """
         Return a string representation of this FreqDist.
 
@@ -336,7 +339,7 @@ class FreqDist(Counter):
 
         :rtype: string
         """
-        return self.pprint()
+        return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
 
 
 ##//////////////////////////////////////////////////////
@@ -1226,7 +1229,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         r_Nr = self._freqdist.r_Nr()
         del r_Nr[0]
         return r_Nr
- 
+
     def _r_Nr(self):
         """
         Split the frequency distribution in two list (r, Nr), where Nr(r) > 0
@@ -1670,7 +1673,7 @@ class ConditionalFreqDist(defaultdict):
     the indexing operator:
 
         >>> cfdist[3]
-        <FreqDist with 3 samples and 6 outcomes>
+        FreqDist({'the': 3, 'dog': 2, 'not': 1})
         >>> cfdist[3].freq('the')
         0.5
         >>> cfdist[3]['dog']

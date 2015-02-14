@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===========
@@ -20,8 +20,10 @@ FreqDist
 
 Note that items are sorted in order of decreasing frequency; two items of the same frequency appear in indeterminate order.
 
+    >>> import itertools
     >>> both = nltk.FreqDist(text1 + text2)
-    >>> both.most_common()
+    >>> both_most_common = both.most_common()
+    >>> list(itertools.chain(*(sorted(ys) for k, ys in itertools.groupby(both_most_common, key=lambda t: t[1]))))
     [('fish', 3), ('anywhere', 2), ('good', 2), ('no', 2), ('porpoise', 2), ('!', 1), ('.', 1), ('a', 1), ('goes', 1), ('likes', 1), ('to', 1), ('without', 1)]
 
     >>> both == fd1 + nltk.FreqDist(text2)
@@ -64,15 +66,16 @@ We extract a small part (500 sentences) of the Brown corpus
 We create a HMM trainer - note that we need the tags and symbols
 from the whole corpus, not just the training corpus
 
-    >>> tag_set = list(set(tag for sent in corpus for (word,tag) in sent))
+    >>> from nltk.util import unique_list
+    >>> tag_set = unique_list(tag for sent in corpus for (word,tag) in sent)
     >>> print(len(tag_set))
     92
-    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
+    >>> symbols = unique_list(word for sent in corpus for (word,tag) in sent)
     >>> print(len(symbols))
     1464
     >>> print(len(tag_set))
     92
-    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
+    >>> symbols = unique_list(word for sent in corpus for (word,tag) in sent)
     >>> print(len(symbols))
     1464
     >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
@@ -103,7 +106,7 @@ Maximum Likelihood Estimation
 
     >>> mle = lambda fd, bins: MLEProbDist(fd)
     >>> train_and_test(mle)
-    14.43%
+    22.75%
 
 Laplace (= Lidstone with gamma==1)
 
@@ -150,11 +153,11 @@ our testing accordingly.
     ...         for sent in corpus[:100]]
 
 We will then need to redefine the rest of the training/testing variables
-    >>> tag_set = list(set(tag for sent in corpus for (word,tag) in sent))
+    >>> tag_set = unique_list(tag for sent in corpus for (word,tag) in sent)
     >>> len(tag_set)
     906
 
-    >>> symbols = list(set(word for sent in corpus for (word,tag) in sent))
+    >>> symbols = unique_list(word for sent in corpus for (word,tag) in sent)
     >>> len(symbols)
     1341
 
@@ -198,7 +201,7 @@ Issue 533: access cumulative frequencies with no arguments
     >>> fd = nltk.FreqDist('aab')
     >>> list(fd._cumulative_frequencies(['a']))
     [2.0]
-    >>> list(fd._cumulative_frequencies())
+    >>> list(fd._cumulative_frequencies(['a', 'b']))
     [2.0, 3.0]
 
 Issue 579: override clear to reset some variables
@@ -240,7 +243,7 @@ they don't get smoothed
 
     >>> import pickle
     >>> pd = MLEProbDist(fd)
-    >>> list(pd.samples()) == list(pickle.loads(pickle.dumps(pd)).samples())
+    >>> sorted(pd.samples()) == sorted(pickle.loads(pickle.dumps(pd)).samples())
     True
     >>> dpd = DictionaryConditionalProbDist({'x': pd})
     >>> unpickled = pickle.loads(pickle.dumps(dpd))

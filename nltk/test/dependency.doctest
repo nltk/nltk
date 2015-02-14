@@ -1,12 +1,16 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===================
 Dependency Grammars
 ===================
 
-    >>> from nltk.grammar import parse_dependency_grammar
-    >>> from nltk.parse import *
+    >>> from nltk.grammar import DependencyGrammar
+    >>> from nltk.parse import (
+    ...     DependencyGraph,
+    ...     ProjectiveDependencyParser,
+    ...     NonprojectiveDependencyParser,
+    ... )
 
 CoNLL Data
 ----------
@@ -31,12 +35,33 @@ CoNLL Data
     ... .       .       9       VMOD
     ... """
 
-
     >>> dg = DependencyGraph(treebank_data)
-    >>> print(dg.tree().pprint())
+    >>> dg.tree().pprint()
     (will
       (Vinken Pierre , (old (years 61)) ,)
       (join (board the) (as (director a nonexecutive)) (Nov. 29) .))
+    >>> for head, rel, dep in dg.triples():
+    ...     print(
+    ...         '({h[0]}, {h[1]}), {r}, ({d[0]}, {d[1]})'
+    ...         .format(h=head, r=rel, d=dep)
+    ...     )
+    (will, MD), SUB, (Vinken, NNP)
+    (Vinken, NNP), NMOD, (Pierre, NNP)
+    (Vinken, NNP), P, (,, ,)
+    (Vinken, NNP), NMOD, (old, JJ)
+    (old, JJ), AMOD, (years, NNS)
+    (years, NNS), NMOD, (61, CD)
+    (Vinken, NNP), P, (,, ,)
+    (will, MD), VC, (join, VB)
+    (join, VB), OBJ, (board, NN)
+    (board, NN), NMOD, (the, DT)
+    (join, VB), VMOD, (as, IN)
+    (as, IN), PMOD, (director, NN)
+    (director, NN), NMOD, (a, DT)
+    (director, NN), NMOD, (nonexecutive, JJ)
+    (join, VB), VMOD, (Nov., NNP)
+    (Nov., NNP), NMOD, (29, CD)
+    (join, VB), VMOD, (., .)
 
 Using the dependency-parsed version of the Penn Treebank corpus sample.
 
@@ -62,10 +87,41 @@ Using the dependency-parsed version of the Penn Treebank corpus sample.
     29  CD      16
     .   .       8
 
+Using the output of zpar (like Malt-TAB but with zero-based indexing)
+
+    >>> zpar_data = """
+    ... Pierre	NNP	1	NMOD
+    ... Vinken	NNP	7	SUB
+    ... ,	,	1	P
+    ... 61	CD	4	NMOD
+    ... years	NNS	5	AMOD
+    ... old	JJ	1	NMOD
+    ... ,	,	1	P
+    ... will	MD	-1	ROOT
+    ... join	VB	7	VC
+    ... the	DT	10	NMOD
+    ... board	NN	8	OBJ
+    ... as	IN	8	VMOD
+    ... a	DT	14	NMOD
+    ... nonexecutive	JJ	14	NMOD
+    ... director	NN	11	PMOD
+    ... Nov.	NNP	8	VMOD
+    ... 29	CD	15	NMOD
+    ... .	.	7	P
+    ... """
+
+    >>> zdg = DependencyGraph(zpar_data, zero_based=True)
+    >>> print(zdg.tree())
+    (will
+      (Vinken Pierre , (old (years 61)) ,)
+      (join (board the) (as (director a nonexecutive)) (Nov. 29))
+      .)
+
+
 Projective Dependency Parsing
 -----------------------------
 
-    >>> grammar = parse_dependency_grammar("""
+    >>> grammar = DependencyGrammar.fromstring("""
     ... 'fell' -> 'price' | 'stock'
     ... 'price' -> 'of' 'the'
     ... 'of' -> 'stock'
@@ -89,7 +145,7 @@ Projective Dependency Parsing
 Non-Projective Dependency Parsing
 ---------------------------------
 
-    >>> grammar = parse_dependency_grammar("""
+    >>> grammar = DependencyGrammar.fromstring("""
     ... 'taught' -> 'play' | 'man'
     ... 'man' -> 'the'
     ... 'play' -> 'golf' | 'dog' | 'to'
@@ -106,14 +162,22 @@ Non-Projective Dependency Parsing
       'dog' -> 'his'
 
     >>> dp = NonprojectiveDependencyParser(grammar)
-    >>> for g in dp.parse(['the', 'man', 'taught', 'his', 'dog', 'to', 'play', 'golf']):
-    ...     print(g)
-    [{'address': 0, 'deps': 3, 'rel': 'TOP', 'tag': 'TOP', 'word': None},
-     {'address': 1, 'deps': [], 'word': 'the'},
-     {'address': 2, 'deps': [1], 'word': 'man'},
-     {'address': 3, 'deps': [2, 7], 'word': 'taught'},
-     {'address': 4, 'deps': [], 'word': 'his'},
-     {'address': 5, 'deps': [4], 'word': 'dog'},
-     {'address': 6, 'deps': [], 'word': 'to'},
-     {'address': 7, 'deps': [5, 6, 8], 'word': 'play'},
-     {'address': 8, 'deps': [], 'word': 'golf'}]
+    >>> g, = dp.parse(['the', 'man', 'taught', 'his', 'dog', 'to', 'play', 'golf'])
+
+    >>> print(g.root['word'])
+    taught
+
+    >>> for _, node in sorted(g.nodes.items()):
+    ...     if node['word'] is not None:
+    ...         print('{address} {word}: {d}'.format(d=node['deps'][''], **node))
+    1 the: []
+    2 man: [1]
+    3 taught: [2, 7]
+    4 his: []
+    5 dog: [4]
+    6 to: []
+    7 play: [5, 6, 8]
+    8 golf: []
+
+    >>> print(g.tree())
+    (taught (man the) (play (dog his) to golf))

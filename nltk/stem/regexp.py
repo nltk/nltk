@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
@@ -20,7 +20,7 @@ class RegexpStemmer(StemmerI):
     be removed.
 
         >>> from nltk.stem import RegexpStemmer
-        >>> st = RegexpStemmer('ing$|s$|e$', min=4)
+        >>> st = RegexpStemmer('ing$|s$|e$|able$', min=4)
         >>> st.stem('cars')
         'car'
         >>> st.stem('mass')
@@ -31,6 +31,8 @@ class RegexpStemmer(StemmerI):
         'bee'
         >>> st.stem('compute')
         'comput'
+        >>> st.stem('advisable')
+        'advis'
 
     :type regexp: str or regexp
     :param regexp: The regular expression that should be used to

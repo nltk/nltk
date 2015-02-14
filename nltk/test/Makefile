@@ -7,7 +7,7 @@ ERRS := $(TESTS:.doctest=.errs)
 HTML = $(TESTS:.doctest=.html)
 
 .doctest.errs:
-	python ./doctest_driver.py $< > $@
+	python ./runtests.py $< > $@
 
 .doctest.html:
 	rst2html.py $< > $@

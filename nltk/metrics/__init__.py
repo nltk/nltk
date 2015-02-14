@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Metrics
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -20,6 +20,7 @@ from nltk.metrics.distance        import (edit_distance, binary_distance,
                                           jaccard_distance, masi_distance,
                                           interval_distance, custom_distance,
                                           presence, fractional_presence)
+from nltk.metrics.paice           import Paice
 from nltk.metrics.segmentation    import windowdiff, ghd, pk
 from nltk.metrics.agreement       import AnnotationTask
 from nltk.metrics.association     import (NgramAssocMeasures, BigramAssocMeasures,

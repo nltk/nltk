@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to TADM Classifier
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -21,7 +21,7 @@ def config_tadm(bin=None):
     global _tadm_bin
     _tadm_bin = find_binary(
         'tadm', bin,
-        env_vars=['TADM_DIR'],
+        env_vars=['TADM'],
         binary_names=['tadm'],
         url='http://tadm.sf.net')
 
