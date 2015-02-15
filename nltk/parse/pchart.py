@@ -212,7 +212,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         # Initialize the chart.
         for edge in bu_init.apply(chart, grammar):
             if self._trace > 1:
-                print('  %-50s [%s]' % (chart.pp_edge(edge,width=2),
+                print('  %-50s [%s]' % (chart.pretty_format_edge(edge,width=2),
                                         edge.prob()))
             queue.append(edge)
 
@@ -227,7 +227,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             # Get the best edge.
             edge = queue.pop()
             if self._trace > 0:
-                print('  %-50s [%s]' % (chart.pp_edge(edge,width=2),
+                print('  %-50s [%s]' % (chart.pretty_format_edge(edge,width=2),
                                         edge.prob()))
 
             # Apply BU & FR to it.
@@ -294,7 +294,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             split = len(queue)-self.beam_size
             if self._trace > 2:
                 for edge in queue[:split]:
-                    print('  %-50s [DISCARDED]' % chart.pp_edge(edge,2))
+                    print('  %-50s [DISCARDED]' % chart.pretty_format_edge(edge,2))
             del queue[:split]
 
 class InsideChartParser(BottomUpProbabilisticChartParser):
@@ -401,7 +401,6 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     from nltk.parse import pchart
 
     # Define two demos.  Each demo has a sentence and a grammar.
-    
     toy_pcfg1 = PCFG.fromstring("""
     S -> NP VP [1.0]
     NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
@@ -439,8 +438,6 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     Det  -> 'my'          [.28]
     """)
 
-    
-    
     demos = [('I saw John with my telescope', toy_pcfg1),
              ('the boy saw Jack with Bob under the table with a telescope',
               toy_pcfg2)]
