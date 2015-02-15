@@ -6,6 +6,9 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import tempfile
 import pickle
 
@@ -18,6 +21,7 @@ from sklearn.datasets import load_svmlight_file
 from sklearn import svm
 
 from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
+
 
 
 class Configuration(object):
@@ -41,9 +45,7 @@ class Configuration(object):
         """
         # dep_graph.nodes contain list of token for a sentence
         self.stack = [0]  # The root element
-        self.buffer = range(
-            1, len(
-                dep_graph.nodes))  # The rest is in the buffer
+        self.buffer = list(range(1, len(dep_graph.nodes)))  # The rest is in the buffer
         self.arcs = []  # empty set of arc
         self._tokens = dep_graph.nodes
         self._max_address = len(self.buffer)
