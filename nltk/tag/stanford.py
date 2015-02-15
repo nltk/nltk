@@ -36,7 +36,7 @@ class StanfordTagger(TaggerI):
     _SEPARATOR = ''
     _JAR = ''
 
-    def __init__(self, path_to_model, path_to_jar=None, encoding='ascii', verbose=False, java_options='-mx1000m'):
+    def __init__(self, path_to_model, path_to_jar=None, encoding='utf8', verbose=False, java_options='-mx1000m'):
 
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
