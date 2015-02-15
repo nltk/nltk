@@ -212,7 +212,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         # Initialize the chart.
         for edge in bu_init.apply(chart, grammar):
             if self._trace > 1:
-                print('  %-50s [%s]' % (chart.pp_edge(edge,width=2),
+                print('  %-50s [%s]' % (chart.pretty_format_edge(edge,width=2),
                                         edge.prob()))
             queue.append(edge)
 
@@ -227,7 +227,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             # Get the best edge.
             edge = queue.pop()
             if self._trace > 0:
-                print('  %-50s [%s]' % (chart.pp_edge(edge,width=2),
+                print('  %-50s [%s]' % (chart.pretty_format_edge(edge,width=2),
                                         edge.prob()))
 
             # Apply BU & FR to it.
@@ -294,7 +294,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             split = len(queue)-self.beam_size
             if self._trace > 2:
                 for edge in queue[:split]:
-                    print('  %-50s [DISCARDED]' % chart.pp_edge(edge,2))
+                    print('  %-50s [DISCARDED]' % chart.pretty_format_edge(edge,2))
             del queue[:split]
 
 class InsideChartParser(BottomUpProbabilisticChartParser):

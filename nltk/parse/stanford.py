@@ -73,7 +73,7 @@ class StanfordParser(ParserI):
 
     def __init__(self, path_to_jar=None, path_to_models_jar=None,
                  model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz',
-                 encoding='UTF-8', verbose=False, java_options='-mx1000m'):
+                 encoding='utf8', verbose=False, java_options='-mx1000m'):
 
         self._stanford_jar = find_jar(
             self._JAR, path_to_jar,
