@@ -109,9 +109,9 @@ class MaltParser(ParserI):
 
         :param sentence: Input sentence to parse
         :type sentence: list(tuple(str, str))
-        :return: ``DependencyGraph`` the dependency graph representation of the sentence
+        :return: iter(DependencyGraph) the possible dependency graph representations of the sentence
         """
-        return self.tagged_parse_sents([sentence], verbose)[0]
+        return next(self.tagged_parse_sents([sentence], verbose))
 
     def tagged_parse_sents(self, sentences, verbose=False):
         """
@@ -156,7 +156,8 @@ class MaltParser(ParserI):
                 raise Exception("MaltParser parsing (%s) failed with exit "
                                 "code %d" % (' '.join(cmd), ret))
 
-            return iter(DependencyGraph.load(output_file.name))
+            # Must return iter(iter(Tree))
+            return (iter([dep_graph]) for dep_graph in  DependencyGraph.load(output_file.name))
         finally:
             input_file.close()
             os.remove(input_file.name)
@@ -241,6 +242,8 @@ def demo():
 
     maltParser.parse_one(['John','sees','Mary'], verbose=verbose).tree().pprint()
     maltParser.parse_one(['a','man','runs'], verbose=verbose).tree().pprint()
-
+    
+    next(maltParser.tagged_parse([('John','NNP'),('sees','VB'),('Mary','NNP')], verbose)).tree().pprint()
+    
 if __name__ == '__main__':
     demo()
