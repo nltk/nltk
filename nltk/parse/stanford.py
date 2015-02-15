@@ -29,10 +29,16 @@ class StanfordParser(ParserI):
     >>> parser=StanfordParser(
     ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
     ... )
-    >>> parser.raw_parse_sents((
+
+    >>> list(parser.raw_parse("the quick brown fox jumps over the lazy dog"))
+    [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']), 
+    Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), 
+    Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])])]
+
+    >>> sum([list(dep_graphs) for dep_graphs in parser.raw_parse_sents((
     ...     "the quick brown fox jumps over the lazy dog",
     ...     "the quick grey wolf jumps over the lazy fox"
-    ... ))
+    ... ))], [])
     [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
     Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree('NP',
@@ -40,17 +46,17 @@ class StanfordParser(ParserI):
     [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), Tree('NP', [Tree('DT', ['the']),
     Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
 
-    >>> parser.parse_sents((
+    >>> sum([list(dep_graphs) for dep_graphs in parser.parse_sents((
     ...     "I 'm a dog".split(),
     ...     "This is my friends ' cat ( the tabby )".split(),
-    ... ))
+    ... ))], [])
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
     Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
     [Tree('DT', ['This'])]), Tree('VP', [Tree('VBZ', ['is']), Tree('NP', [Tree('NP', [Tree('NP', [Tree('PRP$', ['my']),
     Tree('NNS', ['friends']), Tree('POS', ["'"])]), Tree('NN', ['cat'])]), Tree('PRN', [Tree('-LRB-', ['-LRB-']),
     Tree('NP', [Tree('DT', ['the']), Tree('NN', ['tabby'])]), Tree('-RRB-', ['-RRB-'])])])])])])]
 
-    >>> parser.tagged_parse_sents((
+    >>> sum([list(dep_graphs) for dep_graphs in parser.tagged_parse_sents((
     ...     (
     ...         ("The", "DT"),
     ...         ("quick", "JJ"),
@@ -63,7 +69,7 @@ class StanfordParser(ParserI):
     ...         ("dog", "NN"),
     ...         (".", "."),
     ...     ),
-    ... ))
+    ... ))],[])
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
     [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
@@ -103,11 +109,11 @@ class StanfordParser(ParserI):
         cur_lines = []
         for line in output_.splitlines(False):
             if line == '':
-                res.append(Tree.fromstring('\n'.join(cur_lines)))
+                res.append(iter([Tree.fromstring('\n'.join(cur_lines))]))
                 cur_lines = []
             else:
                 cur_lines.append(line)
-        return res
+        return iter(res)
 
     def parse_sents(self, sentences, verbose=False):
         """
@@ -120,7 +126,7 @@ class StanfordParser(ParserI):
 
         :param sentences: Input sentences to parse
         :type sentences: list(list(str))
-        :rtype: list(Tree)
+        :rtype: iter(iter(Tree))
         """
         cmd = [
             'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
@@ -141,9 +147,9 @@ class StanfordParser(ParserI):
 
         :param sentence: Input sentence to parse
         :type sentence: str
-        :rtype: Tree
+        :rtype: iter(Tree)
         """
-        return self.raw_parse_sents((sentence,), verbose)
+        return next(self.raw_parse_sents([sentence], verbose))
 
     def raw_parse_sents(self, sentences, verbose=False):
         """
@@ -153,7 +159,7 @@ class StanfordParser(ParserI):
 
         :param sentences: Input sentences to parse
         :type sentences: list(str)
-        :rtype: list(Tree)
+        :rtype: iter(iter(Tree))
         """
         cmd = [
             'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
@@ -171,9 +177,9 @@ class StanfordParser(ParserI):
 
         :param sentence: Input sentence to parse
         :type sentence: list(tuple(str, str))
-        :rtype: Tree
+        :rtype: iter(Tree)
         """
-        return self.tagged_parse_sents([sentence], verbose)[0]
+        return next(self.tagged_parse_sents([sentence], verbose))
 
     def tagged_parse_sents(self, sentences, verbose=False):
         """
@@ -183,7 +189,7 @@ class StanfordParser(ParserI):
 
         :param sentences: Input sentences to parse
         :type sentences: list(list(tuple(str, str)))
-        :rtype: Tree
+        :rtype: iter(iter(Tree))
         """
         tag_separator = '/'
         cmd = [
