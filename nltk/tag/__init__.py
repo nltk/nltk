@@ -77,15 +77,10 @@ from nltk.tag.senna         import SennaTagger, SennaChunkTagger, SennaNERTagger
 from nltk.tag.mapping       import tagset_mapping, map_tag
 
 from nltk.data import load
-from nltk.compat import PY3
 
 
 # Standard treebank POS tagger
-
-if PY3:
-    _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/PY3/english.pickle'
-else:
-    _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
+_POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
 
 def pos_tag(tokens):
     """
