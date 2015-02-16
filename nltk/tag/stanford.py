@@ -56,7 +56,13 @@ class StanfordTagger(TaggerI):
       raise NotImplementedError
 
     def tag(self, tokens):
-        return self.tag_sents([tokens])[0]
+        temp = self.tag_sents([tokens])
+        # Handle the case where return more than one sentence. 
+        # Note that if it is the case, user should use tag_sents instead  
+        result = []
+        for sent in temp:
+            result += sent
+        return result 
 
     def tag_sents(self, sentences):
         encoding = self._encoding
@@ -158,9 +164,10 @@ class NERTagger(StanfordTagger):
 
     @property
     def _cmd(self):
+        # Adding -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerOptions tokenizeNLs=false for not using stanford Tokenizer  
         return ['edu.stanford.nlp.ie.crf.CRFClassifier',
                 '-loadClassifier', self._stanford_model, '-textFile',
-                self._input_file_path, '-outputFormat', self._FORMAT]
+                self._input_file_path, '-outputFormat', self._FORMAT, '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerOptions','\"tokenizeNLs=false\"']
 
     def parse_output(self, text):
       if self._FORMAT == 'slashTags':
