@@ -12,10 +12,13 @@ import pickle
 from os import remove
 from copy import deepcopy
 from operator import itemgetter
-from scipy import sparse
-from numpy import array
-from sklearn.datasets import load_svmlight_file
-from sklearn import svm
+try:
+    from scipy import sparse
+    from numpy import array
+    from sklearn.datasets import load_svmlight_file
+    from sklearn import svm
+except ImportError:
+    pass
 
 from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
 
@@ -762,6 +765,7 @@ def demo():
 
     Note that result is very poor because of only one training example.
     """
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
