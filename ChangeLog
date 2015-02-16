@@ -1,13 +1,15 @@
-Version 3.0.2 2015-02-08
+Version 3.0.2 2015-02-15
 * make pretty-printing method names consistent
 * improvements to Portuguese stemmer
 * transition-based dependency parsers
+* NKJP corpus reader
 * code clean ups, minor bug fixes
 
 Thanks to the following contributors to 3.0.2:
+	
 Long Duong, Saimadhav Heblikar, Helder, Denis Krusko,
-Felipe Madrigal, Dmitrijs Milajevs, Nathan Schneider,
-0ssifrage, kiwipi.
+Alex Louden, Felipe Madrigal, Dmitrijs Milajevs, Nathan
+Schneider, 0ssifrage, ducki13, kiwipi.
 
 Version 3.0.1 2015-01-12
 * fix setup.py for new version of setuptools
