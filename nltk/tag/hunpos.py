@@ -34,7 +34,7 @@ class HunposTagger(TaggerI):
     Example:
 
         >>> from nltk.tag.hunpos import HunposTagger
-        >>> ht = HunposTagger('english.model')
+        >>> ht = HunposTagger('en_wsj.model')
         >>> ht.tag('What is the airspeed of an unladen swallow ?'.split())
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
         >>> ht.close()
@@ -44,7 +44,7 @@ class HunposTagger(TaggerI):
     free system resources. The class supports the context manager interface; if
     used in a with statement, the close() method is invoked automatically:
 
-        >>> with HunposTagger('english.model') as ht:
+        >>> with HunposTagger('en_wsj.model') as ht:
         ...     ht.tag('What is the airspeed of an unladen swallow ?'.split())
         ...
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
@@ -125,7 +125,7 @@ class HunposTagger(TaggerI):
 def setup_module(module):
     from nose import SkipTest
     try:
-        HunposTagger('english.model')
+        HunposTagger('en_wsj.model')
     except LookupError:
         raise SkipTest("HunposTagger is not available")
 
