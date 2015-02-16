@@ -56,13 +56,7 @@ class StanfordTagger(TaggerI):
       raise NotImplementedError
 
     def tag(self, tokens):
-        temp = self.tag_sents([tokens])
-        # Handle the case where return more than one sentence. 
-        # Note that if it is the case, user should use tag_sents instead  
-        result = []
-        for sent in temp:
-            result += sent
-        return result 
+        return list(self.tag_sents([tokens]))
 
     def tag_sents(self, sentences):
         encoding = self._encoding
