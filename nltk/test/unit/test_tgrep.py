@@ -8,7 +8,6 @@ Unit tests for TGrep search implementation for NTLK ParentedTrees.
 '''
 
 from nltk.tree import ParentedTree
-import sys
 from .. import tgrep
 import unittest
 
@@ -385,5 +384,5 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, 'S < (A < B < C)'),
                          [(0,)])
 
-if __name__ == '__main__' and sys.argv != ['']:
+if __name__ == '__main__':
     unittest.main()
