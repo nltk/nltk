@@ -48,11 +48,12 @@ def ancestors(node):
     This method will not work with leaf nodes, since there is no way
     to recover the parent.
     '''
-    # if node is a leaf, we cannot retrieve its parent
-    if not hasattr(node, 'parent'):
-        return []
     results = []
-    current = node.parent()
+    try:
+        current = node.parent()
+    except AttributeError:
+        # if node is a leaf, we cannot retrieve its parent
+        return results
     while current:
         results.append(current)
         current = current.parent()
@@ -63,11 +64,12 @@ def unique_ancestors(node):
     Returns the list of all nodes dominating the given node, where
     there is only a single path of descent.
     '''
-    # if node is a leaf, we cannot retrieve its parent
-    if not hasattr(node, 'parent'):
-        return []
     results = []
-    current = node.parent()
+    try:
+        current = node.parent()
+    except AttributeError:
+        # if node is a leaf, we cannot retrieve its parent
+        return results
     while current and len(current) == 1:
         results.append(current)
         current = current.parent()
@@ -78,27 +80,32 @@ def _descendants(node):
     Returns the list of all nodes which are descended from the given
     tree node in some way.
     '''
-    if not hasattr(node, 'treepositions'):
+    try:
+        treepos = node.treepositions()
+    except AttributeError:
         return []
-    return [node[x] for x in node.treepositions()[1:]]
+    return [node[x] for x in treepos[1:]]
 
 def _leftmost_descendants(node):
     '''
     Returns the set of all nodes descended in some way through
     left branches from this node.
     '''
-    if not hasattr(node, 'treepositions'):
+    try:
+        treepos = node.treepositions()
+    except AttributeError:
         return []
-    return [node[x] for x in node.treepositions()[1:] if all(y == 0 for y in x)]
+    return [node[x] for x in treepos[1:] if all(y == 0 for y in x)]
 
 def _rightmost_descendants(node):
     '''
     Returns the set of all nodes descended in some way through
     right branches from this node.
     '''
-    if not hasattr(node, 'treepositions'):
+    try:
+        rightmost_leaf = max(node.treepositions())
+    except AttributeError:
         return []
-    rightmost_leaf = max(node.treepositions())
     return [node[rightmost_leaf[:i]] for i in range(1, len(rightmost_leaf) + 1)]
 
 def _unique_descendants(node):
@@ -117,10 +124,11 @@ def _before(node):
     '''
     Returns the set of all nodes that are before the given node.
     '''
-    if not hasattr(node, 'root') or not hasattr(node, 'treeposition'):
+    try:
+        pos = node.treeposition()
+        tree = node.root()
+    except AttributeError:
         return []
-    pos = node.treeposition()
-    tree = node.root()
     return [tree[x] for x in tree.treepositions()
             if x[:len(pos)] < pos[:len(x)]]
 
@@ -133,9 +141,11 @@ def _immediately_before(node):
     symbol (word) produced by A immediately precedes the first
     terminal symbol produced by B.
     '''
-    if not hasattr(node, 'root') or not hasattr(node, 'treeposition'):
+    try:
+        pos = node.treeposition()
+        tree = node.root()
+    except AttributeError:
         return []
-    pos = node.treeposition()
     # go "upwards" from pos until there is a place we can go to the left
     idx = len(pos) - 1
     while 0 <= idx and pos[idx] == 0:
@@ -144,17 +154,18 @@ def _immediately_before(node):
         return []
     pos = list(pos[:idx + 1])
     pos[-1] -= 1
-    before = node.root()[pos]
+    before = tree[pos]
     return [before] + _rightmost_descendants(before)
 
 def _after(node):
     '''
     Returns the set of all nodes that are after the given node.
     '''
-    if not hasattr(node, 'root') or not hasattr(node, 'treeposition'):
+    try:
+        pos = node.treeposition()
+        tree = node.root()
+    except AttributeError:
         return []
-    pos = node.treeposition()
-    tree = node.root()
     return [tree[x] for x in tree.treepositions()
             if x[:len(pos)] > pos[:len(x)]]
 
@@ -167,14 +178,15 @@ def _immediately_after(node):
     symbol (word) produced by A immediately follows the last
     terminal symbol produced by B.
     '''
-    if (not hasattr(node, 'root') or not hasattr(node, 'treeposition') or
-        not hasattr(node, 'parent')):
+    try:
+        pos = node.treeposition()
+        tree = node.root()
+        current = node.parent()
+    except AttributeError:
         return []
-    pos = node.treeposition()
     # go "upwards" from pos until there is a place we can go to the
     # right
     idx = len(pos) - 1
-    current = node.parent()
     while 0 <= idx and pos[idx] == len(current) - 1:
         idx -= 1
         current = current.parent()
@@ -182,7 +194,7 @@ def _immediately_after(node):
         return []
     pos = list(pos[:idx + 1])
     pos[-1] += 1
-    after = node.root()[pos]
+    after = tree[pos]
     return [after] + _leftmost_descendants(after)
 
 def _tgrep_node_literal_value(node):
