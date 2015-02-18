@@ -7,6 +7,7 @@ Unit tests for TGrep search implementation for NTLK ParentedTrees.
 (c) 16 March, 2013 Will Roberts
 '''
 
+from builtins import range
 from nltk.tree import ParentedTree
 from .. import tgrep
 import unittest

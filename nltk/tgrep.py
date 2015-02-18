@@ -38,7 +38,7 @@ Tgrep2 source:
 http://tedlab.mit.edu/~dr/Tgrep2/
 '''
 
-from builtins import bytes, str
+from builtins import bytes, range, str
 import nltk.tree
 import pyparsing
 import re
