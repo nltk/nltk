@@ -167,8 +167,9 @@ class TestSequenceFunctions(unittest.TestCase):
         Test a simple use of tgrep for finding nodes matching a given
         pattern.
         '''
-        tree = ParentedTree('(S (NP (DT the) (JJ big) (NN dog)) '
-                         '(VP bit) (NP (DT a) (NN cat)))')
+        tree = ParentedTree.fromstring(
+            '(S (NP (DT the) (JJ big) (NN dog)) '
+            '(VP bit) (NP (DT a) (NN cat)))')
         self.assertEqual(tgrep.tgrep_positions(tree, 'NN'),
                          [(0,2), (2,1)])
         self.assertEqual(tgrep.tgrep_nodes(tree, 'NN'),
@@ -180,7 +181,7 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         Test regex matching on nodes.
         '''
-        tree = ParentedTree('(S (NP-SBJ x) (NP x) (NNP x) (VP x))')
+        tree = ParentedTree.fromstring('(S (NP-SBJ x) (NP x) (NNP x) (VP x))')
         # This is a regular expression that matches any node whose
         # name starts with NP, including NP-SBJ:
         self.assertEqual(tgrep.tgrep_positions(tree, '/^NP/'),
@@ -190,7 +191,7 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         Test matching on nodes based on NLTK tree position.
         '''
-        tree = ParentedTree('(S (NP-SBJ x) (NP x) (NNP x) (VP x))')
+        tree = ParentedTree.fromstring('(S (NP-SBJ x) (NP x) (NNP x) (VP x))')
         # test all tree positions that are not leaves
         leaf_positions = set([tree.leaf_treeposition(x)
                               for x in range(len(tree.leaves()))])
@@ -206,7 +207,7 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         Test matching nodes based on dominance relations.
         '''
-        tree = ParentedTree('(S (A (T x)) (B (N x)))')
+        tree = ParentedTree.fromstring('(S (A (T x)) (B (N x)))')
         self.assertEqual(tgrep.tgrep_positions(tree, '* < T'),
                          [(0,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* < T > S'),
@@ -232,7 +233,7 @@ class TestSequenceFunctions(unittest.TestCase):
                          [(), (0,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* !<< T'),
                          [(0, 0), (0, 0, 0), (1,), (1, 0), (1, 0, 0)])
-        tree = ParentedTree('(S (A (T x)) (B (T x) (N x )))')
+        tree = ParentedTree.fromstring('(S (A (T x)) (B (T x) (N x )))')
         self.assertEqual(tgrep.tgrep_positions(tree, '* <: T'),
                          [(0,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* < T'),
@@ -242,14 +243,14 @@ class TestSequenceFunctions(unittest.TestCase):
                           (1, 1), (1, 1, 0)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* !<: T > S'),
                          [(1,)])
-        tree = ParentedTree('(S (T (A x) (B x)) (T (C x)))')
+        tree = ParentedTree.fromstring('(S (T (A x) (B x)) (T (C x)))')
         self.assertEqual(tgrep.tgrep_positions(tree, '* >: T'),
                          [(1, 0)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* !>: T'),
                          [(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0),
                           (1,), (1, 0, 0)])
-        tree = ParentedTree('(S (A (B (C (D (E (T x))))))'
-                            ' (A (B (C (D (E (T x))) (N x)))))')
+        tree = ParentedTree.fromstring('(S (A (B (C (D (E (T x))))))'
+                                       ' (A (B (C (D (E (T x))) (N x)))))')
         self.assertEqual(tgrep.tgrep_positions(tree, '* <<: T'),
                          [(0,), (0, 0), (0, 0, 0), (0, 0, 0, 0),
                           (0, 0, 0, 0, 0), (1, 0, 0, 0), (1, 0, 0, 0, 0)])
@@ -261,7 +262,7 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         Test matching sister nodes in a tree.
         '''
-        tree = ParentedTree('(S (A x) (B x) (C x))')
+        tree = ParentedTree.fromstring('(S (A x) (B x) (C x))')
         self.assertEqual(tgrep.tgrep_positions(tree, '* $. B'),  [(0,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* $.. B'), [(0,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* $, B'),  [(2,)])
@@ -272,7 +273,7 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         Test matching nodes based on their index in their parent node.
         '''
-        tree = ParentedTree('(S (A x) (B x) (C x))')
+        tree = ParentedTree.fromstring('(S (A x) (B x) (C x))')
         self.assertEqual(tgrep.tgrep_positions(tree, '* >, S'),   [(0,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* >1 S'),   [(0,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* >2 S'),   [(1,)])
@@ -281,8 +282,9 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, '* >-1 S'),  [(2,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* >-2 S'),  [(1,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* >-3 S'),  [(0,)])
-        tree = ParentedTree('(S (D (A x) (B x) (C x)) (E (B x) (C x) (A x)) '
-                            '(F (C x) (A x) (B x)))')
+        tree = ParentedTree.fromstring(
+            '(S (D (A x) (B x) (C x)) (E (B x) (C x) (A x)) '
+            '(F (C x) (A x) (B x)))')
         self.assertEqual(tgrep.tgrep_positions(tree, '* <, A'),   [(0,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* <1 A'),   [(0,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* <2 A'),   [(2,)])
@@ -296,9 +298,9 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         Test matching nodes based on precedence relations.
         '''
-        tree = ParentedTree('(S (NP (NP (PP x)) (NP (AP x)))'
-                            ' (VP (AP (X (PP x)) (Y (AP x))))'
-                            ' (NP (RC (NP (AP x)))))')
+        tree = ParentedTree.fromstring('(S (NP (NP (PP x)) (NP (AP x)))'
+                                       ' (VP (AP (X (PP x)) (Y (AP x))))'
+                                       ' (NP (RC (NP (AP x)))))')
         self.assertEqual(tgrep.tgrep_positions(tree, '* . X'),
                          [(0,), (0, 1), (0, 1, 0)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* . Y'),
@@ -322,27 +324,27 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         Test the Basic Examples from the TGrep2 manual.
         '''
-        tree = ParentedTree('(S (NP (AP x)) (NP (PP x)))')
+        tree = ParentedTree.fromstring('(S (NP (AP x)) (NP (PP x)))')
         # This matches any NP node that immediately dominates a PP:
         self.assertEqual(tgrep.tgrep_positions(tree, 'NP < PP'),
                          [(1,)])
 
-        tree = ParentedTree('(S (NP x) (VP x) (NP (PP x)) (VP x))')
+        tree = ParentedTree.fromstring('(S (NP x) (VP x) (NP (PP x)) (VP x))')
         # This matches an NP that dominates a PP and is immediately
         # followed by a VP:
         self.assertEqual(tgrep.tgrep_positions(tree, 'NP << PP . VP'),
                          [(2,)])
 
-        tree = ParentedTree('(S (NP (AP x)) (NP (PP x)) '
-                            '(NP (DET x) (NN x)) (VP x))')
+        tree = ParentedTree.fromstring('(S (NP (AP x)) (NP (PP x)) '
+                                       '(NP (DET x) (NN x)) (VP x))')
         # This matches an NP that dominates a PP or is immediately
         # followed by a VP:
         self.assertEqual(tgrep.tgrep_positions(tree, 'NP << PP | . VP'),
                          [(1,), (2,)])
 
-        tree = ParentedTree('(S (NP (NP (PP x)) (NP (AP x)))'
-                            ' (VP (AP (NP (PP x)) (NP (AP x))))'
-                            ' (NP (RC (NP (AP x)))))')
+        tree = ParentedTree.fromstring('(S (NP (NP (PP x)) (NP (AP x)))'
+                                       ' (VP (AP (NP (PP x)) (NP (AP x))))'
+                                       ' (NP (RC (NP (AP x)))))')
         # This matches an NP that does not dominate a PP. Also, the NP
         # must either have a parent that is an NP or be dominated by a
         # VP:
@@ -350,31 +352,34 @@ class TestSequenceFunctions(unittest.TestCase):
                                                'NP !<< PP [> NP | >> VP]'),
                          [(0, 1), (1, 0, 1)])
 
-        tree = ParentedTree('(S (NP (AP (PP x) (VP x))) '
-                            '(NP (AP (PP x) (NP x))) (NP x))')
+        tree = ParentedTree.fromstring('(S (NP (AP (PP x) (VP x))) '
+                                       '(NP (AP (PP x) (NP x))) (NP x))')
         # This matches an NP that dominates a PP which itself is
         # immediately followed by a VP. Note the use of parentheses to
         # group ". VP" with the PP rather than with the NP:
         self.assertEqual(tgrep.tgrep_positions(tree, 'NP << (PP . VP)'),
                          [(0,)])
 
-        tree = ParentedTree('(S (NP (DET a) (NN cat) (PP (IN on) (NP x)))'
-                            ' (NP (DET a) (NN cat) (PP (IN on) (NP x)) (PP x))'
-                            ' (NP x))')
+        tree = ParentedTree.fromstring(
+            '(S (NP (DET a) (NN cat) (PP (IN on) (NP x)))'
+            ' (NP (DET a) (NN cat) (PP (IN on) (NP x)) (PP x))'
+            ' (NP x))')
         # This matches an NP whose last child is a PP that begins with
         # the preposition "on":
         self.assertEqual(tgrep.tgrep_positions(tree,
                                                'NP <\' (PP <, (IN < on))'),
                          [(0,)])
 
-        tree = ParentedTree('(S (S (C x) (A (B x))) (S (C x) (A x)) '
-                            '(S (D x) (A (B x))))')
+        tree = ParentedTree.fromstring(
+            '(S (S (C x) (A (B x))) (S (C x) (A x)) '
+            '(S (D x) (A (B x))))')
         # The following pattern matches an S which has a child A and
         # another child that is a C and that the A has a child B:
         self.assertEqual(tgrep.tgrep_positions(tree, 'S < (A < B) < C'),
                          [(0,)])
 
-        tree = ParentedTree('(S (S (A (B x) (C x))) (S (S (C x) (A (B x)))))')
+        tree = ParentedTree.fromstring(
+            '(S (S (A (B x) (C x))) (S (S (C x) (A (B x)))))')
         # However, this pattern means that S has child A and that A
         # has children B and C:
         self.assertEqual(tgrep.tgrep_positions(tree, 'S < ((A < B) < C)'),
