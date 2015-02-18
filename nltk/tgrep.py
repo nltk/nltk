@@ -190,7 +190,7 @@ def _tgrep_node_literal_value(node):
     Gets the string value of a given parse tree node, for comparison
     using the tgrep node literal predicates.
     '''
-    return (node.node if isinstance(node, nltk.tree.Tree) else unicode(node))
+    return (node.label() if isinstance(node, nltk.tree.Tree) else unicode(node))
 
 def _tgrep_node_action(_s, _l, tokens):
     '''
