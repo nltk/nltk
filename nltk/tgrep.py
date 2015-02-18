@@ -564,14 +564,15 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
     If `search_leaves` is False, the method will not return any
     results in leaf positions.
     '''
-    if not hasattr(tree, u'treepositions'):
+    try:
+        if search_leaves:
+            search_positions = tree.treepositions()
+        else:
+            search_positions = treepositions_no_leaves(tree)
+    except AttributeError:
         return []
     if isinstance(tgrep_string, basestring):
         tgrep_string = tgrep_compile(tgrep_string)
-    if search_leaves:
-        search_positions = tree.treepositions()
-    else:
-        search_positions = treepositions_no_leaves(tree)
     return [position for position in search_positions
             if tgrep_string(tree[position])]
 
