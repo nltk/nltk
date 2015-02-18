@@ -9,7 +9,7 @@ Unit tests for TGrep search implementation for NTLK ParentedTrees.
 
 from nltk.tree import ParentedTree
 import sys
-import tgrep
+from .. import tgrep
 import unittest
 
 class TestSequenceFunctions(unittest.TestCase):
