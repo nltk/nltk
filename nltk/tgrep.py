@@ -38,6 +38,7 @@ Tgrep2 source:
 http://tedlab.mit.edu/~dr/Tgrep2/
 '''
 
+from builtins import bytes, str
 import nltk.tree
 import pyparsing
 import re
@@ -206,7 +207,7 @@ def _tgrep_node_literal_value(node):
     Gets the string value of a given parse tree node, for comparison
     using the tgrep node literal predicates.
     '''
-    return (node.label() if _istree(node) else unicode(node))
+    return (node.label() if _istree(node) else str(node))
 
 def _tgrep_node_action(_s, _l, tokens):
     '''
@@ -544,7 +545,7 @@ def tgrep_compile(tgrep_string):
     lambda function.
     '''
     parser = _build_tgrep_parser(True)
-    return list(parser.parseString(tgrep_string, parseAll=True))[0]
+    return list(parser.parseString(str(tgrep_string), parseAll=True))[0]
 
 def treepositions_no_leaves(tree):
     '''
@@ -575,7 +576,7 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
             search_positions = treepositions_no_leaves(tree)
     except AttributeError:
         return []
-    if isinstance(tgrep_string, basestring):
+    if isinstance(tgrep_string, (bytes, str)):
         tgrep_string = tgrep_compile(tgrep_string)
     return [position for position in search_positions
             if tgrep_string(tree[position])]
