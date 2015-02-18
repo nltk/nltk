@@ -108,6 +108,10 @@ def _rightmost_descendants(node):
         return []
     return [node[rightmost_leaf[:i]] for i in range(1, len(rightmost_leaf) + 1)]
 
+def _istree(obj):
+    '''Predicate to check whether `obj` is a nltk.tree.Tree.'''
+    return isinstance(obj, nltk.tree.Tree)
+
 def _unique_descendants(node):
     '''
     Returns the list of all nodes descended from the given node, where
@@ -115,7 +119,7 @@ def _unique_descendants(node):
     '''
     results = []
     current = node
-    while current and isinstance(current, nltk.tree.Tree) and len(current) == 1:
+    while current and _istree(current) and len(current) == 1:
         current = current[0]
         results.append(current)
     return results
@@ -202,7 +206,7 @@ def _tgrep_node_literal_value(node):
     Gets the string value of a given parse tree node, for comparison
     using the tgrep node literal predicates.
     '''
-    return (node.label() if isinstance(node, nltk.tree.Tree) else unicode(node))
+    return (node.label() if _istree(node) else unicode(node))
 
 def _tgrep_node_action(_s, _l, tokens):
     '''
@@ -284,7 +288,7 @@ def _tgrep_relation_action(_s, _l, tokens):
         operator, predicate = tokens
         # A < B       A is the parent of (immediately dominates) B.
         if operator == u'<':
-            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = lambda n: (_istree(n) and
                                 any(predicate(x) for x in n))
         # A > B       A is the child of B.
         elif operator == u'>':
@@ -293,7 +297,7 @@ def _tgrep_relation_action(_s, _l, tokens):
                                 predicate(n.parent()))
         # A <, B      Synonymous with A <1 B.
         elif operator == u'<,' or operator == u'<1':
-            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = lambda n: (_istree(n) and
                                 bool(list(n)) and
                                 predicate(n[0]))
         # A >, B      Synonymous with A >1 B.
@@ -306,7 +310,7 @@ def _tgrep_relation_action(_s, _l, tokens):
         elif operator[0] == u'<' and operator[1:].isdigit():
             idx = int(operator[1:])
             # capture the index parameter
-            retval = (lambda i: lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = (lambda i: lambda n: (_istree(n) and
                                            bool(list(n)) and
                                            0 <= i < len(n) and
                                            predicate(n[i])))(idx - 1)
@@ -322,7 +326,7 @@ def _tgrep_relation_action(_s, _l, tokens):
         # A <' B      B is the last child of A (also synonymous with A <-1 B).
         # A <- B      B is the last child of A (synonymous with A <-1 B).
         elif operator == u'<\'' or operator == u'<-' or operator == u'<-1':
-            retval = lambda n: (isinstance(n, nltk.tree.Tree) and bool(list(n))
+            retval = lambda n: (_istree(n) and bool(list(n))
                                 and predicate(n[-1]))
         # A >' B      A is the last child of B (also synonymous with A >-1 B).
         # A >- B      A is the last child of B (synonymous with A >-1 B).
@@ -335,7 +339,7 @@ def _tgrep_relation_action(_s, _l, tokens):
         elif operator[:2] == u'<-' and operator[2:].isdigit():
             idx = -int(operator[2:])
             # capture the index parameter
-            retval = (lambda i: lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = (lambda i: lambda n: (_istree(n) and
                                            bool(list(n)) and
                                            0 <= (i + len(n)) < len(n) and
                                            predicate(n[i + len(n)])))(idx)
@@ -351,7 +355,7 @@ def _tgrep_relation_action(_s, _l, tokens):
                            predicate(n.parent())))(idx)
         # A <: B      B is the only child of A
         elif operator == u'<:':
-            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = lambda n: (_istree(n) and
                                 len(n) == 1 and
                                 predicate(n[0]))
         # A >: B      A is the only child of B.
@@ -362,14 +366,14 @@ def _tgrep_relation_action(_s, _l, tokens):
                                 predicate(n.parent()))
         # A << B      A dominates B (A is an ancestor of B).
         elif operator == u'<<':
-            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = lambda n: (_istree(n) and
                                 any(predicate(x) for x in _descendants(n)))
         # A >> B      A is dominated by B (A is a descendant of B).
         elif operator == u'>>':
             retval = lambda n: any(predicate(x) for x in ancestors(n))
         # A <<, B     B is a left-most descendant of A.
         elif operator == u'<<,' or operator == u'<<1':
-            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = lambda n: (_istree(n) and
                                 any(predicate(x)
                                     for x in _leftmost_descendants(n)))
         # A >>, B     A is a left-most descendant of B.
@@ -379,7 +383,7 @@ def _tgrep_relation_action(_s, _l, tokens):
                                    for x in ancestors(n))
         # A <<' B     B is a right-most descendant of A.
         elif operator == u'<<\'':
-            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = lambda n: (_istree(n) and
                                 any(predicate(x)
                                     for x in _rightmost_descendants(n)))
         # A >>' B     A is a right-most descendant of B.
@@ -389,7 +393,7 @@ def _tgrep_relation_action(_s, _l, tokens):
                                    for x in ancestors(n))
         # A <<: B     There is a single path of descent from A and B is on it.
         elif operator == u'<<:':
-            retval = lambda n: (isinstance(n, nltk.tree.Tree) and
+            retval = lambda n: (_istree(n) and
                                 any(predicate(x)
                                     for x in _unique_descendants(n)))
         # A >>: B     There is a single path of descent from B and A is on it.
