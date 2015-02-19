@@ -18,6 +18,7 @@ from __future__ import print_function, unicode_literals
 from collections import defaultdict
 from itertools import chain
 from pprint import pformat
+import subprocess
 
 from nltk.tree import Tree
 from nltk.compat import python_2_unicode_compatible, string_types
@@ -99,7 +100,7 @@ class DependencyGraph(object):
         node specified by the mod address.
         """
         relation = self.nodes[mod_address]['rel']
-        self.nodes[head_address]['deps'].setdefault(relation,[])
+        self.nodes[head_address]['deps'].setdefault(relation, [])
         self.nodes[head_address]['deps'][relation].append(mod_address)
         #self.nodes[head_address]['deps'].append(mod_address)
 
@@ -127,6 +128,41 @@ class DependencyGraph(object):
         address, false otherwise.
         """
         return node_address in self.nodes
+
+    def draw_dot(self):
+        """
+        Returns a dot representation suitable for using with Graphviz
+        @type t:L{nltk.parse.dependencygraph.DependencyGraph}
+        @rtype C{String}
+        """
+        # Start the digraph specification
+        s = 'digraph G{\n'
+        s += 'edge [dir=forward]\n'
+        s += 'node [shape=plaintext]\n'
+        # Draw the remaining nodes
+        for head, h_node in self.nodes.iteritems():
+            s += '\n%s [label="%s (%s)"]' % (h_node['address'], h_node['address'], h_node['word'])
+            if head != 0:  # not TOP
+                if h_node['rel'] != '_':
+                    s += '\n%s -> %s [label="%s"]' % (h_node['head'], h_node['address'], h_node['rel'])
+                else:
+                    s += '\n%s -> %s ' % (h_node['head'], h_node['address'])
+        s += "\n}"
+        return s
+
+    def _repr_svg_(self):
+        """Ipython magic: show SVG representation of the transducer"""
+        dot_string = self.draw_dot()
+        format = 'svg'
+        try:
+            process = subprocess.Popen(['dot', '-T%s' % format], stdin=subprocess.PIPE,
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        except OSError:
+            raise Exception('Cannot find the dot binary from Graphviz package')
+        out, err = process.communicate(dot_string)
+        if err:
+            raise Exception('Cannot create %s representation by running dot from string\n:%s' % (format, dot_string))
+        return out
 
     def __str__(self):
         return pformat(self.nodes)
