@@ -545,7 +545,9 @@ def tgrep_compile(tgrep_string):
     lambda function.
     '''
     parser = _build_tgrep_parser(True)
-    return list(parser.parseString(str(tgrep_string), parseAll=True))[0]
+    if isinstance(tgrep_string, bytes):
+        tgrep_string = tgrep_string.decode()
+    return list(parser.parseString(tgrep_string, parseAll=True))[0]
 
 def treepositions_no_leaves(tree):
     '''
