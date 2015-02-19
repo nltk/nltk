@@ -28,6 +28,14 @@ class TestSequenceFunctions(unittest.TestCase):
                           u'|', u'!', u'[', u'<<', u'(', u'E', u',', u'F', u')', u'$',
                           u'G', u']'])
 
+    def test_tokenize_encoding(self):
+        '''
+        Test that tokenization handles bytes and strs the same way.
+        '''
+        self.assertEqual(
+            tgrep.tgrep_tokenize(b'A .. (B !< C . D) | ![<< (E , F) $ G]'),
+            tgrep.tgrep_tokenize(u'A .. (B !< C . D) | ![<< (E , F) $ G]'))
+
     def test_tokenize_link_types(self):
         '''
         Test tokenization of basic link types.
@@ -177,6 +185,21 @@ class TestSequenceFunctions(unittest.TestCase):
                          [tree[0,2], tree[2,1]])
         self.assertEqual(tgrep.tgrep_positions(tree, u'NN|JJ'),
                          [(0, 1), (0, 2), (2, 1)])
+
+    def test_node_encoding(self):
+        '''
+        Test that tgrep search strings handles bytes and strs the same
+        way.
+        '''
+        tree = ParentedTree.fromstring(
+            u'(S (NP (DT the) (JJ big) (NN dog)) '
+            u'(VP bit) (NP (DT a) (NN cat)))')
+        self.assertEqual(tgrep.tgrep_positions(tree, b'NN'),
+                         tgrep.tgrep_positions(tree, u'NN'))
+        self.assertEqual(tgrep.tgrep_nodes(tree, b'NN'),
+                         tgrep.tgrep_nodes(tree, u'NN'))
+        self.assertEqual(tgrep.tgrep_positions(tree, b'NN|JJ'),
+                         tgrep.tgrep_positions(tree, u'NN|JJ'))
 
     def test_node_regex(self):
         '''
