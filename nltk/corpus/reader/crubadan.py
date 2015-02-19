@@ -23,7 +23,6 @@ http://borel.slu.edu/crubadan/index.html
 from __future__ import print_function, unicode_literals
 
 from nltk.corpus.reader import CorpusReader
-from nltk.corpus.util import LazyCorpusLoader
 from nltk.probability import FreqDist
 from nltk.data import ZipFilePathPointer
 
@@ -60,7 +59,7 @@ class CrubadanCorpusReader(CorpusReader):
         ''' Return n-gram frequency as integer given
             an ISO 639-3 language code and n-gram '''
         if lang not in self.all_lang_freq:
-            raise CrubadanError("Unsupproted language [" + lang + "].")
+            raise CrubadanError("Unsupported language [" + lang + "].")
             
         lf = self.all_lang_freq[lang]
         return lf[ngram]
@@ -77,7 +76,7 @@ class CrubadanCorpusReader(CorpusReader):
         ''' Return internal Crubadan code based on ISO 639-3 code '''
         for i in self._lang_mapping_data:
             if i[1].lower() == lang.lower():
-                return (i[0])
+                return unicode(i[0])
     
     def crubadan_to_iso(self, lang):
         ''' Return ISO 639-3 code given internal Crubadan code '''
