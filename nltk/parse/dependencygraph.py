@@ -132,7 +132,6 @@ class DependencyGraph(object):
     def draw_dot(self):
         """
         Returns a dot representation suitable for using with Graphviz
-        @type t:L{nltk.parse.dependencygraph.DependencyGraph}
         @rtype C{String}
         """
         # Start the digraph specification
