@@ -18,7 +18,6 @@ from __future__ import print_function, unicode_literals
 from collections import defaultdict
 from itertools import chain
 from pprint import pformat
-from copy import deepcopy
 
 from nltk.tree import Tree
 from nltk.compat import python_2_unicode_compatible, string_types
@@ -34,16 +33,6 @@ class DependencyGraph(object):
     """
     A container for the nodes and labelled edges of a dependency structure.
     """
-    default_node = {
-        'address': None,
-        'word': None,
-        'lemma': None,
-        'ctag': None,
-        'tag': None,
-        'feats': None,
-        'head': None,
-        'deps': defaultdict(list),
-    }
 
     def __init__(self, tree_str=None, cell_extractor=None, zero_based=False, cell_separator=None):
         """Dependency graph.
@@ -60,7 +49,16 @@ class DependencyGraph(object):
         are split by whitespace.
 
         """
-        self.nodes = defaultdict(lambda: deepcopy(DependencyGraph.default_node))
+        self.nodes = defaultdict(lambda:  {'address': None,
+                                           'word': None,
+                                           'lemma': None,
+                                           'ctag': None,
+                                           'tag': None,
+                                           'feats': None,
+                                           'head': None,
+                                           'deps': defaultdict(list),
+                                           })
+
         self.nodes[0].update(
             {
                 'ctag': 'TOP',
