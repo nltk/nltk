@@ -1346,9 +1346,9 @@ class ChartParser(ParserI):
         # Return the final chart.
         return chart
 
-    def parse_all(self, tokens, tree_class=Tree):
+    def parse(self, tokens, tree_class=Tree):
         chart = self.chart_parse(tokens)
-        return chart.parses(self._grammar.start(), tree_class=tree_class)
+        return iter(chart.parses(self._grammar.start(), tree_class=tree_class))
 
 class TopDownChartParser(ChartParser):
     """
@@ -1628,9 +1628,8 @@ def demo(choice=None,
         print()
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
-        # parses = cp.parse_all(tokens)
+        parses = cp.parse_all(tokens)
         chart = cp.chart_parse(tokens)
-        parses = list(chart.parses(grammar.start()))
         times[strategies[strategy][0]] = time.time()-t
         print("Nr edges in chart:", len(chart.edges()))
         if numparses:
