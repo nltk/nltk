@@ -44,103 +44,34 @@ class CrubadanCorpusReader(CorpusReader):
         super(CrubadanCorpusReader, self).__init__(root, fileids, encoding='utf8')
         self._lang_mapping_data = []
         self._load_lang_mapping_data()
-    
-    def load_all_ngrams(self):
-        ''' Create a dictionary of every supported language mapping 
-            the ISO 639-3 language code to its corresponding n-gram
-            FreqDist. The result can be accessed via "all_lang_freq" var '''
+        self._load_all_ngrams()
         
-        # Filter out non n-gram files from the corpus dir
-        valid_files = []
-        for f in self.fileids():
-            m = re.search('(\w+)' + re.escape("-3grams.txt"), f)
-            if m:
-                valid_files.append( m.group() )
-                
-        for f in valid_files:
-            ngram_file = self.root + '/' + f
-            
-            import os.path
-            
-            if os.path.isfile(ngram_file):
-                crubadan_code = f.split('-')[0]
-                iso_code = self.crubadan_to_iso(crubadan_code)
-
-                fd = self.load_lang_ngrams(iso_code)
-                self.all_lang_freq[iso_code] = fd
-        
-    def load_lang_ngrams(self, lang):
-        ''' Load single n-gram language file given the ISO 639-3 language code
-            and return its FreqDist '''
-        
-        crubadan_code = self.iso_to_crubadan(lang)
-        ngram_file = self.root + '/' + unicode(crubadan_code) + '-3grams.txt'
-        import os.path
-        
-        if not os.path.isfile(ngram_file):
-            raise CrubadanError("Could not find language n-gram file for [" + lang + "].")
-
-        counts = FreqDist()
-            
-        f = open(ngram_file, 'rU')
-        
-        for line in f:
-            data = line.decode('utf-8').split(u' ')
-            
-            ngram = data[1].strip('\n')
-            freq = int(data[0])
-            
-            counts[ngram] = freq
-            
-        return counts
-    
     def lang_freq(self, lang):
         ''' Return n-gram FreqDist for a specific language
             given ISO 639-3 language code '''
+        
         if len(self.all_lang_freq) == 0:
-            return self.load_lang_ngrams(lang)
-        else:
-            return self.all_lang_freq[lang]
+            self._load_all_ngrams()
+
+        return self.all_lang_freq[lang]
     
     def ngram_freq(self, lang, ngram):
         ''' Return n-gram frequency as integer given
             an ISO 639-3 language code and n-gram '''
         if lang not in self.all_lang_freq:
-            raise CrubadanError("Unsupproted language [" + lang + "].")
+            raise CrubadanError("Unsupported language [" + lang + "].")
             
         lf = self.all_lang_freq[lang]
         return lf[ngram]
         
-    def supported_langs(self):
-        ''' Return a list of supported languages in human-friendly form '''
-        l = []
+    def langs(self):
+        ''' Return a list of supported languages as ISO 639-3 codes '''
+        supported = []
         for i in self._lang_mapping_data:
-            l.append(i[2])
+            supported.append(i[1])
             
-        return l
-    
-    def lang_supported(self, lang):
-        ''' Check if a language is supported (language passed in as ISO 639-3 code) '''
-        for i in self._lang_mapping_data:
-            if i[1].lower() == lang.lower():
-                return True
-        
-        return False
-
-    def iso_to_friendly(self, lang):
-        ''' Return human-friendly name for a lanuage based on ISO 639-3 code '''
-        for i in self._lang_mapping_data:
-            if i[1].lower() == lang.lower():
-                return unicode(i[2])
-        
-        return None
-    
-    def friendly_to_iso(self, lang):
-        ''' Return ISO 639-3 code from human-friendly language name (eg: "English" -> "en") '''
-        for i in self._lang_mapping_data:
-            if i[2].lower() == lang.lower():
-                return unicode(i[1])
-        
+        return supported
+            
     def iso_to_crubadan(self, lang):
         ''' Return internal Crubadan code based on ISO 639-3 code '''
         for i in self._lang_mapping_data:
@@ -170,6 +101,55 @@ class CrubadanCorpusReader(CorpusReader):
         # Get rid of empty entry if last line in file is blank
         if self._lang_mapping_data[ len(self._lang_mapping_data) - 1 ] == [u'']:
             self._lang_mapping_data.pop()
+
+    def _load_lang_ngrams(self, lang):
+        ''' Load single n-gram language file given the ISO 639-3 language code
+            and return its FreqDist '''
+        
+        crubadan_code = self.iso_to_crubadan(lang)
+        ngram_file = self.root + '/' + unicode(crubadan_code) + '-3grams.txt'
+        import os.path
+        
+        if not os.path.isfile(ngram_file):
+            raise CrubadanError("Could not find language n-gram file for [" + lang + "].")
+
+        counts = FreqDist()
+            
+        f = open(ngram_file, 'rU')
+        
+        for line in f:
+            data = line.decode('utf-8').split(u' ')
+            
+            ngram = data[1].strip('\n')
+            freq = int(data[0])
+            
+            counts[ngram] = freq
+            
+        return counts
+
+    def _load_all_ngrams(self):
+        ''' Create a dictionary of every supported language mapping 
+            the ISO 639-3 language code to its corresponding n-gram
+            FreqDist. The result can be accessed via "all_lang_freq" var '''
+        
+        # Filter out non n-gram files from the corpus dir
+        valid_files = []
+        for f in self.fileids():
+            m = re.search('(\w+)' + re.escape("-3grams.txt"), f)
+            if m:
+                valid_files.append( m.group() )
+                
+        for f in valid_files:
+            ngram_file = self.root + '/' + f
+            
+            import os.path
+            
+            if os.path.isfile(ngram_file):
+                crubadan_code = f.split('-')[0]
+                iso_code = self.crubadan_to_iso(crubadan_code)
+
+                fd = self._load_lang_ngrams(iso_code)
+                self.all_lang_freq[iso_code] = fd
 
     def _is_utf8(self, str):
         ''' Check if a string is utf8 encoded '''
