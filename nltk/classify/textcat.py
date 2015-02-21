@@ -54,6 +54,8 @@ class TextCat():
     _START_CHAR = "<".encode('utf8')
     _END_CHAR = ">".encode('utf8')
     
+    last_distances = {}
+    
     def __init__(self):
         self._corpus = CrubadanCorpusReader(nltk.data.find('corpora/crubadan'), '.*\.txt')
         
@@ -133,9 +135,9 @@ class TextCat():
     def guess_language(self, text):
         ''' Find the language with the min distance
             to the text and return its ISO 639-3 code '''
-        r = self.lang_dists(text)
+        self.last_distances = self.lang_dists(text)
         
-        return min(r, key=r.get)
+        return min(r, key=self.last_distances.get)
         
     def demo(self):
         ''' Demo of language guessing using a bunch of UTF-8 encoded
