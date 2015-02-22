@@ -522,7 +522,7 @@ class TransitionParser(ParserI):
                 C=0.5,
                 verbose=True,
                 probability=True)
-            
+
             model.fit(x_train, y_train)
             # Save the model to file name (as pickle)
             pickle.dump(model, open(modelfile, 'wb'))
@@ -649,8 +649,8 @@ def demo():
 
     ###################### Check the Initial Feature ########################
 
-    >>> print(conf.extract_features())
-    [u'STK_0_POS_TOP', u'BUF_0_FORM_Economic', u'BUF_0_LEMMA_Economic', u'BUF_0_POS_JJ', u'BUF_1_FORM_news', u'BUF_1_POS_NN', u'BUF_2_POS_VBD', u'BUF_3_POS_JJ']
+    >>> print(', '.join(conf.extract_features()))
+    STK_0_POS_TOP, BUF_0_FORM_Economic, BUF_0_LEMMA_Economic, BUF_0_POS_JJ, BUF_1_FORM_news, BUF_1_POS_NN, BUF_2_POS_VBD, BUF_3_POS_JJ
 
     ###################### Check The Transition #######################
     Check the Initialized Configuration
@@ -676,8 +676,8 @@ def demo():
     >>> print(conf)
     Stack : [0, 3, 5, 6]  Buffer : [8, 9]   Arcs : [(2, 'ATT', 1), (3, 'SBJ', 2), (5, 'ATT', 4), (8, 'ATT', 7)]
 
-    >>> print(conf.extract_features())
-    [u'STK_0_FORM_on', u'STK_0_LEMMA_on', u'STK_0_POS_IN', u'STK_1_POS_NN', u'BUF_0_FORM_markets', u'BUF_0_LEMMA_markets', u'BUF_0_POS_NNS', u'BUF_1_FORM_.', u'BUF_1_POS_.', 'BUF_0_LDEP_ATT']
+    >>> print(', '.join(conf.extract_features()))
+    STK_0_FORM_on, STK_0_LEMMA_on, STK_0_POS_IN, STK_1_POS_NN, BUF_0_FORM_markets, BUF_0_LEMMA_markets, BUF_0_POS_NNS, BUF_1_FORM_., BUF_1_POS_., BUF_0_LDEP_ATT
 
     >>> operation.right_arc(conf, "PC")
     >>> operation.right_arc(conf, "ATT")
@@ -723,10 +723,10 @@ def demo():
     >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=tempfile.gettempdir(), delete=False)
 
     >>> parser_std = TransitionParser('arc-standard')
-    >>> parser_std._create_training_examples_arc_std([gold_sent], input_file)
+    >>> print(', '.join(parser_std._create_training_examples_arc_std([gold_sent], input_file)))
      Number of training examples : 1
      Number of valid (projective) examples : 1
-    ['SHIFT', u'LEFTARC:ATT', 'SHIFT', u'LEFTARC:SBJ', 'SHIFT', 'SHIFT', u'LEFTARC:ATT', 'SHIFT', 'SHIFT', 'SHIFT', u'LEFTARC:ATT', u'RIGHTARC:PC', u'RIGHTARC:ATT', u'RIGHTARC:OBJ', 'SHIFT', u'RIGHTARC:PU', u'RIGHTARC:ROOT', 'SHIFT']
+    SHIFT, LEFTARC:ATT, SHIFT, LEFTARC:SBJ, SHIFT, SHIFT, LEFTARC:ATT, SHIFT, SHIFT, SHIFT, LEFTARC:ATT, RIGHTARC:PC, RIGHTARC:ATT, RIGHTARC:OBJ, SHIFT, RIGHTARC:PU, RIGHTARC:ROOT, SHIFT
 
     >>> parser_std.train([gold_sent],'temp.arcstd.model')
      Number of training examples : 1
@@ -738,10 +738,10 @@ def demo():
 
     >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=tempfile.gettempdir(),delete=False)
     >>> parser_eager = TransitionParser('arc-eager')
-    >>> parser_eager._create_training_examples_arc_eager([gold_sent], input_file)
+    >>> print(', '.join(parser_eager._create_training_examples_arc_eager([gold_sent], input_file)))
      Number of training examples : 1
      Number of valid (projective) examples : 1
-    ['SHIFT', u'LEFTARC:ATT', 'SHIFT', u'LEFTARC:SBJ', u'RIGHTARC:ROOT', 'SHIFT', u'LEFTARC:ATT', u'RIGHTARC:OBJ', u'RIGHTARC:ATT', 'SHIFT', u'LEFTARC:ATT', u'RIGHTARC:PC', 'REDUCE', 'REDUCE', 'REDUCE', u'RIGHTARC:PU']
+    SHIFT, LEFTARC:ATT, SHIFT, LEFTARC:SBJ, RIGHTARC:ROOT, SHIFT, LEFTARC:ATT, RIGHTARC:OBJ, RIGHTARC:ATT, SHIFT, LEFTARC:ATT, RIGHTARC:PC, REDUCE, REDUCE, REDUCE, RIGHTARC:PU
 
     >>> parser_eager.train([gold_sent],'temp.arceager.model')
      Number of training examples : 1
