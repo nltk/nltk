@@ -161,7 +161,7 @@ class DependencyGraph(object):
         Returns the number of left children under the node specified
         by the given address.
         """
-        children = self.nodes[node_index]['deps']
+        children = chain.from_iterable(self.nodes[node_index]['deps'].values())
         index = self.nodes[node_index]['address']
         return sum(1 for c in children if c < index)
 
@@ -170,7 +170,7 @@ class DependencyGraph(object):
         Returns the number of right children under the node specified
         by the given address.
         """
-        children = self.nodes[node_index]['deps']
+        children = chain.from_iterable(self.nodes[node_index]['deps'].values())
         index = self.nodes[node_index]['address']
         return sum(1 for c in children if c > index)
 
