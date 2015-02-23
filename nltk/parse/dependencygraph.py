@@ -129,7 +129,7 @@ class DependencyGraph(object):
         """
         return node_address in self.nodes
 
-    def draw_dot(self):
+    def to_dot(self):
         """
         Returns a dot representation suitable for using with Graphviz
         @rtype C{String}
@@ -139,13 +139,14 @@ class DependencyGraph(object):
         s += 'edge [dir=forward]\n'
         s += 'node [shape=plaintext]\n'
         # Draw the remaining nodes
-        for head, h_node in self.nodes.iteritems():
-            s += '\n%s [label="%s (%s)"]' % (h_node['address'], h_node['address'], h_node['word'])
-            if head != 0:  # not TOP
-                if h_node['rel'] != '_':
-                    s += '\n%s -> %s [label="%s"]' % (h_node['head'], h_node['address'], h_node['rel'])
-                else:
-                    s += '\n%s -> %s ' % (h_node['head'], h_node['address'])
+        for node in sorted(self.nodes.values()):
+            s += '\n%s [label="%s (%s)"]' % (node['address'], node['address'], node['word'])
+            for rel, deps in node['deps'].iteritems():
+                for dep in deps:
+                    if rel != None:
+                        s += '\n%s -> %s [label="%s"]' % (node['address'], dep, rel)
+                    else:
+                        s += '\n%s -> %s ' % (node['address'], dep)
         s += "\n}"
         return s
 
