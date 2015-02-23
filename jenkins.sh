@@ -34,6 +34,53 @@ if [[ ! -d ${stanford_tagger_package_name} ]]; then
 	ln -s ${stanford_tagger_package_name} 'stanford-postagger'
 fi
 
+# Download SENNA 
+senna_file_name=$(curl -s 'http://ml.nec-labs.com/senna/download.html' | grep -o 'senna-v.*.tgz' | head -n1)
+senna_folder_name='senna'
+if [[ ! -d $senna_folder_name ]]; then
+        wget -nv "http://ml.nec-labs.com/senna/$senna_file_name"
+        tar -xvzf ${senna_file_name}
+        rm ${senna_file_name}       
+fi
+
+# Download and Install Liblbfgs 
+lbfgs_file_name=$(curl -s 'http://www.chokkan.org/software/liblbfgs/' | grep -o 'liblbfgs-.*\.tar.gz' | head -n1)
+[[ ${lbfgs_file_name=} =~ (.+)\.tar.gz ]]
+lbfgs_folder_name=${BASH_REMATCH[1]}
+if [[ ! -d $lbfgs_folder_name ]]; then
+        wget -nv "https://github.com/downloads/chokkan/liblbfgs/$lbfgs_file_name"
+        tar -xvzf ${lbfgs_file_name}
+        rm ${lbfgs_file_name}
+fi
+cd $lbfgs_folder_name
+./configure --prefix=$HOME/third/liblbfgs
+make
+make install
+cd ..
+
+# Download and install crfsuite 
+crfsuite_file_name=$(curl -s 'http://www.chokkan.org/software/crfsuite/' | grep -o 'crfsuite-.*\.tar.gz' | head -n1)
+[[ ${crfsuite_file_name=} =~ (.+)\.tar.gz ]]
+crfsuite_folder_name=${BASH_REMATCH[1]}
+if [[ ! -d $crfsuite_folder_name ]]; then
+        wget -nv "https://github.com/downloads/chokkan/crfsuite/$crfsuite_file_name"
+        tar -xvzf ${crfsuite_file_name}
+        rm ${crfsuite_file_name}
+fi
+cd $crfsuite_folder_name
+./configure --prefix=$HOME/third/crfsuite --with-liblbfgs=$HOME/third/liblbfgs
+make
+make install
+cd ..
+
+
+# Setup the Enviroment variable 
+export CRFSUITE=$(pwd)'/crfsuite/bin'
+export STANFORD_PARSER=$(pwd)'/stanford-parser'
+export STANFORD_MODELS=$(pwd)'/stanford-parser'
+export STANFORD_POSTAGGER=$(pwd)'/stanford-postagger'
+export SENNA=$(pwd)'/senna'
+
 popd
 popd
 

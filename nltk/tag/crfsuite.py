@@ -11,7 +11,9 @@ A module for interfacing with the CRFSuite taggers.
 """
 from __future__ import absolute_import
 from __future__ import unicode_literals
+from os import path, environ, sep
 import os
+from platform import system
 import tempfile
 from subprocess import PIPE
 import unicodedata
@@ -20,6 +22,13 @@ from subprocess import Popen
 from nltk.tag.api import TaggerI
 
 _crfsuite_url = 'http://www.chokkan.org/software/crfsuite'
+
+class Error(Exception):
+    """Basic error handling class to be extended by the module specific
+    exceptions"""
+    
+class ExecutableNotFound(Error):
+    """Raised if the crfsuite executable does not exist"""
 
 class CRFTagger(TaggerI):
     """
@@ -47,9 +56,34 @@ class CRFTagger(TaggerI):
     
     """
     
-    def __init__(self, cmd_options=''):
+    def __init__(self, file_path=''):
+               
+        self._path = path.normpath(file_path) + sep
+        exe_file_1 = self.executable(self._path)
+        # Verifies the existence of the executable on the self._path first    
+        if not path.isfile(exe_file_1):
+            # Check for the system environment 
+            if 'CRFSUITE' in environ:  
+                self._path = path.normpath(environ['CRFSUITE']) + sep 
+                exe_file_2 = self.executable(self._path)
+                if not path.isfile(exe_file_2):
+                    raise ExecutableNotFound("CRFSuite executable expected at %s or %s but not found" % (exe_file_1,exe_file_2))
+                
         self._model_file = ''
     
+    def executable(self, base_path):
+        """
+        The function that determines the system specific binary that should be
+        used in the pipeline. In case, the system is not known the default crfsuite binary will
+        be used.
+        """ 
+        os_name = system()
+        if os_name == 'Linux':
+            return path.join(base_path, 'crfsuite')
+        if os_name == 'Windows':
+            return path.join(base_path, 'crfsuite.exe')
+        return path.join(base_path, 'crfsuite')
+
     def set_model_file(self, model_file):
         self._model_file = model_file
             
@@ -119,7 +153,7 @@ class CRFTagger(TaggerI):
         input_file.close()
         
         # Now use the model to tag
-        _crf_cmd = ['crfsuite', 'tag', '-m', self._model_file, input_file.name]
+        _crf_cmd = [self.executable(self._path), 'tag', '-m', self._model_file, input_file.name]
             
             
         # Run the tagger and get the output
@@ -160,7 +194,7 @@ class CRFTagger(TaggerI):
             input_file.close()
             
             # Now train the model, the output should be model_file
-            _crf_cmd = ['crfsuite', 'learn', '-m', model_file, input_file.name]
+            _crf_cmd = [self.executable(self._path), 'learn', '-m', model_file, input_file.name]
             
             # Serialize the actual sentences to a temporary string
             # Run the tagger and get the output
