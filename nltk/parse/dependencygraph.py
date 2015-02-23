@@ -57,6 +57,7 @@ class DependencyGraph(object):
                                            'feats': None,
                                            'head': None,
                                            'deps': defaultdict(list),
+                                           'rel': None,
                                            })
 
         self.nodes[0].update(
