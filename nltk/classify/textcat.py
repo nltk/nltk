@@ -42,12 +42,15 @@ from sys import maxint
 # is an alternative to the standard re module that supports
 # Unicode codepoint properties with the \p{} syntax.
 # You may have to "pip install regx"
-import regex as re  
+try:
+    import regex as re  
+except ImportError:
+    re = None
 ######################################################################
 ##  Language identification using TextCat
 ######################################################################
 
-class TextCat():
+class TextCat(object):
 
     _corpus = None
     fingerprints = {}
@@ -57,6 +60,12 @@ class TextCat():
     last_distances = {}
     
     def __init__(self):
+        if not re:
+            raise EnvironmentError("classify.textcat requires the regex module that "
+                                   "supports unicode. Try '$ pip install regex' and "
+                                   "see https://pypi.python.org/pypi/regex for "
+                                   "further details.")
+
         self._corpus = CrubadanCorpusReader(nltk.data.find('corpora/crubadan'), '.*\.txt')
         
     def trigrams(self, text):
@@ -137,7 +146,7 @@ class TextCat():
             to the text and return its ISO 639-3 code '''
         self.last_distances = self.lang_dists(text)
         
-        return min(r, key=self.last_distances.get)
+        return min(self.last_distances, key=self.last_distances.get)
         
     def demo(self):
         ''' Demo of language guessing using a bunch of UTF-8 encoded
