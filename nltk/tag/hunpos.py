@@ -83,6 +83,8 @@ class HunposTagger(TaggerI):
         self._hunpos = Popen([self._hunpos_bin, self._hunpos_model],
                              shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         self._closed = False
+        self._endl = compat.text_type("\n").encode(self._encoding)
+        self._tab = compat.text_type("\t").encode(self._encoding)
 
     def __del__(self):
         self.close()
@@ -106,14 +108,14 @@ class HunposTagger(TaggerI):
             assert "\n" not in token, "Tokens should not contain newlines"
             if isinstance(token, compat.text_type):
                 token = token.encode(self._encoding)
-            self._hunpos.stdin.write(token + "\n")
+            self._hunpos.stdin.write(token + self._endl)
         # We write a final empty line to tell hunpos that the sentence is finished:
-        self._hunpos.stdin.write("\n")
+        self._hunpos.stdin.write(self._endl)
         self._hunpos.stdin.flush()
 
         tagged_tokens = []
         for token in tokens:
-            tagged = self._hunpos.stdout.readline().strip().split("\t")
+            tagged = self._hunpos.stdout.readline().strip().split(self._tab)
             tag = (tagged[1] if len(tagged) > 1 else None)
             tagged_tokens.append((token, tag))
         # We have to read (and dismiss) the final empty line:
