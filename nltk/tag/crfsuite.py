@@ -11,28 +11,17 @@ A module for interfacing with the CRFSuite taggers.
 """
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from os import path, environ, sep
-import os
-from platform import system
-import tempfile
-from subprocess import PIPE
 import unicodedata
 import re 
-from subprocess import Popen
 from nltk.tag.api import TaggerI
+import pycrfsuite
 
-_crfsuite_url = 'http://www.chokkan.org/software/crfsuite'
+_py_crfsuite_url = 'https://pypi.python.org/pypi/python-crfsuite'
 
-class Error(Exception):
-    """Basic error handling class to be extended by the module specific
-    exceptions"""
-    
-class ExecutableNotFound(Error):
-    """Raised if the crfsuite executable does not exist"""
 
 class CRFTagger(TaggerI):
     """
-    An interface to CRFSuite taggers. http://www.chokkan.org/software/crfsuite/tutorial.html
+    An interface to Python CRFSuite taggers. https://pypi.python.org/pypi/python-crfsuite
     
     >>> from nltk.tag.crfsuite import CRFTagger
     >>> ct = CRFTagger()
@@ -58,31 +47,8 @@ class CRFTagger(TaggerI):
     
     def __init__(self, file_path=''):
                
-        self._path = path.normpath(file_path) + sep
-        exe_file_1 = self.executable(self._path)
-        # Verifies the existence of the executable on the self._path first    
-        if not path.isfile(exe_file_1):
-            # Check for the system environment 
-            if 'CRFSUITE' in environ:  
-                self._path = path.normpath(environ['CRFSUITE']) + sep 
-                exe_file_2 = self.executable(self._path)
-                if not path.isfile(exe_file_2):
-                    raise ExecutableNotFound("CRFSuite executable expected at %s or %s but not found" % (exe_file_1,exe_file_2))
-                
         self._model_file = ''
     
-    def executable(self, base_path):
-        """
-        The function that determines the system specific binary that should be
-        used in the pipeline. In case, the system is not known the default crfsuite binary will
-        be used.
-        """ 
-        os_name = system()
-        if os_name == 'Linux':
-            return path.join(base_path, 'crfsuite')
-        if os_name == 'Windows':
-            return path.join(base_path, 'crfsuite.exe')
-        return path.join(base_path, 'crfsuite')
 
     def set_model_file(self, model_file):
         self._model_file = model_file
@@ -98,30 +64,32 @@ class CRFTagger(TaggerI):
         :return : a string which contains the features   
         
         """ 
-        feature_list = ''  
+        feature_list = []  
         # Capitalization 
         if data[0].isupper():
-            feature_list += 'CAPITALIZATION\t'
+            feature_list.append('CAPITALIZATION')
         
         # Number 
         pattern = re.compile('\\d')
         if re.search(pattern, data) is not None:
-            feature_list += 'HAS_NUM\t' 
+            feature_list.append('HAS_NUM') 
         
         # Punctuation
         punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
         if all (unicodedata.category(x) in punc_cat for x in data):
-            feature_list += 'PUNCTUATION\t'
+            feature_list.append('PUNCTUATION')
         
         # Suffix up to length 3
         if len(data) > 1:
-            feature_list += ('SUF_' + data[-1:] + '\t') 
+            feature_list.append('SUF_' + data[-1:]) 
         if len(data) > 2: 
-            feature_list += ('SUF_' + data[-2:] + '\t')    
+            feature_list.append('SUF_' + data[-2:])    
         if len(data) > 3: 
-            feature_list += ('SUF_' + data[-3:] + '\t')
-        feature_list +=  'WORD_' + data + '\t'
-        return feature_list.strip()
+            feature_list.append('SUF_' + data[-3:])
+            
+        feature_list.append('WORD_' + data )
+        
+        return feature_list
         
     def tag_sents(self, sents):
         '''
@@ -133,87 +101,55 @@ class CRFTagger(TaggerI):
         :return : list of tagged sentences. 
         :rtype : list (list (tuple(str,str))) 
         '''
-        
-        # We need the list of sentences instead of the list generator for matching the input and output  
-        sentences = list(sents) 
-        
-        # First, build the test file 
-        input_file = tempfile.NamedTemporaryFile(
-                prefix='crf_tagger.test',
-                dir=tempfile.gettempdir(),
-                delete=False)
-
-        for sent in sentences: 
-            for token in sent:
-                #data = unicode(token)
-                data = token
-                input_file.write(('DUMMY_LABEL\t' + self._get_features(data) + '\n').encode('utf-8'))
-            input_file.write('\n'.encode('utf-8'))
-        
-        input_file.close()
-        
-        # Now use the model to tag
-        _crf_cmd = [self.executable(self._path), 'tag', '-m', self._model_file, input_file.name]
+        tagger = pycrfsuite.Tagger()
+        tagger.open(self._model_file)
+        # We need the list of sentences instead of the list generator for matching the input and output
+        result = []  
+        for sent in sents:
+            features = []
+            for data in sent:
+                features.append(self._get_features(data))
+            labels = tagger.tag(features)    
+            if len(labels) != len(sent):
+                raise Exception(' Predicted Length Not Matched, Expect Errors !')
+            tagged_sent = []
+            for i in range(len(labels)):
+                tagged_sent.append((sent[i],labels[i]))
+            result.append(tagged_sent)
             
-            
-        # Run the tagger and get the output
-        p = Popen(_crf_cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        (stdout, stderr) = p.communicate()
-
-        # Check the return code.
-        if p.returncode != 0:
-            raise Exception('CRFSuite command failed! Details: %s' % stderr)
-        
-        # Remove the temp file
-        #print ('Test file : ' + input_file.name) 
-        os.remove(input_file.name)
-        
-        return self.parse_output(stdout, sentences)
-        
+        return result 
     
     def train(self, train_data, model_file):
         '''
         Train the CRF tagger using CRFSuite  
-        :params train : is the list of annotated sentences.        
-        :type train : list (list(tuple(str,str)))
+        :params train_data : is the list of annotated sentences.        
+        :type train_data : list (list(tuple(str,str)))
         :params model_file : the model will be saved to this file.     
          
         '''
+        X_train = []
+        y_train = [] 
         
-        try:
-            input_file = tempfile.NamedTemporaryFile(
-                prefix='crf_tagger.train',
-                dir=tempfile.gettempdir(),
-                delete=False)
-
-            for sent in train_data:
-                for data,label in sent:
-                    #data = unicode(data)
-                    input_file.write((label + '\t' + self._get_features(data) + '\n').encode('utf-8'))
-                input_file.write('\n'.encode('utf-8'))            
-            input_file.close()
+        for sent in train_data:
+            features = []
+            labels = []
+            for data,label in sent:
+                features.append(self._get_features(data))
+                labels.append(label)    
+            X_train.append(features)
+            y_train.append(labels)    
             
-            # Now train the model, the output should be model_file
-            _crf_cmd = [self.executable(self._path), 'learn', '-m', model_file, input_file.name]
-            
-            # Serialize the actual sentences to a temporary string
-            # Run the tagger and get the output
-            p = Popen(_crf_cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-            (stdout, stderr) = p.communicate()
-
-            # Check the return code.
-            if p.returncode != 0:
-                raise Exception('CRFSuite command failed! Details: %s' % stderr)
-            
-            # Save the model file 
-            self._model_file = model_file            
-        finally:
-            os.remove(input_file.name)
-            #print ('Training data : ' + input_file.name)
+        # Now train the model, the output should be model_file
+        trainer = pycrfsuite.Trainer(verbose=False)
+        for xseq, yseq in zip(X_train, y_train):
+            trainer.append(xseq, yseq)
+        trainer.train(model_file)
+        # Save the model file 
+        self._model_file = model_file            
 
     def tag(self, tokens):
         '''
-        Tag a sentence using Mallet CRF Tagger. NB before using this function, user should specify the mode_file either by 
+        Tag a sentence using Python CRFSuite Tagger. NB before using this function, user should specify the mode_file either by 
                        - Train a new model using ``train'' function 
                        - Use the pre-trained model which is set via ``set_model_file'' function  
         :params tokens : list of tokens needed to tag. 
@@ -223,40 +159,6 @@ class CRFTagger(TaggerI):
         '''
         
         return self.tag_sents([tokens])[0]
-
-    def parse_output(self, text, sentences):
-        
-        labels= []
-        sent_labels = []
-        text = text.decode('utf-8')
-        for label in text.strip().split("\n"):
-            label = label.strip()
-            if label == '':
-                sent_labels.append(labels)
-                labels = []
-                continue 
-            labels.append(label)
-            
-        if len(labels) > 0:
-            sent_labels.append(labels)
-            
-        # Match labels with word 
-        if len(sentences) != len(sent_labels):
-            raise ValueError(' Expecting error, number of sentence is not matched' + str(len(sentences)) + ' vs ' + str(len(sent_labels)))
-        tagged_sentences = []
-         
-        for i  in range(len(sentences)):
-            words = sentences[i]  
-            labels = sent_labels[i]
-         
-            if len(words) != len(labels):
-                raise ValueError(' Expecting error, sentence length is not matched')
-            tagged_sentence = []
-            for j in range(len(words)):
-                tagged_sentence.append((words[j],labels[j]))
-            tagged_sentences.append(tagged_sentence)
-            
-        return tagged_sentences
 
 if __name__ == "__main__":
     import doctest
