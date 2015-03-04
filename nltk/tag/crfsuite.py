@@ -106,15 +106,14 @@ class CRFTagger(TaggerI):
         # We need the list of sentences instead of the list generator for matching the input and output
         result = []  
         for sent in sents:
-            features = []
-            for data in sent:
-                features.append(self._get_features(data))
-            labels = tagger.tag(features)    
+            features = [self._get_features(data) for data in sent]
+            labels = tagger.tag(features)
+                
             if len(labels) != len(sent):
                 raise Exception(' Predicted Length Not Matched, Expect Errors !')
-            tagged_sent = []
-            for i in range(len(labels)):
-                tagged_sent.append((sent[i],labels[i]))
+            
+            tagged_sent = [(sent[i],labels[i]) for i in range(len(labels))]
+
             result.append(tagged_sent)
             
         return result 
@@ -131,11 +130,9 @@ class CRFTagger(TaggerI):
         y_train = [] 
         
         for sent in train_data:
-            features = []
-            labels = []
-            for data,label in sent:
-                features.append(self._get_features(data))
-                labels.append(label)    
+            features = [self._get_features(data) for data,label in sent]
+            labels = [label for data,label in sent]
+            
             X_train.append(features)
             y_train.append(labels)    
             
