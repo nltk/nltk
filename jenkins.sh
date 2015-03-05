@@ -55,12 +55,6 @@ popd
 #coverage
 coverage erase
 coverage run --source=nltk nltk/test/runtests.py --with-xunit
-echo '############### INVESTIGATING ###################' 
-coverage debug sys 
-coverage debug data 
-cat nosetests.xml
-echo '############## END INVESTIGATING ###############' 
-
 coverage xml --omit=nltk/test/*
 iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
 pylint -f parseable nltk > pylintoutput
