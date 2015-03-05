@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-A module for interfacing with the CRFSuite taggers.
+A module for POS tagging using CRFSuite
 """
 from __future__ import absolute_import
 from __future__ import unicode_literals
@@ -16,12 +16,9 @@ import re
 from nltk.tag.api import TaggerI
 import pycrfsuite
 
-_py_crfsuite_url = 'https://pypi.python.org/pypi/python-crfsuite'
-
-
 class CRFTagger(TaggerI):
     """
-    An interface to Python CRFSuite taggers. https://pypi.python.org/pypi/python-crfsuite
+    A module for POS tagging using CRFSuite https://pypi.python.org/pypi/python-crfsuite
     
     >>> from nltk.tag.crfsuite import CRFTagger
     >>> ct = CRFTagger()
@@ -45,49 +42,94 @@ class CRFTagger(TaggerI):
     
     """
     
-    def __init__(self, file_path=''):
-               
-        self._model_file = ''
     
-
+    def __init__(self,  feature_func = None, verbose = False, training_opt = {}):
+        """
+        Initialize the CRFSuite tagger 
+        :param feature_func: The function that extracts features for each token of a sentence. This function should take 
+        2 parameters: tokens and index which extract features at index position from tokens list. See the build in 
+        _get_features function for more detail.   
+        :param verbose: output the debugging messages during training.
+        :type verbose: boolean  
+        :param training_opt: python-crfsuite training options
+        :type training_opt : dictionary 
+        
+        Set of possible training options (using LBFGS training algorithm).  
+         'feature.minfreq' : The minimum frequency of features.
+         'feature.possible_states' : Force to generate possible state features.
+         'feature.possible_transitions' : Force to generate possible transition features.
+         'c1' : Coefficient for L1 regularization.
+         'c2' : Coefficient for L2 regularization.
+         'max_iterations' : The maximum number of iterations for L-BFGS optimization.
+         'num_memories' : The number of limited memories for approximating the inverse hessian matrix.
+         'epsilon' : Epsilon for testing the convergence of the objective.
+         'period' : The duration of iterations to test the stopping criterion.
+         'delta' : The threshold for the stopping criterion; an L-BFGS iteration stops when the
+                    improvement of the log likelihood over the last ${period} iterations is no greater than this threshold.
+         'linesearch' : The line search algorithm used in L-BFGS updates:
+                           { 'MoreThuente': More and Thuente's method,
+                              'Backtracking': Backtracking method with regular Wolfe condition,
+                              'StrongBacktracking': Backtracking method with strong Wolfe condition
+                           } 
+         'max_linesearch' :  The maximum number of trials for the line search algorithm.
+         
+        """
+                   
+        self._model_file = ''
+        self._tagger = pycrfsuite.Tagger()
+        
+        if feature_func is None:
+            self._feature_func =  self._get_features
+        else:
+            self._feature_func =  feature_func
+        
+        self._verbose = verbose 
+        self._training_options = training_opt
+        self._pattern = re.compile(r'\d')
+        
     def set_model_file(self, model_file):
         self._model_file = model_file
+        self._tagger.open(self._model_file)
             
-    def _get_features(self,data):
+    def _get_features(self, tokens, idx):
         """
         Extract basic features about this word including 
              - Current Word 
              - Is Capitalized ?
              - Has Punctuation ?
              - Has Number ?
-             - Suffixes up to length 3 
-        :return : a string which contains the features   
+             - Suffixes up to length 3
+        Note that : we might include feature over previous word, next word ect. 
+        
+        :return : a list which contains the features
+        :rtype : list(str)    
         
         """ 
+        token = tokens[idx]
+        
         feature_list = []  
         # Capitalization 
-        if data[0].isupper():
+        if token[0].isupper():
             feature_list.append('CAPITALIZATION')
         
         # Number 
-        pattern = re.compile('\\d')
-        if re.search(pattern, data) is not None:
+        if re.search(self._pattern, token) is not None:
             feature_list.append('HAS_NUM') 
         
         # Punctuation
         punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
-        if all (unicodedata.category(x) in punc_cat for x in data):
+        if all (unicodedata.category(x) in punc_cat for x in token):
             feature_list.append('PUNCTUATION')
         
         # Suffix up to length 3
-        if len(data) > 1:
-            feature_list.append('SUF_' + data[-1:]) 
-        if len(data) > 2: 
-            feature_list.append('SUF_' + data[-2:])    
-        if len(data) > 3: 
-            feature_list.append('SUF_' + data[-3:])
+        if len(token) > 1:
+            feature_list.append('SUF_' + token[-1:]) 
+        if len(token) > 2: 
+            feature_list.append('SUF_' + token[-2:])    
+        if len(token) > 3: 
+            feature_list.append('SUF_' + token[-3:])
             
-        feature_list.append('WORD_' + data )
+        feature_list.append('WORD_' + token )
         
         return feature_list
         
@@ -101,19 +143,19 @@ class CRFTagger(TaggerI):
         :return : list of tagged sentences. 
         :rtype : list (list (tuple(str,str))) 
         '''
-        tagger = pycrfsuite.Tagger()
-        tagger.open(self._model_file)
+        if self._model_file == '':
+            raise Exception(' No model file is found !! Please use train or set_model_file function')
+        
         # We need the list of sentences instead of the list generator for matching the input and output
         result = []  
-        for sent in sents:
-            features = [self._get_features(data) for data in sent]
-            labels = tagger.tag(features)
+        for tokens in sents:
+            features = [self._feature_func(tokens,i) for i in range(len(tokens))]
+            labels = self._tagger.tag(features)
                 
-            if len(labels) != len(sent):
+            if len(labels) != len(tokens):
                 raise Exception(' Predicted Length Not Matched, Expect Errors !')
             
-            tagged_sent = [(sent[i],labels[i]) for i in range(len(labels))]
-
+            tagged_sent = list(zip(tokens,labels))
             result.append(tagged_sent)
             
         return result 
@@ -126,23 +168,18 @@ class CRFTagger(TaggerI):
         :params model_file : the model will be saved to this file.     
          
         '''
-        X_train = []
-        y_train = [] 
+        trainer = pycrfsuite.Trainer(verbose=self._verbose)
+        trainer.set_params(self._training_options)
         
         for sent in train_data:
-            features = [self._get_features(data) for data,label in sent]
-            labels = [label for data,label in sent]
-            
-            X_train.append(features)
-            y_train.append(labels)    
-            
+            tokens,labels = zip(*sent)
+            features = [self._feature_func(tokens,i) for i in range(len(tokens))]
+            trainer.append(features,labels)
+                        
         # Now train the model, the output should be model_file
-        trainer = pycrfsuite.Trainer(verbose=False)
-        for xseq, yseq in zip(X_train, y_train):
-            trainer.append(xseq, yseq)
         trainer.train(model_file)
-        # Save the model file 
-        self._model_file = model_file            
+        # Save the model file
+        self.set_model_file(model_file) 
 
     def tag(self, tokens):
         '''
