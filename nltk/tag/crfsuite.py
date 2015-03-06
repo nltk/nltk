@@ -14,7 +14,11 @@ from __future__ import unicode_literals
 import unicodedata
 import re 
 from nltk.tag.api import TaggerI
-import pycrfsuite
+
+try:
+    import pycrfsuite
+else:
+    pass
 
 class CRFTagger(TaggerI):
     """
