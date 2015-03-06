@@ -17,7 +17,7 @@ from nltk.tag.api import TaggerI
 
 try:
     import pycrfsuite
-else:
+except ImportError:
     pass
 
 class CRFTagger(TaggerI):
