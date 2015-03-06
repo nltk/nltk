@@ -75,6 +75,7 @@ from nltk.tag.stanford      import StanfordTagger
 from nltk.tag.hmm           import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
 from nltk.tag.senna         import SennaTagger, SennaChunkTagger, SennaNERTagger
 from nltk.tag.mapping       import tagset_mapping, map_tag
+from nltk.tag.crf           import CRFTagger
 
 from nltk.data import load
 
