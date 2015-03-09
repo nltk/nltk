@@ -1313,7 +1313,7 @@ class ChartParser(ParserI):
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
         if trace: print(chart.pretty_format_leaves(trace_edge_width))
-
+        
         if self._use_agenda:
             # Use an agenda-based algorithm.
             for axiom in self._axioms:
@@ -1628,8 +1628,9 @@ def demo(choice=None,
         print()
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
-        parses = cp.parse_all(tokens)
         chart = cp.chart_parse(tokens)
+        parses = list(chart.parses(grammar.start()))
+        
         times[strategies[strategy][0]] = time.time()-t
         print("Nr edges in chart:", len(chart.edges()))
         if numparses:
