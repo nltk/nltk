@@ -32,7 +32,7 @@ http://borel.slu.edu/crubadan/index.html
 from __future__ import print_function, unicode_literals
 
 import nltk
-from nltk.corpus import CrubadanCorpusReader
+from nltk.corpus import crubadan
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 
@@ -65,7 +65,7 @@ class TextCat(object):
                                    "see https://pypi.python.org/pypi/regex for "
                                    "further details.")
 
-        self._corpus = CrubadanCorpusReader(nltk.data.find('corpora/crubadan'), '.*\.txt')
+        self._corpus = crubadan
         
     def trigrams(self, text):
         padded_text = self._START_CHAR + text + self._END_CHAR
@@ -145,28 +145,36 @@ class TextCat(object):
         
         return min(self.last_distances, key=self.last_distances.get)
         
-    def demo(self):
-        ''' Demo of language guessing using a bunch of UTF-8 encoded
-            text files with snippets of text copied from news websites
-            around the web in different languages '''
-        from os import listdir
-        from os.path import isfile
-        # Current dir
-        path = '.'
-        lang_samples = []
+def demo():
+    ''' Demo of language guessing using a bunch of UTF-8 encoded
+        text files with snippets of text copied from news websites
+        around the web in different languages '''
+
+    from os import listdir
+    from os.path import isfile
+
+    path = '.'
+    lang_samples = []
+
+    tc = TextCat()
         
-        for f in listdir(path):
-            if isfile(f):
-                m = regex.match('sample_\w+\.txt', f)
-                if m: lang_samples.append(f)
+    for f in listdir(path):
+        if isfile(f):
+            m = regex.match('sample_\w+\.txt', f)
+            if m: lang_samples.append(f)
                 
-        print(lang_samples)
-        for f in lang_samples:
-            cur_sample = open(f, 'rU')
-            cur_data = cur_sample.read()
-            print('Language sample file: ' + f)
-            print('Contents snippet:  ' + cur_data.decode('utf8')[0:140])
-            print('#################################################')
-            print('Language detection: ' + self.guess_language(cur_data))
-            print('#################################################')
+    print(lang_samples)
+    for f in lang_samples:
+        cur_sample = open(f, 'rU')
+        cur_data = cur_sample.read()
+        print('Language sample file: ' + f)
+        print('Contents snippet:  ' + cur_data.decode('utf8')[0:140])
+        print('#################################################')
+        print('Language detection: ' + tc.guess_language(cur_data))
+        print('#################################################')
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE |
+    doctest.ELLIPSIS)
 
