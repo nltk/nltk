@@ -19,7 +19,6 @@ For details about An Crubadan, this data, and its potential uses, see:
 http://borel.slu.edu/crubadan/index.html
 """
 
-# Ensure that your own literal strings default to unicode rather than str.
 from __future__ import print_function, unicode_literals
 
 from nltk.corpus.reader import CorpusReader
@@ -28,9 +27,6 @@ from nltk.data import ZipFilePathPointer
 
 import re
 from re import escape, search
-######################################################################
-##  An Crubadan N-gram Corpus Reader
-######################################################################
 
 class CrubadanCorpusReader(CorpusReader):
     """
@@ -99,7 +95,7 @@ class CrubadanCorpusReader(CorpusReader):
             self._lang_mapping_data.append( row.split('\t') )
         
         # Get rid of empty entry if last line in file is blank
-        if self._lang_mapping_data[ len(self._lang_mapping_data) - 1 ] == [u'']:
+        if self._lang_mapping_data[ len(self._lang_mapping_data) - 1 ] == ['']:
             self._lang_mapping_data.pop()
 
     def _load_lang_ngrams(self, lang):
@@ -118,7 +114,7 @@ class CrubadanCorpusReader(CorpusReader):
         f = open(ngram_file, 'rU')
         
         for line in f:
-            data = line.decode('utf-8').split(u' ')
+            data = line.decode('utf-8').split(' ')
             
             ngram = data[1].strip('\n')
             freq = int(data[0])

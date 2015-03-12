@@ -4,118 +4,85 @@
 Crubadan Corpus Reader
 ======================
 
-Crubadan is an NLTK corpus reader for n-gram files provided
-by the Crubadan project, and can be imported like this:
+Crubadan is an NLTK corpus reader for ngram files provided
+by the Crubadan project. It supports several languages.
 
-    >>> import nltk
     >>> from nltk.corpus import crubadan
-
-The name can be hard to remember so for more compact
-and easy to remember code, try:
-
-    >>> from nltk.corpus import crubadan as cb
-
-------------------------
-Language support methods
-------------------------
-
-    To get a list of supported languages as ISO 639-3 codes:
-    
-    >>> crubadan.langs() # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
-    ['abk', 'abn', 'ace', ..., 'zne', 'zpa', 'zul']
-    
-    To check if a single specific language is supported, check
-    membership in this list. For example, to check for English:
-    
-    >>> 'Yes' if 'eng' in crubadan.langs() else 'No'
-    'Yes'
-
-    And for an unsupported language, say, Ghotuo ('aaa' in ISO 639-3):
-    >>> 'Yes' if 'aaa' in crubadan.langs() else 'No'
-    'No'
+    >>> crubadan.langs()
 
 ----------------------------------------
 Language code mapping and helper methods
 ----------------------------------------
 
-    The web crawler that generated the 3-gram frequencies
-    actually works at the level of "writing systems" rather
-    than "languages". It assigned internal 2-3 letter 
-    "writing system codes" that require mapping to the standard
-    ISO 639-3 codes. 
-    
-    For more info, please refer to the README in nltk/nltk_data/crubadan
-    folder after installing it.
-    
-    To translate ISO 639-3 codes to "Crubadan Code", for example, English:
+The web crawler that generated the 3-gram frequencies works at the
+level of "writing systems" rather than languages. These are assigned
+internal 2-3 letter "writing system codes" that require mapping to the
+standard ISO 639-3 codes.
+
+For details, please refer to the README in nltk_data/crubadan
+folder after installing it.
+
+To translate ISO 639-3 codes to "Crubadan Code":
+
     >>> crubadan.iso_to_crubadan('eng')
     'en'
-
-    And, French:
     >>> crubadan.iso_to_crubadan('fra')
     'fr'
-    
-    Unsupported language returns None, using Ghotuo example from above:
-    >>> code_found = crubadan.iso_to_crubadan('aaa')
-    >>> code_found is None
-    True
+    >>> crubadan.iso_to_crubadan('aaa')
+    None
 
-    In reverse; print ISO 639-3 code if we have Crubadan Code for English:
+In reverse, print ISO 639-3 code if we have the Crubadan Code:
+
     >>> crubadan.crubadan_to_iso('en')
     'eng'
-    
-    Another example, French:
     >>> crubadan.crubadan_to_iso('fr')
     'fra'
+    >>> crubadan.crubadan_to_iso('aa')
+    None
 
-    Unsupported language returns None. Crubadan does not
-    support Ghotuo, so let's continue using it as an example.
-    Say the theoretical Crubadan Code for the Ghotuo language
-    would have been 'aa', then:
-    >>> code_found = crubadan.crubadan_to_iso('aa')
-    >>> code_found is None
-    True
+---------------------------
+Accessing ngram frequencies
+---------------------------
 
-------------------------------------
-N-gram and their frequencies methods
-------------------------------------
+On initialization, the reader will create a dictionary of every
+language supported by the Crubadan project, mapping the ISO 639-3
+language code to its corresponding ngram frequency.
 
-    On initialization the reader will create a dictionary of every
-    language supported by the Crubadan project, mapping the ISO 639-3
-    language code to its corresponding n-gram frequency.
-    The end result is a dictionary of FreqDists representing all the
-    languages that can be accessed via "all_lang_freq":
-    
+The end result is a dictionary of FreqDists representing all the
+languages that can be accessed via "all_lang_freq":
+
     >>> crubadan.all_lang_freq # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
     {'roh': FreqDist({'<da': 33783, ...})}
 
-    You can access individual language FreqDist and the n-grams within them as follows:
-    say you're interested in knowing the frequency of the n-gram 'the' in English:
+You can access individual language FreqDist and the ngrams within them as follows:
+say you're interested in knowing the frequency of the ngram 'the' in English:
 
     >>> english_fd = crubadan.all_lang_freq['eng']
     >>> english_fd['the']
     728135
 
-    Alternatively, you may use the "lang_freq" method to retrieve the FreqDist
-    directly, simply pass the ISO 639-3 code for the language you're interested in:
-    
+Alternatively, you may use the "lang_freq" method to retrieve the FreqDist
+directly, simply pass the ISO 639-3 code for the language you're interested in:
+
     >>> crubadan.lang_freq('eng') # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
     FreqDist({'<th': 954187, 'the': 728135, 'he>': 655273, 'ing': 360758, 'nd>': 359481, 'ng>':
     351373, '<an': 345633, '<to': 333091, 'ed>': 329517, '<of': 316431, ...})
 
-    A companion convenience method to above is "ngram_freq", which can be
-    used to retrieve a specific n-gram frequecy more explicitly. As usual, 
-    pass in the language of interest by its ISO 639-3 code and the n-gram
-    of interest. Using the example above to get the frequency of 'the' in English:
-    
+A companion convenience method to above is "ngram_freq", which can be
+used to retrieve a specific ngram frequecy more explicitly. As usual, 
+pass in the language of interest by its ISO 639-3 code and the ngram
+of interest. Using the example above to get the frequency of 'the' in English:
+
     >>> crubadan.ngram_freq('eng', 'the')
     728135
 
-    A n-gram that isn't found within the language will return 0:
+A ngram that isn't found within the language will return 0:
+
     >>> crubadan.ngram_freq('eng', 'test')
     0
 
-    A language that isn't supported will throw an exception:
+A language that isn't supported will raise an exception:
+
     >>> crubadan.ngram_freq('elvish', 'test')
     Traceback (most recent call last):
     ...

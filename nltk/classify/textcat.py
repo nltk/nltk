@@ -42,13 +42,12 @@ from sys import maxint
 # is an alternative to the standard re module that supports
 # Unicode codepoint properties with the \p{} syntax.
 # You may have to "pip install regx"
+
 try:
-    import regex as re  
+    import regex
 except ImportError:
-    re = None
-######################################################################
-##  Language identification using TextCat
-######################################################################
+    pass
+
 
 class TextCat(object):
 
@@ -71,6 +70,7 @@ class TextCat(object):
     def trigrams(self, text):
         padded_text = self._START_CHAR + text + self._END_CHAR
         trigrams = []
+
         # Generate 3-grams for given text
         for i in range(0, len(padded_text) - 2):
             cur_trigram = padded_text[i:(i + 3)]
@@ -87,7 +87,7 @@ class TextCat(object):
         
     def remove_punctuation(self, text):
         ''' Get rid of punctuation except apostrophes '''
-        return re.sub(ur"[^\P{P}\']+", "", text.decode('utf8'))
+        return regex.sub(r"[^\P{P}\']+", "", text.decode('utf8'))
     
     def profile(self, text):
         ''' Create FreqDist of trigrams within text '''
@@ -129,14 +129,11 @@ class TextCat(object):
             the text and all languages '''
         distances = {}
         profile = self.profile(text)
-        # For all the languages
+
         for lang in self._corpus.all_lang_freq.keys():
-            # Calculate distance metric for every trigram in
-            # input text to be identified
             lang_dist = 0
             for trigram in profile:
                 lang_dist += self.calc_dist(lang, trigram, profile)
-        
             distances[lang] = lang_dist
             
         return distances
@@ -160,7 +157,7 @@ class TextCat(object):
         
         for f in listdir(path):
             if isfile(f):
-                m = re.match('sample_\w+\.txt', f)
+                m = regex.match('sample_\w+\.txt', f)
                 if m: lang_samples.append(f)
                 
         print(lang_samples)
