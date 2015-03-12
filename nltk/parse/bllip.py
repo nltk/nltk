@@ -24,9 +24,10 @@ or see docs for ``bllipparser.ModelFetcher.download_and_install_model``).
 Basic usage::
 
     # download and install a basic unified parsing model (Wall Street Journal)
-    >>> from nltk.downloader import download
-    >>> download('bllip_wsj_no_aux', download_dir='/tmp', raise_on_error=True)
-    >>> model_dir = '/tmp/models/bllip_wsj_no_aux'
+    # sudo python -m nltk.downloader bllip_wsj_no_aux
+
+    >>> from nltk.data import find
+    >>> model_dir = find('models/bllip_wsj_no_aux').path
     >>> bllip = BllipParser.from_unified_model_dir(model_dir)
 
     # 1-best parsing
@@ -231,10 +232,12 @@ class BllipParser(ParserI):
 
 def demo():
     """This assumes the Python module bllipparser is installed."""
-    from nltk.downloader import download
+
     # download and install a basic unified parsing model (Wall Street Journal)
-    download('bllip_wsj_no_aux', download_dir='/tmp', raise_on_error=True)
-    model_dir = '/tmp/models/bllip_wsj_no_aux'
+    # sudo python -m nltk.downloader bllip_wsj_no_aux
+
+    from nltk.data import find
+    model_dir = find('models/bllip_wsj_no_aux').path
 
     print('Loading BLLIP Parsing models...')
     # the easiest way to get started is to use a unified model
@@ -277,4 +280,6 @@ def setup_module(module):
                        'the bllipparser module is not installed')
 
 if __name__ == '__main__':
-    demo()
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
+
