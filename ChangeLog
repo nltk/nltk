@@ -3,7 +3,7 @@ Version 3.0.2 2015-03-13
 * improvements to Portuguese stemmer
 * transition-based dependency parsers
 * dependency graph visualisation for ipython notebook
-* interfaces for Senna, BLLIP, pyCRFsuite
+* interfaces for Senna, BLLIP, python-crfsuite
 * NKJP corpus reader
 * code clean ups, minor bug fixes
 
