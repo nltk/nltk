@@ -34,22 +34,21 @@ class CrubadanCorpusReader(CorpusReader):
     """
     
     _LANG_MAPPER_FILE = 'table.txt'
-    all_lang_freq = {}
+    _all_lang_freq = {}
     
     def __init__(self, root, fileids, encoding='utf8', tagset=None):
         super(CrubadanCorpusReader, self).__init__(root, fileids, encoding='utf8')
         self._lang_mapping_data = []
         self._load_lang_mapping_data()
-        self._load_all_ngrams()
         
     def lang_freq(self, lang):
         ''' Return n-gram FreqDist for a specific language
             given ISO 639-3 language code '''
         
-        if len(self.all_lang_freq) == 0:
-            self._load_all_ngrams()
+        if lang not in self._all_lang_freq:
+            self._load_lang_ngrams(lang)
 
-        return self.all_lang_freq[lang]
+        return self._all_lang_freq[lang]
     
     def langs(self):
         ''' Return a list of supported languages as ISO 639-3 codes '''
@@ -123,5 +122,5 @@ class CrubadanCorpusReader(CorpusReader):
                 iso_code = self.crubadan_to_iso(crubadan_code)
 
                 fd = self._load_lang_ngrams(iso_code)
-                self.all_lang_freq[iso_code] = fd
+                self._all_lang_freq[iso_code] = fd
 
