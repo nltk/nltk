@@ -46,7 +46,7 @@ class CrubadanCorpusReader(CorpusReader):
             given ISO 639-3 language code '''
         
         if lang not in self._all_lang_freq:
-            self._load_lang_ngrams(lang)
+            self._all_lang_freq[lang] = self._load_lang_ngrams(lang)
 
         return self._all_lang_freq[lang]
     
@@ -101,26 +101,4 @@ class CrubadanCorpusReader(CorpusReader):
             counts[ngram] = freq
             
         return counts
-
-    def _load_all_ngrams(self):
-        ''' Create a dictionary of every supported language mapping 
-            the ISO 639-3 language code to its corresponding n-gram
-            FreqDist. The result can be accessed via "all_lang_freq" var '''
         
-        # Filter out non n-gram files from the corpus dir
-        valid_files = []
-        for f in self.fileids():
-            m = re.search('(\w+)' + re.escape("-3grams.txt"), f)
-            if m:
-                valid_files.append( m.group() )
-                
-        for f in valid_files:
-            ngram_file = path.join(self.root, f)
-            
-            if path.isfile(ngram_file):
-                crubadan_code = f.split('-')[0]
-                iso_code = self.crubadan_to_iso(crubadan_code)
-
-                fd = self._load_lang_ngrams(iso_code)
-                self._all_lang_freq[iso_code] = fd
-
