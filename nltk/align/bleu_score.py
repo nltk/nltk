@@ -203,9 +203,34 @@ def _brevity_penalty(candidate, references):
     length sentence, brevity penalty is used to modify the overall BLEU
     score according to length.
 
+    An example from the paper. There are three references with lenght 12, 15
+    and 17.
+    >>> references = [['a'] * 12, ['a'] * 15, ['a'] * 17]
+
+    And a terse candidate of the lenght 12.
+    >>> candidate = ['a'] * 12
+
+    The brevity penalty is 1
+    _brevity_penalty(candidate, references)
+    1
+
+    In case a candidate translation is shorted than the references.
+
+    >>> references = [['a'] * 28, ['a'] * 28]
+    >>> candidate = ['a'] * 12
+    >>> _brevity_penalty(candidate, references)
+    0.2635...
+
+    >>> references = [['a'] * 13, ['a'] * 2]
+    >>> candidate = ['a'] * 12
+    >>> _brevity_penalty(candidate, references)
+    0.92...
+    1
+
     """
     c = len(candidate)
-    r = min(abs(len(r) - c) for r in references)
+    ref_lens = (len(reference) for reference in references)
+    r = min(ref_lens, key=lambda ref_len: abs(ref_len - c))
 
     if c > r:
         return 1
