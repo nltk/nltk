@@ -756,13 +756,13 @@ def demo():
 
     >>> result = parser_std.parse([gold_sent], 'temp.arcstd.model')
     >>> de = DependencyEvaluator(result, [gold_sent])
-    >>> print(de.eval() >= (0,0) )
+    >>> de.eval() >= (0, 0)
     True
 
     B. Check the ARC-EAGER parser
     >>> result = parser_eager.parse([gold_sent], 'temp.arceager.model')
     >>> de = DependencyEvaluator(result, [gold_sent])
-    >>> print(de.eval() >= (0,0) )
+    >>> de.eval() >= (0, 0)
     True
 
     Note that result is very poor because of only one training example.
