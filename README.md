@@ -34,7 +34,7 @@ Contributing
 
 [How to contribute to NLTK](http://www.nltk.org/contribute.html).
 
-The following people have contributed to NLTK:
+The following 170+ people have contributed to NLTK:
 
 Rami Al-Rfou',
 Mark Amery,
