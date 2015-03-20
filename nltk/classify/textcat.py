@@ -152,28 +152,42 @@ class TextCat(object):
         self.last_distances = self.lang_dists(text)
         
         return min(self.last_distances, key=self.last_distances.get)
-        
+        #################################################')
+
     def demo(self):
-        ''' Demo of language guessing using a bunch of UTF-8 encoded
-            text files with snippets of text copied from news websites
-            around the web in different languages '''
-        from os import listdir
-        from os.path import isfile
-        # Current dir
-        path = '.'
-        lang_samples = []
+        from nltk.corpus import udhr
+
+        langs = ['Kurdish-UTF8', 'Abkhaz-UTF8', 'Farsi_Persian-UTF8',
+                 'Hindi-UTF8', 'Hawaiian-UTF8', 'Russian-UTF8', 'Vietnamese-UTF8',
+                 'Serbian_Srpski-UTF8','Esperanto-UTF8']
+
+        friendly = {'kmr':'Northern Kurdish',
+                    'abk':'Abkhazian',
+                    'pes':'Iranian Persian',
+                    'hin':'Hindi',
+                    'haw':'Hawaiian',
+                    'rus':'Russian',
+                    'vie':'Vietnamese',
+                    'srp':'Serbian',
+                    'epo':'Esperanto'}
         
-        for f in listdir(path):
-            if isfile(f):
-                m = re.match('sample_\w+\.txt', f)
-                if m: lang_samples.append(f)
-                
-        print(lang_samples)
-        for f in lang_samples:
-            cur_sample = open(f, 'rU')
-            cur_data = cur_sample.read()
-            print('Language sample file: ' + f)
-            print('Contents snippet:  ' + cur_data.decode('utf8')[0:140])
-            print('#################################################')
-            print('Language detection: ' + self.guess_language(cur_data))
-            print('#################################################')
+        # Generate a sample text of the language
+        for cur_lang in langs:
+          raw_sentences = udhr.sents(cur_lang)
+          rows = len(raw_sentences) - 1
+          cols = map(len, raw_sentences)
+
+          sample = ''
+          
+          for i in range(0, rows):
+            cur_sent = ''
+            for j in range(0, cols[i]):
+              cur_sent += ' ' + raw_sentences[i][j]
+            
+            sample += cur_sent
+          
+          # Try to detect what it is
+          print('Language snippet: ' + sample[0:140] + '...')
+          guess = self.guess_language(sample.encode('utf8'))
+          print('Language detection: %s (%s)' % (guess, friendly[guess]))
+          print('#' * 140)
