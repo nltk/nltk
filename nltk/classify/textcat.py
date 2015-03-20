@@ -32,7 +32,7 @@ http://borel.slu.edu/crubadan/index.html
 from __future__ import print_function, unicode_literals
 
 import nltk
-from nltk.corpus import crubadan
+from nltk.corpus import CrubadanCorpusReader
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 
@@ -42,12 +42,13 @@ from sys import maxint
 # is an alternative to the standard re module that supports
 # Unicode codepoint properties with the \p{} syntax.
 # You may have to "pip install regx"
-
 try:
-    import regex
+    import regex as re
 except ImportError:
-    pass
-
+    re = None
+######################################################################
+##  Language identification using TextCat
+######################################################################
 
 class TextCat(object):
 
@@ -65,12 +66,14 @@ class TextCat(object):
                                    "see https://pypi.python.org/pypi/regex for "
                                    "further details.")
 
-        self._corpus = crubadan
+        self._corpus = CrubadanCorpusReader(nltk.data.find('corpora/crubadan'), '.*\.txt')
+        # Load all language ngrams into cache
+        for lang in self._corpus.langs():
+            self._corpus.lang_freq(lang)
         
     def trigrams(self, text):
         padded_text = self._START_CHAR + text + self._END_CHAR
         trigrams = []
-
         # Generate 3-grams for given text
         for i in range(0, len(padded_text) - 2):
             cur_trigram = padded_text[i:(i + 3)]
@@ -87,7 +90,7 @@ class TextCat(object):
         
     def remove_punctuation(self, text):
         ''' Get rid of punctuation except apostrophes '''
-        return regex.sub(r"[^\P{P}\']+", "", text.decode('utf8'))
+        return re.sub(ur"[^\P{P}\']+", "", text.decode('utf8'))
     
     def profile(self, text):
         ''' Create FreqDist of trigrams within text '''
@@ -108,7 +111,8 @@ class TextCat(object):
     def calc_dist(self, lang, trigram, text_profile):
         ''' Calculate the "out-of-place" measure between the
             text and language profile for a single trigram '''
-        lang_fd = self._corpus.all_lang_freq[lang]
+        
+        lang_fd = self._corpus.lang_freq(lang)
         dist = 0
         
         if trigram in lang_fd:
@@ -127,13 +131,17 @@ class TextCat(object):
     def lang_dists(self, text):
         ''' Calculate the "out-of-place" measure between
             the text and all languages '''
+        
         distances = {}
         profile = self.profile(text)
-
-        for lang in self._corpus.all_lang_freq.keys():
+        # For all the languages
+        for lang in self._corpus._all_lang_freq.keys():
+            # Calculate distance metric for every trigram in
+            # input text to be identified
             lang_dist = 0
             for trigram in profile:
                 lang_dist += self.calc_dist(lang, trigram, profile)
+        
             distances[lang] = lang_dist
             
         return distances
@@ -145,36 +153,27 @@ class TextCat(object):
         
         return min(self.last_distances, key=self.last_distances.get)
         
-def demo():
-    ''' Demo of language guessing using a bunch of UTF-8 encoded
-        text files with snippets of text copied from news websites
-        around the web in different languages '''
-
-    from os import listdir
-    from os.path import isfile
-
-    path = '.'
-    lang_samples = []
-
-    tc = TextCat()
+    def demo(self):
+        ''' Demo of language guessing using a bunch of UTF-8 encoded
+            text files with snippets of text copied from news websites
+            around the web in different languages '''
+        from os import listdir
+        from os.path import isfile
+        # Current dir
+        path = '.'
+        lang_samples = []
         
-    for f in listdir(path):
-        if isfile(f):
-            m = regex.match('sample_\w+\.txt', f)
-            if m: lang_samples.append(f)
+        for f in listdir(path):
+            if isfile(f):
+                m = re.match('sample_\w+\.txt', f)
+                if m: lang_samples.append(f)
                 
-    print(lang_samples)
-    for f in lang_samples:
-        cur_sample = open(f, 'rU')
-        cur_data = cur_sample.read()
-        print('Language sample file: ' + f)
-        print('Contents snippet:  ' + cur_data.decode('utf8')[0:140])
-        print('#################################################')
-        print('Language detection: ' + tc.guess_language(cur_data))
-        print('#################################################')
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE |
-    doctest.ELLIPSIS)
-
+        print(lang_samples)
+        for f in lang_samples:
+            cur_sample = open(f, 'rU')
+            cur_data = cur_sample.read()
+            print('Language sample file: ' + f)
+            print('Contents snippet:  ' + cur_data.decode('utf8')[0:140])
+            print('#################################################')
+            print('Language detection: ' + self.guess_language(cur_data))
+            print('#################################################')
