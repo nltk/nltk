@@ -7,13 +7,9 @@
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
 
-from itertools import chain
 from math import log
 
-from nltk.probability import (FreqDist,
-    ConditionalProbDist,
-    ConditionalFreqDist,
-    LidstoneProbDist)
+from nltk.probability import ConditionalProbDist, ConditionalFreqDist, LidstoneProbDist
 from nltk.util import ngrams
 from nltk.model.api import ModelI
 
