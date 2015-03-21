@@ -87,6 +87,9 @@ class NgramModel(ModelI):
         assert(isinstance(pad_left, bool))
         assert(isinstance(pad_right, bool))
 
+        self._lpad = ('',) * (n - 1) if pad_left else ()
+        self._rpad = ('',) * (n - 1) if pad_right else ()
+
         # make sure n is greater than zero, otherwise print it
         assert (n > 0), n
         self._unigram_model = (n == 1)
@@ -240,13 +243,13 @@ class NgramModel(ModelI):
         :type text: list(str)
         """
 
-        e = 0.0
+        H = 0.0     # entropy is conventionally denoted by "H"
         text = list(self._lpad) + text + list(self._rpad)
-        for i in range(self._n-1, len(text)):
-            context = tuple(text[i-self._n+1:i])
+        for i in range(self._n - 1, len(text)):
+            context = tuple(text[(i - self._n + 1):i])
             token = text[i]
-            e += self.logprob(token, context)
-        return e / float(len(text) - (self._n-1))
+            H += self.logprob(token, context)
+        return H / float(len(text) - (self._n - 1))
 
     def perplexity(self, text):
         """
