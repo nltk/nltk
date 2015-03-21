@@ -174,6 +174,9 @@ class NgramModel(ModelI):
     def _alpha(self, context):
         """Get the backoff alpha value for the given context
         """
+        error_message = "Alphas and backoff are not defined for unigram models"
+        assert not self._unigram_model, error_message
+
         if context in self._backoff_alphas:
             return self._backoff_alphas[context]
         else:
@@ -219,8 +222,8 @@ class NgramModel(ModelI):
         return text
 
     def _generate_one(self, context):
-        context = (self._lpad + tuple(context))[-self._n+1:]
-        # print "Context (%d): <%s>" % (self._n, ','.join(context))
+        context = (self._lpad + tuple(context))[-self._n + 1:]
+
         if context in self:
             return self[context].generate()
         elif self._n > 1:
@@ -258,10 +261,14 @@ class NgramModel(ModelI):
         return pow(2.0, self.entropy(text))
 
     def __contains__(self, item):
-        return tuple(item) in self._model
+        if not isinstance(item, tuple):
+            item = (item,)
+        return item in self._model
 
     def __getitem__(self, item):
-        return self._model[tuple(item)]
+        if not isinstance(item, tuple):
+            item = (item,)
+        return self._model[item]
 
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
