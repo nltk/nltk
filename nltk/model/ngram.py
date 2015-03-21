@@ -45,19 +45,14 @@ class NgramModel(ModelI):
         training.
 
             >>> from nltk.corpus import brown
-            >>> from nltk.probability import LidstoneProbDist
-            >>> est = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-            >>> lm = NgramModel(3, brown.words(categories='news'), estimator=est)
+            >>> lm = NgramModel(3, brown.words(categories='news'))
             >>> lm
             <NgramModel with 91603 3-grams>
             >>> lm._backoff
             <NgramModel with 62888 2-grams>
-            >>> lm.entropy(['The', 'Fulton', 'County', 'Grand', 'Jury', 'said',
-            ... 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent',
-            ... 'primary', 'election', 'produced', '``', 'no', 'evidence',
-            ... "''", 'that', 'any', 'irregularities', 'took', 'place', '.'])
+            >>> lm.entropy(brown.words(categories='humor'))
             ... # doctest: +ELLIPSIS
-            0.5776...
+            12.0399...
 
         :param n: the order of the language model (ngram size)
         :type n: int
