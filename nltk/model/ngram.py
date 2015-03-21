@@ -273,11 +273,6 @@ class NgramModel(ModelI):
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
 
-
-def teardown_module(module=None):
-    from nltk.corpus import brown
-    brown._unload()
-
 if __name__ == "__main__":
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
