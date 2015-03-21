@@ -104,22 +104,20 @@ class NgramModel(ModelI):
             train = [train]
 
         # we need to keep track of the number of word types we encounter
-        words = set()
+        vocabulary = set()
         for sent in train:
             for ngram in ngrams(sent, n, pad_left, pad_right, pad_symbol=''):
                 self._ngrams.add(ngram)
                 context = tuple(ngram[:-1])
                 token = ngram[-1]
                 cfd[context][token] += 1
-                words.add(token)
+                vocabulary.add(token)
 
-        # unless number of bins is explicitly passed, we should use the number
-        # of word types encountered during training as the bins value
+        # Unless number of bins is explicitly passed, we should use the number
+        # of word types encountered during training as the bins value.
+        # If right padding is on, this includes the padding symbol.
         if 'bins' not in estimator_kwargs:
-            estimator_kwargs['bins'] = len(words)
-
-        missed_words = (1 - int(pad_left) - int(pad_right)) * (n - 1)
-        estimator_kwargs['override_N'] = cfd.N() + missed_words
+            estimator_kwargs['bins'] = len(vocabulary)
 
         self._model = ConditionalProbDist(cfd, estimator, *estimator_args, **estimator_kwargs)
 

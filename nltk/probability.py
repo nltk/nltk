@@ -653,7 +653,7 @@ class LidstoneProbDist(ProbDistI):
     likelihood estimate of the resulting frequency distribution.
     """
     SUM_TO_ONE = False
-    def __init__(self, freqdist, gamma, bins=None, override_N=None):
+    def __init__(self, freqdist, gamma, bins=None):
         """
         Use the Lidstone estimate to create a probability distribution
         for the experiment used to generate ``freqdist``.
@@ -688,12 +688,7 @@ class LidstoneProbDist(ProbDistI):
         self._freqdist = freqdist
         self._gamma = float(gamma)
 
-        # if user specifies a number of tokens explicitly, use that number
-        # instead of getting it from the frequency distribution
-        if override_N:
-            self._N = override_N
-        else:
-            self._N = self._freqdist.N()
+        self._N = self._freqdist.N()
 
         if bins is None:
             bins = freqdist.B()
