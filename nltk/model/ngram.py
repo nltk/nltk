@@ -22,11 +22,11 @@ from nltk import compat
 
 def _estimator(fdist, *estimator_args, **estimator_kwargs):
     """
-    Default estimator function using a SimpleGoodTuringProbDist.
+    Default estimator function using a LidstoneProbDist.
     """
     # can't be an instance method of NgramModel as they
     # can't be pickled either.
-    return LidstoneProbDist(fdist, *estimator_args, **estimator_kwargs)
+    return LidstoneProbDist(fdist, 0.001, *estimator_args, **estimator_kwargs)
 
 
 @compat.python_2_unicode_compatible
