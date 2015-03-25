@@ -50,14 +50,21 @@ class DependencyGraph(object):
         are split by whitespace.
 
         """
-        self.nodes = defaultdict(lambda: {'deps': defaultdict(list)})
+        self.nodes = defaultdict(lambda:  {'address': None,
+                                           'word': None,
+                                           'lemma': None,
+                                           'ctag': None,
+                                           'tag': None,
+                                           'feats': None,
+                                           'head': None,
+                                           'deps': defaultdict(list),
+                                           'rel': None,
+                                           })
+
         self.nodes[0].update(
             {
-                'word': None,
-                'lemma': None,
                 'ctag': 'TOP',
                 'tag': 'TOP',
-                'feats': None,
                 'rel': 'TOP',
                 'address': 0,
             }
