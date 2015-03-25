@@ -171,23 +171,24 @@ class TextCat(object):
                     'srp':'Serbian',
                     'epo':'Esperanto'}
         
-        # Generate a sample text of the language
         for cur_lang in langs:
-          raw_sentences = udhr.sents(cur_lang)
-          rows = len(raw_sentences) - 1
-          cols = map(len, raw_sentences)
+            # Get raw data from UDHR corpus
+            raw_sentences = udhr.sents(cur_lang)
+            rows = len(raw_sentences) - 1
+            cols = map(len, raw_sentences)
 
-          sample = ''
+            sample = ''
           
-          for i in range(0, rows):
-            cur_sent = ''
-            for j in range(0, cols[i]):
-              cur_sent += ' ' + raw_sentences[i][j]
+            # Generate a sample text of the language
+            for i in range(0, rows):
+                cur_sent = ''
+                for j in range(0, cols[i]):
+                    cur_sent += ' ' + raw_sentences[i][j]
             
-            sample += cur_sent
+                sample += cur_sent
           
-          # Try to detect what it is
-          print('Language snippet: ' + sample[0:140] + '...')
-          guess = self.guess_language(sample.encode('utf8'))
-          print('Language detection: %s (%s)' % (guess, friendly[guess]))
-          print('#' * 140)
+            # Try to detect what it is
+            print('Language snippet: ' + sample[0:140] + '...')
+            guess = self.guess_language(sample.encode('utf8'))
+            print('Language detection: %s (%s)' % (guess, friendly[guess]))
+            print('#' * 140)
