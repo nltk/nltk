@@ -1890,7 +1890,7 @@ def demo():
     print(lexpr(r'(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))').simplify())
 
     print('='*20 + 'Test alpha conversion and binder expression equality' + '='*20)
-    e1 = p('exists x.P(x)')
+    e1 = lexpr('exists x.P(x)')
     print(e1)
     e2 = e1.alpha_convert(Variable('z'))
     print(e2)
@@ -1923,4 +1923,4 @@ def printtype(ex):
 
 if __name__ == '__main__':
     demo()
-    demo_errors()
+#    demo_errors()

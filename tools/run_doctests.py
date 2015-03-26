@@ -5,7 +5,9 @@ run doctests
 """
 
 from __future__ import print_function
-import sys, subprocess, os
+import sys
+import subprocess
+import os
 
 for root, dirs, filenames in os.walk('.'):
     for filename in filenames:

@@ -203,9 +203,57 @@ def _brevity_penalty(candidate, references):
     length sentence, brevity penalty is used to modify the overall BLEU
     score according to length.
 
+    An example from the paper. There are three references with length 12, 15
+    and 17. And a terse candidate of the length 12. The brevity penalty is 1.
+
+    >>> references = [['a'] * 12, ['a'] * 15, ['a'] * 17]
+    >>> candidate = ['a'] * 12
+    >>> _brevity_penalty(candidate, references)
+    1.0
+
+    In case a candidate translation is shorter than the references, penalty is
+    applied.
+
+    >>> references = [['a'] * 28, ['a'] * 28]
+    >>> candidate = ['a'] * 12
+    >>> _brevity_penalty(candidate, references)
+    0.2635...
+
+    The length of the closest reference is used to compute the penalty. If the
+    length of a candidate is 12, and the reference lengths are 13 and 2, the
+    penalty is applied because the candidate length (12) is less then the
+    closest reference length (13).
+
+    >>> references = [['a'] * 13, ['a'] * 2]
+    >>> candidate = ['a'] * 12
+    >>> _brevity_penalty(candidate, references)
+    0.92...
+
+    The brevity penalty doesn't depend on reference order. More importantly,
+    when two reference sentences are at the same distance, the shortest
+    reference sentence length is used.
+
+    >>> references = [['a'] * 13, ['a'] * 11]
+    >>> candidate = ['a'] * 12
+    >>> _brevity_penalty(candidate, references) == _brevity_penalty(candidate, reversed(references)) == 1
+    True
+
+    A test example from mteval-v13a.pl (starting from the line 705):
+
+    >>> references = [['a'] * 11, ['a'] * 8]
+    >>> candidate = ['a'] * 7
+    >>> _brevity_penalty(candidate, references)
+    0.86...
+
+    >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
+    >>> candidate = ['a'] * 7
+    >>> _brevity_penalty(candidate, references)
+    1.0
+
     """
     c = len(candidate)
-    r = min(abs(len(r) - c) for r in references)
+    ref_lens = (len(reference) for reference in references)
+    r = min(ref_lens, key=lambda ref_len: (abs(ref_len - c), ref_len))
 
     if c > r:
         return 1

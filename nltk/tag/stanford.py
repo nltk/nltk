@@ -36,7 +36,7 @@ class StanfordTagger(TaggerI):
     _SEPARATOR = ''
     _JAR = ''
 
-    def __init__(self, path_to_model, path_to_jar=None, encoding='ascii', verbose=False, java_options='-mx1000m'):
+    def __init__(self, path_to_model, path_to_jar=None, encoding='utf8', verbose=False, java_options='-mx1000m'):
 
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
@@ -56,7 +56,7 @@ class StanfordTagger(TaggerI):
       raise NotImplementedError
 
     def tag(self, tokens):
-        return self.tag_sents([tokens])[0]
+        return list(self.tag_sents([tokens]))
 
     def tag_sents(self, sentences):
         encoding = self._encoding
@@ -158,9 +158,10 @@ class NERTagger(StanfordTagger):
 
     @property
     def _cmd(self):
+        # Adding -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerOptions tokenizeNLs=false for not using stanford Tokenizer  
         return ['edu.stanford.nlp.ie.crf.CRFClassifier',
                 '-loadClassifier', self._stanford_model, '-textFile',
-                self._input_file_path, '-outputFormat', self._FORMAT]
+                self._input_file_path, '-outputFormat', self._FORMAT, '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerOptions','\"tokenizeNLs=false\"']
 
     def parse_output(self, text):
       if self._FORMAT == 'slashTags':

@@ -4,6 +4,12 @@ NLTK News
 2015
 ----
 
+NLTK 3.0.2 released : March 2015
+   Senna, BLLIP, python-crfsuite interfaces, transition-based dependency parsers,
+   dependency graph visualization, NKJP corpus reader, minor bugfixes and clean-ups.
+   For full details see:
+   https://github.com/nltk/nltk/blob/develop/ChangeLog
+
 NLTK 3.0.1 released : January 2015
    Minor packaging update.
 
