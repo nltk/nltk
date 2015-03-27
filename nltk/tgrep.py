@@ -237,7 +237,7 @@ def _tgrep_node_action(_s, _l, tokens):
             return (lambda s: lambda n: _tgrep_node_literal_value(n) == s)(tokens[0].strip(u'"'))
         elif tokens[0].startswith(u'/'):
             return (lambda r: lambda n:
-                        r.match(_tgrep_node_literal_value(n)))(re.compile(tokens[0].strip(u'/')))
+                        r.search(_tgrep_node_literal_value(n)))(re.compile(tokens[0].strip(u'/')))
         elif tokens[0].startswith(u'i@'):
             return (lambda s: lambda n:
                         _tgrep_node_literal_value(n).lower() == s)(tokens[0][2:].lower())
