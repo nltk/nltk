@@ -211,6 +211,18 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, u'/^NP/'),
                          [(0,), (1,)])
 
+    def test_node_regex_2(self):
+        '''
+        Test regex matching on nodes.
+        '''
+        tree = ParentedTree.fromstring(u'(S (SBJ x) (SBJ1 x) (NP-SBJ x))')
+        self.assertEqual(tgrep.tgrep_positions(tree, u'/^SBJ/'),
+                         [(0,), (1,)])
+        # This is a regular expression that matches any node whose
+        # name includes SBJ, including NP-SBJ:
+        self.assertEqual(tgrep.tgrep_positions(tree, u'/SBJ/'),
+                         [(0,), (1,), (2,)])
+
     def test_node_tree_position(self):
         '''
         Test matching on nodes based on NLTK tree position.
