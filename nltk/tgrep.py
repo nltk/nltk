@@ -234,7 +234,9 @@ def _tgrep_node_action(_s, _l, tokens):
         elif tokens[0] == u'*' or tokens[0] == u'__':
             return lambda n: True
         elif tokens[0].startswith(u'"'):
-            return (lambda s: lambda n: _tgrep_node_literal_value(n) == s)(tokens[0].strip(u'"'))
+            assert tokens[0].endswith(u'"')
+            node_lit = tokens[0][1:-1].replace('\\"', '"').replace('\\\\', '\\')
+            return (lambda s: lambda n: _tgrep_node_literal_value(n) == s)(node_lit)
         elif tokens[0].startswith(u'/'):
             return (lambda r: lambda n:
                         r.search(_tgrep_node_literal_value(n)))(re.compile(tokens[0].strip(u'/')))
