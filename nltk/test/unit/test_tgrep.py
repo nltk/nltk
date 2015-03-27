@@ -201,6 +201,16 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, b'NN|JJ'),
                          tgrep.tgrep_positions(tree, u'NN|JJ'))
 
+    def test_node_quoted(self):
+        '''
+        Test selecting nodes using quoted node names.
+        '''
+        tree = ParentedTree.fromstring(u'(N ("N" x) (N" x) ("\\" x))')
+        self.assertEqual(tgrep.tgrep_positions(tree, '"N"'), [()])
+        self.assertEqual(tgrep.tgrep_positions(tree, '"\\"N\\""'), [(0,)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '"N\\""'), [(1,)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '"\\"\\\\\\""'), [(2,)])
+
     def test_node_regex(self):
         '''
         Test regex matching on nodes.
