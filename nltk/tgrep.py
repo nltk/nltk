@@ -216,7 +216,7 @@ def _tgrep_node_action(_s, _l, tokens):
     depending on the name of its node.
     '''
     # print 'node tokens: ', tokens
-    if tokens[0] == u"'":
+    if tokens[0] == "'":
         # strip initial apostrophe (tgrep2 print command)
         tokens = tokens[1:]
     if len(tokens) > 1:
@@ -511,9 +511,9 @@ def _build_tgrep_parser(set_parse_actions = True):
                        tgrep_node_literal)
     tgrep_node = (tgrep_parens |
                   tgrep_nltk_tree_pos |
-                  (pyparsing.Optional(u"'") +
+                  (pyparsing.Optional("'") +
                    tgrep_node_expr +
-                   pyparsing.ZeroOrMore(u"|" + tgrep_node_expr)))
+                   pyparsing.ZeroOrMore("|" + tgrep_node_expr)))
     tgrep_relation = pyparsing.Forward()
     tgrep_brackets = pyparsing.Optional('!') + '[' + tgrep_relations + ']'
     tgrep_relation = tgrep_brackets | tgrep_op + tgrep_node
@@ -522,7 +522,7 @@ def _build_tgrep_parser(set_parse_actions = True):
                               pyparsing.ZeroOrMore(pyparsing.Optional('&') +
                                                    tgrep_rel_conjunction))
     tgrep_relations << tgrep_rel_conjunction + pyparsing.ZeroOrMore(
-        u"|" + tgrep_relations)
+        "|" + tgrep_relations)
     tgrep_expr << tgrep_node + pyparsing.Optional(tgrep_relations)
     if set_parse_actions:
         tgrep_node.setParseAction(_tgrep_node_action)
