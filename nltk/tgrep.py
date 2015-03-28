@@ -239,8 +239,10 @@ def _tgrep_node_action(_s, _l, tokens):
             node_lit = tokens[0][1:-1].replace('\\"', '"').replace('\\\\', '\\')
             return (lambda s: lambda n: _tgrep_node_literal_value(n) == s)(node_lit)
         elif tokens[0].startswith('/'):
+            assert tokens[0].endswith('/')
+            node_lit = tokens[0][1:-1]
             return (lambda r: lambda n:
-                        r.search(_tgrep_node_literal_value(n)))(re.compile(tokens[0].strip('/')))
+                    r.search(_tgrep_node_literal_value(n)))(re.compile(node_lit))
         elif tokens[0].startswith('i@'):
             return (lambda s: lambda n:
                         _tgrep_node_literal_value(n).lower() == s)(tokens[0][2:].lower())
