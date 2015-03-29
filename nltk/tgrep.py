@@ -244,8 +244,9 @@ def _tgrep_node_action(_s, _l, tokens):
             return (lambda r: lambda n:
                     r.search(_tgrep_node_literal_value(n)))(re.compile(node_lit))
         elif tokens[0].startswith('i@'):
-            return (lambda s: lambda n:
-                        _tgrep_node_literal_value(n).lower() == s)(tokens[0][2:].lower())
+            node_func = _tgrep_node_action(_s, _l, [tokens[0][2:].lower()])
+            return (lambda f: lambda n:
+                    f(_tgrep_node_literal_value(n).lower()))(node_func)
         else:
             return (lambda s: lambda n: _tgrep_node_literal_value(n) == s)(tokens[0])
 
@@ -495,6 +496,10 @@ def _build_tgrep_parser(set_parse_actions = True):
                                            unquoteResults=False)
     tgrep_node_regex = pyparsing.QuotedString(quoteChar='/', escChar='\\',
                                               unquoteResults=False)
+    tgrep_qstring_icase = pyparsing.Regex(
+        'i@\\"(?:[^"\\n\\r\\\\]|(?:\\\\.))*\\"')
+    tgrep_node_regex_icase = pyparsing.Regex(
+        'i@\\/(?:[^/\\n\\r\\\\]|(?:\\\\.))*\\/')
     tgrep_node_literal = pyparsing.Regex('[^][ \r\t\n;:.,&|<>()$!@%\'^=]+')
     tgrep_expr = pyparsing.Forward()
     tgrep_relations = pyparsing.Forward()
@@ -505,7 +510,9 @@ def _build_tgrep_parser(set_parse_actions = True):
                            pyparsing.Optional(pyparsing.delimitedList(
                     pyparsing.Word(pyparsing.nums), delim=',') +
                                               pyparsing.Optional(','))) + ')')
-    tgrep_node_expr = (tgrep_qstring |
+    tgrep_node_expr = (tgrep_qstring_icase |
+                       tgrep_node_regex_icase |
+                       tgrep_qstring |
                        tgrep_node_regex |
                        '*' |
                        tgrep_node_literal)
