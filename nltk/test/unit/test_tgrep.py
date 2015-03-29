@@ -210,12 +210,10 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, b'NN|JJ'),
                          tgrep.tgrep_positions(tree, 'NN|JJ'))
 
-    #@unittest.skip('skipping case insensitive node names')
     def test_node_nocase(self):
         '''
         Test selecting nodes using case insensitive node names.
         '''
-        # skip test due to known failure; decorator is not available in py26
         tree = ParentedTree.fromstring('(S (n x) (N x))')
         self.assertEqual(tgrep.tgrep_positions(tree, '"N"'), [(1,)])
         self.assertEqual(tgrep.tgrep_positions(tree, 'i@"N"'), [(0,), (1,)])
