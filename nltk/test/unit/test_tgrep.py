@@ -187,6 +187,14 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, 'NN|JJ'),
                          [(0, 1), (0, 2), (2, 1)])
 
+    def test_node_printing(self):
+        '''Test that the tgrep print operator ' is properly ignored.'''
+        tree = ParentedTree.fromstring('(S (n x) (N x))')
+        self.assertEqual(tgrep.tgrep_positions(tree, 'N'),
+                         tgrep.tgrep_positions(tree, '\'N'))
+        self.assertEqual(tgrep.tgrep_positions(tree, '/[Nn]/'),
+                         tgrep.tgrep_positions(tree, '\'/[Nn]/'))
+
     def test_node_encoding(self):
         '''
         Test that tgrep search strings handles bytes and strs the same
@@ -201,6 +209,15 @@ class TestSequenceFunctions(unittest.TestCase):
                          tgrep.tgrep_nodes(tree, 'NN'))
         self.assertEqual(tgrep.tgrep_positions(tree, b'NN|JJ'),
                          tgrep.tgrep_positions(tree, 'NN|JJ'))
+
+    @unittest.skip('skipping case insensitive node names')
+    def test_node_nocase(self):
+        '''
+        Test selecting nodes using case insensitive node names.
+        '''
+        tree = ParentedTree.fromstring('(S (n x) (N x))')
+        self.assertEqual(tgrep.tgrep_positions(tree, 'N'), [(1,)])
+        self.assertEqual(tgrep.tgrep_positions(tree, 'i@N'), [(0,), (1,)])
 
     def test_node_quoted(self):
         '''
@@ -273,11 +290,17 @@ class TestSequenceFunctions(unittest.TestCase):
                          [(0,), (0, 0), (1,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* >> S'),
                          [(0,), (0, 0), (1,), (1, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* >>\' S'),
+                         [(1,), (1, 0)])
         # Known issue:
         #self.assertEqual(tgrep.tgrep_positions(tree, '* !>> S'),
         #                 [()])
         self.assertEqual(tgrep.tgrep_positions(tree, '* << T'),
                          [(), (0,)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* <<\' T'),
+                         [(0,)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* <<1 N'),
+                         [(1,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* !<< T'),
                          [(0, 0), (0, 0, 0), (1,), (1, 0), (1, 0, 0)])
         tree = ParentedTree.fromstring('(S (A (T x)) (B (T x) (N x )))')
