@@ -216,9 +216,9 @@ class TestSequenceFunctions(unittest.TestCase):
         Test selecting nodes using case insensitive node names.
         '''
         # skip test due to known failure; decorator is not available in py26
-        #tree = ParentedTree.fromstring('(S (n x) (N x))')
-        #self.assertEqual(tgrep.tgrep_positions(tree, 'N'), [(1,)])
-        #self.assertEqual(tgrep.tgrep_positions(tree, 'i@N'), [(0,), (1,)])
+        tree = ParentedTree.fromstring('(S (n x) (N x))')
+        self.assertEqual(tgrep.tgrep_positions(tree, '"N"'), [(1,)])
+        self.assertEqual(tgrep.tgrep_positions(tree, 'i@"N"'), [(0,), (1,)])
 
     def test_node_quoted(self):
         '''
