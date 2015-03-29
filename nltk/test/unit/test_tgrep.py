@@ -268,6 +268,16 @@ class TestSequenceFunctions(unittest.TestCase):
             self.assertEqual(len(tgrep_positions), 1)
             self.assertEqual(tgrep_positions[0], position)
 
+    def test_node_noleaves(self):
+        '''
+        Test node name matching with the search_leaves flag set to False.
+        '''
+        tree = ParentedTree.fromstring('(S (A (T x)) (B (N x)))')
+        self.assertEqual(tgrep.tgrep_positions(tree, 'x'),
+                         [(0, 0, 0), (1, 0, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, 'x', False),
+                         [])
+
     def tests_rel_dominance(self):
         '''
         Test matching nodes based on dominance relations.
@@ -291,6 +301,8 @@ class TestSequenceFunctions(unittest.TestCase):
                          [(0,), (0, 0), (1,)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* >> S'),
                          [(0,), (0, 0), (1,), (1, 0)])
+        self.assertEqual(tgrep.tgrep_positions(tree, '* >>, S'),
+                         [(0,), (0, 0)])
         self.assertEqual(tgrep.tgrep_positions(tree, '* >>\' S'),
                          [(1,), (1, 0)])
         # Known issue:
