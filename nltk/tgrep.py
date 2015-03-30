@@ -510,6 +510,25 @@ def _macro_defn_action(_s, _l, tokens):
     assert tokens[0] == '@'
     return {tokens[1]: tokens[2]}
 
+def _tgrep_exprs_action(_s, _l, tokens):
+    '''
+    Builds a lambda function representing a predicate on a tree node
+    from the disjunction of several tgrep expressions.  Also handles
+    macro definitions and macro name binding.
+    '''
+    if len(tokens) == 1:
+        return tokens[0]
+    assert list(set(tokens[1::2])) == [';']
+    # collect all macro definitions
+    macro_dict = {}
+    macro_defs = [tok for tok in tokens[::2] if isinstance(tok, dict)]
+    for macro_def in macro_defs:
+        macro_dict.update(macro_def)
+    # collect all tgrep expressions
+    tgrep_exprs = [tok for tok in tokens[::2] if not isinstance(tok, dict)]
+    # bind macro definitions and OR together all tgrep_exprs
+    return lambda n, m=macro_dict: any(predicate(n, m) for predicate in tgrep_exprs)
+
 def _build_tgrep_parser(set_parse_actions = True):
     '''
     Builds a pyparsing-based parser object for tokenizing and
@@ -577,6 +596,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         # predicates: the first node predicate, and the remaining
         # relation predicates
         tgrep_expr.setParseAction(_tgrep_rel_conjunction_action)
+        tgrep_exprs.setParseAction(_tgrep_exprs_action)
     return tgrep_exprs
 
 def tgrep_tokenize(tgrep_string):
