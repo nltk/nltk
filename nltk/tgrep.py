@@ -44,6 +44,10 @@ import nltk.tree
 import pyparsing
 import re
 
+class TgrepException(Exception):
+    '''Tgrep exception type.'''
+    pass
+
 def ancestors(node):
     '''
     Returns the list of all nodes dominating the given tree node.
@@ -209,6 +213,19 @@ def _tgrep_node_literal_value(node):
     using the tgrep node literal predicates.
     '''
     return (node.label() if _istree(node) else str(node))
+
+def _tgrep_macro_use_action(_s, _l, tokens):
+    '''
+    Builds a lambda function which looks up the macro name used.
+    '''
+    assert len(tokens) == 1
+    assert tokens[0][0] == '@'
+    macro_name = tokens[0][1:]
+    def macro_use(n, m=None):
+        if m is None or macro_name not in m:
+            raise TgrepException('macro {} not defined'.format(macro_name))
+        return m[macro_name](n, m)
+    return macro_use
 
 def _tgrep_node_action(_s, _l, tokens):
     '''
@@ -540,6 +557,7 @@ def _build_tgrep_parser(set_parse_actions = True):
                    tgrep_expr +
                    pyparsing.ZeroOrMore(';' + (macro_defn | tgrep_expr)))
     if set_parse_actions:
+        macro_use.setParseAction(_tgrep_macro_use_action)
         tgrep_node.setParseAction(_tgrep_node_action)
         tgrep_parens.setParseAction(_tgrep_parens_action)
         tgrep_nltk_tree_pos.setParseAction(_tgrep_nltk_tree_pos_action)
