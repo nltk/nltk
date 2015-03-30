@@ -925,7 +925,7 @@ class Downloader(object):
         ``/usr/lib/nltk_data``, ``/usr/local/lib/nltk_data``, ``~/nltk_data``.
         """
         # Check if we are on GAE where we cannot write into filesystem.
-        if os.environ.get('APPENGINE_RUNTIME') is not None:
+        if 'APPENGINE_RUNTIME' in os.environ:
             return
 
         # Check if we have sufficient permissions to install in a
