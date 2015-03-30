@@ -524,7 +524,7 @@ def _build_tgrep_parser(set_parse_actions = True):
                    tgrep_node_expr +
                    pyparsing.ZeroOrMore("|" + tgrep_node_expr)))
     tgrep_brackets = pyparsing.Optional('!') + '[' + tgrep_relations + ']'
-    tgrep_relation = tgrep_brackets | tgrep_op + tgrep_node
+    tgrep_relation = tgrep_brackets | (tgrep_op + tgrep_node)
     tgrep_rel_conjunction = pyparsing.Forward()
     tgrep_rel_conjunction << (tgrep_relation +
                               pyparsing.ZeroOrMore(pyparsing.Optional('&') +
