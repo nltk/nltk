@@ -480,5 +480,22 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(tree, 'S < (A < B < C)'),
                          [(0,)])
 
+    def test_use_macros(self):
+        '''
+        Test defining and using tgrep2 macros.
+        '''
+        tree = ParentedTree.fromstring(
+            '(VP (VB sold) (NP (DET the) '
+            '(NN heiress)) (NP (NN deed) (PREP to) '
+            '(NP (DET the) (NN school) (NN house))))')
+        self.assertEqual(tgrep.tgrep_positions(
+            tree, '@ NP /^NP/;\n@ NN /^NN/;\n@NP !< @NP !$.. @NN'),
+                         [(1,), (2, 2)])
+        # use undefined macro @CNP
+        self.assertRaises(
+            tgrep.TgrepException,
+            tgrep.tgrep_positions,
+            tree, '@ NP /^NP/;\n@ NN /^NN/;\n@CNP !< @NP !$.. @NN')
+
 if __name__ == '__main__':
     unittest.main()
