@@ -172,6 +172,16 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_tokenize('N(0,0,)'),
                          ['N(', '0', ',', '0', ',', ')'])
 
+    def test_tokenize_macros(self):
+        '''
+        Test tokenization of macro definitions.
+        '''
+        self.assertEqual(tgrep.tgrep_tokenize(
+            '@ NP /^NP/;\n@ NN /^NN/;\n@NP [!< NP | < @NN] !$.. @NN'),
+                         ['@', 'NP', '/^NP/', ';', '@', 'NN', '/^NN/', ';',
+                          '@NP', '[', '!', '<', 'NP', '|', '<', '@NN', ']',
+                          '!', '$..', '@NN'])
+
     def test_node_simple(self):
         '''
         Test a simple use of tgrep for finding nodes matching a given
