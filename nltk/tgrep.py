@@ -502,6 +502,14 @@ def _tgrep_rel_disjunction_action(_s, _l, tokens):
     elif len(tokens) == 2:
         return (lambda a, b: lambda n, m=None: a(n, m) or b(n, m))(tokens[0], tokens[1])
 
+def _macro_defn_action(_s, _l, tokens):
+    '''
+    Builds a dictionary structure which defines the given macro.
+    '''
+    assert len(tokens) == 3
+    assert tokens[0] == '@'
+    return {tokens[1]: tokens[2]}
+
 def _build_tgrep_parser(set_parse_actions = True):
     '''
     Builds a pyparsing-based parser object for tokenizing and
@@ -564,6 +572,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         tgrep_relation.setParseAction(_tgrep_relation_action)
         tgrep_rel_conjunction.setParseAction(_tgrep_rel_conjunction_action)
         tgrep_relations.setParseAction(_tgrep_rel_disjunction_action)
+        macro_defn.setParseAction(_macro_defn_action)
         # the whole expression is also the conjunction of two
         # predicates: the first node predicate, and the remaining
         # relation predicates
