@@ -924,6 +924,10 @@ class Downloader(object):
         permission: ``/usr/share/nltk_data``, ``/usr/local/share/nltk_data``,
         ``/usr/lib/nltk_data``, ``/usr/local/lib/nltk_data``, ``~/nltk_data``.
         """
+        # Check if we are on GAE where we cannot write into filesystem.
+        if os.environ.get('APPENGINE_RUNTIME') is not None:
+            return
+
         # Check if we have sufficient permissions to install in a
         # variety of system-wide locations.
         for nltkdir in nltk.data.path:
@@ -2267,4 +2271,3 @@ if __name__ == '__main__':
         downloader.download(download_dir=options.dir,
             quiet=options.quiet, force=options.force,
             halt_on_error=options.halt_on_error)
-
