@@ -359,6 +359,30 @@ class TestSequenceFunctions(unittest.TestCase):
             tgrep.tgrep_positions,
             tree, '* >>> S')
 
+    def test_comments(self):
+        '''
+        Test that comments are correctly filtered out of tgrep search
+        strings.
+        '''
+        tree = ParentedTree.fromstring('(S (NN x) (NP x) (NN x))')
+        s1 = '''
+        @ NP /^NP/;
+        @ NN /^NN/;
+        @NN
+        '''
+        self.assertEqual(tgrep.tgrep_positions(tree, s1),
+                         [(0,), (2,)])
+        s2 = '''
+        # macros
+        @ NP /^NP/;
+        @ NN /^NN/;
+
+        # search string
+        @NN
+        '''
+        self.assertEqual(tgrep.tgrep_positions(tree, s2),
+                         [(0,), (2,)])
+
     def test_rel_sister_nodes(self):
         '''
         Test matching sister nodes in a tree.
