@@ -223,7 +223,7 @@ def _tgrep_macro_use_action(_s, _l, tokens):
     macro_name = tokens[0][1:]
     def macro_use(n, m=None):
         if m is None or macro_name not in m:
-            raise TgrepException('macro {} not defined'.format(macro_name))
+            raise TgrepException('macro {0} not defined'.format(macro_name))
         return m[macro_name](n, m)
     return macro_use
 
