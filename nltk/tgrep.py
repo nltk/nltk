@@ -599,7 +599,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         # relation predicates
         tgrep_expr.setParseAction(_tgrep_rel_conjunction_action)
         tgrep_exprs.setParseAction(_tgrep_exprs_action)
-    return tgrep_exprs
+    return tgrep_exprs.ignore('#' + pyparsing.restOfLine)
 
 def tgrep_tokenize(tgrep_string):
     '''
