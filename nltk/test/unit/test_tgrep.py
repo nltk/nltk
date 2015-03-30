@@ -349,6 +349,16 @@ class TestSequenceFunctions(unittest.TestCase):
                          [(0, 0), (0, 0, 0), (0, 0, 0, 0), (0, 0, 0, 0, 0),
                           (0, 0, 0, 0, 0, 0), (1, 0), (1, 0, 0)])
 
+    def test_bad_operator(self):
+        '''
+        Test error handling of undefined tgrep operators.
+        '''
+        tree = ParentedTree.fromstring('(S (A (T x)) (B (N x)))')
+        self.assertRaises(
+            tgrep.TgrepException,
+            tgrep.tgrep_positions,
+            tree, '* >>> S')
+
     def test_rel_sister_nodes(self):
         '''
         Test matching sister nodes in a tree.
