@@ -468,8 +468,8 @@ def _tgrep_relation_action(_s, _l, tokens):
                                         any(predicate(x, m) for x in
                                             n.parent()[:n.parent_index()]))
         else:
-            assert False, 'cannot interpret tgrep operator "{0}"'.format(
-                operator)
+            raise TgrepException(
+                'cannot interpret tgrep operator "{0}"'.format(operator))
     # now return the built function
     if negated:
         return (lambda r: (lambda n, m=None: not r(n, m)))(retval)
