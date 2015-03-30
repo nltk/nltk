@@ -560,7 +560,9 @@ def _build_tgrep_parser(set_parse_actions = True):
                        tgrep_node_regex |
                        '*' |
                        tgrep_node_literal)
-    macro_use = pyparsing.Regex('@[^];:.,&|<>()[$!@%\'^=\r\t\n ]+')
+    macro_name = pyparsing.Regex('[^];:.,&|<>()[$!@%\'^=\r\t\n ]+')
+    macro_name.setWhitespaceChars('')
+    macro_use = pyparsing.Combine('@' + macro_name)
     tgrep_node = (macro_use |
                   tgrep_parens |
                   tgrep_nltk_tree_pos |
@@ -578,7 +580,7 @@ def _build_tgrep_parser(set_parse_actions = True):
     tgrep_expr << tgrep_node + pyparsing.Optional(tgrep_relations)
     macro_defn = (pyparsing.Literal('@') +
                   pyparsing.White().suppress() +
-                  pyparsing.Regex('[^];:.,&|<>()[$!@%\'^=\r\t\n ]+') +
+                  macro_name +
                   tgrep_expr)
     tgrep_exprs = (pyparsing.ZeroOrMore((macro_defn | tgrep_expr) + ';') +
                    tgrep_expr +
