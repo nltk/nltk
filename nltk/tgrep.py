@@ -516,7 +516,9 @@ def _build_tgrep_parser(set_parse_actions = True):
                        tgrep_node_regex |
                        '*' |
                        tgrep_node_literal)
-    tgrep_node = (tgrep_parens |
+    macro_use = pyparsing.Regex('@[^];:.,&|<>()[$!@%\'^=\r\t\n ]+')
+    tgrep_node = (macro_use |
+                  tgrep_parens |
                   tgrep_nltk_tree_pos |
                   (pyparsing.Optional("'") +
                    tgrep_node_expr +
@@ -530,6 +532,13 @@ def _build_tgrep_parser(set_parse_actions = True):
     tgrep_relations << tgrep_rel_conjunction + pyparsing.ZeroOrMore(
         "|" + tgrep_relations)
     tgrep_expr << tgrep_node + pyparsing.Optional(tgrep_relations)
+    macro_defn = (pyparsing.Literal('@') +
+                  pyparsing.White().suppress() +
+                  pyparsing.Regex('[^];:.,&|<>()[$!@%\'^=\r\t\n ]+') +
+                  tgrep_expr)
+    tgrep_exprs = (pyparsing.ZeroOrMore((macro_defn | tgrep_expr) + ';') +
+                   tgrep_expr +
+                   pyparsing.ZeroOrMore(';' + (macro_defn | tgrep_expr)))
     if set_parse_actions:
         tgrep_node.setParseAction(_tgrep_node_action)
         tgrep_parens.setParseAction(_tgrep_parens_action)
@@ -541,7 +550,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         # predicates: the first node predicate, and the remaining
         # relation predicates
         tgrep_expr.setParseAction(_tgrep_rel_conjunction_action)
-    return tgrep_expr
+    return tgrep_exprs
 
 def tgrep_tokenize(tgrep_string):
     '''
