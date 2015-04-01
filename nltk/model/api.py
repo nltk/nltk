@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for Language Models
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2013 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -37,4 +37,3 @@ class ModelI(object):
         '''Evaluate the total entropy of a message with respect to the model.
         This is the sum of the log probability of each word in the message.'''
         raise NotImplementedError()
-
