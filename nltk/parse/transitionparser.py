@@ -8,16 +8,16 @@
 
 import tempfile
 import pickle
-import os
-import copy
-import operator
-from nltk.parse.api import ParserI
-import scipy.sparse as sparse
-import numpy as np
+
+from os import remove
+from copy import deepcopy
+from operator import itemgetter
+from scipy import sparse
+from numpy import array
 from sklearn.datasets import load_svmlight_file
 from sklearn import svm
-from nltk.parse import DependencyGraph
-from evaluate import DependencyEvaluator
+
+from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
 
 
 class Configuration(object):
@@ -522,7 +522,7 @@ class TransitionParser(ParserI):
             # Save the model to file name (as pickle)
             pickle.dump(model, open(modelfile, 'wb'))
         finally:
-            os.remove(input_file.name)
+            remove(input_file.name)
 
     def parse(self, depgraphs, modelFile):
         """
@@ -549,9 +549,9 @@ class TransitionParser(ParserI):
                         col.append(self._dictionary[feature])
                         row.append(0)
                         data.append(1.0)
-                np_col = np.array(sorted(col))  # NB : index must be sorted
-                np_row = np.array(row)
-                np_data = np.array(data)
+                np_col = array(sorted(col))  # NB : index must be sorted
+                np_row = array(row)
+                np_data = array(data)
 
                 x_test = sparse.csr_matrix((np_data, (np_row, np_col)), shape=(1, len(self._dictionary)))
 
@@ -570,7 +570,7 @@ class TransitionParser(ParserI):
                 #           votes[j] +=1
                 #        k +=1
                 # Sort votes according to the values
-                #sorted_votes = sorted(votes.items(), key=operator.itemgetter(1), reverse=True)
+                #sorted_votes = sorted(votes.items(), key=itemgetter(1), reverse=True)
 
                 # We will use predict_proba instead of decision_function
                 prob_dict = {}
@@ -579,7 +579,7 @@ class TransitionParser(ParserI):
                     prob_dict[i] = pred_prob[i]
                 sorted_Prob = sorted(
                     prob_dict.items(),
-                    key=operator.itemgetter(1),
+                    key=itemgetter(1),
                     reverse=True)
 
                 # Note that SHIFT is always a valid operation
@@ -609,7 +609,7 @@ class TransitionParser(ParserI):
 
             # Finish with operations build the dependency graph from Conf.arcs
 
-            new_depgraph = copy.deepcopy(depgraph)
+            new_depgraph = deepcopy(depgraph)
             for key in new_depgraph.nodes:
                 node = new_depgraph.nodes[key]
                 node['rel'] = ''
@@ -727,7 +727,7 @@ def demo():
      Number of training examples : 1
      Number of valid (projective) examples : 1
     ...
-    >>> os.remove(input_file.name)
+    >>> remove(input_file.name)
 
     B. Check the ARC-EAGER training
 
@@ -743,7 +743,7 @@ def demo():
      Number of valid (projective) examples : 1
     ...
 
-    >>> os.remove(input_file.name)
+    >>> remove(input_file.name)
 
     ###################### Check The Parsing Function ########################
 
