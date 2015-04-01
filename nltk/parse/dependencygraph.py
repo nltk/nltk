@@ -102,7 +102,7 @@ class DependencyGraph(object):
         self.nodes[head_address]['deps'].setdefault(relation,[])
         self.nodes[head_address]['deps'][relation].append(mod_address)
         #self.nodes[head_address]['deps'].append(mod_address)
-        
+
 
     def connect_graph(self):
         """
@@ -113,7 +113,7 @@ class DependencyGraph(object):
             for node2 in self.nodes.values():
                 if node1['address'] != node2['address'] and node2['rel'] != 'TOP':
                     relation = node2['rel']
-                    node1['deps'].setdefault(relation,[]) 
+                    node1['deps'].setdefault(relation, [])
                     node1['deps'][relation].append(node2['address'])
                     #node1['deps'].append(node2['address'])
 
@@ -214,17 +214,21 @@ class DependencyGraph(object):
         lines = (l.rstrip() for l in input_)
         lines = (l for l in lines if l)
 
+        cell_number = None
         for index, line in enumerate(lines, start=1):
             cells = line.split(cell_separator)
-            nrCells = len(cells)
+            if cell_number is None:
+                cell_number = len(cells)
+            else:
+                assert cell_number == len(cells)
 
             if cell_extractor is None:
                 try:
-                    cell_extractor = extractors[nrCells]
+                    cell_extractor = extractors[cell_number]
                 except KeyError:
                     raise ValueError(
                         'Number of tab-delimited fields ({0}) not supported by '
-                        'CoNLL(10) or Malt-Tab(4) format'.format(nrCells)
+                        'CoNLL(10) or Malt-Tab(4) format'.format(cell_number)
                     )
 
             word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
@@ -246,6 +250,9 @@ class DependencyGraph(object):
                 }
             )
 
+            # Make sure that he fake root node has labeled dependencies.
+            if (cell_number == 3) and (head == 0):
+                rel = 'ROOT'
             self.nodes[head]['deps'][rel].append(index)
 
         if not self.nodes[0]['deps']['ROOT']:
@@ -271,7 +278,7 @@ class DependencyGraph(object):
         """
         node = self.get_by_address(i)
         word = node['word']
-        deps = list(chain.from_iterable(node['deps'].values()))
+        deps = sorted(chain.from_iterable(node['deps'].values()))
 
         if deps:
             return Tree(word, [self._tree(dep) for dep in deps])
@@ -286,7 +293,7 @@ class DependencyGraph(object):
         node = self.root
 
         word = node['word']
-        deps = chain.from_iterable(node['deps'].values())
+        deps = sorted(chain.from_iterable(node['deps'].values()))
         return Tree(word, [self._tree(dep) for dep in deps])
 
     def triples(self, node=None):
@@ -299,7 +306,7 @@ class DependencyGraph(object):
             node = self.root
 
         head = (node['word'], node['ctag'])
-        for i in node['deps']:
+        for i in sorted(chain.from_iterable(node['deps'].values())):
             dep = self.get_by_address(i)
             yield (head, dep['rel'], (dep['word'], dep['ctag']))
             for triple in self.triples(node=dep):
