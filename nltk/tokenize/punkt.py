@@ -1,11 +1,12 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Edward Loper <edloper@gmail.com> (rewrite)
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
+#         Arthur Darcet <arthur@darcet.fr> (fixes)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -49,7 +50,7 @@ flag.
     >>> text = '''
     ... (How does it deal with this parenthesis?)  "It should be part of the
     ... previous sentence." "(And the same with this one.)" ('And this one!')
-    ... "('(And (this)) '?)" [(and this.)]
+    ... "('(And (this)) '?)" [(and this. )]
     ... '''
     >>> print('\n-----\n'.join(
     ...     sent_detector.tokenize(text.strip())))
@@ -64,7 +65,7 @@ flag.
     -----
     "('(And (this)) '?)"
     -----
-    [(and this.)]
+    [(and this. )]
     >>> print('\n-----\n'.join(
     ...     sent_detector.tokenize(text.strip(), realign_boundaries=False)))
     (How does it deal with this parenthesis?
@@ -92,18 +93,6 @@ parameters from the given text.
 (without supervision) from portions of text. Using a ``PunktTrainer`` directly
 allows for incremental training and modification of the hyper-parameters used
 to decide what is considered an abbreviation, etc.
-
-:class:`.PunktWordTokenizer` uses a regular expression to divide a text into tokens,
-leaving all periods attached to words, but separating off other punctuation:
-
-    >>> from nltk.tokenize.punkt import PunktWordTokenizer
-    >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
-    >>> PunktWordTokenizer().tokenize(s)
-    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
-    'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
-    >>> PunktWordTokenizer().span_tokenize(s)
-    [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36), (38, 44), 
-    (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
 
 The algorithm for this tokenizer is described in::
 
@@ -305,38 +294,6 @@ numeric tokens are changed to ##number## and hence contain alpha.)"""
 #}
 ######################################################################
 
-
-######################################################################
-#{ Punkt Word Tokenizer
-######################################################################
-
-class PunktWordTokenizer(TokenizerI):
-    # Retained for backward compatibility
-    def __init__(self, lang_vars=PunktLanguageVars()):
-        self._lang_vars = lang_vars
-
-    def tokenize(self, text):
-        return self._lang_vars.word_tokenize(text)
-
-    def span_tokenize(self, text):
-        """
-        Given a text, returns a list of the (start, end) spans of words
-        in the text.
-        """
-        return [(sl.start, sl.stop) for sl in self._slices_from_text(text)]
-
-    def _slices_from_text(self, text):
-        last_break = 0
-        contains_no_words = True
-        for match in self._lang_vars._word_tokenizer_re().finditer(text):
-            contains_no_words = False
-            context = match.group()
-            yield slice(match.start(), match.end())
-        if contains_no_words:
-            yield slice(0, 0) # matches PunktSentenceTokenizer's functionality
-
-#}
-######################################################################
 
 
 #////////////////////////////////////////////////////////////
@@ -1297,12 +1254,15 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                 break_decision=tokens[0].sentbreak,
             )
 
-    def span_tokenize(self, text):
+    def span_tokenize(self, text, realign_boundaries=True):
         """
         Given a text, returns a list of the (start, end) spans of sentences
         in the text.
         """
-        return [(sl.start, sl.stop) for sl in self._slices_from_text(text)]
+        slices = self._slices_from_text(text)
+        if realign_boundaries:
+            slices = self._realign_boundaries(text, slices)
+        return [(sl.start, sl.stop) for sl in slices]
 
     def sentences_from_text(self, text, realign_boundaries=True):
         """
@@ -1311,10 +1271,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         True, includes in the sentence closing punctuation that
         follows the period.
         """
-        sents = [text[sl] for sl in self._slices_from_text(text)]
-        if realign_boundaries:
-            sents = self._realign_boundaries(sents)
-        return sents
+        return [text[s:e] for s, e in self.span_tokenize(text, realign_boundaries)]
 
     def _slices_from_text(self, text):
         last_break = 0
@@ -1330,7 +1287,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                     last_break = match.end()
         yield slice(last_break, len(text))
 
-    def _realign_boundaries(self, sents):
+    def _realign_boundaries(self, text, slices):
         """
         Attempts to realign punctuation that falls after the period but
         should otherwise be included in the same sentence.
@@ -1344,21 +1301,21 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
             ["(Sent1.)", "Sent2."].
         """
         realign = 0
-        for s1, s2 in _pair_iter(sents):
-            s1 = s1[realign:]
-            if not s2:
-                if s1:
-                    yield s1
+        for sl1, sl2 in _pair_iter(slices):
+            sl1 = slice(sl1.start + realign, sl1.stop)
+            if not sl2:
+                if text[sl1]:
+                    yield sl1
                 continue
 
-            m = self._lang_vars.re_boundary_realignment.match(s2)
+            m = self._lang_vars.re_boundary_realignment.match(text[sl2])
             if m:
-                yield s1 + m.group(0).strip()
+                yield slice(sl1.start, sl2.start + len(m.group(0).rstrip()))
                 realign = m.end()
             else:
                 realign = 0
-                if s1:
-                    yield s1
+                if text[sl1]:
+                    yield sl1
 
     def text_contains_sentbreak(self, text):
         """

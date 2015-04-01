@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Texts
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -24,10 +24,9 @@ import re
 from nltk.probability import FreqDist, LidstoneProbDist
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
-from nltk.model import NgramModel
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
-from nltk.compat import python_2_unicode_compatible, text_type
+from nltk.compat import python_2_unicode_compatible, text_type, Counter
 
 
 class ContextIndex(object):
@@ -328,7 +327,7 @@ class Text(object):
         :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
-            print("Building index...")
+            #print("Building index...")
             self._concordance_index = ConcordanceIndex(self.tokens,
                                                        key=lambda s:s.lower())
 
@@ -348,7 +347,7 @@ class Text(object):
             self._num = num
             self._window_size = window_size
 
-            print("Building collocations list")
+            #print("Building collocations list")
             from nltk.corpus import stopwords
             ignored_words = stopwords.words('english')
             finder = BigramCollocationFinder.from_words(self.tokens, window_size)
@@ -375,21 +374,6 @@ class Text(object):
         # code from nltk_contrib.readability
         raise NotImplementedError
 
-    def generate(self, length=100):
-        """
-        Print random text, generated using a trigram language model.
-
-        :param length: The length of text to generate (default=100)
-        :type length: int
-        :seealso: NgramModel
-        """
-        if '_trigram_model' not in self.__dict__:
-            print("Building ngram index...")
-            estimator = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-            self._trigram_model = NgramModel(3, self, estimator=estimator)
-        text = self._trigram_model.generate(length)
-        print(tokenwrap(text))
-
     def similar(self, word, num=20):
         """
         Distributional similarity: find other words which appear in the
@@ -402,7 +386,7 @@ class Text(object):
         :seealso: ContextIndex.similar_words()
         """
         if '_word_context_index' not in self.__dict__:
-            print('Building word-context index...')
+            #print('Building word-context index...')
             self._word_context_index = ContextIndex(self.tokens,
                                                     filter=lambda x:x.isalpha(),
                                                     key=lambda s:s.lower())
@@ -413,9 +397,9 @@ class Text(object):
         wci = self._word_context_index._word_to_contexts
         if word in wci.conditions():
             contexts = set(wci[word])
-            fd = FreqDist(w for w in wci.conditions() for c in wci[w]
+            fd = Counter(w for w in wci.conditions() for c in wci[w]
                           if c in contexts and not w == word)
-            words = islice(fd.keys(), num)
+            words = [w for w, _ in fd.most_common(num)]
             print(tokenwrap(words))
         else:
             print("No matches")
@@ -433,7 +417,7 @@ class Text(object):
         :seealso: ContextIndex.common_contexts()
         """
         if '_word_context_index' not in self.__dict__:
-            print('Building word-context index...')
+            #print('Building word-context index...')
             self._word_context_index = ContextIndex(self.tokens,
                                                     key=lambda s:s.lower())
 
@@ -442,7 +426,7 @@ class Text(object):
             if not fd:
                 print("No common contexts were found")
             else:
-                ranked_contexts = islice(fd.keys(), num)
+                ranked_contexts = [w for w, _ in fd.most_common(num)]
                 print(tokenwrap(w1+"_"+w2 for w1,w2 in ranked_contexts))
 
         except ValueError as e:
@@ -454,7 +438,7 @@ class Text(object):
         Requires pylab to be installed.
 
         :param words: The words to be plotted
-        :type word: str
+        :type words: list(str)
         :seealso: nltk.draw.dispersion_plot()
         """
         from nltk.draw import dispersion_plot
@@ -472,7 +456,7 @@ class Text(object):
         :seealso: nltk.prob.FreqDist
         """
         if "_vocab" not in self.__dict__:
-            print("Building vocabulary index...")
+            #print("Building vocabulary index...")
             self._vocab = FreqDist(self)
         return self._vocab
 
@@ -602,9 +586,9 @@ def demo():
     print("Collocations:")
     text.collocations()
     print()
-    print("Automatically generated text:")
-    text.generate()
-    print()
+    #print("Automatically generated text:")
+    #text.generate()
+    #print()
     print("Dispersion plot:")
     text.dispersion_plot(['news', 'report', 'said', 'announced'])
     print()

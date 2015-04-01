@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus & Model Downloader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -54,9 +54,9 @@ NLTK Download Server
 Before downloading any packages, the corpus and module downloader
 contacts the NLTK download server, to retrieve an index file
 describing the available packages.  By default, this index file is
-loaded from ``http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml``.
-If necessary, it is possible to create a new ``Downloader`` object,
-specifying a different URL for the package index file.
+loaded from ``http://www.nltk.org/nltk_data/``.  If necessary, it is
+possible to create a new ``Downloader`` object, specifying a different
+URL for the package index file.
 
 Usage::
 
@@ -377,8 +377,7 @@ class Downloader(object):
        server index will be considered 'stale,' and will be
        re-downloaded."""
 
-    # DEFAULT_URL = 'http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml'
-    DEFAULT_URL = 'http://nltk.github.com/nltk_data/'
+    DEFAULT_URL = 'http://www.nltk.org/nltk_data/'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
        ``Downloader`` object."""
@@ -1099,8 +1098,8 @@ class DownloaderShell(object):
             if user_input == 's':
                 self._show_config()
             elif user_input == 'd':
-                new_dl_dir = compat.raw_input('  New Directory> ').strip().lower()
-                if new_dl_dir in ('', 'x', 'q'):
+                new_dl_dir = compat.raw_input('  New Directory> ').strip()
+                if new_dl_dir in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 elif os.path.isdir(new_dl_dir):
                     self._ds.download_dir = new_dl_dir
@@ -1108,8 +1107,8 @@ class DownloaderShell(object):
                     print(('Directory %r not found!  Create it first.' %
                            new_dl_dir))
             elif user_input == 'u':
-                new_url = compat.raw_input('  New URL> ').strip().lower()
-                if new_url in ('', 'x', 'q'):
+                new_url = compat.raw_input('  New URL> ').strip()
+                if new_url in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 else:
                     if not new_url.startswith('http://'):
@@ -1133,7 +1132,7 @@ class DownloaderGUI(object):
     COLUMNS = ['', 'Identifier', 'Name', 'Size', 'Status',
                'Unzipped Size',
                'Copyright', 'Contact', 'License', 'Author',
-               'SVN Revision', 'Subdir', 'Checksum']
+               'Subdir', 'Checksum']
     """A list of the names of columns.  This controls the order in
        which the columns will appear.  If this is edited, then
        ``_package_to_columns()`` may need to be edited to match."""
@@ -1750,7 +1749,11 @@ class DownloaderGUI(object):
             from tkMessageBox import Message
             Message(message=ABOUT, title=TITLE).show()
         except ImportError:
-            ShowText(self._top, TITLE, ABOUT)
+            try:
+                from tkinter.messagebox import Message
+                Message(message=ABOUT, title=TITLE).show()
+            except ImportError:
+                ShowText(self.top, TITLE, ABOUT)
 
     #/////////////////////////////////////////////////////////////////
     # Progress Bar

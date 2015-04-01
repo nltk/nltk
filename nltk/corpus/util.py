@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Reader Utility Functions
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -20,10 +20,8 @@ TRY_ZIPFILE_FIRST = False
 @python_2_unicode_compatible
 class LazyCorpusLoader(object):
     """
-    ==================================================================
     To see the API documentation for this lazily loaded corpus, first
     run corpus.ensure_loaded(), and then run help(this_corpus).
-    ==================================================================
     
     LazyCorpusLoader is a proxy object which is used to stand in for a
     corpus object before the corpus is loaded.  This allows NLTK to
@@ -55,9 +53,9 @@ class LazyCorpusLoader(object):
         if TRY_ZIPFILE_FIRST:
             try:
                 root = nltk.data.find('corpora/%s' % zip_name)
-            except LookupError:
-                raise
-                root = nltk.data.find('corpora/%s' % self.__name)
+            except LookupError as e:
+                try: root = nltk.data.find('corpora/%s' % self.__name)
+                except LookupError: raise e
         else:
             try:
                 root = nltk.data.find('corpora/%s' % self.__name)
