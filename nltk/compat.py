@@ -372,20 +372,22 @@ else:
                         "taggers/maxent_treebank_pos_tagger",
                         "tokenizers/punkt"]
 
+def add_py3_data(path):
+    if PY3:
+        for item in _PY3_DATA_UPDATES:
+            if item in str(path) and "/PY3" not in str(path):
+                pos = path.index(item) + len(item)
+                if path[pos:pos+4] == ".zip":
+                    pos += 4
+                path = path[:pos] + "/PY3" + path[pos:]
+                break
+    return path
+
 # for use in adding /PY3 to the second (filename) argument
 # of the file pointers in data.py
 def py3_data(init_func):
     def _decorator(*args, **kwargs):
-        if PY3:
-            path = args[1]
-            for item in _PY3_DATA_UPDATES:
-                if item in str(path) and "/PY3" not in str(path):
-                    pos = path.index(item) + len(item)
-                    if path[pos:pos+4] == ".zip":
-                        pos += 4
-                    path = path[:pos] + "/PY3" + path[pos:]
-                    args = (args[0], path) + args[2:]
-                    break
+        args = (args[0], add_py3_data(args[1])) + args[2:]
         return init_func(*args, **kwargs)
     return wraps(init_func)(_decorator)
 

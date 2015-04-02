@@ -1,8 +1,10 @@
 from __future__ import print_function
 
-import re, sys
+import re
+import sys
 import nltk
-import epydoc.docbuilder, epydoc.cli
+import epydoc.docbuilder
+import epydoc.cli
 from epydoc import log
 
 STOPLIST = '../../tools/nltk_term_index.stoplist'
@@ -14,6 +16,7 @@ logger = epydoc.cli.ConsoleLogger(0)
 logger._verbosity = 5
 log.register_logger(logger)
 
+
 def find_all_names(stoplist):
     ROOT = ['nltk']
     logger._verbosity = 0
@@ -21,7 +24,7 @@ def find_all_names(stoplist):
     valdocs = sorted(docindex.reachable_valdocs(
         imports=False,
         #packages=False, bases=False, submodules=False,
-        #subclasses=False,
+        # subclasses=False,
         private=False))
     logger._verbosity = 5
     names = nltk.defaultdict(list)
@@ -29,12 +32,14 @@ def find_all_names(stoplist):
     for valdoc in valdocs:
         name = valdoc.canonical_name
         if (name is not epydoc.apidoc.UNKNOWN and
-            name is not None and name[0] == 'nltk'):
+                name is not None and name[0] == 'nltk'):
             n += 1
             for i in range(len(name)):
                 key = str(name[i:])
-                if len(key) == 1: continue
-                if key in stoplist: continue
+                if len(key) == 1:
+                    continue
+                if key in stoplist:
+                    continue
                 names[key].append(valdoc)
 
     log.info('Found %s names from %s objects' % (len(names), n))
@@ -50,6 +55,7 @@ TOKEN_RE = re.compile('[\w\.]+')
 LINE_RE = re.compile('.*')
 
 INDEXTERM = '<indexterm type="nltk"><primary>%s</primary></indexterm>'
+
 
 def scan_xml(filenames, names):
     fdist = nltk.FreqDist()
@@ -81,8 +87,8 @@ def scan_xml(filenames, names):
         out.close()
 
     for word in fdist:
-        namestr = ('\n'+38*' ').join([str(v.canonical_name[:-1])
-                                      for v in names[word][:1]])
+        namestr = ('\n' + 38 * ' ').join([str(v.canonical_name[:-1])
+                                          for v in names[word][:1]])
         print('[%3d]  %-30s %s' % (fdist[word], word, namestr))
         sys.stdout.flush()
 
@@ -99,4 +105,3 @@ def main():
     scan_xml(FILENAMES, names)
 
 main()
-

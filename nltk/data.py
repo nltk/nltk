@@ -56,7 +56,9 @@ except ImportError:
 # this import should be more specific:
 import nltk
 
-from nltk.compat import py3_data, text_type, string_types, BytesIO, urlopen, url2pathname
+from nltk.compat import py3_data, add_py3_data
+from nltk.compat import text_type, string_types, BytesIO, urlopen, url2pathname
+
 
 ######################################################################
 # Search Path
@@ -744,7 +746,8 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     :type encoding: str
     :param encoding: the encoding of the input; only used for text formats.
     """
-    resource_url=normalize_resource_url(resource_url)
+    resource_url = normalize_resource_url(resource_url)
+    resource_url = add_py3_data(resource_url)
 
     # Determine the format of the resource.
     if format == 'auto':
