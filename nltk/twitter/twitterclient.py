@@ -34,8 +34,9 @@ class Streamer(TwythonStreamer):
 
     The streaming API requires OAuth 1.0 authentication.
     """
-    def __init__(self, handler, app_key, app_secret, oauth_token,
-                 oauth_token_secret):
+    def __init__(self, app_key, app_secret, oauth_token,
+                     oauth_token_secret, handler=None):
+
         self.handler = handler
         self.do_continue = True
         super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
