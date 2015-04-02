@@ -148,8 +148,12 @@ class Twitter(object):
         self.query = Query(**self._oauth)
 
 
-    def tweets(self, keywords='', follow='', stream=True, limit=100):
-        handler = TweetViewer(limit=limit)
+    def tweets(self, keywords='', follow='', to_screen=True, stream=True, limit=100):
+        if to_screen:
+            handler = TweetViewer(limit=limit)
+        else:
+            handler = TweetWriter(limit=limit, repeat=False)
+
         if stream:
             self.streamer.register(handler)
             if keywords=='' and follow=='':
@@ -164,10 +168,6 @@ class Twitter(object):
                 tweets = self.query.search(keywords)
                 for t in tweets:
                     print(t['text'])
-
-    def tofile(self, subdir, keywords='', stream=True, limit=100):
-        handler = TweetWriter(limit=limit, repeat=False, subdir=subdir)
-
 
 
 
@@ -263,7 +263,8 @@ class TweetWriter(TweetHandlerI):
 
 
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
+    #pass
     #import doctest
     #doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

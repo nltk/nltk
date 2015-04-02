@@ -1,6 +1,6 @@
 import os
 
-from nltk.twitter import *
+from twitterclient import *
 
 ################################
 # Demos
@@ -71,8 +71,8 @@ def search_demo():
 
 def twitterclass_demo():
     tw = Twitter()
-    tw.tweets(keywords='love')
-    tw.tofile(keywords='', track='', stream=True, limit=100)
+    tw.tweets(keywords='love', to_screen=False)
+
 
 def temp():
     from nltk.corpus import TwitterCorpusReader
@@ -88,7 +88,7 @@ def temp():
 
 
 
-DEMOS = [0]
+DEMOS = [6]
 
 if __name__ == "__main__":
     #import doctest
