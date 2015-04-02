@@ -124,4 +124,4 @@ def guess_path(pth):
     if os.path.isabs(pth):
         return pth
     else:
-        return os.path.expanduser(os.path.join("~", subdir))
+        return os.path.expanduser(os.path.join("~", pth))
