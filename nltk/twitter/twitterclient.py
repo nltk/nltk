@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,6 +9,7 @@
 """
 NLTK Twitter client.
 """
+
 import datetime
 import itertools
 import json
@@ -32,12 +33,12 @@ class Streamer(TwythonStreamer):
     """
     Retrieve data from the Twitter streaming API.
 
-    The streaming API requires OAuth 1.0 authentication.
+    The streaming API requires `OAuth 1.0 <http://en.wikipedia.org/wiki/OAuth>`_ authentication.
     """
     def __init__(self, app_key, app_secret, oauth_token,
-                     oauth_token_secret, handler=None):
+                     oauth_token_secret):
 
-        self.handler = handler
+        self.handler = None
         self.do_continue = True
         super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
 
@@ -107,8 +108,7 @@ class Query(Twython):
 
         :param infile: name of a file consisting of Tweet IDs, one to a line
 
-        :param outfile: name of file where JSON serialisations of fully
-        hydrated Tweets will be written.
+        :param outfile: name of file where JSON serialisations of fully hydrated Tweets will be written.
         """
         tweets = self._lookup(infile, verbose=verbose)
         count = 0
@@ -128,12 +128,19 @@ class Query(Twython):
 
     def search(self, keywords, count=100, lang='en'):
         """
-        Call the REST API 'search/tweets' endpoint with some plausible defaults.
+        Call the REST API ``'search/tweets'`` endpoint with some plausible defaults.
         """
         results = self.get('search/tweets', {'q': keywords, 'count': 100,
                                              'lang': 'en'})
         #results = self.search(q=keywords, count=100, lang='en')
         return results['statuses']
+
+    def user_info_from_id(self, userids):
+        results = []
+        for userid in userids:
+            handle = self.show_user(user_id=userid)
+            results.append(handle)
+        return results
 
 
 
@@ -202,6 +209,10 @@ class TweetWriter(TweetHandlerI):
         """
         :param limit: number of data items to process in the current round of
         processing
+
+        :param repeat: flag to determine whether multiple files should be
+        written. If `True`, the length of each file will be set by the value
+        of `limit`. See also :py:func:`handle`
 
         """
         self.repeat = repeat
