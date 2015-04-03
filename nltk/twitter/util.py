@@ -10,12 +10,13 @@
 NLTK Twitter client.
 """
 
+import json
 import os
 import pprint
 import textwrap
 
 
-def dehydrate(infile):
+def extract_tweetid(infile):
     """
     :return: given a file of Tweets serialised as line-delimited JSON, return
     the corresponding Tweet IDs.
