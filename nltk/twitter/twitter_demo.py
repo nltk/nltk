@@ -1,74 +1,136 @@
+# -*- coding: utf-8 -*-
+# Natural Language Toolkit: Twitter client
+#
+# Copyright (C) 2001-2015 NLTK Project
+# Author: Ewan Klein <ewan@inf.ed.ac.uk>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+
+"""
+Examples to demo the :py:mod:`twitterclient` code.
+"""
+
+from functools import wraps
 import os
 
 from twitterclient import *
+from util import extract_tweetid
 
-################################
-# Demos
-################################
+spacer = '###################################'
+
+def logger(func):
+    @wraps(func)
+    def with_logging(*args, **kwargs):
+        print()
+        print(spacer)
+        print("Using %s" % (func.__name__))
+        print(spacer)
+        return func(*args, **kwargs)
+    return with_logging
+
+
 
 TWITTER = os.environ['TWITTER']
 TWEETS = os.path.join(TWITTER, 'tweets.20140801-150110.json')
 IDS = os.path.join(TWITTER, 'tweet_ids.txt')
 IDS2 = os.path.join(TWITTER, 'tweet_ids2.txt')
+USERIDS = ['759251','612473','788524','15108530']
 REHYDE = os.path.join(TWITTER, 'rehydrated.json')
 
+
+@logger
 def sampletoscreen_demo(limit=20):
     oauth = credsfromfile()
-    handler = TweetViewer(limit=limit)
-    client = Streamer(handler, **oauth)
+    client = Streamer(**oauth)
+    client.register(TweetViewer(limit=limit))
     client.statuses.sample()
 
-def tracktoscreen0_demo(limit=10):
+@logger
+def tracktoscreen0_demo(track="taylor swift", limit=10):
     oauth = credsfromfile()
-    handler = TweetViewer(limit=limit)
-    client = Streamer(handler, **oauth)
-    keywords = "robin williams"
-    client.statuses.filter(track=keywords)
+    client = Streamer(**oauth)
+    client.register(TweetViewer(limit=limit))
+    client.statuses.filter(track=track)
 
-def tracktoscreen1_demo(limit=50):
+@logger
+def lookup_by_userid_demo():
     oauth = credsfromfile()
-    handler = TweetViewer(limit=limit)
-    client = Streamer(handler, **oauth)
-    client.statuses.filter(follow='759251,612473,788524,15108530')
+    client = Query(**oauth)
+    user_info = client.user_info_from_id(USERIDS)
+    for info in user_info:
+        sn = info['screen_name']
+        followers = info['followers_count']
+        following = info['friends_count']
+        print("{}, followers: {}, following: {}".format(sn, followers, following))
 
+
+@logger
+def followtoscreen_demo(limit=10):
+    """
+
+    """
+    oauth = credsfromfile()
+    client = Streamer(**oauth)
+    client.register(TweetViewer(limit=limit))
+    client.statuses.filter(follow=USERIDS)
+
+@logger
 def streamtofile_demo(limit=20):
     oauth = credsfromfile()
-    handler = TweetWriter(limit=limit, repeat=True)
-    client = Streamer(handler, **oauth)
+    client = Streamer(**oauth)
+    client.register(TweetWriter(limit=limit, repeat=False))
     client.statuses.sample()
 
-def dehydrate_demo(infile, outfile):
-    ids = dehydrate(infile)
+@logger
+def extract_tweetids_demo(infile, outfile):
+    print("Reading from {}".format(infile))
+    print()
+    ids = extract_tweetid(infile)
     with open(outfile, 'w') as f:
+        print("Writing ids to {}".format(outfile))
+        print()
         for id_str in ids:
+            print("Found id {}".format(id_str))
             print(id_str, file=f)
 
-def hydrate_demo(infile, outfile):
+@logger
+def expand_tweetids_demo(infile, outfile):
     oauth = credsfromfile()
     client = Query(**oauth)
     client.lookup(infile, outfile)
 
+@logger
 def corpusreader_demo():
     from nltk.corpus import TwitterCorpusReader
     root = os.environ['TWITTER']
     reader = TwitterCorpusReader(root, '.*\.json')
-    for t in reader.docs()[:2]:
+    fileid = 'rehydrated.json'
+    print()
+    print("Complete tweet documents")
+    print(spacer)
+    for t in reader.docs(fileid)[:1]:
+        print(json.dumps(t, indent=1, sort_keys=True))
+
+    print()
+    print("Raw tweet strings:")
+    print(spacer)
+    for t in reader.strings(fileid)[:15]:
         print(t)
 
-    for t in reader.strings()[:15]:
+    print()
+    print("Tokenized tweet strings:")
+    print(spacer)
+    for t in reader.tokenized(fileid)[:15]:
         print(t)
 
-    for t in reader.tokenized()[:15]:
-        print(t)
-
-
-def search_demo():
+@logger
+def search_demo(keywords='nltk'):
     oauth = credsfromfile()
     client = Query(**oauth)
-    for t in client.search(keywords='nltk', count=10):
+    for t in client.search(keywords=keywords, count=10):
         print(t['text'])
 
-
+@logger
 def twitterclass_demo():
     tw = Twitter()
     tw.tweets(keywords='love', to_screen=False)
@@ -87,28 +149,28 @@ def temp():
 
 
 
-
+all_demos = range(8)
+DEMOS = all_demos
 DEMOS = [6]
 
 if __name__ == "__main__":
-    #import doctest
-    #doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
     if 0 in DEMOS:
         sampletoscreen_demo()
-        #tracktoscreen0_demo()
     if 1 in DEMOS:
-        streamtofile_demo()
+        tracktoscreen0_demo()
     if 2 in DEMOS:
-        dehydrate_demo(TWEETS, IDS)
+        followtoscreen_demo()
     if 3 in DEMOS:
-        hydrate_demo(IDS, REHYDE)
+        streamtofile_demo()
     if 4 in DEMOS:
-        corpusreader_demo()
+        extract_tweetids_demo(TWEETS, IDS)
     if 5 in DEMOS:
-        search_demo()
+        expand_tweetids_demo(IDS, REHYDE)
     if 6 in DEMOS:
+        corpusreader_demo()
+    if 7 in DEMOS:
+        search_demo()
+    if 8 in DEMOS:
         twitterclass_demo()
 
-    else:
-        temp()
