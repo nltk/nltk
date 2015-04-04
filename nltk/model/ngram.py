@@ -112,7 +112,6 @@ class NgramModel(ModelI):
             self._backoff = NgramModel(n-1, train,
                                         pad_left, pad_right,
                                         estimator,
-                                        *estimator_args,
                                         **estimator_kwargs)
 
             self._backoff_alphas = dict()
