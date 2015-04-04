@@ -134,8 +134,31 @@ def monotone_stack_decode(sent, tm, lm, stack_size=10, nbest=1,
     else: # Returns n no. of hypotheses.
         return sorted(stacks[-1].values(), key=lambda h: h.logprob)[:nbest]
     
-
+'''
 # run doctests
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+'''
+
+    
+from util import get_moses_sample_model
+#phrasetablefile = get_moses_sample_model('phrase-model', 'phrase-table')
+langmodelfile = get_moses_sample_model('lm', 'europarl.srilm.gz') 
+#tm = TranslationModel(phrasetablefile)
+lm = LanguageModel(langmodelfile)
+
+#print(tm.table['das'])
+#{u'this': 0.1, u'the': 0.4, u'it': 0.1}
+#print(tm.table['das ist'])
+#{u'this is': 0.8, u'it is': 0.2}
+
+state, word = ("small"), "house"
+new_state, logprob = lm.score(state, word) 
+logprob
+-3.454097
+
+state, word = ("a", "small"), "house"
+new_state, logprob = lm.score(state, word)
+logprob
+-3.7636749

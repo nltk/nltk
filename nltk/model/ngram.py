@@ -7,26 +7,22 @@
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
 
-from itertools import chain
 from math import log
 
-from nltk.probability import (FreqDist,
-    ConditionalProbDist,
-    ConditionalFreqDist,
-    LidstoneProbDist)
+from nltk.probability import ConditionalProbDist, ConditionalFreqDist, LidstoneProbDist
 from nltk.util import ngrams
 from nltk.model.api import ModelI
 
 from nltk import compat
 
 
-def _estimator(fdist, *estimator_args, **estimator_kwargs):
+def _estimator(fdist, **estimator_kwargs):
     """
     Default estimator function using a LidstoneProbDist.
     """
     # can't be an instance method of NgramModel as they
     # can't be pickled either.
-    return LidstoneProbDist(fdist, 0.001, *estimator_args, **estimator_kwargs)
+    return LidstoneProbDist(fdist, 0.001, **estimator_kwargs)
 
 
 @compat.python_2_unicode_compatible
@@ -37,12 +33,12 @@ class NgramModel(ModelI):
 
     # add cutoff
     def __init__(self, n, train, pad_left=True, pad_right=False,
-                 estimator=None, *estimator_args, **estimator_kwargs):
+                 estimator=None, **estimator_kwargs):
         """
         Create an ngram language model to capture patterns in n consecutive
         words of training text.  An estimator smooths the probabilities derived
         from the text and may allow generation of ngrams not seen during
-        training.
+        training. See model.doctest for more detailed testing
             >>> from nltk.corpus import brown
             >>> lm = NgramModel(3, brown.words(categories='news'))
             >>> lm
@@ -63,14 +59,6 @@ class NgramModel(ModelI):
         :param estimator: a function for generating a probability distribution
         :type estimator: a function that takes a ConditionalFreqDist and
             returns a ConditionalProbDist
-        :param estimator_args: Extra arguments for estimator.
-            These arguments are usually used to specify extra
-            properties for the probability distributions of individual
-            conditions, such as the number of bins they contain.
-            Note: For backward-compatibility, if no arguments are specified, the
-            number of bins in the underlying ConditionalFreqDist are passed to
-            the estimator as an argument.
-        :type estimator_args: (any)
         :param estimator_kwargs: Extra keyword arguments for the estimator
         :type estimator_kwargs: (any)
         """
@@ -115,7 +103,7 @@ class NgramModel(ModelI):
         if 'bins' not in estimator_kwargs:
             estimator_kwargs['bins'] = len(vocabulary)
 
-        self._model = ConditionalProbDist(cfd, estimator, *estimator_args, **estimator_kwargs)
+        self._model = ConditionalProbDist(cfd, estimator, **estimator_kwargs)
 
         # recursively construct the lower-order models
         if not self._unigram_model:
@@ -264,11 +252,6 @@ class NgramModel(ModelI):
 
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
-
-
-def teardown_module(module=None):
-    from nltk.corpus import brown
-    brown._unload()
 
 if __name__ == "__main__":
     import doctest
