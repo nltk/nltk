@@ -1516,9 +1516,9 @@ class KneserNeyProbDist(ProbDistI):
     """
     def __init__(self, freqdist, bins=None, discount=0.75):
         """
-        :param trigrams: The trigram frequency distribution upon which to base
+        :param freqdist: The trigram frequency distribution upon which to base
             the estimation
-        :type trigrams: FreqDist
+        :type freqdist: FreqDist
         :param bins: Included for compatibility with nltk.tag.hmm
         :type bins: int or float
         :param discount: The discount applied when retrieving counts of
