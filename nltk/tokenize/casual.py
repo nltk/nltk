@@ -47,6 +47,8 @@ import re
 # Most importantly, the final element should always be last, since it
 # does a last ditch whitespace-based tokenization of whatever is left.
 
+# ToDo: Update with http://en.wikipedia.org/wiki/List_of_emoticons ?
+
 # This particular element is used in a couple ways, so we define it
 # with a name:
 EMOTICONS = r"""
