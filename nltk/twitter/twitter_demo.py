@@ -187,11 +187,13 @@ def twitterclass_demo():
     Use the simplified :class:`Twitter` class to write some tweets to a file.
     """
     tw = Twitter()
+#    tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
     tw.tweets(keywords='love, hate', limit=10) #public stream
     print(SPACER)
     tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
     print(SPACER)
-    tw.tweets(follow=['759251', '6017542'], limit=10) #public stream
+    tw = Twitter()
+    tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
 
 
 
