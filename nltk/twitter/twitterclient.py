@@ -8,6 +8,14 @@
 
 """
 NLTK Twitter client.
+
+
+If one of the methods below returns an integer, it is probably a ``Twitter
+error code <https://dev.twitter.com/overview/api/response-codes>`_. For
+example, the response of '420' means that you have reached the limit of the
+requests you can currently make to the Twitter API. Currently, `rate limits
+for the search API <https://dev.twitter.com/rest/public/rate-limiting>_` are
+divided into 15 minute windows.
 """
 
 import datetime
@@ -43,11 +51,16 @@ class Streamer(TwythonStreamer):
         super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
 
     def register(self, handler):
+        """
+        Register a method for handling tweets.
+
+        :param TweetHandlerI handler: method for viewing
+        """
         self.handler = handler
 
     def on_success(self, data):
         """
-        :param data: response from Twitter API
+        :param str data: response from Twitter API
         """
         if self.do_continue:
             if self.handler is not None:
@@ -61,7 +74,7 @@ class Streamer(TwythonStreamer):
 
     def on_error(self, status_code, data):
         """
-        :param data: response from Twitter API
+        :param str data: response from Twitter API
         """
         print(status_code)
 
@@ -72,12 +85,17 @@ class Query(Twython):
     Class for accessing the Twitter REST API.
     """
     def __init__(self, app_key, app_secret, oauth_token,
-                 oauth_token_secret, handler=None):
-        self.handler = handler
+                 oauth_token_secret):
+        self.handler = None
         self.do_continue = True
         super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
 
     def register(self, handler):
+        """
+        Register a method for handling tweets.
+
+        :param TweetHandlerI handler: method for viewing or writing tweets to a file.
+        """
         self.handler = handler
 
     def _lookup(self, infile, verbose=True):
@@ -106,9 +124,8 @@ class Query(Twython):
         Given a file containing a list of Tweet IDs, fetch the corresponding
         Tweets (if they haven't been deleted) and dump them in a file.
 
-        :param infile: name of a file consisting of Tweet IDs, one to a line
-
-        :param outfile: name of file where JSON serialisations of fully hydrated Tweets will be written.
+        :param infile: Name of a file consisting of Tweet IDs, one to a line
+        :param outfile: Name of file where JSON serialisations of fully hydrated Tweets will be written.
         """
         tweets = self._lookup(infile, verbose=verbose)
         count = 0
@@ -126,23 +143,26 @@ class Query(Twython):
             print("""Written {} Tweets to file {} of length {}
             bytes""".format(count, outfile, os.path.getsize( outfile)))
 
-    def search(self, keywords, count=100, lang='en'):
+    def search_tweets(self, keywords, count=100, lang='en'):
         """
         Call the REST API ``'search/tweets'`` endpoint with some plausible defaults.
+
+        :param str keywords: A list of query terms to search for, expressed as a comma-separated string.
+        :rtype: json
         """
-        results = self.get('search/tweets', {'q': keywords, 'count': 100,
-                                             'lang': 'en'})
-        #results = self.search(q=keywords, count=100, lang='en')
+        results = self.search(q=keywords, count=count, lang='en')
         return results['statuses']
 
     def user_info_from_id(self, userids):
-        results = []
-        for userid in userids:
-            handle = self.show_user(user_id=userid)
-            results.append(handle)
-        return results
+        """
+        Convert a list of userIDs into a variety of information about the users.
 
+        See <https://dev.twitter.com/rest/reference/get/users/show>.
 
+        :param list userids: A list of integer strings corresponding to Twitter userIDs
+        :rtype: list(json)
+        """
+        return [self.show_user(user_id=userid) for userid in userids]
 
 
 class Twitter(object):
@@ -156,6 +176,15 @@ class Twitter(object):
 
 
     def tweets(self, keywords='', follow='', to_screen=True, stream=True, limit=100):
+        """
+        Process some tweets in a simple manner.
+
+        :param str keywords: Keywords to use for searching or filtering
+        :param str follow: UserIDs to use for filtering tweets from the public stream
+        :param bool to_screen: If ``True``, display the tweet texts on the screen, otherwise print to a file
+        :param bool stream: If ``True``, use the live public stream, otherwise search past public tweets
+        :param int limit: Number of tweets to process
+        """
         if to_screen:
             handler = TweetViewer(limit=limit)
         else:
@@ -172,7 +201,7 @@ class Twitter(object):
             if keywords == '':
                 raise ValueError("Please supply at least one keyword to search for.")
             else:
-                tweets = self.query.search(keywords)
+                tweets = self.query.search_tweets(keywords)
                 for t in tweets:
                     print(t['text'])
 
@@ -207,12 +236,11 @@ class TweetWriter(TweetHandlerI):
     def __init__(self, limit=2000, repeat=True, fprefix='tweets',
                  subdir='twitter'):
         """
-        :param limit: number of data items to process in the current round of
-        processing
+        :param limit: number of data items to process in the current round of processing
 
-        :param repeat: flag to determine whether multiple files should be
-        written. If `True`, the length of each file will be set by the value
-        of `limit`. See also :py:func:`handle`
+        :param repeat: flag to determine whether multiple files should be\
+        written. If `True`, the length of each file will be set by the value\
+        of `limit`. See also :py:func:`handle`.
 
         """
         self.repeat = repeat
@@ -271,13 +299,6 @@ class TweetWriter(TweetHandlerI):
                 print('\nWriting to new file {}'.format(self.fname))
                 return True
 
-
-
-
-#if __name__ == "__main__":
-    #pass
-    #import doctest
-    #doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
 
 
