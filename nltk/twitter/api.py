@@ -6,6 +6,9 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+Provides an interface for TweetHandlers.
+"""
 
 class TweetHandlerI(object):
     """
@@ -28,4 +31,7 @@ class TweetHandlerI(object):
         self.counter = 0
 
     def handle(self, data):
+        """
+        Deal appropriately with data returned by the Twitter API
+        """
         raise NotImplementedError

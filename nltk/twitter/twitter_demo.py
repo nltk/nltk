@@ -15,20 +15,22 @@ For documentation about the Twitter APIs, see `The Streaming APIs Overview
 """
 
 from functools import wraps
+import json
 import os
 
-from twitterclient import *
-from util import extract_tweetid
+from nltk.twitter.twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
+from nltk.twitter.util import extract_tweetid, credsfromfile
 
-spacer = '###################################'
+SPACER = '###################################'
 
 def verbose(func):
+    """Decorator for demo functions"""
     @wraps(func)
     def with_logging(*args, **kwargs):
         print()
-        print(spacer)
+        print(SPACER)
         print("Using %s" % (func.__name__))
-        print(spacer)
+        print(SPACER)
         return func(*args, **kwargs)
     return with_logging
 
@@ -37,7 +39,7 @@ def verbose(func):
 TWITTER = os.environ['TWITTER']
 TWEETS = os.path.join(TWITTER, 'demo_tweets.json')
 IDS = os.path.join(TWITTER, 'tweet_ids.txt')
-USERIDS = ['759251','612473',  '15108702',   '6017542',    '2673523800'] # UserIDs corresponding to\
+USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
 #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
 HYDRATED = os.path.join(TWITTER, 'rehydrated.json')
 
@@ -71,8 +73,8 @@ def search_demo(keywords='nltk'):
     """
     oauth = credsfromfile()
     client = Query(**oauth)
-    for t in client.search_tweets(keywords=keywords, count=10):
-        print(t['text'])
+    for tweet in client.search_tweets(keywords=keywords, count=10):
+        print(tweet['text'])
 
 # demo 3
 @verbose
@@ -84,10 +86,10 @@ def lookup_by_userid_demo():
     client = Query(**oauth)
     user_info = client.user_info_from_id(USERIDS)
     for info in user_info:
-        sn = info['screen_name']
+        name = info['screen_name']
         followers = info['followers_count']
         following = info['friends_count']
-        print("{}, followers: {}, following: {}".format(sn, followers, following))
+        print("{}, followers: {}, following: {}".format(name, followers, following))
 
 # demo 4
 @verbose
@@ -162,21 +164,21 @@ def corpusreader_demo():
     reader = TwitterCorpusReader(root, 'rehydrated.json')
     print()
     print("Complete tweet documents")
-    print(spacer)
-    for t in reader.docs()[:2]:
-        print(json.dumps(t, indent=1, sort_keys=True))
+    print(SPACER)
+    for tweet in reader.docs()[:2]:
+        print(json.dumps(tweet, indent=1, sort_keys=True))
 
     print()
     print("Raw tweet strings:")
-    print(spacer)
-    for t in reader.strings()[:15]:
-        print(t)
+    print(SPACER)
+    for text in reader.strings()[:15]:
+        print(text)
 
     print()
     print("Tokenized tweet strings:")
-    print(spacer)
-    for t in reader.tokenized()[:15]:
-        print(t)
+    print(SPACER)
+    for text in reader.tokenized()[:15]:
+        print(text)
 
 # demo 9
 @verbose
@@ -186,19 +188,19 @@ def twitterclass_demo():
     """
     tw = Twitter()
     tw.tweets(keywords='love, hate', limit=10) #public stream
+    print(SPACER)
     tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
-    tw.tweets(follow=['759251','6017542'], limit=10) #public stream
+    print(SPACER)
+    tw.tweets(follow=['759251', '6017542'], limit=10) #public stream
 
 
 
-all_demos = range(8)
-DEMOS = all_demos
-DEMOS = [9]
+ALL = range(10)
+DEMOS = ALL[9:]
+
 
 if __name__ == "__main__":
-    """
-    Run selected demo functions.
-    """
+    """Run selected demo functions."""
     if 0 in DEMOS:
         sampletoscreen_demo()
     if 1 in DEMOS:

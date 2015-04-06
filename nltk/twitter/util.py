@@ -7,26 +7,25 @@
 # For license information, see LICENSE.TXT
 
 """
-NLTK Twitter client.
+Utility functions to accompany :module:`twitterclient`.
 """
 
 import json
 import os
 import pprint
-import textwrap
-
+from twython import Twython
 
 def extract_tweetid(infile):
     """
-    :return: given a file of Tweets serialised as line-delimited JSON, return
-    the corresponding Tweet IDs.
+    :return: Given a file of tweets serialised as line-delimited JSON, return\
+    the corresponding tweetIDs.
 
     :rtype: iter(str)
 
     """
     with open(infile) as tweets:
-        for t in tweets:
-            id_str = json.loads(t)['id_str']
+        for tweet in tweets:
+            id_str = json.loads(tweet)['id_str']
             yield id_str
 
 
@@ -34,25 +33,27 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
     Read OAuth credentials from a text file.
 
-    File format for OAuth 1:
-    ========================
-    app_key=YOUR_APP_KEY
-    app_secret=YOUR_APP_SECRET
-    oauth_token=OAUTH_TOKEN
-    oauth_token_secret=OAUTH_TOKEN_SECRET
+    ::
+       File format for OAuth 1
+       =======================
+       app_key=YOUR_APP_KEY
+       app_secret=YOUR_APP_SECRET
+       oauth_token=OAUTH_TOKEN
+       oauth_token_secret=OAUTH_TOKEN_SECRET
 
 
-    File format for OAuth 2
-    =======================
-    app_key=YOUR_APP_KEY
-    app_secret=YOUR_APP_SECRET
-    access_token=ACCESS_TOKEN
 
-    :param file_name: File containing credentials. None (default) reads
-    data from "./credentials.txt"
+    ::
+       File format for OAuth 2
+       =======================
+
+       app_key=YOUR_APP_KEY
+       app_secret=YOUR_APP_SECRET
+       access_token=ACCESS_TOKEN
+
+    :param str file_name: File containing credentials. ``None`` (default) reads\
+    data from `"./credentials.txt"`
     """
-
-
     if subdir is None:
         try:
             subdir = os.environ['TWITTER']
@@ -81,13 +82,14 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
     return oauth
 
 def _validate_creds_file(fn, oauth, verbose=False):
+    """Check validity of a credentials file."""
     oauth1 = False
     oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
     oauth2 = False
     oauth2_keys = ['app_key', 'app_secret', 'access_token']
-    if all (k in oauth for k in oauth1_keys):
-            oauth1 = True
-    elif all (k in oauth for k in oauth1_keys):
+    if all(k in oauth for k in oauth1_keys):
+        oauth1 = True
+    elif all(k in oauth for k in oauth2_keys):
         oauth2 = True
 
     if not (oauth1 or oauth2):
@@ -112,15 +114,17 @@ def add_access_token(creds_file=None):
 
     twitter = Twython(APP_KEY, APP_SECRET, oauth_version=2)
     ACCESS_TOKEN = twitter.obtain_access_token()
-    s = 'access_token={}\n'.format(ACCESS_TOKEN)
+    tok = 'access_token={}\n'.format(ACCESS_TOKEN)
     with open(creds_file, 'a') as f:
-        print(s, file=f)
+        print(tok, file=f)
 
 
 def guess_path(pth):
     """
     If the path is not absolute, guess that it is a subdirectory of the
     user's home directory.
+
+    :param str pth: The pathname of the directory where files of tweets should be written
     """
     if os.path.isabs(pth):
         return pth
