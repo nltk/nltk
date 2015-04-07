@@ -185,6 +185,7 @@ def twitterclass_demo():
     tw = Twitter()
     tw.tweets(keywords='love, hate', limit=10) #public stream
     print(SPACER)
+    tw = Twitter()
     tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
     print(SPACER)
     tw = Twitter()
@@ -193,7 +194,7 @@ def twitterclass_demo():
 
 
 ALL = range(10)
-DEMOS = ALL[5:]
+DEMOS = ALL[:]
 
 
 if __name__ == "__main__":
