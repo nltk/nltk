@@ -25,48 +25,7 @@ def extract_fields(tweet, fields, encoding='utf_8'):
     :param list fields: The fields to be extracted from the tweet
     :rtype: list(str)
     """
-    #row = []
-    #for field in fields:
-        #val = tweet[field]
-        #if '\n' in val:
-            #val = """{}""".format(val)
-        #row.append(val)
-    #return row
     return [tweet[field] for field in fields]
-
-
-
-
-def json2txt(infile, outfile, fields, verbose=True):
-    """
-    Extract selected fields from a file of line-separated JSON tweets and
-    write to a file.
-
-    This utility function allows a file of full tweets to be easily converted
-    to a file of strings for easier processing. For example, just tweetIDs or
-    just the text content of the tweets can be extracted.
-
-    :param str infile: The name of the file containing full tweets
-
-    :param str outfile: The name of the text file where results should be\
-    written
-
-    :param list fields: The list of fields to be extracted. Useful examples\
-    are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
-    <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
-    """
-
-    with open(outfile, 'w', encoding='utf-8') as outf, open(infile) as inf:
-        for line in inf:
-            tweet = json.loads(line)
-            row = extract_fields(tweet, fields)
-            if len(row) == 1:
-                print(row[0], file=outf)
-            else:
-                print(', '.join(row), file=outf)
-        if verbose:
-            print("Written {} tweet field(s) from {}\nto {}".format(len(fields),
-                   os.path.abspath(infile), os.path.abspath(outfile)))
 
 
 def json2csv(infile, outfile, fields, verbose=True):
@@ -203,5 +162,4 @@ if __name__ == "__main__":
     TWEETS = os.path.join(TWITTER, 'demo_tweets.json')
     EXTRACT =  'tweets.txt'
     FIELDS = ['id_str', 'text']
-    #json2txt(TWEETS, EXTRACT, FIELDS)
     json2csv(TWEETS, EXTRACT, FIELDS)
