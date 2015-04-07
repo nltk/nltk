@@ -19,7 +19,7 @@ import json
 import os
 
 from nltk.twitter.twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
-from nltk.twitter.util import extract_tweetid, credsfromfile
+from nltk.twitter.util import credsfromfile, json2csv
 
 SPACER = '###################################'
 
@@ -38,7 +38,8 @@ def verbose(func):
 
 TWITTER = os.environ['TWITTER']
 TWEETS = os.path.join(TWITTER, 'demo_tweets.json')
-IDS = os.path.join(TWITTER, 'tweet_ids.txt')
+IDS = os.path.join(TWITTER, 'tweet_ids.csv')
+FIELDS = ['id_str']
 USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
 #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
 HYDRATED = os.path.join(TWITTER, 'rehydrated.json')
@@ -98,8 +99,8 @@ def followtoscreen_demo(limit=10):
     Using the Streaming API, select just the tweets from a specified list of
     userIDs.
 
-    This is only likely to give quick results if the users in question
-    produce a high-volume of tweets.
+    This is will only give results in a reasonable time if the users in
+    question produce a high volume of tweets, and may even so show some delay.
     """
     oauth = credsfromfile()
     client = Streamer(**oauth)
@@ -125,14 +126,9 @@ def extract_tweetids_demo(infile, outfile):
     tweetIDs to a new file (`outfile`)
     """
     print("Reading from {}".format(infile))
-    print()
-    ids = extract_tweetid(infile)
-    with open(outfile, 'w') as f:
-        print("Writing ids to {}".format(outfile))
-        print()
-        for id_str in ids:
-            print("Found id {}".format(id_str))
-            print(id_str, file=f)
+    json2csv(infile, outfile, FIELDS)
+    print("Writing ids to {}".format(outfile))
+
 
 # demo 7
 @verbose
@@ -187,7 +183,6 @@ def twitterclass_demo():
     Use the simplified :class:`Twitter` class to write some tweets to a file.
     """
     tw = Twitter()
-#    tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
     tw.tweets(keywords='love, hate', limit=10) #public stream
     print(SPACER)
     tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
@@ -198,7 +193,7 @@ def twitterclass_demo():
 
 
 ALL = range(10)
-DEMOS = ALL[9:]
+DEMOS = ALL[5:]
 
 
 if __name__ == "__main__":
