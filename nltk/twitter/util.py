@@ -17,7 +17,7 @@ import pprint
 from twython import Twython
 
 
-def extract_fields(tweet, fields, encoding='utf_8'):
+def extract_fields(tweet, fields):
     """
     Extract field values from a full tweet and return them as a list
 
@@ -28,13 +28,13 @@ def extract_fields(tweet, fields, encoding='utf_8'):
     return [tweet[field] for field in fields]
 
 
-def json2csv(infile, outfile, fields, verbose=True):
+def json2csv(infile, outfile, fields, encoding='utf8'):
     """
     Extract selected fields from a file of line-separated JSON tweets and
-    write to a file.
+    write to a file in CSV format.
 
     This utility function allows a file of full tweets to be easily converted
-    to a file of strings for easier processing. For example, just tweetIDs or
+    to a CSV file for easier processing. For example, just tweetIDs or
     just the text content of the tweets can be extracted.
 
     :param str infile: The name of the file containing full tweets
@@ -46,8 +46,7 @@ def json2csv(infile, outfile, fields, verbose=True):
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
     """
-
-    with open(outfile, 'w', encoding='utf-8') as outf, open(infile) as inf:
+    with open(outfile, 'w', encoding=encoding) as outf, open(infile) as inf:
         for line in inf:
             tweet = json.loads(line)
             row = extract_fields(tweet, fields)
@@ -77,7 +76,7 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
        access_token=ACCESS_TOKEN
 
     :param str file_name: File containing credentials. ``None`` (default) reads\
-    data from `"./credentials.txt"`
+    data from `TWITTER/'credentials.txt'`
     """
     if subdir is None:
         try:
@@ -91,7 +90,6 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
     creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
     if not os.path.isfile(creds_fullpath):
         raise OSError('Cannot find file {}'.format(creds_fullpath))
-
 
     with open(creds_fullpath) as f:
         if verbose:
@@ -157,9 +155,3 @@ def guess_path(pth):
         return os.path.expanduser(os.path.join("~", pth))
 
 
-if __name__ == "__main__":
-    TWITTER = os.environ['TWITTER']
-    TWEETS = os.path.join(TWITTER, 'demo_tweets.json')
-    EXTRACT =  'tweets.txt'
-    FIELDS = ['id_str', 'text']
-    json2csv(TWEETS, EXTRACT, FIELDS)
