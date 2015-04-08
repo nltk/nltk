@@ -109,13 +109,20 @@ class MaltParser(ParserI):
         # These depdendencies are usually located in `maltparser-1.*/lib/*.jar`
         # NLTK users have to symbolically link or copy them in /usr/local/bin like 
         # what they did to `malt.jar`
-        _malt_is_dependent_on = ['log4j.jar', 'libsvm.jar', 'liblinear-1.8.jar']
+        _malt_is_dependent_on = ['log4j.jar', 'libsvm.jar', 'liblinear-1.8.jar',
+        			'liblinear-1.7.jar']
         for _malt_dep in _malt_is_dependent_on:
-            _malt_dep_location = find_binary(_malt_dep, None,
+        	_malt_dep_location = find_binary(_malt_dep, None,
 		                            searchpath=malt_path, env_vars=['MALT_PARSER'],
 		                            url='http://www.maltparser.org/')
-		    self._malt_dependencies.append(_malt_dep_location)
-        
+		if _malt_dep_location: # if the library is found:
+			self._malt_dependencies.append(_malt_dep_location)
+	
+	# Add more checks, this should be converted into a proper regex check when this
+	# module is stable.
+	assert ('log4j.jar' in self._malt_dependencies and \
+	'libsvm.jar' in self._malt_dependencies and \
+	'liblinear-1.' in self._malt_dependencies[2])
         self._malt_bin_with_depdencies = self._malt_bin + self._malt_dependencies
         
 
@@ -181,10 +188,12 @@ for _malt_dep in _malt_is_dependent_on:
                 input_file.write(b'\n\n')
             input_file.close()
 
-            cmd = ['java'] + self.additional_java_args + ['-cp', self._malt_bin,
-                   '-w', self.working_dir,
-                   '-c', self.mco, '-i', input_file.name,
-                   '-o', output_file.name, '-m', 'parse']
+            cmd = ['java'] + self.additional_java_args + [
+            	'-cp', ':'.join(_malt_bin_with_depdencies),
+            	'org.maltparser.Malt',
+            	'-w', self.working_dir,
+            	'-c', self.mco, '-i', input_file.name,
+            	'-o', output_file.name, '-m', 'parse']
 
             ret = self._execute(cmd, verbose)
             if ret != 0:
