@@ -25,7 +25,9 @@ from nltk.parse.dependencygraph import DependencyGraph
 
 class MaltParser(ParserI):
 
-    def __init__(self, tagger=None, mco=None, working_dir=None, additional_java_args=None):
+    def __init__(self, tagger=None, mco=None, working_dir=None, 
+    		malt_bin_with_depdencies=None,
+    		additional_java_args=None):
         """
         An interface for parsing with the Malt Parser.
 
@@ -49,8 +51,15 @@ class MaltParser(ParserI):
                 use when calling Maltparser, usually this is the heapsize limits, (see 
                 http://javarevisited.blogspot.de/2011/05/java-heap-space-memory-size-jvm.html
                 e.g. `additional_java_args=['-Xmx1024m']`)
+                
+        :param malt_bin_with_depdencies: Adds even more flexibility of the user specifying
+        		where the .jar files are. This previous senseless linkings and symbolic exports.
         """
-        self.config_malt()
+        
+        if not malt_bin_with_depdencies:
+        	self.config_malt()
+        else:
+        	self.malt_bin_with_depdencies = malt_bin_with_depdencies
         self.mco = 'malt_temp' if mco is None else mco
         self.working_dir = tempfile.gettempdir() if working_dir is None\
                            else working_dir
@@ -123,7 +132,7 @@ class MaltParser(ParserI):
 	assert ('log4j.jar' in self._malt_dependencies and \
 	'libsvm.jar' in self._malt_dependencies and \
 	'liblinear-1.' in self._malt_dependencies[2])
-        self._malt_bin_with_depdencies = self._malt_bin + self._malt_dependencies
+        self.malt_bin_with_depdencies = self._malt_bin + self._malt_dependencies
         
 
 for _malt_dep in _malt_is_dependent_on:
@@ -187,9 +196,9 @@ for _malt_dep in _malt_is_dependent_on:
                     input_file.write(input_str.encode("utf8"))
                 input_file.write(b'\n\n')
             input_file.close()
-
+	
             cmd = ['java'] + self.additional_java_args + [
-            	'-cp', ':'.join(_malt_bin_with_depdencies),
+            	'-cp', ':'.join(malt_bin_with_depdencies),
             	'org.maltparser.Malt',
             	'-w', self.working_dir,
             	'-c', self.mco, '-i', input_file.name,
