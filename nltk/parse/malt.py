@@ -1,13 +1,3 @@
-# Natural Language Toolkit: Interface to MaltParser
-#
-# Author: Dan Garrette <dhgarrette@gmail.com>
-#         Liling Tan <alvations@gmail.com>
-#
-# Copyright (C) 2001-2015 NLTK Project
-# URL: <http://nltk.org/>
-# For license information, see LICENSE.TXT
-from __future__ import print_function
-
 import os
 import fnmatch
 import tempfile
@@ -42,7 +32,8 @@ def create_regex_tagger():
 						gerunds, pastverbs, nouns])
 			
 class MaltParser(ParserI):
-	def __init__(self, path_to_maltparser, model=None, tagger=None, working_dir=None, additional_java_args=[]):
+	def __init__(self, path_to_maltparser, model=None, tagger=None, 
+	working_dir=None, additional_java_args=[]):
 		"""
 		An interface for parsing with the Malt Parser.
 
@@ -69,7 +60,8 @@ class MaltParser(ParserI):
 		self.additional_java_args = additional_java_args
 
 		# Set the working_dir parameters i.e. `-w` from MaltParser's option.
-		self.working_dir = tempfile.gettempdir() if working_dir is None else working_dir
+		self.working_dir = tempfile.gettempdir() if working_dir is None  \
+												else working_dir
 		
 		# Initialize POS tagger.
 		if tagger is not None:
@@ -185,59 +177,3 @@ class MaltParser(ParserI):
 		representations of the sentence
 		"""
 		return next(self.tagged_parse_sents([sentence], verbose))
-
-		
-	def train(self, depgraphs, verbose=False):
-		"""
-		Train MaltParser from a list of ``DependencyGraph`` objects
-
-		:param depgraphs: list of ``DependencyGraph`` objects for training input data
-		"""
-		input_file = tempfile.NamedTemporaryFile(prefix='malt_train.conll',
-										dir=self.working_dir, delete=False)
-		try:
-			input_str = ('\n'.join(dg.to_conll(10) for dg in depgraphs))
-			input_file.write(input_str.encode("utf8"))
-			input_file.close()
-			self.train_from_file(input_file.name, verbose=verbose)
-		finally:
-			input_file.close()
-			os.remove(input_file.name)
-
-
-	def train_from_file(self, conll_file, verbose=False):
-		"""
-		Train MaltParser from a file
-
-		:param conll_file: str for the filename of the training input data
-		"""
-		if not self._malt_bin:
-			raise Exception("MaltParser location is not configured. ''Call config_malt() first.")
-
-		# If conll_file is a ZipFilePathPointer, then we need to do some extra
-		# massaging
-		if isinstance(conll_file, ZipFilePathPointer):
-		input_file = tempfile.NamedTemporaryFile(prefix='malt_train.conll',
-		dir=self.working_dir,
-		delete=False)
-		try:
-		conll_str = conll_file.open().read()
-		conll_file.close()
-		input_file.write(conll_str)
-		input_file.close()
-		return self.train_from_file(input_file.name, verbose=verbose)
-		finally:
-		input_file.close()
-		os.remove(input_file.name)
-
-		cmd = ['java', '-cp', self._malt_bin, self._malt_dependencies, 
-		'org.maltparser.Malt', '-w', self.working_dir,
-		'-c', self.mco, '-i', conll_file, '-m', 'learn']
-
-		ret = self._execute(cmd, verbose)
-		if ret != 0:
-		raise Exception("MaltParser training (%s) "
-		"failed with exit code %d" %
-		(' '.join(cmd), ret))
-
-		self._trained = True
