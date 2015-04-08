@@ -103,6 +103,24 @@ class MaltParser(ParserI):
             searchpath=malt_path, env_vars=['MALT_PARSER'],
             url='http://www.maltparser.org/',
             verbose=verbose)
+            
+            
+        # Find the malt dependencies.
+        # These depdendencies are usually located in `maltparser-1.*/lib/*.jar`
+        # NLTK users have to symbolically link or copy them in /usr/local/bin like 
+        # what they did to `malt.jar`
+        _malt_is_dependent_on = ['log4j.jar', 'libsvm.jar', 'liblinear-1.8.jar']
+        for _malt_dep in _malt_is_dependent_on:
+            _malt_dep_location = find_binary(_malt_dep, None,
+		                            searchpath=malt_path, env_vars=['MALT_PARSER'],
+		                            url='http://www.maltparser.org/')
+		    self._malt_dependencies.append(_malt_dep_location)
+        
+        self._malt_bin_with_depdencies = self._malt_bin + self._malt_dependencies
+        
+
+for _malt_dep in _malt_is_dependent_on:
+	print 
 
     def parse_sents(self, sentences, verbose=False):
         """
@@ -163,7 +181,7 @@ class MaltParser(ParserI):
                 input_file.write(b'\n\n')
             input_file.close()
 
-            cmd = ['java'] + self.additional_java_args + ['-jar', self._malt_bin,
+            cmd = ['java'] + self.additional_java_args + ['-cp', self._malt_bin,
                    '-w', self.working_dir,
                    '-c', self.mco, '-i', input_file.name,
                    '-o', output_file.name, '-m', 'parse']
@@ -224,7 +242,8 @@ class MaltParser(ParserI):
                 input_file.close()
                 os.remove(input_file.name)
 
-        cmd = ['java', '-jar', self._malt_bin, '-w', self.working_dir,
+        cmd = ['java', '-cp', self._malt_bin, self._malt_dependencies, 
+            'org.maltparser.Malt', '-w', self.working_dir,
                '-c', self.mco, '-i', conll_file, '-m', 'learn']
 
         ret = self._execute(cmd, verbose)
