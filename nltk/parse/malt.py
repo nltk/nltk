@@ -1,6 +1,7 @@
 # Natural Language Toolkit: Interface to MaltParser
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
+#         Liling Tan <alvations@gmail.com>
 #
 # Copyright (C) 2001-2015 NLTK Project
 # URL: <http://nltk.org/>
@@ -31,7 +32,23 @@ class MaltParser(ParserI):
         :param mco: The name of the pre-trained model. If provided, training
             will not be required, and MaltParser will use the model file in
             ${working_dir}/${mco}.mco.
+            (see http://www.maltparser.org/mco/mco.html and 
+            see http://www.patful.com/chalk/node/185)
         :type mco: str
+        
+        :param tagger: The tagger used to POS tag the raw string before formatting
+            to CONLL format. It should behave like `nltk.pos_tag`
+        :type tagger: function
+        
+        :para working_dir: This is not a complusory parameter. It's the directory that
+            saves the temporary CONLL file(s) used in the process of Malt-parsing. 
+            Also it can be used as a short-cut to find the mco model file.
+                            
+                            
+        :param additional_java_args: This is the additional Java arguments that one can
+                use when calling Maltparser, usually this is the heapsize limits, (see 
+                http://javarevisited.blogspot.de/2011/05/java-heap-space-memory-size-jvm.html
+                e.g. `additional_java_args=['-Xmx1024m']`)
         """
         self.config_malt()
         self.mco = 'malt_temp' if mco is None else mco
