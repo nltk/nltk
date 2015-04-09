@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Twitter Tokenizer
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 # URL: <http://nltk.org/>
