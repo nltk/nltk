@@ -6,6 +6,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
+
 import os
 import fnmatch
 import tempfile
@@ -41,6 +43,37 @@ def create_regex_tagger():
     return RegexpTagger([cardinals, articles, adjectives, 
                          nounfromadj, adverbs, pluralnouns, 
                          gerunds, pastverbs, nouns])
+
+def taggedsent_to_conll(sentences):
+    """
+    A module to convert the a POS tagged document stream 
+    (i.e. list of list of tuples) and yield lines in CONLL format. 
+    This module yields one line per word and two newlines for end of sentence. 
+    
+    >>> from nltk import word_tokenize, sent_tokenize
+    >>> text = "This is a foobar sentence. Is that right?"
+    >>> sentences = [word_tokenize(sent) for sent in sent_tokenize(text)]
+    >>> for line in taggedsent_to_conll(sentences):
+    ...     print(line, end="")
+    1    This    _    DT    DT    _    0    a    _    _
+    2    is    _    VBZ    VBZ    _    0    a    _    _
+    3    a    _    DT    DT    _    0    a    _    _
+    4    foobar    _    NN    NN    _    0    a    _    _
+    5    sentence    _    NN    NN    _    0    a    _    _
+    6    .    _    .    .    _    0    a    _    _
+    
+    
+    1    Is    _    VBZ    VBZ    _    0    a    _    _
+    2    that    _    IN    IN    _    0    a    _    _
+    3    right    _    JJ    JJ    _    0    a    _    _
+    4    ?    _    .    .    _    0    a    _    _
+    """
+    for sentence in sentences:
+        for (i, (word, tag)) in enumerate(sentence, start=1):
+            input_str = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+            % (i, word, '_', tag, tag, '_', '0', 'a', '_', '_')
+            yield input_str.encode("utf8")
+        yield b'\n\n'
             
 class MaltParser(ParserI):
     def __init__(self, path_to_maltparser, model=None, tagger=None, 
@@ -107,12 +140,8 @@ class MaltParser(ParserI):
         
         try: 
             # Convert list of sentences to CONLL format.
-            for sentence in sentences:
-                for (i, (word, tag)) in enumerate(sentence, start=1):
-                    input_str = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-                        % (i, word, '_', tag, tag, '_', '0', 'a', '_', '_')
-                    input_file.write(input_str.encode("utf8"))
-                input_file.write(b'\n\n')
+            for line in taggedsent_to_conll(sentences):
+                input_file.write(line)
             input_file.close()
             
             # Generate command to run maltparser.
@@ -134,7 +163,7 @@ class MaltParser(ParserI):
             if ret != 0:
                 raise Exception("MaltParser parsing (%s) failed with exit "
                                 "code %d" % (' '.join(cmd), ret))
-                
+            
             # Must return iter(iter(Tree))
             return (iter([dep_graph]) for dep_graph in 
                     DependencyGraph.load(output_file.name))
@@ -322,4 +351,4 @@ def config_malt(bin=None, verbose=False, path_to_malt_libs=None):
 if __name__ == '__main__':
     # Test if magic find_binary still works but maybe it should be deprecated.
     malt_binary_file = config_malt()
-    dem
+    demo('/home/username/maltparser-1.8/')
