@@ -31,8 +31,8 @@ domains and tasks. The basic logic is this:
 
 ######################################################################
 
-from __future__ import html
-import html.entities
+
+from htmlentitydefs import name2codepoint
 import re
 
 ######################################################################
@@ -227,7 +227,7 @@ class TweetTokenizer:
         for ent in ents:
             entname = ent[1:-1]
             try:
-                s = s.replace(ent, chr(html.entities.name2codepoint[entname]))
+                s = s.replace(ent, chr(name2codepoint[entname]))
             except:
                 pass
             s = s.replace(amp, " and ")
