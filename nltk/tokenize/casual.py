@@ -1,3 +1,5 @@
+# coding: utf-8
+#
 # Natural Language Toolkit: Twitter Tokenizer
 #
 # Copyright (C) 2001-2015 NLTK Project
@@ -6,7 +8,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
-# coding: utf-8
+
 
 """
 Twitter-aware tokenizer, designed to be flexible and easy to adapt to new
@@ -283,15 +285,15 @@ if __name__ == '__main__':
         if toks == right:
             return True
         else:
-            return False
+            return toks
 
     for (tweet, tokenized) in zip(TWEETS, TOKS):
-        print(tokenized)
         if test(tweet, tokenized):
-            print("correct")
+            print("Pass")
         else:
-            print("wrong")
-        print()
+            print("Expected: {}".format(tokenized))
+            print("Actual: {}".format(test(tweet, tokenized)))
+
 
 
 
