@@ -5,6 +5,8 @@
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+#
+# coding: utf-8
 
 """
 Twitter-aware tokenizer, designed to be flexible and easy to adapt to new
@@ -87,14 +89,14 @@ URLS = r"""			# Capture 1: entire matched URL
   (?:					# One or more:
     [^\s()<>{}\[\]]+			# Run of non-space, non-()<>{}[]
     |					#   or
-    \([^\s()]*?\([^\s()]+\)[^\s()]*?\) # balanced parens, one level deep: (…(…)…)
+    \([^\s()]*?\([^\s()]+\)[^\s()]*?\) # balanced parens, one level deep: (...(...)...)
     |
-    \([^\s]+?\)				# balanced parens, non-recursive: (…)
+    \([^\s]+?\)				# balanced parens, non-recursive: (...)
   )+
   (?:					# End with:
-    \([^\s()]*?\([^\s()]+\)[^\s()]*?\) # balanced parens, one level deep: (…(…)…)
+    \([^\s()]*?\([^\s()]+\)[^\s()]*?\) # balanced parens, one level deep: (...(...)...)
     |
-    \([^\s]+?\)				# balanced parens, non-recursive: (…)
+    \([^\s]+?\)				# balanced parens, non-recursive: (...)
     |					#   or
     [^\s`!()\[\]{};:'".,<>?«»“”‘’]	# not a space or one of these punct chars
   )
