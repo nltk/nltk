@@ -31,9 +31,9 @@ domains and tasks. The basic logic is this:
 
 ######################################################################
 
-
-from htmlentitydefs import name2codepoint
 import re
+from nltk.compat import htmlentitydefs
+
 
 ######################################################################
 # The following strings are components in the regular expression
@@ -135,11 +135,11 @@ REGEXPS = (
     EMOTICONS
     ,
     # HTML tags:
-     r"""<[^>\s]+>"""
+    r"""<[^>\s]+>"""
     ,
     # ASCII Arrows
     r"""[\-]+>|<[\-]+"""
-        ,
+    ,
     # Twitter username:
     r"""(?:@[\w_]+)"""
     ,
@@ -164,21 +164,22 @@ REGEXPS = (
 ######################################################################
 # This is the core tokenizing regex:
 
-word_re = re.compile(r"""(%s)""" % "|".join(REGEXPS), re.VERBOSE | re.I
+WORD_RE = re.compile(r"""(%s)""" % "|".join(REGEXPS), re.VERBOSE | re.I
                      | re.UNICODE)
 
 # The emoticon string gets its own regex so that we can preserve case for
 # them as needed:
-emoticon_re = re.compile(EMOTICONS, re.VERBOSE | re.I | re.UNICODE)
+EMOTICON_RE = re.compile(EMOTICONS, re.VERBOSE | re.I | re.UNICODE)
 
 # These are for regularizing HTML entities to Unicode:
-html_entity_digit_re = re.compile(r"&#\d+;")
-html_entity_alpha_re = re.compile(r"&\w+;")
-amp = "&amp;"
+HTML_ENTITY_DIGIT_RE = re.compile(r"&#\d+;")
+HTML_ENTITY_ALPHA_RE = re.compile(r"&\w+;")
+AMP = "&amp;"
 
 ######################################################################
 
 class TweetTokenizer:
+    """Tokenize Tweets"""
     def __init__(self, preserve_case=True):
         self.preserve_case = preserve_case
 
@@ -198,10 +199,10 @@ class TweetTokenizer:
         # Fix HTML character entities:
         s = self._html2unicode(s)
         # Tokenize:
-        words = word_re.findall(s)
+        words = WORD_RE.findall(s)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
-            words = list(map((lambda x : x if emoticon_re.search(x) else
+            words = list(map((lambda x : x if EMOTICON_RE.search(x) else
                               x.lower()), words))
         return words
 
@@ -212,7 +213,7 @@ class TweetTokenizer:
         Unicode characters.
         """
         # First the digits:
-        ents = set(html_entity_digit_re.findall(s))
+        ents = set(HTML_ENTITY_DIGIT_RE.findall(s))
         if len(ents) > 0:
             for ent in ents:
                 entnum = ent[2:-1]
@@ -222,15 +223,15 @@ class TweetTokenizer:
                 except:
                     pass
         # Now the alpha versions:
-        ents = set(html_entity_alpha_re.findall(s))
-        ents = list(filter((lambda x : x != amp), ents))
+        ents = set(HTML_ENTITY_ALPHA_RE.findall(s))
+        ents = list(filter((lambda x : x != AMP), ents))
         for ent in ents:
             entname = ent[1:-1]
             try:
-                s = s.replace(ent, chr(name2codepoint[entname]))
+                s = s.replace(ent, chr(htmlentitydefs.name2codepoint[entname]))
             except:
                 pass
-            s = s.replace(amp, " and ")
+            s = s.replace(AMP, " and ")
         return s
 
 ######################################################################
@@ -238,6 +239,9 @@ class TweetTokenizer:
 ######################################################################
 
 def casual_tokenize(text):
+    """
+    Convenience function for wrapping the tokenizer.
+    """
     return TweetTokenizer().tokenize(text)
 
 ###############################################################################
@@ -245,31 +249,47 @@ def casual_tokenize(text):
 if __name__ == '__main__':
     s0 = "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--"
     s1 = "Naps are a must \ud83d\ude34\ud83d\ude34"
-    s2 = "Renato fica com muito medo de ouvir meus \u00e1udios perto da gaja dele, pois s\u00f3 falo merda KKK"
-    s3 = "\u0412\u043b\u0430\u0434\u0435\u043b\u0435\u0446 20th Century Fox \u043d\u0430\u043c\u0435\u0440\u0435\u043d \u043a\u0443\u043f\u0438\u0442\u044c Warner Bros."
+    s2 = "Renato fica com muito medo de ouvir meus \u00e1udios perto da gaja\
+    dele, pois s\u00f3 falo merda KKK"
+    s3 = "\u0412\u043b\u0430\u0434\u0435\u043b\u0435\u0446 20th Century Fox\
+    \u043d\u0430\u043c\u0435\u0440\u0435\u043d\
+    \u043a\u0443\u043f\u0438\u0442\u044c Warner Bros."
     s4 = "RT @facugambande: Ya por arrancar a grabar !!! #TirenTirenTiren vamoo !!"
-    s5 = "http://t.co/7r8d5bVKyA http://t.co/hZpwZe1uKt http://t.co/ZKb7GKWocy Ничто так не сближает людей"
+    s5 = "http://t.co/7r8d5bVKyA http://t.co/hZpwZe1uKt\
+    http://t.co/ZKb7GKWocy Ничто так не сближает\
+    людей"
 
-    t0 = ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
+    t0 = ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P',\
+          '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
     t1 = ['Naps', 'are', 'a', 'must', '\ud83d', '\ude34', '\ud83d', '\ude34']
-    t2 = ['Renato', 'fica', 'com', 'muito', 'medo', 'de', 'ouvir', 'meus', 'áudios', 'perto', 'da', 'gaja', 'dele', ',', 'pois', 'só', 'falo', 'merda', 'KKK']
+    t2 = ['Renato', 'fica', 'com', 'muito', 'medo', 'de', 'ouvir', 'meus',
+          'áudios', 'perto', 'da', 'gaja', 'dele', ',', 'pois', 'só', 'falo',
+          'merda', 'KKK']
     t3 = ['Владелец', '20th', 'Century', 'Fox', 'намерен', 'купить', 'Warner', 'Bros', '.']
     t4 = ['RT', '@facugambande', ':', 'Ya', 'por', 'arrancar', 'a', 'grabar', '!', '!', '!', '#TirenTirenTiren', 'vamoo', '!', '!']
     t5 = ['http://t.co/7r8d5bVKyA', 'http://t.co/hZpwZe1uKt', 'http://t.co/ZKb7GKWocy', 'Ничто', 'так', 'не', 'сближает', 'людей']
 
-    tweets = [s0, s1, s2, s3, s4, s5]
-    toks = [t0, t1, t2, t3, t4, t5]
+    TWEETS = [s0, s1, s2, s3, s4, s5]
+    TOKS = [t0, t1, t2, t3, t4, t5]
 
     def test(left, right):
+        """
+        Compare the tool's tokenization with expected 'gold standard' output.
+        """
         tokenizer = TweetTokenizer()
-        tokenised = tokenizer.tokenize(left)
-        if tokenised==right:
+        toks = tokenizer.tokenize(left)
+        if toks == right:
             return True
         else:
-            return tokenised
+            return False
 
-    for (left, right) in zip(tweets, toks):
-        print(test(left, right))
+    for (tweet, tokenized) in zip(TWEETS, TOKS):
+        print(tokenized)
+        if test(tweet, tokenized):
+            print("correct")
+        else:
+            print("wrong")
+        print()
 
 
 
