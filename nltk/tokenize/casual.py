@@ -31,7 +31,7 @@ domains and tasks. The basic logic is this:
 
 ######################################################################
 
-
+from __future__ import html
 import html.entities
 import re
 
