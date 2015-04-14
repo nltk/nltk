@@ -500,7 +500,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
                         print('[Found %s: %s]' % (filename, path))
                     yielded = True
                     yield path
-            except (KeyboardInterrupt, SystemExit):
+            except (KeyboardInterrupt, SystemExit, OSError):
                 raise
             except:
                 pass
