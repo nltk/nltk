@@ -18,7 +18,8 @@ from functools import wraps
 import json
 import os
 
-from nltk.twitter.twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
+#from nltk.twitter.twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
+from twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
 from nltk.twitter.util import credsfromfile, json2csv
 
 SPACER = '###################################'
@@ -79,6 +80,14 @@ def search_demo(keywords='nltk'):
 
 # demo 3
 @verbose
+def tweets_by_user_demo(user='NLTK_org', count=200):
+    oauth = credsfromfile()
+    client = Query(**oauth)
+    client.register(TweetWriter())
+    client.user_tweets(user, count)
+
+# demo 4
+@verbose
 def lookup_by_userid_demo():
     """
     Use the REST API to convert a userID to a screen name.
@@ -92,7 +101,7 @@ def lookup_by_userid_demo():
         following = info['friends_count']
         print("{}, followers: {}, following: {}".format(name, followers, following))
 
-# demo 4
+# demo 5
 @verbose
 def followtoscreen_demo(limit=10):
     """
@@ -107,7 +116,7 @@ def followtoscreen_demo(limit=10):
     client.register(TweetViewer(limit=limit))
     client.statuses.filter(follow=USERIDS)
 
-# demo 5
+# demo 6
 @verbose
 def streamtofile_demo(limit=20):
     """
@@ -118,7 +127,7 @@ def streamtofile_demo(limit=20):
     client.register(TweetWriter(limit=limit, repeat=False))
     client.statuses.sample()
 
-# demo 6
+# demo 7
 @verbose
 def extract_tweetids_demo(infile, outfile):
     """
@@ -130,7 +139,7 @@ def extract_tweetids_demo(infile, outfile):
     print("Writing ids to {}".format(outfile))
 
 
-# demo 7
+# demo 8
 @verbose
 def expand_tweetids_demo(infile, outfile):
     """
@@ -144,7 +153,7 @@ def expand_tweetids_demo(infile, outfile):
     client = Query(**oauth)
     client.lookup(infile, outfile)
 
-# demo 8
+# demo 9
 @verbose
 def corpusreader_demo():
     """
@@ -176,7 +185,7 @@ def corpusreader_demo():
     for text in reader.tokenized()[:15]:
         print(text)
 
-# demo 9
+# demo 10
 @verbose
 def twitterclass_demo():
     """
@@ -193,8 +202,8 @@ def twitterclass_demo():
 
 
 
-ALL = range(10)
-DEMOS = ALL[:]
+ALL = range(11)
+DEMOS = ALL[3:4]
 
 
 if __name__ == "__main__":
@@ -206,17 +215,19 @@ if __name__ == "__main__":
     if 2 in DEMOS:
         search_demo()
     if 3 in DEMOS:
-        lookup_by_userid_demo()
+        tweets_by_user_demo()
     if 4 in DEMOS:
-        followtoscreen_demo()
+        lookup_by_userid_demo()
     if 5 in DEMOS:
-        streamtofile_demo()
+        followtoscreen_demo()
     if 6 in DEMOS:
-        extract_tweetids_demo(TWEETS, IDS)
+        streamtofile_demo()
     if 7 in DEMOS:
-        expand_tweetids_demo(IDS, HYDRATED)
+        extract_tweetids_demo(TWEETS, IDS)
     if 8 in DEMOS:
-        corpusreader_demo()
+        expand_tweetids_demo(IDS, HYDRATED)
     if 9 in DEMOS:
+        corpusreader_demo()
+    if 10 in DEMOS:
         twitterclass_demo()
 
