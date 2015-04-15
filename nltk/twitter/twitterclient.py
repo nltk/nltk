@@ -47,7 +47,7 @@ class Streamer(TwythonStreamer):
 
         self.handler = None
         self.do_continue = True
-        super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
+        TwythonStreamer.__init__(self, app_key, app_secret, oauth_token, oauth_token_secret)
 
     def register(self, handler):
         """
@@ -87,7 +87,7 @@ class Query(Twython):
                  oauth_token_secret):
         self.handler = None
         self.do_continue = True
-        super().__init__(app_key, app_secret, oauth_token, oauth_token_secret)
+        Twython.__init__(self, app_key, app_secret, oauth_token, oauth_token_secret)
 
     def register(self, handler):
         """
@@ -265,7 +265,7 @@ class TweetWriter(TweetHandlerI):
         self.subdir = guess_path(subdir)
         self.fname = self.timestamped_file()
         self.startingup = True
-        super().__init__(limit)
+        TweetHandlerI.__init__(self, limit)
 
 
     def timestamped_file(self):
