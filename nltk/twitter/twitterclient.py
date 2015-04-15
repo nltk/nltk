@@ -168,6 +168,14 @@ class Query(Twython):
         """
         return [self.show_user(user_id=userid) for userid in userids]
 
+    def user_tweets(self, user):
+        """
+        Return a collection of the most recent Tweets posted by the user
+
+        :param user: A User ID or Screen Name
+        """
+        return self.get_user_timeline
+
 
 class Twitter(object):
     """
