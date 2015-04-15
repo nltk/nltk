@@ -168,13 +168,17 @@ class Query(Twython):
         """
         return [self.show_user(user_id=userid) for userid in userids]
 
-    def user_tweets(self, user):
+    def user_tweets(self, user, count, include_rts='false'):
         """
         Return a collection of the most recent Tweets posted by the user
 
         :param user: A User ID or Screen Name
         """
-        return self.get_user_timeline
+        data = self.get_user_timeline(screen_name=user, count=count, include_rts=include_rts)
+        #if handler:
+        self.handler.handle(data)
+
+
 
 
 class Twitter(object):
@@ -247,7 +251,7 @@ class TweetWriter(TweetHandlerI):
     Handle data by writing it to a file.
     """
     def __init__(self, limit=2000, repeat=True, fprefix='tweets',
-                 subdir='twitter'):
+                 subdir='twitter-files'):
         """
         :param limit: number of data items to process in the current round of processing
 
