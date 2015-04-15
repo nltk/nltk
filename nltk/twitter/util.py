@@ -14,6 +14,8 @@ import csv
 import json
 import os
 import pprint
+import codecs
+import nltk.compat as compat
 
 from twython import Twython
 
@@ -29,7 +31,7 @@ def extract_fields(tweet, fields):
     return [tweet[field] for field in fields]
 
 
-def json2csv(infile, outfile, fields, encoding='utf8'):
+def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -46,12 +48,18 @@ def json2csv(infile, outfile, fields, encoding='utf8'):
     :param list fields: The list of fields to be extracted. Useful examples\
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
+    
+    :param error: behavior for enconding errors, see 
+    https://docs.python.org/3/library/codecs.html#codec-base-classes
     """
-    with open(outfile, 'w', encoding=encoding) as outf, open(infile) as inf:
+    with codecs.open(outfile, 'w', encoding=encoding, errors=errors) as outf, open(infile) as inf:
+        if compat.PY3 == True:
+            writer = csv.writer(outf)
+        else:
+            writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors) 
         for line in inf:
             tweet = json.loads(line)
             row = extract_fields(tweet, fields)
-            writer = csv.writer(outf)
             writer.writerow(row)
 
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
