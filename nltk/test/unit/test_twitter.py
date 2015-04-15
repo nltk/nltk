@@ -20,11 +20,11 @@ class TestCredentials(unittest.TestCase):
 
     def test_badfile1(self):
         self.assertRaises(ValueError, credsfromfile, creds_file='bad_oauth1-1.txt',
-                      subdir='/Users/ewan/git/nltk/nltk/twitter')
+                      subdir='.')
 
     def test_badfile2(self):
         self.assertRaises(ValueError, credsfromfile, creds_file='bad_oauth1-2.txt',
-                      subdir='/Users/ewan/git/nltk/nltk/twitter')
+                      subdir='.')
 
 
 
