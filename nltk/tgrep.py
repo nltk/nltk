@@ -40,6 +40,7 @@ http://tedlab.mit.edu/~dr/Tgrep2/
 
 from __future__ import unicode_literals
 from builtins import bytes, range, str
+import functools
 import nltk.tree
 import pyparsing
 import re
@@ -476,7 +477,7 @@ def _tgrep_relation_action(_s, _l, tokens):
     else:
         return retval
 
-def _tgrep_rel_conjunction_action(_s, _l, tokens):
+def _tgrep_conjunction_action(_s, _l, tokens, join_char = '&'):
     '''
     Builds a lambda function representing a predicate on a tree node
     from the conjunction of several other such lambda functions.
@@ -628,14 +629,16 @@ def _build_tgrep_parser(set_parse_actions = True):
         tgrep_parens.setParseAction(_tgrep_parens_action)
         tgrep_nltk_tree_pos.setParseAction(_tgrep_nltk_tree_pos_action)
         tgrep_relation.setParseAction(_tgrep_relation_action)
-        tgrep_rel_conjunction.setParseAction(_tgrep_rel_conjunction_action)
+        tgrep_rel_conjunction.setParseAction(_tgrep_conjunction_action)
         tgrep_relations.setParseAction(_tgrep_rel_disjunction_action)
         macro_defn.setParseAction(_macro_defn_action)
         # the whole expression is also the conjunction of two
         # predicates: the first node predicate, and the remaining
         # relation predicates
-        tgrep_expr.setParseAction(_tgrep_rel_conjunction_action)
-        tgrep_expr_labeled.setParseAction(_tgrep_rel_conjunction_action)
+        tgrep_expr.setParseAction(_tgrep_conjunction_action)
+        tgrep_expr_labeled.setParseAction(_tgrep_conjunction_action)
+        tgrep_expr2.setParseAction(functools.partial(_tgrep_conjunction_action,
+                                                     join_char = ':'))
         tgrep_exprs.setParseAction(_tgrep_exprs_action)
     return tgrep_exprs.ignore('#' + pyparsing.restOfLine)
 
