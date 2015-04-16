@@ -489,6 +489,20 @@ def _tgrep_rel_conjunction_action(_s, _l, tokens):
     elif len(tokens) == 2:
         return (lambda a, b: lambda n, m=None: a(n, m) and b(n, m))(tokens[0], tokens[1])
 
+def _tgrep_label_node_action(_s, _l, tokens):
+    '''
+    Takes a lambda function representing a predicate on a tree node
+    and makes it bind a node label.
+    '''
+    if len(tokens) == 1:
+        return tokens[0]
+    else:
+        assert len(tokens) == 3
+        assert tokens[1] == '='
+        node_label = tokens[2]
+        # TODO: implement node label semantics
+        return tokens[0]
+
 def _tgrep_rel_disjunction_action(_s, _l, tokens):
     '''
     Builds a lambda function representing a predicate on a tree node
@@ -601,6 +615,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         # predicates: the first node predicate, and the remaining
         # relation predicates
         tgrep_expr.setParseAction(_tgrep_rel_conjunction_action)
+        tgrep_node_expr2.setParseAction(_tgrep_label_node_action)
         tgrep_exprs.setParseAction(_tgrep_exprs_action)
     return tgrep_exprs.ignore('#' + pyparsing.restOfLine)
 
