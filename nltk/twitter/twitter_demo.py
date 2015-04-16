@@ -54,7 +54,7 @@ def sampletoscreen_demo(limit=20):
     oauth = credsfromfile()
     client = Streamer(**oauth)
     client.register(TweetViewer(limit=limit))
-    client.statuses.sample()
+    client.sample()
 
 # demo 1
 @verbose
@@ -65,7 +65,7 @@ def tracktoscreen_demo(track="taylor swift", limit=10):
     oauth = credsfromfile()
     client = Streamer(**oauth)
     client.register(TweetViewer(limit=limit))
-    client.statuses.filter(track=track)
+    client.filter(track=track)
 
 # demo 2
 @verbose
@@ -203,7 +203,7 @@ def twitterclass_demo():
 
 
 ALL = range(11)
-DEMOS = ALL[3:4]
+DEMOS = ALL[:2]
 
 
 if __name__ == "__main__":
