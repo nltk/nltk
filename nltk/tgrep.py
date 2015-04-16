@@ -565,9 +565,12 @@ def _build_tgrep_parser(set_parse_actions = True):
                        tgrep_node_regex |
                        '*' |
                        tgrep_node_literal)
+    tgrep_node_label = pyparsing.Regex('[A-Za-z0-9]+')
+    tgrep_node_expr2 = tgrep_node_expr + pyparsing.Optional('=' +
+                                                            tgrep_node_label)
     tgrep_node = (tgrep_parens |
                   (pyparsing.Optional("'") +
-                   tgrep_node_expr +
+                   tgrep_node_expr2 +
                    pyparsing.ZeroOrMore("|" + tgrep_node_expr)))
     tgrep_brackets = pyparsing.Optional('!') + '[' + tgrep_relations + ']'
     tgrep_relation = tgrep_brackets | (tgrep_op + tgrep_node)
