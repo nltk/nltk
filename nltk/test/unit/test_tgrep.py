@@ -531,5 +531,41 @@ class TestSequenceFunctions(unittest.TestCase):
             tgrep.tgrep_positions,
             tree, '@ NP /^NP/;\n@ NN /^NN/;\n@CNP !< @NP !$.. @NN')
 
+    def test_labeled_nodes(self):
+        '''
+        Test labeled nodes.
+
+        Test case from Emily M. Bender.
+        '''
+        search = '''
+            # macros
+            @ SBJ /SBJ/;
+            @ VP /VP/;
+            @ VB /VB/;
+            @ VPoB /V[PB]/;
+            @ OBJ /OBJ/;
+
+            # 1 svo
+            S < @SBJ=s < (@VP=v < (@VB $.. @OBJ)) : =s .. =v;'''
+        sent1 = ParentedTree.fromstring(
+            '(S (NP-SBJ I) (VP (VB eat) (NP-OBJ (NNS apples))))')
+        sent2 = ParentedTree.fromstring(
+            '(S (VP (VB eat) (NP-OBJ (NNS apples))) (NP-SBJ I))')
+        search_firsthalf = (search.split('\n\n')[0] +
+                            'S < @SBJ < (@VP < (@VB $.. @OBJ))')
+        search_rewrite = 'S < (/.*SBJ/ $.. (/VP/ < (/VB/ $.. /.*OBJ/)))'
+
+        self.assertTrue(tgrep.tgrep_positions(sent1, search_firsthalf))
+        self.assertTrue(tgrep.tgrep_positions(sent1, search))
+        self.assertTrue(tgrep.tgrep_positions(sent1, search_rewrite))
+        self.assertEqual(tgrep.tgrep_positions(sent1, search),
+                         tgrep.tgrep_positions(sent1, search_rewrite))
+        self.assertTrue(tgrep.tgrep_positions(sent2, search_firsthalf))
+        self.assertFalse(tgrep.tgrep_positions(sent2, search))
+        self.assertFalse(tgrep.tgrep_positions(sent2, search_rewrite))
+        self.assertEqual(tgrep.tgrep_positions(sent2, search),
+                         tgrep.tgrep_positions(sent2, search_rewrite))
+
+
 if __name__ == '__main__':
     unittest.main()
