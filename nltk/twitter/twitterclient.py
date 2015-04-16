@@ -22,6 +22,7 @@ import datetime
 import itertools
 import json
 import os
+import sys
 
 try:
     from twython import Twython, TwythonStreamer, TwythonError
@@ -39,7 +40,7 @@ from nltk.twitter.api import TweetHandlerI
 
 class Streamer(TwythonStreamer):
     """
-    Retrieve data from the Twitter streaming API.
+    Retrieve data from the Twitter Streaming API.
 
     The streaming API requires `OAuth 1.0 <http://en.wikipedia.org/wiki/OAuth>`_ authentication.
     """
@@ -77,11 +78,32 @@ class Streamer(TwythonStreamer):
         """
         print(status_code)
 
+    def sample(self):
+        while True:
+            try:
+                self.statuses.sample()
+            except:
+                e = sys.exc_info()[0]
+                if e is not None:
+                    print("Error: ".format(e))
+                continue
+
+    def filter(self, track):
+        while True:
+            try:
+                self.statuses.filter(track=track)
+            except:
+                e = sys.exc_info()[0]
+                if e is not None:
+                    print("Error: ".format(e))
+                continue
+
+
 
 
 class Query(Twython):
     """
-    Class for accessing the Twitter REST API.
+    Retrieve data from the Twitter REST API.
     """
     def __init__(self, app_key, app_secret, oauth_token,
                  oauth_token_secret):
