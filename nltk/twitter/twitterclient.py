@@ -22,6 +22,8 @@ import datetime
 import itertools
 import json
 import os
+import sys
+import requests
 
 try:
     from twython import Twython, TwythonStreamer, TwythonError
@@ -201,7 +203,19 @@ class Twitter(object):
             if keywords == '' and follow == '':
                 self.streamer.statuses.sample()
             else:
-                self.streamer.statuses.filter(track=keywords, follow=follow)
+                '''
+                Stream in an endless loop until limit is reached
+                see twython issue 288
+                    https://github.com/ryanmcgrath/twython/issues/288
+                    colditzjb commented on 9 Dec 2014
+                '''
+                while self.streamer.do_continue == True:
+                    try: 
+                        self.streamer.statuses.filter(track=keywords, follow=follow)
+                    except requests.exceptions.ChunkedEncodingError as e:
+                        e = sys.exc_info()[0]
+                        print 'ERROR:',e
+                        continue
         else:
             self.query.register(handler)
             if keywords == '':
