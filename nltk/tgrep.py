@@ -584,7 +584,7 @@ def _build_tgrep_parser(set_parse_actions = True):
                        tgrep_node_literal)
     tgrep_node_expr2 = ((tgrep_node_expr +
                          pyparsing.Literal('=').setWhitespaceChars('') +
-                         tgrep_node_label.setWhitespaceChars('')) |
+                         tgrep_node_label.copy().setWhitespaceChars('')) |
                         tgrep_node_expr)
     tgrep_node = (tgrep_parens |
                   (pyparsing.Optional("'") +
