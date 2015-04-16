@@ -569,10 +569,12 @@ def _build_tgrep_parser(set_parse_actions = True):
                     pyparsing.Word(pyparsing.nums), delim=',') +
                                               pyparsing.Optional(','))) + ')')
     tgrep_node_label = pyparsing.Regex('[A-Za-z0-9]+')
+    tgrep_node_label_use = pyparsing.Combine('=' + tgrep_node_label)
     macro_name = pyparsing.Regex('[^];:.,&|<>()[$!@%\'^=\r\t\n ]+')
     macro_name.setWhitespaceChars('')
     macro_use = pyparsing.Combine('@' + macro_name)
-    tgrep_node_expr = (macro_use |
+    tgrep_node_expr = (tgrep_node_label_use |
+                       macro_use |
                        tgrep_nltk_tree_pos |
                        tgrep_qstring_icase |
                        tgrep_node_regex_icase |
