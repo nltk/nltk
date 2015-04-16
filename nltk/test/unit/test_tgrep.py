@@ -566,7 +566,7 @@ class TestSequenceFunctions(unittest.TestCase):
             @ OBJ /OBJ/;
 
             # 1 svo
-            S < @SBJ=s < (@VP=v < (@VB $.. @OBJ)) : =s .. =v;'''
+            S < @SBJ=s < (@VP=v < (@VB $.. @OBJ)) : =s .. =v'''
         sent1 = ParentedTree.fromstring(
             '(S (NP-SBJ I) (VP (VB eat) (NP-OBJ (NNS apples))))')
         sent2 = ParentedTree.fromstring(
