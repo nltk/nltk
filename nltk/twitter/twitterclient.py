@@ -23,6 +23,7 @@ import itertools
 import json
 import os
 import sys
+import requests
 
 try:
     from twython import Twython, TwythonStreamer, TwythonError
@@ -79,23 +80,33 @@ class Streamer(TwythonStreamer):
         print(status_code)
 
     def sample(self):
-        while True:
+        while self.do_continue:
+            '''
+            Stream in an endless loop until limit is reached
+            see twython issue 288
+                https://github.com/ryanmcgrath/twython/issues/288
+                colditzjb commented on 9 Dec 2014
+            '''
             try:
                 self.statuses.sample()
-            except:
-                e = sys.exc_info()[0]
+            except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print("Error: ".format(e))
+                    print("Error (stream will continue): {}".format(e))
                 continue
 
-    def filter(self, track):
-        while True:
+    def filter(self, track, follow):
+        while self.do_continue:
+            '''
+            Stream in an endless loop until limit is reached
+            see twython issue 288
+                https://github.com/ryanmcgrath/twython/issues/288
+                colditzjb commented on 9 Dec 2014
+            '''
             try:
-                self.statuses.filter(track=track)
-            except:
-                e = sys.exc_info()[0]
+                self.statuses.filter(track=track, follow=follow)
+            except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print("Error: ".format(e))
+                    print("Error (stream will continue): {}".format(e))
                 continue
 
 
@@ -233,9 +244,9 @@ class Twitter(object):
         if stream:
             self.streamer.register(handler)
             if keywords == '' and follow == '':
-                self.streamer.statuses.sample()
+                self.streamer.sample()
             else:
-                self.streamer.statuses.filter(track=keywords, follow=follow)
+                self.streamer.filter(track=keywords, follow=follow)            
         else:
             self.query.register(handler)
             if keywords == '':
