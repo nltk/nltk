@@ -487,7 +487,8 @@ def _tgrep_rel_conjunction_action(_s, _l, tokens):
     if len(tokens) == 1:
         return tokens[0]
     elif len(tokens) == 2:
-        return (lambda a, b: lambda n, m=None: a(n, m) and b(n, m))(tokens[0], tokens[1])
+        return (lambda ts: lambda n, m=None: all(predicate(n, m)
+                                                 for predicate in ts))(tokens)
 
 def _tgrep_label_node_action(_s, _l, tokens):
     '''
