@@ -543,6 +543,14 @@ class TestSequenceFunctions(unittest.TestCase):
                           u'=', u'v', u'<', u'(', u'@VB', u'$..', u'@OBJ', u')',
                           u')'])
 
+    def test_tokenize_segmented_patterns(self):
+        '''Test tokenization of segmented patterns.'''
+        self.assertEqual(tgrep.tgrep_tokenize(
+            'S < @SBJ=s < (@VP=v < (@VB $.. @OBJ)) : =s .. =v'),
+                         [u'S', u'<', u'@SBJ', u'=', u's', u'<', u'(', u'@VP',
+                          u'=', u'v', u'<', u'(', u'@VB', u'$..', u'@OBJ', u')',
+                          u')', u':', u'=s', u'..', u'=v'])
+
     def test_labeled_nodes(self):
         '''
         Test labeled nodes.
