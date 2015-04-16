@@ -554,18 +554,18 @@ def _build_tgrep_parser(set_parse_actions = True):
                            pyparsing.Optional(pyparsing.delimitedList(
                     pyparsing.Word(pyparsing.nums), delim=',') +
                                               pyparsing.Optional(','))) + ')')
-    tgrep_node_expr = (tgrep_qstring_icase |
+    macro_name = pyparsing.Regex('[^];:.,&|<>()[$!@%\'^=\r\t\n ]+')
+    macro_name.setWhitespaceChars('')
+    macro_use = pyparsing.Combine('@' + macro_name)
+    tgrep_node_expr = (macro_use |
+                       tgrep_nltk_tree_pos |
+                       tgrep_qstring_icase |
                        tgrep_node_regex_icase |
                        tgrep_qstring |
                        tgrep_node_regex |
                        '*' |
                        tgrep_node_literal)
-    macro_name = pyparsing.Regex('[^];:.,&|<>()[$!@%\'^=\r\t\n ]+')
-    macro_name.setWhitespaceChars('')
-    macro_use = pyparsing.Combine('@' + macro_name)
-    tgrep_node = (macro_use |
-                  tgrep_parens |
-                  tgrep_nltk_tree_pos |
+    tgrep_node = (tgrep_parens |
                   (pyparsing.Optional("'") +
                    tgrep_node_expr +
                    pyparsing.ZeroOrMore("|" + tgrep_node_expr)))
