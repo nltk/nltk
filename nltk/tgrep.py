@@ -599,12 +599,14 @@ def _build_tgrep_parser(set_parse_actions = True):
     tgrep_relations << tgrep_rel_conjunction + pyparsing.ZeroOrMore(
         "|" + tgrep_relations)
     tgrep_expr << tgrep_node + pyparsing.Optional(tgrep_relations)
+    tgrep_expr_labeled = tgrep_node_label_use + pyparsing.Optional(tgrep_relations)
+    tgrep_expr2 = tgrep_expr + pyparsing.ZeroOrMore(':' + tgrep_expr_labeled)
     macro_defn = (pyparsing.Literal('@') +
                   pyparsing.White().suppress() +
                   macro_name +
-                  tgrep_expr)
+                  tgrep_expr2)
     tgrep_exprs = (pyparsing.ZeroOrMore((macro_defn | tgrep_expr) + ';') +
-                   tgrep_expr +
+                   tgrep_expr2 +
                    pyparsing.ZeroOrMore(';' + (macro_defn | tgrep_expr)))
     if set_parse_actions:
         macro_use.setParseAction(_tgrep_macro_use_action)
