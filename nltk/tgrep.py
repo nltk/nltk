@@ -624,6 +624,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         node_label_use.setParseAction(_tgrep_node_label_use_action)
         macro_use.setParseAction(_tgrep_macro_use_action)
         tgrep_node.setParseAction(_tgrep_node_action)
+        tgrep_node_expr2.setParseAction(_tgrep_label_node_action)
         tgrep_parens.setParseAction(_tgrep_parens_action)
         tgrep_nltk_tree_pos.setParseAction(_tgrep_nltk_tree_pos_action)
         tgrep_relation.setParseAction(_tgrep_relation_action)
@@ -635,7 +636,6 @@ def _build_tgrep_parser(set_parse_actions = True):
         # relation predicates
         tgrep_expr.setParseAction(_tgrep_rel_conjunction_action)
         tgrep_expr_labeled.setParseAction(_tgrep_rel_conjunction_action)
-        tgrep_node_expr2.setParseAction(_tgrep_label_node_action)
         tgrep_exprs.setParseAction(_tgrep_exprs_action)
     return tgrep_exprs.ignore('#' + pyparsing.restOfLine)
 
