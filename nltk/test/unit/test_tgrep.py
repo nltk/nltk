@@ -531,6 +531,18 @@ class TestSequenceFunctions(unittest.TestCase):
             tgrep.tgrep_positions,
             tree, '@ NP /^NP/;\n@ NN /^NN/;\n@CNP !< @NP !$.. @NN')
 
+    def test_tokenize_node_labels(self):
+        '''Test tokenization of labeled nodes.'''
+        self.assertEqual(tgrep.tgrep_tokenize(
+            'S < @SBJ < (@VP < (@VB $.. @OBJ))'),
+                         [u'S', u'<', u'@SBJ', u'<', u'(', u'@VP', u'<', u'(',
+                          u'@VB', u'$..', u'@OBJ', u')', u')'])
+        self.assertEqual(tgrep.tgrep_tokenize(
+            'S < @SBJ=s < (@VP=v < (@VB $.. @OBJ))'),
+                         [u'S', u'<', u'@SBJ', u'=', u's', u'<', u'(', u'@VP',
+                          u'=', u'v', u'<', u'(', u'@VB', u'$..', u'@OBJ', u')',
+                          u')'])
+
     def test_labeled_nodes(self):
         '''
         Test labeled nodes.
