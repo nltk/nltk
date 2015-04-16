@@ -487,7 +487,7 @@ def _tgrep_conjunction_action(_s, _l, tokens, join_char = '&'):
     # print 'relation conjunction tokens: ', tokens
     if len(tokens) == 1:
         return tokens[0]
-    elif len(tokens) == 2:
+    else:
         return (lambda ts: lambda n, m=None: all(predicate(n, m)
                                                  for predicate in ts))(tokens)
 
