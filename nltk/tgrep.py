@@ -503,6 +503,17 @@ def _tgrep_label_node_action(_s, _l, tokens):
         # TODO: implement node label semantics
         return tokens[0]
 
+def _tgrep_node_label_use_action(_s, _l, tokens):
+    '''
+    Builds a lambda function representing a predicate on a tree node
+    which describes the use of a previously bound node label.
+    '''
+    assert len(tokens) == 1
+    assert tokens[0].startswith('=')
+    nodel_label = tokens[0]
+    # TODO: implement node label semantics
+    return lambda n, m=None: True
+
 def _tgrep_rel_disjunction_action(_s, _l, tokens):
     '''
     Builds a lambda function representing a predicate on a tree node
@@ -609,6 +620,7 @@ def _build_tgrep_parser(set_parse_actions = True):
                    tgrep_expr2 +
                    pyparsing.ZeroOrMore(';' + (macro_defn | tgrep_expr)))
     if set_parse_actions:
+        node_label_use.setParseAction(_tgrep_node_label_use_action)
         macro_use.setParseAction(_tgrep_macro_use_action)
         tgrep_node.setParseAction(_tgrep_node_action)
         tgrep_parens.setParseAction(_tgrep_parens_action)
