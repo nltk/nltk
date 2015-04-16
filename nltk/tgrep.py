@@ -633,6 +633,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         # predicates: the first node predicate, and the remaining
         # relation predicates
         tgrep_expr.setParseAction(_tgrep_rel_conjunction_action)
+        tgrep_expr_labeled.setParseAction(_tgrep_rel_conjunction_action)
         tgrep_node_expr2.setParseAction(_tgrep_label_node_action)
         tgrep_exprs.setParseAction(_tgrep_exprs_action)
     return tgrep_exprs.ignore('#' + pyparsing.restOfLine)
