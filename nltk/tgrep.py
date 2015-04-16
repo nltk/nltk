@@ -621,7 +621,7 @@ def _build_tgrep_parser(set_parse_actions = True):
                    tgrep_expr2 +
                    pyparsing.ZeroOrMore(';' + (macro_defn | tgrep_expr)))
     if set_parse_actions:
-        node_label_use.setParseAction(_tgrep_node_label_use_action)
+        tgrep_node_label_use.setParseAction(_tgrep_node_label_use_action)
         macro_use.setParseAction(_tgrep_macro_use_action)
         tgrep_node.setParseAction(_tgrep_node_action)
         tgrep_node_expr2.setParseAction(_tgrep_label_node_action)
