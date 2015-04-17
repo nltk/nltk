@@ -600,9 +600,14 @@ def _macro_defn_action(_s, _l, tokens):
 
 def _tgrep_exprs_action(_s, _l, tokens):
     '''
+    This is the top-lebel node in a tgrep2 search string; the
+    predicate function it returns binds together all the state of a
+    tgrep2 search string.
+
     Builds a lambda function representing a predicate on a tree node
     from the disjunction of several tgrep expressions.  Also handles
-    macro definitions and macro name binding.
+    macro definitions and macro name binding, and node label
+    definitions and node label binding.
     '''
     if len(tokens) == 1:
         return lambda n, m=None, l=None: tokens[0](n, None, {})
