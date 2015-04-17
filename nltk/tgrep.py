@@ -529,9 +529,19 @@ def _tgrep_segmented_pattern_action(_s, _l, tokens):
     '''
     # TODO implement
     # tokens[0] is a string containing the node label
+    node_label = tokens[0]
     # tokens[1:] is an (optional) list of predicates which must all
     # hold of the bound node
-    return lambda n, m: True
+    reln_preds = tokens[1:]
+    def pattern_segment_pred(n, m=None, l=None):
+        # look up the bound node using its label
+        if l is None or node_label not in l:
+            raise TgrepException('node_label ={0} not bound in pattern'.format(
+                node_label))
+        node = l[node_label]
+        # match the relation predicates against the node
+        return all(pred(node, m, l) for pred in reln_preds)
+    return pattern_segment_pred
 
 def _tgrep_label_node_action(_s, _l, tokens):
     '''
