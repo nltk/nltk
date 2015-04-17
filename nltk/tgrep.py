@@ -553,7 +553,6 @@ def _tgrep_segmented_pattern_action(_s, _l, tokens):
     `_tgrep_node_label_use_action` and
     `_tgrep_node_label_pred_use_action`.
     '''
-    # TODO implement
     # tokens[0] is a string containing the node label
     node_label = tokens[0]
     # tokens[1:] is an (optional) list of predicates which must all
