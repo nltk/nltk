@@ -593,8 +593,8 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         sent = ParentedTree.fromstring(
             '((A (B b) (C c)) (A (B b) (C c) (D d)))')
-        search = '(A < B < C < D)'
-        search_tworels = '(A < B < C)'
+        # search = '(A < B < C < D)'
+        # search_tworels = '(A < B < C)'
         self.assertEqual(tgrep.tgrep_positions(sent, '(A < B < C < D)'),
                          [(1,)])
         self.assertEqual(tgrep.tgrep_positions(sent, '(A < B < C)'),
