@@ -603,9 +603,16 @@ def _tgrep_node_label_pred_use_action(_s, _l, tokens):
     '''
     assert len(tokens) == 1
     assert tokens[0].startswith('=')
-    nodel_label = tokens[0]
-    # TODO: implement node label semantics
-    return lambda n, m=None, l=None: True
+    nodel_label = tokens[0][1:]
+    def node_label_use_pred(n, m=None, l=None):
+        # look up the bound node using its label
+        if l is None or node_label not in l:
+            raise TgrepException('node_label ={0} not bound in pattern'.format(
+                node_label))
+        node = l[node_label]
+        # truth means the given node is this node
+        return n is node
+    return node_label_use_pred
 
 def _tgrep_rel_disjunction_action(_s, _l, tokens):
     '''
