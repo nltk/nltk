@@ -624,6 +624,7 @@ def _tgrep_exprs_action(_s, _l, tokens):
         label_dict = {}
         # bind macro definitions and OR together all tgrep_exprs
         return any(predicate(n, m, label_dict) for predicate in tgrep_exprs)
+    return top_level_pred
 
 def _build_tgrep_parser(set_parse_actions = True):
     '''
