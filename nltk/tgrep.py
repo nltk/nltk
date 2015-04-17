@@ -561,6 +561,7 @@ def _tgrep_segmented_pattern_action(_s, _l, tokens):
     # hold of the bound node
     reln_preds = tokens[1:]
     def pattern_segment_pred(n, m=None, l=None):
+        '''This predicate function ignores its node argument.'''
         # look up the bound node using its label
         if l is None or node_label not in l:
             raise TgrepException('node_label ={0} not bound in pattern'.format(
