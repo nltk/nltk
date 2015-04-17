@@ -36,6 +36,26 @@ Tgrep2 manual:
 http://tedlab.mit.edu/~dr/Tgrep2/tgrep2.pdf
 Tgrep2 source:
 http://tedlab.mit.edu/~dr/Tgrep2/
+
+This implementation is (somewhat awkwardly) based on lambda functions
+which are predicates on a node.  A predicate is a function which is
+either True or False; using a predicate function, we can identify sets
+of nodes with particular properties.  A predicate function, could, for
+instance, return True only if a particular node has a label matching a
+particular regular expression, and has a daughter node which has no
+sisters.  Because tgrep2 search strings can do things statefully (such
+as substituting in macros, and binding nodes with node labels), the
+actual predicate function is declared with three arguments::
+
+    pred = lambda n, m, l: return True # some logic here
+
+`n` is a node in a tree; this argument must always be given
+`m` contains a dictionary, mapping macro names onto predicate functions
+`l` is a dictionary to map node labels onto nodes in the tree
+
+`m` and `l` are declared to default to `None`, and so need not be
+specified in a call to a predicate.  Predicates which call other
+predicates must always pass the value of these arguments on.  The top-level
 '''
 
 from __future__ import unicode_literals
