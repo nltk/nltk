@@ -613,6 +613,40 @@ def _tgrep_node_label_pred_use_action(_s, _l, tokens):
         return n is node
     return node_label_use_pred
 
+def _tgrep_bind_node_label_action(_s, _l, tokens):
+    '''
+    Builds a lambda function representing a predicate on a tree node
+    which can optionally bind a matching node into the tgrep2 string's
+    label_dict.
+
+    Called for expressions like (`tgrep_node_expr2`)::
+
+        /NP/
+        @NP=n
+    '''
+    # tokens[0] is a tgrep_node_expr
+    if len(tokens) == 1:
+        return tokens[0]
+    else:
+        # if present, tokens[1] is the character '=', and tokens[2] is
+        # a tgrep_node_label, a string value containing the node label
+        assert len(tokens) == 3
+        assert tokens[1] == '='
+        node_pred = tokens[0]
+        node_label = tokens[2]
+        def node_label_bind_pred(n, m=None, l=None):
+            if node_pred(n, m, l):
+                # bind `n` into the dictionary `l`
+                if l is None:
+                    raise TgrepException(
+                        'cannot bind node_label {0}: label_dict is None'.format(
+                            node_label))
+                l[node_label] = n
+                return True
+            else:
+                return False
+        return node_label_bind_pred
+
 def _tgrep_rel_disjunction_action(_s, _l, tokens):
     '''
     Builds a lambda function representing a predicate on a tree node
@@ -734,7 +768,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         tgrep_node_label_use_pred.setParseAction(_tgrep_node_label_pred_use_action)
         macro_use.setParseAction(_tgrep_macro_use_action)
         tgrep_node.setParseAction(_tgrep_node_action)
-        tgrep_node_expr2.setParseAction(_tgrep_conjunction_action)
+        tgrep_node_expr2.setParseAction(_tgrep_bind_node_label_action)
         tgrep_parens.setParseAction(_tgrep_parens_action)
         tgrep_nltk_tree_pos.setParseAction(_tgrep_nltk_tree_pos_action)
         tgrep_relation.setParseAction(_tgrep_relation_action)
