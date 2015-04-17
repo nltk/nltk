@@ -605,7 +605,7 @@ def _tgrep_exprs_action(_s, _l, tokens):
     macro definitions and macro name binding.
     '''
     if len(tokens) == 1:
-        return tokens[0]
+        return lambda n, m=None, l=None: tokens[0](n, None, {})
     assert list(set(tokens[1::2])) == [';']
     # collect all macro definitions
     macro_dict = {}
@@ -614,8 +614,11 @@ def _tgrep_exprs_action(_s, _l, tokens):
         macro_dict.update(macro_def)
     # collect all tgrep expressions
     tgrep_exprs = [tok for tok in tokens[::2] if not isinstance(tok, dict)]
-    # bind macro definitions and OR together all tgrep_exprs
-    return lambda n, m=macro_dict: any(predicate(n, m) for predicate in tgrep_exprs)
+    # create a new scope for the node label dictionary
+    def top_level_pred(n, m=macro_dict, l=None):
+        label_dict = {}
+        # bind macro definitions and OR together all tgrep_exprs
+        return any(predicate(n, m, label_dict) for predicate in tgrep_exprs)
 
 def _build_tgrep_parser(set_parse_actions = True):
     '''
