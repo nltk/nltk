@@ -501,6 +501,24 @@ def _tgrep_conjunction_action(_s, _l, tokens, join_char = '&'):
     '''
     Builds a lambda function representing a predicate on a tree node
     from the conjunction of several other such lambda functions.
+
+    This is prototypically called for expressions like
+    (`tgrep_rel_conjunction`)::
+
+        < NP & < AP < VP
+
+    where tokens is a list of predicates representing the relations
+    (`< NP`, `< AP`, and `< VP`), possibly with the character `&`
+    included (as in the example here).
+
+    This is also called for expressions like (`tgrep_node_expr2`)::
+
+        NP < NN
+        S=s < /NP/=n : s < /VP/=v : n .. v
+
+    tokens[0] is a tgrep_expr predicate; tokens[1:] are an (optional)
+    list of segmented patterns (`tgrep_expr_labeled`, processed by
+    `_tgrep_segmented_pattern_action`).
     '''
     # filter out the ampersand
     tokens = [x for x in tokens if x != join_char]
@@ -515,6 +533,13 @@ def _tgrep_segmented_pattern_action(_s, _l, tokens):
     '''
     Builds a lambda function representing a segmented pattern.
 
+    Called for expressions like (`tgrep_expr_labeled`)::
+
+        =s .. =v < =n
+
+    This is a segmented pattern, a tgrep2 expression which begins with
+    a node label.
+
     The problem is that for segemented_pattern_action (': =v < =s'),
     the first element (in this case, =v) is specifically selected by
     virtue of matching a particular node in the tree; to retrieve
@@ -523,8 +548,9 @@ def _tgrep_segmented_pattern_action(_s, _l, tokens):
     returns true if the node visited is the same as =v.
 
     We solve this by creating two copies of a node_label_use in the
-    grammar; the label use inside a tgrep_expr_labeled has a
-    separate parse action to the pred use inside a node_expr.  See
+    grammar; the label use inside a tgrep_expr_labeled has a separate
+    parse action to the pred use inside a node_expr.  See
+    `_tgrep_node_label_use_action` and
     `_tgrep_node_label_pred_use_action`.
     '''
     # TODO implement
@@ -561,6 +587,15 @@ def _tgrep_node_label_use_action(_s, _l, tokens):
     '''
     Returns the node label used to begin a tgrep_expr_labeled.  See
     `_tgrep_segmented_pattern_action`.
+
+    Called for expressions like (`tgrep_node_label_use`)::
+
+        =s
+
+    when they appear as the first element of a `tgrep_expr_labeled`
+    expression (see `_tgrep_segmented_pattern_action`).
+
+    It returns the node label.
     '''
     assert len(tokens) == 1
     assert tokens[0].startswith('=')
@@ -570,6 +605,15 @@ def _tgrep_node_label_pred_use_action(_s, _l, tokens):
     '''
     Builds a lambda function representing a predicate on a tree node
     which describes the use of a previously bound node label.
+
+    Called for expressions like (`tgrep_node_label_use_pred`)::
+
+        =s
+
+    when they appear inside a tgrep_node_expr (for example, inside a
+    relation).  The predicate returns true if and only if its node
+    argument is identical the the node looked up in the node label
+    dictionary using the node's label.
     '''
     assert len(tokens) == 1
     assert tokens[0].startswith('=')
