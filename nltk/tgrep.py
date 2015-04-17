@@ -55,7 +55,9 @@ actual predicate function is declared with three arguments::
 
 `m` and `l` are declared to default to `None`, and so need not be
 specified in a call to a predicate.  Predicates which call other
-predicates must always pass the value of these arguments on.  The top-level
+predicates must always pass the value of these arguments on.  The
+top-level predicate (constructed by `_tgrep_exprs_action`) binds the
+macro definitions to `m` and initialises `l` to an empty dictionary.
 '''
 
 from __future__ import unicode_literals
