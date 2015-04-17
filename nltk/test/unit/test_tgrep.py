@@ -586,6 +586,19 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(sent2, search),
                          tgrep.tgrep_positions(sent2, search_rewrite))
 
+    def test_multiple_conjs(self):
+        '''
+        Test that multiple (3 or more) conjunctions of node relations are
+        handled properly.
+        '''
+        sent = ParentedTree.fromstring(
+            '((A (B b) (C c)) (A (B b) (C c) (D d)))')
+        search = '(A < B < C < D)'
+        search_tworels = '(A < B < C)'
+        self.assertEqual(tgrep.tgrep_positions(sent, '(A < B < C < D)'),
+                         [(1,)])
+        self.assertEqual(tgrep.tgrep_positions(sent, '(A < B < C)'),
+                         [(0,), (1,)])
 
 if __name__ == '__main__':
     unittest.main()
