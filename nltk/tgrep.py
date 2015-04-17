@@ -569,20 +569,6 @@ def _tgrep_segmented_pattern_action(_s, _l, tokens):
         return all(pred(node, m, l) for pred in reln_preds)
     return pattern_segment_pred
 
-def _tgrep_label_node_action(_s, _l, tokens):
-    '''
-    Takes a lambda function representing a predicate on a tree node
-    and makes it bind a node label.
-    '''
-    if len(tokens) == 1:
-        return tokens[0]
-    else:
-        assert len(tokens) == 3
-        assert tokens[1] == '='
-        node_label = tokens[2]
-        # TODO: implement node label semantics
-        return tokens[0]
-
 def _tgrep_node_label_use_action(_s, _l, tokens):
     '''
     Returns the node label used to begin a tgrep_expr_labeled.  See
@@ -742,7 +728,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         tgrep_node_label_use_pred.setParseAction(_tgrep_node_label_pred_use_action)
         macro_use.setParseAction(_tgrep_macro_use_action)
         tgrep_node.setParseAction(_tgrep_node_action)
-        tgrep_node_expr2.setParseAction(_tgrep_label_node_action)
+        tgrep_node_expr2.setParseAction(_tgrep_conjunction_action)
         tgrep_parens.setParseAction(_tgrep_parens_action)
         tgrep_nltk_tree_pos.setParseAction(_tgrep_nltk_tree_pos_action)
         tgrep_relation.setParseAction(_tgrep_relation_action)
