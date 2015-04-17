@@ -3,6 +3,7 @@
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
+#         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -94,7 +95,7 @@ class Streamer(TwythonStreamer):
                     print("Error (stream will continue): {}".format(e))
                 continue
 
-    def filter(self, track, follow):
+    def filter(self, track='', follow=''):
         while self.do_continue:
             '''
             Stream in an endless loop until limit is reached
@@ -103,6 +104,8 @@ class Streamer(TwythonStreamer):
                 colditzjb commented on 9 Dec 2014
             '''
             try:
+                if track == '' and follow == '':
+                    raise ValueError("Please supply a value for 'track' or 'follow'.")
                 self.statuses.filter(track=track, follow=follow)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
@@ -246,7 +249,7 @@ class Twitter(object):
             if keywords == '' and follow == '':
                 self.streamer.sample()
             else:
-                self.streamer.filter(track=keywords, follow=follow)            
+                self.streamer.filter(track=keywords, follow=follow)
         else:
             self.query.register(handler)
             if keywords == '':

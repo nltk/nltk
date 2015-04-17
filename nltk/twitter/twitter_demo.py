@@ -166,7 +166,7 @@ def corpusreader_demo():
     """
     from nltk.corpus import TwitterCorpusReader
     root = os.environ['TWITTER']
-    reader = TwitterCorpusReader(root, 'rehydrated.json')
+    reader = TwitterCorpusReader(root, '1k_sample.json')
     print()
     print("Complete tweet documents")
     print(SPACER)
@@ -203,7 +203,7 @@ def twitterclass_demo():
 
 
 ALL = range(11)
-DEMOS = ALL[:2]
+DEMOS = ALL[:]
 
 
 if __name__ == "__main__":
