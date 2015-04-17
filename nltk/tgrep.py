@@ -491,6 +491,28 @@ def _tgrep_conjunction_action(_s, _l, tokens, join_char = '&'):
         return (lambda ts: lambda n, m=None: all(predicate(n, m)
                                                  for predicate in ts))(tokens)
 
+def _tgrep_segmented_pattern_action(_s, _l, tokens):
+    '''
+    Builds a lambda function representing a segmented pattern.
+
+    The problem is that for segemented_pattern_action (': =v < =s'),
+    the first element (in this case, =v) is specifically selected by
+    virtue of matching a particular node in the tree; to retrieve
+    the node, we need the label, not a lambda function.  For node
+    labels inside a tgrep_node_expr, we need a lambda function which
+    returns true if the node visited is the same as =v.
+
+    We solve this by creating two copies of a node_label_use in the
+    grammar; the label use inside a tgrep_expr_labeled has a
+    separate parse action to the pred use inside a node_expr.  See
+    `_tgrep_node_label_pred_use_action`.
+    '''
+    # TODO implement
+    # tokens[0] is a string containing the node label
+    # tokens[1:] is an (optional) list of predicates which must all
+    # hold of the bound node
+    return lambda n, m: True
+
 def _tgrep_label_node_action(_s, _l, tokens):
     '''
     Takes a lambda function representing a predicate on a tree node
@@ -506,6 +528,15 @@ def _tgrep_label_node_action(_s, _l, tokens):
         return tokens[0]
 
 def _tgrep_node_label_use_action(_s, _l, tokens):
+    '''
+    Returns the node label used to begin a tgrep_expr_labeled.  See
+    `_tgrep_segmented_pattern_action`.
+    '''
+    assert len(tokens) == 1
+    assert tokens[0].startswith('=')
+    return tokens[0][1:]
+
+def _tgrep_node_label_pred_use_action(_s, _l, tokens):
     '''
     Builds a lambda function representing a predicate on a tree node
     which describes the use of a previously bound node label.
@@ -583,10 +614,12 @@ def _build_tgrep_parser(set_parse_actions = True):
                                               pyparsing.Optional(','))) + ')')
     tgrep_node_label = pyparsing.Regex('[A-Za-z0-9]+')
     tgrep_node_label_use = pyparsing.Combine('=' + tgrep_node_label)
+    # see _tgrep_segmented_pattern_action
+    tgrep_node_label_use_pred = tgrep_node_label_use.copy()
     macro_name = pyparsing.Regex('[^];:.,&|<>()[$!@%\'^=\r\t\n ]+')
     macro_name.setWhitespaceChars('')
     macro_use = pyparsing.Combine('@' + macro_name)
-    tgrep_node_expr = (tgrep_node_label_use |
+    tgrep_node_expr = (tgrep_node_label_use_pred |
                        macro_use |
                        tgrep_nltk_tree_pos |
                        tgrep_qstring_icase |
@@ -623,6 +656,7 @@ def _build_tgrep_parser(set_parse_actions = True):
                    pyparsing.ZeroOrMore(';' + (macro_defn | tgrep_expr2)))
     if set_parse_actions:
         tgrep_node_label_use.setParseAction(_tgrep_node_label_use_action)
+        tgrep_node_label_use_pred.setParseAction(_tgrep_node_label_pred_use_action)
         macro_use.setParseAction(_tgrep_macro_use_action)
         tgrep_node.setParseAction(_tgrep_node_action)
         tgrep_node_expr2.setParseAction(_tgrep_label_node_action)
@@ -636,7 +670,7 @@ def _build_tgrep_parser(set_parse_actions = True):
         # predicates: the first node predicate, and the remaining
         # relation predicates
         tgrep_expr.setParseAction(_tgrep_conjunction_action)
-        tgrep_expr_labeled.setParseAction(_tgrep_conjunction_action)
+        tgrep_expr_labeled.setParseAction(_tgrep_segmented_pattern_action)
         tgrep_expr2.setParseAction(functools.partial(_tgrep_conjunction_action,
                                                      join_char = ':'))
         tgrep_exprs.setParseAction(_tgrep_exprs_action)
