@@ -20,6 +20,7 @@ nltk/test/*.html
 # editor temporary files
 *.*.sw[op]
 .idea
+*~
 
 # git mergetools backups
 *.orig
