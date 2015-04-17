@@ -288,7 +288,8 @@ def _tgrep_node_action(_s, _l, tokens):
             return (lambda f: lambda n, m=None, l=None:
                     f(_tgrep_node_literal_value(n).lower()))(node_func)
         else:
-            return (lambda s: lambda n, m=None, l=None: _tgrep_node_literal_value(n) == s)(tokens[0])
+            return (lambda s: lambda n, m=None, l=None:
+                    _tgrep_node_literal_value(n) == s)(tokens[0])
 
 def _tgrep_parens_action(_s, _l, tokens):
     '''
@@ -661,7 +662,8 @@ def _tgrep_rel_disjunction_action(_s, _l, tokens):
     if len(tokens) == 1:
         return tokens[0]
     elif len(tokens) == 2:
-        return (lambda a, b: lambda n, m=None, l=None: a(n, m, l) or b(n, m, l))(tokens[0], tokens[1])
+        return (lambda a, b: lambda n, m=None, l=None:
+                a(n, m, l) or b(n, m, l))(tokens[0], tokens[1])
 
 def _macro_defn_action(_s, _l, tokens):
     '''
