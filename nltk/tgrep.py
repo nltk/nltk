@@ -483,7 +483,7 @@ def _tgrep_conjunction_action(_s, _l, tokens, join_char = '&'):
     from the conjunction of several other such lambda functions.
     '''
     # filter out the ampersand
-    tokens = [x for x in tokens if x != '&']
+    tokens = [x for x in tokens if x != join_char]
     # print 'relation conjunction tokens: ', tokens
     if len(tokens) == 1:
         return tokens[0]
