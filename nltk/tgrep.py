@@ -684,14 +684,15 @@ def _tgrep_exprs_action(_s, _l, tokens):
     '''
     if len(tokens) == 1:
         return lambda n, m=None, l=None: tokens[0](n, None, {})
-    assert list(set(tokens[1::2])) == [';']
+    # filter out all the semicolons
+    tokens = [x for x in tokens if x != ';']
     # collect all macro definitions
     macro_dict = {}
-    macro_defs = [tok for tok in tokens[::2] if isinstance(tok, dict)]
+    macro_defs = [tok for tok in tokens if isinstance(tok, dict)]
     for macro_def in macro_defs:
         macro_dict.update(macro_def)
     # collect all tgrep expressions
-    tgrep_exprs = [tok for tok in tokens[::2] if not isinstance(tok, dict)]
+    tgrep_exprs = [tok for tok in tokens if not isinstance(tok, dict)]
     # create a new scope for the node label dictionary
     def top_level_pred(n, m=macro_dict, l=None):
         label_dict = {}
@@ -763,9 +764,10 @@ def _build_tgrep_parser(set_parse_actions = True):
                   pyparsing.White().suppress() +
                   macro_name +
                   tgrep_expr2)
-    tgrep_exprs = (pyparsing.ZeroOrMore((macro_defn | tgrep_expr2) + ';') +
+    tgrep_exprs = (pyparsing.Optional(macro_defn + pyparsing.ZeroOrMore(';' + macro_defn) + ';') +
                    tgrep_expr2 +
-                   pyparsing.ZeroOrMore(';' + (macro_defn | tgrep_expr2)))
+                   pyparsing.ZeroOrMore(';' + (macro_defn | tgrep_expr2)) +
+                   pyparsing.ZeroOrMore(';').suppress())
     if set_parse_actions:
         tgrep_node_label_use.setParseAction(_tgrep_node_label_use_action)
         tgrep_node_label_use_pred.setParseAction(_tgrep_node_label_pred_use_action)
