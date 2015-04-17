@@ -600,5 +600,20 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(tgrep.tgrep_positions(sent, '(A < B < C)'),
                          [(0,), (1,)])
 
+    def test_trailing_semicolon(self):
+        '''
+        Test that semicolons at the end of a tgrep2 search string won't
+        cause a parse failure.
+        '''
+        tree = ParentedTree.fromstring(
+            '(S (NP (DT the) (JJ big) (NN dog)) '
+            '(VP bit) (NP (DT a) (NN cat)))')
+        self.assertEqual(tgrep.tgrep_positions(tree, 'NN'),
+                         [(0,2), (2,1)])
+        self.assertEqual(tgrep.tgrep_positions(tree, 'NN;'),
+                         [(0,2), (2,1)])
+        self.assertEqual(tgrep.tgrep_positions(tree, 'NN;;'),
+                         [(0,2), (2,1)])
+
 if __name__ == '__main__':
     unittest.main()
