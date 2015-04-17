@@ -7,8 +7,12 @@ Unit tests for TGrep search implementation for NTLK ParentedTrees.
 (c) 16 March, 2013 Will Roberts
 '''
 
-from __future__ import unicode_literals
-from builtins import range
+from __future__ import print_function, unicode_literals
+try:
+    from builtins import range
+except ImportError:
+    print('Warning: nltk_tgrep may not work correctly on Python 2.* without the ')
+    print('`future` package installed.')
 from nltk.tree import ParentedTree
 from .. import tgrep
 import unittest

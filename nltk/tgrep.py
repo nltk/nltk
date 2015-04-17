@@ -60,11 +60,19 @@ top-level predicate (constructed by `_tgrep_exprs_action`) binds the
 macro definitions to `m` and initialises `l` to an empty dictionary.
 '''
 
-from __future__ import unicode_literals
-from builtins import bytes, range, str
+from __future__ import print_function, unicode_literals
+try:
+    from builtins import bytes, range, str
+except ImportError:
+    print('Warning: nltk_tgrep may not work correctly on Python 2.* without the')
+    print('`future` package installed.')
 import functools
 import nltk.tree
-import pyparsing
+try:
+    import pyparsing
+except ImportError:
+    print('Warning: nltk_tgrep will not work without the `pyparsing` package')
+    print('installed.')
 import re
 
 class TgrepException(Exception):
