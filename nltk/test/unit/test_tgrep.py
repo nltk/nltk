@@ -535,21 +535,21 @@ class TestSequenceFunctions(unittest.TestCase):
         '''Test tokenization of labeled nodes.'''
         self.assertEqual(tgrep.tgrep_tokenize(
             'S < @SBJ < (@VP < (@VB $.. @OBJ))'),
-                         [u'S', u'<', u'@SBJ', u'<', u'(', u'@VP', u'<', u'(',
-                          u'@VB', u'$..', u'@OBJ', u')', u')'])
+                         ['S', '<', '@SBJ', '<', '(', '@VP', '<', '(',
+                          '@VB', '$..', '@OBJ', ')', ')'])
         self.assertEqual(tgrep.tgrep_tokenize(
             'S < @SBJ=s < (@VP=v < (@VB $.. @OBJ))'),
-                         [u'S', u'<', u'@SBJ', u'=', u's', u'<', u'(', u'@VP',
-                          u'=', u'v', u'<', u'(', u'@VB', u'$..', u'@OBJ', u')',
-                          u')'])
+                         ['S', '<', '@SBJ', '=', 's', '<', '(', '@VP',
+                          '=', 'v', '<', '(', '@VB', '$..', '@OBJ', ')',
+                          ')'])
 
     def test_tokenize_segmented_patterns(self):
         '''Test tokenization of segmented patterns.'''
         self.assertEqual(tgrep.tgrep_tokenize(
             'S < @SBJ=s < (@VP=v < (@VB $.. @OBJ)) : =s .. =v'),
-                         [u'S', u'<', u'@SBJ', u'=', u's', u'<', u'(', u'@VP',
-                          u'=', u'v', u'<', u'(', u'@VB', u'$..', u'@OBJ', u')',
-                          u')', u':', u'=s', u'..', u'=v'])
+                         ['S', '<', '@SBJ', '=', 's', '<', '(', '@VP',
+                          '=', 'v', '<', '(', '@VB', '$..', '@OBJ', ')',
+                          ')', ':', '=s', '..', '=v'])
 
     def test_labeled_nodes(self):
         '''
