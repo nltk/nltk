@@ -40,7 +40,7 @@ top-level predicate (constructed by `_tgrep_exprs_action`) binds the
 macro definitions to `m` and initialises `l` to an empty dictionary.
 '''
 
-from __future__ import print_function, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
 try:
     from builtins import bytes, range, str
 except ImportError:
