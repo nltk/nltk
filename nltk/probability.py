@@ -1217,8 +1217,6 @@ class SimpleGoodTuringProbDist(ProbDistI):
         assert bins is None or bins > freqdist.B(),\
                'bins parameter must not be less than %d=freqdist.B()+1' % (freqdist.B()+1)
         if bins is None:
-            warnings.warn('Bins parameter needs to be passed to '
-                          'SimpleGoodTuringProbDist for accurate estimates.')
             bins = freqdist.B() + 1
         self._freqdist = freqdist
         self._bins = bins
