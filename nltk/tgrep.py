@@ -41,11 +41,7 @@ macro definitions to `m` and initialises `l` to an empty dictionary.
 '''
 
 from __future__ import absolute_import, print_function, unicode_literals
-try:
-    from builtins import bytes, range, str
-except ImportError:
-    print('Warning: nltk_tgrep may not work correctly on Python 2.* without the')
-    print('`future` package installed.')
+from nltk.compat import binary_type, text_type
 import functools
 import nltk.tree
 try:
@@ -223,7 +219,7 @@ def _tgrep_node_literal_value(node):
     Gets the string value of a given parse tree node, for comparison
     using the tgrep node literal predicates.
     '''
-    return (node.label() if _istree(node) else str(node))
+    return (node.label() if _istree(node) else text_type(node))
 
 def _tgrep_macro_use_action(_s, _l, tokens):
     '''
@@ -785,7 +781,7 @@ def tgrep_tokenize(tgrep_string):
     Tokenizes a TGrep search string into separate tokens.
     '''
     parser = _build_tgrep_parser(False)
-    if isinstance(tgrep_string, bytes):
+    if isinstance(tgrep_string, binary_type):
         tgrep_string = tgrep_string.decode()
     return list(parser.parseString(tgrep_string))
 
@@ -795,7 +791,7 @@ def tgrep_compile(tgrep_string):
     lambda function.
     '''
     parser = _build_tgrep_parser(True)
-    if isinstance(tgrep_string, bytes):
+    if isinstance(tgrep_string, binary_type):
         tgrep_string = tgrep_string.decode()
     return list(parser.parseString(tgrep_string, parseAll=True))[0]
 
@@ -828,7 +824,7 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
             search_positions = treepositions_no_leaves(tree)
     except AttributeError:
         return []
-    if isinstance(tgrep_string, (bytes, str)):
+    if isinstance(tgrep_string, (binary_type, text_type)):
         tgrep_string = tgrep_compile(tgrep_string)
     return [position for position in search_positions
             if tgrep_string(tree[position])]
