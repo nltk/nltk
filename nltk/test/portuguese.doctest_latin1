@@ -1,0 +1,300 @@
+==========================================
+Examplos para o processamento do português
+==========================================
+
+    >>> import nltk
+
+(NB. Este material parte do pressuposto de que o leitor esteja
+familiarizado com o livro do NLTK, disponível em
+``http://nltk.org/index.php/Book``).
+
+Utilizando o Corpus MacMorpho Tagged
+------------------------------------
+
+O NLTK inclui o corpus de notícias para o português brasileiro com tags de partes do discurso
+MAC-MORPHO, que conta com mais de um milhão de palavras de textos jornalísticos extraídos
+de dez seções do jornal diário *Folha de São Paulo*, do ano de 1994.
+
+Podemos utilizar este corpus como uma seqüência de palavras ou de palavras com tags da
+seguinte maneira:
+
+    >>> nltk.corpus.mac_morpho.words()
+    ['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', ...]
+    >>> nltk.corpus.mac_morpho.sents()
+    [['Jersei', 'atinge', 'm\xe9dia', 'de', 'Cr$', '1,4', 'milh\xe3o',
+    'em', 'a', 'venda', 'de', 'a', 'Pinhal', 'em', 'S\xe3o', 'Paulo'],
+    ['Programe', 'sua', 'viagem', 'a', 'a', 'Exposi\xe7\xe3o', 'Nacional',
+    'do', 'Zebu', ',', 'que', 'come\xe7a', 'dia', '25'], ...]
+    >>> nltk.corpus.mac_morpho.tagged_words()
+    [('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ...]
+
+Também é possível utilizá-lo em chunks de frases.
+
+    >>> nltk.corpus.mac_morpho.tagged_sents()
+    [[('Jersei', 'N'), ('atinge', 'V'), ('m\xe9dia', 'N'), ('de', 'PREP'),
+    ('Cr$', 'CUR'), ('1,4', 'NUM'), ('milh\xe3o', 'N'), ('em', 'PREP|+'),
+    ('a', 'ART'), ('venda', 'N'), ('de', 'PREP|+'), ('a', 'ART'),
+    ('Pinhal', 'NPROP'), ('em', 'PREP'), ('S\xe3o', 'NPROP'), ('Paulo', 'NPROP')],
+    [('Programe', 'V'), ('sua', 'PROADJ'), ('viagem', 'N'), ('a', 'PREP|+'),
+    ('a', 'ART'), ('Exposi\xe7\xe3o', 'NPROP'), ('Nacional', 'NPROP'),
+    ('do', 'NPROP'), ('Zebu', 'NPROP'), (',', ','), ('que', 'PRO-KS-REL'),
+    ('come\xe7a', 'V'), ('dia', 'N'), ('25', 'N|AP')], ...]
+
+Estes dados podem ser utilizados para efetuar o treinamento de taggers (como nos
+exemplos abaixo para o Floresta treebank).
+
+
+Utilizando o Floresta Portuguese Treebank
+-----------------------------------------
+
+A distribuição de dados do NLTK inclui o
+"Floresta Sinta(c)tica Corpus" na versão 7.4, disponível em
+``http://www.linguateca.pt/Floresta/``.
+
+Como para a amostra do Penn Treebank, é possível
+utilizar o conteúdo deste corpus como uma seqüência de palavras com
+informações de tags, da seguinte maneira:
+
+    >>> from nltk.corpus import floresta
+    >>> floresta.words()
+    ['Um', 'revivalismo', 'refrescante', 'O', '7_e_Meio', ...]
+    >>> floresta.tagged_words()
+    [('Um', '>N+art'), ('revivalismo', 'H+n'), ...]
+
+As tags são constituídas por certas informações sintáticas, seguidas por 
+um sinal
+de mais, seguido por tag costumeira de parte do discurso 
+(part-of-speech). Vamos
+remover o conteúdo que antecede o sinal de mais:
+
+    >>> def simplify_tag(t):
+    ...     if "+" in t:
+    ...         return t[t.index("+")+1:]
+    ...     else:
+    ...         return t
+    >>> twords = nltk.corpus.floresta.tagged_words()
+    >>> twords = [(w.lower(),simplify_tag(t)) for (w,t) in twords]
+    >>> twords[:10] # doctest: +NORMALIZE_WHITESPACE
+    [('um', 'art'), ('revivalismo', 'n'), ('refrescante', 'adj'), ('o', 'art'), ('7_e_meio', 'prop'),
+    ('\xe9', 'v-fin'), ('um', 'art'), ('ex-libris', 'n'), ('de', 'prp'), ('a', 'art')]
+   
+E exibir de maneira mais apropriada as palavras com informações de tags:
+
+    >>> print ' '.join(word + '/' + tag for (word, tag) in twords[:10])
+    um/art revivalismo/n refrescante/adj o/art 7_e_meio/prop ?/v-fin um/art ex-libris/n de/prp a/art
+
+Em seguida, vamos contar o número de tokens de palavras e tipos, além de
+determinar qual a palavra mais comum:
+
+    >>> words = floresta.words()
+    >>> len(words)
+    211870
+    >>> fd = nltk.FreqDist(words)
+    >>> len(fd)
+    29425
+    >>> fd.max()
+    'de'
+
+Podemos também listar as 20 tags mais freqüentes, em ordem decrescente de
+freqüência:
+
+    >>> tags = [simplify_tag(tag) for (word,tag) in floresta.tagged_words()]
+    >>> fd = nltk.FreqDist(tags)
+    >>> fd.sorted()[:20] # doctest: +NORMALIZE_WHITESPACE
+    ['n', 'prp', 'art', 'v-fin', ',', 'prop', 'adj', 'adv', '.', 'conj-c', 'v-inf',
+    'pron-det', 'v-pcp', 'num', 'pron-indp', 'pron-pers', '\xab', '\xbb', 'conj-s', '}']
+
+Também podemos ler o corpus agrupado por enunciados:
+
+    >>> floresta.sents() # doctest: +NORMALIZE_WHITESPACE
+    [['Um', 'revivalismo', 'refrescante'], ['O', '7_e_Meio', '\xe9', 'um', 'ex-libris',
+    'de', 'a', 'noite', 'algarvia', '.'], ...]
+    >>> floresta.tagged_sents() # doctest: +NORMALIZE_WHITESPACE
+    [[('Um', '>N+art'), ('revivalismo', 'H+n'), ('refrescante', 'N<+adj')],
+    [('O', '>N+art'), ('7_e_Meio', 'H+prop'), ('\xe9', 'P+v-fin'), ('um', '>N+art'),
+    ('ex-libris', 'H+n'), ('de', 'H+prp'), ('a', '>N+art'), ('noite', 'H+n'),
+    ('algarvia', 'N<+adj'), ('.', '.')], ...]
+    >>> floresta.parsed_sents() # doctest: +NORMALIZE_WHITESPACE
+    [Tree('UTT+np', [Tree('>N+art', ['Um']), Tree('H+n', ['revivalismo']),
+    Tree('N<+adj', ['refrescante'])]), Tree('STA+fcl', [Tree('SUBJ+np',
+    [Tree('>N+art', ['O']), Tree('H+prop', ['7_e_Meio'])]), Tree('P+v-fin', ['\xe9']),
+    Tree('SC+np', [Tree('>N+art', ['um']), Tree('H+n', ['ex-libris']),
+    Tree('N<+pp', [Tree('H+prp', ['de']), Tree('P<+np', [Tree('>N+art', ['a']),
+    Tree('H+n', ['noite']), Tree('N<+adj', ['algarvia'])])])]), Tree('.', ['.'])]), ...]
+
+Para ver uma árvore de análise sintática, podemos utilizar o método
+``draw()``, como no exemplo:
+
+    >>> psents = floresta.parsed_sents()
+    >>> psents[5].draw() # doctest: +SKIP
+
+
+Concordância simples
+--------------------
+
+A seguir, apresentamos uma função que recebe uma palavra e uma 
+quantidade determinada
+de contexto (medido em caracteres) e gera uma concordância para a mesma.
+
+    >>> def concordance(word, context=30):
+    ...     for sent in floresta.sents():
+    ...         if word in sent:
+    ...             pos = sent.index(word)
+    ...             left = ' '.join(sent[:pos])
+    ...             right = ' '.join(sent[pos+1:])
+    ...             print '%*s %s %-*s' %\
+    ...                 (context, left[-context:], word, context, right[:context])
+
+    >>> concordance("dar") # doctest: +SKIP
+    anduru , foi o suficiente para dar a volta a o resultado .      
+                 1. O P?BLICO veio dar a a imprensa di?ria portuguesa
+      A fartura de pensamento pode dar maus resultados e n?s n?o quer
+                          Come?a a dar resultados a pol?tica de a Uni
+    ial come?ar a incorporar- lo e dar forma a um ' site ' que tem se
+    r com Constantino para ele lhe dar tamb?m os pap?is assinados . 
+    va a brincar , pois n?o lhe ia dar procura??o nenhuma enquanto n?
+    ?rica como o ant?doto capaz de dar sentido a o seu enorme poder .
+    . . .
+    >>> concordance("vender") # doctest: +SKIP
+    er recebido uma encomenda para vender 4000 blindados a o Iraque .  
+    m?rico_Amorim caso conseguisse vender o lote de ac??es de o empres?r
+    mpre ter jovens simp?ticos a ? vender ? chega ! }                  
+           Disse que o governo vai vender ? desde autom?vel at? particip
+    ndiciou ontem duas pessoas por vender carro com ?gio .             
+            A inten??o de Fleury ? vender as a??es para equilibrar as fi
+
+Tagging de partes do discurso
+-----------------------------
+
+Vamos começar obtendo os dados dos enunciados marcados com tags e 
+simplificando
+estas últimas como descrito anteriormente.
+
+    >>> from nltk.corpus import floresta
+    >>> tsents = floresta.tagged_sents()
+    >>> tsents = [[(w.lower(),simplify_tag(t)) for (w,t) in sent] for sent in tsents if sent]
+    >>> train = tsents[100:]
+    >>> test = tsents[:100]
+
+Já sabemos que ``n`` é a tag mais comum; desta forma, podemos criar um 
+tagger por default
+que marque toda palavra como substantivo e, em seguida, avaliar seu 
+desempenho:
+
+    >>> tagger0 = nltk.DefaultTagger('n')
+    >>> nltk.tag.accuracy(tagger0, test)
+    0.17690941385435169
+
+Como pode-se deduzir facilmente, uma em cada seis palavras é um 
+substantivo. Vamos
+aperfeiçoar estes resultados treinando um tagger unigrama:
+
+    >>> tagger1 = nltk.UnigramTagger(train, backoff=tagger0)
+    >>> nltk.tag.accuracy(tagger1, test)
+    0.85115452930728241
+
+E, em seguida, um tagger bigrama:
+
+    >>> tagger2 = nltk.BigramTagger(train, backoff=tagger1)
+    >>> nltk.tag.accuracy(tagger2, test)
+    0.86856127886323264
+
+Segmentação de frases
+---------------------
+
+O Punkt é uma ferramenta para segmentação de frases lingüisticamente independente, o qual
+requer um treinamento em texto puro.
+O texto de origem (obtido do Floresta Portuguese Treebank) contém uma frase por linha. Podemos
+ler o texto, dividi-lo em função de suas linhas e então agrupar estas linhas utilizando
+espaços. Desta forma as informações sobre quebras de frases terão sido descartadas; podemos
+então dividir este material em dados para treinamento e para verificação:
+
+    >>> text = open('floresta.txt').read()
+    >>> lines = text.split('\n')
+    >>> train = ' '.join(lines[10:])
+    >>> test = ' '.join(lines[:10])
+
+É agora possível treinar o segmentador de frases (ou tokenizador de frases) e utilizá-lo em
+nossas frases de verificação. (Para exibir o texto em uma forma legível, pode ser necessário
+converter o texto para o UTF-8, utilizando ``print sent.decode('latin-1').encode('utf-8')``.)
+
+    >>> stok = nltk.PunktSentenceTokenizer(train)
+    >>> for sent in stok.tokenize(test):
+    ...     print sent
+
+
+As versões do NLTK a partir da 0.9b1 incluem um modelo treinado para a segmentação de frases
+em português, o qual pode ser carregado pela maneira a seguir. É mais rápido carregar um modelo
+já treinado do que repetir o treinamento do mesmo.
+
+    >>> stok = nltk.data.load('tokenizers/punkt/portuguese.pickle')
+
+Stemming
+--------
+
+O NLTK inclui o stemmer para o português RSLP. Vamos demonstrar sua utilização para algumas
+palavras em português:
+
+    >>> stemmer = nltk.stem.RSLPStemmer()
+    >>> stemmer.stem("copiar")
+    u'copi'
+    >>> stemmer.stem("paisagem")
+    u'pais'
+
+Stopwords
+---------
+
+O NLTK inclui stopword ("palavras limite") para o português:
+
+    >>> stopwords = nltk.corpus.stopwords.words('portuguese')
+    >>> stopwords[:10]
+    ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', 'aquilo', 'as', 'at\xe9']
+
+A esta altura, é possível utilizá-las para filtrar textos. Vamos encontrar as palavras mais
+comuns (à exceção das stopwords) e listá-las em ordem decrescente de freqüência:
+
+    >>> fd = nltk.FreqDist(w.lower() for w in floresta.words() if w not in stopwords)
+    >>> for word in fd.sorted()[:20]:
+    ...     print word, fd[word]
+    , 13444
+    . 7725
+    ? 2369
+    ? 2310
+    ? 1137
+    o 1086
+    } 1047
+    { 1044
+    a 897
+    ; 633
+    em 516
+    ser 466
+    sobre 349
+    os 313
+    anos 301
+    ontem 292
+    ainda 279
+    segundo 256
+    ter 249
+    dois 231
+    
+
+Codificações de caracteres
+--------------------------
+
+O Python é capaz de lidar com todas a codificações de caracteres mais utilizada para o português, a
+ISO 8859-1 (ISO Latin 1).
+
+    >>> text = open('floresta.txt').read()
+    >>> text[:60]
+    'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
+    >>> print text[:60]
+    O 7 e Meio ? um ex-libris da noite algarvia.
+    ? uma das mais
+    >>> text[:60].decode('latin-1')
+    u'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
+    >>> text[:60].decode('latin-1').encode('utf-8')
+    'O 7 e Meio \xc3\xa9 um ex-libris da noite algarvia.\n\xc3\x89 uma das mais '
+    >>> text[:60].decode('latin-1').encode('utf-8')
+    'O 7 e Meio \xc3\xa9 um ex-libris da noite algarvia.\n\xc3\x89 uma das mais '
+    >>> text[:60].decode('latin-1').encode('utf-16')
+    '\xff\xfeO\x00 \x007\x00 \x00e\x00 \x00M\x00e\x00i\x00o\x00 \x00\xe9\x00 \x00u\x00m\x00 \x00e\x00x\x00-\x00l\x00i\x00b\x00r\x00i\x00s\x00 \x00d\x00a\x00 \x00n\x00o\x00i\x00t\x00e\x00 \x00a\x00l\x00g\x00a\x00r\x00v\x00i\x00a\x00.\x00\n\x00\xc9\x00 \x00u\x00m\x00a\x00 \x00d\x00a\x00s\x00 \x00m\x00a\x00i\x00s\x00 \x00'

@@ -1,0 +1,81 @@
+.. Copyright (C) 2001-2015 NLTK Project
+.. For license information, see LICENSE.TXT
+
+==========
+ Stemmers
+==========
+
+Overview
+~~~~~~~~
+
+Stemmers remove morphological affixes from words, leaving only the
+word stem.
+
+    >>> from __future__ import print_function
+    >>> from nltk.stem import *
+
+Unit tests for the Porter stemmer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.stem.porter import *
+
+Create a new Porter stemmer.
+
+    >>> stemmer = PorterStemmer()
+
+Test the stemmer on various pluralised words.
+
+    >>> plurals = ['caresses', 'flies', 'dies', 'mules', 'denied',
+    ...            'died', 'agreed', 'owned', 'humbled', 'sized',
+    ...            'meeting', 'stating', 'siezing', 'itemization',
+    ...            'sensational', 'traditional', 'reference', 'colonizer',
+    ...            'plotted']
+    >>> singles = []
+
+    >>> for plural in plurals:
+    ...     singles.append(stemmer.stem(plural))
+
+    >>> singles # doctest: +NORMALIZE_WHITESPACE
+    [u'caress', u'fli', u'die', u'mule', u'deni', u'die', u'agre', u'own',
+     u'humbl', u'size', u'meet', u'state', u'siez', u'item', u'sensat',
+     u'tradit', u'refer', u'colon', u'plot']
+
+
+Unit tests for Snowball stemmer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    >>> from nltk.stem.snowball import SnowballStemmer
+
+See which languages are supported.
+
+    >>> print(" ".join(SnowballStemmer.languages))
+    danish dutch english finnish french german hungarian italian
+    norwegian porter portuguese romanian russian spanish swedish
+
+Create a new instance of a language specific subclass.
+
+    >>> stemmer = SnowballStemmer("english")
+
+Stem a word.
+
+    >>> print(stemmer.stem("running"))
+    run
+
+Decide not to stem stopwords.
+
+    >>> stemmer2 = SnowballStemmer("english", ignore_stopwords=True)
+    >>> print(stemmer.stem("having"))
+    have
+    >>> print(stemmer2.stem("having"))
+    having
+
+The 'english' stemmer is better than the original 'porter' stemmer.
+
+    >>> print(SnowballStemmer("english").stem("generously"))
+    generous
+    >>> print(SnowballStemmer("porter").stem("generously"))
+    gener
+
+.. note::
+
+    Extra stemmer tests can be found in `nltk.test.unit.test_stem`.

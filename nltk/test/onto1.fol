@@ -1,0 +1,6 @@
+all x. ((boxer2 x) implies (dog x))
+all x. ((boxer1 x) implies (person x))
+all x. (not ((dog x) and (person x)))
+all x. (not ((kitchen x) and (garden x)))
+all x. ((kitchen x) implies (location x))
+all x. ((garden x) implies (location x))

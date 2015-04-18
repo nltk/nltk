@@ -1,0 +1,1027 @@
+Version 3.0.2 2015-03-13
+* make pretty-printing method names consistent
+* improvements to Portuguese stemmer
+* transition-based dependency parsers
+* dependency graph visualisation for ipython notebook
+* interfaces for Senna, BLLIP, python-crfsuite
+* NKJP corpus reader
+* code clean ups, minor bug fixes
+
+Thanks to the following contributors to 3.0.2:
+	
+Long Duong, Saimadhav Heblikar, Helder, Mikhail Korobov, Denis Krusko,
+Alex Louden, Felipe Madrigal, David McClosky, Dmitrijs Milajevs,
+Ondrej Platek, Nathan Schneider, Dávid Márk Nemeskey, 0ssifrage, ducki13, kiwipi.
+
+Version 3.0.1 2015-01-12
+* fix setup.py for new version of setuptools
+	
+Version 3.0.0 2014-09-07
+* minor bugfixes
+* added phrase extraction code by Liling Tan and Fredrik Hedman
+
+Thanks to the following contributors to 3.0.0:
+Mark Amery, Ivan Barria, Ingolf Becker, Francis Bond, Lars
+Buitinck, Cristian Capdevila, Arthur Darcet, Michelle Fullwood,
+Dan Garrette, Dougal Graham, Dan Garrette, Dougal Graham, Lauri
+Hallila, Tyler Hartley, Fredrik Hedman, Ofer Helman, Bruce Hill,
+Marcus Huderle, Nancy Ide, Nick Johnson, Angelos Katharopoulos,
+Ewan Klein, Mikhail Korobov, Chris Liechti, Peter Ljunglof,
+Joseph Lynch, Haejoong Lee, Peter Ljunglöf, Dean Malmgren, Rob
+Malouf, Thorsten Marek, Dmitrijs Milajevs, Shari A’aidil
+Nasruddin, Lance Nathan, Joel Nothman, Alireza Nourian, Alexander
+Oleynikov, Ted Pedersen, Jacob Perkins, Will Roberts, Alex
+Rudnick, Nathan Schneider, Geraldine Sim Wei Ying, Lynn Soe,
+Liling Tan, Louis Tiao, Marcus Uneson, Yu Usami, Steven Xu, Zhe
+Wang, Chuck Wooters, lade, isnowfy, onesandzeros, pquentin, wvanlint
+
+Version 3.0b2 2014-08-21
+* minor bugfixes and clean-ups
+* renamed remaining parse_ methods to read_ or load_, cf issue #656
+* added Paice's method of evaluating stemming algorithms
+
+Thanks to the following contributors to 3.0.0b2: Lars Buitinck,
+Cristian Capdevila, Lauri Hallila, Ofer Helman, Dmitrijs Milajevs,
+lade, Liling Tan, Steven Xu
+
+Version 3.0.0b1 2014-07-11
+* Added SentiWordNet corpus and corpus reader
+* Fixed support for 10-column dependency file format
+* Changed Tree initialization to use fromstring
+
+Thanks to the following contributors to 3.0b1: Mark Amery, Ivan
+Barria, Ingolf Becker, Francis Bond, Lars Buitinck, Arthur Darcet,
+Michelle Fullwood, Dan Garrette, Dougal Graham, Dan Garrette, Dougal
+Graham, Tyler Hartley, Ofer Helman, Bruce Hill, Marcus Huderle, Nancy
+Ide, Nick Johnson, Angelos Katharopoulos, Ewan Klein, Mikhail Korobov,
+Chris Liechti, Peter Ljunglof, Joseph Lynch, Haejoong Lee, Peter
+Ljunglöf, Dean Malmgren, Rob Malouf, Thorsten Marek, Dmitrijs
+Milajevs, Shari A’aidil Nasruddin, Lance Nathan, Joel Nothman, Alireza
+Nourian, Alexander Oleynikov, Ted Pedersen, Jacob Perkins, Will
+Roberts, Alex Rudnick, Nathan Schneider, Geraldine Sim Wei Ying, Lynn
+Soe, Liling Tan, Louis Tiao, Marcus Uneson, Yu Usami, Steven Xu, Zhe
+Wang, Chuck Wooters, isnowfy, onesandzeros, pquentin, wvanlint
+	
+Version 3.0a4 2014-05-25
+* IBM Models 1-3, BLEU, Gale-Church aligner
+* Lesk algorithm for WSD
+* Open Multilingual WordNet
+* New implementation of Brill Tagger
+* Extend BNCCorpusReader to parse the whole BNC
+* MASC Tagged Corpus and corpus reader
+* Interface to Stanford Parser
+* Code speed-ups and clean-ups
+* API standardisation, including fromstring method for many objects
+* Improved regression testing setup
+* Removed PyYAML dependency
+
+Thanks to the following contributors to 3.0a4:
+Ivan Barria, Ingolf Becker, Francis Bond, Arthur Darcet, Dan Garrette,
+Ofer Helman, Dougal Graham, Nancy Ide, Ewan Klein, Mikhail Korobov,
+Chris Liechti, Peter Ljunglof, Joseph Lynch, Rob Malouf, Thorsten Marek,
+Dmitrijs Milajevs, Shari A’aidil Nasruddin, Lance Nathan, Joel Nothman,
+Jacob Perkins, Lynn Soe, Liling Tan, Louis Tiao, Marcus Uneson, Steven Xu,
+Geraldine Sim Wei Ying
+
+Version 3.0a3 2013-11-02
+* support for FrameNet contributed by Chuck Wooters
+* support for Universal Declaration of Human Rights Corpus (udhr2)
+* major API changes:
+  - Tree.node -> Tree.label() / Tree.set_label()
+  - Chunk parser: top_node -> root_label; chunk_node -> chunk_label
+  - WordNet properties are now access methods, e.g. Synset.definition -> Synset.definition()
+  - relextract: show_raw_rtuple() -> rtuple(), show_clause() -> clause()
+* bugfix in texttiling
+* replaced simplify_tags with support for universal tagset (simplify_tags=True -> tagset='universal')
+* Punkt default behavior changed to realign sentence boundaries after trailing parenthesis and quotes
+* deprecated classify.svm (use scikit-learn instead)
+* various efficiency improvements
+
+Thanks to the following contributors to 3.0a3:
+Lars Buitinck, Marcus Huderle, Nick Johnson, Dougal Graham, Ewan Klein,
+Mikhail Korobov, Haejoong Lee, Peter Ljunglöf, Dean Malmgren, Lance Nathan,
+Alexander Oleynikov, Nathan Schneider, Chuck Wooters, Yu Usami, Steven Xu,
+pquentin, wvanlint
+	
+Version 3.0a2 2013-07-12
+* speed improvements in word_tokenize, GAAClusterer, TnT tagger, Baum Welch, HMM tagger
+* small improvements in collocation finders, probability, modelling, Porter Stemmer
+* bugfix in lowest common hypernyn calculation (used in path similarity measures)
+* code cleanups, docstring cleanups, demo fixes
+	
+Thanks to the following contributors to 3.0a2:
+Mark Amery, Lars Buitinck, Michelle Fullwood, Dan Garrette, Dougal Graham,
+Tyler Hartley, Bruce Hill, Angelos Katharopoulos, Mikhail Korobov,
+Rob Malouf, Joel Nothman, Ted Pedersen, Will Roberts, Alex Rudnick,
+Steven Xu, isnowfy, onesandzeros
+
+Version 3.0a1 2013-02-14
+* reinstated tkinter support (Haejoong Lee)
+	
+Version 3.0a0 2013-01-14
+* alpha release of first version to support Python 2.6, 2.7, and 3.
+
+Version 2.0.4 2012-11-07
+* minor bugfix (removed numpy dependency)
+
+Version 2.0.3 2012-09-24
+
+* fixed corpus/reader/util.py to support Python 2.5
+* make MaltParser safe to use in parallel
+* fixed bug in inter-annotator agreement
+* updates to various doctests (nltk/test)
+* minor bugfixes
+
+Thanks to the following contributors to 2.0.3:
+Robin Cooper, Pablo Duboue, Christian Federmann, Dan Garrette, Ewan Klein,
+Pierre-François Laquerre, Max Leonov, Peter Ljunglöf, Nitin Madnani, Ceri Stagg
+
+Version 2.0.2 2012-07-05
+
+* improvements to PropBank, NomBank, and SemCor corpus readers
+* interface to full Penn Treebank Corpus V3 (corpus.ptb)
+* made wordnet.lemmas case-insensitive
+* more flexible padding in model.ngram
+* minor bugfixes and documentation enhancements
+* better support for automated testing
+
+Thanks to the following contributors to 2.0.2:
+Daniel Blanchard, Mikhail Korobov, Nitin Madnani, Duncan McGreggor,
+Morten Neergaard, Nathan Schneider, Rico Sennrich.
+
+Version 2.0.1 2012-05-15
+
+* moved NLTK to GitHub: http://github.com/nltk
+* set up integration testing: https://jenkins.shiningpanda.com/nltk/ (Morten Neergaard)
+* converted documentation to Sphinx format: http://nltk.github.com/api/nltk.html
+* dozens of minor enhancements and bugfixes: https://github.com/nltk/nltk/commits/
+* dozens of fixes for conformance with PEP-8
+* dozens of fixes to ensure operation with Python 2.5
+* added interface to Lin's Dependency Thesaurus (Dan Blanchard)
+* added interface to scikit-learn classifiers (Lars Buitinck)
+* added segmentation evaluation measures (David Doukhan)
+
+Thanks to the following	contributors to	2.0.1 (since 2.0b9, July 2010):
+Rami Al-Rfou', Yonatan Becker, Steven Bethard, Daniel Blanchard, Lars
+Buitinck, David Coles, Lucas Cooper, David Doukhan, Dan Garrette,
+Masato Hagiwara, Michael Hansen, Michael Heilman, Rebecca Ingram,
+Sudharshan Kaushik, Mikhail Korobov, Peter Ljunglof, Nitin Madnani,
+Rob Malouf, Tomonori Nagano, Morten Neergaard, David Nemeskey,
+Joel Nothman, Jacob Perkins, Alessandro Presta, Alex Rudnick,
+Nathan Schneider, Stefano Lattarini, Peter Stahl, Jason Yoder
+
+Version 2.0.1 (rc1) 2011-04-11
+
+NLTK:
+* added interface to the Stanford POS Tagger
+* updates to sem.Boxer, sem.drt.DRS
+* allow unicode strings in grammars
+* allow non-string features in classifiers
+* modifications to HunposTagger
+* issues with DRS printing
+* fixed bigram collocation finder for window_size > 2
+* doctest paths no longer presume unix-style pathname separators
+* fixed issue with NLTK's tokenize module colliding with the Python tokenize module
+* fixed issue with stemming Unicode strings
+* changed ViterbiParser.nbest_parse to parse
+* ChaSen and KNBC Japanese corpus readers
+* preserve case in concordance display
+* fixed bug in simplification of Brown tags
+* a version of IBM Model 1 as described in Koehn 2010
+* new class AlignedSent for aligned sentence data and evaluation metrics
+* new nltk.util.set_proxy to allow easy configuration of HTTP proxy
+* improvements to downloader user interface to catch URL and HTTP errors
+* added CHILDES corpus reader
+* created special exception hierarchy for Prover9 errors
+* significant changes to the underlying code of the boxer interface
+* path-based wordnet similarity metrics use a fake root node for verbs, following the Perl version
+* added ability to handle multi-sentence discourses in Boxer
+* added the 'english' Snowball stemmer
+* simplifications and corrections of Earley Chart Parser rules
+* several changes to the feature chart parsers for correct unification
+* bugfixes: FreqDist.plot, FreqDist.max, NgramModel.entropy, CategorizedCorpusReader, DecisionTreeClassifier
+* removal of Python >2.4 language features for 2.4 compatibility
+* removal of deprecated functions and associated warnings
+* added semantic domains to wordnet corpus reader
+* changed wordnet similarity functions to include instance hyponyms
+* updated to use latest version of Boxer
+
+Data:
+* JEITA Public Morphologically Tagged Corpus (in ChaSen format)
+* KNB Annotated corpus of Japanese blog posts
+* Fixed some minor bugs in alvey.fcfg, and added number of parse trees in alvey_sentences.txt
+* added more comtrans data
+
+Documentation:
+* minor fixes to documentation
+* NLTK Japanese book (chapter 12) by Masato Hagiwara
+
+NLTK-Contrib:
+* Viethen and Dale referring expression algorithms
+
+
+Version 2.0b9 2010-07-25
+
+NLTK:
+* many code and documentation cleanups
+* Added port of Snowball stemmers
+* Fixed loading of pickled tokenizers (issue 556)
+* DecisionTreeClassifier now handles unknown features (issue 570)
+* Added error messages to LogicParser
+* Replaced max_models with end_size to prevent Mace from hanging
+* Added interface to Boxer
+* Added nltk.corpus.semcor to give access to SemCor 3.0 corpus (issue 530)
+* Added support for integer- and float-valued features in maxent classifiers
+* Permit NgramModels to be pickled
+* Added Sourced Strings (see test/sourcedstring.doctest for details)
+* Fixed bugs in with Good-Turing and Simple Good-Turing Estimation (issue 26)
+* Add support for span tokenization, aka standoff annotation of segmentation (incl Punkt)
+* allow unicode nodes in Tree.productions()
+* Fixed WordNet's morphy to be consistent with the original implementation,
+  taking the shortest returned form instead of an arbitrary one (issues 427, 487)
+* Fixed bug in MaxentClassifier
+* Accepted bugfixes for YCOE corpus reader (issue 435)
+* Added test to _cumulative_frequencies() to correctly handle the case when no arguments are supplied
+* Added a TaggerI interface to the HunPos open-source tagger
+* Return 0, not None, when no count is present for a lemma in WordNet
+* fixed pretty-printing of unicode leaves
+* More efficient calculation of the leftcorner relation for left corner parsers
+* Added two functions for graph calculations: transitive closure and inversion.
+* FreqDist.pop() and FreqDist.popitems() now invalidate the caches (issue 511)
+
+Data:
+* Added SemCor 3.0 corpus (Brown Corpus tagged with WordNet synsets)
+* Added LanguageID corpus (trigram counts for 451 languages)
+* Added grammar for a^n b^n c^n
+
+NLTK-Contrib:
+* minor updates
+
+Thanks to the following	contributors to	2.0b9:
+
+Steven Bethard,	Francis Bond, Dmitry Chichkov, Liang Dong, Dan Garrette,
+Simon Greenhill, Bjorn Maeland, Rob Malouf, Joel Nothman, Jacob Perkins,
+Alberto Planas, Alex Rudnick, Geoffrey Sampson, Kevin Scannell, Richard Sproat
+
+
+Version 2.0b8 2010-02-05
+
+NLTK:
+* fixed copyright and license statements
+* removed PyYAML, and added dependency to installers and download instructions
+* updated to LogicParser, DRT (Dan Garrette)
+* WordNet similarity metrics return None instead of -1 when
+  they fail to find a path (Steve Bethard)
+* shortest_path_distance uses instance hypernyms (Jordan Boyd-Graber)
+* clean_html improved (Bjorn Maeland)
+* batch_parse, batch_interpret and batch_evaluate functions allow
+    grammar or grammar filename as argument
+* more Portuguese examples (portuguese_en.doctest, examples/pt.py)
+
+NLTK-Contrib:
+* Aligner implementations (Christopher Crowner, Torsten Marek)
+* ScriptTranscriber package (Richard Sproat and Kristy Hollingshead)
+
+Book:
+* updates for second printing, correcting errata
+  http://nltk.googlecode.com/svn/trunk/nltk/doc/book/errata.txt
+
+Data:
+* added Europarl sample, with 10 docs for each of 11 langs (Nitin Madnani)
+* added SMULTRON sample corpus (Torsten Marek, Martin Volk)
+
+
+Version 2.0b7 2009-11-09
+
+NLTK:
+* minor bugfixes and enhancements: data loader, inference package, FreqDist, Punkt
+* added Portuguese example module, similar to nltk.book for English (examples/pt.py)
+* added all_lemma_names() method to WordNet corpus reader
+* added update() and __add__() extensions to FreqDist (enhances alignment with Python 3.0 counters)
+* reimplemented clean_html
+* added test-suite runner for automatic/manual regression testing
+
+NLTK-Data:
+* updated Punkt models for sentence segmentation
+* added corpus of the works of Machado de Assis (Brazilian Portuguese)
+
+Book:
+* Added translation of preface into Portuguese, contributed by Tiago Tresoldi.
+
+Version 2.0b6 2009-09-20
+
+NLTK:
+* minor fixes for Python 2.4 compatibility
+* added words() method to XML corpus reader
+* minor bugfixes and code clean-ups
+* fixed downloader to put data in %APPDATA% on Windows
+	
+Data:
+* Updated Punkt models
+* Fixed utf8 encoding issues with UDHR and Stopwords Corpora
+* Renamed CoNLL "cat" files to "esp" (different language)
+* Added Alvey NLT feature-based grammar
+* Added Polish PL196x corpus
+	
+Version 2.0b5 2009-07-19
+
+NLTK:
+* minor bugfixes (incl FreqDist, Python eggs)
+* added reader for Europarl Corpora (contributed by Nitin Madnani)
+* added reader for IPI PAN Polish Corpus (contributed by Konrad Goluchowski)
+* fixed data.py so that it doesn't generate a warning for Windows Python 2.6
+
+NLTK-Contrib:
+* updated Praat reader (contributed by Margaret Mitchell) 
+
+Version 2.0b4 2009-07-10
+
+NLTK:
+* switched to Apache License, Version 2.0
+* minor bugfixes in semantics and inference packages
+* support for Python eggs
+* fixed stale regression tests
+
+Data:
+* added NomBank 1.0
+* uppercased feature names in some grammars
+
+Version 2.0b3 2009-06-25
+
+NLTK:
+* several bugfixes
+* added nombank corpus reader (Paul Bedaride)
+
+Version 2.0b2 2009-06-15
+
+NLTK:
+* minor bugfixes and optimizations for parsers, updated some doctests
+* added bottom-up filtered left corner parsers,
+  LeftCornerChartParser and IncrementalLeftCornerChartParser.
+* fixed dispersion plot bug which prevented empty plots
+
+Version 2.0b1 2009-06-09
+
+NLTK:
+* major refactor of chart parser code and improved API (Peter Ljungl喃)
+* added new bottom-up left-corner chart parser strategy
+* misc bugfixes (ChunkScore, chart rules, chatbots, jcn-similarity)
+* improved efficiency of "import nltk" using lazy module imports
+* moved CCG package and ISRI Arabic stemmer from NLTK-Contrib into core NLTK
+* misc code cleanups
+
+Contrib:
+* moved out of the main NLTK distribution into a separate distribution
+
+Book:
+* Ongoing polishing ahead of print publication
+
+Version 0.9.9 2009-05-06
+
+NLTK:
+* Finalized API for NLTK 2.0 and the book, incl dozens of small fixes
+* Names of the form nltk.foo.Bar now available as nltk.Bar
+  for significant functionality; in some cases the name was modified
+  (using old names will produce a deprecation warning)
+* Bugfixes in downloader, WordNet
+* Expanded functionality in DecisionTree
+* Bigram collocations extended for discontiguous bigrams
+* Translation toy nltk.misc.babelfish
+* New module nltk.help giving access to tagset documentation
+* Fix imports so that NLTK builds without Tkinter (Bjorn Maeland)
+
+Data:
+* new maxent NE chunker model
+* updated grammar packages for the book
+* data for new tagsets collection, documenting several tagsets
+* added lolcat translation to the Genesis collection
+
+Contrib (work in progress):
+* Updates to coreference package (Joseph Frazee)
+* New ISRI Arabic stemmer (Hosam Algasaier)
+* Updates to Toolbox package (Greg Aumann)
+
+Book:
+* Substantial editorial corrections ahead of final submission
+
+Version 0.9.8 2009-02-18
+
+NLTK:
+* New off-the-shelf tokenizer, POS tagger, and named-entity tagger
+* New metrics package with inter-annotator agreement scores,
+  distance metrics, rank correlation
+* New collocations package (Joel Nothman)
+* Many clean-ups to WordNet package (Steven Bethard, Jordan Boyd-Graber)
+* Moved old pywordnet-based WordNet package to nltk_contrib
+* WordNet browser (Paul Bone)
+* New interface to dependency treebank corpora
+* Moved MinimalSet class into nltk.misc package
+* Put NLTK applications in new nltk.app package
+* Many other improvements incl semantics package, toolbox, MaltParser
+* Misc changes to many API names in preparation for 1.0, old names deprecated
+* Most classes now available in the top-level namespace
+* Work on Python egg distribution (Brandon Rhodes)
+* Removed deprecated code remaining from 0.8.* versions
+* Fixes for Python 2.4 compatibility
+
+Data:
+* Corrected identifiers in Dependency Treebank corpus
+* Basque and Catalan Dependency Treebanks (CoNLL 2007)
+* PE08 Parser Evalution data
+* New models for POS tagger and named-entity tagger
+
+Book:
+* Substantial editorial corrections
+
+Version 0.9.7 2008-12-19
+
+NLTK:
+* fixed problems with accessing zipped corpora   
+* improved design and efficiency of grammars and chart parsers
+  including new bottom-up combine strategy and a redesigned
+  Earley strategy (Peter Ljunglof)
+* fixed bugs in smoothed probability distributions and added
+  regression tests (Peter Ljunglof)
+* improvements to Punkt (Joel Nothman)
+* improvements to text classifiers
+* simple word-overlap RTE classifier
+
+Data:
+* A new package of large grammars (Peter Ljunglof)
+* A small gazetteer corpus and corpus reader
+* Organized example grammars into separate packages
+* Childrens' stories added to gutenberg package
+
+Contrib (work in progress):
+* fixes and demonstration for named-entity feature extractors in nltk_contrib.coref
+
+Book:
+* extensive changes throughout, including new chapter 5 on classification
+  and substantially revised chapter 11 on managing linguistic data
+
+Version 0.9.6 2008-12-07
+
+NLTK:
+* new WordNet corpus reader (contributed by Steven Bethard)
+* incorporated dependency parsers into NLTK (was NLTK-Contrib) (contributed by Jason Narad)
+* moved nltk/cfg.py to nltk/grammar.py and incorporated dependency grammars
+* improved efficiency of unification algorithm
+* various enhancements to the semantics package
+* added plot() and tabulate() methods to FreqDist and ConditionalFreqDist
+* FreqDist.keys() and list(FreqDist) provide keys reverse-sorted by value,
+  to avoid the confusion caused by FreqDist.sorted()
+* new downloader module to support interactive data download: nltk.download()
+  run using "python -m nltk.downloader all"
+* fixed WordNet bug that caused min_depth() to sometimes give incorrect result
+* added nltk.util.Index as a wrapper around defaultdict(list) plus
+  a functional-style initializer
+* fixed bug in Earley chart parser that caused it to break
+* added basic TnT tagger nltk.tag.tnt
+* new corpus reader for CoNLL dependency format (contributed by Kepa Sarasola and Iker Manterola)
+* misc other bugfixes
+
+Contrib (work in progress):
+* TIGERSearch implementation by Torsten Marek
+* extensions to hole and glue semantics modules by Dan Garrette
+* new coreference package by Joseph Frazee
+* MapReduce interface by Xinfan Meng
+
+Data:
+* Corpora are stored in compressed format if this will not compromise speed of access
+* Swadesh Corpus of comparative wordlists in 23 languages
+* Split grammar collection into separate packages
+* New Basque and Spanish grammar samples (contributed by Kepa Sarasola and Iker Manterola)
+* Brown Corpus sections now have meaningful names (e.g. 'a' is now 'news')
+* Fixed bug that forced users to manually unzip the WordNet corpus
+* New dependency-parsed version of Treebank corpus sample
+* Added movie script "Monty Python and the Holy Grail" to webtext corpus
+* Replaced words corpus data with a much larger list of English words
+* New URL for list of available NLTK corpora
+  http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml
+
+Book:
+* complete rewrite of first three chapters to make the book accessible
+  to a wider audience
+* new chapter on data-intensive language processing
+* extensive reworking of most chapters
+* Dropped subsection numbering; moved exercises to end of chapters
+
+Distributions:
+* created Portfile to support Mac installation
+
+
+Version 0.9.5 2008-08-27
+
+NLTK:
+* text module with support for concordancing, text generation, plotting
+* book module
+* Major reworking of the automated theorem proving modules (Dan Garrette)
+* draw.dispersion now uses pylab
+* draw.concordance GUI tool
+* nltk.data supports for reading corpora and other data files from within zipfiles
+* trees can be constructed from strings with Tree(s) (cf Tree.parse(s))
+
+Contrib (work in progress):
+* many updates to student projects
+  - nltk_contrib.agreement (Thomas Lippincott)
+  - nltk_contrib.coref (Joseph Frazee)
+  - nltk_contrib.depparser (Jason Narad)
+  - nltk_contrib.fuf (Petro Verkhogliad)
+  - nltk_contrib.hadoop (Xinfan Meng)
+* clean-ups: deleted stale files; moved some packages to misc
+
+Data
+* Cleaned up Gutenberg text corpora
+* added Moby Dick; removed redundant copy of Blake songs.
+* more tagger models
+* renamed to nltk_data to facilitate installation
+* stored each corpus as a zip file for quicker installation
+  and access, and to solve a problem with the Propbank
+  corpus including a file with an illegal name for MSWindows
+  (con.xml).
+
+Book:
+* changed filenames to chNN format
+* reworked opening chapters (work in progress)
+
+Distributions:
+* fixed problem with mac installer that arose when Python binary
+  couldn't be found
+* removed dependency of NLTK on nltk_data so that NLTK code can be
+  installed before the data
+
+Version 0.9.4 2008-08-01
+	
+NLTK:
+- Expanded semantics package for first order logic, linear logic,
+  glue semantics, DRT, LFG (Dan Garrette)
+- new WordSense class in wordnet.synset supporting access to synsets
+  from sense keys and accessing sense counts (Joel Nothman)
+- interface to Mallet's linear chain CRF implementation (nltk.tag.crf)
+- misc bugfixes incl Punkt, synsets, maxent
+- improved support for chunkers incl flexible chunk corpus reader,
+  new rule type: ChunkRuleWithContext
+- new GUI for pos-tagged concordancing nltk.draw.pos_concordance
+- new GUI for developing regexp chunkers nltk.draw.rechunkparser 
+- added bio_sents() and bio_words() methods to ConllChunkCorpusReader in conll.py
+    to allow reading (word, tag, chunk_typ) tuples off of CoNLL-2000 corpus. Also 
+    modified ConllChunkCorpusView to support these changes.
+- feature structures support values with custom unification methods
+- new flag on tagged corpus readers to use simplified tagsets
+- new package for ngram language modeling with Katz backoff nltk.model
+- added classes for single-parented and multi-parented trees that 
+  automatically maintain parent pointers (nltk.tree.ParentedTree and
+  nltk.tree.MultiParentedTree)
+- new WordNet browser GUI (Jussi Salmela, Paul Bone)
+- improved support for lazy sequences
+- added generate() method to probability distributions
+- more flexible parser for converting bracketed strings to trees
+- made fixes to docstrings to improve API documentation
+
+Contrib (work in progress)
+- new NLG package, FUF/SURGE (Petro Verkhogliad) 
+- new dependency parser package (Jason Narad)
+- new Coreference package, incl support for
+  ACE-2, MUC-6 and MUC-7 corpora (Joseph Frazee)
+- CCG Parser (Graeme Gange)
+- first order resolution theorem prover (Dan Garrette)
+
+Data:
+- Nnw NPS Chat Corpus and corpus reader (nltk.corpus.nps_chat)
+- ConllCorpusReader can now be used to read CoNLL 2004 and 2005 corpora.
+- Implemented HMM-based Treebank POS tagger and phrase chunker for 
+  nltk_contrib.coref in api.py. Pickled versions of these objects are checked
+  in in data/taggers and data/chunkers.
+
+Book:
+- misc corrections in response to feedback from readers
+	
+Version 0.9.3 2008-06-03
+	
+NLTK:
+- modified WordNet similarity code to use pre-built information content files
+- new classifier-based tagger, BNC corpus reader
+- improved unicode support for corpus readers
+- improved interfaces to Weka, Prover9/Mace4
+- new support for using MEGAM and SciPy to train maxent classifiers
+- rewrite of Punkt sentence segmenter (Joel Nothman)
+- bugfixes for WordNet information content module (Jordan Boyd-Graber)
+- code clean-ups throughout
+
+Book:
+- miscellaneous fixes in response to feedback from readers
+
+Contrib:
+- implementation of incremental algorithm for generating
+  referring expressions (contributed by Margaret Mitchell)
+- refactoring WordNet browser (Paul Bone)
+  
+Corpora:
+- included WordNet information content files
+
+Version 0.9.2 2008-03-04
+
+NLTK:
+- new theorem-prover and model-checker module nltk.inference,
+  including interface to Prover9/Mace4 (Dan Garrette, Ewan Klein)
+- bugfix in Reuters corpus reader that causes Python
+  to complain about too many open files
+- VerbNet and PropBank corpus readers
+
+Data:
+- VerbNet Corpus version 2.1: hierarchical, verb lexicon linked to WordNet
+- PropBank Corpus: predicate-argument structures, as stand-off annotation of Penn Treebank
+
+Contrib:
+- New work on WordNet browser, incorporating a client-server model (Jussi Salmela)
+
+Distributions:
+- Mac OS 10.5 distribution
+	
+Version 0.9.1 2008-01-24
+
+NLTK:
+- new interface for text categorization corpora
+- new corpus readers: RTE, Movie Reviews, Question Classification, Brown Corpus
+- bugfix in ConcatenatedCorpusView that caused iteration to fail if it didn't start from the beginning of the corpus
+
+Data:
+- Question classification data, included with permission of Li & Roth
+- Reuters 21578 Corpus, ApteMod version, from CPAN
+- Movie Reviews corpus (sentiment polarity), included with permission of Lillian Lee
+- Corpus for Recognising Textual Entailment (RTE) Challenges 1, 2 and 3
+- Brown Corpus (reverted to original file structure: ca01-cr09)
+- Penn Treebank corpus sample (simplified implementation, new readers treebank_raw and treebank_chunk)
+- Minor redesign of corpus readers, to use filenames instead of "items" to identify parts of a corpus
+	
+Contrib:
+- theorem_prover: Prover9, tableau, MaltParser, Mace4, glue semantics, docs (Dan Garrette, Ewan Klein)
+- drt: improved drawing, conversion to FOL (Dan Garrette)
+- gluesemantics: GUI demonstration, abstracted LFG code, documentation (Dan Garrette)
+- readability: various text readability scores (Thomas Jakobsen, Thomas Skardal)
+- toolbox: code to normalize toolbox databases (Greg Aumann)
+	
+Book:
+- many improvements in early chapters in response to reader feedback
+- updates for revised corpus readers
+- moved unicode section to chapter 3
+- work on engineering.txt (not included in 0.9.1)
+
+Distributions:
+- Fixed installation for Mac OS 10.5 (Joshua Ritterman)
+- Generalize doctest_driver to work with doc_contrib
+
+Version 0.9 2007-10-12
+
+NLTK:
+- New naming of packages and modules, and more functions imported into
+  top-level nltk namespace, e.g. nltk.chunk.Regexp -> nltk.RegexpParser,
+    nltk.tokenize.Line -> nltk.LineTokenizer, nltk.stem.Porter -> nltk.PorterStemmer,
+    nltk.parse.ShiftReduce -> nltk.ShiftReduceParser
+- processing class names changed from verbs to nouns, e.g.
+  StemI -> StemmerI, ParseI -> ParserI, ChunkParseI -> ChunkParserI, ClassifyI -> ClassifierI
+- all tokenizers are now available as subclasses of TokenizeI,
+  selected tokenizers are also available as functions, e.g. wordpunct_tokenize()
+- rewritten ngram tagger code, collapsed lookup tagger with unigram tagger
+- improved tagger API, permitting training in the initializer
+- new system for deprecating code so that users are notified of name changes.
+- support for reading feature cfgs to parallel reading cfgs (parse_featcfg())
+- text classifier package, maxent (GIS, IIS), naive Bayes, decision trees, weka support
+- more consistent tree printing
+- wordnet's morphy stemmer now accessible via stemmer package
+- RSLP Portuguese stemmer (originally developed by Viviane Moreira Orengo, reimplemented by Tiago Tresoldi)
+- promoted ieer_rels.py to the sem package
+- improvements to WordNet package (Jussi Salmela)
+- more regression tests, and support for checking coverage of tests
+- miscellaneous bugfixes
+- remove numpy dependency
+
+Data:
+- new corpus reader implementation, refactored syntax corpus readers
+- new data package: corpora, grammars, tokenizers, stemmers, samples
+- CESS-ESP Spanish Treebank and corpus reader
+- CESS-CAT Catalan Treebank and corpus reader
+- Alpino Dutch Treebank and corpus reader
+- MacMorpho POS-tagged Brazilian Portuguese news text and corpus reader
+- trained model for Portuguese sentence segmenter
+- Floresta Portuguese Treebank version 7.4 and corpus reader
+- TIMIT player audio support
+
+Contrib:
+- BioReader (contributed by Carlos Rodriguez)
+- TnT tagger (contributed by Sam Huston)
+- wordnet browser (contributed by Jussi Salmela, requires wxpython)
+- lpath interpreter (contributed by Haejoong Lee)
+- timex -- regular expression-based temporal expression tagger
+
+Book:
+- polishing of early chapters
+- introductions to parts 1, 2, 3
+- improvements in book processing software (xrefs, avm & gloss formatting, javascript clipboard)
+- updates to book organization, chapter contents
+- corrections throughout suggested by readers (acknowledged in preface)
+- more consistent use of US spelling throughout
+- all examples redone to work with single import statement: "import nltk"
+- reordered chapters: 5->7->8->9->11->12->5
+  * language engineering in part 1 to broaden the appeal
+    of the earlier part of the book and to talk more about
+    evaluation and baselines at an earlier stage
+  * concentrate the partial and full parsing material in part 2,
+    and remove the specialized feature-grammar material into part 3
+
+Distributions:
+- streamlined mac installation (Joshua Ritterman)
+- included mac distribution with ISO image
+
+Version 0.8 2007-07-01
+
+Code:
+- changed nltk.__init__ imports to explicitly import names from top-level modules
+- changed corpus.util to use the 'rb' flag for opening files, to fix problems
+  reading corpora under MSWindows
+- updated stale examples in engineering.txt
+- extended feature stucture interface to permit chained features, e.g. fs['F','G']
+- further misc improvements to test code plus some bugfixes
+Tutorials:
+- rewritten opening section of tagging chapter
+- reorganized some exercises
+
+Version 0.8b2 2007-06-26
+
+Code (major):
+- new corpus package, obsoleting old corpora package
+  - supports caching, slicing, corpus search path
+  - more flexible API
+  - global updates so all NLTK modules use new corpus package
+- moved nltk/contrib to separate top-level package nltk_contrib
+- changed wordpunct tokenizer to use \w instead of a-zA-Z0-9
+  as this will be more robust for languages other than English,
+  with implications for many corpus readers that use it
+- known bug: certain re-entrant structures in featstruct
+- known bug: when the LHS of an edge contains an ApplicationExpression,
+    variable values in the RHS bindings aren't copied over when the
+    fundamental rule applies
+- known bug: HMM tagger is broken
+Tutorials:
+- global updates to NLTK and docs
+- ongoing polishing
+Corpora:
+- treebank sample reverted to published multi-file structure
+Contrib:
+- DRT and Glue Semantics code (nltk_contrib.drt, nltk_contrib.gluesemantics, by Dan Garrette)
+
+Version 0.8b1 2007-06-18
+
+Code (major):
+- changed package name to nltk
+- import all top-level modules into nltk, reducing need for import statements  
+- reorganization of sub-package structures to simplify imports
+- new featstruct module, unifying old featurelite and featurestructure modules
+- FreqDist now inherits from dict, fd.count(sample) becomes fd[sample]
+- FreqDist initializer permits: fd = FreqDist(len(token) for token in text)
+- made numpy optional
+Code (minor):
+- changed GrammarFile initializer to accept filename
+- consistent tree display format
+- fixed loading process for WordNet and TIMIT that prevented code installation if data not installed
+- taken more care with unicode types
+- incorporated pcfg code into cfg module
+- moved cfg, tree, featstruct to top level
+- new filebroker module to make handling of example grammar files more transparent
+- more corpus readers (webtext, abc)
+- added cfg.covers() to check that a grammar covers a sentence
+- simple text-based wordnet browser
+- known bug: parse/featurechart.py uses incorrect apply() function
+Corpora:
+- csv data file to document NLTK corpora
+Contrib:
+- added Glue semantics code (contrib.glue, by Dan Garrette)
+- Punkt sentence segmenter port (contrib.punkt, by Willy)
+- added LPath interpreter (contrib.lpath, by Haejoong Lee)
+- extensive work on classifiers (contrib.classifier*, Sumukh Ghodke)
+Tutorials:
+- polishing on parts I, II
+- more illustrations, data plots, summaries, exercises
+- continuing to make prose more accessible to non-linguistic audience
+- new default import that all chapters presume: from nltk.book import *
+Distributions:
+- updated to latest version of numpy
+- removed WordNet installation instructions as WordNet is now included in corpus distribution
+- added pylab (matplotlib)
+
+Version 0.7.5 2007-05-16
+
+Code:
+- improved WordNet and WordNet-Similarity interface
+- the Lancaster Stemmer (contributed by Steven Tomcavage)
+Corpora:
+- Web text samples
+- BioCreAtIvE-PPI - a corpus for protein-protein interactions
+- Switchboard Telephone Speech Corpus Sample (via Talkbank)
+- CMU Problem Reports Corpus sample
+- CONLL2002 POS+NER data
+- Patient Information Leaflet corpus
+- WordNet 3.0 data files
+- English wordlists: basic English, frequent words
+Tutorials:
+- more improvements to text and images
+
+Version 0.7.4 2007-05-01
+
+Code:
+- Indian POS tagged corpus reader: corpora.indian
+- Sinica Treebank corpus reader: corpora.sinica_treebank
+- new web corpus reader corpora.web
+- tag package now supports pickling
+- added function to utilities.py to guess character encoding
+Corpora:
+- Rotokas texts from Stuart Robinson
+- POS-tagged corpora for several Indian languages (Bangla, Hindi, Marathi, Telugu) from A Kumaran
+Tutorials:
+- Substantial work on Part II of book on structured programming, parsing and grammar
+- More bibliographic citations
+- Improvements in typesetting, cross references
+- Redimensioned images and tables for better use of page space
+- Moved project list to wiki
+Contrib:
+- validation of toolbox entries using chunking
+- improved classifiers
+Distribution:
+- updated for Python 2.5.1, Numpy 1.0.2
+
+Version 0.7.3 2007-04-02
+	
+* Code:
+ - made chunk.Regexp.parse() more flexible about its input
+ - developed new syntax for PCFG grammars, e.g. A -> B C [0.3] | D [0.7]
+ - fixed CFG parser to support grammars with slash categories
+ - moved beta classify package from main NLTK to contrib
+ - Brill taggers loaded correctly
+ - misc bugfixes
+* Corpora:
+ - Shakespeare XML corpus sample and corpus reader
+* Tutorials:
+ - improvements to prose, exercises, plots, images
+ - expanded and reorganized tutorial on structured programming
+ - formatting improvements for Python listings
+ - improved plots (using pylab)
+ - categorization of problems by difficulty
+Contrib:
+ - more work on kimmo lexicon and grammar
+ - more work on classifiers
+
+Version 0.7.2 2007-03-01
+
+* Code:
+ - simple feature detectors (detect module)
+ - fixed problem when token generators are passed to a parser (parse package)
+ - fixed bug in Grammar.productions() (identified by Lucas Champollion and Mitch Marcus)
+ - fixed import bug in category.GrammarFile.earley_parser
+ - added utilities.OrderedDict
+ - initial port of old NLTK classifier package (by Sam Huston)
+ - UDHR corpus reader
+* Corpora:
+ - added UDHR corpus (Universal Declaration of Human Rights)
+     with 10k text samples in 300+ languages
+* Tutorials:
+ - improved images
+ - improved book formatting, including new support for:
+   - javascript to copy program examples to clipboard in HTML version,
+   - bibliography, chapter cross-references, colorization, index, table-of-contents
+
+* Contrib:
+  - new Kimmo system: contrib.mit.six863.kimmo (Rob Speer)
+  - fixes for: contrib.fsa (Rob Speer)
+  - demonstration of text classifiers trained on UDHR corpus for
+      language identification: contrib.langid (Sam Huston)
+  - new Lambek calculus system: contrib.lambek
+  - new tree implementation based on elementtree: contrib.tree
+	
+Version 0.7.1 2007-01-14
+
+* Code:
+  - bugfixes (HMM, WordNet)
+
+Version 0.7 2006-12-22
+
+* Code:
+  - bugfixes, including fixed bug in Brown corpus reader
+  - cleaned up wordnet 2.1 interface code and similarity measures
+  - support for full Penn treebank format contributed by Yoav Goldberg
+* Tutorials:
+  - expanded tutorials on advanced parsing and structured programming
+  - checked all doctest code
+  - improved images for chart parsing
+	
+Version 0.7b1 2006-12-06
+	
+* Code:
+  - expanded semantic interpretation package
+  - new high-level chunking interface, with cascaded chunking
+  - split chunking code into new chunk package
+  - updated wordnet package to support version 2.1 of Wordnet.
+  - prototyped basic wordnet similarity measures
+    (path distance, Wu + Palmer and Leacock + Chodorow, Resnik similarity measures.)
+  - bugfixes (tag.Window, tag.ngram)
+  - more doctests
+* Contrib:	
+  - toolbox language settings module
+* Tutorials:
+  - rewrite of chunking chapter, switched from Treebank to CoNLL format as main focus,
+    simplified evaluation framework, added ngram chunking section
+  - substantial updates throughout (esp programming and semantics chapters)
+* Corpora:
+  - Chat-80 Prolog data files provided as corpora, plus corpus reader
+	
+Version 0.7a2 2006-11-13
+
+* Code:
+  - more doctest
+  - code to read Chat-80 data
+  - HMM bugfix
+* Tutorials:
+  - continued updates and polishing
+* Corpora:
+  - toolbox MDF sample data
+
+Version 0.7a1 2006-10-29
+
+* Code:
+  - new toolbox module (Greg Aumann)
+  - new semantics package (Ewan Klein)
+  - bugfixes
+* Tutorials
+  - substantial revision, especially in preface, introduction, words,
+    and semantics chapters.
+	
+Version 0.6.6 2006-10-06
+
+* Code:
+  - bugfixes (probability, shoebox, draw)
+* Contrib:
+  - new work on shoebox package (Stuart Robinson)
+* Tutorials:
+  - continual expansion and revision, especially on introduction to
+    programming, advanced programming and the feature-based grammar chapters.
+	
+Version 0.6.5 2006-07-09
+
+* Code:
+  - improvements to shoebox module (Stuart Robinson, Greg Aumann)
+  - incorporated feature-based parsing into core NLTK-Lite
+  - corpus reader for Sinica treebank sample
+  - new stemmer package
+* Contrib:
+  - hole semantics implementation (Peter Wang)
+  - Incorporating yaml
+  - new work on feature structures, unification, lambda calculus
+  - new work on shoebox package (Stuart Robinson, Greg Aumann)
+* Corpora:
+  - Sinica treebank sample	
+* Tutorials:
+  - expanded discussion throughout, incl: left-recursion, trees, grammars,
+    feature-based grammar, agreement, unification, PCFGs,
+    baseline performance, exercises, improved display of trees
+
+Version 0.6.4 2006-04-20
+
+* Code:
+  - corpus readers for Senseval 2 and TIMIT
+  - clusterer (ported from old NLTK)
+  - support for cascaded chunkers
+  - bugfix suggested by Brent Payne
+  - new SortedDict class for regression testing
+* Contrib:
+  - CombinedTagger tagger and marshalling taggers, contributed by Tiago Tresoldi
+* Corpora:
+  - new: Senseval 2, TIMIT sample
+* Tutorials:
+  - major revisions to programming, words, tagging, chunking, and parsing tutorials
+  - many new exercises
+  - formatting improvements, including colorized program examples
+  - fixed problem with testing on training data, reported by Jason Baldridge
+	
+Version 0.6.3 2006-03-09
+
+* switch to new style classes
+* repair FSA model sufficiently for Kimmo module to work	
+* port of MIT Kimmo morphological analyzer; still needs lots of code clean-up and inline docs
+* expanded support for shoebox format, developed with Stuart Robinson
+* fixed bug in indexing CFG productions, for empty right-hand-sides
+* efficiency improvements, suggested by Martin Ranang
+* replaced classeq with isinstance, for efficiency improvement, as suggested by Martin Ranang
+* bugfixes in chunk eval
+* simplified call to draw_trees
+* names, stopwords corpora
+	
+Version 0.6.2 2006-01-29
+
+* Peter Spiller's concordancer
+* Will Hardy's implementation of Penton's paradigm visualization system
+* corpus readers for presidential speeches
+* removed NLTK dependency
+* generalized CFG terminals to permit full range of characters
+* used fully qualified names in demo code, for portability
+* bugfixes from Yoav Goldberg, Eduardo Pereira Habkost
+* fixed obscure quoting bug in tree displays and conversions
+* simplified demo code, fixed import bug

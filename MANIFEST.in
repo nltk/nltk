@@ -1,0 +1,6 @@
+include LICENSE.txt INSTALL.txt README.txt MANIFEST.in
+include setup.py
+include nltk/test/*.doctest
+include nltk/VERSION
+recursive-include *.txt Makefile
+global-exclude *~

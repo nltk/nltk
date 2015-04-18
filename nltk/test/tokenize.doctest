@@ -1,0 +1,117 @@
+.. Copyright (C) 2001-2015 NLTK Project
+.. For license information, see LICENSE.TXT
+
+    >>> from __future__ import print_function
+    >>> from nltk.tokenize import *
+
+Regression Tests: Treebank Tokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some test strings.
+
+    >>> s1 = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
+    >>> word_tokenize(s1)
+    ['On', 'a', '$', '50,000', 'mortgage', 'of', '30', 'years', 'at', '8', 'percent', ',', 'the', 'monthly', 'payment', 'would', 'be', '$', '366.88', '.']
+    >>> s2 = "\"We beat some pretty good teams to get here,\" Slocum said."
+    >>> word_tokenize(s2)
+    ['``', 'We', 'beat', 'some', 'pretty', 'good', 'teams', 'to', 'get', 'here', ',', "''", 'Slocum', 'said', '.']
+    >>> s3 = "Well, we couldn't have this predictable, cliche-ridden, \"Touched by an Angel\" (a show creator John Masius worked on) wanna-be if she didn't."
+    >>> word_tokenize(s3)
+    ['Well', ',', 'we', 'could', "n't", 'have', 'this', 'predictable', ',', 'cliche-ridden', ',', '``', 'Touched', 'by', 'an', 'Angel', "''", '(', 'a', 'show', 'creator', 'John', 'Masius', 'worked', 'on', ')', 'wanna-be', 'if', 'she', 'did', "n't", '.']
+    >>> s4 = "I cannot cannot work under these conditions!"
+    >>> word_tokenize(s4)
+    ['I', 'can', 'not', 'can', 'not', 'work', 'under', 'these', 'conditions', '!']
+    >>> s5 = "The company spent $30,000,000 last year."
+    >>> word_tokenize(s5)
+    ['The', 'company', 'spent', '$', '30,000,000', 'last', 'year', '.']
+    >>> s6 = "The company spent 40.75% of its income last year."
+    >>> word_tokenize(s6)
+    ['The', 'company', 'spent', '40.75', '%', 'of', 'its', 'income', 'last', 'year', '.']
+    >>> s7 = "He arrived at 3:00 pm."
+    >>> word_tokenize(s7)
+    ['He', 'arrived', 'at', '3:00', 'pm', '.']
+    >>> s8 = "I bought these items: books, pencils, and pens."
+    >>> word_tokenize(s8)
+    ['I', 'bought', 'these', 'items', ':', 'books', ',', 'pencils', ',', 'and', 'pens', '.']
+    >>> s9 = "Though there were 150, 100 of them were old."
+    >>> word_tokenize(s9)
+    ['Though', 'there', 'were', '150', ',', '100', 'of', 'them', 'were', 'old', '.']
+    >>> s10 = "There were 300,000, but that wasn't enough."
+    >>> word_tokenize(s10)
+    ['There', 'were', '300,000', ',', 'but', 'that', 'was', "n't", 'enough', '.']
+
+Sentence tokenization in word_tokenize:
+
+    >>> s11 = "I called Dr. Jones. I called Dr. Jones."
+    >>> word_tokenize(s11)
+    ['I', 'called', 'Dr.', 'Jones', '.', 'I', 'called', 'Dr.', 'Jones', '.']
+    >>> s12 = ("Ich muss unbedingt daran denken, Mehl, usw. fur einen "
+    ...        "Kuchen einzukaufen. Ich muss.")
+    >>> word_tokenize(s12)
+    ['Ich', 'muss', 'unbedingt', 'daran', 'denken', ',', 'Mehl', ',', 'usw',
+     '.', 'fur', 'einen', 'Kuchen', 'einzukaufen', '.', 'Ich', 'muss', '.']
+    >>> word_tokenize(s12, 'german')
+    ['Ich', 'muss', 'unbedingt', 'daran', 'denken', ',', 'Mehl', ',', 'usw.',
+     'fur', 'einen', 'Kuchen', 'einzukaufen', '.', 'Ich', 'muss', '.']
+
+
+Regression Tests: Regexp Tokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some additional test strings.
+
+    >>> s = ("Good muffins cost $3.88\nin New York.  Please buy me\n"
+    ...      "two of them.\n\nThanks.")
+    >>> s2 = ("Alas, it has not rained today. When, do you think, "
+    ...       "will it rain again?")
+    >>> s3 = ("<p>Although this is <b>not</b> the case here, we must "
+    ...       "not relax our vigilance!</p>")
+
+    >>> regexp_tokenize(s2, r'[,\.\?!"]\s*', gaps=False)
+    [', ', '. ', ', ', ', ', '?']
+    >>> regexp_tokenize(s2, r'[,\.\?!"]\s*', gaps=True)
+    ['Alas', 'it has not rained today', 'When', 'do you think',
+     'will it rain again']
+
+Make sure that grouping parentheses don't confuse the tokenizer:
+
+    >>> regexp_tokenize(s3, r'</?(b|p)>', gaps=False)
+    ['<p>', '<b>', '</b>', '</p>']
+    >>> regexp_tokenize(s3, r'</?(b|p)>', gaps=True)
+    ['Although this is ', 'not',
+     ' the case here, we must not relax our vigilance!']
+
+Make sure that named groups don't confuse the tokenizer:
+
+    >>> regexp_tokenize(s3, r'</?(?P<named>b|p)>', gaps=False)
+    ['<p>', '<b>', '</b>', '</p>']
+    >>> regexp_tokenize(s3, r'</?(?P<named>b|p)>', gaps=True)
+    ['Although this is ', 'not',
+     ' the case here, we must not relax our vigilance!']
+
+Make sure that nested groups don't confuse the tokenizer:
+
+    >>> regexp_tokenize(s2, r'(h|r|l)a(s|(i|n0))', gaps=False)
+    ['las', 'has', 'rai', 'rai']
+    >>> regexp_tokenize(s2, r'(h|r|l)a(s|(i|n0))', gaps=True)
+    ['A', ', it ', ' not ', 'ned today. When, do you think, will it ',
+     'n again?']
+
+The tokenizer should reject any patterns with backreferences:
+
+    >>> regexp_tokenize(s2, r'(.)\1')
+    Traceback (most recent call last):
+       ...
+    ValueError: Regular expressions with back-references are
+    not supported: '(.)\\1'
+    >>> regexp_tokenize(s2, r'(?P<foo>)(?P=foo)')
+    Traceback (most recent call last):
+       ...
+    ValueError: Regular expressions with back-references are
+    not supported: '(?P<foo>)(?P=foo)'
+
+A simple sentence tokenizer '\.(\s+|$)'
+
+    >>> regexp_tokenize(s, pattern=r'\.(\s+|$)', gaps=True)
+    ['Good muffins cost $3.88\nin New York',
+     'Please buy me\ntwo of them', 'Thanks']
