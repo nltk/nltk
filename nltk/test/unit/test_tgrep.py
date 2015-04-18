@@ -5,6 +5,7 @@
 Unit tests for TGrep search implementation for NTLK ParentedTrees.
 
 (c) 16 March, 2013 Will Roberts
+@wroberts on github.
 '''
 
 from __future__ import absolute_import, print_function, unicode_literals
