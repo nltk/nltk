@@ -339,7 +339,7 @@ class TweetWriter(TweetHandlerI):
 
         self.startingup = False
         self.counter += 1
-        if (self.counter < self.limit and not (bool(self.date_limit) and tweet_date > self.date_limit)):
+        if (self.counter < self.limit and not (self.date_limit is not None and tweet_date > self.date_limit)):
             return True
         else:
             print('Written {} tweets'.format(self.counter))
