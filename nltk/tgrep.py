@@ -48,7 +48,7 @@ import nltk.tree
 try:
     import pyparsing
 except ImportError:
-    print('Warning: nltk_tgrep will not work without the `pyparsing` package')
+    print('Warning: nltk.tgrep will not work without the `pyparsing` package')
     print('installed.')
 import re
 

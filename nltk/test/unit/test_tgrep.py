@@ -17,7 +17,7 @@ import unittest
 class TestSequenceFunctions(unittest.TestCase):
 
     '''
-    Class containing unit tests for tgrep.py.
+    Class containing unit tests for nltk.tgrep.
     '''
 
     def test_tokenize_simple(self):
