@@ -1217,6 +1217,8 @@ class SimpleGoodTuringProbDist(ProbDistI):
         assert bins is None or bins > freqdist.B(),\
                'bins parameter must not be less than %d=freqdist.B()+1' % (freqdist.B()+1)
         if bins is None:
+            warnings.warn('Bins parameter needs to be passed to '
+                          'SimpleGoodTuringProbDist for accurate estimates.')
             bins = freqdist.B() + 1
         self._freqdist = freqdist
         self._bins = bins
@@ -1272,6 +1274,11 @@ class SimpleGoodTuringProbDist(ProbDistI):
             xy_cov += (x - x_mean) * (y - y_mean)
             x_var += (x - x_mean)**2
         self._slope = (xy_cov / x_var if x_var != 0 else 0.0)
+        if self._slope >= -1:
+            warnings.warn('SimpleGoodTuring did not find a proper best fit '
+                          'line for smoothing probabilities of occurrences. '
+                          'The probability estimates are likely to be '
+                          'unreliable.')
         self._intercept = y_mean - self._slope * x_mean
 
     def _switch(self, r, nr):
