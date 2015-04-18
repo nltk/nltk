@@ -8,11 +8,7 @@ Unit tests for TGrep search implementation for NTLK ParentedTrees.
 '''
 
 from __future__ import absolute_import, print_function, unicode_literals
-try:
-    from builtins import range
-except ImportError:
-    print('Warning: nltk_tgrep may not work correctly on Python 2.* without the ')
-    print('`future` package installed.')
+from nltk.compat import b
 from nltk.tree import ParentedTree
 from nltk import tgrep
 import unittest
@@ -38,7 +34,7 @@ class TestSequenceFunctions(unittest.TestCase):
         Test that tokenization handles bytes and strs the same way.
         '''
         self.assertEqual(
-            tgrep.tgrep_tokenize(b'A .. (B !< C . D) | ![<< (E , F) $ G]'),
+            tgrep.tgrep_tokenize(b('A .. (B !< C . D) | ![<< (E , F) $ G]')),
             tgrep.tgrep_tokenize('A .. (B !< C . D) | ![<< (E , F) $ G]'))
 
     def test_tokenize_link_types(self):
@@ -217,11 +213,11 @@ class TestSequenceFunctions(unittest.TestCase):
         tree = ParentedTree.fromstring(
             '(S (NP (DT the) (JJ big) (NN dog)) '
             '(VP bit) (NP (DT a) (NN cat)))')
-        self.assertEqual(tgrep.tgrep_positions(tree, b'NN'),
+        self.assertEqual(tgrep.tgrep_positions(tree, b('NN')),
                          tgrep.tgrep_positions(tree, 'NN'))
-        self.assertEqual(tgrep.tgrep_nodes(tree, b'NN'),
+        self.assertEqual(tgrep.tgrep_nodes(tree, b('NN')),
                          tgrep.tgrep_nodes(tree, 'NN'))
-        self.assertEqual(tgrep.tgrep_positions(tree, b'NN|JJ'),
+        self.assertEqual(tgrep.tgrep_positions(tree, b('NN|JJ')),
                          tgrep.tgrep_positions(tree, 'NN|JJ'))
 
     def test_node_nocase(self):
