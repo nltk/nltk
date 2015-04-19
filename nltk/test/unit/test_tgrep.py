@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+# Natural Language Toolkit: TGrep search
+#
+# Copyright (C) 2001-2015 NLTK Project
+# Author: Will Roberts <wildwilhelm@gmail.com>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
 
 '''
-Unit tests for TGrep search implementation for NTLK ParentedTrees.
-
-(c) 16 March, 2013 Will Roberts
-@wroberts on github.
+Unit tests for nltk.tgrep.
 '''
 
 from __future__ import absolute_import, print_function, unicode_literals
