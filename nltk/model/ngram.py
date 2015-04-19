@@ -234,12 +234,7 @@ class NgramModel(ModelI):
         return text
 
     def _generate_one(self, context):
-<<<<<<< HEAD
-        context = (self._lpad + tuple(context))[- self._n + 1:]
-=======
         context = (self._lpad + tuple(context))[-self._n + 1:]
-
->>>>>>> c54edec6856b877dd049cea5ef4a75b842af6c28
         if context in self:
             return self[context].generate()
         elif self._n > 1:
@@ -260,17 +255,10 @@ class NgramModel(ModelI):
         H = 0.0     # entropy is conventionally denoted by "H"
         text = list(self._lpad) + text + list(self._rpad)
         for i in range(self._n - 1, len(text)):
-<<<<<<< HEAD
-            context = tuple(text[i - self._n + 1:i])
-            token = text[i]
-            e += self.logprob(token, context)
-        return e / float(len(text) - (self._n - 1))
-=======
             context = tuple(text[(i - self._n + 1):i])
             token = text[i]
             H += self.logprob(token, context)
         return H / float(len(text) - (self._n - 1))
->>>>>>> c54edec6856b877dd049cea5ef4a75b842af6c28
 
     def perplexity(self, text):
         """
@@ -284,12 +272,6 @@ class NgramModel(ModelI):
         return pow(2.0, self.entropy(text))
 
     def __contains__(self, item):
-<<<<<<< HEAD
-        return tuple(item) in self._probdist.freqdist
-
-    def __getitem__(self, item):
-        return self._probdist[tuple(item)]
-=======
         if not isinstance(item, tuple):
             item = (item,)
         return item in self._model
@@ -298,7 +280,6 @@ class NgramModel(ModelI):
         if not isinstance(item, tuple):
             item = (item,)
         return self._model[item]
->>>>>>> c54edec6856b877dd049cea5ef4a75b842af6c28
 
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
