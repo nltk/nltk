@@ -8,26 +8,22 @@
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
 
-from itertools import chain
 from math import log
 
-from nltk.probability import (FreqDist,
-    ConditionalProbDist,
-    ConditionalFreqDist,
-    LidstoneProbDist)
+from nltk.probability import ConditionalProbDist, ConditionalFreqDist, LidstoneProbDist
 from nltk.util import ngrams
 from nltk.model.api import ModelI
 
 from nltk import compat
 
 
-def _estimator(fdist, *estimator_args, **estimator_kwargs):
+def _estimator(fdist, **estimator_kwargs):
     """
-    Default estimator function using a SimpleGoodTuringProbDist.
+    Default estimator function using a LidstoneProbDist.
     """
     # can't be an instance method of NgramModel as they
     # can't be pickled either.
-    return LidstoneProbDist(fdist, *estimator_args, **estimator_kwargs)
+    return LidstoneProbDist(fdist, 0.001, **estimator_kwargs)
 
 
 @compat.python_2_unicode_compatible
@@ -37,27 +33,22 @@ class NgramModel(ModelI):
     """
 
     def __init__(self, n, train, pad_left=True, pad_right=False,
-                 estimator=None, *estimator_args, **estimator_kwargs):
+                 estimator=None, **estimator_kwargs):
         """
         Create an ngram language model to capture patterns in n consecutive
         words of training text.  An estimator smooths the probabilities derived
         from the text and may allow generation of ngrams not seen during
-        training.
+        training. See model.doctest for more detailed testing
 
             >>> from nltk.corpus import brown
-            >>> from nltk.probability import LidstoneProbDist
-            >>> est = lambda fdist, bins: LidstoneProbDist(fdist, 0.2)
-            >>> lm = NgramModel(3, brown.words(categories='news'), estimator=est)
+            >>> lm = NgramModel(3, brown.words(categories='news'))
             >>> lm
             <NgramModel with 91603 3-grams>
             >>> lm._backoff
             <NgramModel with 62888 2-grams>
-            >>> lm.entropy(['The', 'Fulton', 'County', 'Grand', 'Jury', 'said',
-            ... 'Friday', 'an', 'investigation', 'of', "Atlanta's", 'recent',
-            ... 'primary', 'election', 'produced', '``', 'no', 'evidence',
-            ... "''", 'that', 'any', 'irregularities', 'took', 'place', '.'])
+            >>> lm.entropy(brown.words(categories='humor'))
             ... # doctest: +ELLIPSIS
-            0.5776...
+            12.0399...
 
         :param n: the order of the language model (ngram size)
         :type n: int
@@ -70,14 +61,6 @@ class NgramModel(ModelI):
         :param estimator: a function for generating a probability distribution
         :type estimator: a function that takes a ConditionalFreqDist and
             returns a ConditionalProbDist
-        :param estimator_args: Extra arguments for estimator.
-            These arguments are usually used to specify extra
-            properties for the probability distributions of individual
-            conditions, such as the number of bins they contain.
-            Note: For backward-compatibility, if no arguments are specified, the
-            number of bins in the underlying ConditionalFreqDist are passed to
-            the estimator as an argument.
-        :type estimator_args: (any)
         :param estimator_kwargs: Extra keyword arguments for the estimator
         :type estimator_kwargs: (any)
         """
@@ -86,6 +69,9 @@ class NgramModel(ModelI):
         # that use the pre-2.0.2 interface
         assert(isinstance(pad_left, bool))
         assert(isinstance(pad_right, bool))
+
+        self._lpad = ('',) * (n - 1) if pad_left else ()
+        self._rpad = ('',) * (n - 1) if pad_right else ()
 
         # make sure n is greater than zero, otherwise print it
         assert (n > 0), n
@@ -110,22 +96,30 @@ class NgramModel(ModelI):
         if (train is not None) and isinstance(train[0], compat.string_types):
             train = [train]
 
+        # we need to keep track of the number of word types we encounter
+        vocabulary = set()
         for sent in train:
             raw_ngrams = ngrams(sent, n, pad_left, pad_right, pad_symbol='')
             for ngram in raw_ngrams:
                 self._ngrams.add(ngram)
                 context = tuple(ngram[:-1])
                 token = ngram[-1]
-                cfd[(context, token)] += 1
+                cfd[context][token] += 1
+                vocabulary.add(token)
 
-        self._probdist = estimator(cfd, *estimator_args, **estimator_kwargs)
+        # Unless number of bins is explicitly passed, we should use the number
+        # of word types encountered during training as the bins value.
+        # If right padding is on, this includes the padding symbol.
+        if 'bins' not in estimator_kwargs:
+            estimator_kwargs['bins'] = len(vocabulary)
+
+        self._model = ConditionalProbDist(cfd, estimator, **estimator_kwargs)
 
         # recursively construct the lower-order models
         if not self.is_unigram_model:
             self._backoff = NgramModel(n-1, train,
                                         pad_left, pad_right,
                                         estimator,
-                                        *estimator_args,
                                         **estimator_kwargs)
 
             self._backoff_alphas = dict()
@@ -240,7 +234,12 @@ class NgramModel(ModelI):
         return text
 
     def _generate_one(self, context):
+<<<<<<< HEAD
         context = (self._lpad + tuple(context))[- self._n + 1:]
+=======
+        context = (self._lpad + tuple(context))[-self._n + 1:]
+
+>>>>>>> c54edec6856b877dd049cea5ef4a75b842af6c28
         if context in self:
             return self[context].generate()
         elif self._n > 1:
@@ -258,13 +257,20 @@ class NgramModel(ModelI):
         :type text: list(str)
         """
 
-        e = 0.0
+        H = 0.0     # entropy is conventionally denoted by "H"
         text = list(self._lpad) + text + list(self._rpad)
         for i in range(self._n - 1, len(text)):
+<<<<<<< HEAD
             context = tuple(text[i - self._n + 1:i])
             token = text[i]
             e += self.logprob(token, context)
         return e / float(len(text) - (self._n - 1))
+=======
+            context = tuple(text[(i - self._n + 1):i])
+            token = text[i]
+            H += self.logprob(token, context)
+        return H / float(len(text) - (self._n - 1))
+>>>>>>> c54edec6856b877dd049cea5ef4a75b842af6c28
 
     def perplexity(self, text):
         """
@@ -278,18 +284,24 @@ class NgramModel(ModelI):
         return pow(2.0, self.entropy(text))
 
     def __contains__(self, item):
+<<<<<<< HEAD
         return tuple(item) in self._probdist.freqdist
 
     def __getitem__(self, item):
         return self._probdist[tuple(item)]
+=======
+        if not isinstance(item, tuple):
+            item = (item,)
+        return item in self._model
+
+    def __getitem__(self, item):
+        if not isinstance(item, tuple):
+            item = (item,)
+        return self._model[item]
+>>>>>>> c54edec6856b877dd049cea5ef4a75b842af6c28
 
     def __repr__(self):
         return '<NgramModel with %d %d-grams>' % (len(self._ngrams), self._n)
-
-
-def teardown_module(module=None):
-    from nltk.corpus import brown
-    brown._unload()
 
 if __name__ == "__main__":
     import doctest
