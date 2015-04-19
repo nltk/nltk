@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+# Natural Language Toolkit: TGrep search
+#
+# Copyright (C) 2001-2015 NLTK Project
+# Author: Will Roberts <wildwilhelm@gmail.com>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
 
 '''
-TGrep search implementation for NTLK trees.
-
-(c) 16 March, 2013 Will Roberts <wildwilhelm@gmail.com>.
-@wroberts on github.
+TGrep search implementation for NLTK trees.
 
 This module supports TGrep2 syntax for matching parts of NLTK Trees.
 Note that many tgrep operators require the tree passed to be a
