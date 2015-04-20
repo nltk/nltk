@@ -27,13 +27,13 @@ SPACER = '###################################'
 def verbose(func):
     """Decorator for demo functions"""
     @wraps(func)
-    def with_logging(*args, **kwargs):
+    def with_formatting(*args, **kwargs):
         print()
         print(SPACER)
         print("Using %s" % (func.__name__))
         print(SPACER)
         return func(*args, **kwargs)
-    return with_logging
+    return with_formatting
 
 
 
@@ -44,8 +44,24 @@ FIELDS = ['id_str']
 USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
 #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
 HYDRATED = os.path.join(TWITTER, 'rehydrated.json')
+DATE = (2015, 4, 20, 16, 40)
 
 # demo 0
+@verbose
+def twitterclass_demo():
+    """
+    Use the simplified :class:`Twitter` class to write some tweets to a file.
+    """
+    tw = Twitter()
+    tw.tweets(keywords='love, hate', limit=10) #public stream
+    print(SPACER)
+    tw = Twitter()
+    tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
+    print(SPACER)
+    tw = Twitter()
+    tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
+
+# demo 1
 @verbose
 def sampletoscreen_demo(limit=20):
     """
@@ -56,7 +72,7 @@ def sampletoscreen_demo(limit=20):
     client.register(TweetViewer(limit=limit))
     client.sample()
 
-# demo 1
+# demo 2
 @verbose
 def tracktoscreen_demo(track="taylor swift", limit=10):
     """
@@ -67,7 +83,7 @@ def tracktoscreen_demo(track="taylor swift", limit=10):
     client.register(TweetViewer(limit=limit))
     client.filter(track=track)
 
-# demo 2
+# demo 3
 @verbose
 def search_demo(keywords='nltk'):
     """
@@ -78,7 +94,7 @@ def search_demo(keywords='nltk'):
     for tweet in client.search_tweets(keywords=keywords, count=10):
         print(tweet['text'])
 
-# demo 3
+# demo 4
 @verbose
 def tweets_by_user_demo(user='NLTK_org', count=200):
     oauth = credsfromfile()
@@ -86,7 +102,7 @@ def tweets_by_user_demo(user='NLTK_org', count=200):
     client.register(TweetWriter())
     client.user_tweets(user, count)
 
-# demo 4
+# demo 5
 @verbose
 def lookup_by_userid_demo():
     """
@@ -101,7 +117,7 @@ def lookup_by_userid_demo():
         following = info['friends_count']
         print("{}, followers: {}, following: {}".format(name, followers, following))
 
-# demo 5
+# demo 6
 @verbose
 def followtoscreen_demo(limit=10):
     """
@@ -116,7 +132,7 @@ def followtoscreen_demo(limit=10):
     client.register(TweetViewer(limit=limit))
     client.statuses.filter(follow=USERIDS)
 
-# demo 6
+# demo 7
 @verbose
 def streamtofile_demo(limit=20):
     """
@@ -127,7 +143,18 @@ def streamtofile_demo(limit=20):
     client.register(TweetWriter(limit=limit, repeat=False))
     client.statuses.sample()
 
-# demo 7
+# demo 8
+@verbose
+def limit_by_time_demo(limit=20, date_limit=DATE):
+    """
+    Sample from the Streaming API and send output to terminal.
+    """
+    oauth = credsfromfile()
+    client = Streamer(**oauth)
+    client.register(TweetWriter(limit=limit, date_limit=date_limit))
+    client.sample()
+
+# demo 9
 @verbose
 def extract_tweetids_demo(infile, outfile):
     """
@@ -138,8 +165,7 @@ def extract_tweetids_demo(infile, outfile):
     json2csv(infile, outfile, FIELDS)
     print("Writing ids to {}".format(outfile))
 
-
-# demo 8
+# demo 10
 @verbose
 def expand_tweetids_demo(infile, outfile):
     """
@@ -153,7 +179,7 @@ def expand_tweetids_demo(infile, outfile):
     client = Query(**oauth)
     client.lookup(infile, outfile)
 
-# demo 9
+# demo 11
 @verbose
 def corpusreader_demo():
     """
@@ -185,49 +211,40 @@ def corpusreader_demo():
     for text in reader.tokenized()[:15]:
         print(text)
 
-# demo 10
-@verbose
-def twitterclass_demo():
-    """
-    Use the simplified :class:`Twitter` class to write some tweets to a file.
-    """
-    tw = Twitter()
-    tw.tweets(keywords='love, hate', limit=10) #public stream
-    print(SPACER)
-    tw = Twitter()
-    tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
-    print(SPACER)
-    tw = Twitter()
-    tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
 
 
 
-ALL = range(11)
-DEMOS = ALL[:]
+
+ALL = range(12)
+DEMOS = ALL[8:9]
 
 
 if __name__ == "__main__":
     """Run selected demo functions."""
     if 0 in DEMOS:
-        sampletoscreen_demo()
-    if 1 in DEMOS:
-        tracktoscreen_demo()
-    if 2 in DEMOS:
-        search_demo()
-    if 3 in DEMOS:
-        tweets_by_user_demo()
-    if 4 in DEMOS:
-        lookup_by_userid_demo()
-    if 5 in DEMOS:
-        followtoscreen_demo()
-    if 6 in DEMOS:
-        streamtofile_demo()
-    if 7 in DEMOS:
-        extract_tweetids_demo(TWEETS, IDS)
-    if 8 in DEMOS:
-        expand_tweetids_demo(IDS, HYDRATED)
-    if 9 in DEMOS:
-        corpusreader_demo()
-    if 10 in DEMOS:
         twitterclass_demo()
+    if 1 in DEMOS:
+        sampletoscreen_demo()
+    if 2 in DEMOS:
+        tracktoscreen_demo()
+    if 3 in DEMOS:
+        search_demo()
+    if 4 in DEMOS:
+        tweets_by_user_demo()
+    if 5 in DEMOS:
+        lookup_by_userid_demo()
+    if 6 in DEMOS:
+        followtoscreen_demo()
+    if 7 in DEMOS:
+        streamtofile_demo()
+    if 8 in DEMOS:
+        limit_by_time_demo()
+    if 9 in DEMOS:
+        extract_tweetids_demo(TWEETS, IDS)
+    if 10 in DEMOS:
+        expand_tweetids_demo(IDS, HYDRATED)
+    if 11 in DEMOS:
+        corpusreader_demo()
+
+
 
