@@ -24,7 +24,7 @@ import itertools
 import json
 import os
 import requests
-import pytz
+from datetime import timezone
 
 try:
     from twython import Twython, TwythonStreamer, TwythonError
@@ -76,11 +76,16 @@ class Streamer(TwythonStreamer):
 
     def on_error(self, status_code, data):
         """
-        :param data: response from Twitter API
+        :param status_code: The status code returned by the Twitter API
+        :param data: The response from Twitter API
+
         """
         print(status_code)
 
     def sample(self):
+        """
+        Wrapper for 'statuses / sample' API call
+        """
         while self.do_continue:
             '''
             Stream in an endless loop until limit is reached
@@ -96,6 +101,9 @@ class Streamer(TwythonStreamer):
                 continue
 
     def filter(self, track='', follow=''):
+        """
+        Wrapper for 'statuses / filter' API call
+        """
         while self.do_continue:
             '''
             Stream in an endless loop until limit is reached
@@ -204,14 +212,16 @@ class Query(Twython):
         """
         return [self.show_user(user_id=userid) for userid in userids]
 
-    def user_tweets(self, user, count, include_rts='false'):
+    def user_tweets(self, screen_name, count, include_rts='false'):
         """
         Return a collection of the most recent Tweets posted by the user
 
-        :param user: A User ID or Screen Name
+        :param str user: The user's screen name; the initial '@' symbol should be omitted
+        :param int count: The number of tweets to recover; 200 is the maximum allowed
+        :param str include_rts: Whether to include statuses which have been\
+        retweeted by the user; possible values are 'true' and 'false'
         """
-        data = self.get_user_timeline(screen_name=user, count=count, include_rts=include_rts)
-        #if handler:
+        data = self.get_user_timeline(screen_name=screen_name, count=count, include_rts=include_rts)
         self.handler.handle(data)
 
 
@@ -219,7 +229,7 @@ class Query(Twython):
 
 class Twitter(object):
     """
-    Wrapper class with restricted functionality.
+    Wrapper class with restricted functionality and fewer options.
     """
     def __init__(self):
         self._oauth = credsfromfile()
@@ -227,7 +237,8 @@ class Twitter(object):
         self.query = Query(**self._oauth)
 
 
-    def tweets(self, keywords='', follow='', to_screen=True, stream=True, limit=100, date_limit=None):
+    def tweets(self, keywords='', follow='', to_screen=True, stream=True,
+               limit=100, date_limit=None):
         """
         Process some tweets in a simple manner.
 
@@ -335,11 +346,17 @@ class TweetWriter(TweetHandlerI):
         json_data = json.dumps(data)
         self.output.write(json_data + "\n")
         if self.date_limit:
-            tweet_date = datetime.datetime.strptime(data['created_at'],'%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=pytz.UTC)
+            tweet_date = datetime.datetime.strptime(data['created_at'], '%a %b %d\
+            %H:%M:%S +0000 %Y').replace(tzinfo=timezone.utc)
+            if tweet_date > self.date_limit:
+                print("Date limit {} is earlier than date of current tweet {}".\
+                                 format(self.date_limit, tweet_date))
+                return False
 
         self.startingup = False
         self.counter += 1
-        if (self.counter < self.limit and not (self.date_limit is not None and tweet_date > self.date_limit)):
+
+        if self.counter < self.limit:
             return True
         else:
             print('Written {} tweets'.format(self.counter))
