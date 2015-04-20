@@ -23,8 +23,8 @@ import datetime
 import itertools
 import json
 import os
-import sys
 import requests
+import pytz
 
 try:
     from twython import Twython, TwythonStreamer, TwythonError
@@ -227,7 +227,7 @@ class Twitter(object):
         self.query = Query(**self._oauth)
 
 
-    def tweets(self, keywords='', follow='', to_screen=True, stream=True, limit=100):
+    def tweets(self, keywords='', follow='', to_screen=True, stream=True, limit=100, date_limit=None):
         """
         Process some tweets in a simple manner.
 
@@ -240,9 +240,9 @@ class Twitter(object):
         :param int limit: Number of tweets to process
         """
         if to_screen:
-            handler = TweetViewer(limit=limit)
+            handler = TweetViewer(limit=limit, date_limit=date_limit)
         else:
-            handler = TweetWriter(limit=limit, repeat=False)
+            handler = TweetWriter(limit=limit, date_limit=date_limit, repeat=False)
 
         if stream:
             self.streamer.register(handler)
@@ -286,7 +286,7 @@ class TweetWriter(TweetHandlerI):
     """
     Handle data by writing it to a file.
     """
-    def __init__(self, limit=2000, repeat=True, fprefix='tweets',
+    def __init__(self, limit=2000, date_limit=None, repeat=True, fprefix='tweets',
                  subdir='twitter-files'):
         """
         :param limit: number of data items to process in the current round of processing
@@ -301,7 +301,7 @@ class TweetWriter(TweetHandlerI):
         self.subdir = guess_path(subdir)
         self.fname = self.timestamped_file()
         self.startingup = True
-        TweetHandlerI.__init__(self, limit)
+        TweetHandlerI.__init__(self, limit, date_limit)
 
 
     def timestamped_file(self):
@@ -334,10 +334,12 @@ class TweetWriter(TweetHandlerI):
             print('Writing to {}'.format(self.fname))
         json_data = json.dumps(data)
         self.output.write(json_data + "\n")
+        if self.date_limit:
+            tweet_date = datetime.datetime.strptime(data['created_at'],'%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=pytz.UTC)
 
         self.startingup = False
         self.counter += 1
-        if self.counter < self.limit:
+        if (self.counter < self.limit and not (self.date_limit is not None and tweet_date > self.date_limit)):
             return True
         else:
             print('Written {} tweets'.format(self.counter))
