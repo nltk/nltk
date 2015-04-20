@@ -9,13 +9,14 @@
 """
 Provides an interface for TweetHandlers.
 """
+import pytz
 
 class TweetHandlerI(object):
     """
     Interface class whose subclasses should implement a handle method that
     Twitter clients can delegate to.
     """
-    def __init__(self, limit=20):
+    def __init__(self, limit=20, date_limit=None):
         """
         :param limit: number of data items to process in the current round of
         processing
@@ -27,6 +28,10 @@ class TweetHandlerI(object):
 
         """
         self.limit = limit
+        if date_limit:
+            self.date_limit = pytz.UTC.localize(date_limit)
+        else:
+            self.date_limit = None
         self.startingup = True
         self.counter = 0
 
