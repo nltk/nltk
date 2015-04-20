@@ -328,11 +328,13 @@ class TransitionParser(ParserI):
     def _is_projective(self, depgraph):
         arc_list = []
         for key in depgraph.nodes:
-            node = depgraph.nodes[key]
+            node = depgraph.nodes[key]           
+            
             if 'head' in node:
                 childIdx = node['address']
                 parentIdx = node['head']
-                arc_list.append((parentIdx, childIdx))
+                if parentIdx is not None:
+                    arc_list.append((parentIdx, childIdx))
 
         for (parentIdx, childIdx) in arc_list:
             # Ensure that childIdx < parentIdx
