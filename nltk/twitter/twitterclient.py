@@ -24,14 +24,7 @@ import itertools
 import json
 import os
 import requests
-from nltk import compat
-
-if compat.PY26:
-    import pytz
-    UTC = pytz.utc
-else:
-    from datetime import timezone
-    UTC = timezone.utc
+from nltk.compat import UTC
 
 
 try:

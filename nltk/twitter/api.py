@@ -10,15 +10,8 @@
 """
 Provides an interface for TweetHandlers.
 """
-from nltk import compat
 import datetime
-
-if compat.PY26:
-    import pytz
-    UTC = pytz.utc
-else:
-    from datetime import timezone
-    UTC = timezone.utc
+from nltk.compat import UTC
 
 class TweetHandlerI(object):
     """
