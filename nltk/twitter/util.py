@@ -3,6 +3,7 @@
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
+#         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -48,15 +49,15 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     :param list fields: The list of fields to be extracted. Useful examples\
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
-    
-    :param error: behavior for enconding errors, see 
+
+    :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
     """
     with codecs.open(outfile, 'w', encoding=encoding, errors=errors) as outf, open(infile) as inf:
         if compat.PY3 == True:
             writer = csv.writer(outf)
         else:
-            writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors) 
+            writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
         for line in inf:
             tweet = json.loads(line)
             row = extract_fields(tweet, fields)

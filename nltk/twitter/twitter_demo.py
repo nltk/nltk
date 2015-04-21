@@ -39,7 +39,8 @@ def verbose(func):
 
 TWITTER = os.environ['TWITTER']
 TWEETS = os.path.join(TWITTER, 'demo_tweets.json')
-IDS = os.path.join(TWITTER, 'tweet_ids.csv')
+TWEETS = os.path.join(TWITTER, '1k_sample.json')
+IDS = os.path.join(TWITTER, '1k_sample.csv')
 FIELDS = ['id_str']
 USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
 #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
@@ -115,7 +116,7 @@ def lookup_by_userid_demo():
         name = info['screen_name']
         followers = info['followers_count']
         following = info['friends_count']
-        print("{}, followers: {}, following: {}".format(name, followers, following))
+        print("{0}, followers: {1}, following: {2}".format(name, followers, following))
 
 # demo 6
 @verbose
@@ -161,9 +162,9 @@ def extract_tweetids_demo(infile, outfile):
     Given a list of full tweets in a file (``infile``), write just the
     tweetIDs to a new file (`outfile`)
     """
-    print("Reading from {}".format(infile))
+    print("Reading from {0}".format(infile))
     json2csv(infile, outfile, FIELDS)
-    print("Writing ids to {}".format(outfile))
+    print("Writing ids to {0}".format(outfile))
 
 # demo 10
 @verbose
@@ -212,11 +213,8 @@ def corpusreader_demo():
         print(text)
 
 
-
-
-
 ALL = range(12)
-DEMOS = ALL[8:9]
+DEMOS = ALL[9:10]
 
 
 if __name__ == "__main__":
