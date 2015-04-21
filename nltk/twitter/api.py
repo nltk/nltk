@@ -10,8 +10,15 @@
 """
 Provides an interface for TweetHandlers.
 """
+from nltk import compat
 import datetime
-from datetime import timezone
+
+if compat.PY26:
+    import pytz
+    UTC = pytz.utc
+else:
+    from datetime import timezone
+    UTC = timezone.utc
 
 class TweetHandlerI(object):
     """
@@ -32,7 +39,7 @@ class TweetHandlerI(object):
         self.limit = limit
         self.date_limit = date_limit
         if date_limit is not None:
-            self.date_limit = datetime.datetime(*date_limit, tzinfo=timezone.utc)
+            self.date_limit = datetime.datetime(*date_limit, tzinfo=UTC)
 
         self.startingup = True
         """A flag to indicate whether this is the first data

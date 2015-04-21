@@ -24,10 +24,18 @@ import itertools
 import json
 import os
 import requests
-from datetime import timezone
+from nltk import compat
+
+if compat.PY26:
+    import pytz
+    UTC = pytz.utc
+else:
+    from datetime import timezone
+    UTC = timezone.utc
+
 
 try:
-    from twython import Twython, TwythonStreamer, TwythonError
+    from twython import Twython, TwythonStreamer
 except ImportError as err:
     import textwrap
     MSG = """The NLTK twitterclient module requires the Twython package. See\
@@ -97,7 +105,7 @@ class Streamer(TwythonStreamer):
                 self.statuses.sample()
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print("Error (stream will continue): {}".format(e))
+                    print("Error (stream will continue): {0}".format(e))
                 continue
 
     def filter(self, track='', follow=''):
@@ -117,7 +125,7 @@ class Streamer(TwythonStreamer):
                 self.statuses.filter(track=track, follow=follow)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    print("Error (stream will continue): {}".format(e))
+                    print("Error (stream will continue): {0}".format(e))
                 continue
 
 
@@ -149,7 +157,7 @@ class Query(Twython):
         with open(infile) as f:
             ids = [line.rstrip() for line in f]
         if verbose:
-            print("Counted {} Tweet IDs in {}.".format(len(ids), infile))
+            print("Counted {0} Tweet IDs in {1}.".format(len(ids), infile))
 
         id_chunks = [ids[i:i+100] for i in range(0, len(ids), 100)]
         """
@@ -184,7 +192,7 @@ class Query(Twython):
                 count += 1
 
         if verbose:
-            print("""Written {} Tweets to file {} of length {}
+            print("""Written {0} Tweets to file {1} of length {2}
             bytes""".format(count, outfile, os.path.getsize(outfile)))
 
     def search_tweets(self, keywords, count=100, lang='en'):
@@ -342,14 +350,14 @@ class TweetWriter(TweetHandlerI):
         """
         if self.startingup:
             self.output = open(self.fname, 'w')
-            print('Writing to {}'.format(self.fname))
+            print('Writing to {0}'.format(self.fname))
         json_data = json.dumps(data)
         self.output.write(json_data + "\n")
         if self.date_limit:
             tweet_date = datetime.datetime.strptime(data['created_at'], '%a %b %d\
-            %H:%M:%S +0000 %Y').replace(tzinfo=timezone.utc)
+            %H:%M:%S +0000 %Y').replace(tzinfo=UTC)
             if tweet_date > self.date_limit:
-                print("Date limit {} is earlier than date of current tweet {}".\
+                print("Date limit {0} is earlier than date of current tweet {1}".\
                                  format(self.date_limit, tweet_date))
                 return False
 
@@ -359,7 +367,7 @@ class TweetWriter(TweetHandlerI):
         if self.counter < self.limit:
             return True
         else:
-            print('Written {} tweets'.format(self.counter))
+            print('Written {0} tweets'.format(self.counter))
             self.output.close()
             if not self.repeat:
                 "Tell the client to disconnect"
@@ -368,7 +376,7 @@ class TweetWriter(TweetHandlerI):
                 self.fname = self.timestamped_file()
                 self.output = open(self.fname, 'w')
                 self.counter = 0
-                print('\nWriting to new file {}'.format(self.fname))
+                print('\nWriting to new file {0}'.format(self.fname))
                 return True
 
 
