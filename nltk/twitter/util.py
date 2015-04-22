@@ -53,10 +53,12 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
     """
-    with codecs.open(outfile, 'w', encoding=encoding, errors=errors) as outf, open(infile) as inf:
+    with open(infile) as inf:
         if compat.PY3 == True:
+            outf = open(outfile, 'w', encoding=encoding)
             writer = csv.writer(outf)
         else:
+            outf = open(outfile, 'wb')
             writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
         for line in inf:
             tweet = json.loads(line)
