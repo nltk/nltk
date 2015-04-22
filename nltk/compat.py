@@ -142,8 +142,14 @@ else:
             self.stream = f
             self.encoder = codecs.getincrementalencoder(encoding)(errors=errors)
     
+        def encode(self, data):
+            if isinstance(data, basestring):
+                return data.encode("utf-8")
+            else:
+                return data
+            
         def writerow(self, row):
-            self.writer.writerow([s.encode("utf-8") for s in row])
+            self.writer.writerow([self.encode(s) for s in row])
             # Fetch UTF-8 output from the queue ...
             data = self.queue.getvalue()
             data = data.decode("utf-8")
