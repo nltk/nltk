@@ -54,6 +54,9 @@ if PY3:
 
     from collections import Counter
 
+    from datetime import timezone
+    UTC = timezone.utc
+
 else:
     def b(s):
         return s
@@ -120,6 +123,9 @@ else:
             return sys.modules[name]
 
     sys.meta_path.insert(0, TkinterLoader())
+
+    import pytz
+    UTC = pytz.utc
 
     import csv, codecs, cStringIO
     class UnicodeWriter:
