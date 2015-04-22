@@ -6,6 +6,7 @@
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+from twython.exceptions import TwythonRateLimitError
 
 """
 NLTK Twitter client.
@@ -24,6 +25,7 @@ import itertools
 import json
 import os
 import requests
+import time
 from nltk.compat import UTC
 
 
@@ -101,7 +103,7 @@ class Streamer(TwythonStreamer):
                     print("Error (stream will continue): {0}".format(e))
                 continue
 
-    def filter(self, track='', follow=''):
+    def filter(self, track='', follow='', lang='en'):
         """
         Wrapper for 'statuses / filter' API call
         """
@@ -199,8 +201,25 @@ class Query(Twython):
         a comma-separated string.
         :rtype: json
         """
-        results = self.search(q=keywords, count=count, lang=lang)
-        return results['statuses']
+        results = self.search(q=keywords, count=min(100, count), lang=lang)
+        count_from_query = results['search_metadata']['count']
+        self.handler.handle_chunk(results['statuses'])
+        
+        '''
+        pagination loop: keep fetching tweets until the count requested is reached,
+        dealing with twitter rate limits 
+        '''
+        while count_from_query < count:
+            max_id = results['search_metadata']['max_id']
+            try:
+                results = self.search(q=keywords, count=min(100, count-count_from_query),
+                                      lang=lang, max_id=max_id)
+            except TwythonRateLimitError as e:
+                print("Waiting for 15 minutes -{0}".format(e))
+                time.sleep(15*60) # wait 15 minutes
+                continue           
+            count_from_query += results['search_metadata']['count']
+            self.handler.handle_chunk(results['statuses'])
 
     def user_info_from_id(self, userids):
         """
@@ -239,7 +258,7 @@ class Twitter(object):
 
 
     def tweets(self, keywords='', follow='', to_screen=True, stream=True,
-               limit=100, date_limit=None):
+               limit=100, date_limit=None, lang='en'):
         """
         Process some tweets in a simple manner.
 
@@ -261,15 +280,13 @@ class Twitter(object):
             if keywords == '' and follow == '':
                 self.streamer.sample()
             else:
-                self.streamer.filter(track=keywords, follow=follow)
+                self.streamer.filter(track=keywords, follow=follow, lang=lang)
         else:
             self.query.register(handler)
             if keywords == '':
                 raise ValueError("Please supply at least one keyword to search for.")
             else:
-                tweets = self.query.search_tweets(keywords, count=limit)
-                for tweet in tweets:
-                    print(tweet['text'])
+                self.query.search_tweets(keywords, count=limit, lang=lang)
 
 
 
