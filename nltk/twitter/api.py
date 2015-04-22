@@ -65,3 +65,11 @@ class TweetHandlerI(object):
         Deal appropriately with data returned by the Twitter API
         """
         raise NotImplementedError
+
+    def handle_chunk(self, data_chunk):
+        """
+        Deal appropriately with a list of elements returned by the Twitter API
+        (default implementation should be enough in most cases)
+        """
+        for item in data_chunk:
+            self.handle(item)
