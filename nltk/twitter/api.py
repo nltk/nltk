@@ -10,8 +10,29 @@
 """
 Provides an interface for TweetHandlers.
 """
-import datetime
-from nltk.compat import UTC
+
+'''
+The following is not a general purpose object for dealing with the local timezone
+- It assumes that the date passed has been created using datetime(..., tzinfo=Local),
+  where Local is an instance of the object LocalTimezoneOffsetWithUTC
+- For such un object, it returns the offset with UTC, used for date comparations
+
+Reference: https://docs.python.org/3/library/datetime.html
+'''
+import time as _time
+from datetime import tzinfo, timedelta, datetime
+
+class LocalTimezoneOffsetWithUTC(tzinfo):
+    STDOFFSET = timedelta(seconds = -_time.timezone)
+    if _time.daylight:
+        DSTOFFSET = timedelta(seconds = -_time.altzone)
+    else:
+        DSTOFFSET = STDOFFSET
+
+    def utcoffset(self, dt):
+        return self.DSTOFFSET
+
+Local = LocalTimezoneOffsetWithUTC()
 
 class TweetHandlerI(object):
     """
@@ -32,7 +53,7 @@ class TweetHandlerI(object):
         self.limit = limit
         self.date_limit = date_limit
         if date_limit is not None:
-            self.date_limit = datetime.datetime(*date_limit, tzinfo=UTC)
+            self.date_limit = datetime(*date_limit, tzinfo=Local)
 
         self.startingup = True
         """A flag to indicate whether this is the first data
