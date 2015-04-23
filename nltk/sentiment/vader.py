@@ -24,12 +24,24 @@ import re
 import sys
 import fnmatch
 import string
-import imp
+#import imp
 
-imp.reload(sys)
+#imp.reload(sys)
 
 def make_lex_dict(f):
-    return dict([(w_m[0], float(w_m[1])) for w_m in [wmsr.strip().split('\t')[0:2] for wmsr in open(f) ]])
+    """
+    Convert lexicon file to a dictionary
+    """
+    d = {}
+    with open(f, encoding='latin-1') as infile:
+        for line in infile:
+            (w, m) = line.strip().split('\t')[0:2]
+            d[w] = float(m)
+    return d    
+
+
+#def make_lex_dict(f):
+#    return dict([(w_m[0], float(w_m[1])) for w_m in [wmsr.strip().split('\t')[0:2] for wmsr in open(f) ]])
 
 f = 'vader_sentiment_lexicon.txt' # empirically derived valence ratings for words, emoticons, slang, swear words, acronyms/initialisms
 try:
@@ -52,15 +64,15 @@ c_INCR = 0.733
 REGEX_REMOVE_PUNCTUATION = re.compile('[%s]' % re.escape(string.punctuation))
 
 PUNC_LIST = [".", "!", "?", ",", ";", ":", "-", "'", "\"",
-                "!!", "!!!", "??", "???", "?!?", "!?!", "?!?!", "!?!?"]
+             "!!", "!!!", "??", "???", "?!?", "!?!", "?!?!", "!?!?"]
 NEGATE = ["aint", "arent", "cannot", "cant", "couldnt", "darent", "didnt", "doesnt",
-              "ain't", "aren't", "can't", "couldn't", "daren't", "didn't", "doesn't",
-              "dont", "hadnt", "hasnt", "havent", "isnt", "mightnt", "mustnt", "neither",
-              "don't", "hadn't", "hasn't", "haven't", "isn't", "mightn't", "mustn't",
-              "neednt", "needn't", "never", "none", "nope", "nor", "not", "nothing", "nowhere",
-              "oughtnt", "shant", "shouldnt", "uhuh", "wasnt", "werent",
-              "oughtn't", "shan't", "shouldn't", "uh-uh", "wasn't", "weren't",
-              "without", "wont", "wouldnt", "won't", "wouldn't", "rarely", "seldom", "despite"]
+          "ain't", "aren't", "can't", "couldn't", "daren't", "didn't", "doesn't",
+          "dont", "hadnt", "hasnt", "havent", "isnt", "mightnt", "mustnt", "neither",
+          "don't", "hadn't", "hasn't", "haven't", "isn't", "mightn't", "mustn't",
+          "neednt", "needn't", "never", "none", "nope", "nor", "not", "nothing", "nowhere",
+          "oughtnt", "shant", "shouldnt", "uhuh", "wasnt", "werent",
+          "oughtn't", "shan't", "shouldn't", "uh-uh", "wasn't", "weren't",
+          "without", "wont", "wouldnt", "won't", "wouldn't", "rarely", "seldom", "despite"]
 # booster/dampener 'intensifiers' or 'degree adverbs' http://en.wiktionary.org/wiki/Category:English_degree_adverbs
 BOOSTER_DICT = {"absolutely": B_INCR, "amazingly": B_INCR, "awfully": B_INCR, "completely": B_INCR, "considerably": B_INCR,
                 "decidedly": B_INCR, "deeply": B_INCR, "effing": B_INCR, "enormously": B_INCR,
@@ -100,7 +112,10 @@ def negated(list, nWords=[], includeNT=True):
     return False
 
 def normalize(score, alpha=15):
-    # normalize the score to be between -1 and 1 using an alpha that approximates the max expected value
+    """
+    Normalize the score to be between -1 and 1 using an alpha that
+    approximates the max expected value
+    """
     normScore = score/math.sqrt( ((score*score) + alpha) )
     return normScore
 
@@ -120,8 +135,11 @@ def isALLCAP_differential(wordList):
     else: isDiff = False
     return isDiff
 
-#check if the preceding words increase, decrease, or negate/nullify the valence
+
 def scalar_inc_dec(word, valence, isCap_diff):
+    """
+    Check if the preceding words increase, decrease, or negate/nullify the valence
+    """
     scalar = 0.0
     word_lower = word.lower()
     if word_lower in BOOSTER_DICT:
@@ -188,7 +206,7 @@ def sentiment(text):
         v = 0
         i = wordsAndEmoticons.index(item)
         if (i < len(wordsAndEmoticons)-1 and item.lower() == "kind" and \
-           wordsAndEmoticons[i+1].lower() == "of") or item.lower() in BOOSTER_DICT:
+            wordsAndEmoticons[i+1].lower() == "of") or item.lower() in BOOSTER_DICT:
             sentiments.append(v)
             continue
         item_lowercase = item.lower()
@@ -264,11 +282,11 @@ def sentiment(text):
 
             # check for negation case using "least"
             if i > 1 and wordsAndEmoticons[i-1].lower() not in WORD_VALENCE_DICT \
-                and wordsAndEmoticons[i-1].lower() == "least":
+               and wordsAndEmoticons[i-1].lower() == "least":
                 if (wordsAndEmoticons[i-2].lower() != "at" and wordsAndEmoticons[i-2].lower() != "very"):
                     v = v*n_scalar
             elif i > 0 and wordsAndEmoticons[i-1].lower() not in WORD_VALENCE_DICT \
-                and wordsAndEmoticons[i-1].lower() == "least":
+                 and wordsAndEmoticons[i-1].lower() == "least":
                 v = v*n_scalar
         sentiments.append(v)
 
@@ -340,24 +358,24 @@ def sentiment(text):
 if __name__ == '__main__':
     # --- examples -------
     sentences = [
-                "VADER is smart, handsome, and funny.",       # positive sentence example
-                "VADER is smart, handsome, and funny!",       # punctuation emphasis handled correctly (sentiment intensity adjusted)
-                "VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
-                "VADER is VERY SMART, handsome, and FUNNY.",  # emphasis for ALLCAPS handled
-                "VADER is VERY SMART, handsome, and FUNNY!!!",# combination of signals - VADER appropriately adjusts intensity
-                "VADER is VERY SMART, really handsome, and INCREDIBLY FUNNY!!!",# booster words & punctuation make this close to ceiling for score
-                "The book was good.",         # positive sentence
-                "The book was kind of good.", # qualified positive sentence is handled correctly (intensity adjusted)
-                "The plot was good, but the characters are uncompelling and the dialog is not great.", # mixed negation sentence
-                "A really bad, horrible book.",       # negative sentence with booster words
-                "At least it isn't a horrible book.", # negated negative sentence with contraction
-                ":) and :D",     # emoticons handled
-                "",              # an empty string is correctly handled
-                "Today sux",     #  negative slang handled
-                "Today sux!",    #  negative slang with punctuation emphasis handled
-                "Today SUX!",    #  negative slang with capitalization emphasis
-                "Today kinda sux! But I'll get by, lol" # mixed sentiment example with slang and constrastive conjunction "but"
-                 ]
+        "VADER is smart, handsome, and funny.",       # positive sentence example
+        "VADER is smart, handsome, and funny!",       # punctuation emphasis handled correctly (sentiment intensity adjusted)
+        "VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
+        "VADER is VERY SMART, handsome, and FUNNY.",  # emphasis for ALLCAPS handled
+        "VADER is VERY SMART, handsome, and FUNNY!!!",# combination of signals - VADER appropriately adjusts intensity
+        "VADER is VERY SMART, really handsome, and INCREDIBLY FUNNY!!!",# booster words & punctuation make this close to ceiling for score
+        "The book was good.",         # positive sentence
+        "The book was kind of good.", # qualified positive sentence is handled correctly (intensity adjusted)
+        "The plot was good, but the characters are uncompelling and the dialog is not great.", # mixed negation sentence
+        "A really bad, horrible book.",       # negative sentence with booster words
+        "At least it isn't a horrible book.", # negated negative sentence with contraction
+        ":) and :D",     # emoticons handled
+        "",              # an empty string is correctly handled
+        "Today sux",     #  negative slang handled
+        "Today sux!",    #  negative slang with punctuation emphasis handled
+        "Today SUX!",    #  negative slang with capitalization emphasis
+        "Today kinda sux! But I'll get by, lol" # mixed sentiment example with slang and constrastive conjunction "but"
+    ]
     paragraph = "It was one of the worst movies I've seen, despite good reviews. \
     Unbelievably bad acting!! Poor direction. VERY poor production. \
     The movie was bad. Very bad movie. VERY bad movie. VERY BAD movie. VERY BAD movie!"
@@ -367,29 +385,29 @@ if __name__ == '__main__':
     sentences.extend(lines_list)
 
     tricky_sentences = [
-                        "Most automated sentiment analysis tools are shit.",
-                        "VADER sentiment analysis is the shit.",
-                        "Sentiment analysis has never been good.",
-                        "Sentiment analysis with VADER has never been this good.",
-                        "Warren Beatty has never been so entertaining.",
-                        "I won't say that the movie is astounding and I wouldn't claim that the movie is too banal either.",
-                        "I like to hate Michael Bay films, but I couldn't fault this one",
-                        "It's one thing to watch an Uwe Boll film, but another thing entirely to pay for it",
-                        "The movie was too good",
-                        "This movie was actually neither that funny, nor super witty.",
-                        "This movie doesn't care about cleverness, wit or any other kind of intelligent humor.",
-                        "Those who find ugly meanings in beautiful things are corrupt without being charming.",
-                        "There are slow and repetitive parts, BUT it has just enough spice to keep it interesting.",
-                        "The script is not fantastic, but the acting is decent and the cinematography is EXCELLENT!",
-                        "Roger Dodger is one of the most compelling variations on this theme.",
-                        "Roger Dodger is one of the least compelling variations on this theme.",
-                        "Roger Dodger is at least compelling as a variation on the theme.",
-                        "they fall in love with the product",
-                        "but then it breaks",
-                        "usually around the time the 90 day warranty expires",
-                        "the twin towers collapsed today",
-                        "However, Mr. Carter solemnly argues, his client carried out the kidnapping under orders and in the ''least offensive way possible.''"
-                        ]
+        "Most automated sentiment analysis tools are shit.",
+        "VADER sentiment analysis is the shit.",
+        "Sentiment analysis has never been good.",
+        "Sentiment analysis with VADER has never been this good.",
+        "Warren Beatty has never been so entertaining.",
+        "I won't say that the movie is astounding and I wouldn't claim that the movie is too banal either.",
+        "I like to hate Michael Bay films, but I couldn't fault this one",
+        "It's one thing to watch an Uwe Boll film, but another thing entirely to pay for it",
+        "The movie was too good",
+        "This movie was actually neither that funny, nor super witty.",
+        "This movie doesn't care about cleverness, wit or any other kind of intelligent humor.",
+        "Those who find ugly meanings in beautiful things are corrupt without being charming.",
+        "There are slow and repetitive parts, BUT it has just enough spice to keep it interesting.",
+        "The script is not fantastic, but the acting is decent and the cinematography is EXCELLENT!",
+        "Roger Dodger is one of the most compelling variations on this theme.",
+        "Roger Dodger is one of the least compelling variations on this theme.",
+        "Roger Dodger is at least compelling as a variation on the theme.",
+        "they fall in love with the product",
+        "but then it breaks",
+        "usually around the time the 90 day warranty expires",
+        "the twin towers collapsed today",
+        "However, Mr. Carter solemnly argues, his client carried out the kidnapping under orders and in the ''least offensive way possible.''"
+    ]
     sentences.extend(tricky_sentences)
     for sentence in sentences:
         print(sentence)
