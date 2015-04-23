@@ -18,19 +18,18 @@ If you use the VADER sentiment analysis tools, please cite:
 """
 
 
-
-
 import os
 import math
 import re
 import sys
 import fnmatch
 import string
+import imp
 
-reload(sys)
+imp.reload(sys)
 
 def make_lex_dict(f):
-    return dict(map(lambda (w, m): (w, float(m)), [wmsr.strip().split('\t')[0:2] for wmsr in open(f) ]))
+    return dict([(w_m[0], float(w_m[1])) for w_m in [wmsr.strip().split('\t')[0:2] for wmsr in open(f) ]])
 
 f = 'vader_sentiment_lexicon.txt' # empirically derived valence ratings for words, emoticons, slang, swear words, acronyms/initialisms
 try:
@@ -139,7 +138,7 @@ def sentiment(text):
     Returns a float for sentiment strength based on the input text.
     Positive values are positive valence, negative value are negative valence.
     """
-    if not isinstance(text, unicode) and not isinstance(text, str):
+    if not isinstance(text, str) and not isinstance(text, str):
         text = str(text)
 
     wordsAndEmoticons = text.split() #doesn't separate words from adjacent punctuation (keeps emoticons & contractions)
@@ -235,11 +234,11 @@ def sentiment(text):
                 #other_idioms = {"back handed": -2, "blow smoke": -2, "blowing smoke": -2, "upper hand": 1, "break a leg": 2,
                 #                "cooking with gas": 2, "in the black": 2, "in the red": -2, "on the ball": 2,"under the weather": -2}
 
-                onezero = u"{} {}".format(wordsAndEmoticons[i-1], wordsAndEmoticons[i])
-                twoonezero = u"{} {} {}".format(wordsAndEmoticons[i-2], wordsAndEmoticons[i-1], wordsAndEmoticons[i])
-                twoone = u"{} {}".format(wordsAndEmoticons[i-2], wordsAndEmoticons[i-1])
-                threetwoone = u"{} {} {}".format(wordsAndEmoticons[i-3], wordsAndEmoticons[i-2], wordsAndEmoticons[i-1])
-                threetwo = u"{} {}".format(wordsAndEmoticons[i-3], wordsAndEmoticons[i-2])
+                onezero = "{} {}".format(wordsAndEmoticons[i-1], wordsAndEmoticons[i])
+                twoonezero = "{} {} {}".format(wordsAndEmoticons[i-2], wordsAndEmoticons[i-1], wordsAndEmoticons[i])
+                twoone = "{} {}".format(wordsAndEmoticons[i-2], wordsAndEmoticons[i-1])
+                threetwoone = "{} {} {}".format(wordsAndEmoticons[i-3], wordsAndEmoticons[i-2], wordsAndEmoticons[i-1])
+                threetwo = "{} {}".format(wordsAndEmoticons[i-3], wordsAndEmoticons[i-2])
                 if onezero in SPECIAL_CASE_IDIOMS:
                     v = SPECIAL_CASE_IDIOMS[onezero]
                 elif twoonezero in SPECIAL_CASE_IDIOMS:
@@ -251,11 +250,11 @@ def sentiment(text):
                 elif threetwo in SPECIAL_CASE_IDIOMS:
                     v = SPECIAL_CASE_IDIOMS[threetwo]
                 if len(wordsAndEmoticons)-1 > i:
-                    zeroone = u"{} {}".format(wordsAndEmoticons[i], wordsAndEmoticons[i+1])
+                    zeroone = "{} {}".format(wordsAndEmoticons[i], wordsAndEmoticons[i+1])
                     if zeroone in SPECIAL_CASE_IDIOMS:
                         v = SPECIAL_CASE_IDIOMS[zeroone]
                 if len(wordsAndEmoticons)-1 > i+1:
-                    zeroonetwo = u"{} {}".format(wordsAndEmoticons[i], wordsAndEmoticons[i+1], wordsAndEmoticons[i+2])
+                    zeroonetwo = "{} {}".format(wordsAndEmoticons[i], wordsAndEmoticons[i+1], wordsAndEmoticons[i+2])
                     if zeroonetwo in SPECIAL_CASE_IDIOMS:
                         v = SPECIAL_CASE_IDIOMS[zeroonetwo]
 
@@ -341,23 +340,23 @@ def sentiment(text):
 if __name__ == '__main__':
     # --- examples -------
     sentences = [
-                u"VADER is smart, handsome, and funny.",       # positive sentence example
-                u"VADER is smart, handsome, and funny!",       # punctuation emphasis handled correctly (sentiment intensity adjusted)
-                u"VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
-                u"VADER is VERY SMART, handsome, and FUNNY.",  # emphasis for ALLCAPS handled
-                u"VADER is VERY SMART, handsome, and FUNNY!!!",# combination of signals - VADER appropriately adjusts intensity
-                u"VADER is VERY SMART, really handsome, and INCREDIBLY FUNNY!!!",# booster words & punctuation make this close to ceiling for score
-                u"The book was good.",         # positive sentence
-                u"The book was kind of good.", # qualified positive sentence is handled correctly (intensity adjusted)
-                u"The plot was good, but the characters are uncompelling and the dialog is not great.", # mixed negation sentence
-                u"A really bad, horrible book.",       # negative sentence with booster words
-                u"At least it isn't a horrible book.", # negated negative sentence with contraction
-                u":) and :D",     # emoticons handled
-                u"",              # an empty string is correctly handled
-                u"Today sux",     #  negative slang handled
-                u"Today sux!",    #  negative slang with punctuation emphasis handled
-                u"Today SUX!",    #  negative slang with capitalization emphasis
-                u"Today kinda sux! But I'll get by, lol" # mixed sentiment example with slang and constrastive conjunction "but"
+                "VADER is smart, handsome, and funny.",       # positive sentence example
+                "VADER is smart, handsome, and funny!",       # punctuation emphasis handled correctly (sentiment intensity adjusted)
+                "VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
+                "VADER is VERY SMART, handsome, and FUNNY.",  # emphasis for ALLCAPS handled
+                "VADER is VERY SMART, handsome, and FUNNY!!!",# combination of signals - VADER appropriately adjusts intensity
+                "VADER is VERY SMART, really handsome, and INCREDIBLY FUNNY!!!",# booster words & punctuation make this close to ceiling for score
+                "The book was good.",         # positive sentence
+                "The book was kind of good.", # qualified positive sentence is handled correctly (intensity adjusted)
+                "The plot was good, but the characters are uncompelling and the dialog is not great.", # mixed negation sentence
+                "A really bad, horrible book.",       # negative sentence with booster words
+                "At least it isn't a horrible book.", # negated negative sentence with contraction
+                ":) and :D",     # emoticons handled
+                "",              # an empty string is correctly handled
+                "Today sux",     #  negative slang handled
+                "Today sux!",    #  negative slang with punctuation emphasis handled
+                "Today SUX!",    #  negative slang with capitalization emphasis
+                "Today kinda sux! But I'll get by, lol" # mixed sentiment example with slang and constrastive conjunction "but"
                  ]
     paragraph = "It was one of the worst movies I've seen, despite good reviews. \
     Unbelievably bad acting!! Poor direction. VERY poor production. \
@@ -393,8 +392,8 @@ if __name__ == '__main__':
                         ]
     sentences.extend(tricky_sentences)
     for sentence in sentences:
-        print sentence
+        print(sentence)
         ss = sentiment(sentence)
-        print "\t" + str(ss)
+        print("\t" + str(ss))
 
-    print "\n\n Done!"
+    print("\n\n Done!")
