@@ -15,7 +15,6 @@ import csv
 import json
 import os
 import pprint
-import codecs
 import nltk.compat as compat
 
 from twython import Twython
@@ -29,8 +28,21 @@ def extract_fields(tweet, fields):
     :param list fields: The fields to be extracted from the tweet
     :rtype: list(str)
     """
-    return [tweet[field] for field in fields]
+    out = []
+    for field in fields:
+        _add_field_to_out(tweet, field, out)
+    return out
 
+def _add_field_to_out(json, field, out):
+    if isinstance(field, dict):
+        for key, value in field.iteritems():
+            _add_field_to_out(json[key], value, out)
+    else:
+        if isinstance(field, basestring):
+            out += [json[field]]
+        else :
+            out += [json[value] for value in field]
+        
 
 def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     """
@@ -51,7 +63,6 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
 
     :param error: Behaviour for encoding errors, see\
-    https://docs.python.org/3/library/codecs.html#codec-base-classes
     """
     with open(infile) as inf:
         if compat.PY3 == True:
