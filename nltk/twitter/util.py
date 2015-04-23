@@ -15,7 +15,6 @@ import csv
 import json
 import os
 import pprint
-import codecs
 import nltk.compat as compat
 
 from twython import Twython
@@ -29,8 +28,21 @@ def extract_fields(tweet, fields):
     :param list fields: The fields to be extracted from the tweet
     :rtype: list(str)
     """
-    return [tweet[field] for field in fields]
+    out = []
+    for field in fields:
+        _add_field_to_out(tweet, field, out)
+    return out
 
+def _add_field_to_out(json, field, out):
+    if isinstance(field, dict):
+        for key, value in field.iteritems():
+            _add_field_to_out(json[key], value, out)
+    else:
+        if isinstance(field, basestring):
+            out += [json[field]]
+        else :
+            out += [json[value] for value in field]
+        
 
 def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     """
@@ -40,6 +52,9 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     This utility function allows a file of full tweets to be easily converted
     to a CSV file for easier processing. For example, just tweetIDs or
     just the text content of the tweets can be extracted.
+    
+    Additionally, the function allows combinations of fields of Twitter. See
+    below.
 
     :param str infile: The name of the file containing full tweets
 
@@ -49,14 +64,20 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     :param list fields: The list of fields to be extracted. Useful examples\
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
+    e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
+    Addionally, it allows fileds from other Twitter entities.
+    e. g.: ['id', 'text', {'user' : ['id', 'followers_count', 'friends_count']}]
+    
 
     :param error: Behaviour for encoding errors, see\
-    https://docs.python.org/3/library/codecs.html#codec-base-classes
+    https://docs.python.org/3/library/codecs.html#codec-base-classes 
     """
-    with codecs.open(outfile, 'w', encoding=encoding, errors=errors) as outf, open(infile) as inf:
+    with open(infile) as inf:
         if compat.PY3 == True:
+            outf = open(outfile, 'w', encoding=encoding)
             writer = csv.writer(outf)
         else:
+            outf = open(outfile, 'wb')
             writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
         for line in inf:
             tweet = json.loads(line)
