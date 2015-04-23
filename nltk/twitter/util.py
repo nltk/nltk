@@ -52,6 +52,9 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     This utility function allows a file of full tweets to be easily converted
     to a CSV file for easier processing. For example, just tweetIDs or
     just the text content of the tweets can be extracted.
+    
+    Additionally, the function allows combinations of fields of Twitter. See
+    below.
 
     :param str infile: The name of the file containing full tweets
 
@@ -61,8 +64,13 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     :param list fields: The list of fields to be extracted. Useful examples\
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
+    e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
+    Addionally, it allows fileds from other Twitter entities.
+    e. g.: ['id', 'text', {'user' : ['id', 'followers_count', 'friends_count']}]
+    
 
     :param error: Behaviour for encoding errors, see\
+    https://docs.python.org/3/library/codecs.html#codec-base-classes 
     """
     with open(infile) as inf:
         if compat.PY3 == True:
