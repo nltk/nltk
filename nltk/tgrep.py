@@ -909,3 +909,8 @@ def tgrep_nodes(tree, tgrep_string, search_leaves = True):
     '''
     return [tree[position] for position in tgrep_positions(tree, tgrep_string,
                                                            search_leaves)]
+
+# run module doctests
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
