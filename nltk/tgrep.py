@@ -9,18 +9,78 @@
 # For license information, see LICENSE.TXT
 
 '''
-TGrep search implementation for NLTK trees.
+============================================
+ TGrep search implementation for NLTK trees
+============================================
 
 This module supports TGrep2 syntax for matching parts of NLTK Trees.
 Note that many tgrep operators require the tree passed to be a
-ParentedTree.
+``ParentedTree``.
 
-Tgrep tutorial:
-http://www.stanford.edu/dept/linguistics/corpora/cas-tut-tgrep.html
-Tgrep2 manual:
-http://tedlab.mit.edu/~dr/Tgrep2/tgrep2.pdf
-Tgrep2 source:
-http://tedlab.mit.edu/~dr/Tgrep2/
+External links:
+
+- `Tgrep tutorial <http://www.stanford.edu/dept/linguistics/corpora/cas-tut-tgrep.html>`_
+- `Tgrep2 manual <http://tedlab.mit.edu/~dr/Tgrep2/tgrep2.pdf>`_
+- `Tgrep2 source <http://tedlab.mit.edu/~dr/Tgrep2/>`_
+
+Usage
+=====
+
+>>> from nltk.tree import ParentedTree
+>>> import nltk_tgrep
+>>> tree = ParentedTree.fromstring('(S (NP (DT the) (JJ big) (NN dog)) (VP bit) (NP (DT a) (NN cat)))')
+>>> nltk_tgrep.tgrep_nodes(tree, 'NN')
+[ParentedTree('NN', ['dog']), ParentedTree('NN', ['cat'])]
+>>> nltk_tgrep.tgrep_positions(tree, 'NN')
+[(0, 2), (2, 1)]
+>>> nltk_tgrep.tgrep_nodes(tree, 'DT')
+[ParentedTree('DT', ['the']), ParentedTree('DT', ['a'])]
+>>> nltk_tgrep.tgrep_nodes(tree, 'DT $ JJ')
+[ParentedTree('DT', ['the'])]
+
+This implementation adds syntax to select nodes based on their NLTK
+tree position.  This syntax is ``N`` plus a Python tuple representing
+the tree position.  For instance, ``N()``, ``N(0,)``, ``N(0,0)`` are
+valid node selectors.  Example:
+
+>>> tree = ParentedTree.fromstring('(S (NP (DT the) (JJ big) (NN dog)) (VP bit) (NP (DT a) (NN cat)))')
+>>> tree[0,0]
+ParentedTree('DT', ['the'])
+>>> tree[0,0].treeposition()
+(0, 0)
+>>> nltk_tgrep.tgrep_nodes(tree, 'N(0,0)')
+[ParentedTree('DT', ['the'])]
+
+Caveats:
+========
+
+- Link modifiers: "?" and "=" are not implemented.
+- Tgrep compatibility: Using "@" for "!", "{" for "<", "}" for ">" are
+  not implemented.
+- The "=" and "~" links are not implemented.
+
+Known Issues:
+=============
+
+- There are some issues with link relations involving leaf nodes
+  (which are represented as bare strings in NLTK trees).  For
+  instance, consider the tree::
+
+      (S (A x))
+
+  The search string ``* !>> S`` should select all nodes which are not
+  dominated in some way by an ``S`` node (i.e., all nodes which are
+  not descendants of an ``S``).  Clearly, in this tree, the only node
+  which fulfills this criterion is the top node (since it is not
+  dominated by anything).  However, the code here will find both the
+  top node and the leaf node ``x``.  This is because we cannot recover
+  the parent of the leaf, since it is stored as a bare string.
+
+  A possible workaround, when performing this kind of search, would be
+  to filter out all leaf nodes.
+
+Implementation notes
+====================
 
 This implementation is (somewhat awkwardly) based on lambda functions
 which are predicates on a node.  A predicate is a function which is
@@ -34,15 +94,20 @@ actual predicate function is declared with three arguments::
 
     pred = lambda n, m, l: return True # some logic here
 
-`n` is a node in a tree; this argument must always be given
-`m` contains a dictionary, mapping macro names onto predicate functions
-`l` is a dictionary to map node labels onto nodes in the tree
+``n``
+    is a node in a tree; this argument must always be given
 
-`m` and `l` are declared to default to `None`, and so need not be
+``m``
+    contains a dictionary, mapping macro names onto predicate functions
+
+``l``
+    is a dictionary to map node labels onto nodes in the tree
+
+``m`` and ``l`` are declared to default to ``None``, and so need not be
 specified in a call to a predicate.  Predicates which call other
 predicates must always pass the value of these arguments on.  The
-top-level predicate (constructed by `_tgrep_exprs_action`) binds the
-macro definitions to `m` and initialises `l` to an empty dictionary.
+top-level predicate (constructed by ``_tgrep_exprs_action``) binds the
+macro definitions to ``m`` and initialises ``l`` to an empty dictionary.
 '''
 
 from __future__ import absolute_import, print_function, unicode_literals
