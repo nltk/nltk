@@ -15,7 +15,7 @@ Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for
 Sentiment Analysis of Social Media Text. Eighth International Conference on
 Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
   
-  
+>>> sid = SentimentIntensityDetector()
 >>> sentences = ["VADER is smart, handsome, and funny.", # positive sentence example
 ...    "VADER is smart, handsome, and funny!", # punctuation emphasis handled correctly (sentiment intensity adjusted)
 ...    "VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
@@ -67,12 +67,110 @@ Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 ...    "However, Mr. Carter solemnly argues, his client carried out the kidnapping under orders and in the ''least offensive way possible.''"
 ... ]
 >>> sentences.extend(tricky_sentences)
->>> for sentence in sentences[0:1]:
+>>> for sentence in sentences:
 ...     print(sentence)
-...     ss = sentiment(sentence)
-...     print(str(ss))
+...     ss = sid.sentiment(sentence)
+...     for k in sorted(ss):
+...         print('{0}: {1}, '.format(k, ss[k]), end='')
+...     print()
 VADER is smart, handsome, and funny.
-{'pos': 0.746, 'compound': 0.8316, 'neu': 0.254, 'neg': 0.0}
+compound: 0.8316, neg: 0.0, neu: 0.254, pos: 0.746, 
+VADER is smart, handsome, and funny!
+compound: 0.8439, neg: 0.0, neu: 0.248, pos: 0.752, 
+VADER is very smart, handsome, and funny.
+compound: 0.8545, neg: 0.0, neu: 0.299, pos: 0.701, 
+VADER is VERY SMART, handsome, and FUNNY.
+compound: 0.9227, neg: 0.0, neu: 0.246, pos: 0.754, 
+VADER is VERY SMART, handsome, and FUNNY!!!
+compound: 0.9342, neg: 0.0, neu: 0.233, pos: 0.767, 
+VADER is VERY SMART, really handsome, and INCREDIBLY FUNNY!!!
+compound: 0.9469, neg: 0.0, neu: 0.294, pos: 0.706, 
+The book was good.
+compound: 0.4404, neg: 0.0, neu: 0.508, pos: 0.492, 
+The book was kind of good.
+compound: 0.3832, neg: 0.0, neu: 0.657, pos: 0.343, 
+The plot was good, but the characters are uncompelling and the dialog is not great.
+compound: -0.7042, neg: 0.327, neu: 0.579, pos: 0.094, 
+A really bad, horrible book.
+compound: -0.8211, neg: 0.791, neu: 0.209, pos: 0.0, 
+At least it isn't a horrible book.
+compound: 0.431, neg: 0.0, neu: 0.637, pos: 0.363, 
+:) and :D
+compound: 0.7925, neg: 0.0, neu: 0.124, pos: 0.876, 
+<BLANKLINE>
+compound: 0.0, neg: 0.0, neu: 0.0, pos: 0.0, 
+Today sux
+compound: -0.3612, neg: 0.714, neu: 0.286, pos: 0.0, 
+Today sux!
+compound: -0.4199, neg: 0.736, neu: 0.264, pos: 0.0, 
+Today SUX!
+compound: -0.5461, neg: 0.779, neu: 0.221, pos: 0.0, 
+Today kinda sux! But I'll get by, lol
+compound: 0.2228, neg: 0.195, neu: 0.531, pos: 0.274, 
+It was one of the worst movies I've seen, despite good reviews.
+compound: -0.7584, neg: 0.394, neu: 0.606, pos: 0.0, 
+... Unbelievably bad acting!!
+compound: -0.6572, neg: 0.593, neu: 0.407, pos: 0.0, 
+Poor direction.
+compound: -0.4767, neg: 0.756, neu: 0.244, pos: 0.0, 
+VERY poor production.
+compound: -0.6281, neg: 0.674, neu: 0.326, pos: 0.0, 
+...
+compound: 0.0, neg: 0.0, neu: 1.0, pos: 0.0, 
+The movie was bad.
+compound: -0.5423, neg: 0.538, neu: 0.462, pos: 0.0, 
+Very bad movie.
+compound: -0.5849, neg: 0.655, neu: 0.345, pos: 0.0, 
+VERY bad movie.
+compound: -0.6732, neg: 0.694, neu: 0.306, pos: 0.0, 
+VERY BAD movie.
+compound: -0.7398, neg: 0.724, neu: 0.276, pos: 0.0, 
+VERY BAD movie!
+compound: -0.7616, neg: 0.735, neu: 0.265, pos: 0.0, 
+Most automated sentiment analysis tools are shit.
+compound: -0.5574, neg: 0.375, neu: 0.625, pos: 0.0, 
+VADER sentiment analysis is the shit.
+compound: 0.6124, neg: 0.0, neu: 0.556, pos: 0.444, 
+Sentiment analysis has never been good.
+compound: -0.3412, neg: 0.325, neu: 0.675, pos: 0.0, 
+Sentiment analysis with VADER has never been this good.
+compound: 0.5228, neg: 0.0, neu: 0.703, pos: 0.297, 
+Warren Beatty has never been so entertaining.
+compound: 0.5777, neg: 0.0, neu: 0.616, pos: 0.384, 
+I won't say that the movie is astounding and I wouldn't claim that the movie is too banal either.
+compound: 0.4215, neg: 0.0, neu: 0.851, pos: 0.149, 
+I like to hate Michael Bay films, but I couldn't fault this one
+compound: 0.3153, neg: 0.157, neu: 0.534, pos: 0.309, 
+It's one thing to watch an Uwe Boll film, but another thing entirely to pay for it
+compound: -0.2541, neg: 0.112, neu: 0.888, pos: 0.0, 
+The movie was too good
+compound: 0.4404, neg: 0.0, neu: 0.58, pos: 0.42, 
+This movie was actually neither that funny, nor super witty.
+compound: -0.6759, neg: 0.41, neu: 0.59, pos: 0.0, 
+This movie doesn't care about cleverness, wit or any other kind of intelligent humor.
+compound: -0.1338, neg: 0.265, neu: 0.497, pos: 0.239, 
+Those who find ugly meanings in beautiful things are corrupt without being charming.
+compound: -0.3553, neg: 0.314, neu: 0.493, pos: 0.192, 
+There are slow and repetitive parts, BUT it has just enough spice to keep it interesting.
+compound: 0.4678, neg: 0.079, neu: 0.735, pos: 0.186, 
+The script is not fantastic, but the acting is decent and the cinematography is EXCELLENT!
+compound: 0.7565, neg: 0.092, neu: 0.607, pos: 0.301, 
+Roger Dodger is one of the most compelling variations on this theme.
+compound: 0.2944, neg: 0.0, neu: 0.834, pos: 0.166, 
+Roger Dodger is one of the least compelling variations on this theme.
+compound: -0.1695, neg: 0.132, neu: 0.868, pos: 0.0, 
+Roger Dodger is at least compelling as a variation on the theme.
+compound: 0.2263, neg: 0.0, neu: 0.84, pos: 0.16, 
+they fall in love with the product
+compound: 0.6369, neg: 0.0, neu: 0.588, pos: 0.412, 
+but then it breaks
+compound: 0.0, neg: 0.0, neu: 1.0, pos: 0.0, 
+usually around the time the 90 day warranty expires
+compound: 0.0, neg: 0.0, neu: 1.0, pos: 0.0, 
+the twin towers collapsed today
+compound: -0.2732, neg: 0.344, neu: 0.656, pos: 0.0, 
+However, Mr. Carter solemnly argues, his client carried out the kidnapping under orders and in the ''least offensive way possible.''
+compound: -0.5859, neg: 0.23, neu: 0.697, pos: 0.074, 
 
 """
 
@@ -81,36 +179,12 @@ import os
 import math
 import re
 import sys
-import fnmatch
+#import fnmatch
 import string
-#import imp
 
-#imp.reload(sys)
+from nltk.util import OrderedDict
 
-def make_lex_dict(f):
-    """
-    Convert lexicon file to a dictionary
-    """
-    d = {}
-    with open(f, encoding='latin-1') as infile:
-        for line in infile:
-            (w, m) = line.strip().split('\t')[0:2]
-            d[w] = float(m)
-    return d    
-
-
-#def make_lex_dict(f):
-#    return dict([(w_m[0], float(w_m[1])) for w_m in [wmsr.strip().split('\t')[0:2] for wmsr in open(f) ]])
-
-f = 'vader_sentiment_lexicon.txt' # empirically derived valence ratings for words, emoticons, slang, swear words, acronyms/initialisms
-try:
-    WORD_VALENCE_DICT = make_lex_dict(f)
-except:
-    f = os.path.join(os.path.dirname(__file__),'vader_sentiment_lexicon.txt')
-    WORD_VALENCE_DICT = make_lex_dict(f)
-
-
-##CONSTANTS#####
+##Constants##
 
 #(empirically derived mean sentiment intensity rating increase for booster words)
 B_INCR = 0.293
@@ -155,20 +229,25 @@ BOOSTER_DICT = {"absolutely": B_INCR, "amazingly": B_INCR, "awfully": B_INCR, "c
 SPECIAL_CASE_IDIOMS = {"the shit": 3, "the bomb": 3, "bad ass": 1.5, "yeah right": -2,
                        "cut the mustard": 2, "kiss of death": -1.5, "hand to mouth": -2}
 
-def negated(list, nWords=[], includeNT=True):
-    nWords.extend(NEGATE)
-    for word in nWords:
-        if word in list:
+
+##Static methods##
+
+def negated(input_words, include_nt=True):
+    neg_words = []
+    neg_words.extend(NEGATE)
+    for word in neg_words:
+        if word in input_words:
             return True
-    if includeNT:
-        for word in list:
+    if include_nt:
+        for word in input_words:
             if "n't" in word:
                 return True
-    if "least" in list:
-        i = list.index("least")
-        if i > 0 and list[i-1] != "at":
+    if "least" in input_words:
+        i = input_words.index("least")
+        if i > 0 and input_words[i-1] != "at":
             return True
     return False
+
 
 def normalize(score, alpha=15):
     """
@@ -178,24 +257,27 @@ def normalize(score, alpha=15):
     normScore = score/math.sqrt( ((score*score) + alpha) )
     return normScore
 
-def wildCardMatch(patternWithWildcard, listOfStringsToMatchAgainst):
-    listOfMatches = fnmatch.filter(listOfStringsToMatchAgainst, patternWithWildcard)
-    return listOfMatches
 
 
-def isALLCAP_differential(wordList):
-    countALLCAPS= 0
-    for w in wordList:
+def allcap_differential(words):
+    """
+    Check whether just some words in in the input are ALL CAPS 
+    
+    :param list words: The words to inspect
+    :returns: `True` if some but not all items in `words` are ALL CAPS
+    """
+    is_different = False
+    allcap_words = 0
+    for w in words:
         if w.isupper():
-            countALLCAPS += 1
-    cap_differential = len(wordList) - countALLCAPS
-    if cap_differential > 0 and cap_differential < len(wordList):
-        isDiff = True
-    else: isDiff = False
-    return isDiff
+            allcap_words += 1
+    cap_differential = len(words) - allcap_words
+    if cap_differential > 0 and cap_differential < len(words):
+        is_different = True        
+    return is_different
 
 
-def scalar_inc_dec(word, valence, isCap_diff):
+def scalar_inc_dec(word, valence, is_cap_diff):
     """
     Check if the preceding words increase, decrease, or negate/nullify the valence
     """
@@ -203,215 +285,234 @@ def scalar_inc_dec(word, valence, isCap_diff):
     word_lower = word.lower()
     if word_lower in BOOSTER_DICT:
         scalar = BOOSTER_DICT[word_lower]
-        if valence < 0: scalar *= -1
+        if valence < 0:
+            scalar *= -1
         #check if booster/dampener word is in ALLCAPS (while others aren't)
-        if word.isupper() and isCap_diff:
+        if word.isupper() and is_cap_diff:
             if valence > 0: scalar += c_INCR
             else:  scalar -= c_INCR
     return scalar
 
-def sentiment(text):
-    """
-    Returns a float for sentiment strength based on the input text.
-    Positive values are positive valence, negative value are negative valence.
-    """
-    if not isinstance(text, str) and not isinstance(text, str):
-        text = str(text)
+#@python_2_unicode_compatible
+class SentimentIntensityDetector(object):
+    def __init__(self, lexicon_file = "vader_sentiment_lexicon.txt"):
+        self.lexicon_file = lexicon_file
+        self.lexicon = self.make_lex_dict()
 
-    wordsAndEmoticons = text.split() #doesn't separate words from adjacent punctuation (keeps emoticons & contractions)
-    text_mod = REGEX_REMOVE_PUNCTUATION.sub('', text) # removes punctuation (but loses emoticons & contractions)
-    wordsOnly = text_mod.split()
-    # get rid of empty items or single letter "words" like 'a' and 'I' from wordsOnly
-    for word in wordsOnly:
-        if len(word) <= 1:
-            wordsOnly.remove(word)
-    # now remove adjacent & redundant punctuation from [wordsAndEmoticons] while keeping emoticons and contractions
+    def make_lex_dict(self):
+        """
+        Convert lexicon file to a dictionary
+        """
+        d = {}
+        with open(self.lexicon_file, encoding='latin-1') as infile:
+            for line in infile:
+                (w, m) = line.strip().split('\t')[0:2]
+                d[w] = float(m)
+        return d    
 
-    for word in wordsOnly:
-        for p in PUNC_LIST:
-            pword = p + word
-            x1 = wordsAndEmoticons.count(pword)
-            while x1 > 0:
-                i = wordsAndEmoticons.index(pword)
-                wordsAndEmoticons.remove(pword)
-                wordsAndEmoticons.insert(i, word)
-                x1 = wordsAndEmoticons.count(pword)
-
-            wordp = word + p
-            x2 = wordsAndEmoticons.count(wordp)
-            while x2 > 0:
-                i = wordsAndEmoticons.index(wordp)
-                wordsAndEmoticons.remove(wordp)
-                wordsAndEmoticons.insert(i, word)
-                x2 = wordsAndEmoticons.count(wordp)
-
-    # get rid of residual empty items or single letter "words" like 'a' and 'I' from wordsAndEmoticons
-    for word in wordsAndEmoticons:
-        if len(word) <= 1:
-            wordsAndEmoticons.remove(word)
-
-    # remove stopwords from [wordsAndEmoticons]
-    #stopwords = [str(word).strip() for word in open('stopwords.txt')]
-    #for word in wordsAndEmoticons:
-    #    if word in stopwords:
-    #        wordsAndEmoticons.remove(word)
-
-    # check for negation
-
-    isCap_diff = isALLCAP_differential(wordsAndEmoticons)
-
-    sentiments = []
-    for item in wordsAndEmoticons:
-        v = 0
-        i = wordsAndEmoticons.index(item)
-        if (i < len(wordsAndEmoticons)-1 and item.lower() == "kind" and \
-            wordsAndEmoticons[i+1].lower() == "of") or item.lower() in BOOSTER_DICT:
-            sentiments.append(v)
-            continue
-        item_lowercase = item.lower()
-        if item_lowercase in WORD_VALENCE_DICT:
-            #get the sentiment valence
-            v = float(WORD_VALENCE_DICT[item_lowercase])
-
-            #check if sentiment laden word is in ALLCAPS (while others aren't)
-
-            if item.isupper() and isCap_diff:
-                if v > 0: v += c_INCR
-                else: v -= c_INCR
-
-
-            n_scalar = -0.74
-            if i > 0 and wordsAndEmoticons[i-1].lower() not in WORD_VALENCE_DICT:
-                s1 = scalar_inc_dec(wordsAndEmoticons[i-1], v,isCap_diff)
-                v = v+s1
-                if negated([wordsAndEmoticons[i-1]]): v = v*n_scalar
-            if i > 1 and wordsAndEmoticons[i-2].lower() not in WORD_VALENCE_DICT:
-                s2 = scalar_inc_dec(wordsAndEmoticons[i-2], v,isCap_diff)
-                if s2 != 0: s2 = s2*0.95
-                v = v+s2
-                # check for special use of 'never' as valence modifier instead of negation
-                if wordsAndEmoticons[i-2] == "never" and (wordsAndEmoticons[i-1] == "so" or wordsAndEmoticons[i-1] == "this"):
-                    v = v*1.5
-                # otherwise, check for negation/nullification
-                elif negated([wordsAndEmoticons[i-2]]): v = v*n_scalar
-            if i > 2 and wordsAndEmoticons[i-3].lower() not in WORD_VALENCE_DICT:
-                s3 = scalar_inc_dec(wordsAndEmoticons[i-3], v,isCap_diff)
-                if s3 != 0: s3 = s3*0.9
-                v = v+s3
-                # check for special use of 'never' as valence modifier instead of negation
-                if wordsAndEmoticons[i-3] == "never" and \
-                   (wordsAndEmoticons[i-2] == "so" or wordsAndEmoticons[i-2] == "this") or \
-                   (wordsAndEmoticons[i-1] == "so" or wordsAndEmoticons[i-1] == "this"):
-                    v = v*1.25
-                # otherwise, check for negation/nullification
-                elif negated([wordsAndEmoticons[i-3]]): v = v*n_scalar
-
-
-                # future work: consider other sentiment-laden idioms
-                #other_idioms = {"back handed": -2, "blow smoke": -2, "blowing smoke": -2, "upper hand": 1, "break a leg": 2,
-                #                "cooking with gas": 2, "in the black": 2, "in the red": -2, "on the ball": 2,"under the weather": -2}
-
-                onezero = "{} {}".format(wordsAndEmoticons[i-1], wordsAndEmoticons[i])
-                twoonezero = "{} {} {}".format(wordsAndEmoticons[i-2], wordsAndEmoticons[i-1], wordsAndEmoticons[i])
-                twoone = "{} {}".format(wordsAndEmoticons[i-2], wordsAndEmoticons[i-1])
-                threetwoone = "{} {} {}".format(wordsAndEmoticons[i-3], wordsAndEmoticons[i-2], wordsAndEmoticons[i-1])
-                threetwo = "{} {}".format(wordsAndEmoticons[i-3], wordsAndEmoticons[i-2])
-                if onezero in SPECIAL_CASE_IDIOMS:
-                    v = SPECIAL_CASE_IDIOMS[onezero]
-                elif twoonezero in SPECIAL_CASE_IDIOMS:
-                    v = SPECIAL_CASE_IDIOMS[twoonezero]
-                elif twoone in SPECIAL_CASE_IDIOMS:
-                    v = SPECIAL_CASE_IDIOMS[twoone]
-                elif threetwoone in SPECIAL_CASE_IDIOMS:
-                    v = SPECIAL_CASE_IDIOMS[threetwoone]
-                elif threetwo in SPECIAL_CASE_IDIOMS:
-                    v = SPECIAL_CASE_IDIOMS[threetwo]
-                if len(wordsAndEmoticons)-1 > i:
-                    zeroone = "{} {}".format(wordsAndEmoticons[i], wordsAndEmoticons[i+1])
-                    if zeroone in SPECIAL_CASE_IDIOMS:
-                        v = SPECIAL_CASE_IDIOMS[zeroone]
-                if len(wordsAndEmoticons)-1 > i+1:
-                    zeroonetwo = "{} {}".format(wordsAndEmoticons[i], wordsAndEmoticons[i+1], wordsAndEmoticons[i+2])
-                    if zeroonetwo in SPECIAL_CASE_IDIOMS:
-                        v = SPECIAL_CASE_IDIOMS[zeroonetwo]
-
-                # check for booster/dampener bi-grams such as 'sort of' or 'kind of'
-                if threetwo in BOOSTER_DICT or twoone in BOOSTER_DICT:
-                    v = v+B_DECR
-
-            # check for negation case using "least"
-            if i > 1 and wordsAndEmoticons[i-1].lower() not in WORD_VALENCE_DICT \
-               and wordsAndEmoticons[i-1].lower() == "least":
-                if (wordsAndEmoticons[i-2].lower() != "at" and wordsAndEmoticons[i-2].lower() != "very"):
+    def sentiment(self, text):
+        """
+        Returns a float for sentiment strength based on the input text.
+        Positive values are positive valence, negative value are negative valence.
+        """
+        if not isinstance(text, str):
+            text = str(text)
+    
+        words_and_emoticons = text.split() #doesn't separate words from adjacent punctuation (keeps emoticons & contractions)
+        text_mod = REGEX_REMOVE_PUNCTUATION.sub('', text) # removes punctuation (but loses emoticons & contractions)
+        words_only = text_mod.split()
+        # get rid of empty items or single letter "words" like 'a' and 'I' from wordsOnly
+        for word in words_only:
+            if len(word) <= 1:
+                words_only.remove(word)
+        # now remove adjacent & redundant punctuation from [wordsAndEmoticons] while keeping emoticons and contractions
+    
+        for word in words_only:
+            for p in PUNC_LIST:
+                pword = p + word
+                x1 = words_and_emoticons.count(pword)
+                while x1 > 0:
+                    i = words_and_emoticons.index(pword)
+                    words_and_emoticons.remove(pword)
+                    words_and_emoticons.insert(i, word)
+                    x1 = words_and_emoticons.count(pword)
+    
+                wordp = word + p
+                x2 = words_and_emoticons.count(wordp)
+                while x2 > 0:
+                    i = words_and_emoticons.index(wordp)
+                    words_and_emoticons.remove(wordp)
+                    words_and_emoticons.insert(i, word)
+                    x2 = words_and_emoticons.count(wordp)
+    
+        # get rid of residual empty items or single letter "words" like 'a' and 'I' from wordsAndEmoticons
+        for word in words_and_emoticons:
+            if len(word) <= 1:
+                words_and_emoticons.remove(word)
+    
+        # remove stopwords from [wordsAndEmoticons]
+        #stopwords = [str(word).strip() for word in open('stopwords.txt')]
+        #for word in wordsAndEmoticons:
+        #    if word in stopwords:
+        #        wordsAndEmoticons.remove(word)
+    
+        # check for negation
+    
+        is_cap_diff = allcap_differential(words_and_emoticons)
+    
+        sentiments = []
+        for item in words_and_emoticons:
+            v = 0
+            i = words_and_emoticons.index(item)
+            if (i < len(words_and_emoticons)-1 and item.lower() == "kind" and \
+                words_and_emoticons[i+1].lower() == "of") or item.lower() in BOOSTER_DICT:
+                sentiments.append(v)
+                continue
+            item_lowercase = item.lower()
+            if item_lowercase in self.lexicon:
+                #get the sentiment valence
+                v = float(self.lexicon[item_lowercase])
+    
+                #check if sentiment laden word is in ALL CAPS (while others aren't)
+    
+                if item.isupper() and is_cap_diff:
+                    if v > 0: v += c_INCR
+                    else: v -= c_INCR
+    
+    
+                n_scalar = -0.74
+                if i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon:
+                    s1 = scalar_inc_dec(words_and_emoticons[i-1], v,is_cap_diff)
+                    v = v+s1
+                    if negated([words_and_emoticons[i-1]]): v = v*n_scalar
+                if i > 1 and words_and_emoticons[i-2].lower() not in self.lexicon:
+                    s2 = scalar_inc_dec(words_and_emoticons[i-2], v,is_cap_diff)
+                    if s2 != 0: s2 = s2*0.95
+                    v = v+s2
+                    # check for special use of 'never' as valence modifier instead of negation
+                    if words_and_emoticons[i-2] == "never" and (words_and_emoticons[i-1] == "so" or words_and_emoticons[i-1] == "this"):
+                        v = v*1.5
+                    # otherwise, check for negation/nullification
+                    elif negated([words_and_emoticons[i-2]]): v = v*n_scalar
+                if i > 2 and words_and_emoticons[i-3].lower() not in self.lexicon:
+                    s3 = scalar_inc_dec(words_and_emoticons[i-3], v,is_cap_diff)
+                    if s3 != 0: s3 = s3*0.9
+                    v = v+s3
+                    # check for special use of 'never' as valence modifier instead of negation
+                    if words_and_emoticons[i-3] == "never" and \
+                       (words_and_emoticons[i-2] == "so" or words_and_emoticons[i-2] == "this") or \
+                       (words_and_emoticons[i-1] == "so" or words_and_emoticons[i-1] == "this"):
+                        v = v*1.25
+                    # otherwise, check for negation/nullification
+                    elif negated([words_and_emoticons[i-3]]): v = v*n_scalar
+    
+    
+                    # future work: consider other sentiment-laden idioms
+                    #other_idioms = {"back handed": -2, "blow smoke": -2, "blowing smoke": -2, "upper hand": 1, "break a leg": 2,
+                    #                "cooking with gas": 2, "in the black": 2, "in the red": -2, "on the ball": 2,"under the weather": -2}
+    
+                    onezero = "{} {}".format(words_and_emoticons[i-1], words_and_emoticons[i])
+                    twoonezero = "{} {} {}".format(words_and_emoticons[i-2], words_and_emoticons[i-1], words_and_emoticons[i])
+                    twoone = "{} {}".format(words_and_emoticons[i-2], words_and_emoticons[i-1])
+                    threetwoone = "{} {} {}".format(words_and_emoticons[i-3], words_and_emoticons[i-2], words_and_emoticons[i-1])
+                    threetwo = "{} {}".format(words_and_emoticons[i-3], words_and_emoticons[i-2])
+                    if onezero in SPECIAL_CASE_IDIOMS:
+                        v = SPECIAL_CASE_IDIOMS[onezero]
+                    elif twoonezero in SPECIAL_CASE_IDIOMS:
+                        v = SPECIAL_CASE_IDIOMS[twoonezero]
+                    elif twoone in SPECIAL_CASE_IDIOMS:
+                        v = SPECIAL_CASE_IDIOMS[twoone]
+                    elif threetwoone in SPECIAL_CASE_IDIOMS:
+                        v = SPECIAL_CASE_IDIOMS[threetwoone]
+                    elif threetwo in SPECIAL_CASE_IDIOMS:
+                        v = SPECIAL_CASE_IDIOMS[threetwo]
+                    if len(words_and_emoticons)-1 > i:
+                        zeroone = "{} {}".format(words_and_emoticons[i], words_and_emoticons[i+1])
+                        if zeroone in SPECIAL_CASE_IDIOMS:
+                            v = SPECIAL_CASE_IDIOMS[zeroone]
+                    if len(words_and_emoticons)-1 > i+1:
+                        zeroonetwo = "{} {}".format(words_and_emoticons[i], words_and_emoticons[i+1], words_and_emoticons[i+2])
+                        if zeroonetwo in SPECIAL_CASE_IDIOMS:
+                            v = SPECIAL_CASE_IDIOMS[zeroonetwo]
+    
+                    # check for booster/dampener bi-grams such as 'sort of' or 'kind of'
+                    if threetwo in BOOSTER_DICT or twoone in BOOSTER_DICT:
+                        v = v+B_DECR
+    
+                # check for negation case using "least"
+                if i > 1 and words_and_emoticons[i-1].lower() not in self.lexicon \
+                   and words_and_emoticons[i-1].lower() == "least":
+                    if (words_and_emoticons[i-2].lower() != "at" and words_and_emoticons[i-2].lower() != "very"):
+                        v = v*n_scalar
+                elif i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon \
+                     and words_and_emoticons[i-1].lower() == "least":
                     v = v*n_scalar
-            elif i > 0 and wordsAndEmoticons[i-1].lower() not in WORD_VALENCE_DICT \
-                 and wordsAndEmoticons[i-1].lower() == "least":
-                v = v*n_scalar
-        sentiments.append(v)
+            sentiments.append(v)
+    
+        # check for modification in sentiment due to contrastive conjunction 'but'
+        if 'but' in words_and_emoticons or 'BUT' in words_and_emoticons:
+            try: bi = words_and_emoticons.index('but')
+            except: bi = words_and_emoticons.index('BUT')
+            for sentiment_dict in sentiments:
+                si = sentiments.index(sentiment_dict)
+                if si < bi:
+                    sentiments.pop(si)
+                    sentiments.insert(si, sentiment_dict*0.5)
+                elif si > bi:
+                    sentiments.pop(si)
+                    sentiments.insert(si, sentiment_dict*1.5)
+    
+        if sentiments:
+            sum_s = float(sum(sentiments))
+            #print sentiments, sum_s
+    
+            # check for added emphasis resulting from exclamation points (up to 4 of them)
+            ep_count = text.count("!")
+            if ep_count > 4: ep_count = 4
+            ep_amplifier = ep_count*0.292 #(empirically derived mean sentiment intensity rating increase for exclamation points)
+            if sum_s > 0:  sum_s += ep_amplifier
+            elif  sum_s < 0: sum_s -= ep_amplifier
+    
+            # check for added emphasis resulting from question marks (2 or 3+)
+            qm_count = text.count("?")
+            qm_amplifier = 0
+            if qm_count > 1:
+                if qm_count <= 3: qm_amplifier = qm_count*0.18
+                else: qm_amplifier = 0.96
+                if sum_s > 0:  sum_s += qm_amplifier
+                elif  sum_s < 0: sum_s -= qm_amplifier
+    
+            compound = normalize(sum_s)
+    
+            # want separate positive versus negative sentiment scores
+            pos_sum = 0.0
+            neg_sum = 0.0
+            neu_count = 0
+            for sentiment_score in sentiments:
+                if sentiment_score > 0:
+                    pos_sum += (float(sentiment_score) +1) # compensates for neutral words that are counted as 1
+                if sentiment_score < 0:
+                    neg_sum += (float(sentiment_score) -1) # when used with math.fabs(), compensates for neutrals
+                if sentiment_score == 0:
+                    neu_count += 1
+    
+            if pos_sum > math.fabs(neg_sum): pos_sum += (ep_amplifier+qm_amplifier)
+            elif pos_sum < math.fabs(neg_sum): neg_sum -= (ep_amplifier+qm_amplifier)
+    
+            total = pos_sum + math.fabs(neg_sum) + neu_count
+            pos = math.fabs(pos_sum / total)
+            neg = math.fabs(neg_sum / total)
+            neu = math.fabs(neu_count / total)
+    
+        else:
+            compound = 0.0; pos = 0.0; neg = 0.0; neu = 0.0
+   
+        sentiment_dict = {"neg" : round(neg, 3),
+             "neu" : round(neu, 3),
+             "pos" : round(pos, 3),
+             "compound" : round(compound, 4)}
 
-    # check for modification in sentiment due to contrastive conjunction 'but'
-    if 'but' in wordsAndEmoticons or 'BUT' in wordsAndEmoticons:
-        try: bi = wordsAndEmoticons.index('but')
-        except: bi = wordsAndEmoticons.index('BUT')
-        for s in sentiments:
-            si = sentiments.index(s)
-            if si < bi:
-                sentiments.pop(si)
-                sentiments.insert(si, s*0.5)
-            elif si > bi:
-                sentiments.pop(si)
-                sentiments.insert(si, s*1.5)
-
-    if sentiments:
-        sum_s = float(sum(sentiments))
-        #print sentiments, sum_s
-
-        # check for added emphasis resulting from exclamation points (up to 4 of them)
-        ep_count = text.count("!")
-        if ep_count > 4: ep_count = 4
-        ep_amplifier = ep_count*0.292 #(empirically derived mean sentiment intensity rating increase for exclamation points)
-        if sum_s > 0:  sum_s += ep_amplifier
-        elif  sum_s < 0: sum_s -= ep_amplifier
-
-        # check for added emphasis resulting from question marks (2 or 3+)
-        qm_count = text.count("?")
-        qm_amplifier = 0
-        if qm_count > 1:
-            if qm_count <= 3: qm_amplifier = qm_count*0.18
-            else: qm_amplifier = 0.96
-            if sum_s > 0:  sum_s += qm_amplifier
-            elif  sum_s < 0: sum_s -= qm_amplifier
-
-        compound = normalize(sum_s)
-
-        # want separate positive versus negative sentiment scores
-        pos_sum = 0.0
-        neg_sum = 0.0
-        neu_count = 0
-        for sentiment_score in sentiments:
-            if sentiment_score > 0:
-                pos_sum += (float(sentiment_score) +1) # compensates for neutral words that are counted as 1
-            if sentiment_score < 0:
-                neg_sum += (float(sentiment_score) -1) # when used with math.fabs(), compensates for neutrals
-            if sentiment_score == 0:
-                neu_count += 1
-
-        if pos_sum > math.fabs(neg_sum): pos_sum += (ep_amplifier+qm_amplifier)
-        elif pos_sum < math.fabs(neg_sum): neg_sum -= (ep_amplifier+qm_amplifier)
-
-        total = pos_sum + math.fabs(neg_sum) + neu_count
-        pos = math.fabs(pos_sum / total)
-        neg = math.fabs(neg_sum / total)
-        neu = math.fabs(neu_count / total)
-
-    else:
-        compound = 0.0; pos = 0.0; neg = 0.0; neu = 0.0
-
-    s = {"neg" : round(neg, 3),
-         "neu" : round(neu, 3),
-         "pos" : round(pos, 3),
-         "compound" : round(compound, 4)}
-    return sorted(s)
+        return sentiment_dict
 
 
 if __name__ == '__main__':
