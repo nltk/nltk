@@ -491,14 +491,14 @@ class SentimentIntensityDetector(object):
                 bi = words_and_emoticons.index('but')
             except IndexError:
                 bi = words_and_emoticons.index('BUT')
-            for sentiment_dict in sentiments:
-                si = sentiments.index(sentiment_dict)
+            for sentiment in sentiments:
+                si = sentiments.index(sentiment)
                 if si < bi:
                     sentiments.pop(si)
-                    sentiments.insert(si, sentiment_dict*0.5)
+                    sentiments.insert(si, sentiment*0.5)
                 elif si > bi:
                     sentiments.pop(si)
-                    sentiments.insert(si, sentiment_dict*1.5)
+                    sentiments.insert(si, sentiment*1.5)
 
         if sentiments:
             sum_s = float(sum(sentiments))
