@@ -15,7 +15,7 @@ Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for
 Sentiment Analysis of Social Media Text. Eighth International Conference on
 Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 
->>> sid = SentimentIntensityDetector()
+
 >>> sentences = ["VADER is smart, handsome, and funny.", # positive sentence example
 ...    "VADER is smart, handsome, and funny!", # punctuation emphasis handled correctly (sentiment intensity adjusted)
 ...    "VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
@@ -67,6 +67,7 @@ Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 ...    "However, Mr. Carter solemnly argues, his client carried out the kidnapping under orders and in the ''least offensive way possible.''"
 ... ]
 >>> sentences.extend(tricky_sentences)
+>>> sid = SentimentIntensityDetector()
 >>> for sentence in sentences:
 ...     print(sentence)
 ...     ss = sid.sentiment(sentence)
@@ -319,6 +320,10 @@ class SentimentIntensityDetector(object):
                 lex_dict[w] = float(m)
         return lex_dict
 
+    def preprocess(self, text):
+        text_dict = {}
+
+
     def sentiment(self, text):
         """
         Returns a float for sentiment strength based on the input text.
@@ -565,7 +570,48 @@ class SentimentIntensityDetector(object):
         return sentiment_dict
 
 
+def demo():
+    text1 = "At least (I think...) it isn't a HORRIBLE :-) book!"
+    text2 = "Today kinda sux! But I'll get by, lol"
+    sid = SentimentIntensityDetector()
+    ss1 = sid.sentiment(text1)
+    print(text1)
+    print(ss1)
+
+    """
+    text == "At least (I think...) it isn't a HORRIBLE :-) book!"
+    text_mod == 'At least I think it isnt a HORRIBLE  book'
+    is_cap_diff == True
+    p == '!?!?'
+    pword == '!?!?book'
+    words_and_emoticons == ['At', 'least', '(I', 'think...)', 'it', "isn't", 'HORRIBLE', ':-)', 'book']
+    words_only == ['At', 'least', 'think', 'it', 'isnt', 'HORRIBLE', 'book']
+    """
+
+
+    ss2 = sid.sentiment(text2)
+    print(text2)
+    print(ss2)
+
+    """
+    text == "Today kinda sux! But I'll get by, lol"
+    text_mod == 'Today kinda sux But Ill get by lol'
+    is_cap_diff == False
+    p == '!?!?'
+    pword == ''!?!?lol''
+    words_and_emoticons == ['Today', 'kinda', 'sux', 'But', "I'll", 'get', 'by', 'lol']
+    words_only == ['Today', 'kinda', 'sux', 'But', 'Ill', 'get', 'by', 'lol']
+    """
+
+
+
+
+
+
+
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+    #import doctest
+    #doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+    demo()
+
 
