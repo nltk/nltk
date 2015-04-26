@@ -495,6 +495,11 @@ class SentimentIntensityDetector(object):
                     valence = valence*n_scalar
             sentiments.append(valence)
 
+        sentiments = self._but_check(words_and_emoticons, sentiments)
+
+        return self.score_valence(sentiments, text)
+
+    def _but_check(self, words_and_emoticons, sentiments):
         # check for modification in sentiment due to contrastive conjunction 'but'
         if 'but' in words_and_emoticons or 'BUT' in words_and_emoticons:
             try:
@@ -509,8 +514,7 @@ class SentimentIntensityDetector(object):
                 elif si > bi:
                     sentiments.pop(si)
                     sentiments.insert(si, sentiment*1.5)
-
-        return self.score_valence(sentiments, text)
+        return sentiments
 
     def score_valence(self, sentiments, text):
         if sentiments:
