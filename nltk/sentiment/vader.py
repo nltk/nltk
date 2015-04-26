@@ -265,7 +265,6 @@ def normalize(score, alpha=15):
     return norm_score
 
 
-
 def allcap_differential(words):
     """
     Check whether just some words in in the input are ALL CAPS
@@ -302,7 +301,58 @@ def scalar_inc_dec(word, valence, is_cap_diff):
             else:  scalar -= C_INCR
     return scalar
 
-#@python_2_unicode_compatible
+class SentiText(object):
+    """
+    Identify sentiment-relevant string-level properties of input text.
+    """
+    def __init__(self, text):
+        if not isinstance(text, str):
+            text = str(text)
+        self.text = text
+        self.words_and_emoticons = self._words_and_emoticons()
+        # doesn't separate words from\
+        # adjacent punctuation (keeps emoticons & contractions)
+        self.is_cap_diff = allcap_differential(self.words_and_emoticons)
+
+    def _words_only(self):
+        text_mod = REGEX_REMOVE_PUNCTUATION.sub('', self.text)
+        # removes punctuation (but loses emoticons & contractions)
+        words_only = text_mod.split()
+        # get rid of empty items or single letter "words" like 'a' and 'I'
+        # from words_only
+        words_only = [word for word in words_only if len(word) > 1]
+        return words_only
+
+    def _words_and_emoticons(self):
+        wes = self.text.split()
+
+        # get rid of residual empty items or single letter "words" like 'a'
+        # and 'I' from words_and_emoticons
+        wes = [we for we in wes if len(we) > 1]
+
+        for word in self._words_only():
+            for p in PUNC_LIST:
+                pword = p + word
+                x1 = wes.count(pword)
+                while x1 > 0:
+                    i = wes.index(pword)
+                    wes.remove(pword)
+                    wes.insert(i, word)
+                    x1 = wes.count(pword)
+
+                wordp = word + p
+                x2 = wes.count(wordp)
+                while x2 > 0:
+                    i = wes.index(wordp)
+                    wes.remove(wordp)
+                    wes.insert(i, word)
+                    x2 = wes.count(wordp)
+        return wes
+
+
+
+
+
 class SentimentIntensityDetector(object):
     """
     Give a sentiment intensity score to sentences.
@@ -322,73 +372,17 @@ class SentimentIntensityDetector(object):
                 lex_dict[w] = float(m)
         return lex_dict
 
-
-
-    def preprocess(self, text):
-        """
-        Identify sentiment-relevant string-level properties of input text.
-        """
-        if not isinstance(text, str):
-            text = str(text)
-
-        words_and_emoticons = text.split()
-        # doesn't separate words from\
-        # adjacent punctuation (keeps emoticons & contractions)
-        text_mod = REGEX_REMOVE_PUNCTUATION.sub('', text)
-        # removes punctuation (but loses emoticons & contractions)
-        words_only = text_mod.split()
-        # get rid of empty items or single letter "words" like 'a' and 'I'
-        # from words_only
-        for word in words_only:
-            if len(word) <= 1:
-                words_only.remove(word)
-        # now remove adjacent & redundant punctuation from
-        # [words_and_emoticons] while keeping emoticons and contractions
-
-        for word in words_only:
-            for p in PUNC_LIST:
-                pword = p + word
-                x1 = words_and_emoticons.count(pword)
-                while x1 > 0:
-                    i = words_and_emoticons.index(pword)
-                    words_and_emoticons.remove(pword)
-                    words_and_emoticons.insert(i, word)
-                    x1 = words_and_emoticons.count(pword)
-
-                wordp = word + p
-                x2 = words_and_emoticons.count(wordp)
-                while x2 > 0:
-                    i = words_and_emoticons.index(wordp)
-                    words_and_emoticons.remove(wordp)
-                    words_and_emoticons.insert(i, word)
-                    x2 = words_and_emoticons.count(wordp)
-
-        # get rid of residual empty items or single letter "words" like 'a'
-        # and 'I' from words_and_emoticons
-        for word in words_and_emoticons:
-            if len(word) <= 1:
-                words_and_emoticons.remove(word)
-
-        # remove stopwords from [words_and_emoticons]
-        #stopwords = [str(word).strip() for word in open('stopwords.txt')]
-        #for word in words_and_emoticons:
-        #    if word in stopwords:
-        #        words_and_emoticons.remove(word)
-
-        # check for negation
-
-        is_cap_diff = allcap_differential(words_and_emoticons)
-        return text, words_and_emoticons, is_cap_diff
-
     def sentiment(self, text):
         """
         Returns a float for sentiment strength based on the input text.
         Positive values are positive valence, negative value are negative
         valence.
         """
-        text, words_and_emoticons, is_cap_diff = self.preprocess(text)
+        sentitext = SentiText(text)
+        #text, words_and_emoticons, is_cap_diff = self.preprocess(text)
 
         sentiments = []
+        words_and_emoticons = sentitext.words_and_emoticons
         for item in words_and_emoticons:
             valence = 0
             i = words_and_emoticons.index(item)
@@ -397,18 +391,21 @@ class SentimentIntensityDetector(object):
                 item.lower() in BOOSTER_DICT:
                 sentiments.append(valence)
                 continue
-            item_lowercase = item.lower()
 
-            sentiments = self.sentiment_valence(valence, item_lowercase, is_cap_diff, item, i, words_and_emoticons, sentiments)
+
+            sentiments = self.sentiment_valence(valence, sentitext, item, i, sentiments)
 
         sentiments = self._but_check(words_and_emoticons, sentiments)
 
         return self.score_valence(sentiments, text)
 
-    def sentiment_valence(self, valence, item_lowercase, is_cap_diff, item, i, words_and_emoticons, sentiments):
+    def sentiment_valence(self, valence, sentitext, item, i, sentiments):
+        is_cap_diff = sentitext.is_cap_diff
+        words_and_emoticons = sentitext.words_and_emoticons
+        item_lowercase = item.lower()
         if item_lowercase in self.lexicon:
             #get the sentiment valence
-            valence = float(self.lexicon[item_lowercase])
+            valence = self.lexicon[item_lowercase]
 
             #check if sentiment laden word is in ALL CAPS (while others aren't)
 
@@ -417,8 +414,6 @@ class SentimentIntensityDetector(object):
                     valence += C_INCR
                 else:
                     valence -= C_INCR
-
-
 
             if i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon:
                 s1 = scalar_inc_dec(words_and_emoticons[i-1], valence, is_cap_diff)
@@ -522,6 +517,7 @@ class SentimentIntensityDetector(object):
                     sentiments.pop(si)
                     sentiments.insert(si, sentiment*1.5)
         return sentiments
+
 
     def score_valence(self, sentiments, text):
         if sentiments:
