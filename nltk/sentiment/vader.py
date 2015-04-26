@@ -320,15 +320,11 @@ class SentimentIntensityDetector(object):
                 lex_dict[w] = float(m)
         return lex_dict
 
+
+
     def preprocess(self, text):
-        text_dict = {}
-
-
-    def sentiment(self, text):
         """
-        Returns a float for sentiment strength based on the input text.
-        Positive values are positive valence, negative value are negative
-        valence.
+        Identify sentiment-relevant string-level properties of input text.
         """
         if not isinstance(text, str):
             text = str(text)
@@ -380,6 +376,15 @@ class SentimentIntensityDetector(object):
         # check for negation
 
         is_cap_diff = allcap_differential(words_and_emoticons)
+        return text, words_and_emoticons, is_cap_diff
+
+    def sentiment(self, text):
+        """
+        Returns a float for sentiment strength based on the input text.
+        Positive values are positive valence, negative value are negative
+        valence.
+        """
+        text, words_and_emoticons, is_cap_diff = self.preprocess(text)
 
         sentiments = []
         for item in words_and_emoticons:
@@ -494,7 +499,7 @@ class SentimentIntensityDetector(object):
         if 'but' in words_and_emoticons or 'BUT' in words_and_emoticons:
             try:
                 bi = words_and_emoticons.index('but')
-            except IndexError:
+            except ValueError:
                 bi = words_and_emoticons.index('BUT')
             for sentiment in sentiments:
                 si = sentiments.index(sentiment)
@@ -570,6 +575,8 @@ class SentimentIntensityDetector(object):
         return sentiment_dict
 
 
+
+
 def demo():
     text1 = "At least (I think...) it isn't a HORRIBLE :-) book!"
     text2 = "Today kinda sux! But I'll get by, lol"
@@ -604,14 +611,13 @@ def demo():
     """
 
 
-
-
-
-
+DEMO = 0
 
 if __name__ == '__main__':
-    #import doctest
-    #doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
-    demo()
+    if DEMO:
+        demo()
+    else:
+        import doctest
+        doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
 
