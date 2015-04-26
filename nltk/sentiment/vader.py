@@ -510,6 +510,9 @@ class SentimentIntensityDetector(object):
                     sentiments.pop(si)
                     sentiments.insert(si, sentiment*1.5)
 
+        return self.score_valence(sentiments, text)
+
+    def score_valence(self, sentiments, text):
         if sentiments:
             sum_s = float(sum(sentiments))
             #print sentiments, sum_s
