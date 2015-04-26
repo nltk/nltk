@@ -190,6 +190,8 @@ B_DECR = -0.293
 # ALLCAPs to emphasize a word)
 C_INCR = 0.733
 
+N_SCALAR = -0.74
+
 # for removing punctuation
 REGEX_REMOVE_PUNCTUATION = re.compile('[%s]' % re.escape(string.punctuation))
 
@@ -409,12 +411,12 @@ class SentimentIntensityDetector(object):
                         valence -= C_INCR
 
 
-                n_scalar = -0.74
+
                 if i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon:
                     s1 = scalar_inc_dec(words_and_emoticons[i-1], valence, is_cap_diff)
                     valence = valence+s1
                     if negated([words_and_emoticons[i-1]]):
-                        valence = valence*n_scalar
+                        valence = valence*N_SCALAR
                 if i > 1 and words_and_emoticons[i-2].lower() not in self.lexicon:
                     s2 = scalar_inc_dec(words_and_emoticons[i-2], valence, is_cap_diff)
                     if s2 != 0:
@@ -428,7 +430,7 @@ class SentimentIntensityDetector(object):
                         valence = valence*1.5
                     # otherwise, check for negation/nullification
                     elif negated([words_and_emoticons[i-2]]):
-                        valence = valence*n_scalar
+                        valence = valence*N_SCALAR
                 if i > 2 and words_and_emoticons[i-3].lower() not in self.lexicon:
                     s3 = scalar_inc_dec(words_and_emoticons[i-3], valence, is_cap_diff)
                     if s3 != 0:
@@ -441,7 +443,7 @@ class SentimentIntensityDetector(object):
                         valence = valence*1.25
                     # otherwise, check for negation/nullification
                     elif negated([words_and_emoticons[i-3]]):
-                        valence = valence*n_scalar
+                        valence = valence*N_SCALAR
 
 
                     # future work: consider other sentiment-laden idioms
@@ -489,10 +491,10 @@ class SentimentIntensityDetector(object):
                 if i > 1 and words_and_emoticons[i-1].lower() not in self.lexicon \
                    and words_and_emoticons[i-1].lower() == "least":
                     if words_and_emoticons[i-2].lower() != "at" and words_and_emoticons[i-2].lower() != "very":
-                        valence = valence*n_scalar
+                        valence = valence*N_SCALAR
                 elif i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon \
                      and words_and_emoticons[i-1].lower() == "least":
-                    valence = valence*n_scalar
+                    valence = valence*N_SCALAR
             sentiments.append(valence)
 
         sentiments = self._but_check(words_and_emoticons, sentiments)
