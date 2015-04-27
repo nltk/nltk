@@ -120,7 +120,6 @@ except ImportError:
     print('Warning: nltk.tgrep will not work without the `pyparsing` package')
     print('installed.')
 import re
-import types
 
 class TgrepException(Exception):
     '''Tgrep exception type.'''
@@ -886,7 +885,7 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
     `tgrep_string`.
 
     Arguments:
-    - `tree`: a NLTK tree (usually a ParentedTree), or a list of trees
+    - `tree`: a NLTK tree (usually a ParentedTree), or an iterable over trees
     - `tgrep_string`: a tgrep search query, either as a string value,
       or compiled into a lambda function with `tgrep_compile`
     - `search_leaves`: Boolean flag; if this is False, the method will
@@ -895,9 +894,16 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
     # compile tgrep_string if needed
     if isinstance(tgrep_string, (binary_type, text_type)):
         tgrep_string = tgrep_compile(tgrep_string)
-    if not _istree(tree) and isinstance(tree,
-                                        (list, tuple, types.GeneratorType)):
-        return [tgrep_positions(t, tgrep_string, search_leaves) for t in tree]
+    # check if tree is iterable
+    tree_iter = None
+    if not _istree(tree):
+        try:
+            tree_iter = iter(tree)
+        except TypeError:
+            pass
+    if tree_iter is not None:
+        return [tgrep_positions(t, tgrep_string, search_leaves)
+                for t in tree_iter]
     else:
         try:
             if search_leaves:
@@ -915,7 +921,7 @@ def tgrep_nodes(tree, tgrep_string, search_leaves = True):
     `tgrep_ string`.
 
     Arguments:
-    - `tree`: a NLTK tree (usually a ParentedTree), or a list of trees
+    - `tree`: a NLTK tree (usually a ParentedTree), or an iterable over trees
     - `tgrep_string`: a tgrep search query, either as a string value,
       or compiled into a lambda function with `tgrep_compile`
     - `search_leaves`: Boolean flag; if this is False, the method will
@@ -924,9 +930,15 @@ def tgrep_nodes(tree, tgrep_string, search_leaves = True):
     # compile tgrep_string if needed
     if isinstance(tgrep_string, (binary_type, text_type)):
         tgrep_string = tgrep_compile(tgrep_string)
-    if not _istree(tree) and isinstance(tree,
-                                        (list, tuple, types.GeneratorType)):
-        return [tgrep_nodes(t, tgrep_string, search_leaves) for t in tree]
+    # check if tree is iterable
+    tree_iter = None
+    if not _istree(tree):
+        try:
+            tree_iter = iter(tree)
+        except TypeError:
+            pass
+    if tree_iter is not None:
+        return [tgrep_nodes(t, tgrep_string, search_leaves) for t in tree_iter]
     else:
         return [tree[position] for position in
                 tgrep_positions(tree, tgrep_string, search_leaves)]
