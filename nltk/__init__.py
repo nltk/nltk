@@ -94,6 +94,17 @@ try:
 except ImportError:
     pass
 
+# Override missing methods on environments where it cannot be used like GAE.
+import subprocess
+if not hasattr(subprocess, 'PIPE'):
+    def _fake_PIPE(*args, **kwargs):
+      raise NotImplementedError('subprocess.PIPE is not supported.')
+    subprocess.PIPE = _fake_PIPE
+if not hasattr(subprocess, 'Popen'):
+    def _fake_Popen(*args, **kwargs):
+      raise NotImplementedError('subprocess.Popen is not supported.')
+    subprocess.Popen = _fake_Popen
+
 ###########################################################
 # TOP-LEVEL MODULES
 ###########################################################
