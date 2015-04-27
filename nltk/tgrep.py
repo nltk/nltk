@@ -894,7 +894,7 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
     # compile tgrep_string if needed
     if isinstance(tgrep_string, (binary_type, text_type)):
         tgrep_string = tgrep_compile(tgrep_string)
-    if isinstance(tree, (list, tuple)):
+    if not _istree(tree) and isinstance(tree, (list, tuple)):
         return [tgrep_positions(t, tgrep_string, search_leaves) for t in tree]
     else:
         try:
@@ -922,7 +922,7 @@ def tgrep_nodes(tree, tgrep_string, search_leaves = True):
     # compile tgrep_string if needed
     if isinstance(tgrep_string, (binary_type, text_type)):
         tgrep_string = tgrep_compile(tgrep_string)
-    if isinstance(tree, (list, tuple)):
+    if not _istree(tree) and isinstance(tree, (list, tuple)):
         return [tgrep_nodes(t, tgrep_string, search_leaves) for t in tree]
     else:
         return [tree[position] for position in
