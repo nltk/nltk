@@ -120,6 +120,7 @@ except ImportError:
     print('Warning: nltk.tgrep will not work without the `pyparsing` package')
     print('installed.')
 import re
+import types
 
 class TgrepException(Exception):
     '''Tgrep exception type.'''
@@ -894,7 +895,8 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
     # compile tgrep_string if needed
     if isinstance(tgrep_string, (binary_type, text_type)):
         tgrep_string = tgrep_compile(tgrep_string)
-    if not _istree(tree) and isinstance(tree, (list, tuple)):
+    if not _istree(tree) and isinstance(tree,
+                                        (list, tuple, types.GeneratorType)):
         return [tgrep_positions(t, tgrep_string, search_leaves) for t in tree]
     else:
         try:
@@ -922,7 +924,8 @@ def tgrep_nodes(tree, tgrep_string, search_leaves = True):
     # compile tgrep_string if needed
     if isinstance(tgrep_string, (binary_type, text_type)):
         tgrep_string = tgrep_compile(tgrep_string)
-    if not _istree(tree) and isinstance(tree, (list, tuple)):
+    if not _istree(tree) and isinstance(tree,
+                                        (list, tuple, types.GeneratorType)):
         return [tgrep_nodes(t, tgrep_string, search_leaves) for t in tree]
     else:
         return [tree[position] for position in
