@@ -905,6 +905,7 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
         return [tgrep_positions(t, tgrep_string, search_leaves)
                 for t in tree_iter]
     else:
+        # tree is not an iterable but a single tree
         try:
             if search_leaves:
                 search_positions = tree.treepositions()
@@ -940,6 +941,7 @@ def tgrep_nodes(tree, tgrep_string, search_leaves = True):
     if tree_iter is not None:
         return [tgrep_nodes(t, tgrep_string, search_leaves) for t in tree_iter]
     else:
+        # tree is not an iterable but a single tree
         return [tree[position] for position in
                 tgrep_positions(tree, tgrep_string, search_leaves)]
 
