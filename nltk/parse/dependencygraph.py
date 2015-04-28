@@ -19,6 +19,7 @@ from collections import defaultdict
 from itertools import chain
 from pprint import pformat
 import subprocess
+import warnings
 
 from nltk.tree import Tree
 from nltk.compat import python_2_unicode_compatible, string_types
@@ -291,13 +292,14 @@ class DependencyGraph(object):
                 rel = 'ROOT'
             self.nodes[head]['deps'][rel].append(index)
 
-        if not self.nodes[0]['deps']['ROOT']:
-            raise DependencyGraphError(
-                "The graph does'n contain a node "
+        if self.nodes[0]['deps']['ROOT']:
+            root_address = self.nodes[0]['deps']['ROOT'][0]
+            self.root = self.nodes[root_address]
+        else:
+            warnings.warn(
+                "The graph doesn't contain a node "
                 "that depends on the root element."
             )
-        root_address = self.nodes[0]['deps']['ROOT'][0]
-        self.root = self.nodes[root_address]
 
     def _word(self, node, filter=True):
         w = node['word']
