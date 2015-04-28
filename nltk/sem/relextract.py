@@ -30,10 +30,10 @@ from nltk.compat import htmlentitydefs
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
     'ieer': ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION',
-            'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'],
-    'conll2002': ['LOC', 'PER', 'ORG'],
+            'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE', 'NE'],
+    'conll2002': ['LOC', 'PER', 'ORG', 'NE'],
     'ace': ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION',
-            'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE', 'FACILITY', 'GPE'],
+            'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE', 'FACILITY', 'GPE', 'NE'],
     }
 
 # Allow abbreviated class labels
@@ -181,10 +181,10 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
     Named Entities to particular types (any of 'LOCATION', 'ORGANIZATION',
     'PERSON', 'DURATION', 'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE').
 
-    :param subjclass: the class of the subject Named Entity.
-    :type subjclass: str
-    :param objclass: the class of the object Named Entity.
-    :type objclass: str
+    :param subjclass: list of possible classes of the subject Named Entity.
+    :type subjclass: list
+    :param objclass: lsit of possible classes of the object Named Entity.
+    :type objclass: list
     :param doc: input document
     :type doc: ieer document or a list of chunk trees
     :param corpus: name of the corpus to take as input; possible values are
@@ -198,17 +198,20 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
     :return: see ``mk_reldicts``
     :rtype: list(defaultdict)
     """
+    
+    for i, s in enumerate(subjclass):
+        if s and s not in NE_CLASSES[corpus]:
+            if _expand(s) in NE_CLASSES[corpus]:
+                subjclass[i] = _expand(s)
+            else:
+                raise ValueError("your value for the subject type has not been recognized: %s" % s)
 
-    if subjclass and subjclass not in NE_CLASSES[corpus]:
-        if _expand(subjclass) in NE_CLASSES[corpus]:
-            subjclass = _expand(subjclass)
-        else:
-            raise ValueError("your value for the subject type has not been recognized: %s" % subjclass)
-    if objclass and objclass not in NE_CLASSES[corpus]:
-        if _expand(objclass) in NE_CLASSES[corpus]:
-            objclass = _expand(objclass)
-        else:
-            raise ValueError("your value for the object type has not been recognized: %s" % objclass)
+    for i, o in enumerate(objclass):
+        if o and o not in NE_CLASSES[corpus]:
+            if _expand(o) in NE_CLASSES[corpus]:
+                objclass[i] = _expand(o)
+            else:
+                raise ValueError("your value for the object type has not been recognized: %s" % o)
         
     if corpus == 'ace' or corpus == 'conll2002':
         pairs = tree2semi_rel(doc)
@@ -219,10 +222,10 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
 
     reldicts = semi_rel2reldict(pairs)
 
-    relfilter = lambda x: (x['subjclass'] == subjclass and
+    relfilter = lambda x: (x['subjclass'] in subjclass and
                            len(x['filler'].split()) <= window and
                            pattern.match(x['filler']) and
-                           x['objclass'] == objclass)
+                           x['objclass'] in objclass)
 
     return list(filter(relfilter, reldicts))
 
