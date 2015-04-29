@@ -33,13 +33,14 @@ class TwitterCorpusReader(CorpusReader):
     If you made your own tweet collection in a directory called
     `twitter-files`, then you can initialise the reader as::
 
-        >>> reader = TwitterCorpusReader(root='twitter-files', '.*\.json') # doctest: +SKIP
+        from nltk.corpus import TwitterCorpusReader
+        reader = TwitterCorpusReader(root='/path/to/twitter-files', '.*\.json')
 
-    The recommended approach is to use this directory as the value of the
+    However, the recommended approach is to use this directory as the value of the
     environmental variable `TWITTER`, and then invoke the reader as::
 
-        >>> root = os.environ['TWITTER']
-        >>> reader = TwitterCorpusReader(root, '.*\.json') # doctest: +SKIP
+       root = os.environ['TWITTER']
+       reader = TwitterCorpusReader(root, '.*\.json')
 
     """
 
