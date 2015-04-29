@@ -48,7 +48,7 @@ class TwitterCorpusReader(CorpusReader):
     The corpus view class used by this reader.
     """
 
-    def __init__(self, root,
+    def __init__(self, root, fileids = None,
                  word_tokenizer=TweetTokenizer(),
                  encoding='utf8'):
         """

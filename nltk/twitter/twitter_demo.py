@@ -191,27 +191,35 @@ def corpusreader_demo():
     * the result of tokenising the raw strings.
 
     """
-    from nltk.corpus import TwitterCorpusReader
+    #from nltk.corpus import TwitterCorpusReader
+    from nltk.corpus import tweets
+    tweets.fileids()
     #root = os.environ['TWITTER']
     #reader = TwitterCorpusReader(root, '1k_sample.json')
-    reader = TwitterCorpusReader('twitter', 'tweets.20150417.json')
+    #reader = TwitterCorpusReader('twitter', 'tweets.20150417.json')
     print()
     print("Complete tweet documents")
     print(SPACER)
-    for tweet in reader.docs()[:2]:
+    for tweet in tweets.docs()[:2]:
         print(json.dumps(tweet, indent=1, sort_keys=True))
 
     print()
     print("Raw tweet strings:")
     print(SPACER)
-    for text in reader.strings()[:15]:
+    for text in tweets.strings()[:15]:
         print(text)
 
     print()
     print("Tokenized tweet strings:")
     print(SPACER)
-    for text in reader.tokenized()[:15]:
+    for text in tweets.tokenized()[:15]:
         print(text)
+
+
+#def corpusreader_demo():
+    #from nltk.corpus import brown
+    #brown.words()
+
 
 
 ALL = range(12)

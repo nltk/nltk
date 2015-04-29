@@ -6,11 +6,14 @@
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from twython.exceptions import TwythonRateLimitError
+
 
 """
-NLTK Twitter client.
+NLTK Twitter client
 
+This module offers methods for collecting and processing tweets. Most of the
+functionality depends on access to the Twitter APIs, and this is handled via
+the third party Twython library.
 
 If one of the methods below returns an integer, it is probably a `Twitter
 error code <https://dev.twitter.com/overview/api/response-codes>`_. For
@@ -31,6 +34,7 @@ from nltk.compat import UTC
 
 try:
     from twython import Twython, TwythonStreamer
+    from twython.exceptions import TwythonRateLimitError
 except ImportError as err:
     import textwrap
     MSG = """The NLTK twitterclient module requires the Twython package. See\
@@ -204,10 +208,10 @@ class Query(Twython):
         results = self.search(q=keywords, count=min(100, count), lang=lang)
         count_from_query = results['search_metadata']['count']
         self.handler.handle_chunk(results['statuses'])
-        
+
         '''
         pagination loop: keep fetching tweets until the count requested is reached,
-        dealing with twitter rate limits 
+        dealing with twitter rate limits
         '''
         while count_from_query < count:
             max_id = results['search_metadata']['max_id']
@@ -217,7 +221,7 @@ class Query(Twython):
             except TwythonRateLimitError as e:
                 print("Waiting for 15 minutes -{0}".format(e))
                 time.sleep(15*60) # wait 15 minutes
-                continue           
+                continue
             count_from_query += results['search_metadata']['count']
             self.handler.handle_chunk(results['statuses'])
 
