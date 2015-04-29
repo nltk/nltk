@@ -15,7 +15,6 @@ import csv
 import json
 import os
 import pprint
-import codecs
 import nltk.compat as compat
 
 from twython import Twython
@@ -29,8 +28,41 @@ def extract_fields(tweet, fields):
     :param list fields: The fields to be extracted from the tweet
     :rtype: list(str)
     """
-    return [tweet[field] for field in fields]
+    out = []
+    for field in fields:
+        _add_field_to_out(tweet, field, out)
+    return out
 
+
+def _add_field_to_out(json, field, out):
+    if isinstance(field, dict):
+        for key, value in field.iteritems():
+            _add_field_to_out(json[key], value, out)
+    else:
+        if isinstance(field, basestring):
+            out += [json[field]]
+        else :
+            out += [json[value] for value in field]
+
+def _get_entity_recursive(json, entity):
+    if json == None:
+        return None
+    if isinstance(json, dict):
+        for key, value in json.iteritems():
+            if key == entity:
+                return value 
+            candidate = _get_entity_recursive(value, entity)
+            if candidate != None:
+                return candidate
+        return None
+    elif isinstance(json, list):
+        for item in json:
+            candidate = _get_entity_recursive(item, entity)
+            if candidate != None:
+                return candidate
+        return None
+    else:
+        return None
 
 def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     """
@@ -40,6 +72,11 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     This utility function allows a file of full tweets to be easily converted
     to a CSV file for easier processing. For example, just tweetIDs or
     just the text content of the tweets can be extracted.
+    
+    Additionally, the function allows combinations of fields of other Twitter
+    objects (mainly the users, see below).
+    
+    For Twitter entities (e.g. hashtags of a tweet) see json2csv_entities
 
     :param str infile: The name of the file containing full tweets
 
@@ -49,20 +86,70 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     :param list fields: The list of fields to be extracted. Useful examples\
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
+    e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
+    Addionally, it allows fileds from other Twitter objects.
+    e. g.: ['id', 'text', {'user' : ['id', 'followers_count', 'friends_count']}]
+    Not suitable for entities like hastags; use json2csv_entities instead
 
     :param error: Behaviour for encoding errors, see\
-    https://docs.python.org/3/library/codecs.html#codec-base-classes
+    https://docs.python.org/3/library/codecs.html#codec-base-classes 
     """
-    with codecs.open(outfile, 'w', encoding=encoding, errors=errors) as outf, open(infile) as inf:
-        if compat.PY3 == True:
-            writer = csv.writer(outf)
-        else:
-            writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
+    with open(infile) as inf:
+        writer = get_outf_writer_compat(outfile, encoding, errors)
         for line in inf:
             tweet = json.loads(line)
             row = extract_fields(tweet, fields)
             writer.writerow(row)
 
+def get_outf_writer_compat(outfile, encoding, errors):
+    if compat.PY3 == True:
+        outf = open(outfile, 'w', encoding=encoding, errors=errors)
+        writer = csv.writer(outf)
+    else:
+        outf = open(outfile, 'wb')
+        writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
+    return writer
+    
+    
+def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
+                      encoding='utf8', errors='replace'):
+    """
+    Extract selected fields from a file of line-separated JSON tweets and
+    write to a file in CSV format.
+
+    This utility function allows a file of full tweets to be easily converted
+    to a CSV file for easier processing of Twitter entities. For example, the
+    hashtags or media elements of a tweet can be extracted.
+    
+    :param str infile: The name of the file containing full tweets
+
+    :param str outfile: The name of the text file where results should be\
+    written
+
+    :param list main_fields: The list of fields to be extracted from the main\
+    object, i.e. tweet. Useful examples: 'id_str' for the tweetID. See\
+    <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
+    e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
+
+    :param list entity_name: The name of the entity: 'hashtags', 'media',\
+    'urls' and 'usermentions' for the tweet.
+    
+    :param list entity_fields: The list of fields to be extracted from the\
+    entity. E.g. ['text'] (of the hashtag)
+    
+    :param error: Behaviour for encoding errors, see\
+    https://docs.python.org/3/library/codecs.html#codec-base-classes
+    """
+    with open(infile) as inf:
+        writer = get_outf_writer_compat(outfile, encoding, errors)
+        for line in inf:
+            tweet = json.loads(line)
+            tweet_id = extract_fields(tweet, main_fields)
+            items = _get_entity_recursive(tweet, entity_name)
+            for item in items:
+                row = tweet_id + extract_fields(item, entity_fields)
+                writer.writerow(row)
+    
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
     Read OAuth credentials from a text file.
