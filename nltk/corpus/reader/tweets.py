@@ -26,6 +26,21 @@ class TwitterCorpusReader(CorpusReader):
 
     Individual Tweets can be tokenized using the default tokenizer, or by a
     custom tokenizer specified as a parameter to the constructor.
+
+    Construct a new Tweet corpus reader for a set of documents
+    located at the given root directory.
+
+    If you made your own tweet collection in a directory called
+    `twitter-files`, then you can initialise the reader as::
+
+        >>> reader = TwitterCorpusReader(root='twitter-files', '.*\.json') # doctest: +SKIP
+
+    The recommended approach is to use this directory as the value of the
+    environmental variable `TWITTER`, and then invoke the reader as::
+
+        >>> root = os.environ['TWITTER']
+        >>> reader = TwitterCorpusReader(root, '.*\.json') # doctest: +SKIP
+
     """
 
     CorpusView = StreamBackedCorpusView
@@ -33,15 +48,10 @@ class TwitterCorpusReader(CorpusReader):
     The corpus view class used by this reader.
     """
 
-    def __init__(self, root, fileids,
+    def __init__(self, root,
                  word_tokenizer=TweetTokenizer(),
                  encoding='utf8'):
         """
-        Construct a new Tweet corpus reader for a set of documents
-        located at the given root directory.  Example usage:
-
-            >>> root = os.environ['TWITTER']
-            >>> reader = TwitterCorpusReader(root, '.*\.json') # doctest: +SKIP
 
         :param root: The root directory for this corpus.
 
