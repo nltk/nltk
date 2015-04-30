@@ -53,7 +53,7 @@ def _get_entity_recursive(json, entity):
     if isinstance(json, dict):
         for key, value in json.iteritems():
             if key == entity:
-                return value 
+                return value
             candidate = _get_entity_recursive(value, entity)
             if candidate != None:
                 return candidate
@@ -75,11 +75,12 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     This utility function allows a file of full tweets to be easily converted
     to a CSV file for easier processing. For example, just tweetIDs or
     just the text content of the tweets can be extracted.
-    
+
     Additionally, the function allows combinations of fields of other Twitter
     objects (mainly the users, see below).
-    
-    For Twitter entities (e.g. hashtags of a tweet) see json2csv_entities
+
+    For Twitter entities (e.g. hashtags of a tweet), and for geolocation, see
+    `json2csv_entities`
 
     :param str infile: The name of the file containing full tweets
 
@@ -90,13 +91,12 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
     e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
-    Addionally, it allows fileds from other Twitter objects.
-    e. g.: ['id', 'text', {'user' : ['id', 'followers_count', 'friends_count']}]
-    Not suitable for entities like hastags; use json2csv_entities instead.
-    Not for the place of a tweet; also use json2csv.
+    Addionally, it allows IDs from other Twitter objects, e. g.,\
+    ['id', 'text', {'user' : ['id', 'followers_count', 'friends_count']}]
+
 
     :param error: Behaviour for encoding errors, see\
-    https://docs.python.org/3/library/codecs.html#codec-base-classes 
+    https://docs.python.org/3/library/codecs.html#codec-base-classes
     """
     with open(infile) as inf:
         writer = get_outf_writer_compat(outfile, encoding, errors)
@@ -106,6 +106,9 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
             writer.writerow(row)
 
 def get_outf_writer_compat(outfile, encoding, errors):
+    """
+    Identify appropriate CSV writer given the Python version
+    """
     if compat.PY3 == True:
         outf = open(outfile, 'w', encoding=encoding, errors=errors)
         writer = csv.writer(outf)
@@ -113,8 +116,8 @@ def get_outf_writer_compat(outfile, encoding, errors):
         outf = open(outfile, 'wb')
         writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
     return writer
-    
-    
+
+
 def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
                       encoding='utf8', errors='replace'):
     """
@@ -124,7 +127,7 @@ def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
     This utility function allows a file of full tweets to be easily converted
     to a CSV file for easier processing of Twitter entities. For example, the
     hashtags or media elements of a tweet can be extracted.
-    
+
     :param str infile: The name of the file containing full tweets
 
     :param str outfile: The name of the text file where results should be\
@@ -143,10 +146,10 @@ def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
     needs to be expressed as a dictionary: {'user' : 'urls'}. For the\
     bounding box of the place from which a tweet was twitted, as a dict\
     as well: {'place', 'bounding_box'}
-    
+
     :param list entity_fields: The list of fields to be extracted from the\
     entity. E.g. ['text'] (of the hashtag)
-    
+
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
     """
@@ -167,6 +170,7 @@ def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
                 tweet_fields = extract_fields(tweet, main_fields)
                 items = _get_entity_recursive(tweet, entity_name)
                 _write_to_file(tweet_fields, items, entity_fields, writer)
+
 
 def _write_to_file(object_fields, items, entity_fields, writer):
     if items == None:
@@ -189,8 +193,8 @@ def _write_to_file(object_fields, items, entity_fields, writer):
     for item in items:
         row = object_fields + extract_fields(item, entity_fields)
         writer.writerow(row)
-    
-    
+
+
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
     Read OAuth credentials from a text file.
@@ -204,7 +208,6 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
        oauth_token_secret=OAUTH_TOKEN_SECRET
 
 
-
     ::
        File format for OAuth 2
        =======================
@@ -216,24 +219,25 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
     :param str file_name: File containing credentials. ``None`` (default) reads\
     data from `TWITTER/'credentials.txt'`
     """
-    if subdir is None:
-        try:
-            subdir = os.environ['TWITTER']
-        except KeyError:
-            print("""Supply a value to the 'subdir' parameter or set the
-            environment variable TWITTER""")
     if creds_file is None:
         creds_file = 'credentials.txt'
+    if not subdir:
+        try:
+            subdir = os.environ['TWITTER']
+            creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
+            if not os.path.isfile(creds_fullpath):
+                raise OSError('Cannot find file {}'.format(creds_fullpath))
+        except KeyError:
+            print("Supply a value to the 'subdir' parameter or set the \
+            TWITTER environment variable.")
+            raise FileNotFoundError from KeyError
 
-    creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
-    if not os.path.isfile(creds_fullpath):
-        raise OSError('Cannot find file {}'.format(creds_fullpath))
 
-    with open(creds_fullpath) as f:
+    with open(creds_fullpath) as infile:
         if verbose:
             print('Reading credentials file {}'.format(creds_fullpath))
         oauth = {}
-        for line in f:
+        for line in infile:
             if '=' in line:
                 name, value = line.split('=', 1)
                 oauth[name.strip()] = value.strip()
@@ -242,7 +246,7 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
 
     return oauth
 
-def _validate_creds_file(fn, oauth, verbose=False):
+def _validate_creds_file(fname, oauth, verbose=False):
     """Check validity of a credentials file."""
     oauth1 = False
     oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
@@ -254,11 +258,11 @@ def _validate_creds_file(fn, oauth, verbose=False):
         oauth2 = True
 
     if not (oauth1 or oauth2):
-        msg = 'Missing or incorrect entries in {}\n'.format(fn)
+        msg = 'Missing or incorrect entries in {}\n'.format(fname)
         msg += pprint.pformat(oauth)
         raise ValueError(msg)
     elif verbose:
-        print('Credentials file "{}" looks good'.format(fn))
+        print('Credentials file "{}" looks good'.format(fname))
 
 
 def add_access_token(creds_file=None):
@@ -270,14 +274,14 @@ def add_access_token(creds_file=None):
         path = os.path.dirname(__file__)
         creds_file = os.path.join(path, 'credentials2.txt')
     oauth2 = credsfromfile(creds_file=creds_file)
-    APP_KEY = oauth2['app_key']
-    APP_SECRET = oauth2['app_secret']
+    app_key = oauth2['app_key']
+    app_secret = oauth2['app_secret']
 
-    twitter = Twython(APP_KEY, APP_SECRET, oauth_version=2)
-    ACCESS_TOKEN = twitter.obtain_access_token()
-    tok = 'access_token={}\n'.format(ACCESS_TOKEN)
-    with open(creds_file, 'a') as f:
-        print(tok, file=f)
+    twitter = Twython(app_key, app_secret, oauth_version=2)
+    access_token = twitter.obtain_access_token()
+    tok = 'access_token={}\n'.format(access_token)
+    with open(creds_file, 'a') as infile:
+        print(tok, file=infile)
 
 
 def guess_path(pth):
@@ -291,5 +295,3 @@ def guess_path(pth):
         return pth
     else:
         return os.path.expanduser(os.path.join("~", pth))
-
-
