@@ -817,6 +817,81 @@ speaker and sentence identifier for a given speech sample:
     >>> timit.utteranceids(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
     ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
 
+twitter
+-------
+
+Twitter is well-known microblog service that allows public data to be
+collected via APIs. We follow standard practice in storing
+full tweets as line-separated JSON, and we can use the
+`json` library to display them in a more readable format.
+
+    >>> import json
+    >>> from nltk.corpus import TwitterCorpusReader
+    >>> root = os.environ['TWITTER']
+    >>> reader = TwitterCorpusReader(root, '1k_sample.json')
+    >>> for tweet in reader.docs()[:1]:
+    ...     print(json.dumps(tweet, indent=1, sort_keys=True))
+    {
+     "contributors": null,
+     "coordinates": null,
+     "created_at": "Thu Apr 16 11:29:25 +0000 2015",
+     "entities": {
+      "hashtags": [],
+      "symbols": [],
+      "trends": [], ... }
+
+We can also just pull out the text content of the tweets using the
+`strings()` method.
+ 
+    >>> for text in reader.strings()[:15]:
+    ...     print(text)
+    O link http://t.co/u8yh4xdIAF por @YouTube \xe9 o tweet mais popular hoje na minha feed.
+    Dolgun Dudakl\u0131 Kad\u0131nlar\u0131n \xc7ok \u0130yi Bildi\u011fi 14 \u015eey http://t.co/vvEzTlqWOv http://t.co/dsWke4uXQ3
+    RT @30SecFlghts: Yep it was bad from the jump https://t.co/6vsFIulyRB
+    @null 188049573
+    You have many tasks on your to-do list today and it's a smart ... More for Libra http://t.co/8Fp04Xo8PM
+    Motola: Unica franquicia de tiendas de productos de \xfaltima tecnolog\xeda.
+    Baja inversi\xf3n. Alta rentabilidad. R\xe1pida... http://t.co/aRRohWNPM2
+    @8_s2_5 \u304a\u304b\u3048\u308a\u306a\u3055\u3044\u307e\u3057
+    \u5742\u9053\u306e\u6642\u306b\u9650\u3063\u3066\u88cf\u306e\u8eca\u304c\u3081\u3063\u3061\u3083\u8eca\u9593\u8ddd\u96e2\u8fd1\u3065\u3051\u3066\u505c\u3081\u3066\u304f\u308b\u304b\u3089\u6b7b\u306c\u304b\u3068\u601d\u3063\u305f
+    RT @dam_anison: \u3010\u30a2\u30cb\u30b5\u30de2014 LIVE\u30ab\u30e9\u30aa\u30b1\u2464\u3011
+    \u03bc's\u306e\u30e9\u30a4\u30d6\u6620\u50cf\u304cDAM\u306b\u521d\u767b\u5834\uff01\u305d\u308c\u306f\u300c\u305d\u308c\u306f\u50d5\u305f\u3061\u306e\u5947\u8de1\u300d\uff01
+    \u03bc's\u7d50\u6210\u304b\u30895\u5e74\u9593\u306e"\u30ad\u30bb\u30ad"\u3092\u565b\u307f\u7de0\u3081\u306a\u304c\u3089\u6b4c\u3044\u305f\u3044\uff01
+    \u2192http://t.co/ZCAB7jgE4L #anisama http:\u2026
+    @lolyuris \u6c60\u888b\u306f\u3044\u3063\u3071\u3044\u3042\u3063\u305f\u3088\U0001f493
+    Christina Grimmie #RisingStar
+    17
+    RT @SaudAlthukair: \u0627\u0646\u0627 \u0627\u0643\u062b\u0631 \u0634\u062e\u0635 \u0627\u062c\u062a\u0645\u0627\u0639\u064a \u0628\u0633 \u0627\u0644\u0645\u0634\u0643\u0644\u0629 \u0627\u0646\u064a \u0645\u0627 \u0627\u0637\u064a\u0642\u0643.
+    RT @zaynbaabe: Rt to be in a Harry solo dm
+    <BLANKLINE>
+    Mbf me + @paynenaconda 
+    <BLANKLINE>
+    10 SECONDS
+    Me\xe7a suas demora \xf4nibus
+    No need to explain more what is done is done
+
+Using a tokenizer that is specialised for 'casual' text, we can also
+view the tweet content as a list of tokens.
+ 
+    >>> for text in reader.tokenized()[:15]:
+    ...     print(text)
+    ['O', 'link', 'http://t.co/u8yh4xdIAF', 'por', '@YouTube', '\xe9', 'o', 'tweet', 'mais', 'popular', 'hoje', 'na', 'minha', 'feed', '.']
+    ['Dolgun', 'Dudakl\u0131', 'Kad\u0131nlar\u0131n', '\xc7ok', '\u0130yi', 'Bildi', '\u011fi', '14', '\u015eey', 'http://t.co/vvEzTlqWOv', 'http://t.co/dsWke4uXQ3']
+    ['RT', '@30SecFlghts', ':', 'Yep', 'it', 'was', 'bad', 'from', 'the', 'jump', 'https://t.co/6vsFIulyRB']
+    ['@null', '18804957', '3']
+    ['You', 'have', 'many', 'tasks', 'on', 'your', 'to-do', 'list', 'today', 'and', "it's", 'a', 'smart', '...', 'More', 'for', 'Libra', 'http://t.co/8Fp04Xo8PM']
+    ['Motola', ':', 'Unica', 'franquicia', 'de', 'tiendas', 'de', 'productos', 'de', '\xfaltima', 'tecnolog', '\xeda', '.', 'Baja', 'inversi', '\xf3n', '.', 'Alta', 'rentabilidad', '.', 'R\xe1pida', '...', 'http://t.co/aRRohWNPM2']
+    ['@8', '_s2_5', '\u304a\u304b\u3048\u308a\u306a\u3055\u3044\u307e\u3057']
+    ['\u5742\u9053\u306e\u6642\u306b\u9650\u3063\u3066\u88cf\u306e\u8eca\u304c\u3081\u3063\u3061\u3083\u8eca\u9593\u8ddd\u96e2\u8fd1\u3065\u3051\u3066\u505c\u3081\u3066\u304f\u308b\u304b\u3089\u6b7b\u306c\u304b\u3068\u601d\u3063\u305f']
+    ['RT', '@dam_anison', ':', '\u3010', '\u30a2\u30cb\u30b5\u30de2014', 'LIVE', '\u30ab\u30e9\u30aa\u30b1\u2464', '\u3011', '\u03bc', "'", 's\u306e\u30e9\u30a4\u30d6\u6620\u50cf\u304cDAM\u306b\u521d\u767b\u5834', '\uff01', '\u305d\u308c\u306f', '\u300c', '\u305d\u308c\u306f\u50d5\u305f\u3061\u306e\u5947\u8de1', '\u300d', '\uff01', '\u03bc', "'", 's\u7d50\u6210\u304b\u30895\u5e74\u9593\u306e', '"', '\u30ad\u30bb\u30ad', '"', '\u3092\u565b\u307f\u7de0\u3081\u306a\u304c\u3089\u6b4c\u3044\u305f\u3044', '\uff01', '\u2192', 'http://t.co/ZCAB7jgE4L', '#anisama', 'http', ':', '\u2026']
+    ['@lolyuris', '\u6c60\u888b\u306f\u3044\u3063\u3071\u3044\u3042\u3063\u305f\u3088', '\U0001f493']
+    ['Christina', 'Grimmie', '#RisingStar', '17']
+    ['RT', '@SaudAlthukair', ':', '\u0627\u0646\u0627', '\u0627\u0643\u062b\u0631', '\u0634\u062e\u0635', '\u0627\u062c\u062a\u0645\u0627\u0639\u064a', '\u0628\u0633', '\u0627\u0644\u0645\u0634\u0643\u0644\u0629', '\u0627\u0646\u064a', '\u0645\u0627', '\u0627\u0637\u064a\u0642\u0643', '.']
+    ['RT', '@zaynbaabe', ':', 'Rt', 'to', 'be', 'in', 'a', 'Harry', 'solo', 'dm', 'Mbf', 'me', '+', '@paynenaconda', '10', 'SECONDS']
+    ['Me\xe7a', 'suas', 'demora', '\xf4nibus']
+    ['No', 'need', 'to', 'explain', 'more', 'what', 'is', 'done', 'is', 'done']
+
+
 rte
 ---
 The RTE (Recognizing Textual Entailment) corpus was derived from the

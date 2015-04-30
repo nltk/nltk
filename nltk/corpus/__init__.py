@@ -200,6 +200,8 @@ treebank_chunk = LazyCorpusLoader(
     para_block_reader=tagged_treebank_para_block_reader, encoding='ascii')
 treebank_raw = LazyCorpusLoader(
     'treebank/raw', PlaintextCorpusReader, r'wsj_.*', encoding='ISO-8859-2')
+tweets = LazyCorpusLoader(
+    'tweets', TwitterCorpusReader)
 udhr = LazyCorpusLoader(
     'udhr', UdhrCorpusReader)
 udhr2 = LazyCorpusLoader(
