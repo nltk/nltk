@@ -121,7 +121,7 @@ class Streamer(TwythonStreamer):
             try:
                 if track == '' and follow == '':
                     raise ValueError("Please supply a value for 'track' or 'follow'.")
-                self.statuses.filter(track=track, follow=follow)
+                self.statuses.filter(track=track, follow=follow, lang=lang)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
                     print("Error (stream will continue): {0}".format(e))
@@ -207,7 +207,8 @@ class Query(Twython):
         """
         results = self.search(q=keywords, count=min(100, count), lang=lang)
         count_from_query = results['search_metadata']['count']
-        self.handler.handle_chunk(results['statuses'])
+        if self.handler.handle_chunk(results['statuses']) == False:
+            return
 
         '''
         pagination loop: keep fetching tweets until the count requested is reached,
@@ -223,7 +224,8 @@ class Query(Twython):
                 time.sleep(15*60) # wait 15 minutes
                 continue
             count_from_query += results['search_metadata']['count']
-            self.handler.handle_chunk(results['statuses'])
+            if self.handler.handle_chunk(results['statuses']) == False:
+                return
 
     def user_info_from_id(self, userids):
         """
@@ -273,11 +275,19 @@ class Twitter(object):
         :param bool stream: If ``True``, use the live public stream,\
         otherwise search past public tweets
         :param int limit: Number of tweets to process
+        :param tuple date_limit: The date at which to stop collecting new\
+        data. This should be entered as a tuple which can serve as the\
+        argument to `datetime.datetime`. E.g. `data_limit=(2015, 4, 1, 12,\
+        40)` for 12:30 pm on April 1 2015.\
+        Note that, in the case of streaming, it is the maximum date, i.e.\
+        a date in the future; if not, it is the minimum date, i.e. a date\
+        in the past
+        :param str lang: language
         """
         if to_screen:
-            handler = TweetViewer(limit=limit, date_limit=date_limit)
+            handler = TweetViewer(limit=limit, date_limit=date_limit, stream=stream)
         else:
-            handler = TweetWriter(limit=limit, date_limit=date_limit, repeat=False)
+            handler = TweetWriter(limit=limit, date_limit=date_limit, stream=stream, repeat=False)
 
         if stream:
             self.streamer.register(handler)
@@ -319,7 +329,7 @@ class TweetWriter(TweetHandlerI):
     """
     Handle data by writing it to a file.
     """
-    def __init__(self, limit=2000, date_limit=None, repeat=True, fprefix='tweets',
+    def __init__(self, limit=2000, date_limit=None, repeat=True, stream=True, fprefix='tweets',
                  subdir='twitter-files'):
         """
         :param limit: number of data items to process in the current round of processing
@@ -327,6 +337,8 @@ class TweetWriter(TweetHandlerI):
         :param repeat: flag to determine whether multiple files should be\
         written. If ``True``, the length of each file will be set by the value\
         of ``limit``. See also :py:func:`handle`.
+        
+        :param 
 
         """
         self.repeat = repeat
@@ -334,6 +346,7 @@ class TweetWriter(TweetHandlerI):
         self.subdir = guess_path(subdir)
         self.fname = self.timestamped_file()
         self.startingup = True
+        self.stream = stream
         TweetHandlerI.__init__(self, limit, date_limit)
 
 
@@ -370,9 +383,14 @@ class TweetWriter(TweetHandlerI):
         if self.date_limit:
             tweet_date = datetime.datetime.strptime(data['created_at'], '%a %b %d\
             %H:%M:%S +0000 %Y').replace(tzinfo=UTC)
-            if tweet_date > self.date_limit:
-                print("Date limit {0} is earlier than date of current tweet {1}".\
-                                 format(self.date_limit, tweet_date))
+            if (tweet_date > self.date_limit and self.stream == True) or \
+                (tweet_date < self.date_limit and self.stream == False):
+                if self.stream:
+                    message = "earlier"
+                else:
+                    message = "later"
+                print("Date limit {0} is {1} than date of current tweet {2}".\
+                                 format(self.date_limit, message, tweet_date))
                 return False
 
         self.startingup = False
