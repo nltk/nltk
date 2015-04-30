@@ -72,4 +72,6 @@ class TweetHandlerI(object):
         (default implementation should be enough in most cases)
         """
         for item in data_chunk:
-            self.handle(item)
+            if self.handle(item) == False:
+                return False
+        return True
