@@ -18,9 +18,8 @@ from functools import wraps
 import json
 import os
 
-#from nltk.twitter.twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
-from twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
-from nltk.twitter.util import credsfromfile, json2csv
+from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
+     credsfromfile, json2csv
 
 SPACER = '###################################'
 
