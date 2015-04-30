@@ -205,7 +205,7 @@ class Query(Twython):
         a comma-separated string.
         :rtype: json
         """
-        results = self.search(q=keywords, count=min(100, count), lang=lang)
+        results = self.search(q=keywords, count=min(100, count), lang=lang, result_type='recent')
         count_from_query = results['search_metadata']['count']
         if self.handler.handle_chunk(results['statuses']) == False:
             return
@@ -215,10 +215,13 @@ class Query(Twython):
         dealing with twitter rate limits
         '''
         while count_from_query < count:
-            max_id = results['search_metadata']['max_id']
+            # the max_id is also in the metadata results['search_metadata']['next_results'],
+            # but as part of a query and difficult to fetch. This is doing the equivalent
+            # (last tweet id minus one)
+            max_id = results['statuses'][99]['id'] - 1
             try:
                 results = self.search(q=keywords, count=min(100, count-count_from_query),
-                                      lang=lang, max_id=max_id)
+                                      lang=lang, max_id=max_id, result_type='recent')
             except TwythonRateLimitError as e:
                 print("Waiting for 15 minutes -{0}".format(e))
                 time.sleep(15*60) # wait 15 minutes
