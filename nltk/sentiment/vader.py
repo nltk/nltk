@@ -67,10 +67,10 @@ Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 ...    "However, Mr. Carter solemnly argues, his client carried out the kidnapping under orders and in the ''least offensive way possible.''"
 ... ]
 >>> sentences.extend(tricky_sentences)
->>> sid = SentimentIntensityDetector()
+>>> sid = SentimentIntensityAnalyzer()
 >>> for sentence in sentences:
 ...     print(sentence)
-...     ss = sid.sentiment(sentence)
+...     ss = sid.polarity_scores(sentence)
 ...     for k in sorted(ss):
 ...         print('{0}: {1}, '.format(k, ss[k]), end='')
 ...     print()
@@ -353,7 +353,7 @@ class SentiText(object):
 
 
 
-class SentimentIntensityDetector(object):
+class SentimentIntensityAnalyzer(object):
     """
     Give a sentiment intensity score to sentences.
     """
@@ -372,7 +372,7 @@ class SentimentIntensityDetector(object):
                 lex_dict[w] = float(m)
         return lex_dict
 
-    def sentiment(self, text):
+    def polarity_scores(self, text):
         """
         Returns a float for sentiment strength based on the input text.
         Positive values are positive valence, negative value are negative
@@ -590,8 +590,8 @@ class SentimentIntensityDetector(object):
 def demo():
     text1 = "At least (I think...) it isn't a HORRIBLE :-) book!"
     text2 = "Today kinda sux! But I'll get by, lol"
-    sid = SentimentIntensityDetector()
-    ss1 = sid.sentiment(text1)
+    sid = SentimentIntensityAnalyzer()
+    ss1 = sid.polarity_scores(text1)
     print(text1)
     print(ss1)
 
@@ -606,7 +606,7 @@ def demo():
     """
 
 
-    ss2 = sid.sentiment(text2)
+    ss2 = sid.polarity_scores(text2)
     print(text2)
     print(ss2)
 
