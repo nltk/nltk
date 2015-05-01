@@ -22,8 +22,8 @@ http://borel.slu.edu/crubadan/index.html
 from __future__ import print_function, unicode_literals
 
 import re
+import nltk.compat
 from os import path
-
 from nltk.corpus.reader import CorpusReader
 from nltk.probability import FreqDist
 from nltk.data import ZipFilePathPointer
@@ -58,13 +58,13 @@ class CrubadanCorpusReader(CorpusReader):
         ''' Return internal Crubadan code based on ISO 639-3 code '''
         for i in self._lang_mapping_data:
             if i[1].lower() == lang.lower():
-                return unicode(i[0])
+                return i[0]
     
     def crubadan_to_iso(self, lang):
         ''' Return ISO 639-3 code given internal Crubadan code '''
         for i in self._lang_mapping_data:
             if i[0].lower() == lang.lower():
-                return unicode(i[1])
+                return i[1]
     
     def _load_lang_mapping_data(self):
         ''' Load language mappings between codes and description from table.txt '''
@@ -74,8 +74,12 @@ class CrubadanCorpusReader(CorpusReader):
         mapper_file = path.join(self.root, self._LANG_MAPPER_FILE)
         if self._LANG_MAPPER_FILE not in self.fileids():
             raise RuntimeError("Could not find language mapper file: " + mapper_file)
-        
-        raw = open(mapper_file, 'rU').read().decode('utf-8').strip()
+
+        if nltk.compat.PY3:
+            raw = open(mapper_file, 'r', encoding='utf-8').read().strip()
+        else:
+            raw = open(mapper_file, 'rU').read().decode('utf-8').strip()
+
         self._lang_mapping_data = [row.split('\t') for row in raw.split('\n')]
         
     def _load_lang_ngrams(self, lang):
@@ -83,18 +87,19 @@ class CrubadanCorpusReader(CorpusReader):
             and return its FreqDist '''
         
         crubadan_code = self.iso_to_crubadan(lang)
-        ngram_file = path.join(self.root, unicode(crubadan_code) + '-3grams.txt')
+        ngram_file = path.join(self.root, crubadan_code + '-3grams.txt')
         
         if not path.isfile(ngram_file):
             raise Runtime("Could not find language n-gram file for " + lang)
 
         counts = FreqDist()
-            
-        f = open(ngram_file, 'rU')
-        
+        if nltk.compat.PY3:
+            f = open(ngram_file, 'r', encoding='utf-8')
+        else:
+            f = open(ngram_file, 'rU')
+
         for line in f:
-            data = line.decode('utf-8').split(' ')
-            
+            data = line.split(' ')
             ngram = data[1].strip('\n')
             freq = int(data[0])
             

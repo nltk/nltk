@@ -28,15 +28,20 @@ For details about An Crubadan, see:
 http://borel.slu.edu/crubadan/index.html
 """
 
-# Ensure that your own literal strings default to unicode rather than str.
+# Ensure that literal strings default to unicode rather than str.
 from __future__ import print_function, unicode_literals
 
 import nltk
+import nltk.compat
 from nltk.corpus import CrubadanCorpusReader
+from nltk.util import trigrams
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 
-from sys import maxint
+if nltk.compat.PY3:
+    from sys import maxsize
+else:
+    from sys import maxint
 
 # Note: this is NOT "re" you're likely used to. The regex module
 # is an alternative to the standard re module that supports
@@ -54,8 +59,8 @@ class TextCat(object):
 
     _corpus = None
     fingerprints = {}
-    _START_CHAR = "<".encode('utf8')
-    _END_CHAR = ">".encode('utf8')
+    _START_CHAR = "<"
+    _END_CHAR = ">"
     
     last_distances = {}
     
@@ -71,26 +76,9 @@ class TextCat(object):
         for lang in self._corpus.langs():
             self._corpus.lang_freq(lang)
         
-    def trigrams(self, text):
-        padded_text = self._START_CHAR + text + self._END_CHAR
-        trigrams = []
-        # Generate 3-grams for given text
-        for i in range(0, len(padded_text) - 2):
-            cur_trigram = padded_text[i:(i + 3)]
-            if len(cur_trigram) == 2:
-                cur_trigram = cur_trigram + self._END_CHAR
-
-            trigrams.append(cur_trigram)
-
-        return trigrams
-
-    def _print_trigrams(self, trigrams):
-        for t in trigrams:
-            print(t)
-        
     def remove_punctuation(self, text):
         ''' Get rid of punctuation except apostrophes '''
-        return re.sub(ur"[^\P{P}\']+", "", text.decode('utf8'))
+        return re.sub(r"[^\P{P}\']+", "", text)
     
     def profile(self, text):
         ''' Create FreqDist of trigrams within text '''
@@ -99,7 +87,9 @@ class TextCat(object):
         
         fingerprint = FreqDist()
         for t in tokens:
-            token_trigrams = self.trigrams(t)
+            token_trigram_tuples = trigrams(self._START_CHAR + t + self._END_CHAR)
+            token_trigrams = [''.join(tri) for tri in token_trigram_tuples]
+
             for cur_trigram in token_trigrams:
                 if cur_trigram in fingerprint:
                     fingerprint[cur_trigram] += 1
@@ -111,20 +101,24 @@ class TextCat(object):
     def calc_dist(self, lang, trigram, text_profile):
         ''' Calculate the "out-of-place" measure between the
             text and language profile for a single trigram '''
-        
+
         lang_fd = self._corpus.lang_freq(lang)
         dist = 0
-        
-        if trigram in lang_fd:
-            idx_lang_profile = lang_fd.keys().index(trigram)
-            idx_text = text_profile.keys().index(trigram)
 
+        if trigram in lang_fd:
+            idx_lang_profile = list(lang_fd.keys()).index(trigram)
+            idx_text = list(text_profile.keys()).index(trigram)
+
+            #print(idx_lang_profile, ", ", idx_text)
             dist = abs(idx_lang_profile - idx_text) 
         else:
             # Arbitrary but should be larger than
             # any possible trigram file length
             # in terms of total lines
-            dist = maxint
+            if nltk.compat.PY3:
+                dist = maxsize
+            else:
+                dist = maxint
 
         return dist
         
@@ -175,7 +169,7 @@ class TextCat(object):
             # Get raw data from UDHR corpus
             raw_sentences = udhr.sents(cur_lang)
             rows = len(raw_sentences) - 1
-            cols = map(len, raw_sentences)
+            cols = list(map(len, raw_sentences))
 
             sample = ''
           
@@ -189,6 +183,6 @@ class TextCat(object):
           
             # Try to detect what it is
             print('Language snippet: ' + sample[0:140] + '...')
-            guess = self.guess_language(sample.encode('utf8'))
+            guess = self.guess_language(sample)
             print('Language detection: %s (%s)' % (guess, friendly[guess]))
             print('#' * 140)
