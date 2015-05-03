@@ -242,11 +242,11 @@ class TweetTokenizer:
 #{ Tokenization Function
 ######################################################################
 
-def casual_tokenize(text):
+def casual_tokenize(text, preserve_case=True):
     """
     Convenience function for wrapping the tokenizer.
     """
-    return TweetTokenizer().tokenize(text)
+    return TweetTokenizer(preserve_case=preserve_case).tokenize(text)
 
 ###############################################################################
 
