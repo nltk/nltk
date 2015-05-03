@@ -274,8 +274,8 @@ def allcap_differential(words):
     """
     is_different = False
     allcap_words = 0
-    for w in words:
-        if w.isupper():
+    for word in words:
+        if word.isupper():
             allcap_words += 1
     cap_differential = len(words) - allcap_words
     if cap_differential > 0 and cap_differential < len(words):
@@ -331,8 +331,8 @@ class SentiText(object):
         wes = [we for we in wes if len(we) > 1]
 
         for word in self._words_only():
-            for p in PUNC_LIST:
-                pword = p + word
+            for punct in PUNC_LIST:
+                pword = punct + word
                 x1 = wes.count(pword)
                 while x1 > 0:
                     i = wes.index(pword)
@@ -340,7 +340,7 @@ class SentiText(object):
                     wes.insert(i, word)
                     x1 = wes.count(pword)
 
-                wordp = word + p
+                wordp = word + punct
                 x2 = wes.count(wordp)
                 while x2 > 0:
                     i = wes.index(wordp)
@@ -357,7 +357,7 @@ class SentimentIntensityAnalyzer(object):
     """
     Give a sentiment intensity score to sentences.
     """
-    def __init__(self, lexicon_file="vader_sentiment_lexicon.txt"):
+    def __init__(self, lexicon_file="vader_lexicon.txt"):
         self.lexicon_file = lexicon_file
         self.lexicon = self.make_lex_dict()
 
@@ -366,10 +366,10 @@ class SentimentIntensityAnalyzer(object):
         Convert lexicon file to a dictionary
         """
         lex_dict = {}
-        with open(self.lexicon_file, encoding='latin-1') as infile:
+        with open(self.lexicon_file, encoding='utf8') as infile:
             for line in infile:
-                (w, m) = line.strip().split('\t')[0:2]
-                lex_dict[w] = float(m)
+                (word, measure) = line.strip().split('\t')[0:2]
+                lex_dict[word] = float(measure)
         return lex_dict
 
     def polarity_scores(self, text):
@@ -574,7 +574,10 @@ class SentimentIntensityAnalyzer(object):
             neu = math.fabs(neu_count / total)
 
         else:
-            compound = 0.0; pos = 0.0; neg = 0.0; neu = 0.0
+            compound = 0.0
+            pos = 0.0
+            neg = 0.0
+            neu = 0.0
 
         sentiment_dict = \
             {"neg" : round(neg, 3),
@@ -583,7 +586,6 @@ class SentimentIntensityAnalyzer(object):
              "compound" : round(compound, 4)}
 
         return sentiment_dict
-
 
 
 
