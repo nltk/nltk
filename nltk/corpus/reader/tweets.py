@@ -16,7 +16,7 @@ import os
 from nltk import compat
 from nltk.tokenize import TweetTokenizer
 
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat
+from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
 from nltk.corpus.reader.api import CorpusReader
 
 
@@ -65,7 +65,9 @@ class TwitterCorpusReader(CorpusReader):
         CorpusReader.__init__(self, root, fileids, encoding)
 
         for path in self.abspaths(self._fileids):
-            if os.path.getsize(path) == 0:
+            if isinstance(path, ZipFilePathPointer):
+                pass
+            elif os.path.getsize(path) == 0:
                 raise ValueError("File {} is empty".format(path))
         """Check that all user-created corpus files are non-empty."""
 
