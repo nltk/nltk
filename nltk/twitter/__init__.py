@@ -13,6 +13,6 @@ This package contains classes for retrieving Tweet documents using the
 Twitter API.
 
 """
-from nltk.twitter.util import credsfromfile
-from nltk.twitter.twitterclient import Streamer, Query, Twitter, TweetViewer,\
-     TweetWriter
+from nltk.twitter.util import credsfromfile, json2csv
+from nltk.twitter.twitterclient import Streamer, Query, Twitter,\
+     TweetViewer, TweetWriter
