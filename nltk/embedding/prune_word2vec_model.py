@@ -19,34 +19,23 @@ if __name__ == '__main__':
     
     # Only output word that appear in the Brown corpus 
     from nltk.corpus import brown
-    dict = {}  
-    for word in brown.words():
-        dict[word] = 1 
-    print (len(dict.keys()))
+    words = set(brown.words())
+    print (len(words))
     
-    # Only print out the model that contain word in dict
+    # Only print out the model that contain word in set
     out_file = 'pruned.word2vec.txt'
     f = open(out_file,'wb')
-    count = 0
-    for key in dict.keys():
-        try:
-            temp = model[key]
-            count +=1
-        except KeyError:
-            print (' Not containing key ' + key)
-                       
-    f.write(str(count) + ' ' + str(len(model['word'])) + '\n')
+
+    word_presented = words.intersection(model.vocab.keys())                       
+    f.write('{} {}\n'.format(len(word_presented),len(model['word'])))
     
-    for key in dict.keys():
-        try:
-            f.write(key + ' ' + ' '.join(str(value) for value in model[key]) + '\n')
-        except KeyError:
-            pass
-    
+    for word in word_presented:        
+        f.write('{} {}\n'.format(word, ' '.join(str(value) for value in model[word])))
+                        
     f.close()
     
     # Reload the model from text file 
-    new_model = Word2Vec.load_word2vec_format(out_file, binary = False);
+    new_model = Word2Vec.load_word2vec_format(out_file, binary=False);
     
     # Save it as the Gensim model
     gensim_model = "pruned.word2vec.bin" 
