@@ -218,7 +218,11 @@ class Query(Twython):
             # the max_id is also in the metadata results['search_metadata']['next_results'],
             # but as part of a query and difficult to fetch. This is doing the equivalent
             # (last tweet id minus one)
-            max_id = results['statuses'][99]['id'] - 1
+            len_prev_request = len(results['statuses'])
+            if len_prev_request == 0:
+                print("No more tweets available through rest api")
+                return
+            max_id = results['statuses'][len_prev_request - 1]['id'] - 1
             try:
                 results = self.search(q=keywords, count=min(100, count-count_from_query),
                                       lang=lang, max_id=max_id, result_type='recent')
