@@ -230,7 +230,7 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
         except KeyError:
             print("Supply a value to the 'subdir' parameter or set the \
             TWITTER environment variable.")
-            raise FileNotFoundError from KeyError
+            raise KeyError
 
 
     with open(creds_fullpath) as infile:
