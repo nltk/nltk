@@ -465,7 +465,7 @@ class DependencyGraph(object):
         for n in nx_nodelist:
             self.nx_labels[n] = self.nodes[n]['word']
 
-        g = NX.XDiGraph()
+        g = NX.MultiDiGraph()
         g.add_nodes_from(nx_nodelist)
         g.add_edges_from(nx_edgelist)
 
@@ -552,13 +552,11 @@ def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
     print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
-    top = {'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0}
-    child1 = {'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1}
-    child2 = {'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2}
-    child3 = {'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3}
-    child4 = {'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4}
-    cyclic_dg.nodelist = [top, child1, child2, child3, child4]
-    cyclic_dg.root = top
+    cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0})
+    cyclic_dg.add_node({'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1})
+    cyclic_dg.add_node({'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2})
+    cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3})
+    cyclic_dg.add_node({'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4})
     print(cyclic_dg.contains_cycle())
 
 treebank_data = """Pierre  NNP     2       NMOD
