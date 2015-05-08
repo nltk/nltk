@@ -247,7 +247,7 @@ semcor = LazyCorpusLoader(
     'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml',
     wordnet) # Must be defined *after* wordnet corpus.
 
-word_embedding = str(find('corpora/word_embeddings/pruned.word2vec.bin')) 
+word2vec_sample = str(find('models/word2vec_sample/pruned.word2vec.bin')) 
 
 def demo():
     # This is out-of-date:
