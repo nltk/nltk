@@ -288,7 +288,7 @@ class Twitter(object):
         :param str lang: language
         """
         if to_screen:
-            handler = TweetViewer(limit=limit, date_limit=date_limit, stream=stream)
+            handler = TweetViewer(limit=limit, date_limit=date_limit)
         else:
             handler = TweetWriter(limit=limit, date_limit=date_limit, stream=stream, repeat=False)
 
@@ -311,6 +311,7 @@ class TweetViewer(TweetHandlerI):
     """
     Handle data by sending it to the terminal.
     """
+
     def handle(self, data):
         """
         Direct data to `sys.stdout`
@@ -332,16 +333,24 @@ class TweetWriter(TweetHandlerI):
     """
     Handle data by writing it to a file.
     """
-    def __init__(self, limit=2000, date_limit=None, repeat=True, stream=True, fprefix='tweets',
-                 subdir='twitter-files'):
+    def __init__(self, limit=2000, date_limit=None, repeat=True, stream=True,
+                 fprefix='tweets', subdir='twitter-files'):
         """
-        :param limit: number of data items to process in the current round of processing
+        :param int limit: number of data items to process in the current\
+        round of processing
 
-        :param repeat: flag to determine whether multiple files should be\
+        :param bool repeat: flag to determine whether multiple files should be\
         written. If ``True``, the length of each file will be set by the value\
         of ``limit``. See also :py:func:`handle`.
-        
-        :param 
+
+        :param bool stream: If ``True``, use the live public stream,\
+        otherwise search past public tweets
+
+        :param str fprefix: The prefix to use in creating files for Tweet\
+        collections
+
+        :param str subdir: |The name of the directory where Tweet collection\
+        files should be stored
 
         """
         self.repeat = repeat
