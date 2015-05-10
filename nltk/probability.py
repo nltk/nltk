@@ -1272,6 +1272,11 @@ class SimpleGoodTuringProbDist(ProbDistI):
             xy_cov += (x - x_mean) * (y - y_mean)
             x_var += (x - x_mean)**2
         self._slope = (xy_cov / x_var if x_var != 0 else 0.0)
+        if self._slope >= -1:
+            warnings.warn('SimpleGoodTuring did not find a proper best fit '
+                          'line for smoothing probabilities of occurrences. '
+                          'The probability estimates are likely to be '
+                          'unreliable.')
         self._intercept = y_mean - self._slope * x_mean
 
     def _switch(self, r, nr):
@@ -1516,9 +1521,9 @@ class KneserNeyProbDist(ProbDistI):
     """
     def __init__(self, freqdist, bins=None, discount=0.75):
         """
-        :param trigrams: The trigram frequency distribution upon which to base
+        :param freqdist: The trigram frequency distribution upon which to base
             the estimation
-        :type trigrams: FreqDist
+        :type freqdist: FreqDist
         :param bins: Included for compatibility with nltk.tag.hmm
         :type bins: int or float
         :param discount: The discount applied when retrieving counts of

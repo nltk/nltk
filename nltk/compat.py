@@ -54,6 +54,9 @@ if PY3:
 
     from collections import Counter
 
+    from datetime import timezone
+    UTC = timezone.utc
+
 else:
     def b(s):
         return s
@@ -121,6 +124,42 @@ else:
 
     sys.meta_path.insert(0, TkinterLoader())
 
+    import pytz
+    UTC = pytz.utc
+
+    import csv, codecs, cStringIO
+    class UnicodeWriter:
+        """
+        A CSV writer which will write rows to CSV file "f",
+        which is encoded in the given encoding.
+        see https://docs.python.org/2/library/csv.html
+        """
+    
+        def __init__(self, f, dialect=csv.excel, encoding="utf-8", errors='replace', **kwds):
+            # Redirect output to a queue
+            self.queue = cStringIO.StringIO()
+            self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+            self.stream = f
+            self.encoder = codecs.getincrementalencoder(encoding)(errors=errors)
+    
+        def encode(self, data):
+            if isinstance(data, basestring):
+                return data.encode("utf-8")
+            else:
+                return data
+            
+        def writerow(self, row):
+            self.writer.writerow([self.encode(s) for s in row])
+            # Fetch UTF-8 output from the queue ...
+            data = self.queue.getvalue()
+            data = data.decode("utf-8")
+            # ... and reencode it into the target encoding
+            data = self.encoder.encode(data, 'replace')
+            # write to the target stream
+            self.stream.write(data)
+            # empty queue
+            self.queue.truncate(0)
+        
     if PY26:
         from operator import itemgetter
         from heapq import nlargest

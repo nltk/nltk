@@ -201,7 +201,7 @@ treebank_chunk = LazyCorpusLoader(
 treebank_raw = LazyCorpusLoader(
     'treebank/raw', PlaintextCorpusReader, r'wsj_.*', encoding='ISO-8859-2')
 tweets = LazyCorpusLoader(
-    'tweets', TwitterCorpusReader)
+    'twitter_samples', TwitterCorpusReader, '.*\.json')
 udhr = LazyCorpusLoader(
     'udhr', UdhrCorpusReader)
 udhr2 = LazyCorpusLoader(

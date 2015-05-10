@@ -96,7 +96,6 @@ from nltk.corpus.reader.sentiwordnet import *
 from nltk.corpus.reader.tweets import *
 from nltk.corpus.reader.nkjp import *
 
-
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
 from nltk.corpus.reader import bracket_parse

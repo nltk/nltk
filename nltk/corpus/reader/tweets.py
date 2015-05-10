@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Twitter Corpus Reader
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -16,7 +16,7 @@ import os
 from nltk import compat
 from nltk.tokenize import TweetTokenizer
 
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat
+from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
 from nltk.corpus.reader.api import CorpusReader
 
 
@@ -26,6 +26,22 @@ class TwitterCorpusReader(CorpusReader):
 
     Individual Tweets can be tokenized using the default tokenizer, or by a
     custom tokenizer specified as a parameter to the constructor.
+
+    Construct a new Tweet corpus reader for a set of documents
+    located at the given root directory.
+
+    If you made your own tweet collection in a directory called
+    `twitter-files`, then you can initialise the reader as::
+
+        from nltk.corpus import TwitterCorpusReader
+        reader = TwitterCorpusReader(root='/path/to/twitter-files', '.*\.json')
+
+    However, the recommended approach is to use this directory as the value of the
+    environmental variable `TWITTER`, and then invoke the reader as::
+
+       root = os.environ['TWITTER']
+       reader = TwitterCorpusReader(root, '.*\.json')
+
     """
 
     CorpusView = StreamBackedCorpusView
@@ -33,15 +49,10 @@ class TwitterCorpusReader(CorpusReader):
     The corpus view class used by this reader.
     """
 
-    def __init__(self, root, fileids,
+    def __init__(self, root, fileids = None,
                  word_tokenizer=TweetTokenizer(),
                  encoding='utf8'):
         """
-        Construct a new Tweet corpus reader for a set of documents
-        located at the given root directory.  Example usage:
-
-            >>> root = os.environ['TWITTER']
-            >>> reader = TwitterCorpusReader(root, '.*\.json') # doctest: +SKIP
 
         :param root: The root directory for this corpus.
 
@@ -54,7 +65,9 @@ class TwitterCorpusReader(CorpusReader):
         CorpusReader.__init__(self, root, fileids, encoding)
 
         for path in self.abspaths(self._fileids):
-            if os.path.getsize(path) == 0:
+            if isinstance(path, ZipFilePathPointer):
+                pass
+            elif os.path.getsize(path) == 0:
                 raise ValueError("File {} is empty".format(path))
         """Check that all user-created corpus files are non-empty."""
 
