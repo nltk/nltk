@@ -207,8 +207,8 @@ class Query(Twython):
         """
         results = self.search(q=keywords, count=min(100, count), lang=lang, result_type='recent')
         count_from_query = results['search_metadata']['count']
-        if self.handler.handle_chunk(results['statuses']) == False:
-            return
+        if self.handler is None or self.handler.handle_chunk(results['statuses']) == False:
+            return results['statuses']
 
         '''
         pagination loop: keep fetching tweets until the count requested is reached,
@@ -228,7 +228,7 @@ class Query(Twython):
                 continue
             count_from_query += results['search_metadata']['count']
             if self.handler.handle_chunk(results['statuses']) == False:
-                return
+                return results['statuses']
 
     def user_info_from_id(self, userids):
         """
@@ -396,13 +396,13 @@ class TweetWriter(TweetHandlerI):
             tweet_date = datetime.datetime.strptime(data['created_at'], '%a %b %d\
             %H:%M:%S +0000 %Y').replace(tzinfo=UTC)
             if (tweet_date > self.date_limit and self.stream == True) or \
-                (tweet_date < self.date_limit and self.stream == False):
+               (tweet_date < self.date_limit and self.stream == False):
                 if self.stream:
                     message = "earlier"
                 else:
                     message = "later"
                 print("Date limit {0} is {1} than date of current tweet {2}".\
-                                 format(self.date_limit, message, tweet_date))
+                      format(self.date_limit, message, tweet_date))
                 return False
 
         self.startingup = False
