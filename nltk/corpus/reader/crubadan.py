@@ -99,7 +99,11 @@ class CrubadanCorpusReader(CorpusReader):
             f = open(ngram_file, 'rU')
 
         for line in f:
-            data = line.split(' ')
+            if nltk.compat.PY3:
+                data = line.split(' ')
+            else:
+                data = line.decode('utf8').split(' ')
+
             ngram = data[1].strip('\n')
             freq = int(data[0])
             
