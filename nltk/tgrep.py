@@ -884,31 +884,66 @@ def tgrep_positions(tree, tgrep_string, search_leaves = True):
     Return all tree positions in the given tree which match the given
     `tgrep_string`.
 
-    If `search_leaves` is False, the method will not return any
-    results in leaf positions.
+    Arguments:
+    - `tree`: a NLTK tree (usually a ParentedTree), or an iterable over trees
+    - `tgrep_string`: a tgrep search query, either as a string value,
+      or compiled into a lambda function with `tgrep_compile`
+    - `search_leaves`: Boolean flag; if this is False, the method will
+      not return any positions which are leaf nodes of the given tree(s)
     '''
-    try:
-        if search_leaves:
-            search_positions = tree.treepositions()
-        else:
-            search_positions = treepositions_no_leaves(tree)
-    except AttributeError:
-        return []
+    # compile tgrep_string if needed
     if isinstance(tgrep_string, (binary_type, text_type)):
         tgrep_string = tgrep_compile(tgrep_string)
-    return [position for position in search_positions
-            if tgrep_string(tree[position])]
+    # check if tree is iterable
+    tree_iter = None
+    if not _istree(tree):
+        try:
+            tree_iter = iter(tree)
+        except TypeError:
+            pass
+    if tree_iter is not None:
+        return [tgrep_positions(t, tgrep_string, search_leaves)
+                for t in tree_iter]
+    else:
+        # tree is not an iterable but a single tree
+        try:
+            if search_leaves:
+                search_positions = tree.treepositions()
+            else:
+                search_positions = treepositions_no_leaves(tree)
+        except AttributeError:
+            return []
+        return [position for position in search_positions
+                if tgrep_string(tree[position])]
 
 def tgrep_nodes(tree, tgrep_string, search_leaves = True):
     '''
     Return all tree nodes in the given tree which match the given
     `tgrep_ string`.
 
-    If `search_leaves` is False, the method will not return any
-    results in leaf positions.
+    Arguments:
+    - `tree`: a NLTK tree (usually a ParentedTree), or an iterable over trees
+    - `tgrep_string`: a tgrep search query, either as a string value,
+      or compiled into a lambda function with `tgrep_compile`
+    - `search_leaves`: Boolean flag; if this is False, the method will
+      not return any leaf nodes of the given tree(s)
     '''
-    return [tree[position] for position in tgrep_positions(tree, tgrep_string,
-                                                           search_leaves)]
+    # compile tgrep_string if needed
+    if isinstance(tgrep_string, (binary_type, text_type)):
+        tgrep_string = tgrep_compile(tgrep_string)
+    # check if tree is iterable
+    tree_iter = None
+    if not _istree(tree):
+        try:
+            tree_iter = iter(tree)
+        except TypeError:
+            pass
+    if tree_iter is not None:
+        return [tgrep_nodes(t, tgrep_string, search_leaves) for t in tree_iter]
+    else:
+        # tree is not an iterable but a single tree
+        return [tree[position] for position in
+                tgrep_positions(tree, tgrep_string, search_leaves)]
 
 # run module doctests
 if __name__ == "__main__":
