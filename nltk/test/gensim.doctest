@@ -74,26 +74,32 @@ You can just change it to a bigger value.
 	count = 0 
 	max_count = 1000
 	X = np.zeros(shape=(max_count,len(model['university'])))
-    
+	    
 	for term in model.vocab:
 		X[count] = model[term]
 		labels.append(term)	
 		count+= 1 
 		if count >= max_count: break 	
 	
-	from nltk.draw.tsne import  tsne
+	# It is recommended to use PCA first to reduce to ~50 dimensions  
+	from sklearn.decomposition import PCA
+	pca = PCA(n_components=50)
+	X_50 = pca.fit_transform(X)
 	
-	# Run with 1000 iterations
-	Y = tsne(X, 2, 50, 20.0,1000)
+	# Using TSNE to further reduce to 2 dimensions
+	from sklearn.manifold import TSNE  
+	model_tsne = TSNE(n_components=2, random_state=0)
+	Y = model_tsne.fit_transform(X_50)
 	
+	# Show the scatter plot 
 	import matplotlib.pyplot as plt
 	plt.scatter(Y[:,0], Y[:,1], 20)
 	
 	# Add labels 
 	for label, x, y in zip(labels, Y[:, 0], Y[:, 1]): 
 		plt.annotate(label, xy = (x,y), xytext = (0, 0), textcoords = 'offset points', size = 10)	
-    
-    plt.show()
+	
+	plt.show()
 
 
 Prune the trained binary model
