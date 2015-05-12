@@ -232,8 +232,8 @@ class AnnotationTask(object):
         data = (x for x in self.data if x['coder'] in (cA, cB))
         for i, itemdata in self._grouped_data('item', data):
             # we should have two items; distance doesn't care which comes first
-            total += self.distance(itemdata.next()['labels'],
-                    itemdata.next()['labels'])
+            total += self.distance(next(itemdata)['labels'],
+                                   next(itemdata)['labels'])
 
         ret = total / (len(self.I) * max_distance)
         log.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
