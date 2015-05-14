@@ -17,9 +17,14 @@ For documentation about the Twitter APIs, see `The Streaming APIs Overview
 from functools import wraps
 import json
 import os
+from tempfile import NamedTemporaryFile, TemporaryFile
 
-from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
-     credsfromfile, json2csv
+#from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
+     #credsfromfile, json2csv
+
+from twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
+
+from util import credsfromfile, json2csv
 
 SPACER = '###################################'
 
@@ -36,15 +41,29 @@ def verbose(func):
 
 
 
-TWITTER = os.environ['TWITTER']
-TWEETS = os.path.join(TWITTER, 'demo_tweets.json')
-TWEETS = os.path.join(TWITTER, '1k_sample.json')
-IDS = os.path.join(TWITTER, '1k_sample.csv')
-FIELDS = ['id_str']
-USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
-#           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
-HYDRATED = os.path.join(TWITTER, 'rehydrated.json')
-DATE = (2015, 4, 20, 16, 40)
+
+#TWITTER = os.environ['TWITTER']
+#TWEETS = os.path.join(TWITTER, 'demo_tweets.json')
+#TWEETS = os.path.join(TWITTER, '1k_sample.json')
+#IDS = os.path.join(TWITTER, '1k_sample.csv')
+#FIELDS = ['id_str']
+#USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
+##           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
+#HYDRATED = os.path.join(TWITTER, 'rehydrated.json')
+
+
+def setup():
+
+    global TWEETS, DATE, USERIDS
+    from nltk.corpus import tweets
+    TWEETS = tweets.docs()[:100]
+    DATE = (2015, 4, 20, 16, 40)
+    USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
+    #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
+    IDS = NamedTemporaryFile(mode='w', delete = False)
+
+def teardown():
+    IDS.close()
 
 
 @verbose
@@ -53,11 +72,15 @@ def twitterclass_demo():
     Use the simplified :class:`Twitter` class to write some tweets to a file.
     """
     tw = Twitter()
+    print(SPACER)
+    print("Track from the public stream\n")
     tw.tweets(keywords='love, hate', limit=10) #public stream
     print(SPACER)
+    print("Search past Tweets\n")
     tw = Twitter()
     tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
     print(SPACER)
+    print("Follow two accounts in the public stream -- be prepared to wait a minute\n")
     tw = Twitter()
     tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
 
@@ -140,34 +163,36 @@ def streamtofile_demo(limit=20):
     """
     oauth = credsfromfile()
     client = Streamer(**oauth)
-    client.register(TweetWriter(limit=limit, repeat=False))
+    client.register(TweetWriter(limit=limit, repeat= False))
     client.statuses.sample()
 
 
 @verbose
-def limit_by_time_demo(limit=20, date_limit=DATE):
+def limit_by_time_demo(limit=20):
     """
     Sample from the Streaming API and send output to terminal.
     """
     oauth = credsfromfile()
     client = Streamer(**oauth)
-    client.register(TweetWriter(limit=limit, date_limit=date_limit))
+    client.register(TweetWriter(limit=limit, date_limit=DATE))
     client.sample()
 
 
 @verbose
-def extract_tweetids_demo(infile = TWEETS, outfile = IDS):
+def extract_tweetids_demo():
     """
     Given a list of full tweets in a file (``infile``), write just the
     tweetIDs to a new file (`outfile`)
     """
+    infile = TWEETS
+    outfile = IDS
     print("Reading from {0}".format(infile))
     json2csv(infile, outfile, FIELDS)
     print("Writing ids to {0}".format(outfile))
 
 
 @verbose
-def expand_tweetids_demo(infile = IDS, outfile = HYDRATED):
+def expand_tweetids_demo():
     """
     Given a list of tweetIDs in a file (``infile``), try to recover the full
     ('hydrated') tweets from the REST API and write the results to a new file (`outfile`).
@@ -175,9 +200,11 @@ def expand_tweetids_demo(infile = IDS, outfile = HYDRATED):
     If any of the tweets corresponding to the tweetIDs have been deleted by
     their authors, :meth:`lookup` will return an empty result.
     """
+    infile = IDS
     oauth = credsfromfile()
     client = Query(**oauth)
-    client.lookup(infile, outfile)
+    with TemporaryFile() as outfile:
+        client.lookup(infile, outfile)
 
 
 @verbose
@@ -218,13 +245,16 @@ ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
          streamtofile_demo, limit_by_time_demo,
          extract_tweetids_demo, expand_tweetids_demo, corpusreader_demo]
 
-DEMOS = ALL[11:]
+DEMOS = ALL[:]
 
 if __name__ == "__main__":
     """Run selected demo functions."""
+    setup()
 
     for demo in DEMOS:
         demo()
+
+    teardown()
 
 
 
