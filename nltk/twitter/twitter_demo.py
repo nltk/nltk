@@ -54,16 +54,23 @@ def verbose(func):
 
 def setup():
 
-    global TWEETS, DATE, USERIDS
+    global TWEETS, DATE, USERIDS, IDS, FIELDS
     from nltk.corpus import tweets
-    TWEETS = tweets.docs()[:100]
+
+    TWEETS = NamedTemporaryFile(mode='w')
+    for tweet in tweets.docs()[:100]:
+        json.dump(tweet, TWEETS)
+
     DATE = (2015, 4, 20, 16, 40)
     USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
     #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
-    IDS = NamedTemporaryFile(mode='w', delete = False)
+    IDS = NamedTemporaryFile(mode='w')
+    FIELDS = ['id_str']
+    pass
 
 def teardown():
     IDS.close()
+    TWEETS.close()
 
 
 @verbose
@@ -185,6 +192,7 @@ def extract_tweetids_demo():
     tweetIDs to a new file (`outfile`)
     """
     infile = TWEETS
+    TWEETS.seek(0)
     outfile = IDS
     print("Reading from {0}".format(infile))
     json2csv(infile, outfile, FIELDS)
@@ -245,7 +253,7 @@ ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
          streamtofile_demo, limit_by_time_demo,
          extract_tweetids_demo, expand_tweetids_demo, corpusreader_demo]
 
-DEMOS = ALL[:]
+DEMOS = ALL[9:10]
 
 if __name__ == "__main__":
     """Run selected demo functions."""
