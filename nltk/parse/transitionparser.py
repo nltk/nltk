@@ -16,8 +16,8 @@ from os import remove
 from copy import deepcopy
 from operator import itemgetter
 try:
-    from scipy import sparse
     from numpy import array
+    from scipy import sparse
     from sklearn.datasets import load_svmlight_file
     from sklearn import svm
 except ImportError:
