@@ -22,10 +22,10 @@ def dispersion_plot(text, words, ignore_case=False):
     """
 
     try:
-        import pylab
+        from matplotlib import pylab
     except ImportError:
-        raise ValueError('The plot function requires the matplotlib package (aka pylab).'
-                     'See http://matplotlib.sourceforge.net/')
+        raise ValueError('The plot function requires matplotlib to be installed.'
+                     'See http://matplotlib.org/')
 
     text = list(text)
     words.reverse()

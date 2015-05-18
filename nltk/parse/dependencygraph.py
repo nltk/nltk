@@ -454,7 +454,7 @@ class DependencyGraph(object):
 
     def nx_graph(self):
         """Convert the data in a ``nodelist`` into a networkx labeled directed graph."""
-        import networkx as NX
+        import networkx
 
         nx_nodelist = list(range(1, len(self.nodes)))
         nx_edgelist = [
@@ -465,7 +465,7 @@ class DependencyGraph(object):
         for n in nx_nodelist:
             self.nx_labels[n] = self.nodes[n]['word']
 
-        g = NX.MultiDiGraph()
+        g = networkx.MultiDiGraph()
         g.add_nodes_from(nx_nodelist)
         g.add_edges_from(nx_edgelist)
 
@@ -511,19 +511,19 @@ Nov.    NNP     9       VMOD
     tree.pprint()
     if nx:
         # currently doesn't work
-        import networkx as NX
-        import pylab as P
+        import networkx
+        from matplotlib import pylab
 
         g = dg.nx_graph()
         g.info()
-        pos = NX.spring_layout(g, dim=1)
-        NX.draw_networkx_nodes(g, pos, node_size=50)
-        # NX.draw_networkx_edges(g, pos, edge_color='k', width=8)
-        NX.draw_networkx_labels(g, pos, dg.nx_labels)
-        P.xticks([])
-        P.yticks([])
-        P.savefig('tree.png')
-        P.show()
+        pos = networkx.spring_layout(g, dim=1)
+        networkx.draw_networkx_nodes(g, pos, node_size=50)
+        # networkx.draw_networkx_edges(g, pos, edge_color='k', width=8)
+        networkx.draw_networkx_labels(g, pos, dg.nx_labels)
+        pylab.xticks([])
+        pylab.yticks([])
+        pylab.savefig('tree.png')
+        pylab.show()
 
 
 def conll_demo():

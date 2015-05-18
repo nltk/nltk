@@ -435,7 +435,7 @@ def smooth(x,window_len=11,window='flat'):
 
 def demo(text=None):
     from nltk.corpus import brown
-    import pylab
+    from matplotlib import pylab
     tt = TextTilingTokenizer(demo_mode=True)
     if text is None: text = brown.raw()[:10000]
     s, ss, d, b = tt.tokenize(text)
