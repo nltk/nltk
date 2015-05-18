@@ -14,7 +14,6 @@ import logging
 from nltk.compat import xrange
 
 from nltk.parse.dependencygraph import DependencyGraph
-from nltk.classify import NaiveBayesClassifier
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +109,8 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         :type graphs: list(DependencyGraph)
         :param graphs: A list of dependency graphs to train the scorer.
         """
+
+        from nltk.classify import NaiveBayesClassifier
 
         # Create training labeled training examples
         labeled_examples = []

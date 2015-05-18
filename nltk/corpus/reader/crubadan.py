@@ -22,7 +22,7 @@ http://borel.slu.edu/crubadan/index.html
 from __future__ import print_function, unicode_literals
 
 import re
-import nltk.compat
+from nltk.compat import PY3
 from os import path
 from nltk.corpus.reader import CorpusReader
 from nltk.probability import FreqDist
@@ -75,7 +75,7 @@ class CrubadanCorpusReader(CorpusReader):
         if self._LANG_MAPPER_FILE not in self.fileids():
             raise RuntimeError("Could not find language mapper file: " + mapper_file)
 
-        if nltk.compat.PY3:
+        if PY3:
             raw = open(mapper_file, 'r', encoding='utf-8').read().strip()
         else:
             raw = open(mapper_file, 'rU').read().decode('utf-8').strip()
@@ -93,13 +93,13 @@ class CrubadanCorpusReader(CorpusReader):
             raise Runtime("Could not find language n-gram file for " + lang)
 
         counts = FreqDist()
-        if nltk.compat.PY3:
+        if PY3:
             f = open(ngram_file, 'r', encoding='utf-8')
         else:
             f = open(ngram_file, 'rU')
 
         for line in f:
-            if nltk.compat.PY3:
+            if PY3:
                 data = line.split(' ')
             else:
                 data = line.decode('utf8').split(' ')

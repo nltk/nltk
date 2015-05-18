@@ -12,10 +12,14 @@ import pickle
 from os import remove
 from copy import deepcopy
 from operator import itemgetter
-from scipy import sparse
-from numpy import array
-from sklearn.datasets import load_svmlight_file
-from sklearn import svm
+
+try:
+    from numpy import array
+    from scipy import sparse
+    from sklearn.datasets import load_svmlight_file
+    from sklearn import svm
+except ImportError:
+    pass
 
 from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
 

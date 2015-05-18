@@ -31,14 +31,10 @@ http://borel.slu.edu/crubadan/index.html
 # Ensure that literal strings default to unicode rather than str.
 from __future__ import print_function, unicode_literals
 
-import nltk
-import nltk.compat
-from nltk.corpus import CrubadanCorpusReader
+from nltk.compat import PY3
 from nltk.util import trigrams
-from nltk.tokenize import word_tokenize
-from nltk.probability import FreqDist
 
-if nltk.compat.PY3:
+if PY3:
     from sys import maxsize
 else:
     from sys import maxint
@@ -71,7 +67,8 @@ class TextCat(object):
                                    "see https://pypi.python.org/pypi/regex for "
                                    "further details.")
 
-        self._corpus = CrubadanCorpusReader(nltk.data.find('corpora/crubadan'), '.*\.txt')
+        from nltk.corpus import crubadan
+        self._corpus = crubadan
         # Load all language ngrams into cache
         for lang in self._corpus.langs():
             self._corpus.lang_freq(lang)
@@ -82,6 +79,8 @@ class TextCat(object):
     
     def profile(self, text):
         ''' Create FreqDist of trigrams within text '''
+        from nltk import word_tokenize, FreqDist
+
         clean_text = self.remove_punctuation(text)
         tokens = word_tokenize(clean_text)
         
@@ -115,7 +114,7 @@ class TextCat(object):
             # Arbitrary but should be larger than
             # any possible trigram file length
             # in terms of total lines
-            if nltk.compat.PY3:
+            if PY3:
                 dist = maxsize
             else:
                 dist = maxint
@@ -148,41 +147,47 @@ class TextCat(object):
         return min(self.last_distances, key=self.last_distances.get)
         #################################################')
 
-    def demo(self):
-        from nltk.corpus import udhr
+def demo():
+    from nltk.corpus import udhr
 
-        langs = ['Kurdish-UTF8', 'Abkhaz-UTF8', 'Farsi_Persian-UTF8',
-                 'Hindi-UTF8', 'Hawaiian-UTF8', 'Russian-UTF8', 'Vietnamese-UTF8',
-                 'Serbian_Srpski-UTF8','Esperanto-UTF8']
+    langs = ['Kurdish-UTF8', 'Abkhaz-UTF8', 'Farsi_Persian-UTF8',
+             'Hindi-UTF8', 'Hawaiian-UTF8', 'Russian-UTF8', 'Vietnamese-UTF8',
+             'Serbian_Srpski-UTF8','Esperanto-UTF8']
 
-        friendly = {'kmr':'Northern Kurdish',
-                    'abk':'Abkhazian',
-                    'pes':'Iranian Persian',
-                    'hin':'Hindi',
-                    'haw':'Hawaiian',
-                    'rus':'Russian',
-                    'vie':'Vietnamese',
-                    'srp':'Serbian',
-                    'epo':'Esperanto'}
+    friendly = {'kmr':'Northern Kurdish',
+                'abk':'Abkhazian',
+                'pes':'Iranian Persian',
+                'hin':'Hindi',
+                'haw':'Hawaiian',
+                'rus':'Russian',
+                'vie':'Vietnamese',
+                'srp':'Serbian',
+                'epo':'Esperanto'}
         
-        for cur_lang in langs:
-            # Get raw data from UDHR corpus
-            raw_sentences = udhr.sents(cur_lang)
-            rows = len(raw_sentences) - 1
-            cols = list(map(len, raw_sentences))
+    tc = TextCat()
 
-            sample = ''
+    for cur_lang in langs:
+        # Get raw data from UDHR corpus
+        raw_sentences = udhr.sents(cur_lang)
+        rows = len(raw_sentences) - 1
+        cols = list(map(len, raw_sentences))
+
+        sample = ''
           
-            # Generate a sample text of the language
-            for i in range(0, rows):
-                cur_sent = ''
-                for j in range(0, cols[i]):
-                    cur_sent += ' ' + raw_sentences[i][j]
+        # Generate a sample text of the language
+        for i in range(0, rows):
+            cur_sent = ''
+            for j in range(0, cols[i]):
+                cur_sent += ' ' + raw_sentences[i][j]
             
-                sample += cur_sent
+            sample += cur_sent
           
-            # Try to detect what it is
-            print('Language snippet: ' + sample[0:140] + '...')
-            guess = self.guess_language(sample)
-            print('Language detection: %s (%s)' % (guess, friendly[guess]))
-            print('#' * 140)
+        # Try to detect what it is
+        print('Language snippet: ' + sample[0:140] + '...')
+        guess = tc.guess_language(sample)
+        print('Language detection: %s (%s)' % (guess, friendly[guess]))
+        print('#' * 140)
+
+
+if __name__ == '__main__':
+    demo()
