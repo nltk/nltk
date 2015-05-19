@@ -196,7 +196,7 @@ def _write_to_file(object_fields, items, entity_fields, writer):
             for kd, vd in d.iteritems():
                 json_dict = items[kd]
                 if not isinstance(json_dict, dict):
-                    raise RuntimeError("Key {0} does not contain a dictionary in the json file".format(key))
+                    raise RuntimeError("Key {0} does not contain a dictionary in the json file".format(kd))
                 for k2 in vd:
                     row += [json_dict[k2]]
         writer.writerow(row)
