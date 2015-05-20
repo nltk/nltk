@@ -85,14 +85,18 @@ class CrubadanCorpusReader(CorpusReader):
     def _load_lang_ngrams(self, lang):
         ''' Load single n-gram language file given the ISO 639-3 language code
             and return its FreqDist '''
-        
+
+        if lang not in self.langs():
+            raise RuntimeError("Unsupported language.")
+
         crubadan_code = self.iso_to_crubadan(lang)
         ngram_file = path.join(self.root, crubadan_code + '-3grams.txt')
-        
+
         if not path.isfile(ngram_file):
-            raise Runtime("Could not find language n-gram file for " + lang)
+            raise Runtime("No N-gram file found for requested language.")
 
         counts = FreqDist()
+
         if nltk.compat.PY3:
             f = open(ngram_file, 'r', encoding='utf-8')
         else:
