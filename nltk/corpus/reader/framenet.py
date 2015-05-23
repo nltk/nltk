@@ -1886,7 +1886,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         """Load a subcorpus of a lexical unit from the given xml."""
         sc = AttrDict()
         try:
-            sc['name'] = str(elt.get('name'))
+            sc['name'] = elt.get('name')    # was wrapped in str(), but some subcorpus names have Unicode chars
         except AttributeError:
             return None
         sc['_type'] = "lusubcorpus"
