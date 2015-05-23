@@ -16,13 +16,35 @@ __docformat__ = 'epytext en'
 import os, sys
 import re
 import textwrap
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
+from itertools import izip_longest
 from pprint import pprint, pformat
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
 from nltk.compat import text_type, string_types, python_2_unicode_compatible
 from nltk.util import AbstractLazySequence, LazyMap
 
+def mimic_wrap(lines, wrap_at=65, **kwargs):
+    """
+    Wrap the first of 'lines' with textwrap and the remaining lines at exactly the same 
+    positions as the first.
+    """
+    l0 = textwrap.wrap(lines[0], wrap_at, drop_whitespace=False)
+    yield l0
+    
+    def _(line):
+        il0 = 0
+        while line and il0<len(l0)-1:
+            yield line[:len(l0[il0])]
+            line = line[len(l0[il0]):]
+            il0 += 1
+        if line: # Remaining stuff on this line past the end of the mimicked line. 
+            # So just textwrap this line.
+            for ln in textwrap.wrap(line, wrap_at, drop_whitespace=False):
+                yield ln
+    
+    for l in lines[1:]:
+        yield list(_(l))
 
 def _pretty_longstring(defstr, prefix='', wrap_at=65):
 
@@ -168,7 +190,113 @@ def _pretty_lu(lu):
         outstr += "\n[subCorpus] {0} subcorpora\n".format(len(lu.subCorpus))
         for line in textwrap.fill(", ".join(sorted(subc)), 60).split('\n'):
             outstr += "  {0}\n".format(line)
+    if 'exemplars' in lukeys:
+        outstr += "\n[exemplars] {0} sentences across all subcorpora\n".format(len(lu.exemplars))
 
+    return outstr
+
+def _pretty_exemplars(exemplars, lu):
+    """
+    Helper function for pretty-printing a list of exemplar sentences for a lexical unit.
+
+    :param sent: The list of exemplar sentences to be printed.
+    :type sent: list(AttrDict)
+    :return: An index of the text of the exemplar sentences.
+    :rtype: str
+    """
+
+    outstr = ""
+    outstr += "exemplar sentences for {0.name} in {0.frame.name}:\n\n".format(lu)
+    for i,sent in enumerate(exemplars):
+        outstr += "[{0}] {1}\n".format(i, sent.text)
+    outstr += "\n"
+    return outstr
+
+def _pretty_exemplar(sent):
+    """
+    Helper function for pretty-printing an exemplar sentence for a lexical unit.
+
+    :param sent: The exemplar sentence to be printed.
+    :type sent: AttrDict
+    :return: A nicely formated string representation of the exemplar sentence 
+    with its target, frame, and FE annotations.
+    :rtype: str
+    """
+
+    sentkeys = sent.keys()
+    outstr = ""
+    outstr += "exemplar sentence ({0.ID}):\n\n".format(sent)
+    for k in ('corpID', 'docID', 'paragNo', 'sentNo', 'aPos'):
+        if k in sentkeys:
+            outstr += "[{0}] {1}\n".format(k, sent[k])
+    outstr += "\n[LU] ({0.ID}) {0.name} in {0.frame.name}\n".format(sent.LU)
+    outstr += "\n[annotationSet] {0} annotation sets\n".format(len(sent.annotationSet))
+    outstr += "\n[POS] {0} tags\n".format(len(sent.POS))
+    outstr += "\n[POS_tagset] {0}\n".format(sent.POS_tagset)
+    outstr += "\n[GF] {0} relations\n".format(len(sent.GF))
+    outstr += "\n[PT] {0} phrases\n".format(len(sent.PT))
+    outstr += "\n[text] + [Target] + [FE]"
+    if 'FE2' in sentkeys:
+        outstr += " + [FE2]"
+        if 'FE3' in sentkeys:
+            outstr += " + [FE3]"
+    outstr += "\n\n"
+    
+    # render the sentence along with its target and FE info.
+    # line-wrapping, second FE layer if necessary.
+    
+    def _render_FE_layer(overt, ni, feAbbrevs):
+        s1 = ''
+        s2 = ''
+        i = 0
+        for j,k,fename in overt:
+            s1 += ' '*(j-i) + '-'*(k-j)
+            short = fename[:k-j]
+            if len(fename)>len(short):
+                r = 0
+                while short in feAbbrevs:
+                    if feAbbrevs[short]==fename:
+                        break
+                    r += 1
+                    short = fename[:k-j-1] + str(r)
+                else:   # short not in feAbbrevs
+                    feAbbrevs[short] = fename
+            s2 += ' '*(j-i) + short.ljust(k-j)
+            i = k
+            
+        sNI = ''
+        if ni:
+            sNI += ' ['+', '.join(':'.join(x) for x in sorted(ni.items()))+']'
+        return [s1,s2,sNI]
+    
+    feAbbrevs = OrderedDict()
+    FE1 = _render_FE_layer(sent.FE[0], sent.FE[1], feAbbrevs)
+    FE2 = FE3 = None
+    if 'FE2' in sent:
+        FE2 = _render_FE_layer(sent.FE2[0], sent.FE2[1], feAbbrevs)
+        if 'FE3' in sent:
+            FE3 = _render_FE_layer(sent.FE3[0], sent.FE3[1], feAbbrevs)
+    
+    for i,j in sent.Target:
+        FE1span, FE1name, FE1exp = FE1
+        if len(FE1span)<j:
+            FE1span += ' '*(j-len(FE1span))
+        if len(FE1name)<j:
+            FE1name += ' '*(j-len(FE1name))
+            FE1[1] = FE1name
+        FE1[0] = FE1span[:i] + FE1span[i:j].replace(' ','*').replace('-','=') + FE1span[j:]
+    long_lines = [sent.text] + [FE1[0], FE1[1]+FE1[2]] # lines with no length limit
+    if FE2:
+        long_lines.extend([FE2[0], FE2[1]+FE2[2]])
+        if FE3:
+            long_lines.extend([FE3[0], FE3[1]+FE3[2]])
+    long_lines.append('')
+    outstr += '\n'.join(map('\n'.join, izip_longest(*mimic_wrap(long_lines), fillvalue=' ')))
+    if feAbbrevs:
+        outstr += '('+', '.join('='.join(pair) for pair in feAbbrevs.items())+')'
+        assert len(feAbbrevs)==len(dict(feAbbrevs)),'Abbreviation clash'
+    outstr += "\n"
+    
     return outstr
 
 def _pretty_fe(fe):
@@ -317,6 +445,10 @@ class AttrDict(dict):
             outstr = _pretty_fe(self)
         elif self['_type'] == 'lu':
             outstr = _pretty_lu(self)
+        elif self['_type'] == 'luexemplars': # list of ALL exemplars for LU
+            outstr = _pretty_exemplars(self, self[0].LU)
+        elif self['_type'] == 'lusentence':
+            outstr = _pretty_exemplar(self)
         elif self['_type'] == 'semtype':
             outstr = _pretty_semtype(self)
         elif self['_type'] == 'framerelationtype':
@@ -333,6 +465,33 @@ class AttrDict(dict):
         # could in principle occur in the data and would trigger an encoding error when
         # passed as arguments to str.format()).
         # assert isinstance(outstr, unicode) # not in Python 3.2
+        return outstr
+
+    def __str__(self):
+        return self._str()
+    def __repr__(self):
+        return self.__str__()
+
+@python_2_unicode_compatible
+class SpecialList(list):
+    """
+    A list subclass which adds a '_type' attribute for special printing 
+    (similar to an AttrDict, though this is NOT an AttrDict subclass).
+    """
+    def __init__(self, typ, *args, **kwargs):
+        super(SpecialList,self).__init__(*args, **kwargs)
+        self._type = typ
+        
+    def _str(self):
+        outstr = ""
+
+        assert self._type
+        if len(self)==0:
+            outstr = "[]"
+        elif self._type == 'luexemplars': # list of ALL exemplars for LU
+            outstr = _pretty_exemplars(self, self[0].LU)
+        else:
+            assert False,self._type
         return outstr
 
     def __str__(self):
@@ -882,6 +1041,36 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> pprint(list(map(PrettyDict, fn.lu(256).lexemes)))
         [{'POS': 'V', 'breakBefore': 'false', 'headword': 'false', 'name': 'foresee', 'order': 1}]
 
+        >>> fn.lu(227).exemplars[23]
+        exemplar sentence (352962):
+        
+        [sentNo] 0
+        [aPos] 59699508
+        
+        [LU] (227) guess.v in Coming_to_believe
+        
+        [annotationSet] 2 annotation sets
+        
+        [POS] 18 tags
+
+        [POS_tagset] BNC
+
+        [GF] 3 relations
+
+        [PT] 3 phrases
+
+        [text] + [Target] + [FE]
+        
+        When he was inside the house , Culley noticed the characteristic
+                                                      ------------------
+                                                      Content
+
+        he would n't have guessed at .
+        --                ******* --
+        Co                        C1 [Evidence:INI]
+         (Co=Cognizer, C1=Content)
+
+        
         The dict that is returned from this function will contain most of the
         following information about the LU. Note that some LUs do not contain
         all of these pieces of information - particularly 'totalAnnotated' and
@@ -989,8 +1178,12 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         lu2 = self._handle_lexunit_elt(elt, ignorekeys)
         lu.subCorpus = lu2.subCorpus
+        lu.exemplars = SpecialList('luexemplars', 
+                                   [sent for subc in lu.subCorpus for sent in subc.sentence])
+        for sent in lu.exemplars:
+            sent['LU'] = lu
 
-        return lu.subCorpus
+        return lu
 
     def _loadsemtypes(self):
         """Create the semantic types index."""
@@ -1694,7 +1887,8 @@ class FramenetCorpusReader(XMLCorpusReader):
                     # problematic LU entry; ignore it
                     continue
                 luentry['frame'] = frinfo
-                luentry['subCorpus'] = Future((lambda lu: lambda: self._lu_file(lu))(luentry))
+                luentry['subCorpus'] = Future((lambda lu: lambda: self._lu_file(lu).subCorpus)(luentry))
+                luentry['exemplars'] = Future((lambda lu: lambda: self._lu_file(lu).exemplars)(luentry))
                 frinfo['lexUnit'][luentry.name] = luentry
                 if not self._lu_idx:
                     self._buildluindex()
@@ -1886,7 +2080,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         """Load a subcorpus of a lexical unit from the given xml."""
         sc = AttrDict()
         try:
-            sc['name'] = elt.get('name')    # was wrapped in str(), but some subcorpus names have Unicode chars
+            sc['name'] = elt.get('name')   # was wrapped in str(), but some subcorpus names have Unicode chars
         except AttributeError:
             return None
         sc['_type'] = "lusubcorpus"
@@ -1911,6 +2105,13 @@ class FramenetCorpusReader(XMLCorpusReader):
             elif sub.tag.endswith('annotationSet'):
                 annset = self._handle_luannotationset_elt(sub)
                 if annset is not None:
+                    assert annset.status=='UNANN' or 'FE' in annset,annset
+                    if annset.status!='UNANN':
+                        info['frameAnnotation'] = annset
+                    # copy Target, FE, GF, PT, POS, POS_tagset info up to current level
+                    for k in ('Target', 'FE', 'FE2', 'FE3', 'GF', 'PT', 'POS', 'POS_tagset'):
+                        if k in annset:
+                            info[k] = annset[k]
                     info['annotationSet'].append(annset)
         return info
 
@@ -1919,11 +2120,60 @@ class FramenetCorpusReader(XMLCorpusReader):
         info = self._load_xml_attributes(AttrDict(), elt)
         info['_type'] = 'luannotationset'
         info['layer'] = []
+        
         for sub in elt:
             if sub.tag.endswith('layer'):
                 l = self._handle_lulayer_elt(sub)
                 if l is not None:
+                    if l.name in ('Sent','Other'):
+                        # not sure what's in these layers, but they sometimes contain 
+                        # duplicate entries.
+                        continue
+                    
+                    overt = []
+                    ni = {} # null instantiations
+                    
                     info['layer'].append(l)
+                    for lbl in l.label:
+                        if 'start' in lbl:
+                            assert (lbl.start,lbl.end+1,lbl.name) not in overt,(info.ID,(lbl.start,lbl.end+1,lbl.name))
+                            overt.append((lbl.start,lbl.end+1,lbl.name))
+                        else: # null instantiation
+                            assert lbl.name not in ni
+                            ni[lbl.name] = lbl.itype
+                    overt = sorted(overt)
+                    
+                    if l.name=='Target':
+                        if not overt:
+                            print('Skipping empty Target layer in annotation set ID={0}'.format(info.ID), file=sys.stderr)
+                            continue
+                        assert all(lblname=='Target' for i,j,lblname in overt)
+                        assert 'Target' not in info,(info.Target, overt, info.text)
+                        info['Target'] = [(i,j) for (i,j,_) in overt]
+                    elif l.name=='FE':
+                        if l.rank==1:
+                            assert 'FE' not in info
+                            info['FE'] = (overt, ni)
+                            #assert False,info
+                        else:
+                            # sometimes there are 3 FE layers! e.g. Change_position_on_a_scale.fall.v
+                            assert 2<=l.rank<=3,l.rank
+                            k = 'FE'+str(l.rank)
+                            assert k not in info
+                            info[k] = (overt, ni)
+                    elif l.name in ('GF', 'PT'):
+                        assert l.rank==1
+                        info[l.name] = overt
+                    elif l.name in ('BNC', 'PENN'):
+                        assert l.rank==1
+                        info['POS'] = overt
+                        info['POS_tagset'] = l.name
+                    # TODO: metadata about annotation sets
+        if info.status!='UNANN':
+            assert 'Target' in info,('Missing target in annotation set ID={0}'.format(info.ID))
+            assert 'FE' in info
+            if 'FE3' in info:
+                assert 'FE2' in info
         return info
 
     def _handle_lulayer_elt(self, elt):
