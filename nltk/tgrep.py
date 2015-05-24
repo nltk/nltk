@@ -30,13 +30,13 @@ Usage
 >>> from nltk.tgrep import tgrep_nodes, tgrep_positions
 >>> tree = ParentedTree.fromstring('(S (NP (DT the) (JJ big) (NN dog)) (VP bit) (NP (DT a) (NN cat)))')
 >>> list(tgrep_nodes('NN', [tree]))
-[ParentedTree('NN', ['dog']), ParentedTree('NN', ['cat'])]
+[[ParentedTree('NN', ['dog']), ParentedTree('NN', ['cat'])]]
 >>> list(tgrep_positions('NN', [tree]))
-[(0, 2), (2, 1)]
+[[(0, 2), (2, 1)]]
 >>> list(tgrep_nodes('DT', [tree]))
-[ParentedTree('DT', ['the']), ParentedTree('DT', ['a'])]
+[[ParentedTree('DT', ['the']), ParentedTree('DT', ['a'])]]
 >>> list(tgrep_nodes('DT $ JJ', [tree]))
-[ParentedTree('DT', ['the'])]
+[[ParentedTree('DT', ['the'])]]
 
 This implementation adds syntax to select nodes based on their NLTK
 tree position.  This syntax is ``N`` plus a Python tuple representing
@@ -44,12 +44,12 @@ the tree position.  For instance, ``N()``, ``N(0,)``, ``N(0,0)`` are
 valid node selectors.  Example:
 
 >>> tree = ParentedTree.fromstring('(S (NP (DT the) (JJ big) (NN dog)) (VP bit) (NP (DT a) (NN cat)))')
->>> tree[0,0]
-ParentedTree('DT', ['the'])
+>>> list(tree[0,0])
+[ParentedTree('DT', ['the'])]
 >>> tree[0,0].treeposition()
 (0, 0)
->>> tgrep_nodes('N(0,0)', [tree])
-[ParentedTree('DT', ['the'])]
+>>> list(tgrep_nodes('N(0,0)', [tree]))
+[[ParentedTree('DT', ['the'])]]
 
 Caveats:
 ========
