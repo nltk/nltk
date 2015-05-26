@@ -1824,11 +1824,11 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         if exemplars:
             if full_text:
-                return self.exemplars() + self.ft_sentences()
+                return self.exemplars() + self.ft_sents()
             else:
                 return self.exemplars()
         elif full_text:
-            return self.ft_sentences()
+            return self.ft_sents()
     
     def annotations(self, luNamePattern=None, exemplars=True, full_text=True):
         """
@@ -1843,7 +1843,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         if full_text:
             if luNamePattern is not None:
                 matchedLUIDs = set(self.lu_ids_and_names(luNamePattern).keys())
-            ftpart = PrettyLazyIteratorList(aset for sent in self.ft_sentences() for aset in sent.annotationSet[1:] if luNamePattern is None or aset.luID in matchedLUIDs)
+            ftpart = PrettyLazyIteratorList(aset for sent in self.ft_sents() for aset in sent.annotationSet[1:] if luNamePattern is None or aset.luID in matchedLUIDs)
         else:
             ftpart = []
         
@@ -1861,7 +1861,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         return PrettyLazyConcatenation(lu.exemplars for lu in self.lus(luNamePattern))
         
-    def ft_sentences(self, docNamePattern=None):
+    def ft_sents(self, docNamePattern=None):
         """
         Full-text annotation sentences, optionally filtered by document name.
         """
