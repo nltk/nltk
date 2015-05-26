@@ -11,15 +11,10 @@ from __future__ import print_function
 import os
 import fnmatch
 import tempfile
-import glob
-from operator import add
-from functools import reduce
 import subprocess
-import fileinput
 
 from nltk.tokenize import word_tokenize
 from nltk.data import ZipFilePathPointer
-from nltk.internals import find_binary
 
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
@@ -315,10 +310,12 @@ def demo(path_to_maltparser, path_to_model):
 	# Initialize a MaltParser object with a pre-trained model.
 	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model)	
 	sent = 'I shot an elephant in my pajamas'.split()
+	sent2 = 'Time flies like banana'.split()
 	# Parse a single sentence.
 	print(mp.parse_one(sent).tree())
+	print(next(mp.parse_sents([sent,sent2])))
+	print(next(next(mp.parse_sents([sent,sent2]))))
 	
-
 if __name__ == '__main__':
-    demo('/home/username/maltparser-1.8/')
+    demo('/home/username/maltparser-1.8/', '/home/username/engmalt.linear-1.7.mco')
 
