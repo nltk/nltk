@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Interface to the Stanford NER-tagger
+# Natural Language Toolkit: Interface to the Stanford Part-of-speech and Named-Entity Taggers
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
@@ -9,6 +9,12 @@
 
 """
 A module for interfacing with the Stanford taggers.
+
+Tagger models need to be downloaded from http://nlp.stanford.edu/software
+and the STANFORD_MODELS environment variable set (a colon-separated
+list of paths).
+
+For more details see the documentation for StanfordPOSTagger and StanfordNERTagger.
 """
 
 import os
@@ -36,17 +42,17 @@ class StanfordTagger(TaggerI):
     _SEPARATOR = ''
     _JAR = ''
 
-    def __init__(self, path_to_model, path_to_jar=None, encoding='utf8', verbose=False, java_options='-mx1000m'):
+    def __init__(self, model_filename, path_to_jar=None, encoding='utf8', verbose=False, java_options='-mx1000m'):
 
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
-                    'instantiated directly. Did you mean POS- or NERTagger?')
+                    'instantiated directly. Did you mean StanfordPOSTagger or StanfordNERTagger?')
         self._stanford_jar = find_jar(
                 self._JAR, path_to_jar,
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 
-        self._stanford_model = find_file(path_to_model,
+        self._stanford_model = find_file(model_filename,
                 env_vars=('STANFORD_MODELS',), verbose=verbose)
         self._encoding = encoding
         self.java_options = java_options
@@ -100,7 +106,7 @@ class StanfordTagger(TaggerI):
             tagged_sentences.append(sentence)
         return tagged_sentences
 
-class POSTagger(StanfordTagger):
+class StanfordPOSTagger(StanfordTagger):
     """
     A class for pos tagging with Stanford Tagger. The input is the paths to:
      - a model trained on training data
@@ -110,9 +116,8 @@ class POSTagger(StanfordTagger):
 
     Example:
 
-        >>> from nltk.tag.stanford import POSTagger
-        >>> st = POSTagger('/usr/share/stanford-postagger/models/english-bidirectional-distsim.tagger',
-        ...                '/usr/share/stanford-postagger/stanford-postagger.jar') # doctest: +SKIP
+        >>> from nltk.tag import StanfordPOSTagger
+        >>> st = StanfordPOSTagger('english-bidirectional-distsim.tagger') # doctest: +SKIP
         >>> st.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
@@ -121,7 +126,7 @@ class POSTagger(StanfordTagger):
     _JAR = 'stanford-postagger.jar'
 
     def __init__(self, *args, **kwargs):
-        super(POSTagger, self).__init__(*args, **kwargs)
+        super(StanfordPOSTagger, self).__init__(*args, **kwargs)
 
     @property
     def _cmd(self):
@@ -129,9 +134,9 @@ class POSTagger(StanfordTagger):
                 '-model', self._stanford_model, '-textFile',
                 self._input_file_path, '-tokenize', 'false','-outputFormatOptions', 'keepEmptySentences']
 
-class NERTagger(StanfordTagger):
+class StanfordNERTagger(StanfordTagger):
     """
-    A class for ner tagging with Stanford Tagger. The input is the paths to:
+    A class for Named-Entity Tagging with Stanford Tagger. The input is the paths to:
 
     - a model trained on training data
     - (optionally) the path to the stanford tagger jar file. If not specified here,
@@ -140,9 +145,8 @@ class NERTagger(StanfordTagger):
 
     Example:
 
-        >>> from nltk.tag.stanford import NERTagger
-        >>> st = NERTagger('/usr/share/stanford-ner/classifiers/all.3class.distsim.crf.ser.gz',
-        ...                '/usr/share/stanford-ner/stanford-ner.jar') # doctest: +SKIP
+        >>> from nltk.tag import StanfordNERTagger
+        >>> st = StanfordNERTagger('english.all.3class.distsim.crf.ser.gz') # doctest: +SKIP
         >>> st.tag('Rami Eid is studying at Stony Brook University in NY'.split()) # doctest: +SKIP
         [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'),
          ('at', 'O'), ('Stony', 'ORGANIZATION'), ('Brook', 'ORGANIZATION'),
@@ -154,7 +158,7 @@ class NERTagger(StanfordTagger):
     _FORMAT = 'slashTags'
 
     def __init__(self, *args, **kwargs):
-        super(NERTagger, self).__init__(*args, **kwargs)
+        super(StanfordNERTagger, self).__init__(*args, **kwargs)
 
     @property
     def _cmd(self):
@@ -165,7 +169,7 @@ class NERTagger(StanfordTagger):
 
     def parse_output(self, text):
       if self._FORMAT == 'slashTags':
-        return super(NERTagger, self).parse_output(text)
+        return super(StanfordNERTagger, self).parse_output(text)
       raise NotImplementedError
 
 

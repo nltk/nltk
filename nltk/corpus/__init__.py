@@ -95,6 +95,8 @@ conll2007 = LazyCorpusLoader(
     'conll2007', DependencyCorpusReader, '.*\.(test|train).*', encoding=[
         ('eus', 'ISO-8859-2'),
         ('esp', 'utf8')])
+crubadan = LazyCorpusLoader(
+    'crubadan', CrubadanCorpusReader, '.*\.txt')
 dependency_treebank = LazyCorpusLoader(
     'dependency_treebank', DependencyCorpusReader, '.*\.dp',
     encoding='ascii')
@@ -182,6 +184,10 @@ stopwords = LazyCorpusLoader(
     'stopwords', WordListCorpusReader, r'(?!README|\.).*', encoding='utf8')
 swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*', encoding='utf8')
+swadesh110 = LazyCorpusLoader(
+    'panlex_swadesh', SwadeshCorpusReader, r'swadesh110/.*\.txt', encoding='utf8')
+swadesh207 = LazyCorpusLoader(
+    'panlex_swadesh', SwadeshCorpusReader, r'swadesh207/.*\.txt', encoding='utf8')
 switchboard = LazyCorpusLoader(
     'switchboard', SwitchboardCorpusReader, tagset='wsj')
 timit = LazyCorpusLoader(

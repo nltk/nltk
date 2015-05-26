@@ -71,7 +71,7 @@ from nltk.tag.brill         import BrillTagger
 from nltk.tag.brill_trainer import BrillTaggerTrainer
 from nltk.tag.tnt           import TnT
 from nltk.tag.hunpos        import HunposTagger
-from nltk.tag.stanford      import StanfordTagger
+from nltk.tag.stanford      import StanfordTagger, StanfordPOSTagger, StanfordNERTagger
 from nltk.tag.hmm           import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
 from nltk.tag.senna         import SennaTagger, SennaChunkTagger, SennaNERTagger
 from nltk.tag.mapping       import tagset_mapping, map_tag
@@ -83,7 +83,7 @@ from nltk.data import load
 # Standard treebank POS tagger
 _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
 
-def pos_tag(tokens):
+def pos_tag(tokens, tagset=None):
     """
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
@@ -101,6 +101,8 @@ def pos_tag(tokens):
     :rtype: list(tuple(str, str))
     """
     tagger = load(_POS_TAGGER)
+    if tagset:
+        return [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagger.tag(tokens)]
     return tagger.tag(tokens)
 
 def pos_tag_sents(sentences):

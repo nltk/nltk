@@ -73,7 +73,7 @@ path = []
 
 # User-specified locations:
 path += [d for d in os.environ.get('NLTK_DATA', str('')).split(os.pathsep) if d]
-if os.path.expanduser('~/') != '~/':
+if 'APPENGINE_RUNTIME' not in os.environ and os.path.expanduser('~/') != '~/':
     path.append(os.path.expanduser(str('~/nltk_data')))
 
 if sys.platform.startswith('win'):

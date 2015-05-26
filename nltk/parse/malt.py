@@ -17,7 +17,6 @@ from functools import reduce
 import subprocess
 import fileinput
 
-from nltk.tag import RegexpTagger
 from nltk.tokenize import word_tokenize
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_binary
@@ -110,14 +109,21 @@ class MaltParser(ParserI):
         # Initialize POS tagger.
         if tagger is not None:
             self.tagger = tagger
-        else: # Use a default Regex Tagger if none specified.
-            self.tagger = create_regex_tagger()
-        
-        # Initialize maltparser model.
-        self.mco = 'malt_temp.mco' if model is None else model
-        self._trained = False if self.mco == 'malt_temp' else True
-            
-    def tagged_parse_sents(self, sentences, verbose=False):
+        else:
+            from nltk.tag import RegexpTagger
+            self.tagger = RegexpTagger(
+            [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+             (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+             (r'.*able$', 'JJ'),                # adjectives
+             (r'.*ness$', 'NN'),                # nouns formed from adjectives
+             (r'.*ly$', 'RB'),                  # adverbs
+             (r'.*s$', 'NNS'),                  # plural nouns
+             (r'.*ing$', 'VBG'),                # gerunds
+             (r'.*ed$', 'VBD'),                 # past tense verbs
+             (r'.*', 'NN')                      # nouns (default)
+             ])
+
+    def config_malt(self, bin=None, verbose=False):
         """
         Use MaltParser to parse multiple sentences. Takes multiple sentences
         where each sentence is a list of (word, tag) tuples.

@@ -14,7 +14,7 @@ from nltk.internals import find_binary
 try:
     import numpy
 except ImportError:
-    numpy = None
+    pass
 
 _tadm_bin = None
 def config_tadm(bin=None):
