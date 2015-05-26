@@ -1776,7 +1776,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.docs())
         78
-        >>> set([x.corpname for x in fn.docs()])==set(['ANC', 'C-4', 'KBEval', \
+        >>> set([x.corpname for x in fn.docs_metadata()])==set(['ANC', 'C-4', 'KBEval', \
                     'LUCorpus-v0.3', 'Miscellaneous', 'NTI', 'PropBank', 'QA', 'SemAnno'])
         True
 
