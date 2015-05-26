@@ -6,7 +6,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import codecs
 from collections import defaultdict
 
 def grow_diag_final_and(srclen, trglen, e2f, f2e):
