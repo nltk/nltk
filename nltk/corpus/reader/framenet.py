@@ -16,20 +16,21 @@ __docformat__ = 'epytext en'
 import os, sys
 import re
 import textwrap
+import itertools
 from collections import defaultdict, OrderedDict
 from itertools import izip_longest
 from pprint import pprint, pformat
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
 from nltk.compat import text_type, string_types, python_2_unicode_compatible
-from nltk.util import AbstractLazySequence, LazyMap
+from nltk.util import AbstractLazySequence, LazyConcatenation, LazyMap
 
 def mimic_wrap(lines, wrap_at=65, **kwargs):
     """
     Wrap the first of 'lines' with textwrap and the remaining lines at exactly the same 
     positions as the first.
     """
-    l0 = textwrap.wrap(lines[0], wrap_at, drop_whitespace=False)
+    l0 = textwrap.fill(lines[0], wrap_at, drop_whitespace=False).split('\n')
     yield l0
     
     def _(line):
@@ -40,7 +41,7 @@ def mimic_wrap(lines, wrap_at=65, **kwargs):
             il0 += 1
         if line: # Remaining stuff on this line past the end of the mimicked line. 
             # So just textwrap this line.
-            for ln in textwrap.wrap(line, wrap_at, drop_whitespace=False):
+            for ln in textwrap.fill(line, wrap_at, drop_whitespace=False).split('\n'):
                 yield ln
     
     for l in lines[1:]:
@@ -212,11 +213,118 @@ def _pretty_exemplars(exemplars, lu):
     outstr += "\n"
     return outstr
 
-def _pretty_exemplar(sent):
+def _pretty_fulltext_sentences(sents):
+    """
+    Helper function for pretty-printing a list of annotated sentences for a full-text document.
+
+    :param sent: The list of sentences to be printed.
+    :type sent: list(AttrDict)
+    :return: An index of the text of the sentences.
+    :rtype: str
+    """
+
+    outstr = ""
+    outstr += "full-text document ({0.ID}) {0.name}:\n\n".format(sents)
+    outstr += "[corpid] {0.corpid}\n[corpname] {0.corpname}\n[description] {0.description}\n\n".format(sents)
+    outstr += "[sentence]\n".format(sents)
+    for i,sent in enumerate(sents.sentence):
+        outstr += "[{0}] {1}\n".format(i, sent.text)
+    outstr += "\n"
+    return outstr
+    
+def _pretty_fulltext_sentence(sent):
+    """
+    Helper function for pretty-printing an annotated sentence from a full-text document.
+
+    :param sent: The sentence to be printed.
+    :type sent: list(AttrDict)
+    :return: The text of the sentence with annotation set indices on frame targets.
+    :rtype: str
+    """
+
+    outstr = ""
+    outstr += "full-text sentence ({0.ID}) in {0.doc.name}:\n\n".format(sent)
+    outstr += "\n[POS] {0} tags\n".format(len(sent.POS))
+    outstr += "\n[POS_tagset] {0}\n\n".format(sent.POS_tagset)
+    outstr += "[text] + [annotationSet]\n\n"
+    
+    # list the target spans and their associated aset index
+    overt = []
+    for a,aset in enumerate(sent.annotationSet):
+        if aset.status=='UNANN': continue
+        for j,k in aset.Target:
+            overt.append((j,k,"[{0}]".format(a)))
+    overt = sorted(overt)
+    
+    s0 = sent.text
+    s1 = ''
+    s2 = ''
+    i = 0
+    adjust = 0
+    for j,k,asetIndex in overt:
+        assert j>=i,('Overlapping targets?',(j,k,asetIndex))
+        s1 += ' '*(j-i) + '-'*(k-j)
+        if len(asetIndex)>(k-j):
+            # add space in the sentence to make room for the annotation index
+            amt = len(asetIndex)-(k-j)
+            s0 = s0[:k+adjust]+ '~'*amt + s0[k+adjust:] # '~' to prevent line wrapping
+            s1 = s1[:k+adjust]+ ' '*amt + s1[k+adjust:]
+            adjust += amt
+        s2 += ' '*(j-i) + asetIndex.ljust(k-j)
+        i = k
+        
+    long_lines = [s0, s1, s2]
+    
+    outstr += '\n\n'.join(map('\n'.join, izip_longest(*mimic_wrap(long_lines), fillvalue=' '))).replace('~',' ')
+    outstr += "\n"
+    return outstr
+
+def _pretty_pos(aset):
+    """
+    Helper function for pretty-printing a sentence with its POS tags.
+
+    :param aset: The POS annotation set of the sentence to be printed.
+    :type sent: list(AttrDict)
+    :return: The text of the sentence and its POS tags.
+    :rtype: str
+    """
+
+    outstr = ""
+    outstr += "POS annotation set ({0.ID}) {0.POS_tagset} in sentence {0.sent.ID}:\n\n".format(aset)
+    
+    # list the target spans and their associated aset index
+    overt = sorted(aset.POS)
+    
+    sent = aset.sent
+    s0 = sent.text
+    s1 = ''
+    s2 = ''
+    i = 0
+    adjust = 0
+    for j,k,lbl in overt:
+        assert j>=i,('Overlapping targets?',(j,k,lbl))
+        s1 += ' '*(j-i) + '-'*(k-j)
+        if len(lbl)>(k-j):
+            # add space in the sentence to make room for the annotation index
+            amt = len(lbl)-(k-j)
+            s0 = s0[:k+adjust]+ '~'*amt + s0[k+adjust:] # '~' to prevent line wrapping
+            s1 = s1[:k+adjust]+ ' '*amt + s1[k+adjust:]
+            adjust += amt
+        s2 += ' '*(j-i) + lbl.ljust(k-j)
+        i = k
+        
+    long_lines = [s0, s1, s2]
+    
+    outstr += '\n\n'.join(map('\n'.join, izip_longest(*mimic_wrap(long_lines), fillvalue=' '))).replace('~',' ')
+    outstr += "\n"
+    return outstr
+
+def _pretty_annotation(sent, aset_level=False):
     """
     Helper function for pretty-printing an exemplar sentence for a lexical unit.
 
-    :param sent: The exemplar sentence to be printed.
+    :param sent: An annotation set or exemplar sentence to be printed.
+    :param aset_level: If True, 'sent' is actually an annotation set within a sentence.
     :type sent: AttrDict
     :return: A nicely formated string representation of the exemplar sentence 
     with its target, frame, and FE annotations.
@@ -230,9 +338,10 @@ def _pretty_exemplar(sent):
         if k in sentkeys:
             outstr += "[{0}] {1}\n".format(k, sent[k])
     outstr += "\n[LU] ({0.ID}) {0.name} in {0.frame.name}\n".format(sent.LU)
-    outstr += "\n[annotationSet] {0} annotation sets\n".format(len(sent.annotationSet))
-    outstr += "\n[POS] {0} tags\n".format(len(sent.POS))
-    outstr += "\n[POS_tagset] {0}\n".format(sent.POS_tagset)
+    if not aset_level:
+        outstr += "\n[annotationSet] {0} annotation sets\n".format(len(sent.annotationSet))
+        outstr += "\n[POS] {0} tags\n".format(len(sent.POS))
+        outstr += "\n[POS_tagset] {0}\n".format(sent.POS_tagset)
     outstr += "\n[GF] {0} relations\n".format(len(sent.GF))
     outstr += "\n[PT] {0} phrases\n".format(len(sent.PT))
     outstr += "\n[text] + [Target] + [FE]"
@@ -285,7 +394,7 @@ def _pretty_exemplar(sent):
             FE1name += ' '*(j-len(FE1name))
             FE1[1] = FE1name
         FE1[0] = FE1span[:i] + FE1span[i:j].replace(' ','*').replace('-','=') + FE1span[j:]
-    long_lines = [sent.text] + [FE1[0], FE1[1]+FE1[2]] # lines with no length limit
+    long_lines = [sent.text if not aset_level else sent.sent.text] + [FE1[0], FE1[1]+FE1[2]] # lines with no length limit
     if FE2:
         long_lines.extend([FE2[0], FE2[1]+FE2[2]])
         if FE3:
@@ -429,8 +538,11 @@ class AttrDict(dict):
                 return self.__repr__()
             try:
                 return "<{0} ID={1} name={2}>".format(self['_type'], self['ID'], self['name'])
-            except KeyError:    # no ID--e.g., for _type=lusubcorpus
-                return "<{0} name={1}>".format(self['_type'], self['name'])
+            except KeyError:    
+                try:    # no ID--e.g., for _type=lusubcorpus
+                    return "<{0} name={1}>".format(self['_type'], self['name'])
+                except KeyError:    # no name--e.g., for _type=lusentence
+                    return "<{0} ID={1}>".format(self['_type'], self['ID'])
         else:
             return self.__repr__()
 
@@ -447,8 +559,16 @@ class AttrDict(dict):
             outstr = _pretty_lu(self)
         elif self['_type'] == 'luexemplars': # list of ALL exemplars for LU
             outstr = _pretty_exemplars(self, self[0].LU)
+        elif self['_type'] == 'fulltext_annotation': # list of all sentences for full-text doc
+            outstr = _pretty_fulltext_sentences(self)
         elif self['_type'] == 'lusentence':
-            outstr = _pretty_exemplar(self)
+            outstr = _pretty_annotation(self)
+        elif self['_type'] == 'fulltext_sentence':
+            outstr = _pretty_fulltext_sentence(self)
+        elif self['_type'] in ('luannotationset', 'fulltext_annotationset'):
+            outstr = _pretty_annotation(self, aset_level=True)
+        elif self['_type'] == 'posannotationset':
+            outstr = _pretty_pos(self)
         elif self['_type'] == 'semtype':
             outstr = _pretty_semtype(self)
         elif self['_type'] == 'framerelationtype':
@@ -535,7 +655,6 @@ class Future(object):
     def __repr__(self):
         return self._data().__repr__()
 
-
 @python_2_unicode_compatible
 class PrettyDict(AttrDict):
     """
@@ -606,6 +725,105 @@ class PrettyLazyMap(LazyMap):
                 return "[%s, ...]" % text_type(', ').join(pieces[:-1])
         else:
             return "[%s]" % text_type(', ').join(pieces)
+
+class LazyIteratorList(AbstractLazySequence):
+    """
+    Wraps an iterator, loading its elements on demand 
+    and making them subscriptable.
+    __repr__ displays only the first few elements.
+    """
+    def __init__(self, it, cache_limit=None, known_len=None):
+        self._it = it
+        self._len = known_len
+        self._cache = []
+        self._cache_limit = cache_limit
+        self._i = 0 # Number of items consumed so far
+        
+    def __len__(self):
+        if self._len:
+            return self._len
+        for x in self.iterate_from(len(self._cache)):
+            pass
+        return len(self._cache)
+    
+    def iterate_from(self, start):
+        while self._i<start:
+            v = next(self._it)
+            if self._cache_limit is None or len(self._cache)+1<self._cache_limit:
+                self._cache.append(v)
+            self._i += 1
+        i = start
+        while i<len(self._cache):
+            yield self._cache[i]
+            i += 1
+        while True:
+            v = next(self._it)
+            if self._cache_limit is None or len(self._cache)+1<self._cache_limit:
+                self._cache.append(v)
+            yield v
+            
+    def __add__(self, other):
+        """Return a list concatenating self with other."""
+        return type(self)(itertools.chain(self, other))
+
+    def __radd__(self, other):
+        """Return a list concatenating other with self."""
+        return type(self)(itertools.chain(other, self))
+
+@python_2_unicode_compatible
+class PrettyLazyIteratorList(LazyIteratorList):
+    """
+    Displays an abbreviated repr of only the first several elements, not the whole list.
+    """
+    # from nltk.util
+    _MAX_REPR_SIZE = 60
+    def __repr__(self):
+        """
+        Return a string representation for this corpus view that is
+        similar to a list's representation; but if it would be more
+        than 60 characters long, it is truncated.
+        """
+        pieces = []
+        length = 5
+        for elt in self:
+            pieces.append(elt._short_repr()) # key difference from inherited version: call to _short_repr()
+            length += len(pieces[-1]) + 2
+            if length > self._MAX_REPR_SIZE and len(pieces) > 2:
+                return "[%s, ...]" % text_type(', ').join(pieces[:-1])
+        else:
+            return "[%s]" % text_type(', ').join(pieces)
+
+@python_2_unicode_compatible
+class PrettyLazyConcatenation(LazyConcatenation):
+    """
+    Displays an abbreviated repr of only the first several elements, not the whole list.
+    """
+    # from nltk.util
+    _MAX_REPR_SIZE = 60
+    def __repr__(self):
+        """
+        Return a string representation for this corpus view that is
+        similar to a list's representation; but if it would be more
+        than 60 characters long, it is truncated.
+        """
+        pieces = []
+        length = 5
+        for elt in self:
+            pieces.append(elt._short_repr()) # key difference from inherited version: call to _short_repr()
+            length += len(pieces[-1]) + 2
+            if length > self._MAX_REPR_SIZE and len(pieces) > 2:
+                return "[%s, ...]" % text_type(', ').join(pieces[:-1])
+        else:
+            return "[%s]" % text_type(', ').join(pieces)
+            
+    def __add__(self, other):
+        """Return a list concatenating self with other."""
+        return PrettyLazyIteratorList(itertools.chain(self, other))
+
+    def __radd__(self, other):
+        """Return a list concatenating other with self."""
+        return PrettyLazyIteratorList(itertools.chain(other, self))
+
 
 class FramenetCorpusReader(XMLCorpusReader):
     """A corpus reader for the Framenet Corpus.
@@ -727,7 +945,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         # frame and FE relations
         self._buildrelationindex()
 
-    def annotated_document(self, fn_docid):
+    def annotated_doc(self, fn_docid):
         """
         Returns the annotated document whose id number is
         ``fn_docid``. This id number can be obtained by calling the
@@ -789,7 +1007,11 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         # Grab the top-level xml element containing the fulltext annotation
         elt = XMLCorpusView(locpath, 'fullTextAnnotation')[0]
-        return self._handle_fulltextannotation_elt(elt)
+        info = self._handle_fulltextannotation_elt(elt)
+        # add metadata
+        for k,v in self._fulltext_idx[fn_docid].items():
+            info[k] = v
+        return info
 
     def frame_by_id(self, fn_fid, ignorekeys=[]):
         """
@@ -1182,6 +1404,8 @@ class FramenetCorpusReader(XMLCorpusReader):
                                    [sent for subc in lu.subCorpus for sent in subc.sentence])
         for sent in lu.exemplars:
             sent['LU'] = lu
+            for aset in sent.annotationSet:
+                aset['LU'] = lu
 
         return lu
 
@@ -1542,17 +1766,17 @@ class FramenetCorpusReader(XMLCorpusReader):
             self._buildluindex()
         return dict((luID, luinfo.name) for luID,luinfo in self._lu_idx.items() if name is None or re.search(name, luinfo.name) is not None)
 
-    def documents(self, name=None):
+    def docs_metadata(self, name=None):
         """
-        Return a list of the annotated documents in Framenet.
+        Return an index of the annotated documents in Framenet.
 
         Details for a specific annotated document can be obtained using this
-        class's annotated_document() function and pass it the value of the 'ID' field.
+        class's annotated_doc() function and pass it the value of the 'ID' field.
 
         >>> from nltk.corpus import framenet as fn
-        >>> len(fn.documents())
+        >>> len(fn.docs())
         78
-        >>> set([x.corpname for x in fn.documents()])==set(['ANC', 'C-4', 'KBEval', \
+        >>> set([x.corpname for x in fn.docs()])==set(['ANC', 'C-4', 'KBEval', \
                     'LUCorpus-v0.3', 'Miscellaneous', 'NTI', 'PropBank', 'QA', 'SemAnno'])
         True
 
@@ -1586,6 +1810,63 @@ class FramenetCorpusReader(XMLCorpusReader):
             return ftlist
         else:
             return PrettyList(x for x in ftlist if re.search(name, x['filename']) is not None)
+
+    def docs(self, name=None):
+        """
+        Return a list of the annotated full-text documents in FrameNet,
+        optionally filtered by a regex to be matched against the document name.
+        """
+        return PrettyLazyMap((lambda x: self.annotated_doc(x.ID)), self.docs_metadata(name))
+
+    def sents(self, exemplars=True, full_text=True):
+        """
+        Annotated sentences matching the specified criteria.
+        """
+        if exemplars:
+            if full_text:
+                return self.exemplars() + self.ft_sentences()
+            else:
+                return self.exemplars()
+        elif full_text:
+            return self.ft_sentences()
+    
+    def annotations(self, luNamePattern=None, exemplars=True, full_text=True):
+        """
+        Frame annotation sets matching the specified criteria.
+        """
+        
+        if exemplars:
+            epart = PrettyLazyIteratorList(sent.frameAnnotation for sent in self.exemplars(luNamePattern))
+        else:
+            epart = []
+        
+        if full_text:
+            if luNamePattern is not None:
+                matchedLUIDs = set(self.lu_ids_and_names(luNamePattern).keys())
+            ftpart = PrettyLazyIteratorList(aset for sent in self.ft_sentences() for aset in sent.annotationSet[1:] if luNamePattern is None or aset.luID in matchedLUIDs)
+        else:
+            ftpart = []
+        
+        if exemplars:
+            if full_text:
+                return epart + ftpart
+            else:
+                return epart
+        elif full_text:
+            return ftpart
+    
+    def exemplars(self, luNamePattern=None):
+        """
+        Lexicographic exemplar sentences, optionally filtered by LU name.
+        """
+        return PrettyLazyConcatenation(lu.exemplars for lu in self.lus(luNamePattern))
+        
+    def ft_sentences(self, docNamePattern=None):
+        """
+        Full-text annotation sentences, optionally filtered by document name.
+        """
+        return PrettyLazyIteratorList(sent for d in self.docs(docNamePattern) for sent in self.docs().sentence)
+
 
     def frame_relation_types(self):
         """
@@ -1959,7 +2240,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         element (which we ignore here) and a bunch of 'sentence'
         elements."""
         info = AttrDict()
-        info['_type'] = 'fulltextannotation'
+        info['_type'] = 'fulltext_annotation'
         info['sentence'] = []
 
         for sub in elt:
@@ -1967,6 +2248,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                 continue  # not used
             elif sub.tag.endswith('sentence'):
                 s = self._handle_fulltext_sentence_elt(sub)
+                s.doc = info
                 info['sentence'].append(s)
 
         return info
@@ -1976,7 +2258,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         'sentence' element contains a "text" and an "annotationSet" sub
         element."""
         info = self._load_xml_attributes(AttrDict(), elt)
-        info['_type'] = "sentence"
+        info['_type'] = "fulltext_sentence"
         info['annotationSet'] = []
         info['text'] = ""
 
@@ -1985,22 +2267,29 @@ class FramenetCorpusReader(XMLCorpusReader):
                 info['text'] = self._strip_tags(sub.text)
             elif sub.tag.endswith('annotationSet'):
                 a = self._handle_fulltextannotationset_elt(sub)
+                if 'cxnID' in info: # TODO: ignoring construction annotations for now
+                    continue
+                a.sent = info
                 info['annotationSet'].append(a)
 
+        assert info['annotationSet'][0].status=='UNANN'
+        info['POS'] = info['annotationSet'][0].POS
+        info['POS_tagset'] = info['annotationSet'][0].POS_tagset
         return info
 
     def _handle_fulltextannotationset_elt(self, elt):
         """Load information from the given 'annotationSet' element. Each
         'annotationSet' contains several "layer" elements."""
-        info = self._load_xml_attributes(AttrDict(), elt)
-        info['_type'] = "annotationset"
-        info['layer'] = []
-
-        for sub in elt:
-            if sub.tag.endswith('layer'):
-                l = self._handle_fulltextlayer_elt(sub)
-                info['layer'].append(l)
-
+        
+        info = self._handle_luannotationset_elt(elt)
+        if info.status!='UNANN':
+            info['_type'] = 'fulltext_annotationset'
+            if 'cxnID' not in info: # TODO: ignoring construction annotations for now
+                try:
+                    info['LU'] = self.lu(info.luID)
+                except:
+                    info['LU'] = None
+                    print('LU ID not found: ',info.luID, file=sys.stderr)
         return info
 
     def _handle_fulltextlayer_elt(self, elt):
@@ -2113,12 +2402,13 @@ class FramenetCorpusReader(XMLCorpusReader):
                         if k in annset:
                             info[k] = annset[k]
                     info['annotationSet'].append(annset)
+                    annset['sent'] = info
         return info
 
     def _handle_luannotationset_elt(self, elt):
         """Load an annotation set from a sentence in an subcorpus of an LU"""
         info = self._load_xml_attributes(AttrDict(), elt)
-        info['_type'] = 'luannotationset'
+        info['_type'] = 'posannotationset' if info.status=='UNANN' else 'luannotationset'
         info['layer'] = []
         
         for sub in elt:
@@ -2139,8 +2429,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                             assert (lbl.start,lbl.end+1,lbl.name) not in overt,(info.ID,(lbl.start,lbl.end+1,lbl.name))
                             overt.append((lbl.start,lbl.end+1,lbl.name))
                         else: # null instantiation
-                            assert lbl.name not in ni
-                            ni[lbl.name] = lbl.itype
+                            if lbl.name in ni:
+                                print('FE with multiple NI entries:', lbl.name, ni[lbl.name], lbl.itype, file=sys.stderr)
+                            else:
+                                ni[lbl.name] = lbl.itype
                     overt = sorted(overt)
                     
                     if l.name=='Target':
@@ -2148,8 +2440,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                             print('Skipping empty Target layer in annotation set ID={0}'.format(info.ID), file=sys.stderr)
                             continue
                         assert all(lblname=='Target' for i,j,lblname in overt)
-                        assert 'Target' not in info,(info.Target, overt, info.text)
-                        info['Target'] = [(i,j) for (i,j,_) in overt]
+                        if 'Target' in info:
+                            print('Annotation set {0} has multiple Target layers'.format(info.ID), file=sys.stderr)
+                        else:
+                            info['Target'] = [(i,j) for (i,j,_) in overt]
                     elif l.name=='FE':
                         if l.rank==1:
                             assert 'FE' not in info
@@ -2169,11 +2463,12 @@ class FramenetCorpusReader(XMLCorpusReader):
                         info['POS'] = overt
                         info['POS_tagset'] = l.name
                     # TODO: metadata about annotation sets
-        if info.status!='UNANN':
+        if info.status!='UNANN' and 'cxnID' not in info:
             assert 'Target' in info,('Missing target in annotation set ID={0}'.format(info.ID))
             assert 'FE' in info
             if 'FE3' in info:
                 assert 'FE2' in info
+            
         return info
 
     def _handle_lulayer_elt(self, elt):
@@ -2244,7 +2539,7 @@ def demo():
     #
     print('Number of Frames:', len(fn.frames()))
     print('Number of Lexical Units:', len(fn.lus()))
-    print('Number of annotated documents:', len(fn.documents()))
+    print('Number of annotated documents:', len(fn.docs()))
     print()
 
     #
@@ -2315,14 +2610,14 @@ def demo():
     # Get a list of all of the corpora used for fulltext annotation
     #
     print('\nNames of all of the corpora used for fulltext annotation:')
-    allcorpora = set([x.corpname for x in fn.documents()])
+    allcorpora = set([x.corpname for x in fn.docs_metadata()])
     pprint(list(allcorpora))
 
     #
     # Get the names of the annotated documents in the first corpus
     #
     firstcorp = list(allcorpora)[0]
-    firstcorp_docs = fn.documents(firstcorp)
+    firstcorp_docs = fn.docs(firstcorp)
     print(
         '\nNames of the annotated documents in the "{0}" corpus:'.format(firstcorp))
     pprint([x.filename for x in firstcorp_docs])
