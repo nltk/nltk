@@ -332,8 +332,8 @@ def _pretty_annotation(sent, aset_level=False):
     """
 
     sentkeys = sent.keys()
-    outstr = ""
-    outstr += "exemplar sentence ({0.ID}):\n\n".format(sent)
+    outstr = "annotation set" if aset_level else "exemplar sentence"
+    outstr += " ({0.ID}):\n\n".format(sent)
     for k in ('corpID', 'docID', 'paragNo', 'sentNo', 'aPos'):
         if k in sentkeys:
             outstr += "[{0}] {1}\n".format(k, sent[k])
@@ -1865,7 +1865,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
         Full-text annotation sentences, optionally filtered by document name.
         """
-        return PrettyLazyIteratorList(sent for d in self.docs(docNamePattern) for sent in self.docs().sentence)
+        return PrettyLazyIteratorList(sent for d in self.docs(docNamePattern) for sent in d.sentence)
 
 
     def frame_relation_types(self):
