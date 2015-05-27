@@ -250,30 +250,35 @@ def _pretty_fulltext_sentence(sent):
     
     # list the target spans and their associated aset index
     overt = []
-    for a,aset in enumerate(sent.annotationSet):
-        if aset.status=='UNANN': continue
+    for a,aset in enumerate(sent.annotationSet[1:]):
         for j,k in aset.Target:
-            overt.append((j,k,"[{0}]".format(a)))
+            indexS = "[{0}]".format(a+1)
+            if aset.status=='UNANN':
+                indexS += " !"  # warning indicator that there is a frame annotation but no FE annotation
+            overt.append((j,k,aset.LU.frame.name,indexS))
     overt = sorted(overt)
     
     s0 = sent.text
     s1 = ''
+    s11 = ''
     s2 = ''
     i = 0
     adjust = 0
-    for j,k,asetIndex in overt:
+    for j,k,fname,asetIndex in overt:
         assert j>=i,('Overlapping targets?',(j,k,asetIndex))
-        s1 += ' '*(j-i) + '-'*(k-j)
+        s1 += ' '*(j-i) + '*'*(k-j)
+        s11 += ' '*(j-i) + fname[:k-j].ljust(k-j)
         if len(asetIndex)>(k-j):
             # add space in the sentence to make room for the annotation index
             amt = len(asetIndex)-(k-j)
             s0 = s0[:k+adjust]+ '~'*amt + s0[k+adjust:] # '~' to prevent line wrapping
             s1 = s1[:k+adjust]+ ' '*amt + s1[k+adjust:]
-            adjust += amt
+            s11 = s11[:k+adjust]+ ' '*amt + s11[k+adjust:]
+            adjust += amt            
         s2 += ' '*(j-i) + asetIndex.ljust(k-j)
         i = k
         
-    long_lines = [s0, s1, s2]
+    long_lines = [s0, s1, s11, s2]
     
     outstr += '\n\n'.join(map('\n'.join, izip_longest(*mimic_wrap(long_lines), fillvalue=' '))).replace('~',' ')
     outstr += "\n"
@@ -333,7 +338,9 @@ def _pretty_annotation(sent, aset_level=False):
 
     sentkeys = sent.keys()
     outstr = "annotation set" if aset_level else "exemplar sentence"
-    outstr += " ({0.ID}):\n\n".format(sent)
+    outstr += " ({0.ID}):\n".format(sent)
+    if aset_level: # TODO: any UNANN exemplars?
+        outstr += "\n[status] {0}\n".format(sent.status)
     for k in ('corpID', 'docID', 'paragNo', 'sentNo', 'aPos'):
         if k in sentkeys:
             outstr += "[{0}] {1}\n".format(k, sent[k])
@@ -342,8 +349,8 @@ def _pretty_annotation(sent, aset_level=False):
         outstr += "\n[annotationSet] {0} annotation sets\n".format(len(sent.annotationSet))
         outstr += "\n[POS] {0} tags\n".format(len(sent.POS))
         outstr += "\n[POS_tagset] {0}\n".format(sent.POS_tagset)
-    outstr += "\n[GF] {0} relations\n".format(len(sent.GF))
-    outstr += "\n[PT] {0} phrases\n".format(len(sent.PT))
+    outstr += "\n[GF] {0} relation{1}\n".format(len(sent.GF), "s" if len(sent.GF)!=1 else "")
+    outstr += "\n[PT] {0} phrase{1}\n".format(len(sent.PT), "s" if len(sent.PT)!=1 else "")
     outstr += "\n[text] + [Target] + [FE]"
     if 'FE2' in sentkeys:
         outstr += " + [FE2]"
@@ -2266,7 +2273,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             if sub.tag.endswith('text'):
                 info['text'] = self._strip_tags(sub.text)
             elif sub.tag.endswith('annotationSet'):
-                a = self._handle_fulltextannotationset_elt(sub)
+                a = self._handle_fulltextannotationset_elt(sub, is_pos=(len(info['annotationSet'])==0))
                 if 'cxnID' in info: # TODO: ignoring construction annotations for now
                     continue
                 a.sent = info
@@ -2277,12 +2284,12 @@ class FramenetCorpusReader(XMLCorpusReader):
         info['POS_tagset'] = info['annotationSet'][0].POS_tagset
         return info
 
-    def _handle_fulltextannotationset_elt(self, elt):
+    def _handle_fulltextannotationset_elt(self, elt, is_pos=False):
         """Load information from the given 'annotationSet' element. Each
         'annotationSet' contains several "layer" elements."""
         
-        info = self._handle_luannotationset_elt(elt)
-        if info.status!='UNANN':
+        info = self._handle_luannotationset_elt(elt, is_pos=is_pos)
+        if not is_pos:
             info['_type'] = 'fulltext_annotationset'
             if 'cxnID' not in info: # TODO: ignoring construction annotations for now
                 try:
@@ -2392,7 +2399,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             if sub.tag.endswith('text'):
                 info['text'] = self._strip_tags(sub.text)
             elif sub.tag.endswith('annotationSet'):
-                annset = self._handle_luannotationset_elt(sub)
+                annset = self._handle_luannotationset_elt(sub, is_pos=(len(info['annotationSet'])==0))
                 if annset is not None:
                     assert annset.status=='UNANN' or 'FE' in annset,annset
                     if annset.status!='UNANN':
@@ -2405,10 +2412,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                     annset['sent'] = info
         return info
 
-    def _handle_luannotationset_elt(self, elt):
+    def _handle_luannotationset_elt(self, elt, is_pos=False):
         """Load an annotation set from a sentence in an subcorpus of an LU"""
         info = self._load_xml_attributes(AttrDict(), elt)
-        info['_type'] = 'posannotationset' if info.status=='UNANN' else 'luannotationset'
+        info['_type'] = 'posannotationset' if is_pos else 'luannotationset'
         info['layer'] = []
         
         for sub in elt:
@@ -2463,7 +2470,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                         info['POS'] = overt
                         info['POS_tagset'] = l.name
                     # TODO: metadata about annotation sets
-        if info.status!='UNANN' and 'cxnID' not in info:
+        if not is_pos and 'cxnID' not in info:
             assert 'Target' in info,('Missing target in annotation set ID={0}'.format(info.ID))
             assert 'FE' in info
             if 'FE3' in info:
