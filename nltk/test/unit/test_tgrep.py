@@ -362,7 +362,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertRaises(
             tgrep.TgrepException,
             tgrep.tgrep_positions,
-            [tree], '* >>> S')
+            '* >>> S', [tree])
 
     def test_comments(self):
         '''
@@ -534,7 +534,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertRaises(
             tgrep.TgrepException,
             tgrep.tgrep_positions,
-            [tree], '@ NP /^NP/;\n@ NN /^NN/;\n@CNP !< @NP !$.. @NN')
+            '@ NP /^NP/;\n@ NN /^NN/;\n@CNP !< @NP !$.. @NN', [tree])
 
     def test_tokenize_node_labels(self):
         '''Test tokenization of labeled nodes.'''
