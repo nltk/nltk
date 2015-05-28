@@ -361,8 +361,8 @@ class TestSequenceFunctions(unittest.TestCase):
         tree = ParentedTree.fromstring('(S (A (T x)) (B (N x)))')
         self.assertRaises(
             tgrep.TgrepException,
-            tgrep.tgrep_positions,
-            '* >>> S', [tree])
+            list,
+            tgrep.tgrep_positions('* >>> S', [tree]))
 
     def test_comments(self):
         '''
@@ -533,8 +533,9 @@ class TestSequenceFunctions(unittest.TestCase):
         # use undefined macro @CNP
         self.assertRaises(
             tgrep.TgrepException,
-            tgrep.tgrep_positions,
-            '@ NP /^NP/;\n@ NN /^NN/;\n@CNP !< @NP !$.. @NN', [tree])
+            list,
+            tgrep.tgrep_positions(
+                '@ NP /^NP/;\n@ NN /^NN/;\n@CNP !< @NP !$.. @NN', [tree]))
 
     def test_tokenize_node_labels(self):
         '''Test tokenization of labeled nodes.'''
