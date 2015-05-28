@@ -230,18 +230,18 @@ class TestSequenceFunctions(unittest.TestCase):
         Test selecting nodes using case insensitive node names.
         '''
         tree = ParentedTree.fromstring('(S (n x) (N x))')
-        self.assertEqual(list(tgrep.tgrep_positions('"N"', [tree])), [(1,)])
-        self.assertEqual(list(tgrep.tgrep_positions('i@"N"', [tree])), [(0,), (1,)])
+        self.assertEqual(list(tgrep.tgrep_positions('"N"', [tree])), [[(1,)]])
+        self.assertEqual(list(tgrep.tgrep_positions('i@"N"', [tree])), [[(0,), (1,)]])
 
     def test_node_quoted(self):
         '''
         Test selecting nodes using quoted node names.
         '''
         tree = ParentedTree.fromstring('(N ("N" x) (N" x) ("\\" x))')
-        self.assertEqual(list(tgrep.tgrep_positions('"N"', [tree])), [()])
-        self.assertEqual(list(tgrep.tgrep_positions('"\\"N\\""', [tree])), [(0,)])
-        self.assertEqual(list(tgrep.tgrep_positions('"N\\""', [tree])), [(1,)])
-        self.assertEqual(list(tgrep.tgrep_positions('"\\"\\\\\\""', [tree])), [(2,)])
+        self.assertEqual(list(tgrep.tgrep_positions('"N"', [tree])), [[()]])
+        self.assertEqual(list(tgrep.tgrep_positions('"\\"N\\""', [tree])), [[(0,)]])
+        self.assertEqual(list(tgrep.tgrep_positions('"N\\""', [tree])), [[(1,)]])
+        self.assertEqual(list(tgrep.tgrep_positions('"\\"\\\\\\""', [tree])), [[(2,)]])
 
     def test_node_regex(self):
         '''
