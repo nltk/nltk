@@ -527,7 +527,8 @@ class TestSequenceFunctions(unittest.TestCase):
             '(VP (VB sold) (NP (DET the) '
             '(NN heiress)) (NP (NN deed) (PREP to) '
             '(NP (DET the) (NN school) (NN house))))')
-        self.assertEqual(list(tgrep.tgrep_positions('@ NP /^NP/;\n@ NN /^NN/;\n@NP !< @NP !$.. @NN', 
+        self.assertEqual(list(tgrep.tgrep_positions(
+            '@ NP /^NP/;\n@ NN /^NN/;\n@NP !< @NP !$.. @NN',
             [tree])),
                          [[(1,), (2, 2)]])
         # use undefined macro @CNP
