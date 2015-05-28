@@ -288,7 +288,7 @@ class TestSequenceFunctions(unittest.TestCase):
         tree = ParentedTree.fromstring('(S (A (T x)) (B (N x)))')
         self.assertEqual(list(tgrep.tgrep_positions('x', [tree])),
                          [[(0, 0, 0), (1, 0, 0)]])
-        self.assertEqual(list(tgrep.tgrep_positions('x', False, [tree])),
+        self.assertEqual(list(tgrep.tgrep_positions('x', [tree], False)),
                          [[]])
 
     def tests_rel_dominance(self):
