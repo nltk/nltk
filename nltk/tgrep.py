@@ -44,8 +44,8 @@ the tree position.  For instance, ``N()``, ``N(0,)``, ``N(0,0)`` are
 valid node selectors.  Example:
 
 >>> tree = ParentedTree.fromstring('(S (NP (DT the) (JJ big) (NN dog)) (VP bit) (NP (DT a) (NN cat)))')
->>> list(tree[0,0])
-[ParentedTree('DT', ['the'])]
+>>> tree[0,0]
+ParentedTree('DT', ['the'])
 >>> tree[0,0].treeposition()
 (0, 0)
 >>> list(tgrep_nodes('N(0,0)', [tree]))
