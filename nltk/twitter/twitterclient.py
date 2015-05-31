@@ -34,7 +34,7 @@ from nltk.compat import UTC
 
 try:
     from twython import Twython, TwythonStreamer
-    from twython.exceptions import TwythonRateLimitError
+    from twython.exceptions import TwythonRateLimitError, TwythonError
 except ImportError as err:
     import textwrap
     MSG = """The NLTK twitterclient module requires the Twython package. See\
@@ -107,7 +107,7 @@ class Streamer(TwythonStreamer):
                     print("Error (stream will continue): {0}".format(e))
                 continue
 
-    def filter(self, track='', follow='', lang='en'):
+    def filter(self, track='', follow='', lang='en', locations=None):
         """
         Wrapper for 'statuses / filter' API call
         """
@@ -119,9 +119,9 @@ class Streamer(TwythonStreamer):
                 colditzjb commented on 9 Dec 2014
             '''
             try:
-                if track == '' and follow == '':
-                    raise ValueError("Please supply a value for 'track' or 'follow'.")
-                self.statuses.filter(track=track, follow=follow, lang=lang)
+                if track == '' and follow == '' and locations == None:
+                    raise ValueError("Please supply a value for either 'track' or 'follow' or 'locations'.")
+                self.statuses.filter(track=track, follow=follow, lang=lang, locations=locations)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
                     print("Error (stream will continue): {0}".format(e))
@@ -194,7 +194,7 @@ class Query(Twython):
             print("""Written {0} Tweets to file {1} of length {2}
             bytes""".format(count, outfile, os.path.getsize(outfile)))
 
-    def search_tweets(self, keywords, count=100, lang='en'):
+    def search_tweets(self, keywords, count=100, lang='en', retries_after_twython_exception=0):
         """
         Call the REST API ``'search/tweets'`` endpoint with some plausible
         defaults. See `the Twitter search documentation
@@ -214,6 +214,7 @@ class Query(Twython):
         pagination loop: keep fetching tweets until the count requested is reached,
         dealing with twitter rate limits
         '''
+        retries = 0
         while count_from_query < count:
             # the max_id is also in the metadata results['search_metadata']['next_results'],
             # but as part of a query and difficult to fetch. This is doing the equivalent
@@ -230,6 +231,11 @@ class Query(Twython):
                 print("Waiting for 15 minutes -{0}".format(e))
                 time.sleep(15*60) # wait 15 minutes
                 continue
+            except TwythonError as e:
+                print("Fatal error in Twython request -{0}".format(e))
+                if retries_after_twython_exception == retries:
+                    raise e
+                retries += 1
             count_from_query += results['search_metadata']['count']
             if self.handler.handle_chunk(results['statuses']) == False:
                 return results['statuses']
@@ -271,12 +277,14 @@ class Twitter(object):
 
 
     def tweets(self, keywords='', follow='', to_screen=True, stream=True,
-               limit=100, date_limit=None, lang='en'):
+               limit=100, date_limit=None, lang='en', retries_after_twython_exception=0,
+               locations=None):
         """
         Process some tweets in a simple manner.
 
         :param str keywords: Keywords to use for searching or filtering
         :param list follow: UserIDs to use for filtering tweets from the public stream
+        :param str locations: Locations to use for filtering tweets from the public stream
         :param bool to_screen: If ``True``, display the tweet texts on the screen,\
         otherwise print to a file
         :param bool stream: If ``True``, use the live public stream,\
@@ -290,6 +298,8 @@ class Twitter(object):
         a date in the future; if not, it is the minimum date, i.e. a date\
         in the past
         :param str lang: language
+        :param int retries_after_twython_exception: number of retries when searching tweets\
+        before raising an exception
         """
         if to_screen:
             handler = TweetViewer(limit=limit, date_limit=date_limit)
@@ -298,16 +308,16 @@ class Twitter(object):
 
         if stream:
             self.streamer.register(handler)
-            if keywords == '' and follow == '':
+            if keywords == '' and follow == '' and locations == None:
                 self.streamer.sample()
             else:
-                self.streamer.filter(track=keywords, follow=follow, lang=lang)
+                self.streamer.filter(track=keywords, follow=follow, lang=lang, locations=locations)
         else:
             self.query.register(handler)
             if keywords == '':
                 raise ValueError("Please supply at least one keyword to search for.")
             else:
-                self.query.search_tweets(keywords, count=limit, lang=lang)
+                self.query.search_tweets(keywords, count=limit, lang=lang, retries_after_twython_exception=retries_after_twython_exception)
 
 
 

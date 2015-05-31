@@ -179,14 +179,26 @@ def _write_to_file(object_fields, items, entity_fields, writer):
         # tweet media may not be present
         return
     if isinstance(items, dict):
-        # this happens for "place" of a tweet
+        # this happens e.g. for "place" of a tweet
         row = object_fields
-        for key, value in items.iteritems():
-            if key in entity_fields:
-                if isinstance(value, list):
-                    row += value
-                else:
-                    row += [value]
+        # there might be dictionaries in de list of required fields
+        entity_dict = [x for x in entity_fields if isinstance(x, dict)]
+        for field in entity_fields:
+            if isinstance(field, dict):
+                continue
+            value = items[field]
+            if isinstance(value, list):
+                row += value
+            else:
+                row += [value]
+        # now check required dictionaries
+        for d in entity_dict:
+            for kd, vd in d.iteritems():
+                json_dict = items[kd]
+                if not isinstance(json_dict, dict):
+                    raise RuntimeError("Key {0} does not contain a dictionary in the json file".format(kd))
+                for k2 in vd:
+                    row += [json_dict[k2]]
         writer.writerow(row)
         return
     # in general it is a list
