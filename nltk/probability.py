@@ -226,10 +226,10 @@ class FreqDist(Counter):
         :type title: bool
         """
         try:
-            import pylab
+            from matplotlib import pylab
         except ImportError:
-            raise ValueError('The plot function requires the matplotlib package (aka pylab). '
-                         'See http://matplotlib.sourceforge.net/')
+            raise ValueError('The plot function requires matplotlib to be installed.'
+                         'See http://matplotlib.org/')
 
         if len(args) == 0:
             args = [len(self)]
@@ -1744,10 +1744,10 @@ class ConditionalFreqDist(defaultdict):
         :type conditions: list
         """
         try:
-            import pylab
+            from matplotlib import pylab
         except ImportError:
-            raise ValueError('The plot function requires the matplotlib package (aka pylab).'
-                             'See http://matplotlib.sourceforge.net/')
+            raise ValueError('The plot function requires matplotlib to be installed.'
+                         'See http://matplotlib.org/')
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))

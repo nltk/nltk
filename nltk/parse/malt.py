@@ -15,7 +15,6 @@ from functools import reduce
 import subprocess
 
 from nltk.data import ZipFilePathPointer
-from nltk.tag import RegexpTagger
 from nltk.tokenize import word_tokenize
 from nltk.internals import find_binary
 
@@ -43,6 +42,7 @@ class MaltParser(ParserI):
         if tagger is not None:
             self.tagger = tagger
         else:
+            from nltk.tag import RegexpTagger
             self.tagger = RegexpTagger(
             [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
              (r'(The|the|A|a|An|an)$', 'AT'),   # articles
