@@ -40,6 +40,9 @@ class TreebankWordTokenizer(TokenizerI):
         >>> s = "They'll save and invest more."
         >>> TreebankWordTokenizer().tokenize(s)
         ['They', "'ll", 'save', 'and', 'invest', 'more', '.']
+        >>> s = "hi, my name can't hello,"
+        >>> TreebankWordTokenizer().tokenize(s)
+        ['hi', ',', 'my', 'name', 'ca', "n't", 'hello', ',']
     """
 
     # List of contractions adapted from Robert MacIntyre's tokenizer.
@@ -64,6 +67,7 @@ class TreebankWordTokenizer(TokenizerI):
 
         #punctuation
         text = re.sub(r'([:,])([^\d])', r' \1 \2', text)
+        text = re.sub(r'([:,])$', r' \1 ', text)
         text = re.sub(r'\.\.\.', r' ... ', text)
         text = re.sub(r'[;@#$%&]', r' \g<0> ', text)
         text = re.sub(r'([^\.])(\.)([\]\)}>"\']*)\s*$', r'\1 \2\3 ', text)
