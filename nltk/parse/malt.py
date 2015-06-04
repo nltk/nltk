@@ -53,7 +53,7 @@ def taggedsent_to_conll(sentences):
 			input_str = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
 			% (i, word, '_', tag, tag, '_', '0', 'a', '_', '_')
 			yield input_str.encode("utf8")
-	yield b'\n\n'
+		yield '\n\n'
 
 
 class MaltParser(ParserI):
@@ -299,9 +299,12 @@ def demo(path_to_maltparser, path_to_model):
 	# Trains a model.
 	mp.train([dg1,dg2], verbose=verbose)
 	
+	sent1 = ['John','sees','Mary']
+	sent2 = ['a','man','runs']
 	# Parse a single sentence.
-	print (mp.parse_one(['John','sees','Mary']).tree())
-	print (mp.parse_one(['a','man','runs']).tree())	
+	print (mp.parse_one(sent1).tree())
+	print (mp.parse_one(sent2).tree())
+	print(next(next(mp.parse_sents([sent1,sent2]))).tree())
 	
 	#########################################################################
 	# Demo to parse example sentences with pre-trained models
@@ -313,9 +316,13 @@ def demo(path_to_maltparser, path_to_model):
 	sent2 = 'Time flies like banana'.split()
 	# Parse a single sentence.
 	print(mp.parse_one(sent).tree())
-	print(next(mp.parse_sents([sent,sent2])))
-	print(next(next(mp.parse_sents([sent,sent2]))))
-	
-if __name__ == '__main__':
-    demo('/home/username/maltparser-1.8/', '/home/username/engmalt.linear-1.7.mco')
+	print(next(next(mp.parse_sents([sent,sent2]))).tree())
+
+indir = '/home/alvas/maltparser-1.8/dist/maltparser-1.8/'
+modelfilepath = '/home/alvas/engmalt.linear-1.7.mco'               
+demo(indir, modelfilepath)
+
+
+#if __name__ == '__main__':
+#    demo('/home/username/maltparser-1.8/', '/home/username/engmalt.linear-1.7.mco')
 
