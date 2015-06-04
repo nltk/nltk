@@ -318,11 +318,7 @@ def demo(path_to_maltparser, path_to_model):
 	print(mp.parse_one(sent).tree())
 	print(next(next(mp.parse_sents([sent,sent2]))).tree())
 
-indir = '/home/alvas/maltparser-1.8/dist/maltparser-1.8/'
-modelfilepath = '/home/alvas/engmalt.linear-1.7.mco'               
-demo(indir, modelfilepath)
 
-
-#if __name__ == '__main__':
-#    demo('/home/username/maltparser-1.8/', '/home/username/engmalt.linear-1.7.mco')
+if __name__ == '__main__':
+    demo('/home/username/maltparser-1.8/', '/home/username/engmalt.linear-1.7.mco')
 
