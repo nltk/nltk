@@ -178,7 +178,7 @@ class NaiveBayesClassifier(ClassifierI):
                           minprob[feature_]/maxprob[feature_])
         return features[:n]
 
-    @staticmethod
+    @classmethod
     def train(labeled_featuresets, estimator=ELEProbDist):
         """
         :param labeled_featuresets: A list of classified featuresets,
