@@ -51,13 +51,15 @@ class Streamer(TwythonStreamer):
     """
     Retrieve data from the Twitter Streaming API.
 
-    The streaming API requires `OAuth 1.0 <http://en.wikipedia.org/wiki/OAuth>`_ authentication.
+    The streaming API requires
+    `OAuth 1.0 <http://en.wikipedia.org/wiki/OAuth>`_ authentication.
     """
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
 
         self.handler = None
         self.do_continue = True
-        TwythonStreamer.__init__(self, app_key, app_secret, oauth_token, oauth_token_secret)
+        TwythonStreamer.__init__(self, app_key, app_secret, oauth_token,
+                                 oauth_token_secret)
 
     def register(self, handler):
         """
@@ -120,8 +122,10 @@ class Streamer(TwythonStreamer):
             '''
             try:
                 if track == '' and follow == '' and locations == None:
-                    raise ValueError("Please supply a value for either 'track' or 'follow' or 'locations'.")
-                self.statuses.filter(track=track, follow=follow, lang=lang, locations=locations)
+                    msg = "Please supply a value for 'track', 'follow' or 'locations'."
+                    raise ValueError(msg)
+                self.statuses.filter(track=track, follow=follow, lang=lang,
+                                     locations=locations)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
                     print("Error (stream will continue): {0}".format(e))
@@ -205,19 +209,21 @@ class Query(Twython):
         a comma-separated string.
         :rtype: json
         """
-        results = self.search(q=keywords, count=min(100, count), lang=lang, result_type='recent')
+        results = self.search(q=keywords, count=min(100, count), lang=lang,
+                              result_type='recent')
         count_from_query = results['search_metadata']['count']
-        if self.handler is None or self.handler.handle_chunk(results['statuses']) == False:
+        if self.handler is None or\
+           self.handler.handle_chunk(results['statuses']) == False:
             return results['statuses']
 
-        '''
-        pagination loop: keep fetching tweets until the count requested is reached,
-        dealing with twitter rate limits
-        '''
+
+        """Pagination loop: keep fetching tweets until the count requested is
+        reached, dealing with twitter rate limits."""
         retries = 0
         while count_from_query < count:
-            # the max_id is also in the metadata results['search_metadata']['next_results'],
-            # but as part of a query and difficult to fetch. This is doing the equivalent
+            # the max_id is also in the metadata
+            # results['search_metadata']['next_results'], but as part of a
+            # query and difficult to fetch. This is doing the equivalent
             # (last tweet id minus one)
             len_prev_request = len(results['statuses'])
             if len_prev_request == 0:
@@ -225,8 +231,9 @@ class Query(Twython):
                 return
             max_id = results['statuses'][len_prev_request - 1]['id'] - 1
             try:
-                results = self.search(q=keywords, count=min(100, count-count_from_query),
-                                      lang=lang, max_id=max_id, result_type='recent')
+                mcount = min(100, count-count_from_query)
+                results = self.search(q=keywords, count=mcount, lang=lang,
+                                      max_id=max_id, result_type='recent')
             except TwythonRateLimitError as e:
                 print("Waiting for 15 minutes -{0}".format(e))
                 time.sleep(15*60) # wait 15 minutes
@@ -255,12 +262,14 @@ class Query(Twython):
         """
         Return a collection of the most recent Tweets posted by the user
 
-        :param str user: The user's screen name; the initial '@' symbol should be omitted
+        :param str user: The user's screen name; the initial '@' symbol\
+        should be omitted
         :param int count: The number of tweets to recover; 200 is the maximum allowed
         :param str include_rts: Whether to include statuses which have been\
         retweeted by the user; possible values are 'true' and 'false'
         """
-        data = self.get_user_timeline(screen_name=screen_name, count=count, include_rts=include_rts)
+        data = self.get_user_timeline(screen_name=screen_name, count=count,
+                                      include_rts=include_rts)
         self.handler.handle(data)
 
 
@@ -298,26 +307,30 @@ class Twitter(object):
         a date in the future; if not, it is the minimum date, i.e. a date\
         in the past
         :param str lang: language
-        :param int retries_after_twython_exception: number of retries when searching tweets\
-        before raising an exception
+        :param int retries_after_twython_exception: number of retries when\
+        searching tweets before raising an exception
         """
         if to_screen:
             handler = TweetViewer(limit=limit, date_limit=date_limit)
         else:
-            handler = TweetWriter(limit=limit, date_limit=date_limit, stream=stream, repeat=False)
+            handler = TweetWriter(limit=limit, date_limit=date_limit,
+                                  stream=stream, repeat=False)
 
         if stream:
             self.streamer.register(handler)
             if keywords == '' and follow == '' and locations == None:
                 self.streamer.sample()
             else:
-                self.streamer.filter(track=keywords, follow=follow, lang=lang, locations=locations)
+                self.streamer.filter(track=keywords, follow=follow,
+                                     lang=lang, locations=locations)
         else:
             self.query.register(handler)
             if keywords == '':
                 raise ValueError("Please supply at least one keyword to search for.")
             else:
-                self.query.search_tweets(keywords, count=limit, lang=lang, retries_after_twython_exception=retries_after_twython_exception)
+                self.query.search_tweets(keywords, count=limit, lang=lang,
+                                         retries_after_twython_exception= \
+                                         retries_after_twython_exception)
 
 
 
