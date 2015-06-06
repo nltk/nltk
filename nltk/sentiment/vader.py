@@ -261,13 +261,13 @@ def normalize(score, alpha=15):
     Normalize the score to be between -1 and 1 using an alpha that
     approximates the max expected value
     """
-    norm_score = score/math.sqrt(((score*score) + alpha))
+    norm_score = score/math.sqrt((score*score) + alpha)
     return norm_score
 
 
 def allcap_differential(words):
     """
-    Check whether just some words in in the input are ALL CAPS
+    Check whether just some words in the input are ALL CAPS
 
     :param list words: The words to inspect
     :returns: `True` if some but not all items in `words` are ALL CAPS
@@ -298,7 +298,7 @@ def scalar_inc_dec(word, valence, is_cap_diff):
         if word.isupper() and is_cap_diff:
             if valence > 0:
                 scalar += C_INCR
-            else:  scalar -= C_INCR
+            else: scalar -= C_INCR
     return scalar
 
 class SentiText(object):
