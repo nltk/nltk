@@ -519,54 +519,69 @@ class SentimentIntensityAnalyzer(object):
         return sentiments
 
 
+    def _punctuation_emphasis(self, sum_s, text):
+        # add emphasis from exclamation points and question marks
+        ep_amplifier = self._amplify_ep(text)
+        qm_amplifier = self._amplify_qm(text)
+        punct_emph_amplifier = ep_amplifier+qm_amplifier
+        return punct_emph_amplifier
+
+    def _amplify_ep(self, text):
+        # check for added emphasis resulting from exclamation points (up to 4 of them)
+        ep_count = text.count("!")
+        if ep_count > 4:
+            ep_count = 4
+        # (empirically derived mean sentiment intensity rating increase for
+        # exclamation points)
+        ep_amplifier = ep_count*0.292
+        return ep_amplifier
+
+    def _amplify_qm(self, text):
+        # check for added emphasis resulting from question marks (2 or 3+)
+        qm_count = text.count("?")
+        qm_amplifier = 0
+        if qm_count > 1:
+            if qm_count <= 3:
+                # (empirically derived mean sentiment intensity rating increase for
+                # question marks)
+                qm_amplifier = qm_count*0.18
+            else:
+                qm_amplifier = 0.96
+        return qm_amplifier
+
+    def _sift_sentiment_scores(self, sentiments):
+        # want separate positive versus negative sentiment scores
+        pos_sum = 0.0
+        neg_sum = 0.0
+        neu_count = 0
+        for sentiment_score in sentiments:
+            if sentiment_score > 0:
+                pos_sum += (float(sentiment_score) +1) # compensates for neutral words that are counted as 1
+            if sentiment_score < 0:
+                neg_sum += (float(sentiment_score) -1) # when used with math.fabs(), compensates for neutrals
+            if sentiment_score == 0:
+                neu_count += 1
+
+        return pos_sum, neg_sum, neu_count
+
     def score_valence(self, sentiments, text):
         if sentiments:
             sum_s = float(sum(sentiments))
-            #print sentiments, sum_s
-
-            # check for added emphasis resulting from exclamation points (up to 4 of them)
-            ep_count = text.count("!")
-            if ep_count > 4:
-                ep_count = 4
-            ep_amplifier = ep_count*0.292
-            # (empirically derived mean sentiment intensity rating increase
-            # for exclamation points)
+            # compute and add emphasis from punctuation in text
+            punct_emph_amplifier = self._punctuation_emphasis(sum_s, text)
             if sum_s > 0:
-                sum_s += ep_amplifier
-            elif sum_s < 0:
-                sum_s -= ep_amplifier
-
-            # check for added emphasis resulting from question marks (2 or 3+)
-            qm_count = text.count("?")
-            qm_amplifier = 0
-            if qm_count > 1:
-                if qm_count <= 3:
-                    qm_amplifier = qm_count*0.18
-                else:
-                    qm_amplifier = 0.96
-                if sum_s > 0:
-                    sum_s += qm_amplifier
-                elif  sum_s < 0:
-                    sum_s -= qm_amplifier
+                sum_s += punct_emph_amplifier
+            elif  sum_s < 0:
+                sum_s -= punct_emph_amplifier
 
             compound = normalize(sum_s)
-
-            # want separate positive versus negative sentiment scores
-            pos_sum = 0.0
-            neg_sum = 0.0
-            neu_count = 0
-            for sentiment_score in sentiments:
-                if sentiment_score > 0:
-                    pos_sum += (float(sentiment_score) +1) # compensates for neutral words that are counted as 1
-                if sentiment_score < 0:
-                    neg_sum += (float(sentiment_score) -1) # when used with math.fabs(), compensates for neutrals
-                if sentiment_score == 0:
-                    neu_count += 1
+            # discriminate between positive, negative and neutral sentiment scores
+            pos_sum, neg_sum, neu_count = self._sift_sentiment_scores(sentiments)
 
             if pos_sum > math.fabs(neg_sum):
-                pos_sum += (ep_amplifier+qm_amplifier)
+                pos_sum += (punct_emph_amplifier)
             elif pos_sum < math.fabs(neg_sum):
-                neg_sum -= (ep_amplifier+qm_amplifier)
+                neg_sum -= (punct_emph_amplifier)
 
             total = pos_sum + math.fabs(neg_sum) + neu_count
             pos = math.fabs(pos_sum / total)
