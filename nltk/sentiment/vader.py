@@ -408,7 +408,6 @@ class SentimentIntensityAnalyzer(object):
             valence = self.lexicon[item_lowercase]
 
             #check if sentiment laden word is in ALL CAPS (while others aren't)
-
             if item.isupper() and is_cap_diff:
                 if valence > 0:
                     valence += C_INCR
@@ -418,36 +417,23 @@ class SentimentIntensityAnalyzer(object):
             if i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon:
                 s1 = scalar_inc_dec(words_and_emoticons[i-1], valence, is_cap_diff)
                 valence = valence+s1
-                if negated([words_and_emoticons[i-1]]):
-                    valence = valence*N_SCALAR
+                valence = self._never_check(valence, words_and_emoticons, 0, i)
+
             if i > 1 and words_and_emoticons[i-2].lower() not in self.lexicon:
                 s2 = scalar_inc_dec(words_and_emoticons[i-2], valence, is_cap_diff)
                 if s2 != 0:
                     s2 = s2*0.95
                 valence = valence+s2
-                # check for special use of 'never' as valence modifier
-                # instead of negation
-                if words_and_emoticons[i-2] == "never" and\
-                   (words_and_emoticons[i-1] == "so" or
-                    words_and_emoticons[i-1] == "this"):
-                    valence = valence*1.5
-                # otherwise, check for negation/nullification
-                elif negated([words_and_emoticons[i-2]]):
-                    valence = valence*N_SCALAR
+                # check for special use of 'never' as valence modifier instead of negation
+                valence = self._never_check(valence, words_and_emoticons, 1, i)
+
             if i > 2 and words_and_emoticons[i-3].lower() not in self.lexicon:
                 s3 = scalar_inc_dec(words_and_emoticons[i-3], valence, is_cap_diff)
                 if s3 != 0:
                     s3 = s3*0.9
                 valence = valence+s3
                 # check for special use of 'never' as valence modifier instead of negation
-                if words_and_emoticons[i-3] == "never" and \
-                   (words_and_emoticons[i-2] == "so" or words_and_emoticons[i-2] == "this") or \
-                   (words_and_emoticons[i-1] == "so" or words_and_emoticons[i-1] == "this"):
-                    valence = valence*1.25
-                # otherwise, check for negation/nullification
-                elif negated([words_and_emoticons[i-3]]):
-                    valence = valence*N_SCALAR
-
+                valence = self._never_check(valence, words_and_emoticons, 2, i)
 
                 # future work: consider other sentiment-laden idioms
                 # other_idioms =
@@ -456,39 +442,7 @@ class SentimentIntensityAnalyzer(object):
                 #  "cooking with gas": 2, "in the black": 2, "in the red": -2,
                 #  "on the ball": 2,"under the weather": -2}
 
-                onezero = "{} {}".format(words_and_emoticons[i-1], words_and_emoticons[i])
-
-                twoonezero = "{} {} {}".format(words_and_emoticons[i-2],
-                                               words_and_emoticons[i-1], words_and_emoticons[i])
-
-                twoone = "{} {}".format(words_and_emoticons[i-2], words_and_emoticons[i-1])
-
-                threetwoone = "{} {} {}".format(words_and_emoticons[i-3],
-                                                words_and_emoticons[i-2], words_and_emoticons[i-1])
-
-                threetwo = "{} {}".format(words_and_emoticons[i-3], words_and_emoticons[i-2])
-                if onezero in SPECIAL_CASE_IDIOMS:
-                    valence = SPECIAL_CASE_IDIOMS[onezero]
-                elif twoonezero in SPECIAL_CASE_IDIOMS:
-                    valence = SPECIAL_CASE_IDIOMS[twoonezero]
-                elif twoone in SPECIAL_CASE_IDIOMS:
-                    valence = SPECIAL_CASE_IDIOMS[twoone]
-                elif threetwoone in SPECIAL_CASE_IDIOMS:
-                    valence = SPECIAL_CASE_IDIOMS[threetwoone]
-                elif threetwo in SPECIAL_CASE_IDIOMS:
-                    valence = SPECIAL_CASE_IDIOMS[threetwo]
-                if len(words_and_emoticons)-1 > i:
-                    zeroone = "{} {}".format(words_and_emoticons[i], words_and_emoticons[i+1])
-                    if zeroone in SPECIAL_CASE_IDIOMS:
-                        valence = SPECIAL_CASE_IDIOMS[zeroone]
-                if len(words_and_emoticons)-1 > i+1:
-                    zeroonetwo = "{} {} {}".format(words_and_emoticons[i], words_and_emoticons[i+1], words_and_emoticons[i+2])
-                    if zeroonetwo in SPECIAL_CASE_IDIOMS:
-                        valence = SPECIAL_CASE_IDIOMS[zeroonetwo]
-
-                # check for booster/dampener bi-grams such as 'sort of' or 'kind of'
-                if threetwo in BOOSTER_DICT or twoone in BOOSTER_DICT:
-                    valence = valence+B_DECR
+                valence = self._idioms_check(valence, words_and_emoticons, i)
 
             # check for negation case using "least"
             if i > 1 and words_and_emoticons[i-1].lower() not in self.lexicon \
@@ -518,6 +472,59 @@ class SentimentIntensityAnalyzer(object):
                     sentiments.insert(si, sentiment*1.5)
         return sentiments
 
+    def _idioms_check(self, valence, words_and_emoticons, i):
+        onezero = "{} {}".format(words_and_emoticons[i-1], words_and_emoticons[i])
+
+        twoonezero = "{} {} {}".format(words_and_emoticons[i-2],
+                                       words_and_emoticons[i-1], words_and_emoticons[i])
+
+        twoone = "{} {}".format(words_and_emoticons[i-2], words_and_emoticons[i-1])
+
+        threetwoone = "{} {} {}".format(words_and_emoticons[i-3],
+                                        words_and_emoticons[i-2], words_and_emoticons[i-1])
+
+        threetwo = "{} {}".format(words_and_emoticons[i-3], words_and_emoticons[i-2])
+
+        sequences = [onezero, twoonezero, twoone, threetwoone, threetwo]
+
+        for seq in sequences:
+            if seq in SPECIAL_CASE_IDIOMS:
+                valence = SPECIAL_CASE_IDIOMS[seq]
+                break
+
+        if len(words_and_emoticons)-1 > i:
+            zeroone = "{} {}".format(words_and_emoticons[i], words_and_emoticons[i+1])
+            if zeroone in SPECIAL_CASE_IDIOMS:
+                valence = SPECIAL_CASE_IDIOMS[zeroone]
+        if len(words_and_emoticons)-1 > i+1:
+            zeroonetwo = "{} {} {}".format(words_and_emoticons[i], words_and_emoticons[i+1], words_and_emoticons[i+2])
+            if zeroonetwo in SPECIAL_CASE_IDIOMS:
+                valence = SPECIAL_CASE_IDIOMS[zeroonetwo]
+
+        # check for booster/dampener bi-grams such as 'sort of' or 'kind of'
+        if threetwo in BOOSTER_DICT or twoone in BOOSTER_DICT:
+            valence = valence+B_DECR
+        return valence
+
+    def _never_check(self, valence, words_and_emoticons, start_i, i):
+        if start_i == 0:
+            if negated([words_and_emoticons[i-1]]):
+                    valence = valence*N_SCALAR
+        if start_i == 1:
+            if words_and_emoticons[i-2] == "never" and\
+               (words_and_emoticons[i-1] == "so" or
+                words_and_emoticons[i-1] == "this"):
+                valence = valence*1.5
+            elif negated([words_and_emoticons[i-(start_i+1)]]):
+                valence = valence*N_SCALAR
+        if start_i == 2:
+            if words_and_emoticons[i-3] == "never" and \
+               (words_and_emoticons[i-2] == "so" or words_and_emoticons[i-2] == "this") or \
+               (words_and_emoticons[i-1] == "so" or words_and_emoticons[i-1] == "this"):
+                valence = valence*1.25
+            elif negated([words_and_emoticons[i-(start_i+1)]]):
+                valence = valence*N_SCALAR
+        return valence
 
     def _punctuation_emphasis(self, sum_s, text):
         # add emphasis from exclamation points and question marks
@@ -561,7 +568,6 @@ class SentimentIntensityAnalyzer(object):
                 neg_sum += (float(sentiment_score) -1) # when used with math.fabs(), compensates for neutrals
             if sentiment_score == 0:
                 neu_count += 1
-
         return pos_sum, neg_sum, neu_count
 
     def score_valence(self, sentiments, text):
