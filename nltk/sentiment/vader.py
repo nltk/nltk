@@ -414,46 +414,43 @@ class SentimentIntensityAnalyzer(object):
                 else:
                     valence -= C_INCR
 
-            if i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon:
-                s1 = scalar_inc_dec(words_and_emoticons[i-1], valence, is_cap_diff)
-                valence = valence+s1
-                valence = self._never_check(valence, words_and_emoticons, 0, i)
+            for start_i in range(0,3):
+                if i > start_i and words_and_emoticons[i-(start_i+1)].lower() not in self.lexicon:
+                    # dampen the scalar modifier of preceding words and emoticons
+                    # (excluding the ones that immediately preceed the item) based
+                    # on their distance from the current item.
+                    s = scalar_inc_dec(words_and_emoticons[i-(start_i+1)], valence, is_cap_diff)
+                    if start_i == 1 and s != 0:
+                        s = s*0.95
+                    if start_i == 2 and s != 0:
+                        s = s*0.9
+                    valence = valence+s
+                    valence = self._never_check(valence, words_and_emoticons, start_i, i)
+                    if start_i == 2:
+                        valence = self._idioms_check(valence, words_and_emoticons, i)
 
-            if i > 1 and words_and_emoticons[i-2].lower() not in self.lexicon:
-                s2 = scalar_inc_dec(words_and_emoticons[i-2], valence, is_cap_diff)
-                if s2 != 0:
-                    s2 = s2*0.95
-                valence = valence+s2
-                # check for special use of 'never' as valence modifier instead of negation
-                valence = self._never_check(valence, words_and_emoticons, 1, i)
+                        # future work: consider other sentiment-laden idioms
+                        # other_idioms =
+                        # {"back handed": -2, "blow smoke": -2, "blowing smoke": -2,
+                        #  "upper hand": 1, "break a leg": 2,
+                        #  "cooking with gas": 2, "in the black": 2, "in the red": -2,
+                        #  "on the ball": 2,"under the weather": -2}
 
-            if i > 2 and words_and_emoticons[i-3].lower() not in self.lexicon:
-                s3 = scalar_inc_dec(words_and_emoticons[i-3], valence, is_cap_diff)
-                if s3 != 0:
-                    s3 = s3*0.9
-                valence = valence+s3
-                # check for special use of 'never' as valence modifier instead of negation
-                valence = self._never_check(valence, words_and_emoticons, 2, i)
+            valence = self._least_check(valence, words_and_emoticons, i)
 
-                # future work: consider other sentiment-laden idioms
-                # other_idioms =
-                # {"back handed": -2, "blow smoke": -2, "blowing smoke": -2,
-                #  "upper hand": 1, "break a leg": 2,
-                #  "cooking with gas": 2, "in the black": 2, "in the red": -2,
-                #  "on the ball": 2,"under the weather": -2}
-
-                valence = self._idioms_check(valence, words_and_emoticons, i)
-
-            # check for negation case using "least"
-            if i > 1 and words_and_emoticons[i-1].lower() not in self.lexicon \
-               and words_and_emoticons[i-1].lower() == "least":
-                if words_and_emoticons[i-2].lower() != "at" and words_and_emoticons[i-2].lower() != "very":
-                    valence = valence*N_SCALAR
-            elif i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon \
-                 and words_and_emoticons[i-1].lower() == "least":
-                valence = valence*N_SCALAR
         sentiments.append(valence)
         return sentiments
+
+    def _least_check(self, valence, words_and_emoticons, i):
+        # check for negation case using "least"
+        if i > 1 and words_and_emoticons[i-1].lower() not in self.lexicon \
+           and words_and_emoticons[i-1].lower() == "least":
+            if words_and_emoticons[i-2].lower() != "at" and words_and_emoticons[i-2].lower() != "very":
+                valence = valence*N_SCALAR
+        elif i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon \
+             and words_and_emoticons[i-1].lower() == "least":
+            valence = valence*N_SCALAR
+        return valence
 
     def _but_check(self, words_and_emoticons, sentiments):
         # check for modification in sentiment due to contrastive conjunction 'but'
