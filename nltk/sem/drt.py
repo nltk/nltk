@@ -1217,12 +1217,12 @@ def demo():
     print(resolve_anaphora(dexpr(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])')))
     print(resolve_anaphora(dexpr(r'(([x,y],[]) + ([],[PRO(x)]))')))
 
-    print('='*20 + 'Test pprint()' + '='*20)
-    dexpr(r"([],[])").pprint()
-    dexpr(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pprint()
-    dexpr(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pprint()
-    dexpr(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pprint()
-    dexpr(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pprint()
+    print('='*20 + 'Test pretty_print()' + '='*20)
+    dexpr(r"([],[])").pretty_print()
+    dexpr(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pretty_print()
+    dexpr(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pretty_print()
+    dexpr(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pretty_print()
+    dexpr(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pretty_print()
 
 
 def test_draw():
