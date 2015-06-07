@@ -49,7 +49,7 @@ class TwitterCorpusReader(CorpusReader):
     The corpus view class used by this reader.
     """
 
-    def __init__(self, root, fileids = None,
+    def __init__(self, root, fileids=None,
                  word_tokenizer=TweetTokenizer(),
                  encoding='utf8'):
         """
@@ -86,8 +86,7 @@ class TwitterCorpusReader(CorpusReader):
         :rtype: list(dict)
         """
         return concat([self.CorpusView(path, self._read_tweets, encoding=enc)
-                               for (path, enc, fileid)
-                               in self.abspaths(fileids, True, True)])
+                       for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
 
     def strings(self, fileids=None):
