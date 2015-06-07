@@ -339,6 +339,8 @@ class BoxerOutputDrsParser(DrtParser):
 
         elif tok == 'whq':
             conds = [self._handle_whq()]
+        elif tok == 'duplex':
+		        conds = [self._handle_duplex()]
 
         else:
             conds = []
@@ -367,6 +369,38 @@ class BoxerOutputDrsParser(DrtParser):
             return BoxerPred(self.discourse_id, sent_index, word_indices, variable, name, pos, sense)
         return _handle_pred_f
 
+    def _handle_duplex(self):
+      	#duplex(whq, drs(...), var, drs(...))
+      	self.assertToken(self.token(), '(')
+      	# self.assertToken(self.token(), '[')
+      	ans_types = []
+      	# while self.token(0) != ']':
+      	#     cat = self.token()
+      	#     self.assertToken(self.token(), ':')
+      	#     if cat == 'des':
+      	#         ans_types.append(self.token())
+      	#     elif cat == 'num':
+      	#         ans_types.append('number')
+      	#         typ = self.token()
+      	#         if typ == 'cou':
+      	#             ans_types.append('count')
+      	#         else:
+      	#             ans_types.append(typ)
+      	#     else:
+      	#         ans_types.append(self.token())
+      	# self.token() #swallow the ']'
+      
+      	self.assertToken(self.token(), 'whq')
+      	self.assertToken(self.token(), ',')
+      	d1 = self.process_next_expression(None)
+      	self.assertToken(self.token(), ',')
+      	ref = self.parse_variable()
+      	self.assertToken(self.token(), ',')
+      	d2 = self.process_next_expression(None)
+      	self.assertToken(self.token(), ')')
+      	return lambda sent_index, word_indices: BoxerWhq(self.discourse_id, sent_index, word_indices, ans_types, d1, ref, d2)
+
+
     def _handle_named(self):
         #named(x0, john, per, 0)
         self.assertToken(self.token(), '(')
@@ -376,7 +410,7 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         type = self.token()
         self.assertToken(self.token(), ',')
-        sense = int(self.token())
+        sense = self.token() # as per boxer rev 2554
         self.assertToken(self.token(), ')')
         return lambda sent_index, word_indices: BoxerNamed(self.discourse_id, sent_index, word_indices, variable, name, type, sense)
 
@@ -593,8 +627,8 @@ class BoxerOutputDrsParser(DrtParser):
 
     def parse_variable(self):
         var = self.token()
-        assert re.match('^[ex]\d+$', var), var
-        return int(var[1:])
+        assert re.match('^[exps]\d+$', var), var
+        return int(str(ord(var[0])) + var[1:]) # for topic(e1,p1), as per boxer revision 2554
 
     def parse_index(self):
         return int(self.token())
