@@ -187,7 +187,7 @@ class TweetTokenizer:
     def __init__(self, preserve_case=True):
         self.preserve_case = preserve_case
 
-    def tokenize(self, s):
+    def tokenize(self, text):
         """
         :param s: str
         :rtype: list(str)
@@ -196,14 +196,14 @@ class TweetTokenizer:
         """
         # Try to ensure unicode:
         try:
-            s = str(s)
+            text = str(text)
         except UnicodeDecodeError:
-            s = str(s).encode('string_escape')
-            s = str(s)
+            text = str(text).encode('string_escape')
+            text = str(text)
         # Fix HTML character entities:
-        s = self._html2unicode(s)
+        text = self._html2unicode(text)
         # Tokenize:
-        words = WORD_RE.findall(s)
+        words = WORD_RE.findall(text)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
             words = list(map((lambda x : x if EMOTICON_RE.search(x) else
@@ -211,35 +211,35 @@ class TweetTokenizer:
         return words
 
 
-    def _html2unicode(self, s):
+    def _html2unicode(self, text):
         """
         Try to replace all the HTML entities in `s` with their corresponding
         Unicode characters.
         """
         # First the digits:
-        ents = set(HTML_ENTITY_DIGIT_RE.findall(s))
+        ents = set(HTML_ENTITY_DIGIT_RE.findall(text))
         if len(ents) > 0:
             for ent in ents:
                 entnum = ent[2:-1]
                 try:
                     entnum = int(entnum)
-                    s = s.replace(ent, chr(entnum))
+                    text = text.replace(ent, chr(entnum))
                 except:
                     pass
         # Now the alpha versions:
-        ents = set(HTML_ENTITY_ALPHA_RE.findall(s))
-        ents = list(filter((lambda x : x != AMP), ents))
+        ents = set(HTML_ENTITY_ALPHA_RE.findall(text))
+        ents = [e for e in ents if not e == AMP]
         for ent in ents:
             entname = ent[1:-1]
             try:
-                s = s.replace(ent, chr(htmlentitydefs.name2codepoint[entname]))
+                text = text.replace(ent, chr(htmlentitydefs.name2codepoint[entname]))
             except:
                 pass
-            s = s.replace(AMP, " and ")
-        return s
+            text = text.replace(AMP, " and ")
+        return text
 
 ######################################################################
-#{ Tokenization Function
+# Tokenization Function
 ######################################################################
 
 def casual_tokenize(text, preserve_case=True):
@@ -269,9 +269,13 @@ if __name__ == '__main__':
     t2 = ['Renato', 'fica', 'com', 'muito', 'medo', 'de', 'ouvir', 'meus',
           'áudios', 'perto', 'da', 'gaja', 'dele', ',', 'pois', 'só', 'falo',
           'merda', 'KKK']
-    t3 = ['Владелец', '20th', 'Century', 'Fox', 'намерен', 'купить', 'Warner', 'Bros', '.']
-    t4 = ['RT', '@facugambande', ':', 'Ya', 'por', 'arrancar', 'a', 'grabar', '!', '!', '!', '#TirenTirenTiren', 'vamoo', '!', '!']
-    t5 = ['http://t.co/7r8d5bVKyA', 'http://t.co/hZpwZe1uKt', 'http://t.co/ZKb7GKWocy', 'Ничто', 'так', 'не', 'сближает', 'людей']
+    t3 = ['Владелец', '20th', 'Century', 'Fox', 'намерен',
+          'купить', 'Warner', 'Bros', '.']
+    t4 = ['RT', '@facugambande', ':', 'Ya', 'por', 'arrancar', 'a', 'grabar',
+          '!', '!', '!', '#TirenTirenTiren', 'vamoo', '!', '!']
+    t5 = ['http://t.co/7r8d5bVKyA', 'http://t.co/hZpwZe1uKt',
+          'http://t.co/ZKb7GKWocy', 'Ничто', 'так', 'не',
+          'сближает', 'людей']
 
     TWEETS = [s0, s1, s2, s3, s4, s5]
     TOKS = [t0, t1, t2, t3, t4, t5]
