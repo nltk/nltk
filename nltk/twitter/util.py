@@ -39,10 +39,10 @@ def extract_fields(tweet, fields):
 
 def _add_field_to_out(json, field, out):
     if isinstance(field, dict):
-        for key, value in field.iteritems():
+        for key, value in field.items():
             _add_field_to_out(json[key], value, out)
     else:
-        if isinstance(field, basestring):
+        if isinstance(field, str):
             out += [json[field]]
         else:
             out += [json[value] for value in field]
@@ -50,8 +50,8 @@ def _add_field_to_out(json, field, out):
 def _get_entity_recursive(json, entity):
     if json == None:
         return None
-    if isinstance(json, dict):
-        for key, value in json.iteritems():
+    elif isinstance(json, dict):
+        for key, value in json.items():
             if key == entity:
                 return value
             candidate = _get_entity_recursive(value, entity)
@@ -67,7 +67,7 @@ def _get_entity_recursive(json, entity):
     else:
         return None
 
-def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
+def json2csv(fp, outfile, fields, encoding='utf8', errors='replace'):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -98,14 +98,14 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
     """
-    with open(infile) as inf:
-        writer = get_outf_writer_compat(outfile, encoding, errors)
-        for line in inf:
-            tweet = json.loads(line)
-            row = extract_fields(tweet, fields)
-            writer.writerow(row)
+    (writer, outf) = outf_writer_compat(outfile, encoding, errors)
+    for line in fp:
+        tweet = json.loads(line)
+        row = extract_fields(tweet, fields)
+        writer.writerow(row)
+    outf.close()
 
-def get_outf_writer_compat(outfile, encoding, errors):
+def outf_writer_compat(outfile, encoding, errors):
     """
     Identify appropriate CSV writer given the Python version
     """
@@ -115,10 +115,12 @@ def get_outf_writer_compat(outfile, encoding, errors):
     else:
         outf = open(outfile, 'wb')
         writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
-    return writer
+    return (writer, outf)
 
 
-def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
+
+
+def json2csv_entities(fp, outfile, main_fields, entity_name, entity_fields,
                       encoding='utf8', errors='replace'):
     """
     Extract selected fields from a file of line-separated JSON tweets and
@@ -128,7 +130,7 @@ def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
     to a CSV file for easier processing of Twitter entities. For example, the
     hashtags or media elements of a tweet can be extracted.
 
-    :param str infile: The name of the file containing full tweets
+    :param file-object fp: The name of the file containing full tweets
 
     :param str outfile: The name of the text file where results should be\
     written
@@ -137,39 +139,40 @@ def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
     object, usually the tweet. Useful examples: 'id_str' for the tweetID. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
     e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
-    If entity_name is expressed as a dictionary, then it is list of fields\
+    If `entity_name` is expressed as a dictionary, then it is list of fields\
     of the object that corresponds to the key of the dictionary (could be\
     the user object, or the place of a tweet object).
 
     :param list entity_name: The name of the entity: 'hashtags', 'media',\
     'urls' and 'user_mentions' for the tweet object. For the user object,\
-    needs to be expressed as a dictionary: {'user' : 'urls'}. For the\
-    bounding box of the place from which a tweet was twitted, as a dict\
-    as well: {'place', 'bounding_box'}
+    needs to be expressed as a dictionary: `{'user' : 'urls'}`. For the\
+    bounding box of the place from which a Tweet was published, as a dict\
+    as well: `{'place' : 'bounding_box'}`.
 
     :param list entity_fields: The list of fields to be extracted from the\
-    entity. E.g. ['text'] (of the hashtag)
+    entity. E.g. `['text']` (of the Tweet)
 
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
     """
-    with open(infile) as inf:
-        writer = get_outf_writer_compat(outfile, encoding, errors)
-        for line in inf:
-            tweet = json.loads(line)
-            if isinstance(entity_name, dict):
-                for key, value in entity_name.iteritems():
-                    object_json = _get_entity_recursive(tweet, key)
-                    if object_json == None:
-                        # can happen in the case of "place"
-                        continue
-                    object_fields = extract_fields(object_json, main_fields)
-                    items = _get_entity_recursive(object_json, value)
-                    _write_to_file(object_fields, items, entity_fields, writer)
-            else:
-                tweet_fields = extract_fields(tweet, main_fields)
-                items = _get_entity_recursive(tweet, entity_name)
-                _write_to_file(tweet_fields, items, entity_fields, writer)
+
+    (writer, outf) = outf_writer_compat(outfile, encoding, errors)
+    for line in fp:
+        tweet = json.loads(line)
+        if isinstance(entity_name, dict):
+            for key, value in entity_name.items():
+                object_json = _get_entity_recursive(tweet, key)
+                if object_json == None:
+                    # can happen in the case of "place"
+                    continue
+                object_fields = extract_fields(object_json, main_fields)
+                items = _get_entity_recursive(object_json, value)
+                _write_to_file(object_fields, items, entity_fields, writer)
+        else:
+            tweet_fields = extract_fields(tweet, main_fields)
+            items = _get_entity_recursive(tweet, entity_name)
+            _write_to_file(tweet_fields, items, entity_fields, writer)
+    outf.close()
 
 
 def _write_to_file(object_fields, items, entity_fields, writer):
@@ -193,10 +196,11 @@ def _write_to_file(object_fields, items, entity_fields, writer):
                 row += [value]
         # now check required dictionaries
         for d in entity_dict:
-            for kd, vd in d.iteritems():
+            for kd, vd in d.items():
                 json_dict = items[kd]
                 if not isinstance(json_dict, dict):
-                    raise RuntimeError("Key {0} does not contain a dictionary in the json file".format(kd))
+                    raise RuntimeError("""Key {0} does not contain a dictionary
+                    in the json file""".format(kd))
                 for k2 in vd:
                     row += [json_dict[k2]]
         writer.writerow(row)

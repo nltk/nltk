@@ -16,15 +16,13 @@ For documentation about the Twitter APIs, see `The Streaming APIs Overview
 
 from functools import wraps
 import json
-import os
-from tempfile import NamedTemporaryFile, TemporaryFile
 
-#from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
-     #credsfromfile, json2csv
+from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
+     credsfromfile
 
-from twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
+#from twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
 
-from util import credsfromfile, json2csv
+#from util import credsfromfile, json2csv
 
 SPACER = '###################################'
 
@@ -53,24 +51,29 @@ def verbose(func):
 
 
 def setup():
+    """
+    Initialize global variables for the demos.
+    """
+    #global TWEETS, DATE, USERIDS, IDS, FIELDS
+    global DATE, USERIDS, FIELDS
 
-    global TWEETS, DATE, USERIDS, IDS, FIELDS
-    from nltk.corpus import tweets
 
-    TWEETS = NamedTemporaryFile(mode='w')
-    for tweet in tweets.docs()[:100]:
-        json.dump(tweet, TWEETS)
+    #TWEETS = NamedTemporaryFile(mode='w')
+    #for tweet in tweets.docs()[:100]:
+        #json.dump(tweet, TWEETS)
+
+    #TWEETS = tweets.docs()[:100]
 
     DATE = (2015, 4, 20, 16, 40)
     USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
     #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
-    IDS = NamedTemporaryFile(mode='w')
+    #IDS = NamedTemporaryFile(mode='w')
     FIELDS = ['id_str']
-    pass
 
-def teardown():
-    IDS.close()
-    TWEETS.close()
+
+#def teardown():
+    #IDS.close()
+    ##TWEETS.close()
 
 
 @verbose
@@ -117,7 +120,7 @@ def tracktoscreen_demo(track="taylor swift", limit=10):
 @verbose
 def search_demo(keywords='nltk'):
     """
-    Using the REST API, search for past tweets containing a given keyword.
+    Use the REST API to search for past tweets containing a given keyword.
     """
     oauth = credsfromfile()
     client = Query(**oauth)
@@ -127,6 +130,9 @@ def search_demo(keywords='nltk'):
 
 @verbose
 def tweets_by_user_demo(user='NLTK_org', count=200):
+    """
+    Use the REST API to search for past tweets by a given user.
+    """
     oauth = credsfromfile()
     client = Query(**oauth)
     client.register(TweetWriter())
@@ -170,7 +176,7 @@ def streamtofile_demo(limit=20):
     """
     oauth = credsfromfile()
     client = Streamer(**oauth)
-    client.register(TweetWriter(limit=limit, repeat= False))
+    client.register(TweetWriter(limit=limit, repeat=False))
     client.statuses.sample()
 
 
@@ -185,34 +191,33 @@ def limit_by_time_demo(limit=20):
     client.sample()
 
 
-@verbose
-def extract_tweetids_demo():
-    """
-    Given a list of full tweets in a file (``infile``), write just the
-    tweetIDs to a new file (`outfile`)
-    """
-    infile = TWEETS
-    TWEETS.seek(0)
-    outfile = IDS
-    print("Reading from {0}".format(infile))
-    json2csv(infile, outfile, FIELDS)
-    print("Writing ids to {0}".format(outfile))
+#@verbose
+#def extract_tweetids_demo():
+    #"""
+    #Given a list of full tweets in a file (``infile``), write just the
+    #tweetIDs to a new file (`outfile`)
+    #"""
+    #fp = TWEETS
+
+    #print("Reading from {0}".format(fp))
+    #json2csv(fp, FIELDS, file=IDS)
+    #print("Writing ids to {0}".format(outfile))
 
 
-@verbose
-def expand_tweetids_demo():
-    """
-    Given a list of tweetIDs in a file (``infile``), try to recover the full
-    ('hydrated') tweets from the REST API and write the results to a new file (`outfile`).
+#@verbose
+#def expand_tweetids_demo():
+    #"""
+    #Given a list of tweetIDs in a file (``infile``), try to recover the full
+    #('hydrated') tweets from the REST API and write the results to a new file (`outfile`).
 
-    If any of the tweets corresponding to the tweetIDs have been deleted by
-    their authors, :meth:`lookup` will return an empty result.
-    """
-    infile = IDS
-    oauth = credsfromfile()
-    client = Query(**oauth)
-    with TemporaryFile() as outfile:
-        client.lookup(infile, outfile)
+    #If any of the tweets corresponding to the tweetIDs have been deleted by
+    #their authors, :meth:`lookup` will return an empty result.
+    #"""
+    #infile = IDS
+    #oauth = credsfromfile()
+    #client = Query(**oauth)
+    #with TemporaryFile() as outfile:
+        #client.lookup(infile, outfile)
 
 
 @verbose
@@ -249,20 +254,20 @@ def corpusreader_demo():
 
 
 ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
-         search_demo, tweets_by_user_demo, lookup_by_userid_demo, followtoscreen_demo,
-         streamtofile_demo, limit_by_time_demo,
-         extract_tweetids_demo, expand_tweetids_demo, corpusreader_demo]
+       search_demo, tweets_by_user_demo, lookup_by_userid_demo, followtoscreen_demo,
+       streamtofile_demo, limit_by_time_demo, corpusreader_demo]
 
-DEMOS = ALL[9:10]
+"""
+Select demo functions to run.
+"""
+DEMOS = ALL[:]
 
 if __name__ == "__main__":
-    """Run selected demo functions."""
     setup()
 
     for demo in DEMOS:
         demo()
 
-    teardown()
 
 
 
