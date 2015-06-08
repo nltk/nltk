@@ -33,6 +33,39 @@ class FeatureExtractor(object):
     a text, which should ideally be the same text the classifier is
     trained on. These counts can independently be serialized to and
     retrieved from pickle files, or can be extracted from a training text.
+
+    >>> fe = FeatureExtractor(None, None)
+    >>> fe.has_counts
+    False
+    >>> from nltk.tokenize.regexp import WhitespaceTokenizer
+    >>> tokenizer = WhitespaceTokenizer()
+    >>> s = """This is some training text. It's alright. It could be better,
+    ... but it's not."""
+    >>> fe.train(tokenizer.tokenize(s))
+    >>> fe.model_non_abbrs == Counter({'be': 1, 'training': 1, "it's": 1,
+    ... 'This': 1, "It's": 1, 'is': 1, 'some': 1, 'It': 1, 'but': 1,
+    ... 'better,': 1, 'not': 1, 'could': 1})
+    True
+    >>> fe.model_lower_words == Counter({'be': 1, 'training': 1, "it's": 1,
+    ... 'text': 1, 'is': 1, 'some': 1, 'but': 1, 'not': 1, 'better': 1,
+    ... 'alright': 1, 'could': 1})
+    True
+    >>> fe.has_counts
+    True
+    >>> from pair_iter import RawPairIter
+    >>> rpi = RawPairIter(tokenizer)
+    >>> it = fe.get_feature(rpi.pair_iter(s))
+    >>> it # doctest: +ELLIPSIS
+    <generator object get_features at 0x...>
+    >>> features = it.next()
+    >>> round(features[0].pop('word2_lower'), 4)
+    0.6931
+    >>> round(features[0].pop('word1_abbr'), 4)
+    0.6931
+    >>> features == ({'word1_len': 4, 'word2_istitle': False,
+    ... 'word1_word2_istitle': ('This', False), 'word1': 'This',
+    ... 'word1_word2': ('This', 'is'), 'word2': 'is'}, 'unlabeled')
+    True
     """
 
     def __init__(self, model_non_abbrs, model_lower_words):
@@ -46,8 +79,7 @@ class FeatureExtractor(object):
         set.
         """
         return all([count for count in (self.model_non_abbrs,
-                                        self.model_lower_words)
-                    if count is not None])
+                                        self.model_lower_words)])
 
     def train(self, tokenized_text):
         """
