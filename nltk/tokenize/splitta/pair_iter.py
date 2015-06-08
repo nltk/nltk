@@ -12,7 +12,7 @@ PairIter classes
 
 import re
 
-from splitta.token_pair import TokenPair
+from token_pair import TokenPair
 
 
 # pylint: disable=no-member
@@ -100,6 +100,7 @@ class RawPairIter(PairIterBase):
     ...     TokenPair('cool.', None, 'non_boundary')]
     >>> pair_iter = RawPairIter(tokenize.regexp.WhiteSpaceTokenizer())
     >>> tps == list(pair_iter.pair_iter(s))
+    True
     """
 
     # no preprocessors--tokens returned 'as-is'
@@ -155,7 +156,8 @@ class TrainingPairIter(PairIterBase):
     ...     TokenPair('cool.', None, 'non_candidate')]
     >>> pair_iter = TrainingPairIter(
     ...     tokenize.regexp.WhiteSpaceTokenizer())
-    >>> tps = list(pair_iter.pair_iter(s))
+    >>> tps == list(pair_iter.pair_iter(s))
+    True
     """
 
     # default preprocessors, plus strip out all angle brackets that aren't
@@ -252,6 +254,7 @@ class TokenizingPairIter(PairIterBase):
     ...     TokenPair('cool.', None, 'non_candidate')]
     >>> pair_iter = TokenizingPairIter(tokenize.regexp.WhiteSpaceTokenizer())
     >>> tps == list(pair_iter.pair_iter(s)) # True
+    True
     """
 
     # default preprocessors plus stripping out all angle brackets
