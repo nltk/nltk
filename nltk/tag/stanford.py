@@ -62,7 +62,8 @@ class StanfordTagger(TaggerI):
       raise NotImplementedError
 
     def tag(self, tokens):
-        return list(self.tag_sents([tokens]))
+        # This function should return list of tuple rather than list of list 
+        return sum(self.tag_sents([tokens]), []) 
 
     def tag_sents(self, sentences):
         encoding = self._encoding
@@ -86,16 +87,16 @@ class StanfordTagger(TaggerI):
         stanpos_output, _stderr = java(self._cmd,classpath=self._stanford_jar,
                                                        stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
-
+        
         # Delete the temporary file
         os.unlink(self._input_file_path) 
 
         # Return java configurations to their default values
         config_java(options=default_options, verbose=False)
                 
-        return self.parse_output(stanpos_output)
+        return self.parse_output(stanpos_output, sentences)
 
-    def parse_output(self, text):
+    def parse_output(self, text, sentences = None):
         # Output the tagged sentences
         tagged_sentences = []
         for tagged_sentence in text.strip().split("\n"):
@@ -167,10 +168,24 @@ class StanfordNERTagger(StanfordTagger):
                 '-loadClassifier', self._stanford_model, '-textFile',
                 self._input_file_path, '-outputFormat', self._FORMAT, '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerOptions','\"tokenizeNLs=false\"']
 
-    def parse_output(self, text):
-      if self._FORMAT == 'slashTags':
-        return super(StanfordNERTagger, self).parse_output(text)
-      raise NotImplementedError
+    def parse_output(self, text, sentences):
+        if self._FORMAT == 'slashTags':
+            # Joint together to a big list    
+            tagged_sentences = []
+            for tagged_sentence in text.strip().split("\n"):
+                for tagged_word in tagged_sentence.strip().split():
+                    word_tags = tagged_word.strip().split(self._SEPARATOR)
+                    tagged_sentences.append((''.join(word_tags[:-1]), word_tags[-1]))
+                
+            # Separate it according to the input
+            result = []
+            start = 0 
+            for sent in sentences:
+                result.append(tagged_sentences[start:start + len(sent)])
+                start += len(sent);
+            return result 
+
+        raise NotImplementedError
 
 
 if __name__ == "__main__":
