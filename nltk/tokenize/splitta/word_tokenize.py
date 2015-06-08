@@ -1,68 +1,67 @@
 import re
 
-"""
-A list of (regexp, repl) pairs applied in sequence.
-The resulting string is split on whitespace.
-(Adapted from the Punkt Word Tokenizer)
-"""
+from nltk.tokenize.api import TokenizerI
 
-_tokenize_regexps = [
 
-    # uniform quotes
-    (re.compile(r'\'\''), r'"'),
-    (re.compile(r'\`\`'), r'"'),
+class SplittaWordTokenizer(TokenizerI):
+    def __init__(self):
+        self.tokenize_regexps = [
+            # uniform quotes
+            (re.compile(r'\'\''), r'"'),
+            (re.compile(r'\`\`'), r'"'),
 
-    # Separate punctuation (except period) from words:
-    (re.compile(r'(^|\s)(\')'), r'\1\2 '),
-    (re.compile(r'(?=[\(\"\`{\[:;&\#\*@])(.)'), r'\1 '),
-    
-    (re.compile(r'(.)(?=[?!)\";}\]\*:@\'])'), r'\1 '),
-    (re.compile(r'(?=[\)}\]])(.)'), r'\1 '),
-    (re.compile(r'(.)(?=[({\[])'), r'\1 '),
-    (re.compile(r'((^|\s)\-)(?=[^\-])'), r'\1 '),
+            # Separate punctuation (except period) from words:
+            (re.compile(r'(^|\s)(\')'), r'\1\2 '),
+            (re.compile(r'(?=[\(\"\`{\[:;&\#\*@])(.)'), r'\1 '),
 
-    # Treat double-hyphen as one token:
-    (re.compile(r'([^-])(\-\-+)([^-])'), r'\1 \2 \3'),
-    (re.compile(r'(\s|^)(,)(?=(\S))'), r'\1\2 '),
+            (re.compile(r'(.)(?=[?!)\";}\]\*:@\'])'), r'\1 '),
+            (re.compile(r'(?=[\)}\]])(.)'), r'\1 '),
+            (re.compile(r'(.)(?=[({\[])'), r'\1 '),
+            (re.compile(r'((^|\s)\-)(?=[^\-])'), r'\1 '),
 
-    # Only separate comma if space follows:
-    (re.compile(r'(.)(,)(\s|$)'), r'\1 \2\3'),
+            # Treat double-hyphen as one token:
+            (re.compile(r'([^-])(\-\-+)([^-])'), r'\1 \2 \3'),
+            (re.compile(r'(\s|^)(,)(?=(\S))'), r'\1\2 '),
 
-    # Combine dots separated by whitespace to be a single token:
-    (re.compile(r'\.\s\.\s\.'), r'...'),
+            # Only separate comma if space follows:
+            (re.compile(r'(.)(,)(\s|$)'), r'\1 \2\3'),
 
-    # Separate "No.6"
-    (re.compile(r'([A-Za-z]\.)(\d+)'), r'\1 \2'),
-    
-    # Separate words from ellipses
-    (re.compile(r'([^\.]|^)(\.{2,})(.?)'), r'\1 \2 \3'),
-    (re.compile(r'(^|\s)(\.{2,})([^\.\s])'), r'\1\2 \3'),
-    (re.compile(r'([^\.\s])(\.{2,})($|\s)'), r'\1 \2\3'),
+            # Combine dots separated by whitespace to be a single token:
+            (re.compile(r'\.\s\.\s\.'), r'...'),
 
-    ## adding a few things here:
+            # Separate "No.6"
+            (re.compile(r'([A-Za-z]\.)(\d+)'), r'\1 \2'),
 
-    # fix %, $, &
-    (re.compile(r'(\d)%'), r'\1 %'),
-    (re.compile(r'\$(\.?\d)'), r'$ \1'),
-    (re.compile(r'(\w)& (\w)'), r'\1&\2'),
-    (re.compile(r'(\w\w+)&(\w\w+)'), r'\1 & \2'),
+            # Separate words from ellipses
+            (re.compile(r'([^\.]|^)(\.{2,})(.?)'), r'\1 \2 \3'),
+            (re.compile(r'(^|\s)(\.{2,})([^\.\s])'), r'\1\2 \3'),
+            (re.compile(r'([^\.\s])(\.{2,})($|\s)'), r'\1 \2\3'),
 
-    # fix (n 't) --> ( n't)
-    (re.compile(r'n \'t( |$)'), r" n't\1"),
-    (re.compile(r'N \'T( |$)'), r" N'T\1"),
+            ## adding a few things here:
 
-    # treebank tokenizer special words
-    (re.compile(r'([Cc])annot'), r'\1an not'),
+            # fix %, $, &
+            (re.compile(r'(\d)%'), r'\1 %'),
+            (re.compile(r'\$(\.?\d)'), r'$ \1'),
+            (re.compile(r'(\w)& (\w)'), r'\1&\2'),
+            (re.compile(r'(\w\w+)&(\w\w+)'), r'\1 & \2'),
 
-    (re.compile(r'\s+'), r' '),
-    
-    ]
+            # fix (n 't) --> ( n't)
+            (re.compile(r'n \'t( |$)'), r" n't\1"),
+            (re.compile(r'N \'T( |$)'), r" N'T\1"),
 
-def tokenize(s):
-    """
-    Tokenize a string using the rule above
-    """
-    for (regexp, repl) in _tokenize_regexps:
-        s = regexp.sub(repl, s)
-    return s
+            # treebank tokenizer special words
+            (re.compile(r'([Cc])annot'), r'\1an not'),
+
+            (re.compile(r'\s+'), r' '),
+
+            ]
+
+        def tokenize(self, s):
+            """
+            Tokenize a string by applying the regexes in
+            :py:attr:`tokenize_regexps` and then splitting on whitespace
+            """
+            for (regexp, repl) in _tokenize_regexps:
+                s = regexp.sub(repl, s)
+            return s.split()
 
