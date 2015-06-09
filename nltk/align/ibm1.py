@@ -118,6 +118,8 @@ class IBMModel1(object):
             # Initialize the maximum probability with Null token
             max_align_prob = (self.probabilities[en_word][None], None)
             for i, fr_word in enumerate(align_sent.mots):
+                max_align_prob = (max_align_prob[0], max_align_prob[1] if
+                                  max_align_prob[1] else 0)
                 # Find out the maximum probability
                 max_align_prob = max(max_align_prob,
                     (self.probabilities[en_word][fr_word], i))
