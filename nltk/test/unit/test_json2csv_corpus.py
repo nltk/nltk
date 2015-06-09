@@ -29,7 +29,7 @@ def are_files_identical(filename1, filename2):
     with open(filename1, "rb") as a:
         with open(filename2, "rb") as b:
             result = True
-            for lineA, lineB in izip(a.readlines(), b.readlines()):
+            for lineA, lineB in izip(sorted(a.readlines()), sorted(b.readlines())):
                 if (lineA.strip() != lineB.strip()):
                     print("Error while comparing files. First difference below.")
                     print("=> Output file line: '" + str(lineA) + "'")
