@@ -64,7 +64,6 @@ import re
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus.util import LazyCorpusLoader
 from nltk.corpus.reader import *
-from nltk.data import find
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding=[
@@ -253,7 +252,6 @@ semcor = LazyCorpusLoader(
     'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml',
     wordnet) # Must be defined *after* wordnet corpus.
 
-word2vec_sample = str(find('models/word2vec_sample/pruned.word2vec.bin'))
   
 def demo():
     # This is out-of-date:
