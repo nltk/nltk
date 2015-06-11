@@ -54,9 +54,15 @@ def _get_entity_recursive(json, entity):
         for key, value in json.items():
             if key == entity:
                 return value
-            candidate = _get_entity_recursive(value, entity)
-            if candidate != None:
-                return candidate
+            '''
+            'entities' and 'extended_entities' are wrappers in twitter json
+            structure that contain other twitter objects. See:
+            https://dev.twitter.com/overview/api/entities-in-twitter-objects
+            '''
+            if key == 'entities' or key == 'extended_entities':
+                candidate = _get_entity_recursive(value, entity)
+                if candidate != None:
+                    return candidate
         return None
     elif isinstance(json, list):
         for item in json:
