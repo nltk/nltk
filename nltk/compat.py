@@ -56,7 +56,7 @@ if PY3:
 
     from datetime import timezone
     UTC = timezone.utc
-    
+
     from tempfile import TemporaryDirectory
 
 else:
@@ -136,20 +136,20 @@ else:
         which is encoded in the given encoding.
         see https://docs.python.org/2/library/csv.html
         """
-    
+
         def __init__(self, f, dialect=csv.excel, encoding="utf-8", errors='replace', **kwds):
             # Redirect output to a queue
             self.queue = cStringIO.StringIO()
             self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
             self.stream = f
             self.encoder = codecs.getincrementalencoder(encoding)(errors=errors)
-    
+
         def encode(self, data):
             if isinstance(data, basestring):
                 return data.encode("utf-8")
             else:
                 return data
-            
+
         def writerow(self, row):
             self.writer.writerow([self.encode(s) for s in row])
             # Fetch UTF-8 output from the queue ...
@@ -161,8 +161,8 @@ else:
             self.stream.write(data)
             # empty queue
             self.queue.truncate(0)
-      
-      
+
+
     import warnings as _warnings
     import os as _os
     from tempfile import mkdtemp
@@ -171,27 +171,27 @@ else:
         """Create and return a temporary directory.  This has the same
         behavior as mkdtemp but can be used as a context manager.  For
         example:
-    
+
             with TemporaryDirectory() as tmpdir:
                 ...
-    
+
         Upon exiting the context, the directory and everything contained
         in it are removed.
-        
+
         http://stackoverflow.com/questions/19296146/tempfile-temporarydirectory-context-manager-in-python-2-7
         """
-    
+
         def __init__(self, suffix="", prefix="tmp", dir=None):
             self._closed = False
             self.name = None # Handle mkdtemp raising an exception
             self.name = mkdtemp(suffix, prefix, dir)
-    
+
         def __repr__(self):
             return "<{} {!r}>".format(self.__class__.__name__, self.name)
-    
+
         def __enter__(self):
             return self.name
-    
+
         def cleanup(self, _warn=False):
             if self.name and not self._closed:
                 try:
@@ -209,14 +209,14 @@ else:
                 if _warn:
                     self._warn("Implicitly cleaning up {!r}".format(self),
                                ResourceWarning)
-    
+
         def __exit__(self, exc, value, tb):
             self.cleanup()
-    
+
         def __del__(self):
             # Issue a ResourceWarning if implicit cleanup needed
             self.cleanup(_warn=True)
-    
+
         # XXX (ncoghlan): The following code attempts to make
         # this class tolerant of the module nulling out process
         # that happens during CPython interpreter shutdown
@@ -228,7 +228,7 @@ else:
         _remove = staticmethod(_os.remove)
         _rmdir = staticmethod(_os.rmdir)
         _warn = _warnings.warn
-    
+
         def _rmtree(self, path):
             # Essentially a stripped down version of shutil.rmtree.  We can't
             # use globals because they may be None'ed out at shutdown.
@@ -250,7 +250,7 @@ else:
             except OSError:
                 pass
 
-        
+
     if PY26:
         from operator import itemgetter
         from heapq import nlargest

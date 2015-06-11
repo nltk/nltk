@@ -171,6 +171,9 @@ class Test(unittest.TestCase):
 
 
     def test_file_is_wrong(self):
+        """
+        Sanity check that file comparison is not giving false positives.
+        """
         ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.retweet.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.text.csv')
