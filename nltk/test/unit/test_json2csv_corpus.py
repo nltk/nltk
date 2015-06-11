@@ -6,6 +6,11 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+Regression tests for `json2csv()` and `json2csv_entities()` in Twitter
+package.
+
+"""
 
 import os
 from nltk.compat import TemporaryDirectory
@@ -22,18 +27,21 @@ except ImportError:
     izip = zip
 
 
-def are_files_identical(filename1, filename2):
+def are_files_identical(filename1, filename2, debug=True):
     """
-    Compare two files ignoring carriage returns
+    Compare two files, ignoring carriage returns.
     """
-    with open(filename1, "rb") as a:
-        with open(filename2, "rb") as b:
+    with open(filename1, "rb") as fileA:
+        with open(filename2, "rb") as fileB:
             result = True
-            for lineA, lineB in izip(sorted(a.readlines()), sorted(b.readlines())):
-                if (lineA.strip() != lineB.strip()):
-                    print("Error while comparing files. First difference below.")
-                    print("=> Output file line: '" + str(lineA) + "'")
-                    print("=> Refer. file line: '" + str(lineB) + "'")
+            for lineA, lineB in izip(sorted(fileA.readlines()),
+                                     sorted(fileB.readlines())):
+                if lineA.strip() != lineB.strip():
+                    if debug:
+                        print("Error while comparing files." +
+                              "First difference at line below.")
+                        print("=> Output file line: {}".format(lineA))
+                        print("=> Refer. file line: {}".format(lineB))
                     result = False
                     break
             return result
