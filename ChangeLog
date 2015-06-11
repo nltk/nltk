@@ -1,3 +1,22 @@
+Version 3.0.3 2015-06-12
+* bug fixes (Stanford NER, Boxer, Snowball, treebank tokenizer,
+    dependency graph, KneserNey, BLEU)
+* code clean-ups
+* default POS tagger permits tagset to be specified
+* gensim illustration
+* tgrep implementation
+* added PanLex Swadesh corpora
+* visualisation for aligned bitext
+* support for Google App Engine
+* POSTagger renamed StanfordPOSTagger, NERTagger renamed StanfordNERTagger
+
+Thanks to the following contributors to 3.0.3:
+
+Long Duong, Pedro Fialho, Dan Garrette, Helder, Saimadhav Heblikar,
+Chris Inskip, David Kamholz, Dmitrijs Milajevs, Smitha Milli,
+Tom Mortimer-Jones, Avital Pekker, Jonathan Pool, Sam Raker,
+Will Roberts, Dmitry Sadovnychyi, Nathan Schneider Anirudh W
+	
 Version 3.0.2 2015-03-13
 * make pretty-printing method names consistent
 * improvements to Portuguese stemmer
