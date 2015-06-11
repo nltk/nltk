@@ -38,8 +38,8 @@ Using the pre-trained model
 ~~~~~~~~~~~~~~~~~~~
 NLTK also include a pre-trained model which is part of a model that is trained on 100 billion words from Google News Dataset. 
 The full model is from https://code.google.com/p/word2vec/  which is about 3 Gb.    
- 
-	>>> from nltk.corpus import word2vec_sample
+ 	>>> from nltk.data import find
+	>>> word2vec_sample = str(find('models/word2vec_sample/pruned.word2vec.bin'))
 	>>> model = gensim.models.Word2Vec.load(word2vec_sample)
 	
 We pruned the model to only include the most common words (~44k words). 

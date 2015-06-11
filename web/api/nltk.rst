@@ -115,6 +115,15 @@ nltk Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`wsd` Module
+------------------
+
+.. automodule:: nltk.wsd
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Subpackages
 -----------
 

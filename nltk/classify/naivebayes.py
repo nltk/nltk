@@ -178,8 +178,8 @@ class NaiveBayesClassifier(ClassifierI):
                           minprob[feature_]/maxprob[feature_])
         return features[:n]
 
-    @staticmethod
-    def train(labeled_featuresets, estimator=ELEProbDist):
+    @classmethod
+    def train(cls, labeled_featuresets, estimator=ELEProbDist):
         """
         :param labeled_featuresets: A list of classified featuresets,
             i.e., a list of tuples ``(featureset, label)``.
@@ -225,7 +225,7 @@ class NaiveBayesClassifier(ClassifierI):
             probdist = estimator(freqdist, bins=len(feature_values[fname]))
             feature_probdist[label, fname] = probdist
 
-        return NaiveBayesClassifier(label_probdist, feature_probdist)
+        return cls(label_probdist, feature_probdist)
 
 ##//////////////////////////////////////////////////////
 ##  Demo
