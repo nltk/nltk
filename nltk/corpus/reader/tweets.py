@@ -36,11 +36,19 @@ class TwitterCorpusReader(CorpusReader):
         from nltk.corpus import TwitterCorpusReader
         reader = TwitterCorpusReader(root='/path/to/twitter-files', '.*\.json')
 
-    However, the recommended approach is to use this directory as the value of the
-    environmental variable `TWITTER`, and then invoke the reader as::
+    However, the recommended approach is to set the relevant directory as the
+    value of the environmental variable `TWITTER`, and then invoke the reader
+    as follows::
 
        root = os.environ['TWITTER']
        reader = TwitterCorpusReader(root, '.*\.json')
+
+    If you want to work directly with the raw Tweets, the `json` library can
+    be used::
+
+       import json
+       for tweet in reader.docs():
+           print(json.dumps(tweet, indent=1, sort_keys=True))
 
     """
 
