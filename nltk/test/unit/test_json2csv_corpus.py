@@ -26,8 +26,10 @@ except ImportError:
         # Python 3
     izip = zip
 
+SUBDIR = 'files'
 
-def are_files_identical(filename1, filename2, debug=True):
+
+def are_files_identical(filename1, filename2, debug=False):
     """
     Compare two files, ignoring carriage returns.
     """
@@ -38,7 +40,7 @@ def are_files_identical(filename1, filename2, debug=True):
                                      sorted(fileB.readlines())):
                 if lineA.strip() != lineB.strip():
                     if debug:
-                        print("Error while comparing files." +
+                        print("Error while comparing files. " +
                               "First difference at line below.")
                         print("=> Output file line: {}".format(lineA))
                         print("=> Refer. file line: {}".format(lineB))
@@ -53,19 +55,21 @@ class Test(unittest.TestCase):
         with open(tweets.abspath("tweets.20150430-223406.json")) as infile:
             self.infile = [next(infile) for x in range(100)]
         infile.close()
+        self.msg = "Test and reference files are not the same"
 
     def tearDown(self):
         return
 
     def test_textoutput(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.text.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.text.csv')
             json2csv(self.infile, outfn, ['text'])
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.text.csv.ref'),\
-                   'Error in csv file'
 
     def test_tweet_metadata(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.tweet.csv.ref')
         fields = ['created_at', 'favorite_count', 'id',
                   'in_reply_to_status_id', 'in_reply_to_user_id', 'retweet_count',
                   'retweeted', 'text', 'truncated', {'user' : 'id'}]
@@ -73,84 +77,89 @@ class Test(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.tweet.csv')
             json2csv(self.infile, outfn, fields)
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.tweet.csv.ref'),\
-                   'Error in csv file'
 
     def test_user_metadata(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.user.csv.ref')
         fields = ['id', 'text', {'user' : ['id', 'followers_count', 'friends_count']}]
 
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.user.csv')
             json2csv(self.infile, outfn, fields)
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.user.csv.ref'),\
-                   'Error in csv file'
 
     def test_tweet_hashtag(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.hashtag.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.hashtag.csv')
             json2csv_entities(self.infile, outfn,
                               ['id', 'text'], 'hashtags', ['text'])
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.hashtag.csv.ref'),\
-                   'Error in csv file'
 
     def test_tweet_usermention(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.usermention.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.usermention.csv')
             json2csv_entities(self.infile, outfn,
                               ['id', 'text'], 'user_mentions', ['id', 'screen_name'])
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-            assert are_files_identical(outfn,
-                                       'tweets.20150430-223406.usermention.csv.ref'), 'Error in csv file'
 
     def test_tweet_media(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.media.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.media.csv')
             json2csv_entities(self.infile, outfn,
                               ['id'], 'media', ['media_url', 'url'])
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.media.csv.ref'),\
-                   'Error in csv file'
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
+
 
     def test_tweet_url(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.url.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.url.csv')
             json2csv_entities(self.infile, outfn,
                               ['id'], 'urls', ['url', 'expanded_url'])
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.url.csv.ref'),\
-                   'Error in csv file'
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
+
 
     def test_userurl(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.userurl.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.userurl.csv')
             json2csv_entities(self.infile, outfn, ['id', 'screen_name'],
                               {'user' : 'urls'}, ['url', 'expanded_url'])
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.userurl.csv.ref'),\
-                   'Error in csv file'
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
+
 
     def test_tweet_place(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.place.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.place.csv')
             json2csv_entities(self.infile, outfn,
                               ['id', 'text'], 'place', ['name', 'country'])
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.place.csv.ref'),\
-                   'Error in csv file'
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
+
 
     def test_tweet_place_boundingbox(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.placeboundingbox.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.placeboundingbox.csv')
             json2csv_entities(self.infile, outfn,
                               ['id', 'name'], {'place' : 'bounding_box'}, ['coordinates'])
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.placeboundingbox.csv.ref'),\
-                   'Error in csv file'
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
+
 
     def test_retweet_original_tweet(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.retweet.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.retweet.csv')
             json2csv_entities(self.infile, outfn, ['id'], 'retweeted_status',
@@ -158,8 +167,16 @@ class Test(unittest.TestCase):
                                'in_reply_to_user_id', 'retweet_count', 'text', 'truncated',
                                {'user' : ['id']}])
 
-            assert are_files_identical(outfn, 'tweets.20150430-223406.retweet.csv.ref'),\
-                   'Error in csv file'
+            self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
+
+
+    def test_file_is_wrong(self):
+        ref_fn = os.path.join(SUBDIR, 'tweets.20150430-223406.retweet.csv.ref')
+        with TemporaryDirectory() as tempdir:
+            outfn = os.path.join(tempdir, 'tweets.20150430-223406.text.csv')
+            json2csv(self.infile, outfn, ['text'])
+            self.assertFalse(are_files_identical(outfn, ref_fn), msg=self.msg)
+
 
 if __name__ == "__main__":
     unittest.main()
