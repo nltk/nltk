@@ -217,74 +217,102 @@ def _write_to_file(object_fields, items, entity_fields, writer):
         writer.writerow(row)
 
 
-def credsfromfile(creds_file=None, subdir=None, verbose=False):
+class Authenticate(object):
     """
-    Read OAuth credentials from a text file.
-
-    ::
-       File format for OAuth 1
-       =======================
-       app_key=YOUR_APP_KEY
-       app_secret=YOUR_APP_SECRET
-       oauth_token=OAUTH_TOKEN
-       oauth_token_secret=OAUTH_TOKEN_SECRET
+    Methods for authenticating with Twitter.
 
 
-    ::
-       File format for OAuth 2
-       =======================
-
-       app_key=YOUR_APP_KEY
-       app_secret=YOUR_APP_SECRET
-       access_token=ACCESS_TOKEN
-
-    :param str file_name: File containing credentials. ``None`` (default) reads\
-    data from `TWITTER/'credentials.txt'`
     """
-    if creds_file is None:
-        creds_file = 'credentials.txt'
-    if not subdir:
+    def __init__(self):
+        self.creds_file = 'credentials.txt'
+        self.creds_fullpath = None
+
+        self.oauth = {}
         try:
-            subdir = os.environ['TWITTER']
-            creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
-            if not os.path.isfile(creds_fullpath):
-                raise OSError('Cannot find file {}'.format(creds_fullpath))
+            self.twitter_dir = os.environ['TWITTER']
+            self.creds_subdir = self.twitter_dir
         except KeyError:
-            print("Supply a value to the 'subdir' parameter or set the \
-            TWITTER environment variable.")
-            raise KeyError
+            self.twitter_dir = None
+            self.creds_subdir = None
 
 
-    with open(creds_fullpath) as infile:
-        if verbose:
-            print('Reading credentials file {}'.format(creds_fullpath))
-        oauth = {}
-        for line in infile:
-            if '=' in line:
-                name, value = line.split('=', 1)
-                oauth[name.strip()] = value.strip()
+    def credsfromfile(self, creds_file=None, subdir=None, verbose=False):
+        """
+        Read OAuth credentials from a text file.
 
-    _validate_creds_file(creds_file, oauth, verbose=verbose)
+        ::
+           File format for OAuth 1
+           =======================
+           app_key=YOUR_APP_KEY
+           app_secret=YOUR_APP_SECRET
+           oauth_token=OAUTH_TOKEN
+           oauth_token_secret=OAUTH_TOKEN_SECRET
 
-    return oauth
 
-def _validate_creds_file(fname, oauth, verbose=False):
-    """Check validity of a credentials file."""
-    oauth1 = False
-    oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
-    oauth2 = False
-    oauth2_keys = ['app_key', 'app_secret', 'access_token']
-    if all(k in oauth for k in oauth1_keys):
-        oauth1 = True
-    elif all(k in oauth for k in oauth2_keys):
-        oauth2 = True
+        ::
+           File format for OAuth 2
+           =======================
 
-    if not (oauth1 or oauth2):
-        msg = 'Missing or incorrect entries in {}\n'.format(fname)
-        msg += pprint.pformat(oauth)
-        raise ValueError(msg)
-    elif verbose:
-        print('Credentials file "{}" looks good'.format(fname))
+           app_key=YOUR_APP_KEY
+           app_secret=YOUR_APP_SECRET
+           access_token=ACCESS_TOKEN
+
+        :param str file_name: File containing credentials. ``None`` (default) reads\
+        data from `TWITTER/'credentials.txt'`
+        """
+        if creds_file is not None:
+            self.creds_file = creds_file
+
+        if subdir is not None:
+            self.creds_subdir = subdir
+
+        self.creds_fullpath =\
+            os.path.normpath(os.path.join(self.creds_subdir, self.creds_file))
+
+        if not os.path.isfile(self.creds_fullpath):
+            raise OSError('Cannot find file {}'.format(self.creds_fullpath))
+
+        #if not subdir:
+            #try:
+                #subdir = os.environ['TWITTER']
+                #creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
+
+            #except KeyError:
+                #print("Supply a value to the 'subdir' parameter or set the \
+                #TWITTER environment variable.")
+                #raise KeyError
+
+
+        with open(self.creds_fullpath) as infile:
+            if verbose:
+                print('Reading credentials file {}'.format(self.creds_fullpath))
+
+            for line in infile:
+                if '=' in line:
+                    name, value = line.split('=', 1)
+                    self.oauth[name.strip()] = value.strip()
+
+        self._validate_creds_file(verbose=verbose)
+
+        return self.oauth
+
+    def _validate_creds_file(self, verbose=False):
+        """Check validity of a credentials file."""
+        oauth1 = False
+        oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
+        oauth2 = False
+        oauth2_keys = ['app_key', 'app_secret', 'access_token']
+        if all(k in self.oauth for k in oauth1_keys):
+            oauth1 = True
+        elif all(k in self.oauth for k in oauth2_keys):
+            oauth2 = True
+
+        if not (oauth1 or oauth2):
+            msg = 'Missing or incorrect entries in {}\n'.format(self.creds_file)
+            msg += pprint.pformat(oauth)
+            raise ValueError(msg)
+        elif verbose:
+            print('Credentials file "{}" looks good'.format(self.creds_file))
 
 
 def add_access_token(creds_file=None):
@@ -317,3 +345,4 @@ def guess_path(pth):
         return pth
     else:
         return os.path.expanduser(os.path.join("~", pth))
+
