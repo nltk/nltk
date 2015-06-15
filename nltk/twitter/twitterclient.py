@@ -42,7 +42,7 @@ except ImportError as err:
     err.msg = textwrap.fill(MSG)
     raise
 
-from nltk.twitter.util import Authenticate, guess_path
+from nltk.twitter.util import credsfromfile, guess_path
 from nltk.twitter.api import TweetHandlerI
 
 

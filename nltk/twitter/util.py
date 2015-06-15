@@ -217,6 +217,13 @@ def _write_to_file(object_fields, items, entity_fields, writer):
         writer.writerow(row)
 
 
+def credsfromfile(creds_file=None, subdir=None, verbose=False):
+    """
+    Convenience function for authentication
+    """
+    return Authenticate().load_creds(creds_file=creds_file, subdir=subdir, verbose=verbose)
+
+
 class Authenticate(object):
     """
     Methods for authenticating with Twitter.
@@ -236,7 +243,7 @@ class Authenticate(object):
             self.creds_subdir = None
 
 
-    def credsfromfile(self, creds_file=None, subdir=None, verbose=False):
+    def load_creds(self, creds_file=None, subdir=None, verbose=False):
         """
         Read OAuth credentials from a text file.
 
@@ -263,11 +270,18 @@ class Authenticate(object):
         if creds_file is not None:
             self.creds_file = creds_file
 
-        if subdir is not None:
+        if subdir is None:
+            if self.creds_subdir is None:
+                msg = "Supply a value to the 'subdir' parameter or" +\
+                      " set the TWITTER environment variable."
+                raise ValueError(msg)
+        else:
             self.creds_subdir = subdir
+
 
         self.creds_fullpath =\
             os.path.normpath(os.path.join(self.creds_subdir, self.creds_file))
+
 
         if not os.path.isfile(self.creds_fullpath):
             raise OSError('Cannot find file {}'.format(self.creds_fullpath))
@@ -309,7 +323,7 @@ class Authenticate(object):
 
         if not (oauth1 or oauth2):
             msg = 'Missing or incorrect entries in {}\n'.format(self.creds_file)
-            msg += pprint.pformat(oauth)
+            msg += pprint.pformat(self.oauth)
             raise ValueError(msg)
         elif verbose:
             print('Credentials file "{}" looks good'.format(self.creds_file))
