@@ -9,6 +9,14 @@
 """
 Examples to demo the :py:mod:`twitterclient` code.
 
+These demo functions should all run, with two caveats:
+
+* You must have obtained API keys from Twitter, and installed them according to
+  the instructions in `nltk/test/twitter.ipynb`.
+
+* If you are on a slow network, some of the calls to the Twitter API may
+  timeout with a 404 error.
+
 For documentation about the Twitter APIs, see `The Streaming APIs Overview
 <https://dev.twitter.com/streaming/overview>`_ and `The REST APIs Overview
 <https://dev.twitter.com/rest/public>`_.
@@ -20,9 +28,6 @@ import json
 from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
      credsfromfile
 
-#from twitterclient import Query, Streamer, Twitter, TweetViewer, TweetWriter
-
-#from util import credsfromfile, json2csv
 
 SPACER = '###################################'
 
@@ -38,42 +43,17 @@ def verbose(func):
     return with_formatting
 
 
-
-
-#TWITTER = os.environ['TWITTER']
-#TWEETS = os.path.join(TWITTER, 'demo_tweets.json')
-#TWEETS = os.path.join(TWITTER, '1k_sample.json')
-#IDS = os.path.join(TWITTER, '1k_sample.csv')
-#FIELDS = ['id_str']
-#USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
-##           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
-#HYDRATED = os.path.join(TWITTER, 'rehydrated.json')
-
-
 def setup():
     """
     Initialize global variables for the demos.
     """
-    #global TWEETS, DATE, USERIDS, IDS, FIELDS
     global DATE, USERIDS, FIELDS
 
-
-    #TWEETS = NamedTemporaryFile(mode='w')
-    #for tweet in tweets.docs()[:100]:
-        #json.dump(tweet, TWEETS)
-
-    #TWEETS = tweets.docs()[:100]
-
     DATE = (2015, 4, 20, 16, 40)
-    USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
+    USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800']
+    # UserIDs corresponding to\
     #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
-    #IDS = NamedTemporaryFile(mode='w')
     FIELDS = ['id_str']
-
-
-#def teardown():
-    #IDS.close()
-    ##TWEETS.close()
 
 
 @verbose
@@ -90,7 +70,8 @@ def twitterclass_demo():
     tw = Twitter()
     tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
     print(SPACER)
-    print("Follow two accounts in the public stream -- be prepared to wait a minute\n")
+    print("Follow two accounts in the public stream" +
+          "-- be prepared to wait a few minutes\n")
     tw = Twitter()
     tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
 
@@ -191,35 +172,6 @@ def limit_by_time_demo(limit=20):
     client.sample()
 
 
-#@verbose
-#def extract_tweetids_demo():
-    #"""
-    #Given a list of full tweets in a file (``infile``), write just the
-    #tweetIDs to a new file (`outfile`)
-    #"""
-    #fp = TWEETS
-
-    #print("Reading from {0}".format(fp))
-    #json2csv(fp, FIELDS, file=IDS)
-    #print("Writing ids to {0}".format(outfile))
-
-
-#@verbose
-#def expand_tweetids_demo():
-    #"""
-    #Given a list of tweetIDs in a file (``infile``), try to recover the full
-    #('hydrated') tweets from the REST API and write the results to a new file (`outfile`).
-
-    #If any of the tweets corresponding to the tweetIDs have been deleted by
-    #their authors, :meth:`lookup` will return an empty result.
-    #"""
-    #infile = IDS
-    #oauth = credsfromfile()
-    #client = Query(**oauth)
-    #with TemporaryFile() as outfile:
-        #client.lookup(infile, outfile)
-
-
 @verbose
 def corpusreader_demo():
     """
@@ -253,6 +205,7 @@ def corpusreader_demo():
         print(toks)
 
 
+
 ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
        search_demo, tweets_by_user_demo, lookup_by_userid_demo, followtoscreen_demo,
        streamtofile_demo, limit_by_time_demo, corpusreader_demo]
@@ -268,6 +221,7 @@ if __name__ == "__main__":
     for demo in DEMOS:
         demo()
 
-
+    print("All demos completed")
+    print(SPACER)
 
 
