@@ -1,0 +1,4 @@
+# first two lines are collapsed
+app_key=aapp_secret=b
+oauth_token=c
+oauth_token_secret=d
