@@ -15,11 +15,17 @@ These demo functions should all run, with two caveats:
   the instructions in `nltk/test/twitter.ipynb`.
 
 * If you are on a slow network, some of the calls to the Twitter API may
-  timeout with a 404 error.
+  timeout.
+
+* If you are being rate limited while searching, you will receive a 420
+  error response.
 
 For documentation about the Twitter APIs, see `The Streaming APIs Overview
 <https://dev.twitter.com/streaming/overview>`_ and `The REST APIs Overview
 <https://dev.twitter.com/rest/public>`_.
+
+For error codes see Twitter's
+`Error Codes and Responses <https://dev.twitter.com/overview/api/response-codes>`
 """
 
 from functools import wraps
@@ -62,7 +68,6 @@ def twitterclass_demo():
     Use the simplified :class:`Twitter` class to write some tweets to a file.
     """
     tw = Twitter()
-    print(SPACER)
     print("Track from the public stream\n")
     tw.tweets(keywords='love, hate', limit=10) #public stream
     print(SPACER)
@@ -71,7 +76,7 @@ def twitterclass_demo():
     tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
     print(SPACER)
     print("Follow two accounts in the public stream" +
-          "-- be prepared to wait a few minutes\n")
+          " -- be prepared to wait a few minutes\n")
     tw = Twitter()
     tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
 
@@ -184,24 +189,22 @@ def corpusreader_demo():
     """
     from nltk.corpus import tweets
 
-    #reader = TwitterCorpusReader(root, '1k_sample.json')
-    #reader = TwitterCorpusReader('twitter', 'tweets.20150417.json')
     print()
     print("Complete tweet documents")
     print(SPACER)
-    for tweet in tweets.docs()[:1]:
+    for tweet in tweets.docs("tweets.20150430-223406.json")[:1]:
         print(json.dumps(tweet, indent=1, sort_keys=True))
 
     print()
     print("Raw tweet strings:")
     print(SPACER)
-    for text in tweets.strings()[:15]:
+    for text in tweets.strings("tweets.20150430-223406.json")[:15]:
         print(text)
 
     print()
     print("Tokenized tweet strings:")
     print(SPACER)
-    for toks in tweets.tokenized()[:15]:
+    for toks in tweets.tokenized("tweets.20150430-223406.json")[:15]:
         print(toks)
 
 
@@ -213,7 +216,7 @@ ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
 """
 Select demo functions to run.
 """
-DEMOS = ALL[:]
+DEMOS = ALL[9:]
 
 if __name__ == "__main__":
     setup()
@@ -221,6 +224,7 @@ if __name__ == "__main__":
     for demo in DEMOS:
         demo()
 
+    print("\n" + SPACER)
     print("All demos completed")
     print(SPACER)
 
