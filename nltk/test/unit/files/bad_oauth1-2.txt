@@ -1,3 +1,4 @@
+# first line is malformed ('app-key' should 'be app_key')
 app-key=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 app_secret=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 oauth_token=cccccccccccccccccccccccccccccccccccccccccccccccc
