@@ -15,35 +15,26 @@ import random
 class SentimentAnalyzer(object):
 
   def parse_labeled_set(self, filename, max_entries=None):
-    '''Parse training file and output train and test sets in (text, label) format'''
-    start = time.time()
-
+    '''
+    Parse training file and output train and test sets in (text, label) format
+    '''
     labeled_tweets = []
     with io.open(filename, 'rt', encoding='utf-8', errors='replace') as csvfile:
-    # with io.open(filename, 'rt', encoding='latin-1') as csvfile:
-    # with io.open(filename, 'rt', encoding='utf-8') as csvfile:
       reader = csv.reader(csvfile)
       i = 0
-      # for label, text, score in reader:
       for row in reader:
         if max_entries and reader.line_num == max_entries:
           break
-        # print(row[0], row[5])
         sys.stderr.write("Loaded %d sentences\r" % (reader.line_num))
-
         i += 1
-        tokenized_tweet = [w.lower() for w in word_tokenize(row[5])] # We are creating a list of training tokenized tweets
-        # tokenized_tweet = [w.lower() for w in word_tokenize(text)] # We are creating a list of training tokenized tweets
-        # print(row[1])
+        # Create a list of tokenized tweets
+        tokenized_tweet = [w.lower() for w in word_tokenize(row[5])]
         labeled_tweets.append((tokenized_tweet, row[0]))
-
-    end = time.time()
-    # print("time: ", end - start)
     print("Loaded {} sentences".format(i+1))
+
     return labeled_tweets
 
   def get_all_words(self, tweets):
-    # all_words = FreqDist(word.lower() for word,sent in tweets)
     all_words = []
     for words, sentiment in tweets:
       all_words.extend(words)
@@ -53,31 +44,21 @@ class SentimentAnalyzer(object):
     # This method could be put outside the class, and the word_features variable
     # can be made more generic (e.g. a list of feature lists for bigrams, trigrams, etc.)
     self.word_features = FreqDist(word.lower() for word in words)
-    # print(word_features.most_common(5))
-    # print(list(word_features)[:5]) # With NLTK 3 this would not output a sorted result
+    # print(list(word_features)[:5]) # With NLTK 3 this will not output a sorted result
     return [w for w,f in self.word_features.most_common()]
 
   def extract_features(self, tweet):
-    # Questo metodo utilizza word_features che viene creato fuori. Devo renderlo
-    # piu modulare
-    # tokenized_tweet = word_tokenize(tweet) # The tweet is already a tokenized list
     features = {}
     for word in self.word_features:
       features['contains({})'.format(word)] = word in set(tweet)
-
     return features
 
   def classify_nb(self, training_set, test_set, load_file=None, save_file=None):
     print("Training NaiveBayesClassifier")
-    # pdb.set_trace()
     if load_file:
       nb_classifier = load_classifier(load_file)
     else:
       nb_classifier = NaiveBayesClassifier.train(training_set)
-    # classifier2 = NaiveBayesClassifier.train(training_set2)
-    # print("fine NaiveBayesClassifier.train(training_set)")
-
-    # pdb.set_trace()
 
     print("Accuracy: ", accuracy(nb_classifier, test_set))
 
@@ -93,7 +74,6 @@ def load_classifier(filename):
   print("Loading", filename)
   with io.open(filename, 'rb') as storage_file:
     classifier = pickle.load(storage_file)
-
   return classifier
 
 def shuffle_csv(source_csv, output_csv):
@@ -108,38 +88,30 @@ def shuffle_csv(source_csv, output_csv):
       for _, line in data:
           target.write(line)
 
-def main():
+def demo():
+  # This is an example using only the first 20000 entries of the shuffled training set
   # Sentiment140 training set can be found at: http://help.sentiment140.com/for-students
-  # sentiment140_train = '../../../sentiment140/training.1600000.processed.noemoticon.csv'
-  sentiment140_train_shuffled = '../../../sentiment140/shuffled_training_ppp.csv'
-  # training_tweets = parse_labeled_set("sentiment140/training.1600000.processed.noemoticon.csv", max_entries=20000)
-  # training_tweets = parse_labeled_set("sentiment140/shuffled_training_ppp.csv", max_entries=2)
+
+  # shuffle_csv('sentiment140/training.1600000.processed.noemoticon.csv', 'sentiment140/shuffled_training.csv')
+  sentiment140_train = '../../../sentiment140/shuffled_training.csv'
+  sentiment140_test = '../../../sentiment140/testdata.manual.2009.06.14.csv'
   sa = SentimentAnalyzer()
-  # shuffle_csv('sentiment140/training.1600000.processed.noemoticon.csv', 'sentiment140/shuffled_training_ppp.csv')
-  training_tweets = sa.parse_labeled_set(sentiment140_train_shuffled, max_entries=20000)
-  testing_tweets = sa.parse_labeled_set("sentiment140/testdata.manual.2009.06.14.csv")
+  training_tweets = sa.parse_labeled_set(sentiment140_train, max_entries=20000)
+  testing_tweets = sa.parse_labeled_set(sentiment140_test)
 
   all_words = sa.get_all_words(training_tweets)
-  # global word_features # We declare word_features as global so that extract_features() can use it.
   sa.get_word_features(all_words)
-  # sa.word_features = sa.get_word_features(all_words)
-  # print(word_features)
   training_set = apply_features(sa.extract_features, training_tweets)
-  # training_set2 = apply_features(extract_features, training_tweets2)
   test_set = apply_features(sa.extract_features, testing_tweets) # Aggiunto ora
-  # pdb.set_trace()
-  # classify_nb(training_tweets, testing_tweets)
-  # classify_nb(training_set, test_set, load_file='nb_classifier.pickle')
-  # classify_nb(training_set, test_set, save_file='stored_classifiers/nb_classifier_train-2.pickle')
   # classify_nb(training_set, test_set, save_file='nb_classifier_train-20000.pickle')
+
   start = time.time()
   sa.classify_nb(training_set, test_set, load_file='nb_classifier_train-20000.pickle')
   end = time.time()
   tot_time = end - start
-  # print(tot_time)
   mins = int(tot_time / 60)
   secs = int(round(tot_time % 60)) # in Python 2.x round() will return a float, so we also convert it to int
   print('{} mins and {} secs'.format(mins, secs))
 
 if __name__ == '__main__':
-  main()
+  demo()
