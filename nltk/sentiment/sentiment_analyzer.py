@@ -74,11 +74,13 @@ class SentimentAnalyzer(object):
 def save_file(content, filename):
     print("Saving", filename)
     with io.open(filename, 'wb') as storage_file:
-        pickle.dump(content, storage_file)
+        # pickle.dump(content, storage_file) # This will break on python2.x
+        pickle.dump(content, storage_file, protocol=2) # protocol = 2 is for python2 compatibility
 
 def load_file(filename):
     print("Loading", filename)
     with io.open(filename, 'rb') as storage_file:
+        # N.B.: The file had to be saved using protocol=2 if we need to read it using python2.x
         content = pickle.load(storage_file)
     return content
 
