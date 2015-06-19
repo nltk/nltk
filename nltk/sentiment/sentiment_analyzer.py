@@ -1,5 +1,5 @@
 from __future__ import print_function
-from nltk.tokenize import word_tokenize, treebank
+from nltk.tokenize import word_tokenize, treebank, regex
 from nltk.probability import FreqDist
 from nltk.classify.util import apply_features, accuracy
 from nltk.classify.naivebayes import NaiveBayesClassifier
@@ -91,6 +91,8 @@ def demo():
     corpus_path = os.path.expanduser('~/nltk_data/corpora/sentiment140/')
 
     tokenizer = treebank.TreebankWordTokenizer()
+    # tokenizer = regexp.WhitespaceTokenizer()
+
     corpus = CategorizedPlaintextCorpusReader(corpus_path, r'sent140_.*\.txt',
         cat_pattern=r'sent140_(\w+)\.txt', word_tokenizer=tokenizer)
 
