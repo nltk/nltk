@@ -49,7 +49,8 @@ class SentimentAnalyzer(object):
         # This method could be put outside the class, and the word_features variable
         # can be made more generic (e.g. a list of feature lists for bigrams, trigrams, etc.)
         self.word_features = FreqDist(word.lower() for word in words)
-        # print(list(word_features)[:5]) # With NLTK 3 this will not output a sorted result
+        # print(list(word_features)[:5]) # In NLTK 3 this does not output a sorted result
+        # return [w for w,f in self.word_features.most_common(5)] # To return top 5 features
         return [w for w,f in self.word_features.most_common()]
 
     def extract_features(self, tweet):
