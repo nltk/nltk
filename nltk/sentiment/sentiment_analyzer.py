@@ -1,5 +1,5 @@
 from __future__ import print_function
-from nltk.tokenize import word_tokenize, treebank, regex
+from nltk.tokenize import word_tokenize, treebank, regexp
 from nltk.probability import FreqDist
 from nltk.classify.util import apply_features, accuracy
 from nltk.classify.naivebayes import NaiveBayesClassifier
@@ -12,6 +12,23 @@ import io
 import pickle
 import random
 import os, os.path
+
+# Define @timer decorator
+def timer(method):
+    def timed(*args, **kw):
+        start = time.time()
+        result = method(*args, **kw)
+        end = time.time()
+        tot_time = end - start
+        mins = int(tot_time / 60)
+        secs = int(round(tot_time % 60)) # in Python 2.x round() will return a float, so we also convert it to int
+        if mins == 0:
+            print('{}(): {:.3f} seconds'.format(method.__name__, tot_time))
+        else:
+            print('{}(): {}:{} minutes'.format(method.__name__, mins, secs))
+        return result
+
+    return timed
 
 class SentimentAnalyzer(object):
     '''
@@ -30,7 +47,7 @@ class SentimentAnalyzer(object):
             for row in reader:
                 if max_entries and reader.line_num == max_entries:
                     break
-                sys.stderr.write("Loaded %d sentences\r" % (reader.line_num))
+                sys.stdout.write("Loaded %d sentences\r" % (reader.line_num))
                 i += 1
                 # Create a list of tokenized tweets
                 tokenized_tweet = [w.lower() for w in word_tokenize(row[5])]
@@ -59,18 +76,24 @@ class SentimentAnalyzer(object):
             features['contains({})'.format(word)] = word in set(tweet)
         return features
 
+    @timer
     def classify_nb(self, training_set, test_set, load_classifier=None, save_classifier=None):
         if load_classifier:
-            print("Loading NaiveBayesClassifier")
             nb_classifier = load_file(load_classifier)
         else:
             print("Training NaiveBayesClassifier")
             nb_classifier = NaiveBayesClassifier.train(training_set)
 
-        print("Accuracy: ", accuracy(nb_classifier, test_set))
+        self.evaluate(nb_classifier, test_set)
 
         if save_classifier:
             save_file(nb_classifier, save_classifier)
+
+    @timer
+    def evaluate(self, classifier, test_set):
+        print("Evaluating accuracy...")
+        accuracy_score = accuracy(classifier, test_set)
+        print("Accuracy: ", accuracy_score)
 
 def save_file(content, filename):
     print("Saving", filename)
@@ -85,14 +108,61 @@ def load_file(filename):
         content = pickle.load(storage_file)
     return content
 
-def demo():
-    # This is an example using only the first 20000 entries of the shuffled training set
-    # Sentiment140 training set can be found at: http://help.sentiment140.com/for-students
+def parse_tweets_set(filename='labeled_tweets.csv'):
+    '''Parse training file and output train and test sets in (text, label) format'''
+    tweets = []
+    with open(filename, 'rt') as csvfile:
+        reader = csv.reader(csvfile)
+        i = 0
+        for label, text, score in reader:
+            i += 1
+            sys.stdout.write('Loaded {} tweets\r'.format(i))
+            # Tokenize using simple word_tokenize
+            tokenized_tweet = [w.lower() for w in word_tokenize(text)] # We are creating a list of training tokenized tweets
+            tweets.append((tokenized_tweet, label))
+    print("Loaded {} tweets".format(i))
+    return tweets
+
+def demo_tweets():
+    '''
+    This is an example using labeled_tweets.csv. Tweets are tokenized using the
+    simple word_tokenize.
+    '''
+
+    print("Demo using labeled_tweets.csv")
+    tokenizer = treebank.TreebankWordTokenizer()
+    # tokenizer = regexp.WhitespaceTokenizer()
+
+    all_tweets = parse_tweets_set()
+    n = 8000 # The number of corpus instances to use
+    # n = len(all_tweets)
+    # Randomly split dataset into train and test set
+    random.seed(12345)
+    random.shuffle(all_tweets)
+    training_tweets = all_tweets[:int(.8*n)]
+    testing_tweets = all_tweets[int(.8*n):n]
+
+    sa = SentimentAnalyzer()
+    all_words = sa.get_all_words(training_tweets)
+    sa.get_word_features(all_words)
+
+    training_set = apply_features(sa.extract_features, training_tweets)
+    test_set = apply_features(sa.extract_features, testing_tweets)
+
+    print("Starting classification")
+    # sa.classify_nb(training_set, test_set, load_classifier='nb_classifier_labeledtweets-8000.pickle')
+    sa.classify_nb(training_set, test_set, save_classifier='nb_classifier_labeledtweets-8000.pickle')
+    # sa.classify_nb(training_set, test_set, save_classifier='nb_classifier_labeledtweets-ALL.pickle')
+
+def demo_sent140():
+    '''
+    This is an example using only the first 20000 entries of the shuffled training set
+    Sentiment140 training set can be found at: http://help.sentiment140.com/for-students
+    '''
     corpus_path = os.path.expanduser('~/nltk_data/corpora/sentiment140/')
 
     tokenizer = treebank.TreebankWordTokenizer()
     # tokenizer = regexp.WhitespaceTokenizer()
-
     corpus = CategorizedPlaintextCorpusReader(corpus_path, r'sent140_.*\.txt',
         cat_pattern=r'sent140_(\w+)\.txt', word_tokenizer=tokenizer)
 
@@ -102,7 +172,7 @@ def demo():
     # start1 = time.time()
     # all_tweets = list(corpus.sents())
 
-    cache_path = 'all_tweets_cache.pickle'
+    cache_path = 'all_tweets140_cache.pickle'
     if not os.path.exists(cache_path):
         print('Parsing corpus.sents()')
         all_tweets = ([(tweet, 'pos') for tweet in corpus.sents('sent140_pos.txt')] +
@@ -110,7 +180,6 @@ def demo():
         save_file(all_tweets, cache_path)
     else:
         all_tweets = load_file(cache_path)
-
 
     # end1 = time.time()
     # tot_time1 = end1 - start1
@@ -140,4 +209,5 @@ def demo():
     print('Classification completed in {} mins and {} secs'.format(mins, secs))
 
 if __name__ == '__main__':
-    demo()
+    # demo_sent140()
+    demo_tweets()
