@@ -194,12 +194,6 @@ class TweetTokenizer:
         :return: a tokenized list of strings; concatenating this list returns
         the original string if preserve_case=False
         """
-        # Try to ensure unicode:
-        try:
-            text = str(text)
-        except UnicodeDecodeError:
-            text = str(text).encode('string_escape')
-            text = str(text)
         # Fix HTML character entities:
         text = self._html2unicode(text)
         # Tokenize:
