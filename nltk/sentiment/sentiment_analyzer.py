@@ -95,29 +95,14 @@ class SentimentAnalyzer(object):
             features['contains({})'.format(word)] = word in set(tweet)
         return features
 
-    # def classify_nb(self, training_set, test_set, load_classifier=None, save_classifier=None):
-    #     if load_classifier:
-    #         nb_classifier = load_file(load_classifier)
-    #     else:
-    #         print("Training NaiveBayesClassifier")
-    #         nb_classifier = NaiveBayesClassifier.train(training_set)
-
-    #     self.evaluate(nb_classifier, test_set)
-
-    #     if save_classifier:
-    #         save_file(nb_classifier, save_classifier)
-
     @timer
-    def train(self, trainer, training_set, load_classifier=None, save_classifier=None, **kwargs):
-        if load_classifier:
-            classifier = load_file(load_classifier)
-        else:
-            print("Training classifier")
-            # classifier = trainer(training_set)
-            # Additional arguments depend on the specific trainer we are using.
-            # Is there a more elegant way to achieve the same result? I think
-            # this might be confusing, especially for teaching purposes.
-            classifier = trainer(training_set, **kwargs)
+    def train(self, trainer, training_set, save_classifier=None, **kwargs):
+        print("Training classifier")
+        # classifier = trainer(training_set)
+        # Additional arguments depend on the specific trainer we are using.
+        # Is there a more elegant way to achieve the same result? I think
+        # this might be confusing, especially for teaching purposes.
+        classifier = trainer(training_set, **kwargs)
         if save_classifier:
             save_file(classifier, save_classifier)
 
@@ -202,7 +187,7 @@ def demo_tweets(classifier_type):
     classifier = sa.train(trainer, training_set, save_classifier=filename)
     sa.evaluate(classifier, test_set)
 
-def demo_sent140():
+def demo_sent140(classifier_type):
     '''
     This is an example using only the first 20000 entries of the shuffled training set
     Sentiment140 training set can be found at: http://help.sentiment140.com/for-students
@@ -217,9 +202,6 @@ def demo_sent140():
     # n = 2000
     n = 8000 # The number of corpus instances to use
 
-    # start1 = time.time()
-    # all_tweets = list(corpus.sents())
-
     cache_path = 'all_tweets140_cache.pickle'
     if not os.path.exists(cache_path):
         print('Parsing corpus.sents()')
@@ -229,27 +211,28 @@ def demo_sent140():
     else:
         all_tweets = load_file(cache_path)
 
-    # end1 = time.time()
-    # tot_time1 = end1 - start1
-    # print('LIST: {} mins and {} secs'.format(int(tot_time1 / 60), int(round(tot_time1 % 60))))
-
     # Randomly split dataset into train and test set
-    random.seed(12345)
-    random.shuffle(all_tweets)
-    training_tweets = all_tweets[:int(.8*n)]
-    testing_tweets = all_tweets[int(.8*n):n]
+    training_tweets, testing_tweets = split_train_test(all_tweets, n)
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_tweets)
-    sa.unigram_word_feats(all_words)
+    sa.unigram_word_feats(all_words, top_n=100)
 
     training_set = apply_features(sa.extract_features, training_tweets)
     test_set = apply_features(sa.extract_features, testing_tweets)
 
-    sa.classify_nb(training_set, test_set, load_classifier='nb_classifier-8000.pickle')
-    # sa.classify_nb(training_set, test_set, save_classifier='nb_classifier-8000.pickle')
+    if classifier_type == 'naivebayes':
+        filename = 'nb_sent140-{}.pickle'.format(n)
+        trainer = NaiveBayesClassifier.train
+    elif classifier_type == 'maxent':
+        filename = 'maxent_sent140-{}.pickle'.format(n)
+        trainer = MaxentClassifier.train
+
+    # classifier = load_file(filename)
+    classifier = sa.train(trainer, training_set, save_classifier=filename)
+    sa.evaluate(classifier, test_set)
 
 if __name__ == '__main__':
-    # demo_sent140()
     # demo_tweets(classifier_type='maxent')
-    demo_tweets(classifier_type='naivebayes')
+    # demo_tweets(classifier_type='naivebayes')
+    demo_sent140(classifier_type='naivebayes')
