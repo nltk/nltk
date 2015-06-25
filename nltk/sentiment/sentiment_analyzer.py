@@ -3,6 +3,7 @@ from nltk.tokenize import word_tokenize, treebank, regexp
 from nltk.probability import FreqDist
 from nltk.classify.util import apply_features, accuracy
 from nltk.classify.naivebayes import NaiveBayesClassifier
+from nltk.classify.maxent import MaxentClassifier
 from nltk.corpus.reader import CategorizedPlaintextCorpusReader
 import pdb
 import csv
@@ -20,12 +21,13 @@ def timer(method):
         result = method(*args, **kw)
         end = time.time()
         tot_time = end - start
-        mins = int(tot_time / 60)
+        hours = int(tot_time / 3600)
+        mins = int((tot_time / 60) % 60)
         secs = int(round(tot_time % 60)) # in Python 2.x round() will return a float, so we also convert it to int
-        if mins == 0:
-            print('{}(): {:.3f} seconds'.format(method.__name__, tot_time))
+        if hours == 0 and mins == 0 and secs < 10:
+            print('[TIMER] {}(): {:.3f} seconds'.format(method.__name__, tot_time))
         else:
-            print('{}(): {}:{} minutes'.format(method.__name__, mins, secs))
+            print('[TIMER] {}(): {}h {}m {}s'.format(method.__name__, hours, mins, secs))
         return result
 
     return timed
@@ -62,13 +64,30 @@ class SentimentAnalyzer(object):
             all_words.extend(words)
         return all_words
 
-    def get_word_features(self, words):
+    def unigram_word_feats(self, words, top_n=None):
+        '''
+        Return most common top_n word features.
+        '''
+        # This method is probably poorly implemented. We need to store word_features
+        # in an instance or global variable because we have to pass it to extract_features(),
+        # but that method cannot have more parameters.
         # This method could be put outside the class, and the word_features variable
         # can be made more generic (e.g. a list of feature lists for bigrams, trigrams, etc.)
-        self.word_features = FreqDist(word.lower() for word in words)
+        # self.word_features = FreqDist(word.lower() for word in words)
+        word_features_freqs = FreqDist(word.lower() for word in words) # Stopwords are not removed
+        # word_features_freqs.plot()
+        self.word_features = [w for w,f in word_features_freqs.most_common(top_n)]
         # print(list(word_features)[:5]) # In NLTK 3 this does not output a sorted result
-        # return [w for w,f in self.word_features.most_common(5)] # To return top 5 features
-        return [w for w,f in self.word_features.most_common()]
+        return self.word_features
+
+    def bigram_word_feats(self, words, top_n=None):
+        '''
+        Return most common top_n word features.
+        '''
+        word_features_freqs = FreqDist(word.lower() for word in words)
+        # word_features_freqs.plot()
+        self.word_features = [w for w,f in word_features_freqs.most_common(top_n)]
+        return self.word_features
 
     def extract_features(self, tweet):
         features = {}
@@ -76,22 +95,40 @@ class SentimentAnalyzer(object):
             features['contains({})'.format(word)] = word in set(tweet)
         return features
 
+    # def classify_nb(self, training_set, test_set, load_classifier=None, save_classifier=None):
+    #     if load_classifier:
+    #         nb_classifier = load_file(load_classifier)
+    #     else:
+    #         print("Training NaiveBayesClassifier")
+    #         nb_classifier = NaiveBayesClassifier.train(training_set)
+
+    #     self.evaluate(nb_classifier, test_set)
+
+    #     if save_classifier:
+    #         save_file(nb_classifier, save_classifier)
+
     @timer
-    def classify_nb(self, training_set, test_set, load_classifier=None, save_classifier=None):
+    def train(self, trainer, training_set, load_classifier=None, save_classifier=None, **kwargs):
         if load_classifier:
-            nb_classifier = load_file(load_classifier)
+            classifier = load_file(load_classifier)
         else:
-            print("Training NaiveBayesClassifier")
-            nb_classifier = NaiveBayesClassifier.train(training_set)
-
-        self.evaluate(nb_classifier, test_set)
-
+            print("Training classifier")
+            # classifier = trainer(training_set)
+            # Additional arguments depend on the specific trainer we are using.
+            # Is there a more elegant way to achieve the same result? I think
+            # this might be confusing, especially for teaching purposes.
+            classifier = trainer(training_set, **kwargs)
         if save_classifier:
-            save_file(nb_classifier, save_classifier)
+            save_file(classifier, save_classifier)
+
+        return classifier
 
     @timer
     def evaluate(self, classifier, test_set):
-        print("Evaluating accuracy...")
+        '''
+        Test classifier accuracy (more evaluation metrics should be added)
+        '''
+        print("Evaluating {} accuracy...".format(type(classifier).__name__))
         accuracy_score = accuracy(classifier, test_set)
         print("Accuracy: ", accuracy_score)
 
@@ -123,36 +160,47 @@ def parse_tweets_set(filename='labeled_tweets.csv'):
     print("Loaded {} tweets".format(i))
     return tweets
 
-def demo_tweets():
+def split_train_test(all_instances, n):
+    # Randomly split n instances of the dataset into train and test sets
+    random.seed(12345)
+    random.shuffle(all_instances)
+    train_set = all_instances[:int(.8*n)]
+    test_set = all_instances[int(.8*n):n]
+
+    return train_set, test_set
+
+def demo_tweets(classifier_type):
     '''
     This is an example using labeled_tweets.csv. Tweets are tokenized using the
     simple word_tokenize.
+    :param classifier_type: A string. Options: 'naivebayes', 'maxent'
     '''
 
     print("Demo using labeled_tweets.csv")
-    tokenizer = treebank.TreebankWordTokenizer()
-    # tokenizer = regexp.WhitespaceTokenizer()
-
+    # We are now using a basic tokenizing strategy inside parse_tweets_set()
     all_tweets = parse_tweets_set()
-    n = 8000 # The number of corpus instances to use
+    n = 1000 # The number of corpus instances to use
     # n = len(all_tweets)
-    # Randomly split dataset into train and test set
-    random.seed(12345)
-    random.shuffle(all_tweets)
-    training_tweets = all_tweets[:int(.8*n)]
-    testing_tweets = all_tweets[int(.8*n):n]
+    training_tweets, testing_tweets = split_train_test(all_tweets, n)
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_tweets)
-    sa.get_word_features(all_words)
+    sa.unigram_word_feats(all_words,top_n=100) # Use only 100 most common words
 
     training_set = apply_features(sa.extract_features, training_tweets)
     test_set = apply_features(sa.extract_features, testing_tweets)
 
-    print("Starting classification")
-    # sa.classify_nb(training_set, test_set, load_classifier='nb_classifier_labeledtweets-8000.pickle')
-    sa.classify_nb(training_set, test_set, save_classifier='nb_classifier_labeledtweets-8000.pickle')
-    # sa.classify_nb(training_set, test_set, save_classifier='nb_classifier_labeledtweets-ALL.pickle')
+    if classifier_type == 'naivebayes':
+        filename = 'nb_labeledtweets-{}.pickle'.format(n)
+        trainer = NaiveBayesClassifier.train
+    elif classifier_type == 'maxent':
+        filename = 'maxent_labeledtweets-{}.pickle'.format(n)
+        trainer = MaxentClassifier.train
+    # classifier = sa.train(trainer, training_set, save_classifier=filename)
+
+    # classifier = sa.train(trainer, training_set, save_classifier=filename, max_iter=4)
+    classifier = sa.train(trainer, training_set, save_classifier=filename)
+    sa.evaluate(classifier, test_set)
 
 def demo_sent140():
     '''
@@ -193,21 +241,15 @@ def demo_sent140():
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_tweets)
-    sa.get_word_features(all_words)
+    sa.unigram_word_feats(all_words)
 
     training_set = apply_features(sa.extract_features, training_tweets)
-    test_set = apply_features(sa.extract_features, testing_tweets) # Aggiunto ora
+    test_set = apply_features(sa.extract_features, testing_tweets)
 
-    print("Starting classification")
-    start = time.time()
     sa.classify_nb(training_set, test_set, load_classifier='nb_classifier-8000.pickle')
     # sa.classify_nb(training_set, test_set, save_classifier='nb_classifier-8000.pickle')
-    end = time.time()
-    tot_time = end - start
-    mins = int(tot_time / 60)
-    secs = int(round(tot_time % 60)) # in Python 2.x round() will return a float, so we also convert it to int
-    print('Classification completed in {} mins and {} secs'.format(mins, secs))
 
 if __name__ == '__main__':
     # demo_sent140()
-    demo_tweets()
+    # demo_tweets(classifier_type='maxent')
+    demo_tweets(classifier_type='naivebayes')
