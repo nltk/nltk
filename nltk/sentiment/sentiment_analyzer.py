@@ -5,14 +5,15 @@ from nltk.classify.util import apply_features, accuracy
 from nltk.classify.naivebayes import NaiveBayesClassifier
 from nltk.classify.maxent import MaxentClassifier
 from nltk.corpus.reader import CategorizedPlaintextCorpusReader
-import pdb
+from collections import defaultdict
 import csv
-import sys
-import time
 import io
+import os, os.path
+import pdb
 import pickle
 import random
-import os, os.path
+import sys
+import time
 
 # Define @timer decorator
 def timer(method):
@@ -36,6 +37,9 @@ class SentimentAnalyzer(object):
     '''
     A Sentiment Analysis tool based on different modular approaches
     '''
+    def __init__(self):
+        self.feat_extractors = defaultdict(list)
+
     def parse_labeled_set(self, filename, max_entries=None):
         '''
         DEPRECATED. This method has to be removed: it will not be used anymore
@@ -68,37 +72,39 @@ class SentimentAnalyzer(object):
         '''
         Return most common top_n word features.
         '''
-        # This method is probably poorly implemented. We need to store word_features
-        # in an instance or global variable because we have to pass it to extract_features(),
-        # but that method cannot have more parameters.
         # This method could be put outside the class, and the word_features variable
         # can be made more generic (e.g. a list of feature lists for bigrams, trigrams, etc.)
-        # self.word_features = FreqDist(word.lower() for word in words)
         word_features_freqs = FreqDist(word.lower() for word in words) # Stopwords are not removed
-        # word_features_freqs.plot()
-        self.word_features = [w for w,f in word_features_freqs.most_common(top_n)]
-        # print(list(word_features)[:5]) # In NLTK 3 this does not output a sorted result
-        return self.word_features
+        return [w for w,f in word_features_freqs.most_common(top_n)]
 
-    def bigram_word_feats(self, words, top_n=None):
+    def add_feat_extractor(self, function, **kwargs):
         '''
-        Return most common top_n word features.
+        Add a new function to extract features from a document. This function will
+        be used in extract_features().
+        Important: in this step our kwargs are only representing additional parameters,
+        and NOT the document we have to parse. The document will always be the first
+        parameter in the parameter list, and it will be added in the extract_features()
+        function.
         '''
-        word_features_freqs = FreqDist(word.lower() for word in words)
-        # word_features_freqs.plot()
-        self.word_features = [w for w,f in word_features_freqs.most_common(top_n)]
-        return self.word_features
+        self.feat_extractors[function].append(kwargs)
 
     def extract_features(self, tweet):
-        features = {}
-        for word in self.word_features:
-            features['contains({})'.format(word)] = word in set(tweet)
-        return features
+        '''
+        Apply extractor functions (and their parameters) to the present tweet.
+        '''
+        all_features = {}
+        for extractor in self.feat_extractors:
+            # We pass tweet as the first parameter of the function.
+            # If we want to use the same extractor function multiple times, we
+            # have to consider multiple sets of parameters (one for each call).
+            for param_set in self.feat_extractors[extractor]:
+                feats = extractor(tweet, **param_set)
+            all_features.update(feats)
+        return all_features
 
     @timer
     def train(self, trainer, training_set, save_classifier=None, **kwargs):
         print("Training classifier")
-        # classifier = trainer(training_set)
         # Additional arguments depend on the specific trainer we are using.
         # Is there a more elegant way to achieve the same result? I think
         # this might be confusing, especially for teaching purposes.
@@ -126,7 +132,7 @@ def save_file(content, filename):
 def load_file(filename):
     print("Loading", filename)
     with io.open(filename, 'rb') as storage_file:
-        # N.B.: The file had to be saved using protocol=2 if we need to read it using python2.x
+        # The file has to be saved using protocol=2 if we need to read it using python2.x
         content = pickle.load(storage_file)
     return content
 
@@ -154,23 +160,33 @@ def split_train_test(all_instances, n):
 
     return train_set, test_set
 
+def extract_unigram_feats(document, word_features):
+    # This function is declared outside the class because the user should have the
+    # possibility to create his/her own feature extractors without modifying the
+    # SentimentAnalyzer class.
+    features = {}
+    for word in word_features:
+        features['contains({})'.format(word)] = word in set(document)
+    return features
+
+
 def demo_tweets(classifier_type):
     '''
     This is an example using labeled_tweets.csv. Tweets are tokenized using the
     simple word_tokenize.
     :param classifier_type: A string. Options: 'naivebayes', 'maxent'
     '''
-
     print("Demo using labeled_tweets.csv")
     # We are now using a basic tokenizing strategy inside parse_tweets_set()
     all_tweets = parse_tweets_set()
-    n = 1000 # The number of corpus instances to use
+    n = 8000 # The number of corpus instances to use
     # n = len(all_tweets)
     training_tweets, testing_tweets = split_train_test(all_tweets, n)
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_tweets)
-    sa.unigram_word_feats(all_words,top_n=100) # Use only 100 most common words
+    word_features = sa.unigram_word_feats(all_words, top_n=100)
+    sa.add_feat_extractor(extract_unigram_feats, word_features=word_features)
 
     training_set = apply_features(sa.extract_features, training_tweets)
     test_set = apply_features(sa.extract_features, testing_tweets)
@@ -181,7 +197,6 @@ def demo_tweets(classifier_type):
     elif classifier_type == 'maxent':
         filename = 'maxent_labeledtweets-{}.pickle'.format(n)
         trainer = MaxentClassifier.train
-    # classifier = sa.train(trainer, training_set, save_classifier=filename)
 
     # classifier = sa.train(trainer, training_set, save_classifier=filename, max_iter=4)
     classifier = sa.train(trainer, training_set, save_classifier=filename)
@@ -211,12 +226,12 @@ def demo_sent140(classifier_type):
     else:
         all_tweets = load_file(cache_path)
 
-    # Randomly split dataset into train and test set
     training_tweets, testing_tweets = split_train_test(all_tweets, n)
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_tweets)
-    sa.unigram_word_feats(all_words, top_n=100)
+    word_features = sa.unigram_word_feats(all_words, top_n=100)
+    sa.add_feat_extractor(extract_unigram_feats, word_features=word_features)
 
     training_set = apply_features(sa.extract_features, training_tweets)
     test_set = apply_features(sa.extract_features, testing_tweets)
