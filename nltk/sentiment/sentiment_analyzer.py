@@ -1,13 +1,16 @@
 from __future__ import print_function
-from nltk.tokenize import word_tokenize, treebank, regexp
-from nltk.probability import FreqDist
 from nltk.classify.util import apply_features, accuracy
 from nltk.classify.naivebayes import NaiveBayesClassifier
 from nltk.classify.maxent import MaxentClassifier
+from nltk.collocations import *
 from nltk.corpus.reader import CategorizedPlaintextCorpusReader
+from nltk.metrics import BigramAssocMeasures
+from nltk.probability import FreqDist
+from nltk.tokenize import word_tokenize, treebank, regexp
 from collections import defaultdict
 import csv
 import io
+import itertools
 import os, os.path
 import pdb
 import pickle
@@ -18,6 +21,7 @@ import time
 # Define @timer decorator
 def timer(method):
     def timed(*args, **kw):
+        print("timing", method.__name__)
         start = time.time()
         result = method(*args, **kw)
         end = time.time()
@@ -72,10 +76,23 @@ class SentimentAnalyzer(object):
         '''
         Return most common top_n word features.
         '''
-        # This method could be put outside the class, and the word_features variable
+        # This method could be put outside the class, and the unigram_feats variable
         # can be made more generic (e.g. a list of feature lists for bigrams, trigrams, etc.)
-        word_features_freqs = FreqDist(word.lower() for word in words) # Stopwords are not removed
-        return [w for w,f in word_features_freqs.most_common(top_n)]
+        unigram_feats_freqs = FreqDist(word.lower() for word in words) # Stopwords are not removed
+        return [w for w,f in unigram_feats_freqs.most_common(top_n)]
+
+    @timer
+    def bigram_word_feats(self, words, score_measure=BigramAssocMeasures.chi_sq, top_n=None):
+        '''
+        Return most common top_n bigram features.
+        Note that this method is based on bigram collocations, and not on simple
+        bigram frequency.
+        '''
+        # This method could be put outside the class
+        finder = BigramCollocationFinder.from_words(words)
+        bigrams = finder.nbest(score_measure, top_n)
+        # return [w for w,f in unigram_feats_freqs.most_common(top_n)]
+        return finder.nbest(score_measure, top_n)
 
     def add_feat_extractor(self, function, **kwargs):
         '''
@@ -160,13 +177,22 @@ def split_train_test(all_instances, n):
 
     return train_set, test_set
 
-def extract_unigram_feats(document, word_features):
+def extract_unigram_feats(document, unigrams):
     # This function is declared outside the class because the user should have the
     # possibility to create his/her own feature extractors without modifying the
     # SentimentAnalyzer class.
     features = {}
-    for word in word_features:
+    for word in unigrams:
         features['contains({})'.format(word)] = word in set(document)
+    return features
+
+def extract_bigram_feats(document, bigrams):
+    features = {}
+    # return dict([(ngram, True) for ngram in itertools.chain(words, bigrams)])
+    for bigram in bigrams:
+        # Important: this function DOES NOT consider the order of the words in
+        # the bigram. It is useful for collocations, but not for idiomatic forms.
+        features['contains({} - {})'.format(bigram[0], bigram[1])] = set(bigram) in [set(b) for b in itertools.combinations(document, r=2)]
     return features
 
 
@@ -185,8 +211,14 @@ def demo_tweets(classifier_type):
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_tweets)
-    word_features = sa.unigram_word_feats(all_words, top_n=100)
-    sa.add_feat_extractor(extract_unigram_feats, word_features=word_features)
+    unigram_feats = sa.unigram_word_feats(all_words, top_n=100)
+    sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+
+    # Note that the all_words variable is a list of ordered words. Since order is
+    # captured, we can get bigram collocations from the list.
+
+    bigram_feats = sa.bigram_word_feats(all_words, top_n=10)
+    sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_feats)
 
     training_set = apply_features(sa.extract_features, training_tweets)
     test_set = apply_features(sa.extract_features, testing_tweets)
@@ -201,6 +233,7 @@ def demo_tweets(classifier_type):
     # classifier = sa.train(trainer, training_set, save_classifier=filename, max_iter=4)
     classifier = sa.train(trainer, training_set, save_classifier=filename)
     sa.evaluate(classifier, test_set)
+    pdb.set_trace()
 
 def demo_sent140(classifier_type):
     '''
@@ -230,8 +263,8 @@ def demo_sent140(classifier_type):
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_tweets)
-    word_features = sa.unigram_word_feats(all_words, top_n=100)
-    sa.add_feat_extractor(extract_unigram_feats, word_features=word_features)
+    unigram_feats = sa.unigram_word_feats(all_words, top_n=100)
+    sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     training_set = apply_features(sa.extract_features, training_tweets)
     test_set = apply_features(sa.extract_features, testing_tweets)
@@ -249,5 +282,5 @@ def demo_sent140(classifier_type):
 
 if __name__ == '__main__':
     # demo_tweets(classifier_type='maxent')
-    # demo_tweets(classifier_type='naivebayes')
-    demo_sent140(classifier_type='naivebayes')
+    demo_tweets(classifier_type='naivebayes')
+    # demo_sent140(classifier_type='naivebayes')
