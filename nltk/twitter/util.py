@@ -42,13 +42,13 @@ def _add_field_to_out(json, field, out):
         for key, value in field.items():
             _add_field_to_out(json[key], value, out)
     else:
-        if isinstance(field, str):
+        if isinstance(field, compat.string_types):
             out += [json[field]]
         else:
             out += [json[value] for value in field]
 
 def _get_entity_recursive(json, entity):
-    if json == None:
+    if not json:
         return None
     elif isinstance(json, dict):
         for key, value in json.items():
@@ -168,7 +168,7 @@ def json2csv_entities(fp, outfile, main_fields, entity_name, entity_fields,
         if isinstance(entity_name, dict):
             for key, value in entity_name.items():
                 object_json = _get_entity_recursive(tweet, key)
-                if object_json == None:
+                if not object_json:
                     # can happen in the case of "place"
                     continue
                 object_fields = extract_fields(object_json, main_fields)
@@ -182,7 +182,7 @@ def json2csv_entities(fp, outfile, main_fields, entity_name, entity_fields,
 
 
 def _write_to_file(object_fields, items, entity_fields, writer):
-    if items == None:
+    if not items:
         # it could be that the entity is just not present for the tweet
         # e.g. tweet hashtag is always present, even as [], however
         # tweet media may not be present

@@ -93,7 +93,7 @@ from nltk.corpus.reader.framenet import *
 from nltk.corpus.reader.udhr import *
 from nltk.corpus.reader.bnc import *
 from nltk.corpus.reader.sentiwordnet import *
-from nltk.corpus.reader.tweets import *
+from nltk.corpus.reader.twitter import *
 from nltk.corpus.reader.nkjp import *
 from nltk.corpus.reader.crubadan import *
 
