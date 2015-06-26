@@ -817,8 +817,8 @@ speaker and sentence identifier for a given speech sample:
     >>> timit.utteranceids(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
     ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
 
-twitter
--------
+twitter_samples
+---------------
 
 Twitter is well-known microblog service that allows public data to be
 collected via APIs. NLTK's twitter corpus currently contains a sample of 20k Tweets

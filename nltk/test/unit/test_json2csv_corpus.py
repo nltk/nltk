@@ -16,15 +16,9 @@ import os
 from nltk.compat import TemporaryDirectory
 import unittest
 
-from nltk.corpus import tweets
+from nltk.corpus import twitter_samples
 from nltk.twitter.util import json2csv, json2csv_entities
-
-try:
-    # Python 2
-    from itertools import izip
-except ImportError:
-        # Python 3
-    izip = zip
+from nltk.compat import izip
 
 
 def are_files_identical(filename1, filename2, debug=False):
@@ -50,7 +44,7 @@ def are_files_identical(filename1, filename2, debug=False):
 class TestJSON2CSV(unittest.TestCase):
 
     def setUp(self):
-        with open(tweets.abspath("tweets.20150430-223406.json")) as infile:
+        with open(twitter_samples.abspath("tweets.20150430-223406.json")) as infile:
             self.infile = [next(infile) for x in range(100)]
         infile.close()
         self.msg = "Test and reference files are not the same"

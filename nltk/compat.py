@@ -126,9 +126,26 @@ else:
 
     sys.meta_path.insert(0, TkinterLoader())
 
-    import pytz
-    UTC = pytz.utc
+    from datetime import tzinfo, timedelta
 
+    ZERO = timedelta(0)
+    HOUR = timedelta(hours=1)
+
+    # A UTC class for python 2.7
+    class UTC(tzinfo):
+        """UTC"""
+    
+        def utcoffset(self, dt):
+            return ZERO
+    
+        def tzname(self, dt):
+            return "UTC"
+    
+        def dst(self, dt):
+            return ZERO
+    
+    UTC = UTC()
+    
     import csv, codecs, cStringIO
     class UnicodeWriter:
         """
