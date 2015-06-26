@@ -51,12 +51,14 @@ class Boxer(object):
     semantic parser that produces Discourse Representation Structures (DRSs).
     """
 
-    def __init__(self, boxer_drs_interpreter=None, elimeq=False, bin_dir=None, verbose=False):
+    def __init__(self, boxer_drs_interpreter=None, resolve=True, elimeq=False, bin_dir=None, verbose=False):
         """
         :param boxer_drs_interpreter: A class that converts from the
         ``AbstractBoxerDrs`` object hierarchy to a different object.  The
         default is ``NltkDrtBoxerDrsInterpreter``, which converts to the NLTK
         DRT hierarchy.
+        :param resolve: When set to true, Boxer will resolve all anaphoric DRSs and perform merge-reduction. 
+        Resolution follows Van der Sandt's theory of binding and accommodation.
         :param elimeq: When set to true, Boxer removes all equalities from the
         DRSs and discourse referents standing in the equality relation are
         unified, but only if this can be done in a meaning-preserving manner.
@@ -65,6 +67,7 @@ class Boxer(object):
             boxer_drs_interpreter = NltkDrtBoxerDrsInterpreter()
         self._boxer_drs_interpreter = boxer_drs_interpreter
 
+        self._resolve = resolve
         self._elimeq = elimeq
 
         self.set_bin_dir(bin_dir, verbose)
@@ -172,7 +175,7 @@ class Boxer(object):
         args = ['--box', 'false',
                 '--semantics', 'drs',
                 #'--flat', 'false', # removed from boxer
-                '--resolve', 'true',
+                '--resolve', ['false','true'][self._resolve],
                 '--elimeq', ['false','true'][self._elimeq],
                 '--format', 'prolog',
                 '--instantiate', 'true',
