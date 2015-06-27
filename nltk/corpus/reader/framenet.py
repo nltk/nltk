@@ -345,6 +345,7 @@ def _pretty_annotation(sent, aset_level=False):
         if k in sentkeys:
             outstr += "[{0}] {1}\n".format(k, sent[k])
     outstr += "\n[LU] ({0.ID}) {0.name} in {0.frame.name}\n".format(sent.LU)
+    outstr += "\n[frame] ({0.ID}) {0.name}\n".format(sent.frame)    # redundant with above, but .frame is convenient
     if not aset_level:
         outstr += "\n[annotationSet] {0} annotation sets\n".format(len(sent.annotationSet))
         outstr += "\n[POS] {0} tags\n".format(len(sent.POS))
@@ -360,6 +361,14 @@ def _pretty_annotation(sent, aset_level=False):
     
     # render the sentence along with its target and FE info.
     # line-wrapping, second FE layer if necessary.
+    
+    # TODO: not strictly the case that every LU sentence has 1 annotation set:
+    # e.g. fn.lu(6412).exemplars[82] (which is from full-text annotation)
+    # has two want.v targets. Need to display like a full-text sentence in this case.
+    #
+    # TODO: (in tandem with above) expose a method like _str(), but just for the 
+    # pretty-print display of the [text] + [Target] + [FE layers]. at both the sentence 
+    # layer and the annotationSet layer.
     
     def _render_FE_layer(overt, ni, feAbbrevs):
         s1 = ''
@@ -1411,8 +1420,10 @@ class FramenetCorpusReader(XMLCorpusReader):
                                    [sent for subc in lu.subCorpus for sent in subc.sentence])
         for sent in lu.exemplars:
             sent['LU'] = lu
+            sent['frame'] = lu.frame
             for aset in sent.annotationSet:
                 aset['LU'] = lu
+                aset['frame'] = lu.frame
 
         return lu
 
@@ -2083,6 +2094,13 @@ class FramenetCorpusReader(XMLCorpusReader):
         """
 
         try:
+            '''
+            # Look for boundary issues in markup. (Sometimes FEs are pluralized in definitions.)
+            m = re.search(r'\w[<][^/]|[<][/][^>]+[>](s\w|[a-rt-z0-9])', data)
+            if m:
+                print('Markup boundary:', data[max(0,m.start(0)-10):m.end(0)+10].replace('\n',' '), file=sys.stderr)
+            '''
+            
             data = data.replace('<t>', '')
             data = data.replace('</t>', '')
             data = re.sub('<fex name="[^"]+">', '', data)
@@ -2262,8 +2280,8 @@ class FramenetCorpusReader(XMLCorpusReader):
 
     def _handle_fulltext_sentence_elt(self, elt):
         """Load information from the given 'sentence' element. Each
-        'sentence' element contains a "text" and an "annotationSet" sub
-        element."""
+        'sentence' element contains a "text" and "annotationSet" sub
+        elements."""
         info = self._load_xml_attributes(AttrDict(), elt)
         info['_type'] = "fulltext_sentence"
         info['annotationSet'] = []
@@ -2277,6 +2295,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                 if 'cxnID' in info: # TODO: ignoring construction annotations for now
                     continue
                 a.sent = info
+                a.text = info.text
                 info['annotationSet'].append(a)
 
         assert info['annotationSet'][0].status=='UNANN'
@@ -2294,6 +2313,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             if 'cxnID' not in info: # TODO: ignoring construction annotations for now
                 try:
                     info['LU'] = self.lu(info.luID)
+                    info['frame'] = info.LU.frame
                 except:
                     info['LU'] = None
                     print('LU ID not found: ',info.luID, file=sys.stderr)
@@ -2410,6 +2430,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                             info[k] = annset[k]
                     info['annotationSet'].append(annset)
                     annset['sent'] = info
+                    annset['text'] = info.text
         return info
 
     def _handle_luannotationset_elt(self, elt, is_pos=False):
