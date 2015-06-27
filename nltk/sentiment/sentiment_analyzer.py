@@ -7,6 +7,7 @@ from nltk.corpus.reader import CategorizedPlaintextCorpusReader
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist
 from nltk.tokenize import word_tokenize, treebank, regexp
+from nltk.util import bigrams
 from collections import defaultdict
 import csv
 import io
@@ -21,7 +22,6 @@ import time
 # Define @timer decorator
 def timer(method):
     def timed(*args, **kw):
-        print("timing", method.__name__)
         start = time.time()
         result = method(*args, **kw)
         end = time.time()
@@ -82,17 +82,27 @@ class SentimentAnalyzer(object):
         return [w for w,f in unigram_feats_freqs.most_common(top_n)]
 
     @timer
-    def bigram_word_feats(self, words, score_measure=BigramAssocMeasures.chi_sq, top_n=None):
+    def bigram_collocation_feats(self, words, assoc_measure=BigramAssocMeasures.pmi, top_n=None, min_freq=3):
         '''
-        Return most common top_n bigram features.
+        Return top_n bigram features (using assoc_measure).
         Note that this method is based on bigram collocations, and not on simple
         bigram frequency.
+        :param min_freq: the minimum number of occurrencies of bigrams to take into consideration
+        :param assoc_measure: bigram association measures
         '''
         # This method could be put outside the class
         finder = BigramCollocationFinder.from_words(words)
-        bigrams = finder.nbest(score_measure, top_n)
-        # return [w for w,f in unigram_feats_freqs.most_common(top_n)]
-        return finder.nbest(score_measure, top_n)
+        finder.apply_freq_filter(min_freq)
+        return finder.nbest(assoc_measure, top_n)
+
+    @timer
+    def bigram_word_feats(self, words, top_n=None):
+        '''
+        Return most common top_n bigram features.
+        '''
+        # This method could be put outside the class
+        bigram_feats_freqs = FreqDist(bigrams(word.lower() for word in words))
+        return [(b[0],b[1]) for b,f in bigram_feats_freqs.most_common(top_n)]
 
     def add_feat_extractor(self, function, **kwargs):
         '''
@@ -217,6 +227,9 @@ def demo_tweets(classifier_type):
     # Note that the all_words variable is a list of ordered words. Since order is
     # captured, we can get bigram collocations from the list.
 
+    # bigram_collocs_feats = sa.bigram_collocation_feats(all_words, top_n=100, min_freq=12)
+    # sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
+
     bigram_feats = sa.bigram_word_feats(all_words, top_n=10)
     sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_feats)
 
@@ -233,7 +246,6 @@ def demo_tweets(classifier_type):
     # classifier = sa.train(trainer, training_set, save_classifier=filename, max_iter=4)
     classifier = sa.train(trainer, training_set, save_classifier=filename)
     sa.evaluate(classifier, test_set)
-    pdb.set_trace()
 
 def demo_sent140(classifier_type):
     '''
