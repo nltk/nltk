@@ -206,24 +206,61 @@ def extract_bigram_feats(document, bigrams):
     return features
 
 
-def demo_tweets(classifier_type):
+def parse_dataset(dataset_name, tokenizer=None):
     '''
-    This is an example using labeled_tweets.csv. Tweets are tokenized using the
-    simple word_tokenize.
-    :param classifier_type: A string. Options: 'naivebayes', 'maxent'
+    Parse a dataset and outputs a list of documents.
+    Available datasets: 'labeled_tweets', 'sent140'.
     '''
-    print("Demo using labeled_tweets.csv")
-    # We are now using a basic tokenizing strategy inside parse_tweets_set()
-    all_tweets = parse_tweets_set()
-    n = 8000 # The number of corpus instances to use
-    # n = len(all_tweets)
-    training_tweets, testing_tweets = split_train_test(all_tweets, n)
+    # TODO: Implement tokenizer in parse_tweets_set() method.
+    if dataset_name == 'labeled_tweets':
+        # This is an example using labeled_tweets.csv. Tweets are tokenized
+        # using the basic word_tokenize.
+        return parse_tweets_set()
+
+    elif dataset_name == 'sent140':
+        #Sentiment140 training set can be found at: http://help.sentiment140.com/for-students
+        corpus_path = os.path.expanduser('~/nltk_data/corpora/sentiment140/')
+        # Choose tokenizer
+        tokenizer = treebank.TreebankWordTokenizer()
+        # tokenizer = regexp.WhitespaceTokenizer()
+        corpus = CategorizedPlaintextCorpusReader(corpus_path, r'sent140_.*\.txt',
+            cat_pattern=r'sent140_(\w+)\.txt', word_tokenizer=tokenizer)
+
+        cache_path = 'sent140tweets_cache.pickle'
+        if not os.path.exists(cache_path):
+            print('Parsing corpus.sents()')
+            all_tweets = ([(tweet, 'pos') for tweet in corpus.sents('sent140_pos.txt')] +
+                          [(tweet, 'neg') for tweet in corpus.sents('sent140_neg.txt')])
+            save_file(all_tweets, cache_path)
+        else:
+            all_tweets = load_file(cache_path)
+
+        return all_tweets
+
+    else:
+        raise
+
+def demo(dataset_name, classifier_type, n=None):
+    '''
+    :param dataset_name: 'labeled_tweets', 'sent140'
+    :param n: the number of the corpus instances to use. Default: use all instances
+    :param classifier_type: 'maxent', 'naivebayes'
+    '''
+    try:
+        all_docs = parse_dataset(dataset_name)
+        # pdb.set_trace()
+    except Exception as ex:
+        sys.exit('Error while parsing the dataset. Did you specify a valid name?')
+
+    if not n:
+        n = len(all_docs)
+
+    training_tweets, testing_tweets = split_train_test(all_docs, n)
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_tweets)
-    unigram_feats = sa.unigram_word_feats(all_words, top_n=100)
+    unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
-
     # Note that the all_words variable is a list of ordered words. Since order is
     # captured, we can get bigram collocations from the list.
 
@@ -237,62 +274,19 @@ def demo_tweets(classifier_type):
     test_set = apply_features(sa.extract_features, testing_tweets)
 
     if classifier_type == 'naivebayes':
-        filename = 'nb_labeledtweets-{}.pickle'.format(n)
+        # filename = 'nb_labeledtweets-{}.pickle'.format(n)
         trainer = NaiveBayesClassifier.train
     elif classifier_type == 'maxent':
-        filename = 'maxent_labeledtweets-{}.pickle'.format(n)
+        # filename = 'maxent_labeledtweets-{}.pickle'.format(n)
         trainer = MaxentClassifier.train
 
+    filename = '{}_{}_{}.pickle'.format(dataset_name, classifier_type, n)
     # classifier = sa.train(trainer, training_set, save_classifier=filename, max_iter=4)
     classifier = sa.train(trainer, training_set, save_classifier=filename)
     sa.evaluate(classifier, test_set)
 
-def demo_sent140(classifier_type):
-    '''
-    This is an example using only the first 20000 entries of the shuffled training set
-    Sentiment140 training set can be found at: http://help.sentiment140.com/for-students
-    '''
-    corpus_path = os.path.expanduser('~/nltk_data/corpora/sentiment140/')
-
-    tokenizer = treebank.TreebankWordTokenizer()
-    # tokenizer = regexp.WhitespaceTokenizer()
-    corpus = CategorizedPlaintextCorpusReader(corpus_path, r'sent140_.*\.txt',
-        cat_pattern=r'sent140_(\w+)\.txt', word_tokenizer=tokenizer)
-
-    # n = 2000
-    n = 8000 # The number of corpus instances to use
-
-    cache_path = 'all_tweets140_cache.pickle'
-    if not os.path.exists(cache_path):
-        print('Parsing corpus.sents()')
-        all_tweets = ([(tweet, 'pos') for tweet in corpus.sents('sent140_pos.txt')] +
-                      [(tweet, 'neg') for tweet in corpus.sents('sent140_neg.txt')])
-        save_file(all_tweets, cache_path)
-    else:
-        all_tweets = load_file(cache_path)
-
-    training_tweets, testing_tweets = split_train_test(all_tweets, n)
-
-    sa = SentimentAnalyzer()
-    all_words = sa.get_all_words(training_tweets)
-    unigram_feats = sa.unigram_word_feats(all_words, top_n=100)
-    sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
-
-    training_set = apply_features(sa.extract_features, training_tweets)
-    test_set = apply_features(sa.extract_features, testing_tweets)
-
-    if classifier_type == 'naivebayes':
-        filename = 'nb_sent140-{}.pickle'.format(n)
-        trainer = NaiveBayesClassifier.train
-    elif classifier_type == 'maxent':
-        filename = 'maxent_sent140-{}.pickle'.format(n)
-        trainer = MaxentClassifier.train
-
-    # classifier = load_file(filename)
-    classifier = sa.train(trainer, training_set, save_classifier=filename)
-    sa.evaluate(classifier, test_set)
 
 if __name__ == '__main__':
-    # demo_tweets(classifier_type='maxent')
-    demo_tweets(classifier_type='naivebayes')
-    # demo_sent140(classifier_type='naivebayes')
+    # demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8000)
+    demo(dataset_name='sent140', classifier_type='naivebayes', n=8000)
+    # demo(dataset_name='labeled_tweets', classifier_type='maxent', n=8000)
