@@ -17,6 +17,7 @@ import os, sys
 import re
 import textwrap
 import itertools
+import types
 from collections import defaultdict, OrderedDict
 from itertools import izip_longest
 from pprint import pprint, pformat
@@ -247,40 +248,7 @@ def _pretty_fulltext_sentence(sent):
     outstr += "\n[POS] {0} tags\n".format(len(sent.POS))
     outstr += "\n[POS_tagset] {0}\n\n".format(sent.POS_tagset)
     outstr += "[text] + [annotationSet]\n\n"
-    
-    # list the target spans and their associated aset index
-    overt = []
-    for a,aset in enumerate(sent.annotationSet[1:]):
-        for j,k in aset.Target:
-            indexS = "[{0}]".format(a+1)
-            if aset.status=='UNANN':
-                indexS += " !"  # warning indicator that there is a frame annotation but no FE annotation
-            overt.append((j,k,aset.LU.frame.name,indexS))
-    overt = sorted(overt)
-    
-    s0 = sent.text
-    s1 = ''
-    s11 = ''
-    s2 = ''
-    i = 0
-    adjust = 0
-    for j,k,fname,asetIndex in overt:
-        assert j>=i,('Overlapping targets?',(j,k,asetIndex))
-        s1 += ' '*(j-i) + '*'*(k-j)
-        s11 += ' '*(j-i) + fname[:k-j].ljust(k-j)
-        if len(asetIndex)>(k-j):
-            # add space in the sentence to make room for the annotation index
-            amt = len(asetIndex)-(k-j)
-            s0 = s0[:k+adjust]+ '~'*amt + s0[k+adjust:] # '~' to prevent line wrapping
-            s1 = s1[:k+adjust]+ ' '*amt + s1[k+adjust:]
-            s11 = s11[:k+adjust]+ ' '*amt + s11[k+adjust:]
-            adjust += amt            
-        s2 += ' '*(j-i) + asetIndex.ljust(k-j)
-        i = k
-        
-    long_lines = [s0, s1, s11, s2]
-    
-    outstr += '\n\n'.join(map('\n'.join, izip_longest(*mimic_wrap(long_lines), fillvalue=' '))).replace('~',' ')
+    outstr += sent._ascii() # -> _annotation_ascii()
     outstr += "\n"
     return outstr
 
@@ -358,49 +326,106 @@ def _pretty_annotation(sent, aset_level=False):
         if 'FE3' in sentkeys:
             outstr += " + [FE3]"
     outstr += "\n\n"
+    outstr += sent._ascii() # -> _annotation_ascii()
+    outstr += "\n"
     
-    # render the sentence along with its target and FE info.
-    # line-wrapping, second FE layer if necessary.
+    return outstr
     
-    # TODO: not strictly the case that every LU sentence has 1 annotation set:
-    # e.g. fn.lu(6412).exemplars[82] (which is from full-text annotation)
-    # has two want.v targets. Need to display like a full-text sentence in this case.
-    #
-    # TODO: (in tandem with above) expose a method like _str(), but just for the 
-    # pretty-print display of the [text] + [Target] + [FE layers]. at both the sentence 
-    # layer and the annotationSet layer.
+def _annotation_ascii(sent):
+    '''
+    Given a sentence or FE annotation set, construct the width-limited string showing 
+    an ASCII visualization of the sentence's annotations, calling either 
+    _annotation_ascii_frames() or _annotation_ascii_FEs() as appropriate.
+    This will be attached as a method to appropriate AttrDict instances 
+    and called in the full pretty-printing of the instance.
+    '''
+    if sent._type=='fulltext_sentence' or ('annotationSet' in sent and len(sent.annotationSet)>2):
+        # a full-text sentence OR sentence with multiple targets. 
+        # (multiple targets = >2 annotation sets, because the first annotation set is POS.)
+        return _annotation_ascii_frames(sent)
+    else:   # an FE annotation set, or an LU sentence with 1 target
+        return _annotation_ascii_FEs(sent)
+        
+def _annotation_ascii_frames(sent):
+    '''
+    ASCII string rendering of the sentence along with its targets and frame names.
+    Called for all full-text sentences, as well as the few LU sentences with multiple 
+    targets (e.g., fn.lu(6412).exemplars[82] has two want.v targets).
+    Line-wrapped to limit the display width.
+    '''
+    # list the target spans and their associated aset index
+    overt = []
+    for a,aset in enumerate(sent.annotationSet[1:]):
+        for j,k in aset.Target:
+            indexS = "[{0}]".format(a+1)
+            if aset.status=='UNANN':
+                indexS += " !"  # warning indicator that there is a frame annotation but no FE annotation
+            overt.append((j,k,aset.LU.frame.name,indexS))
+    overt = sorted(overt)
+
+    s0 = sent.text
+    s1 = ''
+    s11 = ''
+    s2 = ''
+    i = 0
+    adjust = 0
+    for j,k,fname,asetIndex in overt:
+        assert j>=i,('Overlapping targets?',(j,k,asetIndex))
+        s1 += ' '*(j-i) + '*'*(k-j)
+        s11 += ' '*(j-i) + fname[:k-j].ljust(k-j)
+        if len(asetIndex)>(k-j):
+            # add space in the sentence to make room for the annotation index
+            amt = len(asetIndex)-(k-j)
+            s0 = s0[:k+adjust]+ '~'*amt + s0[k+adjust:] # '~' to prevent line wrapping
+            s1 = s1[:k+adjust]+ ' '*amt + s1[k+adjust:]
+            s11 = s11[:k+adjust]+ ' '*amt + s11[k+adjust:]
+            adjust += amt            
+        s2 += ' '*(j-i) + asetIndex.ljust(k-j)
+        i = k
     
-    def _render_FE_layer(overt, ni, feAbbrevs):
-        s1 = ''
-        s2 = ''
-        i = 0
-        for j,k,fename in overt:
-            s1 += ' '*(j-i) + '-'*(k-j)
-            short = fename[:k-j]
-            if len(fename)>len(short):
-                r = 0
-                while short in feAbbrevs:
-                    if feAbbrevs[short]==fename:
-                        break
-                    r += 1
-                    short = fename[:k-j-1] + str(r)
-                else:   # short not in feAbbrevs
-                    feAbbrevs[short] = fename
-            s2 += ' '*(j-i) + short.ljust(k-j)
-            i = k
-            
-        sNI = ''
-        if ni:
-            sNI += ' ['+', '.join(':'.join(x) for x in sorted(ni.items()))+']'
-        return [s1,s2,sNI]
+    long_lines = [s0, s1, s11, s2]
+
+    return '\n\n'.join(map('\n'.join, izip_longest(*mimic_wrap(long_lines), fillvalue=' '))).replace('~',' ')
+
+def _annotation_ascii_FE_layer(overt, ni, feAbbrevs):
+    '''Helper for _annotation_ascii_FEs().'''
+    s1 = ''
+    s2 = ''
+    i = 0
+    for j,k,fename in overt:
+        s1 += ' '*(j-i) + '-'*(k-j)
+        short = fename[:k-j]
+        if len(fename)>len(short):
+            r = 0
+            while short in feAbbrevs:
+                if feAbbrevs[short]==fename:
+                    break
+                r += 1
+                short = fename[:k-j-1] + str(r)
+            else:   # short not in feAbbrevs
+                feAbbrevs[short] = fename
+        s2 += ' '*(j-i) + short.ljust(k-j)
+        i = k
+        
+    sNI = ''
+    if ni:
+        sNI += ' ['+', '.join(':'.join(x) for x in sorted(ni.items()))+']'
+    return [s1,s2,sNI]
     
+def _annotation_ascii_FEs(sent):
+    '''
+    ASCII string rendering of the sentence along with a single target and its FEs.
+    Secondary and tertiary FE layers are included if present.
+    'sent' can be an FE annotation set or an LU sentence with a single target.
+    Line-wrapped to limit the display width.
+    '''
     feAbbrevs = OrderedDict()
-    FE1 = _render_FE_layer(sent.FE[0], sent.FE[1], feAbbrevs)
+    FE1 = _annotation_ascii_FE_layer(sent.FE[0], sent.FE[1], feAbbrevs)
     FE2 = FE3 = None
     if 'FE2' in sent:
-        FE2 = _render_FE_layer(sent.FE2[0], sent.FE2[1], feAbbrevs)
+        FE2 = _annotation_ascii_FE_layer(sent.FE2[0], sent.FE2[1], feAbbrevs)
         if 'FE3' in sent:
-            FE3 = _render_FE_layer(sent.FE3[0], sent.FE3[1], feAbbrevs)
+            FE3 = _annotation_ascii_FE_layer(sent.FE3[0], sent.FE3[1], feAbbrevs)
     
     for i,j in sent.Target:
         FE1span, FE1name, FE1exp = FE1
@@ -410,13 +435,13 @@ def _pretty_annotation(sent, aset_level=False):
             FE1name += ' '*(j-len(FE1name))
             FE1[1] = FE1name
         FE1[0] = FE1span[:i] + FE1span[i:j].replace(' ','*').replace('-','=') + FE1span[j:]
-    long_lines = [sent.text if not aset_level else sent.sent.text] + [FE1[0], FE1[1]+FE1[2]] # lines with no length limit
+    long_lines = [sent.text, FE1[0], FE1[1]+FE1[2]] # lines with no length limit
     if FE2:
         long_lines.extend([FE2[0], FE2[1]+FE2[2]])
         if FE3:
             long_lines.extend([FE3[0], FE3[1]+FE3[2]])
     long_lines.append('')
-    outstr += '\n'.join(map('\n'.join, izip_longest(*mimic_wrap(long_lines), fillvalue=' ')))
+    outstr = '\n'.join(map('\n'.join, izip_longest(*mimic_wrap(long_lines), fillvalue=' ')))
     if feAbbrevs:
         outstr += '('+', '.join('='.join(pair) for pair in feAbbrevs.items())+')'
         assert len(feAbbrevs)==len(dict(feAbbrevs)),'Abbreviation clash'
@@ -2285,6 +2310,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         info = self._load_xml_attributes(AttrDict(), elt)
         info['_type'] = "fulltext_sentence"
         info['annotationSet'] = []
+        info['_ascii'] = types.MethodType(_annotation_ascii, info)  # attach a method for this instance
         info['text'] = ""
 
         for sub in elt:
@@ -2415,6 +2441,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         info = self._load_xml_attributes(AttrDict(), elt)
         info['_type'] = 'lusentence'
         info['annotationSet'] = []
+        info['_ascii'] = types.MethodType(_annotation_ascii, info)  # attach a method for this instance
         for sub in elt:
             if sub.tag.endswith('text'):
                 info['text'] = self._strip_tags(sub.text)
@@ -2438,6 +2465,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         info = self._load_xml_attributes(AttrDict(), elt)
         info['_type'] = 'posannotationset' if is_pos else 'luannotationset'
         info['layer'] = []
+        info['_ascii'] = types.MethodType(_annotation_ascii, info)  # attach a method for this instance
         
         for sub in elt:
             if sub.tag.endswith('layer'):
