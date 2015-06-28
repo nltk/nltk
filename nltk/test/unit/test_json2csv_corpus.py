@@ -65,7 +65,7 @@ class TestJSON2CSV(unittest.TestCase):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.tweet.csv.ref')
         fields = ['created_at', 'favorite_count', 'id',
                   'in_reply_to_status_id', 'in_reply_to_user_id', 'retweet_count',
-                  'retweeted', 'text', 'truncated', {'user' : 'id'}]
+                  'retweeted', 'text', 'truncated', 'user.id']
 
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.tweet.csv')
@@ -75,7 +75,7 @@ class TestJSON2CSV(unittest.TestCase):
 
     def test_user_metadata(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.user.csv.ref')
-        fields = ['id', 'text', {'user' : ['id', 'followers_count', 'friends_count']}]
+        fields = ['id', 'text', 'user.id', 'user.followers_count', 'user.friends_count']
 
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.user.csv')
@@ -126,7 +126,7 @@ class TestJSON2CSV(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.userurl.csv')
             json2csv_entities(self.infile, outfn, ['id', 'screen_name'],
-                              {'user' : 'urls'}, ['url', 'expanded_url'])
+                              'user.urls', ['url', 'expanded_url'])
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
@@ -146,7 +146,7 @@ class TestJSON2CSV(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.placeboundingbox.csv')
             json2csv_entities(self.infile, outfn,
-                              ['id', 'name'], {'place' : 'bounding_box'}, ['coordinates'])
+                              ['id', 'name'], 'place.bounding_box', ['coordinates'])
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
@@ -158,7 +158,7 @@ class TestJSON2CSV(unittest.TestCase):
             json2csv_entities(self.infile, outfn, ['id'], 'retweeted_status',
                               ['created_at', 'favorite_count', 'id', 'in_reply_to_status_id',
                                'in_reply_to_user_id', 'retweet_count', 'text', 'truncated',
-                               {'user' : ['id']}])
+                               'user.id'])
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
@@ -172,6 +172,7 @@ class TestJSON2CSV(unittest.TestCase):
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.text.csv')
             json2csv(self.infile, outfn, ['text'])
             self.assertFalse(are_files_identical(outfn, ref_fn), msg=self.msg)
+
 
 
 if __name__ == "__main__":

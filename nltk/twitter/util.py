@@ -19,6 +19,7 @@ import nltk.compat as compat
 
 from twython import Twython
 
+HIER_SEPARATOR = "."
 
 def extract_fields(tweet, fields):
     """
@@ -38,14 +39,23 @@ def extract_fields(tweet, fields):
 
 
 def _add_field_to_out(json, field, out):
-    if isinstance(field, dict):
-        for key, value in field.items():
-            _add_field_to_out(json[key], value, out)
+    if _is_composed_key(field):
+        key, value = _get_key_value_composed(field)
+        _add_field_to_out(json[key], value, out)
     else:
-        if isinstance(field, compat.string_types):
-            out += [json[field]]
-        else:
-            out += [json[value] for value in field]
+        out += [json[field]]
+
+def _is_composed_key(field):
+    if HIER_SEPARATOR in field:
+        return True
+    return False
+    
+def _get_key_value_composed(field):
+    out = field.split(HIER_SEPARATOR)
+    # there could be up to 3 levels
+    key = out[0]
+    value = HIER_SEPARATOR.join(out[1:])
+    return key, value
 
 def _get_entity_recursive(json, entity):
     if not json:
@@ -98,7 +108,7 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace'):
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
     e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
     Addionally, it allows IDs from other Twitter objects, e. g.,\
-    ['id', 'text', {'user' : ['id', 'followers_count', 'friends_count']}]
+    ['id', 'text', 'user.id', 'user.followers_count', 'user.friends_count']
 
 
     :param error: Behaviour for encoding errors, see\
@@ -126,7 +136,7 @@ def outf_writer_compat(outfile, encoding, errors):
 
 
 
-def json2csv_entities(fp, outfile, main_fields, entity_name, entity_fields,
+def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
                       encoding='utf8', errors='replace'):
     """
     Extract selected fields from a file of line-separated JSON tweets and
@@ -135,6 +145,9 @@ def json2csv_entities(fp, outfile, main_fields, entity_name, entity_fields,
     This utility function allows a file of full tweets to be easily converted
     to a CSV file for easier processing of Twitter entities. For example, the
     hashtags or media elements of a tweet can be extracted.
+    
+    It returns one line per entity of a tweet, e.g. if a tweet has 2 hashtags
+    there will be two lines in the output file, one per hashtag
 
     :param file-object fp: The name of the file containing full tweets
 
@@ -145,15 +158,17 @@ def json2csv_entities(fp, outfile, main_fields, entity_name, entity_fields,
     object, usually the tweet. Useful examples: 'id_str' for the tweetID. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
     e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
-    If `entity_name` is expressed as a dictionary, then it is list of fields\
-    of the object that corresponds to the key of the dictionary (could be\
-    the user object, or the place of a tweet object).
+    If `entity_type` is expressed with hierarchy, then it is  the list of\
+    fields of the object that corresponds to the key of the entity_type\
+    (e.g., for entity_type='user.urls', the fields in the main_fields list\
+    belong to the user object; for entity_type='place.bounding_box', the\
+    files in the main_field list belong to the place object of the tweet).
 
-    :param list entity_name: The name of the entity: 'hashtags', 'media',\
+    :param list entity_type: The name of the entity: 'hashtags', 'media',\
     'urls' and 'user_mentions' for the tweet object. For the user object,\
-    needs to be expressed as a dictionary: `{'user' : 'urls'}`. For the\
-    bounding box of the place from which a Tweet was published, as a dict\
-    as well: `{'place' : 'bounding_box'}`.
+    needs to be expressed with the hierarchy: `'user.urls'`. For the\
+    bounding box of the place from which a Tweet was published, adding\
+    hierarchy as well: `'place.bounding_box'`.
 
     :param list entity_fields: The list of fields to be extracted from the\
     entity. E.g. `['text']` (of the Tweet)
@@ -165,18 +180,18 @@ def json2csv_entities(fp, outfile, main_fields, entity_name, entity_fields,
     (writer, outf) = outf_writer_compat(outfile, encoding, errors)
     for line in fp:
         tweet = json.loads(line)
-        if isinstance(entity_name, dict):
-            for key, value in entity_name.items():
-                object_json = _get_entity_recursive(tweet, key)
-                if not object_json:
-                    # can happen in the case of "place"
-                    continue
-                object_fields = extract_fields(object_json, main_fields)
-                items = _get_entity_recursive(object_json, value)
-                _write_to_file(object_fields, items, entity_fields, writer)
+        if _is_composed_key(entity_type):
+            key, value = _get_key_value_composed(entity_type)
+            object_json = _get_entity_recursive(tweet, key)
+            if not object_json:
+                # can happen in the case of "place"
+                continue
+            object_fields = extract_fields(object_json, main_fields)
+            items = _get_entity_recursive(object_json, value)
+            _write_to_file(object_fields, items, entity_fields, writer)
         else:
             tweet_fields = extract_fields(tweet, main_fields)
-            items = _get_entity_recursive(tweet, entity_name)
+            items = _get_entity_recursive(tweet, entity_type)
             _write_to_file(tweet_fields, items, entity_fields, writer)
     outf.close()
 
@@ -190,25 +205,23 @@ def _write_to_file(object_fields, items, entity_fields, writer):
     if isinstance(items, dict):
         # this happens e.g. for "place" of a tweet
         row = object_fields
-        # there might be dictionaries in de list of required fields
-        entity_dict = [x for x in entity_fields if isinstance(x, dict)]
-        for field in entity_fields:
-            if isinstance(field, dict):
-                continue
+        # there might be composed keys in de list of required fields
+        entity_field_values = [x for x in entity_fields if not _is_composed_key(x)]
+        entity_field_composed = [x for x in entity_fields if _is_composed_key(x)]
+        for field in entity_field_values:
             value = items[field]
             if isinstance(value, list):
                 row += value
             else:
                 row += [value]
         # now check required dictionaries
-        for d in entity_dict:
-            for kd, vd in d.items():
-                json_dict = items[kd]
-                if not isinstance(json_dict, dict):
-                    raise RuntimeError("""Key {0} does not contain a dictionary
-                    in the json file""".format(kd))
-                for k2 in vd:
-                    row += [json_dict[k2]]
+        for d in entity_field_composed:
+            kd, vd = _get_key_value_composed(d)
+            json_dict = items[kd]
+            if not isinstance(json_dict, dict):
+                raise RuntimeError("""Key {0} does not contain a dictionary
+                in the json file""".format(kd))
+            row += [json_dict[vd]]
         writer.writerow(row)
         return
     # in general it is a list
