@@ -4,6 +4,7 @@ from nltk.classify.naivebayes import NaiveBayesClassifier
 from nltk.classify.maxent import MaxentClassifier
 from nltk.collocations import *
 from nltk.corpus.reader import CategorizedPlaintextCorpusReader
+from nltk.data import load
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist
 from nltk.tokenize import word_tokenize, treebank, regexp
@@ -163,17 +164,27 @@ def load_file(filename):
         content = pickle.load(storage_file)
     return content
 
-def parse_tweets_set(filename='labeled_tweets.csv'):
-    '''Parse training file and output train and test sets in (text, label) format'''
+def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
+    '''
+    Parse training file and output train and test sets in (text, label) format.
+    :param tokenizer: the tokenizer method that will be used to tokenize the text
+    E.g. WordPunctTokenizer.tokenize
+         BlanklineTokenizer.tokenize
+
+    N.B.: word_tokenize is actually a shortcut that combines PunktSentenceTokenizer
+    and TreebankWordTokenizer().tokenize
+    '''
     tweets = []
+    if not sent_tokenizer:
+        sent_tokenizer = load('tokenizers/punkt/english.pickle')
     with open(filename, 'rt') as csvfile:
         reader = csv.reader(csvfile)
         i = 0
         for label, text, score in reader:
             i += 1
             sys.stdout.write('Loaded {} tweets\r'.format(i))
-            # Tokenize using simple word_tokenize
-            tokenized_tweet = [w.lower() for w in word_tokenize(text)] # We are creating a list of training tokenized tweets
+            # Apply sentence and word tokenizer to text
+            tokenized_tweet = [w.lower() for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
             tweets.append((tokenized_tweet, label))
     print("Loaded {} tweets".format(i))
     return tweets
@@ -206,7 +217,7 @@ def extract_bigram_feats(document, bigrams):
     return features
 
 
-def parse_dataset(dataset_name, tokenizer=None):
+def parse_dataset(dataset_name, tokenizer):
     '''
     Parse a dataset and outputs a list of documents.
     Available datasets: 'labeled_tweets', 'sent140'.
@@ -215,14 +226,11 @@ def parse_dataset(dataset_name, tokenizer=None):
     if dataset_name == 'labeled_tweets':
         # This is an example using labeled_tweets.csv. Tweets are tokenized
         # using the basic word_tokenize.
-        return parse_tweets_set()
+        return parse_tweets_set('labeled_tweets.csv', tokenizer)
 
     elif dataset_name == 'sent140':
         #Sentiment140 training set can be found at: http://help.sentiment140.com/for-students
         corpus_path = os.path.expanduser('~/nltk_data/corpora/sentiment140/')
-        # Choose tokenizer
-        tokenizer = treebank.TreebankWordTokenizer()
-        # tokenizer = regexp.WhitespaceTokenizer()
         corpus = CategorizedPlaintextCorpusReader(corpus_path, r'sent140_.*\.txt',
             cat_pattern=r'sent140_(\w+)\.txt', word_tokenizer=tokenizer)
 
@@ -246,9 +254,12 @@ def demo(dataset_name, classifier_type, n=None):
     :param n: the number of the corpus instances to use. Default: use all instances
     :param classifier_type: 'maxent', 'naivebayes'
     '''
+    # tokenizer = word_tokenize # This will not work using CategorizedPlaintextCorpusReader
+    # tokenizer = treebank.TreebankWordTokenizer()
+    tokenizer = regexp.WhitespaceTokenizer()
+    # tokenizer = regexp.WordPunctTokenizer()
     try:
-        all_docs = parse_dataset(dataset_name)
-        # pdb.set_trace()
+        all_docs = parse_dataset(dataset_name, tokenizer)
     except Exception as ex:
         sys.exit('Error while parsing the dataset. Did you specify a valid name?')
 
