@@ -10,8 +10,8 @@ from nltk.probability import FreqDist
 from nltk.tokenize import word_tokenize, treebank, regexp
 from nltk.util import bigrams
 from collections import defaultdict
+import codecs
 import csv
-import io
 import itertools
 import os, os.path
 import pdb
@@ -52,7 +52,7 @@ class SentimentAnalyzer(object):
         Parse training file and output train and test sets in (text, label) format
         '''
         labeled_tweets = []
-        with io.open(filename, 'rt', encoding='utf-8', errors='replace') as csvfile:
+        with codecs.open(filename, 'rt', encoding='utf-8', errors='replace') as csvfile:
             reader = csv.reader(csvfile)
             i = 0
             for row in reader:
@@ -153,13 +153,13 @@ class SentimentAnalyzer(object):
 
 def save_file(content, filename):
     print("Saving", filename)
-    with io.open(filename, 'wb') as storage_file:
+    with codecs.open(filename, 'wb') as storage_file:
         # pickle.dump(content, storage_file) # This will break on python2.x
         pickle.dump(content, storage_file, protocol=2) # protocol = 2 is for python2 compatibility
 
 def load_file(filename):
     print("Loading", filename)
-    with io.open(filename, 'rb') as storage_file:
+    with codecs.open(filename, 'rb') as storage_file:
         # The file has to be saved using protocol=2 if we need to read it using python2.x
         content = pickle.load(storage_file)
     return content
@@ -177,15 +177,33 @@ def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
     tweets = []
     if not sent_tokenizer:
         sent_tokenizer = load('tokenizers/punkt/english.pickle')
-    with open(filename, 'rt') as csvfile:
-        reader = csv.reader(csvfile)
-        i = 0
-        for label, text, score in reader:
-            i += 1
-            sys.stdout.write('Loaded {} tweets\r'.format(i))
-            # Apply sentence and word tokenizer to text
-            tokenized_tweet = [w.lower() for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
-            tweets.append((tokenized_tweet, label))
+
+    # If we use Python3.x we can proceed using the 'rt' flag
+    if sys.version_info[0] == 3:
+        with codecs.open(filename, 'rt') as csvfile:
+            reader = csv.reader(csvfile)
+            i = 0
+            for label, text, score in reader:
+                i += 1
+                sys.stdout.write('Loaded {} tweets\r'.format(i))
+                # Apply sentence and word tokenizer to text
+                tokenized_tweet = [w.lower() for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
+                tweets.append((tokenized_tweet, label))
+    # If we use Python2.x we need to handle encoding problems
+    elif sys.version_info[0] < 3:
+        with codecs.open(filename) as csvfile:
+            reader = csv.reader(csvfile)
+            i = 0
+            for row in reader:
+                unicode_row = [x.decode('utf8') for x in row]
+                label = unicode_row[0]
+                text = unicode_row[1]
+                score = unicode_row[2]
+                i += 1
+                sys.stdout.write('Loaded {} tweets\r'.format(i))
+                # Apply sentence and word tokenizer to text
+                tokenized_tweet = [w.lower().encode('utf8') for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
+                tweets.append((tokenized_tweet, label))
     print("Loaded {} tweets".format(i))
     return tweets
 
@@ -222,10 +240,8 @@ def parse_dataset(dataset_name, tokenizer):
     Parse a dataset and outputs a list of documents.
     Available datasets: 'labeled_tweets', 'sent140'.
     '''
-    # TODO: Implement tokenizer in parse_tweets_set() method.
     if dataset_name == 'labeled_tweets':
-        # This is an example using labeled_tweets.csv. Tweets are tokenized
-        # using the basic word_tokenize.
+        # This is an example using labeled_tweets.csv
         return parse_tweets_set('labeled_tweets.csv', tokenizer)
 
     elif dataset_name == 'sent140':
@@ -244,9 +260,8 @@ def parse_dataset(dataset_name, tokenizer):
             all_tweets = load_file(cache_path)
 
         return all_tweets
-
     else:
-        raise
+        raise ValueError('Error while parsing the dataset. Did you specify a valid name?')
 
 def demo(dataset_name, classifier_type, n=None):
     '''
@@ -255,13 +270,13 @@ def demo(dataset_name, classifier_type, n=None):
     :param classifier_type: 'maxent', 'naivebayes'
     '''
     # tokenizer = word_tokenize # This will not work using CategorizedPlaintextCorpusReader
-    # tokenizer = treebank.TreebankWordTokenizer()
-    tokenizer = regexp.WhitespaceTokenizer()
+    tokenizer = treebank.TreebankWordTokenizer()
+    # tokenizer = regexp.WhitespaceTokenizer()
     # tokenizer = regexp.WordPunctTokenizer()
     try:
         all_docs = parse_dataset(dataset_name, tokenizer)
-    except Exception as ex:
-        sys.exit('Error while parsing the dataset. Did you specify a valid name?')
+    except ValueError as ve:
+        sys.exit(ve)
 
     if not n:
         n = len(all_docs)
@@ -298,6 +313,6 @@ def demo(dataset_name, classifier_type, n=None):
 
 
 if __name__ == '__main__':
-    # demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8000)
-    demo(dataset_name='sent140', classifier_type='naivebayes', n=8000)
+    demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8000)
     # demo(dataset_name='labeled_tweets', classifier_type='maxent', n=8000)
+    # demo(dataset_name='sent140', classifier_type='naivebayes', n=8000)
