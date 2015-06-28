@@ -157,13 +157,6 @@ def save_file(content, filename):
         # pickle.dump(content, storage_file) # This will break on python2.x
         pickle.dump(content, storage_file, protocol=2) # protocol = 2 is for python2 compatibility
 
-def load_file(filename):
-    print("Loading", filename)
-    with codecs.open(filename, 'rb') as storage_file:
-        # The file has to be saved using protocol=2 if we need to read it using python2.x
-        content = pickle.load(storage_file)
-    return content
-
 def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
     '''
     Parse training file and output train and test sets in (text, label) format.
@@ -257,7 +250,7 @@ def parse_dataset(dataset_name, tokenizer):
                           [(tweet, 'neg') for tweet in corpus.sents('sent140_neg.txt')])
             save_file(all_tweets, cache_path)
         else:
-            all_tweets = load_file(cache_path)
+            all_tweets = load(cache_path)
 
         return all_tweets
     else:
@@ -313,6 +306,6 @@ def demo(dataset_name, classifier_type, n=None):
 
 
 if __name__ == '__main__':
-    demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8000)
+    # demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8000)
     # demo(dataset_name='labeled_tweets', classifier_type='maxent', n=8000)
-    # demo(dataset_name='sent140', classifier_type='naivebayes', n=8000)
+    demo(dataset_name='sent140', classifier_type='naivebayes', n=8000)
