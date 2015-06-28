@@ -68,6 +68,10 @@ class TweetHandlerI(object):
         """A flag to indicate whether this is the first data
         item to be processed in the current round of processing."""
         self.counter = 0
+        
+        """A flag to indicate that to the client to stop for
+        a functional clause (e.g. date limit)"""
+        self.do_stop = False
 
     def handle(self, data):
         """
@@ -81,6 +85,10 @@ class TweetHandlerI(object):
         (default implementation should be enough in most cases)
         """
         for item in data_chunk:
-            if self.handle(item) == False:
-                return False
-        return True
+            self.handle(item)
+    
+    def do_continue(self):
+        """
+        Returns false if the client should stop fetching tweets
+        """
+        return self.counter < self.limit and not self.do_stop
