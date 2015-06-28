@@ -115,6 +115,9 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace'):
     https://docs.python.org/3/library/codecs.html#codec-base-classes
     """
     (writer, outf) = outf_writer_compat(outfile, encoding, errors)
+    # write the list of fields as header
+    writer.writerow(fields)
+    # process the file
     for line in fp:
         tweet = json.loads(line)
         row = extract_fields(tweet, fields)
@@ -158,8 +161,8 @@ def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
     object, usually the tweet. Useful examples: 'id_str' for the tweetID. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
     e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
-    If `entity_type` is expressed with hierarchy, then it is  the list of\
-    fields of the object that corresponds to the key of the entity_type\
+    If `entity_type` is expressed with hierarchy, then it is the list of\
+    fields of the object that corresponds to the key of the entity_type,\
     (e.g., for entity_type='user.urls', the fields in the main_fields list\
     belong to the user object; for entity_type='place.bounding_box', the\
     files in the main_field list belong to the place object of the tweet).
@@ -178,6 +181,8 @@ def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
     """
 
     (writer, outf) = outf_writer_compat(outfile, encoding, errors)
+    header = get_header_field_list(main_fields, entity_type, entity_fields)
+    writer.writerow(header)
     for line in fp:
         tweet = json.loads(line)
         if _is_composed_key(entity_type):
@@ -195,6 +200,21 @@ def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
             _write_to_file(tweet_fields, items, entity_fields, writer)
     outf.close()
 
+def get_header_field_list(main_fields, entity_type, entity_fields):
+    if _is_composed_key(entity_type):
+        key, value = _get_key_value_composed(entity_type)
+        main_entity = key
+        sub_entity = value
+    else:
+        main_entity = None
+        sub_entity = entity_type
+    
+    if main_entity:
+        output1 = [HIER_SEPARATOR.join([main_entity, x]) for x in main_fields]
+    else:
+        output1 = main_fields
+    output2 = [HIER_SEPARATOR.join([sub_entity, x]) for x in entity_fields]
+    return output1 + output2
 
 def _write_to_file(object_fields, items, entity_fields, writer):
     if not items:
