@@ -85,6 +85,8 @@ class TweetHandlerI(object):
         (default implementation should be enough in most cases)
         """
         for item in data_chunk:
+            if not self.do_continue():
+                break
             self.handle(item)
     
     def do_continue(self):
