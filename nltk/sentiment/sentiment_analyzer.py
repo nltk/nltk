@@ -79,7 +79,7 @@ class SentimentAnalyzer(object):
         '''
         # This method could be put outside the class, and the unigram_feats variable
         # can be made more generic (e.g. a list of feature lists for bigrams, trigrams, etc.)
-        unigram_feats_freqs = FreqDist(word.lower() for word in words) # Stopwords are not removed
+        unigram_feats_freqs = FreqDist(word for word in words) # Stopwords are not removed
         return [w for w,f in unigram_feats_freqs.most_common(top_n)]
 
     @timer
@@ -101,7 +101,7 @@ class SentimentAnalyzer(object):
         Return most common top_n bigram features.
         '''
         # This method could be put outside the class
-        bigram_feats_freqs = FreqDist(bigrams(word.lower() for word in words))
+        bigram_feats_freqs = FreqDist(bigrams(word for word in words))
         return [(b[0],b[1]) for b,f in bigram_feats_freqs.most_common(top_n)]
 
     def add_feat_extractor(self, function, **kwargs):
@@ -180,7 +180,7 @@ def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
                 i += 1
                 sys.stdout.write('Loaded {} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
-                tokenized_tweet = [w.lower() for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
+                tokenized_tweet = [w for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
                 tweets.append((tokenized_tweet, label))
     # If we use Python2.x we need to handle encoding problems
     elif sys.version_info[0] < 3:
@@ -195,7 +195,7 @@ def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
                 i += 1
                 sys.stdout.write('Loaded {} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
-                tokenized_tweet = [w.lower().encode('utf8') for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
+                tokenized_tweet = [w.encode('utf8') for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
                 tweets.append((tokenized_tweet, label))
     print("Loaded {} tweets".format(i))
     return tweets
@@ -317,6 +317,6 @@ def demo(dataset_name, classifier_type, n=None):
         Instances=n, Tokenizer=tokenizer.__class__.__name__, Feats=extr, Accuracy=accuracy)
 
 if __name__ == '__main__':
-    demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8)
+    demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8000)
     # demo(dataset_name='labeled_tweets', classifier_type='maxent', n=8000)
     # demo(dataset_name='sent140', classifier_type='naivebayes', n=8000)
