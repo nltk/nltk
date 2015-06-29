@@ -51,7 +51,7 @@ class Boxer(object):
     semantic parser that produces Discourse Representation Structures (DRSs).
     """
 
-    def __init__(self, boxer_drs_interpreter=None, resolve=True, elimeq=False, bin_dir=None, verbose=False):
+    def __init__(self, boxer_drs_interpreter=None, elimeq=False, bin_dir=None, verbose=False, resolve=True):
         """
         :param boxer_drs_interpreter: A class that converts from the
         ``AbstractBoxerDrs`` object hierarchy to a different object.  The
