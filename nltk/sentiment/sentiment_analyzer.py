@@ -1,3 +1,12 @@
+# coding: utf-8
+#
+# Natural Language Toolkit: Sentiment Analyzer
+#
+# Copyright (C) 2001-2015 NLTK Project
+# Author: Pierpaolo Pantone <24alsecondo@gmail.com>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+
 from __future__ import print_function
 from nltk.classify.util import apply_features, accuracy
 from nltk.classify.naivebayes import NaiveBayesClassifier
