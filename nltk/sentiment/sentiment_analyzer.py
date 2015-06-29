@@ -7,7 +7,7 @@ from nltk.corpus.reader import CategorizedPlaintextCorpusReader
 from nltk.data import load
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist
-from nltk.tokenize import word_tokenize, treebank, regexp
+from nltk.tokenize import word_tokenize, treebank, regexp, casual
 from nltk.util import bigrams
 from collections import defaultdict
 import codecs
@@ -96,7 +96,6 @@ class SentimentAnalyzer(object):
         finder.apply_freq_filter(min_freq)
         return finder.nbest(assoc_measure, top_n)
 
-    @timer
     def bigram_word_feats(self, words, top_n=None):
         '''
         Return most common top_n bigram features.
@@ -150,6 +149,7 @@ class SentimentAnalyzer(object):
         print("Evaluating {} accuracy...".format(type(classifier).__name__))
         accuracy_score = accuracy(classifier, test_set)
         print("Accuracy: ", accuracy_score)
+        return accuracy_score
 
 def save_file(content, filename):
     print("Saving", filename)
@@ -256,6 +256,15 @@ def parse_dataset(dataset_name, tokenizer):
     else:
         raise ValueError('Error while parsing the dataset. Did you specify a valid name?')
 
+def output_markdown(filename, **kwargs):
+    with codecs.open(filename, 'at') as outfile:
+        text = '*** \n'
+        text += '{} \n\n'.format(time.strftime("%d/%m/%Y, %H:%M"))
+        for k in kwargs:
+            text += '  - **{}:** {} \n'.format(k, kwargs[k])
+        text += '*** \n'
+        outfile.write(text)
+
 def demo(dataset_name, classifier_type, n=None):
     '''
     :param dataset_name: 'labeled_tweets', 'sent140'
@@ -266,6 +275,7 @@ def demo(dataset_name, classifier_type, n=None):
     tokenizer = treebank.TreebankWordTokenizer()
     # tokenizer = regexp.WhitespaceTokenizer()
     # tokenizer = regexp.WordPunctTokenizer()
+    # tokenizer = casual.TweetTokenizer()
     try:
         all_docs = parse_dataset(dataset_name, tokenizer)
     except ValueError as ve:
@@ -293,19 +303,20 @@ def demo(dataset_name, classifier_type, n=None):
     test_set = apply_features(sa.extract_features, testing_tweets)
 
     if classifier_type == 'naivebayes':
-        # filename = 'nb_labeledtweets-{}.pickle'.format(n)
         trainer = NaiveBayesClassifier.train
     elif classifier_type == 'maxent':
-        # filename = 'maxent_labeledtweets-{}.pickle'.format(n)
         trainer = MaxentClassifier.train
 
     filename = '{}_{}_{}.pickle'.format(dataset_name, classifier_type, n)
     # classifier = sa.train(trainer, training_set, save_classifier=filename, max_iter=4)
     classifier = sa.train(trainer, training_set, save_classifier=filename)
-    sa.evaluate(classifier, test_set)
+    accuracy = sa.evaluate(classifier, test_set)
 
+    extr = [f.__name__ for f in sa.feat_extractors]
+    output_markdown('results.md', Dataset=dataset_name, Classifier=classifier_type,
+        Instances=n, Tokenizer=tokenizer.__class__.__name__, Feats=extr, Accuracy=accuracy)
 
 if __name__ == '__main__':
-    # demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8000)
+    demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8)
     # demo(dataset_name='labeled_tweets', classifier_type='maxent', n=8000)
-    demo(dataset_name='sent140', classifier_type='naivebayes', n=8000)
+    # demo(dataset_name='sent140', classifier_type='naivebayes', n=8000)
