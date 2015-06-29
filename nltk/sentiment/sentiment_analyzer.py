@@ -258,7 +258,7 @@ def demo(dataset_name, classifier_type, n=None):
     except ValueError as ve:
         sys.exit(ve)
 
-    if not n:
+    if not n or n > len(all_docs):
         n = len(all_docs)
 
     training_tweets, testing_tweets = split_train_test(all_docs, n)
