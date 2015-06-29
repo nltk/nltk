@@ -45,28 +45,6 @@ class SentimentAnalyzer(object):
     def __init__(self):
         self.feat_extractors = defaultdict(list)
 
-    def parse_labeled_set(self, filename, max_entries=None):
-        '''
-        DEPRECATED. This method has to be removed: it will not be used anymore
-        after the proper conversion of datasets into NLTK corpora.
-        Parse training file and output train and test sets in (text, label) format
-        '''
-        labeled_tweets = []
-        with codecs.open(filename, 'rt', encoding='utf-8', errors='replace') as csvfile:
-            reader = csv.reader(csvfile)
-            i = 0
-            for row in reader:
-                if max_entries and reader.line_num == max_entries:
-                    break
-                sys.stdout.write("Loaded %d sentences\r" % (reader.line_num))
-                i += 1
-                # Create a list of tokenized tweets
-                tokenized_tweet = [w.lower() for w in word_tokenize(row[5])]
-                labeled_tweets.append((tokenized_tweet, row[0]))
-        print("Loaded {} sentences".format(i+1))
-
-        return labeled_tweets
-
     def get_all_words(self, tweets):
         all_words = []
         for words, sentiment in tweets:
