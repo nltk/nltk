@@ -57,11 +57,11 @@ class Boxer(object):
         ``AbstractBoxerDrs`` object hierarchy to a different object.  The
         default is ``NltkDrtBoxerDrsInterpreter``, which converts to the NLTK
         DRT hierarchy.
-        :param resolve: When set to true, Boxer will resolve all anaphoric DRSs and perform merge-reduction. 
-        Resolution follows Van der Sandt's theory of binding and accommodation.
         :param elimeq: When set to true, Boxer removes all equalities from the
         DRSs and discourse referents standing in the equality relation are
         unified, but only if this can be done in a meaning-preserving manner.
+        :param resolve: When set to true, Boxer will resolve all anaphoric DRSs and perform merge-reduction. 
+        Resolution follows Van der Sandt's theory of binding and accommodation.
         """
         if boxer_drs_interpreter is None:
             boxer_drs_interpreter = NltkDrtBoxerDrsInterpreter()
