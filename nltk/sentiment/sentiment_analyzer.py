@@ -236,11 +236,10 @@ def parse_dataset(dataset_name, tokenizer):
 
 def output_markdown(filename, **kwargs):
     with codecs.open(filename, 'at') as outfile:
-        text = '*** \n'
+        text = '\n*** \n\n'
         text += '{} \n\n'.format(time.strftime("%d/%m/%Y, %H:%M"))
-        for k in kwargs:
+        for k in sorted(kwargs):
             text += '  - **{}:** {} \n'.format(k, kwargs[k])
-        text += '*** \n'
         outfile.write(text)
 
 def demo(dataset_name, classifier_type, n=None):
