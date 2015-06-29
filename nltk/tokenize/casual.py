@@ -37,7 +37,7 @@ domains and tasks. The basic logic is this:
 
 from __future__ import unicode_literals
 import re
-from nltk.compat import htmlentitydefs
+from nltk.compat import htmlentitydefs, int2byte, unichr
 
 
 ######################################################################
@@ -177,9 +177,66 @@ WORD_RE = re.compile(r"""(%s)""" % "|".join(REGEXPS), re.VERBOSE | re.I
 EMOTICON_RE = re.compile(EMOTICONS, re.VERBOSE | re.I | re.UNICODE)
 
 # These are for regularizing HTML entities to Unicode:
-HTML_ENTITY_DIGIT_RE = re.compile(r"&#\d+;")
-HTML_ENTITY_ALPHA_RE = re.compile(r"&\w+;")
-AMP = "&amp;"
+_ent_re = re.compile(r'&(#?(x?))([^&;\s]+);')
+
+
+######################################################################
+# Functions for converting html entities
+######################################################################
+
+def _str_to_unicode(text, encoding=None, errors='strict'):
+    if encoding is None:
+        encoding = 'utf-8'
+    if isinstance(text, bytes):
+        return text.decode(encoding, errors)
+    return text
+
+def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8'):
+    u"""Remove entities from the given `text` by converting them to their
+    corresponding unicode character.
+    `text` can be a unicode string or a byte string encoded in the given
+    `encoding` (which defaults to 'utf-8').
+    If `keep` is passed (with a list of entity names) those entities will
+    be kept (they won't be removed).
+    It supports both numeric entities (``&#nnnn;`` and ``&#hhhh;``)
+    and named entities (such as ``&nbsp;`` or ``&gt;``).
+    If `remove_illegal` is ``True``, entities that can't be converted are removed.
+    If `remove_illegal` is ``False``, entities that can't be converted are kept "as
+    is". For more information see the tests.
+    Always returns a unicode string (with the entities removed).
+    """
+    
+    def convert_entity(m):
+        entity_body = m.group(3)
+        if m.group(1):
+            try:
+                if m.group(2):
+                    number = int(entity_body, 16)
+                else:
+                    number = int(entity_body, 10)
+                # Numeric character references in the 80-9F range are typically
+                # interpreted by browsers as representing the characters mapped
+                # to bytes 80-9F in the Windows-1252 encoding. For more info
+                # see: http://en.wikipedia.org/wiki/Character_encodings_in_HTML
+                if 0x80 <= number <= 0x9f:
+                    return int2byte(number).decode('cp1252')
+            except ValueError:
+                number = None
+        else:
+            if entity_body in keep:
+                return m.group(0)
+            else:
+                number = htmlentitydefs.name2codepoint.get(entity_body)
+        if number is not None:
+            try:
+                return unichr(number)
+            except ValueError:
+                pass
+    
+        return u'' if remove_illegal else m.group(0)
+    
+    return _ent_re.sub(convert_entity, _str_to_unicode(text, encoding))
+
 
 ######################################################################
 
@@ -196,7 +253,7 @@ class TweetTokenizer:
         the original string if preserve_case=False
         """
         # Fix HTML character entities:
-        text = self._html2unicode(text)
+        text = _replace_html_entities(text)
         # Tokenize:
         words = WORD_RE.findall(text)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
@@ -205,33 +262,6 @@ class TweetTokenizer:
                               x.lower()), words))
         return words
 
-
-    def _html2unicode(self, text):
-        """
-        Try to replace all the HTML entities in `s` with their corresponding
-        Unicode characters.
-        """
-        # First the digits:
-        ents = set(HTML_ENTITY_DIGIT_RE.findall(text))
-        if len(ents) > 0:
-            for ent in ents:
-                entnum = ent[2:-1]
-                try:
-                    entnum = int(entnum)
-                    text = text.replace(ent, chr(entnum))
-                except:
-                    pass
-        # Now the alpha versions:
-        ents = set(HTML_ENTITY_ALPHA_RE.findall(text))
-        ents = [e for e in ents if not e == AMP]
-        for ent in ents:
-            entname = ent[1:-1]
-            try:
-                text = text.replace(ent, chr(htmlentitydefs.name2codepoint[entname]))
-            except:
-                pass
-            text = text.replace(AMP, " and ")
-        return text
 
 ######################################################################
 # Tokenization Function
