@@ -142,7 +142,7 @@ machado = LazyCorpusLoader(
     r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*', encoding='latin-1')
 masc_tagged = LazyCorpusLoader(
     'masc_tagged', CategorizedTaggedCorpusReader, r'(spoken|written)/.*\.txt',
-    cat_file='categories.txt', tagset='wsj', encoding="ascii", sep="_")
+    cat_file='categories.txt', tagset='wsj', encoding="utf-8", sep="_")
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*',
@@ -252,6 +252,7 @@ semcor = LazyCorpusLoader(
     'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml',
     wordnet) # Must be defined *after* wordnet corpus.
 
+  
 def demo():
     # This is out-of-date:
     abc.demo()

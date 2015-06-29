@@ -9,7 +9,7 @@
 A utility for displaying lexical dispersion.
 """
 
-def dispersion_plot(text, words, ignore_case=False):
+def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Plot"):
     """
     Generate a lexical dispersion plot.
 
@@ -47,7 +47,7 @@ def dispersion_plot(text, words, ignore_case=False):
     pylab.plot(x, y, "b|", scalex=.1)
     pylab.yticks(list(range(len(words))), words, color="b")
     pylab.ylim(-1, len(words))
-    pylab.title("Lexical Dispersion Plot")
+    pylab.title(title)
     pylab.xlabel("Word Offset")
     pylab.show()
 
