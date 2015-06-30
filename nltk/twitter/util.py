@@ -16,6 +16,7 @@ import json
 import os
 import pprint
 import nltk.compat as compat
+import gzip
 
 from twython import Twython
 
@@ -83,7 +84,8 @@ def _get_entity_recursive(json, entity):
     else:
         return None
 
-def json2csv(fp, outfile, fields, encoding='utf8', errors='replace'):
+def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
+             gzip_compress=True):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -110,11 +112,12 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace'):
     Addionally, it allows IDs from other Twitter objects, e. g.,\
     ['id', 'text', 'user.id', 'user.followers_count', 'user.friends_count']
 
-
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
+    
+    :param gzip_compress: if True, ouput files are compressed with gzip
     """
-    (writer, outf) = outf_writer_compat(outfile, encoding, errors)
+    (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
     # write the list of fields as header
     writer.writerow(fields)
     # process the file
@@ -124,15 +127,21 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace'):
         writer.writerow(row)
     outf.close()
 
-def outf_writer_compat(outfile, encoding, errors):
+def outf_writer_compat(outfile, encoding, errors, gzip_compress=True):
     """
     Identify appropriate CSV writer given the Python version
     """
     if compat.PY3 == True:
-        outf = open(outfile, 'w', encoding=encoding, errors=errors)
+        if gzip_compress:
+            outf = gzip.open(outfile, 'wt', encoding=encoding, errors=errors)
+        else:
+            outf = open(outfile, 'w', encoding=encoding, errors=errors)
         writer = csv.writer(outf)
     else:
-        outf = open(outfile, 'wb')
+        if gzip_compress:
+            outf = gzip.open(outfile, 'wb')
+        else:
+            outf = open(outfile, 'wb')
         writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
     return (writer, outf)
 
@@ -140,7 +149,7 @@ def outf_writer_compat(outfile, encoding, errors):
 
 
 def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
-                      encoding='utf8', errors='replace'):
+                      encoding='utf8', errors='replace', gzip_compress=True):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -178,9 +187,11 @@ def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
 
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
+    
+    :param gzip_compress: if True, ouput files are compressed with gzip
     """
 
-    (writer, outf) = outf_writer_compat(outfile, encoding, errors)
+    (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
     header = get_header_field_list(main_fields, entity_type, entity_fields)
     writer.writerow(header)
     for line in fp:
