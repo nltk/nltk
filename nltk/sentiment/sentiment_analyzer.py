@@ -19,6 +19,7 @@ from nltk.probability import FreqDist
 from nltk.tokenize import word_tokenize, treebank, regexp, casual
 from nltk.util import bigrams
 from collections import defaultdict
+from copy import deepcopy
 import codecs
 import csv
 import itertools
@@ -26,8 +27,25 @@ import os, os.path
 import pdb
 import pickle
 import random
+import re
 import sys
 import time
+
+# This list of negation is taken from vader.py. We'd better import it instead.
+NEGATION = r"""
+    (?:
+        ^(?:never|no|nothing|nowhere|noone|none|not|
+            havent|hasnt|hadnt|cant|couldnt|shouldnt|
+            wont|wouldnt|dont|doesnt|didnt|isnt|arent|aint
+        )$
+    )
+    |
+    n't"""
+
+CLAUSE_PUNCT = r'^[.:;!?]$'
+
+NEGATION_RE = re.compile(NEGATION, re.VERBOSE)
+CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
 
 # Define @timer decorator
 def timer(method):
@@ -196,6 +214,34 @@ def split_train_test(all_instances, n):
 
     return train_set, test_set
 
+def add_neg_suffix(document, shallow=False):
+    '''
+    Append a specific suffix to words that appear in the scope between a negation
+    and a punctuation mark.
+    :param shallow: if True, the method will modify the original document in place
+    '''
+    # check if the document is labeled. If so, only consider the unlabeled document
+    if not shallow:
+        document = deepcopy(document)
+    labeled = document and isinstance(document[0], (tuple, list))
+    if labeled:
+        doc = document[0]
+    else:
+        doc = document
+    neg_scope = False
+    for i,word in enumerate(doc):
+        if NEGATION_RE.search(word):
+            print('NEGATION ->', word)
+            neg_scope = not neg_scope # double negation is considered affirmation
+            continue
+        elif neg_scope and CLAUSE_PUNCT_RE.search(word):
+            neg_scope = not neg_scope
+        elif neg_scope and not CLAUSE_PUNCT_RE.search(word):
+            print(word)
+            doc[i] += '_NEG'
+
+    return document
+
 def extract_unigram_feats(document, unigrams):
     # This function is declared outside the class because the user should have the
     # possibility to create his/her own feature extractors without modifying the
@@ -277,7 +323,7 @@ def demo(dataset_name, classifier_type, n=None):
     unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
     # Note that the all_words variable is a list of ordered words. Since order is
-    # captured, we can get bigram collocations from the list.
+    # captured, we can get bigram features from the list.
 
     # bigram_collocs_feats = sa.bigram_collocation_feats(all_words, top_n=100, min_freq=12)
     # sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
