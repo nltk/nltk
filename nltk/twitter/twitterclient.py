@@ -76,7 +76,8 @@ class Streamer(TwythonStreamer):
         if self.do_continue:
             if self.handler is not None:
                 if 'text' in data:
-                    self.do_continue = self.handler.handle(data)
+                    self.handler.handle(data)
+                    self.do_continue = self.handler.do_continue()
             else:
                 raise ValueError("No data handler has been registered.")
         else:
@@ -212,8 +213,11 @@ class Query(Twython):
         results = self.search(q=keywords, count=min(100, count), lang=lang,
                               result_type='recent')
         count_from_query = results['search_metadata']['count']
-        if self.handler is None or\
-           self.handler.handle_chunk(results['statuses']) == False:
+        if not self.handler:
+            return results['statuses']
+        
+        self.handler.handle_chunk(results['statuses'])
+        if self.handler.do_continue() == False:
             return results['statuses']
 
 
@@ -244,7 +248,8 @@ class Query(Twython):
                     raise e
                 retries += 1
             count_from_query += results['search_metadata']['count']
-            if self.handler.handle_chunk(results['statuses']) == False:
+            self.handler.handle_chunk(results['statuses'])
+            if self.handler.do_continue() == False:
                 return results['statuses']
 
     def user_info_from_id(self, userids):
@@ -350,10 +355,6 @@ class TweetViewer(TweetHandlerI):
         text = data['text']
         print(text)
         self.counter += 1
-        if self.counter >= self.limit:
-            # Tell the client to disconnect
-            return False
-        return True
 
 
 class TweetWriter(TweetHandlerI):
@@ -430,25 +431,27 @@ class TweetWriter(TweetHandlerI):
                     message = "later"
                 print("Date limit {0} is {1} than date of current tweet {2}".\
                       format(self.date_limit, message, tweet_date))
-                return False
+                self.do_stop = True
+                return
 
         self.startingup = False
         self.counter += 1
 
         if self.counter < self.limit:
-            return True
+            return
         else:
             print('Written {0} tweets'.format(self.counter))
             self.output.close()
             if not self.repeat:
                 "Tell the client to disconnect"
-                return False
+                self.do_stop = True
+                return
             else:
                 self.fname = self.timestamped_file()
                 self.output = open(self.fname, 'w')
                 self.counter = 0
                 print('\nWriting to new file {0}'.format(self.fname))
-                return True
+                return
 
 
 

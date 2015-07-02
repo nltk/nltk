@@ -58,6 +58,15 @@ if PY3:
     UTC = timezone.utc
 
     from tempfile import TemporaryDirectory
+    
+    unichr = chr
+    if sys.version_info[1] <= 1:
+        def int2byte(i):
+            return bytes((i,))
+    else:
+        # This is about 2x faster than the implementation above on 3.2+
+        import operator
+        int2byte = operator.methodcaller("to_bytes", 1, "big")
 
 else:
     def b(s):
@@ -145,6 +154,9 @@ else:
             return ZERO
     
     UTC = UTC()
+
+    unichr = unichr
+    int2byte = chr
     
     import csv, codecs, cStringIO
     class UnicodeWriter:
