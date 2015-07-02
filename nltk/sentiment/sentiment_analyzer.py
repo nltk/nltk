@@ -8,6 +8,7 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import print_function
+import nltk
 from nltk.classify.util import apply_features, accuracy
 from nltk.classify.naivebayes import NaiveBayesClassifier
 from nltk.classify.maxent import MaxentClassifier
@@ -17,7 +18,6 @@ from nltk.data import load
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist
 from nltk.tokenize import word_tokenize, treebank, regexp, casual
-from nltk.util import bigrams
 from collections import defaultdict
 from copy import deepcopy
 import codecs
@@ -72,11 +72,17 @@ class SentimentAnalyzer(object):
     def __init__(self):
         self.feat_extractors = defaultdict(list)
 
-    def get_all_words(self, tweets):
+    def get_all_words(self, documents):
         all_words = []
-        for words, sentiment in tweets:
+        for words, sentiment in documents:
             all_words.extend(words)
         return all_words
+
+    def get_all_bigrams(self, documents):
+        all_bigrams = []
+        for text, sentiment in documents:
+            all_bigrams.extend(nltk.bigrams(text))
+        return all_bigrams
 
     def unigram_word_feats(self, words, top_n=None):
         '''
@@ -88,7 +94,7 @@ class SentimentAnalyzer(object):
         return [w for w,f in unigram_feats_freqs.most_common(top_n)]
 
     @timer
-    def bigram_collocation_feats(self, words, assoc_measure=BigramAssocMeasures.pmi, top_n=None, min_freq=3):
+    def bigram_collocation_feats(self, documents, assoc_measure=BigramAssocMeasures.pmi, top_n=None, min_freq=3):
         '''
         Return top_n bigram features (using assoc_measure).
         Note that this method is based on bigram collocations, and not on simple
@@ -97,16 +103,16 @@ class SentimentAnalyzer(object):
         :param assoc_measure: bigram association measures
         '''
         # This method could be put outside the class
-        finder = BigramCollocationFinder.from_words(words)
+        finder = BigramCollocationFinder.from_documents(documents)
         finder.apply_freq_filter(min_freq)
         return finder.nbest(assoc_measure, top_n)
 
-    def bigram_word_feats(self, words, top_n=None):
+    def bigram_word_feats(self, bigrams, top_n=None):
         '''
         Return most common top_n bigram features.
         '''
         # This method could be put outside the class
-        bigram_feats_freqs = FreqDist(bigrams(word for word in words))
+        bigram_feats_freqs = FreqDist(bigram for bigram in bigrams)
         return [(b[0],b[1]) for b,f in bigram_feats_freqs.most_common(top_n)]
 
     def add_feat_extractor(self, function, **kwargs):
@@ -214,15 +220,17 @@ def split_train_test(all_instances, n):
 
     return train_set, test_set
 
-def add_neg_suffix(document, shallow=False):
+def mark_negation(document, double_neg_flip=False, shallow=False):
     '''
     Append a specific suffix to words that appear in the scope between a negation
     and a punctuation mark.
-    :param shallow: if True, the method will modify the original document in place
+    :param shallow: if True, the method will modify the original document in place.
+    :param double_neg_flip: if True, double negation is considered affirmation (we
+        activate/deactivate negation scope everytime we find a negation).
     '''
-    # check if the document is labeled. If so, only consider the unlabeled document
     if not shallow:
         document = deepcopy(document)
+    # check if the document is labeled. If so, only consider the unlabeled document
     labeled = document and isinstance(document[0], (tuple, list))
     if labeled:
         doc = document[0]
@@ -231,29 +239,40 @@ def add_neg_suffix(document, shallow=False):
     neg_scope = False
     for i,word in enumerate(doc):
         if NEGATION_RE.search(word):
-            print('NEGATION ->', word)
-            neg_scope = not neg_scope # double negation is considered affirmation
-            continue
+            if not neg_scope or (neg_scope and double_neg_flip):
+                neg_scope = not neg_scope
+                continue
+            else:
+                doc[i] += '_NEG'
         elif neg_scope and CLAUSE_PUNCT_RE.search(word):
             neg_scope = not neg_scope
         elif neg_scope and not CLAUSE_PUNCT_RE.search(word):
-            print(word)
             doc[i] += '_NEG'
 
     return document
 
-def extract_unigram_feats(document, unigrams):
+def extract_unigram_feats(document, unigrams, handle_negation=False):
     # This function is declared outside the class because the user should have the
     # possibility to create his/her own feature extractors without modifying the
     # SentimentAnalyzer class.
     features = {}
+    if handle_negation:
+        document = mark_negation(document)
     for word in unigrams:
         features['contains({})'.format(word)] = word in set(document)
     return features
 
 def extract_bigram_feats(document, bigrams):
+    # This function is declared outside the class because the user should have the
+    # possibility to create his/her own feature extractors without modifying the
+    # SentimentAnalyzer class.
     features = {}
-    # return dict([(ngram, True) for ngram in itertools.chain(words, bigrams)])
+    for bigr in bigrams:
+        features['contains({})'.format(bigr)] = bigr in nltk.bigrams(document)
+    return features
+
+def extract_bigram_coll_feats(document, bigrams):
+    features = {}
     for bigram in bigrams:
         # Important: this function DOES NOT consider the order of the words in
         # the bigram. It is useful for collocations, but not for idiomatic forms.
@@ -304,10 +323,10 @@ def demo(dataset_name, classifier_type, n=None):
     :param classifier_type: 'maxent', 'naivebayes'
     '''
     # tokenizer = word_tokenize # This will not work using CategorizedPlaintextCorpusReader
-    tokenizer = treebank.TreebankWordTokenizer()
+    # tokenizer = treebank.TreebankWordTokenizer()
     # tokenizer = regexp.WhitespaceTokenizer()
     # tokenizer = regexp.WordPunctTokenizer()
-    # tokenizer = casual.TweetTokenizer()
+    tokenizer = casual.TweetTokenizer()
     try:
         all_docs = parse_dataset(dataset_name, tokenizer)
     except ValueError as ve:
@@ -320,16 +339,27 @@ def demo(dataset_name, classifier_type, n=None):
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_tweets)
+
+    # Add simple unigram word features
     unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+
+    # Add unigram word features handling negation
+    # all_words_neg = sa.get_all_words([mark_negation(tweet) for tweet in training_tweets])
+    # unigram_feats = sa.unigram_word_feats(all_words_neg, top_n=1000)
+    # sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats, handle_negation=True)
+
     # Note that the all_words variable is a list of ordered words. Since order is
     # captured, we can get bigram features from the list.
 
-    # bigram_collocs_feats = sa.bigram_collocation_feats(all_words, top_n=100, min_freq=12)
-    # sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
+    # Add bigram collocation features
+    bigram_collocs_feats = sa.bigram_collocation_feats([tweet[0] for tweet in training_tweets], top_n=100, min_freq=12)
+    sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
 
-    bigram_feats = sa.bigram_word_feats(all_words, top_n=10)
-    sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_feats)
+    # Add bigram word features
+    # all_bigrams = sa.get_all_bigrams(training_tweets)
+    # bigram_feats = sa.bigram_word_feats(all_bigrams, top_n=10)
+    # sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_feats)
 
     training_set = apply_features(sa.extract_features, training_tweets)
     test_set = apply_features(sa.extract_features, testing_tweets)
@@ -350,5 +380,6 @@ def demo(dataset_name, classifier_type, n=None):
 
 if __name__ == '__main__':
     demo(dataset_name='labeled_tweets', classifier_type='naivebayes', n=8000)
+    # demo(dataset_name='labeled_tweets', classifier_type='naivebayes')
     # demo(dataset_name='labeled_tweets', classifier_type='maxent', n=8000)
     # demo(dataset_name='sent140', classifier_type='naivebayes', n=8000)
