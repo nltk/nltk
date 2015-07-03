@@ -57,7 +57,7 @@ class TestJSON2CSV(unittest.TestCase):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.text.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.text.csv')
-            json2csv(self.infile, outfn, ['text'])
+            json2csv(self.infile, outfn, ['text'], gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
 
@@ -69,7 +69,7 @@ class TestJSON2CSV(unittest.TestCase):
 
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.tweet.csv')
-            json2csv(self.infile, outfn, fields)
+            json2csv(self.infile, outfn, fields, gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
 
@@ -79,7 +79,7 @@ class TestJSON2CSV(unittest.TestCase):
 
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.user.csv')
-            json2csv(self.infile, outfn, fields)
+            json2csv(self.infile, outfn, fields, gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
 
@@ -88,7 +88,8 @@ class TestJSON2CSV(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.hashtag.csv')
             json2csv_entities(self.infile, outfn,
-                              ['id', 'text'], 'hashtags', ['text'])
+                              ['id', 'text'], 'hashtags', ['text'],
+                              gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
 
@@ -97,7 +98,8 @@ class TestJSON2CSV(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.usermention.csv')
             json2csv_entities(self.infile, outfn,
-                              ['id', 'text'], 'user_mentions', ['id', 'screen_name'])
+                              ['id', 'text'], 'user_mentions', ['id', 'screen_name'],
+                              gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
 
@@ -106,7 +108,8 @@ class TestJSON2CSV(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.media.csv')
             json2csv_entities(self.infile, outfn,
-                              ['id'], 'media', ['media_url', 'url'])
+                              ['id'], 'media', ['media_url', 'url'],
+                              gzip_compress=False)
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
@@ -116,7 +119,8 @@ class TestJSON2CSV(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.url.csv')
             json2csv_entities(self.infile, outfn,
-                              ['id'], 'urls', ['url', 'expanded_url'])
+                              ['id'], 'urls', ['url', 'expanded_url'],
+                              gzip_compress=False)
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
@@ -126,7 +130,8 @@ class TestJSON2CSV(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.userurl.csv')
             json2csv_entities(self.infile, outfn, ['id', 'screen_name'],
-                              'user.urls', ['url', 'expanded_url'])
+                              'user.urls', ['url', 'expanded_url'],
+                              gzip_compress=False)
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
@@ -136,7 +141,8 @@ class TestJSON2CSV(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.place.csv')
             json2csv_entities(self.infile, outfn,
-                              ['id', 'text'], 'place', ['name', 'country'])
+                              ['id', 'text'], 'place', ['name', 'country'],
+                              gzip_compress=False)
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
@@ -146,7 +152,8 @@ class TestJSON2CSV(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.placeboundingbox.csv')
             json2csv_entities(self.infile, outfn,
-                              ['id', 'name'], 'place.bounding_box', ['coordinates'])
+                              ['id', 'name'], 'place.bounding_box', ['coordinates'],
+                              gzip_compress=False)
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
@@ -158,7 +165,8 @@ class TestJSON2CSV(unittest.TestCase):
             json2csv_entities(self.infile, outfn, ['id'], 'retweeted_status',
                               ['created_at', 'favorite_count', 'id', 'in_reply_to_status_id',
                                'in_reply_to_user_id', 'retweet_count', 'text', 'truncated',
-                               'user.id'])
+                               'user.id'],
+                              gzip_compress=False)
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
@@ -170,7 +178,7 @@ class TestJSON2CSV(unittest.TestCase):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.retweet.csv.ref')
         with TemporaryDirectory() as tempdir:
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.text.csv')
-            json2csv(self.infile, outfn, ['text'])
+            json2csv(self.infile, outfn, ['text'], gzip_compress=False)
             self.assertFalse(are_files_identical(outfn, ref_fn), msg=self.msg)
 
 

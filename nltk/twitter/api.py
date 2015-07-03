@@ -43,7 +43,27 @@ class LocalTimezoneOffsetWithUTC(tzinfo):
 
 LOCAL = LocalTimezoneOffsetWithUTC()
 
-class TweetHandlerI(object):
+class BasicTweetHandler(object):
+    """
+    Minimum implementation of TweetHandler
+    Counts the number of tweets and decides when the client shoud stop
+    fetching tweets
+    """
+    def __init__(self, limit=20):
+        self.limit = limit
+        self.counter = 0
+        
+        """A flag to indicate that to the client to stop for
+        a functional clause (e.g. date limit)"""
+        self.do_stop = False
+
+    def do_continue(self):
+        """
+        Returns false if the client should stop fetching tweets
+        """
+        return self.counter < self.limit and not self.do_stop
+
+class TweetHandlerI(BasicTweetHandler):
     """
     Interface class whose subclasses should implement a handle method that
     Twitter clients can delegate to.
@@ -59,19 +79,13 @@ class TweetHandlerI(object):
         40)` for 12:30 pm on April 1 2015.
 
         """
-        self.limit = limit
+        BasicTweetHandler.__init__(self, limit)
+
         self.date_limit = date_limit
         if date_limit is not None:
             self.date_limit = datetime(*date_limit, tzinfo=LOCAL)
 
         self.startingup = True
-        """A flag to indicate whether this is the first data
-        item to be processed in the current round of processing."""
-        self.counter = 0
-        
-        """A flag to indicate that to the client to stop for
-        a functional clause (e.g. date limit)"""
-        self.do_stop = False
 
     def handle(self, data):
         """
@@ -79,18 +93,9 @@ class TweetHandlerI(object):
         """
         raise NotImplementedError
 
-    def handle_chunk(self, data_chunk):
+    def on_finish(self):
         """
-        Deal appropriately with a list of elements returned by the Twitter API
-        (default implementation should be enough in most cases)
+        Actions when the tweet limit has been reached
         """
-        for item in data_chunk:
-            if not self.do_continue():
-                break
-            self.handle(item)
-    
-    def do_continue(self):
-        """
-        Returns false if the client should stop fetching tweets
-        """
-        return self.counter < self.limit and not self.do_stop
+        raise NotImplementedError
+        
