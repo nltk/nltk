@@ -115,7 +115,7 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
     
-    :param gzip_compress: if True, ouput files are compressed with gzip
+    :param gzip_compress: if True, output files are compressed with gzip
     """
     (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
     # write the list of fields as header
