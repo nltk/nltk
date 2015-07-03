@@ -187,7 +187,7 @@ def corpusreader_demo():
     * the result of tokenising the raw strings.
 
     """
-    from nltk.corpus import tweets
+    from nltk.corpus import twitter_samples as tweets
 
     print()
     print("Complete tweet documents")
@@ -216,7 +216,7 @@ ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
 """
 Select demo functions to run.
 """
-DEMOS = ALL[9:]
+DEMOS = ALL[:]
 
 if __name__ == "__main__":
     setup()
