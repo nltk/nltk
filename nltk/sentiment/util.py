@@ -17,7 +17,7 @@ def output_markdown(filename, **kwargs):
         outfile.write(text)
 
 def parse_dataset(dataset_name, tokenizer):
-    '''
+    r'''
     Parse a dataset and outputs a list of documents.
     Available datasets: 'labeled_tweets', 'sent140'.
     '''
@@ -45,7 +45,7 @@ def parse_dataset(dataset_name, tokenizer):
         raise ValueError('Error while parsing the dataset. Did you specify a valid name?')
 
 def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
-    '''
+    r'''
     Parse training file and output train and test sets in (text, label) format.
     :param tokenizer: the tokenizer method that will be used to tokenize the text
     E.g. WordPunctTokenizer.tokenize
@@ -87,7 +87,6 @@ def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
     print("Loaded {} tweets".format(i))
     return tweets
 
-
 def save_file(content, filename):
     print("Saving", filename)
     with codecs.open(filename, 'wb') as storage_file:
@@ -109,5 +108,4 @@ def timer(method):
         else:
             print('[TIMER] {}(): {}h {}m {}s'.format(method.__name__, hours, mins, secs))
         return result
-
     return timed

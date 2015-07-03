@@ -47,7 +47,7 @@ CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
 
 
 class SentimentAnalyzer(object):
-    '''
+    r'''
     A Sentiment Analysis tool based on different modular approaches
     '''
     def __init__(self):
@@ -66,7 +66,7 @@ class SentimentAnalyzer(object):
         return all_bigrams
 
     def unigram_word_feats(self, words, top_n=None):
-        '''
+        r'''
         Return most common top_n word features.
         '''
         # This method could be put outside the class, and the unigram_feats variable
@@ -76,8 +76,8 @@ class SentimentAnalyzer(object):
 
     @timer
     def bigram_collocation_feats(self, documents, assoc_measure=BigramAssocMeasures.pmi, top_n=None, min_freq=3):
-        '''
-        Return top_n bigram features (using assoc_measure).
+        r'''
+        Return ``top_n`` bigram features (using ``assoc_measure``).
         Note that this method is based on bigram collocations, and not on simple
         bigram frequency.
         :param min_freq: the minimum number of occurrencies of bigrams to take into consideration
@@ -89,7 +89,7 @@ class SentimentAnalyzer(object):
         return finder.nbest(assoc_measure, top_n)
 
     def bigram_word_feats(self, bigrams, top_n=None):
-        '''
+        r'''
         Return most common top_n bigram features.
         '''
         # This method could be put outside the class
@@ -97,7 +97,7 @@ class SentimentAnalyzer(object):
         return [(b[0],b[1]) for b,f in bigram_feats_freqs.most_common(top_n)]
 
     def add_feat_extractor(self, function, **kwargs):
-        '''
+        r'''
         Add a new function to extract features from a document. This function will
         be used in extract_features().
         Important: in this step our kwargs are only representing additional parameters,
@@ -108,7 +108,7 @@ class SentimentAnalyzer(object):
         self.feat_extractors[function].append(kwargs)
 
     def extract_features(self, tweet):
-        '''
+        r'''
         Apply extractor functions (and their parameters) to the present tweet.
         '''
         all_features = {}
@@ -135,7 +135,7 @@ class SentimentAnalyzer(object):
 
     @timer
     def evaluate(self, classifier, test_set):
-        '''
+        r'''
         Test classifier accuracy (more evaluation metrics should be added)
         '''
         print("Evaluating {} accuracy...".format(type(classifier).__name__))
@@ -154,7 +154,7 @@ def split_train_test(all_instances, n):
     return train_set, test_set
 
 def mark_negation(document, double_neg_flip=False, shallow=False):
-    '''
+    r'''
     Append a specific suffix to words that appear in the scope between a negation
     and a punctuation mark.
     :param shallow: if True, the method will modify the original document in place.
@@ -213,7 +213,7 @@ def extract_bigram_coll_feats(document, bigrams):
     return features
 
 def demo(dataset_name, classifier_type, n=None):
-    '''
+    r'''
     :param dataset_name: 'labeled_tweets', 'sent140'
     :param n: the number of the corpus instances to use. Default: use all instances
     :param classifier_type: 'maxent', 'naivebayes'
