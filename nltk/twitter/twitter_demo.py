@@ -3,13 +3,14 @@
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
+#         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Examples to demo the :py:mod:`twitterclient` code.
 
-These demo functions should all run, with two caveats:
+These demo functions should all run, with the following caveats:
 
 * You must have obtained API keys from Twitter, and installed them according to
   the instructions in `nltk/test/twitter.ipynb`.
@@ -19,6 +20,8 @@ These demo functions should all run, with two caveats:
 
 * If you are being rate limited while searching, you will receive a 420
   error response.
+
+* Your terminal window / console must be able to display UTF-8 encoded characters.
 
 For documentation about the Twitter APIs, see `The Streaming APIs Overview
 <https://dev.twitter.com/streaming/overview>`_ and `The REST APIs Overview
@@ -214,7 +217,8 @@ ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
        streamtofile_demo, limit_by_time_demo, corpusreader_demo]
 
 """
-Select demo functions to run.
+Select demo functions to run. E.g. replace the following line with "DEMOS =
+ALL[8:]" to execute only the final two demos.
 """
 DEMOS = ALL[:]
 
