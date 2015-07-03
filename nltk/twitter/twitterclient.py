@@ -180,8 +180,9 @@ class Query(Twython):
         Tweets (if they haven't been deleted) and dump them in a file.
 
         :param str infile: Name of a file consisting of tweetIDs, one to a line
-        :param str outfile: Name of file where JSON serialisations of fully\
-        expanded Tweets will be written.
+        
+        :param str outfile: Name of file where fully expanded Tweets will be\
+        written as line-delimited JSON        
         """
         tweets = self._lookup(infile, verbose=verbose)
         count = 0
