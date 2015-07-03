@@ -29,6 +29,7 @@ import json
 import os
 import requests
 import time
+import gzip
 from nltk.compat import UTC
 
 
@@ -218,7 +219,7 @@ class Query(Twython):
         
         self.handler.handle_chunk(results['statuses'])
         if self.handler.do_continue() == False:
-            return results['statuses']
+            return
 
 
         """Pagination loop: keep fetching tweets until the count requested is
@@ -250,7 +251,7 @@ class Query(Twython):
             count_from_query += results['search_metadata']['count']
             self.handler.handle_chunk(results['statuses'])
             if self.handler.do_continue() == False:
-                return results['statuses']
+                return
 
     def user_info_from_id(self, userids):
         """
@@ -292,7 +293,7 @@ class Twitter(object):
 
     def tweets(self, keywords='', follow='', to_screen=True, stream=True,
                limit=100, date_limit=None, lang='en', retries_after_twython_exception=0,
-               locations=None):
+               locations=None, gzip_compress=True):
         """
         Process some tweets in a simple manner.
 
@@ -314,12 +315,14 @@ class Twitter(object):
         :param str lang: language
         :param int retries_after_twython_exception: number of retries when\
         searching tweets before raising an exception
+        :param gzip_compress: if True, ouput files are compressed with gzip
         """
         if to_screen:
             handler = TweetViewer(limit=limit, date_limit=date_limit)
         else:
             handler = TweetWriter(limit=limit, date_limit=date_limit,
-                                  stream=stream, repeat=False)
+                                  stream=stream, repeat=False,
+                                  gzip_compress=gzip_compress)
 
         if stream:
             self.streamer.register(handler)
@@ -362,7 +365,7 @@ class TweetWriter(TweetHandlerI):
     Handle data by writing it to a file.
     """
     def __init__(self, limit=2000, date_limit=None, repeat=True, stream=True,
-                 fprefix='tweets', subdir='twitter-files'):
+                 fprefix='tweets', subdir='twitter-files', gzip_compress=True):
         """
         :param int limit: number of data items to process in the current\
         round of processing
@@ -380,10 +383,12 @@ class TweetWriter(TweetHandlerI):
         :param str subdir: |The name of the directory where Tweet collection\
         files should be stored
 
+        :param gzip_compress: if True, ouput files are compressed with gzip
         """
         self.repeat = repeat
         self.fprefix = fprefix
         self.subdir = guess_path(subdir)
+        self.gzip_compress = gzip_compress
         self.fname = self.timestamped_file()
         self.startingup = True
         self.stream = stream
@@ -404,7 +409,11 @@ class TweetWriter(TweetHandlerI):
         fname = os.path.join(subdir, fprefix)
         fmt = '%Y%m%d-%H%M%S'
         timestamp = datetime.datetime.now().strftime(fmt)
-        outfile = '{0}.{1}.json'.format(fname, timestamp)
+        if self.gzip_compress: 
+            suffix = '.gz'
+        else:
+            suffix = ''
+        outfile = '{0}.{1}.json{2}'.format(fname, timestamp, suffix)
         return outfile
 
 
@@ -416,10 +425,18 @@ class TweetWriter(TweetHandlerI):
         :param data: tweet object returned by Twitter API
         """
         if self.startingup:
-            self.output = open(self.fname, 'w')
+            if self.gzip_compress:
+                self.output = gzip.open(self.fname, 'w')
+            else:
+                self.output = open(self.fname, 'w')
             print('Writing to {0}'.format(self.fname))
+
         json_data = json.dumps(data)
-        self.output.write(json_data + "\n")
+        if self.gzip_compress:
+            self.output.write((json_data + "\n").encode('utf-8'))
+        else:
+            self.output.write(json_data + "\n")
+
         if self.date_limit:
             tweet_date = datetime.datetime.strptime(data['created_at'], '%a %b %d\
             %H:%M:%S +0000 %Y').replace(tzinfo=UTC)
