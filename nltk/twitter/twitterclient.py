@@ -77,12 +77,14 @@ class Streamer(TwythonStreamer):
         if self.do_continue:
             if self.handler is not None:
                 if 'text' in data:
+                    self.handler.counter += 1
                     self.handler.handle(data)
                     self.do_continue = self.handler.do_continue()
             else:
                 raise ValueError("No data handler has been registered.")
         else:
             self.disconnect()
+            self.handler.on_finish()
 
 
     def on_error(self, status_code, data):
@@ -391,6 +393,9 @@ class TweetViewer(TweetHandlerI):
         text = data['text']
         print(text)
         self.counter += 1
+    
+    def on_finish(self):
+        print('Written {0} tweets'.format(self.counter))
 
 
 class TweetWriter(TweetHandlerI):
