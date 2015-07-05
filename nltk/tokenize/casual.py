@@ -248,7 +248,7 @@ class TweetTokenizer:
 
     def tokenize(self, text):
         """
-        :param s: str
+        :param text: str
         :rtype: list(str)
         :return: a tokenized list of strings; concatenating this list returns
         the original string if preserve_case=False
