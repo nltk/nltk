@@ -331,25 +331,35 @@ if __name__ == '__main__':
     TWEETS = [s0, s1, s2, s3, s4, s5]
     TOKS = [t0, t1, t2, t3, t4, t5]
 
-    def test(left, right):
+    s6 = '@remy: This is waaaaayyyy too much for you!!!!!!'
+    s7 = '@_willy65: No place for @chuck tonight. Sorry.'
+
+    t6 = [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
+    t7 = [':', 'No', 'place', 'for', 'tonight', '.', 'Sorry', '.']
+
+    NORM_TWEETS = [s6, s7]
+    NORM_TOKS = [t6, t7]
+
+    def test(tokenizer, left, right):
         """
         Compare the tool's tokenization with expected 'gold standard' output.
         """
-        tokenizer = TweetTokenizer()
+        # tokenizer = TweetTokenizer()
         toks = tokenizer.tokenize(left)
         if toks == right:
+            print("Pass")
             return True
         else:
-            return toks
+            print("Expected: {}".format(right))
+            print("Actual: {}".format(toks))
+            return False
 
+    # Test default TweetTokenizer
+    tokenizer = TweetTokenizer()
     for (tweet, tokenized) in zip(TWEETS, TOKS):
-        if test(tweet, tokenized) == True:
-            print("Pass")
-        else:
-            print("Expected: {}".format(tokenized))
-            print("Actual: {}".format(test(tweet, tokenized)))
+        test(tokenizer, tweet, tokenized)
 
-
-
-
-
+    # Test TweetTokenizer with normalization
+    n_tokenizer = TweetTokenizer(strip_handles=True, reduce_len=True)
+    for (tweet, tokenized) in zip(NORM_TWEETS, NORM_TOKS):
+        test(n_tokenizer, tweet, tokenized)
