@@ -242,7 +242,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
 
 class TweetTokenizer:
     """Tokenize Tweets"""
-    def __init__(self, preserve_case=True, normalize=False):
+    def __init__(self, preserve_case=True, normalize=True):
         self.preserve_case = preserve_case
         self.normalize = normalize
 
