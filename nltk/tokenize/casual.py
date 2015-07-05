@@ -205,7 +205,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
     is". For more information see the tests.
     Always returns a unicode string (with the entities removed).
     """
-    
+
     def convert_entity(m):
         entity_body = m.group(3)
         if m.group(1):
@@ -232,9 +232,9 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
                 return unichr(number)
             except ValueError:
                 pass
-    
+
         return u'' if remove_illegal else m.group(0)
-    
+
     return _ent_re.sub(convert_entity, _str_to_unicode(text, encoding))
 
 
@@ -242,8 +242,9 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
 
 class TweetTokenizer:
     """Tokenize Tweets"""
-    def __init__(self, preserve_case=True):
+    def __init__(self, preserve_case=True, normalize=False):
         self.preserve_case = preserve_case
+        self.normalize = normalize
 
     def tokenize(self, text):
         """
@@ -254,6 +255,8 @@ class TweetTokenizer:
         """
         # Fix HTML character entities:
         text = _replace_html_entities(text)
+        if self.normalize:
+          text = normalize(text)
         # Tokenize:
         words = WORD_RE.findall(text)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
@@ -262,16 +265,31 @@ class TweetTokenizer:
                               x.lower()), words))
         return words
 
+######################################################################
+# Normalization Functions
+######################################################################
+
+def normalize(text, reduce_length=True):
+    if reduce_length:
+      text = _reduce_length(text)
+    return text
+
+def _reduce_length(text):
+    '''
+    Replace character sequences of length 3 or greater with sequences of length 3
+    '''
+    pattern = re.compile(r"(.)\1{2,}")
+    return pattern.sub(r"\1\1\1", text)
 
 ######################################################################
 # Tokenization Function
 ######################################################################
 
-def casual_tokenize(text, preserve_case=True):
+def casual_tokenize(text, preserve_case=True, normalize=True):
     """
     Convenience function for wrapping the tokenizer.
     """
-    return TweetTokenizer(preserve_case=preserve_case).tokenize(text)
+    return TweetTokenizer(preserve_case=preserve_case, normalize=normalize).tokenize(text)
 
 ###############################################################################
 
@@ -287,6 +305,7 @@ if __name__ == '__main__':
     s5 = "http://t.co/7r8d5bVKyA http://t.co/hZpwZe1uKt\
     http://t.co/ZKb7GKWocy Ничто так не сближает\
     людей"
+    s6 = "These words are waaaaay toooo loooooong for a tokenizer! :P"
 
     t0 = ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P',\
           '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
@@ -301,9 +320,11 @@ if __name__ == '__main__':
     t5 = ['http://t.co/7r8d5bVKyA', 'http://t.co/hZpwZe1uKt',
           'http://t.co/ZKb7GKWocy', 'Ничто', 'так', 'не',
           'сближает', 'людей']
+    t6 = ['These', 'words', 'are', 'waaay', 'tooo', 'looong', 'for', 'a',
+          'tokenizer', '!', ':P']
 
-    TWEETS = [s0, s1, s2, s3, s4, s5]
-    TOKS = [t0, t1, t2, t3, t4, t5]
+    TWEETS = [s0, s1, s2, s3, s4, s5, s6]
+    TOKS = [t0, t1, t2, t3, t4, t5, t6]
 
     def test(left, right):
         """
