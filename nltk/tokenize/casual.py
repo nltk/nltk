@@ -242,9 +242,10 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
 
 class TweetTokenizer:
     """Tokenize Tweets"""
-    def __init__(self, preserve_case=True, reduce_len=False):
+    def __init__(self, preserve_case=True, reduce_len=False, strip_handles=False):
         self.preserve_case = preserve_case
         self.reduce_len = reduce_len
+        self.strip_handles = strip_handles
 
     def tokenize(self, text):
         """
@@ -255,6 +256,10 @@ class TweetTokenizer:
         """
         # Fix HTML character entities:
         text = _replace_html_entities(text)
+        # Remove username handles
+        if self.strip_handles:
+          text = remove_handles(text)
+        # Normalize word lengthening
         if self.reduce_len:
           text = reduce_lengthening(text)
         # Tokenize:
@@ -271,20 +276,28 @@ class TweetTokenizer:
 
 def reduce_lengthening(text):
     '''
-    Replace character sequences of length 3 or greater with sequences of length 3
+    Replace character sequences of length 3 or greater with sequences of length 3.
     '''
     pattern = re.compile(r"(.)\1{2,}")
     return pattern.sub(r"\1\1\1", text)
+
+def remove_handles(text):
+    '''
+    Remove twitter username handles from text.
+    '''
+    pattern = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-\.]))@([A-Za-z_]+[A-Za-z0-9_]+)")
+    return pattern.sub('', text)
 
 ######################################################################
 # Tokenization Function
 ######################################################################
 
-def casual_tokenize(text, preserve_case=True, reduce_len=False):
+def casual_tokenize(text, preserve_case=True, reduce_len=False, strip_handles=False):
     """
     Convenience function for wrapping the tokenizer.
     """
-    return TweetTokenizer(preserve_case=preserve_case, reduce_len=reduce_len).tokenize(text)
+    return TweetTokenizer(preserve_case=preserve_case, reduce_len=reduce_len,
+      strip_handles=strip_handles).tokenize(text)
 
 ###############################################################################
 
