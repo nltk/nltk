@@ -9,42 +9,20 @@
 
 from __future__ import print_function
 from collections import defaultdict
-from copy import deepcopy
-
 import codecs
-import itertools
 import pdb
-import random
-import re
 import sys
 
 from nltk.classify.util import apply_features, accuracy
-from nltk.classify.naivebayes import NaiveBayesClassifier
-from nltk.classify.maxent import MaxentClassifier
+from nltk.classify import MaxentClassifier
+from nltk.classify import NaiveBayesClassifier
 from nltk.collocations import *
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist
 from nltk.tokenize import word_tokenize, treebank, regexp, casual
-from util import output_markdown, parse_dataset, save_file, timer
-
+from util import (output_markdown, parse_dataset, save_file, timer, split_train_test,
+    extract_unigram_feats, extract_bigram_coll_feats, extract_bigram_feats)
 import nltk
-
-# Regular expression by Christopher Potts
-NEGATION = r"""
-    (?:
-        ^(?:never|no|nothing|nowhere|noone|none|not|
-            havent|hasnt|hadnt|cant|couldnt|shouldnt|
-            wont|wouldnt|dont|doesnt|didnt|isnt|arent|aint
-        )$
-    )
-    |
-    n't"""
-
-CLAUSE_PUNCT = r'^[.:;!?]$'
-
-NEGATION_RE = re.compile(NEGATION, re.VERBOSE)
-CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
-
 
 class SentimentAnalyzer(object):
     r'''
@@ -140,77 +118,8 @@ class SentimentAnalyzer(object):
         '''
         print("Evaluating {} accuracy...".format(type(classifier).__name__))
         accuracy_score = accuracy(classifier, test_set)
-        print("Accuracy: ", accuracy_score)
         return accuracy_score
 
-
-def split_train_test(all_instances, n):
-    # Randomly split n instances of the dataset into train and test sets
-    random.seed(12345)
-    random.shuffle(all_instances)
-    train_set = all_instances[:int(.8*n)]
-    test_set = all_instances[int(.8*n):n]
-
-    return train_set, test_set
-
-def mark_negation(document, double_neg_flip=False, shallow=False):
-    r'''
-    Append a specific suffix to words that appear in the scope between a negation
-    and a punctuation mark.
-    :param shallow: if True, the method will modify the original document in place.
-    :param double_neg_flip: if True, double negation is considered affirmation (we
-        activate/deactivate negation scope everytime we find a negation).
-    '''
-    if not shallow:
-        document = deepcopy(document)
-    # check if the document is labeled. If so, only consider the unlabeled document
-    labeled = document and isinstance(document[0], (tuple, list))
-    if labeled:
-        doc = document[0]
-    else:
-        doc = document
-    neg_scope = False
-    for i,word in enumerate(doc):
-        if NEGATION_RE.search(word):
-            if not neg_scope or (neg_scope and double_neg_flip):
-                neg_scope = not neg_scope
-                continue
-            else:
-                doc[i] += '_NEG'
-        elif neg_scope and CLAUSE_PUNCT_RE.search(word):
-            neg_scope = not neg_scope
-        elif neg_scope and not CLAUSE_PUNCT_RE.search(word):
-            doc[i] += '_NEG'
-
-    return document
-
-def extract_unigram_feats(document, unigrams, handle_negation=False):
-    # This function is declared outside the class because the user should have the
-    # possibility to create his/her own feature extractors without modifying the
-    # SentimentAnalyzer class.
-    features = {}
-    if handle_negation:
-        document = mark_negation(document)
-    for word in unigrams:
-        features['contains({})'.format(word)] = word in set(document)
-    return features
-
-def extract_bigram_feats(document, bigrams):
-    # This function is declared outside the class because the user should have the
-    # possibility to create his/her own feature extractors without modifying the
-    # SentimentAnalyzer class.
-    features = {}
-    for bigr in bigrams:
-        features['contains({})'.format(bigr)] = bigr in nltk.bigrams(document)
-    return features
-
-def extract_bigram_coll_feats(document, bigrams):
-    features = {}
-    for bigram in bigrams:
-        # Important: this function DOES NOT consider the order of the words in
-        # the bigram. It is useful for collocations, but not for idiomatic forms.
-        features['contains({} - {})'.format(bigram[0], bigram[1])] = set(bigram) in [set(b) for b in itertools.combinations(document, r=2)]
-    return features
 
 def demo(dataset_name, classifier_type, n=None):
     r'''
@@ -269,6 +178,8 @@ def demo(dataset_name, classifier_type, n=None):
     # classifier = sa.train(trainer, training_set, save_classifier=filename, max_iter=4)
     classifier = sa.train(trainer, training_set, save_classifier=filename)
     accuracy = sa.evaluate(classifier, test_set)
+
+    print('Accuracy:', accuracy)
 
     extr = [f.__name__ for f in sa.feat_extractors]
     output_markdown('results.md', Dataset=dataset_name, Classifier=classifier_type,

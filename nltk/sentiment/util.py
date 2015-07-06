@@ -1,12 +1,104 @@
+from copy import deepcopy
 import codecs
 import csv
+import itertools
 import os
 import pickle
+import random
+import re
 import sys
 import time
 
 from nltk.corpus.reader import CategorizedPlaintextCorpusReader
 from nltk.data import load
+
+#////////////////////////////////////////////////////////////
+#{ Regular expressions
+#////////////////////////////////////////////////////////////
+
+# Regular expression by Christopher Potts
+NEGATION = r"""
+    (?:
+        ^(?:never|no|nothing|nowhere|noone|none|not|
+            havent|hasnt|hadnt|cant|couldnt|shouldnt|
+            wont|wouldnt|dont|doesnt|didnt|isnt|arent|aint
+        )$
+    )
+    |
+    n't"""
+
+CLAUSE_PUNCT = r'^[.:;!?]$'
+
+NEGATION_RE = re.compile(NEGATION, re.VERBOSE)
+CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
+
+
+#////////////////////////////////////////////////////////////
+#{ Feature extractor functions
+#////////////////////////////////////////////////////////////
+
+def extract_unigram_feats(document, unigrams, handle_negation=False):
+    # This function is declared outside the class because the user should have the
+    # possibility to create his/her own feature extractors without modifying the
+    # SentimentAnalyzer class.
+    features = {}
+    if handle_negation:
+        document = mark_negation(document)
+    for word in unigrams:
+        features['contains({})'.format(word)] = word in set(document)
+    return features
+
+def extract_bigram_coll_feats(document, bigrams):
+    features = {}
+    for bigram in bigrams:
+        # Important: this function DOES NOT consider the order of the words in
+        # the bigram. It is useful for collocations, but not for idiomatic forms.
+        features['contains({} - {})'.format(bigram[0], bigram[1])] = set(bigram) in [set(b) for b in itertools.combinations(document, r=2)]
+    return features
+
+def extract_bigram_feats(document, bigrams):
+    # This function is declared outside the class because the user should have the
+    # possibility to create his/her own feature extractors without modifying the
+    # SentimentAnalyzer class.
+    features = {}
+    for bigr in bigrams:
+        features['contains({})'.format(bigr)] = bigr in nltk.bigrams(document)
+    return features
+
+#////////////////////////////////////////////////////////////
+#{ Helper Functions
+#////////////////////////////////////////////////////////////
+
+def mark_negation(document, double_neg_flip=False, shallow=False):
+    r'''
+    Append a specific suffix to words that appear in the scope between a negation
+    and a punctuation mark.
+    :param shallow: if True, the method will modify the original document in place.
+    :param double_neg_flip: if True, double negation is considered affirmation (we
+        activate/deactivate negation scope everytime we find a negation).
+    '''
+    if not shallow:
+        document = deepcopy(document)
+    # check if the document is labeled. If so, only consider the unlabeled document
+    labeled = document and isinstance(document[0], (tuple, list))
+    if labeled:
+        doc = document[0]
+    else:
+        doc = document
+    neg_scope = False
+    for i,word in enumerate(doc):
+        if NEGATION_RE.search(word):
+            if not neg_scope or (neg_scope and double_neg_flip):
+                neg_scope = not neg_scope
+                continue
+            else:
+                doc[i] += '_NEG'
+        elif neg_scope and CLAUSE_PUNCT_RE.search(word):
+            neg_scope = not neg_scope
+        elif neg_scope and not CLAUSE_PUNCT_RE.search(word):
+            doc[i] += '_NEG'
+
+    return document
 
 def output_markdown(filename, **kwargs):
     with codecs.open(filename, 'at') as outfile:
@@ -93,6 +185,15 @@ def save_file(content, filename):
         # pickle.dump(content, storage_file) # This will break on python2.x
         pickle.dump(content, storage_file, protocol=2) # protocol = 2 is for python2 compatibility
 
+def split_train_test(all_instances, n):
+    # Randomly split n instances of the dataset into train and test sets
+    random.seed(12345)
+    random.shuffle(all_instances)
+    train_set = all_instances[:int(.8*n)]
+    test_set = all_instances[int(.8*n):n]
+
+    return train_set, test_set
+
 # Define @timer decorator
 def timer(method):
     def timed(*args, **kw):
@@ -109,3 +210,50 @@ def timer(method):
             print('[TIMER] {}(): {}h {}m {}s'.format(method.__name__, hours, mins, secs))
         return result
     return timed
+
+
+#////////////////////////////////////////////////////////////
+#{ Demos
+#////////////////////////////////////////////////////////////
+
+def demo_naivebayes():
+    r'''
+    Train Naive Bayes classifier on 8000 instances of labeled_tweets dataset,
+    using TweetTokenizer.
+    Features are composed of:
+        - 1000 most frequent unigrams
+        - 100 top bigram collocations (using BigramAssocMeasures.pmi)
+    '''
+    from nltk.classify.util import apply_features
+    from nltk.tokenize import casual
+    from sentiment_analyzer import SentimentAnalyzer
+    from nltk.classify import NaiveBayesClassifier
+
+    tokenizer = casual.TweetTokenizer()
+    all_docs = parse_dataset('labeled_tweets', tokenizer)
+
+    training_tweets, testing_tweets = split_train_test(all_docs, 8000)
+
+    sa = SentimentAnalyzer()
+    all_words = sa.get_all_words(training_tweets)
+
+    # Add simple unigram word features
+    unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
+    sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+
+    # Add bigram collocation features
+    bigram_collocs_feats = sa.bigram_collocation_feats([tweet[0] for tweet in training_tweets], top_n=100, min_freq=12)
+    sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
+
+    training_set = apply_features(sa.extract_features, training_tweets)
+    test_set = apply_features(sa.extract_features, testing_tweets)
+
+    trainer = NaiveBayesClassifier.train
+
+    classifier = sa.train(trainer, training_set)
+    accuracy = sa.evaluate(classifier, test_set)
+    print('Accuracy:', accuracy)
+
+
+if __name__ == '__main__':
+    demo_naivebayes()
