@@ -276,14 +276,15 @@ class TweetTokenizer:
 
 def reduce_lengthening(text):
     '''
-    Replace character sequences of length 3 or greater with sequences of length 3.
+    Replace repeated character sequences of length 3 or greater with sequences
+    of length 3.
     '''
     pattern = re.compile(r"(.)\1{2,}")
     return pattern.sub(r"\1\1\1", text)
 
 def remove_handles(text):
     '''
-    Remove twitter username handles from text.
+    Remove Twitter username handles from text.
     '''
     pattern = re.compile(r"(^|(?<=[^\w.-]))@[A-Za-z_]+\w+")
     return pattern.sub('', text)
