@@ -285,7 +285,7 @@ def remove_handles(text):
     '''
     Remove twitter username handles from text.
     '''
-    pattern = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-\.]))@([A-Za-z_]+[A-Za-z0-9_]+)")
+    pattern = re.compile(r"(^|(?<=[^\w.-]))@[A-Za-z_]+\w+")
     return pattern.sub('', text)
 
 ######################################################################
@@ -333,12 +333,14 @@ if __name__ == '__main__':
 
     s6 = '@remy: This is waaaaayyyy too much for you!!!!!!'
     s7 = '@_willy65: No place for @chuck tonight. Sorry.'
+    s8 = '@mar_tin is a great developer. Contact him at mar_tin@email.com'
 
     t6 = [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
     t7 = [':', 'No', 'place', 'for', 'tonight', '.', 'Sorry', '.']
+    t8 = ['is', 'a', 'great', 'developer', '.', 'Contact', 'him', 'at', 'mar_tin', '@email', '.', 'com']
 
-    NORM_TWEETS = [s6, s7]
-    NORM_TOKS = [t6, t7]
+    NORM_TWEETS = [s6, s7, s8]
+    NORM_TOKS = [t6, t7, t8]
 
     def test(tokenizer, left, right):
         """
