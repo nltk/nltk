@@ -216,7 +216,7 @@ def split_train_test(all_instances, n):
 #{ Demos
 #////////////////////////////////////////////////////////////
 
-def demo_naivebayes():
+def demo_tweets_nb():
     r'''
     Train Naive Bayes classifier on 8000 instances of labeled_tweets dataset,
     using TweetTokenizer.
@@ -255,21 +255,22 @@ def demo_naivebayes():
     accuracy = sa.evaluate(classifier, test_set)
     print('Accuracy:', accuracy)
 
-def demo_movie_reviews():
+def demo_movie_reviews_nb():
     r'''
     Train Naive Bayes classifier on 8000 instances of the Movie Reviews dataset.
     The corpus has been preprocessed using the default sentence tokenizer and
     WordPunctTokenizer.
     Features are composed of:
         - 1000 most frequent unigrams
+
+
     '''
     from nltk.classify import NaiveBayesClassifier
     from nltk.classify.util import apply_features
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
-    # We consider each document as a list (a stream, actually) of words
-    all_docs = [(movie_reviews.words(file_id), category)
+    all_docs = [(list(movie_reviews.words(file_id)), category)
         for category in movie_reviews.categories()
         for file_id in movie_reviews.fileids(category)]
 
@@ -294,5 +295,5 @@ def demo_movie_reviews():
     print('Accuracy:', accuracy)
 
 if __name__ == '__main__':
-    # demo_naivebayes()
-    demo_movie_reviews()
+    # demo_tweets_nb()
+    demo_movie_reviews_nb()
