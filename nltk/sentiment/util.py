@@ -33,6 +33,23 @@ NEGATION_RE = re.compile(NEGATION, re.VERBOSE)
 CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
 
 
+# Define @timer decorator
+def timer(method):
+    def timed(*args, **kw):
+        start = time.time()
+        result = method(*args, **kw)
+        end = time.time()
+        tot_time = end - start
+        hours = int(tot_time / 3600)
+        mins = int((tot_time / 60) % 60)
+        secs = int(round(tot_time % 60)) # in Python 2.x round() will return a float, so we also convert it to int
+        if hours == 0 and mins == 0 and secs < 10:
+            print('[TIMER] {}(): {:.3f} seconds'.format(method.__name__, tot_time))
+        else:
+            print('[TIMER] {}(): {}h {}m {}s'.format(method.__name__, hours, mins, secs))
+        return result
+    return timed
+
 #////////////////////////////////////////////////////////////
 #{ Feature extractor functions
 #////////////////////////////////////////////////////////////
@@ -194,23 +211,6 @@ def split_train_test(all_instances, n):
 
     return train_set, test_set
 
-# Define @timer decorator
-def timer(method):
-    def timed(*args, **kw):
-        start = time.time()
-        result = method(*args, **kw)
-        end = time.time()
-        tot_time = end - start
-        hours = int(tot_time / 3600)
-        mins = int((tot_time / 60) % 60)
-        secs = int(round(tot_time % 60)) # in Python 2.x round() will return a float, so we also convert it to int
-        if hours == 0 and mins == 0 and secs < 10:
-            print('[TIMER] {}(): {:.3f} seconds'.format(method.__name__, tot_time))
-        else:
-            print('[TIMER] {}(): {}h {}m {}s'.format(method.__name__, hours, mins, secs))
-        return result
-    return timed
-
 
 #////////////////////////////////////////////////////////////
 #{ Demos
@@ -251,9 +251,48 @@ def demo_naivebayes():
     trainer = NaiveBayesClassifier.train
 
     classifier = sa.train(trainer, training_set)
+    classifier.show_most_informative_features()
     accuracy = sa.evaluate(classifier, test_set)
     print('Accuracy:', accuracy)
 
+def demo_movie_reviews():
+    r'''
+    Train Naive Bayes classifier on 8000 instances of the Movie Reviews dataset.
+    The corpus has been preprocessed using the default sentence tokenizer and
+    WordPunctTokenizer.
+    Features are composed of:
+        - 1000 most frequent unigrams
+    '''
+    from nltk.classify import NaiveBayesClassifier
+    from nltk.classify.util import apply_features
+    from nltk.corpus import movie_reviews
+    from sentiment_analyzer import SentimentAnalyzer
+
+    # We consider each document as a list (a stream, actually) of words
+    all_docs = [(movie_reviews.words(file_id), category)
+        for category in movie_reviews.categories()
+        for file_id in movie_reviews.fileids(category)]
+
+    training_docs, testing_docs = split_train_test(all_docs, 8000)
+
+    sa = SentimentAnalyzer()
+    all_words = sa.get_all_words(training_docs)
+
+    # Add simple unigram word features
+    unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
+    sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+
+    # Apply features to obtain a feature-value representation of our datasets
+    training_set = apply_features(sa.extract_features, training_docs)
+    test_set = apply_features(sa.extract_features, testing_docs)
+
+    trainer = NaiveBayesClassifier.train
+
+    classifier = sa.train(trainer, training_set)
+    accuracy = sa.evaluate(classifier, test_set)
+    classifier.show_most_informative_features()
+    print('Accuracy:', accuracy)
 
 if __name__ == '__main__':
-    demo_naivebayes()
+    # demo_naivebayes()
+    demo_movie_reviews()
