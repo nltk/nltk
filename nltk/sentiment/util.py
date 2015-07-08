@@ -202,10 +202,12 @@ def save_file(content, filename):
         # pickle.dump(content, storage_file) # This will break on python2.x
         pickle.dump(content, storage_file, protocol=2) # protocol = 2 is for python2 compatibility
 
-def split_train_test(all_instances, n):
+def split_train_test(all_instances, n=None):
     # Randomly split n instances of the dataset into train and test sets
     random.seed(12345)
     random.shuffle(all_instances)
+    if not n or n > len(all_instances):
+        n = len(all_instances)
     train_set = all_instances[:int(.8*n)]
     test_set = all_instances[int(.8*n):n]
 
@@ -262,8 +264,6 @@ def demo_movie_reviews_nb():
     WordPunctTokenizer.
     Features are composed of:
         - 1000 most frequent unigrams
-
-
     '''
     from nltk.classify import NaiveBayesClassifier
     from nltk.classify.util import apply_features
@@ -274,7 +274,7 @@ def demo_movie_reviews_nb():
         for category in movie_reviews.categories()
         for file_id in movie_reviews.fileids(category)]
 
-    training_docs, testing_docs = split_train_test(all_docs, 8000)
+    training_docs, testing_docs = split_train_test(all_docs, 2000)
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_docs)
