@@ -11,7 +11,7 @@
 """
 NLTK Twitter client
 
-This module offers methods for collecting and processing tweets. Most of the
+This module offers methods for collecting and processing Tweets. Most of the
 functionality depends on access to the Twitter APIs, and this is handled via
 the third party Twython library.
 
@@ -64,7 +64,7 @@ class Streamer(TwythonStreamer):
 
     def register(self, handler):
         """
-        Register a method for handling tweets.
+        Register a method for handling Tweets.
 
         :param TweetHandlerI handler: method for viewing
         """
@@ -100,12 +100,11 @@ class Streamer(TwythonStreamer):
         Wrapper for 'statuses / sample' API call
         """
         while self.do_continue:
-            '''
-            Stream in an endless loop until limit is reached
-            see twython issue 288
-                https://github.com/ryanmcgrath/twython/issues/288
-                colditzjb commented on 9 Dec 2014
-            '''
+
+            # Stream in an endless loop until limit is reached. See twython
+            # issue 288: https://github.com/ryanmcgrath/twython/issues/288
+            # colditzjb commented on 9 Dec 2014
+
             try:
                 self.statuses.sample()
             except requests.exceptions.ChunkedEncodingError as e:
@@ -118,12 +117,8 @@ class Streamer(TwythonStreamer):
         Wrapper for 'statuses / filter' API call
         """
         while self.do_continue:
-            '''
-            Stream in an endless loop until limit is reached
-            see twython issue 288
-                https://github.com/ryanmcgrath/twython/issues/288
-                colditzjb commented on 9 Dec 2014
-            '''
+            #Stream in an endless loop until limit is reached
+
             try:
                 if track == '' and follow == '' and locations == None:
                     msg = "Please supply a value for 'track', 'follow' or 'locations'."
@@ -134,8 +129,6 @@ class Streamer(TwythonStreamer):
                 if e is not None:
                     print("Error (stream will continue): {0}".format(e))
                 continue
-
-
 
 
 class Query(Twython):
@@ -150,73 +143,56 @@ class Query(Twython):
 
     def register(self, handler):
         """
-        Register a method for handling tweets.
+        Register a method for handling Tweets.
 
-        :param TweetHandlerI handler: method for viewing or writing tweets to a file.
+        :param TweetHandlerI handler: method for viewing or writing Tweets to a file.
         """
         self.handler = handler
 
-    def _lookup(self, infile, verbose=True):
+    def expand_tweetids(self, ids_f, verbose=True):
         """
-        :param infile: name of a file consisting of Tweet IDs, one to a line
-        :return: iterable of Tweet objects
-        """
-        with open(infile) as f:
-            ids = [line.rstrip() for line in f]
-        if verbose:
-            print("Counted {0} Tweet IDs in {1}.".format(len(ids), infile))
+        Given a file object containing a list of Tweet IDs, fetch the
+        corresponding full Tweets from the Twitter API.
 
+        The API call `statuses/lookup` will fail to retrieve a Tweet if the
+        user has deleted it.
+
+        This call to the Twitter API is rate-limited. See
+        <https://dev.twitter.com/rest/reference/get/statuses/lookup> for details.
+
+        :param ids_f: input file object consisting of Tweet IDs, one to a line
+        :return: iterable of Tweet objects in JSON format
+        """
+        ids = [line.strip() for line in ids_f if line]
+
+        if verbose:
+            print("Counted {0} Tweet IDs in {1}.".format(len(ids), ids_f))
+
+        # The Twitter endpoint takes lists of up to 100 ids, so we chunk the
+        # ids.
         id_chunks = [ids[i:i+100] for i in range(0, len(ids), 100)]
-        """
-        The Twitter endpoint takes lists of up to 100 ids, so we chunk
-        the ids.
-        """
 
-        listoflists = [self.post('statuses/lookup', {'id': chunk}) for chunk
-                       in id_chunks]
-        return itertools.chain.from_iterable(listoflists)
+        chunked_tweets = (self.lookup_status(id=chunk) for chunk in
+                          id_chunks)
+
+        return itertools.chain.from_iterable(chunked_tweets)
 
 
-    def lookup(self, infile, outfile, verbose=True):
-        """
-        Given a file containing a list of tweetIDs, fetch the corresponding
-        Tweets (if they haven't been deleted) and dump them in a file.
 
-        :param str infile: Name of a file consisting of tweetIDs, one to a line
-        
-        :param str outfile: Name of file where fully expanded Tweets will be\
-        written as line-delimited JSON        
-        """
-        tweets = self._lookup(infile, verbose=verbose)
-        count = 0
-
-        if os.path.isfile(outfile):
-            os.remove(outfile)
-
-        with open(outfile, 'a') as f:
-            for data in tweets:
-                json.dump(data, f)
-                f.write("\n")
-                count += 1
-
-        if verbose:
-            print("""Written {0} Tweets to file {1} of length {2}
-            bytes""".format(count, outfile, os.path.getsize(outfile)))
-
-    def _search_tweets(self, keywords, limit=100, lang='en', 
+    def _search_tweets(self, keywords, limit=100, lang='en',
                        repeat=False, retries_after_twython_exception=0):
         """
-        Assumes that the handler has been informed. Fetches tweets from
+        Assumes that the handler has been informed. Fetches Tweets from
         search_tweets generator output and passses them to handler
 
         :param str keywords: A list of query terms to search for, written as\
         a comma-separated string.
-        :param int limit: Number of tweets to process
+        :param int limit: Number of Tweets to process
         :param bool repeat: flag to determine whether multiple files should be\
         written. If ``True``, the length of each file will be set by the value\
         of ``limit``. See also :py:func:`handle`.
         :param int retries_after_twython_exception: number of retries when\
-        searching tweets before raising an exception
+        searching Tweets before raising an exception
         """
         while True:
             tweets = self.search_tweets(keywords=keywords, limit=limit, lang=lang)
@@ -237,18 +213,18 @@ class Query(Twython):
 
         :param str keywords: A list of query terms to search for, written as\
         a comma-separated string
-        :param int limit: Number of tweets to process
+        :param int limit: Number of Tweets to process
         :rtype: python generator
         """
         if not self.handler:
-            # if no handler is provided, BasicTweetHandler provides minimum
-            # funcionality to control limit in number of tweets
+            # if no handler is provided, `BasicTweetHandler` provides minimum
+            # functionality for limiting the number of Tweets retrieved
             self.handler = BasicTweetHandler(limit=limit)
 
         results = self.search(q=keywords, count=min(100, limit), lang=lang,
                               result_type='recent')
         count_from_query = results['search_metadata']['count']
-        
+
         for result in results['statuses']:
             yield result
             self.handler.counter += 1
@@ -256,17 +232,17 @@ class Query(Twython):
                 return
 
 
-        """Pagination loop: keep fetching tweets until the count requested is
-        reached, dealing with twitter rate limits."""
+        # Pagination loop: keep fetching Tweets until the desired count is
+        # reached while dealing with Twitter rate limits.
         retries = 0
         while count_from_query < limit:
-            # the max_id is also in the metadata
+            # the max_id is also present in the Tweet metadata
             # results['search_metadata']['next_results'], but as part of a
             # query and difficult to fetch. This is doing the equivalent
             # (last tweet id minus one)
             len_prev_request = len(results['statuses'])
             if len_prev_request == 0:
-                print("No more tweets available through rest api")
+                print("No more Tweets available through rest api")
                 return
             max_id = results['statuses'][len_prev_request - 1]['id'] - 1
             try:
@@ -307,7 +283,7 @@ class Query(Twython):
 
         :param str user: The user's screen name; the initial '@' symbol\
         should be omitted
-        :param int count: The number of tweets to recover; 200 is the maximum allowed
+        :param int count: The number of Tweets to recover; 200 is the maximum allowed
         :param str include_rts: Whether to include statuses which have been\
         retweeted by the user; possible values are 'true' and 'false'
         """
@@ -330,18 +306,20 @@ class Twitter(object):
 
     def tweets(self, keywords='', follow='', to_screen=True, stream=True,
                limit=100, date_limit=None, lang='en', retries_after_twython_exception=0,
-               locations=None, gzip_compress=True):
+               locations=None, gzip_compress=False):
         """
-        Process some tweets in a simple manner.
+        Process some Tweets in a simple manner.
 
         :param str keywords: Keywords to use for searching or filtering
-        :param list follow: UserIDs to use for filtering tweets from the public stream
-        :param str locations: Locations to use for filtering tweets from the public stream
-        :param bool to_screen: If ``True``, display the tweet texts on the screen,\
+        :param list follow: UserIDs to use for filtering Tweets from the public stream
+        :param str locations: Locations to use for filtering Tweets from the public stream
+        :param bool to_screen: If `True`, display the tweet texts on the screen,\
         otherwise print to a file
-        :param bool stream: If ``True``, use the live public stream,\
-        otherwise search past public tweets
-        :param int limit: Number of tweets to process
+
+        :param bool stream: If `True`, use the live public stream,\
+        otherwise search past public Tweets
+
+        :param int limit: Number of Tweets to process
         :param tuple date_limit: The date at which to stop collecting new\
         data. This should be entered as a tuple which can serve as the\
         argument to `datetime.datetime`. E.g. `data_limit=(2015, 4, 1, 12,\
@@ -349,10 +327,12 @@ class Twitter(object):
         Note that, in the case of streaming, it is the maximum date, i.e.\
         a date in the future; if not, it is the minimum date, i.e. a date\
         in the past
+
         :param str lang: language
         :param int retries_after_twython_exception: number of retries when\
-        searching tweets before raising an exception
-        :param gzip_compress: if True, ouput files are compressed with gzip
+        searching Tweets before raising an exception
+
+        :param gzip_compress: if `True`, ouput files are compressed with gzip
         """
         if to_screen:
             handler = TweetViewer(limit=limit, date_limit=date_limit)
@@ -373,8 +353,8 @@ class Twitter(object):
                 raise ValueError("Please supply at least one keyword to search for.")
             else:
                 self.query._search_tweets(keywords, limit=limit, lang=lang,
-                                         retries_after_twython_exception= \
-                                         retries_after_twython_exception)
+                                          retries_after_twython_exception= \
+                                          retries_after_twython_exception)
 
 
 
@@ -394,9 +374,9 @@ class TweetViewer(TweetHandlerI):
         text = data['text']
         print(text)
         self.counter += 1
-    
+
     def on_finish(self):
-        print('Written {0} tweets'.format(self.counter))
+        print('Written {0} Tweets'.format(self.counter))
 
 
 class TweetWriter(TweetHandlerI):
@@ -409,16 +389,16 @@ class TweetWriter(TweetHandlerI):
         :param int limit: number of data items to process in the current\
         round of processing
 
-        :param bool stream: If ``True``, use the live public stream,\
-        otherwise search past public tweets
+        :param bool stream: If `True`, use the live public stream,\
+        otherwise search past public Tweets
 
-        :param str fprefix: The prefix to use in creating files for Tweet\
+        :param str fprefix: The prefix to use in creating file names for Tweet\
         collections
 
-        :param str subdir: |The name of the directory where Tweet collection\
+        :param str subdir: The name of the directory where Tweet collection\
         files should be stored
 
-        :param gzip_compress: if True, ouput files are compressed with gzip
+        :param gzip_compress: if `True`, ouput files are compressed with gzip
         """
         self.fprefix = fprefix
         self.subdir = guess_path(subdir)
@@ -443,7 +423,7 @@ class TweetWriter(TweetHandlerI):
         fname = os.path.join(subdir, fprefix)
         fmt = '%Y%m%d-%H%M%S'
         timestamp = datetime.datetime.now().strftime(fmt)
-        if self.gzip_compress: 
+        if self.gzip_compress:
             suffix = '.gz'
         else:
             suffix = ''
@@ -488,7 +468,7 @@ class TweetWriter(TweetHandlerI):
         self.startingup = False
 
     def on_finish(self):
-        print('Written {0} tweets'.format(self.counter))
+        print('Written {0} Tweets'.format(self.counter))
         self.output.close()
 
 
