@@ -43,14 +43,14 @@ class SentimentAnalyzer(object):
             all_bigrams.extend(nltk.bigrams(text))
         return all_bigrams
 
-    def unigram_word_feats(self, words, top_n=None):
+    def unigram_word_feats(self, words, top_n=None, min_freq=0):
         r'''
         Return most common top_n word features.
         '''
         # This method could be put outside the class, and the unigram_feats variable
         # can be made more generic (e.g. a list of feature lists for bigrams, trigrams, etc.)
         unigram_feats_freqs = FreqDist(word for word in words) # Stopwords are not removed
-        return [w for w,f in unigram_feats_freqs.most_common(top_n)]
+        return [w for w,f in unigram_feats_freqs.most_common(top_n) if unigram_feats_freqs[w]>min_freq]
 
     @timer
     def bigram_collocation_feats(self, documents, assoc_measure=BigramAssocMeasures.pmi, top_n=None, min_freq=3):
