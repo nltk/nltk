@@ -277,17 +277,17 @@ class Query(Twython):
         """
         return [self.show_user(user_id=userid) for userid in userids]
 
-    def user_tweets(self, screen_name, count, include_rts='false'):
+    def user_tweets(self, screen_name, limit, include_rts='false'):
         """
         Return a collection of the most recent Tweets posted by the user
 
         :param str user: The user's screen name; the initial '@' symbol\
         should be omitted
-        :param int count: The number of Tweets to recover; 200 is the maximum allowed
+        :param int limit: The number of Tweets to recover; 200 is the maximum allowed
         :param str include_rts: Whether to include statuses which have been\
         retweeted by the user; possible values are 'true' and 'false'
         """
-        data = self.get_user_timeline(screen_name=screen_name, count=count,
+        data = self.get_user_timeline(screen_name=screen_name, count=limit,
                                       include_rts=include_rts)
         self.handler.handle(data)
 
