@@ -264,6 +264,7 @@ def demo_movie_reviews_nb():
     WordPunctTokenizer.
     Features are composed of:
         - 1000 most frequent unigrams
+        - 100 top bigram collocations (using BigramAssocMeasures.pmi)
     '''
     from nltk.classify import NaiveBayesClassifier
     from nltk.classify.util import apply_features
@@ -280,8 +281,13 @@ def demo_movie_reviews_nb():
     all_words = sa.get_all_words(training_docs)
 
     # Add simple unigram word features
-    unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
+    unigram_feats = sa.unigram_word_feats(all_words, min_freq=4)
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+
+    # Add bigram collocation features
+    bigram_collocs_feats = sa.bigram_collocation_feats([doc[0] for doc in training_docs], top_n=16175, min_freq=7)
+    print(len(bigram_collocs_feats))
+    sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
 
     # Apply features to obtain a feature-value representation of our datasets
     training_set = apply_features(sa.extract_features, training_docs)
