@@ -271,11 +271,22 @@ def demo_movie_reviews_nb():
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
-    all_docs = [(list(movie_reviews.words(file_id)), category)
-        for category in movie_reviews.categories()
-        for file_id in movie_reviews.fileids(category)]
+    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in movie_reviews.fileids('pos')]
+    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in movie_reviews.fileids('neg')]
 
-    training_docs, testing_docs = split_train_test(all_docs, 2000)
+    # all_docs = [(list(movie_reviews.words(file_id)), category)
+        # for category in movie_reviews.categories()
+        # for file_id in movie_reviews.fileids(category)]
+
+    # training_docs, testing_docs = split_train_test(all_docs, 2000)
+
+    # We separately split positive and negative instances to keep a balanced
+    # uniform class distribution in both train and test sets.
+    train_pos_docs, test_pos_docs = split_train_test(pos_docs)
+    train_neg_docs, test_neg_docs = split_train_test(neg_docs)
+
+    training_docs = train_pos_docs+train_neg_docs
+    testing_docs = test_pos_docs+test_neg_docs
 
     sa = SentimentAnalyzer()
     all_words = sa.get_all_words(training_docs)
@@ -285,9 +296,8 @@ def demo_movie_reviews_nb():
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Add bigram collocation features
-    bigram_collocs_feats = sa.bigram_collocation_feats([doc[0] for doc in training_docs], top_n=16175, min_freq=7)
-    print(len(bigram_collocs_feats))
-    sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
+    # bigram_collocs_feats = sa.bigram_collocation_feats([doc[0] for doc in training_docs], top_n=16175, min_freq=7)
+    # sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
 
     # Apply features to obtain a feature-value representation of our datasets
     training_set = apply_features(sa.extract_features, training_docs)
