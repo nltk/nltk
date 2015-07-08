@@ -27,7 +27,7 @@ reNextPrim = re.compile(r'''([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)''')
 reApp = re.compile(r'''([\\/])([.,]?)([.,]?)(.*)''')
 
 # Parses the definition of the category of either a word or a family
-reLex = re.compile(r'''([A-Za-z_]+)\s*(::|[-=]+>)\s*(.+)''')
+reLex = re.compile(r'''([\w_]+)\s*(::|[-=]+>)\s*(.+)''', re.UNICODE)
 
 # Strips comments from a line
 reComm = re.compile('''([^#]*)(?:#.*)?''')
