@@ -227,7 +227,10 @@ class Query(Twython):
         if not max_id:
             results = self.search(q=keywords, count=min(100, limit), lang=lang,
                                   result_type='recent')
-            count = results['search_metadata']['count']
+            count = len(results['statuses'])
+            if count == 0:
+                print("No Tweets available through rest api for those keywords")
+                return                
             count_from_query = count
             max_id = results['statuses'][count - 1]['id'] - 1
 
@@ -256,7 +259,7 @@ class Query(Twython):
                     raise e
                 retries += 1
                 
-            count = results['search_metadata']['count']
+            count = len(results['statuses'])
             if count == 0:
                 print("No more Tweets available through rest api")
                 return
@@ -420,6 +423,7 @@ class TweetWriter(TweetHandlerI):
         self.repeat = repeat
         # max_id stores the id of the older tweet fetched
         self.max_id = None
+        self.output = None
         TweetHandlerI.__init__(self, limit, date_limit)
 
 
@@ -483,7 +487,8 @@ class TweetWriter(TweetHandlerI):
         
     def on_finish(self):
         print('Written {0} Tweets'.format(self.counter))
-        self.output.close()
+        if self.output:
+            self.output.close()
         
     def do_continue(self):
         if self.repeat == False:
