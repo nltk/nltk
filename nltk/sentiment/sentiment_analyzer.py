@@ -28,8 +28,9 @@ class SentimentAnalyzer(object):
     r'''
     A Sentiment Analysis tool based on different modular approaches
     '''
-    def __init__(self):
+    def __init__(self, classifier=None):
         self.feat_extractors = defaultdict(list)
+        self.classifier = classifier
 
     def get_all_words(self, documents):
         all_words = []
@@ -105,11 +106,11 @@ class SentimentAnalyzer(object):
         # Additional arguments depend on the specific trainer we are using.
         # Is there a more elegant way to achieve the same result? I think
         # this might be confusing, especially for teaching purposes.
-        classifier = trainer(training_set, **kwargs)
+        self.classifier = trainer(training_set, **kwargs)
         if save_classifier:
-            save_file(classifier, save_classifier)
+            save_file(self.classifier, save_classifier)
 
-        return classifier
+        return self.classifier
 
     @timer
     def evaluate(self, classifier, test_set):
