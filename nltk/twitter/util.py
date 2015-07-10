@@ -85,7 +85,7 @@ def _get_entity_recursive(json, entity):
         return None
 
 def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
-             gzip_compress=True):
+             gzip_compress=False):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -127,7 +127,7 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
         writer.writerow(row)
     outf.close()
 
-def outf_writer_compat(outfile, encoding, errors, gzip_compress=True):
+def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
     """
     Identify appropriate CSV writer given the Python version
     """
@@ -149,7 +149,7 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=True):
 
 
 def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
-                      encoding='utf8', errors='replace', gzip_compress=True):
+                      encoding='utf8', errors='replace', gzip_compress=False):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
