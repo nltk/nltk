@@ -196,6 +196,15 @@ def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
     print("Loaded {} tweets".format(i))
     return tweets
 
+def parse_subjectivity_dataset(filename, word_tokenizer, sent_tokenizer=None, label=None):
+    with codecs.open(filename, 'rb') as inputfile:
+        docs = []
+        for line in inputfile:
+            tokenized_line = word_tokenizer.tokenize(line.decode('latin-1')) # We should add a sentence tokenizer
+            docs.append((tokenized_line, label))
+    return docs
+
+
 def save_file(content, filename):
     print("Saving", filename)
     with codecs.open(filename, 'wb') as storage_file:
@@ -310,6 +319,65 @@ def demo_movie_reviews_nb():
     classifier.show_most_informative_features()
     print('Accuracy:', accuracy)
 
+def demo_subjectivity():
+    from nltk.classify import NaiveBayesClassifier
+    from nltk.classify.util import apply_features
+    from nltk.corpus import movie_reviews
+    from sentiment_analyzer import SentimentAnalyzer
+    from nltk.tokenize import regexp
+
+    word_tokenizer = regexp.WhitespaceTokenizer()
+
+    subj_docs = parse_subjectivity_dataset('/home/fievelk/nltk_data/corpora/rotten_imdb/quote.tok.gt9_subj.5000',
+        word_tokenizer=word_tokenizer, label='subj')
+    obj_docs = parse_subjectivity_dataset('/home/fievelk/nltk_data/corpora/rotten_imdb/plot.tok.gt9_obj.5000',
+        word_tokenizer=word_tokenizer, label='obj')
+
+    # We separately split subjective and objective instances to keep a balanced
+    # uniform class distribution in both train and test sets.
+    train_subj_docs, test_subj_docs = split_train_test(subj_docs)
+    train_obj_docs, test_obj_docs = split_train_test(obj_docs)
+
+    training_docs = train_subj_docs+train_obj_docs
+    testing_docs = test_subj_docs+test_obj_docs
+
+    sa = SentimentAnalyzer()
+    all_words = sa.get_all_words(training_docs)
+
+    # Add simple unigram word features
+    unigram_feats = sa.unigram_word_feats(all_words, min_freq=4)
+    sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+
+    # Apply features to obtain a feature-value representation of our datasets
+    training_set = apply_features(sa.extract_features, training_docs)
+    test_set = apply_features(sa.extract_features, testing_docs)
+
+    trainer = NaiveBayesClassifier.train
+
+    classifier = sa.train(trainer, training_set)
+    accuracy = sa.evaluate(classifier, test_set)
+    classifier.show_most_informative_features()
+    print('Accuracy:', accuracy)
+
+    # save_file(sa, 'sa_subjectivity.pickle')
+
+    extr = [f.__name__ for f in sa.feat_extractors]
+    output_markdown('results.md', Dataset='subjectivity', Classifier='naivebayes',
+        Instances=2000, Tokenizer='WordPunctTokenizer', Feats=extr, Accuracy=accuracy,
+        Notes='All unigrams with at least frequency=4 - Uniform class distribution')
+
+def demo_sent_subjectivity(text):
+    from nltk.classify.util import apply_features
+    from nltk.tokenize import regexp
+    word_tokenizer = regexp.WhitespaceTokenizer()
+    sentim_analyzer = load('sa_subjectivity.pickle')
+
+    tokenized_text = word_tokenizer.tokenize(text)
+    text_feats = apply_features(sentim_analyzer.extract_features, [tokenized_text], labeled=False)
+    print(sentim_analyzer.classifier.classify(text_feats[0]))
+
 if __name__ == '__main__':
     # demo_tweets_nb()
-    demo_movie_reviews_nb()
+    # demo_movie_reviews_nb()
+    # demo_subjectivity()
+    demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
