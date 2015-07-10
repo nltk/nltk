@@ -32,13 +32,13 @@ class SentimentAnalyzer(object):
         self.feat_extractors = defaultdict(list)
         self.classifier = classifier
 
-    def get_all_words(self, documents):
+    def all_words(self, documents):
         all_words = []
         for words, sentiment in documents:
             all_words.extend(words)
         return all_words
 
-    def get_all_bigrams(self, documents):
+    def all_bigrams(self, documents):
         all_bigrams = []
         for text, sentiment in documents:
             all_bigrams.extend(nltk.bigrams(text))
@@ -144,14 +144,14 @@ def demo(dataset_name, classifier_type, n=None):
     training_tweets, testing_tweets = split_train_test(all_docs, n)
 
     sa = SentimentAnalyzer()
-    all_words = sa.get_all_words(training_tweets)
+    all_words = sa.all_words(training_tweets)
 
     # Add simple unigram word features
     unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Add unigram word features handling negation
-    # all_words_neg = sa.get_all_words([mark_negation(tweet) for tweet in training_tweets])
+    # all_words_neg = sa.all_words([mark_negation(tweet) for tweet in training_tweets])
     # unigram_feats = sa.unigram_word_feats(all_words_neg, top_n=1000)
     # sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats, handle_negation=True)
 
@@ -163,7 +163,7 @@ def demo(dataset_name, classifier_type, n=None):
     sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
 
     # Add bigram word features
-    # all_bigrams = sa.get_all_bigrams(training_tweets)
+    # all_bigrams = sa.all_bigrams(training_tweets)
     # bigram_feats = sa.bigram_word_feats(all_bigrams, top_n=10)
     # sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_feats)
 

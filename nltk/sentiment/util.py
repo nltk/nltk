@@ -246,7 +246,7 @@ def demo_tweets_nb():
     training_tweets, testing_tweets = split_train_test(all_docs, 8000)
 
     sa = SentimentAnalyzer()
-    all_words = sa.get_all_words(training_tweets)
+    all_words = sa.all_words(training_tweets)
 
     # Add simple unigram word features
     unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
@@ -298,7 +298,7 @@ def demo_movie_reviews_nb():
     testing_docs = test_pos_docs+test_neg_docs
 
     sa = SentimentAnalyzer()
-    all_words = sa.get_all_words(training_docs)
+    all_words = sa.all_words(training_docs)
 
     # Add simple unigram word features
     unigram_feats = sa.unigram_word_feats(all_words, min_freq=4)
@@ -342,7 +342,7 @@ def demo_subjectivity():
     testing_docs = test_subj_docs+test_obj_docs
 
     sa = SentimentAnalyzer()
-    all_words = sa.get_all_words(training_docs)
+    all_words = sa.all_words(training_docs)
 
     # Add simple unigram word features
     unigram_feats = sa.unigram_word_feats(all_words, min_freq=4)
