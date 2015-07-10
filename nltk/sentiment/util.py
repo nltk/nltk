@@ -87,7 +87,7 @@ def extract_bigram_feats(document, bigrams):
 #////////////////////////////////////////////////////////////
 
 def mark_negation(document, double_neg_flip=False, shallow=False):
-    r'''
+    '''
     Append a specific suffix to words that appear in the scope between a negation
     and a punctuation mark.
     :param shallow: if True, the method will modify the original document in place.
@@ -126,7 +126,7 @@ def output_markdown(filename, **kwargs):
         outfile.write(text)
 
 def parse_dataset(dataset_name, tokenizer):
-    r'''
+    '''
     Parse a dataset and outputs a list of documents.
     Available datasets: 'labeled_tweets', 'sent140'.
     '''
@@ -154,7 +154,7 @@ def parse_dataset(dataset_name, tokenizer):
         raise ValueError('Error while parsing the dataset. Did you specify a valid name?')
 
 def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
-    r'''
+    '''
     Parse training file and output train and test sets in (text, label) format.
     :param tokenizer: the tokenizer method that will be used to tokenize the text
     E.g. WordPunctTokenizer.tokenize
@@ -228,7 +228,7 @@ def split_train_test(all_instances, n=None):
 #////////////////////////////////////////////////////////////
 
 def demo_tweets_nb():
-    r'''
+    '''
     Train Naive Bayes classifier on 8000 instances of labeled_tweets dataset,
     using TweetTokenizer.
     Features are composed of:
@@ -267,7 +267,7 @@ def demo_tweets_nb():
     print('Accuracy:', accuracy)
 
 def demo_movie_reviews_nb():
-    r'''
+    '''
     Train Naive Bayes classifier on 8000 instances of the Movie Reviews dataset.
     The corpus has been preprocessed using the default sentence tokenizer and
     WordPunctTokenizer.
