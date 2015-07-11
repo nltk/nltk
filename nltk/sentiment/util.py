@@ -227,7 +227,7 @@ def split_train_test(all_instances, n=None):
 #{ Demos
 #////////////////////////////////////////////////////////////
 
-def demo_tweets_nb():
+def demo_tweets(trainer, n=None):
     '''
     Train Naive Bayes classifier on 8000 instances of labeled_tweets dataset,
     using TweetTokenizer.
@@ -238,12 +238,14 @@ def demo_tweets_nb():
     from nltk.classify.util import apply_features
     from nltk.tokenize import casual
     from sentiment_analyzer import SentimentAnalyzer
-    from nltk.classify import NaiveBayesClassifier
 
     tokenizer = casual.TweetTokenizer()
     all_docs = parse_dataset('labeled_tweets', tokenizer)
 
-    training_tweets, testing_tweets = split_train_test(all_docs, 8000)
+    if not n or n > len(all_docs):
+        n = len(all_docs)
+
+    training_tweets, testing_tweets = split_train_test(all_docs, n)
 
     sa = SentimentAnalyzer()
     all_words = sa.all_words(training_tweets)
@@ -259,35 +261,30 @@ def demo_tweets_nb():
     training_set = apply_features(sa.extract_features, training_tweets)
     test_set = apply_features(sa.extract_features, testing_tweets)
 
-    trainer = NaiveBayesClassifier.train
-
     classifier = sa.train(trainer, training_set)
-    classifier.show_most_informative_features()
+    # classifier = sa.train(trainer, training_set, max_iter=4)
+    try:
+        classifier.show_most_informative_features()
+    except AttributeError:
+        print('Your classifier does not provide a show_most_informative_features() method.')
+        pass
     accuracy = sa.evaluate(classifier, test_set)
     print('Accuracy:', accuracy)
 
-def demo_movie_reviews_nb():
+def demo_movie_reviews(trainer):
     '''
-    Train Naive Bayes classifier on 8000 instances of the Movie Reviews dataset.
+    Train Naive Bayes classifier on all instances of the Movie Reviews dataset.
     The corpus has been preprocessed using the default sentence tokenizer and
     WordPunctTokenizer.
     Features are composed of:
         - 1000 most frequent unigrams
-        - 100 top bigram collocations (using BigramAssocMeasures.pmi)
     '''
-    from nltk.classify import NaiveBayesClassifier
     from nltk.classify.util import apply_features
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
     pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in movie_reviews.fileids('pos')]
     neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in movie_reviews.fileids('neg')]
-
-    # all_docs = [(list(movie_reviews.words(file_id)), category)
-        # for category in movie_reviews.categories()
-        # for file_id in movie_reviews.fileids(category)]
-
-    # training_docs, testing_docs = split_train_test(all_docs, 2000)
 
     # We separately split positive and negative instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -304,23 +301,24 @@ def demo_movie_reviews_nb():
     unigram_feats = sa.unigram_word_feats(all_words, min_freq=4)
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
-    # Add bigram collocation features
-    # bigram_collocs_feats = sa.bigram_collocation_feats([doc[0] for doc in training_docs], top_n=16175, min_freq=7)
-    # sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
-
     # Apply features to obtain a feature-value representation of our datasets
     training_set = apply_features(sa.extract_features, training_docs)
     test_set = apply_features(sa.extract_features, testing_docs)
 
-    trainer = NaiveBayesClassifier.train
-
     classifier = sa.train(trainer, training_set)
+    try:
+        classifier.show_most_informative_features()
+    except AttributeError:
+        print('Your classifier does not provide a show_most_informative_features() method.')
+        pass
     accuracy = sa.evaluate(classifier, test_set)
-    classifier.show_most_informative_features()
     print('Accuracy:', accuracy)
 
-def demo_subjectivity():
-    from nltk.classify import NaiveBayesClassifier
+    extr = [f.__name__ for f in sa.feat_extractors]
+    output_markdown('results.md', Dataset='Movie_reviews', Classifier=type(classifier).__name__,
+        Tokenizer='WordPunctTokenizer', Feats=extr, Accuracy=accuracy)
+
+def demo_subjectivity(trainer):
     from nltk.classify.util import apply_features
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
@@ -352,19 +350,21 @@ def demo_subjectivity():
     training_set = apply_features(sa.extract_features, training_docs)
     test_set = apply_features(sa.extract_features, testing_docs)
 
-    trainer = NaiveBayesClassifier.train
-
     classifier = sa.train(trainer, training_set)
+    try:
+        classifier.show_most_informative_features()
+    except AttributeError:
+        print('Your classifier does not provide a show_most_informative_features() method.')
+        pass
     accuracy = sa.evaluate(classifier, test_set)
-    classifier.show_most_informative_features()
     print('Accuracy:', accuracy)
 
     # save_file(sa, 'sa_subjectivity.pickle')
 
     extr = [f.__name__ for f in sa.feat_extractors]
-    output_markdown('results.md', Dataset='subjectivity', Classifier='naivebayes',
-        Instances=2000, Tokenizer='WordPunctTokenizer', Feats=extr, Accuracy=accuracy,
-        Notes='All unigrams with at least frequency=4 - Uniform class distribution')
+    output_markdown('results.md', Dataset='subjectivity', Classifier=type(classifier).__name__,
+        Instances=2000, Tokenizer=word_tokenizer.__class__.__name__, Feats=extr,
+        Accuracy=accuracy)
 
 def demo_sent_subjectivity(text):
     from nltk.classify.util import apply_features
@@ -376,8 +376,17 @@ def demo_sent_subjectivity(text):
     text_feats = apply_features(sentim_analyzer.extract_features, [tokenized_text], labeled=False)
     print(sentim_analyzer.classifier.classify(text_feats[0]))
 
+
 if __name__ == '__main__':
-    # demo_tweets_nb()
-    # demo_movie_reviews_nb()
-    # demo_subjectivity()
-    demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
+    from nltk.classify import NaiveBayesClassifier, MaxentClassifier
+    from nltk.classify.scikitlearn import SklearnClassifier
+    from sklearn.svm import LinearSVC
+
+    naive_bayes = NaiveBayesClassifier.train
+    svm = SklearnClassifier(LinearSVC()).train
+    maxent = MaxentClassifier.train
+
+    # demo_tweets(maxent, n=8000)
+    # demo_movie_reviews(svm)
+    demo_subjectivity(svm)
+    # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
