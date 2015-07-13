@@ -340,10 +340,10 @@ def demo_subjectivity(trainer):
     testing_docs = test_subj_docs+test_obj_docs
 
     sa = SentimentAnalyzer()
-    all_words = sa.all_words(training_docs)
+    all_words_neg = sa.all_words([mark_negation(doc) for doc in training_docs])
 
-    # Add simple unigram word features
-    unigram_feats = sa.unigram_word_feats(all_words, min_freq=4)
+    # Add simple unigram word features handling negation
+    unigram_feats = sa.unigram_word_feats(all_words_neg, min_freq=4)
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Apply features to obtain a feature-value representation of our datasets
