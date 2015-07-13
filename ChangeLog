@@ -1,3 +1,11 @@
+Version 3.0.4 2015-07-13
+* minor bug fixes and enhancements
+
+Thanks to the following contributors to 3.0.4:
+Nicola Bova, Santiago Castro, Len Remmerswaal, Keith Suderman, kabayan55,
+pln-fing-udelar (NLP Group, Instituto de Computación, Facultad de Ingeniería, Universidad de la República, Uruguay).
+
+	
 Version 3.0.3 2015-06-12
 * bug fixes (Stanford NER, Boxer, Snowball, treebank tokenizer,
     dependency graph, KneserNey, BLEU)
