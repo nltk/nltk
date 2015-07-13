@@ -27,16 +27,16 @@ Usage
 =====
 
 >>> from nltk.tree import ParentedTree
->>> from nltk import tgrep
+>>> from nltk.tgrep import tgrep_nodes, tgrep_positions
 >>> tree = ParentedTree.fromstring('(S (NP (DT the) (JJ big) (NN dog)) (VP bit) (NP (DT a) (NN cat)))')
->>> tgrep.tgrep_nodes(tree, 'NN')
-[ParentedTree('NN', ['dog']), ParentedTree('NN', ['cat'])]
->>> tgrep.tgrep_positions(tree, 'NN')
-[(0, 2), (2, 1)]
->>> tgrep.tgrep_nodes(tree, 'DT')
-[ParentedTree('DT', ['the']), ParentedTree('DT', ['a'])]
->>> tgrep.tgrep_nodes(tree, 'DT $ JJ')
-[ParentedTree('DT', ['the'])]
+>>> list(tgrep_nodes('NN', [tree]))
+[[ParentedTree('NN', ['dog']), ParentedTree('NN', ['cat'])]]
+>>> list(tgrep_positions('NN', [tree]))
+[[(0, 2), (2, 1)]]
+>>> list(tgrep_nodes('DT', [tree]))
+[[ParentedTree('DT', ['the']), ParentedTree('DT', ['a'])]]
+>>> list(tgrep_nodes('DT $ JJ', [tree]))
+[[ParentedTree('DT', ['the'])]]
 
 This implementation adds syntax to select nodes based on their NLTK
 tree position.  This syntax is ``N`` plus a Python tuple representing
@@ -48,8 +48,8 @@ valid node selectors.  Example:
 ParentedTree('DT', ['the'])
 >>> tree[0,0].treeposition()
 (0, 0)
->>> tgrep.tgrep_nodes(tree, 'N(0,0)')
-[ParentedTree('DT', ['the'])]
+>>> list(tgrep_nodes('N(0,0)', [tree]))
+[[ParentedTree('DT', ['the'])]]
 
 Caveats:
 ========
@@ -879,38 +879,63 @@ def treepositions_no_leaves(tree):
             prefixes.add(pos[:length])
     return [pos for pos in treepositions if pos in prefixes]
 
-def tgrep_positions(tree, tgrep_string, search_leaves = True):
-    '''
-    Return all tree positions in the given tree which match the given
-    `tgrep_string`.
+def tgrep_positions(pattern, trees, search_leaves=True):
+    """
+    Return the tree positions in the trees which match the given pattern.
 
-    If `search_leaves` is False, the method will not return any
-    results in leaf positions.
-    '''
-    try:
-        if search_leaves:
-            search_positions = tree.treepositions()
-        else:
-            search_positions = treepositions_no_leaves(tree)
-    except AttributeError:
-        return []
-    if isinstance(tgrep_string, (binary_type, text_type)):
-        tgrep_string = tgrep_compile(tgrep_string)
-    return [position for position in search_positions
-            if tgrep_string(tree[position])]
+    :param pattern: a tgrep search pattern
+    :type pattern: str or output of tgrep_compile()
+    :param trees: a sequence of NLTK trees (usually ParentedTrees)
+    :type trees: iter(ParentedTree) or iter(Tree)
+    :param search_leaves: whether ot return matching leaf nodes
+    :type search_leaves: bool
+    :rtype: iter(tree positions)
+    """
 
-def tgrep_nodes(tree, tgrep_string, search_leaves = True):
-    '''
-    Return all tree nodes in the given tree which match the given
-    `tgrep_ string`.
+    if isinstance(pattern, (binary_type, text_type)):
+        pattern = tgrep_compile(pattern)
 
-    If `search_leaves` is False, the method will not return any
-    results in leaf positions.
-    '''
-    return [tree[position] for position in tgrep_positions(tree, tgrep_string,
-                                                           search_leaves)]
+    for tree in trees:
+        try:
+            if search_leaves:
+                positions = tree.treepositions()
+            else:
+                positions = treepositions_no_leaves(tree)
+            yield [position for position in positions
+                      if pattern(tree[position])]
+        except AttributeError:
+            yield []
+
+def tgrep_nodes(pattern, trees, search_leaves=True):
+    """
+    Return the tree nodes in the trees which match the given pattern.
+
+    :param pattern: a tgrep search pattern
+    :type pattern: str or output of tgrep_compile()
+    :param trees: a sequence of NLTK trees (usually ParentedTrees)
+    :type trees: iter(ParentedTree) or iter(Tree)
+    :param search_leaves: whether ot return matching leaf nodes
+    :type search_leaves: bool
+    :rtype: iter(tree nodes)
+    """
+
+    if isinstance(pattern, (binary_type, text_type)):
+        pattern = tgrep_compile(pattern)
+
+    for tree in trees:
+        try:
+            if search_leaves:
+                positions = tree.treepositions()
+            else:
+                positions = treepositions_no_leaves(tree)
+            yield [tree[position] for position in positions
+                      if pattern(tree[position])]
+        except AttributeError:
+            yield []
+
 
 # run module doctests
 if __name__ == "__main__":
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+

@@ -95,3 +95,4 @@ from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
                                   TypedMaxentFeatureEncoding,
                                   ConditionalExponentialClassifier)
 from nltk.classify.senna import Senna
+from nltk.classify.textcat import TextCat

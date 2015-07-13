@@ -5,8 +5,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import pylab
-import nltk.text
+from matplotlib import pylab
+from nltk.text import Text
 from nltk.corpus import gutenberg
 
 def plot_word_freq_dist(text):
@@ -23,7 +23,7 @@ def plot_word_freq_dist(text):
     pylab.show()
 
 def app():
-    t1 = nltk.Text(gutenberg.words('melville-moby_dick.txt'))
+    t1 = Text(gutenberg.words('melville-moby_dick.txt'))
     plot_word_freq_dist(t1)
 
 if __name__ == '__main__':

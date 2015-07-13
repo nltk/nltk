@@ -83,7 +83,7 @@ from nltk.data import load
 # Standard treebank POS tagger
 _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
 
-def pos_tag(tokens):
+def pos_tag(tokens, tagset=None):
     """
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
@@ -101,6 +101,8 @@ def pos_tag(tokens):
     :rtype: list(tuple(str, str))
     """
     tagger = load(_POS_TAGGER)
+    if tagset:
+        return [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagger.tag(tokens)]
     return tagger.tag(tokens)
 
 def pos_tag_sents(sentences):

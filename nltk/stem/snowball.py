@@ -2533,7 +2533,7 @@ class PortugueseStemmer(_StandardStemmer):
                         word = suffix_replace(word, suffix, "log")
                         rv = suffix_replace(rv, suffix, "log")
 
-                    elif suffix in ("ução", "uções"):
+                    elif suffix in ("uça~o", "uço~es"):
                         word = suffix_replace(word, suffix, "u")
                         rv = suffix_replace(rv, suffix, "u")
 

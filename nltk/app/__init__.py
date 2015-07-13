@@ -39,11 +39,11 @@ else:
     from nltk.app.wordnet_app import app as wordnet
 
     try:
-        import pylab
+        from matplotlib import pylab
     except ImportError:
         import warnings
         warnings.warn("nltk.app.wordfreq not loaded "
-                      "(requires the pylab library).")
+                      "(requires the matplotlib library).")
     else:
         from nltk.app.wordfreq_app import app as wordfreq
 

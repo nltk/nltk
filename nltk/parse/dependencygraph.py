@@ -19,6 +19,7 @@ from collections import defaultdict
 from itertools import chain
 from pprint import pformat
 import subprocess
+import warnings
 
 from nltk.tree import Tree
 from nltk.compat import python_2_unicode_compatible, string_types
@@ -298,13 +299,14 @@ class DependencyGraph(object):
                 rel = 'ROOT'
             self.nodes[head]['deps'][rel].append(index)
 
-        if not self.nodes[0]['deps']['ROOT']:
-            raise DependencyGraphError(
-                "The graph does'n contain a node "
+        if self.nodes[0]['deps']['ROOT']:
+            root_address = self.nodes[0]['deps']['ROOT'][0]
+            self.root = self.nodes[root_address]
+        else:
+            warnings.warn(
+                "The graph doesn't contain a node "
                 "that depends on the root element."
             )
-        root_address = self.nodes[0]['deps']['ROOT'][0]
-        self.root = self.nodes[root_address]
 
     def _word(self, node, filter=True):
         w = node['word']
@@ -454,7 +456,7 @@ class DependencyGraph(object):
 
     def nx_graph(self):
         """Convert the data in a ``nodelist`` into a networkx labeled directed graph."""
-        import networkx as NX
+        import networkx
 
         nx_nodelist = list(range(1, len(self.nodes)))
         nx_edgelist = [
@@ -465,7 +467,7 @@ class DependencyGraph(object):
         for n in nx_nodelist:
             self.nx_labels[n] = self.nodes[n]['word']
 
-        g = NX.XDiGraph()
+        g = networkx.MultiDiGraph()
         g.add_nodes_from(nx_nodelist)
         g.add_edges_from(nx_edgelist)
 
@@ -511,19 +513,19 @@ Nov.    NNP     9       VMOD
     tree.pprint()
     if nx:
         # currently doesn't work
-        import networkx as NX
-        import pylab as P
+        import networkx
+        from matplotlib import pylab
 
         g = dg.nx_graph()
         g.info()
-        pos = NX.spring_layout(g, dim=1)
-        NX.draw_networkx_nodes(g, pos, node_size=50)
-        # NX.draw_networkx_edges(g, pos, edge_color='k', width=8)
-        NX.draw_networkx_labels(g, pos, dg.nx_labels)
-        P.xticks([])
-        P.yticks([])
-        P.savefig('tree.png')
-        P.show()
+        pos = networkx.spring_layout(g, dim=1)
+        networkx.draw_networkx_nodes(g, pos, node_size=50)
+        # networkx.draw_networkx_edges(g, pos, edge_color='k', width=8)
+        networkx.draw_networkx_labels(g, pos, dg.nx_labels)
+        pylab.xticks([])
+        pylab.yticks([])
+        pylab.savefig('tree.png')
+        pylab.show()
 
 
 def conll_demo():
@@ -552,13 +554,11 @@ def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
     print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
-    top = {'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0}
-    child1 = {'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1}
-    child2 = {'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2}
-    child3 = {'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3}
-    child4 = {'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4}
-    cyclic_dg.nodelist = [top, child1, child2, child3, child4]
-    cyclic_dg.root = top
+    cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0})
+    cyclic_dg.add_node({'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1})
+    cyclic_dg.add_node({'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2})
+    cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3})
+    cyclic_dg.add_node({'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4})
     print(cyclic_dg.contains_cycle())
 
 treebank_data = """Pierre  NNP     2       NMOD

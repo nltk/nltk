@@ -95,6 +95,8 @@ conll2007 = LazyCorpusLoader(
     'conll2007', DependencyCorpusReader, '.*\.(test|train).*', encoding=[
         ('eus', 'ISO-8859-2'),
         ('esp', 'utf8')])
+crubadan = LazyCorpusLoader(
+    'crubadan', CrubadanCorpusReader, '.*\.txt')
 dependency_treebank = LazyCorpusLoader(
     'dependency_treebank', DependencyCorpusReader, '.*\.dp',
     encoding='ascii')
@@ -140,7 +142,7 @@ machado = LazyCorpusLoader(
     r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*', encoding='latin-1')
 masc_tagged = LazyCorpusLoader(
     'masc_tagged', CategorizedTaggedCorpusReader, r'(spoken|written)/.*\.txt',
-    cat_file='categories.txt', tagset='wsj', encoding="ascii", sep="_")
+    cat_file='categories.txt', tagset='wsj', encoding="utf-8", sep="_")
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*',
@@ -182,6 +184,10 @@ stopwords = LazyCorpusLoader(
     'stopwords', WordListCorpusReader, r'(?!README|\.).*', encoding='utf8')
 swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*', encoding='utf8')
+swadesh110 = LazyCorpusLoader(
+    'panlex_swadesh', SwadeshCorpusReader, r'swadesh110/.*\.txt', encoding='utf8')
+swadesh207 = LazyCorpusLoader(
+    'panlex_swadesh', SwadeshCorpusReader, r'swadesh207/.*\.txt', encoding='utf8')
 switchboard = LazyCorpusLoader(
     'switchboard', SwitchboardCorpusReader, tagset='wsj')
 timit = LazyCorpusLoader(
@@ -248,6 +254,7 @@ semcor = LazyCorpusLoader(
     'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml',
     wordnet) # Must be defined *after* wordnet corpus.
 
+  
 def demo():
     # This is out-of-date:
     abc.demo()
