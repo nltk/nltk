@@ -13,7 +13,9 @@ import fnmatch
 import tempfile
 import subprocess
 
+
 from nltk.tokenize import word_tokenize
+from nltk.tag import pos_tag
 from nltk.data import ZipFilePathPointer
 
 from nltk.parse.api import ParserI
@@ -42,7 +44,6 @@ def taggedsent_to_conll(sentences):
 	5    sentence    _    NN    NN    _    0    a    _    _
 	6    .    _    .    .    _    0    a    _    _
 
-
 	1    Is    _    VBZ    VBZ    _    0    a    _    _
 	2    that    _    IN    IN    _    0    a    _    _
 	3    right    _    JJ    JJ    _    0    a    _    _
@@ -55,6 +56,33 @@ def taggedsent_to_conll(sentences):
 			yield input_str.encode("utf8")
 		yield '\n\n'
 
+def malt_regex_tagger():
+	from nltk.tag import RegexpTagger
+	_tagger = RegexpTagger(
+	[(r'\.$','.'), (r'\,$',','), (r'\?$','?'),	# fullstop, comma, Qmark
+	(r'\($','('), (r'\)$',')'), 				# round brackets
+	(r'\[$','['), (r'\]$',']'), 				# square brackets
+	(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),			# cardinal numbers
+	(r'(The|the|A|a|An|an)$', 'DT'),			# articles
+	(r'(He|he|She|she|It|it|I|You|you)$', 'PRP'), 	# pronouns
+	(r'(on|On|in|In|at|At|since|Since)$', 'IN'), 	# time prepopsitions
+	(r'(for|For|ago|Ago|before|Before)$', 'IN'),	# time prepopsitions
+	(r'(till|Till|until|Until)$', 'IN'),  			# time prepopsitions
+	(r'(by|By|beside|Beside)$', 'IN'),				# space prepopsitions
+	(r'(under|Under|below|Below)$', 'IN'),			# space prepopsitions
+	(r'(over|Over|above|Above)$', 'IN'),			# space prepopsitions
+	(r'(across|Across|through|Through)$', 'IN'),	# space prepopsitions
+	(r'(into|Into|towards|Towards)$', 'IN'),		# space prepopsitions
+	(r'(onto|Onto|from|From)$', 'IN'),				# space prepopsitions
+	(r'.*able$', 'JJ'),                # adjectives
+	(r'.*ness$', 'NN'),                # nouns formed from adjectives
+	(r'.*ly$', 'RB'),                  # adverbs
+	(r'.*s$', 'NNS'),                  # plural nouns
+	(r'.*ing$', 'VBG'),                # gerunds
+	(r'.*ed$', 'VBD'),                 # past tense verbs
+	(r'.*', 'NN'),                     # nouns (default)
+	])
+	return _tagger.tag
 
 class MaltParser(ParserI):
 	def __init__(self, path_to_maltparser, model=None, tagger=None, 
@@ -94,18 +122,7 @@ class MaltParser(ParserI):
 		if tagger is not None:
 			self.tagger = tagger
 		else:
-			from nltk.tag import RegexpTagger
-			self.tagger = RegexpTagger(
-			[(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
-			(r'(The|the|A|a|An|an)$', 'AT'),   # articles
-			(r'.*able$', 'JJ'),                # adjectives
-			(r'.*ness$', 'NN'),                # nouns formed from adjectives
-			(r'.*ly$', 'RB'),                  # adverbs
-			(r'.*s$', 'NNS'),                  # plural nouns
-			(r'.*ing$', 'VBG'),                # gerunds
-			(r'.*ed$', 'VBD'),                 # past tense verbs
-			(r'.*', 'NN')                      # nouns (default)
-			])
+			self.tagger = malt_regex_tagger()	
 
 	def parse_tagged_sents(self, sentences, verbose=False):
 		"""
@@ -161,7 +178,7 @@ class MaltParser(ParserI):
 			input_file.close()
 			os.remove(input_file.name)
 			output_file.close()
-			os.remove(output_file.name)
+			#os.remove(output_file.name)
 
 	
 	def parse_sents(self, sentences, verbose=False):
@@ -175,7 +192,7 @@ class MaltParser(ParserI):
 		:type sentence: list(list(str))
 		:return: iter(DependencyGraph)
 		"""
-		tagged_sentences = [self.tagger.tag(sentence) for sentence in sentences]
+		tagged_sentences = [self.tagger(sentence) for sentence in sentences]
 		return iter(self.parse_tagged_sents(tagged_sentences, verbose))
 
 	def generate_malt_command(self, inputfilename, outputfilename=None, 
@@ -239,8 +256,8 @@ class MaltParser(ParserI):
 		:type conll_file: str
 		"""
 
-		# If conll_file is a ZipFilePathPointer, then we need to do some extra
-		# massaging
+		# If conll_file is a ZipFilePathPointer, 
+		# then we need to do some extra massaging
 		if isinstance(conll_file, ZipFilePathPointer):
 			input_file = tempfile.NamedTemporaryFile(prefix='malt_train.conll',
 				                                    dir=self.working_dir,
@@ -257,7 +274,7 @@ class MaltParser(ParserI):
 
 		# Generate command to run maltparser.
 		cmd =self.generate_malt_command(conll_file, mode="learn")
-
+		
 		ret = self._execute(cmd, verbose)
 		if ret != 0:
 			raise Exception("MaltParser training (%s) "
@@ -278,6 +295,7 @@ def demo(path_to_maltparser, path_to_model):
 	(pajamas (shot I) an elephant in my)
 	'''
 
+	'''
 	#########################################################################
 	# Demo to train a new model with DependencyGraph objects and 
 	# parse example sentences with the new model.
@@ -299,26 +317,30 @@ def demo(path_to_maltparser, path_to_model):
 	# Trains a model.
 	mp.train([dg1,dg2], verbose=verbose)
 	
-	sent1 = ['John','sees','Mary']
-	sent2 = ['a','man','runs']
+	sent1 = ['John','sees','Mary', '.']
+	sent2 = ['a','man','runs', '.']
 	# Parse a single sentence.
 	print (mp.parse_one(sent1).tree())
 	print (mp.parse_one(sent2).tree())
 	print(next(next(mp.parse_sents([sent1,sent2]))).tree())
-	
+	'''
+		
 	#########################################################################
 	# Demo to parse example sentences with pre-trained models
 	#########################################################################
 
 	# Initialize a MaltParser object with a pre-trained model.
-	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model)	
-	sent = 'I shot an elephant in my pajamas'.split()
-	sent2 = 'Time flies like banana'.split()
+	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model, tagger=pos_tag)	
+	sent = 'I shot an elephant in my pajamas .'.split()
+	sent2 = 'Time flies like banana .'.split()
 	# Parse a single sentence.
 	print(mp.parse_one(sent).tree())
-	print(next(next(mp.parse_sents([sent,sent2]))).tree())
+	
+	#print(next(next(mp.parse_sents([sent,sent2]))))
 
 
 if __name__ == '__main__':
-    demo('/home/username/maltparser-1.8/', '/home/username/engmalt.linear-1.7.mco')
+	demo('/home/alvas/maltparser-1.7.2/', '/home/alvas/engmalt.linear-1.7.mco')
+	#demo('/home/alvas/maltparser-1.7.2/', '/home/alvas/engmalt.poly-1.7.mco')
+    
 
