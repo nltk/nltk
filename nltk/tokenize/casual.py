@@ -205,7 +205,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
     is". For more information see the tests.
     Always returns a unicode string (with the entities removed).
     """
-    
+
     def convert_entity(m):
         entity_body = m.group(3)
         if m.group(1):
@@ -232,28 +232,71 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
                 return unichr(number)
             except ValueError:
                 pass
-    
+
         return u'' if remove_illegal else m.group(0)
-    
+
     return _ent_re.sub(convert_entity, _str_to_unicode(text, encoding))
 
 
 ######################################################################
 
 class TweetTokenizer:
-    """Tokenize Tweets"""
-    def __init__(self, preserve_case=True):
+    r"""
+    Tokenizer for tweets.
+
+    >>> from nltk.tokenize import TweetTokenizer
+    >>> s0 = "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--"
+    >>> TweetTokenizer().tokenize(s0)
+    ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
+    >>> s1 = "Naps are a must \ud83d\ude34\ud83d\ude34"
+    >>> TweetTokenizer().tokenize(s1)
+    ['Naps', 'are', 'a', 'must', '\ud83d', '\ude34', '\ud83d', '\ude34']
+    >>> s2 = "Renato fica com muito medo de ouvir meus \u00e1udios perto da gaja dele, pois s\u00f3 falo merda KKK"
+    >>> TweetTokenizer().tokenize(s2)
+    ['Renato', 'fica', 'com', 'muito', 'medo', 'de', 'ouvir', 'meus', 'áudios', 'perto', 'da', 'gaja', 'dele', ',', 'pois', 'só', 'falo', 'merda', 'KKK']
+    >>> s3 = "\u0412\u043b\u0430\u0434\u0435\u043b\u0435\u0446 20th Century Fox \u043d\u0430\u043c\u0435\u0440\u0435\u043d \u043a\u0443\u043f\u0438\u0442\u044c Warner Bros."
+    >>> TweetTokenizer().tokenize(s3)
+    ['Владелец', '20th', 'Century', 'Fox', 'намерен', 'купить', 'Warner', 'Bros', '.']
+    >>> s4 = "RT @facugambande: Ya por arrancar a grabar !!! #TirenTirenTiren vamoo !!"
+    >>> TweetTokenizer().tokenize(s4)
+    ['RT', '@facugambande', ':', 'Ya', 'por', 'arrancar', 'a', 'grabar', '!', '!', '!', '#TirenTirenTiren', 'vamoo', '!', '!']
+    >>> s5 = "http://t.co/7r8d5bVKyA http://t.co/hZpwZe1uKt http://t.co/ZKb7GKWocy Ничто так не сближает людей"
+    >>> TweetTokenizer().tokenize(s5)
+    ['http://t.co/7r8d5bVKyA', 'http://t.co/hZpwZe1uKt', 'http://t.co/ZKb7GKWocy', 'Ничто', 'так', 'не', 'сближает', 'людей']
+
+    Examples using strip_handles and reduce_len parameters:
+    >>> tokenizer = TweetTokenizer(strip_handles=True, reduce_len=True)
+    >>> s6 = '@remy: This is waaaaayyyy too much for you!!!!!!'
+    >>> tokenizer.tokenize(s6)
+    [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
+    >>> s7 = '@_willy65: No place for @chuck tonight. Sorry.'
+    >>> tokenizer.tokenize(s7)
+    [':', 'No', 'place', 'for', 'tonight', '.', 'Sorry', '.']
+    >>> s8 = '@mar_tin is a great developer. Contact him at mar_tin@email.com'
+    >>> tokenizer.tokenize(s8)
+    ['is', 'a', 'great', 'developer', '.', 'Contact', 'him', 'at', 'mar_tin', '@email', '.', 'com']
+    """
+
+    def __init__(self, preserve_case=True, reduce_len=False, strip_handles=False):
         self.preserve_case = preserve_case
+        self.reduce_len = reduce_len
+        self.strip_handles = strip_handles
 
     def tokenize(self, text):
         """
-        :param s: str
+        :param text: str
         :rtype: list(str)
         :return: a tokenized list of strings; concatenating this list returns
         the original string if preserve_case=False
         """
         # Fix HTML character entities:
         text = _replace_html_entities(text)
+        # Remove username handles
+        if self.strip_handles:
+          text = remove_handles(text)
+        # Normalize word lengthening
+        if self.reduce_len:
+          text = reduce_lengthening(text)
         # Tokenize:
         words = WORD_RE.findall(text)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
@@ -262,68 +305,38 @@ class TweetTokenizer:
                               x.lower()), words))
         return words
 
+######################################################################
+# Normalization Functions
+######################################################################
+
+def reduce_lengthening(text):
+    '''
+    Replace repeated character sequences of length 3 or greater with sequences
+    of length 3.
+    '''
+    pattern = re.compile(r"(.)\1{2,}")
+    return pattern.sub(r"\1\1\1", text)
+
+def remove_handles(text):
+    '''
+    Remove Twitter username handles from text.
+    '''
+    pattern = re.compile(r"(^|(?<=[^\w.-]))@[A-Za-z_]+\w+")
+    return pattern.sub('', text)
 
 ######################################################################
 # Tokenization Function
 ######################################################################
 
-def casual_tokenize(text, preserve_case=True):
+def casual_tokenize(text, preserve_case=True, reduce_len=False, strip_handles=False):
     """
     Convenience function for wrapping the tokenizer.
     """
-    return TweetTokenizer(preserve_case=preserve_case).tokenize(text)
+    return TweetTokenizer(preserve_case=preserve_case, reduce_len=reduce_len,
+      strip_handles=strip_handles).tokenize(text)
 
 ###############################################################################
 
 if __name__ == '__main__':
-    s0 = "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--"
-    s1 = "Naps are a must \ud83d\ude34\ud83d\ude34"
-    s2 = "Renato fica com muito medo de ouvir meus \u00e1udios perto da gaja\
-    dele, pois s\u00f3 falo merda KKK"
-    s3 = "\u0412\u043b\u0430\u0434\u0435\u043b\u0435\u0446 20th Century Fox\
-    \u043d\u0430\u043c\u0435\u0440\u0435\u043d\
-    \u043a\u0443\u043f\u0438\u0442\u044c Warner Bros."
-    s4 = "RT @facugambande: Ya por arrancar a grabar !!! #TirenTirenTiren vamoo !!"
-    s5 = "http://t.co/7r8d5bVKyA http://t.co/hZpwZe1uKt\
-    http://t.co/ZKb7GKWocy Ничто так не сближает\
-    людей"
-
-    t0 = ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P',\
-          '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
-    t1 = ['Naps', 'are', 'a', 'must', '\ud83d', '\ude34', '\ud83d', '\ude34']
-    t2 = ['Renato', 'fica', 'com', 'muito', 'medo', 'de', 'ouvir', 'meus',
-          'áudios', 'perto', 'da', 'gaja', 'dele', ',', 'pois', 'só', 'falo',
-          'merda', 'KKK']
-    t3 = ['Владелец', '20th', 'Century', 'Fox', 'намерен',
-          'купить', 'Warner', 'Bros', '.']
-    t4 = ['RT', '@facugambande', ':', 'Ya', 'por', 'arrancar', 'a', 'grabar',
-          '!', '!', '!', '#TirenTirenTiren', 'vamoo', '!', '!']
-    t5 = ['http://t.co/7r8d5bVKyA', 'http://t.co/hZpwZe1uKt',
-          'http://t.co/ZKb7GKWocy', 'Ничто', 'так', 'не',
-          'сближает', 'людей']
-
-    TWEETS = [s0, s1, s2, s3, s4, s5]
-    TOKS = [t0, t1, t2, t3, t4, t5]
-
-    def test(left, right):
-        """
-        Compare the tool's tokenization with expected 'gold standard' output.
-        """
-        tokenizer = TweetTokenizer()
-        toks = tokenizer.tokenize(left)
-        if toks == right:
-            return True
-        else:
-            return toks
-
-    for (tweet, tokenized) in zip(TWEETS, TOKS):
-        if test(tweet, tokenized):
-            print("Pass")
-        else:
-            print("Expected: {}".format(tokenized))
-            print("Actual: {}".format(test(tweet, tokenized)))
-
-
-
-
-
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
