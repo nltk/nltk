@@ -54,6 +54,20 @@ if PY3:
 
     from collections import Counter
 
+    from datetime import timezone
+    UTC = timezone.utc
+
+    from tempfile import TemporaryDirectory
+    
+    unichr = chr
+    if sys.version_info[1] <= 1:
+        def int2byte(i):
+            return bytes((i,))
+    else:
+        # This is about 2x faster than the implementation above on 3.2+
+        import operator
+        int2byte = operator.methodcaller("to_bytes", 1, "big")
+
 else:
     def b(s):
         return s
@@ -120,6 +134,151 @@ else:
             return sys.modules[name]
 
     sys.meta_path.insert(0, TkinterLoader())
+
+    from datetime import tzinfo, timedelta
+
+    ZERO = timedelta(0)
+    HOUR = timedelta(hours=1)
+
+    # A UTC class for python 2.7
+    class UTC(tzinfo):
+        """UTC"""
+    
+        def utcoffset(self, dt):
+            return ZERO
+    
+        def tzname(self, dt):
+            return "UTC"
+    
+        def dst(self, dt):
+            return ZERO
+    
+    UTC = UTC()
+
+    unichr = unichr
+    int2byte = chr
+    
+    import csv, codecs, cStringIO
+    class UnicodeWriter:
+        """
+        A CSV writer which will write rows to CSV file "f",
+        which is encoded in the given encoding.
+        see https://docs.python.org/2/library/csv.html
+        """
+
+        def __init__(self, f, dialect=csv.excel, encoding="utf-8", errors='replace', **kwds):
+            # Redirect output to a queue
+            self.queue = cStringIO.StringIO()
+            self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+            self.stream = f
+            self.encoder = codecs.getincrementalencoder(encoding)(errors=errors)
+
+        def encode(self, data):
+            if isinstance(data, basestring):
+                return data.encode("utf-8")
+            else:
+                return data
+
+        def writerow(self, row):
+            self.writer.writerow([self.encode(s) for s in row])
+            # Fetch UTF-8 output from the queue ...
+            data = self.queue.getvalue()
+            data = data.decode("utf-8")
+            # ... and reencode it into the target encoding
+            data = self.encoder.encode(data, 'replace')
+            # write to the target stream
+            self.stream.write(data)
+            # empty queue
+            self.queue.truncate(0)
+
+
+    import warnings as _warnings
+    import os as _os
+    from tempfile import mkdtemp
+
+    class TemporaryDirectory(object):
+        """Create and return a temporary directory.  This has the same
+        behavior as mkdtemp but can be used as a context manager.  For
+        example:
+
+            with TemporaryDirectory() as tmpdir:
+                ...
+
+        Upon exiting the context, the directory and everything contained
+        in it are removed.
+
+        http://stackoverflow.com/questions/19296146/tempfile-temporarydirectory-context-manager-in-python-2-7
+        """
+
+        def __init__(self, suffix="", prefix="tmp", dir=None):
+            self._closed = False
+            self.name = None # Handle mkdtemp raising an exception
+            self.name = mkdtemp(suffix, prefix, dir)
+
+        def __repr__(self):
+            return "<{} {!r}>".format(self.__class__.__name__, self.name)
+
+        def __enter__(self):
+            return self.name
+
+        def cleanup(self, _warn=False):
+            if self.name and not self._closed:
+                try:
+                    self._rmtree(self.name)
+                except (TypeError, AttributeError) as ex:
+                    # Issue #10188: Emit a warning on stderr
+                    # if the directory could not be cleaned
+                    # up due to missing globals
+                    if "None" not in str(ex):
+                        raise
+                    print("ERROR: {!r} while cleaning up {!r}".format(ex, self,),
+                          file=sys.stderr)
+                    return
+                self._closed = True
+                if _warn:
+                    self._warn("Implicitly cleaning up {!r}".format(self),
+                               ResourceWarning)
+
+        def __exit__(self, exc, value, tb):
+            self.cleanup()
+
+        def __del__(self):
+            # Issue a ResourceWarning if implicit cleanup needed
+            self.cleanup(_warn=True)
+
+        # XXX (ncoghlan): The following code attempts to make
+        # this class tolerant of the module nulling out process
+        # that happens during CPython interpreter shutdown
+        # Alas, it doesn't actually manage it. See issue #10188
+        _listdir = staticmethod(_os.listdir)
+        _path_join = staticmethod(_os.path.join)
+        _isdir = staticmethod(_os.path.isdir)
+        _islink = staticmethod(_os.path.islink)
+        _remove = staticmethod(_os.remove)
+        _rmdir = staticmethod(_os.rmdir)
+        _warn = _warnings.warn
+
+        def _rmtree(self, path):
+            # Essentially a stripped down version of shutil.rmtree.  We can't
+            # use globals because they may be None'ed out at shutdown.
+            for name in self._listdir(path):
+                fullname = self._path_join(path, name)
+                try:
+                    isdir = self._isdir(fullname) and not self._islink(fullname)
+                except OSError:
+                    isdir = False
+                if isdir:
+                    self._rmtree(fullname)
+                else:
+                    try:
+                        self._remove(fullname)
+                    except OSError:
+                        pass
+            try:
+                self._rmdir(path)
+            except OSError:
+                pass
+
 
     if PY26:
         from operator import itemgetter
