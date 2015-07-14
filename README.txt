@@ -13,7 +13,7 @@ Python modules, data sets and tutorials supporting research and
 development in Natural Language Processing.
 
 Documentation: A substantial amount of documentation about how
-to use NLTK, including a textbook and API documention, is
+to use NLTK, including a textbook and API documentation, is
 available from the NLTK website: http://nltk.org/
 
   - The book covers a wide range of introductory topics in NLP, and
@@ -21,7 +21,7 @@ available from the NLTK website: http://nltk.org/
 
   - The toolkit's reference documentation describes every module,
     interface, class, method, function, and variable in the toolkit.
-    This documentation should be useful to both users and developers.  
+    This documentation should be useful to both users and developers.
 
 Mailing Lists: There are several mailing lists associated with NLTK:
 

@@ -4,6 +4,11 @@ NLTK News
 2015
 ----
 
+NLTK 3.0.4 released : July 2015
+   Minor bugfixes and enhancements
+   For full details see:
+   https://github.com/nltk/nltk/blob/develop/ChangeLog
+
 NLTK 3.0.3 released : June 2015
    PanLex Swadesh Corpus, tgrep tree search, minor bugfixes
    For full details see:

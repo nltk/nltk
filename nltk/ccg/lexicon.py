@@ -27,7 +27,7 @@ reNextPrim = re.compile(r'''([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)''')
 reApp = re.compile(r'''([\\/])([.,]?)([.,]?)(.*)''')
 
 # Parses the definition of the category of either a word or a family
-reLex = re.compile(r'''([A-Za-z_]+)\s*(::|[-=]+>)\s*(.+)''')
+reLex = re.compile(r'''([\w_]+)\s*(::|[-=]+>)\s*(.+)''', re.UNICODE)
 
 # Strips comments from a line
 reComm = re.compile('''([^#]*)(?:#.*)?''')
@@ -183,7 +183,7 @@ def parseLexicon(lex_str):
 
         if line.startswith(':-'):
             # A line of primitive categories.
-            # The first line is the target category
+            # The first one is the target category
             # ie, :- S, N, NP, VP
             primitives = primitives + [ prim.strip() for prim in line[2:].strip().split(',') ]
         else:
