@@ -8,33 +8,62 @@
 # For license information, see LICENSE.TXT
 
 """
-Provides an interface for TweetHandlers.
+This module provides an interface for TweetHandlers, and support for timezone
+handling.
 """
 
-'''
-The following is not a general purpose object for dealing with the local timezone
-- It assumes that the date passed has been created using datetime(..., tzinfo=Local),
-  where Local is an instance of the object LocalTimezoneOffsetWithUTC
-- For such un object, it returns the offset with UTC, used for date comparations
-
-Reference: https://docs.python.org/3/library/datetime.html
-'''
-import time as _time
 from datetime import tzinfo, timedelta, datetime
+import time as _time
+
 
 class LocalTimezoneOffsetWithUTC(tzinfo):
-    STDOFFSET = timedelta(seconds = -_time.timezone)
+    """
+    This is not intended to be a general purpose class for dealing with the
+    local timezone. In particular:
+
+    * it assumes that the date passed has been created using
+      `datetime(..., tzinfo=Local)`, where `Local` is an instance of
+      the object `LocalTimezoneOffsetWithUTC`;
+    * for such an object, it returns the offset with UTC, used for date comparisons.
+
+    Reference: https://docs.python.org/3/library/datetime.html
+    """
+    STDOFFSET = timedelta(seconds=-_time.timezone)
+
     if _time.daylight:
-        DSTOFFSET = timedelta(seconds = -_time.altzone)
+        DSTOFFSET = timedelta(seconds=-_time.altzone)
     else:
         DSTOFFSET = STDOFFSET
 
     def utcoffset(self, dt):
+        """
+        Access the relevant time offset.
+        """
         return self.DSTOFFSET
 
-Local = LocalTimezoneOffsetWithUTC()
+LOCAL = LocalTimezoneOffsetWithUTC()
 
-class TweetHandlerI(object):
+class BasicTweetHandler(object):
+    """
+    Minimum implementation of TweetHandler
+    Counts the number of tweets and decides when the client shoud stop
+    fetching tweets
+    """
+    def __init__(self, limit=20):
+        self.limit = limit
+        self.counter = 0
+        
+        """A flag to indicate that to the client to stop for
+        a functional clause (e.g. date limit)"""
+        self.do_stop = False
+
+    def do_continue(self):
+        """
+        Returns false if the client should stop fetching tweets
+        """
+        return self.counter < self.limit and not self.do_stop
+
+class TweetHandlerI(BasicTweetHandler):
     """
     Interface class whose subclasses should implement a handle method that
     Twitter clients can delegate to.
@@ -50,15 +79,13 @@ class TweetHandlerI(object):
         40)` for 12:30 pm on April 1 2015.
 
         """
-        self.limit = limit
+        BasicTweetHandler.__init__(self, limit)
+
         self.date_limit = date_limit
         if date_limit is not None:
-            self.date_limit = datetime(*date_limit, tzinfo=Local)
+            self.date_limit = datetime(*date_limit, tzinfo=LOCAL)
 
         self.startingup = True
-        """A flag to indicate whether this is the first data
-        item to be processed in the current round of processing."""
-        self.counter = 0
 
     def handle(self, data):
         """
@@ -66,12 +93,9 @@ class TweetHandlerI(object):
         """
         raise NotImplementedError
 
-    def handle_chunk(self, data_chunk):
+    def on_finish(self):
         """
-        Deal appropriately with a list of elements returned by the Twitter API
-        (default implementation should be enough in most cases)
+        Actions when the tweet limit has been reached
         """
-        for item in data_chunk:
-            if self.handle(item) == False:
-                return False
-        return True
+        raise NotImplementedError
+        

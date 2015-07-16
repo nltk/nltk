@@ -3,23 +3,42 @@
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
+#         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Examples to demo the :py:mod:`twitterclient` code.
 
+These demo functions should all run, with the following caveats:
+
+* You must have obtained API keys from Twitter, and installed them according to
+  the instructions in `nltk/test/twitter.ipynb`.
+
+* If you are on a slow network, some of the calls to the Twitter API may
+  timeout.
+
+* If you are being rate limited while searching, you will receive a 420
+  error response.
+
+* Your terminal window / console must be able to display UTF-8 encoded characters.
+
 For documentation about the Twitter APIs, see `The Streaming APIs Overview
 <https://dev.twitter.com/streaming/overview>`_ and `The REST APIs Overview
 <https://dev.twitter.com/rest/public>`_.
+
+For error codes see Twitter's
+`Error Codes and Responses <https://dev.twitter.com/overview/api/response-codes>`
 """
 
 from functools import wraps
 import json
-import os
+
+from nltk.compat import io
 
 from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
-     credsfromfile, json2csv
+     credsfromfile
+
 
 SPACER = '###################################'
 
@@ -35,16 +54,17 @@ def verbose(func):
     return with_formatting
 
 
+def setup():
+    """
+    Initialize global variables for the demos.
+    """
+    global DATE, USERIDS, FIELDS
 
-TWITTER = os.environ['TWITTER']
-TWEETS = os.path.join(TWITTER, 'demo_tweets.json')
-TWEETS = os.path.join(TWITTER, '1k_sample.json')
-IDS = os.path.join(TWITTER, '1k_sample.csv')
-FIELDS = ['id_str']
-USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800'] # UserIDs corresponding to\
-#           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
-HYDRATED = os.path.join(TWITTER, 'rehydrated.json')
-DATE = (2015, 4, 20, 16, 40)
+    DATE = (2015, 4, 20, 16, 40)
+    USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800']
+    # UserIDs corresponding to\
+    #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
+    FIELDS = ['id_str']
 
 
 @verbose
@@ -53,11 +73,15 @@ def twitterclass_demo():
     Use the simplified :class:`Twitter` class to write some tweets to a file.
     """
     tw = Twitter()
+    print("Track from the public stream\n")
     tw.tweets(keywords='love, hate', limit=10) #public stream
     print(SPACER)
+    print("Search past Tweets\n")
     tw = Twitter()
     tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
     print(SPACER)
+    print("Follow two accounts in the public stream" +
+          " -- be prepared to wait a few minutes\n")
     tw = Twitter()
     tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
 
@@ -87,16 +111,19 @@ def tracktoscreen_demo(track="taylor swift", limit=10):
 @verbose
 def search_demo(keywords='nltk'):
     """
-    Using the REST API, search for past tweets containing a given keyword.
+    Use the REST API to search for past tweets containing a given keyword.
     """
     oauth = credsfromfile()
     client = Query(**oauth)
-    for tweet in client.search_tweets(keywords=keywords, count=10):
+    for tweet in client.search_tweets(keywords=keywords, limit=10):
         print(tweet['text'])
 
 
 @verbose
 def tweets_by_user_demo(user='NLTK_org', count=200):
+    """
+    Use the REST API to search for past tweets by a given user.
+    """
     oauth = credsfromfile()
     client = Query(**oauth)
     client.register(TweetWriter())
@@ -145,39 +172,14 @@ def streamtofile_demo(limit=20):
 
 
 @verbose
-def limit_by_time_demo(limit=20, date_limit=DATE):
+def limit_by_time_demo(limit=20):
     """
     Sample from the Streaming API and send output to terminal.
     """
     oauth = credsfromfile()
     client = Streamer(**oauth)
-    client.register(TweetWriter(limit=limit, date_limit=date_limit))
+    client.register(TweetWriter(limit=limit, date_limit=DATE))
     client.sample()
-
-
-@verbose
-def extract_tweetids_demo(infile = TWEETS, outfile = IDS):
-    """
-    Given a list of full tweets in a file (``infile``), write just the
-    tweetIDs to a new file (`outfile`)
-    """
-    print("Reading from {0}".format(infile))
-    json2csv(infile, outfile, FIELDS)
-    print("Writing ids to {0}".format(outfile))
-
-
-@verbose
-def expand_tweetids_demo(infile = IDS, outfile = HYDRATED):
-    """
-    Given a list of tweetIDs in a file (``infile``), try to recover the full
-    ('hydrated') tweets from the REST API and write the results to a new file (`outfile`).
-
-    If any of the tweets corresponding to the tweetIDs have been deleted by
-    their authors, :meth:`lookup` will return an empty result.
-    """
-    oauth = credsfromfile()
-    client = Query(**oauth)
-    client.lookup(infile, outfile)
 
 
 @verbose
@@ -190,41 +192,77 @@ def corpusreader_demo():
     * the result of tokenising the raw strings.
 
     """
-    from nltk.corpus import tweets
+    from nltk.corpus import twitter_samples as tweets
 
-    #reader = TwitterCorpusReader(root, '1k_sample.json')
-    #reader = TwitterCorpusReader('twitter', 'tweets.20150417.json')
     print()
     print("Complete tweet documents")
     print(SPACER)
-    for tweet in tweets.docs()[:1]:
+    for tweet in tweets.docs("tweets.20150430-223406.json")[:1]:
         print(json.dumps(tweet, indent=1, sort_keys=True))
 
     print()
     print("Raw tweet strings:")
     print(SPACER)
-    for text in tweets.strings()[:15]:
+    for text in tweets.strings("tweets.20150430-223406.json")[:15]:
         print(text)
 
     print()
     print("Tokenized tweet strings:")
     print(SPACER)
-    for toks in tweets.tokenized()[:15]:
+    for toks in tweets.tokenized("tweets.20150430-223406.json")[:15]:
         print(toks)
 
 
-ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
-         search_demo, tweets_by_user_demo, lookup_by_userid_demo, followtoscreen_demo,
-         streamtofile_demo, limit_by_time_demo,
-         extract_tweetids_demo, expand_tweetids_demo, corpusreader_demo]
+@verbose
+def expand_tweetids_demo():
+    """
+    Given a file object containing a list of Tweet IDs, fetch the
+    corresponding full Tweets.
+    
+    """        
+    ids_f =\
+        io.StringIO("""\
+        588665495492124672
+        588665495487909888
+        588665495508766721
+        588665495513006080
+        588665495517200384
+        588665495487811584
+        588665495525588992
+        588665495487844352
+        588665495492014081
+        588665495512948737""")
+    oauth = credsfromfile()
+    client = Query(**oauth)    
+    hydrated = client.expand_tweetids(ids_f)
+ 
+    for tweet in hydrated:
+        try:
+            id_str = tweet['id_str']
+            print('id: {}\ntext: {}\n'.format(id_str, tweet['text']))
+        except IndexError:
+            pass
 
-DEMOS = ALL[11:]
+    
+
+ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
+       search_demo, tweets_by_user_demo, lookup_by_userid_demo, followtoscreen_demo,
+       streamtofile_demo, limit_by_time_demo, corpusreader_demo, expand_tweetids_demo]
+
+"""
+Select demo functions to run. E.g. replace the following line with "DEMOS =
+ALL[8:]" to execute only the final two demos.
+"""
+DEMOS = ALL[:]
 
 if __name__ == "__main__":
-    """Run selected demo functions."""
+    setup()
 
     for demo in DEMOS:
         demo()
 
+    print("\n" + SPACER)
+    print("All demos completed")
+    print(SPACER)
 
 

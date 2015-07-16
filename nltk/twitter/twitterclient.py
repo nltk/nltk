@@ -11,7 +11,7 @@
 """
 NLTK Twitter client
 
-This module offers methods for collecting and processing tweets. Most of the
+This module offers methods for collecting and processing Tweets. Most of the
 functionality depends on access to the Twitter APIs, and this is handled via
 the third party Twython library.
 
@@ -29,12 +29,13 @@ import json
 import os
 import requests
 import time
+import gzip
 from nltk.compat import UTC
 
 
 try:
     from twython import Twython, TwythonStreamer
-    from twython.exceptions import TwythonRateLimitError
+    from twython.exceptions import TwythonRateLimitError, TwythonError
 except ImportError as err:
     import textwrap
     MSG = """The NLTK twitterclient module requires the Twython package. See\
@@ -43,7 +44,7 @@ except ImportError as err:
     raise
 
 from nltk.twitter.util import credsfromfile, guess_path
-from nltk.twitter.api import TweetHandlerI
+from nltk.twitter.api import TweetHandlerI, BasicTweetHandler
 
 
 
@@ -51,17 +52,19 @@ class Streamer(TwythonStreamer):
     """
     Retrieve data from the Twitter Streaming API.
 
-    The streaming API requires `OAuth 1.0 <http://en.wikipedia.org/wiki/OAuth>`_ authentication.
+    The streaming API requires
+    `OAuth 1.0 <http://en.wikipedia.org/wiki/OAuth>`_ authentication.
     """
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
 
         self.handler = None
         self.do_continue = True
-        TwythonStreamer.__init__(self, app_key, app_secret, oauth_token, oauth_token_secret)
+        TwythonStreamer.__init__(self, app_key, app_secret, oauth_token,
+                                 oauth_token_secret)
 
     def register(self, handler):
         """
-        Register a method for handling tweets.
+        Register a method for handling Tweets.
 
         :param TweetHandlerI handler: method for viewing
         """
@@ -74,11 +77,14 @@ class Streamer(TwythonStreamer):
         if self.do_continue:
             if self.handler is not None:
                 if 'text' in data:
-                    self.do_continue = self.handler.handle(data)
+                    self.handler.counter += 1
+                    self.handler.handle(data)
+                    self.do_continue = self.handler.do_continue()
             else:
                 raise ValueError("No data handler has been registered.")
         else:
             self.disconnect()
+            self.handler.on_finish()
 
 
     def on_error(self, status_code, data):
@@ -94,12 +100,11 @@ class Streamer(TwythonStreamer):
         Wrapper for 'statuses / sample' API call
         """
         while self.do_continue:
-            '''
-            Stream in an endless loop until limit is reached
-            see twython issue 288
-                https://github.com/ryanmcgrath/twython/issues/288
-                colditzjb commented on 9 Dec 2014
-            '''
+
+            # Stream in an endless loop until limit is reached. See twython
+            # issue 288: https://github.com/ryanmcgrath/twython/issues/288
+            # colditzjb commented on 9 Dec 2014
+
             try:
                 self.statuses.sample()
             except requests.exceptions.ChunkedEncodingError as e:
@@ -112,22 +117,17 @@ class Streamer(TwythonStreamer):
         Wrapper for 'statuses / filter' API call
         """
         while self.do_continue:
-            '''
-            Stream in an endless loop until limit is reached
-            see twython issue 288
-                https://github.com/ryanmcgrath/twython/issues/288
-                colditzjb commented on 9 Dec 2014
-            '''
+            #Stream in an endless loop until limit is reached
+
             try:
                 if track == '' and follow == '':
-                    raise ValueError("Please supply a value for 'track' or 'follow'.")
+                    msg = "Please supply a value for 'track', 'follow'"
+                    raise ValueError(msg)
                 self.statuses.filter(track=track, follow=follow, lang=lang)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
                     print("Error (stream will continue): {0}".format(e))
                 continue
-
-
 
 
 class Query(Twython):
@@ -142,59 +142,67 @@ class Query(Twython):
 
     def register(self, handler):
         """
-        Register a method for handling tweets.
+        Register a method for handling Tweets.
 
-        :param TweetHandlerI handler: method for viewing or writing tweets to a file.
+        :param TweetHandlerI handler: method for viewing or writing Tweets to a file.
         """
         self.handler = handler
 
-    def _lookup(self, infile, verbose=True):
+    def expand_tweetids(self, ids_f, verbose=True):
         """
-        :param infile: name of a file consisting of Tweet IDs, one to a line
-        :return: iterable of Tweet objects
-        """
-        with open(infile) as f:
-            ids = [line.rstrip() for line in f]
-        if verbose:
-            print("Counted {0} Tweet IDs in {1}.".format(len(ids), infile))
+        Given a file object containing a list of Tweet IDs, fetch the
+        corresponding full Tweets from the Twitter API.
 
+        The API call `statuses/lookup` will fail to retrieve a Tweet if the
+        user has deleted it.
+
+        This call to the Twitter API is rate-limited. See
+        <https://dev.twitter.com/rest/reference/get/statuses/lookup> for details.
+
+        :param ids_f: input file object consisting of Tweet IDs, one to a line
+        :return: iterable of Tweet objects in JSON format
+        """
+        ids = [line.strip() for line in ids_f if line]
+
+        if verbose:
+            print("Counted {0} Tweet IDs in {1}.".format(len(ids), ids_f))
+
+        # The Twitter endpoint takes lists of up to 100 ids, so we chunk the
+        # ids.
         id_chunks = [ids[i:i+100] for i in range(0, len(ids), 100)]
+
+        chunked_tweets = (self.lookup_status(id=chunk) for chunk in
+                          id_chunks)
+
+        return itertools.chain.from_iterable(chunked_tweets)
+
+
+
+    def _search_tweets(self, keywords, limit=100, lang='en'):
         """
-        The Twitter endpoint takes lists of up to 100 ids, so we chunk
-        the ids.
+        Assumes that the handler has been informed. Fetches Tweets from
+        search_tweets generator output and passses them to handler
+
+        :param str keywords: A list of query terms to search for, written as\
+        a comma-separated string.
+        :param int limit: Number of Tweets to process
+        :param str lang: language
         """
-
-        listoflists = [self.post('statuses/lookup', {'id': chunk}) for chunk
-                       in id_chunks]
-        return itertools.chain.from_iterable(listoflists)
-
-
-    def lookup(self, infile, outfile, verbose=True):
-        """
-        Given a file containing a list of tweetIDs, fetch the corresponding
-        Tweets (if they haven't been deleted) and dump them in a file.
-
-        :param str infile: Name of a file consisting of tweetIDs, one to a line
-        :param str outfile: Name of file where JSON serialisations of fully\
-        expanded Tweets will be written.
-        """
-        tweets = self._lookup(infile, verbose=verbose)
-        count = 0
-
-        if os.path.isfile(outfile):
-            os.remove(outfile)
-
-        with open(outfile, 'a') as f:
-            for data in tweets:
-                json.dump(data, f)
-                f.write("\n")
-                count += 1
-
-        if verbose:
-            print("""Written {0} Tweets to file {1} of length {2}
-            bytes""".format(count, outfile, os.path.getsize(outfile)))
-
-    def search_tweets(self, keywords, count=100, lang='en'):
+        while True:
+            if isinstance(self.handler, TweetWriter):
+                max_id = self.handler.max_id
+            else:
+                max_id = None
+            tweets = self.search_tweets(keywords=keywords, limit=limit, lang=lang,
+                                        max_id=max_id)
+            for tweet in tweets:
+                self.handler.handle(tweet)
+            if not (self.handler.do_continue() and self.handler.repeat):
+                break
+        self.handler.on_finish()
+ 
+    def search_tweets(self, keywords, limit=100, lang='en', max_id=None,
+                      retries_after_twython_exception=0):
         """
         Call the REST API ``'search/tweets'`` endpoint with some plausible
         defaults. See `the Twitter search documentation
@@ -202,33 +210,72 @@ class Query(Twython):
         about admissable search parameters.
 
         :param str keywords: A list of query terms to search for, written as\
-        a comma-separated string.
-        :rtype: json
+        a comma-separated string
+        :param int limit: Number of Tweets to process
+        :param str lang: language
+        :param int max_id: id of the last tweet fetched
+        :param int retries_after_twython_exception: number of retries when\
+        searching Tweets before raising an exception
+        :rtype: python generator
         """
-        results = self.search(q=keywords, count=min(100, count), lang=lang, result_type='recent')
-        count_from_query = results['search_metadata']['count']
-        if self.handler.handle_chunk(results['statuses']) == False:
-            return
+        if not self.handler:
+            # if no handler is provided, `BasicTweetHandler` provides minimum
+            # functionality for limiting the number of Tweets retrieved
+            self.handler = BasicTweetHandler(limit=limit)
 
-        '''
-        pagination loop: keep fetching tweets until the count requested is reached,
-        dealing with twitter rate limits
-        '''
-        while count_from_query < count:
-            # the max_id is also in the metadata results['search_metadata']['next_results'],
-            # but as part of a query and difficult to fetch. This is doing the equivalent
-            # (last tweet id minus one)
-            max_id = results['statuses'][99]['id'] - 1
+        count_from_query = 0
+        if not max_id:
+            results = self.search(q=keywords, count=min(100, limit), lang=lang,
+                                  result_type='recent')
+            count = len(results['statuses'])
+            if count == 0:
+                print("No Tweets available through rest api for those keywords")
+                return                
+            count_from_query = count
+            max_id = results['statuses'][count - 1]['id'] - 1
+
+            for result in results['statuses']:
+                yield result
+                self.handler.counter += 1
+                if self.handler.do_continue() == False:
+                    return
+
+
+        # Pagination loop: keep fetching Tweets until the desired count is
+        # reached while dealing with Twitter rate limits.
+        retries = 0
+        while count_from_query < limit:
             try:
-                results = self.search(q=keywords, count=min(100, count-count_from_query),
-                                      lang=lang, max_id=max_id, result_type='recent')
+                mcount = min(100, limit-count_from_query)
+                results = self.search(q=keywords, count=mcount, lang=lang,
+                                      max_id=max_id, result_type='recent')
             except TwythonRateLimitError as e:
                 print("Waiting for 15 minutes -{0}".format(e))
                 time.sleep(15*60) # wait 15 minutes
                 continue
-            count_from_query += results['search_metadata']['count']
-            if self.handler.handle_chunk(results['statuses']) == False:
+            except TwythonError as e:
+                print("Fatal error in Twython request -{0}".format(e))
+                if retries_after_twython_exception == retries:
+                    raise e
+                retries += 1
+                
+            count = len(results['statuses'])
+            if count == 0:
+                print("No more Tweets available through rest api")
                 return
+            count_from_query += count
+            # the max_id is also present in the Tweet metadata
+            # results['search_metadata']['next_results'], but as part of a
+            # query and difficult to fetch. This is doing the equivalent
+            # (last tweet id minus one)
+            max_id = results['statuses'][count - 1]['id'] - 1
+            self.handler.max_id = max_id
+
+            for result in results['statuses']:
+                yield result
+                self.handler.counter += 1
+                if self.handler.do_continue() == False:
+                    return
 
     def user_info_from_id(self, userids):
         """
@@ -241,16 +288,18 @@ class Query(Twython):
         """
         return [self.show_user(user_id=userid) for userid in userids]
 
-    def user_tweets(self, screen_name, count, include_rts='false'):
+    def user_tweets(self, screen_name, limit, include_rts='false'):
         """
         Return a collection of the most recent Tweets posted by the user
 
-        :param str user: The user's screen name; the initial '@' symbol should be omitted
-        :param int count: The number of tweets to recover; 200 is the maximum allowed
+        :param str user: The user's screen name; the initial '@' symbol\
+        should be omitted
+        :param int limit: The number of Tweets to recover; 200 is the maximum allowed
         :param str include_rts: Whether to include statuses which have been\
         retweeted by the user; possible values are 'true' and 'false'
         """
-        data = self.get_user_timeline(screen_name=screen_name, count=count, include_rts=include_rts)
+        data = self.get_user_timeline(screen_name=screen_name, count=limit,
+                                      include_rts=include_rts)
         self.handler.handle(data)
 
 
@@ -267,17 +316,20 @@ class Twitter(object):
 
 
     def tweets(self, keywords='', follow='', to_screen=True, stream=True,
-               limit=100, date_limit=None, lang='en'):
+               limit=100, date_limit=None, lang='en', repeat=False,
+               gzip_compress=False):
         """
-        Process some tweets in a simple manner.
+        Process some Tweets in a simple manner.
 
         :param str keywords: Keywords to use for searching or filtering
-        :param list follow: UserIDs to use for filtering tweets from the public stream
-        :param bool to_screen: If ``True``, display the tweet texts on the screen,\
+        :param list follow: UserIDs to use for filtering Tweets from the public stream
+        :param bool to_screen: If `True`, display the tweet texts on the screen,\
         otherwise print to a file
-        :param bool stream: If ``True``, use the live public stream,\
-        otherwise search past public tweets
-        :param int limit: Number of tweets to process
+
+        :param bool stream: If `True`, use the live public stream,\
+        otherwise search past public Tweets
+
+        :param int limit: Number of Tweets to process
         :param tuple date_limit: The date at which to stop collecting new\
         data. This should be entered as a tuple which can serve as the\
         argument to `datetime.datetime`. E.g. `data_limit=(2015, 4, 1, 12,\
@@ -285,12 +337,21 @@ class Twitter(object):
         Note that, in the case of streaming, it is the maximum date, i.e.\
         a date in the future; if not, it is the minimum date, i.e. a date\
         in the past
+
         :param str lang: language
+        
+        :param bool repeat: flag to determine whether multiple files should be\
+        written. If `True`, the length of each file will be set by the value\
+        of `limit`. Use only if `to_screen` is `False`. See also :py:func:`handle`.        
+
+        :param gzip_compress: if `True`, ouput files are compressed with gzip
         """
         if to_screen:
-            handler = TweetViewer(limit=limit, date_limit=date_limit, stream=stream)
+            handler = TweetViewer(limit=limit, date_limit=date_limit)
         else:
-            handler = TweetWriter(limit=limit, date_limit=date_limit, stream=stream, repeat=False)
+            handler = TweetWriter(limit=limit, date_limit=date_limit,
+                                  stream=stream, repeat=repeat,
+                                  gzip_compress=gzip_compress)
 
         if stream:
             self.streamer.register(handler)
@@ -303,7 +364,7 @@ class Twitter(object):
             if keywords == '':
                 raise ValueError("Please supply at least one keyword to search for.")
             else:
-                self.query.search_tweets(keywords, count=limit, lang=lang)
+                self.query._search_tweets(keywords, limit=limit, lang=lang)
 
 
 
@@ -311,6 +372,7 @@ class TweetViewer(TweetHandlerI):
     """
     Handle data by sending it to the terminal.
     """
+
     def handle(self, data):
         """
         Direct data to `sys.stdout`
@@ -322,34 +384,46 @@ class TweetViewer(TweetHandlerI):
         text = data['text']
         print(text)
         self.counter += 1
-        if self.counter >= self.limit:
-            # Tell the client to disconnect
-            return False
-        return True
+
+    def on_finish(self):
+        print('Written {0} Tweets'.format(self.counter))
 
 
 class TweetWriter(TweetHandlerI):
     """
     Handle data by writing it to a file.
     """
-    def __init__(self, limit=2000, date_limit=None, repeat=True, stream=True, fprefix='tweets',
-                 subdir='twitter-files'):
+    def __init__(self, limit=2000, date_limit=None, stream=True,
+                 fprefix='tweets', subdir='twitter-files', repeat=False,
+                 gzip_compress=False):
         """
-        :param limit: number of data items to process in the current round of processing
+        :param int limit: number of data items to process in the current\
+        round of processing
 
-        :param repeat: flag to determine whether multiple files should be\
-        written. If ``True``, the length of each file will be set by the value\
-        of ``limit``. See also :py:func:`handle`.
-        
-        :param 
+        :param bool stream: If `True`, use the live public stream,\
+        otherwise search past public Tweets
 
+        :param str fprefix: The prefix to use in creating file names for Tweet\
+        collections
+
+        :param str subdir: The name of the directory where Tweet collection\
+        files should be stored
+
+        :param bool repeat: flag to determine whether multiple files should be\
+        written. If `True`, the length of each file will be set by the value\
+        of `limit`. See also :py:func:`handle`.
+
+        :param gzip_compress: if `True`, ouput files are compressed with gzip
         """
-        self.repeat = repeat
         self.fprefix = fprefix
         self.subdir = guess_path(subdir)
+        self.gzip_compress = gzip_compress
         self.fname = self.timestamped_file()
-        self.startingup = True
         self.stream = stream
+        self.repeat = repeat
+        # max_id stores the id of the older tweet fetched
+        self.max_id = None
+        self.output = None
         TweetHandlerI.__init__(self, limit, date_limit)
 
 
@@ -367,7 +441,11 @@ class TweetWriter(TweetHandlerI):
         fname = os.path.join(subdir, fprefix)
         fmt = '%Y%m%d-%H%M%S'
         timestamp = datetime.datetime.now().strftime(fmt)
-        outfile = '{0}.{1}.json'.format(fname, timestamp)
+        if self.gzip_compress:
+            suffix = '.gz'
+        else:
+            suffix = ''
+        outfile = '{0}.{1}.json{2}'.format(fname, timestamp, suffix)
         return outfile
 
 
@@ -379,43 +457,57 @@ class TweetWriter(TweetHandlerI):
         :param data: tweet object returned by Twitter API
         """
         if self.startingup:
-            self.output = open(self.fname, 'w')
+            if self.gzip_compress:
+                self.output = gzip.open(self.fname, 'w')
+            else:
+                self.output = open(self.fname, 'w')
             print('Writing to {0}'.format(self.fname))
+
         json_data = json.dumps(data)
-        self.output.write(json_data + "\n")
+        if self.gzip_compress:
+            self.output.write((json_data + "\n").encode('utf-8'))
+        else:
+            self.output.write(json_data + "\n")
+
         if self.date_limit:
             tweet_date = datetime.datetime.strptime(data['created_at'], '%a %b %d\
             %H:%M:%S +0000 %Y').replace(tzinfo=UTC)
             if (tweet_date > self.date_limit and self.stream == True) or \
-                (tweet_date < self.date_limit and self.stream == False):
+               (tweet_date < self.date_limit and self.stream == False):
                 if self.stream:
                     message = "earlier"
                 else:
                     message = "later"
                 print("Date limit {0} is {1} than date of current tweet {2}".\
-                                 format(self.date_limit, message, tweet_date))
-                return False
+                      format(self.date_limit, message, tweet_date))
+                self.do_stop = True
+                return
 
         self.startingup = False
-        self.counter += 1
-
-        if self.counter < self.limit:
-            return True
-        else:
-            print('Written {0} tweets'.format(self.counter))
+        
+    def on_finish(self):
+        print('Written {0} Tweets'.format(self.counter))
+        if self.output:
             self.output.close()
-            if not self.repeat:
-                "Tell the client to disconnect"
-                return False
-            else:
-                self.fname = self.timestamped_file()
-                self.output = open(self.fname, 'w')
-                self.counter = 0
-                print('\nWriting to new file {0}'.format(self.fname))
-                return True
-
-
-
-
-
+        
+    def do_continue(self):
+        if self.repeat == False:
+            return TweetHandlerI.do_continue(self)
+        
+        if self.do_stop:
+            # stop for a functional cause (e.g. date limit)
+            return False
+        
+        if self.counter == self.limit:
+            # repeat is True, thus close output file and
+            # create a new one
+            self._restart_file()
+        return True
+        
+        
+    def _restart_file(self):
+        self.on_finish()
+        self.fname = self.timestamped_file()
+        self.startingup = True
+        self.counter = 0
 

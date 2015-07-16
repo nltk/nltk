@@ -16,9 +16,11 @@ import json
 import os
 import pprint
 import nltk.compat as compat
+import gzip
 
 from twython import Twython
 
+HIER_SEPARATOR = "."
 
 def extract_fields(tweet, fields):
     """
@@ -38,25 +40,40 @@ def extract_fields(tweet, fields):
 
 
 def _add_field_to_out(json, field, out):
-    if isinstance(field, dict):
-        for key, value in field.iteritems():
-            _add_field_to_out(json[key], value, out)
+    if _is_composed_key(field):
+        key, value = _get_key_value_composed(field)
+        _add_field_to_out(json[key], value, out)
     else:
-        if isinstance(field, basestring):
-            out += [json[field]]
-        else:
-            out += [json[value] for value in field]
+        out += [json[field]]
+
+def _is_composed_key(field):
+    if HIER_SEPARATOR in field:
+        return True
+    return False
+    
+def _get_key_value_composed(field):
+    out = field.split(HIER_SEPARATOR)
+    # there could be up to 3 levels
+    key = out[0]
+    value = HIER_SEPARATOR.join(out[1:])
+    return key, value
 
 def _get_entity_recursive(json, entity):
-    if json == None:
+    if not json:
         return None
-    if isinstance(json, dict):
-        for key, value in json.iteritems():
+    elif isinstance(json, dict):
+        for key, value in json.items():
             if key == entity:
                 return value
-            candidate = _get_entity_recursive(value, entity)
-            if candidate != None:
-                return candidate
+            '''
+            'entities' and 'extended_entities' are wrappers in twitter json
+            structure that contain other twitter objects. See:
+            https://dev.twitter.com/overview/api/entities-in-twitter-objects
+            '''
+            if key == 'entities' or key == 'extended_entities':
+                candidate = _get_entity_recursive(value, entity)
+                if candidate != None:
+                    return candidate
         return None
     elif isinstance(json, list):
         for item in json:
@@ -67,7 +84,8 @@ def _get_entity_recursive(json, entity):
     else:
         return None
 
-def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
+def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
+             gzip_compress=False):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -92,34 +110,46 @@ def json2csv(infile, outfile, fields, encoding='utf8', errors='replace'):
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
     e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
     Addionally, it allows IDs from other Twitter objects, e. g.,\
-    ['id', 'text', {'user' : ['id', 'followers_count', 'friends_count']}]
-
+    ['id', 'text', 'user.id', 'user.followers_count', 'user.friends_count']
 
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
+    
+    :param gzip_compress: if True, output files are compressed with gzip
     """
-    with open(infile) as inf:
-        writer = get_outf_writer_compat(outfile, encoding, errors)
-        for line in inf:
-            tweet = json.loads(line)
-            row = extract_fields(tweet, fields)
-            writer.writerow(row)
+    (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
+    # write the list of fields as header
+    writer.writerow(fields)
+    # process the file
+    for line in fp:
+        tweet = json.loads(line)
+        row = extract_fields(tweet, fields)
+        writer.writerow(row)
+    outf.close()
 
-def get_outf_writer_compat(outfile, encoding, errors):
+def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
     """
     Identify appropriate CSV writer given the Python version
     """
     if compat.PY3 == True:
-        outf = open(outfile, 'w', encoding=encoding, errors=errors)
+        if gzip_compress:
+            outf = gzip.open(outfile, 'wt', encoding=encoding, errors=errors)
+        else:
+            outf = open(outfile, 'w', encoding=encoding, errors=errors)
         writer = csv.writer(outf)
     else:
-        outf = open(outfile, 'wb')
+        if gzip_compress:
+            outf = gzip.open(outfile, 'wb')
+        else:
+            outf = open(outfile, 'wb')
         writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
-    return writer
+    return (writer, outf)
 
 
-def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
-                      encoding='utf8', errors='replace'):
+
+
+def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
+                      encoding='utf8', errors='replace', gzip_compress=False):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -127,8 +157,11 @@ def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
     This utility function allows a file of full tweets to be easily converted
     to a CSV file for easier processing of Twitter entities. For example, the
     hashtags or media elements of a tweet can be extracted.
+    
+    It returns one line per entity of a tweet, e.g. if a tweet has 2 hashtags
+    there will be two lines in the output file, one per hashtag
 
-    :param str infile: The name of the file containing full tweets
+    :param file-object fp: The name of the file containing full tweets
 
     :param str outfile: The name of the text file where results should be\
     written
@@ -137,56 +170,89 @@ def json2csv_entities(infile, outfile, main_fields, entity_name, entity_fields,
     object, usually the tweet. Useful examples: 'id_str' for the tweetID. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
     e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
-    If entity_name is expressed as a dictionary, then it is list of fields\
-    of the object that corresponds to the key of the dictionary (could be\
-    the user object, or the place of a tweet object).
+    If `entity_type` is expressed with hierarchy, then it is the list of\
+    fields of the object that corresponds to the key of the entity_type,\
+    (e.g., for entity_type='user.urls', the fields in the main_fields list\
+    belong to the user object; for entity_type='place.bounding_box', the\
+    files in the main_field list belong to the place object of the tweet).
 
-    :param list entity_name: The name of the entity: 'hashtags', 'media',\
+    :param list entity_type: The name of the entity: 'hashtags', 'media',\
     'urls' and 'user_mentions' for the tweet object. For the user object,\
-    needs to be expressed as a dictionary: {'user' : 'urls'}. For the\
-    bounding box of the place from which a tweet was twitted, as a dict\
-    as well: {'place', 'bounding_box'}
+    needs to be expressed with the hierarchy: `'user.urls'`. For the\
+    bounding box of the place from which a Tweet was published, adding\
+    hierarchy as well: `'place.bounding_box'`.
 
     :param list entity_fields: The list of fields to be extracted from the\
-    entity. E.g. ['text'] (of the hashtag)
+    entity. E.g. `['text']` (of the Tweet)
 
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
+    
+    :param gzip_compress: if True, ouput files are compressed with gzip
     """
-    with open(infile) as inf:
-        writer = get_outf_writer_compat(outfile, encoding, errors)
-        for line in inf:
-            tweet = json.loads(line)
-            if isinstance(entity_name, dict):
-                for key, value in entity_name.iteritems():
-                    object_json = _get_entity_recursive(tweet, key)
-                    if object_json == None:
-                        # can happen in the case of "place"
-                        continue
-                    object_fields = extract_fields(object_json, main_fields)
-                    items = _get_entity_recursive(object_json, value)
-                    _write_to_file(object_fields, items, entity_fields, writer)
-            else:
-                tweet_fields = extract_fields(tweet, main_fields)
-                items = _get_entity_recursive(tweet, entity_name)
-                _write_to_file(tweet_fields, items, entity_fields, writer)
 
+    (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
+    header = get_header_field_list(main_fields, entity_type, entity_fields)
+    writer.writerow(header)
+    for line in fp:
+        tweet = json.loads(line)
+        if _is_composed_key(entity_type):
+            key, value = _get_key_value_composed(entity_type)
+            object_json = _get_entity_recursive(tweet, key)
+            if not object_json:
+                # can happen in the case of "place"
+                continue
+            object_fields = extract_fields(object_json, main_fields)
+            items = _get_entity_recursive(object_json, value)
+            _write_to_file(object_fields, items, entity_fields, writer)
+        else:
+            tweet_fields = extract_fields(tweet, main_fields)
+            items = _get_entity_recursive(tweet, entity_type)
+            _write_to_file(tweet_fields, items, entity_fields, writer)
+    outf.close()
+
+def get_header_field_list(main_fields, entity_type, entity_fields):
+    if _is_composed_key(entity_type):
+        key, value = _get_key_value_composed(entity_type)
+        main_entity = key
+        sub_entity = value
+    else:
+        main_entity = None
+        sub_entity = entity_type
+    
+    if main_entity:
+        output1 = [HIER_SEPARATOR.join([main_entity, x]) for x in main_fields]
+    else:
+        output1 = main_fields
+    output2 = [HIER_SEPARATOR.join([sub_entity, x]) for x in entity_fields]
+    return output1 + output2
 
 def _write_to_file(object_fields, items, entity_fields, writer):
-    if items == None:
+    if not items:
         # it could be that the entity is just not present for the tweet
         # e.g. tweet hashtag is always present, even as [], however
         # tweet media may not be present
         return
     if isinstance(items, dict):
-        # this happens for "place" of a tweet
+        # this happens e.g. for "place" of a tweet
         row = object_fields
-        for key, value in items.iteritems():
-            if key in entity_fields:
-                if isinstance(value, list):
-                    row += value
-                else:
-                    row += [value]
+        # there might be composed keys in de list of required fields
+        entity_field_values = [x for x in entity_fields if not _is_composed_key(x)]
+        entity_field_composed = [x for x in entity_fields if _is_composed_key(x)]
+        for field in entity_field_values:
+            value = items[field]
+            if isinstance(value, list):
+                row += value
+            else:
+                row += [value]
+        # now check required dictionaries
+        for d in entity_field_composed:
+            kd, vd = _get_key_value_composed(d)
+            json_dict = items[kd]
+            if not isinstance(json_dict, dict):
+                raise RuntimeError("""Key {0} does not contain a dictionary
+                in the json file""".format(kd))
+            row += [json_dict[vd]]
         writer.writerow(row)
         return
     # in general it is a list
@@ -197,72 +263,114 @@ def _write_to_file(object_fields, items, entity_fields, writer):
 
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
-    Read OAuth credentials from a text file.
-
-    ::
-       File format for OAuth 1
-       =======================
-       app_key=YOUR_APP_KEY
-       app_secret=YOUR_APP_SECRET
-       oauth_token=OAUTH_TOKEN
-       oauth_token_secret=OAUTH_TOKEN_SECRET
-
-
-    ::
-       File format for OAuth 2
-       =======================
-
-       app_key=YOUR_APP_KEY
-       app_secret=YOUR_APP_SECRET
-       access_token=ACCESS_TOKEN
-
-    :param str file_name: File containing credentials. ``None`` (default) reads\
-    data from `TWITTER/'credentials.txt'`
+    Convenience function for authentication
     """
-    if creds_file is None:
-        creds_file = 'credentials.txt'
-    if not subdir:
+    return Authenticate().load_creds(creds_file=creds_file, subdir=subdir, verbose=verbose)
+
+
+class Authenticate(object):
+    """
+    Methods for authenticating with Twitter.
+
+
+    """
+    def __init__(self):
+        self.creds_file = 'credentials.txt'
+        self.creds_fullpath = None
+
+        self.oauth = {}
         try:
-            subdir = os.environ['TWITTER']
-            creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
-            if not os.path.isfile(creds_fullpath):
-                raise OSError('Cannot find file {}'.format(creds_fullpath))
+            self.twitter_dir = os.environ['TWITTER']
+            self.creds_subdir = self.twitter_dir
         except KeyError:
-            print("Supply a value to the 'subdir' parameter or set the \
-            TWITTER environment variable.")
-            raise FileNotFoundError from KeyError
+            self.twitter_dir = None
+            self.creds_subdir = None
 
 
-    with open(creds_fullpath) as infile:
-        if verbose:
-            print('Reading credentials file {}'.format(creds_fullpath))
-        oauth = {}
-        for line in infile:
-            if '=' in line:
-                name, value = line.split('=', 1)
-                oauth[name.strip()] = value.strip()
+    def load_creds(self, creds_file=None, subdir=None, verbose=False):
+        """
+        Read OAuth credentials from a text file.
 
-    _validate_creds_file(creds_file, oauth, verbose=verbose)
+        ::
+           File format for OAuth 1
+           =======================
+           app_key=YOUR_APP_KEY
+           app_secret=YOUR_APP_SECRET
+           oauth_token=OAUTH_TOKEN
+           oauth_token_secret=OAUTH_TOKEN_SECRET
 
-    return oauth
 
-def _validate_creds_file(fname, oauth, verbose=False):
-    """Check validity of a credentials file."""
-    oauth1 = False
-    oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
-    oauth2 = False
-    oauth2_keys = ['app_key', 'app_secret', 'access_token']
-    if all(k in oauth for k in oauth1_keys):
-        oauth1 = True
-    elif all(k in oauth for k in oauth2_keys):
-        oauth2 = True
+        ::
+           File format for OAuth 2
+           =======================
 
-    if not (oauth1 or oauth2):
-        msg = 'Missing or incorrect entries in {}\n'.format(fname)
-        msg += pprint.pformat(oauth)
-        raise ValueError(msg)
-    elif verbose:
-        print('Credentials file "{}" looks good'.format(fname))
+           app_key=YOUR_APP_KEY
+           app_secret=YOUR_APP_SECRET
+           access_token=ACCESS_TOKEN
+
+        :param str file_name: File containing credentials. ``None`` (default) reads\
+        data from `TWITTER/'credentials.txt'`
+        """
+        if creds_file is not None:
+            self.creds_file = creds_file
+
+        if subdir is None:
+            if self.creds_subdir is None:
+                msg = "Supply a value to the 'subdir' parameter or" +\
+                      " set the TWITTER environment variable."
+                raise ValueError(msg)
+        else:
+            self.creds_subdir = subdir
+
+
+        self.creds_fullpath =\
+            os.path.normpath(os.path.join(self.creds_subdir, self.creds_file))
+
+
+        if not os.path.isfile(self.creds_fullpath):
+            raise OSError('Cannot find file {}'.format(self.creds_fullpath))
+
+        #if not subdir:
+            #try:
+                #subdir = os.environ['TWITTER']
+                #creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
+
+            #except KeyError:
+                #print("Supply a value to the 'subdir' parameter or set the \
+                #TWITTER environment variable.")
+                #raise KeyError
+
+
+        with open(self.creds_fullpath) as infile:
+            if verbose:
+                print('Reading credentials file {}'.format(self.creds_fullpath))
+
+            for line in infile:
+                if '=' in line:
+                    name, value = line.split('=', 1)
+                    self.oauth[name.strip()] = value.strip()
+
+        self._validate_creds_file(verbose=verbose)
+
+        return self.oauth
+
+    def _validate_creds_file(self, verbose=False):
+        """Check validity of a credentials file."""
+        oauth1 = False
+        oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
+        oauth2 = False
+        oauth2_keys = ['app_key', 'app_secret', 'access_token']
+        if all(k in self.oauth for k in oauth1_keys):
+            oauth1 = True
+        elif all(k in self.oauth for k in oauth2_keys):
+            oauth2 = True
+
+        if not (oauth1 or oauth2):
+            msg = 'Missing or incorrect entries in {}\n'.format(self.creds_file)
+            msg += pprint.pformat(self.oauth)
+            raise ValueError(msg)
+        elif verbose:
+            print('Credentials file "{}" looks good'.format(self.creds_file))
 
 
 def add_access_token(creds_file=None):
@@ -295,3 +403,4 @@ def guess_path(pth):
         return pth
     else:
         return os.path.expanduser(os.path.join("~", pth))
+

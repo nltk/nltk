@@ -1,5 +1,0 @@
-app_key=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-app_secret=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-oauth_token=cccccccccccccccccccccccccccccccccccccccccccccccc
-
-
