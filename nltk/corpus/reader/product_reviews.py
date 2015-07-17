@@ -63,6 +63,7 @@ FEATURES = re.compile(r'((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]') # find 'feature'
 NOTES    = re.compile(r'\[(?!t)(p|u|s|cc|cs)\]') # find 'p' in camera[+2][p]
 SENT     = re.compile(r'##(.*)$') # find tokenized sentence
 
+
 @compat.python_2_unicode_compatible
 class Review(object):
     def __init__(self, title=None, review_lines=None):
@@ -73,10 +74,27 @@ class Review(object):
             self.review_lines = review_lines
 
     def add_line(self, review_line):
+        """
+        Add a line (ReviewLine) to the review
+        """
         assert type(review_line) == ReviewLine
         self.review_lines.append(review_line)
 
+    def features(self):
+        """
+        :return: all features of the review as a list of tuples (feat, score)
+        :rtype: list(tuple)
+        """
+        features = []
+        for review_line in self.review_lines:
+            features.extend(review_line.features)
+        return features
+
     def sents(self):
+        """
+        :return: all sentences of the review as lists of tokens
+        :rtype: list(list(str))
+        """
         return [review_line.sent for review_line in self.review_lines]
 
     def __repr__(self):
@@ -85,6 +103,10 @@ class Review(object):
 
 @compat.python_2_unicode_compatible
 class ReviewLine(object):
+    """
+    A ReviewLine represents a sentence of the review, together with (optional)
+    annotations of its features and notes about the reviewed product.
+    """
     def __init__(self, sent, features=[], notes=[]):
         self.sent = sent
         self.features = features
@@ -109,6 +131,26 @@ class ProductReviewsCorpusReader(CorpusReader):
 
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
+
+    def features(self, fileids=None):
+        """
+        :return: all features for the product(s) in the given file(s).
+        :rtype: list(tuple)
+        """
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, string_types): fileids = [fileids]
+        return concat([self.CorpusView(fileid, self._read_features,
+                                              encoding=enc)
+                       for (fileid, enc) in self.abspaths(fileids, True)])
+
+    def _read_features(self, stream):
+        features = []
+        for i in range(20):
+            line = stream.readline()
+            if not line: return features
+            features.extend(re.findall(FEATURES, line))
+        return features
+
 
     def raw(self, fileids=None):
         """
