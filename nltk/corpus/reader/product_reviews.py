@@ -49,6 +49,33 @@ Symbols used in the annotated reviews:
     [s] : suggestion or recommendation.
     [cc]: comparison with a competing product from a different brand.
     [cs]: comparison with a competing product from the same brand.
+
+ProductReviewsCorpusReader usage examples:
+
+    >>> from nltk.corpus import product_reviews
+    >>> camera_reviews = product_reviews.reviews('Canon G3.txt')
+    >>> review = camera_reviews[0]
+    >>> review.sents()[0]
+    ['i', 'recently', 'purchased', 'the', 'canon', 'powershot', 'g3', 'and', 'am',
+    'extremely', 'satisfied', 'with', 'the', 'purchase', '.']
+    >>> review.features()
+    [('canon powershot g3', '+3'), ('use', '+2'), ('picture', '+2'),
+    ('picture quality', '+1'), ('picture quality', '+1'), ('camera', '+2'),
+    ('use', '+2'), ('feature', '+1'), ('picture quality', '+3'), ('use', '+1'),
+    ('option', '+1')]
+
+We can also reach the same information directly from the stream:
+
+    >>> product_reviews.features('Canon G3.txt')
+    [('canon powershot g3', '+3'), ('use', '+2'), ...]
+
+We can compute stats for specific product features:
+
+    >>> n_reviews = len([(feat,score) for (feat,score) in product_reviews.features('Canon G3.txt') if feat=='picture'])
+    >>> tot = sum([int(score) for (feat,score) in product_reviews.features('Canon G3.txt') if feat=='picture'])
+    >>> mean = tot/n_reviews
+    >>> print(n_reviews, tot, mean)
+    15 24 1.6
 """
 import re
 
@@ -236,6 +263,5 @@ class ProductReviewsCorpusReader(CorpusReader):
 
 
 if __name__ == '__main__':
-    pass
-    # import doctest
-    # doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
