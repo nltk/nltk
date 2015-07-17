@@ -158,6 +158,8 @@ pl196x = LazyCorpusLoader(
     cat_file='cats.txt', textid_file='textids.txt', encoding='utf8')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
+product_reviews = LazyCorpusLoader(
+    'product_reviews', ProductReviewsCorpusReader, r'^(?!Readme).*.txt', encoding='utf8')
 ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
     'ptb', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
     cat_file='allcats.txt', tagset='wsj')
