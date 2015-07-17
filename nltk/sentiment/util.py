@@ -376,6 +376,30 @@ def demo_sent_subjectivity(text):
     text_feats = apply_features(sentim_analyzer.extract_features, [tokenized_text], labeled=False)
     print(sentim_analyzer.classifier.classify(text_feats[0]))
 
+def demo_liu_hu_lexicon(sentence):
+    from nltk.corpus.util import LazyCorpusLoader
+    from nltk.corpus.reader import WordListCorpusReader
+    from nltk.tokenize import treebank
+
+    tokenizer = treebank.TreebankWordTokenizer()
+    # Place your opinion_lexicon files in ~/nltk_data/opinion_lexicon/ folder
+    # Example using Liu, Hu opinion lexicon
+    opinion_lexicon = LazyCorpusLoader('opinion_lexicon', WordListCorpusReader, r'(\w+)\.txt', encoding='utf-8')
+    pos_words = 0
+    neg_words = 0
+    for word in tokenizer.tokenize(sentence):
+        if word in opinion_lexicon.words('positive.txt'):
+            pos_words += 1
+        elif word in opinion_lexicon.words('negative.txt'):
+            neg_words += 1
+
+    if pos_words > neg_words:
+        print('Positive')
+    elif pos_words < neg_words:
+        print('Negative')
+    elif pos_words == neg_words:
+        print('Neutral')
+
 
 if __name__ == '__main__':
     from nltk.classify import NaiveBayesClassifier, MaxentClassifier
@@ -388,5 +412,6 @@ if __name__ == '__main__':
 
     # demo_tweets(maxent, n=8000)
     # demo_movie_reviews(svm)
-    demo_subjectivity(svm)
+    # demo_subjectivity(svm)
     # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
+    demo_liu_hu_lexicon('This movie is really fantastic!')
