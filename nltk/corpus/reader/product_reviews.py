@@ -180,6 +180,15 @@ class ProductReviewsCorpusReader(CorpusReader):
                        for (path, enc, fileid)
                        in self.abspaths(fileids, True, True)])
 
+    def words(self, fileids=None):
+        """
+        :return: the given file(s) as a list of words and punctuation symbols.
+        :rtype: list(str)
+        """
+        return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
+                       for (path, enc, fileid)
+                       in self.abspaths(fileids, True, True)])
+
     def _read_review_block(self, stream):
         while True:
             line = stream.readline()
@@ -215,6 +224,15 @@ class ProductReviewsCorpusReader(CorpusReader):
         for review in self._read_review_block(stream):
             sents.extend([sent for sent in review.sents()])
         return sents
+
+    def _read_word_block(self, stream):
+        words = []
+        for i in range(20): # Read 20 lines at a time.
+            line = stream.readline()
+            sent = re.findall(SENT, line)
+            if sent:
+                words.extend(self._word_tokenizer.tokenize(sent[0]))
+        return words
 
 
 if __name__ == '__main__':
