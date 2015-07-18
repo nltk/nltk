@@ -377,14 +377,13 @@ def demo_sent_subjectivity(text):
     print(sentim_analyzer.classifier.classify(text_feats[0]))
 
 def demo_liu_hu_lexicon(sentence):
-    from nltk.corpus.util import LazyCorpusLoader
-    from nltk.corpus.reader import WordListCorpusReader
+    """
+    Very basic example of sentiment classification using Liu and Hu opinion lexicon
+    """
+    from nltk.corpus import opinion_lexicon
     from nltk.tokenize import treebank
 
     tokenizer = treebank.TreebankWordTokenizer()
-    # Place your opinion_lexicon files in ~/nltk_data/opinion_lexicon/ folder
-    # Example using Liu, Hu opinion lexicon
-    opinion_lexicon = LazyCorpusLoader('opinion_lexicon', WordListCorpusReader, r'(\w+)\.txt', encoding='utf-8')
     pos_words = 0
     neg_words = 0
     for word in tokenizer.tokenize(sentence):
