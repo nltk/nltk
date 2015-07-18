@@ -153,6 +153,8 @@ nkjp = LazyCorpusLoader(
     'nkjp', NKJPCorpusReader, r'', encoding='utf8')
 nps_chat = LazyCorpusLoader(
     'nps_chat', NPSChatCorpusReader, r'(?!README|\.).*\.xml', tagset='wsj')
+opinion_lexicon = LazyCorpusLoader(
+    'opinion_lexicon', WordListCorpusReader, r'(\w+)\.txt', encoding='ISO-8859-2')
 pl196x = LazyCorpusLoader(
     'pl196x', Pl196xCorpusReader, r'[a-z]-.*\.xml',
     cat_file='cats.txt', textid_file='textids.txt', encoding='utf8')
