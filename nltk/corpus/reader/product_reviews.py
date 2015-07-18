@@ -261,5 +261,7 @@ class ProductReviewsCorpusReader(CorpusReader):
 
 
 if __name__ == '__main__':
+    import sys
     import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+    from nltk.test import doctest_nose_plugin
+    doctest.DocTestSuite(sys.modules['__main__'], checker=doctest_nose_plugin._UnicodeOutputChecker())
