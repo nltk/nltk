@@ -380,8 +380,12 @@ def demo_liu_hu_lexicon(sentence):
     """
     Very basic example of sentiment classification using Liu and Hu opinion lexicon
     """
-    from nltk.corpus import opinion_lexicon
+    from nltk.corpus.util import LazyCorpusLoader
+    from nltk.corpus.reader import WordListCorpusReader
     from nltk.tokenize import treebank
+
+    opinion_lexicon = LazyCorpusLoader('opinion_lexicon', WordListCorpusReader,
+        r'(\w+)\.txt', encoding='ISO-8859-2')
 
     tokenizer = treebank.TreebankWordTokenizer()
     pos_words = 0

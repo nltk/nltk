@@ -153,15 +153,11 @@ nkjp = LazyCorpusLoader(
     'nkjp', NKJPCorpusReader, r'', encoding='utf8')
 nps_chat = LazyCorpusLoader(
     'nps_chat', NPSChatCorpusReader, r'(?!README|\.).*\.xml', tagset='wsj')
-opinion_lexicon = LazyCorpusLoader(
-    'opinion_lexicon', WordListCorpusReader, r'(\w+)\.txt', encoding='ISO-8859-2')
 pl196x = LazyCorpusLoader(
     'pl196x', Pl196xCorpusReader, r'[a-z]-.*\.xml',
     cat_file='cats.txt', textid_file='textids.txt', encoding='utf8')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
-product_reviews = LazyCorpusLoader(
-    'product_reviews', ProductReviewsCorpusReader, r'^(?!Readme).*.txt', encoding='utf8')
 ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
     'ptb', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
     cat_file='allcats.txt', tagset='wsj')
