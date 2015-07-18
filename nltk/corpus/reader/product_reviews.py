@@ -55,7 +55,6 @@ import re
 from nltk.compat import string_types
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
-import nltk.data
 
 TITLE    = re.compile(r'^\[t\](.*)$') # [t] Title
 FEATURES = re.compile(r'((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]') # find 'feature' in feature[+3]
