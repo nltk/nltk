@@ -50,7 +50,7 @@ def _is_composed_key(field):
     if HIER_SEPARATOR in field:
         return True
     return False
-    
+
 def _get_key_value_composed(field):
     out = field.split(HIER_SEPARATOR)
     # there could be up to 3 levels
@@ -114,7 +114,7 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
 
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
-    
+
     :param gzip_compress: if True, output files are compressed with gzip
     """
     (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
@@ -157,7 +157,7 @@ def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
     This utility function allows a file of full tweets to be easily converted
     to a CSV file for easier processing of Twitter entities. For example, the
     hashtags or media elements of a tweet can be extracted.
-    
+
     It returns one line per entity of a tweet, e.g. if a tweet has 2 hashtags
     there will be two lines in the output file, one per hashtag
 
@@ -187,7 +187,7 @@ def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
 
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
-    
+
     :param gzip_compress: if True, ouput files are compressed with gzip
     """
 
@@ -219,7 +219,7 @@ def get_header_field_list(main_fields, entity_type, entity_fields):
     else:
         main_entity = None
         sub_entity = entity_type
-    
+
     if main_entity:
         output1 = [HIER_SEPARATOR.join([main_entity, x]) for x in main_fields]
     else:
@@ -403,4 +403,3 @@ def guess_path(pth):
         return pth
     else:
         return os.path.expanduser(os.path.join("~", pth))
-

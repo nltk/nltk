@@ -36,4 +36,3 @@ web/api/*.rst
 # iPython notebooks
 
 .ipynb_checkpoints
-
