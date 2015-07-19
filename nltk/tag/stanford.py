@@ -114,7 +114,7 @@ class StanfordPOSTagger(StanfordTagger):
      - a model trained on training data
      - (optionally) the path to the stanford tagger jar file. If not specified here,
        then this jar file must be specified in the CLASSPATH envinroment variable.
-     - (optionally) the encoding of the training data (default: ASCII)
+     - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:
 
@@ -143,7 +143,7 @@ class StanfordNERTagger(StanfordTagger):
     - a model trained on training data
     - (optionally) the path to the stanford tagger jar file. If not specified here,
       then this jar file must be specified in the CLASSPATH envinroment variable.
-    - (optionally) the encoding of the training data (default: ASCII)
+    - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:
 
