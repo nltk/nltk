@@ -15,7 +15,7 @@ class TestCredentials(unittest.TestCase):
     """
 
     def setUp(self):
-        self.subdir = 'files'
+        self.subdir = os.path.join(os.path.dirname(__file__), 'files')
         self.auth = Authenticate()
         os.environ['TWITTER'] = 'twitter-files'
 
