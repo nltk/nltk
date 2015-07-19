@@ -73,7 +73,8 @@ class StanfordTagger(TaggerI):
         # Create a temporary input file
         _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
 
-        self._cmd.extend(['-encoding', encoding])
+        cmd = list(self._cmd)
+        cmd.extend(['-encoding', encoding])
         
         # Write the actual sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, 'wb')
@@ -84,7 +85,7 @@ class StanfordTagger(TaggerI):
         _input_fh.close()
         
         # Run the tagger and get the output
-        stanpos_output, _stderr = java(self._cmd,classpath=self._stanford_jar,
+        stanpos_output, _stderr = java(cmd, classpath=self._stanford_jar,
                                                        stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
         
