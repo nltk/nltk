@@ -167,15 +167,6 @@ class ProductReviewsCorpusReader(CorpusReader):
                                               encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def _read_features(self, stream):
-        features = []
-        for i in range(20):
-            line = stream.readline()
-            if not line: return features
-            features.extend(re.findall(FEATURES, line))
-        return features
-
-
     def raw(self, fileids=None):
         """
         :return: the given file(s) as a single string.
@@ -212,6 +203,14 @@ class ProductReviewsCorpusReader(CorpusReader):
         return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
                        for (path, enc, fileid)
                        in self.abspaths(fileids, True, True)])
+
+    def _read_features(self, stream):
+        features = []
+        for i in range(20):
+            line = stream.readline()
+            if not line: return features
+            features.extend(re.findall(FEATURES, line))
+        return features
 
     def _read_review_block(self, stream):
         while True:
