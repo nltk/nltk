@@ -35,6 +35,15 @@ from nltk.tokenize import *
 class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
     """
     Reader for the Pros and Cons sentence dataset.
+
+        >>> from nltk.corpus.util import LazyCorpusLoader
+        >>> procons = LazyCorpusLoader('pros_cons', ProsConsCorpusReader, r'Integrated(Cons|Pros)\.txt',\
+            cat_pattern=r'Integrated(Cons|Pros)\.txt', encoding='ISO-8859-2')
+        >>> procons.sents(categories='Cons')
+        [['East', 'batteries', '!', 'On', '-', 'off', 'switch', 'too', 'easy',
+        'to', 'maneuver', '.'], ['Eats', '...', 'no', ',', 'GULPS', 'batteries'], ...]
+        >>> procons.words('IntegratedPros.txt')
+        ['Easy', 'to', 'use', ',', 'economical', '!', ...]
     """
     CorpusView = StreamBackedCorpusView
 
@@ -45,14 +54,6 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         CorpusReader.__init__(self, root, fileids, encoding)
         CategorizedCorpusReader.__init__(self, kwargs)
         self._word_tokenizer = word_tokenizer
-
-    def _resolve(self, fileids, categories):
-        if fileids is not None and categories is not None:
-            raise ValueError('Specify fileids or categories, not both')
-        if categories is not None:
-            return self.fileids(categories)
-        else:
-            return fileids
 
     def sents(self, fileids=None, categories=None):
         """
@@ -89,14 +90,15 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         return sents
 
     def _read_word_block(self, stream):
-        import pdb
         words = []
         for sent in self._read_sent_block(stream):
-            pdb.set_trace()
             words.extend(sent)
+        return words
 
-if __name__ == '__main__':
-    from nltk.corpus.util import LazyCorpusLoader
-    procons = LazyCorpusLoader('pros_cons', ProsConsCorpusReader, r'Integrated(Cons|Pros)\.txt',
-        cat_pattern=r'Integrated(Cons|Pros)\.txt', encoding='ISO-8859-2')
-    procons.sents(categories='Cons')
+    def _resolve(self, fileids, categories):
+        if fileids is not None and categories is not None:
+            raise ValueError('Specify fileids or categories, not both')
+        if categories is not None:
+            return self.fileids(categories)
+        else:
+            return fileids
