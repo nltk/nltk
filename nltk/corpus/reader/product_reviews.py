@@ -176,6 +176,12 @@ class ProductReviewsCorpusReader(CorpusReader):
         elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
+    def readme(self):
+        """
+        Return the contents of the corpus Readme.txt file.
+        """
+        return self.open("Readme.txt").read()
+
     def reviews(self, fileids=None):
         """
         :return: the given file(s) as a list of reviews.
