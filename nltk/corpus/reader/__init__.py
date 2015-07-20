@@ -96,6 +96,7 @@ from nltk.corpus.reader.sentiwordnet import *
 from nltk.corpus.reader.twitter import *
 from nltk.corpus.reader.nkjp import *
 from nltk.corpus.reader.crubadan import *
+from nltk.corpus.reader.product_reviews import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
@@ -131,5 +132,6 @@ __all__ = [
     'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader',
     'SemcorCorpusReader', 'FramenetCorpusReader', 'UdhrCorpusReader',
     'BNCCorpusReader', 'SentiWordNetCorpusReader', 'SentiSynset',
-    'TwitterCorpusReader', 'NKJPCorpusReader', 'CrubadanCorpusReader'
+    'TwitterCorpusReader', 'NKJPCorpusReader', 'CrubadanCorpusReader',
+    'ProductReviewsCorpusReader'
 ]
