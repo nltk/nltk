@@ -172,15 +172,18 @@ class MaltParser(ParserI):
 								"code %d" % (' '.join(cmd), ret))
 
 			# Must return iter(iter(Tree))
-			return (iter([dep_graph]) for dep_graph in 
-			DependencyGraph.load(output_file.name))
-
+			with open(output_file.name) as infile:
+				for tree_str in infile.read().split('\n\n'):
+					if '\t0\tnull\t' in tree_str:
+						tree_str = tree_str.replace('\t0\tnull\t','\t0\tROOT\t')
+					yield(iter([DependencyGraph(tree_str)]))
+					
 		finally:
 			# Deletes temp files created in the process.
 			input_file.close()
 			os.remove(input_file.name)
 			output_file.close()
-			#os.remove(output_file.name)
+			os.remove(output_file.name)
 
 	
 	def parse_sents(self, sentences, verbose=False):
@@ -272,7 +275,7 @@ class MaltParser(ParserI):
 				return self.train_from_file(input_file.name, verbose=verbose)
 			finally:
 				input_file.close()
-				os.remove(input_file.name)
+				#os.remove(input_file.name)
 
 		# Generate command to run maltparser.
 		cmd =self.generate_malt_command(conll_file, mode="learn")
@@ -297,7 +300,6 @@ def demo(path_to_maltparser, path_to_model):
 	(pajamas (shot I) an elephant in my)
 	'''
 
-	'''
 	#########################################################################
 	# Demo to train a new model with DependencyGraph objects and 
 	# parse example sentences with the new model.
@@ -305,11 +307,13 @@ def demo(path_to_maltparser, path_to_model):
 	_dg1_str = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
 					"2    sees    _    VB    _    _    0    ROOT    _    _\n"
 					"3    a       _    DT    _    _    4    SPEC    _    _\n"
-					"4    dog     _    NN    _    _    2    OBJ     _    _\n")
+					"4    dog     _    NN    _    _    2    OBJ     _    _\n"
+					"4    .     _    .    _    _    2    PUNCT     _    _\n")
 
 
 	_dg2_str  = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
-					"2    walks   _    VB    _    _    0    ROOT    _    _\n")
+					"2    walks   _    VB    _    _    0    ROOT    _    _\n"
+					"3    .     _    .    _    _    2    PUNCT     _    _\n")
 	dg1 = DependencyGraph(_dg1_str)
 	dg2 = DependencyGraph(_dg2_str)
 
@@ -320,27 +324,25 @@ def demo(path_to_maltparser, path_to_model):
 	mp.train([dg1,dg2], verbose=verbose)
 	
 	sent1 = ['John','sees','Mary', '.']
-	sent2 = ['a','man','runs', '.']
+	sent2 = ['John', 'walks', 'a', 'dog', '.']
 	# Parse a single sentence.
 	print (mp.parse_one(sent1).tree())
 	print (mp.parse_one(sent2).tree())
 	print(next(next(mp.parse_sents([sent1,sent2]))).tree())
-	'''
+
 		
 	#########################################################################
 	# Demo to parse example sentences with pre-trained models
 	#########################################################################
 
 	# Initialize a MaltParser object with a pre-trained model.
-	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model)	
+	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model, tagger=pos_tag)	
 	sent = 'I shot an elephant in my pajamas .'.split()
 	sent2 = 'Time flies like banana .'.split()
 	# Parse a single sentence.
-	print(mp.parse_one(sent).tree())
+	print(mp.parse_one(sent).tree())	
+	print(next(next(mp.parse_sents([sent,sent2]))).tree())
 	
-	#print(next(next(mp.parse_sents([sent,sent2]))))
-
-
 if __name__ == '__main__':
 	demo('/home/alvas/maltparser-1.7.2/', '/home/alvas/engmalt.linear-1.7.mco')
 	#demo('/home/alvas/maltparser-1.7.2/', '/home/alvas/engmalt.poly-1.7.mco')
