@@ -9,15 +9,11 @@
 
 from __future__ import print_function
 from collections import defaultdict
-import codecs
-import pdb
-import sys
 
 from nltk.classify.util import apply_features, accuracy
 from nltk.collocations import *
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist
-from nltk.tokenize import word_tokenize, treebank, regexp, casual
 from util import (output_markdown, parse_dataset, save_file, timer, split_train_test,
     extract_unigram_feats, extract_bigram_coll_feats, extract_bigram_feats)
 import nltk
@@ -96,17 +92,17 @@ class SentimentAnalyzer(object):
         """
         self.feat_extractors[function].append(kwargs)
 
-    def extract_features(self, tweet):
+    def extract_features(self, document):
         """
-        Apply extractor functions (and their parameters) to the present tweet.
+        Apply extractor functions (and their parameters) to the present document.
         """
         all_features = {}
         for extractor in self.feat_extractors:
-            # We pass tweet as the first parameter of the function.
+            # We pass document as the first parameter of the function.
             # If we want to use the same extractor function multiple times, we
             # have to consider multiple sets of parameters (one for each call).
             for param_set in self.feat_extractors[extractor]:
-                feats = extractor(tweet, **param_set)
+                feats = extractor(document, **param_set)
             all_features.update(feats)
         return all_features
 
