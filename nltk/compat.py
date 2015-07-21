@@ -58,7 +58,7 @@ if PY3:
     UTC = timezone.utc
 
     from tempfile import TemporaryDirectory
-    
+
     unichr = chr
     if sys.version_info[1] <= 1:
         def int2byte(i):
@@ -143,21 +143,21 @@ else:
     # A UTC class for python 2.7
     class UTC(tzinfo):
         """UTC"""
-    
+
         def utcoffset(self, dt):
             return ZERO
-    
+
         def tzname(self, dt):
             return "UTC"
-    
+
         def dst(self, dt):
             return ZERO
-    
+
     UTC = UTC()
 
     unichr = unichr
     int2byte = chr
-    
+
     import csv, codecs, cStringIO
     class UnicodeWriter:
         """

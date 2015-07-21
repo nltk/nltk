@@ -52,7 +52,7 @@ class BasicTweetHandler(object):
     def __init__(self, limit=20):
         self.limit = limit
         self.counter = 0
-        
+
         """A flag to indicate that to the client to stop for
         a functional clause (e.g. date limit)"""
         self.do_stop = False
@@ -98,4 +98,3 @@ class TweetHandlerI(BasicTweetHandler):
         Actions when the tweet limit has been reached
         """
         raise NotImplementedError
-        

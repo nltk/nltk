@@ -238,7 +238,7 @@ to the entire chunk).
     >>> [[str(c) for c in s] for s in semcor.tagged_sents(tag='both')[:2]]
     [['(DT The)', "(Lemma('group.n.01.group') (NE (NNP Fulton County Grand Jury)))", ...
      '(None .)'], ['(DT The)', ... '(None .)']]
-    
+
 
 The IEER corpus is another chunked corpus.  This corpus is unusual in
 that each corpus item contains multiple documents.  (This reflects the
@@ -2070,7 +2070,6 @@ access to its tuples() method
     >>> from nltk.corpus import qc
     >>> qc.tuples('test.txt')
     [('NUM:dist', 'How far is it from Denver to Aspen ?'), ('LOC:city', 'What county is Modesto , California in ?'), ...]
-
 
 
 
