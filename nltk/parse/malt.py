@@ -90,6 +90,21 @@ def malt_regex_tagger():
 	return _tagger.tag
 
 class MaltParser(ParserI):
+	"""
+	A class for dependency parsing with MaltParser. The input is the paths to:
+     - a maltparser directory
+     - (optionally) the path to a pre-trained MaltParser .mco model file
+     - (optionally) the tagger to use for POS tagging before parsing
+     - (optionally) a working directory to store the temporary files produced
+     				by the MaltParser
+     - (optionally) additional Java arguments
+	
+	Example:
+        >>> from nltk.parse import malt
+        >>> mp = malt.MaltParser('/home/alvas/maltparser-1.7.2/', '/home/alvas/engmalt.linear-1.7.mco') # doctest: +SKIP
+        >>> mp.parse_one('I shot an elephant in my pajamas .'.split()).tree() # doctest: +SKIP
+        (shot I (elephant an) (in (pajamas my)) .)
+	"""
 	def __init__(self, path_to_maltparser, model=None, tagger=None, 
 		     working_dir=None, additional_java_args=[]):
 		"""
@@ -380,7 +395,7 @@ if __name__ == '__main__':
 
 	
 	#########################################################################
-	# Demo to parse example sentences with pre-trained French model
+	# Demo to parse example sentence with pre-trained French model
 	#########################################################################
 
 	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
@@ -397,7 +412,7 @@ if __name__ == '__main__':
 
 
 	#########################################################################
-	# Demo to parse example sentences with pre-trained Swedish model
+	# Demo to parse example sentence with pre-trained Swedish model
 	#########################################################################
 
 	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
@@ -411,4 +426,21 @@ if __name__ == '__main__':
 
 	parsed_sent = mp.parse_tagged_sents([tagged_sent])
 	print(next(next(parsed_sent)).tree())
+
+	
+	#########################################################################
+	# Demo to parse example sentences with pre-trained Spanish model
+	#########################################################################
+	
+	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
+	path_to_model = '/home/alvas/espmalt-1.0.mco'	    
+
+	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model)	
+	#sent = "Los niños leen cuentos de hadas .".split()
+	sent = "Los ninos leen cuentos de hadas .".split()
+	pos = "DA0MP0 NCMP000 VMIP3P0 NCMP000 NCFP000 Fp".split()
+	tagged_sent = list(zip(sent,pos))
+
+	parsed_sent = mp.parse_tagged_sents([tagged_sent])
+	print(next(next(parsed_sent)).tree())	
 
