@@ -268,7 +268,7 @@ class MaltParser(ParserI):
 		:type depgraphs: DependencyGraph
 		"""
 		input_file = tempfile.NamedTemporaryFile(prefix='malt_train.conll',
-				                                 dir=self.working_dir,
+				                                 dir=self.working_dir, mode='w',
 				                                 delete=False)
 		try:
 			input_str = ('\n'.join(dg.to_conll(10) for dg in depgraphs))
