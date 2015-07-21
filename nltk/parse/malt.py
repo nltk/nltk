@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 # Natural Language Toolkit: Interface to MaltParser
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
@@ -7,6 +8,8 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import print_function
+from __future__ import unicode_literals
+from six import text_type
 
 import os
 import fnmatch
@@ -165,13 +168,13 @@ class MaltParser(ParserI):
 										dir=self.working_dir, 
 										mode='w', delete=False)
 		output_file = tempfile.NamedTemporaryFile(prefix='malt_output.conll', 
-										dir=self.working_dir, 
+										dir=self.working_dir,
 										mode='w', delete=False)
 
 		try: 
 			# Convert list of sentences to CONLL format.
 			for line in taggedsent_to_conll(sentences):
-				input_file.write(line)
+				input_file.write(text_type(line))
 			input_file.close()
 
 			# Generate command to run maltparser.
@@ -272,7 +275,7 @@ class MaltParser(ParserI):
 				                                 delete=False)
 		try:
 			input_str = ('\n'.join(dg.to_conll(10) for dg in depgraphs))
-			input_file.write(input_str)
+			input_file.write(text_type(input_str))
 			input_file.close()
 			self.train_from_file(input_file.name, verbose=verbose)
 		finally:
@@ -295,7 +298,7 @@ class MaltParser(ParserI):
 			try:
 				conll_str = conll_file.open().read()
 				conll_file.close()
-				input_file.write(conll_str)
+				input_file.write(text_type(conll_str))
 				input_file.close()
 				return self.train_from_file(input_file.name, verbose=verbose)
 			finally:
@@ -392,6 +395,20 @@ if __name__ == '__main__':
 	parsed_sent = mp.parse_tagged_sents([tagged_sent])
 	print(next(next(parsed_sent)).tree())
 
-	
 
+	#########################################################################
+	# Demo to parse example sentences with pre-trained Swedish model
+	#########################################################################
+
+	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
+	path_to_model = '/home/alvas/swemalt-1.7.2.mco'	    
+
+	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model)	
+	#sent = "För telefonrådfrågning betalar försäkringskassan 4 kronor till sjukvårdshuvudmannen .".split()
+	sent = "For telefonradfragning betalar forsakringskassan 4 kronor till sjukvardshuvudmannen .".split()
+	pos = "PP NN VB NN RG NOM NN PP NN MAD".split()
+	tagged_sent = list(zip(sent,pos))
+
+	parsed_sent = mp.parse_tagged_sents([tagged_sent])
+	print(next(next(parsed_sent)).tree())
 
