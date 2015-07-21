@@ -12,7 +12,7 @@ import os
 import fnmatch
 import tempfile
 import subprocess
-
+import inspect
 
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
@@ -126,6 +126,27 @@ class MaltParser(ParserI):
 		else:
 			self.tagger = malt_regex_tagger()	
 
+	def pretrained_model_sanity_checks(self, tree_str):
+		"""
+		Performs sanity checks and replace oddities in pre-trained model
+		outputs from http://www.maltparser.org/mco/english_parser/engmalt.html
+		
+		:param tree_str: The CONLL output file for a single parse
+		:type tree_str: str
+		:return: str
+		"""
+		# Checks for oddities in English pre-trained model.
+		if '\t0\tnull\t' in tree_str and \
+		(self.model.endswith('engmalt.linear-1.7.mco') or
+		self.model.endswith('engmalt.poly-1.7.mco')
+		):
+			tree_str = tree_str.replace('\t0\tnull\t','\t0\tROOT\t')
+		# Checks for oddities in French pre-trained model.
+		if '\t0\troot\t' in tree_str and \
+		self.model.endswith('fremalt-1.7.mco'):
+			tree_str = tree_str.replace('\t0\troot\t','\t0\tROOT\t')
+		return tree_str	
+	
 	def parse_tagged_sents(self, sentences, verbose=False):
 		"""
 		Use MaltParser to parse multiple POS tagged sentences. Takes multiple 
@@ -174,16 +195,15 @@ class MaltParser(ParserI):
 			# Must return iter(iter(Tree))
 			with open(output_file.name) as infile:
 				for tree_str in infile.read().split('\n\n'):
-					if '\t0\tnull\t' in tree_str:
-						tree_str = tree_str.replace('\t0\tnull\t','\t0\tROOT\t')
+					tree_str = self.pretrained_model_sanity_checks(tree_str)
 					yield(iter([DependencyGraph(tree_str)]))
 					
 		finally:
 			# Deletes temp files created in the process.
 			input_file.close()
-			os.remove(input_file.name)
+			#os.remove(input_file.name)
 			output_file.close()
-			os.remove(output_file.name)
+			#os.remove(output_file.name)
 
 	
 	def parse_sents(self, sentences, verbose=False):
@@ -198,8 +218,10 @@ class MaltParser(ParserI):
 		:return: iter(DependencyGraph)
 		"""
 		tagged_sentences = [self.tagger(sentence) for sentence in sentences]
-		return iter(self.parse_tagged_sents(tagged_sentences, verbose))
-
+		parsed_sentences = self.parse_tagged_sents(tagged_sentences, verbose)
+		return parsed_sentences
+		
+		
 	def generate_malt_command(self, inputfilename, outputfilename=None, 
 							mode=None):
 		"""
@@ -227,6 +249,7 @@ class MaltParser(ParserI):
 		if mode == 'parse':
 			cmd+= ['-o', outputfilename]
 		cmd+= ['-m', mode] # mode use to generate parses.
+		#print(" ".join(cmd))
 		return cmd
 
 	@staticmethod
@@ -252,7 +275,7 @@ class MaltParser(ParserI):
 			self.train_from_file(input_file.name, verbose=verbose)
 		finally:
 			input_file.close()
-			os.remove(input_file.name)
+			#os.remove(input_file.name)
             
 	def train_from_file(self, conll_file, verbose=False):
 		"""
@@ -288,18 +311,11 @@ class MaltParser(ParserI):
 
 		self._trained = True
 
-def demo(path_to_maltparser, path_to_model):
+	
+if __name__ == '__main__':
 	'''
 	A demostration function to show how NLTK users can use the malt parser API.
-	
-	>>> indir = '/home/alvas/maltparser-1.8/dist/maltparser-1.8/'
-	>>> modelfilepath = '/home/alvas/engmalt.linear-1.7.mco'               
-	>>> demo(indir, modelfilepath)
-	(sees John Mary)
-	(a (runs man))
-	(pajamas (shot I) an elephant in my)
 	'''
-
 	#########################################################################
 	# Demo to train a new model with DependencyGraph objects and 
 	# parse example sentences with the new model.
@@ -319,6 +335,7 @@ def demo(path_to_maltparser, path_to_model):
 
 	# Initial a MaltParser object
 	verbose = False
+	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
 	mp = MaltParser(path_to_maltparser=path_to_maltparser)
 	# Trains a model.
 	mp.train([dg1,dg2], verbose=verbose)
@@ -326,25 +343,50 @@ def demo(path_to_maltparser, path_to_model):
 	sent1 = ['John','sees','Mary', '.']
 	sent2 = ['John', 'walks', 'a', 'dog', '.']
 	# Parse a single sentence.
-	print (mp.parse_one(sent1).tree())
-	print (mp.parse_one(sent2).tree())
-	print(next(next(mp.parse_sents([sent1,sent2]))).tree())
+	parsed_sent1 = mp.parse_one(sent1)
+	parsed_sent2 = mp.parse_one(sent2)
+	print (parsed_sent1.tree())
+	print (parsed_sent2.tree())
+	# Parsing multiple sentences.
+	sentences = [sent1,sent2]
+	parsed_sents = mp.parse_sents(sentences)
+	print(next(next(parsed_sents)).tree())
+	print(next(next(parsed_sents)).tree())
 
-		
+	
 	#########################################################################
-	# Demo to parse example sentences with pre-trained models
+	# Demo to parse example sentences with pre-trained English model
 	#########################################################################
 
-	# Initialize a MaltParser object with a pre-trained model.
+	# Initialize a MaltParser object with an English pre-trained model.
+	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
+	path_to_model = '/home/alvas/engmalt.linear-1.7.mco'
 	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model, tagger=pos_tag)	
 	sent = 'I shot an elephant in my pajamas .'.split()
 	sent2 = 'Time flies like banana .'.split()
 	# Parse a single sentence.
-	print(mp.parse_one(sent).tree())	
-	print(next(next(mp.parse_sents([sent,sent2]))).tree())
+	print(mp.parse_one(sent).tree())
+	# Parsing multiple sentences
+	sentences = [sent1,sent2]
+	parsed_sents = mp.parse_sents(sentences)
+	print(next(next(parsed_sents)).tree())
+	print(next(next(parsed_sents)).tree())
+
 	
-if __name__ == '__main__':
-	demo('/home/alvas/maltparser-1.7.2/', '/home/alvas/engmalt.linear-1.7.mco')
-	#demo('/home/alvas/maltparser-1.7.2/', '/home/alvas/engmalt.poly-1.7.mco')
-    
+	#########################################################################
+	# Demo to parse example sentences with pre-trained French model
+	#########################################################################
+
+	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
+	path_to_model = '/home/alvas/fremalt-1.7.mco'
+
+	# Initialize a MaltParser object with a French pre-trained model.
+	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model, tagger=pos_tag)	
+	sent = 'Nous prions les cineastes et tous nos lecteurs de bien vouloir nous en excuser .'.split()
+	pos = 'CLS V DET NC CC ADJ DET NC P ADV VINF CLS CLO VINF PUNCT'.split()
+	tagged_sent = list(zip(sent,pos))
+
+	parsed_sent = mp.parse_tagged_sents([tagged_sent])
+	print(next(next(parsed_sent)).tree())
+	    
 
