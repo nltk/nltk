@@ -40,10 +40,11 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         >>> procons = LazyCorpusLoader('pros_cons', ProsConsCorpusReader, r'Integrated(Cons|Pros)\.txt',\
             cat_pattern=r'Integrated(Cons|Pros)\.txt', encoding='ISO-8859-2')
         >>> procons.sents(categories='Cons')
-        [['East', 'batteries', '!', 'On', '-', 'off', 'switch', 'too', 'easy',
-        'to', 'maneuver', '.'], ['Eats', '...', 'no', ',', 'GULPS', 'batteries'], ...]
+        [(['East', 'batteries', '!', 'On', '-', 'off', 'switch', 'too', 'easy',
+            'to', 'maneuver', '.'], 'Cons'), (['Eats', '...', 'no', ',', 'GULPS',
+            'batteries'], 'Cons'), ...]
         >>> procons.words('IntegratedPros.txt')
-        ['Easy', 'to', 'use', ',', 'economical', '!', ...]
+        [['Easy', 'to', 'use', ',', 'economical', '!'], 'Pros', ...]
     """
     CorpusView = StreamBackedCorpusView
 
@@ -57,9 +58,9 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
 
     def sents(self, fileids=None, categories=None):
         """
-        :return: the given file(s) as a list of tokenized sentences.
+        :return: the given file(s) as a list of (sentence, label) tuples.
             Each sentence is tokenized using the specified word_tokenizer.
-        :rtype: list(list(str))
+        :rtype: list(tuple(list, str))
         """
         fileids = self._resolve(fileids, categories)
         if fileids is None: fileids = self._fileids
@@ -86,7 +87,8 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
                 continue
             sent = re.match(r"^(?!\n)\s*<(Pros|Cons)>(.*)</(?:Pros|Cons)>", line)
             if sent:
-                sents.append(self._word_tokenizer.tokenize(sent.group(2).strip()))
+                sents.append((self._word_tokenizer.tokenize(sent.group(2).strip()), sent.group(1)))
+                # sents.append(self._word_tokenizer.tokenize(sent.group(2).strip()))
         return sents
 
     def _read_word_block(self, stream):
