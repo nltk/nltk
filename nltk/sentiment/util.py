@@ -235,7 +235,6 @@ def demo_tweets(trainer, n=None):
         - 1000 most frequent unigrams
         - 100 top bigram collocations (using BigramAssocMeasures.pmi)
     '''
-    from nltk.classify.util import apply_features
     from nltk.tokenize import casual
     from sentiment_analyzer import SentimentAnalyzer
     from nltk.corpus import stopwords
@@ -260,8 +259,8 @@ def demo_tweets(trainer, n=None):
     bigram_collocs_feats = sa.bigram_collocation_feats([tweet[0] for tweet in training_tweets], top_n=100, min_freq=12)
     sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
 
-    training_set = apply_features(sa.extract_features, training_tweets)
-    test_set = apply_features(sa.extract_features, testing_tweets)
+    training_set = sa.apply_features(training_tweets)
+    test_set = sa.apply_features(testing_tweets)
 
     classifier = sa.train(trainer, training_set)
     # classifier = sa.train(trainer, training_set, max_iter=4)
@@ -286,7 +285,6 @@ def demo_movie_reviews(trainer):
     Features are composed of:
         - 1000 most frequent unigrams
     '''
-    from nltk.classify.util import apply_features
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
@@ -309,8 +307,8 @@ def demo_movie_reviews(trainer):
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Apply features to obtain a feature-value representation of our datasets
-    training_set = apply_features(sa.extract_features, training_docs)
-    test_set = apply_features(sa.extract_features, testing_docs)
+    training_set = sa.apply_features(training_docs)
+    test_set = sa.apply_features(testing_docs)
 
     classifier = sa.train(trainer, training_set)
     try:
@@ -326,7 +324,6 @@ def demo_movie_reviews(trainer):
         Tokenizer='WordPunctTokenizer', Feats=extr, Accuracy=accuracy)
 
 def demo_subjectivity(trainer):
-    from nltk.classify.util import apply_features
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
     from nltk.tokenize import regexp
@@ -354,8 +351,8 @@ def demo_subjectivity(trainer):
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Apply features to obtain a feature-value representation of our datasets
-    training_set = apply_features(sa.extract_features, training_docs)
-    test_set = apply_features(sa.extract_features, testing_docs)
+    training_set = sa.apply_features(training_docs)
+    test_set = sa.apply_features(testing_docs)
 
     classifier = sa.train(trainer, training_set)
     try:
@@ -377,14 +374,13 @@ def demo_sent_subjectivity(text):
     """
     Classify a single sentence using a stored SentimentAnalyzer
     """
-    from nltk.classify.util import apply_features
     from nltk.tokenize import regexp
     word_tokenizer = regexp.WhitespaceTokenizer()
     sentim_analyzer = load('sa_subjectivity.pickle')
 
     # tokenized_text = word_tokenizer.tokenize(text)
     tokenized_text = [word.lower() for word in word_tokenizer.tokenize(text)]
-    text_feats = apply_features(sentim_analyzer.extract_features, [tokenized_text], labeled=False)
+    text_feats = sentim_analyzer.apply_features([tokenized_text], labeled=False)
     print(sentim_analyzer.classifier.classify(text_feats[0]))
 
 def demo_liu_hu_lexicon(sentence):
@@ -428,5 +424,5 @@ if __name__ == '__main__':
     # demo_tweets(naive_bayes, n=8000)
     # demo_movie_reviews(svm)
     # demo_subjectivity(svm)
-    # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
-    demo_liu_hu_lexicon('This movie is really fantastic!')
+    demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
+    # demo_liu_hu_lexicon('This movie is really fantastic!')
