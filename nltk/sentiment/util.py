@@ -238,6 +238,7 @@ def demo_tweets(trainer, n=None):
     from nltk.classify.util import apply_features
     from nltk.tokenize import casual
     from sentiment_analyzer import SentimentAnalyzer
+    from nltk.corpus import stopwords
 
     tokenizer = casual.TweetTokenizer()
     all_docs = parse_dataset('labeled_tweets', tokenizer)
@@ -247,8 +248,9 @@ def demo_tweets(trainer, n=None):
 
     training_tweets, testing_tweets = split_train_test(all_docs, n)
 
+    stopwords = stopwords.words('english')
     sa = SentimentAnalyzer()
-    all_words = sa.all_words(training_tweets)
+    all_words = [word for word in sa.all_words(training_tweets) if word.lower() not in stopwords]
 
     # Add simple unigram word features
     unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
@@ -270,6 +272,11 @@ def demo_tweets(trainer, n=None):
         pass
     accuracy = sa.evaluate(classifier, test_set)
     print('Accuracy:', accuracy)
+
+    extr = [f.__name__ for f in sa.feat_extractors]
+    output_markdown('results.md', Dataset='labeled_tweets', Classifier=type(classifier).__name__,
+        Tokenizer=tokenizer.__class__.__name__, Feats=extr, Accuracy=accuracy,
+        Notes='Remove stopwords')
 
 def demo_movie_reviews(trainer):
     '''
@@ -367,12 +374,16 @@ def demo_subjectivity(trainer):
         Accuracy=accuracy)
 
 def demo_sent_subjectivity(text):
+    """
+    Classify a single sentence using a stored SentimentAnalyzer
+    """
     from nltk.classify.util import apply_features
     from nltk.tokenize import regexp
     word_tokenizer = regexp.WhitespaceTokenizer()
     sentim_analyzer = load('sa_subjectivity.pickle')
 
-    tokenized_text = word_tokenizer.tokenize(text)
+    # tokenized_text = word_tokenizer.tokenize(text)
+    tokenized_text = [word.lower() for word in word_tokenizer.tokenize(text)]
     text_feats = apply_features(sentim_analyzer.extract_features, [tokenized_text], labeled=False)
     print(sentim_analyzer.classifier.classify(text_feats[0]))
 
@@ -390,7 +401,8 @@ def demo_liu_hu_lexicon(sentence):
     tokenizer = treebank.TreebankWordTokenizer()
     pos_words = 0
     neg_words = 0
-    for word in tokenizer.tokenize(sentence):
+    tokenized_sent = [word.lower() for word in tokenizer.tokenize(sentence)]
+    for word in tokenized_sent:
         if word in opinion_lexicon.positive():
             pos_words += 1
         elif word in opinion_lexicon.negative():
@@ -413,7 +425,7 @@ if __name__ == '__main__':
     svm = SklearnClassifier(LinearSVC()).train
     maxent = MaxentClassifier.train
 
-    # demo_tweets(maxent, n=8000)
+    # demo_tweets(naive_bayes, n=8000)
     # demo_movie_reviews(svm)
     # demo_subjectivity(svm)
     # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
