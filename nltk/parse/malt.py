@@ -20,6 +20,7 @@ import inspect
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 from nltk.data import ZipFilePathPointer
+from nltk.internals import find_file
 
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
@@ -95,8 +96,6 @@ class MaltParser(ParserI):
      - a maltparser directory
      - (optionally) the path to a pre-trained MaltParser .mco model file
      - (optionally) the tagger to use for POS tagging before parsing
-     - (optionally) a working directory to store the temporary files produced
-     				by the MaltParser
      - (optionally) additional Java arguments
 	
 	Example:
@@ -106,7 +105,7 @@ class MaltParser(ParserI):
         (shot I (elephant an) (in (pajamas my)) .)
 	"""
 	def __init__(self, path_to_maltparser, model=None, tagger=None, 
-		     working_dir=None, additional_java_args=[]):
+				 additional_java_args=[]):
 		"""
 		An interface for parsing with the Malt Parser.
 
@@ -136,8 +135,7 @@ class MaltParser(ParserI):
 		self.model = 'malt_temp.mco' if model is None else model
 		self._trained = False if self.model == 'malt_temp' else True
 		# Set the working_dir parameters i.e. `-w` from MaltParser's option.
-		self.working_dir = tempfile.gettempdir() \
-				        if working_dir is None  else working_dir
+		self.working_dir = tempfile.gettempdir() 
 		# Initialize POS tagger.
 		if tagger is not None:
 			self.tagger = tagger
@@ -221,9 +219,9 @@ class MaltParser(ParserI):
 		finally:
 			# Deletes temp files created in the process.
 			input_file.close()
-			#os.remove(input_file.name)
+			os.remove(input_file.name)
 			output_file.close()
-			#os.remove(output_file.name)
+			os.remove(output_file.name)
 
 	
 	def parse_sents(self, sentences, verbose=False):
@@ -257,7 +255,6 @@ class MaltParser(ParserI):
 		cmd+= self.additional_java_args # Adds additional java arguments.
 		cmd+= ['-cp', ':'.join(self.malt_jars)] # Adds classpaths for jars
 		cmd+= ['org.maltparser.Malt'] # Adds the main function.
-		##cmd+= ['-w', self.working_dir]
 
 		# Adds the model file.
 		if os.path.exists(self.model): # when parsing
@@ -295,7 +292,7 @@ class MaltParser(ParserI):
 			self.train_from_file(input_file.name, verbose=verbose)
 		finally:
 			input_file.close()
-			#os.remove(input_file.name)
+			os.remove(input_file.name)
             
 	def train_from_file(self, conll_file, verbose=False):
 		"""
@@ -322,13 +319,11 @@ class MaltParser(ParserI):
 
 		# Generate command to run maltparser.
 		cmd =self.generate_malt_command(conll_file, mode="learn")
-		
 		ret = self._execute(cmd, verbose)
 		if ret != 0:
 			raise Exception("MaltParser training (%s) "
 				            "failed with exit code %d" %
 				            (' '.join(cmd), ret))
-
 		self._trained = True
 
 	
