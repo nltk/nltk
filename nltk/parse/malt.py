@@ -113,7 +113,7 @@ class MaltParser(ParserI):
         """
         return next(self.tagged_parse_sents([sentence], verbose))
 
-    def tagged_parse_sents(self, sentences, verbose=False):
+    def tagged_parse_sents(self, sentences, verbose=False, top_relation_label='null'):
         """
         Use MaltParser to parse multiple sentences. Takes multiple sentences
         where each sentence is a list of (word, tag) tuples.
@@ -157,7 +157,13 @@ class MaltParser(ParserI):
                                 "code %d" % (' '.join(cmd), ret))
 
             # Must return iter(iter(Tree))
-            return (iter([dep_graph]) for dep_graph in  DependencyGraph.load(output_file.name))
+            return (
+                iter([dep_graph])
+                for dep_graph in  DependencyGraph.load(
+                    output_file.name,
+                    top_relation_label=top_relation_label
+                )
+            )
         finally:
             input_file.close()
             os.remove(input_file.name)
@@ -238,12 +244,12 @@ def demo():
     verbose = False
 
     maltParser = MaltParser()
-    maltParser.train([dg1,dg2], verbose=verbose)
+    maltParser.train([dg1, dg2], verbose=verbose)
 
     maltParser.parse_one(['John','sees','Mary'], verbose=verbose).tree().pprint()
     maltParser.parse_one(['a','man','runs'], verbose=verbose).tree().pprint()
-    
+
     next(maltParser.tagged_parse([('John','NNP'),('sees','VB'),('Mary','NNP')], verbose)).tree().pprint()
-    
+
 if __name__ == '__main__':
     demo()
