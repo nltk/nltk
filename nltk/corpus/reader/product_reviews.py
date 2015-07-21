@@ -262,10 +262,3 @@ class ProductReviewsCorpusReader(CorpusReader):
             if sent:
                 words.extend(self._word_tokenizer.tokenize(sent[0]))
         return words
-
-
-if __name__ == '__main__':
-    import sys
-    import doctest
-    from nltk.test import doctest_nose_plugin
-    doctest.DocTestSuite(sys.modules['__main__'], checker=doctest_nose_plugin._UnicodeOutputChecker())
