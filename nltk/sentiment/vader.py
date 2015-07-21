@@ -175,6 +175,7 @@ compound: -0.5859, neg: 0.23, neu: 0.697, pos: 0.074,
 
 """
 
+import codecs
 import math
 import re
 import string
@@ -366,7 +367,7 @@ class SentimentIntensityAnalyzer(object):
         Convert lexicon file to a dictionary
         """
         lex_dict = {}
-        with open(self.lexicon_file, encoding='utf8') as infile:
+        with codecs.open(self.lexicon_file, encoding='utf8') as infile:
             for line in infile:
                 (word, measure) = line.strip().split('\t')[0:2]
                 lex_dict[word] = float(measure)
