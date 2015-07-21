@@ -53,7 +53,7 @@ def taggedsent_to_conll(sentences):
 		for (i, (word, tag)) in enumerate(sentence, start=1):
 			input_str = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
 			% (i, word, '_', tag, tag, '_', '0', 'a', '_', '_')
-			yield input_str.encode("utf8")
+			yield input_str
 		yield '\n\n'
 
 def malt_regex_tagger():
@@ -162,9 +162,11 @@ class MaltParser(ParserI):
 			raise Exception("Parser has not been trained. Call train() first.")
 
 		input_file = tempfile.NamedTemporaryFile(prefix='malt_input.conll', 
-										dir=self.working_dir, delete=False)
+										dir=self.working_dir, 
+										mode='w', delete=False)
 		output_file = tempfile.NamedTemporaryFile(prefix='malt_output.conll', 
-										dir=self.working_dir, delete=False)
+										dir=self.working_dir, 
+										mode='w', delete=False)
 
 		try: 
 			# Convert list of sentences to CONLL format.
@@ -270,7 +272,7 @@ class MaltParser(ParserI):
 				                                 delete=False)
 		try:
 			input_str = ('\n'.join(dg.to_conll(10) for dg in depgraphs))
-			input_file.write(input_str.encode("utf8"))
+			input_file.write(input_str)
 			input_file.close()
 			self.train_from_file(input_file.name, verbose=verbose)
 		finally:
@@ -288,8 +290,8 @@ class MaltParser(ParserI):
 		# then we need to do some extra massaging
 		if isinstance(conll_file, ZipFilePathPointer):
 			input_file = tempfile.NamedTemporaryFile(prefix='malt_train.conll',
-				                                    dir=self.working_dir,
-				                                    delete=False)
+				                                    dir=self.working_dir, 
+				                                    mode='w', delete=False)
 			try:
 				conll_str = conll_file.open().read()
 				conll_file.close()
@@ -316,6 +318,7 @@ if __name__ == '__main__':
 	'''
 	A demostration function to show how NLTK users can use the malt parser API.
 	'''
+
 	#########################################################################
 	# Demo to train a new model with DependencyGraph objects and 
 	# parse example sentences with the new model.
@@ -381,12 +384,14 @@ if __name__ == '__main__':
 	path_to_model = '/home/alvas/fremalt-1.7.mco'
 
 	# Initialize a MaltParser object with a French pre-trained model.
-	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model, tagger=pos_tag)	
+	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model)	
 	sent = 'Nous prions les cineastes et tous nos lecteurs de bien vouloir nous en excuser .'.split()
 	pos = 'CLS V DET NC CC ADJ DET NC P ADV VINF CLS CLO VINF PUNCT'.split()
 	tagged_sent = list(zip(sent,pos))
 
 	parsed_sent = mp.parse_tagged_sents([tagged_sent])
 	print(next(next(parsed_sent)).tree())
-	    
+
+	
+
 
