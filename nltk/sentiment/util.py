@@ -223,6 +223,20 @@ def split_train_test(all_instances, n=None):
 
     return train_set, test_set
 
+def _show_plot(x_values, y_values, x_labels=None, y_labels=None, y_min=-1.2, y_max=1.2):
+    plt.locator_params(axis='y', nbins=3)
+    ax = plt.axes()
+    ax.yaxis.grid()
+    plt.plot(x_values, y_values, 'ro', color='red')
+    plt.ylim(ymin=y_min, ymax=y_max)
+    plt.tight_layout(pad=5)
+    if x_labels:
+        plt.xticks(x_values, x_labels, rotation='vertical')
+    if y_labels:
+        plt.yticks([-1,0,1], y_labels, rotation='horizontal')
+    # Pad margins so that markers don't get clipped by the axes
+    plt.margins(0.2)
+    plt.show()
 
 #////////////////////////////////////////////////////////////
 #{ Demos
@@ -424,21 +438,6 @@ def demo_liu_hu_lexicon(sentence, plot=False):
 
     if plot == True:
         _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
-
-def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
-    plt.locator_params(axis='y', nbins=3)
-    ax = plt.axes()
-    ax.yaxis.grid()
-    plt.plot(x_values, y_values, 'ro', color='red')
-    plt.ylim(ymin=-1.2, ymax=1.2)
-    plt.tight_layout(pad=5)
-    if x_labels:
-        plt.xticks(x_values, x_labels, rotation='vertical')
-    if y_labels:
-        plt.yticks([-1,0,1], y_labels, rotation='horizontal')
-    # Pad margins so that markers don't get clipped by the axes
-    plt.margins(0.2)
-    plt.show()
 
 def demo_vader(text):
     from vader import SentimentIntensityAnalyzer
