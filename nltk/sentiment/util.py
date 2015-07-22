@@ -431,6 +431,7 @@ def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
     ax.yaxis.grid()
     plt.plot(x_values, y_values, 'ro', color='red')
     plt.ylim(ymin=-1.2, ymax=1.2)
+    plt.tight_layout(pad=5)
     if x_labels:
         plt.xticks(x_values, x_labels, rotation='vertical')
     if y_labels:
