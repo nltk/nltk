@@ -2,6 +2,7 @@ from copy import deepcopy
 import codecs
 import csv
 import itertools
+import matplotlib.pyplot as plt
 import os
 import pickle
 import random
@@ -383,13 +384,14 @@ def demo_sent_subjectivity(text):
     text_feats = sentim_analyzer.apply_features([tokenized_text], labeled=False)
     print(sentim_analyzer.classifier.classify(text_feats[0]))
 
-def demo_liu_hu_lexicon(sentence):
+def demo_liu_hu_lexicon(sentence, plot=False):
     """
     Very basic example of sentiment classification using Liu and Hu opinion lexicon
     """
     from nltk.corpus.util import LazyCorpusLoader
     from nltk.corpus.reader import OpinionLexiconCorpusReader
     from nltk.tokenize import treebank
+
 
     opinion_lexicon = LazyCorpusLoader('opinion_lexicon', OpinionLexiconCorpusReader,
         r'(\w+)\-words\.txt', encoding='ISO-8859-2')
@@ -398,11 +400,20 @@ def demo_liu_hu_lexicon(sentence):
     pos_words = 0
     neg_words = 0
     tokenized_sent = [word.lower() for word in tokenizer.tokenize(sentence)]
+
+    x = list(range(len(tokenized_sent))) # x axis for the plot
+    y = []
+
     for word in tokenized_sent:
         if word in opinion_lexicon.positive():
             pos_words += 1
+            y.append(1) # positive
         elif word in opinion_lexicon.negative():
             neg_words += 1
+            y.append(-1) # negative
+        else:
+            y.append(0) # neutral
+
 
     if pos_words > neg_words:
         print('Positive')
@@ -410,6 +421,28 @@ def demo_liu_hu_lexicon(sentence):
         print('Negative')
     elif pos_words == neg_words:
         print('Neutral')
+
+    if plot == True:
+        _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
+
+def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
+    plt.locator_params(axis='y', nbins=3)
+    ax = plt.axes()
+    ax.yaxis.grid()
+    plt.plot(x_values, y_values, 'ro', color='red')
+    plt.ylim(ymin=-1.2, ymax=1.2)
+    if x_labels:
+        plt.xticks(x_values, x_labels, rotation='vertical')
+    if y_labels:
+        plt.yticks([-1,0,1], y_labels, rotation='horizontal')
+    # Pad margins so that markers don't get clipped by the axes
+    plt.margins(0.2)
+    plt.show()
+
+def demo_vader(text):
+    from vader import SentimentIntensityAnalyzer
+    sia = SentimentIntensityAnalyzer()
+    print(sia.polarity_scores(text))
 
 
 if __name__ == '__main__':
@@ -424,5 +457,6 @@ if __name__ == '__main__':
     # demo_tweets(naive_bayes, n=8000)
     # demo_movie_reviews(svm)
     # demo_subjectivity(svm)
-    demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
-    # demo_liu_hu_lexicon('This movie is really fantastic!')
+    # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
+    demo_liu_hu_lexicon("This movie was actually neither that funny, nor super witty.", plot=True)
+    # demo_vader("This movie was actually neither that funny, nor super witty.")
