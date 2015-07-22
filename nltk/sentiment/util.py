@@ -340,10 +340,10 @@ def demo_subjectivity(trainer):
     testing_docs = test_subj_docs+test_obj_docs
 
     sa = SentimentAnalyzer()
-    all_words = sa.all_words(training_docs)
+    all_words_neg = sa.all_words([mark_negation(doc) for doc in training_docs])
 
-    # Add simple unigram word features
-    unigram_feats = sa.unigram_word_feats(all_words, min_freq=4)
+    # Add simple unigram word features handling negation
+    unigram_feats = sa.unigram_word_feats(all_words_neg, min_freq=4)
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Apply features to obtain a feature-value representation of our datasets
@@ -376,6 +376,33 @@ def demo_sent_subjectivity(text):
     text_feats = apply_features(sentim_analyzer.extract_features, [tokenized_text], labeled=False)
     print(sentim_analyzer.classifier.classify(text_feats[0]))
 
+def demo_liu_hu_lexicon(sentence):
+    """
+    Very basic example of sentiment classification using Liu and Hu opinion lexicon
+    """
+    from nltk.corpus.util import LazyCorpusLoader
+    from nltk.corpus.reader import OpinionLexiconCorpusReader
+    from nltk.tokenize import treebank
+
+    opinion_lexicon = LazyCorpusLoader('opinion_lexicon', OpinionLexiconCorpusReader,
+        r'(\w+)\-words\.txt', encoding='ISO-8859-2')
+
+    tokenizer = treebank.TreebankWordTokenizer()
+    pos_words = 0
+    neg_words = 0
+    for word in tokenizer.tokenize(sentence):
+        if word in opinion_lexicon.positive():
+            pos_words += 1
+        elif word in opinion_lexicon.negative():
+            neg_words += 1
+
+    if pos_words > neg_words:
+        print('Positive')
+    elif pos_words < neg_words:
+        print('Negative')
+    elif pos_words == neg_words:
+        print('Neutral')
+
 
 if __name__ == '__main__':
     from nltk.classify import NaiveBayesClassifier, MaxentClassifier
@@ -388,5 +415,6 @@ if __name__ == '__main__':
 
     # demo_tweets(maxent, n=8000)
     # demo_movie_reviews(svm)
-    demo_subjectivity(svm)
+    # demo_subjectivity(svm)
     # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
+    demo_liu_hu_lexicon('This movie is really fantastic!')

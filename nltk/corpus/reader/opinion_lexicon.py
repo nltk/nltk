@@ -1,0 +1,106 @@
+# Natural Language Toolkit: Product Reviews Corpus Reader
+#
+# Copyright (C) 2001-2015 NLTK Project
+# Author: Pierpaolo Pantone <24alsecondo@gmail.com>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+
+"""
+CorpusReader for the Opinion Lexicon.
+
+- Opinion Lexicon information -
+Authors: Minqing Hu and Bing Liu, 2004.
+    Department of Computer Sicence
+    University of Illinois at Chicago
+
+Contact: Bing Liu, liub@cs.uic.edu
+        http://www.cs.uic.edu/~liub
+
+Distributed with permission.
+
+Related papers:
+- Minqing Hu and Bing Liu. "Mining and summarizing customer reviews".
+    Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery
+    & Data Mining (KDD-04), Aug 22-25, 2004, Seattle, Washington, USA.
+
+- Bing Liu, Minqing Hu and Junsheng Cheng. "Opinion Observer: Analyzing and
+    Comparing Opinions on the Web". Proceedings of the 14th International World
+    Wide Web conference (WWW-2005), May 10-14, 2005, Chiba, Japan.
+"""
+
+from nltk.compat import string_types
+from nltk.corpus.reader import WordListCorpusReader
+from nltk.corpus.reader.api import *
+
+class IgnoreReadmeCorpusView(StreamBackedCorpusView):
+    def __init__(self, *args, **kwargs):
+        StreamBackedCorpusView.__init__(self, *args, **kwargs)
+        # open self._stream
+        self._open()
+        # skip the readme block
+        read_blankline_block(self._stream)
+        # Set the initial position to the current stream position
+        self._filepos = [self._stream.tell()]
+
+
+class OpinionLexiconCorpusReader(WordListCorpusReader):
+    """
+    Reader for Liu and Hu opinion lexicon.  Blank lines and readme are ignored.
+
+        >>> from nltk.corpus.util import LazyCorpusLoader
+        >>> opinion_lexicon = LazyCorpusLoader('opinion_lexicon', OpinionLexiconCorpusReader, r'(\w+)\-words\.txt', encoding='ISO-8859-2')
+        >>> opinion_lexicon.words()
+        ['2-faced', '2-faces', 'abnormal', 'abolish', ...]
+        >>> opinion_lexicon.words('positive-words.txt')
+        ['a+', 'abound', 'abounds', 'abundance', 'abundant', ...]
+
+    The OpinionLexiconCorpusReader provides shortcuts to retrieve positive/negative
+    words:
+
+        >>> opinion_lexicon.positive()
+        ['a+', 'abound', 'abounds', 'abundance', 'abundant', ...]
+        >>> opinion_lexicon.negative()
+        ['2-faced', '2-faces', 'abnormal', 'abolish', ...]
+
+    Note that words from `words()` method are sorted by file id, not alphabetically:
+
+        >>> opinion_lexicon.words()[0:10]
+        ['2-faced', '2-faces', 'abnormal', 'abolish', 'abominable', 'abominably',
+        'abominate', 'abomination', 'abort', 'aborted']
+        >>> sorted(opinion_lexicon.words())[0:10]
+        ['2-faced', '2-faces', 'a+', 'abnormal', 'abolish', 'abominable', 'abominably',
+        'abominate', 'abomination', 'abort']
+    """
+
+    CorpusView = IgnoreReadmeCorpusView
+
+    def words(self, fileids=None):
+        """
+        Return all words in the opinion lexicon. Note that these words are not
+        sorted in alphabetical order.
+        """
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
+            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+
+    def positive(self):
+        """
+        Return all positive words in alphabetical order.
+        """
+        return self.words('positive-words.txt')
+
+    def negative(self):
+        """
+        Return all negative words in alphabetical order.
+        """
+        return self.words('negative-words.txt')
+
+    def _read_word_block(self, stream):
+        words = []
+        for i in range(20): # Read 20 lines at a time.
+            line = stream.readline()
+            if not line:
+                continue
+            words.append(line.strip())
+        return words
