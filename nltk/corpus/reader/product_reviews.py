@@ -56,14 +56,17 @@ from nltk.compat import string_types
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
-TITLE    = re.compile(r'^\[t\](.*)$') # [t] Title
+TITLE = re.compile(r'^\[t\](.*)$') # [t] Title
 FEATURES = re.compile(r'((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]') # find 'feature' in feature[+3]
-NOTES    = re.compile(r'\[(?!t)(p|u|s|cc|cs)\]') # find 'p' in camera[+2][p]
-SENT     = re.compile(r'##(.*)$') # find tokenized sentence
+NOTES = re.compile(r'\[(?!t)(p|u|s|cc|cs)\]') # find 'p' in camera[+2][p]
+SENT = re.compile(r'##(.*)$') # find tokenized sentence
 
 
 @compat.python_2_unicode_compatible
 class Review(object):
+    """
+    A Review is the main block of a ProductReviewsCorpusReader.
+    """
     def __init__(self, title=None, review_lines=None):
         self.title = title
         if review_lines is None:
@@ -75,7 +78,7 @@ class Review(object):
         """
         Add a line (ReviewLine) to the review
         """
-        assert type(review_line) == ReviewLine
+        assert isinstance(review_line) == ReviewLine
         self.review_lines.append(review_line)
 
     def features(self):
@@ -96,7 +99,7 @@ class Review(object):
         return [review_line.sent for review_line in self.review_lines]
 
     def __repr__(self):
-        return ('Review(title=\"{}\", review_lines={})'.format(self.title, self.review_lines))
+        return 'Review(title=\"{}\", review_lines={})'.format(self.title, self.review_lines)
 
 
 @compat.python_2_unicode_compatible
@@ -105,10 +108,17 @@ class ReviewLine(object):
     A ReviewLine represents a sentence of the review, together with (optional)
     annotations of its features and notes about the reviewed product.
     """
-    def __init__(self, sent, features=[], notes=[]):
+    def __init__(self, sent, features=None, notes=None):
         self.sent = sent
-        self.features = features
-        self.notes = notes
+        if features is None:
+            self.features = []
+        else:
+            self.features = features
+
+        if notes is None:
+            self.notes = []
+        else:
+            self.notes = notes
 
     def __repr__(self):
         return ('ReviewLine(features={}, notes={}, sent={})'.format(
@@ -121,9 +131,10 @@ class ProductReviewsCorpusReader(CorpusReader):
     Note: we are not applying any sentence tokenization at the moment, just word
     tokenization.
 
-        >>> root = "/home/fievelk/nltk_data/corpora/product_reviews"
-        >>> product_reviews = ProductReviewsCorpusReader(root, r'^(?!Readme).*.txt', encoding='utf8')
-        >>> camera_reviews = product_reviews.reviews('Canon G3.txt')
+        >>> root = "/home/fievelk/nltk_data/corpora/customer_reviews_1"
+        >>> product_reviews = ProductReviewsCorpusReader(root, r'^(?!Readme).*.txt',
+            encoding='utf8')
+        >>> camera_reviews = product_reviews.reviews('Canon_G3.txt')
         >>> review = camera_reviews[0]
         >>> review.sents()[0]
         ['i', 'recently', 'purchased', 'the', 'canon', 'powershot', 'g3', 'and', 'am',
@@ -136,22 +147,23 @@ class ProductReviewsCorpusReader(CorpusReader):
 
     We can also reach the same information directly from the stream:
 
-        >>> product_reviews.features('Canon G3.txt')
+        >>> product_reviews.features('Canon_G3.txt')
         [('canon powershot g3', '+3'), ('use', '+2'), ...]
 
     We can compute stats for specific product features:
 
-        >>> n_reviews = len([(feat,score) for (feat,score) in product_reviews.features('Canon G3.txt') if feat=='picture'])
-        >>> tot = sum([int(score) for (feat,score) in product_reviews.features('Canon G3.txt') if feat=='picture'])
+        >>> n_reviews = len([(feat,score) for (feat,score) in
+            product_reviews.features('Canon_G3.txt') if feat=='picture'])
+        >>> tot = sum([int(score) for (feat,score) in
+            product_reviews.features('Canon_G3.txt') if feat=='picture'])
         >>> mean = tot/n_reviews
         >>> print(n_reviews, tot, mean)
         15 24 1.6
     """
     CorpusView = StreamBackedCorpusView
 
-    def __init__(self, root, fileids,
-                word_tokenizer=WordPunctTokenizer(),
-                encoding='utf8'):
+    def __init__(self, root, fileids, word_tokenizer=WordPunctTokenizer(),
+                 encoding='utf8'):
 
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
@@ -161,10 +173,11 @@ class ProductReviewsCorpusReader(CorpusReader):
         :return: all features for the product(s) in the given file(s).
         :rtype: list(tuple)
         """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.CorpusView(fileid, self._read_features,
-                                              encoding=enc)
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat([self.CorpusView(fileid, self._read_features, encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
     def raw(self, fileids=None):
@@ -172,8 +185,10 @@ class ProductReviewsCorpusReader(CorpusReader):
         :return: the given file(s) as a single string.
         :rtype: str
         """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def readme(self):
@@ -186,9 +201,9 @@ class ProductReviewsCorpusReader(CorpusReader):
         """
         :return: the given file(s) as a list of reviews.
         """
-        if fileids is None: fileids = self._fileids
-        return concat([self.CorpusView(fileid, self._read_review_block,
-                                              encoding=enc)
+        if fileids is None:
+            fileids = self._fileids
+        return concat([self.CorpusView(fileid, self._read_review_block, encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
     def sents(self, fileids=None):
@@ -214,14 +229,16 @@ class ProductReviewsCorpusReader(CorpusReader):
         features = []
         for i in range(20):
             line = stream.readline()
-            if not line: return features
+            if not line:
+                return features
             features.extend(re.findall(FEATURES, line))
         return features
 
     def _read_review_block(self, stream):
         while True:
             line = stream.readline()
-            if not line: return [] # end of file.
+            if not line:
+                return [] # end of file.
             title_match = re.match(TITLE, line)
             if title_match:
                 review = Review(title=title_match.group(1).strip()) # We create a new review
@@ -262,3 +279,9 @@ class ProductReviewsCorpusReader(CorpusReader):
             if sent:
                 words.extend(self._word_tokenizer.tokenize(sent[0]))
         return words
+
+if __name__ == '__main__':
+    import sys
+    import doctest
+    from nltk.test import doctest_nose_plugin
+    doctest.DocTestSuite(sys.modules['__main__'], checker=doctest_nose_plugin._UnicodeOutputChecker())
