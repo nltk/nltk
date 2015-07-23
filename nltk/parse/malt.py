@@ -394,7 +394,7 @@ if __name__ == '__main__':
 
 	# Initial a MaltParser object
 	verbose = False
-	parser_dirname = '/home/alvas/maltparser-1.7.2/'
+	parser_dirname = 'maltparser-1.7.2'
 	mp = MaltParser(parser_dirname=parser_dirname)
 	# Trains a model.
 	mp.train([dg1,dg2], verbose=verbose)
@@ -423,8 +423,8 @@ if __name__ == '__main__':
 	print (demo_header)
 	
 	# Initialize a MaltParser object with an English pre-trained model.
-	parser_dirname = '/home/alvas/maltparser-1.7.2/'
-	path_to_model = '/home/alvas/engmalt.linear-1.7.mco'
+	parser_dirname = 'maltparser-1.7.2'
+	path_to_model = 'engmalt.linear-1.7.mco'
 	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model,
 					 tagger=pos_tag)	
 	sent1 = 'I shot an elephant in my pajamas .'.split()
@@ -447,8 +447,8 @@ if __name__ == '__main__':
 	"######################################################################\n")
 	print (demo_header)
 
-	parser_dirname = '/home/alvas/maltparser-1.7.2/'
-	path_to_model = '/home/alvas/fremalt-1.7.mco'
+	parser_dirname = '/home/user/maltparser-1.7.2/'
+	path_to_model = '/home/user/fremalt-1.7.mco'
 
 	# Initialize a MaltParser object with a French pre-trained model.
 	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model)	
@@ -465,8 +465,8 @@ if __name__ == '__main__':
 	"######################################################################\n")
 	print (demo_header)
 
-	parser_dirname = '/home/alvas/maltparser-1.7.2/'
-	path_to_model = '/home/alvas/swemalt-1.7.2.mco'    
+	parser_dirname = '/home/user/maltparser-1.7.2/'
+	path_to_model = '/home/user/swemalt-1.7.2.mco'    
 
 	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model)	
 	#sent = "För telefonrådfrågning betalar försäkringskassan 4 kronor till sjukvårdshuvudmannen .".split()
@@ -483,8 +483,8 @@ if __name__ == '__main__':
 	"######################################################################\n")
 	print (demo_header)
 	
-	parser_dirname = '/home/alvas/maltparser-1.7.2/'
-	path_to_model = '/home/alvas/espmalt-1.0.mco'    
+	parser_dirname = '/home/user/maltparser-1.7.2/'
+	path_to_model = '/home/user/espmalt-1.0.mco'    
 
 	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model)	
 	#sent = "Los niños leen cuentos de hadas .".split()
