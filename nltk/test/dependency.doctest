@@ -212,5 +212,3 @@ of MALT parser, it's set to `'null'`.
 5   in      _       NN      NN      _       7       nn      _       _
 6   my      _       NN      NN      _       7       nn      _       _
 7   pajamas _       NNS     NNS     _       3       dobj    _       _
-
-.. >>> import pytest; pytest.set_trace()
