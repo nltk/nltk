@@ -194,9 +194,7 @@ def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
                 i += 1
                 sys.stdout.write('Loaded {} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
-                tokenized_tweet = [w.encode('utf8') for sent in
-                                   sent_tokenizer.tokenize(text) for w in
-                                   word_tokenizer.tokenize(sent)]
+                tokenized_tweet = [w.encode('utf8') for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
                 tweets.append((tokenized_tweet, label))
     print("Loaded {} tweets".format(i))
     return tweets
@@ -275,8 +273,8 @@ def demo_tweets(trainer, n=None):
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Add bigram collocation features
-    bigram_collocs_feats = sa.bigram_collocation_feats([tweet[0] for tweet in
-        training_tweets], top_n=100, min_freq=12)
+    bigram_collocs_feats = sa.bigram_collocation_feats([tweet[0] for tweet in training_tweets],
+        top_n=100, min_freq=12)
     sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
 
     training_set = sa.apply_features(training_tweets)
@@ -307,10 +305,8 @@ def demo_movie_reviews(trainer):
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
-    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in
-                movie_reviews.fileids('pos')]
-    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in
-                movie_reviews.fileids('neg')]
+    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in movie_reviews.fileids('pos')]
+    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in movie_reviews.fileids('neg')]
 
     # We separately split positive and negative instances to keep a balanced
     # uniform class distribution in both train and test sets.
