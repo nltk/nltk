@@ -97,6 +97,8 @@ conll2007 = LazyCorpusLoader(
         ('esp', 'utf8')])
 crubadan = LazyCorpusLoader(
     'crubadan', CrubadanCorpusReader, '.*\.txt')
+customer_reviews_1 = LazyCorpusLoader(
+    'customer_reviews_1', ProductReviewsCorpusReader, r'^(?!Readme).*\.txt', encoding='utf8')
 dependency_treebank = LazyCorpusLoader(
     'dependency_treebank', DependencyCorpusReader, '.*\.dp',
     encoding='ascii')
