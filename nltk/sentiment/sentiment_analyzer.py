@@ -11,12 +11,12 @@ from __future__ import print_function
 from collections import defaultdict
 
 from nltk.classify.util import apply_features, accuracy
-from nltk.collocations import *
+from nltk.collocations import BigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist
-from util import (output_markdown, parse_dataset, save_file, timer, split_train_test,
-    extract_unigram_feats, extract_bigram_coll_feats, extract_bigram_feats)
+from util import (save_file, timer)
 import nltk
+
 
 class SentimentAnalyzer(object):
     """
@@ -58,11 +58,14 @@ class SentimentAnalyzer(object):
         """
         Return most common top_n word features.
         """
-        unigram_feats_freqs = FreqDist(word for word in words) # Stopwords are not removed
-        return [w for w,f in unigram_feats_freqs.most_common(top_n) if unigram_feats_freqs[w]>min_freq]
+        # Stopwords are not removed
+        unigram_feats_freqs = FreqDist(word for word in words)
+        return [w for w, f in unigram_feats_freqs.most_common(top_n)
+                if unigram_feats_freqs[w] > min_freq]
 
     @timer
-    def bigram_collocation_feats(self, documents, assoc_measure=BigramAssocMeasures.pmi, top_n=None, min_freq=3):
+    def bigram_collocation_feats(self, documents, top_n=None, min_freq=3,
+                                 assoc_measure=BigramAssocMeasures.pmi):
         """
         Return ``top_n`` bigram features (using ``assoc_measure``).
         Note that this method is based on bigram collocations, and not on simple
@@ -79,7 +82,8 @@ class SentimentAnalyzer(object):
         Return most common top_n bigram features.
         """
         bigram_feats_freqs = FreqDist(bigram for bigram in bigrams)
-        return [(b[0],b[1]) for b,f in bigram_feats_freqs.most_common(top_n) if bigram_feats_freqs[b]>min_freq]
+        return [(b[0], b[1]) for b, f in bigram_feats_freqs.most_common(top_n)
+                if bigram_feats_freqs[b] > min_freq]
 
     def add_feat_extractor(self, function, **kwargs):
         """

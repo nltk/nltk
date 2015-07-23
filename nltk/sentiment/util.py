@@ -2,15 +2,20 @@ from copy import deepcopy
 import codecs
 import csv
 import itertools
-import matplotlib.pyplot as plt
 import os
 import pickle
 import random
 import re
 import sys
 import time
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    import warnings
+    warnings.warn("matplotlib not installed. Graph generation not available.")
 
-from nltk.corpus.reader import CategorizedPlaintextCorpusReader
+import nltk
+from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
 
 #////////////////////////////////////////////////////////////
@@ -43,7 +48,8 @@ def timer(method):
         tot_time = end - start
         hours = int(tot_time / 3600)
         mins = int((tot_time / 60) % 60)
-        secs = int(round(tot_time % 60)) # in Python 2.x round() will return a float, so we also convert it to int
+        # in Python 2.x round() will return a float, so we convert it to int
+        secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
             print('[TIMER] {}(): {:.3f} seconds'.format(method.__name__, tot_time))
         else:
@@ -71,7 +77,9 @@ def extract_bigram_coll_feats(document, bigrams):
     for bigram in bigrams:
         # Important: this function DOES NOT consider the order of the words in
         # the bigram. It is useful for collocations, but not for idiomatic forms.
-        features['contains({} - {})'.format(bigram[0], bigram[1])] = set(bigram) in [set(b) for b in itertools.combinations(document, r=2)]
+        bigrams_set = set(bigram) in [set(b) for b in itertools.combinations(
+            document, r=2)]
+        features['contains({} - {})'.format(bigram[0], bigram[1])] = bigrams_set
     return features
 
 def extract_bigram_feats(document, bigrams):
@@ -104,7 +112,7 @@ def mark_negation(document, double_neg_flip=False, shallow=False):
     else:
         doc = document
     neg_scope = False
-    for i,word in enumerate(doc):
+    for i, word in enumerate(doc):
         if NEGATION_RE.search(word):
             if not neg_scope or (neg_scope and double_neg_flip):
                 neg_scope = not neg_scope
@@ -177,7 +185,8 @@ def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
                 i += 1
                 sys.stdout.write('Loaded {} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
-                tokenized_tweet = [w for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
+                tokenized_tweet = [w for sent in sent_tokenizer.tokenize(text)
+                                   for w in word_tokenizer.tokenize(sent)]
                 tweets.append((tokenized_tweet, label))
     # If we use Python2.x we need to handle encoding problems
     elif sys.version_info[0] < 3:
@@ -192,16 +201,18 @@ def parse_tweets_set(filename, word_tokenizer, sent_tokenizer=None):
                 i += 1
                 sys.stdout.write('Loaded {} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
-                tokenized_tweet = [w.encode('utf8') for sent in sent_tokenizer.tokenize(text) for w in word_tokenizer.tokenize(sent)]
+                tokenized_tweet = [w.encode('utf8') for sent in
+                                   sent_tokenizer.tokenize(text) for w in
+                                   word_tokenizer.tokenize(sent)]
                 tweets.append((tokenized_tweet, label))
     print("Loaded {} tweets".format(i))
     return tweets
 
-def parse_subjectivity_dataset(filename, word_tokenizer, sent_tokenizer=None, label=None):
+def parse_subjectivity_dataset(filename, word_tokenizer, label=None):
     with codecs.open(filename, 'rb') as inputfile:
         docs = []
         for line in inputfile:
-            tokenized_line = word_tokenizer.tokenize(line.decode('latin-1')) # We should add a sentence tokenizer
+            tokenized_line = word_tokenizer.tokenize(line.decode('latin-1'))
             docs.append((tokenized_line, label))
     return docs
 
@@ -223,17 +234,17 @@ def split_train_test(all_instances, n=None):
 
     return train_set, test_set
 
-def _show_plot(x_values, y_values, x_labels=None, y_labels=None, y_min=-1.2, y_max=1.2):
+def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
     plt.locator_params(axis='y', nbins=3)
-    ax = plt.axes()
-    ax.yaxis.grid()
+    axes = plt.axes()
+    axes.yaxis.grid()
     plt.plot(x_values, y_values, 'ro', color='red')
-    plt.ylim(ymin=y_min, ymax=y_max)
+    plt.ylim(ymin=-1.2, ymax=1.2)
     plt.tight_layout(pad=5)
     if x_labels:
         plt.xticks(x_values, x_labels, rotation='vertical')
     if y_labels:
-        plt.yticks([-1,0,1], y_labels, rotation='horizontal')
+        plt.yticks([-1, 0, 1], y_labels, rotation='horizontal')
     # Pad margins so that markers don't get clipped by the axes
     plt.margins(0.2)
     plt.show()
@@ -271,7 +282,8 @@ def demo_tweets(trainer, n=None):
     sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Add bigram collocation features
-    bigram_collocs_feats = sa.bigram_collocation_feats([tweet[0] for tweet in training_tweets], top_n=100, min_freq=12)
+    bigram_collocs_feats = sa.bigram_collocation_feats([tweet[0] for tweet in
+        training_tweets], top_n=100, min_freq=12)
     sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
 
     training_set = sa.apply_features(training_tweets)
@@ -283,14 +295,13 @@ def demo_tweets(trainer, n=None):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-        pass
     accuracy = sa.evaluate(classifier, test_set)
     print('Accuracy:', accuracy)
 
     extr = [f.__name__ for f in sa.feat_extractors]
     output_markdown('results.md', Dataset='labeled_tweets', Classifier=type(classifier).__name__,
-        Tokenizer=tokenizer.__class__.__name__, Feats=extr, Accuracy=accuracy,
-        Notes='Remove stopwords')
+                    Tokenizer=tokenizer.__class__.__name__, Feats=extr, Accuracy=accuracy,
+                    Notes='Remove stopwords')
 
 def demo_movie_reviews(trainer):
     '''
@@ -303,8 +314,10 @@ def demo_movie_reviews(trainer):
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
-    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in movie_reviews.fileids('pos')]
-    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in movie_reviews.fileids('neg')]
+    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in
+                movie_reviews.fileids('pos')]
+    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in
+                movie_reviews.fileids('neg')]
 
     # We separately split positive and negative instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -330,25 +343,25 @@ def demo_movie_reviews(trainer):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-        pass
     accuracy = sa.evaluate(classifier, test_set)
     print('Accuracy:', accuracy)
 
     extr = [f.__name__ for f in sa.feat_extractors]
     output_markdown('results.md', Dataset='Movie_reviews', Classifier=type(classifier).__name__,
-        Tokenizer='WordPunctTokenizer', Feats=extr, Accuracy=accuracy)
+                    Tokenizer='WordPunctTokenizer', Feats=extr, Accuracy=accuracy)
 
 def demo_subjectivity(trainer):
-    from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
     from nltk.tokenize import regexp
 
     word_tokenizer = regexp.WhitespaceTokenizer()
 
-    subj_docs = parse_subjectivity_dataset('/home/fievelk/nltk_data/corpora/rotten_imdb/quote.tok.gt9_subj.5000',
-        word_tokenizer=word_tokenizer, label='subj')
-    obj_docs = parse_subjectivity_dataset('/home/fievelk/nltk_data/corpora/rotten_imdb/plot.tok.gt9_obj.5000',
-        word_tokenizer=word_tokenizer, label='obj')
+    subj_data = '/home/fievelk/nltk_data/corpora/rotten_imdb/quote.tok.gt9_subj.5000'
+    subj_docs = parse_subjectivity_dataset(subj_data, word_tokenizer=word_tokenizer,
+                                           label='subj')
+    obj_data = '/home/fievelk/nltk_data/corpora/rotten_imdb/plot.tok.gt9_obj.5000'
+    obj_docs = parse_subjectivity_dataset(obj_data, word_tokenizer=word_tokenizer,
+                                          label='obj')
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -374,7 +387,6 @@ def demo_subjectivity(trainer):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-        pass
     accuracy = sa.evaluate(classifier, test_set)
     print('Accuracy:', accuracy)
 
@@ -382,8 +394,8 @@ def demo_subjectivity(trainer):
 
     extr = [f.__name__ for f in sa.feat_extractors]
     output_markdown('results.md', Dataset='subjectivity', Classifier=type(classifier).__name__,
-        Instances=2000, Tokenizer=word_tokenizer.__class__.__name__, Feats=extr,
-        Accuracy=accuracy)
+                    Instances=2000, Tokenizer=word_tokenizer.__class__.__name__,
+                    Feats=extr, Accuracy=accuracy)
 
 def demo_sent_subjectivity(text):
     """
@@ -402,13 +414,12 @@ def demo_liu_hu_lexicon(sentence, plot=False):
     """
     Very basic example of sentiment classification using Liu and Hu opinion lexicon
     """
-    from nltk.corpus.util import LazyCorpusLoader
-    from nltk.corpus.reader import OpinionLexiconCorpusReader
+    from nltk.corpus import LazyCorpusLoader
+    from nltk.corpus import OpinionLexiconCorpusReader
     from nltk.tokenize import treebank
 
-
     opinion_lexicon = LazyCorpusLoader('opinion_lexicon', OpinionLexiconCorpusReader,
-        r'(\w+)\-words\.txt', encoding='ISO-8859-2')
+                                       r'(\w+)\-words\.txt', encoding='ISO-8859-2')
 
     tokenizer = treebank.TreebankWordTokenizer()
     pos_words = 0
@@ -437,7 +448,10 @@ def demo_liu_hu_lexicon(sentence, plot=False):
         print('Neutral')
 
     if plot == True:
-        _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
+        try:
+            _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
+        except NameError:
+            print("matplotlib not installed. Graph generation not available.")
 
 def demo_vader(text):
     from vader import SentimentIntensityAnalyzer
@@ -454,9 +468,9 @@ if __name__ == '__main__':
     svm = SklearnClassifier(LinearSVC()).train
     maxent = MaxentClassifier.train
 
-    # demo_tweets(naive_bayes, n=8000)
+    # demo_tweets(naive_bayes, n=80)
     # demo_movie_reviews(svm)
     # demo_subjectivity(svm)
     # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
-    demo_liu_hu_lexicon("This movie was actually neither that funny, nor super witty.", plot=True)
-    # demo_vader("This movie was actually neither that funny, nor super witty.")
+    # demo_liu_hu_lexicon("This movie was actually neither that funny, nor super witty.", plot=True)
+    demo_vader("This movie was actually neither that funny, nor super witty.")
