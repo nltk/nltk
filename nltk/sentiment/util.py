@@ -60,11 +60,13 @@ def timer(method):
 #////////////////////////////////////////////////////////////
 #{ Feature extractor functions
 #////////////////////////////////////////////////////////////
+"""
+Feature extractor functions are declared outside the SentimentAnalyzer class
+because users should have the possibility to create their own feature extractors
+without modifying SentimentAnalyzer.
+"""
 
 def extract_unigram_feats(document, unigrams, handle_negation=False):
-    # This function is declared outside the class because the user should have the
-    # possibility to create his/her own feature extractors without modifying the
-    # SentimentAnalyzer class.
     features = {}
     if handle_negation:
         document = mark_negation(document)
@@ -72,20 +74,11 @@ def extract_unigram_feats(document, unigrams, handle_negation=False):
         features['contains({})'.format(word)] = word in set(document)
     return features
 
-def extract_bigram_coll_feats(document, bigrams):
-    features = {}
-    for bigram in bigrams:
-        # Important: this function DOES NOT consider the order of the words in
-        # the bigram. It is useful for collocations, but not for idiomatic forms.
-        bigrams_set = set(bigram) in [set(b) for b in itertools.combinations(
-            document, r=2)]
-        features['contains({} - {})'.format(bigram[0], bigram[1])] = bigrams_set
-    return features
-
 def extract_bigram_feats(document, bigrams):
-    # This function is declared outside the class because the user should have the
-    # possibility to create his/her own feature extractors without modifying the
-    # SentimentAnalyzer class.
+    """
+    Populate bigram features for the document. This extractor function only considers
+    contiguous bigrams obtained by `nltk.bigrams`.
+    """
     features = {}
     for bigr in bigrams:
         features['contains({})'.format(bigr)] = bigr in nltk.bigrams(document)
@@ -284,7 +277,7 @@ def demo_tweets(trainer, n=None):
     # Add bigram collocation features
     bigram_collocs_feats = sa.bigram_collocation_feats([tweet[0] for tweet in
         training_tweets], top_n=100, min_freq=12)
-    sa.add_feat_extractor(extract_bigram_coll_feats, bigrams=bigram_collocs_feats)
+    sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
 
     training_set = sa.apply_features(training_tweets)
     test_set = sa.apply_features(testing_tweets)
@@ -468,9 +461,9 @@ if __name__ == '__main__':
     svm = SklearnClassifier(LinearSVC()).train
     maxent = MaxentClassifier.train
 
-    # demo_tweets(naive_bayes, n=80)
+    demo_tweets(naive_bayes, n=8000)
     # demo_movie_reviews(svm)
     # demo_subjectivity(svm)
     # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
     # demo_liu_hu_lexicon("This movie was actually neither that funny, nor super witty.", plot=True)
-    demo_vader("This movie was actually neither that funny, nor super witty.")
+    # demo_vader("This movie was actually neither that funny, nor super witty.")

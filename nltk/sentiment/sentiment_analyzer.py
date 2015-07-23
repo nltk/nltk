@@ -35,15 +35,6 @@ class SentimentAnalyzer(object):
             all_words.extend(words)
         return all_words
 
-    def all_bigrams(self, documents):
-        """
-        Return all bigrams from the documents.
-        """
-        all_bigrams = []
-        for text, sentiment in documents:
-            all_bigrams.extend(nltk.bigrams(text))
-        return all_bigrams
-
     def apply_features(self, documents, labeled=None):
         """
         Apply all feature extractor functions to the documents.
@@ -76,14 +67,6 @@ class SentimentAnalyzer(object):
         finder = BigramCollocationFinder.from_documents(documents)
         finder.apply_freq_filter(min_freq)
         return finder.nbest(assoc_measure, top_n)
-
-    def bigram_word_feats(self, bigrams, top_n=None, min_freq=0):
-        """
-        Return most common top_n bigram features.
-        """
-        bigram_feats_freqs = FreqDist(bigram for bigram in bigrams)
-        return [(b[0], b[1]) for b, f in bigram_feats_freqs.most_common(top_n)
-                if bigram_feats_freqs[b] > min_freq]
 
     def add_feat_extractor(self, function, **kwargs):
         """
