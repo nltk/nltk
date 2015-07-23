@@ -10,6 +10,7 @@ from __future__ import print_function
 
 import subprocess
 import os
+import fnmatch
 import re, sre_constants, sre_parse, sre_compile
 import warnings
 import textwrap
@@ -411,7 +412,7 @@ class Counter:
 ##########################################################################
 
 def find_file_iter(filename, env_vars=(), searchpath=(),
-        file_names=None, url=None, verbose=True):
+        file_names=None, url=None, verbose=True, finding_dir=False):
     """
     Search for a file to be used by nltk.
 
@@ -429,7 +430,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
     if isinstance(env_vars, compat.string_types):
         env_vars = env_vars.split()
     yielded = False
-
+    
     # File exists, no magic
     for alternative in file_names:
         path_to_file = os.path.join(filename, alternative)
@@ -452,9 +453,14 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
             yielded = True
             yield path_to_file
 
+
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
+            if finding_dir: # This is to file a directory instead of file
+                yielded = True
+                yield os.environ[env_var]
+        		
             for env_dir in os.environ[env_var].split(os.pathsep):
                 # Check if the environment variable contains a direct path to the bin
                 if os.path.isfile(env_dir):
@@ -477,6 +483,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
                             print('[Found %s: %s]' % (filename, path_to_file))
                         yielded = True
                         yield path_to_file
+
 
     # Check the path list.
     for directory in searchpath:
@@ -522,6 +529,12 @@ def find_file(filename, env_vars=(), searchpath=(),
         file_names=None, url=None, verbose=True):
     return next(find_file_iter(filename, env_vars, searchpath,
                                file_names, url, verbose))
+
+
+def find_dir(filename, env_vars=(), searchpath=(),
+        file_names=None, url=None, verbose=True):
+    return next(find_file_iter(filename, env_vars, searchpath,
+                               file_names, url, verbose, finding_dir=True))
 
 def find_binary_iter(name, path_to_bin=None, env_vars=(), searchpath=(),
                 binary_names=None, url=None, verbose=True):
@@ -661,6 +674,11 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
         searchpath=(), url=None, verbose=True, is_regex=False):
     return next(find_jar_iter(name_pattern, path_to_jar, env_vars,
                          searchpath, url, verbose, is_regex))
+                         
+def find_jars_within_path(path_to_jars):
+	return [os.path.join(root, filename) 
+			for root, dirnames, filenames in os.walk(path_to_jars) 
+			for filename in fnmatch.filter(filenames, '*.jar')]
 
 def _decode_stdoutdata(stdoutdata):
     """ Convert data read from stdout/stderr to unicode """

@@ -12,7 +12,6 @@ from __future__ import unicode_literals
 from six import text_type
 
 import os
-import fnmatch
 import tempfile
 import subprocess
 import inspect
@@ -20,15 +19,11 @@ import inspect
 from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 from nltk.data import ZipFilePathPointer
-from nltk.internals import find_file
+from nltk.internals import find_dir, find_file, find_jars_within_path
 
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 
-def find_jars_within_path(path_to_jars):
-	return [os.path.join(root, filename) 
-			for root, dirnames, filenames in os.walk(path_to_jars) 
-			for filename in fnmatch.filter(filenames, '*.jar')]
 
 def taggedsent_to_conll(sentences):
 	"""
@@ -90,6 +85,38 @@ def malt_regex_tagger():
 	])
 	return _tagger.tag
 
+
+def find_maltparser(parser_dirname):
+	"""
+	A module to find MaltParser .jar file and its dependencies.
+	"""
+	if os.path.exists(parser_dirname): # If a full path is given.
+		_malt_dir = parser_dirname
+	else: # Try to find path to maltparser directory in environment variables.
+		_malt_dir = find_dir(parser_dirname, env_vars=('MALT_PARSER',))
+	# Checks that that the found directory contains all the necessary .jar 
+	malt_dependencies = ['','','']
+	_malt_jars = set(find_jars_within_path(_malt_dir))
+	_jars = set(jar.rpartition('/')[2] for jar in _malt_jars)
+	malt_dependencies = set([u'log4j.jar', u'libsvm.jar', u'liblinear-1.8.jar'])
+					
+	assert malt_dependencies.issubset(_jars)
+	assert any(filter(lambda i: i.startswith('maltparser-') and \
+								i.endswith('.jar'), _jars))
+	return list(_malt_jars)
+
+def find_malt_model(model_filename):
+	"""
+	A module to find pre-trained MaltParser model.
+	"""
+	if model_filename == None:
+		return 'malt_temp.mco'
+	elif os.path.exists(model_filename): # If a full path is given.
+		return model_filename
+	else: # Try to find path to malt model in environment variables.
+		return find_file(model_filename, env_vars=('MALT_MODEL',), 
+						verbose=False)
+		
 class MaltParser(ParserI):
 	"""
 	A class for dependency parsing with MaltParser. The input is the paths to:
@@ -100,20 +127,28 @@ class MaltParser(ParserI):
 	
 	Example:
         >>> from nltk.parse import malt
+        >>> # With MALT_PARSER and MALT_MODEL environment set.
+        >>> mp = malt.MaltParser('maltparser-1.7.2', 'engmalt.linear-1.7.mco') # doctest: +SKIP
+        >>> mp.parse_one('I shot an elephant in my pajamas .'.split()).tree() # doctest: +SKIP
+        (shot I (elephant an) (in (pajamas my)) .)
+        >>> # Without MALT_PARSER and MALT_MODEL environment.
         >>> mp = malt.MaltParser('/home/alvas/maltparser-1.7.2/', '/home/alvas/engmalt.linear-1.7.mco') # doctest: +SKIP
         >>> mp.parse_one('I shot an elephant in my pajamas .'.split()).tree() # doctest: +SKIP
         (shot I (elephant an) (in (pajamas my)) .)
 	"""
-	def __init__(self, path_to_maltparser, model=None, tagger=None, 
+	def __init__(self, parser_dirname, model_filename=None, tagger=None, 
 				 additional_java_args=[]):
 		"""
 		An interface for parsing with the Malt Parser.
 
-		:param model: The name of the pre-trained model with .mco file 
+		:param parser_dirname: The path to the maltparser directory that 
+		contains the maltparser-1.x.jar
+		:type parser_dirname: str
+		:param model_filename: The name of the pre-trained model with .mco file 
 		extension. If provided, training will not be required.
 		(see http://www.maltparser.org/mco/mco.html and 
 		see http://www.patful.com/chalk/node/185)
-		:type model: str
+		:type model_filename: str
 		:param tagger: The tagger used to POS tag the raw string before 
 		formatting to CONLL format. It should behave like `nltk.pos_tag`
 		:type tagger: function
@@ -122,18 +157,15 @@ class MaltParser(ParserI):
 		limits, e.g. `additional_java_args=['-Xmx1024m']`
 		(see http://goo.gl/mpDBvQ)
 		:type additional_java_args: list
-		:param path_to_maltparser: The path to the maltparser directory that 
-		contains the maltparser-1.x.jar
-		:type path_to_malt_binary: str
 		"""
 		
-		# Collects all the jar files found in the MaltParser distribution.
-		self.malt_jars = find_jars_within_path(path_to_maltparser)
+		# Find all the necessary jar files for MaltParser.
+		self.malt_jars = find_maltparser(parser_dirname)
 		# Initialize additional java arguments.
 		self.additional_java_args = additional_java_args
 		# Initialize model.
-		self.model = 'malt_temp.mco' if model is None else model
-		self._trained = False if self.model == 'malt_temp' else True
+		self.model = find_malt_model(model_filename)
+		self._trained = False if self.model == 'malt_temp.mco' else True
 		# Set the working_dir parameters i.e. `-w` from MaltParser's option.
 		self.working_dir = tempfile.gettempdir() 
 		# Initialize POS tagger.
@@ -331,11 +363,22 @@ if __name__ == '__main__':
 	'''
 	A demostration function to show how NLTK users can use the malt parser API.
 	'''
+	
+	assert 'MALT_PARSER' in os.environ, \
+	str("Please set MALT_PARSER in your global environment, e.g.:\n"
+		"$ export MALT_PARSER='/home/user/maltparser-1.7.2/'")
+		
+	assert 'MALT_MODEL' in os.environ, \
+	str("Please set MALT_MODEin your global environment, e.g.:\n"
+		"$ export MALT_MODEL='/home/user/engmalt.linear-1.7.mco'")
+	
 
-	#########################################################################
-	# Demo to train a new model with DependencyGraph objects and 
-	# parse example sentences with the new model.
-	#########################################################################
+	demo_header = str(
+	"######################################################################\n"
+	"# Demo to train a new model with DependencyGraph objects and\n"
+	"# parse example sentences with the new model.\n"
+	"######################################################################\n")
+	print (demo_header)
 	_dg1_str = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
 					"2    sees    _    VB    _    _    0    ROOT    _    _\n"
 					"3    a       _    DT    _    _    4    SPEC    _    _\n"
@@ -351,8 +394,8 @@ if __name__ == '__main__':
 
 	# Initial a MaltParser object
 	verbose = False
-	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
-	mp = MaltParser(path_to_maltparser=path_to_maltparser)
+	parser_dirname = '/home/alvas/maltparser-1.7.2/'
+	mp = MaltParser(parser_dirname=parser_dirname)
 	# Trains a model.
 	mp.train([dg1,dg2], verbose=verbose)
 	
@@ -361,81 +404,94 @@ if __name__ == '__main__':
 	# Parse a single sentence.
 	parsed_sent1 = mp.parse_one(sent1)
 	parsed_sent2 = mp.parse_one(sent2)
+	print(" ".join(sent1))
 	print (parsed_sent1.tree())
+	print(" ".join(sent2))
 	print (parsed_sent2.tree())
 	# Parsing multiple sentences.
 	sentences = [sent1,sent2]
 	parsed_sents = mp.parse_sents(sentences)
+	print(" ".join(sent1))
 	print(next(next(parsed_sents)).tree())
+	print(" ".join(sent2))
 	print(next(next(parsed_sents)).tree())
 
+	demo_header = str(
+	"\n######################################################################\n"
+	"# Demo to parse example sentences with pre-trained English model\n"
+	"######################################################################\n")
+	print (demo_header)
 	
-	#########################################################################
-	# Demo to parse example sentences with pre-trained English model
-	#########################################################################
-
 	# Initialize a MaltParser object with an English pre-trained model.
-	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
+	parser_dirname = '/home/alvas/maltparser-1.7.2/'
 	path_to_model = '/home/alvas/engmalt.linear-1.7.mco'
-	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model, tagger=pos_tag)	
-	sent = 'I shot an elephant in my pajamas .'.split()
+	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model,
+					 tagger=pos_tag)	
+	sent1 = 'I shot an elephant in my pajamas .'.split()
 	sent2 = 'Time flies like banana .'.split()
 	# Parse a single sentence.
-	print(mp.parse_one(sent).tree())
+	print(" ".join(sent1))
+	print(mp.parse_one(sent1).tree())
 	# Parsing multiple sentences
 	sentences = [sent1,sent2]
 	parsed_sents = mp.parse_sents(sentences)
+	print(" ".join(sent1))
 	print(next(next(parsed_sents)).tree())
+	print(" ".join(sent2))
 	print(next(next(parsed_sents)).tree())
-
 	
-	#########################################################################
-	# Demo to parse example sentence with pre-trained French model
-	#########################################################################
+	'''
+	demo_header = str(
+	"\n######################################################################\n"
+	"# Demo to parse example sentences with pre-trained French model\n"
+	"######################################################################\n")
+	print (demo_header)
 
-	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
+	parser_dirname = '/home/alvas/maltparser-1.7.2/'
 	path_to_model = '/home/alvas/fremalt-1.7.mco'
 
 	# Initialize a MaltParser object with a French pre-trained model.
-	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model)	
+	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model)	
 	sent = 'Nous prions les cineastes et tous nos lecteurs de bien vouloir nous en excuser .'.split()
 	pos = 'CLS V DET NC CC ADJ DET NC P ADV VINF CLS CLO VINF PUNCT'.split()
 	tagged_sent = list(zip(sent,pos))
-
+	print(" ".join(sent))
 	parsed_sent = mp.parse_tagged_sents([tagged_sent])
 	print(next(next(parsed_sent)).tree())
 
+	demo_header = str(
+	"\n######################################################################\n"
+	"# Demo to parse example sentences with pre-trained Swedish model\n"
+	"######################################################################\n")
+	print (demo_header)
 
-	#########################################################################
-	# Demo to parse example sentence with pre-trained Swedish model
-	#########################################################################
+	parser_dirname = '/home/alvas/maltparser-1.7.2/'
+	path_to_model = '/home/alvas/swemalt-1.7.2.mco'    
 
-	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
-	path_to_model = '/home/alvas/swemalt-1.7.2.mco'	    
-
-	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model)	
+	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model)	
 	#sent = "För telefonrådfrågning betalar försäkringskassan 4 kronor till sjukvårdshuvudmannen .".split()
 	sent = "For telefonradfragning betalar forsakringskassan 4 kronor till sjukvardshuvudmannen .".split()
 	pos = "PP NN VB NN RG NOM NN PP NN MAD".split()
 	tagged_sent = list(zip(sent,pos))
-
+	print(" ".join(sent))
 	parsed_sent = mp.parse_tagged_sents([tagged_sent])
 	print(next(next(parsed_sent)).tree())
 
+	demo_header = str(
+	"\n######################################################################\n"
+	"# Demo to parse example sentences with pre-trained Spanish model\n"
+	"######################################################################\n")
+	print (demo_header)
 	
-	#########################################################################
-	# Demo to parse example sentences with pre-trained Spanish model
-	#########################################################################
-	
-	path_to_maltparser = '/home/alvas/maltparser-1.7.2/'
-	path_to_model = '/home/alvas/espmalt-1.0.mco'	    
+	parser_dirname = '/home/alvas/maltparser-1.7.2/'
+	path_to_model = '/home/alvas/espmalt-1.0.mco'    
 
-	mp = MaltParser(path_to_maltparser=path_to_maltparser, model=path_to_model)	
+	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model)	
 	#sent = "Los niños leen cuentos de hadas .".split()
 	sent = "Los ninos leen cuentos de hadas .".split()
 	pos = "DA0MP0 NCMP000 VMIP3P0 NCMP000 NCFP000 Fp".split()
 	tagged_sent = list(zip(sent,pos))
-
+	print(" ".join(sent))
 	parsed_sent = mp.parse_tagged_sents([tagged_sent])
 	print(next(next(parsed_sent)).tree())	
-
+	'''
