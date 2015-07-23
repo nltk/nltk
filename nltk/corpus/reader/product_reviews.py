@@ -78,7 +78,7 @@ class Review(object):
         """
         Add a line (ReviewLine) to the review
         """
-        assert isinstance(review_line) == ReviewLine
+        assert isinstance(review_line, ReviewLine)
         self.review_lines.append(review_line)
 
     def features(self):
@@ -131,10 +131,8 @@ class ProductReviewsCorpusReader(CorpusReader):
     Note: we are not applying any sentence tokenization at the moment, just word
     tokenization.
 
-        >>> root = "/home/fievelk/nltk_data/corpora/customer_reviews_1"
-        >>> product_reviews = ProductReviewsCorpusReader(root, r'^(?!Readme).*.txt',
-            encoding='utf8')
-        >>> camera_reviews = product_reviews.reviews('Canon_G3.txt')
+        >>> from nltk.corpus import customer_reviews_1
+        >>> camera_reviews = customer_reviews_1.reviews('Canon_G3.txt')
         >>> review = camera_reviews[0]
         >>> review.sents()[0]
         ['i', 'recently', 'purchased', 'the', 'canon', 'powershot', 'g3', 'and', 'am',
@@ -147,16 +145,15 @@ class ProductReviewsCorpusReader(CorpusReader):
 
     We can also reach the same information directly from the stream:
 
-        >>> product_reviews.features('Canon_G3.txt')
+        >>> customer_reviews_1.features('Canon_G3.txt')
         [('canon powershot g3', '+3'), ('use', '+2'), ...]
 
     We can compute stats for specific product features:
 
-        >>> n_reviews = len([(feat,score) for (feat,score) in
-            product_reviews.features('Canon_G3.txt') if feat=='picture'])
-        >>> tot = sum([int(score) for (feat,score) in
-            product_reviews.features('Canon_G3.txt') if feat=='picture'])
-        >>> mean = tot/n_reviews
+        >>> n_reviews = len([(feat,score) for (feat,score) in customer_reviews_1.features('Canon_G3.txt') if feat=='picture'])
+        >>> tot = sum([int(score) for (feat,score) in customer_reviews_1.features('Canon_G3.txt') if feat=='picture'])
+        >>> # We use float for backward compatibility with division in Python2.7
+        >>> mean = float(tot)/n_reviews
         >>> print(n_reviews, tot, mean)
         15 24 1.6
     """
@@ -279,9 +276,3 @@ class ProductReviewsCorpusReader(CorpusReader):
             if sent:
                 words.extend(self._word_tokenizer.tokenize(sent[0]))
         return words
-
-if __name__ == '__main__':
-    import sys
-    import doctest
-    from nltk.test import doctest_nose_plugin
-    doctest.DocTestSuite(sys.modules['__main__'], checker=doctest_nose_plugin._UnicodeOutputChecker())
