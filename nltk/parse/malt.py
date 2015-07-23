@@ -424,8 +424,8 @@ if __name__ == '__main__':
 	
 	# Initialize a MaltParser object with an English pre-trained model.
 	parser_dirname = 'maltparser-1.7.2'
-	path_to_model = 'engmalt.linear-1.7.mco'
-	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model,
+	model_name = 'engmalt.linear-1.7.mco'
+	mp = MaltParser(parser_dirname=parser_dirname, model_filename=model_name,
 					 tagger=pos_tag)	
 	sent1 = 'I shot an elephant in my pajamas .'.split()
 	sent2 = 'Time flies like banana .'.split()
