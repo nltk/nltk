@@ -354,136 +354,66 @@ class MaltParser(ParserI):
 if __name__ == '__main__':
 	'''
 	A demostration function to show how NLTK users can use the malt parser API.
-	'''
 	
-	assert 'MALT_PARSER' in os.environ, \
-	str("Please set MALT_PARSER in your global environment, e.g.:\n"
-		"$ export MALT_PARSER='/home/user/maltparser-1.7.2/'")
-		
-	assert 'MALT_MODEL' in os.environ, \
-	str("Please set MALT_MODEL in your global environment, e.g.:\n"
-		"$ export MALT_MODEL='/home/user/engmalt.linear-1.7.mco'")
-	
-
-	demo_header = str(
-	"######################################################################\n"
-	"# Demo to train a new model with DependencyGraph objects and\n"
-	"# parse example sentences with the new model.\n"
-	"######################################################################\n")
-	print (demo_header)
-	_dg1_str = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
-					"2    sees    _    VB    _    _    0    ROOT    _    _\n"
-					"3    a       _    DT    _    _    4    SPEC    _    _\n"
-					"4    dog     _    NN    _    _    2    OBJ     _    _\n"
-					"4    .     _    .    _    _    2    PUNCT     _    _\n")
-
-
-	_dg2_str  = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
-					"2    walks   _    VB    _    _    0    ROOT    _    _\n"
-					"3    .     _    .    _    _    2    PUNCT     _    _\n")
-	dg1 = DependencyGraph(_dg1_str)
-	dg2 = DependencyGraph(_dg2_str)
-
-	# Initial a MaltParser object
-	verbose = False
-	parser_dirname = 'maltparser-1.7.2'
-	mp = MaltParser(parser_dirname=parser_dirname)
-	# Trains a model.
-	mp.train([dg1,dg2], verbose=verbose)
-	
-	sent1 = ['John','sees','Mary', '.']
-	sent2 = ['John', 'walks', 'a', 'dog', '.']
-	# Parse a single sentence.
-	parsed_sent1 = mp.parse_one(sent1)
-	parsed_sent2 = mp.parse_one(sent2)
-	print(" ".join(sent1))
-	print (parsed_sent1.tree())
-	print(" ".join(sent2))
-	print (parsed_sent2.tree())
-	# Parsing multiple sentences.
-	sentences = [sent1,sent2]
-	parsed_sents = mp.parse_sents(sentences)
-	print(" ".join(sent1))
-	print(next(next(parsed_sents)).tree())
-	print(" ".join(sent2))
-	print(next(next(parsed_sents)).tree())
-
-	demo_header = str(
-	"\n######################################################################\n"
-	"# Demo to parse example sentences with pre-trained English model\n"
-	"######################################################################\n")
-	print (demo_header)
-	
-	# Initialize a MaltParser object with an English pre-trained model.
-	parser_dirname = 'maltparser-1.7.2'
-	model_name = 'engmalt.linear-1.7.mco'
-	mp = MaltParser(parser_dirname=parser_dirname, model_filename=model_name,
-					 tagger=pos_tag)	
-	sent1 = 'I shot an elephant in my pajamas .'.split()
-	sent2 = 'Time flies like banana .'.split()
-	# Parse a single sentence.
-	print(" ".join(sent1))
-	print(mp.parse_one(sent1).tree())
+	>>> assert 'MALT_PARSER' in os.environ, str(
+	... "Please set MALT_PARSER in your global environment, e.g.:\n"
+	... "$ export MALT_PARSER='/home/user/maltparser-1.7.2/'")
+	>>>
+	>>> assert 'MALT_MODEL' in os.environ, str(
+	... "Please set MALT_MODEL in your global environment, e.g.:\n" 
+	... "$ export MALT_MODEL='/home/user/engmalt.linear-1.7.mco'")
+	>>>
+	>>> _dg1_str = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
+	...             "2    sees    _    VB    _    _    0    ROOT    _    _\n"
+	...             "3    a       _    DT    _    _    4    SPEC    _    _\n"
+	...             "4    dog     _    NN    _    _    2    OBJ     _    _\n"
+	...             "5    .     _    .    _    _    2    PUNCT     _    _\n")
+	>>> 
+	>>> 
+	>>> _dg2_str  = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
+	...             "2    walks   _    VB    _    _    0    ROOT    _    _\n"
+	...             "3    .     _    .    _    _    2    PUNCT     _    _\n")
+	>>> dg1 = DependencyGraph(_dg1_str)
+	>>> dg2 = DependencyGraph(_dg2_str)
+	>>> # Initialize a MaltParser object
+	>>> parser_dirname = 'maltparser-1.7.2'
+	>>> mp = MaltParser(parser_dirname=parser_dirname)
+	>>>
+	>>> # Trains a model.
+	>>> mp.train([dg1,dg2], verbose=False)
+	>>> sent1 = ['John','sees','Mary', '.']
+	>>> sent2 = ['John', 'walks', 'a', 'dog', '.']
+	>>>
+	>>> # Parse a single sentence.
+	>>> parsed_sent1 = mp.parse_one(sent1)
+	>>> parsed_sent2 = mp.parse_one(sent2)
+	>>> print (parsed_sent1.tree())
+	(sees John Mary .)
+	>>> print (parsed_sent2.tree())
+	(walks John (dog a) .)
+	>>>
+	>>> # Parsing multiple sentences.
+	>>> sentences = [sent1,sent2]
+	>>> parsed_sents = mp.parse_sents(sentences)
+	>>> print(next(next(parsed_sents)).tree())
+	(sees John Mary .)
+	>>> print(next(next(parsed_sents)).tree())
+	(walks John (dog a) .)
+	>>>
+	>>> # Initialize a MaltParser object with an English pre-trained model.
+	>>> parser_dirname = 'maltparser-1.7.2'
+	>>> model_name = 'engmalt.linear-1.7.mco'
+	>>> mp = MaltParser(parser_dirname=parser_dirname, model_filename=model_name, tagger=pos_tag)	
+	>>> sent1 = 'I shot an elephant in my pajamas .'.split()
+	>>> sent2 = 'Time flies like banana .'.split()
+	>>> # Parse a single sentence.
+	>>> print(mp.parse_one(sent1).tree())
+	(shot I (elephant an) (in (pajamas my)) .)
 	# Parsing multiple sentences
-	sentences = [sent1,sent2]
-	parsed_sents = mp.parse_sents(sentences)
-	print(" ".join(sent1))
-	print(next(next(parsed_sents)).tree())
-	print(" ".join(sent2))
-	print(next(next(parsed_sents)).tree())
-	
-	'''
-	demo_header = str(
-	"\n######################################################################\n"
-	"# Demo to parse example sentences with pre-trained French model\n"
-	"######################################################################\n")
-	print (demo_header)
-
-	parser_dirname = '/home/user/maltparser-1.7.2/'
-	path_to_model = '/home/user/fremalt-1.7.mco'
-
-	# Initialize a MaltParser object with a French pre-trained model.
-	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model)	
-	sent = 'Nous prions les cineastes et tous nos lecteurs de bien vouloir nous en excuser .'.split()
-	pos = 'CLS V DET NC CC ADJ DET NC P ADV VINF CLS CLO VINF PUNCT'.split()
-	tagged_sent = list(zip(sent,pos))
-	print(" ".join(sent))
-	parsed_sent = mp.parse_tagged_sents([tagged_sent])
-	print(next(next(parsed_sent)).tree())
-
-	demo_header = str(
-	"\n######################################################################\n"
-	"# Demo to parse example sentences with pre-trained Swedish model\n"
-	"######################################################################\n")
-	print (demo_header)
-
-	parser_dirname = '/home/user/maltparser-1.7.2/'
-	path_to_model = '/home/user/swemalt-1.7.2.mco'    
-
-	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model)	
-	#sent = "För telefonrådfrågning betalar försäkringskassan 4 kronor till sjukvårdshuvudmannen .".split()
-	sent = "For telefonradfragning betalar forsakringskassan 4 kronor till sjukvardshuvudmannen .".split()
-	pos = "PP NN VB NN RG NOM NN PP NN MAD".split()
-	tagged_sent = list(zip(sent,pos))
-	print(" ".join(sent))
-	parsed_sent = mp.parse_tagged_sents([tagged_sent])
-	print(next(next(parsed_sent)).tree())
-
-	demo_header = str(
-	"\n######################################################################\n"
-	"# Demo to parse example sentences with pre-trained Spanish model\n"
-	"######################################################################\n")
-	print (demo_header)
-	
-	parser_dirname = '/home/user/maltparser-1.7.2/'
-	path_to_model = '/home/user/espmalt-1.0.mco'    
-
-	mp = MaltParser(parser_dirname=parser_dirname, model_filename=path_to_model)	
-	#sent = "Los niños leen cuentos de hadas .".split()
-	sent = "Los ninos leen cuentos de hadas .".split()
-	pos = "DA0MP0 NCMP000 VMIP3P0 NCMP000 NCFP000 Fp".split()
-	tagged_sent = list(zip(sent,pos))
-	print(" ".join(sent))
-	parsed_sent = mp.parse_tagged_sents([tagged_sent])
-	print(next(next(parsed_sent)).tree())	
+	>>> sentences = [sent1,sent2]
+	>>> parsed_sents = mp.parse_sents(sentences)
+	>>> print(next(next(parsed_sents)).tree())
+	(shot I (elephant an) (in (pajamas my)) .)
+	>>>	print(next(next(parsed_sents)).tree())
+	(flies Time (like banana) .)
 	'''
