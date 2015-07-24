@@ -369,7 +369,7 @@ if __name__ == '__main__':
 		"$ export MALT_PARSER='/home/user/maltparser-1.7.2/'")
 		
 	assert 'MALT_MODEL' in os.environ, \
-	str("Please set MALT_MODEin your global environment, e.g.:\n"
+	str("Please set MALT_MODEL in your global environment, e.g.:\n"
 		"$ export MALT_MODEL='/home/user/engmalt.linear-1.7.mco'")
 	
 

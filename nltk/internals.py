@@ -453,7 +453,6 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
             yielded = True
             yield path_to_file
 
-
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
