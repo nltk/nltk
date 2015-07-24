@@ -430,7 +430,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
     if isinstance(env_vars, compat.string_types):
         env_vars = env_vars.split()
     yielded = False
-    
+
     # File exists, no magic
     for alternative in file_names:
         path_to_file = os.path.join(filename, alternative)
