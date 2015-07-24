@@ -268,7 +268,7 @@ class MaltParser(ParserI):
 		:type sentence: list(list(str))
 		:return: iter(DependencyGraph)
 		"""
-		tagged_sentences = [self.tagger(sentence) for sentence in sentences]
+		tagged_sentences = (self.tagger(sentence) for sentence in sentences)
 		return self.parse_tagged_sents(tagged_sentences, verbose)
 		
 		
