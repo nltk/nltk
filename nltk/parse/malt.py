@@ -210,14 +210,11 @@ class MaltParser(ParserI):
 		if not self._trained:
 			raise Exception("Parser has not been trained. Call train() first.")
 
-		input_file = tempfile.NamedTemporaryFile(prefix='malt_input.conll', 
-										dir=self.working_dir, 
-										mode='w', delete=False)
-		output_file = tempfile.NamedTemporaryFile(prefix='malt_output.conll', 
-										dir=self.working_dir,
-										mode='w', delete=False)
 
-		try: 
+		with tempfile.NamedTemporaryFile(prefix='malt_input.conll.', 
+		dir=self.working_dir, mode='w', delete=False) as input_file, \
+		tempfile.NamedTemporaryFile(prefix='malt_output.conll.', 
+		dir=self.working_dir, mode='w', delete=False) as output_file:
 			# Convert list of sentences to CONLL format.
 			for line in taggedsent_to_conll(sentences):
 				input_file.write(text_type(line))
@@ -248,13 +245,9 @@ class MaltParser(ParserI):
 				for tree_str in infile.read().split('\n\n'):
 					tree_str = self.pretrained_model_sanity_checks(tree_str)
 					yield(iter([DependencyGraph(tree_str)]))
-					
-		finally:
-			# Deletes temp files created in the process.
-			input_file.close()
-			os.remove(input_file.name)
-			output_file.close()
-			os.remove(output_file.name)
+
+		os.remove(input_file.name)
+		os.remove(output_file.name)
 
 	
 	def parse_sents(self, sentences, verbose=False):
@@ -417,3 +410,79 @@ if __name__ == '__main__':
 	>>>	print(next(next(parsed_sents)).tree())
 	(flies Time (like banana) .)
 	'''
+	
+	assert 'MALT_PARSER' in os.environ, \
+	str("Please set MALT_PARSER in your global environment, e.g.:\n"
+		"$ export MALT_PARSER='/home/user/maltparser-1.7.2/'")
+		
+	assert 'MALT_MODEL' in os.environ, \
+	str("Please set MALT_MODEL in your global environment, e.g.:\n"
+		"$ export MALT_MODEL='/home/user/engmalt.linear-1.7.mco'")
+	
+
+	demo_header = str(
+	"######################################################################\n"
+	"# Demo to train a new model with DependencyGraph objects and\n"
+	"# parse example sentences with the new model.\n"
+	"######################################################################\n")
+	print (demo_header)
+	_dg1_str = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
+					"2    sees    _    VB    _    _    0    ROOT    _    _\n"
+					"3    a       _    DT    _    _    4    SPEC    _    _\n"
+					"4    dog     _    NN    _    _    2    OBJ     _    _\n"
+					"4    .     _    .    _    _    2    PUNCT     _    _\n")
+
+
+	_dg2_str  = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
+					"2    walks   _    VB    _    _    0    ROOT    _    _\n"
+					"3    .     _    .    _    _    2    PUNCT     _    _\n")
+	dg1 = DependencyGraph(_dg1_str)
+	dg2 = DependencyGraph(_dg2_str)
+
+	# Initial a MaltParser object
+	verbose = False
+	parser_dirname = 'maltparser-1.7.2'
+	mp = MaltParser(parser_dirname=parser_dirname)
+	# Trains a model.
+	mp.train([dg1,dg2], verbose=verbose)
+	
+	sent1 = ['John','sees','Mary', '.']
+	sent2 = ['John', 'walks', 'a', 'dog', '.']
+	# Parse a single sentence.
+	parsed_sent1 = mp.parse_one(sent1)
+	parsed_sent2 = mp.parse_one(sent2)
+	print(" ".join(sent1))
+	print (parsed_sent1.tree())
+	print(" ".join(sent2))
+	print (parsed_sent2.tree())
+	# Parsing multiple sentences.
+	sentences = [sent1,sent2]
+	parsed_sents = mp.parse_sents(sentences)
+	print(" ".join(sent1))
+	print(next(next(parsed_sents)).tree())
+	print(" ".join(sent2))
+	print(next(next(parsed_sents)).tree())
+
+	demo_header = str(
+	"\n######################################################################\n"
+	"# Demo to parse example sentences with pre-trained English model\n"
+	"######################################################################\n")
+	print (demo_header)
+	
+	# Initialize a MaltParser object with an English pre-trained model.
+	parser_dirname = 'maltparser-1.7.2'
+	model_name = 'engmalt.linear-1.7.mco'
+	mp = MaltParser(parser_dirname=parser_dirname, model_filename=model_name,
+					 tagger=pos_tag)	
+	sent1 = 'I shot an elephant in my pajamas .'.split()
+	sent2 = 'Time flies like banana .'.split()
+	# Parse a single sentence.
+	print(" ".join(sent1))
+	print(mp.parse_one(sent1).tree())
+	# Parsing multiple sentences
+	sentences = [sent1,sent2]
+	parsed_sents = mp.parse_sents(sentences)
+	print(" ".join(sent1))
+	print(next(next(parsed_sents)).tree())
+	print(" ".join(sent2))
+	print(next(next(parsed_sents)).tree())
