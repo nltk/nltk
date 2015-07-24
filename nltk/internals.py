@@ -412,7 +412,7 @@ class Counter:
 ##########################################################################
 
 def find_file_iter(filename, env_vars=(), searchpath=(),
-        file_names=None, url=None, verbose=True, finding_dir=False):
+    file_names=None, url=None, verbose=True, finding_dir=False):
     """
     Search for a file to be used by nltk.
 
@@ -483,7 +483,6 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
                         yielded = True
                         yield path_to_file
 
-
     # Check the path list.
     for directory in searchpath:
         for alternative in file_names:
@@ -524,6 +523,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
         div = '='*75
         raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
 
+
 def find_file(filename, env_vars=(), searchpath=(),
         file_names=None, url=None, verbose=True):
     return next(find_file_iter(filename, env_vars, searchpath,
@@ -534,6 +534,7 @@ def find_dir(filename, env_vars=(), searchpath=(),
         file_names=None, url=None, verbose=True):
     return next(find_file_iter(filename, env_vars, searchpath,
                                file_names, url, verbose, finding_dir=True))
+
 
 def find_binary_iter(name, path_to_bin=None, env_vars=(), searchpath=(),
                 binary_names=None, url=None, verbose=True):
@@ -673,7 +674,8 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
         searchpath=(), url=None, verbose=True, is_regex=False):
     return next(find_jar_iter(name_pattern, path_to_jar, env_vars,
                          searchpath, url, verbose, is_regex))
-                         
+
+                
 def find_jars_within_path(path_to_jars):
 	return [os.path.join(root, filename) 
 			for root, dirnames, filenames in os.walk(path_to_jars) 

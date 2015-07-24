@@ -50,10 +50,11 @@ def taggedsent_to_conll(sentences):
 	"""
 	for sentence in sentences:
 		for (i, (word, tag)) in enumerate(sentence, start=1):
-			input_str = '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-			% (i, word, '_', tag, tag, '_', '0', 'a', '_', '_')
+			input_str = [str(i), word, '_', tag, tag, '_', '0', 'a', '_', '_']
+			input_str = "\t".join(input_str) + "\n"
 			yield input_str
 		yield '\n\n'
+
 
 def malt_regex_tagger():
 	from nltk.tag import RegexpTagger
@@ -105,6 +106,7 @@ def find_maltparser(parser_dirname):
 								i.endswith('.jar'), _jars))
 	return list(_malt_jars)
 
+
 def find_malt_model(model_filename):
 	"""
 	A module to find pre-trained MaltParser model.
@@ -116,6 +118,7 @@ def find_malt_model(model_filename):
 	else: # Try to find path to malt model in environment variables.
 		return find_file(model_filename, env_vars=('MALT_MODEL',), 
 						verbose=False)
+
 		
 class MaltParser(ParserI):
 	"""
@@ -137,7 +140,7 @@ class MaltParser(ParserI):
         (shot I (elephant an) (in (pajamas my)) .)
 	"""
 	def __init__(self, parser_dirname, model_filename=None, tagger=None, 
-				 additional_java_args=[]):
+				 additional_java_args=None):
 		"""
 		An interface for parsing with the Malt Parser.
 
@@ -162,31 +165,30 @@ class MaltParser(ParserI):
 		# Find all the necessary jar files for MaltParser.
 		self.malt_jars = find_maltparser(parser_dirname)
 		# Initialize additional java arguments.
-		self.additional_java_args = additional_java_args
+		self.additional_java_args = additional_java_args if \
+									additional_java_args is not None else []
 		# Initialize model.
 		self.model = find_malt_model(model_filename)
-		self._trained = False if self.model == 'malt_temp.mco' else True
+		self._trained = self.model != 'malt_temp.mco'
 		# Set the working_dir parameters i.e. `-w` from MaltParser's option.
 		self.working_dir = tempfile.gettempdir() 
 		# Initialize POS tagger.
-		if tagger is not None:
-			self.tagger = tagger
-		else:
-			self.tagger = malt_regex_tagger()	
+		self.tagger = tagger if tagger is not None else malt_regex_tagger()
 
 	def pretrained_model_sanity_checks(self, tree_str):
 		"""
 		Performs sanity checks and replace oddities in pre-trained model
 		outputs from http://www.maltparser.org/mco/english_parser/engmalt.html
-		
+		Note: This hack function should go away once nltk.parse.DependencyGraph 
+		handles optional TOP label!!!
 		:param tree_str: The CONLL output file for a single parse
 		:type tree_str: str
 		:return: str
 		"""
 		# Checks for oddities in English pre-trained model.
-		if '\t0\tnull\t' in tree_str and \
-		(self.model.endswith('engmalt.linear-1.7.mco') or
-		self.model.endswith('engmalt.poly-1.7.mco')
+		if (
+		'\t0\tnull\t' in tree_str and 
+		self.model.endswith(('engmalt.linear-1.7.mco', 'engmalt.poly-1.7.mco'))
 		):
 			tree_str = tree_str.replace('\t0\tnull\t','\t0\tROOT\t')
 		# Checks for oddities in French pre-trained model.
@@ -238,7 +240,7 @@ class MaltParser(ParserI):
 			ret = self._execute(cmd, verbose) # Run command.
 			os.chdir(_current_path) # Change back to current path.
 
-			if ret != 0:
+			if ret is not 0:
 				raise Exception("MaltParser parsing (%s) failed with exit "
 								"code %d" % (' '.join(cmd), ret))
 
@@ -268,8 +270,7 @@ class MaltParser(ParserI):
 		:return: iter(DependencyGraph)
 		"""
 		tagged_sentences = [self.tagger(sentence) for sentence in sentences]
-		parsed_sentences = self.parse_tagged_sents(tagged_sentences, verbose)
-		return parsed_sentences
+		return self.parse_tagged_sents(tagged_sentences, verbose)
 		
 		
 	def generate_malt_command(self, inputfilename, outputfilename=None, 
@@ -298,7 +299,6 @@ class MaltParser(ParserI):
 		if mode == 'parse':
 			cmd+= ['-o', outputfilename]
 		cmd+= ['-m', mode] # mode use to generate parses.
-		#print(" ".join(cmd))
 		return cmd
 
 	@staticmethod
@@ -314,17 +314,16 @@ class MaltParser(ParserI):
 		:param depgraphs: list of ``DependencyGraph`` objects for training input data
 		:type depgraphs: DependencyGraph
 		"""
-		input_file = tempfile.NamedTemporaryFile(prefix='malt_train.conll',
-				                                 dir=self.working_dir, mode='w',
-				                                 delete=False)
-		try:
+		
+		# Write the conll_str to malt_train.conll file in /tmp/
+		with tempfile.NamedTemporaryFile(prefix='malt_train.conll.',
+		dir=self.working_dir, mode='w', delete=False) as input_file:
 			input_str = ('\n'.join(dg.to_conll(10) for dg in depgraphs))
 			input_file.write(text_type(input_str))
-			input_file.close()
-			self.train_from_file(input_file.name, verbose=verbose)
-		finally:
-			input_file.close()
-			os.remove(input_file.name)
+		# Trains the model with the malt_train.conll
+		self.train_from_file(input_file.name, verbose=verbose)
+		# Removes the malt_train.conll once training finishes.
+		os.remove(input_file.name)
             
 	def train_from_file(self, conll_file, verbose=False):
 		"""
@@ -336,18 +335,12 @@ class MaltParser(ParserI):
 		# If conll_file is a ZipFilePathPointer, 
 		# then we need to do some extra massaging
 		if isinstance(conll_file, ZipFilePathPointer):
-			input_file = tempfile.NamedTemporaryFile(prefix='malt_train.conll',
-				                                    dir=self.working_dir, 
-				                                    mode='w', delete=False)
-			try:
-				conll_str = conll_file.open().read()
-				conll_file.close()
+			with tempfile.NamedTemporaryFile(prefix='malt_train.conll.',
+			dir=self.working_dir, mode='w', delete=False) as input_file, \
+			conll_file.open() as conll_input_file:
+				conll_str = conll_input_file.read()
 				input_file.write(text_type(conll_str))
-				input_file.close()
-				return self.train_from_file(input_file.name, verbose=verbose)
-			finally:
-				input_file.close()
-				#os.remove(input_file.name)
+			return self.train_from_file(input_file.name, verbose=verbose)
 
 		# Generate command to run maltparser.
 		cmd =self.generate_malt_command(conll_file, mode="learn")
