@@ -530,12 +530,10 @@ def find_file(filename, env_vars=(), searchpath=(),
                                file_names, url, verbose))
 
 
-
 def find_dir(filename, env_vars=(), searchpath=(),
         file_names=None, url=None, verbose=True):
     return next(find_file_iter(filename, env_vars, searchpath,
                                file_names, url, verbose, finding_dir=True))
-
 
 
 def find_binary_iter(name, path_to_bin=None, env_vars=(), searchpath=(),
