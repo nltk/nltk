@@ -102,8 +102,7 @@ def find_maltparser(parser_dirname):
 	malt_dependencies = set([u'log4j.jar', u'libsvm.jar', u'liblinear-1.8.jar'])
 					
 	assert malt_dependencies.issubset(_jars)
-	assert any(filter(lambda i: i.startswith('maltparser-') and \
-								i.endswith('.jar'), _jars))
+	assert any(filter(lambda i: i.startswith('maltparser-') and i.endswith('.jar'), _jars))
 	return list(_malt_jars)
 
 
