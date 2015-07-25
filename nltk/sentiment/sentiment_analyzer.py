@@ -95,6 +95,14 @@ class SentimentAnalyzer(object):
         finder.apply_freq_filter(min_freq)
         return finder.nbest(assoc_measure, top_n)
 
+    def classify(self, instance):
+        """
+        Classify a single instance applying the features that have already been
+        stored in the SentimentAnalyzer.
+        """
+        instance_feats = self.apply_features([instance], labeled=False)
+        return self.classifier.classify(instance_feats[0])
+
     def add_feat_extractor(self, function, **kwargs):
         """
         Add a new function to extract features from a document. This function will
