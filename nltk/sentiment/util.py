@@ -308,13 +308,13 @@ def demo_tweets(trainer):
     # tokenizer = TweetTokenizer(preserve_case=True, strip_handles=True)
     # tokenizer = TweetTokenizer(reduce_len=True, strip_handles=True)
 
-    positive_json = twitter_samples.abspath("pos_tweets.20150724-102358.json")
+    positive_json = twitter_samples.abspath("positive_tweets.json")
 
     fields = ['id', 'text']
     positive_csv = 'positive_tweets.csv'
     json2csv_preprocess(positive_json, positive_csv, fields, limit=5000)
 
-    negative_json = twitter_samples.abspath("neg_tweets.20150724-124310.json")
+    negative_json = twitter_samples.abspath("negative_tweets.json")
     negative_csv = 'negative_tweets.csv'
     json2csv_preprocess(negative_json, negative_csv, fields, limit=5000)
 
