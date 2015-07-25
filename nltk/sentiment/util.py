@@ -95,7 +95,7 @@ def extract_bigram_feats(document, bigrams):
     """
     features = {}
     for bigr in bigrams:
-        features['contains({})'.format(bigr)] = bigr in nltk.bigrams(document)
+        features['contains({} - {})'.format(bigr[0], bigr[1])] = bigr in nltk.bigrams(document)
     return features
 
 #////////////////////////////////////////////////////////////
