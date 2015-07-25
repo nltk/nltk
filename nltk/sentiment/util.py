@@ -498,7 +498,7 @@ def demo_movie_reviews(trainer):
     output_markdown('results.md', Dataset='Movie_reviews', Classifier=type(classifier).__name__,
                     Tokenizer='WordPunctTokenizer', Feats=extr, Accuracy=accuracy)
 
-def demo_subjectivity(trainer):
+def demo_subjectivity(trainer, save_analyzer=False):
     """
     Train and test a classifier on instances of the Subjective Dataset by Pang and
     Lee. The dataset is made of 5000 subjective and 5000 objective sentences.
@@ -528,31 +528,34 @@ def demo_subjectivity(trainer):
     training_docs = train_subj_docs+train_obj_docs
     testing_docs = test_subj_docs+test_obj_docs
 
-    sa = SentimentAnalyzer()
-    all_words_neg = sa.all_words([mark_negation(doc) for doc in training_docs])
+    sentim_analyzer = SentimentAnalyzer()
+    all_words_neg = sentim_analyzer.all_words([mark_negation(doc) for doc in training_docs])
 
     # Add simple unigram word features handling negation
-    unigram_feats = sa.unigram_word_feats(all_words_neg, min_freq=4)
-    sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+    unigram_feats = sentim_analyzer.unigram_word_feats(all_words_neg, min_freq=4)
+    sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Apply features to obtain a feature-value representation of our datasets
-    training_set = sa.apply_features(training_docs)
-    test_set = sa.apply_features(testing_docs)
+    training_set = sentim_analyzer.apply_features(training_docs)
+    test_set = sentim_analyzer.apply_features(testing_docs)
 
-    classifier = sa.train(trainer, training_set)
+    classifier = sentim_analyzer.train(trainer, training_set)
     try:
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    accuracy = sa.evaluate(classifier, test_set)
+    accuracy = sentim_analyzer.evaluate(classifier, test_set)
     print('Accuracy:', accuracy)
 
-    # save_file(sa, 'sa_subjectivity.pickle')
+    if save_analyzer == True:
+        save_file(sentim_analyzer, 'sa_subjectivity.pickle')
 
-    extr = [f.__name__ for f in sa.feat_extractors]
+    extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
     output_markdown('results.md', Dataset='subjectivity', Classifier=type(classifier).__name__,
                     Instances=2000, Tokenizer=word_tokenizer.__class__.__name__,
                     Feats=extr, Accuracy=accuracy)
+
+    return sentim_analyzer
 
 def demo_sent_subjectivity(text):
     """
@@ -561,15 +564,19 @@ def demo_sent_subjectivity(text):
 
     :param text: a sentence whose subjectivity has to be classified.
     """
+    from nltk.classify import NaiveBayesClassifier
     from nltk.tokenize import regexp
     word_tokenizer = regexp.WhitespaceTokenizer()
-    sentim_analyzer = load('sa_subjectivity.pickle')
+    try:
+        sentim_analyzer = load('sa_subjectivity.pickle')
+    except LookupError:
+        print('Cannot find the sentiment analyzer you want to load.')
+        print('Training a new one using NaiveBayesClassifier.')
+        sentim_analyzer = demo_subjectivity(NaiveBayesClassifier.train, True)
 
     # Tokenize and convert to lower case
     tokenized_text = [word.lower() for word in word_tokenizer.tokenize(text)]
-    # Apply the features that have already been stored in the SentimentAnalyzer
-    text_feats = sentim_analyzer.apply_features([tokenized_text], labeled=False)
-    print(sentim_analyzer.classifier.classify(text_feats[0]))
+    print(sentim_analyzer.classify(tokenized_text))
 
 def demo_liu_hu_lexicon(sentence, plot=False):
     """
@@ -642,6 +649,6 @@ if __name__ == '__main__':
     # demo_tweets(naive_bayes)
     # demo_movie_reviews(svm)
     # demo_subjectivity(svm)
-    # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
+    demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
     # demo_liu_hu_lexicon("This movie was actually neither that funny, nor super witty.", plot=True)
-    demo_vader("This movie was actually neither that funny, nor super witty.")
+    # demo_vader("This movie was actually neither that funny, nor super witty.")
