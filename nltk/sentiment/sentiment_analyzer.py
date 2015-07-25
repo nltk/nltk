@@ -20,9 +20,8 @@ from nltk.classify.util import apply_features, accuracy
 from nltk.collocations import BigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist
-from util import (save_file, timer)
-import nltk
 
+from util import save_file, timer
 
 class SentimentAnalyzer(object):
     """
