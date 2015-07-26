@@ -131,8 +131,8 @@ class ProductReviewsCorpusReader(CorpusReader):
     Note: we are not applying any sentence tokenization at the moment, just word
     tokenization.
 
-        >>> from nltk.corpus import customer_reviews_1
-        >>> camera_reviews = customer_reviews_1.reviews('Canon_G3.txt')
+        >>> from nltk.corpus import product_reviews_1
+        >>> camera_reviews = product_reviews_1.reviews('Canon_G3.txt')
         >>> review = camera_reviews[0]
         >>> review.sents()[0]
         ['i', 'recently', 'purchased', 'the', 'canon', 'powershot', 'g3', 'and', 'am',
@@ -145,13 +145,13 @@ class ProductReviewsCorpusReader(CorpusReader):
 
     We can also reach the same information directly from the stream:
 
-        >>> customer_reviews_1.features('Canon_G3.txt')
+        >>> product_reviews_1.features('Canon_G3.txt')
         [('canon powershot g3', '+3'), ('use', '+2'), ...]
 
     We can compute stats for specific product features:
 
-        >>> n_reviews = len([(feat,score) for (feat,score) in customer_reviews_1.features('Canon_G3.txt') if feat=='picture'])
-        >>> tot = sum([int(score) for (feat,score) in customer_reviews_1.features('Canon_G3.txt') if feat=='picture'])
+        >>> n_reviews = len([(feat,score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
+        >>> tot = sum([int(score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
         >>> # We use float for backward compatibility with division in Python2.7
         >>> mean = float(tot)/n_reviews
         >>> print(n_reviews, tot, mean)
