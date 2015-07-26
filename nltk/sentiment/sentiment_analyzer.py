@@ -99,6 +99,9 @@ class SentimentAnalyzer(object):
         """
         Classify a single instance applying the features that have already been
         stored in the SentimentAnalyzer.
+
+        :param instance: a list (or iterable) of tokens.
+        :return: the classification result given by applying the classifier.
         """
         instance_feats = self.apply_features([instance], labeled=False)
         return self.classifier.classify(instance_feats[0])
