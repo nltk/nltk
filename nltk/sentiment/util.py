@@ -159,6 +159,11 @@ def mark_negation(document, double_neg_flip=False, shallow=False):
     :return: if `shallow == True` the method will modify the original document
         and return it. If `shallow == False` the method will return a modified
         document, leaving the original unmodified.
+
+    >>> sent = "I didn't like this movie . It was bad .".split()
+    >>> mark_negation(sent)
+    ['I', "didn't", 'like_NEG', 'this_NEG', 'movie_NEG', '.', 'It', 'was', 'bad', '.']
+
     '''
     if not shallow:
         document = deepcopy(document)
