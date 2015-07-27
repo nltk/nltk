@@ -143,7 +143,7 @@ def extract_bigram_feats(document, bigrams):
 #////////////////////////////////////////////////////////////
 
 def mark_negation(document, double_neg_flip=False, shallow=False):
-    '''
+    """
     Append _NEG suffix to words that appear in the scope between a negation
     and a punctuation mark.
 
@@ -158,8 +158,7 @@ def mark_negation(document, double_neg_flip=False, shallow=False):
     >>> sent = "I didn't like this movie . It was bad .".split()
     >>> mark_negation(sent)
     ['I', "didn't", 'like_NEG', 'this_NEG', 'movie_NEG', '.', 'It', 'was', 'bad', '.']
-
-    '''
+    """
     if not shallow:
         document = deepcopy(document)
     # check if the document is labeled. If so, do not consider the label.
@@ -320,7 +319,7 @@ def json2csv_preprocess(json_file, outfile, fields, encoding='utf8', errors='rep
 
 def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
                      skip_header=True):
-    '''
+    """
     Parse csv file containing tweets and output data a list of (text, label) tuples.
 
     :param filename: the input csv filename.
@@ -334,7 +333,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
         contains headers).
 
     :return: a list of (text, label) tuples.
-    '''
+    """
     tweets = []
     if not sent_tokenizer:
         sent_tokenizer = load('tokenizers/punkt/english.pickle')
@@ -395,7 +394,7 @@ def parse_subjectivity_dataset(filename, word_tokenizer, label=None):
 #////////////////////////////////////////////////////////////
 
 def demo_tweets(trainer):
-    '''
+    """
     Train and test Naive Bayes classifier on 10000 tweets, tokenized using
     TweetTokenizer.
     Features are composed of:
@@ -403,7 +402,7 @@ def demo_tweets(trainer):
         - 100 top bigrams (using BigramAssocMeasures.pmi)
 
     :param trainer: `train` method of a classifier.
-    '''
+    """
     from nltk.tokenize import TweetTokenizer
     from sentiment_analyzer import SentimentAnalyzer
     from nltk.corpus import twitter_samples, stopwords
@@ -465,7 +464,7 @@ def demo_tweets(trainer):
                     Notes='Remove stopwords')
 
 def demo_movie_reviews(trainer):
-    '''
+    """
     Train classifier on all instances of the Movie Reviews dataset.
     The corpus has been preprocessed using the default sentence tokenizer and
     WordPunctTokenizer.
@@ -473,7 +472,7 @@ def demo_movie_reviews(trainer):
         - 1000 most frequent unigrams
 
     :param trainer: `train` method of a classifier.
-    '''
+    """
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
