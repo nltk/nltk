@@ -317,7 +317,7 @@ def json2csv_preprocess(json_file, outfile, fields, encoding='utf8', errors='rep
                 break
         outf.close()
 
-def parse_tweets_set(filename, label, word_tokenizer, sent_tokenizer=None,
+def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
                      skip_header=True):
     '''
     Parse csv file containing tweets and output data a list of (text, label) tuples.
@@ -325,7 +325,8 @@ def parse_tweets_set(filename, label, word_tokenizer, sent_tokenizer=None,
     :param filename: the input csv filename.
     :param label: the label to be appended to each tweet contained in the csv file.
     :param word_tokenizer: the tokenizer instance that will be used to tokenize
-        each sentence into tokens (e.g. WordPunctTokenizer() or BlanklineTokenizer())
+        each sentence into tokens (e.g. WordPunctTokenizer() or BlanklineTokenizer()).
+        If no word_tokenizer is specified, tweets will not be tokenized.
     :param sent_tokenizer: the tokenizer that will be used to split each tweet into
         sentences.
     :param skip_header: if True, skip the first line of the csv file (which usually
@@ -349,9 +350,12 @@ def parse_tweets_set(filename, label, word_tokenizer, sent_tokenizer=None,
                 i += 1
                 sys.stdout.write('Loaded {} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
-                tokenized_tweet = [w for sent in sent_tokenizer.tokenize(text)
-                                   for w in word_tokenizer.tokenize(sent)]
-                tweets.append((tokenized_tweet, label))
+                if word_tokenizer:
+                    tweet = [w for sent in sent_tokenizer.tokenize(text)
+                                       for w in word_tokenizer.tokenize(sent)]
+                else:
+                    tweet = text
+                tweets.append((tweet, label))
     # If we use Python2.x we need to handle encoding problems
     elif sys.version_info[0] < 3:
         with codecs.open(filename) as csvfile:
@@ -365,9 +369,12 @@ def parse_tweets_set(filename, label, word_tokenizer, sent_tokenizer=None,
                 i += 1
                 sys.stdout.write('Loaded {} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
-                tokenized_tweet = [w.encode('utf8') for sent in sent_tokenizer.tokenize(text)
-                                   for w in word_tokenizer.tokenize(sent)]
-                tweets.append((tokenized_tweet, label))
+                if word_tokenizer:
+                    tweet = [w.encode('utf8') for sent in sent_tokenizer.tokenize(text)
+                                       for w in word_tokenizer.tokenize(sent)]
+                else:
+                    tweet = text
+                tweets.append((tweet, label))
     print("Loaded {} tweets".format(i))
     return tweets
 
