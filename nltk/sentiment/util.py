@@ -20,11 +20,6 @@ import random
 import re
 import sys
 import time
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    import warnings
-    warnings.warn("matplotlib not installed. Graph generation not available.")
 
 import nltk
 from nltk.corpus import CategorizedPlaintextCorpusReader
@@ -228,6 +223,12 @@ def split_train_test(all_instances, n=None):
     return train_set, test_set
 
 def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        raise ImportError('The plot function requires matplotlib to be installed.'
+                         'See http://matplotlib.org/')
+
     plt.locator_params(axis='y', nbins=3)
     axes = plt.axes()
     axes.yaxis.grid()
@@ -633,10 +634,7 @@ def demo_liu_hu_lexicon(sentence, plot=False):
         print('Neutral')
 
     if plot == True:
-        try:
-            _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
-        except NameError:
-            print("matplotlib not installed. Graph generation not available.")
+        _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
 
 def demo_vader(text):
     """
