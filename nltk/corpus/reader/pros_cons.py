@@ -36,14 +36,12 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
     """
     Reader for the Pros and Cons sentence dataset.
 
-        >>> from nltk.corpus.util import LazyCorpusLoader
-        >>> procons = LazyCorpusLoader('pros_cons', ProsConsCorpusReader, r'Integrated(Cons|Pros)\.txt',\
-            cat_pattern=r'Integrated(Cons|Pros)\.txt', encoding='ISO-8859-2')
-        >>> procons.sents(categories='Cons')
+        >>> from nltk.corpus import pros_cons
+        >>> pros_cons.sents(categories='Cons')
         [(['East', 'batteries', '!', 'On', '-', 'off', 'switch', 'too', 'easy',
             'to', 'maneuver', '.'], 'Cons'), (['Eats', '...', 'no', ',', 'GULPS',
             'batteries'], 'Cons'), ...]
-        >>> procons.words('IntegratedPros.txt')
+        >>> pros_cons.words('IntegratedPros.txt')
         [['Easy', 'to', 'use', ',', 'economical', '!'], 'Pros', ...]
     """
     CorpusView = StreamBackedCorpusView
