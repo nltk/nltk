@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Product Reviews Corpus Reader
+# Natural Language Toolkit: Opinion Lexicon Corpus Reader
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
