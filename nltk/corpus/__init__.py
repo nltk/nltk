@@ -162,6 +162,9 @@ product_reviews_1 = LazyCorpusLoader(
     'product_reviews_1', ProductReviewsCorpusReader, r'^(?!Readme).*\.txt', encoding='utf8')
 product_reviews_2 = LazyCorpusLoader(
     'product_reviews_2', ProductReviewsCorpusReader, r'^(?!Readme).*\.txt', encoding='utf8')
+pros_cons = LazyCorpusLoader(
+    'pros_cons', ProsConsCorpusReader, r'Integrated(Cons|Pros)\.txt',
+    cat_pattern=r'Integrated(Cons|Pros)\.txt', encoding='ISO-8859-2')
 ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
     'ptb', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
     cat_file='allcats.txt', tagset='wsj')

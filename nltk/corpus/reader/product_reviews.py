@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 """
-CorpusReader for the Customer Review corpus.
+CorpusReader for the Product Reviews corpus.
 
 - Customer Review Corpus information -
 Annotated by: Minqing Hu and Bing Liu, 2004.
@@ -18,22 +18,23 @@ Contact: Bing Liu, liub@cs.uic.edu
 
 Distributed with permission.
 
-The dataset contains annotated customer reviews of 5 products from amazon.com.
-
-    1. digital camera: Canon G3
-    2. digital camera: Nikon coolpix 4300
-    3. celluar phone:  Nokia 6610
-    4. mp3 player:     Creative Labs Nomad Jukebox Zen Xtra 40GB
-    5. dvd player:     Apex AD2600 Progressive-scan DVD player
+The "product_reviews_1" and "product_reviews_2" datasets respectively contain
+annotated customer reviews of 5 and 9 products from amazon.com.
 
 Related papers:
+
 - Minqing Hu and Bing Liu. "Mining and summarizing customer reviews".
     Proceedings of the ACM SIGKDD International Conference on Knowledge
     Discovery & Data Mining (KDD-04), 2004.
 
-- Minqing Hu and Bing Liu. "Mining Opinion Features in Customer Reviews."
+- Minqing Hu and Bing Liu. "Mining Opinion Features in Customer Reviews".
     Proceedings of Nineteeth National Conference on Artificial Intelligence
     (AAAI-2004), 2004.
+
+- Xiaowen Ding, Bing Liu and Philip S. Yu. "A Holistic Lexicon-Based Appraoch to
+    Opinion Mining." Proceedings of First ACM International Conference on Web
+    Search and Data Mining (WSDM-2008), Feb 11-12, 2008, Stanford University,
+    Stanford, California, USA.
 
 Symbols used in the annotated reviews:
 
@@ -49,6 +50,13 @@ Symbols used in the annotated reviews:
     [s] : suggestion or recommendation.
     [cc]: comparison with a competing product from a different brand.
     [cs]: comparison with a competing product from the same brand.
+
+Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
+    provide separation between different reviews. This is due to the fact that
+    the dataset was specifically designed for aspect/feature-based sentiment
+    analysis, for which sentence-level annotation is sufficient. For document-
+    level classification and analysis, this peculiarity should be taken into
+    consideration.
 """
 import re
 

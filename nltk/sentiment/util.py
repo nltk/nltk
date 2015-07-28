@@ -20,11 +20,6 @@ import random
 import re
 import sys
 import time
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    import warnings
-    warnings.warn("matplotlib not installed. Graph generation not available.")
 
 import nltk
 from nltk.corpus import CategorizedPlaintextCorpusReader
@@ -148,7 +143,7 @@ def extract_bigram_feats(document, bigrams):
 #////////////////////////////////////////////////////////////
 
 def mark_negation(document, double_neg_flip=False, shallow=False):
-    '''
+    """
     Append _NEG suffix to words that appear in the scope between a negation
     and a punctuation mark.
 
@@ -159,7 +154,11 @@ def mark_negation(document, double_neg_flip=False, shallow=False):
     :return: if `shallow == True` the method will modify the original document
         and return it. If `shallow == False` the method will return a modified
         document, leaving the original unmodified.
-    '''
+
+    >>> sent = "I didn't like this movie . It was bad .".split()
+    >>> mark_negation(sent)
+    ['I', "didn't", 'like_NEG', 'this_NEG', 'movie_NEG', '.', 'It', 'was', 'bad', '.']
+    """
     if not shallow:
         document = deepcopy(document)
     # check if the document is labeled. If so, do not consider the label.
@@ -223,6 +222,12 @@ def split_train_test(all_instances, n=None):
     return train_set, test_set
 
 def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        raise ImportError('The plot function requires matplotlib to be installed.'
+                         'See http://matplotlib.org/')
+
     plt.locator_params(axis='y', nbins=3)
     axes = plt.axes()
     axes.yaxis.grid()
@@ -312,22 +317,23 @@ def json2csv_preprocess(json_file, outfile, fields, encoding='utf8', errors='rep
                 break
         outf.close()
 
-def parse_tweets_set(filename, label, word_tokenizer, sent_tokenizer=None,
+def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
                      skip_header=True):
-    '''
+    """
     Parse csv file containing tweets and output data a list of (text, label) tuples.
 
     :param filename: the input csv filename.
     :param label: the label to be appended to each tweet contained in the csv file.
     :param word_tokenizer: the tokenizer instance that will be used to tokenize
-        each sentence into tokens (e.g. WordPunctTokenizer() or BlanklineTokenizer())
+        each sentence into tokens (e.g. WordPunctTokenizer() or BlanklineTokenizer()).
+        If no word_tokenizer is specified, tweets will not be tokenized.
     :param sent_tokenizer: the tokenizer that will be used to split each tweet into
         sentences.
     :param skip_header: if True, skip the first line of the csv file (which usually
         contains headers).
 
     :return: a list of (text, label) tuples.
-    '''
+    """
     tweets = []
     if not sent_tokenizer:
         sent_tokenizer = load('tokenizers/punkt/english.pickle')
@@ -344,9 +350,12 @@ def parse_tweets_set(filename, label, word_tokenizer, sent_tokenizer=None,
                 i += 1
                 sys.stdout.write('Loaded {} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
-                tokenized_tweet = [w for sent in sent_tokenizer.tokenize(text)
-                                   for w in word_tokenizer.tokenize(sent)]
-                tweets.append((tokenized_tweet, label))
+                if word_tokenizer:
+                    tweet = [w for sent in sent_tokenizer.tokenize(text)
+                                       for w in word_tokenizer.tokenize(sent)]
+                else:
+                    tweet = text
+                tweets.append((tweet, label))
     # If we use Python2.x we need to handle encoding problems
     elif sys.version_info[0] < 3:
         with codecs.open(filename) as csvfile:
@@ -360,9 +369,12 @@ def parse_tweets_set(filename, label, word_tokenizer, sent_tokenizer=None,
                 i += 1
                 sys.stdout.write('Loaded {} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
-                tokenized_tweet = [w.encode('utf8') for sent in sent_tokenizer.tokenize(text)
-                                   for w in word_tokenizer.tokenize(sent)]
-                tweets.append((tokenized_tweet, label))
+                if word_tokenizer:
+                    tweet = [w.encode('utf8') for sent in sent_tokenizer.tokenize(text)
+                                       for w in word_tokenizer.tokenize(sent)]
+                else:
+                    tweet = text
+                tweets.append((tweet, label))
     print("Loaded {} tweets".format(i))
     return tweets
 
@@ -382,7 +394,7 @@ def parse_subjectivity_dataset(filename, word_tokenizer, label=None):
 #////////////////////////////////////////////////////////////
 
 def demo_tweets(trainer):
-    '''
+    """
     Train and test Naive Bayes classifier on 10000 tweets, tokenized using
     TweetTokenizer.
     Features are composed of:
@@ -390,7 +402,7 @@ def demo_tweets(trainer):
         - 100 top bigrams (using BigramAssocMeasures.pmi)
 
     :param trainer: `train` method of a classifier.
-    '''
+    """
     from nltk.tokenize import TweetTokenizer
     from sentiment_analyzer import SentimentAnalyzer
     from nltk.corpus import twitter_samples, stopwords
@@ -452,7 +464,7 @@ def demo_tweets(trainer):
                     Notes='Remove stopwords')
 
 def demo_movie_reviews(trainer):
-    '''
+    """
     Train classifier on all instances of the Movie Reviews dataset.
     The corpus has been preprocessed using the default sentence tokenizer and
     WordPunctTokenizer.
@@ -460,7 +472,7 @@ def demo_movie_reviews(trainer):
         - 1000 most frequent unigrams
 
     :param trainer: `train` method of a classifier.
-    '''
+    """
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
@@ -621,10 +633,7 @@ def demo_liu_hu_lexicon(sentence, plot=False):
         print('Neutral')
 
     if plot == True:
-        try:
-            _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
-        except NameError:
-            print("matplotlib not installed. Graph generation not available.")
+        _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
 
 def demo_vader(text):
     """
