@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Product Reviews Corpus Reader
+# Natural Language Toolkit: Pros and Cons Corpus Reader
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
@@ -58,7 +58,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         """
         :return: the given file(s) as a list of sentences. Each sentence is
             tokenized using the specified word_tokenizer.
-        :rtype: list(tuple(list, str))
+        :rtype: list(list(str))
         """
         fileids = self._resolve(fileids, categories)
         if fileids is None:
