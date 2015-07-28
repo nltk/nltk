@@ -38,11 +38,11 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
 
         >>> from nltk.corpus import pros_cons
         >>> pros_cons.sents(categories='Cons')
-        [(['East', 'batteries', '!', 'On', '-', 'off', 'switch', 'too', 'easy',
-            'to', 'maneuver', '.'], 'Cons'), (['Eats', '...', 'no', ',', 'GULPS',
-            'batteries'], 'Cons'), ...]
+        [['East', 'batteries', '!', 'On', '-', 'off', 'switch', 'too', 'easy',
+        'to', 'maneuver', '.'], ['Eats', '...', 'no', ',', 'GULPS', 'batteries'],
+        ...]
         >>> pros_cons.words('IntegratedPros.txt')
-        [['Easy', 'to', 'use', ',', 'economical', '!'], 'Pros', ...]
+        ['Easy', 'to', 'use', ',', 'economical', '!', ...]
     """
     CorpusView = StreamBackedCorpusView
 
@@ -56,13 +56,15 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
 
     def sents(self, fileids=None, categories=None):
         """
-        :return: the given file(s) as a list of (sentence, label) tuples.
-            Each sentence is tokenized using the specified word_tokenizer.
+        :return: the given file(s) as a list of sentences. Each sentence is
+            tokenized using the specified word_tokenizer.
         :rtype: list(tuple(list, str))
         """
         fileids = self._resolve(fileids, categories)
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, compat.string_types):
+            fileids = [fileids]
         return concat([self.CorpusView(path, self._read_sent_block, encoding=enc)
             for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
@@ -72,8 +74,10 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         :rtype: list(str)
         """
         fileids = self._resolve(fileids, categories)
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, compat.string_types):
+            fileids = [fileids]
         return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
             for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
@@ -85,8 +89,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
                 continue
             sent = re.match(r"^(?!\n)\s*<(Pros|Cons)>(.*)</(?:Pros|Cons)>", line)
             if sent:
-                sents.append((self._word_tokenizer.tokenize(sent.group(2).strip()), sent.group(1)))
-                # sents.append(self._word_tokenizer.tokenize(sent.group(2).strip()))
+                sents.append(self._word_tokenizer.tokenize(sent.group(2).strip()))
         return sents
 
     def _read_word_block(self, stream):
