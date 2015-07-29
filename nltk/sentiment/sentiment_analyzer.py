@@ -16,9 +16,11 @@ purposes.
 from __future__ import print_function
 from collections import defaultdict
 
-from nltk.classify.util import apply_features, accuracy
+from nltk.classify.util import apply_features, accuracy as eval_accuracy
 from nltk.collocations import BigramCollocationFinder
-from nltk.metrics import BigramAssocMeasures
+from nltk.metrics import (BigramAssocMeasures, precision as eval_precision,
+    recall as eval_recall, f_measure as eval_f_measure)
+
 from nltk.probability import FreqDist
 
 from util import save_file, timer
@@ -167,15 +169,51 @@ class SentimentAnalyzer(object):
         return self.classifier
 
     @timer
-    def evaluate(self, classifier, test_set):
+    def evaluate(self, classifier, test_set, accuracy=True, f_measure=True,
+                 precision=True, recall=True):
         """
-        Test classifier accuracy on the test set. `accuracy` is `classify.util.accuracy`,
-        not to be confused with `metrics.scores.accuracy`.
+        Evaluate and print classifier performance on the test set.
 
         :param classifier: a classifier instance (previously trained).
-        :param test_set: A list of (tokens, label) tuples.
-        :return: The accuracy score.
+        :param test_set: A list of (tokens, label) tuples to use as gold set.
+        :param accuracy: if `True`, evaluate classifier accuracy.
+        :param f_measure: if `True`, evaluate classifier f_measure.
+        :param precision: if `True`, evaluate classifier precision.
+        :param recall: if `True`, evaluate classifier recall.
+        :return: evaluation results.
+        :rtype: dict
         """
-        print("Evaluating {} accuracy...".format(type(classifier).__name__))
-        accuracy_score = accuracy(classifier, test_set)
-        return accuracy_score
+        print("Evaluating {} results...".format(type(classifier).__name__))
+        metrics_results = {}
+        if accuracy == True:
+            accuracy_score = eval_accuracy(classifier, test_set)
+            metrics_results['Accuracy'] = accuracy_score
+
+        gold_results = defaultdict(set)
+        test_results = defaultdict(set)
+        labels = set()
+        for i, (feats, label) in enumerate(test_set):
+            labels.add(label)
+            gold_results[label].add(i)
+            observed = classifier.classify(feats)
+            test_results[observed].add(i)
+
+        for label in labels:
+            if precision == True:
+                precision_score = eval_precision(gold_results[label],
+                    test_results[label])
+                metrics_results['Precision [{}]'.format(label)] = precision_score
+            if recall == True:
+                recall_score = eval_recall(gold_results[label],
+                    test_results[label])
+                metrics_results['Recall [{}]'.format(label)] = recall_score
+            if f_measure == True:
+                f_measure_score = eval_f_measure(gold_results[label],
+                    test_results[label])
+                metrics_results['F-measure [{}]'.format(label)] = f_measure_score
+
+        # Print evaluation results (in alphabetical order)
+        for result in sorted(metrics_results):
+            print('{}: {}'.format(result, metrics_results[result]))
+
+        return metrics_results

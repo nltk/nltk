@@ -190,7 +190,17 @@ def output_markdown(filename, **kwargs):
         text = '\n*** \n\n'
         text += '{} \n\n'.format(time.strftime("%d/%m/%Y, %H:%M"))
         for k in sorted(kwargs):
-            text += '  - **{}:** {} \n'.format(k, kwargs[k])
+            if isinstance(kwargs[k], dict):
+                dictionary = kwargs[k]
+                text += '  - **{}:**\n'.format(k)
+                for entry in sorted(dictionary):
+                    text += '    - {}: {} \n'.format(entry, dictionary[entry])
+            elif isinstance(kwargs[k], list):
+                text += '  - **{}:**\n'.format(k)
+                for entry in kwargs[k]:
+                    text += '    - {}\n'.format(entry)
+            else:
+                text += '  - **{}:** {} \n'.format(k, kwargs[k])
         outfile.write(text)
 
 def save_file(content, filename):
@@ -416,11 +426,11 @@ def demo_tweets(trainer):
 
     fields = ['id', 'text']
     positive_csv = 'positive_tweets.csv'
-    json2csv_preprocess(positive_json, positive_csv, fields, limit=5000)
+    # json2csv_preprocess(positive_json, positive_csv, fields, limit=5000)
 
     negative_json = twitter_samples.abspath("negative_tweets.json")
     negative_csv = 'negative_tweets.csv'
-    json2csv_preprocess(negative_json, negative_csv, fields, limit=5000)
+    # json2csv_preprocess(negative_json, negative_csv, fields, limit=5000)
 
     pos_docs = parse_tweets_set(positive_csv, label='pos', word_tokenizer=tokenizer)
     neg_docs = parse_tweets_set(negative_csv, label='neg', word_tokenizer=tokenizer)
@@ -455,12 +465,11 @@ def demo_tweets(trainer):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    accuracy = sa.evaluate(classifier, test_set)
-    print('Accuracy:', accuracy)
+    results = sa.evaluate(classifier, test_set)
 
     extr = [f.__name__ for f in sa.feat_extractors]
     output_markdown('results.md', Dataset='labeled_tweets', Classifier=type(classifier).__name__,
-                    Tokenizer=tokenizer.__class__.__name__, Feats=extr, Accuracy=accuracy,
+                    Tokenizer=tokenizer.__class__.__name__, Feats=extr, Results=results,
                     Notes='Remove stopwords')
 
 def demo_movie_reviews(trainer):
@@ -503,12 +512,11 @@ def demo_movie_reviews(trainer):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    accuracy = sa.evaluate(classifier, test_set)
-    print('Accuracy:', accuracy)
+    results = sa.evaluate(classifier, test_set)
 
     extr = [f.__name__ for f in sa.feat_extractors]
     output_markdown('results.md', Dataset='Movie_reviews', Classifier=type(classifier).__name__,
-                    Tokenizer='WordPunctTokenizer', Feats=extr, Accuracy=accuracy)
+                    Tokenizer='WordPunctTokenizer', Feats=extr, Results=results)
 
 def demo_subjectivity(trainer, save_analyzer=False):
     """
@@ -556,8 +564,7 @@ def demo_subjectivity(trainer, save_analyzer=False):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    accuracy = sentim_analyzer.evaluate(classifier, test_set)
-    print('Accuracy:', accuracy)
+    results = sentim_analyzer.evaluate(classifier, test_set)
 
     if save_analyzer == True:
         save_file(sentim_analyzer, 'sa_subjectivity.pickle')
@@ -565,7 +572,7 @@ def demo_subjectivity(trainer, save_analyzer=False):
     extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
     output_markdown('results.md', Dataset='subjectivity', Classifier=type(classifier).__name__,
                     Instances=2000, Tokenizer=word_tokenizer.__class__.__name__,
-                    Feats=extr, Accuracy=accuracy)
+                    Feats=extr, Results=results)
 
     return sentim_analyzer
 
