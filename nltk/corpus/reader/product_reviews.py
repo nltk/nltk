@@ -60,7 +60,6 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
 """
 import re
 
-from nltk.compat import string_types
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
@@ -76,6 +75,10 @@ class Review(object):
     A Review is the main block of a ProductReviewsCorpusReader.
     """
     def __init__(self, title=None, review_lines=None):
+        """
+        :param title: the title of the review.
+        :param review_lines: the list of the ReviewLines that belong to the Review.
+        """
         self.title = title
         if review_lines is None:
             self.review_lines = []
@@ -84,14 +87,19 @@ class Review(object):
 
     def add_line(self, review_line):
         """
-        Add a line (ReviewLine) to the review
+        Add a line (ReviewLine) to the review.
+
+        :param review_line: a ReviewLine instance that belongs to the Review.
         """
         assert isinstance(review_line, ReviewLine)
         self.review_lines.append(review_line)
 
     def features(self):
         """
-        :return: all features of the review as a list of tuples (feat, score)
+        Return a list of features in the review. Each feature is a tuple made of
+        the specific product feature and the opinion strength about that feature.
+
+        :return: all features of the review as a list of tuples (feat, score).
         :rtype: list(tuple)
         """
         features = []
@@ -101,6 +109,8 @@ class Review(object):
 
     def sents(self):
         """
+        Return all tokenized sentences in the review.
+
         :return: all sentences of the review as lists of tokens
         :rtype: list(list(str))
         """
@@ -169,12 +179,23 @@ class ProductReviewsCorpusReader(CorpusReader):
 
     def __init__(self, root, fileids, word_tokenizer=WordPunctTokenizer(),
                  encoding='utf8'):
+        """
+        :param root: The root directory for the corpus.
+        :param fileids: a list or regexp specifying the fileids in the corpus.
+        :param word_tokenizer: a tokenizer for breaking sentences or paragraphs
+            into words. Default: `WordPunctTokenizer`
+        :param encoding: the encoding that should be used to read the corpus.
+        """
 
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
 
     def features(self, fileids=None):
         """
+        Return a list of features. Each feature is a tuple made of the specific
+        product feature and the opinion strength about that feature.
+
+        :param fileids: a list or regexp specifying the fileids in this corpus.
         :return: all features for the product(s) in the given file(s).
         :rtype: list(tuple)
         """
@@ -187,6 +208,7 @@ class ProductReviewsCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
+        :param fileids: a list or regexp specifying the fileids in this corpus.
         :return: the given file(s) as a single string.
         :rtype: str
         """
@@ -198,12 +220,16 @@ class ProductReviewsCorpusReader(CorpusReader):
 
     def readme(self):
         """
-        Return the contents of the corpus Readme.txt file.
+        Return the contents of the corpus README.txt file.
         """
-        return self.open("Readme.txt").read()
+        return self.open("README.txt").read()
 
     def reviews(self, fileids=None):
         """
+        Return all the reviews as a list of Review objects. If `fileids` is
+        specified, return all the reviews from each of the specified files.
+
+        :param fileids: a list or regexp specifying the fileids in this corpus.
         :return: the given file(s) as a list of reviews.
         """
         if fileids is None:
@@ -213,6 +239,9 @@ class ProductReviewsCorpusReader(CorpusReader):
 
     def sents(self, fileids=None):
         """
+        Return all sentences in the corpus or in the specified files.
+
+        :param fileids: a list or regexp specifying the fileids in this corpus.
         :return: the given file(s) as a list of sentences, each encoded as a
             list of word strings.
         :rtype: list(list(str))
@@ -223,6 +252,10 @@ class ProductReviewsCorpusReader(CorpusReader):
 
     def words(self, fileids=None):
         """
+        Return all words and punctuation symbols in the corpus or in the specified
+        files.
+
+        :param fileids: a list or regexp specifying the fileids in this corpus.
         :return: the given file(s) as a list of words and punctuation symbols.
         :rtype: list(str)
         """
