@@ -80,7 +80,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
     Reader for the Comparative Sentence Dataset by Jindal and Liu (2006).
 
         >>> from nltk.corpus.util import LazyCorpusLoader
-        >>> corpus = LazyCorpusLoader('data', ComparativeSentencesCorpusReader, \
+        >>> corpus = LazyCorpusLoader('data', ComparativeSentencesCorpusReader,
             r'labeledSentences\.txt', encoding='latin-1')
         >>> comparison = corpus.comparisons()[0]
         >>> comparison.text
