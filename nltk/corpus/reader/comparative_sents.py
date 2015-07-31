@@ -35,7 +35,6 @@ Related papers:
 """
 import re
 
-from nltk.compat import string_types
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
