@@ -46,7 +46,7 @@ CLOSE_COMPARISON = re.compile(r'</cs-[1234]>')
 GRAD_COMPARISON = re.compile(r'<cs-[123]>')
 NON_GRAD_COMPARISON = re.compile(r'<cs-4>')
 ENTITIES_FEATS = re.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
-KEYWORD = re.compile(r'\((.*)\)$')
+KEYWORD = re.compile(r'\((?!.*\()(.*)\)$')
 
 class Comparison(object):
     """
@@ -73,8 +73,8 @@ class Comparison(object):
 
     def __repr__(self):
         return ("Comparison(text=\"{}\", comp_type={}, entity_1=\"{}\", entity_2=\"{}\", "
-            "feature=\"{}\", keyword=\"{}\")").format(self.text, self.comp_type,
-            self.entity_1, self.entity_2, self.feature, self.keyword)
+                "feature=\"{}\", keyword=\"{}\")").format(self.text, self.comp_type,
+                self.entity_1, self.entity_2, self.feature, self.keyword)
 
 class ComparativeSentencesCorpusReader(CorpusReader):
     """
@@ -129,6 +129,49 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         return concat([self.CorpusView(path, self._read_comparison_block, encoding=enc)
             for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
+    def keywords(self, fileids=None):
+        """
+        Return a set of all keywords used in the corpus.
+
+        :return: the set of keywords and comparative phrases used in the corpus.
+        :rtype: set(str)
+        """
+        all_keywords = concat([self.CorpusView(path, self._read_keyword_block, encoding=enc)
+                       for (path, enc, fileid)
+                       in self.abspaths(fileids, True, True)])
+        keywords_set = {keyword.lower() for keyword in all_keywords if keyword}
+        return keywords_set
+
+    def keywords_readme(self):
+        """
+        Return the list of words and constituents considered as clues of a
+        comparison (from listOfkeywords.txt).
+        """
+        keywords = []
+        raw_text = self.open("listOfkeywords.txt").read()
+        for line in raw_text.split("\n"):
+            if not line or line.startswith("//"):
+                continue
+            keywords.append(line.strip())
+        return keywords
+
+    def raw(self, fileids=None):
+        """
+        :return: the given file(s) as a single string.
+        :rtype: str
+        """
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
+
+    def readme(self):
+        """
+        Return the contents of the corpus readme file.
+        """
+        return self.open("README.txt").read()
+
     def sents(self, fileids=None):
         """
         Return all sentences in the corpus.
@@ -153,7 +196,6 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                        for (path, enc, fileid)
                        in self.abspaths(fileids, True, True)])
 
-
     def _read_comparison_block(self, stream):
         while True:
             line = stream.readline()
@@ -176,8 +218,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                     # Each comparison tag has its own relations on a separate line
                     for comp in grad_comparisons:
                         comp_type = int(re.match(r'<cs-(\d)>', comp).group(1))
-                        comparison = Comparison(text=comparison_text,
-                            comp_type=comp_type)
+                        comparison = Comparison(text=comparison_text, comp_type=comp_type)
                         line = stream.readline()
                         entities_feats = ENTITIES_FEATS.findall(line)
                         if entities_feats:
@@ -198,12 +239,17 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                     for comp in non_grad_comparisons:
                         # comp_type in this case should always be 4.
                         comp_type = int(re.match(r'<cs-(\d)>', comp).group(1))
-                        comparison = Comparison(text=comparison_text,
-                            comp_type=comp_type)
+                        comparison = Comparison(text=comparison_text, comp_type=comp_type)
                         comparison_bundle.append(comparison)
                 # Flatten the list of comparisons before returning them
                 # return concat([comparison_bundle])
                 return comparison_bundle
+
+    def _read_keyword_block(self, stream):
+        keywords = []
+        for comparison in self._read_comparison_block(stream):
+            keywords.append(comparison.keyword)
+        return keywords
 
     def _read_sent_block(self, stream):
         while True:
