@@ -105,6 +105,10 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
 
     def raw(self, fileids=None, categories=None):
         """
+        :param fileids: a list or regexp specifying the fileids that have to be
+            returned as a raw string.
+        :param categories: a list specifying the categories whose files have to
+            be returned as a raw string.
         :return: the given file(s) as a single string.
         :rtype: str
         """
@@ -125,6 +129,10 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         """
         Return all sentences in the corpus or in the specified file(s).
 
+        :param fileids: a list or regexp specifying the ids of the files whose
+            sentences have to be returned.
+        :param categories: a list specifying the categories whose sentences have
+            to be returned.
         :return: the given file(s) as a list of sentences.
             Each sentence is tokenized using the specified word_tokenizer.
         :rtype: list(list(str))
@@ -142,6 +150,10 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         Return all words and punctuation symbols in the corpus or in the specified
         file(s).
 
+        :param fileids: a list or regexp specifying the ids of the files whose
+            words have to be returned.
+        :param categories: a list specifying the categories whose words have to
+            be returned.
         :return: the given file(s) as a list of words and punctuation symbols.
         :rtype: list(str)
         """

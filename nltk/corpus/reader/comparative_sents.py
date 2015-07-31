@@ -117,7 +117,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         """
         Return all comparisons in the corpus.
 
-        :param fileids: a list or regexp specifying the fileids in this corpus.
+        :param fileids: a list or regexp specifying the ids of the files whose
+            comparisons have to be returned.
         :return: the given file(s) as a list of Comparison objects.
         :rtype: list(Comparison)
         """
@@ -132,6 +133,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         """
         Return a set of all keywords used in the corpus.
 
+        :param fileids: a list or regexp specifying the ids of the files whose
+            keywords have to be returned.
         :return: the set of keywords and comparative phrases used in the corpus.
         :rtype: set(str)
         """
@@ -156,6 +159,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
+        :param fileids: a list or regexp specifying the fileids that have to be
+            returned as a raw string.
         :return: the given file(s) as a single string.
         :rtype: str
         """
@@ -175,7 +180,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         """
         Return all sentences in the corpus.
 
-        :param fileids: a list or regexp specifying the fileids in this corpus.
+        :param fileids: a list or regexp specifying the ids of the files whose
+            sentences have to be returned.
         :return: all sentences of the corpus as lists of tokens (or as plain
             strings, if no word tokenizer is specified).
         :rtype: list(list(str)) or list(str)
@@ -187,7 +193,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         """
         Return all words and punctuation symbols in the corpus.
 
-        :param fileids: a list or regexp specifying the fileids in this corpus.
+        :param fileids: a list or regexp specifying the ids of the files whose
+            words have to be returned.
         :return: the given file(s) as a list of words and punctuation symbols.
         :rtype: list(str)
         """
