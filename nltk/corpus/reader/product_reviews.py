@@ -111,7 +111,7 @@ class Review(object):
         """
         Return all tokenized sentences in the review.
 
-        :return: all sentences of the review as lists of tokens
+        :return: all sentences of the review as lists of tokens.
         :rtype: list(list(str))
         """
         return [review_line.sent for review_line in self.review_lines]
@@ -195,7 +195,8 @@ class ProductReviewsCorpusReader(CorpusReader):
         Return a list of features. Each feature is a tuple made of the specific
         product feature and the opinion strength about that feature.
 
-        :param fileids: a list or regexp specifying the fileids in this corpus.
+        :param fileids: a list or regexp specifying the ids of the files whose
+            features have to be returned.
         :return: all features for the product(s) in the given file(s).
         :rtype: list(tuple)
         """
@@ -208,7 +209,8 @@ class ProductReviewsCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         """
-        :param fileids: a list or regexp specifying the fileids in this corpus.
+        :param fileids: a list or regexp specifying the fileids of the files that
+            have to be returned as a raw string.
         :return: the given file(s) as a single string.
         :rtype: str
         """
@@ -229,7 +231,8 @@ class ProductReviewsCorpusReader(CorpusReader):
         Return all the reviews as a list of Review objects. If `fileids` is
         specified, return all the reviews from each of the specified files.
 
-        :param fileids: a list or regexp specifying the fileids in this corpus.
+        :param fileids: a list or regexp specifying the ids of the files whose
+            reviews have to be returned.
         :return: the given file(s) as a list of reviews.
         """
         if fileids is None:
@@ -241,7 +244,8 @@ class ProductReviewsCorpusReader(CorpusReader):
         """
         Return all sentences in the corpus or in the specified files.
 
-        :param fileids: a list or regexp specifying the fileids in this corpus.
+        :param fileids: a list or regexp specifying the ids of the files whose
+            sentences have to be returned.
         :return: the given file(s) as a list of sentences, each encoded as a
             list of word strings.
         :rtype: list(list(str))
@@ -255,7 +259,8 @@ class ProductReviewsCorpusReader(CorpusReader):
         Return all words and punctuation symbols in the corpus or in the specified
         files.
 
-        :param fileids: a list or regexp specifying the fileids in this corpus.
+        :param fileids: a list or regexp specifying the ids of the files whose
+            words have to be returned.
         :return: the given file(s) as a list of words and punctuation symbols.
         :rtype: list(str)
         """

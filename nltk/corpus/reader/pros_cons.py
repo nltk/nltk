@@ -64,6 +64,10 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         """
         Return all sentences in the corpus or in the specified files/categories.
 
+        :param fileids: a list or regexp specifying the ids of the files whose
+            sentences have to be returned.
+        :param categories: a list specifying the categories whose sentences
+            have to be returned.
         :return: the given file(s) as a list of sentences. Each sentence is
             tokenized using the specified word_tokenizer.
         :rtype: list(list(str))
@@ -81,6 +85,10 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         Return all words and punctuation symbols in the corpus or in the specified
         files/categories.
 
+        :param fileids: a list or regexp specifying the ids of the files whose
+            words have to be returned.
+        :param categories: a list specifying the categories whose words have
+            to be returned.
         :return: the given file(s) as a list of words and punctuation symbols.
         :rtype: list(str)
         """
