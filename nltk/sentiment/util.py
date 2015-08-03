@@ -190,7 +190,17 @@ def output_markdown(filename, **kwargs):
         text = '\n*** \n\n'
         text += '{} \n\n'.format(time.strftime("%d/%m/%Y, %H:%M"))
         for k in sorted(kwargs):
-            text += '  - **{}:** {} \n'.format(k, kwargs[k])
+            if isinstance(kwargs[k], dict):
+                dictionary = kwargs[k]
+                text += '  - **{}:**\n'.format(k)
+                for entry in sorted(dictionary):
+                    text += '    - {}: {} \n'.format(entry, dictionary[entry])
+            elif isinstance(kwargs[k], list):
+                text += '  - **{}:**\n'.format(k)
+                for entry in kwargs[k]:
+                    text += '    - {}\n'.format(entry)
+            else:
+                text += '  - **{}:** {} \n'.format(k, kwargs[k])
         outfile.write(text)
 
 def save_file(content, filename):
@@ -416,11 +426,11 @@ def demo_tweets(trainer):
 
     fields = ['id', 'text']
     positive_csv = 'positive_tweets.csv'
-    json2csv_preprocess(positive_json, positive_csv, fields, limit=5000)
+    # json2csv_preprocess(positive_json, positive_csv, fields, limit=5000)
 
     negative_json = twitter_samples.abspath("negative_tweets.json")
     negative_csv = 'negative_tweets.csv'
-    json2csv_preprocess(negative_json, negative_csv, fields, limit=5000)
+    # json2csv_preprocess(negative_json, negative_csv, fields, limit=5000)
 
     pos_docs = parse_tweets_set(positive_csv, label='pos', word_tokenizer=tokenizer)
     neg_docs = parse_tweets_set(negative_csv, label='neg', word_tokenizer=tokenizer)
@@ -434,33 +444,32 @@ def demo_tweets(trainer):
     testing_tweets = test_pos_docs+test_neg_docs
 
     stopwords = stopwords.words('english')
-    sa = SentimentAnalyzer()
-    all_words = [word for word in sa.all_words(training_tweets) if word.lower() not in stopwords]
+    sentim_analyzer = SentimentAnalyzer()
+    all_words = [word for word in sentim_analyzer.all_words(training_tweets) if word.lower() not in stopwords]
 
     # Add simple unigram word features
-    unigram_feats = sa.unigram_word_feats(all_words, top_n=1000)
-    sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+    unigram_feats = sentim_analyzer.unigram_word_feats(all_words, top_n=1000)
+    sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Add bigram collocation features
-    bigram_collocs_feats = sa.bigram_collocation_feats([tweet[0] for tweet in training_tweets],
+    bigram_collocs_feats = sentim_analyzer.bigram_collocation_feats([tweet[0] for tweet in training_tweets],
         top_n=100, min_freq=12)
-    sa.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
+    sentim_analyzer.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
 
-    training_set = sa.apply_features(training_tweets)
-    test_set = sa.apply_features(testing_tweets)
+    training_set = sentim_analyzer.apply_features(training_tweets)
+    test_set = sentim_analyzer.apply_features(testing_tweets)
 
-    classifier = sa.train(trainer, training_set)
-    # classifier = sa.train(trainer, training_set, max_iter=4)
+    classifier = sentim_analyzer.train(trainer, training_set)
+    # classifier = sentim_analyzer.train(trainer, training_set, max_iter=4)
     try:
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    accuracy = sa.evaluate(classifier, test_set)
-    print('Accuracy:', accuracy)
+    results = sentim_analyzer.evaluate(classifier, test_set)
 
-    extr = [f.__name__ for f in sa.feat_extractors]
+    extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
     output_markdown('results.md', Dataset='labeled_tweets', Classifier=type(classifier).__name__,
-                    Tokenizer=tokenizer.__class__.__name__, Feats=extr, Accuracy=accuracy,
+                    Tokenizer=tokenizer.__class__.__name__, Feats=extr, Results=results,
                     Notes='Remove stopwords')
 
 def demo_movie_reviews(trainer):
@@ -487,28 +496,27 @@ def demo_movie_reviews(trainer):
     training_docs = train_pos_docs+train_neg_docs
     testing_docs = test_pos_docs+test_neg_docs
 
-    sa = SentimentAnalyzer()
-    all_words = sa.all_words(training_docs)
+    sentim_analyzer = SentimentAnalyzer()
+    all_words = sentim_analyzer.all_words(training_docs)
 
     # Add simple unigram word features
-    unigram_feats = sa.unigram_word_feats(all_words, min_freq=4)
-    sa.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+    unigram_feats = sentim_analyzer.unigram_word_feats(all_words, min_freq=4)
+    sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Apply features to obtain a feature-value representation of our datasets
-    training_set = sa.apply_features(training_docs)
-    test_set = sa.apply_features(testing_docs)
+    training_set = sentim_analyzer.apply_features(training_docs)
+    test_set = sentim_analyzer.apply_features(testing_docs)
 
-    classifier = sa.train(trainer, training_set)
+    classifier = sentim_analyzer.train(trainer, training_set)
     try:
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    accuracy = sa.evaluate(classifier, test_set)
-    print('Accuracy:', accuracy)
+    results = sentim_analyzer.evaluate(classifier, test_set)
 
-    extr = [f.__name__ for f in sa.feat_extractors]
+    extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
     output_markdown('results.md', Dataset='Movie_reviews', Classifier=type(classifier).__name__,
-                    Tokenizer='WordPunctTokenizer', Feats=extr, Accuracy=accuracy)
+                    Tokenizer='WordPunctTokenizer', Feats=extr, Results=results)
 
 def demo_subjectivity(trainer, save_analyzer=False):
     """
@@ -556,8 +564,7 @@ def demo_subjectivity(trainer, save_analyzer=False):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    accuracy = sentim_analyzer.evaluate(classifier, test_set)
-    print('Accuracy:', accuracy)
+    results = sentim_analyzer.evaluate(classifier, test_set)
 
     if save_analyzer == True:
         save_file(sentim_analyzer, 'sa_subjectivity.pickle')
@@ -565,7 +572,7 @@ def demo_subjectivity(trainer, save_analyzer=False):
     extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
     output_markdown('results.md', Dataset='subjectivity', Classifier=type(classifier).__name__,
                     Instances=2000, Tokenizer=word_tokenizer.__class__.__name__,
-                    Feats=extr, Accuracy=accuracy)
+                    Feats=extr, Results=results)
 
     return sentim_analyzer
 
@@ -655,9 +662,9 @@ if __name__ == '__main__':
     svm = SklearnClassifier(LinearSVC()).train
     maxent = MaxentClassifier.train
 
-    # demo_tweets(naive_bayes)
+    demo_tweets(naive_bayes)
     # demo_movie_reviews(svm)
     # demo_subjectivity(svm)
-    demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
+    # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
     # demo_liu_hu_lexicon("This movie was actually neither that funny, nor super witty.", plot=True)
     # demo_vader("This movie was actually neither that funny, nor super witty.")

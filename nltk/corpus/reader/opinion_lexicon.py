@@ -33,6 +33,9 @@ from nltk.corpus.reader import WordListCorpusReader
 from nltk.corpus.reader.api import *
 
 class IgnoreReadmeCorpusView(StreamBackedCorpusView):
+    """
+    This CorpusView is used to skip the initial readme block of the corpus.
+    """
     def __init__(self, *args, **kwargs):
         StreamBackedCorpusView.__init__(self, *args, **kwargs)
         # open self._stream
@@ -78,6 +81,11 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         """
         Return all words in the opinion lexicon. Note that these words are not
         sorted in alphabetical order.
+
+        :param fileids: a list or regexp specifying the ids of the files whose
+            words have to be returned.
+        :return: the given file(s) as a list of words and punctuation symbols.
+        :rtype: list(str)
         """
         if fileids is None: fileids = self._fileids
         elif isinstance(fileids, compat.string_types): fileids = [fileids]
@@ -87,12 +95,18 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
     def positive(self):
         """
         Return all positive words in alphabetical order.
+
+        :return: a list of positive words.
+        :rtype: list(str)
         """
         return self.words('positive-words.txt')
 
     def negative(self):
         """
         Return all negative words in alphabetical order.
+
+        :return: a list of negative words.
+        :rtype: list(str)
         """
         return self.words('negative-words.txt')
 
