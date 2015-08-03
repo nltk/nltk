@@ -356,9 +356,17 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                                   + "|" + xmlpost_rel.get('relation'))
                         except:
                             pass
+
+                    if suffixStem and not relation and not pos:
+                        word = word + "~" + suffixStem
+                        appendSuffixStem = False
+                    else:
+                        appendSuffixStem = True
+
                     sents.append(word)
-                    if suffixStem:
+                    if appendSuffixStem and suffixStem:
                         sents.append(suffixStem)
+
                 if sent or relation:
                     results.append(sents)
                 else:
