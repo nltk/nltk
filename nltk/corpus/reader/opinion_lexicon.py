@@ -50,8 +50,7 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
     """
     Reader for Liu and Hu opinion lexicon.  Blank lines and readme are ignored.
 
-        >>> from nltk.corpus.util import LazyCorpusLoader
-        >>> opinion_lexicon = LazyCorpusLoader('opinion_lexicon', OpinionLexiconCorpusReader, r'(\w+)\-words\.txt', encoding='ISO-8859-2')
+        >>> from nltk.corpus import opinion_lexicon
         >>> opinion_lexicon.words()
         ['2-faced', '2-faces', 'abnormal', 'abolish', ...]
         >>> opinion_lexicon.words('positive-words.txt')
