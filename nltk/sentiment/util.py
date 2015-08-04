@@ -590,7 +590,6 @@ def demo_liu_hu_lexicon(sentence, plot=False):
     :param sentence: a sentence whose polarity has to be classified.
     :param plot: if True, plot a visual representation of the sentence polarity.
     """
-    from nltk.corpus import LazyCorpusLoader
     from nltk.corpus import opinion_lexicon
     from nltk.tokenize import treebank
 
