@@ -59,16 +59,14 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
 
     Examples using the Sentence Polarity Dataset:
 
-    >>> polar_corpus = LazyCorpusLoader('rt-polaritydata', CategorizedSentencesCorpusReader,
-            r'rt-polarity\.(neg|pos)', cat_pattern=r'rt-polarity\.(neg|pos)',
-            encoding='utf-8')
-    >>> polar_corpus.sents()
+    >>> from nltk.corpus import sentence_polarity
+    >>> sentence_polarity.sents()
     [['simplistic', ',', 'silly', 'and', 'tedious', '.'], ["it's", 'so', 'laddish',
     'and', 'juvenile', ',', 'only', 'teenage', 'boys', 'could', 'possibly', 'find',
     'it', 'funny', '.'], ...]
-    >>> polar_corpus.categories()
+    >>> sentence_polarity.categories()
     ['neg', 'pos']
-    >>> polar_corpus.words(categories='pos')
+    >>> sentence_polarity.words(categories='pos')
     ['the', 'rock', 'is', 'destined', 'to', 'be', 'the', ...]
     """
 
