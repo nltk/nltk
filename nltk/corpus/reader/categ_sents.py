@@ -48,6 +48,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
     than all rows.
 
     Examples using the Subjectivity Dataset:
+
     >>> from nltk.corpus import subjectivity
     >>> subjectivity.sents()[23]
     ['television', 'made', 'him', 'famous', ',', 'but', 'his', 'biggest', 'hits',

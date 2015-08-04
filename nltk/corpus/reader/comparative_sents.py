@@ -79,10 +79,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
     """
     Reader for the Comparative Sentence Dataset by Jindal and Liu (2006).
 
-        >>> from nltk.corpus.util import LazyCorpusLoader
-        >>> corpus = LazyCorpusLoader('data', ComparativeSentencesCorpusReader,
-            r'labeledSentences\.txt', encoding='latin-1')
-        >>> comparison = corpus.comparisons()[0]
+        >>> from nltk.corpus import comparative_sentences
+        >>> comparison = comparative_sentences.comparisons()[0]
         >>> comparison.text
         ['its', 'fast-forward', 'and', 'rewind', 'work', 'much', 'more', 'smoothly',
         'and', 'consistently', 'than', 'those', 'of', 'other', 'models', 'i', "'ve",
@@ -91,9 +89,9 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         'models'
         >>> (comparison.feature, comparison.keyword)
         ('rewind', 'more')
-        >>> len(corpus.comparisons())
+        >>> len(comparative_sentences.comparisons())
         853
-        >>> corpus.words()
+        >>> comparative_sentences.words()
         ['troubleshooting', 'ad-2500', 'and', 'ad-2600', 'no', ...]
     """
     CorpusView = StreamBackedCorpusView

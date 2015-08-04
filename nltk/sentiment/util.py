@@ -591,11 +591,8 @@ def demo_liu_hu_lexicon(sentence, plot=False):
     :param plot: if True, plot a visual representation of the sentence polarity.
     """
     from nltk.corpus import LazyCorpusLoader
-    from nltk.corpus import OpinionLexiconCorpusReader
+    from nltk.corpus import opinion_lexicon
     from nltk.tokenize import treebank
-
-    opinion_lexicon = LazyCorpusLoader('opinion_lexicon', OpinionLexiconCorpusReader,
-                                       r'(\w+)\-words\.txt', encoding='ISO-8859-2')
 
     tokenizer = treebank.TreebankWordTokenizer()
     pos_words = 0
