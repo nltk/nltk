@@ -48,17 +48,13 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
     than all rows.
 
     Examples using the Subjectivity Dataset:
-
-    >>> from nltk.corpus.util import LazyCorpusLoader
-    >>> subj_corpus = LazyCorpusLoader('rotten_imdb', CategorizedSentencesCorpusReader,
-            r'(quote.tok.gt9_subj|plot.tok.gt9_obj)\.5000',
-            cat_pattern=r'.*_(subj|obj)\.5000', encoding='latin-1')
-    >>> subj_corpus.sents()[23]
+    >>> from nltk.corpus import subjectivity
+    >>> subjectivity.sents()[23]
     ['television', 'made', 'him', 'famous', ',', 'but', 'his', 'biggest', 'hits',
     'happened', 'off', 'screen', '.']
     >>> subj.categories()
     ['obj', 'subj']
-    >>> subj_corpus.words(categories='subj')
+    >>> subjectivity.words(categories='subj')
     ['smart', 'and', 'alert', ',', 'thirteen', ...]
 
     Examples using the Sentence Polarity Dataset:

@@ -189,6 +189,9 @@ state_union = LazyCorpusLoader(
     encoding='ISO-8859-2')
 stopwords = LazyCorpusLoader(
     'stopwords', WordListCorpusReader, r'(?!README|\.).*', encoding='utf8')
+subjectivity = LazyCorpusLoader(
+    'rotten_imdb', CategorizedSentencesCorpusReader, r'(quote.tok.gt9_subj|plot.tok.gt9_obj)\.5000',
+    cat_pattern=r'.*_(subj|obj)\.5000', encoding='latin-1')
 swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*', encoding='utf8')
 swadesh110 = LazyCorpusLoader(
