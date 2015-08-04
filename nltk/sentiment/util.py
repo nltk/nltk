@@ -388,17 +388,6 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
     print("Loaded {} tweets".format(i))
     return tweets
 
-def parse_subjectivity_dataset(filename, word_tokenizer, label=None):
-    """
-    Parse the Subjectivity Dataset by Pang and Lee.
-    """
-    with codecs.open(filename, 'rb') as inputfile:
-        docs = []
-        for line in inputfile:
-            tokenized_line = word_tokenizer.tokenize(line.decode('latin-1'))
-            docs.append((tokenized_line, label))
-    return docs
-
 #////////////////////////////////////////////////////////////
 #{ Demos
 #////////////////////////////////////////////////////////////
@@ -527,18 +516,12 @@ def demo_subjectivity(trainer, save_analyzer=False):
 
     :param trainer: `train` method of a classifier.
     """
-
     from sentiment_analyzer import SentimentAnalyzer
+    from nltk.corpus import subjectivity
     from nltk.tokenize import regexp
 
-    word_tokenizer = regexp.WhitespaceTokenizer()
-
-    subj_data = '/home/fievelk/nltk_data/corpora/rotten_imdb/quote.tok.gt9_subj.5000'
-    subj_docs = parse_subjectivity_dataset(subj_data, word_tokenizer=word_tokenizer,
-                                           label='subj')
-    obj_data = '/home/fievelk/nltk_data/corpora/rotten_imdb/plot.tok.gt9_obj.5000'
-    obj_docs = parse_subjectivity_dataset(obj_data, word_tokenizer=word_tokenizer,
-                                          label='obj')
+    subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')]
+    obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')]
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
