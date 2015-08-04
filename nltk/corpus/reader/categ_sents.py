@@ -53,7 +53,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
     >>> subjectivity.sents()[23]
     ['television', 'made', 'him', 'famous', ',', 'but', 'his', 'biggest', 'hits',
     'happened', 'off', 'screen', '.']
-    >>> subj.categories()
+    >>> subjectivity.categories()
     ['obj', 'subj']
     >>> subjectivity.words(categories='subj')
     ['smart', 'and', 'alert', ',', 'thirteen', ...]
