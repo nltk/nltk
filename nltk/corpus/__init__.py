@@ -177,6 +177,9 @@ rte = LazyCorpusLoader(
     'rte', RTECorpusReader, r'(?!\.).*\.xml')
 senseval = LazyCorpusLoader(
     'senseval', SensevalCorpusReader, r'(?!\.).*\.pos')
+sentence_polarity = LazyCorpusLoader(
+    'rt-polaritydata', CategorizedSentencesCorpusReader, r'rt-polarity\.(neg|pos)',
+    cat_pattern=r'rt-polarity\.(neg|pos)', encoding='utf-8')
 sentiwordnet = LazyCorpusLoader(
     'sentiwordnet', SentiWordNetCorpusReader, 'SentiWordNet_3.0.0.txt', encoding='utf-8')
 shakespeare = LazyCorpusLoader(
