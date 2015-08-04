@@ -178,13 +178,13 @@ class SentimentAnalyzer(object):
         return self.classifier
 
     @timer
-    def evaluate(self, classifier, test_set, accuracy=True, f_measure=True,
+    def evaluate(self, test_set, classifier=None, accuracy=True, f_measure=True,
                  precision=True, recall=True):
         """
         Evaluate and print classifier performance on the test set.
 
-        :param classifier: a classifier instance (previously trained).
         :param test_set: A list of (tokens, label) tuples to use as gold set.
+        :param classifier: a classifier instance (previously trained).
         :param accuracy: if `True`, evaluate classifier accuracy.
         :param f_measure: if `True`, evaluate classifier f_measure.
         :param precision: if `True`, evaluate classifier precision.
@@ -192,6 +192,8 @@ class SentimentAnalyzer(object):
         :return: evaluation results.
         :rtype: dict
         """
+        if classifier is None:
+            classifier = self.classifier
         print("Evaluating {} results...".format(type(classifier).__name__))
         metrics_results = {}
         if accuracy == True:
