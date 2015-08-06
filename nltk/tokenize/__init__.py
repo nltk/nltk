@@ -103,6 +103,3 @@ def word_tokenize(text, language='english'):
     return [token for sent in sent_tokenize(text, language)
             for token in _treebank_word_tokenize(sent)]
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

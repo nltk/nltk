@@ -128,8 +128,3 @@ class IBMModel1(object):
                 alignment.append((j, max_align_prob[1]))
 
         return AlignedSent(align_sent.words, align_sent.mots, alignment)
-
-# run doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
