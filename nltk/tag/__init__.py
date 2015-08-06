@@ -114,6 +114,3 @@ def pos_tag_sents(sentences):
     return tagger.tag_sents(sentences)
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

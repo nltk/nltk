@@ -168,10 +168,3 @@ def demo():
     classifier = partial_names_demo(PositiveNaiveBayesClassifier.train)
     classifier.show_most_informative_features()
 
-##//////////////////////////////////////////////////////
-##  Test
-##//////////////////////////////////////////////////////
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

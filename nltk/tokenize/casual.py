@@ -354,6 +354,3 @@ def casual_tokenize(text, preserve_case=True, reduce_len=False, strip_handles=Fa
 
 ###############################################################################
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -194,7 +194,3 @@ class IBMModel2(object):
 
         return AlignedSent(align_sent.words, align_sent.mots, alignment)
 
-# run doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
