@@ -58,7 +58,6 @@ class VectorSpaceClusterer(ClusterI):
 
         # assign the vectors to clusters
         if assign_clusters:
-            print(self._Tt, vectors)
             return [self.classify(vector) for vector in vectors]
 
     def cluster_vectorspace(self, vectors, trace):
