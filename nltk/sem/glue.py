@@ -541,6 +541,14 @@ class Glue(object):
         return [self.gfl_to_compiled(gfl) for gfl in gfls]
 
     def dep_parse(self, sentence):
+        """
+        Return a dependency graph for the sentence.
+
+        :param sentence: the sentence to be parsed
+        :type sentence: list(str)
+        :rtype: DependencyGraph
+        """
+
         #Lazy-initialize the depparser
         if self.depparser is None:
             from nltk.parse import MaltParser
