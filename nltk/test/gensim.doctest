@@ -40,7 +40,7 @@ NLTK also include a pre-trained model which is part of a model that is trained o
 The full model is from https://code.google.com/p/word2vec/  which is about 3 Gb.    
  	>>> from nltk.data import find
 	>>> word2vec_sample = str(find('models/word2vec_sample/pruned.word2vec.txt'))
-	>>> model = gensim.models.Word2Vec.load_word2vec_format(word2vec_sample)
+	>>> model = gensim.models.Word2Vec.load_word2vec_format(word2vec_sample, binary=False)
 	
 We pruned the model to only include the most common words (~44k words). 
 	>>> len(model.vocab)
