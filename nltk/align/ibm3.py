@@ -185,10 +185,10 @@ class IBMModel3(object):
         """
 
         # Initial probability of null insertion
-        self.p0 = 0.5
+        self.p1 = 0.5
         """
-        Probability that a generated word does not require another
-        target word that is aligned to NULL
+        Probability that a generated word requires another target word
+        that is aligned to NULL
         """
 
         # Get the translation and alignment probabilities from IBM model 2
@@ -332,7 +332,7 @@ class IBMModel3(object):
             self.translation_table = translation_table
             self.distortion_table = distortion_table
             self.fertility_table = fertility_table
-            self.p0 = 1 - p1
+            self.p1 = p1
 
     def sample(self, trg_sentence, src_sentence):
         """
@@ -441,13 +441,14 @@ class IBMModel3(object):
 
         m = len(trg_sentence)
         l = len(src_sentence) - 1
-        p1 = 1 - self.p0
+        p1 = self.p1
+        p0 = 1 - p1
 
         probability = 1.0
 
         # Combine NULL insertion probability
         probability *= (pow(p1, fertility_of_i[0]) *
-                        pow(self.p0, m - 2 * fertility_of_i[0]))
+                        pow(p0, m - 2 * fertility_of_i[0]))
         if probability == 0:
             return probability
 
