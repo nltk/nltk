@@ -23,7 +23,7 @@ from nltk.metrics import (BigramAssocMeasures, precision as eval_precision,
 
 from nltk.probability import FreqDist
 
-from util import save_file, timer
+from nltk.sentiment.util import save_file, timer
 
 class SentimentAnalyzer(object):
     """
