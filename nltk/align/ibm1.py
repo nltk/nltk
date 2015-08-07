@@ -92,70 +92,81 @@ class IBMModel1(object):
     0.333
     
     """
-    def __init__(self, align_sents, num_iter):
-        self.probabilities = self.train(align_sents, num_iter)
 
-    def train(self, align_sents, num_iter):
+    def __init__(self, sentence_aligned_corpus, iterations):
         """
-        Train on ``align_sents`` and create
+        Train on ``sentence_aligned_corpus`` and create
         a translation model.
 
         Translation direction is from ``AlignedSent.mots`` to
         ``AlignedSent.words``.
 
-        :param align_sents: Sentence-aligned parallel corpus
-        :type align_sents: list(AlignedSent)
+        :param sentence_aligned_corpus: Sentence-aligned parallel corpus
+        :type sentence_aligned_corpus: list(AlignedSent)
 
-        :param num_iter: Number of iterations to run training algorithm
-        :type num_iter: int
+        :param iterations: Number of iterations to run training algorithm
+        :type iterations: int
+        """
+
+        self.translation_table = self.train(sentence_aligned_corpus, iterations)
+        """
+        dict(dict(float)): probability(target word | source word). Values
+            accessed with ``translation_table[target_word][source_word].``
+        """
+
+    def train(self, parallel_corpus, iterations):
+        """
+        :return: A dictionary of translation probabilities
         """
 
         # Vocabulary of each language
-        fr_vocab = set()
-        en_vocab = set()
-        for alignSent in align_sents:
-            en_vocab.update(alignSent.words)
-            fr_vocab.update(alignSent.mots)
-        # Add the Null token
-        fr_vocab.add(None)
+        src_vocab = set()
+        trg_vocab = set()
+        for aligned_sentence in parallel_corpus:
+            trg_vocab.update(aligned_sentence.words)
+            src_vocab.update(aligned_sentence.mots)
+        # Add the NULL token
+        src_vocab.add(None)
 
-        # Initial probability
-        init_prob = 1 / len(en_vocab)
+        initial_prob = 1 / len(trg_vocab)
 
         # Create the translation model with initial probability
-        t_ef = defaultdict(lambda: defaultdict(lambda: init_prob))
+        translation_table = defaultdict(
+            lambda: defaultdict(lambda: initial_prob))
 
-        total_e = defaultdict(lambda: 0.0)
+        total_count = defaultdict(lambda: 0.0)
 
-        for i in range(0, num_iter):
-            count_ef = defaultdict(lambda: defaultdict(lambda: 0.0))
-            total_f = defaultdict(lambda: 0.0)
+        for i in range(0, iterations):
+            count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
+            count_any_t_given_s = defaultdict(lambda: 0.0)
 
-            for alignSent in align_sents:
-                en_set = alignSent.words
-                fr_set = [None] + alignSent.mots  
+            for aligned_sentence in parallel_corpus:
+                trg_sentence = aligned_sentence.words
+                src_sentence = [None] + aligned_sentence.mots
 
-                # Compute normalization
-                for e in en_set:
-                    total_e[e] = 0.0
-                    for f in fr_set:
-                        total_e[e] += t_ef[e][f]
+                # E step (a): Compute normalization factors to weigh counts
+                for t in trg_sentence:
+                    total_count[t] = 0.0
+                    for s in src_sentence:
+                        total_count[t] += translation_table[t][s]
 
-                # Collect counts
-                for e in en_set:
-                    for f in fr_set:
-                        c = t_ef[e][f] / total_e[e]
-                        count_ef[e][f] += c
-                        total_f[f] += c
+                # E step (b): Collect counts
+                for t in trg_sentence:
+                    for s in src_sentence:
+                        count = translation_table[t][s]
+                        normalized_count = count / total_count[t]
+                        count_t_given_s[t][s] += normalized_count
+                        count_any_t_given_s[s] += normalized_count
 
-            # Compute the estimate probabilities
-            for f in fr_vocab:
-                for e in en_vocab:
-                    t_ef[e][f] = count_ef[e][f] / total_f[f]
+            # M step: Update probabilities with maximum likelihood estimate
+            for s in src_vocab:
+                for t in trg_vocab:
+                    translation_table[t][s] = (count_t_given_s[t][s] /
+                                               count_any_t_given_s[s])
 
-        return t_ef
+        return translation_table
 
-    def align(self, align_sent):
+    def align(self, sentence_pair):
         """
         Determines the best word alignment for one sentence pair from
         the corpus that the model was trained on.
@@ -163,34 +174,33 @@ class IBMModel1(object):
         The original sentence pair is not modified. Results are
         undefined if ``sentence_pair`` is not in the training set.
 
-        :param align_sent: A sentence in the source language and its
+        :param sentence_pair: A sentence in the source language and its
             counterpart sentence in the target language
-        :type align_sent: AlignedSent
+        :type sentence_pair: AlignedSent
 
         :return: ``AlignedSent`` filled in with the best word alignment
         :rtype: AlignedSent
         """
 
-        if self.probabilities is None:
-            raise ValueError("The model does not train.")
+        if self.translation_table is None:
+            raise ValueError("The model has not been trained.")
 
         alignment = []
 
-        for j, en_word in enumerate(align_sent.words):
-            
-            # Initialize the maximum probability with Null token
-            max_align_prob = (self.probabilities[en_word][None], None)
-            for i, fr_word in enumerate(align_sent.mots):
-                # Find out the maximum probability
-                max_align_prob = max(max_align_prob,
-                    (self.probabilities[en_word][fr_word], i))
+        for j, trg_word in enumerate(sentence_pair.words):
+            # Initialize trg_word to align with the NULL token
+            best_alignment = (self.translation_table[trg_word][None], None)
+            for i, src_word in enumerate(sentence_pair.mots):
+                align_prob = self.translation_table[trg_word][src_word]
+                best_alignment = max(best_alignment, (align_prob, i))
 
-            # If the maximum probability is not Null token,
-            # then append it to the alignment. 
-            if max_align_prob[1] is not None:
-                alignment.append((j, max_align_prob[1]))
+            # If trg_word is not aligned to the NULL token,
+            # add it to the viterbi_alignment.
+            if best_alignment[1] is not None:
+                alignment.append((j, best_alignment[1]))
 
-        return AlignedSent(align_sent.words, align_sent.mots, alignment)
+        return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
+
 
 # run doctests
 if __name__ == "__main__":
