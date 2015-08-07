@@ -12,20 +12,70 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+The IBM models are a series of generative models that learn lexical
+translation probabilities, p(target language word|source language word),
+given a sentence-aligned parallel corpus.
+
+The models increase in sophistication from model 1 to 5. Typically, the
+output of lower models is used to seed the higher models. All models
+use the Expectation-Maximization (EM) algorithm to learn various
+probability tables.
+
+Words in a sentence are one-indexed. The first word of a sentence has
+position 1, not 0. Index 0 is reserved in the source sentence for the
+NULL token. The concept of position does not apply to NULL, but it is
+indexed at 0 by convention.
+
+Each target word is aligned to exactly one source word or the NULL
+token.
+
+Notations
+i: Position in the source sentence
+    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+j: Position in the target sentence
+    Valid values are 1, 2, ..., length of target sentence
+s: A word in the source language
+t: A word in the target language
+
+
+In IBM Model 1, word order is ignored for simplicity. Thus, the
+following two alignments are equally likely.
+
+Source: je mange du jambon
+Target: i eat some ham
+Alignment: (1,1) (2,2) (3,3) (4,4)
+
+Source: je mange du jambon
+Target: some ham eat i
+Alignment: (1,4) (2,3) (3,2) (4,1)
+
+The EM algorithm used in Model 1 is:
+E step - In the training data, count how many times a source language
+         word is translated into a target language word, weighted by
+         the prior probability of the translation.
+
+M step - Estimate the new probability of translation based on the
+         counts from the Expectation step.
+
+
+References:
+Philipp Koehn. 2010. Statistical Machine Translation.
+Cambridge University Press, New York.
+
+Peter E Brown, Stephen A. Della Pietra, Vincent J. Della Pietra, and
+Robert L. Mercer. 1993. The Mathematics of Statistical Machine
+Translation: Parameter Estimation. Computational Linguistics, 19 (2),
+263-311.
+"""
+
 from __future__  import division
 from collections import defaultdict
 from nltk.align  import AlignedSent
 
 class IBMModel1(object):
     """
-    This class implements the algorithm of Expectation Maximization for 
-    the IBM Model 1. 
-
-    Step 1 - Collect the evidence of a English word being translated by a 
-             foreign language word.
-
-    Step 2 - Estimate the probability of translation according to the 
-             evidence from Step 1. 
+    Lexical translation model that ignores word order
 
     >>> from nltk.corpus import comtrans
     >>> bitexts = comtrans.aligned_sents()[:100]
@@ -47,15 +97,17 @@ class IBMModel1(object):
 
     def train(self, align_sents, num_iter):
         """
-        Return the translation probability model trained by IBM model 1. 
+        Train on ``align_sents`` and create
+        a translation model.
 
-        Arguments:
-        align_sents   -- A list of instances of AlignedSent class, which
-                        contains sentence pairs. 
-        num_iter     -- The number of iterations.
+        Translation direction is from ``AlignedSent.mots`` to
+        ``AlignedSent.words``.
 
-        Returns:
-        t_ef         -- A dictionary of translation probabilities. 
+        :param align_sents: Sentence-aligned parallel corpus
+        :type align_sents: list(AlignedSent)
+
+        :param num_iter: Number of iterations to run training algorithm
+        :type num_iter: int
         """
 
         # Vocabulary of each language
@@ -105,7 +157,18 @@ class IBMModel1(object):
 
     def align(self, align_sent):
         """
-        Returns the alignment result for one sentence pair. 
+        Determines the best word alignment for one sentence pair from
+        the corpus that the model was trained on.
+
+        The original sentence pair is not modified. Results are
+        undefined if ``sentence_pair`` is not in the training set.
+
+        :param align_sent: A sentence in the source language and its
+            counterpart sentence in the target language
+        :type align_sent: AlignedSent
+
+        :return: ``AlignedSent`` filled in with the best word alignment
+        :rtype: AlignedSent
         """
 
         if self.probabilities is None:

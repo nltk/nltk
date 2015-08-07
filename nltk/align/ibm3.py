@@ -6,6 +6,86 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+The IBM models are a series of generative models that learn lexical
+translation probabilities, p(target language word|source language word),
+given a sentence-aligned parallel corpus.
+
+The models increase in sophistication from model 1 to 5. Typically, the
+output of lower models is used to seed the higher models. All models
+use the Expectation-Maximization (EM) algorithm to learn various
+probability tables.
+
+Words in a sentence are one-indexed. The first word of a sentence has
+position 1, not 0. Index 0 is reserved in the source sentence for the
+NULL token. The concept of position does not apply to NULL, but it is
+indexed at 0 by convention.
+
+Each target word is aligned to exactly one source word or the NULL
+token.
+
+Notations
+i: Position in the source sentence
+    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+j: Position in the target sentence
+    Valid values are 1, 2, ..., length of target sentence
+l: Number of words in the source sentence
+m: Number of words in the target sentence
+s: A word in the source language
+t: A word in the target language
+phi: Fertility, the number of target words produced by a source word
+p1: Probability that a target word produced by a source word is
+    accompanied by another target word that is aligned to NULL
+p0: 1 - p1
+
+IBM Model 3 improves on Model 2 by directly modeling the phenomenon
+where a word in one language may be translated into zero or more words
+in another. This is expressed by the fertility probability,
+n(phi | source word).
+
+If a source word translates into more than one word, it is possible to
+generate sentences that have the same alignment in multiple ways. This
+is modeled by a distortion step. The distortion probability, d(j|i,l,m),
+predicts a target word position, given its aligned source word's
+position. The distortion probability replaces the alignment probability
+of Model 2.
+
+The fertility probability is not applicable for NULL. Target words that
+align to NULL are assumed to be distributed uniformly in the target
+sentence. The existence of these words is modeled by p1, the probability
+that a target word produced by a real source word requires another
+target word that is produced by NULL.
+
+The EM algorithm used in Model 3 is:
+E step - In the training data, collect counts, weighted by prior
+         probabilities.
+         (a) count how many times a source language word is translated
+             into a target language word
+         (b) count how many times a particular position in the target
+             sentence is aligned to a particular position in the source
+             sentence
+         (c) count how many times a source word is aligned to phi number
+             of target words
+         (d) count how many times NULL is aligned to a target word
+
+M step - Estimate new probabilities based on the counts from the E step
+
+Because there are too many possible alignments, only the most probable
+ones are considered. First, the best alignment is determined using prior
+probabilities. Then, a hill climbing approach is used to find other good
+candidates.
+
+
+References:
+Philipp Koehn. 2010. Statistical Machine Translation.
+Cambridge University Press, New York.
+
+Peter E Brown, Stephen A. Della Pietra, Vincent J. Della Pietra, and
+Robert L. Mercer. 1993. The Mathematics of Statistical Machine
+Translation: Parameter Estimation. Computational Linguistics, 19 (2),
+263-311.
+"""
+
 from __future__  import division
 from collections import defaultdict
 from nltk.align  import AlignedSent
@@ -14,8 +94,7 @@ from math import factorial
 
 class HashableDict(dict):
     """
-    This class implements a hashable dict, which can be 
-    put into a set.
+    Hashable dictionary which can be put into a set.
     """
     def __key(self):
         return tuple((k,self[k]) for k in sorted(self))
@@ -28,19 +107,8 @@ class HashableDict(dict):
 
 class IBMModel3(object):
     """
-    This class implements the algorithm of Expectation Maximization for 
-    the IBM Model 3. 
-
-    Step 1 - Run a number of iterations of IBM Model 2 and get the initial
-             distribution of translation probability. 
-
-    Step 2 - Sample the alignment spaces by using the hillclimb approach. 
-
-    Step 3 - Collect the evidence of translation probabilities, distortion, 
-    		 the probability of null insertion, and fertility. 
-
-    Step 4 - Estimate the new probabilities according to the evidence from 
-             Step 3. 
+    Translation model that considers how a word can be aligned to
+    multiple words in another language
 
     >>> align_sents = []
     >>> align_sents.append(AlignedSent(['klein', 'ist', 'das', 'Haus'], ['the', 'house', 'is', 'small']))
@@ -68,6 +136,24 @@ class IBMModel3(object):
     """
 
     def __init__(self, align_sents, num_iter):
+        """
+        Train on ``align_sents`` and create a
+        translation model, a distortion model, a fertility model, and a
+        model for generating NULL-aligned words.
+
+        Translation direction is from ``AlignedSent.mots`` to
+        ``AlignedSent.words``.
+
+        Runs a few iterations of Model 2 training to initialize
+        model parameters.
+
+        :param align_sents: Sentence-aligned parallel corpus
+        :type align_sents: list(AlignedSent)
+
+        :param num_iter: Number of iterations to run training algorithm
+        :type num_iter: int
+        """
+
         # If there is not an initial value, it throws an exception of 
         # the number divided by zero. And the value of computing 
         # probability will be always zero.
@@ -78,9 +164,7 @@ class IBMModel3(object):
 
     def train(self, align_sents, num_iter):
         """
-        This function is the main process of training model, which
-        initialize all the probability distributions and executes 
-        a specific number of iterations. 
+        Learns and sets probability tables
         """
         # Get the translation and alignment probabilities from IBM model 2
         ibm2 = IBMModel2(align_sents, num_iter)
@@ -200,11 +284,17 @@ class IBMModel3(object):
 
     def sample(self, e, f):
         """
-        This function returns a sample from the entire alignment space.
-        First, it pegs one alignment point and finds out the best alignment
-        through the IBM model 2. Then, using the hillclimb approach, it 
-        finds out the best alignment on local and returns all its neighborings,
-        which are swapped or moved one distance from the best alignment.
+        Sample the most probable alignments from the entire alignment
+        space
+
+        First, peg one alignment point and determine the best alignment
+        according to IBM Model 2. With this initial alignment, use hill
+        climbing to determine the best alignment according to Model 3.
+        This alignment and its neighbors are added to the sample set.
+        This process is repeated by pegging different alignment points.
+
+        Hill climbing may be stuck in a local maxima, hence the pegging
+        and trying out of different alignments.
         """
         A = set()
 
@@ -230,19 +320,7 @@ class IBMModel3(object):
                         maxalignment = 0
                         besti = 1
 
-                        for ii in range(0, lf+1): 
-                            # Notice that the probabilities returned by IBM model 2, 
-                            # which is not distortion, is alignment. 
-                            #
-                            # The alignment probability predicts foreign input word
-                            # positions conditioned on English output word positions.
-                            # However, the distortion probability in a reverse direction
-                            # predicts the output word position based on input word 
-                            # position. 
-                            # 
-                            # Actually, you cannot just change the index to get a 
-                            # distortion from alignment table, because its process of 
-                            # collecting evidence is different from each other.
+                        for ii in range(0, lf+1):
                             alignment = self.probabilities[e[jj-1]][f[ii]] * self.align_table[ii][jj][le][lf]
                             if alignment > maxalignment:
                                 maxalignment = alignment
@@ -259,12 +337,15 @@ class IBMModel3(object):
 
     def hillclimb(self, a, j_pegged, es, fs, fert):
         """
-        This function returns the best alignment on local. It gets 
-        some neighboring alignments and finds out the alignment with 
-        highest probability in those alignment spaces. If the current
-        alignment recorded has the highest probability, then stop the
-        search loop. If not, then continue the search loop until it 
-        finds out the highest probability of alignment in local.
+        Starting from ``a``, look at neighboring alignments
+        iteratively for the best one
+
+        There is no guarantee that the best alignment in the alignment
+        space will be found, because the algorithm might be stuck in a
+        local maximum.
+
+        :return: The best alignment found from hill climbing
+        :rtype: AlignedSent
         """
         so_far_fert = fert
 
@@ -287,11 +368,8 @@ class IBMModel3(object):
 
     def probability(self, a, es, fs, Fert):
         """
-        This function returns the probability given an alignment. 
-        The Fert variable is math syntax 'Phi' in the fomula, which 
-        represents the fertility according to the current alignment,
-        which records how many output words are generated by each 
-        input word.
+        Probability of ``es`` and ``a`` given
+        ``fs``
         """
         l_e = len(es)
         l_f = len(fs) - 1
@@ -330,8 +408,9 @@ class IBMModel3(object):
 
     def neighboring(self, a, j_pegged, es, fs, fert):
         """
-        This function returns the neighboring alignments from
-        the given alignment by moving or swapping one distance.
+        :return: Neighbors of ``a`` obtained by moving or
+            swapping one alignment point, with the corresponding fertility
+        :rtype: set(tuple(HashableDict(int), int))
         """
         N = set()
 
@@ -370,7 +449,21 @@ class IBMModel3(object):
 
     def align(self, align_sent):
         """
-        Returns the alignment result for one sentence pair. 
+        Determines the best word alignment for one sentence pair from
+        the corpus that the model was trained on.
+
+        The original sentence pair is not modified. Results are
+        undefined if ``align_sent`` is not in the training set.
+
+        Note that the algorithm used is not strictly Model 3, because
+        fertilities and NULL insertion probabilities are ignored.
+
+        :param align_sent: A sentence in the source language and its
+            counterpart sentence in the target language
+        :type align_sent: AlignedSent
+
+        :return: ``AlignedSent`` filled in with the best word alignment
+        :rtype: AlignedSent
         """
 
         if self.probabilities is None or self.distortion is None:

@@ -6,6 +6,61 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+The IBM models are a series of generative models that learn lexical
+translation probabilities, p(target language word|source language word),
+given a sentence-aligned parallel corpus.
+
+The models increase in sophistication from model 1 to 5. Typically, the
+output of lower models is used to seed the higher models. All models
+use the Expectation-Maximization (EM) algorithm to learn various
+probability tables.
+
+Words in a sentence are one-indexed. The first word of a sentence has
+position 1, not 0. Index 0 is reserved in the source sentence for the
+NULL token. The concept of position does not apply to NULL, but it is
+indexed at 0 by convention.
+
+Each target word is aligned to exactly one source word or the NULL
+token.
+
+Notations
+i: Position in the source sentence
+    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+j: Position in the target sentence
+    Valid values are 1, 2, ..., length of target sentence
+l: Number of words in the source sentence
+m: Number of words in the target sentence
+s: A word in the source language
+t: A word in the target language
+
+
+IBM Model 2 improves on Model 1 by accounting for word order.
+An alignment probability is introduced, a(i | j,l,m), which predicts
+a source word position, given its aligned target word's position.
+
+The EM algorithm used in Model 2 is:
+E step - In the training data, collect counts, weighted by prior
+         probabilities.
+         (a) count how many times a source language word is translated
+             into a target language word
+         (b) count how many times a particular position in the source
+             sentence is aligned to a particular position in the target
+             sentence
+
+M step - Estimate new probabilities based on the counts from the E step
+
+
+References:
+Philipp Koehn. 2010. Statistical Machine Translation.
+Cambridge University Press, New York.
+
+Peter E Brown, Stephen A. Della Pietra, Vincent J. Della Pietra, and
+Robert L. Mercer. 1993. The Mathematics of Statistical Machine
+Translation: Parameter Estimation. Computational Linguistics, 19 (2),
+263-311.
+"""
+
 from __future__  import division
 from collections import defaultdict
 from nltk.align  import AlignedSent
@@ -13,17 +68,7 @@ from nltk.align.ibm1 import IBMModel1
 
 class IBMModel2(object):
     """
-    This class implements the algorithm of Expectation Maximization for 
-    the IBM Model 2. 
-
-    Step 1 - Run a number of iterations of IBM Model 1 and get the initial
-             distribution of translation probability. 
-
-    Step 2 - Collect the evidence of an English word being translated by a 
-             foreign language word.
-
-    Step 3 - Estimate the probability of translation and alignment according 
-             to the evidence from Step 2. 
+    Lexical translation model that considers word order
 
     >>> from nltk.corpus import comtrans
     >>> bitexts = comtrans.aligned_sents()[:100]
@@ -48,16 +93,20 @@ class IBMModel2(object):
 
     def train(self, align_sents, num_iter):
         """
-        Return the translation and alignment probability distributions
-        trained by the Expectation Maximization algorithm for IBM Model 2. 
+        Train on ``align_sents`` and create
+        a translation model and an alignment model.
 
-        Arguments:
-        align_sents   -- A list contains some sentence pairs.
-        num_iter     -- The number of iterations.
+        Translation direction is from ``AlignedSent.mots`` to
+        ``AlignedSent.words``.
 
-        Returns:
-        t_ef         -- A distribution of translation probabilities.
-        align        -- A distribution of alignment probabilities.
+        Runs a few iterations of Model 1 training to initialize
+        model parameters.
+
+        :param align_sents: Sentence-aligned parallel corpus
+        :type align_sents: list(AlignedSent)
+
+        :param num_iter: Number of iterations to run training algorithm
+        :type num_iter: int
         """
 
         # Get initial translation probability distribution
@@ -167,7 +216,18 @@ class IBMModel2(object):
 
     def align(self, align_sent):
         """
-        Returns the alignment result for one sentence pair. 
+        Determines the best word alignment for one sentence pair from
+        the corpus that the model was trained on.
+
+        The original sentence pair is not modified. Results are
+        undefined if ``align_sent`` is not in the training set.
+
+        :param align_sent: A sentence in the source language and its
+            counterpart sentence in the target language
+        :type align_sent: AlignedSent
+
+        :return: ``AlignedSent`` filled in with the best word alignment
+        :rtype: AlignedSent
         """
 
         if self.probabilities is None or self.alignments is None:
