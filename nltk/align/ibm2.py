@@ -108,26 +108,23 @@ class IBMModel2(object):
         :type iterations: int
         """
 
-        output = self.train(sentence_aligned_corpus, iterations)
-        self.translation_table = output[0]
+        self.translation_table = defaultdict(lambda: defaultdict(lambda: float))
         """
-        dict(dict(float)): probability(target word | source word). Values
-            accessed with ``translation_table[target_word][source_word].``
+        Probability(target word | source word). Values accessed as
+        ``translation_table[target_word][source_word].``
         """
 
-        self.alignment_table = output[1]
+        self.alignment_table = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: float))))
         """
-        dict(dict(dict(dict(float)))): probability(i | j,l,m). Values
-            accessed with ``alignment_table[i][j][m][l].``
+        Probability(i | j,l,m). Values accessed as
+        ``alignment_table[i][j][m][l].``
         """
+
+        self.train(sentence_aligned_corpus, iterations)
 
     def train(self, parallel_corpus, iterations):
-        """
-        :return: A 2-tuple containing a dictionary of translation
-            probabilities and a dictionary of alignment probabilities
-        :rtype: tuple(dict(dict(int)), dict(dict(dict(dict(int)))))
-        """
-
         # Get initial translation probability distribution
         # from a few iterations of Model 1 training.
         ibm1 = IBMModel1(parallel_corpus, 10)
@@ -247,7 +244,8 @@ class IBMModel2(object):
                             alignment_count[i][j][m][l] /
                             alignment_count_for_any_i[j][m][l])
 
-        return translation_table, alignment_table
+        self.translation_table = translation_table
+        self.alignment_table = alignment_table
 
     def align(self, sentence_pair):
         """

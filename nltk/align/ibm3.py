@@ -163,22 +163,48 @@ class IBMModel3(object):
         # than 1
         self.PROB_SMOOTH = 0.1
 
+        self.translation_table = defaultdict(lambda: defaultdict(lambda: float))
+        """
+        Probability(target word | source word). Values accessed as
+        ``translation_table[target_word][source_word].``
+        """
+
+        self.distortion_table = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: self.PROB_SMOOTH))))
+        """
+        Probability(j | i,l,m). Values accessed as
+        ``distortion_table[j][i][m][l].``
+        """
+
+        self.fertility_table = defaultdict(
+            lambda: defaultdict(lambda: self.PROB_SMOOTH))
+        """
+        Probability(fertility | source word). Values accessed as
+        ``fertility_table[fertility][source_word].``
+        """
+
+        # Initial probability of null insertion
+        self.p0 = 0.5
+        """
+        Probability that a generated word does not require another
+        target word that is aligned to NULL
+        """
+
+        # Get the translation and alignment probabilities from IBM model 2
+        ibm2 = IBMModel2(sentence_aligned_corpus, iterations)
+        self.translation_table = ibm2.translation_table
+
+        # Alignment table is only used for hill climbing and is not part
+        # of the output of Model 3 training
+        self.__alignment_table = ibm2.alignment_table
+
         self.train(sentence_aligned_corpus, iterations)
 
     def train(self, parallel_corpus, iterations):
         """
         Learns and sets probability tables
         """
-
-        # Get the translation and alignment probabilities from IBM model 2
-        ibm2 = IBMModel2(parallel_corpus, iterations)
-        self.translation_table = ibm2.translation_table
-        """
-        dict(dict(float)): probability(target word | source word). Values
-            accessed with ``translation_table[target_word][source_word].``
-        """
-
-        self.alignment_table = ibm2.alignment_table
 
         src_vocab = set()
         trg_vocab = set()
@@ -188,30 +214,9 @@ class IBMModel3(object):
         # Add the NULL token
         src_vocab.add(None)
 
-        # Initial probability of null insertion
-        self.p0 = 0.5
-        """
-        float: probability that a generated word does not require
-            another target word that is aligned to NULL
-        """
-
-        self.fertility_table = defaultdict(
-            lambda: defaultdict(lambda: self.PROB_SMOOTH))
-        """
-        dict(dict(float)))): probability(fertility | source word). Values
-            accessed with ``fertility_table[fertility][source_word].``
-        """
-
-        self.distortion_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                lambda: self.PROB_SMOOTH))))
-        """
-        dict(dict(dict(dict(float)))): probability(j | i,l,m). Values
-            accessed with ``distortion_table[j][i][m][l].``
-        """
-
         for k in range(0, iterations):
             max_fertility = 0
+
             # Reset all counts
             count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
             count_any_t_given_s = defaultdict(lambda: 0.0)
@@ -287,20 +292,18 @@ class IBMModel3(object):
                         if fertility > max_fertility:
                             max_fertility = fertility
 
-            self.translation_table = defaultdict(
-                lambda: defaultdict(lambda: 0.0)
-            )
-            self.distortion_table = defaultdict(
+            translation_table = defaultdict(lambda: defaultdict(lambda: 0.0))
+            distortion_table = defaultdict(
                 lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
                     lambda: 0.0)))
             )
-            self.fertility_table = defaultdict(lambda: defaultdict(lambda: 0.0))
+            fertility_table = defaultdict(lambda: defaultdict(lambda: 0.0))
 
             # M step: Update probabilities with maximum likelihood estimates
             # Lexical translation
             for s in src_vocab:
                 for t in trg_vocab:
-                    self.translation_table[t][s] = (count_t_given_s[t][s] /
+                    translation_table[t][s] = (count_t_given_s[t][s] /
                                                     count_any_t_given_s[s])
 
             # Distortion
@@ -312,19 +315,23 @@ class IBMModel3(object):
 
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
-                        self.distortion_table[j][i][m][l] = (
+                        distortion_table[j][i][m][l] = (
                             distortion_count[j][i][m][l] /
                             distortion_count_for_any_j[i][m][l])
 
             # Fertility
             for fertility in range(0, max_fertility + 1):
                 for s in src_vocab:
-                    self.fertility_table[fertility][s] = (
+                    fertility_table[fertility][s] = (
                         fertility_count[fertility][s] /
                         fertility_count_for_any_phi[s])
 
             # NULL-aligned words generation
             p1 = count_p1 / (count_p1 + count_p0)
+
+            self.translation_table = translation_table
+            self.distortion_table = distortion_table
+            self.fertility_table = fertility_table
             self.p0 = 1 - p1
 
     def sample(self, trg_sentence, src_sentence):
@@ -370,7 +377,7 @@ class IBMModel3(object):
                             s = src_sentence[ii]
                             t = trg_sentence[jj - 1]
                             alignment_prob = (self.translation_table[t][s] *
-                                         self.alignment_table[ii][jj][m][l])
+                                         self.__alignment_table[ii][jj][m][l])
                             if alignment_prob > max_alignment_prob:
                                 max_alignment_prob = alignment_prob
                                 best_i = ii

@@ -108,17 +108,15 @@ class IBMModel1(object):
         :type iterations: int
         """
 
-        self.translation_table = self.train(sentence_aligned_corpus, iterations)
+        self.translation_table = defaultdict(lambda: defaultdict(lambda: float))
         """
-        dict(dict(float)): probability(target word | source word). Values
-            accessed with ``translation_table[target_word][source_word].``
+        Probability(target word | source word). Values accessed as
+        ``translation_table[target_word][source_word].``
         """
+
+        self.train(sentence_aligned_corpus, iterations)
 
     def train(self, parallel_corpus, iterations):
-        """
-        :return: A dictionary of translation probabilities
-        """
-
         # Vocabulary of each language
         src_vocab = set()
         trg_vocab = set()
@@ -164,7 +162,7 @@ class IBMModel1(object):
                     translation_table[t][s] = (count_t_given_s[t][s] /
                                                count_any_t_given_s[s])
 
-        return translation_table
+        self.translation_table = translation_table
 
     def align(self, sentence_pair):
         """
