@@ -67,8 +67,6 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
     'it', 'funny', '.'], ...]
     >>> sentence_polarity.categories()
     ['neg', 'pos']
-    >>> sentence_polarity.words(categories='pos')
-    ['the', 'rock', 'is', 'destined', 'to', 'be', 'the', ...]
     """
 
     CorpusView = StreamBackedCorpusView
