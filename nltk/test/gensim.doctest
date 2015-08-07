@@ -39,8 +39,8 @@ Using the pre-trained model
 NLTK also include a pre-trained model which is part of a model that is trained on 100 billion words from Google News Dataset. 
 The full model is from https://code.google.com/p/word2vec/  which is about 3 Gb.    
  	>>> from nltk.data import find
-	>>> word2vec_sample = str(find('models/word2vec_sample/pruned.word2vec.bin'))
-	>>> model = gensim.models.Word2Vec.load(word2vec_sample)
+	>>> word2vec_sample = str(find('models/word2vec_sample/pruned.word2vec.txt'))
+	>>> model = gensim.models.Word2Vec.load_word2vec_format(word2vec_sample, binary=False)
 	
 We pruned the model to only include the most common words (~44k words). 
 	>>> len(model.vocab)
@@ -107,9 +107,9 @@ Prune the trained binary model
 Here is the supporting code to extract part of the binary model (GoogleNews-vectors-negative300.bin.gz) from  https://code.google.com/p/word2vec/
 We use this code to get the  `word2vec_sample` model. 
 
-	import gensim
-	from gensim.models.word2vec import Word2Vec
-	# Load the binary model 
+    import gensim
+    from gensim.models.word2vec import Word2Vec
+    # Load the binary model 
     model = Word2Vec.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary = True);
     
     # Only output word that appear in the Brown corpus 
@@ -129,16 +129,3 @@ We use this code to get the  `word2vec_sample` model.
                         
     f.close()
     
-    # Reload the model from text file 
-    new_model = Word2Vec.load_word2vec_format(out_file, binary=False);
-    
-    # Save it as the Gensim model
-    gensim_model = "pruned.word2vec.bin" 
-    new_model.save(gensim_model)
-    
-    # Load the model 
-    very_new_model = gensim.models.Word2Vec.load(gensim_model)
-    
-    # Test it 
-    very_new_model.most_similar(positive=['king','woman'], negative=['man'], topn=1)	
-	
