@@ -53,14 +53,10 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         >>> from nltk.corpus import opinion_lexicon
         >>> opinion_lexicon.words()
         ['2-faced', '2-faces', 'abnormal', 'abolish', ...]
-        >>> opinion_lexicon.words('positive-words.txt')
-        ['a+', 'abound', 'abounds', 'abundance', 'abundant', ...]
 
     The OpinionLexiconCorpusReader provides shortcuts to retrieve positive/negative
     words:
 
-        >>> opinion_lexicon.positive()
-        ['a+', 'abound', 'abounds', 'abundance', 'abundant', ...]
         >>> opinion_lexicon.negative()
         ['2-faced', '2-faces', 'abnormal', 'abolish', ...]
 

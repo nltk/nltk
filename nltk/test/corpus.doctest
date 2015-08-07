@@ -575,16 +575,12 @@ opinion_lexicon
 A list of positive and negative opinion words or sentiment words for English.
 
     >>> from nltk.corpus import opinion_lexicon
-    >>> opinion_lexicon.words('positive-words.txt')[:4]
-    ['a+', 'abound', 'abounds', 'abundance']
-    >>> opinion_lexicon.negative()[:4]
-    ['2-faced', '2-faces', 'abnormal', 'abolish']
+    >>> opinion_lexicon.words()[:4]
+        ['2-faced', '2-faces', 'abnormal', 'abolish']
 
 The OpinionLexiconCorpusReader also provides shortcuts to retrieve positive/negative
 words:
 
-    >>> opinion_lexicon.positive()[:4]
-    ['a+', 'abound', 'abounds', 'abundance']
     >>> opinion_lexicon.negative()[:4]
     ['2-faced', '2-faces', 'abnormal', 'abolish']
 
