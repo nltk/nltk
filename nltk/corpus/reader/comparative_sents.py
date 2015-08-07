@@ -91,8 +91,6 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         ('rewind', 'more')
         >>> len(comparative_sentences.comparisons())
         853
-        >>> comparative_sentences.words()
-        ['troubleshooting', 'ad-2500', 'and', 'ad-2600', 'no', ...]
     """
     CorpusView = StreamBackedCorpusView
 
@@ -139,7 +137,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         all_keywords = concat([self.CorpusView(path, self._read_keyword_block, encoding=enc)
                        for (path, enc, fileid)
                        in self.abspaths(fileids, True, True)])
-        keywords_set = {keyword.lower() for keyword in all_keywords if keyword}
+
+        keywords_set = set([keyword.lower() for keyword in all_keywords if keyword])
         return keywords_set
 
     def keywords_readme(self):
