@@ -174,7 +174,7 @@ class IBMModel3(object):
                 lambda: self.PROB_SMOOTH))))
         """
         Probability(j | i,l,m). Values accessed as
-        ``distortion_table[j][i][m][l].``
+        ``distortion_table[j][i][l][m].``
         """
 
         self.fertility_table = defaultdict(
@@ -267,8 +267,8 @@ class IBMModel3(object):
                         count_any_t_given_s[s] += normalized_count
 
                         # Distortion
-                        distortion_count[j][i][m][l] += normalized_count
-                        distortion_count_for_any_j[i][m][l] += normalized_count
+                        distortion_count[j][i][l][m] += normalized_count
+                        distortion_count_for_any_j[i][l][m] += normalized_count
 
                         if i == 0:
                             null_count += 1
@@ -315,9 +315,9 @@ class IBMModel3(object):
 
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
-                        distortion_table[j][i][m][l] = (
-                            distortion_count[j][i][m][l] /
-                            distortion_count_for_any_j[i][m][l])
+                        distortion_table[j][i][l][m] = (
+                            distortion_count[j][i][l][m] /
+                            distortion_count_for_any_j[i][l][m])
 
             # Fertility
             for fertility in range(0, max_fertility + 1):
@@ -377,7 +377,7 @@ class IBMModel3(object):
                             s = src_sentence[ii]
                             t = trg_sentence[jj - 1]
                             alignment_prob = (self.translation_table[t][s] *
-                                         self.__alignment_table[ii][jj][m][l])
+                                         self.__alignment_table[ii][jj][l][m])
                             if alignment_prob > max_alignment_prob:
                                 max_alignment_prob = alignment_prob
                                 best_i = ii
@@ -471,7 +471,7 @@ class IBMModel3(object):
             s = src_sentence[i]
 
             probability *= self.translation_table[t][s]
-            probability *= self.distortion_table[j][i][m][l]
+            probability *= self.distortion_table[j][i][l][m]
             if probability == 0:
                 return probability
 
@@ -549,10 +549,10 @@ class IBMModel3(object):
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
             best_alignment = (self.translation_table[trg_word][None] *
-                              self.distortion_table[j + 1][0][m][l], 0)
+                              self.distortion_table[j + 1][0][l][m], 0)
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = (self.translation_table[trg_word][src_word] *
-                              self.distortion_table[j + 1][i + 1][m][l])
+                              self.distortion_table[j + 1][i + 1][l][m])
                 best_alignment = max(best_alignment, (align_prob, i))
 
             # If trg_word is not aligned to the NULL token,

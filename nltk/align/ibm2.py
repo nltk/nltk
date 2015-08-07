@@ -119,7 +119,7 @@ class IBMModel2(object):
                 lambda: float))))
         """
         Probability(i | j,l,m). Values accessed as
-        ``alignment_table[i][j][m][l].``
+        ``alignment_table[i][j][l][m].``
         """
 
         self.train(sentence_aligned_corpus, iterations)
@@ -153,7 +153,7 @@ class IBMModel2(object):
             initial_value = 1 / (l + 1)
             for i in range(0, l + 1):
                 for j in range(1, m + 1):
-                    alignment_table[i][j][m][l] = initial_value
+                    alignment_table[i][j][l][m] = initial_value
 
         for i in range(0, iterations):
             count_t_given_s = defaultdict(lambda: defaultdict(float))
@@ -182,7 +182,7 @@ class IBMModel2(object):
                     for i in range(0, l + 1):
                         s = src_sentence[i]
                         count = (translation_table[t][s] *
-                                 alignment_table[i][j][m][l])
+                                 alignment_table[i][j][l][m])
                         total_count[t] += count
 
                 # E step (b): Collect counts
@@ -191,13 +191,13 @@ class IBMModel2(object):
                     for i in range(0, l + 1):
                         s = src_sentence[i]
                         count = (translation_table[t][s] *
-                                 alignment_table[i][j][m][l])
+                                 alignment_table[i][j][l][m])
                         normalized_count = count / total_count[t]
 
                         count_t_given_s[t][s] += normalized_count
                         count_any_t_given_s[s] += normalized_count
-                        alignment_count[i][j][m][l] += normalized_count
-                        alignment_count_for_any_i[j][m][l] += normalized_count
+                        alignment_count[i][j][l][m] += normalized_count
+                        alignment_count_for_any_i[j][l][m] += normalized_count
 
             translation_table = defaultdict(lambda: defaultdict(lambda: 0.0))
             alignment_table = defaultdict(lambda: defaultdict(
@@ -214,18 +214,18 @@ class IBMModel2(object):
                 laplace = 1.0
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
-                        value = alignment_count[i][j][m][l]
+                        value = alignment_count[i][j][l][m]
                         if 0 < value < laplace:
                             laplace = value
 
                 laplace *= 0.5
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
-                        alignment_count[i][j][m][l] += laplace
+                        alignment_count[i][j][l][m] += laplace
 
                 initial_value = laplace * m
                 for j in range(1, m + 1):
-                    alignment_count_for_any_i[j][m][l] += initial_value
+                    alignment_count_for_any_i[j][l][m] += initial_value
 
             # M step: Update probabilities with maximum likelihood estimates
             for s in src_vocab:
@@ -240,9 +240,9 @@ class IBMModel2(object):
                 m = len(trg_sentence)
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
-                        alignment_table[i][j][m][l] = (
-                            alignment_count[i][j][m][l] /
-                            alignment_count_for_any_i[j][m][l])
+                        alignment_table[i][j][l][m] = (
+                            alignment_count[i][j][l][m] /
+                            alignment_count_for_any_i[j][l][m])
 
         self.translation_table = translation_table
         self.alignment_table = alignment_table
@@ -274,10 +274,10 @@ class IBMModel2(object):
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
             best_alignment = (self.translation_table[trg_word][None] *
-                              self.alignment_table[0][j + 1][m][l], None)
+                              self.alignment_table[0][j + 1][l][m], None)
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = (self.translation_table[trg_word][src_word] *
-                              self.alignment_table[i + 1][j + 1][m][l])
+                              self.alignment_table[i + 1][j + 1][l][m])
                 best_alignment = max(best_alignment, (align_prob, i))
 
             # If trg_word is not aligned to the NULL token,
