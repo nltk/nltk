@@ -49,19 +49,19 @@ CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
 
 # Happy and sad emoticons
 
-HAPPY = {
+HAPPY = set([
     ':-)', ':)', ';)', ':o)', ':]', ':3', ':c)', ':>', '=]', '8)', '=)', ':}',
     ':^)', ':-D', ':D', '8-D', '8D', 'x-D', 'xD', 'X-D', 'XD', '=-D', '=D',
     '=-3', '=3', ':-))', ":'-)", ":')", ':*', ':^*', '>:P', ':-P', ':P', 'X-P',
     'x-p', 'xp', 'XP', ':-p', ':p', '=p', ':-b', ':b', '>:)', '>;)', '>:-)',
     '<3'
-    }
+    ])
 
-SAD = {
+SAD = set([
     ':L', ':-/', '>:/', ':S', '>:[', ':@', ':-(', ':[', ':-||', '=L', ':<',
     ':-[', ':-<', '=\\', '=/', '>:(', ':(', '>.<', ":'-(", ":'(", ':\\', ':-c',
     ':c', ':{', '>:\\', ';('
-    }
+    ])
 
 def timer(method):
     """
@@ -392,7 +392,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
 #{ Demos
 #////////////////////////////////////////////////////////////
 
-def demo_tweets(trainer):
+def demo_tweets(trainer, n_instances=None, output=None):
     """
     Train and test Naive Bayes classifier on 10000 tweets, tokenized using
     TweetTokenizer.
@@ -401,28 +401,33 @@ def demo_tweets(trainer):
         - 100 top bigrams (using BigramAssocMeasures.pmi)
 
     :param trainer: `train` method of a classifier.
+    :param n_instances: the number of total tweets that have to be used for
+        training and testing. Tweets will be equally split between positive and
+        negative.
     """
     from nltk.tokenize import TweetTokenizer
     from sentiment_analyzer import SentimentAnalyzer
     from nltk.corpus import twitter_samples, stopwords
 
     # Different customizations for the TweetTokenizer
-    tokenizer = TweetTokenizer(preserve_case=False)
-    # tokenizer = TweetTokenizer(preserve_case=True, strip_handles=True)
+    # tokenizer = TweetTokenizer(preserve_case=False)
+    tokenizer = TweetTokenizer(preserve_case=True, strip_handles=True)
     # tokenizer = TweetTokenizer(reduce_len=True, strip_handles=True)
+    if n_instances is not None:
+        n_instances = int(n_instances/2)
 
     positive_json = twitter_samples.abspath("positive_tweets.json")
 
     fields = ['id', 'text']
     positive_csv = 'positive_tweets.csv'
-    json2csv_preprocess(positive_json, positive_csv, fields)
+    json2csv_preprocess(positive_json, positive_csv, fields, limit=n_instances)
 
     negative_json = twitter_samples.abspath("negative_tweets.json")
     negative_csv = 'negative_tweets.csv'
-    json2csv_preprocess(negative_json, negative_csv, fields)
+    json2csv_preprocess(negative_json, negative_csv, fields, limit=n_instances)
 
-    pos_docs = parse_tweets_set(positive_csv, label='pos', word_tokenizer=tokenizer)
     neg_docs = parse_tweets_set(negative_csv, label='neg', word_tokenizer=tokenizer)
+    pos_docs = parse_tweets_set(positive_csv, label='pos', word_tokenizer=tokenizer)
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -432,18 +437,19 @@ def demo_tweets(trainer):
     training_tweets = train_pos_docs+train_neg_docs
     testing_tweets = test_pos_docs+test_neg_docs
 
-    stopwords = stopwords.words('english')
     sentim_analyzer = SentimentAnalyzer()
-    all_words = [word for word in sentim_analyzer.all_words(training_tweets) if word.lower() not in stopwords]
+    # stopwords = stopwords.words('english')
+    # all_words = [word for word in sentim_analyzer.all_words(training_tweets) if word.lower() not in stopwords]
+    all_words = [word for word in sentim_analyzer.all_words(training_tweets)]
 
     # Add simple unigram word features
     unigram_feats = sentim_analyzer.unigram_word_feats(all_words, top_n=1000)
     sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Add bigram collocation features
-    bigram_collocs_feats = sentim_analyzer.bigram_collocation_feats([tweet[0] for tweet in training_tweets],
-        top_n=100, min_freq=12)
-    sentim_analyzer.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
+    # bigram_collocs_feats = sentim_analyzer.bigram_collocation_feats([tweet[0] for tweet in training_tweets],
+        # top_n=100, min_freq=12)
+    # sentim_analyzer.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
 
     training_set = sentim_analyzer.apply_features(training_tweets)
     test_set = sentim_analyzer.apply_features(testing_tweets)
@@ -456,12 +462,13 @@ def demo_tweets(trainer):
         print('Your classifier does not provide a show_most_informative_features() method.')
     results = sentim_analyzer.evaluate(test_set)
 
-    extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
-    output_markdown('results.md', Dataset='labeled_tweets', Classifier=type(classifier).__name__,
-                    Tokenizer=tokenizer.__class__.__name__, Feats=extr, Results=results,
-                    Notes='Remove stopwords')
+    if output:
+        extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
+        output_markdown(output, Dataset='labeled_tweets', Classifier=type(classifier).__name__,
+                        Tokenizer=tokenizer.__class__.__name__, Feats=extr,
+                        Results=results, Instances=n_instances)
 
-def demo_movie_reviews(trainer):
+def demo_movie_reviews(trainer, n_instances=None, output=None):
     """
     Train classifier on all instances of the Movie Reviews dataset.
     The corpus has been preprocessed using the default sentence tokenizer and
@@ -474,9 +481,11 @@ def demo_movie_reviews(trainer):
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
-    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in movie_reviews.fileids('pos')]
-    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in movie_reviews.fileids('neg')]
+    if n_instances is not None:
+        n_instances = int(n_instances/2)
 
+    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in movie_reviews.fileids('pos')[:n_instances]]
+    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in movie_reviews.fileids('neg')[:n_instances]]
     # We separately split positive and negative instances to keep a balanced
     # uniform class distribution in both train and test sets.
     train_pos_docs, test_pos_docs = split_train_test(pos_docs)
@@ -491,7 +500,6 @@ def demo_movie_reviews(trainer):
     # Add simple unigram word features
     unigram_feats = sentim_analyzer.unigram_word_feats(all_words, min_freq=4)
     sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
-
     # Apply features to obtain a feature-value representation of our datasets
     training_set = sentim_analyzer.apply_features(training_docs)
     test_set = sentim_analyzer.apply_features(testing_docs)
@@ -503,11 +511,13 @@ def demo_movie_reviews(trainer):
         print('Your classifier does not provide a show_most_informative_features() method.')
     results = sentim_analyzer.evaluate(test_set)
 
-    extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
-    output_markdown('results.md', Dataset='Movie_reviews', Classifier=type(classifier).__name__,
-                    Tokenizer='WordPunctTokenizer', Feats=extr, Results=results)
+    if output:
+        extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
+        output_markdown(output, Dataset='Movie_reviews', Classifier=type(classifier).__name__,
+                        Tokenizer='WordPunctTokenizer', Feats=extr, Results=results,
+                        Instances=n_instances)
 
-def demo_subjectivity(trainer, save_analyzer=False):
+def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=None):
     """
     Train and test a classifier on instances of the Subjective Dataset by Pang and
     Lee. The dataset is made of 5000 subjective and 5000 objective sentences.
@@ -518,10 +528,12 @@ def demo_subjectivity(trainer, save_analyzer=False):
     """
     from sentiment_analyzer import SentimentAnalyzer
     from nltk.corpus import subjectivity
-    from nltk.tokenize import regexp
 
-    subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')]
-    obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')]
+    if n_instances is not None:
+        n_instances = int(n_instances/2)
+
+    subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
+    obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -552,10 +564,11 @@ def demo_subjectivity(trainer, save_analyzer=False):
     if save_analyzer == True:
         save_file(sentim_analyzer, 'sa_subjectivity.pickle')
 
-    extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
-    output_markdown('results.md', Dataset='subjectivity', Classifier=type(classifier).__name__,
-                    Instances=2000, Tokenizer=word_tokenizer.__class__.__name__,
-                    Feats=extr, Results=results)
+    if output:
+        extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
+        output_markdown(output, Dataset='subjectivity', Classifier=type(classifier).__name__,
+                        Tokenizer='WhitespaceTokenizer', Feats=extr,
+                        Instances=n_instances, Results=results)
 
     return sentim_analyzer
 
@@ -631,7 +644,7 @@ def demo_vader_instance(text):
     vader_analyzer = SentimentIntensityAnalyzer()
     print(vader_analyzer.polarity_scores(text))
 
-def demo_vader_tweets():
+def demo_vader_tweets(n_instances=None, output=None):
     """
     Classify 10000 positive and negative tweets using Vader approach.
     """
@@ -641,14 +654,19 @@ def demo_vader_tweets():
     from nltk.metrics import (accuracy as eval_accuracy, precision as eval_precision,
         recall as eval_recall, f_measure as eval_f_measure)
 
+    if n_instances is not None:
+        n_instances = int(n_instances/2)
+
     fields = ['id', 'text']
     positive_json = twitter_samples.abspath("positive_tweets.json")
     positive_csv = 'positive_tweets.csv'
-    json2csv_preprocess(positive_json, positive_csv, fields, strip_off_emoticons=False)
+    json2csv_preprocess(positive_json, positive_csv, fields, strip_off_emoticons=False,
+                        limit=n_instances)
 
     negative_json = twitter_samples.abspath("negative_tweets.json")
     negative_csv = 'negative_tweets.csv'
-    json2csv_preprocess(negative_json, negative_csv, fields, strip_off_emoticons=False)
+    json2csv_preprocess(negative_json, negative_csv, fields, strip_off_emoticons=False,
+                        limit=n_instances)
 
     pos_docs = parse_tweets_set(positive_csv, label='pos')
     neg_docs = parse_tweets_set(negative_csv, label='neg')
@@ -698,6 +716,10 @@ def demo_vader_tweets():
 
     for result in sorted(metrics_results):
             print('{}: {}'.format(result, metrics_results[result]))
+
+    if output:
+        output_markdown(output, Approach='Vader', Dataset='labeled_tweets',
+            Instances=n_instances, Results=metrics_results)
 
 if __name__ == '__main__':
     from nltk.classify import NaiveBayesClassifier, MaxentClassifier
