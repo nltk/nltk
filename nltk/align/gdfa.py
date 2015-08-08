@@ -129,7 +129,3 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
     final_and(f2e)
     return alignment
 
-# run doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

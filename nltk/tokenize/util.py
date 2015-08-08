@@ -88,6 +88,3 @@ def spans_to_relative(spans):
         prev = right
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

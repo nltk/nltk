@@ -178,7 +178,4 @@ def setup_module(module):
     except OSError:
         raise SkipTest("Senna executable not found")
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
 

@@ -561,6 +561,4 @@ def test():
 __all__ = ['TreePrettyPrinter']
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
     test()

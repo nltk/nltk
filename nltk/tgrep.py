@@ -934,8 +934,4 @@ def tgrep_nodes(pattern, trees, search_leaves=True):
             yield []
 
 
-# run module doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

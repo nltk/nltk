@@ -230,10 +230,11 @@ class GlueDict(dict):
 
     def to_glueformula_list(self, depgraph, node=None, counter=None, verbose=False):
         if node is None:
+            # TODO: should it be depgraph.root? Is this code tested?
             top = depgraph.nodes[0]
             depList = sum(list(top['deps'].values()), [])
             root = depgraph.nodes[depList[0]]
-            #print (root) 
+
             return self.to_glueformula_list(depgraph, root, Counter(), verbose)
 
         glueformulas = self.lookup(node, depgraph, counter)
@@ -540,13 +541,21 @@ class Glue(object):
         return [self.gfl_to_compiled(gfl) for gfl in gfls]
 
     def dep_parse(self, sentence):
+        """
+        Return a dependency graph for the sentence.
+
+        :param sentence: the sentence to be parsed
+        :type sentence: list(str)
+        :rtype: DependencyGraph
+        """
+
         #Lazy-initialize the depparser
         if self.depparser is None:
             from nltk.parse import MaltParser
             self.depparser = MaltParser(tagger=self.get_pos_tagger())
         if not self.depparser._trained:
             self.train_depparser()
-        return [self.depparser.parse(sentence, verbose=self.verbose)]
+        return self.depparser.parse(sentence, verbose=self.verbose)
 
     def depgraph_to_glue(self, depgraph):
         return self.get_glue_dict().to_glueformula_list(depgraph)
