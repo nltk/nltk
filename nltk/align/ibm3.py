@@ -230,21 +230,19 @@ class IBMModel3(object):
                 total_count = 0.0
 
                 # E step (a): Compute normalization factors to weigh counts
-                for (alignment, fert) in sampled_alignments:
-                    count = self.probability(
-                        alignment, trg_sentence, src_sentence, fert)
+                for alignment_info in sampled_alignments:
+                    count = self.probability(alignment_info)
                     total_count += count
 
                 # E step (b): Collect counts
-                for (alignment, fert) in sampled_alignments:
-                    count = self.probability(
-                        alignment, trg_sentence, src_sentence, fert)
+                for alignment_info in sampled_alignments:
+                    count = self.probability(alignment_info)
                     normalized_count = count / total_count
                     null_count = 0
 
                     for j in range(1, m + 1):
                         t = trg_sentence[j - 1]
-                        i = alignment[j]
+                        i = alignment_info.alignment[j]
                         s = src_sentence[i]
 
                         # Lexical translation
@@ -267,7 +265,7 @@ class IBMModel3(object):
                         fertility = 0
 
                         for j in range(1, m + 1):
-                            if i == alignment[j]:
+                            if i == alignment_info.alignment[j]:
                                 fertility += 1
 
                         s = src_sentence[i]
@@ -289,7 +287,7 @@ class IBMModel3(object):
             for s in src_vocab:
                 for t in trg_vocab:
                     translation_table[t][s] = (count_t_given_s[t][s] /
-                                                    count_any_t_given_s[s])
+                                               count_any_t_given_s[s])
 
             # Distortion
             for aligned_sentence in parallel_corpus:
@@ -330,7 +328,11 @@ class IBMModel3(object):
 
         Hill climbing may be stuck in a local maxima, hence the pegging
         and trying out of different alignments.
+
+        :return: A set of best alignments represented by their ``AlignmentInfo``
+        :rtype: set(AlignmentInfo)
         """
+
         sampled_alignments = set()
 
         l = len(src_sentence) - 1 # exclude NULL
@@ -339,8 +341,8 @@ class IBMModel3(object):
         # Compute Normalization
         for i in range(0, l + 1):
             for j in range(1, m + 1):
-                alignment = list(range(m + 1))
-                fertility_of_i = list(range(l + 1))
+                alignment = [0] * (m + 1)
+                fertility_of_i = [0] * (l + 1)
 
                 # Initialize all fertility to zero
                 for ii in range(0, l + 1):
@@ -368,64 +370,59 @@ class IBMModel3(object):
                         alignment[jj] = best_i
                         fertility_of_i[best_i] += 1
 
-                alignment = self.hillclimb(
-                    alignment, j, trg_sentence, src_sentence, fertility_of_i)
-                neighbors = self.neighboring(
-                    alignment, j, trg_sentence, src_sentence, fertility_of_i)
+                alignment_info = AlignmentInfo(tuple(alignment), src_sentence,
+                                               trg_sentence, fertility_of_i)
+                best_alignment = self.hillclimb(alignment_info, j)
+                neighbors = self.neighboring(best_alignment, j)
                 sampled_alignments.update(neighbors)
 
         return sampled_alignments
 
-    def hillclimb(self, alignment, j_pegged,
-                  trg_sentence, src_sentence, fertility_of_i):
+    def hillclimb(self, alignment_info, j_pegged):
         """
-        Starting from ``alignment``, look at neighboring alignments
-        iteratively for the best one
+        Starting from the alignment in ``alignment_info``, look at
+        neighboring alignments iteratively for the best one
 
         There is no guarantee that the best alignment in the alignment
         space will be found, because the algorithm might be stuck in a
         local maximum.
 
         :return: The best alignment found from hill climbing
-        :rtype: AlignedSent
+        :rtype: AlignmentInfo
         """
 
-        fertility_so_far = fertility_of_i
-
+        alignment = alignment_info # alias with shorter name
         while True:
             old_alignment = alignment
 
-            for (neighbor_alignment, neighbor_fertility) in self.neighboring(
-                    alignment, j_pegged, trg_sentence, src_sentence,
-                    fertility_so_far):
-                neighbor_probability = self.probability(
-                    neighbor_alignment, trg_sentence, src_sentence,
-                    neighbor_fertility)
-                current_probability = self.probability(
-                    alignment, trg_sentence, src_sentence,
-                    fertility_so_far)
+            for neighbor_alignment in self.neighboring(alignment, j_pegged):
+                neighbor_probability = self.probability(neighbor_alignment)
+                current_probability = self.probability(alignment)
 
                 if neighbor_probability > current_probability:
                     alignment = neighbor_alignment
-                    fertility_so_far = neighbor_fertility
 
             if alignment == old_alignment:
                 # Until there are no better alignments
                 break
 
-        return alignment
+        return alignment_info
 
-    def probability(self, alignment,
-                    trg_sentence, src_sentence, fertility_of_i):
+    def probability(self, alignment_info):
         """
-        Probability of ``trg_sentence`` and ``alignment`` given
-        ``src_sentence``
-        """
+        Probability of target sentence and an alignment given the
+        source sentence
 
-        l = len(src_sentence) - 1 # exclude NULL
-        m = len(trg_sentence)
+        All required information is assumed to be in ``alignment_info``
+        """
+        l = len(alignment_info.src_sentence) - 1 # exclude NULL
+        m = len(alignment_info.trg_sentence)
         p1 = self.p1
         p0 = 1 - p1
+        alignment = alignment_info.alignment
+        fertility_of_i = alignment_info.fertility_of_i
+        src_sentence = alignment_info.src_sentence
+        trg_sentence = alignment_info.trg_sentence
 
         probability = 1.0
 
@@ -461,47 +458,55 @@ class IBMModel3(object):
 
         return probability
 
-    def neighboring(self, alignment, j_pegged,
-                    trg_sentence, src_sentence, fertility_of_i):
+    def neighboring(self, alignment_info, j_pegged):
         """
-        :return: Neighbors of ``alignment`` obtained by moving or
-            swapping one alignment point, with the corresponding fertility
-        :rtype: set(tuple(tuple(int), int))
+        Determine the neighbors of ``alignment_info``, obtained by
+        moving or swapping one alignment point
+
+        :return: A set neighboring alignments represented by their
+            ``AlignmentInfo``
+        :rtype: dict(AlignmentInfo)
         """
 
         neighbors = set()
 
-        l = len(src_sentence) - 1 # exclude NULL
-        m = len(trg_sentence)
+        l = len(alignment_info.src_sentence) - 1 # exclude NULL
+        m = len(alignment_info.trg_sentence)
+        original_alignment = alignment_info.alignment
+        original_fertility = alignment_info.fertility_of_i
 
         for j in range(1, m + 1):
             if j != j_pegged:
                 # Add alignments that differ by one alignment point
                 for i in range(0, l + 1):
-                    new_alignment = list(alignment)
+                    new_alignment = list(original_alignment)
                     new_alignment[j] = i
 
-                    new_fertility = fertility_of_i
-                    if new_fertility[alignment[j]] > 0:
-                        new_fertility = list(fertility_of_i)
-                        new_fertility[alignment[j]] -= 1
-                        new_fertility[i] += 1
+                    new_fertility = original_fertility # FIXME A deep copy should be made here
+                    if new_fertility[original_alignment[j]] > 0:
+                        new_fertility = list(original_fertility)
+                        new_fertility[original_alignment[j]] -= 1
+                        new_fertility[i] += 1 # FIXME This should be outside the if block
 
-                    # convert list to tuple because set members must be immutable
-                    neighbors.add((tuple(new_alignment), tuple(new_fertility)))
+                    new_alignment_info = AlignmentInfo(
+                        tuple(new_alignment), alignment_info.src_sentence,
+                        alignment_info.trg_sentence, new_fertility)
+                    neighbors.add(new_alignment_info)
 
         for j in range(1, m + 1):
             if j != j_pegged:
                 # Add alignments that have two alignment points swapped
                 for other_j in range(1, m + 1):
                     if other_j != j_pegged and other_j != j:
-                        new_alignment = list(alignment)
-                        new_fertility = fertility_of_i
-                        new_alignment[j] = alignment[other_j]
-                        new_alignment[other_j] = alignment[j]
+                        new_alignment = list(original_alignment)
+                        new_fertility = original_fertility  # FIXME A deep copy should be made here
+                        new_alignment[j] = original_alignment[other_j]
+                        new_alignment[other_j] = original_alignment[j]
 
-                        neighbors.add((tuple(new_alignment),
-                                       tuple(new_fertility)))
+                        new_alignment_info = AlignmentInfo(
+                            tuple(new_alignment), alignment_info.src_sentence,
+                            alignment_info.trg_sentence, new_fertility)
+                        neighbors.add(new_alignment_info)
 
         return neighbors
 
@@ -549,3 +554,56 @@ class IBMModel3(object):
         return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
 
 
+class AlignmentInfo(object):
+    """
+    Helper data object for IBM Model 3 training
+
+    For a source sentence and its counterpart in the target language,
+    this class holds information about the sentence pair's alignment
+    and fertility.
+    """
+
+    def __init__(self, alignment, src_sentence, trg_sentence, fertility_of_i):
+        if not isinstance(alignment, tuple):
+            raise TypeError("The alignment must be a tuple because it is used "
+                            "to uniquely identify AlignmentInfo objects.")
+
+        self.alignment = alignment
+        """
+        tuple(int): Alignment function. ``alignment[j]`` is the position
+        in the source sentence that is aligned to the position j in the
+        target sentence.
+        """
+
+        self.fertility_of_i = fertility_of_i
+        """
+        list(int): Fertility of source word. ``fertility_of_i[i]`` is
+        the number of words in the target sentence that is aligned to
+        the word in position i of the source sentence.
+        """
+
+        self.src_sentence = src_sentence
+        """
+        list(str): Source sentence referred to by this object.
+        Should include NULL token (None) in index 0.
+        """
+
+        self.trg_sentence = trg_sentence
+        """
+        list(str): Target sentence referred to by this object.
+        """
+
+    def __eq__(self, other):
+        return self.alignment == other.alignment
+
+    def __hash__(self):
+        # FIXME There should not be a need to hash over fertility_of_i,
+        # but the existing code does not update fertility_of_i correctly.
+        # See other FIXMEs
+        return hash((self.alignment, tuple(self.fertility_of_i)))
+
+
+# run doctests
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
