@@ -165,13 +165,12 @@ class IBMModel2(object):
                 lambda: defaultdict(lambda: defaultdict(
                     lambda: 0.0)))
 
-            total_count = defaultdict(float)
-
             for aligned_sentence in parallel_corpus:
                 src_sentence = [None] + aligned_sentence.mots
                 trg_sentence = aligned_sentence.words
                 l = len(aligned_sentence.mots)
                 m = len(trg_sentence)
+                total_count = defaultdict(float)
 
                 # E step (a): Compute normalization factors to weigh counts
                 for j in range(1, m + 1):

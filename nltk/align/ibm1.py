@@ -132,8 +132,6 @@ class IBMModel1(object):
         translation_table = defaultdict(
             lambda: defaultdict(lambda: initial_prob))
 
-        total_count = defaultdict(lambda: 0.0)
-
         for i in range(0, iterations):
             count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
             count_any_t_given_s = defaultdict(lambda: 0.0)
@@ -141,12 +139,13 @@ class IBMModel1(object):
             for aligned_sentence in parallel_corpus:
                 trg_sentence = aligned_sentence.words
                 src_sentence = [None] + aligned_sentence.mots
+                total_count = defaultdict(lambda: 0.0)
 
                 # E step (a): Compute normalization factors to weigh counts
                 for t in trg_sentence:
-                    total_count[t] = 0.0
-                    for s in src_sentence:
-                        total_count[t] += translation_table[t][s]
+                    if total_count[t] == 0.0:
+                        for s in src_sentence:
+                            total_count[t] += translation_table[t][s]
 
                 # E step (b): Collect counts
                 for t in trg_sentence:
