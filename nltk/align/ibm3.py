@@ -125,7 +125,7 @@ class IBMModel3(object):
 
     def __init__(self, sentence_aligned_corpus, iterations):
         """
-        Train on ``sentence_aligned_corpus`` and create a
+        Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, a distortion model, a fertility model, and a
         model for generating NULL-aligned words.
 

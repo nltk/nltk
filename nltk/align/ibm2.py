@@ -92,8 +92,8 @@ class IBMModel2(object):
 
     def __init__(self, sentence_aligned_corpus, iterations):
         """
-        Train on ``sentence_aligned_corpus`` and create
-        a translation model and an alignment model.
+        Train on ``sentence_aligned_corpus`` and create a lexical
+        translation model and an alignment model.
 
         Translation direction is from ``AlignedSent.mots`` to
         ``AlignedSent.words``.
