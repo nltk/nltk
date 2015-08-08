@@ -146,10 +146,8 @@ class IBMModel2(object):
         # Initialize the distribution of alignment probability,
         # a(i | j,l,m) = 1 / (l+1) for all i, j, l, m
         for aligned_sentence in parallel_corpus:
-            trg_sentence = aligned_sentence.words
-            src_sentence = [None] + aligned_sentence.mots
-            l = len(src_sentence) - 1  # exclude NULL token
-            m = len(trg_sentence)
+            l = len(aligned_sentence.mots)
+            m = len(aligned_sentence.words)
             initial_value = 1 / (l + 1)
             for i in range(0, l + 1):
                 for j in range(1, m + 1):
@@ -170,9 +168,9 @@ class IBMModel2(object):
             total_count = defaultdict(float)
 
             for aligned_sentence in parallel_corpus:
-                trg_sentence = aligned_sentence.words
                 src_sentence = [None] + aligned_sentence.mots
-                l = len(src_sentence) - 1
+                trg_sentence = aligned_sentence.words
+                l = len(aligned_sentence.mots)
                 m = len(trg_sentence)
 
                 # E step (a): Compute normalization factors to weigh counts
@@ -206,10 +204,8 @@ class IBMModel2(object):
             # Perform Laplace smoothing of alignment counts.
             # Note that smoothing is not in the original IBM Model 2 algorithm.
             for aligned_sentence in parallel_corpus:
-                trg_sentence = aligned_sentence.words
-                src_sentence = [None] + aligned_sentence.mots
-                l = len(src_sentence) - 1
-                m = len(trg_sentence)
+                l = len(aligned_sentence.mots)
+                m = len(aligned_sentence.words)
 
                 laplace = 1.0
                 for i in range(0, l + 1):
@@ -234,10 +230,8 @@ class IBMModel2(object):
                                                count_any_t_given_s[s])
 
             for aligned_sentence in parallel_corpus:
-                trg_sentence = aligned_sentence.words
-                src_sentence = [None] + aligned_sentence.mots
-                l = len(src_sentence) - 1
-                m = len(trg_sentence)
+                l = len(aligned_sentence.mots)
+                m = len(aligned_sentence.words)
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
                         alignment_table[i][j][l][m] = (
@@ -268,8 +262,8 @@ class IBMModel2(object):
 
         alignment = []
 
-        m = len(sentence_pair.words)
         l = len(sentence_pair.mots)
+        m = len(sentence_pair.words)
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token

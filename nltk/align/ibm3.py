@@ -219,9 +219,9 @@ class IBMModel3(object):
             fertility_count_for_any_phi = defaultdict(lambda: 0.0)
 
             for aligned_sentence in parallel_corpus:
-                trg_sentence = aligned_sentence.words
                 src_sentence = [None] + aligned_sentence.mots
-                l = len(src_sentence) - 1
+                trg_sentence = aligned_sentence.words
+                l = len(aligned_sentence.mots)
                 m = len(trg_sentence)
 
                 # Sample the alignment space
@@ -293,10 +293,8 @@ class IBMModel3(object):
 
             # Distortion
             for aligned_sentence in parallel_corpus:
-                trg_sentence = aligned_sentence.words
-                src_sentence = [None] + aligned_sentence.mots
-                l = len(src_sentence) - 1
-                m = len(trg_sentence)
+                l = len(aligned_sentence.mots)
+                m = len(aligned_sentence.words)
 
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
@@ -335,8 +333,8 @@ class IBMModel3(object):
         """
         sampled_alignments = set()
 
+        l = len(src_sentence) - 1 # exclude NULL
         m = len(trg_sentence)
-        l = len(src_sentence) - 1
 
         # Compute Normalization
         for i in range(0, l + 1):
@@ -424,8 +422,8 @@ class IBMModel3(object):
         ``src_sentence``
         """
 
+        l = len(src_sentence) - 1 # exclude NULL
         m = len(trg_sentence)
-        l = len(src_sentence) - 1
         p1 = self.p1
         p0 = 1 - p1
 
@@ -473,8 +471,8 @@ class IBMModel3(object):
 
         neighbors = set()
 
+        l = len(src_sentence) - 1 # exclude NULL
         m = len(trg_sentence)
-        l = len(src_sentence) - 1
 
         for j in range(1, m + 1):
             if j != j_pegged:
@@ -531,8 +529,8 @@ class IBMModel3(object):
 
         alignment = []
 
-        m = len(sentence_pair.words)
         l = len(sentence_pair.mots)
+        m = len(sentence_pair.words)
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
