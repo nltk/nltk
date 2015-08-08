@@ -133,7 +133,4 @@ def line_tokenize(text, blanklines='discard'):
     return LineTokenizer(blanklines).tokenize(text)
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

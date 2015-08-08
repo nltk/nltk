@@ -181,7 +181,3 @@ def phrase_extraction(srctext, trgtext, alignment):
                 bp.update(phrases)
     return bp
 
-# run doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

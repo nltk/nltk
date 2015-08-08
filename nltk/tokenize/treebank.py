@@ -103,6 +103,3 @@ class TreebankWordTokenizer(TokenizerI):
         return text.split()
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

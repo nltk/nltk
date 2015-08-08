@@ -206,7 +206,4 @@ blankline_tokenize = BlanklineTokenizer().tokenize
 wordpunct_tokenize = WordPunctTokenizer().tokenize
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

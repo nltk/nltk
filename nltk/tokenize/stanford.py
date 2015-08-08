@@ -19,7 +19,7 @@ from nltk.internals import find_jar, config_java, java, _java_options
 
 from nltk.tokenize.api import TokenizerI
 
-_stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
+_stanford_url = 'http://nlp.stanford.edu/software/tokenizer.shtml'
 
 class StanfordTokenizer(TokenizerI):
     r"""
@@ -107,6 +107,3 @@ def setup_module(module):
         raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
 
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)

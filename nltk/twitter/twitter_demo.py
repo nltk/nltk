@@ -34,7 +34,7 @@ For error codes see Twitter's
 from functools import wraps
 import json
 
-from nltk.compat import io
+from nltk.compat import StringIO
 
 from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
      credsfromfile
@@ -221,7 +221,7 @@ def expand_tweetids_demo():
 
     """
     ids_f =\
-        io.StringIO("""\
+        StringIO("""\
         588665495492124672
         588665495487909888
         588665495508766721
