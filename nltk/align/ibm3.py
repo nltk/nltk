@@ -93,21 +93,6 @@ from nltk.align.ibm2 import IBMModel2
 from math import factorial
 
 
-class HashableDict(dict):
-    """
-    Hashable dictionary which can be put into a set.
-    """
-
-    def __key(self):
-        return tuple((k, self[k]) for k in sorted(self))
-
-    def __hash__(self):
-        return hash(self.__key())
-
-    def __eq__(self, other):
-        return self.__key() == other.__key()
-
-
 class IBMModel3(object):
     """
     Translation model that considers how a word can be aligned to
@@ -356,8 +341,8 @@ class IBMModel3(object):
         # Compute Normalization
         for i in range(0, l + 1):
             for j in range(1, m + 1):
-                alignment = HashableDict()
-                fertility_of_i = HashableDict()
+                alignment = list(range(m + 1))
+                fertility_of_i = list(range(l + 1))
 
                 # Initialize all fertility to zero
                 for ii in range(0, l + 1):
@@ -483,7 +468,7 @@ class IBMModel3(object):
         """
         :return: Neighbors of ``alignment`` obtained by moving or
             swapping one alignment point, with the corresponding fertility
-        :rtype: set(tuple(HashableDict(int), int))
+        :rtype: set(tuple(tuple(int), int))
         """
 
         neighbors = set()
@@ -495,28 +480,30 @@ class IBMModel3(object):
             if j != j_pegged:
                 # Add alignments that differ by one alignment point
                 for i in range(0, l + 1):
-                    new_alignment = HashableDict(alignment)
+                    new_alignment = list(alignment)
                     new_alignment[j] = i
 
                     new_fertility = fertility_of_i
                     if new_fertility[alignment[j]] > 0:
-                        new_fertility = HashableDict(fertility_of_i)
+                        new_fertility = list(fertility_of_i)
                         new_fertility[alignment[j]] -= 1
                         new_fertility[i] += 1
 
-                    neighbors.update([(new_alignment, new_fertility)])
+                    # convert list to tuple because set members must be immutable
+                    neighbors.add((tuple(new_alignment), tuple(new_fertility)))
 
         for j in range(1, m + 1):
             if j != j_pegged:
                 # Add alignments that have two alignment points swapped
                 for other_j in range(1, m + 1):
                     if other_j != j_pegged and other_j != j:
-                        new_alignment = HashableDict(alignment)
+                        new_alignment = list(alignment)
                         new_fertility = fertility_of_i
                         new_alignment[j] = alignment[other_j]
                         new_alignment[other_j] = alignment[j]
 
-                        neighbors.update([(new_alignment, new_fertility)])
+                        neighbors.add((tuple(new_alignment),
+                                       tuple(new_fertility)))
 
         return neighbors
 
