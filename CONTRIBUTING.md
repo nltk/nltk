@@ -73,7 +73,7 @@ Summary of our git branching model:
   to `master`: your access should be used only to accept pull requests; if you
   want to make a new feature, you should use the same process as other
   developers so you code will be reviewed.
-- See [RELEASE-HOWTO.markdown](RELEASE-HOWTO.markdown) to see everything you
+- See [RELEASE-HOWTO.txt](RELEASE-HOWTO.txt) to see everything you
   need before creating a new NLTK release.
 
 
