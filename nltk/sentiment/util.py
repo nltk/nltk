@@ -404,21 +404,22 @@ def demo_tweets(trainer, n_instances=None, output=None):
     :param n_instances: the number of total tweets that have to be used for
         training and testing. Tweets will be equally split between positive and
         negative.
+    :param output: the output file where results have to be reported.
     """
     from nltk.tokenize import TweetTokenizer
     from sentiment_analyzer import SentimentAnalyzer
     from nltk.corpus import twitter_samples, stopwords
 
     # Different customizations for the TweetTokenizer
-    # tokenizer = TweetTokenizer(preserve_case=False)
-    tokenizer = TweetTokenizer(preserve_case=True, strip_handles=True)
+    tokenizer = TweetTokenizer(preserve_case=False)
+    # tokenizer = TweetTokenizer(preserve_case=True, strip_handles=True)
     # tokenizer = TweetTokenizer(reduce_len=True, strip_handles=True)
+
     if n_instances is not None:
         n_instances = int(n_instances/2)
 
-    positive_json = twitter_samples.abspath("positive_tweets.json")
-
     fields = ['id', 'text']
+    positive_json = twitter_samples.abspath("positive_tweets.json")
     positive_csv = 'positive_tweets.csv'
     json2csv_preprocess(positive_json, positive_csv, fields, limit=n_instances)
 
@@ -447,9 +448,9 @@ def demo_tweets(trainer, n_instances=None, output=None):
     sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
     # Add bigram collocation features
-    # bigram_collocs_feats = sentim_analyzer.bigram_collocation_feats([tweet[0] for tweet in training_tweets],
-        # top_n=100, min_freq=12)
-    # sentim_analyzer.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
+    bigram_collocs_feats = sentim_analyzer.bigram_collocation_feats([tweet[0] for tweet in training_tweets],
+        top_n=100, min_freq=12)
+    sentim_analyzer.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
 
     training_set = sentim_analyzer.apply_features(training_tweets)
     test_set = sentim_analyzer.apply_features(testing_tweets)
@@ -474,9 +475,13 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
     The corpus has been preprocessed using the default sentence tokenizer and
     WordPunctTokenizer.
     Features are composed of:
-        - 1000 most frequent unigrams
+        - most frequent unigrams
 
     :param trainer: `train` method of a classifier.
+    :param n_instances: the number of total reviews that have to be used for
+        training and testing. Reviews will be equally split between positive and
+        negative.
+    :param output: the output file where results have to be reported.
     """
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
@@ -525,6 +530,11 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
     we use the basic WhitespaceTokenizer to parse the data.
 
     :param trainer: `train` method of a classifier.
+    :param save_analyzer: if `True`, store the SentimentAnalyzer in a pickle file.
+    :param n_instances: the number of total sentences that have to be used for
+        training and testing. Sentences will be equally split between positive
+        and negative.
+    :param output: the output file where results have to be reported.
     """
     from sentiment_analyzer import SentimentAnalyzer
     from nltk.corpus import subjectivity
@@ -647,6 +657,9 @@ def demo_vader_instance(text):
 def demo_vader_tweets(n_instances=None, output=None):
     """
     Classify 10000 positive and negative tweets using Vader approach.
+
+    :param n_instances: the number of total tweets that have to be classified.
+    :param output: the output file where results have to be reported.
     """
     from collections import defaultdict
     from nltk.corpus import twitter_samples
