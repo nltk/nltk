@@ -1,6 +1,13 @@
 # Natural Language Toolkit (NLTK) Authors
 
-The following people have contributed to NLTK:
+## Original Authors
+
+- Steven Bird <stevenbird1@gmail.com>
+- Edward Loper <edloper@gmail.com>
+- Ewan Klein <ewan@inf.ed.ac.uk>
+
+
+## Contributors
 
 - Rami Al-Rfou'
 - Mark Amery

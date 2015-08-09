@@ -1,13 +1,11 @@
-Contributing to NLTK
-====================
+# Contributing to NLTK
 
 Hi! Thanks for your interest in contributing to [NLTK](http://www.nltk.org/).
 :-) In this document we'll try to summarize everything that you need to know to
 do a good job.
 
 
-Code and Issues
----------------
+## Code and Issues
 
 We use [GitHub](https://www.github.com/) to host our code repositories and
 issues. The [NLTK organization on GitHub](https://github.com/nltk) has many
@@ -115,11 +113,16 @@ the desired feature.
 
 ### Continuous Integration
 
-We have a continuous integration service (Jenkins) running on:
-<https://jenkins.shiningpanda.com/nltk/>.
+The continuous integration test suite previously running at [Shining
+Panda](http://shiningpanda.com) is down due to them having taken their Clap de
+Fin. There have been some investigations into moving to other CI, but no
+official build is running right now. This may change in the near future.
+
+`nltk/test/runtests.py` is a good starting point for running tests locally, but
+note that the suite is currently failing.
 
 
-### Discussion
+## Discussion
 
 We have two mail lists on Google Groups:
 
