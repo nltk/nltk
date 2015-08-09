@@ -10,7 +10,7 @@ For documentation, please visit [nltk.org](http://www.nltk.org/).
 ## Contributing
 
 Do you want to contribute with NLTK development? Great! Please read more details
-at[CONTRIBUTING.md](CONTRIBUTING.md).
+at [CONTRIBUTING.md](CONTRIBUTING.md).
 
 See also [How to contribute to NLTK](http://www.nltk.org/contribute.html).
 
