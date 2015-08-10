@@ -79,10 +79,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
     """
     Reader for the Comparative Sentence Dataset by Jindal and Liu (2006).
 
-        >>> from nltk.corpus.util import LazyCorpusLoader
-        >>> corpus = LazyCorpusLoader('data', ComparativeSentencesCorpusReader,
-            r'labeledSentences\.txt', encoding='latin-1')
-        >>> comparison = corpus.comparisons()[0]
+        >>> from nltk.corpus import comparative_sentences
+        >>> comparison = comparative_sentences.comparisons()[0]
         >>> comparison.text
         ['its', 'fast-forward', 'and', 'rewind', 'work', 'much', 'more', 'smoothly',
         'and', 'consistently', 'than', 'those', 'of', 'other', 'models', 'i', "'ve",
@@ -91,10 +89,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         'models'
         >>> (comparison.feature, comparison.keyword)
         ('rewind', 'more')
-        >>> len(corpus.comparisons())
+        >>> len(comparative_sentences.comparisons())
         853
-        >>> corpus.words()
-        ['troubleshooting', 'ad-2500', 'and', 'ad-2600', 'no', ...]
     """
     CorpusView = StreamBackedCorpusView
 
@@ -141,7 +137,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         all_keywords = concat([self.CorpusView(path, self._read_keyword_block, encoding=enc)
                        for (path, enc, fileid)
                        in self.abspaths(fileids, True, True)])
-        keywords_set = {keyword.lower() for keyword in all_keywords if keyword}
+
+        keywords_set = set([keyword.lower() for keyword in all_keywords if keyword])
         return keywords_set
 
     def keywords_readme(self):

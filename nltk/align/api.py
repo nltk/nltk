@@ -346,6 +346,3 @@ def _naacl2pair(pair_string):
     i, j, p = pair_string.split("-")
     return int(i), int(j)
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

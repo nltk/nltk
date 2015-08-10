@@ -48,7 +48,7 @@ class TestJSON2CSV(unittest.TestCase):
             self.infile = [next(infile) for x in range(100)]
         infile.close()
         self.msg = "Test and reference files are not the same"
-        self.subdir = 'files'
+        self.subdir = os.path.join(os.path.dirname(__file__), 'files')
 
     def tearDown(self):
         return

@@ -23,7 +23,7 @@ from nltk.metrics import (BigramAssocMeasures, precision as eval_precision,
 
 from nltk.probability import FreqDist
 
-from util import save_file, timer
+from nltk.sentiment.util import save_file, timer
 
 class SentimentAnalyzer(object):
     """
@@ -33,16 +33,25 @@ class SentimentAnalyzer(object):
         self.feat_extractors = defaultdict(list)
         self.classifier = classifier
 
-    def all_words(self, documents):
+    def all_words(self, documents, labeled=None):
         """
         Return all words/tokens from the documents (with duplicates).
         :param documents: a list of (words, label) tuples.
+        :param labeled: if `True`, assume that each document is represented by a
+            (words, label) tuple: (list(str), str). If `False`, each document is
+            considered as being a simple list of strings: list(str).
         :rtype: list(str)
         :return: A list of all words/tokens in `documents`.
         """
         all_words = []
-        for words, sentiment in documents:
-            all_words.extend(words)
+        if labeled is None:
+            labeled = documents and isinstance(documents[0], tuple)
+        if labeled == True:
+            for words, sentiment in documents:
+                all_words.extend(words)
+        elif labeled == False:
+            for words in documents:
+                all_words.extend(words)
         return all_words
 
     def apply_features(self, documents, labeled=None):
@@ -169,13 +178,13 @@ class SentimentAnalyzer(object):
         return self.classifier
 
     @timer
-    def evaluate(self, classifier, test_set, accuracy=True, f_measure=True,
+    def evaluate(self, test_set, classifier=None, accuracy=True, f_measure=True,
                  precision=True, recall=True):
         """
         Evaluate and print classifier performance on the test set.
 
-        :param classifier: a classifier instance (previously trained).
         :param test_set: A list of (tokens, label) tuples to use as gold set.
+        :param classifier: a classifier instance (previously trained).
         :param accuracy: if `True`, evaluate classifier accuracy.
         :param f_measure: if `True`, evaluate classifier f_measure.
         :param precision: if `True`, evaluate classifier precision.
@@ -183,6 +192,8 @@ class SentimentAnalyzer(object):
         :return: evaluation results.
         :rtype: dict
         """
+        if classifier is None:
+            classifier = self.classifier
         print("Evaluating {} results...".format(type(classifier).__name__))
         metrics_results = {}
         if accuracy == True:

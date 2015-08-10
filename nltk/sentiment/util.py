@@ -49,19 +49,19 @@ CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
 
 # Happy and sad emoticons
 
-HAPPY = {
+HAPPY = set([
     ':-)', ':)', ';)', ':o)', ':]', ':3', ':c)', ':>', '=]', '8)', '=)', ':}',
     ':^)', ':-D', ':D', '8-D', '8D', 'x-D', 'xD', 'X-D', 'XD', '=-D', '=D',
     '=-3', '=3', ':-))', ":'-)", ":')", ':*', ':^*', '>:P', ':-P', ':P', 'X-P',
     'x-p', 'xp', 'XP', ':-p', ':p', '=p', ':-b', ':b', '>:)', '>;)', '>:-)',
     '<3'
-    }
+    ])
 
-SAD = {
+SAD = set([
     ':L', ':-/', '>:/', ':S', '>:[', ':@', ':-(', ':[', ':-||', '=L', ':<',
     ':-[', ':-<', '=\\', '=/', '>:(', ':(', '>.<', ":'-(", ":'(", ':\\', ':-c',
     ':c', ':{', '>:\\', ';('
-    }
+    ])
 
 def timer(method):
     """
@@ -388,22 +388,11 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
     print("Loaded {} tweets".format(i))
     return tweets
 
-def parse_subjectivity_dataset(filename, word_tokenizer, label=None):
-    """
-    Parse the Subjectivity Dataset by Pang and Lee.
-    """
-    with codecs.open(filename, 'rb') as inputfile:
-        docs = []
-        for line in inputfile:
-            tokenized_line = word_tokenizer.tokenize(line.decode('latin-1'))
-            docs.append((tokenized_line, label))
-    return docs
-
 #////////////////////////////////////////////////////////////
 #{ Demos
 #////////////////////////////////////////////////////////////
 
-def demo_tweets(trainer):
+def demo_tweets(trainer, n_instances=None, output=None):
     """
     Train and test Naive Bayes classifier on 10000 tweets, tokenized using
     TweetTokenizer.
@@ -412,6 +401,10 @@ def demo_tweets(trainer):
         - 100 top bigrams (using BigramAssocMeasures.pmi)
 
     :param trainer: `train` method of a classifier.
+    :param n_instances: the number of total tweets that have to be used for
+        training and testing. Tweets will be equally split between positive and
+        negative.
+    :param output: the output file where results have to be reported.
     """
     from nltk.tokenize import TweetTokenizer
     from sentiment_analyzer import SentimentAnalyzer
@@ -422,18 +415,20 @@ def demo_tweets(trainer):
     # tokenizer = TweetTokenizer(preserve_case=True, strip_handles=True)
     # tokenizer = TweetTokenizer(reduce_len=True, strip_handles=True)
 
-    positive_json = twitter_samples.abspath("positive_tweets.json")
+    if n_instances is not None:
+        n_instances = int(n_instances/2)
 
     fields = ['id', 'text']
+    positive_json = twitter_samples.abspath("positive_tweets.json")
     positive_csv = 'positive_tweets.csv'
-    # json2csv_preprocess(positive_json, positive_csv, fields, limit=5000)
+    json2csv_preprocess(positive_json, positive_csv, fields, limit=n_instances)
 
     negative_json = twitter_samples.abspath("negative_tweets.json")
     negative_csv = 'negative_tweets.csv'
-    # json2csv_preprocess(negative_json, negative_csv, fields, limit=5000)
+    json2csv_preprocess(negative_json, negative_csv, fields, limit=n_instances)
 
-    pos_docs = parse_tweets_set(positive_csv, label='pos', word_tokenizer=tokenizer)
     neg_docs = parse_tweets_set(negative_csv, label='neg', word_tokenizer=tokenizer)
+    pos_docs = parse_tweets_set(positive_csv, label='pos', word_tokenizer=tokenizer)
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -443,9 +438,10 @@ def demo_tweets(trainer):
     training_tweets = train_pos_docs+train_neg_docs
     testing_tweets = test_pos_docs+test_neg_docs
 
-    stopwords = stopwords.words('english')
     sentim_analyzer = SentimentAnalyzer()
-    all_words = [word for word in sentim_analyzer.all_words(training_tweets) if word.lower() not in stopwords]
+    # stopwords = stopwords.words('english')
+    # all_words = [word for word in sentim_analyzer.all_words(training_tweets) if word.lower() not in stopwords]
+    all_words = [word for word in sentim_analyzer.all_words(training_tweets)]
 
     # Add simple unigram word features
     unigram_feats = sentim_analyzer.unigram_word_feats(all_words, top_n=1000)
@@ -465,29 +461,36 @@ def demo_tweets(trainer):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    results = sentim_analyzer.evaluate(classifier, test_set)
+    results = sentim_analyzer.evaluate(test_set)
 
-    extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
-    output_markdown('results.md', Dataset='labeled_tweets', Classifier=type(classifier).__name__,
-                    Tokenizer=tokenizer.__class__.__name__, Feats=extr, Results=results,
-                    Notes='Remove stopwords')
+    if output:
+        extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
+        output_markdown(output, Dataset='labeled_tweets', Classifier=type(classifier).__name__,
+                        Tokenizer=tokenizer.__class__.__name__, Feats=extr,
+                        Results=results, Instances=n_instances)
 
-def demo_movie_reviews(trainer):
+def demo_movie_reviews(trainer, n_instances=None, output=None):
     """
     Train classifier on all instances of the Movie Reviews dataset.
     The corpus has been preprocessed using the default sentence tokenizer and
     WordPunctTokenizer.
     Features are composed of:
-        - 1000 most frequent unigrams
+        - most frequent unigrams
 
     :param trainer: `train` method of a classifier.
+    :param n_instances: the number of total reviews that have to be used for
+        training and testing. Reviews will be equally split between positive and
+        negative.
+    :param output: the output file where results have to be reported.
     """
     from nltk.corpus import movie_reviews
     from sentiment_analyzer import SentimentAnalyzer
 
-    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in movie_reviews.fileids('pos')]
-    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in movie_reviews.fileids('neg')]
+    if n_instances is not None:
+        n_instances = int(n_instances/2)
 
+    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in movie_reviews.fileids('pos')[:n_instances]]
+    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in movie_reviews.fileids('neg')[:n_instances]]
     # We separately split positive and negative instances to keep a balanced
     # uniform class distribution in both train and test sets.
     train_pos_docs, test_pos_docs = split_train_test(pos_docs)
@@ -502,7 +505,6 @@ def demo_movie_reviews(trainer):
     # Add simple unigram word features
     unigram_feats = sentim_analyzer.unigram_word_feats(all_words, min_freq=4)
     sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
-
     # Apply features to obtain a feature-value representation of our datasets
     training_set = sentim_analyzer.apply_features(training_docs)
     test_set = sentim_analyzer.apply_features(testing_docs)
@@ -512,13 +514,15 @@ def demo_movie_reviews(trainer):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    results = sentim_analyzer.evaluate(classifier, test_set)
+    results = sentim_analyzer.evaluate(test_set)
 
-    extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
-    output_markdown('results.md', Dataset='Movie_reviews', Classifier=type(classifier).__name__,
-                    Tokenizer='WordPunctTokenizer', Feats=extr, Results=results)
+    if output:
+        extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
+        output_markdown(output, Dataset='Movie_reviews', Classifier=type(classifier).__name__,
+                        Tokenizer='WordPunctTokenizer', Feats=extr, Results=results,
+                        Instances=n_instances)
 
-def demo_subjectivity(trainer, save_analyzer=False):
+def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=None):
     """
     Train and test a classifier on instances of the Subjective Dataset by Pang and
     Lee. The dataset is made of 5000 subjective and 5000 objective sentences.
@@ -526,19 +530,20 @@ def demo_subjectivity(trainer, save_analyzer=False):
     we use the basic WhitespaceTokenizer to parse the data.
 
     :param trainer: `train` method of a classifier.
+    :param save_analyzer: if `True`, store the SentimentAnalyzer in a pickle file.
+    :param n_instances: the number of total sentences that have to be used for
+        training and testing. Sentences will be equally split between positive
+        and negative.
+    :param output: the output file where results have to be reported.
     """
-
     from sentiment_analyzer import SentimentAnalyzer
-    from nltk.tokenize import regexp
+    from nltk.corpus import subjectivity
 
-    word_tokenizer = regexp.WhitespaceTokenizer()
+    if n_instances is not None:
+        n_instances = int(n_instances/2)
 
-    subj_data = '/home/fievelk/nltk_data/corpora/rotten_imdb/quote.tok.gt9_subj.5000'
-    subj_docs = parse_subjectivity_dataset(subj_data, word_tokenizer=word_tokenizer,
-                                           label='subj')
-    obj_data = '/home/fievelk/nltk_data/corpora/rotten_imdb/plot.tok.gt9_obj.5000'
-    obj_docs = parse_subjectivity_dataset(obj_data, word_tokenizer=word_tokenizer,
-                                          label='obj')
+    subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
+    obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -564,15 +569,16 @@ def demo_subjectivity(trainer, save_analyzer=False):
         classifier.show_most_informative_features()
     except AttributeError:
         print('Your classifier does not provide a show_most_informative_features() method.')
-    results = sentim_analyzer.evaluate(classifier, test_set)
+    results = sentim_analyzer.evaluate(test_set)
 
     if save_analyzer == True:
         save_file(sentim_analyzer, 'sa_subjectivity.pickle')
 
-    extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
-    output_markdown('results.md', Dataset='subjectivity', Classifier=type(classifier).__name__,
-                    Instances=2000, Tokenizer=word_tokenizer.__class__.__name__,
-                    Feats=extr, Results=results)
+    if output:
+        extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
+        output_markdown(output, Dataset='subjectivity', Classifier=type(classifier).__name__,
+                        Tokenizer='WhitespaceTokenizer', Feats=extr,
+                        Instances=n_instances, Results=results)
 
     return sentim_analyzer
 
@@ -607,12 +613,8 @@ def demo_liu_hu_lexicon(sentence, plot=False):
     :param sentence: a sentence whose polarity has to be classified.
     :param plot: if True, plot a visual representation of the sentence polarity.
     """
-    from nltk.corpus import LazyCorpusLoader
-    from nltk.corpus import OpinionLexiconCorpusReader
+    from nltk.corpus import opinion_lexicon
     from nltk.tokenize import treebank
-
-    opinion_lexicon = LazyCorpusLoader('opinion_lexicon', OpinionLexiconCorpusReader,
-                                       r'(\w+)\-words\.txt', encoding='ISO-8859-2')
 
     tokenizer = treebank.TreebankWordTokenizer()
     pos_words = 0
@@ -642,16 +644,95 @@ def demo_liu_hu_lexicon(sentence, plot=False):
     if plot == True:
         _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
 
-def demo_vader(text):
+def demo_vader_instance(text):
     """
     Output polarity scores for a text using Vader approach.
 
     :param text: a text whose polarity has to be evaluated.
     """
     from vader import SentimentIntensityAnalyzer
-    sia = SentimentIntensityAnalyzer()
-    print(sia.polarity_scores(text))
+    vader_analyzer = SentimentIntensityAnalyzer()
+    print(vader_analyzer.polarity_scores(text))
 
+def demo_vader_tweets(n_instances=None, output=None):
+    """
+    Classify 10000 positive and negative tweets using Vader approach.
+
+    :param n_instances: the number of total tweets that have to be classified.
+    :param output: the output file where results have to be reported.
+    """
+    from collections import defaultdict
+    from nltk.corpus import twitter_samples
+    from vader import SentimentIntensityAnalyzer
+    from nltk.metrics import (accuracy as eval_accuracy, precision as eval_precision,
+        recall as eval_recall, f_measure as eval_f_measure)
+
+    if n_instances is not None:
+        n_instances = int(n_instances/2)
+
+    fields = ['id', 'text']
+    positive_json = twitter_samples.abspath("positive_tweets.json")
+    positive_csv = 'positive_tweets.csv'
+    json2csv_preprocess(positive_json, positive_csv, fields, strip_off_emoticons=False,
+                        limit=n_instances)
+
+    negative_json = twitter_samples.abspath("negative_tweets.json")
+    negative_csv = 'negative_tweets.csv'
+    json2csv_preprocess(negative_json, negative_csv, fields, strip_off_emoticons=False,
+                        limit=n_instances)
+
+    pos_docs = parse_tweets_set(positive_csv, label='pos')
+    neg_docs = parse_tweets_set(negative_csv, label='neg')
+
+    # We separately split subjective and objective instances to keep a balanced
+    # uniform class distribution in both train and test sets.
+    train_pos_docs, test_pos_docs = split_train_test(pos_docs)
+    train_neg_docs, test_neg_docs = split_train_test(neg_docs)
+
+    training_tweets = train_pos_docs+train_neg_docs
+    testing_tweets = test_pos_docs+test_neg_docs
+
+    vader_analyzer = SentimentIntensityAnalyzer()
+
+    gold_results = defaultdict(set)
+    test_results = defaultdict(set)
+    acc_gold_results = []
+    acc_test_results = []
+    labels = set()
+    num = 0
+    for i, (text, label) in enumerate(testing_tweets):
+        labels.add(label)
+        gold_results[label].add(i)
+        acc_gold_results.append(label)
+        score = vader_analyzer.polarity_scores(text)['compound']
+        if score > 0:
+            observed = 'pos'
+        else:
+            observed = 'neg'
+        num += 1
+        acc_test_results.append(observed)
+        test_results[observed].add(i)
+    metrics_results = {}
+    for label in labels:
+        accuracy_score = eval_accuracy(acc_gold_results,
+            acc_test_results)
+        metrics_results['Accuracy'] = accuracy_score
+        precision_score = eval_precision(gold_results[label],
+            test_results[label])
+        metrics_results['Precision [{}]'.format(label)] = precision_score
+        recall_score = eval_recall(gold_results[label],
+            test_results[label])
+        metrics_results['Recall [{}]'.format(label)] = recall_score
+        f_measure_score = eval_f_measure(gold_results[label],
+            test_results[label])
+        metrics_results['F-measure [{}]'.format(label)] = f_measure_score
+
+    for result in sorted(metrics_results):
+            print('{}: {}'.format(result, metrics_results[result]))
+
+    if output:
+        output_markdown(output, Approach='Vader', Dataset='labeled_tweets',
+            Instances=n_instances, Results=metrics_results)
 
 if __name__ == '__main__':
     from nltk.classify import NaiveBayesClassifier, MaxentClassifier
@@ -667,4 +748,5 @@ if __name__ == '__main__':
     # demo_subjectivity(svm)
     # demo_sent_subjectivity("she's an artist , but hasn't picked up a brush in a year . ")
     # demo_liu_hu_lexicon("This movie was actually neither that funny, nor super witty.", plot=True)
-    # demo_vader("This movie was actually neither that funny, nor super witty.")
+    # demo_vader_instance("This movie was actually neither that funny, nor super witty.")
+    # demo_vader_tweets()

@@ -1512,9 +1512,8 @@ class WordNetCorpusReader(CorpusReader):
                         # adjective satellites are in the same file as
                         # adjectives so only yield the synset if it's actually
                         # a satellite
-                        if pos_tag == ADJ_SAT:
-                            if synset._pos == pos_tag:
-                                yield synset
+                        if synset._pos == ADJ_SAT:
+                            yield synset
 
                         # for all other POS tags, yield all synsets (this means
                         # that adjectives also include adjective satellites)

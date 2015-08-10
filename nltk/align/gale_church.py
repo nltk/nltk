@@ -219,9 +219,6 @@ def parse_token_stream(stream, soft_delimiter, hard_delimiter):
         for block_it in split_at(stream, hard_delimiter)]
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
 
 #    Code for test files in nltk_contrib/align/data/*.tok

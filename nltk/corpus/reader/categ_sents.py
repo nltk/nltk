@@ -49,31 +49,24 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
 
     Examples using the Subjectivity Dataset:
 
-    >>> from nltk.corpus.util import LazyCorpusLoader
-    >>> subj_corpus = LazyCorpusLoader('rotten_imdb', CategorizedSentencesCorpusReader,
-            r'(quote.tok.gt9_subj|plot.tok.gt9_obj)\.5000',
-            cat_pattern=r'.*_(subj|obj)\.5000', encoding='latin-1')
-    >>> subj_corpus.sents()[23]
+    >>> from nltk.corpus import subjectivity
+    >>> subjectivity.sents()[23]
     ['television', 'made', 'him', 'famous', ',', 'but', 'his', 'biggest', 'hits',
     'happened', 'off', 'screen', '.']
-    >>> subj.categories()
+    >>> subjectivity.categories()
     ['obj', 'subj']
-    >>> subj_corpus.words(categories='subj')
+    >>> subjectivity.words(categories='subj')
     ['smart', 'and', 'alert', ',', 'thirteen', ...]
 
     Examples using the Sentence Polarity Dataset:
 
-    >>> polar_corpus = LazyCorpusLoader('rt-polaritydata', CategorizedSentencesCorpusReader,
-            r'rt-polarity\.(neg|pos)', cat_pattern=r'rt-polarity\.(neg|pos)',
-            encoding='utf-8')
-    >>> polar_corpus.sents()
+    >>> from nltk.corpus import sentence_polarity
+    >>> sentence_polarity.sents()
     [['simplistic', ',', 'silly', 'and', 'tedious', '.'], ["it's", 'so', 'laddish',
     'and', 'juvenile', ',', 'only', 'teenage', 'boys', 'could', 'possibly', 'find',
     'it', 'funny', '.'], ...]
-    >>> polar_corpus.categories()
+    >>> sentence_polarity.categories()
     ['neg', 'pos']
-    >>> polar_corpus.words(categories='pos')
-    ['the', 'rock', 'is', 'destined', 'to', 'be', 'the', ...]
     """
 
     CorpusView = StreamBackedCorpusView
