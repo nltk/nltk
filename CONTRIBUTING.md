@@ -130,8 +130,6 @@ We have two mail lists on Google Groups:
 - [nltk-users][nltk-users], for general discussion and user questions;
 - [nltk-dev][nltk-dev], for people interested in NLTK development.
 
-You can also reach us at Slack.com.
-
 Please feel free to contact us through the [nltk-dev][nltk-dev] mail list if
 you have any questions or suggestions. Every contribution is very welcome!
 
