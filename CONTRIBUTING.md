@@ -44,17 +44,17 @@ Summary of our git branching model:
 - Fork the desired repository on GitHub to your account;
 - Clone your forked repository locally
   (`git clone git@github.com:your-username:repository-name.git`);
-- Create a new branch off of `master` with a descriptive name (for example:
+- Create a new branch off of `develop` with a descriptive name (for example:
   `feature/portuguese-sentiment-analysis`, `hotfix/bug-on-downloader`). You can
-  do it switching to master branch (`git checkout master`) and then creating a
-  new branch (`git checkout -b name-of-the-new-branch`);
+  do it switching to `develop` branch (`git checkout develop`) and then
+  creating a new branch (`git checkout -b name-of-the-new-branch`);
 - Do many small commits on that branch locally (`git add files-changed`,
   `git commit -m "Add some change"`);
 - Add your name to the `AUTHORS.markdown` file as a contributor;
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
 - Create a pull request using the GitHub Web interface (asking us to pull the
-  changes from your new branch and add the to our `master` branch);
+  changes from your new branch and add the to our `develop` branch);
 - Wait for comments.
 
 
@@ -126,14 +126,17 @@ note that the suite is currently failing.
 
 We have two mail lists on Google Groups:
 
-- [nltk](https://groups.google.com/forum/#!forum/nltk), for general discussion
-  and user questions;
-- [nltk-dev](https://groups.google.com/forum/#!forum/nltk-dev), for people
-  interested in NLTK development.
+- [nltk][nltk-announce], for announcements only;
+- [nltk-users][nltk-users], for general discussion and user questions;
+- [nltk-dev][nltk-dev], for people interested in NLTK development.
 
-You can also reach us at #NLTK channel on FreeNode IRC network.
+You can also reach us at Slack.com.
 
-Please feel free to contact us if you have any questions or suggestions. Every
-contribution is very welcome!
+Please feel free to contact us through the [nltk-dev][nltk-dev] mail list if
+you have any questions or suggestions. Every contribution is very welcome!
 
 Happy hacking! (;
+
+[nltk-announce]: https://groups.google.com/forum/#!forum/nltk
+[nltk-dev]: https://groups.google.com/forum/#!forum/nltk-dev
+[nltk-users]: https://groups.google.com/forum/#!forum/nltk-users
