@@ -100,6 +100,7 @@ class IBMModel3(object):
 
     >>> align_sents = []
     >>> align_sents.append(AlignedSent(['klein', 'ist', 'das', 'Haus'], ['the', 'house', 'is', 'small']))
+    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'groß'], ['the', 'house', 'is', 'big']))
     >>> align_sents.append(AlignedSent(['das', 'Haus'], ['the', 'house']))
     >>> align_sents.append(AlignedSent(['das', 'Buch'], ['the', 'book']))
     >>> align_sents.append(AlignedSent(['ein', 'Buch'], ['a', 'book']))
@@ -119,7 +120,7 @@ class IBMModel3(object):
     >>> aligned_sent.mots
     ['the', 'house', 'is', 'small']
     >>> aligned_sent.alignment
-    Alignment([(0, 2), (1, 3), (2, 0), (3, 1)])
+    Alignment([(0, 3), (1, 2), (2, 0), (3, 1)])
 
     """
 
