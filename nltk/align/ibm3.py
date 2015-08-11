@@ -142,13 +142,15 @@ class IBMModel3(object):
         :type iterations: int
         """
 
-        # Avoid division by zero errors by initializing probabilities to
-        # a tiny value. Note that this approach is mathematically
+        # Avoid division by zero and precision errors by imposing a minimum
+        # value for probabilities. Note that this approach is theoretically
         # incorrect, since it may create probabilities that sum to more
-        # than 1
-        self.PROB_SMOOTH = 0.1
+        # than 1. In practice, the contribution of probabilities with MIN_PROB
+        # is tiny enough that the value of MIN_PROB can be treated as zero.
+        self.MIN_PROB = 1.0e-12 # GIZA++ is more liberal and uses 1.0e-7
 
-        self.translation_table = defaultdict(lambda: defaultdict(lambda: float))
+        self.translation_table = defaultdict(
+            lambda: defaultdict(lambda: self.MIN_PROB))
         """
         Probability(target word | source word). Values accessed as
         ``translation_table[target_word][source_word].``
@@ -156,14 +158,14 @@ class IBMModel3(object):
 
         self.distortion_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                lambda: self.PROB_SMOOTH))))
+                lambda: self.MIN_PROB))))
         """
         Probability(j | i,l,m). Values accessed as
         ``distortion_table[j][i][l][m].``
         """
 
         self.fertility_table = defaultdict(
-            lambda: defaultdict(lambda: self.PROB_SMOOTH))
+            lambda: defaultdict(lambda: self.MIN_PROB))
         """
         Probability(fertility | source word). Values accessed as
         ``fertility_table[fertility][source_word].``
@@ -275,19 +277,22 @@ class IBMModel3(object):
                         if fertility > max_fertility:
                             max_fertility = fertility
 
-            translation_table = defaultdict(lambda: defaultdict(lambda: 0.0))
+            translation_table = defaultdict(
+                lambda: defaultdict(lambda: self.MIN_PROB))
             distortion_table = defaultdict(
                 lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                    lambda: 0.0)))
-            )
-            fertility_table = defaultdict(lambda: defaultdict(lambda: 0.0))
+                    lambda: self.MIN_PROB))))
+            fertility_table = defaultdict(
+                lambda: defaultdict(lambda: self.MIN_PROB))
 
             # M step: Update probabilities with maximum likelihood estimates
+            # If any probability is less than MIN_PROB, clamp it to MIN_PROB
+
             # Lexical translation
             for s in src_vocab:
                 for t in trg_vocab:
-                    translation_table[t][s] = (count_t_given_s[t][s] /
-                                               count_any_t_given_s[s])
+                    estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                    translation_table[t][s] = max(estimate, self.MIN_PROB)
 
             # Distortion
             for aligned_sentence in parallel_corpus:
@@ -296,19 +301,25 @@ class IBMModel3(object):
 
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
-                        distortion_table[j][i][l][m] = (
-                            distortion_count[j][i][l][m] /
-                            distortion_count_for_any_j[i][l][m])
+                        estimate = (distortion_count[j][i][l][m] /
+                                    distortion_count_for_any_j[i][l][m])
+                        distortion_table[j][i][l][m] = max(estimate,
+                                                           self.MIN_PROB)
 
             # Fertility
             for fertility in range(0, max_fertility + 1):
                 for s in src_vocab:
-                    fertility_table[fertility][s] = (
-                        fertility_count[fertility][s] /
-                        fertility_count_for_any_phi[s])
+                    estimate = (fertility_count[fertility][s] /
+                                fertility_count_for_any_phi[s])
+                    fertility_table[fertility][s] = max(estimate, self.MIN_PROB)
 
             # NULL-aligned words generation
-            p1 = count_p1 / (count_p1 + count_p0)
+            p1_estimate = count_p1 / (count_p1 + count_p0)
+            p1 = max(p1_estimate, self.MIN_PROB)
+
+            # If p1 is too large, it may result in p0 = 1 - p1 being
+            # smaller than MIN_PROB
+            p1 = min(p1, 1 - self.MIN_PROB)
 
             self.translation_table = translation_table
             self.distortion_table = distortion_table
@@ -350,7 +361,7 @@ class IBMModel3(object):
                 for jj in range(1, m + 1):
                     if jj != j:
                         # Find the best alignment according to model 2
-                        max_alignment_prob = 0
+                        max_alignment_prob = self.MIN_PROB
                         best_i = 1
 
                         for ii in range(0, l + 1):
@@ -421,25 +432,27 @@ class IBMModel3(object):
         trg_sentence = alignment_info.trg_sentence
 
         probability = 1.0
+        MIN_PROB = self.MIN_PROB
 
         # Combine NULL insertion probability
-        probability *= (pow(p1, fertility_of_i[0]) *
-                        pow(p0, m - 2 * fertility_of_i[0]))
-        if probability == 0:
-            return probability
+        null_fertility = fertility_of_i[0]
+        probability *= (pow(p1, null_fertility) *
+                        pow(p0, m - 2 * null_fertility))
+        if probability < MIN_PROB:
+            return MIN_PROB
 
-        # Compute combination (m - fertility_of_i[0]) choose fertility_of_i[0]
-        for i in range(1, fertility_of_i[0] + 1):
-            probability *= (m - fertility_of_i[0] - i + 1) / i
-            if probability == 0:
-                return probability
+        # Compute combination (m - null_fertility) choose null_fertility
+        for i in range(1, null_fertility + 1):
+            probability *= (m - null_fertility - i + 1) / i
+            if probability < MIN_PROB:
+                return MIN_PROB
 
         # Combine fertility probabilities
         for i in range(1, l + 1):
             probability *= (factorial(fertility_of_i[i]) *
                 self.fertility_table[fertility_of_i[i]][src_sentence[i]])
-            if probability == 0:
-                return probability
+            if probability < MIN_PROB:
+                return MIN_PROB
 
         # Combine lexical and distortion probabilities
         for j in range(1, m + 1):
@@ -447,10 +460,10 @@ class IBMModel3(object):
             i = alignment[j]
             s = src_sentence[i]
 
-            probability *= self.translation_table[t][s]
-            probability *= self.distortion_table[j][i][l][m]
-            if probability == 0:
-                return probability
+            probability *= (self.translation_table[t][s] *
+                self.distortion_table[j][i][l][m])
+            if probability < MIN_PROB:
+                return MIN_PROB
 
         return probability
 
@@ -533,8 +546,10 @@ class IBMModel3(object):
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
-            best_alignment = (self.translation_table[trg_word][None] *
-                              self.distortion_table[j + 1][0][l][m], 0)
+            initial_prob = (self.translation_table[trg_word][None] *
+                            self.distortion_table[j + 1][0][l][m])
+            initial_prob = max(initial_prob, self.MIN_PROB)
+            best_alignment = (initial_prob, 0)
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = (self.translation_table[trg_word][src_word] *
                               self.distortion_table[j + 1][i + 1][l][m])
