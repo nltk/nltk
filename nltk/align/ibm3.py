@@ -338,15 +338,10 @@ class IBMModel3(object):
         l = len(src_sentence) - 1 # exclude NULL
         m = len(trg_sentence)
 
-        # Compute Normalization
         for i in range(0, l + 1):
             for j in range(1, m + 1):
-                alignment = [0] * (m + 1)
+                alignment = [0] * (m + 1) # Initialize all alignments to NULL
                 fertility_of_i = [0] * (l + 1)
-
-                # Initialize all fertility to zero
-                for ii in range(0, l + 1):
-                    fertility_of_i[ii] = 0
 
                 # Pegging one alignment point
                 alignment[j] = i
@@ -370,8 +365,9 @@ class IBMModel3(object):
                         alignment[jj] = best_i
                         fertility_of_i[best_i] += 1
 
-                alignment_info = AlignmentInfo(tuple(alignment), src_sentence,
-                                               trg_sentence, fertility_of_i)
+                alignment_info = AlignmentInfo(
+                    tuple(alignment), tuple(src_sentence),
+                    tuple(trg_sentence), tuple(fertility_of_i))
                 best_alignment = self.hillclimb(alignment_info, j)
                 neighbors = self.neighboring(best_alignment, j)
                 sampled_alignments.update(neighbors)
@@ -465,7 +461,7 @@ class IBMModel3(object):
 
         :return: A set neighboring alignments represented by their
             ``AlignmentInfo``
-        :rtype: dict(AlignmentInfo)
+        :rtype: set(AlignmentInfo)
         """
 
         neighbors = set()
@@ -480,17 +476,15 @@ class IBMModel3(object):
                 # Add alignments that differ by one alignment point
                 for i in range(0, l + 1):
                     new_alignment = list(original_alignment)
-                    new_alignment[j] = i
+                    new_fertility = list(original_fertility)
 
-                    new_fertility = original_fertility # FIXME A deep copy should be made here
-                    if new_fertility[original_alignment[j]] > 0:
-                        new_fertility = list(original_fertility)
-                        new_fertility[original_alignment[j]] -= 1
-                        new_fertility[i] += 1 # FIXME This should be outside the if block
+                    new_alignment[j] = i
+                    new_fertility[i] += 1
+                    new_fertility[original_alignment[j]] -= 1
 
                     new_alignment_info = AlignmentInfo(
                         tuple(new_alignment), alignment_info.src_sentence,
-                        alignment_info.trg_sentence, new_fertility)
+                        alignment_info.trg_sentence, tuple(new_fertility))
                     neighbors.add(new_alignment_info)
 
         for j in range(1, m + 1):
@@ -499,13 +493,13 @@ class IBMModel3(object):
                 for other_j in range(1, m + 1):
                     if other_j != j_pegged and other_j != j:
                         new_alignment = list(original_alignment)
-                        new_fertility = original_fertility  # FIXME A deep copy should be made here
+                        new_fertility = list(original_fertility)
                         new_alignment[j] = original_alignment[other_j]
                         new_alignment[other_j] = original_alignment[j]
 
                         new_alignment_info = AlignmentInfo(
                             tuple(new_alignment), alignment_info.src_sentence,
-                            alignment_info.trg_sentence, new_fertility)
+                            alignment_info.trg_sentence, tuple(new_fertility))
                         neighbors.add(new_alignment_info)
 
         return neighbors
@@ -577,30 +571,27 @@ class AlignmentInfo(object):
 
         self.fertility_of_i = fertility_of_i
         """
-        list(int): Fertility of source word. ``fertility_of_i[i]`` is
+        tuple(int): Fertility of source word. ``fertility_of_i[i]`` is
         the number of words in the target sentence that is aligned to
         the word in position i of the source sentence.
         """
 
         self.src_sentence = src_sentence
         """
-        list(str): Source sentence referred to by this object.
+        tuple(str): Source sentence referred to by this object.
         Should include NULL token (None) in index 0.
         """
 
         self.trg_sentence = trg_sentence
         """
-        list(str): Target sentence referred to by this object.
+        tuple(str): Target sentence referred to by this object.
         """
 
     def __eq__(self, other):
         return self.alignment == other.alignment
 
     def __hash__(self):
-        # FIXME There should not be a need to hash over fertility_of_i,
-        # but the existing code does not update fertility_of_i correctly.
-        # See other FIXMEs
-        return hash((self.alignment, tuple(self.fertility_of_i)))
+        return hash(self.alignment)
 
 
 # run doctests
