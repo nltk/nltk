@@ -7,33 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """
-The IBM models are a series of generative models that learn lexical
-translation probabilities, p(target language word|source language word),
-given a sentence-aligned parallel corpus.
-
-The models increase in sophistication from model 1 to 5. Typically, the
-output of lower models is used to seed the higher models. All models
-use the Expectation-Maximization (EM) algorithm to learn various
-probability tables.
-
-Words in a sentence are one-indexed. The first word of a sentence has
-position 1, not 0. Index 0 is reserved in the source sentence for the
-NULL token. The concept of position does not apply to NULL, but it is
-indexed at 0 by convention.
-
-Each target word is aligned to exactly one source word or the NULL
-token.
-
-Notations
-i: Position in the source sentence
-    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
-j: Position in the target sentence
-    Valid values are 1, 2, ..., length of target sentence
-l: Number of words in the source sentence, excluding NULL
-m: Number of words in the target sentence
-s: A word in the source language
-t: A word in the target language
-
+Lexical translation model that considers word order.
 
 IBM Model 2 improves on Model 1 by accounting for word order.
 An alignment probability is introduced, a(i | j,l,m), which predicts
@@ -49,6 +23,17 @@ E step - In the training data, collect counts, weighted by prior
              sentence
 
 M step - Estimate new probabilities based on the counts from the E step
+
+
+Notations:
+i: Position in the source sentence
+    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+j: Position in the target sentence
+    Valid values are 1, 2, ..., length of target sentence
+l: Number of words in the source sentence, excluding NULL
+m: Number of words in the target sentence
+s: A word in the source language
+t: A word in the target language
 
 
 References:

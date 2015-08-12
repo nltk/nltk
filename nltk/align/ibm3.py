@@ -7,36 +7,8 @@
 # For license information, see LICENSE.TXT
 
 """
-The IBM models are a series of generative models that learn lexical
-translation probabilities, p(target language word|source language word),
-given a sentence-aligned parallel corpus.
-
-The models increase in sophistication from model 1 to 5. Typically, the
-output of lower models is used to seed the higher models. All models
-use the Expectation-Maximization (EM) algorithm to learn various
-probability tables.
-
-Words in a sentence are one-indexed. The first word of a sentence has
-position 1, not 0. Index 0 is reserved in the source sentence for the
-NULL token. The concept of position does not apply to NULL, but it is
-indexed at 0 by convention.
-
-Each target word is aligned to exactly one source word or the NULL
-token.
-
-Notations
-i: Position in the source sentence
-    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
-j: Position in the target sentence
-    Valid values are 1, 2, ..., length of target sentence
-l: Number of words in the source sentence, excluding NULL
-m: Number of words in the target sentence
-s: A word in the source language
-t: A word in the target language
-phi: Fertility, the number of target words produced by a source word
-p1: Probability that a target word produced by a source word is
-    accompanied by another target word that is aligned to NULL
-p0: 1 - p1
+Translation model that considers how a word can be aligned to
+multiple words in another language.
 
 IBM Model 3 improves on Model 2 by directly modeling the phenomenon
 where a word in one language may be translated into zero or more words
@@ -74,6 +46,21 @@ Because there are too many possible alignments, only the most probable
 ones are considered. First, the best alignment is determined using prior
 probabilities. Then, a hill climbing approach is used to find other good
 candidates.
+
+
+Notations:
+i: Position in the source sentence
+    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+j: Position in the target sentence
+    Valid values are 1, 2, ..., length of target sentence
+l: Number of words in the source sentence, excluding NULL
+m: Number of words in the target sentence
+s: A word in the source language
+t: A word in the target language
+phi: Fertility, the number of target words produced by a source word
+p1: Probability that a target word produced by a source word is
+    accompanied by another target word that is aligned to NULL
+p0: 1 - p1
 
 
 References:
