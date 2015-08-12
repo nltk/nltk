@@ -58,6 +58,8 @@ from __future__  import division
 from collections import defaultdict
 from nltk.align  import AlignedSent
 from nltk.align.ibm_model import IBMModel
+import warnings
+
 
 class IBMModel1(IBMModel):
     """
@@ -98,9 +100,13 @@ class IBMModel1(IBMModel):
 
         # seed with a uniform distribution
         initial_prob = 1 / len(self.trg_vocab)
-        for t in self.trg_vocab:
-            for s in self.src_vocab:
-                self.translation_table[t][s] = initial_prob
+        if initial_prob > IBMModel.MIN_PROB:
+            for t in self.trg_vocab:
+                for s in self.src_vocab:
+                    self.translation_table[t][s] = initial_prob
+        else:
+            warnings.warn("Target language vocabulary is too large. "
+                          "Results may be less accurate.")
 
         self.train(sentence_aligned_corpus, iterations)
 
@@ -131,8 +137,9 @@ class IBMModel1(IBMModel):
             # M step: Update probabilities with maximum likelihood estimate
             for s in self.src_vocab:
                 for t in self.trg_vocab:
-                    self.translation_table[t][s] = (count_t_given_s[t][s] /
-                                                    count_any_t_given_s[s])
+                    estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                    self.translation_table[t][s] = max(estimate,
+                                                       IBMModel.MIN_PROB)
 
     def align(self, sentence_pair):
         """
@@ -157,7 +164,9 @@ class IBMModel1(IBMModel):
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
-            best_alignment = (self.translation_table[trg_word][None], None)
+            initial_prob = max(self.translation_table[trg_word][None],
+                               IBMModel.MIN_PROB)
+            best_alignment = (initial_prob, None)
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = self.translation_table[trg_word][src_word]
                 best_alignment = max(best_alignment, (align_prob, i))
