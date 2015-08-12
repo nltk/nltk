@@ -76,6 +76,7 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 from __future__ import division
 from collections import defaultdict
 from nltk.align import AlignedSent
+from nltk.align.ibm_model import AlignmentInfo
 from nltk.align.ibm2 import IBMModel2
 from math import factorial
 
@@ -549,52 +550,6 @@ class IBMModel3(object):
                 alignment.append((j, best_alignment[1]))
 
         return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
-
-
-class AlignmentInfo(object):
-    """
-    Helper data object for IBM Model 3 training
-
-    For a source sentence and its counterpart in the target language,
-    this class holds information about the sentence pair's alignment
-    and fertility.
-    """
-
-    def __init__(self, alignment, src_sentence, trg_sentence, fertility_of_i):
-        if not isinstance(alignment, tuple):
-            raise TypeError("The alignment must be a tuple because it is used "
-                            "to uniquely identify AlignmentInfo objects.")
-
-        self.alignment = alignment
-        """
-        tuple(int): Alignment function. ``alignment[j]`` is the position
-        in the source sentence that is aligned to the position j in the
-        target sentence.
-        """
-
-        self.fertility_of_i = fertility_of_i
-        """
-        tuple(int): Fertility of source word. ``fertility_of_i[i]`` is
-        the number of words in the target sentence that is aligned to
-        the word in position i of the source sentence.
-        """
-
-        self.src_sentence = src_sentence
-        """
-        tuple(str): Source sentence referred to by this object.
-        Should include NULL token (None) in index 0.
-        """
-
-        self.trg_sentence = trg_sentence
-        """
-        tuple(str): Target sentence referred to by this object.
-        """
-
-    def __eq__(self, other):
-        return self.alignment == other.alignment
-
-    def __hash__(self):
-        return hash(self.alignment)
 
 
 # run doctests
