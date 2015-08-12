@@ -37,13 +37,12 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from abc import ABCMeta
 from collections import defaultdict
 
 
-class IBMModel(metaclass=ABCMeta):
+class IBMModel(object):
     """
-    Base class for all IBM models
+    Abstract base class for all IBM models
     """
 
     # Avoid division by zero and precision errors by imposing a minimum
