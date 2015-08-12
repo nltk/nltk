@@ -37,6 +37,85 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
+from abc import ABCMeta
+from collections import defaultdict
+
+
+class IBMModel(metaclass=ABCMeta):
+    """
+    Base class for all IBM models
+    """
+
+    # Avoid division by zero and precision errors by imposing a minimum
+    # value for probabilities. Note that this approach is theoretically
+    # incorrect, since it may create probabilities that sum to more
+    # than 1. In practice, the contribution of probabilities with MIN_PROB
+    # is tiny enough that the value of MIN_PROB can be treated as zero.
+    MIN_PROB = 1.0e-12 # GIZA++ is more liberal and uses 1.0e-7
+
+    def __init__(self, sentence_aligned_corpus):
+        self.init_vocab(sentence_aligned_corpus)
+
+        self.translation_table = defaultdict(
+            lambda: defaultdict(lambda: IBMModel.MIN_PROB))
+        """
+        dict[str][str]: float. Probability(target word | source word).
+        Values accessed as ``translation_table[target_word][source_word]``.
+        """
+
+        self.alignment_table = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: IBMModel.MIN_PROB))))
+        """
+        dict[int][int][int][int]: float. Probability(i | j,l,m).
+        Values accessed as ``alignment_table[i][j][l][m]``.
+        Used in model 2.
+        """
+
+        self.distortion_table = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: self.MIN_PROB))))
+        """
+        dict[int][int][int][int]: float. Probability(j | i,l,m).
+        Values accessed as ``distortion_table[j][i][l][m]``.
+        Used in model 3 and higher.
+        """
+
+        self.fertility_table = defaultdict(
+            lambda: defaultdict(lambda: self.MIN_PROB))
+        """
+        dict[int][str]: float. Probability(fertility | source word).
+        Values accessed as ``fertility_table[fertility][source_word]``.
+        Used in model 3 and higher.
+        """
+
+        # Initial probability of null insertion
+        self.p1 = 0.5
+        """
+        Probability that a generated word requires another target word
+        that is aligned to NULL.
+        Used in model 3 and higher.
+        """
+
+    def init_vocab(self, sentence_aligned_corpus):
+        src_vocab = set()
+        trg_vocab = set()
+        for aligned_sentence in sentence_aligned_corpus:
+            trg_vocab.update(aligned_sentence.words)
+            src_vocab.update(aligned_sentence.mots)
+        # Add the NULL token
+        src_vocab.add(None)
+
+        self.src_vocab = src_vocab
+        """
+        set(str): All source language words used in training
+        """
+
+        self.trg_vocab = trg_vocab
+        """
+        set(str): All target language words used in training
+        """
+
 
 class AlignmentInfo(object):
     """

@@ -57,8 +57,9 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 from __future__  import division
 from collections import defaultdict
 from nltk.align  import AlignedSent
+from nltk.align.ibm_model import IBMModel
 
-class IBMModel1(object):
+class IBMModel1(IBMModel):
     """
     Lexical translation model that ignores word order
 
@@ -93,30 +94,17 @@ class IBMModel1(object):
         :type iterations: int
         """
 
-        self.translation_table = defaultdict(lambda: defaultdict(lambda: float))
-        """
-        Probability(target word | source word). Values accessed as
-        ``translation_table[target_word][source_word].``
-        """
+        super(IBMModel1, self).__init__(sentence_aligned_corpus)
+
+        # seed with a uniform distribution
+        initial_prob = 1 / len(self.trg_vocab)
+        for t in self.trg_vocab:
+            for s in self.src_vocab:
+                self.translation_table[t][s] = initial_prob
 
         self.train(sentence_aligned_corpus, iterations)
 
     def train(self, parallel_corpus, iterations):
-        # Vocabulary of each language
-        src_vocab = set()
-        trg_vocab = set()
-        for aligned_sentence in parallel_corpus:
-            trg_vocab.update(aligned_sentence.words)
-            src_vocab.update(aligned_sentence.mots)
-        # Add the NULL token
-        src_vocab.add(None)
-
-        initial_prob = 1 / len(trg_vocab)
-
-        # Create the translation model with initial probability
-        translation_table = defaultdict(
-            lambda: defaultdict(lambda: initial_prob))
-
         for i in range(0, iterations):
             count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
             count_any_t_given_s = defaultdict(lambda: 0.0)
@@ -130,23 +118,21 @@ class IBMModel1(object):
                 for t in trg_sentence:
                     if total_count[t] == 0.0:
                         for s in src_sentence:
-                            total_count[t] += translation_table[t][s]
+                            total_count[t] += self.translation_table[t][s]
 
                 # E step (b): Collect counts
                 for t in trg_sentence:
                     for s in src_sentence:
-                        count = translation_table[t][s]
+                        count = self.translation_table[t][s]
                         normalized_count = count / total_count[t]
                         count_t_given_s[t][s] += normalized_count
                         count_any_t_given_s[s] += normalized_count
 
             # M step: Update probabilities with maximum likelihood estimate
-            for s in src_vocab:
-                for t in trg_vocab:
-                    translation_table[t][s] = (count_t_given_s[t][s] /
-                                               count_any_t_given_s[s])
-
-        self.translation_table = translation_table
+            for s in self.src_vocab:
+                for t in self.trg_vocab:
+                    self.translation_table[t][s] = (count_t_given_s[t][s] /
+                                                    count_any_t_given_s[s])
 
     def align(self, sentence_pair):
         """
