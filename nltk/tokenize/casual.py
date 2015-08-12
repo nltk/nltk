@@ -248,7 +248,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
             except ValueError:
                 pass
 
-        return u'' if remove_illegal else match.group(0)
+        return "" if remove_illegal else match.group(0)
 
     return ENT_RE.sub(_convert_entity, _str_to_unicode(text, encoding))
 
