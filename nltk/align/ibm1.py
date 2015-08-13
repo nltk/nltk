@@ -13,31 +13,7 @@
 # For license information, see LICENSE.TXT
 
 """
-The IBM models are a series of generative models that learn lexical
-translation probabilities, p(target language word|source language word),
-given a sentence-aligned parallel corpus.
-
-The models increase in sophistication from model 1 to 5. Typically, the
-output of lower models is used to seed the higher models. All models
-use the Expectation-Maximization (EM) algorithm to learn various
-probability tables.
-
-Words in a sentence are one-indexed. The first word of a sentence has
-position 1, not 0. Index 0 is reserved in the source sentence for the
-NULL token. The concept of position does not apply to NULL, but it is
-indexed at 0 by convention.
-
-Each target word is aligned to exactly one source word or the NULL
-token.
-
-Notations
-i: Position in the source sentence
-    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
-j: Position in the target sentence
-    Valid values are 1, 2, ..., length of target sentence
-s: A word in the source language
-t: A word in the target language
-
+Lexical translation model that ignores word order.
 
 In IBM Model 1, word order is ignored for simplicity. Thus, the
 following two alignments are equally likely.
@@ -59,6 +35,15 @@ M step - Estimate the new probability of translation based on the
          counts from the Expectation step.
 
 
+Notations:
+i: Position in the source sentence
+    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+j: Position in the target sentence
+    Valid values are 1, 2, ..., length of target sentence
+s: A word in the source language
+t: A word in the target language
+
+
 References:
 Philipp Koehn. 2010. Statistical Machine Translation.
 Cambridge University Press, New York.
@@ -72,8 +57,11 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 from __future__  import division
 from collections import defaultdict
 from nltk.align  import AlignedSent
+from nltk.align.ibm_model import IBMModel
+import warnings
 
-class IBMModel1(object):
+
+class IBMModel1(IBMModel):
     """
     Lexical translation model that ignores word order
 
@@ -95,8 +83,8 @@ class IBMModel1(object):
 
     def __init__(self, sentence_aligned_corpus, iterations):
         """
-        Train on ``sentence_aligned_corpus`` and create
-        a translation model.
+        Train on ``sentence_aligned_corpus`` and create a lexical
+        translation model.
 
         Translation direction is from ``AlignedSent.mots`` to
         ``AlignedSent.words``.
@@ -108,34 +96,21 @@ class IBMModel1(object):
         :type iterations: int
         """
 
-        self.translation_table = self.train(sentence_aligned_corpus, iterations)
-        """
-        dict(dict(float)): probability(target word | source word). Values
-            accessed with ``translation_table[target_word][source_word].``
-        """
+        super(IBMModel1, self).__init__(sentence_aligned_corpus)
+
+        # seed with a uniform distribution
+        initial_prob = 1 / len(self.trg_vocab)
+        if initial_prob > IBMModel.MIN_PROB:
+            for t in self.trg_vocab:
+                for s in self.src_vocab:
+                    self.translation_table[t][s] = initial_prob
+        else:
+            warnings.warn("Target language vocabulary is too large. "
+                          "Results may be less accurate.")
+
+        self.train(sentence_aligned_corpus, iterations)
 
     def train(self, parallel_corpus, iterations):
-        """
-        :return: A dictionary of translation probabilities
-        """
-
-        # Vocabulary of each language
-        src_vocab = set()
-        trg_vocab = set()
-        for aligned_sentence in parallel_corpus:
-            trg_vocab.update(aligned_sentence.words)
-            src_vocab.update(aligned_sentence.mots)
-        # Add the NULL token
-        src_vocab.add(None)
-
-        initial_prob = 1 / len(trg_vocab)
-
-        # Create the translation model with initial probability
-        translation_table = defaultdict(
-            lambda: defaultdict(lambda: initial_prob))
-
-        total_count = defaultdict(lambda: 0.0)
-
         for i in range(0, iterations):
             count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
             count_any_t_given_s = defaultdict(lambda: 0.0)
@@ -143,28 +118,28 @@ class IBMModel1(object):
             for aligned_sentence in parallel_corpus:
                 trg_sentence = aligned_sentence.words
                 src_sentence = [None] + aligned_sentence.mots
+                total_count = defaultdict(lambda: 0.0)
 
                 # E step (a): Compute normalization factors to weigh counts
                 for t in trg_sentence:
-                    total_count[t] = 0.0
-                    for s in src_sentence:
-                        total_count[t] += translation_table[t][s]
+                    if total_count[t] == 0.0:
+                        for s in src_sentence:
+                            total_count[t] += self.translation_table[t][s]
 
                 # E step (b): Collect counts
                 for t in trg_sentence:
                     for s in src_sentence:
-                        count = translation_table[t][s]
+                        count = self.translation_table[t][s]
                         normalized_count = count / total_count[t]
                         count_t_given_s[t][s] += normalized_count
                         count_any_t_given_s[s] += normalized_count
 
             # M step: Update probabilities with maximum likelihood estimate
-            for s in src_vocab:
-                for t in trg_vocab:
-                    translation_table[t][s] = (count_t_given_s[t][s] /
-                                               count_any_t_given_s[s])
-
-        return translation_table
+            for s in self.src_vocab:
+                for t in self.trg_vocab:
+                    estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                    self.translation_table[t][s] = max(estimate,
+                                                       IBMModel.MIN_PROB)
 
     def align(self, sentence_pair):
         """
@@ -189,7 +164,9 @@ class IBMModel1(object):
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
-            best_alignment = (self.translation_table[trg_word][None], None)
+            initial_prob = max(self.translation_table[trg_word][None],
+                               IBMModel.MIN_PROB)
+            best_alignment = (initial_prob, None)
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = self.translation_table[trg_word][src_word]
                 best_alignment = max(best_alignment, (align_prob, i))
