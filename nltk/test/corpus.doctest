@@ -238,7 +238,7 @@ to the entire chunk).
     >>> [[str(c) for c in s] for s in semcor.tagged_sents(tag='both')[:2]]
     [['(DT The)', "(Lemma('group.n.01.group') (NE (NNP Fulton County Grand Jury)))", ...
      '(None .)'], ['(DT The)', ... '(None .)']]
-    
+
 
 The IEER corpus is another chunked corpus.  This corpus is unusual in
 that each corpus item contains multiple documents.  (This reflects the
@@ -826,7 +826,7 @@ retrieved from the Twitter Streaming API.
 
     >>> from nltk.corpus import twitter_samples
     >>> twitter_samples.fileids()
-    ['tweets.20150430-223406.json']
+    ['negative_tweets.json', 'positive_tweets.json', 'tweets.20150430-223406.json']
 
 We follow standard practice in storing full Tweets as line-separated
 JSON. These data structures can be accessed via `tweets.docs()`. However, in general it
@@ -834,7 +834,7 @@ is more practical to focus just on the text field of the Tweets, which
 are accessed via the `strings()` method.
 
     >>> twitter_samples.strings('tweets.20150430-223406.json')
-    ['RT @KirkKus: Indirect cost of the UK being in the EU is estimated to be costing Britain £170 billion per year! #BetterOffOut #UKIP', ...]
+    ['RT @KirkKus: Indirect cost of the UK being in the EU is estimated to be costing Britain \xa3170 billion per year! #BetterOffOut #UKIP', ...]
 
 The default tokenizer for Tweets is specialised for 'casual' text, and
 the `tokenized()` method returns a list of lists of tokens.
