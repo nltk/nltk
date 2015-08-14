@@ -89,7 +89,7 @@ class IBMModel3(IBMModel):
 
     >>> align_sents = []
     >>> align_sents.append(AlignedSent(['klein', 'ist', 'das', 'Haus'], ['the', 'house', 'is', 'small']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
     >>> align_sents.append(AlignedSent(['das', 'Haus'], ['the', 'house']))
     >>> align_sents.append(AlignedSent(['das', 'Buch'], ['the', 'book']))
     >>> align_sents.append(AlignedSent(['ein', 'Buch'], ['a', 'book']))
