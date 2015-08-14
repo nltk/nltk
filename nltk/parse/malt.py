@@ -179,39 +179,39 @@ class MaltParser(ParserI):
 			raise Exception("Parser has not been trained. Call train() first.")
 
 
-		with (tempfile.NamedTemporaryFile(prefix='malt_input.conll.', 
-		      dir=self.working_dir, mode='w', delete=False)) as input_file , (
-		      tempfile.NamedTemporaryFile(prefix='malt_output.conll.', 
-		      dir=self.working_dir, mode='w', delete=False)) as output_file:
-			# Convert list of sentences to CONLL format.
-			for line in taggedsents_to_conll(sentences):
-				input_file.write(text_type(line))
-			input_file.close()
-
-			# Generate command to run maltparser.
-			cmd =self.generate_malt_command(input_file.name, 
-							output_file.name, mode="parse")
-
-			# This is a maltparser quirk, it needs to be run 
-			# where the model file is. otherwise it goes into an awkward
-			# missing .jars or strange -w working_dir problem.
-			_current_path = os.getcwd() # Remembers the current path.
-			try: # Change to modelfile path
-				os.chdir(os.path.split(self.model)[0]) 
-			except:
-				pass
-			ret = self._execute(cmd, verbose) # Run command.
-			os.chdir(_current_path) # Change back to current path.
-
-			if ret is not 0:
-				raise Exception("MaltParser parsing (%s) failed with exit "
-						"code %d" % (' '.join(cmd), ret))
-
-			# Must return iter(iter(Tree))
-			with open(output_file.name) as infile:
-				for tree_str in infile.read().split('\n\n'):
-					tree_str = self.pretrained_model_sanity_checks(tree_str)
-					yield(iter([DependencyGraph(tree_str)]))
+		with tempfile.NamedTemporaryFile(prefix='malt_input.conll.', 
+		      dir=self.working_dir, mode='w', delete=False as input_file:
+		      with tempfile.NamedTemporaryFile(prefix='malt_output.conll.', 
+		      	   dir=self.working_dir, mode='w', delete=False) as output_file:
+				# Convert list of sentences to CONLL format.
+				for line in taggedsents_to_conll(sentences):
+					input_file.write(text_type(line))
+				input_file.close()
+	
+				# Generate command to run maltparser.
+				cmd =self.generate_malt_command(input_file.name, 
+								output_file.name, mode="parse")
+	
+				# This is a maltparser quirk, it needs to be run 
+				# where the model file is. otherwise it goes into an awkward
+				# missing .jars or strange -w working_dir problem.
+				_current_path = os.getcwd() # Remembers the current path.
+				try: # Change to modelfile path
+					os.chdir(os.path.split(self.model)[0]) 
+				except:
+					pass
+				ret = self._execute(cmd, verbose) # Run command.
+				os.chdir(_current_path) # Change back to current path.
+	
+				if ret is not 0:
+					raise Exception("MaltParser parsing (%s) failed with exit "
+							"code %d" % (' '.join(cmd), ret))
+	
+				# Must return iter(iter(Tree))
+				with open(output_file.name) as infile:
+					for tree_str in infile.read().split('\n\n'):
+						tree_str = self.pretrained_model_sanity_checks(tree_str)
+						yield(iter([DependencyGraph(tree_str)]))
 
 		os.remove(input_file.name)
 		os.remove(output_file.name)
@@ -294,11 +294,11 @@ class MaltParser(ParserI):
 		# then we need to do some extra massaging
 		if isinstance(conll_file, ZipFilePathPointer):
 			with tempfile.NamedTemporaryFile(prefix='malt_train.conll.',
-			dir=self.working_dir, mode='w', delete=False) as input_file , (
-			conll_file.open()) as conll_input_file:
-				conll_str = conll_input_file.read()
-				input_file.write(text_type(conll_str))
-			return self.train_from_file(input_file.name, verbose=verbose)
+			dir=self.working_dir, mode='w', delete=False) as input_file: 
+				with conll_file.open() as conll_input_file:
+					conll_str = conll_input_file.read()
+					input_file.write(text_type(conll_str))
+				return self.train_from_file(input_file.name, verbose=verbose)
 
 		# Generate command to run maltparser.
 		cmd =self.generate_malt_command(conll_file, mode="learn")
