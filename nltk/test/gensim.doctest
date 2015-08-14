@@ -78,38 +78,37 @@ the vector 'King - Man + Woman' is close to 'Queen' and 'Germany - Berlin + Pari
 
 We can visualize the word embeddings using t-SNE (http://lvdmaaten.github.io/tsne/). For this demonstration, we visualize the first 1000 words.
 
-    import numpy as np
-    labels = []
-    count = 0
-    max_count = 1000
-    X = np.zeros(shape=(max_count,len(model['university'])))
-
-    for term in model.vocab:
-        X[count] = model[term]
-        labels.append(term)
-        count+= 1
-        if count >= max_count: break
-
-    # It is recommended to use PCA first to reduce to ~50 dimensions
-    from sklearn.decomposition import PCA
-    pca = PCA(n_components=50)
-    X_50 = pca.fit_transform(X)
-
-    # Using TSNE to further reduce to 2 dimensions
-    from sklearn.manifold import TSNE
-    model_tsne = TSNE(n_components=2, random_state=0)
-    Y = model_tsne.fit_transform(X_50)
-
-    # Show the scatter plot
-    import matplotlib.pyplot as plt
-    plt.scatter(Y[:,0], Y[:,1], 20)
-
-    # Add labels
-    for label, x, y in zip(labels, Y[:, 0], Y[:, 1]):
-        plt.annotate(label, xy = (x,y), xytext = (0, 0), textcoords = 'offset points', size = 10)
-
-    plt.show()
-
+|    import numpy as np
+|    labels = []
+|    count = 0
+|    max_count = 1000
+|    X = np.zeros(shape=(max_count,len(model['university'])))
+|
+|    for term in model.vocab:
+|        X[count] = model[term]
+|        labels.append(term)
+|        count+= 1
+|        if count >= max_count: break
+|
+|    # It is recommended to use PCA first to reduce to ~50 dimensions
+|    from sklearn.decomposition import PCA
+|    pca = PCA(n_components=50)
+|    X_50 = pca.fit_transform(X)
+|
+|    # Using TSNE to further reduce to 2 dimensions
+|    from sklearn.manifold import TSNE
+|    model_tsne = TSNE(n_components=2, random_state=0)
+|    Y = model_tsne.fit_transform(X_50)
+|
+|    # Show the scatter plot
+|    import matplotlib.pyplot as plt
+|    plt.scatter(Y[:,0], Y[:,1], 20)
+|
+|    # Add labels
+|    for label, x, y in zip(labels, Y[:, 0], Y[:, 1]):
+|        plt.annotate(label, xy = (x,y), xytext = (0, 0), textcoords = 'offset points', size = 10)
+|
+|    plt.show()
 
 ------------------------------
 Prune the trained binary model
@@ -118,25 +117,25 @@ Prune the trained binary model
 Here is the supporting code to extract part of the binary model (GoogleNews-vectors-negative300.bin.gz) from https://code.google.com/p/word2vec/
 We use this code to get the `word2vec_sample` model.
 
-    import gensim
-    from gensim.models.word2vec import Word2Vec
-    # Load the binary model
-    model = Word2Vec.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary = True);
-
-    # Only output word that appear in the Brown corpus
-    from nltk.corpus import brown
-    words = set(brown.words())
-    print (len(words))
-
-    # Output presented word to a temporary file
-    out_file = 'pruned.word2vec.txt'
-    f = open(out_file,'wb')
-
-    word_presented = words.intersection(model.vocab.keys())
-    f.write('{} {}\n'.format(len(word_presented),len(model['word'])))
-
-    for word in word_presented:
-        f.write('{} {}\n'.format(word, ' '.join(str(value) for value in model[word])))
-
-    f.close()
+|    import gensim
+|    from gensim.models.word2vec import Word2Vec
+|    # Load the binary model
+|    model = Word2Vec.load_word2vec_format('GoogleNews-vectors-negative300.bin.gz', binary = True);
+|
+|    # Only output word that appear in the Brown corpus
+|    from nltk.corpus import brown
+|    words = set(brown.words())
+|    print (len(words))
+|
+|    # Output presented word to a temporary file
+|    out_file = 'pruned.word2vec.txt'
+|    f = open(out_file,'wb')
+|
+|    word_presented = words.intersection(model.vocab.keys())
+|    f.write('{} {}\n'.format(len(word_presented),len(model['word'])))
+|
+|    for word in word_presented:
+|        f.write('{} {}\n'.format(word, ' '.join(str(value) for value in model[word])))
+|
+|    f.close()
 
