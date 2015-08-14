@@ -23,7 +23,7 @@ from nltk.internals import find_dir, find_file, find_jars_within_path
 
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
-from nltk.parse.util import taggedsent_to_conll
+from nltk.parse.util import taggedsents_to_conll
 
 
 def malt_regex_tagger():
@@ -184,7 +184,7 @@ class MaltParser(ParserI):
 		      tempfile.NamedTemporaryFile(prefix='malt_output.conll.', 
 		      dir=self.working_dir, mode='w', delete=False)) as output_file:
 			# Convert list of sentences to CONLL format.
-			for line in taggedsent_to_conll(sentences):
+			for line in taggedsents_to_conll(sentences):
 				input_file.write(text_type(line))
 			input_file.close()
 
