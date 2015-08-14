@@ -132,7 +132,8 @@ class MaltParser(ParserI):
 		# Find all the necessary jar files for MaltParser.
 		self.malt_jars = find_maltparser(parser_dirname)
 		# Initialize additional java arguments.
-		self.additional_java_args = additional_java_args if additional_java_args is not None else []
+		self.additional_java_args = additional_java_args if \
+					    additional_java_args is not None else []
 		# Initialize model.
 		self.model = find_malt_model(model_filename)
 		self._trained = self.model != 'malt_temp.mco'
@@ -179,7 +180,7 @@ class MaltParser(ParserI):
 
 
 		with (tempfile.NamedTemporaryFile(prefix='malt_input.conll.', 
-		      dir=self.working_dir, mode='w', delete=False)) as input_file, (
+		      dir=self.working_dir, mode='w', delete=False)) as input_file , (
 		      tempfile.NamedTemporaryFile(prefix='malt_output.conll.', 
 		      dir=self.working_dir, mode='w', delete=False)) as output_file:
 			# Convert list of sentences to CONLL format.
@@ -189,8 +190,7 @@ class MaltParser(ParserI):
 
 			# Generate command to run maltparser.
 			cmd =self.generate_malt_command(input_file.name, 
-			output_file.name,
-			mode="parse")
+							output_file.name, mode="parse")
 
 			# This is a maltparser quirk, it needs to be run 
 			# where the model file is. otherwise it goes into an awkward
@@ -232,8 +232,7 @@ class MaltParser(ParserI):
 		return self.parse_tagged_sents(tagged_sentences, verbose)
 		
 		
-	def generate_malt_command(self, inputfilename, outputfilename=None, 
-							mode=None):
+	def generate_malt_command(self, inputfilename, outputfilename=None, mode=None):
 		"""
 		This function generates the maltparser command use at the terminal.
 
@@ -276,7 +275,7 @@ class MaltParser(ParserI):
 		
 		# Write the conll_str to malt_train.conll file in /tmp/
 		with tempfile.NamedTemporaryFile(prefix='malt_train.conll.',
-		dir=self.working_dir, mode='w', delete=False) as input_file:
+		     dir=self.working_dir, mode='w', delete=False) as input_file:
 			input_str = ('\n'.join(dg.to_conll(10) for dg in depgraphs))
 			input_file.write(text_type(input_str))
 		# Trains the model with the malt_train.conll
@@ -295,7 +294,7 @@ class MaltParser(ParserI):
 		# then we need to do some extra massaging
 		if isinstance(conll_file, ZipFilePathPointer):
 			with tempfile.NamedTemporaryFile(prefix='malt_train.conll.',
-			dir=self.working_dir, mode='w', delete=False) as input_file, (
+			dir=self.working_dir, mode='w', delete=False) as input_file , (
 			conll_file.open()) as conll_input_file:
 				conll_str = conll_input_file.read()
 				input_file.write(text_type(conll_str))
