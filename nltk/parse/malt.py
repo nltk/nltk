@@ -23,29 +23,29 @@ from nltk.internals import find_dir, find_file, find_jars_within_path
 
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
-from nltk.parse.util import taggedsent_to_conll
+from nltk.parse.util import taggedsents_to_conll
 
 
 def malt_regex_tagger():
 	from nltk.tag import RegexpTagger
 	_tagger = RegexpTagger(
 	[(r'\.$','.'), (r'\,$',','), (r'\?$','?'),	# fullstop, comma, Qmark
-	(r'\($','('), (r'\)$',')'), 				# round brackets
-	(r'\[$','['), (r'\]$',']'), 				# square brackets
-	(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),			# cardinal numbers
-	(r'(The|the|A|a|An|an)$', 'DT'),			# articles
+	(r'\($','('), (r'\)$',')'), 			# round brackets
+	(r'\[$','['), (r'\]$',']'), 			# square brackets
+	(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),		# cardinal numbers
+	(r'(The|the|A|a|An|an)$', 'DT'),		# articles
 	(r'(He|he|She|she|It|it|I|me|Me|You|you)$', 'PRP'), # pronouns
-	(r'(His|his|Her|her|Its|its)$', 'PRP$'), 			# possesive
-	(r'(my|Your|your|Yours|yours)$', 'PRP$'), 			# possesive
+	(r'(His|his|Her|her|Its|its)$', 'PRP$'), 	# possesive
+	(r'(my|Your|your|Yours|yours)$', 'PRP$'), 	# possesive
 	(r'(on|On|in|In|at|At|since|Since)$', 'IN'), 	# time prepopsitions
 	(r'(for|For|ago|Ago|before|Before)$', 'IN'),	# time prepopsitions
-	(r'(till|Till|until|Until)$', 'IN'),  			# time prepopsitions
-	(r'(by|By|beside|Beside)$', 'IN'),				# space prepopsitions
-	(r'(under|Under|below|Below)$', 'IN'),			# space prepopsitions
-	(r'(over|Over|above|Above)$', 'IN'),			# space prepopsitions
+	(r'(till|Till|until|Until)$', 'IN'),  		# time prepopsitions
+	(r'(by|By|beside|Beside)$', 'IN'),		# space prepopsitions
+	(r'(under|Under|below|Below)$', 'IN'),		# space prepopsitions
+	(r'(over|Over|above|Above)$', 'IN'),		# space prepopsitions
 	(r'(across|Across|through|Through)$', 'IN'),	# space prepopsitions
-	(r'(into|Into|towards|Towards)$', 'IN'),		# space prepopsitions
-	(r'(onto|Onto|from|From)$', 'IN'),				# space prepopsitions
+	(r'(into|Into|towards|Towards)$', 'IN'),	# space prepopsitions
+	(r'(onto|Onto|from|From)$', 'IN'),		# space prepopsitions
 	(r'.*able$', 'JJ'),                # adjectives
 	(r'.*ness$', 'NN'),                # nouns formed from adjectives
 	(r'.*ly$', 'RB'),                  # adverbs
@@ -70,7 +70,7 @@ def find_maltparser(parser_dirname):
 	_malt_jars = set(find_jars_within_path(_malt_dir))
 	_jars = set(jar.rpartition('/')[2] for jar in _malt_jars)
 	malt_dependencies = set([u'log4j.jar', u'libsvm.jar', u'liblinear-1.8.jar'])
-					
+	
 	assert malt_dependencies.issubset(_jars)
 	assert any(filter(lambda i: i.startswith('maltparser-') and i.endswith('.jar'), _jars))
 	return list(_malt_jars)
@@ -85,17 +85,16 @@ def find_malt_model(model_filename):
 	elif os.path.exists(model_filename): # If a full path is given.
 		return model_filename
 	else: # Try to find path to malt model in environment variables.
-		return find_file(model_filename, env_vars=('MALT_MODEL',), 
-						verbose=False)
+		return find_file(model_filename, env_vars=('MALT_MODEL',), verbose=False)
 
-		
+
 class MaltParser(ParserI):
 	"""
 	A class for dependency parsing with MaltParser. The input is the paths to:
-     - a maltparser directory
-     - (optionally) the path to a pre-trained MaltParser .mco model file
-     - (optionally) the tagger to use for POS tagging before parsing
-     - (optionally) additional Java arguments
+	- a maltparser directory
+	- (optionally) the path to a pre-trained MaltParser .mco model file
+	- (optionally) the tagger to use for POS tagging before parsing
+	- (optionally) additional Java arguments
 	
 	Example:
         >>> from nltk.parse import malt
@@ -104,12 +103,11 @@ class MaltParser(ParserI):
         >>> mp.parse_one('I shot an elephant in my pajamas .'.split()).tree() # doctest: +SKIP
         (shot I (elephant an) (in (pajamas my)) .)
         >>> # Without MALT_PARSER and MALT_MODEL environment.
-        >>> mp = malt.MaltParser('/home/alvas/maltparser-1.7.2/', '/home/alvas/engmalt.linear-1.7.mco') # doctest: +SKIP
+        >>> mp = malt.MaltParser('/home/user/maltparser-1.7.2/', '/home/user/engmalt.linear-1.7.mco') # doctest: +SKIP
         >>> mp.parse_one('I shot an elephant in my pajamas .'.split()).tree() # doctest: +SKIP
         (shot I (elephant an) (in (pajamas my)) .)
 	"""
-	def __init__(self, parser_dirname, model_filename=None, tagger=None, 
-				 additional_java_args=None):
+	def __init__(self, parser_dirname, model_filename=None, tagger=None, additional_java_args=None):
 		"""
 		An interface for parsing with the Malt Parser.
 
@@ -135,7 +133,7 @@ class MaltParser(ParserI):
 		self.malt_jars = find_maltparser(parser_dirname)
 		# Initialize additional java arguments.
 		self.additional_java_args = additional_java_args if \
-									additional_java_args is not None else []
+					    additional_java_args is not None else []
 		# Initialize model.
 		self.model = find_malt_model(model_filename)
 		self._trained = self.model != 'malt_temp.mco'
@@ -182,39 +180,38 @@ class MaltParser(ParserI):
 
 
 		with tempfile.NamedTemporaryFile(prefix='malt_input.conll.', 
-		dir=self.working_dir, mode='w', delete=False) as input_file, \
-		tempfile.NamedTemporaryFile(prefix='malt_output.conll.', 
-		dir=self.working_dir, mode='w', delete=False) as output_file:
-			# Convert list of sentences to CONLL format.
-			for line in taggedsent_to_conll(sentences):
-				input_file.write(text_type(line))
-			input_file.close()
-
-			# Generate command to run maltparser.
-			cmd =self.generate_malt_command(input_file.name, 
-			output_file.name,
-			mode="parse")
-
-			# This is a maltparser quirk, it needs to be run 
-			# where the model file is. otherwise it goes into an awkward
-			# missing .jars or strange -w working_dir problem.
-			_current_path = os.getcwd() # Remembers the current path.
-			try: # Change to modelfile path
-				os.chdir(os.path.split(self.model)[0]) 
-			except:
-				pass
-			ret = self._execute(cmd, verbose) # Run command.
-			os.chdir(_current_path) # Change back to current path.
-
-			if ret is not 0:
-				raise Exception("MaltParser parsing (%s) failed with exit "
-								"code %d" % (' '.join(cmd), ret))
-
-			# Must return iter(iter(Tree))
-			with open(output_file.name) as infile:
-				for tree_str in infile.read().split('\n\n'):
-					tree_str = self.pretrained_model_sanity_checks(tree_str)
-					yield(iter([DependencyGraph(tree_str)]))
+		      dir=self.working_dir, mode='w', delete=False) as input_file:
+		      with tempfile.NamedTemporaryFile(prefix='malt_output.conll.', 
+		      	   dir=self.working_dir, mode='w', delete=False) as output_file:
+				# Convert list of sentences to CONLL format.
+				for line in taggedsents_to_conll(sentences):
+					input_file.write(text_type(line))
+				input_file.close()
+	
+				# Generate command to run maltparser.
+				cmd =self.generate_malt_command(input_file.name, 
+								output_file.name, mode="parse")
+	
+				# This is a maltparser quirk, it needs to be run 
+				# where the model file is. otherwise it goes into an awkward
+				# missing .jars or strange -w working_dir problem.
+				_current_path = os.getcwd() # Remembers the current path.
+				try: # Change to modelfile path
+					os.chdir(os.path.split(self.model)[0]) 
+				except:
+					pass
+				ret = self._execute(cmd, verbose) # Run command.
+				os.chdir(_current_path) # Change back to current path.
+	
+				if ret is not 0:
+					raise Exception("MaltParser parsing (%s) failed with exit "
+							"code %d" % (' '.join(cmd), ret))
+	
+				# Must return iter(iter(Tree))
+				with open(output_file.name) as infile:
+					for tree_str in infile.read().split('\n\n'):
+						tree_str = self.pretrained_model_sanity_checks(tree_str)
+						yield(iter([DependencyGraph(tree_str)]))
 
 		os.remove(input_file.name)
 		os.remove(output_file.name)
@@ -235,8 +232,7 @@ class MaltParser(ParserI):
 		return self.parse_tagged_sents(tagged_sentences, verbose)
 		
 		
-	def generate_malt_command(self, inputfilename, outputfilename=None, 
-							mode=None):
+	def generate_malt_command(self, inputfilename, outputfilename=None, mode=None):
 		"""
 		This function generates the maltparser command use at the terminal.
 
@@ -279,7 +275,7 @@ class MaltParser(ParserI):
 		
 		# Write the conll_str to malt_train.conll file in /tmp/
 		with tempfile.NamedTemporaryFile(prefix='malt_train.conll.',
-		dir=self.working_dir, mode='w', delete=False) as input_file:
+		     dir=self.working_dir, mode='w', delete=False) as input_file:
 			input_str = ('\n'.join(dg.to_conll(10) for dg in depgraphs))
 			input_file.write(text_type(input_str))
 		# Trains the model with the malt_train.conll
@@ -298,19 +294,18 @@ class MaltParser(ParserI):
 		# then we need to do some extra massaging
 		if isinstance(conll_file, ZipFilePathPointer):
 			with tempfile.NamedTemporaryFile(prefix='malt_train.conll.',
-			dir=self.working_dir, mode='w', delete=False) as input_file, \
-			conll_file.open() as conll_input_file:
-				conll_str = conll_input_file.read()
-				input_file.write(text_type(conll_str))
-			return self.train_from_file(input_file.name, verbose=verbose)
+			dir=self.working_dir, mode='w', delete=False) as input_file: 
+				with conll_file.open() as conll_input_file:
+					conll_str = conll_input_file.read()
+					input_file.write(text_type(conll_str))
+				return self.train_from_file(input_file.name, verbose=verbose)
 
 		# Generate command to run maltparser.
 		cmd =self.generate_malt_command(conll_file, mode="learn")
 		ret = self._execute(cmd, verbose)
 		if ret != 0:
-			raise Exception("MaltParser training (%s) "
-				            "failed with exit code %d" %
-				            (' '.join(cmd), ret))
+			raise Exception("MaltParser training (%s) failed with exit "
+					"code %d" % (' '.join(cmd), ret))
 		self._trained = True
 
 	
@@ -380,4 +375,6 @@ if __name__ == '__main__':
 	>>>	print(next(next(parsed_sents)).tree())
 	(flies Time (like banana) .)
 	'''
-	
+	import doctest
+	doctest.testmod()
+
