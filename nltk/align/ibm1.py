@@ -164,32 +164,18 @@ class IBMModel1(IBMModel):
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
-            initial_prob = max(self.translation_table[trg_word][None],
-                               IBMModel.MIN_PROB)
-            best_alignment = (initial_prob, None)
+            best_prob = max(self.translation_table[trg_word][None],
+                            IBMModel.MIN_PROB)
+            best_alignment = None
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = self.translation_table[trg_word][src_word]
-                best_alignment = max(best_alignment, (align_prob, i))
+                if align_prob >= best_prob: # prefer newer word in case of tie
+                    best_prob = align_prob
+                    best_alignment = i
 
             # If trg_word is not aligned to the NULL token,
             # add it to the viterbi_alignment.
-            if best_alignment[1] is not None:
-                alignment.append((j, best_alignment[1]))
+            if best_alignment is not None:
+                alignment.append((j, best_alignment))
 
         return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
-
-        for j, en_word in enumerate(align_sent.words):
-            
-            # Initialize the maximum probability with Null token
-            max_align_prob = (self.probabilities[en_word][None], None)
-            for i, fr_word in enumerate(align_sent.mots):
-                # Find out the maximum probability
-                max_align_prob = max(max_align_prob,
-                    (self.probabilities[en_word][fr_word], i))
-
-            # If the maximum probability is not Null token,
-            # then append it to the alignment. 
-            if max_align_prob[1] is not None:
-                alignment.append((j, max_align_prob[1]))
-
-        return AlignedSent(align_sent.words, align_sent.mots, alignment)

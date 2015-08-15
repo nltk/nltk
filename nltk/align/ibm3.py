@@ -89,7 +89,7 @@ class IBMModel3(IBMModel):
 
     >>> align_sents = []
     >>> align_sents.append(AlignedSent(['klein', 'ist', 'das', 'Haus'], ['the', 'house', 'is', 'small']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
     >>> align_sents.append(AlignedSent(['das', 'Haus'], ['the', 'house']))
     >>> align_sents.append(AlignedSent(['das', 'Buch'], ['the', 'book']))
     >>> align_sents.append(AlignedSent(['ein', 'Buch'], ['a', 'book']))
@@ -478,19 +478,21 @@ class IBMModel3(IBMModel):
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
-            initial_prob = (self.translation_table[trg_word][None] *
-                            self.distortion_table[j + 1][0][l][m])
-            initial_prob = max(initial_prob, IBMModel.MIN_PROB)
-            best_alignment = (initial_prob, 0)
+            best_prob = (self.translation_table[trg_word][None] *
+                         self.distortion_table[j + 1][0][l][m])
+            best_prob = max(best_prob, IBMModel.MIN_PROB)
+            best_alignment = None
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = (self.translation_table[trg_word][src_word] *
                               self.distortion_table[j + 1][i + 1][l][m])
-                best_alignment = max(best_alignment, (align_prob, i))
+                if align_prob >= best_prob:
+                    best_prob = align_prob
+                    best_alignment = i
 
             # If trg_word is not aligned to the NULL token,
             # add it to the viterbi_alignment.
-            if best_alignment[1] is not None:
-                alignment.append((j, best_alignment[1]))
+            if best_alignment is not None:
+                alignment.append((j, best_alignment))
 
         return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
 
