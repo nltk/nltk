@@ -2,11 +2,11 @@
 
 cd `dirname $0`
 
-#download nltk data packages
-python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
-
 #download nltk python dependencies
 pip install --upgrade -r pip-req.txt --allow-external matplotlib --allow-unverified matplotlib
+
+#download nltk data packages
+python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
 
 #download external dependencies
 pushd ${HOME}
