@@ -61,6 +61,7 @@ class AbstractCollocationFinder(object):
         each of which is a list (or iterable) of tokens.
         """
         #return cls.from_words(_itertools.chain(*documents))
+        print (cls.default_ws)
         return cls.from_new_documents(documents) 
 
     @staticmethod
@@ -144,7 +145,8 @@ class BigramCollocationFinder(AbstractCollocationFinder):
     association measures. It is often useful to use from_words() rather than
     constructing an instance directly.
     """
-
+    default_ws = 2 
+    
     def __init__(self, word_fd, bigram_fd, window_size=2):
         """Construct a BigramCollocationFinder, given FreqDists for
         appearances of words and (possibly non-contiguous) bigrams.
@@ -197,7 +199,8 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
     association measures. It is often useful to use from_words() rather than
     constructing an instance directly.
     """
-
+    default_ws = 3
+    
     def __init__(self, word_fd, bigram_fd, wildcard_fd, trigram_fd):
         """Construct a TrigramCollocationFinder, given FreqDists for
         appearances of words, bigrams, two words with any word between them,
@@ -268,7 +271,8 @@ class QuadgramCollocationFinder(AbstractCollocationFinder):
     """A tool for the finding and ranking of quadgram collocations or other association measures.
     It is often useful to use from_words() rather than constructing an instance directly.
     """
-
+    default_ws = 4
+    
     def __init__(self, word_fd, quadgram_fd, ii, iii, ixi, ixxi, iixi, ixii):
         """Construct a QuadgramCollocationFinder, given FreqDists for appearances of words,
         bigrams, trigrams, two words with one word and two words between them, three words
