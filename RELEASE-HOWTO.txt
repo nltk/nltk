@@ -19,6 +19,7 @@ A. PREPARE
      - install the new version locally, since its the installed code that is checked
      - cd nltk/test; make (run the tests in nltk.test; or see Jenkins)
      - make demotest (run the demonstration code including some graphical demos)
+     - test individual modules with, e.g.: tox-3.4 -e py34 nltk.package.module
 6. Check that installation instructions are up-to-date
 7. Update the news page in nltk/web/news.rst
 8. Merge with master branch
