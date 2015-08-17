@@ -82,7 +82,7 @@ def taggedsent_to_conll(sentence):
 	
 	>>> from nltk import word_tokenize, pos_tag
 	>>> text = "This is a foobar sentence."
-	>>> for line in taggedsent_to_conll(pos_tag(word_tokenize(sent))):
+	>>> for line in taggedsent_to_conll(pos_tag(word_tokenize(text))):
 	... 	print(line, end="")
 	1    This    _    DT    DT    _    0    a    _    _
 	2    is    _    VBZ    VBZ    _    0    a    _    _
