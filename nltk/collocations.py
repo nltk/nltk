@@ -56,13 +56,23 @@ class AbstractCollocationFinder(object):
         self.ngram_fd = ngram_fd
     
     @classmethod
+    def _build_new_documents(cls,documents, window_size, pad_left=False, pad_right=False, pad_symbol=None):
+        '''
+        Pad the document with the place holder according to the window_size 
+        '''
+        padding = (pad_symbol,) * (window_size - 1)
+        if pad_right:
+            return _itertools.chain.from_iterable(_itertools.chain(doc, padding) for doc in documents)
+        if pad_left:
+            return _itertools.chain.from_iterable(_itertools.chain(padding, doc) for doc in documents)
+    
+    @classmethod
     def from_documents(cls, documents):
         """Constructs a collocation finder given a collection of documents,
         each of which is a list (or iterable) of tokens.
         """
         #return cls.from_words(_itertools.chain(*documents))
-        print (cls.default_ws)
-        return cls.from_new_documents(documents) 
+        return cls.from_words(cls._build_new_documents(documents, cls.default_ws, pad_right=True)) 
 
     @staticmethod
     def _ngram_freqdist(words, n):
@@ -124,22 +134,6 @@ class AbstractCollocationFinder(object):
                 break
 
 
-
-def _build_new_documents(documents, window_size, pad_left=False, pad_right=False, pad_symbol=None):
-        '''
-        Pad the document with the place holder according to the window_size 
-        '''
-        new_documents = iter([])
-        for document in documents:
-            document = iter(document)
-            if pad_left:
-                document = _itertools.chain((pad_symbol,) * (window_size - 1), document)
-            if pad_right:
-                document = _itertools.chain(document, (pad_symbol,) * (window_size - 1))
-            new_documents = _itertools.chain(new_documents, document)
-            
-        return new_documents
-
 class BigramCollocationFinder(AbstractCollocationFinder):
     """A tool for the finding and ranking of bigram collocations or other
     association measures. It is often useful to use from_words() rather than
@@ -153,10 +147,6 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         """
         AbstractCollocationFinder.__init__(self, word_fd, bigram_fd)
         self.window_size = window_size
-
-    @classmethod
-    def from_new_documents(cls, documents, window_size = 2):
-        return cls.from_words(_build_new_documents(documents, window_size, pad_right=True))
 
     @classmethod
     def from_words(cls, words, window_size=2):
@@ -209,9 +199,6 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         AbstractCollocationFinder.__init__(self, word_fd, trigram_fd)
         self.wildcard_fd = wildcard_fd
         self.bigram_fd = bigram_fd
-    @classmethod
-    def from_new_documents(cls, documents, window_size = 3):
-        return cls.from_words(_build_new_documents(documents, window_size, pad_right=True))
 
     @classmethod
     def from_words(cls, words, window_size=3):
@@ -285,10 +272,6 @@ class QuadgramCollocationFinder(AbstractCollocationFinder):
         self.ixxi = ixxi
         self.iixi = iixi
         self.ixii = ixii
-
-    @classmethod
-    def from_new_documents(cls, documents, window_size = 4):
-        return cls.from_words(_build_new_documents(documents, window_size, pad_right=True))
 
     @classmethod
     def from_words(cls, words, window_size=4):
