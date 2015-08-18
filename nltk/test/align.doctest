@@ -186,8 +186,8 @@ Here are some examples:
     1.0
     >>> print(als.recall([(0,0), (3,3)]))
     1.0
-    >>> print('{:.5f}'.format(als.recall([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)])))
-    0.66667
+    >>> als.recall([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)])
+    0.66666...
     >>> print(my_als.recall(als))
     0.75
 
@@ -216,11 +216,11 @@ Here are some examples:
     1.0
     >>> print(als.alignment_error_rate([(0,0), (1,1), (2,2), (3,3)]))
     0.0
-    >>> print('{:.5f}'.format(my_als.alignment_error_rate(als)))
-    0.33333
-    >>> print('{:.5f}'.format(my_als.alignment_error_rate(als,
-    ...     als.alignment | set([(1,2), (2,1)]))))
-    0.22222
+    >>> my_als.alignment_error_rate(als)
+    0.333333...
+    >>> my_als.alignment_error_rate(als,
+    ...     als.alignment | set([(1,2), (2,1)]))
+    0.222222...
 
 
 .. [OCH2000] Och, F. and Ney, H. (2000)
