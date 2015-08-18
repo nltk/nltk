@@ -3,19 +3,25 @@
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: C.J. Hutto <Clayton.Hutto@gtri.gatech.edu>
-#         Ewan Klein <ewan@inf.ed.ac.uk>
+#         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
+#         Pierpaolo Pantone <24alsecondo@gmail.com> (modifications)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
-"""
+# Modifications to the original VADER code have been made in order to
+# integrate it into NLTK. These have involved changes to
+# ensure Python 3 compatibility, and refactoring to achieve greater modularity.
 
+
+"""
 If you use the VADER sentiment analysis tools, please cite:
 
 Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for
 Sentiment Analysis of Social Media Text. Eighth International Conference on
 Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
+"""
 
-
+"""
 >>> sentences = ["VADER is smart, handsome, and funny.", # positive sentence example
 ...    "VADER is smart, handsome, and funny!", # punctuation emphasis handled correctly (sentiment intensity adjusted)
 ...    "VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
