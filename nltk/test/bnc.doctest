@@ -43,7 +43,7 @@ Testing access to the sentences.
     [('Ah', 'ITJ'), ('there', 'AV0'), ('we', 'PNP'), ('are', 'VBB'), (',', 'PUN'), ('.', 'PUN')]
 
 A not lazy loader.
------------------
+------------------
 
     >>> eager = BNCCorpusReader(root=root, fileids=r'FX8.xml', lazy=False)
 
