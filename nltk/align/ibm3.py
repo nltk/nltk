@@ -134,6 +134,14 @@ class IBMModel3(IBMModel):
 
         super(IBMModel3, self).__init__(sentence_aligned_corpus)
 
+        self.distortion_table = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: self.MIN_PROB))))
+        """
+        dict[int][int][int][int]: float. Probability(j | i,l,m).
+        Values accessed as ``distortion_table[j][i][l][m]``.
+        """
+
         # Get the translation and alignment probabilities from IBM model 2
         ibm2 = IBMModel2(sentence_aligned_corpus, iterations)
         self.translation_table = ibm2.translation_table

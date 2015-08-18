@@ -68,16 +68,7 @@ class IBMModel(object):
         """
         dict[int][int][int][int]: float. Probability(i | j,l,m).
         Values accessed as ``alignment_table[i][j][l][m]``.
-        Used in model 2.
-        """
-
-        self.distortion_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                lambda: self.MIN_PROB))))
-        """
-        dict[int][int][int][int]: float. Probability(j | i,l,m).
-        Values accessed as ``distortion_table[j][i][l][m]``.
-        Used in model 3 and higher.
+        Used in model 2 and hill climbing in models 3 and above
         """
 
         self.fertility_table = defaultdict(
