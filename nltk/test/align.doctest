@@ -40,8 +40,8 @@ Aligned sentences are simply a mapping between words in a sentence:
     Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
 
 
-Usually we look at them from the perpective of a source to a target languge,
-but they are easilly inverted:
+Usually we look at them from the perspective of a source to a target language,
+but they are easily inverted:
 
     >>> als.invert() # doctest: +NORMALIZE_WHITESPACE
     AlignedSent(['Reprise', 'de', 'la', 'session'],
@@ -142,10 +142,10 @@ Precision
 already a set based implementation in NLTK as
 `nltk.metrics.scores.precision`_.  Since precision is simply interested in the
 proportion of correct alignments, we calculate the ratio of the number of our
-test alignments (*A*) that match a possible alignment (*P*) over the number of
-test alignments provided. We compare to the possible alignment set don't
-penalise for coming up with an alignment that a humans would have possibly
-considered to be correct [OCH2000]_.
+test alignments (*A*) that match a possible alignment (*P*), over the number of
+test alignments provided. There is no penalty for missing a possible alignment
+in our test alignments. An easy way to game this metric is to provide just one
+test alignment that is in *P* [OCH2000]_.
 
 Here are some examples:
 
@@ -173,8 +173,10 @@ Recall
 implementation in NLTK as `nltk.metrics.scores.recall`_. Since recall is
 simply interested in the proportion of found alignments, we calculate the
 ratio of the number of our test alignments (*A*) that match a sure alignment
-(*S*) over the number of sure alignments. Since we are not sure about some of
-our possible alignments we don't penalise for not finding these [OCH2000]_.
+(*S*) over the number of sure alignments. There is no penalty for producing
+a lot of test alignments. An easy way to game this metric is to include every
+possible alignment in our test alignments, regardless if they are correct or
+not [OCH2000]_.
 
 Here are some examples:
 
@@ -205,9 +207,8 @@ possible alignments [MIHALCEA2003]_ [KOEHN2010]_.
 
 .. Note::
     [KOEHN2010]_ defines the AER as ``AER = (|A∩S| + |A∩P|) / (|A| + |S|)``
-    meaning that the best alignment would when the ``AER = 1.0``. Thus we
-    follow [MIHALCEA2003]_ more intuitive definition where we are minimising
-    the error rate.
+    in his book, but corrects it to the above in his online errata. This is
+    in line with [MIHALCEA2003]_.
 
 Here are some examples:
 
