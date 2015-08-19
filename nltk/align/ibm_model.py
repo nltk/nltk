@@ -119,6 +119,14 @@ class IBMModel(object):
         Hill climbing may be stuck in a local maxima, hence the pegging
         and trying out of different alignments.
 
+        :param trg_sentence: 1-indexed target sentence. Zeroeth element
+            will be ignored.
+        :type trg_sentence: list(str)
+
+        :param src_sentence: 1-indexed source sentence. Zeroeth element
+            should be None.
+        :type src_sentence: list(str)
+
         :return: A set of best alignments represented by their ``AlignmentInfo``
         :rtype: set(AlignmentInfo)
         """
@@ -126,7 +134,7 @@ class IBMModel(object):
         sampled_alignments = set()
 
         l = len(src_sentence) - 1 # exclude NULL
-        m = len(trg_sentence)
+        m = len(trg_sentence) - 1
 
         for i in range(0, l + 1):
             for j in range(1, m + 1):
@@ -145,7 +153,7 @@ class IBMModel(object):
 
                         for ii in range(0, l + 1):
                             s = src_sentence[ii]
-                            t = trg_sentence[jj - 1]
+                            t = trg_sentence[jj]
                             alignment_prob = (self.translation_table[t][s] *
                                 self.alignment_table[ii][jj][l][m])
                             if alignment_prob > max_alignment_prob:
@@ -207,7 +215,7 @@ class IBMModel(object):
         neighbors = set()
 
         l = len(alignment_info.src_sentence) - 1 # exclude NULL
-        m = len(alignment_info.trg_sentence)
+        m = len(alignment_info.trg_sentence) - 1
         original_alignment = alignment_info.alignment
         original_fertility = alignment_info.fertility_of_i
 
@@ -294,6 +302,8 @@ class AlignmentInfo(object):
         self.trg_sentence = trg_sentence
         """
         tuple(str): Target sentence referred to by this object.
+        Should have a dummy element in index 0 so that the first word
+        starts from index 1.
         """
 
     def __eq__(self, other):

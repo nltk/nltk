@@ -80,8 +80,9 @@ class IBMModel1(IBMModel):
     0.333
 
     >>> from nltk.align.ibm_model import AlignmentInfo
-    >>> alignment_info = AlignmentInfo((0, 1, 2, 3, 8, 8, 9), [None] + aligned_sent.mots, aligned_sent.words, None)
-    >>> print('{0:.3f}'.format(ibm.prob_t_a_given_s(alignment_info)))
+    >>> alignment_info = AlignmentInfo((0, 1, 2, 3, 8, 8, 9), [None] + aligned_sent.mots, ['UNUSED'] + aligned_sent.words, None)
+    >>> prob_target_alignment = ibm.prob_t_a_given_s(alignment_info)
+    >>> print('{0:.3f}'.format(prob_target_alignment))
     0.137
 
     """
@@ -157,7 +158,7 @@ class IBMModel1(IBMModel):
         for j, i in enumerate(alignment_info.alignment):
             if j == 0:
                 continue # skip the dummy zeroeth element
-            trg_word = alignment_info.trg_sentence[j - 1]
+            trg_word = alignment_info.trg_sentence[j]
             src_word = alignment_info.src_sentence[i]
             prob *= self.translation_table[trg_word][src_word]
 

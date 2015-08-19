@@ -173,9 +173,9 @@ class IBMModel3(IBMModel):
 
             for aligned_sentence in parallel_corpus:
                 src_sentence = [None] + aligned_sentence.mots
-                trg_sentence = aligned_sentence.words
+                trg_sentence = ['UNUSED'] + aligned_sentence.words # 1-indexed
                 l = len(aligned_sentence.mots)
-                m = len(trg_sentence)
+                m = len(aligned_sentence.words)
 
                 # Sample the alignment space
                 sampled_alignments = self.sample(trg_sentence, src_sentence)
@@ -194,7 +194,7 @@ class IBMModel3(IBMModel):
                     null_count = 0
 
                     for j in range(1, m + 1):
-                        t = trg_sentence[j - 1]
+                        t = trg_sentence[j]
                         i = alignment_info.alignment[j]
                         s = src_sentence[i]
 
@@ -272,14 +272,14 @@ class IBMModel3(IBMModel):
 
         All required information is assumed to be in ``alignment_info``
         """
-        l = len(alignment_info.src_sentence) - 1 # exclude NULL
-        m = len(alignment_info.trg_sentence)
+        src_sentence = alignment_info.src_sentence
+        trg_sentence = alignment_info.trg_sentence
+        l = len(src_sentence) - 1 # exclude NULL
+        m = len(trg_sentence) - 1
         p1 = self.p1
         p0 = 1 - p1
         alignment = alignment_info.alignment
         fertility_of_i = alignment_info.fertility_of_i
-        src_sentence = alignment_info.src_sentence
-        trg_sentence = alignment_info.trg_sentence
 
         probability = 1.0
         MIN_PROB = IBMModel.MIN_PROB
@@ -306,7 +306,7 @@ class IBMModel3(IBMModel):
 
         # Combine lexical and distortion probabilities
         for j in range(1, m + 1):
-            t = trg_sentence[j - 1]
+            t = trg_sentence[j]
             i = alignment[j]
             s = src_sentence[i]
 

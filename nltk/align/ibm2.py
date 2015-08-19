@@ -76,8 +76,9 @@ class IBMModel2(IBMModel):
     0.1428571428571429
 
     >>> from nltk.align.ibm_model import AlignmentInfo
-    >>> alignment_info = AlignmentInfo((0, 1, 3, 4), [None] + aligned_sent.mots, aligned_sent.words, None)
-    >>> print('{0:.3f}'.format(ibm.prob_t_a_given_s(alignment_info)))
+    >>> alignment_info = AlignmentInfo((0, 1, 3, 4), [None] + aligned_sent.mots, ['UNUSED'] + aligned_sent.words, None)
+    >>> prob_target_alignment = ibm.prob_t_a_given_s(alignment_info)
+    >>> print('{0:.3f}'.format(prob_target_alignment))
     0.545
 
     """
@@ -121,7 +122,6 @@ class IBMModel2(IBMModel):
                 warnings.warn("Source sentence is too long (" + str(l) +
                               " words). Results may be less accurate.")
 
-
         self.train(sentence_aligned_corpus, iterations)
 
     def train(self, parallel_corpus, iterations):
@@ -139,14 +139,14 @@ class IBMModel2(IBMModel):
 
             for aligned_sentence in parallel_corpus:
                 src_sentence = [None] + aligned_sentence.mots
-                trg_sentence = aligned_sentence.words
+                trg_sentence = ['UNUSED'] + aligned_sentence.words # 1-indexed
                 l = len(aligned_sentence.mots)
-                m = len(trg_sentence)
+                m = len(aligned_sentence.words)
                 total_count = defaultdict(float)
 
                 # E step (a): Compute normalization factors to weigh counts
                 for j in range(1, m + 1):
-                    t = trg_sentence[j - 1]
+                    t = trg_sentence[j]
                     total_count[t] = 0
                     for i in range(0, l + 1):
                         s = src_sentence[i]
@@ -156,7 +156,7 @@ class IBMModel2(IBMModel):
 
                 # E step (b): Collect counts
                 for j in range(1, m + 1):
-                    t = trg_sentence[j - 1]
+                    t = trg_sentence[j]
                     for i in range(0, l + 1):
                         s = src_sentence[i]
                         count = (self.translation_table[t][s] *
@@ -193,12 +193,12 @@ class IBMModel2(IBMModel):
 
         prob = 1.0
         l = len(alignment_info.src_sentence) - 1
-        m = len(alignment_info.trg_sentence)
+        m = len(alignment_info.trg_sentence) - 1
 
         for j, i in enumerate(alignment_info.alignment):
             if j == 0:
                 continue # skip the dummy zeroeth element
-            trg_word = alignment_info.trg_sentence[j - 1]
+            trg_word = alignment_info.trg_sentence[j]
             src_word = alignment_info.src_sentence[i]
             prob *= (self.translation_table[trg_word][src_word] *
                      self.alignment_table[i][j][l][m])
