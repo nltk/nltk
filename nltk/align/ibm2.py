@@ -75,6 +75,11 @@ class IBMModel2(IBMModel):
     >>> bitexts[0].alignment_error_rate(aligned_sent)
     0.1428571428571429
 
+    >>> from nltk.align.ibm_model import AlignmentInfo
+    >>> alignment_info = AlignmentInfo((0, 1, 3, 4), [None] + aligned_sent.mots, aligned_sent.words, None)
+    >>> print('{0:.3f}'.format(ibm.prob_t_a_given_s(alignment_info)))
+    0.545
+
     """
 
     def __init__(self, sentence_aligned_corpus, iterations):
@@ -179,6 +184,26 @@ class IBMModel2(IBMModel):
                                     alignment_count_for_any_i[j][l][m])
                         self.alignment_table[i][j][l][m] = max(estimate,
                                                               IBMModel.MIN_PROB)
+
+    def prob_t_a_given_s(self, alignment_info):
+        """
+        Probability of target sentence and an alignment given the
+        source sentence
+        """
+
+        prob = 1.0
+        l = len(alignment_info.src_sentence) - 1
+        m = len(alignment_info.trg_sentence)
+
+        for j, i in enumerate(alignment_info.alignment):
+            if j == 0:
+                continue # skip the dummy zeroeth element
+            trg_word = alignment_info.trg_sentence[j - 1]
+            src_word = alignment_info.src_sentence[i]
+            prob *= (self.translation_table[trg_word][src_word] *
+                     self.alignment_table[i][j][l][m])
+
+        return max(prob, IBMModel.MIN_PROB)
 
     def align(self, sentence_pair):
         """
