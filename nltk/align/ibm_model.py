@@ -106,7 +106,7 @@ class IBMModel(object):
         set(str): All target language words used in training
         """
 
-    def sample(self, trg_sentence, src_sentence):
+    def sample(self, src_sentence, trg_sentence):
         """
         Sample the most probable alignments from the entire alignment
         space
@@ -121,13 +121,13 @@ class IBMModel(object):
         Hill climbing may be stuck in a local maxima, hence the pegging
         and trying out of different alignments.
 
-        :param trg_sentence: 1-indexed target sentence. Zeroeth element
-            will be ignored.
-        :type trg_sentence: list(str)
-
         :param src_sentence: 1-indexed source sentence. Zeroeth element
             should be None.
         :type src_sentence: list(str)
+
+        :param trg_sentence: 1-indexed target sentence. Zeroeth element
+            will be ignored.
+        :type trg_sentence: list(str)
 
         :return: A set of best alignments represented by their ``AlignmentInfo``
         :rtype: set(AlignmentInfo)
