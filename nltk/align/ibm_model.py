@@ -106,6 +106,146 @@ class IBMModel(object):
         set(str): All target language words used in training
         """
 
+    def sample(self, trg_sentence, src_sentence):
+        """
+        Sample the most probable alignments from the entire alignment
+        space
+
+        First, peg one alignment point and determine the best alignment
+        according to IBM Model 2. With this initial alignment, use hill
+        climbing to determine the best alignment according to Model 3.
+        This alignment and its neighbors are added to the sample set.
+        This process is repeated by pegging different alignment points.
+
+        Hill climbing may be stuck in a local maxima, hence the pegging
+        and trying out of different alignments.
+
+        :return: A set of best alignments represented by their ``AlignmentInfo``
+        :rtype: set(AlignmentInfo)
+        """
+
+        sampled_alignments = set()
+
+        l = len(src_sentence) - 1 # exclude NULL
+        m = len(trg_sentence)
+
+        for i in range(0, l + 1):
+            for j in range(1, m + 1):
+                alignment = [0] * (m + 1) # Initialize all alignments to NULL
+                fertility_of_i = [0] * (l + 1)
+
+                # Pegging one alignment point
+                alignment[j] = i
+                fertility_of_i[i] = 1
+
+                for jj in range(1, m + 1):
+                    if jj != j:
+                        # Find the best alignment according to model 2
+                        max_alignment_prob = IBMModel.MIN_PROB
+                        best_i = 1
+
+                        for ii in range(0, l + 1):
+                            s = src_sentence[ii]
+                            t = trg_sentence[jj - 1]
+                            alignment_prob = (self.translation_table[t][s] *
+                                self.alignment_table[ii][jj][l][m])
+                            if alignment_prob > max_alignment_prob:
+                                max_alignment_prob = alignment_prob
+                                best_i = ii
+
+                        alignment[jj] = best_i
+                        fertility_of_i[best_i] += 1
+
+                alignment_info = AlignmentInfo(
+                    tuple(alignment), tuple(src_sentence),
+                    tuple(trg_sentence), tuple(fertility_of_i))
+                best_alignment = self.hillclimb(alignment_info, j)
+                neighbors = self.neighboring(best_alignment, j)
+                sampled_alignments.update(neighbors)
+
+        return sampled_alignments
+
+    def hillclimb(self, alignment_info, j_pegged):
+        """
+        Starting from the alignment in ``alignment_info``, look at
+        neighboring alignments iteratively for the best one
+
+        There is no guarantee that the best alignment in the alignment
+        space will be found, because the algorithm might be stuck in a
+        local maximum.
+
+        :return: The best alignment found from hill climbing
+        :rtype: AlignmentInfo
+        """
+
+        alignment = alignment_info # alias with shorter name
+        while True:
+            old_alignment = alignment
+
+            for neighbor_alignment in self.neighboring(alignment, j_pegged):
+                neighbor_probability = self.probability(neighbor_alignment)
+                current_probability = self.probability(alignment)
+
+                if neighbor_probability > current_probability:
+                    alignment = neighbor_alignment
+
+            if alignment == old_alignment:
+                # Until there are no better alignments
+                break
+
+        return alignment_info
+
+    def neighboring(self, alignment_info, j_pegged):
+        """
+        Determine the neighbors of ``alignment_info``, obtained by
+        moving or swapping one alignment point
+
+        :return: A set neighboring alignments represented by their
+            ``AlignmentInfo``
+        :rtype: set(AlignmentInfo)
+        """
+
+        neighbors = set()
+
+        l = len(alignment_info.src_sentence) - 1 # exclude NULL
+        m = len(alignment_info.trg_sentence)
+        original_alignment = alignment_info.alignment
+        original_fertility = alignment_info.fertility_of_i
+
+        for j in range(1, m + 1):
+            if j != j_pegged:
+                # Add alignments that differ by one alignment point
+                for i in range(0, l + 1):
+                    new_alignment = list(original_alignment)
+                    new_fertility = list(original_fertility)
+
+                    new_alignment[j] = i
+                    new_fertility[i] += 1
+                    new_fertility[original_alignment[j]] -= 1
+
+                    new_alignment_info = AlignmentInfo(
+                        tuple(new_alignment), alignment_info.src_sentence,
+                        alignment_info.trg_sentence, tuple(new_fertility))
+                    neighbors.add(new_alignment_info)
+
+        for j in range(1, m + 1):
+            if j != j_pegged:
+                # Add alignments that have two alignment points swapped
+                for other_j in range(1, m + 1):
+                    if other_j != j_pegged and other_j != j:
+                        new_alignment = list(original_alignment)
+                        new_fertility = list(original_fertility)
+                        new_alignment[j] = original_alignment[other_j]
+                        new_alignment[other_j] = original_alignment[j]
+
+                        new_alignment_info = AlignmentInfo(
+                            tuple(new_alignment), alignment_info.src_sentence,
+                            alignment_info.trg_sentence, tuple(new_fertility))
+                        neighbors.add(new_alignment_info)
+
+        return neighbors
+
+
 
 class AlignmentInfo(object):
     """
