@@ -8,7 +8,8 @@
 
 """
 Common methods and classes for all IBM models. See ``IBMModel1``,
-``IBMModel2``, and ``IBMModel3`` for specific implementations.
+``IBMModel2``, ``IBMModel3``, and ``IBMModel4`` for specific
+implementations.
 
 The IBM models are a series of generative models that learn lexical
 translation probabilities, p(target language word|source language word),
@@ -110,11 +111,12 @@ class IBMModel(object):
         Sample the most probable alignments from the entire alignment
         space
 
-        First, peg one alignment point and determine the best alignment
-        according to IBM Model 2. With this initial alignment, use hill
-        climbing to determine the best alignment according to Model 3.
-        This alignment and its neighbors are added to the sample set.
-        This process is repeated by pegging different alignment points.
+        First, determine the best alignment according to IBM Model 2.
+        With this initial alignment, use hill climbing to determine the
+        best alignment according to a higher IBM Model. Add this
+        alignment and its neighbors to the sample set. Repeat this
+        process with other initial alignments obtained by pegging an
+        alignment point.
 
         Hill climbing may be stuck in a local maxima, hence the pegging
         and trying out of different alignments.
@@ -136,43 +138,80 @@ class IBMModel(object):
         l = len(src_sentence) - 1 # exclude NULL
         m = len(trg_sentence) - 1
 
-        for i in range(0, l + 1):
-            for j in range(1, m + 1):
-                alignment = [0] * (m + 1) # Initialize all alignments to NULL
-                fertility_of_i = [0] * (l + 1)
+        # Start from the best model 2 alignment
+        initial_alignment = self.best_model2_alignment(
+            src_sentence, trg_sentence)
+        best_alignment = self.hillclimb(initial_alignment)
+        sampled_alignments.update(self.neighboring(best_alignment))
 
-                # Pegging one alignment point
-                alignment[j] = i
-                fertility_of_i[i] = 1
-
-                for jj in range(1, m + 1):
-                    if jj != j:
-                        # Find the best alignment according to model 2
-                        max_alignment_prob = IBMModel.MIN_PROB
-                        best_i = 1
-
-                        for ii in range(0, l + 1):
-                            s = src_sentence[ii]
-                            t = trg_sentence[jj]
-                            alignment_prob = (self.translation_table[t][s] *
-                                self.alignment_table[ii][jj][l][m])
-                            if alignment_prob > max_alignment_prob:
-                                max_alignment_prob = alignment_prob
-                                best_i = ii
-
-                        alignment[jj] = best_i
-                        fertility_of_i[best_i] += 1
-
-                alignment_info = AlignmentInfo(
-                    tuple(alignment), tuple(src_sentence),
-                    tuple(trg_sentence), tuple(fertility_of_i))
-                best_alignment = self.hillclimb(alignment_info, j)
+        # Start from other model 2 alignments,
+        # with the constraint that j is aligned (pegged) to i
+        for j in range(1, m + 1):
+            for i in range(0, l + 1):
+                initial_alignment = self.best_model2_alignment(
+                    src_sentence, trg_sentence, j, i)
+                best_alignment = self.hillclimb(initial_alignment, j)
                 neighbors = self.neighboring(best_alignment, j)
                 sampled_alignments.update(neighbors)
 
         return sampled_alignments
 
-    def hillclimb(self, alignment_info, j_pegged):
+    def best_model2_alignment(self, src_sentence, trg_sentence,
+                              j_pegged = None, i_pegged = 0):
+        """
+        Finds the best alignment according to IBM Model 2
+
+        Used as a starting point for hill climbing in Models 3 and
+        above, because it is easier to compute than the best alignments
+        in higher models
+
+        :param src_sentence: 1-indexed source sentence. Zeroeth element
+            should be None.
+        :type src_sentence: list(str)
+
+        :param trg_sentence: 1-indexed target sentence. Zeroeth element
+            will be ignored.
+        :type trg_sentence: list(str)
+
+        :param j_pegged: If specified, the alignment point of j_pegged
+            will be fixed to i_pegged
+        :type j_pegged: int
+
+        :param i_pegged: Alignment point to j_pegged
+        :type i_pegged: int
+        """
+
+        l = len(src_sentence) - 1 # exclude NULL
+        m = len(trg_sentence) - 1
+
+        alignment = [0] * (m + 1) # Initialize all alignments to NULL
+        fertility_of_i = [0] * (l + 1)
+
+        for j in range(1, m + 1):
+            if j == j_pegged:
+                # use the pegged alignment instead of searching for best one
+                best_i = i_pegged
+            else:
+                best_i = 0
+                max_alignment_prob = IBMModel.MIN_PROB
+                t = trg_sentence[j]
+
+                for i in range(0, l + 1):
+                    s = src_sentence[i]
+                    alignment_prob = (self.translation_table[t][s] *
+                                      self.alignment_table[i][j][l][m])
+
+                    if alignment_prob >= max_alignment_prob:
+                        max_alignment_prob = alignment_prob
+                        best_i = i
+
+            alignment[j] = best_i
+            fertility_of_i[best_i] += 1
+
+        return AlignmentInfo(tuple(alignment), tuple(src_sentence),
+                             tuple(trg_sentence), tuple(fertility_of_i))
+
+    def hillclimb(self, alignment_info, j_pegged = None):
         """
         Starting from the alignment in ``alignment_info``, look at
         neighboring alignments iteratively for the best one
@@ -180,6 +219,10 @@ class IBMModel(object):
         There is no guarantee that the best alignment in the alignment
         space will be found, because the algorithm might be stuck in a
         local maximum.
+
+        :param j_pegged: If specified, the search will be constrained to
+            alignments where ``j_pegged`` remains unchanged
+        :type j_pegged: int
 
         :return: The best alignment found from hill climbing
         :rtype: AlignmentInfo
@@ -202,10 +245,14 @@ class IBMModel(object):
 
         return alignment_info
 
-    def neighboring(self, alignment_info, j_pegged):
+    def neighboring(self, alignment_info, j_pegged = None):
         """
         Determine the neighbors of ``alignment_info``, obtained by
         moving or swapping one alignment point
+
+        :param j_pegged: If specified, neighbors that have a different
+            alignment point from j_pegged will not be considered
+        :type j_pegged: int
 
         :return: A set neighboring alignments represented by their
             ``AlignmentInfo``
@@ -267,7 +314,7 @@ class IBMModel(object):
 
 class AlignmentInfo(object):
     """
-    Helper data object for training IBM Model 3
+    Helper data object for training IBM Models 3 and up
 
     Read-only. For a source sentence and its counterpart in the target
     language, this class holds information about the sentence pair's

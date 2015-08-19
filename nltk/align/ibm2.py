@@ -248,5 +248,3 @@ class IBMModel2(IBMModel):
                 alignment.append((j, best_alignment))
 
         return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
-
-
