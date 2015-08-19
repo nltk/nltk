@@ -39,7 +39,6 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 
 from collections import defaultdict
 
-
 class IBMModel(object):
     """
     Abstract base class for all IBM models
@@ -183,8 +182,8 @@ class IBMModel(object):
             old_alignment = alignment
 
             for neighbor_alignment in self.neighboring(alignment, j_pegged):
-                neighbor_probability = self.probability(neighbor_alignment)
-                current_probability = self.probability(alignment)
+                neighbor_probability = self.prob_t_a_given_s(neighbor_alignment)
+                current_probability = self.prob_t_a_given_s(alignment)
 
                 if neighbor_probability > current_probability:
                     alignment = neighbor_alignment
@@ -245,6 +244,17 @@ class IBMModel(object):
 
         return neighbors
 
+    def prob_t_a_given_s(self, alignment_info):
+        """
+        Probability of target sentence and an alignment given the
+        source sentence
+
+        All required information is assumed to be in ``alignment_info``
+        and self.
+
+        Derived classes should override this method
+        """
+        return 0.0
 
 
 class AlignmentInfo(object):

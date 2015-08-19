@@ -76,7 +76,6 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 from __future__ import division
 from collections import defaultdict
 from nltk.align import AlignedSent
-from nltk.align.ibm_model import AlignmentInfo
 from nltk.align.ibm_model import IBMModel
 from nltk.align.ibm2 import IBMModel2
 from math import factorial
@@ -185,12 +184,12 @@ class IBMModel3(IBMModel):
 
                 # E step (a): Compute normalization factors to weigh counts
                 for alignment_info in sampled_alignments:
-                    count = self.probability(alignment_info)
+                    count = self.prob_t_a_given_s(alignment_info)
                     total_count += count
 
                 # E step (b): Collect counts
                 for alignment_info in sampled_alignments:
-                    count = self.probability(alignment_info)
+                    count = self.prob_t_a_given_s(alignment_info)
                     normalized_count = count / total_count
                     null_count = 0
 
@@ -266,7 +265,7 @@ class IBMModel3(IBMModel):
             # not be smaller than MIN_PROB
             self.p1 = min(p1_estimate, 1 - MIN_PROB)
 
-    def probability(self, alignment_info):
+    def prob_t_a_given_s(self, alignment_info):
         """
         Probability of target sentence and an alignment given the
         source sentence
