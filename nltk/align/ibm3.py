@@ -269,23 +269,20 @@ class IBMModel3(IBMModel):
         """
         Probability of target sentence and an alignment given the
         source sentence
-
-        All required information is assumed to be in ``alignment_info``
         """
+
         src_sentence = alignment_info.src_sentence
         trg_sentence = alignment_info.trg_sentence
         l = len(src_sentence) - 1 # exclude NULL
         m = len(trg_sentence) - 1
         p1 = self.p1
         p0 = 1 - p1
-        alignment = alignment_info.alignment
-        fertility_of_i = alignment_info.fertility_of_i
 
         probability = 1.0
         MIN_PROB = IBMModel.MIN_PROB
 
         # Combine NULL insertion probability
-        null_fertility = fertility_of_i[0]
+        null_fertility = alignment_info.fertility_of_i(0)
         probability *= (pow(p1, null_fertility) *
                         pow(p0, m - 2 * null_fertility))
         if probability < MIN_PROB:
@@ -299,15 +296,16 @@ class IBMModel3(IBMModel):
 
         # Combine fertility probabilities
         for i in range(1, l + 1):
-            probability *= (factorial(fertility_of_i[i]) *
-                self.fertility_table[fertility_of_i[i]][src_sentence[i]])
+            fertility = alignment_info.fertility_of_i(i)
+            probability *= (factorial(fertility) *
+                self.fertility_table[fertility][src_sentence[i]])
             if probability < MIN_PROB:
                 return MIN_PROB
 
         # Combine lexical and distortion probabilities
         for j in range(1, m + 1):
             t = trg_sentence[j]
-            i = alignment[j]
+            i = alignment_info.alignment[j]
             s = src_sentence[i]
 
             probability *= (self.translation_table[t][s] *

@@ -38,7 +38,10 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
+from bisect import insort_left
 from collections import defaultdict
+from copy import deepcopy
+
 
 class IBMModel(object):
     """
@@ -185,7 +188,7 @@ class IBMModel(object):
         m = len(trg_sentence) - 1
 
         alignment = [0] * (m + 1) # Initialize all alignments to NULL
-        fertility_of_i = [0] * (l + 1)
+        cepts = [[] for i in range((l + 1))] # Initialize all cepts to empty list
 
         for j in range(1, m + 1):
             if j == j_pegged:
@@ -206,10 +209,10 @@ class IBMModel(object):
                         best_i = i
 
             alignment[j] = best_i
-            fertility_of_i[best_i] += 1
+            cepts[best_i].append(j)
 
         return AlignmentInfo(tuple(alignment), tuple(src_sentence),
-                             tuple(trg_sentence), tuple(fertility_of_i))
+                             tuple(trg_sentence), cepts)
 
     def hillclimb(self, alignment_info, j_pegged = None):
         """
@@ -243,7 +246,7 @@ class IBMModel(object):
                 # Until there are no better alignments
                 break
 
-        return alignment_info
+        return alignment
 
     def neighboring(self, alignment_info, j_pegged = None):
         """
@@ -264,22 +267,26 @@ class IBMModel(object):
         l = len(alignment_info.src_sentence) - 1 # exclude NULL
         m = len(alignment_info.trg_sentence) - 1
         original_alignment = alignment_info.alignment
-        original_fertility = alignment_info.fertility_of_i
+        original_cepts = alignment_info.cepts
 
         for j in range(1, m + 1):
             if j != j_pegged:
                 # Add alignments that differ by one alignment point
                 for i in range(0, l + 1):
                     new_alignment = list(original_alignment)
-                    new_fertility = list(original_fertility)
+                    new_cepts = deepcopy(original_cepts)
+                    old_i = original_alignment[j]
 
+                    # update alignment
                     new_alignment[j] = i
-                    new_fertility[i] += 1
-                    new_fertility[original_alignment[j]] -= 1
+
+                    # update cepts
+                    insort_left(new_cepts[i], j)
+                    new_cepts[old_i].remove(j)
 
                     new_alignment_info = AlignmentInfo(
                         tuple(new_alignment), alignment_info.src_sentence,
-                        alignment_info.trg_sentence, tuple(new_fertility))
+                        alignment_info.trg_sentence, new_cepts)
                     neighbors.add(new_alignment_info)
 
         for j in range(1, m + 1):
@@ -288,13 +295,23 @@ class IBMModel(object):
                 for other_j in range(1, m + 1):
                     if other_j != j_pegged and other_j != j:
                         new_alignment = list(original_alignment)
-                        new_fertility = list(original_fertility)
-                        new_alignment[j] = original_alignment[other_j]
-                        new_alignment[other_j] = original_alignment[j]
+                        new_cepts = deepcopy(original_cepts)
+                        other_i = original_alignment[other_j]
+                        i = original_alignment[j]
+
+                        # update alignments
+                        new_alignment[j] = other_i
+                        new_alignment[other_j] = i
+
+                        # update cepts
+                        new_cepts[other_i].remove(other_j)
+                        insort_left(new_cepts[other_i], j)
+                        new_cepts[i].remove(j)
+                        insort_left(new_cepts[i], other_j)
 
                         new_alignment_info = AlignmentInfo(
                             tuple(new_alignment), alignment_info.src_sentence,
-                            alignment_info.trg_sentence, tuple(new_fertility))
+                            alignment_info.trg_sentence, new_cepts)
                         neighbors.add(new_alignment_info)
 
         return neighbors
@@ -318,10 +335,10 @@ class AlignmentInfo(object):
 
     Read-only. For a source sentence and its counterpart in the target
     language, this class holds information about the sentence pair's
-    alignment and fertility.
+    alignment, cepts and fertility.
     """
 
-    def __init__(self, alignment, src_sentence, trg_sentence, fertility_of_i):
+    def __init__(self, alignment, src_sentence, trg_sentence, cepts):
         if not isinstance(alignment, tuple):
             raise TypeError("The alignment must be a tuple because it is used "
                             "to uniquely identify AlignmentInfo objects.")
@@ -331,13 +348,6 @@ class AlignmentInfo(object):
         tuple(int): Alignment function. ``alignment[j]`` is the position
         in the source sentence that is aligned to the position j in the
         target sentence.
-        """
-
-        self.fertility_of_i = fertility_of_i
-        """
-        tuple(int): Fertility of source word. ``fertility_of_i[i]`` is
-        the number of words in the target sentence that is aligned to
-        the word in position i of the source sentence.
         """
 
         self.src_sentence = src_sentence
@@ -352,6 +362,22 @@ class AlignmentInfo(object):
         Should have a dummy element in index 0 so that the first word
         starts from index 1.
         """
+
+        self.cepts = cepts
+        """
+        list(list(int)): The positions of the target words, in
+        ascending order, aligned to a source word position. For example,
+        cepts[4] = (2, 3, 7) means that words in positions 2, 3 and 7
+        of the target sentence are aligned to the word in position 4 of
+        the source sentence
+        """
+
+    def fertility_of_i(self, i):
+        """
+        Fertility of word in position i of the source sentence
+        """
+
+        return len(self.cepts[i])
 
     def __eq__(self, other):
         return self.alignment == other.alignment
