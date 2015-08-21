@@ -614,47 +614,8 @@ class SentimentIntensityAnalyzer(object):
 
 
 
-def demo():
-    text1 = "At least (I think...) it isn't a HORRIBLE :-) book!"
-    text2 = "Today kinda sux! But I'll get by, lol"
-    sid = SentimentIntensityAnalyzer()
-    ss1 = sid.polarity_scores(text1)
-    print(text1)
-    print(ss1)
-
-    """
-    text == "At least (I think...) it isn't a HORRIBLE :-) book!"
-    text_mod == 'At least I think it isnt a HORRIBLE  book'
-    is_cap_diff == True
-    p == '!?!?'
-    pword == '!?!?book'
-    words_and_emoticons == ['At', 'least', '(I', 'think...)', 'it', "isn't", 'HORRIBLE', ':-)', 'book']
-    words_only == ['At', 'least', 'think', 'it', 'isnt', 'HORRIBLE', 'book']
-    """
-
-
-    ss2 = sid.polarity_scores(text2)
-    print(text2)
-    print(ss2)
-
-    """
-    text == "Today kinda sux! But I'll get by, lol"
-    text_mod == 'Today kinda sux But Ill get by lol'
-    is_cap_diff == False
-    p == '!?!?'
-    pword == ''!?!?lol''
-    words_and_emoticons == ['Today', 'kinda', 'sux', 'But', "I'll", 'get', 'by', 'lol']
-    words_only == ['Today', 'kinda', 'sux', 'But', 'Ill', 'get', 'by', 'lol']
-    """
-
-
-DEMO = 0
-
 if __name__ == '__main__':
-    if DEMO:
-        demo()
-    else:
-        import doctest
-        doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
 
