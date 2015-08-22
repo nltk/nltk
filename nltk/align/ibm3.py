@@ -79,6 +79,7 @@ from nltk.align import AlignedSent
 from nltk.align.ibm_model import IBMModel
 from nltk.align.ibm2 import IBMModel2
 from math import factorial
+import warnings
 
 
 class IBMModel3(IBMModel):
@@ -148,6 +149,20 @@ class IBMModel3(IBMModel):
         # Alignment table is only used for hill climbing and is not part
         # of the output of Model 3 training
         self.alignment_table = ibm2.alignment_table
+
+        # Initialize the distribution of distortion probability,
+        # d(j | i,l,m) = 1 / m for all i, j, l, m
+        for aligned_sentence in sentence_aligned_corpus:
+            l = len(aligned_sentence.mots)
+            m = len(aligned_sentence.words)
+            initial_value = 1 / m
+            if initial_value > IBMModel.MIN_PROB:
+                for i in range(0, l + 1):
+                    for j in range(1, m + 1):
+                        self.distortion_table[j][i][l][m] = initial_value
+            else:
+                warnings.warn("Target sentence is too long (" + str(m) +
+                              " words). Results may be less accurate.")
 
         self.train(sentence_aligned_corpus, iterations)
 
