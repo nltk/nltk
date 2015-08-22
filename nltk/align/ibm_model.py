@@ -41,13 +41,13 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 from bisect import insort_left
 from collections import defaultdict
 from copy import deepcopy
+from math import ceil
 
 
 class IBMModel(object):
     """
     Abstract base class for all IBM models
     """
-
     # Avoid division by zero and precision errors by imposing a minimum
     # value for probabilities. Note that this approach is theoretically
     # incorrect, since it may create probabilities that sum to more
@@ -57,7 +57,9 @@ class IBMModel(object):
 
     def __init__(self, sentence_aligned_corpus):
         self.init_vocab(sentence_aligned_corpus)
+        self.reset_probabilities()
 
+    def reset_probabilities(self):
         self.translation_table = defaultdict(
             lambda: defaultdict(lambda: IBMModel.MIN_PROB))
         """
@@ -82,7 +84,6 @@ class IBMModel(object):
         Used in model 3 and higher.
         """
 
-        # Initial probability of null insertion
         self.p1 = 0.5
         """
         Probability that a generated word requires another target word
@@ -135,7 +136,6 @@ class IBMModel(object):
         :return: A set of best alignments represented by their ``AlignmentInfo``
         :rtype: set(AlignmentInfo)
         """
-
         sampled_alignments = set()
 
         l = len(src_sentence) - 1 # exclude NULL
@@ -183,7 +183,6 @@ class IBMModel(object):
         :param i_pegged: Alignment point to j_pegged
         :type i_pegged: int
         """
-
         l = len(src_sentence) - 1 # exclude NULL
         m = len(trg_sentence) - 1
 
@@ -230,7 +229,6 @@ class IBMModel(object):
         :return: The best alignment found from hill climbing
         :rtype: AlignmentInfo
         """
-
         alignment = alignment_info # alias with shorter name
         while True:
             old_alignment = alignment
@@ -261,7 +259,6 @@ class IBMModel(object):
             ``AlignmentInfo``
         :rtype: set(AlignmentInfo)
         """
-
         neighbors = set()
 
         l = len(alignment_info.src_sentence) - 1 # exclude NULL
@@ -335,7 +332,7 @@ class AlignmentInfo(object):
 
     Read-only. For a source sentence and its counterpart in the target
     language, this class holds information about the sentence pair's
-    alignment, cepts and fertility.
+    alignment, cepts, and fertility.
     """
 
     def __init__(self, alignment, src_sentence, trg_sentence, cepts):
@@ -374,10 +371,57 @@ class AlignmentInfo(object):
 
     def fertility_of_i(self, i):
         """
-        Fertility of word in position i of the source sentence
+        Fertility of word in position ``i`` of the source sentence
         """
-
         return len(self.cepts[i])
+
+    def is_head_word(self, j):
+        """
+        :return: Whether the word in position ``j`` of the target
+            sentence is a head word
+        """
+        i = self.alignment[j]
+        return self.cepts[i][0] == j
+
+    def center_of_cept(self, i):
+        """
+        :return: The ceiling of the average positions of the words in
+            the tablet of cept ``i``, or 0 if ``i`` is None
+        """
+        if i == None:
+            return 0
+
+        average_position = float(sum(self.cepts[i])) / len(self.cepts[i])
+        return ceil(average_position)
+
+    def previous_cept(self, j):
+        """
+        :return: The previous cept of ``j``, or None if ``j`` belongs to
+            the first cept
+        """
+        i = self.alignment[j]
+        if i == 0:
+            raise ValueError("Words aligned to NULL cannot have a previous "
+                             "cept because NULL has no position")
+        previous_cept = i - 1
+        while previous_cept > 0 and self.fertility_of_i(previous_cept) == 0:
+            previous_cept -= 1
+
+        if previous_cept <= 0:
+            previous_cept = None
+        return previous_cept
+
+    def previous_in_tablet(self, j):
+        """
+        :return: The position of the previous word that is in the same
+            tablet as ``j``, or None if ``j`` is the first word of the
+            tablet
+        """
+        i = self.alignment[j]
+        tablet_position = self.cepts[i].index(j)
+        if tablet_position == 0:
+            return None
+        return self.cepts[i][tablet_position - 1]
 
     def __eq__(self, other):
         return self.alignment == other.alignment
