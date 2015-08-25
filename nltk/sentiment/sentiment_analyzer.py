@@ -85,7 +85,6 @@ class SentimentAnalyzer(object):
         return [w for w, f in unigram_feats_freqs.most_common(top_n)
                 if unigram_feats_freqs[w] > min_freq]
 
-    @timer
     def bigram_collocation_feats(self, documents, top_n=None, min_freq=3,
                                  assoc_measure=BigramAssocMeasures.pmi):
         """
@@ -151,7 +150,6 @@ class SentimentAnalyzer(object):
             all_features.update(feats)
         return all_features
 
-    @timer
     def train(self, trainer, training_set, save_classifier=None, **kwargs):
         """
         Train classifier on the training set, optionally saving the output in the
@@ -177,7 +175,6 @@ class SentimentAnalyzer(object):
 
         return self.classifier
 
-    @timer
     def evaluate(self, test_set, classifier=None, accuracy=True, f_measure=True,
                  precision=True, recall=True):
         """
