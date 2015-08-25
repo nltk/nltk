@@ -32,10 +32,14 @@ class TestCredentials(unittest.TestCase):
         """
         try:
             self.auth.load_creds(subdir='')
+        # raises ValueError (zero length field name in format) for python 2.6
+        # OSError for the rest
         except OSError:
             pass
-        except e:
-            self.fail('Unexpected exception thrown:', e)
+        except ValueError:
+            pass
+        except Exception as e:
+            self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('OSError exception not thrown.')
             
@@ -49,8 +53,8 @@ class TestCredentials(unittest.TestCase):
             self.auth.load_creds()
         except ValueError:
             pass
-        except e:
-            self.fail('Unexpected exception thrown:', e)
+        except Exception as e:
+            self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('ValueError exception not thrown.')
 
@@ -60,10 +64,14 @@ class TestCredentials(unittest.TestCase):
         """
         try:
             self.auth.load_creds(subdir='/nosuchdir')
+        # raises ValueError (zero length field name in format) for python 2.6
+        # OSError for the rest
         except OSError:
             pass
-        except e:
-            self.fail('Unexpected exception thrown:', e)
+        except ValueError:
+            pass
+        except Exception as e:
+            self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('OSError exception not thrown.')
 
@@ -75,10 +83,14 @@ class TestCredentials(unittest.TestCase):
         """
         try:
             self.auth.load_creds()
+        # raises ValueError (zero length field name in format) for python 2.6
+        # OSError for the rest
         except OSError:
             pass
-        except e:
-            self.fail('Unexpected exception thrown:', e)
+        except ValueError:
+            pass
+        except Exception as e:
+            self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('OSError exception not thrown.')
 
@@ -89,10 +101,14 @@ class TestCredentials(unittest.TestCase):
         """
         try:
             self.auth.load_creds(creds_file='foobar')
+        # raises ValueError (zero length field name in format) for python 2.6
+        # OSError for the rest
         except OSError:
             pass
-        except e:
-            self.fail('Unexpected exception thrown:', e)
+        except ValueError:
+            pass
+        except Exception as e:
+            self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('OSError exception not thrown.')
 
@@ -107,8 +123,8 @@ class TestCredentials(unittest.TestCase):
                                  subdir=self.subdir)
         except ValueError:
             pass
-        except e:
-            self.fail('Unexpected exception thrown:', e)
+        except Exception as e:
+            self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('ValueError exception not thrown.')
 
@@ -122,8 +138,8 @@ class TestCredentials(unittest.TestCase):
                                  subdir=self.subdir)
         except ValueError:
             pass
-        except e:
-            self.fail('Unexpected exception thrown:', e)
+        except Exception as e:
+            self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('ValueError exception not thrown.')
 
@@ -136,8 +152,8 @@ class TestCredentials(unittest.TestCase):
                                  subdir=self.subdir)
         except ValueError:
             pass
-        except e:
-            self.fail('Unexpected exception thrown:', e)
+        except Exception as e:
+            self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('ValueError exception not thrown.')
 
