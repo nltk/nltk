@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 """
-CorpusReader for the Product Reviews corpus.
+CorpusReader for reviews corpora (syntax based on Customer Review Corpus).
 
 - Customer Review Corpus information -
 Annotated by: Minqing Hu and Bing Liu, 2004.
@@ -72,7 +72,7 @@ SENT = re.compile(r'##(.*)$') # find tokenized sentence
 @compat.python_2_unicode_compatible
 class Review(object):
     """
-    A Review is the main block of a ProductReviewsCorpusReader.
+    A Review is the main block of a ReviewsCorpusReader.
     """
     def __init__(self, title=None, review_lines=None):
         """
@@ -97,7 +97,7 @@ class Review(object):
     def features(self):
         """
         Return a list of features in the review. Each feature is a tuple made of
-        the specific product feature and the opinion strength about that feature.
+        the specific item feature and the opinion strength about that feature.
 
         :return: all features of the review as a list of tuples (feat, score).
         :rtype: list(tuple)
@@ -124,7 +124,7 @@ class Review(object):
 class ReviewLine(object):
     """
     A ReviewLine represents a sentence of the review, together with (optional)
-    annotations of its features and notes about the reviewed product.
+    annotations of its features and notes about the reviewed item.
     """
     def __init__(self, sent, features=None, notes=None):
         self.sent = sent
@@ -143,7 +143,7 @@ class ReviewLine(object):
             self.features, self.notes, self.sent))
 
 
-class ProductReviewsCorpusReader(CorpusReader):
+class ReviewsCorpusReader(CorpusReader):
     """
     Reader for the Customer Review Data dataset by Hu, Liu (2004).
     Note: we are not applying any sentence tokenization at the moment, just word
@@ -193,11 +193,11 @@ class ProductReviewsCorpusReader(CorpusReader):
     def features(self, fileids=None):
         """
         Return a list of features. Each feature is a tuple made of the specific
-        product feature and the opinion strength about that feature.
+        item feature and the opinion strength about that feature.
 
         :param fileids: a list or regexp specifying the ids of the files whose
             features have to be returned.
-        :return: all features for the product(s) in the given file(s).
+        :return: all features for the item(s) in the given file(s).
         :rtype: list(tuple)
         """
         if fileids is None:

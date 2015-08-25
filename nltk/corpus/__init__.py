@@ -165,9 +165,9 @@ pl196x = LazyCorpusLoader(
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
 product_reviews_1 = LazyCorpusLoader(
-    'product_reviews_1', ProductReviewsCorpusReader, r'^(?!Readme).*\.txt', encoding='utf8')
+    'product_reviews_1', ReviewsCorpusReader, r'^(?!Readme).*\.txt', encoding='utf8')
 product_reviews_2 = LazyCorpusLoader(
-    'product_reviews_2', ProductReviewsCorpusReader, r'^(?!Readme).*\.txt', encoding='utf8')
+    'product_reviews_2', ReviewsCorpusReader, r'^(?!Readme).*\.txt', encoding='utf8')
 pros_cons = LazyCorpusLoader(
     'pros_cons', ProsConsCorpusReader, r'Integrated(Cons|Pros)\.txt',
     cat_pattern=r'Integrated(Cons|Pros)\.txt', encoding='ISO-8859-2')
