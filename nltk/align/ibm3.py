@@ -7,36 +7,8 @@
 # For license information, see LICENSE.TXT
 
 """
-The IBM models are a series of generative models that learn lexical
-translation probabilities, p(target language word|source language word),
-given a sentence-aligned parallel corpus.
-
-The models increase in sophistication from model 1 to 5. Typically, the
-output of lower models is used to seed the higher models. All models
-use the Expectation-Maximization (EM) algorithm to learn various
-probability tables.
-
-Words in a sentence are one-indexed. The first word of a sentence has
-position 1, not 0. Index 0 is reserved in the source sentence for the
-NULL token. The concept of position does not apply to NULL, but it is
-indexed at 0 by convention.
-
-Each target word is aligned to exactly one source word or the NULL
-token.
-
-Notations
-i: Position in the source sentence
-    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
-j: Position in the target sentence
-    Valid values are 1, 2, ..., length of target sentence
-l: Number of words in the source sentence, excluding NULL
-m: Number of words in the target sentence
-s: A word in the source language
-t: A word in the target language
-phi: Fertility, the number of target words produced by a source word
-p1: Probability that a target word produced by a source word is
-    accompanied by another target word that is aligned to NULL
-p0: 1 - p1
+Translation model that considers how a word can be aligned to
+multiple words in another language.
 
 IBM Model 3 improves on Model 2 by directly modeling the phenomenon
 where a word in one language may be translated into zero or more words
@@ -76,6 +48,21 @@ probabilities. Then, a hill climbing approach is used to find other good
 candidates.
 
 
+Notations:
+i: Position in the source sentence
+    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+j: Position in the target sentence
+    Valid values are 1, 2, ..., length of target sentence
+l: Number of words in the source sentence, excluding NULL
+m: Number of words in the target sentence
+s: A word in the source language
+t: A word in the target language
+phi: Fertility, the number of target words produced by a source word
+p1: Probability that a target word produced by a source word is
+    accompanied by another target word that is aligned to NULL
+p0: 1 - p1
+
+
 References:
 Philipp Koehn. 2010. Statistical Machine Translation.
 Cambridge University Press, New York.
@@ -89,32 +76,20 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 from __future__ import division
 from collections import defaultdict
 from nltk.align import AlignedSent
+from nltk.align.ibm_model import AlignmentInfo
+from nltk.align.ibm_model import IBMModel
 from nltk.align.ibm2 import IBMModel2
 from math import factorial
 
 
-class HashableDict(dict):
-    """
-    Hashable dictionary which can be put into a set.
-    """
-
-    def __key(self):
-        return tuple((k, self[k]) for k in sorted(self))
-
-    def __hash__(self):
-        return hash(self.__key())
-
-    def __eq__(self, other):
-        return self.__key() == other.__key()
-
-
-class IBMModel3(object):
+class IBMModel3(IBMModel):
     """
     Translation model that considers how a word can be aligned to
     multiple words in another language
 
     >>> align_sents = []
     >>> align_sents.append(AlignedSent(['klein', 'ist', 'das', 'Haus'], ['the', 'house', 'is', 'small']))
+    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
     >>> align_sents.append(AlignedSent(['das', 'Haus'], ['the', 'house']))
     >>> align_sents.append(AlignedSent(['das', 'Buch'], ['the', 'book']))
     >>> align_sents.append(AlignedSent(['ein', 'Buch'], ['a', 'book']))
@@ -134,13 +109,13 @@ class IBMModel3(object):
     >>> aligned_sent.mots
     ['the', 'house', 'is', 'small']
     >>> aligned_sent.alignment
-    Alignment([(0, 2), (1, 3), (2, 0), (3, 1)])
+    Alignment([(0, 3), (1, 2), (2, 0), (3, 1)])
 
     """
 
     def __init__(self, sentence_aligned_corpus, iterations):
         """
-        Train on ``sentence_aligned_corpus`` and create a
+        Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, a distortion model, a fertility model, and a
         model for generating NULL-aligned words.
 
@@ -157,61 +132,22 @@ class IBMModel3(object):
         :type iterations: int
         """
 
-        # Avoid division by zero errors by initializing probabilities to
-        # a tiny value. Note that this approach is mathematically
-        # incorrect, since it may create probabilities that sum to more
-        # than 1
-        self.PROB_SMOOTH = 0.1
+        super(IBMModel3, self).__init__(sentence_aligned_corpus)
+
+        # Get the translation and alignment probabilities from IBM model 2
+        ibm2 = IBMModel2(sentence_aligned_corpus, iterations)
+        self.translation_table = ibm2.translation_table
+
+        # Alignment table is only used for hill climbing and is not part
+        # of the output of Model 3 training
+        self.alignment_table = ibm2.alignment_table
 
         self.train(sentence_aligned_corpus, iterations)
 
     def train(self, parallel_corpus, iterations):
-        """
-        Learns and sets probability tables
-        """
-
-        # Get the translation and alignment probabilities from IBM model 2
-        ibm2 = IBMModel2(parallel_corpus, iterations)
-        self.translation_table = ibm2.translation_table
-        """
-        dict(dict(float)): probability(target word | source word). Values
-            accessed with ``translation_table[target_word][source_word].``
-        """
-
-        self.alignment_table = ibm2.alignment_table
-
-        src_vocab = set()
-        trg_vocab = set()
-        for aligned_sentence in parallel_corpus:
-            trg_vocab.update(aligned_sentence.words)
-            src_vocab.update(aligned_sentence.mots)
-        # Add the NULL token
-        src_vocab.add(None)
-
-        # Initial probability of null insertion
-        self.p0 = 0.5
-        """
-        float: probability that a generated word does not require
-            another target word that is aligned to NULL
-        """
-
-        self.fertility_table = defaultdict(
-            lambda: defaultdict(lambda: self.PROB_SMOOTH))
-        """
-        dict(dict(float)))): probability(fertility | source word). Values
-            accessed with ``fertility_table[fertility][source_word].``
-        """
-
-        self.distortion_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                lambda: self.PROB_SMOOTH))))
-        """
-        dict(dict(dict(dict(float)))): probability(j | i,l,m). Values
-            accessed with ``distortion_table[j][i][m][l].``
-        """
-
         for k in range(0, iterations):
             max_fertility = 0
+
             # Reset all counts
             count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
             count_any_t_given_s = defaultdict(lambda: 0.0)
@@ -229,9 +165,9 @@ class IBMModel3(object):
             fertility_count_for_any_phi = defaultdict(lambda: 0.0)
 
             for aligned_sentence in parallel_corpus:
-                trg_sentence = aligned_sentence.words
                 src_sentence = [None] + aligned_sentence.mots
-                l = len(src_sentence) - 1
+                trg_sentence = aligned_sentence.words
+                l = len(aligned_sentence.mots)
                 m = len(trg_sentence)
 
                 # Sample the alignment space
@@ -240,21 +176,19 @@ class IBMModel3(object):
                 total_count = 0.0
 
                 # E step (a): Compute normalization factors to weigh counts
-                for (alignment, fert) in sampled_alignments:
-                    count = self.probability(
-                        alignment, trg_sentence, src_sentence, fert)
+                for alignment_info in sampled_alignments:
+                    count = self.probability(alignment_info)
                     total_count += count
 
                 # E step (b): Collect counts
-                for (alignment, fert) in sampled_alignments:
-                    count = self.probability(
-                        alignment, trg_sentence, src_sentence, fert)
+                for alignment_info in sampled_alignments:
+                    count = self.probability(alignment_info)
                     normalized_count = count / total_count
                     null_count = 0
 
                     for j in range(1, m + 1):
                         t = trg_sentence[j - 1]
-                        i = alignment[j]
+                        i = alignment_info.alignment[j]
                         s = src_sentence[i]
 
                         # Lexical translation
@@ -262,8 +196,8 @@ class IBMModel3(object):
                         count_any_t_given_s[s] += normalized_count
 
                         # Distortion
-                        distortion_count[j][i][m][l] += normalized_count
-                        distortion_count_for_any_j[i][m][l] += normalized_count
+                        distortion_count[j][i][l][m] += normalized_count
+                        distortion_count_for_any_j[i][l][m] += normalized_count
 
                         if i == 0:
                             null_count += 1
@@ -277,7 +211,7 @@ class IBMModel3(object):
                         fertility = 0
 
                         for j in range(1, m + 1):
-                            if i == alignment[j]:
+                            if i == alignment_info.alignment[j]:
                                 fertility += 1
 
                         s = src_sentence[i]
@@ -287,45 +221,42 @@ class IBMModel3(object):
                         if fertility > max_fertility:
                             max_fertility = fertility
 
-            self.translation_table = defaultdict(
-                lambda: defaultdict(lambda: 0.0)
-            )
-            self.distortion_table = defaultdict(
-                lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                    lambda: 0.0)))
-            )
-            self.fertility_table = defaultdict(lambda: defaultdict(lambda: 0.0))
-
             # M step: Update probabilities with maximum likelihood estimates
+            # If any probability is less than MIN_PROB, clamp it to MIN_PROB
+            MIN_PROB = IBMModel.MIN_PROB
+
             # Lexical translation
-            for s in src_vocab:
-                for t in trg_vocab:
-                    self.translation_table[t][s] = (count_t_given_s[t][s] /
-                                                    count_any_t_given_s[s])
+            for s in self.src_vocab:
+                for t in self.trg_vocab:
+                    estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                    self.translation_table[t][s] = max(estimate, MIN_PROB)
 
             # Distortion
             for aligned_sentence in parallel_corpus:
-                trg_sentence = aligned_sentence.words
-                src_sentence = [None] + aligned_sentence.mots
-                l = len(src_sentence) - 1
-                m = len(trg_sentence)
+                l = len(aligned_sentence.mots)
+                m = len(aligned_sentence.words)
 
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
-                        self.distortion_table[j][i][m][l] = (
-                            distortion_count[j][i][m][l] /
-                            distortion_count_for_any_j[i][m][l])
+                        estimate = (distortion_count[j][i][l][m] /
+                                    distortion_count_for_any_j[i][l][m])
+                        self.distortion_table[j][i][l][m] = max(estimate,
+                                                                MIN_PROB)
 
             # Fertility
             for fertility in range(0, max_fertility + 1):
-                for s in src_vocab:
-                    self.fertility_table[fertility][s] = (
-                        fertility_count[fertility][s] /
-                        fertility_count_for_any_phi[s])
+                for s in self.src_vocab:
+                    estimate = (fertility_count[fertility][s] /
+                                fertility_count_for_any_phi[s])
+                    self.fertility_table[fertility][s] = max(estimate, MIN_PROB)
 
             # NULL-aligned words generation
-            p1 = count_p1 / (count_p1 + count_p0)
-            self.p0 = 1 - p1
+            p1_estimate = count_p1 / (count_p1 + count_p0)
+            p1_estimate = max(p1_estimate, MIN_PROB)
+
+            # Clip p1 if it is too large, because p0 = 1 - p1 should
+            # not be smaller than MIN_PROB
+            self.p1 = min(p1_estimate, 1 - MIN_PROB)
 
     def sample(self, trg_sentence, src_sentence):
         """
@@ -340,21 +271,20 @@ class IBMModel3(object):
 
         Hill climbing may be stuck in a local maxima, hence the pegging
         and trying out of different alignments.
+
+        :return: A set of best alignments represented by their ``AlignmentInfo``
+        :rtype: set(AlignmentInfo)
         """
+
         sampled_alignments = set()
 
+        l = len(src_sentence) - 1 # exclude NULL
         m = len(trg_sentence)
-        l = len(src_sentence) - 1
 
-        # Compute Normalization
         for i in range(0, l + 1):
             for j in range(1, m + 1):
-                alignment = HashableDict()
-                fertility_of_i = HashableDict()
-
-                # Initialize all fertility to zero
-                for ii in range(0, l + 1):
-                    fertility_of_i[ii] = 0
+                alignment = [0] * (m + 1) # Initialize all alignments to NULL
+                fertility_of_i = [0] * (l + 1)
 
                 # Pegging one alignment point
                 alignment[j] = i
@@ -363,14 +293,14 @@ class IBMModel3(object):
                 for jj in range(1, m + 1):
                     if jj != j:
                         # Find the best alignment according to model 2
-                        max_alignment_prob = 0
+                        max_alignment_prob = IBMModel.MIN_PROB
                         best_i = 1
 
                         for ii in range(0, l + 1):
                             s = src_sentence[ii]
                             t = trg_sentence[jj - 1]
                             alignment_prob = (self.translation_table[t][s] *
-                                         self.alignment_table[ii][jj][m][l])
+                                self.alignment_table[ii][jj][l][m])
                             if alignment_prob > max_alignment_prob:
                                 max_alignment_prob = alignment_prob
                                 best_i = ii
@@ -378,84 +308,83 @@ class IBMModel3(object):
                         alignment[jj] = best_i
                         fertility_of_i[best_i] += 1
 
-                alignment = self.hillclimb(
-                    alignment, j, trg_sentence, src_sentence, fertility_of_i)
-                neighbors = self.neighboring(
-                    alignment, j, trg_sentence, src_sentence, fertility_of_i)
+                alignment_info = AlignmentInfo(
+                    tuple(alignment), tuple(src_sentence),
+                    tuple(trg_sentence), tuple(fertility_of_i))
+                best_alignment = self.hillclimb(alignment_info, j)
+                neighbors = self.neighboring(best_alignment, j)
                 sampled_alignments.update(neighbors)
 
         return sampled_alignments
 
-    def hillclimb(self, alignment, j_pegged,
-                  trg_sentence, src_sentence, fertility_of_i):
+    def hillclimb(self, alignment_info, j_pegged):
         """
-        Starting from ``alignment``, look at neighboring alignments
-        iteratively for the best one
+        Starting from the alignment in ``alignment_info``, look at
+        neighboring alignments iteratively for the best one
 
         There is no guarantee that the best alignment in the alignment
         space will be found, because the algorithm might be stuck in a
         local maximum.
 
         :return: The best alignment found from hill climbing
-        :rtype: AlignedSent
+        :rtype: AlignmentInfo
         """
 
-        fertility_so_far = fertility_of_i
-
+        alignment = alignment_info # alias with shorter name
         while True:
             old_alignment = alignment
 
-            for (neighbor_alignment, neighbor_fertility) in self.neighboring(
-                    alignment, j_pegged, trg_sentence, src_sentence,
-                    fertility_so_far):
-                neighbor_probability = self.probability(
-                    neighbor_alignment, trg_sentence, src_sentence,
-                    neighbor_fertility)
-                current_probability = self.probability(
-                    alignment, trg_sentence, src_sentence,
-                    fertility_so_far)
+            for neighbor_alignment in self.neighboring(alignment, j_pegged):
+                neighbor_probability = self.probability(neighbor_alignment)
+                current_probability = self.probability(alignment)
 
                 if neighbor_probability > current_probability:
                     alignment = neighbor_alignment
-                    fertility_so_far = neighbor_fertility
 
             if alignment == old_alignment:
                 # Until there are no better alignments
                 break
 
-        return alignment
+        return alignment_info
 
-    def probability(self, alignment,
-                    trg_sentence, src_sentence, fertility_of_i):
+    def probability(self, alignment_info):
         """
-        Probability of ``trg_sentence`` and ``alignment`` given
-        ``src_sentence``
-        """
+        Probability of target sentence and an alignment given the
+        source sentence
 
-        m = len(trg_sentence)
-        l = len(src_sentence) - 1
-        p1 = 1 - self.p0
+        All required information is assumed to be in ``alignment_info``
+        """
+        l = len(alignment_info.src_sentence) - 1 # exclude NULL
+        m = len(alignment_info.trg_sentence)
+        p1 = self.p1
+        p0 = 1 - p1
+        alignment = alignment_info.alignment
+        fertility_of_i = alignment_info.fertility_of_i
+        src_sentence = alignment_info.src_sentence
+        trg_sentence = alignment_info.trg_sentence
 
         probability = 1.0
+        MIN_PROB = IBMModel.MIN_PROB
 
         # Combine NULL insertion probability
-        probability *= (pow(p1, fertility_of_i[0]) *
-                        pow(self.p0, m - 2 * fertility_of_i[0]))
-        if probability == 0:
-            return probability
+        null_fertility = fertility_of_i[0]
+        probability *= (pow(p1, null_fertility) *
+                        pow(p0, m - 2 * null_fertility))
+        if probability < MIN_PROB:
+            return MIN_PROB
 
-        # Compute combination (m - fertility_of_i[0]) choose fertility_of_i[0]
-        for i in range(1, fertility_of_i[0] + 1):
-            probability *= (m - fertility_of_i[0] - i + 1) / i
-            if probability == 0:
-                return probability
+        # Compute combination (m - null_fertility) choose null_fertility
+        for i in range(1, null_fertility + 1):
+            probability *= (m - null_fertility - i + 1) / i
+            if probability < MIN_PROB:
+                return MIN_PROB
 
         # Combine fertility probabilities
         for i in range(1, l + 1):
             probability *= (factorial(fertility_of_i[i]) *
                 self.fertility_table[fertility_of_i[i]][src_sentence[i]])
-            if probability == 0:
-                return probability
+            if probability < MIN_PROB:
+                return MIN_PROB
 
         # Combine lexical and distortion probabilities
         for j in range(1, m + 1):
@@ -463,52 +392,60 @@ class IBMModel3(object):
             i = alignment[j]
             s = src_sentence[i]
 
-            probability *= self.translation_table[t][s]
-            probability *= self.distortion_table[j][i][m][l]
-            if probability == 0:
-                return probability
+            probability *= (self.translation_table[t][s] *
+                self.distortion_table[j][i][l][m])
+            if probability < MIN_PROB:
+                return MIN_PROB
 
         return probability
 
-    def neighboring(self, alignment, j_pegged,
-                    trg_sentence, src_sentence, fertility_of_i):
+    def neighboring(self, alignment_info, j_pegged):
         """
-        :return: Neighbors of ``alignment`` obtained by moving or
-            swapping one alignment point, with the corresponding fertility
-        :rtype: set(tuple(HashableDict(int), int))
+        Determine the neighbors of ``alignment_info``, obtained by
+        moving or swapping one alignment point
+
+        :return: A set neighboring alignments represented by their
+            ``AlignmentInfo``
+        :rtype: set(AlignmentInfo)
         """
 
         neighbors = set()
 
-        m = len(trg_sentence)
-        l = len(src_sentence) - 1
+        l = len(alignment_info.src_sentence) - 1 # exclude NULL
+        m = len(alignment_info.trg_sentence)
+        original_alignment = alignment_info.alignment
+        original_fertility = alignment_info.fertility_of_i
 
         for j in range(1, m + 1):
             if j != j_pegged:
                 # Add alignments that differ by one alignment point
                 for i in range(0, l + 1):
-                    new_alignment = HashableDict(alignment)
+                    new_alignment = list(original_alignment)
+                    new_fertility = list(original_fertility)
+
                     new_alignment[j] = i
+                    new_fertility[i] += 1
+                    new_fertility[original_alignment[j]] -= 1
 
-                    new_fertility = fertility_of_i
-                    if new_fertility[alignment[j]] > 0:
-                        new_fertility = HashableDict(fertility_of_i)
-                        new_fertility[alignment[j]] -= 1
-                        new_fertility[i] += 1
-
-                    neighbors.update([(new_alignment, new_fertility)])
+                    new_alignment_info = AlignmentInfo(
+                        tuple(new_alignment), alignment_info.src_sentence,
+                        alignment_info.trg_sentence, tuple(new_fertility))
+                    neighbors.add(new_alignment_info)
 
         for j in range(1, m + 1):
             if j != j_pegged:
                 # Add alignments that have two alignment points swapped
                 for other_j in range(1, m + 1):
                     if other_j != j_pegged and other_j != j:
-                        new_alignment = HashableDict(alignment)
-                        new_fertility = fertility_of_i
-                        new_alignment[j] = alignment[other_j]
-                        new_alignment[other_j] = alignment[j]
+                        new_alignment = list(original_alignment)
+                        new_fertility = list(original_fertility)
+                        new_alignment[j] = original_alignment[other_j]
+                        new_alignment[other_j] = original_alignment[j]
 
-                        neighbors.update([(new_alignment, new_fertility)])
+                        new_alignment_info = AlignmentInfo(
+                            tuple(new_alignment), alignment_info.src_sentence,
+                            alignment_info.trg_sentence, tuple(new_fertility))
+                        neighbors.add(new_alignment_info)
 
         return neighbors
 
@@ -536,23 +473,31 @@ class IBMModel3(object):
 
         alignment = []
 
-        m = len(sentence_pair.words)
         l = len(sentence_pair.mots)
+        m = len(sentence_pair.words)
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
-            best_alignment = (self.translation_table[trg_word][None] *
-                              self.distortion_table[j + 1][0][m][l], 0)
+            best_prob = (self.translation_table[trg_word][None] *
+                         self.distortion_table[j + 1][0][l][m])
+            best_prob = max(best_prob, IBMModel.MIN_PROB)
+            best_alignment = None
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = (self.translation_table[trg_word][src_word] *
-                              self.distortion_table[j + 1][i + 1][m][l])
-                best_alignment = max(best_alignment, (align_prob, i))
+                              self.distortion_table[j + 1][i + 1][l][m])
+                if align_prob >= best_prob:
+                    best_prob = align_prob
+                    best_alignment = i
 
             # If trg_word is not aligned to the NULL token,
             # add it to the viterbi_alignment.
-            if best_alignment[1] is not None:
-                alignment.append((j, best_alignment[1]))
+            if best_alignment is not None:
+                alignment.append((j, best_alignment))
 
         return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
 
 
+# run doctests
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

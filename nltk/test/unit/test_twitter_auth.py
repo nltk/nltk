@@ -30,23 +30,42 @@ class TestCredentials(unittest.TestCase):
         """
         Setting subdir to empty path should raise an error.
         """
-        with self.assertRaises(OSError):
+        try:
             self.auth.load_creds(subdir='')
+        except OSError:
+            pass
+        except e:
+            self.fail('Unexpected exception thrown:', e)
+        else:
+            self.fail('OSError exception not thrown.')
+            
 
     def test_empty_subdir2(self):
         """
         Setting subdir to `None` should raise an error.
         """
         self.auth.creds_subdir = None
-        with self.assertRaises(ValueError):
+        try:
             self.auth.load_creds()
+        except ValueError:
+            pass
+        except e:
+            self.fail('Unexpected exception thrown:', e)
+        else:
+            self.fail('ValueError exception not thrown.')
 
     def test_missingdir(self):
         """
         Setting subdir to nonexistent directory should raise an error.
         """
-        with self.assertRaises(OSError):
+        try:
             self.auth.load_creds(subdir='/nosuchdir')
+        except OSError:
+            pass
+        except e:
+            self.fail('Unexpected exception thrown:', e)
+        else:
+            self.fail('OSError exception not thrown.')
 
 
     def test_missingfile1(self):
@@ -54,41 +73,73 @@ class TestCredentials(unittest.TestCase):
         Defaults for authentication will fail since 'credentials.txt' not
         present in default subdir, as read from `os.environ['TWITTER']`.
         """
-        with self.assertRaises(OSError):
+        try:
             self.auth.load_creds()
+        except OSError:
+            pass
+        except e:
+            self.fail('Unexpected exception thrown:', e)
+        else:
+            self.fail('OSError exception not thrown.')
 
 
     def test_missingfile2(self):
         """
         Credentials file 'foobar' cannot be found in default subdir.
         """
-        with self.assertRaises(OSError):
+        try:
             self.auth.load_creds(creds_file='foobar')
+        except OSError:
+            pass
+        except e:
+            self.fail('Unexpected exception thrown:', e)
+        else:
+            self.fail('OSError exception not thrown.')
+
 
 
     def test_incomplete_file(self):
         """
         Credentials file 'bad_oauth1-1.txt' is incomplete
         """
-        with self.assertRaises(ValueError):
+        try:
             self.auth.load_creds(creds_file='bad_oauth1-1.txt',
                                  subdir=self.subdir)
+        except ValueError:
+            pass
+        except e:
+            self.fail('Unexpected exception thrown:', e)
+        else:
+            self.fail('ValueError exception not thrown.')
+
 
     def test_malformed_file1(self):
         """
         First key in credentials file 'bad_oauth1-2.txt' is ill-formed
         """
-        with self.assertRaises(ValueError):
+        try:
             self.auth.load_creds(creds_file='bad_oauth1-2.txt',
                                  subdir=self.subdir)
+        except ValueError:
+            pass
+        except e:
+            self.fail('Unexpected exception thrown:', e)
+        else:
+            self.fail('ValueError exception not thrown.')
 
     def test_malformed_file2(self):
         """
         First key in credentials file 'bad_oauth1-2.txt' is ill-formed
         """
-        with self.assertRaises(ValueError):
+        try:
             self.auth.load_creds(creds_file='bad_oauth1-3.txt',
                                  subdir=self.subdir)
+        except ValueError:
+            pass
+        except e:
+            self.fail('Unexpected exception thrown:', e)
+        else:
+            self.fail('ValueError exception not thrown.')
 
     def test_correct_path(self):
         """

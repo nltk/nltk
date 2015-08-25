@@ -3,19 +3,25 @@
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: C.J. Hutto <Clayton.Hutto@gtri.gatech.edu>
-#         Ewan Klein <ewan@inf.ed.ac.uk>
+#         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
+#         Pierpaolo Pantone <24alsecondo@gmail.com> (modifications)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
-"""
+# Modifications to the original VADER code have been made in order to
+# integrate it into NLTK. These have involved changes to
+# ensure Python 3 compatibility, and refactoring to achieve greater modularity.
 
+
+"""
 If you use the VADER sentiment analysis tools, please cite:
 
 Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for
 Sentiment Analysis of Social Media Text. Eighth International Conference on
 Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
+"""
 
-
+"""
 >>> sentences = ["VADER is smart, handsome, and funny.", # positive sentence example
 ...    "VADER is smart, handsome, and funny!", # punctuation emphasis handled correctly (sentiment intensity adjusted)
 ...    "VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
@@ -605,50 +611,3 @@ class SentimentIntensityAnalyzer(object):
              "compound" : round(compound, 4)}
 
         return sentiment_dict
-
-
-
-def demo():
-    text1 = "At least (I think...) it isn't a HORRIBLE :-) book!"
-    text2 = "Today kinda sux! But I'll get by, lol"
-    sid = SentimentIntensityAnalyzer()
-    ss1 = sid.polarity_scores(text1)
-    print(text1)
-    print(ss1)
-
-    """
-    text == "At least (I think...) it isn't a HORRIBLE :-) book!"
-    text_mod == 'At least I think it isnt a HORRIBLE  book'
-    is_cap_diff == True
-    p == '!?!?'
-    pword == '!?!?book'
-    words_and_emoticons == ['At', 'least', '(I', 'think...)', 'it', "isn't", 'HORRIBLE', ':-)', 'book']
-    words_only == ['At', 'least', 'think', 'it', 'isnt', 'HORRIBLE', 'book']
-    """
-
-
-    ss2 = sid.polarity_scores(text2)
-    print(text2)
-    print(ss2)
-
-    """
-    text == "Today kinda sux! But I'll get by, lol"
-    text_mod == 'Today kinda sux But Ill get by lol'
-    is_cap_diff == False
-    p == '!?!?'
-    pword == ''!?!?lol''
-    words_and_emoticons == ['Today', 'kinda', 'sux', 'But', "I'll", 'get', 'by', 'lol']
-    words_only == ['Today', 'kinda', 'sux', 'But', 'Ill', 'get', 'by', 'lol']
-    """
-
-
-DEMO = 0
-
-if __name__ == '__main__':
-    if DEMO:
-        demo()
-    else:
-        import doctest
-        doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
-
-
