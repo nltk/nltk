@@ -65,20 +65,19 @@ def _get_entity_recursive(json, entity):
         for key, value in json.items():
             if key == entity:
                 return value
-            '''
-            'entities' and 'extended_entities' are wrappers in twitter json
-            structure that contain other twitter objects. See:
-            https://dev.twitter.com/overview/api/entities-in-twitter-objects
-            '''
+            # 'entities' and 'extended_entities' are wrappers in Twitter json
+            # structure that contain other Twitter objects. See:
+            # https://dev.twitter.com/overview/api/entities-in-twitter-objects
+
             if key == 'entities' or key == 'extended_entities':
                 candidate = _get_entity_recursive(value, entity)
-                if candidate != None:
+                if candidate is not None:
                     return candidate
         return None
     elif isinstance(json, list):
         for item in json:
             candidate = _get_entity_recursive(item, entity)
-            if candidate != None:
+            if candidate is not None:
                 return candidate
         return None
     else:
@@ -91,13 +90,13 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
     write to a file in CSV format.
 
     This utility function allows a file of full tweets to be easily converted
-    to a CSV file for easier processing. For example, just tweetIDs or
-    just the text content of the tweets can be extracted.
+    to a CSV file for easier processing. For example, just TweetIDs or
+    just the text content of the Tweets can be extracted.
 
     Additionally, the function allows combinations of fields of other Twitter
     objects (mainly the users, see below).
 
-    For Twitter entities (e.g. hashtags of a tweet), and for geolocation, see
+    For Twitter entities (e.g. hashtags of a Tweet), and for geolocation, see
     `json2csv_entities`
 
     :param str infile: The name of the file containing full tweets
@@ -107,15 +106,15 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
 
     :param list fields: The list of fields to be extracted. Useful examples\
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
-    <https://dev.twitter.com/overview/api/tweets> for a full list of fields.
-    e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']
-    Addionally, it allows IDs from other Twitter objects, e. g.,\
+    <https://dev.twitter.com/overview/api/tweets> for a full list of fields.\
+    e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']\
+    Additonally, it allows IDs from other Twitter objects, e. g.,\
     ['id', 'text', 'user.id', 'user.followers_count', 'user.friends_count']
 
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
 
-    :param gzip_compress: if True, output files are compressed with gzip
+    :param gzip_compress: if `True`, output files are compressed with gzip
     """
     (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
     # write the list of fields as header
@@ -131,7 +130,7 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
     """
     Identify appropriate CSV writer given the Python version
     """
-    if compat.PY3 == True:
+    if compat.PY3:
         if gzip_compress:
             outf = gzip.open(outfile, 'wt', encoding=encoding, errors=errors)
         else:
@@ -148,22 +147,22 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
 
 
 
-def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
+def json2csv_entities(tweets_file, outfile, main_fields, entity_type, entity_fields,
                       encoding='utf8', errors='replace', gzip_compress=False):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
 
-    This utility function allows a file of full tweets to be easily converted
+    This utility function allows a file of full Tweets to be easily converted
     to a CSV file for easier processing of Twitter entities. For example, the
     hashtags or media elements of a tweet can be extracted.
 
-    It returns one line per entity of a tweet, e.g. if a tweet has 2 hashtags
+    It returns one line per entity of a Tweet, e.g. if a tweet has two hashtags
     there will be two lines in the output file, one per hashtag
 
-    :param file-object fp: The name of the file containing full tweets
+    :param tweets_file: the file-like object containing full Tweets
 
-    :param str outfile: The name of the text file where results should be\
+    :param str outfile: The path of the text file where results should be\
     written
 
     :param list main_fields: The list of fields to be extracted from the main\
@@ -177,10 +176,9 @@ def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
     files in the main_field list belong to the place object of the tweet).
 
     :param list entity_type: The name of the entity: 'hashtags', 'media',\
-    'urls' and 'user_mentions' for the tweet object. For the user object,\
-    needs to be expressed with the hierarchy: `'user.urls'`. For the\
-    bounding box of the place from which a Tweet was published, adding\
-    hierarchy as well: `'place.bounding_box'`.
+    'urls' and 'user_mentions' for the tweet object. For a user object,\
+    this needs to be expressed with a hierarchy: `'user.urls'`. For the\
+    bounding box of the Tweet location, use `'place.bounding_box'`.
 
     :param list entity_fields: The list of fields to be extracted from the\
     entity. E.g. `['text']` (of the Tweet)
@@ -188,19 +186,19 @@ def json2csv_entities(fp, outfile, main_fields, entity_type, entity_fields,
     :param error: Behaviour for encoding errors, see\
     https://docs.python.org/3/library/codecs.html#codec-base-classes
 
-    :param gzip_compress: if True, ouput files are compressed with gzip
+    :param gzip_compress: if `True`, ouput files are compressed with gzip
     """
 
     (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
     header = get_header_field_list(main_fields, entity_type, entity_fields)
     writer.writerow(header)
-    for line in fp:
+    for line in tweets_file:
         tweet = json.loads(line)
         if _is_composed_key(entity_type):
             key, value = _get_key_value_composed(entity_type)
             object_json = _get_entity_recursive(tweet, key)
             if not object_json:
-                # can happen in the case of "place"
+                # this can happen in the case of "place"
                 continue
             object_fields = extract_fields(object_json, main_fields)
             items = _get_entity_recursive(object_json, value)
@@ -271,8 +269,6 @@ def credsfromfile(creds_file=None, subdir=None, verbose=False):
 class Authenticate(object):
     """
     Methods for authenticating with Twitter.
-
-
     """
     def __init__(self):
         self.creds_file = 'credentials.txt'
@@ -322,24 +318,11 @@ class Authenticate(object):
         else:
             self.creds_subdir = subdir
 
-
         self.creds_fullpath =\
             os.path.normpath(os.path.join(self.creds_subdir, self.creds_file))
 
-
         if not os.path.isfile(self.creds_fullpath):
             raise OSError('Cannot find file {}'.format(self.creds_fullpath))
-
-        #if not subdir:
-            #try:
-                #subdir = os.environ['TWITTER']
-                #creds_fullpath = os.path.normpath(os.path.join(subdir, creds_file))
-
-            #except KeyError:
-                #print("Supply a value to the 'subdir' parameter or set the \
-                #TWITTER environment variable.")
-                #raise KeyError
-
 
         with open(self.creds_fullpath) as infile:
             if verbose:
