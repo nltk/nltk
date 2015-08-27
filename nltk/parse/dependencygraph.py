@@ -166,7 +166,7 @@ class DependencyGraph(object):
         s += 'node [shape=plaintext]\n'
 
         # Draw the remaining nodes
-        for _, node in sorted(self.nodes.items()):
+        for node in sorted(self.nodes.values(), key=lambda v: v['address']):
             s += '\n%s [label="%s (%s)"]' % (node['address'], node['address'], node['word'])
             for rel, deps in node['deps'].items():
                 for dep in deps:
@@ -191,10 +191,10 @@ class DependencyGraph(object):
 
         """
         dot_string = self.to_dot()
-        format_ = 'svg'
+
         try:
             process = subprocess.Popen(
-                ['dot', '-T{0}'.format(format_)],
+                ['dot', '-Tsvg'],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -205,8 +205,8 @@ class DependencyGraph(object):
         out, err = process.communicate(dot_string)
         if err:
             raise Exception(
-                'Cannot create {0} representation by running dot from string\n:{1}'
-                ''.format(format_, dot_string))
+                'Cannot create svg representation by running dot from string: {}'
+                ''.format(dot_string))
         return out
 
     def __str__(self):
