@@ -75,12 +75,6 @@ class IBMModel2(IBMModel):
     >>> bitexts[0].alignment_error_rate(aligned_sent)
     0.1428571428571429
 
-    >>> from nltk.align.ibm_model import AlignmentInfo
-    >>> alignment_info = AlignmentInfo((0, 1, 3, 4), [None] + aligned_sent.mots, ['UNUSED'] + aligned_sent.words, None)
-    >>> prob_target_alignment = ibm.prob_t_a_given_s(alignment_info)
-    >>> print('{0:.3f}'.format(prob_target_alignment))
-    0.545
-
     """
 
     def __init__(self, sentence_aligned_corpus, iterations):
