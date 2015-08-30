@@ -44,6 +44,21 @@ from copy import deepcopy
 from math import ceil
 
 
+def longest_target_sentence_length(sentence_aligned_corpus):
+    """
+    :param sentence_aligned_corpus: Parallel corpus under consideration
+    :type sentence_aligned_corpus: list(AlignedSent)
+    :return: Number of words in the longest target language sentence
+        of ``sentence_aligned_corpus``
+    """
+    max_m = 0
+    for aligned_sentence in sentence_aligned_corpus:
+        m = len(aligned_sentence.words)
+        if m > max_m:
+            max_m = m
+    return max_m
+
+
 class IBMModel(object):
     """
     Abstract base class for all IBM models
@@ -312,6 +327,26 @@ class IBMModel(object):
                         neighbors.add(new_alignment_info)
 
         return neighbors
+
+    def maximize_lexical_translation_probabilities(self, counts):
+        for t, src_words in counts.t_given_s.items():
+            for s in src_words:
+                estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
+                self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
+
+    def maximize_fertility_probabilities(self, counts):
+        for phi, src_words in counts.fertility.items():
+            for s in src_words:
+                estimate = (counts.fertility[phi][s] /
+                            counts.fertility_for_any_phi[s])
+                self.fertility_table[phi][s] = max(estimate, IBMModel.MIN_PROB)
+
+    def maximize_null_generation_probabilities(self, counts):
+        p1_estimate = counts.p1 / (counts.p1 + counts.p0)
+        p1_estimate = max(p1_estimate, IBMModel.MIN_PROB)
+        # Clip p1 if it is too large, because p0 = 1 - p1 should not be
+        # smaller than MIN_PROB
+        self.p1 = min(p1_estimate, 1 - IBMModel.MIN_PROB)
 
     def prob_of_alignments(self, alignments):
         probability = 0

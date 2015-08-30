@@ -106,6 +106,7 @@ from collections import defaultdict
 from nltk.align import AlignedSent
 from nltk.align.ibm_model import Counts
 from nltk.align.ibm_model import IBMModel
+from nltk.align.ibm_model import longest_target_sentence_length
 from nltk.align.ibm3 import IBMModel3
 from math import factorial
 import warnings
@@ -224,8 +225,7 @@ class IBMModel4(IBMModel):
         Set distortion probabilities uniformly to
         1 / cardinality of displacement values
         """
-        max_m = IBMModel4.longest_target_sentence_length(
-            sentence_aligned_corpus)
+        max_m = longest_target_sentence_length(sentence_aligned_corpus)
 
         # The maximum displacement is m-1, when a word is in the last
         # position m of the target sentence and the previously placed
@@ -250,15 +250,6 @@ class IBMModel4(IBMModel):
                 lambda: initial_prob)
             self.non_head_distortion_table[-dj] = defaultdict(
                 lambda: initial_prob)
-
-    @classmethod
-    def longest_target_sentence_length(cls, sentence_aligned_corpus):
-        max_m = 0
-        for aligned_sentence in sentence_aligned_corpus:
-            m = len(aligned_sentence.words)
-            if m > max_m:
-                max_m = m
-        return max_m
 
     def train(self, parallel_corpus):
         # Reset all counts
@@ -388,12 +379,6 @@ class IBMModel4(IBMModel):
 
         return probability
 
-    def maximize_lexical_translation_probabilities(self, counts):
-        for t, src_words in counts.t_given_s.items():
-            for s in src_words:
-                estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
-                self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
-
     def maximize_distortion_probabilities(self, counts):
         head_d_table = self.head_distortion_table
         for dj, src_classes in counts.head_distortion.items():
@@ -410,22 +395,6 @@ class IBMModel4(IBMModel):
                 estimate = (counts.non_head_distortion[dj][t_cls] /
                             counts.non_head_distortion_for_any_dj[t_cls])
                 non_head_d_table[dj][t_cls] = max(estimate, IBMModel.MIN_PROB)
-
-    def maximize_fertility_probabilities(self, counts):
-        for fertility, src_words in counts.fertility.items():
-            for s in src_words:
-                estimate = (counts.fertility[fertility][s] /
-                            counts.fertility_for_any_phi[s])
-                self.fertility_table[fertility][s] = max(estimate,
-                                                         IBMModel.MIN_PROB)
-
-    def maximize_null_generation_probabilities(self, counts):
-        MIN_PROB = IBMModel.MIN_PROB
-        p1_estimate = counts.p1 / (counts.p1 + counts.p0)
-        p1_estimate = max(p1_estimate, MIN_PROB)
-        # Clip p1 if it is too large, because p0 = 1 - p1 should not be
-        # smaller than MIN_PROB
-        self.p1 = min(p1_estimate, 1 - MIN_PROB)
 
 
 class Model4Counts(Counts):
