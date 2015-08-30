@@ -478,7 +478,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
                     # Check if the alternative is inside a 'file' directory
                     # path_to_file = os.path.join(env_dir, 'file', alternative)
 
-                    # Check if the alternative is inside a 'file' directory
+                    # Check if the alternative is inside a 'bin' directory
                     path_to_file = os.path.join(env_dir, 'bin', alternative)
 
                     if os.path.isfile(path_to_file):
