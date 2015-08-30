@@ -4,7 +4,7 @@ TESTS = $(wildcard *.doctest)
 
 ERRS := $(TESTS:.doctest=.errs)
 
-HTML = $(TESTS:.doctest=.html) $(IPYNB:.ipynb=.html)
+HTML = $(TESTS:.doctest=.html) # $(IPYNB:.ipynb=.html)
 
 IPYNB = $(wildcard *.ipynb)
 
