@@ -313,6 +313,12 @@ class IBMModel(object):
 
         return neighbors
 
+    def prob_of_alignments(self, alignments):
+        probability = 0
+        for alignment_info in alignments:
+            probability += self.prob_t_a_given_s(alignment_info)
+        return probability
+
     def prob_t_a_given_s(self, alignment_info):
         """
         Probability of target sentence and an alignment given the
@@ -388,7 +394,7 @@ class AlignmentInfo(object):
         :return: The ceiling of the average positions of the words in
             the tablet of cept ``i``, or 0 if ``i`` is None
         """
-        if i == None:
+        if i is None:
             return 0
 
         average_position = float(sum(self.cepts[i])) / len(self.cepts[i])
@@ -428,3 +434,36 @@ class AlignmentInfo(object):
 
     def __hash__(self):
         return hash(self.alignment)
+
+
+class Counts(object):
+    """
+    Data object to store counts of various parameters during training
+    """
+    def __init__(self):
+        self.t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.any_t_given_s = defaultdict(lambda: 0.0)
+        self.p0 = 0.0
+        self.p1 = 0.0
+        self.fertility = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.fertility_for_any_phi = defaultdict(lambda: 0.0)
+
+    def update_lexical_translation(self, count, alignment_info, j):
+        i = alignment_info.alignment[j]
+        t = alignment_info.trg_sentence[j]
+        s = alignment_info.src_sentence[i]
+        self.t_given_s[t][s] += count
+        self.any_t_given_s[s] += count
+
+    def update_null_generation(self, count, alignment_info):
+        m = len(alignment_info.trg_sentence) - 1
+        fertility_of_null = alignment_info.fertility_of_i(0)
+        self.p1 += fertility_of_null * count
+        self.p0 += (m - 2 * fertility_of_null) * count
+
+    def update_fertility(self, count, alignment_info):
+        for i in range(0, len(alignment_info.src_sentence)):
+            s = alignment_info.src_sentence[i]
+            phi = len(alignment_info.cepts[i])
+            self.fertility[phi][s] += count
+            self.fertility_for_any_phi[s] += count

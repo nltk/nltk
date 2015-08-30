@@ -104,6 +104,7 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 from __future__ import division
 from collections import defaultdict
 from nltk.align import AlignedSent
+from nltk.align.ibm_model import Counts
 from nltk.align.ibm_model import IBMModel
 from nltk.align.ibm3 import IBMModel3
 from math import factorial
@@ -223,7 +224,8 @@ class IBMModel4(IBMModel):
         Set distortion probabilities uniformly to
         1 / cardinality of displacement values
         """
-        max_m = self.longest_target_sentence_length(sentence_aligned_corpus)
+        max_m = IBMModel4.longest_target_sentence_length(
+            sentence_aligned_corpus)
 
         # The maximum displacement is m-1, when a word is in the last
         # position m of the target sentence and the previously placed
@@ -268,7 +270,7 @@ class IBMModel4(IBMModel):
 
     def train(self, parallel_corpus):
         # Reset all counts
-        counts = Counts()
+        counts = Model4Counts()
 
         for aligned_sentence in parallel_corpus:
             src_sentence = [None] + aligned_sentence.mots
@@ -285,7 +287,6 @@ class IBMModel4(IBMModel):
             for alignment_info in sampled_alignments:
                 count = self.prob_t_a_given_s(alignment_info)
                 normalized_count = count / total_count
-                counts.null = 0
 
                 for j in range(1, m + 1):
                     counts.update_lexical_translation(
@@ -308,12 +309,6 @@ class IBMModel4(IBMModel):
         self.maximize_distortion_probabilities(counts)
         self.maximize_fertility_probabilities(counts)
         self.maximize_null_generation_probabilities(counts)
-
-    def prob_of_alignments(self, alignments):
-        probability = 0
-        for alignment_info in alignments:
-            probability += self.prob_t_a_given_s(alignment_info)
-        return probability
 
     def prob_t_a_given_s(self, alignment_info):
         """
@@ -362,7 +357,7 @@ class IBMModel4(IBMModel):
             if i == 0:
                 # case 1: t is aligned to NULL
                 return 1.0
-            elif alignment_info.is_head_word(j):
+            if alignment_info.is_head_word(j):
                 # case 2: t is the first word of a tablet
                 previous_cept = alignment_info.previous_cept(j)
                 src_class = None
@@ -372,12 +367,12 @@ class IBMModel4(IBMModel):
                 trg_class = self.trg_classes[t]
                 dj = j - alignment_info.center_of_cept(previous_cept)
                 return self.head_distortion_table[dj][src_class][trg_class]
-            else:
-                # case 3: t is a subsequent word of a tablet
-                previous_position = alignment_info.previous_in_tablet(j)
-                trg_class = self.trg_classes[t]
-                dj = j - previous_position
-                return self.non_head_distortion_table[dj][trg_class]
+
+            # case 3: t is a subsequent word of a tablet
+            previous_position = alignment_info.previous_in_tablet(j)
+            trg_class = self.trg_classes[t]
+            dj = j - previous_position
+            return self.non_head_distortion_table[dj][trg_class]
         # end nested functions
 
         # Abort computation whenever probability falls below MIN_PROB at
@@ -441,14 +436,13 @@ class IBMModel4(IBMModel):
         self.p1 = min(p1_estimate, 1 - MIN_PROB)
 
 
-class Counts(object):
+class Model4Counts(Counts):
     """
-    Data object to store counts of various parameters during training
+    Data object to store counts of various parameters during training.
+    Include counts for distortion.
     """
     def __init__(self):
-        self.t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
-        self.any_t_given_s = defaultdict(lambda: 0.0)
-
+        super(Model4Counts, self).__init__()
         self.head_distortion = defaultdict(
             lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
         self.head_distortion_for_any_dj = defaultdict(
@@ -457,28 +451,13 @@ class Counts(object):
             lambda: defaultdict(lambda: 0.0))
         self.non_head_distortion_for_any_dj = defaultdict(lambda: 0.0)
 
-        self.p0 = 0.0
-        self.p1 = 0.0
-
-        self.fertility = defaultdict(lambda: defaultdict(lambda: 0.0))
-        self.fertility_for_any_phi = defaultdict(lambda: 0.0)
-
-        self.null = 0
-
-    def update_lexical_translation(self, count, alignment_info, j):
-        i = alignment_info.alignment[j]
-        t = alignment_info.trg_sentence[j]
-        s = alignment_info.src_sentence[i]
-        self.t_given_s[t][s] += count
-        self.any_t_given_s[s] += count
-
     def update_distortion(self, count, alignment_info, j,
                           src_classes, trg_classes):
         i = alignment_info.alignment[j]
         t = alignment_info.trg_sentence[j]
         if i == 0:
             # case 1: t is aligned to NULL
-            self.null += 1
+            pass
         elif alignment_info.is_head_word(j):
             # case 2: t is the first word of a tablet
             previous_cept = alignment_info.previous_cept(j)
@@ -498,18 +477,6 @@ class Counts(object):
             dj = j - previous_j
             self.non_head_distortion[dj][trg_class] += count
             self.non_head_distortion_for_any_dj[trg_class] += count
-
-    def update_null_generation(self, count, alignment_info):
-        m = len(alignment_info.trg_sentence) - 1
-        self.p1 += self.null * count
-        self.p0 += (m - 2 * self.null) * count
-
-    def update_fertility(self, count, alignment_info):
-        for i in range(0, len(alignment_info.src_sentence)):
-            s = alignment_info.src_sentence[i]
-            fertility = len(alignment_info.cepts[i])
-            self.fertility[fertility][s] += count
-            self.fertility_for_any_phi[s] += count
 
 
 # run doctests
