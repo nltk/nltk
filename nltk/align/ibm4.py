@@ -149,21 +149,21 @@ class IBMModel4(IBMModel):
         Runs a few iterations of Model 3 training to initialize
         model parameters.
 
-        :param: sentence_aligned_corpus: Sentence-aligned parallel corpus
-        :type: sentence_aligned_corpus: list(AlignedSent)
+        :param sentence_aligned_corpus: Sentence-aligned parallel corpus
+        :type sentence_aligned_corpus: list(AlignedSent)
 
-        :param: iterations: Number of iterations to run training algorithm
-        :type: iterations: int
+        :param iterations: Number of iterations to run training algorithm
+        :type iterations: int
 
-        :param: source_word_classes: Lookup table that maps a source word
+        :param source_word_classes: Lookup table that maps a source word
             to its word class, the latter represented by an integer id
-        :type: source_word_classes: dict[str]: int
+        :type source_word_classes: dict[str]: int
 
-        :param: target_word_classes: Lookup table that maps a target word
+        :param target_word_classes: Lookup table that maps a target word
             to its word class, the latter represented by an integer id
-        :type: target_word_classes: dict[str]: int
+        :type target_word_classes: dict[str]: int
 
-        :param: probability_tables: Optional. Use this to pass in custom
+        :param probability_tables: Optional. Use this to pass in custom
             probability values. If not specified, probabilities will be
             set to a uniform distribution, or some other sensible value.
             If specified, all the following entries must be present:
@@ -171,7 +171,7 @@ class IBMModel4(IBMModel):
             ``fertility_table``, ``p1``, ``head_distortion_table``,
             ``non_head_distortion_table``. See ``IBMModel`` and
             ``IBMModel4`` for the type and purpose of these tables.
-        :type: probability_tables: dict[str]: object
+        :type probability_tables: dict[str]: object
         """
         super(IBMModel4, self).__init__(sentence_aligned_corpus)
         self.reset_probabilities()
