@@ -1,10 +1,21 @@
+Version 3.0.5 2015-MM-DD
+* rewritten IBM models, and new IBM Model 4 implementation
+* new Twitter package
+* stabilized MaltParser API
+* improved regex tagger
+* improved documentation on contributing
+* minor improvements to documentation and testing
+
+Thanks to the following contributors to 3.0.5:
+Álvaro Justen, Dmitrijs Milajevs, Ewan Klein, Heran Lin, hoontw, Justin Hammar,
+Liling Tan, Long Duong, Lorenzo Rubio, Pierpaolo Pantone, turicas
+	
 Version 3.0.4 2015-07-13
 * minor bug fixes and enhancements
 
 Thanks to the following contributors to 3.0.4:
 Nicola Bova, Santiago Castro, Len Remmerswaal, Keith Suderman, kabayan55,
 pln-fing-udelar (NLP Group, Instituto de Computación, Facultad de Ingeniería, Universidad de la República, Uruguay).
-
 	
 Version 3.0.3 2015-06-12
 * bug fixes (Stanford NER, Boxer, Snowball, treebank tokenizer,
