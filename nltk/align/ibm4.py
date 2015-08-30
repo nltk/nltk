@@ -293,18 +293,39 @@ class IBMModel4(IBMModel):
         self.maximize_fertility_probabilities(counts)
         self.maximize_null_generation_probabilities(counts)
 
+    def maximize_distortion_probabilities(self, counts):
+        head_d_table = self.head_distortion_table
+        for dj, src_classes in counts.head_distortion.items():
+            for s_cls, trg_classes in src_classes.items():
+                for t_cls in trg_classes:
+                    estimate = (counts.head_distortion[dj][s_cls][t_cls] /
+                                counts.head_distortion_for_any_dj[s_cls][t_cls])
+                    head_d_table[dj][s_cls][t_cls] = max(estimate,
+                                                         IBMModel.MIN_PROB)
+
+        non_head_d_table = self.non_head_distortion_table
+        for dj, trg_classes in counts.non_head_distortion.items():
+            for t_cls in trg_classes:
+                estimate = (counts.non_head_distortion[dj][t_cls] /
+                            counts.non_head_distortion_for_any_dj[t_cls])
+                non_head_d_table[dj][t_cls] = max(estimate, IBMModel.MIN_PROB)
+
     def prob_t_a_given_s(self, alignment_info):
         """
         Probability of target sentence and an alignment given the
         source sentence
         """
+        return IBMModel4.model4_prob_t_a_given_s(alignment_info, self)
+
+    @staticmethod # exposed for Model 5 to use
+    def model4_prob_t_a_given_s(alignment_info, ibm_model):
         probability = 1.0
         MIN_PROB = IBMModel.MIN_PROB
 
         def null_generation_term():
             # Binomial distribution: B(m - null_fertility, p1)
             value = 1.0
-            p1 = self.p1
+            p1 = ibm_model.p1
             p0 = 1 - p1
             null_fertility = alignment_info.fertility_of_i(0)
             m = len(alignment_info.trg_sentence) - 1
@@ -323,7 +344,7 @@ class IBMModel4(IBMModel):
             for i in range(1, len(src_sentence)):
                 fertility = alignment_info.fertility_of_i(i)
                 value *= (factorial(fertility) *
-                          self.fertility_table[fertility][src_sentence[i]])
+                          ibm_model.fertility_table[fertility][src_sentence[i]])
                 if value < MIN_PROB:
                     return MIN_PROB
             return value
@@ -332,7 +353,7 @@ class IBMModel4(IBMModel):
             t = alignment_info.trg_sentence[j]
             i = alignment_info.alignment[j]
             s = alignment_info.src_sentence[i]
-            return self.translation_table[t][s]
+            return ibm_model.translation_table[t][s]
 
         def distortion_term(j):
             t = alignment_info.trg_sentence[j]
@@ -346,16 +367,16 @@ class IBMModel4(IBMModel):
                 src_class = None
                 if previous_cept is not None:
                     previous_s = alignment_info.src_sentence[previous_cept]
-                    src_class = self.src_classes[previous_s]
-                trg_class = self.trg_classes[t]
+                    src_class = ibm_model.src_classes[previous_s]
+                trg_class = ibm_model.trg_classes[t]
                 dj = j - alignment_info.center_of_cept(previous_cept)
-                return self.head_distortion_table[dj][src_class][trg_class]
+                return ibm_model.head_distortion_table[dj][src_class][trg_class]
 
             # case 3: t is a subsequent word of a tablet
             previous_position = alignment_info.previous_in_tablet(j)
-            trg_class = self.trg_classes[t]
+            trg_class = ibm_model.trg_classes[t]
             dj = j - previous_position
-            return self.non_head_distortion_table[dj][trg_class]
+            return ibm_model.non_head_distortion_table[dj][trg_class]
         # end nested functions
 
         # Abort computation whenever probability falls below MIN_PROB at
@@ -378,23 +399,6 @@ class IBMModel4(IBMModel):
                 return MIN_PROB
 
         return probability
-
-    def maximize_distortion_probabilities(self, counts):
-        head_d_table = self.head_distortion_table
-        for dj, src_classes in counts.head_distortion.items():
-            for s_cls, trg_classes in src_classes.items():
-                for t_cls in trg_classes:
-                    estimate = (counts.head_distortion[dj][s_cls][t_cls] /
-                                counts.head_distortion_for_any_dj[s_cls][t_cls])
-                    head_d_table[dj][s_cls][t_cls] = max(estimate,
-                                                         IBMModel.MIN_PROB)
-
-        non_head_d_table = self.non_head_distortion_table
-        for dj, trg_classes in counts.non_head_distortion.items():
-            for t_cls in trg_classes:
-                estimate = (counts.non_head_distortion[dj][t_cls] /
-                            counts.non_head_distortion_for_any_dj[t_cls])
-                non_head_d_table[dj][t_cls] = max(estimate, IBMModel.MIN_PROB)
 
 
 class Model4Counts(Counts):
