@@ -8,8 +8,8 @@
 
 """
 Common methods and classes for all IBM models. See ``IBMModel1``,
-``IBMModel2``, ``IBMModel3``, and ``IBMModel4`` for specific
-implementations.
+``IBMModel2``, ``IBMModel3``, ``IBMModel4``, and ``IBMModel5``
+for specific implementations.
 
 The IBM models are a series of generative models that learn lexical
 translation probabilities, p(target language word|source language word),
