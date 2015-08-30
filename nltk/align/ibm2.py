@@ -116,7 +116,6 @@ class IBMModel2(IBMModel):
                 warnings.warn("Source sentence is too long (" + str(l) +
                               " words). Results may be less accurate.")
 
-
         self.train(sentence_aligned_corpus, iterations)
 
     def train(self, parallel_corpus, iterations):
@@ -134,14 +133,14 @@ class IBMModel2(IBMModel):
 
             for aligned_sentence in parallel_corpus:
                 src_sentence = [None] + aligned_sentence.mots
-                trg_sentence = aligned_sentence.words
+                trg_sentence = ['UNUSED'] + aligned_sentence.words # 1-indexed
                 l = len(aligned_sentence.mots)
-                m = len(trg_sentence)
+                m = len(aligned_sentence.words)
                 total_count = defaultdict(float)
 
                 # E step (a): Compute normalization factors to weigh counts
                 for j in range(1, m + 1):
-                    t = trg_sentence[j - 1]
+                    t = trg_sentence[j]
                     total_count[t] = 0
                     for i in range(0, l + 1):
                         s = src_sentence[i]
@@ -151,7 +150,7 @@ class IBMModel2(IBMModel):
 
                 # E step (b): Collect counts
                 for j in range(1, m + 1):
-                    t = trg_sentence[j - 1]
+                    t = trg_sentence[j]
                     for i in range(0, l + 1):
                         s = src_sentence[i]
                         count = (self.translation_table[t][s] *
@@ -179,6 +178,26 @@ class IBMModel2(IBMModel):
                                     alignment_count_for_any_i[j][l][m])
                         self.alignment_table[i][j][l][m] = max(estimate,
                                                               IBMModel.MIN_PROB)
+
+    def prob_t_a_given_s(self, alignment_info):
+        """
+        Probability of target sentence and an alignment given the
+        source sentence
+        """
+
+        prob = 1.0
+        l = len(alignment_info.src_sentence) - 1
+        m = len(alignment_info.trg_sentence) - 1
+
+        for j, i in enumerate(alignment_info.alignment):
+            if j == 0:
+                continue # skip the dummy zeroeth element
+            trg_word = alignment_info.trg_sentence[j]
+            src_word = alignment_info.src_sentence[i]
+            prob *= (self.translation_table[trg_word][src_word] *
+                     self.alignment_table[i][j][l][m])
+
+        return max(prob, IBMModel.MIN_PROB)
 
     def align(self, sentence_pair):
         """
@@ -223,5 +242,3 @@ class IBMModel2(IBMModel):
                 alignment.append((j, best_alignment))
 
         return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
-
-
