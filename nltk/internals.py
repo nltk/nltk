@@ -476,7 +476,11 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
                         yielded = True
                         yield path_to_file
                     # Check if the alternative is inside a 'file' directory
-                    path_to_file = os.path.join(env_dir, 'file', alternative)
+                    # path_to_file = os.path.join(env_dir, 'file', alternative)
+
+                    # Check if the alternative is inside a 'file' directory
+                    path_to_file = os.path.join(env_dir, 'bin', alternative)
+
                     if os.path.isfile(path_to_file):
                         if verbose:
                             print('[Found %s: %s]' % (filename, path_to_file))
