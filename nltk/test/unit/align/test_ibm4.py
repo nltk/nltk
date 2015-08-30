@@ -31,9 +31,11 @@ class TestIBMModel4(unittest.TestCase):
         #     2 *(number of words in longest target sentence - 1)
         expected_prob = 1.0 / (2 * (4 - 1))
 
-        # examine the boundary values for (displacement, s_class, t_class)
+        # examine the boundary values for (displacement, src_class, trg_class)
         self.assertEqual(model4.head_distortion_table[3][0][0], expected_prob)
         self.assertEqual(model4.head_distortion_table[-3][1][2], expected_prob)
+        self.assertEqual(model4.non_head_distortion_table[3][0], expected_prob)
+        self.assertEqual(model4.non_head_distortion_table[-3][2], expected_prob)
 
     def test_set_uniform_distortion_probabilities_of_non_domain_values(self):
         # arrange
@@ -49,11 +51,14 @@ class TestIBMModel4(unittest.TestCase):
         model4.set_uniform_distortion_probabilities(corpus)
 
         # assert
-        # examine combinations of (displacement, s_class, t_class) not in the
-        # training data domain
+        # examine displacement values that are not in the training data domain
         self.assertEqual(model4.head_distortion_table[4][0][0],
                          IBMModel.MIN_PROB)
-        self.assertEqual(model4.head_distortion_table[3][100][100],
+        self.assertEqual(model4.head_distortion_table[100][1][2],
+                         IBMModel.MIN_PROB)
+        self.assertEqual(model4.non_head_distortion_table[4][0],
+                         IBMModel.MIN_PROB)
+        self.assertEqual(model4.non_head_distortion_table[100][2],
                          IBMModel.MIN_PROB)
 
     def test_prob_t_a_given_s(self):

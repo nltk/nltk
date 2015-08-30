@@ -241,23 +241,15 @@ class IBMModel4(IBMModel):
             warnings.warn("A target sentence is too long (" + str(max_m) +
                           " words). Results may be less accurate.")
 
-        src_classes = IBMModel4.get_unique_word_classes(self.src_classes)
-        trg_classes = IBMModel4.get_unique_word_classes(self.trg_classes)
-
         for dj in range(1, max_m):
-            for t_cls in trg_classes:
-                self.non_head_distortion_table[dj][t_cls] = initial_prob
-                self.non_head_distortion_table[-dj][t_cls] = initial_prob
-                for s_cls in src_classes:
-                    self.head_distortion_table[dj][s_cls][t_cls] = initial_prob
-                    self.head_distortion_table[-dj][s_cls][t_cls] = initial_prob
-
-    @classmethod
-    def get_unique_word_classes(cls, word_classes_table):
-        word_classes = set()
-        for word_class in word_classes_table.values():
-            word_classes.add(word_class)
-        return word_classes
+            self.head_distortion_table[dj] = defaultdict(
+                lambda: defaultdict(lambda: initial_prob))
+            self.head_distortion_table[-dj] = defaultdict(
+                lambda: defaultdict(lambda: initial_prob))
+            self.non_head_distortion_table[dj] = defaultdict(
+                lambda: initial_prob)
+            self.non_head_distortion_table[-dj] = defaultdict(
+                lambda: initial_prob)
 
     @classmethod
     def longest_target_sentence_length(cls, sentence_aligned_corpus):
