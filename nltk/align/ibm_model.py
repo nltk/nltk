@@ -434,7 +434,7 @@ class AlignmentInfo(object):
             return 0
 
         average_position = float(sum(self.cepts[i])) / len(self.cepts[i])
-        return ceil(average_position)
+        return int(ceil(average_position))
 
     def previous_cept(self, j):
         """
