@@ -124,7 +124,3 @@ class TestIBMModel4(unittest.TestCase):
         expected_probability = (null_generation * fertility *
                                 lexical_translation * distortion)
         self.assertEqual(round(probability, 4), round(expected_probability, 4))
-
-
-if __name__ == '__main__':
-    unittest.main()

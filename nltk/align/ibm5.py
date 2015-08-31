@@ -620,9 +620,3 @@ class Slots(object):
 
     def __len__(self):
         return len(self._slots) - 1 # exclude dummy zeroeth element
-
-
-# run doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

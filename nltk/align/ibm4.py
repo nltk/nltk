@@ -442,9 +442,3 @@ class Model4Counts(Counts):
             dj = j - previous_j
             self.non_head_distortion[dj][trg_class] += count
             self.non_head_distortion_for_any_dj[trg_class] += count
-
-
-# run doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()

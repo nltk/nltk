@@ -164,7 +164,3 @@ class TestIBMModel5(unittest.TestCase):
 
         # restore static method
         IBMModel4.model4_prob_t_a_given_s = original_prob_function
-
-
-if __name__ == '__main__':
-    unittest.main()

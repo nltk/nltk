@@ -265,7 +265,3 @@ class TestIBMModel(unittest.TestCase):
 
         # assert
         self.assertEqual(len(samples), 61)
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -376,9 +376,3 @@ class IBMModel3(IBMModel):
                 alignment.append((j, best_alignment))
 
         return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
-
-
-# run doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
