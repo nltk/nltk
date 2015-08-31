@@ -42,7 +42,6 @@ from bisect import insort_left
 from collections import defaultdict
 from copy import deepcopy
 from math import ceil
-from nltk.align import Alignment
 
 
 def longest_target_sentence_length(sentence_aligned_corpus):
@@ -146,7 +145,8 @@ class IBMModel(object):
         :type sentence_pair: AlignedSent
 
         :return: A set of best alignments represented by their ``AlignmentInfo``
-        :rtype: set(AlignmentInfo)
+            and the best alignment of the set for convenience
+        :rtype: set(AlignmentInfo), AlignmentInfo
         """
         sampled_alignments = set()
         l = len(sentence_pair.mots)
@@ -154,8 +154,9 @@ class IBMModel(object):
 
         # Start from the best model 2 alignment
         initial_alignment = self.best_model2_alignment(sentence_pair)
-        best_alignment = self.hillclimb(initial_alignment)
-        sampled_alignments.update(self.neighboring(best_alignment))
+        potential_alignment = self.hillclimb(initial_alignment)
+        sampled_alignments.update(self.neighboring(potential_alignment))
+        best_alignment = potential_alignment
 
         # Start from other model 2 alignments,
         # with the constraint that j is aligned (pegged) to i
@@ -163,11 +164,13 @@ class IBMModel(object):
             for i in range(0, l + 1):
                 initial_alignment = self.best_model2_alignment(
                     sentence_pair, j, i)
-                best_alignment = self.hillclimb(initial_alignment, j)
-                neighbors = self.neighboring(best_alignment, j)
+                potential_alignment = self.hillclimb(initial_alignment, j)
+                neighbors = self.neighboring(potential_alignment, j)
                 sampled_alignments.update(neighbors)
+                if potential_alignment.score > best_alignment.score:
+                    best_alignment = potential_alignment
 
-        return sampled_alignments
+        return sampled_alignments, best_alignment
 
     def best_model2_alignment(self, sentence_pair, j_pegged=None, i_pegged=0):
         """
@@ -468,6 +471,20 @@ class AlignmentInfo(object):
         if tablet_position == 0:
             return None
         return self.cepts[i][tablet_position - 1]
+
+    def zero_indexed_alignment(self):
+        """
+        :return: Zero-indexed alignment, suitable for use in external
+            ``nltk.align`` modules like ``nltk.align.Alignment``
+        :rtype: list(tuple)
+        """
+        zero_indexed_alignment = []
+        for j in range(1, len(self.trg_sentence)):
+            i = self.alignment[j] - 1
+            if i < 0:
+                i = None  # alignment to NULL token
+            zero_indexed_alignment.append((j - 1, i))
+        return zero_indexed_alignment
 
     def __eq__(self, other):
         return self.alignment == other.alignment

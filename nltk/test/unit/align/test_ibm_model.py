@@ -264,7 +264,7 @@ class TestIBMModel(unittest.TestCase):
         ibm_model.prob_t_a_given_s = lambda x: 0.001
 
         # act
-        samples = ibm_model.sample(sentence_pair)
+        samples, best_alignment = ibm_model.sample(sentence_pair)
 
         # assert
         self.assertEqual(len(samples), 61)

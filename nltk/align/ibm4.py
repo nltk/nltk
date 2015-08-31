@@ -104,6 +104,7 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 from __future__ import division
 from collections import defaultdict
 from nltk.align import AlignedSent
+from nltk.align import Alignment
 from nltk.align.ibm_model import Counts
 from nltk.align.ibm_model import IBMModel
 from nltk.align.ibm_model import longest_target_sentence_length
@@ -121,6 +122,7 @@ class IBMModel4(IBMModel):
     >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
     >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
     >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['ein', 'haus', 'ist', 'klein'], ['a', 'house', 'is', 'small']))
     >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
     >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
     >>> bitext.append(AlignedSent(['ein', 'buch'], ['a', 'book']))
@@ -136,7 +138,7 @@ class IBMModel4(IBMModel):
     >>> print('{0:.3f}'.format(ibm4.translation_table['das']['book']))
     0.000
     >>> print('{0:.3f}'.format(ibm4.translation_table['ja'][None]))
-    0.971
+    1.000
 
     >>> print('{0:.3f}'.format(ibm4.head_distortion_table[1][0][1]))
     1.000
@@ -151,7 +153,15 @@ class IBMModel4(IBMModel):
     1.000
 
     >>> print('{0:.3f}'.format(ibm4.p1))
-    0.000
+    0.033
+
+    >>> test_sentence = bitext[2]
+    >>> test_sentence.words
+    ['das', 'buch', 'ist', 'ja', 'klein']
+    >>> test_sentence.mots
+    ['the', 'book', 'is', 'small']
+    >>> test_sentence.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (3, None), (4, 3)])
 
     """
 
@@ -277,7 +287,10 @@ class IBMModel4(IBMModel):
             m = len(aligned_sentence.words)
 
             # Sample the alignment space
-            sampled_alignments = self.sample(aligned_sentence)
+            sampled_alignments, best_alignment = self.sample(aligned_sentence)
+            # Record the most probable alignment
+            aligned_sentence.alignment = Alignment(
+                best_alignment.zero_indexed_alignment())
 
             # E step (a): Compute normalization factors to weigh counts
             total_count = self.prob_of_alignments(sampled_alignments)
