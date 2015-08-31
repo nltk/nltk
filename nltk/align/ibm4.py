@@ -117,23 +117,41 @@ class IBMModel4(IBMModel):
     Translation model that reorders output words based on their type and
     their distance from other related words in the output sentence
 
-    >>> align_sents = []
-    >>> align_sents.append(AlignedSent(['klein', 'ist', 'das', 'Haus'], ['the', 'house', 'is', 'small']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus'], ['the', 'house']))
-    >>> align_sents.append(AlignedSent(['das', 'Buch'], ['the', 'book']))
-    >>> align_sents.append(AlignedSent(['ein', 'Buch'], ['a', 'book']))
-    >>> src_classes = {'a': 0, 'big': 1, 'book': 2, 'house': 2, 'is': 3, 'small': 1, 'the': 0 }
-    >>> trg_classes = {'das': 0, 'Buch': 1, 'ein': 0, 'groß': 2, 'Haus': 1, 'ist': 3, 'ja': 4, 'klein': 2 }
+    >>> bitext = []
+    >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
+    >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
+    >>> bitext.append(AlignedSent(['ein', 'buch'], ['a', 'book']))
+    >>> bitext.append(AlignedSent(['ich', 'fasse', 'das', 'buch', 'zusammen'], ['i', 'summarize', 'the', 'book']))
+    >>> bitext.append(AlignedSent(['fasse', 'zusammen'], ['summarize']))
+    >>> src_classes = {'the': 0, 'a': 0, 'small': 1, 'big': 1, 'house': 2, 'book': 2, 'is': 3, 'i': 4, 'summarize': 5 }
+    >>> trg_classes = {'das': 0, 'ein': 0, 'haus': 1, 'buch': 1, 'klein': 2, 'groß': 2, 'ist': 3, 'ja': 4, 'ich': 5, 'fasse': 6, 'zusammen': 6 }
 
-    >>> ibm4 = IBMModel4(align_sents, 5, src_classes, trg_classes)
+    >>> ibm4 = IBMModel4(bitext, 5, src_classes, trg_classes)
 
-    >>> print('{0:.1f}'.format(ibm4.translation_table['Buch']['book']))
-    1.0
-    >>> print('{0:.1f}'.format(ibm4.translation_table['das']['book']))
-    0.0
-    >>> print('{0:.1f}'.format(ibm4.translation_table[None]['book']))
-    0.0
+    >>> print('{0:.3f}'.format(ibm4.translation_table['buch']['book']))
+    1.000
+    >>> print('{0:.3f}'.format(ibm4.translation_table['das']['book']))
+    0.000
+    >>> print('{0:.3f}'.format(ibm4.translation_table['ja'][None]))
+    0.971
+
+    >>> print('{0:.3f}'.format(ibm4.head_distortion_table[1][0][1]))
+    1.000
+    >>> print('{0:.3f}'.format(ibm4.head_distortion_table[2][0][1]))
+    0.000
+    >>> print('{0:.3f}'.format(ibm4.non_head_distortion_table[3][6]))
+    0.500
+
+    >>> print('{0:.3f}'.format(ibm4.fertility_table[2]['summarize']))
+    1.000
+    >>> print('{0:.3f}'.format(ibm4.fertility_table[1]['book']))
+    1.000
+
+    >>> print('{0:.3f}'.format(ibm4.p1))
+    0.000
 
     """
 

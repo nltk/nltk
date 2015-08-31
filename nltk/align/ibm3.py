@@ -87,29 +87,49 @@ class IBMModel3(IBMModel):
     Translation model that considers how a word can be aligned to
     multiple words in another language
 
-    >>> align_sents = []
-    >>> align_sents.append(AlignedSent(['klein', 'ist', 'das', 'Haus'], ['the', 'house', 'is', 'small']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus'], ['the', 'house']))
-    >>> align_sents.append(AlignedSent(['das', 'Buch'], ['the', 'book']))
-    >>> align_sents.append(AlignedSent(['ein', 'Buch'], ['a', 'book']))
+    >>> bitext = []
+    >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
+    >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
+    >>> bitext.append(AlignedSent(['ein', 'buch'], ['a', 'book']))
+    >>> bitext.append(AlignedSent(['ich', 'fasse', 'das', 'buch', 'zusammen'], ['i', 'summarize', 'the', 'book']))
+    >>> bitext.append(AlignedSent(['fasse', 'zusammen'], ['summarize']))
 
-    >>> ibm3 = IBMModel3(align_sents, 5)
+    >>> ibm3 = IBMModel3(bitext, 5)
 
-    >>> print('{0:.1f}'.format(ibm3.translation_table['Buch']['book']))
-    1.0
-    >>> print('{0:.1f}'.format(ibm3.translation_table['das']['book']))
-    0.0
-    >>> print('{0:.1f}'.format(ibm3.translation_table[None]['book']))
-    0.0
+    >>> print('{0:.3f}'.format(ibm3.translation_table['buch']['book']))
+    1.000
+    >>> print('{0:.3f}'.format(ibm3.translation_table['das']['book']))
+    0.000
+    >>> print('{0:.3f}'.format(ibm3.translation_table['ja'][None]))
+    1.000
 
-    >>> aligned_sent = ibm3.align(align_sents[0])
-    >>> aligned_sent.words
-    ['klein', 'ist', 'das', 'Haus']
-    >>> aligned_sent.mots
-    ['the', 'house', 'is', 'small']
-    >>> aligned_sent.alignment
-    Alignment([(0, 3), (1, 2), (2, 0), (3, 1)])
+    >>> print('{0:.3f}'.format(ibm3.distortion_table[1][1][2][2]))
+    1.000
+    >>> print('{0:.3f}'.format(ibm3.distortion_table[1][2][2][2]))
+    0.000
+    >>> print('{0:.3f}'.format(ibm3.distortion_table[2][2][4][5]))
+    0.750
+
+    >>> print('{0:.3f}'.format(ibm3.fertility_table[2]['summarize']))
+    1.000
+    >>> print('{0:.3f}'.format(ibm3.fertility_table[1]['book']))
+    1.000
+
+    >>> print('{0:.3f}'.format(ibm3.p1))
+    0.012
+
+    >>> test_sentence = bitext[2]
+    >>> test_sentence.words
+    ['das', 'buch', 'ist', 'ja', 'klein']
+    >>> test_sentence.mots
+    ['the', 'book', 'is', 'small']
+
+    >>> aligned_sentence = ibm3.align(test_sentence)
+    >>> aligned_sentence.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (4, 3)])
 
     """
 
