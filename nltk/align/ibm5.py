@@ -146,6 +146,10 @@ class IBMModel5(IBMModel):
     0.0
 
     """
+    MIN_SCORE_FACTOR = 0.2
+    """
+    Alignments with scores below this factor are pruned during sampling
+    """
 
     def __init__(self, sentence_aligned_corpus, iterations,
                  source_word_classes, target_word_classes,
@@ -344,8 +348,24 @@ class IBMModel5(IBMModel):
         return self.prune(sampled_alignments)
 
     def prune(self, alignment_infos):
-        # TODO implement me
-        return alignment_infos
+        """
+        Removes alignments from ``alignment_infos`` that have
+        substantially lower Model 4 scores than the best alignment
+
+        :return: Pruned alignments
+        :rtype: set(AlignmentInfo)
+        """
+        alignments = []
+        best_score = 0
+
+        for alignment_info in alignment_infos:
+            score = IBMModel4.model4_prob_t_a_given_s(alignment_info, self)
+            best_score = max(score, best_score)
+            alignments.append((alignment_info, score))
+
+        threshold = IBMModel5.MIN_SCORE_FACTOR * best_score
+        alignments = [a[0] for a in alignments if a[1] > threshold]
+        return set(alignments)
 
     def hillclimb(self, alignment_info, j_pegged = None):
         """
@@ -506,8 +526,9 @@ class IBMModel5(IBMModel):
         for dv, max_vs in counts.non_head_vacancy.items():
             for max_v, trg_classes in max_vs.items():
                 for t_cls in trg_classes:
-                    estimate = (counts.non_head_vacancy[dv][max_v][t_cls] /
-                                counts.non_head_vacancy_for_any_dv[max_v][t_cls])
+                    estimate = (
+                        counts.non_head_vacancy[dv][max_v][t_cls] /
+                        counts.non_head_vacancy_for_any_dv[max_v][t_cls])
                     non_head_vacancy_table[dv][max_v][t_cls] = max(estimate,
                                                                    MIN_PROB)
 

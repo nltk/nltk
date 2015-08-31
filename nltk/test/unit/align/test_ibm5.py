@@ -9,6 +9,7 @@ from collections import defaultdict
 from nltk.align import AlignedSent
 from nltk.align.ibm_model import AlignmentInfo
 from nltk.align.ibm_model import IBMModel
+from nltk.align.ibm4 import IBMModel4
 from nltk.align.ibm5 import IBMModel5
 
 
@@ -129,6 +130,40 @@ class TestIBMModel5(unittest.TestCase):
         expected_probability = (null_generation * fertility *
                                 lexical_translation * vacancy)
         self.assertEqual(round(probability, 4), round(expected_probability, 4))
+
+    def test_prune(self):
+        # arrange
+        alignment_infos = [
+            AlignmentInfo((1, 1), None, None, None),
+            AlignmentInfo((1, 2), None, None, None),
+            AlignmentInfo((2, 1), None, None, None),
+            AlignmentInfo((2, 2), None, None, None),
+            AlignmentInfo((0, 0), None, None, None)
+        ]
+        min_factor = IBMModel5.MIN_SCORE_FACTOR
+        best_score = 0.9
+        scores = {
+            (1, 1): min(min_factor * 1.5, 1) * best_score,  # above threshold
+            (1, 2): best_score,
+            (2, 1): min_factor * best_score,        # at threshold
+            (2, 2): min_factor * best_score * 0.5,  # low score
+            (0, 0): min(min_factor * 1.1, 1) * 1.2  # above threshold
+        }
+        corpus = [AlignedSent(['a'],['b'])]
+        original_prob_function = IBMModel4.model4_prob_t_a_given_s
+        # mock static method
+        IBMModel4.model4_prob_t_a_given_s = staticmethod(
+            lambda a, model: scores[a.alignment])
+        model5 = IBMModel5(corpus, 0, None, None)
+
+        # act
+        pruned_alignments = model5.prune(alignment_infos)
+
+        # assert
+        self.assertEqual(len(pruned_alignments), 3)
+
+        # restore static method
+        IBMModel4.model4_prob_t_a_given_s = original_prob_function
 
 
 if __name__ == '__main__':
