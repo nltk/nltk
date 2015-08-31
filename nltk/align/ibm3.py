@@ -127,10 +127,6 @@ class IBMModel3(IBMModel):
     >>> test_sentence.mots
     ['the', 'book', 'is', 'small']
 
-    >>> aligned_sentence = ibm3.align(test_sentence)
-    >>> aligned_sentence.alignment
-    Alignment([(0, 0), (1, 1), (2, 2), (4, 3)])
-
     """
 
     def __init__(self, sentence_aligned_corpus, iterations):
@@ -347,49 +343,3 @@ class IBMModel3(IBMModel):
                 return MIN_PROB
 
         return probability
-
-    def align(self, sentence_pair):
-        """
-        Determines the best word alignment for one sentence pair from
-        the corpus that the model was trained on.
-
-        The original sentence pair is not modified. Results are
-        undefined if ``sentence_pair`` is not in the training set.
-
-        Note that the algorithm used is not strictly Model 3, because
-        fertilities and NULL insertion probabilities are ignored.
-
-        :param sentence_pair: A sentence in the source language and its
-            counterpart sentence in the target language
-        :type sentence_pair: AlignedSent
-
-        :return: ``AlignedSent`` filled in with the best word alignment
-        :rtype: AlignedSent
-        """
-        if self.translation_table is None or self.distortion_table is None:
-            raise ValueError("The model has not been trained.")
-
-        alignment = []
-
-        l = len(sentence_pair.mots)
-        m = len(sentence_pair.words)
-
-        for j, trg_word in enumerate(sentence_pair.words):
-            # Initialize trg_word to align with the NULL token
-            best_prob = (self.translation_table[trg_word][None] *
-                         self.distortion_table[j + 1][0][l][m])
-            best_prob = max(best_prob, IBMModel.MIN_PROB)
-            best_alignment = None
-            for i, src_word in enumerate(sentence_pair.mots):
-                align_prob = (self.translation_table[trg_word][src_word] *
-                              self.distortion_table[j + 1][i + 1][l][m])
-                if align_prob >= best_prob:
-                    best_prob = align_prob
-                    best_alignment = i
-
-            # If trg_word is not aligned to the NULL token,
-            # add it to the viterbi_alignment.
-            if best_alignment is not None:
-                alignment.append((j, best_alignment))
-
-        return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
