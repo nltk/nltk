@@ -164,7 +164,7 @@ class IBMModel5(IBMModel):
 
     def __init__(self, sentence_aligned_corpus, iterations,
                  source_word_classes, target_word_classes,
-                 probability_tables = None):
+                 probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, vacancy models, a fertility model, and a
@@ -287,7 +287,7 @@ class IBMModel5(IBMModel):
 
         for aligned_sentence in parallel_corpus:
             src_sentence = [None] + aligned_sentence.mots
-            trg_sentence = ['UNUSED'] + aligned_sentence.words # 1-indexed
+            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
 
@@ -378,7 +378,7 @@ class IBMModel5(IBMModel):
         alignments = [a[0] for a in alignments if a[1] > threshold]
         return set(alignments)
 
-    def hillclimb(self, alignment_info, j_pegged = None):
+    def hillclimb(self, alignment_info, j_pegged=None):
         """
         Starting from the alignment in ``alignment_info``, look at
         neighboring alignments iteratively for the best one, according
@@ -398,7 +398,7 @@ class IBMModel5(IBMModel):
         :return: The best alignment found from hill climbing
         :rtype: AlignmentInfo
         """
-        alignment = alignment_info # alias with shorter name
+        alignment = alignment_info  # alias with shorter name
         max_probability = IBMModel4.model4_prob_t_a_given_s(alignment, self)
 
         while True:
@@ -477,7 +477,7 @@ class IBMModel5(IBMModel):
             max_v = total_vacancies - tablet_length + 1
             trg_class = self.trg_classes[alignment_info.trg_sentence[j]]
             value *= self.head_vacancy_table[dv][max_v][trg_class]
-            slots.occupy(j) # mark position as occupied
+            slots.occupy(j)  # mark position as occupied
             total_vacancies -= 1
             if value < MIN_PROB:
                 return MIN_PROB
@@ -492,7 +492,7 @@ class IBMModel5(IBMModel):
                          previous_vacancies)
                 trg_class = self.trg_classes[alignment_info.trg_sentence[j]]
                 value *= self.non_head_vacancy_table[dv][max_v][trg_class]
-                slots.occupy(j) # mark position as occupied
+                slots.occupy(j)  # mark position as occupied
                 total_vacancies -= 1
                 if value < MIN_PROB:
                     return MIN_PROB
@@ -576,7 +576,7 @@ class Model5Counts(Counts):
 
         # case 1: NULL aligned words
         if tablet_length == 0:
-            return # ignore zero fertility words
+            return  # ignore zero fertility words
 
         # case 2: head word
         j = tablet[0]
@@ -587,7 +587,7 @@ class Model5Counts(Counts):
         trg_class = trg_classes[alignment_info.trg_sentence[j]]
         self.head_vacancy[dv][max_v][trg_class] += count
         self.head_vacancy_for_any_dv[max_v][trg_class] += count
-        slots.occupy(j) # mark position as occupied
+        slots.occupy(j)  # mark position as occupied
         total_vacancies -= 1
 
         # case 3: non-head words
@@ -601,7 +601,7 @@ class Model5Counts(Counts):
             trg_class = trg_classes[alignment_info.trg_sentence[j]]
             self.non_head_vacancy[dv][max_v][trg_class] += count
             self.non_head_vacancy_for_any_dv[max_v][trg_class] += count
-            slots.occupy(j) # mark position as occupied
+            slots.occupy(j)  # mark position as occupied
             total_vacancies -= 1
 
 
@@ -611,7 +611,7 @@ class Slots(object):
     which slot (position) is occupied.
     """
     def __init__(self, target_sentence_length):
-        self._slots = [False] * (target_sentence_length + 1) # 1-indexed
+        self._slots = [False] * (target_sentence_length + 1)  # 1-indexed
 
     def occupy(self, position):
         """
@@ -630,4 +630,4 @@ class Slots(object):
         return vacancies
 
     def __len__(self):
-        return len(self._slots) - 1 # exclude dummy zeroeth element
+        return len(self._slots) - 1  # exclude dummy zeroeth element

@@ -110,7 +110,6 @@ class IBMModel1(IBMModel):
         :param iterations: Number of iterations to run training algorithm
         :type iterations: int
         """
-
         super(IBMModel1, self).__init__(sentence_aligned_corpus)
 
         # seed with a uniform distribution
@@ -161,12 +160,11 @@ class IBMModel1(IBMModel):
         Probability of target sentence and an alignment given the
         source sentence
         """
-
         prob = 1.0
 
         for j, i in enumerate(alignment_info.alignment):
             if j == 0:
-                continue # skip the dummy zeroeth element
+                continue  # skip the dummy zeroeth element
             trg_word = alignment_info.trg_sentence[j]
             src_word = alignment_info.src_sentence[i]
             prob *= self.translation_table[trg_word][src_word]
@@ -188,7 +186,6 @@ class IBMModel1(IBMModel):
         :return: ``AlignedSent`` filled in with the best word alignment
         :rtype: AlignedSent
         """
-
         if self.translation_table is None:
             raise ValueError("The model has not been trained.")
 
@@ -201,7 +198,7 @@ class IBMModel1(IBMModel):
             best_alignment = None
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = self.translation_table[trg_word][src_word]
-                if align_prob >= best_prob: # prefer newer word in case of tie
+                if align_prob >= best_prob:  # prefer newer word in case of tie
                     best_prob = align_prob
                     best_alignment = i
 

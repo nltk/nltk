@@ -80,14 +80,14 @@ class TestIBMModel5(unittest.TestCase):
 
         head_vacancy_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(float)))
-        head_vacancy_table[1 - 0][6][3] = 0.97 # ich -> i
-        head_vacancy_table[3 - 0][5][4] = 0.97 # esse -> eat
-        head_vacancy_table[1 - 2][4][4] = 0.97 # gern -> love
-        head_vacancy_table[2 - 0][2][1] = 0.97 # räucherschinken -> smoked
+        head_vacancy_table[1 - 0][6][3] = 0.97  # ich -> i
+        head_vacancy_table[3 - 0][5][4] = 0.97  # esse -> eat
+        head_vacancy_table[1 - 2][4][4] = 0.97  # gern -> love
+        head_vacancy_table[2 - 0][2][1] = 0.97  # räucherschinken -> smoked
 
         non_head_vacancy_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(float)))
-        non_head_vacancy_table[1 - 0][1][0] = 0.96 # räucherschinken -> ham
+        non_head_vacancy_table[1 - 0][1][0] = 0.96  # räucherschinken -> ham
 
         translation_table = defaultdict(lambda: defaultdict(float))
         translation_table['i']['ich'] = 0.98
@@ -149,7 +149,7 @@ class TestIBMModel5(unittest.TestCase):
             (2, 2): min_factor * best_score * 0.5,  # low score
             (0, 0): min(min_factor * 1.1, 1) * 1.2  # above threshold
         }
-        corpus = [AlignedSent(['a'],['b'])]
+        corpus = [AlignedSent(['a'], ['b'])]
         original_prob_function = IBMModel4.model4_prob_t_a_given_s
         # mock static method
         IBMModel4.model4_prob_t_a_given_s = staticmethod(

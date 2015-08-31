@@ -157,7 +157,7 @@ class IBMModel4(IBMModel):
 
     def __init__(self, sentence_aligned_corpus, iterations,
                  source_word_classes, target_word_classes,
-                 probability_tables = None):
+                 probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, distortion models, a fertility model, and a
@@ -275,7 +275,7 @@ class IBMModel4(IBMModel):
 
         for aligned_sentence in parallel_corpus:
             src_sentence = [None] + aligned_sentence.mots
-            trg_sentence = ['UNUSED'] + aligned_sentence.words # 1-indexed
+            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
             m = len(aligned_sentence.words)
 
             # Sample the alignment space
@@ -335,7 +335,7 @@ class IBMModel4(IBMModel):
         """
         return IBMModel4.model4_prob_t_a_given_s(alignment_info, self)
 
-    @staticmethod # exposed for Model 5 to use
+    @staticmethod  # exposed for Model 5 to use
     def model4_prob_t_a_given_s(alignment_info, ibm_model):
         probability = 1.0
         MIN_PROB = IBMModel.MIN_PROB

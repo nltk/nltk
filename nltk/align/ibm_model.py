@@ -68,7 +68,7 @@ class IBMModel(object):
     # incorrect, since it may create probabilities that sum to more
     # than 1. In practice, the contribution of probabilities with MIN_PROB
     # is tiny enough that the value of MIN_PROB can be treated as zero.
-    MIN_PROB = 1.0e-12 # GIZA++ is more liberal and uses 1.0e-7
+    MIN_PROB = 1.0e-12  # GIZA++ is more liberal and uses 1.0e-7
 
     def __init__(self, sentence_aligned_corpus):
         self.init_vocab(sentence_aligned_corpus)
@@ -153,7 +153,7 @@ class IBMModel(object):
         """
         sampled_alignments = set()
 
-        l = len(src_sentence) - 1 # exclude NULL
+        l = len(src_sentence) - 1  # exclude NULL
         m = len(trg_sentence) - 1
 
         # Start from the best model 2 alignment
@@ -175,7 +175,7 @@ class IBMModel(object):
         return sampled_alignments
 
     def best_model2_alignment(self, src_sentence, trg_sentence,
-                              j_pegged = None, i_pegged = 0):
+                              j_pegged=None, i_pegged=0):
         """
         Finds the best alignment according to IBM Model 2
 
@@ -198,11 +198,11 @@ class IBMModel(object):
         :param i_pegged: Alignment point to j_pegged
         :type i_pegged: int
         """
-        l = len(src_sentence) - 1 # exclude NULL
+        l = len(src_sentence) - 1  # exclude NULL
         m = len(trg_sentence) - 1
 
-        alignment = [0] * (m + 1) # Initialize all alignments to NULL
-        cepts = [[] for i in range((l + 1))] # Initialize all cepts to empty list
+        alignment = [0] * (m + 1)  # init all alignments to NULL
+        cepts = [[] for i in range((l + 1))]  # init all cepts to empty list
 
         for j in range(1, m + 1):
             if j == j_pegged:
@@ -228,7 +228,7 @@ class IBMModel(object):
         return AlignmentInfo(tuple(alignment), tuple(src_sentence),
                              tuple(trg_sentence), cepts)
 
-    def hillclimb(self, alignment_info, j_pegged = None):
+    def hillclimb(self, alignment_info, j_pegged=None):
         """
         Starting from the alignment in ``alignment_info``, look at
         neighboring alignments iteratively for the best one
@@ -244,7 +244,7 @@ class IBMModel(object):
         :return: The best alignment found from hill climbing
         :rtype: AlignmentInfo
         """
-        alignment = alignment_info # alias with shorter name
+        alignment = alignment_info  # alias with shorter name
         max_probability = self.prob_t_a_given_s(alignment)
 
         while True:
@@ -262,7 +262,7 @@ class IBMModel(object):
 
         return alignment
 
-    def neighboring(self, alignment_info, j_pegged = None):
+    def neighboring(self, alignment_info, j_pegged=None):
         """
         Determine the neighbors of ``alignment_info``, obtained by
         moving or swapping one alignment point
@@ -277,7 +277,7 @@ class IBMModel(object):
         """
         neighbors = set()
 
-        l = len(alignment_info.src_sentence) - 1 # exclude NULL
+        l = len(alignment_info.src_sentence) - 1  # exclude NULL
         m = len(alignment_info.trg_sentence) - 1
         original_alignment = alignment_info.alignment
         original_cepts = alignment_info.cepts

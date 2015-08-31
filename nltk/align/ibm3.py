@@ -151,7 +151,6 @@ class IBMModel3(IBMModel):
         :param iterations: Number of iterations to run training algorithm
         :type iterations: int
         """
-
         super(IBMModel3, self).__init__(sentence_aligned_corpus)
 
         self.distortion_table = defaultdict(
@@ -208,7 +207,7 @@ class IBMModel3(IBMModel):
 
             for aligned_sentence in parallel_corpus:
                 src_sentence = [None] + aligned_sentence.mots
-                trg_sentence = ['UNUSED'] + aligned_sentence.words # 1-indexed
+                trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
                 l = len(aligned_sentence.mots)
                 m = len(aligned_sentence.words)
 
@@ -305,10 +304,9 @@ class IBMModel3(IBMModel):
         Probability of target sentence and an alignment given the
         source sentence
         """
-
         src_sentence = alignment_info.src_sentence
         trg_sentence = alignment_info.trg_sentence
-        l = len(src_sentence) - 1 # exclude NULL
+        l = len(src_sentence) - 1  # exclude NULL
         m = len(trg_sentence) - 1
         p1 = self.p1
         p0 = 1 - p1
@@ -368,7 +366,6 @@ class IBMModel3(IBMModel):
         :return: ``AlignedSent`` filled in with the best word alignment
         :rtype: AlignedSent
         """
-
         if self.translation_table is None or self.distortion_table is None:
             raise ValueError("The model has not been trained.")
 

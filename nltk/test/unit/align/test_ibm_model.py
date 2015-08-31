@@ -17,7 +17,8 @@ class TestIBMModel(unittest.TestCase):
 
     def test_vocabularies_are_initialized(self):
         parallel_corpora = [
-            AlignedSent(['one', 'two', 'three', 'four'], ['un', 'deux', 'trois']),
+            AlignedSent(['one', 'two', 'three', 'four'],
+                        ['un', 'deux', 'trois']),
             AlignedSent(['five', 'one', 'six'], ['quatre', 'cinq', 'six']),
             AlignedSent([], ['sept'])
         ]
@@ -30,7 +31,7 @@ class TestIBMModel(unittest.TestCase):
         parallel_corpora = []
 
         ibm_model = IBMModel(parallel_corpora)
-        self.assertEqual(len(ibm_model.src_vocab), 1) # addition of NULL token
+        self.assertEqual(len(ibm_model.src_vocab), 1)  # addition of NULL token
         self.assertEqual(len(ibm_model.trg_vocab), 0)
 
     def test_best_model2_alignment(self):
@@ -58,7 +59,7 @@ class TestIBMModel(unittest.TestCase):
         a_info = ibm_model.best_model2_alignment(src_sentence, trg_sentence)
 
         # assert
-        self.assertEqual(a_info.alignment[1:], (1, 2, 4)) # 0th element unused
+        self.assertEqual(a_info.alignment[1:], (1, 2, 4))  # 0th element unused
         self.assertEqual(a_info.cepts, [[], [1], [2], [], [3]])
 
     def test_best_model2_alignment_does_not_change_pegged_alignment(self):
