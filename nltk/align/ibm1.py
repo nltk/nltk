@@ -202,9 +202,6 @@ class IBMModel1(IBMModel):
                     best_prob = align_prob
                     best_alignment_point = i
 
-            # If trg_word is not aligned to the NULL token,
-            # add it to the best_alignment.
-            if best_alignment_point is not None:
-                best_alignment.append((j, best_alignment_point))
+            best_alignment.append((j, best_alignment_point))
 
         sentence_pair.alignment = Alignment(best_alignment)
