@@ -367,14 +367,15 @@ class IBMModel5(IBMModel):
         :return: The best alignment found from hill climbing
         :rtype: AlignmentInfo
         """
-        # TODO use Model 4 scoring instead of Model 5
         alignment = alignment_info # alias with shorter name
         while True:
             old_alignment = alignment
 
             for neighbor_alignment in self.neighboring(alignment, j_pegged):
-                neighbor_probability = self.prob_t_a_given_s(neighbor_alignment)
-                current_probability = self.prob_t_a_given_s(alignment)
+                neighbor_probability = IBMModel4.model4_prob_t_a_given_s(
+                    neighbor_alignment, self)
+                current_probability = IBMModel4.model4_prob_t_a_given_s(
+                    alignment, self)
 
                 if neighbor_probability > current_probability:
                     alignment = neighbor_alignment
