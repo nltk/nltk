@@ -49,6 +49,7 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 from __future__ import division
 from collections import defaultdict
 from nltk.align import AlignedSent
+from nltk.align import Alignment
 from nltk.align.ibm_model import IBMModel
 from nltk.align.ibm1 import IBMModel1
 import warnings
@@ -89,9 +90,7 @@ class IBMModel2(IBMModel):
     ['das', 'buch', 'ist', 'ja', 'klein']
     >>> test_sentence.mots
     ['the', 'book', 'is', 'small']
-
-    >>> aligned_sentence = ibm2.align(test_sentence)
-    >>> aligned_sentence.alignment
+    >>> test_sentence.alignment
     Alignment([(0, 0), (1, 1), (2, 2), (3, 2), (4, 3)])
 
     """
@@ -135,6 +134,7 @@ class IBMModel2(IBMModel):
                               " words). Results may be less accurate.")
 
         self.train(sentence_aligned_corpus, iterations)
+        self.__align_all(sentence_aligned_corpus)
 
     def train(self, parallel_corpus, iterations):
         for i in range(0, iterations):
@@ -216,25 +216,25 @@ class IBMModel2(IBMModel):
 
         return max(prob, IBMModel.MIN_PROB)
 
-    def align(self, sentence_pair):
+    def __align_all(self, parallel_corpus):
+        for sentence_pair in parallel_corpus:
+            self.__align(sentence_pair)
+
+    def __align(self, sentence_pair):
         """
         Determines the best word alignment for one sentence pair from
         the corpus that the model was trained on.
 
-        The original sentence pair is not modified. Results are
-        undefined if ``sentence_pair`` is not in the training set.
+        The best alignment will be set in ``sentence_pair`` when the
+        method returns. In contrast with the internal implementation of
+        IBM models, the word indices in the ``Alignment`` are zero-
+        indexed, not one-indexed.
 
         :param sentence_pair: A sentence in the source language and its
             counterpart sentence in the target language
         :type sentence_pair: AlignedSent
-
-        :return: ``AlignedSent`` filled in with the best word alignment
-        :rtype: AlignedSent
         """
-        if self.translation_table is None or self.alignment_table is None:
-            raise ValueError("The model has not been trained.")
-
-        alignment = []
+        best_alignment = []
 
         l = len(sentence_pair.mots)
         m = len(sentence_pair.words)
@@ -244,17 +244,17 @@ class IBMModel2(IBMModel):
             best_prob = (self.translation_table[trg_word][None] *
                          self.alignment_table[0][j + 1][l][m])
             best_prob = max(best_prob, IBMModel.MIN_PROB)
-            best_alignment = None
+            best_alignment_point = None
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = (self.translation_table[trg_word][src_word] *
                               self.alignment_table[i + 1][j + 1][l][m])
                 if align_prob >= best_prob:
                     best_prob = align_prob
-                    best_alignment = i
+                    best_alignment_point = i
 
             # If trg_word is not aligned to the NULL token,
-            # add it to the viterbi_alignment.
-            if best_alignment is not None:
-                alignment.append((j, best_alignment))
+            # add it to the best_alignment.
+            if best_alignment_point is not None:
+                best_alignment.append((j, best_alignment_point))
 
-        return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
+        sentence_pair.alignment = Alignment(best_alignment)
