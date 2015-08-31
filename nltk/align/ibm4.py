@@ -274,12 +274,10 @@ class IBMModel4(IBMModel):
         counts = Model4Counts()
 
         for aligned_sentence in parallel_corpus:
-            src_sentence = [None] + aligned_sentence.mots
-            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
             m = len(aligned_sentence.words)
 
             # Sample the alignment space
-            sampled_alignments = self.sample(src_sentence, trg_sentence)
+            sampled_alignments = self.sample(aligned_sentence)
 
             # E step (a): Compute normalization factors to weigh counts
             total_count = self.prob_of_alignments(sampled_alignments)

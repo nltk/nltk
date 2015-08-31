@@ -286,13 +286,11 @@ class IBMModel5(IBMModel):
         counts = Model5Counts()
 
         for aligned_sentence in parallel_corpus:
-            src_sentence = [None] + aligned_sentence.mots
-            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
 
             # Sample the alignment space
-            sampled_alignments = self.sample(src_sentence, trg_sentence)
+            sampled_alignments = self.sample(aligned_sentence)
 
             # E step (a): Compute normalization factors to weigh counts
             total_count = self.prob_of_alignments(sampled_alignments)
@@ -327,7 +325,7 @@ class IBMModel5(IBMModel):
         self.maximize_fertility_probabilities(counts)
         self.maximize_null_generation_probabilities(counts)
 
-    def sample(self, src_sentence, trg_sentence):
+    def sample(self, sentence_pair):
         """
         Sample the most probable alignments from the entire alignment
         space according to Model 4
@@ -343,19 +341,14 @@ class IBMModel5(IBMModel):
         alignment point. Finally, prune alignments that have
         substantially lower Model 4 scores than the best alignment.
 
-        :param src_sentence: 1-indexed source sentence. Zeroeth element
-            should be None.
-        :type src_sentence: list(str)
-
-        :param trg_sentence: 1-indexed target sentence. Zeroeth element
-            will be ignored.
-        :type trg_sentence: list(str)
+        :param sentence_pair: Source and target language sentence pair
+            to generate a sample of alignments from
+        :type sentence_pair: AlignedSent
 
         :return: A set of best alignments represented by their ``AlignmentInfo``
         :rtype: set(AlignmentInfo)
         """
-        sampled_alignments = super(IBMModel5, self).sample(
-            src_sentence, trg_sentence)
+        sampled_alignments = super(IBMModel5, self).sample(sentence_pair)
         return self.prune(sampled_alignments)
 
     def prune(self, alignment_infos):

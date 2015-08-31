@@ -125,7 +125,7 @@ class IBMModel(object):
         set(str): All target language words used in training
         """
 
-    def sample(self, src_sentence, trg_sentence):
+    def sample(self, sentence_pair):
         """
         Sample the most probable alignments from the entire alignment
         space
@@ -140,25 +140,19 @@ class IBMModel(object):
         Hill climbing may be stuck in a local maxima, hence the pegging
         and trying out of different alignments.
 
-        :param src_sentence: 1-indexed source sentence. Zeroeth element
-            should be None.
-        :type src_sentence: list(str)
-
-        :param trg_sentence: 1-indexed target sentence. Zeroeth element
-            will be ignored.
-        :type trg_sentence: list(str)
+        :param sentence_pair: Source and target language sentence pair
+            to generate a sample of alignments from
+        :type sentence_pair: AlignedSent
 
         :return: A set of best alignments represented by their ``AlignmentInfo``
         :rtype: set(AlignmentInfo)
         """
         sampled_alignments = set()
-
-        l = len(src_sentence) - 1  # exclude NULL
-        m = len(trg_sentence) - 1
+        l = len(sentence_pair.mots)
+        m = len(sentence_pair.words)
 
         # Start from the best model 2 alignment
-        initial_alignment = self.best_model2_alignment(
-            src_sentence, trg_sentence)
+        initial_alignment = self.best_model2_alignment(sentence_pair)
         best_alignment = self.hillclimb(initial_alignment)
         sampled_alignments.update(self.neighboring(best_alignment))
 
@@ -167,15 +161,14 @@ class IBMModel(object):
         for j in range(1, m + 1):
             for i in range(0, l + 1):
                 initial_alignment = self.best_model2_alignment(
-                    src_sentence, trg_sentence, j, i)
+                    sentence_pair, j, i)
                 best_alignment = self.hillclimb(initial_alignment, j)
                 neighbors = self.neighboring(best_alignment, j)
                 sampled_alignments.update(neighbors)
 
         return sampled_alignments
 
-    def best_model2_alignment(self, src_sentence, trg_sentence,
-                              j_pegged=None, i_pegged=0):
+    def best_model2_alignment(self, sentence_pair, j_pegged=None, i_pegged=0):
         """
         Finds the best alignment according to IBM Model 2
 
@@ -183,13 +176,9 @@ class IBMModel(object):
         above, because it is easier to compute than the best alignments
         in higher models
 
-        :param src_sentence: 1-indexed source sentence. Zeroeth element
-            should be None.
-        :type src_sentence: list(str)
-
-        :param trg_sentence: 1-indexed target sentence. Zeroeth element
-            will be ignored.
-        :type trg_sentence: list(str)
+        :param sentence_pair: Source and target language sentence pair
+            to be word-aligned
+        :type sentence_pair: AlignedSent
 
         :param j_pegged: If specified, the alignment point of j_pegged
             will be fixed to i_pegged
@@ -198,6 +187,9 @@ class IBMModel(object):
         :param i_pegged: Alignment point to j_pegged
         :type i_pegged: int
         """
+        src_sentence = [None] + sentence_pair.mots
+        trg_sentence = ['UNUSED'] + sentence_pair.words  # 1-indexed
+
         l = len(src_sentence) - 1  # exclude NULL
         m = len(trg_sentence) - 1
 
@@ -375,6 +367,10 @@ class AlignmentInfo(object):
     Read-only. For a source sentence and its counterpart in the target
     language, this class holds information about the sentence pair's
     alignment, cepts, and fertility.
+
+    Warning: Alignments are one-indexed here, in contrast to
+    nltk.align.Alignment and nltk.align.AlignedSent, which are zero-
+    indexed. This class is not meant to be used outside of IBM models.
     """
 
     def __init__(self, alignment, src_sentence, trg_sentence, cepts):

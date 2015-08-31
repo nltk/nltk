@@ -208,7 +208,7 @@ class IBMModel3(IBMModel):
                 m = len(aligned_sentence.words)
 
                 # Sample the alignment space
-                sampled_alignments = self.sample(src_sentence, trg_sentence)
+                sampled_alignments = self.sample(aligned_sentence)
 
                 total_count = 0.0
 
