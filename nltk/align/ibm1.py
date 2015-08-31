@@ -54,9 +54,9 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from __future__  import division
+from __future__ import division
 from collections import defaultdict
-from nltk.align  import AlignedSent
+from nltk.align import AlignedSent
 from nltk.align.ibm_model import IBMModel
 import warnings
 
@@ -65,19 +65,34 @@ class IBMModel1(IBMModel):
     """
     Lexical translation model that ignores word order
 
-    >>> from nltk.corpus import comtrans
-    >>> bitexts = comtrans.aligned_sents()[:100]
-    >>> ibm = IBMModel1(bitexts, 20)
+    >>> bitext = []
+    >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
+    >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
+    >>> bitext.append(AlignedSent(['ein', 'buch'], ['a', 'book']))
 
-    >>> aligned_sent = ibm.align(bitexts[6])
-    >>> aligned_sent.alignment
-    Alignment([(0, 0), (1, 1), (2, 2), (3, 7), (4, 7), (5, 8)])
-    >>> print('{0:.3f}'.format(bitexts[6].precision(aligned_sent)))
-    0.556
-    >>> print('{0:.3f}'.format(bitexts[6].recall(aligned_sent)))
-    0.833
-    >>> print('{0:.3f}'.format(bitexts[6].alignment_error_rate(aligned_sent)))
-    0.333
+    >>> ibm1 = IBMModel1(bitext, 5)
+
+    >>> print('{0:.3f}'.format(ibm1.translation_table['buch']['book']))
+    0.889
+    >>> print('{0:.3f}'.format(ibm1.translation_table['das']['book']))
+    0.062
+    >>> print('{0:.3f}'.format(ibm1.translation_table['buch'][None]))
+    0.113
+    >>> print('{0:.3f}'.format(ibm1.translation_table['ja'][None]))
+    0.073
+
+    >>> test_sentence = bitext[2]
+    >>> test_sentence.words
+    ['das', 'buch', 'ist', 'ja', 'klein']
+    >>> test_sentence.mots
+    ['the', 'book', 'is', 'small']
+
+    >>> aligned_sentence = ibm1.align(test_sentence)
+    >>> aligned_sentence.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (3, 2), (4, 3)])
 
     """
 
