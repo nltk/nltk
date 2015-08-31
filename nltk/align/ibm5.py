@@ -368,17 +368,17 @@ class IBMModel5(IBMModel):
         :rtype: AlignmentInfo
         """
         alignment = alignment_info # alias with shorter name
+        max_probability = IBMModel4.model4_prob_t_a_given_s(alignment, self)
+
         while True:
             old_alignment = alignment
-
             for neighbor_alignment in self.neighboring(alignment, j_pegged):
                 neighbor_probability = IBMModel4.model4_prob_t_a_given_s(
                     neighbor_alignment, self)
-                current_probability = IBMModel4.model4_prob_t_a_given_s(
-                    alignment, self)
 
-                if neighbor_probability > current_probability:
+                if neighbor_probability > max_probability:
                     alignment = neighbor_alignment
+                    max_probability = neighbor_probability
 
             if alignment == old_alignment:
                 # Until there are no better alignments
