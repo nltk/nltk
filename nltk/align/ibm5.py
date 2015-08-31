@@ -408,6 +408,7 @@ class IBMModel5(IBMModel):
                 # Until there are no better alignments
                 break
 
+        alignment.score = max_probability
         return alignment
 
     def prob_t_a_given_s(self, alignment_info):

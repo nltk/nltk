@@ -42,6 +42,7 @@ from bisect import insort_left
 from collections import defaultdict
 from copy import deepcopy
 from math import ceil
+from nltk.align import Alignment
 
 
 def longest_target_sentence_length(sentence_aligned_corpus):
@@ -252,6 +253,7 @@ class IBMModel(object):
                 # Until there are no better alignments
                 break
 
+        alignment.score = max_probability
         return alignment
 
     def neighboring(self, alignment_info, j_pegged=None):
@@ -405,6 +407,12 @@ class AlignmentInfo(object):
         cepts[4] = (2, 3, 7) means that words in positions 2, 3 and 7
         of the target sentence are aligned to the word in position 4 of
         the source sentence
+        """
+
+        self.score = None
+        """
+        float: Optional. Probability of alignment, as defined by the
+        IBM model that assesses this alignment
         """
 
     def fertility_of_i(self, i):
