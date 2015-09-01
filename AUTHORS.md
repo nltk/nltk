@@ -1,4 +1,4 @@
-# Natural Language Toolkit (NLTK) Authors
+﻿# Natural Language Toolkit (NLTK) Authors
 
 ## Original Authors
 
@@ -178,3 +178,4 @@
 - pquentin
 - wvanlint
 - Álvaro Justen <https://github.com/turicas>
+- bjut-hz
