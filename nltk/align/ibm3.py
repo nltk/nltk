@@ -80,6 +80,7 @@ from nltk.align import AlignedSent
 from nltk.align import Alignment
 from nltk.align import IBMModel
 from nltk.align import IBMModel2
+from nltk.align.ibm_model import Counts
 import warnings
 
 
@@ -202,27 +203,9 @@ class IBMModel3(IBMModel):
                         self.distortion_table[j][i][l][m] = initial_prob
 
     def train(self, parallel_corpus):
-        max_fertility = 0
-
-        # Reset all counts
-        count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
-        count_any_t_given_s = defaultdict(lambda: 0.0)
-
-        distortion_count = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                lambda: 0.0))))
-        distortion_count_for_any_j = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
-
-        count_p0 = 0.0
-        count_p1 = 0.0
-
-        fertility_count = defaultdict(lambda: defaultdict(lambda: 0.0))
-        fertility_count_for_any_phi = defaultdict(lambda: 0.0)
-
+        counts = Model3Counts()
         for aligned_sentence in parallel_corpus:
             src_sentence = [None] + aligned_sentence.mots
-            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
 
@@ -243,42 +226,15 @@ class IBMModel3(IBMModel):
             for alignment_info in sampled_alignments:
                 count = self.prob_t_a_given_s(alignment_info)
                 normalized_count = count / total_count
-                null_count = 0
 
                 for j in range(1, m + 1):
-                    t = trg_sentence[j]
-                    i = alignment_info.alignment[j]
-                    s = src_sentence[i]
+                    counts.update_lexical_translation(
+                        normalized_count, alignment_info, j)
+                    counts.update_distortion(
+                        normalized_count, alignment_info, j, l, m)
 
-                    # Lexical translation
-                    count_t_given_s[t][s] += normalized_count
-                    count_any_t_given_s[s] += normalized_count
-
-                    # Distortion
-                    distortion_count[j][i][l][m] += normalized_count
-                    distortion_count_for_any_j[i][l][m] += normalized_count
-
-                    if i == 0:
-                        null_count += 1
-
-                # NULL-aligned words generation
-                count_p1 += null_count * normalized_count
-                count_p0 += (m - 2 * null_count) * normalized_count
-
-                # Fertility
-                for i in range(0, l + 1):
-                    fertility = 0
-
-                    for j in range(1, m + 1):
-                        if i == alignment_info.alignment[j]:
-                            fertility += 1
-
-                    s = src_sentence[i]
-                    fertility_count[fertility][s] += normalized_count
-                    fertility_count_for_any_phi[s] += normalized_count
-
-                    if fertility > max_fertility:
-                        max_fertility = fertility
+                counts.update_null_generation(normalized_count, alignment_info)
+                counts.update_fertility(normalized_count, alignment_info)
 
         # M step: Update probabilities with maximum likelihood estimates
         # If any probability is less than MIN_PROB, clamp it to MIN_PROB
@@ -287,7 +243,7 @@ class IBMModel3(IBMModel):
         # Lexical translation
         for s in self.src_vocab:
             for t in self.trg_vocab:
-                estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
                 self.translation_table[t][s] = max(estimate, MIN_PROB)
 
         # Distortion
@@ -297,19 +253,20 @@ class IBMModel3(IBMModel):
 
             for i in range(0, l + 1):
                 for j in range(1, m + 1):
-                    estimate = (distortion_count[j][i][l][m] /
-                                distortion_count_for_any_j[i][l][m])
+                    estimate = (counts.distortion[j][i][l][m] /
+                                counts.distortion_for_any_j[i][l][m])
                     self.distortion_table[j][i][l][m] = max(estimate, MIN_PROB)
 
         # Fertility
+        max_fertility = 10  # FIXME magic number that will be removed in next commit, which drops the use of max_fertiliy
         for fertility in range(0, max_fertility + 1):
             for s in self.src_vocab:
-                estimate = (fertility_count[fertility][s] /
-                            fertility_count_for_any_phi[s])
+                estimate = (counts.fertility[fertility][s] /
+                            counts.fertility_for_any_phi[s])
                 self.fertility_table[fertility][s] = max(estimate, MIN_PROB)
 
         # NULL-aligned words generation
-        p1_estimate = count_p1 / (count_p1 + count_p0)
+        p1_estimate = counts.p1 / (counts.p1 + counts.p0)
         p1_estimate = max(p1_estimate, MIN_PROB)
 
         # Clip p1 if it is too large, because p0 = 1 - p1 should not be
@@ -364,3 +321,22 @@ class IBMModel3(IBMModel):
                 return MIN_PROB
 
         return probability
+
+
+class Model3Counts(Counts):
+    """
+    Data object to store counts of various parameters during training.
+    Includes counts for distortion.
+    """
+    def __init__(self):
+        super(Model3Counts, self).__init__()
+        self.distortion = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: 0.0))))
+        self.distortion_for_any_j = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
+
+    def update_distortion(self, count, alignment_info, j, l, m):
+        i = alignment_info.alignment[j]
+        self.distortion[j][i][l][m] += count
+        self.distortion_for_any_j[i][l][m] += count

@@ -277,9 +277,7 @@ class IBMModel4(IBMModel):
                 lambda: initial_prob)
 
     def train(self, parallel_corpus):
-        # Reset all counts
         counts = Model4Counts()
-
         for aligned_sentence in parallel_corpus:
             m = len(aligned_sentence.words)
 
@@ -430,7 +428,7 @@ class IBMModel4(IBMModel):
 class Model4Counts(Counts):
     """
     Data object to store counts of various parameters during training.
-    Include counts for distortion.
+    Includes counts for distortion.
     """
     def __init__(self):
         super(Model4Counts, self).__init__()

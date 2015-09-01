@@ -292,9 +292,7 @@ class IBMModel5(IBMModel):
                     lambda: initial_prob)
 
     def train(self, parallel_corpus):
-        # Reset all counts
         counts = Model5Counts()
-
         for aligned_sentence in parallel_corpus:
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
@@ -556,7 +554,7 @@ class IBMModel5(IBMModel):
 class Model5Counts(Counts):
     """
     Data object to store counts of various parameters during training.
-    Include counts for vacancies.
+    Includes counts for vacancies.
     """
     def __init__(self):
         super(Model5Counts, self).__init__()
