@@ -133,7 +133,8 @@ class IBMModel3(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations):
+    def __init__(self, sentence_aligned_corpus, iterations,
+                 probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, a distortion model, a fertility model, and a
@@ -142,14 +143,20 @@ class IBMModel3(IBMModel):
         Translation direction is from ``AlignedSent.mots`` to
         ``AlignedSent.words``.
 
-        Runs a few iterations of Model 2 training to initialize
-        model parameters.
-
         :param sentence_aligned_corpus: Sentence-aligned parallel corpus
         :type sentence_aligned_corpus: list(AlignedSent)
 
         :param iterations: Number of iterations to run training algorithm
         :type iterations: int
+
+        :param probability_tables: Optional. Use this to pass in custom
+            probability values. If not specified, probabilities will be
+            set to a uniform distribution, or some other sensible value.
+            If specified, all the following entries must be present:
+            ``translation_table``, ``alignment_table``,
+            ``fertility_table``, ``p1``, ``distortion_table``.
+            See ``IBMModel`` for the type and purpose of these tables.
+        :type probability_tables: dict[str]: object
         """
         super(IBMModel3, self).__init__(sentence_aligned_corpus)
 
@@ -161,14 +168,19 @@ class IBMModel3(IBMModel):
         Values accessed as ``distortion_table[j][i][l][m]``.
         """
 
-        # Get the translation and alignment probabilities from IBM model 2
-        ibm2 = IBMModel2(sentence_aligned_corpus, iterations)
-        self.translation_table = ibm2.translation_table
-
-        # Alignment table is only used for hill climbing and is not part
-        # of the output of Model 3 training
-        self.alignment_table = ibm2.alignment_table
-        self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+        if probability_tables is None:
+            # Get translation and alignment probabilities from IBM Model 2
+            ibm2 = IBMModel2(sentence_aligned_corpus, iterations)
+            self.translation_table = ibm2.translation_table
+            self.alignment_table = ibm2.alignment_table
+            self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+        else:
+            # Set user-defined probabilities
+            self.translation_table = probability_tables['translation_table']
+            self.alignment_table = probability_tables['alignment_table']
+            self.fertility_table = probability_tables['fertility_table']
+            self.p1 = probability_tables['p1']
+            self.distortion_table = probability_tables['distortion_table']
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)

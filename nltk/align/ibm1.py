@@ -95,7 +95,8 @@ class IBMModel1(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations):
+    def __init__(self, sentence_aligned_corpus, iterations,
+                 probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model.
@@ -108,9 +109,22 @@ class IBMModel1(IBMModel):
 
         :param iterations: Number of iterations to run training algorithm
         :type iterations: int
+
+        :param probability_tables: Optional. Use this to pass in custom
+            probability values. If not specified, probabilities will be
+            set to a uniform distribution, or some other sensible value.
+            If specified, the following entry must be present:
+            ``translation_table``.
+            See ``IBMModel`` for the type and purpose of this table.
+        :type probability_tables: dict[str]: object
         """
         super(IBMModel1, self).__init__(sentence_aligned_corpus)
-        self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+
+        if probability_tables is None:
+            self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+        else:
+            # Set user-defined probabilities
+            self.translation_table = probability_tables['translation_table']
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)

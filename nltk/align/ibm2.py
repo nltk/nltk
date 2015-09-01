@@ -95,7 +95,8 @@ class IBMModel2(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations):
+    def __init__(self, sentence_aligned_corpus, iterations,
+                 probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model and an alignment model.
@@ -103,22 +104,33 @@ class IBMModel2(IBMModel):
         Translation direction is from ``AlignedSent.mots`` to
         ``AlignedSent.words``.
 
-        Runs a few iterations of Model 1 training to initialize
-        model parameters.
-
         :param sentence_aligned_corpus: Sentence-aligned parallel corpus
         :type sentence_aligned_corpus: list(AlignedSent)
 
         :param iterations: Number of iterations to run training algorithm
         :type iterations: int
+
+        :param probability_tables: Optional. Use this to pass in custom
+            probability values. If not specified, probabilities will be
+            set to a uniform distribution, or some other sensible value.
+            If specified, all the following entries must be present:
+            ``translation_table``, ``alignment_table``.
+            See ``IBMModel`` for the type and purpose of these tables.
+        :type probability_tables: dict[str]: object
         """
         super(IBMModel2, self).__init__(sentence_aligned_corpus)
 
-        # Get initial translation probability distribution
-        # from a few iterations of Model 1 training.
-        ibm1 = IBMModel1(sentence_aligned_corpus, 10)
-        self.translation_table = ibm1.translation_table
-        self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+        if probability_tables is None:
+            # Get translation probabilities from IBM Model 1
+            # Run more iterations of training for Model 1, since it is
+            # faster than Model 2
+            ibm1 = IBMModel1(sentence_aligned_corpus, 2 * iterations)
+            self.translation_table = ibm1.translation_table
+            self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+        else:
+            # Set user-defined probabilities
+            self.translation_table = probability_tables['translation_table']
+            self.alignment_table = probability_tables['alignment_table']
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)

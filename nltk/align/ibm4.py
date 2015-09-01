@@ -176,9 +176,6 @@ class IBMModel4(IBMModel):
         Translation direction is from ``AlignedSent.mots`` to
         ``AlignedSent.words``.
 
-        Runs a few iterations of Model 3 training to initialize
-        model parameters.
-
         :param sentence_aligned_corpus: Sentence-aligned parallel corpus
         :type sentence_aligned_corpus: list(AlignedSent)
 
