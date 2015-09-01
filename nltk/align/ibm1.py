@@ -58,7 +58,7 @@ from __future__ import division
 from collections import defaultdict
 from nltk.align import AlignedSent
 from nltk.align import Alignment
-from nltk.align.ibm_model import IBMModel
+from nltk.align import IBMModel
 import warnings
 
 

@@ -75,11 +75,11 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 
 from __future__ import division
 from collections import defaultdict
+from math import factorial
 from nltk.align import AlignedSent
 from nltk.align import Alignment
-from nltk.align.ibm_model import IBMModel
-from nltk.align.ibm2 import IBMModel2
-from math import factorial
+from nltk.align import IBMModel
+from nltk.align import IBMModel2
 import warnings
 
 

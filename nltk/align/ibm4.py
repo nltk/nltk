@@ -103,13 +103,13 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 
 from __future__ import division
 from collections import defaultdict
+from math import factorial
 from nltk.align import AlignedSent
 from nltk.align import Alignment
+from nltk.align import IBMModel
+from nltk.align import IBMModel3
 from nltk.align.ibm_model import Counts
-from nltk.align.ibm_model import IBMModel
 from nltk.align.ibm_model import longest_target_sentence_length
-from nltk.align.ibm3 import IBMModel3
-from math import factorial
 import warnings
 
 
