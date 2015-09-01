@@ -147,13 +147,9 @@ class IBMModel1(IBMModel):
         for aligned_sentence in parallel_corpus:
             trg_sentence = aligned_sentence.words
             src_sentence = [None] + aligned_sentence.mots
-            total_count = defaultdict(lambda: 0.0)
 
             # E step (a): Compute normalization factors to weigh counts
-            for t in trg_sentence:
-                if total_count[t] == 0.0:
-                    for s in src_sentence:
-                        total_count[t] += self.prob_alignment_point(s, t)
+            total_count = self.prob_all_alignments(src_sentence, trg_sentence)
 
             # E step (b): Collect counts
             for t in trg_sentence:
@@ -164,10 +160,28 @@ class IBMModel1(IBMModel):
                     counts.any_t_given_s[s] += normalized_count
 
         # M step: Update probabilities with maximum likelihood estimate
-        for s in self.src_vocab:
-            for t in self.trg_vocab:
-                estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
-                self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
+        self.maximize_lexical_translation_probabilities(counts)
+
+    def prob_all_alignments(self, src_sentence, trg_sentence):
+        """
+        Computes the probability of all possible word alignments,
+        expressed as a marginal distribution over target words t
+
+        Each entry in the return value represents the contribution to
+        the total alignment probability by the target word t.
+
+        To obtain probability(alignment | src_sentence, trg_sentence),
+        simply sum the entries in the return value.
+
+        :return: Probability of t for all s in ``src_sentence``
+        :rtype: dict(str): float
+        """
+        alignment_prob_for_t = defaultdict(lambda: 0.0)
+        for t in trg_sentence:
+            alignment_prob_for_t[t] = 0
+            for s in src_sentence:
+                alignment_prob_for_t[t] += self.prob_alignment_point(s, t)
+        return alignment_prob_for_t
 
     def prob_alignment_point(self, s, t):
         """

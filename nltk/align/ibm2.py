@@ -162,17 +162,9 @@ class IBMModel2(IBMModel):
             trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
-            total_count = defaultdict(float)
 
             # E step (a): Compute normalization factors to weigh counts
-            for j in range(1, m + 1):
-                t = trg_sentence[j]
-                total_count[t] = 0
-                for i in range(0, l + 1):
-                    s = src_sentence[i]
-                    count = self.prob_alignment_point(
-                        i, j, src_sentence, trg_sentence)
-                    total_count[t] += count
+            total_count = self.prob_all_alignments(src_sentence, trg_sentence)
 
             # E step (b): Collect counts
             for j in range(1, m + 1):
@@ -187,20 +179,42 @@ class IBMModel2(IBMModel):
                     counts.update_alignment(normalized_count, i, j, l, m)
 
         # M step: Update probabilities with maximum likelihood estimates
-        for s in self.src_vocab:
-            for t in self.trg_vocab:
-                estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
-                self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
+        self.maximize_lexical_translation_probabilities(counts)
+        self.maximize_alignment_probabilities(counts)
 
-        for aligned_sentence in parallel_corpus:
-            l = len(aligned_sentence.mots)
-            m = len(aligned_sentence.words)
-            for i in range(0, l + 1):
-                for j in range(1, m + 1):
-                    estimate = (counts.alignment[i][j][l][m] /
-                                counts.alignment_for_any_i[j][l][m])
-                    self.alignment_table[i][j][l][m] = max(estimate,
-                                                           IBMModel.MIN_PROB)
+    def maximize_alignment_probabilities(self, counts):
+        MIN_PROB = IBMModel.MIN_PROB
+        for i, j_s in counts.alignment.items():
+            for j, src_sentence_lengths in j_s.items():
+                for l, trg_sentence_lengths in src_sentence_lengths.items():
+                    for m in trg_sentence_lengths:
+                        estimate = (counts.alignment[i][j][l][m] /
+                                    counts.alignment_for_any_i[j][l][m])
+                        self.alignment_table[i][j][l][m] = max(estimate,
+                                                               MIN_PROB)
+
+    def prob_all_alignments(self, src_sentence, trg_sentence):
+        """
+        Computes the probability of all possible word alignments,
+        expressed as a marginal distribution over target words t
+
+        Each entry in the return value represents the contribution to
+        the total alignment probability by the target word t.
+
+        To obtain probability(alignment | src_sentence, trg_sentence),
+        simply sum the entries in the return value.
+
+        :return: Probability of t for all s in ``src_sentence``
+        :rtype: dict(str): float
+        """
+        alignment_prob_for_t = defaultdict(lambda: 0.0)
+        for j in range(1, len(trg_sentence)):
+            t = trg_sentence[j]
+            alignment_prob_for_t[t] = 0
+            for i in range(0, len(src_sentence)):
+                alignment_prob_for_t[t] += self.prob_alignment_point(
+                    i, j, src_sentence, trg_sentence)
+        return alignment_prob_for_t
 
     def prob_alignment_point(self, i, j, src_sentence, trg_sentence):
         """
