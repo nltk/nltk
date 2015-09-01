@@ -52,7 +52,3 @@ class TestIBMModel2(unittest.TestCase):
         alignment = 0.97 * 0.97 * 0.97 * 0.97 * 0.96 * 0.96
         expected_probability = lexical_translation * alignment
         self.assertEqual(round(probability, 4), round(expected_probability, 4))
-
-
-if __name__ == '__main__':
-    unittest.main()

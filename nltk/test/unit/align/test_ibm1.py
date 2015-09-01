@@ -40,7 +40,3 @@ class TestIBMModel1(unittest.TestCase):
         lexical_translation = 0.98 * 0.98 * 0.98 * 0.98 * 0.98 * 0.98
         expected_probability = lexical_translation
         self.assertEqual(round(probability, 4), round(expected_probability, 4))
-
-
-if __name__ == '__main__':
-    unittest.main()

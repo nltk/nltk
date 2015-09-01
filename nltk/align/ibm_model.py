@@ -8,8 +8,8 @@
 
 """
 Common methods and classes for all IBM models. See ``IBMModel1``,
-``IBMModel2``, ``IBMModel3``, and ``IBMModel4`` for specific
-implementations.
+``IBMModel2``, ``IBMModel3``, ``IBMModel4``, and ``IBMModel5``
+for specific implementations.
 
 The IBM models are a series of generative models that learn lexical
 translation probabilities, p(target language word|source language word),
@@ -42,6 +42,21 @@ from bisect import insort_left
 from collections import defaultdict
 from copy import deepcopy
 from math import ceil
+
+
+def longest_target_sentence_length(sentence_aligned_corpus):
+    """
+    :param sentence_aligned_corpus: Parallel corpus under consideration
+    :type sentence_aligned_corpus: list(AlignedSent)
+    :return: Number of words in the longest target language sentence
+        of ``sentence_aligned_corpus``
+    """
+    max_m = 0
+    for aligned_sentence in sentence_aligned_corpus:
+        m = len(aligned_sentence.words)
+        if m > max_m:
+            max_m = m
+    return max_m
 
 
 class IBMModel(object):
@@ -230,15 +245,16 @@ class IBMModel(object):
         :rtype: AlignmentInfo
         """
         alignment = alignment_info # alias with shorter name
+        max_probability = self.prob_t_a_given_s(alignment)
+
         while True:
             old_alignment = alignment
-
             for neighbor_alignment in self.neighboring(alignment, j_pegged):
                 neighbor_probability = self.prob_t_a_given_s(neighbor_alignment)
-                current_probability = self.prob_t_a_given_s(alignment)
 
-                if neighbor_probability > current_probability:
+                if neighbor_probability > max_probability:
                     alignment = neighbor_alignment
+                    max_probability = neighbor_probability
 
             if alignment == old_alignment:
                 # Until there are no better alignments
@@ -312,6 +328,32 @@ class IBMModel(object):
                         neighbors.add(new_alignment_info)
 
         return neighbors
+
+    def maximize_lexical_translation_probabilities(self, counts):
+        for t, src_words in counts.t_given_s.items():
+            for s in src_words:
+                estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
+                self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
+
+    def maximize_fertility_probabilities(self, counts):
+        for phi, src_words in counts.fertility.items():
+            for s in src_words:
+                estimate = (counts.fertility[phi][s] /
+                            counts.fertility_for_any_phi[s])
+                self.fertility_table[phi][s] = max(estimate, IBMModel.MIN_PROB)
+
+    def maximize_null_generation_probabilities(self, counts):
+        p1_estimate = counts.p1 / (counts.p1 + counts.p0)
+        p1_estimate = max(p1_estimate, IBMModel.MIN_PROB)
+        # Clip p1 if it is too large, because p0 = 1 - p1 should not be
+        # smaller than MIN_PROB
+        self.p1 = min(p1_estimate, 1 - IBMModel.MIN_PROB)
+
+    def prob_of_alignments(self, alignments):
+        probability = 0
+        for alignment_info in alignments:
+            probability += self.prob_t_a_given_s(alignment_info)
+        return probability
 
     def prob_t_a_given_s(self, alignment_info):
         """
@@ -388,11 +430,11 @@ class AlignmentInfo(object):
         :return: The ceiling of the average positions of the words in
             the tablet of cept ``i``, or 0 if ``i`` is None
         """
-        if i == None:
+        if i is None:
             return 0
 
         average_position = float(sum(self.cepts[i])) / len(self.cepts[i])
-        return ceil(average_position)
+        return int(ceil(average_position))
 
     def previous_cept(self, j):
         """
@@ -428,3 +470,36 @@ class AlignmentInfo(object):
 
     def __hash__(self):
         return hash(self.alignment)
+
+
+class Counts(object):
+    """
+    Data object to store counts of various parameters during training
+    """
+    def __init__(self):
+        self.t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.any_t_given_s = defaultdict(lambda: 0.0)
+        self.p0 = 0.0
+        self.p1 = 0.0
+        self.fertility = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.fertility_for_any_phi = defaultdict(lambda: 0.0)
+
+    def update_lexical_translation(self, count, alignment_info, j):
+        i = alignment_info.alignment[j]
+        t = alignment_info.trg_sentence[j]
+        s = alignment_info.src_sentence[i]
+        self.t_given_s[t][s] += count
+        self.any_t_given_s[s] += count
+
+    def update_null_generation(self, count, alignment_info):
+        m = len(alignment_info.trg_sentence) - 1
+        fertility_of_null = alignment_info.fertility_of_i(0)
+        self.p1 += fertility_of_null * count
+        self.p0 += (m - 2 * fertility_of_null) * count
+
+    def update_fertility(self, count, alignment_info):
+        for i in range(0, len(alignment_info.src_sentence)):
+            s = alignment_info.src_sentence[i]
+            phi = len(alignment_info.cepts[i])
+            self.fertility[phi][s] += count
+            self.fertility_for_any_phi[s] += count
