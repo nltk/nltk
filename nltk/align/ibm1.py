@@ -59,6 +59,7 @@ from collections import defaultdict
 from nltk.align import AlignedSent
 from nltk.align import Alignment
 from nltk.align import IBMModel
+from nltk.align.ibm_model import Counts
 import warnings
 
 
@@ -142,9 +143,7 @@ class IBMModel1(IBMModel):
             self.translation_table[t] = defaultdict(lambda: initial_prob)
 
     def train(self, parallel_corpus):
-        count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
-        count_any_t_given_s = defaultdict(lambda: 0.0)
-
+        counts = Counts()
         for aligned_sentence in parallel_corpus:
             trg_sentence = aligned_sentence.words
             src_sentence = [None] + aligned_sentence.mots
@@ -154,21 +153,28 @@ class IBMModel1(IBMModel):
             for t in trg_sentence:
                 if total_count[t] == 0.0:
                     for s in src_sentence:
-                        total_count[t] += self.translation_table[t][s]
+                        total_count[t] += self.prob_alignment_point(s, t)
 
             # E step (b): Collect counts
             for t in trg_sentence:
                 for s in src_sentence:
-                    count = self.translation_table[t][s]
+                    count = self.prob_alignment_point(s, t)
                     normalized_count = count / total_count[t]
-                    count_t_given_s[t][s] += normalized_count
-                    count_any_t_given_s[s] += normalized_count
+                    counts.t_given_s[t][s] += normalized_count
+                    counts.any_t_given_s[s] += normalized_count
 
         # M step: Update probabilities with maximum likelihood estimate
         for s in self.src_vocab:
             for t in self.trg_vocab:
-                estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
                 self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
+
+    def prob_alignment_point(self, s, t):
+        """
+        Probability that word ``t`` in the target sentence is aligned to
+        word ``s`` in the source sentence
+        """
+        return self.translation_table[t][s]
 
     def prob_t_a_given_s(self, alignment_info):
         """

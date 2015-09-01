@@ -52,6 +52,7 @@ from nltk.align import AlignedSent
 from nltk.align import Alignment
 from nltk.align import IBMModel
 from nltk.align import IBMModel1
+from nltk.align.ibm_model import Counts
 import warnings
 
 
@@ -155,16 +156,7 @@ class IBMModel2(IBMModel):
                         self.alignment_table[i][j][l][m] = initial_prob
 
     def train(self, parallel_corpus):
-        count_t_given_s = defaultdict(lambda: defaultdict(float))
-        count_any_t_given_s = defaultdict(float)
-
-        # count of i given j, l, m
-        alignment_count = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                lambda: 0.0))))
-        alignment_count_for_any_i = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
-
+        counts = Model2Counts()
         for aligned_sentence in parallel_corpus:
             src_sentence = [None] + aligned_sentence.mots
             trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
@@ -178,8 +170,8 @@ class IBMModel2(IBMModel):
                 total_count[t] = 0
                 for i in range(0, l + 1):
                     s = src_sentence[i]
-                    count = (self.translation_table[t][s] *
-                             self.alignment_table[i][j][l][m])
+                    count = self.prob_alignment_point(
+                        i, j, src_sentence, trg_sentence)
                     total_count[t] += count
 
             # E step (b): Collect counts
@@ -187,19 +179,17 @@ class IBMModel2(IBMModel):
                 t = trg_sentence[j]
                 for i in range(0, l + 1):
                     s = src_sentence[i]
-                    count = (self.translation_table[t][s] *
-                             self.alignment_table[i][j][l][m])
+                    count = self.prob_alignment_point(
+                        i, j, src_sentence, trg_sentence)
                     normalized_count = count / total_count[t]
 
-                    count_t_given_s[t][s] += normalized_count
-                    count_any_t_given_s[s] += normalized_count
-                    alignment_count[i][j][l][m] += normalized_count
-                    alignment_count_for_any_i[j][l][m] += normalized_count
+                    counts.update_lexical_translation(normalized_count, s, t)
+                    counts.update_alignment(normalized_count, i, j, l, m)
 
         # M step: Update probabilities with maximum likelihood estimates
         for s in self.src_vocab:
             for t in self.trg_vocab:
-                estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
                 self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
 
         for aligned_sentence in parallel_corpus:
@@ -207,10 +197,21 @@ class IBMModel2(IBMModel):
             m = len(aligned_sentence.words)
             for i in range(0, l + 1):
                 for j in range(1, m + 1):
-                    estimate = (alignment_count[i][j][l][m] /
-                                alignment_count_for_any_i[j][l][m])
+                    estimate = (counts.alignment[i][j][l][m] /
+                                counts.alignment_for_any_i[j][l][m])
                     self.alignment_table[i][j][l][m] = max(estimate,
                                                            IBMModel.MIN_PROB)
+
+    def prob_alignment_point(self, i, j, src_sentence, trg_sentence):
+        """
+        Probability that position j in ``trg_sentence`` is aligned to
+        position i in the ``src_sentence``
+        """
+        l = len(src_sentence) - 1
+        m = len(trg_sentence) - 1
+        s = src_sentence[i]
+        t = trg_sentence[j]
+        return self.translation_table[t][s] * self.alignment_table[i][j][l][m]
 
     def prob_t_a_given_s(self, alignment_info):
         """
@@ -270,3 +271,25 @@ class IBMModel2(IBMModel):
             best_alignment.append((j, best_alignment_point))
 
         sentence_pair.alignment = Alignment(best_alignment)
+
+
+class Model2Counts(Counts):
+    """
+    Data object to store counts of various parameters during training.
+    Includes counts for alignment.
+    """
+    def __init__(self):
+        super(Model2Counts, self).__init__()
+        self.alignment = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: 0.0))))
+        self.alignment_for_any_i = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
+
+    def update_lexical_translation(self, count, s, t):
+        self.t_given_s[t][s] += count
+        self.any_t_given_s[s] += count
+
+    def update_alignment(self, count, i, j, l, m):
+        self.alignment[i][j][l][m] += count
+        self.alignment_for_any_i[j][l][m] += count
