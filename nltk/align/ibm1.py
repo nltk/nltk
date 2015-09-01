@@ -110,19 +110,20 @@ class IBMModel1(IBMModel):
         :type iterations: int
         """
         super(IBMModel1, self).__init__(sentence_aligned_corpus)
-
-        # seed with a uniform distribution
-        initial_prob = 1 / len(self.trg_vocab)
-        if initial_prob > IBMModel.MIN_PROB:
-            for t in self.trg_vocab:
-                for s in self.src_vocab:
-                    self.translation_table[t][s] = initial_prob
-        else:
-            warnings.warn("Target language vocabulary is too large. "
-                          "Results may be less accurate.")
+        self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
 
         self.train(sentence_aligned_corpus, iterations)
         self.__align_all(sentence_aligned_corpus)
+
+    def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
+        initial_prob = 1 / len(self.trg_vocab)
+        if initial_prob < IBMModel.MIN_PROB:
+            warnings.warn("Target language vocabulary is too large (" +
+                          str(len(self.trg_vocab)) + " words). "
+                          "Results may be less accurate.")
+
+        for t in self.trg_vocab:
+            self.translation_table[t] = defaultdict(lambda: initial_prob)
 
     def train(self, parallel_corpus, iterations):
         for i in range(0, iterations):

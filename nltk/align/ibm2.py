@@ -118,23 +118,27 @@ class IBMModel2(IBMModel):
         # from a few iterations of Model 1 training.
         ibm1 = IBMModel1(sentence_aligned_corpus, 10)
         self.translation_table = ibm1.translation_table
-
-        # Initialize the distribution of alignment probability,
-        # a(i | j,l,m) = 1 / (l+1) for all i, j, l, m
-        for aligned_sentence in sentence_aligned_corpus:
-            l = len(aligned_sentence.mots)
-            m = len(aligned_sentence.words)
-            initial_value = 1 / (l + 1)
-            if initial_value > IBMModel.MIN_PROB:
-                for i in range(0, l + 1):
-                    for j in range(1, m + 1):
-                        self.alignment_table[i][j][l][m] = initial_value
-            else:
-                warnings.warn("Source sentence is too long (" + str(l) +
-                              " words). Results may be less accurate.")
+        self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
 
         self.train(sentence_aligned_corpus, iterations)
         self.__align_all(sentence_aligned_corpus)
+
+    def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
+        # a(i | j,l,m) = 1 / (l+1) for all i, j, l, m
+        l_m_combinations = set()
+        for aligned_sentence in sentence_aligned_corpus:
+            l = len(aligned_sentence.mots)
+            m = len(aligned_sentence.words)
+            if (l, m) not in l_m_combinations:
+                l_m_combinations.add((l, m))
+                initial_prob = 1 / float(l + 1)
+                if initial_prob < IBMModel.MIN_PROB:
+                    warnings.warn("A source sentence is too long (" + str(l) +
+                                  " words). Results may be less accurate.")
+
+                for i in range(0, l + 1):
+                    for j in range(1, m + 1):
+                        self.alignment_table[i][j][l][m] = initial_prob
 
     def train(self, parallel_corpus, iterations):
         for i in range(0, iterations):

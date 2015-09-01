@@ -7,11 +7,44 @@ import unittest
 
 from collections import defaultdict
 from nltk.align import AlignedSent
+from nltk.align import IBMModel
+from nltk.align import IBMModel1
 from nltk.align.ibm_model import AlignmentInfo
-from nltk.align.ibm1 import IBMModel1
 
 
 class TestIBMModel1(unittest.TestCase):
+    def test_set_uniform_translation_probabilities(self):
+        # arrange
+        corpus = [
+            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
+            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+        ]
+        model1 = IBMModel1(corpus, 0)
+
+        # act
+        model1.set_uniform_probabilities(corpus)
+
+        # assert
+        # expected_prob = 1.0 / (target vocab size + 1)
+        self.assertEqual(model1.translation_table['ham']['eier'], 1.0 / 3)
+        self.assertEqual(model1.translation_table['eggs'][None], 1.0 / 3)
+
+    def test_set_uniform_translation_probabilities_of_non_domain_values(self):
+        # arrange
+        corpus = [
+            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
+            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+        ]
+        model1 = IBMModel1(corpus, 0)
+
+        # act
+        model1.set_uniform_probabilities(corpus)
+
+        # assert
+        # examine target words that are not in the training data domain
+        self.assertEqual(model1.translation_table['parrot']['eier'],
+                         IBMModel.MIN_PROB)
+
     def test_prob_t_a_given_s(self):
         # arrange
         src_sentence = ["ich", 'esse', 'ja', 'gern', 'räucherschinken']

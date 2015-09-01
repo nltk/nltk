@@ -168,22 +168,25 @@ class IBMModel3(IBMModel):
         # Alignment table is only used for hill climbing and is not part
         # of the output of Model 3 training
         self.alignment_table = ibm2.alignment_table
+        self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
 
-        # Initialize the distribution of distortion probability,
+        self.train(sentence_aligned_corpus, iterations)
+
+    def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
         # d(j | i,l,m) = 1 / m for all i, j, l, m
+        l_m_combinations = set()
         for aligned_sentence in sentence_aligned_corpus:
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
-            initial_value = 1 / m
-            if initial_value > IBMModel.MIN_PROB:
-                for i in range(0, l + 1):
-                    for j in range(1, m + 1):
-                        self.distortion_table[j][i][l][m] = initial_value
-            else:
-                warnings.warn("Target sentence is too long (" + str(m) +
-                              " words). Results may be less accurate.")
-
-        self.train(sentence_aligned_corpus, iterations)
+            if (l, m) not in l_m_combinations:
+                l_m_combinations.add((l, m))
+                initial_prob = 1 / float(m)
+                if initial_prob < IBMModel.MIN_PROB:
+                    warnings.warn("A target sentence is too long (" + str(m) +
+                                  " words). Results may be less accurate.")
+                for j in range(1, m + 1):
+                    for i in range(0, l + 1):
+                        self.distortion_table[j][i][l][m] = initial_prob
 
     def train(self, parallel_corpus, iterations):
         for k in range(0, iterations):
