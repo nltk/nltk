@@ -205,6 +205,18 @@ class IBMModel3(IBMModel):
                     for i in range(0, l + 1):
                         self.distortion_table[j][i][l][m] = initial_prob
 
+        # simple initialization, taken from GIZA++
+        self.fertility_table[0] = defaultdict(lambda: 0.2)
+        self.fertility_table[1] = defaultdict(lambda: 0.65)
+        self.fertility_table[2] = defaultdict(lambda: 0.1)
+        self.fertility_table[3] = defaultdict(lambda: 0.04)
+        MAX_FERTILITY = 10
+        initial_fert_prob = 0.01 / (MAX_FERTILITY - 4)
+        for phi in range(4, MAX_FERTILITY):
+            self.fertility_table[phi] = defaultdict(lambda: initial_fert_prob)
+
+        self.p1 = 0.5
+
     def train(self, parallel_corpus):
         counts = Model3Counts()
         for aligned_sentence in parallel_corpus:
