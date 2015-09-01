@@ -113,7 +113,7 @@ class SennaChunkTagger(Senna):
                     current_chunk = []
                     current_chunk_position = []
         if current_chunk: # Flush the last chunk.
-            yield ' '.join(current_chunk), '-'.join(current_chunk_position)
+            yield ' '.join(current_chunk), '-'.join(map(str, current_chunk_position))
     
 
 @python_2_unicode_compatible
