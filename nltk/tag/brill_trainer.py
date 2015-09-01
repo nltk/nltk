@@ -11,12 +11,10 @@
 from __future__ import print_function, division
 
 import bisect
+import textwrap
 from collections import defaultdict
 
-import textwrap
-
-from nltk.tag.util import untag
-from nltk.tag.brill import BrillTagger
+from nltk.tag import untag, BrillTagger
 
 ######################################################################
 #  Brill Tagger Trainer
