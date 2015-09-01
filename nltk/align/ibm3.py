@@ -167,7 +167,7 @@ class IBMModel3(IBMModel):
             ibm2 = IBMModel2(sentence_aligned_corpus, iterations)
             self.translation_table = ibm2.translation_table
             self.alignment_table = ibm2.alignment_table
-            self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+            self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
             self.translation_table = probability_tables['translation_table']
@@ -189,7 +189,7 @@ class IBMModel3(IBMModel):
         Values accessed as ``distortion_table[j][i][l][m]``.
         """
 
-    def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
+    def set_uniform_probabilities(self, sentence_aligned_corpus):
         # d(j | i,l,m) = 1 / m for all i, j, l, m
         l_m_combinations = set()
         for aligned_sentence in sentence_aligned_corpus:

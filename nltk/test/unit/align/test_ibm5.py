@@ -14,7 +14,7 @@ from nltk.align.ibm5 import IBMModel5
 
 
 class TestIBMModel5(unittest.TestCase):
-    def test_set_uniform_distortion_probabilities_of_max_displacements(self):
+    def test_set_uniform_vacancy_probabilities_of_max_displacements(self):
         # arrange
         src_classes = {'schinken': 0, 'eier': 0, 'spam': 1}
         trg_classes = {'ham': 0, 'eggs': 1, 'spam': 2}
@@ -25,7 +25,7 @@ class TestIBMModel5(unittest.TestCase):
         model5 = IBMModel5(corpus, 0, src_classes, trg_classes)
 
         # act
-        model5.set_uniform_distortion_probabilities(corpus)
+        model5.set_uniform_probabilities(corpus)
 
         # assert
         # number of vacancy difference values =
@@ -38,7 +38,7 @@ class TestIBMModel5(unittest.TestCase):
         self.assertEqual(model5.non_head_vacancy_table[4][4][0], expected_prob)
         self.assertEqual(model5.non_head_vacancy_table[-3][1][2], expected_prob)
 
-    def test_set_uniform_distortion_probabilities_of_non_domain_values(self):
+    def test_set_uniform_vacancy_probabilities_of_non_domain_values(self):
         # arrange
         src_classes = {'schinken': 0, 'eier': 0, 'spam': 1}
         trg_classes = {'ham': 0, 'eggs': 1, 'spam': 2}
@@ -49,7 +49,7 @@ class TestIBMModel5(unittest.TestCase):
         model5 = IBMModel5(corpus, 0, src_classes, trg_classes)
 
         # act
-        model5.set_uniform_distortion_probabilities(corpus)
+        model5.set_uniform_probabilities(corpus)
 
         # assert
         # examine dv and max_v values that are not in the training data domain

@@ -127,7 +127,7 @@ class IBMModel2(IBMModel):
             # faster than Model 2
             ibm1 = IBMModel1(sentence_aligned_corpus, 2 * iterations)
             self.translation_table = ibm1.translation_table
-            self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+            self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
             self.translation_table = probability_tables['translation_table']
@@ -138,7 +138,7 @@ class IBMModel2(IBMModel):
 
         self.__align_all(sentence_aligned_corpus)
 
-    def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
+    def set_uniform_probabilities(self, sentence_aligned_corpus):
         # a(i | j,l,m) = 1 / (l+1) for all i, j, l, m
         l_m_combinations = set()
         for aligned_sentence in sentence_aligned_corpus:

@@ -223,7 +223,7 @@ class IBMModel5(IBMModel):
             self.p1 = ibm4.p1
             self.head_distortion_table = ibm4.head_distortion_table
             self.non_head_distortion_table = ibm4.non_head_distortion_table
-            self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+            self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
             self.translation_table = probability_tables['translation_table']
@@ -260,7 +260,7 @@ class IBMModel5(IBMModel):
         Values accessed as ``non_head_vacancy_table[dv][v_max][trg_class]``.
         """
 
-    def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
+    def set_uniform_probabilities(self, sentence_aligned_corpus):
         """
         Set vacancy probabilities uniformly to
         1 / cardinality of vacancy difference values

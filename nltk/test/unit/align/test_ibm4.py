@@ -24,7 +24,7 @@ class TestIBMModel4(unittest.TestCase):
         model4 = IBMModel4(corpus, 0, src_classes, trg_classes)
 
         # act
-        model4.set_uniform_distortion_probabilities(corpus)
+        model4.set_uniform_probabilities(corpus)
 
         # assert
         # number of displacement values =
@@ -48,7 +48,7 @@ class TestIBMModel4(unittest.TestCase):
         model4 = IBMModel4(corpus, 0, src_classes, trg_classes)
 
         # act
-        model4.set_uniform_distortion_probabilities(corpus)
+        model4.set_uniform_probabilities(corpus)
 
         # assert
         # examine displacement values that are not in the training data domain

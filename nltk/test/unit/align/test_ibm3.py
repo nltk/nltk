@@ -22,7 +22,7 @@ class TestIBMModel3(unittest.TestCase):
         model3 = IBMModel3(corpus, 0)
 
         # act
-        model3.set_uniform_distortion_probabilities(corpus)
+        model3.set_uniform_probabilities(corpus)
 
         # assert
         # expected_prob = 1.0 / length of target sentence
@@ -38,7 +38,7 @@ class TestIBMModel3(unittest.TestCase):
         model3 = IBMModel3(corpus, 0)
 
         # act
-        model3.set_uniform_distortion_probabilities(corpus)
+        model3.set_uniform_probabilities(corpus)
 
         # assert
         # examine i and j values that are not in the training data domain

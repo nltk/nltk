@@ -105,7 +105,7 @@ class IBMModel(object):
         Used in model 3 and higher.
         """
 
-    def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
+    def set_uniform_probabilities(self, sentence_aligned_corpus):
         """
         Initialize probability tables to a uniform distribution
 

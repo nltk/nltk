@@ -122,7 +122,7 @@ class IBMModel1(IBMModel):
         super(IBMModel1, self).__init__(sentence_aligned_corpus)
 
         if probability_tables is None:
-            self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
+            self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
             self.translation_table = probability_tables['translation_table']
@@ -132,7 +132,7 @@ class IBMModel1(IBMModel):
 
         self.__align_all(sentence_aligned_corpus)
 
-    def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
+    def set_uniform_probabilities(self, sentence_aligned_corpus):
         initial_prob = 1 / len(self.trg_vocab)
         if initial_prob < IBMModel.MIN_PROB:
             warnings.warn("Target language vocabulary is too large (" +
