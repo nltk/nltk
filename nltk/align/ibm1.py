@@ -178,7 +178,6 @@ class IBMModel1(IBMModel):
         """
         alignment_prob_for_t = defaultdict(lambda: 0.0)
         for t in trg_sentence:
-            alignment_prob_for_t[t] = 0
             for s in src_sentence:
                 alignment_prob_for_t[t] += self.prob_alignment_point(s, t)
         return alignment_prob_for_t

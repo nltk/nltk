@@ -210,7 +210,6 @@ class IBMModel2(IBMModel):
         alignment_prob_for_t = defaultdict(lambda: 0.0)
         for j in range(1, len(trg_sentence)):
             t = trg_sentence[j]
-            alignment_prob_for_t[t] = 0
             for i in range(0, len(src_sentence)):
                 alignment_prob_for_t[t] += self.prob_alignment_point(
                     i, j, src_sentence, trg_sentence)
