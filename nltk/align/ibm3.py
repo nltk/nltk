@@ -160,14 +160,7 @@ class IBMModel3(IBMModel):
         :type probability_tables: dict[str]: object
         """
         super(IBMModel3, self).__init__(sentence_aligned_corpus)
-
-        self.distortion_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                lambda: self.MIN_PROB))))
-        """
-        dict[int][int][int][int]: float. Probability(j | i,l,m).
-        Values accessed as ``distortion_table[j][i][l][m]``.
-        """
+        self.reset_probabilities()
 
         if probability_tables is None:
             # Get translation and alignment probabilities from IBM Model 2
@@ -185,6 +178,16 @@ class IBMModel3(IBMModel):
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
+
+    def reset_probabilities(self):
+        super(IBMModel3, self).reset_probabilities()
+        self.distortion_table = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: self.MIN_PROB))))
+        """
+        dict[int][int][int][int]: float. Probability(j | i,l,m).
+        Values accessed as ``distortion_table[j][i][l][m]``.
+        """
 
     def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
         # d(j | i,l,m) = 1 / m for all i, j, l, m
@@ -205,7 +208,6 @@ class IBMModel3(IBMModel):
     def train(self, parallel_corpus):
         counts = Model3Counts()
         for aligned_sentence in parallel_corpus:
-            src_sentence = [None] + aligned_sentence.mots
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
 
@@ -215,12 +217,8 @@ class IBMModel3(IBMModel):
             aligned_sentence.alignment = Alignment(
                 best_alignment.zero_indexed_alignment())
 
-            total_count = 0.0
-
             # E step (a): Compute normalization factors to weigh counts
-            for alignment_info in sampled_alignments:
-                count = self.prob_t_a_given_s(alignment_info)
-                total_count += count
+            total_count = self.prob_of_alignments(sampled_alignments)
 
             # E step (b): Collect counts
             for alignment_info in sampled_alignments:
@@ -238,40 +236,25 @@ class IBMModel3(IBMModel):
 
         # M step: Update probabilities with maximum likelihood estimates
         # If any probability is less than MIN_PROB, clamp it to MIN_PROB
+        existing_alignment_table = self.alignment_table
+        self.reset_probabilities()
+        self.alignment_table = existing_alignment_table  # don't retrain
+
+        self.maximize_lexical_translation_probabilities(counts)
+        self.maximize_distortion_probabilities(counts)
+        self.maximize_fertility_probabilities(counts)
+        self.maximize_null_generation_probabilities(counts)
+
+    def maximize_distortion_probabilities(self, counts):
         MIN_PROB = IBMModel.MIN_PROB
-
-        # Lexical translation
-        for s in self.src_vocab:
-            for t in self.trg_vocab:
-                estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
-                self.translation_table[t][s] = max(estimate, MIN_PROB)
-
-        # Distortion
-        for aligned_sentence in parallel_corpus:
-            l = len(aligned_sentence.mots)
-            m = len(aligned_sentence.words)
-
-            for i in range(0, l + 1):
-                for j in range(1, m + 1):
-                    estimate = (counts.distortion[j][i][l][m] /
-                                counts.distortion_for_any_j[i][l][m])
-                    self.distortion_table[j][i][l][m] = max(estimate, MIN_PROB)
-
-        # Fertility
-        max_fertility = 10  # FIXME magic number that will be removed in next commit, which drops the use of max_fertiliy
-        for fertility in range(0, max_fertility + 1):
-            for s in self.src_vocab:
-                estimate = (counts.fertility[fertility][s] /
-                            counts.fertility_for_any_phi[s])
-                self.fertility_table[fertility][s] = max(estimate, MIN_PROB)
-
-        # NULL-aligned words generation
-        p1_estimate = counts.p1 / (counts.p1 + counts.p0)
-        p1_estimate = max(p1_estimate, MIN_PROB)
-
-        # Clip p1 if it is too large, because p0 = 1 - p1 should not be
-        # smaller than MIN_PROB
-        self.p1 = min(p1_estimate, 1 - MIN_PROB)
+        for j, i_s in counts.distortion.items():
+            for i, src_sentence_lengths in i_s.items():
+                for l, trg_sentence_lengths in src_sentence_lengths.items():
+                    for m in trg_sentence_lengths:
+                        estimate = (counts.distortion[j][i][l][m] /
+                                    counts.distortion_for_any_j[i][l][m])
+                        self.distortion_table[j][i][l][m] = max(estimate,
+                                                                MIN_PROB)
 
     def prob_t_a_given_s(self, alignment_info):
         """

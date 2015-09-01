@@ -328,8 +328,7 @@ class IBMModel5(IBMModel):
         # If any probability is less than MIN_PROB, clamp it to MIN_PROB
         existing_alignment_table = self.alignment_table
         self.reset_probabilities()
-        # don't retrain alignment table
-        self.alignment_table = existing_alignment_table
+        self.alignment_table = existing_alignment_table  # don't retrain
 
         self.maximize_lexical_translation_probabilities(counts)
         self.maximize_vacancy_probabilities(counts)
