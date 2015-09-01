@@ -7,9 +7,9 @@ import unittest
 
 from collections import defaultdict
 from nltk.align import AlignedSent
+from nltk.align import IBMModel
+from nltk.align import IBMModel4
 from nltk.align.ibm_model import AlignmentInfo
-from nltk.align.ibm_model import IBMModel
-from nltk.align.ibm4 import IBMModel4
 
 
 class TestIBMModel4(unittest.TestCase):
