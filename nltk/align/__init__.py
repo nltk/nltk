@@ -12,9 +12,12 @@ These interfaces are prone to change.
 """
 
 from nltk.align.api import AlignedSent, Alignment
+from nltk.align.ibm_model import IBMModel
 from nltk.align.ibm1 import IBMModel1
 from nltk.align.ibm2 import IBMModel2
 from nltk.align.ibm3 import IBMModel3
+from nltk.align.ibm4 import IBMModel4
+from nltk.align.ibm5 import IBMModel5
 from nltk.align.bleu_score import bleu
 
 

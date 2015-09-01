@@ -68,7 +68,7 @@ class IBMModel(object):
     # incorrect, since it may create probabilities that sum to more
     # than 1. In practice, the contribution of probabilities with MIN_PROB
     # is tiny enough that the value of MIN_PROB can be treated as zero.
-    MIN_PROB = 1.0e-12 # GIZA++ is more liberal and uses 1.0e-7
+    MIN_PROB = 1.0e-12  # GIZA++ is more liberal and uses 1.0e-7
 
     def __init__(self, sentence_aligned_corpus):
         self.init_vocab(sentence_aligned_corpus)
@@ -125,7 +125,7 @@ class IBMModel(object):
         set(str): All target language words used in training
         """
 
-    def sample(self, src_sentence, trg_sentence):
+    def sample(self, sentence_pair):
         """
         Sample the most probable alignments from the entire alignment
         space
@@ -140,42 +140,39 @@ class IBMModel(object):
         Hill climbing may be stuck in a local maxima, hence the pegging
         and trying out of different alignments.
 
-        :param src_sentence: 1-indexed source sentence. Zeroeth element
-            should be None.
-        :type src_sentence: list(str)
-
-        :param trg_sentence: 1-indexed target sentence. Zeroeth element
-            will be ignored.
-        :type trg_sentence: list(str)
+        :param sentence_pair: Source and target language sentence pair
+            to generate a sample of alignments from
+        :type sentence_pair: AlignedSent
 
         :return: A set of best alignments represented by their ``AlignmentInfo``
-        :rtype: set(AlignmentInfo)
+            and the best alignment of the set for convenience
+        :rtype: set(AlignmentInfo), AlignmentInfo
         """
         sampled_alignments = set()
-
-        l = len(src_sentence) - 1 # exclude NULL
-        m = len(trg_sentence) - 1
+        l = len(sentence_pair.mots)
+        m = len(sentence_pair.words)
 
         # Start from the best model 2 alignment
-        initial_alignment = self.best_model2_alignment(
-            src_sentence, trg_sentence)
-        best_alignment = self.hillclimb(initial_alignment)
-        sampled_alignments.update(self.neighboring(best_alignment))
+        initial_alignment = self.best_model2_alignment(sentence_pair)
+        potential_alignment = self.hillclimb(initial_alignment)
+        sampled_alignments.update(self.neighboring(potential_alignment))
+        best_alignment = potential_alignment
 
         # Start from other model 2 alignments,
         # with the constraint that j is aligned (pegged) to i
         for j in range(1, m + 1):
             for i in range(0, l + 1):
                 initial_alignment = self.best_model2_alignment(
-                    src_sentence, trg_sentence, j, i)
-                best_alignment = self.hillclimb(initial_alignment, j)
-                neighbors = self.neighboring(best_alignment, j)
+                    sentence_pair, j, i)
+                potential_alignment = self.hillclimb(initial_alignment, j)
+                neighbors = self.neighboring(potential_alignment, j)
                 sampled_alignments.update(neighbors)
+                if potential_alignment.score > best_alignment.score:
+                    best_alignment = potential_alignment
 
-        return sampled_alignments
+        return sampled_alignments, best_alignment
 
-    def best_model2_alignment(self, src_sentence, trg_sentence,
-                              j_pegged = None, i_pegged = 0):
+    def best_model2_alignment(self, sentence_pair, j_pegged=None, i_pegged=0):
         """
         Finds the best alignment according to IBM Model 2
 
@@ -183,13 +180,9 @@ class IBMModel(object):
         above, because it is easier to compute than the best alignments
         in higher models
 
-        :param src_sentence: 1-indexed source sentence. Zeroeth element
-            should be None.
-        :type src_sentence: list(str)
-
-        :param trg_sentence: 1-indexed target sentence. Zeroeth element
-            will be ignored.
-        :type trg_sentence: list(str)
+        :param sentence_pair: Source and target language sentence pair
+            to be word-aligned
+        :type sentence_pair: AlignedSent
 
         :param j_pegged: If specified, the alignment point of j_pegged
             will be fixed to i_pegged
@@ -198,11 +191,14 @@ class IBMModel(object):
         :param i_pegged: Alignment point to j_pegged
         :type i_pegged: int
         """
-        l = len(src_sentence) - 1 # exclude NULL
+        src_sentence = [None] + sentence_pair.mots
+        trg_sentence = ['UNUSED'] + sentence_pair.words  # 1-indexed
+
+        l = len(src_sentence) - 1  # exclude NULL
         m = len(trg_sentence) - 1
 
-        alignment = [0] * (m + 1) # Initialize all alignments to NULL
-        cepts = [[] for i in range((l + 1))] # Initialize all cepts to empty list
+        alignment = [0] * (m + 1)  # init all alignments to NULL
+        cepts = [[] for i in range((l + 1))]  # init all cepts to empty list
 
         for j in range(1, m + 1):
             if j == j_pegged:
@@ -228,7 +224,7 @@ class IBMModel(object):
         return AlignmentInfo(tuple(alignment), tuple(src_sentence),
                              tuple(trg_sentence), cepts)
 
-    def hillclimb(self, alignment_info, j_pegged = None):
+    def hillclimb(self, alignment_info, j_pegged=None):
         """
         Starting from the alignment in ``alignment_info``, look at
         neighboring alignments iteratively for the best one
@@ -244,7 +240,7 @@ class IBMModel(object):
         :return: The best alignment found from hill climbing
         :rtype: AlignmentInfo
         """
-        alignment = alignment_info # alias with shorter name
+        alignment = alignment_info  # alias with shorter name
         max_probability = self.prob_t_a_given_s(alignment)
 
         while True:
@@ -260,9 +256,10 @@ class IBMModel(object):
                 # Until there are no better alignments
                 break
 
+        alignment.score = max_probability
         return alignment
 
-    def neighboring(self, alignment_info, j_pegged = None):
+    def neighboring(self, alignment_info, j_pegged=None):
         """
         Determine the neighbors of ``alignment_info``, obtained by
         moving or swapping one alignment point
@@ -277,7 +274,7 @@ class IBMModel(object):
         """
         neighbors = set()
 
-        l = len(alignment_info.src_sentence) - 1 # exclude NULL
+        l = len(alignment_info.src_sentence) - 1  # exclude NULL
         m = len(alignment_info.trg_sentence) - 1
         original_alignment = alignment_info.alignment
         original_cepts = alignment_info.cepts
@@ -375,6 +372,10 @@ class AlignmentInfo(object):
     Read-only. For a source sentence and its counterpart in the target
     language, this class holds information about the sentence pair's
     alignment, cepts, and fertility.
+
+    Warning: Alignments are one-indexed here, in contrast to
+    nltk.align.Alignment and nltk.align.AlignedSent, which are zero-
+    indexed. This class is not meant to be used outside of IBM models.
     """
 
     def __init__(self, alignment, src_sentence, trg_sentence, cepts):
@@ -409,6 +410,12 @@ class AlignmentInfo(object):
         cepts[4] = (2, 3, 7) means that words in positions 2, 3 and 7
         of the target sentence are aligned to the word in position 4 of
         the source sentence
+        """
+
+        self.score = None
+        """
+        float: Optional. Probability of alignment, as defined by the
+        IBM model that assesses this alignment
         """
 
     def fertility_of_i(self, i):
@@ -464,6 +471,20 @@ class AlignmentInfo(object):
         if tablet_position == 0:
             return None
         return self.cepts[i][tablet_position - 1]
+
+    def zero_indexed_alignment(self):
+        """
+        :return: Zero-indexed alignment, suitable for use in external
+            ``nltk.align`` modules like ``nltk.align.Alignment``
+        :rtype: list(tuple)
+        """
+        zero_indexed_alignment = []
+        for j in range(1, len(self.trg_sentence)):
+            i = self.alignment[j] - 1
+            if i < 0:
+                i = None  # alignment to NULL token
+            zero_indexed_alignment.append((j - 1, i))
+        return zero_indexed_alignment
 
     def __eq__(self, other):
         return self.alignment == other.alignment
