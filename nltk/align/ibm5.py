@@ -239,7 +239,7 @@ class IBMModel5(IBMModel):
             self.non_head_vacancy_table = probability_tables[
                 'non_head_vacancy_table']
 
-        for k in range(0, iterations):
+        for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
 
     def reset_probabilities(self):

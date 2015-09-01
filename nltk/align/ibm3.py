@@ -170,7 +170,8 @@ class IBMModel3(IBMModel):
         self.alignment_table = ibm2.alignment_table
         self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
 
-        self.train(sentence_aligned_corpus, iterations)
+        for n in range(0, iterations):
+            self.train(sentence_aligned_corpus)
 
     def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
         # d(j | i,l,m) = 1 / m for all i, j, l, m
@@ -188,123 +189,120 @@ class IBMModel3(IBMModel):
                     for i in range(0, l + 1):
                         self.distortion_table[j][i][l][m] = initial_prob
 
-    def train(self, parallel_corpus, iterations):
-        for k in range(0, iterations):
-            max_fertility = 0
+    def train(self, parallel_corpus):
+        max_fertility = 0
 
-            # Reset all counts
-            count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
-            count_any_t_given_s = defaultdict(lambda: 0.0)
+        # Reset all counts
+        count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
+        count_any_t_given_s = defaultdict(lambda: 0.0)
 
-            distortion_count = defaultdict(
-                lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                    lambda: 0.0))))
-            distortion_count_for_any_j = defaultdict(
-                lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
+        distortion_count = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: 0.0))))
+        distortion_count_for_any_j = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
 
-            count_p0 = 0.0
-            count_p1 = 0.0
+        count_p0 = 0.0
+        count_p1 = 0.0
 
-            fertility_count = defaultdict(lambda: defaultdict(lambda: 0.0))
-            fertility_count_for_any_phi = defaultdict(lambda: 0.0)
+        fertility_count = defaultdict(lambda: defaultdict(lambda: 0.0))
+        fertility_count_for_any_phi = defaultdict(lambda: 0.0)
 
-            for aligned_sentence in parallel_corpus:
-                src_sentence = [None] + aligned_sentence.mots
-                trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
-                l = len(aligned_sentence.mots)
-                m = len(aligned_sentence.words)
+        for aligned_sentence in parallel_corpus:
+            src_sentence = [None] + aligned_sentence.mots
+            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
+            l = len(aligned_sentence.mots)
+            m = len(aligned_sentence.words)
 
-                # Sample the alignment space
-                sampled_alignments, best_alignment = self.sample(
-                    aligned_sentence)
-                # Record the most probable alignment
-                aligned_sentence.alignment = Alignment(
-                    best_alignment.zero_indexed_alignment())
+            # Sample the alignment space
+            sampled_alignments, best_alignment = self.sample(aligned_sentence)
+            # Record the most probable alignment
+            aligned_sentence.alignment = Alignment(
+                best_alignment.zero_indexed_alignment())
 
-                total_count = 0.0
+            total_count = 0.0
 
-                # E step (a): Compute normalization factors to weigh counts
-                for alignment_info in sampled_alignments:
-                    count = self.prob_t_a_given_s(alignment_info)
-                    total_count += count
+            # E step (a): Compute normalization factors to weigh counts
+            for alignment_info in sampled_alignments:
+                count = self.prob_t_a_given_s(alignment_info)
+                total_count += count
 
-                # E step (b): Collect counts
-                for alignment_info in sampled_alignments:
-                    count = self.prob_t_a_given_s(alignment_info)
-                    normalized_count = count / total_count
-                    null_count = 0
+            # E step (b): Collect counts
+            for alignment_info in sampled_alignments:
+                count = self.prob_t_a_given_s(alignment_info)
+                normalized_count = count / total_count
+                null_count = 0
 
-                    for j in range(1, m + 1):
-                        t = trg_sentence[j]
-                        i = alignment_info.alignment[j]
-                        s = src_sentence[i]
+                for j in range(1, m + 1):
+                    t = trg_sentence[j]
+                    i = alignment_info.alignment[j]
+                    s = src_sentence[i]
 
-                        # Lexical translation
-                        count_t_given_s[t][s] += normalized_count
-                        count_any_t_given_s[s] += normalized_count
+                    # Lexical translation
+                    count_t_given_s[t][s] += normalized_count
+                    count_any_t_given_s[s] += normalized_count
 
-                        # Distortion
-                        distortion_count[j][i][l][m] += normalized_count
-                        distortion_count_for_any_j[i][l][m] += normalized_count
+                    # Distortion
+                    distortion_count[j][i][l][m] += normalized_count
+                    distortion_count_for_any_j[i][l][m] += normalized_count
 
-                        if i == 0:
-                            null_count += 1
+                    if i == 0:
+                        null_count += 1
 
-                    # NULL-aligned words generation
-                    count_p1 += null_count * normalized_count
-                    count_p0 += (m - 2 * null_count) * normalized_count
+                # NULL-aligned words generation
+                count_p1 += null_count * normalized_count
+                count_p0 += (m - 2 * null_count) * normalized_count
 
-                    # Fertility
-                    for i in range(0, l + 1):
-                        fertility = 0
-
-                        for j in range(1, m + 1):
-                            if i == alignment_info.alignment[j]:
-                                fertility += 1
-
-                        s = src_sentence[i]
-                        fertility_count[fertility][s] += normalized_count
-                        fertility_count_for_any_phi[s] += normalized_count
-
-                        if fertility > max_fertility:
-                            max_fertility = fertility
-
-            # M step: Update probabilities with maximum likelihood estimates
-            # If any probability is less than MIN_PROB, clamp it to MIN_PROB
-            MIN_PROB = IBMModel.MIN_PROB
-
-            # Lexical translation
-            for s in self.src_vocab:
-                for t in self.trg_vocab:
-                    estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
-                    self.translation_table[t][s] = max(estimate, MIN_PROB)
-
-            # Distortion
-            for aligned_sentence in parallel_corpus:
-                l = len(aligned_sentence.mots)
-                m = len(aligned_sentence.words)
-
+                # Fertility
                 for i in range(0, l + 1):
+                    fertility = 0
+
                     for j in range(1, m + 1):
-                        estimate = (distortion_count[j][i][l][m] /
-                                    distortion_count_for_any_j[i][l][m])
-                        self.distortion_table[j][i][l][m] = max(estimate,
-                                                                MIN_PROB)
+                        if i == alignment_info.alignment[j]:
+                            fertility += 1
 
-            # Fertility
-            for fertility in range(0, max_fertility + 1):
-                for s in self.src_vocab:
-                    estimate = (fertility_count[fertility][s] /
-                                fertility_count_for_any_phi[s])
-                    self.fertility_table[fertility][s] = max(estimate, MIN_PROB)
+                    s = src_sentence[i]
+                    fertility_count[fertility][s] += normalized_count
+                    fertility_count_for_any_phi[s] += normalized_count
 
-            # NULL-aligned words generation
-            p1_estimate = count_p1 / (count_p1 + count_p0)
-            p1_estimate = max(p1_estimate, MIN_PROB)
+                    if fertility > max_fertility:
+                        max_fertility = fertility
 
-            # Clip p1 if it is too large, because p0 = 1 - p1 should
-            # not be smaller than MIN_PROB
-            self.p1 = min(p1_estimate, 1 - MIN_PROB)
+        # M step: Update probabilities with maximum likelihood estimates
+        # If any probability is less than MIN_PROB, clamp it to MIN_PROB
+        MIN_PROB = IBMModel.MIN_PROB
+
+        # Lexical translation
+        for s in self.src_vocab:
+            for t in self.trg_vocab:
+                estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                self.translation_table[t][s] = max(estimate, MIN_PROB)
+
+        # Distortion
+        for aligned_sentence in parallel_corpus:
+            l = len(aligned_sentence.mots)
+            m = len(aligned_sentence.words)
+
+            for i in range(0, l + 1):
+                for j in range(1, m + 1):
+                    estimate = (distortion_count[j][i][l][m] /
+                                distortion_count_for_any_j[i][l][m])
+                    self.distortion_table[j][i][l][m] = max(estimate, MIN_PROB)
+
+        # Fertility
+        for fertility in range(0, max_fertility + 1):
+            for s in self.src_vocab:
+                estimate = (fertility_count[fertility][s] /
+                            fertility_count_for_any_phi[s])
+                self.fertility_table[fertility][s] = max(estimate, MIN_PROB)
+
+        # NULL-aligned words generation
+        p1_estimate = count_p1 / (count_p1 + count_p0)
+        p1_estimate = max(p1_estimate, MIN_PROB)
+
+        # Clip p1 if it is too large, because p0 = 1 - p1 should not be
+        # smaller than MIN_PROB
+        self.p1 = min(p1_estimate, 1 - MIN_PROB)
 
     def prob_t_a_given_s(self, alignment_info):
         """

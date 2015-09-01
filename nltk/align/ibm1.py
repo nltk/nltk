@@ -112,7 +112,9 @@ class IBMModel1(IBMModel):
         super(IBMModel1, self).__init__(sentence_aligned_corpus)
         self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
 
-        self.train(sentence_aligned_corpus, iterations)
+        for n in range(0, iterations):
+            self.train(sentence_aligned_corpus)
+
         self.__align_all(sentence_aligned_corpus)
 
     def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
@@ -125,36 +127,34 @@ class IBMModel1(IBMModel):
         for t in self.trg_vocab:
             self.translation_table[t] = defaultdict(lambda: initial_prob)
 
-    def train(self, parallel_corpus, iterations):
-        for i in range(0, iterations):
-            count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
-            count_any_t_given_s = defaultdict(lambda: 0.0)
+    def train(self, parallel_corpus):
+        count_t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
+        count_any_t_given_s = defaultdict(lambda: 0.0)
 
-            for aligned_sentence in parallel_corpus:
-                trg_sentence = aligned_sentence.words
-                src_sentence = [None] + aligned_sentence.mots
-                total_count = defaultdict(lambda: 0.0)
+        for aligned_sentence in parallel_corpus:
+            trg_sentence = aligned_sentence.words
+            src_sentence = [None] + aligned_sentence.mots
+            total_count = defaultdict(lambda: 0.0)
 
-                # E step (a): Compute normalization factors to weigh counts
-                for t in trg_sentence:
-                    if total_count[t] == 0.0:
-                        for s in src_sentence:
-                            total_count[t] += self.translation_table[t][s]
-
-                # E step (b): Collect counts
-                for t in trg_sentence:
+            # E step (a): Compute normalization factors to weigh counts
+            for t in trg_sentence:
+                if total_count[t] == 0.0:
                     for s in src_sentence:
-                        count = self.translation_table[t][s]
-                        normalized_count = count / total_count[t]
-                        count_t_given_s[t][s] += normalized_count
-                        count_any_t_given_s[s] += normalized_count
+                        total_count[t] += self.translation_table[t][s]
 
-            # M step: Update probabilities with maximum likelihood estimate
-            for s in self.src_vocab:
-                for t in self.trg_vocab:
-                    estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
-                    self.translation_table[t][s] = max(estimate,
-                                                       IBMModel.MIN_PROB)
+            # E step (b): Collect counts
+            for t in trg_sentence:
+                for s in src_sentence:
+                    count = self.translation_table[t][s]
+                    normalized_count = count / total_count[t]
+                    count_t_given_s[t][s] += normalized_count
+                    count_any_t_given_s[s] += normalized_count
+
+        # M step: Update probabilities with maximum likelihood estimate
+        for s in self.src_vocab:
+            for t in self.trg_vocab:
+                estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
 
     def prob_t_a_given_s(self, alignment_info):
         """

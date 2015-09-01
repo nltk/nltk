@@ -120,7 +120,9 @@ class IBMModel2(IBMModel):
         self.translation_table = ibm1.translation_table
         self.set_uniform_distortion_probabilities(sentence_aligned_corpus)
 
-        self.train(sentence_aligned_corpus, iterations)
+        for n in range(0, iterations):
+            self.train(sentence_aligned_corpus)
+
         self.__align_all(sentence_aligned_corpus)
 
     def set_uniform_distortion_probabilities(self, sentence_aligned_corpus):
@@ -140,66 +142,63 @@ class IBMModel2(IBMModel):
                     for j in range(1, m + 1):
                         self.alignment_table[i][j][l][m] = initial_prob
 
-    def train(self, parallel_corpus, iterations):
-        for i in range(0, iterations):
-            count_t_given_s = defaultdict(lambda: defaultdict(float))
-            count_any_t_given_s = defaultdict(float)
+    def train(self, parallel_corpus):
+        count_t_given_s = defaultdict(lambda: defaultdict(float))
+        count_any_t_given_s = defaultdict(float)
 
-            # count of i given j, l, m
-            alignment_count = defaultdict(
-                lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                    lambda: 0.0))))
-            alignment_count_for_any_i = defaultdict(
-                lambda: defaultdict(lambda: defaultdict(
-                    lambda: 0.0)))
+        # count of i given j, l, m
+        alignment_count = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: 0.0))))
+        alignment_count_for_any_i = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
 
-            for aligned_sentence in parallel_corpus:
-                src_sentence = [None] + aligned_sentence.mots
-                trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
-                l = len(aligned_sentence.mots)
-                m = len(aligned_sentence.words)
-                total_count = defaultdict(float)
+        for aligned_sentence in parallel_corpus:
+            src_sentence = [None] + aligned_sentence.mots
+            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
+            l = len(aligned_sentence.mots)
+            m = len(aligned_sentence.words)
+            total_count = defaultdict(float)
 
-                # E step (a): Compute normalization factors to weigh counts
-                for j in range(1, m + 1):
-                    t = trg_sentence[j]
-                    total_count[t] = 0
-                    for i in range(0, l + 1):
-                        s = src_sentence[i]
-                        count = (self.translation_table[t][s] *
-                                 self.alignment_table[i][j][l][m])
-                        total_count[t] += count
-
-                # E step (b): Collect counts
-                for j in range(1, m + 1):
-                    t = trg_sentence[j]
-                    for i in range(0, l + 1):
-                        s = src_sentence[i]
-                        count = (self.translation_table[t][s] *
-                                 self.alignment_table[i][j][l][m])
-                        normalized_count = count / total_count[t]
-
-                        count_t_given_s[t][s] += normalized_count
-                        count_any_t_given_s[s] += normalized_count
-                        alignment_count[i][j][l][m] += normalized_count
-                        alignment_count_for_any_i[j][l][m] += normalized_count
-
-            # M step: Update probabilities with maximum likelihood estimates
-            for s in self.src_vocab:
-                for t in self.trg_vocab:
-                    estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
-                    self.translation_table[t][s] = max(estimate,
-                                                       IBMModel.MIN_PROB)
-
-            for aligned_sentence in parallel_corpus:
-                l = len(aligned_sentence.mots)
-                m = len(aligned_sentence.words)
+            # E step (a): Compute normalization factors to weigh counts
+            for j in range(1, m + 1):
+                t = trg_sentence[j]
+                total_count[t] = 0
                 for i in range(0, l + 1):
-                    for j in range(1, m + 1):
-                        estimate = (alignment_count[i][j][l][m] /
-                                    alignment_count_for_any_i[j][l][m])
-                        self.alignment_table[i][j][l][m] = max(estimate,
-                                                              IBMModel.MIN_PROB)
+                    s = src_sentence[i]
+                    count = (self.translation_table[t][s] *
+                             self.alignment_table[i][j][l][m])
+                    total_count[t] += count
+
+            # E step (b): Collect counts
+            for j in range(1, m + 1):
+                t = trg_sentence[j]
+                for i in range(0, l + 1):
+                    s = src_sentence[i]
+                    count = (self.translation_table[t][s] *
+                             self.alignment_table[i][j][l][m])
+                    normalized_count = count / total_count[t]
+
+                    count_t_given_s[t][s] += normalized_count
+                    count_any_t_given_s[s] += normalized_count
+                    alignment_count[i][j][l][m] += normalized_count
+                    alignment_count_for_any_i[j][l][m] += normalized_count
+
+        # M step: Update probabilities with maximum likelihood estimates
+        for s in self.src_vocab:
+            for t in self.trg_vocab:
+                estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
+                self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
+
+        for aligned_sentence in parallel_corpus:
+            l = len(aligned_sentence.mots)
+            m = len(aligned_sentence.words)
+            for i in range(0, l + 1):
+                for j in range(1, m + 1):
+                    estimate = (alignment_count[i][j][l][m] /
+                                alignment_count_for_any_i[j][l][m])
+                    self.alignment_table[i][j][l][m] = max(estimate,
+                                                           IBMModel.MIN_PROB)
 
     def prob_t_a_given_s(self, alignment_info):
         """
