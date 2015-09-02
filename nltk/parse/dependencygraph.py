@@ -288,6 +288,10 @@ class DependencyGraph(object):
             word, tag, head, rel = cells
             return word, word, tag, tag, '', head, rel
 
+        def extract_7_cells(cells):
+            _, word, lemma, tag, _, head, rel = cells
+            return word, lemma, tag, tag, '', head, rel
+
         def extract_10_cells(cells):
             _, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
             return word, lemma, ctag, tag, feats, head, rel
@@ -295,6 +299,7 @@ class DependencyGraph(object):
         extractors = {
             3: extract_3_cells,
             4: extract_4_cells,
+            7: extract_7_cells,
             10: extract_10_cells,
         }
 
@@ -323,6 +328,7 @@ class DependencyGraph(object):
 
             word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
 
+            if head == '_': continue
             head = int(head)
             if zero_based:
                 head += 1

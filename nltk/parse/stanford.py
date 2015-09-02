@@ -13,6 +13,7 @@ import tempfile
 import os
 import re
 from subprocess import PIPE
+from io import StringIO
 
 from nltk import compat
 from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_options
@@ -27,21 +28,29 @@ class GenericStanfordParser(ParserI):
     """Interface to the Stanford Parser"""
 
     _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)(\.(\d+))+-models\.jar'
-    _JAR = 'stanford-parser.jar'
+    _JAR = r'stanford-parser\.jar'
+    _MAIN_CLASS = 'edu.stanford.nlp.parser.lexparser.LexicalizedParser'
+
+    _USE_STDIN = False
+    _DOUBLE_SPACED_OUTPUT = False
 
     def __init__(self, path_to_jar=None, path_to_models_jar=None,
                  model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz',
-                 encoding='utf8', verbose=False, java_options='-mx1000m'):
+                 encoding='utf8', verbose=False,
+                 java_options='-mx1000m', corenlp_options=''):
 
-        self._stanford_jar = find_jar(
-            self._JAR, path_to_jar,
-            env_vars=('STANFORD_PARSER',),
-            searchpath=(), url=_stanford_url,
-            verbose=verbose
+        # find the most recent code and model jar
+        stanford_jar = max(
+            find_jar_iter(
+                self._JAR, path_to_jar,
+                env_vars=('STANFORD_PARSER',),
+                searchpath=(), url=_stanford_url,
+                verbose=verbose, is_regex=True
+            ),
+            key=lambda model_name: re.match(self._JAR, model_name)
         )
 
-        # find the most recent model
-        self._model_jar=max(
+        model_jar=max(
             find_jar_iter(
                 self._MODEL_JAR_PATTERN, path_to_models_jar,
                 env_vars=('STANFORD_MODELS',),
@@ -51,19 +60,34 @@ class GenericStanfordParser(ParserI):
             key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
         )
 
+        self._classpath = (stanford_jar, model_jar)
+
         self.model_path = model_path
         self._encoding = encoding
+        self.corenlp_options = corenlp_options
         self.java_options = java_options
 
     def _parse_trees_output(self, output_):
         res = []
         cur_lines = []
+        cur_trees = []
+        blank = False
         for line in output_.splitlines(False):
             if line == '':
-                res.append(iter([self._make_tree('\n'.join(cur_lines))]))
-                cur_lines = []
+                if blank:
+                    res.append(iter(cur_trees))
+                    cur_trees = []
+                    blank = False
+                elif self._DOUBLE_SPACED_OUTPUT:
+                    cur_trees.append(self._make_tree('\n'.join(cur_lines)))
+                    cur_lines = []
+                    blank = True
+                else:
+                    res.append(iter([self._make_tree('\n'.join(cur_lines))]))
+                    cur_lines = []
             else:
                 cur_lines.append(line)
+                blank = False
         return iter(res)
 
     def parse_sents(self, sentences, verbose=False):
@@ -80,7 +104,7 @@ class GenericStanfordParser(ParserI):
         :rtype: iter(iter(Tree))
         """
         cmd = [
-            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            self._MAIN_CLASS,
             '-model', self.model_path,
             '-sentences', 'newline',
             '-outputFormat', self._OUTPUT_FORMAT,
@@ -113,7 +137,7 @@ class GenericStanfordParser(ParserI):
         :rtype: iter(iter(Tree))
         """
         cmd = [
-            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            self._MAIN_CLASS,
             '-model', self.model_path,
             '-sentences', 'newline',
             '-outputFormat', self._OUTPUT_FORMAT,
@@ -144,7 +168,7 @@ class GenericStanfordParser(ParserI):
         """
         tag_separator = '/'
         cmd = [
-            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            self._MAIN_CLASS,
             '-model', self.model_path,
             '-sentences', 'newline',
             '-outputFormat', self._OUTPUT_FORMAT,
@@ -160,6 +184,8 @@ class GenericStanfordParser(ParserI):
     def _execute(self, cmd, input_, verbose=False):
         encoding = self._encoding
         cmd.extend(['-encoding', encoding])
+        if self.corenlp_options:
+            cmd.append(self.corenlp_options)
 
         default_options = ' '.join(_java_options)
 
@@ -174,11 +200,16 @@ class GenericStanfordParser(ParserI):
             input_file.write(input_)
             input_file.flush()
 
-            cmd.append(input_file.name)
-
             # Run the tagger and get the output.
-            stdout, stderr = java(cmd, classpath=(self._stanford_jar, self._model_jar),
-                                  stdout=PIPE, stderr=PIPE)
+            if self._USE_STDIN:
+                input_file.seek(0)
+                stdout, stderr = java(cmd, classpath=self._classpath,
+                                      stdin=input_file, stdout=PIPE, stderr=PIPE)
+            else:
+                cmd.append(input_file.name)
+                stdout, stderr = java(cmd, classpath=self._classpath,
+                                      stdout=PIPE, stderr=PIPE)
+
             stdout = stdout.decode(encoding)
 
         os.unlink(input_file.name)
@@ -297,8 +328,25 @@ class StanfordDependencyParser(GenericStanfordParser):
 
     _OUTPUT_FORMAT = 'conll2007'
 
+    def __init__(self, use_nndep=False, verbose=False, *args, **kwargs):
+        if use_nndep:
+            self._OUTPUT_FORMAT = 'conll'
+            self._MAIN_CLASS = 'edu.stanford.nlp.pipeline.StanfordCoreNLP'
+            self._JAR = r'stanford-corenlp-(\d+)(\.(\d+))+\.jar'
+            self._MODEL_JAR_PATTERN = r'stanford-corenlp-(\d+)(\.(\d+))+-models\.jar'
+            self._USE_STDIN = True
+            self._DOUBLE_SPACED_OUTPUT = True
+            self._TOP_RELATION_LABEL = 'ROOT'
+        else:
+            self._TOP_RELATION_LABEL = 'root'
+
+        super(StanfordDependencyParser, self).__init__(verbose=verbose, *args, **kwargs)
+
+        if use_nndep:
+            self.corenlp_options += '-annotators tokenize,ssplit,pos,depparse'
+
     def _make_tree(self, result):
-        return DependencyGraph(result, top_relation_label='root')
+        return DependencyGraph(result, top_relation_label=self._TOP_RELATION_LABEL)
 
 
 def setup_module(module):
