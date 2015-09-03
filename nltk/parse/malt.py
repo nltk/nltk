@@ -46,13 +46,13 @@ def malt_regex_tagger():
     (r'(across|Across|through|Through)$', 'IN'),# space prepopsitions
     (r'(into|Into|towards|Towards)$', 'IN'),    # space prepopsitions
     (r'(onto|Onto|from|From)$', 'IN'),          # space prepopsitions
-    (r'.*able$', 'JJ'),                # adjectives
-    (r'.*ness$', 'NN'),                # nouns formed from adjectives
-    (r'.*ly$', 'RB'),                  # adverbs
-    (r'.*s$', 'NNS'),                  # plural nouns
-    (r'.*ing$', 'VBG'),                # gerunds
-    (r'.*ed$', 'VBD'),                 # past tense verbs
-    (r'.*', 'NN'),                     # nouns (default)
+    (r'.*able$', 'JJ'), # adjectives
+    (r'.*ness$', 'NN'), # nouns formed from adjectives
+    (r'.*ly$', 'RB'),   # adverbs
+    (r'.*s$', 'NNS'),   # plural nouns
+    (r'.*ing$', 'VBG'), # gerunds
+    (r'.*ed$', 'VBD'),  # past tense verbs
+    (r'.*', 'NN'),      # nouns (default)
     ])
     return _tagger.tag
 

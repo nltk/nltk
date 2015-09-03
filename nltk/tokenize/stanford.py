@@ -25,7 +25,7 @@ class StanfordTokenizer(TokenizerI):
     r"""
     Interface to the Stanford Tokenizer
 
-    >>> from nltk.tokenize.stanford import StanfordTokenizer
+    >>> from nltk.tokenize import StanfordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
     >>> StanfordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
