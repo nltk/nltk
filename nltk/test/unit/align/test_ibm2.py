@@ -33,12 +33,12 @@ class TestIBMModel2(unittest.TestCase):
         alignment_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(
                 lambda: defaultdict(float))))
-        alignment_table[0][3][5][6] = 0.97 # None -> to
-        alignment_table[1][1][5][6] = 0.97 # ich -> i
-        alignment_table[2][4][5][6] = 0.97 # esse -> eat
-        alignment_table[4][2][5][6] = 0.97 # gern -> love
-        alignment_table[5][5][5][6] = 0.96 # räucherschinken -> smoked
-        alignment_table[5][6][5][6] = 0.96 # räucherschinken -> ham
+        alignment_table[0][3][5][6] = 0.97  # None -> to
+        alignment_table[1][1][5][6] = 0.97  # ich -> i
+        alignment_table[2][4][5][6] = 0.97  # esse -> eat
+        alignment_table[4][2][5][6] = 0.97  # gern -> love
+        alignment_table[5][5][5][6] = 0.96  # räucherschinken -> smoked
+        alignment_table[5][6][5][6] = 0.96  # räucherschinken -> ham
 
         model2 = IBMModel2(corpus, 0)
         model2.translation_table = translation_table

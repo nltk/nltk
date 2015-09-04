@@ -103,12 +103,13 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 
 from __future__ import division
 from collections import defaultdict
-from nltk.align import AlignedSent
-from nltk.align.ibm_model import Counts
-from nltk.align.ibm_model import IBMModel
-from nltk.align.ibm_model import longest_target_sentence_length
-from nltk.align.ibm3 import IBMModel3
 from math import factorial
+from nltk.align import AlignedSent
+from nltk.align import Alignment
+from nltk.align import IBMModel
+from nltk.align import IBMModel3
+from nltk.align.ibm_model import Counts
+from nltk.align.ibm_model import longest_target_sentence_length
 import warnings
 
 
@@ -117,29 +118,56 @@ class IBMModel4(IBMModel):
     Translation model that reorders output words based on their type and
     their distance from other related words in the output sentence
 
-    >>> align_sents = []
-    >>> align_sents.append(AlignedSent(['klein', 'ist', 'das', 'Haus'], ['the', 'house', 'is', 'small']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus'], ['the', 'house']))
-    >>> align_sents.append(AlignedSent(['das', 'Buch'], ['the', 'book']))
-    >>> align_sents.append(AlignedSent(['ein', 'Buch'], ['a', 'book']))
-    >>> src_classes = {'a': 0, 'big': 1, 'book': 2, 'house': 2, 'is': 3, 'small': 1, 'the': 0 }
-    >>> trg_classes = {'das': 0, 'Buch': 1, 'ein': 0, 'groß': 2, 'Haus': 1, 'ist': 3, 'ja': 4, 'klein': 2 }
+    >>> bitext = []
+    >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['ein', 'haus', 'ist', 'klein'], ['a', 'house', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
+    >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
+    >>> bitext.append(AlignedSent(['ein', 'buch'], ['a', 'book']))
+    >>> bitext.append(AlignedSent(['ich', 'fasse', 'das', 'buch', 'zusammen'], ['i', 'summarize', 'the', 'book']))
+    >>> bitext.append(AlignedSent(['fasse', 'zusammen'], ['summarize']))
+    >>> src_classes = {'the': 0, 'a': 0, 'small': 1, 'big': 1, 'house': 2, 'book': 2, 'is': 3, 'i': 4, 'summarize': 5 }
+    >>> trg_classes = {'das': 0, 'ein': 0, 'haus': 1, 'buch': 1, 'klein': 2, 'groß': 2, 'ist': 3, 'ja': 4, 'ich': 5, 'fasse': 6, 'zusammen': 6 }
 
-    >>> ibm4 = IBMModel4(align_sents, 5, src_classes, trg_classes)
+    >>> ibm4 = IBMModel4(bitext, 5, src_classes, trg_classes)
 
-    >>> print('{0:.1f}'.format(ibm4.translation_table['Buch']['book']))
-    1.0
-    >>> print('{0:.1f}'.format(ibm4.translation_table['das']['book']))
-    0.0
-    >>> print('{0:.1f}'.format(ibm4.translation_table[None]['book']))
-    0.0
+    >>> print('{0:.3f}'.format(ibm4.translation_table['buch']['book']))
+    1.000
+    >>> print('{0:.3f}'.format(ibm4.translation_table['das']['book']))
+    0.000
+    >>> print('{0:.3f}'.format(ibm4.translation_table['ja'][None]))
+    1.000
+
+    >>> print('{0:.3f}'.format(ibm4.head_distortion_table[1][0][1]))
+    1.000
+    >>> print('{0:.3f}'.format(ibm4.head_distortion_table[2][0][1]))
+    0.000
+    >>> print('{0:.3f}'.format(ibm4.non_head_distortion_table[3][6]))
+    0.500
+
+    >>> print('{0:.3f}'.format(ibm4.fertility_table[2]['summarize']))
+    1.000
+    >>> print('{0:.3f}'.format(ibm4.fertility_table[1]['book']))
+    1.000
+
+    >>> print('{0:.3f}'.format(ibm4.p1))
+    0.033
+
+    >>> test_sentence = bitext[2]
+    >>> test_sentence.words
+    ['das', 'buch', 'ist', 'ja', 'klein']
+    >>> test_sentence.mots
+    ['the', 'book', 'is', 'small']
+    >>> test_sentence.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (3, None), (4, 3)])
 
     """
 
     def __init__(self, sentence_aligned_corpus, iterations,
                  source_word_classes, target_word_classes,
-                 probability_tables = None):
+                 probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, distortion models, a fertility model, and a
@@ -256,12 +284,13 @@ class IBMModel4(IBMModel):
         counts = Model4Counts()
 
         for aligned_sentence in parallel_corpus:
-            src_sentence = [None] + aligned_sentence.mots
-            trg_sentence = ['UNUSED'] + aligned_sentence.words # 1-indexed
             m = len(aligned_sentence.words)
 
             # Sample the alignment space
-            sampled_alignments = self.sample(src_sentence, trg_sentence)
+            sampled_alignments, best_alignment = self.sample(aligned_sentence)
+            # Record the most probable alignment
+            aligned_sentence.alignment = Alignment(
+                best_alignment.zero_indexed_alignment())
 
             # E step (a): Compute normalization factors to weigh counts
             total_count = self.prob_of_alignments(sampled_alignments)
@@ -317,7 +346,7 @@ class IBMModel4(IBMModel):
         """
         return IBMModel4.model4_prob_t_a_given_s(alignment_info, self)
 
-    @staticmethod # exposed for Model 5 to use
+    @staticmethod  # exposed for Model 5 to use
     def model4_prob_t_a_given_s(alignment_info, ibm_model):
         probability = 1.0
         MIN_PROB = IBMModel.MIN_PROB

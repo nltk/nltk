@@ -12,12 +12,13 @@ from nltk.align.ibm_model import IBMModel
 
 
 class TestIBMModel(unittest.TestCase):
-    __TEST_SRC_SENTENCE = (None, "j'", 'aime', 'bien', 'jambon')
-    __TEST_TRG_SENTENCE = ('UNUSED', 'i', 'love', 'ham')
+    __TEST_SRC_SENTENCE = ["j'", 'aime', 'bien', 'jambon']
+    __TEST_TRG_SENTENCE = ['i', 'love', 'ham']
 
     def test_vocabularies_are_initialized(self):
         parallel_corpora = [
-            AlignedSent(['one', 'two', 'three', 'four'], ['un', 'deux', 'trois']),
+            AlignedSent(['one', 'two', 'three', 'four'],
+                        ['un', 'deux', 'trois']),
             AlignedSent(['five', 'one', 'six'], ['quatre', 'cinq', 'six']),
             AlignedSent([], ['sept'])
         ]
@@ -30,13 +31,14 @@ class TestIBMModel(unittest.TestCase):
         parallel_corpora = []
 
         ibm_model = IBMModel(parallel_corpora)
-        self.assertEqual(len(ibm_model.src_vocab), 1) # addition of NULL token
+        self.assertEqual(len(ibm_model.src_vocab), 1)  # addition of NULL token
         self.assertEqual(len(ibm_model.trg_vocab), 0)
 
     def test_best_model2_alignment(self):
         # arrange
-        src_sentence = TestIBMModel.__TEST_SRC_SENTENCE
-        trg_sentence = TestIBMModel.__TEST_TRG_SENTENCE
+        sentence_pair = AlignedSent(
+            TestIBMModel.__TEST_TRG_SENTENCE,
+            TestIBMModel.__TEST_SRC_SENTENCE)
         # None and 'bien' have zero fertility
         translation_table = {
             'i': {"j'": 0.9, 'aime': 0.05, 'bien': 0.02, 'jambon': 0.03,
@@ -55,16 +57,17 @@ class TestIBMModel(unittest.TestCase):
         ibm_model.alignment_table = alignment_table
 
         # act
-        a_info = ibm_model.best_model2_alignment(src_sentence, trg_sentence)
+        a_info = ibm_model.best_model2_alignment(sentence_pair)
 
         # assert
-        self.assertEqual(a_info.alignment[1:], (1, 2, 4)) # 0th element unused
+        self.assertEqual(a_info.alignment[1:], (1, 2, 4))  # 0th element unused
         self.assertEqual(a_info.cepts, [[], [1], [2], [], [3]])
 
     def test_best_model2_alignment_does_not_change_pegged_alignment(self):
         # arrange
-        src_sentence = TestIBMModel.__TEST_SRC_SENTENCE
-        trg_sentence = TestIBMModel.__TEST_TRG_SENTENCE
+        sentence_pair = AlignedSent(
+            TestIBMModel.__TEST_TRG_SENTENCE,
+            TestIBMModel.__TEST_SRC_SENTENCE)
         translation_table = {
             'i': {"j'": 0.9, 'aime': 0.05, 'bien': 0.02, 'jambon': 0.03,
                   None: 0},
@@ -81,16 +84,16 @@ class TestIBMModel(unittest.TestCase):
         ibm_model.alignment_table = alignment_table
 
         # act: force 'love' to be pegged to 'jambon'
-        a_info = ibm_model.best_model2_alignment(src_sentence, trg_sentence,
-                                                 2, 4)
+        a_info = ibm_model.best_model2_alignment(sentence_pair, 2, 4)
         # assert
         self.assertEqual(a_info.alignment[1:], (1, 4, 4))
         self.assertEqual(a_info.cepts, [[], [1], [], [], [2, 3]])
 
     def test_best_model2_alignment_handles_fertile_words(self):
         # arrange
-        src_sentence = TestIBMModel.__TEST_SRC_SENTENCE
-        trg_sentence = ['UNUSED', 'i', 'really', ',', 'really', 'love', 'ham']
+        sentence_pair = AlignedSent(
+            ['i', 'really', ',', 'really', 'love', 'ham'],
+            TestIBMModel.__TEST_SRC_SENTENCE)
         # 'bien' produces 2 target words: 'really' and another 'really'
         translation_table = {
             'i': {"j'": 0.9, 'aime': 0.05, 'bien': 0.02, 'jambon': 0.03, None: 0},
@@ -108,7 +111,7 @@ class TestIBMModel(unittest.TestCase):
         ibm_model.alignment_table = alignment_table
 
         # act
-        a_info = ibm_model.best_model2_alignment(src_sentence, trg_sentence)
+        a_info = ibm_model.best_model2_alignment(sentence_pair)
 
         # assert
         self.assertEqual(a_info.alignment[1:], (1, 3, 0, 3, 2, 4))
@@ -116,12 +119,11 @@ class TestIBMModel(unittest.TestCase):
 
     def test_best_model2_alignment_handles_empty_src_sentence(self):
         # arrange
-        src_sentence = [None]
-        trg_sentence = TestIBMModel.__TEST_TRG_SENTENCE
+        sentence_pair = AlignedSent(TestIBMModel.__TEST_TRG_SENTENCE, [])
         ibm_model = IBMModel([])
 
         # act
-        a_info = ibm_model.best_model2_alignment(src_sentence, trg_sentence)
+        a_info = ibm_model.best_model2_alignment(sentence_pair)
 
         # assert
         self.assertEqual(a_info.alignment[1:], (0, 0, 0))
@@ -129,12 +131,11 @@ class TestIBMModel(unittest.TestCase):
 
     def test_best_model2_alignment_handles_empty_trg_sentence(self):
         # arrange
-        src_sentence = TestIBMModel.__TEST_SRC_SENTENCE
-        trg_sentence = ['UNUSED']
+        sentence_pair = AlignedSent([], TestIBMModel.__TEST_SRC_SENTENCE)
         ibm_model = IBMModel([])
 
         # act
-        a_info = ibm_model.best_model2_alignment(src_sentence, trg_sentence)
+        a_info = ibm_model.best_model2_alignment(sentence_pair)
 
         # assert
         self.assertEqual(a_info.alignment[1:], ())
@@ -256,12 +257,14 @@ class TestIBMModel(unittest.TestCase):
 
     def test_sample(self):
         # arrange
+        sentence_pair = AlignedSent(
+            TestIBMModel.__TEST_TRG_SENTENCE,
+            TestIBMModel.__TEST_SRC_SENTENCE)
         ibm_model = IBMModel([])
         ibm_model.prob_t_a_given_s = lambda x: 0.001
 
         # act
-        samples = ibm_model.sample(TestIBMModel.__TEST_SRC_SENTENCE,
-                                   TestIBMModel.__TEST_TRG_SENTENCE)
+        samples, best_alignment = ibm_model.sample(sentence_pair)
 
         # assert
         self.assertEqual(len(samples), 61)

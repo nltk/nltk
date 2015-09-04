@@ -33,15 +33,8 @@ import gzip
 from nltk.compat import UTC
 
 
-try:
-    from twython import Twython, TwythonStreamer
-    from twython.exceptions import TwythonRateLimitError, TwythonError
-except ImportError as err:
-    import textwrap
-    MSG = """The NLTK twitterclient module requires the Twython package. See\
-    https://twython.readthedocs.org/ for installation instructions."""
-    err.msg = textwrap.fill(MSG)
-    raise
+from twython import Twython, TwythonStreamer
+from twython.exceptions import TwythonRateLimitError, TwythonError
 
 from nltk.twitter.util import credsfromfile, guess_path
 from nltk.twitter.api import TweetHandlerI, BasicTweetHandler
@@ -200,7 +193,7 @@ class Query(Twython):
             if not (self.handler.do_continue() and self.handler.repeat):
                 break
         self.handler.on_finish()
- 
+
     def search_tweets(self, keywords, limit=100, lang='en', max_id=None,
                       retries_after_twython_exception=0):
         """
@@ -229,8 +222,8 @@ class Query(Twython):
                                   result_type='recent')
             count = len(results['statuses'])
             if count == 0:
-                print("No Tweets available through rest api for those keywords")
-                return                
+                print("No Tweets available through REST API for those keywords")
+                return
             count_from_query = count
             max_id = results['statuses'][count - 1]['id'] - 1
 
@@ -258,7 +251,7 @@ class Query(Twython):
                 if retries_after_twython_exception == retries:
                     raise e
                 retries += 1
-                
+
             count = len(results['statuses'])
             if count == 0:
                 print("No more Tweets available through rest api")
@@ -339,10 +332,10 @@ class Twitter(object):
         in the past
 
         :param str lang: language
-        
+
         :param bool repeat: flag to determine whether multiple files should be\
         written. If `True`, the length of each file will be set by the value\
-        of `limit`. Use only if `to_screen` is `False`. See also :py:func:`handle`.        
+        of `limit`. Use only if `to_screen` is `False`. See also :py:func:`handle`.
 
         :param gzip_compress: if `True`, ouput files are compressed with gzip
         """
@@ -484,27 +477,27 @@ class TweetWriter(TweetHandlerI):
                 return
 
         self.startingup = False
-        
+
     def on_finish(self):
         print('Written {0} Tweets'.format(self.counter))
         if self.output:
             self.output.close()
-        
+
     def do_continue(self):
         if self.repeat == False:
             return TweetHandlerI.do_continue(self)
-        
+
         if self.do_stop:
             # stop for a functional cause (e.g. date limit)
             return False
-        
+
         if self.counter == self.limit:
             # repeat is True, thus close output file and
             # create a new one
             self._restart_file()
         return True
-        
-        
+
+
     def _restart_file(self):
         self.on_finish()
         self.fname = self.timestamped_file()

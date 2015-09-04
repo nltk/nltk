@@ -113,12 +113,13 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 
 from __future__ import division
 from collections import defaultdict
-from nltk.align import AlignedSent
-from nltk.align.ibm_model import Counts
-from nltk.align.ibm_model import IBMModel
-from nltk.align.ibm_model import longest_target_sentence_length
-from nltk.align.ibm4 import IBMModel4
 from math import factorial
+from nltk.align import AlignedSent
+from nltk.align import Alignment
+from nltk.align import IBMModel
+from nltk.align import IBMModel4
+from nltk.align.ibm_model import Counts
+from nltk.align.ibm_model import longest_target_sentence_length
 import warnings
 
 
@@ -127,23 +128,43 @@ class IBMModel5(IBMModel):
     Translation model that keeps track of vacant positions in the target
     sentence to decide where to place translated words
 
-    >>> align_sents = []
-    >>> align_sents.append(AlignedSent(['klein', 'ist', 'das', 'Haus'], ['the', 'house', 'is', 'small']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
-    >>> align_sents.append(AlignedSent(['das', 'Haus'], ['the', 'house']))
-    >>> align_sents.append(AlignedSent(['das', 'Buch'], ['the', 'book']))
-    >>> align_sents.append(AlignedSent(['ein', 'Buch'], ['a', 'book']))
-    >>> src_classes = {'a': 0, 'big': 1, 'book': 2, 'house': 2, 'is': 3, 'small': 1, 'the': 0 }
-    >>> trg_classes = {'das': 0, 'Buch': 1, 'ein': 0, 'groß': 2, 'Haus': 1, 'ist': 3, 'ja': 4, 'klein': 2 }
+    >>> bitext = []
+    >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['ein', 'haus', 'ist', 'klein'], ['a', 'house', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
+    >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
+    >>> bitext.append(AlignedSent(['ein', 'buch'], ['a', 'book']))
+    >>> bitext.append(AlignedSent(['ich', 'fasse', 'das', 'buch', 'zusammen'], ['i', 'summarize', 'the', 'book']))
+    >>> bitext.append(AlignedSent(['fasse', 'zusammen'], ['summarize']))
+    >>> src_classes = {'the': 0, 'a': 0, 'small': 1, 'big': 1, 'house': 2, 'book': 2, 'is': 3, 'i': 4, 'summarize': 5 }
+    >>> trg_classes = {'das': 0, 'ein': 0, 'haus': 1, 'buch': 1, 'klein': 2, 'groß': 2, 'ist': 3, 'ja': 4, 'ich': 5, 'fasse': 6, 'zusammen': 6 }
 
-    >>> ibm5 = IBMModel5(align_sents, 5, src_classes, trg_classes)
+    >>> ibm5 = IBMModel5(bitext, 5, src_classes, trg_classes)
 
-    >>> print('{0:.1f}'.format(ibm5.translation_table['Buch']['book']))
-    1.0
-    >>> print('{0:.1f}'.format(ibm5.translation_table['das']['book']))
-    0.0
-    >>> print('{0:.1f}'.format(ibm5.translation_table[None]['book']))
-    0.0
+    >>> print('{0:.3f}'.format(ibm5.head_vacancy_table[1][1][1]))
+    1.000
+    >>> print('{0:.3f}'.format(ibm5.head_vacancy_table[2][1][1]))
+    0.000
+    >>> print('{0:.3f}'.format(ibm5.non_head_vacancy_table[3][3][6]))
+    1.000
+
+    >>> print('{0:.3f}'.format(ibm5.fertility_table[2]['summarize']))
+    1.000
+    >>> print('{0:.3f}'.format(ibm5.fertility_table[1]['book']))
+    1.000
+
+    >>> print('{0:.3f}'.format(ibm5.p1))
+    0.033
+
+    >>> test_sentence = bitext[2]
+    >>> test_sentence.words
+    ['das', 'buch', 'ist', 'ja', 'klein']
+    >>> test_sentence.mots
+    ['the', 'book', 'is', 'small']
+    >>> test_sentence.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (3, None), (4, 3)])
 
     """
     MIN_SCORE_FACTOR = 0.2
@@ -153,7 +174,7 @@ class IBMModel5(IBMModel):
 
     def __init__(self, sentence_aligned_corpus, iterations,
                  source_word_classes, target_word_classes,
-                 probability_tables = None):
+                 probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, vacancy models, a fertility model, and a
@@ -275,13 +296,14 @@ class IBMModel5(IBMModel):
         counts = Model5Counts()
 
         for aligned_sentence in parallel_corpus:
-            src_sentence = [None] + aligned_sentence.mots
-            trg_sentence = ['UNUSED'] + aligned_sentence.words # 1-indexed
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
 
             # Sample the alignment space
-            sampled_alignments = self.sample(src_sentence, trg_sentence)
+            sampled_alignments, best_alignment = self.sample(aligned_sentence)
+            # Record the most probable alignment
+            aligned_sentence.alignment = Alignment(
+                best_alignment.zero_indexed_alignment())
 
             # E step (a): Compute normalization factors to weigh counts
             total_count = self.prob_of_alignments(sampled_alignments)
@@ -316,7 +338,7 @@ class IBMModel5(IBMModel):
         self.maximize_fertility_probabilities(counts)
         self.maximize_null_generation_probabilities(counts)
 
-    def sample(self, src_sentence, trg_sentence):
+    def sample(self, sentence_pair):
         """
         Sample the most probable alignments from the entire alignment
         space according to Model 4
@@ -332,20 +354,17 @@ class IBMModel5(IBMModel):
         alignment point. Finally, prune alignments that have
         substantially lower Model 4 scores than the best alignment.
 
-        :param src_sentence: 1-indexed source sentence. Zeroeth element
-            should be None.
-        :type src_sentence: list(str)
-
-        :param trg_sentence: 1-indexed target sentence. Zeroeth element
-            will be ignored.
-        :type trg_sentence: list(str)
+        :param sentence_pair: Source and target language sentence pair
+            to generate a sample of alignments from
+        :type sentence_pair: AlignedSent
 
         :return: A set of best alignments represented by their ``AlignmentInfo``
-        :rtype: set(AlignmentInfo)
+            and the best alignment of the set for convenience
+        :rtype: set(AlignmentInfo), AlignmentInfo
         """
-        sampled_alignments = super(IBMModel5, self).sample(
-            src_sentence, trg_sentence)
-        return self.prune(sampled_alignments)
+        sampled_alignments, best_alignment = super(
+            IBMModel5, self).sample(sentence_pair)
+        return self.prune(sampled_alignments), best_alignment
 
     def prune(self, alignment_infos):
         """
@@ -367,7 +386,7 @@ class IBMModel5(IBMModel):
         alignments = [a[0] for a in alignments if a[1] > threshold]
         return set(alignments)
 
-    def hillclimb(self, alignment_info, j_pegged = None):
+    def hillclimb(self, alignment_info, j_pegged=None):
         """
         Starting from the alignment in ``alignment_info``, look at
         neighboring alignments iteratively for the best one, according
@@ -387,7 +406,7 @@ class IBMModel5(IBMModel):
         :return: The best alignment found from hill climbing
         :rtype: AlignmentInfo
         """
-        alignment = alignment_info # alias with shorter name
+        alignment = alignment_info  # alias with shorter name
         max_probability = IBMModel4.model4_prob_t_a_given_s(alignment, self)
 
         while True:
@@ -404,6 +423,7 @@ class IBMModel5(IBMModel):
                 # Until there are no better alignments
                 break
 
+        alignment.score = max_probability
         return alignment
 
     def prob_t_a_given_s(self, alignment_info):
@@ -466,7 +486,7 @@ class IBMModel5(IBMModel):
             max_v = total_vacancies - tablet_length + 1
             trg_class = self.trg_classes[alignment_info.trg_sentence[j]]
             value *= self.head_vacancy_table[dv][max_v][trg_class]
-            slots.occupy(j) # mark position as occupied
+            slots.occupy(j)  # mark position as occupied
             total_vacancies -= 1
             if value < MIN_PROB:
                 return MIN_PROB
@@ -481,7 +501,7 @@ class IBMModel5(IBMModel):
                          previous_vacancies)
                 trg_class = self.trg_classes[alignment_info.trg_sentence[j]]
                 value *= self.non_head_vacancy_table[dv][max_v][trg_class]
-                slots.occupy(j) # mark position as occupied
+                slots.occupy(j)  # mark position as occupied
                 total_vacancies -= 1
                 if value < MIN_PROB:
                     return MIN_PROB
@@ -565,7 +585,7 @@ class Model5Counts(Counts):
 
         # case 1: NULL aligned words
         if tablet_length == 0:
-            return # ignore zero fertility words
+            return  # ignore zero fertility words
 
         # case 2: head word
         j = tablet[0]
@@ -576,7 +596,7 @@ class Model5Counts(Counts):
         trg_class = trg_classes[alignment_info.trg_sentence[j]]
         self.head_vacancy[dv][max_v][trg_class] += count
         self.head_vacancy_for_any_dv[max_v][trg_class] += count
-        slots.occupy(j) # mark position as occupied
+        slots.occupy(j)  # mark position as occupied
         total_vacancies -= 1
 
         # case 3: non-head words
@@ -590,7 +610,7 @@ class Model5Counts(Counts):
             trg_class = trg_classes[alignment_info.trg_sentence[j]]
             self.non_head_vacancy[dv][max_v][trg_class] += count
             self.non_head_vacancy_for_any_dv[max_v][trg_class] += count
-            slots.occupy(j) # mark position as occupied
+            slots.occupy(j)  # mark position as occupied
             total_vacancies -= 1
 
 
@@ -600,7 +620,7 @@ class Slots(object):
     which slot (position) is occupied.
     """
     def __init__(self, target_sentence_length):
-        self._slots = [False] * (target_sentence_length + 1) # 1-indexed
+        self._slots = [False] * (target_sentence_length + 1)  # 1-indexed
 
     def occupy(self, position):
         """
@@ -619,4 +639,4 @@ class Slots(object):
         return vacancies
 
     def __len__(self):
-        return len(self._slots) - 1 # exclude dummy zeroeth element
+        return len(self._slots) - 1  # exclude dummy zeroeth element

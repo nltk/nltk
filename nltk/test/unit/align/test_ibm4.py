@@ -77,13 +77,13 @@ class TestIBMModel4(unittest.TestCase):
 
         head_distortion_table = defaultdict(
             lambda: defaultdict(lambda: defaultdict(float)))
-        head_distortion_table[1][None][3] = 0.97 # None, i
-        head_distortion_table[3][2][4] = 0.97 # ich, eat
-        head_distortion_table[-2][3][4] = 0.97 # esse, love
-        head_distortion_table[3][4][1] = 0.97 # gern, smoked
+        head_distortion_table[1][None][3] = 0.97  # None, i
+        head_distortion_table[3][2][4] = 0.97  # ich, eat
+        head_distortion_table[-2][3][4] = 0.97  # esse, love
+        head_distortion_table[3][4][1] = 0.97  # gern, smoked
 
         non_head_distortion_table = defaultdict(lambda: defaultdict(float))
-        non_head_distortion_table[1][0] = 0.96 # ham
+        non_head_distortion_table[1][0] = 0.96  # ham
 
         translation_table = defaultdict(lambda: defaultdict(float))
         translation_table['i']['ich'] = 0.98
