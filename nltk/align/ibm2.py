@@ -70,21 +70,21 @@ class IBMModel2(IBMModel):
 
     >>> ibm2 = IBMModel2(bitext, 5)
 
-    >>> print('{0:.3f}'.format(ibm2.translation_table['buch']['book']))
-    1.000
-    >>> print('{0:.3f}'.format(ibm2.translation_table['das']['book']))
-    0.000
-    >>> print('{0:.3f}'.format(ibm2.translation_table['buch'][None]))
-    0.000
-    >>> print('{0:.3f}'.format(ibm2.translation_table['ja'][None]))
-    0.000
+    >>> print(round(ibm2.translation_table['buch']['book'], 3))
+    1.0
+    >>> print(round(ibm2.translation_table['das']['book'], 3))
+    0.0
+    >>> print(round(ibm2.translation_table['buch'][None], 3))
+    0.0
+    >>> print(round(ibm2.translation_table['ja'][None], 3))
+    0.0
 
-    >>> print('{0:.3f}'.format(ibm2.alignment_table[1][1][2][2]))
-    0.939
-    >>> print('{0:.3f}'.format(ibm2.alignment_table[1][2][2][2]))
-    0.000
-    >>> print('{0:.3f}'.format(ibm2.alignment_table[2][2][4][5]))
-    1.000
+    >>> print(ibm2.alignment_table[1][1][2][2])
+    0.938...
+    >>> print(round(ibm2.alignment_table[1][2][2][2], 3))
+    0.0
+    >>> print(round(ibm2.alignment_table[2][2][4][5], 3))
+    1.0
 
     >>> test_sentence = bitext[2]
     >>> test_sentence.words

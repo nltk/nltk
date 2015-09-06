@@ -91,7 +91,7 @@ class IBMModel3(IBMModel):
 
     >>> bitext = []
     >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
-    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'war', 'ja', 'groß'], ['the', 'house', 'was', 'big']))
     >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
     >>> bitext.append(AlignedSent(['ein', 'haus', 'ist', 'klein'], ['a', 'house', 'is', 'small']))
     >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
@@ -102,27 +102,27 @@ class IBMModel3(IBMModel):
 
     >>> ibm3 = IBMModel3(bitext, 5)
 
-    >>> print('{0:.3f}'.format(ibm3.translation_table['buch']['book']))
-    1.000
-    >>> print('{0:.3f}'.format(ibm3.translation_table['das']['book']))
-    0.000
-    >>> print('{0:.3f}'.format(ibm3.translation_table['ja'][None]))
-    1.000
+    >>> print(round(ibm3.translation_table['buch']['book'], 3))
+    1.0
+    >>> print(round(ibm3.translation_table['das']['book'], 3))
+    0.0
+    >>> print(round(ibm3.translation_table['ja'][None], 3))
+    1.0
 
-    >>> print('{0:.3f}'.format(ibm3.distortion_table[1][1][2][2]))
-    1.000
-    >>> print('{0:.3f}'.format(ibm3.distortion_table[1][2][2][2]))
-    0.000
-    >>> print('{0:.3f}'.format(ibm3.distortion_table[2][2][4][5]))
-    0.750
+    >>> print(round(ibm3.distortion_table[1][1][2][2], 3))
+    1.0
+    >>> print(round(ibm3.distortion_table[1][2][2][2], 3))
+    0.0
+    >>> print(round(ibm3.distortion_table[2][2][4][5], 3))
+    0.75
 
-    >>> print('{0:.3f}'.format(ibm3.fertility_table[2]['summarize']))
-    1.000
-    >>> print('{0:.3f}'.format(ibm3.fertility_table[1]['book']))
-    1.000
+    >>> print(round(ibm3.fertility_table[2]['summarize'], 3))
+    1.0
+    >>> print(round(ibm3.fertility_table[1]['book'], 3))
+    1.0
 
-    >>> print('{0:.3f}'.format(ibm3.p1))
-    0.026
+    >>> print(ibm3.p1)
+    0.054...
 
     >>> test_sentence = bitext[2]
     >>> test_sentence.words

@@ -77,14 +77,14 @@ class IBMModel1(IBMModel):
 
     >>> ibm1 = IBMModel1(bitext, 5)
 
-    >>> print('{0:.3f}'.format(ibm1.translation_table['buch']['book']))
-    0.889
-    >>> print('{0:.3f}'.format(ibm1.translation_table['das']['book']))
-    0.062
-    >>> print('{0:.3f}'.format(ibm1.translation_table['buch'][None]))
-    0.113
-    >>> print('{0:.3f}'.format(ibm1.translation_table['ja'][None]))
-    0.073
+    >>> print(ibm1.translation_table['buch']['book'])
+    0.889...
+    >>> print(ibm1.translation_table['das']['book'])
+    0.061...
+    >>> print(ibm1.translation_table['buch'][None])
+    0.113...
+    >>> print(ibm1.translation_table['ja'][None])
+    0.072...
 
     >>> test_sentence = bitext[2]
     >>> test_sentence.words

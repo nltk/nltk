@@ -130,7 +130,7 @@ class IBMModel5(IBMModel):
 
     >>> bitext = []
     >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
-    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'war', 'ja', 'groß'], ['the', 'house', 'was', 'big']))
     >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
     >>> bitext.append(AlignedSent(['ein', 'haus', 'ist', 'klein'], ['a', 'house', 'is', 'small']))
     >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
@@ -138,25 +138,25 @@ class IBMModel5(IBMModel):
     >>> bitext.append(AlignedSent(['ein', 'buch'], ['a', 'book']))
     >>> bitext.append(AlignedSent(['ich', 'fasse', 'das', 'buch', 'zusammen'], ['i', 'summarize', 'the', 'book']))
     >>> bitext.append(AlignedSent(['fasse', 'zusammen'], ['summarize']))
-    >>> src_classes = {'the': 0, 'a': 0, 'small': 1, 'big': 1, 'house': 2, 'book': 2, 'is': 3, 'i': 4, 'summarize': 5 }
-    >>> trg_classes = {'das': 0, 'ein': 0, 'haus': 1, 'buch': 1, 'klein': 2, 'groß': 2, 'ist': 3, 'ja': 4, 'ich': 5, 'fasse': 6, 'zusammen': 6 }
+    >>> src_classes = {'the': 0, 'a': 0, 'small': 1, 'big': 1, 'house': 2, 'book': 2, 'is': 3, 'was': 3, 'i': 4, 'summarize': 5 }
+    >>> trg_classes = {'das': 0, 'ein': 0, 'haus': 1, 'buch': 1, 'klein': 2, 'groß': 2, 'ist': 3, 'war': 3, 'ja': 4, 'ich': 5, 'fasse': 6, 'zusammen': 6 }
 
     >>> ibm5 = IBMModel5(bitext, 5, src_classes, trg_classes)
 
-    >>> print('{0:.3f}'.format(ibm5.head_vacancy_table[1][1][1]))
-    1.000
-    >>> print('{0:.3f}'.format(ibm5.head_vacancy_table[2][1][1]))
-    0.000
-    >>> print('{0:.3f}'.format(ibm5.non_head_vacancy_table[3][3][6]))
-    1.000
+    >>> print(round(ibm5.head_vacancy_table[1][1][1], 3))
+    1.0
+    >>> print(round(ibm5.head_vacancy_table[2][1][1], 3))
+    0.0
+    >>> print(round(ibm5.non_head_vacancy_table[3][3][6], 3))
+    1.0
 
-    >>> print('{0:.3f}'.format(ibm5.fertility_table[2]['summarize']))
-    1.000
-    >>> print('{0:.3f}'.format(ibm5.fertility_table[1]['book']))
-    1.000
+    >>> print(round(ibm5.fertility_table[2]['summarize'], 3))
+    1.0
+    >>> print(round(ibm5.fertility_table[1]['book'], 3))
+    1.0
 
-    >>> print('{0:.3f}'.format(ibm5.p1))
-    0.033
+    >>> print(ibm5.p1)
+    0.033...
 
     >>> test_sentence = bitext[2]
     >>> test_sentence.words
