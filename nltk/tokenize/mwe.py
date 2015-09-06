@@ -66,7 +66,7 @@ class MWETokenizer(TokenizerI):
         We represent the trie as a dict of dicts:
 
             >>> tokenizer = MWETokenizer([('a', 'b'), ('a', 'b', 'c'), ('a', 'x')])
-            >>> print tokenizer._mwes
+            >>> tokenizer._mwes
             {'a': {'x': {True: None}, 'b': {True: None, 'c': {True: None}}}}
 
         The key True marks the end of a valid MWE
