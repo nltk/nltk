@@ -3,7 +3,6 @@ A reader for corpora whose documents are in MTE format.
 """
 
 import os
-import nltk
 from os.path import expanduser
 from nltk import Text
 from nltk.corpus.reader.api import *
@@ -170,14 +169,6 @@ class MTECorpusReader(TaggedCorpusReader):
         :rtype: str
         """
         return concat([self.open(f).read() for f in self.__fileids(fileids)])
-
-    def text(self, fileids=None):
-        """
-	    :param fileids: A list specifying the fileids that should be used.
-        :return: he given file(s) concatenated and wrapped in a Text object of NLTK
-        :rtype: Text
-        """
-        return Text(self.words(fileids))
 
     def words(self, fileids=None):
         """
