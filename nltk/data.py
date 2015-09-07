@@ -72,7 +72,8 @@ path = []
    (e.g., in their home directory under ~/nltk_data)."""
 
 # User-specified locations:
-path += [d for d in os.environ.get('NLTK_DATA', str('')).split(os.pathsep) if d]
+_paths_from_env = os.environ.get('NLTK_DATA', str('')).split(os.pathsep)
+path += [d for d in _paths_from_env if d]
 if 'APPENGINE_RUNTIME' not in os.environ and os.path.expanduser('~/') != '~/':
     path.append(os.path.expanduser(str('~/nltk_data')))
 
@@ -82,7 +83,8 @@ if sys.platform.startswith('win'):
         str(r'C:\nltk_data'), str(r'D:\nltk_data'), str(r'E:\nltk_data'),
         os.path.join(sys.prefix, str('nltk_data')),
         os.path.join(sys.prefix, str('lib'), str('nltk_data')),
-        os.path.join(os.environ.get(str('APPDATA'), str('C:\\')), str('nltk_data'))
+        os.path.join(
+            os.environ.get(str('APPDATA'), str('C:\\')), str('nltk_data'))
     ]
 else:
     # Common locations on UNIX & OS X:
@@ -101,8 +103,9 @@ else:
 def gzip_open_unicode(filename, mode="rb", compresslevel=9,
                       encoding='utf-8', fileobj=None, errors=None, newline=None):
     if fileobj is None:
-        fileobj=GzipFile(filename, mode, compresslevel, fileobj)
+        fileobj = GzipFile(filename, mode, compresslevel, fileobj)
     return io.TextIOWrapper(fileobj, encoding, errors, newline)
+
 
 def split_resource_url(resource_url):
     """
@@ -129,6 +132,7 @@ def split_resource_url(resource_url):
     else:
         path_ = re.sub(r'^/{0,2}', '', path_)
     return protocol, path_
+
 
 def normalize_resource_url(resource_url):
     r"""
@@ -185,6 +189,7 @@ def normalize_resource_url(resource_url):
         protocol += '://'
     return ''.join([protocol, name])
 
+
 def normalize_resource_name(resource_name, allow_relative=True, relative_path=None):
     """
     :type resource_name: str or unicode
@@ -222,7 +227,8 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     else:
         if relative_path is None:
             relative_path = os.curdir
-        resource_name = os.path.abspath(os.path.join(relative_path, resource_name))
+        resource_name = os.path.abspath(
+            os.path.join(relative_path, resource_name))
     resource_name = resource_name.replace('\\', '/').replace(os.path.sep, '/')
     if sys.platform.startswith('win') and os.path.isabs(resource_name):
         resource_name = '/' + resource_name
@@ -244,6 +250,7 @@ class PathPointer(object):
     identifies a file contained within a zipfile, that can be accessed
     by reading that zipfile.
     """
+
     def open(self, encoding=None):
         """
         Return a seekable read-only stream that can be used to read
@@ -335,7 +342,8 @@ class BufferedGzipFile(GzipFile):
     ``BufferedGzipFile`` is useful for loading large gzipped pickle objects
     as well as writing large encoded feature files for classifier training.
     """
-    SIZE = 2 * 2**20
+    MB = 2 ** 20
+    SIZE = 2 * MB
 
     @py3_data
     def __init__(self, filename=None, mode=None, compresslevel=9,
@@ -430,6 +438,7 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     file located at a given absolute path.  ``GzipFileSystemPathPointer`` is
     appropriate for loading large gzip-compressed pickle objects efficiently.
     """
+
     def open(self, encoding=None):
         stream = BufferedGzipFile(self._path, 'rb')
         if encoding:
@@ -467,8 +476,8 @@ class ZipFilePathPointer(PathPointer):
                 # then check if the zipfile contains any files that
                 # are under the given directory.
                 if (entry.endswith('/') and
-                    [n for n in zipfile.namelist() if n.startswith(entry)]):
-                    pass # zipfile contains a file in that directory.
+                        [n for n in zipfile.namelist() if n.startswith(entry)]):
+                    pass  # zipfile contains a file in that directory.
                 else:
                     # Otherwise, complain.
                     raise IOError('Zipfile %r does not contain %r' %
@@ -525,6 +534,7 @@ _resource_cache = {}
 """A dictionary used to cache resources so that they won't
    need to be loaded more than once."""
 
+
 def find(resource_name, paths=None):
     """
     Find the given resource by searching through the directories and
@@ -564,7 +574,8 @@ def find(resource_name, paths=None):
     """
     resource_name = normalize_resource_name(resource_name, True)
 
-    # Resolve default paths at runtime in-case the user overrides nltk.data.path
+    # Resolve default paths at runtime in-case the user overrides
+    # nltk.data.path
     if paths is None:
         paths = path
 
@@ -606,7 +617,8 @@ def find(resource_name, paths=None):
     if zipfile is None:
         pieces = resource_name.split('/')
         for i in range(len(pieces)):
-            modified_name = '/'.join(pieces[:i]+[pieces[i]+'.zip']+pieces[i:])
+            modified_name = '/'.join(pieces[:i] +
+                                     [pieces[i] + '.zip'] + pieces[i:])
             try:
                 return find(modified_name, paths)
             except LookupError:
@@ -619,9 +631,10 @@ def find(resource_name, paths=None):
         (resource_name,), initial_indent='  ', subsequent_indent='  ',
         width=66)
     msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in paths)
-    sep = '*'*70
+    sep = '*' * 70
     resource_not_found = '\n%s\n%s\n%s' % (sep, msg, sep)
     raise LookupError(resource_not_found)
+
 
 def retrieve(resource_url, filename=None, verbose=True):
     """
@@ -653,9 +666,10 @@ def retrieve(resource_url, filename=None, verbose=True):
     # Copy infile -> outfile, using 64k blocks.
     with open(filename, "wb") as outfile:
         while True:
-            s = infile.read(1024*64) # 64k blocks.
+            s = infile.read(1024 * 64)  # 64k blocks.
             outfile.write(s)
-            if not s: break
+            if not s:
+                break
 
     infile.close()
 
@@ -695,6 +709,7 @@ AUTO_FORMATS = {
     'txt': 'text',
     'text': 'text',
 }
+
 
 def load(resource_url, format='auto', cache=True, verbose=False,
          logic_parser=None, fstruct_reader=None, encoding=None):
@@ -847,6 +862,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
 
     return resource_val
 
+
 def show_cfg(resource_url, escape='##'):
     """
     Write out a grammar file, ignoring escaped and empty lines.
@@ -862,8 +878,10 @@ def show_cfg(resource_url, escape='##'):
     resource_val = load(resource_url, format='text', cache=False)
     lines = resource_val.splitlines()
     for l in lines:
-        if l.startswith(escape): continue
-        if re.match('^$', l): continue
+        if l.startswith(escape):
+            continue
+        if re.match('^$', l):
+            continue
         print(l)
 
 
@@ -873,6 +891,7 @@ def clear_cache():
     :see: load()
     """
     _resource_cache.clear()
+
 
 def _open(resource_url):
     """
@@ -906,7 +925,9 @@ def _open(resource_url):
 # We shouldn't apply @python_2_unicode_compatible
 # decorator to LazyLoader, this is resource.__class__ responsibility.
 
+
 class LazyLoader(object):
+
     @py3_data
     def __init__(self, _path):
         self._path = _path
@@ -976,6 +997,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
 #{ Seekable Unicode Stream Reader
 ######################################################################
 
+
 class SeekableUnicodeStreamReader(object):
     """
     A stream reader that automatically encodes the source byte stream
@@ -992,7 +1014,7 @@ class SeekableUnicodeStreamReader(object):
     this shouldn't cause a problem with any of python's builtin
     unicode encodings.
     """
-    DEBUG = True #: If true, then perform extra sanity checks.
+    DEBUG = True  # : If true, then perform extra sanity checks.
 
     @py3_data
     def __init__(self, stream, encoding, errors='strict'):
@@ -1111,13 +1133,14 @@ class SeekableUnicodeStreamReader(object):
             if len(lines) > 1:
                 line = lines[0]
                 self.linebuffer = lines[1:]
-                self._rewind_numchars = len(new_chars)-(len(chars)-len(line))
+                self._rewind_numchars = (len(new_chars) -
+                                         (len(chars) - len(line)))
                 self._rewind_checkpoint = startpos
                 break
             elif len(lines) == 1:
                 line0withend = lines[0]
                 line0withoutend = lines[0].splitlines(False)[0]
-                if line0withend != line0withoutend: # complete line
+                if line0withend != line0withoutend:  # complete line
                     line = line0withend
                     break
 
@@ -1145,8 +1168,10 @@ class SeekableUnicodeStreamReader(object):
     def next(self):
         """Return the next decoded line from the underlying stream."""
         line = self.readline()
-        if line: return line
-        else: raise StopIteration
+        if line:
+            return line
+        else:
+            raise StopIteration
 
     def __next__(self):
         return self.next()
@@ -1230,12 +1255,13 @@ class SeekableUnicodeStreamReader(object):
             bytes that will be neded to move forward by ``offset`` chars.
             Defaults to ``offset``.
         """
-        if est_bytes is None: est_bytes = offset
+        if est_bytes is None:
+            est_bytes = offset
         bytes = b''
 
         while True:
             # Read in a block of bytes.
-            newbytes = self.stream.read(est_bytes-len(bytes))
+            newbytes = self.stream.read(est_bytes - len(bytes))
             bytes += newbytes
 
             # Decode the bytes to characters.
@@ -1244,7 +1270,7 @@ class SeekableUnicodeStreamReader(object):
             # If we got the right number of characters, then seek
             # backwards over any truncated characters, and return.
             if len(chars) == offset:
-                self.stream.seek(-len(bytes)+bytes_decoded, 1)
+                self.stream.seek(-len(bytes) + bytes_decoded, 1)
                 return
 
             # If we went too far, then we can back-up until we get it
@@ -1252,9 +1278,9 @@ class SeekableUnicodeStreamReader(object):
             if len(chars) > offset:
                 while len(chars) > offset:
                     # Assume at least one byte/char.
-                    est_bytes += offset-len(chars)
+                    est_bytes += offset - len(chars)
                     chars, bytes_decoded = self._incr_decode(bytes[:est_bytes])
-                self.stream.seek(-len(bytes)+bytes_decoded, 1)
+                self.stream.seek(-len(bytes) + bytes_decoded, 1)
                 return
 
             # Otherwise, we haven't read enough bytes yet; loop again.
@@ -1278,11 +1304,11 @@ class SeekableUnicodeStreamReader(object):
         orig_filepos = self.stream.tell()
 
         # Calculate an estimate of where we think the newline is.
-        bytes_read = ( (orig_filepos-len(self.bytebuffer)) -
-                       self._rewind_checkpoint )
+        bytes_read = ((orig_filepos - len(self.bytebuffer)) -
+                      self._rewind_checkpoint)
         buf_size = sum(len(line) for line in self.linebuffer)
         est_bytes = int((bytes_read * self._rewind_numchars /
-                     (self._rewind_numchars + buf_size)))
+                         (self._rewind_numchars + buf_size)))
 
         self.stream.seek(self._rewind_checkpoint)
         self._char_seek_forward(self._rewind_numchars, est_bytes)
@@ -1312,7 +1338,8 @@ class SeekableUnicodeStreamReader(object):
         them using this reader's encoding, and return the resulting
         unicode string.  ``linebuffer`` is not included in the result.
         """
-        if size == 0: return ''
+        if size == 0:
+            return ''
 
         # Skip past the byte order marker, if present.
         if self._bom and self.stream.tell() == 0:
@@ -1332,7 +1359,8 @@ class SeekableUnicodeStreamReader(object):
         if (size is not None) and (not chars) and (len(new_bytes) > 0):
             while not chars:
                 new_bytes = self.stream.read(1)
-                if not new_bytes: break # end of file.
+                if not new_bytes:
+                    break  # end of file.
                 bytes += new_bytes
                 chars, bytes_decoded = self._incr_decode(bytes)
 
@@ -1382,7 +1410,7 @@ class SeekableUnicodeStreamReader(object):
                   (codecs.BOM_UTF32_BE, 'utf32-be')],
         'utf32le': [(codecs.BOM_UTF32_LE, None)],
         'utf32be': [(codecs.BOM_UTF32_BE, None)],
-        }
+    }
 
     def _check_bom(self):
         # Normalize our encoding name
@@ -1399,7 +1427,8 @@ class SeekableUnicodeStreamReader(object):
             # Check for each possible BOM.
             for (bom, new_encoding) in bom_info:
                 if bytes.startswith(bom):
-                    if new_encoding: self.encoding = new_encoding
+                    if new_encoding:
+                        self.encoding = new_encoding
                     return len(bom)
 
         return None

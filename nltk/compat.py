@@ -19,6 +19,7 @@ PY26 = sys.version_info[:2] == (2, 6)
 if PY3:
     def b(s):
         return s.encode("latin-1")
+
     def u(s):
         return s
 
@@ -46,9 +47,9 @@ if PY3:
 
     import html.entities as htmlentitydefs
     from urllib.request import (urlopen, ProxyHandler, build_opener,
-        install_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
-        ProxyBasicAuthHandler, ProxyDigestAuthHandler, Request,
-        url2pathname)
+                                install_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
+                                ProxyBasicAuthHandler, ProxyDigestAuthHandler, Request,
+                                url2pathname)
     from urllib.error import HTTPError, URLError
     from urllib.parse import quote_plus, unquote_plus, urlencode
 
@@ -58,7 +59,7 @@ if PY3:
     UTC = timezone.utc
 
     from tempfile import TemporaryDirectory
-    
+
     unichr = chr
     if sys.version_info[1] <= 1:
         def int2byte(i):
@@ -71,6 +72,7 @@ if PY3:
 else:
     def b(s):
         return s
+
     def u(s):
         return unicode(s, "unicode_escape")
 
@@ -97,9 +99,9 @@ else:
 
     import htmlentitydefs
     from urllib2 import (urlopen, HTTPError, URLError,
-        ProxyHandler, build_opener, install_opener,
-        HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler,
-        ProxyDigestAuthHandler, Request)
+                         ProxyHandler, build_opener, install_opener,
+                         HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler,
+                         ProxyDigestAuthHandler, Request)
     from urllib import getproxies, quote_plus, unquote_plus, urlencode, url2pathname
 
     # Maps py2 tkinter package structure to py3 using import hook (PEP 302)
@@ -107,6 +109,7 @@ else:
         def __init__(self):
             self.mod = __import__("Tkinter")
             self.__path__ = ["nltk_py2_tkinter_package_path"]
+
         def __getattr__(self, name):
             return getattr(self.mod, name)
 
@@ -119,11 +122,13 @@ else:
                 "tkinter.font": "tkFont",
                 "tkinter.messagebox": "tkMessageBox",
             }
+
         def find_module(self, name, path=None):
             # we are only interested in tkinter modules listed
             # in self.module_map
             if name in self.module_map:
                 return self
+
         def load_module(self, name):
             if name not in sys.modules:
                 if name == 'tkinter':
@@ -143,22 +148,25 @@ else:
     # A UTC class for python 2.7
     class UTC(tzinfo):
         """UTC"""
-    
+
         def utcoffset(self, dt):
             return ZERO
-    
+
         def tzname(self, dt):
             return "UTC"
-    
+
         def dst(self, dt):
             return ZERO
-    
+
     UTC = UTC()
 
     unichr = unichr
     int2byte = chr
-    
-    import csv, codecs, cStringIO
+
+    import csv
+    import codecs
+    import cStringIO
+
     class UnicodeWriter:
         """
         A CSV writer which will write rows to CSV file "f",
@@ -171,7 +179,8 @@ else:
             self.queue = cStringIO.StringIO()
             self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
             self.stream = f
-            self.encoder = codecs.getincrementalencoder(encoding)(errors=errors)
+            encoder_cls = codecs.getincrementalencoder(encoding)
+            self.encoder = encoder_cls(errors=errors)
 
         def encode(self, data):
             if isinstance(data, basestring):
@@ -190,7 +199,6 @@ else:
             self.stream.write(data)
             # empty queue
             self.queue.truncate(0)
-
 
     import warnings as _warnings
     import os as _os
@@ -212,7 +220,7 @@ else:
 
         def __init__(self, suffix="", prefix="tmp", dir=None):
             self._closed = False
-            self.name = None # Handle mkdtemp raising an exception
+            self.name = None  # Handle mkdtemp raising an exception
             self.name = mkdtemp(suffix, prefix, dir)
 
         def __repr__(self):
@@ -279,7 +287,6 @@ else:
             except OSError:
                 pass
 
-
     if PY26:
         from operator import itemgetter
         from heapq import nlargest
@@ -338,7 +345,8 @@ else:
                     for _ in repeat(None, count):
                         yield elem
 
-            # Override dict methods where the meaning changes for Counter objects.
+            # Override dict methods where the meaning changes for Counter
+            # objects.
 
             @classmethod
             def fromkeys(cls, iterable, v=None):
@@ -365,7 +373,8 @@ else:
                             for elem, count in iterable.iteritems():
                                 self[elem] = self_get(elem, 0) + count
                         else:
-                            dict.update(self, iterable) # fast path when counter is empty
+                            # fast path when counter is empty
+                            dict.update(self, iterable)
                     else:
                         self_get = self.get
                         for elem in iterable:
@@ -474,9 +483,11 @@ def iterkeys(d):
     """Return an iterator over the keys of a dictionary."""
     return getattr(d, _iterkeys)()
 
+
 def itervalues(d):
     """Return an iterator over the values of a dictionary."""
     return getattr(d, _itervalues)()
+
 
 def iteritems(d):
     """Return an iterator over the (key, value) pairs of a dictionary."""
@@ -484,7 +495,7 @@ def iteritems(d):
 
 try:
     from functools import total_ordering
-except ImportError: # python 2.6
+except ImportError:  # python 2.6
     def total_ordering(cls):
         """Class decorator that fills in missing ordering methods"""
         convert = {
@@ -503,7 +514,8 @@ except ImportError: # python 2.6
         }
         roots = set(dir(cls)) & set(convert)
         if not roots:
-            raise ValueError('must define at least one ordering operation: < > <= >=')
+            raise ValueError(
+                'must define at least one ordering operation: < > <= >=')
         root = max(roots)       # prefer __lt__ to __le__ to __gt__ to __ge__
         for opname, opfunc in convert[root]:
             if opname not in roots:
@@ -527,20 +539,22 @@ if sys.platform.startswith('win'):
                          "tokenizers\punkt"]
 else:
     _PY3_DATA_UPDATES = ["chunkers/maxent_ne_chunker",
-                        "help/tagsets",
-                        "taggers/maxent_treebank_pos_tagger",
-                        "tokenizers/punkt"]
+                         "help/tagsets",
+                         "taggers/maxent_treebank_pos_tagger",
+                         "tokenizers/punkt"]
+
 
 def add_py3_data(path):
     if PY3:
         for item in _PY3_DATA_UPDATES:
             if item in str(path) and "/PY3" not in str(path):
                 pos = path.index(item) + len(item)
-                if path[pos:pos+4] == ".zip":
+                if path[pos:pos + 4] == ".zip":
                     pos += 4
                 path = path[:pos] + "/PY3" + path[pos:]
                 break
     return path
+
 
 # for use in adding /PY3 to the second (filename) argument
 # of the file pointers in data.py
@@ -554,6 +568,7 @@ def py3_data(init_func):
 
 import unicodedata
 import functools
+
 
 def remove_accents(text):
 
@@ -609,7 +624,6 @@ def python_2_unicode_compatible(klass):
         klass.__unicode__ = klass.__str__
         if not PY3:
             klass.__str__ = _7bit(_transliterated(klass.__unicode__))
-
 
     if not _was_fixed(klass.__repr__):
         klass.unicode_repr = klass.__repr__
