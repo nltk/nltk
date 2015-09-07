@@ -334,7 +334,9 @@ class DependencyGraph(object):
             # Make sure that he fake root node has labeled dependencies.
             if (cell_number == 3) and (head == 0):
                 rel = 'ROOT'
-            if rel == 'root': rel = 'ROOT'  # Stanford parser doesn't capitalize ROOT
+            # Stanford parser doesn't capitalize ROOT
+            if rel == 'root':
+                rel = 'ROOT'
             self.nodes[head]['deps'][rel].append(index)
 
         if self.nodes[0]['deps']['ROOT']:
