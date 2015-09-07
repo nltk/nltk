@@ -7,11 +7,44 @@ import unittest
 
 from collections import defaultdict
 from nltk.align import AlignedSent
+from nltk.align import IBMModel
+from nltk.align import IBMModel2
 from nltk.align.ibm_model import AlignmentInfo
-from nltk.align.ibm2 import IBMModel2
 
 
 class TestIBMModel2(unittest.TestCase):
+    def test_set_uniform_alignment_probabilities(self):
+        # arrange
+        corpus = [
+            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
+            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+        ]
+        model2 = IBMModel2(corpus, 0)
+
+        # act
+        model2.set_uniform_probabilities(corpus)
+
+        # assert
+        # expected_prob = 1.0 / (length of source sentence + 1)
+        self.assertEqual(model2.alignment_table[0][1][3][2], 1.0 / 4)
+        self.assertEqual(model2.alignment_table[2][4][2][4], 1.0 / 3)
+
+    def test_set_uniform_alignment_probabilities_of_non_domain_values(self):
+        # arrange
+        corpus = [
+            AlignedSent(['ham', 'eggs'], ['schinken', 'schinken', 'eier']),
+            AlignedSent(['spam', 'spam', 'spam', 'spam'], ['spam', 'spam']),
+        ]
+        model2 = IBMModel2(corpus, 0)
+
+        # act
+        model2.set_uniform_probabilities(corpus)
+
+        # assert
+        # examine i and j values that are not in the training data domain
+        self.assertEqual(model2.alignment_table[99][1][3][2], IBMModel.MIN_PROB)
+        self.assertEqual(model2.alignment_table[2][99][2][4], IBMModel.MIN_PROB)
+
     def test_prob_t_a_given_s(self):
         # arrange
         src_sentence = ["ich", 'esse', 'ja', 'gern', 'räucherschinken']
