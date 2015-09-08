@@ -1,12 +1,12 @@
 """
 A reader for corpora whose documents are in MTE format.
 """
-
 import os
-from os.path import expanduser
-from nltk import Text
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.tagged import *
+from functools import reduce
+from nltk import compat
+from nltk.corpus import TaggedCorpusReader, CorpusReader
+from nltk.corpus.reader import concat
+
 try:
     from lxml import etree
 except ImportError:
