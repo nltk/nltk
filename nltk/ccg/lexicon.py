@@ -208,7 +208,7 @@ def augParseCategory(line, primitives, families, var=None):
     return (res, var)
 
 
-def parseLexicon(lex_str):
+def fromstring(lex_str):
     """
     Convert string representation into a lexicon for CCGs.
     """
@@ -241,7 +241,7 @@ def parseLexicon(lex_str):
     return CCGLexicon(primitives[0], primitives, families, entries)
 
 
-openccg_tinytiny = parseLexicon('''
+openccg_tinytiny = fromstring("""
     # Rather minimal lexicon based on the openccg `tinytiny' grammar.
     # Only incorporates a subset of the morphological subcategories, however.
     :- S,NP,N                    # Primitive categories
@@ -282,4 +282,4 @@ openccg_tinytiny = parseLexicon('''
 
     see => TransVpl
     sees => TransVsg
-    ''')
+    """)
