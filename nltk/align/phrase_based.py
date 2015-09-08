@@ -8,7 +8,7 @@
 
 def extract(f_start, f_end, e_start, e_end, 
             alignment, f_aligned,
-            srctext, trgtext, srclen, trglen, max_phrase_lenght):
+            srctext, trgtext, srclen, trglen, max_phrase_length):
     """
     This function checks for alignment point consistency and extracts 
     phrases using the chunk of consistent phrases.
@@ -62,7 +62,7 @@ def extract(f_start, f_end, e_start, e_end,
     phrases = set()
     fs = f_start
     while True:
-        fe = min(f_end, f_start + max_phrase_lenght - 1)
+        fe = min(f_end, f_start + max_phrase_length - 1)
         while True:
             # add phrase pair ([e_start, e_end], [fs, fe]) to set E
             # Need to +1 in range  to include the end-point.
@@ -81,7 +81,7 @@ def extract(f_start, f_end, e_start, e_end,
             break
     return phrases
 
-def phrase_extraction(srctext, trgtext, alignment, max_phrase_lenght=7):
+def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=7):
     """
     Phrase extraction algorithm extracts all consistent phrase pairs from 
     a word-aligned sentence pair.
@@ -159,8 +159,8 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_lenght=7):
     bp = set() # set of phrase pairs BP
     # Index e_start from 0 to len(e) - 1
     for e_start in xrange(srclen):
-        # Index e_end from e_start to len(e) - 1 or the lenght of maximum phrase
-        max_idx = min(srclen, e_start + max_phrase_lenght)
+        # Index e_end from e_start to len(e) - 1 or the length of maximum phrase
+        max_idx = min(srclen, e_start + max_phrase_length)
         for e_end in xrange(e_start, max_idx):
             # // find the minimally matching foreign phrase
             # (f start , f end ) = ( length(f), 0 )
@@ -175,7 +175,7 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_lenght=7):
             phrases = extract(f_start, f_end, e_start, e_end, 
                               alignment, f_aligned,
                               srctext, trgtext, srclen, trglen,
-                               max_phrase_lenght)
+                               max_phrase_length)
             if phrases:
                 bp.update(phrases)
     return bp
