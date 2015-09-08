@@ -7,7 +7,10 @@ from os.path import expanduser
 from nltk import Text
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.tagged import *
-from lxml import etree
+try:
+    from lxml import etree
+except ImportError:
+    raise ImportError('lxml is necessary for multex-east corpus')
 import re
 
 
