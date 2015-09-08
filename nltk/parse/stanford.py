@@ -23,10 +23,173 @@ from nltk.tree import Tree
 
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
-class StanfordParser(ParserI):
-    r"""
-    Interface to the Stanford Parser
+class GenericStanfordParser(ParserI):
+    """Interface to the Stanford Parser"""
 
+    _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)(\.(\d+))+-models\.jar'
+    _JAR = 'stanford-parser.jar'
+
+    def __init__(self, path_to_jar=None, path_to_models_jar=None,
+                 model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz',
+                 encoding='utf8', verbose=False, java_options='-mx1000m'):
+
+        self._stanford_jar = find_jar(
+            self._JAR, path_to_jar,
+            env_vars=('STANFORD_PARSER',),
+            searchpath=(), url=_stanford_url,
+            verbose=verbose
+        )
+
+        # find the most recent model
+        self._model_jar=max(
+            find_jar_iter(
+                self._MODEL_JAR_PATTERN, path_to_models_jar,
+                env_vars=('STANFORD_MODELS',),
+                searchpath=(), url=_stanford_url,
+                verbose=verbose, is_regex=True
+            ),
+            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
+        )
+
+        self.model_path = model_path
+        self._encoding = encoding
+        self.java_options = java_options
+
+    def _parse_trees_output(self, output_):
+        res = []
+        cur_lines = []
+        for line in output_.splitlines(False):
+            if line == '':
+                res.append(iter([self._TO_TREE('\n'.join(cur_lines))]))
+                cur_lines = []
+            else:
+                cur_lines.append(line)
+        return iter(res)
+
+    def parse_sents(self, sentences, verbose=False):
+        """
+        Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
+        list where each sentence is a list of words.
+        Each sentence will be automatically tagged with this StanfordParser instance's
+        tagger.
+        If whitespaces exists inside a token, then the token will be treated as
+        separate tokens.
+
+        :param sentences: Input sentences to parse
+        :type sentences: list(list(str))
+        :rtype: iter(iter(Tree))
+        """
+        cmd = [
+            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            '-model', self.model_path,
+            '-sentences', 'newline',
+            '-outputFormat', self._OUTPUT_FORMAT,
+            '-tokenized',
+            '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor',
+        ]
+        return self._parse_trees_output(self._execute(
+            cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))
+
+    def raw_parse(self, sentence, verbose=False):
+        """
+        Use StanfordParser to parse a sentence. Takes a sentence as a string;
+        before parsing, it will be automatically tokenized and tagged by
+        the Stanford Parser.
+
+        :param sentence: Input sentence to parse
+        :type sentence: str
+        :rtype: iter(Tree)
+        """
+        return next(self.raw_parse_sents([sentence], verbose))
+
+    def raw_parse_sents(self, sentences, verbose=False):
+        """
+        Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
+        list of strings.
+        Each sentence will be automatically tokenized and tagged by the Stanford Parser.
+
+        :param sentences: Input sentences to parse
+        :type sentences: list(str)
+        :rtype: iter(iter(Tree))
+        """
+        cmd = [
+            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            '-model', self.model_path,
+            '-sentences', 'newline',
+            '-outputFormat', self._OUTPUT_FORMAT,
+        ]
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+
+    def tagged_parse(self, sentence, verbose=False):
+        """
+        Use StanfordParser to parse a sentence. Takes a sentence as a list of
+        (word, tag) tuples; the sentence must have already been tokenized and
+        tagged.
+
+        :param sentence: Input sentence to parse
+        :type sentence: list(tuple(str, str))
+        :rtype: iter(Tree)
+        """
+        return next(self.tagged_parse_sents([sentence], verbose))
+
+    def tagged_parse_sents(self, sentences, verbose=False):
+        """
+        Use StanfordParser to parse multiple sentences. Takes multiple sentences
+        where each sentence is a list of (word, tag) tuples.
+        The sentences must have already been tokenized and tagged.
+
+        :param sentences: Input sentences to parse
+        :type sentences: list(list(tuple(str, str)))
+        :rtype: iter(iter(Tree))
+        """
+        tag_separator = '/'
+        cmd = [
+            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            '-model', self.model_path,
+            '-sentences', 'newline',
+            '-outputFormat', self._OUTPUT_FORMAT,
+            '-tokenized',
+            '-tagSeparator', tag_separator,
+            '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer',
+            '-tokenizerMethod', 'newCoreLabelTokenizerFactory',
+        ]
+        # We don't need to escape slashes as "splitting is done on the last instance of the character in the token"
+        return self._parse_trees_output(self._execute(
+            cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
+
+    def _execute(self, cmd, input_, verbose=False):
+        encoding = self._encoding
+        cmd.extend(['-encoding', encoding])
+
+        default_options = ' '.join(_java_options)
+
+        # Configure java.
+        config_java(options=self.java_options, verbose=verbose)
+
+        # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
+        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as input_file:
+            # Write the actual sentences to the temporary input file
+            if isinstance(input_, compat.text_type) and encoding:
+                input_ = input_.encode(encoding)
+            input_file.write(input_)
+            input_file.flush()
+
+            cmd.append(input_file.name)
+
+            # Run the tagger and get the output.
+            stdout, stderr = java(cmd, classpath=(self._stanford_jar, self._model_jar),
+                                  stdout=PIPE, stderr=PIPE)
+            stdout = stdout.decode(encoding)
+
+        os.unlink(input_file.name)
+
+        # Return java configurations to their default values.
+        config_java(options=default_options, verbose=False)
+
+        return stdout
+
+class StanfordParser(GenericStanfordParser):
+    """
     >>> parser=StanfordParser(
     ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
     ... )
@@ -74,10 +237,17 @@ class StanfordParser(ParserI):
     [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
     Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
     [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
+    """
 
-    >>> dep_parser=StanfordParser(
-    ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz",
-    ...     dependencies=True
+    _OUTPUT_FORMAT = 'penn'
+    _TO_TREE = Tree.fromstring
+
+
+class StanfordDependencyParser(GenericStanfordParser):
+
+    """
+    >>> dep_parser=StanfordDependencyParser(
+    ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
     ... )
 
     >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
@@ -123,175 +293,8 @@ class StanfordParser(ParserI):
 
     """
 
-    _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)(\.(\d+))+-models\.jar'
-    _JAR = 'stanford-parser.jar'
-
-    def __init__(self, path_to_jar=None, path_to_models_jar=None,
-                 model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz',
-                 encoding='utf8', verbose=False, java_options='-mx1000m',
-                 dependencies=False):
-
-        self._stanford_jar = find_jar(
-            self._JAR, path_to_jar,
-            env_vars=('STANFORD_PARSER',),
-            searchpath=(), url=_stanford_url,
-            verbose=verbose
-        )
-
-        # find the most recent model
-        self._model_jar=max(
-            find_jar_iter(
-                self._MODEL_JAR_PATTERN, path_to_models_jar,
-                env_vars=('STANFORD_MODELS',),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose, is_regex=True
-            ),
-            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
-        )
-
-        self.model_path = model_path
-        self._encoding = encoding
-        self.java_options = java_options
-
-        if dependencies:
-            self._output_format = 'conll2007'
-            self._to_tree = DependencyGraph
-        else:
-            self._output_format = 'penn'
-            self._to_tree = Tree.fromstring
-
-    def _parse_trees_output(self, output_):
-        res = []
-        cur_lines = []
-        for line in output_.splitlines(False):
-            if line == '':
-                res.append(iter([self._to_tree('\n'.join(cur_lines))]))
-                cur_lines = []
-            else:
-                cur_lines.append(line)
-        return iter(res)
-
-    def parse_sents(self, sentences, verbose=False):
-        """
-        Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
-        list where each sentence is a list of words.
-        Each sentence will be automatically tagged with this StanfordParser instance's
-        tagger.
-        If whitespaces exists inside a token, then the token will be treated as
-        separate tokens.
-
-        :param sentences: Input sentences to parse
-        :type sentences: list(list(str))
-        :rtype: iter(iter(Tree))
-        """
-        cmd = [
-            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
-            '-model', self.model_path,
-            '-sentences', 'newline',
-            '-outputFormat', self._output_format,
-            '-tokenized',
-            '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor',
-        ]
-        return self._parse_trees_output(self._execute(
-            cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))
-
-    def raw_parse(self, sentence, verbose=False):
-        """
-        Use StanfordParser to parse a sentence. Takes a sentence as a string;
-        before parsing, it will be automatically tokenized and tagged by
-        the Stanford Parser.
-
-        :param sentence: Input sentence to parse
-        :type sentence: str
-        :rtype: iter(Tree)
-        """
-        return next(self.raw_parse_sents([sentence], verbose))
-
-    def raw_parse_sents(self, sentences, verbose=False):
-        """
-        Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
-        list of strings.
-        Each sentence will be automatically tokenized and tagged by the Stanford Parser.
-
-        :param sentences: Input sentences to parse
-        :type sentences: list(str)
-        :rtype: iter(iter(Tree))
-        """
-        cmd = [
-            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
-            '-model', self.model_path,
-            '-sentences', 'newline',
-            '-outputFormat', self._output_format,
-        ]
-        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
-
-    def tagged_parse(self, sentence, verbose=False):
-        """
-        Use StanfordParser to parse a sentence. Takes a sentence as a list of
-        (word, tag) tuples; the sentence must have already been tokenized and
-        tagged.
-
-        :param sentence: Input sentence to parse
-        :type sentence: list(tuple(str, str))
-        :rtype: iter(Tree)
-        """
-        return next(self.tagged_parse_sents([sentence], verbose))
-
-    def tagged_parse_sents(self, sentences, verbose=False):
-        """
-        Use StanfordParser to parse multiple sentences. Takes multiple sentences
-        where each sentence is a list of (word, tag) tuples.
-        The sentences must have already been tokenized and tagged.
-
-        :param sentences: Input sentences to parse
-        :type sentences: list(list(tuple(str, str)))
-        :rtype: iter(iter(Tree))
-        """
-        tag_separator = '/'
-        cmd = [
-            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
-            '-model', self.model_path,
-            '-sentences', 'newline',
-            '-outputFormat', self._output_format,
-            '-tokenized',
-            '-tagSeparator', tag_separator,
-            '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer',
-            '-tokenizerMethod', 'newCoreLabelTokenizerFactory',
-        ]
-        # We don't need to escape slashes as "splitting is done on the last instance of the character in the token"
-        return self._parse_trees_output(self._execute(
-            cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
-
-    def _execute(self, cmd, input_, verbose=False):
-        encoding = self._encoding
-        cmd.extend(['-encoding', encoding])
-
-        default_options = ' '.join(_java_options)
-
-        # Configure java.
-        config_java(options=self.java_options, verbose=verbose)
-
-        # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
-        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as input_file:
-            # Write the actual sentences to the temporary input file
-            if isinstance(input_, compat.text_type) and encoding:
-                input_ = input_.encode(encoding)
-            input_file.write(input_)
-            input_file.flush()
-
-            cmd.append(input_file.name)
-
-            # Run the tagger and get the output.
-            stdout, stderr = java(cmd, classpath=(self._stanford_jar, self._model_jar),
-                                  stdout=PIPE, stderr=PIPE)
-            stdout = stdout.decode(encoding)
-
-        os.unlink(input_file.name)
-
-        # Return java configurations to their default values.
-        config_java(options=default_options, verbose=False)
-
-        return stdout
+    _OUTPUT_FORMAT = 'conll2007'
+    _TO_TREE = DependencyGraph
 
 
 def setup_module(module):
