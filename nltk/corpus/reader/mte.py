@@ -4,9 +4,7 @@ A reader for corpora whose documents are in MTE format.
 import os
 from functools import reduce
 from nltk import compat
-from nltk.corpus.reader.api import CorpusReader
-from nltk.corpus.reader.tagged import TaggedCorpusReader
-from nltk.corpus.reader import concat
+from nltk.corpus.reader import concat, TaggedCorpusReader
 
 lxmlAvailable = False
 try:
@@ -158,7 +156,7 @@ class MTECorpusReader(TaggedCorpusReader):
         :param fileids: A list or regexp specifying the fileids in this corpus. (default is oana-en.xml)
         :param enconding: The encoding of the given files (default is utf8)
         """
-        CorpusReader.__init__(self, root, fileids, encoding)
+        TaggedCorpusReader.__init__(self, root, fileids, encoding)
 
     def __fileids(self, fileids):
         if fileids is None: fileids = self._fileids
