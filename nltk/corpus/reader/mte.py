@@ -171,10 +171,11 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def readme(self):
         """
-        This corpus has no readme file attached, to avoid errors
-        being thrown we overwrite the method from the super class
+        Prints some information about this corpus.
+        :return: the content of the attached README file
+        :rtype: str
         """
-        print("No readme file found")
+        return self.open("00README.txt").read()
 
     def raw(self, fileids=None):
         """
