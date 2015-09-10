@@ -15,6 +15,7 @@ from collections import defaultdict
 
 from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategory
 from nltk.compat import python_2_unicode_compatible
+from nltk.internals import deprecated
 
 #------------
 # Regular expressions used for parsing components of the lexicon
@@ -44,7 +45,7 @@ COMMENTS_RE = re.compile('''([^#]*)(?:#.*)?''')
 class CCGLexicon(object):
     """
     Class representing a lexicon for CCG grammars.
-    
+
     * `primitives`: The list of primitive categories for the lexicon
     * `families`: Families of categories
     * `entries`: A mapping of words to possible categories
@@ -55,7 +56,7 @@ class CCGLexicon(object):
         self._families = families
         self._entries = entries
 
-    
+
     def categories(self, word):
         """
         Returns all the possible categories for a word
@@ -140,10 +141,10 @@ def parseSubscripts(subscr):
     return []
 
 
-def parsePrimitiveCategory(chunks, primitives, families, var):    
+def parsePrimitiveCategory(chunks, primitives, families, var):
     """
     Parse a primitive category
-    
+
     If the primitive is the special category 'var', replace it with the
     correct `CCGVar`.
     """
@@ -240,6 +241,10 @@ def fromstring(lex_str):
                 entries[ident].append(cat)
     return CCGLexicon(primitives[0], primitives, families, entries)
 
+
+@deprecated('Use fromstring() instead.')
+def parseLexicon(lex_str):
+    return fromstring(lex_str)
 
 openccg_tinytiny = fromstring("""
     # Rather minimal lexicon based on the openccg `tinytiny' grammar.
