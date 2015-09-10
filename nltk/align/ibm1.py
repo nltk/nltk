@@ -54,10 +54,11 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from __future__  import division
+from __future__ import division
 from collections import defaultdict
-from nltk.align  import AlignedSent
-from nltk.align.ibm_model import IBMModel
+from nltk.align import AlignedSent
+from nltk.align import Alignment
+from nltk.align import IBMModel
 import warnings
 
 
@@ -65,20 +66,33 @@ class IBMModel1(IBMModel):
     """
     Lexical translation model that ignores word order
 
-    >>> from nltk.corpus import comtrans
-    >>> bitexts = comtrans.aligned_sents()[:100]
-    >>> ibm = IBMModel1(bitexts, 20)
+    >>> bitext = []
+    >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
+    >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
+    >>> bitext.append(AlignedSent(['ein', 'buch'], ['a', 'book']))
 
-    >>> aligned_sent = ibm.align(bitexts[6])
-    >>> aligned_sent.alignment
-    Alignment([(0, 0), (1, 1), (2, 2), (3, 7), (4, 7), (5, 8)])
-    >>> print('{0:.3f}'.format(bitexts[6].precision(aligned_sent)))
-    0.556
-    >>> print('{0:.3f}'.format(bitexts[6].recall(aligned_sent)))
-    0.833
-    >>> print('{0:.3f}'.format(bitexts[6].alignment_error_rate(aligned_sent)))
-    0.333
-    
+    >>> ibm1 = IBMModel1(bitext, 5)
+
+    >>> print('{0:.3f}'.format(ibm1.translation_table['buch']['book']))
+    0.889
+    >>> print('{0:.3f}'.format(ibm1.translation_table['das']['book']))
+    0.062
+    >>> print('{0:.3f}'.format(ibm1.translation_table['buch'][None]))
+    0.113
+    >>> print('{0:.3f}'.format(ibm1.translation_table['ja'][None]))
+    0.073
+
+    >>> test_sentence = bitext[2]
+    >>> test_sentence.words
+    ['das', 'buch', 'ist', 'ja', 'klein']
+    >>> test_sentence.mots
+    ['the', 'book', 'is', 'small']
+    >>> test_sentence.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (3, 2), (4, 3)])
+
     """
 
     def __init__(self, sentence_aligned_corpus, iterations):
@@ -95,7 +109,6 @@ class IBMModel1(IBMModel):
         :param iterations: Number of iterations to run training algorithm
         :type iterations: int
         """
-
         super(IBMModel1, self).__init__(sentence_aligned_corpus)
 
         # seed with a uniform distribution
@@ -109,6 +122,7 @@ class IBMModel1(IBMModel):
                           "Results may be less accurate.")
 
         self.train(sentence_aligned_corpus, iterations)
+        self.__align_all(sentence_aligned_corpus)
 
     def train(self, parallel_corpus, iterations):
         for i in range(0, iterations):
@@ -141,41 +155,53 @@ class IBMModel1(IBMModel):
                     self.translation_table[t][s] = max(estimate,
                                                        IBMModel.MIN_PROB)
 
-    def align(self, sentence_pair):
+    def prob_t_a_given_s(self, alignment_info):
+        """
+        Probability of target sentence and an alignment given the
+        source sentence
+        """
+        prob = 1.0
+
+        for j, i in enumerate(alignment_info.alignment):
+            if j == 0:
+                continue  # skip the dummy zeroeth element
+            trg_word = alignment_info.trg_sentence[j]
+            src_word = alignment_info.src_sentence[i]
+            prob *= self.translation_table[trg_word][src_word]
+
+        return max(prob, IBMModel.MIN_PROB)
+
+    def __align_all(self, parallel_corpus):
+        for sentence_pair in parallel_corpus:
+            self.__align(sentence_pair)
+
+    def __align(self, sentence_pair):
         """
         Determines the best word alignment for one sentence pair from
         the corpus that the model was trained on.
 
-        The original sentence pair is not modified. Results are
-        undefined if ``sentence_pair`` is not in the training set.
+        The best alignment will be set in ``sentence_pair`` when the
+        method returns. In contrast with the internal implementation of
+        IBM models, the word indices in the ``Alignment`` are zero-
+        indexed, not one-indexed.
 
         :param sentence_pair: A sentence in the source language and its
             counterpart sentence in the target language
         :type sentence_pair: AlignedSent
-
-        :return: ``AlignedSent`` filled in with the best word alignment
-        :rtype: AlignedSent
         """
-
-        if self.translation_table is None:
-            raise ValueError("The model has not been trained.")
-
-        alignment = []
+        best_alignment = []
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
             best_prob = max(self.translation_table[trg_word][None],
                             IBMModel.MIN_PROB)
-            best_alignment = None
+            best_alignment_point = None
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = self.translation_table[trg_word][src_word]
-                if align_prob >= best_prob: # prefer newer word in case of tie
+                if align_prob >= best_prob:  # prefer newer word in case of tie
                     best_prob = align_prob
-                    best_alignment = i
+                    best_alignment_point = i
 
-            # If trg_word is not aligned to the NULL token,
-            # add it to the viterbi_alignment.
-            if best_alignment is not None:
-                alignment.append((j, best_alignment))
+            best_alignment.append((j, best_alignment_point))
 
-        return AlignedSent(sentence_pair.words, sentence_pair.mots, alignment)
+        sentence_pair.alignment = Alignment(best_alignment)

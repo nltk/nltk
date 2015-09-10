@@ -33,15 +33,8 @@ import gzip
 from nltk.compat import UTC
 
 
-try:
-    from twython import Twython, TwythonStreamer
-    from twython.exceptions import TwythonRateLimitError, TwythonError
-except ImportError as err:
-    import textwrap
-    MSG = """The NLTK twitterclient module requires the Twython package. See\
-    https://twython.readthedocs.org/ for installation instructions."""
-    err.msg = textwrap.fill(MSG)
-    raise
+from twython import Twython, TwythonStreamer
+from twython.exceptions import TwythonRateLimitError, TwythonError
 
 from nltk.twitter.util import credsfromfile, guess_path
 from nltk.twitter.api import TweetHandlerI, BasicTweetHandler
@@ -229,7 +222,7 @@ class Query(Twython):
                                   result_type='recent')
             count = len(results['statuses'])
             if count == 0:
-                print("No Tweets available through rest api for those keywords")
+                print("No Tweets available through REST API for those keywords")
                 return
             count_from_query = count
             max_id = results['statuses'][count - 1]['id'] - 1
