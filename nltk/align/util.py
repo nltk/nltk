@@ -44,3 +44,4 @@ def alignment2pharaohtext(alignment):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+	
