@@ -152,9 +152,9 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     # set of phrase pairs BP
     bp = set()
 
-    for e_start in xrange(srclen):
+    for e_start in range(srclen):
         max_idx = min(srclen, e_start + max_phrase_length)
-        for e_end in xrange(e_start, max_idx):
+        for e_end in range(e_start, max_idx):
             # // find the minimally matching foreign phrase
             # (f start , f end ) = ( length(f), 0 )
             # f_start ∈ [0, len(f) - 1]; f_end ∈ [0, len(f) - 1]
