@@ -1,7 +1,7 @@
 # Natural Language Toolkit: Aligner Utilities
 #
 # Copyright (C) 2001-2013 NLTK Project
-# Author: 
+# Author: Anna Garbar
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
