@@ -4,15 +4,17 @@ NLTK News
 2015
 ----
 
-NLTK 3.0.4 released : July 2015
-   Minor bugfixes and enhancements
-   For full details see:
+NLTK 3.0.5 released : September 2015
+   New Twitter package; updates to IBM models 1-3, new models 4 and 5,
+   minor bugfixes and enhancements
+   For details see:
    https://github.com/nltk/nltk/blob/develop/ChangeLog
 
+NLTK 3.0.4 released : July 2015
+   Minor bugfixes and enhancements.
+
 NLTK 3.0.3 released : June 2015
-   PanLex Swadesh Corpus, tgrep tree search, minor bugfixes
-   For full details see:
-   https://github.com/nltk/nltk/blob/develop/ChangeLog
+   PanLex Swadesh Corpus, tgrep tree search, minor bugfixes.
 
 NLTK 3.0.2 released : March 2015
    Senna, BLLIP, python-crfsuite interfaces, transition-based dependency parsers,

@@ -71,7 +71,8 @@ from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
 from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.stanford import StanfordTokenizer
 from nltk.tokenize.texttiling import TextTilingTokenizer
-from nltk.tokenize.casual import (TweetTokenizer, casual_tokenize)
+from nltk.tokenize.casual   import (TweetTokenizer, casual_tokenize)
+from nltk.tokenize.mwe      import MWETokenizer
 
 # Standard sentence tokenizer.
 def sent_tokenize(text, language='english'):

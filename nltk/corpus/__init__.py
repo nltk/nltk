@@ -150,6 +150,8 @@ movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*',
     encoding='ascii')
+multext_east = LazyCorpusLoader(
+    'mte_teip5', MTECorpusReader, r'(oana).*\.xml', encoding="utf-8")
 names = LazyCorpusLoader(
     'names', WordListCorpusReader, r'(?!\.).*\.txt', encoding='ascii')
 nkjp = LazyCorpusLoader(

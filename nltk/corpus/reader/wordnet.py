@@ -252,7 +252,7 @@ class Lemma(_WordNetObject):
         self._frame_ids = []
         self._lexname_index = lexname_index
         self._lex_id = lex_id
-        self._lang = "en"
+        self._lang = 'eng'
 
         self._key = None # gets set later.
 
@@ -410,9 +410,9 @@ class Synset(_WordNetObject):
         elif self._pos == VERB:
             return True
 
-    def lemma_names(self, lang='en'):
+    def lemma_names(self, lang='eng'):
         '''Return all the lemma_names associated with the synset'''
-        if lang=='en':
+        if lang=='eng':
             return self._lemma_names
         else:
             self._wordnet_corpus_reader._load_lang_data(lang)
@@ -422,9 +422,9 @@ class Synset(_WordNetObject):
                 if x == i:
                     return self._wordnet_corpus_reader._lang_data[lang][0][x]
                 
-    def lemmas(self, lang='en'):
+    def lemmas(self, lang='eng'):
         '''Return all the lemma objects associated with the synset'''
-        if lang=='en':
+        if lang=='eng':
             return self._lemmas
         else:
             self._wordnet_corpus_reader._load_lang_data(lang)
@@ -1396,7 +1396,7 @@ class WordNetCorpusReader(CorpusReader):
     # Retrieve synsets and lemmas.
     #////////////////////////////////////////////////////////////
 
-    def synsets(self, lemma, pos=None, lang='en'):
+    def synsets(self, lemma, pos=None, lang='eng'):
         """Load all synsets with a given lemma and part of speech tag.
         If no pos is specified, all synsets for all parts of speech
         will be loaded. 
@@ -1405,7 +1405,7 @@ class WordNetCorpusReader(CorpusReader):
         """
         lemma = lemma.lower()
         
-        if lang == 'en':
+        if lang == 'eng':
             get_synset = self._synset_from_pos_and_offset
             index = self._lemma_pos_offset_map
             if pos is None:
@@ -1424,12 +1424,12 @@ class WordNetCorpusReader(CorpusReader):
                 synset_list.append(self.of2ss(l))
             return synset_list
 
-    def lemmas(self, lemma, pos=None, lang='en'):
+    def lemmas(self, lemma, pos=None, lang='eng'):
         """Return all Lemma objects with a name matching the specified lemma
         name and part of speech tag. Matches any part of speech tag if none is
         specified."""
 
-        if lang == 'en':
+        if lang == 'eng':
             lemma = lemma.lower()
             return [lemma_obj
                     for synset in self.synsets(lemma, pos)
@@ -1448,12 +1448,12 @@ class WordNetCorpusReader(CorpusReader):
                 lemmas.append(a)
             return lemmas
 
-    def all_lemma_names(self, pos=None, lang='en'):
+    def all_lemma_names(self, pos=None, lang='eng'):
         """Return all lemma names for all synsets for the given
         part of speech tag and langauge or languages. If pos is not specified, all synsets
         for all parts of speech will be used."""
 
-        if lang == 'en':
+        if lang == 'eng':
             if pos is None:
                 return iter(self._lemma_pos_offset_map)
             else:
@@ -1534,6 +1534,9 @@ class WordNetCorpusReader(CorpusReader):
     #////////////////////////////////////////////////////////////
     def lemma_count(self, lemma):
         """Return the frequency count for this Lemma"""
+        # Currently, count is only work for English
+        if lemma._lang != 'eng':
+            return 0
         # open the count file if we haven't already
         if self._key_count_file is None:
             self._key_count_file = self.open('cntlist.rev')
