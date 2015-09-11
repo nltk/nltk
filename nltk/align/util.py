@@ -42,8 +42,3 @@ def alignment2pharaohtext(alignment):
 
     pharaoh_text = ' '.join(str(i) + "-" + str(j) for i,j in alignment)
     return pharaoh_text
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
-
