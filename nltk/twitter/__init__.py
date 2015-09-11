@@ -17,9 +17,11 @@ try:
     import twython
 except ImportError:
     import warnings
-    warnings.warn("nltk.twitter package not loaded "
-                  "(please install twython library).")
+    warnings.warn("twython library is not installed. "
+                  "Some nltk.twitter functionalities will not be available.")
+else:
+    from nltk.twitter.util import Authenticate, credsfromfile
+    from nltk.twitter.twitterclient import Streamer, Query, Twitter,\
+         TweetViewer, TweetWriter
 
-from nltk.twitter.util import Authenticate, credsfromfile, json2csv
-from nltk.twitter.twitterclient import Streamer, Query, Twitter,\
-     TweetViewer, TweetWriter
+from nltk.twitter.common import json2csv

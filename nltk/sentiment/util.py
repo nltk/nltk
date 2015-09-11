@@ -25,7 +25,7 @@ import nltk
 from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
 from nltk.tokenize.casual import EMOTICON_RE
-from nltk.twitter.util import outf_writer_compat, extract_fields
+from nltk.twitter.common import outf_writer_compat, extract_fields
 
 #////////////////////////////////////////////////////////////
 #{ Regular expressions
@@ -77,9 +77,9 @@ def timer(method):
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
-            print('[TIMER] {}(): {:.3f} seconds'.format(method.__name__, tot_time))
+            print('[TIMER] {0}(): {:.3f} seconds'.format(method.__name__, tot_time))
         else:
-            print('[TIMER] {}(): {}h {}m {}s'.format(method.__name__, hours, mins, secs))
+            print('[TIMER] {0}(): {1}h {2}m {3}s'.format(method.__name__, hours, mins, secs))
         return result
     return timed
 
@@ -113,7 +113,7 @@ def extract_unigram_feats(document, unigrams, handle_negation=False):
     if handle_negation:
         document = mark_negation(document)
     for word in unigrams:
-        features['contains({})'.format(word)] = word in set(document)
+        features['contains({0})'.format(word)] = word in set(document)
     return features
 
 def extract_bigram_feats(document, bigrams):
@@ -135,7 +135,7 @@ def extract_bigram_feats(document, bigrams):
     """
     features = {}
     for bigr in bigrams:
-        features['contains({} - {})'.format(bigr[0], bigr[1])] = bigr in nltk.bigrams(document)
+        features['contains({0} - {1})'.format(bigr[0], bigr[1])] = bigr in nltk.bigrams(document)
     return features
 
 #////////////////////////////////////////////////////////////
@@ -188,19 +188,19 @@ def output_markdown(filename, **kwargs):
     """
     with codecs.open(filename, 'at') as outfile:
         text = '\n*** \n\n'
-        text += '{} \n\n'.format(time.strftime("%d/%m/%Y, %H:%M"))
+        text += '{0} \n\n'.format(time.strftime("%d/%m/%Y, %H:%M"))
         for k in sorted(kwargs):
             if isinstance(kwargs[k], dict):
                 dictionary = kwargs[k]
-                text += '  - **{}:**\n'.format(k)
+                text += '  - **{0}:**\n'.format(k)
                 for entry in sorted(dictionary):
-                    text += '    - {}: {} \n'.format(entry, dictionary[entry])
+                    text += '    - {0}: {1} \n'.format(entry, dictionary[entry])
             elif isinstance(kwargs[k], list):
-                text += '  - **{}:**\n'.format(k)
+                text += '  - **{0}:**\n'.format(k)
                 for entry in kwargs[k]:
-                    text += '    - {}\n'.format(entry)
+                    text += '    - {0}\n'.format(entry)
             else:
-                text += '  - **{}:** {} \n'.format(k, kwargs[k])
+                text += '  - **{0}:** {1} \n'.format(k, kwargs[k])
         outfile.write(text)
 
 def save_file(content, filename):
@@ -358,7 +358,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
             for tweet_id, text in reader:
                 # text = text[1]
                 i += 1
-                sys.stdout.write('Loaded {} tweets\r'.format(i))
+                sys.stdout.write('Loaded {0} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
                 if word_tokenizer:
                     tweet = [w for sent in sent_tokenizer.tokenize(text)
@@ -377,7 +377,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
                 unicode_row = [x.decode('utf8') for x in row]
                 text = unicode_row[1]
                 i += 1
-                sys.stdout.write('Loaded {} tweets\r'.format(i))
+                sys.stdout.write('Loaded {0} tweets\r'.format(i))
                 # Apply sentence and word tokenizer to text
                 if word_tokenizer:
                     tweet = [w.encode('utf8') for sent in sent_tokenizer.tokenize(text)
@@ -385,7 +385,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
                 else:
                     tweet = text
                 tweets.append((tweet, label))
-    print("Loaded {} tweets".format(i))
+    print("Loaded {0} tweets".format(i))
     return tweets
 
 #////////////////////////////////////////////////////////////
@@ -719,16 +719,16 @@ def demo_vader_tweets(n_instances=None, output=None):
         metrics_results['Accuracy'] = accuracy_score
         precision_score = eval_precision(gold_results[label],
             test_results[label])
-        metrics_results['Precision [{}]'.format(label)] = precision_score
+        metrics_results['Precision [{0}]'.format(label)] = precision_score
         recall_score = eval_recall(gold_results[label],
             test_results[label])
-        metrics_results['Recall [{}]'.format(label)] = recall_score
+        metrics_results['Recall [{0}]'.format(label)] = recall_score
         f_measure_score = eval_f_measure(gold_results[label],
             test_results[label])
-        metrics_results['F-measure [{}]'.format(label)] = f_measure_score
+        metrics_results['F-measure [{0}]'.format(label)] = f_measure_score
 
     for result in sorted(metrics_results):
-            print('{}: {}'.format(result, metrics_results[result]))
+            print('{0}: {1}'.format(result, metrics_results[result]))
 
     if output:
         output_markdown(output, Approach='Vader', Dataset='labeled_tweets',
