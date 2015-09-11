@@ -6,6 +6,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+from nltk.align.util import alignment2pharaohtext
+
 def extract(f_start, f_end, e_start, e_end, 
             alignment, f_aligned,
             srctext, trgtext, srclen, trglen, max_phrase_length):
@@ -62,9 +64,16 @@ def extract(f_start, f_end, e_start, e_end,
             # Need to +1 in range  to include the end-point.
             src_phrase = " ".join(srctext[e_start:e_end+1])
             trg_phrase = " ".join(trgtext[fs:fe+1])
-            # Include more data for later ordering.
-            phrases.add(((e_start, e_end+1), (f_start, f_end+1), 
-                         src_phrase, trg_phrase))
+            # Extract phrase-internal lexical alignments. they're for computing 
+            # phrase-internal lexicalized weighting and reordering weights.
+            lexical_alignments = []
+            for s,t in alignment: 
+                if e_start <= s <= e_end and f_start <= t <= f_end:
+                    lexical_alignments.append((s-e_start, t-f_start))
+            # Store the output lexical alignment string.
+            lexical_alignments = alignment2pharaohtext(lexical_alignments)
+            # Append the phrase to the output list of phrases.
+            phrases.add((src_phrase, trg_phrase, lexical_alignments))
             fe += 1
             if fe in f_aligned or fe == trglen:
                 break
@@ -72,6 +81,7 @@ def extract(f_start, f_end, e_start, e_end,
         if fs in f_aligned or fs < 0:
             break
     return phrases
+
 
 def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     """
@@ -96,30 +106,30 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     >>> for i in sorted(phrases):
     ...    print(i)
     ...
-    ((0, 1), (0, 1), 'michael', 'michael')
-    ((0, 2), (0, 4), 'michael assumes', 'michael geht davon aus')
-    ((0, 2), (0, 4), 'michael assumes', 'michael geht davon aus ,')
-    ((0, 3), (0, 6), 'michael assumes that', 'michael geht davon aus , dass')
-    ((0, 4), (0, 7), 'michael assumes that he', 'michael geht davon aus , dass er')
-    ((0, 9), (0, 10), 'michael assumes that he will stay in the house', 'michael geht davon aus , dass er im haus bleibt')
-    ((1, 2), (1, 4), 'assumes', 'geht davon aus')
-    ((1, 2), (1, 4), 'assumes', 'geht davon aus ,')
-    ((1, 3), (1, 6), 'assumes that', 'geht davon aus , dass')
-    ((1, 4), (1, 7), 'assumes that he', 'geht davon aus , dass er')
-    ((1, 9), (1, 10), 'assumes that he will stay in the house', 'geht davon aus , dass er im haus bleibt')
-    ((2, 3), (5, 6), 'that', ', dass')
-    ((2, 3), (5, 6), 'that', 'dass')
-    ((2, 4), (5, 7), 'that he', ', dass er')
-    ((2, 4), (5, 7), 'that he', 'dass er')
-    ((2, 9), (5, 10), 'that he will stay in the house', ', dass er im haus bleibt')
-    ((2, 9), (5, 10), 'that he will stay in the house', 'dass er im haus bleibt')
-    ((3, 4), (6, 7), 'he', 'er')
-    ((3, 9), (6, 10), 'he will stay in the house', 'er im haus bleibt')
-    ((4, 6), (9, 10), 'will stay', 'bleibt')
-    ((4, 9), (7, 10), 'will stay in the house', 'im haus bleibt')
-    ((6, 8), (7, 8), 'in the', 'im')
-    ((6, 9), (7, 9), 'in the house', 'im haus')
-    ((8, 9), (8, 9), 'house', 'haus')
+    ('assumes', 'geht davon aus', '0-0 0-1 0-2')
+    ('assumes', 'geht davon aus ,', '0-0 0-1 0-2')
+    ('assumes that', 'geht davon aus , dass', '0-0 0-1 0-2 1-4')
+    ('assumes that he', 'geht davon aus , dass er', '0-0 0-1 0-2 1-4 2-5')
+    ('assumes that he will stay in the house', 'geht davon aus , dass er im haus bleibt', '0-0 0-1 0-2 1-4 2-5 3-8 4-8 5-6 6-6 7-7')
+    ('he', 'er', '0-0')
+    ('he will stay in the house', 'er im haus bleibt', '0-0 1-3 2-3 3-1 4-1 5-2')
+    ('house', 'haus', '0-0')
+    ('in the', 'im', '0-0 1-0')
+    ('in the house', 'im haus', '0-0 1-0 2-1')
+    ('michael', 'michael', '0-0')
+    ('michael assumes', 'michael geht davon aus', '0-0 1-1 1-2 1-3')
+    ('michael assumes', 'michael geht davon aus ,', '0-0 1-1 1-2 1-3')
+    ('michael assumes that', 'michael geht davon aus , dass', '0-0 1-1 1-2 1-3 2-5')
+    ('michael assumes that he', 'michael geht davon aus , dass er', '0-0 1-1 1-2 1-3 2-5 3-6')
+    ('michael assumes that he will stay in the house', 'michael geht davon aus , dass er im haus bleibt', '0-0 1-1 1-2 1-3 2-5 3-6 4-9 5-9 6-7 7-7 8-8')
+    ('that', ', dass', '0-0')
+    ('that', 'dass', '0-0')
+    ('that he', ', dass er', '0-0 1-1')
+    ('that he', 'dass er', '0-0 1-1')
+    ('that he will stay in the house', ', dass er im haus bleibt', '0-0 1-1 2-4 3-4 4-2 5-2 6-3')
+    ('that he will stay in the house', 'dass er im haus bleibt', '0-0 1-1 2-4 3-4 4-2 5-2 6-3')
+    ('will stay', 'bleibt', '0-0 1-0')
+    ('will stay in the house', 'im haus bleibt', '0-2 1-2 2-0 3-0 4-1')
     
     :type srctext: str
     :param srctext: The sentence string from the source language.
@@ -172,4 +182,3 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
             if phrases:
                 bp.update(phrases)
     return bp
-
