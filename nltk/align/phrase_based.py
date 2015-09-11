@@ -82,6 +82,7 @@ def extract(f_start, f_end, e_start, e_end,
             break
     return phrases
 
+
 def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     """
     Phrase extraction algorithm extracts all consistent phrase pairs from 
