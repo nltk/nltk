@@ -142,28 +142,6 @@ class MaltParser(ParserI):
         # Initialize POS tagger.
         self.tagger = tagger if tagger is not None else malt_regex_tagger()
 
-    def pretrained_model_sanity_checks(self, tree_str):
-        """
-        Performs sanity checks and replace oddities in pre-trained model
-        outputs from http://www.maltparser.org/mco/english_parser/engmalt.html
-        Note: This hack function should go away once nltk.parse.DependencyGraph
-        handles optional TOP label!!!
-        :param tree_str: The CONLL output file for a single parse
-        :type tree_str: str
-        :return: str
-        """
-        # Checks for oddities in English pre-trained model.
-        if (
-        '\t0\tnull\t' in tree_str and
-        self.model.endswith(('engmalt.linear-1.7.mco', 'engmalt.poly-1.7.mco'))
-        ):
-            tree_str = tree_str.replace('\t0\tnull\t','\t0\tROOT\t')
-        # Checks for oddities in French pre-trained model.
-        if '\t0\troot\t' in tree_str and \
-        self.model.endswith('fremalt-1.7.mco'):
-            tree_str = tree_str.replace('\t0\troot\t','\t0\tROOT\t')
-        return tree_str
-
     def parse_tagged_sents(self, sentences, verbose=False, top_relation_label='null'):
         """
         Use MaltParser to parse multiple POS tagged sentences. Takes multiple
@@ -177,7 +155,6 @@ class MaltParser(ParserI):
         """
         if not self._trained:
             raise Exception("Parser has not been trained. Call train() first.")
-
 
         with tempfile.NamedTemporaryFile(prefix='malt_input.conll.',
               dir=self.working_dir, mode='w', delete=False) as input_file:
@@ -210,12 +187,10 @@ class MaltParser(ParserI):
                 # Must return iter(iter(Tree))
                 with open(output_file.name) as infile:
                     for tree_str in infile.read().split('\n\n'):
-                        tree_str = self.pretrained_model_sanity_checks(tree_str)
                         yield(iter([DependencyGraph(tree_str, top_relation_label=top_relation_label)]))
 
         os.remove(input_file.name)
         os.remove(output_file.name)
-
 
     def parse_sents(self, sentences, verbose=False, top_relation_label='null'):
         """
@@ -230,7 +205,6 @@ class MaltParser(ParserI):
         """
         tagged_sentences = (self.tagger(sentence) for sentence in sentences)
         return self.parse_tagged_sents(tagged_sentences, verbose, top_relation_label=top_relation_label)
-
 
     def generate_malt_command(self, inputfilename, outputfilename=None, mode=None):
         """
