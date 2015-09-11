@@ -8,20 +8,6 @@
 
 from nltk.align.util import alignment2pharaohtext
 
-def extract_lexical_alignment(f_start, f_end, e_start, e_end, alignment):
-    """
-    Extracts the lexical alignments of a phrase given its start and end
-    position and the word alignments of the full sentence.
-    These phrase-internal lexical alignments are used to computing lexicalized
-    weighting of phrases and lexicalized reordering weights.
-    
-    """
-    _lexical_alignments = []
-    for s,t in alignment: 
-        if e_start <= s <= e_end and f_start <= t <= f_end:
-            _lexical_alignments.append((s-e_start, t-f_start))
-    return alignment2pharaohtext(_lexical_alignments)
-
 def extract(f_start, f_end, e_start, e_end, 
             alignment, f_aligned,
             srctext, trgtext, srclen, trglen, max_phrase_length):
@@ -78,11 +64,16 @@ def extract(f_start, f_end, e_start, e_end,
             # Need to +1 in range  to include the end-point.
             src_phrase = " ".join(srctext[e_start:e_end+1])
             trg_phrase = " ".join(trgtext[fs:fe+1])
+            # Extract phrase-internal lexical alignments. they're for computing 
+            # phrase-internal lexicalized weighting and reordering weights.
+            lexical_alignments = []
+            for s,t in alignment: 
+                if e_start <= s <= e_end and f_start <= t <= f_end:
+                    lexical_alignments.append((s-e_start, t-f_start))
             # Store the output lexical alignment string.
-            lex_alignments = extract_lexical_alignment(f_start, f_end, 
-                                                       e_start, e_end, alignment)
+            lexical_alignments = alignment2pharaohtext(lexical_alignments)
             # Append the phrase to the output list of phrases.
-            phrases.add((src_phrase, trg_phrase, lex_alignments))
+            phrases.add((src_phrase, trg_phrase, lexical_alignments))
             fe += 1
             if fe in f_aligned or fe == trglen:
                 break
