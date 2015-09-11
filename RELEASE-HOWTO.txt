@@ -8,8 +8,8 @@ Building an NLTK distribution
 
 A. PREPARE
 
-1. Create a release branch from the develop branch
-     git checkout -b release-3.X.Y develop
+(1. Create a release branch from the develop branch
+     git checkout -b release-3.X.Y develop)
 2. Modify nltk/VERSION with the version number
 3. Update the ChangeLog (for nltk, nltk_data)
        git log --since=20XX-YY-ZZ
@@ -19,26 +19,29 @@ A. PREPARE
      - install the new version locally, since its the installed code that is checked
      - cd nltk/test; make (run the tests in nltk.test; or see Jenkins)
      - make demotest (run the demonstration code including some graphical demos)
+     - test individual modules with, e.g.: tox-3.4 -e py34 nltk.package.module
 6. Check that installation instructions are up-to-date
 7. Update the news page in nltk/web/news.rst
-8. Merge with master branch
-     - git checkout master
-     - git merge --no-ff release-3.X.Y
+8. Tag this version:
      - git tag -a 3.X.Y -m "version 3.X.Y"
      - git push --tags
+     Check that it shows up here: https://github.com/nltk/nltk/releases
+(9. Merge with master branch
+     - git checkout master
+     - git merge --no-ff release-3.X.Y)
 
 B. RELEASE
 
-  1. Make dist
-  2. Put up the release on github
-     https://github.com/nltk/nltk/releases
-  3. sudo python setup.py register
-  4. Log in to http://pypi.python.org/pypi and upload distributions
-  5. rebuild the website with updated news page
-  6. post announcement to NLTK the mailing lists:
+  1. make clean
+  2. make dist
+  3. ls dist/
+  4. sudo python setup.py register
+  5. Log in to http://pypi.python.org/pypi and upload distributions
+  6. rebuild the website with updated news page
+  7. post announcement to NLTK the mailing lists:
        nltk-dev (for beta releases)
        nltk (for final releases)
-  7. post announcement to external mailing lists, for major N.N releases only
+  8. post announcement to external mailing lists, for major N.N releases only
        CORPORA@uib.no, linguist@linguistlist.org,
        PythonSIL@lists.sil.org, edu-sig@python.org
        mailing lists for any local courses using NLTK

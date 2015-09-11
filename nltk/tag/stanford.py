@@ -73,7 +73,8 @@ class StanfordTagger(TaggerI):
         # Create a temporary input file
         _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
 
-        self._cmd.extend(['-encoding', encoding])
+        cmd = list(self._cmd)
+        cmd.extend(['-encoding', encoding])
         
         # Write the actual sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, 'wb')
@@ -84,7 +85,7 @@ class StanfordTagger(TaggerI):
         _input_fh.close()
         
         # Run the tagger and get the output
-        stanpos_output, _stderr = java(self._cmd,classpath=self._stanford_jar,
+        stanpos_output, _stderr = java(cmd, classpath=self._stanford_jar,
                                                        stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
         
@@ -113,7 +114,7 @@ class StanfordPOSTagger(StanfordTagger):
      - a model trained on training data
      - (optionally) the path to the stanford tagger jar file. If not specified here,
        then this jar file must be specified in the CLASSPATH envinroment variable.
-     - (optionally) the encoding of the training data (default: ASCII)
+     - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:
 
@@ -142,7 +143,7 @@ class StanfordNERTagger(StanfordTagger):
     - a model trained on training data
     - (optionally) the path to the stanford tagger jar file. If not specified here,
       then this jar file must be specified in the CLASSPATH envinroment variable.
-    - (optionally) the encoding of the training data (default: ASCII)
+    - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:
 
@@ -188,6 +189,3 @@ class StanfordNERTagger(StanfordTagger):
         raise NotImplementedError
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

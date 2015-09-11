@@ -230,6 +230,3 @@ def setup_module(module):
         raise SkipTest("numpy is required for nltk.metrics.segmentation")
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

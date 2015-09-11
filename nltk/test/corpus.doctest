@@ -238,7 +238,7 @@ to the entire chunk).
     >>> [[str(c) for c in s] for s in semcor.tagged_sents(tag='both')[:2]]
     [['(DT The)', "(Lemma('group.n.01.group') (NE (NNP Fulton County Grand Jury)))", ...
      '(None .)'], ['(DT The)', ... '(None .)']]
-    
+
 
 The IEER corpus is another chunked corpus.  This corpus is unusual in
 that each corpus item contains multiple documents.  (This reflects the
@@ -826,7 +826,7 @@ retrieved from the Twitter Streaming API.
 
     >>> from nltk.corpus import twitter_samples
     >>> twitter_samples.fileids()
-    ['tweets.20150430-223406.json']
+    ['negative_tweets.json', 'positive_tweets.json', 'tweets.20150430-223406.json']
 
 We follow standard practice in storing full Tweets as line-separated
 JSON. These data structures can be accessed via `tweets.docs()`. However, in general it
@@ -834,7 +834,7 @@ is more practical to focus just on the text field of the Tweets, which
 are accessed via the `strings()` method.
 
     >>> twitter_samples.strings('tweets.20150430-223406.json')
-    ['RT @KirkKus: Indirect cost of the UK being in the EU is estimated to be costing Britain £170 billion per year! #BetterOffOut #UKIP', ...]
+    ['RT @KirkKus: Indirect cost of the UK being in the EU is estimated to be costing Britain \xa3170 billion per year! #BetterOffOut #UKIP', ...]
 
 The default tokenizer for Tweets is specialised for 'casual' text, and
 the `tokenized()` method returns a list of lists of tokens.
@@ -990,6 +990,24 @@ the XML structure directly, as follows:
     >>> tokens = posts[0].findall('terminals/t')
     >>> [t.attrib['pos'] + "/" + t.attrib['word'] for t in tokens]
     ['RB/now', 'PRP/im', 'VBD/left', 'IN/with', 'DT/this', 'JJ/gay', 'NN/name']
+
+multext_east
+------------
+
+The Multext-East Corpus consists of POS-tagged versions of George Orwell's book
+1984 in 12 languages: English, Czech, Hungarian, Macedonian, Slovenian, Serbian,
+Slovak, Romanian, Estonian, Farsi, Bulgarian and Polish.
+The corpus can be accessed using the usual methods for tagged corpora. The tagset
+can be transformed from the Multext-East specific MSD tags to the Universal tagset
+using the "tagset" parameter of all functions returning tagged parts of the corpus.
+
+    >>> print(nltk.corpus.multext_east.words("oana-en.xml"))
+    ['It', 'was', 'a', 'bright', ...]
+    >>> print(nltk.corpus.multext_east.tagged_words("oana-en.xml"))
+    [('It', '#Pp3ns'), ('was', '#Vmis3s'), ('a', '#Di'), ...]
+    >>> print(nltk.corpus.multext_east.tagged_sents("oana-en.xml", "universal"))
+    [[('It', 'PRON'), ('was', 'VERB'), ('a', 'DET'), ...]
+
 
 
 ---------------------

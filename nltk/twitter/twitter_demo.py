@@ -34,7 +34,7 @@ For error codes see Twitter's
 from functools import wraps
 import json
 
-from nltk.compat import io
+from nltk.compat import StringIO
 
 from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
      credsfromfile
@@ -218,10 +218,10 @@ def expand_tweetids_demo():
     """
     Given a file object containing a list of Tweet IDs, fetch the
     corresponding full Tweets.
-    
-    """        
+
+    """
     ids_f =\
-        io.StringIO("""\
+        StringIO("""\
         588665495492124672
         588665495487909888
         588665495508766721
@@ -233,9 +233,9 @@ def expand_tweetids_demo():
         588665495492014081
         588665495512948737""")
     oauth = credsfromfile()
-    client = Query(**oauth)    
+    client = Query(**oauth)
     hydrated = client.expand_tweetids(ids_f)
- 
+
     for tweet in hydrated:
         try:
             id_str = tweet['id_str']
@@ -243,7 +243,7 @@ def expand_tweetids_demo():
         except IndexError:
             pass
 
-    
+
 
 ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
        search_demo, tweets_by_user_demo, lookup_by_userid_demo, followtoscreen_demo,

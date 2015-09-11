@@ -12,124 +12,230 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__  import division
+"""
+Lexical translation model that ignores word order.
+
+In IBM Model 1, word order is ignored for simplicity. Thus, the
+following two alignments are equally likely.
+
+Source: je mange du jambon
+Target: i eat some ham
+Alignment: (1,1) (2,2) (3,3) (4,4)
+
+Source: je mange du jambon
+Target: some ham eat i
+Alignment: (1,4) (2,3) (3,2) (4,1)
+
+The EM algorithm used in Model 1 is:
+E step - In the training data, count how many times a source language
+         word is translated into a target language word, weighted by
+         the prior probability of the translation.
+
+M step - Estimate the new probability of translation based on the
+         counts from the Expectation step.
+
+
+Notations:
+i: Position in the source sentence
+    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+j: Position in the target sentence
+    Valid values are 1, 2, ..., length of target sentence
+s: A word in the source language
+t: A word in the target language
+
+
+References:
+Philipp Koehn. 2010. Statistical Machine Translation.
+Cambridge University Press, New York.
+
+Peter E Brown, Stephen A. Della Pietra, Vincent J. Della Pietra, and
+Robert L. Mercer. 1993. The Mathematics of Statistical Machine
+Translation: Parameter Estimation. Computational Linguistics, 19 (2),
+263-311.
+"""
+
+from __future__ import division
 from collections import defaultdict
-from nltk.align  import AlignedSent
+from nltk.align import AlignedSent
+from nltk.align import Alignment
+from nltk.align import IBMModel
+from nltk.align.ibm_model import Counts
+import warnings
 
-class IBMModel1(object):
+
+class IBMModel1(IBMModel):
     """
-    This class implements the algorithm of Expectation Maximization for 
-    the IBM Model 1. 
+    Lexical translation model that ignores word order
 
-    Step 1 - Collect the evidence of a English word being translated by a 
-             foreign language word.
+    >>> bitext = []
+    >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
+    >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
+    >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
+    >>> bitext.append(AlignedSent(['ein', 'buch'], ['a', 'book']))
 
-    Step 2 - Estimate the probability of translation according to the 
-             evidence from Step 1. 
+    >>> ibm1 = IBMModel1(bitext, 5)
 
-    >>> from nltk.corpus import comtrans
-    >>> bitexts = comtrans.aligned_sents()[:100]
-    >>> ibm = IBMModel1(bitexts, 20)
+    >>> print(ibm1.translation_table['buch']['book'])
+    0.889...
+    >>> print(ibm1.translation_table['das']['book'])
+    0.061...
+    >>> print(ibm1.translation_table['buch'][None])
+    0.113...
+    >>> print(ibm1.translation_table['ja'][None])
+    0.072...
 
-    >>> aligned_sent = ibm.align(bitexts[6])
-    >>> aligned_sent.alignment
-    Alignment([(0, 0), (1, 1), (2, 2), (3, 7), (4, 7), (5, 8)])
-    >>> print('{0:.3f}'.format(bitexts[6].precision(aligned_sent)))
-    0.556
-    >>> print('{0:.3f}'.format(bitexts[6].recall(aligned_sent)))
-    0.833
-    >>> print('{0:.3f}'.format(bitexts[6].alignment_error_rate(aligned_sent)))
-    0.333
-    
+    >>> test_sentence = bitext[2]
+    >>> test_sentence.words
+    ['das', 'buch', 'ist', 'ja', 'klein']
+    >>> test_sentence.mots
+    ['the', 'book', 'is', 'small']
+    >>> test_sentence.alignment
+    Alignment([(0, 0), (1, 1), (2, 2), (3, 2), (4, 3)])
+
     """
-    def __init__(self, align_sents, num_iter):
-        self.probabilities = self.train(align_sents, num_iter)
 
-    def train(self, align_sents, num_iter):
+    def __init__(self, sentence_aligned_corpus, iterations,
+                 probability_tables=None):
         """
-        Return the translation probability model trained by IBM model 1. 
+        Train on ``sentence_aligned_corpus`` and create a lexical
+        translation model.
 
-        Arguments:
-        align_sents   -- A list of instances of AlignedSent class, which
-                        contains sentence pairs. 
-        num_iter     -- The number of iterations.
+        Translation direction is from ``AlignedSent.mots`` to
+        ``AlignedSent.words``.
 
-        Returns:
-        t_ef         -- A dictionary of translation probabilities. 
+        :param sentence_aligned_corpus: Sentence-aligned parallel corpus
+        :type sentence_aligned_corpus: list(AlignedSent)
+
+        :param iterations: Number of iterations to run training algorithm
+        :type iterations: int
+
+        :param probability_tables: Optional. Use this to pass in custom
+            probability values. If not specified, probabilities will be
+            set to a uniform distribution, or some other sensible value.
+            If specified, the following entry must be present:
+            ``translation_table``.
+            See ``IBMModel`` for the type and purpose of this table.
+        :type probability_tables: dict[str]: object
         """
+        super(IBMModel1, self).__init__(sentence_aligned_corpus)
 
-        # Vocabulary of each language
-        fr_vocab = set()
-        en_vocab = set()
-        for alignSent in align_sents:
-            en_vocab.update(alignSent.words)
-            fr_vocab.update(alignSent.mots)
-        # Add the Null token
-        fr_vocab.add(None)
+        if probability_tables is None:
+            self.set_uniform_probabilities(sentence_aligned_corpus)
+        else:
+            # Set user-defined probabilities
+            self.translation_table = probability_tables['translation_table']
 
-        # Initial probability
-        init_prob = 1 / len(en_vocab)
+        for n in range(0, iterations):
+            self.train(sentence_aligned_corpus)
 
-        # Create the translation model with initial probability
-        t_ef = defaultdict(lambda: defaultdict(lambda: init_prob))
+        self.__align_all(sentence_aligned_corpus)
 
-        total_e = defaultdict(lambda: 0.0)
+    def set_uniform_probabilities(self, sentence_aligned_corpus):
+        initial_prob = 1 / len(self.trg_vocab)
+        if initial_prob < IBMModel.MIN_PROB:
+            warnings.warn("Target language vocabulary is too large (" +
+                          str(len(self.trg_vocab)) + " words). "
+                          "Results may be less accurate.")
 
-        for i in range(0, num_iter):
-            count_ef = defaultdict(lambda: defaultdict(lambda: 0.0))
-            total_f = defaultdict(lambda: 0.0)
+        for t in self.trg_vocab:
+            self.translation_table[t] = defaultdict(lambda: initial_prob)
 
-            for alignSent in align_sents:
-                en_set = alignSent.words
-                fr_set = [None] + alignSent.mots  
+    def train(self, parallel_corpus):
+        counts = Counts()
+        for aligned_sentence in parallel_corpus:
+            trg_sentence = aligned_sentence.words
+            src_sentence = [None] + aligned_sentence.mots
 
-                # Compute normalization
-                for e in en_set:
-                    total_e[e] = 0.0
-                    for f in fr_set:
-                        total_e[e] += t_ef[e][f]
+            # E step (a): Compute normalization factors to weigh counts
+            total_count = self.prob_all_alignments(src_sentence, trg_sentence)
 
-                # Collect counts
-                for e in en_set:
-                    for f in fr_set:
-                        c = t_ef[e][f] / total_e[e]
-                        count_ef[e][f] += c
-                        total_f[f] += c
+            # E step (b): Collect counts
+            for t in trg_sentence:
+                for s in src_sentence:
+                    count = self.prob_alignment_point(s, t)
+                    normalized_count = count / total_count[t]
+                    counts.t_given_s[t][s] += normalized_count
+                    counts.any_t_given_s[s] += normalized_count
 
-            # Compute the estimate probabilities
-            for f in fr_vocab:
-                for e in en_vocab:
-                    t_ef[e][f] = count_ef[e][f] / total_f[f]
+        # M step: Update probabilities with maximum likelihood estimate
+        self.maximize_lexical_translation_probabilities(counts)
 
-        return t_ef
-
-    def align(self, align_sent):
+    def prob_all_alignments(self, src_sentence, trg_sentence):
         """
-        Returns the alignment result for one sentence pair. 
+        Computes the probability of all possible word alignments,
+        expressed as a marginal distribution over target words t
+
+        Each entry in the return value represents the contribution to
+        the total alignment probability by the target word t.
+
+        To obtain probability(alignment | src_sentence, trg_sentence),
+        simply sum the entries in the return value.
+
+        :return: Probability of t for all s in ``src_sentence``
+        :rtype: dict(str): float
         """
+        alignment_prob_for_t = defaultdict(lambda: 0.0)
+        for t in trg_sentence:
+            for s in src_sentence:
+                alignment_prob_for_t[t] += self.prob_alignment_point(s, t)
+        return alignment_prob_for_t
 
-        if self.probabilities is None:
-            raise ValueError("The model does not train.")
+    def prob_alignment_point(self, s, t):
+        """
+        Probability that word ``t`` in the target sentence is aligned to
+        word ``s`` in the source sentence
+        """
+        return self.translation_table[t][s]
 
-        alignment = []
+    def prob_t_a_given_s(self, alignment_info):
+        """
+        Probability of target sentence and an alignment given the
+        source sentence
+        """
+        prob = 1.0
 
-        for j, en_word in enumerate(align_sent.words):
-            
-            # Initialize the maximum probability with Null token
-            max_align_prob = (self.probabilities[en_word][None], None)
-            for i, fr_word in enumerate(align_sent.mots):
-                # Find out the maximum probability
-                max_align_prob = max(max_align_prob,
-                    (self.probabilities[en_word][fr_word], i))
+        for j, i in enumerate(alignment_info.alignment):
+            if j == 0:
+                continue  # skip the dummy zeroeth element
+            trg_word = alignment_info.trg_sentence[j]
+            src_word = alignment_info.src_sentence[i]
+            prob *= self.translation_table[trg_word][src_word]
 
-            # If the maximum probability is not Null token,
-            # then append it to the alignment. 
-            if max_align_prob[1] is not None:
-                alignment.append((j, max_align_prob[1]))
+        return max(prob, IBMModel.MIN_PROB)
 
-        return AlignedSent(align_sent.words, align_sent.mots, alignment)
+    def __align_all(self, parallel_corpus):
+        for sentence_pair in parallel_corpus:
+            self.__align(sentence_pair)
 
-# run doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+    def __align(self, sentence_pair):
+        """
+        Determines the best word alignment for one sentence pair from
+        the corpus that the model was trained on.
+
+        The best alignment will be set in ``sentence_pair`` when the
+        method returns. In contrast with the internal implementation of
+        IBM models, the word indices in the ``Alignment`` are zero-
+        indexed, not one-indexed.
+
+        :param sentence_pair: A sentence in the source language and its
+            counterpart sentence in the target language
+        :type sentence_pair: AlignedSent
+        """
+        best_alignment = []
+
+        for j, trg_word in enumerate(sentence_pair.words):
+            # Initialize trg_word to align with the NULL token
+            best_prob = max(self.translation_table[trg_word][None],
+                            IBMModel.MIN_PROB)
+            best_alignment_point = None
+            for i, src_word in enumerate(sentence_pair.mots):
+                align_prob = self.translation_table[trg_word][src_word]
+                if align_prob >= best_prob:  # prefer newer word in case of tie
+                    best_prob = align_prob
+                    best_alignment_point = i
+
+            best_alignment.append((j, best_alignment_point))
+
+        sentence_pair.alignment = Alignment(best_alignment)

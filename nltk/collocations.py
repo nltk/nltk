@@ -53,14 +53,27 @@ class AbstractCollocationFinder(object):
 
     def __init__(self, word_fd, ngram_fd):
         self.word_fd = word_fd
+        self.N = word_fd.N()
         self.ngram_fd = ngram_fd
 
+    @classmethod
+    def _build_new_documents(cls,documents, window_size, pad_left=False, pad_right=False, pad_symbol=None):
+        '''
+        Pad the document with the place holder according to the window_size 
+        '''
+        padding = (pad_symbol,) * (window_size - 1)
+        if pad_right:
+            return _itertools.chain.from_iterable(_itertools.chain(doc, padding) for doc in documents)
+        if pad_left:
+            return _itertools.chain.from_iterable(_itertools.chain(padding, doc) for doc in documents)
+    
     @classmethod
     def from_documents(cls, documents):
         """Constructs a collocation finder given a collection of documents,
         each of which is a list (or iterable) of tokens.
         """
-        return cls.from_words(_itertools.chain(*documents))
+        #return cls.from_words(_itertools.chain(*documents))
+        return cls.from_words(cls._build_new_documents(documents, cls.default_ws, pad_right=True)) 
 
     @staticmethod
     def _ngram_freqdist(words, n):
@@ -127,7 +140,8 @@ class BigramCollocationFinder(AbstractCollocationFinder):
     association measures. It is often useful to use from_words() rather than
     constructing an instance directly.
     """
-
+    default_ws = 2 
+    
     def __init__(self, word_fd, bigram_fd, window_size=2):
         """Construct a BigramCollocationFinder, given FreqDists for
         appearances of words and (possibly non-contiguous) bigrams.
@@ -149,6 +163,8 @@ class BigramCollocationFinder(AbstractCollocationFinder):
 
         for window in ngrams(words, window_size, pad_right=True):
             w1 = window[0]
+            if w1 is None: 
+                continue
             wfd[w1] += 1
             for w2 in window[1:]:
                 if w2 is not None:
@@ -160,7 +176,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         function.  Following Church and Hanks (1990), counts are scaled by
         a factor of 1/(window_size - 1).
         """
-        n_all = self.word_fd.N()
+        n_all = self.N
         n_ii = self.ngram_fd[(w1, w2)] / (self.window_size - 1.0)
         if not n_ii:
             return
@@ -174,7 +190,8 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
     association measures. It is often useful to use from_words() rather than
     constructing an instance directly.
     """
-
+    default_ws = 3
+    
     def __init__(self, word_fd, bigram_fd, wildcard_fd, trigram_fd):
         """Construct a TrigramCollocationFinder, given FreqDists for
         appearances of words, bigrams, two words with any word between them,
@@ -198,6 +215,8 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         tfd = FreqDist()
         for window in ngrams(words, window_size, pad_right=True):
             w1 = window[0]
+            if w1 is None: 
+                continue
             for w2, w3 in _itertools.combinations(window[1:], 2):
                 wfd[w1] += 1
                 if w2 is None:
@@ -220,7 +239,7 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         """Returns the score for a given trigram using the given scoring
         function.
         """
-        n_all = self.word_fd.N()
+        n_all = self.N
         n_iii = self.ngram_fd[(w1, w2, w3)]
         if not n_iii:
             return
@@ -240,7 +259,8 @@ class QuadgramCollocationFinder(AbstractCollocationFinder):
     """A tool for the finding and ranking of quadgram collocations or other association measures.
     It is often useful to use from_words() rather than constructing an instance directly.
     """
-
+    default_ws = 4
+    
     def __init__(self, word_fd, quadgram_fd, ii, iii, ixi, ixxi, iixi, ixii):
         """Construct a QuadgramCollocationFinder, given FreqDists for appearances of words,
         bigrams, trigrams, two words with one word and two words between them, three words
@@ -269,6 +289,8 @@ class QuadgramCollocationFinder(AbstractCollocationFinder):
 
         for window in ngrams(words, window_size, pad_right=True):
             w1 = window[0]
+            if w1 is None: 
+                continue
             for w2, w3, w4 in _itertools.combinations(window[1:], 3):
                 ixxx[w1] += 1
                 if w2 is None:
@@ -288,7 +310,7 @@ class QuadgramCollocationFinder(AbstractCollocationFinder):
         return cls(ixxx, iiii, ii, iii, ixi, ixxi, iixi, ixii)
 
     def score_ngram(self, score_fn, w1, w2, w3, w4):
-        n_all = self.word_fd.N()
+        n_all = self.N
         n_iiii = self.ngram_fd[(w1, w2, w3, w4)]
         if not n_iiii:
             return

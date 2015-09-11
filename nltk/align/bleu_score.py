@@ -261,7 +261,3 @@ def _brevity_penalty(candidate, references):
         return math.exp(1 - r / c)
 
 
-# run doctests
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.ELLIPSIS)

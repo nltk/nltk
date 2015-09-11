@@ -69,8 +69,10 @@ from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
 from nltk.tokenize.punkt    import PunktSentenceTokenizer
 from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
 from nltk.tokenize.treebank import TreebankWordTokenizer
+from nltk.tokenize.stanford import StanfordTokenizer
 from nltk.tokenize.texttiling import TextTilingTokenizer
-from nltk.tokenize.casual import (TweetTokenizer, casual_tokenize)
+from nltk.tokenize.casual   import (TweetTokenizer, casual_tokenize)
+from nltk.tokenize.mwe      import MWETokenizer
 
 # Standard sentence tokenizer.
 def sent_tokenize(text, language='english'):
@@ -102,6 +104,3 @@ def word_tokenize(text, language='english'):
     return [token for sent in sent_tokenize(text, language)
             for token in _treebank_word_tokenize(sent)]
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

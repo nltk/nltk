@@ -12,14 +12,14 @@ Corpus Reader
 
     >>> from nltk.corpus import comtrans
     >>> words = comtrans.words('alignment-en-fr.txt')
-    >>> for word in words:
+    >>> for word in words[:6]:
     ...     print(word)
     Resumption
     of
     the
     session
     I
-    declare...
+    declare
     >>> als = comtrans.aligned_sents('alignment-en-fr.txt')[0]
     >>> als  # doctest: +NORMALIZE_WHITESPACE
     AlignedSent(['Resumption', 'of', 'the', 'session'],
@@ -40,8 +40,8 @@ Aligned sentences are simply a mapping between words in a sentence:
     Alignment([(0, 0), (1, 1), (2, 2), (3, 3)])
 
 
-Usually we look at them from the perpective of a source to a target languge,
-but they are easilly inverted:
+Usually we look at them from the perspective of a source to a target language,
+but they are easily inverted:
 
     >>> als.invert() # doctest: +NORMALIZE_WHITESPACE
     AlignedSent(['Reprise', 'de', 'la', 'session'],
@@ -83,36 +83,36 @@ Here is an example from Koehn, 2010:
     ...           AlignedSent(['the', 'book'], ['das', 'Buch']),
     ...           AlignedSent(['a', 'book'], ['ein', 'Buch'])]
     >>> em_ibm1 = IBMModel1(corpus, 20)
-    >>> print(round(em_ibm1.probabilities['the']['das'], 1))
+    >>> print(round(em_ibm1.translation_table['the']['das'], 1))
     1.0
-    >>> print(round(em_ibm1.probabilities['book']['das'], 1))
+    >>> print(round(em_ibm1.translation_table['book']['das'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['house']['das'], 1))
+    >>> print(round(em_ibm1.translation_table['house']['das'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['the']['Buch'], 1))
+    >>> print(round(em_ibm1.translation_table['the']['Buch'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['book']['Buch'], 1))
+    >>> print(round(em_ibm1.translation_table['book']['Buch'], 1))
     1.0
-    >>> print(round(em_ibm1.probabilities['a']['Buch'], 1))
+    >>> print(round(em_ibm1.translation_table['a']['Buch'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['book']['ein'], 1))
+    >>> print(round(em_ibm1.translation_table['book']['ein'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['a']['ein'], 1))
+    >>> print(round(em_ibm1.translation_table['a']['ein'], 1))
     1.0
-    >>> print(round(em_ibm1.probabilities['the']['Haus'], 1))
+    >>> print(round(em_ibm1.translation_table['the']['Haus'], 1))
     0.0
-    >>> print(round(em_ibm1.probabilities['house']['Haus'], 1))
+    >>> print(round(em_ibm1.translation_table['house']['Haus'], 1))
     1.0
-    >>> print(round(em_ibm1.probabilities['book'][None], 1))
+    >>> print(round(em_ibm1.translation_table['book'][None], 1))
     0.5
 
 And using an NLTK corpus. We train on only 10 sentences, since it is so slow:
 
     >>> from nltk.corpus import comtrans
     >>> com_ibm1 = IBMModel1(comtrans.aligned_sents()[:10], 20)
-    >>> print(round(com_ibm1.probabilities['bitte']['Please'], 1))
+    >>> print(round(com_ibm1.translation_table['bitte']['Please'], 1))
     0.2
-    >>> print(round(com_ibm1.probabilities['Sitzungsperiode']['session'], 1))
+    >>> print(round(com_ibm1.translation_table['Sitzungsperiode']['session'], 1))
     1.0
 
 
@@ -142,10 +142,10 @@ Precision
 already a set based implementation in NLTK as
 `nltk.metrics.scores.precision`_.  Since precision is simply interested in the
 proportion of correct alignments, we calculate the ratio of the number of our
-test alignments (*A*) that match a possible alignment (*P*) over the number of
-test alignments provided. We compare to the possible alignment set don't
-penalise for coming up with an alignment that a humans would have possibly
-considered to be correct [OCH2000]_.
+test alignments (*A*) that match a possible alignment (*P*), over the number of
+test alignments provided. There is no penalty for missing a possible alignment
+in our test alignments. An easy way to game this metric is to provide just one
+test alignment that is in *P* [OCH2000]_.
 
 Here are some examples:
 
@@ -173,8 +173,10 @@ Recall
 implementation in NLTK as `nltk.metrics.scores.recall`_. Since recall is
 simply interested in the proportion of found alignments, we calculate the
 ratio of the number of our test alignments (*A*) that match a sure alignment
-(*S*) over the number of sure alignments. Since we are not sure about some of
-our possible alignments we don't penalise for not finding these [OCH2000]_.
+(*S*) over the number of sure alignments. There is no penalty for producing
+a lot of test alignments. An easy way to game this metric is to include every
+possible alignment in our test alignments, regardless if they are correct or
+not [OCH2000]_.
 
 Here are some examples:
 
@@ -184,8 +186,8 @@ Here are some examples:
     1.0
     >>> print(als.recall([(0,0), (3,3)]))
     1.0
-    >>> print(als.recall([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)]))
-    0.66666666666...
+    >>> als.recall([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)])
+    0.66666...
     >>> print(my_als.recall(als))
     0.75
 
@@ -205,9 +207,8 @@ possible alignments [MIHALCEA2003]_ [KOEHN2010]_.
 
 .. Note::
     [KOEHN2010]_ defines the AER as ``AER = (|A∩S| + |A∩P|) / (|A| + |S|)``
-    meaning that the best alignment would when the ``AER = 1.0``. Thus we
-    follow [MIHALCEA2003]_ more intuitive definition where we are minimising
-    the error rate.
+    in his book, but corrects it to the above in his online errata. This is
+    in line with [MIHALCEA2003]_.
 
 Here are some examples:
 
@@ -215,11 +216,11 @@ Here are some examples:
     1.0
     >>> print(als.alignment_error_rate([(0,0), (1,1), (2,2), (3,3)]))
     0.0
-    >>> print(my_als.alignment_error_rate(als))
-    0.33333333333...
-    >>> print(my_als.alignment_error_rate(als,
-    ...     als.alignment | set([(1,2), (2,1)])))
-    0.22222222222...
+    >>> my_als.alignment_error_rate(als)
+    0.333333...
+    >>> my_als.alignment_error_rate(als,
+    ...     als.alignment | set([(1,2), (2,1)]))
+    0.222222...
 
 
 .. [OCH2000] Och, F. and Ney, H. (2000)

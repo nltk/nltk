@@ -279,7 +279,4 @@ def setup_module(module):
         raise SkipTest('doctests from nltk.parse.bllip are skipped because '
                        'the bllipparser module is not installed')
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
 

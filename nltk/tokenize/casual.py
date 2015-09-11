@@ -248,7 +248,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
             except ValueError:
                 pass
 
-        return u'' if remove_illegal else match.group(0)
+        return "" if remove_illegal else match.group(0)
 
     return ENT_RE.sub(_convert_entity, _str_to_unicode(text, encoding))
 
@@ -264,21 +264,22 @@ class TweetTokenizer:
         >>> s0 = "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--"
         >>> tknzr.tokenize(s0)
         ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
-        >>> s1 = "Naps are a must \ud83d\ude34\ud83d\ude34"
+        >>> s1 = "@Joyster2012 @CathStaincliffe Good for you, girl!! Best wishes :-)"
         >>> tknzr.tokenize(s1)
-        ['Naps', 'are', 'a', 'must', '\ud83d', '\ude34', '\ud83d', '\ude34']
-        >>> s2 = "Renato fica com muito medo de ouvir meus \u00e1udios perto da gaja dele, pois s\u00f3 falo merda KKK"
+        ['@Joyster2012', '@CathStaincliffe', 'Good', 'for', 'you', ',', 'girl', '!', '!', 'Best', 'wishes', ':-)']
+        >>> s2 = "3Points for #DreamTeam Gooo BAILEY! :) #PBB737Gold @PBBabscbn"
         >>> tknzr.tokenize(s2)
-        ['Renato', 'fica', 'com', 'muito', 'medo', 'de', 'ouvir', 'meus', 'áudios', 'perto', 'da', 'gaja', 'dele', ',', 'pois', 'só', 'falo', 'merda', 'KKK']
-        >>> s3 = "\u0412\u043b\u0430\u0434\u0435\u043b\u0435\u0446 20th Century Fox \u043d\u0430\u043c\u0435\u0440\u0435\u043d \u043a\u0443\u043f\u0438\u0442\u044c Warner Bros."
+        ['3Points', 'for', '#DreamTeam', 'Gooo', 'BAILEY', '!', ':)', '#PBB737Gold', '@PBBabscbn']
+        >>> s3 = "@Insanomania They do... Their mentality doesn't :("
         >>> tknzr.tokenize(s3)
-        ['Владелец', '20th', 'Century', 'Fox', 'намерен', 'купить', 'Warner', 'Bros', '.']
+        ['@Insanomania', 'They', 'do', '...', 'Their', 'mentality', "doesn't", ':(']
         >>> s4 = "RT @facugambande: Ya por arrancar a grabar !!! #TirenTirenTiren vamoo !!"
         >>> tknzr.tokenize(s4)
         ['RT', '@facugambande', ':', 'Ya', 'por', 'arrancar', 'a', 'grabar', '!', '!', '!', '#TirenTirenTiren', 'vamoo', '!', '!']
-        >>> s5 = "http://t.co/7r8d5bVKyA http://t.co/hZpwZe1uKt http://t.co/ZKb7GKWocy Ничто так не сближает людей"
+        >>> tknzr = TweetTokenizer(reduce_len=True)
+        >>> s5 = "@crushinghes the summer holidays are great but I'm so bored already :("
         >>> tknzr.tokenize(s5)
-        ['http://t.co/7r8d5bVKyA', 'http://t.co/hZpwZe1uKt', 'http://t.co/ZKb7GKWocy', 'Ничто', 'так', 'не', 'сближает', 'людей']
+        ['@crushinghes', 'the', 'summer', 'holidays', 'are', 'great', 'but', "I'm", 'so', 'bored', 'already', ':(']
 
     Examples using `strip_handles` and `reduce_len parameters`:
 
@@ -354,6 +355,3 @@ def casual_tokenize(text, preserve_case=True, reduce_len=False, strip_handles=Fa
 
 ###############################################################################
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
