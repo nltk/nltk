@@ -96,6 +96,7 @@ from nltk.corpus.reader.sentiwordnet import *
 from nltk.corpus.reader.twitter import *
 from nltk.corpus.reader.nkjp import *
 from nltk.corpus.reader.crubadan import *
+from nltk.corpus.reader.mte import *
 from nltk.corpus.reader.reviews import *
 from nltk.corpus.reader.opinion_lexicon import *
 from nltk.corpus.reader.pros_cons import *
@@ -137,7 +138,7 @@ __all__ = [
     'SemcorCorpusReader', 'FramenetCorpusReader', 'UdhrCorpusReader',
     'BNCCorpusReader', 'SentiWordNetCorpusReader', 'SentiSynset',
     'TwitterCorpusReader', 'NKJPCorpusReader', 'CrubadanCorpusReader',
-    'ReviewsCorpusReader', 'OpinionLexiconCorpusReader',
+    'MTECorpusReader', 'ReviewsCorpusReader', 'OpinionLexiconCorpusReader',
     'ProsConsCorpusReader', 'CategorizedSentencesCorpusReader',
     'ComparativeSentencesCorpusReader'
 ]

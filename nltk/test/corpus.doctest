@@ -1109,6 +1109,24 @@ the XML structure directly, as follows:
     >>> [t.attrib['pos'] + "/" + t.attrib['word'] for t in tokens]
     ['RB/now', 'PRP/im', 'VBD/left', 'IN/with', 'DT/this', 'JJ/gay', 'NN/name']
 
+multext_east
+------------
+
+The Multext-East Corpus consists of POS-tagged versions of George Orwell's book
+1984 in 12 languages: English, Czech, Hungarian, Macedonian, Slovenian, Serbian,
+Slovak, Romanian, Estonian, Farsi, Bulgarian and Polish.
+The corpus can be accessed using the usual methods for tagged corpora. The tagset
+can be transformed from the Multext-East specific MSD tags to the Universal tagset
+using the "tagset" parameter of all functions returning tagged parts of the corpus.
+
+    >>> print(nltk.corpus.multext_east.words("oana-en.xml"))
+    ['It', 'was', 'a', 'bright', ...]
+    >>> print(nltk.corpus.multext_east.tagged_words("oana-en.xml"))
+    [('It', '#Pp3ns'), ('was', '#Vmis3s'), ('a', '#Di'), ...]
+    >>> print(nltk.corpus.multext_east.tagged_sents("oana-en.xml", "universal"))
+    [[('It', 'PRON'), ('was', 'VERB'), ('a', 'DET'), ...]
+
+
 
 ---------------------
 Corpus Reader Classes

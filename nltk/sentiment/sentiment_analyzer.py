@@ -191,7 +191,7 @@ class SentimentAnalyzer(object):
         """
         if classifier is None:
             classifier = self.classifier
-        print("Evaluating {} results...".format(type(classifier).__name__))
+        print("Evaluating {0} results...".format(type(classifier).__name__))
         metrics_results = {}
         if accuracy == True:
             accuracy_score = eval_accuracy(classifier, test_set)
@@ -210,18 +210,18 @@ class SentimentAnalyzer(object):
             if precision == True:
                 precision_score = eval_precision(gold_results[label],
                     test_results[label])
-                metrics_results['Precision [{}]'.format(label)] = precision_score
+                metrics_results['Precision [{0}]'.format(label)] = precision_score
             if recall == True:
                 recall_score = eval_recall(gold_results[label],
                     test_results[label])
-                metrics_results['Recall [{}]'.format(label)] = recall_score
+                metrics_results['Recall [{0}]'.format(label)] = recall_score
             if f_measure == True:
                 f_measure_score = eval_f_measure(gold_results[label],
                     test_results[label])
-                metrics_results['F-measure [{}]'.format(label)] = f_measure_score
+                metrics_results['F-measure [{0}]'.format(label)] = f_measure_score
 
         # Print evaluation results (in alphabetical order)
         for result in sorted(metrics_results):
-            print('{}: {}'.format(result, metrics_results[result]))
+            print('{0}: {1}'.format(result, metrics_results[result]))
 
         return metrics_results

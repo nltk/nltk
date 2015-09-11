@@ -314,7 +314,7 @@ class SentiText(object):
     """
     def __init__(self, text):
         if not isinstance(text, str):
-            text = str(text)
+            text = str(text.encode('utf-8'))
         self.text = text
         self.words_and_emoticons = self._words_and_emoticons()
         # doesn't separate words from\
@@ -477,17 +477,17 @@ class SentimentIntensityAnalyzer(object):
         return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
-        onezero = "{} {}".format(words_and_emoticons[i-1], words_and_emoticons[i])
+        onezero = "{0} {1}".format(words_and_emoticons[i-1], words_and_emoticons[i])
 
-        twoonezero = "{} {} {}".format(words_and_emoticons[i-2],
+        twoonezero = "{0} {1} {2}".format(words_and_emoticons[i-2],
                                        words_and_emoticons[i-1], words_and_emoticons[i])
 
-        twoone = "{} {}".format(words_and_emoticons[i-2], words_and_emoticons[i-1])
+        twoone = "{0} {1}".format(words_and_emoticons[i-2], words_and_emoticons[i-1])
 
-        threetwoone = "{} {} {}".format(words_and_emoticons[i-3],
+        threetwoone = "{0} {1} {2}".format(words_and_emoticons[i-3],
                                         words_and_emoticons[i-2], words_and_emoticons[i-1])
 
-        threetwo = "{} {}".format(words_and_emoticons[i-3], words_and_emoticons[i-2])
+        threetwo = "{0} {1}".format(words_and_emoticons[i-3], words_and_emoticons[i-2])
 
         sequences = [onezero, twoonezero, twoone, threetwoone, threetwo]
 
@@ -497,11 +497,11 @@ class SentimentIntensityAnalyzer(object):
                 break
 
         if len(words_and_emoticons)-1 > i:
-            zeroone = "{} {}".format(words_and_emoticons[i], words_and_emoticons[i+1])
+            zeroone = "{0} {1}".format(words_and_emoticons[i], words_and_emoticons[i+1])
             if zeroone in SPECIAL_CASE_IDIOMS:
                 valence = SPECIAL_CASE_IDIOMS[zeroone]
         if len(words_and_emoticons)-1 > i+1:
-            zeroonetwo = "{} {} {}".format(words_and_emoticons[i], words_and_emoticons[i+1], words_and_emoticons[i+2])
+            zeroonetwo = "{0} {1} {2}".format(words_and_emoticons[i], words_and_emoticons[i+1], words_and_emoticons[i+2])
             if zeroonetwo in SPECIAL_CASE_IDIOMS:
                 valence = SPECIAL_CASE_IDIOMS[zeroonetwo]
 

@@ -52,6 +52,7 @@ from nltk.align import AlignedSent
 from nltk.align import Alignment
 from nltk.align import IBMModel
 from nltk.align import IBMModel1
+from nltk.align.ibm_model import Counts
 import warnings
 
 
@@ -69,21 +70,21 @@ class IBMModel2(IBMModel):
 
     >>> ibm2 = IBMModel2(bitext, 5)
 
-    >>> print('{0:.3f}'.format(ibm2.translation_table['buch']['book']))
-    1.000
-    >>> print('{0:.3f}'.format(ibm2.translation_table['das']['book']))
-    0.000
-    >>> print('{0:.3f}'.format(ibm2.translation_table['buch'][None]))
-    0.000
-    >>> print('{0:.3f}'.format(ibm2.translation_table['ja'][None]))
-    0.000
+    >>> print(round(ibm2.translation_table['buch']['book'], 3))
+    1.0
+    >>> print(round(ibm2.translation_table['das']['book'], 3))
+    0.0
+    >>> print(round(ibm2.translation_table['buch'][None], 3))
+    0.0
+    >>> print(round(ibm2.translation_table['ja'][None], 3))
+    0.0
 
-    >>> print('{0:.3f}'.format(ibm2.alignment_table[1][1][2][2]))
-    0.939
-    >>> print('{0:.3f}'.format(ibm2.alignment_table[1][2][2][2]))
-    0.000
-    >>> print('{0:.3f}'.format(ibm2.alignment_table[2][2][4][5]))
-    1.000
+    >>> print(ibm2.alignment_table[1][1][2][2])
+    0.938...
+    >>> print(round(ibm2.alignment_table[1][2][2][2], 3))
+    0.0
+    >>> print(round(ibm2.alignment_table[2][2][4][5], 3))
+    1.0
 
     >>> test_sentence = bitext[2]
     >>> test_sentence.words
@@ -95,7 +96,8 @@ class IBMModel2(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations):
+    def __init__(self, sentence_aligned_corpus, iterations,
+                 probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model and an alignment model.
@@ -103,99 +105,126 @@ class IBMModel2(IBMModel):
         Translation direction is from ``AlignedSent.mots`` to
         ``AlignedSent.words``.
 
-        Runs a few iterations of Model 1 training to initialize
-        model parameters.
-
         :param sentence_aligned_corpus: Sentence-aligned parallel corpus
         :type sentence_aligned_corpus: list(AlignedSent)
 
         :param iterations: Number of iterations to run training algorithm
         :type iterations: int
+
+        :param probability_tables: Optional. Use this to pass in custom
+            probability values. If not specified, probabilities will be
+            set to a uniform distribution, or some other sensible value.
+            If specified, all the following entries must be present:
+            ``translation_table``, ``alignment_table``.
+            See ``IBMModel`` for the type and purpose of these tables.
+        :type probability_tables: dict[str]: object
         """
         super(IBMModel2, self).__init__(sentence_aligned_corpus)
 
-        # Get initial translation probability distribution
-        # from a few iterations of Model 1 training.
-        ibm1 = IBMModel1(sentence_aligned_corpus, 10)
-        self.translation_table = ibm1.translation_table
+        if probability_tables is None:
+            # Get translation probabilities from IBM Model 1
+            # Run more iterations of training for Model 1, since it is
+            # faster than Model 2
+            ibm1 = IBMModel1(sentence_aligned_corpus, 2 * iterations)
+            self.translation_table = ibm1.translation_table
+            self.set_uniform_probabilities(sentence_aligned_corpus)
+        else:
+            # Set user-defined probabilities
+            self.translation_table = probability_tables['translation_table']
+            self.alignment_table = probability_tables['alignment_table']
 
-        # Initialize the distribution of alignment probability,
+        for n in range(0, iterations):
+            self.train(sentence_aligned_corpus)
+
+        self.__align_all(sentence_aligned_corpus)
+
+    def set_uniform_probabilities(self, sentence_aligned_corpus):
         # a(i | j,l,m) = 1 / (l+1) for all i, j, l, m
+        l_m_combinations = set()
         for aligned_sentence in sentence_aligned_corpus:
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
-            initial_value = 1 / (l + 1)
-            if initial_value > IBMModel.MIN_PROB:
+            if (l, m) not in l_m_combinations:
+                l_m_combinations.add((l, m))
+                initial_prob = 1 / float(l + 1)
+                if initial_prob < IBMModel.MIN_PROB:
+                    warnings.warn("A source sentence is too long (" + str(l) +
+                                  " words). Results may be less accurate.")
+
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
-                        self.alignment_table[i][j][l][m] = initial_value
-            else:
-                warnings.warn("Source sentence is too long (" + str(l) +
-                              " words). Results may be less accurate.")
+                        self.alignment_table[i][j][l][m] = initial_prob
 
-        self.train(sentence_aligned_corpus, iterations)
-        self.__align_all(sentence_aligned_corpus)
+    def train(self, parallel_corpus):
+        counts = Model2Counts()
+        for aligned_sentence in parallel_corpus:
+            src_sentence = [None] + aligned_sentence.mots
+            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
+            l = len(aligned_sentence.mots)
+            m = len(aligned_sentence.words)
 
-    def train(self, parallel_corpus, iterations):
-        for i in range(0, iterations):
-            count_t_given_s = defaultdict(lambda: defaultdict(float))
-            count_any_t_given_s = defaultdict(float)
+            # E step (a): Compute normalization factors to weigh counts
+            total_count = self.prob_all_alignments(src_sentence, trg_sentence)
 
-            # count of i given j, l, m
-            alignment_count = defaultdict(
-                lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                    lambda: 0.0))))
-            alignment_count_for_any_i = defaultdict(
-                lambda: defaultdict(lambda: defaultdict(
-                    lambda: 0.0)))
-
-            for aligned_sentence in parallel_corpus:
-                src_sentence = [None] + aligned_sentence.mots
-                trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
-                l = len(aligned_sentence.mots)
-                m = len(aligned_sentence.words)
-                total_count = defaultdict(float)
-
-                # E step (a): Compute normalization factors to weigh counts
-                for j in range(1, m + 1):
-                    t = trg_sentence[j]
-                    total_count[t] = 0
-                    for i in range(0, l + 1):
-                        s = src_sentence[i]
-                        count = (self.translation_table[t][s] *
-                                 self.alignment_table[i][j][l][m])
-                        total_count[t] += count
-
-                # E step (b): Collect counts
-                for j in range(1, m + 1):
-                    t = trg_sentence[j]
-                    for i in range(0, l + 1):
-                        s = src_sentence[i]
-                        count = (self.translation_table[t][s] *
-                                 self.alignment_table[i][j][l][m])
-                        normalized_count = count / total_count[t]
-
-                        count_t_given_s[t][s] += normalized_count
-                        count_any_t_given_s[s] += normalized_count
-                        alignment_count[i][j][l][m] += normalized_count
-                        alignment_count_for_any_i[j][l][m] += normalized_count
-
-            # M step: Update probabilities with maximum likelihood estimates
-            for s in self.src_vocab:
-                for t in self.trg_vocab:
-                    estimate = count_t_given_s[t][s] / count_any_t_given_s[s]
-                    self.translation_table[t][s] = max(estimate,
-                                                       IBMModel.MIN_PROB)
-
-            for aligned_sentence in parallel_corpus:
-                l = len(aligned_sentence.mots)
-                m = len(aligned_sentence.words)
+            # E step (b): Collect counts
+            for j in range(1, m + 1):
+                t = trg_sentence[j]
                 for i in range(0, l + 1):
-                    for j in range(1, m + 1):
-                        estimate = (alignment_count[i][j][l][m] /
-                                    alignment_count_for_any_i[j][l][m])
+                    s = src_sentence[i]
+                    count = self.prob_alignment_point(
+                        i, j, src_sentence, trg_sentence)
+                    normalized_count = count / total_count[t]
+
+                    counts.update_lexical_translation(normalized_count, s, t)
+                    counts.update_alignment(normalized_count, i, j, l, m)
+
+        # M step: Update probabilities with maximum likelihood estimates
+        self.maximize_lexical_translation_probabilities(counts)
+        self.maximize_alignment_probabilities(counts)
+
+    def maximize_alignment_probabilities(self, counts):
+        MIN_PROB = IBMModel.MIN_PROB
+        for i, j_s in counts.alignment.items():
+            for j, src_sentence_lengths in j_s.items():
+                for l, trg_sentence_lengths in src_sentence_lengths.items():
+                    for m in trg_sentence_lengths:
+                        estimate = (counts.alignment[i][j][l][m] /
+                                    counts.alignment_for_any_i[j][l][m])
                         self.alignment_table[i][j][l][m] = max(estimate,
-                                                              IBMModel.MIN_PROB)
+                                                               MIN_PROB)
+
+    def prob_all_alignments(self, src_sentence, trg_sentence):
+        """
+        Computes the probability of all possible word alignments,
+        expressed as a marginal distribution over target words t
+
+        Each entry in the return value represents the contribution to
+        the total alignment probability by the target word t.
+
+        To obtain probability(alignment | src_sentence, trg_sentence),
+        simply sum the entries in the return value.
+
+        :return: Probability of t for all s in ``src_sentence``
+        :rtype: dict(str): float
+        """
+        alignment_prob_for_t = defaultdict(lambda: 0.0)
+        for j in range(1, len(trg_sentence)):
+            t = trg_sentence[j]
+            for i in range(0, len(src_sentence)):
+                alignment_prob_for_t[t] += self.prob_alignment_point(
+                    i, j, src_sentence, trg_sentence)
+        return alignment_prob_for_t
+
+    def prob_alignment_point(self, i, j, src_sentence, trg_sentence):
+        """
+        Probability that position j in ``trg_sentence`` is aligned to
+        position i in the ``src_sentence``
+        """
+        l = len(src_sentence) - 1
+        m = len(trg_sentence) - 1
+        s = src_sentence[i]
+        t = trg_sentence[j]
+        return self.translation_table[t][s] * self.alignment_table[i][j][l][m]
 
     def prob_t_a_given_s(self, alignment_info):
         """
@@ -255,3 +284,25 @@ class IBMModel2(IBMModel):
             best_alignment.append((j, best_alignment_point))
 
         sentence_pair.alignment = Alignment(best_alignment)
+
+
+class Model2Counts(Counts):
+    """
+    Data object to store counts of various parameters during training.
+    Includes counts for alignment.
+    """
+    def __init__(self):
+        super(Model2Counts, self).__init__()
+        self.alignment = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
+                lambda: 0.0))))
+        self.alignment_for_any_i = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
+
+    def update_lexical_translation(self, count, s, t):
+        self.t_given_s[t][s] += count
+        self.any_t_given_s[s] += count
+
+    def update_alignment(self, count, i, j, l, m):
+        self.alignment[i][j][l][m] += count
+        self.alignment_for_any_i[j][l][m] += count
