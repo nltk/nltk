@@ -7,7 +7,7 @@
 
 from nltk.align.api import Alignment
 
-def pharaohtext2tuples(pharaoh_text):
+def pharaohtext2alignment(pharaoh_text):
     """
     Converts pharaoh text format into an Alignment object (a list of tuples).
     
@@ -21,7 +21,6 @@ def pharaohtext2tuples(pharaoh_text):
     :return: An Alignment object that contains a list of integer tuples 
     """
 
-    # Converts integers to strings for a word alignment point.
     list_of_tuples = [tuple(map(int,a.split('-'))) for a in pharaoh_text.split()]
     return Alignment(list_of_tuples)
     
