@@ -20,7 +20,8 @@ def pharaohtext2tuples(pharaoh_text):
     :rtype: Alignment
     :return: An Alignment object that contains a list of integer tuples 
     """
-	# Converts integers to strings for a word alignment point.
+
+    # Converts integers to strings for a word alignment point.
     list_of_tuples = [tuple(map(int,a.split('-'))) for a in pharaoh_text.split()]
     return Alignment(list_of_tuples)
     
@@ -38,10 +39,11 @@ def alignment2pharaohtext(alignment):
     :rtype: str
     :return: the word alignment outputs in the pharaoh output format
     """
+
     pharaoh_text = ' '.join(str(i) + "-" + str(j) for i,j in alignment)
     return pharaoh_text
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-	
+
