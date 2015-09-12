@@ -7,9 +7,9 @@ import unittest
 
 from collections import defaultdict
 from nltk.align import AlignedSent
+from nltk.align import IBMModel
+from nltk.align import IBMModel4
 from nltk.align.ibm_model import AlignmentInfo
-from nltk.align.ibm_model import IBMModel
-from nltk.align.ibm4 import IBMModel4
 
 
 class TestIBMModel4(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestIBMModel4(unittest.TestCase):
         model4 = IBMModel4(corpus, 0, src_classes, trg_classes)
 
         # act
-        model4.set_uniform_distortion_probabilities(corpus)
+        model4.set_uniform_probabilities(corpus)
 
         # assert
         # number of displacement values =
@@ -48,7 +48,7 @@ class TestIBMModel4(unittest.TestCase):
         model4 = IBMModel4(corpus, 0, src_classes, trg_classes)
 
         # act
-        model4.set_uniform_distortion_probabilities(corpus)
+        model4.set_uniform_probabilities(corpus)
 
         # assert
         # examine displacement values that are not in the training data domain

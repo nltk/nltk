@@ -53,8 +53,9 @@ class AbstractCollocationFinder(object):
 
     def __init__(self, word_fd, ngram_fd):
         self.word_fd = word_fd
+        self.N = word_fd.N()
         self.ngram_fd = ngram_fd
-    
+
     @classmethod
     def _build_new_documents(cls,documents, window_size, pad_left=False, pad_right=False, pad_symbol=None):
         '''
@@ -175,7 +176,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         function.  Following Church and Hanks (1990), counts are scaled by
         a factor of 1/(window_size - 1).
         """
-        n_all = self.word_fd.N()
+        n_all = self.N
         n_ii = self.ngram_fd[(w1, w2)] / (self.window_size - 1.0)
         if not n_ii:
             return
@@ -238,7 +239,7 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         """Returns the score for a given trigram using the given scoring
         function.
         """
-        n_all = self.word_fd.N()
+        n_all = self.N
         n_iii = self.ngram_fd[(w1, w2, w3)]
         if not n_iii:
             return
@@ -309,7 +310,7 @@ class QuadgramCollocationFinder(AbstractCollocationFinder):
         return cls(ixxx, iiii, ii, iii, ixi, ixxi, iixi, ixii)
 
     def score_ngram(self, score_fn, w1, w2, w3, w4):
-        n_all = self.word_fd.N()
+        n_all = self.N
         n_iiii = self.ngram_fd[(w1, w2, w3, w4)]
         if not n_iiii:
             return

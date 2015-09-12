@@ -54,8 +54,7 @@ def longest_target_sentence_length(sentence_aligned_corpus):
     max_m = 0
     for aligned_sentence in sentence_aligned_corpus:
         m = len(aligned_sentence.words)
-        if m > max_m:
-            max_m = m
+        max_m = max(m, max_m)
     return max_m
 
 
@@ -105,6 +104,14 @@ class IBMModel(object):
         that is aligned to NULL.
         Used in model 3 and higher.
         """
+
+    def set_uniform_probabilities(self, sentence_aligned_corpus):
+        """
+        Initialize probability tables to a uniform distribution
+
+        Derived classes should implement this accordingly.
+        """
+        pass
 
     def init_vocab(self, sentence_aligned_corpus):
         src_vocab = set()
@@ -521,6 +528,6 @@ class Counts(object):
     def update_fertility(self, count, alignment_info):
         for i in range(0, len(alignment_info.src_sentence)):
             s = alignment_info.src_sentence[i]
-            phi = len(alignment_info.cepts[i])
+            phi = alignment_info.fertility_of_i(i)
             self.fertility[phi][s] += count
             self.fertility_for_any_phi[s] += count

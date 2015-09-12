@@ -1,5 +1,5 @@
-Version 3.0.5 2015-MM-DD
-* rewritten IBM models, and new IBM Model 4 implementation
+Version 3.0.5 2015-09-05
+* rewritten IBM models, and new IBM Model 4 and 5 implementations
 * new Twitter package
 * stabilized MaltParser API
 * improved regex tagger
@@ -8,7 +8,7 @@ Version 3.0.5 2015-MM-DD
 
 Thanks to the following contributors to 3.0.5:
 Álvaro Justen, Dmitrijs Milajevs, Ewan Klein, Heran Lin, Justin Hammar,
-Liling Tan, Long Duong, Lorenzo Rubio, Pierpaolo Pantone, Tah Wei Hoon, turicas
+Liling Tan, Long Duong, Lorenzo Rubio, Pierpaolo Pantone, Tah Wei Hoon
 	
 Version 3.0.4 2015-07-13
 * minor bug fixes and enhancements
@@ -34,7 +34,7 @@ Thanks to the following contributors to 3.0.3:
 Long Duong, Pedro Fialho, Dan Garrette, Helder, Saimadhav Heblikar,
 Chris Inskip, David Kamholz, Dmitrijs Milajevs, Smitha Milli,
 Tom Mortimer-Jones, Avital Pekker, Jonathan Pool, Sam Raker,
-Will Roberts, Dmitry Sadovnychyi, Nathan Schneider Anirudh W
+Will Roberts, Dmitry Sadovnychyi, Nathan Schneider, Anirudh W
 	
 Version 3.0.2 2015-03-13
 * make pretty-printing method names consistent
