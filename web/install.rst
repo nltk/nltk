@@ -1,7 +1,7 @@
 Installing NLTK
 ===============
 
-NLTK requires Python versions 2.6-2.7 or 3.2+
+NLTK requires Python versions 2.7 or 3.2+
 
 Mac/Unix
 --------
