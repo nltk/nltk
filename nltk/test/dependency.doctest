@@ -181,3 +181,34 @@ Non-Projective Dependency Parsing
 
     >>> print(g.tree())
     (taught (man the) (play (dog his) to golf))
+
+Integration with MALT parser
+============================
+
+In case the top relation is different from the default, we can set it. In case
+of MALT parser, it's set to `'null'`.
+
+>>> dg_str = """1       I       _       NN      NN      _       2       nn      _       _
+... 2   shot    _       NN      NN      _       0       null    _       _
+... 3   an      _       AT      AT      _       2       dep     _       _
+... 4   elephant        _       NN      NN      _       7       nn      _       _
+... 5   in      _       NN      NN      _       7       nn      _       _
+... 6   my      _       NN      NN      _       7       nn      _       _
+... 7   pajamas _       NNS     NNS     _       3       dobj    _       _
+... """
+>>> dg = DependencyGraph(dg_str, top_relation_label='null')
+
+>>> len(dg.nodes)
+8
+
+>>> dg.root['word'], dg.root['address']
+('shot', 2)
+
+>>> print(dg.to_conll(10))  # doctest: +NORMALIZE_WHITESPACE
+1   I       _       NN      NN      _       2       nn      _       _
+2   shot    _       NN      NN      _       0       null    _       _
+3   an      _       AT      AT      _       2       dep     _       _
+4   elephant        _       NN      NN      _       7       nn      _       _
+5   in      _       NN      NN      _       7       nn      _       _
+6   my      _       NN      NN      _       7       nn      _       _
+7   pajamas _       NNS     NNS     _       3       dobj    _       _
