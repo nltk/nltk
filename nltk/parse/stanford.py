@@ -60,7 +60,7 @@ class GenericStanfordParser(ParserI):
         cur_lines = []
         for line in output_.splitlines(False):
             if line == '':
-                res.append(iter([self._TO_TREE('\n'.join(cur_lines))]))
+                res.append(iter([self._make_tree('\n'.join(cur_lines))]))
                 cur_lines = []
             else:
                 cur_lines.append(line)
@@ -240,7 +240,9 @@ class StanfordParser(GenericStanfordParser):
     """
 
     _OUTPUT_FORMAT = 'penn'
-    _TO_TREE = Tree.fromstring
+
+    def _make_tree(self, result):
+        return Tree.fromstring(result)
 
 
 class StanfordDependencyParser(GenericStanfordParser):
@@ -294,7 +296,9 @@ class StanfordDependencyParser(GenericStanfordParser):
     """
 
     _OUTPUT_FORMAT = 'conll2007'
-    _TO_TREE = DependencyGraph
+
+    def _make_tree(self, result):
+        return DependencyGraph(result, top_relation_label='root')
 
 
 def setup_module(module):
