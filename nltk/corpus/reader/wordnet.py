@@ -1084,7 +1084,7 @@ class WordNetCorpusReader(CorpusReader):
     def langs(self):
         ''' return a list of languages supported by Multilingual Wordnet '''
         import os
-        langs = []
+        langs = [ 'eng' ]
         fileids = self._omw_reader.fileids()
         for fileid in fileids:
             file_name, file_extension = os.path.splitext(fileid)
