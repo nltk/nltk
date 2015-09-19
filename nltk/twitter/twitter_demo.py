@@ -60,7 +60,8 @@ def setup():
     """
     global DATE, USERIDS, FIELDS
 
-    DATE = (2015, 4, 20, 16, 40)
+    DATE = (2015, 9, 1, 12, 00)
+    #       YYYY, M, D, HH, MM)
     USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800']
     # UserIDs corresponding to\
     #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
@@ -172,14 +173,16 @@ def streamtofile_demo(limit=20):
 
 
 @verbose
-def limit_by_time_demo(limit=20):
+def limit_by_time_demo(keywords="taylorswift", limit=20):
     """
-    Sample from the Streaming API and send output to terminal.
+    Query the REST API for Taylor Swift Tweets after DATE and send output to
+    terminal.
     """
     oauth = credsfromfile()
-    client = Streamer(**oauth)
-    client.register(TweetWriter(limit=limit, date_limit=DATE))
-    client.sample()
+    client = Query(**oauth)
+    client.register(TweetViewer(upper_date_limit=DATE))
+    for tweet in client.search_tweets(keywords=keywords, limit=limit):
+        print("{} {}".format(tweet['created_at'], tweet['text']))
 
 
 @verbose
