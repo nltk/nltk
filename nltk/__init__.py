@@ -19,9 +19,9 @@ from __future__ import print_function, absolute_import
 
 import os
 
-##//////////////////////////////////////////////////////
-##  Metadata
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Metadata
+# //////////////////////////////////////////////////////
 
 # Version.  For each new release, the version number should be updated
 # in the file VERSION.
@@ -35,7 +35,7 @@ except NameError:
 except IOError as ex:
     __version__ = "unknown (%s)" % ex
 
-if __doc__ is not None: # fix for the ``python -OO``
+if __doc__ is not None:  # fix for the ``python -OO``
     __doc__ += '\n@version: ' + __version__
 
 
@@ -84,7 +84,7 @@ __classifiers__ = [
     'Topic :: Text Processing :: General',
     'Topic :: Text Processing :: Indexing',
     'Topic :: Text Processing :: Linguistic',
-    ]
+]
 
 from nltk.internals import config_java
 
@@ -178,6 +178,7 @@ from nltk import align, ccg, chunk, classify, collocations
 from nltk import data, featstruct, grammar, help, inference, metrics
 from nltk import misc, parse, probability, sem, stem, wsd
 from nltk import tag, tbl, text, tokenize, tree, treetransforms, util
+
 
 # override any accidentally imported demo
 def demo():
