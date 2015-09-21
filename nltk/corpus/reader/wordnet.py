@@ -1056,8 +1056,8 @@ class WordNetCorpusReader(CorpusReader):
         return self._synset_from_pos_and_offset(of[-1], int(of[:8]))      
 
     def ss2of(self, ss):
-        ''' return the ILI of the synset '''
-        return ( "0"*8 + str(ss.offset()) +"-"+ str(ss.pos()))[-10:]
+        ''' return the ID of the synset '''
+        return ("{:08d}-{}".format(ss.offset(), ss.pos()))
     
     def _load_lang_data(self, lang):
         ''' load the wordnet data of the requested language from the file to the cache, _lang_data '''
