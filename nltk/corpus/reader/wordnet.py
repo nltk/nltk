@@ -1530,6 +1530,51 @@ class WordNetCorpusReader(CorpusReader):
             else:
                 data_file.close()
 
+    def words(self, lang='eng'):
+        """return lemmas of the given language as list of words"""
+        return self.all_lemma_names(lang=lang)
+
+    def license(self, lang='eng'):
+        """Return the contents of LICENSE (for omw)
+           use lang=lang to get the license for an individual language"""
+        if lang == 'eng':
+            return self.open("LICENSE").read()
+        elif lang in self.langs():
+            return self._omw_reader.open("{}/LICENSE".format(lang)).read()
+        elif lang == 'omw':
+            ### under the not unreasonable assumption you don't mean Omwunra-Toqura
+            return self._omw_reader.open("LICENSE").read()
+        else:
+            raise WordNetError("Language is not supported.")
+ 
+    def readme(self, lang='omw'):
+        """Return the contents of README (for omw)
+           use lang=lang to get the readme for an individual language"""
+        if lang == 'eng':
+            return self.open("README").read()
+        elif lang in self.langs():
+            return self._omw_reader.open("{}/README".format(lang)).read()
+        elif lang == 'omw':
+            ### under the not unreasonable assumption you don't mean Omwunra-Toqura
+            return self._omw_reader.open("README").read()
+        else:
+            raise WordNetError("Language is not supported.")
+
+    def citation(self, lang='omw'):
+        """Return the contents of citation.bib file (for omw)
+           use lang=lang to get the citation for an individual language"""
+        if lang == 'eng':
+            return self.open("citation.bib").read()
+        elif lang in self.langs():
+            return self._omw_reader.open("{}/citation.bib".format(lang)).read()
+        elif lang == 'omw':
+            ### under the not unreasonable assumption you don't mean Omwunra-Toqura
+            return self._omw_reader.open("citation.bib").read()
+        else:
+            raise WordNetError("Language is not supported.")
+
+
+
     #////////////////////////////////////////////////////////////
     # Misc
     #////////////////////////////////////////////////////////////
