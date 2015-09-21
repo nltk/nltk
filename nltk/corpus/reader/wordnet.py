@@ -6,6 +6,10 @@
 #         Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
+#         Nasruddin A’aidil Shari
+#         Sim Wei Ying Geraldine
+#         Soe Lynn
+#         Francis Bond <bond@ieee.org>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -18,6 +22,11 @@ such as hypernyms, hyponyms, synonyms, antonyms etc.
 
 For details about WordNet see:
 http://wordnet.princeton.edu/
+
+This module also allows you to find lemmas in languages 
+other than English from the Open Multilingual Wordnet
+http://compling.hss.ntu.edu.sg/omw/
+
 """
 
 from __future__ import print_function, unicode_literals
