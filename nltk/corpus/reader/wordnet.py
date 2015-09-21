@@ -418,9 +418,10 @@ class Synset(_WordNetObject):
             self._wordnet_corpus_reader._load_lang_data(lang)
 
             i = self._wordnet_corpus_reader.ss2of(self)
-            for x in self._wordnet_corpus_reader._lang_data[lang][0].keys():
-                if x == i:
-                    return self._wordnet_corpus_reader._lang_data[lang][0][x]
+            if i in self._wordnet_corpus_reader._lang_data[lang][0]:
+                return self._wordnet_corpus_reader._lang_data[lang][0][i]
+            else:
+                return []
                 
     def lemmas(self, lang='eng'):
         '''Return all the lemma objects associated with the synset'''
