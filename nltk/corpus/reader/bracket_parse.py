@@ -29,8 +29,8 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     trees.
     """
     def __init__(self, root, fileids, comment_char=None,
-                 detect_blocks='unindented_paren', encoding='utf8',
-                 tagset=None):
+                 detect_blocks='unindented_paren', multiword_terminals=False,
+                 encoding='utf8', tagset=None):
         """
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
@@ -40,6 +40,8 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
           in the corpus; can be 'unindented_paren' (every unindented
           parenthesis starts a new parse) or 'sexpr' (brackets are
           matched).
+        :param multiword_terminals: If true, allows for terminals that are
+          separated by spaces.
         :param tagset: The name of the tagset used by this corpus, to be used
               for normalizing or converting the POS tags returned by the
               tagged_...() methods.
@@ -47,7 +49,9 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         CorpusReader.__init__(self, root, fileids, encoding)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
+        self._multiword_terminals = multiword_terminals
         self._tagset = tagset
+        
 
     def _read_block(self, stream):
         if self._detect_blocks == 'sexpr':
@@ -74,7 +78,8 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         # Replace leaves of the form (!), (,), with (! !), (, ,)
         t = re.sub(r"\((.)\)", r"(\1 \1)", t)
         # Replace leaves of the form (tag word root) with (tag word)
-        t = re.sub(r"\(([^\s()]+) ([^\s()]+) [^\s()]+\)", r"(\1 \2)", t)
+        if not self._multiword_terminals:
+          t = re.sub(r"\(([^\s()]+) ([^\s()]+) [^\s()]+\)", r"(\1 \2)", t)
         return t
 
     def _parse(self, t):
