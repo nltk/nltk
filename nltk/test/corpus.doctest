@@ -1097,7 +1097,7 @@ reader for it with::
     ...     '/usr/share/some-corpus', '.*\.txt') # doctest: +SKIP
 
 For a complete list of corpus reader subclasses, see the API
-documentation for `nltk.corpus.CorpusReader`.
+documentation for `nltk.corpus.reader`.
 
 Corpus Types
 ============
