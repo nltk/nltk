@@ -49,7 +49,10 @@ def compile_regexp_to_noncapturing(pattern, flags=0):
                 raise ValueError('Regular expressions with back-references are not supported: {0}'.format(pattern))
             res_data.append((key, value))
         parsed_pattern.data = res_data
-        parsed_pattern.pattern.groups = 1
+        try:
+            parsed_pattern.pattern.groups = 1
+        except AttributeError:
+            pass
         parsed_pattern.pattern.groupdict = {}
         return parsed_pattern
 
