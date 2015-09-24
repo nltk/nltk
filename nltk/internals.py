@@ -49,11 +49,15 @@ def compile_regexp_to_noncapturing(pattern, flags=0):
                 raise ValueError('Regular expressions with back-references are not supported: {0}'.format(pattern))
             res_data.append((key, value))
         parsed_pattern.data = res_data
-        parsed_pattern.pattern.groups = 1
+        parsed_pattern.pattern.groups = 1 # breaks in Python 3.5
         parsed_pattern.pattern.groupdict = {}
         return parsed_pattern
 
     return sre_compile.compile(convert_regexp_to_noncapturing_parsed(sre_parse.parse(pattern)), flags=flags)
+
+
+def has_capturing_groups(pattern):
+    return sre_parse.parse(pattern).pattern.groups > 1
 
 
 ##########################################################################
