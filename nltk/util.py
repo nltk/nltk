@@ -465,7 +465,8 @@ def everygrams(sequence, min_len=1, max_len=-1):
     """
     Returns all possible ngrams generated from a sequence of items, as an iterator.
     
-        >>> list(everygrams('a b c'.split()))
+        >>> sent = 'a b c'.split()
+        >>> list(everygrams(sent))
         [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
         >>> list(everygrams(sent, max_len=2))
         [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c')]
@@ -490,8 +491,9 @@ def skipgrams(sequence, n, k):
     Skipgrams are ngrams that allows tokens to be skipped.
     Refer to http://homepages.inf.ed.ac.uk/ballison/pdf/lrec_skipgrams.pdf
     
+        >>> sent = "Insurgents killed in ongoing fighting".split()
         >>> list(skipgrams(sent, 2, 2))
-        >>> [('Insurgents', 'killed'), ('Insurgents', 'in'), ('Insurgents', 'ongoing'), ('killed', 'in'), ('killed', 'ongoing'), ('killed', 'fighting'), ('in', 'ongoing'), ('in', 'fighting'), ('ongoing', 'fighting')]
+        [('Insurgents', 'killed'), ('Insurgents', 'in'), ('Insurgents', 'ongoing'), ('killed', 'in'), ('killed', 'ongoing'), ('killed', 'fighting'), ('in', 'ongoing'), ('in', 'fighting'), ('ongoing', 'fighting')]
         >>> list(skipgrams(sent, 3, 2))
         [('Insurgents', 'killed', 'in'), ('Insurgents', 'killed', 'ongoing'), ('Insurgents', 'killed', 'fighting'), ('Insurgents', 'in', 'ongoing'), ('Insurgents', 'in', 'fighting'), ('Insurgents', 'ongoing', 'fighting'), ('killed', 'in', 'ongoing'), ('killed', 'in', 'fighting'), ('killed', 'ongoing', 'fighting'), ('in', 'ongoing', 'fighting')]
     
