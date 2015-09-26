@@ -76,10 +76,10 @@ brown = LazyCorpusLoader(
     cat_file='cats.txt', tagset='brown', encoding="ascii")
 cess_cat = LazyCorpusLoader(
     'cess_cat', BracketParseCorpusReader, r'(?!\.).*\.tbf',
-    tagset='unknown', encoding='ISO-8859-2')
+    tagset='unknown', encoding='ISO-8859-15')
 cess_esp = LazyCorpusLoader(
     'cess_esp', BracketParseCorpusReader, r'(?!\.).*\.tbf',
-    tagset='unknown', encoding='ISO-8859-2')
+    tagset='unknown', encoding='ISO-8859-15')
 cmudict = LazyCorpusLoader(
     'cmudict', CMUDictCorpusReader, ['cmudict'])
 comtrans = LazyCorpusLoader(

@@ -25,8 +25,10 @@ EMPTY_BRACKETS = re.compile(r'\s*\(\s*\(')
 
 class BracketParseCorpusReader(SyntaxCorpusReader):
     """
-    Reader for corpora that consist of parenthesis-delineated parse
-    trees.
+    Reader for corpora that consist of parenthesis-delineated parse trees,
+    like those found in the "combined" section of the Penn Treebank,
+    e.g. "(S (NP (DT the) (JJ little) (NN dog)) (VP (VBD barked)))".
+
     """
     def __init__(self, root, fileids, comment_char=None,
                  detect_blocks='unindented_paren', encoding='utf8',

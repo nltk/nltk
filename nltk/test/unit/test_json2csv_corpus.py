@@ -34,8 +34,8 @@ def are_files_identical(filename1, filename2, debug=False):
                     if debug:
                         print("Error while comparing files. " +
                               "First difference at line below.")
-                        print("=> Output file line: {}".format(lineA))
-                        print("=> Refer. file line: {}".format(lineB))
+                        print("=> Output file line: {0}".format(lineA))
+                        print("=> Refer. file line: {0}".format(lineB))
                     result = False
                     break
             return result

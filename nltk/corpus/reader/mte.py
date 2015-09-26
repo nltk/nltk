@@ -150,7 +150,7 @@ class MTECorpusReader(TaggedCorpusReader):
         located at the given root directory.  Example usage:
 
             >>> root = '/...path to corpus.../'
-            >>> reader = MTECorpusReader(root, 'oana-*.xml', 'utf8', "msd") 
+            >>> reader = MTECorpusReader(root, 'oana-*.xml', 'utf8') 
 
         :param root: The root directory for this corpus. (default points to location in multext config file)
         :param fileids: A list or regexp specifying the fileids in this corpus. (default is oana-en.xml)

@@ -8,14 +8,17 @@
 # For license information, see LICENSE.TXT
 
 """
-Utility functions to accompany :module:`twitterclient`.
+Utility functions for the :module:`twitterclient` module which do not require
+the `twython` library to have been installed.
 """
 from __future__ import print_function
 
 import csv
 import gzip
-import nltk.compat as compat
 import json
+
+import nltk.compat as compat
+
 
 HIER_SEPARATOR = "."
 
@@ -53,24 +56,6 @@ def _get_key_value_composed(field):
     key = out[0]
     value = HIER_SEPARATOR.join(out[1:])
     return key, value
-
-def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
-    """
-    Identify appropriate CSV writer given the Python version
-    """
-    if compat.PY3:
-        if gzip_compress:
-            outf = gzip.open(outfile, 'wt', encoding=encoding, errors=errors)
-        else:
-            outf = open(outfile, 'w', encoding=encoding, errors=errors)
-        writer = csv.writer(outf)
-    else:
-        if gzip_compress:
-            outf = gzip.open(outfile, 'wb')
-        else:
-            outf = open(outfile, 'wb')
-        writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
-    return (writer, outf)
 
 def _get_entity_recursive(json, entity):
     if not json:
@@ -139,6 +124,26 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
         row = extract_fields(tweet, fields)
         writer.writerow(row)
     outf.close()
+
+
+def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
+    """
+    Identify appropriate CSV writer given the Python version
+    """
+    if compat.PY3:
+        if gzip_compress:
+            outf = gzip.open(outfile, 'wt', encoding=encoding, errors=errors)
+        else:
+            outf = open(outfile, 'w', encoding=encoding, errors=errors)
+        writer = csv.writer(outf)
+    else:
+        if gzip_compress:
+            outf = gzip.open(outfile, 'wb')
+        else:
+            outf = open(outfile, 'wb')
+        writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
+    return (writer, outf)
+
 
 def json2csv_entities(tweets_file, outfile, main_fields, entity_type, entity_fields,
                       encoding='utf8', errors='replace', gzip_compress=False):
@@ -250,3 +255,4 @@ def _write_to_file(object_fields, items, entity_fields, writer):
     for item in items:
         row = object_fields + extract_fields(item, entity_fields)
         writer.writerow(row)
+
