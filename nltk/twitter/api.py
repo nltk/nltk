@@ -13,6 +13,7 @@ handling.
 """
 
 from datetime import tzinfo, timedelta, datetime
+from nltk.compat import UTC
 import time as _time
 
 
@@ -111,3 +112,25 @@ class TweetHandlerI(BasicTweetHandler):
         Actions when the tweet limit has been reached
         """
         raise NotImplementedError
+
+    def check_date_limit(self, data, verbose=False):
+        """
+        Validate date limits.
+        """
+        if self.upper_date_limit or self.lower_date_limit:
+            date_fmt = '%a %b %d %H:%M:%S +0000 %Y'
+            tweet_date = \
+                datetime.strptime(data['created_at'],
+                                  date_fmt).replace(tzinfo=UTC)
+            if (self.upper_date_limit and tweet_date > self.upper_date_limit) or \
+               (self.lower_date_limit and tweet_date < self.lower_date_limit):
+                if self.upper_date_limit:
+                    message = "earlier"
+                    date_limit = self.upper_date_limit
+                else:
+                    message = "later"
+                    date_limit = self.lower_date_limit
+                if verbose:
+                    print("Date limit {0} is {1} than date of current tweet {2}".\
+                      format(date_limit, message, tweet_date))
+                self.do_stop = True

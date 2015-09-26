@@ -30,7 +30,6 @@ import os
 import requests
 import time
 import gzip
-from nltk.compat import UTC
 
 
 from twython import Twython, TwythonStreamer
@@ -340,6 +339,25 @@ class Twitter(object):
 
         :param gzip_compress: if `True`, output files are compressed with gzip.
         """
+        if stream:
+            upper_date_limit = date_limit
+            lower_date_limit = None
+        else:
+            upper_date_limit = None
+            lower_date_limit = date_limit
+
+        if to_screen:
+            handler = TweetViewer(limit=limit,
+                                  upper_date_limit=upper_date_limit,
+                                  lower_date_limit=lower_date_limit)
+        else:
+            handler = TweetWriter(limit=limit,
+                                  upper_date_limit=upper_date_limit,
+                                  lower_date_limit=lower_date_limit, repeat=repeat,
+                                  gzip_compress=gzip_compress)
+
+
+
         if to_screen:
             handler = TweetViewer(limit=limit)
         else:
@@ -385,6 +403,10 @@ class TweetViewer(TweetHandlerI):
         text = data['text']
         print(text)
 
+        self.check_date_limit(data)
+        if self.do_stop:
+            return
+
     def on_finish(self):
         print('Written {0} Tweets'.format(self.counter))
 
@@ -397,6 +419,10 @@ class TweetWriter(TweetHandlerI):
                  fprefix='tweets', subdir='twitter-files', repeat=False,
                  gzip_compress=False):
         """
+        The difference between the upper and lower date limits depends on
+        whether Tweets are coming in an ascending date order (i.e. when
+        streaming) or descending date order (i.e. when searching past Tweets).
+
         :param int limit: number of data items to process in the current\
         round of processing.
 
@@ -406,10 +432,7 @@ class TweetWriter(TweetHandlerI):
         40)` for 12:30 pm on April 1 2015.
 
         :param tuple lower_date_limit: The date at which to stop collecting new\
-        data. See `upper_data_limit` for formatting. The difference between the\
-        upper and lower date limits depends on whether tweets are coming in an\
-        ascending date order (i.e. when streaming) or descending date order (i.e.\
-        when searching tweets).
+        data. See `upper_data_limit` for formatting.
 
         :param str fprefix: The prefix to use in creating file names for Tweet\
         collections.
@@ -474,21 +497,9 @@ class TweetWriter(TweetHandlerI):
         else:
             self.output.write(json_data + "\n")
 
-        if self.upper_date_limit or self.lower_date_limit:
-            tweet_date = datetime.datetime.strptime(data['created_at'], '%a %b %d\
-            %H:%M:%S +0000 %Y').replace(tzinfo=UTC)
-            if (self.upper_date_limit and tweet_date > self.upper_date_limit) or \
-               (self.lower_date_limit and tweet_date < self.lower_date_limit):
-                if self.upper_date_limit:
-                    message = "earlier"
-                    date_limit = self.upper_date_limit
-                else:
-                    message = "later"
-                    date_limit = self.lower_date_limit
-                print("Date limit {0} is {1} than date of current tweet {2}".\
-                      format(date_limit, message, tweet_date))
-                self.do_stop = True
-                return
+        self.check_date_limit(data)
+        if self.do_stop:
+            return
 
         self.startingup = False
 
