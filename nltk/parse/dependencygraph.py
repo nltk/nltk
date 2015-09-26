@@ -36,7 +36,7 @@ class DependencyGraph(object):
     A container for the nodes and labelled edges of a dependency structure.
     """
 
-    def __init__(self, tree_str=None, cell_extractor=None, zero_based=False, cell_separator=None):
+    def __init__(self, tree_str=None, cell_extractor=None, zero_based=False, cell_separator=None, top_relation_label='ROOT'):
         """Dependency graph.
 
         We place a dummy `TOP` node with the index 0, since the root node is
@@ -49,6 +49,9 @@ class DependencyGraph(object):
 
         :param str cell_separator: the cell separator. If not provided, cells
         are split by whitespace.
+
+        :param str top_relation_label: the label by which the top relation is
+        identified, for examlple, `ROOT`, `null` or `TOP`.
 
         """
         self.nodes = defaultdict(lambda:  {'address': None,
@@ -66,7 +69,6 @@ class DependencyGraph(object):
             {
                 'ctag': 'TOP',
                 'tag': 'TOP',
-                'rel': 'TOP',
                 'address': 0,
             }
         )
@@ -79,6 +81,7 @@ class DependencyGraph(object):
                 cell_extractor=cell_extractor,
                 zero_based=zero_based,
                 cell_separator=cell_separator,
+                top_relation_label=top_relation_label,
             )
 
     def remove_by_address(self, address):
@@ -216,13 +219,15 @@ class DependencyGraph(object):
         return "<DependencyGraph with {0} nodes>".format(len(self.nodes))
 
     @staticmethod
-    def load(filename, zero_based=False, cell_separator=None):
+    def load(filename, zero_based=False, cell_separator=None, top_relation_label='ROOT'):
         """
         :param filename: a name of a file in Malt-TAB format
         :param zero_based: nodes in the input file are numbered starting from 0
         rather than 1 (as produced by, e.g., zpar)
         :param str cell_separator: the cell separator. If not provided, cells
         are split by whitespace.
+        :param str top_relation_label: the label by which the top relation is
+        identified, for examlple, `ROOT`, `null` or `TOP`.
 
         :return: a list of DependencyGraphs
 
@@ -233,6 +238,7 @@ class DependencyGraph(object):
                     tree_str,
                     zero_based=zero_based,
                     cell_separator=cell_separator,
+                    top_relation_label=top_relation_label,
                 )
                 for tree_str in infile.read().split('\n\n')
             ]
@@ -259,7 +265,7 @@ class DependencyGraph(object):
         if not self.contains_address(node['address']):
             self.nodes[node['address']].update(node)
 
-    def _parse(self, input_, cell_extractor=None, zero_based=False, cell_separator=None):
+    def _parse(self, input_, cell_extractor=None, zero_based=False, cell_separator=None, top_relation_label='ROOT'):
         """Parse a sentence.
 
         :param extractor: a function that given a tuple of cells returns a
@@ -268,6 +274,9 @@ class DependencyGraph(object):
 
         :param str cell_separator: the cell separator. If not provided, cells
         are split by whitespace.
+
+        :param str top_relation_label: the label by which the top relation is
+        identified, for examlple, `ROOT`, `null` or `TOP`.
 
         """
 
@@ -331,14 +340,15 @@ class DependencyGraph(object):
                 }
             )
 
-            # Make sure that he fake root node has labeled dependencies.
+            # Make sure that the fake root node has labeled dependencies.
             if (cell_number == 3) and (head == 0):
-                rel = 'ROOT'
+                rel = top_relation_label
             self.nodes[head]['deps'][rel].append(index)
 
-        if self.nodes[0]['deps']['ROOT']:
-            root_address = self.nodes[0]['deps']['ROOT'][0]
+        if self.nodes[0]['deps'][top_relation_label]:
+            root_address = self.nodes[0]['deps'][top_relation_label][0]
             self.root = self.nodes[root_address]
+            self.top_relation_label = top_relation_label
         else:
             warnings.warn(
                 "The graph doesn't contain a node "

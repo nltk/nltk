@@ -6,6 +6,10 @@
 #         Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
+#         Nasruddin A’aidil Shari
+#         Sim Wei Ying Geraldine
+#         Soe Lynn
+#         Francis Bond <bond@ieee.org>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -18,6 +22,11 @@ such as hypernyms, hyponyms, synonyms, antonyms etc.
 
 For details about WordNet see:
 http://wordnet.princeton.edu/
+
+This module also allows you to find lemmas in languages 
+other than English from the Open Multilingual Wordnet
+http://compling.hss.ntu.edu.sg/omw/
+
 """
 
 from __future__ import print_function, unicode_literals
@@ -418,9 +427,10 @@ class Synset(_WordNetObject):
             self._wordnet_corpus_reader._load_lang_data(lang)
 
             i = self._wordnet_corpus_reader.ss2of(self)
-            for x in self._wordnet_corpus_reader._lang_data[lang][0].keys():
-                if x == i:
-                    return self._wordnet_corpus_reader._lang_data[lang][0][x]
+            if i in self._wordnet_corpus_reader._lang_data[lang][0]:
+                return self._wordnet_corpus_reader._lang_data[lang][0][i]
+            else:
+                return []
                 
     def lemmas(self, lang='eng'):
         '''Return all the lemma objects associated with the synset'''
@@ -1055,8 +1065,8 @@ class WordNetCorpusReader(CorpusReader):
         return self._synset_from_pos_and_offset(of[-1], int(of[:8]))      
 
     def ss2of(self, ss):
-        ''' return the ILI of the synset '''
-        return ( "0"*8 + str(ss.offset()) +"-"+ str(ss.pos()))[-10:]
+        ''' return the ID of the synset '''
+        return ("{:08d}-{}".format(ss.offset(), ss.pos()))
     
     def _load_lang_data(self, lang):
         ''' load the wordnet data of the requested language from the file to the cache, _lang_data '''
@@ -1084,7 +1094,7 @@ class WordNetCorpusReader(CorpusReader):
     def langs(self):
         ''' return a list of languages supported by Multilingual Wordnet '''
         import os
-        langs = []
+        langs = [ 'eng' ]
         fileids = self._omw_reader.fileids()
         for fileid in fileids:
             file_name, file_extension = os.path.splitext(fileid)
@@ -1528,6 +1538,51 @@ class WordNetCorpusReader(CorpusReader):
                 raise
             else:
                 data_file.close()
+
+    def words(self, lang='eng'):
+        """return lemmas of the given language as list of words"""
+        return self.all_lemma_names(lang=lang)
+
+    def license(self, lang='eng'):
+        """Return the contents of LICENSE (for omw)
+           use lang=lang to get the license for an individual language"""
+        if lang == 'eng':
+            return self.open("LICENSE").read()
+        elif lang in self.langs():
+            return self._omw_reader.open("{}/LICENSE".format(lang)).read()
+        elif lang == 'omw':
+            ### under the not unreasonable assumption you don't mean Omwunra-Toqura
+            return self._omw_reader.open("LICENSE").read()
+        else:
+            raise WordNetError("Language is not supported.")
+ 
+    def readme(self, lang='omw'):
+        """Return the contents of README (for omw)
+           use lang=lang to get the readme for an individual language"""
+        if lang == 'eng':
+            return self.open("README").read()
+        elif lang in self.langs():
+            return self._omw_reader.open("{}/README".format(lang)).read()
+        elif lang == 'omw':
+            ### under the not unreasonable assumption you don't mean Omwunra-Toqura
+            return self._omw_reader.open("README").read()
+        else:
+            raise WordNetError("Language is not supported.")
+
+    def citation(self, lang='omw'):
+        """Return the contents of citation.bib file (for omw)
+           use lang=lang to get the citation for an individual language"""
+        if lang == 'eng':
+            return self.open("citation.bib").read()
+        elif lang in self.langs():
+            return self._omw_reader.open("{}/citation.bib".format(lang)).read()
+        elif lang == 'omw':
+            ### under the not unreasonable assumption you don't mean Omwunra-Toqura
+            return self._omw_reader.open("citation.bib").read()
+        else:
+            raise WordNetError("Language is not supported.")
+
+
 
     #////////////////////////////////////////////////////////////
     # Misc
