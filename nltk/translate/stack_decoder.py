@@ -43,6 +43,7 @@ Cambridge University Press, New York.
 """
 
 import warnings
+from collections import defaultdict
 from math import log
 
 
@@ -67,7 +68,7 @@ class StackDecoder(object):
     >>> language_prob[('expects',)] = log(0.4)
     >>> language_prob[('the', 'spanish', 'inquisition')] = log(0.2)
     >>> language_prob[('!',)] = log(0.1)
-    >>> language_model = type('',(object,),{'probability_change': lambda self, context, phrase: language_prob[phrase]})()
+    >>> language_model = type('',(object,),{'probability_change': lambda self, context, phrase: language_prob[phrase], 'probability': lambda self, phrase: language_prob[phrase]})()
 
     >>> stack_decoder = StackDecoder(phrase_table, language_model)
 
@@ -156,6 +157,7 @@ class StackDecoder(object):
         stacks[0].push(empty_hypothesis)
 
         all_phrases = self.find_all_src_phrases(sentence)
+        future_score_table = self.compute_future_scores(sentence)
         for stack in stacks:
             for hypothesis in stack:
                 possible_expansions = StackDecoder.valid_phrases(all_phrases,
@@ -166,14 +168,16 @@ class StackDecoder(object):
                     # TODO Consider top n translations
                     translation_option = self.phrase_table.translations_for(
                         src_phrase)[0]
-                    score = self.expansion_score(hypothesis, translation_option,
-                                                 src_phrase_span)
+                    raw_score = self.expansion_score(
+                        hypothesis, translation_option, src_phrase_span)
                     new_hypothesis = _Hypothesis(
-                        score=score,
+                        raw_score=raw_score,
                         src_phrase_span=src_phrase_span,
                         trg_phrase=translation_option.trg_phrase,
                         previous=hypothesis
                     )
+                    new_hypothesis.future_score = self.future_score(
+                        new_hypothesis, future_score_table, sentence_length)
                     total_words = new_hypothesis.total_translated_words()
                     stacks[total_words].push(new_hypothesis)
 
@@ -193,6 +197,8 @@ class StackDecoder(object):
         Finds all subsequences in src_sentence that have a phrase
         translation in the translation table
 
+        :type src_sentence: tuple(str)
+
         :return: Subsequences that have a phrase translation,
             represented as a table of lists of end positions.
             For example, if result[2] is [5, 6, 9], then there are
@@ -201,15 +207,60 @@ class StackDecoder(object):
             ending positions are in ascending order.
         :rtype: list(list(int))
         """
-        sentence = tuple(src_sentence)
-        sentence_length = len(sentence)
-        phrase_indices = [[] for _ in sentence]
+        sentence_length = len(src_sentence)
+        phrase_indices = [[] for _ in src_sentence]
         for start in range(0, sentence_length):
             for end in range(start + 1, sentence_length + 1):
-                potential_phrase = sentence[start:end]
+                potential_phrase = src_sentence[start:end]
                 if potential_phrase in self.phrase_table:
                     phrase_indices[start].append(end)
         return phrase_indices
+
+    def compute_future_scores(self, src_sentence):
+        """
+        Determines the approximate scores for translating every
+        subsequence in ``src_sentence``
+
+        Future scores can be used a look-ahead to determine the
+        difficulty of translating the remaining parts of a src_sentence.
+
+        :type src_sentence: tuple(str)
+
+        :return: Scores of subsequences referenced by their start and
+        end positions. For example, result[2][5] is the score of the
+        subsequence covering positions 2, 3, and 4.
+        :rtype: dict(int: (dict(int): float))
+        """
+        scores = defaultdict(lambda: defaultdict(lambda: float('-inf')))
+        for seq_length in range(1, len(src_sentence) + 1):
+            for start in range(0, len(src_sentence) - seq_length + 1):
+                end = start + seq_length
+                phrase = src_sentence[start:end]
+                if phrase in self.phrase_table:
+                    score = self.phrase_table.translations_for(
+                        phrase)[0].log_prob  # pick best (first) translation
+                    # Warning: API of language_model is subject to change
+                    score += self.language_model.probability(phrase)
+                    scores[start][end] = score
+
+                # check if a better score can be obtained by combining
+                # two child subsequences
+                for mid in range(start + 1, end):
+                    combined_score = (scores[start][mid] +
+                                      scores[mid][end])
+                    if combined_score > scores[start][end]:
+                        scores[start][end] = combined_score
+        return scores
+
+    def future_score(self, hypothesis, future_score_table, sentence_length):
+        """
+        Determines the approximate score for translating the
+        untranslated words in ``hypothesis``
+        """
+        score = 0.0
+        for span in hypothesis.untranslated_spans(sentence_length):
+            score += future_score_table[span[0]][span[1]]
+        return score
 
     def expansion_score(self, hypothesis, translation_option, src_phrase_span):
         """
@@ -225,7 +276,7 @@ class StackDecoder(object):
         :param src_phrase_span: Word position span of the source phrase
         :type src_phrase_span: tuple(int, int)
         """
-        score = hypothesis.score
+        score = hypothesis.raw_score
         score += translation_option.log_prob
         # The API of language_model is subject to change; it could accept
         # a string, a list of words, and/or some other type
@@ -233,7 +284,6 @@ class StackDecoder(object):
             hypothesis, translation_option.trg_phrase)
         score += self.distortion_score(hypothesis, src_phrase_span)
         score -= self.word_penalty * len(translation_option.trg_phrase)
-        # TODO Incorporate future cost in calculation
         return score
 
     def distortion_score(self, hypothesis, next_src_phrase_span):
@@ -284,34 +334,52 @@ class _Hypothesis(object):
     Partial solution to a translation.
 
     Records the word positions of the phrase being translated, its
-    translation, and the score so far. When the next phrase is selected
-    to build upon the partial solution, a new _Hypothesis object is
-    created, with a back pointer to the previous hypothesis.
+    translation, raw score, and the cost of the untranslated parts of
+    the sentence. When the next phrase is selected to build upon the
+    partial solution, a new _Hypothesis object is created, with a back
+    pointer to the previous hypothesis.
 
     To find out which words have been translated so far, look at the
     ``src_phrase_span`` in the hypothesis chain. Similarly, the
     translation output can be found by traversing up the chain.
     """
-    def __init__(self, score=0.0, src_phrase_span=(), trg_phrase=(),
-                 previous=None):
+    def __init__(self, raw_score=0.0, src_phrase_span=(), trg_phrase=(),
+                 previous=None, future_score=0.0):
         """
-        :param score: Likelihood of hypothesis so far. Higher is better.
-        :type score: float
+        :param raw_score: Likelihood of hypothesis so far.
+            Higher is better. Does not account for untranslated words.
+        :type raw_score: float
 
         :param src_phrase_span: Span of word positions covered by the
-        source phrase in this hypothesis expansion. For example, (2, 5)
-        means that the phrase is from the second word up to, but not
-        including the fifth word in the source sentence.
+            source phrase in this hypothesis expansion. For example,
+            (2, 5) means that the phrase is from the second word up to,
+            but not including the fifth word in the source sentence.
         :type src_phrase_span: tuple(int)
 
         :param trg_phrase: Translation of the source phrase in this
-        hypothesis expansion
+            hypothesis expansion
         :type trg_phrase: tuple(str)
+
+        :param previous: Previous hypothesis before expansion to this one
+        :type previous: _Hypothesis
+
+        :param future_score: Approximate score for translating the
+            remaining words not covered by this hypothesis. Higher means
+            that the remaining words are easier to translate.
+        :type future_score: float
         """
-        self.score = score
+        self.raw_score = raw_score
         self.src_phrase_span = src_phrase_span
         self.trg_phrase = trg_phrase
         self.previous = previous
+        self.future_score = future_score
+
+    def score(self):
+        """
+        Overall score of hypothesis after accounting for local and
+        global features
+        """
+        return self.raw_score + self.future_score
 
     def untranslated_spans(self, sentence_length):
         """
@@ -397,7 +465,7 @@ class _Stack(object):
         are removed.
         """
         self.items.append(hypothesis)
-        self.items.sort(key=lambda h: h.score, reverse=True)
+        self.items.sort(key=lambda h: h.score(), reverse=True)
         while len(self.items) > self.max_size:
             self.items.pop()
         self.threshold_prune()
@@ -406,9 +474,9 @@ class _Stack(object):
         if not self.items:
             return
         #  log(score * beam_threshold) = log(score) + log(beam_threshold)
-        threshold = self.items[0].score + self.__log_beam_threshold
+        threshold = self.items[0].score() + self.__log_beam_threshold
         for hypothesis in reversed(self.items):
-            if hypothesis.score < threshold:
+            if hypothesis.score() < threshold:
                 self.items.pop()
             else:
                 break

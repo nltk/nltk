@@ -11,6 +11,7 @@ Tests for stack decoder
 """
 
 import unittest
+from collections import defaultdict
 from math import log
 from nltk.translate import PhraseTable
 from nltk.translate import StackDecoder
@@ -22,7 +23,7 @@ class TestStackDecoder(unittest.TestCase):
         # arrange
         phrase_table = TestStackDecoder.create_fake_phrase_table()
         stack_decoder = StackDecoder(phrase_table, None)
-        sentence = ['my', 'hovercraft', 'is', 'full', 'of', 'eels']
+        sentence = ('my', 'hovercraft', 'is', 'full', 'of', 'eels')
 
         # act
         src_phrase_spans = stack_decoder.find_all_src_phrases(sentence)
@@ -61,6 +62,57 @@ class TestStackDecoder(unittest.TestCase):
         # assert
         # expansion from empty hypothesis always has zero distortion cost
         self.assertEqual(score, 0.0)
+
+    def test_compute_future_costs(self):
+        # arrange
+        phrase_table = TestStackDecoder.create_fake_phrase_table()
+        language_model = TestStackDecoder.create_fake_language_model()
+        stack_decoder = StackDecoder(phrase_table, language_model)
+        sentence = ('my', 'hovercraft', 'is', 'full', 'of', 'eels')
+
+        # act
+        future_scores = stack_decoder.compute_future_scores(sentence)
+
+        # assert
+        self.assertEqual(
+            future_scores[1][2],
+            (phrase_table.translations_for(('hovercraft',))[0].log_prob +
+             language_model.probability(('hovercraft',))))
+        self.assertEqual(
+            future_scores[0][2],
+            (phrase_table.translations_for(('my', 'hovercraft'))[0].log_prob +
+             language_model.probability(('my', 'hovercraft'))))
+
+    def test_compute_future_costs_for_phrases_not_in_phrase_table(self):
+        # arrange
+        phrase_table = TestStackDecoder.create_fake_phrase_table()
+        language_model = TestStackDecoder.create_fake_language_model()
+        stack_decoder = StackDecoder(phrase_table, language_model)
+        sentence = ('my', 'hovercraft', 'is', 'full', 'of', 'eels')
+
+        # act
+        future_scores = stack_decoder.compute_future_scores(sentence)
+
+        # assert
+        self.assertEqual(
+            future_scores[1][3],  # 'hovercraft is' is not in phrase table
+            future_scores[1][2] + future_scores[2][3])  # backoff
+
+    def test_future_score(self):
+        # arrange: sentence with 8 words; words 2, 3, 4 already translated
+        hypothesis = _Hypothesis()
+        hypothesis.untranslated_spans = lambda self: [(0, 2), (5, 8)]  # mock
+        future_score_table = defaultdict(lambda: defaultdict(float))
+        future_score_table[0][2] = 0.4
+        future_score_table[5][8] = 0.5
+        stack_decoder = StackDecoder(None, None)
+
+        # act
+        future_score = stack_decoder.future_score(
+            hypothesis, future_score_table, 8)
+
+        # assert
+        self.assertEqual(future_score, 0.4 + 0.5)
 
     def test_valid_phrases(self):
         # arrange
@@ -101,18 +153,32 @@ class TestStackDecoder(unittest.TestCase):
         phrase_table.add(('spam',), ('',), 0.5)
         return phrase_table
 
+    @staticmethod
+    def create_fake_language_model():
+        # nltk.model should be used here once it is implemented
+        language_prob = defaultdict(lambda: -999.0)
+        language_prob[('my',)] = log(0.1)
+        language_prob[('hovercraft',)] = log(0.1)
+        language_prob[('is',)] = log(0.1)
+        language_prob[('full',)] = log(0.1)
+        language_prob[('of',)] = log(0.1)
+        language_prob[('eels',)] = log(0.1)
+        language_prob[('my', 'hovercraft',)] = log(0.3)
+        language_model = type('',(object,),{'probability': lambda self, phrase: language_prob[phrase]})()
+        return language_model
+
 
 class TestHypothesis(unittest.TestCase):
     def setUp(self):
         root = _Hypothesis()
         child = _Hypothesis(
-            score=0.5,
+            raw_score=0.5,
             src_phrase_span=(3, 7),
             trg_phrase=('hello', 'world'),
             previous=root
         )
         grandchild = _Hypothesis(
-            score=0.4,
+            raw_score=0.4,
             src_phrase_span=(1, 2),
             trg_phrase=('and', 'goodbye'),
             previous=child
