@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Porting TextBlob PerceptronTagger 
-# Copyright (C) 2001-2015 NLTK Project
-# Author: Long Duong <longdt219@gmail.com>  
-# URL: <http://nltk.org/>
+#This module is a port of the Textblob Averaged Perceptron Tagger
+# Author: Matthew Honnibal <honnibal+gh@gmail.com>, 
+#         Long Duong <longdt219@gmail.com> (NLTK port)
+# URL: <https://github.com/sloria/textblob-aptagger>
+#      <http://nltk.org/>
+#Copyright 2013 Matthew Honnibal
+#NLTK modifications Copyright 2015 The NLTK Project
+#This module is provided under the terms of the MIT License.
 # For license information, see LICENSE.TXT
 
 from __future__ import absolute_import
@@ -13,14 +17,14 @@ import logging
 from nltk.tag.api import TaggerI
 from nltk.data import find
 
-PICKLE = "average_perceptron_tagger.pickle"
+PICKLE = "averaged_perceptron_tagger.pickle"
 
 class AveragedPerceptron(object):
 
     '''An averaged perceptron, as implemented by Matthew Honnibal.
 
     See more implementation details here:
-        http://honnibal.wordpress.com/2013/09/11/a-good-part-of-speechpos-tagger-in-about-200-lines-of-python/
+        http://spacy.io/blog/part-of-speech-POS-tagger-in-python/
     '''
 
     def __init__(self):
@@ -92,29 +96,53 @@ class AveragedPerceptron(object):
 
 class PerceptronTagger(TaggerI):
 
-    '''Greedy Averaged Perceptron tagger, as implemented by Matthew Honnibal.
-
+    '''
+    Greedy Averaged Perceptron tagger, as implemented by Matthew Honnibal.
     See more implementation details here:
-        http://honnibal.wordpress.com/2013/09/11/a-good-part-of-speechpos-tagger-in-about-200-lines-of-python/
+        http://spacy.io/blog/part-of-speech-POS-tagger-in-python/
+    
+    >>> from nltk.tag.perceptron import PerceptronTagger
 
-    :param load: Load the pickled model upon instantiation.
+    Train the model 
+    
+    >>> tagger = PerceptronTagger(load=False)
+    
+    >>> tagger.train([[('today','NN'),('is','VBZ'),('good','JJ'),('day','NN')],
+    ... [('yes','NNS'),('it','PRP'),('beautiful','JJ')]])
+    
+    >>> tagger.tag(['today','is','a','beautiful','day'])
+    [('today', 'NN'), ('is', 'PRP'), ('a', 'PRP'), ('beautiful', 'JJ'), ('day', 'NN')]
+    
+    Use the pretrain model (the default constructor) 
+    
+    >>> pretrain = PerceptronTagger()
+    
+    >>> pretrain.tag('The quick brown fox jumps over the lazy dog'.split())
+    [('The', 'DT'), ('quick', 'JJ'), ('brown', 'NN'), ('fox', 'NN'), ('jumps', 'VBZ'), ('over', 'IN'), ('the', 'DT'), ('lazy', 'JJ'), ('dog', 'NN')]
+    
+    >>> pretrain.tag("The red cat".split())
+    [('The', 'DT'), ('red', 'JJ'), ('cat', 'NN')]
     '''
 
     START = ['-START-', '-START2-']
     END = ['-END-', '-END2-']
     
     def __init__(self, load=True):
+        '''
+        :param load: Load the pickled model upon instantiation.
+        '''
         self.model = AveragedPerceptron()
         self.tagdict = {}
         self.classes = set()
         if load:
-            AP_MODEL_LOC = str(find('models/perceptron_tagger/'+PICKLE))
+            AP_MODEL_LOC = str(find('taggers/averaged_perceptron_tagger/'+PICKLE))
             self.load(AP_MODEL_LOC)
 
     def tag(self, tokens):
         '''
         Tag tokenized sentences.
         :params tokens: list of word
+        :type tokens: list(str)
         '''
         prev, prev2 = self.START
         output = []
@@ -171,7 +199,10 @@ class PerceptronTagger(TaggerI):
         return None
 
     def load(self, loc):
-        '''Load a pickled model at location.'''
+        '''
+        :param loc: Load a pickled model at location.
+        :type loc: str 
+        '''
         try:
             w_td_c = pickle.load(open(loc, 'rb'))
         except IOError:
@@ -182,8 +213,8 @@ class PerceptronTagger(TaggerI):
         return None
 
     def _normalize(self, word):
-        '''Normalization used in pre-processing.
-
+        '''
+        Normalization used in pre-processing.
         - All words are lower cased
         - Digits in the range 1800-2100 are represented as !YEAR;
         - Other digits are represented as !DIGITS
@@ -269,22 +300,18 @@ def _load_data_conll_format(filename):
     fin.close()
     return sentences
 
-def _demo():
-    tagger = PerceptronTagger(load=False)
-    tagger.train([[('today','NN'),('is','VBZ'),('good','JJ'),('day','NN')],
-                  [('yes','JV'),('it','NN'),('beautiful','ADJ')]], 'average_perceptron_tagger.pickle')
-    print (tagger.tag(['today','is','a','beautiful','day']))
-    
+def _get_pretrain_model():
     # Train and test on English part of ConLL data (WSJ part of Penn Treebank)
     # Train: section 2-11 
     # Test : section 23
     tagger = PerceptronTagger()
-    #training = _load_data_conll_format('english_ptb_train.conll')
+    training = _load_data_conll_format('english_ptb_train.conll')
     testing = _load_data_conll_format('english_ptb_test.conll')
-    #print ('Size of training and testing (sentence)', len(training), len(testing))
-    #tagger.train(training, PICKLE)
+    print ('Size of training and testing (sentence)', len(training), len(testing))
+    # Train and save the model 
+    tagger.train(training, PICKLE) 
     print ('Accuracy : ',tagger.evaluate(testing))
     
 if __name__ == '__main__':
-    #_demo()
+    #_get_pretrain_model()
     pass
