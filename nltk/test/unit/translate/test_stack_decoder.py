@@ -101,7 +101,7 @@ class TestStackDecoder(unittest.TestCase):
     def test_future_score(self):
         # arrange: sentence with 8 words; words 2, 3, 4 already translated
         hypothesis = _Hypothesis()
-        hypothesis.untranslated_spans = lambda self: [(0, 2), (5, 8)]  # mock
+        hypothesis.untranslated_spans = lambda _: [(0, 2), (5, 8)]  # mock
         future_score_table = defaultdict(lambda: defaultdict(float))
         future_score_table[0][2] = 0.4
         future_score_table[5][8] = 0.5
@@ -164,7 +164,9 @@ class TestStackDecoder(unittest.TestCase):
         language_prob[('of',)] = log(0.1)
         language_prob[('eels',)] = log(0.1)
         language_prob[('my', 'hovercraft',)] = log(0.3)
-        language_model = type('',(object,),{'probability': lambda self, phrase: language_prob[phrase]})()
+        language_model = type(
+            '', (object,),
+            {'probability': lambda _, phrase: language_prob[phrase]})()
         return language_model
 
 

@@ -164,22 +164,20 @@ class StackDecoder(object):
                                                                  hypothesis)
                 for src_phrase_span in possible_expansions:
                     src_phrase = sentence[src_phrase_span[0]:src_phrase_span[1]]
-                    # Pick the most likely (first) translation for src_phrase
-                    # TODO Consider top n translations
-                    translation_option = self.phrase_table.translations_for(
-                        src_phrase)[0]
-                    raw_score = self.expansion_score(
-                        hypothesis, translation_option, src_phrase_span)
-                    new_hypothesis = _Hypothesis(
-                        raw_score=raw_score,
-                        src_phrase_span=src_phrase_span,
-                        trg_phrase=translation_option.trg_phrase,
-                        previous=hypothesis
-                    )
-                    new_hypothesis.future_score = self.future_score(
-                        new_hypothesis, future_score_table, sentence_length)
-                    total_words = new_hypothesis.total_translated_words()
-                    stacks[total_words].push(new_hypothesis)
+                    for translation_option in (self.phrase_table.
+                                               translations_for(src_phrase)):
+                        raw_score = self.expansion_score(
+                            hypothesis, translation_option, src_phrase_span)
+                        new_hypothesis = _Hypothesis(
+                            raw_score=raw_score,
+                            src_phrase_span=src_phrase_span,
+                            trg_phrase=translation_option.trg_phrase,
+                            previous=hypothesis
+                        )
+                        new_hypothesis.future_score = self.future_score(
+                            new_hypothesis, future_score_table, sentence_length)
+                        total_words = new_hypothesis.total_translated_words()
+                        stacks[total_words].push(new_hypothesis)
 
         if not stacks[sentence_length]:
             warnings.warn('Unable to translate all words. '
