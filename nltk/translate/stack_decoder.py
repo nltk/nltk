@@ -72,7 +72,7 @@ class StackDecoder(object):
     >>> stack_decoder = StackDecoder(phrase_table, language_model)
 
     >>> stack_decoder.translate(['niemand', 'erwartet', 'die', 'spanische', 'inquisition', '!'])
-    ['nobody', 'expects', '!', 'the', 'spanish', 'inquisition']
+    ['nobody', 'expects', 'the', 'spanish', 'inquisition', '!']
 
     """
     def __init__(self, phrase_table, language_model):
@@ -91,7 +91,8 @@ class StackDecoder(object):
         """
         self.phrase_table = phrase_table
         self.language_model = language_model
-        self.word_penalty = 0
+
+        self.word_penalty = 0.0
         """
         float: Influences the translation length exponentially.
             If positive, shorter translations are preferred.
@@ -101,9 +102,9 @@ class StackDecoder(object):
 
         self.beam_threshold = 0.0
         """
-        float: Value between 0.0 and 1.0. Hypotheses that score below a
-            factor of this value of the best hypothesis in a stack are
-            dropped from consideration.
+        float: Hypotheses that score below this factor of the best
+            hypothesis in a stack are dropped from consideration.
+            Value between 0.0 and 1.0.
         """
 
         self.stack_size = 100
@@ -112,6 +113,32 @@ class StackDecoder(object):
             Higher values increase the likelihood of a good translation,
             but increases processing time.
         """
+
+        self.__distortion_factor = 0.5
+        self.__compute_log_distortion()
+
+    @property
+    def distortion_factor(self):
+        """
+        float: Amount of reordering of source phrases.
+            Lower values favour monotone translation, suitable when
+            word order is similar for both source and target languages.
+            Value between 0.0 and 1.0. Default 0.5.
+        """
+        return self.__distortion_factor
+
+    @distortion_factor.setter
+    def distortion_factor(self, d):
+        self.__distortion_factor = d
+        self.__compute_log_distortion()
+
+    def __compute_log_distortion(self):
+        # cache log(distortion_factor) so we don't have to recompute it
+        # when scoring hypotheses
+        if self.__distortion_factor == 0.0:
+            self.__log_distortion_factor = log(1e-9)  # 1e-9 is almost zero
+        else:
+            self.__log_distortion_factor = log(self.__distortion_factor)
 
     def translate(self, src_sentence):
         """
@@ -139,7 +166,8 @@ class StackDecoder(object):
                     # TODO Consider top n translations
                     translation_option = self.phrase_table.translations_for(
                         src_phrase)[0]
-                    score = self.expansion_score(hypothesis, translation_option)
+                    score = self.expansion_score(hypothesis, translation_option,
+                                                 src_phrase_span)
                     new_hypothesis = _Hypothesis(
                         score=score,
                         src_phrase_span=src_phrase_span,
@@ -183,26 +211,38 @@ class StackDecoder(object):
                     phrase_indices[start].append(end)
         return phrase_indices
 
-    def expansion_score(self, preceding_hypothesis, translation_option):
+    def expansion_score(self, hypothesis, translation_option, src_phrase_span):
         """
-        Calculate the score of expanding ``preceding_hypothesis`` with
+        Calculate the score of expanding ``hypothesis`` with
         ``translation_option``
 
-        :param preceding_hypothesis: Hypothesis being expanded
-        :type preceding_hypothesis: _Hypothesis
+        :param hypothesis: Hypothesis being expanded
+        :type hypothesis: _Hypothesis
 
         :param translation_option: Information about the proposed expansion
         :type translation_option: PhraseTableEntry
+
+        :param src_phrase_span: Word position span of the source phrase
+        :type src_phrase_span: tuple(int, int)
         """
-        score = preceding_hypothesis.score
+        score = hypothesis.score
         score += translation_option.log_prob
         # The API of language_model is subject to change; it could accept
         # a string, a list of words, and/or some other type
         score += self.language_model.probability_change(
-            preceding_hypothesis, translation_option.trg_phrase)
+            hypothesis, translation_option.trg_phrase)
+        score += self.distortion_score(hypothesis, src_phrase_span)
         score -= self.word_penalty * len(translation_option.trg_phrase)
-        # TODO Incorporate distortion and future cost in calculation
+        # TODO Incorporate future cost in calculation
         return score
+
+    def distortion_score(self, hypothesis, next_src_phrase_span):
+        if not hypothesis.src_phrase_span:
+            return 0.0
+        next_src_phrase_start = next_src_phrase_span[0]
+        prev_src_phrase_end = hypothesis.src_phrase_span[1]
+        distortion_distance = next_src_phrase_start - prev_src_phrase_end
+        return abs(distortion_distance) * self.__log_distortion_factor
 
     @staticmethod
     def valid_phrases(all_phrases_from, hypothesis):

@@ -11,6 +11,7 @@ Tests for stack decoder
 """
 
 import unittest
+from math import log
 from nltk.translate import PhraseTable
 from nltk.translate import StackDecoder
 from nltk.translate.stack_decoder import _Hypothesis, _Stack
@@ -33,6 +34,33 @@ class TestStackDecoder(unittest.TestCase):
         self.assertEqual(src_phrase_spans[3], [5, 6])  # 'full of', 'full of eels'
         self.assertFalse(src_phrase_spans[4])  # no entry starting with 'of'
         self.assertEqual(src_phrase_spans[5], [6])  # 'eels'
+
+    def test_distortion_score(self):
+        # arrange
+        stack_decoder = StackDecoder(None, None)
+        stack_decoder.distortion_factor = 0.5
+        hypothesis = _Hypothesis()
+        hypothesis.src_phrase_span = (3, 5)
+
+        # act
+        score = stack_decoder.distortion_score(hypothesis, (8, 10))
+
+        # assert
+        expected_score = log(stack_decoder.distortion_factor) * (8 - 5)
+        self.assertEqual(score, expected_score)
+
+    def test_distortion_score_of_first_expansion(self):
+        # arrange
+        stack_decoder = StackDecoder(None, None)
+        stack_decoder.distortion_factor = 0.5
+        hypothesis = _Hypothesis()
+
+        # act
+        score = stack_decoder.distortion_score(hypothesis, (8, 10))
+
+        # assert
+        # expansion from empty hypothesis always has zero distortion cost
+        self.assertEqual(score, 0.0)
 
     def test_valid_phrases(self):
         # arrange
