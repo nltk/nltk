@@ -10,6 +10,7 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import absolute_import
+from __future__ import print_function, division
 import random
 from collections import defaultdict
 import pickle
@@ -68,7 +69,6 @@ class AveragedPerceptron(object):
             weights = self.weights.setdefault(f, {})
             upd_feat(truth, f, weights.get(truth, 0.0), 1.0)
             upd_feat(guess, f, weights.get(guess, 0.0), -1.0)
-        return None
 
     def average_weights(self):
         '''Average weights from all iterations.'''
@@ -82,17 +82,16 @@ class AveragedPerceptron(object):
                 if averaged:
                     new_feat_weights[clas] = averaged
             self.weights[feat] = new_feat_weights
-        return None
 
     def save(self, path):
         '''Save the pickled model weights.'''
-        return pickle.dump(dict(self.weights), open(path, 'w'))
+        with open(path, 'wb') as fout:
+            return pickle.dump(dict(self.weights), fout)
 
     def load(self, path):
         '''Load the pickled model weights.'''
-        self.weights = pickle.load(open(path))
-        return None
-
+        with open(path,'rb') as fin:
+            self.weights = pickle.load(fin)
 
 class PerceptronTagger(TaggerI):
 
@@ -147,7 +146,7 @@ class PerceptronTagger(TaggerI):
         prev, prev2 = self.START
         output = []
         
-        context = self.START + [self._normalize(w) for w in tokens] + self.END
+        context = self.START + [self.normalize(w) for w in tokens] + self.END
         for i, word in enumerate(tokens):
             tag = self.tagdict.get(word)
             if not tag:
@@ -177,7 +176,7 @@ class PerceptronTagger(TaggerI):
                 tags  = [tag for word,tag in sentence]
                 
                 prev, prev2 = self.START
-                context = self.START + [self._normalize(w) for w in words] \
+                context = self.START + [self.normalize(w) for w in words] \
                                                                     + self.END
                 for i, word in enumerate(words):
                     guess = self.tagdict.get(word)
@@ -194,25 +193,24 @@ class PerceptronTagger(TaggerI):
         self.model.average_weights()
         # Pickle as a binary file
         if save_loc is not None:
-            pickle.dump((self.model.weights, self.tagdict, self.classes),
-                         open(save_loc, 'wb'), -1)
-        return None
+            with open(save_loc, 'wb') as fout:
+                pickle.dump((self.model.weights, self.tagdict, self.classes), fout, -1)
+        
 
     def load(self, loc):
         '''
         :param loc: Load a pickled model at location.
         :type loc: str 
         '''
-        try:
-            w_td_c = pickle.load(open(loc, 'rb'))
-        except IOError:
-            msg = ("Missing trontagger.pickle file.")
-            raise Exception(msg)
+        
+        with open(loc, 'rb') as fin:
+            w_td_c = pickle.load(fin)
+        
         self.model.weights, self.tagdict, self.classes = w_td_c
         self.model.classes = self.classes
-        return None
+        
 
-    def _normalize(self, word):
+    def normalize(self, word):
         '''
         Normalization used in pre-processing.
         - All words are lower cased
@@ -283,22 +281,21 @@ def _pc(n, d):
 
 def _load_data_conll_format(filename):
     print ('Read from file: ', filename)
-    fin = open(filename,'rb')
-    sentences = []
-    sentence = []
-    for line in fin.readlines():
-        line = line.strip()
-        #print line
-        if len(line) ==0:
-            sentences.append(sentence)
-            sentence = []
-            continue
-        tokens = line.split('\t')
-        word = tokens[1]
-        tag = tokens[4]
-        sentence.append((word,tag)) 
-    fin.close()
-    return sentences
+    with open(filename,'rb') as fin:
+        sentences = []
+        sentence = []
+        for line in fin.readlines():
+            line = line.strip()
+            #print line
+            if len(line) ==0:
+                sentences.append(sentence)
+                sentence = []
+                continue
+            tokens = line.split('\t')
+            word = tokens[1]
+            tag = tokens[4]
+            sentence.append((word,tag)) 
+        return sentences
 
 def _get_pretrain_model():
     # Train and test on English part of ConLL data (WSJ part of Penn Treebank)
