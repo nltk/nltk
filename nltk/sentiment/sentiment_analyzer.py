@@ -176,7 +176,7 @@ class SentimentAnalyzer(object):
         return self.classifier
 
     def evaluate(self, test_set, classifier=None, accuracy=True, f_measure=True,
-                 precision=True, recall=True):
+                 precision=True, recall=True, verbose=False):
         """
         Evaluate and print classifier performance on the test set.
 
@@ -221,7 +221,8 @@ class SentimentAnalyzer(object):
                 metrics_results['F-measure [{0}]'.format(label)] = f_measure_score
 
         # Print evaluation results (in alphabetical order)
-        for result in sorted(metrics_results):
-            print('{0}: {1}'.format(result, metrics_results[result]))
+        if verbose == True:
+            for result in sorted(metrics_results):
+                print('{0}: {1}'.format(result, metrics_results[result]))
 
         return metrics_results
