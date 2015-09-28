@@ -86,7 +86,7 @@ class SennaChunkTagger(Senna):
         [('What', 'B-NP'), ('is', 'B-VP'), ('the', 'B-NP'), ('airspeed', 'I-NP'),
         ('of', 'B-PP'), ('an', 'B-NP'), ('unladen', 'I-NP'), ('swallow', 'I-NP'),
         ('?', 'O')]
-        >>> list(chktagger.bio_to_chunks(tagged_sents, chunk_type='NP'))
+        >>> list(chktagger.bio_to_chunks(tagged_sent, chunk_type='NP'))
         [('What', '0'), ('the airspeed', '2-3'), ('an unladen swallow', '5-6-7')]
         
         :param tagged_sent: A list of tuples of word and BIO chunk tag.
