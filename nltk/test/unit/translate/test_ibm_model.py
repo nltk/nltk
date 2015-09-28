@@ -6,9 +6,9 @@ Tests for common methods of IBM translation models
 import unittest
 
 from collections import defaultdict
-from nltk.align import AlignedSent
-from nltk.align import IBMModel
-from nltk.align.ibm_model import AlignmentInfo
+from nltk.translate import AlignedSent
+from nltk.translate import IBMModel
+from nltk.translate.ibm_model import AlignmentInfo
 
 
 class TestIBMModel(unittest.TestCase):

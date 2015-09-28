@@ -5,7 +5,7 @@
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.align.api import Alignment
+from nltk.translate.api import Alignment
 
 def pharaohtext2tuples(pharaoh_text):
     """
