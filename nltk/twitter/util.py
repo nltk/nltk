@@ -12,20 +12,11 @@ Authentication utilities to accompany :module:`twitterclient`.
 """
 
 from __future__ import print_function
-<<<<<<< HEAD
-import os
-import pprint
-
-from twython import Twython
-
-=======
 
 import os
 import pprint
 from twython import Twython
 
-
->>>>>>> develop
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
     Convenience function for authentication
