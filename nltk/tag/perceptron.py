@@ -19,6 +19,7 @@ import logging
 
 from nltk.tag.api import TaggerI
 from nltk.data import find
+from nltk.compat import python_2_unicode_compatible
 
 PICKLE = "averaged_perceptron_tagger.pickle"
 
@@ -95,6 +96,7 @@ class AveragedPerceptron(object):
         with open(path,'rb') as fin:
             self.weights = pickle.load(fin)
 
+@python_2_unicode_compatible
 class PerceptronTagger(TaggerI):
 
     '''
