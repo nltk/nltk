@@ -21,18 +21,16 @@ the word ``'fly'`` with a noun part of speech tag (``'NN'``):
 
 An off-the-shelf tagger is available.  It uses the Penn Treebank tagset:
 
-    >>> from nltk.tag import pos_tag  # doctest: +SKIP
-    >>> from nltk.tokenize import word_tokenize # doctest: +SKIP
-    >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +SKIP
-    [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
-    'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
-    ('.', '.')]
+    >>> from nltk import pos_tag, word_tokenize
+    >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+    [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is', 'VBZ'),
+    ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
 
-This package defines several taggers, which take a token list (typically a
-sentence), assign a tag to each token, and return the resulting list of
-tagged tokens.  Most of the taggers are built automatically based on a
-training corpus.  For example, the unigram tagger tags each word *w*
-by checking what the most frequent tag for *w* was in a training corpus:
+This package defines several taggers, which take a list of tokens,
+assign a tag to each one, and return the resulting list of tagged tokens.
+Most of the taggers are built automatically based on a training corpus.
+For example, the unigram tagger tags each word *w* by checking what
+the most frequent tag for *w* was in a training corpus:
 
     >>> from nltk.corpus import brown
     >>> from nltk.tag import UnigramTagger
