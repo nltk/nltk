@@ -84,12 +84,12 @@ def taggedsent_to_conll(sentence):
 	>>> text = "This is a foobar sentence."
 	>>> for line in taggedsent_to_conll(pos_tag(word_tokenize(text))):
 	... 	print(line, end="")
-	1    This    _    DT    DT    _    0    a    _    _
-	2    is    _    VBZ    VBZ    _    0    a    _    _
-	3    a    _    DT    DT    _    0    a    _    _
-	4    foobar    _    NN    NN    _    0    a    _    _
-	5    sentence    _    NN    NN    _    0    a    _    _
-	6    .    _    .    .    _    0    a    _    _
+        1	This	_	DT	DT	_	0	a	_	_
+        2	is	_	VBZ	VBZ	_	0	a	_	_
+        3	a	_	DT	DT	_	0	a	_	_
+        4	foobar	_	JJ	JJ	_	0	a	_	_
+        5	sentence	_	NN	NN	_	0	a	_	_
+        6	.		_	.	.	_	0	a	_	_
 	
 	:param sentence: A single input sentence to parse
 	:type sentence: list(tuple(str, str))
@@ -115,16 +115,20 @@ def taggedsents_to_conll(sentences):
 	>>> for line in taggedsents_to_conll(sentences):
         ...     if line:
 	...         print(line, end="")
-	1    This    _    DT    DT    _    0    a    _    _
-	2    is    _    VBZ    VBZ    _    0    a    _    _
-	3    a    _    DT    DT    _    0    a    _    _
-	4    foobar    _    NN    NN    _    0    a    _    _
-	5    sentence    _    NN    NN    _    0    a    _    _
-	6    .    _    .    .    _    0    a    _    _
-	1    Is    _    VBZ    VBZ    _    0    a    _    _
-	2    that    _    IN    IN    _    0    a    _    _
-	3    right    _    JJ    JJ    _    0    a    _    _
-	4    ?    _    .    .    _    0    a    _    _
+        1	This	_	DT	DT	_	0	a	_	_
+        2	is	_	VBZ	VBZ	_	0	a	_	_
+        3	a	_	DT	DT	_	0	a	_	_
+        4	foobar	_	JJ	JJ	_	0	a	_	_
+        5	sentence	_	NN	NN	_	0	a	_	_
+        6	.		_	.	.	_	0	a	_	_
+        <BLANKLINE>
+        <BLANKLINE>
+        1	Is	_	VBZ	VBZ	_	0	a	_	_
+        2	that	_	IN	IN	_	0	a	_	_
+        3	right	_	NN	NN	_	0	a	_	_
+        4	?	_	.	.	_	0	a	_	_
+        <BLANKLINE>
+        <BLANKLINE>
 
 	:param sentences: Input sentences to parse
 	:type sentence: list(list(tuple(str, str)))
