@@ -76,12 +76,10 @@ from nltk.tag.hmm           import HiddenMarkovModelTagger, HiddenMarkovModelTra
 from nltk.tag.senna         import SennaTagger, SennaChunkTagger, SennaNERTagger
 from nltk.tag.mapping       import tagset_mapping, map_tag
 from nltk.tag.crf           import CRFTagger
+from nltk.tag.perceptron    import PerceptronTagger
 
 from nltk.data import load
 
-
-# Standard treebank POS tagger
-_POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
 
 def pos_tag(tokens, tagset=None):
     """
@@ -95,12 +93,14 @@ def pos_tag(tokens, tagset=None):
         'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
         ('.', '.')]
 
+    NB use `pos_tag_sents()` for efficient tagging of more than one sentence.
+
     :param tokens: Sequence of tokens to be tagged
     :type tokens: list(str)
     :return: The tagged tokens
     :rtype: list(tuple(str, str))
     """
-    tagger = load(_POS_TAGGER)
+    tagger = PerceptronTagger()
     if tagset:
         return [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagger.tag(tokens)]
     return tagger.tag(tokens)
@@ -110,7 +110,5 @@ def pos_tag_sents(sentences):
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
     """
-    tagger = load(_POS_TAGGER)
+    tagger = PerceptronTagger()
     return tagger.tag_sents(sentences)
-
-
