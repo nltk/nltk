@@ -528,4 +528,3 @@ class TweetWriter(TweetHandlerI):
         self.fname = self.timestamped_file()
         self.startingup = True
         self.counter = 0
-

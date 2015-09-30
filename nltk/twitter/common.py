@@ -38,7 +38,6 @@ def extract_fields(tweet, fields):
             raise RuntimeError('Fatal error when extracting fields. Cannot find field ', field)
     return out
 
-
 def _add_field_to_out(json, field, out):
     if _is_composed_key(field):
         key, value = _get_key_value_composed(field)
@@ -126,6 +125,7 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
         writer.writerow(row)
     outf.close()
 
+
 def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
     """
     Identify appropriate CSV writer given the Python version
@@ -143,8 +143,6 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
             outf = open(outfile, 'wb')
         writer = compat.UnicodeWriter(outf, encoding=encoding, errors=errors)
     return (writer, outf)
-
-
 
 
 def json2csv_entities(tweets_file, outfile, main_fields, entity_type, entity_fields,
@@ -257,3 +255,4 @@ def _write_to_file(object_fields, items, entity_fields, writer):
     for item in items:
         row = object_fields + extract_fields(item, entity_fields)
         writer.writerow(row)
+

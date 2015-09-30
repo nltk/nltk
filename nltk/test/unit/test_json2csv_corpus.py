@@ -17,7 +17,7 @@ from nltk.compat import TemporaryDirectory
 import unittest
 
 from nltk.corpus import twitter_samples
-from nltk.twitter.util import json2csv, json2csv_entities
+from nltk.twitter.common import json2csv, json2csv_entities
 from nltk.compat import izip
 
 

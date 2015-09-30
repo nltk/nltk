@@ -84,6 +84,9 @@ cmudict = LazyCorpusLoader(
     'cmudict', CMUDictCorpusReader, ['cmudict'])
 comtrans = LazyCorpusLoader(
     'comtrans', AlignedCorpusReader, r'(?!\.).*\.txt')
+comparative_sentences = LazyCorpusLoader(
+    'comparative_sentences', ComparativeSentencesCorpusReader, r'labeledSentences\.txt',
+    encoding='latin-1')
 conll2000 = LazyCorpusLoader(
     'conll2000', ConllChunkCorpusReader,
     ['train.txt', 'test.txt'], ('NP','VP','PP'),
@@ -155,11 +158,21 @@ nkjp = LazyCorpusLoader(
     'nkjp', NKJPCorpusReader, r'', encoding='utf8')
 nps_chat = LazyCorpusLoader(
     'nps_chat', NPSChatCorpusReader, r'(?!README|\.).*\.xml', tagset='wsj')
+opinion_lexicon = LazyCorpusLoader(
+    'opinion_lexicon', OpinionLexiconCorpusReader, r'(\w+)\-words\.txt',
+    encoding='ISO-8859-2')
 pl196x = LazyCorpusLoader(
     'pl196x', Pl196xCorpusReader, r'[a-z]-.*\.xml',
     cat_file='cats.txt', textid_file='textids.txt', encoding='utf8')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
+product_reviews_1 = LazyCorpusLoader(
+    'product_reviews_1', ReviewsCorpusReader, r'^(?!Readme).*\.txt', encoding='utf8')
+product_reviews_2 = LazyCorpusLoader(
+    'product_reviews_2', ReviewsCorpusReader, r'^(?!Readme).*\.txt', encoding='utf8')
+pros_cons = LazyCorpusLoader(
+    'pros_cons', ProsConsCorpusReader, r'Integrated(Cons|Pros)\.txt',
+    cat_pattern=r'Integrated(Cons|Pros)\.txt', encoding='ISO-8859-2')
 ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
     'ptb', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
     cat_file='allcats.txt', tagset='wsj')
@@ -172,6 +185,9 @@ rte = LazyCorpusLoader(
     'rte', RTECorpusReader, r'(?!\.).*\.xml')
 senseval = LazyCorpusLoader(
     'senseval', SensevalCorpusReader, r'(?!\.).*\.pos')
+sentence_polarity = LazyCorpusLoader(
+    'sentence_polarity', CategorizedSentencesCorpusReader, r'rt-polarity\.(neg|pos)',
+    cat_pattern=r'rt-polarity\.(neg|pos)', encoding='utf-8')
 sentiwordnet = LazyCorpusLoader(
     'sentiwordnet', SentiWordNetCorpusReader, 'SentiWordNet_3.0.0.txt', encoding='utf-8')
 shakespeare = LazyCorpusLoader(
@@ -184,6 +200,9 @@ state_union = LazyCorpusLoader(
     encoding='ISO-8859-2')
 stopwords = LazyCorpusLoader(
     'stopwords', WordListCorpusReader, r'(?!README|\.).*', encoding='utf8')
+subjectivity = LazyCorpusLoader(
+    'subjectivity', CategorizedSentencesCorpusReader, r'(quote.tok.gt9|plot.tok.gt9)\.5000',
+    cat_map={'quote.tok.gt9.5000':['subj'], 'plot.tok.gt9.5000':['obj']}, encoding='latin-1')
 swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*', encoding='utf8')
 swadesh110 = LazyCorpusLoader(
@@ -256,7 +275,7 @@ semcor = LazyCorpusLoader(
     'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml',
     wordnet) # Must be defined *after* wordnet corpus.
 
-  
+
 def demo():
     # This is out-of-date:
     abc.demo()

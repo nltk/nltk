@@ -17,7 +17,6 @@ import os
 import pprint
 from twython import Twython
 
-
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
     Convenience function for authentication
@@ -145,4 +144,3 @@ def guess_path(pth):
         return pth
     else:
         return os.path.expanduser(os.path.join("~", pth))
-

@@ -550,6 +550,154 @@ category assigned to a document is correct as follows:
 Other Corpora
 =============
 
+comparative_sentences
+---------------------
+A list of sentences from various sources, especially reviews and articles. Each
+line contains one sentence; sentences were separated by using a sentence tokenizer.
+Comparative sentences have been annotated with their type, entities, features and
+keywords.
+
+    >>> from nltk.corpus import comparative_sentences
+    >>> comparison = comparative_sentences.comparisons()[0]
+    >>> comparison.text
+    ['its', 'fast-forward', 'and', 'rewind', 'work', 'much', 'more', 'smoothly',
+    'and', 'consistently', 'than', 'those', 'of', 'other', 'models', 'i', "'ve",
+    'had', '.']
+    >>> comparison.entity_2
+    'models'
+    >>> (comparison.feature, comparison.keyword)
+    ('rewind', 'more')
+    >>> len(comparative_sentences.comparisons())
+    853
+
+opinion_lexicon
+---------------
+A list of positive and negative opinion words or sentiment words for English.
+
+    >>> from nltk.corpus import opinion_lexicon
+    >>> opinion_lexicon.words()[:4]
+        ['2-faced', '2-faces', 'abnormal', 'abolish']
+
+The OpinionLexiconCorpusReader also provides shortcuts to retrieve positive/negative
+words:
+
+    >>> opinion_lexicon.negative()[:4]
+    ['2-faced', '2-faces', 'abnormal', 'abolish']
+
+Note that words from `words()` method in opinion_lexicon are sorted by file id,
+not alphabetically:
+
+    >>> opinion_lexicon.words()[0:10]
+    ['2-faced', '2-faces', 'abnormal', 'abolish', 'abominable', 'abominably',
+    'abominate', 'abomination', 'abort', 'aborted']
+    >>> sorted(opinion_lexicon.words())[0:10]
+    ['2-faced', '2-faces', 'a+', 'abnormal', 'abolish', 'abominable', 'abominably',
+    'abominate', 'abomination', 'abort']
+
+ppattach
+--------
+The Prepositional Phrase Attachment corpus is a corpus of
+prepositional phrase attachment decisions.  Each instance in the
+corpus is encoded as a ``PPAttachment`` object:
+
+    >>> from nltk.corpus import ppattach
+    >>> ppattach.attachments('training') # doctest: +NORMALIZE_WHITESPACE
+    [PPAttachment(sent='0', verb='join', noun1='board',
+                  prep='as', noun2='director', attachment='V'),
+     PPAttachment(sent='1', verb='is', noun1='chairman',
+                  prep='of', noun2='N.V.', attachment='N'),
+     ...]
+    >>> inst = ppattach.attachments('training')[0]
+    >>> (inst.sent, inst.verb, inst.noun1, inst.prep, inst.noun2)
+    ('0', 'join', 'board', 'as', 'director')
+    >>> inst.attachment
+    'V'
+
+product_reviews_1 and product_reviews_2
+---------------------------------------
+These two datasets respectively contain annotated customer reviews of 5 and 9
+products from amazon.com.
+
+    >>> from nltk.corpus import product_reviews_1
+    >>> camera_reviews = product_reviews_1.reviews('Canon_G3.txt')
+    >>> review = camera_reviews[0]
+    >>> review.sents()[0]
+    ['i', 'recently', 'purchased', 'the', 'canon', 'powershot', 'g3', 'and', 'am',
+    'extremely', 'satisfied', 'with', 'the', 'purchase', '.']
+    >>> review.features()
+    [('canon powershot g3', '+3'), ('use', '+2'), ('picture', '+2'),
+    ('picture quality', '+1'), ('picture quality', '+1'), ('camera', '+2'),
+    ('use', '+2'), ('feature', '+1'), ('picture quality', '+3'), ('use', '+1'),
+    ('option', '+1')]
+
+It is also possible to reach the same information directly from the stream:
+
+    >>> product_reviews_1.features('Canon_G3.txt')
+    [('canon powershot g3', '+3'), ('use', '+2'), ...]
+
+We can compute stats for specific product features:
+
+    >>> n_reviews = len([(feat,score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
+    >>> tot = sum([int(score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
+    >>> # We use float for backward compatibility with division in Python2.7
+    >>> mean = float(tot)/n_reviews
+    >>> print(n_reviews, tot, mean)
+    15 24 1.6
+
+pros_cons
+---------
+A list of pros/cons sentences for determining context (aspect) dependent
+sentiment words, which are then applied to sentiment analysis of comparative
+sentences.
+
+    >>> from nltk.corpus import pros_cons
+    >>> pros_cons.sents(categories='Cons')
+    [['East', 'batteries', '!', 'On', '-', 'off', 'switch', 'too', 'easy',
+    'to', 'maneuver', '.'], ['Eats', '...', 'no', ',', 'GULPS', 'batteries'],
+    ...]
+    >>> pros_cons.words('IntegratedPros.txt')
+    ['Easy', 'to', 'use', ',', 'economical', '!', ...]
+
+semcor
+------
+The Brown Corpus, annotated with WordNet senses.
+
+    >>> from nltk.corpus import semcor
+    >>> semcor.words('brown2/tagfiles/br-n12.xml')  # doctest: +ELLIPSIS
+    ['When', 'several', 'minutes', 'had', 'passed', ...]
+    >>> sent = semcor.xml('brown2/tagfiles/br-n12.xml').findall('context/p/s')[0]
+    >>> for wordform in sent.getchildren():
+    ...     print(wordform.text, end=' ')
+    ...     for key in sorted(wordform.keys()):
+    ...         print(key + '=' + wordform.get(key), end=' ')
+    ...     print()
+    ...
+    When cmd=ignore pos=WRB
+    several cmd=done lemma=several lexsn=5:00:00:some(a):00 pos=JJ wnsn=1
+    minutes cmd=done lemma=minute lexsn=1:28:00:: pos=NN wnsn=1
+    had cmd=done ot=notag pos=VBD
+    passed cmd=done lemma=pass lexsn=2:38:03:: pos=VB wnsn=4
+    and cmd=ignore pos=CC
+    Curt cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
+    had cmd=done ot=notag pos=VBD
+    n't cmd=done lemma=n't lexsn=4:02:00:: pos=RB wnsn=0
+    emerged cmd=done lemma=emerge lexsn=2:30:00:: pos=VB wnsn=1
+    from cmd=ignore pos=IN
+    the cmd=ignore pos=DT
+    livery_stable cmd=done lemma=livery_stable lexsn=1:06:00:: pos=NN wnsn=1
+    ,
+    Brenner cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
+    re-entered cmd=done lemma=re-enter lexsn=2:38:00:: pos=VB wnsn=1
+    the cmd=ignore pos=DT
+    hotel cmd=done lemma=hotel lexsn=1:06:00:: pos=NN wnsn=1
+    and cmd=ignore pos=CC
+    faced cmd=done lemma=face lexsn=2:42:02:: pos=VB wnsn=4
+    Summers cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
+    across cmd=ignore pos=IN
+    the cmd=ignore pos=DT
+    counter cmd=done lemma=counter lexsn=1:06:00:: pos=NN wnsn=1
+    .
+
 senseval
 --------
 The Senseval 2 corpus is a word sense disambiguation corpus.  Each
@@ -594,64 +742,21 @@ displays their local context (2 words on each side) and word sense(s):
            principal and |  interest | is the          -> interest_6
             increase its |  interest | to 70           -> interest_5
 
-ppattach
---------
-The Prepositional Phrase Attachment corpus is a corpus of
-prepositional phrase attachment decisions.  Each instance in the
-corpus is encoded as a ``PPAttachment`` object:
+sentence_polarity
+-----------------
+The Sentence Polarity dataset contains 5331 positive and 5331 negative processed
+sentences.
 
-    >>> from nltk.corpus import ppattach
-    >>> ppattach.attachments('training') # doctest: +NORMALIZE_WHITESPACE
-    [PPAttachment(sent='0', verb='join', noun1='board',
-                  prep='as', noun2='director', attachment='V'),
-     PPAttachment(sent='1', verb='is', noun1='chairman',
-                  prep='of', noun2='N.V.', attachment='N'),
-     ...]
-    >>> inst = ppattach.attachments('training')[0]
-    >>> (inst.sent, inst.verb, inst.noun1, inst.prep, inst.noun2)
-    ('0', 'join', 'board', 'as', 'director')
-    >>> inst.attachment
-    'V'
-
-semcor
-------
-The Brown Corpus, annotated with WordNet senses.
-
-    >>> from nltk.corpus import semcor
-    >>> semcor.words('brown2/tagfiles/br-n12.xml')  # doctest: +ELLIPSIS
-    ['When', 'several', 'minutes', 'had', 'passed', ...]
-    >>> sent = semcor.xml('brown2/tagfiles/br-n12.xml').findall('context/p/s')[0]
-    >>> for wordform in sent.getchildren():
-    ...     print(wordform.text, end=' ')
-    ...     for key in sorted(wordform.keys()):
-    ...         print(key + '=' + wordform.get(key), end=' ')
-    ...     print()
-    ...
-    When cmd=ignore pos=WRB
-    several cmd=done lemma=several lexsn=5:00:00:some(a):00 pos=JJ wnsn=1
-    minutes cmd=done lemma=minute lexsn=1:28:00:: pos=NN wnsn=1
-    had cmd=done ot=notag pos=VBD
-    passed cmd=done lemma=pass lexsn=2:38:03:: pos=VB wnsn=4
-    and cmd=ignore pos=CC
-    Curt cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
-    had cmd=done ot=notag pos=VBD
-    n't cmd=done lemma=n't lexsn=4:02:00:: pos=RB wnsn=0
-    emerged cmd=done lemma=emerge lexsn=2:30:00:: pos=VB wnsn=1
-    from cmd=ignore pos=IN
-    the cmd=ignore pos=DT
-    livery_stable cmd=done lemma=livery_stable lexsn=1:06:00:: pos=NN wnsn=1
-    ,
-    Brenner cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
-    re-entered cmd=done lemma=re-enter lexsn=2:38:00:: pos=VB wnsn=1
-    the cmd=ignore pos=DT
-    hotel cmd=done lemma=hotel lexsn=1:06:00:: pos=NN wnsn=1
-    and cmd=ignore pos=CC
-    faced cmd=done lemma=face lexsn=2:42:02:: pos=VB wnsn=4
-    Summers cmd=done lemma=person lexsn=1:03:00:: pn=person pos=NNP rdf=person wnsn=1
-    across cmd=ignore pos=IN
-    the cmd=ignore pos=DT
-    counter cmd=done lemma=counter lexsn=1:06:00:: pos=NN wnsn=1
-    .
+    >>> from nltk.corpus import sentence_polarity
+    >>> sentence_polarity.sents()
+    [['simplistic', ',', 'silly', 'and', 'tedious', '.'], ["it's", 'so', 'laddish',
+    'and', 'juvenile', ',', 'only', 'teenage', 'boys', 'could', 'possibly', 'find',
+    'it', 'funny', '.'], ...]
+    >>> sentence_polarity.categories()
+    ['neg', 'pos']
+    >>> sentence_polarity.sents()[1]
+    ["it's", 'so', 'laddish', 'and', 'juvenile', ',', 'only', 'teenage', 'boys',
+    'could', 'possibly', 'find', 'it', 'funny', '.']
 
 shakespeare
 -----------
@@ -679,6 +784,20 @@ as XML files.  These corpora are returned as ElementTree objects:
     ['ALL', 'COBWEB', 'DEMETRIUS', 'Fairy', 'HERNIA', 'LYSANDER',
      'Lion', 'MOTH', 'MUSTARDSEED', 'Moonshine', 'PEASEBLOSSOM',
      'Prologue', 'Pyramus', 'Thisbe', 'Wall']
+
+subjectivity
+-----------
+The Subjectivity Dataset contains 5000 subjective and 5000 objective processed
+sentences.
+
+    >>> from nltk.corpus import subjectivity
+    >>> subjectivity.categories()
+    ['obj', 'subj']
+    >>> subjectivity.sents()[23]
+    ['television', 'made', 'him', 'famous', ',', 'but', 'his', 'biggest', 'hits',
+    'happened', 'off', 'screen', '.']
+    >>> subjectivity.words(categories='subj')
+    ['smart', 'and', 'alert', ',', 'thirteen', ...]
 
 toolbox
 -------
@@ -842,7 +961,6 @@ the `tokenized()` method returns a list of lists of tokens.
     >>> twitter_samples.tokenized('tweets.20150430-223406.json')
     [['RT', '@KirkKus', ':', 'Indirect', 'cost', 'of', 'the', 'UK', 'being', 'in', ...],
      ['VIDEO', ':', 'Sturgeon', 'on', 'post-election', 'deals', 'http://t.co/BTJwrpbmOY'], ...]
-
 
 rte
 ---
@@ -2088,7 +2206,6 @@ access to its tuples() method
     >>> from nltk.corpus import qc
     >>> qc.tuples('test.txt')
     [('NUM:dist', 'How far is it from Denver to Aspen ?'), ('LOC:city', 'What county is Modesto , California in ?'), ...]
-
 
 
 
