@@ -30,7 +30,9 @@ For documentation about the Twitter APIs, see `The Streaming APIs Overview
 For error codes see Twitter's
 `Error Codes and Responses <https://dev.twitter.com/overview/api/response-codes>`
 """
+from __future__ import print_function
 
+import datetime
 from functools import wraps
 import json
 
@@ -53,14 +55,21 @@ def verbose(func):
         return func(*args, **kwargs)
     return with_formatting
 
+def yesterday():
+    """
+    Get yesterday's datetime as a 5-tuple.
+    """
+    date =  datetime.datetime.now()
+    date -= datetime.timedelta(days=1)
+    date_tuple = date.timetuple()[:6]
+    return date_tuple
 
 def setup():
     """
     Initialize global variables for the demos.
     """
-    global DATE, USERIDS, FIELDS
+    global USERIDS, FIELDS
 
-    DATE = (2015, 4, 20, 16, 40)
     USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800']
     # UserIDs corresponding to\
     #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
@@ -83,7 +92,7 @@ def twitterclass_demo():
     print("Follow two accounts in the public stream" +
           " -- be prepared to wait a few minutes\n")
     tw = Twitter()
-    tw.tweets(follow=['759251', '6017542'], stream=True, limit=10) #public stream
+    tw.tweets(follow=['759251', '6017542'], stream=True, limit=5) #public stream
 
 
 @verbose
@@ -172,14 +181,25 @@ def streamtofile_demo(limit=20):
 
 
 @verbose
-def limit_by_time_demo(limit=20):
+def limit_by_time_demo(keywords="nltk"):
     """
-    Sample from the Streaming API and send output to terminal.
+    Query the REST API for Tweets about NLTK since yesterday and send
+    the output to terminal.
+
+    This example makes the assumption that there are sufficient Tweets since
+    yesterday for the date to be an effective cut-off.
     """
+    date = yesterday()
+    dt_date = datetime.datetime(*date)
     oauth = credsfromfile()
-    client = Streamer(**oauth)
-    client.register(TweetWriter(limit=limit, date_limit=DATE))
-    client.sample()
+    client = Query(**oauth)
+    client.register(TweetViewer(limit=100, lower_date_limit=date))
+
+    print("Cutoff date: {}\n".format(dt_date))
+
+    for tweet in client.search_tweets(keywords=keywords):
+        print("{} ".format(tweet['created_at']), end='')
+        client.handler.handle(tweet)
 
 
 @verbose
@@ -217,7 +237,7 @@ def corpusreader_demo():
 def expand_tweetids_demo():
     """
     Given a file object containing a list of Tweet IDs, fetch the
-    corresponding full Tweets.
+    corresponding full Tweets, if available.
 
     """
     ids_f =\
@@ -237,11 +257,12 @@ def expand_tweetids_demo():
     hydrated = client.expand_tweetids(ids_f)
 
     for tweet in hydrated:
-        try:
             id_str = tweet['id_str']
-            print('id: {}\ntext: {}\n'.format(id_str, tweet['text']))
-        except IndexError:
-            pass
+            print('id: {}'.format(id_str))
+            text = tweet['text']
+            if text.startswith('@null'):
+                text = "[Tweet not available]"
+            print(text + '\n')
 
 
 
@@ -251,7 +272,7 @@ ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
 
 """
 Select demo functions to run. E.g. replace the following line with "DEMOS =
-ALL[8:]" to execute only the final two demos.
+ALL[8:]" to execute only the final three demos.
 """
 DEMOS = ALL[:]
 
@@ -264,5 +285,4 @@ if __name__ == "__main__":
     print("\n" + SPACER)
     print("All demos completed")
     print(SPACER)
-
 

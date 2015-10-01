@@ -75,9 +75,9 @@ Some additional test strings.
 
 Make sure that grouping parentheses don't confuse the tokenizer:
 
-    >>> regexp_tokenize(s3, r'</?(b|p)>', gaps=False)
+    >>> regexp_tokenize(s3, r'</?(?:b|p)>', gaps=False)
     ['<p>', '<b>', '</b>', '</p>']
-    >>> regexp_tokenize(s3, r'</?(b|p)>', gaps=True)
+    >>> regexp_tokenize(s3, r'</?(?:b|p)>', gaps=True)
     ['Although this is ', 'not',
      ' the case here, we must not relax our vigilance!']
 
@@ -91,9 +91,9 @@ Make sure that named groups don't confuse the tokenizer:
 
 Make sure that nested groups don't confuse the tokenizer:
 
-    >>> regexp_tokenize(s2, r'(h|r|l)a(s|(i|n0))', gaps=False)
+    >>> regexp_tokenize(s2, r'(?:h|r|l)a(:?s|(:?i|n0))', gaps=False)
     ['las', 'has', 'rai', 'rai']
-    >>> regexp_tokenize(s2, r'(h|r|l)a(s|(i|n0))', gaps=True)
+    >>> regexp_tokenize(s2, r'(?:h|r|l)a(?:s|(?:i|n0))', gaps=True)
     ['A', ', it ', ' not ', 'ned today. When, do you think, will it ',
      'n again?']
 
@@ -112,6 +112,6 @@ The tokenizer should reject any patterns with backreferences:
 
 A simple sentence tokenizer '\.(\s+|$)'
 
-    >>> regexp_tokenize(s, pattern=r'\.(\s+|$)', gaps=True)
+    >>> regexp_tokenize(s, pattern=r'\.(?:\s+|$)', gaps=True)
     ['Good muffins cost $3.88\nin New York',
      'Please buy me\ntwo of them', 'Thanks']

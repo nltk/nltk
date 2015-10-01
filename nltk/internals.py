@@ -11,7 +11,7 @@ from __future__ import print_function
 import subprocess
 import os
 import fnmatch
-import re, sre_constants, sre_parse, sre_compile
+import re
 import warnings
 import textwrap
 import types
@@ -27,34 +27,6 @@ except ImportError:
 
 from nltk import __file__
 from nltk import compat
-######################################################################
-# Regular Expression Processing
-######################################################################
-
-def compile_regexp_to_noncapturing(pattern, flags=0):
-    """
-    Compile the regexp pattern after switching all grouping parentheses
-    in the given regexp pattern to non-capturing groups.
-
-    :type pattern: str
-    :rtype: str
-    """
-    def convert_regexp_to_noncapturing_parsed(parsed_pattern):
-        res_data = []
-        for key, value in parsed_pattern.data:
-            if key == sre_constants.SUBPATTERN:
-                index, subpattern = value
-                value = (None, convert_regexp_to_noncapturing_parsed(subpattern))
-            elif key == sre_constants.GROUPREF:
-                raise ValueError('Regular expressions with back-references are not supported: {0}'.format(pattern))
-            res_data.append((key, value))
-        parsed_pattern.data = res_data
-        parsed_pattern.pattern.groups = 1
-        parsed_pattern.pattern.groupdict = {}
-        return parsed_pattern
-
-    return sre_compile.compile(convert_regexp_to_noncapturing_parsed(sre_parse.parse(pattern)), flags=flags)
-
 
 ##########################################################################
 # Java Via Command-Line

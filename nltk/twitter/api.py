@@ -13,6 +13,7 @@ handling.
 """
 
 from datetime import tzinfo, timedelta, datetime
+from nltk.compat import UTC
 import time as _time
 
 
@@ -45,21 +46,29 @@ LOCAL = LocalTimezoneOffsetWithUTC()
 
 class BasicTweetHandler(object):
     """
-    Minimum implementation of TweetHandler
-    Counts the number of tweets and decides when the client shoud stop
-    fetching tweets
+    Minimal implementation of `TweetHandler`.
+
+    Counts the number of Tweets and decides when the client should stop
+    fetching them.
     """
     def __init__(self, limit=20):
         self.limit = limit
         self.counter = 0
-        
-        """A flag to indicate that to the client to stop for
-        a functional clause (e.g. date limit)"""
+
+        """
+        A flag to indicate to the client whether to stop fetching data given
+        some condition (e.g., reaching a date limit).
+        """
         self.do_stop = False
+
+        """
+        Stores the id of the last fetched Tweet to handle pagination.
+        """
+        self.max_id = None
 
     def do_continue(self):
         """
-        Returns false if the client should stop fetching tweets
+        Returns `False` if the client should stop fetching Tweets.
         """
         return self.counter < self.limit and not self.do_stop
 
@@ -68,22 +77,27 @@ class TweetHandlerI(BasicTweetHandler):
     Interface class whose subclasses should implement a handle method that
     Twitter clients can delegate to.
     """
-    def __init__(self, limit=20, date_limit=None):
+    def __init__(self, limit=20, upper_date_limit=None, lower_date_limit=None):
         """
-        :param int limit: The number of data items to process in the current round of\
-        processing.
+        :param int limit: The number of data items to process in the current\
+        round of processing.
 
-        :param tuple date_limit: The date at which to stop collecting new\
-        data. This should be entered as a tuple which can serve as the\
-        argument to `datetime.datetime`. E.g. `data_limit=(2015, 4, 1, 12,\
-        40)` for 12:30 pm on April 1 2015.
+        :param tuple upper_date_limit: The date at which to stop collecting\
+        new data. This should be entered as a tuple which can serve as the\
+        argument to `datetime.datetime`.\
+        E.g. `date_limit=(2015, 4, 1, 12, 40)` for 12:30 pm on April 1 2015.
 
+        :param tuple lower_date_limit: The date at which to stop collecting\
+        new data. See `upper_data_limit` for formatting.
         """
         BasicTweetHandler.__init__(self, limit)
 
-        self.date_limit = date_limit
-        if date_limit is not None:
-            self.date_limit = datetime(*date_limit, tzinfo=LOCAL)
+        self.upper_date_limit = None
+        self.lower_date_limit = None
+        if upper_date_limit:
+            self.upper_date_limit = datetime(*upper_date_limit, tzinfo=LOCAL)
+        if lower_date_limit:
+            self.lower_date_limit = datetime(*lower_date_limit, tzinfo=LOCAL)
 
         self.startingup = True
 
@@ -98,4 +112,25 @@ class TweetHandlerI(BasicTweetHandler):
         Actions when the tweet limit has been reached
         """
         raise NotImplementedError
-        
+
+    def check_date_limit(self, data, verbose=False):
+        """
+        Validate date limits.
+        """
+        if self.upper_date_limit or self.lower_date_limit:
+            date_fmt = '%a %b %d %H:%M:%S +0000 %Y'
+            tweet_date = \
+                datetime.strptime(data['created_at'],
+                                  date_fmt).replace(tzinfo=UTC)
+            if (self.upper_date_limit and tweet_date > self.upper_date_limit) or \
+               (self.lower_date_limit and tweet_date < self.lower_date_limit):
+                if self.upper_date_limit:
+                    message = "earlier"
+                    date_limit = self.upper_date_limit
+                else:
+                    message = "later"
+                    date_limit = self.lower_date_limit
+                if verbose:
+                    print("Date limit {0} is {1} than date of current tweet {2}".\
+                      format(date_limit, message, tweet_date))
+                self.do_stop = True

@@ -30,7 +30,6 @@ import os
 import requests
 import time
 import gzip
-from nltk.compat import UTC
 
 
 from twython import Twython, TwythonStreamer
@@ -182,12 +181,8 @@ class Query(Twython):
         :param str lang: language
         """
         while True:
-            if isinstance(self.handler, TweetWriter):
-                max_id = self.handler.max_id
-            else:
-                max_id = None
             tweets = self.search_tweets(keywords=keywords, limit=limit, lang=lang,
-                                        max_id=max_id)
+                                        max_id=self.handler.max_id)
             for tweet in tweets:
                 self.handler.handle(tweet)
             if not (self.handler.do_continue() and self.handler.repeat):
@@ -217,7 +212,9 @@ class Query(Twython):
             self.handler = BasicTweetHandler(limit=limit)
 
         count_from_query = 0
-        if not max_id:
+        if max_id:
+            self.handler.max_id = max_id
+        else:
             results = self.search(q=keywords, count=min(100, limit), lang=lang,
                                   result_type='recent')
             count = len(results['statuses'])
@@ -225,7 +222,7 @@ class Query(Twython):
                 print("No Tweets available through REST API for those keywords")
                 return
             count_from_query = count
-            max_id = results['statuses'][count - 1]['id'] - 1
+            self.handler.max_id = results['statuses'][count - 1]['id'] - 1
 
             for result in results['statuses']:
                 yield result
@@ -241,7 +238,7 @@ class Query(Twython):
             try:
                 mcount = min(100, limit-count_from_query)
                 results = self.search(q=keywords, count=mcount, lang=lang,
-                                      max_id=max_id, result_type='recent')
+                                      max_id=self.handler.max_id, result_type='recent')
             except TwythonRateLimitError as e:
                 print("Waiting for 15 minutes -{0}".format(e))
                 time.sleep(15*60) # wait 15 minutes
@@ -261,8 +258,7 @@ class Query(Twython):
             # results['search_metadata']['next_results'], but as part of a
             # query and difficult to fetch. This is doing the equivalent
             # (last tweet id minus one)
-            max_id = results['statuses'][count - 1]['id'] - 1
-            self.handler.max_id = max_id
+            self.handler.max_id = results['statuses'][count - 1]['id'] - 1
 
             for result in results['statuses']:
                 yield result
@@ -293,7 +289,8 @@ class Query(Twython):
         """
         data = self.get_user_timeline(screen_name=screen_name, count=limit,
                                       include_rts=include_rts)
-        self.handler.handle(data)
+        for item in data:
+            self.handler.handle(item)
 
 
 
@@ -322,28 +319,57 @@ class Twitter(object):
         :param bool stream: If `True`, use the live public stream,\
         otherwise search past public Tweets
 
-        :param int limit: Number of Tweets to process
-        :param tuple date_limit: The date at which to stop collecting new\
-        data. This should be entered as a tuple which can serve as the\
-        argument to `datetime.datetime`. E.g. `data_limit=(2015, 4, 1, 12,\
-        40)` for 12:30 pm on April 1 2015.\
-        Note that, in the case of streaming, it is the maximum date, i.e.\
+        :param int limit: The number of data items to process in the current\
+        round of processing.
+
+        :param tuple date_limit: The date at which to stop collecting\
+        new data. This should be entered as a tuple which can serve as the\
+        argument to `datetime.datetime`.\
+        E.g. `date_limit=(2015, 4, 1, 12, 40)` for 12:30 pm on April 1 2015.
+        Note that, in the case of streaming, this is the maximum date, i.e.\
         a date in the future; if not, it is the minimum date, i.e. a date\
         in the past
 
         :param str lang: language
 
-        :param bool repeat: flag to determine whether multiple files should be\
-        written. If `True`, the length of each file will be set by the value\
-        of `limit`. Use only if `to_screen` is `False`. See also :py:func:`handle`.
+        :param bool repeat: A flag to determine whether multiple files should\
+        be written. If `True`, the length of each file will be set by the\
+        value of `limit`. Use only if `to_screen` is `False`. See also
+        :py:func:`handle`.
 
-        :param gzip_compress: if `True`, ouput files are compressed with gzip
+        :param gzip_compress: if `True`, output files are compressed with gzip.
         """
-        if to_screen:
-            handler = TweetViewer(limit=limit, date_limit=date_limit)
+        if stream:
+            upper_date_limit = date_limit
+            lower_date_limit = None
         else:
-            handler = TweetWriter(limit=limit, date_limit=date_limit,
-                                  stream=stream, repeat=repeat,
+            upper_date_limit = None
+            lower_date_limit = date_limit
+
+        if to_screen:
+            handler = TweetViewer(limit=limit,
+                                  upper_date_limit=upper_date_limit,
+                                  lower_date_limit=lower_date_limit)
+        else:
+            handler = TweetWriter(limit=limit,
+                                  upper_date_limit=upper_date_limit,
+                                  lower_date_limit=lower_date_limit, repeat=repeat,
+                                  gzip_compress=gzip_compress)
+
+
+
+        if to_screen:
+            handler = TweetViewer(limit=limit)
+        else:
+            if stream:
+                upper_date_limit = date_limit
+                lower_date_limit = None
+            else:
+                upper_date_limit = None
+                lower_date_limit = date_limit
+
+            handler = TweetWriter(limit=limit, upper_date_limit=upper_date_limit,
+                                  lower_date_limit=lower_date_limit, repeat=repeat,
                                   gzip_compress=gzip_compress)
 
         if stream:
@@ -376,7 +402,10 @@ class TweetViewer(TweetHandlerI):
         """
         text = data['text']
         print(text)
-        self.counter += 1
+
+        self.check_date_limit(data)
+        if self.do_stop:
+            return
 
     def on_finish(self):
         print('Written {0} Tweets'.format(self.counter))
@@ -386,38 +415,44 @@ class TweetWriter(TweetHandlerI):
     """
     Handle data by writing it to a file.
     """
-    def __init__(self, limit=2000, date_limit=None, stream=True,
+    def __init__(self, limit=2000, upper_date_limit=None, lower_date_limit=None,
                  fprefix='tweets', subdir='twitter-files', repeat=False,
                  gzip_compress=False):
         """
-        :param int limit: number of data items to process in the current\
-        round of processing
+        The difference between the upper and lower date limits depends on
+        whether Tweets are coming in an ascending date order (i.e. when
+        streaming) or descending date order (i.e. when searching past Tweets).
 
-        :param bool stream: If `True`, use the live public stream,\
-        otherwise search past public Tweets
+        :param int limit: number of data items to process in the current\
+        round of processing.
+
+        :param tuple upper_date_limit: The date at which to stop collecting new\
+        data. This should be entered as a tuple which can serve as the\
+        argument to `datetime.datetime`. E.g. `upper_date_limit=(2015, 4, 1, 12,\
+        40)` for 12:30 pm on April 1 2015.
+
+        :param tuple lower_date_limit: The date at which to stop collecting new\
+        data. See `upper_data_limit` for formatting.
 
         :param str fprefix: The prefix to use in creating file names for Tweet\
-        collections
+        collections.
 
         :param str subdir: The name of the directory where Tweet collection\
-        files should be stored
+        files should be stored.
 
         :param bool repeat: flag to determine whether multiple files should be\
         written. If `True`, the length of each file will be set by the value\
         of `limit`. See also :py:func:`handle`.
 
-        :param gzip_compress: if `True`, ouput files are compressed with gzip
+        :param gzip_compress: if `True`, ouput files are compressed with gzip.
         """
         self.fprefix = fprefix
         self.subdir = guess_path(subdir)
         self.gzip_compress = gzip_compress
         self.fname = self.timestamped_file()
-        self.stream = stream
         self.repeat = repeat
-        # max_id stores the id of the older tweet fetched
-        self.max_id = None
         self.output = None
-        TweetHandlerI.__init__(self, limit, date_limit)
+        TweetHandlerI.__init__(self, limit, upper_date_limit, lower_date_limit)
 
 
     def timestamped_file(self):
@@ -462,19 +497,9 @@ class TweetWriter(TweetHandlerI):
         else:
             self.output.write(json_data + "\n")
 
-        if self.date_limit:
-            tweet_date = datetime.datetime.strptime(data['created_at'], '%a %b %d\
-            %H:%M:%S +0000 %Y').replace(tzinfo=UTC)
-            if (tweet_date > self.date_limit and self.stream == True) or \
-               (tweet_date < self.date_limit and self.stream == False):
-                if self.stream:
-                    message = "earlier"
-                else:
-                    message = "later"
-                print("Date limit {0} is {1} than date of current tweet {2}".\
-                      format(self.date_limit, message, tweet_date))
-                self.do_stop = True
-                return
+        self.check_date_limit(data)
+        if self.do_stop:
+            return
 
         self.startingup = False
 
@@ -503,4 +528,3 @@ class TweetWriter(TweetHandlerI):
         self.fname = self.timestamped_file()
         self.startingup = True
         self.counter = 0
-

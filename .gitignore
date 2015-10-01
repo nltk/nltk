@@ -16,6 +16,7 @@ web/_build
 .noseids
 .coverage
 nltk/test/*.html
+nltk/test/tweets*
 
 # editor temporary files
 *.*.sw[op]
@@ -36,4 +37,3 @@ web/api/*.rst
 # iPython notebooks
 
 .ipynb_checkpoints
-
