@@ -6,10 +6,10 @@ Tests for IBM Model 2 training methods
 import unittest
 
 from collections import defaultdict
-from nltk.align import AlignedSent
-from nltk.align import IBMModel
-from nltk.align import IBMModel2
-from nltk.align.ibm_model import AlignmentInfo
+from nltk.translate import AlignedSent
+from nltk.translate import IBMModel
+from nltk.translate import IBMModel2
+from nltk.translate.ibm_model import AlignmentInfo
 
 
 class TestIBMModel2(unittest.TestCase):

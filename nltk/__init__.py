@@ -125,7 +125,6 @@ from nltk.jsontags import *
 # PACKAGES
 ###########################################################
 
-from nltk.align import *
 from nltk.chunk import *
 from nltk.classify import *
 from nltk.inference import *
@@ -133,6 +132,7 @@ from nltk.metrics import *
 from nltk.parse import *
 from nltk.tag import *
 from nltk.tokenize import *
+from nltk.translate import *
 from nltk.sem import *
 from nltk.stem import *
 
@@ -174,10 +174,10 @@ else:
 # they override the same names inadvertently imported
 # from a subpackage)
 
-from nltk import align, ccg, chunk, classify, collocations
+from nltk import ccg, chunk, classify, collocations
 from nltk import data, featstruct, grammar, help, inference, metrics
 from nltk import misc, parse, probability, sem, stem, wsd
-from nltk import tag, tbl, text, tokenize, tree, treetransforms, util
+from nltk import tag, tbl, text, tokenize, translate, tree, treetransforms, util
 
 
 # override any accidentally imported demo

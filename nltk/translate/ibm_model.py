@@ -381,8 +381,8 @@ class AlignmentInfo(object):
     alignment, cepts, and fertility.
 
     Warning: Alignments are one-indexed here, in contrast to
-    nltk.align.Alignment and nltk.align.AlignedSent, which are zero-
-    indexed. This class is not meant to be used outside of IBM models.
+    nltk.translate.Alignment and AlignedSent, which are zero-indexed
+    This class is not meant to be used outside of IBM models.
     """
 
     def __init__(self, alignment, src_sentence, trg_sentence, cepts):
@@ -482,7 +482,7 @@ class AlignmentInfo(object):
     def zero_indexed_alignment(self):
         """
         :return: Zero-indexed alignment, suitable for use in external
-            ``nltk.align`` modules like ``nltk.align.Alignment``
+            ``nltk.translate`` modules like ``nltk.translate.Alignment``
         :rtype: list(tuple)
         """
         zero_indexed_alignment = []
