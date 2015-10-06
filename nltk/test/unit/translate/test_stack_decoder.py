@@ -13,6 +13,7 @@ Tests for stack decoder
 import unittest
 from collections import defaultdict
 from math import log
+from nltk.model import LanguageModel
 from nltk.translate import PhraseTable
 from nltk.translate import StackDecoder
 from nltk.translate.stack_decoder import _Hypothesis, _Stack
@@ -66,7 +67,7 @@ class TestStackDecoder(unittest.TestCase):
     def test_compute_future_costs(self):
         # arrange
         phrase_table = TestStackDecoder.create_fake_phrase_table()
-        language_model = TestStackDecoder.create_fake_language_model()
+        language_model = _FakeLanguageModel()
         stack_decoder = StackDecoder(phrase_table, language_model)
         sentence = ('my', 'hovercraft', 'is', 'full', 'of', 'eels')
 
@@ -86,7 +87,7 @@ class TestStackDecoder(unittest.TestCase):
     def test_compute_future_costs_for_phrases_not_in_phrase_table(self):
         # arrange
         phrase_table = TestStackDecoder.create_fake_phrase_table()
-        language_model = TestStackDecoder.create_fake_language_model()
+        language_model = _FakeLanguageModel()
         stack_decoder = StackDecoder(phrase_table, language_model)
         sentence = ('my', 'hovercraft', 'is', 'full', 'of', 'eels')
 
@@ -153,9 +154,8 @@ class TestStackDecoder(unittest.TestCase):
         phrase_table.add(('spam',), ('',), 0.5)
         return phrase_table
 
-    @staticmethod
-    def create_fake_language_model():
-        # nltk.model should be used here once it is implemented
+class _FakeLanguageModel(LanguageModel):
+    def __init__(self):
         language_prob = defaultdict(lambda: -999.0)
         language_prob[('my',)] = log(0.1)
         language_prob[('hovercraft',)] = log(0.1)
@@ -164,10 +164,10 @@ class TestStackDecoder(unittest.TestCase):
         language_prob[('of',)] = log(0.1)
         language_prob[('eels',)] = log(0.1)
         language_prob[('my', 'hovercraft',)] = log(0.3)
-        language_model = type(
-            '', (object,),
-            {'probability': lambda _, phrase: language_prob[phrase]})()
-        return language_model
+        self.language_prob = language_prob
+
+    def probability(self, words):
+        return self.language_prob[words]
 
 
 class TestHypothesis(unittest.TestCase):
