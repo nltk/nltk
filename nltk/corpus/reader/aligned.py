@@ -7,7 +7,7 @@
 
 from nltk import compat
 from nltk.tokenize import WhitespaceTokenizer, RegexpTokenizer
-from nltk.align import AlignedSent
+from nltk.translate import AlignedSent
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat,\

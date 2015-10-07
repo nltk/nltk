@@ -36,7 +36,7 @@ def lemmatize(word):
     """
     Use morphy from WordNet to find the base form of verbs.
     """
-    lemma = nltk.corpus.wordnet.morphy(word, pos='verb')
+    lemma = nltk.corpus.wordnet.morphy(word, pos=nltk.corpus.wordnet.VERB)
     if lemma is not None:
         return lemma
     return word

@@ -129,7 +129,7 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     :param alignment: The word alignment outputs as list of tuples, where
         the first elements of tuples are the source words' indices and
         second elements are the target words' indices. This is also the output
-        format of nltk/align/ibm1.py
+        format of nltk.translate.ibm1
     :rtype: list(tuple)
     :return: A list of tuples, each element in a list is a phrase and each 
         phrase is a tuple made up of (i) its source location, (ii) its target 

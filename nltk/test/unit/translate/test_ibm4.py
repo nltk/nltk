@@ -6,10 +6,10 @@ Tests for IBM Model 4 training methods
 import unittest
 
 from collections import defaultdict
-from nltk.align import AlignedSent
-from nltk.align import IBMModel
-from nltk.align import IBMModel4
-from nltk.align.ibm_model import AlignmentInfo
+from nltk.translate import AlignedSent
+from nltk.translate import IBMModel
+from nltk.translate import IBMModel4
+from nltk.translate.ibm_model import AlignmentInfo
 
 
 class TestIBMModel4(unittest.TestCase):
