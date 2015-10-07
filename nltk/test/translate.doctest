@@ -139,7 +139,7 @@ Precision
 ``precision = |A∩P| / |A|``
 
 **Precision** is probably the most well known evaluation metric and there is
-already a set based implementation in NLTK as
+already a set-based implementation in NLTK as
 `nltk.metrics.scores.precision`_.  Since precision is simply interested in the
 proportion of correct alignments, we calculate the ratio of the number of our
 test alignments (*A*) that match a possible alignment (*P*), over the number of
@@ -149,15 +149,18 @@ test alignment that is in *P* [OCH2000]_.
 
 Here are some examples:
 
-    >>> print(als.precision(set()))
+    >>> from nltk.metrics import precision
+    >>> precision(set(), als.alignment)
     0.0
-    >>> print(als.precision([(0,0), (1,1), (2,2), (3,3)]))
+    >>> precision([(0,0), (1,1), (2,2), (3,3)], als.alignment)
     1.0
-    >>> print(als.precision([(0,0), (3,3)]))
+    >>> precision([(0,0), (3,3)], als.alignment)
     0.5
-    >>> print(als.precision([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)]))
+    >>> precision(Alignment.fromstring('0-0 3-3'), als.alignment)
+    0.5
+    >>> precision([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)], als.alignment)
     1.0
-    >>> print(my_als.precision(als))
+    >>> precision(als, my_als)
     0.6
 
 

@@ -21,7 +21,6 @@ class AlignedSent(object):
     along with an ``Alignment`` between them.
 
         >>> from nltk.translate import AlignedSent, Alignment
-        >>> from nltk.metrics import precision
         >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
         ...     ['the', 'house', 'is', 'small'], Alignment.fromstring('0-2 1-3 2-1 3-0'))
         >>> algnsent.words
@@ -30,8 +29,6 @@ class AlignedSent(object):
         ['the', 'house', 'is', 'small']
         >>> algnsent.alignment
         Alignment([(0, 2), (1, 3), (2, 1), (3, 0)])
-        >>> precision(Alignment.fromstring('0-2 1-3 2-1 3-3'), algnsent.alignment)
-        0.75
         >>> from nltk.corpus import comtrans
         >>> print(comtrans.aligned_sents()[54])
         <AlignedSent: 'Weshalb also sollten...' -> 'So why should EU arm...'>
@@ -47,7 +44,7 @@ class AlignedSent(object):
     :type alignment: Alignment
     """
 
-    def __init__(self, words=[], mots=[], alignment=[], encoding='utf8'):
+    def __init__(self, words, mots, alignment):
         self._words = words
         self._mots = mots
         self.alignment = alignment
