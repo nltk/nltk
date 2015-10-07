@@ -20,16 +20,17 @@ class AlignedSent(object):
     Return an aligned sentence object, which encapsulates two sentences
     along with an ``Alignment`` between them.
 
-        >>> from nltk.translate import AlignedSent
+        >>> from nltk.translate import AlignedSent, Alignment
+        >>> from nltk.metrics import precision
         >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
-        ...     ['the', 'house', 'is', 'small'], '0-2 1-3 2-1 3-0')
+        ...     ['the', 'house', 'is', 'small'], Alignment.fromstring('0-2 1-3 2-1 3-0'))
         >>> algnsent.words
         ['klein', 'ist', 'das', 'Haus']
         >>> algnsent.mots
         ['the', 'house', 'is', 'small']
         >>> algnsent.alignment
         Alignment([(0, 2), (1, 3), (2, 1), (3, 0)])
-        >>> algnsent.precision('0-2 1-3 2-1 3-3')
+        >>> precision(Alignment.fromstring('0-2 1-3 2-1 3-3'), algnsent.alignment)
         0.75
         >>> from nltk.corpus import comtrans
         >>> print(comtrans.aligned_sents()[54])
@@ -46,7 +47,7 @@ class AlignedSent(object):
     :type alignment: Alignment
     """
 
-    def __init__(self, words=[], mots=[], alignment='', encoding='utf8'):
+    def __init__(self, words=[], mots=[], alignment=[], encoding='utf8'):
         self._words = words
         self._mots = mots
         self.alignment = alignment
@@ -63,8 +64,6 @@ class AlignedSent(object):
         return self._alignment
         
     def _set_alignment(self, alignment):
-        if not isinstance(alignment, Alignment):
-            alignment = Alignment(alignment)
         self._check_align(alignment)
         self._alignment = alignment
     alignment = property(_get_alignment, _set_alignment)
@@ -275,18 +274,32 @@ class Alignment(frozenset):
         >>> b = Alignment([(0, 0), (0, 1)])
         >>> b.issubset(a)
         True
-        >>> c = Alignment('0-0 0-1')
+        >>> c = Alignment.fromstring('0-0 0-1')
         >>> b == c
         True
     """
 
-    def __new__(cls, string_or_pairs):
-        if isinstance(string_or_pairs, string_types):
-            string_or_pairs = [_giza2pair(p) for p in string_or_pairs.split()]
-        self = frozenset.__new__(cls, string_or_pairs)
+    def __new__(cls, pairs):
+        self = frozenset.__new__(cls, pairs)
         self._len = (max(p[0] for p in self) if self != frozenset([]) else 0)
         self._index = None
         return self
+
+    @classmethod
+    def fromstring(cls, s):
+        """
+        Read a giza-formatted string and return an Alignment object.
+
+            >>> Alignment.fromstring('0-0 2-1 9-2 21-3 10-4 7-5')
+            Alignment([(0, 0), (2, 1), (7, 5), (9, 2), (10, 4), (21, 3)])
+
+        :type s: str
+        :param s: the positional alignments in giza format
+        :rtype: Alignment
+        :return: An Alignment object corresponding to the string representation ``s``.
+        """
+
+        return Alignment([_giza2pair(a) for a in s.split()])
 
     def __getitem__(self, key):
         """
