@@ -6,4 +6,4 @@ def setup_module(module):
     try:
         import gensim
     except ImportError:
-        raise SkipTest("classify.doctest requires numpy")
+        raise SkipTest("Gensim doctest requires gensim")
