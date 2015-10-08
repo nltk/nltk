@@ -150,15 +150,15 @@ test alignment that is in *P* [OCH2000]_.
 Here are some examples:
 
     >>> from nltk.metrics import precision
-    >>> precision(set(), als.alignment)
+    >>> precision(Alignment([]), als.alignment)
     0.0
-    >>> precision([(0,0), (1,1), (2,2), (3,3)], als.alignment)
+    >>> precision(Alignment([(0,0), (1,1), (2,2), (3,3)]), als.alignment)
     1.0
-    >>> precision([(0,0), (3,3)], als.alignment)
+    >>> precision(Alignment([(0,0), (3,3)]), als.alignment)
     0.5
     >>> precision(Alignment.fromstring('0-0 3-3'), als.alignment)
     0.5
-    >>> precision([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)], als.alignment)
+    >>> precision(Alignment([(0,0), (1,1), (2,2), (3,3), (1,2), (2,1)]), als.alignment)
     1.0
     >>> precision(als, my_als)
     0.6
