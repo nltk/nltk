@@ -8,11 +8,9 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import print_function, unicode_literals
-
-from nltk.compat import python_2_unicode_compatible, string_types
-from nltk.metrics import precision, recall
 import subprocess
 
+from nltk.compat import python_2_unicode_compatible, string_types
 
 @python_2_unicode_compatible
 class AlignedSent(object):
@@ -158,51 +156,6 @@ class AlignedSent(object):
         """
         return AlignedSent(self._mots, self._words,
                                self._alignment.invert())
-
-    def precision(self, reference):
-        """
-        Return the precision of an aligned sentence with respect to a
-        "gold standard" reference ``AlignedSent``.
-
-        :type reference: AlignedSent or Alignment
-        :param reference: A "gold standard" reference aligned sentence.
-        :rtype: float or None
-        """
-        # Get alignments in set of 2-tuples form
-        # The "possible" precision is used since it doesn't penalize for finding
-        # an alignment that was marked as "possible" (NAACL corpus)
-
-        align = self.alignment
-        if isinstance(reference, AlignedSent):
-            possible = reference.alignment
-        else:
-            possible = Alignment(reference)
-
-        return precision(possible, align)
-
-
-    def recall(self, reference):
-        """
-        Return the recall of an aligned sentence with respect to a
-        "gold standard" reference ``AlignedSent``.
-
-        :type reference: AlignedSent or Alignment
-        :param reference: A "gold standard" reference aligned sentence.
-        :rtype: float or None
-        """
-        # Get alignments in set of 2-tuples form
-        # The "sure" recall is used so we don't penalize for missing an
-        # alignment that was only marked as "possible".
-
-        align = self.alignment
-        if isinstance(reference, AlignedSent):
-            sure = reference.alignment
-        else:
-            sure  = Alignment(reference)
-
-        # Call NLTKs existing functions for recall
-        return recall(sure, align)
-
 
     def alignment_error_rate(self, reference, possible=None):
         """
