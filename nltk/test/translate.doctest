@@ -184,7 +184,7 @@ not [OCH2000]_.
 Here are some examples:
 
     >>> from nltk.metrics import recall
-    >>> recall(Alignment([]), als.alignment)
+    >>> print(recall(Alignment([]), als.alignment))
     None
     >>> recall(Alignment([(0,0), (1,1), (2,2), (3,3)]), als.alignment)
     1.0
