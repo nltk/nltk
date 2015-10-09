@@ -42,10 +42,14 @@ class AlignedSent(object):
     :type alignment: Alignment
     """
 
-    def __init__(self, words, mots, alignment):
+    def __init__(self, words, mots, alignment=None):
         self._words = words
         self._mots = mots
-        self.alignment = alignment
+        if alignment is None:
+            self.alignment = Alignment([])
+        else:
+            assert type(alignment) is Alignment
+            self.alignment = alignment
 
     @property
     def words(self):
@@ -59,23 +63,9 @@ class AlignedSent(object):
         return self._alignment
         
     def _set_alignment(self, alignment):
-        self._check_align(alignment)
+        _check_alignment(len(self.words), len(self.mots), alignment)
         self._alignment = alignment
     alignment = property(_get_alignment, _set_alignment)
-
-    def _check_align(self, a):
-        """
-        Check whether the alignments are legal.
-
-        :param a: alignment to be checked
-        :raise IndexError: if alignment is out of sentence boundary
-        :rtype: boolean
-        """
-        if not all(0 <= p[0] < len(self._words) for p in a):
-            raise IndexError("Alignment is outside boundary of words")
-        if not all(p[1] is None or 0 <= p[1] < len(self._mots) for p in a):
-            raise IndexError("Alignment is outside boundary of mots")
-        return True
 
     def __repr__(self):
         """
@@ -156,51 +146,6 @@ class AlignedSent(object):
         """
         return AlignedSent(self._mots, self._words,
                                self._alignment.invert())
-
-    def alignment_error_rate(self, reference, possible=None):
-        """
-        Return the Alignment Error Rate (AER) of an aligned sentence
-        with respect to a "gold standard" reference ``AlignedSent``.
-
-        Return an error rate between 0.0 (perfect alignment) and 1.0 (no
-        alignment).
-
-            >>> from nltk.translate import AlignedSent
-            >>> s = AlignedSent(["the", "cat"], ["le", "chat"], [(0, 0), (1, 1)])
-            >>> s.alignment_error_rate(s)
-            0.0
-
-        :type reference: AlignedSent or Alignment
-        :param reference: A "gold standard" reference aligned sentence.
-        :type possible: AlignedSent or Alignment or None
-        :param possible: A "gold standard" reference of possible alignments
-            (defaults to *reference* if None)
-        :rtype: float or None
-        """
-        # Get alignments in set of 2-tuples form
-        align = self.alignment
-        if isinstance(reference, AlignedSent):
-            sure = reference.alignment
-        else:
-            sure = Alignment(reference)
-
-        if possible is not None:
-            # Set possible alignment
-            if isinstance(possible, AlignedSent):
-                possible = possible.alignment
-            else:
-                possible = Alignment(possible)
-        else:
-            # Possible alignment is just sure alignment
-            possible = sure
-
-        # Sanity check
-        assert(sure.issubset(possible))
-
-        # Return the Alignment Error Rate
-        return (1.0 - float(len(align & sure) + len(align & possible)) /
-                float(len(align) + len(sure)))
-
 
 @python_2_unicode_compatible
 class Alignment(frozenset):
@@ -309,3 +254,22 @@ def _naacl2pair(pair_string):
     i, j, p = pair_string.split("-")
     return int(i), int(j)
 
+def _check_alignment(num_words, num_mots, alignment):
+    """
+    Check whether the alignments are legal.
+
+    :param num_words: the number of source language words
+    :type num_words: int
+    :param num_mots: the number of target language words
+    :type num_mots: int
+    :param alignment: alignment to be checked
+    :type alignment: Alignment
+    :raise IndexError: if alignment falls outside the sentence
+    """
+
+    assert type(alignment) is Alignment
+
+    if not all(0 <= pair[0] < num_words for pair in alignment):
+        raise IndexError("Alignment is outside boundary of words")
+    if not all(pair[1] is None or 0 <= pair[1] < num_mots for pair in alignment):
+        raise IndexError("Alignment is outside boundary of mots")
