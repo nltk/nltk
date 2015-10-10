@@ -304,7 +304,7 @@ class StanfordDependencyParser(GenericStanfordParser):
     ...     "I 'm a dog".split(),
     ...     "This is my friends ' cat ( the tabby )".split(),
     ... ))], []) # doctest: +NORMALIZE_WHITESPACE
-    [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends', ['my', "'"]), 'tabby'])]
+    [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends', ['my', "'"]), Tree('tabby', ['the'])])]
 
     >>> sum([[list(parse.triples()) for parse in dep_graphs] for dep_graphs in dep_parser.tagged_parse_sents((
     ...     (

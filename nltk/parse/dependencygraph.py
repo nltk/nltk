@@ -282,19 +282,19 @@ class DependencyGraph(object):
 
         def extract_3_cells(cells):
             word, tag, head = cells
-            return word, word, tag, tag, '', head, ''
+            return None, word, word, tag, tag, '', head, ''
 
         def extract_4_cells(cells):
             word, tag, head, rel = cells
-            return word, word, tag, tag, '', head, rel
+            return None, word, word, tag, tag, '', head, rel
 
         def extract_7_cells(cells):
-            _, word, lemma, tag, _, head, rel = cells
-            return word, lemma, tag, tag, '', head, rel
+            index, word, lemma, tag, _, head, rel = cells
+            return index, word, lemma, tag, tag, '', head, rel
 
         def extract_10_cells(cells):
-            _, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
-            return word, lemma, ctag, tag, feats, head, rel
+            index, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
+            return index, word, lemma, ctag, tag, feats, head, rel
 
         extractors = {
             3: extract_3_cells,
@@ -326,11 +326,15 @@ class DependencyGraph(object):
                         'CoNLL(10) or Malt-Tab(4) format'.format(cell_number)
                     )
 
-            word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
+            line_index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
+            try:
+                index = int(line_index)
+            except TypeError: pass  # line_index is probably None, use default
+            except ValueError: pass  # line_index is not an integer, use default
 
             if head == '_': continue
             head = int(head)
-            if zero_based:
+            if zero_based and line_index is None:
                 head += 1
 
             self.nodes[index].update(
