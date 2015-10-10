@@ -12,6 +12,7 @@ from __future__ import unicode_literals
 import tempfile
 import os
 import re
+import warnings
 from subprocess import PIPE
 from io import StringIO
 
@@ -329,6 +330,7 @@ class StanfordDependencyParser(GenericStanfordParser):
     _OUTPUT_FORMAT = 'conll2007'
 
     def __init__(self, use_nndep=False, verbose=False, *args, **kwargs):
+        self.nndep = use_nndep
         if use_nndep:
             self._OUTPUT_FORMAT = 'conll'
             self._MAIN_CLASS = 'edu.stanford.nlp.pipeline.StanfordCoreNLP'
@@ -345,8 +347,31 @@ class StanfordDependencyParser(GenericStanfordParser):
         if use_nndep:
             self.corenlp_options += '-annotators tokenize,ssplit,pos,depparse'
 
+    def tagged_parse_sents(self, sentences, verbose=False):
+        if self.nndep:
+            warnings.warn(
+                'tagged_parse_sents is not supported by the neural dependency '
+                'parser [StanfordDependencyParser(use_nndep=True)]; tags passed '
+                'will be ignored and retagged with the Stanford POS tagger.'
+            )
+
+            return self.parse_sents([[token[0] for token in s] for s in sentences],
+                                    verbose=verbose)
+        else:
+            return super(StanfordDependencyParser, self).\
+                tagged_parse_sents(sentences, verbose=verbose)
+
     def _make_tree(self, result):
         return DependencyGraph(result, top_relation_label=self._TOP_RELATION_LABEL)
+
+try:
+    # Python 3: methods are ordinary functions
+    StanfordDependencyParser.tagged_parse_sents.__doc__ = \
+        GenericStanfordParser.tagged_parse_sents.__doc__
+except AttributeError:
+    # Python 2: need to reference __func__ to overwrite method docstrings
+    StanfordDependencyParser.tagged_parse_sents.__func__.__doc__ = \
+        GenericStanfordParser.tagged_parse_sents.__doc__
 
 
 def setup_module(module):
