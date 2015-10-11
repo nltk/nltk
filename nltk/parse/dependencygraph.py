@@ -344,7 +344,9 @@ class DependencyGraph(object):
                 # extractor and doesn't accept or return an index.
                 word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
 
-            if head == '_': continue
+            if head == '_':
+                continue
+
             head = int(head)
             if zero_based:
                 head += 1
