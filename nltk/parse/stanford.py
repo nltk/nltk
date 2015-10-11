@@ -329,49 +329,63 @@ class StanfordDependencyParser(GenericStanfordParser):
 
     _OUTPUT_FORMAT = 'conll2007'
 
-    def __init__(self, use_nndep=False, verbose=False, *args, **kwargs):
-        self.nndep = use_nndep
-        if use_nndep:
-            self._OUTPUT_FORMAT = 'conll'
-            self._MAIN_CLASS = 'edu.stanford.nlp.pipeline.StanfordCoreNLP'
-            self._JAR = r'stanford-corenlp-(\d+)(\.(\d+))+\.jar'
-            self._MODEL_JAR_PATTERN = r'stanford-corenlp-(\d+)(\.(\d+))+-models\.jar'
-            self._USE_STDIN = True
-            self._DOUBLE_SPACED_OUTPUT = True
-            self._TOP_RELATION_LABEL = 'ROOT'
-        else:
-            self._TOP_RELATION_LABEL = 'root'
+    def _make_tree(self, result):
+        return DependencyGraph(result, top_relation_label='root')
 
-        super(StanfordDependencyParser, self).__init__(verbose=verbose, *args, **kwargs)
 
-        if use_nndep:
-            self.corenlp_options += '-annotators tokenize,ssplit,pos,depparse'
+class StanfordNeuralDependencyParser(GenericStanfordParser):
+    '''
+    >>> from nltk.parse.stanford import StanfordNeuralDependencyParser
+    >>> dep_parser=StanfordNeuralDependencyParser()
+
+    >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+    [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy'])])]
+
+    >>> [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+    [[((u'jumps', u'VBZ'), u'nsubj', (u'fox', u'NN')), ((u'fox', u'NN'), u'det', (u'The', u'DT')),
+    ((u'fox', u'NN'), u'amod', (u'quick', u'JJ')), ((u'fox', u'NN'), u'amod', (u'brown', u'JJ')),
+    ((u'jumps', u'VBZ'), u'nmod', (u'dog', u'NN')), ((u'dog', u'NN'), u'case', (u'over', u'IN')),
+    ((u'dog', u'NN'), u'det', (u'the', u'DT')), ((u'dog', u'NN'), u'amod', (u'lazy', u'JJ'))]]
+
+    >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.raw_parse_sents((
+    ...     "The quick brown fox jumps over the lazy dog.",
+    ...     "The quick grey wolf jumps over the lazy fox."
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy'])]),
+    Tree('jumps', [Tree('wolf', ['The', 'quick', 'grey']), Tree('fox', ['over', 'the', 'lazy'])])]
+
+    >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.parse_sents((
+    ...     "I 'm a dog".split(),
+    ...     "This is my friends ' cat ( the tabby )".split(),
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends', ['my', "'"]), Tree('tabby', ['the'])])]
+    '''
+
+    _OUTPUT_FORMAT = 'conll'
+    _MAIN_CLASS = 'edu.stanford.nlp.pipeline.StanfordCoreNLP'
+    _JAR = r'stanford-corenlp-(\d+)(\.(\d+))+\.jar'
+    _MODEL_JAR_PATTERN = r'stanford-corenlp-(\d+)(\.(\d+))+-models\.jar'
+    _USE_STDIN = True
+    _DOUBLE_SPACED_OUTPUT = True
+
+    def __init__(self, *args, **kwargs):
+        super(StanfordNeuralDependencyParser, self).__init__(*args, **kwargs)
+        self.corenlp_options += '-annotators tokenize,ssplit,pos,depparse'
 
     def tagged_parse_sents(self, sentences, verbose=False):
-        if self.nndep:
-            warnings.warn(
-                'tagged_parse_sents is not supported by the neural dependency '
-                'parser [StanfordDependencyParser(use_nndep=True)]; tags passed '
-                'will be ignored and retagged with the Stanford POS tagger.'
-            )
-
-            return self.parse_sents([[token[0] for token in s] for s in sentences],
-                                    verbose=verbose)
-        else:
-            return super(StanfordDependencyParser, self).\
-                tagged_parse_sents(sentences, verbose=verbose)
+        '''
+        Currently unimplemented because the neural dependency parser (and
+        the StanfordCoreNLP pipeline class) doesn't support passing in pre-
+        tagged tokens.
+        '''
+        raise NotImplementedError(
+            'tagged_parse[_sents] is not supported by '
+            'StanfordNeuralDependencyParser; use '
+            'parse[_sents] or raw_parse[_sents] instead.'
+        )
 
     def _make_tree(self, result):
-        return DependencyGraph(result, top_relation_label=self._TOP_RELATION_LABEL)
-
-try:
-    # Python 3: methods are ordinary functions
-    StanfordDependencyParser.tagged_parse_sents.__doc__ = \
-        GenericStanfordParser.tagged_parse_sents.__doc__
-except AttributeError:
-    # Python 2: need to reference __func__ to overwrite method docstrings
-    StanfordDependencyParser.tagged_parse_sents.__func__.__doc__ = \
-        GenericStanfordParser.tagged_parse_sents.__doc__
+        return DependencyGraph(result, top_relation_label='ROOT')
 
 
 def setup_module(module):
