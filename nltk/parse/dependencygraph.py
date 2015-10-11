@@ -280,20 +280,30 @@ class DependencyGraph(object):
 
         """
 
-        def extract_3_cells(cells):
+        def extract_3_cells(cells, index):
             word, tag, head = cells
-            return None, word, word, tag, tag, '', head, ''
+            return index, word, word, tag, tag, '', head, ''
 
-        def extract_4_cells(cells):
+        def extract_4_cells(cells, index):
             word, tag, head, rel = cells
-            return None, word, word, tag, tag, '', head, rel
+            return index, word, word, tag, tag, '', head, rel
 
-        def extract_7_cells(cells):
-            index, word, lemma, tag, _, head, rel = cells
+        def extract_7_cells(cells, index):
+            line_index, word, lemma, tag, _, head, rel = cells
+            try:
+                index = int(line_index)
+            except ValueError:
+                # index can't be parsed as an integer, use default
+                pass
             return index, word, lemma, tag, tag, '', head, rel
 
-        def extract_10_cells(cells):
-            index, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
+        def extract_10_cells(cells, index):
+            line_index, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
+            try:
+                index = int(line_index)
+            except ValueError:
+                # index can't be parsed as an integer, use default
+                pass
             return index, word, lemma, ctag, tag, feats, head, rel
 
         extractors = {
@@ -326,15 +336,17 @@ class DependencyGraph(object):
                         'CoNLL(10) or Malt-Tab(4) format'.format(cell_number)
                     )
 
-            line_index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
             try:
-                index = int(line_index)
-            except TypeError: pass  # line_index is probably None, use default
-            except ValueError: pass  # line_index is not an integer, use default
+                index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells, index)
+            except (TypeError, ValueError):
+                # cell_extractor doesn't take 2 arguments or doesn't return 8
+                # values; assume the cell_extractor is an older external
+                # extractor and doesn't accept or return an index.
+                word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
 
             if head == '_': continue
             head = int(head)
-            if zero_based and line_index is None:
+            if zero_based:
                 head += 1
 
             self.nodes[index].update(
