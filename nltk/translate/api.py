@@ -8,11 +8,9 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import print_function, unicode_literals
-
-from nltk.compat import python_2_unicode_compatible, string_types
-from nltk.metrics import precision, recall
 import subprocess
 
+from nltk.compat import python_2_unicode_compatible, string_types
 
 @python_2_unicode_compatible
 class AlignedSent(object):
@@ -20,17 +18,15 @@ class AlignedSent(object):
     Return an aligned sentence object, which encapsulates two sentences
     along with an ``Alignment`` between them.
 
-        >>> from nltk.translate import AlignedSent
+        >>> from nltk.translate import AlignedSent, Alignment
         >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
-        ...     ['the', 'house', 'is', 'small'], '0-2 1-3 2-1 3-0')
+        ...     ['the', 'house', 'is', 'small'], Alignment.fromstring('0-2 1-3 2-1 3-0'))
         >>> algnsent.words
         ['klein', 'ist', 'das', 'Haus']
         >>> algnsent.mots
         ['the', 'house', 'is', 'small']
         >>> algnsent.alignment
         Alignment([(0, 2), (1, 3), (2, 1), (3, 0)])
-        >>> algnsent.precision('0-2 1-3 2-1 3-3')
-        0.75
         >>> from nltk.corpus import comtrans
         >>> print(comtrans.aligned_sents()[54])
         <AlignedSent: 'Weshalb also sollten...' -> 'So why should EU arm...'>
@@ -46,10 +42,14 @@ class AlignedSent(object):
     :type alignment: Alignment
     """
 
-    def __init__(self, words=[], mots=[], alignment='', encoding='utf8'):
+    def __init__(self, words, mots, alignment=None):
         self._words = words
         self._mots = mots
-        self.alignment = alignment
+        if alignment is None:
+            self.alignment = Alignment([])
+        else:
+            assert type(alignment) is Alignment
+            self.alignment = alignment
 
     @property
     def words(self):
@@ -63,25 +63,9 @@ class AlignedSent(object):
         return self._alignment
         
     def _set_alignment(self, alignment):
-        if not isinstance(alignment, Alignment):
-            alignment = Alignment(alignment)
-        self._check_align(alignment)
+        _check_alignment(len(self.words), len(self.mots), alignment)
         self._alignment = alignment
     alignment = property(_get_alignment, _set_alignment)
-
-    def _check_align(self, a):
-        """
-        Check whether the alignments are legal.
-
-        :param a: alignment to be checked
-        :raise IndexError: if alignment is out of sentence boundary
-        :rtype: boolean
-        """
-        if not all(0 <= p[0] < len(self._words) for p in a):
-            raise IndexError("Alignment is outside boundary of words")
-        if not all(p[1] is None or 0 <= p[1] < len(self._mots) for p in a):
-            raise IndexError("Alignment is outside boundary of mots")
-        return True
 
     def __repr__(self):
         """
@@ -163,96 +147,6 @@ class AlignedSent(object):
         return AlignedSent(self._mots, self._words,
                                self._alignment.invert())
 
-    def precision(self, reference):
-        """
-        Return the precision of an aligned sentence with respect to a
-        "gold standard" reference ``AlignedSent``.
-
-        :type reference: AlignedSent or Alignment
-        :param reference: A "gold standard" reference aligned sentence.
-        :rtype: float or None
-        """
-        # Get alignments in set of 2-tuples form
-        # The "possible" precision is used since it doesn't penalize for finding
-        # an alignment that was marked as "possible" (NAACL corpus)
-
-        align = self.alignment
-        if isinstance(reference, AlignedSent):
-            possible = reference.alignment
-        else:
-            possible = Alignment(reference)
-
-        return precision(possible, align)
-
-
-    def recall(self, reference):
-        """
-        Return the recall of an aligned sentence with respect to a
-        "gold standard" reference ``AlignedSent``.
-
-        :type reference: AlignedSent or Alignment
-        :param reference: A "gold standard" reference aligned sentence.
-        :rtype: float or None
-        """
-        # Get alignments in set of 2-tuples form
-        # The "sure" recall is used so we don't penalize for missing an
-        # alignment that was only marked as "possible".
-
-        align = self.alignment
-        if isinstance(reference, AlignedSent):
-            sure = reference.alignment
-        else:
-            sure  = Alignment(reference)
-
-        # Call NLTKs existing functions for recall
-        return recall(sure, align)
-
-
-    def alignment_error_rate(self, reference, possible=None):
-        """
-        Return the Alignment Error Rate (AER) of an aligned sentence
-        with respect to a "gold standard" reference ``AlignedSent``.
-
-        Return an error rate between 0.0 (perfect alignment) and 1.0 (no
-        alignment).
-
-            >>> from nltk.translate import AlignedSent
-            >>> s = AlignedSent(["the", "cat"], ["le", "chat"], [(0, 0), (1, 1)])
-            >>> s.alignment_error_rate(s)
-            0.0
-
-        :type reference: AlignedSent or Alignment
-        :param reference: A "gold standard" reference aligned sentence.
-        :type possible: AlignedSent or Alignment or None
-        :param possible: A "gold standard" reference of possible alignments
-            (defaults to *reference* if None)
-        :rtype: float or None
-        """
-        # Get alignments in set of 2-tuples form
-        align = self.alignment
-        if isinstance(reference, AlignedSent):
-            sure = reference.alignment
-        else:
-            sure = Alignment(reference)
-
-        if possible is not None:
-            # Set possible alignment
-            if isinstance(possible, AlignedSent):
-                possible = possible.alignment
-            else:
-                possible = Alignment(possible)
-        else:
-            # Possible alignment is just sure alignment
-            possible = sure
-
-        # Sanity check
-        assert(sure.issubset(possible))
-
-        # Return the Alignment Error Rate
-        return (1.0 - float(len(align & sure) + len(align & possible)) /
-                float(len(align) + len(sure)))
-
-
 @python_2_unicode_compatible
 class Alignment(frozenset):
     """
@@ -275,18 +169,32 @@ class Alignment(frozenset):
         >>> b = Alignment([(0, 0), (0, 1)])
         >>> b.issubset(a)
         True
-        >>> c = Alignment('0-0 0-1')
+        >>> c = Alignment.fromstring('0-0 0-1')
         >>> b == c
         True
     """
 
-    def __new__(cls, string_or_pairs):
-        if isinstance(string_or_pairs, string_types):
-            string_or_pairs = [_giza2pair(p) for p in string_or_pairs.split()]
-        self = frozenset.__new__(cls, string_or_pairs)
+    def __new__(cls, pairs):
+        self = frozenset.__new__(cls, pairs)
         self._len = (max(p[0] for p in self) if self != frozenset([]) else 0)
         self._index = None
         return self
+
+    @classmethod
+    def fromstring(cls, s):
+        """
+        Read a giza-formatted string and return an Alignment object.
+
+            >>> Alignment.fromstring('0-0 2-1 9-2 21-3 10-4 7-5')
+            Alignment([(0, 0), (2, 1), (7, 5), (9, 2), (10, 4), (21, 3)])
+
+        :type s: str
+        :param s: the positional alignments in giza format
+        :rtype: Alignment
+        :return: An Alignment object corresponding to the string representation ``s``.
+        """
+
+        return Alignment([_giza2pair(a) for a in s.split()])
 
     def __getitem__(self, key):
         """
@@ -346,3 +254,22 @@ def _naacl2pair(pair_string):
     i, j, p = pair_string.split("-")
     return int(i), int(j)
 
+def _check_alignment(num_words, num_mots, alignment):
+    """
+    Check whether the alignments are legal.
+
+    :param num_words: the number of source language words
+    :type num_words: int
+    :param num_mots: the number of target language words
+    :type num_mots: int
+    :param alignment: alignment to be checked
+    :type alignment: Alignment
+    :raise IndexError: if alignment falls outside the sentence
+    """
+
+    assert type(alignment) is Alignment
+
+    if not all(0 <= pair[0] < num_words for pair in alignment):
+        raise IndexError("Alignment is outside boundary of words")
+    if not all(pair[1] is None or 0 <= pair[1] < num_mots for pair in alignment):
+        raise IndexError("Alignment is outside boundary of mots")
