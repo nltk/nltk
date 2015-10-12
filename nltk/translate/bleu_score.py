@@ -136,6 +136,7 @@ def _modified_precision(references, hypothesis, n):
         >>> reference3 = ['It', 'is', 'the', 'practical', 'guide', 'for', 'the',
         ...               'army', 'always', 'to', 'heed', 'the', 'directions',
         ...               'of', 'the', 'party']
+        >>> references = [reference1, reference2, reference3]
         >>> modified_precision(references, hyp1, n=1)
         0.94
         >>> modified_precision(references, hyp2, n=1)
