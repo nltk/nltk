@@ -24,37 +24,26 @@ def bleu(references, hypothesis, weights):
     :type references: list(list(str))
     :param hypothesis: a hypothesis sentence
     :type hypothesis: list(str)
-    :param weights: weights for unigrams, bigrams, trigrams and so on
+    :param weights: weights for unigrams, bigrams, trigrams and fourgrams
     :type weights: list(float)
 
-    >>> weights = [0.25, 0.25, 0.25, 0.25]
-    >>> hypothesis1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
-    ...               'ensures', 'that', 'the', 'military', 'always',
-    ...               'obeys', 'the', 'commands', 'of', 'the', 'party']
-
-    >>> hypothesis2 = ['It', 'is', 'to', 'insure', 'the', 'troops',
-    ...               'forever', 'hearing', 'the', 'activity', 'guidebook',
-    ...               'that', 'party', 'direct']
-
-    >>> reference1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'that',
-    ...               'ensures', 'that', 'the', 'military', 'will', 'forever',
-    ...               'heed', 'Party', 'commands']
-
-    >>> reference2 = ['It', 'is', 'the', 'guiding', 'principle', 'which',
-    ...               'guarantees', 'the', 'military', 'forces', 'always',
-    ...               'being', 'under', 'the', 'command', 'of', 'the',
-    ...               'Party']
-
-    >>> reference3 = ['It', 'is', 'the', 'practical', 'guide', 'for', 'the',
-    ...               'army', 'always', 'to', 'heed', 'the', 'directions',
-    ...               'of', 'the', 'party']
-
-    >>> bleu([reference1, reference2, reference3], hypothesis1, weights)
-    0.504...
-
-    >>> bleu([reference1, reference2, reference3], hypothesis2, weights)
-    0
-
+        >>> weights = [0.25, 0.25, 0.25, 0.25]    
+        >>> reference1 = str('It is a guide to action that ensures that the '
+        ... 'military will forever heed Party commands.').split()
+        >>> reference2 = str('It is the guiding principle which guarantees the '
+        ... 'military forces always being under the command of the Party.').split()
+        >>> reference3 = str('It is the practical guide for the army always to '
+        ... 'heed the directions of the party').split()
+        >>> hypothesis1 = str('It is a guide to action which ensures that the '
+        ... 'military always obeys the commands of the party').split()
+        >>> hypothesis2 = str('It is to insure the troops forever hearing the '
+        ... 'activity guidebook that party direct').split()
+        >>> references = [reference1, reference2, reference3]
+        >>> bleu(references, hypothesis1, weights)
+        0.504...
+        >>> bleu(references, hypothesis2, weights)
+        0.0
+    
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
     "BLEU: a method for automatic evaluation of machine translation." 
     In Proceedings of ACL. http://www.aclweb.org/anthology/P02-1040.pdf
@@ -88,6 +77,7 @@ def _modified_precision(references, hypothesis, n):
         >>> ref1 = 'the cat is on the mat'.split()
         >>> ref2 = 'there is a cat on the mat'.split()
         >>> hyp1 = 'the the the the the the the'.split()
+        >>> references = [ref1, ref2]
         >>> modified_precision(references, hyp1, n=1)
         0.28
     
