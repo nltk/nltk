@@ -17,13 +17,13 @@ from nltk.compat import Counter
 from nltk.util import ngrams
 
 
-def bleu(hypothesis, references, weights):
+def bleu(references, hypothesis, weights):
     """Calculate BLEU score (Bilingual Evaluation Understudy)
 
-    :param hypothesis: a hypothesis sentence
-    :type hypothesis: list(str)
     :param references: reference sentences
     :type references: list(list(str))
+    :param hypothesis: a hypothesis sentence
+    :type hypothesis: list(str)
     :param weights: weights for unigrams, bigrams, trigrams and so on
     :type weights: list(float)
 
@@ -49,10 +49,10 @@ def bleu(hypothesis, references, weights):
     ...               'army', 'always', 'to', 'heed', 'the', 'directions',
     ...               'of', 'the', 'party']
 
-    >>> bleu(hypothesis1, [reference1, reference2, reference3], weights)
+    >>> bleu([reference1, reference2, reference3], hypothesis1, weights)
     0.504...
 
-    >>> bleu(hypothesis2, [reference1, reference2, reference3], weights)
+    >>> bleu([reference1, reference2, reference3], hypothesis2, weights)
     0
 
     Papineni, Kishore, et al. "BLEU: A method for automatic evaluation of
@@ -62,7 +62,7 @@ def bleu(hypothesis, references, weights):
 
     """
     p_ns = (
-        _modified_precision(hypothesis, references, i)
+        _modified_precision(references, hypothesis, i)
         for i, _ in enumerate(weights, start=1)
     )
 
@@ -72,11 +72,11 @@ def bleu(hypothesis, references, weights):
         # some p_ns is 0
         return 0
 
-    bp = _brevity_penalty(hypothesis, references)
+    bp = _brevity_penalty(references, hypothesis)
     return bp * math.exp(s)
 
 
-def _modified_precision(hypothesis, references, n):
+def _modified_precision(references, hypothesis, n):
     """Calculate modified ngram precision.
 
     The normal precision method may lead to some wrong translations with
@@ -88,37 +88,37 @@ def _modified_precision(hypothesis, references, n):
     Paper examples:
 
     >>> _modified_precision(
-    ...    'the the the the the the the'.split(),
     ...    ['the cat is on the mat'.split(), 'there is a cat on the mat'.split()],
+    ...    'the the the the the the the'.split(),
     ...    n=1,
     ... )
     0.28...
 
     >>> _modified_precision(
-    ...    'the the the the the the the'.split(),
     ...    ['the cat is on the mat'.split(), 'there is a cat on the mat'.split()],
+    ...    'the the the the the the the'.split(),
     ...    n=2,
     ... )
     0.0
 
     >>> _modified_precision(
-    ...    'of the'.split(),
     ...    [
     ...        'It is a guide to action that ensures that the military will forever heed Party commands.'.split(),
     ...        'It is the guiding principle which guarantees the military forces always being under the command of the Party.'.split(),
     ...        'It is the practical guide for the army always to heed the directions of the party'.split(),
     ...    ],
+    ...    'of the'.split(),
     ...    n=1,
     ... )
     1.0
 
     >>> _modified_precision(
-    ...    'of the'.split(),
     ...    [
     ...        'It is a guide to action that ensures that the military will forever heed Party commands.'.split(),
     ...        'It is the guiding principle which guarantees the military forces always being under the command of the Party.'.split(),
     ...        'It is the practical guide for the army always to heed the directions of the party'.split(),
     ...    ],
+    ...    'of the'.split(),
     ...    n=2,
     ... )
     1.0
@@ -150,15 +150,15 @@ def _modified_precision(hypothesis, references, n):
     Unigrams:
 
     >>> _modified_precision(
-    ...    hypothesis1,
     ...    [reference1, reference2, reference3],
+    ...    hypothesis1,
     ...    n=1,
     ... )
     0.94...
 
     >>> _modified_precision(
-    ...    hypothesis2,
     ...    [reference1, reference2, reference3],
+    ...    hypothesis2,
     ...    n=1,
     ... )
     0.57...
@@ -166,15 +166,15 @@ def _modified_precision(hypothesis, references, n):
     Bigrams:
 
     >>> _modified_precision(
-    ...    hypothesis1,
     ...    [reference1, reference2, reference3],
+    ...    hypothesis1,
     ...    n=2,
     ... )
     0.58...
 
     >>> _modified_precision(
-    ...    hypothesis2,
     ...    [reference1, reference2, reference3],
+    ...    hypothesis2,
     ...    n=2,
     ... )
     0.07...
@@ -196,7 +196,7 @@ def _modified_precision(hypothesis, references, n):
     return sum(clipped_counts.values()) / sum(counts.values())
 
 
-def _brevity_penalty(hypothesis, references):
+def _brevity_penalty(references, hypothesis):
     """Calculate brevity penalty.
 
     As the modified n-gram precision still has the problem from the short
@@ -208,7 +208,7 @@ def _brevity_penalty(hypothesis, references):
 
     >>> references = [['a'] * 12, ['a'] * 15, ['a'] * 17]
     >>> hypothesis = ['a'] * 12
-    >>> _brevity_penalty(hypothesis, references)
+    >>> _brevity_penalty(references, hypothesis)
     1.0
 
     In case a hypothesis translation is shorter than the references, penalty is
@@ -216,7 +216,7 @@ def _brevity_penalty(hypothesis, references):
 
     >>> references = [['a'] * 28, ['a'] * 28]
     >>> hypothesis = ['a'] * 12
-    >>> _brevity_penalty(hypothesis, references)
+    >>> _brevity_penalty(references, hypothesis)
     0.2635...
 
     The length of the closest reference is used to compute the penalty. If the
@@ -226,7 +226,7 @@ def _brevity_penalty(hypothesis, references):
 
     >>> references = [['a'] * 13, ['a'] * 2]
     >>> hypothesis = ['a'] * 12
-    >>> _brevity_penalty(hypothesis, references)
+    >>> _brevity_penalty(references, hypothesis)
     0.92...
 
     The brevity penalty doesn't depend on reference order. More importantly,
@@ -235,19 +235,19 @@ def _brevity_penalty(hypothesis, references):
 
     >>> references = [['a'] * 13, ['a'] * 11]
     >>> hypothesis = ['a'] * 12
-    >>> _brevity_penalty(hypothesis, references) == _brevity_penalty(hypothesis, reversed(references)) == 1
+    >>> _brevity_penalty(references, hypothesis) == _brevity_penalty(reversed(references),hypothesis) == 1
     True
 
     A test example from mteval-v13a.pl (starting from the line 705):
 
     >>> references = [['a'] * 11, ['a'] * 8]
     >>> hypothesis = ['a'] * 7
-    >>> _brevity_penalty(hypothesis, references)
+    >>> _brevity_penalty(references, hypothesis)
     0.86...
 
     >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
     >>> hypothesis = ['a'] * 7
-    >>> _brevity_penalty(hypothesis, references)
+    >>> _brevity_penalty(references, hypothesis)
     1.0
 
     """

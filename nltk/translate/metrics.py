@@ -7,7 +7,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-def alignment_error_rate(hypothesis, reference, possible=None):
+def alignment_error_rate(reference, hypothesis, possible=None):
     """
     Return the Alignment Error Rate (AER) of an alignment
     with respect to a "gold standard" reference alignment.
@@ -15,7 +15,7 @@ def alignment_error_rate(hypothesis, reference, possible=None):
     alignment).
 
         >>> from nltk.translate import Alignment
-        >>> a = Alignment([(0, 0), (1, 1)])
+        >>> s = Alignment([(0, 0), (1, 1)])
         >>> s = Alignment([(0, 0), (1, 1)])
         >>> a.alignment_error_rate(s)
         0.0
@@ -23,7 +23,7 @@ def alignment_error_rate(hypothesis, reference, possible=None):
     :type reference: Alignment
     :param reference: A gold standard alignment (sure alignments)
     :type hypothesis: Alignment
-    :param hypothesis: A candidate alignment
+    :param hypothesis: A hypothesis alignment (aka. candidate alignments)
     :type possible: Alignment or None
     :param possible: A gold standard reference of possible alignments
         (defaults to *reference* if None)
