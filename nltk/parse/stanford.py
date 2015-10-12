@@ -12,7 +12,9 @@ from __future__ import unicode_literals
 import tempfile
 import os
 import re
+import warnings
 from subprocess import PIPE
+from io import StringIO
 
 from nltk import compat
 from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_options
@@ -27,21 +29,29 @@ class GenericStanfordParser(ParserI):
     """Interface to the Stanford Parser"""
 
     _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)(\.(\d+))+-models\.jar'
-    _JAR = 'stanford-parser.jar'
+    _JAR = r'stanford-parser\.jar'
+    _MAIN_CLASS = 'edu.stanford.nlp.parser.lexparser.LexicalizedParser'
+
+    _USE_STDIN = False
+    _DOUBLE_SPACED_OUTPUT = False
 
     def __init__(self, path_to_jar=None, path_to_models_jar=None,
                  model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz',
-                 encoding='utf8', verbose=False, java_options='-mx1000m'):
+                 encoding='utf8', verbose=False,
+                 java_options='-mx1000m', corenlp_options=''):
 
-        self._stanford_jar = find_jar(
-            self._JAR, path_to_jar,
-            env_vars=('STANFORD_PARSER',),
-            searchpath=(), url=_stanford_url,
-            verbose=verbose
+        # find the most recent code and model jar
+        stanford_jar = max(
+            find_jar_iter(
+                self._JAR, path_to_jar,
+                env_vars=('STANFORD_PARSER',),
+                searchpath=(), url=_stanford_url,
+                verbose=verbose, is_regex=True
+            ),
+            key=lambda model_name: re.match(self._JAR, model_name)
         )
 
-        # find the most recent model
-        self._model_jar=max(
+        model_jar=max(
             find_jar_iter(
                 self._MODEL_JAR_PATTERN, path_to_models_jar,
                 env_vars=('STANFORD_MODELS',),
@@ -51,19 +61,34 @@ class GenericStanfordParser(ParserI):
             key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
         )
 
+        self._classpath = (stanford_jar, model_jar)
+
         self.model_path = model_path
         self._encoding = encoding
+        self.corenlp_options = corenlp_options
         self.java_options = java_options
 
     def _parse_trees_output(self, output_):
         res = []
         cur_lines = []
+        cur_trees = []
+        blank = False
         for line in output_.splitlines(False):
             if line == '':
-                res.append(iter([self._make_tree('\n'.join(cur_lines))]))
-                cur_lines = []
+                if blank:
+                    res.append(iter(cur_trees))
+                    cur_trees = []
+                    blank = False
+                elif self._DOUBLE_SPACED_OUTPUT:
+                    cur_trees.append(self._make_tree('\n'.join(cur_lines)))
+                    cur_lines = []
+                    blank = True
+                else:
+                    res.append(iter([self._make_tree('\n'.join(cur_lines))]))
+                    cur_lines = []
             else:
                 cur_lines.append(line)
+                blank = False
         return iter(res)
 
     def parse_sents(self, sentences, verbose=False):
@@ -80,7 +105,7 @@ class GenericStanfordParser(ParserI):
         :rtype: iter(iter(Tree))
         """
         cmd = [
-            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            self._MAIN_CLASS,
             '-model', self.model_path,
             '-sentences', 'newline',
             '-outputFormat', self._OUTPUT_FORMAT,
@@ -113,7 +138,7 @@ class GenericStanfordParser(ParserI):
         :rtype: iter(iter(Tree))
         """
         cmd = [
-            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            self._MAIN_CLASS,
             '-model', self.model_path,
             '-sentences', 'newline',
             '-outputFormat', self._OUTPUT_FORMAT,
@@ -144,7 +169,7 @@ class GenericStanfordParser(ParserI):
         """
         tag_separator = '/'
         cmd = [
-            'edu.stanford.nlp.parser.lexparser.LexicalizedParser',
+            self._MAIN_CLASS,
             '-model', self.model_path,
             '-sentences', 'newline',
             '-outputFormat', self._OUTPUT_FORMAT,
@@ -160,6 +185,8 @@ class GenericStanfordParser(ParserI):
     def _execute(self, cmd, input_, verbose=False):
         encoding = self._encoding
         cmd.extend(['-encoding', encoding])
+        if self.corenlp_options:
+            cmd.append(self.corenlp_options)
 
         default_options = ' '.join(_java_options)
 
@@ -174,11 +201,16 @@ class GenericStanfordParser(ParserI):
             input_file.write(input_)
             input_file.flush()
 
-            cmd.append(input_file.name)
-
             # Run the tagger and get the output.
-            stdout, stderr = java(cmd, classpath=(self._stanford_jar, self._model_jar),
-                                  stdout=PIPE, stderr=PIPE)
+            if self._USE_STDIN:
+                input_file.seek(0)
+                stdout, stderr = java(cmd, classpath=self._classpath,
+                                      stdin=input_file, stdout=PIPE, stderr=PIPE)
+            else:
+                cmd.append(input_file.name)
+                stdout, stderr = java(cmd, classpath=self._classpath,
+                                      stdout=PIPE, stderr=PIPE)
+
             stdout = stdout.decode(encoding)
 
         os.unlink(input_file.name)
@@ -272,7 +304,7 @@ class StanfordDependencyParser(GenericStanfordParser):
     ...     "I 'm a dog".split(),
     ...     "This is my friends ' cat ( the tabby )".split(),
     ... ))], []) # doctest: +NORMALIZE_WHITESPACE
-    [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends', ['my', "'"]), 'tabby'])]
+    [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends', ['my', "'"]), Tree('tabby', ['the'])])]
 
     >>> sum([[list(parse.triples()) for parse in dep_graphs] for dep_graphs in dep_parser.tagged_parse_sents((
     ...     (
@@ -299,6 +331,61 @@ class StanfordDependencyParser(GenericStanfordParser):
 
     def _make_tree(self, result):
         return DependencyGraph(result, top_relation_label='root')
+
+
+class StanfordNeuralDependencyParser(GenericStanfordParser):
+    '''
+    >>> from nltk.parse.stanford import StanfordNeuralDependencyParser
+    >>> dep_parser=StanfordNeuralDependencyParser()
+
+    >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+    [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy'])])]
+
+    >>> [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+    [[((u'jumps', u'VBZ'), u'nsubj', (u'fox', u'NN')), ((u'fox', u'NN'), u'det', (u'The', u'DT')),
+    ((u'fox', u'NN'), u'amod', (u'quick', u'JJ')), ((u'fox', u'NN'), u'amod', (u'brown', u'JJ')),
+    ((u'jumps', u'VBZ'), u'nmod', (u'dog', u'NN')), ((u'dog', u'NN'), u'case', (u'over', u'IN')),
+    ((u'dog', u'NN'), u'det', (u'the', u'DT')), ((u'dog', u'NN'), u'amod', (u'lazy', u'JJ'))]]
+
+    >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.raw_parse_sents((
+    ...     "The quick brown fox jumps over the lazy dog.",
+    ...     "The quick grey wolf jumps over the lazy fox."
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy'])]),
+    Tree('jumps', [Tree('wolf', ['The', 'quick', 'grey']), Tree('fox', ['over', 'the', 'lazy'])])]
+
+    >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.parse_sents((
+    ...     "I 'm a dog".split(),
+    ...     "This is my friends ' cat ( the tabby )".split(),
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends', ['my', "'"]), Tree('tabby', ['the'])])]
+    '''
+
+    _OUTPUT_FORMAT = 'conll'
+    _MAIN_CLASS = 'edu.stanford.nlp.pipeline.StanfordCoreNLP'
+    _JAR = r'stanford-corenlp-(\d+)(\.(\d+))+\.jar'
+    _MODEL_JAR_PATTERN = r'stanford-corenlp-(\d+)(\.(\d+))+-models\.jar'
+    _USE_STDIN = True
+    _DOUBLE_SPACED_OUTPUT = True
+
+    def __init__(self, *args, **kwargs):
+        super(StanfordNeuralDependencyParser, self).__init__(*args, **kwargs)
+        self.corenlp_options += '-annotators tokenize,ssplit,pos,depparse'
+
+    def tagged_parse_sents(self, sentences, verbose=False):
+        '''
+        Currently unimplemented because the neural dependency parser (and
+        the StanfordCoreNLP pipeline class) doesn't support passing in pre-
+        tagged tokens.
+        '''
+        raise NotImplementedError(
+            'tagged_parse[_sents] is not supported by '
+            'StanfordNeuralDependencyParser; use '
+            'parse[_sents] or raw_parse[_sents] instead.'
+        )
+
+    def _make_tree(self, result):
+        return DependencyGraph(result, top_relation_label='ROOT')
 
 
 def setup_module(module):

@@ -63,6 +63,33 @@ CoNLL Data
     (Nov., NNP), NMOD, (29, CD)
     (join, VB), VMOD, (., .)
 
+Using a custom cell extractor.
+
+    >>> def custom_extractor(cells):
+    ...     _, tag, head, rel = cells
+    ...     return 'spam', 'spam', tag, tag, '', head, rel
+    >>> dg = DependencyGraph(treebank_data, cell_extractor=custom_extractor)
+    >>> dg.tree().pprint()
+    (spam
+      (spam spam spam (spam (spam spam)) spam)
+      (spam (spam spam) (spam (spam spam spam)) (spam spam) spam))
+
+Custom cell extractors can take in and return an index.
+
+    >>> def custom_extractor(cells, index):
+    ...     word, tag, head, rel = cells
+    ...     return (index, '{}-{}'.format(word, index), word,
+    ...             tag, tag, '', head, rel)
+    >>> dg = DependencyGraph(treebank_data, cell_extractor=custom_extractor)
+    >>> dg.tree().pprint()
+    (will-8
+      (Vinken-2 Pierre-1 ,-3 (old-6 (years-5 61-4)) ,-7)
+      (join-9
+        (board-11 the-10)
+        (as-12 (director-15 a-13 nonexecutive-14))
+        (Nov.-16 29-17)
+        .-18))
+
 Using the dependency-parsed version of the Penn Treebank corpus sample.
 
     >>> from nltk.corpus import dependency_treebank
