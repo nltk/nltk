@@ -15,9 +15,10 @@ def alignment_error_rate(reference, test, possible=None):
     alignment).
 
         >>> from nltk.translate import Alignment
-        >>> a = Alignment([(0, 0), (1, 1)])
-        >>> a.alignment_error_rate(s)
-        0.0
+        >>> ref = Alignment([(0, 0), (1, 1), (2, 2)])
+        >>> test = Alignment([(0, 0), (1, 2), (2, 1)])
+        >>> alignment_error_rate(ref, test) # doctest: +ELLIPSIS
+        0.6666666666666667
 
     :type reference: Alignment
     :param reference: A gold standard alignment (sure alignments)
