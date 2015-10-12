@@ -4,18 +4,12 @@ Tests for BLEU translation evaluation metric
 """
 
 import unittest
-
+from nltk.translate.bleu_score import _modified_precision
 
 class TestBLEU(unittest.TestCase):
-    """
-    Examples from 
-    
-    """
-    
     def test_modified_precision(self):
         """
         Examples from the original BLEU paper 
-        
         http://www.aclweb.org/anthology/P02-1040.pdf
         """
         # Example 1: the "the*" example.
@@ -68,4 +62,6 @@ class TestBLEU(unittest.TestCase):
         # Bigram precision
         assert (modified_precision(references, hyp1, n=2) == 0.58)
         assert (modified_precision(references, hyp2, n=2) == 0.07)
-        
+
+    def test_brevity_penalty(self):
+        pass
