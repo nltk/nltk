@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Aligned Sentences
+# Natural Language Toolkit: API for alignment and translation objects 
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
