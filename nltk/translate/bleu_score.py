@@ -17,22 +17,22 @@ from nltk.compat import Counter
 from nltk.util import ngrams
 
 
-def bleu(candidate, references, weights):
+def bleu(hypothesis, references, weights):
     """Calculate BLEU score (Bilingual Evaluation Understudy)
 
-    :param candidate: a candidate sentence
-    :type candidate: list(str)
+    :param hypothesis: a hypothesis sentence
+    :type hypothesis: list(str)
     :param references: reference sentences
     :type references: list(list(str))
     :param weights: weights for unigrams, bigrams, trigrams and so on
     :type weights: list(float)
 
     >>> weights = [0.25, 0.25, 0.25, 0.25]
-    >>> candidate1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
+    >>> hypothesis1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
     ...               'ensures', 'that', 'the', 'military', 'always',
     ...               'obeys', 'the', 'commands', 'of', 'the', 'party']
 
-    >>> candidate2 = ['It', 'is', 'to', 'insure', 'the', 'troops',
+    >>> hypothesis2 = ['It', 'is', 'to', 'insure', 'the', 'troops',
     ...               'forever', 'hearing', 'the', 'activity', 'guidebook',
     ...               'that', 'party', 'direct']
 
@@ -49,10 +49,10 @@ def bleu(candidate, references, weights):
     ...               'army', 'always', 'to', 'heed', 'the', 'directions',
     ...               'of', 'the', 'party']
 
-    >>> bleu(candidate1, [reference1, reference2, reference3], weights)
+    >>> bleu(hypothesis1, [reference1, reference2, reference3], weights)
     0.504...
 
-    >>> bleu(candidate2, [reference1, reference2, reference3], weights)
+    >>> bleu(hypothesis2, [reference1, reference2, reference3], weights)
     0
 
     Papineni, Kishore, et al. "BLEU: A method for automatic evaluation of
@@ -62,7 +62,7 @@ def bleu(candidate, references, weights):
 
     """
     p_ns = (
-        _modified_precision(candidate, references, i)
+        _modified_precision(hypothesis, references, i)
         for i, _ in enumerate(weights, start=1)
     )
 
@@ -72,18 +72,18 @@ def bleu(candidate, references, weights):
         # some p_ns is 0
         return 0
 
-    bp = _brevity_penalty(candidate, references)
+    bp = _brevity_penalty(hypothesis, references)
     return bp * math.exp(s)
 
 
-def _modified_precision(candidate, references, n):
+def _modified_precision(hypothesis, references, n):
     """Calculate modified ngram precision.
 
     The normal precision method may lead to some wrong translations with
     high-precision, e.g., the translation, in which a word of reference
     repeats several times, has very high precision. So in the modified
     n-gram precision, a reference word will be considered exhausted after
-    a matching candidate word is identified.
+    a matching hypothesis word is identified.
 
     Paper examples:
 
@@ -126,11 +126,11 @@ def _modified_precision(candidate, references, n):
     More examples:
 
     >>> weights = [0.25, 0.25, 0.25, 0.25]
-    >>> candidate1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
+    >>> hypothesis1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
     ...               'ensures', 'that', 'the', 'military', 'always',
     ...               'obeys', 'the', 'commands', 'of', 'the', 'party']
 
-    >>> candidate2 = ['It', 'is', 'to', 'insure', 'the', 'troops',
+    >>> hypothesis2 = ['It', 'is', 'to', 'insure', 'the', 'troops',
     ...               'forever', 'hearing', 'the', 'activity', 'guidebook',
     ...               'that', 'party', 'direct']
 
@@ -150,14 +150,14 @@ def _modified_precision(candidate, references, n):
     Unigrams:
 
     >>> _modified_precision(
-    ...    candidate1,
+    ...    hypothesis1,
     ...    [reference1, reference2, reference3],
     ...    n=1,
     ... )
     0.94...
 
     >>> _modified_precision(
-    ...    candidate2,
+    ...    hypothesis2,
     ...    [reference1, reference2, reference3],
     ...    n=1,
     ... )
@@ -166,21 +166,21 @@ def _modified_precision(candidate, references, n):
     Bigrams:
 
     >>> _modified_precision(
-    ...    candidate1,
+    ...    hypothesis1,
     ...    [reference1, reference2, reference3],
     ...    n=2,
     ... )
     0.58...
 
     >>> _modified_precision(
-    ...    candidate2,
+    ...    hypothesis2,
     ...    [reference1, reference2, reference3],
     ...    n=2,
     ... )
     0.07...
 
     """
-    counts = Counter(ngrams(candidate, n))
+    counts = Counter(ngrams(hypothesis, n))
 
     if not counts:
         return 0
@@ -196,7 +196,7 @@ def _modified_precision(candidate, references, n):
     return sum(clipped_counts.values()) / sum(counts.values())
 
 
-def _brevity_penalty(candidate, references):
+def _brevity_penalty(hypothesis, references):
     """Calculate brevity penalty.
 
     As the modified n-gram precision still has the problem from the short
@@ -204,29 +204,29 @@ def _brevity_penalty(candidate, references):
     score according to length.
 
     An example from the paper. There are three references with length 12, 15
-    and 17. And a terse candidate of the length 12. The brevity penalty is 1.
+    and 17. And a concise hypothesis of the length 12. The brevity penalty is 1.
 
     >>> references = [['a'] * 12, ['a'] * 15, ['a'] * 17]
-    >>> candidate = ['a'] * 12
-    >>> _brevity_penalty(candidate, references)
+    >>> hypothesis = ['a'] * 12
+    >>> _brevity_penalty(hypothesis, references)
     1.0
 
-    In case a candidate translation is shorter than the references, penalty is
+    In case a hypothesis translation is shorter than the references, penalty is
     applied.
 
     >>> references = [['a'] * 28, ['a'] * 28]
-    >>> candidate = ['a'] * 12
-    >>> _brevity_penalty(candidate, references)
+    >>> hypothesis = ['a'] * 12
+    >>> _brevity_penalty(hypothesis, references)
     0.2635...
 
     The length of the closest reference is used to compute the penalty. If the
-    length of a candidate is 12, and the reference lengths are 13 and 2, the
-    penalty is applied because the candidate length (12) is less then the
+    length of a hypothesis is 12, and the reference lengths are 13 and 2, the
+    penalty is applied because the hypothesis length (12) is less then the
     closest reference length (13).
 
     >>> references = [['a'] * 13, ['a'] * 2]
-    >>> candidate = ['a'] * 12
-    >>> _brevity_penalty(candidate, references)
+    >>> hypothesis = ['a'] * 12
+    >>> _brevity_penalty(hypothesis, references)
     0.92...
 
     The brevity penalty doesn't depend on reference order. More importantly,
@@ -234,24 +234,24 @@ def _brevity_penalty(candidate, references):
     reference sentence length is used.
 
     >>> references = [['a'] * 13, ['a'] * 11]
-    >>> candidate = ['a'] * 12
-    >>> _brevity_penalty(candidate, references) == _brevity_penalty(candidate, reversed(references)) == 1
+    >>> hypothesis = ['a'] * 12
+    >>> _brevity_penalty(hypothesis, references) == _brevity_penalty(hypothesis, reversed(references)) == 1
     True
 
     A test example from mteval-v13a.pl (starting from the line 705):
 
     >>> references = [['a'] * 11, ['a'] * 8]
-    >>> candidate = ['a'] * 7
-    >>> _brevity_penalty(candidate, references)
+    >>> hypothesis = ['a'] * 7
+    >>> _brevity_penalty(hypothesis, references)
     0.86...
 
     >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
-    >>> candidate = ['a'] * 7
-    >>> _brevity_penalty(candidate, references)
+    >>> hypothesis = ['a'] * 7
+    >>> _brevity_penalty(hypothesis, references)
     1.0
 
     """
-    c = len(candidate)
+    c = len(hypothesis)
     ref_lens = (len(reference) for reference in references)
     r = min(ref_lens, key=lambda ref_len: (abs(ref_len - c), ref_len))
 
