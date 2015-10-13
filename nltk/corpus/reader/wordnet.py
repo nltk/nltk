@@ -1185,7 +1185,7 @@ class WordNetCorpusReader(CorpusReader):
     # Loading Lemmas
     #////////////////////////////////////////////////////////////
 
-    def lemma(self, name, lang='en'):
+    def lemma(self, name, lang='eng'):
         '''Return lemma object that matches the name'''
         # cannot simply split on first '.', e.g.: '.45_caliber.a.01..45_caliber'
         separator = SENSENUM_RE.search(name).start()
