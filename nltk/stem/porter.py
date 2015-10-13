@@ -81,10 +81,9 @@ Later additions:
    Invariants proceed, succeed, exceed. Also suggested by Hiranmay Ghosh.
 
 Additional modifications were made to incorperate this module into
-nltk.  All such modifications are marked with \"--NLTK--\".  The nltk
-version of this module is maintained by the NLTK developers, and is
-available from <http://nltk.sourceforge.net>
+nltk.  All such modifications are marked with \"--NLTK--\".
 """
+
 from __future__ import print_function, unicode_literals
 
 ## --NLTK--
@@ -690,8 +689,4 @@ def demo():
 
 ##--NLTK--
 
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

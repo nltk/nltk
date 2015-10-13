@@ -1,8 +1,13 @@
-.. Copyright (C) 2001-2014 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
+    >>> import os.path
+
     >>> from nltk.corpus.reader import BNCCorpusReader
-    >>> bnc = BNCCorpusReader(root='.', fileids=r'FX8.xml')
+    >>> import nltk.test
+
+    >>> root = os.path.dirname(nltk.test.__file__)
+    >>> bnc = BNCCorpusReader(root=root, fileids='FX8.xml')
 
 Checking the word access.
 -------------------------
@@ -38,9 +43,9 @@ Testing access to the sentences.
     [('Ah', 'ITJ'), ('there', 'AV0'), ('we', 'PNP'), ('are', 'VBB'), (',', 'PUN'), ('.', 'PUN')]
 
 A not lazy loader.
------------------
+------------------
 
-    >>> eager = BNCCorpusReader(root='.', fileids=r'FX8.xml', lazy=False)
+    >>> eager = BNCCorpusReader(root=root, fileids=r'FX8.xml', lazy=False)
 
     >>> len(eager.words())
     151

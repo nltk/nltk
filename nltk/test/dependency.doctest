@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2014 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===================
@@ -6,7 +6,11 @@ Dependency Grammars
 ===================
 
     >>> from nltk.grammar import DependencyGrammar
-    >>> from nltk.parse import *
+    >>> from nltk.parse import (
+    ...     DependencyGraph,
+    ...     ProjectiveDependencyParser,
+    ...     NonprojectiveDependencyParser,
+    ... )
 
 CoNLL Data
 ----------
@@ -31,12 +35,60 @@ CoNLL Data
     ... .       .       9       VMOD
     ... """
 
-
     >>> dg = DependencyGraph(treebank_data)
-    >>> print(dg.tree().pprint())
+    >>> dg.tree().pprint()
     (will
       (Vinken Pierre , (old (years 61)) ,)
       (join (board the) (as (director a nonexecutive)) (Nov. 29) .))
+    >>> for head, rel, dep in dg.triples():
+    ...     print(
+    ...         '({h[0]}, {h[1]}), {r}, ({d[0]}, {d[1]})'
+    ...         .format(h=head, r=rel, d=dep)
+    ...     )
+    (will, MD), SUB, (Vinken, NNP)
+    (Vinken, NNP), NMOD, (Pierre, NNP)
+    (Vinken, NNP), P, (,, ,)
+    (Vinken, NNP), NMOD, (old, JJ)
+    (old, JJ), AMOD, (years, NNS)
+    (years, NNS), NMOD, (61, CD)
+    (Vinken, NNP), P, (,, ,)
+    (will, MD), VC, (join, VB)
+    (join, VB), OBJ, (board, NN)
+    (board, NN), NMOD, (the, DT)
+    (join, VB), VMOD, (as, IN)
+    (as, IN), PMOD, (director, NN)
+    (director, NN), NMOD, (a, DT)
+    (director, NN), NMOD, (nonexecutive, JJ)
+    (join, VB), VMOD, (Nov., NNP)
+    (Nov., NNP), NMOD, (29, CD)
+    (join, VB), VMOD, (., .)
+
+Using a custom cell extractor.
+
+    >>> def custom_extractor(cells):
+    ...     _, tag, head, rel = cells
+    ...     return 'spam', 'spam', tag, tag, '', head, rel
+    >>> dg = DependencyGraph(treebank_data, cell_extractor=custom_extractor)
+    >>> dg.tree().pprint()
+    (spam
+      (spam spam spam (spam (spam spam)) spam)
+      (spam (spam spam) (spam (spam spam spam)) (spam spam) spam))
+
+Custom cell extractors can take in and return an index.
+
+    >>> def custom_extractor(cells, index):
+    ...     word, tag, head, rel = cells
+    ...     return (index, '{}-{}'.format(word, index), word,
+    ...             tag, tag, '', head, rel)
+    >>> dg = DependencyGraph(treebank_data, cell_extractor=custom_extractor)
+    >>> dg.tree().pprint()
+    (will-8
+      (Vinken-2 Pierre-1 ,-3 (old-6 (years-5 61-4)) ,-7)
+      (join-9
+        (board-11 the-10)
+        (as-12 (director-15 a-13 nonexecutive-14))
+        (Nov.-16 29-17)
+        .-18))
 
 Using the dependency-parsed version of the Penn Treebank corpus sample.
 
@@ -61,6 +113,37 @@ Using the dependency-parsed version of the Penn Treebank corpus sample.
     Nov.        NNP     9
     29  CD      16
     .   .       8
+
+Using the output of zpar (like Malt-TAB but with zero-based indexing)
+
+    >>> zpar_data = """
+    ... Pierre	NNP	1	NMOD
+    ... Vinken	NNP	7	SUB
+    ... ,	,	1	P
+    ... 61	CD	4	NMOD
+    ... years	NNS	5	AMOD
+    ... old	JJ	1	NMOD
+    ... ,	,	1	P
+    ... will	MD	-1	ROOT
+    ... join	VB	7	VC
+    ... the	DT	10	NMOD
+    ... board	NN	8	OBJ
+    ... as	IN	8	VMOD
+    ... a	DT	14	NMOD
+    ... nonexecutive	JJ	14	NMOD
+    ... director	NN	11	PMOD
+    ... Nov.	NNP	8	VMOD
+    ... 29	CD	15	NMOD
+    ... .	.	7	P
+    ... """
+
+    >>> zdg = DependencyGraph(zpar_data, zero_based=True)
+    >>> print(zdg.tree())
+    (will
+      (Vinken Pierre , (old (years 61)) ,)
+      (join (board the) (as (director a nonexecutive)) (Nov. 29))
+      .)
+
 
 Projective Dependency Parsing
 -----------------------------
@@ -106,21 +189,53 @@ Non-Projective Dependency Parsing
       'dog' -> 'his'
 
     >>> dp = NonprojectiveDependencyParser(grammar)
-    >>> for g in dp.parse(['the', 'man', 'taught', 'his', 'dog', 'to', 'play', 'golf']):
-    ...     print(g)  # doctest: +NORMALIZE_WHITESPACE
-    [{'address': 0,
-      'ctag': 'TOP',
-      'deps': 3,
-      'feats': None,
-      'lemma': None,
-      'rel': 'TOP',
-      'tag': 'TOP',
-      'word': None},
-     {'address': 1, 'deps': [], 'word': 'the'},
-     {'address': 2, 'deps': [1], 'word': 'man'},
-     {'address': 3, 'deps': [2, 7], 'word': 'taught'},
-     {'address': 4, 'deps': [], 'word': 'his'},
-     {'address': 5, 'deps': [4], 'word': 'dog'},
-     {'address': 6, 'deps': [], 'word': 'to'},
-     {'address': 7, 'deps': [5, 6, 8], 'word': 'play'},
-     {'address': 8, 'deps': [], 'word': 'golf'}]
+    >>> g, = dp.parse(['the', 'man', 'taught', 'his', 'dog', 'to', 'play', 'golf'])
+
+    >>> print(g.root['word'])
+    taught
+
+    >>> for _, node in sorted(g.nodes.items()):
+    ...     if node['word'] is not None:
+    ...         print('{address} {word}: {d}'.format(d=node['deps'][''], **node))
+    1 the: []
+    2 man: [1]
+    3 taught: [2, 7]
+    4 his: []
+    5 dog: [4]
+    6 to: []
+    7 play: [5, 6, 8]
+    8 golf: []
+
+    >>> print(g.tree())
+    (taught (man the) (play (dog his) to golf))
+
+Integration with MALT parser
+============================
+
+In case the top relation is different from the default, we can set it. In case
+of MALT parser, it's set to `'null'`.
+
+>>> dg_str = """1       I       _       NN      NN      _       2       nn      _       _
+... 2   shot    _       NN      NN      _       0       null    _       _
+... 3   an      _       AT      AT      _       2       dep     _       _
+... 4   elephant        _       NN      NN      _       7       nn      _       _
+... 5   in      _       NN      NN      _       7       nn      _       _
+... 6   my      _       NN      NN      _       7       nn      _       _
+... 7   pajamas _       NNS     NNS     _       3       dobj    _       _
+... """
+>>> dg = DependencyGraph(dg_str, top_relation_label='null')
+
+>>> len(dg.nodes)
+8
+
+>>> dg.root['word'], dg.root['address']
+('shot', 2)
+
+>>> print(dg.to_conll(10))  # doctest: +NORMALIZE_WHITESPACE
+1   I       _       NN      NN      _       2       nn      _       _
+2   shot    _       NN      NN      _       0       null    _       _
+3   an      _       AT      AT      _       2       dep     _       _
+4   elephant        _       NN      NN      _       7       nn      _       _
+5   in      _       NN      NN      _       7       nn      _       _
+6   my      _       NN      NN      _       7       nn      _       _
+7   pajamas _       NNS     NNS     _       3       dobj    _       _

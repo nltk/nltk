@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Drawing utilities
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -1930,7 +1930,7 @@ class EntryDialog(object):
         self._original_text = original_text
         self._set_callback = set_callback
 
-        width = max(30, len(original_text)*3/2)
+        width = int(max(30, len(original_text)*3/2))
         self._top = Toplevel(parent)
 
         if title: self._top.title(title)

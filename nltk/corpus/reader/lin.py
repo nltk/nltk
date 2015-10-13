@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Lin's Thesaurus
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Dan Blanchard <dblanchard@ets.org>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.txt
@@ -140,7 +140,7 @@ def demo():
     print(thes.synonyms(word1))
 
     print("Getting scored synonyms for " + word1)
-    print(thes.synonyms(word1))
+    print(thes.scored_synonyms(word1))
 
     print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
     print(thes.synonyms(word1, fileid="simN.lsp"))

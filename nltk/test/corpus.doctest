@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2014 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ================
@@ -9,7 +9,7 @@ The `nltk.corpus` package defines a collection of *corpus reader*
 classes, which can be used to access the contents of a diverse set of
 corpora.  The list of available corpora is given at:
 
-http://nltk.googlecode.com/svn/trunk/nltk_data/index.xml
+http://www.nltk.org/nltk_data/
 
 Each corpus reader class is specialized to handle a specific
 corpus format.  In addition, the `nltk.corpus` package automatically
@@ -149,7 +149,7 @@ than just bare word strings.
      [[('There', 'EX'), ('was', 'BEDZ'), ('about', 'IN'), ...],
       [('Not', '*'), ('the', 'AT'), ('noblest', 'JJT'), ...], ...], ...]
 
-Similarly, the Indian Langauge POS-Tagged Corpus includes samples of
+Similarly, the Indian Language POS-Tagged Corpus includes samples of
 Indian text annotated with part-of-speech tags:
 
     >>> from nltk.corpus import indian
@@ -238,7 +238,7 @@ to the entire chunk).
     >>> [[str(c) for c in s] for s in semcor.tagged_sents(tag='both')[:2]]
     [['(DT The)', "(Lemma('group.n.01.group') (NE (NNP Fulton County Grand Jury)))", ...
      '(None .)'], ['(DT The)', ... '(None .)']]
-    
+
 
 The IEER corpus is another chunked corpus.  This corpus is unusual in
 that each corpus item contains multiple documents.  (This reflects the
@@ -550,49 +550,49 @@ category assigned to a document is correct as follows:
 Other Corpora
 =============
 
-senseval
---------
-The Senseval 2 corpus is a word sense disambiguation corpus.  Each
-item in the corpus corresponds to a single ambiguous word.  For each
-of these words, the corpus contains a list of instances, corresponding
-to occurences of that word.  Each instance provides the word; a list
-of word senses that apply to the word occurrence; and the word's
-context.
+comparative_sentences
+---------------------
+A list of sentences from various sources, especially reviews and articles. Each
+line contains one sentence; sentences were separated by using a sentence tokenizer.
+Comparative sentences have been annotated with their type, entities, features and
+keywords.
 
-    >>> from nltk.corpus import senseval
-    >>> senseval.fileids()
-    ['hard.pos', 'interest.pos', 'line.pos', 'serve.pos']
-    >>> senseval.instances('hard.pos')
-    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [SensevalInstance(word='hard-a',
-        position=20,
-        context=[('``', '``'), ('he', 'PRP'), ...('hard', 'JJ'), ...],
-        senses=('HARD1',)),
-     SensevalInstance(word='hard-a',
-        position=10,
-        context=[('clever', 'NNP'), ...('hard', 'JJ'), ('time', 'NN'), ...],
-        senses=('HARD1',)), ...]
+    >>> from nltk.corpus import comparative_sentences
+    >>> comparison = comparative_sentences.comparisons()[0]
+    >>> comparison.text
+    ['its', 'fast-forward', 'and', 'rewind', 'work', 'much', 'more', 'smoothly',
+    'and', 'consistently', 'than', 'those', 'of', 'other', 'models', 'i', "'ve",
+    'had', '.']
+    >>> comparison.entity_2
+    'models'
+    >>> (comparison.feature, comparison.keyword)
+    ('rewind', 'more')
+    >>> len(comparative_sentences.comparisons())
+    853
 
-The following code looks at instances of the word 'interest', and
-displays their local context (2 words on each side) and word sense(s):
+opinion_lexicon
+---------------
+A list of positive and negative opinion words or sentiment words for English.
 
-    >>> for inst in senseval.instances('interest.pos')[:10]:
-    ...     p = inst.position
-    ...     left = ' '.join(w for (w,t) in inst.context[p-2:p])
-    ...     word = ' '.join(w for (w,t) in inst.context[p:p+1])
-    ...     right = ' '.join(w for (w,t) in inst.context[p+1:p+3])
-    ...     senses = ' '.join(inst.senses)
-    ...     print('%20s |%10s | %-15s -> %s' % (left, word, right, senses))
-             declines in |  interest | rates .         -> interest_6
-      indicate declining |  interest | rates because   -> interest_6
-           in short-term |  interest | rates .         -> interest_6
-                     4 % |  interest | in this         -> interest_5
-            company with | interests | in the          -> interest_5
-                  , plus |  interest | .               -> interest_6
-                 set the |  interest | rate on         -> interest_6
-                  's own |  interest | , prompted      -> interest_4
-           principal and |  interest | is the          -> interest_6
-            increase its |  interest | to 70           -> interest_5
+    >>> from nltk.corpus import opinion_lexicon
+    >>> opinion_lexicon.words()[:4]
+        ['2-faced', '2-faces', 'abnormal', 'abolish']
+
+The OpinionLexiconCorpusReader also provides shortcuts to retrieve positive/negative
+words:
+
+    >>> opinion_lexicon.negative()[:4]
+    ['2-faced', '2-faces', 'abnormal', 'abolish']
+
+Note that words from `words()` method in opinion_lexicon are sorted by file id,
+not alphabetically:
+
+    >>> opinion_lexicon.words()[0:10]
+    ['2-faced', '2-faces', 'abnormal', 'abolish', 'abominable', 'abominably',
+    'abominate', 'abomination', 'abort', 'aborted']
+    >>> sorted(opinion_lexicon.words())[0:10]
+    ['2-faced', '2-faces', 'a+', 'abnormal', 'abolish', 'abominable', 'abominably',
+    'abominate', 'abomination', 'abort']
 
 ppattach
 --------
@@ -612,6 +612,51 @@ corpus is encoded as a ``PPAttachment`` object:
     ('0', 'join', 'board', 'as', 'director')
     >>> inst.attachment
     'V'
+
+product_reviews_1 and product_reviews_2
+---------------------------------------
+These two datasets respectively contain annotated customer reviews of 5 and 9
+products from amazon.com.
+
+    >>> from nltk.corpus import product_reviews_1
+    >>> camera_reviews = product_reviews_1.reviews('Canon_G3.txt')
+    >>> review = camera_reviews[0]
+    >>> review.sents()[0]
+    ['i', 'recently', 'purchased', 'the', 'canon', 'powershot', 'g3', 'and', 'am',
+    'extremely', 'satisfied', 'with', 'the', 'purchase', '.']
+    >>> review.features()
+    [('canon powershot g3', '+3'), ('use', '+2'), ('picture', '+2'),
+    ('picture quality', '+1'), ('picture quality', '+1'), ('camera', '+2'),
+    ('use', '+2'), ('feature', '+1'), ('picture quality', '+3'), ('use', '+1'),
+    ('option', '+1')]
+
+It is also possible to reach the same information directly from the stream:
+
+    >>> product_reviews_1.features('Canon_G3.txt')
+    [('canon powershot g3', '+3'), ('use', '+2'), ...]
+
+We can compute stats for specific product features:
+
+    >>> n_reviews = len([(feat,score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
+    >>> tot = sum([int(score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
+    >>> # We use float for backward compatibility with division in Python2.7
+    >>> mean = float(tot)/n_reviews
+    >>> print(n_reviews, tot, mean)
+    15 24 1.6
+
+pros_cons
+---------
+A list of pros/cons sentences for determining context (aspect) dependent
+sentiment words, which are then applied to sentiment analysis of comparative
+sentences.
+
+    >>> from nltk.corpus import pros_cons
+    >>> pros_cons.sents(categories='Cons')
+    [['East', 'batteries', '!', 'On', '-', 'off', 'switch', 'too', 'easy',
+    'to', 'maneuver', '.'], ['Eats', '...', 'no', ',', 'GULPS', 'batteries'],
+    ...]
+    >>> pros_cons.words('IntegratedPros.txt')
+    ['Easy', 'to', 'use', ',', 'economical', '!', ...]
 
 semcor
 ------
@@ -653,6 +698,66 @@ The Brown Corpus, annotated with WordNet senses.
     counter cmd=done lemma=counter lexsn=1:06:00:: pos=NN wnsn=1
     .
 
+senseval
+--------
+The Senseval 2 corpus is a word sense disambiguation corpus.  Each
+item in the corpus corresponds to a single ambiguous word.  For each
+of these words, the corpus contains a list of instances, corresponding
+to occurrences of that word.  Each instance provides the word; a list
+of word senses that apply to the word occurrence; and the word's
+context.
+
+    >>> from nltk.corpus import senseval
+    >>> senseval.fileids()
+    ['hard.pos', 'interest.pos', 'line.pos', 'serve.pos']
+    >>> senseval.instances('hard.pos')
+    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [SensevalInstance(word='hard-a',
+        position=20,
+        context=[('``', '``'), ('he', 'PRP'), ...('hard', 'JJ'), ...],
+        senses=('HARD1',)),
+     SensevalInstance(word='hard-a',
+        position=10,
+        context=[('clever', 'NNP'), ...('hard', 'JJ'), ('time', 'NN'), ...],
+        senses=('HARD1',)), ...]
+
+The following code looks at instances of the word 'interest', and
+displays their local context (2 words on each side) and word sense(s):
+
+    >>> for inst in senseval.instances('interest.pos')[:10]:
+    ...     p = inst.position
+    ...     left = ' '.join(w for (w,t) in inst.context[p-2:p])
+    ...     word = ' '.join(w for (w,t) in inst.context[p:p+1])
+    ...     right = ' '.join(w for (w,t) in inst.context[p+1:p+3])
+    ...     senses = ' '.join(inst.senses)
+    ...     print('%20s |%10s | %-15s -> %s' % (left, word, right, senses))
+             declines in |  interest | rates .         -> interest_6
+      indicate declining |  interest | rates because   -> interest_6
+           in short-term |  interest | rates .         -> interest_6
+                     4 % |  interest | in this         -> interest_5
+            company with | interests | in the          -> interest_5
+                  , plus |  interest | .               -> interest_6
+                 set the |  interest | rate on         -> interest_6
+                  's own |  interest | , prompted      -> interest_4
+           principal and |  interest | is the          -> interest_6
+            increase its |  interest | to 70           -> interest_5
+
+sentence_polarity
+-----------------
+The Sentence Polarity dataset contains 5331 positive and 5331 negative processed
+sentences.
+
+    >>> from nltk.corpus import sentence_polarity
+    >>> sentence_polarity.sents()
+    [['simplistic', ',', 'silly', 'and', 'tedious', '.'], ["it's", 'so', 'laddish',
+    'and', 'juvenile', ',', 'only', 'teenage', 'boys', 'could', 'possibly', 'find',
+    'it', 'funny', '.'], ...]
+    >>> sentence_polarity.categories()
+    ['neg', 'pos']
+    >>> sentence_polarity.sents()[1]
+    ["it's", 'so', 'laddish', 'and', 'juvenile', ',', 'only', 'teenage', 'boys',
+    'could', 'possibly', 'find', 'it', 'funny', '.']
+
 shakespeare
 -----------
 The Shakespeare corpus contains a set of Shakespeare plays, formatted
@@ -679,6 +784,20 @@ as XML files.  These corpora are returned as ElementTree objects:
     ['ALL', 'COBWEB', 'DEMETRIUS', 'Fairy', 'HERNIA', 'LYSANDER',
      'Lion', 'MOTH', 'MUSTARDSEED', 'Moonshine', 'PEASEBLOSSOM',
      'Prologue', 'Pyramus', 'Thisbe', 'Wall']
+
+subjectivity
+-----------
+The Subjectivity Dataset contains 5000 subjective and 5000 objective processed
+sentences.
+
+    >>> from nltk.corpus import subjectivity
+    >>> subjectivity.categories()
+    ['obj', 'subj']
+    >>> subjectivity.sents()[23]
+    ['television', 'made', 'him', 'famous', ',', 'but', 'his', 'biggest', 'hits',
+    'happened', 'off', 'screen', '.']
+    >>> subjectivity.words(categories='subj')
+    ['smart', 'and', 'alert', ',', 'thirteen', ...]
 
 toolbox
 -------
@@ -817,6 +936,32 @@ speaker and sentence identifier for a given speech sample:
     >>> timit.utteranceids(spkrid=timit.spkrid(item)) # doctest: +ELLIPSIS
     ['dr1-fvmh0/sa1', 'dr1-fvmh0/sa2', 'dr1-fvmh0/si1466', ...]
 
+twitter_samples
+---------------
+
+Twitter is well-known microblog service that allows public data to be
+collected via APIs. NLTK's twitter corpus currently contains a sample of 20k Tweets
+retrieved from the Twitter Streaming API.
+
+    >>> from nltk.corpus import twitter_samples
+    >>> twitter_samples.fileids()
+    ['negative_tweets.json', 'positive_tweets.json', 'tweets.20150430-223406.json']
+
+We follow standard practice in storing full Tweets as line-separated
+JSON. These data structures can be accessed via `tweets.docs()`. However, in general it
+is more practical to focus just on the text field of the Tweets, which
+are accessed via the `strings()` method.
+
+    >>> twitter_samples.strings('tweets.20150430-223406.json')
+    ['RT @KirkKus: Indirect cost of the UK being in the EU is estimated to be costing Britain \xa3170 billion per year! #BetterOffOut #UKIP', ...]
+
+The default tokenizer for Tweets is specialised for 'casual' text, and
+the `tokenized()` method returns a list of lists of tokens.
+
+    >>> twitter_samples.tokenized('tweets.20150430-223406.json')
+    [['RT', '@KirkKus', ':', 'Indirect', 'cost', 'of', 'the', 'UK', 'being', 'in', ...],
+     ['VIDEO', ':', 'Sturgeon', 'on', 'post-election', 'deals', 'http://t.co/BTJwrpbmOY'], ...]
+
 rte
 ---
 The RTE (Recognizing Textual Entailment) corpus was derived from the
@@ -859,7 +1004,7 @@ The VerbNet corpus is a lexicon that divides verbs into classes, based
 on their syntax-semantics linking behavior.  The basic elements in the
 lexicon are verb lemmas, such as 'abandon' and 'accept', and verb
 classes, which have identifiers such as 'remove-10.1' and
-'admire-31.2-1'.  These class identifiers consist of a representitive
+'admire-31.2-1'.  These class identifiers consist of a representative
 verb selected from the class, followed by a numerical identifier.  The
 list of verb lemmas, and the list of class identifiers, can be
 retrieved with the following methods:
@@ -904,7 +1049,7 @@ list of thematic roles for a given Verbnet class:
 
 The Verbnet corpus also provides a variety of pretty printing
 functions that can be used to display the xml contents in a more
-consise form.  The simplest such method is `pprint()`:
+concise form.  The simplest such method is `pprint()`:
 
     >>> print(verbnet.pprint('57'))
     weather-57
@@ -964,6 +1109,24 @@ the XML structure directly, as follows:
     >>> [t.attrib['pos'] + "/" + t.attrib['word'] for t in tokens]
     ['RB/now', 'PRP/im', 'VBD/left', 'IN/with', 'DT/this', 'JJ/gay', 'NN/name']
 
+multext_east
+------------
+
+The Multext-East Corpus consists of POS-tagged versions of George Orwell's book
+1984 in 12 languages: English, Czech, Hungarian, Macedonian, Slovenian, Serbian,
+Slovak, Romanian, Estonian, Farsi, Bulgarian and Polish.
+The corpus can be accessed using the usual methods for tagged corpora. The tagset
+can be transformed from the Multext-East specific MSD tags to the Universal tagset
+using the "tagset" parameter of all functions returning tagged parts of the corpus.
+
+    >>> print(nltk.corpus.multext_east.words("oana-en.xml"))
+    ['It', 'was', 'a', 'bright', ...]
+    >>> print(nltk.corpus.multext_east.tagged_words("oana-en.xml"))
+    [('It', '#Pp3ns'), ('was', '#Vmis3s'), ('a', '#Di'), ...]
+    >>> print(nltk.corpus.multext_east.tagged_sents("oana-en.xml", "universal"))
+    [[('It', 'PRON'), ('was', 'VERB'), ('a', 'DET'), ...]
+
+
 
 ---------------------
 Corpus Reader Classes
@@ -980,7 +1143,7 @@ parenthesis-delineated parse trees.
 Automatically Created Corpus Reader Instances
 =============================================
 
-When then `nltk.corpus` module is imported, it automatically creates a
+When the `nltk.corpus` module is imported, it automatically creates a
 set of corpus reader instances that can be used to access the corpora
 in the NLTK data distribution.  Here is a small sample of those
 corpus reader instances:
@@ -1033,7 +1196,7 @@ we can create a customized corpus reader for the genesis corpus that
 uses a different sentence tokenizer as follows:
 
     >>> # Find the directory where the corpus lives.
-    >>> genesis_dir = nltk.data.find('corpora/genesis.zip').join('genesis/')
+    >>> genesis_dir = nltk.data.find('corpora/genesis')
     >>> # Create our custom sentence tokenizer.
     >>> my_sent_tokenizer = nltk.RegexpTokenizer('[^.!?]+')
     >>> # Create the new corpus reader object.
@@ -1052,7 +1215,7 @@ reader for it with::
     ...     '/usr/share/some-corpus', '.*\.txt') # doctest: +SKIP
 
 For a complete list of corpus reader subclasses, see the API
-documentation for `nltk.corpus.CorpusReader`.
+documentation for `nltk.corpus.reader`.
 
 Corpus Types
 ============
@@ -1107,7 +1270,7 @@ path to the root directory is stored in the ``root`` property:
 
 Each file within the corpus is identified by a platform-independent
 identifier, which is basically a path string that uses ``/`` as the
-path seperator.  I.e., this identifier can be converted to a relative
+path separator.  I.e., this identifier can be converted to a relative
 path as follows:
 
     >>> some_corpus_file_id = nltk.corpus.reuters.fileids()[0]
@@ -1247,7 +1410,7 @@ list), but does not store the data elements in memory; instead, data
 elements are read from the underlying data files on an as-needed
 basis.
 
-By only loading items from the file on an as-needesd basis, corpus
+By only loading items from the file on an as-needed basis, corpus
 views maintain both memory efficiency and responsiveness.  The memory
 efficiency of corpus readers is important because some corpora contain
 very large amounts of data, and storing the entire data set in memory
@@ -1270,7 +1433,7 @@ Writing New Corpus Readers
 
 In order to add support for new corpus formats, it is necessary to
 define new corpus reader classes.  For many corpus formats, writing
-new corpus readers is relatively streight-forward.  In this section,
+new corpus readers is relatively straight-forward.  In this section,
 we'll describe what's involved in creating a new corpus reader.  If
 you do create a new corpus reader, we encourage you to contribute it
 back to the NLTK project.
@@ -1332,11 +1495,12 @@ then you can often just inherit the base class's constructor.
 
 Data Access Methods
 ~~~~~~~~~~~~~~~~~~~
+
 The most common type of data access method takes an argument
 identifying which files to access, and returns a view covering those
-files.  This argument may be a a single file identifier string (to get
-a view for a specific file); a list of file identifier strings (to get
-a view for a specific list of files); or None (to get a view for the
+files.  This argument may be a single file identifier string (to get a
+view for a specific file); a list of file identifier strings (to get a
+view for a specific list of files); or None (to get a view for the
 entire corpus).  The method's implementation converts this argument to
 a list of path names using the `abspaths()` method, which handles all
 three value types (string, list, and None):
@@ -1402,7 +1566,7 @@ This simple block reader reads a single line at a time, and returns a
 single token (consisting of a string) for each whitespace-separated
 substring on the line.  A `StreamBackedCorpusView` built from this
 block reader will act like a read-only list of all the
-whitespace-seperated tokens in an underlying file.
+whitespace-separated tokens in an underlying file.
 
 When deciding how to define the block reader for a given corpus,
 careful consideration should be given to the size of blocks handled by
@@ -1470,7 +1634,7 @@ Plaintext Corpus Reader
 The plaintext corpus reader is used to access corpora that consist of
 unprocessed plaintext data.  It assumes that paragraph breaks are
 indicated by blank lines.  Sentences and words can be tokenized using
-the default tokenizers, or by custom tokenizers specificed as
+the default tokenizers, or by custom tokenizers specified as
 parameters to the constructor.
 
     >>> root = make_testcorpus(ext='.txt',
@@ -2042,7 +2206,6 @@ access to its tuples() method
     >>> from nltk.corpus import qc
     >>> qc.tuples('test.txt')
     [('NUM:dist', 'How far is it from Denver to Aspen ?'), ('LOC:city', 'What county is Modesto , California in ?'), ...]
-
 
 
 

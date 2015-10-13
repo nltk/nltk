@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Text Trees
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
@@ -685,6 +685,16 @@ class Tree(list):
         from nltk.draw.tree import draw_trees
         draw_trees(self)
 
+    def pretty_print(self, sentence=None, highlight=(), stream=None, **kwargs):
+        """
+        Pretty-print this tree as ASCII or Unicode art.
+        For explanation of the arguments, see the documentation for
+        `nltk.treeprettyprinter.TreePrettyPrinter`.
+        """
+        from nltk.treeprettyprinter import TreePrettyPrinter
+        print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs),
+              file=stream)
+        
     def __repr__(self):
         childstr = ", ".join(unicode_repr(c) for c in self)
         return '%s(%s, [%s])' % (type(self).__name__, unicode_repr(self._label), childstr)
@@ -715,8 +725,7 @@ class Tree(list):
             _canvas_frame.destroy_widget(widget)
             subprocess.call([find_binary('gs', binary_names=['gswin32c.exe', 'gswin64c.exe'], env_vars=['PATH'], verbose=False)] +
                             '-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={0:} {1:}'
-                            .format(out_path, in_path).split(),
-                            shell=True)
+                            .format(out_path, in_path).split())
             with open(out_path, 'rb') as sr:
                 res = sr.read()
             os.remove(in_path)
@@ -724,9 +733,21 @@ class Tree(list):
             return base64.b64encode(res).decode()
 
     def __str__(self):
-        return self.pprint()
+        return self.pformat()
 
-    def pprint(self, margin=70, indent=0, nodesep='', parens='()', quotes=False):
+    def pprint(self, **kwargs):
+        """
+        Print a string representation of this Tree to 'stream'
+        """
+
+        if "stream" in kwargs:
+            stream = kwargs["stream"]
+            del kwargs["stream"]
+        else:
+            stream = None
+        print(self.pformat(**kwargs), file=stream)
+
+    def pformat(self, margin=70, indent=0, nodesep='', parens='()', quotes=False):
         """
         :return: A pretty-printed string representation of this tree.
         :rtype: str
@@ -742,8 +763,8 @@ class Tree(list):
         """
 
         # Try writing it on one line.
-        s = self._pprint_flat(nodesep, parens, quotes)
-        if len(s)+indent < margin:
+        s = self._pformat_flat(nodesep, parens, quotes)
+        if len(s) + indent < margin:
             return s
 
         # If it doesn't fit on one line, then write it on multi-lines.
@@ -753,7 +774,7 @@ class Tree(list):
             s = '%s%s%s' % (parens[0], unicode_repr(self._label), nodesep)
         for child in self:
             if isinstance(child, Tree):
-                s += '\n'+' '*(indent+2)+child.pprint(margin, indent+2,
+                s += '\n'+' '*(indent+2)+child.pformat(margin, indent+2,
                                                   nodesep, parens, quotes)
             elif isinstance(child, tuple):
                 s += '\n'+' '*(indent+2)+ "/".join(child)
@@ -763,7 +784,7 @@ class Tree(list):
                 s += '\n'+' '*(indent+2)+ unicode_repr(child)
         return s+parens[1]
 
-    def pprint_latex_qtree(self):
+    def pformat_latex_qtree(self):
         r"""
         Returns a representation of the tree compatible with the
         LaTeX qtree package. This consists of the string ``\Tree``
@@ -783,14 +804,14 @@ class Tree(list):
         """
         reserved_chars = re.compile('([#\$%&~_\{\}])')
 
-        pprint = self.pprint(indent=6, nodesep='', parens=('[.', ' ]'))
-        return r'\Tree ' + re.sub(reserved_chars, r'\\\1', pprint)
+        pformat = self.pformat(indent=6, nodesep='', parens=('[.', ' ]'))
+        return r'\Tree ' + re.sub(reserved_chars, r'\\\1', pformat)
 
-    def _pprint_flat(self, nodesep, parens, quotes):
+    def _pformat_flat(self, nodesep, parens, quotes):
         childstrs = []
         for child in self:
             if isinstance(child, Tree):
-                childstrs.append(child._pprint_flat(nodesep, parens, quotes))
+                childstrs.append(child._pformat_flat(nodesep, parens, quotes))
             elif isinstance(child, tuple):
                 childstrs.append("/".join(child))
             elif isinstance(child, string_types) and not quotes:
@@ -1391,7 +1412,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __repr__(self):
         return '%s (p=%r)' % (Tree.unicode_repr(self), self.prob())
     def __str__(self):
-        return '%s (p=%.6g)' % (self.pprint(margin=60), self.prob())
+        return '%s (p=%.6g)' % (self.pformat(margin=60), self.prob())
     def copy(self, deep=False):
         if not deep: return type(self)(self._label, self, prob=self.prob())
         else: return type(self).convert(self)
@@ -1433,7 +1454,7 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def __repr__(self):
         return '%s [%s]' % (Tree.unicode_repr(self), self.prob())
     def __str__(self):
-        return '%s [%s]' % (self.pprint(margin=60), self.prob())
+        return '%s [%s]' % (self.pformat(margin=60), self.prob())
     def copy(self, deep=False):
         if not deep: return type(self)(self._label, self, prob=self.prob())
         else: return type(self).convert(self)
@@ -1556,14 +1577,14 @@ def demo():
     print()
 
     # Demonstrate parsing of treebank output format.
-    t = Tree.fromstring(t.pprint())
+    t = Tree.fromstring(t.pformat())
     print("Convert tree to bracketed string and back again:")
     print(t)
     print()
 
     # Demonstrate LaTeX output
     print("LaTeX output:")
-    print(t.pprint_latex_qtree())
+    print(t.pformat_latex_qtree())
     print()
 
     # Demonstrate Productions
@@ -1580,6 +1601,3 @@ __all__ = ['ImmutableProbabilisticTree', 'ImmutableTree', 'ProbabilisticMixIn',
            'sinica_parse', 'ParentedTree', 'MultiParentedTree',
            'ImmutableParentedTree', 'ImmutableMultiParentedTree']
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

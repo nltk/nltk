@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
@@ -268,7 +268,7 @@ def postag(
             print("Wrote plot of learning curve to {0}".format(learning_curve_output))
     else:
         print("Tagging the test data")
-        taggedtest = brill_tagger.batch_tag(testing_data)
+        taggedtest = brill_tagger.tag_sents(testing_data)
         if template_stats:
             brill_tagger.print_template_statistics()
 
@@ -276,20 +276,19 @@ def postag(
     if error_output is not None:
         with open(error_output, 'w') as f:
             f.write('Errors for Brill Tagger %r\n\n' % serialize_output)
-            for e in error_list(gold_data, taggedtest):
-                f.write(e+'\n')
+            f.write(u'\n'.join(error_list(gold_data, taggedtest)).encode('utf-8') + '\n')
         print("Wrote tagger errors including context to {0}".format(error_output))
 
     # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
-        taggedtest = brill_tagger.batch_tag(testing_data)
+        taggedtest = brill_tagger.tag_sents(testing_data)
         with open(serialize_output, 'w') as print_rules:
             pickle.dump(brill_tagger, print_rules)
         print("Wrote pickled tagger to {0}".format(serialize_output))
         with open(serialize_output, "r") as print_rules:
             brill_tagger_reloaded = pickle.load(print_rules)
         print("Reloaded pickled tagger from {0}".format(serialize_output))
-        taggedtest_reloaded = brill_tagger.batch_tag(testing_data)
+        taggedtest_reloaded = brill_tagger.tag_sents(testing_data)
         if taggedtest == taggedtest_reloaded:
             print("Reloaded tagger tried on test set, results identical")
         else:

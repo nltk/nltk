@@ -2,11 +2,11 @@
 
 cd `dirname $0`
 
-#download nltk data packages
-python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
-
 #download nltk python dependencies
 pip install --upgrade -r pip-req.txt --allow-external matplotlib --allow-unverified matplotlib
+
+#download nltk data packages
+python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
 
 #download external dependencies
 pushd ${HOME}
@@ -33,6 +33,21 @@ if [[ ! -d ${stanford_tagger_package_name} ]]; then
 	rm ${stanford_tagger_package_zip_name}
 	ln -s ${stanford_tagger_package_name} 'stanford-postagger'
 fi
+
+# Download SENNA 
+senna_file_name=$(curl -s 'http://ml.nec-labs.com/senna/download.html' | grep -o 'senna-v.*.tgz' | head -n1)
+senna_folder_name='senna'
+if [[ ! -d $senna_folder_name ]]; then
+        wget -nv "http://ml.nec-labs.com/senna/$senna_file_name"
+        tar -xvzf ${senna_file_name}
+        rm ${senna_file_name}       
+fi
+
+# Setup the Enviroment variable 
+export STANFORD_PARSER=$(pwd)'/stanford-parser'
+export STANFORD_MODELS=$(pwd)'/stanford-parser'
+export STANFORD_POSTAGGER=$(pwd)'/stanford-postagger'
+export SENNA=$(pwd)'/senna'
 
 popd
 popd

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: TextTiling
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: George Boutsioukis
 #
 # URL: <http://nltk.org/>
@@ -52,6 +52,15 @@ class TextTilingTokenizer(TokenizerI):
     :param cutoff_policy: The policy used to determine the number of boundaries:
       `HC` (default) or `LC`
     :type cutoff_policy: constant
+
+    >>> from nltk.corpus import brown
+    >>> tt = TextTilingTokenizer(demo_mode=True)
+    >>> text = brown.raw()[:10000]
+    >>> s, ss, d, b = tt.tokenize(text)
+    >>> b
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+     0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
+     0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0]
     """
 
     def __init__(self,
@@ -284,7 +293,7 @@ class TextTilingTokenizer(TokenizerI):
 
         depth_tuples = sorted(zip(depth_scores, range(len(depth_scores))))
         depth_tuples.reverse()
-        hp = filter(lambda x:x[0]>cutoff, depth_tuples)
+        hp = list(filter(lambda x:x[0]>cutoff, depth_tuples))
 
         for dt in hp:
             boundaries[dt[1]] = 1
@@ -414,7 +423,7 @@ def smooth(x,window_len=11,window='flat'):
     if x.size < window_len:
         raise ValueError("Input vector needs to be bigger than window size.")
 
-    if window_len<3:
+    if window_len < 3:
         return x
 
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
@@ -424,31 +433,28 @@ def smooth(x,window_len=11,window='flat'):
 
     #print(len(s))
     if window == 'flat': #moving average
-        w=numpy.ones(window_len,'d')
+        w = numpy.ones(window_len,'d')
     else:
-        w=eval('numpy.'+window+'(window_len)')
+        w = eval('numpy.' + window + '(window_len)')
 
-    y=numpy.convolve(w/w.sum(),s,mode='same')
+    y = numpy.convolve(w/w.sum(), s, mode='same')
 
     return y[window_len-1:-window_len+1]
 
 
 def demo(text=None):
     from nltk.corpus import brown
-    import pylab
-    tt=TextTilingTokenizer(demo_mode=True)
-    if text is None: text=brown.raw()[:10000]
-    s,ss,d,b=tt.tokenize(text)
+    from matplotlib import pylab
+    tt = TextTilingTokenizer(demo_mode=True)
+    if text is None: text = brown.raw()[:10000]
+    s, ss, d, b = tt.tokenize(text)
     pylab.xlabel("Sentence Gap index")
     pylab.ylabel("Gap Scores")
     pylab.plot(range(len(s)), s, label="Gap Scores")
     pylab.plot(range(len(ss)), ss, label="Smoothed Gap scores")
     pylab.plot(range(len(d)), d, label="Depth scores")
-    pylab.stem(range(len(b)),b)
+    pylab.stem(range(len(b)), b)
     pylab.legend()
     pylab.show()
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

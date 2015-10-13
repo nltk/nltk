@@ -1,6 +1,6 @@
 # CHILDES XML Corpus Reader
 
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
 # URL: <http://nltk.org/>
@@ -270,7 +270,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
             # select speakers
             if speaker == 'ALL' or xmlsent.get('who') in speaker:
                 for xmlword in xmlsent.findall('.//{%s}w' % NS):
-                    infl = None ; suffixStem = None
+                    infl = None ; suffixStem = None; suffixTag = None
                     # getting replaced words
                     if replace and xmlsent.find('.//{%s}w/{%s}replacement'
                                                 % (NS,NS)):
@@ -307,6 +307,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
                             suffixStem = xmlsuffix.text
                         except AttributeError:
                             suffixStem = ""
+                        if suffixStem:
+                            word += "~"+suffixStem
                     # pos
                     if relation or pos:
                         try:
@@ -316,11 +318,22 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                 tag = xmlpos[0].text+":"+xmlpos2[0].text
                             else:
                                 tag = xmlpos[0].text
-                            word = (word,tag)
                         except (AttributeError,IndexError) as e:
-                            word = (word,None)
-                            if suffixStem:
-                                suffixStem = (suffixStem,None)
+                            tag = ""
+                        try:
+                            xmlsuffixpos = xmlword.findall('.//{%s}mor/{%s}mor-post/{%s}mw/{%s}pos/{%s}c'
+                                                     % (NS,NS,NS,NS,NS))
+                            xmlsuffixpos2 = xmlword.findall('.//{%s}mor/{%s}mor-post/{%s}mw/{%s}pos/{%s}s'
+                                                     % (NS,NS,NS,NS,NS))
+                            if xmlsuffixpos2:
+                                suffixTag = xmlsuffixpos[0].text+":"+xmlsuffixpos2[0].text
+                            else:
+                                suffixTag = xmlsuffixpos[0].text
+                        except:
+                            pass
+                        if suffixTag:
+                            tag += "~"+suffixTag
+                        word = (word, tag)
                     # relational
                     # the gold standard is stored in
                     # <mor></mor><mor type="trn"><gra type="grt">
@@ -357,8 +370,6 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         except:
                             pass
                     sents.append(word)
-                    if suffixStem:
-                        sents.append(suffixStem)
                 if sent or relation:
                     results.append(sents)
                 else:
@@ -480,3 +491,4 @@ def demo(corpus_root=None):
 
 if __name__ == "__main__":
     demo()
+

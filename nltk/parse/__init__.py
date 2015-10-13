@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Parsers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -68,10 +68,13 @@ from nltk.parse.recursivedescent import (RecursiveDescentParser,
 from nltk.parse.shiftreduce import (ShiftReduceParser, SteppingShiftReduceParser)
 from nltk.parse.util import load_parser, TestGrammar, extract_test_sentences
 from nltk.parse.viterbi import ViterbiParser
-from nltk.parse.dependencygraph import DependencyGraph, nx_graph
+from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.projectivedependencyparser import (ProjectiveDependencyParser,
                                                    ProbabilisticProjectiveDependencyParser)
 from nltk.parse.nonprojectivedependencyparser import (NonprojectiveDependencyParser,
                                                       NaiveBayesDependencyScorer,
                                                       ProbabilisticNonprojectiveParser)
 from nltk.parse.malt import MaltParser
+from nltk.parse.evaluate import DependencyEvaluator
+from nltk.parse.transitionparser import TransitionParser
+from nltk.parse.bllip import BllipParser

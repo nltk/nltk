@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Plaintext Corpus Reader
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -22,7 +22,7 @@ class BNCCorpusReader(XMLCorpusReader):
     http://www.ota.ox.ac.uk/desc/2554
 
     If you extracted the archive to a directory called `BNC`, then you can
-    instantiate the reder as::
+    instantiate the reader as::
 
         BNCCorpusReader(root='BNC/Texts/', fileids=r'[A-K]/\w*/\w*\.xml')
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sequential Backoff Taggers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 #         Tiago Tresoldi <tresoldi@users.sf.net> (original affix tagger)
@@ -22,7 +22,7 @@ from __future__ import print_function, unicode_literals
 import re
 
 from nltk.probability import ConditionalFreqDist
-from nltk.classify.naivebayes import NaiveBayesClassifier
+from nltk.classify import NaiveBayesClassifier
 from nltk.compat import python_2_unicode_compatible
 
 from nltk.tag.api import TaggerI, FeaturesetTaggerI
@@ -216,7 +216,7 @@ class DefaultTagger(SequentialBackoffTagger):
     """
     A tagger that assigns the same tag to every token.
 
-        >>> from nltk.tag.sequential import DefaultTagger
+        >>> from nltk.tag import DefaultTagger
         >>> default_tagger = DefaultTagger('NN')
         >>> list(default_tagger.tag('This is a test'.split()))
         [('This', 'NN'), ('is', 'NN'), ('a', 'NN'), ('test', 'NN')]
@@ -308,7 +308,7 @@ class UnigramTagger(NgramTagger):
     corpus, and then uses that information to assign tags to new tokens.
 
         >>> from nltk.corpus import brown
-        >>> from nltk.tag.sequential import UnigramTagger
+        >>> from nltk.tag import UnigramTagger
         >>> test_sent = brown.sents(categories='news')[0]
         >>> unigram_tagger = UnigramTagger(brown.tagged_sents(categories='news')[:500])
         >>> for tok, tag in unigram_tagger.tag(test_sent):
@@ -491,7 +491,7 @@ class RegexpTagger(SequentialBackoffTagger):
     of speech tag:
 
         >>> from nltk.corpus import brown
-        >>> from nltk.tag.sequential import RegexpTagger
+        >>> from nltk.tag import RegexpTagger
         >>> test_sent = brown.sents(categories='news')[0]
         >>> regexp_tagger = RegexpTagger(
         ...     [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
@@ -741,6 +741,3 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
         return features
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

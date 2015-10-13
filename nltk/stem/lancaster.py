@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Tomcavage <stomcava@law.upenn.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -308,6 +308,3 @@ class LancasterStemmer(StemmerI):
         return '<LancasterStemmer>'
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

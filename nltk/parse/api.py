@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Parser API
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -32,7 +32,7 @@ class ParserI(object):
         """
         raise NotImplementedError()
 
-    def parse(self, sent):
+    def parse(self, sent, *args, **kwargs):
         """
         :return: An iterator that generates parse trees for the sentence.
         When possible this list is sorted from most likely to least likely.
@@ -42,25 +42,25 @@ class ParserI(object):
         :rtype: iter(Tree)
         """
         if overridden(self.parse_sents):
-            return next(self.parse_sents([sent]))
+            return next(self.parse_sents([sent], *args, **kwargs))
         elif overridden(self.parse_one):
-            return (tree for tree in [self.parse_one(sent)] if tree is not None)
+            return (tree for tree in [self.parse_one(sent, *args, **kwargs)] if tree is not None)
         elif overridden(self.parse_all):
-            return iter(self.parse_all(sent))
+            return iter(self.parse_all(sent, *args, **kwargs))
         else:
             raise NotImplementedError()
 
-    def parse_sents(self, sents):
+    def parse_sents(self, sents, *args, **kwargs):
         """
         Apply ``self.parse()`` to each element of ``sents``.
         :rtype: iter(iter(Tree))
         """
-        return (self.parse(sent) for sent in sents)
+        return (self.parse(sent, *args, **kwargs) for sent in sents)
 
-    def parse_all(self, sent):
+    def parse_all(self, sent, *args, **kwargs):
         """:rtype: list(Tree)"""
-        return list(self.parse(sent))
+        return list(self.parse(sent, *args, **kwargs))
 
-    def parse_one(self, sent):
+    def parse_one(self, sent, *args, **kwargs):
         """:rtype: Tree or None"""
-        return next(self.parse(sent), None)
+        return next(self.parse(sent, *args, **kwargs), None)

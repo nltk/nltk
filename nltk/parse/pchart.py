@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Probabilistic Chart Parsers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -212,7 +212,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         # Initialize the chart.
         for edge in bu_init.apply(chart, grammar):
             if self._trace > 1:
-                print('  %-50s [%s]' % (chart.pp_edge(edge,width=2),
+                print('  %-50s [%s]' % (chart.pretty_format_edge(edge,width=2),
                                         edge.prob()))
             queue.append(edge)
 
@@ -227,7 +227,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             # Get the best edge.
             edge = queue.pop()
             if self._trace > 0:
-                print('  %-50s [%s]' % (chart.pp_edge(edge,width=2),
+                print('  %-50s [%s]' % (chart.pretty_format_edge(edge,width=2),
                                         edge.prob()))
 
             # Apply BU & FR to it.
@@ -294,7 +294,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             split = len(queue)-self.beam_size
             if self._trace > 2:
                 for edge in queue[:split]:
-                    print('  %-50s [DISCARDED]' % chart.pp_edge(edge,2))
+                    print('  %-50s [DISCARDED]' % chart.pretty_format_edge(edge,2))
             del queue[:split]
 
 class InsideChartParser(BottomUpProbabilisticChartParser):
@@ -397,10 +397,47 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     summary of the results are displayed.
     """
     import sys, time
-    from nltk import tokenize, toy_pcfg1, toy_pcfg2
+    from nltk import tokenize
     from nltk.parse import pchart
 
     # Define two demos.  Each demo has a sentence and a grammar.
+    toy_pcfg1 = PCFG.fromstring("""
+    S -> NP VP [1.0]
+    NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
+    Det -> 'the' [0.8] | 'my' [0.2]
+    N -> 'man' [0.5] | 'telescope' [0.5]
+    VP -> VP PP [0.1] | V NP [0.7] | V [0.2]
+    V -> 'ate' [0.35] | 'saw' [0.65]
+    PP -> P NP [1.0]
+    P -> 'with' [0.61] | 'under' [0.39]
+    """)
+
+    toy_pcfg2 = PCFG.fromstring("""
+    S    -> NP VP         [1.0]
+    VP   -> V NP          [.59]
+    VP   -> V             [.40]
+    VP   -> VP PP         [.01]
+    NP   -> Det N         [.41]
+    NP   -> Name          [.28]
+    NP   -> NP PP         [.31]
+    PP   -> P NP          [1.0]
+    V    -> 'saw'         [.21]
+    V    -> 'ate'         [.51]
+    V    -> 'ran'         [.28]
+    N    -> 'boy'         [.11]
+    N    -> 'cookie'      [.12]
+    N    -> 'table'       [.13]
+    N    -> 'telescope'   [.14]
+    N    -> 'hill'        [.5]
+    Name -> 'Jack'        [.52]
+    Name -> 'Bob'         [.48]
+    P    -> 'with'        [.61]
+    P    -> 'under'       [.39]
+    Det  -> 'the'         [.41]
+    Det  -> 'a'           [.31]
+    Det  -> 'my'          [.28]
+    """)
+
     demos = [('I saw John with my telescope', toy_pcfg1),
              ('the boy saw Jack with Bob under the table with a telescope',
               toy_pcfg2)]

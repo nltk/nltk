@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
 # URL: <http://nltk.org/>
@@ -12,7 +12,7 @@ from collections import defaultdict
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
                           ProbabilisticDependencyGrammar)
-from nltk.parse.dependencygraph import DependencyGraph, conll_data2
+from nltk.parse.dependencygraph import DependencyGraph
 from nltk.internals import raise_unorderable_types
 from nltk.compat import total_ordering, python_2_unicode_compatible
 
@@ -191,7 +191,9 @@ class ProjectiveDependencyParser(object):
 #            malt_format = ""
             for i in range(len(tokens)):
 #                malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
-                conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'null', '-', '-')
+                #conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'null', '-', '-')
+                # Modify to comply with the new Dependency Graph requirement (at least must have an root elements) 
+                conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'ROOT', '-', '-')
             dg = DependencyGraph(conll_format)
 #           if self.meets_arity(dg):
             yield dg.tree()
@@ -232,20 +234,36 @@ class ProjectiveDependencyParser(object):
         return spans
 
 
-
 #################################################################
 # Parsing  with Probabilistic Dependency Grammars
 #################################################################
 
+
 class ProbabilisticProjectiveDependencyParser(object):
-    """
-    A probabilistic, projective dependency parser.  This parser returns
-    the most probable projective parse derived from the probabilistic
-    dependency grammar derived from the train() method.  The probabilistic
-    model is an implementation of Eisner's (1996) Model C, which conditions
-    on head-word, head-tag, child-word, and child-tag.  The decoding
-    uses a bottom-up chart-based span concatenation algorithm that's
-    identical to the one utilized by the rule-based projective parser.
+    """A probabilistic, projective dependency parser.
+
+    This parser returns the most probable projective parse derived from the
+    probabilistic dependency grammar derived from the train() method.  The
+    probabilistic model is an implementation of Eisner's (1996) Model C, which
+    conditions on head-word, head-tag, child-word, and child-tag.  The decoding
+    uses a bottom-up chart-based span concatenation algorithm that's identical
+    to the one utilized by the rule-based projective parser.
+
+    Usage example
+    -------------
+    >>> from nltk.parse.dependencygraph import conll_data2
+
+    >>> graphs = [
+    ... DependencyGraph(entry) for entry in conll_data2.split('\\n\\n') if entry
+    ... ]
+
+    >>> ppdp = ProbabilisticProjectiveDependencyParser()
+    >>> ppdp.train(graphs)
+
+    >>> sent = ['Cathy', 'zag', 'hen', 'wild', 'zwaaien', '.']
+    >>> list(ppdp.parse(sent))
+    [Tree('zag', ['Cathy', 'hen', Tree('zwaaien', ['wild', '.'])])]
+
     """
 
     def __init__(self):
@@ -253,7 +271,6 @@ class ProbabilisticProjectiveDependencyParser(object):
         Create a new probabilistic dependency parser.  No additional
         operations are necessary.
         """
-        print('')
 
     def parse(self, tokens):
         """
@@ -291,9 +308,11 @@ class ProbabilisticProjectiveDependencyParser(object):
             malt_format = ""
             for i in range(len(tokens)):
                 malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
-                conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'null', '-', '-')
+                #conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'null', '-', '-')
+                # Modify to comply with recent change in dependency graph such that there must be a ROOT element. 
+                conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'ROOT', '-', '-')
             dg = DependencyGraph(conll_format)
-            score = self.compute_prob(dg)
+            score = self.compute_prob(dg)            
             trees.append((score, dg.tree()))
         trees.sort()
         return (tree for (score, tree) in trees)
@@ -346,14 +365,17 @@ class ProbabilisticProjectiveDependencyParser(object):
         events = defaultdict(int)
         tags = {}
         for dg in graphs:
-            for node_index in range(1,len(dg.nodelist)):
-                children = dg.nodelist[node_index]['deps']
+            for node_index in range(1, len(dg.nodes)):
+                #children = dg.nodes[node_index]['deps']
+                # Put list so that in will work in python 3
+                children = sum(list(dg.nodes[node_index]['deps'].values()), [])
+                
                 nr_left_children = dg.left_children(node_index)
                 nr_right_children = dg.right_children(node_index)
                 nr_children = nr_left_children + nr_right_children
                 for child_index in range(0 - (nr_left_children + 1), nr_right_children + 2):
-                    head_word = dg.nodelist[node_index]['word']
-                    head_tag = dg.nodelist[node_index]['tag']
+                    head_word = dg.nodes[node_index]['word']
+                    head_tag = dg.nodes[node_index]['tag']
                     if head_word in tags:
                         tags[head_word].add(head_tag)
                     else:
@@ -365,11 +387,11 @@ class ProbabilisticProjectiveDependencyParser(object):
                     if child_index < 0:
                         array_index = child_index + nr_left_children
                         if array_index >= 0:
-                            child = dg.nodelist[children[array_index]]['word']
-                            child_tag = dg.nodelist[children[array_index]]['tag']
+                            child = dg.nodes[children[array_index]]['word']
+                            child_tag = dg.nodes[children[array_index]]['tag']
                         if child_index != -1:
-                            prev_word = dg.nodelist[children[array_index + 1]]['word']
-                            prev_tag =  dg.nodelist[children[array_index + 1]]['tag']
+                            prev_word = dg.nodes[children[array_index + 1]]['word']
+                            prev_tag = dg.nodes[children[array_index + 1]]['tag']
                         if child != 'STOP':
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) left))' % (child, child_tag, prev_tag, head_word, head_tag)
@@ -379,11 +401,11 @@ class ProbabilisticProjectiveDependencyParser(object):
                     elif child_index > 0:
                         array_index = child_index + nr_left_children - 1
                         if array_index < nr_children:
-                            child = dg.nodelist[children[array_index]]['word']
-                            child_tag = dg.nodelist[children[array_index]]['tag']
+                            child = dg.nodes[children[array_index]]['word']
+                            child_tag = dg.nodes[children[array_index]]['tag']
                         if child_index != 1:
-                            prev_word = dg.nodelist[children[array_index - 1]]['word']
-                            prev_tag =  dg.nodelist[children[array_index - 1]]['tag']
+                            prev_word = dg.nodes[children[array_index - 1]]['word']
+                            prev_tag =  dg.nodes[children[array_index - 1]]['tag']
                         if child != 'STOP':
                             productions.append(DependencyProduction(head_word, [child]))
                         head_event = '(head (%s %s) (mods (%s, %s, %s) right))' % (child, child_tag, prev_tag, head_word, head_tag)
@@ -391,7 +413,6 @@ class ProbabilisticProjectiveDependencyParser(object):
                         events[head_event] += 1
                         events[mod_event] += 1
         self._grammar = ProbabilisticDependencyGrammar(productions, events, tags)
-#        print self._grammar
 
     def compute_prob(self, dg):
         """
@@ -405,14 +426,16 @@ class ProbabilisticProjectiveDependencyParser(object):
         :rtype: int
         """
         prob = 1.0
-        for node_index in range(1,len(dg.nodelist)):
-            children = dg.nodelist[node_index]['deps']
+        for node_index in range(1, len(dg.nodes)):
+            #children = dg.nodes[node_index]['deps']
+            children = sum(list(dg.nodes[node_index]['deps'].values()), [])
+            
             nr_left_children = dg.left_children(node_index)
             nr_right_children = dg.right_children(node_index)
             nr_children = nr_left_children + nr_right_children
             for child_index in range(0 - (nr_left_children + 1), nr_right_children + 2):
-                head_word = dg.nodelist[node_index]['word']
-                head_tag = dg.nodelist[node_index]['tag']
+                head_word = dg.nodes[node_index]['word']
+                head_tag = dg.nodes[node_index]['tag']
                 child = 'STOP'
                 child_tag = 'STOP'
                 prev_word = 'START'
@@ -420,29 +443,40 @@ class ProbabilisticProjectiveDependencyParser(object):
                 if child_index < 0:
                     array_index = child_index + nr_left_children
                     if array_index >= 0:
-                        child = dg.nodelist[children[array_index]]['word']
-                        child_tag = dg.nodelist[children[array_index]]['tag']
+                        child = dg.nodes[children[array_index]]['word']
+                        child_tag = dg.nodes[children[array_index]]['tag']
                     if child_index != -1:
-                        prev_word = dg.nodelist[children[array_index + 1]]['word']
-                        prev_tag =  dg.nodelist[children[array_index + 1]]['tag']
+                        prev_word = dg.nodes[children[array_index + 1]]['word']
+                        prev_tag = dg.nodes[children[array_index + 1]]['tag']
                     head_event = '(head (%s %s) (mods (%s, %s, %s) left))' % (child, child_tag, prev_tag, head_word, head_tag)
                     mod_event = '(mods (%s, %s, %s) left))' % (prev_tag, head_word, head_tag)
                     h_count = self._grammar._events[head_event]
                     m_count = self._grammar._events[mod_event]
-                    prob *= (h_count / m_count)
+                    
+                    # If the grammar is not covered 
+                    if m_count != 0:
+                        prob *= (h_count / m_count)
+                    else:
+                        prob = 0.00000001  # Very small number  
+                    
                 elif child_index > 0:
                     array_index = child_index + nr_left_children - 1
                     if array_index < nr_children:
-                        child = dg.nodelist[children[array_index]]['word']
-                        child_tag = dg.nodelist[children[array_index]]['tag']
+                        child = dg.nodes[children[array_index]]['word']
+                        child_tag = dg.nodes[children[array_index]]['tag']
                     if child_index != 1:
-                        prev_word = dg.nodelist[children[array_index - 1]]['word']
-                        prev_tag =  dg.nodelist[children[array_index - 1]]['tag']
+                        prev_word = dg.nodes[children[array_index - 1]]['word']
+                        prev_tag = dg.nodes[children[array_index - 1]]['tag']
                     head_event = '(head (%s %s) (mods (%s, %s, %s) right))' % (child, child_tag, prev_tag, head_word, head_tag)
                     mod_event = '(mods (%s, %s, %s) right))' % (prev_tag, head_word, head_tag)
                     h_count = self._grammar._events[head_event]
                     m_count = self._grammar._events[mod_event]
-                    prob *= (h_count / m_count)
+
+                    if m_count != 0:
+                        prob *= (h_count / m_count)
+                    else:
+                        prob = 0.00000001  # Very small number  
+
         return prob
 
 
@@ -520,21 +554,25 @@ def arity_parse_demo():
     for tree in trees:
         print(tree)
 
+
 def projective_prob_parse_demo():
     """
     A demo showing the training and use of a projective
     dependency parser.
     """
+    from nltk.parse.dependencygraph import conll_data2
+
     graphs = [DependencyGraph(entry)
               for entry in conll_data2.split('\n\n') if entry]
     ppdp = ProbabilisticProjectiveDependencyParser()
     print('Training Probabilistic Projective Dependency Parser...')
     ppdp.train(graphs)
+    
     sent = ['Cathy', 'zag', 'hen', 'wild', 'zwaaien', '.']
     print('Parsing \'', " ".join(sent), '\'...')
     print('Parse:')
     for tree in ppdp.parse(sent):
-    	print(tree)
+        print(tree)
 
 if __name__ == '__main__':
     demo()

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the HunPos POS-tagger
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
-#         David Nemeskey <nemeskeyd@gmail.com> (modifications)
-#         Attila Zseder <zseder@gmail.com> (modifications)
+#         Dávid Márk Nemeskey <nemeskeyd@gmail.com> (modifications)
+#         Attila Zséder <zseder@gmail.com> (modifications)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -33,8 +33,8 @@ class HunposTagger(TaggerI):
 
     Example:
 
-        >>> from nltk.tag.hunpos import HunposTagger
-        >>> ht = HunposTagger('english.model')
+        >>> from nltk.tag import HunposTagger
+        >>> ht = HunposTagger('en_wsj.model')
         >>> ht.tag('What is the airspeed of an unladen swallow ?'.split())
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
         >>> ht.close()
@@ -44,7 +44,7 @@ class HunposTagger(TaggerI):
     free system resources. The class supports the context manager interface; if
     used in a with statement, the close() method is invoked automatically:
 
-        >>> with HunposTagger('english.model') as ht:
+        >>> with HunposTagger('en_wsj.model') as ht:
         ...     ht.tag('What is the airspeed of an unladen swallow ?'.split())
         ...
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'VB'), ('?', '.')]
@@ -71,14 +71,15 @@ class HunposTagger(TaggerI):
         hunpos_paths = list(map(os.path.expanduser, hunpos_paths))
 
         self._hunpos_bin = find_binary(
-                'hunpos-tag', path_to_bin,
-                env_vars=('HUNPOS_TAGGER',),
-                searchpath=hunpos_paths,
-                url=_hunpos_url,
-                verbose=verbose)
+            'hunpos-tag', path_to_bin,
+            env_vars=('HUNPOS_TAGGER',),
+            searchpath=hunpos_paths,
+            url=_hunpos_url,
+            verbose=verbose
+        )
 
-        self._hunpos_model = find_file(path_to_model,
-                env_vars=('HUNPOS_TAGGER',), verbose=verbose)
+        self._hunpos_model = find_file(
+            path_to_model, env_vars=('HUNPOS_TAGGER',), verbose=verbose)
         self._encoding = encoding
         self._hunpos = Popen([self._hunpos_bin, self._hunpos_model],
                              shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -106,14 +107,14 @@ class HunposTagger(TaggerI):
             assert "\n" not in token, "Tokens should not contain newlines"
             if isinstance(token, compat.text_type):
                 token = token.encode(self._encoding)
-            self._hunpos.stdin.write(token + "\n")
+            self._hunpos.stdin.write(token + b"\n")
         # We write a final empty line to tell hunpos that the sentence is finished:
-        self._hunpos.stdin.write("\n")
+        self._hunpos.stdin.write(b"\n")
         self._hunpos.stdin.flush()
 
         tagged_tokens = []
         for token in tokens:
-            tagged = self._hunpos.stdout.readline().strip().split("\t")
+            tagged = self._hunpos.stdout.readline().strip().split(b"\t")
             tag = (tagged[1] if len(tagged) > 1 else None)
             tagged_tokens.append((token, tag))
         # We have to read (and dismiss) the final empty line:
@@ -125,10 +126,7 @@ class HunposTagger(TaggerI):
 def setup_module(module):
     from nose import SkipTest
     try:
-        HunposTagger('english.model')
+        HunposTagger('en_wsj.model')
     except LookupError:
         raise SkipTest("HunposTagger is not available")
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

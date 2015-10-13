@@ -1,6 +1,6 @@
 # Natural Language Toolkit: TnT Tagger
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Sam Huston <sjh900@gmail.com>
 #
 # URL: <http://nltk.org/>
@@ -601,7 +601,4 @@ def demo3():
 
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

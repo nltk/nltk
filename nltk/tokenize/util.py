@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizer Utilities
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -88,6 +88,3 @@ def spans_to_relative(spans):
         prev = right
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

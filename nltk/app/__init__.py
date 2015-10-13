@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Applications package
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -39,11 +39,11 @@ else:
     from nltk.app.wordnet_app import app as wordnet
 
     try:
-        import pylab
+        from matplotlib import pylab
     except ImportError:
         import warnings
         warnings.warn("nltk.app.wordfreq not loaded "
-                      "(requires the pylab library).")
+                      "(requires the matplotlib library).")
     else:
         from nltk.app.wordfreq_app import app as wordfreq
 

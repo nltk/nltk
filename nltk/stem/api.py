@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmer Interface
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
@@ -23,6 +23,3 @@ class StemmerI(object):
         raise NotImplementedError()
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

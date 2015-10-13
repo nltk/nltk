@@ -15,10 +15,26 @@ web/_build
 *.errs
 .noseids
 .coverage
+nltk/test/*.html
+nltk/test/tweets*
 
 # editor temporary files
 *.*.sw[op]
 .idea
+*~
 
 # git mergetools backups
 *.orig
+
+# emacs backups
+*#
+
+# spell-check backups
+*.bak
+
+# automatically built files for website
+web/api/*.rst
+
+# iPython notebooks
+
+.ipynb_checkpoints

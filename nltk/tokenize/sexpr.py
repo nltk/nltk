@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Yoav Goldberg <yoavg@cs.bgu.ac.il>
 #         Steven Bird <stevenbird1@gmail.com> (minor edits)
 # URL: <http://nltk.sourceforge.net>
@@ -138,8 +138,5 @@ class SExprTokenizer(TokenizerI):
 sexpr_tokenize = SExprTokenizer().tokenize
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 
 

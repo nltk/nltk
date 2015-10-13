@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dispersion Plots
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,7 +9,7 @@
 A utility for displaying lexical dispersion.
 """
 
-def dispersion_plot(text, words, ignore_case=False):
+def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Plot"):
     """
     Generate a lexical dispersion plot.
 
@@ -22,10 +22,10 @@ def dispersion_plot(text, words, ignore_case=False):
     """
 
     try:
-        import pylab
+        from matplotlib import pylab
     except ImportError:
-        raise ValueError('The plot function requires the matplotlib package (aka pylab).'
-                     'See http://matplotlib.sourceforge.net/')
+        raise ValueError('The plot function requires matplotlib to be installed.'
+                     'See http://matplotlib.org/')
 
     text = list(text)
     words.reverse()
@@ -47,7 +47,7 @@ def dispersion_plot(text, words, ignore_case=False):
     pylab.plot(x, y, "b|", scalex=.1)
     pylab.yticks(list(range(len(words))), words, color="b")
     pylab.ylim(-1, len(words))
-    pylab.title("Lexical Dispersion Plot")
+    pylab.title(title)
     pylab.xlabel("Word Offset")
     pylab.show()
 

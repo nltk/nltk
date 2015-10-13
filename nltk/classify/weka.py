@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to Weka Classsifiers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -138,7 +138,7 @@ class WekaClassifier(ClassifierI):
             return [line.split()[2].split(':')[1]
                     for line in lines[1:] if line.strip()]
         elif lines[0].split() == ['inst#', 'actual', 'predicted',
-                                'error', 'distribution']:
+                                  'error', 'distribution']:
             return [self.parse_weka_distribution(line.split()[-1])
                     for line in lines[1:] if line.strip()]
 
@@ -147,7 +147,8 @@ class WekaClassifier(ClassifierI):
             return [line.split()[1] for line in lines if line.strip()]
 
         else:
-            for line in lines[:10]: print(line)
+            for line in lines[:10]:
+                print(line)
             raise ValueError('Unhandled output format -- your version '
                              'of weka may not be supported.\n'
                              '  Header: %s' % lines[0])
@@ -199,7 +200,8 @@ class WekaClassifier(ClassifierI):
             # Train the weka model.
             cmd = [javaclass, '-d', model_filename, '-t', train_filename]
             cmd += list(options)
-            if quiet: stdout = subprocess.PIPE
+            if quiet:
+                stdout = subprocess.PIPE
             else: stdout = None
             java(cmd, classpath=_weka_classpath, stdout=stdout)
 
@@ -255,7 +257,7 @@ class ARFF_Formatter:
         string (note: not nominal) types.
         """
         # Find the set of all attested labels.
-        labels = set(label for (tok,label) in tokens)
+        labels = set(label for (tok, label) in tokens)
 
         # Determine the types of all features.
         features = {}

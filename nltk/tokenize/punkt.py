@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
@@ -93,18 +93,6 @@ parameters from the given text.
 (without supervision) from portions of text. Using a ``PunktTrainer`` directly
 allows for incremental training and modification of the hyper-parameters used
 to decide what is considered an abbreviation, etc.
-
-:class:`.PunktWordTokenizer` uses a regular expression to divide a text into tokens,
-leaving all periods attached to words, but separating off other punctuation:
-
-    >>> from nltk.tokenize.punkt import PunktWordTokenizer
-    >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
-    >>> PunktWordTokenizer().tokenize(s)
-    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
-    'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
-    >>> PunktWordTokenizer().span_tokenize(s)
-    [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36), (38, 44), 
-    (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
 
 The algorithm for this tokenizer is described in::
 
@@ -306,38 +294,6 @@ numeric tokens are changed to ##number## and hence contain alpha.)"""
 #}
 ######################################################################
 
-
-######################################################################
-#{ Punkt Word Tokenizer
-######################################################################
-
-class PunktWordTokenizer(TokenizerI):
-    # Retained for backward compatibility
-    def __init__(self, lang_vars=PunktLanguageVars()):
-        self._lang_vars = lang_vars
-
-    def tokenize(self, text):
-        return self._lang_vars.word_tokenize(text)
-
-    def span_tokenize(self, text):
-        """
-        Given a text, returns a list of the (start, end) spans of words
-        in the text.
-        """
-        return [(sl.start, sl.stop) for sl in self._slices_from_text(text)]
-
-    def _slices_from_text(self, text):
-        last_break = 0
-        contains_no_words = True
-        for match in self._lang_vars._word_tokenizer_re().finditer(text):
-            contains_no_words = False
-            context = match.group()
-            yield slice(match.start(), match.end())
-        if contains_no_words:
-            yield slice(0, 0) # matches PunktSentenceTokenizer's functionality
-
-#}
-######################################################################
 
 
 #////////////////////////////////////////////////////////////
@@ -1643,6 +1599,3 @@ def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
         print(cleanup(l))
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

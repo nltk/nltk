@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for Corpus Readers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -133,6 +133,18 @@ class CorpusReader(object):
         """
         return self.open("README").read()
 
+    def license(self):
+        """
+        Return the contents of the corpus LICENSE file, if it exists.
+        """
+        return self.open("LICENSE").read()
+
+    def citation(self):
+        """
+        Return the contents of the corpus citation.bib file, if it exists.
+        """
+        return self.open("citation.bib").read()
+
     def fileids(self):
         """
         Return a list of file identifiers for the fileids that make up
@@ -144,8 +156,8 @@ class CorpusReader(object):
         """
         Return the absolute path for the given file.
 
-        :type file: str
-        :param file: The file identifier for the file whose path
+        :type fileid: str
+        :param fileid: The file identifier for the file whose path
             should be returned.
         :rtype: PathPointer
         """

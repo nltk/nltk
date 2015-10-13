@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Naive Bayes Classifiers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -110,7 +110,7 @@ class NaiveBayesClassifier(ClassifierI):
         for label in self._labels:
             for (fname, fval) in featureset.items():
                 if (label, fname) in self._feature_probdist:
-                    feature_probs = self._feature_probdist[label,fname]
+                    feature_probs = self._feature_probdist[label, fname]
                     logprob[label] += feature_probs.logprob(fval)
                 else:
                     # nb: This case will never come up if the
@@ -127,19 +127,20 @@ class NaiveBayesClassifier(ClassifierI):
 
         for (fname, fval) in self.most_informative_features(n):
             def labelprob(l):
-                return cpdist[l,fname].prob(fval)
+                return cpdist[l, fname].prob(fval)
 
             labels = sorted([l for l in self._labels
-                             if fval in cpdist[l,fname].samples()],
+                             if fval in cpdist[l, fname].samples()],
                             key=labelprob)
-            if len(labels) == 1: continue
+            if len(labels) == 1:
+                continue
             l0 = labels[0]
             l1 = labels[-1]
-            if cpdist[l0,fname].prob(fval) == 0:
+            if cpdist[l0, fname].prob(fval) == 0:
                 ratio = 'INF'
             else:
-                ratio = '%8.1f' % (cpdist[l1,fname].prob(fval) /
-                                  cpdist[l0,fname].prob(fval))
+                ratio = '%8.1f' % (cpdist[l1, fname].prob(fval) /
+                                   cpdist[l0, fname].prob(fval))
             print(('%24s = %-14r %6s : %-6s = %s : 1.0' %
                    (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)))
 
@@ -163,7 +164,7 @@ class NaiveBayesClassifier(ClassifierI):
         for (label, fname), probdist in self._feature_probdist.items():
             for fval in probdist.samples():
                 feature = (fname, fval)
-                features.add( feature )
+                features.add(feature)
                 p = probdist.prob(fval)
                 maxprob[feature] = max(p, maxprob[feature])
                 minprob[feature] = min(p, minprob[feature])
@@ -173,11 +174,12 @@ class NaiveBayesClassifier(ClassifierI):
         # Convert features to a list, & sort it by how informative
         # features are.
         features = sorted(features,
-            key=lambda feature_: minprob[feature_]/maxprob[feature_])
+                          key=lambda feature_:
+                          minprob[feature_]/maxprob[feature_])
         return features[:n]
 
-    @staticmethod
-    def train(labeled_featuresets, estimator=ELEProbDist):
+    @classmethod
+    def train(cls, labeled_featuresets, estimator=ELEProbDist):
         """
         :param labeled_featuresets: A list of classified featuresets,
             i.e., a list of tuples ``(featureset, label)``.
@@ -221,9 +223,9 @@ class NaiveBayesClassifier(ClassifierI):
         feature_probdist = {}
         for ((label, fname), freqdist) in feature_freqdist.items():
             probdist = estimator(freqdist, bins=len(feature_values[fname]))
-            feature_probdist[label,fname] = probdist
+            feature_probdist[label, fname] = probdist
 
-        return NaiveBayesClassifier(label_probdist, feature_probdist)
+        return cls(label_probdist, feature_probdist)
 
 ##//////////////////////////////////////////////////////
 ##  Demo

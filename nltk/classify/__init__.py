@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifiers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -94,3 +94,5 @@ from nltk.classify.scikitlearn import SklearnClassifier
 from nltk.classify.maxent import (MaxentClassifier, BinaryMaxentFeatureEncoding,
                                   TypedMaxentFeatureEncoding,
                                   ConditionalExponentialClassifier)
+from nltk.classify.senna import Senna
+from nltk.classify.textcat import TextCat

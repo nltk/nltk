@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: WordNet
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -129,6 +129,3 @@ class SentiSynset(object):
     def __repr__(self):
         return "Senti" + repr(self.synset)
                     
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Clusterer Utilities
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -58,7 +58,6 @@ class VectorSpaceClusterer(ClusterI):
 
         # assign the vectors to clusters
         if assign_clusters:
-            print(self._Tt, vectors)
             return [self.classify(vector) for vector in vectors]
 
     def cluster_vectorspace(self, vectors, trace):

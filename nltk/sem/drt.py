@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
@@ -258,18 +258,15 @@ class DrtExpression(object):
         return self.visit_structured(lambda e: e.eliminate_equality(),
                                      self.__class__)
 
-    def pprint(self):
-        """
-        Draw the DRS
-        """
-        print(self.pretty())
-
-    def pretty(self):
+    def pretty_format(self):
         """
         Draw the DRS
         :return: the pretty print string
         """
         return '\n'.join(self._pretty())
+
+    def pretty_print(self):
+        print(self.pretty_format())
 
     def draw(self):
         DrsDrawer(self).draw()
@@ -1220,15 +1217,21 @@ def demo():
     print(resolve_anaphora(dexpr(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])')))
     print(resolve_anaphora(dexpr(r'(([x,y],[]) + ([],[PRO(x)]))')))
 
-    print('='*20 + 'Test pprint()' + '='*20)
-    dexpr(r"([],[])").pprint()
-    dexpr(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pprint()
-    dexpr(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pprint()
-    dexpr(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pprint()
-    dexpr(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pprint()
+    print('='*20 + 'Test pretty_print()' + '='*20)
+    dexpr(r"([],[])").pretty_print()
+    dexpr(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pretty_print()
+    dexpr(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pretty_print()
+    dexpr(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pretty_print()
+    dexpr(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pretty_print()
 
 
 def test_draw():
+    try:
+        from tkinter import Tk
+    except ImportError:
+        from nose import SkipTest
+        raise SkipTest("tkinter is required, but it's not available.")
+
     expressions = [
             r'x',
             r'([],[])',

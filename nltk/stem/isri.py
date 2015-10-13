@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: The ISRI Arabic Stemmer
 #
-# Copyright (C) 2001-2014 NLTK Proejct
+# Copyright (C) 2001-2015 NLTK Proejct
 # Algorithm: Kazem Taghva, Rania Elkhoury, and Jeffrey Coombs (2005)
 # Author: Hosam Algasaier <hosam_hme@yahoo.com>
 # URL: <http://nltk.org/>
@@ -343,6 +343,3 @@ class ISRIStemmer(StemmerI):
         return word
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

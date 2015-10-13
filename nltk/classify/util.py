@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifier Utility Functions
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -76,16 +76,16 @@ def attested_labels(tokens):
         labels.  A classified token has the form ``(token, label)``.
     :type tokens: list
     """
-    return tuple(set(label for (tok,label) in tokens))
+    return tuple(set(label for (tok, label) in tokens))
 
 def log_likelihood(classifier, gold):
-    results = classifier.prob_classify_many([fs for (fs,l) in gold])
-    ll = [pdist.prob(l) for ((fs,l), pdist) in zip(gold, results)]
+    results = classifier.prob_classify_many([fs for (fs, l) in gold])
+    ll = [pdist.prob(l) for ((fs, l), pdist) in zip(gold, results)]
     return math.log(float(sum(ll))/len(ll))
 
 def accuracy(classifier, gold):
-    results = classifier.classify_many([fs for (fs,l) in gold])
-    correct = [l==r for ((fs,l), r) in zip(gold, results)]
+    results = classifier.classify_many([fs for (fs, l) in gold])
+    correct = [l == r for ((fs, l), r) in zip(gold, results)]
     if correct:
         return float(sum(correct))/len(correct)
     else:
@@ -161,8 +161,8 @@ def binary_names_demo_features(name):
     for letter in 'abcdefghijklmnopqrstuvwxyz':
         features['count(%s)' % letter] = name.lower().count(letter)
         features['has(%s)' % letter] = letter in name.lower()
-        features['startswith(%s)' % letter] = (letter==name[0].lower())
-        features['endswith(%s)' % letter] = (letter==name[-1].lower())
+        features['startswith(%s)' % letter] = (letter == name[0].lower())
+        features['endswith(%s)' % letter] = (letter == name[-1].lower())
     return features
 
 def names_demo(trainer, features=names_demo_features):
@@ -181,17 +181,17 @@ def names_demo(trainer, features=names_demo_features):
 
     # Train up a classifier.
     print('Training classifier...')
-    classifier = trainer( [(features(n), g) for (n,g) in train] )
+    classifier = trainer( [(features(n), g) for (n, g) in train] )
 
     # Run the classifier on the test data.
     print('Testing classifier...')
-    acc = accuracy(classifier, [(features(n),g) for (n,g) in test])
+    acc = accuracy(classifier, [(features(n), g) for (n, g) in test])
     print('Accuracy: %6.4f' % acc)
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
     try:
-        test_featuresets = [features(n) for (n,g) in test]
+        test_featuresets = [features(n) for (n, g) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
@@ -239,13 +239,13 @@ def partial_names_demo(trainer, features=names_demo_features):
 
     # Run the classifier on the test data.
     print('Testing classifier...')
-    acc = accuracy(classifier, [(features(n),m) for (n,m) in test])
+    acc = accuracy(classifier, [(features(n), m) for (n, m) in test])
     print('Accuracy: %6.4f' % acc)
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
     try:
-        test_featuresets = [features(n) for (n,m) in test]
+        test_featuresets = [features(n) for (n, m) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
@@ -275,8 +275,9 @@ def wsd_demo(trainer, word, features, n=1000):
     if word not in _inst_cache:
         _inst_cache[word] = [(i, i.senses[0]) for i in senseval.instances(word)]
     instances = _inst_cache[word][:]
-    if n> len(instances): n = len(instances)
-    senses = list(set(l for (i,l) in instances))
+    if n > len(instances):
+        n = len(instances)
+    senses = list(set(l for (i, l) in instances))
     print('  Senses: ' + ' '.join(senses))
 
     # Randomly split the names into a test & train set.
@@ -288,17 +289,17 @@ def wsd_demo(trainer, word, features, n=1000):
 
     # Train up a classifier.
     print('Training classifier...')
-    classifier = trainer( [(features(i), l) for (i,l) in train] )
+    classifier = trainer([(features(i), l) for (i, l) in train])
 
     # Run the classifier on the test data.
     print('Testing classifier...')
-    acc = accuracy(classifier, [(features(i),l) for (i,l) in test])
+    acc = accuracy(classifier, [(features(i), l) for (i, l) in test])
     print('Accuracy: %6.4f' % acc)
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
     try:
-        test_featuresets = [features(i) for (i,n) in test]
+        test_featuresets = [features(i) for (i, n) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]

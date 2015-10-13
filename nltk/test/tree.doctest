@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2014 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ===============================
@@ -34,10 +34,34 @@ every tree, subtree, and leaf, in prefix order:
 In addition to `str` and `repr`, several methods exist to convert a
 tree object to one of several standard tree encodings:
 
-    >>> print(tree.pprint_latex_qtree())
+    >>> print(tree.pformat_latex_qtree())
     \Tree [.s
             [.dp [.d the ] [.np dog ] ]
             [.vp [.v chased ] [.dp [.d the ] [.np cat ] ] ] ]
+
+There is also a fancy ASCII art representation:
+
+    >>> tree.pretty_print()
+                  s               
+          ________|_____           
+         |              vp        
+         |         _____|___       
+         dp       |         dp    
+      ___|___     |      ___|___   
+     d       np   v     d       np
+     |       |    |     |       |  
+    the     dog chased the     cat
+
+    >>> tree.pretty_print(unicodelines=True, nodedist=4)
+                           s                        
+            ┌──────────────┴────────┐                   
+            │                       vp              
+            │              ┌────────┴──────┐            
+            dp             │               dp       
+     ┌──────┴──────┐       │        ┌──────┴──────┐     
+     d             np      v        d             np
+     │             │       │        │             │     
+    the           dog    chased    the           cat
 
 Trees can be initialized from treebank strings:
 

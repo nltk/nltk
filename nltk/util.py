@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -14,7 +14,7 @@ import pydoc
 import bisect
 import os
 
-from itertools import islice, chain
+from itertools import islice, chain, combinations
 from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info
@@ -460,6 +460,58 @@ def trigrams(sequence, **kwargs):
 
     for item in ngrams(sequence, 3, **kwargs):
         yield item
+
+def everygrams(sequence, min_len=1, max_len=-1):
+    """
+    Returns all possible ngrams generated from a sequence of items, as an iterator.
+    
+        >>> sent = 'a b c'.split()
+        >>> list(everygrams(sent))
+        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
+        >>> list(everygrams(sent, max_len=2))
+        [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c')]
+        
+    :param sequence: the source data to be converted into trigrams
+    :type sequence: sequence or iter
+    :param min_len: minimum length of the ngrams, aka. n-gram order/degree of ngram
+    :type  min_len: int
+    :param max_len: maximum length of the ngrams (set to length of sequence by default)
+    :type  max_len: int
+    :rtype: iter(tuple)
+    """
+    if max_len == -1:
+    	max_len = len(sequence)
+    for n in range(min_len, max_len+1):
+        for ng in ngrams(sequence, n):
+            yield ng
+
+def skipgrams(sequence, n, k):
+    """
+    Returns all possible skipgrams generated from a sequence of items, as an iterator.
+    Skipgrams are ngrams that allows tokens to be skipped.
+    Refer to http://homepages.inf.ed.ac.uk/ballison/pdf/lrec_skipgrams.pdf
+    
+        >>> sent = "Insurgents killed in ongoing fighting".split()
+        >>> list(skipgrams(sent, 2, 2))
+        [('Insurgents', 'killed'), ('Insurgents', 'in'), ('Insurgents', 'ongoing'), ('killed', 'in'), ('killed', 'ongoing'), ('killed', 'fighting'), ('in', 'ongoing'), ('in', 'fighting'), ('ongoing', 'fighting')]
+        >>> list(skipgrams(sent, 3, 2))
+        [('Insurgents', 'killed', 'in'), ('Insurgents', 'killed', 'ongoing'), ('Insurgents', 'killed', 'fighting'), ('Insurgents', 'in', 'ongoing'), ('Insurgents', 'in', 'fighting'), ('Insurgents', 'ongoing', 'fighting'), ('killed', 'in', 'ongoing'), ('killed', 'in', 'fighting'), ('killed', 'ongoing', 'fighting'), ('in', 'ongoing', 'fighting')]
+    
+    :param sequence: the source data to be converted into trigrams
+    :type sequence: sequence or iter
+    :param n: the degree of the ngrams
+    :type n: int
+    :param k: the skip distance
+    :type  k: int
+    :rtype: iter(tuple)
+    """
+    for ngram in ngrams(sequence, n + k, pad_right=True):
+        head = ngram[:1]
+        tail = ngram[1:]
+        for skip_tail in combinations(tail, n - 1):
+            if skip_tail[-1] is None:
+                continue
+            yield head + skip_tail
 
 ##########################################################################
 # Ordered Dictionary

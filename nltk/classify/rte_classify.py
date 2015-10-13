@@ -1,6 +1,6 @@
 # Natural Language Toolkit: RTE Classifier
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -36,7 +36,7 @@ def lemmatize(word):
     """
     Use morphy from WordNet to find the base form of verbs.
     """
-    lemma = nltk.corpus.wordnet.morphy(word, pos='verb')
+    lemma = nltk.corpus.wordnet.morphy(word, pos=nltk.corpus.wordnet.VERB)
     if lemma is not None:
         return lemma
     return word
@@ -53,10 +53,11 @@ class RTEFeatureExtractor(object):
         :type stop: bool
         """
         self.stop = stop
-        self.stopwords = set(['a', 'the', 'it', 'they', 'of', 'in', 'to',
-                              'have', 'is', 'are', 'were', 'and', 'very', '.',','])
+        self.stopwords = set(['a', 'the', 'it', 'they', 'of', 'in', 'to', 'is',
+                              'have', 'are', 'were', 'and', 'very', '.', ','])
 
-        self.negwords = set(['no', 'not', 'never', 'failed' 'rejected', 'denied'])
+        self.negwords = set(['no', 'not', 'never', 'failed', 'rejected',
+                             'denied'])
         # Try to tokenize so that abbreviations like U.S.and monetary amounts
         # like "$23.00" are kept as tokens.
         from nltk.tokenize import RegexpTokenizer
@@ -90,10 +91,12 @@ class RTEFeatureExtractor(object):
         """
         ne_overlap = set(token for token in self._overlap if ne(token))
         if toktype == 'ne':
-            if debug: print("ne overlap", ne_overlap)
+            if debug:
+                print("ne overlap", ne_overlap)
             return ne_overlap
         elif toktype == 'word':
-            if debug: print("word overlap", self._overlap - ne_overlap)
+            if debug:
+                print("word overlap", self._overlap - ne_overlap)
             return self._overlap - ne_overlap
         else:
             raise ValueError("Type not recognized:'%s'" % toktype)
@@ -131,16 +134,21 @@ def rte_classifier(trainer, features=rte_features):
     """
     Classify RTEPairs
     """
-    train = ((pair, pair.value) for pair in nltk.corpus.rte.pairs(['rte1_dev.xml', 'rte2_dev.xml', 'rte3_dev.xml']))
-    test = ((pair, pair.value) for pair in nltk.corpus.rte.pairs(['rte1_test.xml', 'rte2_test.xml', 'rte3_test.xml']))
+    train = ((pair, pair.value) for pair in
+             nltk.corpus.rte.pairs(['rte1_dev.xml', 'rte2_dev.xml',
+                                    'rte3_dev.xml']))
+    test = ((pair, pair.value) for pair in
+            nltk.corpus.rte.pairs(['rte1_test.xml', 'rte2_test.xml',
+                                   'rte3_test.xml']))
 
     # Train up a classifier.
     print('Training classifier...')
-    classifier = trainer( [(features(pair), label) for (pair,label) in train] )
+    classifier = trainer([(features(pair), label) for (pair, label) in train])
 
     # Run the classifier on the test data.
     print('Testing classifier...')
-    acc = accuracy(classifier, [(features(pair), label) for (pair,label) in test])
+    acc = accuracy(classifier, [(features(pair), label)
+                                for (pair, label) in test])
     print('Accuracy: %6.4f' % acc)
 
     # Return the classifier

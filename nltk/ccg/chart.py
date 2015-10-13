@@ -1,13 +1,13 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 The lexicon is constructed by calling
-``lexicon.parseLexicon(<lexicon string>)``.
+``lexicon.fromstring(<lexicon string>)``.
 
 In order to construct a parser, you also need a rule set.
 The standard English rules are provided in chart as
@@ -37,7 +37,7 @@ from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
 from nltk.tree import Tree
 
-from nltk.ccg.lexicon import parseLexicon
+from nltk.ccg.lexicon import fromstring
 from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
                                  BackwardApplication, ForwardComposition,
                                  BackwardComposition, ForwardSubstitution,
@@ -321,7 +321,7 @@ def printCCGTree(lwidth,tree):
 ### Demonstration code
 
 # Construct the lexicon
-lex = parseLexicon('''
+lex = fromstring('''
     :- S, NP, N, VP    # Primitive categories, S is the target primitive
 
     Det :: NP/N         # Family of words

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagset Mapping
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Nathan Schneider <nathan@cmu.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -99,6 +99,3 @@ def map_tag(source, target, source_tag):
     return tagset_mapping(source, target)[source_tag]
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

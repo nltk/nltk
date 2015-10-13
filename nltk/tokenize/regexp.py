@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Trevor Cohn <tacohn@csse.unimelb.edu.au>
@@ -68,9 +68,7 @@ argument.  This differs from the conventions used by Python's
 from __future__ import unicode_literals
 
 import re
-import sre_constants
 
-from nltk.internals import compile_regexp_to_noncapturing
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
 from nltk.compat import python_2_unicode_compatible
@@ -111,17 +109,13 @@ class RegexpTokenizer(TokenizerI):
         self._discard_empty = discard_empty
         self._flags = flags
         self._regexp = None
-
-        # Remove capturing parentheses -- if the regexp contains any
-        # capturing parentheses, then the behavior of re.findall and
-        # re.split will change.
-        try:
-            self._regexp = compile_regexp_to_noncapturing(pattern, flags)
-        except re.error as e:
-            raise ValueError('Error in regular expression %r: %s' %
-                             (pattern, e))
-
+        
+    def _check_regexp(self):
+        if self._regexp is None:
+            self._regexp = re.compile(self._pattern)
+        
     def tokenize(self, text):
+        self._check_regexp()
         # If our regexp matches gaps, use re.split:
         if self._gaps:
             if self._discard_empty:
@@ -134,6 +128,8 @@ class RegexpTokenizer(TokenizerI):
             return self._regexp.findall(text)
 
     def span_tokenize(self, text):
+        self._check_regexp()
+
         if self._gaps:
             for left, right in regexp_span_tokenize(text, self._regexp):
                 if not (self._discard_empty and left == right):
@@ -202,7 +198,4 @@ blankline_tokenize = BlanklineTokenizer().tokenize
 wordpunct_tokenize = WordPunctTokenizer().tokenize
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

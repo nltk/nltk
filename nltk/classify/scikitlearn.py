@@ -35,7 +35,6 @@ from __future__ import print_function, unicode_literals
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 from nltk import compat
-from warnings import warn
 
 try:
     from sklearn.feature_extraction import DictVectorizer

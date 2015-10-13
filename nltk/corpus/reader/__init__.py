@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -93,6 +93,15 @@ from nltk.corpus.reader.framenet import *
 from nltk.corpus.reader.udhr import *
 from nltk.corpus.reader.bnc import *
 from nltk.corpus.reader.sentiwordnet import *
+from nltk.corpus.reader.twitter import *
+from nltk.corpus.reader.nkjp import *
+from nltk.corpus.reader.crubadan import *
+from nltk.corpus.reader.mte import *
+from nltk.corpus.reader.reviews import *
+from nltk.corpus.reader.opinion_lexicon import *
+from nltk.corpus.reader.pros_cons import *
+from nltk.corpus.reader.categorized_sents import *
+from nltk.corpus.reader.comparative_sents import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
@@ -127,5 +136,9 @@ __all__ = [
     'CHILDESCorpusReader', 'AlignedCorpusReader',
     'TimitTaggedCorpusReader', 'LinThesaurusCorpusReader',
     'SemcorCorpusReader', 'FramenetCorpusReader', 'UdhrCorpusReader',
-    'BNCCorpusReader', 'SentiWordNetCorpusReader', 'SentiSynset'
+    'BNCCorpusReader', 'SentiWordNetCorpusReader', 'SentiSynset',
+    'TwitterCorpusReader', 'NKJPCorpusReader', 'CrubadanCorpusReader',
+    'MTECorpusReader', 'ReviewsCorpusReader', 'OpinionLexiconCorpusReader',
+    'ProsConsCorpusReader', 'CategorizedSentencesCorpusReader',
+    'ComparativeSentencesCorpusReader'
 ]

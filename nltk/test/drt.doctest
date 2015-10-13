@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2014 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ================================
@@ -52,9 +52,9 @@ The ``fol()`` method converts DRSs into FOL formulae.
     >>> print(dexpr(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])').fol())
     all x.(man(x) -> walks(x))
 
-In order to visualize a DRS, the ``pprint()`` method can be use.
+In order to visualize a DRS, the ``pretty_format()`` method can be used.
 
-    >>> drs3.pprint()
+    >>> print(drs3.pretty_format())
       _________     __________
      | x       |   | y        |
     (|---------| + |----------|)
@@ -342,7 +342,7 @@ regression tests
     >>> d = dexpr('([x],[A(c), ([y],[B(x,y,z,a)])->([z],[C(x,y,z,a)])])')
     >>> print(d)
     ([x],[A(c), (([y],[B(x,y,z,a)]) -> ([z],[C(x,y,z,a)]))])
-    >>> d.pprint()
+    >>> print(d.pretty_format())
      ____________________________________
     | x                                  |
     |------------------------------------|
@@ -464,13 +464,13 @@ Parse errors
 Pretty Printing
 ===============
 
-    >>> dexpr(r"([],[])").pprint()
+    >>> dexpr(r"([],[])").pretty_print()
      __
     |  |
     |--|
     |__|
 
-    >>> dexpr(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pprint()
+    >>> dexpr(r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])").pretty_print()
      _____________________________
     |                             |
     |-----------------------------|
@@ -487,7 +487,7 @@ Pretty Printing
     |     |_________|             |
     |_____________________________|
 
-    >>> dexpr(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pprint()
+    >>> dexpr(r"([x,y],[x=y]) + ([z],[dog(z), walk(z)])").pretty_print()
       _________     _________
      | x y     |   | z       |
     (|---------| + |---------|)
@@ -495,7 +495,7 @@ Pretty Printing
      |_________|   | walk(z) |
                    |_________|
 
-    >>> dexpr(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pprint()
+    >>> dexpr(r"([],[([x],[]) | ([y],[]) | ([z],[dog(z), walk(z)])])").pretty_print()
      _______________________________
     |                               |
     |-------------------------------|
@@ -507,7 +507,7 @@ Pretty Printing
     |                  |_________|  |
     |_______________________________|
 
-    >>> dexpr(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pprint()
+    >>> dexpr(r"\P.\Q.(([x],[]) + P(x) + Q(x))(\x.([],[dog(x)]))").pretty_print()
               ___                        ________
      \       | x |                 \    |        |
      /\ P Q.(|---| + P(x) + Q(x))( /\ x.|--------|)

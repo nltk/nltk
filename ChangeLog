@@ -1,3 +1,59 @@
+Version 3.0.5 2015-09-05
+* rewritten IBM models, and new IBM Model 4 and 5 implementations
+* new Twitter package
+* stabilized MaltParser API
+* improved regex tagger
+* improved documentation on contributing
+* minor improvements to documentation and testing
+
+Thanks to the following contributors to 3.0.5:
+Álvaro Justen, Dmitrijs Milajevs, Ewan Klein, Heran Lin, Justin Hammar,
+Liling Tan, Long Duong, Lorenzo Rubio, Pierpaolo Pantone, Tah Wei Hoon
+	
+Version 3.0.4 2015-07-13
+* minor bug fixes and enhancements
+
+Thanks to the following contributors to 3.0.4:
+Nicola Bova, Santiago Castro, Len Remmerswaal, Keith Suderman, kabayan55,
+pln-fing-udelar (NLP Group, Instituto de Computación, Facultad de Ingeniería, Universidad de la República, Uruguay).
+	
+Version 3.0.3 2015-06-12
+* bug fixes (Stanford NER, Boxer, Snowball, treebank tokenizer,
+    dependency graph, KneserNey, BLEU)
+* code clean-ups
+* default POS tagger permits tagset to be specified
+* gensim illustration
+* tgrep implementation
+* added PanLex Swadesh corpora
+* visualisation for aligned bitext
+* support for Google App Engine
+* POSTagger renamed StanfordPOSTagger, NERTagger renamed StanfordNERTagger
+
+Thanks to the following contributors to 3.0.3:
+
+Long Duong, Pedro Fialho, Dan Garrette, Helder, Saimadhav Heblikar,
+Chris Inskip, David Kamholz, Dmitrijs Milajevs, Smitha Milli,
+Tom Mortimer-Jones, Avital Pekker, Jonathan Pool, Sam Raker,
+Will Roberts, Dmitry Sadovnychyi, Nathan Schneider, Anirudh W
+	
+Version 3.0.2 2015-03-13
+* make pretty-printing method names consistent
+* improvements to Portuguese stemmer
+* transition-based dependency parsers
+* dependency graph visualisation for ipython notebook
+* interfaces for Senna, BLLIP, python-crfsuite
+* NKJP corpus reader
+* code clean ups, minor bug fixes
+
+Thanks to the following contributors to 3.0.2:
+	
+Long Duong, Saimadhav Heblikar, Helder, Mikhail Korobov, Denis Krusko,
+Alex Louden, Felipe Madrigal, David McClosky, Dmitrijs Milajevs,
+Ondrej Platek, Nathan Schneider, Dávid Márk Nemeskey, 0ssifrage, ducki13, kiwipi.
+
+Version 3.0.1 2015-01-12
+* fix setup.py for new version of setuptools
+	
 Version 3.0.0 2014-09-07
 * minor bugfixes
 * added phrase extraction code by Liling Tan and Fredrik Hedman

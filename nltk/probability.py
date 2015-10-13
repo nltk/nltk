@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
@@ -226,10 +226,10 @@ class FreqDist(Counter):
         :type title: bool
         """
         try:
-            import pylab
+            from matplotlib import pylab
         except ImportError:
-            raise ValueError('The plot function requires the matplotlib package (aka pylab). '
-                         'See http://matplotlib.sourceforge.net/')
+            raise ValueError('The plot function requires matplotlib to be installed.'
+                         'See http://matplotlib.org/')
 
         if len(args) == 0:
             args = [len(self)]
@@ -308,9 +308,19 @@ class FreqDist(Counter):
 
         :rtype: string
         """
-        return self.pprint()
+        return self.pformat()
 
-    def pprint(self, maxlen=10):
+    def pprint(self, maxlen=10, stream=None):
+        """
+        Print a string representation of this FreqDist to 'stream'
+
+        :param maxlen: The maximum number of items to print
+        :type maxlen: int
+        :param stream: The stream to print to. stdout by default
+        """
+        print(self.pformat(maxlen=maxlen), file=stream)
+
+    def pformat(self, maxlen=10):
         """
         Return a string representation of this FreqDist.
 
@@ -1219,7 +1229,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         r_Nr = self._freqdist.r_Nr()
         del r_Nr[0]
         return r_Nr
- 
+
     def _r_Nr(self):
         """
         Split the frequency distribution in two list (r, Nr), where Nr(r) > 0
@@ -1262,6 +1272,11 @@ class SimpleGoodTuringProbDist(ProbDistI):
             xy_cov += (x - x_mean) * (y - y_mean)
             x_var += (x - x_mean)**2
         self._slope = (xy_cov / x_var if x_var != 0 else 0.0)
+        if self._slope >= -1:
+            warnings.warn('SimpleGoodTuring did not find a proper best fit '
+                          'line for smoothing probabilities of occurrences. '
+                          'The probability estimates are likely to be '
+                          'unreliable.')
         self._intercept = y_mean - self._slope * x_mean
 
     def _switch(self, r, nr):
@@ -1506,9 +1521,9 @@ class KneserNeyProbDist(ProbDistI):
     """
     def __init__(self, freqdist, bins=None, discount=0.75):
         """
-        :param trigrams: The trigram frequency distribution upon which to base
+        :param freqdist: The trigram frequency distribution upon which to base
             the estimation
-        :type trigrams: FreqDist
+        :type freqdist: FreqDist
         :param bins: Included for compatibility with nltk.tag.hmm
         :type bins: int or float
         :param discount: The discount applied when retrieving counts of
@@ -1729,10 +1744,10 @@ class ConditionalFreqDist(defaultdict):
         :type conditions: list
         """
         try:
-            import pylab
+            from matplotlib import pylab
         except ImportError:
-            raise ValueError('The plot function requires the matplotlib package (aka pylab).'
-                             'See http://matplotlib.sourceforge.net/')
+            raise ValueError('The plot function requires matplotlib to be installed.'
+                         'See http://matplotlib.org/')
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
-## Natural Language Toolkit: Deprecated Function & Class Finder
+# Natural Language Toolkit: Deprecated Function & Class Finder
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -23,8 +23,13 @@ identifier will be highlighted in red.
 # Imports
 ######################################################################
 
-import os, re, sys, tokenize, textwrap
-import nltk, nltk.corpus
+import os
+import re
+import sys
+import tokenize
+import textwrap
+import nltk
+import nltk.corpus
 from doctest import DocTestParser, register_optionflag
 from cStringIO import StringIO
 from nltk import defaultdict
@@ -69,6 +74,7 @@ try:
     from epydoc.cli import TerminalController
 except ImportError:
     class TerminalController:
+
         def __getattr__(self, attr): return ''
 
 term = TerminalController()
@@ -78,7 +84,9 @@ term = TerminalController()
 ######################################################################
 
 # If we're using py24, then ignore the +SKIP directive.
-if sys.version_info[:2] < (2,5): register_optionflag('SKIP')
+if sys.version_info[:2] < (2, 5):
+    register_optionflag('SKIP')
+
 
 def strip_quotes(s):
     s = s.strip()
@@ -89,13 +97,16 @@ def strip_quotes(s):
     s = s.strip()
     return s
 
+
 def find_class(s, index):
     lines = s[:index].split('\n')
     while lines:
         m = CLASS_DEF_RE.match(lines[-1])
-        if m: return m.group(1)+'.'
+        if m:
+            return m.group(1) + '.'
         lines.pop()
     return '?.'
+
 
 def find_deprecated_defs(pkg_dir):
     """
@@ -117,16 +128,19 @@ def find_deprecated_defs(pkg_dir):
                         msg = ' '.join(msg.split())
                         if m.group()[0] in ' \t':
                             cls = find_class(s, m.start())
-                            deprecated_methods[name].add( (msg, cls, '()') )
+                            deprecated_methods[name].add((msg, cls, '()'))
                         else:
-                            deprecated_funcs[name].add( (msg, '', '()') )
+                            deprecated_funcs[name].add((msg, '', '()'))
                     else:
                         name = m.group(3)
                         m2 = STRING_RE.match(s, m.end())
-                        if m2: msg = strip_quotes(m2.group())
-                        else: msg = ''
+                        if m2:
+                            msg = strip_quotes(m2.group())
+                        else:
+                            msg = ''
                         msg = ' '.join(msg.split())
-                        deprecated_classes[name].add( (msg, '', ''))
+                        deprecated_classes[name].add((msg, '', ''))
+
 
 def print_deprecated_uses(paths):
     dep_names = set()
@@ -134,7 +148,7 @@ def print_deprecated_uses(paths):
     for path in sorted(paths):
         if os.path.isdir(path):
             dep_names.update(print_deprecated_uses(
-                [os.path.join(path,f) for f in os.listdir(path)]))
+                [os.path.join(path, f) for f in os.listdir(path)]))
         elif path.endswith('.py'):
             print_deprecated_uses_in(open(path).readline, path,
                                      dep_files, dep_names, 0)
@@ -146,8 +160,9 @@ def print_deprecated_uses(paths):
                                              dep_names, example.lineno)
                 except tokenize.TokenError:
                     print(term.RED + 'Caught TokenError -- '
-                           'malformatted doctest?' + term.NORMAL)
+                          'malformatted doctest?' + term.NORMAL)
     return dep_names
+
 
 def print_deprecated_uses_in(readline, path, dep_files, dep_names,
                              lineno_offset):
@@ -158,7 +173,8 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
         # the @deprecated decorator.
         if line is not context[-1]:
             context.append(line)
-            if len(context) > 10: del context[0]
+            if len(context) > 10:
+                del context[0]
         esctok = re.escape(tok)
         # Ignore all tokens except deprecated names.
         if not (tok in deprecated_classes or
@@ -175,17 +191,20 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
             continue
         # Print a header for the first use in a file:
         if path not in dep_files:
-            print('\n'+term.BOLD + path + term.NORMAL)
+            print('\n' + term.BOLD + path + term.NORMAL)
             print('  %slinenum%s' % (term.YELLOW, term.NORMAL))
             dep_files.add(path)
         # Mark the offending token.
         dep_names.add(tok)
-        if term.RED: sub = term.RED+tok+term.NORMAL
-        elif term.BOLD: sub = term.BOLD+tok+term.NORMAL
-        else: sub = '<<'+tok+'>>'
+        if term.RED:
+            sub = term.RED + tok + term.NORMAL
+        elif term.BOLD:
+            sub = term.BOLD + tok + term.NORMAL
+        else:
+            sub = '<<' + tok + '>>'
         line = re.sub(r'\b%s\b' % esctok, sub, line)
         # Print the offending line.
-        print('  %s[%5d]%s %s' % (term.YELLOW, start[0]+lineno_offset,
+        print('  %s[%5d]%s %s' % (term.YELLOW, start[0] + lineno_offset,
                                   term.NORMAL, line.rstrip()))
 
 
@@ -208,19 +227,17 @@ def main():
     if not dep_names:
         print('No deprecated funcs or classes found!')
     else:
-        print("\n"+term.BOLD+"What you should use instead:"+term.NORMAL)
+        print("\n" + term.BOLD + "What you should use instead:" + term.NORMAL)
         for name in sorted(dep_names):
             msgs = deprecated_funcs[name].union(
                 deprecated_classes[name]).union(
                 deprecated_methods[name])
             for msg, prefix, suffix in msgs:
-                print(textwrap.fill(term.RED+prefix+name+suffix+
-                                    term.NORMAL+': '+msg,
-                                    width=75, initial_indent=' '*2,
-                                    subsequent_indent=' '*6))
-
+                print(textwrap.fill(term.RED + prefix + name + suffix +
+                                    term.NORMAL + ': ' + msg,
+                                    width=75, initial_indent=' ' * 2,
+                                    subsequent_indent=' ' * 6))
 
 
 if __name__ == '__main__':
     main()
-

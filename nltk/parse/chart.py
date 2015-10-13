@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: A Chart Parser
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
@@ -716,7 +716,7 @@ class Chart(object):
     #////////////////////////////////////////////////////////////
     # Display
     #////////////////////////////////////////////////////////////
-    def pp_edge(self, edge, width=None):
+    def pretty_format_edge(self, edge, width=None):
         """
         Return a pretty-printed string representation of a given edge
         in this chart.
@@ -747,11 +747,11 @@ class Chart(object):
         str += (' '*(width-1)+'.')*(self._num_leaves-end)
         return str + '| %s' % edge
 
-    def pp_leaves(self, width=None):
+    def pretty_format_leaves(self, width=None):
         """
         Return a pretty-printed string representation of this
         chart's leaves.  This string can be used as a header
-        for calls to ``pp_edge``.
+        for calls to ``pretty_format_edge``.
         """
         if width is None: width = 50 // (self.num_leaves()+1)
 
@@ -765,7 +765,7 @@ class Chart(object):
 
         return header
 
-    def pp(self, width=None):
+    def pretty_format(self, width=None):
         """
         Return a pretty-printed string representation of this chart.
 
@@ -779,8 +779,8 @@ class Chart(object):
         edges = sorted([(e.length(), e.start(), e) for e in self])
         edges = [e for (_,_,e) in edges]
 
-        return (self.pp_leaves(width) + '\n' +
-                '\n'.join(self.pp_edge(edge, width) for edge in edges))
+        return (self.pretty_format_leaves(width) + '\n' +
+                '\n'.join(self.pretty_format_edge(edge, width) for edge in edges))
 
     #////////////////////////////////////////////////////////////
     # Display: Dot (AT&T Graphviz)
@@ -1291,7 +1291,7 @@ class ChartParser(ParserI):
             if print_rule_header:
                 print('%s:' % rule)
                 print_rule_header = False
-            print(chart.pp_edge(edge, edge_width))
+            print(chart.pretty_format_edge(edge, edge_width))
 
     def chart_parse(self, tokens, trace=None):
         """
@@ -1312,8 +1312,8 @@ class ChartParser(ParserI):
 
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
-        if trace: print(chart.pp_leaves(trace_edge_width))
-
+        if trace: print(chart.pretty_format_leaves(trace_edge_width))
+        
         if self._use_agenda:
             # Use an agenda-based algorithm.
             for axiom in self._axioms:
@@ -1346,9 +1346,9 @@ class ChartParser(ParserI):
         # Return the final chart.
         return chart
 
-    def parse_all(self, tokens, tree_class=Tree):
+    def parse(self, tokens, tree_class=Tree):
         chart = self.chart_parse(tokens)
-        return chart.parses(self._grammar.start(), tree_class=tree_class)
+        return iter(chart.parses(self._grammar.start(), tree_class=tree_class))
 
 class TopDownChartParser(ChartParser):
     """
@@ -1449,7 +1449,7 @@ class SteppingChartParser(ChartParser):
 
             for e in self._parse():
                 if self._trace > 1: print(self._current_chartrule)
-                if self._trace > 0: print(self._chart.pp_edge(e,w))
+                if self._trace > 0: print(self._chart.pretty_format_edge(e,w))
                 yield e
                 if self._restart: break
             else:
@@ -1628,9 +1628,9 @@ def demo(choice=None,
         print()
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
-        # parses = cp.parse_all(tokens)
         chart = cp.chart_parse(tokens)
         parses = list(chart.parses(grammar.start()))
+        
         times[strategies[strategy][0]] = time.time()-t
         print("Nr edges in chart:", len(chart.edges()))
         if numparses:

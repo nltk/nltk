@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2014 NLTK Project
+.. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ========
@@ -71,7 +71,7 @@ trees for 10% of the standard PropBank Corpus are contained in the
     >>> inst.predicate.select(tree)
     Tree('VBD', ['rose'])
     >>> for (argloc, argid) in inst.arguments:
-    ...     print('%-10s %s' % (argid, argloc.select(tree).pprint(500)[:50]))
+    ...     print('%-10s %s' % (argid, argloc.select(tree).pformat(500)[:50]))
     ARG1       (NP-SBJ (NP (DT The) (NN yield)) (PP (IN on) (NP (
     ARGM-DIS   (PP (IN for) (NP (NN example)))
     ARG4-to    (PP-DIR (TO to) (NP (CD 8.04) (NN %)))
