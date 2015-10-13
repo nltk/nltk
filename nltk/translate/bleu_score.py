@@ -48,7 +48,7 @@ def bleu(references, hypothesis, weights):
     ...               'of', 'the', 'party']
 
     >>> bleu([reference1, reference2, reference3], hypothesis1, weights)
-    0.504...
+    0.5045666840058485
 
     >>> bleu([reference1, reference2, reference3], hypothesis2, weights)
     0
@@ -86,11 +86,12 @@ def _modified_precision(references, hypothesis, n):
     The famous "the the the ... " example shows that you can get BLEU precision
     by duplicating high frequency words.
     
-        >>> ref1 = 'the cat is on the mat'.split()
-        >>> ref2 = 'there is a cat on the mat'.split()
-        >>> hyp1 = 'the the the the the the the'.split()
-        >>> modified_precision(references, hyp1, n=1)
-        0.28
+        >>> reference1 = 'the cat is on the mat'.split()
+        >>> reference2 = 'there is a cat on the mat'.split()
+        >>> hypothesis1 = 'the the the the the the the'.split()
+        >>> references = [reference1, reference2]
+        >>> _modified_precision(references, hypothesis1, n=1)
+        0.2857142857142857
     
     In the modified n-gram precision, a reference word will be considered 
     exhausted after a matching hypothesis word is identified, e.g.
@@ -98,20 +99,18 @@ def _modified_precision(references, hypothesis, n):
         >>> reference1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'that',
         ...               'ensures', 'that', 'the', 'military', 'will', 
         ...               'forever', 'heed', 'Party', 'commands']
-        
         >>> reference2 = ['It', 'is', 'the', 'guiding', 'principle', 'which',
         ...               'guarantees', 'the', 'military', 'forces', 'always',
         ...               'being', 'under', 'the', 'command', 'of', 'the',
         ...               'Party']
-        
         >>> reference3 = ['It', 'is', 'the', 'practical', 'guide', 'for', 'the',
         ...               'army', 'always', 'to', 'heed', 'the', 'directions',
         ...               'of', 'the', 'party']
-        
         >>> hypothesis = 'of the'.split()
-        >>> modified_precision(references, hyp1, n=1)
+        >>> references = [reference1, reference2, reference3]
+        >>> _modified_precision(references, hypothesis, n=1)
         1.0
-        >>> modified_precision(references, hyp1, n=2)
+        >>> _modified_precision(references, hypothesis, n=2)
         1.0
         
     An example of a normal machine translation hypothesis:
@@ -137,14 +136,14 @@ def _modified_precision(references, hypothesis, n):
         ...               'army', 'always', 'to', 'heed', 'the', 'directions',
         ...               'of', 'the', 'party']
         >>> references = [reference1, reference2, reference3]
-        >>> modified_precision(references, hyp1, n=1)
-        0.94
-        >>> modified_precision(references, hyp2, n=1)
-        0.57
-        >>> modified_precision(references, hyp1, n=2
-        0.58
-        >>> modified_precision(references, hyp2, n=2)
-        0.07
+        >>> _modified_precision(references, hypothesis1, n=1)
+        0.9444444444444444
+        >>> _modified_precision(references, hypothesis2, n=1)
+        0.5714285714285714
+        >>> _modified_precision(references, hypothesis1, n=2)
+        0.5882352941176471
+        >>> _modified_precision(references, hypothesis2, n=2)
+        0.07692307692307693
 
     :param references: A list of reference translations.
     :type references: list(list(str))
@@ -184,6 +183,7 @@ def _brevity_penalty(references, hypothesis):
         >>> reference2 = list('aaaaaaaaaaaaaaa')   # i.e. ['a'] * 15
         >>> reference3 = list('aaaaaaaaaaaaaaaaa') # i.e. ['a'] * 17
         >>> hypothesis = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
+        >>> references = [reference1, reference2, reference3]
         >>> _brevity_penalty(references, hypothesis)
         1.0
 
@@ -193,7 +193,7 @@ def _brevity_penalty(references, hypothesis):
         >>> references = [['a'] * 28, ['a'] * 28]
         >>> hypothesis = ['a'] * 12
         >>> _brevity_penalty(references, hypothesis)
-        0.2635...
+        0.2635971381157267
 
     The length of the closest reference is used to compute the penalty. If the
     length of a hypothesis is 12, and the reference lengths are 13 and 2, the
@@ -203,7 +203,7 @@ def _brevity_penalty(references, hypothesis):
         >>> references = [['a'] * 13, ['a'] * 2]
         >>> hypothesis = ['a'] * 12
         >>> _brevity_penalty(references, hypothesis)
-        0.92...
+        0.9200444146293233
 
     The brevity penalty doesn't depend on reference order. More importantly,
     when two reference sentences are at the same distance, the shortest
@@ -211,8 +211,9 @@ def _brevity_penalty(references, hypothesis):
 
         >>> references = [['a'] * 13, ['a'] * 11]
         >>> hypothesis = ['a'] * 12
-        >>> _brevity_penalty(references, hypothesis) == 
-        ... _brevity_penalty(reversed(references),hypothesis) == 1
+        >>> bp1 = _brevity_penalty(references, hypothesis)  
+        >>> bp2 = _brevity_penalty(reversed(references),hypothesis) 
+        >>> bp1 == bp2 == 1
         True
 
     A test example from mteval-v13a.pl (starting from the line 705):
@@ -220,7 +221,7 @@ def _brevity_penalty(references, hypothesis):
         >>> references = [['a'] * 11, ['a'] * 8]
         >>> hypothesis = ['a'] * 7
         >>> _brevity_penalty(references, hypothesis)
-        0.86...
+        0.8668778997501817
 
         >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
         >>> hypothesis = ['a'] * 7
@@ -240,5 +241,4 @@ def _brevity_penalty(references, hypothesis):
         return 1
     else:
         return math.exp(1 - r / c)
-
 
