@@ -11,7 +11,7 @@ Experimental features for machine translation.
 These interfaces are prone to change.
 """
 
-from nltk.translate.api import AlignedSent, Alignment
+from nltk.translate.api import AlignedSent, Alignment, PhraseTable
 from nltk.translate.ibm_model import IBMModel
 from nltk.translate.ibm1 import IBMModel1
 from nltk.translate.ibm2 import IBMModel2
@@ -21,4 +21,3 @@ from nltk.translate.ibm5 import IBMModel5
 from nltk.translate.bleu_score import bleu
 from nltk.translate.metrics import alignment_error_rate
 from nltk.translate.stack_decoder import StackDecoder 
-from nltk.translate.phrase_table import PhraseTable
