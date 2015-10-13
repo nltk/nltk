@@ -7,7 +7,7 @@ import unittest
 from nltk.translate.bleu_score import _modified_precision
 
 class TestBLEU(unittest.TestCase):
-    def test_modified_precision(self):
+    def test__modified_precision(self):
         """
         Examples from the original BLEU paper 
         http://www.aclweb.org/anthology/P02-1040.pdf
@@ -22,10 +22,10 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2] 
         
         # Testing modified unigram precision.
-        assert (modified_precision(references, hyp1, n=1) == 0.28)
+        assert (_modified_precision(references, hyp1, n=1) == 0.28)
         
         # Testing modified bigram precision.
-        assert(modified_precision(references, hyp1, n=2) == 0.0)
+        assert(_modified_precision(references, hyp1, n=2) == 0.0)
         
         
         # Example 2: the "of the" example.
@@ -41,10 +41,10 @@ class TestBLEU(unittest.TestCase):
         
         references = [ref1, ref2, ref3] 
         # Testing modified unigram precision.
-        assert (modified_precision(references, hyp1, n=1) == 1.0)
+        assert (_modified_precision(references, hyp1, n=1) == 1.0)
         
         # Testing modified bigram precision.
-        assert(modified_precision(references, hyp1, n=2) == 1.0)
+        assert(_modified_precision(references, hyp1, n=2) == 1.0)
         
 
         # Example 3: Proper MT outputs.
@@ -56,12 +56,12 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2, ref3]
         
         # Unigram precision.
-        assert (modified_precision(references, hyp1, n=1) == 0.94)
-        assert (modified_precision(references, hyp2, n=1) == 0.57)
+        assert (_modified_precision(references, hyp1, n=1) == 0.94)
+        assert (_modified_precision(references, hyp2, n=1) == 0.57)
         
         # Bigram precision
-        assert (modified_precision(references, hyp1, n=2) == 0.58)
-        assert (modified_precision(references, hyp2, n=2) == 0.07)
+        assert (_modified_precision(references, hyp1, n=2) == 0.58)
+        assert (_modified_precision(references, hyp2, n=2) == 0.07)
 
     def test_brevity_penalty(self):
         pass
