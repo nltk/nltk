@@ -6,7 +6,7 @@ WordNet Interface
 =================
 
 WordNet is just another NLTK corpus reader, and can be imported like this:
-	>>> from __future__ import print_function, unicode_literals
+    >>> from __future__ import print_function, unicode_literals
     >>> from nltk.corpus import wordnet
 
 For more compact code, we recommend:
