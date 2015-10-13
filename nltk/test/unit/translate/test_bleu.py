@@ -22,7 +22,7 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2] 
         
         # Testing modified unigram precision.
-        assert (_modified_precision(references, hyp1, n=1) == 0.28)
+        assert (_modified_precision(references, hyp1, n=1) == 0.2857142857142857)
         
         # Testing modified bigram precision.
         assert(_modified_precision(references, hyp1, n=2) == 0.0)
@@ -56,12 +56,12 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2, ref3]
         
         # Unigram precision.
-        assert (_modified_precision(references, hyp1, n=1) == 0.94)
-        assert (_modified_precision(references, hyp2, n=1) == 0.57)
+        assert (_modified_precision(references, hyp1, n=1) == 0.9444444444444444)
+        assert (_modified_precision(references, hyp2, n=1) == 0.5714285714285714)
         
         # Bigram precision
-        assert (_modified_precision(references, hyp1, n=2) == 0.58)
-        assert (_modified_precision(references, hyp2, n=2) == 0.07)
+        assert (_modified_precision(references, hyp1, n=2) == 0.5882352941176471)
+        assert (_modified_precision(references, hyp2, n=2) == 0.07692307692307693)
 
     def test_brevity_penalty(self):
         pass
