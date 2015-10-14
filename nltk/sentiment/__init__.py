@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Twitter
+# Natural Language Toolkit: Sentiment Analysis
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
