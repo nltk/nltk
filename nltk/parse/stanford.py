@@ -44,7 +44,7 @@ class GenericStanfordParser(ParserI):
         stanford_jar = max(
             find_jar_iter(
                 self._JAR, path_to_jar,
-                env_vars=('STANFORD_PARSER',),
+                env_vars=('STANFORD_PARSER', 'STANFORD_CORENLP'),
                 searchpath=(), url=_stanford_url,
                 verbose=verbose, is_regex=True
             ),
@@ -54,7 +54,7 @@ class GenericStanfordParser(ParserI):
         model_jar=max(
             find_jar_iter(
                 self._MODEL_JAR_PATTERN, path_to_models_jar,
-                env_vars=('STANFORD_MODELS',),
+                env_vars=('STANFORD_MODELS', 'STANFORD_CORENLP'),
                 searchpath=(), url=_stanford_url,
                 verbose=verbose, is_regex=True
             ),
