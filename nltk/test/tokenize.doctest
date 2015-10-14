@@ -73,42 +73,36 @@ Some additional test strings.
     ['Alas', 'it has not rained today', 'When', 'do you think',
      'will it rain again']
 
-Make sure that grouping parentheses don't confuse the tokenizer:
+Take care to avoid using capturing groups:
 
+    >>> regexp_tokenize(s3, r'</?[bp]>', gaps=False)
+    ['<p>', '<b>', '</b>', '</p>']
     >>> regexp_tokenize(s3, r'</?(?:b|p)>', gaps=False)
     ['<p>', '<b>', '</b>', '</p>']
     >>> regexp_tokenize(s3, r'</?(?:b|p)>', gaps=True)
     ['Although this is ', 'not',
      ' the case here, we must not relax our vigilance!']
 
-Make sure that named groups don't confuse the tokenizer:
+Named groups are capturing groups, and confuse the tokenizer:
 
     >>> regexp_tokenize(s3, r'</?(?P<named>b|p)>', gaps=False)
-    ['<p>', '<b>', '</b>', '</p>']
+    ['p', 'b', 'b', 'p']
     >>> regexp_tokenize(s3, r'</?(?P<named>b|p)>', gaps=True)
-    ['Although this is ', 'not',
-     ' the case here, we must not relax our vigilance!']
+    ['p', 'Although this is ', 'b', 'not', 'b',
+     ' the case here, we must not relax our vigilance!', 'p']
 
 Make sure that nested groups don't confuse the tokenizer:
 
-    >>> regexp_tokenize(s2, r'(?:h|r|l)a(:?s|(:?i|n0))', gaps=False)
+    >>> regexp_tokenize(s2, r'(?:h|r|l)a(?:s|(?:i|n0))', gaps=False)
     ['las', 'has', 'rai', 'rai']
     >>> regexp_tokenize(s2, r'(?:h|r|l)a(?:s|(?:i|n0))', gaps=True)
     ['A', ', it ', ' not ', 'ned today. When, do you think, will it ',
      'n again?']
 
-The tokenizer should reject any patterns with backreferences:
+Back-references require capturing groups, and these are not supported:
 
-    >>> regexp_tokenize(s2, r'(.)\1')
-    Traceback (most recent call last):
-       ...
-    ValueError: Regular expressions with back-references are
-    not supported: '(.)\\1'
-    >>> regexp_tokenize(s2, r'(?P<foo>)(?P=foo)')
-    Traceback (most recent call last):
-       ...
-    ValueError: Regular expressions with back-references are
-    not supported: '(?P<foo>)(?P=foo)'
+    >>> regexp_tokenize("aabbbcccc", r'(.)\1')
+    ['a', 'b', 'c', 'c']
 
 A simple sentence tokenizer '\.(\s+|$)'
 
