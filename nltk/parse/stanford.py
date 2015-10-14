@@ -395,5 +395,6 @@ def setup_module(module):
         StanfordParser(
             model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
         )
+        StanfordNeuralDependencyParser()
     except LookupError:
-        raise SkipTest('doctests from nltk.parse.stanford are skipped because the stanford parser jar doesn\'t exist')
+        raise SkipTest('doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn\'t exist')
