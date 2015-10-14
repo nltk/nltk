@@ -96,7 +96,7 @@ def pos_tag(tokens, tagset=None):
         ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
         >>> pos_tag(word_tokenize("John's big idea isn't all that bad."), tagset='universal')
         [('John', 'NOUN'), ("'s", 'PRT'), ('big', 'ADJ'), ('idea', 'NOUN'), ('is', 'VERB'),
-        ("n't", 'ADV'), ('all', 'DET'), ('that', 'DET'), ('bad', 'ADJ')]
+        ("n't", 'ADV'), ('all', 'DET'), ('that', 'DET'), ('bad', 'ADJ'), ('.', '.')]
 
     NB. Use `pos_tag_sents()` for efficient tagging of more than one sentence.
 
