@@ -4,11 +4,23 @@ NLTK News
 2015
 ----
 
-NLTK 3.0.5 released : September 2015
-   New Twitter package; updates to IBM models 1-3, new models 4 and 5,
+NLTK 3.1 released : October 2015
+   Add support for Python 3.5, drop support for Python 2.6,
+   sentiment analysis package and several corpora,
+   improved POS tagger, Twitter package,
+   multi-word expression tokenizer,
+   wrapper for Stanford Neural Dependency Parser,
+   improved translation/alignment module including stack decoder,
+   skipgram and everygram methods,
+   Multext East Corpus and MTECorpusReader,
    minor bugfixes and enhancements
    For details see:
    https://github.com/nltk/nltk/blob/develop/ChangeLog
+
+
+NLTK 3.0.5 released : September 2015
+   New Twitter package; updates to IBM models 1-3, new models 4 and 5,
+   minor bugfixes and enhancements
 
 NLTK 3.0.4 released : July 2015
    Minor bugfixes and enhancements.
