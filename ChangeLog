@@ -1,3 +1,27 @@
+Version 3.1 2015-10-15
+* Fixes for Python 3.5 (drop support for capturing groups in regexp tokenizer)
+* Drop support for Python 2.6
+* Adopt perceptron tagger for new default POS tagger nltk.pos_tag
+* Stanford Neural Dependency Parser wrapper
+* Sentiment analysis package incl VADER
+* Improvements to twitter package
+* Multi word expression tokenizer
+* Support for everygram and skipgram
+* consistent evaluation metric interfaces, putting reference before hypothesis
+* new nltk.translate module, incorporating the old align module
+* implement stack decoder
+* clean up Alignment interface
+* CorpusReader method to support access to license and citation
+* Multext East Corpus and MTECorpusReader
+* include six module to streamline installation on MS Windows
+	
+Thanks to the following contributors to 3.1
+Le Tuan Anh, Petra Barancikova, Alexander Böhm, Francis Bond,
+Long Duong, Anna Garbar, Matthew Honnibal, Tah Wei Hoon, Ewan Klein,
+Rob Malouf, Dmitrijs Milajevs, Will Monroe, Sergio Oller, Pierpaolo
+Pantone, Jacob Perkins, Lorenzo Rubio, Thomas Stieglmaier, Liling Tan,
+Pratap Vardhan
+	
 Version 3.0.5 2015-09-05
 * rewritten IBM models, and new IBM Model 4 and 5 implementations
 * new Twitter package

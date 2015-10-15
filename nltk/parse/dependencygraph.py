@@ -280,21 +280,36 @@ class DependencyGraph(object):
 
         """
 
-        def extract_3_cells(cells):
+        def extract_3_cells(cells, index):
             word, tag, head = cells
-            return word, word, tag, tag, '', head, ''
+            return index, word, word, tag, tag, '', head, ''
 
-        def extract_4_cells(cells):
+        def extract_4_cells(cells, index):
             word, tag, head, rel = cells
-            return word, word, tag, tag, '', head, rel
+            return index, word, word, tag, tag, '', head, rel
 
-        def extract_10_cells(cells):
-            _, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
-            return word, lemma, ctag, tag, feats, head, rel
+        def extract_7_cells(cells, index):
+            line_index, word, lemma, tag, _, head, rel = cells
+            try:
+                index = int(line_index)
+            except ValueError:
+                # index can't be parsed as an integer, use default
+                pass
+            return index, word, lemma, tag, tag, '', head, rel
+
+        def extract_10_cells(cells, index):
+            line_index, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
+            try:
+                index = int(line_index)
+            except ValueError:
+                # index can't be parsed as an integer, use default
+                pass
+            return index, word, lemma, ctag, tag, feats, head, rel
 
         extractors = {
             3: extract_3_cells,
             4: extract_4_cells,
+            7: extract_7_cells,
             10: extract_10_cells,
         }
 
@@ -321,7 +336,16 @@ class DependencyGraph(object):
                         'CoNLL(10) or Malt-Tab(4) format'.format(cell_number)
                     )
 
-            word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
+            try:
+                index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells, index)
+            except (TypeError, ValueError):
+                # cell_extractor doesn't take 2 arguments or doesn't return 8
+                # values; assume the cell_extractor is an older external
+                # extractor and doesn't accept or return an index.
+                word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
+
+            if head == '_':
+                continue
 
             head = int(head)
             if zero_based:

@@ -6,7 +6,7 @@ WordNet Interface
 =================
 
 WordNet is just another NLTK corpus reader, and can be imported like this:
-
+    >>> from __future__ import print_function, unicode_literals
     >>> from nltk.corpus import wordnet
 
 For more compact code, we recommend:
@@ -47,35 +47,37 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
 The WordNet corpus reader gives access to the Open Multilingual
 WordNet, using ISO-639 language codes.
 
-    >>> sorted(wn.langs())
-    ['als', 'arb', 'cat', 'cmn', 'dan', 'eng', 'eus', 'fas',
-    'fin', 'fra', 'fre', 'glg', 'heb', 'ind', 'ita', 'jpn', 'nno',
-    'nob', 'pol', 'por', 'spa', 'tha', 'zsm']
+    >>> sorted(wn.langs()) # doctest: +NORMALIZE_WHITESPACE
+    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus', 'fas', 'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 
+    'ita', 'jpn', 'nno', 'nob', 'pol', 'por', 'qcn', 'slv', 'spa', 'swe', 'tha', 'zsm']
     >>> wn.synsets(b'\xe7\x8a\xac'.decode('utf-8'), lang='jpn')
     [Synset('dog.n.01'), Synset('spy.n.01')]
-    >>> wn.synset('spy.n.01').lemma_names('jpn')
+    
+    wn.synset('spy.n.01').lemma_names('jpn') # doctest: +NORMALIZE_WHITESPACE
     ['\u3044\u306c', '\u307e\u308f\u3057\u8005', '\u30b9\u30d1\u30a4', '\u56de\u3057\u8005',
     '\u56de\u8005', '\u5bc6\u5075', '\u5de5\u4f5c\u54e1', '\u5efb\u3057\u8005',
     '\u5efb\u8005', '\u63a2', '\u63a2\u308a', '\u72ac', '\u79d8\u5bc6\u635c\u67fb\u54e1',
     '\u8adc\u5831\u54e1', '\u8adc\u8005', '\u9593\u8005', '\u9593\u8adc', '\u96a0\u5bc6']
+    
     >>> wn.synset('dog.n.01').lemma_names('ita')
     ['cane', 'Canis_familiaris']
-    >>> wn.lemmas('cane', lang='ita')
-    [Lemma('dog.n.01.cane'), Lemma('hammer.n.01.cane'), Lemma('cramp.n.02.cane'),
-    Lemma('bad_person.n.01.cane'), Lemma('incompetent.n.01.cane')]
-    >>> sorted(wn.synset('dog.n.01').lemmas('dan'))
+    >>> wn.lemmas('cane', lang='ita') # doctest: +NORMALIZE_WHITESPACE
+    [Lemma('dog.n.01.cane'), Lemma('cramp.n.02.cane'), Lemma('hammer.n.01.cane'), Lemma('bad_person.n.01.cane'), 
+    Lemma('incompetent.n.01.cane')]
+    >>> sorted(wn.synset('dog.n.01').lemmas('dan')) # doctest: +NORMALIZE_WHITESPACE
     [Lemma('dog.n.01.hund'), Lemma('dog.n.01.k\xf8ter'),
     Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]
-    >>> sorted(wn.synset('dog.n.01').lemmas('por'))
-    [Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.c\xe3es'),
-    Lemma('dog.n.01.c\xe3o'), Lemma('dog.n.01.c\xe3o')]
+    
+    sorted(wn.synset('dog.n.01').lemmas('por'))
+	[Lemma('dog.n.01.cachorra'), Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.cadela'), Lemma('dog.n.01.c\xe3o')]
+    
     >>> dog_lemma = wn.lemma(b'dog.n.01.c\xc3\xa3o'.decode('utf-8'), lang='por')
     >>> dog_lemma
     Lemma('dog.n.01.c\xe3o')
     >>> dog_lemma.lang()
     'por'
     >>> len(wordnet.all_lemma_names(pos='n', lang='jpn'))
-    66027
+    64797
 
 -------
 Synsets
@@ -413,17 +415,16 @@ Compute transitive closures of synsets
     True
     >>> list(dog.closure(hyper, depth=1)) == dog.hypernyms()
     True
-    >>> list(dog.closure(hypo))
+    >>> list(dog.closure(hypo)) # doctest: +NORMALIZE_WHITESPACE, +ELLIPSIS
     [Synset('basenji.n.01'), Synset('corgi.n.01'), Synset('cur.n.01'),
      Synset('dalmatian.n.02'), Synset('great_pyrenees.n.01'),
      Synset('griffon.n.02'), Synset('hunting_dog.n.01'), Synset('lapdog.n.01'),
      Synset('leonberg.n.01'), Synset('mexican_hairless.n.01'),
      Synset('newfoundland.n.01'), Synset('pooch.n.01'), Synset('poodle.n.01'), ...]
-    >>> list(dog.closure(hyper))
-    [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'),
-    Synset('animal.n.01'), Synset('placental.n.01'), Synset('organism.n.01'),
-    Synset('mammal.n.01'), Synset('living_thing.n.01'), Synset('vertebrate.n.01'),
-    Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),
+    >>> list(dog.closure(hyper)) # doctest: +NORMALIZE_WHITESPACE
+    [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'), Synset('animal.n.01'), 
+    Synset('placental.n.01'), Synset('organism.n.01'), Synset('mammal.n.01'), Synset('living_thing.n.01'),
+    Synset('vertebrate.n.01'), Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),
     Synset('physical_entity.n.01'), Synset('entity.n.01')]
 
 

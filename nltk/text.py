@@ -544,7 +544,7 @@ class TextCollection(Text):
     Iterating over a TextCollection produces all the tokens of all the
     texts in order.
     """
-    def __init__(self, source, name=None):
+    def __init__(self, source):
         if hasattr(source, 'words'): # bridge to the text corpus reader
             source = [source.words(f) for f in source.fileids()]
 
@@ -552,11 +552,11 @@ class TextCollection(Text):
         Text.__init__(self, LazyConcatenation(source))
         self._idf_cache = {}
 
-    def tf(self, term, text, method=None):
+    def tf(self, term, text):
         """ The frequency of the term in text. """
         return text.count(term) / len(text)
 
-    def idf(self, term, method=None):
+    def idf(self, term):
         """ The number of texts in the corpus divided by the
         number of texts that the term appears in.
         If a term does not appear in the corpus, 0.0 is returned. """

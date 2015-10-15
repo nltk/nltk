@@ -68,7 +68,7 @@ class MTEFileReader:
 
     @classmethod
     def _lemma_sents(self, text_root):
-        return [MTEFileReader._lemma_words(s) for s in xpath(text_root, './/tei:s', self.ns)] 
+        return [MTEFileReader._lemma_words(s) for s in xpath(text_root, './/tei:s', self.ns)]
 
     @classmethod
     def _tagged_sents(self, text_root, tags=""):
@@ -150,7 +150,7 @@ class MTECorpusReader(TaggedCorpusReader):
         located at the given root directory.  Example usage:
 
             >>> root = '/...path to corpus.../'
-            >>> reader = MTECorpusReader(root, 'oana-*.xml', 'utf8') 
+            >>> reader = MTECorpusReader(root, 'oana-*.xml', 'utf8') # doctest: +SKIP
 
         :param root: The root directory for this corpus. (default points to location in multext config file)
         :param fileids: A list or regexp specifying the fileids in this corpus. (default is oana-en.xml)

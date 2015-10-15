@@ -12,7 +12,6 @@
 # integrate it into NLTK. These have involved changes to
 # ensure Python 3 compatibility, and refactoring to achieve greater modularity.
 
-
 """
 If you use the VADER sentiment analysis tools, please cite:
 
@@ -26,7 +25,6 @@ import math
 import os
 import re
 import string
-
 
 ##Constants##
 
@@ -167,15 +165,13 @@ class SentiText(object):
         # removes punctuation (but loses emoticons & contractions)
         words_only = text_mod.split()
         # get rid of empty items or single letter "words" like 'a' and 'I'
-        # from words_only
         words_only = [word for word in words_only if len(word) > 1]
         return words_only
 
     def _words_and_emoticons(self):
         wes = self.text.split()
 
-        # get rid of residual empty items or single letter "words" like 'a'
-        # and 'I' from words_and_emoticons
+        # get rid of residual empty items or single letter words
         wes = [we for we in wes if len(we) > 1]
 
         for word in self._words_only():
@@ -196,10 +192,6 @@ class SentiText(object):
                     wes.insert(i, word)
                     x2 = wes.count(wordp)
         return wes
-
-
-
-
 
 class SentimentIntensityAnalyzer(object):
     """
@@ -222,7 +214,7 @@ class SentimentIntensityAnalyzer(object):
 
     def polarity_scores(self, text):
         """
-        Returns a float for sentiment strength based on the input text.
+        Return a float for sentiment strength based on the input text.
         Positive values are positive valence, negative value are negative
         valence.
         """
@@ -239,7 +231,6 @@ class SentimentIntensityAnalyzer(object):
                 item.lower() in BOOSTER_DICT:
                 sentiments.append(valence)
                 continue
-
 
             sentiments = self.sentiment_valence(valence, sentitext, item, i, sentiments)
 

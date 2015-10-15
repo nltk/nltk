@@ -12,7 +12,6 @@ import os
 import nltk
 from nltk.internals import Counter
 from nltk.compat import string_types
-from nltk.corpus import brown
 from nltk.tag import UnigramTagger, BigramTagger, TrigramTagger, RegexpTagger
 from nltk.sem.logic import (Expression, Variable, VariableExpression,
                             LambdaExpression, AbstractVariableExpression)
@@ -577,6 +576,7 @@ class Glue(object):
         return return_list
 
     def get_pos_tagger(self):
+        from nltk.corpus import brown
         regexp_tagger = RegexpTagger(
             [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
              (r'(The|the|A|a|An|an)$', 'AT'),   # articles
