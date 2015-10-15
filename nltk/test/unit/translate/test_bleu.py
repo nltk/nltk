@@ -22,7 +22,8 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2] 
         
         # Testing modified unigram precision.
-        assert (_modified_precision(references, hyp1, n=1) == 0.2857142857142857)
+        hyp1_unigram_precision =  _modified_precision(references, hyp1, n=1) 
+        assert (round(hyp1_unigram_precision, 4) == 0.2857)
         
         # Testing modified bigram precision.
         assert(_modified_precision(references, hyp1, n=2) == 0.0)
@@ -31,9 +32,9 @@ class TestBLEU(unittest.TestCase):
         # Example 2: the "of the" example.
         # Reference sentences
         ref1 = str('It is a guide to action that ensures that the military '
-                   'will forever heed Party commands.').split()
+                   'will forever heed Party commands').split()
         ref2 = str('It is the guiding principle which guarantees the military '
-                   'forces always being under the command of the Party.').split()
+                   'forces always being under the command of the Party').split()
         ref3 = str('It is the practical guide for the army always to heed '
                    'the directions of the party').split()
         # Hypothesis sentence(s).
@@ -56,12 +57,25 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2, ref3]
         
         # Unigram precision.
-        assert (_modified_precision(references, hyp1, n=1) == 0.9444444444444444)
-        assert (_modified_precision(references, hyp2, n=1) == 0.5714285714285714)
+        hyp1_unigram_precision = _modified_precision(references, hyp1, n=1)
+        hyp2_unigram_precision = _modified_precision(references, hyp2, n=1)
+        # Test unigram precision without rounding.
+        assert (hyp1_unigram_precision == 0.9444444444444444)
+        assert (hyp2_unigram_precision == 0.5714285714285714)
+        # Test unigram precision with rounding.
+        assert (round(hyp1_unigram_precision, 4) == 0.9444)
+        assert (round(hyp2_unigram_precision, 4) == 0.5714)
         
         # Bigram precision
-        assert (_modified_precision(references, hyp1, n=2) == 0.5882352941176471)
-        assert (_modified_precision(references, hyp2, n=2) == 0.07692307692307693)
-
+        hyp1_bigram_precision = _modified_precision(references, hyp1, n=2)
+        hyp2_bigram_precision = _modified_precision(references, hyp2, n=2)
+        # Test bigram precision without rounding.
+        assert (hyp1_bigram_precision == 0.5882352941176471)
+        assert (hyp2_bigram_precision == 0.07692307692307693)
+        # Test bigram precision with rounding.
+        assert (round(hyp1_bigram_precision, 4) == 0.5882)
+        assert (round(hyp2_bigram_precision, 4) == 0.0769)
+        
     def test_brevity_penalty(self):
         pass
+    
