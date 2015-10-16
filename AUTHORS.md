@@ -125,6 +125,7 @@
 - Joel Nothman
 - Alireza Nourian
 - Alexander Oleynikov
+- Pierpaolo Pantone
 - Ted Pedersen
 - Jacob Perkins
 - Alberto Planas
