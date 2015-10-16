@@ -137,6 +137,7 @@
 - Will Roberts
 - Stuart Robinson
 - Carlos Rodriguez
+- Lorenzo Rubio
 - Alex Rudnick
 - Jussi Salmela
 - Geoffrey Sampson
