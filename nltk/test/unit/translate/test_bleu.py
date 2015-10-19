@@ -22,8 +22,10 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2] 
         
         # Testing modified unigram precision.
-        hyp1_unigram_precision =  _modified_precision(references, hyp1, n=1) 
+        hyp1_unigram_precision =  _modified_precision(references, hyp1, n=1)
         assert (round(hyp1_unigram_precision, 4) == 0.2857)
+        # With assertAlmostEqual at 4 place precision.
+        self.assertAlmostEqual(hyp1_unigram_precision, 0.2857142857142857, places=4)
         
         # Testing modified bigram precision.
         assert(_modified_precision(references, hyp1, n=2) == 0.0)
@@ -59,19 +61,20 @@ class TestBLEU(unittest.TestCase):
         # Unigram precision.
         hyp1_unigram_precision = _modified_precision(references, hyp1, n=1)
         hyp2_unigram_precision = _modified_precision(references, hyp2, n=1)
-        # Test unigram precision without rounding.
-        assert (hyp1_unigram_precision == 0.9444444444444444)
-        assert (hyp2_unigram_precision == 0.5714285714285714)
+        # Test unigram precision with assertAlmostEqual at 4 place precision.
+        self.assertAlmostEqual(hyp1_unigram_precision, 0.9444444444444444, places=4)
+        self.assertAlmostEqual(hyp2_unigram_precision, 0.5714285714285714, places=4)
         # Test unigram precision with rounding.
         assert (round(hyp1_unigram_precision, 4) == 0.9444)
         assert (round(hyp2_unigram_precision, 4) == 0.5714)
         
+        
         # Bigram precision
         hyp1_bigram_precision = _modified_precision(references, hyp1, n=2)
         hyp2_bigram_precision = _modified_precision(references, hyp2, n=2)
-        # Test bigram precision without rounding.
-        assert (hyp1_bigram_precision == 0.5882352941176471)
-        assert (hyp2_bigram_precision == 0.07692307692307693)
+        # Test bigram precision with assertAlmostEqual at 4 place precision.
+        self.assertAlmostEqual(hyp1_bigram_precision, 0.5882352941176471, places=4)
+        self.assertAlmostEqual(hyp2_bigram_precision, 0.07692307692307693, places=4)
         # Test bigram precision with rounding.
         assert (round(hyp1_bigram_precision, 4) == 0.5882)
         assert (round(hyp2_bigram_precision, 4) == 0.0769)
@@ -79,3 +82,6 @@ class TestBLEU(unittest.TestCase):
     def test_brevity_penalty(self):
         pass
     
+    
+if __name__ == '__main__':
+    unittest.main()
