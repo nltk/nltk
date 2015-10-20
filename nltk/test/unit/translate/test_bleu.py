@@ -82,6 +82,3 @@ class TestBLEU(unittest.TestCase):
     def test_brevity_penalty(self):
         pass
     
-    
-if __name__ == '__main__':
-    unittest.main()
