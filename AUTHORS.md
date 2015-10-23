@@ -125,6 +125,7 @@
 - Joel Nothman
 - Alireza Nourian
 - Alexander Oleynikov
+- Pierpaolo Pantone
 - Ted Pedersen
 - Jacob Perkins
 - Alberto Planas
@@ -136,6 +137,7 @@
 - Will Roberts
 - Stuart Robinson
 - Carlos Rodriguez
+- Lorenzo Rubio
 - Alex Rudnick
 - Jussi Salmela
 - Geoffrey Sampson
