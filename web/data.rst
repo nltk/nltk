@@ -17,7 +17,7 @@ Run the Python interpreter and type the commands:
     >>> import nltk
     >>> nltk.download()
 
-A new window should open, showing the NLTK Downloader.  Click on the File menu and select Change Download Directory.  For central installation, set this to ``C:\nltk_data`` (Windows), or ``/usr/share/nltk_data`` (Mac, Unix).  Next, select the packages or collections you want to download.
+A new window should open, showing the NLTK Downloader.  Click on the File menu and select Change Download Directory.  For central installation, set this to ``C:\nltk_data`` (Windows), ``/usr/local/share/nltk_data`` (Mac), or ``/usr/share/nltk_data`` (Unix).  Next, select the packages or collections you want to download.
 
 If you did not install the data to one of the above central locations, you will need to set the ``NLTK_DATA`` environment variable to specify the location of the data.  (On a Windows machine, right click on "My Computer" then select ``Properties > Advanced > Environment Variables > User Variables > New...``)
 
