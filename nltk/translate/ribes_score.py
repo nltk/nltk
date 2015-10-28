@@ -63,6 +63,7 @@ def position_of_ngram(ngram, sentence):
         word_pos = char_pos.count(' ')
         
     Another way to conceive this is:
+    
         return next(i for i, ng in enumerate(ngrams(sentence, len(ngram))) 
                     if ng == ngram)
                     
@@ -146,7 +147,7 @@ def word_rank_alignment(reference, hypothesis):
                         worder.append(pos)
                         break
                 if i+window < hyp_len:
-                    # Retrieve the left context window.
+                    # Retrieve the right context window.
                     right_context_ngram = tuple(islice(hypothesis, i, i+window+1))
                     if right_context_ngram in ref_ngrams:
                         # Find the position of ngram that matched the reference.
