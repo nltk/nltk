@@ -2,8 +2,8 @@
 # Natural Language Toolkit: RIBES Score
 #
 # Copyright (C) 2001-2015 NLTK Project
-# Authors: Liling Tan 
-# Contributors: Kasramvd, J.F.Sebastian, Mark Byers
+# Authors: 
+# Contributors: Liling Tan, Kasramvd, J.F.Sebastian, Mark Byers
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
