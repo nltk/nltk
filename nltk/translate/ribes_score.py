@@ -2,7 +2,7 @@
 # Natural Language Toolkit: RIBES Score
 #
 # Copyright (C) 2001-2015 NLTK Project
-# Authors: 
+# Authors: Hideki Isozaki, Tsutomu Hirao, Kevin Duh, Katsuhito Sudoh, Hajime Tsukada
 # Contributors: Liling Tan, Kasramvd, J.F.Sebastian, Mark Byers
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
