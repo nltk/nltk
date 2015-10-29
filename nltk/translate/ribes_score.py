@@ -3,12 +3,12 @@
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Authors: Hideki Isozaki, Tsutomu Hirao, Kevin Duh, Katsuhito Sudoh, Hajime Tsukada
-# Contributors: Liling Tan, Kasramvd, J.F.Sebastian, Mark Byers
+# Contributors: Liling Tan, Kasramvd, J.F.Sebastian, Mark Byers, ekhumoro, P. Ortiz
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
 
-from itertools import islice, tee, chain
+from itertools import islice
 
 from nltk import ngrams
 from bleu_score import _brevity_penalty
@@ -35,14 +35,16 @@ def ribes(references, hypothesis, alpha=0.25, beta=1.0):
     :param beta: hyperparameter used as a prior for the brevity penalty.
     :type beta: float
     """
-    bp = brevity_penalty = _brevity_penalty(references, hypothesis)
+    bp = _brevity_penalty(references, hypothesis)
     _best_ribes = -1.0
     # Calculates RIBES for each reference and returns the best score.
     for reference in references:
         # Collects the *worder* from the ranked correlation alignments.
         worder = word_rank_alignment(reference, hypothesis)
-        p1 = unigram_precision = 1.0 * len(worder) / len(hypothesis)
-        nkt = normalized_kendall_tau = kendall_tau(worder)
+        # Calculates the unigram precision, *p1*
+        p1 = 1.0 * len(worder) / len(hypothesis)
+        # Calculates the normalized kendall Tau, *nkt*
+        nkt = kendall_tau(worder)
         _ribes = nkt * (alpha**p1) *  (beta**bp)
         
         if _ribes > _best_ribes: # Keeps the best score.
@@ -119,9 +121,12 @@ def word_rank_alignment(reference, hypothesis):
     # Stores a list of possible ngrams from the reference sentence.
     # This is used for matching context window later in the algorithm.
     ref_ngrams = []
+    hyp_ngrams = []
     for n in range(1, len(reference)+1):
         for ng in ngrams(reference, n):
-             ref_ngrams.append(ng)
+            ref_ngrams.append(ng)
+        for ng in ngrams(hypothesis, n):
+            hyp_ngrams.append(ng)
     for i, h_word in enumerate(hypothesis):
         # If word is not in the reference, continue.
         if h_word not in reference:
@@ -129,31 +134,30 @@ def word_rank_alignment(reference, hypothesis):
         # If we can determine one-to-one word correspondence for unigrams that 
         # only appear once in both the reference and hypothesis.
         elif hypothesis.count(h_word) == reference.count(h_word) == 1:
-            #print (h_word, hypothesis.count(h_word), reference.count(h_word))
             worder.append(reference.index(h_word))
-        # If there's no one-to-one unigram concordant, try higher order ngrams.
         else:
             # Note: range(1, max(i, hyp_len-i+1)) is the range of window sizes.
-            # Starts with the largest possible window and if the a context
-            # ngram is found break.
-            for window in reversed(range(1, max(i, hyp_len-i+1))):
-                if window <= i: # If searching the left context is possible.
-                    # Retrieve the left context window.
-                    left_context_ngram = tuple(islice(hypothesis, i-window, i))
-                    if left_context_ngram in ref_ngrams:
-                        # Find the position of ngram that matched the reference.
-                        pos = position_of_ngram(left_context_ngram, reference)
-                        # Add the positions of the ngram.
-                        worder.append(pos)
-                        break
-                if i+window < hyp_len:
+            for window in range(1, max(i, hyp_len-i+1)):
+                if i+window < hyp_len: # If searching the right context is possible.
                     # Retrieve the right context window.
                     right_context_ngram = tuple(islice(hypothesis, i, i+window+1))
-                    if right_context_ngram in ref_ngrams:
+                    num_times_in_ref = ref_ngrams.count(right_context_ngram)
+                    num_times_in_hyp = hyp_ngrams.count(right_context_ngram) 
+                    # If ngram appears only once in both ref and hyp.
+                    if num_times_in_ref == num_times_in_hyp == 1:
                         # Find the position of ngram that matched the reference.
                         pos = position_of_ngram(right_context_ngram, reference)
-                        # Add the positions of the ngram.
-                        worder.append(pos)
+                        worder.append(pos)  # Add the positions of the ngram.
+                        break
+                if window <= i: # If searching the left context is possible.
+                    # Retrieve the left context window.
+                    left_context_ngram = tuple(islice(hypothesis, i-window, i+1))
+                    num_times_in_ref = ref_ngrams.count(left_context_ngram)
+                    num_times_in_hyp = hyp_ngrams.count(left_context_ngram)
+                    if num_times_in_ref == num_times_in_hyp == 1:
+                        # Find the position of ngram that matched the reference.
+                        pos = position_of_ngram(left_context_ngram, reference)
+                        worder.append(pos)  # Add the positions of the ngram.
                         break
     return worder
 
@@ -184,20 +188,28 @@ def choose(n, k):
     else:
         return 0
     
-
-def pairwise(iterable): 
+def find_increasing_sequences(worder):
     """
-    This is a pairwise iteration loop function from itertools recipes
-    https://docs.python.org/2/library/itertools.html#recipes
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    Given the *worder* list, this function groups monotonic +1 sequences. 
     
-    :param iterable: An iterable
-    :type iterable: Iterable
+        >>> worder = [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
+        >>> list(find_increasing_sequences(worder))
+        [(7, 8, 9, 10), (0, 1, 2, 3, 4, 5)]
+    
+    :param worder: The worder list output from word_rank_alignment
+    :param type: list(int)
     """
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
-
+    items = iter(worder)
+    a, b = None, next(items, None)
+    result = [b]
+    while b is not None:
+        a, b = b, next(items, None)
+        if b is not None and a + 1 == b:
+            result.append(b)
+        else:
+            if len(result) > 1:
+                yield tuple(result)
+            result = [b]
 
 def kendall_tau(worder, normalize=True):
     """
@@ -222,11 +234,7 @@ def kendall_tau(worder, normalize=True):
     """
     worder_len = len(worder)
     # Extract the groups of increasing/monotonic sequences.
-    boundaries =  iter([0] + [i+1 for i, (j,k) in 
-                              enumerate(pairwise(worder)) 
-                              if j+1!=k] 
-                       + [worder_len])
-    increasing_sequences = [tuple(worder[i:next(boundaries)]) for i in boundaries]
+    increasing_sequences = find_increasing_sequences(worder)
     # Calculate no. of increasing_pairs in *worder* list.
     num_increasing_pairs = sum(choose(len(seq),2) for seq in increasing_sequences) 
     # Calculate no. of possible pairs.
@@ -253,11 +261,11 @@ def spearman_rho(worder, normalize=True):
     Using the (H0,R0) and (H5, R5) example from the paper
     
         >>> worder =  [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
-        >>> sum((wi - i)**2 for wi, i in zip(worderr, range(worder_len)))
+        >>> sum((wi - i)**2 for wi, i in zip(worder, range(len(worder))))
         350
         >>> worder =  [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
         >>> round(spearman_rho(worder, normalize=False), 3)
-        −0.591
+        -0.591
         >>> round(spearman_rho(worder), 3)
         0.205
     
