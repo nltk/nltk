@@ -381,8 +381,19 @@ def flatten(*args):
 def pad_sequence(sequence, n, pad_left=False, pad_right=False, 
                  left_pad_symbol=None, right_pad_symbol=None):
     """
-    Returns a padded sequence of items.
+    Returns a padded sequence of items before ngram extraction.
     
+        >>> list(pad_sequence([1,2,3,4,5], 2, pad_left=True, pad_right=True, left_pad_symbol='<s>', right_pad_symbol='</s>'))
+        ['<s>', 1, 2, 3, 4, 5, '</s>']
+        >>> list(pad_sequence([1,2,3,4,5], 2, pad_left=True, left_pad_symbol='<s>'))
+        ['<s>', 1, 2, 3, 4, 5]
+        >>> list(pad_sequence([1,2,3,4,5], 2, pad_right=True, right_pad_symbol='</s>'))
+        [1, 2, 3, 4, 5, '</s>']
+    
+    :param sequence: the source data to be padded
+    :type sequence: sequence or iter
+    :param n: the degree of the ngrams
+    :type n: int
     :param pad_left: whether the ngrams should be left-padded
     :type pad_left: bool
     :param pad_right: whether the ngrams should be right-padded
@@ -391,7 +402,7 @@ def pad_sequence(sequence, n, pad_left=False, pad_right=False,
     :type left_pad_symbol: any
     :param right_pad_symbol: the symbol to use for right padding (default is None)
     :type right_pad_symbol: any
-    :rtype: iter(tuple)
+    :rtype: sequence or iter
     """
     sequence = iter(sequence)
     if pad_left:
@@ -402,7 +413,8 @@ def pad_sequence(sequence, n, pad_left=False, pad_right=False,
 
 # add a flag to pad the sequence so we get peripheral ngrams?
 
-def ngrams(sequence, n, **kwargs):
+def ngrams(sequence, n, pad_left=False, pad_right=False, 
+           left_pad_symbol=None, right_pad_symbol=None):
     """
     Return the ngrams generated from a sequence of items, as an iterator.
     For example:
@@ -416,15 +428,32 @@ def ngrams(sequence, n, **kwargs):
 
         >>> list(ngrams([1,2,3,4,5], 2, pad_right=True))
         [(1, 2), (2, 3), (3, 4), (4, 5), (5, None)]
+        >>> list(ngrams([1,2,3,4,5], 2, pad_right=True, right_pad_symbol='</s>'))
+        [(1, 2), (2, 3), (3, 4), (4, 5), (5, '</s>')]
+        >>> list(ngrams([1,2,3,4,5], 2, pad_left=True, left_pad_symbol='<s>'))
+        [('<s>', 1), (1, 2), (2, 3), (3, 4), (4, 5)]
+        >>> list(ngrams([1,2,3,4,5], 2, pad_left=True, pad_right=True, left_pad_symbol='<s>', right_pad_symbol='</s>'))
+        [('<s>', 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, '</s>')]
+
 
     :param sequence: the source data to be converted into ngrams
     :type sequence: sequence or iter
     :param n: the degree of the ngrams
     :type n: int
+    :param pad_left: whether the ngrams should be left-padded
+    :type pad_left: bool
+    :param pad_right: whether the ngrams should be right-padded
+    :type pad_right: bool
+    :param left_pad_symbol: the symbol to use for left padding (default is None)
+    :type left_pad_symbol: any
+    :param right_pad_symbol: the symbol to use for right padding (default is None)
+    :type right_pad_symbol: any
+    :rtype: sequence or iter
     """
     
-    if ('pad_left' in kwargs or 'pad_right' in kwargs):
-        sequence = pad_sequence(sequence, n, **kwargs)
+    if pad_left or pad_right:
+        sequence = pad_sequence(sequence, n, pad_left, pad_right,
+                                left_pad_symbol, right_pad_symbol)
         
     history = []
     while n > 1:
