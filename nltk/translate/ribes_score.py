@@ -24,7 +24,7 @@ def ribes(references, hypothesis, alpha=0.25, beta=1.0):
     The generic RIBES scores used in shared task, e.g. Workshop for 
     Asian Translation (WAT) uses the following RIBES calculations:
     
-        RIBES = kendall_tau * alpha * p1 * beta * bp
+        RIBES = kendall_tau * alpha**p1 * beta**bp
     
     :param reference: a reference sentence
     :type reference: list(str)
