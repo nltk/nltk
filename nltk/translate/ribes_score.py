@@ -9,11 +9,13 @@
 """ RIBES score implementation """
 
 from itertools import islice
+import math
 
 from nltk import ngrams
-from bleu_score import _brevity_penalty
 
-def ribes(references, hypothesis, alpha=0.25, beta=1.0):
+
+def ribes(references, hypothesis, alpha=0.25, beta=0.10, 
+          character_based=False, emulate_official=False):
     """
     The RIBES (Rank-based Intuitive Bilingual Evaluation Score) from 
     Hideki Isozaki, Tsutomu Hirao, Kevin Duh, Katsuhito Sudoh and 
@@ -34,23 +36,39 @@ def ribes(references, hypothesis, alpha=0.25, beta=1.0):
     :type alpha: float
     :param beta: hyperparameter used as a prior for the brevity penalty.
     :type beta: float
+    :param character_based: a flag to emulate the original character-based RIBES
+    :type character_based: boolean 
     """
-    bp = _brevity_penalty(references, hypothesis)
     _best_ribes = -1.0
     # Calculates RIBES for each reference and returns the best score.
     for reference in references:
-        # Collects the *worder* from the ranked correlation alignments.
-        worder = word_rank_alignment(reference, hypothesis)
+        # To emulate the official character-based RIBES implementation
+        if character_based:
+            reference = list("".join(reference))
+            hypothesis = list("".join(hypothesis))
+        
+        # Calculates the normalized kendall Tau, *nkt*
+        if emulate_official: # Emulates the official RIBES v1.03.1
+            # Collects the *worder* from the ranked correlation alignments.
+            worder = _ribes_word_rank_alignment(reference, hypothesis)
+            nkt = _ribes_kendall_tau(worder)
+        else:
+            # Collects the *worder* from the ranked correlation alignments.
+            worder = word_rank_alignment(reference, hypothesis)
+            nkt = kendall_tau(worder)
+            
+        # Calculates the brevity penalty
+        bp = min(1.0, math.exp(1.0 - 1.0 * len(reference)/len(hypothesis)))
+        
         # Calculates the unigram precision, *p1*
         p1 = 1.0 * len(worder) / len(hypothesis)
-        # Calculates the normalized kendall Tau, *nkt*
-        nkt = kendall_tau(worder)
-        _ribes = nkt * (alpha**p1) *  (beta**bp)
+        
+        _ribes = nkt * (p1 ** alpha) *  (bp ** beta)
         
         if _ribes > _best_ribes: # Keeps the best score.
             _best_ribes = _ribes
-            
-    return _best_ribes
+        
+    return _best_ribes, p1, bp, worder, nkt
 
 
 def position_of_ngram(ngram, sentence):
@@ -79,9 +97,9 @@ def position_of_ngram(ngram, sentence):
         # Returns the index of the word when ngram matches.
         if ngram == sublist:
             return i
-        
 
-def word_rank_alignment(reference, hypothesis):
+
+def word_rank_alignment(reference, hypothesis, character_based=False):
     """    
     This is the word rank alignment algorithm described in the paper to produce
     the *worder* list, i.e. a list of word indices of the hypothesis word orders 
@@ -157,7 +175,8 @@ def word_rank_alignment(reference, hypothesis):
                     if num_times_in_ref == num_times_in_hyp == 1:
                         # Find the position of ngram that matched the reference.
                         pos = position_of_ngram(left_context_ngram, reference)
-                        worder.append(pos)  # Add the positions of the ngram.
+                        # Add the positions of the ngram.
+                        worder.append(pos+ len(left_context_ngram) -1)  
                         break
     return worder
 
@@ -187,6 +206,7 @@ def choose(n, k):
         return ntok // ktok
     else:
         return 0
+
     
 def find_increasing_sequences(worder):
     """
@@ -211,6 +231,7 @@ def find_increasing_sequences(worder):
                 yield tuple(result)
             result = [b]
 
+
 def kendall_tau(worder, normalize=True):
     """
     Calculates the Kendall's Tau correlation coefficient given the *worder*
@@ -229,8 +250,16 @@ def kendall_tau(worder, normalize=True):
         >>> round(kendall_tau(worder),3)
         0.382
     
+    To compare with the _ribes_kendall_tau():
+    
+        >>> worder = [0, 1, 8, 9, 10, 11, 12, 13, 14, 15, 24, 17, 18, 19, 20, 25, 26]
+        >>> round(kendall_tau(worder), 3)
+        0.265
+    
     :param worder: The worder list output from word_rank_alignment
-    :param type: list(int)
+    :type worder: list(int)
+    :param normalize: Flag to indicate normalization
+    :type normalize: boolean
     """
     worder_len = len(worder)
     # Extract the groups of increasing/monotonic sequences.
@@ -241,7 +270,6 @@ def kendall_tau(worder, normalize=True):
     num_possible_pairs = choose(worder_len, 2)
     # Kendall's Tau computation.
     tau = 2 * num_increasing_pairs / num_possible_pairs -1
-    
     if normalize: # If normalized, the tau output falls between 0.0 to 1.0
         return (tau + 1) /2
     else: # Otherwise, the tau outputs falls between -1.0 to +1.0
@@ -280,3 +308,111 @@ def spearman_rho(worder, normalize=True):
         return (rho + 1) /2
     else: # Otherwise, the rho outputs falls between -1.0 to +1.0
         return rho
+
+
+#########################################################################
+# Functions use to emulate official RIBES v1.03.1
+#########################################################################
+
+def _ribes_overlapping_count (pattern, sentence):
+    """
+    This is the original overlapping_count() function from the official RIBES
+    version 1.03.1, it calculates the number of occurences of a pattern within
+    a sentence, usually it counts the no. of times an ngram appears in a sentence.
+    
+    :param pattern: The pattern that needs to be counted.
+    :type pattern: str
+    :param sentence: The sentence that the pattern appears
+    :type sentence: str 
+    """
+    pos = sentence.find(pattern)
+    if pos > -1:
+        return 1 + _ribes_overlapping_count(pattern, sentence[pos+1:])
+    else:
+        return 0
+
+def _ribes_word_rank_alignment(reference, hypothesis, character_based=True):
+    """
+    This is the original implementation from the official RIBES version 1.03.1,
+    it extracts the *worder* list using string comparisons instead of comparing
+    items in an iterable as implemented in `word_rank_alignment()`.
+    
+    :param reference: a reference sentence
+    :type reference: list(str)
+    :param hypothesis: a hypothesis sentence
+    :type hypothesis: list(str)
+    :param character_based: Flag to indicate using character-based computation
+    :type character_based: boolean
+    """
+    # Fires warning if users wants non-normalized value.
+    _assert_msg = "This version of word rank alignment only works at char level."
+    assert (character_based==True), _assert_msg
+    
+    worder = []
+    ref, hyp = "".join(reference), "".join(hypothesis)
+    for i in range(len(hyp)):
+        # At the i-th hypthesis word hyp[i]
+        if not hyp[i] in ref: # Check if hyp[i] doesn't exist in reference.
+            pass
+        # If hyp[i] exists, go on to the next hyp token.
+        elif ref.count(hyp[i]) == 1 and hyp.count(hyp[i]) == 1:
+            # If we can determine one-to-one word correspondence by only unigram
+            # one-to-one correspondence append the index in reference
+            worder.append(ref.index(hyp[i]))
+            # Go on to the next hyp token.
+        else:
+            # If not, we consider context words
+            for window in range (1, max(i+1, len(hyp)-i+1)):
+                if window <= i:
+                    ngram = hyp[i-window:i+1]
+                    if (_ribes_overlapping_count(ngram, ref) == 1 and 
+                    _ribes_overlapping_count(ngram, hyp) == 1):
+                        worder.append(ref.index(ngram) + len(ngram) -1)
+                        break
+                if i+window < len(hyp):
+                    ngram = hyp[i:i+window+1]
+                    if (_ribes_overlapping_count(ngram, ref) ==  1 and
+                        _ribes_overlapping_count(ngram, hyp) == 1):
+                        worder.append(ref.index(ngram))
+                        break
+    return worder
+
+            
+def _ribes_kendall_tau(worder, normalize=True):
+    """
+    This is the original implementation from the official RIBES version 1.03.1, 
+    it calculates the normalized Kendall's Tau without the use of nCr /choose(). 
+    Note: this version of Kendall Tau's overestimates the normalized value.   
+    
+        >>> worder = [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
+        >>> round(_ribes_kendall_tau(worder), 3)
+        0.382
+    
+    To compare with the kendall_tau():
+    
+        >>> worder = [0, 1, 8, 9, 10, 11, 12, 13, 14, 15, 24, 17, 18, 19, 20, 25, 26]
+        >>> round(_ribes_kendall_tau(worder), 3)
+        0.971
+    
+    :param worder: The worder list output from word_rank_alignment
+    :type worder: list(int)
+    :param normalize: Flag to indicate normalization
+    :type normalize: boolean
+    """
+    # Fires warning if users wants non-normalized value.
+    _assert_msg = "This version of kendall's Tau only returns normalized value."
+    assert (normalize==True), _assert_msg
+    # This is the original implementation normalized Kendall Tau from the 
+    # official 
+    ascending = 0.0
+    for i in range(len(worder)-1):  
+        for j in range(i+1,len(worder)):
+            if worder[i] < worder[j]:
+                ascending += 1
+    n = len(worder)
+    return ascending / ((n * (n - 1))/2)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
