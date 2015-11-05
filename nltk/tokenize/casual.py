@@ -156,7 +156,7 @@ REGEXPS = (
 
     # Remaining word types:
     r"""
-    (?:\w[\w'\-_]+\w)              # Words with apostrophes or dashes.
+    (?:[^\W\d_](?:[^\W\d_]|['\-_])+[^\W\d_]) # Words with apostrophes or dashes.
     |
     (?:[+\-]?\d+[,/.:-]\d+[+\-]?)  # Numbers, including fractions, decimals.
     |
@@ -264,35 +264,13 @@ class TweetTokenizer:
         >>> s0 = "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--"
         >>> tknzr.tokenize(s0)
         ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
-        >>> s1 = "@Joyster2012 @CathStaincliffe Good for you, girl!! Best wishes :-)"
-        >>> tknzr.tokenize(s1)
-        ['@Joyster2012', '@CathStaincliffe', 'Good', 'for', 'you', ',', 'girl', '!', '!', 'Best', 'wishes', ':-)']
-        >>> s2 = "3Points for #DreamTeam Gooo BAILEY! :) #PBB737Gold @PBBabscbn"
-        >>> tknzr.tokenize(s2)
-        ['3Points', 'for', '#DreamTeam', 'Gooo', 'BAILEY', '!', ':)', '#PBB737Gold', '@PBBabscbn']
-        >>> s3 = "@Insanomania They do... Their mentality doesn't :("
-        >>> tknzr.tokenize(s3)
-        ['@Insanomania', 'They', 'do', '...', 'Their', 'mentality', "doesn't", ':(']
-        >>> s4 = "RT @facugambande: Ya por arrancar a grabar !!! #TirenTirenTiren vamoo !!"
-        >>> tknzr.tokenize(s4)
-        ['RT', '@facugambande', ':', 'Ya', 'por', 'arrancar', 'a', 'grabar', '!', '!', '!', '#TirenTirenTiren', 'vamoo', '!', '!']
-        >>> tknzr = TweetTokenizer(reduce_len=True)
-        >>> s5 = "@crushinghes the summer holidays are great but I'm so bored already :("
-        >>> tknzr.tokenize(s5)
-        ['@crushinghes', 'the', 'summer', 'holidays', 'are', 'great', 'but', "I'm", 'so', 'bored', 'already', ':(']
 
     Examples using `strip_handles` and `reduce_len parameters`:
 
         >>> tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
-        >>> s6 = '@remy: This is waaaaayyyy too much for you!!!!!!'
-        >>> tknzr.tokenize(s6)
+        >>> s1 = '@remy: This is waaaaayyyy too much for you!!!!!!'
+        >>> tknzr.tokenize(s1)
         [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
-        >>> s7 = '@_willy65: No place for @chuck tonight. Sorry.'
-        >>> tknzr.tokenize(s7)
-        [':', 'No', 'place', 'for', 'tonight', '.', 'Sorry', '.']
-        >>> s8 = '@mar_tin is a great developer. Contact him at mar_tin@email.com'
-        >>> tknzr.tokenize(s8)
-        ['is', 'a', 'great', 'developer', '.', 'Contact', 'him', 'at', 'mar_tin', '@email', '.', 'com']
     """
 
     def __init__(self, preserve_case=True, reduce_len=False, strip_handles=False):
