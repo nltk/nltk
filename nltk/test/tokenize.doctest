@@ -109,3 +109,10 @@ A simple sentence tokenizer '\.(\s+|$)'
     >>> regexp_tokenize(s, pattern=r'\.(?:\s+|$)', gaps=True)
     ['Good muffins cost $3.88\nin New York',
      'Please buy me\ntwo of them', 'Thanks']
+
+Post-hoc alignment of tokens with a source string
+
+    >>> from nltk.tokenize.util import *
+    >>> list(align_tokens(word_tokenize(s1), s1))
+    [(0, 2), (3, 4), (5, 6), (6, 12), (13, 21), (22, 24), (25, 27), (28, 33), (34, 36), (37, 38), (39, 46), (46, 47), (48, 51), (52, 59), (60, 67), (68, 73), (74, 76), (77, 78), (78, 84), (84, 85)]
+    
