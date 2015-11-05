@@ -1233,3 +1233,35 @@ def elementtree_indent(elem, level=0):
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
+######################################################################
+# Mathematical approximations
+######################################################################
+
+def choose(n, k):
+    """
+    This function is a fast way to calculate binomial coefficients, commonly
+    known as nCk, i.e. the number of combinations of n things taken k at a time. 
+    (https://en.wikipedia.org/wiki/Binomial_coefficient).
+    
+    This is the *scipy.special.comb()* with long integer computation but this 
+    approximation is faster, see https://github.com/nltk/nltk/issues/1181
+    
+        >>> choose(4, 2)
+        6
+        >>> choose(6, 2)
+        15
+    
+    :param n: The number of things.
+    :type n: int
+    :param r: The number of times a thing is taken.
+    :type r: int
+    """
+    if 0 <= k <= n:
+        ntok, ktok = 1, 1
+        for t in range(1, min(k, n - k) + 1):
+            ntok *= n
+            ktok *= t
+            n -= 1
+        return ntok // ktok
+    else:
+        return 0
