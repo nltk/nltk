@@ -88,3 +88,32 @@ def spans_to_relative(spans):
         prev = right
 
 
+def align_tokens(tokens, sentence): 
+    r"""
+    Return the offsets of the tokens in *s*, as a sequence of ``(start, end)``
+    tuples, given the tokens and also the source string.
+    
+    :param tokens: the list of strings that are the result of tokenization
+    :type s: list(str)
+    :param sentence: the original string 
+    :rtype: iter(tuple(int,int))
+    """
+    prev = 0
+    token_offset = 0
+
+    while token_offset < len(tokens):
+        token = tokens[token_offset]
+        try:
+            substring = sentence[prev:prev + len(token)]
+        except:
+	        raise ValueError('Sentence ended while scanning for token end', token)
+
+        if substring == token:
+            yield prev, prev + len(token)
+            prev += len(token)
+            token_offset += 1
+        else:
+            prev += 1
+
+        if prev > len(sentence):
+        	raise ValueError('Sentence ended while scanning for token start', token_offset)
