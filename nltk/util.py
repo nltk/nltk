@@ -450,10 +450,8 @@ def ngrams(sequence, n, pad_left=False, pad_right=False,
     :type right_pad_symbol: any
     :rtype: sequence or iter
     """
-    
-    if pad_left or pad_right:
-        sequence = pad_sequence(sequence, n, pad_left, pad_right,
-                                left_pad_symbol, right_pad_symbol)
+    sequence = pad_sequence(sequence, n, pad_left, pad_right,
+                            left_pad_symbol, right_pad_symbol)
         
     history = []
     while n > 1:
