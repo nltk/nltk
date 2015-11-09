@@ -226,6 +226,27 @@ def read_int(s, start_position):
     string, then return a tuple ``(val, end_position)`` containing the
     value of the integer and the position where it ends.  Otherwise,
     raise a ``ReadError``.
+
+    :param s: A string that will be checked to see if within which a 
+        Python integer exists.
+    :type s: str
+    
+    :param start_position: The specified beginning position of the string ``s``
+        to begin regex matching.
+    :type start_position: int
+    
+    :return: A tuple containing the matched integer casted to an int,
+        and the end position of the int in ``s``.
+    :rtype: tuple(int, int)
+
+    :raise ReadError: If the ``_READ_INT_RE`` regex doesn't return a
+        match in ``s`` at ``start_position``.
+
+    :Example:
+    >>> from nltk.internals import read_int
+    >>> read_int('42 is the answer', 0)
+    (42, 2)
+    
     """
     m = _READ_INT_RE.match(s, start_position)
     if not m: raise ReadError('integer', start_position)
