@@ -259,6 +259,27 @@ def read_number(s, start_position):
     given string, then return a tuple ``(val, end_position)``
     containing the value of the number and the position where it ends.
     Otherwise, raise a ``ReadError``.
+
+    :param s: A string that will be checked to see if within which a 
+        Python number exists.
+    :type s: str
+    
+    :param start_position: The specified beginning position of the string ``s``
+        to begin regex matching.
+    :type start_position: int
+    
+    :return: A tuple containing the matched number casted to a ``float``,
+        and the end position of the number in ``s``.
+    :rtype: tuple(float, int)
+
+    :raise ReadError: If the ``_READ_NUMBER_VALUE`` regex doesn't return a
+        match in ``s`` at ``start_position``.
+
+    :Example:
+    >>> from nltk.internals import read_number
+    >>> read_number('Pi is 3.14159', 6)
+    (3.14159, 13)
+    
     """
     m = _READ_NUMBER_VALUE.match(s, start_position)
     if not m or not (m.group(1) or m.group(2)):
