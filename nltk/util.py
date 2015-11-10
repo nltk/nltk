@@ -1268,12 +1268,18 @@ def choose(n, k):
 # Trie Implementation
 ######################################################################
 class Trie(defaultdict):
-    LEAF = "<leaf>"
+    """A Trie implementation for strings"""
+    LEAF = True
 
     def __init__(self, strings=None):
-        """A Trie implementation for strings
+        """Builds a Trie object, which is a ``defaultdict`` 
+        not-so-cleverly disguised. 
+        
+        If ``strings`` is provided, it will add the ``list(str)``
+        to the Trie. Otherwise, it'll construct an empty Trie.
 
-        :param strings: List of strings to insert into the trie
+        :param strings: List of strings to insert into the trie 
+            (Default is ``None``)
         :type strings: list(str)
 
         """
@@ -1291,8 +1297,9 @@ class Trie(defaultdict):
         :Example:
 
         >>> from nltk.util import Trie
-        >>> trie = Trie(["abc", "def"])
+        >>> trie = Trie(["ab"])
         >>> trie
+        defaultdict(<class 'nltk.util.Trie'>, {'a': defaultdict(<class 'nltk.util.Trie'>, {'b': defaultdict(<class 'nltk.util.Trie'>, {True: None})})})
 
         """
         if len(string):
