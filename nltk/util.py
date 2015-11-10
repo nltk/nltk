@@ -10,6 +10,7 @@ import locale
 import re
 import types
 import textwrap
+import json
 import pydoc
 import bisect
 import os
@@ -1307,3 +1308,24 @@ class Trie(defaultdict):
         else:
             # mark the string is complete
             self[Trie.LEAF] = None
+
+    def as_dict(self):
+        """Convert ``defaultdict`` to common ``dict`` representation.
+
+        :return: Even though ``defaultdict`` is a subclass of ``dict`` and thus
+            can be converted to a simple ``dict`` using ``dict()``, in our case
+            it's a nested ``defaultdict``, so here's a quick trick to provide to
+            us the ``dict`` representation of the ``Trie`` without 
+            ``defaultdict(<class 'nltk.util.Trie'>, ...``
+        :rtype: dict
+
+        :Example:
+
+        >>> from nltk.util import Trie
+        >>> trie = Trie(["abc", "def"])
+        >>> trie.as_dict()
+        {u'a': {u'b': {u'c': {u'True': None}}}, u'd': {u'e': {u'f': {u'True': None}}}}
+
+        """
+        return json.loads(json.dumps(self))
+
