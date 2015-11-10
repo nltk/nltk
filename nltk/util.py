@@ -1309,6 +1309,9 @@ class Trie(defaultdict):
             # mark the string is complete
             self[Trie.LEAF] = None
 
+    def __str__(self):
+        return str(self.as_dict())
+
     def as_dict(self):
         """Convert ``defaultdict`` to common ``dict`` representation.
 
