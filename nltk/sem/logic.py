@@ -1789,23 +1789,6 @@ class EqualityExpression(BinaryExpression):
 
 ### Utilities
 
-class StringTrie(defaultdict):
-    LEAF = "<leaf>"
-
-    def __init__(self, strings=None):
-        defaultdict.__init__(self, StringTrie)
-        if strings:
-            for string in strings:
-                self.insert(string)
-
-    def insert(self, string):
-        if len(string):
-            self[string[0]].insert(string[1:])
-        else:
-            #mark the string is complete
-            self[StringTrie.LEAF] = None
-
-
 class LogicalExpressionException(Exception):
     def __init__(self, index, message):
         self.index = index
