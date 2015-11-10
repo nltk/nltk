@@ -1263,3 +1263,40 @@ def choose(n, k):
         return ntok // ktok
     else:
         return 0
+
+######################################################################
+# Trie Implementation
+######################################################################
+class Trie(defaultdict):
+    LEAF = "<leaf>"
+
+    def __init__(self, strings=None):
+        """A Trie implementation for strings
+
+        :param strings: List of strings to insert into the trie
+        :type strings: list(str)
+
+        """
+        defaultdict.__init__(self, Trie)
+        if strings:
+            for string in strings:
+                self.insert(string)
+
+    def insert(self, string):
+        """Inserts ``string`` into the Trie
+
+        :param string: String to insert into the trie
+        :type string: str
+
+        :Example:
+
+        >>> from nltk.util import Trie
+        >>> trie = Trie(["abc", "def"])
+        >>> trie
+
+        """
+        if len(string):
+            self[string[0]].insert(string[1:])
+        else:
+            # mark the string is complete
+            self[Trie.LEAF] = None
