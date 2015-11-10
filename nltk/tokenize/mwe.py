@@ -71,7 +71,7 @@ class MWETokenizer(TokenizerI):
         >>> tokenizer.add_mwe(('a', 'b', 'c'))
         >>> tokenizer.add_mwe(('a', 'x'))
         >>> tokenizer._mwes.as_dict()
-        {u'a': {u'x': {u'True': None}, u'b': {u'c': {u'True': None}, u'True': None}}}
+        {'a': {'x': {True: None}, 'b': {True: None, 'c': {True: None}}}}
 
         """
         self._mwes.insert(mwe)
