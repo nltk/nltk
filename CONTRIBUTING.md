@@ -113,14 +113,8 @@ the desired feature.
 
 ### Continuous Integration
 
-The continuous integration test suite previously running at [Shining
-Panda](http://shiningpanda.com) is down due to them having taken their Clap de
-Fin. There have been some investigations into moving to other CI, but no
-official build is running right now. This may change in the near future.
-
-`nltk/test/runtests.py` is a good starting point for running tests locally, but
-note that the suite is currently failing.
-
+NLTK uses [Cloudbees](https://nltk.ci.cloudbees.com/) for continuous integration.
+Tests can be run locally using tox, e.g. `sudo tox -e py34`.
 
 ## Discussion
 
