@@ -133,6 +133,7 @@
 - Ondrej Platek
 - Alessandro Presta
 - Martin Thorsen Ranang
+- Michael Recachinas
 - Brandon Rhodes
 - Joshua Ritterman
 - Will Roberts
