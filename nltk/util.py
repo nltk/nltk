@@ -1312,9 +1312,12 @@ class Trie(defaultdict):
     def __str__(self):
         return str(self.as_dict())
 
-    def as_dict(self):
+    def as_dict(self, d=None):
         """Convert ``defaultdict`` to common ``dict`` representation.
 
+        :param: A defaultdict containing strings mapped to nested defaultdicts.
+            This is the structure of the trie. (Default is None)
+        :type: defaultdict(str -> defaultdict)
         :return: Even though ``defaultdict`` is a subclass of ``dict`` and thus
             can be converted to a simple ``dict`` using ``dict()``, in our case
             it's a nested ``defaultdict``, so here's a quick trick to provide to
@@ -1330,8 +1333,31 @@ class Trie(defaultdict):
         >>> from nltk.util import Trie
         >>> trie = Trie(["abc", "def"])
         >>> trie.as_dict()
-        {u'a': {u'b': {u'c': {u'True': None}}}, u'd': {u'e': {u'f': {u'True': None}}}}
+        {'a': {'b': {'c': {True: None}}}, 'd': {'e': {'f': {True: None}}}}
 
         """
-        return json.loads(json.dumps(self))
+        def _default_to_regular(d):
+            """
+            Source: http://stackoverflow.com/a/26496899/4760801
 
+            :param d: Nested ``defaultdict`` to convert to regular ``dict``
+            :type d: defaultdict(str -> defaultdict(...))
+            :return: A dict representation of the defaultdict
+            :rtype: dict(str -> dict(str -> ...))
+
+            :Example:
+
+            >>> from collections import defaultdict
+            >>> d = defaultdict(defaultdict)
+            >>> d["one"]["two"] = "three"
+            >>> d
+            defaultdict(<type 'collections.defaultdict'>, {'one': defaultdict(None, {'two': 'three'})})
+            >>> _default_to_regular(d)
+            {'one': {'two': 'three'}}
+
+            """
+            if isinstance(d, defaultdict):
+                d = {k: _default_to_regular(v) for k, v in d.iteritems()}
+            return d
+        
+        return _default_to_regular(self)
