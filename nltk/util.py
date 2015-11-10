@@ -10,7 +10,6 @@ import locale
 import re
 import types
 import textwrap
-import json
 import pydoc
 import bisect
 import os
