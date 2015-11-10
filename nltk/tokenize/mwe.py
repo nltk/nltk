@@ -34,49 +34,63 @@ from nltk.tokenize.api import TokenizerI
 
 
 class MWETokenizer(TokenizerI):
-    """
-    A tokenizer that processes tokenized text and merges multi-word expressions
-    into single tokens:
-
-        >>> tokenizer = MWETokenizer([('hors', "d'oeuvre")], separator='+')
-        >>> tokenizer.tokenize("An hors d'oeuvre tonight, sir?".split())
-        ['An', "hors+d'oeuvre", 'tonight,', 'sir?']
-
-    :type mwes: list(list(str))
-    :param mwes: A sequence of multi-word expressions to be merged, where
-        each MWE is a sequence of strings.
-    :type separator: str
-    :param separator: String that should be inserted between words in a multi-word
-        expression token.
-
+    """A tokenizer that processes tokenized text and merges multi-word expressions
+    into single tokens.
     """
 
     def __init__(self, mwes=None, separator='_'):
+        """Initialize the multi-word tokenizer with a list of expressions and a
+        separator
 
+        :type mwes: list(list(str))
+        :param mwes: A sequence of multi-word expressions to be merged, where
+            each MWE is a sequence of strings.
+        :type separator: str
+        :param separator: String that should be inserted between words in a multi-word
+            expression token. (Default is '_')
+
+        """
         if not mwes:
             mwes = []
         self._mwes = Trie(mwes)
         self._separator = separator
 
-    def add_mwe(self, mwe, _trie=None):
-        """
-        Add a multi-word expression to the lexicon (stored as a word trie)
+    def add_mwe(self, mwe):
+        """Add a multi-word expression to the lexicon (stored as a word trie)
 
-        We represent the trie as a dict of dicts:
+        We use ``util.Trie`` to represent the trie. Its form is a dict of dicts. 
+        The key True marks the end of a valid MWE.
 
-            >>> tokenizer = MWETokenizer([('a', 'b'), ('a', 'b', 'c'), ('a', 'x')])
-            >>> tokenizer._mwes
-            {'a': {'x': {True: None}, 'b': {True: None, 'c': {True: None}}}}
+        :param mwe: The multi-word expression we're adding into the word trie
+        :type mwe: tuple(str) or list(str)
 
-        The key True marks the end of a valid MWE
+        :Example:
 
-        """
+        >>> tokenizer = MWETokenizer()
+        >>> tokenizer.add_mwe(('a', 'b'))
+        >>> tokenizer.add_mwe(('a', 'b', 'c'))
+        >>> tokenizer.add_mwe(('a', 'x'))
+        >>> tokenizer._mwes.as_dict()
+        {u'a': {u'x': {u'True': None}, u'b': {u'c': {u'True': None}, u'True': None}}}
 
         """
         self._mwes.insert(mwe)
 
     def tokenize(self, text):
+        """
 
+        :param text: A list containing tokenized text
+        :type text: list(str)
+        :return: A list of the tokenized text with multi-words merged together
+        :rtype: list(str)
+
+        :Example:
+
+        >>> tokenizer = MWETokenizer([('hors', "d'oeuvre")], separator='+')
+        >>> tokenizer.tokenize("An hors d'oeuvre tonight, sir?".split())
+        ['An', "hors+d'oeuvre", 'tonight,', 'sir?']
+        
+        """
         i = 0
         n = len(text)
         result = []
