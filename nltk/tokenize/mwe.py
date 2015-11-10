@@ -28,6 +28,7 @@ of MWEs:
     ['In', 'a_little', 'or', 'a_little_bit', 'or', 'a_lot', 'in_spite_of']
 
 """
+from nltk.util import Trie
 
 from nltk.tokenize.api import TokenizerI
 
@@ -54,10 +55,8 @@ class MWETokenizer(TokenizerI):
 
         if not mwes:
             mwes = []
-        self._mwes = dict()
+        self._mwes = Trie(mwes)
         self._separator = separator
-        for mwe in mwes:
-            self.add_mwe(mwe)
 
     def add_mwe(self, mwe, _trie=None):
         """
@@ -73,14 +72,8 @@ class MWETokenizer(TokenizerI):
 
         """
 
-        if _trie is None:
-            _trie = self._mwes
-        if mwe:
-            if mwe[0] not in _trie:
-                _trie[mwe[0]] = dict()
-            self.add_mwe(mwe[1:], _trie=_trie[mwe[0]])
-        else:
-            _trie[True] = None
+        """
+        self._mwes.insert(mwe)
 
     def tokenize(self, text):
 
@@ -97,7 +90,7 @@ class MWETokenizer(TokenizerI):
                     trie = trie[text[j]]
                     j = j + 1
                 else:
-                    if True in trie:
+                    if Trie.LEAF in trie:
                         # success!
                         result.append(self._separator.join(text[i:j]))
                         i = j
