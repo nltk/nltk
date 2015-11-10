@@ -1317,7 +1317,10 @@ class Trie(defaultdict):
             it's a nested ``defaultdict``, so here's a quick trick to provide to
             us the ``dict`` representation of the ``Trie`` without 
             ``defaultdict(<class 'nltk.util.Trie'>, ...``
-        :rtype: dict
+        :rtype: dict(str -> dict(bool -> None))
+            Note: there can be an arbitrarily deeply nested 
+            ``dict(str -> dict(str -> dict(..))``, but the last
+            level will have ``dict(str -> dict(bool -> None))``
 
         :Example:
 
