@@ -1273,8 +1273,7 @@ class Trie(defaultdict):
     LEAF = True
 
     def __init__(self, strings=None):
-        """Builds a Trie object, which is a ``defaultdict`` 
-        not-so-cleverly disguised. 
+        """Builds a Trie object, which is built around a ``defaultdict``
         
         If ``strings`` is provided, it will add the ``list(str)``
         to the Trie. Otherwise, it'll construct an empty Trie.
