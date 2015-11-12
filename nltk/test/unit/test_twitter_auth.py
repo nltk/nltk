@@ -5,6 +5,12 @@ Tests for static parts of Twitter package
 
 import os
 import unittest
+from nose import SkipTest
+
+try:
+    import twython
+except ImportError as e:
+    raise SkipTest("The twython library has not been installed.")
 
 from nltk.twitter import Authenticate
 
@@ -42,7 +48,7 @@ class TestCredentials(unittest.TestCase):
             self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('OSError exception not thrown.')
-            
+
 
     def test_empty_subdir2(self):
         """
