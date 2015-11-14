@@ -5,6 +5,12 @@ Tests for static parts of Twitter package
 
 import os
 import unittest
+from nose import SkipTest
+
+try:
+    import twython
+except ImportError as e:
+    raise SkipTest("The twython library has not been installed.")
 
 from nltk.twitter import Authenticate
 
@@ -42,7 +48,6 @@ class TestCredentials(unittest.TestCase):
             self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('OSError exception not thrown.')
-            
 
     def test_empty_subdir2(self):
         """
@@ -75,7 +80,6 @@ class TestCredentials(unittest.TestCase):
         else:
             self.fail('OSError exception not thrown.')
 
-
     def test_missingfile1(self):
         """
         Defaults for authentication will fail since 'credentials.txt' not
@@ -94,7 +98,6 @@ class TestCredentials(unittest.TestCase):
         else:
             self.fail('OSError exception not thrown.')
 
-
     def test_missingfile2(self):
         """
         Credentials file 'foobar' cannot be found in default subdir.
@@ -112,8 +115,6 @@ class TestCredentials(unittest.TestCase):
         else:
             self.fail('OSError exception not thrown.')
 
-
-
     def test_incomplete_file(self):
         """
         Credentials file 'bad_oauth1-1.txt' is incomplete
@@ -127,7 +128,6 @@ class TestCredentials(unittest.TestCase):
             self.fail('Unexpected exception thrown: %s' % e)
         else:
             self.fail('ValueError exception not thrown.')
-
 
     def test_malformed_file1(self):
         """
@@ -165,14 +165,12 @@ class TestCredentials(unittest.TestCase):
         self.auth.load_creds(subdir=self.subdir)
         self.auth.creds_fullpath = os.path.join(self.subdir, self.auth.creds_file)
 
-
     def test_correct_file1(self):
         """
         Default credentials file is identified
         """
         self.auth.load_creds(subdir=self.subdir)
         self.assertEqual(self.auth.creds_file, 'credentials.txt')
-
 
     def test_correct_file2(self):
         """
