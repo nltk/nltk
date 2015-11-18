@@ -34,6 +34,7 @@
 - Jinyoung Choi
 - Andrew Clausen
 - Lucas Champollion
+- Graham Christensen
 - Trevor Cohn
 - David Coles
 - Lucas Cooper
@@ -132,6 +133,7 @@
 - Ondrej Platek
 - Alessandro Presta
 - Martin Thorsen Ranang
+- Michael Recachinas
 - Brandon Rhodes
 - Joshua Ritterman
 - Will Roberts

@@ -156,7 +156,7 @@ REGEXPS = (
 
     # Remaining word types:
     r"""
-    (?:[a-z][a-z'\-_]+[a-z])       # Words with apostrophes or dashes.
+    (?:\w[\w'\-_]+\w)              # Words with apostrophes or dashes.
     |
     (?:[+\-]?\d+[,/.:-]\d+[+\-]?)  # Numbers, including fractions, decimals.
     |
