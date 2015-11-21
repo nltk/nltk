@@ -102,7 +102,7 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
     w.r.t. the list of reference words.
     
     Below is (H0, R0) example from the Isozaki et al. 2010 paper, 
-    note the examples are indexed from 1th but the results here starts from 0th:
+    note the examples are indexed from 1 but the results here are indexed from 0:
     
         >>> ref = str('he was interested in world history because he '
         ... 'read the book').split()
