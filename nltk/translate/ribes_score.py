@@ -46,7 +46,7 @@ def ribes(references, hypothesis, alpha=0.25, beta=0.10):
     :return: The best ribes score of one of the references.
     :rtype: float
     """
-    _best_ribes = -1.0
+    best_ribes = -1.0
     # Calculates RIBES for each reference and returns the best score.
     for reference in references:
         # Collects the *worder* from the ranked correlation alignments.
@@ -61,10 +61,10 @@ def ribes(references, hypothesis, alpha=0.25, beta=0.10):
         
         _ribes = nkt * (p1 ** alpha) *  (bp ** beta)
         
-        if _ribes > _best_ribes: # Keeps the best score.
-            _best_ribes = _ribes
+        if _ribes > best_ribes: # Keeps the best score.
+            best_ribes = _ribes
         
-    return _best_ribes, p1, bp, worder, nkt
+    return best_ribes
 
 
 def position_of_ngram(ngram, sentence):
