@@ -35,16 +35,14 @@ def ribes(references, hypothesis, alpha=0.25, beta=0.10):
     implementation when evaluating your machine translation system. Refer
     to http://www.kecl.ntt.co.jp/icl/lirg/ribes/ for the official script.
     
-    :param reference: a reference sentence
-    :type reference: list(str)
+    :param references: a list of reference sentences
+    :type reference: list(list(str))
     :param hypothesis: a hypothesis sentence
     :type hypothesis: list(str)
     :param alpha: hyperparameter used as a prior for the unigram precision.
     :type alpha: float
     :param beta: hyperparameter used as a prior for the brevity penalty.
     :type beta: float
-    :param character_based: a flag to emulate the original character-based RIBES
-    :type character_based: boolean 
     """
     _best_ribes = -1.0
     # Calculates RIBES for each reference and returns the best score.
