@@ -151,7 +151,8 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
             worder.append(reference.index(h_word))
         else:
             # Note: range(1, max(i, hyp_len-i+1)) is the range of window sizes.
-            for window in range(1, max(i, hyp_len-i+1)):
+            max_window_size = max(i, hyp_len-i+1)
+            for window in range(1, max_window_size):
                 if i+window < hyp_len: # If searching the right context is possible.
                     # Retrieve the right context window.
                     right_context_ngram = tuple(islice(hypothesis, i, i+window+1))
