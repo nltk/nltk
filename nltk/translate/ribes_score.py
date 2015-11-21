@@ -43,6 +43,8 @@ def ribes(references, hypothesis, alpha=0.25, beta=0.10):
     :type alpha: float
     :param beta: hyperparameter used as a prior for the brevity penalty.
     :type beta: float
+    :return: The best ribes score of one of the references.
+    :rtype: float
     """
     _best_ribes = -1.0
     # Calculates RIBES for each reference and returns the best score.
