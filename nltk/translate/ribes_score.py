@@ -304,8 +304,3 @@ def spearman_rho(worder, normalize=True):
         return (rho + 1) /2
     else: # Otherwise, the rho outputs falls between -1.0 to +1.0
         return rho
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
