@@ -10,7 +10,7 @@
 from itertools import islice
 import math
 
-from nltk import ngrams
+from nltk.util import ngrams, choose
 
 
 def ribes(references, hypothesis, alpha=0.25, beta=0.10):
@@ -176,33 +176,6 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
                         worder.append(pos+ len(left_context_ngram) -1)  
                         break
     return worder
-
- 
-def choose(n, k):
-    """
-    This function is a fast way to calculate binomial coefficients, commonly
-    known as nCk, i.e. the number of combinations of n things taken k at a time. 
-    (https://en.wikipedia.org/wiki/Binomial_coefficient).
-    
-        >>> choose(4, 2)
-        6
-        >>> choose(6, 2)
-        15
-    
-    :param n: The number of things.
-    :type n: int
-    :param r: The number of times a thing is taken.
-    :type r: int
-    """
-    if 0 <= k <= n:
-        ntok, ktok = 1, 1
-        for t in range(1, min(k, n - k) + 1):
-            ntok *= n
-            ktok *= t
-            n -= 1
-        return ntok // ktok
-    else:
-        return 0
 
     
 def find_increasing_sequences(worder):
