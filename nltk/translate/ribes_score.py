@@ -210,8 +210,8 @@ def kendall_tau(worder, normalize=True):
         tau = 2 * num_increasing_pairs / num_possible pairs -1
     
     Note that the no. of increasing pairs can be discontinuous in the *worder*
-    list and each increase sequence can be tabulated as choose(len(seq), 2) no. 
-    of increasing pair, e.g.
+    list and each each increasing sequence can be tabulated as choose(len(seq), 2) 
+    no. of increasing pair, e.g.
     
         >>> worder = [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
         >>> number_possible_pairs = choose(len(worder), 2)
