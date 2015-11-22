@@ -211,7 +211,7 @@ def kendall_tau(worder, normalize=True):
     
     Note that the no. of increasing pairs can be discontinuous in the *worder*
     list and each each increasing sequence can be tabulated as choose(len(seq), 2) 
-    no. of increasing pair, e.g.
+    no. of increasing pairs, e.g.
     
         >>> worder = [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
         >>> number_possible_pairs = choose(len(worder), 2)
@@ -220,16 +220,12 @@ def kendall_tau(worder, normalize=True):
         >>> round(kendall_tau(worder),3)
         0.382
     
-    To compare with the _ribes_kendall_tau():
-    
-        >>> worder = [0, 1, 8, 9, 10, 11, 12, 13, 14, 15, 24, 17, 18, 19, 20, 25, 26]
-        >>> round(kendall_tau(worder), 3)
-        0.265
-    
     :param worder: The worder list output from word_rank_alignment
     :type worder: list(int)
     :param normalize: Flag to indicate normalization
     :type normalize: boolean
+    :return: The Kendall's Tau correlation coefficient.
+    :rtype: float
     """
     worder_len = len(worder)
     # Extract the groups of increasing/monotonic sequences.
