@@ -26,6 +26,20 @@ class PanLexCorpusReader(CorpusReader):
         ORDER BY dnx2.uq DESC
     """
 
+    TRANSLATION_Q = """
+        SELECT s.tt, sum(s.uq) AS trq FROM (
+            SELECT ex2.tt, max(dnx.uq) AS uq
+            FROM dnx
+            JOIN ex ON (ex.ex = dnx.ex)
+            JOIN dnx dnx2 ON (dnx2.mn = dnx.mn)
+            JOIN ex ex2 ON (ex2.ex = dnx2.ex)
+            WHERE dnx.ex != dnx2.ex AND ex.lv = ? AND ex.tt = ? AND ex2.lv = ?
+            GROUP BY ex2.tt, dnx.ui
+        ) s
+        GROUP BY s.tt
+        ORDER BY trq DESC, s.tt
+    """
+
     def __init__(self):
         self._conn = sqlite3.connect(os.environ['PANLEX_LITE'])
         self._c = self._conn.cursor()
@@ -52,9 +66,9 @@ class PanLexCorpusReader(CorpusReader):
 
         return sorted(lvs)
 
-    def meanings(self, expr_tt, expr_uid):
+    def meanings(self, expr_uid, expr_tt):
         """
-        >>> panlex.meanings("book", "eng-001")
+        >>> panlex.meanings("eng-000", "book")
 
         """
 
@@ -80,6 +94,12 @@ class PanLexCorpusReader(CorpusReader):
             mns.append(Meaning(mn, mn_info[mn]))
 
         return mns
+
+    def translations(self, from_uid, from_tt, to_uid):
+        from_lv = self._uid_lv[from_uid]
+        to_lv = self._uid_lv[to_uid]
+
+        return self._c.execute(self.TRANSLATION_Q, (from_lv, from_tt, to_lv)).fetchall()
 
 class Meaning(object):
     def __init__(self, mn, attr):
