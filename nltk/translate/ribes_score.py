@@ -255,9 +255,6 @@ def spearman_rho(worder, normalize=True):
     Using the (H0,R0) and (H5, R5) example from the paper
     
         >>> worder =  [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
-        >>> sum((wi - i)**2 for wi, i in zip(worder, range(len(worder))))
-        350
-        >>> worder =  [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
         >>> round(spearman_rho(worder, normalize=False), 3)
         -0.591
         >>> round(spearman_rho(worder), 3)
