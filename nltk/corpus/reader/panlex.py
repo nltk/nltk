@@ -55,16 +55,10 @@ class PanLexCorpusReader(CorpusReader):
         """given "eng" returns ["eng-001", ...]
         """
 
-        lvs = []
-
         if lc == None:
-            for row in self._c.execute('SELECT uid FROM lv'):
-                lvs.append(row[0])
+            return [ i[0] for i in self._c.execute('SELECT uid FROM lv ORDER BY uid').fetchall() ]
         else:
-            for row in self._c.execute('SELECT uid FROM lv WHERE lc = ?', (lc,)):
-                lvs.append(row[0])
-
-        return sorted(lvs)
+            return [ i[0] for i in self._c.execute('SELECT uid FROM lv WHERE lc = ? ORDER BY uid', (lc,)).fetchall() ]
 
     def meanings(self, expr_uid, expr_tt):
         """
