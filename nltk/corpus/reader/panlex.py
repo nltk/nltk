@@ -41,8 +41,7 @@ class PanLexCorpusReader(CorpusReader):
     """
 
     def __init__(self):
-        self._conn = sqlite3.connect(os.environ['PANLEX_LITE'])
-        self._c = self._conn.cursor()
+        self._c = sqlite3.connect(os.environ['PANLEX_LITE']).cursor()
 
         self._uid_lv = {}
         self._lv_uid = {}
