@@ -150,7 +150,6 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
         elif hypothesis.count(h_word) == reference.count(h_word) == 1:
             worder.append(reference.index(h_word))
         else:
-            # Note: range(1, max(i, hyp_len-i+1)) is the range of window sizes.
             max_window_size = max(i, hyp_len-i+1)
             for window in range(1, max_window_size):
                 if i+window < hyp_len: # If searching the right context is possible.
