@@ -27,9 +27,10 @@ def parse_sents(inputs, grammar, trace=0):
     Convert input sentences into syntactic trees.
 
     :param inputs: sentences to be parsed
-    :type inputs: list of str
+    :type inputs: list(str)
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
-    :rtype: dict
+    :type grammar: 
+    :rtype: dict (list(str)): list(Tree)
     :return: a mapping from input sentences to a list of ``Tree``s
     """
 
@@ -74,9 +75,11 @@ def interpret_sents(inputs, grammar, semkey='SEM', trace=0):
     of each input sentence.
 
     :param inputs: a list of sentences
+    :type inputs: list(str)
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
+    :type grammar: 
     :return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
-    :rtype: dict
+    :rtype: dict (list(str)) : list(tuple(parse-tree, semantic-representations))
     """
     return [[(syn, root_semrep(syn, semkey)) for syn in syntrees]
             for syntrees in parse_sents(inputs, grammar, trace=trace)]

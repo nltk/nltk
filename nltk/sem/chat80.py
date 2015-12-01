@@ -671,7 +671,7 @@ def concepts(items = items):
     Build a list of concepts corresponding to the relation names in ``items``.
 
     :param items: names of the Chat-80 relations to extract
-    :type items: list of strings
+    :type items: list(str)
     :return: the ``Concept`` objects which are extracted from the relations
     :rtype: list
     """
