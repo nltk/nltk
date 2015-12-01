@@ -210,7 +210,9 @@ class GenericStanfordParser(ParserI):
                 cmd.append(input_file.name)
                 stdout, stderr = java(cmd, classpath=self._classpath,
                                       stdout=PIPE, stderr=PIPE)
-
+                
+            stdout = stdout.replace(b'\xc2\xa0',b' ')
+            stdout = stdout.replace(b'\xa0',b' ')
             stdout = stdout.decode(encoding)
 
         os.unlink(input_file.name)
