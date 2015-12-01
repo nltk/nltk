@@ -147,9 +147,9 @@ It is possible to specify `strip_handles` and `reduce_len` parameters for a Twee
     >>> s7 = '@_willy65: No place for @chuck tonight. Sorry.'
     >>> tknzr.tokenize(s7)
     [':', 'No', 'place', 'for', 'tonight', '.', 'Sorry', '.']
-    >>> s8 = '@mar_tin is a great developer. Contact him at mar_tin@email.com'
+    >>> s8 = '@mar_tin is a great developer. Contact him at mar_tin@email.com.'
     >>> tknzr.tokenize(s8)
-    ['is', 'a', 'great', 'developer', '.', 'Contact', 'him', 'at', 'mar_tin', '@email', '.', 'com']
+    ['is', 'a', 'great', 'developer', '.', 'Contact', 'him', 'at', 'mar_tin@email.com', '.']
 
 The `preserve_case` parameter (default: True) allows to convert uppercase tokens to lowercase tokens. Emoticons are not affected:
 

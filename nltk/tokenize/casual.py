@@ -153,7 +153,9 @@ REGEXPS = (
     # Twitter hashtags:
     r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)"""
     ,
-
+    # email addresses
+    r"""[\w.+-]+@[\w-]+\.(?:[\w-]\.?)+[\w-]"""
+    ,
     # Remaining word types:
     r"""
     (?:[^\W\d_](?:[^\W\d_]|['\-_])+[^\W\d_]) # Words with apostrophes or dashes.
