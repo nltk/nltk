@@ -88,3 +88,43 @@ def spans_to_relative(spans):
         prev = right
 
 
+def align_tokens(tokens, sentence): 
+    r"""
+    Return the offsets of the tokens in *s*, as a sequence of ``(start, end)``
+    tuples, given the tokens and also the source string.
+       
+        >>> from nltk.tokenize import TreebankWordTokenizer
+        >>> from nltk.tokenize.util import align_tokens
+        >>> s = '''The plane, bound for St Petersburg, crashed in Egypt's 
+        ... Sinai desert just 23 minutes after take-off from Sharm el-Sheikh 
+        ... on Saturday.'''
+        >>> list(align_tokens(TreebankWordTokenizer().tokenize(s), s))
+        [(0, 3), (4, 9), (9, 10), (11, 16), (17, 20), (21, 23), (24, 34), 
+        (34, 35), (36, 43), (44, 46), (47, 52), (52, 54), (55, 60), (61, 67), 
+        (68, 72), (73, 75), (76, 83), (84, 89), (90, 98), (99, 103), (104, 109), 
+        (110, 119), (120, 122), (123, 131), (131, 132)]
+
+    :param tokens: the list of strings that are the result of tokenization
+    :type s: list(str)
+    :param sentence: the original string 
+    :rtype: iter(tuple(int,int))
+    """
+    prev = 0
+    token_offset = 0
+
+    while token_offset < len(tokens):
+        token = tokens[token_offset]
+        try:
+            substring = sentence[prev:prev + len(token)]
+        except:
+	        raise ValueError('Sentence ended while scanning for token end', token)
+
+        if substring == token:
+            yield prev, prev + len(token)
+            prev += len(token)
+            token_offset += 1
+        else:
+            prev += 1
+
+        if prev > len(sentence):
+        	raise ValueError('Sentence ended while scanning for token start', token_offset)
