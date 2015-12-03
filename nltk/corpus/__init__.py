@@ -162,7 +162,7 @@ opinion_lexicon = LazyCorpusLoader(
     'opinion_lexicon', OpinionLexiconCorpusReader, r'(\w+)\-words\.txt',
     encoding='ISO-8859-2')
 panlex_lite = LazyCorpusLoader(
-    'panlex-lite', PanLexLiteCorpusReader)
+    'panlex_lite', PanLexLiteCorpusReader)
 pl196x = LazyCorpusLoader(
     'pl196x', Pl196xCorpusReader, r'[a-z]-.*\.xml',
     cat_file='cats.txt', textid_file='textids.txt', encoding='utf8')
