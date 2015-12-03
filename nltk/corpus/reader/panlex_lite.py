@@ -50,7 +50,8 @@ class PanLexLiteCorpusReader(CorpusReader):
             self._lv_uid[row[1]] = row[0]
 
     def language_varieties(self, lc=None):
-        """given "eng" returns ["eng-001", ...]
+        """
+        given "eng" returns ["eng-000", ...]
         """
 
         if lc == None:
@@ -60,8 +61,7 @@ class PanLexLiteCorpusReader(CorpusReader):
 
     def meanings(self, expr_uid, expr_tt):
         """
-        >>> panlex.meanings("eng-000", "book")
-
+        >>> panlex_lite.meanings("eng-000", "book")
         """
 
         expr_lv = self._uid_lv[expr_uid]
@@ -83,6 +83,10 @@ class PanLexLiteCorpusReader(CorpusReader):
         return [ Meaning(mn, mn_info[mn]) for mn in mn_info ]
 
     def translations(self, from_uid, from_tt, to_uid):
+        """
+        >>> panlex_lite.translations("eng-000", "book", "fra-000")
+        """
+
         from_lv = self._uid_lv[from_uid]
         to_lv = self._uid_lv[to_uid]
 
