@@ -55,9 +55,9 @@ class PanLexLiteCorpusReader(CorpusReader):
         """
 
         if lc == None:
-            return [ i[0] for i in self._c.execute('SELECT uid FROM lv ORDER BY uid').fetchall() ]
+            return self._c.execute('SELECT uid, tt FROM lv ORDER BY uid').fetchall()
         else:
-            return [ i[0] for i in self._c.execute('SELECT uid FROM lv WHERE lc = ? ORDER BY uid', (lc,)).fetchall() ]
+            return self._c.execute('SELECT uid, tt FROM lv WHERE lc = ? ORDER BY uid', (lc,)).fetchall()
 
     def meanings(self, expr_uid, expr_tt):
         """
