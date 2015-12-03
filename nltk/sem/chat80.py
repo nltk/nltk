@@ -503,9 +503,9 @@ def process_bundle(rels):
     dictionary of concepts, indexed by the relation name.
 
     :param rels: bundle of metadata needed for constructing a concept
-    :type rels: list of dict
+    :type rels: list(dict)
     :return: a dictionary of concepts, indexed by the relation name.
-    :rtype: dict
+    :rtype: dict(str): Concept 
     """
     concepts = {}
     for rel in rels:
@@ -549,7 +549,8 @@ def make_valuation(concepts, read=False, lexicon=False):
         # add labels for individuals
         val = label_indivs(val, lexicon=lexicon)
         return val
-    else: return vals
+    else:
+        return vals
 
 
 def val_dump(rels, db):
@@ -561,7 +562,7 @@ def val_dump(rels, db):
     :type rels: list of dict
     :param db: name of file to which data is written.
                The suffix '.db' will be automatically appended.
-    :type db: string
+    :type db: str
     """
     concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
@@ -578,7 +579,7 @@ def val_load(db):
 
     :param db: name of file from which data is read.
                The suffix '.db' should be omitted from the name.
-    :type db: string
+    :type db: str
     """
     dbname = db+".db"
 
@@ -640,8 +641,8 @@ def make_lex(symbols):
     create a lexical rule for the proper name 'Zloty'.
 
     :param symbols: a list of individual constants in the semantic representation
-    :type symbols: sequence
-    :rtype: list
+    :type symbols: sequence -- set(str) 
+    :rtype: list(str)
     """
     lex = []
     header = """
@@ -671,9 +672,9 @@ def concepts(items = items):
     Build a list of concepts corresponding to the relation names in ``items``.
 
     :param items: names of the Chat-80 relations to extract
-    :type items: list of strings
+    :type items: list(str)
     :return: the ``Concept`` objects which are extracted from the relations
-    :rtype: list
+    :rtype: list(Concept)
     """
     if isinstance(items, string_types): items = (items,)
 

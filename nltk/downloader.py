@@ -2093,7 +2093,8 @@ def build_index(root, base_url):
         pkg_xml.set('checksum', '%s' % md5_hexdigest(zf.filename))
         pkg_xml.set('subdir', subdir)
         #pkg_xml.set('svn_revision', _svn_revision(zf.filename))
-        pkg_xml.set('url', url)
+        if not pkg_xml.get('url'):
+            pkg_xml.set('url', url)
 
         # Record the package.
         packages.append(pkg_xml)
