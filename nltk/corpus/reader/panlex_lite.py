@@ -12,10 +12,9 @@ Module docstring from readme
 import os
 import sqlite3
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+from nltk.corpus.reader.api import CorpusReader
 
-class PanLexCorpusReader(CorpusReader):
+class PanLexLiteCorpusReader(CorpusReader):
     MEANING_Q = """
         SELECT dnx2.mn, dnx2.uq, dnx2.ap, dnx2.ui, ex2.tt, ex2.lv
         FROM dnx
@@ -40,13 +39,13 @@ class PanLexCorpusReader(CorpusReader):
         ORDER BY trq DESC, s.tt
     """
 
-    def __init__(self):
-        self._c = sqlite3.connect(os.environ['PANLEX_LITE']).cursor()
+    def __init__(self, root):
+        self._c = sqlite3.connect(os.path.join(root, 'db.sqlite')).cursor()
 
         self._uid_lv = {}
         self._lv_uid = {}
 
-        for row in self._c.execute('SELECT uid, lv, lc FROM lv'):
+        for row in self._c.execute('SELECT uid, lv FROM lv'):
             self._uid_lv[row[0]] = row[1]
             self._lv_uid[row[1]] = row[0]
 
@@ -74,19 +73,14 @@ class PanLexCorpusReader(CorpusReader):
             uid = self._lv_uid[i[5]]
 
             if not mn in mn_info:
-                mn_info[mn] = { 'uq': i[1], 'ap': i[2], 'ui': i[3], 'ex': {} }
+                mn_info[mn] = { 'uq': i[1], 'ap': i[2], 'ui': i[3], 'ex': { expr_uid: [expr_tt] } }
 
             if not uid in mn_info[mn]['ex']:
                 mn_info[mn]['ex'][uid] = []
 
             mn_info[mn]['ex'][uid].append(i[4])
 
-        mns = []
-
-        for mn in mn_info:
-            mns.append(Meaning(mn, mn_info[mn]))
-
-        return mns
+        return [ Meaning(mn, mn_info[mn]) for mn in mn_info ]
 
     def translations(self, from_uid, from_tt, to_uid):
         from_lv = self._uid_lv[from_uid]
@@ -94,15 +88,10 @@ class PanLexCorpusReader(CorpusReader):
 
         return self._c.execute(self.TRANSLATION_Q, (from_lv, from_tt, to_lv)).fetchall()
 
-class Meaning(object):
+class Meaning(dict):
     def __init__(self, mn, attr):
-        self = {
-            'mn': mn,
-            'uq': attr['uq'],
-            'ap': attr['ap'],
-            'ui': attr['ui'],
-            'ex': attr['ex']
-        }
+        super(Meaning, self).__init__(**attr)
+        self['mn'] = mn
 
     def id(self):
         return self['mn']
