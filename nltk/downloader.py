@@ -54,9 +54,9 @@ NLTK Download Server
 Before downloading any packages, the corpus and module downloader
 contacts the NLTK download server, to retrieve an index file
 describing the available packages.  By default, this index file is
-loaded from ``http://www.nltk.org/nltk_data/``.  If necessary, it is
-possible to create a new ``Downloader`` object, specifying a different
-URL for the package index file.
+loaded from ``https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml``.
+If necessary, it is possible to create a new ``Downloader`` object,
+specifying a different URL for the package index file.
 
 Usage::
 
@@ -377,7 +377,7 @@ class Downloader(object):
        server index will be considered 'stale,' and will be
        re-downloaded."""
 
-    DEFAULT_URL = 'http://www.nltk.org/nltk_data/'
+    DEFAULT_URL = 'https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
        ``Downloader`` object."""
@@ -1118,7 +1118,7 @@ class DownloaderShell(object):
                 if new_url in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 else:
-                    if not new_url.startswith('http://'):
+                    if not new_url.startswith(('http://', 'https://')):
                         new_url = 'http://'+new_url
                     try: self._ds.url = new_url
                     except Exception as e:
