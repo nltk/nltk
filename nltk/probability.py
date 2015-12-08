@@ -194,7 +194,7 @@ class FreqDist(Counter):
         """
         if self.N() == 0:
             return 0
-        return float(self[sample]) / self.N()
+        return self[sample] / self.N()
 
     def max(self):
         """
