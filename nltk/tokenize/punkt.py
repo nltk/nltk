@@ -1060,9 +1060,9 @@ class PunktTrainer(PunktBaseClass):
         """
         import math
 
-        p = 1.0 * count_b / N
-        p1 = 1.0 * count_ab / count_a
-        p2 = 1.0 * (count_b - count_ab) / (N - count_a)
+        p = count_b / N
+        p1 = count_ab / count_a
+        p2 = (count_b - count_ab) / (N - count_a)
 
         summand1 = (count_ab * math.log(p) +
                     (count_a - count_ab) * math.log(1.0 - p))
