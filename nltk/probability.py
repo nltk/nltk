@@ -37,7 +37,7 @@ implementation of the ``ConditionalProbDistI`` interface is
 ``ConditionalProbDist``, a derived distribution.
 
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 import math
 import random
@@ -1097,12 +1097,12 @@ class WittenBellProbDist(ProbDistI):
             # if freqdist is empty, we approximate P(0) by a UniformProbDist:
             self._P0 = 1.0 / self._Z
         else:
-            self._P0 = self._T / float(self._Z * (self._N + self._T))
+            self._P0 = self._T / (self._Z * (self._N + self._T))
 
     def prob(self, sample):
         # inherit docs from ProbDistI
         c = self._freqdist[sample]
-        return (c / float(self._N + self._T) if c != 0 else self._P0)
+        return (c / (self._N + self._T) if c != 0 else self._P0)
 
     def max(self):
         return self._freqdist.max()
