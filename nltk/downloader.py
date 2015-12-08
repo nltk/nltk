@@ -568,7 +568,7 @@ class Downloader(object):
             if isinstance(item, Package):
                 delta = 1./num_packages
             else:
-                delta = float(len(item.packages))/num_packages
+                delta = len(item.packages)/num_packages
             for msg in self.incr_download(item, download_dir, force):
                 if isinstance(msg, ProgressMessage):
                     yield ProgressMessage(progress + msg.progress*delta)
@@ -613,7 +613,7 @@ class Downloader(object):
             infile = compat.urlopen(info.url)
             with open(filepath, 'wb') as outfile:
                 #print info.size
-                num_blocks = max(1, float(info.size)/(1024*16))
+                num_blocks = max(1, info.size/(1024*16))
                 for block in itertools.count():
                     s = infile.read(1024*16) # 16k blocks.
                     outfile.write(s)

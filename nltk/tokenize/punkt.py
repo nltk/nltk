@@ -99,7 +99,7 @@ The algorithm for this tokenizer is described in::
   Kiss, Tibor and Strunk, Jan (2006): Unsupervised Multilingual Sentence
     Boundary Detection.  Computational Linguistics 32: 485-525.
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 # TODO: Make orthographic heuristic less susceptible to overtraining
 # TODO: Frequent sentence starters optionally exclude always-capitalised words
@@ -1036,12 +1036,12 @@ class PunktTrainer(PunktBaseClass):
         ratio scores for abbreviation candidates.  The details of how
         this works is available in the paper.
         """
-        p1 = float(count_b) / N
+        p1 = count_b / N
         p2 = 0.99
 
-        null_hypo = (float(count_ab) * math.log(p1) +
+        null_hypo = (count_ab * math.log(p1) +
                      (count_a - count_ab) * math.log(1.0 - p1))
-        alt_hypo  = (float(count_ab) * math.log(p2) +
+        alt_hypo  = (count_ab * math.log(p2) +
                      (count_a - count_ab) * math.log(1.0 - p2))
 
         likelihood = null_hypo - alt_hypo
@@ -1060,9 +1060,9 @@ class PunktTrainer(PunktBaseClass):
         """
         import math
 
-        p = 1.0 * count_b / N
-        p1 = 1.0 * count_ab / count_a
-        p2 = 1.0 * (count_b - count_ab) / (N - count_a)
+        p = count_b / N
+        p1 = count_ab / count_a
+        p2 = (count_b - count_ab) / (N - count_a)
 
         summand1 = (count_ab * math.log(p) +
                     (count_a - count_ab) * math.log(1.0 - p))
@@ -1126,8 +1126,8 @@ class PunktTrainer(PunktBaseClass):
                                               col_count, self._type_fdist.N())
                 # Filter out the not-so-collocative
                 if (ll >= self.COLLOCATION and
-                    (float(self._type_fdist.N())/typ1_count >
-                     float(typ2_count)/col_count)):
+                    (self._type_fdist.N()/typ1_count >
+                     typ2_count/col_count)):
                     yield (typ1, typ2), ll
 
     #////////////////////////////////////////////////////////////
@@ -1166,8 +1166,8 @@ class PunktTrainer(PunktBaseClass):
                                           self._type_fdist.N())
 
             if (ll >= self.SENT_STARTER and
-                float(self._type_fdist.N())/self._sentbreak_count >
-                float(typ_count)/typ_at_break_count):
+                self._type_fdist.N()/self._sentbreak_count >
+                typ_count/typ_at_break_count):
 
                 yield typ, ll
 
