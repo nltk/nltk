@@ -11,13 +11,13 @@ Tokenizer Interface
 """
 
 from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 from nltk.internals import overridden
 from nltk.tokenize.util import string_span_tokenize
 
+@add_metaclass(ABCMeta)
 class TokenizerI(object):
-    __metaclass__ = ABCMeta
-
     """
     A processing interface for tokenizing a string.
     Subclasses must define ``tokenize()`` or ``tokenize_sents()`` (or both).
