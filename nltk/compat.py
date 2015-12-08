@@ -530,19 +530,16 @@ except ImportError:  # python 2.6
 # The following datasets have a /PY3 subdirectory containing
 # a full copy of the data which has been re-encoded or repickled.
 
+import os.path
+
 _PY3_DATA_UPDATES = []
 
-if sys.platform.startswith('win'):
-    _PY3_DATA_UPDATES = ["chunkers\maxent_ne_chunker",
-                         "help\tagsets",
-                         "taggers\maxent_treebank_pos_tagger",
-                         "tokenizers\punkt"]
-else:
-    _PY3_DATA_UPDATES = ["chunkers/maxent_ne_chunker",
-                         "help/tagsets",
-                         "taggers/maxent_treebank_pos_tagger",
-                         "tokenizers/punkt"]
+ne_chunker = os.path.join("chunkers", "maxent_ne_chunker")
+help_tagsets = os.path.join("help", "tagsets")
+treebank_tagger = os.path.join("taggers", "maxent_treebank_pos_tagger")
+punkt_tok = os.path.join("tokenizers", "punkt")
 
+_PY3_DATA_UPDATES = [ne_chunker, help_tagsets, treebank_tagger, punkt_tok]
 
 def add_py3_data(path):
     if PY3:
