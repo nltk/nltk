@@ -102,7 +102,7 @@ class BrillTaggerTrainer(object):
         #imports
         >>> from nltk.tbl.template import Template
         >>> from nltk.tag.brill import Pos, Word
-        >>> from nltk.tag import RegexpTagger, BrillTaggerTrainer
+        >>> from nltk.tag import untag, RegexpTagger, BrillTaggerTrainer
 
         #some data
         >>> from nltk.corpus import treebank
