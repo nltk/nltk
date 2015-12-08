@@ -6,7 +6,9 @@
 # For license information, see LICENSE.TXT
 
 """
-Module docstring from readme
+CorpusReader for PanLex Lite, a stripped down version of PanLex distributed
+as an SQLite database. See the README.txt in the panlex_lite corpus directory
+for more information on PanLex Lite.
 """
 
 import os
@@ -51,7 +53,14 @@ class PanLexLiteCorpusReader(CorpusReader):
 
     def language_varieties(self, lc=None):
         """
-        given "eng" returns ["eng-000", ...]
+        Return a list of PanLex language varieties.
+
+        :param lc: ISO 639 alpha-3 code. If specified, filters returned varieties
+            by this code. If unspecified, all varieties are returned.
+        :return: the specified language varieties as a list of tuples. The first
+            element is the language variety's seven-character uniform identifier,
+            and the second element is its default name.
+        :rtype: list(tuple)
         """
 
         if lc == None:
@@ -61,7 +70,13 @@ class PanLexLiteCorpusReader(CorpusReader):
 
     def meanings(self, expr_uid, expr_tt):
         """
-        >>> panlex_lite.meanings("eng-000", "book")
+        Return a list of meanings for an expression.
+
+        :param expr_uid: the expression's language variety, as a seven-character
+            uniform identifier.
+        :param expr_tt: the expression's text.
+        :return: a list of Meaning objects.
+        :rtype: list(Meaning)
         """
 
         expr_lv = self._uid_lv[expr_uid]
@@ -84,7 +99,17 @@ class PanLexLiteCorpusReader(CorpusReader):
 
     def translations(self, from_uid, from_tt, to_uid):
         """
-        >>> panlex_lite.translations("eng-000", "book", "fra-000")
+        Return a list of translations for an expression into a single language
+            variety.
+
+        :param from_uid: the source expression's language variety, as a
+            seven-character uniform identifier.
+        :param from_tt: the source expression's text.
+        :param to_uid: the target language variety, as a seven-character
+            uniform identifier.
+        :return a list of translation tuples. The first element is the expression 
+            text and the second element is the translation quality.
+        :rtype: list(tuple)
         """
 
         from_lv = self._uid_lv[from_uid]
@@ -93,21 +118,48 @@ class PanLexLiteCorpusReader(CorpusReader):
         return self._c.execute(self.TRANSLATION_Q, (from_lv, from_tt, to_lv)).fetchall()
 
 class Meaning(dict):
+    """
+    Represents a single PanLex meaning. A meaning is a translation set derived
+    from a single source.
+    """
+
     def __init__(self, mn, attr):
         super(Meaning, self).__init__(**attr)
         self['mn'] = mn
 
     def id(self):
+        """
+        :return: the meaning's id.
+        :rtype: int
+        """
         return self['mn']
 
     def quality(self):
+        """
+        :return: the meaning's source's quality (0=worst, 9=best).
+        :rtype: int
+        """
         return self['uq']
 
     def source(self):
+        """
+        :return: the meaning's source id.
+        :rtype: int
+        """
         return self['ap']
 
     def source_group(self):
+        """
+        :return: the meaning's source group id.
+        :rtype: int
+        """
         return self['ui']
 
     def expressions(self):
+        """
+        :return: the meaning's expressions as a dictionary whose keys are language
+            variety uniform identifiers and whose values are lists of expression
+            texts.
+        :rtype: dict
+        """
         return self['ex']
