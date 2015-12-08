@@ -18,7 +18,7 @@ import pickle
 import logging
 
 from nltk.tag.api import TaggerI
-from nltk.data import find
+from nltk.data import find, load
 from nltk.compat import python_2_unicode_compatible
 
 PICKLE = "averaged_perceptron_tagger.pickle"
@@ -93,8 +93,7 @@ class AveragedPerceptron(object):
 
     def load(self, path):
         '''Load the pickled model weights.'''
-        with open(path,'rb') as fin:
-            self.weights = pickle.load(fin)
+        self.weights = load(path)
 
 @python_2_unicode_compatible
 class PerceptronTagger(TaggerI):
@@ -206,11 +205,8 @@ class PerceptronTagger(TaggerI):
         :param loc: Load a pickled model at location.
         :type loc: str 
         '''
-        
-        with open(loc, 'rb') as fin:
-            w_td_c = pickle.load(fin)
-        
-        self.model.weights, self.tagdict, self.classes = w_td_c
+
+        self.model.weights, self.tagdict, self.classes = load(loc)
         self.model.classes = self.classes
         
 

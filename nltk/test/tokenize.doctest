@@ -109,3 +109,51 @@ A simple sentence tokenizer '\.(\s+|$)'
     >>> regexp_tokenize(s, pattern=r'\.(?:\s+|$)', gaps=True)
     ['Good muffins cost $3.88\nin New York',
      'Please buy me\ntwo of them', 'Thanks']
+
+
+Regression Tests: TweetTokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TweetTokenizer is a tokenizer specifically designed for micro-blogging tokenization tasks.
+
+    >>> from nltk.tokenize import TweetTokenizer
+    >>> tknzr = TweetTokenizer()
+    >>> s0 = "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--"
+    >>> tknzr.tokenize(s0)
+    ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
+    >>> s1 = "@Joyster2012 @CathStaincliffe Good for you, girl!! Best wishes :-)"
+    >>> tknzr.tokenize(s1)
+    ['@Joyster2012', '@CathStaincliffe', 'Good', 'for', 'you', ',', 'girl', '!', '!', 'Best', 'wishes', ':-)']
+    >>> s2 = "3Points for #DreamTeam Gooo BAILEY! :) #PBB737Gold @PBBabscbn"
+    >>> tknzr.tokenize(s2)
+    ['3Points', 'for', '#DreamTeam', 'Gooo', 'BAILEY', '!', ':)', '#PBB737Gold', '@PBBabscbn']
+    >>> s3 = "@Insanomania They do... Their mentality doesn't :("
+    >>> tknzr.tokenize(s3)
+    ['@Insanomania', 'They', 'do', '...', 'Their', 'mentality', "doesn't", ':(']
+    >>> s4 = "RT @facugambande: Ya por arrancar a grabar !!! #TirenTirenTiren vamoo !!"
+    >>> tknzr.tokenize(s4)
+    ['RT', '@facugambande', ':', 'Ya', 'por', 'arrancar', 'a', 'grabar', '!', '!', '!', '#TirenTirenTiren', 'vamoo', '!', '!']
+    >>> tknzr = TweetTokenizer(reduce_len=True)
+    >>> s5 = "@crushinghes the summer holidays are great but I'm so bored already :("
+    >>> tknzr.tokenize(s5)
+    ['@crushinghes', 'the', 'summer', 'holidays', 'are', 'great', 'but', "I'm", 'so', 'bored', 'already', ':(']
+
+It is possible to specify `strip_handles` and `reduce_len` parameters for a TweetTokenizer instance. Setting `strip_handles` to True, the tokenizer will remove Twitter handles (e.g. usernames). Setting `reduce_len` to True, repeated character sequences of length 3 or greater will be replaced with sequences of length 3.
+
+    >>> tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
+    >>> s6 = '@remy: This is waaaaayyyy too much for you!!!!!!'
+    >>> tknzr.tokenize(s6)
+    [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
+    >>> s7 = '@_willy65: No place for @chuck tonight. Sorry.'
+    >>> tknzr.tokenize(s7)
+    [':', 'No', 'place', 'for', 'tonight', '.', 'Sorry', '.']
+    >>> s8 = '@mar_tin is a great developer. Contact him at mar_tin@email.com.'
+    >>> tknzr.tokenize(s8)
+    ['is', 'a', 'great', 'developer', '.', 'Contact', 'him', 'at', 'mar_tin@email.com', '.']
+
+The `preserve_case` parameter (default: True) allows to convert uppercase tokens to lowercase tokens. Emoticons are not affected:
+
+    >>> tknzr = TweetTokenizer(preserve_case=False)
+    >>> s9 = "@jrmy: I'm REALLY HAPPYYY about that! NICEEEE :D :P"
+    >>> tknzr.tokenize(s9)
+    ['@jrmy', ':', "i'm", 'really', 'happyyy', 'about', 'that', '!', 'niceeee', ':D', ':P']
