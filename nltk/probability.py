@@ -1266,8 +1266,8 @@ class SimpleGoodTuringProbDist(ProbDistI):
         log_zr = [math.log(i) for i in zr]
 
         xy_cov = x_var = 0.0
-        x_mean = 1.0 * sum(log_r) / len(log_r)
-        y_mean = 1.0 * sum(log_zr) / len(log_zr)
+        x_mean = sum(log_r) / len(log_r)
+        y_mean = sum(log_zr) / len(log_zr)
         for (x, y) in zip(log_r, log_zr):
             xy_cov += (x - x_mean) * (y - y_mean)
             x_var += (x - x_mean)**2
@@ -1292,7 +1292,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
 
             Sr = self.smoothedNr
             smooth_r_star = (r_ + 1) * Sr(r_+1) / Sr(r_)
-            unsmooth_r_star = 1.0 * (r_ + 1) * nr[i+1] / nr[i]
+            unsmooth_r_star = (r_ + 1) * nr[i+1] / nr[i]
 
             std = math.sqrt(self._variance(r_, nr[i], nr[i+1]))
             if abs(unsmooth_r_star-smooth_r_star) <= 1.96 * std:
@@ -1349,7 +1349,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
             if self._bins == self._freqdist.B():
                 p = 0.0
             else:
-                p = p / (1.0 * self._bins - self._freqdist.B())
+                p = p / (self._bins - self._freqdist.B())
         else:
             p = p * self._renormal
         return p
@@ -1358,11 +1358,11 @@ class SimpleGoodTuringProbDist(ProbDistI):
         if count == 0 and self._freqdist.N() == 0 :
             return 1.0
         elif count == 0 and self._freqdist.N() != 0:
-            return 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
+            return self._freqdist.Nr(1) / self._freqdist.N()
 
         if self._switch_at > count:
-            Er_1 = 1.0 * self._freqdist.Nr(count+1)
-            Er = 1.0 * self._freqdist.Nr(count)
+            Er_1 = self._freqdist.Nr(count+1)
+            Er = self._freqdist.Nr(count)
         else:
             Er_1 = self.smoothedNr(count+1)
             Er = self.smoothedNr(count)
@@ -1382,7 +1382,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         This function returns the total mass of probability transfers from the
         seen samples to the unseen samples.
         """
-        return  1.0 * self.smoothedNr(1) / self._freqdist.N()
+        return  self.smoothedNr(1) / self._freqdist.N()
 
     def max(self):
         return self._freqdist.max()
