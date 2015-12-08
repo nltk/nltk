@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: WordNet
+# Natural Language Toolkit: SentiWordNet
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
