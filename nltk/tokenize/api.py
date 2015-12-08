@@ -10,14 +10,19 @@
 Tokenizer Interface
 """
 
+from abc import ABCMeta, abstractmethod
+
 from nltk.internals import overridden
 from nltk.tokenize.util import string_span_tokenize
 
 class TokenizerI(object):
+    __metaclass__ = ABCMeta
+
     """
     A processing interface for tokenizing a string.
     Subclasses must define ``tokenize()`` or ``tokenize_sents()`` (or both).
     """
+    @abstractmethod
     def tokenize(self, s):
         """
         Return a tokenized copy of *s*.
@@ -26,8 +31,6 @@ class TokenizerI(object):
         """
         if overridden(self.tokenize_sents):
             return self.tokenize_sents([s])[0]
-        else:
-            raise NotImplementedError()
 
     def span_tokenize(self, s):
         """
