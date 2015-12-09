@@ -100,7 +100,7 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     >>> list_of_references = [[ref1a, ref1b, ref1c], [ref2a]]
     >>> hypotheses = [hyp1, hyp2]
     >>> corpus_ribes(list_of_references, hypotheses)
-    0.5920778868801042    
+    0.35970295471471503    
     
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
@@ -117,7 +117,7 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
         corpus_best_ribes += sentence_ribes(references, hypothesis, alpha, beta)
-    return corpus_best_ribes / len(hypothesis)
+    return corpus_best_ribes / len(hypotheses)
     
         
 def position_of_ngram(ngram, sentence):
