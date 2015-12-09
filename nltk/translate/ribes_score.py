@@ -68,7 +68,7 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     return best_ribes
 
 
-def corpus_ribes(references, hypothesis, alpha=0.25, beta=0.10):
+def corpus_ribes(list_of_references, hypothesis, alpha=0.25, beta=0.10):
     """
     This function "calculates RIBES for a system output (hypothesis) with 
     multiple references, and returns "best" score among multi-references and 
@@ -78,6 +78,29 @@ def corpus_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     Different from BLEU's micro-average precision, RIBES calculates the 
     macro-average precision by averaging the best RIBES score for each pair of 
     hypothesis and its corresponding references 
+
+    >>> hyp1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
+    ...         'ensures', 'that', 'the', 'military', 'always',
+    ...         'obeys', 'the', 'commands', 'of', 'the', 'party']
+    >>> ref1a = ['It', 'is', 'a', 'guide', 'to', 'action', 'that',
+    ...          'ensures', 'that', 'the', 'military', 'will', 'forever',
+    ...          'heed', 'Party', 'commands']
+    >>> ref1b = ['It', 'is', 'the', 'guiding', 'principle', 'which',
+    ...          'guarantees', 'the', 'military', 'forces', 'always',
+    ...          'being', 'under', 'the', 'command', 'of', 'the', 'Party']
+    >>> ref1c = ['It', 'is', 'the', 'practical', 'guide', 'for', 'the',
+    ...          'army', 'always', 'to', 'heed', 'the', 'directions',
+    ...          'of', 'the', 'party']
+    
+    >>> hyp2 = ['he', 'read', 'the', 'book', 'because', 'he', 'was', 
+    ...         'interested', 'in', 'world', 'history']
+    >>> ref2a = ['he', 'was', 'interested', 'in', 'world', 'history', 
+    ...          'because', 'he', 'read', 'the', 'book']
+    
+    >>> list_of_references = [[ref1a, ref1b, ref1c], [ref2a]]
+    >>> hypotheses = [hyp1, hyp2]
+    >>> corpus_ribes(list_of_references, hypotheses)
+    0.5920778868801042    
     
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
