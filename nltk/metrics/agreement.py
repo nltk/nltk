@@ -68,7 +68,7 @@ Expected results from the Artstein and Poesio survey paper:
     1.0
 
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 import logging
 from itertools import groupby
@@ -180,7 +180,7 @@ class AnnotationTask(object):
 
         """
         data = self._grouped_data('item', (x for x in self.data if x['coder'] in (cA, cB)))
-        ret = float(sum(self.agr(cA, cB, item, item_data) for item, item_data in data)) / float(len(self.I))
+        ret = sum(self.agr(cA, cB, item, item_data) for item, item_data in data) / len(self.I)
         log.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
         return ret
 
@@ -220,7 +220,7 @@ class AnnotationTask(object):
             for j, nj in iteritems(label_freqs):
                 for l, nl in iteritems(label_freqs):
                     total += float(nj * nl) * self.distance(l, j)
-        ret = (1.0 / float((len(self.I) * len(self.C) * (len(self.C) - 1)))) * total
+        ret = (1.0 / (len(self.I) * len(self.C) * (len(self.C) - 1))) * total
         log.debug("Observed disagreement: %f", ret)
         return ret
 
@@ -252,7 +252,7 @@ class AnnotationTask(object):
         """Bennett, Albert and Goldstein 1954
 
         """
-        Ae = 1.0 / float(len(self.K))
+        Ae = 1.0 / len(self.K)
         ret = (self.avg_Ao() - Ae) / (1.0 - Ae)
         return ret
 
@@ -265,7 +265,7 @@ class AnnotationTask(object):
         label_freqs = FreqDist(x['labels'] for x in self.data)
         for k, f in iteritems(label_freqs):
             total += f ** 2
-        Ae = total / float((len(self.I) * len(self.C)) ** 2)
+        Ae = total / ((len(self.I) * len(self.C)) ** 2)
         return (self.avg_Ao() - Ae) / (1 - Ae)
 
     def Ae_kappa(self, cA, cB):

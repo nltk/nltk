@@ -63,7 +63,7 @@ Keyboard Shortcuts::
       [Ctrl-p]\t Print
       [q]\t Quit
 """
-
+from __future__ import division
 import nltk.compat
 import tkinter.font
 from tkinter import (Listbox, IntVar, Button,
@@ -806,7 +806,7 @@ class RecursiveDescentApp(object):
     def _animate_match_backtrack(self, treeloc):
         widget = self._get(self._tree, treeloc)
         node = widget.parent().label()
-        dy = (1.0 * (node.bbox()[3] - widget.bbox()[1] + 14) /
+        dy = ((node.bbox()[3] - widget.bbox()[1] + 14) /
               max(1, self._animation_frames.get()))
         self._animate_match_backtrack_frame(self._animation_frames.get(),
                                             widget, dy)

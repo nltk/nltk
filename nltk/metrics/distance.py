@@ -20,6 +20,7 @@ As metrics, they must satisfy the following three requirements:
 """
 
 from __future__ import print_function
+from __future__ import division
 
 
 def _edit_dist_init(len1, len2):
@@ -106,7 +107,7 @@ def jaccard_distance(label1, label2):
     """Distance metric comparing set-similarity.
 
     """
-    return (len(label1.union(label2)) - len(label1.intersection(label2)))/float(len(label1.union(label2)))
+    return (len(label1.union(label2)) - len(label1.intersection(label2)))/len(label1.union(label2))
 
 
 def masi_distance(label1, label2):
@@ -134,7 +135,7 @@ def masi_distance(label1, label2):
     else:
         m = 0
 
-    return 1 - (len_intersection / float(len_union)) * m
+    return 1 - (len_intersection / len_union) * m
 
 
 def interval_distance(label1,label2):
@@ -163,10 +164,10 @@ def presence(label):
 
 def fractional_presence(label):
     return lambda x, y:\
-        abs((float(1.0 / len(x)) - float(1.0 / len(y)))) * (label in x and label in y) \
+        abs(((1.0 / len(x)) - (1.0 / len(y)))) * (label in x and label in y) \
         or 0.0 * (label not in x and label not in y) \
-        or abs(float(1.0 / len(x))) * (label in x and label not in y) \
-        or (float(1.0 / len(y))) * (label not in x and label in y)
+        or abs((1.0 / len(x))) * (label in x and label not in y) \
+        or ((1.0 / len(y))) * (label not in x and label in y)
 
 
 def custom_distance(file):

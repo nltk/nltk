@@ -9,7 +9,7 @@
 """
 Utility functions and classes for classifiers.
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 import math
 
@@ -81,13 +81,13 @@ def attested_labels(tokens):
 def log_likelihood(classifier, gold):
     results = classifier.prob_classify_many([fs for (fs, l) in gold])
     ll = [pdist.prob(l) for ((fs, l), pdist) in zip(gold, results)]
-    return math.log(float(sum(ll))/len(ll))
+    return math.log(sum(ll) / len(ll))
 
 def accuracy(classifier, gold):
     results = classifier.classify_many([fs for (fs, l) in gold])
     correct = [l == r for ((fs, l), r) in zip(gold, results)]
     if correct:
-        return float(sum(correct))/len(correct)
+        return sum(correct) / len(correct)
     else:
         return 0
 
@@ -195,7 +195,7 @@ def names_demo(trainer, features=names_demo_features):
         pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
-        print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))
+        print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
         print()
         print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
         for ((name, gender), pdist) in list(zip(test, pdists))[:5]:
@@ -249,7 +249,7 @@ def partial_names_demo(trainer, features=names_demo_features):
         pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
-        print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))
+        print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
         print()
         print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
         for ((name, is_male), pdist) in zip(test, pdists)[:5]:
@@ -303,7 +303,7 @@ def wsd_demo(trainer, word, features, n=1000):
         pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold)
               for ((name, gold), pdist) in zip(test, pdists)]
-        print('Avg. log likelihood: %6.4f' % (sum(ll)/len(test)))
+        print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
     except NotImplementedError:
         pass
 
