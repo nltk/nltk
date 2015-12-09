@@ -68,7 +68,7 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     return best_ribes
 
 
-def corpus_ribes(list_of_references, hypothesis, alpha=0.25, beta=0.10):
+def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     """
     This function "calculates RIBES for a system output (hypothesis) with 
     multiple references, and returns "best" score among multi-references and 
