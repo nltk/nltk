@@ -119,8 +119,8 @@ def corpus_bleu(list_of_references, hypotheses, weights=[0.25, 0.25, 0.25, 0.25]
     
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
-    :param hypothesis: a list of hypothesis sentences
-    :type hypothesis: list(list(str))
+    :param hypotheses: a list of hypothesis sentences
+    :type hypotheses: list(list(str))
     :param weights: weights for unigrams, bigrams, trigrams and so on
     :type weights: list(float)
     """
