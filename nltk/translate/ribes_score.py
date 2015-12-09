@@ -2,7 +2,8 @@
 # Natural Language Toolkit: RIBES Score
 #
 # Copyright (C) 2001-2015 NLTK Project
-# Contributors: Katsuhito Sudoh, Liling Tan, Kasramvd, J.F.Sebastian, Mark Byers, ekhumoro, P. Ortiz
+# Contributors: Katsuhito Sudoh, Liling Tan, Kasramvd, J.F.Sebastian
+#               Mark Byers, ekhumoro, P. Ortiz
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
@@ -13,7 +14,7 @@ import math
 from nltk.util import ngrams, choose
 
 
-def ribes(references, hypothesis, alpha=0.25, beta=0.10):
+def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     """
     The RIBES (Rank-based Intuitive Bilingual Evaluation Score) from 
     Hideki Isozaki, Tsutomu Hirao, Kevin Duh, Katsuhito Sudoh and 
@@ -67,6 +68,35 @@ def ribes(references, hypothesis, alpha=0.25, beta=0.10):
     return best_ribes
 
 
+def corpus_ribes(references, hypothesis, alpha=0.25, beta=0.10):
+    """
+    This function "calculates RIBES for a system output (hypothesis) with 
+    multiple references, and returns "best" score among multi-references and 
+    individual scores. The scores are corpus-wise, i.e., averaged by the number 
+    of sentences." (c.f. RIBES version 1.03.1 code).
+    
+    Different from BLEU's micro-average precision, RIBES calculates the 
+    macro-average precision by averaging the best RIBES score for each pair of 
+    hypothesis and its corresponding references 
+    
+    :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
+    :type references: list(list(list(str)))
+    :param hypotheses: a list of hypothesis sentences
+    :type hypotheses: list(list(str))
+    :param alpha: hyperparameter used as a prior for the unigram precision.
+    :type alpha: float
+    :param beta: hyperparameter used as a prior for the brevity penalty.
+    :type beta: float
+    :return: The best ribes score from one of the references.
+    :rtype: float
+    """
+    corpus_best_ribes = []
+    # Iterate through each hypothesis and their corresponding references.
+    for references, hypothesis in zip(list_of_references, hypotheses):
+        best_ribes = sentence_ribes(references, hypothesis, alpha, beta)
+    return sum(corpus_best_ribes) / len(corpus_best_ribes)
+    
+        
 def position_of_ngram(ngram, sentence):
     """
     This function returns the position of the first instance of the ngram 

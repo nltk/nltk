@@ -19,6 +19,6 @@ from nltk.translate.ibm3 import IBMModel3
 from nltk.translate.ibm4 import IBMModel4
 from nltk.translate.ibm5 import IBMModel5
 from nltk.translate.bleu_score import sentence_bleu as bleu
-from nltk.translate.ribes_score import ribes
+from nltk.translate.ribes_score import sentence_ribes as ribes
 from nltk.translate.metrics import alignment_error_rate
 from nltk.translate.stack_decoder import StackDecoder
