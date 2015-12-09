@@ -11,9 +11,8 @@
 from __future__ import division
 
 import math
-from collections import defaultdict
+from collections import Counter
 
-from nltk.compat import Counter
 from nltk.util import ngrams
 
 
