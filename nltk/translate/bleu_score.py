@@ -207,7 +207,7 @@ def _brevity_penalty(references, hypothesis):
     hyp_len = len(hypothesis) 
     ref_lens = (len(reference) for reference in references)
     # Find the reference length that's closes to the hypothesis. 
-    # *closest_ref_len* is referred to as *c* in (Papineni et. al. 2002)
+    # *closest_ref_len* is referred to as *r* in (Papineni et. al. 2002)
     closest_ref_len = min(ref_lens, key=lambda ref_len: 
                            (abs(ref_len - hyp_len), ref_len))
     return hyp_len, closest_ref_len
