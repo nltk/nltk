@@ -116,6 +116,13 @@ def corpus_bleu(list_of_references, hypotheses, weights=[0.25, 0.25, 0.25, 0.25]
     >>> hypotheses = [hyp1, hyp2]
     >>> corpus_bleu(list_of_references, hypotheses)
     0.5920778868801042
+    
+    :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
+    :type references: list(list(list(str)))
+    :param hypothesis: a list of hypothesis sentences
+    :type hypothesis: list(list(str))
+    :param weights: weights for unigrams, bigrams, trigrams and so on
+    :type weights: list(float)
     """
     p_numerators = Counter() # Key = ngram order, and value = no. of ngram matches.
     p_denominators = Counter() # Key = ngram order, and value = no. of ngram in ref.
