@@ -99,8 +99,8 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     
     >>> list_of_references = [[ref1a, ref1b, ref1c], [ref2a]]
     >>> hypotheses = [hyp1, hyp2]
-    >>> corpus_ribes(list_of_references, hypotheses)
-    0.35970295471471503    
+    >>> round(corpus_ribes(list_of_references, hypotheses),4)
+    0.3597
     
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
