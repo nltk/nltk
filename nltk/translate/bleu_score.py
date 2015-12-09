@@ -117,6 +117,14 @@ def corpus_bleu(list_of_references, hypotheses, weights=[0.25, 0.25, 0.25, 0.25]
     >>> corpus_bleu(list_of_references, hypotheses)
     0.5920778868801042
     
+    The example below show that corpus_bleu() is different from averaging 
+    sentence_bleu() for hypotheses 
+    
+    >>> score1 = sentence_bleu([ref1a, ref1b, ref1c], hyp1)
+    >>> score2 = sentence_bleu([ref2a], hyp2)
+    >>> (score1 + score2) / 2
+    0.6223247442490669
+    
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
     :param hypotheses: a list of hypothesis sentences
