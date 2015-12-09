@@ -94,7 +94,7 @@ def corpus_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
         best_ribes = sentence_ribes(references, hypothesis, alpha, beta)
-    return sum(corpus_best_ribes) / len(corpus_best_ribes)
+    return math.fsum(corpus_best_ribes) / len(corpus_best_ribes)
     
         
 def position_of_ngram(ngram, sentence):
