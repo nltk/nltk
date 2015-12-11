@@ -6,7 +6,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
-
+from __future__ import division
 from itertools import islice
 import math
 
@@ -54,10 +54,10 @@ def ribes(references, hypothesis, alpha=0.25, beta=0.10):
         nkt = kendall_tau(worder)
             
         # Calculates the brevity penalty
-        bp = min(1.0, math.exp(1.0 - 1.0 * len(reference)/len(hypothesis)))
+        bp = min(1.0, math.exp(1.0 - len(reference)/len(hypothesis)))
         
         # Calculates the unigram precision, *p1*
-        p1 = 1.0 * len(worder) / len(hypothesis)
+        p1 = len(worder) / len(hypothesis)
         
         _ribes = nkt * (p1 ** alpha) *  (bp ** beta)
         

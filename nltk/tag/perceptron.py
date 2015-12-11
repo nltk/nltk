@@ -18,7 +18,7 @@ import pickle
 import logging
 
 from nltk.tag.api import TaggerI
-from nltk.data import find
+from nltk.data import find, load
 from nltk.compat import python_2_unicode_compatible
 
 PICKLE = "averaged_perceptron_tagger.pickle"
@@ -81,7 +81,7 @@ class AveragedPerceptron(object):
                 param = (feat, clas)
                 total = self._totals[param]
                 total += (self.i - self._tstamps[param]) * weight
-                averaged = round(total / float(self.i), 3)
+                averaged = round(total / self.i, 3)
                 if averaged:
                     new_feat_weights[clas] = averaged
             self.weights[feat] = new_feat_weights
@@ -93,8 +93,7 @@ class AveragedPerceptron(object):
 
     def load(self, path):
         '''Load the pickled model weights.'''
-        with open(path,'rb') as fin:
-            self.weights = pickle.load(fin)
+        self.weights = load(path)
 
 @python_2_unicode_compatible
 class PerceptronTagger(TaggerI):
@@ -206,11 +205,8 @@ class PerceptronTagger(TaggerI):
         :param loc: Load a pickled model at location.
         :type loc: str 
         '''
-        
-        with open(loc, 'rb') as fin:
-            w_td_c = pickle.load(fin)
-        
-        self.model.weights, self.tagdict, self.classes = w_td_c
+
+        self.model.weights, self.tagdict, self.classes = load(loc)
         self.model.classes = self.classes
         
 
@@ -276,12 +272,12 @@ class PerceptronTagger(TaggerI):
             n = sum(tag_freqs.values())
             # Don't add rare words to the tag dictionary
             # Only add quite unambiguous words
-            if n >= freq_thresh and (float(mode) / n) >= ambiguity_thresh:
+            if n >= freq_thresh and (mode / n) >= ambiguity_thresh:
                 self.tagdict[word] = tag
 
 
 def _pc(n, d):
-    return (float(n) / d) * 100
+    return (n / d) * 100
 
 def _load_data_conll_format(filename):
     print ('Read from file: ', filename)

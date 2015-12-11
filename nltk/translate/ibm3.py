@@ -197,7 +197,7 @@ class IBMModel3(IBMModel):
             m = len(aligned_sentence.words)
             if (l, m) not in l_m_combinations:
                 l_m_combinations.add((l, m))
-                initial_prob = 1 / float(m)
+                initial_prob = 1 / m
                 if initial_prob < IBMModel.MIN_PROB:
                     warnings.warn("A target sentence is too long (" + str(m) +
                                   " words). Results may be less accurate.")

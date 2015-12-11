@@ -5,7 +5,7 @@
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 import re
 
@@ -190,7 +190,7 @@ class ChunkScore(object):
         self._updateMeasures()
         div = self._tp_num + self._fp_num
         if div == 0: return 0
-        else: return float(self._tp_num) / div
+        else: return self._tp_num / div
 
     def recall(self):
         """
@@ -202,7 +202,7 @@ class ChunkScore(object):
         self._updateMeasures()
         div = self._tp_num + self._fn_num
         if div == 0: return 0
-        else: return float(self._tp_num) / div
+        else: return self._tp_num / div
 
     def f_measure(self, alpha=0.5):
         """
