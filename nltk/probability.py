@@ -295,39 +295,43 @@ class FreqDist(Counter):
     # Mathematical operatiors 
     
     def __add__(self, other):
-        '''Add counts from two counters.
+        """
+        Add counts from two counters.
 
         >>> FreqDist('abbb') + FreqDist('bcc')
         FreqDist({'b': 4, 'c': 2, 'a': 1})
 
-        '''
+        """
         return self.__class__(super(FreqDist, self).__add__(other))
 
     def __sub__(self, other):
-        ''' Subtract count, but keep only results with positive counts.
+        """
+        Subtract count, but keep only results with positive counts.
 
         >>> FreqDist('abbbc') - FreqDist('bccd')
         FreqDist({'b': 2, 'a': 1})
 
-        '''
+        """
         return self.__class__(super(FreqDist, self).__sub__(other))
 
     def __or__(self, other):
-        '''Union is the maximum of value in either of the input counters.
+        """
+        Union is the maximum of value in either of the input counters.
 
         >>> FreqDist('abbb') | FreqDist('bcc')
         FreqDist({'b': 3, 'c': 2, 'a': 1})
 
-        '''
+        """
         return self.__class__(super(FreqDist, self).__or__(other))
 
     def __and__(self, other):
-        ''' Intersection is the minimum of corresponding counts.
+        """
+        Intersection is the minimum of corresponding counts.
 
         >>> FreqDist('abbb') & FreqDist('bcc')
         FreqDist({'b': 1})
 
-        '''
+        """
         return self.__class__(super(FreqDist, self).__and__(other))
 
     def __le__(self, other):
@@ -1849,6 +1853,75 @@ class ConditionalFreqDist(defaultdict):
             for f in freqs:
                 print("%4d" % f, end=' ')
             print()
+
+    # Mathematical operators
+    
+    def __add__(self, other):
+        """
+        Add counts from two ConditionalFreqDists.
+        """
+        if not isinstance(other, ConditionalFreqDist):
+            return NotImplemented
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] + other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
+        for cond in other.conditions():
+            if cond not in self.conditions():
+                for elem, count in other[cond].items():
+                    if count > 0:
+                        result[cond][elem] = count
+        return result
+
+    def __sub__(self, other):
+        """
+        Subtract count, but keep only results with positive counts.
+        """
+        if not isinstance(other, ConditionalFreqDist):
+            return NotImplemented
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] - other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
+        for cond in other.conditions():
+            if cond not in self.conditions():
+                for elem, count in other[cond].items():
+                    if count < 0:
+                        result[cond][elem] = 0 - count
+        return result
+
+    def __or__(self, other):
+        """
+        Union is the maximum of value in either of the input counters.
+        """
+        if not isinstance(other, ConditionalFreqDist):
+            return NotImplemented
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] | other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
+        for cond in other.conditions():
+            if cond not in self.conditions():
+                for elem, count in other[cond].items():
+                    if count > 0:
+                        result[cond][elem] = count
+        return result
+
+    def __and__(self, other):
+        """ 
+        Intersection is the minimum of corresponding counts.
+        """
+        if not isinstance(other, ConditionalFreqDist):
+            return NotImplemented
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] & other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
+        return result
 
     # @total_ordering doesn't work here, since the class inherits from a builtin class
     def __le__(self, other):
