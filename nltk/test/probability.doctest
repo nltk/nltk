@@ -54,6 +54,17 @@ Note that items are sorted in order of decreasing frequency; two items of the sa
     >>> fd1 == pickle.loads(pickled)
     True
 
+Mathematical operations:
+
+    >>> FreqDist('abbb') + FreqDist('bcc')
+    FreqDist({'b': 4, 'c': 2, 'a': 1})
+    >>> FreqDist('abbbc') - FreqDist('bccd')
+    FreqDist({'b': 2, 'a': 1})
+    >>> FreqDist('abbb') | FreqDist('bcc')
+    FreqDist({'b': 3, 'c': 2, 'a': 1})
+    >>> FreqDist('abbb') & FreqDist('bcc')
+    FreqDist({'b': 1})
+
 Testing some HMM estimators
 ---------------------------
 
