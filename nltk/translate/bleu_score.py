@@ -66,6 +66,8 @@ def sentence_bleu(references, hypothesis, weights=[0.25, 0.25, 0.25, 0.25]):
     :type hypothesis: list(str)
     :param weights: weights for unigrams, bigrams, trigrams and so on
     :type weights: list(float)
+    :return: The sentence-level BLEU score.
+    :rtype: float
     """
     # Calculates the modified precision *p_n* for each order of ngram.
     p_ns = [] 
@@ -137,6 +139,8 @@ def corpus_bleu(list_of_references, hypotheses, weights=[0.25, 0.25, 0.25, 0.25]
     :type hypotheses: list(list(str))
     :param weights: weights for unigrams, bigrams, trigrams and so on
     :type weights: list(float)
+    :return: The corpus-level BLEU score.
+    :rtype: float
     """
     p_numerators = Counter() # Key = ngram order, and value = no. of ngram matches.
     p_denominators = Counter() # Key = ngram order, and value = no. of ngram in ref.
@@ -253,6 +257,8 @@ def _modified_precision(references, hypothesis, n):
     :type hypothesis: list(str)
     :param n: The ngram order.
     :type n: int
+    :return: BLEU's modified precision for the nth order ngram.
+    :rtype: Fraction
     """
     counts = Counter(ngrams(hypothesis, n))
 
@@ -283,7 +289,9 @@ def _closest_ref_length(references, hyp_len):
     :param references: A list of reference translations.
     :type references: list(list(str))
     :param hypothesis: The length of the hypothesis.
-    :type hypothesis: int    
+    :type hypothesis: int
+    :return: The length of the reference that's closest to the hypothesis.
+    :rtype: int    
     """
     ref_lens = (len(reference) for reference in references)
     closest_ref_len = min(ref_lens, key=lambda ref_len: 
@@ -371,6 +379,8 @@ def _brevity_penalty(closest_ref_len, hyp_len):
     :param closest_ref_len: The length of the closest reference for a single 
     hypothesis OR the sum of all the closest references for every hypotheses.
     :type closest_reference_len: int    
+    :return: BLEU's brevity penalty.
+    :rtype: float
     """
     if hyp_len > closest_ref_len:
         return 1
