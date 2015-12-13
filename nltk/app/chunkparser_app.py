@@ -986,7 +986,7 @@ class RegexpChunkApp(object):
 
         # Update the scrollbar
         first = self.devset_index/self._devset_size.get()
-        last = self.devset_index+2)/self._devset_size.get()
+        last = (self.devset_index + 2) / self._devset_size.get()
         self.devset_scroll.set(first, last)
 
     def _chunks(self, tree):
