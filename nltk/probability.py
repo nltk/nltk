@@ -265,6 +265,8 @@ class FreqDist(Counter):
 
         :param samples: The samples to plot (default is all samples)
         :type samples: list
+        :param cumulative: A flag to specify whether the freqs are cumulative (default = False)
+        :type title: bool
         """
         if len(args) == 0:
             args = [len(self)]
@@ -277,11 +279,14 @@ class FreqDist(Counter):
             freqs = [self[sample] for sample in samples]
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
+        width = max(len("%s" % s) for s in samples)
+        width = max(width, max(len("%d" % f) for f in freqs))
+
         for i in range(len(samples)):
-            print("%4s" % samples[i], end=' ')
+            print("%*s" % (width, samples[i]), end=' ')
         print()
         for i in range(len(samples)):
-            print("%4d" % freqs[i], end=' ')
+            print("%*d" % (width, freqs[i]), end=' ')
         print()
 
     def copy(self):
@@ -1827,10 +1832,10 @@ class ConditionalFreqDist(defaultdict):
 
         :param samples: The samples to plot
         :type samples: list
-        :param title: The title for the graph
-        :type title: str
         :param conditions: The conditions to plot (default is all)
         :type conditions: list
+        :param cumulative: A flag to specify whether the freqs are cumulative (default = False)
+        :type title: bool
         """
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
@@ -1838,20 +1843,24 @@ class ConditionalFreqDist(defaultdict):
         samples = _get_kwarg(kwargs, 'samples',
                              sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
 
+        width = max(len("%s" % s) for s in samples)
+        freqs = dict()
+        for c in conditions:
+            if cumulative:
+                freqs[c] = list(self[c]._cumulative_frequencies(samples))
+            else:
+                freqs[c] = [self[c][sample] for sample in samples]
+            width = max(width, max(len("%d" % f) for f in freqs[c]))
+
         condition_size = max(len("%s" % c) for c in conditions)
         print(' ' * condition_size, end=' ')
         for s in samples:
-            print("%4s" % s, end=' ')
+            print("%*s" % (width, s), end=' ')
         print()
         for c in conditions:
             print("%*s" % (condition_size, c), end=' ')
-            if cumulative:
-                freqs = list(self[c]._cumulative_frequencies(samples))
-            else:
-                freqs = [self[c][sample] for sample in samples]
-
-            for f in freqs:
-                print("%4d" % f, end=' ')
+            for f in freqs[c]:
+                print("%*d" % (width, f), end=' ')
             print()
 
     # Mathematical operators
