@@ -58,6 +58,8 @@ def regexp_span_tokenize(s, regexp):
     :type regexp: str
     :rtype: iter(tuple(int, int))
     """
+    if len(regexp) == 0:
+        raise ValueError("regexp must not be empty")
     left = 0
     for m in finditer(regexp, s):
         right, next = m.span()
