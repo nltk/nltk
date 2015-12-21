@@ -263,7 +263,7 @@ def _modified_precision(references, hypothesis, n):
     counts = Counter(ngrams(hypothesis, n))
 
     if not counts:
-        return 0
+        return Fraction(0)
 
     max_counts = {}
     for reference in references:
@@ -316,7 +316,6 @@ def _brevity_penalty(closest_ref_len, hyp_len):
         >>> references = [reference1, reference2, reference3]
         >>> hyp_len = len(hypothesis)
         >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
-        >>> hyp_len = len(hypothesis)
         >>> _brevity_penalty(closest_ref_len, hyp_len)
         1.0
 
@@ -352,7 +351,7 @@ def _brevity_penalty(closest_ref_len, hyp_len):
         >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
         >>> bp1 = _brevity_penalty(closest_ref_len, hyp_len)
         >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
+        >>> closest_ref_len =  _closest_ref_length(reversed(references), hyp_len)
         >>> bp2 = _brevity_penalty(closest_ref_len, hyp_len)
         >>> bp1 == bp2 == 1
         True
