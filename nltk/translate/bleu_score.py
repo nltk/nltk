@@ -56,7 +56,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     use customized weights. E.g. when accounting for up to 6grams with uniform
     weights:
 
-    >>> weights = [0.1666, 0.1666, 0.1666, 0.1666, 0.1666]
+    >>> weights = (0.1666, 0.1666, 0.1666, 0.1666, 0.1666)
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1, weights)
     0.45838627164939455
     
@@ -90,7 +90,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     return bp * math.exp(s)
 
 
-def corpus_bleu(list_of_references, hypotheses, weights=[0.25, 0.25, 0.25, 0.25]):
+def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)):
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all 
     the hypotheses and their respective references.  
