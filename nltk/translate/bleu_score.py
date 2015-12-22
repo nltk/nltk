@@ -70,10 +70,8 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     :rtype: float
     """
     # Calculates the modified precision *p_n* for each order of ngram.
-    p_ns = [] 
-    for i, _ in enumerate(weights, start=1): 
-        p_n = float(_modified_precision(references, hypothesis, i))
-        p_ns.append(p_n) 
+    p_ns = [float(_modified_precision(references, hypothesis, i))
+            for i, _ in enumerate(weights, start=1)]
 
     try:
         # Calculates the overall modified precision for all ngrams.
