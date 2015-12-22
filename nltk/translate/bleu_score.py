@@ -17,7 +17,7 @@ from collections import Counter
 from nltk.util import ngrams
 
 
-def sentence_bleu(references, hypothesis, weights=[0.25, 0.25, 0.25, 0.25]):
+def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     """
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
