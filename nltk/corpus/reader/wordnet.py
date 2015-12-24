@@ -1460,7 +1460,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def all_lemma_names(self, pos=None, lang='eng'):
         """Return all lemma names for all synsets for the given
-        part of speech tag and langauge or languages. If pos is not specified, all synsets
+        part of speech tag and language or languages. If pos is not specified, all synsets
         for all parts of speech will be used."""
 
         if lang == 'eng':
