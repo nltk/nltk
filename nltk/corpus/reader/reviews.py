@@ -168,10 +168,11 @@ class ReviewsCorpusReader(CorpusReader):
 
     We can compute stats for specific product features:
 
+        >>> from __future__ import division
         >>> n_reviews = len([(feat,score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
         >>> tot = sum([int(score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
         >>> # We use float for backward compatibility with division in Python2.7
-        >>> mean = float(tot)/n_reviews
+        >>> mean = tot / n_reviews
         >>> print(n_reviews, tot, mean)
         15 24 1.6
     """

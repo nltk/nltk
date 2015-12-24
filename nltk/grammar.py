@@ -68,7 +68,7 @@ The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division 
 
 import re
 
@@ -1130,7 +1130,7 @@ def induce_pcfg(start, productions):
         pcount[prod]       = pcount.get(prod,       0) + 1
 
     prods = [ProbabilisticProduction(p.lhs(), p.rhs(),
-                                prob=float(pcount[p]) / lcount[p.lhs()])
+                                prob=pcount[p] / lcount[p.lhs()])
              for p in pcount]
     return PCFG(start, prods)
 

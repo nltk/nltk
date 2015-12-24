@@ -27,12 +27,12 @@ def parse_sents(inputs, grammar, trace=0):
     Convert input sentences into syntactic trees.
 
     :param inputs: sentences to be parsed
-    :type inputs: list of str
+    :type inputs: list(str)
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
-    :rtype: dict
+    :type grammar: nltk.grammar.FeatureGrammar
+    :rtype: list(nltk.tree.Tree) or dict(list(str)): list(Tree)
     :return: a mapping from input sentences to a list of ``Tree``s
     """
-
     # put imports here to avoid circult dependencies
     from nltk.grammar import FeatureGrammar
     from nltk.parse import FeatureChartParser, load_parser
@@ -74,9 +74,11 @@ def interpret_sents(inputs, grammar, semkey='SEM', trace=0):
     of each input sentence.
 
     :param inputs: a list of sentences
+    :type inputs: list(str)
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
+    :type grammar: nltk.grammar.FeatureGrammar
     :return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
-    :rtype: dict
+    :rtype: list(list(tuple(nltk.tree.Tree, nltk.sem.logic.ConstantExpression)))
     """
     return [[(syn, root_semrep(syn, semkey)) for syn in syntrees]
             for syntrees in parse_sents(inputs, grammar, trace=trace)]
@@ -87,9 +89,11 @@ def evaluate_sents(inputs, grammar, model, assignment, trace=0):
     for each syntactic parse of each input sentences.
 
     :param inputs: a list of sentences
+    :type inputs: list(str)
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
+    :type grammar: nltk.grammar.FeatureGrammar
     :return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
-    :rtype: dict
+    :rtype: list(list(tuple(nltk.tree.Tree, nltk.sem.logic.ConstantExpression, bool or dict(str): bool)))
     """
     return [[(syn, sem, model.evaluate("%s" % sem, assignment, trace=trace))
             for (syn, sem) in interpretations]
@@ -241,5 +245,5 @@ def demo():
                 n += 1
 
 if __name__ == "__main__":
-    #demo()
+    demo()
     demo_legacy_grammar()

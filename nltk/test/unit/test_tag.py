@@ -8,7 +8,7 @@ def test_basic():
     result = pos_tag(word_tokenize("John's big idea isn't all that bad."))
     assert result == [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'),
                       ('idea', 'NN'), ('is', 'VBZ'), ("n't", 'RB'),
-                      ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
+                      ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'),
                       ('.', '.')]
 
 

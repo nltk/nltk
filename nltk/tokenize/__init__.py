@@ -73,6 +73,7 @@ from nltk.tokenize.stanford import StanfordTokenizer
 from nltk.tokenize.texttiling import TextTilingTokenizer
 from nltk.tokenize.casual   import (TweetTokenizer, casual_tokenize)
 from nltk.tokenize.mwe      import MWETokenizer
+from nltk.tokenize.util     import string_span_tokenize, regexp_span_tokenize
 
 # Standard sentence tokenizer.
 def sent_tokenize(text, language='english'):

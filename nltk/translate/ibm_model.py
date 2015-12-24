@@ -37,7 +37,7 @@ Robert L. Mercer. 1993. The Mathematics of Statistical Machine
 Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
-
+from __future__ import division
 from bisect import insort_left
 from collections import defaultdict
 from copy import deepcopy
@@ -447,7 +447,7 @@ class AlignmentInfo(object):
         if i is None:
             return 0
 
-        average_position = float(sum(self.cepts[i])) / len(self.cepts[i])
+        average_position = sum(self.cepts[i]) / len(self.cepts[i])
         return int(ceil(average_position))
 
     def previous_cept(self, j):

@@ -261,7 +261,7 @@ class IBMModel4(IBMModel):
         if max_m <= 1:
             initial_prob = IBMModel.MIN_PROB
         else:
-            initial_prob = float(1) / (2 * (max_m - 1))
+            initial_prob = 1 / (2 * (max_m - 1))
         if initial_prob < IBMModel.MIN_PROB:
             warnings.warn("A target sentence is too long (" + str(max_m) +
                           " words). Results may be less accurate.")

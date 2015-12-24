@@ -23,10 +23,14 @@ important are:
 - [nltk/nltk_book](https://github.com/nltk/nltk_book), source code for the NLTK
   Book.
 
+## Development priorities
 
-### Git and our Branching model
+NLTK consists of the functionality that the Python/NLP community is motivated to contribute.
+Some priority areas for development are listed in the [NLTK Wiki](https://github.com/nltk/nltk/wiki#development)
 
-#### Git
+## Git and our Branching model
+
+### Git
 
 We use [Git](http://git-scm.com/) as our [version control
 system](http://en.wikipedia.org/wiki/Revision_control), so the best way to
@@ -34,7 +38,7 @@ contribute is to learn how to use it and put your changes on a Git repository.
 There's a plenty of documentation about Git -- you can start with the [Pro Git
 book](http://git-scm.com/book/).
 
-#### Forks + GitHub Pull requests
+### Forks + GitHub Pull requests
 
 We use the famous
 [gitflow](http://nvie.com/posts/a-successful-git-branching-model/) to manage our
@@ -58,7 +62,7 @@ Summary of our git branching model:
 - Wait for comments.
 
 
-#### Tips
+### Tips
 
 - Write [helpful commit
   messages](http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message).
@@ -75,7 +79,7 @@ Summary of our git branching model:
   need before creating a new NLTK release.
 
 
-### Code Guidelines
+## Code Guidelines
 
 - Use [PEP8](http://www.python.org/dev/peps/pep-0008/);
 - Write tests for your new features (please see "Tests" topic below);
@@ -97,7 +101,7 @@ See also our [developer's
 guide](https://github.com/nltk/nltk/wiki/Developers-Guide).
 
 
-### Tests
+## Tests
 
 You should write tests for every feature you add or bug you solve in the code.
 Having automated tests for every line of our code let us make big changes
@@ -111,18 +115,12 @@ where you write your tests **before** writing the actual code that implements
 the desired feature.
 
 
-### Continuous Integration
+## Continuous Integration
 
-The continuous integration test suite previously running at [Shining
-Panda](http://shiningpanda.com) is down due to them having taken their Clap de
-Fin. There have been some investigations into moving to other CI, but no
-official build is running right now. This may change in the near future.
+NLTK uses [Cloudbees](https://nltk.ci.cloudbees.com/) for continuous integration.
+Tests can be run locally using tox, e.g. `sudo tox -e py34`.
 
-`nltk/test/runtests.py` is a good starting point for running tests locally, but
-note that the suite is currently failing.
-
-
-## Discussion
+# Discussion
 
 We have two mail lists on Google Groups:
 
