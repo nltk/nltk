@@ -73,13 +73,14 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     p_ns = [float(_modified_precision(references, hypothesis, i))
             for i, _ in enumerate(weights, start=1)]
 
-    try:
-        # Calculates the overall modified precision for all ngrams.
-        # By taking the product of the weights and the respective *p_n*
-        s = math.fsum(w * math.log(p_n) for w, p_n in zip(weights, p_ns))
-    except ValueError:
-        # some p_ns is 0
-        return 0
+    # Calculates the overall modified precision for all ngrams.
+    # By sum of the product of the weights and the respective *p_n*
+    s = []
+    for w, p_n in zip(weights, p_ns):
+        try:
+            s.append(w * math.log(p_n))
+        except ValueError: # some p_ns is 0
+            s.append(0)
 
     # Calculates the brevity penalty.
     # *hyp_len* is referred to as *c* in Papineni et. al. (2002)
