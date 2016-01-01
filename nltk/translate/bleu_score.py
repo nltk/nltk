@@ -81,6 +81,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
             s.append(w * math.log(p_n))
         except ValueError: # some p_ns is 0
             s.append(0)
+    s = math.fsum(s)
 
     # Calculates the brevity penalty.
     # *hyp_len* is referred to as *c* in Papineni et. al. (2002)
