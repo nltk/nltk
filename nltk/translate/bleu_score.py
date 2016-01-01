@@ -49,7 +49,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     0.5045666840058485
 
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis2)
-    0
+    0.39692877231857493
 
     The default BLEU calculates a score for up to 4grams using uniform
     weights. To evaluate your translations with higher/lower order ngrams, 
