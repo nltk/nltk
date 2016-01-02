@@ -170,7 +170,10 @@ def corpus_bleu(list_of_references, hypotheses, weights=[0.25, 0.25, 0.25, 0.25]
     p_n = []
     for i, w in enumerate(weights, start=1):
         pn = p_numerators[i] / p_denominators[i]
-        p_n.append(w* math.log(pn))
+        try:
+            p_n.append(w* math.log(pn))
+        except ValueError:
+            return 0
         
     return bp * math.exp(math.fsum(p_n))
 
