@@ -164,14 +164,14 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     # Calculate corpus-level brevity penalty.
     bp = _brevity_penalty(ref_lengths, hyp_lengths)
     
-    # Calculate corpus-level modified precision.
+    # Calculate sum of corpus-level modified precisions.
     s = []
     for i, w in enumerate(weights, start=1):
         p_i = p_numerators[i] / p_denominators[i]
-        p_i = 0 if p_i == 0 else (w* math.log(pn))
+        p_i = 0 if p_i == 0 else (w* math.log(p_i))
         s.append(p_i)
         
-    return bp * math.exp(math.fsum(p_n))
+    return bp * math.exp(math.fsum(s))
 
 
 def _modified_precision(references, hypothesis, n):
