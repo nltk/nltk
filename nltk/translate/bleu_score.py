@@ -77,7 +77,8 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     # By sum of the product of the weights and the respective *p_n*
     s = []
     for w, p_i in zip(weights, p_n):
-        p_i = 0 if p_i == 0 else w * math.log(p_i)
+        p_i = 0 if p_i == 0 else (w * math.log(p_i))
+        s.append(p_i)
     s = math.fsum(s)
 
     # Calculates the brevity penalty.
@@ -167,10 +168,10 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     s = []
     for i, w in enumerate(weights, start=1):
         p_i = p_numerators[i] / p_denominators[i]
-        p_i = 0 if p_i == 0 else w * math.log(p_i) 
+        p_i = 0 if p_i == 0 else (w* math.log(pn))
         s.append(p_i)
         
-    return bp * math.exp(math.fsum(s))
+    return bp * math.exp(math.fsum(p_n))
 
 
 def _modified_precision(references, hypothesis, n):
