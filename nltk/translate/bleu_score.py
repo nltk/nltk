@@ -79,7 +79,6 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     for w, p_i in zip(weights, p_n):
         p_i = 0 if p_i == 0 else (w * math.log(p_i))
         s.append(p_i)
-    s = math.fsum(s)
 
     # Calculates the brevity penalty.
     # *hyp_len* is referred to as *c* in Papineni et. al. (2002)
@@ -87,7 +86,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     # *closest_ref_len* is referred to as *r* variable in Papineni et. al. (2002)
     closest_ref_len = _closest_ref_length(references, hyp_len)
     bp = _brevity_penalty(closest_ref_len, hyp_len)
-    return bp * math.exp(s)
+    return bp * math.exp(math.fsum(s))
 
 
 def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)):
