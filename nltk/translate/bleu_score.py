@@ -7,7 +7,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """BLEU score implementation."""
-
 from __future__ import division
 
 import math
@@ -70,16 +69,13 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     :rtype: float
     """
     # Calculates the modified precision *p_n* for each order of ngram.
-    p_n = [float(_modified_precision(references, hypothesis, i))
-            for i, _ in enumerate(weights, start=1)]
+    p_n = (float(_modified_precision(references, hypothesis, i))
+            for i, _ in enumerate(weights, start=1))
 
     # Calculates the overall modified precision for all ngrams.
     # By sum of the product of the weights and the respective *p_n*
-    s = []
-    for w, p_i in zip(weights, p_n):
-        p_i = 0 if p_i == 0 else (w * math.log(p_i))
-        s.append(p_i)
-
+    s = (p_i if p_i == 0 else (w * math.log(p_i)) for w, p_i in zip(weights, p_n))
+    
     # Calculates the brevity penalty.
     # *hyp_len* is referred to as *c* in Papineni et. al. (2002)
     hyp_len = len(hypothesis)
@@ -164,11 +160,9 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     bp = _brevity_penalty(ref_lengths, hyp_lengths)
     
     # Calculate sum of corpus-level modified precisions.
-    s = []
-    for i, w in enumerate(weights, start=1):
-        p_i = p_numerators[i] / p_denominators[i]
-        p_i = 0 if p_i == 0 else (w* math.log(p_i))
-        s.append(p_i)
+    s = (p_i if p_numerators[i] == 0 else
+         (w* math.log(p_numerators[i] / p_denominators[i]))
+         for i, w in enumerate(weights, start=1))
         
     return bp * math.exp(math.fsum(s))
 
