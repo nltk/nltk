@@ -533,10 +533,10 @@ except ImportError:  # python 2.6
 _PY3_DATA_UPDATES = []
 
 if sys.platform.startswith('win'):
-    _PY3_DATA_UPDATES = ["chunkers\maxent_ne_chunker",
-                         "help\tagsets",
-                         "taggers\maxent_treebank_pos_tagger",
-                         "tokenizers\punkt"]
+    _PY3_DATA_UPDATES = [r"chunkers\maxent_ne_chunker",
+                         r"help\tagsets",
+                         r"taggers\maxent_treebank_pos_tagger",
+                         r"tokenizers\punkt"]
 else:
     _PY3_DATA_UPDATES = ["chunkers/maxent_ne_chunker",
                          "help/tagsets",
