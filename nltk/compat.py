@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import absolute_import, print_function
+import os
 import sys
 import types
 from functools import wraps
@@ -530,18 +531,13 @@ except ImportError:  # python 2.6
 # The following datasets have a /PY3 subdirectory containing
 # a full copy of the data which has been re-encoded or repickled.
 
-_PY3_DATA_UPDATES = []
-
-if sys.platform.startswith('win'):
-    _PY3_DATA_UPDATES = [r"chunkers\maxent_ne_chunker",
-                         r"help\tagsets",
-                         r"taggers\maxent_treebank_pos_tagger",
-                         r"tokenizers\punkt"]
-else:
-    _PY3_DATA_UPDATES = ["chunkers/maxent_ne_chunker",
-                         "help/tagsets",
-                         "taggers/maxent_treebank_pos_tagger",
-                         "tokenizers/punkt"]
+_PY3_DATA_UPDATES = ["chunkers/maxent_ne_chunker",
+                     "help/tagsets",
+                     "taggers/maxent_treebank_pos_tagger",
+                     "tokenizers/punkt"]
+if os.path.sep != '/':
+    _PY3_DATA_UPDATES = [s.replace('/', os.path.sep)
+                         for s in _PY3_DATA_UPDATES]
 
 
 def add_py3_data(path):
