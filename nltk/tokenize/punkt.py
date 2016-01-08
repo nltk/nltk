@@ -1062,25 +1062,32 @@ class PunktTrainer(PunktBaseClass):
 
         p = count_b / N
         p1 = count_ab / count_a
-        p2 = (count_b - count_ab) / (N - count_a)
 
-        summand1 = (count_ab * math.log(p) +
-                    (count_a - count_ab) * math.log(1.0 - p))
+        p2_denom = N - count_a
+        if p2_denom == 0:
+            p2 = 1
+        else:
+            p2 = (count_b - count_ab) / p2_denom
 
-        summand2 = ((count_b - count_ab) * math.log(p) +
-                    (N - count_a - count_b + count_ab) * math.log(1.0 - p))
+        print (p, p1, p2, N, count_a, count_b, count_ab)
+
+        summand1 = (count_ab * math.log(p + (p == 0)) +
+                    (count_a - count_ab) * math.log(1.0 - p + (p == 1)))
+
+        summand2 = ((count_b - count_ab) * math.log(p + (p == 0)) +
+                    (N - count_a - count_b + count_ab) * math.log(1.0 - p + (p == 1)))
 
         if count_a == count_ab:
             summand3 = 0
         else:
-            summand3 = (count_ab * math.log(p1) +
-                        (count_a - count_ab) * math.log(1.0 - p1))
+            summand3 = (count_ab * math.log(p1 + (p1 == 0)) +
+                        (count_a - count_ab) * math.log(1.0 - p1 + (p1 == 1)))
 
         if count_b == count_ab:
             summand4 = 0
         else:
-            summand4 = ((count_b - count_ab) * math.log(p2) +
-                        (N - count_a - count_b + count_ab) * math.log(1.0 - p2))
+            summand4 = ((count_b - count_ab) * math.log(p2 + (p2 == 0)) +
+                        (N - count_a - count_b + count_ab) * math.log(1.0 - p2 + (p2 == 1)))
 
         likelihood = summand1 + summand2 - summand3 - summand4
 
