@@ -12,18 +12,20 @@ from __future__ import unicode_literals
 import tempfile
 import os
 import re
-import warnings
+import json
 from subprocess import PIPE
-from io import StringIO
+
+import requests
 
 from nltk import compat
-from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_options
+from nltk.internals import find_jar_iter, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
 
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
+
 
 class GenericStanfordParser(ParserI):
     """Interface to the Stanford Parser"""
@@ -39,6 +41,8 @@ class GenericStanfordParser(ParserI):
                  model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz',
                  encoding='utf8', verbose=False,
                  java_options='-mx1000m', corenlp_options=''):
+
+        return
 
         # find the most recent code and model jar
         stanford_jar = max(
@@ -92,11 +96,13 @@ class GenericStanfordParser(ParserI):
         return iter(res)
 
     def parse_sents(self, sentences, verbose=False):
-        """
-        Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
-        list where each sentence is a list of words.
-        Each sentence will be automatically tagged with this StanfordParser instance's
-        tagger.
+        """Parse multiple sentences.
+
+
+        Takes multiple sentences as a list where each sentence is a list of
+        words. Each sentence will be automatically tagged with this
+        StanfordParser instance's tagger.
+
         If whitespaces exists inside a token, then the token will be treated as
         separate tokens.
 
@@ -104,16 +110,10 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(list(str))
         :rtype: iter(iter(Tree))
         """
-        cmd = [
-            self._MAIN_CLASS,
-            '-model', self.model_path,
-            '-sentences', 'newline',
-            '-outputFormat', self._OUTPUT_FORMAT,
-            '-tokenized',
-            '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor',
-        ]
-        return self._parse_trees_output(self._execute(
-            cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))
+
+        sentences = [' '.join(words) for words in sentences]
+
+        return self.raw_parse_sents(sentences, verbose=False, tokenize_whitespace=True)
 
     def raw_parse(self, sentence, verbose=False):
         """
@@ -127,23 +127,45 @@ class GenericStanfordParser(ParserI):
         """
         return next(self.raw_parse_sents([sentence], verbose))
 
-    def raw_parse_sents(self, sentences, verbose=False):
-        """
-        Use StanfordParser to parse multiple sentences. Takes multiple sentences as a
-        list of strings.
-        Each sentence will be automatically tokenized and tagged by the Stanford Parser.
+    def raw_parse_sents(self, sentences, verbose=False, tokenize_whitespace=False):
+        """Use StanfordParser to parse multiple sentences.
 
-        :param sentences: Input sentences to parse
+        Takes multiple sentences as a list of strings. Each sentence will be
+        automatically tokenized and tagged by the Stanford Parser.
+
+        :param sentences: Input sentences to parse.
         :type sentences: list(str)
         :rtype: iter(iter(Tree))
         """
-        cmd = [
-            self._MAIN_CLASS,
-            '-model', self.model_path,
-            '-sentences', 'newline',
-            '-outputFormat', self._OUTPUT_FORMAT,
-        ]
-        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+        session = requests.Session()
+
+        for sentence in sentences:
+
+            properties = {
+                'annotators': 'tokenize,pos,parse',
+                'outputFormat': 'json',
+                'tokenize.options': 'normalizeParentheses=true',
+            }
+
+            if tokenize_whitespace:
+                properties['tokenize.whitespace'] = 'true'
+
+            response = session.post(
+                'http://localhost:9000',
+                params={
+                    'properties': json.dumps(properties),
+                },
+                data=sentence,
+                )
+
+            response.raise_for_status()
+
+            parsed_data = response.json()
+            assert len(parsed_data['sentences']) == 1
+
+            tree = Tree.fromstring(parsed_data['sentences'][0]['parse'])
+
+            yield iter([tree])
 
     def tagged_parse(self, sentence, verbose=False):
         """
@@ -222,37 +244,99 @@ class GenericStanfordParser(ParserI):
 
         return stdout
 
+
 class StanfordParser(GenericStanfordParser):
     """
-    >>> parser=StanfordParser(
-    ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
+    >>> parser=StanfordParser()
+
+    >>> next(
+    ...     parser.raw_parse('the quick brown fox jumps over the lazy dog')
+    ... ).pretty_print()  # doctest: +NORMALIZE_WHITESPACE
+                         ROOT
+                          |
+                          S
+           _______________|_________
+          |                         VP
+          |                _________|___
+          |               |             PP
+          |               |     ________|___
+          NP              |    |            NP
+      ____|__________     |    |     _______|____
+     DT   JJ    JJ   NN  VBZ   IN   DT      JJ   NN
+     |    |     |    |    |    |    |       |    |
+    the quick brown fox jumps over the     lazy dog
+
+    >>> (parse_fox, ), (parse_wolf, ) = parser.raw_parse_sents(
+    ...     [
+    ...         'the quick brown fox jumps over the lazy dog',
+    ...         'the quick grey wolf jumps over the lazy fox',
+    ...     ]
     ... )
+    >>> parse_fox.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
+                         ROOT
+                          |
+                          S
+           _______________|_________
+          |                         VP
+          |                _________|___
+          |               |             PP
+          |               |     ________|___
+          NP              |    |            NP
+      ____|__________     |    |     _______|____
+     DT   JJ    JJ   NN  VBZ   IN   DT      JJ   NN
+     |    |     |    |    |    |    |       |    |
+    the quick brown fox jumps over the     lazy dog
 
-    >>> list(parser.raw_parse("the quick brown fox jumps over the lazy dog")) # doctest: +NORMALIZE_WHITESPACE
-    [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
-    Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
-    Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])])]
+    >>> parse_wolf.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
+                         ROOT
+                          |
+                          S
+           _______________|_________
+          |                         VP
+          |                _________|___
+          |               |             PP
+          |               |     ________|___
+          NP              |    |            NP
+      ____|_________      |    |     _______|____
+     DT   JJ   JJ   NN   VBZ   IN   DT      JJ   NN
+     |    |    |    |     |    |    |       |    |
+    the quick grey wolf jumps over the     lazy fox
 
-    >>> sum([list(dep_graphs) for dep_graphs in parser.raw_parse_sents((
-    ...     "the quick brown fox jumps over the lazy dog",
-    ...     "the quick grey wolf jumps over the lazy fox"
-    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
-    [Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
-    Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']),
-    Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])]), Tree('ROOT', [Tree('NP',
-    [Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['quick']), Tree('JJ', ['grey']), Tree('NN', ['wolf'])]), Tree('NP',
-    [Tree('NP', [Tree('NNS', ['jumps'])]), Tree('PP', [Tree('IN', ['over']), Tree('NP', [Tree('DT', ['the']),
-    Tree('JJ', ['lazy']), Tree('NN', ['fox'])])])])])])]
+    >>> (parse_dog, ), (parse_friends, ) = parser.parse_sents(
+    ...     [
+    ...         "I 'm a dog".split(),
+    ...         "This is my friends ' cat ( the tabby )".split(),
+    ...     ]
+    ... )
+    >>> parse_dog.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
+            ROOT
+             |
+             S
+      _______|____
+     |            VP
+     |    ________|___
+     NP  |            NP
+     |   |         ___|___
+    PRP VBP       DT      NN
+     |   |        |       |
+     I   'm       a      dog
 
-    >>> sum([list(dep_graphs) for dep_graphs in parser.parse_sents((
-    ...     "I 'm a dog".split(),
-    ...     "This is my friends ' cat ( the tabby )".split(),
-    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
-    [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
-    Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
-    [Tree('DT', ['This'])]), Tree('VP', [Tree('VBZ', ['is']), Tree('NP', [Tree('NP', [Tree('NP', [Tree('PRP$', ['my']),
-    Tree('NNS', ['friends']), Tree('POS', ["'"])]), Tree('NN', ['cat'])]), Tree('PRN', [Tree('-LRB-', ['-LRB-']),
-    Tree('NP', [Tree('DT', ['the']), Tree('NN', ['tabby'])]), Tree('-RRB-', ['-RRB-'])])])])])])]
+    >>> parse_friends.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
+                              ROOT
+                               |
+                              SINV
+               ________________|________________
+              S                                 |
+      ________|______                           |
+     |               VP                         |
+     |     __________|_____                     |
+     |    |                NP                   VP
+     |    |           _____|________     _______|____
+     NP   |          NP             |  VBD           NP
+     |    |    ______|_________     |   |    ________|____
+     DT  VBZ PRP$   NNS       POS   NN      DT       JJ   NN
+     |    |   |      |         |    |   |   |        |    |
+    This  is  my  friends      '   cat ... the     tabby ...
 
     >>> sum([list(dep_graphs) for dep_graphs in parser.tagged_parse_sents((
     ...     (
@@ -393,10 +477,8 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
 def setup_module(module):
     from nose import SkipTest
 
-    try:
-        StanfordParser(
-            model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz'
+    if not requests.get('http://localhost:9000').ok:
+        raise SkipTest(
+            'Doctests from nltk.parse.stanford are skipped because '
+            'one of the CoreNLP server is not available.'
         )
-        StanfordNeuralDependencyParser()
-    except LookupError:
-        raise SkipTest('doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn\'t exist')

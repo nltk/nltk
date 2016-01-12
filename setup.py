@@ -70,6 +70,9 @@ natural language processing.  NLTK requires Python 2.7, or 3.2+.""",
     ],
     package_data = {'nltk': ['test/*.doctest', 'VERSION', 'sentiment/vader_lexicon.txt']},
 #    install_requires = ['six>=1.9.0'],
+    extras_require={
+        'stanford-corenl': ['requests'],
+    },
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
     )
