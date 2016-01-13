@@ -127,7 +127,13 @@ class GenericStanfordParser(ParserI):
         """
         return next(self.raw_parse_sents([sentence], verbose))
 
-    def raw_parse_sents(self, sentences, verbose=False, tokenize_whitespace=False):
+    def raw_parse_sents(
+        self,
+        sentences,
+        verbose=False,
+        tokenize_whitespace=False,
+        sentence_split=False,
+    ):
         """Use StanfordParser to parse multiple sentences.
 
         Takes multiple sentences as a list of strings. Each sentence will be
@@ -136,16 +142,19 @@ class GenericStanfordParser(ParserI):
         :param sentences: Input sentences to parse.
         :type sentences: list(str)
         :rtype: iter(iter(Tree))
+
         """
         session = requests.Session()
 
         for sentence in sentences:
 
             properties = {
-                'annotators': 'tokenize,pos,lemma,{parser_annotator}'.format(
-                    parser_annotator=self.parser_annotator,
+                'annotators': ','.join(
+                    ['tokenize', 'pos', 'lemma', self.parser_annotator] +
+                    (['ssplit'] if sentence_split else [])
                 ),
                 'outputFormat': 'json',
+                # TODO: Does it work?
                 'tokenize.options': 'normalizeParentheses=true',
             }
 
@@ -158,16 +167,22 @@ class GenericStanfordParser(ParserI):
                     'properties': json.dumps(properties),
                 },
                 data=sentence,
-                )
+            )
 
             response.raise_for_status()
 
             parsed_data = response.json()
-            assert len(parsed_data['sentences']) == 1
 
-            tree = self.make_tree(parsed_data['sentences'][0])
+            if not sentence_split:
+                assert len(parsed_data['sentences']) == 1
 
-            yield iter([tree])
+            # TODO: Originally, we can return several parsers for a sentence.
+            #       * We always return one wrapped in an iterator.
+            #       * When text is split to sentences we return one parse per
+            #         sentence, not an iterable of parses per sentence.
+            for parse in parsed_data['sentences']:
+                tree = self.make_tree(parse)
+                yield iter([tree])
 
     def tagged_parse(self, sentence, verbose=False):
         """
@@ -246,6 +261,17 @@ class GenericStanfordParser(ParserI):
 
         return stdout
 
+    def parse_text(self, text):
+        """Parse a piece of text.
+
+        The text might contain several sentences which will be split by CoreNLP.
+
+        :param str text: text to be split.
+        :returns: an iterable of syntactic structures.  # TODO: should it be an iterable of iterables.
+
+        """
+        return self.raw_parse_sents([text], sentence_split=True)
+
 
 class StanfordParser(GenericStanfordParser):
     """
@@ -274,6 +300,7 @@ class StanfordParser(GenericStanfordParser):
     ...         'the quick grey wolf jumps over the lazy fox',
     ...     ]
     ... )
+
     >>> parse_fox.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
                          ROOT
                           |
@@ -310,6 +337,7 @@ class StanfordParser(GenericStanfordParser):
     ...         "This is my friends ' cat ( the tabby )".split(),
     ...     ]
     ... )
+
     >>> parse_dog.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
             ROOT
              |
@@ -340,6 +368,34 @@ class StanfordParser(GenericStanfordParser):
      |    |   |      |         |    |   |   |        |    |
     This  is  my  friends      '   cat ... the     tabby ...
 
+    >>> (parse_john, ), (parse_mary, ) = parser.parse_text(
+    ...     'John loves Mary. Mary walks.'
+    ... )
+
+    >>> parse_john.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
+          ROOT
+           |
+           S
+      _____|_____________
+     |          VP       |
+     |      ____|___     |
+     NP    |        NP   |
+     |     |        |    |
+    NNP   VBZ      NNP   .
+     |     |        |    |
+    John loves     Mary  .
+
+    >>> parse_mary.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
+          ROOT
+           |
+           S
+      _____|____
+     NP    VP   |
+     |     |    |
+    NNP   VBZ   .
+     |     |    |
+    Mary walks  .
+
     >>> sum([list(dep_graphs) for dep_graphs in parser.tagged_parse_sents((
     ...     (
     ...         ("The", "DT"),
@@ -369,7 +425,7 @@ class StanfordParser(GenericStanfordParser):
 class StanfordDependencyParser(GenericStanfordParser):
 
     """
-    >>> dep_parser=StanfordDependencyParser()
+    >>> dep_parser = StanfordDependencyParser()
 
     >>> parse, = dep_parser.raw_parse(
     ...     'The quick brown fox jumps over the lazy dog.'
@@ -454,6 +510,21 @@ class StanfordDependencyParser(GenericStanfordParser):
     the DT      10      det
     tabby       JJ      10      amod
     )   NN      7       dobj
+
+    >>> (parse_john, ), (parse_mary, ) = dep_parser.parse_text(
+    ...     'John loves Mary. Mary walks.'
+    ... )
+
+    >>> print(parse_john.to_conll(4))  # doctest: +NORMALIZE_WHITESPACE
+    John        NNP     2       nsubj
+    loves       VBZ     0       ROOT
+    Mary        NNP     2       dobj
+    .   .       2       punct
+
+    >>> print(parse_mary.to_conll(4))  # doctest: +NORMALIZE_WHITESPACE
+    Mary        NNP     2       nsubj
+    walks       VBZ     0       ROOT
+    .   .       2       punct
 
     >>> sum([[list(parse.triples()) for parse in dep_graphs] for dep_graphs in dep_parser.tagged_parse_sents((
     ...     (
