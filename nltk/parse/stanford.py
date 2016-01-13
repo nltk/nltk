@@ -149,13 +149,13 @@ class GenericStanfordParser(ParserI):
         for sentence in sentences:
 
             properties = {
-                'annotators': ','.join(
-                    ['tokenize', 'pos', 'lemma', self.parser_annotator] +
-                    (['ssplit'] if sentence_split else [])
+                'annotators': 'tokenize,pos,lemma,ssplit,{parser_annotator}'.format(
+                    parser_annotator=self.parser_annotator,
                 ),
                 'outputFormat': 'json',
+                'ssplit.isOneSentence': 'false' if sentence_split else 'true',
                 # TODO: Does it work?
-                'tokenize.options': 'normalizeParentheses=true',
+                'tokenize.options': 'normalizeParentheses=true,normalizeOtherBrackets=true',
             }
 
             if tokenize_whitespace:
@@ -166,7 +166,7 @@ class GenericStanfordParser(ParserI):
                 params={
                     'properties': json.dumps(properties),
                 },
-                data=sentence,
+                data=sentence.encode('utf-8'),
             )
 
             response.raise_for_status()
@@ -396,6 +396,26 @@ class StanfordParser(GenericStanfordParser):
      |     |    |
     Mary walks  .
 
+    Special cases
+    -------------
+
+    >>> next(
+    ...     parser.raw_parse(
+    ...         'NASIRIYA, Iraq—Iraqi doctors who treated former prisoner of war '
+    ...         'Jessica Lynch have angrily dismissed claims made in her biography '
+    ...         'that she was raped by her Iraqi captors.'
+    ...     )
+    ... ).height()
+    17
+
+    >>> next(
+    ...     parser.raw_parse(
+    ...         "The broader Standard & Poor's 500 Index <.SPX> was 0.46 points lower, or "
+    ...         '0.05 percent, at 997.02.'
+    ...     )
+    ... ).height()
+    10
+
     >>> sum([list(dep_graphs) for dep_graphs in parser.tagged_parse_sents((
     ...     (
     ...         ("The", "DT"),
@@ -526,6 +546,21 @@ class StanfordDependencyParser(GenericStanfordParser):
     walks       VBZ     0       ROOT
     .   .       2       punct
 
+    Special cases
+    -------------
+
+    Non-breaking space inside of a token.
+
+    >>> len(
+    ...     next(
+    ...         dep_parser.raw_parse(
+    ...             'Anhalt said children typically treat a 20-ounce soda bottle as one '
+    ...             'serving, while it actually contains 2 1/2 servings.'
+    ...         )
+    ...     ).nodes
+    ... )
+    21
+
     >>> sum([[list(parse.triples()) for parse in dep_graphs] for dep_graphs in dep_parser.tagged_parse_sents((
     ...     (
     ...         ("The", "DT"),
@@ -557,6 +592,7 @@ class StanfordDependencyParser(GenericStanfordParser):
                 ' '.join(items)  # NLTK expects an iterable of strings...
                 for n, *items in sorted(transform(result))
             ),
+            cell_separator=' ',  # To make sure that a non-breaking space is kept inside of a token.
         )
 
 
