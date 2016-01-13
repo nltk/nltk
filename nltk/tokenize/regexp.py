@@ -68,9 +68,7 @@ argument.  This differs from the conventions used by Python's
 from __future__ import unicode_literals
 
 import re
-import sre_constants
 
-from nltk.internals import compile_regexp_to_noncapturing
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
 from nltk.compat import python_2_unicode_compatible
@@ -114,13 +112,7 @@ class RegexpTokenizer(TokenizerI):
         
     def _check_regexp(self):
         if self._regexp is None:
-            try:
-                # Remove capturing parentheses -- if the regexp contains any
-                # capturing parentheses, then the behavior of re.findall and
-                # re.split will change.                 
-                self._regexp = compile_regexp_to_noncapturing(self._pattern, self._flags)
-            except re.error as e:
-                raise ValueError('Error in regular expression %r: %s' % (self._pattern, e))
+            self._regexp = re.compile(self._pattern)
         
     def tokenize(self, text):
         self._check_regexp()
@@ -206,7 +198,4 @@ blankline_tokenize = BlanklineTokenizer().tokenize
 wordpunct_tokenize = WordPunctTokenizer().tokenize
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
 

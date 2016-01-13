@@ -685,14 +685,15 @@ class Tree(list):
         from nltk.draw.tree import draw_trees
         draw_trees(self)
 
-    def pretty_print(self, sentence=None, highlight=(), **viz_args):
+    def pretty_print(self, sentence=None, highlight=(), stream=None, **kwargs):
         """
         Pretty-print this tree as ASCII or Unicode art.
         For explanation of the arguments, see the documentation for
         `nltk.treeprettyprinter.TreePrettyPrinter`.
         """
         from nltk.treeprettyprinter import TreePrettyPrinter
-        print(TreePrettyPrinter(self, sentence, highlight).text(**viz_args))
+        print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs),
+              file=stream)
         
     def __repr__(self):
         childstr = ", ".join(unicode_repr(c) for c in self)
@@ -734,16 +735,17 @@ class Tree(list):
     def __str__(self):
         return self.pformat()
 
-    def pprint(self, **args):
+    def pprint(self, **kwargs):
         """
         Print a string representation of this Tree to 'stream'
         """
 
-        if "stream" in args:
-            stream = args["stream"]
+        if "stream" in kwargs:
+            stream = kwargs["stream"]
+            del kwargs["stream"]
         else:
             stream = None
-        print(self.pformat(**args), file=stream)
+        print(self.pformat(**kwargs), file=stream)
 
     def pformat(self, margin=70, indent=0, nodesep='', parens='()', quotes=False):
         """
@@ -1599,6 +1601,3 @@ __all__ = ['ImmutableProbabilisticTree', 'ImmutableTree', 'ProbabilisticMixIn',
            'sinica_parse', 'ParentedTree', 'MultiParentedTree',
            'ImmutableParentedTree', 'ImmutableMultiParentedTree']
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

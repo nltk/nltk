@@ -424,6 +424,3 @@ class BrillTagger(TaggerI):
         return (tagged_tokenses, testing_stats)
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

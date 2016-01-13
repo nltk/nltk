@@ -45,10 +45,10 @@ def regexp_span_tokenize(s, regexp):
     Return the offsets of the tokens in *s*, as a sequence of ``(start, end)``
     tuples, by splitting the string at each successive match of *regexp*.
 
-        >>> from nltk.tokenize import WhitespaceTokenizer
+        >>> from nltk.tokenize.util import regexp_span_tokenize
         >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
         ... two of them.\n\nThanks.'''
-        >>> list(WhitespaceTokenizer().span_tokenize(s))
+        >>> list(regexp_span_tokenize(s, r'\s'))
         [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36),
         (38, 44), (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
 
@@ -58,6 +58,8 @@ def regexp_span_tokenize(s, regexp):
     :type regexp: str
     :rtype: iter(tuple(int, int))
     """
+    if len(regexp) == 0:
+        raise ValueError("regexp must not be empty")
     left = 0
     for m in finditer(regexp, s):
         right, next = m.span()
@@ -88,6 +90,3 @@ def spans_to_relative(spans):
         prev = right
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -51,7 +51,7 @@ class Boxer(object):
     semantic parser that produces Discourse Representation Structures (DRSs).
     """
 
-    def __init__(self, boxer_drs_interpreter=None, elimeq=False, bin_dir=None, verbose=False):
+    def __init__(self, boxer_drs_interpreter=None, elimeq=False, bin_dir=None, verbose=False, resolve=True):
         """
         :param boxer_drs_interpreter: A class that converts from the
         ``AbstractBoxerDrs`` object hierarchy to a different object.  The
@@ -60,11 +60,14 @@ class Boxer(object):
         :param elimeq: When set to true, Boxer removes all equalities from the
         DRSs and discourse referents standing in the equality relation are
         unified, but only if this can be done in a meaning-preserving manner.
+        :param resolve: When set to true, Boxer will resolve all anaphoric DRSs and perform merge-reduction. 
+        Resolution follows Van der Sandt's theory of binding and accommodation.
         """
         if boxer_drs_interpreter is None:
             boxer_drs_interpreter = NltkDrtBoxerDrsInterpreter()
         self._boxer_drs_interpreter = boxer_drs_interpreter
 
+        self._resolve = resolve
         self._elimeq = elimeq
 
         self.set_bin_dir(bin_dir, verbose)
@@ -171,8 +174,8 @@ class Boxer(object):
 
         args = ['--box', 'false',
                 '--semantics', 'drs',
-                '--flat', 'false',
-                '--resolve', 'true',
+                #'--flat', 'false', # removed from boxer
+                '--resolve', ['false','true'][self._resolve],
                 '--elimeq', ['false','true'][self._elimeq],
                 '--format', 'prolog',
                 '--instantiate', 'true',
@@ -237,7 +240,9 @@ class Boxer(object):
                 i += 1
                 line = lines[i]
                 assert line.startswith('sem(%s,' % drs_id)
-                assert line.endswith(').')
+                if line[-4:] == "').'":
+                    line = line[:-4] + ")."
+                assert line.endswith(').'), "can't parse line: %s" % line
 
                 search_start = len('sem(%s,[' % drs_id)
                 brace_count = 1
@@ -248,7 +253,11 @@ class Boxer(object):
                     if(c == ']'):
                         brace_count -= 1
                         if(brace_count == 0):
-                            drs_start = search_start + j + 2
+                            drs_start = search_start + j + 1
+                            if line[drs_start:drs_start+3] == "','":
+                                drs_start = drs_start + 3
+                            else:
+                                drs_start = drs_start + 1
                             break
                 assert drs_start > -1
 
@@ -272,10 +281,8 @@ class BoxerOutputDrsParser(DrtParser):
         self.discourse_id = discourse_id
         self.sentence_id_offset = None
         self.quote_chars = [("'", "'", "\\", False)]
-        self._label_counter = None
 
     def parse(self, data, signature=None):
-        self._label_counter = Counter(-1)
         return DrtParser.parse(self, data, signature)
 
     def get_all_symbols(self):
@@ -339,6 +346,8 @@ class BoxerOutputDrsParser(DrtParser):
 
         elif tok == 'whq':
             conds = [self._handle_whq()]
+        elif tok == 'duplex':
+                conds = [self._handle_duplex()]
 
         else:
             conds = []
@@ -367,6 +376,38 @@ class BoxerOutputDrsParser(DrtParser):
             return BoxerPred(self.discourse_id, sent_index, word_indices, variable, name, pos, sense)
         return _handle_pred_f
 
+    def _handle_duplex(self):
+        #duplex(whq, drs(...), var, drs(...))
+        self.assertToken(self.token(), '(')
+        # self.assertToken(self.token(), '[')
+        ans_types = []
+        # while self.token(0) != ']':
+        #     cat = self.token()
+        #     self.assertToken(self.token(), ':')
+        #     if cat == 'des':
+        #         ans_types.append(self.token())
+        #     elif cat == 'num':
+        #         ans_types.append('number')
+        #         typ = self.token()
+        #         if typ == 'cou':
+        #             ans_types.append('count')
+        #         else:
+        #             ans_types.append(typ)
+        #     else:
+        #         ans_types.append(self.token())
+        # self.token() #swallow the ']'
+      
+        self.assertToken(self.token(), 'whq')
+        self.assertToken(self.token(), ',')
+        d1 = self.process_next_expression(None)
+        self.assertToken(self.token(), ',')
+        ref = self.parse_variable()
+        self.assertToken(self.token(), ',')
+        d2 = self.process_next_expression(None)
+        self.assertToken(self.token(), ')')
+        return lambda sent_index, word_indices: BoxerWhq(self.discourse_id, sent_index, word_indices, ans_types, d1, ref, d2)
+
+
     def _handle_named(self):
         #named(x0, john, per, 0)
         self.assertToken(self.token(), '(')
@@ -376,7 +417,7 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         type = self.token()
         self.assertToken(self.token(), ',')
-        sense = int(self.token())
+        sense = self.token() # as per boxer rev 2554
         self.assertToken(self.token(), ')')
         return lambda sent_index, word_indices: BoxerNamed(self.discourse_id, sent_index, word_indices, variable, name, type, sense)
 
@@ -504,7 +545,6 @@ class BoxerOutputDrsParser(DrtParser):
         #drs([[1001]:_G3943],
         #    [[1002]:pred(_G3943, dog, n, 0)]
         #   )
-        label = self._label_counter.get()
         self.assertToken(self.token(), '(')
         self.assertToken(self.token(), '[')
         refs = set()
@@ -524,7 +564,7 @@ class BoxerOutputDrsParser(DrtParser):
                 self.token() #swallow ','
         self.token() #swallow ']'
         self.assertToken(self.token(), ')')
-        return BoxerDrs(label, list(refs), conds)
+        return BoxerDrs(list(refs), conds)
 
     def _handle_binary_expression(self, make_callback):
         self.assertToken(self.token(), '(')
@@ -583,18 +623,18 @@ class BoxerOutputDrsParser(DrtParser):
         return lambda sent_index, word_indices: BoxerWhq(self.discourse_id, sent_index, word_indices, ans_types, d1, ref, d2)
 
     def _make_merge_expression(self, sent_index, word_indices, drs1, drs2):
-        return BoxerDrs(drs1.label, drs1.refs + drs2.refs, drs1.conds + drs2.conds)
+        return BoxerDrs(drs1.refs + drs2.refs, drs1.conds + drs2.conds)
 
     def _make_or_expression(self, sent_index, word_indices, drs1, drs2):
         return BoxerOr(self.discourse_id, sent_index, word_indices, drs1, drs2)
 
     def _make_imp_expression(self, sent_index, word_indices, drs1, drs2):
-        return BoxerDrs(drs1.label, drs1.refs, drs1.conds, drs2)
+        return BoxerDrs(drs1.refs, drs1.conds, drs2)
 
     def parse_variable(self):
         var = self.token()
-        assert re.match('^[ex]\d+$', var), var
-        return int(var[1:])
+        assert re.match('^[exps]\d+$', var), var
+        return var
 
     def parse_index(self):
         return int(self.token())
@@ -631,16 +671,16 @@ class BoxerDrsParser(DrtParser):
 
     def handle(self, tok, context):
         try:
-            if tok == 'drs':
-                self.assertNextToken(DrtTokens.OPEN)
-                label = int(self.token())
-                self.assertNextToken(DrtTokens.COMMA)
-                refs = list(map(int, self.handle_refs()))
-                self.assertNextToken(DrtTokens.COMMA)
-                conds = self.handle_conds(None)
-                self.assertNextToken(DrtTokens.CLOSE)
-                return BoxerDrs(label, refs, conds)
-            elif tok == 'pred':
+#             if tok == 'drs':
+#                 self.assertNextToken(DrtTokens.OPEN)
+#                 label = int(self.token())
+#                 self.assertNextToken(DrtTokens.COMMA)
+#                 refs = list(map(int, self.handle_refs()))
+#                 self.assertNextToken(DrtTokens.COMMA)
+#                 conds = self.handle_conds(None)
+#                 self.assertNextToken(DrtTokens.CLOSE)
+#                 return BoxerDrs(label, refs, conds)
+            if tok == 'pred':
                 self.assertNextToken(DrtTokens.OPEN)
                 disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
                 self.assertNextToken(DrtTokens.COMMA)
@@ -715,7 +755,7 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 drs2 = self.process_next_expression(None)
                 self.assertNextToken(DrtTokens.CLOSE)
-                return BoxerDrs(drs1.label, drs1.refs, drs1.conds, drs2)
+                return BoxerDrs(drs1.refs, drs1.conds, drs2)
             elif tok == 'or':
                 self.assertNextToken(DrtTokens.OPEN)
                 disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
@@ -829,9 +869,8 @@ class AbstractBoxerDrs(object):
 
 @python_2_unicode_compatible
 class BoxerDrs(AbstractBoxerDrs):
-    def __init__(self, label, refs, conds, consequent=None):
+    def __init__(self, refs, conds, consequent=None):
         AbstractBoxerDrs.__init__(self)
-        self.label = label
         self.refs = refs
         self.conds = conds
         self.consequent = consequent
@@ -854,23 +893,21 @@ class BoxerDrs(AbstractBoxerDrs):
 
     def clean(self):
         consequent = (self.consequent.clean() if self.consequent else None)
-        return BoxerDrs(self.label, self.refs, [c.clean() for c in self.conds], consequent)
+        return BoxerDrs(self.refs, [c.clean() for c in self.conds], consequent)
 
     def renumber_sentences(self, f):
         consequent = (self.consequent.renumber_sentences(f) if self.consequent else None)
-        return BoxerDrs(self.label, self.refs, [c.renumber_sentences(f) for c in self.conds], consequent)
+        return BoxerDrs(self.refs, [c.renumber_sentences(f) for c in self.conds], consequent)
 
     def __repr__(self):
-        s = 'drs(%s, [%s], [%s])' % (self.label,
-                                    ', '.join("%s" % r for r in self.refs),
-                                    ', '.join("%s" % c for c in self.conds))
+        s = 'drs([%s], [%s])' % (', '.join("%s" % r for r in self.refs),
+                                 ', '.join("%s" % c for c in self.conds))
         if self.consequent is not None:
             s = 'imp(%s, %s)' % (s, self.consequent)
         return s
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
-               self.label == other.label and \
                self.refs == other.refs and \
                len(self.conds) == len(other.conds) and \
                reduce(operator.and_, (c1==c2 for c1,c2 in zip(self.conds, other.conds))) and \
@@ -1151,9 +1188,7 @@ class NltkDrtBoxerDrsInterpreter(object):
         :return: ``DrtExpression``
         """
         if isinstance(ex, BoxerDrs):
-            drs = DRS([Variable('x%d' % r) for r in ex.refs], list(map(self.interpret, ex.conds)))
-            if ex.label is not None:
-                drs.label = Variable('x%d' % ex.label)
+            drs = DRS([Variable(r) for r in ex.refs], list(map(self.interpret, ex.conds)))
             if ex.consequent is not None:
                 drs.consequent = self.interpret(ex.consequent)
             return drs
@@ -1161,21 +1196,21 @@ class NltkDrtBoxerDrsInterpreter(object):
             return DrtNegatedExpression(self.interpret(ex.drs))
         elif isinstance(ex, BoxerPred):
             pred = self._add_occur_indexing('%s_%s' % (ex.pos, ex.name), ex)
-            return self._make_atom(pred, 'x%d' % ex.var)
+            return self._make_atom(pred, ex.var)
         elif isinstance(ex, BoxerNamed):
             pred = self._add_occur_indexing('ne_%s_%s' % (ex.type, ex.name), ex)
-            return self._make_atom(pred, 'x%d' % ex.var)
+            return self._make_atom(pred, ex.var)
         elif isinstance(ex, BoxerRel):
             pred = self._add_occur_indexing('%s' % (ex.rel), ex)
-            return self._make_atom(pred, 'x%d' % ex.var1, 'x%d' % ex.var2)
+            return self._make_atom(pred, ex.var1, ex.var2)
         elif isinstance(ex, BoxerProp):
-            return DrtProposition(Variable('x%d' % ex.var), self.interpret(ex.drs))
+            return DrtProposition(Variable(ex.var), self.interpret(ex.drs))
         elif isinstance(ex, BoxerEq):
-            return DrtEqualityExpression(DrtVariableExpression(Variable('x%d' % ex.var1)),
-                                         DrtVariableExpression(Variable('x%d' % ex.var2)))
+            return DrtEqualityExpression(DrtVariableExpression(Variable(ex.var1)),
+                                         DrtVariableExpression(Variable(ex.var2)))
         elif isinstance(ex, BoxerCard):
             pred = self._add_occur_indexing('card_%s_%s' % (ex.type, ex.value), ex)
-            return self._make_atom(pred, 'x%d' % ex.var)
+            return self._make_atom(pred, ex.var)
         elif isinstance(ex, BoxerOr):
             return DrtOrExpression(self.interpret(ex.drs1), self.interpret(ex.drs2))
         elif isinstance(ex, BoxerWhq):
@@ -1223,4 +1258,4 @@ if __name__ == '__main__':
         if options.fol:
             print(drs.fol().normalize())
         else:
-            drs.normalize().pprint()
+            drs.pretty_print()

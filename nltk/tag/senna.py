@@ -73,6 +73,48 @@ class SennaChunkTagger(Senna):
                 annotations = tagged_sents[i][j]
                 tagged_sents[i][j] = (annotations['word'], annotations['chk'])
         return tagged_sents
+        
+    def bio_to_chunks(self, tagged_sent, chunk_type):
+        """
+        Extracts the chunks in a BIO chunk-tagged sentence.
+        
+        >>> from nltk.tag import SennaChunkTagger
+        >>> chktagger = SennaChunkTagger('/usr/share/senna-v2.0')
+        >>> sent = 'What is the airspeed of an unladen swallow ?'.split()
+        >>> tagged_sent = chktagger.tag(sent)
+        >>> tagged_sent
+        [('What', 'B-NP'), ('is', 'B-VP'), ('the', 'B-NP'), ('airspeed', 'I-NP'),
+        ('of', 'B-PP'), ('an', 'B-NP'), ('unladen', 'I-NP'), ('swallow', 'I-NP'),
+        ('?', 'O')]
+        >>> list(chktagger.bio_to_chunks(tagged_sent, chunk_type='NP'))
+        [('What', '0'), ('the airspeed', '2-3'), ('an unladen swallow', '5-6-7')]
+        
+        :param tagged_sent: A list of tuples of word and BIO chunk tag.
+        :type tagged_sent: list(tuple)
+        :param tagged_sent: The chunk tag that users want to extract, e.g. 'NP' or 'VP'
+        :type tagged_sent: str
+        
+        :return: An iterable of tuples of chunks that users want to extract
+          and their corresponding indices. 
+        :rtype: iter(tuple(str))
+        """
+        current_chunk = []
+        current_chunk_position = []
+        for idx, word_pos in enumerate(tagged_sent):
+            word, pos = word_pos
+            if '-'+chunk_type in pos: # Append the word to the current_chunk.
+                current_chunk.append((word))
+                current_chunk_position.append((idx))
+            else:
+                if current_chunk: # Flush the full chunk when out of an NP.
+                    _chunk_str = ' '.join(current_chunk) 
+                    _chunk_pos_str = '-'.join(map(str, current_chunk_position))
+                    yield _chunk_str, _chunk_pos_str 
+                    current_chunk = []
+                    current_chunk_position = []
+        if current_chunk: # Flush the last chunk.
+            yield ' '.join(current_chunk), '-'.join(map(str, current_chunk_position))
+    
 
 @python_2_unicode_compatible
 class SennaNERTagger(Senna):
@@ -101,6 +143,3 @@ def setup_module(module):
     except OSError:
         raise SkipTest("Senna executable not found")
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)

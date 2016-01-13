@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 #
-## Natural Language Toolkit: substitute a pattern with a replacement in every file
-#
+# Natural Language Toolkit: substitute a pattern with
+#                           a replacement in every file
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-# NB Should work on all platforms, http://www.python.org/doc/2.5.2/lib/os-file-dir.html
+# NB Should work on all platforms,
+# http://www.python.org/doc/2.5.2/lib/os-file-dir.html
 
-import os, stat, sys
+import os
+import stat
+import sys
+
 
 def update(file, pattern, replacement):
 
@@ -56,6 +60,3 @@ if __name__ == '__main__':
                     count += 1
 
     print("Updated %d files" % count)
-
-
-

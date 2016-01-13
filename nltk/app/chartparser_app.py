@@ -37,7 +37,7 @@ edge you wish to apply a rule to.
 # widget system.
 
 
-
+from __future__ import division
 import nltk.compat
 import pickle
 from tkinter.filedialog import asksaveasfilename, askopenfilename
@@ -1190,7 +1190,7 @@ class ChartView(object):
         self._chart_canvas.yview('moveto', 1.0)
         if self._chart_height != 0:
             self._chart_canvas.yview('moveto',
-                                     float(y-dy)/self._chart_height)
+                                     (y-dy)/self._chart_height)
 
     def _draw_edge(self, edge, lvl):
         """

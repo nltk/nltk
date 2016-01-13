@@ -17,6 +17,7 @@ import operator
 from collections import defaultdict
 from functools import reduce
 
+from nltk.util import Trie
 from nltk.internals import Counter
 from nltk.compat import (total_ordering, string_types,
                          python_2_unicode_compatible)
@@ -153,7 +154,7 @@ class LogicParser(object):
         """Split the data into tokens"""
         out = []
         mapping = {}
-        tokenTrie = StringTrie(self.get_all_symbols())
+        tokenTrie = Trie(self.get_all_symbols())
         token = ''
         data_idx = 0
         token_start_idx = data_idx
@@ -176,7 +177,7 @@ class LogicParser(object):
                     c = data[data_idx+len(symbol)]
                 else:
                     break
-            if StringTrie.LEAF in st:
+            if Trie.LEAF in st:
                 #token is a complete symbol
                 if token:
                     mapping[len(out)] = token_start_idx
@@ -1788,23 +1789,6 @@ class EqualityExpression(BinaryExpression):
 
 ### Utilities
 
-class StringTrie(defaultdict):
-    LEAF = "<leaf>"
-
-    def __init__(self, strings=None):
-        defaultdict.__init__(self, StringTrie)
-        if strings:
-            for string in strings:
-                self.insert(string)
-
-    def insert(self, string):
-        if len(string):
-            self[string[0]].insert(string[1:])
-        else:
-            #mark the string is complete
-            self[StringTrie.LEAF] = None
-
-
 class LogicalExpressionException(Exception):
     def __init__(self, index, message):
         self.index = index
@@ -1890,7 +1874,7 @@ def demo():
     print(lexpr(r'(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))').simplify())
 
     print('='*20 + 'Test alpha conversion and binder expression equality' + '='*20)
-    e1 = p('exists x.P(x)')
+    e1 = lexpr('exists x.P(x)')
     print(e1)
     e2 = e1.alpha_convert(Variable('z'))
     print(e2)
@@ -1923,4 +1907,4 @@ def printtype(ex):
 
 if __name__ == '__main__':
     demo()
-    demo_errors()
+#    demo_errors()

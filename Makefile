@@ -18,16 +18,15 @@ all: dist
 # TESTING
 ########################################################################
 
-DOCTEST_DRIVER = nltk/test/doctest_driver.py
-DOCTEST_FLAGS = --ellipsis --normalize_whitespace
+DOCTEST_DRIVER = nltk/test/runtests.py
 DOCTEST_FILES = nltk/test/*.doctest
 DOCTEST_CODE_FILES = nltk/*.py nltk/*/*.py
 
 doctest:
-	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FLAGS) $(DOCTEST_FILES)
+	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FILES)
 
 doctest_code:
-	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_FLAGS) $(DOCTEST_CODE_FILES)
+	$(PYTHON) $(DOCTEST_DRIVER) $(DOCTEST_CODE_FILES)
 
 demotest:
 	find nltk -name "*.py"\

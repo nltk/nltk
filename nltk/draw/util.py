@@ -1930,7 +1930,7 @@ class EntryDialog(object):
         self._original_text = original_text
         self._set_callback = set_callback
 
-        width = max(30, len(original_text)*3/2)
+        width = int(max(30, len(original_text)*3/2))
         self._top = Toplevel(parent)
 
         if title: self._top.title(title)

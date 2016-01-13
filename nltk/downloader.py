@@ -54,9 +54,9 @@ NLTK Download Server
 Before downloading any packages, the corpus and module downloader
 contacts the NLTK download server, to retrieve an index file
 describing the available packages.  By default, this index file is
-loaded from ``http://www.nltk.org/nltk_data/``.  If necessary, it is
-possible to create a new ``Downloader`` object, specifying a different
-URL for the package index file.
+loaded from ``https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml``.
+If necessary, it is possible to create a new ``Downloader`` object,
+specifying a different URL for the package index file.
 
 Usage::
 
@@ -377,7 +377,7 @@ class Downloader(object):
        server index will be considered 'stale,' and will be
        re-downloaded."""
 
-    DEFAULT_URL = 'http://www.nltk.org/nltk_data/'
+    DEFAULT_URL = 'https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/index.xml'
     """The default URL for the NLTK data server's index.  An
        alternative URL can be specified when creating a new
        ``Downloader`` object."""
@@ -568,7 +568,7 @@ class Downloader(object):
             if isinstance(item, Package):
                 delta = 1./num_packages
             else:
-                delta = float(len(item.packages))/num_packages
+                delta = len(item.packages)/num_packages
             for msg in self.incr_download(item, download_dir, force):
                 if isinstance(msg, ProgressMessage):
                     yield ProgressMessage(progress + msg.progress*delta)
@@ -613,7 +613,7 @@ class Downloader(object):
             infile = compat.urlopen(info.url)
             with open(filepath, 'wb') as outfile:
                 #print info.size
-                num_blocks = max(1, float(info.size)/(1024*16))
+                num_blocks = max(1, info.size/(1024*16))
                 for block in itertools.count():
                     s = infile.read(1024*16) # 16k blocks.
                     outfile.write(s)
@@ -840,8 +840,11 @@ class Downloader(object):
             for i, child_id in enumerate(collection.children):
                 if child_id in self._packages:
                     collection.children[i] = self._packages[child_id]
-                if child_id in self._collections:
+                elif child_id in self._collections:
                     collection.children[i] = self._collections[child_id]
+                else:
+                    print('removing collection member with no package: {}'.format(child_id))
+                    del collection.children[i]
 
         # Fill in collection.packages for each collection.
         for collection in self._collections.values():
@@ -921,6 +924,10 @@ class Downloader(object):
         permission: ``/usr/share/nltk_data``, ``/usr/local/share/nltk_data``,
         ``/usr/lib/nltk_data``, ``/usr/local/lib/nltk_data``, ``~/nltk_data``.
         """
+        # Check if we are on GAE where we cannot write into filesystem.
+        if 'APPENGINE_RUNTIME' in os.environ:
+            return
+
         # Check if we have sufficient permissions to install in a
         # variety of system-wide locations.
         for nltkdir in nltk.data.path:
@@ -1111,7 +1118,7 @@ class DownloaderShell(object):
                 if new_url in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 else:
-                    if not new_url.startswith('http://'):
+                    if not new_url.startswith(('http://', 'https://')):
                         new_url = 'http://'+new_url
                     try: self._ds.url = new_url
                     except Exception as e:
@@ -2086,7 +2093,8 @@ def build_index(root, base_url):
         pkg_xml.set('checksum', '%s' % md5_hexdigest(zf.filename))
         pkg_xml.set('subdir', subdir)
         #pkg_xml.set('svn_revision', _svn_revision(zf.filename))
-        pkg_xml.set('url', url)
+        if not pkg_xml.get('url'):
+            pkg_xml.set('url', url)
 
         # Record the package.
         packages.append(pkg_xml)
@@ -2264,4 +2272,3 @@ if __name__ == '__main__':
         downloader.download(download_dir=options.dir,
             quiet=options.quiet, force=options.force,
             halt_on_error=options.halt_on_error)
-

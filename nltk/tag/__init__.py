@@ -21,18 +21,16 @@ the word ``'fly'`` with a noun part of speech tag (``'NN'``):
 
 An off-the-shelf tagger is available.  It uses the Penn Treebank tagset:
 
-    >>> from nltk.tag import pos_tag  # doctest: +SKIP
-    >>> from nltk.tokenize import word_tokenize # doctest: +SKIP
-    >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +SKIP
-    [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
-    'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
-    ('.', '.')]
+    >>> from nltk import pos_tag, word_tokenize
+    >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+    [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is', 'VBZ'),
+    ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
 
-This package defines several taggers, which take a token list (typically a
-sentence), assign a tag to each token, and return the resulting list of
-tagged tokens.  Most of the taggers are built automatically based on a
-training corpus.  For example, the unigram tagger tags each word *w*
-by checking what the most frequent tag for *w* was in a training corpus:
+This package defines several taggers, which take a list of tokens,
+assign a tag to each one, and return the resulting list of tagged tokens.
+Most of the taggers are built automatically based on a training corpus.
+For example, the unigram tagger tags each word *w* by checking what
+the most frequent tag for *w* was in a training corpus:
 
     >>> from nltk.corpus import brown
     >>> from nltk.tag import UnigramTagger
@@ -71,51 +69,59 @@ from nltk.tag.brill         import BrillTagger
 from nltk.tag.brill_trainer import BrillTaggerTrainer
 from nltk.tag.tnt           import TnT
 from nltk.tag.hunpos        import HunposTagger
-from nltk.tag.stanford      import StanfordTagger
+from nltk.tag.stanford      import StanfordTagger, StanfordPOSTagger, StanfordNERTagger
 from nltk.tag.hmm           import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
 from nltk.tag.senna         import SennaTagger, SennaChunkTagger, SennaNERTagger
 from nltk.tag.mapping       import tagset_mapping, map_tag
+from nltk.tag.crf           import CRFTagger
+from nltk.tag.perceptron    import PerceptronTagger
 
 from nltk.data import load
-from nltk.compat import PY3
 
+def _pos_tag(tokens, tagset, tagger):
+    tagged_tokens = tagger.tag(tokens)
+    if tagset:
+        tagged_tokens = [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagged_tokens]
+    return tagged_tokens
 
-# Standard treebank POS tagger
-
-if PY3:
-    _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/PY3/english.pickle'
-else:
-    _POS_TAGGER = 'taggers/maxent_treebank_pos_tagger/english.pickle'
-
-def pos_tag(tokens):
+def pos_tag(tokens, tagset=None):
     """
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
 
-        >>> from nltk.tag import pos_tag # doctest: +SKIP
-        >>> from nltk.tokenize import word_tokenize # doctest: +SKIP
-        >>> pos_tag(word_tokenize("John's big idea isn't all that bad.")) # doctest: +SKIP
-        [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is',
-        'VBZ'), ("n't", 'RB'), ('all', 'DT'), ('that', 'DT'), ('bad', 'JJ'),
-        ('.', '.')]
+        >>> from nltk.tag import pos_tag
+        >>> from nltk.tokenize import word_tokenize
+        >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
+        [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is', 'VBZ'),
+        ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
+        >>> pos_tag(word_tokenize("John's big idea isn't all that bad."), tagset='universal')
+        [('John', 'NOUN'), ("'s", 'PRT'), ('big', 'ADJ'), ('idea', 'NOUN'), ('is', 'VERB'),
+        ("n't", 'ADV'), ('all', 'DET'), ('that', 'DET'), ('bad', 'ADJ'), ('.', '.')]
+
+    NB. Use `pos_tag_sents()` for efficient tagging of more than one sentence.
 
     :param tokens: Sequence of tokens to be tagged
     :type tokens: list(str)
+    :param tagset: the tagset to be used, e.g. universal, wsj, brown
+    :type tagset: str
     :return: The tagged tokens
     :rtype: list(tuple(str, str))
     """
-    tagger = load(_POS_TAGGER)
-    return tagger.tag(tokens)
+    tagger = PerceptronTagger()
+    return _pos_tag(tokens, tagset, tagger)    
 
-def pos_tag_sents(sentences):
+
+def pos_tag_sents(sentences, tagset=None):
     """
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
+
+    :param tokens: List of sentences to be tagged
+    :type tokens: list(list(str))
+    :param tagset: the tagset to be used, e.g. universal, wsj, brown
+    :type tagset: str
+    :return: The list of tagged sentences
+    :rtype: list(list(tuple(str, str)))
     """
-    tagger = load(_POS_TAGGER)
-    return tagger.tag_sents(sentences)
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+    tagger = PerceptronTagger()
+    return [_pos_tag(sent, tagset, tagger) for sent in sentences]

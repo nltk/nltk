@@ -27,19 +27,17 @@ The input is:
 - List of the operations needed to be performed.
 - (optionally) the encoding of the input data (default:utf-8)
 
+    >>> from __future__ import unicode_literals
     >>> from nltk.classify import Senna
     >>> pipeline = Senna('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
-    >>> sent = 'Düsseldorf is an international business center'.split()
-    >>> pipeline.tag(sent)
-    [{'word': 'D\xfcsseldorf', 'chk': 'B-NP', 'ner': 'B-PER', 'pos': 'NNP'},
-    {'word': 'is', 'chk': 'B-VP', 'ner': 'O', 'pos': 'VBZ'},
-    {'word': 'an', 'chk': 'B-NP', 'ner': 'O', 'pos': 'DT'},
-    {'word': 'international', 'chk': 'I-NP', 'ner': 'O', 'pos': 'JJ'},
-    {'word': 'business', 'chk': 'I-NP', 'ner': 'O', 'pos': 'NN'},
-    {'word': 'center', 'chk': 'I-NP', 'ner': 'O','pos': 'NN'}]
+    >>> sent = 'Dusseldorf is an international business center'.split()
+    >>> [(token['word'], token['chk'], token['ner'], token['pos']) for token in pipeline.tag(sent)]
+    [('Dusseldorf', 'B-NP', 'B-LOC', 'NNP'), ('is', 'B-VP', 'O', 'VBZ'), ('an', 'B-NP', 'O', 'DT'), 
+    ('international', 'I-NP', 'O', 'JJ'), ('business', 'I-NP', 'O', 'NN'), ('center', 'I-NP', 'O', 'NN')]
 """
 
 
+from __future__ import unicode_literals
 from os import path, sep, environ
 from subprocess import Popen, PIPE
 from platform import architecture, system
@@ -180,7 +178,4 @@ def setup_module(module):
     except OSError:
         raise SkipTest("Senna executable not found")
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
 

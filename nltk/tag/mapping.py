@@ -99,6 +99,3 @@ def map_tag(source, target, source_tag):
     return tagset_mapping(source, target)[source_tag]
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

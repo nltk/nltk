@@ -36,7 +36,8 @@ types_map = {
     'xml': 'text/xml',
     'xsl': 'text/plain',
     'zip': 'application/zip',
-    }
+}
+
 
 def usage():
     exit("Usage: svnmime files")
@@ -45,6 +46,7 @@ for file in sys.argv[1:]:
     if "." in file:
         extension = file.rsplit('.', 1)[1]
         if extension in types_map:
-            os.system("svn propset svn:mime-type %s %s" % (types_map[extension], file))
+            os.system("svn propset svn:mime-type %s %s" %
+                      (types_map[extension], file))
         else:
             print("Unrecognized extension", extension)

@@ -2,11 +2,11 @@
 
 cd `dirname $0`
 
-#download nltk data packages
-python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
-
 #download nltk python dependencies
 pip install --upgrade -r pip-req.txt --allow-external matplotlib --allow-unverified matplotlib
+
+#download nltk data packages
+python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
 
 #download external dependencies
 pushd ${HOME}
@@ -14,6 +14,16 @@ pushd ${HOME}
 pushd 'third'
 
 #download nltk stanford dependencies
+stanford_corenlp_package_zip_name=$(curl -s 'http://nlp.stanford.edu/software/corenlp.shtml' | grep -o 'stanford-corenlp-full-.*\.zip' | head -n1)
+[[ ${stanford_corenlp_package_zip_name} =~ (.+)\.zip ]]
+stanford_corenlp_package_name=${BASH_REMATCH[1]}
+if [[ ! -d ${stanford_corenlp_package_name} ]]; then
+	wget -nv "http://nlp.stanford.edu/software/$stanford_corenlp_package_zip_name"
+	unzip ${stanford_corenlp_package_zip_name}
+	rm ${stanford_corenlp_package_zip_name}
+	ln -s ${stanford_corenlp_package_name} 'stanford-corenlp'
+fi
+
 stanford_parser_package_zip_name=$(curl -s 'http://nlp.stanford.edu/software/lex-parser.shtml' | grep -o 'stanford-parser-full-.*\.zip' | head -n1)
 [[ ${stanford_parser_package_zip_name} =~ (.+)\.zip ]]
 stanford_parser_package_name=${BASH_REMATCH[1]}
@@ -44,6 +54,7 @@ if [[ ! -d $senna_folder_name ]]; then
 fi
 
 # Setup the Enviroment variable 
+export STANFORD_CORENLP=$(pwd)'/stanford-corenlp'
 export STANFORD_PARSER=$(pwd)'/stanford-parser'
 export STANFORD_MODELS=$(pwd)'/stanford-parser'
 export STANFORD_POSTAGGER=$(pwd)'/stanford-postagger'

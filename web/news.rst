@@ -4,6 +4,34 @@ NLTK News
 2015
 ----
 
+NLTK 3.1 released : October 2015
+   Add support for Python 3.5, drop support for Python 2.6,
+   sentiment analysis package and several corpora,
+   improved POS tagger, Twitter package,
+   multi-word expression tokenizer,
+   wrapper for Stanford Neural Dependency Parser,
+   improved translation/alignment module including stack decoder,
+   skipgram and everygram methods,
+   Multext East Corpus and MTECorpusReader,
+   minor bugfixes and enhancements
+   For details see:
+   https://github.com/nltk/nltk/blob/develop/ChangeLog
+
+
+NLTK 3.0.5 released : September 2015
+   New Twitter package; updates to IBM models 1-3, new models 4 and 5,
+   minor bugfixes and enhancements
+
+NLTK 3.0.4 released : July 2015
+   Minor bugfixes and enhancements.
+
+NLTK 3.0.3 released : June 2015
+   PanLex Swadesh Corpus, tgrep tree search, minor bugfixes.
+
+NLTK 3.0.2 released : March 2015
+   Senna, BLLIP, python-crfsuite interfaces, transition-based dependency parsers,
+   dependency graph visualization, NKJP corpus reader, minor bugfixes and clean-ups.
+
 NLTK 3.0.1 released : January 2015
    Minor packaging update.
 
@@ -11,12 +39,10 @@ NLTK 3.0.1 released : January 2015
 ----
 
 NLTK 3.0.0 released : September 2014
-   Minor bugfixes. For full details see:
-   https://github.com/nltk/nltk/blob/develop/ChangeLog
+   Minor bugfixes.
 
 NLTK 3.0.0b2 released : August 2014
-   Minor bugfixes and clean-ups. For full details see:
-   https://github.com/nltk/nltk/blob/develop/ChangeLog
+   Minor bugfixes and clean-ups.
 
 NLTK Book Updates : July 2014
    The NLTK book is being updated for Python 3 and NLTK 3 `here <http://nltk.org/book>`_.
@@ -25,8 +51,6 @@ NLTK Book Updates : July 2014
 NLTK 3.0.0b1 released : July 2014
    FrameNet, SentiWordNet, universal tagset, misc efficiency improvements and bugfixes
    Several API changes, see https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
-   For full details see:
-   https://github.com/nltk/nltk/blob/develop/ChangeLog
 
 NLTK 3.0a4 released : June 2014
    FrameNet, universal tagset, misc efficiency improvements and bugfixes

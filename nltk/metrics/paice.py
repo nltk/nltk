@@ -29,9 +29,9 @@ def get_words_from_dictionary(lemmas):
 
     :param lemmas: A dictionary where keys are lemmas and values are sets
     or lists of words corresponding to that lemma.
-    :type lemmas: dict
+    :type lemmas: dict(str): list(str)
     :return: Set of words that exist as values in the dictionary
-    :rtype: set
+    :rtype: set(str)
     '''
     words = set()
     for lemma in lemmas:
@@ -44,11 +44,11 @@ def _truncate(words, cutlength):
 
     :param words: Set of words used for analysis
     :param cutlength: Words are stemmed by cutting at this length.
-    :type words: set or list
+    :type words: set(str) or list(str)
     :type cutlength: int
     :return: Dictionary where keys are stems and values are sets of words
     corresponding to that stem.
-    :rtype: dict
+    :rtype: dict(str): set(str)
     '''
     stems = {}
     for word in words:
@@ -66,10 +66,10 @@ def _count_intersection(l1, l2):
 
     :param l1: Tuple of two coordinate pairs defining the first line segment
     :param l2: Tuple of two coordinate pairs defining the second line segment
-    :type l1: tuple
-    :type l2: tuple
+    :type l1: tuple(float, float)
+    :type l2: tuple(float, float)
     :return: Coordinates of the intersection
-    :rtype: tuple
+    :rtype: tuple(float, float)
     '''
     x1, y1 = l1[0]
     x2, y2 = l1[1]
@@ -96,7 +96,7 @@ def _get_derivative(coordinates):
     '''Get derivative of the line from (0,0) to given coordinates.
 
     :param coordinates: A coordinate pair
-    :type coordinates: tuple
+    :type coordinates: tuple(float, float)
     :return: Derivative; inf if x is zero
     :rtype: float
     '''
@@ -112,11 +112,11 @@ def _calculate_cut(lemmawords, stems):
     :param lemmawords: Set or list of words corresponding to certain lemma.
     :param stems: A dictionary where keys are stems and values are sets
     or lists of words corresponding to that stem.
-    :type lemmawords: set or list
-    :type stems: dict
+    :type lemmawords: set(str) or list(str)
+    :type stems: dict(str): set(str)
     :return: Amount of understemmed and overstemmed pairs contributed by words
     existing in both lemmawords and stems.
-    :rtype: tuple
+    :rtype: tuple(float, float)
     '''
     umt, wmt = 0.0, 0.0
     for stem in stems:
@@ -138,13 +138,13 @@ def _calculate(lemmas, stems):
     or lists of words corresponding to that lemma.
     :param stems: A dictionary where keys are stems and values are sets
     or lists of words corresponding to that stem.
-    :type lemmas: dict
-    :type stems: dict
+    :type lemmas: dict(str): list(str)
+    :type stems: dict(str): set(str)
     :return: Global unachieved merge total (gumt),
     global desired merge total (gdmt),
     global wrongly merged total (gwmt) and
     global desired non-merge total (gdnt).
-    :rtype: tuple
+    :rtype: tuple(float, float, float, float)
     '''
 
     n = sum(len(lemmas[word]) for word in lemmas)
@@ -183,7 +183,7 @@ def _indexes(gumt, gdmt, gwmt, gdnt):
     :return: Understemming Index (UI),
     Overstemming Index (OI) and
     Stemming Weight (SW).
-    :rtype: tuple
+    :rtype: tuple(float, float, float)
     '''
     # Calculate Understemming Index (UI),
     # Overstemming Index (OI) and Stemming Weight (SW)
@@ -217,8 +217,8 @@ class Paice(object):
         or lists of words corresponding to that lemma.
         :param stems: A dictionary where keys are stems and values are sets
         or lists of words corresponding to that stem.
-        :type lemmas: dict
-        :type stems: dict
+        :type lemmas: dict(str): list(str)
+        :type stems: dict(str): set(str)
         '''
         self.lemmas = lemmas
         self.stems = stems
@@ -246,10 +246,10 @@ class Paice(object):
 
         :param words: Words used for the analysis
         :param cutlength: Words are stemmed by cutting them at this length
-        :type words: set or list
+        :type words: set(str) or list(str)
         :type cutlength: int
         :return: Understemming and overstemming indexes
-        :rtype: tuple
+        :rtype: tuple(int, int)
         '''
 
         truncated = _truncate(words, cutlength)
@@ -266,7 +266,7 @@ class Paice(object):
         intersection.
         :type cutlength: int
         :return: List of coordinate pairs that define the truncation line
-        :rtype: list
+        :rtype: list(tuple(float, float))
         '''
         words = get_words_from_dictionary(self.lemmas)
         maxlength = max(len(word) for word in words)

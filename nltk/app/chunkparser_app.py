@@ -15,6 +15,7 @@ parser ``nltk.chunk.RegexpChunkParser``.
 # configuration parameters to select what's being chunked (eg VP vs NP)
 # and what part of the data is being used as the development set.
 
+from __future__ import division
 import nltk.compat
 import time
 import textwrap
@@ -378,7 +379,7 @@ class RegexpChunkApp(object):
         self._font = tkinter.font.Font(family='helvetica',
                                  size=-self._size.get())
         self._smallfont = tkinter.font.Font(family='helvetica',
-                                      size=-(int(self._size.get()*14/20)))
+                                      size=-(int(self._size.get()*14//20)))
 
     def _init_menubar(self, parent):
         menubar = Menu(parent)
@@ -454,10 +455,10 @@ class RegexpChunkApp(object):
         self.evalbox.delete('all')
 
         # Draw the precision & recall labels.
-        tag = self.evalbox.create_text(10, height/2-10, justify='left',
+        tag = self.evalbox.create_text(10, height//2-10, justify='left',
                                  anchor='w', text='Precision')
         left, right = self.evalbox.bbox(tag)[2] + 5, width-10
-        tag = self.evalbox.create_text(left + (width-left)/2, height-10,
+        tag = self.evalbox.create_text(left + (width-left)//2, height-10,
                                 anchor='s', text='Recall', justify='center')
         top, bot = 10, self.evalbox.bbox(tag)[1]-10
 
@@ -984,8 +985,8 @@ class RegexpChunkApp(object):
         self.devsetbox['state'] = 'disabled'
 
         # Update the scrollbar
-        first = float(self.devset_index)/self._devset_size.get()
-        last = float(self.devset_index+2)/self._devset_size.get()
+        first = self.devset_index/self._devset_size.get()
+        last = (self.devset_index + 2) / self._devset_size.get()
         self.devset_scroll.set(first, last)
 
     def _chunks(self, tree):
@@ -1241,7 +1242,7 @@ class RegexpChunkApp(object):
         if size is not None: self._size.set(size)
         size = self._size.get()
         self._font.configure(size=-(abs(size)))
-        self._smallfont.configure(size=min(-10, -(abs(size))*14/20))
+        self._smallfont.configure(size=min(-10, -(abs(size))*14//20))
 
     def mainloop(self, *args, **kwargs):
         """

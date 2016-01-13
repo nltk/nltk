@@ -37,14 +37,13 @@ implementation of the ``ConditionalProbDistI`` interface is
 ``ConditionalProbDist``, a derived distribution.
 
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 import math
 import random
 import warnings
 import array
 from operator import itemgetter
-from itertools import islice
 from collections import defaultdict
 from functools import reduce
 from nltk import compat
@@ -115,7 +114,7 @@ class FreqDist(Counter):
 
         :rtype: int
         """
-        return sum(compat.itervalues(self))
+        return sum(self.values())
 
     def B(self):
         """
@@ -161,6 +160,21 @@ class FreqDist(Counter):
 
         return _r_Nr
 
+    def _cumulative_frequencies(self, samples):
+        """
+        Return the cumulative frequencies of the specified samples.
+        If no samples are specified, all counts are returned, starting
+        with the largest.
+
+        :param samples: the samples whose frequencies should be returned.
+        :type samples: any
+        :rtype: list(float)
+        """
+        cf = 0.0
+        for sample in samples:
+            cf += self[sample]
+            yield cf
+
     # slightly odd nomenclature freq() if FreqDist does counts and ProbDist does probs,
     # here, freq() does probs
     def freq(self, sample):
@@ -180,7 +194,7 @@ class FreqDist(Counter):
         """
         if self.N() == 0:
             return 0
-        return float(self[sample]) / self.N()
+        return self[sample] / self.N()
 
     def max(self):
         """
@@ -212,10 +226,10 @@ class FreqDist(Counter):
         :type title: bool
         """
         try:
-            import pylab
+            from matplotlib import pylab
         except ImportError:
-            raise ValueError('The plot function requires the matplotlib package (aka pylab). '
-                         'See http://matplotlib.sourceforge.net/')
+            raise ValueError('The plot function requires matplotlib to be installed.'
+                         'See http://matplotlib.org/')
 
         if len(args) == 0:
             args = [len(self)]
@@ -237,7 +251,7 @@ class FreqDist(Counter):
             pylab.title(kwargs["title"])
             del kwargs["title"]
         pylab.plot(freqs, **kwargs)
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples])
+        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
@@ -251,6 +265,8 @@ class FreqDist(Counter):
 
         :param samples: The samples to plot (default is all samples)
         :type samples: list
+        :param cumulative: A flag to specify whether the freqs are cumulative (default = False)
+        :type title: bool
         """
         if len(args) == 0:
             args = [len(self)]
@@ -263,29 +279,15 @@ class FreqDist(Counter):
             freqs = [self[sample] for sample in samples]
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
+        width = max(len("%s" % s) for s in samples)
+        width = max(width, max(len("%d" % f) for f in freqs))
+
         for i in range(len(samples)):
-            print("%4s" % samples[i], end=' ')
+            print("%*s" % (width, samples[i]), end=' ')
         print()
         for i in range(len(samples)):
-            print("%4d" % freqs[i], end=' ')
+            print("%*d" % (width, freqs[i]), end=' ')
         print()
-
-    def _cumulative_frequencies(self, samples):
-        """
-        Return the cumulative frequencies of the specified samples.
-        If no samples are specified, all counts are returned, starting
-        with the largest.
-
-        :param samples: the samples whose frequencies should be returned.
-        :type samples: any
-        :rtype: list(float)
-        """
-        cf = 0.0
-        if not samples:
-            samples = self.keys()
-        for sample in samples:
-            cf += self[sample]
-            yield cf
 
     def copy(self):
         """
@@ -294,6 +296,48 @@ class FreqDist(Counter):
         :rtype: FreqDist
         """
         return self.__class__(self)
+
+    # Mathematical operatiors 
+    
+    def __add__(self, other):
+        """
+        Add counts from two counters.
+
+        >>> FreqDist('abbb') + FreqDist('bcc')
+        FreqDist({'b': 4, 'c': 2, 'a': 1})
+
+        """
+        return self.__class__(super(FreqDist, self).__add__(other))
+
+    def __sub__(self, other):
+        """
+        Subtract count, but keep only results with positive counts.
+
+        >>> FreqDist('abbbc') - FreqDist('bccd')
+        FreqDist({'b': 2, 'a': 1})
+
+        """
+        return self.__class__(super(FreqDist, self).__sub__(other))
+
+    def __or__(self, other):
+        """
+        Union is the maximum of value in either of the input counters.
+
+        >>> FreqDist('abbb') | FreqDist('bcc')
+        FreqDist({'b': 3, 'c': 2, 'a': 1})
+
+        """
+        return self.__class__(super(FreqDist, self).__or__(other))
+
+    def __and__(self, other):
+        """
+        Intersection is the minimum of corresponding counts.
+
+        >>> FreqDist('abbb') & FreqDist('bcc')
+        FreqDist({'b': 1})
+
+        """
+        return self.__class__(super(FreqDist, self).__and__(other))
 
     def __le__(self, other):
         if not isinstance(other, FreqDist):
@@ -691,14 +735,8 @@ class LidstoneProbDist(ProbDistI):
                              'the number of bins in the FreqDist used ' +
                              'to create it (%d).' % freqdist.B())
 
-        # the frequency distribution used to generate this probability
-        # distribution (read-only)
         self._freqdist = freqdist
-
-        # Gamma used for computing probabilities (can be modified after
-        # instance has been initialized)
-        self.Gamma = float(gamma)
-
+        self._gamma = float(gamma)
         self._N = self._freqdist.N()
 
         if bins is None:
@@ -709,10 +747,9 @@ class LidstoneProbDist(ProbDistI):
         if self._divisor == 0.0:
             # In extreme cases we force the probability to be 0,
             # which it will be, since the count will be 0:
-            self.Gamma = 0
+            self._gamma = 0
             self._divisor = 1
 
-    @property
     def freqdist(self):
         """
         Return the frequency distribution that this probability
@@ -722,13 +759,9 @@ class LidstoneProbDist(ProbDistI):
         """
         return self._freqdist
 
-    @property
-    def N(self):
-        return self._N
-
     def prob(self, sample):
         c = self._freqdist[sample]
-        return (c + self.Gamma) / self._divisor
+        return (c + self._gamma) / self._divisor
 
     def max(self):
         # For Lidstone distributions, probability is monotonic with
@@ -740,7 +773,7 @@ class LidstoneProbDist(ProbDistI):
         return self._freqdist.keys()
 
     def discount(self):
-        gb = self.Gamma * self._bins
+        gb = self._gamma * self._bins
         return gb / (self._N + gb)
 
     def __repr__(self):
@@ -1111,12 +1144,12 @@ class WittenBellProbDist(ProbDistI):
             # if freqdist is empty, we approximate P(0) by a UniformProbDist:
             self._P0 = 1.0 / self._Z
         else:
-            self._P0 = self._T / float(self._Z * (self._N + self._T))
+            self._P0 = self._T / (self._Z * (self._N + self._T))
 
     def prob(self, sample):
         # inherit docs from ProbDistI
         c = self._freqdist[sample]
-        return (c / float(self._N + self._T) if c != 0 else self._P0)
+        return (c / (self._N + self._T) if c != 0 else self._P0)
 
     def max(self):
         return self._freqdist.max()
@@ -1280,12 +1313,17 @@ class SimpleGoodTuringProbDist(ProbDistI):
         log_zr = [math.log(i) for i in zr]
 
         xy_cov = x_var = 0.0
-        x_mean = 1.0 * sum(log_r) / len(log_r)
-        y_mean = 1.0 * sum(log_zr) / len(log_zr)
+        x_mean = sum(log_r) / len(log_r)
+        y_mean = sum(log_zr) / len(log_zr)
         for (x, y) in zip(log_r, log_zr):
             xy_cov += (x - x_mean) * (y - y_mean)
             x_var += (x - x_mean)**2
         self._slope = (xy_cov / x_var if x_var != 0 else 0.0)
+        if self._slope >= -1:
+            warnings.warn('SimpleGoodTuring did not find a proper best fit '
+                          'line for smoothing probabilities of occurrences. '
+                          'The probability estimates are likely to be '
+                          'unreliable.')
         self._intercept = y_mean - self._slope * x_mean
 
     def _switch(self, r, nr):
@@ -1301,7 +1339,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
 
             Sr = self.smoothedNr
             smooth_r_star = (r_ + 1) * Sr(r_+1) / Sr(r_)
-            unsmooth_r_star = 1.0 * (r_ + 1) * nr[i+1] / nr[i]
+            unsmooth_r_star = (r_ + 1) * nr[i+1] / nr[i]
 
             std = math.sqrt(self._variance(r_, nr[i], nr[i+1]))
             if abs(unsmooth_r_star-smooth_r_star) <= 1.96 * std:
@@ -1358,7 +1396,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
             if self._bins == self._freqdist.B():
                 p = 0.0
             else:
-                p = p / (1.0 * self._bins - self._freqdist.B())
+                p = p / (self._bins - self._freqdist.B())
         else:
             p = p * self._renormal
         return p
@@ -1367,11 +1405,11 @@ class SimpleGoodTuringProbDist(ProbDistI):
         if count == 0 and self._freqdist.N() == 0 :
             return 1.0
         elif count == 0 and self._freqdist.N() != 0:
-            return 1.0 * self._freqdist.Nr(1) / self._freqdist.N()
+            return self._freqdist.Nr(1) / self._freqdist.N()
 
         if self._switch_at > count:
-            Er_1 = 1.0 * self._freqdist.Nr(count+1)
-            Er = 1.0 * self._freqdist.Nr(count)
+            Er_1 = self._freqdist.Nr(count+1)
+            Er = self._freqdist.Nr(count)
         else:
             Er_1 = self.smoothedNr(count+1)
             Er = self.smoothedNr(count)
@@ -1391,7 +1429,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         This function returns the total mass of probability transfers from the
         seen samples to the unseen samples.
         """
-        return  1.0 * self.smoothedNr(1) / self._freqdist.N()
+        return  self.smoothedNr(1) / self._freqdist.N()
 
     def max(self):
         return self._freqdist.max()
@@ -1530,9 +1568,9 @@ class KneserNeyProbDist(ProbDistI):
     """
     def __init__(self, freqdist, bins=None, discount=0.75):
         """
-        :param trigrams: The trigram frequency distribution upon which to base
+        :param freqdist: The trigram frequency distribution upon which to base
             the estimation
-        :type trigrams: FreqDist
+        :type freqdist: FreqDist
         :param bins: Included for compatibility with nltk.tag.hmm
         :type bins: int or float
         :param discount: The discount applied when retrieving counts of
@@ -1652,7 +1690,7 @@ def entropy(pdist):
 ##//////////////////////////////////////////////////////
 
 @compat.python_2_unicode_compatible
-class ConditionalFreqDist(FreqDist):
+class ConditionalFreqDist(defaultdict):
     """
     A collection of frequency distributions for a single experiment
     run under different conditions.  Conditional frequency
@@ -1709,32 +1747,14 @@ class ConditionalFreqDist(FreqDist):
             frequency distribution with
         :type cond_samples: Sequence of (condition, sample) tuples
         """
+        defaultdict.__init__(self, FreqDist)
+        if cond_samples:
+            for (cond, sample) in cond_samples:
+                self[cond][sample] += 1
 
-        self.condition_counts = defaultdict(int)
-        self.sample_counts = defaultdict(int)
-        super(ConditionalFreqDist, self).__init__(cond_samples)
-
-    def __setitem__(self, key, value):
-        difference_in_value = value - self[key]
-        condition, item = key
-        self.sample_counts[item] += difference_in_value
-        self.condition_counts[condition] += difference_in_value
-
-        super(ConditionalFreqDist, self).__setitem__(key, value)
-
-    def __delitem__(self, key):
-        old_value = self[key]
-        super(ConditionalFreqDist, self).__delitem__(key)
-        condition, item = key
-        self.__decrement_internal(self.sample_counts, item, old_value)
-        self.__decrement_internal(self.condition_counts, condition, old_value)
-
-    def __decrement_internal(self, internal_dict, key, value):
-        new_value = internal_dict[key] - value
-        if new_value > 0:
-            internal_dict[key] = new_value
-        else:
-            del internal_dict[key]
+    def __reduce__(self):
+        kv_pairs = ((cond, self[cond]) for cond in self.conditions())
+        return (self.__class__, (), None, None, kv_pairs)
 
     def conditions(self):
         """
@@ -1746,14 +1766,16 @@ class ConditionalFreqDist(FreqDist):
 
         :rtype: list
         """
-        return self.condition_counts.keys()
+        return list(self.keys())
 
-    def B(self):
-        return len(self.sample_counts)
+    def N(self):
+        """
+        Return the total number of sample outcomes that have been
+        recorded by this ``ConditionalFreqDist``.
 
-    def __reduce__(self):
-        kv_pairs = ((cond, self[cond]) for cond in self.conditions())
-        return (self.__class__, (), None, None, kv_pairs)
+        :rtype: int
+        """
+        return sum(fdist.N() for fdist in compat.itervalues(self))
 
     def plot(self, *args, **kwargs):
         """
@@ -1769,27 +1791,26 @@ class ConditionalFreqDist(FreqDist):
         :type conditions: list
         """
         try:
-            import pylab
+            from matplotlib import pylab
         except ImportError:
-            raise ValueError('The plot function requires the matplotlib package (aka pylab).'
-                             'See http://matplotlib.sourceforge.net/')
+            raise ValueError('The plot function requires matplotlib to be installed.'
+                         'See http://matplotlib.org/')
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(kwargs, 'samples',
-                             sorted(set(v for c, v in self.iterkeys())))  # this computation could be wasted
+                             sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
         if not "linewidth" in kwargs:
             kwargs["linewidth"] = 2
 
         for condition in conditions:
             if cumulative:
-                cond_samples = ((condition, sample) for sample in samples)
-                freqs = list(self._cumulative_frequencies(cond_samples))
+                freqs = list(self[condition]._cumulative_frequencies(samples))
                 ylabel = "Cumulative Counts"
                 legend_loc = 'lower right'
             else:
-                freqs = [self[(condition, sample)] for sample in samples]
+                freqs = [self[condition][sample] for sample in samples]
                 ylabel = "Counts"
                 legend_loc = 'upper right'
             # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
@@ -1798,7 +1819,7 @@ class ConditionalFreqDist(FreqDist):
 
         pylab.legend(loc=legend_loc)
         pylab.grid(True, color="silver")
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples])
+        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
         if title:
             pylab.title(title)
         pylab.xlabel("Samples")
@@ -1811,53 +1832,120 @@ class ConditionalFreqDist(FreqDist):
 
         :param samples: The samples to plot
         :type samples: list
-        :param title: The title for the graph
-        :type title: str
         :param conditions: The conditions to plot (default is all)
         :type conditions: list
+        :param cumulative: A flag to specify whether the freqs are cumulative (default = False)
+        :type title: bool
         """
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         samples = _get_kwarg(kwargs, 'samples',
-                             sorted(set(v for c, v in self.iterkeys())))  # this computation could be wasted
+                             sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
+
+        width = max(len("%s" % s) for s in samples)
+        freqs = dict()
+        for c in conditions:
+            if cumulative:
+                freqs[c] = list(self[c]._cumulative_frequencies(samples))
+            else:
+                freqs[c] = [self[c][sample] for sample in samples]
+            width = max(width, max(len("%d" % f) for f in freqs[c]))
 
         condition_size = max(len("%s" % c) for c in conditions)
         print(' ' * condition_size, end=' ')
         for s in samples:
-            print("%4s" % s, end=' ')
+            print("%*s" % (width, s), end=' ')
         print()
         for c in conditions:
             print("%*s" % (condition_size, c), end=' ')
-            if cumulative:
-                cond_samples = ((c, sample) for sample in samples)
-                freqs = list(self._cumulative_frequencies(cond_samples))
-            else:
-                freqs = [self[(c, sample)] for sample in samples]
-
-            for f in freqs:
-                print("%4d" % f, end=' ')
+            for f in freqs[c]:
+                print("%*d" % (width, f), end=' ')
             print()
+
+    # Mathematical operators
+    
+    def __add__(self, other):
+        """
+        Add counts from two ConditionalFreqDists.
+        """
+        if not isinstance(other, ConditionalFreqDist):
+            return NotImplemented
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] + other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
+        for cond in other.conditions():
+            if cond not in self.conditions():
+                for elem, count in other[cond].items():
+                    if count > 0:
+                        result[cond][elem] = count
+        return result
+
+    def __sub__(self, other):
+        """
+        Subtract count, but keep only results with positive counts.
+        """
+        if not isinstance(other, ConditionalFreqDist):
+            return NotImplemented
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] - other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
+        for cond in other.conditions():
+            if cond not in self.conditions():
+                for elem, count in other[cond].items():
+                    if count < 0:
+                        result[cond][elem] = 0 - count
+        return result
+
+    def __or__(self, other):
+        """
+        Union is the maximum of value in either of the input counters.
+        """
+        if not isinstance(other, ConditionalFreqDist):
+            return NotImplemented
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] | other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
+        for cond in other.conditions():
+            if cond not in self.conditions():
+                for elem, count in other[cond].items():
+                    if count > 0:
+                        result[cond][elem] = count
+        return result
+
+    def __and__(self, other):
+        """ 
+        Intersection is the minimum of corresponding counts.
+        """
+        if not isinstance(other, ConditionalFreqDist):
+            return NotImplemented
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] & other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
+        return result
 
     # @total_ordering doesn't work here, since the class inherits from a builtin class
     def __le__(self, other):
         if not isinstance(other, ConditionalFreqDist):
             raise_unorderable_types("<=", self, other)
-
-        conditions_subset = set(self.conditions()).issubset(other.conditions())
-        comparing_counts = all(self[s] <= other[s] for s in self)
-        return conditions_subset and comparing_counts
-
+        return set(self.conditions()).issubset(other.conditions()) \
+               and all(self[c] <= other[c] for c in self.conditions())
     def __lt__(self, other):
         if not isinstance(other, ConditionalFreqDist):
             raise_unorderable_types("<", self, other)
         return self <= other and self != other
-
     def __ge__(self, other):
         if not isinstance(other, ConditionalFreqDist):
             raise_unorderable_types(">=", self, other)
         return other <= self
-
     def __gt__(self, other):
         if not isinstance(other, ConditionalFreqDist):
             raise_unorderable_types(">", self, other)
@@ -1869,8 +1957,7 @@ class ConditionalFreqDist(FreqDist):
 
         :rtype: str
         """
-        message = '<ConditionalFreqDist with {0} conditions and {1} outcomes>'
-        return message.format(len(self.condition_counts), self.N())
+        return '<ConditionalFreqDist with %d conditions>' % len(self)
 
 
 @compat.python_2_unicode_compatible

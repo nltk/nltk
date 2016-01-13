@@ -18,6 +18,8 @@ from __future__ import print_function, unicode_literals
 from collections import defaultdict
 from itertools import chain
 from pprint import pformat
+import subprocess
+import warnings
 
 from nltk.tree import Tree
 from nltk.compat import python_2_unicode_compatible, string_types
@@ -34,7 +36,7 @@ class DependencyGraph(object):
     A container for the nodes and labelled edges of a dependency structure.
     """
 
-    def __init__(self, tree_str=None, cell_extractor=None, zero_based=False, cell_separator=None):
+    def __init__(self, tree_str=None, cell_extractor=None, zero_based=False, cell_separator=None, top_relation_label='ROOT'):
         """Dependency graph.
 
         We place a dummy `TOP` node with the index 0, since the root node is
@@ -48,16 +50,25 @@ class DependencyGraph(object):
         :param str cell_separator: the cell separator. If not provided, cells
         are split by whitespace.
 
+        :param str top_relation_label: the label by which the top relation is
+        identified, for examlple, `ROOT`, `null` or `TOP`.
+
         """
-        self.nodes = defaultdict(lambda: {'deps': defaultdict(list)})
+        self.nodes = defaultdict(lambda:  {'address': None,
+                                           'word': None,
+                                           'lemma': None,
+                                           'ctag': None,
+                                           'tag': None,
+                                           'feats': None,
+                                           'head': None,
+                                           'deps': defaultdict(list),
+                                           'rel': None,
+                                           })
+
         self.nodes[0].update(
             {
-                'word': None,
-                'lemma': None,
                 'ctag': 'TOP',
                 'tag': 'TOP',
-                'feats': None,
-                'rel': 'TOP',
                 'address': 0,
             }
         )
@@ -70,6 +81,7 @@ class DependencyGraph(object):
                 cell_extractor=cell_extractor,
                 zero_based=zero_based,
                 cell_separator=cell_separator,
+                top_relation_label=top_relation_label,
             )
 
     def remove_by_address(self, address):
@@ -99,7 +111,7 @@ class DependencyGraph(object):
         node specified by the mod address.
         """
         relation = self.nodes[mod_address]['rel']
-        self.nodes[head_address]['deps'].setdefault(relation,[])
+        self.nodes[head_address]['deps'].setdefault(relation, [])
         self.nodes[head_address]['deps'][relation].append(mod_address)
         #self.nodes[head_address]['deps'].append(mod_address)
 
@@ -128,6 +140,78 @@ class DependencyGraph(object):
         """
         return node_address in self.nodes
 
+    def to_dot(self):
+        """Return a dot representation suitable for using with Graphviz.
+
+        >>> dg = DependencyGraph(
+        ...     'John N 2\\n'
+        ...     'loves V 0\\n'
+        ...     'Mary N 2'
+        ... )
+        >>> print(dg.to_dot())
+        digraph G{
+        edge [dir=forward]
+        node [shape=plaintext]
+        <BLANKLINE>
+        0 [label="0 (None)"]
+        0 -> 2 [label="ROOT"]
+        1 [label="1 (John)"]
+        2 [label="2 (loves)"]
+        2 -> 1 [label=""]
+        2 -> 3 [label=""]
+        3 [label="3 (Mary)"]
+        }
+
+        """
+        # Start the digraph specification
+        s = 'digraph G{\n'
+        s += 'edge [dir=forward]\n'
+        s += 'node [shape=plaintext]\n'
+
+        # Draw the remaining nodes
+        for node in sorted(self.nodes.values(), key=lambda v: v['address']):
+            s += '\n%s [label="%s (%s)"]' % (node['address'], node['address'], node['word'])
+            for rel, deps in node['deps'].items():
+                for dep in deps:
+                    if rel is not None:
+                        s += '\n%s -> %s [label="%s"]' % (node['address'], dep, rel)
+                    else:
+                        s += '\n%s -> %s ' % (node['address'], dep)
+        s += "\n}"
+
+        return s
+
+    def _repr_svg_(self):
+        """Show SVG representation of the transducer (IPython magic).
+
+        >>> dg = DependencyGraph(
+        ...     'John N 2\\n'
+        ...     'loves V 0\\n'
+        ...     'Mary N 2'
+        ... )
+        >>> dg._repr_svg_().split('\\n')[0]
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
+
+        """
+        dot_string = self.to_dot()
+
+        try:
+            process = subprocess.Popen(
+                ['dot', '-Tsvg'],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+            )
+        except OSError:
+            raise Exception('Cannot find the dot binary from Graphviz package')
+        out, err = process.communicate(dot_string)
+        if err:
+            raise Exception(
+                'Cannot create svg representation by running dot from string: {}'
+                ''.format(dot_string))
+        return out
+
     def __str__(self):
         return pformat(self.nodes)
 
@@ -135,13 +219,15 @@ class DependencyGraph(object):
         return "<DependencyGraph with {0} nodes>".format(len(self.nodes))
 
     @staticmethod
-    def load(filename, zero_based=False, cell_separator=None):
+    def load(filename, zero_based=False, cell_separator=None, top_relation_label='ROOT'):
         """
         :param filename: a name of a file in Malt-TAB format
         :param zero_based: nodes in the input file are numbered starting from 0
         rather than 1 (as produced by, e.g., zpar)
         :param str cell_separator: the cell separator. If not provided, cells
         are split by whitespace.
+        :param str top_relation_label: the label by which the top relation is
+        identified, for examlple, `ROOT`, `null` or `TOP`.
 
         :return: a list of DependencyGraphs
 
@@ -152,6 +238,7 @@ class DependencyGraph(object):
                     tree_str,
                     zero_based=zero_based,
                     cell_separator=cell_separator,
+                    top_relation_label=top_relation_label,
                 )
                 for tree_str in infile.read().split('\n\n')
             ]
@@ -161,7 +248,7 @@ class DependencyGraph(object):
         Returns the number of left children under the node specified
         by the given address.
         """
-        children = self.nodes[node_index]['deps']
+        children = chain.from_iterable(self.nodes[node_index]['deps'].values())
         index = self.nodes[node_index]['address']
         return sum(1 for c in children if c < index)
 
@@ -170,7 +257,7 @@ class DependencyGraph(object):
         Returns the number of right children under the node specified
         by the given address.
         """
-        children = self.nodes[node_index]['deps']
+        children = chain.from_iterable(self.nodes[node_index]['deps'].values())
         index = self.nodes[node_index]['address']
         return sum(1 for c in children if c > index)
 
@@ -178,7 +265,7 @@ class DependencyGraph(object):
         if not self.contains_address(node['address']):
             self.nodes[node['address']].update(node)
 
-    def _parse(self, input_, cell_extractor=None, zero_based=False, cell_separator=None):
+    def _parse(self, input_, cell_extractor=None, zero_based=False, cell_separator=None, top_relation_label='ROOT'):
         """Parse a sentence.
 
         :param extractor: a function that given a tuple of cells returns a
@@ -188,23 +275,41 @@ class DependencyGraph(object):
         :param str cell_separator: the cell separator. If not provided, cells
         are split by whitespace.
 
+        :param str top_relation_label: the label by which the top relation is
+        identified, for examlple, `ROOT`, `null` or `TOP`.
+
         """
 
-        def extract_3_cells(cells):
+        def extract_3_cells(cells, index):
             word, tag, head = cells
-            return word, word, tag, tag, '', head, ''
+            return index, word, word, tag, tag, '', head, ''
 
-        def extract_4_cells(cells):
+        def extract_4_cells(cells, index):
             word, tag, head, rel = cells
-            return word, word, tag, tag, '', head, rel
+            return index, word, word, tag, tag, '', head, rel
 
-        def extract_10_cells(cells):
-            _, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
-            return word, lemma, ctag, tag, feats, head, rel
+        def extract_7_cells(cells, index):
+            line_index, word, lemma, tag, _, head, rel = cells
+            try:
+                index = int(line_index)
+            except ValueError:
+                # index can't be parsed as an integer, use default
+                pass
+            return index, word, lemma, tag, tag, '', head, rel
+
+        def extract_10_cells(cells, index):
+            line_index, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
+            try:
+                index = int(line_index)
+            except ValueError:
+                # index can't be parsed as an integer, use default
+                pass
+            return index, word, lemma, ctag, tag, feats, head, rel
 
         extractors = {
             3: extract_3_cells,
             4: extract_4_cells,
+            7: extract_7_cells,
             10: extract_10_cells,
         }
 
@@ -231,7 +336,16 @@ class DependencyGraph(object):
                         'CoNLL(10) or Malt-Tab(4) format'.format(cell_number)
                     )
 
-            word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
+            try:
+                index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells, index)
+            except (TypeError, ValueError):
+                # cell_extractor doesn't take 2 arguments or doesn't return 8
+                # values; assume the cell_extractor is an older external
+                # extractor and doesn't accept or return an index.
+                word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
+
+            if head == '_':
+                continue
 
             head = int(head)
             if zero_based:
@@ -250,18 +364,20 @@ class DependencyGraph(object):
                 }
             )
 
-            # Make sure that he fake root node has labeled dependencies.
+            # Make sure that the fake root node has labeled dependencies.
             if (cell_number == 3) and (head == 0):
-                rel = 'ROOT'
+                rel = top_relation_label
             self.nodes[head]['deps'][rel].append(index)
 
-        if not self.nodes[0]['deps']['ROOT']:
-            raise DependencyGraphError(
-                "The graph does'n contain a node "
+        if self.nodes[0]['deps'][top_relation_label]:
+            root_address = self.nodes[0]['deps'][top_relation_label][0]
+            self.root = self.nodes[root_address]
+            self.top_relation_label = top_relation_label
+        else:
+            warnings.warn(
+                "The graph doesn't contain a node "
                 "that depends on the root element."
             )
-        root_address = self.nodes[0]['deps']['ROOT'][0]
-        self.root = self.nodes[root_address]
 
     def _word(self, node, filter=True):
         w = node['word']
@@ -411,7 +527,7 @@ class DependencyGraph(object):
 
     def nx_graph(self):
         """Convert the data in a ``nodelist`` into a networkx labeled directed graph."""
-        import networkx as NX
+        import networkx
 
         nx_nodelist = list(range(1, len(self.nodes)))
         nx_edgelist = [
@@ -422,7 +538,7 @@ class DependencyGraph(object):
         for n in nx_nodelist:
             self.nx_labels[n] = self.nodes[n]['word']
 
-        g = NX.XDiGraph()
+        g = networkx.MultiDiGraph()
         g.add_nodes_from(nx_nodelist)
         g.add_edges_from(nx_edgelist)
 
@@ -468,19 +584,19 @@ Nov.    NNP     9       VMOD
     tree.pprint()
     if nx:
         # currently doesn't work
-        import networkx as NX
-        import pylab as P
+        import networkx
+        from matplotlib import pylab
 
         g = dg.nx_graph()
         g.info()
-        pos = NX.spring_layout(g, dim=1)
-        NX.draw_networkx_nodes(g, pos, node_size=50)
-        # NX.draw_networkx_edges(g, pos, edge_color='k', width=8)
-        NX.draw_networkx_labels(g, pos, dg.nx_labels)
-        P.xticks([])
-        P.yticks([])
-        P.savefig('tree.png')
-        P.show()
+        pos = networkx.spring_layout(g, dim=1)
+        networkx.draw_networkx_nodes(g, pos, node_size=50)
+        # networkx.draw_networkx_edges(g, pos, edge_color='k', width=8)
+        networkx.draw_networkx_labels(g, pos, dg.nx_labels)
+        pylab.xticks([])
+        pylab.yticks([])
+        pylab.savefig('tree.png')
+        pylab.show()
 
 
 def conll_demo():
@@ -509,13 +625,11 @@ def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
     print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
-    top = {'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0}
-    child1 = {'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1}
-    child2 = {'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2}
-    child3 = {'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3}
-    child4 = {'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4}
-    cyclic_dg.nodelist = [top, child1, child2, child3, child4]
-    cyclic_dg.root = top
+    cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0})
+    cyclic_dg.add_node({'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1})
+    cyclic_dg.add_node({'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2})
+    cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3})
+    cyclic_dg.add_node({'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4})
     print(cyclic_dg.contains_cycle())
 
 treebank_data = """Pierre  NNP     2       NMOD

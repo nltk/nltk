@@ -30,7 +30,7 @@ class CorpusReader(object):
     identified by its ``file identifier``, which is the relative path
     to the file from the root directory.
 
-    A separate subclass is be defined for each corpus format.  These
+    A separate subclass is defined for each corpus format.  These
     subclasses define one or more methods that provide 'views' on the
     corpus contents, such as ``words()`` (for a list of words) and
     ``parsed_sents()`` (for a list of parsed sentences).  Called with
@@ -133,6 +133,18 @@ class CorpusReader(object):
         """
         return self.open("README").read()
 
+    def license(self):
+        """
+        Return the contents of the corpus LICENSE file, if it exists.
+        """
+        return self.open("LICENSE").read()
+
+    def citation(self):
+        """
+        Return the contents of the corpus citation.bib file, if it exists.
+        """
+        return self.open("citation.bib").read()
+
     def fileids(self):
         """
         Return a list of file identifiers for the fileids that make up
@@ -144,8 +156,8 @@ class CorpusReader(object):
         """
         Return the absolute path for the given file.
 
-        :type file: str
-        :param file: The file identifier for the file whose path
+        :type fileid: str
+        :param fileid: The file identifier for the file whose path
             should be returned.
         :rtype: PathPointer
         """

@@ -312,7 +312,7 @@ class ProbabilisticProjectiveDependencyParser(object):
                 # Modify to comply with recent change in dependency graph such that there must be a ROOT element. 
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'ROOT', '-', '-')
             dg = DependencyGraph(conll_format)
-            score = self.compute_prob(dg)
+            score = self.compute_prob(dg)            
             trees.append((score, dg.tree()))
         trees.sort()
         return (tree for (score, tree) in trees)
@@ -452,7 +452,13 @@ class ProbabilisticProjectiveDependencyParser(object):
                     mod_event = '(mods (%s, %s, %s) left))' % (prev_tag, head_word, head_tag)
                     h_count = self._grammar._events[head_event]
                     m_count = self._grammar._events[mod_event]
-                    prob *= (h_count / m_count)
+                    
+                    # If the grammar is not covered 
+                    if m_count != 0:
+                        prob *= (h_count / m_count)
+                    else:
+                        prob = 0.00000001  # Very small number  
+                    
                 elif child_index > 0:
                     array_index = child_index + nr_left_children - 1
                     if array_index < nr_children:
@@ -465,7 +471,12 @@ class ProbabilisticProjectiveDependencyParser(object):
                     mod_event = '(mods (%s, %s, %s) right))' % (prev_tag, head_word, head_tag)
                     h_count = self._grammar._events[head_event]
                     m_count = self._grammar._events[mod_event]
-                    prob *= (h_count / m_count)
+
+                    if m_count != 0:
+                        prob *= (h_count / m_count)
+                    else:
+                        prob = 0.00000001  # Very small number  
+
         return prob
 
 
@@ -556,6 +567,7 @@ def projective_prob_parse_demo():
     ppdp = ProbabilisticProjectiveDependencyParser()
     print('Training Probabilistic Projective Dependency Parser...')
     ppdp.train(graphs)
+    
     sent = ['Cathy', 'zag', 'hen', 'wild', 'zwaaien', '.']
     print('Parsing \'', " ".join(sent), '\'...')
     print('Parse:')

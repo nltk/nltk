@@ -7,7 +7,7 @@
 
 from nltk import compat
 from nltk.tokenize import WhitespaceTokenizer, RegexpTokenizer
-from nltk.align import AlignedSent
+from nltk.translate import AlignedSent, Alignment
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat,\
@@ -104,7 +104,7 @@ class AlignedSentCorpusView(StreamBackedCorpusView):
                  for alignedsent_str in self._alignedsent_block_reader(stream)
                  for sent_str in self._sent_tokenizer.tokenize(alignedsent_str)]
         if self._aligned:
-            block[2] = " ".join(block[2]) # kludge; we shouldn't have tokenized the alignment string
+            block[2] = Alignment.fromstring(" ".join(block[2])) # kludge; we shouldn't have tokenized the alignment string
             block = [AlignedSent(*block)]
         elif self._group_by_sent:
             block = [block[0]]

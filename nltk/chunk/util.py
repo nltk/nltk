@@ -5,11 +5,12 @@
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 import re
 
 from nltk.tree import Tree
+from nltk.tag.mapping import map_tag
 from nltk.tag.util import str2tuple
 from nltk.compat import python_2_unicode_compatible
 
@@ -189,7 +190,7 @@ class ChunkScore(object):
         self._updateMeasures()
         div = self._tp_num + self._fp_num
         if div == 0: return 0
-        else: return float(self._tp_num) / div
+        else: return self._tp_num / div
 
     def recall(self):
         """
@@ -201,7 +202,7 @@ class ChunkScore(object):
         self._updateMeasures()
         div = self._tp_num + self._fn_num
         if div == 0: return 0
-        else: return float(self._tp_num) / div
+        else: return self._tp_num / div
 
     def f_measure(self, alpha=0.5):
         """
@@ -307,7 +308,8 @@ def _chunksets(t, count, chunk_label):
     return set(chunks)
 
 
-def tagstr2tree(s, chunk_label="NP", root_label="S", sep='/'):
+def tagstr2tree(s, chunk_label="NP", root_label="S", sep='/',
+                source_tagset=None, target_tagset=None):
     """
     Divide a string of bracketted tagged text into
     chunks and unchunked tokens, and produce a Tree.
@@ -344,7 +346,10 @@ def tagstr2tree(s, chunk_label="NP", root_label="S", sep='/'):
             if sep is None:
                 stack[-1].append(text)
             else:
-                stack[-1].append(str2tuple(text, sep))
+                word, tag = str2tuple(text, sep)
+                if source_tagset and target_tagset:
+                    tag = map_tag(source_tagset, target_tagset, tag)
+                stack[-1].append((word, tag))
 
     if len(stack) != 1:
         raise ValueError('Expected ] at char %d' % len(s))

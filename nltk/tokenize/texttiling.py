@@ -52,6 +52,15 @@ class TextTilingTokenizer(TokenizerI):
     :param cutoff_policy: The policy used to determine the number of boundaries:
       `HC` (default) or `LC`
     :type cutoff_policy: constant
+
+    >>> from nltk.corpus import brown
+    >>> tt = TextTilingTokenizer(demo_mode=True)
+    >>> text = brown.raw()[:10000]
+    >>> s, ss, d, b = tt.tokenize(text)
+    >>> b
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+     0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
+     0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0]
     """
 
     def __init__(self,
@@ -284,7 +293,7 @@ class TextTilingTokenizer(TokenizerI):
 
         depth_tuples = sorted(zip(depth_scores, range(len(depth_scores))))
         depth_tuples.reverse()
-        hp = filter(lambda x:x[0]>cutoff, depth_tuples)
+        hp = list(filter(lambda x:x[0]>cutoff, depth_tuples))
 
         for dt in hp:
             boundaries[dt[1]] = 1
@@ -435,7 +444,7 @@ def smooth(x,window_len=11,window='flat'):
 
 def demo(text=None):
     from nltk.corpus import brown
-    import pylab
+    from matplotlib import pylab
     tt = TextTilingTokenizer(demo_mode=True)
     if text is None: text = brown.raw()[:10000]
     s, ss, d, b = tt.tokenize(text)
@@ -449,6 +458,3 @@ def demo(text=None):
     pylab.show()
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

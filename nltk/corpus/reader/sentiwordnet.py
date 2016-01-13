@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: WordNet
+# Natural Language Toolkit: SentiWordNet
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
@@ -70,11 +70,15 @@ class SentiWordNetCorpusReader(CorpusReader):
         if tuple(vals) in self._db:
             pos_score, neg_score = self._db[tuple(vals)]
             pos, offset = vals
+            if pos == 's':
+                pos = 'a'
             synset = wn._synset_from_pos_and_offset(pos, offset)
             return SentiSynset(pos_score, neg_score, synset)
         else:
             synset = wn.synset(vals[0])
             pos = synset.pos()
+            if pos == 's':
+                pos = 'a'
             offset = synset.offset()
             if (pos, offset) in self._db:
                 pos_score, neg_score = self._db[(pos, offset)]
@@ -129,6 +133,3 @@ class SentiSynset(object):
     def __repr__(self):
         return "Senti" + repr(self.synset)
                     
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

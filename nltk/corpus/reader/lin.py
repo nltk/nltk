@@ -140,7 +140,7 @@ def demo():
     print(thes.synonyms(word1))
 
     print("Getting scored synonyms for " + word1)
-    print(thes.synonyms(word1))
+    print(thes.scored_synonyms(word1))
 
     print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
     print(thes.synonyms(word1, fileid="simN.lsp"))

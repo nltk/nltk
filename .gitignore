@@ -16,10 +16,12 @@ web/_build
 .noseids
 .coverage
 nltk/test/*.html
+nltk/test/tweets*
 
 # editor temporary files
 *.*.sw[op]
 .idea
+*~
 
 # git mergetools backups
 *.orig
@@ -33,5 +35,6 @@ nltk/test/*.html
 # automatically built files for website
 web/api/*.rst
 
+# iPython notebooks
 
-
+.ipynb_checkpoints

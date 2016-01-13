@@ -108,7 +108,7 @@ underscores (_).  Nonterminals are colored blue.  If you place the
 mouse over any nonterminal, then all occurrences of that nonterminal
 will be highlighted.
 
-Termianals must be surrounded by single quotes (') or double
+Terminals must be surrounded by single quotes (') or double
 quotes(\").  For example, "dog" and "New York" are terminals.
 Currently, the string within the quotes must consist of alphanumeric
 characters, underscores, and spaces.

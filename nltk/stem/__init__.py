@@ -31,6 +31,3 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.rslp import RSLPStemmer
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

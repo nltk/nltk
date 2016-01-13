@@ -10,7 +10,7 @@ A classifier model that decides which label to assign to a token on
 the basis of a tree structure, where branches correspond to conditions
 on feature values, and leaves correspond to label assignments.
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 from collections import defaultdict
 
@@ -69,7 +69,7 @@ class DecisionTreeClassifier(ClassifierI):
         for featureset, label in labeled_featuresets:
             if self.classify(featureset) != label:
                 errors += 1
-        return float(errors)/len(labeled_featuresets)
+        return errors/len(labeled_featuresets)
 
     def pretty_format(self, width=70, prefix='', depth=4):
         """
