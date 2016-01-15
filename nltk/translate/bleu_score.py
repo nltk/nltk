@@ -74,7 +74,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
 
     # Calculates the overall modified precision for all ngrams.
     # By sum of the product of the weights and the respective *p_n*
-    s = (0 if p_i == 0 else (w * math.log(p_i)) 
+    s = (w * math.log(p_i) if p_i else 0 
          for w, p_i in zip(weights, p_n))
     
     # Calculates the brevity penalty.
@@ -161,8 +161,8 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     bp = _brevity_penalty(ref_lengths, hyp_lengths)
     
     # Calculate sum of corpus-level modified precisions.
-    s = (0 if (p_numerators[i] | p_denominators[i]) == 0 else
-         (w * math.log(p_numerators[i] / p_denominators[i]))
+    s = (0 if not(p_numerators[i] and p_denominators[i]) else
+         w * math.log(p_numerators[i] / p_denominators[i])
          for i, w in enumerate(weights, start=1))
         
     return bp * math.exp(math.fsum(s))
