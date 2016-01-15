@@ -162,7 +162,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     
     # Calculate sum of corpus-level modified precisions.
     s = (0 if (p_numerators[i] | p_denominators[i]) == 0 else
-         (w* math.log(p_numerators[i] / p_denominators[i]))
+         (w * math.log(p_numerators[i] / p_denominators[i]))
          for i, w in enumerate(weights, start=1))
         
     return bp * math.exp(math.fsum(s))
