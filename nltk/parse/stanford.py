@@ -37,10 +37,12 @@ class GenericStanfordParser(ParserI):
     _USE_STDIN = False
     _DOUBLE_SPACED_OUTPUT = False
 
-    def __init__(self, path_to_jar=None, path_to_models_jar=None,
-                 model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz',
-                 encoding='utf8', verbose=False,
-                 java_options='-mx1000m', corenlp_options=''):
+    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+
+        self.url = url
+        self.encoding = encoding
+
+        self.session = requests.Session()
 
         return
 
@@ -95,27 +97,25 @@ class GenericStanfordParser(ParserI):
                 blank = False
         return iter(res)
 
-    def parse_sents(self, sentences, verbose=False):
+    def parse_sents(self, sentences, *args, **kwargs):
         """Parse multiple sentences.
-
 
         Takes multiple sentences as a list where each sentence is a list of
         words. Each sentence will be automatically tagged with this
         StanfordParser instance's tagger.
 
-        If whitespaces exists inside a token, then the token will be treated as
-        separate tokens.
+        If a whitespace exists inside a token, then the token will be treated as
+        several tokens.
 
         :param sentences: Input sentences to parse
         :type sentences: list(list(str))
         :rtype: iter(iter(Tree))
         """
 
-        sentences = [' '.join(words) for words in sentences]
+        sentences = (' '.join(words) for words in sentences)
+        return self.raw_parse_sents(sentences, *args, **kwargs)
 
-        return self.raw_parse_sents(sentences, verbose=False, tokenize_whitespace=True)
-
-    def raw_parse(self, sentence, verbose=False):
+    def raw_parse(self, sentence, properties=None, *args, **kwargs):
         """
         Use StanfordParser to parse a sentence. Takes a sentence as a string;
         before parsing, it will be automatically tokenized and tagged by
@@ -125,14 +125,56 @@ class GenericStanfordParser(ParserI):
         :type sentence: str
         :rtype: iter(Tree)
         """
-        return next(self.raw_parse_sents([sentence], verbose))
+        if properties is None:
+            properties = {}
+
+        default_properties = {
+                    'tokenize.whitespace': 'false',
+        }
+
+        default_properties.update(properties)
+
+        return next(
+            self.raw_parse_sents(
+                [sentence],
+                properties=default_properties,
+                *args,
+                **kwargs
+            )
+        )
+
+    def api_call(self, data, properties=None):
+        if properties is None:
+            properties = {}
+
+        default_properties = {
+            'outputFormat': 'json',
+            'annotators': 'tokenize,pos,lemma,ssplit,{parser_annotator}'.format(
+                parser_annotator=self.parser_annotator,
+            ),
+        }
+
+        default_properties.update(properties)
+
+        response = self.session.post(
+            self.url,
+            params={
+                'properties': json.dumps(default_properties),
+            },
+            data=data.encode(self.encoding),
+        )
+
+        response.raise_for_status()
+
+        return response.json()
 
     def raw_parse_sents(
         self,
         sentences,
         verbose=False,
-        tokenize_whitespace=False,
-        sentence_split=False,
+        properties=None,
+        *args,
+        **kwargs
     ):
         """Use StanfordParser to parse multiple sentences.
 
@@ -144,42 +186,20 @@ class GenericStanfordParser(ParserI):
         :rtype: iter(iter(Tree))
 
         """
-        session = requests.Session()
+        if properties is None:
+            properties = {}
+
+        default_properties = {
+            'ssplit.isOneSentence': 'true',
+        }
+
+        default_properties.update(properties)
 
         for sentence in sentences:
+            parsed_data = self.api_call(sentence, properties=default_properties)
 
-            properties = {
-                'annotators': 'tokenize,pos,lemma,ssplit,{parser_annotator}'.format(
-                    parser_annotator=self.parser_annotator,
-                ),
-                'outputFormat': 'json',
-                'ssplit.isOneSentence': 'false' if sentence_split else 'true',
-                # TODO: Does it work?
-                'tokenize.options': 'normalizeParentheses=true,normalizeOtherBrackets=true',
-            }
+            assert len(parsed_data['sentences']) == 1
 
-            if tokenize_whitespace:
-                properties['tokenize.whitespace'] = 'true'
-
-            response = session.post(
-                'http://localhost:9000',
-                params={
-                    'properties': json.dumps(properties),
-                },
-                data=sentence.encode('utf-8'),
-            )
-
-            response.raise_for_status()
-
-            parsed_data = response.json()
-
-            if not sentence_split:
-                assert len(parsed_data['sentences']) == 1
-
-            # TODO: Originally, we can return several parsers for a sentence.
-            #       * We always return one wrapped in an iterator.
-            #       * When text is split to sentences we return one parse per
-            #         sentence, not an iterable of parses per sentence.
             for parse in parsed_data['sentences']:
                 tree = self.make_tree(parse)
                 yield iter([tree])
@@ -261,7 +281,7 @@ class GenericStanfordParser(ParserI):
 
         return stdout
 
-    def parse_text(self, text):
+    def parse_text(self, text, properties=None, *args, **kwargs):
         """Parse a piece of text.
 
         The text might contain several sentences which will be split by CoreNLP.
@@ -270,7 +290,17 @@ class GenericStanfordParser(ParserI):
         :returns: an iterable of syntactic structures.  # TODO: should it be an iterable of iterables.
 
         """
-        return self.raw_parse_sents([text], sentence_split=True)
+        if properties is None:
+            properties is {}
+
+        default_properties = {
+            ''
+        }
+
+        parsed_data = self.api_call(text, properties=properties, *args, **kwargs)
+
+        for parse in parsed_data['sentences']:
+            yield self.make_tree(parse)
 
 
 class StanfordParser(GenericStanfordParser):
@@ -352,23 +382,23 @@ class StanfordParser(GenericStanfordParser):
      I   'm       a      dog
 
     >>> parse_friends.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
-                              ROOT
-                               |
-                              SINV
-               ________________|________________
-              S                                 |
-      ________|______                           |
-     |               VP                         |
-     |     __________|_____                     |
-     |    |                NP                   VP
-     |    |           _____|________     _______|____
-     NP   |          NP             |  VBD           NP
-     |    |    ______|_________     |   |    ________|____
-     DT  VBZ PRP$   NNS       POS   NN      DT       JJ   NN
-     |    |   |      |         |    |   |   |        |    |
-    This  is  my  friends      '   cat ... the     tabby ...
+         ROOT
+          |
+          S
+      ____|___________
+     |                VP
+     |     ___________|_____________
+     |    |                         NP
+     |    |                  _______|_________
+     |    |                 NP               PRN
+     |    |            _____|_______      ____|______________
+     NP   |           NP            |    |        NP         |
+     |    |     ______|_________    |    |     ___|____      |
+     DT  VBZ  PRP$   NNS       POS  NN -LRB-  DT       NN  -RRB-
+     |    |    |      |         |   |    |    |        |     |
+    This  is   my  friends      '  cat -LRB- the     tabby -RRB-
 
-    >>> (parse_john, ), (parse_mary, ) = parser.parse_text(
+    >>> parse_john, parse_mary, = parser.parse_text(
     ...     'John loves Mary. Mary walks.'
     ... )
 
@@ -416,23 +446,6 @@ class StanfordParser(GenericStanfordParser):
     ... ).height()
     10
 
-    >>> sum([list(dep_graphs) for dep_graphs in parser.tagged_parse_sents((
-    ...     (
-    ...         ("The", "DT"),
-    ...         ("quick", "JJ"),
-    ...         ("brown", "JJ"),
-    ...         ("fox", "NN"),
-    ...         ("jumped", "VBD"),
-    ...         ("over", "IN"),
-    ...         ("the", "DT"),
-    ...         ("lazy", "JJ"),
-    ...         ("dog", "NN"),
-    ...         (".", "."),
-    ...     ),
-    ... ))],[])  # doctest: +NORMALIZE_WHITESPACE
-    [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']), Tree('JJ', ['brown']),
-    Tree('NN', ['fox'])]), Tree('VP', [Tree('VBD', ['jumped']), Tree('PP', [Tree('IN', ['over']), Tree('NP',
-    [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])]), Tree('.', ['.'])])])]
     """
 
     _OUTPUT_FORMAT = 'penn'
@@ -526,12 +539,12 @@ class StanfordDependencyParser(GenericStanfordParser):
     friends     NNS     6       nmod:poss
     '   POS     4       case
     cat NN      0       ROOT
-    (   VBD     6       acl
-    the DT      10      det
-    tabby       JJ      10      amod
-    )   NN      7       dobj
+    -LRB-       -LRB-   9       punct
+    the DT      9       det
+    tabby       NN      6       appos
+    -RRB-       -RRB-   9       punct
 
-    >>> (parse_john, ), (parse_mary, ) = dep_parser.parse_text(
+    >>> parse_john, parse_mary, = dep_parser.parse_text(
     ...     'John loves Mary. Mary walks.'
     ... )
 
@@ -560,25 +573,6 @@ class StanfordDependencyParser(GenericStanfordParser):
     ...     ).nodes
     ... )
     21
-
-    >>> sum([[list(parse.triples()) for parse in dep_graphs] for dep_graphs in dep_parser.tagged_parse_sents((
-    ...     (
-    ...         ("The", "DT"),
-    ...         ("quick", "JJ"),
-    ...         ("brown", "JJ"),
-    ...         ("fox", "NN"),
-    ...         ("jumped", "VBD"),
-    ...         ("over", "IN"),
-    ...         ("the", "DT"),
-    ...         ("lazy", "JJ"),
-    ...         ("dog", "NN"),
-    ...         (".", "."),
-    ...     ),
-    ... ))],[]) # doctest: +NORMALIZE_WHITESPACE
-    [[((u'jumped', u'VBD'), u'nsubj', (u'fox', u'NN')), ((u'fox', u'NN'), u'det', (u'The', u'DT')),
-    ((u'fox', u'NN'), u'amod', (u'quick', u'JJ')), ((u'fox', u'NN'), u'amod', (u'brown', u'JJ')),
-    ((u'jumped', u'VBD'), u'nmod', (u'dog', u'NN')), ((u'dog', u'NN'), u'case', (u'over', u'IN')),
-    ((u'dog', u'NN'), u'det', (u'the', u'DT')), ((u'dog', u'NN'), u'amod', (u'lazy', u'JJ'))]]
 
     """
 
