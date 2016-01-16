@@ -48,6 +48,6 @@ def setup_module(module):
 
     if not requests.get('http://localhost:9000').ok:
         raise SkipTest(
-            'Doctests from nltk.parse.stanford are skipped because '
+            'Doctests from nltk.tokenize.stanford are skipped because '
             'the CoreNLP server is not available.'
         )
