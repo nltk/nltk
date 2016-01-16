@@ -21,13 +21,14 @@ from nltk import compat
 from nltk.internals import find_jar_iter, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
+from nltk.tokenize.api import TokenizerI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
 
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 
-class GenericStanfordParser(ParserI):
+class GenericStanfordParser(ParserI, TokenizerI):
     """Interface to the Stanford Parser"""
 
     _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)(\.(\d+))+-models\.jar'
@@ -292,6 +293,37 @@ class GenericStanfordParser(ParserI):
 
         for parse in parsed_data['sentences']:
             yield self.make_tree(parse)
+
+    def tokenize(self, text, properties=None):
+        """Tokenize a string of text.
+
+        >>> parser = StanfordParser()
+
+        >>> text = 'Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'
+        >>> list(parser.tokenize(text))
+        ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+        >>> s = "The colour of the wall is blue."
+
+        >>> list(
+        ...     parser.tokenize(
+        ...         'The colour of the wall is blue.',
+        ...         properties={'tokenize.options': 'americanize=true'},
+        ...     )
+        ... )
+        ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
+
+        """
+        default_properties = {
+            'annotators': 'tokenize,ssplit',
+        }
+
+        default_properties.update(properties or {})
+
+        result = self.api_call(text, properties=default_properties)
+
+        for sentence in result['sentences']:
+            for token in sentence['tokens']:
+                yield token['originalText']
 
 
 class StanfordParser(GenericStanfordParser):
