@@ -125,14 +125,11 @@ class GenericStanfordParser(ParserI):
         :type sentence: str
         :rtype: iter(Tree)
         """
-        if properties is None:
-            properties = {}
-
         default_properties = {
                     'tokenize.whitespace': 'false',
         }
 
-        default_properties.update(properties)
+        default_properties.update(properties or {})
 
         return next(
             self.raw_parse_sents(
@@ -144,9 +141,6 @@ class GenericStanfordParser(ParserI):
         )
 
     def api_call(self, data, properties=None):
-        if properties is None:
-            properties = {}
-
         default_properties = {
             'outputFormat': 'json',
             'annotators': 'tokenize,pos,lemma,ssplit,{parser_annotator}'.format(
@@ -154,7 +148,7 @@ class GenericStanfordParser(ParserI):
             ),
         }
 
-        default_properties.update(properties)
+        default_properties.update(properties or {})
 
         response = self.session.post(
             self.url,
@@ -186,14 +180,11 @@ class GenericStanfordParser(ParserI):
         :rtype: iter(iter(Tree))
 
         """
-        if properties is None:
-            properties = {}
-
         default_properties = {
             'ssplit.isOneSentence': 'true',
         }
 
-        default_properties.update(properties)
+        default_properties.update(properties or {})
 
         for sentence in sentences:
             parsed_data = self.api_call(sentence, properties=default_properties)
