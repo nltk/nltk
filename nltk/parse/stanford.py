@@ -13,6 +13,7 @@ import tempfile
 import os
 import re
 import json
+import time
 from subprocess import PIPE
 
 import requests
@@ -28,15 +29,131 @@ from nltk.tree import Tree
 _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 
+class CoreNLPServerError(EnvironmentError):
+    """Exceptions assciated with the Core NLP server."""
+
+class CoreNLPServer(object):
+
+    _MODEL_JAR_PATTERN = r'stanford-corenlp-(\d+)\.(\d+)\.(\d+)-models\.jar'
+    _JAR = r'stanford-corenlp-(\d+)\.(\d+)\.(\d+)\.jar'
+
+    other_jars = (
+        'ejml-0.23.jar',
+        'javax.json.jar',
+        'joda-time.jar',
+        'jollyday.jar',
+        'protobuf.jar',
+        'slf4j-api.jar',
+        'slf4j-simple.jar',
+        'xom.jar',
+    )
+
+    def __init__(
+        self, path_to_jar=None, path_to_models_jar=None, verbose=False,
+        java_options='-mx4g', corenlp_options=''
+    ):
+        # find the most recent code and model jar
+        stanford_jar = max(
+            find_jar_iter(
+                self._JAR,
+                path_to_jar,
+                env_vars=('STANFORD_PARSER', 'STANFORD_CORENLP'),
+                searchpath=(),
+                url=_stanford_url,
+                verbose=verbose,
+                is_regex=True,
+            ),
+            key=lambda model_name: re.match(self._JAR, model_name)
+        )
+
+        # TODO: take a free random port.
+        self.url = 'http://localhost:9000'
+
+        model_jar = max(
+            find_jar_iter(
+                self._MODEL_JAR_PATTERN,
+                path_to_models_jar,
+                env_vars=('STANFORD_MODELS', 'STANFORD_CORENLP'),
+                searchpath=(),
+                url=_stanford_url,
+                verbose=verbose,
+                is_regex=True,
+            ),
+            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
+        )
+
+        self.other_jars = tuple(
+            next(
+                find_jar_iter(
+                    jar,
+                    None,
+                    searchpath=(os.path.dirname(stanford_jar), ),
+                    verbose=verbose,
+                    is_regex=False,
+                )
+            )
+            for jar in self.other_jars
+        )
+
+        self.verbose = verbose
+
+        self._classpath = (stanford_jar, model_jar) + self.other_jars
+
+        self.corenlp_options = corenlp_options
+        self.java_options = java_options
+
+    def start(self):
+        cmd = ['edu.stanford.nlp.pipeline.StanfordCoreNLPServer']
+
+        if self.corenlp_options:
+            cmd.append(self.corenlp_options)
+
+        # Configure java.
+        default_options = ' '.join(_java_options)
+        config_java(options=self.java_options, verbose=self.verbose)
+
+        try:
+            # TODO: it's probably a bad idea to pipe stdout, as it will
+            #       accumulate when lots of text is being parsed.
+            self.popen = java(
+                cmd,
+                classpath=self._classpath,
+                blocking=False,
+                stderr='pipe',
+            )
+        finally:
+            # Return java configurations to their default values.
+            config_java(options=default_options, verbose=self.verbose)
+
+        # Check that the server is istill running.
+        # TODO: is there a better way of checking whether a server is ready to
+        #       accept connections?
+        time.sleep(5)
+        returncode = self.popen.poll()
+        if returncode is not None:
+            _, stderrdata = self.popen.communicate()
+            raise CoreNLPServerError(
+                returncode,
+                'Could not start the server. '
+                'The error was: {}'.format(stderrdata.decode('ascii'))
+            )
+
+    def stop(self):
+        self.popen.terminate()
+        self.popen.wait()
+
+    def __enter__(self):
+        self.start()
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+        return False
+
+
 class GenericStanfordParser(ParserI, TokenizerI):
     """Interface to the Stanford Parser"""
-
-    _MODEL_JAR_PATTERN = r'stanford-parser-(\d+)(\.(\d+))+-models\.jar'
-    _JAR = r'stanford-parser\.jar'
-    _MAIN_CLASS = 'edu.stanford.nlp.parser.lexparser.LexicalizedParser'
-
-    _USE_STDIN = False
-    _DOUBLE_SPACED_OUTPUT = False
 
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
 
@@ -44,59 +161,6 @@ class GenericStanfordParser(ParserI, TokenizerI):
         self.encoding = encoding
 
         self.session = requests.Session()
-
-        return
-
-        # find the most recent code and model jar
-        stanford_jar = max(
-            find_jar_iter(
-                self._JAR, path_to_jar,
-                env_vars=('STANFORD_PARSER', 'STANFORD_CORENLP'),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose, is_regex=True
-            ),
-            key=lambda model_name: re.match(self._JAR, model_name)
-        )
-
-        model_jar=max(
-            find_jar_iter(
-                self._MODEL_JAR_PATTERN, path_to_models_jar,
-                env_vars=('STANFORD_MODELS', 'STANFORD_CORENLP'),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose, is_regex=True
-            ),
-            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
-        )
-
-        self._classpath = (stanford_jar, model_jar)
-
-        self.model_path = model_path
-        self._encoding = encoding
-        self.corenlp_options = corenlp_options
-        self.java_options = java_options
-
-    def _parse_trees_output(self, output_):
-        res = []
-        cur_lines = []
-        cur_trees = []
-        blank = False
-        for line in output_.splitlines(False):
-            if line == '':
-                if blank:
-                    res.append(iter(cur_trees))
-                    cur_trees = []
-                    blank = False
-                elif self._DOUBLE_SPACED_OUTPUT:
-                    cur_trees.append(self._make_tree('\n'.join(cur_lines)))
-                    cur_lines = []
-                    blank = True
-                else:
-                    res.append(iter([self._make_tree('\n'.join(cur_lines))]))
-                    cur_lines = []
-            else:
-                cur_lines.append(line)
-                blank = False
-        return iter(res)
 
     def parse_sents(self, sentences, *args, **kwargs):
         """Parse multiple sentences.
@@ -233,63 +297,16 @@ class GenericStanfordParser(ParserI, TokenizerI):
         return self._parse_trees_output(self._execute(
             cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
 
-    def _execute(self, cmd, input_, verbose=False):
-        encoding = self._encoding
-        cmd.extend(['-encoding', encoding])
-        if self.corenlp_options:
-            cmd.append(self.corenlp_options)
-
-        default_options = ' '.join(_java_options)
-
-        # Configure java.
-        config_java(options=self.java_options, verbose=verbose)
-
-        # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
-        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as input_file:
-            # Write the actual sentences to the temporary input file
-            if isinstance(input_, compat.text_type) and encoding:
-                input_ = input_.encode(encoding)
-            input_file.write(input_)
-            input_file.flush()
-
-            # Run the tagger and get the output.
-            if self._USE_STDIN:
-                input_file.seek(0)
-                stdout, stderr = java(cmd, classpath=self._classpath,
-                                      stdin=input_file, stdout=PIPE, stderr=PIPE)
-            else:
-                cmd.append(input_file.name)
-                stdout, stderr = java(cmd, classpath=self._classpath,
-                                      stdout=PIPE, stderr=PIPE)
-
-            stdout = stdout.replace(b'\xc2\xa0',b' ')
-            stdout = stdout.replace(b'\xa0',b' ')
-            stdout = stdout.decode(encoding)
-
-        os.unlink(input_file.name)
-
-        # Return java configurations to their default values.
-        config_java(options=default_options, verbose=False)
-
-        return stdout
-
-    def parse_text(self, text, properties=None, *args, **kwargs):
+    def parse_text(self, text, *args, **kwargs):
         """Parse a piece of text.
 
         The text might contain several sentences which will be split by CoreNLP.
 
         :param str text: text to be split.
-        :returns: an iterable of syntactic structures.  # TODO: should it be an iterable of iterables.
+        :returns: an iterable of syntactic structures.  # TODO: should it be an iterable of iterables?
 
         """
-        if properties is None:
-            properties is {}
-
-        default_properties = {
-            ''
-        }
-
-        parsed_data = self.api_call(text, properties=properties, *args, **kwargs)
+        parsed_data = self.api_call(text, *args, **kwargs)
 
         for parse in parsed_data['sentences']:
             yield self.make_tree(parse)
@@ -297,17 +314,17 @@ class GenericStanfordParser(ParserI, TokenizerI):
     def tokenize(self, text, properties=None):
         """Tokenize a string of text.
 
-        >>> parser = StanfordParser()
+        >>> parser = StanfordParser(url='http://localhost:9000')
 
         >>> text = 'Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'
         >>> list(parser.tokenize(text))
         ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
-        >>> s = "The colour of the wall is blue."
 
+        >>> s = "The colour of the wall is blue."
         >>> list(
         ...     parser.tokenize(
         ...         'The colour of the wall is blue.',
-        ...         properties={'tokenize.options': 'americanize=true'},
+        ...             properties={'tokenize.options': 'americanize=true'},
         ...     )
         ... )
         ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
@@ -328,7 +345,7 @@ class GenericStanfordParser(ParserI, TokenizerI):
 
 class StanfordParser(GenericStanfordParser):
     """
-    >>> parser=StanfordParser()
+    >>> parser = StanfordParser(url='http://localhost:9000')
 
     >>> next(
     ...     parser.raw_parse('the quick brown fox jumps over the lazy dog')
@@ -481,7 +498,7 @@ class StanfordParser(GenericStanfordParser):
 class StanfordDependencyParser(GenericStanfordParser):
 
     """
-    >>> dep_parser = StanfordDependencyParser()
+    >>> dep_parser = StanfordDependencyParser(url='http://localhost:9000')
 
     >>> parse, = dep_parser.raw_parse(
     ...     'The quick brown fox jumps over the lazy dog.'
@@ -639,8 +656,14 @@ def transform(sentence):
 def setup_module(module):
     from nose import SkipTest
 
-    if not requests.get('http://localhost:9000').ok:
-        raise SkipTest(
-            'Doctests from nltk.parse.stanford are skipped because '
-            'the CoreNLP server is not available.'
-        )
+    global server
+    server = CoreNLPServer()
+
+    try:
+        server.start()
+    except CoreNLPServerError as e:
+        raise SkipTest('Skiping CoreNLP tests because the server could not be started. {}'.format(e.strerror))
+
+
+def teardown_module(module):
+    server.stop()

@@ -43,11 +43,17 @@ class StanfordTokenizer(TokenizerI):
 
 
 def setup_module(module):
+    from nltk.parse.stanford import CoreNLPServer, CoreNLPServerError
     from nose import SkipTest
-    import requests
 
-    if not requests.get('http://localhost:9000').ok:
-        raise SkipTest(
-            'Doctests from nltk.tokenize.stanford are skipped because '
-            'the CoreNLP server is not available.'
-        )
+    global server
+    server = CoreNLPServer()
+
+    try:
+        server.start()
+    except CoreNLPServerError as e:
+        raise SkipTest('Skiping CoreNLP tests because the server could not be started. {}'.format(e.strerror))
+
+
+def teardown_module(module):
+    server.stop()
