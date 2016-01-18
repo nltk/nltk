@@ -186,7 +186,10 @@ class GenericStanfordParser(ParserI):
         encoding = self._encoding
         cmd.extend(['-encoding', encoding])
         if self.corenlp_options:
-            cmd.append(self.corenlp_options)
+            if type(self.corenlp_options) is list:
+                cmd.extend(self.corenlp_options)
+            else:
+                cmd.append(self.corenlp_options)
 
         default_options = ' '.join(_java_options)
 
