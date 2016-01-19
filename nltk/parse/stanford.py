@@ -50,7 +50,7 @@ class CoreNLPServer(object):
 
     def __init__(
         self, path_to_jar=None, path_to_models_jar=None, verbose=False,
-        java_options='-mx4g', corenlp_options=''
+        java_options=None, corenlp_options=None
     ):
         # find the most recent code and model jar
         stanford_jar = max(
@@ -99,14 +99,14 @@ class CoreNLPServer(object):
 
         self._classpath = (stanford_jar, model_jar) + self.other_jars
 
-        self.corenlp_options = corenlp_options
-        self.java_options = java_options
+        self.corenlp_options = corenlp_options or []
+        self.java_options = java_options or ['-mx4g']
 
     def start(self):
         cmd = ['edu.stanford.nlp.pipeline.StanfordCoreNLPServer']
 
         if self.corenlp_options:
-            cmd.append(self.corenlp_options)
+            cmd.extend(self.corenlp_options)
 
         # Configure java.
         default_options = ' '.join(_java_options)
