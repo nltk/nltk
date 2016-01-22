@@ -572,7 +572,7 @@ class DependencyGraph(object):
         ...                               u'Lemma': u'.',
         ...                               u'NamedEntityTag': u'O',
         ...                               u'PartOfSpeech': u'.'}]]}
-        >>>  list(stanfordjson2conll(stanfordjson)) # stanford-corenlp-full-2014-08-27.
+        >>> list(stanfordjson2conll(stanfordjson)) # stanford-corenlp-full-2014-08-27.
         [(2, '_', 'world', 'world', 'NN', 'NN', '_', '0', 'ROOT', '_', '_'), (1, '_', 'Hello', 'hello', 'UH', 'UH', '_', '2', 'discourse', '_', '_')]
         >>> stanfordjson = {u'dependencies': [[u'root', u'ROOT', u'0', u'loves', u'2'],
         ...                                    [u'nsubj',
@@ -604,7 +604,7 @@ class DependencyGraph(object):
         ...                               u'CharacterOffsetEnd': u'16',
         ...                               u'Lemma': u'.',
         ...                               u'PartOfSpeech': u'.'}]]}
-        >>>  list(stanfordjson2conll(stanfordjson)) # stanford-corenlp-full-2015-04-20.
+        >>> list(stanfordjson2conll(stanfordjson)) # stanford-corenlp-full-2015-04-20.
         [(2, '_', 'loves', 'love', 'VBZ', 'VBZ', '_', '0', 'ROOT', '_', '_'), (1, '_', 'John', 'John', 'NNP', 'NNP', '_', '2', 'nsubj', '_', '_'), (3, '_', 'Mary', 'Mary', 'NNP', 'NNP', '_', '2', 'dobj', '_', '_'), (4, '_', '.', '.', '.', '.', '_', '2', 'punct', '_', '_')]
         
         :param sentence: The JSON output from Stanford CoreNLP tool.
