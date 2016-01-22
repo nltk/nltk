@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Dependency Grammars
 #
 # Copyright (C) 2001-2015 NLTK Project
-# Author: Jason Narad <jason.narad@gmail.com>
-#         Steven Bird <stevenbird1@gmail.com> (modifications)
+# Authors: Jason Narad <jason.narad@gmail.com>
+#          Steven Bird <stevenbird1@gmail.com> (modifications)
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -543,6 +543,109 @@ class DependencyGraph(object):
         g.add_edges_from(nx_edgelist)
 
         return g
+    
+    @staticmethod
+    def stanfordjson2conll(jsonparse):
+        """
+        This function takes a JSON output from Stanford CoreNLP and converts 
+        it into CONLL format. 
+        
+        >>> stanfordjson = {u'dependencies': [[u'root', u'ROOT-0', u'world-2'],
+        ...                                    [u'discourse', u'world-2', u'Hello-1']],
+        ...                  u'parsetree': u'(ROOT (S (VP (NP (INTJ (UH Hello)) (NP (NN world)))) (. .)))',
+        ...                  u'text': u'Hello world.',
+        ...                  u'words': [[u'Hello',
+        ...                              {u'CharacterOffsetBegin': u'0',
+        ...                               u'CharacterOffsetEnd': u'5',
+        ...                               u'Lemma': u'hello',
+        ...                               u'NamedEntityTag': u'O',
+        ...                               u'PartOfSpeech': u'UH'}],
+        ...                             [u'world',
+        ...                              {u'CharacterOffsetBegin': u'6',
+        ...                               u'CharacterOffsetEnd': u'11',
+        ...                               u'Lemma': u'world',
+        ...                               u'NamedEntityTag': u'O',
+        ...                               u'PartOfSpeech': u'NN'}],
+        ...                             [u'.',
+        ...                              {u'CharacterOffsetBegin': u'11',
+        ...                               u'CharacterOffsetEnd': u'12',
+        ...                               u'Lemma': u'.',
+        ...                               u'NamedEntityTag': u'O',
+        ...                               u'PartOfSpeech': u'.'}]]}
+        >>> list(stanfordjson2conll(stanfordjson)) # stanford-corenlp-full-2014-08-27.
+        [(2, '_', 'world', 'world', 'NN', 'NN', '_', '0', 'ROOT', '_', '_'), (1, '_', 'Hello', 'hello', 'UH', 'UH', '_', '2', 'discourse', '_', '_')]
+        >>> stanfordjson = {u'dependencies': [[u'root', u'ROOT', u'0', u'loves', u'2'],
+        ...                                    [u'nsubj',
+        ...                                     u'loves',
+        ...                                     u'2',
+        ...                                     u'John',
+        ...                                     u'1'],
+        ...                                    [u'dobj', u'loves', u'2', u'Mary', u'3'],
+        ...                                    [u'punct', u'loves', u'2', u'.', u'4']],
+        ...                  u'parsetree': [],
+        ...                  u'text': u'John loves Mary.',
+        ...                  u'words': [[u'John',
+        ...                              {u'CharacterOffsetBegin': u'0',
+        ...                               u'CharacterOffsetEnd': u'4',
+        ...                               u'Lemma': u'John',
+        ...                               u'PartOfSpeech': u'NNP'}],
+        ...                             [u'loves',
+        ...                              {u'CharacterOffsetBegin': u'5',
+        ...                               u'CharacterOffsetEnd': u'10',
+        ...                               u'Lemma': u'love',
+        ...                               u'PartOfSpeech': u'VBZ'}],
+        ...                             [u'Mary',
+        ...                              {u'CharacterOffsetBegin': u'11',
+        ...                               u'CharacterOffsetEnd': u'15',
+        ...                               u'Lemma': u'Mary',
+        ...                               u'PartOfSpeech': u'NNP'}],
+        ...                             [u'.',
+        ...                              {u'CharacterOffsetBegin': u'15',
+        ...                               u'CharacterOffsetEnd': u'16',
+        ...                               u'Lemma': u'.',
+        ...                               u'PartOfSpeech': u'.'}]]}
+        >>> list(stanfordjson2conll(stanfordjson)) # stanford-corenlp-full-2015-04-20.
+        [(2, '_', 'loves', 'love', 'VBZ', 'VBZ', '_', '0', 'ROOT', '_', '_'), (1, '_', 'John', 'John', 'NNP', 'NNP', '_', '2', 'nsubj', '_', '_'), (3, '_', 'Mary', 'Mary', 'NNP', 'NNP', '_', '2', 'dobj', '_', '_'), (4, '_', '.', '.', '.', '.', '_', '2', 'punct', '_', '_')]
+        
+        :param sentence: The JSON output from Stanford CoreNLP tool.
+        :type sentence: dict
+        :rtype: generator
+        """
+        for node in jsonparse['dependencies']:
+            # Parses the node for different stanford-corenlp versions.
+            if len(node) == 5: # stanford-corenlp-full-2015-04-20.
+                rel, _, head, word, n = node
+            elif len(node) == 3: # For stanford-corenlp-full-2014-08-27.
+                rel, head, word = node
+                word, n = word.split('-')
+                _ , head = head.split('-') 
+            # Access the words, POS and lemma. 
+            n = int(n)
+            word_info = jsonparse['words'][n - 1][1]
+            tag = word_info['PartOfSpeech']
+            lemma = word_info['Lemma']
+            if rel == 'root':
+                # NLTK expects that the root relation is labelled as ROOT!
+                rel = 'ROOT'
+            # Hack: Return values we don't know as '_'.
+            #       Also, consider tag and ctag to be equal.
+            # n is used to sort words as they appear in the sentence.
+            yield n, '_', word, lemma, tag, tag, '_', head, rel, '_', '_'
+
+    @staticmethod
+    def fromstanfordjson(jsonparse):
+        """
+        This function takes a JSON output from Stanford CoreNLP and converts 
+        it into a DependencyGraph object.
+    
+        :param jsonparse: The JSON output from Stanford CoreNLP tool.
+        :type sentence: dict
+        :rtype: DependencyGraph
+        """
+        # Converts Stanford JSON outputs to CONLL
+        conllparse = DependencyGraph.stanfordjson2conll(jsonparse)
+        return DependencyGraph([' '.join(items[1:]) for 
+                                items in sorted(conllparse)])
 
 
 class DependencyGraphError(Exception):
@@ -554,6 +657,7 @@ def demo():
     conll_demo()
     conll_file_demo()
     cycle_finding_demo()
+    stanford_json_demo()
 
 
 def malt_demo(nx=False):
@@ -631,6 +735,13 @@ def cycle_finding_demo():
     cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3})
     cyclic_dg.add_node({'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4})
     print(cyclic_dg.contains_cycle())
+
+def stanford_json_demo():
+    dg = DependencyGraph.fromstanfordjson(stanfordjson_20140827)
+    print(dg)
+    dg = DependencyGraph.fromstanfordjson(stanfordjson_20150420)
+    print(dg)
+
 
 treebank_data = """Pierre  NNP     2       NMOD
 Vinken  NNP     8       SUB
@@ -753,6 +864,62 @@ conll_data2 = """1   Cathy             Cathy             N     N     eigen|ev|ne
 15  Trafalgar_Square  Trafalgar_Square  MWU   N_N   eigen|ev|neut_eigen|ev|neut      14  obj1    _  _
 16  .                 .                 Punc  Punc  punt                             15  punct   _  _
 """
+
+
+# JSON output from stanford-corenlp-full-2014-08-27.
+stanfordjson_20140827 = {
+u'dependencies': [[u'root', u'ROOT-0', u'world-2'],
+                  [u'discourse', u'world-2', u'Hello-1']],
+u'parsetree': u'(ROOT (S (VP (NP (INTJ (UH Hello)) (NP (NN world)))) (. .)))',
+u'text': u'Hello world.',
+u'words': [[u'Hello',
+            {u'CharacterOffsetBegin': u'0',
+             u'CharacterOffsetEnd': u'5',
+             u'Lemma': u'hello',
+             u'NamedEntityTag': u'O',
+             u'PartOfSpeech': u'UH'}],
+           [u'world',
+            {u'CharacterOffsetBegin': u'6',
+             u'CharacterOffsetEnd': u'11',
+             u'Lemma': u'world',
+             u'NamedEntityTag': u'O',
+             u'PartOfSpeech': u'NN'}],
+           [u'.',
+            {u'CharacterOffsetBegin': u'11',
+             u'CharacterOffsetEnd': u'12',
+             u'Lemma': u'.',
+             u'NamedEntityTag': u'O',
+             u'PartOfSpeech': u'.'}]]}
+
+# JSON output from stanford-corenlp-full-2015-04-20.
+stanfordjson_20150420 = {
+u'dependencies': [[u'root', u'ROOT', u'0', u'loves', u'2'],
+                   [u'nsubj', u'loves', u'2', u'John', u'1'],
+                   [u'dobj', u'loves', u'2', u'Mary', u'3'],
+                   [u'punct', u'loves', u'2', u'.', u'4']],
+ u'parsetree': [],
+ u'text': u'John loves Mary.',
+ u'words': [[u'John',
+             {u'CharacterOffsetBegin': u'0',
+              u'CharacterOffsetEnd': u'4',
+              u'Lemma': u'John',
+              u'PartOfSpeech': u'NNP'}],
+            [u'loves',
+             {u'CharacterOffsetBegin': u'5',
+              u'CharacterOffsetEnd': u'10',
+              u'Lemma': u'love',
+              u'PartOfSpeech': u'VBZ'}],
+            [u'Mary',
+             {u'CharacterOffsetBegin': u'11',
+              u'CharacterOffsetEnd': u'15',
+              u'Lemma': u'Mary',
+              u'PartOfSpeech': u'NNP'}],
+            [u'.',
+             {u'CharacterOffsetBegin': u'15',
+              u'CharacterOffsetEnd': u'16',
+              u'Lemma': u'.',
+              u'PartOfSpeech': u'.'}]]}
+
 
 if __name__ == '__main__':
     demo()
