@@ -7,7 +7,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """BLEU score implementation."""
-
 from __future__ import division
 
 import math
@@ -17,7 +16,7 @@ from collections import Counter
 from nltk.util import ngrams
 
 
-def sentence_bleu(references, hypothesis, weights=[0.25, 0.25, 0.25, 0.25]):
+def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     """
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
@@ -49,14 +48,14 @@ def sentence_bleu(references, hypothesis, weights=[0.25, 0.25, 0.25, 0.25]):
     0.5045666840058485
 
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis2)
-    0
+    0.39692877231857493
 
     The default BLEU calculates a score for up to 4grams using uniform
     weights. To evaluate your translations with higher/lower order ngrams, 
     use customized weights. E.g. when accounting for up to 6grams with uniform
     weights:
 
-    >>> weights = [0.1666, 0.1666, 0.1666, 0.1666, 0.1666]
+    >>> weights = (0.1666, 0.1666, 0.1666, 0.1666, 0.1666)
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1, weights)
     0.45838627164939455
     
@@ -70,29 +69,24 @@ def sentence_bleu(references, hypothesis, weights=[0.25, 0.25, 0.25, 0.25]):
     :rtype: float
     """
     # Calculates the modified precision *p_n* for each order of ngram.
-    p_ns = [] 
-    for i, _ in enumerate(weights, start=1): 
-        p_n = float(_modified_precision(references, hypothesis, i))
-        p_ns.append(p_n) 
+    p_n = (float(_modified_precision(references, hypothesis, i))
+            for i, _ in enumerate(weights, start=1))
 
-    try:
-        # Calculates the overall modified precision for all ngrams.
-        # By taking the product of the weights and the respective *p_n*
-        s = math.fsum(w * math.log(p_n) for w, p_n in zip(weights, p_ns))
-    except ValueError:
-        # some p_ns is 0
-        return 0
-
+    # Calculates the overall modified precision for all ngrams.
+    # By sum of the product of the weights and the respective *p_n*
+    s = (w * math.log(p_i) if p_i else 0 
+         for w, p_i in zip(weights, p_n))
+    
     # Calculates the brevity penalty.
     # *hyp_len* is referred to as *c* in Papineni et. al. (2002)
     hyp_len = len(hypothesis)
     # *closest_ref_len* is referred to as *r* variable in Papineni et. al. (2002)
     closest_ref_len = _closest_ref_length(references, hyp_len)
     bp = _brevity_penalty(closest_ref_len, hyp_len)
-    return bp * math.exp(s)
+    return bp * math.exp(math.fsum(s))
 
 
-def corpus_bleu(list_of_references, hypotheses, weights=[0.25, 0.25, 0.25, 0.25]):
+def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)):
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all 
     the hypotheses and their respective references.  
@@ -166,13 +160,12 @@ def corpus_bleu(list_of_references, hypotheses, weights=[0.25, 0.25, 0.25, 0.25]
     # Calculate corpus-level brevity penalty.
     bp = _brevity_penalty(ref_lengths, hyp_lengths)
     
-    # Calculate corpus-level modified precision.
-    p_n = []
-    for i, w in enumerate(weights, start=1):
-        pn = p_numerators[i] / p_denominators[i]
-        p_n.append(w* math.log(pn))
+    # Calculate sum of corpus-level modified precisions.
+    s = (0 if not(p_numerators[i] and p_denominators[i]) else
+         w * math.log(p_numerators[i] / p_denominators[i])
+         for i, w in enumerate(weights, start=1))
         
-    return bp * math.exp(math.fsum(p_n))
+    return bp * math.exp(math.fsum(s))
 
 
 def _modified_precision(references, hypothesis, n):
