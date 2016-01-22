@@ -891,7 +891,7 @@ u'words': [[u'Hello',
              u'NamedEntityTag': u'O',
              u'PartOfSpeech': u'.'}]]}
 
-# JSON output from stanford-corenlp-full-2014-04-20.
+# JSON output from stanford-corenlp-full-2015-04-20.
 stanfordjson_20150420 = {
 u'dependencies': [[u'root', u'ROOT', u'0', u'loves', u'2'],
                    [u'nsubj', u'loves', u'2', u'John', u'1'],
