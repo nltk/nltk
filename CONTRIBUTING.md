@@ -58,7 +58,7 @@ Summary of our git branching model:
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
 - Create a pull request using the GitHub Web interface (asking us to pull the
-  changes from your new branch and add the to our `develop` branch);
+  changes from your new branch and add to our `develop` branch);
 - Wait for comments.
 
 
