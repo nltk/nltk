@@ -58,7 +58,7 @@ Summary of our git branching model:
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
 - Create a pull request using the GitHub Web interface (asking us to pull the
-  changes from your new branch and add the to our `develop` branch);
+  changes from your new branch and add to our `develop` branch);
 - Wait for comments.
 
 
@@ -69,7 +69,7 @@ Summary of our git branching model:
 - Anything in the `master` branch should be deployable (no failing tests).
 - Never use `git add .`: it can add unwanted files;
 - Avoid using `git commit -a` unless you know what you're doing;
-- Check every change with `git diff` before adding then to the index (stage
+- Check every change with `git diff` before adding them to the index (stage
   area) and with `git diff --cached` before commiting;
 - If you have push access to the main repository, please do not commit directly
   to `master`: your access should be used only to accept pull requests; if you
@@ -91,7 +91,7 @@ Summary of our git branching model:
   formatting](http://docs.python.org/library/string.html#format-string-syntax)
   (`'{} = {}'.format(a, b)` instead of `'%s = %s' % (a, b)`);
 - All `#TODO` comments should be turned into issues (use our
-  [GitHub issue system](https://github.com/namd/pypln.web/issues));
+  [GitHub issue system](https://github.com/nltk/nltk/issues));
 - Run all tests before pushing (just execute `tox`) so you will know if your
   changes broke something;
 - Try to write both Python 2 and Python3-friendly code so won't be a pain for
