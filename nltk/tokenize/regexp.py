@@ -83,7 +83,8 @@ class RegexpTokenizer(TokenizerI):
 
     :type pattern: str
     :param pattern: The pattern used to build this tokenizer.
-        (This pattern may safely contain capturing parentheses.)
+        (This pattern must not contain capturing parentheses;
+        Use non-capturing parentheses, e.g. (?:...), instead)
     :type gaps: bool
     :param gaps: True if this tokenizer's pattern should be used
         to find separators between tokens; False if this
