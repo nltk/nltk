@@ -16,7 +16,8 @@ from collections import Counter
 from nltk.util import ngrams
 
 
-def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
+def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
+                  smoothing_method=0, epsilon=0.1, alpha=5, k=5):
     """
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
@@ -68,25 +69,32 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25)):
     :return: The sentence-level BLEU score.
     :rtype: float
     """
-    # Calculates the modified precision *p_n* for each order of ngram.
-    p_n = (float(_modified_precision(references, hypothesis, i))
-            for i, _ in enumerate(weights, start=1))
-
-    # Calculates the overall modified precision for all ngrams.
-    # By sum of the product of the weights and the respective *p_n*
-    s = (w * math.log(p_i) if p_i else 0 
-         for w, p_i in zip(weights, p_n))
-    
     # Calculates the brevity penalty.
     # *hyp_len* is referred to as *c* in Papineni et. al. (2002)
     hyp_len = len(hypothesis)
     # *closest_ref_len* is referred to as *r* variable in Papineni et. al. (2002)
     closest_ref_len = _closest_ref_length(references, hyp_len)
     bp = _brevity_penalty(closest_ref_len, hyp_len)
+    
+    # Calculates the modified precision *p_n* for each order of ngram.
+    p_n = [_modified_precision(references, hypothesis, i)
+            for i, _ in enumerate(weights, start=1)]
+
+    # Smoothen the modified precision.
+    # Note: smooth_precision() converts values into float.
+    p_n = smooth_precision(references, hypothesis, p_n, hyp_len, 
+                           smoothing_method, epsilon, alpha, k)
+    
+    # Calculates the overall modified precision for all ngrams.
+    # By sum of the product of the weights and the respective *p_n*
+    s = (w * math.log(p_i) if p_i else 0 
+         for w, p_i in zip(weights, p_n))
+    
     return bp * math.exp(math.fsum(s))
 
 
-def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)):
+def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25),
+                smoothing_method=0, epsilon=0.1, alpha=5, k=5):
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all 
     the hypotheses and their respective references.  
@@ -160,10 +168,19 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     # Calculate corpus-level brevity penalty.
     bp = _brevity_penalty(ref_lengths, hyp_lengths)
     
-    # Calculate sum of corpus-level modified precisions.
-    s = (0 if not(p_numerators[i] and p_denominators[i]) else
-         w * math.log(p_numerators[i] / p_denominators[i])
-         for i, w in enumerate(weights, start=1))
+    # Collects the various precision values for the different ngram orders.
+    p_n = [Fraction(p_numerators[i], p_denominators[i]) 
+           for i, _ in enumerate(weights, start=1)]
+    
+    # Smoothen the modified precision.
+    # Note: smooth_precision() converts values into float.
+    p_n = smooth_precision(references, hypothesis, p_n, hyp_len, 
+                           smoothing_method, epsilon, alpha, k)
+    
+    # Calculates the overall modified precision for all ngrams.
+    # By sum of the product of the weights and the respective *p_n*
+    s = (w * math.log(p_i) if p_i else 0 
+         for w, p_i in zip(weights, p_n))
         
     return bp * math.exp(math.fsum(s))
 
@@ -379,3 +396,130 @@ def _brevity_penalty(closest_ref_len, hyp_len):
     else:
         return math.exp(1 - closest_ref_len / hyp_len)
 
+
+def smooth_precision(references, hypothesis, p_n, hyp_len, 
+                    method=0, epsilon=0.1, alpha=5, k=5):
+    """
+    This is an implementation of the smoothing techniques 
+    for segment-level BLEU scores that was presented in 
+    Boxing Chen and Collin Cherry (2014) A Systematic Comparison of 
+    Smoothing Techniques for Sentence-Level BLEU. In WMT14. 
+    http://acl2014.org/acl2014/W14-33/pdf/W14-3346.pdf
+
+        >>> hypothesis1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
+        ... 'ensures', 'that', 'the', 'military', 'always',
+        ... 'obeys', 'the', 'commands', 'of', 'the', 'party']
+        >>> reference1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'that',
+        ... 'ensures', 'that', 'the', 'military', 'will', 'forever',
+        ... 'heed', 'Party', 'commands']
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=0))
+        0.411803763569
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=1))
+        0.411803763569
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=2))
+        0.457631898086
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=3))
+        0.411803763569
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=4))
+        0.411803763569
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=5))
+        0.490532813802
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=6))
+        0.180150787676
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=7))
+        0.490532813802
+    
+    :param references: reference sentences
+    :type references: list(list(str))
+    :param hypothesis: a hypothesis sentence
+    :type hypothesis: list(str)
+    :param p_n: the list of modified precision
+    :type p_n: Fraction
+    :param hyp_len: the length of the hypothesis
+    :type hyp_len: int
+    :param method: the smoothing method to be used
+    :type method: int
+    :param epsilon: the epsilon value use in method 1
+    :type epsilon: float
+    :param alpha: the alpha value use in method 6
+    :type alpha: int
+    :param k: the k value use in method 4
+    :type k: int
+    """
+    # No smoothing.
+    if method == 0:
+        return p_n
+    # Smoothing method 1: Add *epsilon* counts to precision with 0 counts.
+    if method == 1:
+        return [(p_i.numerator + epsilon)/ p_i.denominator 
+                if p_i.numerator == 0 else p_i for p_i in p_n]
+    # Smoothing method 2: Add 1 to both numerator and denominator from 
+    # Chin-Yew Lin and Franz Josef Och (2004) Automatic evaluation of 
+    # machine translation quality using longest common subsequence and 
+    # skip-bigram statistics. In ACL04.
+    if method == 2:
+        return [Fraction(p_i.numerator + 1, p_i.denominator + 1)
+                for p_i in p_n]
+    # Smoothing method 3: NIST geometric sequence smoothing 
+    # The smoothing is computed by taking 1 / ( 2^k ), instead of 0, for each 
+    # precision score whose matching n-gram count is null.
+    # k is 1 for the first 'n' value for which the n-gram match count is null/
+    # For example, if the text contains:
+    #   - one 2-gram match
+    #   - and (consequently) two 1-gram matches
+    # the n-gram count for each individual precision score would be:
+    #   - n=1  =>  prec_count = 2     (two unigrams)
+    #   - n=2  =>  prec_count = 1     (one bigram)
+    #   - n=3  =>  prec_count = 1/2   (no trigram,  taking 'smoothed' value of 1 / ( 2^k ), with k=1)
+    #   - n=4  =>  prec_count = 1/4   (no fourgram, taking 'smoothed' value of 1 / ( 2^k ), with k=2)
+    if method == 3:
+        incvnt = 1 # From the mteval-v13a.pl, it's referred to as k.
+        for i, p_i in enumerate(p_n):
+            if p_i == 0:
+                p_n[i] = 1 / 2**incvnt
+                incvnt+=1
+        return p_n
+    # Smoothing method 4: 
+    # Shorter translations may have inflated precision values due to having 
+    # smaller denominators; therefore, we give them proportionally
+    # smaller smoothed counts. Instead of scaling to 1/(2^k), Chen and Cherry 
+    # suggests dividing by 1/ln(len(T), where T is the length of the translation.
+    if method == 4:
+        incvnt = 1 
+        for i, p_i in enumerate(p_n):
+            if p_i == 0:
+                p_n[i] = incvnt * k / math.log(hyp_len) # Note that this K is different from the K from NIST.
+                incvnt+=1
+        return p_n
+    # Smoothing method 5:
+    # The matched counts for similar values of n should be similar. To a 
+    # calculate the n-gram matched count, it averages the n−1, n and n+1 gram 
+    # matched counts.
+    if method == 5:
+        m = {}
+        # Requires an precision value for an addition ngram order.
+        p_n_plus5 = p_n + [_modified_precision(references, hypothesis, 5)]
+        m[-1] = p_n[0] + 1
+        for i, p_i in enumerate(p_n):
+            p_n[i] = (m[i-1] + p_i + p_n_plus5[i+1]) / 3
+            m[i] = p_n[i] 
+        return p_n
+    # Smoothing method 6:
+    # Interpolates the maximum likelihood estimate of the precision *p_n* with 
+    # a prior estimate *pi0*. The prior is estimated by assuming that the ratio 
+    # between pn and pn−1 will be the same as that between pn−1 and pn−2.
+    if method == 6:
+        for i, p_i in enumerate(p_n):
+            if i in [1,2]: # Skips the first 2 orders of ngrams.
+                continue
+            else:
+                pi0 = 0 if p_n[i-2] == 0 else p_n[i-1]**2 / p_n[i-2] 
+                # No. of ngrams in translation.
+                l = sum(1 for _ in ngrams(hypothesis, i+1))
+                p_n[i] = (p_i + alpha * pi0) / (l + alpha)
+        return p_n
+    # Smoothing method
+    if method == 7:
+        p_n = smooth_precision(references, hypothesis, p_n, hyp_len, method=4)
+        p_n = smooth_precision(references, hypothesis, p_n, hyp_len, method=5)
+        return p_n
