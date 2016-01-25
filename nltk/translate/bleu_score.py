@@ -485,7 +485,7 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
     # Shorter translations may have inflated precision values due to having 
     # smaller denominators; therefore, we give them proportionally
     # smaller smoothed counts. Instead of scaling to 1/(2^k), Chen and Cherry 
-    # suggests dividing by 1/ln(len(T), where T is the length of the translation.
+    # suggests dividing by 1/ln(len(T)), where T is the length of the translation.
     if method == 4:
         incvnt = 1 
         for i, p_i in enumerate(p_n):
