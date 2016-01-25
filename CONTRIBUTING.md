@@ -91,7 +91,7 @@ Summary of our git branching model:
   formatting](http://docs.python.org/library/string.html#format-string-syntax)
   (`'{} = {}'.format(a, b)` instead of `'%s = %s' % (a, b)`);
 - All `#TODO` comments should be turned into issues (use our
-  [GitHub issue system](https://github.com/namd/pypln.web/issues));
+  [GitHub issue system](https://github.com/nltk/nltk/issues));
 - Run all tests before pushing (just execute `tox`) so you will know if your
   changes broke something;
 - Try to write both Python 2 and Python3-friendly code so won't be a pain for
