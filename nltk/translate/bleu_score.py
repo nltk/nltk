@@ -447,6 +447,8 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
     :type alpha: int
     :param k: the k value use in method 4
     :type k: int
+    :return: a list of smoothen modified precisions
+    :rtype: list(float)
     """
     # No smoothing.
     if method == 0:
