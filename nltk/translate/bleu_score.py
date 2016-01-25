@@ -89,8 +89,10 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     # By sum of the product of the weights and the respective *p_n*
     s = (w * math.log(p_i) if p_i else 0 
          for w, p_i in zip(weights, p_n))
-    
-    return bp * math.exp(math.fsum(s))
+    sum_s = math.fsum(s)
+    if sum_s == 0:
+        return 0
+    return bp * math.exp(sum_s)
 
 
 def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25),
