@@ -1252,7 +1252,7 @@ class SeekableUnicodeStreamReader(object):
         ignoring all buffers.
 
         :param est_bytes: A hint, giving an estimate of the number of
-            bytes that will be neded to move forward by ``offset`` chars.
+            bytes that will be needed to move forward by ``offset`` chars.
             Defaults to ``offset``.
         """
         if est_bytes is None:
