@@ -491,7 +491,7 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
     elif method == 4:
         incvnt = 1 
         for i, p_i in enumerate(p_n):
-            if p_i == 0:
+            if p_i == 0 and hyp_len != 0:
                 p_n[i] = incvnt * k / math.log(hyp_len) # Note that this K is different from the K from NIST.
                 incvnt+=1
         return p_n
