@@ -113,7 +113,7 @@ class RegexpTokenizer(TokenizerI):
         
     def _check_regexp(self):
         if self._regexp is None:
-            self._regexp = re.compile(self._pattern)
+            self._regexp = re.compile(self._pattern, self._flags)
         
     def tokenize(self, text):
         self._check_regexp()
