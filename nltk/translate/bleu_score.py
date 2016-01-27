@@ -45,11 +45,11 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     ...               'army', 'always', 'to', 'heed', 'the', 'directions',
     ...               'of', 'the', 'party']
 
-    >>> sentence_bleu([reference1, reference2, reference3], hypothesis1)
-    0.5045666840058485
+    >>> sentence_bleu([reference1, reference2, reference3], hypothesis1) # doctest: +ELLIPSIS
+    0.5045...
 
-    >>> sentence_bleu([reference1, reference2, reference3], hypothesis2)
-    0.39692877231857493
+    >>> sentence_bleu([reference1, reference2, reference3], hypothesis2) # doctest: +ELLIPSIS
+    0.3969...
 
     The default BLEU calculates a score for up to 4grams using uniform
     weights. To evaluate your translations with higher/lower order ngrams, 
@@ -126,16 +126,16 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     
     >>> list_of_references = [[ref1a, ref1b, ref1c], [ref2a]]
     >>> hypotheses = [hyp1, hyp2]
-    >>> corpus_bleu(list_of_references, hypotheses)
-    0.5520516129306314
+    >>> corpus_bleu(list_of_references, hypotheses) # doctest: +ELLIPSIS
+    0.5520...
     
     The example below show that corpus_bleu() is different from averaging 
     sentence_bleu() for hypotheses 
     
     >>> score1 = sentence_bleu([ref1a, ref1b, ref1c], hyp1)
     >>> score2 = sentence_bleu([ref2a], hyp2)
-    >>> (score1 + score2) / 2
-    0.6223247442490669
+    >>> (score1 + score2) / 2 # doctest: +ELLIPSIS
+    0.6223...
     
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
@@ -207,8 +207,8 @@ def _modified_precision(references, hypothesis, n):
         >>> reference2 = 'there is a cat on the mat'.split()
         >>> hypothesis1 = 'the the the the the the the'.split()
         >>> references = [reference1, reference2]
-        >>> float(_modified_precision(references, hypothesis1, n=1))
-        0.2857142857142857
+        >>> float(_modified_precision(references, hypothesis1, n=1)) # doctest: +ELLIPSIS
+        0.2857...
     
     In the modified n-gram precision, a reference word will be considered 
     exhausted after a matching hypothesis word is identified, e.g.
@@ -253,14 +253,14 @@ def _modified_precision(references, hypothesis, n):
         ...               'army', 'always', 'to', 'heed', 'the', 'directions',
         ...               'of', 'the', 'party']
         >>> references = [reference1, reference2, reference3]
-        >>> float(_modified_precision(references, hypothesis1, n=1))
-        0.9444444444444444
-        >>> float(_modified_precision(references, hypothesis2, n=1))
-        0.5714285714285714
-        >>> float(_modified_precision(references, hypothesis1, n=2))
+        >>> float(_modified_precision(references, hypothesis1, n=1)) # doctest: +ELLIPSIS
+        0.9444...
+        >>> float(_modified_precision(references, hypothesis2, n=1)) # doctest: +ELLIPSIS
+        0.5714...
+        >>> float(_modified_precision(references, hypothesis1, n=2)) # doctest: +ELLIPSIS
         0.5882352941176471
-        >>> float(_modified_precision(references, hypothesis2, n=2))
-        0.07692307692307693
+        >>> float(_modified_precision(references, hypothesis2, n=2)) # doctest: +ELLIPSIS
+        0.07692...
      
     
     :param references: A list of reference translations.
@@ -350,8 +350,8 @@ def _brevity_penalty(closest_ref_len, hyp_len):
         >>> hypothesis = ['a'] * 12
         >>> hyp_len = len(hypothesis)
         >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
-        >>> _brevity_penalty(closest_ref_len, hyp_len)
-        0.9200444146293233
+        >>> _brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
+        0.9200...
 
     The brevity penalty doesn't depend on reference order. More importantly,
     when two reference sentences are at the same distance, the shortest
@@ -374,8 +374,8 @@ def _brevity_penalty(closest_ref_len, hyp_len):
         >>> hypothesis = ['a'] * 7
         >>> hyp_len = len(hypothesis)
         >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
-        >>> _brevity_penalty(closest_ref_len, hyp_len)
-        0.8668778997501817
+        >>> _brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
+        0.8668...
 
         >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
         >>> hypothesis = ['a'] * 7
@@ -414,22 +414,22 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
         >>> reference1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'that',
         ... 'ensures', 'that', 'the', 'military', 'will', 'forever',
         ... 'heed', 'Party', 'commands']
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=0))
-        0.411803763569
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=1))
-        0.411803763569
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=2))
-        0.457631898086
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=3))
-        0.411803763569
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=4))
-        0.411803763569
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=5))
-        0.490532813802
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=6))
-        0.180150787676
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=7))
-        0.490532813802
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=0)) # doctest: +ELLIPSIS
+        0.4118...
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=1)) # doctest: +ELLIPSIS
+        0.4118...
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=2)) # doctest: +ELLIPSIS
+        0.4576...
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=3)) # doctest: +ELLIPSIS
+        0.4118...
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=4)) # doctest: +ELLIPSIS
+        0.4118...
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=5)) # doctest: +ELLIPSIS
+        0.4905...
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=6)) # doctest: +ELLIPSIS
+        0.1801...
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_method=7)) # doctest: +ELLIPSIS
+        0.4905...
     
     :param references: reference sentences
     :type references: list(list(str))
