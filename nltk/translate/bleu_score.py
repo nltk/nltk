@@ -454,14 +454,14 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
     if method == 0:
         return p_n
     # Smoothing method 1: Add *epsilon* counts to precision with 0 counts.
-    if method == 1:
+    elif method == 1:
         return [(p_i.numerator + epsilon)/ p_i.denominator 
                 if p_i.numerator == 0 else p_i for p_i in p_n]
     # Smoothing method 2: Add 1 to both numerator and denominator from 
     # Chin-Yew Lin and Franz Josef Och (2004) Automatic evaluation of 
     # machine translation quality using longest common subsequence and 
     # skip-bigram statistics. In ACL04.
-    if method == 2:
+    elif method == 2:
         return [Fraction(p_i.numerator + 1, p_i.denominator + 1)
                 for p_i in p_n]
     # Smoothing method 3: NIST geometric sequence smoothing 
@@ -476,7 +476,7 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
     #   - n=2  =>  prec_count = 1     (one bigram)
     #   - n=3  =>  prec_count = 1/2   (no trigram,  taking 'smoothed' value of 1 / ( 2^k ), with k=1)
     #   - n=4  =>  prec_count = 1/4   (no fourgram, taking 'smoothed' value of 1 / ( 2^k ), with k=2)
-    if method == 3:
+    elif method == 3:
         incvnt = 1 # From the mteval-v13a.pl, it's referred to as k.
         for i, p_i in enumerate(p_n):
             if p_i == 0:
@@ -488,7 +488,7 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
     # smaller denominators; therefore, we give them proportionally
     # smaller smoothed counts. Instead of scaling to 1/(2^k), Chen and Cherry 
     # suggests dividing by 1/ln(len(T)), where T is the length of the translation.
-    if method == 4:
+    elif method == 4:
         incvnt = 1 
         for i, p_i in enumerate(p_n):
             if p_i == 0:
@@ -499,7 +499,7 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
     # The matched counts for similar values of n should be similar. To a 
     # calculate the n-gram matched count, it averages the n−1, n and n+1 gram 
     # matched counts.
-    if method == 5:
+    elif method == 5:
         m = {}
         # Requires an precision value for an addition ngram order.
         p_n_plus5 = p_n + [_modified_precision(references, hypothesis, 5)]
@@ -512,7 +512,7 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
     # Interpolates the maximum likelihood estimate of the precision *p_n* with 
     # a prior estimate *pi0*. The prior is estimated by assuming that the ratio 
     # between pn and pn−1 will be the same as that between pn−1 and pn−2.
-    if method == 6:
+    elif method == 6:
         for i, p_i in enumerate(p_n):
             if i in [1,2]: # Skips the first 2 orders of ngrams.
                 continue
@@ -523,7 +523,7 @@ def smooth_precision(references, hypothesis, p_n, hyp_len,
                 p_n[i] = (p_i + alpha * pi0) / (l + alpha)
         return p_n
     # Smoothing method
-    if method == 7:
+    elif method == 7:
         p_n = smooth_precision(references, hypothesis, p_n, hyp_len, method=4)
         p_n = smooth_precision(references, hypothesis, p_n, hyp_len, method=5)
         return p_n
