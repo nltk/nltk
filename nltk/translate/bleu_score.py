@@ -423,32 +423,32 @@ class SmoothingFunction:
         ...               'Party', 'commands']
                 
         >>> chencherry = SmoothingFunction()
-        >>> print (sentence_bleu([reference1], hypothesis1))
-        0.411803763569
+        >>> print (sentence_bleu([reference1], hypothesis1)) # doctest: +ELLIPSIS
+        0.4118...
         >>> chencherry = SmoothingFunction()
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method0))
-        0.411803763569
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method0)) # doctest: +ELLIPSIS
+        0.4118...
         >>> chencherry = SmoothingFunction()
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method1))
-        0.411803763569
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method1)) # doctest: +ELLIPSIS
+        0.4118...
         >>> chencherry = SmoothingFunction()
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method2))
-        0.457631898086
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method2)) # doctest: +ELLIPSIS
+        0.4576...
         >>> chencherry = SmoothingFunction()
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method3))
-        0.411803763569
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method3)) # doctest: +ELLIPSIS
+        0.4118...
         >>> chencherry = SmoothingFunction()
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method4))
-        0.411803763569
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method4)) # doctest: +ELLIPSIS
+        0.4118...
         >>> chencherry = SmoothingFunction()
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method5))
-        0.490532813802
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method5)) # doctest: +ELLIPSIS
+        0.4905...
         >>> chencherry = SmoothingFunction()
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method6))
-        0.180150787676
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method6)) # doctest: +ELLIPSIS
+        0.1801...
         >>> chencherry = SmoothingFunction()
-        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method7))
-        0.490532813802
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method7)) # doctest: +ELLIPSIS
+        0.4905...
 
         :param epsilon: the epsilon value use in method 1
         :type epsilon: float
