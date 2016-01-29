@@ -425,28 +425,20 @@ class SmoothingFunction:
         >>> chencherry = SmoothingFunction()
         >>> print (sentence_bleu([reference1], hypothesis1)) # doctest: +ELLIPSIS
         0.4118...
-        >>> chencherry = SmoothingFunction()
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method0)) # doctest: +ELLIPSIS
         0.4118...
-        >>> chencherry = SmoothingFunction()
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method1)) # doctest: +ELLIPSIS
         0.4118...
-        >>> chencherry = SmoothingFunction()
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method2)) # doctest: +ELLIPSIS
         0.4576...
-        >>> chencherry = SmoothingFunction()
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method3)) # doctest: +ELLIPSIS
         0.4118...
-        >>> chencherry = SmoothingFunction()
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method4)) # doctest: +ELLIPSIS
         0.4118...
-        >>> chencherry = SmoothingFunction()
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method5)) # doctest: +ELLIPSIS
         0.4905...
-        >>> chencherry = SmoothingFunction()
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method6)) # doctest: +ELLIPSIS
         0.1801...
-        >>> chencherry = SmoothingFunction()
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method7)) # doctest: +ELLIPSIS
         0.4905...
 
@@ -461,35 +453,41 @@ class SmoothingFunction:
         self.alpha = alpha
         self.k = k
         
-    def method0(self, p_n, **kwargs):
-        # No smoothing.
+    def method0(self, p_n, *args, **kwargs):
+        """ No smoothing. """
         return p_n
         
-    def method1(self, p_n, **kwargs):
-        # Smoothing method 1: Add *epsilon* counts to precision with 0 counts.
+    def method1(self, p_n, *args, **kwargs):
+        """ 
+        Smoothing method 1: Add *epsilon* counts to precision with 0 counts.
+        """ 
         return [(p_i.numerator + self.epsilon)/ p_i.denominator 
                 if p_i.numerator == 0 else p_i for p_i in p_n]
         
-    def method2(self, p_n, **kwargs):
-        # Smoothing method 2: Add 1 to both numerator and denominator from 
-        # Chin-Yew Lin and Franz Josef Och (2004) Automatic evaluation of 
-        # machine translation quality using longest common subsequence and 
-        # skip-bigram statistics. In ACL04.
+    def method2(self, p_n, *args, **kwargs):
+        """
+        Smoothing method 2: Add 1 to both numerator and denominator from 
+        Chin-Yew Lin and Franz Josef Och (2004) Automatic evaluation of 
+        machine translation quality using longest common subsequence and 
+        skip-bigram statistics. In ACL04.
+        """
         return [Fraction(p_i.numerator + 1, p_i.denominator + 1) for p_i in p_n]
         
-    def method3(self, p_n, **kwargs):
-        # Smoothing method 3: NIST geometric sequence smoothing 
-        # The smoothing is computed by taking 1 / ( 2^k ), instead of 0, for each 
-        # precision score whose matching n-gram count is null.
-        # k is 1 for the first 'n' value for which the n-gram match count is null/
-        # For example, if the text contains:
-        #   - one 2-gram match
-        #   - and (consequently) two 1-gram matches
-        # the n-gram count for each individual precision score would be:
-        #   - n=1  =>  prec_count = 2     (two unigrams)
-        #   - n=2  =>  prec_count = 1     (one bigram)
-        #   - n=3  =>  prec_count = 1/2   (no trigram,  taking 'smoothed' value of 1 / ( 2^k ), with k=1)
-        #   - n=4  =>  prec_count = 1/4   (no fourgram, taking 'smoothed' value of 1 / ( 2^k ), with k=2)
+    def method3(self, p_n, *args, **kwargs):
+        """
+        Smoothing method 3: NIST geometric sequence smoothing 
+        The smoothing is computed by taking 1 / ( 2^k ), instead of 0, for each 
+        precision score whose matching n-gram count is null.
+        k is 1 for the first 'n' value for which the n-gram match count is null/
+        For example, if the text contains:
+         - one 2-gram match
+         - and (consequently) two 1-gram matches
+        the n-gram count for each individual precision score would be:
+         - n=1  =>  prec_count = 2     (two unigrams)
+         - n=2  =>  prec_count = 1     (one bigram)
+         - n=3  =>  prec_count = 1/2   (no trigram,  taking 'smoothed' value of 1 / ( 2^k ), with k=1)
+         - n=4  =>  prec_count = 1/4   (no fourgram, taking 'smoothed' value of 1 / ( 2^k ), with k=2)
+        """
         incvnt = 1 # From the mteval-v13a.pl, it's referred to as k.
         for i, p_i in enumerate(p_n):
             if p_i == 0:
@@ -498,11 +496,13 @@ class SmoothingFunction:
         return p_n
     
     def method4(self, p_n, references, hypothesis, hyp_len):
-        # Smoothing method 4: 
-        # Shorter translations may have inflated precision values due to having 
-        # smaller denominators; therefore, we give them proportionally
-        # smaller smoothed counts. Instead of scaling to 1/(2^k), Chen and Cherry 
-        # suggests dividing by 1/ln(len(T)), where T is the length of the translation.
+        """
+        Smoothing method 4: 
+        Shorter translations may have inflated precision values due to having 
+        smaller denominators; therefore, we give them proportionally
+        smaller smoothed counts. Instead of scaling to 1/(2^k), Chen and Cherry 
+        suggests dividing by 1/ln(len(T)), where T is the length of the translation.
+        """
         incvnt = 1 
         for i, p_i in enumerate(p_n):
             if p_i == 0 and hyp_len != 0:
@@ -512,10 +512,12 @@ class SmoothingFunction:
 
 
     def method5(self, p_n, references, hypothesis, hyp_len):
-        # Smoothing method 5:
-        # The matched counts for similar values of n should be similar. To a 
-        # calculate the n-gram matched count, it averages the n−1, n and n+1 gram 
-        # matched counts.
+        """
+        Smoothing method 5:
+        The matched counts for similar values of n should be similar. To a 
+        calculate the n-gram matched count, it averages the n−1, n and n+1 gram 
+        matched counts.
+        """
         m = {}
         # Requires an precision value for an addition ngram order.
         p_n_plus1 = p_n + [_modified_precision(references, hypothesis, 5)]
@@ -526,10 +528,12 @@ class SmoothingFunction:
         return p_n
         
     def method6(self, p_n, references, hypothesis, hyp_len):
-        # Smoothing method 6:
-        # Interpolates the maximum likelihood estimate of the precision *p_n* with 
-        # a prior estimate *pi0*. The prior is estimated by assuming that the ratio 
-        # between pn and pn−1 will be the same as that between pn−1 and pn−2.
+        """
+        Smoothing method 6:
+        Interpolates the maximum likelihood estimate of the precision *p_n* with 
+        a prior estimate *pi0*. The prior is estimated by assuming that the ratio 
+        between pn and pn−1 will be the same as that between pn−1 and pn−2.
+        """
         for i, p_i in enumerate(p_n):
             if i in [1,2]: # Skips the first 2 orders of ngrams.
                 continue
@@ -541,6 +545,12 @@ class SmoothingFunction:
         return p_n
     
     def method7(self, p_n, references, hypothesis, hyp_len):
+        """
+        Smoothing method 6:
+        Interpolates the maximum likelihood estimate of the precision *p_n* with 
+        a prior estimate *pi0*. The prior is estimated by assuming that the ratio 
+        between pn and pn−1 will be the same as that between pn−1 and pn−2.
+        """
         p_n = self.method4(p_n, references, hypothesis, hyp_len)
         p_n = self.method5(p_n, references, hypothesis, hyp_len)
         return p_n
