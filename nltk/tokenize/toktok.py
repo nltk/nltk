@@ -15,6 +15,10 @@ sentence per line; thus only final period is tokenized (Now in Python too!)
 Tok-tok has been tested on, and gives reasonably good results for English, 
 Persian, Russian, Czech, French, German, Vietnamese, Tajik, and a few others. 
 The input should be in UTF-8 encoding.
+
+Reference:
+Jon Dehdari. 2014. A Neurophysiologically-Inspired Statistical Language 
+Model (Doctoral dissertation). Columbus, OH, USA: The Ohio State University. 
 """
 
 import re
