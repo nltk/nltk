@@ -10,7 +10,7 @@
 
 """
 The tok-tok tokenizer is a simple, general tokenizer, where the input has one 
-sentence per line; thus only final period is tokenized (Now in Python too!)
+sentence per line; thus only final period is tokenized.
 
 Tok-tok has been tested on, and gives reasonably good results for English, 
 Persian, Russian, Czech, French, German, Vietnamese, Tajik, and a few others. 
