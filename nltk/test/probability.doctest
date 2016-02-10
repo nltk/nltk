@@ -116,11 +116,6 @@ from the whole corpus, not just the training corpus
     >>> symbols = unique_list(word for sent in corpus for (word,tag) in sent)
     >>> print(len(symbols))
     1464
-    >>> print(len(tag_set))
-    92
-    >>> symbols = unique_list(word for sent in corpus for (word,tag) in sent)
-    >>> print(len(symbols))
-    1464
     >>> trainer = nltk.tag.HiddenMarkovModelTrainer(tag_set, symbols)
 
 We divide the corpus into 90% training and 10% testing
