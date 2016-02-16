@@ -64,7 +64,7 @@ class GenericStanfordParser(ParserI):
         #self._classpath = (stanford_jar, model_jar)
         
         # Adding logging jar files to classpath 
-        stanford_dir = stanford_jar.rpartition('/')[0]
+        stanford_dir = os.path.split(stanford_jar)[0]
         self._classpath = tuple([model_jar] + find_jars_within_path(stanford_dir))
 
         self.model_path = model_path
