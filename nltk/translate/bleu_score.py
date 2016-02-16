@@ -183,7 +183,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
         
     # Calculates the overall modified precision for all ngrams.
     # By sum of the product of the weights and the respective *p_n*
-    s = (w * p_i if p_i == (0|1) else w * math.log(p_i) 
+    s = (w * math.log(p_i) if p_i else 0 
          for w, p_i in zip(weights, p_n))
         
     return bp * math.exp(math.fsum(s))
