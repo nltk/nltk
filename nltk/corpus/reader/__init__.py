@@ -141,5 +141,6 @@ __all__ = [
     'TwitterCorpusReader', 'NKJPCorpusReader', 'CrubadanCorpusReader',
     'MTECorpusReader', 'ReviewsCorpusReader', 'OpinionLexiconCorpusReader',
     'ProsConsCorpusReader', 'CategorizedSentencesCorpusReader',
-    'ComparativeSentencesCorpusReader', 'PanLexLiteCorpusReader'
+    'ComparativeSentencesCorpusReader', 'PanLexLiteCorpusReader',
+    'NonbreakingPrefixesCorpusReader', 'UnicharsCorpusReader'
 ]
