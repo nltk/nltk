@@ -62,6 +62,7 @@ For further information, please see Chapter 3 of the NLTK book.
 from nltk.data              import load
 from nltk.tokenize.casual   import (TweetTokenizer, casual_tokenize)
 from nltk.tokenize.mwe      import MWETokenizer
+from nltk.tokenize.moses      import MosesTokenizer
 from nltk.tokenize.punkt    import PunktSentenceTokenizer
 from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
                                     BlanklineTokenizer, WordPunctTokenizer,
