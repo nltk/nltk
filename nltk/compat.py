@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import absolute_import, print_function
+import os
 import sys
 import types
 from functools import wraps
