@@ -60,6 +60,8 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
 """
 import re
 
+from __future__ import division
+
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
