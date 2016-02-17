@@ -2,8 +2,8 @@
 # Natural Language Toolkit: 
 #
 # Copyright (C) 2001-2015 NLTK Project
-# Author: 
-# Contributors: 
+# Author: Pidong Wang, Josh Schroeder, based on code by Philipp Koehn
+# Contributors: Liling Tan, Martijn Pieters, Wiktor Stribizew
 #
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
