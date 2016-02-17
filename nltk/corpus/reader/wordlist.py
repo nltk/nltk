@@ -40,7 +40,9 @@ class SwadeshCorpusReader(WordListCorpusReader):
 
 class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
     """
-    :return: a list words for the specified language(s).
+    This is a class to read the nonbreaking prefixes textfiles from the
+    Moses Machine Translation toolkit. These lists are used in the Python port 
+    of the Moses' word tokenizer.  
     """
     available_langs = {'catalan': 'ca', 'czech': 'cs', 'german': 'de',
                         'greek': 'el', 'english': 'en', 'spanish': 'es',
@@ -53,6 +55,18 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
     available_langs.update({v:v for v in available_langs.values()})
     
     def words(self, lang=None, fileids=None, ignore_lines_startswith='#'):
+        """
+        This module returns a list of nonbreaking prefixes for the specified
+        language(s).
+        
+        >>> from nltk.corpus import nonbreaking_prefixes as nbp
+        >>> nbp.words('en')[:10]
+        [u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J']
+        >>> nbp.words('ta')[:5]
+        [u'\u0b85', u'\u0b86', u'\u0b87', u'\u0b88', u'\u0b89']
+        
+        :return: a list words for the specified language(s).
+        """
         # If *lang* in list of languages available, allocate apt fileid.
         # Otherwise, the function returns non-breaking prefixes for 
         # all languages when fileids==None.
@@ -64,14 +78,10 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
 
 class UnicharsCorpusReader(WordListCorpusReader):
     """
-    Returns a list of characters from Perl Unicode Properties 
-    (see http://perldoc.perl.org/perluniprops.html). The files in the 
-    perluniprop.zip are extracted using the Unicode::Tussle module from 
-    http://search.cpan.org/~bdfoy/Unicode-Tussle-1.11/lib/Unicode/Tussle.pm
-    
-    They are very useful when porting Perl tokenizers to Python.
-    
-    :return: a list of characters given the specific unicode character category 
+    This class is use to read lists of characters from the Perl Unicode 
+    Properties (see http://perldoc.perl.org/perluniprops.html).
+    The files in the perluniprop.zip are extracted using the Unicode::Tussle 
+    module from http://search.cpan.org/~bdfoy/Unicode-Tussle-1.11/lib/Unicode/Tussle.pm
     """
     # These are categories similar to the Perl Unicode Properties
     available_categories = ['Close_Punctuation', 'Currency_Symbol', 
@@ -79,6 +89,20 @@ class UnicharsCorpusReader(WordListCorpusReader):
                             'IsSo', 'Open_Punctuation']
     
     def chars(self, category=None, fileids=None):
+        """
+        This module returns a list of characters from  the Perl Unicode Properties
+        They are very useful when porting Perl tokenizers to Python.
+        
+        >>> from nltk.corpus import perluniprops as pup
+        >>> pup.chars('Open_Punctuation')[:5]
+        [u'(', u'[', u'{', u'\u0f3a', u'\u0f3c']
+        >>> pup.chars('Currency_Symbol')[:5]
+        [u'$', u'\xa2', u'\xa3', u'\xa4', u'\xa5']
+        >>> pup.available_categories
+        ['Close_Punctuation', 'Currency_Symbol', 'IsAlnum', 'IsAlpha', 'IsLower', 'IsN', 'IsSc', 'IsSo', 'Open_Punctuation']
+        
+        :return: a list of characters given the specific unicode character category 
+        """
         if category in self.available_categories:
             fileids = [category+'.txt']
         return list(self.raw(fileids).strip())
