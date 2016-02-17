@@ -8,7 +8,7 @@
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
-import os, io, six, re
+import re
 from six import text_type
 
 from nltk.tokenize.api import TokenizerI
@@ -21,12 +21,12 @@ class MosesTokenizer(TokenizerI):
     """
     
     # Perl Unicode Properties character sets.
-    IsN = ''.join(perluniprops.chars('IsN'))
-    IsAlnum = ''.join(perluniprops.chars('IsAlnum'))
-    IsSc = ''.join(perluniprops.chars('IsSc'))
-    IsSo = ''.join(perluniprops.chars('IsSo'))
-    IsAlpha = ''.join(perluniprops.chars('IsAlpha'))
-    IsLower = ''.join(perluniprops.chars('IsLower'))
+    IsN = text_type(''.join(perluniprops.chars('IsN')))
+    IsAlnum = text_type(''.join(perluniprops.chars('IsAlnum')))
+    IsSc = text_type(''.join(perluniprops.chars('IsSc')))
+    IsSo = text_type(''.join(perluniprops.chars('IsSo')))
+    IsAlpha = text_type(''.join(perluniprops.chars('IsAlpha')))
+    IsLower = text_type(''.join(perluniprops.chars('IsLower')))
     
     # Remove ASCII junk.
     DEDUPLICATE_SPACE = r'\s+', r' '
@@ -39,11 +39,11 @@ class MosesTokenizer(TokenizerI):
     RIGHT_STRIP = r" $", r""    # Uses text.rstrip() instead.
     
     # Pad all "other" special characters not in IsAlnum.
-    PAD_NOT_ISALNUM = ur'([^{}\s\.\'\`\,\-])'.format(IsAlnum), ur' \1 '
+    PAD_NOT_ISALNUM = u'([^{}\s\.\'\`\,\-])'.format(IsAlnum), r' \1 '
     
     # Splits all hypens (regardless of circumstances), e.g.
     # 'foo -- bar' -> 'foo @-@ @-@ bar' , 'foo-bar' -> 'foo @-@ bar'
-    AGGRESSIVE_HYPHEN_SPLIT = ur'([{alphanum}])\-(?=[{alphanum}])'.format(alphanum=IsAlnum), ur'\1 \@-\@ '
+    AGGRESSIVE_HYPHEN_SPLIT = u'([{alphanum}])\-(?=[{alphanum}])'.format(alphanum=IsAlnum), r'\1 \@-\@ '
     
     # Make multi-dots stay together.
     REPLACE_DOT_WITH_LITERALSTRING_1 = r'\.([\.]+)', ' DOTMULTI\1'
@@ -55,8 +55,8 @@ class MosesTokenizer(TokenizerI):
     # First application uses up B so rule can't see B,C
     # two-step version here may create extra spaces but these are removed later
     # will also space digit,letter or letter,digit forms (redundant with next section)
-    COMMA_SEPARATE_1 = ur'([^{}])[,]'.format(IsN), r'\1 , '
-    COMMA_SEPARATE_2 = ur'[,]([^{}])'.format(IsN), r' , \1'
+    COMMA_SEPARATE_1 = u'([^{}])[,]'.format(IsN), r'\1 , '
+    COMMA_SEPARATE_2 = u'[,]([^{}])'.format(IsN), r' , \1'
     
     # Attempt to get correct directional quotes.
     DIRECTIONAL_QUOTE_1 = r'^``',               r'`` '
@@ -75,17 +75,17 @@ class MosesTokenizer(TokenizerI):
     
     # Pad , with tailing space except if within numbers, e.g. 5,300
     # These are used in nltk.tokenize.moses.penn_tokenize()
-    COMMA_1 = ur'([^{numbers})[,]([^{numbers}])'.format(numbers=IsN), ur'\1 , \2'
-    COMMA_2 = ur'([{numbers}])[,]([^{numbers}])'.format(numbers=IsN), ur'\1 , \2'
-    COMMA_3 = ur'([^{numbers}])[,]([{numbers}])'.format(numbers=IsN), ur'\1 , \2'
+    COMMA_1 = u'([^{numbers})[,]([^{numbers}])'.format(numbers=IsN), r'\1 , \2'
+    COMMA_2 = u'([{numbers}])[,]([^{numbers}])'.format(numbers=IsN), r'\1 , \2'
+    COMMA_3 = u'([^{numbers}])[,]([{numbers}])'.format(numbers=IsN), r'\1 , \2'
     
     # Pad unicode symbols with spaces.
-    SYMBOLS = ur'([;:@#\$%&{}{}])'.format(IsSc, IsSo), ur' \1 '
+    SYMBOLS = u'([;:@#\$%&{}{}])'.format(IsSc, IsSo), r' \1 '
     
     # Separate out intra-token slashes.  PTB tokenization doesn't do this, so
     # the tokens should be merged prior to parsing with a PTB-trained parser.
     # e.g. "and/or" -> "and @/@ or"
-    INTRATOKEN_SLASHES = ur'([{alphanum}])\/([{alphanum}])'.format(alphanum=IsAlnum), ur'$1 \@\/\@ $2'
+    INTRATOKEN_SLASHES = u'([{alphanum}])\/([{alphanum}])'.format(alphanum=IsAlnum), r'$1 \@\/\@ $2'
     
     # Splits final period at end of string.
     FINAL_PERIOD = r"""([^.])([.])([\]\)}>"']*) ?$""", r'\1 \2\3'
@@ -154,19 +154,19 @@ class MosesTokenizer(TokenizerI):
     ESCAPE_LEFT_SQUARE_BRACKET = r"\[", r"\&#91;"
     ESCAPE_RIGHT_SQUARE_BRACKET = r"\]", r"\&#93;"
     
-    EN_SPECIFIC_1 = ur"([^{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), ur"\1 ' \2"
-    EN_SPECIFIC_2 = ur"([^{alpha}{isn}])[']([{alpha}])".format(alpha=IsAlpha, isn=IsN), ur"\1 ' \2" 
-    EN_SPECIFIC_3 = ur"([{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), ur"\1 ' \2"
-    EN_SPECIFIC_4 = ur"([{alpha}])[']([{alpha}])".format(alpha=IsAlpha), ur"\1 ' \2"
-    EN_SPECIFIC_5 = ur"([{isn}])[']([s])".format(isn=IsN), ur"\1 '\2"
+    EN_SPECIFIC_1 = u"([^{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
+    EN_SPECIFIC_2 = u"([^{alpha}{isn}])[']([{alpha}])".format(alpha=IsAlpha, isn=IsN), r"\1 ' \2" 
+    EN_SPECIFIC_3 = u"([{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
+    EN_SPECIFIC_4 = u"([{alpha}])[']([{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
+    EN_SPECIFIC_5 = u"([{isn}])[']([s])".format(isn=IsN), r"\1 '\2"
     
     ENGLISH_SPECIFIC_APOSTROPHE = [EN_SPECIFIC_1, EN_SPECIFIC_2, EN_SPECIFIC_3, 
                                    EN_SPECIFIC_4, EN_SPECIFIC_5]
     
-    FR_IT_SPECIFIC_1 = ur"([^{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), ur"\1 ' \2"
-    FR_IT_SPECIFIC_2 = ur"([^{alpha}])[']([{alpha}])".format(alpha=IsAlpha), ur"\1 ' \2"
-    FR_IT_SPECIFIC_3 = ur"([{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), ur"\1 ' \2"
-    FR_IT_SPECIFIC_4 = ur"([{alpha}])[']([{alpha}])".format(alpha=IsAlpha), ur"\1' \2"
+    FR_IT_SPECIFIC_1 = u"([^{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
+    FR_IT_SPECIFIC_2 = u"([^{alpha}])[']([{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
+    FR_IT_SPECIFIC_3 = u"([{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
+    FR_IT_SPECIFIC_4 = u"([{alpha}])[']([{alpha}])".format(alpha=IsAlpha), r"\1' \2"
     
     FR_IT_SPECIFIC_APOSTROPHE = [FR_IT_SPECIFIC_1, FR_IT_SPECIFIC_2, 
                                  FR_IT_SPECIFIC_3, FR_IT_SPECIFIC_4]
