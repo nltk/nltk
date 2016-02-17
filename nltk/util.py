@@ -1357,7 +1357,7 @@ class Trie(defaultdict):
 
             """
             if isinstance(d, defaultdict):
-                d = {k: _default_to_regular(v) for k, v in d.iteritems()}
+                d = {k: _default_to_regular(v) for k, v in d.items()}
             return d
         
         return _default_to_regular(self)
