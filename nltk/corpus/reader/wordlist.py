@@ -78,7 +78,7 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
 
 class UnicharsCorpusReader(WordListCorpusReader):
     """
-    This class is use to read lists of characters from the Perl Unicode 
+    This class is used to read lists of characters from the Perl Unicode 
     Properties (see http://perldoc.perl.org/perluniprops.html).
     The files in the perluniprop.zip are extracted using the Unicode::Tussle 
     module from http://search.cpan.org/~bdfoy/Unicode-Tussle-1.11/lib/Unicode/Tussle.pm
@@ -90,7 +90,7 @@ class UnicharsCorpusReader(WordListCorpusReader):
     
     def chars(self, category=None, fileids=None):
         """
-        This module returns a list of characters from  the Perl Unicode Properties
+        This module returns a list of characters from  the Perl Unicode Properties.
         They are very useful when porting Perl tokenizers to Python.
         
         >>> from nltk.corpus import perluniprops as pup
