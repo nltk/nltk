@@ -61,7 +61,7 @@ def regexp_span_tokenize(s, regexp):
     left = 0
     for m in finditer(regexp, s):
         right, next = m.span()
-        if right != 0:
+        if right != left:
             yield left, right
         left = next
     yield left, len(s)
