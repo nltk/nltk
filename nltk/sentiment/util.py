@@ -407,7 +407,7 @@ def demo_tweets(trainer, n_instances=None, output=None):
     :param output: the output file where results have to be reported.
     """
     from nltk.tokenize import TweetTokenizer
-    from sentiment_analyzer import SentimentAnalyzer
+    from nltk.sentiment import SentimentAnalyzer
     from nltk.corpus import twitter_samples, stopwords
 
     # Different customizations for the TweetTokenizer
@@ -484,7 +484,7 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
     :param output: the output file where results have to be reported.
     """
     from nltk.corpus import movie_reviews
-    from sentiment_analyzer import SentimentAnalyzer
+    from nltk.sentiment import SentimentAnalyzer
 
     if n_instances is not None:
         n_instances = int(n_instances/2)
@@ -536,7 +536,7 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
         and negative.
     :param output: the output file where results have to be reported.
     """
-    from sentiment_analyzer import SentimentAnalyzer
+    from nltk.sentiment import SentimentAnalyzer
     from nltk.corpus import subjectivity
 
     if n_instances is not None:
