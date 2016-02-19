@@ -650,7 +650,7 @@ def demo_vader_instance(text):
 
     :param text: a text whose polarity has to be evaluated.
     """
-    from vader import SentimentIntensityAnalyzer
+    from nltk.sentiment import SentimentIntensityAnalyzer
     vader_analyzer = SentimentIntensityAnalyzer()
     print(vader_analyzer.polarity_scores(text))
 
@@ -663,7 +663,7 @@ def demo_vader_tweets(n_instances=None, output=None):
     """
     from collections import defaultdict
     from nltk.corpus import twitter_samples
-    from vader import SentimentIntensityAnalyzer
+    from nltk.sentiment import SentimentIntensityAnalyzer
     from nltk.metrics import (accuracy as eval_accuracy, precision as eval_precision,
         recall as eval_recall, f_measure as eval_f_measure)
 
