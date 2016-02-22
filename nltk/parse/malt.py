@@ -12,6 +12,7 @@ from __future__ import unicode_literals
 from nltk.six import text_type
 
 import os
+import sys
 import tempfile
 import subprocess
 import inspect
@@ -215,8 +216,10 @@ class MaltParser(ParserI):
         """
 
         cmd = ['java']
-        cmd+= self.additional_java_args # Adds additional java arguments.
-        cmd+= ['-cp', ':'.join(self.malt_jars)] # Adds classpaths for jars
+        cmd+= self.additional_java_args # Adds additional java arguments
+        # Joins classpaths with ";" if on Windows and on Linux/Mac use ":"
+        classpaths_separator = ';' if sys.platform.startswith('win') else ':'
+        cmd+= ['-cp', classpaths_separator.join(self.malt_jars)] # Adds classpaths for jars
         cmd+= ['org.maltparser.Malt'] # Adds the main function.
 
         # Adds the model file.
