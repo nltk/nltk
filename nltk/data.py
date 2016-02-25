@@ -974,11 +974,17 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
         zipfile.ZipFile.__init__(self, filename)
         assert self.filename == filename
         self.close()
+        # After closing a ZipFile object, the _fileRefCnt needs to be cleared 
+        # for Python2and3 compatible code.
+        self._fileRefCnt = 0
 
     def read(self, name):
         assert self.fp is None
         self.fp = open(self.filename, 'rb')
         value = zipfile.ZipFile.read(self, name)
+        # Ensure that _fileRefCnt needs to be set for Python2and3 compatible code.
+        # Since we only opened one file here, we add 1.
+        self._fileRefCnt += 1
         self.close()
         return value
 
