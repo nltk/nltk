@@ -978,7 +978,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     def read(self, name):
         assert self.fp is None
         self.fp = open(self.filename, 'rb')
-        with self.open(name) as zfin:
+        with self.open(name, 'r') as zfin:
           value = zfin.read()
         return value
 
