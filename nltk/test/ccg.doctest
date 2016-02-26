@@ -345,7 +345,7 @@ Lexicons for the tests:
 
     >>> parser = chart.CCGChartParser(lex, chart.DefaultRuleSet)
     >>> for parse in parser.parse(u"el ministro anunció pero el presidente desmintió la nueva ley".split()):
-    ...     printCCGDerivation(parse)
+    ...     printCCGDerivation(parse) # doctest: +NORMALIZE_WHITESPACE
     ...     break
        el    ministro    anunció              pero              el    presidente   desmintió     la    nueva  ley
      (NP/N)     N      ((S\NP)/NP)  (((S/NP)\(S/NP))/(S/NP))  (NP/N)      N       ((S\NP)/NP)  (NP/N)  (N/N)   N
@@ -393,4 +393,3 @@ Lexicons for the tests:
                                                                  (S/NP)
     -------------------------------------------------------------------------------------------------------------->
                                                           S
-
