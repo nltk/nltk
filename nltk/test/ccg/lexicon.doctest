@@ -1,0 +1,60 @@
+.. Copyright (C) 2001-2015 NLTK Project
+.. For license information, see LICENSE.TXT
+
+=================
+Lexicon for CCG
+=================
+
+    >>> from nltk.ccg import lexicon
+
+Parse lexicon with semantics
+
+    >>> print(str(lexicon.fromstring(
+    ...     '''
+    ...     :- S,NP
+    ...
+    ...     IntransVsg :: S\\NP[sg]
+    ...     
+    ...     sleeps => IntransVsg {\\x.sleep(x)}
+    ...     eats => S\\NP[sg]/NP {\\x y.eat(x,y)}
+    ...        
+    ...     and => var\\var/var {\\x y.x & y}
+    ...     ''',
+    ...     True
+    ... )))
+    and => ((_var1\_var1)/_var1) {(\x y.x & y)}
+    eats => ((S\NP['sg'])/NP) {\x y.eat(x,y)}
+    sleeps => (S\NP['sg']) {\x.sleep(x)}
+
+Parse lexicon without semantics
+
+    >>> print(str(lexicon.fromstring(
+    ...     '''
+    ...     :- S,NP
+    ...
+    ...     IntransVsg :: S\\NP[sg]
+    ...     
+    ...     sleeps => IntransVsg
+    ...     eats => S\\NP[sg]/NP {sem=\\x y.eat(x,y)}
+    ...        
+    ...     and => var\\var/var
+    ...     ''',
+    ...     False
+    ... )))
+    and => ((_var2\_var2)/_var2)
+    eats => ((S\NP['sg'])/NP)
+    sleeps => (S\NP['sg'])
+
+Semantics are missing
+
+    >>> print(str(lexicon.fromstring(
+    ...     '''
+    ...     :- S,NP
+    ...     
+    ...     eats => S\\NP[sg]/NP
+    ...     ''',
+    ...     True
+    ... )))
+    Traceback (most recent call last):
+      ...
+    AssertionError: eats => S\NP[sg]/NP must contain semantics because include_semantics is set to True

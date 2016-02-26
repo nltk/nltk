@@ -1,0 +1,54 @@
+.. Copyright (C) 2001-2015 NLTK Project
+.. For license information, see LICENSE.TXT
+
+==============================================
+CCG combinator semantics computation
+==============================================
+
+    >>> from nltk.sem.logic import *
+    >>> from nltk.ccg.logic import *
+
+    >>> read_expr = Expression.fromstring
+
+Compute semantics from function application
+
+    >>> print(str(compute_function_semantics(read_expr(r'\x.P(x)'), read_expr(r'book'))))
+    P(book)
+
+    >>> print(str(compute_function_semantics(read_expr(r'\P.P(book)'), read_expr(r'read'))))
+    read(book)
+
+    >>> print(str(compute_function_semantics(read_expr(r'\P.P(book)'), read_expr(r'\x.read(x)'))))
+    read(book)
+
+Compute semantics from composition
+
+    >>> print(str(compute_composition_semantics(read_expr(r'\x.P(x)'), read_expr(r'\x.Q(x)'))))
+    \x.P(Q(x))
+
+    >>> print(str(compute_composition_semantics(read_expr(r'\x.P(x)'), read_expr(r'read'))))
+    Traceback (most recent call last):
+      ...
+    AssertionError: `read` must be a lambda expression
+
+Compute semantics from substitution
+
+    >>> print(str(compute_substitution_semantics(read_expr(r'\x y.P(x,y)'), read_expr(r'\x.Q(x)'))))
+    \x.P(x,Q(x))
+    
+    >>> print(str(compute_substitution_semantics(read_expr(r'\x.P(x)'), read_expr(r'read'))))
+    Traceback (most recent call last):
+      ...
+    AssertionError: `\x.P(x)` must be a lambda expression with 2 arguments
+
+Compute type-raise semantics
+
+    >>> print(str(compute_type_raised_semantics(read_expr(r'\x.P(x)'))))
+    \F x.F(P(x))
+
+    >>> print(str(compute_type_raised_semantics(read_expr(r'\x.F(x)'))))
+    \F1 x.F1(F(x))
+
+    >>> print(str(compute_type_raised_semantics(read_expr(r'\x y z.P(x,y,z)'))))
+    \F x y z.F(P(x,y,z))
+
