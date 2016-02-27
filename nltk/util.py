@@ -1332,8 +1332,9 @@ class Trie(defaultdict):
 
         >>> from nltk.util import Trie
         >>> trie = Trie(["abc", "def"])
-        >>> trie.as_dict()
-        {'a': {'b': {'c': {True: None}}}, 'd': {'e': {'f': {True: None}}}}
+        >>> expected = {'a': {'b': {'c': {True: None}}}, 'd': {'e': {'f': {True: None}}}}
+        >>> trie.as_dict() == expected
+        True
 
         """
         def _default_to_regular(d):
