@@ -334,6 +334,9 @@ class StreamBackedCorpusView(AbstractLazySequence):
 
         # If we reach this point, then we should know our length.
         assert self._len is not None
+        # Enforce closing of stream once we reached end of file
+        # We should have reached EOF once we're out of the while loop.
+        self.close()
 
     # Use concat for these, so we can use a ConcatenatedCorpusView
     # when possible.

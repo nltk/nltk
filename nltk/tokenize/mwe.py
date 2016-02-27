@@ -70,8 +70,9 @@ class MWETokenizer(TokenizerI):
         >>> tokenizer.add_mwe(('a', 'b'))
         >>> tokenizer.add_mwe(('a', 'b', 'c'))
         >>> tokenizer.add_mwe(('a', 'x'))
-        >>> tokenizer._mwes.as_dict()
-        {'a': {'x': {True: None}, 'b': {True: None, 'c': {True: None}}}}
+        >>> expected = {'a': {'x': {True: None}, 'b': {True: None, 'c': {True: None}}}}
+        >>> tokenizer._mwes.as_dict() == expected
+        True
 
         """
         self._mwes.insert(mwe)
