@@ -369,25 +369,30 @@ class BufferedGzipFile(GzipFile):
         """
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
-        self._buffer = BytesIO()
+        # Note: In > Python3.5, GzipFile is already using a 
+        # buffered reader in the backend which has a variable self._buffer
+        # See https://github.com/nltk/nltk/issues/1308
+        if sys.version.startswith('3.5'):
+            sys.stderr.write("Use the native Python gzip.GzipFile instead.")
+        self._nltk_buffer = BytesIO()
         # cStringIO does not support len.
         self._len = 0
 
     def _reset_buffer(self):
         # For some reason calling BytesIO.truncate() here will lead to
         # inconsistent writes so just set _buffer to a new BytesIO object.
-        self._buffer = BytesIO()
+        self._nltk_buffer = BytesIO()
         self._len = 0
 
     def _write_buffer(self, data):
         # Simply write to the buffer and increment the buffer size.
         if data is not None:
-            self._buffer.write(data)
+            self._nltk_buffer.write(data)
             self._len += len(data)
 
     def _write_gzip(self, data):
         # Write the current buffer to the GzipFile.
-        GzipFile.write(self, self._buffer.getvalue())
+        GzipFile.write(self, self._nltk_buffer.getvalue())
         # Then reset the buffer and write the new data to the buffer.
         self._reset_buffer()
         self._write_buffer(data)
@@ -400,7 +405,7 @@ class BufferedGzipFile(GzipFile):
         return GzipFile.close(self)
 
     def flush(self, lib_mode=FLUSH):
-        self._buffer.flush()
+        self._nltk_buffer.flush()
         GzipFile.flush(self, lib_mode)
 
     def read(self, size=None):
