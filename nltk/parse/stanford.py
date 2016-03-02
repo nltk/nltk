@@ -9,16 +9,13 @@
 
 from __future__ import unicode_literals
 
-import tempfile
 import os
 import re
 import json
 import time
-from subprocess import PIPE
 
 import requests
 
-from nltk import compat
 from nltk.internals import find_jar_iter, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
@@ -31,6 +28,7 @@ _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 class CoreNLPServerError(EnvironmentError):
     """Exceptions assciated with the Core NLP server."""
+
 
 class CoreNLPServer(object):
 
