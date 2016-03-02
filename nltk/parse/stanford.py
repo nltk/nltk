@@ -16,7 +16,7 @@ import time
 
 import requests
 
-from nltk.internals import find_jar_iter, config_java, java, _java_options
+from nltk.internals import find_jar_iter, config_java, java, _java_options, find_jars_within_path
 
 from nltk.parse.api import ParserI
 from nltk.tokenize.api import TokenizerI
@@ -34,17 +34,6 @@ class CoreNLPServer(object):
 
     _MODEL_JAR_PATTERN = r'stanford-corenlp-(\d+)\.(\d+)\.(\d+)-models\.jar'
     _JAR = r'stanford-corenlp-(\d+)\.(\d+)\.(\d+)\.jar'
-
-    other_jars = (
-        'ejml-0.23.jar',
-        'javax.json.jar',
-        'joda-time.jar',
-        'jollyday.jar',
-        'protobuf.jar',
-        'slf4j-api.jar',
-        'slf4j-simple.jar',
-        'xom.jar',
-    )
 
     def __init__(
         self, path_to_jar=None, path_to_models_jar=None, verbose=False,
@@ -80,18 +69,7 @@ class CoreNLPServer(object):
             key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
         )
 
-        self.other_jars = tuple(
-            next(
-                find_jar_iter(
-                    jar,
-                    None,
-                    searchpath=(os.path.dirname(stanford_jar), ),
-                    verbose=verbose,
-                    is_regex=False,
-                )
-            )
-            for jar in self.other_jars
-        )
+        self.other_jars = tuple(find_jars_within_path(os.path.dirname(stanford_jar)))
 
         self.verbose = verbose
 
