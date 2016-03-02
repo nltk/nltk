@@ -1,6 +1,19 @@
 NLTK News
 =========
 
+2016
+----
+
+NLTK 3.2 released : March 2016
+   Fixes for Python 3.5, code cleanups now Python 2.6 is no longer
+   supported, support for PanLex, support for third party download
+   locations for NLTK data, new support for RIBES score, BLEU
+   smoothing, corpus-level BLEU, improvements to TweetTokenizer,
+   updates for Stanford API, add mathematical operators to
+   ConditionalFreqDist, fix bug in sentiwordnet for adjectives,
+   improvements to documentation, code cleanups, consistent handling
+   of file paths for cross-platform operation.
+
 2015
 ----
 
