@@ -28,7 +28,7 @@ A. PREPARE
      - cd ../nltk/web
      - make (slow)
      - cd ../../nltk.github.com
-     - git add _modules _sources api *.html objects.inv searchindex.js
+     - git add _modules _sources _static api *.html objects.inv searchindex.js
      - git commit -m "updates for version 3.X.Y"
      - git push origin master
 8. Tag this version:
