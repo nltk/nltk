@@ -22,7 +22,7 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2] 
         
         # Testing modified unigram precision.
-        hyp1_unigram_precision =  _modified_precision(references, hyp1, n=1)
+        hyp1_unigram_precision =  float(_modified_precision(references, hyp1, n=1))
         assert (round(hyp1_unigram_precision, 4) == 0.2857)
         # With assertAlmostEqual at 4 place precision.
         self.assertAlmostEqual(hyp1_unigram_precision, 0.28571428, places=4)
@@ -59,8 +59,8 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2, ref3]
         
         # Unigram precision.
-        hyp1_unigram_precision = _modified_precision(references, hyp1, n=1)
-        hyp2_unigram_precision = _modified_precision(references, hyp2, n=1)
+        hyp1_unigram_precision = float(_modified_precision(references, hyp1, n=1))
+        hyp2_unigram_precision = float(_modified_precision(references, hyp2, n=1))
         # Test unigram precision with assertAlmostEqual at 4 place precision.
         self.assertAlmostEqual(hyp1_unigram_precision, 0.94444444, places=4)
         self.assertAlmostEqual(hyp2_unigram_precision, 0.57142857, places=4)
@@ -70,8 +70,8 @@ class TestBLEU(unittest.TestCase):
         
         
         # Bigram precision
-        hyp1_bigram_precision = _modified_precision(references, hyp1, n=2)
-        hyp2_bigram_precision = _modified_precision(references, hyp2, n=2)
+        hyp1_bigram_precision = float(_modified_precision(references, hyp1, n=2))
+        hyp2_bigram_precision = float(_modified_precision(references, hyp2, n=2))
         # Test bigram precision with assertAlmostEqual at 4 place precision.
         self.assertAlmostEqual(hyp1_bigram_precision, 0.58823529, places=4)
         self.assertAlmostEqual(hyp2_bigram_precision, 0.07692307, places=4)

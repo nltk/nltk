@@ -69,33 +69,33 @@ ConditionalFreqDist
 -------------------
 
     >>> cfd1 = ConditionalFreqDist()
-    >>> cfd1[1] = FreqDist('abbbc')
+    >>> cfd1[1] = FreqDist('abbbb')
     >>> cfd1[2] = FreqDist('xxxxyy')
     >>> cfd1
     <ConditionalFreqDist with 2 conditions>
 
     >>> cfd2 = ConditionalFreqDist()
-    >>> cfd2[1] = FreqDist('bccd')
-    >>> cfd2[2] = FreqDist('xxyyyzz')
+    >>> cfd2[1] = FreqDist('bbccc')
+    >>> cfd2[2] = FreqDist('xxxyyyzz')
     >>> cfd2[3] = FreqDist('m')
     >>> cfd2
     <ConditionalFreqDist with 3 conditions>
 
     >>> r = cfd1 + cfd2
     >>> [(i,r[i]) for i in r.conditions()]
-    [(1, FreqDist({'b': 4, 'c': 3, 'a': 1, 'd': 1})), (2, FreqDist({'x': 6, 'y': 5, 'z': 2})), (3, FreqDist({'m': 1}))]
+    [(1, FreqDist({'b': 6, 'c': 3, 'a': 1})), (2, FreqDist({'x': 7, 'y': 5, 'z': 2})), (3, FreqDist({'m': 1}))]
 
     >>> r = cfd1 - cfd2
     >>> [(i,r[i]) for i in r.conditions()]
-    [(1, FreqDist({'b': 2, 'a': 1})), (2, FreqDist({'x': 2}))]
+    [(1, FreqDist({'b': 2, 'a': 1})), (2, FreqDist({'x': 1}))]
 
     >>> r = cfd1 | cfd2
     >>> [(i,r[i]) for i in r.conditions()]
-    [(1, FreqDist({'b': 3, 'c': 2, 'a': 1, 'd': 1})), (2, FreqDist({'x': 4, 'y': 3, 'z': 2})), (3, FreqDist({'m': 1}))]
+    [(1, FreqDist({'b': 4, 'c': 3, 'a': 1})), (2, FreqDist({'x': 4, 'y': 3, 'z': 2})), (3, FreqDist({'m': 1}))]
 
     >>> r = cfd1 & cfd2
     >>> [(i,r[i]) for i in r.conditions()]
-    [(1, FreqDist({'c': 1, 'b': 1})), (2, FreqDist({'y': 2, 'x': 2}))]
+    [(1, FreqDist({'b': 2})), (2, FreqDist({'x': 3, 'y': 2}))]
 
 Testing some HMM estimators
 ---------------------------
@@ -111,11 +111,6 @@ from the whole corpus, not just the training corpus
 
     >>> from nltk.util import unique_list
     >>> tag_set = unique_list(tag for sent in corpus for (word,tag) in sent)
-    >>> print(len(tag_set))
-    92
-    >>> symbols = unique_list(word for sent in corpus for (word,tag) in sent)
-    >>> print(len(symbols))
-    1464
     >>> print(len(tag_set))
     92
     >>> symbols = unique_list(word for sent in corpus for (word,tag) in sent)

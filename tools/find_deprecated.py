@@ -44,19 +44,19 @@ STRING_PAT = (r'\s*[ur]{0,2}(?:'
               "'''[\s\S]*?'''|"  "'[^'\n]+?'" ")\s*")
 STRING_RE = re.compile(STRING_PAT)
 
-STRINGS_PAT = '%s(?:[+]?%s)*' % (STRING_PAT, STRING_PAT)
+STRINGS_PAT = '{}(?:[+]?{})*'.format(STRING_PAT, STRING_PAT)
 STRINGS_RE = re.compile(STRINGS_PAT)
 
 # Define a regexp to search for deprecated definitions.
 DEPRECATED_DEF_PAT = (
-    r'^\s*@deprecated\s*\(\s*(%s)\s*\)\s*\n+' % STRINGS_PAT +
+    r'^\s*@deprecated\s*\(\s*({})\s*\)\s*\n+'.format(STRINGS_PAT) +
     r'\s*def\s*(\w+).*' +
     r'|' +
     r'^\s*class\s+(\w+)\s*\(.*Deprecated.*\):\s*')
 DEPRECATED_DEF_RE = re.compile(DEPRECATED_DEF_PAT, re.MULTILINE)
 
 CORPUS_READ_METHOD_RE = re.compile(
-    '(%s)\.read\(' % ('|'.join(re.escape(n) for n in dir(nltk.corpus))))
+    '({})\.read\('.format('|'.join(re.escape(n) for n in dir(nltk.corpus))))
 
 CLASS_DEF_RE = re.compile('^\s*class\s+(\w+)\s*[:\(]')
 
@@ -179,9 +179,9 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
         # Ignore all tokens except deprecated names.
         if not (tok in deprecated_classes or
                 (tok in deprecated_funcs and
-                 re.search(r'\b%s\s*\(' % esctok, line)) or
+                 re.search(r'\b{}\s*\('.format(esctok), line)) or
                 (tok in deprecated_methods and
-                 re.search(r'(?!<\bself)[.]\s*%s\s*\(' % esctok, line))):
+                 re.search(r'(?!<\bself)[.]\s*{}\s*\('.format(esctok), line))):
             continue
         # Hack: only complain about read if it's used after a corpus.
         if tok == 'read' and not CORPUS_READ_METHOD_RE.search(line):
@@ -192,7 +192,7 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
         # Print a header for the first use in a file:
         if path not in dep_files:
             print('\n' + term.BOLD + path + term.NORMAL)
-            print('  %slinenum%s' % (term.YELLOW, term.NORMAL))
+            print('  {}linenum{}'.format(term.YELLOW, term.NORMAL))
             dep_files.add(path)
         # Mark the offending token.
         dep_names.add(tok)
@@ -202,9 +202,9 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
             sub = term.BOLD + tok + term.NORMAL
         else:
             sub = '<<' + tok + '>>'
-        line = re.sub(r'\b%s\b' % esctok, sub, line)
+        line = re.sub(r'\b{}\b'.format(esctok), sub, line)
         # Print the offending line.
-        print('  %s[%5d]%s %s' % (term.YELLOW, start[0] + lineno_offset,
+        print('  {}[{:5d}]{} {}'.format(term.YELLOW, start[0] + lineno_offset,
                                   term.NORMAL, line.rstrip()))
 
 
