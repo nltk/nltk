@@ -137,7 +137,7 @@ class PerceptronTagger(TaggerI):
         self.tagdict = {}
         self.classes = set()
         if load:
-            AP_MODEL_LOC = str(find('taggers/averaged_perceptron_tagger/'+PICKLE))
+            AP_MODEL_LOC = 'file:'+str(find('taggers/averaged_perceptron_tagger/'+PICKLE))
             self.load(AP_MODEL_LOC)
 
     def tag(self, tokens):
