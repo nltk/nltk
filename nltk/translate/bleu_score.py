@@ -291,7 +291,7 @@ def _modified_precision(references, hypothesis, n):
     numerator = sum(clipped_counts.values())
     denominator = sum(counts.values())  
     
-    return Fraction(numerator, denominator)  
+    return Fraction(numerator, denominator, _normalize=False)  
     
 
 def _closest_ref_length(references, hyp_len):
@@ -490,7 +490,7 @@ class SmoothingFunction:
         """
         incvnt = 1 # From the mteval-v13a.pl, it's referred to as k.
         for i, p_i in enumerate(p_n):
-            if p_i == 0:
+            if p_i.numerator == 0:
                 p_n[i] = 1 / (2**incvnt * p_i.denominator)
                 incvnt+=1
         return p_n
@@ -505,7 +505,7 @@ class SmoothingFunction:
         """
         incvnt = 1 
         for i, p_i in enumerate(p_n):
-            if p_i == 0 and hyp_len != 0:
+            if p_i.numerator == 0 and hyp_len != 0:
                 p_n[i] = incvnt * self.k / math.log(hyp_len) # Note that this K is different from the K from NIST.
                 incvnt+=1
         return p_n
