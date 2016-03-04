@@ -172,7 +172,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     bp = _brevity_penalty(ref_lengths, hyp_lengths)
     
     # Collects the various precision values for the different ngram orders.
-    p_n = [Fraction(p_numerators[i], p_denominators[i]) 
+    p_n = [Fraction(p_numerators[i], p_denominators[i], _normalize=False) 
            for i, _ in enumerate(weights, start=1)]
     
     # Smoothen the modified precision.
@@ -471,7 +471,7 @@ class SmoothingFunction:
         machine translation quality using longest common subsequence and 
         skip-bigram statistics. In ACL04.
         """
-        return [Fraction(p_i.numerator + 1, p_i.denominator + 1) for p_i in p_n]
+        return [Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False) for p_i in p_n]
         
     def method3(self, p_n, *args, **kwargs):
         """
