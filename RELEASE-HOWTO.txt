@@ -22,6 +22,15 @@ A. PREPARE
      - test individual modules with, e.g.: tox-3.4 -e py34 nltk.package.module
 6. Check that installation instructions are up-to-date
 7. Update the news page in nltk/web/news.rst
+8. Rebuild the web docs
+     - cd nltk.github.com
+     - git pull
+     - cd ../nltk/web
+     - make (slow)
+     - cd ../../nltk.github.com
+     - git add _modules _sources _static api *.html objects.inv searchindex.js
+     - git commit -m "updates for version 3.X.Y"
+     - git push origin master
 8. Tag this version:
      - git tag -a 3.X.Y -m "version 3.X.Y"
      - git push --tags

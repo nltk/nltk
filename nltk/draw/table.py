@@ -1070,12 +1070,18 @@ def demo():
         if pos[0] != 'N': continue
         word = word.lower()
         for synset in wordnet.synsets(word):
-            hyper = (synset.hypernyms()+[''])[0]
-            hypo = (synset.hyponyms()+[''])[0]
+            try:
+                hyper_def = synset.hypernyms()[0].definition()
+            except:
+                hyper_def = '*none*'
+            try:
+                hypo_def = synset.hypernyms()[0].definition()
+            except:
+                hypo_def = '*none*'
             table.append([word,
-                          getattr(synset, 'definition', '*none*'),
-                          getattr(hyper, 'definition', '*none*'),
-                          getattr(hypo, 'definition', '*none*')])
+                          synset.definition(),
+                          hyper_def,
+                          hypo_def])
 
     table.columnconfig('Word', background='#afa')
     table.columnconfig('Synset', background='#efe')

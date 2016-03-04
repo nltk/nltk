@@ -91,7 +91,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     s = (w * math.log(p_i) if p_i else 0 
          for w, p_i in zip(weights, p_n))
     sum_s = math.fsum(s)
-    if sum_s == 0:
+    if sum_s == 0 and all(p_n) == 0:
         return 0
     return bp * math.exp(sum_s)
 
@@ -491,7 +491,7 @@ class SmoothingFunction:
         incvnt = 1 # From the mteval-v13a.pl, it's referred to as k.
         for i, p_i in enumerate(p_n):
             if p_i == 0:
-                p_n[i] = 1 / 2**incvnt
+                p_n[i] = 1 / (2**incvnt * p_i.denominator)
                 incvnt+=1
         return p_n
     
