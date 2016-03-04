@@ -125,7 +125,10 @@ class ToktokTokenizer(TokenizerI):
     URL_FOE_3 = re.compile(r'(:\/\/)[\S+\.\S+\/\S+][\/]'), ' / '
     URL_FOE_4 = re.compile(r' /'), r' / ' # s{ /}{ / }g;
     
-    # Left/Right strip, i.e. remove heading/trailing spaces.     
+    # Left/Right strip, i.e. remove heading/trailing spaces.
+    # These strip regexes should NOT be used,
+    # instead use str.lstrip(), str.rstrip() or str.strip() 
+    # (They are kept for reference purposes to the original toktok.pl code)  
     LSTRIP = re.compile(r'^ +'), ''
     RSTRIP = re.compile(r'\s+$'),'\n' 
     # Merge multiple spaces.
@@ -137,13 +140,12 @@ class ToktokTokenizer(TokenizerI):
                       OPEN_PUNCT_RE, CLOSE_PUNCT_RE, 
                       MULTI_COMMAS, COMMA_IN_NUM, FINAL_PERIOD_2,
                       PROB_SINGLE_QUOTES, STUPID_QUOTES_1, STUPID_QUOTES_2,
-                      CURRENCY_SYM_RE, RSTRIP,
-                      MULTI_DASHES, MULTI_DOTS,
-                      FINAL_PERIOD_1, FINAL_PERIOD_2,
-                      LSTRIP, ONE_SPACE]
+                      CURRENCY_SYM_RE, EN_EM_DASHES, MULTI_DASHES, MULTI_DOTS,
+                      FINAL_PERIOD_1, FINAL_PERIOD_2, ONE_SPACE]
     
     def tokenize(self, text):
         text = text_type(text) # Converts input string into unicode.
         for regexp, subsitution in self.TOKTOK_REGEXES:
             text = regexp.sub(subsitution, text)
+        # Finally, strips heading and trailing spaces.
         return text_type(text.strip()) # Converts output string into unicode.
