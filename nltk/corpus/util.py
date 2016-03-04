@@ -38,12 +38,29 @@ class LazyCorpusLoader(object):
     NLTK data package.  Once they've properly installed the data
     package (or modified ``nltk.data.path`` to point to its location),
     they can then use the corpus object without restarting python.
+    
+    :param name: The name of the corpus
+    :type name: str
+    :param reader_cls: The specific CorpusReader class, e.g. PlaintextCorpusReader, WordListCorpusReader
+    :type reader: nltk.corpus.reader.api.CorpusReader
+    :param nltk_data_subdir: The subdirectory where the corpus is stored.
+    :type nltk_data_subdir: str
+    :param *args: Any other non-keywords arguments that `reader_cls` might need.
+    :param *kargs: Any other keywords arguments that `reader_cls` might need.
     """
     def __init__(self, name, reader_cls, *args, **kwargs):
         from nltk.corpus.reader.api import CorpusReader
         assert issubclass(reader_cls, CorpusReader)
         self.__name = self.__name__ = name
         self.__reader_cls = reader_cls
+        # If nltk_data_subdir is set explicitly 
+        if 'nltk_data_subdir' in kwargs:
+            # Use the specified subdirectory path
+            self.subdir = kwargs['nltk_data_subdir']
+            # Pops the `nltk_data_subdir` argument, we don't need it anymore.
+            kwargs.pop('nltk_data_subdir', None)
+        else: # Otherwise use 'nltk_data/corpora'
+            self.subdir = 'corpora'
         self.__args = args
         self.__kwargs = kwargs
 
@@ -52,15 +69,15 @@ class LazyCorpusLoader(object):
         zip_name = re.sub(r'(([^/]*)(/.*)?)', r'\2.zip/\1/', self.__name)
         if TRY_ZIPFILE_FIRST:
             try:
-                root = nltk.data.find('corpora/%s' % zip_name)
+                root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
             except LookupError as e:
-                try: root = nltk.data.find('corpora/%s' % self.__name)
+                try: root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
                 except LookupError: raise e
         else:
             try:
-                root = nltk.data.find('corpora/%s' % self.__name)
+                root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
             except LookupError as e:
-                try: root = nltk.data.find('corpora/%s' % zip_name)
+                try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
                 except LookupError: raise e
 
         # Load the corpus.

@@ -281,7 +281,7 @@ nonbreaking_prefixes = LazyCorpusLoader(
     'nonbreaking_prefixes', NonbreakingPrefixesCorpusReader, r'(?!README|\.).*', encoding='utf8')
 
 perluniprops = LazyCorpusLoader(
-    'perluniprops', UnicharsCorpusReader, r'(?!README|\.).*', encoding='utf8')
+    'perluniprops', UnicharsCorpusReader, r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
 
 
 def demo():
