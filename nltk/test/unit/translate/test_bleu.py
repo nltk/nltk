@@ -79,6 +79,9 @@ class TestBLEU(unittest.TestCase):
         assert (round(hyp1_bigram_precision, 4) == 0.5882)
         assert (round(hyp2_bigram_precision, 4) == 0.0769)
         
+    def test_fringe_cases(self):
+        pass
+        
     def test_brevity_penalty(self):
         pass
     
