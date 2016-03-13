@@ -152,6 +152,12 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     p_n = [Fraction(p_numerators[i], p_denominators[i]) 
            for i, _ in enumerate(weights, start=1)]
     
+    # Sanity check before smoothing, returns 0 if there's no matching n-grams 
+    # We only need to check for p_numerators[1] == 0, since if there's
+    # no unigrams, there won't be any higher order ngrams.
+    if p_numerators[1] == 0:
+        return 0
+    
     # Smoothen the modified precision.
     # Note: smooth_precision() converts values into float.
     if smoothing_function:
