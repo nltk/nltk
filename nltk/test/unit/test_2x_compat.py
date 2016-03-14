@@ -56,3 +56,8 @@ class TestFraction(unittest.TestCase):
         six_twelve_original = NativePythonFraction(6, 12)
         # Checks that rational values of one_two and six_twelve is the same.
         assert float(one_two) == float(six_twelve) == float(six_twelve_original)
+        
+        # Checks that the fraction does get normalized, even when
+        # _normalize == False when numerator is using native 
+        # fractions.Fraction.from_float 
+        assert NLTKFraction(3.142, _normalize=False) == NativePythonFraction(3.142)
