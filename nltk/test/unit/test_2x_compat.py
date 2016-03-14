@@ -15,6 +15,16 @@ def setup_module(module):
         raise SkipTest("test_2x_compat is for testing nltk.compat under Python 2.x")
 
 
+class TestTextTransliteration(unittest.TestCase):
+    txt = Text(["São", "Tomé", "and", "Príncipe"])
+
+    def test_repr(self):
+        self.assertEqual(repr(self.txt), br"<Text: S\xe3o Tom\xe9 and Pr\xedncipe...>")
+
+    def test_str(self):
+        self.assertEqual(str(self.txt), b"<Text: Sao Tome and Principe...>")
+
+
 class TestFraction(unittest.TestCase):
     def test_unnoramlize_fraction(self):
         from fractions import Fraction as NativePythonFraction
