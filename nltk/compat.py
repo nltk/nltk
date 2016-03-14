@@ -698,7 +698,9 @@ class Fraction(fractions.Fraction):
     """
     def __new__(cls, numerator=0, denominator=None, _normalize=True):
         cls = super(Fraction, cls).__new__(cls, numerator, denominator)
-        if not _normalize:
+        # To emulate fraction.Fraction.from_float across Python >=2.7,
+        # check that numerator is an integer and denominator is not None.
+        if not _normalize and type(numerator) == int and denominator:
             cls._numerator = numerator
             cls._denominator = denominator
         return cls
