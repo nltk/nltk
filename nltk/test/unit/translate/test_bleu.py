@@ -106,7 +106,7 @@ class TestBLEU(unittest.TestCase):
         self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.4729, places=4)
             
 
-@unittest.skip("Skipping fringe cases for BLEU.")            
+@unittest.skip("Skipping fringe cases for BLEU.")
 class TestBLEUFringeCases(unittest.TestCase):
 
     def test_case_where_n_is_bigger_than_hypothesis_length(self):
