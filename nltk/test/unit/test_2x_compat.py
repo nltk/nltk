@@ -15,24 +15,14 @@ def setup_module(module):
         raise SkipTest("test_2x_compat is for testing nltk.compat under Python 2.x")
 
 
-class TestTextTransliteration(unittest.TestCase):
-    txt = Text(["São", "Tomé", "and", "Príncipe"])
-
-    def test_repr(self):
-        self.assertEqual(repr(self.txt), br"<Text: S\xe3o Tom\xe9 and Pr\xedncipe...>")
-
-    def test_str(self):
-        self.assertEqual(str(self.txt), b"<Text: Sao Tome and Principe...>")
-
-
 class TestFraction(unittest.TestCase):
     def test_unnoramlize_fraction(self):
-        from fractions import Fraction as OrginalFraction
+        from fractions import Fraction as NativePythonFraction
         from nltk.compat import Fraction as NLTKFraction
         
-        # The orginal fraction should throw a TypeError in Python < 3.5
+        # The native fraction should throw a TypeError in Python < 3.5
         with self.assertRaises(TypeError):
-            OrginalFraction(0, 1000, _normalize=False)
+            NativePythonFraction(0, 1000, _normalize=False)
         
         # Using nltk.compat.Fraction in Python < 3.5
         compat_frac = NLTKFraction(0, 1000, _normalize=False)
@@ -52,5 +42,7 @@ class TestFraction(unittest.TestCase):
         assert one_two.numerator == 1
         assert one_two.denominator == 2
         
+        # Checks against the native fraction.
+        six_twelve_original = NativePythonFraction(6, 12)
         # Checks that rational values of one_two and six_twelve is the same.
-        assert float(one_two) == float(six_twelve)
+        assert float(one_two) == float(six_twelve) == float(six_twelve_original)
