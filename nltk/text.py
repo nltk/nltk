@@ -143,7 +143,7 @@ class ConcordanceIndex(object):
         self._offsets = defaultdict(list)
         """Dictionary mapping words (or keys) to lists of offset
            indices."""
-
+        
         # Initialize the index (self._offsets)
         for index, word in enumerate(tokens):
             word = self._key(word)
@@ -170,38 +170,64 @@ class ConcordanceIndex(object):
     def __repr__(self):
         return '<ConcordanceIndex for %d tokens (%d types)>' % (
             len(self._tokens), len(self._offsets))
+    
 
-    def print_concordance(self, word, width=75, lines=25):
+    def concordance(self, word, width=75):
         """
-        Print a concordance for ``word`` with the specified context window.
-
+        Generate a concordance list of tuples(left, token, right) 
+        for ``word`` with the specified context window.
+        
         :param word: The target word
         :type word: str
         :param width: The width of each line, in characters (default=80)
         :type width: int
-        :param lines: The number of lines to display (default=25)
-        :type lines: int
         """
+        
+        self._concordance = []
+        
         half_width = (width - len(word) - 2) // 2
         context = width // 4 # approx number of words of context
 
         offsets = self.offsets(word)
         if offsets:
-            lines = min(lines, len(offsets))
-            print("Displaying %s of %s matches:" % (lines, len(offsets)))
             for i in offsets:
-                if lines <= 0:
-                    break
                 left = (' ' * half_width +
-                        ' '.join(self._tokens[i-context:i]))
+                ' '.join(self._tokens[i-context:i]))
                 right = ' '.join(self._tokens[i+1:i+context])
                 left = left[-half_width:]
                 right = right[:half_width]
-                print(left, self._tokens[i], right)
-                lines -= 1
-        else:
+                self._concordance.append((left, self._tokens[i], right))
+       
+            
+    def list_concordance(self, lines=None):
+        """
+        :rtype: list(str)
+        :return: self._concordance as a list of strings of 
+             concordance instances
+        :param length:  The number of concordances to return (default=None)
+        :type length: int
+        """
+        return [" ".join(left, token, right) for 
+                (left, token, right) in self._concordance[:lines]]
+            
+            
+    def print_concordance(self, lines=25):
+        """
+        Print self._concordance
+        :parama lines: The number of lines to display (default=25)
+        :type lines: int:
+        """
+        if lines>len(self._concordance):
+            lines=len(self._concordance)
+            
+        if not self._concordance:
             print("No matches")
-
+        else:
+            print("Displaying %s of %s matches:" % (lines, len(self._concordance)))
+            for (left, token, right) in self._concordance[:lines]:
+                print(left, token, right)
+        return
+        
 class TokenSearcher(object):
     """
     A class that makes it easier to use regular expressions to search
@@ -320,7 +346,7 @@ class Text(object):
     # Interactive console methods
     #////////////////////////////////////////////////////////////
 
-    def concordance(self, word, width=79, lines=25):
+    def concordance(self, word, width=79, lines=25, print_concordance=True):
         """
         Print a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
@@ -330,9 +356,15 @@ class Text(object):
             #print("Building index...")
             self._concordance_index = ConcordanceIndex(self.tokens,
                                                        key=lambda s:s.lower())
+                                                       
+                                
 
-        self._concordance_index.print_concordance(word, width, lines)
-
+        self._concordance_index.concordance(word, width)
+        if print_concordance:
+            self._concordance_index.print_concordance(lines)
+        else:
+            return self._concordance_index.list_concordance(lines)
+        
     def collocations(self, num=20, window_size=2):
         """
         Print collocations derived from the text, ignoring stopwords.
