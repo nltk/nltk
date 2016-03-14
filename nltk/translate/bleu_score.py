@@ -6,6 +6,7 @@
 # Contributors: Dmitrijs Milajevs, Liling Tan
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+
 """BLEU score implementation."""
 from __future__ import division
 
@@ -69,31 +70,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     :return: The sentence-level BLEU score.
     :rtype: float
     """
-    # Calculates the brevity penalty.
-    # *hyp_len* is referred to as *c* in Papineni et. al. (2002)
-    hyp_len = len(hypothesis)
-    # *closest_ref_len* is referred to as *r* variable in Papineni et. al. (2002)
-    closest_ref_len = _closest_ref_length(references, hyp_len)
-    bp = _brevity_penalty(closest_ref_len, hyp_len)
-    
-    # Calculates the modified precision *p_n* for each order of ngram.
-    p_n = [_modified_precision(references, hypothesis, i)
-            for i, _ in enumerate(weights, start=1)]
-
-    # Smoothen the modified precision.
-    # Note: smooth_precision() converts values into float.
-    if smoothing_function:
-        p_n = smoothing_function(p_n, references=references, 
-                                 hypothesis=hypothesis, hyp_len=hyp_len)
-    
-    # Calculates the overall modified precision for all ngrams.
-    # By sum of the product of the weights and the respective *p_n*
-    s = (w * math.log(p_i) if p_i else 0 
-         for w, p_i in zip(weights, p_n))
-    sum_s = math.fsum(s)
-    if sum_s == 0 and all(p_n) == 0:
-        return 0
-    return bp * math.exp(sum_s)
+    return corpus_bleu([references], [hypothesis], weights, smoothing_function)
 
 
 def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25),
@@ -158,7 +135,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
         # For each order of ngram, calculate the numerator and
         # denominator for the corpus-level modified precision.
         for i, _ in enumerate(weights, start=1): 
-            p_i = _modified_precision(references, hypothesis, i)
+            p_i = modified_precision(references, hypothesis, i)
             p_numerators[i] += p_i.numerator
             p_denominators[i] += p_i.denominator
             
@@ -166,14 +143,20 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
         # Adds them to the corpus-level hypothesis and reference counts.
         hyp_len =  len(hypothesis)
         hyp_lengths += hyp_len
-        ref_lengths += _closest_ref_length(references, hyp_len)    
+        ref_lengths += closest_ref_length(references, hyp_len)    
         
     # Calculate corpus-level brevity penalty.
-    bp = _brevity_penalty(ref_lengths, hyp_lengths)
+    bp = brevity_penalty(ref_lengths, hyp_lengths)
     
     # Collects the various precision values for the different ngram orders.
-    p_n = [Fraction(p_numerators[i], p_denominators[i], _normalize=False) 
+    p_n = [Fraction(p_numerators[i], p_denominators[i]) 
            for i, _ in enumerate(weights, start=1)]
+    
+    # Sanity check before smoothing, returns 0 if there's no matching n-grams 
+    # We only need to check for p_numerators[1] == 0, since if there's
+    # no unigrams, there won't be any higher order ngrams.
+    if p_numerators[1] == 0:
+        return 0
     
     # Smoothen the modified precision.
     # Note: smooth_precision() converts values into float.
@@ -183,13 +166,12 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
         
     # Calculates the overall modified precision for all ngrams.
     # By sum of the product of the weights and the respective *p_n*
-    s = (w * math.log(p_i) if p_i else 0 
-         for w, p_i in zip(weights, p_n))
+    s = (w * math.log(p_i) if p_i != 0 else 0 for w, p_i in zip(weights, p_n))
         
     return bp * math.exp(math.fsum(s))
 
 
-def _modified_precision(references, hypothesis, n):
+def modified_precision(references, hypothesis, n):
     """
     Calculate modified ngram precision.
 
@@ -209,7 +191,7 @@ def _modified_precision(references, hypothesis, n):
         >>> reference2 = 'there is a cat on the mat'.split()
         >>> hypothesis1 = 'the the the the the the the'.split()
         >>> references = [reference1, reference2]
-        >>> float(_modified_precision(references, hypothesis1, n=1)) # doctest: +ELLIPSIS
+        >>> float(modified_precision(references, hypothesis1, n=1)) # doctest: +ELLIPSIS
         0.2857...
     
     In the modified n-gram precision, a reference word will be considered 
@@ -227,9 +209,9 @@ def _modified_precision(references, hypothesis, n):
         ...               'of', 'the', 'party']
         >>> hypothesis = 'of the'.split()
         >>> references = [reference1, reference2, reference3]
-        >>> float(_modified_precision(references, hypothesis, n=1))
+        >>> float(modified_precision(references, hypothesis, n=1))
         1.0
-        >>> float(_modified_precision(references, hypothesis, n=2))
+        >>> float(modified_precision(references, hypothesis, n=2))
         1.0
         
     An example of a normal machine translation hypothesis:
@@ -255,13 +237,13 @@ def _modified_precision(references, hypothesis, n):
         ...               'army', 'always', 'to', 'heed', 'the', 'directions',
         ...               'of', 'the', 'party']
         >>> references = [reference1, reference2, reference3]
-        >>> float(_modified_precision(references, hypothesis1, n=1)) # doctest: +ELLIPSIS
+        >>> float(modified_precision(references, hypothesis1, n=1)) # doctest: +ELLIPSIS
         0.9444...
-        >>> float(_modified_precision(references, hypothesis2, n=1)) # doctest: +ELLIPSIS
+        >>> float(modified_precision(references, hypothesis2, n=1)) # doctest: +ELLIPSIS
         0.5714...
-        >>> float(_modified_precision(references, hypothesis1, n=2)) # doctest: +ELLIPSIS
+        >>> float(modified_precision(references, hypothesis1, n=2)) # doctest: +ELLIPSIS
         0.5882352941176471
-        >>> float(_modified_precision(references, hypothesis2, n=2)) # doctest: +ELLIPSIS
+        >>> float(modified_precision(references, hypothesis2, n=2)) # doctest: +ELLIPSIS
         0.07692...
      
     
@@ -274,27 +256,29 @@ def _modified_precision(references, hypothesis, n):
     :return: BLEU's modified precision for the nth order ngram.
     :rtype: Fraction
     """
+    # Extracts all ngrams in hypothesis.
     counts = Counter(ngrams(hypothesis, n))
 
-    if not counts:
-        return Fraction(0)
-
+    # Extract a union of references' counts.
+    ## max_counts = reduce(or_, [Counter(ngrams(ref, n)) for ref in references])
     max_counts = {}
     for reference in references:
         reference_counts = Counter(ngrams(reference, n))
         for ngram in counts:
-            max_counts[ngram] = max(max_counts.get(ngram, 0), reference_counts[ngram])
-
-    clipped_counts = dict((ngram, min(count, max_counts[ngram])) 
-                          for ngram, count in counts.items())
+            max_counts[ngram] = max(max_counts.get(ngram, 0), 
+                                    reference_counts[ngram])
     
+    # Assigns the intersection between hypothesis and references' counts.
+    clipped_counts = {ngram: min(count, max_counts[ngram]) 
+                      for ngram, count in counts.items()}
+
     numerator = sum(clipped_counts.values())
-    denominator = sum(counts.values())  
+    denominator = sum(counts.values())
     
-    return Fraction(numerator, denominator, _normalize=False)  
+    return Fraction(numerator, denominator)  
     
 
-def _closest_ref_length(references, hyp_len):
+def closest_ref_length(references, hyp_len):
     """
     This function finds the reference that is the closest length to the 
     hypothesis. The closest reference length is referred to as *r* variable 
@@ -312,7 +296,8 @@ def _closest_ref_length(references, hyp_len):
                           (abs(ref_len - hyp_len), ref_len))
     return closest_ref_len
 
-def _brevity_penalty(closest_ref_len, hyp_len):
+
+def brevity_penalty(closest_ref_len, hyp_len):
     """
     Calculate brevity penalty.
 
@@ -329,8 +314,8 @@ def _brevity_penalty(closest_ref_len, hyp_len):
         >>> hypothesis = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
         >>> references = [reference1, reference2, reference3]
         >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
-        >>> _brevity_penalty(closest_ref_len, hyp_len)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len)
         1.0
 
     In case a hypothesis translation is shorter than the references, penalty is
@@ -339,8 +324,8 @@ def _brevity_penalty(closest_ref_len, hyp_len):
         >>> references = [['a'] * 28, ['a'] * 28]
         >>> hypothesis = ['a'] * 12
         >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
-        >>> _brevity_penalty(closest_ref_len, hyp_len)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len)
         0.2635971381157267
 
     The length of the closest reference is used to compute the penalty. If the
@@ -351,8 +336,8 @@ def _brevity_penalty(closest_ref_len, hyp_len):
         >>> references = [['a'] * 13, ['a'] * 2]
         >>> hypothesis = ['a'] * 12
         >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
-        >>> _brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
         0.9200...
 
     The brevity penalty doesn't depend on reference order. More importantly,
@@ -362,11 +347,11 @@ def _brevity_penalty(closest_ref_len, hyp_len):
         >>> references = [['a'] * 13, ['a'] * 11]
         >>> hypothesis = ['a'] * 12
         >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
-        >>> bp1 = _brevity_penalty(closest_ref_len, hyp_len)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> bp1 = brevity_penalty(closest_ref_len, hyp_len)
         >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  _closest_ref_length(reversed(references), hyp_len)
-        >>> bp2 = _brevity_penalty(closest_ref_len, hyp_len)
+        >>> closest_ref_len =  closest_ref_length(reversed(references), hyp_len)
+        >>> bp2 = brevity_penalty(closest_ref_len, hyp_len)
         >>> bp1 == bp2 == 1
         True
 
@@ -375,15 +360,15 @@ def _brevity_penalty(closest_ref_len, hyp_len):
         >>> references = [['a'] * 11, ['a'] * 8]
         >>> hypothesis = ['a'] * 7
         >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
-        >>> _brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
         0.8668...
 
         >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
         >>> hypothesis = ['a'] * 7
         >>> hyp_len = len(hypothesis)
-        >>> closest_ref_len =  _closest_ref_length(references, hyp_len)
-        >>> _brevity_penalty(closest_ref_len, hyp_len)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len)
         1.0
     
     :param hyp_len: The length of the hypothesis for a single sentence OR the 
@@ -471,7 +456,7 @@ class SmoothingFunction:
         machine translation quality using longest common subsequence and 
         skip-bigram statistics. In ACL04.
         """
-        return [Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False) for p_i in p_n]
+        return [Fraction(p_i.numerator + 1, p_i.denominator + 1) for p_i in p_n]
         
     def method3(self, p_n, *args, **kwargs):
         """
@@ -520,7 +505,7 @@ class SmoothingFunction:
         """
         m = {}
         # Requires an precision value for an addition ngram order.
-        p_n_plus1 = p_n + [_modified_precision(references, hypothesis, 5)]
+        p_n_plus1 = p_n + [modified_precision(references, hypothesis, 5)]
         m[-1] = p_n[0] + 1
         for i, p_i in enumerate(p_n):
             p_n[i] = (m[i-1] + p_i + p_n_plus1[i+1]) / 3

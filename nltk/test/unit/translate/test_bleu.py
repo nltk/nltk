@@ -4,10 +4,12 @@ Tests for BLEU translation evaluation metric
 """
 
 import unittest
-from nltk.translate.bleu_score import _modified_precision
+from nltk.translate.bleu_score import modified_precision, brevity_penalty
+from nltk.translate.bleu_score import sentence_bleu, corpus_bleu
+
 
 class TestBLEU(unittest.TestCase):
-    def test__modified_precision(self):
+    def test_modified_precision(self):
         """
         Examples from the original BLEU paper 
         http://www.aclweb.org/anthology/P02-1040.pdf
@@ -22,13 +24,13 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2] 
         
         # Testing modified unigram precision.
-        hyp1_unigram_precision =  float(_modified_precision(references, hyp1, n=1))
+        hyp1_unigram_precision =  float(modified_precision(references, hyp1, n=1))
         assert (round(hyp1_unigram_precision, 4) == 0.2857)
         # With assertAlmostEqual at 4 place precision.
         self.assertAlmostEqual(hyp1_unigram_precision, 0.28571428, places=4)
         
         # Testing modified bigram precision.
-        assert(_modified_precision(references, hyp1, n=2) == 0.0)
+        assert(modified_precision(references, hyp1, n=2) == 0.0)
         
         
         # Example 2: the "of the" example.
@@ -44,10 +46,10 @@ class TestBLEU(unittest.TestCase):
         
         references = [ref1, ref2, ref3] 
         # Testing modified unigram precision.
-        assert (_modified_precision(references, hyp1, n=1) == 1.0)
+        assert (modified_precision(references, hyp1, n=1) == 1.0)
         
         # Testing modified bigram precision.
-        assert(_modified_precision(references, hyp1, n=2) == 1.0)
+        assert(modified_precision(references, hyp1, n=2) == 1.0)
         
 
         # Example 3: Proper MT outputs.
@@ -59,8 +61,8 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2, ref3]
         
         # Unigram precision.
-        hyp1_unigram_precision = float(_modified_precision(references, hyp1, n=1))
-        hyp2_unigram_precision = float(_modified_precision(references, hyp2, n=1))
+        hyp1_unigram_precision = float(modified_precision(references, hyp1, n=1))
+        hyp2_unigram_precision = float(modified_precision(references, hyp2, n=1))
         # Test unigram precision with assertAlmostEqual at 4 place precision.
         self.assertAlmostEqual(hyp1_unigram_precision, 0.94444444, places=4)
         self.assertAlmostEqual(hyp2_unigram_precision, 0.57142857, places=4)
@@ -70,14 +72,17 @@ class TestBLEU(unittest.TestCase):
         
         
         # Bigram precision
-        hyp1_bigram_precision = float(_modified_precision(references, hyp1, n=2))
-        hyp2_bigram_precision = float(_modified_precision(references, hyp2, n=2))
+        hyp1_bigram_precision = float(modified_precision(references, hyp1, n=2))
+        hyp2_bigram_precision = float(modified_precision(references, hyp2, n=2))
         # Test bigram precision with assertAlmostEqual at 4 place precision.
         self.assertAlmostEqual(hyp1_bigram_precision, 0.58823529, places=4)
         self.assertAlmostEqual(hyp2_bigram_precision, 0.07692307, places=4)
         # Test bigram precision with rounding.
         assert (round(hyp1_bigram_precision, 4) == 0.5882)
         assert (round(hyp2_bigram_precision, 4) == 0.0769)
+        
+    def test_fringe_cases(self):
+        pass
         
     def test_brevity_penalty(self):
         pass
