@@ -11,11 +11,17 @@
 from __future__ import division
 
 import math
-from fractions import Fraction
+import fractions
 from collections import Counter
 
 from nltk.util import ngrams
 
+try:
+    fractions.Fraction(0, 1000, _normalize=False)
+    from fractions import Fraction
+except TypeError:
+    from nltk.compat import Fraction
+    
 
 def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
                   smoothing_function=None):
@@ -105,7 +111,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     >>> list_of_references = [[ref1a, ref1b, ref1c], [ref2a]]
     >>> hypotheses = [hyp1, hyp2]
     >>> corpus_bleu(list_of_references, hypotheses) # doctest: +ELLIPSIS
-    0.5520...
+    0.5920...
     
     The example below show that corpus_bleu() is different from averaging 
     sentence_bleu() for hypotheses 
@@ -124,6 +130,8 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     :return: The corpus-level BLEU score.
     :rtype: float
     """
+    # Before proceeding to compute BLEU, perform sanity checks.
+
     p_numerators = Counter() # Key = ngram order, and value = no. of ngram matches.
     p_denominators = Counter() # Key = ngram order, and value = no. of ngram in ref.
     hyp_lengths, ref_lengths = 0, 0
@@ -143,16 +151,16 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
         # Adds them to the corpus-level hypothesis and reference counts.
         hyp_len =  len(hypothesis)
         hyp_lengths += hyp_len
-        ref_lengths += closest_ref_length(references, hyp_len)    
-        
+        ref_lengths += closest_ref_length(references, hyp_len)
+    
     # Calculate corpus-level brevity penalty.
     bp = brevity_penalty(ref_lengths, hyp_lengths)
     
     # Collects the various precision values for the different ngram orders.
-    p_n = [Fraction(p_numerators[i], p_denominators[i]) 
+    p_n = [Fraction(p_numerators[i], p_denominators[i], _normalize=False) 
            for i, _ in enumerate(weights, start=1)]
     
-    # Sanity check before smoothing, returns 0 if there's no matching n-grams 
+    # Returns 0 if there's no matching n-grams 
     # We only need to check for p_numerators[1] == 0, since if there's
     # no unigrams, there won't be any higher order ngrams.
     if p_numerators[1] == 0:
@@ -163,10 +171,11 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     if smoothing_function:
         p_n = smoothing_function(p_n, references=references, 
                                  hypothesis=hypothesis, hyp_len=hyp_len)
-        
+    
     # Calculates the overall modified precision for all ngrams.
     # By sum of the product of the weights and the respective *p_n*
-    s = (w * math.log(p_i) if p_i != 0 else 0 for w, p_i in zip(weights, p_n))
+    s = (w * math.log(p_i) for w, p_i in zip(weights, p_n) 
+         if p_i.numerator != 0)
         
     return bp * math.exp(math.fsum(s))
 
@@ -275,7 +284,7 @@ def modified_precision(references, hypothesis, n):
     numerator = sum(clipped_counts.values())
     denominator = sum(counts.values())
     
-    return Fraction(numerator, denominator)  
+    return Fraction(numerator, denominator, _normalize=False)  
     
 
 def closest_ref_length(references, hyp_len):
@@ -415,7 +424,7 @@ class SmoothingFunction:
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method1)) # doctest: +ELLIPSIS
         0.4118...
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method2)) # doctest: +ELLIPSIS
-        0.4576...
+        0.4489...
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method3)) # doctest: +ELLIPSIS
         0.4118...
         >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method4)) # doctest: +ELLIPSIS
@@ -456,7 +465,7 @@ class SmoothingFunction:
         machine translation quality using longest common subsequence and 
         skip-bigram statistics. In ACL04.
         """
-        return [Fraction(p_i.numerator + 1, p_i.denominator + 1) for p_i in p_n]
+        return [Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False) for p_i in p_n]
         
     def method3(self, p_n, *args, **kwargs):
         """
