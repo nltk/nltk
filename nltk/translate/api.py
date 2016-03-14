@@ -127,7 +127,7 @@ class AlignedSent(object):
             raise Exception('Cannot find the dot binary from Graphviz package')
         out, err = process.communicate(dot_string)
          
-        return out
+        return out.decode('utf8')
     
     
     def __str__(self):

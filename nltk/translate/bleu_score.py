@@ -16,10 +16,10 @@ from collections import Counter
 
 from nltk.util import ngrams
 
-try: # If Python's native fraction.Fraction has _normalize param.
+try:
     fractions.Fraction(0, 1000, _normalize=False)
     from fractions import Fraction
-except TypeError: # Otherwise, use nltk.compat.Fraction.
+except TypeError:
     from nltk.compat import Fraction
     
 
