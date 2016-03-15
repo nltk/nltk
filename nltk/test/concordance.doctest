@@ -1,0 +1,38 @@
+.. Copyright (C) 2001-2016 NLTK Project
+.. For license information, see LICENSE.TXT
+
+==================================
+Concordance Example
+==================================
+
+A concordance view shows us every occurrence of a given
+word, together with some context. Here we look up the word monstrous
+in Moby Dick by entering text1 followed by a period, then the term
+concordance, and then placing "monstrous" in parentheses:
+
+>>> from nltk.corpus import gutenberg
+>>> from nltk.text import Text
+>>> corpus = gutenberg.words('melville-moby_dick.txt')
+>>> text = Text(corpus)
+>>> text.concordance("monstrous") # doctest:+ELLIPSIS
+Displaying 11 of 11 matches:
+...
+of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u
+
+=================================
+Concordance List
+=================================
+
+Often we need to store the results of concordance for further usage.
+To do so, call the concordance function with the stdout argument set
+to false:
+
+>>> from nltk.corpus import gutenberg
+>>> from nltk.text import Text
+>>> corpus = gutenberg.words('melville-moby_dick.txt')
+>>> text = Text(corpus)
+>>> clist = text.concordance("monstrous", stdout=False)
+>>> clist[2]
+'ll over with a heathenish array of monstrous clubs and spears . Some were thick'
+>>> len(clist)
+11
