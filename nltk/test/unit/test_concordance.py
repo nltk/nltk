@@ -24,6 +24,10 @@ def stdout_redirect(where):
     finally:
         sys.stdout = sys.__stdout__
         
+def clean(raw_str):
+    """Utility function to remove spaces and case when checking equality"""
+    return raw_str.lower().split()
+
 class TestConcordance(unittest.TestCase):
     """Using this tutorial: http://www.nltk.org/book/ch01.html 
     to construct texts"""
@@ -43,8 +47,10 @@ class TestConcordance(unittest.TestCase):
     def tearDown(self):
         pass
     
+    
+    
     def test_concordance_list(self):
-        list_out = ["ong the former , one was of a most monstrous size . ... This came towards us",
+        list_out = ["ong the former , one was of a most monstrous size . ... This came towards us ,",
         "ON OF THE PSALMS . \" Touching that monstrous bulk of the whale or ork we have r",
         "ll over with a heathenish array of monstrous clubs and spears . Some were thick",
         "d as you gazed , and wondered what monstrous cannibal and savage could ever hav",
@@ -55,8 +61,10 @@ class TestConcordance(unittest.TestCase):
         "ere to enter upon those still more monstrous stories of them which are to be fo",
         "ght have been rummaged out of this monstrous cabinet there is no telling . But",
         "of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u"]
-        self.assertListEqual(list_out, 
-                   self.text.concordance(self.query))
+        
+        concordance_out = self.text.concordance(self.query, stdout=False)
+        for lo, co in zip(list_out, concordance_out):
+            self.assertListEqual(clean(lo), clean(co))                    
         return
     
     def test_concordance_print(self):
@@ -74,7 +82,7 @@ class TestConcordance(unittest.TestCase):
             of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u"""
         
         with stdout_redirect(StringIO()) as stdout:
-            self.text.concordance(self.query)
+            self.text.concordance(self.query, stdout=True)
         
         clean = lambda rstr: rstr.lower().split()
         
