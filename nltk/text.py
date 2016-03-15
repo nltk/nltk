@@ -207,7 +207,7 @@ class ConcordanceIndex(object):
         :param length:  The number of concordances to return (default=None)
         :type length: int
         """
-        return [" ".join(left, token, right) for 
+        return [" ".join([left, token, right]) for 
                 (left, token, right) in self._concordance[:lines]]
             
             
@@ -217,12 +217,12 @@ class ConcordanceIndex(object):
         :parama lines: The number of lines to display (default=25)
         :type lines: int:
         """
-        if lines>len(self._concordance):
-            lines=len(self._concordance)
             
         if not self._concordance:
             print("No matches")
         else:
+            if not lines or lines>len(self._concordance):
+                lines = len(self._concordance)
             print("Displaying %s of %s matches:" % (lines, len(self._concordance)))
             for (left, token, right) in self._concordance[:lines]:
                 print(left, token, right)
@@ -346,10 +346,16 @@ class Text(object):
     # Interactive console methods
     #////////////////////////////////////////////////////////////
 
-    def concordance(self, word, width=79, lines=25, print_concordance=True):
+    def concordance(self, word, width=79, lines=None, stdout=True):
         """
-        Print a concordance for ``word`` with the specified context window.
+        Generate a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
+        :return: concordance, either printed to stdout or as a list
+        :rtype: None, list 
+        :param stdout: print concordance to stdout
+        :type stdout: bool
+                 
+        
         :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
@@ -358,9 +364,9 @@ class Text(object):
                                                        key=lambda s:s.lower())
                                                        
                                 
-
         self._concordance_index.concordance(word, width)
-        if print_concordance:
+        
+        if stdout:
             self._concordance_index.print_concordance(lines)
         else:
             return self._concordance_index.list_concordance(lines)
