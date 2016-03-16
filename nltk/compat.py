@@ -11,6 +11,7 @@ import os
 import sys
 import types
 from functools import wraps
+import fractions
 
 # Python 2/3 compatibility layer. Based on six.
 
@@ -678,3 +679,28 @@ def _7bit(method):
 def _was_fixed(method):
     return (getattr(method, "_nltk_compat_7bit", False) or
             getattr(method, "_nltk_compat_transliterated", False))
+
+
+class Fraction(fractions.Fraction):
+    """
+    This is a simplified backwards compatible version of fractions.Fraction from
+    Python >=3.5. It adds the `_normalize` parameter such that it does
+    not normalize the denominator to the Greatest Common Divisor (gcd) when
+    the numerator is 0.
+    
+    This is most probably only used by the nltk.translate.bleu_score.py where
+    numerator and denominator of the different ngram precisions are mutable.
+    But the idea of "mutable" fraction might not be applicable to other usages, 
+    See http://stackoverflow.com/questions/34561265
+    
+    This objects should be deprecated once NLTK stops supporting Python < 3.5
+    See https://github.com/nltk/nltk/issues/1330
+    """
+    def __new__(cls, numerator=0, denominator=None, _normalize=True):
+        cls = super(Fraction, cls).__new__(cls, numerator, denominator)
+        # To emulate fraction.Fraction.from_float across Python >=2.7,
+        # check that numerator is an integer and denominator is not None.
+        if not _normalize and type(numerator) == int and denominator:
+            cls._numerator = numerator
+            cls._denominator = denominator
+        return cls
