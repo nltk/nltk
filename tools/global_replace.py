@@ -59,4 +59,4 @@ if __name__ == '__main__':
                     print("Updated:", path)
                     count += 1
 
-    print("Updated %d files" % count)
+    print("Updated {} files".format(count))

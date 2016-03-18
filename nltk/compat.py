@@ -7,9 +7,11 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import absolute_import, print_function
+import os
 import sys
 import types
 from functools import wraps
+import fractions
 
 # Python 2/3 compatibility layer. Based on six.
 
@@ -530,19 +532,14 @@ except ImportError:  # python 2.6
 # The following datasets have a /PY3 subdirectory containing
 # a full copy of the data which has been re-encoded or repickled.
 
-_PY3_DATA_UPDATES = []
+import os.path
 
-if sys.platform.startswith('win'):
-    _PY3_DATA_UPDATES = ["chunkers\maxent_ne_chunker",
-                         "help\tagsets",
-                         "taggers\maxent_treebank_pos_tagger",
-                         "tokenizers\punkt"]
-else:
-    _PY3_DATA_UPDATES = ["chunkers/maxent_ne_chunker",
-                         "help/tagsets",
-                         "taggers/maxent_treebank_pos_tagger",
-                         "tokenizers/punkt"]
+DATA_UPDATES = [("chunkers", "maxent_ne_chunker"),
+                ("help", "tagsets"),
+                ("taggers", "maxent_treebank_pos_tagger"),
+                ("tokenizers", "punkt")]
 
+_PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
 
 def add_py3_data(path):
     if PY3:
@@ -682,3 +679,28 @@ def _7bit(method):
 def _was_fixed(method):
     return (getattr(method, "_nltk_compat_7bit", False) or
             getattr(method, "_nltk_compat_transliterated", False))
+
+
+class Fraction(fractions.Fraction):
+    """
+    This is a simplified backwards compatible version of fractions.Fraction from
+    Python >=3.5. It adds the `_normalize` parameter such that it does
+    not normalize the denominator to the Greatest Common Divisor (gcd) when
+    the numerator is 0.
+    
+    This is most probably only used by the nltk.translate.bleu_score.py where
+    numerator and denominator of the different ngram precisions are mutable.
+    But the idea of "mutable" fraction might not be applicable to other usages, 
+    See http://stackoverflow.com/questions/34561265
+    
+    This objects should be deprecated once NLTK stops supporting Python < 3.5
+    See https://github.com/nltk/nltk/issues/1330
+    """
+    def __new__(cls, numerator=0, denominator=None, _normalize=True):
+        cls = super(Fraction, cls).__new__(cls, numerator, denominator)
+        # To emulate fraction.Fraction.from_float across Python >=2.7,
+        # check that numerator is an integer and denominator is not None.
+        if not _normalize and type(numerator) == int and denominator:
+            cls._numerator = numerator
+            cls._denominator = denominator
+        return cls

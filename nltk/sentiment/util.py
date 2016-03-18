@@ -407,7 +407,7 @@ def demo_tweets(trainer, n_instances=None, output=None):
     :param output: the output file where results have to be reported.
     """
     from nltk.tokenize import TweetTokenizer
-    from sentiment_analyzer import SentimentAnalyzer
+    from nltk.sentiment import SentimentAnalyzer
     from nltk.corpus import twitter_samples, stopwords
 
     # Different customizations for the TweetTokenizer
@@ -484,7 +484,7 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
     :param output: the output file where results have to be reported.
     """
     from nltk.corpus import movie_reviews
-    from sentiment_analyzer import SentimentAnalyzer
+    from nltk.sentiment import SentimentAnalyzer
 
     if n_instances is not None:
         n_instances = int(n_instances/2)
@@ -536,7 +536,7 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
         and negative.
     :param output: the output file where results have to be reported.
     """
-    from sentiment_analyzer import SentimentAnalyzer
+    from nltk.sentiment import SentimentAnalyzer
     from nltk.corpus import subjectivity
 
     if n_instances is not None:
@@ -650,7 +650,7 @@ def demo_vader_instance(text):
 
     :param text: a text whose polarity has to be evaluated.
     """
-    from vader import SentimentIntensityAnalyzer
+    from nltk.sentiment import SentimentIntensityAnalyzer
     vader_analyzer = SentimentIntensityAnalyzer()
     print(vader_analyzer.polarity_scores(text))
 
@@ -663,7 +663,7 @@ def demo_vader_tweets(n_instances=None, output=None):
     """
     from collections import defaultdict
     from nltk.corpus import twitter_samples
-    from vader import SentimentIntensityAnalyzer
+    from nltk.sentiment import SentimentIntensityAnalyzer
     from nltk.metrics import (accuracy as eval_accuracy, precision as eval_precision,
         recall as eval_recall, f_measure as eval_f_measure)
 

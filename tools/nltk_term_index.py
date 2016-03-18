@@ -42,13 +42,13 @@ def find_all_names(stoplist):
                     continue
                 names[key].append(valdoc)
 
-    log.info('Found %s names from %s objects' % (len(names), n))
+    log.info('Found {} names from {} objects'.format(len(names), n))
 
     return names
 
 SCAN_RE1 = "<programlisting>[\s\S]*?</programlisting>"
 SCAN_RE2 = "<literal>[\s\S]*?</literal>"
-SCAN_RE = re.compile("(%s)|(%s)" % (SCAN_RE1, SCAN_RE2))
+SCAN_RE = re.compile("({})|({})".format(SCAN_RE1, SCAN_RE2))
 
 TOKEN_RE = re.compile('[\w\.]+')
 
@@ -67,7 +67,7 @@ def scan_xml(filenames, names):
                 targets = names[token]
                 fdist.inc(token)
                 if len(targets) > 1:
-                    log.warning('%s is ambiguous: %s' % (
+                    log.warning('{} is ambiguous: {}'.format(
                         token, ', '.join(str(v.canonical_name)
                                          for v in names[token])))
                 line += INDEXTERM % token
@@ -78,7 +78,7 @@ def scan_xml(filenames, names):
         return LINE_RE.sub(linesub, match.group())
 
     for filename in filenames:
-        log.info('  %s' % filename)
+        log.info('  {}'.format(filename))
         src = open(filename, 'rb').read()
         src = SCAN_RE.sub(scansub, src)
 #        out = open(filename[:-4]+'.li.xml', 'wb')
@@ -96,7 +96,7 @@ def scan_xml(filenames, names):
 def main():
     log.info('Loading stoplist...')
     stoplist = open(STOPLIST).read().split()
-    log.info('  Stoplist contains %d words' % len(stoplist))
+    log.info('  Stoplist contains {} words'.format(len(stoplist)))
 
     log.info('Running epydoc to build a name index...')
     names = find_all_names(stoplist)

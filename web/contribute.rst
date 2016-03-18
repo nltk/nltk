@@ -19,8 +19,8 @@ the NLTK book, anticipated in early 2016.
 * `nltk-dev mailing list <http://groups.google.com/group/nltk-dev>`_
 * `GitHub Project <https://github.com/nltk/nltk>`_
 
-NLTK Core Developers
---------------------
+NLTK Team
+---------
 
 The NLTK project is led by `Steven Bird, Ewan Klein, and Edward Loper <mailto:stevenbird1@gmail.com,ewan.klein@gmail.com,edloper@gmail.com>`_.
 Individual packages are maintained by the following people:
@@ -30,6 +30,8 @@ Individual packages are maintained by the following people:
 :Metrics: `Joel Nothman <http://joelnothman.com/>`_, Sydney, Australia (``nltk.metrics, nltk.tokenize.punkt``)
 :Python 3: `Mikhail Korobov <http://kmike.ru/>`_, Ekaterinburg, Russia
 :Releases: `Steven Bird <http://estive.net>`_, Melbourne, Australia
+:NLTK-Users: `Alexis Dimitriadis <A.Dimitriadis@uu.nl>`_, Utrecht, Netherlands
+
 
 
 

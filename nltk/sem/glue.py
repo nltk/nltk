@@ -103,6 +103,10 @@ class GlueFormula(object):
     def __ne__(self, other):
         return not self == other
 
+    # sorting for use in doctests which must be deterministic
+    def __lt__(self, other):
+        return str(self) < str(other)
+
     def __str__(self):
         assert isinstance(self.indices, set)
         accum = '%s : %s' % (self.meaning, self.glue)

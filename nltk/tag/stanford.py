@@ -22,7 +22,7 @@ import tempfile
 from subprocess import PIPE
 import warnings
 
-from nltk.internals import find_file, find_jar, config_java, java, _java_options
+from nltk.internals import find_file, find_jar, config_java, java, _java_options, find_jars_within_path
 from nltk.tag.api import TaggerI
 from nltk import compat
 
@@ -54,6 +54,11 @@ class StanfordTagger(TaggerI):
 
         self._stanford_model = find_file(model_filename,
                 env_vars=('STANFORD_MODELS',), verbose=verbose)
+        
+        # Adding logging jar files to classpath 
+        stanford_dir = os.path.split(self._stanford_jar)[0]
+        self._stanford_jar = tuple(find_jars_within_path(stanford_dir))
+        
         self._encoding = encoding
         self.java_options = java_options
 
