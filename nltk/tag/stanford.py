@@ -133,7 +133,7 @@ class StanfordPOSTagger(StanfordTagger):
     _JAR = 'stanford-postagger.jar'
 
     def __init__(self, *args, **kwargs):
-        # Standford POSTagger uses '#' as separator.
+        # Standford POSTagger uses '#' as separator for Chinese texts.
         if ('chinese-distsim.tagger' in args[0] or
             'chinese-nodistsim.tagger' in args[0]) and \
            'stanford-postagger.jar' in args[1]:
