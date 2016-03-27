@@ -108,8 +108,8 @@ class StanfordTagger(TaggerI):
         for tagged_sentence in text.strip().split("\n"):
             sentence = []
             for tagged_word in tagged_sentence.strip().split():
-                word_tags = tagged_word.strip().split(self._SEPARATOR)
-                sentence.append((''.join(word_tags[:-1]), word_tags[-1]))
+                word_tags = tagged_word.strip().rsplit(self._SEPARATOR, 1)
+                sentence.append((word_tags[0], word_tags[-1]))
             tagged_sentences.append(sentence)
         return tagged_sentences
 
@@ -139,7 +139,9 @@ class StanfordPOSTagger(StanfordTagger):
     def _cmd(self):
         return ['edu.stanford.nlp.tagger.maxent.MaxentTagger',
                 '-model', self._stanford_model, '-textFile',
-                self._input_file_path, '-tokenize', 'false','-outputFormatOptions', 'keepEmptySentences']
+                self._input_file_path, '-tokenize', 'false',
+                '-outputFormatOptions', 'keepEmptySentences',
+                '-tagSeparator', self._SEPARATOR]
 
 class StanfordNERTagger(StanfordTagger):
     """
@@ -180,8 +182,8 @@ class StanfordNERTagger(StanfordTagger):
             tagged_sentences = []
             for tagged_sentence in text.strip().split("\n"):
                 for tagged_word in tagged_sentence.strip().split():
-                    word_tags = tagged_word.strip().split(self._SEPARATOR)
-                    tagged_sentences.append((''.join(word_tags[:-1]), word_tags[-1]))
+                    word_tags = tagged_word.strip().rsplit(self._SEPARATOR, 1)
+                    tagged_sentences.append((word_tags[0], word_tags[-1]))
                 
             # Separate it according to the input
             result = []
