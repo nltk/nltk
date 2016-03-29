@@ -71,6 +71,9 @@ class StanfordSegmenter(TokenizerI):
         options = {} if options is None else options
         self._options_cmd = ','.join('{0}={1}'.format(key, json.dumps(val)) for key, val in options.items())
 
+    def tokenize(self, s):
+        super().tokenize(s)
+
     def segment_file(self, input_file_path):
         """
         """
