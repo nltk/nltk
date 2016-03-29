@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Chinese Segmenter
 #
-# Copyright (C) 2001-2014 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: 52nlp <52nlpcn@gmail.com>
+#         Casper Lehmann-Strøm <casperlehmann@gmail.com>
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -20,11 +21,18 @@ from nltk.internals import find_jar, config_java, java, _java_options
 
 from nltk.tokenize.api import TokenizerI
 
+_stanford_url = 'http://nlp.stanford.edu/software'
+
 class StanfordSegmenter(TokenizerI):
     r"""
     Interface to the Stanford Segmenter
     >>> from nltk.tokenize.stanford_segmenter import StanfordSegmenter
-    >>> segmenter = StanfordSegmenter(path_to_jar="stanford-segmenter-3.4.1.jar", path_to_sihan_corpora_dict="./data", path_to_model="./data/pku.gz", path_to_dict="./data/dict-chris6.ser.gz")
+    >>> segmenter = StanfordSegmenter(
+    ...     path_to_jar="stanford-segmenter-3.6.0.jar",
+    ...     path_to_slf4j = "slf4j-api.jar"
+    ...     path_to_sihan_corpora_dict="./data",
+    ...     path_to_model="./data/pku.gz",
+    ...     path_to_dict="./data/dict-chris6.ser.gz")
     >>> sentence = u"这是斯坦福中文分词器测试"
     >>> segmenter.segment(sentence)
     >>> u'\u8fd9 \u662f \u65af\u5766\u798f \u4e2d\u6587 \u5206\u8bcd\u5668 \u6d4b\u8bd5\n'
@@ -33,18 +41,27 @@ class StanfordSegmenter(TokenizerI):
     """
 
     _JAR = 'stanford-segmenter.jar'
+    _SLF4J = 'slf4j-api.jar'
 
-    def __init__(self, path_to_jar=None,
+    def __init__(self, path_to_jar=None, path_to_slf4j=None,
             path_to_sihan_corpora_dict=None,
             path_to_model=None, path_to_dict=None,
             encoding='UTF-8', options=None,
             verbose=False, java_options='-mx2g'):
-        self._stanford_jar = find_jar(
-            self._JAR, path_to_jar,
-            env_vars=('STANFORD_SEGMENTER',),
-            searchpath=(),
-            verbose=verbose
-        )
+        stanford_segmenter = find_jar(
+                self._JAR, path_to_jar,
+                env_vars=('STANFORD_SEGMENTER',),
+                searchpath=(), url=_stanford_url,
+                verbose=verbose)
+        slf4j = find_jar(
+                self._SLF4J, path_to_slf4j,
+                env_vars=('SLF4J',),
+                searchpath=(), url=_stanford_url,
+                verbose=verbose)
+
+        self._stanford_jar = ':'.join(
+            [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
+
         self._sihan_corpora_dict = path_to_sihan_corpora_dict
         self._model = path_to_model
         self._dict = path_to_dict
@@ -118,7 +135,8 @@ class StanfordSegmenter(TokenizerI):
         # Configure java.
         config_java(options=self.java_options, verbose=verbose)
 
-        stdout, _stderr = java(cmd,classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
+        stdout, _stderr = java(
+            cmd,classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
         stdout = stdout.decode(encoding)
 
         # Return java configurations to their default values.
