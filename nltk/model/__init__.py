@@ -6,3 +6,4 @@
 # For license information, see LICENSE.TXT
 
 from nltk.model.ngram import NgramModel
+from nltk.model.counter import NgramCounter
