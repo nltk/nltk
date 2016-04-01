@@ -124,6 +124,12 @@ class LanguageModelVocabularyTests(unittest.TestCase):
     def test_cutoff_value_set_correctly(self):
         self.assertEqual(self.vocab.cutoff, 2)
 
+    def test_cutoff_setter_checks_value(self):
+        with self.assertRaises(ValueError) as exc_info:
+            LanguageModelVocabulary(0, "abc")
+        expected_error_msg = "Cutoff value cannot be less than 1. Got: 0"
+        self.assertEqual(expected_error_msg, str(exc_info.exception))
+
     def test_counts_set_correctly(self):
         self.assertEqual(self.vocab['a'], 2)
         self.assertEqual(self.vocab['b'], 2)
