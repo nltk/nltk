@@ -29,6 +29,17 @@ class LanguageModelVocabulary(Counter):
         Counter.__init__(self, *counter_args)
         self.cutoff = unknown_cutoff
 
+    @property
+    def cutoff(self):
+        return self._cutoff
+
+    @cutoff.setter
+    def cutoff(self, new_cutoff):
+        if new_cutoff < 1:
+            msg_template = "Cutoff value cannot be less than 1. Got: {0}"
+            raise ValueError(msg_template.format(new_cutoff))
+        self._cutoff = new_cutoff
+
     def __contains__(self, item):
         """Only consider items with counts GE to cutoff as being in the vocabulary."""
         return self[item] >= self.cutoff
