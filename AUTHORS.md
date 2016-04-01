@@ -192,3 +192,4 @@
 - Will Monroe
 - Elijah Rippeth
 - Emil Manukyan
+- Casper Lehmann-Strøm
