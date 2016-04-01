@@ -193,3 +193,4 @@
 - Elijah Rippeth
 - Emil Manukyan
 - Casper Lehmann-Strøm
+- Andrew Giel
