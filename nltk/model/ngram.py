@@ -27,9 +27,9 @@ class MLENgramModel(NgramModelI):
     Currently untested.
     """
 
-    def __init__(self, highest_order, unknown_cutoff, training_text,
+    def __init__(self, highest_order, training_text, unknown_cutoff,
                  **ngram_counter_kwargs):
-        self.counter = NgramCounter(highest_order, unknown_cutoff, training_text,
+        self.counter = NgramCounter(highest_order, training_text, unknown_cutoff,
                                     **ngram_counter_kwargs)
 
         self.ngrams = self.counter.ngrams[self.counter.order]

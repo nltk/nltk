@@ -58,8 +58,8 @@ class LanguageModelVocabulary(Counter):
 class NgramCounter(object):
     """Class for counting ngrams"""
 
-    def __init__(self, highest_order, unknown_cutoff, training_text,
-                 start_symbol="<s>", end_symbol="</s>", unknown_label="<UNK>"):
+    def __init__(self, highest_order, training_text=None, unk_cutoff=2,
+                 unk_label="<UNK>", start_symbol="<s>", end_symbol="</s>"):
         """
         :type training_text: List[List[str]]
         """
@@ -71,13 +71,23 @@ class NgramCounter(object):
         self.order = highest_order
         self.start_symbol = start_symbol
         self.end_symbol = end_symbol
-        self.unknown_label = unknown_label
-
-        flattened_text = chain(*training_text)
-        self.vocabulary = LanguageModelVocabulary(unknown_cutoff, flattened_text)
+        self.unk_label = unk_label
 
         self.ngrams = defaultdict(ConditionalFreqDist)
         self.unigrams = FreqDist()
+
+        if training_text is not None:
+            flattened_text = chain(*training_text)
+            self.build_vocab(flattened_text, unk_cutoff)
+            self.train_counts(training_text)
+
+    def _enumerate_ngram_orders(self):
+        return enumerate(range(self.order, 1, -1))
+
+    def build_vocab(self, word_sequence, unk_cutoff):
+        self.vocabulary = LanguageModelVocabulary(unk_cutoff, word_sequence)
+
+    def train_counts(self, training_text):
         for sent in training_text:
             checked_sent = (self.check_against_vocab(word) for word in sent)
             for ngram in self.padded_ngrams(checked_sent):
@@ -88,16 +98,13 @@ class NgramCounter(object):
                     self.ngrams[ngram_order][trunc_context][word] += 1
                 self.unigrams[word] += 1
 
-    def _enumerate_ngram_orders(self):
-        return enumerate(range(self.order, 1, -1))
-
     def change_vocab_cutoff(self, new_cutoff):
         self.vocabulary.cutoff = new_cutoff
 
     def check_against_vocab(self, word):
         if word in self.vocabulary:
             return word
-        return self.unknown_label
+        return self.unk_label
 
     def padded_ngrams(self, sequence):
         """Wrapper around util.ngrams with usefull options saved during initialization.

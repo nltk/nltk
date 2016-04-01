@@ -16,15 +16,15 @@ class NgramCounterTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.trigram_counter = NgramCounter(3, 2, ['abcd', 'egadbe'])
-        self.bigram_counter = NgramCounter(2, 2, ['abcd', 'egadbe'])
+        self.trigram_counter = NgramCounter(3, training_text=['abcd', 'egadbe'], unk_cutoff=2)
+        self.bigram_counter = NgramCounter(2, training_text=['abcd', 'egadbe'], unk_cutoff=2)
 
     def test_NgramCounter_order_property(self):
         self.assertEqual(self.trigram_counter.order, 3)
 
     def test_NgramCounter_breaks_given_invalid_order(self):
         with self.assertRaises(ValueError) as exc_info:
-            NgramCounter(0, 0, ['abc'])
+            NgramCounter(0)
         expected_error_msg = "Order of NgramCounter cannot be less than 1. Got: 0"
         self.assertEqual(str(exc_info.exception), expected_error_msg)
 
@@ -34,7 +34,7 @@ class NgramCounterTests(unittest.TestCase):
         self.assertFalse('c' in self.bigram_counter.vocabulary)
 
     def test_change_vocab_cutoff(self):
-        ngram_counter = NgramCounter(2, 2, ['abcd', 'eadbe'])
+        ngram_counter = NgramCounter(2, ['abcd', 'eadbe'], 2)
         ngram_counter.change_vocab_cutoff(1)
 
         # "c" was seen once so now it should be showing up in the vocab
@@ -112,6 +112,12 @@ class NgramCounterTests(unittest.TestCase):
         expected_count_a = 2
 
         self.assertEqual(expected_count_a, unigrams['<UNK>'])
+
+    def test_separate_vocab_and_ngram_training(self):
+        # this is closer to an integration test...
+        empty_counter = NgramCounter(2)
+        empty_counter.build_vocab("abcabc", 2)
+        empty_counter.train_counts(['abcd', 'eadbe'])
 
 
 class LanguageModelVocabularyTests(unittest.TestCase):
