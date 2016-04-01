@@ -31,7 +31,7 @@ If you publish work that uses NLTK, please cite the NLTK book, as follows:
 
 ## Copyright
 
-Copyright (C) 2001-2015 NLTK Project
+Copyright (C) 2001-2016 NLTK Project
 
 For license information, see [LICENSE.txt](LICENSE.txt).
 
