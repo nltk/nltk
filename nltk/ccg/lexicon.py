@@ -17,6 +17,8 @@ from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategor
 from nltk.compat import python_2_unicode_compatible
 from nltk.internals import deprecated
 
+from nltk.sem.logic import *
+
 #------------
 # Regular expressions used for parsing components of the lexicon
 #------------
@@ -31,15 +33,50 @@ NEXTPRIM_RE = re.compile(r'''([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)''')
 # Separates the next application operator from the remainder
 APP_RE = re.compile(r'''([\\/])([.,]?)([.,]?)(.*)''')
 
-# Parses the definition of the category of either a word or a family
+# Parses the definition of the right-hand side (rhs) of either a word or a family
 LEX_RE = re.compile(r'''([\w_]+)\s*(::|[-=]+>)\s*(.+)''', re.UNICODE)
+
+# Parses the right hand side that contains category and maybe semantic predicate
+RHS_RE = re.compile(r'''([^{}]*[^ {}])\s*(\{[^}]+\})?''', re.UNICODE)
+
+# Parses the semantic predicate
+SEMANTICS_RE = re.compile(r'''\{([^}]+)\}''', re.UNICODE)
 
 # Strips comments from a line
 COMMENTS_RE = re.compile('''([^#]*)(?:#.*)?''')
 
-#----------
-# Lexicons
-#----------
+class Token(object):
+    """
+    Class representing a token.
+
+    token => category {semantics}
+    e.g. eat => S\\var[pl]/var {\\x y.eat(x,y)}
+
+    * `token` (string)
+    * `categ` (string)
+    * `semantics` (Expression)
+    """
+    def __init__(self, token, categ, semantics=None):
+        self._token = token
+        self._categ = categ
+        self._semantics = semantics
+        
+    def categ(self):
+        return self._categ
+    
+    def semantics(self):
+        return self._semantics
+        
+    def __str__(self):
+        semantics_str = ""
+        if self._semantics is not None:
+            semantics_str = " {" + str(self._semantics) + "}"
+        return "" + str(self._categ) + semantics_str
+    
+    def __cmp__(self, other):
+        if not isinstance(other, Token): return -1
+        return cmp((self._categ,self._semantics),
+                    other.categ(),other.semantics())
 
 @python_2_unicode_compatible
 class CCGLexicon(object):
@@ -76,7 +113,7 @@ class CCGLexicon(object):
         """
         string = ""
         first = True
-        for ident in self._entries:
+        for ident in sorted(self._entries):
             if not first:
                 string = string + "\n"
             string = string + ident + " => "
@@ -169,13 +206,6 @@ def parsePrimitiveCategory(chunks, primitives, families, var):
     raise AssertionError('String \'' + catstr + '\' is neither a family nor primitive category.')
 
 
-def parseCategory(line, primitives, families):
-    """
-    Drop the 'var' from the tuple
-    """
-    return augParseCategory(line, primitives, families)[0]
-
-
 def augParseCategory(line, primitives, families, var=None):
     """
     Parse a string representing a category, and returns a tuple with
@@ -208,8 +238,7 @@ def augParseCategory(line, primitives, families, var=None):
 
     return (res, var)
 
-
-def fromstring(lex_str):
+def fromstring(lex_str, include_semantics=False):
     """
     Convert string representation into a lexicon for CCGs.
     """
@@ -229,16 +258,24 @@ def fromstring(lex_str):
             primitives = primitives + [prim.strip() for prim in line[2:].strip().split(',')]
         else:
             # Either a family definition, or a word definition
-            (ident, sep, catstr) = LEX_RE.match(line).groups()
+            (ident, sep, rhs) = LEX_RE.match(line).groups()
+            (catstr, semantics_str) = RHS_RE.match(rhs).groups()
             (cat, var) = augParseCategory(catstr, primitives, families)
+
             if sep == '::':
                 # Family definition
                 # ie, Det :: NP/N
                 families[ident] = (cat, var)
             else:
+                semantics = None
+                if include_semantics is True:
+                    if semantics_str is None:
+                        raise AssertionError(line + " must contain semantics because include_semantics is set to True")
+                    else:
+                        semantics = Expression.fromstring(SEMANTICS_RE.match(semantics_str).groups()[0])
                 # Word definition
                 # ie, which => (N\N)/(S/NP)
-                entries[ident].append(cat)
+                entries[ident].append(Token(ident, cat, semantics))
     return CCGLexicon(primitives[0], primitives, families, entries)
 
 
