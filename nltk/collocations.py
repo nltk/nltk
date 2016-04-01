@@ -176,12 +176,14 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         function.  Following Church and Hanks (1990), counts are scaled by
         a factor of 1/(window_size - 1).
         """
-        n_all = self.N
-        n_ii = self.ngram_fd[(w1, w2)] / (self.window_size - 1.0)
+        n_all = self.ngram_fd.N()
+        n_ii = self.ngram_fd[(w1, w2)]/(self.window_size - 1.0)
         if not n_ii:
             return
-        n_ix = self.word_fd[w1]
-        n_xi = self.word_fd[w2]
+        nix_list = [tup for tup in self.ngram_fd if tup[0] == w1]
+        nxi_list = [tup for tup in self.ngram_fd if tup[1] == w2] 
+        n_ix = sum([self.ngram_fd[tup] for tup in nix_list])
+        n_xi = sum([self.ngram_fd[tup] for tup in nxi_list])
         return score_fn(n_ii, (n_ix, n_xi), n_all)
 
 
