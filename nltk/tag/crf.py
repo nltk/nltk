@@ -111,7 +111,11 @@ class CRFTagger(TaggerI):
         """ 
         token = tokens[idx]
         
-        feature_list = []  
+        feature_list = []
+        
+        if not token:
+            return feature_list
+            
         # Capitalization 
         if token[0].isupper():
             feature_list.append('CAPITALIZATION')
