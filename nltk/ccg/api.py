@@ -91,6 +91,10 @@ class CCGVar(AbstractCCGCategory):
         cls._maxID = cls._maxID + 1
         return cls._maxID - 1
 
+    @classmethod
+    def reset_id(cls):
+        cls._maxID = 0
+
     def is_primitive(self):
         return False
 
