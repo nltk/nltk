@@ -1,7 +1,8 @@
 # Contributing to NLTK
 
 Hi! Thanks for your interest in contributing to [NLTK](http://www.nltk.org/).
-:-) In this document we'll try to summarize everything that you need to know to
+:-) You'll be joining a [long list of contributors](https://github.com/nltk/nltk/blob/develop/AUTHORS.md).
+In this document we'll try to summarize everything that you need to know to
 do a good job.
 
 
@@ -66,13 +67,14 @@ Summary of our git branching model:
 
 - Write [helpful commit
   messages](http://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message).
-- Anything in the `master` branch should be deployable (no failing tests).
+- Anything in the `develop` branch should be deployable (no failing tests).
 - Never use `git add .`: it can add unwanted files;
 - Avoid using `git commit -a` unless you know what you're doing;
 - Check every change with `git diff` before adding them to the index (stage
   area) and with `git diff --cached` before commiting;
+- Make sure you add your name to our [list of contributors](https://github.com/nltk/nltk/blob/develop/AUTHORS.md)
 - If you have push access to the main repository, please do not commit directly
-  to `master`: your access should be used only to accept pull requests; if you
+  to `develop`: your access should be used only to accept pull requests; if you
   want to make a new feature, you should use the same process as other
   developers so you code will be reviewed.
 - See [RELEASE-HOWTO.txt](RELEASE-HOWTO.txt) to see everything you
