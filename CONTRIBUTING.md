@@ -72,7 +72,7 @@ Summary of our git branching model:
 - Avoid using `git commit -a` unless you know what you're doing;
 - Check every change with `git diff` before adding them to the index (stage
   area) and with `git diff --cached` before commiting;
-- Make sure you add your name to our [list of contributors](https://github.com/nltk/nltk/blob/develop/AUTHORS.md)
+- Make sure you add your name to our [list of contributors](https://github.com/nltk/nltk/blob/develop/AUTHORS.md);
 - If you have push access to the main repository, please do not commit directly
   to `develop`: your access should be used only to accept pull requests; if you
   want to make a new feature, you should use the same process as other
