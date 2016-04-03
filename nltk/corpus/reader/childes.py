@@ -1,6 +1,6 @@
 # CHILDES XML Corpus Reader
 
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
 # URL: <http://nltk.org/>
@@ -16,7 +16,7 @@ __docformat__ = 'epytext en'
 import re
 from collections import defaultdict
 
-from nltk.util import flatten
+from nltk.util import flatten, LazyMap, LazyConcatenation
 from nltk.compat import string_types
 
 from nltk.corpus.reader.util import concat
@@ -60,8 +60,13 @@ class CHILDESCorpusReader(XMLCorpusReader):
         """
         sent=None
         pos=False
-        return concat([self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace) for fileid in self.abspaths(fileids)])
+        if not self._lazy:
+            return [self._get_words(fileid, speaker, sent, stem, relation,
+                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+
+        get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
+            pos, strip_space, replace)
+        return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def tagged_words(self, fileids=None, speaker='ALL', stem=False,
             relation=False, strip_space=True, replace=False):
@@ -85,8 +90,13 @@ class CHILDESCorpusReader(XMLCorpusReader):
         """
         sent=None
         pos=True
-        return concat([self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace) for fileid in self.abspaths(fileids)])
+        if not self._lazy:
+            return [self._get_words(fileid, speaker, sent, stem, relation,
+                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+
+        get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
+            pos, strip_space, replace)
+        return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def sents(self, fileids=None, speaker='ALL', stem=False,
             relation=None, strip_space=True, replace=False):
@@ -110,8 +120,13 @@ class CHILDESCorpusReader(XMLCorpusReader):
         """
         sent=True
         pos=False
-        return concat([self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace) for fileid in self.abspaths(fileids)])
+        if not self._lazy:
+            return [self._get_words(fileid, speaker, sent, stem, relation,
+                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+        
+        get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
+            pos, strip_space, replace)
+        return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def tagged_sents(self, fileids=None, speaker='ALL', stem=False,
             relation=None, strip_space=True, replace=False):
@@ -135,15 +150,22 @@ class CHILDESCorpusReader(XMLCorpusReader):
         """
         sent=True
         pos=True
-        return concat([self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace) for fileid in self.abspaths(fileids)])
+        if not self._lazy:
+            return [self._get_words(fileid, speaker, sent, stem, relation,
+                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+        
+        get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
+            pos, strip_space, replace)
+        return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def corpus(self, fileids=None):
         """
         :return: the given file(s) as a dict of ``(corpus_property_key, value)``
         :rtype: list(dict)
         """
-        return [self._get_corpus(fileid) for fileid in self.abspaths(fileids)]
+        if not self._lazy:
+            return [self._get_corpus(fileid) for fileid in self.abspaths(fileids)]
+        return LazyMap(self._get_corpus, self.abspaths(fileids))
 
     def _get_corpus(self, fileid):
         results = dict()
@@ -158,8 +180,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
             ``(participant_property_key, value)``
         :rtype: list(dict)
         """
-        return [self._get_participants(fileid)
-                            for fileid in self.abspaths(fileids)]
+        if not self._lazy:
+            return [self._get_participants(fileid) for fileid in self.abspaths(fileids)]
+        return LazyMap(self._get_participants, self.abspaths(fileids))
 
     def _get_participants(self, fileid):
         # multidimensional dicts
@@ -182,8 +205,11 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
         :param month: If true, return months instead of year-month-date
         """
-        return [self._get_age(fileid, speaker, month)
+        if not self._lazy:
+            return [self._get_age(fileid, speaker, month)
                 for fileid in self.abspaths(fileids)]
+        get_age = lambda fileid: self._get_age(fileid, speaker, month)
+        return LazyMap(get_age, self.abspaths(fileids))
 
     def _get_age(self, fileid, speaker, month):
         xmldoc = ElementTree.parse(fileid).getroot()
@@ -216,8 +242,11 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :return: the given file(s) as a floating number
         :rtype: list(float)
         """
-        return [self._getMLU(fileid, speaker=speaker)
+        if not self._lazy:
+            return [self._getMLU(fileid, speaker=speaker)
                 for fileid in self.abspaths(fileids)]
+        get_MLU = lambda fileid: self._getMLU(fileid, speaker=speaker)
+        return LazyMap(get_MLU, self.abspaths(fileids))
 
     def _getMLU(self, fileid, speaker):
         sents = self._get_words(fileid, speaker=speaker, sent=True, stem=True,
@@ -374,7 +403,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     results.append(sents)
                 else:
                     results.extend(sents)
-        return results
+        return LazyMap(lambda x: x, results)
 
 
     # Ready-to-use browser opener
