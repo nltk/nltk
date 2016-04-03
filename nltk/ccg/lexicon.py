@@ -34,7 +34,7 @@ NEXTPRIM_RE = re.compile(r'''([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)''')
 APP_RE = re.compile(r'''([\\/])([.,]?)([.,]?)(.*)''')
 
 # Parses the definition of the right-hand side (rhs) of either a word or a family
-LEX_RE = re.compile(r'''([\w_]+)\s*(::|[-=]+>)\s*(.+)''', re.UNICODE)
+LEX_RE = re.compile(r'''([\S_]+)\s*(::|[-=]+>)\s*(.+)''', re.UNICODE)
 
 # Parses the right hand side that contains category and maybe semantic predicate
 RHS_RE = re.compile(r'''([^{}]*[^ {}])\s*(\{[^}]+\})?''', re.UNICODE)
@@ -242,6 +242,7 @@ def fromstring(lex_str, include_semantics=False):
     """
     Convert string representation into a lexicon for CCGs.
     """
+    CCGVar.reset_id()
     primitives = []
     families = {}
     entries = defaultdict(list)
