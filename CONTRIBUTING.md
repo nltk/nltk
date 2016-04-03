@@ -122,7 +122,7 @@ Tests can be run locally using tox, e.g. `sudo tox -e py34`.
 
 # Discussion
 
-We have two mail lists on Google Groups:
+We have three mail lists on Google Groups:
 
 - [nltk][nltk-announce], for announcements only;
 - [nltk-users][nltk-users], for general discussion and user questions;
