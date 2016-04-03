@@ -216,7 +216,7 @@ Using conjunctions
 
     >>> printCCGDerivation(parses[0])
        I                 cook                                       and                                        eat                     the            bacon
-     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var1\.,_var1)/.,_var1) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
+     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var0\.,_var0)/.,_var0) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
                                           ------------------------------------------------------------------------------------->
                                                         (((S\NP)/NP)\.,((S\NP)/NP)) {\Q x y.(eat(x,y) & Q(x,y))}
             -------------------------------------------------------------------------------------------------------------------<
@@ -230,7 +230,7 @@ Using conjunctions
 
     >>> printCCGDerivation(parses[1])
        I                 cook                                       and                                        eat                     the            bacon
-     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var1\.,_var1)/.,_var1) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
+     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var0\.,_var0)/.,_var0) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
                                           ------------------------------------------------------------------------------------->
                                                         (((S\NP)/NP)\.,((S\NP)/NP)) {\Q x y.(eat(x,y) & Q(x,y))}
             -------------------------------------------------------------------------------------------------------------------<
@@ -244,7 +244,7 @@ Using conjunctions
 
     >>> printCCGDerivation(parses[2])
        I                 cook                                       and                                        eat                     the            bacon
-     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var1\.,_var1)/.,_var1) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
+     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var0\.,_var0)/.,_var0) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
     -------->T
     (S/(S\NP)) {\F.F(I)}
                                           ------------------------------------------------------------------------------------->
@@ -260,7 +260,7 @@ Using conjunctions
 
     >>> printCCGDerivation(parses[3])
        I                 cook                                       and                                        eat                     the            bacon
-     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var1\.,_var1)/.,_var1) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
+     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var0\.,_var0)/.,_var0) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
     -------->T
     (S/(S\NP)) {\F.F(I)}
                                           ------------------------------------------------------------------------------------->
@@ -276,7 +276,7 @@ Using conjunctions
 
     >>> printCCGDerivation(parses[4])
        I                 cook                                       and                                        eat                     the            bacon
-     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var1\.,_var1)/.,_var1) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
+     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var0\.,_var0)/.,_var0) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
     -------->T
     (S/(S\NP)) {\F.F(I)}
                                           ------------------------------------------------------------------------------------->
@@ -292,7 +292,7 @@ Using conjunctions
 
     >>> printCCGDerivation(parses[5])
        I                 cook                                       and                                        eat                     the            bacon
-     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var1\.,_var1)/.,_var1) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
+     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var0\.,_var0)/.,_var0) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
     -------->T
     (S/(S\NP)) {\F.F(I)}
                                           ------------------------------------------------------------------------------------->
@@ -308,7 +308,7 @@ Using conjunctions
 
     >>> printCCGDerivation(parses[6])
        I                 cook                                       and                                        eat                     the            bacon
-     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var1\.,_var1)/.,_var1) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
+     NP {I}  ((S\NP)/NP) {\x y.cook(x,y)}  ((_var0\.,_var0)/.,_var0) {\P Q x y.(P(x,y) & Q(x,y))}  ((S\NP)/NP) {\x y.eat(x,y)}  (NP/N) {\x.the(x)}  N {bacon}
     -------->T
     (S/(S\NP)) {\F.F(I)}
                                           ------------------------------------------------------------------------------------->
@@ -462,7 +462,7 @@ Parse lexicon with semantics
     ...     ''',
     ...     True
     ... )))
-    and => ((_var1\_var1)/_var1) {(\x y.x & y)}
+    and => ((_var0\_var0)/_var0) {(\x y.x & y)}
     eats => ((S\NP['sg'])/NP) {\x y.eat(x,y)}
     sleeps => (S\NP['sg']) {\x.sleep(x)}
 
@@ -481,7 +481,7 @@ Parse lexicon without semantics
     ...     ''',
     ...     False
     ... )))
-    and => ((_var2\_var2)/_var2)
+    and => ((_var0\_var0)/_var0)
     eats => ((S\NP['sg'])/NP)
     sleeps => (S\NP['sg'])
 
