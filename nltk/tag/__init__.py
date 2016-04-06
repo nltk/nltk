@@ -78,8 +78,6 @@ from nltk.tag.perceptron    import PerceptronTagger
 
 from nltk.data import load, find
 
-print('hi')
-
 
 def _pos_tag(tokens, tagset, tagger):
     tagged_tokens = tagger.tag(tokens)
