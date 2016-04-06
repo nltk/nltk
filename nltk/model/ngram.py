@@ -11,7 +11,6 @@ from __future__ import unicode_literals
 
 from math import log
 
-from nltk.model.api import NgramModelI
 from nltk.model.counter import NgramCounter
 
 from nltk import compat
@@ -21,51 +20,49 @@ NEG_INF = -1e6
 
 
 @compat.python_2_unicode_compatible
-class MLENgramModel(NgramModelI):
+class BaseNgramModel(object):
     """An example of how to consume NgramCounter to create a language model.
 
-    Currently untested.
+    This class isn't intended to be used directly, folks should inherit from it
+    when writing their own ngram models.
     """
 
-    def __init__(self, highest_order, training_text, unknown_cutoff,
-                 **ngram_counter_kwargs):
-        self.counter = NgramCounter(highest_order, training_text, unknown_cutoff,
-                                    **ngram_counter_kwargs)
+    def __init__(self, ngram_counts):
 
-        self.ngrams = self.counter.ngrams[self.counter.order]
+        self.ngram_counts = ngram_counts
 
-        self._normalize = self.counter.check_against_vocab
+        self.ngrams = ngram_counts.ngrams[ngram_counts.order]
+
+        self._normalize = self.ngram_counts.check_against_vocab
 
     def score(self, word, context):
         """
-        Evaluate the probability of this word in this context using MLE.
+        This is a dummy implementation. Child classes should define their own
+        implementations.
 
         :param word: the word to get the probability of
         :type word: str
         :param context: the context the word is in
         :type context: Tuple[str]
         """
-        if len(context) > self.counter.order - 1:
-            raise ValueError("Context too long for this model!")
-
-        norm_word = self._normalize(word)
-        norm_context = tuple(self.normalize_word(word) for word in context)
-
-        mle_score = self.ngrams[norm_context][norm_word]
-        if mle_score > 0:
-            return mle_score
-        return NEG_INF
+        return 0.5
 
     def logscore(self, word, context):
         """
-        Evaluate the (negative) log probability of this word in this context.
+        Evaluate the log probability of this word in this context.
+
+        This implementation actually works, child classes don't have to
+        redefine it.
 
         :param word: the word to get the probability of
         :type word: str
         :param context: the context the word is in
         :type context: Tuple[str]
         """
-        return -log(self.prob(word, context), 2)
+        score = self.score(word, context)
+        if score == 0.0:
+            return NEG_INF
+        return log(score, 2)
 
     def entropy(self, text):
         """

@@ -5,10 +5,13 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import division
+
 import unittest
 
 from nltk.model import NgramCounter
 from nltk.model.counter import LanguageModelVocabulary
+from nltk.model.ngram import BaseNgramModel, NEG_INF
 
 
 class NgramCounterTests(unittest.TestCase):
@@ -16,8 +19,8 @@ class NgramCounterTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.trigram_counter = NgramCounter(3, training_text=['abcd', 'egadbe'], unk_cutoff=2)
-        self.bigram_counter = NgramCounter(2, training_text=['abcd', 'egadbe'], unk_cutoff=2)
+        self.trigram_counter = NgramCounter(3, ['abcd', 'egadbe'], unk_cutoff=2)
+        self.bigram_counter = NgramCounter(2, ['abcd', 'egadbe'], unk_cutoff=2)
 
     def test_NgramCounter_order_property(self):
         self.assertEqual(self.trigram_counter.order, 3)
@@ -154,3 +157,32 @@ class LanguageModelVocabularyTests(unittest.TestCase):
         # as the cutoff value, plus 1 to account for unknown words.
         expected_vocab_size = 5
         self.assertEqual(expected_vocab_size, len(self.vocab))
+
+
+class BaseNgramModelTests(unittest.TestCase):
+    """unit tests for BaseNgramModel class"""
+
+    @classmethod
+    def setUpClass(self):
+        self.counter = NgramCounter(2, ['abcd', 'egadbe'], unk_cutoff=2)
+        # print(self.counter.ngrams[2])
+        self.base_model = BaseNgramModel(self.counter)
+
+    def test_score(self):
+        # this should return the relative frequency of the word
+        score1 = self.base_model.score("b", ["a"])
+        score2 = self.base_model.score("c", ["a"])
+        score3 = self.base_model.score("c", ["a", "d"])
+        self.assertEqual(score1, 0.5)
+        self.assertEqual(score1, score2)
+        self.assertEqual(score1, score3)
+
+    def test_logscore_non_zero_score(self):
+        logscore = self.base_model.logscore("g", ["e"])
+        self.assertEqual(logscore, -1.0)
+
+    def test_logscore_zero_score(self):
+        model = BaseNgramModel(self.counter)
+        model.score = lambda word, context: 0.0
+        logscore = model.logscore("d", ["e"])
+        self.assertEqual(logscore, NEG_INF)

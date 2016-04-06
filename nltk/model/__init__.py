@@ -6,5 +6,5 @@
 # URL: <http://nltk.org/
 # For license information, see LICENSE.TXT
 
-from nltk.model.ngram import MLENgramModel
+from nltk.model.ngram import BaseNgramModel
 from nltk.model.counter import NgramCounter
