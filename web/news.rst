@@ -4,6 +4,10 @@ NLTK News
 2016
 ----
 
+NLTK 3.2.1 released: April 2016
+    Support for CCG semantics, Stanford segmenter, VADER lexicon;
+    Fixes to BLEU score calculation, CHILDES corpus reader.
+
 NLTK 3.2 released : March 2016
    Fixes for Python 3.5, code cleanups now Python 2.6 is no longer
    supported, support for PanLex, support for third party download

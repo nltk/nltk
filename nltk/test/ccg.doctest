@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2015 NLTK Project
+.. Copyright (C) 2001-2016 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==============================
@@ -64,7 +64,7 @@ Construct a lexicon:
     ...     ''')
 
     >>> parser = chart.CCGChartParser(lex, chart.DefaultRuleSet)
-    >>> for parse in parser.parse("you prefer that cake".split()):  # doctest: +SKIP
+    >>> for parse in parser.parse("you prefer that cake".split()):
     ...     chart.printCCGDerivation(parse)
     ...     break
     ...
@@ -77,7 +77,7 @@ Construct a lexicon:
     --------------------------------<
                    S
 
-    >>> for parse in parser.parse("that is the cake which you prefer".split()):  # doctest: +SKIP
+    >>> for parse in parser.parse("that is the cake which you prefer".split()):
     ...     chart.printCCGDerivation(parse)
     ...     break
     ...
@@ -114,7 +114,7 @@ Without Substitution (no output)
 
 With Substitution:
 
-    >>> for parse in parser.parse(sent):  # doctest: +SKIP
+    >>> for parse in parser.parse(sent):
     ...     chart.printCCGDerivation(parse)
     ...     break
     ...
@@ -185,9 +185,9 @@ Note that while the two derivations are different, they are semantically equival
     >>> lex = lexicon.parseLexicon(test1_lex)
     >>> parser = CCGChartParser(lex, ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
     >>> for parse in parser.parse("I will cook and might eat the mushrooms and parsnips".split()):
-    ...     printCCGDerivation(parse) # doctest: +NORMALIZE_WHITESPACE +SKIP
+    ...     printCCGDerivation(parse)
      I      will       cook               and                might       eat     the    mushrooms             and             parsnips
-     NP  ((S\NP)/VP)  (VP/NP)  ((_var2\.,_var2)/.,_var2)  ((S\NP)/VP)  (VP/NP)  (NP/N)      N      ((_var2\.,_var2)/.,_var2)     N
+     NP  ((S\NP)/VP)  (VP/NP)  ((_var0\.,_var0)/.,_var0)  ((S\NP)/VP)  (VP/NP)  (NP/N)      N      ((_var0\.,_var0)/.,_var0)     N
         ---------------------->B
              ((S\NP)/NP)
                                                          ---------------------->B
@@ -207,7 +207,7 @@ Note that while the two derivations are different, they are semantically equival
     -----------------------------------------------------------------------------------------------------------------------------------<
                                                                      S
      I      will       cook               and                might       eat     the    mushrooms             and             parsnips
-     NP  ((S\NP)/VP)  (VP/NP)  ((_var2\.,_var2)/.,_var2)  ((S\NP)/VP)  (VP/NP)  (NP/N)      N      ((_var2\.,_var2)/.,_var2)     N
+     NP  ((S\NP)/VP)  (VP/NP)  ((_var0\.,_var0)/.,_var0)  ((S\NP)/VP)  (VP/NP)  (NP/N)      N      ((_var0\.,_var0)/.,_var0)     N
         ---------------------->B
              ((S\NP)/NP)
                                                          ---------------------->B
@@ -234,9 +234,9 @@ Interesting to point that the two parses are clearly semantically different.
     >>> lex = lexicon.parseLexicon(test2_lex)
     >>> parser = CCGChartParser(lex, ApplicationRuleSet + CompositionRuleSet + SubstitutionRuleSet)
     >>> for parse in parser.parse("articles which I will file and forget without reading".split()):
-    ...     printCCGDerivation(parse)  # doctest: +NORMALIZE_WHITESPACE +SKIP
+    ...     printCCGDerivation(parse)
      articles      which       I      will       file               and             forget         without           reading
-        N      ((N\N)/(S/NP))  NP  ((S/VP)\NP)  (VP/NP)  ((_var3\.,_var3)/.,_var3)  (VP/NP)  ((VP\VP)/VP['ing'])  (VP['ing']/NP)
+        N      ((N\N)/(S/NP))  NP  ((S/VP)\NP)  (VP/NP)  ((_var0\.,_var0)/.,_var0)  (VP/NP)  ((VP\VP)/VP['ing'])  (VP['ing']/NP)
                               -----------------<
                                    (S/VP)
                                                                                             ------------------------------------->B
@@ -254,7 +254,7 @@ Interesting to point that the two parses are clearly semantically different.
     -----------------------------------------------------------------------------------------------------------------------------<
                                                                   N
      articles      which       I      will       file               and             forget         without           reading
-        N      ((N\N)/(S/NP))  NP  ((S/VP)\NP)  (VP/NP)  ((_var3\.,_var3)/.,_var3)  (VP/NP)  ((VP\VP)/VP['ing'])  (VP['ing']/NP)
+        N      ((N\N)/(S/NP))  NP  ((S/VP)\NP)  (VP/NP)  ((_var0\.,_var0)/.,_var0)  (VP/NP)  ((VP\VP)/VP['ing'])  (VP['ing']/NP)
                               -----------------<
                                    (S/VP)
                                                         ------------------------------------>
@@ -345,42 +345,23 @@ Lexicons for the tests:
 
     >>> parser = chart.CCGChartParser(lex, chart.DefaultRuleSet)
     >>> for parse in parser.parse(u"el ministro anunció pero el presidente desmintió la nueva ley".split()):
-    ...     printCCGDerivation(parse) # doctest: +NORMALIZE_WHITESPACE
+    ...     printCCGDerivation(parse) # doctest: +SKIP 
+    ...     # it fails on python2.7 because of the unicode problem explained in https://github.com/nltk/nltk/pull/1354
     ...     break
        el    ministro    anunció              pero              el    presidente   desmintió     la    nueva  ley
      (NP/N)     N      ((S\NP)/NP)  (((S/NP)\(S/NP))/(S/NP))  (NP/N)      N       ((S\NP)/NP)  (NP/N)  (N/N)   N
-    --------Leaf
-     (NP/N)
-            ----------Leaf
-                N
     ------------------>
             NP
     ------------------>T
         (S/(S\NP))
-                      -------------Leaf
-                       ((S\NP)/NP)
-                                   --------------------------Leaf
-                                    (((S/NP)\(S/NP))/(S/NP))
-                                                             --------Leaf
-                                                              (NP/N)
-                                                                     ------------Leaf
-                                                                          N
                                                              -------------------->
                                                                       NP
                                                              -------------------->T
                                                                   (S/(S\NP))
-                                                                                 -------------Leaf
-                                                                                  ((S\NP)/NP)
                                                              --------------------------------->B
                                                                           (S/NP)
                                    ----------------------------------------------------------->
                                                          ((S/NP)\(S/NP))
-                                                                                              --------Leaf
-                                                                                               (NP/N)
-                                                                                                      -------Leaf
-                                                                                                       (N/N)
-                                                                                                             -----Leaf
-                                                                                                               N
                                                                                                       ------------>
                                                                                                            N
                                                                                               -------------------->

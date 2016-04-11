@@ -1,7 +1,7 @@
 # coding: utf-8
 # Natural Language Toolkit: vader
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: C.J. Hutto <Clayton.Hutto@gtri.gatech.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <24alsecondo@gmail.com> (modifications)
@@ -22,9 +22,9 @@ Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 
 import codecs
 import math
-import os
 import re
 import string
+import nltk.data
 
 ##Constants##
 
@@ -197,8 +197,8 @@ class SentimentIntensityAnalyzer(object):
     """
     Give a sentiment intensity score to sentences.
     """
-    def __init__(self, lexicon_file="vader_lexicon.txt"):
-        self.lexicon_file = os.path.join(os.path.dirname(__file__), lexicon_file)
+    def __init__(self, lexicon_file="sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt"):
+        self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.make_lex_dict()
 
     def make_lex_dict(self):
@@ -206,10 +206,9 @@ class SentimentIntensityAnalyzer(object):
         Convert lexicon file to a dictionary
         """
         lex_dict = {}
-        with codecs.open(self.lexicon_file, encoding='utf8') as infile:
-            for line in infile:
-                (word, measure) = line.strip().split('\t')[0:2]
-                lex_dict[word] = float(measure)
+        for line in self.lexicon_file.split('\n'):
+            (word, measure) = line.strip().split('\t')[0:2]
+            lex_dict[word] = float(measure)
         return lex_dict
 
     def polarity_scores(self, text):
