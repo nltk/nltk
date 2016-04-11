@@ -102,14 +102,17 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         self._f2t = defaultdict(list)
         self._t2f = defaultdict(list)
         if self._textids is not None:
-            for line in self.open(self._textids).readlines():
-                line = line.strip()
-                file_id, text_ids = line.split(' ', 1)
-                if file_id not in self.fileids():
-                    raise ValueError('In text_id mapping file %s: %s '
-                                     'not found' % (catfile, file_id))
-                for text_id in text_ids.split(self._delimiter):
-                    self._add_textids(file_id, text_id)
+            with open(self._textids) as fp:
+                for line in fp:
+                    line = line.strip()
+                    file_id, text_ids = line.split(' ', 1)
+                    if file_id not in self.fileids():
+                        raise ValueError(
+                            'In text_id mapping file %s: %s not found'
+                            % (self._textids, file_id)
+                        )
+                    for text_id in text_ids.split(self._delimiter):
+                        self._add_textids(file_id, text_id)
 
     def _add_textids(self, file_id, text_id):
         self._f2t[file_id].append(text_id)
@@ -117,28 +120,26 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
 
     def _resolve(self, fileids, categories, textids=None):
         tmp = None
+        if len(filter(lambda accessor: accessor is None,
+                      (fileids, categories, textids))) != 1:
+
+            raise ValueError('Specify exactly one of: fileids, '
+                             'categories or textids')
+
         if fileids is not None:
-            if not tmp:
-                tmp = fileids, None
-            else:
-                raise ValueError('Specify only fileids, categories or textids')
+            return fileids, None
+
         if categories is not None:
-            if not tmp:
-                tmp = self.fileids(categories), None
-            else:
-                raise ValueError('Specify only fileids, categories or textids')
+            return self.fileids(categories), None
+
         if textids is not None:
-            if not tmp:
-                if isinstance(textids, compat.string_types):
-                    textids = [textids]
-                files = sum((self._t2f[t] for t in textids), [])
-                tdict = dict()
-                for f in files:
-                    tdict[f] = (set(self._f2t[f]) & set(textids))
-                tmp = files, tdict
-            else:
-                raise ValueError('Specify only fileids, categories or textids')
-        return None, None
+            if isinstance(textids, compat.string_types):
+                textids = [textids]
+            files = sum((self._t2f[t] for t in textids), [])
+            tdict = dict()
+            for f in files:
+                tdict[f] = (set(self._f2t[f]) & set(textids))
+            return files, tdict
 
     def decode_tag(self, tag):
         # to be implemented
