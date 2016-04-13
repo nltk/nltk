@@ -59,6 +59,11 @@ class EmptyVocabularyError(Exception):
     pass
 
 
+def build_vocabulary(cutoff, *texts):
+    combined_texts = chain(*texts)
+    return NgramModelVocabulary(cutoff, combined_texts)
+
+
 @compat.python_2_unicode_compatible
 class NgramCounter(object):
     """Class for counting ngrams"""
