@@ -173,3 +173,23 @@ class BaseNgramModelTests(unittest.TestCase):
         model.score = lambda word, context: 0.0
         logscore = model.logscore("d", ["e"])
         self.assertEqual(logscore, NEG_INF)
+
+
+class ModelFuncsTests(unittest.TestCase):
+    """Tests for module functions"""
+
+    def test_build_vocabulary(self):
+        vocab = build_vocabulary(2, 'zabcfdegadbew')
+        assert "a" in vocab
+        assert "c" not in vocab
+
+    def test_build_vocabulary_multiple_texts(self):
+        vocab = build_vocabulary(2, 'zabcfdegadbew', "abcdeadbe")
+        assert "a" in vocab
+        assert "c" in vocab
+        assert "g" not in vocab
+
+    def test_build_vocabulary_no_texts(self):
+        vocab = build_vocabulary(2)
+        assert "a" not in vocab
+        assert "z" not in vocab
