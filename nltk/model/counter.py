@@ -16,7 +16,7 @@ from nltk import compat
 
 
 @compat.python_2_unicode_compatible
-class LanguageModelVocabulary(Counter):
+class NgramModelVocabulary(Counter):
     """Stores language model vocabulary.
 
     Satisfies two common language modeling requirements for a vocabulary:
@@ -55,10 +55,15 @@ class LanguageModelVocabulary(Counter):
 
 
 @compat.python_2_unicode_compatible
+class EmptyVocabularyError(Exception):
+    pass
+
+
+@compat.python_2_unicode_compatible
 class NgramCounter(object):
     """Class for counting ngrams"""
 
-    def __init__(self, highest_order, training_text=None, unk_cutoff=2,
+    def __init__(self, highest_order, vocabulary, unk_cutoff=None,
                  unk_label="<UNK>", start_symbol="<s>", end_symbol="</s>"):
         """
         :type training_text: List[List[str]]
@@ -73,21 +78,23 @@ class NgramCounter(object):
         self.end_symbol = end_symbol
         self.unk_label = unk_label
 
+        self.vocabulary = vocabulary
+        if unk_cutoff is not None:
+            # If cutoff value is provided, override vocab's cutoff
+            self.vocabulary.cutoff = unk_cutoff
         self.ngrams = defaultdict(ConditionalFreqDist)
         self.unigrams = FreqDist()
-
-        if training_text is not None:
-            flattened_text = chain(*training_text)
-            self.build_vocab(flattened_text, unk_cutoff)
-            self.train_counts(training_text)
 
     def _enumerate_ngram_orders(self):
         return enumerate(range(self.order, 1, -1))
 
-    def build_vocab(self, word_sequence, unk_cutoff):
-        self.vocabulary = LanguageModelVocabulary(unk_cutoff, word_sequence)
+    def count_ngrams(self, training_text):
+        # Note here "1" indicates an empty vocabulary!
+        # See NgramModelVocabulary __len__ method for more.
+        if len(self.vocabulary) <= 1:
+            raise EmptyVocabularyError("Cannot start counting ngrams until "
+                                       "vocabulary contains more than one item.")
 
-    def train_counts(self, training_text):
         for sent in training_text:
             checked_sent = (self.check_against_vocab(word) for word in sent)
             for ngram in self.padded_ngrams(checked_sent):
@@ -97,9 +104,6 @@ class NgramCounter(object):
                     # note that above line doesn't affect context on first iteration
                     self.ngrams[ngram_order][trunc_context][word] += 1
                 self.unigrams[word] += 1
-
-    def change_vocab_cutoff(self, new_cutoff):
-        self.vocabulary.cutoff = new_cutoff
 
     def check_against_vocab(self, word):
         if word in self.vocabulary:
