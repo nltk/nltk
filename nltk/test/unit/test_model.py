@@ -10,7 +10,7 @@ from __future__ import division
 import unittest
 
 from nltk.model import NgramCounter
-from nltk.model.counter import LanguageModelVocabulary
+from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, build_vocabulary
 from nltk.model.ngram import BaseNgramModel, NEG_INF
 
 
@@ -19,29 +19,22 @@ class NgramCounterTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.trigram_counter = NgramCounter(3, ['abcd', 'egadbe'], unk_cutoff=2)
-        self.bigram_counter = NgramCounter(2, ['abcd', 'egadbe'], unk_cutoff=2)
+        self.vocab = NgramModelVocabulary(2, "abcdeadbe")
 
-    def test_NgramCounter_order_property(self):
+        self.trigram_counter = NgramCounter(3, self.vocab)
+        self.trigram_counter.count_ngrams(['abcd', 'egdbe'])
+
+        self.bigram_counter = NgramCounter(2, self.vocab)
+        self.bigram_counter.count_ngrams(['abcd', 'egdbe'])
+
+    def test_NgramCounter_order_attr(self):
         self.assertEqual(self.trigram_counter.order, 3)
 
     def test_NgramCounter_breaks_given_invalid_order(self):
         with self.assertRaises(ValueError) as exc_info:
-            NgramCounter(0)
+            NgramCounter(0, self.vocab)
         expected_error_msg = "Order of NgramCounter cannot be less than 1. Got: 0"
         self.assertEqual(str(exc_info.exception), expected_error_msg)
-
-    def test_NgramCounter_vocab_creation(self):
-        # more of an integration test
-        self.assertTrue('a' in self.bigram_counter.vocabulary)
-        self.assertFalse('c' in self.bigram_counter.vocabulary)
-
-    def test_change_vocab_cutoff(self):
-        ngram_counter = NgramCounter(2, ['abcd', 'eadbe'], 2)
-        ngram_counter.change_vocab_cutoff(1)
-
-        # "c" was seen once so now it should be showing up in the vocab
-        self.assertTrue('c' in ngram_counter.vocabulary)
 
     def test_check_against_vocab(self):
         unk_label = "<UNK>"
@@ -59,8 +52,6 @@ class NgramCounterTests(unittest.TestCase):
             ("d", "</s>"),
             ("<s>", "e"),
             ("e", "<UNK>"),
-            ("<UNK>", "a"),
-            ("a", "d"),
             ("d", "b"),
             ("b", "e"),
             ("e", "</s>",)
@@ -97,45 +88,39 @@ class NgramCounterTests(unittest.TestCase):
 
     def test_unigram_counts_seen_words(self):
         unigrams = self.bigram_counter.unigrams
-        expected_count_a = 2
+        expected_count_b = 2
 
-        self.assertEqual(expected_count_a, unigrams['a'])
+        self.assertEqual(expected_count_b, unigrams['b'])
 
     def test_unigram_counts_completely_unseen_words(self):
         unigrams = self.bigram_counter.unigrams
-        expected_count_a = 0
+        unseen_count = 0
 
-        self.assertEqual(expected_count_a, unigrams['z'])
+        self.assertEqual(unseen_count, unigrams['z'])
 
     def test_unigram_counts_unknown_words(self):
         # The subtle difference between this and "unseen" is that the latter
         # have no counts recorded for them at all and in practice would usually
-        # get converted to "unknown" words
+        # get assigned the "unknown" label
         unigrams = self.bigram_counter.unigrams
-        expected_count_a = 2
+        unknown_count = 2
 
-        self.assertEqual(expected_count_a, unigrams['<UNK>'])
-
-    def test_separate_vocab_and_ngram_training(self):
-        # this is closer to an integration test...
-        empty_counter = NgramCounter(2)
-        empty_counter.build_vocab("abcabc", 2)
-        empty_counter.train_counts(['abcd', 'eadbe'])
+        self.assertEqual(unknown_count, unigrams['<UNK>'])
 
 
-class LanguageModelVocabularyTests(unittest.TestCase):
-    """tests LanguageModelVocabulary Class"""
+class NgramModelVocabularyTests(unittest.TestCase):
+    """tests NgramModelVocabulary Class"""
 
     @classmethod
     def setUpClass(self):
-        self.vocab = LanguageModelVocabulary(2, 'zabcfdegadbew')
+        self.vocab = NgramModelVocabulary(2, 'zabcfdegadbew')
 
     def test_cutoff_value_set_correctly(self):
         self.assertEqual(self.vocab.cutoff, 2)
 
     def test_cutoff_setter_checks_value(self):
         with self.assertRaises(ValueError) as exc_info:
-            LanguageModelVocabulary(0, "abc")
+            NgramModelVocabulary(0, "abc")
         expected_error_msg = "Cutoff value cannot be less than 1. Got: 0"
         self.assertEqual(expected_error_msg, str(exc_info.exception))
 
@@ -164,7 +149,9 @@ class BaseNgramModelTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.counter = NgramCounter(2, ['abcd', 'egadbe'], unk_cutoff=2)
+        self.vocab = NgramModelVocabulary(2, "abcabc")
+        self.counter = NgramCounter(2, self.vocab)
+        self.counter.count_ngrams(['abcd', 'egadbe'])
         # print(self.counter.ngrams[2])
         self.base_model = BaseNgramModel(self.counter)
 
