@@ -335,7 +335,7 @@ def printCCGTree(lwidth,tree):
 
     (token, op) = tree.label()
 
-    if op == u'Leaf':
+    if op == 'Leaf':
         return rwidth
 
     # Pad to the left with spaces, followed by a sequence of '-'
