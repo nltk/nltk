@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, division, unicode_literals
@@ -102,6 +102,10 @@ class GlueFormula(object):
 
     def __ne__(self, other):
         return not self == other
+
+    # sorting for use in doctests which must be deterministic
+    def __lt__(self, other):
+        return str(self) < str(other)
 
     def __str__(self):
         assert isinstance(self.indices, set)

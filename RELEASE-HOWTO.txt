@@ -10,23 +10,34 @@ A. PREPARE
 
 (1. Create a release branch from the develop branch
      git checkout -b release-3.X.Y develop)
-2. Modify nltk/VERSION with the version number
-3. Update the ChangeLog (for nltk, nltk_data)
+2. Check the copyright year is correct and update if necessary
+       e.g. ./tools/global_replace.py 2001-2015 2001-2016
+3. Modify nltk/VERSION with the version number
+4. Update the ChangeLog (for nltk, nltk_data)
        git log --since=20XX-YY-ZZ
-4. Update the data index (make data_index) and commit
-5. Continue with testing and bugfixing
+5. Update the data index (make data_index) and commit
+6. Continue with testing and bugfixing
      - https://nltk.ci.cloudbees.com/job/nltk/
      - install the new version locally, since its the installed code that is checked
      - cd nltk/test; make (run the tests in nltk.test; or see Jenkins)
      - make demotest (run the demonstration code including some graphical demos)
      - test individual modules with, e.g.: tox-3.4 -e py34 nltk.package.module
-6. Check that installation instructions are up-to-date
-7. Update the news page in nltk/web/news.rst
-8. Tag this version:
+7. Check that installation instructions are up-to-date
+8. Update the news page in nltk/web/news.rst
+9. Rebuild the web docs
+     - cd nltk.github.com
+     - git pull
+     - cd ../nltk/web
+     - make (slow)
+     - cd ../../nltk.github.com
+     - git add _modules _sources _static api *.html objects.inv searchindex.js
+     - git commit -m "updates for version 3.X.Y"
+     - git push origin master
+10. Tag this version:
      - git tag -a 3.X.Y -m "version 3.X.Y"
      - git push --tags
      Check that it shows up here: https://github.com/nltk/nltk/releases
-(9. Merge with master branch
+(11. Merge with master branch
      - git checkout master
      - git merge --no-ff release-3.X.Y)
 

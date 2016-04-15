@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Product Reviews Corpus Reader
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -58,6 +58,9 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
     level classification and analysis, this peculiarity should be taken into
     consideration.
 """
+
+from __future__ import division
+
 import re
 
 from nltk.corpus.reader.api import *

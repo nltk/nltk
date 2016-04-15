@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: SentiWordNet
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -20,10 +20,12 @@ http://sentiwordnet.isti.cnr.it/
     >>> print(swn.senti_synset('breakdown.n.03'))
     <breakdown.n.03: PosScore=0.0 NegScore=0.25>
     >>> list(swn.senti_synsets('slow'))
-    [SentiSynset('decelerate.v.01'), SentiSynset('slow.v.02'),\
-    SentiSynset('slow.v.03'), SentiSynset('slow.a.01'),\
-    SentiSynset('slow.a.02'), SentiSynset('slow.a.04'),\
-    SentiSynset('slowly.r.01'), SentiSynset('behind.r.03')]
+    [SentiSynset('decelerate.v.01'), SentiSynset('slow.v.02'),
+    SentiSynset('slow.v.03'), SentiSynset('slow.a.01'),
+    SentiSynset('slow.a.02'), SentiSynset('dense.s.04'),
+    SentiSynset('slow.a.04'), SentiSynset('boring.s.01'),
+    SentiSynset('dull.s.08'), SentiSynset('slowly.r.01'),
+    SentiSynset('behind.r.03')]
     >>> happy = swn.senti_synsets('happy', 'a')
     >>> happy0 = list(happy)[0]
     >>> happy0.pos_score()

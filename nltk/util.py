@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -1332,8 +1332,9 @@ class Trie(defaultdict):
 
         >>> from nltk.util import Trie
         >>> trie = Trie(["abc", "def"])
-        >>> trie.as_dict()
-        {'a': {'b': {'c': {True: None}}}, 'd': {'e': {'f': {True: None}}}}
+        >>> expected = {'a': {'b': {'c': {True: None}}}, 'd': {'e': {'f': {True: None}}}}
+        >>> trie.as_dict() == expected
+        True
 
         """
         def _default_to_regular(d):
@@ -1357,7 +1358,7 @@ class Trie(defaultdict):
 
             """
             if isinstance(d, defaultdict):
-                d = {k: _default_to_regular(v) for k, v in d.iteritems()}
+                d = {k: _default_to_regular(v) for k, v in d.items()}
             return d
         
         return _default_to_regular(self)

@@ -1,3 +1,36 @@
+Version 3.2.1 2015-04-09
+* Support for CCG semantics, Stanford segmenter, VADER lexicon
+* Fixes to BLEU score calculation, CHILDES corpus reader
+* Other miscellaneous fixes
+
+Thanks to the following contributors to 3.2.1:
+Andrew Giel, Casper Lehmann-Strøm, David Madl, Tanin Na Nakorn,
+Guilherme Nardari, Philippe Ombredanne, Nathan Schneider, Liling Tan,
+Josiah Wang, venticello
+	
+Version 3.2 2015-03-03
+* Fixes for Python 3.5
+* Code cleanups now Python 2.6 is no longer supported
+* Improvements to documentation
+* Comprehensive use of os.path for platform-specific path handling
+* Support for PanLex
+* Support for third party download locations for NLTK data
+* Fix bugs in IBM method 3 smoothing and BLEU calculation
+* Support smoothing for BLEU score and corpus-level BLEU
+* Support RIBES score
+* Improvements to TweetTokenizer
+* Updates for Stanford API
+* Add mathematical operators to ConditionalFreqDist
+* Fix bug in sentiwordnet for adjectives
+* Merged internal implementations of Trie
+
+Thanks to the following contributors to 3.2:
+Santiago Castro, Jihun Choi, Graham Christensen, Andrew Drozdov, Long
+Duong, Kyriakos Georgiou, Michael Wayne Goodman, Clark Grubb, Tah Wei
+Hoon, David Kamholz, Ewan Klein, Reed Loden, Rob Malouf, Philippe
+Ombredanne, Josh Owen, Pierpaolo Pantone, Mike Recachinas, Elijah
+Rippeth, Thomas Stieglmaier, Liling Tan, Philip Tzou, Pratap Vardhan.
+
 Version 3.1 2015-10-15
 * Fixes for Python 3.5 (drop support for capturing groups in regexp tokenizer)
 * Drop support for Python 2.6
@@ -15,7 +48,7 @@ Version 3.1 2015-10-15
 * Multext East Corpus and MTECorpusReader
 * include six module to streamline installation on MS Windows
 	
-Thanks to the following contributors to 3.1
+Thanks to the following contributors to 3.1:
 Le Tuan Anh, Petra Barancikova, Alexander Böhm, Francis Bond,
 Long Duong, Anna Garbar, Matthew Honnibal, Tah Wei Hoon, Ewan Klein,
 Rob Malouf, Dmitrijs Milajevs, Will Monroe, Sergio Oller, Pierpaolo

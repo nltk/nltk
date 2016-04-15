@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Framenet Corpus Reader
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Authors: Chuck Wooters <wooters@icsi.berkeley.edu>,
 #          Nathan Schneider <nschneid@cs.cmu.edu>
 # URL: <http://nltk.org/>
@@ -1886,7 +1886,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         """Load a subcorpus of a lexical unit from the given xml."""
         sc = AttrDict()
         try:
-            sc['name'] = str(elt.get('name'))
+            sc['name'] = elt.get('name')
         except AttributeError:
             return None
         sc['_type'] = "lusubcorpus"
