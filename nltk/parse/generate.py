@@ -38,9 +38,15 @@ def generate(grammar, start=None, depth=None, n=None):
 
 def _generate_all(grammar, items, depth):
     if items:
-        for frag1 in _generate_one(grammar, items[0], depth):
-            for frag2 in _generate_all(grammar, items[1:], depth):
-                yield frag1 + frag2
+        try:
+            for frag1 in _generate_one(grammar, items[0], depth):
+                for frag2 in _generate_all(grammar, items[1:], depth):
+                    yield frag1 + frag2
+        except RuntimeError as _error:
+            if _error.message == "maximum recursion depth exceeded":
+                print("The grammar has rule(s) that yield infinite recursion!!\n", file=sys.stderr)
+            raise RuntimeError
+
     else:
         yield []
 
