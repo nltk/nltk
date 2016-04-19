@@ -36,6 +36,7 @@ def generate(grammar, start=None, depth=None, n=None):
 
     return iter
 
+
 def _generate_all(grammar, items, depth):
     if items:
         try:
@@ -44,11 +45,13 @@ def _generate_all(grammar, items, depth):
                     yield frag1 + frag2
         except RuntimeError as _error:
             if _error.message == "maximum recursion depth exceeded":
-                print("The grammar has rule(s) that yield infinite recursion!!\n", file=sys.stderr)
-            raise RuntimeError
-
+                # Helpful error message while still showing the recursion stack.
+                raise RuntimeError("The grammar has rule(s) that yield infinite recursion!!")
+            else:
+                raise
     else:
         yield []
+
 
 def _generate_one(grammar, item, depth):
     if depth > 0:
@@ -69,6 +72,7 @@ demo_grammar = """
   P -> 'in' | 'with'
 """
 
+
 def demo(N=23):
     from nltk.grammar import CFG
 
@@ -77,6 +81,7 @@ def demo(N=23):
     grammar = CFG.fromstring(demo_grammar)
     for n, sent in enumerate(generate(grammar, n=N), 1):
         print('%3d. %s' % (n, ' '.join(sent)))
+
 
 if __name__ == '__main__':
     demo()
