@@ -1,4 +1,4 @@
-Version 3.2.1 2015-04-09
+Version 3.2.1 2016-04-09
 * Support for CCG semantics, Stanford segmenter, VADER lexicon
 * Fixes to BLEU score calculation, CHILDES corpus reader
 * Other miscellaneous fixes
@@ -8,7 +8,7 @@ Andrew Giel, Casper Lehmann-Strøm, David Madl, Tanin Na Nakorn,
 Guilherme Nardari, Philippe Ombredanne, Nathan Schneider, Liling Tan,
 Josiah Wang, venticello
 	
-Version 3.2 2015-03-03
+Version 3.2 2016-03-03
 * Fixes for Python 3.5
 * Code cleanups now Python 2.6 is no longer supported
 * Improvements to documentation
