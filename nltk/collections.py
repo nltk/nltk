@@ -551,6 +551,50 @@ class LazyEnumerate(LazyZip):
         """
         LazyZip.__init__(self, range(len(lst)), lst)
 
+class LazyIteratorList(AbstractLazySequence):
+    """
+    Wraps an iterator, loading its elements on demand 
+    and making them subscriptable.
+    __repr__ displays only the first few elements.
+    """
+    def __init__(self, it, cache_limit=None, known_len=None):
+        self._it = it
+        self._len = known_len
+        self._cache = []
+        self._cache_limit = cache_limit
+        self._i = 0 # Number of items consumed so far
+
+    def __len__(self):
+        if self._len:
+            return self._len
+        for x in self.iterate_from(len(self._cache)):
+            pass
+        return len(self._cache)
+
+    def iterate_from(self, start):
+        while self._i<start:
+            v = next(self._it)
+            if self._cache_limit is None or len(self._cache)+1<self._cache_limit:
+                self._cache.append(v)
+            self._i += 1
+        i = start
+        while i<len(self._cache):
+            yield self._cache[i]
+            i += 1
+        while True:
+            v = next(self._it)
+            if self._cache_limit is None or len(self._cache)+1<self._cache_limit:
+                self._cache.append(v)
+            yield v
+
+    def __add__(self, other):
+        """Return a list concatenating self with other."""
+        return type(self)(itertools.chain(self, other))
+
+    def __radd__(self, other):
+        """Return a list concatenating other with self."""
+        return type(self)(itertools.chain(other, self))
+
 ######################################################################
 # Trie Implementation
 ######################################################################
