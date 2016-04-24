@@ -4,7 +4,7 @@
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 import locale
 import re
@@ -16,7 +16,7 @@ import os
 
 from itertools import islice, chain, combinations
 from pprint import pprint
-from collections import defaultdict, deque
+from collections import defaultdict, deque, Counter
 from sys import version_info
 
 from nltk.internals import slice_bounds, raise_unorderable_types
