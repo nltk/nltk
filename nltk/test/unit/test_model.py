@@ -221,3 +221,25 @@ class ModelFuncsTests(unittest.TestCase):
         self.assertEqual(bigrams[("blue",)]['river'], 0)
         self.assertEqual(bigrams[("blue",)]['<UNK>'], 1)
         self.assertEqual(bigrams[("over",)]['the'], 1)
+
+    def test_count_ngrams_kwargs(self):
+        vocab_text = ("the cow jumped over the blue moon . "
+            "blue river jumped over the rainbow .")
+        vocab = build_vocabulary(2, vocab_text.split())
+
+        text = ["blue moon".split(), "over the rainbow".split()]
+        counter = count_ngrams(2, vocab, text, left_pad_symbol="TEST")
+
+        self.assertEqual(counter.ngrams[2][("TEST",)]["blue"], 1)
+
+    def test_count_grams_bad_kwarg(self):
+        vocab_text = ("the cow jumped over the blue moon . "
+            "blue river jumped over the rainbow .")
+        vocab = build_vocabulary(2, vocab_text.split())
+
+        text = ["blue moon".split()]
+        with self.assertRaises(TypeError) as exc_info:
+            count_ngrams(2, vocab, text, dummy_kwarg="TEST")
+
+        expected_error_msg = "ngrams() got an unexpected keyword argument 'dummy_kwarg'"
+        self.assertEqual(expected_error_msg, str(exc_info.exception))
