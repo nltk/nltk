@@ -15,6 +15,18 @@ from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
 
 
+def build_vocabulary(cutoff, *texts):
+    combined_texts = chain(*texts)
+    return NgramModelVocabulary(cutoff, combined_texts)
+
+
+def count_ngrams(order, vocabulary, *training_texts, **counter_kwargs):
+    counter = NgramCounter(order, vocabulary, **counter_kwargs)
+    for text in training_texts:
+        counter.train_counts(text)
+    return counter
+
+
 @compat.python_2_unicode_compatible
 class NgramModelVocabulary(Counter):
     """Stores language model vocabulary.
@@ -59,11 +71,6 @@ class EmptyVocabularyError(Exception):
     pass
 
 
-def build_vocabulary(cutoff, *texts):
-    combined_texts = chain(*texts)
-    return NgramModelVocabulary(cutoff, combined_texts)
-
-
 @compat.python_2_unicode_compatible
 class NgramCounter(object):
     """Class for counting ngrams"""
@@ -93,7 +100,7 @@ class NgramCounter(object):
     def _enumerate_ngram_orders(self):
         return enumerate(range(self.order, 1, -1))
 
-    def count_ngrams(self, training_text):
+    def train_counts(self, training_text):
         # Note here "1" indicates an empty vocabulary!
         # See NgramModelVocabulary __len__ method for more.
         if len(self.vocabulary) <= 1:

@@ -10,7 +10,7 @@ from __future__ import division
 import unittest
 
 from nltk.model import NgramCounter
-from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, build_vocabulary
+from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, build_vocabulary, count_ngrams
 from nltk.model.ngram import BaseNgramModel, NEG_INF
 
 
@@ -22,10 +22,10 @@ class NgramCounterTests(unittest.TestCase):
         self.vocab = NgramModelVocabulary(2, "abcdeadbe")
 
         self.trigram_counter = NgramCounter(3, self.vocab)
-        self.trigram_counter.count_ngrams(['abcd', 'egdbe'])
+        self.trigram_counter.train_counts(['abcd', 'egdbe'])
 
         self.bigram_counter = NgramCounter(2, self.vocab)
-        self.bigram_counter.count_ngrams(['abcd', 'egdbe'])
+        self.bigram_counter.train_counts(['abcd', 'egdbe'])
 
     def test_NgramCounter_order_attr(self):
         self.assertEqual(self.trigram_counter.order, 3)
@@ -151,7 +151,7 @@ class BaseNgramModelTests(unittest.TestCase):
     def setUpClass(self):
         self.vocab = NgramModelVocabulary(2, "abcabc")
         self.counter = NgramCounter(2, self.vocab)
-        self.counter.count_ngrams(['abcd', 'egadbe'])
+        self.counter.train_counts(['abcd', 'egadbe'])
         # print(self.counter.ngrams[2])
         self.base_model = BaseNgramModel(self.counter)
 
@@ -176,7 +176,10 @@ class BaseNgramModelTests(unittest.TestCase):
 
 
 class ModelFuncsTests(unittest.TestCase):
-    """Tests for module functions"""
+    """Tests for module functions.
+
+    They are essentially integration tests.
+    """
 
     def test_build_vocabulary(self):
         vocab = build_vocabulary(2, 'zabcfdegadbew')
@@ -193,3 +196,28 @@ class ModelFuncsTests(unittest.TestCase):
         vocab = build_vocabulary(2)
         assert "a" not in vocab
         assert "z" not in vocab
+
+    def test_count_ngrams(self):
+        vocab = build_vocabulary(2, 'abcdead')
+        counter = count_ngrams(2, vocab, ['abcfdezgadbew'])
+
+        bigrams = counter.ngrams[2]
+
+        self.assertEqual(bigrams[("a",)]['b'], 0)
+        self.assertEqual(bigrams[("a",)]['d'], 1)
+        self.assertEqual(bigrams[("<s>",)]['a'], 1)
+
+    def test_count_ngrams_multiple_texts(self):
+        vocab_text = ("the cow jumped over the blue moon . "
+            "blue river jumped over the rainbow .")
+        vocab = build_vocabulary(2, vocab_text.split())
+
+        text1 = ['zabcfdegadbew']
+        text2 = ["blue moon".split(), "over the rainbow".split()]
+        counter = count_ngrams(2, vocab, text1, text2)
+
+        bigrams = counter.ngrams[2]
+
+        self.assertEqual(bigrams[("blue",)]['river'], 0)
+        self.assertEqual(bigrams[("blue",)]['<UNK>'], 1)
+        self.assertEqual(bigrams[("over",)]['the'], 1)
