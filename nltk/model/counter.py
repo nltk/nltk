@@ -75,25 +75,33 @@ class EmptyVocabularyError(Exception):
 class NgramCounter(object):
     """Class for counting ngrams"""
 
-    def __init__(self, highest_order, vocabulary, unk_cutoff=None,
-                 unk_label="<UNK>", start_symbol="<s>", end_symbol="</s>"):
+    def __init__(self, order, vocabulary, unk_cutoff=None, unk_label="<UNK>", **ngrams_kwargs):
         """
         :type training_text: List[List[str]]
         """
 
-        if highest_order < 1:
+        if order < 1:
             message = "Order of NgramCounter cannot be less than 1. Got: {0}"
-            raise ValueError(message.format(highest_order))
+            raise ValueError(message.format(order))
 
-        self.order = highest_order
-        self.start_symbol = start_symbol
-        self.end_symbol = end_symbol
+        self.order = order
         self.unk_label = unk_label
+
+        # Preset some common defaults...
+        self.ngrams_kwargs = {
+            "pad_left": True,
+            "pad_right": True,
+            "left_pad_symbol": "<s>",
+            "right_pad_symbol": "</s>"
+        }
+        # While allowing whatever the user passes to override them
+        self.ngrams_kwargs.update(ngrams_kwargs)
 
         self.vocabulary = vocabulary
         if unk_cutoff is not None:
             # If cutoff value is provided, override vocab's cutoff
             self.vocabulary.cutoff = unk_cutoff
+
         self.ngrams = defaultdict(ConditionalFreqDist)
         self.unigrams = FreqDist()
 
@@ -128,6 +136,4 @@ class NgramCounter(object):
         :param sequence: same as nltk.util.ngrams
         :type sequence: any iterable
         """
-        return ngrams(sequence, self.order, pad_left=True, pad_right=True,
-                      left_pad_symbol=self.start_symbol,
-                      right_pad_symbol=self.end_symbol)
+        return ngrams(sequence, self.order, **self.ngrams_kwargs)
