@@ -9,8 +9,8 @@ from __future__ import division
 
 import unittest
 
-from nltk.model import NgramCounter
-from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, build_vocabulary, count_ngrams
+from nltk.model import build_vocabulary, count_ngrams
+from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, NgramCounter
 from nltk.model.ngram import BaseNgramModel, NEG_INF
 
 
