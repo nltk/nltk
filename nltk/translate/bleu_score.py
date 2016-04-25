@@ -292,7 +292,7 @@ def modified_precision(references, hypothesis, n):
 
 def closest_ref_length(references, hyp_len):
     """
-    This function finds the reference that is the closestyu length to the 
+    This function finds the reference that is the closest length to the 
     hypothesis. The closest reference length is referred to as *r* variable 
     from the brevity penalty formula in Papineni et. al. (2002)
     
