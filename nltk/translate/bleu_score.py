@@ -283,7 +283,7 @@ def modified_precision(references, hypothesis, n):
                       for ngram, count in counts.items()}
     
     numerator = sum(clipped_counts.values())
-    # Ensures that denominator is 1 to avoid ZeroDivisionError.
+    # Ensures that denominator is minimum 1 to avoid ZeroDivisionError.
     # Usually this happens when the ngram order is > len(reference).
     denominator = max(1, sum(counts.values()))
     
