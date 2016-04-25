@@ -66,6 +66,12 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     >>> weights = (0.1666, 0.1666, 0.1666, 0.1666, 0.1666)
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1, weights)
     0.45838627164939455
+
+    The example below shows how to use a smoothing function:
+
+    >>> ref_short = ['It', 'is', 'a']
+    >>> sentence_bleu([ref_short], hypothesis1, smoothing_function = SmoothingFunction().method1) # doctest: +ELLIPSIS
+    0.0534...
     
     :param references: reference sentences
     :type references: list(list(str))
@@ -171,11 +177,12 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     if smoothing_function:
         p_n = smoothing_function(p_n, references=references, 
                                  hypothesis=hypothesis, hyp_len=hyp_len)
+    else:
+        p_n = [float(p_i) for p_i in p_n if p_i.numerator != 0]
     
     # Calculates the overall modified precision for all ngrams.
     # By sum of the product of the weights and the respective *p_n*
-    s = (w * math.log(p_i) for w, p_i in zip(weights, p_n) 
-         if p_i.numerator != 0)
+    s = (w * math.log(p_i) for w, p_i in zip(weights, p_n))
         
     return bp * math.exp(math.fsum(s))
 
