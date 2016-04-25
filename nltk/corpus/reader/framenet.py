@@ -2430,10 +2430,19 @@ class FramenetCorpusReader(XMLCorpusReader):
                 luinfo['sentenceCount'] = self._load_xml_attributes(
                     PrettyDict(), sub)
             elif sub.tag.endswith('lexeme'):
-                luinfo['lexemes'].append(self._load_xml_attributes(PrettyDict(), sub))
+                lexemeinfo = self._load_xml_attributes(PrettyDict(), sub)
+                if not isinstance(lexemeinfo.name, basestring):
+                    # some lexeme names are ints by default: e.g., 
+                    # thousand.num has lexeme with name="1000"
+                    lexemeinfo.name = str(lexemeinfo.name)
+                luinfo['lexemes'].append(lexemeinfo)
             elif sub.tag.endswith('semType'):
                 semtypeinfo = self._load_xml_attributes(PrettyDict(), sub)
                 luinfo['semTypes'].append(self.semtype(semtypeinfo.ID))
+
+        # sort lexemes by 'order' attribute
+        # otherwise, e.g., 'write down.v' may have lexemes in wrong order
+        luinfo['lexemes'].sort(key=lambda x: x.order)
 
         return luinfo
 
