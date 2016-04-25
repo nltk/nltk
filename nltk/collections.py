@@ -15,16 +15,11 @@ import bisect
 import os
 
 from itertools import islice, chain, combinations
-from pprint import pprint
 from collections import defaultdict, deque, Counter
-from sys import version_info
 
 from nltk.internals import slice_bounds, raise_unorderable_types
 from nltk.compat import (class_types, text_type, string_types, total_ordering,
-                         python_2_unicode_compatible, getproxies,
-			 ProxyHandler, build_opener, install_opener,
-			 HTTPPasswordMgrWithDefaultRealm,
-			 ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+                         python_2_unicode_compatible)
 
 
 ##########################################################################
