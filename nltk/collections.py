@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Utility functions
+# Natural Language Toolkit: Collections
 #
 # Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
@@ -347,7 +347,7 @@ class LazyMap(AbstractLazySequence):
     ``map``.  In particular, the following two expressions are
     equivalent:
 
-        >>> from nltk.util import LazyMap
+        >>> from nltk.collections import LazyMap
         >>> function = str
         >>> sequence = [1,2,3]
         >>> map(function, sequence) # doctest: +SKIP
@@ -473,7 +473,7 @@ class LazyZip(LazyMap):
     ``LazyZip`` is essentially a lazy version of the Python primitive function
     ``zip``.  In particular, an evaluated LazyZip is equivalent to a zip:
 
-        >>> from nltk.util import LazyZip
+        >>> from nltk.collections import LazyZip
         >>> sequence1, sequence2 = [1, 2, 3], ['a', 'b', 'c']
         >>> zip(sequence1, sequence2) # doctest: +SKIP
         [(1, 'a'), (2, 'b'), (3, 'c')]
@@ -523,7 +523,7 @@ class LazyEnumerate(LazyZip):
     function ``enumerate``.  In particular, the following two expressions are
     equivalent:
 
-        >>> from nltk.util import LazyEnumerate
+        >>> from nltk.collections import LazyEnumerate
         >>> sequence = ['first', 'second', 'third']
         >>> list(enumerate(sequence))
         [(0, 'first'), (1, 'second'), (2, 'third')]
@@ -622,10 +622,10 @@ class Trie(defaultdict):
 
         :Example:
 
-        >>> from nltk.util import Trie
+        >>> from nltk.collections import Trie
         >>> trie = Trie(["ab"])
         >>> trie
-        defaultdict(<class 'nltk.util.Trie'>, {'a': defaultdict(<class 'nltk.util.Trie'>, {'b': defaultdict(<class 'nltk.util.Trie'>, {True: None})})})
+        defaultdict(<class 'nltk.collections.Trie'>, {'a': defaultdict(<class 'nltk.collections.Trie'>, {'b': defaultdict(<class 'nltk.collections.Trie'>, {True: None})})})
 
         """
         if len(string):
@@ -647,7 +647,7 @@ class Trie(defaultdict):
             can be converted to a simple ``dict`` using ``dict()``, in our case
             it's a nested ``defaultdict``, so here's a quick trick to provide to
             us the ``dict`` representation of the ``Trie`` without 
-            ``defaultdict(<class 'nltk.util.Trie'>, ...``
+            ``defaultdict(<class 'nltk.collections.Trie'>, ...``
         :rtype: dict(str -> dict(bool -> None))
             Note: there can be an arbitrarily deeply nested 
             ``dict(str -> dict(str -> dict(..))``, but the last
@@ -655,7 +655,7 @@ class Trie(defaultdict):
 
         :Example:
 
-        >>> from nltk.util import Trie
+        >>> from nltk.collections import Trie
         >>> trie = Trie(["abc", "def"])
         >>> expected = {'a': {'b': {'c': {True: None}}}, 'd': {'e': {'f': {True: None}}}}
         >>> trie.as_dict() == expected
