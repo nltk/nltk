@@ -106,33 +106,40 @@ class TestBLEU(unittest.TestCase):
         self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.4729, places=4)
             
 
-@unittest.skip("Skipping fringe cases for BLEU.")
+#@unittest.skip("Skipping fringe cases for BLEU.")
 class TestBLEUFringeCases(unittest.TestCase):
 
     def test_case_where_n_is_bigger_than_hypothesis_length(self):
         # Test BLEU to nth order of n-grams, where n > len(hypothesis).
-        # TODO: Currently this test breaks the BLEU implementation (13.03.2016)
-        references = ['John loves Mary'.split()]
+        references = ['John loves Mary ?'.split()]
         hypothesis = 'John loves Mary'.split()
         n = len(hypothesis) + 1 # 
         weights = [1.0/n] * n # Uniform weights.
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.7165, places=4)
+        
+        # Test case where n > len(hypothesis) but so is n > len(reference), and
+        # it's a special case where reference == hypothesis.
+        references = ['John loves Mary'.split()]
+        hypothesis = 'John loves Mary'.split()
         assert(sentence_bleu(references, hypothesis, weights) == 1.0)
     
     def test_empty_hypothesis(self):
         # Test case where there's hypothesis is empty.
-        # TODO: Currently this test breaks the BLEU implementation (13.03.2016)
         references = ['The candidate has no alignment to any of the references'.split()]
         hypothesis = []
         assert(sentence_bleu(references, hypothesis) == 0)
         
     def test_empty_references(self):
         # Test case where there's reference is empty.
-        # TODO: Currently this test breaks the BLEU implementation (13.03.2016)
         references = [[]]
         hypothesis = 'John loves Mary'.split()
         assert(sentence_bleu(references, hypothesis) == 0)
         
+    def test_empty_references_and_hypothesis(self):
+        # Test case where both references and hypothesis is empty.
+        references = [[]]
+        hypothesis = []
+        assert(sentence_bleu(references, hypothesis) == 0)
         
     def test_brevity_penalty(self):
         pass
-    

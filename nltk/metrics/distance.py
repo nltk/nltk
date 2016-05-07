@@ -34,7 +34,7 @@ def _edit_dist_init(len1, len2):
     return lev
 
 
-def _edit_dist_step(lev, i, j, s1, s2, transpositions=False):
+def _edit_dist_step(lev, i, j, s1, s2, substitution_cost=1, transpositions=False):
     c1 = s1[i - 1]
     c2 = s2[j - 1]
 
@@ -43,7 +43,7 @@ def _edit_dist_step(lev, i, j, s1, s2, transpositions=False):
     # skipping a character in s2
     b = lev[i][j - 1] + 1
     # substitution
-    c = lev[i - 1][j - 1] + (c1 != c2)
+    c = lev[i - 1][j - 1] + (substitution_cost if c1 != c2 else 0)
 
     # transposition
     d = c + 1  # never picked by default
@@ -55,7 +55,7 @@ def _edit_dist_step(lev, i, j, s1, s2, transpositions=False):
     lev[i][j] = min(a, b, c, d)
 
 
-def edit_distance(s1, s2, transpositions=False):
+def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     """
     Calculate the Levenshtein edit-distance between two strings.
     The edit distance is the number of characters that need to be
@@ -65,6 +65,9 @@ def edit_distance(s1, s2, transpositions=False):
     "rain" -> "sain" -> "shin" -> "shine".  These operations could have
     been done in other orders, but at least three steps are needed.
 
+    Allows specifying the cost of substitution edits (e.g., "a" -> "b"),
+    because sometimes it makes sense to assign greater penalties to substitutions.
+
     This also optionally allows transposition edits (e.g., "ab" -> "ba"),
     though this is disabled by default.
 
@@ -72,6 +75,7 @@ def edit_distance(s1, s2, transpositions=False):
     :param transpositions: Whether to allow transposition edits
     :type s1: str
     :type s2: str
+    :type substitution_cost: int
     :type transpositions: bool
     :rtype int
     """
@@ -83,7 +87,8 @@ def edit_distance(s1, s2, transpositions=False):
     # iterate over the array
     for i in range(len1):
         for j in range(len2):
-            _edit_dist_step(lev, i + 1, j + 1, s1, s2, transpositions=transpositions)
+            _edit_dist_step(lev, i + 1, j + 1, s1, s2,
+                            substitution_cost=substitution_cost, transpositions=transpositions)
     return lev[len1][len2]
 
 
