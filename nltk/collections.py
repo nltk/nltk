@@ -589,11 +589,11 @@ class LazyIteratorList(AbstractLazySequence):
 
     def __add__(self, other):
         """Return a list concatenating self with other."""
-        return type(self)(itertools.chain(self, other))
+        return type(self)(chain(self, other))
 
     def __radd__(self, other):
         """Return a list concatenating other with self."""
-        return type(self)(itertools.chain(other, self))
+        return type(self)(chain(other, self))
 
 ######################################################################
 # Trie Implementation
