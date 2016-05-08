@@ -1,17 +1,12 @@
 # Natural Language Toolkit: Language Models
 #
 # Copyright (C) 2001-2016 NLTK Project
-# Authors: Steven Bird <stevenbird1@gmail.com>
-#          Daniel Blanchard <dblanchard@ets.org>
-#          Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, division
 
 from math import log
-
-from nltk.model.counter import NgramCounter
 
 from nltk import compat
 
@@ -74,13 +69,13 @@ class BaseNgramModel(object):
         :type text: Iterable[str]
         """
 
-        H = 0.0     # entropy is conventionally denoted by "H"
         normed_text = (self._normalize(word) for word in text)
-        processed_ngrams = 0.0
-        for ngram in self.counter.padded_ngrams(normed_text):
+        H = 0.0     # entropy is conventionally denoted by "H"
+        processed_ngrams = 0
+        for ngram in self.ngram_counts.to_ngrams(normed_text):
             context, word = tuple(ngram[:-1]), ngram[-1]
-            H += self.logprob(word, context)
-            processed_ngrams += 1.0
+            H += self.logscore(word, context)
+            processed_ngrams += 1
         return H / processed_ngrams
 
     def perplexity(self, text):

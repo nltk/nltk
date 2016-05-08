@@ -1,121 +1,282 @@
 .. Copyright (C) 2001-2015 NLTK Project
 .. For license information, see LICENSE.TXT
 
-===========
-NGram Model
-===========
+.. -*- coding: utf-8 -*-
 
-    >>> import nltk
-    >>> from nltk.model import NgramModel
+    >>> from pprint import pprint # for dictionary comparison
+
+===============
+Counting Ngrams
+===============
+
+Building a Vocabulary
+---------------------
+
+    >>> from nltk.corpus import gutenberg
+    >>> sents = gutenberg.sents("burgess-busterbrown.txt")
+    >>> test_sents = sents[3:5]
+    >>> test_words = [w for s in test_sents for w in s]
+    >>> test_words[:5]
+    ['Buster', 'Bear', 'yawned', 'as', 'he']
+
+    >>> from nltk.model import build_vocabulary
+
+The first argument to the `build_vocabulary` function is a cutoff value.
+
+    >>> vocab = build_vocabulary(2, test_words)
+
+This function returns an instance of NgramModelVocabulary, its characteristics
+are described below.
+Firstly, tokens with counts greater than or equal to the cuttoff value will
+be considered part of the vocabulary.
+
+    >>> vocab['the']
+    3
+    >>> 'the' in vocab
+    True
+    >>> vocab['he']
+    2
+    >>> 'he' in vocab
+    True
+
+Tokens with frequency counts less than the cutoff value will be considered not
+part of the vocabulary even though their entries in the count dictionary are
+preserved.
+
+    >>> vocab['Buster']
+    1
+    >>> 'Buster' in vocab
+    False
+    >>> vocab['aliens']
+    0
+    >>> 'aliens' in vocab
+    False
+
+Keeping the count entries for seen words allows us to change the cutoff value
+without having to recalculate the counts.
+
+    >>> vocab.cutoff = 1
+    >>> "Buster" in vocab
+    True
+    >>> "aliens" in vocab
+    False
+
+The cutoff value influences not only membership checking but also the result of
+getting the size of the vocabulary using the built-in `len`.
+Note that while the number of keys in the vocab dictionary stays the same, passing
+it to `len` yields different numbers depending on the cutoff
+
+    >>> len(vocab.keys())
+    37
+    >>> len(vocab)
+    38
+    >>> vocab.cutoff = 2
+    >>> len(vocab)
+    8
+
+Note also that we add 1 to the size of the vocabulary, so even when cutoff=1
+`len(vocab) > len(vocab.keys())`. This is done because in many language modeling
+algorithms the size of the vocabulary is used for normalizating scores and because
+it needs to account for the unknown token label.
+This is definitely not an uncotroversial design choice, one that may be reverted
+based on discussion and usage.
+
+Vocabulary from multiple sources
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `build_vocabulary` function can handle multiple text arguments, i.e.
+
+    >>> test_words2 = sents[5]
+    >>> test_words3 = sents[6]
+    >>> vocab2 = build_vocabulary(2, test_words, test_words2, test_words3)
+    >>> len(vocab2)
+    14
 
 
-################
-A Simple Example
-################
+Counting Ngrams
+---------------
 
-The purpose of this example is to demonstrate the correctness of the current
-NgramModel implementation. For that reason we train on a small corpus so that
-calculating probabilities by hand is tractable. We will compare the probabilities
-we compute by hand to the ones the model yields and ideally they should match.
+    >>> from nltk.model import count_ngrams
+
+The first argument to `count_ngrams` is the highest ngram order to consider, the
+second is an NgramModelVocabulary instance, followed by one (or more) texts.
+A text is a sequence of sentences, eg. a list of lists of strings.
+
+    >>> bigram_counts = count_ngrams(2, vocab, sents[3:7])
+
+This returns an instance of an NgramCounter class which provides an interface
+to the ngram counts.
+
+For all non-unigram ngrams (order > 1) the counts are stored in the `ngrams`
+attribute indexed by ngram order.
+
+    >>> bigram_counts.ngrams[2]
+    <ConditionalFreqDist with 9 conditions>
+
+The keys of this ConditionalFreqDist are the contexts preceding a word.
+
+    >>> sorted(bigram_counts.ngrams[2].conditions()) # doctest: +NORMALIZE_WHITESPACE
+    [('.',), ('<UNK>',), ('<s>',), ('and',),
+    ('he',), ('his',), ('the',), ('to',), ('yawned',)]
+
+Each context has a FreqDist of tokens found following it in the text.
+
+    >>> bigram_counts.ngrams[2][('.',)]
+    FreqDist({'</s>': 4})
+
+Accessing unigram counts works a little differently because they don't have any
+preceding contexts. They are namely stored as a simple FreqDist in the `unigrams`
+attribute.
+
+    >>> print(bigram_counts.unigrams)
+    <FreqDist with 9 samples and 117 outcomes>
+    >>> pprint(bigram_counts.unigrams) # doctest: +NORMALIZE_WHITESPACE
+    {'.': 4,
+    '</s>': 4,
+    '<UNK>': 80,
+    'and': 5,
+    'he': 6,
+    'his': 5,
+    'the': 6,
+    'to': 4,
+    'yawned': 3}
+
+Tweaking the unknown label
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+While counting ngrams all tokens that do not occur frequently enough (read: are
+not "in" the NgramModelVocabulary instance) are replaced by a special "unknown word"
+label. By convention this tends to be something like "<UNK>".
+This is the default for the NgramCounter and it gets returned by
+the `check_against_vocab` method for words that don't pass the cutoff.
+
+    >>> bigram_counts.check_against_vocab('the')
+    'the'
+    >>> bigram_counts.check_against_vocab('aliens')
+    '<UNK>'
+
+This can be changed by passing a different value for the `unk_label` argument.
+
+    >>> diff_unk = count_ngrams(2, vocab, sents[3:7], unk_label="UNKNOWN")
+    >>> diff_unk.check_against_vocab('aliens')
+    'UNKNOWN'
 
 
-Setup
------
+Changing the cutoff
+~~~~~~~~~~~~~~~~~~~
 
-Below is very small corpus, borrowed from one of the comments in this thread:
-https://github.com/nltk/nltk/issues/367
+Sometimes we want to compare the effect of different cutoff values on the ngram
+counts. We can do this specifying an `unk_cutoff` argument that overrides
+the vocabulary's cutoff value.
 
-    >>> word_seq = ['foo', 'foo', 'foo', 'foo', 'bar', 'baz']
+    >>> cutoff_1 = count_ngrams(2, vocab, unk_cutoff=1)
+    >>> cutoff_1.vocabulary.cutoff
+    1
 
-This corpus has a property that will be important to us later. It namely has a
-different number of word tokens as opposed to word types. The latter (also
-referred to as the vocabulary) is the set of unique words in the text.
-Let's save it to a variable.
+Note that this does not affect the original vocabulary cutoff value.
 
-    >>> word_types = set(word_seq)
+    >>> vocab.cutoff
+    2
 
-Next we need choose a probability estimator (aka smoothing algorithm).
-Once again, for the sake of simplicity let's use LaplaceProbDist.
+Changing how ngrams are generated
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    >>> from nltk.probability import LaplaceProbDist as estimator
+NgramCounter uses nltk's `util.ngrams` function to break a text up into ngrams.
+The behavior of `util.ngrams` is controlled by passing it keyword arguments stored
+in an attribute of NgramCounter.
 
-We are ready to initialize our ngram language model. For this example, let's
-make it a trigram model.
+    >>> pprint(bigram_counts.ngrams_kwargs)  # doctest: +NORMALIZE_WHITESPACE
+    {'left_pad_symbol': '<s>',
+    'pad_left': True,
+    'pad_right': True,
+    'right_pad_symbol': '</s>'}
 
-    >>> lm = NgramModel(3, word_seq, estimator=estimator, bins=len(word_types))
+The default values of these arguments have been chosen based on what I think are
+the most common practices for ngram splitting. You can easily override the settings
+by passing corresponding key=value pairs to `count_ngrams`
 
-Please note the last argument to the NgramModel constructor. In NLTK parlance
-this is called the ``bins`` parameter and it is passed on to the LaplaceProbDist
-estimator. Failing to provide this argument currently almost always leads to
-incorrect probability scores.
+    >>> no_padding = count_ngrams(2, vocab, sents[3:6], pad_left=False, pad_right=False)
 
-Testing Probability Scores
---------------------------
+You can always test your ngram generation by calling the `to_ngrams` method
+with an example sentence.
 
-Now that we have the language model set up, let's see what probability it produces
-for a trigram seen during training.
+    >>> list(no_padding.to_ngrams(sents[4]))  # doctest: +NORMALIZE_WHITESPACE
+    [('Once', 'more'), ('more', 'he'), ('he', 'yawned'), ('yawned', ','),
+    (',', 'and'), ('and', 'slowly'), ('slowly', 'got'), ('got', 'to'),
+    ('to', 'his'), ('his', 'feet'), ('feet', 'and'), ('and', 'shook'),
+    ('shook', 'himself'), ('himself', '.')]
 
-    >>> lm.prob('foo', ('foo', 'foo'))
+Compare this to the output of the default counter.
+
+    >>> list(bigram_counts.to_ngrams(sents[4]))  # doctest: +NORMALIZE_WHITESPACE
+    [('<s>', 'Once'), ('Once', 'more'), ('more', 'he'), ('he', 'yawned'), ('yawned', ','),
+    (',', 'and'), ('and', 'slowly'), ('slowly', 'got'), ('got', 'to'),
+    ('to', 'his'), ('his', 'feet'), ('feet', 'and'), ('and', 'shook'),
+    ('shook', 'himself'), ('himself', '.'), ('.', '</s>')]
+
+
+Multiple (or no) sources
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Just like `build_vocab`, `count_ngrams` can handle multiple source text arguments.
+
+    >>> multiple_texts_counter = count_ngrams(2, vocab, sents[3:6], sents[6:9])
+
+Moreover, it is also possible to specify no texts whatsoever to simply create
+an empty NgramCounter object and train it later.
+
+    >>> no_initial_texts = count_ngrams(2, vocab)
+
+In this case though, it's probably more reader-friendly to use the NgramCounter
+class directly:
+
+    >>> from nltk.model.counter import NgramCounter
+    >>> no_initial_texts = NgramCounter(2, vocab)
+
+If you choose to do this, you can call the `train_counts` method with some text
+to populate your counter instance with some numbers.
+
+    >>> no_initial_texts.train_counts(sents[3:7])
+    >>> pprint(no_initial_texts.unigrams) # doctest: +NORMALIZE_WHITESPACE
+    {'.': 4,
+    '</s>': 4,
+    '<UNK>': 80,
+    'and': 5,
+    'he': 6,
+    'his': 5,
+    'the': 6,
+    'to': 4,
+    'yawned': 3}
+
+=====================
+From Counts to Scores
+=====================
+
+Once we counted up the ngrams it is trivial to turn them into a proper model
+with scores (probabilities): just pass your NgramCounter object to a BaseNgramModel
+class or any of its children.
+
+    >>> from nltk.model import BaseNgramModel
+    >>> bigram_model = BaseNgramModel(bigram_counts)
+    >>> bigram_model.ngram_counts == bigram_counts
+    True
+
+As its name suggests, the BaseNgramModel class is intended first and foremost
+as something folks can base classes for different models. As such BaseNgramModel
+doesn't have an interesting `score` method implementation, it always
+returns 0.5.
+
+    >>> bigram_model.score("test", ('abc',))
+    0.5
+    >>> bigram_model.score("abc", ("test",))
     0.5
 
-To make sure we're on the right track, let's compute this probability by hand.
-Since the trigam was seen, P(foo | foo, foo) simply translates into:
-    (count(foo, foo, foo) + 1) / (count(foo, foo) + bins * 1)
-If we plug in numbers we have:
-    (2 + 1) / (3 + 3) = 3/6 = 0.5
-So far our model is on track!
+Children classes are expected to override this method and take advantage of methods
+(shown below) whose implementations do not depend on that of `score`.
 
-But what if we plug in a trigram that wasn't in the training corpus?
-
-    >>> lm.prob('baz', ('foo', 'foo'))
-    0.16666...
-
-Let's verify this result by hand. The current implementation of NgramModel uses
-Katz backoff, which means that P(baz | foo, foo) becomes:
-alpha(foo, foo) * P(baz | foo)
-where alpha(foo, foo)
-= (1 - sum(P(w | foo, foo) for w in W)) / (1 - sum(P(w | foo) for w in W))
-where W is all the words that followed bigram "foo foo", namely the list [foo, bar].
-
-Thus the sum in the numerator will be:
-P(foo | foo, foo) + P(bar | foo, foo)
-We already know the first member of this sum and if we plug in analogous numbers
-for P(bar | foo, foo), we arrive at:
-3/6 + 2/6 = 5/6
-We subtract this from 1 to arrive at the numerator of 1/6.
-
-Next we do the same for the denominator, with the difference that this time we're
-conditioning on the context "foo" instead of "foo foo".
-P(foo | foo) + P(bar | foo) = 4/7 + 2/7 = 6/7
-1 - 6/7 = 1/7
-
-If we combine the numerator with the denominator we get 7/6.
-This is alpha(foo, foo). Now all we need is P(baz | foo).
-
-However since our training text contains no instances of the bigram "foo baz",
-we will have to perform the same operations as we just did for "foo foo baz". I.E.
-P(baz | foo) = alpha(foo) * P(baz)
-
-The alpha this time is equal to:
-(1 - (P(foo | foo) + P(bar | foo))) / (1 - (P(foo) + P(bar)))
-
-We already have the numerator from the previous calculation, it's 1/7.
-The denominator comes from the unigram probabilities for "foo" and "bar", making it:
-1 - (5/9 + 2/9) = 2/9
-
-Thus we have alpha(foo) = 9/14
-
-Combine this with the unigram P(baz) and we get:
-P(baz | foo) = 1/7
-
-Then we combine this with alpha(foo, foo) to arrive at:
-P(baz | foo, foo) = 7/6 * 1/7 = 1/6 = 0.16666...
-
-Our model is correct again!
-
-
-Pickling and unpickling
------------------------
-
-We currently don't have a doctest for this because NgramModel comparison doesn't
-work. One will be added as soon as that's fixed.
+    >>> bigram_model.logscore("abc", ("test",))
+    -1.0
+    >>> bigram_model.entropy(sents[4])
+    -1.0
+    >>> bigram_model.perplexity(sents[4])
+    0.5
