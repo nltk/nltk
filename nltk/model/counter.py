@@ -8,6 +8,7 @@
 from __future__ import unicode_literals
 
 from collections import Counter, defaultdict
+from copy import copy
 from itertools import chain
 
 from nltk.util import ngrams
@@ -65,6 +66,9 @@ class NgramModelVocabulary(Counter):
         # the if-clause here looks a bit dumb, should we make it clearer?
         return sum(1 for item in self if item in self) + 1
 
+    def __copy__(self):
+        return self.__class__(self._cutoff, self)
+
 
 @compat.python_2_unicode_compatible
 class EmptyVocabularyError(Exception):
@@ -97,7 +101,7 @@ class NgramCounter(object):
         # While allowing whatever the user passes to override them
         self.ngrams_kwargs.update(ngrams_kwargs)
 
-        self.vocabulary = vocabulary
+        self.vocabulary = copy(vocabulary)  # copy needed to prevent state sharing
         if unk_cutoff is not None:
             # If cutoff value is provided, override vocab's cutoff
             self.vocabulary.cutoff = unk_cutoff
@@ -117,7 +121,7 @@ class NgramCounter(object):
 
         for sent in training_text:
             checked_sent = (self.check_against_vocab(word) for word in sent)
-            for ngram in self.padded_ngrams(checked_sent):
+            for ngram in self.to_ngrams(checked_sent):
                 context, word = tuple(ngram[:-1]), ngram[-1]
                 for trunc_index, ngram_order in self._enumerate_ngram_orders():
                     trunc_context = context[trunc_index:]
@@ -130,7 +134,7 @@ class NgramCounter(object):
             return word
         return self.unk_label
 
-    def padded_ngrams(self, sequence):
+    def to_ngrams(self, sequence):
         """Wrapper around util.ngrams with usefull options saved during initialization.
 
         :param sequence: same as nltk.util.ngrams
