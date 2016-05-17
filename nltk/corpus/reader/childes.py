@@ -22,9 +22,6 @@ from nltk.compat import string_types
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
 
-# to resolve the namespace issue
-NS = 'http://www.talkbank.org/ns/talkbank'
-
 class CHILDESCorpusReader(XMLCorpusReader):
     """
     Corpus reader for the XML version of the CHILDES corpus.
@@ -184,16 +181,29 @@ class CHILDESCorpusReader(XMLCorpusReader):
             return [self._get_participants(fileid) for fileid in self.abspaths(fileids)]
         return LazyMap(self._get_participants, self.abspaths(fileids))
 
+    def _clean_doc(self, fileid):
+        """
+        :return: the XML root of the document, with namespace URLs removed from tag names.
+        Otherwise, because the document declares `xmlns="http://www.talkbank.org/ns/talkbank"`, 
+        tag names would look like `{http://www.talkbank.org/ns/talkbank}tag`, which is 
+        painful to work with.
+        """
+        # Unfortunately no elegant solution; this one is from https://bugs.python.org/issue18304
+        it = ElementTree.iterparse(fileid)
+        for _, el in it:
+            el.tag = el.tag.split('}', 1)[1]  # strip all namespaces
+        root = it.root
+        return root
+
     def _get_participants(self, fileid):
         # multidimensional dicts
         def dictOfDicts():
             return defaultdict(dictOfDicts)
 
-        xmldoc = ElementTree.parse(fileid).getroot()
+        xmldoc = self._clean_doc(fileid)
         # getting participants' data
         pat = dictOfDicts()
-        for participant in xmldoc.findall('.//{%s}Participants/{%s}participant'
-                                          % (NS,NS)):
+        for participant in xmldoc.findall('.//Participants/participant'):
             for (key,value) in participant.items():
                 pat[participant.get('id')][key] = value
         return pat
@@ -212,9 +222,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return LazyMap(get_age, self.abspaths(fileids))
 
     def _get_age(self, fileid, speaker, month):
-        xmldoc = ElementTree.parse(fileid).getroot()
-        for pat in xmldoc.findall('.//{%s}Participants/{%s}participant'
-                                  % (NS,NS)):
+        xmldoc = self._clean_doc(fileid)
+        for pat in xmldoc.findall('.//Participants/participant'):
             try:
                 if pat.get('id') == speaker:
                     age = pat.get('age')
@@ -291,22 +300,20 @@ class CHILDESCorpusReader(XMLCorpusReader):
             strip_space, replace):
         if isinstance(speaker, string_types) and speaker != 'ALL':  # ensure we have a list of speakers
             speaker = [ speaker ]
-        xmldoc = ElementTree.parse(fileid).getroot()
+        xmldoc = self._clean_doc(fileid)
         # processing each xml doc
         results = []
-        for xmlsent in xmldoc.findall('.//{%s}u' % NS):
+        for xmlsent in xmldoc.findall('.//u'):
             sents = []
             # select speakers
             if speaker == 'ALL' or xmlsent.get('who') in speaker:
-                for xmlword in xmlsent.findall('.//{%s}w' % NS):
+                for xmlword in xmlsent.findall('.//w'):
                     infl = None ; suffixStem = None; suffixTag = None
                     # getting replaced words
-                    if replace and xmlsent.find('.//{%s}w/{%s}replacement'
-                                                % (NS,NS)):
-                        xmlword = xmlsent.find('.//{%s}w/{%s}replacement/{%s}w'
-                                               % (NS,NS,NS))
-                    elif replace and xmlsent.find('.//{%s}w/{%s}wk' % (NS,NS)):
-                        xmlword = xmlsent.find('.//{%s}w/{%s}wk' % (NS,NS))
+                    if replace and xmlsent.find('.//w/replacement'):
+                        xmlword = xmlsent.find('.//w/replacement/w')
+                    elif replace and xmlsent.find('.//w/wk'):
+                        xmlword = xmlsent.find('.//w/wk')
                     # get text
                     if xmlword.text:
                         word = xmlword.text
@@ -318,21 +325,19 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     # stem
                     if relation or stem:
                         try:
-                            xmlstem = xmlword.find('.//{%s}stem' % NS)
+                            xmlstem = xmlword.find('.//stem')
                             word = xmlstem.text
                         except AttributeError as e:
                             pass
                         # if there is an inflection
                         try:
-                            xmlinfl = xmlword.find('.//{%s}mor/{%s}mw/{%s}mk'
-                                                   % (NS,NS,NS))
+                            xmlinfl = xmlword.find('.//mor/mw/mk')
                             word += '-' + xmlinfl.text
                         except:
                             pass
                         # if there is a suffix
                         try:
-                            xmlsuffix = xmlword.find('.//{%s}mor/{%s}mor-post/{%s}mw/{%s}stem'
-                                                     % (NS,NS,NS,NS))
+                            xmlsuffix = xmlword.find('.//mor/mor-post/mw/stem')
                             suffixStem = xmlsuffix.text
                         except AttributeError:
                             suffixStem = ""
@@ -341,8 +346,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     # pos
                     if relation or pos:
                         try:
-                            xmlpos = xmlword.findall(".//{%s}c" % NS)
-                            xmlpos2 = xmlword.findall(".//{%s}s" % NS)
+                            xmlpos = xmlword.findall(".//c")
+                            xmlpos2 = xmlword.findall(".//s")
                             if xmlpos2 != []:
                                 tag = xmlpos[0].text+":"+xmlpos2[0].text
                             else:
@@ -350,10 +355,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         except (AttributeError,IndexError) as e:
                             tag = ""
                         try:
-                            xmlsuffixpos = xmlword.findall('.//{%s}mor/{%s}mor-post/{%s}mw/{%s}pos/{%s}c'
-                                                     % (NS,NS,NS,NS,NS))
-                            xmlsuffixpos2 = xmlword.findall('.//{%s}mor/{%s}mor-post/{%s}mw/{%s}pos/{%s}s'
-                                                     % (NS,NS,NS,NS,NS))
+                            xmlsuffixpos = xmlword.findall('.//mor/mor-post/mw/pos/c')
+                            xmlsuffixpos2 = xmlword.findall('.//mor/mor-post/mw/pos/s')
                             if xmlsuffixpos2:
                                 suffixTag = xmlsuffixpos[0].text+":"+xmlsuffixpos2[0].text
                             else:
@@ -367,8 +370,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     # the gold standard is stored in
                     # <mor></mor><mor type="trn"><gra type="grt">
                     if relation == True:
-                        for xmlstem_rel in xmlword.findall('.//{%s}mor/{%s}gra'
-                                                           % (NS,NS)):
+                        for xmlstem_rel in xmlword.findall('.//mor/gra'):
                             if not xmlstem_rel.get('type') == 'grt':
                                 word = (word[0], word[1],
                                         xmlstem_rel.get('index')
@@ -381,8 +383,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                         + "|" + xmlstem_rel.get('head')
                                         + "|" + xmlstem_rel.get('relation'))
                         try:
-                            for xmlpost_rel in xmlword.findall('.//{%s}mor/{%s}mor-post/{%s}gra'
-                                                               % (NS,NS,NS)):
+                            for xmlpost_rel in xmlword.findall('.//mor/mor-post/gra'):
                                 if not xmlpost_rel.get('type') == 'grt':
                                     suffixStem = (suffixStem[0],
                                                   suffixStem[1],
