@@ -1,8 +1,10 @@
+#coding=utf-8
 # CHILDES XML Corpus Reader
 
 # Copyright (C) 2001-2016 NLTK Project
 # Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
+#         Nathan Schneider <nschneid@cs.cmu.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -66,7 +68,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def tagged_words(self, fileids=None, speaker='ALL', stem=False,
-            relation=False, strip_space=True, replace=False):
+            relation=False, strip_space=True, replace=False, punct=False):
         """
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
@@ -89,14 +91,14 @@ class CHILDESCorpusReader(XMLCorpusReader):
         pos=True
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+                pos, strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
 
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace)
+            pos, strip_space, replace, punct=punct)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def sents(self, fileids=None, speaker='ALL', stem=False,
-            relation=None, strip_space=True, replace=False):
+            relation=None, strip_space=True, replace=False, punct=False):
         """
         :return: the given file(s) as a list of sentences or utterances, each
             encoded as a list of word strings.
@@ -119,10 +121,10 @@ class CHILDESCorpusReader(XMLCorpusReader):
         pos=False
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+                pos, strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
         
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace)
+            pos, strip_space, replace, punct=punct)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def tagged_sents(self, fileids=None, speaker='ALL', stem=False,
@@ -297,7 +299,16 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return mlu
 
     def _get_words(self, fileid, speaker, sent, stem, relation, pos,
-            strip_space, replace):
+            strip_space, replace, punct=False, gold_gra=None):
+            """
+            gold_gra: Some documents contain two tiers of grammatical analysis, 
+            one of which is automatic (<gra type="gra">) 
+            and one of which is gold standard (<gra type="grt">). 
+            If this parameter is True, ONLY gold standard <gra> tiers will be loaded. 
+            If it is False, then only non-gold <gra> tiers will be loaded.
+            If it is None, then gold <gra> tiers will be preferred when available, 
+            and non-gold tiers will be loaded only as a fallback.
+            """
         if isinstance(speaker, string_types) and speaker != 'ALL':  # ensure we have a list of speakers
             speaker = [ speaker ]
         xmldoc = self._clean_doc(fileid)
@@ -307,32 +318,85 @@ class CHILDESCorpusReader(XMLCorpusReader):
             sents = []
             # select speakers
             if speaker == 'ALL' or xmlsent.get('who') in speaker:
-                for xmlword in xmlsent.findall('.//w'):
+                token_path = ('.//w') if not punct else './*'
+                for xmlword in xmlsent.findall(token_path):
+                    if xmlword.tag=='g': # <g> is used, e.g., when there is a replacement. immediately dominates <w>
+                        xmlsubword = xmlword.find('.//w')
+                        if xmlsubword is None:
+                            xmlsubword = xmlword.find(".//ga[@type='paralinguistics']")
+                        xmlword = xmlsubword
+                        assert xmlword is not None,(xmlsent.attrib,xmldoc.attrib,fileid)
+                    
                     infl = None ; suffixStem = None; suffixTag = None
                     # getting replaced words
-                    if replace and xmlsent.find('.//w/replacement'):
-                        xmlword = xmlsent.find('.//w/replacement/w')
-                    elif replace and xmlsent.find('.//w/wk'):
-                        xmlword = xmlsent.find('.//w/wk')
+                    if replace and xmlsent.find(token_path+'/replacement'):
+                        xmlword = xmlsent.find(token_path+'/replacement/w')
+                    elif replace and xmlsent.find(token_path+'/wk'):
+                        xmlword = xmlsent.find(token_path+'/wk')
+                    
+                    assert xmlword is not None,(xmlsent.attrib,xmldoc.attrib,fileid)
+                        
                     # get text
-                    if xmlword.text:
-                        word = xmlword.text
+                    VOCATIVE = '‡'  # symbol used in CHILDES .cha format for <tagMarker type="vocative">
+                    TAG = '„' # symbol used in CHILDES .cha format for <tagMarker type="tag">
+                    # note that <tagMarker>s ARE included in the dependency parse
+
+                    if xmlword.tag=='tagMarker':
+                        marker_type = xmlword.attrib["type"]
+                        if marker_type=='comma':
+                            word = ','
+                        elif marker_type=='vocative':
+                            word = VOCATIVE
+                        elif marker_type=='tag':
+                            word = TAG
+                        else:
+                            raise ValueError('Unknown tagMarker type: '+marker_type)
+                    elif xmlword.tag=='t':
+                        # end-of-utterance punctuation
+                        t_type = xmlword.attrib["type"]
+                        if t_type=='p':
+                            word = '.'
+                        elif t_type=='q':
+                            word = '?'
+                        elif t_type=='e':
+                            word = '!'
+                        elif t_type=='trail off':
+                            word = '+...'
+                        elif t_type=='interruption':
+                            word = '+/.'
+                    elif xmlword.tag=='ga' and xmlword.attrib['type']=='paralinguistics':
+                        word = '[=! '+xmlword.text+']'
+                    elif xmlword.tag in ('a', 'e', 'pause', 'linker'):
+                        # <a> mainly for transcriber comments, <e> for actions, etc.
+                        continue
                     else:
                         word = ''
+                        if xmlword.attrib.get('type')=='fragment':
+                            word += '&'
+                        word += xmlword.text or ''    # text before the first child tag
+                        for ch in xmlword:
+                            if ch.tag=='shortening':
+                                word += '('+ch.text+')' # elided part of word
+                            word += ch.tail or '' # text following this child and within the word
+                        if xmlword.attrib.get('separated-prefix')=='true':
+                            word += '#'
+                    
                     # strip tailing space
                     if strip_space:
                         word = word.strip()
-                    # stem
+                    tok = word
+                    # stem and suffix
+                    mor = ''
                     if relation or stem:
                         try:
                             xmlstem = xmlword.find('.//stem')
-                            word = xmlstem.text
+                            mor = xmlstem.text
                         except AttributeError as e:
                             pass
                         # if there is an inflection
                         try:
                             xmlinfl = xmlword.find('.//mor/mw/mk')
-                            word += '-' + xmlinfl.text
+                            mor += '-' + xmlinfl.text
                         except:
                             pass
                         # if there is a suffix
@@ -342,7 +406,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         except AttributeError:
                             suffixStem = ""
                         if suffixStem:
-                            word += "~"+suffixStem
+                            mor += "~"+suffixStem
                     # pos
                     if relation or pos:
                         try:
@@ -365,32 +429,39 @@ class CHILDESCorpusReader(XMLCorpusReader):
                             pass
                         if suffixTag:
                             tag += "~"+suffixTag
-                        word = (word, tag)
+                        tok = (word, mor, tag, '')
+                        assert ''.join(tok),(xmlword.tag, sents, xmlword.text, [ch.tail for ch in xmlword], xmlword.attrib, xmlsent.attrib, xmldoc.attrib, fileid)
+                        # note that some words in certain documents may be missing morphological analysis
+                        
                     # relational
                     # the gold standard is stored in
                     # <mor></mor><mor type="trn"><gra type="grt">
                     if relation == True:
+                        a, b, c, r = tok
                         for xmlstem_rel in xmlword.findall('.//mor/gra'):
-                            if not xmlstem_rel.get('type') == 'grt':
-                                word = (word[0], word[1],
+                            
+                            if r:
+                                r += '+'
+                            if not xmlstem_rel.get('type') == 'grt':    # non-gold <gra> tier
+                                r += (xmlstem_rel.get('index')
+                                        + "|" + xmlstem_rel.get('head')
+                                        + "|" + xmlstem_rel.get('relation'))
+                            else:   # TODO: gold <gra> tier
+                                tok = (tok[0], tok[1], tok[2],
+                                        tok[0], tok[1],
                                         xmlstem_rel.get('index')
                                         + "|" + xmlstem_rel.get('head')
                                         + "|" + xmlstem_rel.get('relation'))
-                            else:
-                                word = (word[0], word[1], word[2],
-                                        word[0], word[1],
-                                        xmlstem_rel.get('index')
-                                        + "|" + xmlstem_rel.get('head')
-                                        + "|" + xmlstem_rel.get('relation'))
+                        tok = (a, b, c, r)
                         try:
                             for xmlpost_rel in xmlword.findall('.//mor/mor-post/gra'):
-                                if not xmlpost_rel.get('type') == 'grt':
-                                    suffixStem = (suffixStem[0],
-                                                  suffixStem[1],
-                                                  xmlpost_rel.get('index')
+                                if not xmlpost_rel.get('type') == 'grt':    # non-gold <gra> tier
+                                    a, b, c, r = tok
+                                    r += '~' + (xmlpost_rel.get('index')
                                                   + "|" + xmlpost_rel.get('head')
                                                   + "|" + xmlpost_rel.get('relation'))
-                                else:
+                                    tok = (a, b, c, r)
+                                else:   # TODO: gold <gra> tier
                                     suffixStem = (suffixStem[0], suffixStem[1],
                                                   suffixStem[2], suffixStem[0],
                                                   suffixStem[1],
@@ -399,7 +470,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                                   + "|" + xmlpost_rel.get('relation'))
                         except:
                             pass
-                    sents.append(word)
+                    sents.append(tok[:-1] if (stem and not relation) else tok)
                 if sent or relation:
                     results.append(sents)
                 else:
