@@ -25,8 +25,10 @@ class MosesTokenizer(TokenizerI):
     >>> tokenizer = MosesTokenizer()
     >>> text = u'This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
     >>> expected_tokenized = u'This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
-    >>> tokenized_text = tokenizer.tokenize(text)
+    >>> tokenized_text = tokenizer.tokenize(text, return_str=True)
     >>> tokenized_text == expected_tokenized
+    True
+    >>> tokenizer.tokenize(text) == [u'This', u',', u'is', u'a', u'sentence', u'with', u'weird', u'\xbb', u'symbols', u'\u2026', u'appearing', u'everywhere', u'\xbf']
     True
     """
     
@@ -284,7 +286,7 @@ class MosesTokenizer(TokenizerI):
             text = re.sub(regexp, subsitution, text)
         return text
     
-    def penn_tokenize(self, text):
+    def penn_tokenize(self, text, return_str=False):
         """
         This is a Python port of the Penn treebank tokenizer adapted by the Moses
         machine translation community. It's a little different from the 
@@ -300,27 +302,27 @@ class MosesTokenizer(TokenizerI):
         # Restore ellipsis, clean extra spaces, escape XML symbols.
         for regexp, subsitution in self.MOSES_PENN_REGEXES_2:
             text = re.sub(regexp, subsitution, text)        
-        return text
+        return text if return_str else text.split()
     
-    def tokenize(self, text, agressive_dash_splits=False):
+    def tokenize(self, text, agressive_dash_splits=False, return_str=False):
         """
         Python port of the Moses tokenizer. 
         
         >>> mtokenizer = MosesTokenizer()
         >>> text = u'Is 9.5 or 525,600 my favorite number?'
-        >>> print (mtokenizer.tokenize(text))
+        >>> print (mtokenizer.tokenize(text, return_str=True))
         Is 9.5 or 525,600 my favorite number ?
         >>> text = u'The https://github.com/jonsafari/tok-tok/blob/master/tok-tok.pl is a website with/and/or slashes and sort of weird : things'
-        >>> print (mtokenizer.tokenize(text))
+        >>> print (mtokenizer.tokenize(text, return_str=True))
         The https : / / github.com / jonsafari / tok-tok / blob / master / tok-tok.pl is a website with / and / or slashes and sort of weird : things
         >>> text = u'This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
         >>> expected = u'This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
-        >>> assert mtokenizer.tokenize(text) == expected
+        >>> assert mtokenizer.tokenize(text, return_str=True) == expected
         
         :param tokens: A single string, i.e. sentence text.
         :type tokens: str
         :param agressive_dash_splits: Option to trigger dash split rules .
-        :type lagressive_dash_splitsang: bool
+        :type agressive_dash_splits: bool
         """
         # Converts input string into unicode.
         text = text_type(text) 
@@ -364,7 +366,7 @@ class MosesTokenizer(TokenizerI):
         # Escape XML symbols.
         text = self.escape_xml(text)
         
-        return text
+        return text if return_str else text.split()
 
 
 class MosesDetokenizer(TokenizerI):
@@ -375,12 +377,12 @@ class MosesDetokenizer(TokenizerI):
     >>> tokenizer = MosesTokenizer()
     >>> text = u'This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
     >>> expected_tokenized = u'This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
-    >>> tokenized_text = tokenizer.tokenize(text)
+    >>> tokenized_text = tokenizer.tokenize(text, return_str=True)
     >>> tokenized_text == expected_tokenized
     True
     >>> detokenizer = MosesDetokenizer()
     >>> expected_detokenized = u'This, is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
-    >>> detokenized_text = detokenizer.detokenize(tokenized_text.split())
+    >>> detokenized_text = detokenizer.detokenize(tokenized_text.split(), return_str=True)
     >>> detokenized_text == expected_detokenized
     True
     """
@@ -449,11 +451,9 @@ class MosesDetokenizer(TokenizerI):
         return text
     
 
-    def tokenize(self, tokens):
+    def tokenize(self, tokens, return_str=False):
         """
-        Python port of the Moses tokenizer.
-        
-        >>> detokenizer =  MosesDetokenizer()
+        Python port of the Moses detokenizer.
         
         :param tokens: A list of strings, i.e. tokenized text.
         :type tokens: list(str)
@@ -471,13 +471,12 @@ class MosesDetokenizer(TokenizerI):
         # Keep track of no. of quotation marks.
         quote_counts = {u"'":0 , u'"':0}
         
-        detokenized_text = ""
         # The *prepend_space* variable is used to control the "effects" of 
         # detokenization as the function loops through the list of tokens and
         # changes the *prepend_space* accordingly as it sequentially checks 
         # through the language specific and language independent conditions. 
         prepend_space = " " 
-        
+        detokenized_text = "" 
         tokens = text.split()
         # Iterate through every token and apply language specific detokenization rule(s).
         for i, token in enumerate(iter(tokens)):
@@ -569,6 +568,8 @@ class MosesDetokenizer(TokenizerI):
             
             elif (self.lang == 'fi' and re.match(r':$', tokens[i-1])
                   and re.match(FINNISH_REGEX, token)):
+                # Finnish : without intervening space if followed by case suffix
+                # EU:N EU:n EU:ssa EU:sta EU:hun EU:iin ...
                 detokenized_text += prepend_space + token
                 prepend_space = " "
             
@@ -580,9 +581,11 @@ class MosesDetokenizer(TokenizerI):
         regexp, subsitution = self.ONE_SPACE
         detokenized_text = re.sub(regexp, subsitution, detokenized_text)
         # Removes heading and trailing spaces.
-        return detokenized_text.strip()
+        detokenized_text = detokenized_text.strip()
     
-    def detokenize(self, tokens):
+        return detokenized_text if return_str else detokenized_text.split()
+    
+    def detokenize(self, tokens, return_str=False):
         """ Duck-typing the abstract *tokenize()*."""
-        return self.tokenize(tokens)
+        return self.tokenize(tokens, return_str)
     
