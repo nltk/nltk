@@ -33,14 +33,16 @@ class ToktokTokenizer(TokenizerI):
     
     >>> toktok = ToktokTokenizer()
     >>> text = u'Is 9.5 or 525,600 my favorite number?'
-    >>> print (toktok.tokenize(text))
+    >>> print (toktok.tokenize(text, return_str=True))
     Is 9.5 or 525,600 my favorite number ?
     >>> text = u'The https://github.com/jonsafari/tok-tok/blob/master/tok-tok.pl is a website with/and/or slashes and sort of weird : things'
-    >>> print (toktok.tokenize(text))
+    >>> print (toktok.tokenize(text, return_str=True))
     The https://github.com/jonsafari/tok-tok/blob/master/tok-tok.pl is a website with/and/or slashes and sort of weird : things
     >>> text = u'This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
     >>> expected = u'This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
-    >>> assert toktok.tokenize(text) == expected
+    >>> assert toktok.tokenize(text, return_str=True) == expected
+    >>> toktok.tokenize(text) == [u'This', u',', u'is', u'a', u'sentence', u'with', u'weird', u'\xbb', u'symbols', u'\u2026', u'appearing', u'everywhere', u'\xbf']
+    True
     """
     # Replace non-breaking spaces with normal spaces.
     NON_BREAKING = re.compile(u"\u00A0"), " "
@@ -143,9 +145,11 @@ class ToktokTokenizer(TokenizerI):
                       CURRENCY_SYM_RE, EN_EM_DASHES, MULTI_DASHES, MULTI_DOTS,
                       FINAL_PERIOD_1, FINAL_PERIOD_2, ONE_SPACE]
     
-    def tokenize(self, text):
+    def tokenize(self, text, return_str=False):
         text = text_type(text) # Converts input string into unicode.
         for regexp, subsitution in self.TOKTOK_REGEXES:
             text = regexp.sub(subsitution, text)
-        # Finally, strips heading and trailing spaces.
-        return text_type(text.strip()) # Converts output string into unicode.
+        # Finally, strips heading and trailing spaces
+        # and converts output string into unicode.
+        text = text_type(text.strip()) 
+        return text if return_str else text.split()
