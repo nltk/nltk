@@ -2,22 +2,32 @@
 # Natural Language Toolkit: 
 #
 # Copyright (C) 2001-2015 NLTK Project
-# Author: Pidong Wang, Josh Schroeder, based on code by Philipp Koehn
+# Author: Pidong Wang, Josh Schroeder, Ondrej Bojar, based on code by Philipp Koehn
 # Contributors: Liling Tan, Martijn Pieters, Wiktor Stribizew
 #
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function
 import re
 from six import text_type
 
 from nltk.tokenize.api import TokenizerI
+from nltk.tokenize.util import is_cjk
 from nltk.corpus import perluniprops, nonbreaking_prefixes
+
 
 class MosesTokenizer(TokenizerI):
     """
     This is a Python port of the Moses Tokenizer from 
     https://github.com/moses-smt/mosesdecoder/blob/master/scripts/tokenizer/tokenizer.perl
+    
+    >>> tokenizer = MosesTokenizer()
+    >>> text = u'This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
+    >>> expected_tokenized = u'This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
+    >>> tokenized_text = tokenizer.tokenize(text)
+    >>> tokenized_text == expected_tokenized
+    True
     """
     
     # Perl Unicode Properties character sets.
@@ -306,6 +316,11 @@ class MosesTokenizer(TokenizerI):
         >>> text = u'This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
         >>> expected = u'This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
         >>> assert mtokenizer.tokenize(text) == expected
+        
+        :param tokens: A single string, i.e. sentence text.
+        :type tokens: str
+        :param agressive_dash_splits: Option to trigger dash split rules .
+        :type lagressive_dash_splitsang: bool
         """
         # Converts input string into unicode.
         text = text_type(text) 
@@ -350,3 +365,224 @@ class MosesTokenizer(TokenizerI):
         text = self.escape_xml(text)
         
         return text
+
+
+class MosesDetokenizer(TokenizerI):
+    """
+    This is a Python port of the Moses Detokenizer from 
+    https://github.com/moses-smt/mosesdecoder/blob/master/scripts/tokenizer/detokenizer.perl
+    
+    >>> tokenizer = MosesTokenizer()
+    >>> text = u'This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
+    >>> expected_tokenized = u'This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
+    >>> tokenized_text = tokenizer.tokenize(text)
+    >>> tokenized_text == expected_tokenized
+    True
+    >>> detokenizer = MosesDetokenizer()
+    >>> expected_detokenized = u'This, is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
+    >>> detokenized_text = detokenizer.detokenize(tokenized_text.split())
+    >>> detokenized_text == expected_detokenized
+    True
+    """
+    # Currency Symbols.
+    IsAlnum = text_type(''.join(perluniprops.chars('IsAlnum')))
+    IsAlpha = text_type(''.join(perluniprops.chars('IsAlpha')))
+    IsSc = text_type(''.join(perluniprops.chars('IsSc')))
+
+    AGGRESSIVE_HYPHEN_SPLIT = r' \@\-\@ ', r'-'
+
+    # Merge multiple spaces.
+    ONE_SPACE = re.compile(r' {2,}'), ' '
+
+    # Unescape special characters. 
+    UNESCAPE_FACTOR_SEPARATOR = r'\&#124;', r'\|'
+    UNESCAPE_LEFT_ANGLE_BRACKET = r'\&lt;', r'\<'
+    UNESCAPE_RIGHT_ANGLE_BRACKET = r'\&gt;', r'\>'
+    UNESCAPE_DOUBLE_QUOTE = r'\&quot;', r'\"'
+    UNESCAPE_SINGLE_QUOTE = r"\&apos;", r"\'"
+    UNESCAPE_SYNTAX_NONTERMINAL_LEFT = r'\&#91;', r'\['
+    UNESCAPE_SYNTAX_NONTERMINAL_RIGHT = r'\&#93;', r'\]'
+    UNESCAPE_AMPERSAND = r'\&amp;', r'\&'
+    # The legacy regexes are used to support outputs from older Moses versions.
+    UNESCAPE_FACTOR_SEPARATOR_LEGACY = r'\&bar;', r'\|' 
+    UNESCAPE_SYNTAX_NONTERMINAL_LEFT_LEGACY = r'\&bra;', r'\['
+    UNESCAPE_SYNTAX_NONTERMINAL_RIGHT_LEGACY = r'\&ket;', r'\]'
+    
+    
+    MOSES_UNESCAPE_XML_REGEXES = [UNESCAPE_FACTOR_SEPARATOR_LEGACY, 
+                        UNESCAPE_FACTOR_SEPARATOR, UNESCAPE_LEFT_ANGLE_BRACKET, 
+                        UNESCAPE_RIGHT_ANGLE_BRACKET, 
+                        UNESCAPE_SYNTAX_NONTERMINAL_LEFT_LEGACY, 
+                        UNESCAPE_SYNTAX_NONTERMINAL_RIGHT_LEGACY, 
+                        UNESCAPE_DOUBLE_QUOTE, UNESCAPE_SINGLE_QUOTE, 
+                        UNESCAPE_SYNTAX_NONTERMINAL_LEFT, 
+                        UNESCAPE_SYNTAX_NONTERMINAL_RIGHT, UNESCAPE_AMPERSAND]
+
+    FINNISH_MORPHSET_1 = [u'N', u'n', u'A', u'a', u'\xc4', u'\xe4', u'ssa', 
+                         u'Ssa', u'ss\xe4', u'Ss\xe4', u'sta', u'st\xe4', 
+                         u'Sta', u'St\xe4', u'hun', u'Hun', u'hyn', u'Hyn', 
+                         u'han', u'Han', u'h\xe4n', u'H\xe4n', u'h\xf6n', 
+                         u'H\xf6n', u'un', u'Un', u'yn', u'Yn', u'an', u'An', 
+                         u'\xe4n', u'\xc4n', u'\xf6n', u'\xd6n', u'seen', 
+                         u'Seen', u'lla', u'Lla', u'll\xe4', u'Ll\xe4', u'lta', 
+                         u'Lta', u'lt\xe4', u'Lt\xe4', u'lle', u'Lle', u'ksi', 
+                         u'Ksi', u'kse', u'Kse', u'tta', u'Tta', u'ine', u'Ine']
+    
+    FINNISH_MORPHSET_2 = [u'ni', u'si', u'mme', u'nne', u'nsa']
+    
+    FINNISH_MORPHSET_3 = [u'ko', u'k\xf6', u'han', u'h\xe4n', u'pa', u'p\xe4', 
+                         u'kaan', u'k\xe4\xe4n', u'kin']
+    
+    FINNISH_REGEX = u'^({})({})?({})$'.format(text_type('|'.join(FINNISH_MORPHSET_1)), 
+                                               text_type('|'.join(FINNISH_MORPHSET_2)), 
+                                               text_type('|'.join(FINNISH_MORPHSET_3)))
+
+    
+    def __init__(self, lang='en'):
+        super(MosesDetokenizer, self).__init__()
+        self.lang = lang
+
+
+    def unescape_xml(self, text):
+        for regexp, subsitution in self.MOSES_UNESCAPE_XML_REGEXES:
+            text = re.sub(regexp, subsitution, text)
+        return text
+    
+
+    def tokenize(self, tokens):
+        """
+        Python port of the Moses tokenizer.
+        
+        >>> detokenizer =  MosesDetokenizer()
+        
+        :param tokens: A list of strings, i.e. tokenized text.
+        :type tokens: list(str)
+        :return: str
+        """
+        # Convert the list of tokens into a string and pad it with spaces.
+        text = u" {} ".format(" ".join(tokens))
+        # Converts input string into unicode.
+        text = text_type(text)
+        # Detokenize the agressive hyphen split.
+        regexp, subsitution = self.AGGRESSIVE_HYPHEN_SPLIT
+        text = re.sub(regexp, subsitution, text)
+        # Unescape the XML symbols.
+        text = self.unescape_xml(text)
+        # Keep track of no. of quotation marks.
+        quote_counts = {u"'":0 , u'"':0}
+        
+        detokenized_text = ""
+        # The *prepend_space* variable is used to control the "effects" of 
+        # detokenization as the function loops through the list of tokens and
+        # changes the *prepend_space* accordingly as it sequentially checks 
+        # through the language specific and language independent conditions. 
+        prepend_space = " " 
+        
+        tokens = text.split()
+        # Iterate through every token and apply language specific detokenization rule(s).
+        for i, token in enumerate(iter(tokens)):
+            # Check if the first char is CJK.
+            if is_cjk(token[0]):
+                # Perform left shift if this is a second consecutive CJK word.
+                if i > 0 and is_cjk(token[-1]):
+                    detokenized_text += token
+                # But do nothing special if this is a CJK word that doesn't follow a CJK word
+                else:
+                    detokenized_text += prepend_space + token
+                prepend_space = " " 
+                
+            # If it's a currency symbol.
+            elif token in self.IsSc:
+                # Perform right shift on currency and other random punctuation items
+                detokenized_text += prepend_space + token
+                prepend_space = ""
+
+            elif re.match(r'^[\,\.\?\!\:\;\\\%\}\]\)]+$', token):
+                # In French, these punctuations are prefixed with a non-breakable space.
+                if self.lang == 'fr' and re.match(r'^[\?\!\:\;\\\%]$', token):
+                    detokenized_text += " "
+                # Perform left shift on punctuation items.
+                detokenized_text += token
+                prepend_space = " " 
+               
+            elif (self.lang == 'en' and i > 0 
+                  and re.match(u'^[\'][{}]'.format(self.IsAlpha), token)
+                  and re.match(u'[{}]'.format(self.IsAlnum), token)):
+                # For English, left-shift the contraction.
+                detokenized_text += token
+                prepend_space = " "
+                
+            elif (self.lang == 'cs' and i > 1
+                  and re.match(r'^[0-9]+$', tokens[-2]) # If the previous previous token is a number.
+                  and re.match(r'^[.,]$', tokens[-1]) # If previous token is a dot.
+                  and re.match(r'^[0-9]+$', token)): # If the current token is a number.
+                # In Czech, left-shift floats that are decimal numbers.
+                detokenized_text += token
+                prepend_space = " "
+            
+            elif (self.lang in ['fr', 'it'] and i <= len(tokens)-2
+                  and re.match(u'[{}][\']$'.format(self.IsAlpha), token)
+                  and re.match(u'^[{}]$'.format(self.IsAlpha), tokens[i+1])): # If the next token is alpha.
+                # For French and Italian, right-shift the contraction.
+                detokenized_text += prepend_space + token
+                prepend_space = ""
+            
+            elif (self.lang == 'cs' and i <= len(tokens)-3
+                  and re.match(u'[{}][\']$'.format(self.IsAlpha), token)
+                  and re.match(u'^[-–]$', tokens[i+1])
+                  and re.match(u'^li$|^mail.*', tokens[i+2], re.IGNORECASE)): # In Perl, ($words[$i+2] =~ /^li$|^mail.*/i)
+                # In Czech, right-shift "-li" and a few Czech dashed words (e.g. e-mail)
+                detokenized_text += prepend_space + token + tokens[i+1]
+                next(tokens, None) # Advance over the dash
+                prepend_space = ""
+                
+            # Combine punctuation smartly.
+            elif re.match(r'''^[\'\"„“`]+$''', token):
+                normalized_quo = token
+                if re.match(r'^[„“”]+$', token):
+                    normalized_quo = '"'
+                quote_count.get(normalized_quo, 0)
+                
+                if self.lang == 'cs' and token == u"„":
+                    quote_count[normalized_quo] = 0
+                if self.lang == 'cs' and token == u"“":
+                    quote_count[normalized_quo] = 1
+            
+            
+                if quote_count[normalized_quo] % 2 == 0:
+                    if (self.lang == 'en' and token == u"'" and i > 0 
+                        and re.match(r'[s]$', tokens[i-1]) ):
+                        # Left shift on single quote for possessives ending
+                        # in "s", e.g. "The Jones' house" 
+                        detokenized_text += token
+                        prepend_space = " "
+                    else:
+                        # Right shift.
+                        detokenized_text += prepend_space + token
+                        prepend_space = ""
+                        quote_count[normalized_quo] += 1
+                else:
+                    # Left shift.
+                    text += token
+                    prepend_space = " "
+                    quote_count[normalized_quo] += 1
+            
+            elif (self.lang == 'fi' and re.match(r':$', tokens[i-1])
+                  and re.match(FINNISH_REGEX, token)):
+                detokenized_text += prepend_space + token
+                prepend_space = " "
+            
+            else:
+                detokenized_text += prepend_space + token
+                prepend_space = " "
+                
+        # Merge multiple spaces.
+        regexp, subsitution = self.ONE_SPACE
+        detokenized_text = re.sub(regexp, subsitution, detokenized_text)
+        # Removes heading and trailing spaces.
+        return detokenized_text.strip()
+    
+    def detokenize(self, tokens):
+        """ Duck-typing the abstract *tokenize()*."""
+        return self.tokenize(tokens)
+    
