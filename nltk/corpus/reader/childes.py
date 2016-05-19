@@ -19,11 +19,12 @@ import re, sys
 from collections import defaultdict
 
 from nltk.util import flatten, LazyMap, LazyConcatenation
-from nltk.compat import string_types
+from nltk.compat import string_types, python_2_unicode_compatible
 
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
 
+@python_2_unicode_compatible
 class CHILDESWord(object):
     uttered = None
     "Uttered wordform"
@@ -105,9 +106,15 @@ class CHILDESWord(object):
             s += ']'
         return s
     
-    def __repr__(self):
+    def _display_str(self):
+        """A proper unicode string"""
         return '<'+unicode(self)+' ({} morph components)>'.format(self.nMorphs)
+    
+    def __repr__(self):
+        """Will be converted to str in Python 2, exposing escapes for non-ASCII characters"""
+        return self._display_str()
 
+@python_2_unicode_compatible
 class CHILDESMorph(object):
     """Unit of morphological analysis; may have nested `CHILDESMorph` instances."""
     
@@ -167,7 +174,7 @@ class CHILDESMorph(object):
         self.clitic_status = clitic_status
         self.affix_status = affix_status
         self.is_punct = is_punct
-        if isinstance(form_or_submorphs, basestring):
+        if isinstance(form_or_submorphs, string_types):
             self._form = form_or_submorphs
             self.submorphs = []
         else:
@@ -212,12 +219,17 @@ class CHILDESMorph(object):
             return '~' + s
         return s
         
-    def __repr__(self):
+    def _display_str(self):
+        """A proper unicode string"""
         return u'|'.join(map(unicode,
                             (self.pos or '', 
                              self,
                              self.get_stem_str() or '',
                              self.get_dep_str() or '')))
+    
+    def __repr__(self):
+        """Will be converted to str in Python 2, exposing escapes for non-ASCII characters"""
+        return self._display_str()
     
     def set_gra(self, gra_type, dep):
         i, head, rel = dep
@@ -847,7 +859,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     if tag=='pos':
                         sents.extend(zip(wordSL,[(m.pos if m else None) for m in word.mor]))
                     elif tag=='morph':
-                        sents.extend(zip(wordSL,word.mor))
+                        sents.extend(zip(wordSL,word.mor))  # TODO: with replace=False, will this truncate multiple word.mor elts?
                     elif tag=='word':
                         sents.extend(zip(wordSL, [word]*len(wordSL)))
                     else:
