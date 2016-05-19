@@ -15,7 +15,7 @@ from __future__ import print_function
 
 __docformat__ = 'epytext en'
 
-import re
+import re, sys
 from collections import defaultdict
 
 from nltk.util import flatten, LazyMap, LazyConcatenation
@@ -23,6 +23,243 @@ from nltk.compat import string_types
 
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
+
+class CHILDESWord(object):
+    uttered = None
+    "Uttered wordform"
+    
+    interpreted = []
+    """Wordform(s) that the transcriber understood from the uttered word: 
+    either the same as `uttered`, or a normalized form in a <replacement>."""
+    
+    real = None
+    """True if there is a <replacement> of a real word with an intended word
+    (apparently this distinction is not made in practice for the corpora examined)."""
+    
+    mor = []
+    "Morphological/grammatical analysis per interpreted word"
+
+    def __init__(self, uttered, mor=None, replacement_wordforms=None, real=None):
+        self.uttered = uttered
+        if replacement_wordforms is None:
+            self.interpreted = [uttered]
+            self.mor = [mor]
+        else:
+            self.interpreted = replacement_wordforms
+            self.mor = mor
+            assert len(self.mor)==len(replacement_wordforms),(replacement_wordforms,self.mor)
+        self.real = real
+
+    @property
+    def nMorphs(self):
+        return sum(m.nMorphs for m in self.mor)
+
+    def descendants(self):
+        """Morphological units under this word."""
+        return mor + [d for m in mor for d in mor.descendants()]
+
+    def split(self, clitics=True, compounds=False, affixes=False):
+        """Return a list of morphemes based on the given split criteria.
+        Note: splitting affixes will always cause clitics to be split.
+        """
+        queue = list(self.mor)
+        result = []
+        while queue:
+            m = queue.pop(0)
+            if m.is_compound:
+                if compounds:
+                    queue = list(m) + queue
+                else:
+                    result.append(m)
+            elif m._form is not None:
+                # must be a stem (or punctuation)
+                result.append(m)
+            elif len(m.submorphs)==0:
+                assert False,(m,)
+            elif m[0].clitic_status or m[-1].clitic_status:
+                if clitics:
+                    queue = list(m) + queue
+                else:
+                    result.append(m)
+            elif m[0].affix_status or m[-1].affix_status:
+                if affixes:
+                    queue = list(m) + queue
+                else:
+                    result.append(m)
+            else:
+                assert False,(m,)
+        assert result,self.mor
+        return result
+
+    def __iter__(self):
+        """Iterate over morphological units under this word"""
+        return iter(self.mor)
+
+    def __str__(self):
+        """Approximate .cha rendering of word layer (not morphology)"""
+        s = self.uttered
+        if len(self.interpreted)>1 or self.interpreted[0]!=self.uttered:
+            # <replacement>
+            s += ' [:: '  if self.real else ' [: '
+            s += u' '.join(interpreted)
+            s += ']'
+        return s
+    
+    def __repr__(self):
+        return '<'+unicode(self)+' ({} morph components)>'.format(self.nMorphs)
+
+class CHILDESMorph(object):
+    """Unit of morphological analysis; may have nested `CHILDESMorph` instances."""
+    
+    is_compound = False
+    """True for <mwc>"""
+    
+    clitic_status = None
+    """`'pre'` for preclitics, `'post'` for postclitics"""
+    
+    affix_status = None
+    """`'prefix'` for <mpfx>, `'suffix'` for <mk>"""
+    
+    submorphs = []
+    """Subunits"""
+    
+    pos = None
+    """Part-of-speech tag"""
+    
+    gold_index = None
+    """Index from <gra type="grt">"""
+    
+    gold_head = None
+    """Head from <gra type="grt">"""
+    
+    gold_rel = None
+    """Dependency relation type from <gra type="grt">"""
+    
+    auto_index = None
+    """Index from <gra type="gra">"""
+    
+    auto_head = None
+    """Head from <gra type="gra">"""
+    
+    auto_rel = None
+    """Dependency relation type from <gra type="gra">"""
+    
+    @property
+    def nMorphs(self):
+        return 1 + sum(m.nMorphs for m in self.submorphs)
+    
+    @staticmethod
+    def stringify_morphs(morphs, key=unicode, joiner=u''):
+        result = []
+        for m in morphs:
+            s = key(m)
+            if m.clitic_status=='pre':
+                s += '~'
+            elif m.clitic_status=='post':
+                s = '~' + s
+            result.append(s)
+        return joiner.join(result)
+    
+    def __init__(self, form_or_submorphs, pos=None, 
+            is_compound=False, clitic_status=None, affix_status=None, is_punct=False):
+        
+        self.is_compound = is_compound
+        self.clitic_status = clitic_status
+        self.affix_status = affix_status
+        self.is_punct = is_punct
+        if isinstance(form_or_submorphs, basestring):
+            self._form = form_or_submorphs
+            self.submorphs = []
+        else:
+            self._form = None
+            self.submorphs = form_or_submorphs
+        
+        if pos is None:
+            joiner = u'+' if self.is_compound else u''
+            self.pos = CHILDESMorph.stringify_morphs(self.submorphs, 
+                                                     key=lambda m: m.pos or '', 
+                                                     joiner=joiner)
+            self._dep_str = CHILDESMorph.stringify_morphs(self.submorphs, 
+                                                     key=lambda m: m.get_dep_str() or '', 
+                                                     joiner=joiner)
+                                                      
+        else:
+            self.pos = pos
+            self._dep_str = None
+    
+    def __iter__(self):
+        return iter(self.submorphs)
+    
+    def __getitem__(self, index):
+        return list(self)[index]
+    
+    def __str__(self):
+        s = ''
+        if self.submorphs:
+            assert not self._form
+            if self.is_compound:
+                s = u'+'.join(map(unicode, self.submorphs))
+            else:
+                # TODO: is this assertion true for compounds?
+                assert sum(1 for m in self.submorphs if not (m.clitic_status or m.affix_status))==1,self.submorphs
+                s = u''.join(map(unicode, self.submorphs))
+        else:
+            s = self._form
+        
+        if self.clitic_status=='pre':
+            return s + '~'
+        elif self.clitic_status=='post':
+            return '~' + s
+        return s
+        
+    def __repr__(self):
+        return u'|'.join(map(unicode,
+                            (self.pos or '', 
+                             self,
+                             self.get_stem_str() or '',
+                             self.get_dep_str() or '')))
+    
+    def set_gra(self, gra_type, dep):
+        i, head, rel = dep
+        if gra_type=='grt':
+            self.gold_index = i
+            self.gold_head = head
+            self.gold_rel = rel
+        else:
+            assert gra_type=='gra',gra_type
+            self.auto_index = i
+            self.auto_head = head
+            self.auto_rel = rel
+            
+    def dep(self, gold_status=None):
+        if (gold_status is True) or (gold_status is None and self.gold_index is not None):
+            return (self.gold_index, self.gold_head, self.gold_rel)
+        elif self.auto_index is not None:
+            return (self.auto_index, self.auto_head, self.auto_rel)
+        else:
+            return None
+    
+    def get_dep_str(self, gold_status=None):
+        if self._dep_str:
+            return self._dep_str
+        dep = self.dep(gold_status)
+        if not dep:
+            return dep
+        return ','.join(map(unicode, dep))
+    
+    def descendants(self):
+        return self.submorphs + [d for subm in self.submorphs for d in subm.descendants()]
+
+    def get_stem_str(self):
+        if self.affix_status:
+            return ''
+        submss = [m.get_stem_str() for m in self.submorphs]
+        joiner = u'+' if self.is_compound else u''
+        if self.clitic_status=='pre':
+            return (self._form or joiner.join(submss)) + '~'
+        if self.clitic_status=='post':
+            return '~'+(self._form or joiner.join(submss))
+        return self._form or joiner.join(submss)
 
 class CHILDESCorpusReader(XMLCorpusReader):
     """
@@ -39,8 +276,63 @@ class CHILDESCorpusReader(XMLCorpusReader):
         XMLCorpusReader.__init__(self, root, fileids)
         self._lazy = lazy
 
+    def morphs(self, fileids=None, speaker='ALL', stem=False, 
+            split_clitics=True, split_compounds=False, split_affixes=False,
+            strip_space=True, replace=False, punct=False):
+            
+        return LazyMap((lambda m: unicode(m)),
+            self.tagged_morphs(fileids=fileids, speaker=speaker, stem=stem, 
+            split_clitics=split_clitics, split_compounds=split_compounds, split_affixes=split_affixes, 
+            strip_space=strip_space, replace=replace, punct=punct))
+        
+    def tagged_morphs(self, fileids=None, speaker='ALL', stem=False, 
+            split_clitics=True, split_compounds=False, split_affixes=False,
+            strip_space=True, replace=False, punct=False):
+        
+        return LazyMap((lambda m: (unicode(m), m)),
+            LazyConcatenation(LazyMap((lambda (s,m): m.split(clitics=split_clitics, 
+            compounds=split_compounds, affixes=split_affixes) if m else None), 
+            self.tagged_words(fileids=fileids, speaker=speaker, tag='word', stem=stem, 
+                strip_space=strip_space, replace=replace, punct=punct))))
+    
+    def _morph_sents(self, fileids=None, speaker='ALL', stem=False, 
+            split_clitics=True, split_compounds=False, split_affixes=False,
+            strip_space=True, replace=False, punct=False):
+        """Returns sentences of CHILDESMorph objects"""
+        
+        return LazyMap(lambda sent: LazyConcatenation(map(lambda (s,w): w.split(clitics=split_clitics, 
+            compounds=split_compounds, affixes=split_affixes), sent)), 
+            self.tagged_sents(fileids=fileids, speaker=speaker, tag='word', stem=stem, 
+            strip_space=strip_space, replace=replace, punct=punct))
+    
+    def morph_sents(self, fileids=None, speaker='ALL', stem=False, 
+            split_clitics=True, split_compounds=False, split_affixes=False,
+            strip_space=True, replace=False, punct=False):
+            
+        return LazyMap((lambda sent: map(lambda (s,m): s, sent)),
+            self.tagged_morph_sents(fileids=fileids, speaker=speaker, stem=stem, 
+            split_clitics=split_clitics, split_compounds=split_compounds, split_affixes=split_affixes, 
+            strip_space=strip_space, replace=replace, punct=punct))
+    
+    def tagged_morph_sents(self, fileids=None, speaker='ALL', stem=False, 
+            split_clitics=True, split_compounds=False, split_affixes=False,
+            strip_space=True, replace=False, punct=False):
+            
+        return LazyMap((lambda sent: map(lambda m: (unicode(m), m), sent)),
+            self._morph_sents(fileids=fileids, speaker=speaker, stem=stem, 
+            split_clitics=split_clitics, split_compounds=split_compounds, split_affixes=split_affixes, 
+            strip_space=strip_space, replace=replace, punct=punct))
+    
+    def morph_deps(self, fileids=None, speaker='ALL', gold_status=None, stem=False,
+            strip_space=True, punct=True):
+            
+        return LazyMap((lambda sent: map(lambda (s,m): (s,)+(m.dep(gold_status=gold_status) or ()), sent)), 
+            self.tagged_morph_sents(fileids=fileids, speaker=speaker, stem=stem,
+                split_clitics=True, split_compounds=False, split_affixes=False,
+                strip_space=strip_space, replace=True, punct=punct))
+
     def words(self, fileids=None, speaker='ALL', stem=False,
-            relation=False, strip_space=True, replace=False):
+            strip_space=True, replace=False, punct=False):
         """
         :return: the given file(s) as a list of words
         :rtype: list(str)
@@ -49,8 +341,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
             in the corpus. Default is 'ALL' (all participants). Common choices
             are 'CHI' (the child), 'MOT' (mother), ['CHI','MOT'] (exclude
             researchers)
-        :param stem: If true, then use word stems instead of word strings.
-        :param relation: If true, then return tuples of (stem, index,
+        :param stem: If true, then use word stems, omitting affixes (but not clitics).
+        --:param relation: If true, then return tuples of (stem, index,
             dependent_index)
         :param strip_space: If true, then strip trailing spaces from word
             tokens. Otherwise, leave the spaces on the tokens.
@@ -58,17 +350,17 @@ class CHILDESCorpusReader(XMLCorpusReader):
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
         sent=None
-        pos=False
+        mor=False
         if not self._lazy:
-            return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+            return [self._get_words(fileid, speaker, sent, mor, stem,
+                strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
 
-        get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace)
+        get_words = lambda fileid: self._get_words(fileid, speaker, sent, mor, stem,
+            strip_space, replace, punct=punct)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
-    def tagged_words(self, fileids=None, speaker='ALL', stem=False,
-            relation=False, strip_space=True, replace=False, punct=False):
+    def tagged_words(self, fileids=None, speaker='ALL', tag='morph', stem=False,
+            strip_space=True, replace=False, punct=False):
         """
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
@@ -79,8 +371,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
             in the corpus. Default is 'ALL' (all participants). Common choices
             are 'CHI' (the child), 'MOT' (mother), ['CHI','MOT'] (exclude
             researchers)
-        :param stem: If true, then use word stems instead of word strings.
-        :param relation: If true, then return tuples of (stem, index,
+        :param stem: If true, then use word stems, omitting affixes (but not clitics).
+        --:param relation: If true, then return tuples of (stem, index,
             dependent_index)
         :param strip_space: If true, then strip trailing spaces from word
             tokens. Otherwise, leave the spaces on the tokens.
@@ -88,17 +380,17 @@ class CHILDESCorpusReader(XMLCorpusReader):
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
         sent=None
-        pos=True
+        assert tag in ('pos', 'morph', 'word')
         if not self._lazy:
-            return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
+            return [self._get_words(fileid, speaker, sent, tag, stem,
+                strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
 
-        get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace, punct=punct)
+        get_words = lambda fileid: self._get_words(fileid, speaker, sent, tag, stem,
+            strip_space, replace, punct=punct)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def sents(self, fileids=None, speaker='ALL', stem=False,
-            relation=None, strip_space=True, replace=False, punct=False):
+            strip_space=True, replace=False, punct=False):
         """
         :return: the given file(s) as a list of sentences or utterances, each
             encoded as a list of word strings.
@@ -108,8 +400,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
             in the corpus. Default is 'ALL' (all participants). Common choices
             are 'CHI' (the child), 'MOT' (mother), ['CHI','MOT'] (exclude
             researchers)
-        :param stem: If true, then use word stems instead of word strings.
-        :param relation: If true, then return tuples of ``(str,pos,relation_list)``.
+        :param stem: If true, then use word stems, omitting affixes (but not clitics).
+        --:param relation: If true, then return tuples of ``(str,pos,relation_list)``.
             If there is manually-annotated relation info, it will return
             tuples of ``(str,pos,test_relation_list,str,pos,gold_relation_list)``
         :param strip_space: If true, then strip trailing spaces from word
@@ -118,17 +410,17 @@ class CHILDESCorpusReader(XMLCorpusReader):
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
         sent=True
-        pos=False
+        mor=False
         if not self._lazy:
-            return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
+            return [self._get_words(fileid, speaker, sent, mor, stem,
+                strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
         
-        get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace, punct=punct)
+        get_words = lambda fileid: self._get_words(fileid, speaker, sent, mor, stem,
+            strip_space, replace, punct=punct)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
-    def tagged_sents(self, fileids=None, speaker='ALL', stem=False,
-            relation=None, strip_space=True, replace=False):
+    def tagged_sents(self, fileids=None, speaker='ALL', tag='morph', stem=False,
+            strip_space=True, replace=False, punct=False):
         """
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
@@ -138,8 +430,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
             in the corpus. Default is 'ALL' (all participants). Common choices
             are 'CHI' (the child), 'MOT' (mother), ['CHI','MOT'] (exclude
             researchers)
-        :param stem: If true, then use word stems instead of word strings.
-        :param relation: If true, then return tuples of ``(str,pos,relation_list)``.
+        :param stem: If true, then use word stems, omitting affixes (but not clitics).
+        --:param relation: If true, then return tuples of ``(str,pos,relation_list)``.
             If there is manually-annotated relation info, it will return
             tuples of ``(str,pos,test_relation_list,str,pos,gold_relation_list)``
         :param strip_space: If true, then strip trailing spaces from word
@@ -148,13 +440,13 @@ class CHILDESCorpusReader(XMLCorpusReader):
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
         sent=True
-        pos=True
+        assert tag in ('pos', 'morph', 'word')
         if not self._lazy:
-            return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+            return [self._get_words(fileid, speaker, sent, tag, stem,
+                strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
         
-        get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace)
+        get_words = lambda fileid: self._get_words(fileid, speaker, sent, tag, stem,
+            strip_space, replace, punct=punct)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def corpus(self, fileids=None):
@@ -298,183 +590,274 @@ class CHILDESCorpusReader(XMLCorpusReader):
         # return {'mlu':mlu,'wordNum':numWords,'sentNum':numSents}
         return mlu
 
-    def _get_words(self, fileid, speaker, sent, stem, relation, pos,
-            strip_space, replace, punct=False, gold_gra=None):
-            """
-            gold_gra: Some documents contain two tiers of grammatical analysis, 
-            one of which is automatic (<gra type="gra">) 
-            and one of which is gold standard (<gra type="grt">). 
-            If this parameter is True, ONLY gold standard <gra> tiers will be loaded. 
-            If it is False, then only non-gold <gra> tiers will be loaded.
-            If it is None, then gold <gra> tiers will be preferred when available, 
-            and non-gold tiers will be loaded only as a fallback.
-            """
+    def _utterance_nodes(self, fileid, speaker):
         if isinstance(speaker, string_types) and speaker != 'ALL':  # ensure we have a list of speakers
             speaker = [ speaker ]
         xmldoc = self._clean_doc(fileid)
         # processing each xml doc
-        results = []
         for xmlsent in xmldoc.findall('.//u'):
-            sents = []
-            # select speakers
+            # filter by speakers
             if speaker == 'ALL' or xmlsent.get('who') in speaker:
-                token_path = ('.//w') if not punct else './*'
-                for xmlword in xmlsent.findall(token_path):
-                    if xmlword.tag=='g': # <g> is used, e.g., when there is a replacement. immediately dominates <w>
-                        xmlsubword = xmlword.find('.//w')
-                        if xmlsubword is None:
-                            xmlsubword = xmlword.find(".//ga[@type='paralinguistics']")
-                        xmlword = xmlsubword
-                        assert xmlword is not None,(xmlsent.attrib,xmldoc.attrib,fileid)
-                    
-                    infl = None ; suffixStem = None; suffixTag = None
-                    # getting replaced words
-                    if replace and xmlsent.find(token_path+'/replacement'):
-                        xmlword = xmlsent.find(token_path+'/replacement/w')
-                    elif replace and xmlsent.find(token_path+'/wk'):
-                        xmlword = xmlsent.find(token_path+'/wk')
-                    
-                    assert xmlword is not None,(xmlsent.attrib,xmldoc.attrib,fileid)
-                        
-                    # get text
-                    VOCATIVE = '‡'  # symbol used in CHILDES .cha format for <tagMarker type="vocative">
-                    TAG = '„' # symbol used in CHILDES .cha format for <tagMarker type="tag">
-                    # note that <tagMarker>s ARE included in the dependency parse
+                yield xmlsent
 
-                    if xmlword.tag=='tagMarker':
-                        marker_type = xmlword.attrib["type"]
-                        if marker_type=='comma':
-                            word = ','
-                        elif marker_type=='vocative':
-                            word = VOCATIVE
-                        elif marker_type=='tag':
-                            word = TAG
-                        else:
-                            raise ValueError('Unknown tagMarker type: '+marker_type)
-                    elif xmlword.tag=='t':
-                        # end-of-utterance punctuation
-                        t_type = xmlword.attrib["type"]
-                        if t_type=='p':
-                            word = '.'
-                        elif t_type=='q':
-                            word = '?'
-                        elif t_type=='e':
-                            word = '!'
-                        elif t_type=='trail off':
-                            word = '+...'
-                        elif t_type=='interruption':
-                            word = '+/.'
-                    elif xmlword.tag=='ga' and xmlword.attrib['type']=='paralinguistics':
-                        word = '[=! '+xmlword.text+']'
-                    elif xmlword.tag in ('a', 'e', 'pause', 'linker'):
-                        # <a> mainly for transcriber comments, <e> for actions, etc.
-                        continue
-                    else:
-                        word = ''
-                        if xmlword.attrib.get('type')=='fragment':
-                            word += '&'
-                        word += xmlword.text or ''    # text before the first child tag
-                        for ch in xmlword:
-                            if ch.tag=='shortening':
-                                word += '('+ch.text+')' # elided part of word
-                            word += ch.tail or '' # text following this child and within the word
-                        if xmlword.attrib.get('separated-prefix')=='true':
-                            word += '#'
-                    
-                    # strip tailing space
-                    if strip_space:
-                        word = word.strip()
-                    tok = word
-                    # stem and suffix
-                    mor = ''
-                    if relation or stem:
-                        try:
-                            xmlstem = xmlword.find('.//stem')
-                            mor = xmlstem.text
-                        except AttributeError as e:
-                            pass
-                        # if there is an inflection
-                        try:
-                            xmlinfl = xmlword.find('.//mor/mw/mk')
-                            mor += '-' + xmlinfl.text
-                        except:
-                            pass
-                        # if there is a suffix
-                        try:
-                            xmlsuffix = xmlword.find('.//mor/mor-post/mw/stem')
-                            suffixStem = xmlsuffix.text
-                        except AttributeError:
-                            suffixStem = ""
-                        if suffixStem:
-                            mor += "~"+suffixStem
-                    # pos
-                    if relation or pos:
-                        try:
-                            xmlpos = xmlword.findall(".//c")
-                            xmlpos2 = xmlword.findall(".//s")
-                            if xmlpos2 != []:
-                                tag = xmlpos[0].text+":"+xmlpos2[0].text
-                            else:
-                                tag = xmlpos[0].text
-                        except (AttributeError,IndexError) as e:
-                            tag = ""
-                        try:
-                            xmlsuffixpos = xmlword.findall('.//mor/mor-post/mw/pos/c')
-                            xmlsuffixpos2 = xmlword.findall('.//mor/mor-post/mw/pos/s')
-                            if xmlsuffixpos2:
-                                suffixTag = xmlsuffixpos[0].text+":"+xmlsuffixpos2[0].text
-                            else:
-                                suffixTag = xmlsuffixpos[0].text
-                        except:
-                            pass
-                        if suffixTag:
-                            tag += "~"+suffixTag
-                        tok = (word, mor, tag, '')
-                        assert ''.join(tok),(xmlword.tag, sents, xmlword.text, [ch.tail for ch in xmlword], xmlword.attrib, xmlsent.attrib, xmldoc.attrib, fileid)
-                        # note that some words in certain documents may be missing morphological analysis
-                        
-                    # relational
-                    # the gold standard is stored in
-                    # <mor></mor><mor type="trn"><gra type="grt">
-                    if relation == True:
-                        a, b, c, r = tok
-                        for xmlstem_rel in xmlword.findall('.//mor/gra'):
-                            
-                            if r:
-                                r += '+'
-                            if not xmlstem_rel.get('type') == 'grt':    # non-gold <gra> tier
-                                r += (xmlstem_rel.get('index')
-                                        + "|" + xmlstem_rel.get('head')
-                                        + "|" + xmlstem_rel.get('relation'))
-                            else:   # TODO: gold <gra> tier
-                                tok = (tok[0], tok[1], tok[2],
-                                        tok[0], tok[1],
-                                        xmlstem_rel.get('index')
-                                        + "|" + xmlstem_rel.get('head')
-                                        + "|" + xmlstem_rel.get('relation'))
-                        tok = (a, b, c, r)
-                        try:
-                            for xmlpost_rel in xmlword.findall('.//mor/mor-post/gra'):
-                                if not xmlpost_rel.get('type') == 'grt':    # non-gold <gra> tier
-                                    a, b, c, r = tok
-                                    r += '~' + (xmlpost_rel.get('index')
-                                                  + "|" + xmlpost_rel.get('head')
-                                                  + "|" + xmlpost_rel.get('relation'))
-                                    tok = (a, b, c, r)
-                                else:   # TODO: gold <gra> tier
-                                    suffixStem = (suffixStem[0], suffixStem[1],
-                                                  suffixStem[2], suffixStem[0],
-                                                  suffixStem[1],
-                                                  xmlpost_rel.get('index')
-                                                  + "|" + xmlpost_rel.get('head')
-                                                  + "|" + xmlpost_rel.get('relation'))
-                        except:
-                            pass
-                    sents.append(tok[:-1] if (stem and not relation) else tok)
-                if sent or relation:
-                    results.append(sents)
+    def _word_nodes(self, xmlsent, punct):
+        for xmlword in xmlsent.findall('./*'):
+            if xmlword.tag=='g': # <g> is used, e.g., when there is a replacement. immediately dominates <w>
+                xmlsubword = xmlword.find('.//w')
+                if xmlsubword is None:
+                    xmlsubword = xmlword.find(".//ga[@type='paralinguistics']")
+                xmlword = xmlsubword
+                assert xmlword is not None,(xmlsent.attrib,fileid)
+            
+            """
+            # getting replaced words
+            if replace and xmlsent.find(token_path+'/replacement'):
+                xmlword = xmlsent.find(token_path+'/replacement/w')
+            elif replace and xmlsent.find(token_path+'/wk'):
+                xmlword = xmlsent.find(token_path+'/wk')
+            """
+            
+            if not punct and xmlword.tag in ('tagMarker', 't'):
+                # skip punctuation (though note that <tagMarker> and <t> elements ARE in the dependency parse)
+                continue
+            elif xmlword.tag in ('a', 'e', 'pause', 'linker'):
+                # nodes directly under the utterance that don't count as words
+                # <a> mainly for transcriber comments, <e> for actions, etc.
+                continue
+            
+            yield xmlword
+            
+    def _wordform(self, xmlword, strip_space):
+        if xmlword.tag=='tagMarker':
+            marker_type = xmlword.attrib["type"]
+            if marker_type=='comma':
+                word = ','
+            elif marker_type=='vocative':
+                word = '‡'  # symbol used in CHILDES .cha format for <tagMarker type="vocative">
+            elif marker_type=='tag':
+                word = '„' # symbol used in CHILDES .cha format for <tagMarker type="tag">
+            else:
+                raise ValueError('Unknown tagMarker type: '+marker_type)
+        elif xmlword.tag=='t':
+            # end-of-utterance punctuation
+            t_type = xmlword.attrib["type"]
+            if t_type=='p':
+                word = '.'
+            elif t_type=='q':
+                word = '?'
+            elif t_type=='e':
+                word = '!'
+            elif t_type=='trail off':
+                word = '+...'
+            elif t_type=='interruption':
+                word = '+/.'
+            else:
+                word = '<'+t_type+'>'
+        elif xmlword.tag=='ga' and xmlword.attrib['type']=='paralinguistics':
+            word = '[=! '+xmlword.text+']'
+        else:
+            word = ''
+            if xmlword.attrib.get('type')=='fragment':
+                word += '&'
+            word += xmlword.text or ''    # text before the first child tag
+            for ch in xmlword:
+                if ch.tag=='shortening':
+                    word += '('+ch.text+')' # elided part of word
+                elif ch.tag=='wk':  # compound separator
+                    word += {'cmp': '+', 'cli': '~'}[ch.attrib['type']]
+                word += ch.tail or '' # text following this child and within the word
+            if xmlword.attrib.get('separated-prefix')=='true':
+                word += '#'
+        
+            # strip tailing space
+            if strip_space:
+                word = word.strip()
+        
+        return word
+
+    def _morph_mw(self, xmlmw):
+        """
+        Morphemic word.
+        <mw> contains <mpfx>* <pos> <stem> <mk>*
+        
+        <mk> is for suffixes, of which there are 3 kinds:
+        https://talkbank.org/software/xsddoc/schemas/talkbank_xsd/elements/mk.html
+        
+        In English, the suffix is a morphological attribute (e.g., "PL") rather than a morph form.
+        """
+        stem = xmlmw.find('.//stem').text
+        prefix = u''.join(mpfx.text+'#' for mpfx in xmlmw.findall('.//mpfx'))
+        #prefixed_stem = prefix + stem
+        coarsepos = xmlmw.find('.//pos/c').text
+        pos = coarsepos + u''.join(':'+x.text for x in xmlmw.findall('.//pos/s'))
+        SUFFIX_TYPES = {'sfx': '-', # suffix
+                        'sfxf': '&', # fusional suffix
+                        'mc': ':'}  # morphological category
+        suffix = u''.join(SUFFIX_TYPES[mk.attrib['type']]+mk.text for mk in xmlmw.findall('.//mk'))
+        #return (prefixed_stem, stem, pos, infl)
+        if prefix or suffix:
+            morphs = []
+            if prefix:
+                morphs.append(CHILDESMorph(prefix, affix_status='prefix'))
+            morphs.append(CHILDESMorph(stem))
+            if suffix:
+                morphs.append(CHILDESMorph(suffix, affix_status='suffix'))
+            return CHILDESMorph(morphs, pos=pos)
+        else:
+            return CHILDESMorph(stem, pos=pos)
+
+    def _morph_mwc(self, xmlmwc):
+        """
+        Compound morphemic word.
+        <mwc> contains <mpfx>* <pos> <mw>{2,}
+        """
+        morphs = [self._morph_mw(xmlmw) for xmlmw in xmlmwc.findall('.//mw')]
+        #compound_morphs = '='.join(prefixed_stem for prefixed_stem,_,_,_ in morphs)
+        #prefix = u''.join(mpfx.text+'++' for mpfx in xmlmw.findall('.//mpfx'))
+        prefix = u''.join(mpfx.text+'#' for mpfx in xmlmw.findall('.//mpfx'))
+        prefixL = [CHILDESMorph(prefix, affix_status='prefix')] if prefix else []
+        #prefixed_compound = prefix + compound_morphs
+        coarsepos = xmlmwc.find('.//pos/c').text
+        pos = coarsepos + u''.join(':'+x.text for x in xmlmwc.findall('.//pos/s'))
+        #return (prefixed_compound, compound_morphs, pos, morphs)
+        return CHILDESMorph(prefixL + morphs, pos=pos, is_compound=True)
+
+    def _morph_gra(self, xmlgra):
+        dep = (int(xmlgra.attrib['index']),
+               int(xmlgra.attrib['head']),
+               xmlgra.attrib['relation'])
+        return dep
+
+    def _morphs(self, xmlword, gold_gra, clitic_status=None, wform=None):
+        """
+        Main morphological unit and pre-/post-clitics. 
+        Each of these participate in grammatical (dependency) relations.
+        Schema documentation at https://talkbank.org/software/xsddoc/schemas/talkbank_xsd/complexTypes/morType.html
+        <mor> contains (<mw> | <mwc> | <mt>) <menx>* <gra>* <mor-pre>* <mor-post>*
+        """
+        preclitics = [] # <mor-pre>
+        postclitics = []    # <mor-post>
+        mainmorph = None    # <mw> or <mwc> [ignore <mt>, which is for terminal punctuation]
+        mainmorphtag = None
+        # ignore <menx> [translation] for now
+        
+        # dependency information for the main unit (<mw>, <mwc>, or <mt>)
+        gra = {}    # gra_type -> dependency triple
+        
+        # We always load the <mor type="mor"> tier and ignore <mor type="trn"> 
+        # if present (this seems to be analogous to gra/grt: the latter is for 
+        # training a system, i.e., it is a gold standard).
+        
+        for xmlm in (xmlword if clitic_status else xmlword.findall(".//mor[@type='mor']/*")):
+            if xmlm.tag=='mw':
+                assert mainmorph is None,mainmorph
+                mainmorph = self._morph_mw(xmlm)
+                mainmorphtag = 'mw'
+            elif xmlm.tag=='mwc':
+                assert mainmorph is None,mainmorph
+                mainmorph = self._morph_mwc(xmlm)
+                mainmorphtag = 'mwc'
+            elif xmlm.tag=='mt':    # terminal punctuation
+                assert mainmorph is None,mainmorph
+                # nothing interesting here
+                mainmorph = CHILDESMorph(wform, pos=wform, is_punct=True)
+                mainmorphtag = 'mt'
+            elif xmlm.tag=='mor-pre':
+                preclitics.append(self._morphs(xmlm, gold_gra, clitic_status='pre'))
+            elif xmlm.tag=='mor-post':
+                postclitics.append(self._morphs(xmlm, gold_gra, clitic_status='post'))
+            elif xmlm.tag=='gra':
+                gra_type = xmlm.attrib['type']
+                assert gra_type not in gra
+                gra[gra_type] = self._morph_gra(xmlm)
+                
+        assert mainmorph is not None,(clitic_status,xmlword.tag,xmlword.text,list(xmlword))
+        assert unicode(mainmorph) or mainmorphtag=='mt',mainmorph
+        
+        for gra_type,dep in gra.items():
+            mainmorph.set_gra(gra_type, dep)
+        
+        if clitic_status:
+            assert not preclitics+postclitics
+            mainmorph.clitic_status = clitic_status
+            return mainmorph
+        else:
+            if preclitics+postclitics:
+                return CHILDESMorph(preclitics+[mainmorph]+postclitics)
+            return mainmorph
+
+    def _get_words(self, fileid, speaker, bysent, tag, stem,
+            strip_space, replace, punct=False, gold_gra=None):
+        """
+        tag: one of 'pos', 'morph', 'word'.
+        
+        gold_gra: Some documents contain two tiers of grammatical analysis, 
+        one of which is automatic (<gra type="gra">) 
+        and one of which is gold standard (<gra type="grt">). 
+        If this parameter is True, ONLY gold standard <gra> tiers will be loaded. 
+        If it is False, then only non-gold <gra> tiers will be loaded.
+        If it is None, then gold <gra> tiers will be preferred when available, 
+        and non-gold tiers will be loaded only as a fallback.
+        """
+        results = []
+        for xmlsent in self._utterance_nodes(fileid, speaker):
+            sents = []
+            
+            for xmlword in self._word_nodes(xmlsent, punct):
+                # one uttered word, though if there is a <replacement> 
+                # it may have multiple words
+                assert xmlword is not None,(xmlsent.attrib,fileid)
+                wordform = self._wordform(xmlword, strip_space)
+                
+                xmlrepl = xmlword.find('.//replacement')
+                if xmlrepl is not None:
+                    real = xmlrepl.get('real')
+                    ww = xmlrepl.findall('.//w')
+                    # if there is a <replacement>, then any <mor> tiers are within it
                 else:
-                    results.extend(sents)
+                    real = None
+                    ww = [xmlword]
+                
+                try:
+                
+                    wforms = []
+                    mor = []
+                    for w in ww:
+                        wform = self._wordform(w, strip_space)
+                        wforms.append(wform)
+                    
+                        if w.find(".//mor[@type='mor']") is None:
+                            morphs = ()
+                        else:
+                            morphs = self._morphs(w, gold_gra, wform=wform)
+                        mor.append(morphs)
+                
+                    word = CHILDESWord(wordform, mor, wforms, real=real)
+                
+                except AssertionError:
+                    print(fileid, xmlsent.attrib['uID'], wordform, file=sys.stderr)
+                    raise
+
+                if not stem:
+                    wordSL = word.interpreted if replace else [word.uttered]
+                else:
+                    wordSL = [m.get_stem_str() if m else None for m in word.mor]
+                
+                if tag:
+                    if tag=='pos':
+                        sents.extend(zip(wordSL,[(m.pos if m else None) for m in word.mor]))
+                    elif tag=='morph':
+                        sents.extend(zip(wordSL,word.mor))
+                    elif tag=='word':
+                        sents.extend(zip(wordSL, [word]*len(wordSL)))
+                    else:
+                        raise ValueError('Invalid value of tag parameter: '+tag)
+                else:
+                    sents.extend(wordSL)
+            if bysent:
+                results.append(sents)
+            else:
+                results.extend(sents)
         return LazyMap(lambda x: x, results)
 
 
