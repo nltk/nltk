@@ -67,7 +67,9 @@ class CHILDESWord(object):
         result = []
         while queue:
             m = queue.pop(0)
-            if m.is_compound:
+            if not m:
+                result.append(m)
+            elif m.is_compound:
                 if compounds:
                     queue = list(m) + queue
                 else:
@@ -338,7 +340,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def morph_deps(self, fileids=None, speaker='ALL', gold_status=None, stem=False,
             strip_space=True, punct=True):
             
-        return LazyMap((lambda sent: map(lambda (s,m): (s,)+(m.dep(gold_status=gold_status) or ()), sent)), 
+        return LazyMap((lambda sent: map(lambda (s,m): (s,m.pos if m else None)+((m.dep(gold_status=gold_status) or ()) if m else ()), sent)), 
             self.tagged_morph_sents(fileids=fileids, speaker=speaker, stem=stem,
                 split_clitics=True, split_compounds=False, split_affixes=False,
                 strip_space=strip_space, replace=True, punct=punct))
