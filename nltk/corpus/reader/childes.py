@@ -504,17 +504,37 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return root
 
     def _get_participants(self, fileid):
-        # multidimensional dicts
-        def dictOfDicts():
-            return defaultdict(dictOfDicts)
-
         xmldoc = self._clean_doc(fileid)
+        return self._get_participants_dict(xmldoc)
+        
+    def _get_participants_dict(self, xmldoc):
         # getting participants' data
-        pat = dictOfDicts()
+        pat = defaultdict(dict)
         for participant in xmldoc.findall('.//Participants/participant'):
             for (key,value) in participant.items():
                 pat[participant.get('id')][key] = value
-        return pat
+        return dict(pat)
+
+    def is_child(self, participant, fileid=None):
+        """
+        Returns True if any of the following apply:
+         - the participant ID is 'CHI'
+         - the participant's role is 'Child' or 'Target_Child'
+         - the participant's age is provided
+        """
+        if isinstance(participant, string_types):
+            participant = self.participants(fileid=fileid)[0][participant]
+        id = participant['id']
+        role = participant.get('role')
+        age = participant.get('age')
+        return bool(id=='CHI' or role.upper() in ('CHILD','TARGET_CHILD') or age)
+
+    def is_adult(self, participant, fileid=None):
+        """
+        Returns True if none of the heuristics for identifying children apply. 
+        See `is_child()`.
+        """
+        return not self.is_child(participant, fileid)
 
     def age(self, fileids=None, speaker='CHI', month=False):
         """
@@ -604,10 +624,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         # return {'mlu':mlu,'wordNum':numWords,'sentNum':numSents}
         return mlu
 
-    def _utterance_nodes(self, fileid, speaker):
-        if isinstance(speaker, string_types) and speaker != 'ALL':  # ensure we have a list of speakers
-            speaker = [ speaker ]
-        xmldoc = self._clean_doc(fileid)
+    def _utterance_nodes(self, xmldoc, speaker):
         # processing each xml doc
         for xmlsent in xmldoc.findall('.//u'):
             # filter by speakers
@@ -803,6 +820,14 @@ class CHILDESCorpusReader(XMLCorpusReader):
     def _get_words(self, fileid, speaker, bysent, tag, stem,
             strip_space, replace, punct=False, gold_gra=None):
         """
+        speaker: may be 
+          - 'ALL'
+          - a participant ID such as 'CHI' or 'MOT'
+          - a list of participant IDs
+          - a filter function that, when applied to the participant data dict, 
+            returns a true value for included participants
+          - 'is_child' or 'is_adult' (see methods of the same name)
+        
         tag: one of 'pos', 'morph', 'word'.
         
         gold_gra: Some documents contain two tiers of grammatical analysis, 
@@ -813,8 +838,24 @@ class CHILDESCorpusReader(XMLCorpusReader):
         If it is None, then gold <gra> tiers will be preferred when available, 
         and non-gold tiers will be loaded only as a fallback.
         """
+        xmldoc = self._clean_doc(fileid)
+        participants = None
+        
+        # determine IDs of relevant speakers
+        if speaker in ('is_child','is_adult') or callable(speaker):
+            # we need participant info
+            participants = self._get_participants_dict(xmldoc)
+            if speaker=='is_child':
+                speaker = self.is_child
+            elif speaker=='is_adult':
+                speaker = self.is_adult
+            speaker = [p['id'] for p in participants.values() if speaker(p)]
+        elif isinstance(speaker, string_types) and speaker != 'ALL':  # ensure we have a list of speakers
+            speaker = [speaker]
+        
+        
         results = []
-        for xmlsent in self._utterance_nodes(fileid, speaker):
+        for xmlsent in self._utterance_nodes(xmldoc, speaker):
             sents = []
             
             for xmlword in self._word_nodes(xmlsent, punct):
