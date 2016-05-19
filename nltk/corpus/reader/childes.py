@@ -40,7 +40,7 @@ class CHILDESWord(object):
     mor = []
     "Morphological/grammatical analysis per interpreted word"
 
-    def __init__(self, uttered, mor=None, replacement_wordforms=None, real=None):
+    def __init__(self, uttered, mor=None, replacement_wordforms=None, real=None, sepprefix=False):
         self.uttered = uttered
         if replacement_wordforms is None:
             self.interpreted = [uttered]
@@ -50,6 +50,7 @@ class CHILDESWord(object):
             self.mor = mor
             assert len(self.mor)==len(replacement_wordforms),(replacement_wordforms,self.mor)
         self.real = real
+        self.is_sepprefix = sepprefix  # separated-prefix (used in Hebrew CHIDLES for preclitics)
 
     @property
     def nMorphs(self):
@@ -60,39 +61,7 @@ class CHILDESWord(object):
         return mor + [d for m in mor for d in mor.descendants()]
 
     def split(self, clitics=True, compounds=False, affixes=False):
-        """Return a list of morphemes based on the given split criteria.
-        Note: splitting affixes will always cause clitics to be split.
-        """
-        queue = list(self.mor)
-        result = []
-        while queue:
-            m = queue.pop(0)
-            if not m:
-                result.append(m)
-            elif m.is_compound:
-                if compounds:
-                    queue = list(m) + queue
-                else:
-                    result.append(m)
-            elif m._form is not None:
-                # must be a stem (or punctuation)
-                result.append(m)
-            elif len(m.submorphs)==0:
-                assert False,(m,)
-            elif m[0].clitic_status or m[-1].clitic_status:
-                if clitics:
-                    queue = list(m) + queue
-                else:
-                    result.append(m)
-            elif m[0].affix_status or m[-1].affix_status:
-                if affixes:
-                    queue = list(m) + queue
-                else:
-                    result.append(m)
-            else:
-                assert False,(m,)
-        assert result,self.mor
-        return result
+        return [m for subw in self.mor for m in subw.split(clitics,compounds,affixes)]
 
     def __iter__(self):
         """Iterate over morphological units under this word"""
@@ -104,7 +73,7 @@ class CHILDESWord(object):
         if len(self.interpreted)>1 or self.interpreted[0]!=self.uttered:
             # <replacement>
             s += ' [:: '  if self.real else ' [: '
-            s += u' '.join(interpreted)
+            s += u' '.join(self.interpreted)
             s += ']'
         return s
     
@@ -274,6 +243,41 @@ class CHILDESMorph(object):
         if self.clitic_status=='post':
             return '~'+(self._form or joiner.join(submss))
         return self._form or joiner.join(submss)
+    
+    def split(self, clitics=True, compounds=False, affixes=False):
+        """Return a list of morphemes based on the given split criteria.
+        Note: splitting affixes will always cause clitics to be split.
+        """
+        queue = [self]
+        result = []
+        while queue:
+            m = queue.pop(0)
+            if not m:
+                result.append(m)
+            elif m.is_compound:
+                if compounds:
+                    queue = list(m) + queue
+                else:
+                    result.append(m)
+            elif m._form is not None:
+                # must be a stem (or punctuation)
+                result.append(m)
+            elif len(m.submorphs)==0:
+                assert False,(m,)
+            elif m[0].clitic_status or m[-1].clitic_status:
+                if clitics:
+                    queue = list(m) + queue
+                else:
+                    result.append(m)
+            elif m[0].affix_status or m[-1].affix_status:
+                if affixes:
+                    queue = list(m) + queue
+                else:
+                    result.append(m)
+            else:
+                assert False,(m,)
+        assert result,self.__dict__
+        return result
 
 class CHILDESCorpusReader(XMLCorpusReader):
     """
@@ -462,6 +466,62 @@ class CHILDESCorpusReader(XMLCorpusReader):
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, tag, stem,
             strip_space, replace, punct=punct)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
+
+    def utterances():
+        """(speaker, sentence) pairs"""
+        pass
+    
+    def tagged_utterances():
+        pass
+
+    def _conllu_format(self, ww):
+        def convert_pos(pos):
+            # TODO
+            upos = pos
+            return upos
+        
+        try:
+            lines = []
+            i = 1
+            sepprefixes = []
+            sepprefixesS = ''
+            for w in ww:
+                if w.is_sepprefix:  # for CONLL-U purposes, count the separated prefix as part of a multiword with its stem
+                    sepprefixes += [m for subw in w.mor for m in subw.split(clitics=True)]
+                    sepprefixesS += u''.join(w.interpreted)
+                    continue    # don't increment i
+                for tokform,subw in zip(w.interpreted,w.mor):
+                    mm = sepprefixes + subw.split(clitics=True)
+                    sepprefixes = []
+                    if len(mm)>1:
+                        # multiword
+                        I = '{}-{}'.format(i, i+len(mm)-1)
+                        lines.append(u'{}\t{}\t'.format(I, sepprefixesS+tokform) + '\t'.join('_'*8))
+                
+                    for m in mm:
+                        form = sepprefixesS+tokform if len(mm)==1 else unicode(m)
+                        sepprefixesS = ''
+                        suffixes = u'|'.join(unicode(subm) for subm in m if subm.affix_status=='suffix')
+                        pos = m.pos
+                        upos = convert_pos(pos)
+                        s = u'{}\t{}\t{}\t'.format(i, form, m.get_stem_str())
+                        s += u'{}\t{}\t{}\t'.format(upos, pos, suffixes or '_')
+                        dep = m.dep() or ('_', '_', '_')
+                        s += u'{}\t{}\t_\t_'.format(*dep[1:])
+                        assert m.dep()[0]==i,(i,m.dep(),s,lines)
+                        lines.append(s)
+                        i += 1
+        except AssertionError as ex:
+            print(u' '.join(map(unicode, ww)), file=sys.stderr)
+            raise
+                    
+        return u'\n'.join(lines)
+
+    def conllu_parses(self, fileids=None, speaker='ALL', gold_status=None, stem=False):
+        
+        return LazyMap((lambda sent: self._conllu_format(zip(*sent)[1])), 
+            self.tagged_sents(fileids=fileids, speaker=speaker, stem=stem, tag='word',
+                strip_space=True, replace=True, punct=True))
 
     def corpus(self, fileids=None):
         """
@@ -688,7 +748,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
             word = '[=! '+xmlword.text+']'
         else:
             word = ''
-            if xmlword.attrib.get('type')=='fragment':
+            if xmlword.get('type')=='fragment':
                 word += '&'
             word += xmlword.text or ''    # text before the first child tag
             for ch in xmlword:
@@ -697,7 +757,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 elif ch.tag=='wk':  # compound separator
                     word += {'cmp': '+', 'cli': '~'}[ch.attrib['type']]
                 word += ch.tail or '' # text following this child and within the word
-            if xmlword.attrib.get('separated-prefix')=='true':
+            if xmlword.get('separated-prefix')=='true':
                 word += '#'
         
             # strip tailing space
@@ -887,7 +947,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
                             morphs = self._morphs(w, gold_gra, wform=wform)
                         mor.append(morphs)
                 
-                    word = CHILDESWord(wordform, mor, wforms, real=real)
+                    word = CHILDESWord(wordform, mor, wforms, real=real,
+                                       sepprefix=(xmlword.get('separated-prefix')=='true'))
                 
                 except AssertionError:
                     print(fileid, xmlsent.attrib['uID'], wordform, file=sys.stderr)
