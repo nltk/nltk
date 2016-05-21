@@ -200,22 +200,7 @@ class CHILDESMorph(object):
         return list(self)[index]
     
     def __str__(self):
-        s = ''
-        if self.submorphs:
-            assert not self._form
-            if self.is_compound:
-                s = u'+'.join(map(unicode, self.submorphs))
-            else:
-                assert sum(1 for m in self.submorphs if not (m.clitic_status or m.affix_status))==1,self.submorphs
-                s = u''.join(map(unicode, self.submorphs))
-        else:
-            s = self._form
-        
-        if self.clitic_status=='pre':
-            return s + '~'
-        elif self.clitic_status=='post':
-            return '~' + s
-        return s
+        return self.get_str()
         
     def _display_str(self):
         """A proper unicode string"""
@@ -267,6 +252,28 @@ class CHILDESMorph(object):
         if self.clitic_status=='post':
             return '~'+(self._form or joiner.join(submss))
         return self._form or joiner.join(submss)
+    
+    def get_str(self, include_suffixes=True):
+        s = ''
+        if self.submorphs:
+            assert not self._form
+            mm = self.submorphs
+            if not include_suffixes:
+                mm = filter(lambda m: m.affix_status!='suffix', mm)
+            if self.is_compound:
+                s = u'+'.join(map(unicode, mm))
+            else:
+                assert sum(1 for m in self.submorphs if not (m.clitic_status or m.affix_status))==1,self.submorphs
+                s = u''.join(map(unicode, mm))
+        else:
+            s = self._form
+        
+        if self.clitic_status=='pre':
+            return s + '~'
+        elif self.clitic_status=='post':
+            return '~' + s
+        return s
+
     
     def split(self, clitics=True, compounds=False, affixes=False):
         """Return a list of morphemes based on the given split criteria.
@@ -362,7 +369,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
     - skip_uanalyzed_tokens: conllu_parses()
     - stem: non-raw_* methods, excluding conllu_parses()
     - as_obj: all but morph_deps() and conllu_parses()
-    - gold_status: morph_deps() and conllu_parses()
+    - gold_status, include_suffixes: morph_deps() and conllu_parses()
     
     Code dependencies
     =================
@@ -624,13 +631,15 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     split_affixes=split_affixes, as_obj=as_obj, 
                     skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
     
-    def morph_deps(self, fileids=None, speakers='ALL', include_speaker=False, gold_status=None, stem=False,
+    def morph_deps(self, fileids=None, speakers='ALL', include_speaker=False, 
+            include_suffixes=True, gold_status=None, stem=False,
             punct=True, skip_unanalyzed=False, strip_space=True):
             
         def add_dep((m,p)):
             if not m: return ()
             try:
-                return (unicode(m), p)+(m.dep(gold_status=gold_status) or ())
+                form = m.get_str(include_suffixes=include_suffixes)
+                return (form, p)+(m.dep(gold_status=gold_status) or ())
             except AttributeError:
                 # no morphological analysis, so 'm' is actually a CHILDESWord
                 return (unicode(m), p, None, None, None)
@@ -658,7 +667,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
     
     
     def _conllu_format(self, (who,ww), gold_status=None, include_speaker=False, 
-        skip_unanalyzed_tokens=False):
+        include_suffixes=False, skip_unanalyzed_tokens=False):
         def convert_pos(pos):
             # TODO
             upos = pos
@@ -695,13 +704,19 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     lines.append(u'{}\t{}\t'.format(I, sepprefixesS+tokform) + '\t'.join('_'*8))
             
                 for m in mm:
-                    form = sepprefixesS+tokform if len(mm)==1 else unicode(m)
-                    sepprefixesS = ''
                     try:
+                        if len(mm)==1:
+                            form = sepprefixesS+tokform
+                        else:
+                            form = m.get_str(include_suffixes=include_suffixes)
+                        sepprefixesS = ''
+
                         pos = m.pos
                         suffixes = u'|'.join(unicode(subm) for subm in m if subm.affix_status=='suffix')
                         upos = convert_pos(pos)
-                        dep = m.dep(gold_status=gold_status) or ('_', '_', '_')
+                        dep = m.dep(gold_status=gold_status) 
+                        if not dep:
+                            dep = ('_', '_', '_')
                         s = u'{}\t{}\t{}\t'.format(i, form, m.get_stem_str())
                         s += u'{}\t{}\t{}\t'.format(upos, pos, suffixes or '_')
                         s += u'{}\t{}\t_'.format(*dep[1:])
@@ -724,9 +739,10 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return u'\n'.join(lines)
 
     def conllu_parses(self, fileids=None, speakers='ALL', gold_status=None, 
-        include_speaker=False, skip_unanalyzed_tokens=False):
+        include_speaker=False, include_suffixes=False, skip_unanalyzed_tokens=False):
         return LazyMap(lambda sent: self._conllu_format(sent, gold_status=gold_status, 
-                include_speaker=include_speaker, skip_unanalyzed_tokens=skip_unanalyzed_tokens), 
+                include_speaker=include_speaker, include_suffixes=include_suffixes, 
+                skip_unanalyzed_tokens=skip_unanalyzed_tokens), 
             self.sents(fileids=fileids, speakers=speakers, include_speaker=True, stem=False, 
                 punct=True, as_obj=True, strip_space=True))
 
