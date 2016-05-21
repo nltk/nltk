@@ -24,56 +24,84 @@ from nltk.compat import string_types, python_2_unicode_compatible
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
 
+class CHILDESError(Exception):
+    pass
+
 @python_2_unicode_compatible
 class CHILDESWord(object):
-    uttered = None
-    "Uttered wordform"
     
-    interpreted = []
-    """Wordform(s) that the transcriber understood from the uttered word: 
-    either the same as `uttered`, or a normalized form in a <replacement>."""
-    
-    real = None
-    """True if there is a <replacement> of a real word with an intended word
-    (apparently this distinction is not made in practice for the corpora examined)."""
-    
-    mor = []
-    "Morphological/grammatical analysis per interpreted word"
 
-    def __init__(self, uttered, mor=None, replacement_wordforms=None, real=None, sepprefix=False):
-        self.uttered = uttered
-        if replacement_wordforms is None:
-            self.interpreted = [uttered]
-            self.mor = [mor]
+    def __init__(self, wordform, mor=None, sepprefix=False, 
+                 replacement=None, is_replacement=False, real=None):
+        """
+        @param wordform: String.
+        
+        @param mor: Morphological/grammatical analysis. 
+        Will not be present on the original uttered word 
+        if there is a replacement.
+        
+        @param sepprefix: True if this is a separated-prefix. 
+        (Used in Hebrew for preclitics.)
+        
+        @param replacement: List of replacement CHILDESWord objects 
+        indicating the transcriber's interpretation.
+        
+        @param is_replacement: True if the word is part of a replacement 
+        (and therefore nested within a parent CHILDESWord).
+        
+        @param real: True if there is a <replacement> of a real word with an intended word
+        (apparently this distinction is not made in practice for the corpora examined).
+        """
+        self.wordform = wordform
+        if replacement is not None:
+            assert not mor
+        assert not (replacement is not None and is_replacement)
+        assert not (replacement is None and real is not None)
+        if replacement is not None:
+            self.replacement = replacement
+            self.real = real
+            self.mor = None
+            self.is_replacement = False
         else:
-            self.interpreted = replacement_wordforms
+            self.replacement = []
             self.mor = mor
-            assert len(self.mor)==len(replacement_wordforms),(replacement_wordforms,self.mor)
-        self.real = real
+            self.is_replacement = is_replacement
+            self.real = None
         self.is_sepprefix = sepprefix  # separated-prefix (used in Hebrew CHIDLES for preclitics)
 
+    def interpreted_words(self):
+        """
+        A list containing the replacement word(s), if any, 
+        and the present word otherwise.
+        """
+        return self.replacement or [self]
+    
+    def has_replacement(self):
+        return bool(self.replacement)
+    
     @property
     def nMorphs(self):
-        return sum(m.nMorphs for m in self.mor)
-
-    def descendants(self):
-        """Morphological units under this word."""
-        return mor + [d for m in mor for d in mor.descendants()]
+        if self.mor:
+            return self.mor.nMorphs
+        return sum(w.nMorphs for w in self.replacement or [])
 
     def split(self, clitics=True, compounds=False, affixes=False):
-        return [m for subw in self.mor for m in subw.split(clitics,compounds,affixes)]
+        if self.mor:
+            return self.mor.split(clitics,compounds,affixes)
+        if not self.has_replacement():
+            raise CHILDESError('No morphology available for this word: '+unicode(self))
+        return [m for w in self.replacement for m in w.split(clitics,compounds,affixes)]
 
-    def __iter__(self):
-        """Iterate over morphological units under this word"""
-        return iter(self.mor)
+    def get_stem_str(self):
+        return self.mor.get_stem_str()
 
     def __str__(self):
         """Approximate .cha rendering of word layer (not morphology)"""
-        s = self.uttered
-        if len(self.interpreted)>1 or self.interpreted[0]!=self.uttered:
+        s = self.wordform
+        if self.has_replacement():
             # <replacement>
             s += ' [:: '  if self.real else ' [: '
-            s += u' '.join(self.interpreted)
+            s += u' '.join(map(unicode, self.replacement))
             s += ']'
         return s
     
@@ -178,7 +206,6 @@ class CHILDESMorph(object):
             if self.is_compound:
                 s = u'+'.join(map(unicode, self.submorphs))
             else:
-                # TODO: is this assertion true for compounds?
                 assert sum(1 for m in self.submorphs if not (m.clitic_status or m.affix_status))==1,self.submorphs
                 s = u''.join(map(unicode, self.submorphs))
         else:
@@ -230,9 +257,6 @@ class CHILDESMorph(object):
             return dep
         return ','.join(map(unicode, dep))
     
-    def descendants(self):
-        return self.submorphs + [d for subm in self.submorphs for d in subm.descendants()]
-
     def get_stem_str(self):
         if self.affix_status:
             return ''
@@ -287,194 +311,342 @@ class CHILDESCorpusReader(XMLCorpusReader):
     Copy the needed parts of the CHILDES XML corpus into the NLTK data directory
     (``nltk_data/corpora/CHILDES/``).
 
-    For access to the file text use the usual nltk functions,
-    ``words()``, ``sents()``, ``tagged_words()`` and ``tagged_sents()``.
+    
+    
+    Main access methods
+    ===================
+    
+    This reader provides the usual NLTK methods, including
+    ``words()`` and ``sents()`` (just the utterances), as well as
+    ``tagged_words()`` and ``tagged_sents()`` (including part-of-speech tags). 
+    It also offers methods that are specialized to CHILDES data:
+    
+    * ``raw_words()`` and ``raw_sents()``: Some uttered tokens 
+    (particularly by children) are nonstandard words, and have 
+    are transcribed in both their original form and a normalized form. 
+    These methods provide access to the original form of each word/sentence. 
+    Note that morphological/grammatical information (if present) always refers to
+    the normalized form.
+    
+    * ``morphs()`` and ``morph_sents()``: These provide morpheme-level analysis 
+    for corpora where it is available, offering options for the level of 
+    granularity at which morphemes are split (e.g., it is sometimes necessary 
+    to split clitics but not affixes).
+    
+    All of the above methods have an ``as_obj`` parameter. 
+    If this is set to True, then in place of string representations of the words/morphemes, 
+    there will be an instance of ``CHILDESWord`` or ``CHILDESMorph``, 
+    which provides structural information and metadata about the word/morpheme.
+    
+    * ``morph_deps()`` and ``conllu_parses()``: These provide access to grammatical 
+    relations, i.e., syntactic dependencies, which are noted for some morphologically-analyzed 
+    corpora. A subset of corpora provide both manual and automatically parsed syntactic 
+    annotations: the ``gold_status`` parameter will determine whether the manual 
+    (gold standard) one is returned. ``conllu_parses()`` produces, for each sentence, 
+    a string according to the CoNLL-U standard: http://universaldependencies.org/format.html
+    
+    Summary of main method names and parameters
+    ===========================================
+    
+    (tagged_|raw_)sents
+    (tagged_|raw_)words
+    (tagged_)morph_sents
+    (tagged_)morphs
+    morph_deps
+    conllu_parses()
+    
+    all methods have: fileids, speakers 
+    all methods except conllu_parses() have: punct, strip_space
+  TODO  the sentence-level methods (RHS) all have an include_speaker parameter
+    split_*, skip_uananlyzed parameters apply to the *morph* methods
+    skip_uanalyzed_tokens parameter applies to conllu_parses()
+    stem parameter applies to non-raw_* methods, excluding conllu_parses()
+    as_obj parameter applies to all but morph_deps() and conllu_parses()
+    gold_status parameter applies to morph_deps() and conllu_parses()
+    
+    tagged_*: POS tag
+    
+    Code dependencies
+    =================
+    
+    raw_sents(as_obj=True) <-- raw_words()
+    ^-- sents(as_obj=True) <-- words()
+        ^-- morph_sents(as_obj=True) <-- morphs()
+            ^-- tagged_morph_sents() <-- tagged_morphs()
+                ^-- morph_deps()
+        ^-- tagged_sents() <-- tagged_words()
+        ^-- conllu_parses() [doesn't depend on morph_deps() because of multiwords]
     """
     def __init__(self, root, fileids, lazy=True):
         XMLCorpusReader.__init__(self, root, fileids)
         self._lazy = lazy
 
-    def morphs(self, fileids=None, speaker='ALL', stem=False, 
-            split_clitics=True, split_compounds=False, split_affixes=False,
-            strip_space=True, replace=False, punct=False):
-            
-        return LazyMap((lambda m: unicode(m)),
-            self.tagged_morphs(fileids=fileids, speaker=speaker, stem=stem, 
-            split_clitics=split_clitics, split_compounds=split_compounds, split_affixes=split_affixes, 
-            strip_space=strip_space, replace=replace, punct=punct))
+    def _raw_sents_in_file(self, fileid, speakers='ALL', punct=True,
+            as_obj=False, strip_space=True):
         
-    def tagged_morphs(self, fileids=None, speaker='ALL', stem=False, 
-            split_clitics=True, split_compounds=False, split_affixes=False,
-            strip_space=True, replace=False, punct=False):
+        xmldoc = self._clean_doc(fileid)
+        participants = None
         
-        return LazyMap((lambda m: (unicode(m), m)),
-            LazyConcatenation(LazyMap((lambda (s,m): m.split(clitics=split_clitics, 
-            compounds=split_compounds, affixes=split_affixes) if m else None), 
-            self.tagged_words(fileids=fileids, speaker=speaker, tag='word', stem=stem, 
-                strip_space=strip_space, replace=replace, punct=punct))))
-    
-    def _morph_sents(self, fileids=None, speaker='ALL', stem=False, 
-            split_clitics=True, split_compounds=False, split_affixes=False,
-            strip_space=True, replace=False, punct=False):
-        """Returns sentences of CHILDESMorph objects"""
+        # Filter to relevant speakers
         
-        return LazyMap(lambda sent: LazyConcatenation(map(lambda (s,w): w.split(clitics=split_clitics, 
-            compounds=split_compounds, affixes=split_affixes), sent)), 
-            self.tagged_sents(fileids=fileids, speaker=speaker, tag='word', stem=stem, 
-            strip_space=strip_space, replace=replace, punct=punct))
+        if speakers in ('is_child','is_adult') or callable(speakers):
+            # we need participant info
+            participants = self._get_participants_dict(xmldoc)
+            if speakers=='is_child':
+                speakers = self.is_child
+            elif speakers=='is_adult':
+                speakers = self.is_adult
+            speakers = [p['id'] for p in participants.values() if speakers(p)]
+        elif isinstance(speakers, string_types) and speakers != 'ALL':  # ensure we have a list of speakers
+            speakers = [speakers]
+        
+        
+        results = []
+        
+        # Iterate over utterances from relevant speakers
+        for xmlsent in self._utterance_nodes(xmldoc, speakers):
+            sent = []
+            
+            for xmlword in self._word_nodes(xmlsent, punct):
+                # Construct object for the XML uttered word 
+                # (it will hold replacement word(s) if applicable)
+                
+                assert xmlword is not None,(xmlsent.attrib,fileid)
+                wordform = self._wordform(xmlword, strip_space)
+                
+                xmlrepl = xmlword.find('.//replacement')
+                if xmlrepl is not None: # has replacement
+                    real = xmlrepl.get('real')
+                    xmlww = xmlrepl.findall('.//w')
+                    # if there is a <replacement>, then any <mor> tiers are within it
+                    
+                    ww = []
+                    for xmlw in xmlww:
+                        wform = self._wordform(xmlw, strip_space)
+                        
+                        if xmlw.find(".//mor[@type='mor']") is None:
+                            morphs = ()
+                        else:
+                            morphs = self._morphs(xmlw, wform=wform)
+                            assert morphs
+                        
+                        w = CHILDESWord(wform, morphs, is_replacement=True, real=real,
+                                        sepprefix=(xmlw.get('separated-prefix')=='true'))
+                        ww.append(w)
+                
+                    word = CHILDESWord(wordform, replacement=ww, # nest replacement words within original word
+                                       sepprefix=(xmlword.get('separated-prefix')=='true'))    
+                else:   # no replacement
+                    real = None
+                    if xmlword.find(".//mor[@type='mor']") is None:
+                        morphs = ()
+                    else:
+                        morphs = self._morphs(xmlword, wform=wordform)
+                        assert morphs
+                    word = CHILDESWord(wordform, mor=morphs, 
+                                       sepprefix=(xmlword.get('separated-prefix')=='true'))
+
+                # Put word object in a list
+                try:
+                    sent.append(word if as_obj else unicode(word))
+                except Exception:
+                    assert False,(fileid,xmlsent.attrib,wordform)
+            results.append(sent)   # all results will be grouped by sentence
+        return results
+
+    def raw_sents(self, fileids=None, speakers='ALL', punct=True,
+            as_obj=False, strip_space=True):
+        """
+        speakers: may be 
+          - 'ALL'
+          - a participant ID such as 'CHI' or 'MOT'
+          - a list of participant IDs
+          - a filter function that, when applied to the participant data dict, 
+            returns a true value for included participants
+          - 'is_child' or 'is_adult' (see methods of the same name)
+        
+        tag: one of 'pos', 'morph', 'word'. If 'pos' or 'morph', and 
+        `replace` is false, then the tag will be a list 
+        for any word with multiple replacement words. (??)
+        
+        stem: whether to return the stem instead of the full wordform. 
+        If True, forces replacement (because morphology is in reference 
+        to the normalized word); the value of `replace` will be ignored.
+        
+        gold_gra: Some documents contain two tiers of grammatical analysis, 
+        one of which is automatic (<gra type="gra">) 
+        and one of which is gold standard (<gra type="grt">). 
+        If this parameter is True, ONLY gold standard <gra> tiers will be loaded. 
+        If it is False, then only non-gold <gra> tiers will be loaded.
+        If it is None, then gold <gra> tiers will be preferred when available, 
+        and non-gold tiers will be loaded only as a fallback.
+        """
+        def apply_to_file(fileid):
+            return self._raw_sents_in_file(fileid, speakers=speakers, punct=punct, 
+                as_obj=as_obj, strip_space=strip_space)
+        return LazyConcatenation(LazyMap(apply_to_file, self.abspaths(fileids)))
+
+    def sents(self, fileids=None, speakers='ALL', stem=False, punct=True, as_obj=False, 
+            strip_space=True):
+        if not as_obj:
+            # 'stem' only applies if as_obj is false
+            stringify = CHILDESWord.get_stem_str if stem else unicode
+            return LazyMap(lambda sent: map(stringify, sent), 
+                self.sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
+                    as_obj=True, strip_space=strip_space))
+        
+        # as_obj is True
+        
+        def replace(sent):
+            # use <replacement> word(s) where present
+            return list(LazyConcatenation(map(CHILDESWord.interpreted_words, sent)))
+        
+        return LazyMap(replace, 
+            self.raw_sents(fileids=fileids, speakers=speakers, punct=punct, 
+                as_obj=True, strip_space=strip_space))
+
+    def tagged_sents(self, fileids=None, speakers='ALL', stem=False, punct=True, as_obj=False, 
+            strip_space=True):
+        """Like ``sents()``, but entries in the sentence are tuples of the form
+        (word, POStag)."""
+        if not as_obj:
+            stringify = CHILDESWord.get_stem_str if stem else unicode
+        def add_pos(sent):
+            return map(lambda w: (w if as_obj else stringify(w), w.mor.pos if w.mor else None),
+                       sent)
+        return LazyMap(add_pos,
+            self.sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
+                    as_obj=True, strip_space=strip_space))
     
-    def morph_sents(self, fileids=None, speaker='ALL', stem=False, 
+    def raw_words(self, fileids=None, speakers='ALL', punct=True, as_obj=False, 
+            strip_space=True):
+        """Concatenation of ```raw_sents()``."""
+        return LazyConcatenation(raw_sents(fileids=fileids, speakers=speakers, 
+            punct=punct, as_obj=as_obj, strip_space=strip_space))
+    
+    def words(self, fileids=None, speakers='ALL', stem=False, punct=True, as_obj=False,
+            strip_space=True):
+        """
+        The results of ``sents()`` concatenated together. 
+        """
+        return LazyConcatenation(self.sents(fileids=fileids, speakers=speakers, 
+            stem=stem, punct=punct, as_obj=as_obj, strip_space=strip_space))
+
+    def tagged_words(self, fileids=None, speakers='ALL', stem=False, punct=True, as_obj=False,
+            strip_space=True):
+        """
+        The results of ``tagged_sents()`` concatenated together. 
+        """
+        return LazyConcatenation(self.tagged_sents(fileids=fileids, speakers=speakers, 
+            stem=stem, punct=punct, as_obj=as_obj, strip_space=strip_space))
+
+    def morph_sents(self, fileids=None, speakers='ALL', stem=False, punct=True, 
             split_clitics=True, split_compounds=False, split_affixes=False,
-            strip_space=True, replace=False, punct=False):
-            
-        return LazyMap((lambda sent: map(lambda (s,m): s, sent)),
-            self.tagged_morph_sents(fileids=fileids, speaker=speaker, stem=stem, 
-            split_clitics=split_clitics, split_compounds=split_compounds, split_affixes=split_affixes, 
-            strip_space=strip_space, replace=replace, punct=punct))
+            as_obj=False, skip_unanalyzed=False, strip_space=True):
+        """
+        Note that ``stem`` only applies if ``as_obj`` is false. 
+        If ``stem=True`` and ``split_affixes=True`` are both passed, 
+        then prefix and suffix morphs will be returned as empty strings.
+        """
+        
+        if not as_obj:
+            # 'stem' only applies if as_obj is false
+            stringify = CHILDESMorph.get_stem_str if stem else unicode
+            return LazyMap(lambda sent: map(stringify, sent), 
+                self.morph_sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
+                    split_clitics=split_clitics, split_compounds=split_compounds, 
+                    split_affixes=split_affixes, as_obj=True, 
+                    skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
+        
+        
+        def morphize(w):
+            # extract morphemes from word
+            try:
+                return w.split(clitics=split_clitics,
+                               compounds=split_compounds,
+                               affixes=split_affixes)
+            except CHILDESError:    # no morphological annotation
+                if skip_unanalyzed:
+                    return []
+                else:
+                    return [w]  # just return the entire word
+        
+        return LazyMap(lambda sent: list(LazyConcatenation(map(morphize, sent))),
+            self.sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
+                    as_obj=True, strip_space=strip_space))
     
-    def tagged_morph_sents(self, fileids=None, speaker='ALL', stem=False, 
+    def tagged_morph_sents(self, fileids=None, speakers='ALL', stem=False, punct=True, 
             split_clitics=True, split_compounds=False, split_affixes=False,
-            strip_space=True, replace=False, punct=False):
-            
-        return LazyMap((lambda sent: map(lambda m: (unicode(m), m), sent)),
-            self._morph_sents(fileids=fileids, speaker=speaker, stem=stem, 
-            split_clitics=split_clitics, split_compounds=split_compounds, split_affixes=split_affixes, 
-            strip_space=strip_space, replace=replace, punct=punct))
+            as_obj=False, skip_unanalyzed=False, strip_space=True):
+        """Like ``morph_sents()``, but entries in the sentence are tuples of the form
+        (morph, POStag)."""
+        if not as_obj:
+            stringify = CHILDESMorph.get_stem_str if stem else unicode
+        def add_pos(m):
+            try:
+                return (m if as_obj else stringify(m), m.pos if m else None)
+            except AttributeError:
+                # if there is no morphological analysis and 'm' is actually a CHILDESWord
+                # (which has no 'pos')
+                return (m if as_obj else stringify(m), None)
+        return LazyMap(lambda sent: map(add_pos, sent),
+            self.morph_sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
+                split_clitics=split_clitics, split_compounds=split_compounds, split_affixes=split_affixes, 
+                as_obj=True, skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
     
-    def morph_deps(self, fileids=None, speaker='ALL', gold_status=None, stem=False,
-            strip_space=True, punct=True):
+    def morphs(self, fileids=None, speakers='ALL', stem=False, punct=True, 
+            split_clitics=True, split_compounds=False, split_affixes=False,
+            as_obj=False, skip_unanalyzed=False, strip_space=True):
+        """
+        The results of ``morph_sents()`` concatenated together. 
+        """
+        return LazyConcatenation(self.morph_sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
+                    split_clitics=split_clitics, split_compounds=split_compounds, 
+                    split_affixes=split_affixes, as_obj=as_obj, 
+                    skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
+    
+    def tagged_morphs(self, fileids=None, speakers='ALL', stem=False, punct=True, 
+            split_clitics=True, split_compounds=False, split_affixes=False,
+            as_obj=False, skip_unanalyzed=False, strip_space=True):
+        """The results of ``tagged_morph_sents()`` concatenated together."""
+        return LazyConcatenation(self.tagged_morph_sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
+                    split_clitics=split_clitics, split_compounds=split_compounds, 
+                    split_affixes=split_affixes, as_obj=as_obj, 
+                    skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
+    
+    def morph_deps(self, fileids=None, speakers='ALL', gold_status=None, stem=False,
+            punct=True, skip_unanalyzed=False, strip_space=True):
             
-        return LazyMap((lambda sent: map(lambda (s,m): (s,m.pos if m else None)+((m.dep(gold_status=gold_status) or ()) if m else ()), sent)), 
-            self.tagged_morph_sents(fileids=fileids, speaker=speaker, stem=stem,
+        def add_dep((m,p)):
+            if not m: return ()
+            try:
+                return (unicode(m), p)+(m.dep(gold_status=gold_status) or ())
+            except AttributeError:
+                # no morphological analysis, so 'm' is actually a CHILDESWord
+                return (unicode(m), p, None, None, None)
+        
+        return LazyMap(lambda sent: map(add_dep, sent), 
+            self.tagged_morph_sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
                 split_clitics=True, split_compounds=False, split_affixes=False,
-                strip_space=strip_space, replace=True, punct=punct))
+                as_obj=True, skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
 
-    def words(self, fileids=None, speaker='ALL', stem=False,
-            strip_space=True, replace=False, punct=False):
-        """
-        :return: the given file(s) as a list of words
-        :rtype: list(str)
-
-        :param speaker: If specified, select specific speaker(s) defined
-            in the corpus. Default is 'ALL' (all participants). Common choices
-            are 'CHI' (the child), 'MOT' (mother), ['CHI','MOT'] (exclude
-            researchers)
-        :param stem: If true, then use word stems, omitting affixes (but not clitics).
-        --:param relation: If true, then return tuples of (stem, index,
-            dependent_index)
-        :param strip_space: If true, then strip trailing spaces from word
-            tokens. Otherwise, leave the spaces on the tokens.
-        :param replace: If true, then use the replaced (intended) word instead
-            of the original word (e.g., 'wat' will be replaced with 'watch')
-        """
-        sent=None
-        mor=False
-        if not self._lazy:
-            return [self._get_words(fileid, speaker, sent, mor, stem,
-                strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
-
-        get_words = lambda fileid: self._get_words(fileid, speaker, sent, mor, stem,
-            strip_space, replace, punct=punct)
-        return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
-
-    def tagged_words(self, fileids=None, speaker='ALL', tag='morph', stem=False,
-            strip_space=True, replace=False, punct=False):
-        """
-        :return: the given file(s) as a list of tagged
-            words and punctuation symbols, encoded as tuples
-            ``(word,tag)``.
-        :rtype: list(tuple(str,str))
-
-        :param speaker: If specified, select specific speaker(s) defined
-            in the corpus. Default is 'ALL' (all participants). Common choices
-            are 'CHI' (the child), 'MOT' (mother), ['CHI','MOT'] (exclude
-            researchers)
-        :param stem: If true, then use word stems, omitting affixes (but not clitics).
-        --:param relation: If true, then return tuples of (stem, index,
-            dependent_index)
-        :param strip_space: If true, then strip trailing spaces from word
-            tokens. Otherwise, leave the spaces on the tokens.
-        :param replace: If true, then use the replaced (intended) word instead
-            of the original word (e.g., 'wat' will be replaced with 'watch')
-        """
-        sent=None
-        assert tag in ('pos', 'morph', 'word')
-        if not self._lazy:
-            return [self._get_words(fileid, speaker, sent, tag, stem,
-                strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
-
-        get_words = lambda fileid: self._get_words(fileid, speaker, sent, tag, stem,
-            strip_space, replace, punct=punct)
-        return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
-
-    def sents(self, fileids=None, speaker='ALL', stem=False,
-            strip_space=True, replace=False, punct=False):
-        """
+    """
         :return: the given file(s) as a list of sentences or utterances, each
             encoded as a list of word strings.
         :rtype: list(list(str))
 
-        :param speaker: If specified, select specific speaker(s) defined
+        :param speakers: If specified, select specific speaker(s) defined
             in the corpus. Default is 'ALL' (all participants). Common choices
             are 'CHI' (the child), 'MOT' (mother), ['CHI','MOT'] (exclude
             researchers)
         :param stem: If true, then use word stems, omitting affixes (but not clitics).
-        --:param relation: If true, then return tuples of ``(str,pos,relation_list)``.
-            If there is manually-annotated relation info, it will return
-            tuples of ``(str,pos,test_relation_list,str,pos,gold_relation_list)``
         :param strip_space: If true, then strip trailing spaces from word
             tokens. Otherwise, leave the spaces on the tokens.
-        :param replace: If true, then use the replaced (intended) word instead
-            of the original word (e.g., 'wat' will be replaced with 'watch')
         """
-        sent=True
-        mor=False
-        if not self._lazy:
-            return [self._get_words(fileid, speaker, sent, mor, stem,
-                strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
-        
-        get_words = lambda fileid: self._get_words(fileid, speaker, sent, mor, stem,
-            strip_space, replace, punct=punct)
-        return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
-    def tagged_sents(self, fileids=None, speaker='ALL', tag='morph', stem=False,
-            strip_space=True, replace=False, punct=False):
-        """
-        :return: the given file(s) as a list of
-            sentences, each encoded as a list of ``(word,tag)`` tuples.
-        :rtype: list(list(tuple(str,str)))
-
-        :param speaker: If specified, select specific speaker(s) defined
-            in the corpus. Default is 'ALL' (all participants). Common choices
-            are 'CHI' (the child), 'MOT' (mother), ['CHI','MOT'] (exclude
-            researchers)
-        :param stem: If true, then use word stems, omitting affixes (but not clitics).
-        --:param relation: If true, then return tuples of ``(str,pos,relation_list)``.
-            If there is manually-annotated relation info, it will return
-            tuples of ``(str,pos,test_relation_list,str,pos,gold_relation_list)``
-        :param strip_space: If true, then strip trailing spaces from word
-            tokens. Otherwise, leave the spaces on the tokens.
-        :param replace: If true, then use the replaced (intended) word instead
-            of the original word (e.g., 'wat' will be replaced with 'watch')
-        """
-        sent=True
-        assert tag in ('pos', 'morph', 'word')
-        if not self._lazy:
-            return [self._get_words(fileid, speaker, sent, tag, stem,
-                strip_space, replace, punct=punct) for fileid in self.abspaths(fileids)]
-        
-        get_words = lambda fileid: self._get_words(fileid, speaker, sent, tag, stem,
-            strip_space, replace, punct=punct)
-        return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
-
-    def utterances():
-        """(speaker, sentence) pairs"""
-        pass
     
-    def tagged_utterances():
-        pass
-
-    def _conllu_format(self, ww):
+    
+    def _conllu_format(self, ww, gold_status=None, skip_unanalyzed_tokens=False):
         def convert_pos(pos):
             # TODO
             upos = pos
@@ -487,41 +659,62 @@ class CHILDESCorpusReader(XMLCorpusReader):
             sepprefixesS = ''
             for w in ww:
                 if w.is_sepprefix:  # for CONLL-U purposes, count the separated prefix as part of a multiword with its stem
-                    sepprefixes += [m for subw in w.mor for m in subw.split(clitics=True)]
-                    sepprefixesS += u''.join(w.interpreted)
+                    try:
+                        sepprefixes.extend(w.split(clitics=True))
+                    except CHILDESError:
+                        # no morphologoy for 'w'
+                        if skip_unanalyzed_tokens:
+                            continue
+                        sepprefixes.append(w)
+                    sepprefixesS += unicode(w)
                     continue    # don't increment i
-                for tokform,subw in zip(w.interpreted,w.mor):
-                    mm = sepprefixes + subw.split(clitics=True)
-                    sepprefixes = []
-                    if len(mm)>1:
-                        # multiword
-                        I = '{}-{}'.format(i, i+len(mm)-1)
-                        lines.append(u'{}\t{}\t'.format(I, sepprefixesS+tokform) + '\t'.join('_'*8))
-                
-                    for m in mm:
-                        form = sepprefixesS+tokform if len(mm)==1 else unicode(m)
-                        sepprefixesS = ''
-                        suffixes = u'|'.join(unicode(subm) for subm in m if subm.affix_status=='suffix')
+                tokform = w.wordform
+                try:
+                    mm = sepprefixes + w.split(clitics=True)
+                except CHILDESError:
+                    # no morphology for 'w'
+                    if skip_unanalyzed_tokens:
+                        continue
+                    mm = sepprefixes + [w]
+                sepprefixes = []
+                if len(mm)>1:
+                    # multiword
+                    I = '{}-{}'.format(i, i+len(mm)-1)
+                    lines.append(u'{}\t{}\t'.format(I, sepprefixesS+tokform) + '\t'.join('_'*8))
+            
+                for m in mm:
+                    form = sepprefixesS+tokform if len(mm)==1 else unicode(m)
+                    sepprefixesS = ''
+                    try:
                         pos = m.pos
+                        suffixes = u'|'.join(unicode(subm) for subm in m if subm.affix_status=='suffix')
                         upos = convert_pos(pos)
+                        dep = m.dep(gold_status=gold_status) or ('_', '_', '_')
                         s = u'{}\t{}\t{}\t'.format(i, form, m.get_stem_str())
                         s += u'{}\t{}\t{}\t'.format(upos, pos, suffixes or '_')
-                        dep = m.dep() or ('_', '_', '_')
                         s += u'{}\t{}\t_\t_'.format(*dep[1:])
-                        assert m.dep()[0]==i,(i,m.dep(),s,lines)
-                        lines.append(s)
-                        i += 1
+                        if dep[0]!='_':
+                            assert dep[0]==i,(i,m.dep(gold_status=gold_status),s,lines)
+                    except AttributeError:
+                        # no morphology, so 'm' is actually a CHILDESWord
+                        s = u'_\t{}\t'.format(unicode(m))
+                        s += u'\t'.join('_'*8)
+                        i -= 1  # this token isn't part of the parse, so it doesn't count
+                    
+                    lines.append(s)
+                    i += 1
         except AssertionError as ex:
             print(u' '.join(map(unicode, ww)), file=sys.stderr)
             raise
                     
         return u'\n'.join(lines)
 
-    def conllu_parses(self, fileids=None, speaker='ALL', gold_status=None, stem=False):
-        
-        return LazyMap((lambda sent: self._conllu_format(zip(*sent)[1])), 
-            self.tagged_sents(fileids=fileids, speaker=speaker, stem=stem, tag='word',
-                strip_space=True, replace=True, punct=True))
+    def conllu_parses(self, fileids=None, speakers='ALL', gold_status=None, 
+        skip_unanalyzed_tokens=False):
+        return LazyMap(lambda sent: self._conllu_format(sent, gold_status=gold_status, 
+                skip_unanalyzed_tokens=skip_unanalyzed_tokens), 
+            self.sents(fileids=fileids, speakers=speakers, stem=False, punct=True, 
+                as_obj=True, strip_space=True))
 
     def corpus(self, fileids=None):
         """
@@ -580,14 +773,16 @@ class CHILDESCorpusReader(XMLCorpusReader):
         Returns True if any of the following apply:
          - the participant ID is 'CHI'
          - the participant's role is 'Child' or 'Target_Child'
-         - the participant's age is provided
+         - the participant's age is provided and <15 years (180 months)
         """
         if isinstance(participant, string_types):
             participant = self.participants(fileid=fileid)[0][participant]
         id = participant['id']
         role = participant.get('role')
         age = participant.get('age')
-        return bool(id=='CHI' or role.upper() in ('CHILD','TARGET_CHILD') or age)
+        if age:
+            age = self.convert_age(age)
+        return bool(id=='CHI' or role.upper() in ('CHILD','TARGET_CHILD') or (age is not None and age<180))
 
     def is_adult(self, participant, fileid=None):
         """
@@ -624,7 +819,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def convert_age(self, age_year):
         "Caclculate age in months from a string in CHILDES format"
-        m = re.match("P(\d+)Y(\d+)M?(\d?\d?)D?",age_year)
+        m = re.match(r"P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
         age_month = int(m.group(1))*12 + int(m.group(2))
         try:
             if int(m.group(3)) > 15:
@@ -634,19 +829,19 @@ class CHILDESCorpusReader(XMLCorpusReader):
             pass
         return age_month
 
-    def MLU(self, fileids=None, speaker='CHI'):
+    def MLU(self, fileids=None, speakers='CHI'):
         """
         :return: the given file(s) as a floating number
         :rtype: list(float)
         """
         if not self._lazy:
-            return [self._getMLU(fileid, speaker=speaker)
+            return [self._getMLU(fileid, speakers=speakers)
                 for fileid in self.abspaths(fileids)]
-        get_MLU = lambda fileid: self._getMLU(fileid, speaker=speaker)
+        get_MLU = lambda fileid: self._getMLU(fileid, speakers=speakers)
         return LazyMap(get_MLU, self.abspaths(fileids))
 
-    def _getMLU(self, fileid, speaker):
-        sents = self._get_words(fileid, speaker=speaker, sent=True, stem=True,
+    def _getMLU(self, fileid, speakers):
+        sents = self._get_words(fileid, speakers=speakers, sent=True, stem=True,
                     relation=False, pos=True, strip_space=True, replace=True)
         results = []
         lastSent = []
@@ -684,11 +879,11 @@ class CHILDESCorpusReader(XMLCorpusReader):
         # return {'mlu':mlu,'wordNum':numWords,'sentNum':numSents}
         return mlu
 
-    def _utterance_nodes(self, xmldoc, speaker):
+    def _utterance_nodes(self, xmldoc, speakers):
         # processing each xml doc
         for xmlsent in xmldoc.findall('.//u'):
             # filter by speakers
-            if speaker == 'ALL' or xmlsent.get('who') in speaker:
+            if speakers == 'ALL' or xmlsent.get('who') in speakers:
                 yield xmlsent
 
     def _word_nodes(self, xmlsent, punct):
@@ -724,9 +919,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
             if marker_type=='comma':
                 word = ','
             elif marker_type=='vocative':
-                word = '‡'  # symbol used in CHILDES .cha format for <tagMarker type="vocative">
+                word = '‡'.decode('utf-8') # symbol used in CHAT format for <tagMarker type="vocative">
             elif marker_type=='tag':
-                word = '„' # symbol used in CHILDES .cha format for <tagMarker type="tag">
+                word = '„'.decode('utf-8') # symbol used in CHAT format for <tagMarker type="tag">
             else:
                 raise ValueError('Unknown tagMarker type: '+marker_type)
         elif xmlword.tag=='t':
@@ -819,7 +1014,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                xmlgra.attrib['relation'])
         return dep
 
-    def _morphs(self, xmlword, gold_gra, clitic_status=None, wform=None):
+    def _morphs(self, xmlword, clitic_status=None, wform=None):
         """
         Main morphological unit and pre-/post-clitics. 
         Each of these participate in grammatical (dependency) relations.
@@ -854,9 +1049,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 mainmorph = CHILDESMorph(wform, pos=wform, is_punct=True)
                 mainmorphtag = 'mt'
             elif xmlm.tag=='mor-pre':
-                preclitics.append(self._morphs(xmlm, gold_gra, clitic_status='pre'))
+                preclitics.append(self._morphs(xmlm, clitic_status='pre'))
             elif xmlm.tag=='mor-post':
-                postclitics.append(self._morphs(xmlm, gold_gra, clitic_status='post'))
+                postclitics.append(self._morphs(xmlm, clitic_status='post'))
             elif xmlm.tag=='gra':
                 gra_type = xmlm.attrib['type']
                 assert gra_type not in gra
@@ -876,105 +1071,6 @@ class CHILDESCorpusReader(XMLCorpusReader):
             if preclitics+postclitics:
                 return CHILDESMorph(preclitics+[mainmorph]+postclitics)
             return mainmorph
-
-    def _get_words(self, fileid, speaker, bysent, tag, stem,
-            strip_space, replace, punct=False, gold_gra=None):
-        """
-        speaker: may be 
-          - 'ALL'
-          - a participant ID such as 'CHI' or 'MOT'
-          - a list of participant IDs
-          - a filter function that, when applied to the participant data dict, 
-            returns a true value for included participants
-          - 'is_child' or 'is_adult' (see methods of the same name)
-        
-        tag: one of 'pos', 'morph', 'word'.
-        
-        gold_gra: Some documents contain two tiers of grammatical analysis, 
-        one of which is automatic (<gra type="gra">) 
-        and one of which is gold standard (<gra type="grt">). 
-        If this parameter is True, ONLY gold standard <gra> tiers will be loaded. 
-        If it is False, then only non-gold <gra> tiers will be loaded.
-        If it is None, then gold <gra> tiers will be preferred when available, 
-        and non-gold tiers will be loaded only as a fallback.
-        """
-        xmldoc = self._clean_doc(fileid)
-        participants = None
-        
-        # determine IDs of relevant speakers
-        if speaker in ('is_child','is_adult') or callable(speaker):
-            # we need participant info
-            participants = self._get_participants_dict(xmldoc)
-            if speaker=='is_child':
-                speaker = self.is_child
-            elif speaker=='is_adult':
-                speaker = self.is_adult
-            speaker = [p['id'] for p in participants.values() if speaker(p)]
-        elif isinstance(speaker, string_types) and speaker != 'ALL':  # ensure we have a list of speakers
-            speaker = [speaker]
-        
-        
-        results = []
-        for xmlsent in self._utterance_nodes(xmldoc, speaker):
-            sents = []
-            
-            for xmlword in self._word_nodes(xmlsent, punct):
-                # one uttered word, though if there is a <replacement> 
-                # it may have multiple words
-                assert xmlword is not None,(xmlsent.attrib,fileid)
-                wordform = self._wordform(xmlword, strip_space)
-                
-                xmlrepl = xmlword.find('.//replacement')
-                if xmlrepl is not None:
-                    real = xmlrepl.get('real')
-                    ww = xmlrepl.findall('.//w')
-                    # if there is a <replacement>, then any <mor> tiers are within it
-                else:
-                    real = None
-                    ww = [xmlword]
-                
-                try:
-                
-                    wforms = []
-                    mor = []
-                    for w in ww:
-                        wform = self._wordform(w, strip_space)
-                        wforms.append(wform)
-                    
-                        if w.find(".//mor[@type='mor']") is None:
-                            morphs = ()
-                        else:
-                            morphs = self._morphs(w, gold_gra, wform=wform)
-                        mor.append(morphs)
-                
-                    word = CHILDESWord(wordform, mor, wforms, real=real,
-                                       sepprefix=(xmlword.get('separated-prefix')=='true'))
-                
-                except AssertionError:
-                    print(fileid, xmlsent.attrib['uID'], wordform, file=sys.stderr)
-                    raise
-
-                if not stem:
-                    wordSL = word.interpreted if replace else [word.uttered]
-                else:
-                    wordSL = [m.get_stem_str() if m else None for m in word.mor]
-                
-                if tag:
-                    if tag=='pos':
-                        sents.extend(zip(wordSL,[(m.pos if m else None) for m in word.mor]))
-                    elif tag=='morph':
-                        sents.extend(zip(wordSL,word.mor))  # TODO: with replace=False, will this truncate multiple word.mor elts?
-                    elif tag=='word':
-                        sents.extend(zip(wordSL, [word]*len(wordSL)))
-                    else:
-                        raise ValueError('Invalid value of tag parameter: '+tag)
-                else:
-                    sents.extend(wordSL)
-            if bysent:
-                results.append(sents)
-            else:
-                results.extend(sents)
-        return LazyMap(lambda x: x, results)
 
 
     # Ready-to-use browser opener
@@ -1061,8 +1157,8 @@ def demo(corpus_root=None):
             print("words:", childes.words(file)[:7],"...")
             print("words with replaced words:", childes.words(file, replace=True)[:7]," ...")
             print("words with pos tags:", childes.tagged_words(file)[:7]," ...")
-            print("words (only MOT):", childes.words(file, speaker='MOT')[:7], "...")
-            print("words (only CHI):", childes.words(file, speaker='CHI')[:7], "...")
+            print("words (only MOT):", childes.words(file, speakers='MOT')[:7], "...")
+            print("words (only CHI):", childes.words(file, speakers='CHI')[:7], "...")
             print("stemmed words:", childes.words(file, stem=True)[:7]," ...")
             print("words with relations and pos-tag:", childes.words(file, relation=True)[:5]," ...")
             print("sentence:", childes.sents(file)[:2]," ...")
