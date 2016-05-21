@@ -355,16 +355,14 @@ class CHILDESCorpusReader(XMLCorpusReader):
     morph_deps
     conllu_parses()
     
-    all methods have: fileids, speakers 
-    all methods except conllu_parses() have: punct, strip_space
-  TODO  the sentence-level methods (RHS) all have an include_speaker parameter
-    split_*, skip_uananlyzed parameters apply to the *morph* methods
-    skip_uanalyzed_tokens parameter applies to conllu_parses()
-    stem parameter applies to non-raw_* methods, excluding conllu_parses()
-    as_obj parameter applies to all but morph_deps() and conllu_parses()
-    gold_status parameter applies to morph_deps() and conllu_parses()
-    
-    tagged_*: POS tag
+    - fileids, speakers: all methods
+    - punct, strip_space: all methods except conllu_parses()
+    - include_speaker: all sentence-level methods (*sents, morph_deps, conllu_parses)
+    - split_*, skip_uananlyzed: all *morph* methods
+    - skip_uanalyzed_tokens: conllu_parses()
+    - stem: non-raw_* methods, excluding conllu_parses()
+    - as_obj: all but morph_deps() and conllu_parses()
+    - gold_status: morph_deps() and conllu_parses()
     
     Code dependencies
     =================
@@ -381,7 +379,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         XMLCorpusReader.__init__(self, root, fileids)
         self._lazy = lazy
 
-    def _raw_sents_in_file(self, fileid, speakers='ALL', punct=True,
+    def _raw_sents_in_file(self, fileid, speakers='ALL', include_speaker=False, punct=True,
             as_obj=False, strip_space=True):
         
         xmldoc = self._clean_doc(fileid)
@@ -404,7 +402,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         results = []
         
         # Iterate over utterances from relevant speakers
-        for xmlsent in self._utterance_nodes(xmldoc, speakers):
+        for who,xmlsent in self._utterance_nodes(xmldoc, speakers):
             sent = []
             
             for xmlword in self._word_nodes(xmlsent, punct):
@@ -451,10 +449,11 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     sent.append(word if as_obj else unicode(word))
                 except Exception:
                     assert False,(fileid,xmlsent.attrib,wordform)
-            results.append(sent)   # all results will be grouped by sentence
+            # all results will be grouped by sentence
+            results.append((who,sent) if include_speaker else sent)
         return results
 
-    def raw_sents(self, fileids=None, speakers='ALL', punct=True,
+    def raw_sents(self, fileids=None, speakers='ALL', include_speaker=False, punct=True,
             as_obj=False, strip_space=True):
         """
         speakers: may be 
@@ -482,67 +481,71 @@ class CHILDESCorpusReader(XMLCorpusReader):
         and non-gold tiers will be loaded only as a fallback.
         """
         def apply_to_file(fileid):
-            return self._raw_sents_in_file(fileid, speakers=speakers, punct=punct, 
-                as_obj=as_obj, strip_space=strip_space)
+            return self._raw_sents_in_file(fileid, speakers=speakers, 
+                include_speaker=include_speaker,
+                punct=punct, as_obj=as_obj, strip_space=strip_space)
         return LazyConcatenation(LazyMap(apply_to_file, self.abspaths(fileids)))
 
-    def sents(self, fileids=None, speakers='ALL', stem=False, punct=True, as_obj=False, 
-            strip_space=True):
+    def sents(self, fileids=None, speakers='ALL', include_speaker=False, stem=False, 
+            punct=True, as_obj=False, strip_space=True):
         if not as_obj:
             # 'stem' only applies if as_obj is false
             stringify = CHILDESWord.get_stem_str if stem else unicode
-            return LazyMap(lambda sent: map(stringify, sent), 
-                self.sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
-                    as_obj=True, strip_space=strip_space))
+            return LazyMap(lambda (who,sent): (who,map(stringify, sent)) if include_speaker else map(stringify, sent), 
+                self.sents(fileids=fileids, speakers=speakers, 
+                    include_speaker=True,
+                    stem=stem, punct=punct, as_obj=True, strip_space=strip_space))
         
         # as_obj is True
         
-        def replace(sent):
+        def replace((who, sent)):
             # use <replacement> word(s) where present
-            return list(LazyConcatenation(map(CHILDESWord.interpreted_words, sent)))
+            replaced = list(LazyConcatenation(map(CHILDESWord.interpreted_words, sent)))
+            return (who, replaced) if include_speaker else replaced
         
         return LazyMap(replace, 
-            self.raw_sents(fileids=fileids, speakers=speakers, punct=punct, 
-                as_obj=True, strip_space=strip_space))
+            self.raw_sents(fileids=fileids, speakers=speakers, include_speaker=True, 
+                punct=punct, as_obj=True, strip_space=strip_space))
 
-    def tagged_sents(self, fileids=None, speakers='ALL', stem=False, punct=True, as_obj=False, 
-            strip_space=True):
+    def tagged_sents(self, fileids=None, speakers='ALL', include_speaker=False, stem=False, 
+            punct=True, as_obj=False, strip_space=True):
         """Like ``sents()``, but entries in the sentence are tuples of the form
         (word, POStag)."""
         if not as_obj:
             stringify = CHILDESWord.get_stem_str if stem else unicode
-        def add_pos(sent):
-            return map(lambda w: (w if as_obj else stringify(w), w.mor.pos if w.mor else None),
-                       sent)
+        def add_pos((who,sent)):
+            tagged = map(lambda w: (w if as_obj else stringify(w), w.mor.pos if w.mor else None),
+                         sent)
+            return (who,tagged) if include_speaker else tagged
         return LazyMap(add_pos,
-            self.sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
-                    as_obj=True, strip_space=strip_space))
+            self.sents(fileids=fileids, speakers=speakers, include_speaker=True, 
+                    stem=stem, punct=punct, as_obj=True, strip_space=strip_space))
     
-    def raw_words(self, fileids=None, speakers='ALL', punct=True, as_obj=False, 
-            strip_space=True):
+    def raw_words(self, fileids=None, speakers='ALL', 
+            punct=True, as_obj=False, strip_space=True):
         """Concatenation of ```raw_sents()``."""
         return LazyConcatenation(raw_sents(fileids=fileids, speakers=speakers, 
             punct=punct, as_obj=as_obj, strip_space=strip_space))
     
-    def words(self, fileids=None, speakers='ALL', stem=False, punct=True, as_obj=False,
-            strip_space=True):
+    def words(self, fileids=None, speakers='ALL', stem=False, 
+            punct=True, as_obj=False, strip_space=True):
         """
         The results of ``sents()`` concatenated together. 
         """
         return LazyConcatenation(self.sents(fileids=fileids, speakers=speakers, 
             stem=stem, punct=punct, as_obj=as_obj, strip_space=strip_space))
 
-    def tagged_words(self, fileids=None, speakers='ALL', stem=False, punct=True, as_obj=False,
-            strip_space=True):
+    def tagged_words(self, fileids=None, speakers='ALL', stem=False, 
+            punct=True, as_obj=False, strip_space=True):
         """
         The results of ``tagged_sents()`` concatenated together. 
         """
         return LazyConcatenation(self.tagged_sents(fileids=fileids, speakers=speakers, 
             stem=stem, punct=punct, as_obj=as_obj, strip_space=strip_space))
 
-    def morph_sents(self, fileids=None, speakers='ALL', stem=False, punct=True, 
+    def morph_sents(self, fileids=None, speakers='ALL', include_speaker=False, stem=False, 
             split_clitics=True, split_compounds=False, split_affixes=False,
-            as_obj=False, skip_unanalyzed=False, strip_space=True):
+            punct=True, as_obj=False, skip_unanalyzed=False, strip_space=True):
         """
         Note that ``stem`` only applies if ``as_obj`` is false. 
         If ``stem=True`` and ``split_affixes=True`` are both passed, 
@@ -552,11 +555,12 @@ class CHILDESCorpusReader(XMLCorpusReader):
         if not as_obj:
             # 'stem' only applies if as_obj is false
             stringify = CHILDESMorph.get_stem_str if stem else unicode
-            return LazyMap(lambda sent: map(stringify, sent), 
-                self.morph_sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
-                    split_clitics=split_clitics, split_compounds=split_compounds, 
-                    split_affixes=split_affixes, as_obj=True, 
-                    skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
+            return LazyMap(lambda (who,sent): (who,map(stringify, sent)) if include_speaker else map(stringify, sent), 
+                self.morph_sents(fileids=fileids, speakers=speakers, include_speaker=True, 
+                    stem=stem, split_clitics=split_clitics, 
+                    split_compounds=split_compounds, split_affixes=split_affixes,
+                    punct=punct, as_obj=True, skip_unanalyzed=skip_unanalyzed, 
+                    strip_space=strip_space))
         
         
         def morphize(w):
@@ -571,13 +575,17 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 else:
                     return [w]  # just return the entire word
         
-        return LazyMap(lambda sent: list(LazyConcatenation(map(morphize, sent))),
-            self.sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
-                    as_obj=True, strip_space=strip_space))
+        def morphize_sent((who,sent)):
+            morphized = list(LazyConcatenation(map(morphize, sent)))
+            return (who, morphized) if include_speaker else morphized
+        
+        return LazyMap(morphize_sent,
+            self.sents(fileids=fileids, speakers=speakers, include_speaker=True, stem=stem, 
+                    punct=punct, as_obj=True, strip_space=strip_space))
     
-    def tagged_morph_sents(self, fileids=None, speakers='ALL', stem=False, punct=True, 
+    def tagged_morph_sents(self, fileids=None, speakers='ALL', include_speaker=False, stem=False, 
             split_clitics=True, split_compounds=False, split_affixes=False,
-            as_obj=False, skip_unanalyzed=False, strip_space=True):
+            punct=True, as_obj=False, skip_unanalyzed=False, strip_space=True):
         """Like ``morph_sents()``, but entries in the sentence are tuples of the form
         (morph, POStag)."""
         if not as_obj:
@@ -589,14 +597,16 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 # if there is no morphological analysis and 'm' is actually a CHILDESWord
                 # (which has no 'pos')
                 return (m if as_obj else stringify(m), None)
-        return LazyMap(lambda sent: map(add_pos, sent),
-            self.morph_sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
-                split_clitics=split_clitics, split_compounds=split_compounds, split_affixes=split_affixes, 
-                as_obj=True, skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
+        return LazyMap(lambda (who,sent): (who,map(add_pos, sent)) if include_speaker else map(add_pos, sent),
+            self.morph_sents(fileids=fileids, speakers=speakers, include_speaker=True, 
+                stem=stem, split_clitics=split_clitics, 
+                split_compounds=split_compounds, split_affixes=split_affixes, 
+                punct=punct, as_obj=True, skip_unanalyzed=skip_unanalyzed, 
+                strip_space=strip_space))
     
-    def morphs(self, fileids=None, speakers='ALL', stem=False, punct=True, 
+    def morphs(self, fileids=None, speakers='ALL', stem=False, 
             split_clitics=True, split_compounds=False, split_affixes=False,
-            as_obj=False, skip_unanalyzed=False, strip_space=True):
+            punct=True, as_obj=False, skip_unanalyzed=False, strip_space=True):
         """
         The results of ``morph_sents()`` concatenated together. 
         """
@@ -605,16 +615,16 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     split_affixes=split_affixes, as_obj=as_obj, 
                     skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
     
-    def tagged_morphs(self, fileids=None, speakers='ALL', stem=False, punct=True, 
+    def tagged_morphs(self, fileids=None, speakers='ALL', stem=False, 
             split_clitics=True, split_compounds=False, split_affixes=False,
-            as_obj=False, skip_unanalyzed=False, strip_space=True):
+            punct=True, as_obj=False, skip_unanalyzed=False, strip_space=True):
         """The results of ``tagged_morph_sents()`` concatenated together."""
         return LazyConcatenation(self.tagged_morph_sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
                     split_clitics=split_clitics, split_compounds=split_compounds, 
                     split_affixes=split_affixes, as_obj=as_obj, 
                     skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
     
-    def morph_deps(self, fileids=None, speakers='ALL', gold_status=None, stem=False,
+    def morph_deps(self, fileids=None, speakers='ALL', include_speaker=False, gold_status=None, stem=False,
             punct=True, skip_unanalyzed=False, strip_space=True):
             
         def add_dep((m,p)):
@@ -625,10 +635,11 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 # no morphological analysis, so 'm' is actually a CHILDESWord
                 return (unicode(m), p, None, None, None)
         
-        return LazyMap(lambda sent: map(add_dep, sent), 
-            self.tagged_morph_sents(fileids=fileids, speakers=speakers, stem=stem, punct=punct,
-                split_clitics=True, split_compounds=False, split_affixes=False,
-                as_obj=True, skip_unanalyzed=skip_unanalyzed, strip_space=strip_space))
+        return LazyMap(lambda (who,sent): (who,map(add_dep, sent)) if include_speaker else map(add_dep, sent), 
+            self.tagged_morph_sents(fileids=fileids, speakers=speakers, include_speaker=True, 
+                stem=stem, split_clitics=True, split_compounds=False, split_affixes=False,
+                punct=punct, as_obj=True, skip_unanalyzed=skip_unanalyzed, 
+                strip_space=strip_space))
 
     """
         :return: the given file(s) as a list of sentences or utterances, each
@@ -646,7 +657,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     
     
-    def _conllu_format(self, ww, gold_status=None, skip_unanalyzed_tokens=False):
+    def _conllu_format(self, (who,ww), gold_status=None, include_speaker=False, 
+        skip_unanalyzed_tokens=False):
         def convert_pos(pos):
             # TODO
             upos = pos
@@ -692,13 +704,15 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         dep = m.dep(gold_status=gold_status) or ('_', '_', '_')
                         s = u'{}\t{}\t{}\t'.format(i, form, m.get_stem_str())
                         s += u'{}\t{}\t{}\t'.format(upos, pos, suffixes or '_')
-                        s += u'{}\t{}\t_\t_'.format(*dep[1:])
+                        s += u'{}\t{}\t_'.format(*dep[1:])
+                        s += u'\t{}'.format(who if include_speaker else '_')
                         if dep[0]!='_':
                             assert dep[0]==i,(i,m.dep(gold_status=gold_status),s,lines)
                     except AttributeError:
                         # no morphology, so 'm' is actually a CHILDESWord
                         s = u'_\t{}\t'.format(unicode(m))
-                        s += u'\t'.join('_'*8)
+                        s += u'\t'.join('_'*7)
+                        s += u'\t{}'.format(who if include_speaker else '_')
                         i -= 1  # this token isn't part of the parse, so it doesn't count
                     
                     lines.append(s)
@@ -710,11 +724,11 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return u'\n'.join(lines)
 
     def conllu_parses(self, fileids=None, speakers='ALL', gold_status=None, 
-        skip_unanalyzed_tokens=False):
+        include_speaker=False, skip_unanalyzed_tokens=False):
         return LazyMap(lambda sent: self._conllu_format(sent, gold_status=gold_status, 
-                skip_unanalyzed_tokens=skip_unanalyzed_tokens), 
-            self.sents(fileids=fileids, speakers=speakers, stem=False, punct=True, 
-                as_obj=True, strip_space=True))
+                include_speaker=include_speaker, skip_unanalyzed_tokens=skip_unanalyzed_tokens), 
+            self.sents(fileids=fileids, speakers=speakers, include_speaker=True, stem=False, 
+                punct=True, as_obj=True, strip_space=True))
 
     def corpus(self, fileids=None):
         """
@@ -884,7 +898,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         for xmlsent in xmldoc.findall('.//u'):
             # filter by speakers
             if speakers == 'ALL' or xmlsent.get('who') in speakers:
-                yield xmlsent
+                yield xmlsent.get('who'), xmlsent
 
     def _word_nodes(self, xmlsent, punct):
         for xmlword in xmlsent.findall('./*'):
