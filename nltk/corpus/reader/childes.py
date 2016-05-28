@@ -24,6 +24,43 @@ from nltk.compat import string_types, python_2_unicode_compatible
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
 
+def ch2upos(chpos):
+    """
+    Convert an English CHILDES part-of-speech tag to a Universal POS tag
+    (refer to http://universaldependencies.org/en/pos/all.html). 
+    Based on the English Brown corpus; not guaranteed to work for other datasets.
+    """
+    if len(chpos)>1 and chpos.startswith('0'):
+        return ch2upos(chpos[1:])   # omitted word POS is prefixed with 0
+    p1 = chpos.split(':')[0]
+    if chpos in ('n', 'n:gerund', 'n:pt', 'n:adj'): return 'NOUN'    # n:pt appears to be for 
+    # nouns that are morphologically always plural: pants, clothes, pliers, means, etc. 
+    # n:adj is apparently for adjectives with plural endings (including, mistakenly, "overalls").
+    if p1=='pro' or chpos=='rel': return 'PRON'
+    if chpos=='n:prop': return 'PROPN'
+    if chpos=='prep': return 'ADP'
+    if chpos in (',', 'cm', '.', '?', '!', 'bq', 'eq', 'beg', 'end', '+...', '+/.', 
+        '<interruption question>', '<quotation next line>'): return 'PUNCT'
+        # cm = comma, bq = begin quote, eq = end quote
+    if p1=='adv': return 'ADV'
+    if chpos=='adj': return 'ADJ'
+    if chpos in ('aux', 'mod', 'mod:aux'): return 'AUX'
+    if chpos in ('art', 'det', 'det:wh', 'qn'): return 'DET'
+    if chpos=='co': return 'INTJ' # communicator
+    if chpos=='conj': return 'SCONJ'
+    if chpos=='coord': return 'CONJ'
+    if chpos in ('cop', 'part', 'v'): return 'VERB'
+    if chpos=='det:num': return 'NUM'
+    if chpos in ('inf', 'neg', 'poss'): return 'PART'
+    if chpos=='n:let': return 'SYM' # letter of the alphabet
+    if chpos=='post': return 'ADV' # else, too
+    if chpos=='meta': return 'NOUN' # metalinguistic reference to a word
+    if chpos in ('bab', 'L2', 'on', 'test', 'chi', 'fam', 'neo', 'wplay', 'uni', 'phon', 'none'): return 'X' 
+    # babbling, foreign word, onomatopoeia, experimental nonce word, 
+    # child-invented word, family-specific word, neologism, wordplay, UNIBET [phonemic alphabet]. 
+    # "phon" is labeled "phonology consistent". not sure what "none" is
+    raise ValueError("Unknown CHILDES POS: "+chpos)
+
 class CHILDESError(Exception):
     pass
 
@@ -663,15 +700,10 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :param strip_space: If true, then strip trailing spaces from word
             tokens. Otherwise, leave the spaces on the tokens.
         """
-
-    
     
     def _conllu_format(self, (who,ww), gold_status=None, include_speaker=False, 
-        include_suffixes=False, skip_unanalyzed_tokens=False):
-        def convert_pos(pos):
-            # TODO
-            upos = pos
-            return upos
+        include_suffixes=False, skip_unanalyzed_tokens=False, 
+        convert_pos=ch2upos):
         
         try:
             lines = []
@@ -739,10 +771,11 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return u'\n'.join(lines)
 
     def conllu_parses(self, fileids=None, speakers='ALL', gold_status=None, 
-        include_speaker=False, include_suffixes=False, skip_unanalyzed_tokens=False):
+        include_speaker=False, include_suffixes=False, skip_unanalyzed_tokens=False, 
+        convert_pos=ch2upos):
         return LazyMap(lambda sent: self._conllu_format(sent, gold_status=gold_status, 
                 include_speaker=include_speaker, include_suffixes=include_suffixes, 
-                skip_unanalyzed_tokens=skip_unanalyzed_tokens), 
+                skip_unanalyzed_tokens=skip_unanalyzed_tokens, convert_pos=convert_pos), 
             self.sents(fileids=fileids, speakers=speakers, include_speaker=True, stem=False, 
                 punct=True, as_obj=True, strip_space=True))
 
@@ -971,10 +1004,20 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 word = '<'+t_type+'>'
         elif xmlword.tag=='ga' and xmlword.attrib['type']=='paralinguistics':
             word = '[=! '+xmlword.text+']'
+        elif xmlword.tag=='quotation':
+            q_type = xmlword.get('type')
+            if q_type=='begin':
+                word = '``'
+            elif q_type=='end':
+                word = "''"
+            else:
+                raise ValueError('Unknown quotation mark type: '+q_type)
         else:
             word = ''
             if xmlword.get('type')=='fragment':
                 word += '&'
+            elif xmlword.get('type')=='omission':
+                word += '0'
             word += xmlword.text or ''    # text before the first child tag
             for ch in xmlword:
                 if ch.tag=='shortening':
