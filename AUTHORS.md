@@ -197,3 +197,4 @@
 - Tanin Na Nakorn
 - Linghao Zhang
 - Colin Carroll
+- Tomislav Subic <https://github.com/tsubic>
