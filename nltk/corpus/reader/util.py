@@ -765,7 +765,7 @@ def find_corpus_fileids(root, regexp):
         for dirname, subdirs, fileids in os.walk(root.path, **kwargs):
             prefix = ''.join('%s/' % p for p in _path_from(root.path, dirname))
             items += [prefix+fileid for fileid in fileids
-                      if re.match(regexp, prefix+fileid)]
+                      if re.match(regexp, prefix+fileid) and os.path.getsize(root+fileid) > 0]
             # Don't visit svn directories:
             if '.svn' in subdirs: subdirs.remove('.svn')
         return sorted(items)
