@@ -90,7 +90,11 @@ class StanfordTagger(TaggerI):
         _input_fh.close()
         
         # Run the tagger and get the output
-        stanpos_output, _stderr = java(cmd, classpath=os.environ['CLASSPATH'],
+        if os.environ.get('CLASSPATH'):
+            classpath = self._stanford_jar +  (os.environ.get('CLASSPATH'), )
+        else:
+            classpath = self._stanford_jar
+        stanpos_output, _stderr = java(cmd, classpath=classpath,
                                                        stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
         
