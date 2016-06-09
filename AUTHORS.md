@@ -195,3 +195,5 @@
 - Casper Lehmann-Strøm
 - Andrew Giel
 - Tanin Na Nakorn
+- Linghao Zhang
+- Colin Carroll

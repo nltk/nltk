@@ -280,9 +280,9 @@ class ConllCorpusReader(CorpusReader):
             right = right.count(')')*')' # only keep ')'.
             treestr += '%s (%s %s) %s' % (left, pos_tag, word, right)
         try:
-            tree = self._tree_class.parse(treestr)
+            tree = self._tree_class.fromstring(treestr)
         except (ValueError, IndexError):
-            tree = self._tree_class.parse('(%s %s)' %
+            tree = self._tree_class.fromstring('(%s %s)' %
                                           (self._root_label, treestr))
 
         if not pos_in_tree:
