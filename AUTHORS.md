@@ -192,4 +192,13 @@
 - Will Monroe
 - Elijah Rippeth
 - Emil Manukyan
+<<<<<<< HEAD
 - Hannah Aizenman
+=======
+- Casper Lehmann-Strøm
+- Andrew Giel
+- Tanin Na Nakorn
+- Linghao Zhang
+- Colin Carroll
+- Heguang Miao
+>>>>>>> 2429915e583a1866d90026722ffa79f531b62d9c
