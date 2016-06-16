@@ -198,3 +198,4 @@
 - Linghao Zhang
 - Colin Carroll
 - Heguang Miao
+- [Ratul Ghosh](https://github.com/RatulGhosh)
