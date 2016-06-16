@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CONLL Corpus Reader
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -280,9 +280,9 @@ class ConllCorpusReader(CorpusReader):
             right = right.count(')')*')' # only keep ')'.
             treestr += '%s (%s %s) %s' % (left, pos_tag, word, right)
         try:
-            tree = self._tree_class.parse(treestr)
+            tree = self._tree_class.fromstring(treestr)
         except (ValueError, IndexError):
-            tree = self._tree_class.parse('(%s %s)' %
+            tree = self._tree_class.fromstring('(%s %s)' %
                                           (self._root_label, treestr))
 
         if not pos_in_tree:

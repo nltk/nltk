@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -74,6 +74,7 @@ from nltk.tokenize.texttiling import TextTilingTokenizer
 from nltk.tokenize.casual   import (TweetTokenizer, casual_tokenize)
 from nltk.tokenize.mwe      import MWETokenizer
 from nltk.tokenize.util     import string_span_tokenize, regexp_span_tokenize
+from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
 # Standard sentence tokenizer.
 def sent_tokenize(text, language='english'):

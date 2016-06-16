@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Feature Structures
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>,
 #         Rob Speer,
 #         Steven Bird <stevenbird1@gmail.com>
