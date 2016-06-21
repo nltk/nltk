@@ -493,3 +493,7 @@ class _Stack(object):
 
     def __contains__(self, hypothesis):
         return hypothesis in self.items
+
+    def __bool__(self):
+        return len(self.items) != 0
+    __nonzero__=__bool__

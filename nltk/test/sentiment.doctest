@@ -128,8 +128,8 @@ Vader
     ...    under orders and in the ''least offensive way possible.''"
     ... ]
     >>> sentences.extend(tricky_sentences)
-    >>> sid = SentimentIntensityAnalyzer()
     >>> for sentence in sentences:
+    ...     sid = SentimentIntensityAnalyzer()
     ...     print(sentence)
     ...     ss = sid.polarity_scores(sentence)
     ...     for k in sorted(ss):

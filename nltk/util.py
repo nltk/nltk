@@ -424,7 +424,7 @@ def ngrams(sequence, n, pad_left=False, pad_right=False,
         >>> list(ngrams([1,2,3,4,5], 3))
         [(1, 2, 3), (2, 3, 4), (3, 4, 5)]
 
-    Use ngrams for a list version of this function.  Set pad_left
+    Wrap with list for a list version of this function.  Set pad_left
     or pad_right to true in order to get additional ngrams:
 
         >>> list(ngrams([1,2,3,4,5], 2, pad_right=True))

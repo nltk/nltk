@@ -196,3 +196,6 @@
 - Andrew Giel
 - Tanin Na Nakorn
 - Linghao Zhang
+- Colin Carroll
+- Heguang Miao
+- George Berry
