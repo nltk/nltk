@@ -88,3 +88,19 @@ class BaseNgramModel(object):
         """
 
         return pow(2.0, self.entropy(text))
+
+
+class MLENgramModel(BaseNgramModel):
+    """Class for providing MLE ngram model scores.
+
+    Inherits initialization from BaseNgramModel.
+    """
+
+    def score(self, word, context):
+        """Returns the MLE score for a word given a context.
+
+        Args:
+        - word is expcected to be a string
+        - context is expected to be something reasonably convertible to a tuple
+        """
+        return self.ngrams[tuple(context)].freq(word)
