@@ -189,13 +189,13 @@ class MLENgramModelTest(NgramModelBaseTest):
     """unit tests for MLENgramModel class"""
 
     def setUp(self):
-        self.base_model = MLENgramModel(self.counter)
+        self.model = MLENgramModel(self.counter)
 
     def test_score(self):
         # simultaneously tests the accuracy of score and whether it can handle
         # both lists and tuples as context arguments
-        score_ctx_list = self.base_model.score("d", ["c"])
-        score_ctx_tuple = self.base_model.score("b", ("a",))
+        score_ctx_list = self.model.score("d", ["c"])
+        score_ctx_tuple = self.model.score("b", ("a",))
         self.assertEqual(score_ctx_list, 1)
         self.assertEqual(score_ctx_tuple, 0.5)
 
