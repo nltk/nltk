@@ -11,7 +11,7 @@ import unittest
 
 from nltk.model import build_vocabulary, count_ngrams
 from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, NgramCounter
-from nltk.model.ngram import BaseNgramModel, NEG_INF
+from nltk.model.ngram import BaseNgramModel, MLENgramModel, NEG_INF
 
 
 class NgramCounterTests(unittest.TestCase):
@@ -179,6 +179,21 @@ class BaseNgramModelTests(NgramModelBaseTest):
         patch_model.score = lambda word, context: 0.0
         logscore = patch_model.logscore("d", ["e"])
         self.assertEqual(logscore, NEG_INF)
+
+
+class MLENgramModelTest(NgramModelBaseTest):
+    """unit tests for MLENgramModel class"""
+
+    def setUp(self):
+        self.base_model = MLENgramModel(self.counter)
+
+    def test_score(self):
+        # simultaneously tests the accuracy of score and whether it can handle
+        # both lists and tuples as context arguments
+        score_ctx_list = self.base_model.score("d", ["c"])
+        score_ctx_tuple = self.base_model.score("b", ("a",))
+        self.assertEqual(score_ctx_list, 1)
+        self.assertEqual(score_ctx_tuple, 0.5)
 
 
 class ModelFuncsTests(unittest.TestCase):
