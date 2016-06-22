@@ -3,8 +3,6 @@
 
 .. -*- coding: utf-8 -*-
 
-    >>> from pprint import pprint # for dictionary comparison
-
 ===============
 Counting Ngrams
 ===============
@@ -130,16 +128,17 @@ attribute.
 
     >>> print(bigram_counts.unigrams)
     <FreqDist with 9 samples and 117 outcomes>
-    >>> pprint(bigram_counts.unigrams) # doctest: +NORMALIZE_WHITESPACE
-    {'.': 4,
-    '</s>': 4,
-    '<UNK>': 80,
-    'and': 5,
-    'he': 6,
-    'his': 5,
-    'the': 6,
-    'to': 4,
-    'yawned': 3}
+    >>> expected_unigram_counts = {'.': 4,
+    ... '</s>': 4,
+    ... '<UNK>': 80,
+    ... 'and': 5,
+    ... 'he': 6,
+    ... 'his': 5,
+    ... 'the': 6,
+    ... 'to': 4,
+    ... 'yawned': 3}
+    >>> bigram_counts.unigrams == expected_unigram_counts
+    True
 
 Tweaking the unknown label
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -185,11 +184,12 @@ NgramCounter uses nltk's `util.ngrams` function to break a text up into ngrams.
 The behavior of `util.ngrams` is controlled by passing it keyword arguments stored
 in an attribute of NgramCounter.
 
-    >>> pprint(bigram_counts.ngrams_kwargs)  # doctest: +NORMALIZE_WHITESPACE
-    {'left_pad_symbol': '<s>',
-    'pad_left': True,
-    'pad_right': True,
-    'right_pad_symbol': '</s>'}
+    >>> default_kwargs = {'left_pad_symbol': '<s>',
+    ... 'pad_left': True,
+    ... 'pad_right': True,
+    ... 'right_pad_symbol': '</s>'}
+    >>> bigram_counts.ngrams_kwargs == default_kwargs
+    True
 
 The default values of these arguments have been chosen based on what I think are
 the most common practices for ngram splitting. You can easily override the settings
@@ -237,16 +237,18 @@ If you choose to do this, you can call the `train_counts` method with some text
 to populate your counter instance with some numbers.
 
     >>> no_initial_texts.train_counts(sents[3:7])
-    >>> pprint(no_initial_texts.unigrams) # doctest: +NORMALIZE_WHITESPACE
-    {'.': 4,
-    '</s>': 4,
-    '<UNK>': 80,
-    'and': 5,
-    'he': 6,
-    'his': 5,
-    'the': 6,
-    'to': 4,
-    'yawned': 3}
+    >>> expected_unigram_counts = {'.': 4,
+    ... '</s>': 4,
+    ... '<UNK>': 80,
+    ... 'and': 5,
+    ... 'he': 6,
+    ... 'his': 5,
+    ... 'the': 6,
+    ... 'to': 4,
+    ... 'yawned': 3}
+    >>> no_initial_texts.unigrams == expected_unigram_counts
+    True
+
 
 =====================
 From Counts to Scores
