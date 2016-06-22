@@ -90,6 +90,7 @@ class BaseNgramModel(object):
         return pow(2.0, self.entropy(text))
 
 
+@compat.python_2_unicode_compatible
 class MLENgramModel(BaseNgramModel):
     """Class for providing MLE ngram model scores.
 
