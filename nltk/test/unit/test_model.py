@@ -11,7 +11,10 @@ import unittest
 
 from nltk.model import build_vocabulary, count_ngrams
 from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, NgramCounter
-from nltk.model.ngram import BaseNgramModel, MLENgramModel, NEG_INF
+from nltk.model.ngram import (BaseNgramModel,
+                              MLENgramModel,
+                              LidstoneNgramModel,
+                              NEG_INF)
 
 
 class NgramCounterTests(unittest.TestCase):
@@ -194,6 +197,22 @@ class MLENgramModelTest(NgramModelBaseTest):
         score_ctx_tuple = self.base_model.score("b", ("a",))
         self.assertEqual(score_ctx_list, 1)
         self.assertEqual(score_ctx_tuple, 0.5)
+
+
+class LidstoneNgramModelTest(NgramModelBaseTest):
+    """unit test for LidstoneNgramModel class"""
+
+    def setUp(self):
+        self.model = LidstoneNgramModel(0.1, self.counter)
+
+    def test_gamma(self):
+        self.assertEqual(0.1, self.model.gamma)
+        self.assertEqual(0.5, self.model.gamma_norm)
+
+    def test_score(self):
+        expected_score = 0.7333
+        got_score = self.model.score("d", ["c"])
+        self.assertAlmostEqual(expected_score, got_score, places=4)
 
 
 class ModelFuncsTests(unittest.TestCase):
