@@ -222,8 +222,8 @@ Just like `build_vocab`, `count_ngrams` can handle multiple source text argument
 
     >>> multiple_texts_counter = count_ngrams(2, vocab, sents[3:6], sents[6:9])
 
-Moreover, it is also possible to specify no texts whatsoever to simply create
-an empty NgramCounter object and train it later.
+Moreover, it is also possible to specify no texts whatsoever, which simply creates
+an empty NgramCounter object so that it can be trained later.
 
     >>> no_initial_texts = count_ngrams(2, vocab)
 
@@ -233,7 +233,7 @@ class directly:
     >>> from nltk.model.counter import NgramCounter
     >>> no_initial_texts = NgramCounter(2, vocab)
 
-If you choose to do this, you can call the `train_counts` method with some text
+If you choose to do this, you can call the `train_counts` method and pass it some text
 to populate your counter instance with some numbers.
 
     >>> no_initial_texts.train_counts(sents[3:7])
