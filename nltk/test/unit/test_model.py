@@ -14,6 +14,7 @@ from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, Ngram
 from nltk.model.ngram import (BaseNgramModel,
                               MLENgramModel,
                               LidstoneNgramModel,
+                              LaplaceNgramModel,
                               NEG_INF)
 
 
@@ -211,6 +212,24 @@ class LidstoneNgramModelTest(NgramModelBaseTest):
 
     def test_score(self):
         expected_score = 0.7333
+        got_score = self.model.score("d", ["c"])
+        self.assertAlmostEqual(expected_score, got_score, places=4)
+
+
+class LaplaceNgramModelTest(NgramModelBaseTest):
+    """unit tests for LaplaceNgramModel class"""
+
+    def setUp(self):
+        self.model = LaplaceNgramModel(self.counter)
+
+    def test_gamma(self):
+        # Make sure the gamma is set to 1
+        self.assertEqual(1, self.model.gamma)
+        self.assertEqual(5, self.model.gamma_norm)
+
+    def test_score(self):
+        # basic sanit-check
+        expected_score = 0.3333
         got_score = self.model.score("d", ["c"])
         self.assertAlmostEqual(expected_score, got_score, places=4)
 
