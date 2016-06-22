@@ -161,7 +161,7 @@ class BaseNgramModelTests(NgramModelBaseTest):
         self.base_model = BaseNgramModel(self.counter)
 
     def test_score(self):
-        # this should return the relative frequency of the word
+        # should always return 0.5
         score1 = self.base_model.score("b", ["a"])
         score2 = self.base_model.score("c", ["a"])
         score3 = self.base_model.score("c", ["a", "d"])
@@ -174,9 +174,10 @@ class BaseNgramModelTests(NgramModelBaseTest):
         self.assertEqual(logscore, -1.0)
 
     def test_logscore_zero_score(self):
-        model = BaseNgramModel(self.counter)
-        model.score = lambda word, context: 0.0
-        logscore = model.logscore("d", ["e"])
+        patch_model = BaseNgramModel(self.counter)
+        # monkey patched the score method to always return 0, just for this test
+        patch_model.score = lambda word, context: 0.0
+        logscore = patch_model.logscore("d", ["e"])
         self.assertEqual(logscore, NEG_INF)
 
 
