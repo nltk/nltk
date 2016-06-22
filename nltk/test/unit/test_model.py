@@ -215,7 +215,7 @@ class ModelFuncsTests(unittest.TestCase):
 
     def test_count_ngrams_multiple_texts(self):
         vocab_text = ("the cow jumped over the blue moon . "
-            "blue river jumped over the rainbow .")
+                      "blue river jumped over the rainbow .")
         vocab = build_vocabulary(2, vocab_text.split())
 
         text1 = ['zabcfdegadbew']
@@ -230,7 +230,7 @@ class ModelFuncsTests(unittest.TestCase):
 
     def test_count_ngrams_kwargs(self):
         vocab_text = ("the cow jumped over the blue moon . "
-            "blue river jumped over the rainbow .")
+                      "blue river jumped over the rainbow .")
         vocab = build_vocabulary(2, vocab_text.split())
 
         text = ["blue moon".split(), "over the rainbow".split()]
@@ -240,7 +240,7 @@ class ModelFuncsTests(unittest.TestCase):
 
     def test_count_grams_bad_kwarg(self):
         vocab_text = ("the cow jumped over the blue moon . "
-            "blue river jumped over the rainbow .")
+                      "blue river jumped over the rainbow .")
         vocab = build_vocabulary(2, vocab_text.split())
 
         text = ["blue moon".split()]
