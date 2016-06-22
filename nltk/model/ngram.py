@@ -128,6 +128,7 @@ class LidstoneNgramModel(BaseNgramModel):
         return (word_count + self.gamma) / (ctx_count + self.gamma_norm)
 
 
+@compat.python_2_unicode_compatible
 class LaplaceNgramModel(LidstoneNgramModel):
     """Implements Laplace (add one) smoothing.
 
