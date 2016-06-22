@@ -252,31 +252,76 @@ to populate your counter instance with some numbers.
 From Counts to Scores
 =====================
 
-Once we counted up the ngrams it is trivial to turn them into a proper model
-with scores (probabilities): just pass your NgramCounter object to a BaseNgramModel
-class or any of its children.
+Example: MLE
+------------
 
-    >>> from nltk.model import BaseNgramModel
-    >>> bigram_model = BaseNgramModel(bigram_counts)
-    >>> bigram_model.ngram_counts == bigram_counts
+Once we counted up the ngrams it is trivial to turn them into a proper model
+with scores (probabilities): just pass your NgramCounter object to an ngram model class.
+The module currently has classes for only the basic ngram model types:
+MLE, Lidstone, and Laplace.
+Here's an example of how to use an MLE estimator with the counts we've defined.
+
+    >>> from nltk.model import MLENgramModel
+    >>> bigram_model = MLENgramModel(bigram_counts)
+
+We can access the `bigram_counts` object from the `ngram_counter` attribute:
+
+    >>> bigram_model.ngram_counter == bigram_counts
     True
 
-As its name suggests, the BaseNgramModel class is intended first and foremost
-as something folks can base classes for different models. As such BaseNgramModel
-doesn't have an interesting `score` method implementation, it always
-returns 0.5.
+The most important method of all ngram model classes is `score`, which computes
+the score (aka probability) of a word given some preceding context.
+In our example we are working with a bigram model, so the context consists of only
+one word.
 
-    >>> bigram_model.score("test", ('abc',))
+    >>> ex_score = bigram_model.score("yawned", ["he"])
+
+Note that an MLE score is no more than the relative frequency of the word given
+its context (it just looks much nicer!).
+
+    >>> bigram_counts.ngrams[2][('he',)].freq('yawned') == ex_score
+    True
+
+Also note that both lists and tuples are supported as `context` arguments.
+
+    >>> bigram_model.score("yawned", ("he",)) == ex_score
+    True
+
+In addition to `score` all ngram model classes provide the following methods:
+- logscore
+- entropy
+- perplexity
+Their usage is described in the following section.
+
+
+Custom NgramModel Classes
+-------------------------
+
+In case you need an ngram model estimator that's not currently in the module,
+it's quite easy to define your own class for that, you simply subclass the
+`BaseNgramModel` class. The following section describes.
+
+    >>> from nltk.model import BaseNgramModel
+    >>> base_model = BaseNgramModel(bigram_counts)
+
+Since it is intended only as a base class for real estimators, the `BaseNgramModel`
+doesn't have an interesting `score` method, it always returns 0.5.
+
+    >>> base_model.score("test", ('abc',))
     0.5
-    >>> bigram_model.score("abc", ("test",))
+    >>> base_model.score("abc", ("test",))
     0.5
 
-Children classes are expected to override this method and take advantage of methods
-(shown below) whose implementations do not depend on that of `score`.
+Children classes are expected to override this method and provide their own
+logic for how to compute a score.
+The advantage of having a base ngram model class is that there are plenty of methods
+that do not depend of `score` in their implementations which are all defined in
+the `BaseNgramModel` class and which you get "for free" by inheriting from it.
+Here are examples of these methods:
 
-    >>> bigram_model.logscore("abc", ("test",))
+    >>> base_model.logscore("abc", ("test",))
     -1.0
-    >>> bigram_model.entropy(sents[4])
+    >>> base_model.entropy(sents[4])
     -1.0
-    >>> bigram_model.perplexity(sents[4])
+    >>> base_model.perplexity(sents[4])
     0.5
