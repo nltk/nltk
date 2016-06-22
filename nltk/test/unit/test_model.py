@@ -144,15 +144,20 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.assertEqual(expected_vocab_size, len(self.vocab))
 
 
-class BaseNgramModelTests(unittest.TestCase):
-    """unit tests for BaseNgramModel class"""
+class NgramModelBaseTest(unittest.TestCase):
+    """Base test class for testing ngram model classes"""
 
     @classmethod
     def setUpClass(self):
-        self.vocab = NgramModelVocabulary(2, "abcabc")
+        self.vocab = NgramModelVocabulary(1, "abcd")
         self.counter = NgramCounter(2, self.vocab)
         self.counter.train_counts(['abcd', 'egadbe'])
-        # print(self.counter.ngrams[2])
+
+
+class BaseNgramModelTests(NgramModelBaseTest):
+    """unit tests for BaseNgramModel class"""
+
+    def setUp(self):
         self.base_model = BaseNgramModel(self.counter)
 
     def test_score(self):
