@@ -22,13 +22,13 @@ class BaseNgramModel(object):
     when writing their own ngram models.
     """
 
-    def __init__(self, ngram_counts):
+    def __init__(self, ngram_counter):
 
-        self.ngram_counts = ngram_counts
+        self.ngram_counter = ngram_counter
+        # for convenient access save top-most ngram order ConditionalFreqDist
+        self.ngrams = ngram_counter.ngrams[ngram_counter.order]
 
-        self.ngrams = ngram_counts.ngrams[ngram_counts.order]
-
-        self._normalize = self.ngram_counts.check_against_vocab
+        self._normalize = self.ngram_counter.check_against_vocab
 
     def score(self, word, context):
         """
@@ -72,7 +72,7 @@ class BaseNgramModel(object):
         normed_text = (self._normalize(word) for word in text)
         H = 0.0     # entropy is conventionally denoted by "H"
         processed_ngrams = 0
-        for ngram in self.ngram_counts.to_ngrams(normed_text):
+        for ngram in self.ngram_counter.to_ngrams(normed_text):
             context, word = tuple(ngram[:-1]), ngram[-1]
             H += self.logscore(word, context)
             processed_ngrams += 1
