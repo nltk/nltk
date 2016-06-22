@@ -126,3 +126,13 @@ class LidstoneNgramModel(BaseNgramModel):
         word_count = context_freqdist[word]
         ctx_count = context_freqdist.N()
         return (word_count + self.gamma) / (ctx_count + self.gamma_norm)
+
+
+class LaplaceNgramModel(LidstoneNgramModel):
+    """Implements Laplace (add one) smoothing.
+
+    Initialization identical to BaseNgramModel because gamma is always 1.
+    """
+
+    def __init__(self, *args):
+        super(LaplaceNgramModel, self).__init__(1, *args)
