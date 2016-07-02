@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -37,12 +37,15 @@ from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
 from nltk.tree import Tree
 
-from nltk.ccg.lexicon import fromstring
+from nltk.ccg.lexicon import fromstring, Token
 from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
                                  BackwardApplication, ForwardComposition,
                                  BackwardComposition, ForwardSubstitution,
                                  BackwardBx, BackwardSx)
 from nltk.compat import python_2_unicode_compatible, string_types
+from nltk.ccg.combinator import *
+from nltk.ccg.logic import *
+from nltk.sem.logic import *
 
 # Based on the EdgeI class from NLTK.
 # A number of the properties of the EdgeI interface don't
@@ -73,14 +76,14 @@ class CCGLeafEdge(EdgeI):
     '''
     Class representing leaf edges in a CCG derivation.
     '''
-    def __init__(self, pos, categ, leaf):
+    def __init__(self, pos, token, leaf):
         self._pos = pos
-        self._categ = categ
+        self._token = token
         self._leaf = leaf
-        self._comparison_key = (pos, categ, leaf)
+        self._comparison_key = (pos, token.categ(), leaf)
 
     # Accessors
-    def lhs(self): return self._categ
+    def lhs(self): return self._token.categ()
     def span(self): return (self._pos, self._pos+1)
     def start(self): return self._pos
     def end(self): return self._pos + 1
@@ -91,7 +94,8 @@ class CCGLeafEdge(EdgeI):
     def is_incomplete(self): return False
     def nextsym(self): return None
 
-    def categ(self): return self._categ
+    def token(self): return self._token
+    def categ(self): return self._token.categ()
     def leaf(self): return self._leaf
 
 @python_2_unicode_compatible
@@ -202,8 +206,8 @@ class CCGChartParser(ParserI):
 
         # Initialize leaf edges.
         for index in range(chart.num_leaves()):
-            for cat in lex.categories(chart.leaf(index)):
-                new_edge = CCGLeafEdge(index, cat, chart.leaf(index))
+            for token in lex.categories(chart.leaf(index)):
+                new_edge = CCGLeafEdge(index, token, chart.leaf(index))
                 chart.insert(new_edge, ())
 
 
@@ -242,23 +246,47 @@ class CCGChart(Chart):
             return memo[edge]
 
         if isinstance(edge,CCGLeafEdge):
-            word = tree_class(edge.lhs(), [self._tokens[edge.start()]])
-            leaf = tree_class((edge.lhs(), "Leaf"), [word])
+            word = tree_class(edge.token(), [self._tokens[edge.start()]])
+            leaf = tree_class((edge.token(), "Leaf"), [word])
             memo[edge] = [leaf]
             return [leaf]
 
         memo[edge] = []
         trees = []
-        lhs = (edge.lhs(), "%s" % edge.rule())
 
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class)
                              for cp in cpl]
             for children in itertools.product(*child_choices):
+                lhs = (Token(self._tokens[edge.start():edge.end()], edge.lhs(), compute_semantics(children, edge)), str(edge.rule()))
                 trees.append(tree_class(lhs, children))
 
         memo[edge] = trees
         return trees
+
+           
+def compute_semantics(children, edge):
+    if children[0].label()[0].semantics() is None:
+        return None
+        
+    if len(children) is 2:
+        if isinstance(edge.rule(), BackwardCombinator):
+            children = [children[1],children[0]]
+
+        combinator = edge.rule()._combinator
+        function = children[0].label()[0].semantics()
+        argument = children[1].label()[0].semantics()
+
+        if isinstance(combinator, UndirectedFunctionApplication):
+            return compute_function_semantics(function, argument)
+        elif isinstance(combinator, UndirectedComposition):
+            return compute_composition_semantics(function, argument)
+        elif isinstance(combinator, UndirectedSubstitution):
+            return compute_substitution_semantics(function, argument)
+        else:
+            raise AssertionError('Unsupported combinator \'' + combinator + '\'')
+    else:
+        return compute_type_raised_semantics(children[0].label()[0].semantics())
 
 #--------
 # Displaying derivations
@@ -273,8 +301,6 @@ def printCCGDerivation(tree):
     # category aligned.
     for (leaf, cat) in leafcats:
         str_cat = "%s" % cat
-#        print(cat.__class__)
-#        print("str_cat", str_cat)
         nextlen = 2 + max(len(leaf), len(str_cat))
         lcatlen = (nextlen - len(str_cat)) // 2
         rcatlen = lcatlen + (nextlen - len(str_cat)) % 2
@@ -282,8 +308,8 @@ def printCCGDerivation(tree):
         lleaflen = (nextlen - len(leaf)) // 2
         rleaflen = lleaflen + (nextlen - len(leaf)) % 2
         leafstr += ' '*lleaflen + leaf + ' '*rleaflen
-    print(leafstr)
-    print(catstr)
+    print(leafstr.rstrip())
+    print(catstr.rstrip())
 
     # Display the derivation steps
     printCCGTree(0,tree)
@@ -294,7 +320,7 @@ def printCCGTree(lwidth,tree):
 
     # Is a leaf (word).
     # Increment the span by the space occupied by the leaf.
-    if not isinstance(tree,Tree):
+    if not isinstance(tree, Tree):
         return 2 + lwidth + len(tree)
 
     # Find the width of the current derivation step
@@ -307,16 +333,21 @@ def printCCGTree(lwidth,tree):
         return max(rwidth,2 + lwidth + len("%s" % tree.label()),
                   2 + lwidth + len(tree[0]))
 
-    (res,op) = tree.label()
+    (token, op) = tree.label()
+
+    if op == 'Leaf':
+        return rwidth
+
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
     print(lwidth*' ' + (rwidth-lwidth)*'-' + "%s" % op)
     # Print the resulting category on a new line.
-    str_res = "%s" % res
+    str_res = "%s" % (token.categ())
+    if token.semantics() is not None:
+        str_res += " {" + str(token.semantics()) + "}"
     respadlen = (rwidth - lwidth - len(str_res)) // 2 + lwidth
     print(respadlen*' ' + str_res)
     return rwidth
-
 
 ### Demonstration code
 

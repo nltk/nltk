@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -141,5 +141,6 @@ __all__ = [
     'TwitterCorpusReader', 'NKJPCorpusReader', 'CrubadanCorpusReader',
     'MTECorpusReader', 'ReviewsCorpusReader', 'OpinionLexiconCorpusReader',
     'ProsConsCorpusReader', 'CategorizedSentencesCorpusReader',
-    'ComparativeSentencesCorpusReader', 'PanLexLiteCorpusReader'
+    'ComparativeSentencesCorpusReader', 'PanLexLiteCorpusReader',
+    'NonbreakingPrefixesCorpusReader', 'UnicharsCorpusReader'
 ]

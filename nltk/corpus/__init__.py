@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -276,6 +276,12 @@ nombank_ptb = LazyCorpusLoader(
 semcor = LazyCorpusLoader(
     'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml',
     wordnet) # Must be defined *after* wordnet corpus.
+
+nonbreaking_prefixes = LazyCorpusLoader(
+    'nonbreaking_prefixes', NonbreakingPrefixesCorpusReader, r'(?!README|\.).*', encoding='utf8')
+
+perluniprops = LazyCorpusLoader(
+    'perluniprops', UnicharsCorpusReader, r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
 
 
 def demo():
