@@ -13,6 +13,7 @@ import os
 import re
 import json
 import time
+import socket
 
 import requests
 
@@ -30,6 +31,16 @@ class CoreNLPServerError(EnvironmentError):
     """Exceptions assciated with the Core NLP server."""
 
 
+def try_port(port=0):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('', port))
+
+    p = sock.getsockname()[1]
+    sock.close()
+
+    return p
+
+
 class CoreNLPServer(object):
 
     _MODEL_JAR_PATTERN = r'stanford-corenlp-(\d+)\.(\d+)\.(\d+)-models\.jar'
@@ -37,7 +48,7 @@ class CoreNLPServer(object):
 
     def __init__(
         self, path_to_jar=None, path_to_models_jar=None, verbose=False,
-        java_options=None, corenlp_options=None
+        java_options=None, corenlp_options=None, port=None,
     ):
         # find the most recent code and model jar
         stanford_jar = max(
@@ -53,8 +64,20 @@ class CoreNLPServer(object):
             key=lambda model_name: re.match(self._JAR, model_name)
         )
 
-        # TODO: take a free random port.
-        self.url = 'http://localhost:9000'
+        if port is None:
+            try:
+                port = try_port(9000)
+            except socket.error:
+                port = try_port()
+
+            if corenlp_options:
+                corenlp_options.append(str(port))
+            else:
+                corenlp_options = [str(port)]
+        else:
+            try_port(port)
+
+        self.url = 'http://localhost:{}'.format(port)
 
         model_jar = max(
             find_jar_iter(
@@ -633,12 +656,16 @@ def setup_module(module):
     from nose import SkipTest
 
     global server
-    server = CoreNLPServer()
+    server = CoreNLPServer(port=9000)
 
     try:
         server.start()
     except CoreNLPServerError as e:
-        raise SkipTest('Skiping CoreNLP tests because the server could not be started. {}'.format(e.strerror))
+        raise SkipTest(
+            'Skiping CoreNLP tests because the server could not be started. '
+            'Make sure that the 9000 port is free. '
+            '{}'.format(e.strerror)
+        )
 
 
 def teardown_module(module):
