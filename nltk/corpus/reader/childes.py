@@ -950,13 +950,20 @@ class CHILDESCorpusReader(XMLCorpusReader):
                 yield xmlsent.get('who'), xmlsent
 
     def _word_nodes(self, xmlsent, punct):
-        for xmlword in xmlsent.findall('./*'):
-            if xmlword.tag=='g': # <g> is used, e.g., when there is a replacement. immediately dominates <w>
-                xmlsubword = xmlword.find('.//w')
-                if xmlsubword is None:
-                    xmlsubword = xmlword.find(".//ga[@type='paralinguistics']")
-                xmlword = xmlsubword
-                assert xmlword is not None,(xmlsent.attrib,fileid)
+        def expand_g(xmlwords):
+            """<g> can group multiple <w> words together. This iterates over the <w> words."""
+            for xmlword in xmlwords:
+                if xmlword.tag=='g': # <g> is used, e.g., when there is a replacement. immediately dominates <w>
+                    xmlsubwords = xmlword.findall('./w')
+                    if not xmlsubwords:
+                        xmlsubwords = xmlword.findall(".//ga[@type='paralinguistics']")
+                    assert xmlsubwords is not None,(xmlsent.attrib,fileid)
+                    for xmlsubword in xmlsubwords:
+                        yield xmlsubword
+                else:
+                    yield xmlword
+    
+        for xmlword in expand_g(xmlsent.findall('./*')):
             
             """
             # getting replaced words
