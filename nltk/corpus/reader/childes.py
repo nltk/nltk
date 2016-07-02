@@ -839,7 +839,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
          - the participant's age is provided and <15 years (180 months)
         """
         if isinstance(participant, string_types):
-            participant = self.participants(fileid=fileid)[0][participant]
+            participant = self.participants(fileids=fileid)[0][participant]
         id = participant['id']
         role = participant.get('role')
         age = participant.get('age')
