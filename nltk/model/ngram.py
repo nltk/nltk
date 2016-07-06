@@ -22,13 +22,13 @@ class BaseNgramModel(object):
     when writing their own ngram models.
     """
 
-    def __init__(self, ngram_counts):
+    def __init__(self, ngram_counter):
 
-        self.ngram_counts = ngram_counts
+        self.ngram_counter = ngram_counter
+        # for convenient access save top-most ngram order ConditionalFreqDist
+        self.ngrams = ngram_counter.ngrams[ngram_counter.order]
 
-        self.ngrams = ngram_counts.ngrams[ngram_counts.order]
-
-        self._normalize = self.ngram_counts.check_against_vocab
+        self._normalize = self.ngram_counter.check_against_vocab
 
     def score(self, word, context):
         """
@@ -72,7 +72,7 @@ class BaseNgramModel(object):
         normed_text = (self._normalize(word) for word in text)
         H = 0.0     # entropy is conventionally denoted by "H"
         processed_ngrams = 0
-        for ngram in self.ngram_counts.to_ngrams(normed_text):
+        for ngram in self.ngram_counter.to_ngrams(normed_text):
             context, word = tuple(ngram[:-1]), ngram[-1]
             H += self.logscore(word, context)
             processed_ngrams += 1
@@ -88,3 +88,52 @@ class BaseNgramModel(object):
         """
 
         return pow(2.0, self.entropy(text))
+
+
+@compat.python_2_unicode_compatible
+class MLENgramModel(BaseNgramModel):
+    """Class for providing MLE ngram model scores.
+
+    Inherits initialization from BaseNgramModel.
+    """
+
+    def score(self, word, context):
+        """Returns the MLE score for a word given a context.
+
+        Args:
+        - word is expcected to be a string
+        - context is expected to be something reasonably convertible to a tuple
+        """
+        return self.ngrams[tuple(context)].freq(word)
+
+
+@compat.python_2_unicode_compatible
+class LidstoneNgramModel(BaseNgramModel):
+    """Provides Lidstone-smoothed scores.
+
+    In addition to initialization arguments from BaseNgramModel also requires
+    a number by which to increase the counts, gamma.
+    """
+
+    def __init__(self, gamma, *args):
+        super(LidstoneNgramModel, self).__init__(*args)
+        self.gamma = gamma
+        # This gets added to the denominator to normalize the effect of gamma
+        self.gamma_norm = len(self.ngram_counter.vocabulary) * gamma
+
+    def score(self, word, context):
+        context_freqdist = self.ngrams[tuple(context)]
+        word_count = context_freqdist[word]
+        ctx_count = context_freqdist.N()
+        return (word_count + self.gamma) / (ctx_count + self.gamma_norm)
+
+
+@compat.python_2_unicode_compatible
+class LaplaceNgramModel(LidstoneNgramModel):
+    """Implements Laplace (add one) smoothing.
+
+    Initialization identical to BaseNgramModel because gamma is always 1.
+    """
+
+    def __init__(self, *args):
+        super(LaplaceNgramModel, self).__init__(1, *args)

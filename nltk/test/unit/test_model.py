@@ -11,7 +11,11 @@ import unittest
 
 from nltk.model import build_vocabulary, count_ngrams
 from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, NgramCounter
-from nltk.model.ngram import BaseNgramModel, NEG_INF
+from nltk.model.ngram import (BaseNgramModel,
+                              MLENgramModel,
+                              LidstoneNgramModel,
+                              LaplaceNgramModel,
+                              NEG_INF)
 
 
 class NgramCounterTests(unittest.TestCase):
@@ -144,19 +148,24 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.assertEqual(expected_vocab_size, len(self.vocab))
 
 
-class BaseNgramModelTests(unittest.TestCase):
-    """unit tests for BaseNgramModel class"""
+class NgramModelBaseTest(unittest.TestCase):
+    """Base test class for testing ngram model classes"""
 
     @classmethod
     def setUpClass(self):
-        self.vocab = NgramModelVocabulary(2, "abcabc")
+        self.vocab = NgramModelVocabulary(1, "abcd")
         self.counter = NgramCounter(2, self.vocab)
         self.counter.train_counts(['abcd', 'egadbe'])
-        # print(self.counter.ngrams[2])
+
+
+class BaseNgramModelTests(NgramModelBaseTest):
+    """unit tests for BaseNgramModel class"""
+
+    def setUp(self):
         self.base_model = BaseNgramModel(self.counter)
 
     def test_score(self):
-        # this should return the relative frequency of the word
+        # should always return 0.5
         score1 = self.base_model.score("b", ["a"])
         score2 = self.base_model.score("c", ["a"])
         score3 = self.base_model.score("c", ["a", "d"])
@@ -169,10 +178,60 @@ class BaseNgramModelTests(unittest.TestCase):
         self.assertEqual(logscore, -1.0)
 
     def test_logscore_zero_score(self):
-        model = BaseNgramModel(self.counter)
-        model.score = lambda word, context: 0.0
-        logscore = model.logscore("d", ["e"])
+        patch_model = BaseNgramModel(self.counter)
+        # monkey patched the score method to always return 0, just for this test
+        patch_model.score = lambda word, context: 0.0
+        logscore = patch_model.logscore("d", ["e"])
         self.assertEqual(logscore, NEG_INF)
+
+
+class MLENgramModelTest(NgramModelBaseTest):
+    """unit tests for MLENgramModel class"""
+
+    def setUp(self):
+        self.model = MLENgramModel(self.counter)
+
+    def test_score(self):
+        # simultaneously tests the accuracy of score and whether it can handle
+        # both lists and tuples as context arguments
+        score_ctx_list = self.model.score("d", ["c"])
+        score_ctx_tuple = self.model.score("b", ("a",))
+        self.assertEqual(score_ctx_list, 1)
+        self.assertEqual(score_ctx_tuple, 0.5)
+
+
+class LidstoneNgramModelTest(NgramModelBaseTest):
+    """unit test for LidstoneNgramModel class"""
+
+    def setUp(self):
+        self.model = LidstoneNgramModel(0.1, self.counter)
+
+    def test_gamma(self):
+        self.assertEqual(0.1, self.model.gamma)
+        self.assertEqual(0.5, self.model.gamma_norm)
+
+    def test_score(self):
+        expected_score = 0.7333
+        got_score = self.model.score("d", ["c"])
+        self.assertAlmostEqual(expected_score, got_score, places=4)
+
+
+class LaplaceNgramModelTest(NgramModelBaseTest):
+    """unit tests for LaplaceNgramModel class"""
+
+    def setUp(self):
+        self.model = LaplaceNgramModel(self.counter)
+
+    def test_gamma(self):
+        # Make sure the gamma is set to 1
+        self.assertEqual(1, self.model.gamma)
+        self.assertEqual(5, self.model.gamma_norm)
+
+    def test_score(self):
+        # basic sanit-check
+        expected_score = 0.3333
+        got_score = self.model.score("d", ["c"])
+        self.assertAlmostEqual(expected_score, got_score, places=4)
 
 
 class ModelFuncsTests(unittest.TestCase):
@@ -209,7 +268,7 @@ class ModelFuncsTests(unittest.TestCase):
 
     def test_count_ngrams_multiple_texts(self):
         vocab_text = ("the cow jumped over the blue moon . "
-            "blue river jumped over the rainbow .")
+                      "blue river jumped over the rainbow .")
         vocab = build_vocabulary(2, vocab_text.split())
 
         text1 = ['zabcfdegadbew']
@@ -224,7 +283,7 @@ class ModelFuncsTests(unittest.TestCase):
 
     def test_count_ngrams_kwargs(self):
         vocab_text = ("the cow jumped over the blue moon . "
-            "blue river jumped over the rainbow .")
+                      "blue river jumped over the rainbow .")
         vocab = build_vocabulary(2, vocab_text.split())
 
         text = ["blue moon".split(), "over the rainbow".split()]
@@ -234,7 +293,7 @@ class ModelFuncsTests(unittest.TestCase):
 
     def test_count_grams_bad_kwarg(self):
         vocab_text = ("the cow jumped over the blue moon . "
-            "blue river jumped over the rainbow .")
+                      "blue river jumped over the rainbow .")
         vocab = build_vocabulary(2, vocab_text.split())
 
         text = ["blue moon".split()]
