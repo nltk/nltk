@@ -277,6 +277,12 @@ semcor = LazyCorpusLoader(
     'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml',
     wordnet) # Must be defined *after* wordnet corpus.
 
+nonbreaking_prefixes = LazyCorpusLoader(
+    'nonbreaking_prefixes', NonbreakingPrefixesCorpusReader, r'(?!README|\.).*', encoding='utf8')
+
+perluniprops = LazyCorpusLoader(
+    'perluniprops', UnicharsCorpusReader, r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
+
 
 def demo():
     # This is out-of-date:
