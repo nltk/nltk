@@ -29,7 +29,7 @@ The input is:
 
     >>> from __future__ import unicode_literals
     >>> from nltk.classify import Senna
-    >>> pipeline = Senna('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
+    >>> pipeline = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     >>> sent = 'Dusseldorf is an international business center'.split()
     >>> [(token['word'], token['chk'], token['ner'], token['pos']) for token in pipeline.tag(sent)]
     [('Dusseldorf', 'B-NP', 'B-LOC', 'NNP'), ('is', 'B-VP', 'O', 'VBZ'), ('an', 'B-NP', 'O', 'DT'), 
@@ -174,7 +174,7 @@ class Senna(TaggerI):
 def setup_module(module):
     from nose import SkipTest
     try:
-        tagger = Senna('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
+        tagger = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     except OSError:
         raise SkipTest("Senna executable not found")
 
