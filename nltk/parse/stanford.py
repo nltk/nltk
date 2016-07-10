@@ -99,7 +99,7 @@ class CoreNLPServer(object):
         self._classpath = (stanford_jar, model_jar) + self.other_jars
 
         self.corenlp_options = corenlp_options or []
-        self.java_options = java_options or ['-mx4g']
+        self.java_options = java_options or ['-mx1g']
 
     def start(self):
         cmd = ['edu.stanford.nlp.pipeline.StanfordCoreNLPServer']
