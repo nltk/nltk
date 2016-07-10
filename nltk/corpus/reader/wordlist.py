@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Word List Corpus Reader
 #
 # Copyright (C) 2001-2016 NLTK Project
@@ -60,10 +61,10 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
         language(s).
         
         >>> from nltk.corpus import nonbreaking_prefixes as nbp
-        >>> nbp.words('en')[:10]
-        [u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J']
-        >>> nbp.words('ta')[:5]
-        [u'\u0b85', u'\u0b86', u'\u0b87', u'\u0b88', u'\u0b89']
+        >>> nbp.words('en')[:10] == [u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J']
+        True
+        >>> nbp.words('ta')[:5] == [u'\u0b85', u'\u0b86', u'\u0b87', u'\u0b88', u'\u0b89']
+        True
         
         :return: a list words for the specified language(s).
         """
@@ -94,10 +95,10 @@ class UnicharsCorpusReader(WordListCorpusReader):
         They are very useful when porting Perl tokenizers to Python.
         
         >>> from nltk.corpus import perluniprops as pup
-        >>> pup.chars('Open_Punctuation')[:5]
-        [u'(', u'[', u'{', u'\u0f3a', u'\u0f3c']
-        >>> pup.chars('Currency_Symbol')[:5]
-        [u'$', u'\xa2', u'\xa3', u'\xa4', u'\xa5']
+        >>> pup.chars('Open_Punctuation')[:5] == [u'(', u'[', u'{', u'\u0f3a', u'\u0f3c']
+        True
+        >>> pup.chars('Currency_Symbol')[:5] == [u'$', u'\xa2', u'\xa3', u'\xa4', u'\xa5']
+        True
         >>> pup.available_categories
         ['Close_Punctuation', 'Currency_Symbol', 'IsAlnum', 'IsAlpha', 'IsLower', 'IsN', 'IsSc', 'IsSo', 'Open_Punctuation']
         
