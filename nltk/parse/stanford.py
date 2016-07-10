@@ -28,7 +28,7 @@ _stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
 
 
 class CoreNLPServerError(EnvironmentError):
-    """Exceptions assciated with the Core NLP server."""
+    """Exceptions associated with the Core NLP server."""
 
 
 def try_port(port=0):
@@ -662,7 +662,7 @@ def setup_module(module):
         server.start()
     except CoreNLPServerError as e:
         raise SkipTest(
-            'Skiping CoreNLP tests because the server could not be started. '
+            'Skipping CoreNLP tests because the server could not be started. '
             'Make sure that the 9000 port is free. '
             '{}'.format(e.strerror)
         )
