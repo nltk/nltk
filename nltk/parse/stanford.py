@@ -613,6 +613,15 @@ class StanfordDependencyParser(GenericStanfordParser):
     ... )
     21
 
+    Phone  numbers.
+
+    >>> len(
+    ...     next(
+    ...         dep_parser.raw_parse('This is not going to crash: 01 111 555.')
+    ...     ).nodes
+    ... )
+    10
+
     """
 
     _OUTPUT_FORMAT = 'conll2007'
