@@ -47,12 +47,12 @@ def setup_module(module):
     from nose import SkipTest
 
     global server
-    server = CoreNLPServer()
+    server = CoreNLPServer(port=9000)
 
     try:
         server.start()
     except CoreNLPServerError as e:
-        raise SkipTest('Skiping CoreNLP tests because the server could not be started. {}'.format(e.strerror))
+        raise SkipTest('Skipping CoreNLP tests because the server could not be started. {}'.format(e.strerror))
 
 
 def teardown_module(module):
