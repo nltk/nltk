@@ -1071,23 +1071,23 @@ class PunktTrainer(PunktBaseClass):
 
         print (p, p1, p2, N, count_a, count_b, count_ab)
 
-        summand1 = (count_ab * math.log(p + (p == 0)) +
-                    (count_a - count_ab) * math.log(1.0 - p + (p == 1)))
+        summand1 = (count_ab * math.log(p or 1) +
+                    (count_a - count_ab) * math.log(1.0 - p) if p < 1 else 0)
 
-        summand2 = ((count_b - count_ab) * math.log(p + (p == 0)) +
-                    (N - count_a - count_b + count_ab) * math.log(1.0 - p + (p == 1)))
+        summand2 = ((count_b - count_ab) * math.log(p or 1) +
+                    (N - count_a - count_b + count_ab) * math.log(1.0 - p) if p < 1 else 0)
 
         if count_a == count_ab:
             summand3 = 0
         else:
-            summand3 = (count_ab * math.log(p1 + (p1 == 0)) +
-                        (count_a - count_ab) * math.log(1.0 - p1 + (p1 == 1)))
+            summand3 = (count_ab * math.log(p1 or 0) +
+                        (count_a - count_ab) * math.log(1.0 - p1) if p1 < 1 else 0)
 
         if count_b == count_ab:
             summand4 = 0
         else:
-            summand4 = ((count_b - count_ab) * math.log(p2 + (p2 == 0)) +
-                        (N - count_a - count_b + count_ab) * math.log(1.0 - p2 + (p2 == 1)))
+            summand4 = ((count_b - count_ab) * math.log(p2 or 1) +
+                        (N - count_a - count_b + count_ab) * math.log(1.0 - p2) if p2 < 1 else 0)
 
         likelihood = summand1 + summand2 - summand3 - summand4
 
