@@ -1080,7 +1080,7 @@ class PunktTrainer(PunktBaseClass):
         if count_a == count_ab:
             summand3 = 0
         else:
-            summand3 = (count_ab * math.log(p1 or 0) +
+            summand3 = (count_ab * math.log(p1 or 1) +
                         (count_a - count_ab) * math.log(1.0 - p1) if p1 < 1 else 0)
 
         if count_b == count_ab:
