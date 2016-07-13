@@ -1062,9 +1062,9 @@ class PunktTrainer(PunktBaseClass):
 
         p = count_b / N
         p1 = count_ab / count_a
-
-        p2_denom = N - count_a
-        if p2_denom == 0:
+        try:
+            p2 = (count_b - count_ab) / (N - count_a)
+        except ZeroDivisionError as e:
             p2 = 1
         else:
             p2 = (count_b - count_ab) / p2_denom
