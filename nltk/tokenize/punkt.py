@@ -1081,13 +1081,13 @@ class PunktTrainer(PunktBaseClass):
         except ValueError as e:
             summand2 = 0
 
-        if count_a == count_ab or p1 == 0 or p1 == 1:
+        if count_a == count_ab or p1 <= 0 or p1 >= 1:
             summand3 = 0
         else:
             summand3 = (count_ab * math.log(p1) +
                         (count_a - count_ab) * math.log(1.0 - p1))
 
-        if count_b == count_ab or p2 == 0 or p2 == 1:
+        if count_b == count_ab or p2 <= 0 or p2 >= 1:
             summand4 = 0
         else:
             summand4 = ((count_b - count_ab) * math.log(p2) +
