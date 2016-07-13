@@ -1066,16 +1066,20 @@ class PunktTrainer(PunktBaseClass):
             p2 = (count_b - count_ab) / (N - count_a)
         except ZeroDivisionError as e:
             p2 = 1
-        else:
-            p2 = (count_b - count_ab) / p2_denom
 
         print (p, p1, p2, N, count_a, count_b, count_ab)
 
-        summand1 = (count_ab * math.log(p or 1) +
-                    (count_a - count_ab) * math.log(1.0 - p) if p < 1 else 0)
+        try:
+            summand1 = (count_ab * math.log(p) +
+                        (count_a - count_ab) * math.log(1.0 - p))
+        except ValueError as e:
+            summand1 = 0
 
-        summand2 = ((count_b - count_ab) * math.log(p or 1) +
-                    (N - count_a - count_b + count_ab) * math.log(1.0 - p) if p < 1 else 0)
+        try:
+            summand2 = ((count_b - count_ab) * math.log(p) +
+                        (N - count_a - count_b + count_ab) * math.log(1.0 - p))
+        except ValueError as e:
+            summand2 = 0
 
         if count_a == count_ab:
             summand3 = 0
