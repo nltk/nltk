@@ -20,6 +20,7 @@ from __future__ import print_function
 
 import nltk
 from nltk.classify.util import accuracy
+from nltk import word_tokenize
 
 def ne(token):
     """
@@ -58,14 +59,11 @@ class RTEFeatureExtractor(object):
 
         self.negwords = set(['no', 'not', 'never', 'failed', 'rejected',
                              'denied'])
-        # Try to tokenize so that abbreviations like U.S.and monetary amounts
-        # like "$23.00" are kept as tokens.
-        from nltk.tokenize import RegexpTokenizer
-        tokenizer = RegexpTokenizer('([A-Z]\.)+|\w+|\$[\d\.]+')
-
-        #Get the set of word types for text and hypothesis
-        self.text_tokens = tokenizer.tokenize(rtepair.text)
-        self.hyp_tokens = tokenizer.tokenize(rtepair.hyp)
+        # Try to tokenize so that abbreviations like U.S. and number like "23.00" 
+        # are kept as tokens (but '$23.00' will be on two tokens '$' and '23.00')
+        # Get the set of word types for text and hypothesis
+        self.text_tokens = word_tokenize(rtepair.text)
+        self.hyp_tokens = word_tokenize(rtepair.hyp)
         self.text_words = set(self.text_tokens)
         self.hyp_words = set(self.hyp_tokens)
 
