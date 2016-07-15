@@ -58,10 +58,10 @@ class RTEFeatureExtractor(object):
 
         self.negwords = set(['no', 'not', 'never', 'failed', 'rejected',
                              'denied'])
-        # Try to tokenize so that abbreviations like U.S.and monetary amounts
-        # like "$23.00" are kept as tokens.
+        # Try to tokenize so that abbreviations like U.S., numbers like 3.1416, email like 
+        # name.family@mail.com, web sites, and monetary amounts like "$23.00" are kept as tokens.
         from nltk.tokenize import RegexpTokenizer
-        tokenizer = RegexpTokenizer('[A-Za-z.]+|\w+|\$[\d\.]+')
+        tokenizer = RegexpTokenizer('[A-Za-z\d\.@:\/]+|\w+|\$[\d\.]+')
 
         #Get the set of word types for text and hypothesis
         self.text_tokens = tokenizer.tokenize(rtepair.text)
