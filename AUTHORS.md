@@ -39,6 +39,7 @@
 - David Coles
 - Lucas Cooper
 - Robin Cooper
+- Claude Coulombe
 - Chris Crowner
 - James Curran
 - Arthur Darcet
