@@ -49,6 +49,7 @@ class TreebankWordTokenizer(TokenizerI):
     STARTING_QUOTES = [
         (re.compile(r'^\"'), r'``'),
         (re.compile(r'(``)'), r' \1 '),
+        (re.compile(r'(«)'), r' \1 '),
         (re.compile(r'([ (\[{<])"'), r'\1 `` '),
     ]
 
@@ -58,7 +59,7 @@ class TreebankWordTokenizer(TokenizerI):
         (re.compile(r'([:,])$'), r' \1 '),
         (re.compile(r'\.\.\.'), r' ... '),
         (re.compile(r'[;@#$%&]'), r' \g<0> '),
-        (re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'), r'\1 \2\3 '),
+        (re.compile(r'([^\.])(\.)([\]\)}>"\'»]*)\s*$'), r'\1 \2\3 '),
         (re.compile(r'[?!]'), r' \g<0> '),
 
         (re.compile(r"([^'])' "), r"\1 ' "),
@@ -73,6 +74,7 @@ class TreebankWordTokenizer(TokenizerI):
     #ending quotes
     ENDING_QUOTES = [
         (re.compile(r'"'), " '' "),
+        (re.compile(r'(»)'), r' \1 '),
         (re.compile(r'(\S)(\'\')'), r'\1 \2 '),
 
         (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
@@ -96,7 +98,7 @@ class TreebankWordTokenizer(TokenizerI):
     def tokenize(self, text):
         for regexp, substitution in self.STARTING_QUOTES:
             text = regexp.sub(substitution, text)
-
+            
         for regexp, substitution in self.PUNCTUATION:
             text = regexp.sub(substitution, text)
 
