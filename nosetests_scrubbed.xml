@@ -1,0 +1,1254 @@
+<?xml version="1.0" encoding="UTF-8"?><testsuite name="nosetests" tests="426" errors="4" failures="7" skip="20"><testcase classname="nose.failure.Failure" name="runTest" time="0.000"><error type="builtins.RuntimeError" message="Python is not installed as a framework. The Mac OS X backend will not be able to function correctly if Python is not installed as a framework. See the Python documentation for more information on installing Python as a framework on Mac OS X. Please either reinstall Python as a framework, or try one of the other backends. If you are Working with Matplotlib in a virtual enviroment see 'Working with Matplotlib in Virtual environments' in the Matplotlib FAQ"><![CDATA[Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/failure.py", line 39, in runTest
+    raise self.exc_val.with_traceback(self.tb)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/loader.py", line 418, in loadTestsFromName
+    addr.filename, addr.module)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/importer.py", line 47, in importFromPath
+    return self.importFromDir(dir_path, fqname)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/importer.py", line 94, in importFromDir
+    mod = load_module(part_fqname, fh, filename, desc)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/imp.py", line 244, in load_module
+    return load_package(name, filename)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/imp.py", line 216, in load_package
+    return _load(spec)
+  File "<frozen importlib._bootstrap>", line 693, in _load
+  File "<frozen importlib._bootstrap>", line 673, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 662, in exec_module
+  File "<frozen importlib._bootstrap>", line 222, in _call_with_frames_removed
+  File "/Users/adamn1/dev/nltk/nltk/app/__init__.py", line 42, in <module>
+    from matplotlib import pylab
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/matplotlib/pylab.py", line 274, in <module>
+    from matplotlib.pyplot import *
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/matplotlib/pyplot.py", line 114, in <module>
+    _backend_mod, new_figure_manager, draw_if_interactive, _show = pylab_setup()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/matplotlib/backends/__init__.py", line 32, in pylab_setup
+    globals(),locals(),[backend_name],0)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/matplotlib/backends/backend_macosx.py", line 24, in <module>
+    from matplotlib.backends import _macosx
+RuntimeError: Python is not installed as a framework. The Mac OS X backend will not be able to function correctly if Python is not installed as a framework. See the Python documentation for more information on installing Python as a framework on Mac OS X. Please either reinstall Python as a framework, or try one of the other backends. If you are Working with Matplotlib in a virtual enviroment see 'Working with Matplotlib in Virtual environments' in the Matplotlib FAQ
+]]></error></testcase><testcase classname="nltk.chunk.regexp.RegexpChunkRule" name="fromstring" time="0.012"></testcase><testcase classname="nltk.chunk.util" name="ChunkScore" time="0.001"></testcase><testcase classname="nltk.classify" name="megam" time="0.001"></testcase><testcase classname="nltk.classify" name="positivenaivebayes" time="0.003"></testcase><testcase classname="nltk.classify" name="scikitlearn" time="0.004"></testcase><testcase classname="nltk.classify" name="senna" time="0.368"></testcase><testcase classname="nltk" name="classify" time="0.002"></testcase><testcase classname="nltk.collections" name="LazyEnumerate" time="0.001"></testcase><testcase classname="nltk.collections" name="LazyMap" time="0.001"></testcase><testcase classname="nltk.collections" name="LazyZip" time="0.001"></testcase><testcase classname="nltk.collections.Trie" name="as_dict" time="0.001"></testcase><testcase classname="nltk.collections.Trie" name="insert" time="0.001"></testcase><testcase classname="nltk.corpus.reader.aligned.AlignedCorpusReader" name="__init__" time="0.001"></testcase><testcase classname="nltk.corpus.reader.categorized_sents" name="CategorizedSentencesCorpusReader" time="0.007"></testcase><testcase classname="nltk.corpus.reader.comparative_sents" name="ComparativeSentencesCorpusReader" time="0.151"></testcase><testcase classname="nltk.corpus.reader.framenet" name="AttrDict" time="0.002"></testcase><testcase classname="nltk.corpus.reader.framenet" name="FramenetCorpusReader" time="1.813"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="documents" time="0.006"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="fe_relations" time="0.189"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="fes" time="5.573"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="frame" time="0.003"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="frame_by_id" time="0.002"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="frame_by_name" time="0.002"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="frame_relation_types" time="0.002"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="frame_relations" time="0.020"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="frames" time="0.005"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="frames_by_lemma" time="0.023"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="lu" time="0.002"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="lu_basic" time="0.001"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="lus" time="0.044"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="propagate_semtypes" time="2.162"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="semtype" time="0.002"></testcase><testcase classname="nltk.corpus.reader.framenet.FramenetCorpusReader" name="semtypes" time="0.002"></testcase><testcase classname="nltk.corpus.reader.knbc" name="KNBCorpusReader" time="0.300"></testcase><testcase classname="nltk.corpus.reader.mte.MTECorpusReader" name="__init__" time="0.002"></testcase><testcase classname="nltk.corpus.reader.opinion_lexicon" name="OpinionLexiconCorpusReader" time="0.083"></testcase><testcase classname="nltk.corpus.reader.plaintext.PlaintextCorpusReader" name="__init__" time="0.001"></testcase><testcase classname="nltk.corpus.reader.pros_cons" name="ProsConsCorpusReader" time="0.004"></testcase><testcase classname="nltk.corpus.reader.reviews" name="ReviewsCorpusReader" time="0.182"></testcase><testcase classname="nltk.corpus.reader" name="sentiwordnet" time="0.016"></testcase><testcase classname="nltk.corpus.reader.tagged.TaggedCorpusReader" name="__init__" time="0.002"></testcase><testcase classname="nltk.corpus.reader" name="timit" time="0.001"></testcase><testcase classname="nltk.corpus.reader.util" name="PickleCorpusView" time="0.001"></testcase><testcase classname="nltk.corpus.reader.util" name="StreamBackedCorpusView" time="0.001"></testcase><testcase classname="nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader" name="words" time="0.004"><failure type="builtins.AssertionError" message="Failed doctest test for nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words&#10;  File &quot;/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py&quot;, line 58, in words&#10;&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py&quot;, line 64, in nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words&#10;Failed example:&#10;    nbp.words('en')[:10] == [u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J']&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 80, in __load&#10;        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource&#10;      'corpora/nonbreaking_prefixes.zip/nonbreaking_prefixes/' not&#10;      found.  Please use the NLTK Downloader to obtain the resource:&#10;      &gt;&gt;&gt; nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;&#10;    During handling of the above exception, another exception occurred:&#10;&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words[1]&gt;&quot;, line 1, in &lt;module&gt;&#10;        nbp.words('en')[:10] == [u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J']&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 116, in __getattr__&#10;        self.__load()&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 81, in __load&#10;        except LookupError: raise e&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 78, in __load&#10;        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource 'corpora/nonbreaking_prefixes' not found.  Please use&#10;      the NLTK Downloader to obtain the resource:  &gt;&gt;&gt; nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py&quot;, line 66, in nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words&#10;Failed example:&#10;    nbp.words('ta')[:5] == [u'அ', u'ஆ', u'இ', u'ஈ', u'உ']&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 80, in __load&#10;        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource&#10;      'corpora/nonbreaking_prefixes.zip/nonbreaking_prefixes/' not&#10;      found.  Please use the NLTK Downloader to obtain the resource:&#10;      &gt;&gt;&gt; nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;&#10;    During handling of the above exception, another exception occurred:&#10;&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words[2]&gt;&quot;, line 1, in &lt;module&gt;&#10;        nbp.words('ta')[:5] == [u'அ', u'ஆ', u'இ', u'ஈ', u'உ']&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 116, in __getattr__&#10;        self.__load()&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 81, in __load&#10;        except LookupError: raise e&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 78, in __load&#10;        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource 'corpora/nonbreaking_prefixes' not found.  Please use&#10;      the NLTK Downloader to obtain the resource:  &gt;&gt;&gt; nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;"><![CDATA[Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 2189, in runTest
+    raise self.failureException(self.format_failure(new.getvalue()))
+AssertionError: Failed doctest test for nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words
+  File "/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py", line 58, in words
+
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py", line 64, in nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words
+Failed example:
+    nbp.words('en')[:10] == [u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J']
+Exception raised:
+    Traceback (most recent call last):
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 80, in __load
+        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource
+      'corpora/nonbreaking_prefixes.zip/nonbreaking_prefixes/' not
+      found.  Please use the NLTK Downloader to obtain the resource:
+      >>> nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+
+    During handling of the above exception, another exception occurred:
+
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words[1]>", line 1, in <module>
+        nbp.words('en')[:10] == [u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J']
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 116, in __getattr__
+        self.__load()
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 81, in __load
+        except LookupError: raise e
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 78, in __load
+        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource 'corpora/nonbreaking_prefixes' not found.  Please use
+      the NLTK Downloader to obtain the resource:  >>> nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py", line 66, in nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words
+Failed example:
+    nbp.words('ta')[:5] == [u'அ', u'ஆ', u'இ', u'ஈ', u'உ']
+Exception raised:
+    Traceback (most recent call last):
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 80, in __load
+        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource
+      'corpora/nonbreaking_prefixes.zip/nonbreaking_prefixes/' not
+      found.  Please use the NLTK Downloader to obtain the resource:
+      >>> nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+
+    During handling of the above exception, another exception occurred:
+
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.corpus.reader.wordlist.NonbreakingPrefixesCorpusReader.words[2]>", line 1, in <module>
+        nbp.words('ta')[:5] == [u'அ', u'ஆ', u'இ', u'ஈ', u'உ']
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 116, in __getattr__
+        self.__load()
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 81, in __load
+        except LookupError: raise e
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 78, in __load
+        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource 'corpora/nonbreaking_prefixes' not found.  Please use
+      the NLTK Downloader to obtain the resource:  >>> nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+
+]]></failure></testcase><testcase classname="nltk.corpus.reader.wordlist.UnicharsCorpusReader" name="chars" time="0.005"><failure type="builtins.AssertionError" message="Failed doctest test for nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars&#10;  File &quot;/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py&quot;, line 92, in chars&#10;&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py&quot;, line 98, in nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars&#10;Failed example:&#10;    pup.chars('Open_Punctuation')[:5] == [u'(', u'[', u'{', u'༺', u'༼']&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 80, in __load&#10;        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource 'misc/perluniprops.zip/perluniprops/' not found.&#10;      Please use the NLTK Downloader to obtain the resource:  &gt;&gt;&gt;&#10;      nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;&#10;    During handling of the above exception, another exception occurred:&#10;&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars[1]&gt;&quot;, line 1, in &lt;module&gt;&#10;        pup.chars('Open_Punctuation')[:5] == [u'(', u'[', u'{', u'༺', u'༼']&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 116, in __getattr__&#10;        self.__load()&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 81, in __load&#10;        except LookupError: raise e&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 78, in __load&#10;        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource 'misc/perluniprops' not found.  Please use the NLTK&#10;      Downloader to obtain the resource:  &gt;&gt;&gt; nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py&quot;, line 100, in nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars&#10;Failed example:&#10;    pup.chars('Currency_Symbol')[:5] == [u'$', u'¢', u'£', u'¤', u'¥']&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 80, in __load&#10;        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource 'misc/perluniprops.zip/perluniprops/' not found.&#10;      Please use the NLTK Downloader to obtain the resource:  &gt;&gt;&gt;&#10;      nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;&#10;    During handling of the above exception, another exception occurred:&#10;&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars[2]&gt;&quot;, line 1, in &lt;module&gt;&#10;        pup.chars('Currency_Symbol')[:5] == [u'$', u'¢', u'£', u'¤', u'¥']&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 116, in __getattr__&#10;        self.__load()&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 81, in __load&#10;        except LookupError: raise e&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 78, in __load&#10;        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource 'misc/perluniprops' not found.  Please use the NLTK&#10;      Downloader to obtain the resource:  &gt;&gt;&gt; nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py&quot;, line 102, in nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars&#10;Failed example:&#10;    pup.available_categories&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 80, in __load&#10;        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource 'misc/perluniprops.zip/perluniprops/' not found.&#10;      Please use the NLTK Downloader to obtain the resource:  &gt;&gt;&gt;&#10;      nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;&#10;    During handling of the above exception, another exception occurred:&#10;&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars[3]&gt;&quot;, line 1, in &lt;module&gt;&#10;        pup.available_categories&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 116, in __getattr__&#10;        self.__load()&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 81, in __load&#10;        except LookupError: raise e&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/corpus/util.py&quot;, line 78, in __load&#10;        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource 'misc/perluniprops' not found.  Please use the NLTK&#10;      Downloader to obtain the resource:  &gt;&gt;&gt; nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;    **********************************************************************&#10;"><![CDATA[Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 2189, in runTest
+    raise self.failureException(self.format_failure(new.getvalue()))
+AssertionError: Failed doctest test for nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars
+  File "/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py", line 92, in chars
+
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py", line 98, in nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars
+Failed example:
+    pup.chars('Open_Punctuation')[:5] == [u'(', u'[', u'{', u'༺', u'༼']
+Exception raised:
+    Traceback (most recent call last):
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 80, in __load
+        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource 'misc/perluniprops.zip/perluniprops/' not found.
+      Please use the NLTK Downloader to obtain the resource:  >>>
+      nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+
+    During handling of the above exception, another exception occurred:
+
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars[1]>", line 1, in <module>
+        pup.chars('Open_Punctuation')[:5] == [u'(', u'[', u'{', u'༺', u'༼']
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 116, in __getattr__
+        self.__load()
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 81, in __load
+        except LookupError: raise e
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 78, in __load
+        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource 'misc/perluniprops' not found.  Please use the NLTK
+      Downloader to obtain the resource:  >>> nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py", line 100, in nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars
+Failed example:
+    pup.chars('Currency_Symbol')[:5] == [u'$', u'¢', u'£', u'¤', u'¥']
+Exception raised:
+    Traceback (most recent call last):
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 80, in __load
+        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource 'misc/perluniprops.zip/perluniprops/' not found.
+      Please use the NLTK Downloader to obtain the resource:  >>>
+      nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+
+    During handling of the above exception, another exception occurred:
+
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars[2]>", line 1, in <module>
+        pup.chars('Currency_Symbol')[:5] == [u'$', u'¢', u'£', u'¤', u'¥']
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 116, in __getattr__
+        self.__load()
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 81, in __load
+        except LookupError: raise e
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 78, in __load
+        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource 'misc/perluniprops' not found.  Please use the NLTK
+      Downloader to obtain the resource:  >>> nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/corpus/reader/wordlist.py", line 102, in nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars
+Failed example:
+    pup.available_categories
+Exception raised:
+    Traceback (most recent call last):
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 80, in __load
+        try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource 'misc/perluniprops.zip/perluniprops/' not found.
+      Please use the NLTK Downloader to obtain the resource:  >>>
+      nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+
+    During handling of the above exception, another exception occurred:
+
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.corpus.reader.wordlist.UnicharsCorpusReader.chars[3]>", line 1, in <module>
+        pup.available_categories
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 116, in __getattr__
+        self.__load()
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 81, in __load
+        except LookupError: raise e
+      File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 78, in __load
+        root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource 'misc/perluniprops' not found.  Please use the NLTK
+      Downloader to obtain the resource:  >>> nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+    **********************************************************************
+
+]]></failure></testcase><testcase classname="nltk.corpus.reader.wordnet.Synset" name="closure" time="0.008"></testcase><testcase classname="nltk.corpus.reader.wordnet.Synset" name="tree" time="0.003"></testcase><testcase classname="nltk.corpus.reader.wordnet.WordNetCorpusReader" name="morphy" time="0.002"></testcase><testcase classname="nltk.corpus" name="reader" time="6.285"></testcase><testcase classname="nose.failure.Failure" name="runTest" time="0.000"><error type="builtins.LookupError" message="&#10;**********************************************************************&#10;  Resource 'corpora/nonbreaking_prefixes' not found.  Please use&#10;  the NLTK Downloader to obtain the resource:  &gt;&gt;&gt; nltk.download()&#10;  Searched in:&#10;    - '/Users/adamn1/nltk_data'&#10;    - '/usr/share/nltk_data'&#10;    - '/usr/local/share/nltk_data'&#10;    - '/usr/lib/nltk_data'&#10;    - '/usr/local/lib/nltk_data'&#10;**********************************************************************"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 80, in __load
+    try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+  File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+    raise LookupError(resource_not_found)
+LookupError: 
+**********************************************************************
+  Resource
+  'corpora/nonbreaking_prefixes.zip/nonbreaking_prefixes/' not
+  found.  Please use the NLTK Downloader to obtain the resource:
+  >>> nltk.download()
+  Searched in:
+    - '/Users/adamn1/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/failure.py", line 39, in runTest
+    raise self.exc_val.with_traceback(self.tb)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/plugins/manager.py", line 154, in generate
+    for r in result:
+  File "/Users/adamn1/dev/nltk/nltk/test/doctest_nose_plugin.py", line 106, in loadTestsFromModule
+    for suite in super(DoctestPluginHelper, self).loadTestsFromModule(module):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/plugins/doctests.py", line 228, in loadTestsFromModule
+    tests = self.finder.find(module)
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 923, in find
+    self._find(tests, obj, name, module, source_lines, globs, {})
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 982, in _find
+    if ((inspect.isroutine(inspect.unwrap(val))
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/inspect.py", line 471, in unwrap
+    while _is_wrapper(func):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/inspect.py", line 465, in _is_wrapper
+    return hasattr(f, '__wrapped__')
+  File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 116, in __getattr__
+    self.__load()
+  File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 81, in __load
+    except LookupError: raise e
+  File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 78, in __load
+    root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+  File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+    raise LookupError(resource_not_found)
+LookupError: 
+**********************************************************************
+  Resource 'corpora/nonbreaking_prefixes' not found.  Please use
+  the NLTK Downloader to obtain the resource:  >>> nltk.download()
+  Searched in:
+    - '/Users/adamn1/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+]]></error></testcase><testcase classname="nltk.data" name="normalize_resource_name" time="0.002"></testcase><testcase classname="nltk.data" name="normalize_resource_url" time="0.002"></testcase><testcase classname="nltk.data" name="split_resource_url" time="0.002"></testcase><testcase classname="nltk.decorators" name="decorator" time="0.002"></testcase><testcase classname="nltk.decorators" name="getinfo" time="0.001"></testcase><testcase classname="nltk" name="downloader" time="0.001"></testcase><testcase classname="&lt;nose.suite.ContextSuite context=nltk" name="draw&gt;:setup" time="0.001"><skipped type="unittest.case.SkipTest" message="nltk.draw examples are not doctests"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/draw/__init__.py", line 28, in setup_module
+    raise SkipTest("nltk.draw examples are not doctests")
+unittest.case.SkipTest: nltk.draw examples are not doctests
+]]></skipped></testcase><testcase classname="nltk" name="featstruct" time="0.002"></testcase><testcase classname="nltk.featstruct" name="rename_variables" time="0.003"></testcase><testcase classname="nltk.featstruct" name="unify" time="0.002"></testcase><testcase classname="nltk.internals" name="Deprecated" time="0.001"></testcase><testcase classname="nltk.internals.ElementWrapper" name="__init__" time="0.001"></testcase><testcase classname="nltk.internals" name="deprecated" time="0.002"></testcase><testcase classname="nltk.internals" name="overridden" time="0.002"></testcase><testcase classname="nltk.internals" name="read_int" time="0.001"></testcase><testcase classname="nltk.internals" name="read_number" time="0.001"></testcase><testcase classname="nltk.internals" name="read_str" time="0.001"></testcase><testcase classname="nltk.metrics" name="agreement" time="0.028"></testcase><testcase classname="nltk.metrics" name="aline" time="0.003"></testcase><testcase classname="nltk.metrics.association.TrigramAssocMeasures" name="_contingency" time="0.001"></testcase><testcase classname="nltk.metrics.association.TrigramAssocMeasures" name="_marginals" time="0.001"></testcase><testcase classname="nltk.metrics.confusionmatrix" name="ConfusionMatrix" time="0.002"></testcase><testcase classname="nltk.metrics.distance" name="binary_distance" time="0.002"></testcase><testcase classname="nltk.metrics.distance" name="interval_distance" time="0.001"></testcase><testcase classname="nltk.metrics.distance" name="masi_distance" time="0.001"></testcase><testcase classname="nltk.metrics.segmentation" name="ghd" time="0.002"></testcase><testcase classname="nltk.metrics.segmentation" name="pk" time="0.003"></testcase><testcase classname="nltk.metrics.segmentation" name="windowdiff" time="0.001"></testcase><testcase classname="nltk.parse.evaluate" name="DependencyEvaluator" time="0.002"></testcase><testcase classname="nltk.parse.malt" name="MaltParser" time="0.001"></testcase><testcase classname="nltk.parse.nonprojectivedependencyparser" name="NaiveBayesDependencyScorer" time="0.032"></testcase><testcase classname="nltk.parse.nonprojectivedependencyparser" name="ProbabilisticNonprojectiveParser" time="0.013"></testcase><testcase classname="nltk.parse.projectivedependencyparser" name="ProbabilisticProjectiveDependencyParser" time="0.007"></testcase><testcase classname="nltk.parse.stanford" name="StanfordDependencyParser" time="0.683"><failure type="builtins.AssertionError" message="Failed doctest test for nltk.parse.stanford.StanfordDependencyParser&#10;  File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 287, in StanfordDependencyParser&#10;&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 293, in nltk.parse.stanford.StanfordDependencyParser&#10;Failed example:&#10;    [parse.tree() for parse in dep_parser.raw_parse(&quot;The quick brown fox jumps over the lazy dog.&quot;)] # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordDependencyParser[1]&gt;&quot;, line 1, in &lt;module&gt;&#10;        [parse.tree() for parse in dep_parser.raw_parse(&quot;The quick brown fox jumps over the lazy dog.&quot;)] # doctest: +NORMALIZE_WHITESPACE&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 132, in raw_parse&#10;        return next(self.raw_parse_sents([sentence], verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 150, in raw_parse_sents&#10;        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 216, in _execute&#10;        stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpqjej6_22']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 296, in nltk.parse.stanford.StanfordDependencyParser&#10;Failed example:&#10;    [list(parse.triples()) for parse in dep_parser.raw_parse(&quot;The quick brown fox jumps over the lazy dog.&quot;)] # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordDependencyParser[2]&gt;&quot;, line 1, in &lt;module&gt;&#10;        [list(parse.triples()) for parse in dep_parser.raw_parse(&quot;The quick brown fox jumps over the lazy dog.&quot;)] # doctest: +NORMALIZE_WHITESPACE&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 132, in raw_parse&#10;        return next(self.raw_parse_sents([sentence], verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 150, in raw_parse_sents&#10;        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 216, in _execute&#10;        stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmp8d5tlmgd']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 302, in nltk.parse.stanford.StanfordDependencyParser&#10;Failed example:&#10;    sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.raw_parse_sents((&#10;        &quot;The quick brown fox jumps over the lazy dog.&quot;,&#10;        &quot;The quick grey wolf jumps over the lazy fox.&quot;&#10;    ))], []) # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordDependencyParser[3]&gt;&quot;, line 3, in &lt;module&gt;&#10;        &quot;The quick grey wolf jumps over the lazy fox.&quot;&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 150, in raw_parse_sents&#10;        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 216, in _execute&#10;        stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpqsklu2im']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 309, in nltk.parse.stanford.StanfordDependencyParser&#10;Failed example:&#10;    sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.parse_sents((&#10;        &quot;I 'm a dog&quot;.split(),&#10;        &quot;This is my friends ' cat ( the tabby )&quot;.split(),&#10;    ))], []) # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordDependencyParser[4]&gt;&quot;, line 3, in &lt;module&gt;&#10;        &quot;This is my friends ' cat ( the tabby )&quot;.split(),&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 120, in parse_sents&#10;        cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 216, in _execute&#10;        stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-tokenized', '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpxi52sjpf']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 315, in nltk.parse.stanford.StanfordDependencyParser&#10;Failed example:&#10;    sum([[list(parse.triples()) for parse in dep_graphs] for dep_graphs in dep_parser.tagged_parse_sents((&#10;        (&#10;            (&quot;The&quot;, &quot;DT&quot;),&#10;            (&quot;quick&quot;, &quot;JJ&quot;),&#10;            (&quot;brown&quot;, &quot;JJ&quot;),&#10;            (&quot;fox&quot;, &quot;NN&quot;),&#10;            (&quot;jumped&quot;, &quot;VBD&quot;),&#10;            (&quot;over&quot;, &quot;IN&quot;),&#10;            (&quot;the&quot;, &quot;DT&quot;),&#10;            (&quot;lazy&quot;, &quot;JJ&quot;),&#10;            (&quot;dog&quot;, &quot;NN&quot;),&#10;            (&quot;.&quot;, &quot;.&quot;),&#10;        ),&#10;    ))],[]) # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordDependencyParser[5]&gt;&quot;, line 12, in &lt;module&gt;&#10;        (&quot;.&quot;, &quot;.&quot;),&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 187, in tagged_parse_sents&#10;        cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 216, in _execute&#10;        stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-tokenized', '-tagSeparator', '/', '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerMethod', 'newCoreLabelTokenizerFactory', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmp7kd_p53c']&#10;"><![CDATA[Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 2189, in runTest
+    raise self.failureException(self.format_failure(new.getvalue()))
+AssertionError: Failed doctest test for nltk.parse.stanford.StanfordDependencyParser
+  File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 287, in StanfordDependencyParser
+
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 293, in nltk.parse.stanford.StanfordDependencyParser
+Failed example:
+    [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordDependencyParser[1]>", line 1, in <module>
+        [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 132, in raw_parse
+        return next(self.raw_parse_sents([sentence], verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 150, in raw_parse_sents
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 216, in _execute
+        stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpqjej6_22']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 296, in nltk.parse.stanford.StanfordDependencyParser
+Failed example:
+    [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordDependencyParser[2]>", line 1, in <module>
+        [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 132, in raw_parse
+        return next(self.raw_parse_sents([sentence], verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 150, in raw_parse_sents
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 216, in _execute
+        stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmp8d5tlmgd']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 302, in nltk.parse.stanford.StanfordDependencyParser
+Failed example:
+    sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.raw_parse_sents((
+        "The quick brown fox jumps over the lazy dog.",
+        "The quick grey wolf jumps over the lazy fox."
+    ))], []) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordDependencyParser[3]>", line 3, in <module>
+        "The quick grey wolf jumps over the lazy fox."
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 150, in raw_parse_sents
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 216, in _execute
+        stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpqsklu2im']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 309, in nltk.parse.stanford.StanfordDependencyParser
+Failed example:
+    sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.parse_sents((
+        "I 'm a dog".split(),
+        "This is my friends ' cat ( the tabby )".split(),
+    ))], []) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordDependencyParser[4]>", line 3, in <module>
+        "This is my friends ' cat ( the tabby )".split(),
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 120, in parse_sents
+        cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 216, in _execute
+        stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-tokenized', '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpxi52sjpf']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 315, in nltk.parse.stanford.StanfordDependencyParser
+Failed example:
+    sum([[list(parse.triples()) for parse in dep_graphs] for dep_graphs in dep_parser.tagged_parse_sents((
+        (
+            ("The", "DT"),
+            ("quick", "JJ"),
+            ("brown", "JJ"),
+            ("fox", "NN"),
+            ("jumped", "VBD"),
+            ("over", "IN"),
+            ("the", "DT"),
+            ("lazy", "JJ"),
+            ("dog", "NN"),
+            (".", "."),
+        ),
+    ))],[]) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordDependencyParser[5]>", line 12, in <module>
+        (".", "."),
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 187, in tagged_parse_sents
+        cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 216, in _execute
+        stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll2007', '-tokenized', '-tagSeparator', '/', '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerMethod', 'newCoreLabelTokenizerFactory', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmp7kd_p53c']
+
+]]></failure></testcase><testcase classname="nltk.parse.stanford" name="StanfordNeuralDependencyParser" time="0.416"><failure type="builtins.AssertionError" message="Failed doctest test for nltk.parse.stanford.StanfordNeuralDependencyParser&#10;  File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 342, in StanfordNeuralDependencyParser&#10;&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 347, in nltk.parse.stanford.StanfordNeuralDependencyParser&#10;Failed example:&#10;    [parse.tree() for parse in dep_parser.raw_parse(&quot;The quick brown fox jumps over the lazy dog.&quot;)] # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordNeuralDependencyParser[2]&gt;&quot;, line 1, in &lt;module&gt;&#10;        [parse.tree() for parse in dep_parser.raw_parse(&quot;The quick brown fox jumps over the lazy dog.&quot;)] # doctest: +NORMALIZE_WHITESPACE&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 132, in raw_parse&#10;        return next(self.raw_parse_sents([sentence], verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 150, in raw_parse_sents&#10;        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 212, in _execute&#10;        stdin=input_file, stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/ejml-0.23.jar:/Users/adamn1/third/stanford-corenlp/javax.json-api-1.0-sources.jar:/Users/adamn1/third/stanford-corenlp/javax.json.jar:/Users/adamn1/third/stanford-corenlp/joda-time-2.1-sources.jar:/Users/adamn1/third/stanford-corenlp/joda-time.jar:/Users/adamn1/third/stanford-corenlp/jollyday-0.4.7-sources.jar:/Users/adamn1/third/stanford-corenlp/jollyday.jar:/Users/adamn1/third/stanford-corenlp/protobuf.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-javadoc.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-sources.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2.jar:/Users/adamn1/third/stanford-corenlp/xom-1.2.10-src.jar:/Users/adamn1/third/stanford-corenlp/xom.jar', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll', '-encoding', 'utf8', '-annotators tokenize,ssplit,pos,depparse']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 350, in nltk.parse.stanford.StanfordNeuralDependencyParser&#10;Failed example:&#10;    [list(parse.triples()) for parse in dep_parser.raw_parse(&quot;The quick brown fox jumps over the lazy dog.&quot;)] # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordNeuralDependencyParser[3]&gt;&quot;, line 1, in &lt;module&gt;&#10;        [list(parse.triples()) for parse in dep_parser.raw_parse(&quot;The quick brown fox jumps over the lazy dog.&quot;)] # doctest: +NORMALIZE_WHITESPACE&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 132, in raw_parse&#10;        return next(self.raw_parse_sents([sentence], verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 150, in raw_parse_sents&#10;        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 212, in _execute&#10;        stdin=input_file, stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/ejml-0.23.jar:/Users/adamn1/third/stanford-corenlp/javax.json-api-1.0-sources.jar:/Users/adamn1/third/stanford-corenlp/javax.json.jar:/Users/adamn1/third/stanford-corenlp/joda-time-2.1-sources.jar:/Users/adamn1/third/stanford-corenlp/joda-time.jar:/Users/adamn1/third/stanford-corenlp/jollyday-0.4.7-sources.jar:/Users/adamn1/third/stanford-corenlp/jollyday.jar:/Users/adamn1/third/stanford-corenlp/protobuf.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-javadoc.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-sources.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2.jar:/Users/adamn1/third/stanford-corenlp/xom-1.2.10-src.jar:/Users/adamn1/third/stanford-corenlp/xom.jar', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll', '-encoding', 'utf8', '-annotators tokenize,ssplit,pos,depparse']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 356, in nltk.parse.stanford.StanfordNeuralDependencyParser&#10;Failed example:&#10;    sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.raw_parse_sents((&#10;        &quot;The quick brown fox jumps over the lazy dog.&quot;,&#10;        &quot;The quick grey wolf jumps over the lazy fox.&quot;&#10;    ))], []) # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordNeuralDependencyParser[4]&gt;&quot;, line 3, in &lt;module&gt;&#10;        &quot;The quick grey wolf jumps over the lazy fox.&quot;&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 150, in raw_parse_sents&#10;        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 212, in _execute&#10;        stdin=input_file, stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/ejml-0.23.jar:/Users/adamn1/third/stanford-corenlp/javax.json-api-1.0-sources.jar:/Users/adamn1/third/stanford-corenlp/javax.json.jar:/Users/adamn1/third/stanford-corenlp/joda-time-2.1-sources.jar:/Users/adamn1/third/stanford-corenlp/joda-time.jar:/Users/adamn1/third/stanford-corenlp/jollyday-0.4.7-sources.jar:/Users/adamn1/third/stanford-corenlp/jollyday.jar:/Users/adamn1/third/stanford-corenlp/protobuf.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-javadoc.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-sources.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2.jar:/Users/adamn1/third/stanford-corenlp/xom-1.2.10-src.jar:/Users/adamn1/third/stanford-corenlp/xom.jar', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll', '-encoding', 'utf8', '-annotators tokenize,ssplit,pos,depparse']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 363, in nltk.parse.stanford.StanfordNeuralDependencyParser&#10;Failed example:&#10;    sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.parse_sents((&#10;        &quot;I 'm a dog&quot;.split(),&#10;        &quot;This is my friends ' cat ( the tabby )&quot;.split(),&#10;    ))], []) # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordNeuralDependencyParser[5]&gt;&quot;, line 3, in &lt;module&gt;&#10;        &quot;This is my friends ' cat ( the tabby )&quot;.split(),&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 120, in parse_sents&#10;        cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 212, in _execute&#10;        stdin=input_file, stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/ejml-0.23.jar:/Users/adamn1/third/stanford-corenlp/javax.json-api-1.0-sources.jar:/Users/adamn1/third/stanford-corenlp/javax.json.jar:/Users/adamn1/third/stanford-corenlp/joda-time-2.1-sources.jar:/Users/adamn1/third/stanford-corenlp/joda-time.jar:/Users/adamn1/third/stanford-corenlp/jollyday-0.4.7-sources.jar:/Users/adamn1/third/stanford-corenlp/jollyday.jar:/Users/adamn1/third/stanford-corenlp/protobuf.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-javadoc.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-sources.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2.jar:/Users/adamn1/third/stanford-corenlp/xom-1.2.10-src.jar:/Users/adamn1/third/stanford-corenlp/xom.jar', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll', '-tokenized', '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor', '-encoding', 'utf8', '-annotators tokenize,ssplit,pos,depparse']&#10;"><![CDATA[Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 2189, in runTest
+    raise self.failureException(self.format_failure(new.getvalue()))
+AssertionError: Failed doctest test for nltk.parse.stanford.StanfordNeuralDependencyParser
+  File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 342, in StanfordNeuralDependencyParser
+
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 347, in nltk.parse.stanford.StanfordNeuralDependencyParser
+Failed example:
+    [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordNeuralDependencyParser[2]>", line 1, in <module>
+        [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 132, in raw_parse
+        return next(self.raw_parse_sents([sentence], verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 150, in raw_parse_sents
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 212, in _execute
+        stdin=input_file, stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/ejml-0.23.jar:/Users/adamn1/third/stanford-corenlp/javax.json-api-1.0-sources.jar:/Users/adamn1/third/stanford-corenlp/javax.json.jar:/Users/adamn1/third/stanford-corenlp/joda-time-2.1-sources.jar:/Users/adamn1/third/stanford-corenlp/joda-time.jar:/Users/adamn1/third/stanford-corenlp/jollyday-0.4.7-sources.jar:/Users/adamn1/third/stanford-corenlp/jollyday.jar:/Users/adamn1/third/stanford-corenlp/protobuf.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-javadoc.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-sources.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2.jar:/Users/adamn1/third/stanford-corenlp/xom-1.2.10-src.jar:/Users/adamn1/third/stanford-corenlp/xom.jar', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll', '-encoding', 'utf8', '-annotators tokenize,ssplit,pos,depparse']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 350, in nltk.parse.stanford.StanfordNeuralDependencyParser
+Failed example:
+    [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordNeuralDependencyParser[3]>", line 1, in <module>
+        [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 132, in raw_parse
+        return next(self.raw_parse_sents([sentence], verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 150, in raw_parse_sents
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 212, in _execute
+        stdin=input_file, stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/ejml-0.23.jar:/Users/adamn1/third/stanford-corenlp/javax.json-api-1.0-sources.jar:/Users/adamn1/third/stanford-corenlp/javax.json.jar:/Users/adamn1/third/stanford-corenlp/joda-time-2.1-sources.jar:/Users/adamn1/third/stanford-corenlp/joda-time.jar:/Users/adamn1/third/stanford-corenlp/jollyday-0.4.7-sources.jar:/Users/adamn1/third/stanford-corenlp/jollyday.jar:/Users/adamn1/third/stanford-corenlp/protobuf.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-javadoc.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-sources.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2.jar:/Users/adamn1/third/stanford-corenlp/xom-1.2.10-src.jar:/Users/adamn1/third/stanford-corenlp/xom.jar', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll', '-encoding', 'utf8', '-annotators tokenize,ssplit,pos,depparse']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 356, in nltk.parse.stanford.StanfordNeuralDependencyParser
+Failed example:
+    sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.raw_parse_sents((
+        "The quick brown fox jumps over the lazy dog.",
+        "The quick grey wolf jumps over the lazy fox."
+    ))], []) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordNeuralDependencyParser[4]>", line 3, in <module>
+        "The quick grey wolf jumps over the lazy fox."
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 150, in raw_parse_sents
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 212, in _execute
+        stdin=input_file, stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/ejml-0.23.jar:/Users/adamn1/third/stanford-corenlp/javax.json-api-1.0-sources.jar:/Users/adamn1/third/stanford-corenlp/javax.json.jar:/Users/adamn1/third/stanford-corenlp/joda-time-2.1-sources.jar:/Users/adamn1/third/stanford-corenlp/joda-time.jar:/Users/adamn1/third/stanford-corenlp/jollyday-0.4.7-sources.jar:/Users/adamn1/third/stanford-corenlp/jollyday.jar:/Users/adamn1/third/stanford-corenlp/protobuf.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-javadoc.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-sources.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2.jar:/Users/adamn1/third/stanford-corenlp/xom-1.2.10-src.jar:/Users/adamn1/third/stanford-corenlp/xom.jar', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll', '-encoding', 'utf8', '-annotators tokenize,ssplit,pos,depparse']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 363, in nltk.parse.stanford.StanfordNeuralDependencyParser
+Failed example:
+    sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.parse_sents((
+        "I 'm a dog".split(),
+        "This is my friends ' cat ( the tabby )".split(),
+    ))], []) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordNeuralDependencyParser[5]>", line 3, in <module>
+        "This is my friends ' cat ( the tabby )".split(),
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 120, in parse_sents
+        cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 212, in _execute
+        stdin=input_file, stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/ejml-0.23.jar:/Users/adamn1/third/stanford-corenlp/javax.json-api-1.0-sources.jar:/Users/adamn1/third/stanford-corenlp/javax.json.jar:/Users/adamn1/third/stanford-corenlp/joda-time-2.1-sources.jar:/Users/adamn1/third/stanford-corenlp/joda-time.jar:/Users/adamn1/third/stanford-corenlp/jollyday-0.4.7-sources.jar:/Users/adamn1/third/stanford-corenlp/jollyday.jar:/Users/adamn1/third/stanford-corenlp/protobuf.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-javadoc.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-models.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2-sources.jar:/Users/adamn1/third/stanford-corenlp/stanford-corenlp-3.5.2.jar:/Users/adamn1/third/stanford-corenlp/xom-1.2.10-src.jar:/Users/adamn1/third/stanford-corenlp/xom.jar', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'conll', '-tokenized', '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor', '-encoding', 'utf8', '-annotators tokenize,ssplit,pos,depparse']
+
+]]></failure></testcase><testcase classname="nltk.parse.stanford" name="StanfordParser" time="0.400"><failure type="builtins.AssertionError" message="Failed doctest test for nltk.parse.stanford.StanfordParser&#10;  File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 229, in StanfordParser&#10;&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 235, in nltk.parse.stanford.StanfordParser&#10;Failed example:&#10;    list(parser.raw_parse(&quot;the quick brown fox jumps over the lazy dog&quot;)) # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordParser[1]&gt;&quot;, line 1, in &lt;module&gt;&#10;        list(parser.raw_parse(&quot;the quick brown fox jumps over the lazy dog&quot;)) # doctest: +NORMALIZE_WHITESPACE&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 132, in raw_parse&#10;        return next(self.raw_parse_sents([sentence], verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 150, in raw_parse_sents&#10;        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 216, in _execute&#10;        stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'penn', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmp3kuvgazb']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 240, in nltk.parse.stanford.StanfordParser&#10;Failed example:&#10;    sum([list(dep_graphs) for dep_graphs in parser.raw_parse_sents((&#10;        &quot;the quick brown fox jumps over the lazy dog&quot;,&#10;        &quot;the quick grey wolf jumps over the lazy fox&quot;&#10;    ))], []) # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordParser[2]&gt;&quot;, line 3, in &lt;module&gt;&#10;        &quot;the quick grey wolf jumps over the lazy fox&quot;&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 150, in raw_parse_sents&#10;        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 216, in _execute&#10;        stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'penn', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpe2mzyy37']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 251, in nltk.parse.stanford.StanfordParser&#10;Failed example:&#10;    sum([list(dep_graphs) for dep_graphs in parser.parse_sents((&#10;        &quot;I 'm a dog&quot;.split(),&#10;        &quot;This is my friends ' cat ( the tabby )&quot;.split(),&#10;    ))], []) # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordParser[3]&gt;&quot;, line 3, in &lt;module&gt;&#10;        &quot;This is my friends ' cat ( the tabby )&quot;.split(),&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 120, in parse_sents&#10;        cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 216, in _execute&#10;        stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'penn', '-tokenized', '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmp5soazk8e']&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 261, in nltk.parse.stanford.StanfordParser&#10;Failed example:&#10;    sum([list(dep_graphs) for dep_graphs in parser.tagged_parse_sents((&#10;        (&#10;            (&quot;The&quot;, &quot;DT&quot;),&#10;            (&quot;quick&quot;, &quot;JJ&quot;),&#10;            (&quot;brown&quot;, &quot;JJ&quot;),&#10;            (&quot;fox&quot;, &quot;NN&quot;),&#10;            (&quot;jumped&quot;, &quot;VBD&quot;),&#10;            (&quot;over&quot;, &quot;IN&quot;),&#10;            (&quot;the&quot;, &quot;DT&quot;),&#10;            (&quot;lazy&quot;, &quot;JJ&quot;),&#10;            (&quot;dog&quot;, &quot;NN&quot;),&#10;            (&quot;.&quot;, &quot;.&quot;),&#10;        ),&#10;    ))],[]) # doctest: +NORMALIZE_WHITESPACE&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest nltk.parse.stanford.StanfordParser[4]&gt;&quot;, line 12, in &lt;module&gt;&#10;        (&quot;.&quot;, &quot;.&quot;),&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 187, in tagged_parse_sents&#10;        cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/parse/stanford.py&quot;, line 216, in _execute&#10;        stdout=PIPE, stderr=PIPE)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/internals.py&quot;, line 134, in java&#10;        raise OSError('Java command failed : ' + str(cmd))&#10;    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'penn', '-tokenized', '-tagSeparator', '/', '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerMethod', 'newCoreLabelTokenizerFactory', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpmhgrz0nw']&#10;"><![CDATA[Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 2189, in runTest
+    raise self.failureException(self.format_failure(new.getvalue()))
+AssertionError: Failed doctest test for nltk.parse.stanford.StanfordParser
+  File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 229, in StanfordParser
+
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 235, in nltk.parse.stanford.StanfordParser
+Failed example:
+    list(parser.raw_parse("the quick brown fox jumps over the lazy dog")) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordParser[1]>", line 1, in <module>
+        list(parser.raw_parse("the quick brown fox jumps over the lazy dog")) # doctest: +NORMALIZE_WHITESPACE
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 132, in raw_parse
+        return next(self.raw_parse_sents([sentence], verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 150, in raw_parse_sents
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 216, in _execute
+        stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'penn', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmp3kuvgazb']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 240, in nltk.parse.stanford.StanfordParser
+Failed example:
+    sum([list(dep_graphs) for dep_graphs in parser.raw_parse_sents((
+        "the quick brown fox jumps over the lazy dog",
+        "the quick grey wolf jumps over the lazy fox"
+    ))], []) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordParser[2]>", line 3, in <module>
+        "the quick grey wolf jumps over the lazy fox"
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 150, in raw_parse_sents
+        return self._parse_trees_output(self._execute(cmd, '\n'.join(sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 216, in _execute
+        stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'penn', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpe2mzyy37']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 251, in nltk.parse.stanford.StanfordParser
+Failed example:
+    sum([list(dep_graphs) for dep_graphs in parser.parse_sents((
+        "I 'm a dog".split(),
+        "This is my friends ' cat ( the tabby )".split(),
+    ))], []) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordParser[3]>", line 3, in <module>
+        "This is my friends ' cat ( the tabby )".split(),
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 120, in parse_sents
+        cmd, '\n'.join(' '.join(sentence) for sentence in sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 216, in _execute
+        stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'penn', '-tokenized', '-escaper', 'edu.stanford.nlp.process.PTBEscapingProcessor', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmp5soazk8e']
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 261, in nltk.parse.stanford.StanfordParser
+Failed example:
+    sum([list(dep_graphs) for dep_graphs in parser.tagged_parse_sents((
+        (
+            ("The", "DT"),
+            ("quick", "JJ"),
+            ("brown", "JJ"),
+            ("fox", "NN"),
+            ("jumped", "VBD"),
+            ("over", "IN"),
+            ("the", "DT"),
+            ("lazy", "JJ"),
+            ("dog", "NN"),
+            (".", "."),
+        ),
+    ))],[]) # doctest: +NORMALIZE_WHITESPACE
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest nltk.parse.stanford.StanfordParser[4]>", line 12, in <module>
+        (".", "."),
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 187, in tagged_parse_sents
+        cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
+      File "/Users/adamn1/dev/nltk/nltk/parse/stanford.py", line 216, in _execute
+        stdout=PIPE, stderr=PIPE)
+      File "/Users/adamn1/dev/nltk/nltk/internals.py", line 134, in java
+        raise OSError('Java command failed : ' + str(cmd))
+    OSError: Java command failed : ['/usr/bin/java', '-mx1000m', '-cp', '/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/ejml-0.23.jar:/Users/adamn1/third/stanford-parser/slf4j-api.jar:/Users/adamn1/third/stanford-parser/slf4j-simple.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-javadoc.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-models.jar:/Users/adamn1/third/stanford-parser/stanford-parser-3.6.0-sources.jar:/Users/adamn1/third/stanford-parser/stanford-parser.jar', 'edu.stanford.nlp.parser.lexparser.LexicalizedParser', '-model', 'edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz', '-sentences', 'newline', '-outputFormat', 'penn', '-tokenized', '-tagSeparator', '/', '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerMethod', 'newCoreLabelTokenizerFactory', '-encoding', 'utf8', '/var/folders/vf/3rsfnspx2z995zyfst389tm80000gp/T/tmpmhgrz0nw']
+
+]]></failure></testcase><testcase classname="nltk.parse.transitionparser" name="demo" time="0.041"></testcase><testcase classname="nltk.parse.util" name="taggedsent_to_conll" time="0.121"></testcase><testcase classname="nltk.parse.util" name="taggedsents_to_conll" time="0.005"></testcase><testcase classname="nltk.probability" name="ConditionalFreqDist" time="0.002"></testcase><testcase classname="nltk.probability" name="ConditionalProbDist" time="0.077"></testcase><testcase classname="nltk.probability" name="FreqDist" time="0.002"></testcase><testcase classname="nltk.probability.FreqDist" name="__add__" time="0.002"></testcase><testcase classname="nltk.probability.FreqDist" name="__and__" time="0.001"></testcase><testcase classname="nltk.probability.FreqDist" name="__or__" time="0.001"></testcase><testcase classname="nltk.probability.FreqDist" name="__sub__" time="0.001"></testcase><testcase classname="nltk.probability" name="ProbabilisticMixIn" time="0.001"></testcase><testcase classname="nltk.sem.evaluate" name="Assignment" time="0.002"></testcase><testcase classname="nltk" name="sem" time="0.002"></testcase><testcase classname="nltk.sentiment.util" name="extract_bigram_feats" time="0.001"></testcase><testcase classname="nltk.sentiment.util" name="extract_unigram_feats" time="0.001"></testcase><testcase classname="nltk.sentiment.util" name="mark_negation" time="0.001"></testcase><testcase classname="nltk.stem.lancaster" name="LancasterStemmer" time="0.003"></testcase><testcase classname="nltk.stem.regexp" name="RegexpStemmer" time="0.002"></testcase><testcase classname="nltk.stem.rslp" name="RSLPStemmer" time="0.008"></testcase><testcase classname="nltk.stem.snowball" name="SnowballStemmer" time="0.002"></testcase><testcase classname="nltk.stem.wordnet" name="WordNetLemmatizer" time="3.087"></testcase><testcase classname="nltk.tag.brill_trainer.BrillTaggerTrainer" name="train" time="4.647"></testcase><testcase classname="nltk.tag.crf" name="CRFTagger" time="0.014"></testcase><testcase classname="&lt;nose.suite.ContextSuite context=nltk.tag" name="hunpos&gt;:setup" time="0.022"><skipped type="unittest.case.SkipTest" message="HunposTagger is not available"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/tag/hunpos.py", line 129, in setup_module
+    HunposTagger('en_wsj.model')
+  File "/Users/adamn1/dev/nltk/nltk/tag/hunpos.py", line 78, in __init__
+    verbose=verbose
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 602, in find_binary
+    binary_names, url, verbose))
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 596, in find_binary_iter
+    url, verbose):
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 567, in find_file_iter
+    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+LookupError: 
+
+===========================================================================
+NLTK was unable to find the hunpos-tag file!
+Use software specific configuration paramaters or set the HUNPOS_TAGGER environment variable.
+
+  Searched in:
+    - .
+    - /usr/bin
+    - /usr/local/bin
+    - /opt/local/bin
+    - /Applications/bin
+    - /Users/adamn1/bin
+    - /Users/adamn1/Applications/bin
+
+  For more information on hunpos-tag, see:
+    <http://code.google.com/p/hunpos/>
+===========================================================================
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/tag/hunpos.py", line 131, in setup_module
+    raise SkipTest("HunposTagger is not available")
+unittest.case.SkipTest: HunposTagger is not available
+]]></skipped></testcase><testcase classname="nltk.tag.mapping" name="map_tag" time="0.003"></testcase><testcase classname="nltk.tag.mapping" name="tagset_mapping" time="0.002"></testcase><testcase classname="nltk.tag.perceptron" name="PerceptronTagger" time="0.007"></testcase><testcase classname="nltk.tag" name="senna" time="0.786"></testcase><testcase classname="nltk.tag.senna.SennaChunkTagger" name="bio_to_chunks" time="0.208"></testcase><testcase classname="nltk.tag.sequential" name="DefaultTagger" time="0.002"></testcase><testcase classname="nltk.tag.sequential" name="RegexpTagger" time="0.010"></testcase><testcase classname="nltk.tag.sequential" name="UnigramTagger" time="0.155"></testcase><testcase classname="nltk.tag.stanford" name="StanfordNERTagger" time="0.002"></testcase><testcase classname="nltk.tag.stanford" name="StanfordPOSTagger" time="0.001"></testcase><testcase classname="nltk.tag.util" name="str2tuple" time="0.002"></testcase><testcase classname="nltk.tag.util" name="tuple2str" time="0.001"></testcase><testcase classname="nltk.tag.util" name="untag" time="0.001"></testcase><testcase classname="nltk" name="tag" time="0.231"></testcase><testcase classname="nltk.tag" name="pos_tag" time="0.004"></testcase><testcase classname="nltk.tbl.feature.Feature" name="__init__" time="0.002"></testcase><testcase classname="nltk.tbl.feature.Feature" name="expand" time="0.002"></testcase><testcase classname="nltk.tbl.feature.Feature" name="intersects" time="0.002"></testcase><testcase classname="nltk.tbl.feature.Feature" name="issuperset" time="0.002"></testcase><testcase classname="nltk.tbl.rule.Rule" name="format" time="0.002"></testcase><testcase classname="nltk.tbl.template.Template" name="__init__" time="0.002"></testcase><testcase classname="nltk.tbl.template.Template" name="expand" time="0.146"></testcase><testcase classname="nltk.text" name="Text" time="0.967"></testcase><testcase classname="nltk.text.Text" name="findall" time="0.428"></testcase><testcase classname="nltk.text" name="TextCollection" time="16.956"></testcase><testcase classname="nltk.text.TokenSearcher" name="findall" time="0.027"></testcase><testcase classname="nltk" name="tgrep" time="0.048"></testcase><testcase classname="nltk.tokenize.casual" name="TweetTokenizer" time="0.003"></testcase><testcase classname="nltk.tokenize.casual" name="_replace_html_entities" time="0.001"></testcase><testcase classname="nose.failure.Failure" name="runTest" time="0.000"><error type="builtins.LookupError" message="&#10;**********************************************************************&#10;  Resource 'misc/perluniprops' not found.  Please use the NLTK&#10;  Downloader to obtain the resource:  &gt;&gt;&gt; nltk.download()&#10;  Searched in:&#10;    - '/Users/adamn1/nltk_data'&#10;    - '/usr/share/nltk_data'&#10;    - '/usr/local/share/nltk_data'&#10;    - '/usr/lib/nltk_data'&#10;    - '/usr/local/lib/nltk_data'&#10;**********************************************************************"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 80, in __load
+    try: root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+  File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+    raise LookupError(resource_not_found)
+LookupError: 
+**********************************************************************
+  Resource 'misc/perluniprops.zip/perluniprops/' not found.
+  Please use the NLTK Downloader to obtain the resource:  >>>
+  nltk.download()
+  Searched in:
+    - '/Users/adamn1/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/failure.py", line 39, in runTest
+    raise self.exc_val.with_traceback(self.tb)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/loader.py", line 418, in loadTestsFromName
+    addr.filename, addr.module)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/importer.py", line 47, in importFromPath
+    return self.importFromDir(dir_path, fqname)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/importer.py", line 94, in importFromDir
+    mod = load_module(part_fqname, fh, filename, desc)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/imp.py", line 234, in load_module
+    return load_source(name, filename, file)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/imp.py", line 172, in load_source
+    module = _load(spec)
+  File "<frozen importlib._bootstrap>", line 693, in _load
+  File "<frozen importlib._bootstrap>", line 673, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 662, in exec_module
+  File "<frozen importlib._bootstrap>", line 222, in _call_with_frames_removed
+  File "/Users/adamn1/dev/nltk/nltk/tokenize/moses.py", line 20, in <module>
+    class MosesTokenizer(TokenizerI):
+  File "/Users/adamn1/dev/nltk/nltk/tokenize/moses.py", line 36, in MosesTokenizer
+    IsN = text_type(''.join(perluniprops.chars('IsN')))
+  File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 116, in __getattr__
+    self.__load()
+  File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 81, in __load
+    except LookupError: raise e
+  File "/Users/adamn1/dev/nltk/nltk/corpus/util.py", line 78, in __load
+    root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+  File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+    raise LookupError(resource_not_found)
+LookupError: 
+**********************************************************************
+  Resource 'misc/perluniprops' not found.  Please use the NLTK
+  Downloader to obtain the resource:  >>> nltk.download()
+  Searched in:
+    - '/Users/adamn1/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+]]></error></testcase><testcase classname="nltk.tokenize" name="mwe" time="0.001"></testcase><testcase classname="nltk.tokenize.mwe.MWETokenizer" name="add_mwe" time="0.001"></testcase><testcase classname="nltk.tokenize.mwe.MWETokenizer" name="tokenize" time="0.001"></testcase><testcase classname="nltk.tokenize" name="punkt" time="0.002"></testcase><testcase classname="nltk.tokenize" name="regexp" time="0.003"></testcase><testcase classname="nltk.tokenize.regexp" name="RegexpTokenizer" time="0.001"></testcase><testcase classname="nltk.tokenize.regexp" name="WhitespaceTokenizer" time="0.001"></testcase><testcase classname="nltk.tokenize.regexp" name="WordPunctTokenizer" time="0.001"></testcase><testcase classname="nltk.tokenize.repp" name="ReppTokenizer" time="0.001"></testcase><testcase classname="nltk.tokenize" name="sexpr" time="0.002"></testcase><testcase classname="nltk.tokenize.sexpr.SExprTokenizer" name="tokenize" time="0.001"></testcase><testcase classname="nltk.tokenize.sexpr" name="sexpr_tokenize" time="0.002"></testcase><testcase classname="nltk.tokenize" name="simple" time="0.002"></testcase><testcase classname="nltk.tokenize.simple" name="LineTokenizer" time="0.002"></testcase><testcase classname="nltk.tokenize.simple" name="SpaceTokenizer" time="0.001"></testcase><testcase classname="nltk.tokenize.simple" name="TabTokenizer" time="0.001"></testcase><testcase classname="&lt;nose.suite.ContextSuite context=nltk.tokenize" name="stanford&gt;:setup" time="0.002"><skipped type="unittest.case.SkipTest" message="doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn't exist"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/tokenize/stanford.py", line 109, in setup_module
+    StanfordTokenizer()
+  File "/Users/adamn1/dev/nltk/nltk/tokenize/stanford.py", line 44, in __init__
+    verbose=verbose
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 719, in find_jar
+    searchpath, url, verbose, is_regex))
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 714, in find_jar_iter
+    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+LookupError: 
+
+===========================================================================
+  NLTK was unable to find stanford-postagger.jar! Set the CLASSPATH
+  environment variable.
+
+  For more information, on stanford-postagger.jar, see:
+    <http://nlp.stanford.edu/software/tokenizer.shtml>
+===========================================================================
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/tokenize/stanford.py", line 111, in setup_module
+    raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
+unittest.case.SkipTest: doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn't exist
+]]></skipped></testcase><testcase classname="&lt;nose.suite.ContextSuite context=nltk.tokenize" name="stanford_segmenter&gt;:setup" time="0.003"><skipped type="unittest.case.SkipTest" message="doctests from nltk.tokenize.stanford_segmenter are skipped because the stanford segmenter jar doesn't exist"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/tokenize/stanford_segmenter.py", line 155, in setup_module
+    StanfordSegmenter()
+  File "/Users/adamn1/dev/nltk/nltk/tokenize/stanford_segmenter.py", line 55, in __init__
+    verbose=verbose)
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 719, in find_jar
+    searchpath, url, verbose, is_regex))
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 714, in find_jar_iter
+    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+LookupError: 
+
+===========================================================================
+  NLTK was unable to find stanford-segmenter.jar! Set the CLASSPATH
+  environment variable.
+
+  For more information, on stanford-segmenter.jar, see:
+    <http://nlp.stanford.edu/software>
+===========================================================================
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/tokenize/stanford_segmenter.py", line 157, in setup_module
+    raise SkipTest('doctests from nltk.tokenize.stanford_segmenter are skipped because the stanford segmenter jar doesn\'t exist')
+unittest.case.SkipTest: doctests from nltk.tokenize.stanford_segmenter are skipped because the stanford segmenter jar doesn't exist
+]]></skipped></testcase><testcase classname="nltk.tokenize.texttiling" name="TextTilingTokenizer" time="0.388"></testcase><testcase classname="nltk.tokenize.toktok" name="ToktokTokenizer" time="0.002"></testcase><testcase classname="nltk.tokenize.treebank" name="TreebankWordTokenizer" time="0.002"></testcase><testcase classname="nltk.tokenize.util" name="is_cjk" time="0.001"></testcase><testcase classname="nltk.tokenize.util" name="regexp_span_tokenize" time="0.001"></testcase><testcase classname="nltk.tokenize.util" name="spans_to_relative" time="0.001"></testcase><testcase classname="nltk.tokenize.util" name="string_span_tokenize" time="0.001"></testcase><testcase classname="nltk" name="tokenize" time="0.003"></testcase><testcase classname="nltk.translate.api" name="AlignedSent" time="0.110"></testcase><testcase classname="nltk.translate.api" name="Alignment" time="0.002"></testcase><testcase classname="nltk.translate.api.Alignment" name="fromstring" time="0.001"></testcase><testcase classname="nltk.translate.bleu_score.SmoothingFunction" name="__init__" time="0.007"></testcase><testcase classname="nltk.translate.bleu_score" name="brevity_penalty" time="0.003"></testcase><testcase classname="nltk.translate.bleu_score" name="corpus_bleu" time="0.004"></testcase><testcase classname="nltk.translate.bleu_score" name="modified_precision" time="0.003"></testcase><testcase classname="nltk.translate.bleu_score" name="sentence_bleu" time="0.004"></testcase><testcase classname="nltk.translate.gale_church" name="align_blocks" time="0.004"></testcase><testcase classname="nltk.translate.gdfa" name="grow_diag_final_and" time="0.003"></testcase><testcase classname="nltk.translate.ibm1" name="IBMModel1" time="0.003"></testcase><testcase classname="nltk.translate.ibm2" name="IBMModel2" time="0.009"></testcase><testcase classname="nltk.translate.ibm3" name="IBMModel3" time="1.776"></testcase><testcase classname="nltk.translate.ibm4" name="IBMModel4" time="3.538"></testcase><testcase classname="nltk.translate.ibm5" name="IBMModel5" time="4.970"></testcase><testcase classname="nltk.translate.metrics" name="alignment_error_rate" time="0.002"></testcase><testcase classname="nltk.translate.phrase_based" name="phrase_extraction" time="0.002"></testcase><testcase classname="nltk.translate.ribes_score" name="corpus_ribes" time="0.005"></testcase><testcase classname="nltk.translate.ribes_score" name="find_increasing_sequences" time="0.001"></testcase><testcase classname="nltk.translate.ribes_score" name="kendall_tau" time="0.002"></testcase><testcase classname="nltk.translate.ribes_score" name="spearman_rho" time="0.002"></testcase><testcase classname="nltk.translate.ribes_score" name="word_rank_alignment" time="0.002"></testcase><testcase classname="nltk.translate.stack_decoder" name="StackDecoder" time="0.015"></testcase><testcase classname="nltk.tree" name="Tree" time="0.002"></testcase><testcase classname="nltk.tree.Tree" name="flatten" time="0.001"></testcase><testcase classname="nltk.tree.Tree" name="height" time="0.002"></testcase><testcase classname="nltk.tree.Tree" name="label" time="0.001"></testcase><testcase classname="nltk.tree.Tree" name="leaves" time="0.001"></testcase><testcase classname="nltk.tree.Tree" name="pos" time="0.001"></testcase><testcase classname="nltk.tree.Tree" name="productions" time="0.001"></testcase><testcase classname="nltk.tree.Tree" name="set_label" time="0.002"></testcase><testcase classname="nltk.tree.Tree" name="subtrees" time="0.001"></testcase><testcase classname="nltk.tree.Tree" name="treepositions" time="0.002"></testcase><testcase classname="nltk.treeprettyprinter" name="TreePrettyPrinter" time="0.002"></testcase><testcase classname="nltk.util" name="bigrams" time="0.001"></testcase><testcase classname="nltk.util" name="choose" time="0.001"></testcase><testcase classname="nltk.util" name="everygrams" time="0.001"></testcase><testcase classname="nltk.util" name="flatten" time="0.001"></testcase><testcase classname="nltk.util" name="ngrams" time="0.001"></testcase><testcase classname="nltk.util" name="pad_sequence" time="0.001"></testcase><testcase classname="nltk.util" name="skipgrams" time="0.001"></testcase><testcase classname="nltk.util" name="trigrams" time="0.001"></testcase><testcase classname="nltk.wsd" name="lesk" time="3.003"></testcase><testcase classname="bleu_doctest" name="bleu_doctest" time="0.002"></testcase><testcase classname="bnc_doctest" name="bnc_doctest" time="0.045"></testcase><testcase classname="ccg_doctest" name="ccg_doctest" time="0.056"></testcase><testcase classname="ccg_semantics_doctest" name="ccg_semantics_doctest" time="0.043"></testcase><testcase classname="chat80_doctest" name="chat80_doctest" time="0.030"></testcase><testcase classname="&lt;nose.suite" name="ContextSuite context=childes_fixt&gt;:setup" time="0.031"><skipped type="unittest.case.SkipTest" message="The CHILDES corpus is not found. It should be manually downloaded and saved/unpacked to [NLTK_Data_Dir]/corpora/childes/"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/test/childes_fixt.py", line 8, in setup_module
+    nltk.data.find('corpora/childes/data-xml/Eng-USA-MOR/')
+  File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+    raise LookupError(resource_not_found)
+LookupError: 
+**********************************************************************
+  Resource 'corpora/childes/data-xml/Eng-USA-MOR/' not found.
+  Please use the NLTK Downloader to obtain the resource:  >>>
+  nltk.download()
+  Searched in:
+    - '/Users/adamn1/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/test/childes_fixt.py", line 11, in setup_module
+    raise SkipTest("The CHILDES corpus is not found. "
+unittest.case.SkipTest: The CHILDES corpus is not found. It should be manually downloaded and saved/unpacked to [NLTK_Data_Dir]/corpora/childes/
+]]></skipped><system-out><![CDATA[
+**********************************************************************
+  Resource 'corpora/childes/data-xml/Eng-USA-MOR/' not found.
+  Please use the NLTK Downloader to obtain the resource:  >>>
+  nltk.download()
+  Searched in:
+    - '/Users/adamn1/nltk_data'
+    - '/usr/share/nltk_data'
+    - '/usr/local/share/nltk_data'
+    - '/usr/lib/nltk_data'
+    - '/usr/local/lib/nltk_data'
+**********************************************************************
+]]></system-out></testcase><testcase classname="chunk_doctest" name="chunk_doctest" time="0.019"></testcase><testcase classname="classify_doctest" name="classify_doctest" time="9.005"></testcase><testcase classname="collocations_doctest" name="collocations_doctest" time="2.022"></testcase><testcase classname="&lt;nose.suite" name="ContextSuite context=compat_fixt&gt;:setup" time="2.022"><skipped type="unittest.case.SkipTest" message="compat.doctest is for Python 2.x"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/test/compat_fixt.py", line 8, in setup_module
+    raise SkipTest("compat.doctest is for Python 2.x")
+unittest.case.SkipTest: compat.doctest is for Python 2.x
+]]></skipped></testcase><testcase classname="corpus_doctest" name="corpus_doctest" time="15.635"></testcase><testcase classname="crubadan_doctest" name="crubadan_doctest" time="0.031"></testcase><testcase classname="data_doctest" name="data_doctest" time="0.639"><system-err><![CDATA[Use the native Python gzip.GzipFile instead.Use the native Python gzip.GzipFile instead.]]></system-err></testcase><testcase classname="&lt;nose.suite" name="ContextSuite context=discourse_fixt&gt;:setup" time="0.654"><skipped type="unittest.case.SkipTest" message="Mace4/Prover9 is not available so discourse.doctest is skipped"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/test/discourse_fixt.py", line 11, in setup_module
+    m._find_binary('mace4')
+  File "/Users/adamn1/dev/nltk/nltk/inference/prover9.py", line 166, in _find_binary
+    verbose=verbose)
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 602, in find_binary
+    binary_names, url, verbose))
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 596, in find_binary_iter
+    url, verbose):
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 567, in find_file_iter
+    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+LookupError: 
+
+===========================================================================
+NLTK was unable to find the mace4 file!
+Use software specific configuration paramaters or set the PROVER9 environment variable.
+
+  Searched in:
+    - /usr/local/bin/prover9
+    - /usr/local/bin/prover9/bin
+    - /usr/local/bin
+    - /usr/bin
+    - /usr/local/prover9
+    - /usr/local/share/prover9
+
+  For more information on mace4, see:
+    <http://www.cs.unm.edu/~mccune/prover9/>
+===========================================================================
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/test/discourse_fixt.py", line 13, in setup_module
+    raise SkipTest("Mace4/Prover9 is not available so discourse.doctest is skipped")
+unittest.case.SkipTest: Mace4/Prover9 is not available so discourse.doctest is skipped
+]]></skipped></testcase><testcase classname="drt_doctest" name="drt_doctest" time="0.157"></testcase><testcase classname="featgram_doctest" name="featgram_doctest" time="0.231"></testcase><testcase classname="featstruct_doctest" name="featstruct_doctest" time="0.058"></testcase><testcase classname="framenet_doctest" name="framenet_doctest" time="6.422"></testcase><testcase classname="generate_doctest" name="generate_doctest" time="0.009"></testcase><testcase classname="gensim_doctest" name="gensim_doctest" time="39.543"></testcase><testcase classname="gluesemantics_doctest" name="gluesemantics_doctest" time="0.047"><failure type="builtins.AssertionError" message="Failed doctest test for gluesemantics.doctest&#10;  File &quot;/Users/adamn1/dev/nltk/nltk/test/gluesemantics.doctest&quot;, line 0&#10;&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/test/gluesemantics.doctest&quot;, line 346, in gluesemantics.doctest&#10;Failed example:&#10;    for gf in sorted(gfl):&#10;        print(gf)&#10;Expected:&#10;    \P Q.exists x.(P(x) &amp; Q(x)) : ((fv -o fr) -o ((f -o F2) -o F2))&#10;    \P Q.exists x.(P(x) &amp; Q(x)) : ((iv -o ir) -o ((i -o I5) -o I5))&#10;    \x y.sees(x,y) : (f -o (i -o g))&#10;    \x.John(x) : (fv -o fr)&#10;    \x.dog(x) : (iv -o ir)&#10;Got:&#10;    \P Q.exists x.(P(x) &amp; Q(x)) : ((fv -o fr) -o ((f -o F4) -o F4))&#10;    \P Q.exists x.(P(x) &amp; Q(x)) : ((iv -o ir) -o ((i -o I3) -o I3))&#10;    \x y.sees(x,y) : (f -o (i -o g))&#10;    \x.John(x) : (fv -o fr)&#10;    \x.dog(x) : (iv -o ir)&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/test/gluesemantics.doctest&quot;, line 378, in gluesemantics.doctest&#10;Failed example:&#10;    for gf in sorted(fstruct.to_glueformula_list(GlueDict('nltk:grammars/sample_grammars/glue.semtype'))):&#10;        print(gf)&#10;Expected:&#10;    \P Q.exists x.(P(x) &amp; Q(x)) : ((gv -o gr) -o ((g -o G5) -o G5))&#10;    \P Q.exists x.(P(x) &amp; Q(x)) : ((iv -o ir) -o ((i -o I2) -o I2))&#10;    \x y.sees(x,y) : (i -o (g -o f))&#10;    \x.John(x) : (iv -o ir)&#10;    \x.dog(x) : (gv -o gr)&#10;Got:&#10;    \P Q.exists x.(P(x) &amp; Q(x)) : ((gv -o gr) -o ((g -o G3) -o G3))&#10;    \P Q.exists x.(P(x) &amp; Q(x)) : ((iv -o ir) -o ((i -o I4) -o I4))&#10;    \x y.sees(x,y) : (i -o (g -o f))&#10;    \x.John(x) : (iv -o ir)&#10;    \x.dog(x) : (gv -o gr)&#10;"><![CDATA[Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 2189, in runTest
+    raise self.failureException(self.format_failure(new.getvalue()))
+AssertionError: Failed doctest test for gluesemantics.doctest
+  File "/Users/adamn1/dev/nltk/nltk/test/gluesemantics.doctest", line 0
+
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/test/gluesemantics.doctest", line 346, in gluesemantics.doctest
+Failed example:
+    for gf in sorted(gfl):
+        print(gf)
+Expected:
+    \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F2) -o F2))
+    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I5) -o I5))
+    \x y.sees(x,y) : (f -o (i -o g))
+    \x.John(x) : (fv -o fr)
+    \x.dog(x) : (iv -o ir)
+Got:
+    \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F4) -o F4))
+    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I3) -o I3))
+    \x y.sees(x,y) : (f -o (i -o g))
+    \x.John(x) : (fv -o fr)
+    \x.dog(x) : (iv -o ir)
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/test/gluesemantics.doctest", line 378, in gluesemantics.doctest
+Failed example:
+    for gf in sorted(fstruct.to_glueformula_list(GlueDict('nltk:grammars/sample_grammars/glue.semtype'))):
+        print(gf)
+Expected:
+    \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G5) -o G5))
+    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I2) -o I2))
+    \x y.sees(x,y) : (i -o (g -o f))
+    \x.John(x) : (iv -o ir)
+    \x.dog(x) : (gv -o gr)
+Got:
+    \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G3) -o G3))
+    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I4) -o I4))
+    \x y.sees(x,y) : (i -o (g -o f))
+    \x.John(x) : (iv -o ir)
+    \x.dog(x) : (gv -o gr)
+
+]]></failure></testcase><testcase classname="&lt;nose.suite" name="ContextSuite context=gluesemantics_malt_fixt&gt;:setup" time="0.055"><skipped type="unittest.case.SkipTest" message="MaltParser is not available"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/test/gluesemantics_malt_fixt.py", line 9, in setup_module
+    depparser = MaltParser('maltparser-1.7.2')
+  File "/Users/adamn1/dev/nltk/nltk/parse/malt.py", line 133, in __init__
+    self.malt_jars = find_maltparser(parser_dirname)
+  File "/Users/adamn1/dev/nltk/nltk/parse/malt.py", line 67, in find_maltparser
+    _malt_dir = find_dir(parser_dirname, env_vars=('MALT_PARSER',))
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 579, in find_dir
+    file_names, url, verbose, finding_dir=True))
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 567, in find_file_iter
+    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+LookupError: 
+
+===========================================================================
+NLTK was unable to find the maltparser-1.7.2 file!
+Use software specific configuration paramaters or set the MALT_PARSER environment variable.
+===========================================================================
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/test/gluesemantics_malt_fixt.py", line 11, in setup_module
+    raise SkipTest("MaltParser is not available")
+unittest.case.SkipTest: MaltParser is not available
+]]></skipped></testcase><testcase classname="grammar_doctest" name="grammar_doctest" time="0.005"></testcase><testcase classname="grammartestsuites_doctest" name="grammartestsuites_doctest" time="0.425"></testcase><testcase classname="&lt;nose.suite" name="ContextSuite context=inference_fixt&gt;:setup" time="0.439"><skipped type="unittest.case.SkipTest" message="Mace4/Prover9 is not available so inference.doctest was skipped"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/test/inference_fixt.py", line 9, in setup_module
+    m._find_binary('mace4')
+  File "/Users/adamn1/dev/nltk/nltk/inference/prover9.py", line 166, in _find_binary
+    verbose=verbose)
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 602, in find_binary
+    binary_names, url, verbose))
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 596, in find_binary_iter
+    url, verbose):
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 567, in find_file_iter
+    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+LookupError: 
+
+===========================================================================
+NLTK was unable to find the mace4 file!
+Use software specific configuration paramaters or set the PROVER9 environment variable.
+
+  Searched in:
+    - /usr/local/bin/prover9
+    - /usr/local/bin/prover9/bin
+    - /usr/local/bin
+    - /usr/bin
+    - /usr/local/prover9
+    - /usr/local/share/prover9
+
+  For more information on mace4, see:
+    <http://www.cs.unm.edu/~mccune/prover9/>
+===========================================================================
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/test/inference_fixt.py", line 11, in setup_module
+    raise SkipTest("Mace4/Prover9 is not available so inference.doctest was skipped")
+unittest.case.SkipTest: Mace4/Prover9 is not available so inference.doctest was skipped
+]]></skipped></testcase><testcase classname="internals_doctest" name="internals_doctest" time="0.007"></testcase><testcase classname="japanese_doctest" name="japanese_doctest" time="0.855"></testcase><testcase classname="logic_doctest" name="logic_doctest" time="0.121"></testcase><testcase classname="metrics_doctest" name="metrics_doctest" time="0.011"></testcase><testcase classname="misc_doctest" name="misc_doctest" time="0.003"></testcase><testcase classname="&lt;nose.suite" name="ContextSuite context=nonmonotonic_fixt&gt;:setup" time="0.017"><skipped type="unittest.case.SkipTest" message="Mace4/Prover9 is not available so nonmonotonic.doctest was skipped"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/dev/nltk/nltk/test/nonmonotonic_fixt.py", line 9, in setup_module
+    m._find_binary('mace4')
+  File "/Users/adamn1/dev/nltk/nltk/inference/prover9.py", line 166, in _find_binary
+    verbose=verbose)
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 602, in find_binary
+    binary_names, url, verbose))
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 596, in find_binary_iter
+    url, verbose):
+  File "/Users/adamn1/dev/nltk/nltk/internals.py", line 567, in find_file_iter
+    raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+LookupError: 
+
+===========================================================================
+NLTK was unable to find the mace4 file!
+Use software specific configuration paramaters or set the PROVER9 environment variable.
+
+  Searched in:
+    - /usr/local/bin/prover9
+    - /usr/local/bin/prover9/bin
+    - /usr/local/bin
+    - /usr/bin
+    - /usr/local/prover9
+    - /usr/local/share/prover9
+
+  For more information on mace4, see:
+    <http://www.cs.unm.edu/~mccune/prover9/>
+===========================================================================
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/test/nonmonotonic_fixt.py", line 11, in setup_module
+    raise SkipTest("Mace4/Prover9 is not available so nonmonotonic.doctest was skipped")
+unittest.case.SkipTest: Mace4/Prover9 is not available so nonmonotonic.doctest was skipped
+]]></skipped></testcase><testcase classname="paice_doctest" name="paice_doctest" time="0.004"></testcase><testcase classname="parse_doctest" name="parse_doctest" time="8.367"></testcase><testcase classname="&lt;nose.suite" name="ContextSuite context=portuguese_en_fixt&gt;:setup" time="8.367"><skipped type="unittest.case.SkipTest" message="portuguese_en.doctest imports nltk.examples.pt which doesn't exist!"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/test/portuguese_en_fixt.py", line 11, in setup_module
+    raise SkipTest("portuguese_en.doctest imports nltk.examples.pt which doesn't exist!")
+unittest.case.SkipTest: portuguese_en.doctest imports nltk.examples.pt which doesn't exist!
+]]></skipped></testcase><testcase classname="probability_doctest" name="probability_doctest" time="14.331"><system-err><![CDATA[/Users/adamn1/dev/nltk/nltk/probability.py:1323: UserWarning: SimpleGoodTuring did not find a proper best fit line for smoothing probabilities of occurrences. The probability estimates are likely to be unreliable.
+  warnings.warn('SimpleGoodTuring did not find a proper best fit '
+]]></system-err></testcase><testcase classname="propbank_doctest" name="propbank_doctest" time="0.614"></testcase><testcase classname="relextract_doctest" name="relextract_doctest" time="6.598"></testcase><testcase classname="resolution_doctest" name="resolution_doctest" time="0.126"></testcase><testcase classname="semantics_doctest" name="semantics_doctest" time="0.234"></testcase><testcase classname="sentiment_doctest" name="sentiment_doctest" time="0.127"><failure type="builtins.AssertionError" message="Failed doctest test for sentiment.doctest&#10;  File &quot;/Users/adamn1/dev/nltk/nltk/test/sentiment.doctest&quot;, line 0&#10;&#10;----------------------------------------------------------------------&#10;File &quot;/Users/adamn1/dev/nltk/nltk/test/sentiment.doctest&quot;, line 131, in sentiment.doctest&#10;Failed example:&#10;    for sentence in sentences:&#10;        sid = SentimentIntensityAnalyzer()&#10;        print(sentence)&#10;        ss = sid.polarity_scores(sentence)&#10;        for k in sorted(ss):&#10;            print('{0}: {1}, '.format(k, ss[k]), end='')&#10;        print()&#10;Exception raised:&#10;    Traceback (most recent call last):&#10;      File &quot;/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py&quot;, line 1320, in __run&#10;        compileflags, 1), test.globs)&#10;      File &quot;&lt;doctest sentiment.doctest[33]&gt;&quot;, line 2, in &lt;module&gt;&#10;        sid = SentimentIntensityAnalyzer()&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/sentiment/vader.py&quot;, line 204, in __init__&#10;        self.lexicon_file = nltk.data.load(lexicon_file)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 801, in load&#10;        opened_resource = _open(resource_url)&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 919, in _open&#10;        return find(path_, path + ['']).open()&#10;      File &quot;/Users/adamn1/dev/nltk/nltk/data.py&quot;, line 641, in find&#10;        raise LookupError(resource_not_found)&#10;    LookupError: &#10;    **********************************************************************&#10;      Resource&#10;      'sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt'&#10;      not found.  Please use the NLTK Downloader to obtain the&#10;      resource:  &gt;&gt;&gt; nltk.download()&#10;      Searched in:&#10;        - '/Users/adamn1/nltk_data'&#10;        - '/usr/share/nltk_data'&#10;        - '/usr/local/share/nltk_data'&#10;        - '/usr/lib/nltk_data'&#10;        - '/usr/local/lib/nltk_data'&#10;        - ''&#10;    **********************************************************************&#10;"><![CDATA[Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 2189, in runTest
+    raise self.failureException(self.format_failure(new.getvalue()))
+AssertionError: Failed doctest test for sentiment.doctest
+  File "/Users/adamn1/dev/nltk/nltk/test/sentiment.doctest", line 0
+
+----------------------------------------------------------------------
+File "/Users/adamn1/dev/nltk/nltk/test/sentiment.doctest", line 131, in sentiment.doctest
+Failed example:
+    for sentence in sentences:
+        sid = SentimentIntensityAnalyzer()
+        print(sentence)
+        ss = sid.polarity_scores(sentence)
+        for k in sorted(ss):
+            print('{0}: {1}, '.format(k, ss[k]), end='')
+        print()
+Exception raised:
+    Traceback (most recent call last):
+      File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 1320, in __run
+        compileflags, 1), test.globs)
+      File "<doctest sentiment.doctest[33]>", line 2, in <module>
+        sid = SentimentIntensityAnalyzer()
+      File "/Users/adamn1/dev/nltk/nltk/sentiment/vader.py", line 204, in __init__
+        self.lexicon_file = nltk.data.load(lexicon_file)
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 801, in load
+        opened_resource = _open(resource_url)
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 919, in _open
+        return find(path_, path + ['']).open()
+      File "/Users/adamn1/dev/nltk/nltk/data.py", line 641, in find
+        raise LookupError(resource_not_found)
+    LookupError: 
+    **********************************************************************
+      Resource
+      'sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt'
+      not found.  Please use the NLTK Downloader to obtain the
+      resource:  >>> nltk.download()
+      Searched in:
+        - '/Users/adamn1/nltk_data'
+        - '/usr/share/nltk_data'
+        - '/usr/local/share/nltk_data'
+        - '/usr/lib/nltk_data'
+        - '/usr/local/lib/nltk_data'
+        - ''
+    **********************************************************************
+
+]]></failure></testcase><testcase classname="sentiwordnet_doctest" name="sentiwordnet_doctest" time="4.411"></testcase><testcase classname="simple_doctest" name="simple_doctest" time="0.017"></testcase><testcase classname="stem_doctest" name="stem_doctest" time="0.004"></testcase><testcase classname="tag_doctest" name="tag_doctest" time="0.010"></testcase><testcase classname="tokenize_doctest" name="tokenize_doctest" time="0.033"></testcase><testcase classname="toolbox_doctest" name="toolbox_doctest" time="0.010"></testcase><testcase classname="translate_doctest" name="translate_doctest" time="0.405"></testcase><testcase classname="tree_doctest" name="tree_doctest" time="0.297"></testcase><testcase classname="treeprettyprinter_doctest" name="treeprettyprinter_doctest" time="0.017"></testcase><testcase classname="treetransforms_doctest" name="treetransforms_doctest" time="0.010"></testcase><testcase classname="nltk.test.unit.translate.test_bleu.TestBLEU" name="test_full_matches" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_bleu.TestBLEU" name="test_modified_precision" time="0.001"></testcase><testcase classname="nltk.test.unit.translate.test_bleu.TestBLEU" name="test_partial_matches_hypothesis_longer_than_reference" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_bleu.TestBLEU" name="test_zero_matches" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_bleu.TestBLEUFringeCases" name="test_brevity_penalty" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_bleu.TestBLEUFringeCases" name="test_case_where_n_is_bigger_than_hypothesis_length" time="0.001"></testcase><testcase classname="nltk.test.unit.translate.test_bleu.TestBLEUFringeCases" name="test_empty_hypothesis" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_bleu.TestBLEUFringeCases" name="test_empty_references" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_bleu.TestBLEUFringeCases" name="test_empty_references_and_hypothesis" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm1.TestIBMModel1" name="test_prob_t_a_given_s" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm1.TestIBMModel1" name="test_set_uniform_translation_probabilities" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm1.TestIBMModel1" name="test_set_uniform_translation_probabilities_of_non_domain_values" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm2.TestIBMModel2" name="test_prob_t_a_given_s" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm2.TestIBMModel2" name="test_set_uniform_alignment_probabilities" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm2.TestIBMModel2" name="test_set_uniform_alignment_probabilities_of_non_domain_values" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm3.TestIBMModel3" name="test_prob_t_a_given_s" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm3.TestIBMModel3" name="test_set_uniform_distortion_probabilities" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm3.TestIBMModel3" name="test_set_uniform_distortion_probabilities_of_non_domain_values" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm4.TestIBMModel4" name="test_prob_t_a_given_s" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm4.TestIBMModel4" name="test_set_uniform_distortion_probabilities_of_max_displacements" time="0.001"></testcase><testcase classname="nltk.test.unit.translate.test_ibm4.TestIBMModel4" name="test_set_uniform_distortion_probabilities_of_non_domain_values" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm5.TestIBMModel5" name="test_prob_t_a_given_s" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm5.TestIBMModel5" name="test_prune" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm5.TestIBMModel5" name="test_set_uniform_vacancy_probabilities_of_max_displacements" time="0.001"></testcase><testcase classname="nltk.test.unit.translate.test_ibm5.TestIBMModel5" name="test_set_uniform_vacancy_probabilities_of_non_domain_values" time="0.001"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_best_model2_alignment" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_best_model2_alignment_does_not_change_pegged_alignment" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_best_model2_alignment_handles_empty_src_sentence" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_best_model2_alignment_handles_empty_trg_sentence" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_best_model2_alignment_handles_fertile_words" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_hillclimb" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_neighboring_finds_neighbor_alignments" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_neighboring_returns_neighbors_with_pegged_alignment" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_neighboring_sets_neighbor_alignment_info" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_sample" time="0.012"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_vocabularies_are_initialized" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_ibm_model.TestIBMModel" name="test_vocabularies_are_initialized_even_with_empty_corpora" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestHypothesis" name="test_total_translated_words" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestHypothesis" name="test_translated_positions" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestHypothesis" name="test_translation_so_far" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestHypothesis" name="test_translation_so_far_for_empty_hypothesis" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestHypothesis" name="test_untranslated_spans" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestHypothesis" name="test_untranslated_spans_for_empty_hypothesis" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStack" name="test_best_returns_none_when_stack_is_empty" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStack" name="test_best_returns_the_best_hypothesis" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStack" name="test_push_bumps_off_worst_hypothesis_when_stack_is_full" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStack" name="test_push_does_not_add_hypothesis_that_falls_below_beam_threshold" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStack" name="test_push_removes_hypotheses_that_fall_below_beam_threshold" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStackDecoder" name="test_compute_future_costs" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStackDecoder" name="test_compute_future_costs_for_phrases_not_in_phrase_table" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStackDecoder" name="test_distortion_score" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStackDecoder" name="test_distortion_score_of_first_expansion" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStackDecoder" name="test_find_all_src_phrases" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStackDecoder" name="test_future_score" time="0.000"></testcase><testcase classname="nltk.test.unit.translate.test_stack_decoder.TestStackDecoder" name="test_valid_phrases" time="0.000"></testcase><testcase classname="&lt;nose.suite.ContextSuite context=nltk.test.unit" name="test_2x_compat&gt;:setup" time="0.001"><skipped type="unittest.case.SkipTest" message="test_2x_compat is for testing nltk.compat under Python 2.x"><![CDATA[Traceback (most recent call last):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 210, in run
+    self.setUp()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 293, in setUp
+    self.setupContext(ancestor)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/suite.py", line 316, in setupContext
+    try_run(context, names)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/util.py", line 469, in try_run
+    return func(obj)
+  File "/Users/adamn1/dev/nltk/nltk/test/unit/test_2x_compat.py", line 15, in setup_module
+    raise SkipTest("test_2x_compat is for testing nltk.compat under Python 2.x")
+unittest.case.SkipTest: test_2x_compat is for testing nltk.compat under Python 2.x
+]]></skipped></testcase><testcase classname="nltk.test.unit.test_classify" name="test_megam" time="0.027"><skipped type="unittest.case.SkipTest" message="&#10;&#10;===========================================================================&#10;NLTK was unable to find the megam file!&#10;Use software specific configuration paramaters or set the MEGAM environment variable.&#10;&#10;  For more information on megam, see:&#10;    &lt;http://www.umiacs.umd.edu/~hal/megam/index.html&gt;&#10;==========================================================================="><![CDATA[Exception: 
+
+===========================================================================
+NLTK was unable to find the megam file!
+Use software specific configuration paramaters or set the MEGAM environment variable.
+
+  For more information on megam, see:
+    <http://www.umiacs.umd.edu/~hal/megam/index.html>
+===========================================================================
+]]></skipped></testcase><testcase classname="nltk.test.unit.test_classify" name="test_tadm" time="0.012"><skipped type="unittest.case.SkipTest" message="&#10;&#10;===========================================================================&#10;NLTK was unable to find the tadm file!&#10;Use software specific configuration paramaters or set the TADM environment variable.&#10;&#10;  For more information on tadm, see:&#10;    &lt;http://tadm.sf.net&gt;&#10;==========================================================================="><![CDATA[Exception: 
+
+===========================================================================
+NLTK was unable to find the tadm file!
+Use software specific configuration paramaters or set the TADM environment variable.
+
+  For more information on tadm, see:
+    <http://tadm.sf.net>
+===========================================================================
+]]></skipped></testcase><testcase classname="nltk.test.unit.test_collocations.TestBigram" name="test_bigram2" time="0.000"></testcase><testcase classname="nltk.test.unit.test_collocations.TestBigram" name="test_bigram3" time="0.000"></testcase><testcase classname="nltk.test.unit.test_collocations.TestBigram" name="test_bigram5" time="0.000"></testcase><testcase classname="nltk.test.unit.test_corpora.TestCess" name="test_catalan" time="0.113"></testcase><testcase classname="nltk.test.unit.test_corpora.TestCess" name="test_esp" time="0.052"></testcase><testcase classname="nltk.test.unit.test_corpora.TestCoNLL2007" name="test_parsed_sents" time="2.053"></testcase><testcase classname="nltk.test.unit.test_corpora.TestCoNLL2007" name="test_sents" time="0.009"></testcase><testcase classname="nltk.test.unit.test_corpora.TestFloresta" name="test_words" time="0.003"></testcase><testcase classname="nltk.test.unit.test_corpora.TestIndian" name="test_tagged_words" time="0.002"></testcase><testcase classname="nltk.test.unit.test_corpora.TestIndian" name="test_words" time="0.001"></testcase><testcase classname="nltk.test.unit.test_corpora.TestPTB" name="test_categories" time="0.000"><skipped type="unittest.case.SkipTest" message="A full installation of the Penn Treebank is not available"><![CDATA[Exception: A full installation of the Penn Treebank is not available
+]]></skipped></testcase><testcase classname="nltk.test.unit.test_corpora.TestPTB" name="test_category_words" time="0.000"><skipped type="unittest.case.SkipTest" message="A full installation of the Penn Treebank is not available"><![CDATA[Exception: A full installation of the Penn Treebank is not available
+]]></skipped></testcase><testcase classname="nltk.test.unit.test_corpora.TestPTB" name="test_fileids" time="0.000"><skipped type="unittest.case.SkipTest" message="A full installation of the Penn Treebank is not available"><![CDATA[Exception: A full installation of the Penn Treebank is not available
+]]></skipped></testcase><testcase classname="nltk.test.unit.test_corpora.TestPTB" name="test_news_fileids" time="0.000"><skipped type="unittest.case.SkipTest" message="A full installation of the Penn Treebank is not available"><![CDATA[Exception: A full installation of the Penn Treebank is not available
+]]></skipped></testcase><testcase classname="nltk.test.unit.test_corpora.TestPTB" name="test_tagged_words" time="0.000"><skipped type="unittest.case.SkipTest" message="A full installation of the Penn Treebank is not available"><![CDATA[Exception: A full installation of the Penn Treebank is not available
+]]></skipped></testcase><testcase classname="nltk.test.unit.test_corpora.TestPTB" name="test_words" time="0.000"><skipped type="unittest.case.SkipTest" message="A full installation of the Penn Treebank is not available"><![CDATA[Exception: A full installation of the Penn Treebank is not available
+]]></skipped></testcase><testcase classname="nltk.test.unit.test_corpora.TestSinicaTreebank" name="test_parsed_sents" time="0.005"></testcase><testcase classname="nltk.test.unit.test_corpora.TestSinicaTreebank" name="test_sents" time="0.001"></testcase><testcase classname="nltk.test.unit.test_corpora.TestUdhr" name="test_raw_unicode" time="0.133"></testcase><testcase classname="nltk.test.unit.test_corpora.TestUdhr" name="test_words" time="1.874"></testcase><testcase classname="nltk.test.unit.test_corpus_views.TestCorpusViews" name="test_correct_length" time="0.009"></testcase><testcase classname="nltk.test.unit.test_corpus_views.TestCorpusViews" name="test_correct_values" time="0.015"></testcase><testcase classname="nltk.test.unit.test_hmm" name="test_forward_probability" time="0.001"></testcase><testcase classname="nltk.test.unit.test_hmm" name="test_forward_probability2" time="0.001"></testcase><testcase classname="nltk.test.unit.test_hmm" name="test_backward_probability" time="0.001"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_file_is_wrong" time="0.010"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_retweet_original_tweet" time="0.011"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_textoutput" time="0.008"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_tweet_hashtag" time="0.010"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_tweet_media" time="0.009"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_tweet_metadata" time="0.010"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_tweet_place" time="0.009"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_tweet_place_boundingbox" time="0.009"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_tweet_url" time="0.009"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_tweet_usermention" time="0.012"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_user_metadata" time="0.010"></testcase><testcase classname="nltk.test.unit.test_json2csv_corpus.TestJSON2CSV" name="test_userurl" time="0.010"></testcase><testcase classname="nltk.test.unit.test_naivebayes.NaiveBayesClassifierTest" name="test_simple" time="0.000"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('\n    This is a test file.\n    It is fairly short.\n    ', 'ascii')" time="0.056"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('\n    This is a test file.\n    It is fairly short.\n    ', 'latin1')" time="0.053"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('\n    This is a test file.\n    It is fairly short.\n    ', 'greek')" time="0.055"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('\n    This is a test file.\n    It is fairly short.\n    ', 'hebrew')" time="0.059"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('\n    This is a test file.\n    It is fairly short.\n    ', 'utf-16')" time="0.062"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('\n    This is a test file.\n    It is fairly short.\n    ', 'utf-8')" time="0.056"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('This file can be encoded with latin1. \x83', 'latin1')" time="0.051"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('This file can be encoded with latin1. \x83', 'greek')" time="0.053"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('This file can be encoded with latin1. \x83', 'hebrew')" time="0.055"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('This file can be encoded with latin1. \x83', 'utf-16')" time="0.056"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('This file can be encoded with latin1. \x83', 'utf-8')" time="0.062"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader(&quot;    This is a test file.\n    Here's a blank line:\n\n    And here's some unicode: î ģ ￣\n    &quot;, 'utf-16')" time="0.071"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader(&quot;    This is a test file.\n    Here's a blank line:\n\n    And here's some unicode: î ģ ￣\n    &quot;, 'utf-8')" time="0.077"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('    This is a test file.\n    Unicode characters: ó ∢ ㌳䑄 啕\n    ', 'utf-16')" time="0.065"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader('    This is a test file.\n    Unicode characters: ó ∢ ㌳䑄 啕\n    ', 'utf-8')" time="0.063"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader_on_large_string('utf-16',)" time="1.591"></testcase><testcase classname="nltk.test.unit.test_seekable_unicode_stream_reader" name="test_reader_on_large_string('utf-8',)" time="1.566"></testcase><testcase classname="nltk.test.unit.test_stem.SnowballTest" name="test_german" time="0.002"></testcase><testcase classname="nltk.test.unit.test_stem.SnowballTest" name="test_russian" time="0.001"></testcase><testcase classname="nltk.test.unit.test_stem.SnowballTest" name="test_short_strings_bug" time="0.000"></testcase><testcase classname="nltk.test.unit.test_stem.SnowballTest" name="test_spanish" time="0.000"></testcase><testcase classname="nltk.test.unit.test_tag" name="test_basic" time="0.094"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_bad_operator" time="0.011"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_comments" time="0.021"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_examples" time="0.106"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_labeled_nodes" time="0.156"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_multiple_conjs" time="0.019"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_node_encoding" time="0.049"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_node_nocase" time="0.016"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_node_noleaves" time="0.018"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_node_printing" time="0.030"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_node_quoted" time="0.036"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_node_regex" time="0.008"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_node_regex_2" time="0.016"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_node_simple" time="0.027"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_node_tree_position" time="0.040"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_rel_precedence" time="0.090"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_rel_sister_nodes" time="0.044"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_tokenize_encoding" time="0.021"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_tokenize_examples" time="0.068"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_tokenize_link_types" time="0.316"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_tokenize_macros" time="0.010"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_tokenize_node_labels" time="0.014"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_tokenize_nodenames" time="0.035"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_tokenize_quoting" time="0.006"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_tokenize_segmented_patterns" time="0.011"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_tokenize_simple" time="0.011"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_trailing_semicolon" time="0.025"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="test_use_macros" time="0.025"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="tests_rel_dominance" time="0.209"></testcase><testcase classname="nltk.test.unit.test_tgrep.TestSequenceFunctions" name="tests_rel_indexed_children" time="0.152"></testcase><testcase classname="nltk.test.unit.test_tokenize.TestTokenize" name="test_tweet_tokenizer" time="0.000"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_correct_file1" time="0.001"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_correct_file2" time="0.000"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_correct_path" time="0.000"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_empty_subdir1" time="0.000"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_empty_subdir2" time="0.000"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_environment" time="0.000"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_incomplete_file" time="0.001"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_malformed_file1" time="0.001"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_malformed_file2" time="0.000"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_missingdir" time="0.000"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_missingfile1" time="0.000"></testcase><testcase classname="nltk.test.unit.test_twitter_auth.TestCredentials" name="test_missingfile2" time="0.000"></testcase><testcase classname="util_doctest" name="util_doctest" time="0.003"></testcase><testcase classname="wordnet_doctest" name="wordnet_doctest" time="57.151"></testcase><testcase classname="wordnet_lch_doctest" name="wordnet_lch_doctest" time="3.284"></testcase><testcase classname="wsd_doctest" name="wsd_doctest" time="0.006"></testcase><testcase classname="nose.failure.Failure" name="runTest" time="0.000"><error type="builtins.RuntimeError" message="Python is not installed as a framework. The Mac OS X backend will not be able to function correctly if Python is not installed as a framework. See the Python documentation for more information on installing Python as a framework on Mac OS X. Please either reinstall Python as a framework, or try one of the other backends. If you are Working with Matplotlib in a virtual enviroment see 'Working with Matplotlib in Virtual environments' in the Matplotlib FAQ"><![CDATA[Traceback (most recent call last):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 58, in testPartExecutor
+    yield
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/unittest/case.py", line 600, in run
+    testMethod()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/failure.py", line 39, in runTest
+    raise self.exc_val.with_traceback(self.tb)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/plugins/manager.py", line 154, in generate
+    for r in result:
+  File "/Users/adamn1/dev/nltk/nltk/test/doctest_nose_plugin.py", line 106, in loadTestsFromModule
+    for suite in super(DoctestPluginHelper, self).loadTestsFromModule(module):
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/nose/plugins/doctests.py", line 228, in loadTestsFromModule
+    tests = self.finder.find(module)
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 923, in find
+    self._find(tests, obj, name, module, source_lines, globs, {})
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/doctest.py", line 982, in _find
+    if ((inspect.isroutine(inspect.unwrap(val))
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/inspect.py", line 471, in unwrap
+    while _is_wrapper(func):
+  File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/inspect.py", line 465, in _is_wrapper
+    return hasattr(f, '__wrapped__')
+  File "/Users/adamn1/dev/nltk/nltk/lazyimport.py", line 121, in __getattr__
+    module = self.__lazymodule_import()
+  File "/Users/adamn1/dev/nltk/nltk/lazyimport.py", line 99, in __lazymodule_import
+    '*')
+  File "/Users/adamn1/dev/nltk/nltk/app/__init__.py", line 42, in <module>
+    from matplotlib import pylab
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/matplotlib/pylab.py", line 274, in <module>
+    from matplotlib.pyplot import *
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/matplotlib/pyplot.py", line 114, in <module>
+    _backend_mod, new_figure_manager, draw_if_interactive, _show = pylab_setup()
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/matplotlib/backends/__init__.py", line 32, in pylab_setup
+    globals(),locals(),[backend_name],0)
+  File "/Users/adamn1/.venvs/nltk/lib/python3.5/site-packages/matplotlib/backends/backend_macosx.py", line 24, in <module>
+    from matplotlib.backends import _macosx
+RuntimeError: Python is not installed as a framework. The Mac OS X backend will not be able to function correctly if Python is not installed as a framework. See the Python documentation for more information on installing Python as a framework on Mac OS X. Please either reinstall Python as a framework, or try one of the other backends. If you are Working with Matplotlib in a virtual enviroment see 'Working with Matplotlib in Virtual environments' in the Matplotlib FAQ
+]]></error></testcase></testsuite>

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: ALINE
 #
 # Copyright (C) 2001-2015 NLTK Project

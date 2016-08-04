@@ -37,6 +37,7 @@
 - Graham Christensen
 - Trevor Cohn
 - David Coles
+- Claude Coulombe
 - Lucas Cooper
 - Robin Cooper
 - Chris Crowner
@@ -197,3 +198,6 @@
 - Tanin Na Nakorn
 - Linghao Zhang
 - Colin Carroll
+- Heguang Miao
+- George Berry
+- Adam Nelson

@@ -2036,7 +2036,11 @@ def _unzip_iter(filename, root, verbose=True):
             except Exception as e:
                 yield ErrorMessage(filename, e)
                 return
-            outfile.write(contents)
+            try:
+                outfile.write(contents)
+            except OSError as e:
+                yield ErrorMessage(filename, e)
+                return
 
         if verbose and (i*10/len(filelist) > (i-1)*10/len(filelist)):
             sys.stdout.write('.')
