@@ -37,6 +37,7 @@
 - Graham Christensen
 - Trevor Cohn
 - David Coles
+- Claude Coulombe
 - Lucas Cooper
 - Robin Cooper
 - Chris Crowner
