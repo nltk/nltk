@@ -97,8 +97,15 @@ class AnnotationTask(object):
     """
 
     def __init__(self, data=None, distance=binary_distance):
-        """Initialize an empty annotation task.
-
+        """Initialize an annotation task.
+        
+        The data argument can be None (to create an empty annotation task) or a list of 3-tuples, 
+        each representing a coder's labeling of an item:
+            (coder,item,label)
+            
+        The distance argument is a function taking two arguments (labels) and producing a numerical distance.
+        The distance from a label to itsel should be zero:
+            distance(l,l) = 0
         """
         self.distance = distance
         self.I = set()
