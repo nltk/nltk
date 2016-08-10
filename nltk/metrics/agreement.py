@@ -104,7 +104,7 @@ class AnnotationTask(object):
             (coder,item,label)
             
         The distance argument is a function taking two arguments (labels) and producing a numerical distance.
-        The distance from a label to itsel should be zero:
+        The distance from a label to itself should be zero:
             distance(l,l) = 0
         """
         self.distance = distance
@@ -121,7 +121,7 @@ class AnnotationTask(object):
                                 ",".join(x['labels'])), self.data))
 
     def load_array(self, array):
-        """Load the results of annotation.
+        """Load an array of annotation results, appending to any data already loaded.
 
         The argument is a list of 3-tuples, each representing a coder's labeling of an item:
             (coder,item,label)
