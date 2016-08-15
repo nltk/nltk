@@ -99,7 +99,7 @@ class AnnotationTask(object):
     def __init__(self, data=None, distance=binary_distance):
         """Initialize an annotation task.
         
-        The data argument can be None (to create an empty annotation task) or a list or iterator of 3-tuples, 
+        The data argument can be None (to create an empty annotation task) or a sequence of 3-tuples, 
         each representing a coder's labeling of an item:
             (coder,item,label)
             
@@ -121,9 +121,9 @@ class AnnotationTask(object):
                                 ",".join(x['labels'])), self.data))
 
     def load_array(self, array):
-        """Load an array or iterator of annotation results, appending to any data already loaded.
+        """Load an sequence of annotation results, appending to any data already loaded.
 
-        The argument is a list of 3-tuples, each representing a coder's labeling of an item:
+        The argument is a sequence of 3-tuples, each representing a coder's labeling of an item:
             (coder,item,label)
         """
         for coder, item, labels in array:
