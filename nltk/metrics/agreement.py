@@ -99,12 +99,12 @@ class AnnotationTask(object):
     def __init__(self, data=None, distance=binary_distance):
         """Initialize an annotation task.
         
-        The data argument can be None (to create an empty annotation task) or a list of 3-tuples, 
+        The data argument can be None (to create an empty annotation task) or a list or iterator of 3-tuples, 
         each representing a coder's labeling of an item:
             (coder,item,label)
             
         The distance argument is a function taking two arguments (labels) and producing a numerical distance.
-        The distance from a label to itsel should be zero:
+        The distance from a label to itself should be zero:
             distance(l,l) = 0
         """
         self.distance = distance
@@ -121,7 +121,7 @@ class AnnotationTask(object):
                                 ",".join(x['labels'])), self.data))
 
     def load_array(self, array):
-        """Load the results of annotation.
+        """Load an array or iterator of annotation results, appending to any data already loaded.
 
         The argument is a list of 3-tuples, each representing a coder's labeling of an item:
             (coder,item,label)
