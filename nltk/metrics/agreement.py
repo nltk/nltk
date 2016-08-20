@@ -312,8 +312,13 @@ class AnnotationTask(object):
 
         """
         # check for degenerate cases
+        if len(self.K)==0:
+            raise ValueError("Cannot calculate alpha, no data present!")
         if len(self.K) == 1:
+            log.debug("Only one annotation value, allpha returning 1.")
             return 1
+        if len(self.C)==1 and len(self.I) == 1:
+            raise ValueError("Cannot calculate alpha, only one coder and item present!")
         
         De = 0.0
 
@@ -322,9 +327,12 @@ class AnnotationTask(object):
             nj = label_freqs[j]
             for l in self.K:
                 De += float(nj * label_freqs[l]) * self.distance(j, l)
-        De = (1.0 / (len(self.I) * len(self.C) * (len(self.I) * len(self.C) - 1))) * De
-        log.debug("Expected disagreement: %f", De)
-        ret = 1.0 - (self.Do_alpha() / De)
+        try:
+            De = (1.0 / (len(self.I) * len(self.C) * (len(self.I) * len(self.C) - 1))) * De
+            log.debug("Expected disagreement: %f", De)
+            ret = 1.0 - (self.Do_alpha() / De)
+        except ZeroDivisionError:
+            raise ValueError("Cannot calculate alpha, expected disagreement zero, check the distance function!")
         return ret
 
     def weighted_kappa_pairwise(self, cA, cB, max_distance=1.0):
