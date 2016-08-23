@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2016 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
+# Contributor: J Richard Snape 
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
@@ -163,6 +164,9 @@ class _DendrogramNode(object):
         for priority, node in queue:
             groups.append(node.leaves())
         return groups
+    
+    def __lt__(self, comparator):
+        return self._value.any() < comparator._value.any()
 
 
 @python_2_unicode_compatible
@@ -240,7 +244,7 @@ class Dendrogram(object):
 
         # display functions
         def format(centre, left=' ', right=' '):
-            return '%s%s%s' % (lhalf*left, centre, right*rhalf)
+            return '%s%s%s' % (int(lhalf)*left, centre, right*int(rhalf))
         def display(str):
             stdout.write(str)
 
