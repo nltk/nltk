@@ -15,20 +15,20 @@ The input is:
 - (optionally) the encoding of the input data (default:utf-8)
 
     >>> from nltk.tag import SennaTagger
-    >>> tagger = SennaTagger('/usr/share/senna-v2.0')
+    >>> tagger = SennaTagger('/usr/share/senna-v3.0')
     >>> tagger.tag('What is the airspeed of an unladen swallow ?'.split())
     [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'),
     ('of', 'IN'), ('an', 'DT'), ('unladen', 'NN'), ('swallow', 'NN'), ('?', '.')]
 
     >>> from nltk.tag import SennaChunkTagger
-    >>> chktagger = SennaChunkTagger('/usr/share/senna-v2.0')
+    >>> chktagger = SennaChunkTagger('/usr/share/senna-v3.0')
     >>> chktagger.tag('What is the airspeed of an unladen swallow ?'.split())
     [('What', 'B-NP'), ('is', 'B-VP'), ('the', 'B-NP'), ('airspeed', 'I-NP'),
     ('of', 'B-PP'), ('an', 'B-NP'), ('unladen', 'I-NP'), ('swallow', 'I-NP'),
     ('?', 'O')]
 
     >>> from nltk.tag import SennaNERTagger
-    >>> nertagger = SennaNERTagger('/usr/share/senna-v2.0')
+    >>> nertagger = SennaNERTagger('/usr/share/senna-v3.0')
     >>> nertagger.tag('Shakespeare theatre was in London .'.split())
     [('Shakespeare', 'B-PER'), ('theatre', 'O'), ('was', 'O'), ('in', 'O'),
     ('London', 'B-LOC'), ('.', 'O')]
@@ -79,7 +79,7 @@ class SennaChunkTagger(Senna):
         Extracts the chunks in a BIO chunk-tagged sentence.
         
         >>> from nltk.tag import SennaChunkTagger
-        >>> chktagger = SennaChunkTagger('/usr/share/senna-v2.0')
+        >>> chktagger = SennaChunkTagger('/usr/share/senna-v3.0')
         >>> sent = 'What is the airspeed of an unladen swallow ?'.split()
         >>> tagged_sent = chktagger.tag(sent)
         >>> tagged_sent
@@ -139,7 +139,7 @@ class SennaNERTagger(Senna):
 def setup_module(module):
     from nose import SkipTest
     try:
-        tagger = Senna('/usr/share/senna-v2.0', ['pos', 'chk', 'ner'])
+        tagger = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     except OSError:
         raise SkipTest("Senna executable not found")
 
