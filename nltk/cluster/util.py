@@ -167,7 +167,7 @@ class _DendrogramNode(object):
     
     
     def __lt__(self, comparator):
-        return self._value.any() < comparator._value.any()
+        return cosine_distance(self._value, comparator._value) < 0
     
 
 @python_2_unicode_compatible
