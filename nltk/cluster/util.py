@@ -165,9 +165,10 @@ class _DendrogramNode(object):
             groups.append(node.leaves())
         return groups
     
+    
     def __lt__(self, comparator):
         return self._value.any() < comparator._value.any()
-
+    
 
 @python_2_unicode_compatible
 class Dendrogram(object):
@@ -244,7 +245,7 @@ class Dendrogram(object):
 
         # display functions
         def format(centre, left=' ', right=' '):
-            return '%s%s%s' % (int(lhalf)*left, centre, right*int(rhalf))
+            return '%s%s%s' % (lhalf*left, centre, right*rhalf)
         def display(str):
             stdout.write(str)
 
