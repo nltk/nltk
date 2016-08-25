@@ -240,8 +240,8 @@ class Dendrogram(object):
 
         # find the bottom row and the best cell width
         width = max(map(len, last_row)) + 1
-        lhalf = width / 2
-        rhalf = width - lhalf - 1
+        lhalf = int(width / 2)
+        rhalf = int(width - lhalf - 1)
 
         # display functions
         def format(centre, left=' ', right=' '):
