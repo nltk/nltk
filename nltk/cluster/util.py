@@ -165,7 +165,6 @@ class _DendrogramNode(object):
             groups.append(node.leaves())
         return groups
     
-    
     def __lt__(self, comparator):
         return cosine_distance(self._value, comparator._value) < 0
     
