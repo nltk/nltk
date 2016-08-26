@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: ALINE
 #
-# Copyright (C) 2001-2015 NLTK Project
-# Author: Geoff Bacon <bacon@berkeley.edu>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Greg Kondrak <gkondrak@ualberta.ca>
+#         Geoff Bacon <bacon@berkeley.edu> (Python port)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
