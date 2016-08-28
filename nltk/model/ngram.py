@@ -76,7 +76,7 @@ class BaseNgramModel(object):
             context, word = tuple(ngram[:-1]), ngram[-1]
             H += self.logscore(word, context)
             processed_ngrams += 1
-        return H / processed_ngrams
+        return - (H / processed_ngrams)
 
     def perplexity(self, text):
         """
