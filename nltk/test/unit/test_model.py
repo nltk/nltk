@@ -200,6 +200,28 @@ class MLENgramModelTests(NgramModelBaseTest):
         self.assertEqual(score_ctx_tuple, 0.5)
 
 
+    def test_entropy(self):
+        # ngrams seen during training
+        seen_ngrams = "abrad"
+        # Ngram = Log score
+        # <s>, a    = -1
+        # a, b      = -1
+        # b, UNK    = -1
+        # UNK, a    = -1.585
+        # a, d      = -1
+        # d, </s>   = -1
+        # TOTAL    = -6.585
+        seen_entropy = 1.0975
+
+        self.assertAlmostEqual(seen_entropy, self.model.entropy(seen_ngrams), places=4)
+
+    def test_entropy_perplexity_unseen(self):
+        # In MLE, even one unseen ngram should turn entropy and perplexity into INF
+        unseen_ngram = "acd"
+
+        self.assertEqual(float("inf"), self.model.entropy(unseen_ngram))
+        self.assertEqual(float("inf"), self.model.perplexity(unseen_ngram))
+
 class LidstoneNgramModelTests(NgramModelBaseTest):
     """unit tests for LidstoneNgramModel class"""
 
@@ -214,6 +236,24 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
         expected_score = 0.7333
         got_score = self.model.score("d", ["c"])
         self.assertAlmostEqual(expected_score, got_score, places=4)
+
+
+    def test_entropy_perplexity(self):
+        # Unlike MLE this should be able to handle completely novel ngrams
+        test_corp = "ac-dc"
+        # Ngram = score; log score
+        # <s>, a    = 0.4074; -1.2955
+        # a, c      = 0.1428; -4.7549
+        # c, -      = 0.0588; -4.0875
+        # -, d      = 0.027;  -5.2109
+        # d, c      = 0.037; -4.7563
+        # c, </s>   = 0.0588; -4.088
+        # Total Log Score: -24.1896
+        expected_H = 4.0316
+        expected_perplexity = 16.3543
+
+        self.assertAlmostEqual(expected_H, self.model.entropy(test_corp), places=4)
+        self.assertAlmostEqual(expected_perplexity, self.model.perplexity(test_corp), places=4)
 
 
 class LaplaceNgramModelTests(NgramModelBaseTest):
@@ -232,6 +272,23 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
         expected_score = 0.3333
         got_score = self.model.score("d", ["c"])
         self.assertAlmostEqual(expected_score, got_score, places=4)
+
+    def test_entropy_perplexity(self):
+        # Unlike MLE this should be able to handle completely novel ngrams
+        test_corp = "ac-dc"
+        # Ngram = score; log score
+        # <s>, a    = 0.(2); -2.1699
+        # a, c      = 0.(1); -3.1699
+        # c, -      = 0.125; -3.0
+        # -, d      = 0.1;  -3.3219
+        # d, c      = 0.(1); -3.1699
+        # c, </s>   = 0.125; -3.0
+        # Total Log Score: -17.8317
+        expected_H = 2.972
+        expected_perplexity = 7.846
+
+        self.assertAlmostEqual(expected_H, self.model.entropy(test_corp), places=4)
+        self.assertAlmostEqual(expected_perplexity, self.model.perplexity(test_corp), places=4)
 
 
 class ModelFuncsTests(unittest.TestCase):

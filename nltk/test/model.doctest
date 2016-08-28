@@ -324,6 +324,6 @@ Here are examples of these methods:
     >>> base_model.logscore("abc", ("test",))
     -1.0
     >>> base_model.entropy(sents[4])
-    -1.0
+    1.0
     >>> base_model.perplexity(sents[4])
-    0.5
+    2.0
