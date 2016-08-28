@@ -40,6 +40,17 @@ class NgramCounterTests(unittest.TestCase):
         expected_error_msg = "Order of NgramCounter cannot be less than 1. Got: 0"
         self.assertEqual(str(exc_info.exception), expected_error_msg)
 
+    def test_NgramCounter_breaks_given_empty_vocab(self):
+        empty_vocab = NgramModelVocabulary(2, "abc")
+        empty_counter = NgramCounter(2, empty_vocab, pad_left=False, pad_right=False)
+
+        with self.assertRaises(EmptyVocabularyError) as exc_info:
+            empty_counter.train_counts(['ad', 'hominem'])
+
+        self.assertEqual(("Cannot start counting ngrams until "
+                          "vocabulary contains more than one item."),
+                         str(exc_info.exception))
+
     def test_check_against_vocab(self):
         unk_label = "<UNK>"
 
