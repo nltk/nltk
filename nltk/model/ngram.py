@@ -11,7 +11,7 @@ from math import log
 from nltk import compat
 
 
-NEG_INF = -1e6
+NEG_INF = float("-inf")
 
 
 @compat.python_2_unicode_compatible
