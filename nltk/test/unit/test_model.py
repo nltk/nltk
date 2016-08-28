@@ -185,7 +185,7 @@ class BaseNgramModelTests(NgramModelBaseTest):
         self.assertEqual(logscore, NEG_INF)
 
 
-class MLENgramModelTest(NgramModelBaseTest):
+class MLENgramModelTests(NgramModelBaseTest):
     """unit tests for MLENgramModel class"""
 
     def setUp(self):
@@ -200,8 +200,8 @@ class MLENgramModelTest(NgramModelBaseTest):
         self.assertEqual(score_ctx_tuple, 0.5)
 
 
-class LidstoneNgramModelTest(NgramModelBaseTest):
-    """unit test for LidstoneNgramModel class"""
+class LidstoneNgramModelTests(NgramModelBaseTest):
+    """unit tests for LidstoneNgramModel class"""
 
     def setUp(self):
         self.model = LidstoneNgramModel(0.1, self.counter)
@@ -216,7 +216,7 @@ class LidstoneNgramModelTest(NgramModelBaseTest):
         self.assertAlmostEqual(expected_score, got_score, places=4)
 
 
-class LaplaceNgramModelTest(NgramModelBaseTest):
+class LaplaceNgramModelTests(NgramModelBaseTest):
     """unit tests for LaplaceNgramModel class"""
 
     def setUp(self):
