@@ -162,27 +162,20 @@ class BaseNgramModelTests(NgramModelBaseTest):
     """unit tests for BaseNgramModel class"""
 
     def setUp(self):
-        self.base_model = BaseNgramModel(self.counter)
+        self.model = BaseNgramModel(self.counter)
 
     def test_score(self):
         # should always return 0.5
-        score1 = self.base_model.score("b", ["a"])
-        score2 = self.base_model.score("c", ["a"])
-        score3 = self.base_model.score("c", ["a", "d"])
+        # should handle both lists and tuples as context
+        score1 = self.model.score("b", ["a"])
+        score2 = self.model.score("c", ("a",))
+        score3 = self.model.score("c", ["a", "d"])
+        score4 = self.model.score("c", ("a", "d"))
+
         self.assertEqual(score1, 0.5)
         self.assertEqual(score1, score2)
         self.assertEqual(score1, score3)
-
-    def test_logscore_non_zero_score(self):
-        logscore = self.base_model.logscore("g", ["e"])
-        self.assertEqual(logscore, -1.0)
-
-    def test_logscore_zero_score(self):
-        patch_model = BaseNgramModel(self.counter)
-        # monkey patched the score method to always return 0, just for this test
-        patch_model.score = lambda word, context: 0.0
-        logscore = patch_model.logscore("d", ["e"])
-        self.assertEqual(logscore, NEG_INF)
+        self.assertEqual(score1, score4)
 
 
 class MLENgramModelTests(NgramModelBaseTest):
@@ -192,13 +185,24 @@ class MLENgramModelTests(NgramModelBaseTest):
         self.model = MLENgramModel(self.counter)
 
     def test_score(self):
-        # simultaneously tests the accuracy of score and whether it can handle
-        # both lists and tuples as context arguments
         score_ctx_list = self.model.score("d", ["c"])
         score_ctx_tuple = self.model.score("b", ("a",))
+
         self.assertEqual(score_ctx_list, 1)
         self.assertEqual(score_ctx_tuple, 0.5)
 
+    def test_score_unseen(self):
+        # Unseen ngrams should yield 0
+        score_unseen = self.model.score("d", ["e"])
+
+        self.assertEqual(score_unseen, 0)
+
+
+    def test_logscore_zero_score(self):
+        # logscore of unseen ngrams should be -inf
+        logscore = self.model.logscore("d", ["e"])
+
+        self.assertEqual(logscore, NEG_INF)
 
     def test_entropy(self):
         # ngrams seen during training
@@ -221,6 +225,7 @@ class MLENgramModelTests(NgramModelBaseTest):
 
         self.assertEqual(float("inf"), self.model.entropy(unseen_ngram))
         self.assertEqual(float("inf"), self.model.perplexity(unseen_ngram))
+
 
 class LidstoneNgramModelTests(NgramModelBaseTest):
     """unit tests for LidstoneNgramModel class"""
