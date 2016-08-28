@@ -100,14 +100,25 @@ class NgramCounter(object):
         }
         # While allowing whatever the user passes to override them
         self.ngrams_kwargs.update(ngrams_kwargs)
+        # Set up the vocabulary
+        self._set_up_vocabulary(vocabulary, unk_cutoff)
 
+        self.ngrams = defaultdict(ConditionalFreqDist)
+        self.unigrams = FreqDist()
+
+    def _set_up_vocabulary(self, vocabulary, unk_cutoff):
         self.vocabulary = copy(vocabulary)  # copy needed to prevent state sharing
         if unk_cutoff is not None:
             # If cutoff value is provided, override vocab's cutoff
             self.vocabulary.cutoff = unk_cutoff
 
-        self.ngrams = defaultdict(ConditionalFreqDist)
-        self.unigrams = FreqDist()
+        if self.ngrams_kwargs['pad_left']:
+            lpad_sym = self.ngrams_kwargs.get("left_pad_symbol")
+            self.vocabulary[lpad_sym] = self.vocabulary.cutoff
+
+        if self.ngrams_kwargs['pad_right']:
+            rpad_sym = self.ngrams_kwargs.get("right_pad_symbol")
+            self.vocabulary[rpad_sym] = self.vocabulary.cutoff
 
     def _enumerate_ngram_orders(self):
         return enumerate(range(self.order, 1, -1))

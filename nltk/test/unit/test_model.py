@@ -228,12 +228,18 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
     def setUp(self):
         self.model = LidstoneNgramModel(0.1, self.counter)
 
-    def test_gamma(self):
+    def test_gamma_and_gamma_norm(self):
         self.assertEqual(0.1, self.model.gamma)
-        self.assertEqual(0.5, self.model.gamma_norm)
+        # There are 7 items in the vocabulary, so we expect gamma norm to be 0.7
+        # Due to floating point funkyness in Python, we use float assertion here
+        self.assertAlmostEqual(0.7, self.model.gamma_norm)
 
     def test_score(self):
-        expected_score = 0.7333
+        # count(d | c) = 1
+        # *count(d | c) = 1.1
+        # Count(w | c for w in vocab) = 1
+        # *Count(w | c for w in vocab) = 1.7
+        expected_score = 0.6471
         got_score = self.model.score("d", ["c"])
         self.assertAlmostEqual(expected_score, got_score, places=4)
 
@@ -265,11 +271,16 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
     def test_gamma(self):
         # Make sure the gamma is set to 1
         self.assertEqual(1, self.model.gamma)
-        self.assertEqual(5, self.model.gamma_norm)
+        # Laplace Gamma norm is just the vocabulary size
+        self.assertEqual(7, self.model.gamma_norm)
 
     def test_score(self):
-        # basic sanit-check
-        expected_score = 0.3333
+        # basic sanity-check:
+        # count(d | c) = 1
+        # *count(d | c) = 2
+        # Count(w | c for w in vocab) = 1
+        # *Count(w | c for w in vocab) = 8
+        expected_score = 0.25
         got_score = self.model.score("d", ["c"])
         self.assertAlmostEqual(expected_score, got_score, places=4)
 
