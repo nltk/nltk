@@ -11,7 +11,7 @@ from math import log
 from nltk import compat
 
 
-NEG_INF = -1e6
+NEG_INF = float("-inf")
 
 
 @compat.python_2_unicode_compatible
@@ -76,7 +76,7 @@ class BaseNgramModel(object):
             context, word = tuple(ngram[:-1]), ngram[-1]
             H += self.logscore(word, context)
             processed_ngrams += 1
-        return H / processed_ngrams
+        return - (H / processed_ngrams)
 
     def perplexity(self, text):
         """

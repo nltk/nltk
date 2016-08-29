@@ -162,61 +162,112 @@ class BaseNgramModelTests(NgramModelBaseTest):
     """unit tests for BaseNgramModel class"""
 
     def setUp(self):
-        self.base_model = BaseNgramModel(self.counter)
+        self.model = BaseNgramModel(self.counter)
 
     def test_score(self):
         # should always return 0.5
-        score1 = self.base_model.score("b", ["a"])
-        score2 = self.base_model.score("c", ["a"])
-        score3 = self.base_model.score("c", ["a", "d"])
+        # should handle both lists and tuples as context
+        score1 = self.model.score("b", ["a"])
+        score2 = self.model.score("c", ("a",))
+        score3 = self.model.score("c", ["a", "d"])
+        score4 = self.model.score("c", ("a", "d"))
+
         self.assertEqual(score1, 0.5)
         self.assertEqual(score1, score2)
         self.assertEqual(score1, score3)
-
-    def test_logscore_non_zero_score(self):
-        logscore = self.base_model.logscore("g", ["e"])
-        self.assertEqual(logscore, -1.0)
-
-    def test_logscore_zero_score(self):
-        patch_model = BaseNgramModel(self.counter)
-        # monkey patched the score method to always return 0, just for this test
-        patch_model.score = lambda word, context: 0.0
-        logscore = patch_model.logscore("d", ["e"])
-        self.assertEqual(logscore, NEG_INF)
+        self.assertEqual(score1, score4)
 
 
-class MLENgramModelTest(NgramModelBaseTest):
+class MLENgramModelTests(NgramModelBaseTest):
     """unit tests for MLENgramModel class"""
 
     def setUp(self):
         self.model = MLENgramModel(self.counter)
 
     def test_score(self):
-        # simultaneously tests the accuracy of score and whether it can handle
-        # both lists and tuples as context arguments
         score_ctx_list = self.model.score("d", ["c"])
         score_ctx_tuple = self.model.score("b", ("a",))
+
         self.assertEqual(score_ctx_list, 1)
         self.assertEqual(score_ctx_tuple, 0.5)
 
+    def test_score_unseen(self):
+        # Unseen ngrams should yield 0
+        score_unseen = self.model.score("d", ["e"])
 
-class LidstoneNgramModelTest(NgramModelBaseTest):
-    """unit test for LidstoneNgramModel class"""
+        self.assertEqual(score_unseen, 0)
+
+
+    def test_logscore_zero_score(self):
+        # logscore of unseen ngrams should be -inf
+        logscore = self.model.logscore("d", ["e"])
+
+        self.assertEqual(logscore, NEG_INF)
+
+    def test_entropy(self):
+        # ngrams seen during training
+        seen_ngrams = "abrad"
+        # Ngram = Log score
+        # <s>, a    = -1
+        # a, b      = -1
+        # b, UNK    = -1
+        # UNK, a    = -1.585
+        # a, d      = -1
+        # d, </s>   = -1
+        # TOTAL    = -6.585
+        seen_entropy = 1.0975
+
+        self.assertAlmostEqual(seen_entropy, self.model.entropy(seen_ngrams), places=4)
+
+    def test_entropy_perplexity_unseen(self):
+        # In MLE, even one unseen ngram should turn entropy and perplexity into INF
+        unseen_ngram = "acd"
+
+        self.assertEqual(float("inf"), self.model.entropy(unseen_ngram))
+        self.assertEqual(float("inf"), self.model.perplexity(unseen_ngram))
+
+
+class LidstoneNgramModelTests(NgramModelBaseTest):
+    """unit tests for LidstoneNgramModel class"""
 
     def setUp(self):
         self.model = LidstoneNgramModel(0.1, self.counter)
 
-    def test_gamma(self):
+    def test_gamma_and_gamma_norm(self):
         self.assertEqual(0.1, self.model.gamma)
-        self.assertEqual(0.5, self.model.gamma_norm)
+        # There are 7 items in the vocabulary, so we expect gamma norm to be 0.7
+        # Due to floating point funkyness in Python, we use float assertion here
+        self.assertAlmostEqual(0.7, self.model.gamma_norm)
 
     def test_score(self):
-        expected_score = 0.7333
+        # count(d | c) = 1
+        # *count(d | c) = 1.1
+        # Count(w | c for w in vocab) = 1
+        # *Count(w | c for w in vocab) = 1.7
+        expected_score = 0.6471
         got_score = self.model.score("d", ["c"])
         self.assertAlmostEqual(expected_score, got_score, places=4)
 
 
-class LaplaceNgramModelTest(NgramModelBaseTest):
+    def test_entropy_perplexity(self):
+        # Unlike MLE this should be able to handle completely novel ngrams
+        test_corp = "ac-dc"
+        # Ngram = score; log score
+        # <s>, a    = 0.4074; -1.2955
+        # a, c      = 0.1428; -4.7549
+        # c, -      = 0.0588; -4.0875
+        # -, d      = 0.027;  -5.2109
+        # d, c      = 0.037; -4.7563
+        # c, </s>   = 0.0588; -4.088
+        # Total Log Score: -24.1896
+        expected_H = 4.0316
+        expected_perplexity = 16.3543
+
+        self.assertAlmostEqual(expected_H, self.model.entropy(test_corp), places=4)
+        self.assertAlmostEqual(expected_perplexity, self.model.perplexity(test_corp), places=4)
+
+
+class LaplaceNgramModelTests(NgramModelBaseTest):
     """unit tests for LaplaceNgramModel class"""
 
     def setUp(self):
@@ -225,13 +276,35 @@ class LaplaceNgramModelTest(NgramModelBaseTest):
     def test_gamma(self):
         # Make sure the gamma is set to 1
         self.assertEqual(1, self.model.gamma)
-        self.assertEqual(5, self.model.gamma_norm)
+        # Laplace Gamma norm is just the vocabulary size
+        self.assertEqual(7, self.model.gamma_norm)
 
     def test_score(self):
-        # basic sanit-check
-        expected_score = 0.3333
+        # basic sanity-check:
+        # count(d | c) = 1
+        # *count(d | c) = 2
+        # Count(w | c for w in vocab) = 1
+        # *Count(w | c for w in vocab) = 8
+        expected_score = 0.25
         got_score = self.model.score("d", ["c"])
         self.assertAlmostEqual(expected_score, got_score, places=4)
+
+    def test_entropy_perplexity(self):
+        # Unlike MLE this should be able to handle completely novel ngrams
+        test_corp = "ac-dc"
+        # Ngram = score; log score
+        # <s>, a    = 0.(2); -2.1699
+        # a, c      = 0.(1); -3.1699
+        # c, -      = 0.125; -3.0
+        # -, d      = 0.1;  -3.3219
+        # d, c      = 0.(1); -3.1699
+        # c, </s>   = 0.125; -3.0
+        # Total Log Score: -17.8317
+        expected_H = 2.972
+        expected_perplexity = 7.846
+
+        self.assertAlmostEqual(expected_H, self.model.entropy(test_corp), places=4)
+        self.assertAlmostEqual(expected_perplexity, self.model.perplexity(test_corp), places=4)
 
 
 class ModelFuncsTests(unittest.TestCase):
