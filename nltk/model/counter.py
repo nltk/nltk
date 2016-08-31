@@ -132,8 +132,15 @@ class NgramCounter(object):
 
         for sent in training_text:
             checked_sent = (self.check_against_vocab(word) for word in sent)
+            sent_start = True
             for ngram in self.to_ngrams(checked_sent):
                 context, word = tuple(ngram[:-1]), ngram[-1]
+
+                if sent_start:
+                    for context_word in context:
+                        self.unigrams[context_word] += 1
+                    sent_start = False
+
                 for trunc_index, ngram_order in self._enumerate_ngram_orders():
                     trunc_context = context[trunc_index:]
                     # note that above line doesn't affect context on first iteration
