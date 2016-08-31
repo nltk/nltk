@@ -164,9 +164,21 @@ class NgramModelBaseTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
+        # The base vocabulary contains 5 items: abcd and UNK
         self.vocab = NgramModelVocabulary(1, "abcd")
+        # NgramCounter.vocabulary contains 7 items (+2 for padding symbols)
         self.counter = NgramCounter(2, self.vocab)
         self.counter.train_counts(['abcd', 'egadbe'])
+
+    def total_vocab_score(self, context):
+        """Sums up scores for the whole vocabulary given some context.
+
+        Used to make sure they sum to 1.
+        Note that we *must* loop over the counter's vocabulary so as to include
+        padding symbols.
+        """
+        return (sum(self.model.score(w, context) for w in self.counter.vocabulary)
+                + self.model.score(self.counter.unk_label, context))
 
 
 class BaseNgramModelTests(NgramModelBaseTest):
@@ -208,6 +220,19 @@ class MLENgramModelTests(NgramModelBaseTest):
 
         self.assertEqual(score_unseen, 0)
 
+    def test_score_sums_to_1(self):
+        seen_contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',))
+
+        for context in seen_contexts:
+            self.assertEqual(self.total_vocab_score(context), 1)
+
+    def test_score_sum_of_unseen_contexts_is_0(self):
+        # MLE will give 0 scores across the board for contexts not seen during training.
+        # Note that due to heavy defaultdict usage this doesn't raise missing key errors.
+        unseen_contexts = (('e',), ('r',))
+
+        for context in unseen_contexts:
+            self.assertEqual(self.total_vocab_score(context), 0)
 
     def test_logscore_zero_score(self):
         # logscore of unseen ngrams should be -inf
@@ -259,6 +284,13 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
         got_score = self.model.score("d", ["c"])
         self.assertAlmostEqual(expected_score, got_score, places=4)
 
+    def test_scores_sum_to_1(self):
+        # Lidstone smoothing can handle contexts unseen during training
+        mixed_contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
+                          ('e',), ('r'), ('w',))
+
+        for context in mixed_contexts:
+            self.assertAlmostEqual(self.total_vocab_score(context), 1)
 
     def test_entropy_perplexity(self):
         # Unlike MLE this should be able to handle completely novel ngrams
@@ -316,6 +348,14 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
 
         self.assertAlmostEqual(expected_H, self.model.entropy(test_corp), places=4)
         self.assertAlmostEqual(expected_perplexity, self.model.perplexity(test_corp), places=4)
+
+    def test_scores_sum_to_1(self):
+        # Laplace (like Lidstone) smoothing can handle contexts unseen during training
+        mixed_contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
+                          ('e',), ('r'), ('w',))
+
+        for context in mixed_contexts:
+            self.assertAlmostEqual(self.total_vocab_score(context), 1)
 
 
 class ModelFuncsTests(unittest.TestCase):
