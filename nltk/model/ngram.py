@@ -5,7 +5,6 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import unicode_literals, division
-
 from math import log
 
 from nltk import compat
@@ -27,8 +26,17 @@ class BaseNgramModel(object):
         self.ngram_counter = ngram_counter
         # for convenient access save top-most ngram order ConditionalFreqDist
         self.ngrams = ngram_counter.ngrams[ngram_counter.order]
+        self._ngrams = ngram_counter.ngrams
+        self._order = ngram_counter.order
 
         self._check_against_vocab = self.ngram_counter.check_against_vocab
+
+    def check_context(self, context):
+        """Makes sure context not longer than model's ngram order and is a tuple."""
+        if len(context) >= self._order:
+            raise ValueError("Context is too long for this ngram order: {0}".format(context))
+        # ensures the context argument is a tuple
+        return tuple(context)
 
     def score(self, word, context):
         """
@@ -104,7 +112,8 @@ class MLENgramModel(BaseNgramModel):
         - word is expcected to be a string
         - context is expected to be something reasonably convertible to a tuple
         """
-        return self.ngrams[tuple(context)].freq(word)
+        context = self.check_context(context)
+        return self.ngrams[context].freq(word)
 
 
 @compat.python_2_unicode_compatible
@@ -122,7 +131,8 @@ class LidstoneNgramModel(BaseNgramModel):
         self.gamma_norm = len(self.ngram_counter.vocabulary) * gamma
 
     def score(self, word, context):
-        context_freqdist = self.ngrams[tuple(context)]
+        context = self.check_context(context)
+        context_freqdist = self.ngrams[context]
         word_count = context_freqdist[word]
         ctx_count = context_freqdist.N()
         return (word_count + self.gamma) / (ctx_count + self.gamma_norm)
