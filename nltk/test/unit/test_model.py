@@ -187,13 +187,31 @@ class BaseNgramModelTests(NgramModelBaseTest):
     def setUp(self):
         self.model = BaseNgramModel(self.counter)
 
+    def test_aliases(self):
+        self.assertEqual(self.model._order, 2)
+        self.assertEqual(self.model._ngrams, self.counter.ngrams)
+        self.assertEqual(self.model._check_against_vocab, self.counter.check_against_vocab)
+
+    def test_context_checker(self):
+        ctx_tuple = self.model.check_context(('a',))
+        ctx_list = self.model.check_context(['a'])
+
+        self.assertEqual(ctx_list, ctx_tuple)
+
+        with self.assertRaises(ValueError):
+            self.model.check_context(['a', 'b'])
+
+        with self.assertRaises(TypeError):
+            self.model.check_context(None)
+
     def test_score(self):
         # should always return 0.5
         # should handle both lists and tuples as context
         score1 = self.model.score("b", ["a"])
         score2 = self.model.score("c", ("a",))
-        score3 = self.model.score("c", ["a", "d"])
-        score4 = self.model.score("c", ("a", "d"))
+        # Should also handle various empty context
+        score3 = self.model.score("c", "")
+        score4 = self.model.score("c", [])
 
         self.assertEqual(score1, 0.5)
         self.assertEqual(score1, score2)
@@ -213,6 +231,10 @@ class MLENgramModelTests(NgramModelBaseTest):
 
         self.assertEqual(score_ctx_list, 1)
         self.assertEqual(score_ctx_tuple, 0.5)
+
+    def test_score_context_too_long(self):
+        with self.assertRaises(ValueError) as exc_info:
+            self.model.score('d', ('a', 'b'))
 
     def test_score_unseen(self):
         # Unseen ngrams should yield 0
@@ -288,6 +310,10 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
         self.assertAlmostEqual(expected_score, got_score_list, places=4)
         self.assertEqual(got_score_list, got_score_tuple)
 
+    def test_score_context_too_long(self):
+        with self.assertRaises(ValueError) as exc_info:
+            self.model.score('d', ('a', 'b'))
+
     def test_scores_sum_to_1(self):
         # Lidstone smoothing can handle contexts unseen during training
         mixed_contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
@@ -339,6 +365,10 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
 
         self.assertAlmostEqual(expected_score, got_score_list, places=4)
         self.assertEqual(got_score_list, got_score_tuple)
+
+    def test_score_context_too_long(self):
+        with self.assertRaises(ValueError) as exc_info:
+            self.model.score('d', ('a', 'b'))
 
     def test_entropy_perplexity(self):
         # Unlike MLE this should be able to handle completely novel ngrams
