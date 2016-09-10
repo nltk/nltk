@@ -28,7 +28,7 @@ class BaseNgramModel(object):
         # for convenient access save top-most ngram order ConditionalFreqDist
         self.ngrams = ngram_counter.ngrams[ngram_counter.order]
 
-        self._normalize = self.ngram_counter.check_against_vocab
+        self._check_against_vocab = self.ngram_counter.check_against_vocab
 
     def score(self, word, context):
         """
@@ -69,7 +69,7 @@ class BaseNgramModel(object):
         :type text: Iterable[str]
         """
 
-        normed_text = (self._normalize(word) for word in text)
+        normed_text = (self._check_against_vocab(word) for word in text)
         H = 0.0     # entropy is conventionally denoted by "H"
         processed_ngrams = 0
         for ngram in self.ngram_counter.to_ngrams(normed_text):
