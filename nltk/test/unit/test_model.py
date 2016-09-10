@@ -281,8 +281,12 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 1.7
         expected_score = 0.6471
-        got_score = self.model.score("d", ["c"])
-        self.assertAlmostEqual(expected_score, got_score, places=4)
+
+        got_score_list = self.model.score("d", ["c"])
+        got_score_tuple = self.model.score("d", ("c",))
+
+        self.assertAlmostEqual(expected_score, got_score_list, places=4)
+        self.assertEqual(got_score_list, got_score_tuple)
 
     def test_scores_sum_to_1(self):
         # Lidstone smoothing can handle contexts unseen during training
@@ -329,8 +333,12 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 8
         expected_score = 0.25
-        got_score = self.model.score("d", ["c"])
-        self.assertAlmostEqual(expected_score, got_score, places=4)
+
+        got_score_list = self.model.score("d", ["c"])
+        got_score_tuple = self.model.score("d", ("c",))
+
+        self.assertAlmostEqual(expected_score, got_score_list, places=4)
+        self.assertEqual(got_score_list, got_score_tuple)
 
     def test_entropy_perplexity(self):
         # Unlike MLE this should be able to handle completely novel ngrams
