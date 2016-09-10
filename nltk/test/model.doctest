@@ -127,9 +127,10 @@ preceding contexts. They are namely stored as a simple FreqDist in the `unigrams
 attribute.
 
     >>> print(bigram_counts.unigrams)
-    <FreqDist with 9 samples and 117 outcomes>
+    <FreqDist with 10 samples and 121 outcomes>
     >>> expected_unigram_counts = {'.': 4,
     ... '</s>': 4,
+    ... '<s>': 4,
     ... '<UNK>': 80,
     ... 'and': 5,
     ... 'he': 6,
@@ -239,6 +240,7 @@ to populate your counter instance with some numbers.
     >>> no_initial_texts.train_counts(sents[3:7])
     >>> expected_unigram_counts = {'.': 4,
     ... '</s>': 4,
+    ... '<s>': 4,
     ... '<UNK>': 80,
     ... 'and': 5,
     ... 'he': 6,
