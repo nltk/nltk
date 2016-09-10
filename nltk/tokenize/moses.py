@@ -10,7 +10,7 @@
 
 from __future__ import print_function
 import re
-from six import text_type
+from nltk.six import text_type
 
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import is_cjk

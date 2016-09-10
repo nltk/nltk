@@ -9,7 +9,7 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import unicode_literals, print_function
-from six import text_type
+from nltk.six import text_type
 
 import os
 import re

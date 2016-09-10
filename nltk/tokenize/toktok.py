@@ -22,7 +22,7 @@ Model (Doctoral dissertation). Columbus, OH, USA: The Ohio State University.
 """
 
 import re
-from six import text_type
+from nltk.six import text_type
 
 from nltk.tokenize.api import TokenizerI
 
