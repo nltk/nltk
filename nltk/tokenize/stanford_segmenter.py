@@ -25,6 +25,7 @@ from nltk.tokenize.api import TokenizerI
 
 _stanford_url = 'http://nlp.stanford.edu/software'
 
+
 class StanfordSegmenter(TokenizerI):
     r"""
     Interface to the Stanford Segmenter
@@ -46,15 +47,15 @@ class StanfordSegmenter(TokenizerI):
     _SLF4J = 'slf4j-api.jar'
 
     def __init__(self,
-            path_to_jar=None, path_to_slf4j=None,
-            java_class = 'edu.stanford.nlp.ie.crf.CRFClassifier',
-            path_to_model=None,
-            path_to_sihan_corpora_dict=None,
-            sihan_post_processing='true',
-            keep_whitespaces='false',
-            path_to_dict=None,
-            encoding='UTF-8', options=None,
-            verbose=False, java_options='-mx2g'):
+                 path_to_jar=None, path_to_slf4j=None,
+                 java_class='edu.stanford.nlp.ie.crf.CRFClassifier',
+                 path_to_model=None,
+                 path_to_sihan_corpora_dict=None,
+                 sihan_post_processing='true',
+                 keep_whitespaces='false',
+                 path_to_dict=None,
+                 encoding='UTF-8', options=None,
+                 verbose=False, java_options='-mx2g'):
 
         stanford_segmenter = find_jar(
                 self._JAR, path_to_jar,
@@ -70,7 +71,7 @@ class StanfordSegmenter(TokenizerI):
         # This is passed to java as the -cp option, the segmenter needs slf4j.
         sep = ';' if os.name == 'nt' else ':'
         self._stanford_jar = sep.join(
-            [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
+            [_ for _ in [stanford_segmenter, slf4j] if _ is not None])
 
         self._java_class = java_class
         self._model = path_to_model
@@ -82,7 +83,8 @@ class StanfordSegmenter(TokenizerI):
         self._encoding = encoding
         self.java_options = java_options
         options = {} if options is None else options
-        self._options_cmd = ','.join('{0}={1}'.format(key, json.dumps(val)) for key, val in options.items())
+        self._options_cmd = ','.join('{0}={1}'.format(
+            key, json.dumps(val)) for key, val in options.items())
 
     def tokenize(self, s):
         super().tokenize(s)
@@ -154,7 +156,7 @@ class StanfordSegmenter(TokenizerI):
         config_java(options=self.java_options, verbose=verbose)
 
         stdout, _stderr = java(
-            cmd,classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
+            cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
         stdout = stdout.decode(encoding)
 
         # Return java configurations to their default values.
@@ -162,10 +164,12 @@ class StanfordSegmenter(TokenizerI):
 
         return stdout
 
+
 def setup_module(module):
     from nose import SkipTest
 
     try:
         StanfordSegmenter()
     except LookupError:
-        raise SkipTest('doctests from nltk.tokenize.stanford_segmenter are skipped because the stanford segmenter jar doesn\'t exist')
+        raise SkipTest('doctests from nltk.tokenize.stanford_segmenter skipped'
+                       ' because the stanford segmenter jar doesn\'t exist')
