@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Interface to the Stanford Chinese Segmenter
+# Natural Language Toolkit: Interface to the Stanford Segmenter
+# for Chinese and Arabic
 #
 # Copyright (C) 2001-2016 NLTK Project
 # Author: 52nlp <52nlpcn@gmail.com>
 #         Casper Lehmann-Strøm <casperlehmann@gmail.com>
+#         Alex Constantin (alex@keyworder.ch)
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -43,11 +45,17 @@ class StanfordSegmenter(TokenizerI):
     _JAR = 'stanford-segmenter.jar'
     _SLF4J = 'slf4j-api.jar'
 
-    def __init__(self, path_to_jar=None, path_to_slf4j=None,
+    def __init__(self,
+            path_to_jar=None, path_to_slf4j=None,
+            java_class = 'edu.stanford.nlp.ie.crf.CRFClassifier',
+            path_to_model=None,
             path_to_sihan_corpora_dict=None,
-            path_to_model=None, path_to_dict=None,
+            sihan_post_processing='true',
+            keep_whitespaces='false',
+            path_to_dict=None,
             encoding='UTF-8', options=None,
             verbose=False, java_options='-mx2g'):
+
         stanford_segmenter = find_jar(
                 self._JAR, path_to_jar,
                 env_vars=('STANFORD_SEGMENTER',),
@@ -64,8 +72,11 @@ class StanfordSegmenter(TokenizerI):
         self._stanford_jar = sep.join(
             [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
 
-        self._sihan_corpora_dict = path_to_sihan_corpora_dict
+        self._java_class = java_class
         self._model = path_to_model
+        self._sihan_corpora_dict = path_to_sihan_corpora_dict
+        self._sihan_post_processing = sihan_post_processing
+        self._keep_whitespaces = keep_whitespaces
         self._dict = path_to_dict
 
         self._encoding = encoding
@@ -80,14 +91,15 @@ class StanfordSegmenter(TokenizerI):
         """
         """
         cmd = [
-            'edu.stanford.nlp.ie.crf.CRFClassifier',
-            '-sighanCorporaDict', self._sihan_corpora_dict,
-            '-textFile', input_file_path,
-            '-sighanPostProcessing', 'true',
-            '-keepAllWhitespaces', 'false',
+            self._java_class,
             '-loadClassifier', self._model,
-            '-serDictionary', self._dict
+            '-keepAllWhitespaces', self._keep_whitespaces,
+            '-serDictionary', self._dict,
+            '-textFile', input_file_path
         ]
+        if self._sihan_corpora_dict is not None:
+            cmd.extend(['-sighanCorporaDict', self._sihan_corpora_dict,
+                        '-sighanPostProcessing', self._sihan_post_processing])
 
         stdout = self._execute(cmd)
 
@@ -112,14 +124,15 @@ class StanfordSegmenter(TokenizerI):
         _input_fh.close()
 
         cmd = [
-            'edu.stanford.nlp.ie.crf.CRFClassifier',
-            '-sighanCorporaDict', self._sihan_corpora_dict,
-            '-textFile', self._input_file_path,
-            '-sighanPostProcessing', 'true',
-            '-keepAllWhitespaces', 'false',
+            self._java_class,
             '-loadClassifier', self._model,
-            '-serDictionary', self._dict
+            '-keepAllWhitespaces', self._keep_whitespaces,
+            '-serDictionary', self._dict,
+            '-textFile', self._input_file_path
         ]
+        if self._sihan_corpora_dict is not None:
+            cmd.extend(['-sighanCorporaDict', self._sihan_corpora_dict,
+                        '-sighanPostProcessing', self._sihan_post_processing])
 
         stdout = self._execute(cmd)
 
