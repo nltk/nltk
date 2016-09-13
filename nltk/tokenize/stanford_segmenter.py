@@ -83,8 +83,7 @@ class StanfordSegmenter(TokenizerI):
         self._encoding = encoding
         self.java_options = java_options
         options = {} if options is None else options
-        self._options_cmd = ','.join('{0}={1}'.format(
-            key, json.dumps(val)) for key, val in options.items())
+        self._options_cmd = ','.join('{0}={1}'.format(key, json.dumps(val)) for key, val in options.items())
 
     def tokenize(self, s):
         super().tokenize(s)
@@ -155,8 +154,7 @@ class StanfordSegmenter(TokenizerI):
         # Configure java.
         config_java(options=self.java_options, verbose=verbose)
 
-        stdout, _stderr = java(
-            cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
+        stdout, _stderr = java(cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
         stdout = stdout.decode(encoding)
 
         # Return java configurations to their default values.
