@@ -756,7 +756,7 @@ class Downloader(object):
         else:
             filepath = os.path.join(download_dir, info.filename)
             if download_dir != self._download_dir:
-                status = self._pkg_status(info, filepath)
+                return self._pkg_status(info, filepath)
             else:
                 if info.id not in self._status_cache:
                     self._status_cache[info.id] = self._pkg_status(info,
