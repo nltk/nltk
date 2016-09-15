@@ -37,6 +37,7 @@
 - Graham Christensen
 - Trevor Cohn
 - David Coles
+- Claude Coulombe
 - Lucas Cooper
 - Robin Cooper
 - Chris Crowner
@@ -195,3 +196,17 @@
 - Casper Lehmann-Strøm
 - Andrew Giel
 - Tanin Na Nakorn
+- Linghao Zhang
+- Colin Carroll
+- Heguang Miao
+- George Berry
+- Adam Nelson
+- J Richard Snape
+
+## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
+### Contributors to the Porter Stemmer
+- Martin Porter
+- Vivake Gupta
+- Barry Wilkins
+- Hiranmay Ghosh
+- Chris Emerson

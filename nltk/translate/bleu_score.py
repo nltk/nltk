@@ -168,9 +168,10 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     
     # Smoothen the modified precision.
     # Note: smooth_precision() converts values into float.
-    if smoothing_function:
-        p_n = smoothing_function(p_n, references=references, 
-                                 hypothesis=hypothesis, hyp_len=hyp_len)
+    if not smoothing_function:
+        smoothing_function = SmoothingFunction().method0
+    p_n = smoothing_function(p_n, references=references, 
+                             hypothesis=hypothesis, hyp_len=hyp_len)
     
     # Calculates the overall modified precision for all ngrams.
     # By sum of the product of the weights and the respective *p_n*
@@ -280,9 +281,11 @@ def modified_precision(references, hypothesis, n):
     # Assigns the intersection between hypothesis and references' counts.
     clipped_counts = {ngram: min(count, max_counts[ngram]) 
                       for ngram, count in counts.items()}
-
+    
     numerator = sum(clipped_counts.values())
-    denominator = sum(counts.values())
+    # Ensures that denominator is minimum 1 to avoid ZeroDivisionError.
+    # Usually this happens when the ngram order is > len(reference).
+    denominator = max(1, sum(counts.values()))
     
     return Fraction(numerator, denominator, _normalize=False)  
     
@@ -391,6 +394,9 @@ def brevity_penalty(closest_ref_len, hyp_len):
     """
     if hyp_len > closest_ref_len:
         return 1
+    # If hypothesis is empty, brevity penalty = 0 should result in BLEU = 0.0
+    elif hyp_len == 0: 
+        return 0
     else:
         return math.exp(1 - closest_ref_len / hyp_len)
 

@@ -756,7 +756,7 @@ class Downloader(object):
         else:
             filepath = os.path.join(download_dir, info.filename)
             if download_dir != self._download_dir:
-                status = self._pkg_status(info, filepath)
+                return self._pkg_status(info, filepath)
             else:
                 if info.id not in self._status_cache:
                     self._status_cache[info.id] = self._pkg_status(info,
@@ -2036,7 +2036,11 @@ def _unzip_iter(filename, root, verbose=True):
             except Exception as e:
                 yield ErrorMessage(filename, e)
                 return
-            outfile.write(contents)
+            try:
+                outfile.write(contents)
+            except OSError as e:
+                yield ErrorMessage(filename, e)
+                return
 
         if verbose and (i*10/len(filelist) > (i-1)*10/len(filelist)):
             sys.stdout.write('.')

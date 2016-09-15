@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2001-2016 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
+# Contributor: J Richard Snape 
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
@@ -163,7 +164,10 @@ class _DendrogramNode(object):
         for priority, node in queue:
             groups.append(node.leaves())
         return groups
-
+    
+    def __lt__(self, comparator):
+        return cosine_distance(self._value, comparator._value) < 0
+    
 
 @python_2_unicode_compatible
 class Dendrogram(object):
@@ -235,8 +239,8 @@ class Dendrogram(object):
 
         # find the bottom row and the best cell width
         width = max(map(len, last_row)) + 1
-        lhalf = width / 2
-        rhalf = width - lhalf - 1
+        lhalf = int(width / 2)
+        rhalf = int(width - lhalf - 1)
 
         # display functions
         def format(centre, left=' ', right=' '):
