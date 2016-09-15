@@ -86,7 +86,7 @@ def _pos_tag(tokens, tagset, tagger):
     return tagged_tokens
 
 
-RUS_PICKLE = 'taggers/averaged_perceptron_tagger/averaged_perceptron_russian_tagger.pickle'
+RUS_PICKLE = 'taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle'
 
 
 def _get_tagger(language=None):
