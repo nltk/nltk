@@ -159,7 +159,7 @@ they didn't download that model.
 default: unzip or not?
 
 """
-import time, os, zipfile, sys, textwrap, threading, itertools
+import time, os, zipfile, sys, textwrap, threading, itertools, shutil
 from hashlib import md5
 
 try:
@@ -2030,17 +2030,12 @@ def _unzip_iter(filename, root, verbose=True):
     for i, filename in enumerate(filelist):
         filepath = os.path.join(root, *filename.split('/'))
 
-        with open(filepath, 'wb') as outfile:
-            try:
-                contents = zf.read(filename)
-            except Exception as e:
-                yield ErrorMessage(filename, e)
-                return
-            try:
-                outfile.write(contents)
-            except OSError as e:
-                yield ErrorMessage(filename, e)
-                return
+        try:
+            with open(filepath, 'wb') as dstfile, zf.open(filename) as srcfile:
+                shutil.copyfileobj(srcfile, dstfile)
+        except Exception as e:
+            yield ErrorMessage(filename, e)
+            return
 
         if verbose and (i*10/len(filelist) > (i-1)*10/len(filelist)):
             sys.stdout.write('.')
