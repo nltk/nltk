@@ -808,7 +808,7 @@ class Table(object):
         """
         Delete the ``row_index``th row from this table.
         """
-        if isinstance(index, slice):
+        if isinstance(row_index, slice):
             raise ValueError('Slicing not supported')
         if isinstance(row_index, tuple) and len(row_index)==2:
             raise ValueError('Cannot delete a single cell!')
