@@ -765,6 +765,10 @@ def demo():
     >>> de.eval() >= (0, 0)
     True
 
+    Remove test temporary files
+    >>> remove('temp.arceager.model')
+    >>> remove('temp.arcstd.model')
+
     Note that result is very poor because of only one training example.
     """
 

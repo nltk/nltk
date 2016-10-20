@@ -20,8 +20,6 @@ nltk/test/tweets*
 nosetests.xml
 nosetests_scrubbed.xml
 pylintoutput
-temp.acreager.model
-temp.arcstd.model
 model.crf.tagger
 coverage.xml
 brown.embedding

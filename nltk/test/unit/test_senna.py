@@ -85,10 +85,6 @@ class TestSennaTagger(unittest.TestCase):
             self.assertEqual(result_1, expected_1)
             self.assertEqual(result_2, expected_2)
         else:
-            print("OKKK")
-            print("OKKK")
-            print("OKKK")
-            print("OKKK")
             with self.assertRaises(OSError):
                 nertagger.tag('Shakespeare theatre was in London .'.split())
                 nertagger.tag('UN headquarters are in NY , USA .'.split())
