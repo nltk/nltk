@@ -31,12 +31,15 @@ Example usage
 
 # Get optimal alignment of two phonetic sequences
 
->>> align('θin', 'tenwis')
+>>> align('θin', 'tenwis') # doctest: +SKIP
 [[('θ', 't'), ('i', 'e'), ('n', 'n'), ('-', 'w'), ('-', 'i'), ('-', 's')]]
 
 [1] G. Kondrak. Algorithms for Language Reconstruction. PhD dissertation,
 University of Toronto.
 """
+
+from __future__ import unicode_literals
+
 import numpy as np
 
 # === Constants ===
