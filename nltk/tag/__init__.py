@@ -81,12 +81,12 @@ from nltk.data import load, find
 RUS_PICKLE = 'taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle'
 
 
-def _get_tagger(language=None):
-    if language == 'russian':
+def _get_tagger(lang=None):
+    if lang == 'rus':
         tagger = PerceptronTagger(False)
         ap_russian_model_loc = 'file:' + str(find(RUS_PICKLE))
         tagger.load(ap_russian_model_loc)
-    elif language == 'english':
+    elif lang == 'eng':
         tagger = PerceptronTagger()
     else:
         tagger = PerceptronTagger()
@@ -100,7 +100,7 @@ def _pos_tag(tokens, tagset, tagger):
     return tagged_tokens
 
 
-def pos_tag(tokens, tagset=None, language='english'):
+def pos_tag(tokens, tagset=None, lang='eng'):
     """
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
@@ -123,11 +123,11 @@ def pos_tag(tokens, tagset=None, language='english'):
     :return: The tagged tokens
     :rtype: list(tuple(str, str))
     """
-    tagger = _get_tagger(language)
+    tagger = _get_tagger(lang)
     return _pos_tag(tokens, tagset, tagger)    
 
 
-def pos_tag_sents(sentences, tagset=None, language='english'):
+def pos_tag_sents(sentences, tagset=None, lang='eng'):
     """
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
@@ -139,5 +139,5 @@ def pos_tag_sents(sentences, tagset=None, language='english'):
     :return: The list of tagged sentences
     :rtype: list(list(tuple(str, str)))
     """
-    tagger = _get_tagger(language)
+    tagger = _get_tagger(lang)
     return [_pos_tag(sent, tagset, tagger) for sent in sentences]
