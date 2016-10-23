@@ -120,6 +120,8 @@ def pos_tag(tokens, tagset=None, lang='eng'):
     :type tokens: list(str)
     :param tagset: the tagset to be used, e.g. universal, wsj, brown
     :type tagset: str
+    :param lang: the ISO 639 code of the language, e.g. 'eng' for English, 'rus' for Russian
+    :type lang: str
     :return: The tagged tokens
     :rtype: list(tuple(str, str))
     """
@@ -136,6 +138,8 @@ def pos_tag_sents(sentences, tagset=None, lang='eng'):
     :type tokens: list(list(str))
     :param tagset: the tagset to be used, e.g. universal, wsj, brown
     :type tagset: str
+    :param lang: the ISO 639 code of the language, e.g. 'eng' for English, 'rus' for Russian
+    :type lang: str
     :return: The list of tagged sentences
     :rtype: list(list(tuple(str, str)))
     """
