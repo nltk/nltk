@@ -516,7 +516,10 @@ def demo():
     """
     data = [pair.split(',') for pair in cognate_data.split('\n')]
     for pair in data:
-        print(pair[0], "~", pair[1], ":", align(pair[0], pair[1])[0])
+        alignment = align(pair[0], pair[1])[0]
+        alignment = ['({}, {})'.format(a[0], a[1]) for a in alignment]
+        alignment = ' '.join(alignment)
+        print('{} ~ {} : {}'.format(pair[0], pair[1], alignment))
 
 cognate_data = """jo,ʒə
 tu,ty
