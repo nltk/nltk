@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Trevor Cohn <tacohn@csse.unimelb.edu.au>
@@ -83,7 +83,8 @@ class RegexpTokenizer(TokenizerI):
 
     :type pattern: str
     :param pattern: The pattern used to build this tokenizer.
-        (This pattern may safely contain capturing parentheses.)
+        (This pattern must not contain capturing parentheses;
+        Use non-capturing parentheses, e.g. (?:...), instead)
     :type gaps: bool
     :param gaps: True if this tokenizer's pattern should be used
         to find separators between tokens; False if this
@@ -112,7 +113,7 @@ class RegexpTokenizer(TokenizerI):
         
     def _check_regexp(self):
         if self._regexp is None:
-            self._regexp = re.compile(self._pattern)
+            self._regexp = re.compile(self._pattern, self._flags)
         
     def tokenize(self, text):
         self._check_regexp()

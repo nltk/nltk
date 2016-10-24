@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for Corpus Readers
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -14,6 +14,7 @@ from __future__ import unicode_literals
 import os
 import re
 from collections import defaultdict
+from itertools import chain
 
 from nltk import compat
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
@@ -426,10 +427,10 @@ class SyntaxCorpusReader(CorpusReader):
     #{ Block Readers
 
     def _read_word_block(self, stream):
-        return sum(self._read_sent_block(stream), [])
+        return list(chain(*self._read_sent_block(stream)))
 
     def _read_tagged_word_block(self, stream, tagset=None):
-        return sum(self._read_tagged_sent_block(stream, tagset), [])
+        return list(chain(*self._read_tagged_sent_block(stream, tagset)))
 
     def _read_sent_block(self, stream):
         return list(filter(None, [self._word(t) for t in self._read_block(stream)]))

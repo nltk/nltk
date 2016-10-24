@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Compatibility
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 from __future__ import absolute_import, print_function
+import os
 import sys
 import types
 from functools import wraps
+import fractions
 
 # Python 2/3 compatibility layer. Based on six.
 
 PY3 = sys.version_info[0] == 3
-PY26 = sys.version_info[:2] == (2, 6)
 
 if PY3:
     def b(s):
@@ -35,7 +36,7 @@ if PY3:
     _iterkeys = "keys"
     _itervalues = "values"
     _iteritems = "items"
-    from imp import reload
+    from importlib import reload
     raw_input = input
 
     imap = map
@@ -61,13 +62,8 @@ if PY3:
     from tempfile import TemporaryDirectory
 
     unichr = chr
-    if sys.version_info[1] <= 1:
-        def int2byte(i):
-            return bytes((i,))
-    else:
-        # This is about 2x faster than the implementation above on 3.2+
-        import operator
-        int2byte = operator.methodcaller("to_bytes", 1, "big")
+    import operator
+    int2byte = operator.methodcaller("to_bytes", 1, "big")
 
 else:
     def b(s):
@@ -245,13 +241,13 @@ else:
                 self._closed = True
                 if _warn:
                     self._warn("Implicitly cleaning up {!r}".format(self),
-                               ResourceWarning)
+                               Warning)
 
         def __exit__(self, exc, value, tb):
             self.cleanup()
 
         def __del__(self):
-            # Issue a ResourceWarning if implicit cleanup needed
+            # Issue a Warning if implicit cleanup needed
             self.cleanup(_warn=True)
 
         # XXX (ncoghlan): The following code attempts to make
@@ -287,196 +283,7 @@ else:
             except OSError:
                 pass
 
-    if PY26:
-        from operator import itemgetter
-        from heapq import nlargest
-        from itertools import repeat, ifilter
-
-        class Counter(dict):
-            '''Dict subclass for counting hashable objects.  Sometimes called a bag
-            or multiset.  Elements are stored as dictionary keys and their counts
-            are stored as dictionary values.
-
-            >>> Counter('zyzygy')
-            Counter({'y': 3, 'z': 2, 'g': 1})
-
-            '''
-
-            def __init__(self, iterable=None, **kwds):
-                '''Create a new, empty Counter object.  And if given, count elements
-                from an input iterable.  Or, initialize the count from another mapping
-                of elements to their counts.
-
-                >>> Counter()                           # a new, empty counter
-                >>> Counter('gallahad')                 # a new counter from an iterable
-                >>> Counter({'a': 4, 'b': 2})           # a new counter from a mapping
-                >>> Counter(a=4, b=2)                   # a new counter from keyword args
-
-                '''
-                self.update(iterable, **kwds)
-
-            def __missing__(self, key):
-                return 0
-
-            def most_common(self, n=None):
-                '''List the n most common elements and their counts from the most
-                common to the least.  If n is None, then list all element counts.
-
-                >>> Counter('abracadabra').most_common(3)
-                [('a', 5), ('r', 2), ('b', 2)]
-
-                '''
-                if n is None:
-                    return sorted(self.iteritems(), key=itemgetter(1), reverse=True)
-                return nlargest(n, self.iteritems(), key=itemgetter(1))
-
-            def elements(self):
-                '''Iterator over elements repeating each as many times as its count.
-
-                >>> c = Counter('ABCABC')
-                >>> sorted(c.elements())
-                ['A', 'A', 'B', 'B', 'C', 'C']
-
-                If an element's count has been set to zero or is a negative number,
-                elements() will ignore it.
-
-                '''
-                for elem, count in self.iteritems():
-                    for _ in repeat(None, count):
-                        yield elem
-
-            # Override dict methods where the meaning changes for Counter
-            # objects.
-
-            @classmethod
-            def fromkeys(cls, iterable, v=None):
-                raise NotImplementedError(
-                    'Counter.fromkeys() is undefined.  Use Counter(iterable) instead.')
-
-            def update(self, iterable=None, **kwds):
-                '''Like dict.update() but add counts instead of replacing them.
-
-                Source can be an iterable, a dictionary, or another Counter instance.
-
-                >>> c = Counter('which')
-                >>> c.update('witch')           # add elements from another iterable
-                >>> d = Counter('watch')
-                >>> c.update(d)                 # add elements from another counter
-                >>> c['h']                      # four 'h' in which, witch, and watch
-                4
-
-                '''
-                if iterable is not None:
-                    if hasattr(iterable, 'iteritems'):
-                        if self:
-                            self_get = self.get
-                            for elem, count in iterable.iteritems():
-                                self[elem] = self_get(elem, 0) + count
-                        else:
-                            # fast path when counter is empty
-                            dict.update(self, iterable)
-                    else:
-                        self_get = self.get
-                        for elem in iterable:
-                            self[elem] = self_get(elem, 0) + 1
-                if kwds:
-                    self.update(kwds)
-
-            def copy(self):
-                'Like dict.copy() but returns a Counter instance instead of a dict.'
-                return Counter(self)
-
-            def __delitem__(self, elem):
-                'Like dict.__delitem__() but does not raise KeyError for missing values.'
-                if elem in self:
-                    dict.__delitem__(self, elem)
-
-            def __repr__(self):
-                if not self:
-                    return '%s()' % self.__class__.__name__
-                items = ', '.join(map('%r: %r'.__mod__, self.most_common()))
-                return '%s({%s})' % (self.__class__.__name__, items)
-
-            # Multiset-style mathematical operations discussed in:
-            #       Knuth TAOCP Volume II section 4.6.3 exercise 19
-            #       and at http://en.wikipedia.org/wiki/Multiset
-            #
-            # Outputs guaranteed to only include positive counts.
-            #
-            # To strip negative and zero counts, add-in an empty counter:
-            #       c += Counter()
-
-            def __add__(self, other):
-                '''Add counts from two counters.
-
-                >>> Counter('abbb') + Counter('bcc')
-                Counter({'b': 4, 'c': 2, 'a': 1})
-
-
-                '''
-                if not isinstance(other, Counter):
-                    return NotImplemented
-                result = Counter()
-                for elem in set(self) | set(other):
-                    newcount = self[elem] + other[elem]
-                    if newcount > 0:
-                        result[elem] = newcount
-                return result
-
-            def __sub__(self, other):
-                ''' Subtract count, but keep only results with positive counts.
-
-                >>> Counter('abbbc') - Counter('bccd')
-                Counter({'b': 2, 'a': 1})
-
-                '''
-                if not isinstance(other, Counter):
-                    return NotImplemented
-                result = Counter()
-                for elem in set(self) | set(other):
-                    newcount = self[elem] - other[elem]
-                    if newcount > 0:
-                        result[elem] = newcount
-                return result
-
-            def __or__(self, other):
-                '''Union is the maximum of value in either of the input counters.
-
-                >>> Counter('abbb') | Counter('bcc')
-                Counter({'b': 3, 'c': 2, 'a': 1})
-
-                '''
-                if not isinstance(other, Counter):
-                    return NotImplemented
-                _max = max
-                result = Counter()
-                for elem in set(self) | set(other):
-                    newcount = _max(self[elem], other[elem])
-                    if newcount > 0:
-                        result[elem] = newcount
-                return result
-
-            def __and__(self, other):
-                ''' Intersection is the minimum of corresponding counts.
-
-                >>> Counter('abbb') & Counter('bcc')
-                Counter({'b': 1})
-
-                '''
-                if not isinstance(other, Counter):
-                    return NotImplemented
-                _min = min
-                result = Counter()
-                if len(self) < len(other):
-                    self, other = other, self
-                for elem in ifilter(self.__contains__, other):
-                    newcount = _min(self[elem], other[elem])
-                    if newcount > 0:
-                        result[elem] = newcount
-                return result
-
-    else:
-        from collections import Counter
+    from collections import Counter
 
 
 def iterkeys(d):
@@ -530,19 +337,14 @@ except ImportError:  # python 2.6
 # The following datasets have a /PY3 subdirectory containing
 # a full copy of the data which has been re-encoded or repickled.
 
-_PY3_DATA_UPDATES = []
+import os.path
 
-if sys.platform.startswith('win'):
-    _PY3_DATA_UPDATES = ["chunkers\maxent_ne_chunker",
-                         "help\tagsets",
-                         "taggers\maxent_treebank_pos_tagger",
-                         "tokenizers\punkt"]
-else:
-    _PY3_DATA_UPDATES = ["chunkers/maxent_ne_chunker",
-                         "help/tagsets",
-                         "taggers/maxent_treebank_pos_tagger",
-                         "tokenizers/punkt"]
+DATA_UPDATES = [("chunkers", "maxent_ne_chunker"),
+                ("help", "tagsets"),
+                ("taggers", "maxent_treebank_pos_tagger"),
+                ("tokenizers", "punkt")]
 
+_PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
 
 def add_py3_data(path):
     if PY3:
@@ -682,3 +484,28 @@ def _7bit(method):
 def _was_fixed(method):
     return (getattr(method, "_nltk_compat_7bit", False) or
             getattr(method, "_nltk_compat_transliterated", False))
+
+
+class Fraction(fractions.Fraction):
+    """
+    This is a simplified backwards compatible version of fractions.Fraction from
+    Python >=3.5. It adds the `_normalize` parameter such that it does
+    not normalize the denominator to the Greatest Common Divisor (gcd) when
+    the numerator is 0.
+    
+    This is most probably only used by the nltk.translate.bleu_score.py where
+    numerator and denominator of the different ngram precisions are mutable.
+    But the idea of "mutable" fraction might not be applicable to other usages, 
+    See http://stackoverflow.com/questions/34561265
+    
+    This objects should be deprecated once NLTK stops supporting Python < 3.5
+    See https://github.com/nltk/nltk/issues/1330
+    """
+    def __new__(cls, numerator=0, denominator=None, _normalize=True):
+        cls = super(Fraction, cls).__new__(cls, numerator, denominator)
+        # To emulate fraction.Fraction.from_float across Python >=2.7,
+        # check that numerator is an integer and denominator is not None.
+        if not _normalize and type(numerator) == int and denominator:
+            cls._numerator = numerator
+            cls._denominator = denominator
+        return cls

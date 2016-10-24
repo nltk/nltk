@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
 # URL: <http://nltk.org/>
@@ -9,6 +9,7 @@
 from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
+from itertools import chain
 
 from nltk.grammar import (DependencyProduction, DependencyGrammar,
                           ProbabilisticDependencyGrammar)
@@ -367,8 +368,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         for dg in graphs:
             for node_index in range(1, len(dg.nodes)):
                 #children = dg.nodes[node_index]['deps']
-                # Put list so that in will work in python 3
-                children = sum(list(dg.nodes[node_index]['deps'].values()), [])
+                children = list(chain(*dg.nodes[node_index]['deps'].values()))
                 
                 nr_left_children = dg.left_children(node_index)
                 nr_right_children = dg.right_children(node_index)
@@ -428,7 +428,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         prob = 1.0
         for node_index in range(1, len(dg.nodes)):
             #children = dg.nodes[node_index]['deps']
-            children = sum(list(dg.nodes[node_index]['deps'].values()), [])
+            children = list(chain(*dg.nodes[node_index]['deps'].values()))
             
             nr_left_children = dg.left_children(node_index)
             nr_right_children = dg.right_children(node_index)

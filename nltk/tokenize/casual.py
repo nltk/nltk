@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Twitter Tokenizer
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <> (modifications)
@@ -176,6 +176,9 @@ REGEXPS = (
 WORD_RE = re.compile(r"""(%s)""" % "|".join(REGEXPS), re.VERBOSE | re.I
                      | re.UNICODE)
 
+# WORD_RE performs poorly on these patterns:
+HANG_RE = re.compile(r'([^a-zA-Z0-9])\1{3,}')
+
 # The emoticon string gets its own regex so that we can preserve case for
 # them as needed:
 EMOTICON_RE = re.compile(EMOTICONS, re.VERBOSE | re.I | re.UNICODE)
@@ -295,8 +298,10 @@ class TweetTokenizer:
         # Normalize word lengthening
         if self.reduce_len:
             text = reduce_lengthening(text)
+        # Shorten problematic sequences of characters
+        safe_text = HANG_RE.sub(r'\1\1\1', text)
         # Tokenize:
-        words = WORD_RE.findall(text)
+        words = WORD_RE.findall(safe_text)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
             words = list(map((lambda x : x if EMOTICON_RE.search(x) else

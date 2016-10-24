@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
@@ -549,6 +549,7 @@ class RandomProbDist(ProbDistI):
         it can still be passed to MutableProbDist and called with identical
         syntax to UniformProbDist
         """
+        samples = set(samples)
         randrow = [random.random() for i in range(len(samples))]
         total = sum(randrow)
         for i, x in enumerate(randrow):

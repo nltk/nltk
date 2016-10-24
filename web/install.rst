@@ -1,7 +1,7 @@
 Installing NLTK
 ===============
 
-NLTK requires Python versions 2.7 or 3.2+
+NLTK requires Python versions 2.7 or 3.4+
 
 Mac/Unix
 --------
@@ -20,10 +20,10 @@ These instructions assume that you do not already have Python installed on your 
 32-bit binary installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#. Install Python 3.4: http://www.python.org/downloads/ (avoid the 64-bit versions)
-#. Install Numpy (optional): http://sourceforge.net/projects/numpy/files/NumPy/ (the version that specifies pythnon3.4)
+#. Install Python 3.5: http://www.python.org/downloads/ (avoid the 64-bit versions)
+#. Install Numpy (optional): http://sourceforge.net/projects/numpy/files/NumPy/ (the version that specifies python3.5)
 #. Install NLTK: http://pypi.python.org/pypi/nltk
-#. Test installation: ``Start>Python34``, then type ``import nltk``
+#. Test installation: ``Start>Python35``, then type ``import nltk``
 
 Installing Third-Party Software
 -------------------------------

@@ -2,12 +2,13 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, division, unicode_literals
 
 import os
+from itertools import chain
 
 import nltk
 from nltk.internals import Counter
@@ -102,6 +103,10 @@ class GlueFormula(object):
 
     def __ne__(self, other):
         return not self == other
+
+    # sorting for use in doctests which must be deterministic
+    def __lt__(self, other):
+        return str(self) < str(other)
 
     def __str__(self):
         assert isinstance(self.indices, set)
@@ -231,13 +236,13 @@ class GlueDict(dict):
         if node is None:
             # TODO: should it be depgraph.root? Is this code tested?
             top = depgraph.nodes[0]
-            depList = sum(list(top['deps'].values()), [])
+            depList = list(chain(*top['deps'].values()))
             root = depgraph.nodes[depList[0]]
 
             return self.to_glueformula_list(depgraph, root, Counter(), verbose)
 
         glueformulas = self.lookup(node, depgraph, counter)
-        for dep_idx in sum(list(node['deps'].values()), []):
+        for dep_idx in chain(*node['deps'].values()):
             dep = depgraph.nodes[dep_idx]
             glueformulas.extend(self.to_glueformula_list(depgraph, dep, counter, verbose))
         return glueformulas
@@ -281,7 +286,7 @@ class GlueDict(dict):
     def _lookup_semtype_option(self, semtype, node, depgraph):
         relationships = frozenset(
             depgraph.nodes[dep]['rel'].lower()
-            for dep in sum(list(node['deps'].values()), [])
+            for dep in chain(*node['deps'].values())
             if depgraph.nodes[dep]['rel'].lower() not in OPTIONAL_RELATIONSHIPS
         )
 
@@ -414,7 +419,7 @@ class GlueDict(dict):
         """
         deps = [
             depgraph.nodes[dep]
-            for dep in sum(list(node['deps'].values()), [])
+            for dep in chain(*node['deps'].values())
             if depgraph.nodes[dep]['rel'].lower() == rel.lower()
         ]
 

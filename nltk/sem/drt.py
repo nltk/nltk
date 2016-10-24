@@ -2,13 +2,14 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
 
 import operator
 from functools import reduce
+from itertools import chain
 
 from nltk.compat import string_types, python_2_unicode_compatible
 from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
@@ -339,7 +340,7 @@ class DRS(DrtExpression, Expression):
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
         if recursive:
-            conds_refs = self.refs + sum((c.get_refs(True) for c in self.conds), [])
+            conds_refs = self.refs + list(chain(*(c.get_refs(True) for c in self.conds)))
             if self.consequent:
                 conds_refs.extend(self.consequent.get_refs(True))
             return conds_refs

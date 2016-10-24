@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: substitute a pattern with
 #                           a replacement in every file
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -59,4 +59,4 @@ if __name__ == '__main__':
                     print("Updated:", path)
                     count += 1
 
-    print("Updated %d files" % count)
+    print("Updated {} files".format(count))

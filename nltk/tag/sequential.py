@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sequential Backoff Taggers
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 #         Tiago Tresoldi <tresoldi@users.sf.net> (original affix tagger)
@@ -529,34 +529,27 @@ class RegexpTagger(SequentialBackoffTagger):
         """
         """
         SequentialBackoffTagger.__init__(self, backoff)
-        labels = ['g'+str(i) for i in range(len(regexps))]
-        tags = [tag for regex, tag in regexps]
-        self._map = dict(zip(labels, tags))
-        regexps_labels = [(regex, label) for ((regex,tag),label) in zip(regexps,labels)]
-        self._regexs = re.compile('|'.join('(?P<%s>%s)' % (label, regex) for regex,label in regexps_labels))
-        self._size=len(regexps)
+        self._regexs = [(re.compile(regexp), tag,) for regexp, tag in regexps]
 
     def encode_json_obj(self):
-        return self._map, self._regexs.pattern, self._size, self.backoff
+        return [(regexp.patten, tag,) for regexp, tag in self._regexs], self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _map, _regexs, _size, backoff = obj
+        regexps, backoff = obj
         self = cls(())
-        self._map = _map
-        self._regexs = re.compile(_regexs)
-        self._size = _size
+        self._regexs = [(re.compile(regexp), tag,) for regexp, tag in regexps]
         SequentialBackoffTagger.__init__(self, backoff)
         return self
 
     def choose_tag(self, tokens, index, history):
-        m = self._regexs.match(tokens[index])
-        if m:
-          return self._map[m.lastgroup]
+        for regexp, tag in self._regexs:
+            if re.match(regexp, tokens[index]):
+                return tag
         return None
 
     def __repr__(self):
-        return '<Regexp Tagger: size=%d>' % self._size
+        return '<Regexp Tagger: size=%d>' % len(self._regexs)
 
 
 @python_2_unicode_compatible

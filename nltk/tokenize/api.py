@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizer Interface
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -11,7 +11,7 @@ Tokenizer Interface
 """
 
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
+from nltk.six import add_metaclass
 
 from nltk.internals import overridden
 from nltk.tokenize.util import string_span_tokenize

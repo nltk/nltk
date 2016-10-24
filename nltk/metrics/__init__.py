@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Metrics
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -27,3 +27,4 @@ from nltk.metrics.association     import (NgramAssocMeasures, BigramAssocMeasure
                                           TrigramAssocMeasures, ContingencyMeasures)
 from nltk.metrics.spearman        import (spearman_correlation, ranks_from_sequence,
                                           ranks_from_scores)
+from nltk.metrics.aline           import align

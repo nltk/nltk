@@ -137,7 +137,7 @@ class PerceptronTagger(TaggerI):
         self.tagdict = {}
         self.classes = set()
         if load:
-            AP_MODEL_LOC = str(find('taggers/averaged_perceptron_tagger/'+PICKLE))
+            AP_MODEL_LOC = 'file:'+str(find('taggers/averaged_perceptron_tagger/'+PICKLE))
             self.load(AP_MODEL_LOC)
 
     def tag(self, tokens):
@@ -197,7 +197,8 @@ class PerceptronTagger(TaggerI):
         # Pickle as a binary file
         if save_loc is not None:
             with open(save_loc, 'wb') as fout:
-                pickle.dump((self.model.weights, self.tagdict, self.classes), fout, -1)
+                # changed protocol from -1 to 2 to make pickling Python 2 compatible
+                pickle.dump((self.model.weights, self.tagdict, self.classes), fout, 2)
         
 
     def load(self, loc):

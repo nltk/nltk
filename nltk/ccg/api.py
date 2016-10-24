@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CCG Categories
 #
-# Copyright (C) 2001-2015 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -90,6 +90,10 @@ class CCGVar(AbstractCCGCategory):
         """A class method allowing generation of unique variable identifiers."""
         cls._maxID = cls._maxID + 1
         return cls._maxID - 1
+
+    @classmethod
+    def reset_id(cls):
+        cls._maxID = 0
 
     def is_primitive(self):
         return False
