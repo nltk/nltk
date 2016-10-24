@@ -50,6 +50,3 @@ class TestAline(unittest.TestCase):
         
         self.assertEqual(result, expected)
         
-        
-        
-        
