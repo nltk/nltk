@@ -7,7 +7,7 @@ import functools
 import io
 import unittest
 
-from nltk.data import find, load
+from nltk.data import find
 from nltk.translate.bleu_score import modified_precision, brevity_penalty, closest_ref_length
 from nltk.translate.bleu_score import sentence_bleu, corpus_bleu, SmoothingFunction
 
