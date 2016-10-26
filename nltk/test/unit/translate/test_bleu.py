@@ -187,7 +187,7 @@ class TestBLEUvsMteval13a(unittest.TestCase):
                     nltk_bleu = corpus_bleu(references, hypothesis, weights=(1.0/i,)*i)
                     # Check that the BLEU scores difference is less than 0.005 .
                     # Note: This is an approximate comparison; as much as
-                    #       +/- 1.0 BLEU might be "statistically significant",
+                    #       +/- 0.01 BLEU might be "statistically significant",
                     #       the actual translation quality might not be.
                     assert abs(mteval_bleu - nltk_bleu) < 0.005
 
