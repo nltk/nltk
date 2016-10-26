@@ -3,12 +3,13 @@
 Tests for BLEU translation evaluation metric
 """
 
+import functools
 import io
 import unittest
 
 from nltk.data import find, load
 from nltk.translate.bleu_score import modified_precision, brevity_penalty, closest_ref_length
-from nltk.translate.bleu_score import sentence_bleu, corpus_bleu
+from nltk.translate.bleu_score import sentence_bleu, corpus_bleu, SmoothingFunction
 
 
 class TestBLEU(unittest.TestCase):
@@ -181,10 +182,19 @@ class TestBLEUvsMteval13a(unittest.TestCase):
                 hypothesis = map(lambda x: x.split(), hyp_fin)
                 # Note that the corpus_bleu input is list of list of references.
                 references = map(lambda x: [x.split()],ref_fin)
+                # Without smoothing.
                 for i, mteval_bleu in zip(range(1,10), mteval_bleu_scores):
                     nltk_bleu = corpus_bleu(references, hypothesis, weights=(1.0/i,)*i)
-                    # Check that the BLEU scores difference is less than 0.5 .
+                    # Check that the BLEU scores difference is less than 0.005 .
                     # Note: This is an approximate comparison; as much as
                     #       +/- 1.0 BLEU might be "statistically significant",
                     #       the actual translation quality might not be.
-                    assert abs(mteval_bleu - nltk_bleu) < 0.5
+                    assert abs(mteval_bleu - nltk_bleu) < 0.005
+
+                # With the same smoothing method used in mteval-v13a.pl
+                chencherry = SmoothingFunction()
+                for i, mteval_bleu in zip(range(1,10), mteval_bleu_scores):
+                    nltk_bleu = corpus_bleu(references, hypothesis,
+                                            weights=(1.0/i,)*i,
+                                            smoothing_function=chencherry.method3)
+                    assert abs(mteval_bleu - nltk_bleu) < 0.005
