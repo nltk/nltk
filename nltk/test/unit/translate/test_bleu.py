@@ -188,24 +188,3 @@ class TestBLEUvsMteval13a(unittest.TestCase):
                     #       +/- 1.0 BLEU might be "statistically significant",
                     #       the actual translation quality might not be.
                     assert abs(mteval_bleu - nltk_bleu) < 0.5
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            #
