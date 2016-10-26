@@ -166,17 +166,16 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     if p_numerators[1] == 0:
         return 0
 
-    # Smoothen the modified precision.
-    # Note: smooth_precision() converts values into float.
-    if not smoothing_function:
-        smoothing_function = SmoothingFunction().method0
-    p_n = smoothing_function(p_n, references=references,
-                             hypothesis=hypothesis, hyp_len=hyp_len)
-
-    # Calculates the overall modified precision for all ngrams.
-    # By sum of the product of the weights and the respective *p_n*
-    s = (w * math.log(p_i) for w, p_i in zip(weights, p_n)
-         if p_i.numerator != 0)
+    if not smoothing_function: # No smoothing, values remain as Fractions.
+        s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n))
+             if p_i.numerator != 0)
+    else: # Smoothen the modified precision.
+        # Note: smoothing_function() may convert values into floats;
+        #       it tries to retain the Fraction object as much as the
+        #       smoothing method allows.
+        p_n = smoothing_function(p_n, references=references,
+                                 hypothesis=hypothesis, hyp_len=hyp_len)
+        s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n)))
 
     return bp * math.exp(math.fsum(s))
 
