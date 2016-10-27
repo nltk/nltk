@@ -15,7 +15,7 @@ from nltk.util import ngrams, everygrams
 
 def sentence_gleu(reference, hypothesis, min_len=1, max_len=4):
     """
-    Calculates the sentence level CHRF (Character n-gram F-score) described in
+    Calculates the sentence level GLEU (Google-BLEU) score described in
 
         Yonghui Wu, Mike Schuster, Zhifeng Chen, Quoc V. Le, Mohammad Norouzi,
         Wolfgang Macherey, Maxim Krikun, Yuan Cao, Qin Gao, Klaus Macherey,
