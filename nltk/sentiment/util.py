@@ -11,6 +11,8 @@
 Utility methods for Sentiment Analysis.
 """
 
+from __future__ import unicode_literals
+
 from copy import deepcopy
 import codecs
 import csv
