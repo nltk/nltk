@@ -46,9 +46,10 @@ class BaseNgramModel(object):
         :param word: the word to get the probability of
         :type word: str
         :param context: the context the word is in
-        :type context: Tuple[str]
+        :type context: sequence[str]
+        :rtype: float
         """
-        return 0.5
+        raise NotImplementedError()
 
     def logscore(self, word, context):
         """

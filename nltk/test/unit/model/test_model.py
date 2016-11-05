@@ -64,18 +64,8 @@ class BaseNgramModelTests(NgramModelBaseTest):
             self.model.check_context(None)
 
     def test_score(self):
-        # should always return 0.5
-        # should handle both lists and tuples as context
-        score1 = self.model.score("b", ["a"])
-        score2 = self.model.score("c", ("a",))
-        # Should also handle various empty context
-        score3 = self.model.score("c", "")
-        score4 = self.model.score("c", [])
-
-        self.assertEqual(score1, 0.5)
-        self.assertEqual(score1, score2)
-        self.assertEqual(score1, score3)
-        self.assertEqual(score1, score4)
+        with self.assertRaises(NotImplementedError):
+            self.model.score("d", ["c"])
 
 
 class MLENgramModelTests(NgramModelBaseTest):

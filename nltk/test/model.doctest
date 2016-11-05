@@ -295,7 +295,6 @@ In addition to `score` all ngram model classes provide the following methods:
 - logscore
 - entropy
 - perplexity
-Their usage is described in the following section.
 
 
 Custom NgramModel Classes
@@ -309,23 +308,14 @@ it's quite easy to define your own class for that, you simply subclass the
     >>> base_model = BaseNgramModel(bigram_counts)
 
 Since it is intended only as a base class for real estimators, the `BaseNgramModel`
-doesn't have an interesting `score` method, it always returns 0.5.
+only has a dummy `score` method. If you call it directly, it will raise an exception
 
     >>> base_model.score("test", ('abc',))
-    0.5
-    >>> base_model.score("abc", ("test",))
-    0.5
+    Traceback (most recent call last):
+    ...
+    NotImplementedError
 
 Children classes are expected to override this method and provide their own
 logic for how to compute a score.
-The advantage of having a base ngram model class is that there are plenty of methods
-that do not depend of `score` in their implementations which are all defined in
-the `BaseNgramModel` class and which you get "for free" by inheriting from it.
-Here are examples of these methods:
-
-    >>> base_model.logscore("abc", ("test",))
-    -1.0
-    >>> base_model.entropy(sents[4])
-    1.0
-    >>> base_model.perplexity(sents[4])
-    2.0
+The advantage of inheriting from `BaseNgramModel` is that you get implementations
+of methods such as `entropy` and `perplexity` for free.
