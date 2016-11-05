@@ -6,7 +6,6 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import unicode_literals
-
 from collections import Counter, defaultdict
 from copy import copy
 from itertools import chain
@@ -39,7 +38,7 @@ class NgramModelVocabulary(Counter):
     """
 
     def __init__(self, unknown_cutoff, *counter_args):
-        Counter.__init__(self, *counter_args)
+        super(self.__class__, self).__init__(*counter_args)
         self.cutoff = unknown_cutoff
 
     @property
