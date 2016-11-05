@@ -16,7 +16,8 @@ class NgramModelVocabularyTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.vocab = NgramModelVocabulary(2, 'zabcfdegadbew')
+        self.vocab = NgramModelVocabulary(2, ['z', 'a', 'b', 'c', 'f', 'd',
+                                             'e', 'g', 'a', 'd', 'b', 'e', 'w'])
 
     def test_cutoff_value_set_correctly(self):
         self.assertEqual(self.vocab.cutoff, 2)

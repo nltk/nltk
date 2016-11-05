@@ -17,7 +17,8 @@ class NgramCounterTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.vocab = NgramModelVocabulary(2, "abcdeadbe")
+        self.vocab = NgramModelVocabulary(2, ["a", "b", "c", "d", "e",
+                                              "a", "d", "b", "e"])
 
         self.trigram_counter = NgramCounter(3, self.vocab)
         self.trigram_counter.train_counts(['abcd', 'egdbe'])

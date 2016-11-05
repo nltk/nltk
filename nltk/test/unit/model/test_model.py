@@ -24,7 +24,7 @@ class NgramModelBaseTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         # The base vocabulary contains 5 items: abcd and UNK
-        self.vocab = NgramModelVocabulary(1, "abcd")
+        self.vocab = NgramModelVocabulary(1, ["a", "b", "c", "d"])
         # NgramCounter.vocabulary contains 7 items (+2 for padding symbols)
         self.counter = NgramCounter(2, self.vocab)
         self.counter.train_counts(['abcd', 'egadbe'])
