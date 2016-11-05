@@ -66,6 +66,13 @@ class NgramModelVocabulary(Counter):
         # the if-clause here looks a bit dumb, should we make it clearer?
         return sum(1 for item in self if item in self) + 1
 
+    def __eq__(self, other):
+        return (super(self.__class__, self).__eq__(other)
+                and (self.cutoff == other.cutoff))
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __copy__(self):
         return self.__class__(self._cutoff, self)
 

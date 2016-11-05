@@ -5,6 +5,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+import copy
 import unittest
 
 from nltk.model.counter import NgramModelVocabulary
@@ -44,3 +45,12 @@ class NgramModelVocabularyTests(unittest.TestCase):
         # as the cutoff value, plus 1 to account for unknown words.
         expected_vocab_size = 5
         self.assertEqual(expected_vocab_size, len(self.vocab))
+
+    def test_copying_vs_recreating_vocabulary(self):
+        new_vocab = NgramModelVocabulary(1, self.vocab)
+        copied_vocab = copy.copy(self.vocab)
+
+        # Because of the different cutoff the two must also be unequal
+        self.assertNotEqual(new_vocab, self.vocab)
+        # Equality test should be True because copies are "equal"
+        self.assertEqual(copied_vocab, self.vocab)
