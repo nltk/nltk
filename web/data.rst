@@ -17,7 +17,7 @@ Run the Python interpreter and type the commands:
     >>> import nltk
     >>> nltk.download()
 
-A new window should open, showing the NLTK Downloader.  Click on the File menu and select Change Download Directory.  For central installation, set this to ``C:\nltk_data`` (Windows), or ``/usr/share/nltk_data`` (Mac, Unix).  Next, select the packages or collections you want to download.
+A new window should open, showing the NLTK Downloader.  Click on the File menu and select Change Download Directory.  For central installation, set this to ``C:\nltk_data`` (Windows), ``/usr/local/share/nltk_data`` (Mac), or ``/usr/share/nltk_data`` (Unix).  Next, select the packages or collections you want to download.
 
 If you did not install the data to one of the above central locations, you will need to set the ``NLTK_DATA`` environment variable to specify the location of the data.  (On a Windows machine, right click on "My Computer" then select ``Properties > Advanced > Environment Variables > User Variables > New...``)
 
@@ -38,9 +38,9 @@ If your web connection uses a proxy server, you should specify the proxy address
 Command line installation
 -------------------------
 
-The downloader will search for an existing ``nltk_data`` directory to install NLTK data.  If one does not exist it will attempt to create one in a central location (when using an administrator account) or otherwise in the user's filespace.  If necessary, run the download command from an administrator account, or using sudo.  The default system location on Windows is ``C:\nltk_data``; and on Mac and Unix is ``/usr/share/nltk_data``.  You can use the ``-d`` flag to specify a different location (but if you do this, be sure to set the ``NLTK_DATA`` environment variable accordingly).
+The downloader will search for an existing ``nltk_data`` directory to install NLTK data.  If one does not exist it will attempt to create one in a central location (when using an administrator account) or otherwise in the user's filespace.  If necessary, run the download command from an administrator account, or using sudo.  The recommended system location is ``C:\nltk_data`` (Windows); ``/usr/local/share/nltk_data`` (Mac); and ``/usr/share/nltk_data`` (Unix).  You can use the ``-d`` flag to specify a different location (but if you do this, be sure to set the ``NLTK_DATA`` environment variable accordingly).
 
-Python 2.5-2.7: Run the command ``python -m nltk.downloader all``.  To ensure central installation, run the command ``sudo python -m nltk.downloader -d /usr/share/nltk_data all``.
+Run the command ``python -m nltk.downloader all``.  To ensure central installation, run the command ``sudo python -m nltk.downloader -d /usr/local/share/nltk_data all``.
 
 Windows: Use the "Run..." option on the Start menu.  Windows Vista users need to first turn on this option, using ``Start -> Properties -> Customize`` to check the box to activate the "Run..." option. 
 

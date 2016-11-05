@@ -1,7 +1,6 @@
 include LICENSE.txt INSTALL.txt README.txt MANIFEST.in
 include setup.py
-include nltk/nltk.jar
 include nltk/test/*.doctest
 include nltk/VERSION
-recursive-include javasrc *.java *.txt Makefile
+recursive-include *.txt Makefile
 global-exclude *~

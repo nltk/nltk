@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2016 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==========
@@ -30,34 +30,13 @@ Test the stemmer on various pluralised words.
     ...            'meeting', 'stating', 'siezing', 'itemization',
     ...            'sensational', 'traditional', 'reference', 'colonizer',
     ...            'plotted']
-    >>> singles = []
 
-    >>> for plural in plurals:
-    ...     singles.append(stemmer.stem(plural))
+    >>> singles = [stemmer.stem(plural) for plural in plurals]
 
-    >>> singles # doctest: +NORMALIZE_WHITESPACE
-    [u'caress', u'fli', u'die', u'mule', u'deni', u'die', u'agre', u'own',
-     u'humbl', u'size', u'meet', u'state', u'siez', u'item', u'sensat',
-     u'tradit', u'refer', u'colon', u'plot']
+    >>> print(' '.join(singles))  # doctest: +NORMALIZE_WHITESPACE
+    caress fli die mule deni die agre own humbl size meet
+    state siez item sensat tradit refer colon plot
 
-Unit tests for Regexp stemmer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    >>> patterns = "ed$|ing$|able$|s$"
-
-    >>> stemmer = RegexpStemmer(patterns, 4)
-
-    >>> stemmer.stem("red")
-    'red'
-
-    >>> stemmer.stem("hurried")
-    'hurri'
-
-    >>> stemmer.stem("advisable")
-    'advis'
-
-    >>> stemmer.stem("impossible")
-    'impossible'
 
 Unit tests for Snowball stemmer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

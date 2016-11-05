@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Recursive Descent Parser Application
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -63,7 +63,7 @@ Keyboard Shortcuts::
       [Ctrl-p]\t Print
       [q]\t Quit
 """
-
+from __future__ import division
 import nltk.compat
 import tkinter.font
 from tkinter import (Listbox, IntVar, Button,
@@ -541,11 +541,11 @@ class RecursiveDescentApp(object):
             index = self._productions.index(rv)
             self._prodlist.selection_set(index)
             self._animate_expand(old_frontier[0])
-            return 1
+            return True
         else:
             self._lastoper1['text'] = 'Expand:'
             self._lastoper2['text'] = '(all expansions tried)'
-            return 0
+            return False
 
     def _match(self, *e):
         if self._animating_lock: return
@@ -555,11 +555,11 @@ class RecursiveDescentApp(object):
             self._lastoper1['text'] = 'Match:'
             self._lastoper2['text'] = rv
             self._animate_match(old_frontier[0])
-            return 1
+            return True
         else:
             self._lastoper1['text'] = 'Match:'
             self._lastoper2['text'] = '(failed)'
-            return 0
+            return False
 
     def _backtrack(self, *e):
         if self._animating_lock: return
@@ -573,12 +573,12 @@ class RecursiveDescentApp(object):
                 self._animate_backtrack(self._parser.frontier()[0])
             else:
                 self._animate_match_backtrack(self._parser.frontier()[0])
-            return 1
+            return True
         else:
             self._autostep = 0
             self._lastoper1['text'] = 'Finished'
             self._lastoper2['text'] = ''
-            return 0
+            return False
 
     def about(self, *e):
         ABOUT = ("NLTK Recursive Descent Parser Application\n"+
@@ -806,7 +806,7 @@ class RecursiveDescentApp(object):
     def _animate_match_backtrack(self, treeloc):
         widget = self._get(self._tree, treeloc)
         node = widget.parent().label()
-        dy = (1.0 * (node.bbox()[3] - widget.bbox()[1] + 14) /
+        dy = ((node.bbox()[3] - widget.bbox()[1] + 14) /
               max(1, self._animation_frames.get()))
         self._animate_match_backtrack_frame(self._animation_frames.get(),
                                             widget, dy)
@@ -867,8 +867,8 @@ def app():
     Create a recursive descent parser demo, using a simple grammar and
     text.
     """
-    from nltk.grammar import parse_cfg
-    grammar = parse_cfg("""
+    from nltk.grammar import CFG
+    grammar = CFG.fromstring("""
     # Grammatical productions.
         S -> NP VP
         NP -> Det N PP | Det N

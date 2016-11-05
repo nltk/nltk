@@ -1,11 +1,13 @@
 # Natural Language Toolkit: Collocations Application
 # Much of the GUI code is imported from concordance.py; We intend to merge these tools together
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
+
+from __future__ import division
 
 import nltk.compat
 import threading
@@ -327,7 +329,7 @@ class CollocationsModel:
                 text = [w for w in words if len(w) > 2]
                 fd = FreqDist(tuple(text[i:i+2]) for i in range(len(text)-1))
                 vocab = FreqDist(text)
-                scored = [((w1,w2), fd[(w1,w2)] ** 3 / float(vocab[w1] * vocab[w2])) for w1, w2 in fd]
+                scored = [((w1,w2), fd[(w1,w2)] ** 3 / (vocab[w1] * vocab[w2])) for w1, w2 in fd]
                 scored.sort(key=itemgetter(1), reverse=True)
                 self.model.collocations = list(map(itemgetter(0), scored))
                 self.model.queue.put(CORPUS_LOADED_EVENT)

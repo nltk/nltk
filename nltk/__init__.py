@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -19,9 +19,9 @@ from __future__ import print_function, absolute_import
 
 import os
 
-##//////////////////////////////////////////////////////
-##  Metadata
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Metadata
+# //////////////////////////////////////////////////////
 
 # Version.  For each new release, the version number should be updated
 # in the file VERSION.
@@ -35,13 +35,13 @@ except NameError:
 except IOError as ex:
     __version__ = "unknown (%s)" % ex
 
-if __doc__ is not None: # fix for the ``python -OO``
+if __doc__ is not None:  # fix for the ``python -OO``
     __doc__ += '\n@version: ' + __version__
 
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2013 NLTK Project.
+Copyright (C) 2001-2016 NLTK Project.
 
 Distributed and Licensed under the Apache License, Version 2.0,
 which is included by reference.
@@ -84,9 +84,9 @@ __classifiers__ = [
     'Topic :: Text Processing :: General',
     'Topic :: Text Processing :: Indexing',
     'Topic :: Text Processing :: Linguistic',
-    ]
+]
 
-from .internals import config_java
+from nltk.internals import config_java
 
 # support numpy from pypy
 try:
@@ -94,50 +94,54 @@ try:
 except ImportError:
     pass
 
+# Override missing methods on environments where it cannot be used like GAE.
+import subprocess
+if not hasattr(subprocess, 'PIPE'):
+    def _fake_PIPE(*args, **kwargs):
+        raise NotImplementedError('subprocess.PIPE is not supported.')
+    subprocess.PIPE = _fake_PIPE
+if not hasattr(subprocess, 'Popen'):
+    def _fake_Popen(*args, **kwargs):
+        raise NotImplementedError('subprocess.Popen is not supported.')
+    subprocess.Popen = _fake_Popen
+
 ###########################################################
 # TOP-LEVEL MODULES
 ###########################################################
 
 # Import top-level functionality into top-level namespace
 
-from .collocations import *
-from .decorators import decorator, memoize
-from .featstruct import *
-from .grammar import *
-from .probability import *
-from .text import *
-from .tree import *
-from .util import *
-from .yamltags import *
-from .align import *
-
-# don't import contents into top-level namespace:
-
-from . import ccg
-from . import data
-from . import help
+from nltk.collocations import *
+from nltk.decorators import decorator, memoize
+from nltk.featstruct import *
+from nltk.grammar import *
+from nltk.probability import *
+from nltk.text import *
+from nltk.tree import *
+from nltk.util import *
+from nltk.jsontags import *
 
 ###########################################################
 # PACKAGES
 ###########################################################
 
-from .chunk import *
-from .classify import *
-from .inference import *
-from .metrics import *
-from .model import *
-from .parse import *
-from .tag import *
-from .tokenize import *
-from .sem import *
-from .stem import *
+from nltk.chunk import *
+from nltk.classify import *
+from nltk.inference import *
+from nltk.metrics import *
+from nltk.parse import *
+from nltk.tag import *
+from nltk.tokenize import *
+from nltk.translate import *
+from nltk.sem import *
+from nltk.stem import *
 
 # Packages which can be lazily imported
 # (a) we don't import *
 # (b) they're slow to import or have run-time dependencies
 #     that can safely fail at run time
 
-from . import lazyimport
+from nltk import lazyimport
 app = lazyimport.LazyModule('nltk.app', locals(), globals())
 chat = lazyimport.LazyModule('nltk.chat', locals(), globals())
 corpus = lazyimport.LazyModule('nltk.corpus', locals(), globals())
@@ -151,16 +155,16 @@ try:
 except ImportError:
     pass
 else:
-    from . import cluster; from .cluster import *
+    from nltk import cluster
 
-from .downloader import download, download_shell
+from nltk.downloader import download, download_shell
 try:
     import tkinter
 except ImportError:
     pass
 else:
     try:
-        from .downloader import download_gui
+        from nltk.downloader import download_gui
     except RuntimeError as e:
         import warnings
         warnings.warn("Corpus downloader GUI not loaded "
@@ -170,10 +174,11 @@ else:
 # they override the same names inadvertently imported
 # from a subpackage)
 
-from . import align, ccg, chunk, classify, collocations
-from . import data, featstruct, grammar, inference, metrics
-from . import misc, model, parse, probability, sem, stem
-from . import tag, text, tokenize, tree, treetransforms, util
+from nltk import ccg, chunk, classify, collocations
+from nltk import data, featstruct, grammar, help, inference, metrics
+from nltk import misc, parse, probability, sem, stem, wsd
+from nltk import tag, tbl, text, tokenize, translate, tree, treetransforms, util
+
 
 # override any accidentally imported demo
 def demo():

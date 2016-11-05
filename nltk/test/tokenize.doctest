@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2016 NLTK Project
 .. For license information, see LICENSE.TXT
 
     >>> from __future__ import print_function
@@ -40,6 +40,21 @@ Some test strings.
     >>> word_tokenize(s10)
     ['There', 'were', '300,000', ',', 'but', 'that', 'was', "n't", 'enough', '.']
 
+Sentence tokenization in word_tokenize:
+
+    >>> s11 = "I called Dr. Jones. I called Dr. Jones."
+    >>> word_tokenize(s11)
+    ['I', 'called', 'Dr.', 'Jones', '.', 'I', 'called', 'Dr.', 'Jones', '.']
+    >>> s12 = ("Ich muss unbedingt daran denken, Mehl, usw. fur einen "
+    ...        "Kuchen einzukaufen. Ich muss.")
+    >>> word_tokenize(s12)
+    ['Ich', 'muss', 'unbedingt', 'daran', 'denken', ',', 'Mehl', ',', 'usw',
+     '.', 'fur', 'einen', 'Kuchen', 'einzukaufen', '.', 'Ich', 'muss', '.']
+    >>> word_tokenize(s12, 'german')
+    ['Ich', 'muss', 'unbedingt', 'daran', 'denken', ',', 'Mehl', ',', 'usw.',
+     'fur', 'einen', 'Kuchen', 'einzukaufen', '.', 'Ich', 'muss', '.']
+
+
 Regression Tests: Regexp Tokenizer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -58,45 +73,94 @@ Some additional test strings.
     ['Alas', 'it has not rained today', 'When', 'do you think',
      'will it rain again']
 
-Make sure that grouping parentheses don't confuse the tokenizer:
+Take care to avoid using capturing groups:
 
-    >>> regexp_tokenize(s3, r'</?(b|p)>', gaps=False)
+    >>> regexp_tokenize(s3, r'</?[bp]>', gaps=False)
     ['<p>', '<b>', '</b>', '</p>']
-    >>> regexp_tokenize(s3, r'</?(b|p)>', gaps=True)
+    >>> regexp_tokenize(s3, r'</?(?:b|p)>', gaps=False)
+    ['<p>', '<b>', '</b>', '</p>']
+    >>> regexp_tokenize(s3, r'</?(?:b|p)>', gaps=True)
     ['Although this is ', 'not',
      ' the case here, we must not relax our vigilance!']
 
-Make sure that named groups don't confuse the tokenizer:
+Named groups are capturing groups, and confuse the tokenizer:
 
     >>> regexp_tokenize(s3, r'</?(?P<named>b|p)>', gaps=False)
-    ['<p>', '<b>', '</b>', '</p>']
+    ['p', 'b', 'b', 'p']
     >>> regexp_tokenize(s3, r'</?(?P<named>b|p)>', gaps=True)
-    ['Although this is ', 'not',
-     ' the case here, we must not relax our vigilance!']
+    ['p', 'Although this is ', 'b', 'not', 'b',
+     ' the case here, we must not relax our vigilance!', 'p']
 
 Make sure that nested groups don't confuse the tokenizer:
 
-    >>> regexp_tokenize(s2, r'(h|r|l)a(s|(i|n0))', gaps=False)
+    >>> regexp_tokenize(s2, r'(?:h|r|l)a(?:s|(?:i|n0))', gaps=False)
     ['las', 'has', 'rai', 'rai']
-    >>> regexp_tokenize(s2, r'(h|r|l)a(s|(i|n0))', gaps=True)
+    >>> regexp_tokenize(s2, r'(?:h|r|l)a(?:s|(?:i|n0))', gaps=True)
     ['A', ', it ', ' not ', 'ned today. When, do you think, will it ',
      'n again?']
 
-The tokenizer should reject any patterns with backreferences:
+Back-references require capturing groups, and these are not supported:
 
-    >>> regexp_tokenize(s2, r'(.)\1')
-    Traceback (most recent call last):
-       ...
-    ValueError: Regular expressions with back-references are
-    not supported: '(.)\\1'
-    >>> regexp_tokenize(s2, r'(?P<foo>)(?P=foo)')
-    Traceback (most recent call last):
-       ...
-    ValueError: Regular expressions with back-references are
-    not supported: '(?P<foo>)(?P=foo)'
+    >>> regexp_tokenize("aabbbcccc", r'(.)\1')
+    ['a', 'b', 'c', 'c']
 
 A simple sentence tokenizer '\.(\s+|$)'
 
-    >>> regexp_tokenize(s, pattern=r'\.(\s+|$)', gaps=True)
+    >>> regexp_tokenize(s, pattern=r'\.(?:\s+|$)', gaps=True)
     ['Good muffins cost $3.88\nin New York',
      'Please buy me\ntwo of them', 'Thanks']
+
+
+Regression Tests: TweetTokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TweetTokenizer is a tokenizer specifically designed for micro-blogging tokenization tasks.
+
+    >>> from nltk.tokenize import TweetTokenizer
+    >>> tknzr = TweetTokenizer()
+    >>> s0 = "This is a cooool #dummysmiley: :-) :-P <3 and some arrows < > -> <--"
+    >>> tknzr.tokenize(s0)
+    ['This', 'is', 'a', 'cooool', '#dummysmiley', ':', ':-)', ':-P', '<3', 'and', 'some', 'arrows', '<', '>', '->', '<--']
+    >>> s1 = "@Joyster2012 @CathStaincliffe Good for you, girl!! Best wishes :-)"
+    >>> tknzr.tokenize(s1)
+    ['@Joyster2012', '@CathStaincliffe', 'Good', 'for', 'you', ',', 'girl', '!', '!', 'Best', 'wishes', ':-)']
+    >>> s2 = "3Points for #DreamTeam Gooo BAILEY! :) #PBB737Gold @PBBabscbn"
+    >>> tknzr.tokenize(s2)
+    ['3Points', 'for', '#DreamTeam', 'Gooo', 'BAILEY', '!', ':)', '#PBB737Gold', '@PBBabscbn']
+    >>> s3 = "@Insanomania They do... Their mentality doesn't :("
+    >>> tknzr.tokenize(s3)
+    ['@Insanomania', 'They', 'do', '...', 'Their', 'mentality', "doesn't", ':(']
+    >>> s4 = "RT @facugambande: Ya por arrancar a grabar !!! #TirenTirenTiren vamoo !!"
+    >>> tknzr.tokenize(s4)
+    ['RT', '@facugambande', ':', 'Ya', 'por', 'arrancar', 'a', 'grabar', '!', '!', '!', '#TirenTirenTiren', 'vamoo', '!', '!']
+    >>> tknzr = TweetTokenizer(reduce_len=True)
+    >>> s5 = "@crushinghes the summer holidays are great but I'm so bored already :("
+    >>> tknzr.tokenize(s5)
+    ['@crushinghes', 'the', 'summer', 'holidays', 'are', 'great', 'but', "I'm", 'so', 'bored', 'already', ':(']
+
+It is possible to specify `strip_handles` and `reduce_len` parameters for a TweetTokenizer instance. Setting `strip_handles` to True, the tokenizer will remove Twitter handles (e.g. usernames). Setting `reduce_len` to True, repeated character sequences of length 3 or greater will be replaced with sequences of length 3.
+
+    >>> tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
+    >>> s6 = '@remy: This is waaaaayyyy too much for you!!!!!!'
+    >>> tknzr.tokenize(s6)
+    [':', 'This', 'is', 'waaayyy', 'too', 'much', 'for', 'you', '!', '!', '!']
+    >>> s7 = '@_willy65: No place for @chuck tonight. Sorry.'
+    >>> tknzr.tokenize(s7)
+    [':', 'No', 'place', 'for', 'tonight', '.', 'Sorry', '.']
+    >>> s8 = '@mar_tin is a great developer. Contact him at mar_tin@email.com.'
+    >>> tknzr.tokenize(s8)
+    ['is', 'a', 'great', 'developer', '.', 'Contact', 'him', 'at', 'mar_tin@email.com', '.']
+
+The `preserve_case` parameter (default: True) allows to convert uppercase tokens to lowercase tokens. Emoticons are not affected:
+
+    >>> tknzr = TweetTokenizer(preserve_case=False)
+    >>> s9 = "@jrmy: I'm REALLY HAPPYYY about that! NICEEEE :D :P"
+    >>> tknzr.tokenize(s9)
+    ['@jrmy', ':', "i'm", 'really', 'happyyy', 'about', 'that', '!', 'niceeee', ':D', ':P']
+
+It should not hang on long sequences of the same punctuation character.
+
+    >>> tknzr = TweetTokenizer()
+    >>> s10 = "Photo: Aujourd'hui sur http://t.co/0gebOFDUzn Projet... http://t.co/bKfIUbydz2.............................. http://fb.me/3b6uXpz0L"
+    >>> tknzr.tokenize(s10)
+    [u'Photo', u':', u"Aujourd'hui", u'sur', u'http://t.co/0gebOFDUzn', u'Projet', u'...', u'http://t.co/bKfIUbydz2', u'...', u'http://fb.me/3b6uXpz0L']

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2016 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =========================================
@@ -56,16 +56,22 @@ currently supported by the data module are described by the dictionary
 `nltk.data.FORMATS`:
 
     >>> for format, descr in sorted(nltk.data.FORMATS.items()):
-    ...     print('%-7s %s' % (format, descr)) # doctest: +NORMALIZE_WHITESPACE
-    cfg     A context free grammar, parsed by nltk.parse_cfg().
-    fcfg    A feature CFG, parsed by nltk.parse_fcfg().
-    fol     A list of first order logic expressions, parsed by nltk.sem.parse_fol() using nltk.sem.logic.LogicParser.
-    logic   A list of first order logic expressions, parsed by nltk.sem.parse_logic().  Requires an additional logic_parser parameter
-    pcfg    A probabilistic CFG, parsed by nltk.parse_pcfg().
-    pickle  A serialized python object, stored using the pickle module.
+    ...     print('{0:<7} {1:}'.format(format, descr)) # doctest: +NORMALIZE_WHITESPACE
+    cfg     A context free grammar.
+    fcfg    A feature CFG.
+    fol     A list of first order logic expressions, parsed with
+    nltk.sem.logic.Expression.fromstring.
+    json    A serialized python object, stored using the json module.
+    logic   A list of first order logic expressions, parsed with
+    nltk.sem.logic.LogicParser.  Requires an additional logic_parser
+    parameter
+    pcfg    A probabilistic CFG.
+    pickle  A serialized python object, stored using the pickle
+    module.
     raw     The raw (byte string) contents of a file.
     text    The raw (unicode string) contents of a file. 
-    val     A semantic valuation, parsed by nltk.sem.parse_valuation().
+    val     A semantic valuation, parsed by
+    nltk.sem.Valuation.fromstring.
     yaml    A serialized python object, stored using the yaml module.
 
 `nltk.data.load()` will raise a ValueError if a bad format name is
@@ -85,6 +91,7 @@ to format names is specified by `nltk.data.AUTO_FORMATS`:
     .cfg     -> cfg
     .fcfg    -> fcfg
     .fol     -> fol
+    .json    -> json
     .logic   -> logic
     .pcfg    -> pcfg
     .pickle  -> pickle
@@ -270,13 +277,13 @@ Create a temp dir for tests that write files:
 
 The `retrieve()` function accepts all url types:
 
-    >>> urls = ['http://nltk.googlecode.com/svn/trunk/nltk/nltk/test/toy.cfg',
+    >>> urls = ['https://raw.githubusercontent.com/nltk/nltk/develop/nltk/test/toy.cfg',
     ...         'file:%s' % nltk.data.find('grammars/sample_grammars/toy.cfg'),
     ...         'nltk:grammars/sample_grammars/toy.cfg',
     ...         'grammars/sample_grammars/toy.cfg']
     >>> for i, url in enumerate(urls):
     ...     nltk.data.retrieve(url, 'toy-%d.cfg' % i) # doctest: +ELLIPSIS
-    Retrieving 'http://nltk.googlecode.com/svn/trunk/nltk/nltk/test/toy.cfg', saving to 'toy-0.cfg'
+    Retrieving 'https://raw.githubusercontent.com/nltk/nltk/develop/nltk/test/toy.cfg', saving to 'toy-0.cfg'
     Retrieving 'file:...toy.cfg', saving to 'toy-1.cfg'
     Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy-2.cfg'
     Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy-3.cfg'
@@ -287,10 +294,6 @@ Clean up the temp dir:
     >>> for f in os.listdir(tempdir):
     ...     os.remove(os.path.join(tempdir, f))
     >>> os.rmdir(tempdir)
-
-.. note:: load(..., format='yaml') is not currently tested, because we
-    do not have any yaml files in our data distribution yet.  We should
-    probably have a trained brill tagger there.
 
 Lazy Loader
 -----------
@@ -311,7 +314,7 @@ internal use by NLTK's corpus readers.
 
     >>> # Show that it's now been loaded:
     >>> object.__repr__(ll) # doctest: +ELLIPSIS
-    '<nltk.grammar.ContextFreeGrammar object at ...>'
+    '<nltk.grammar.CFG object at ...>'
 
 
     >>> # Test that accessing an attribute also loads it:
@@ -319,7 +322,7 @@ internal use by NLTK's corpus readers.
     >>> ll.start()
     S
     >>> object.__repr__(ll) # doctest: +ELLIPSIS
-    '<nltk.grammar.ContextFreeGrammar object at ...>'
+    '<nltk.grammar.CFG object at ...>'
 
 Buffered Gzip Reading and Writing
 ---------------------------------
@@ -348,4 +351,29 @@ provides.
     >>> import os
     >>> os.unlink('testbuf.gz')
 
+JSON Encoding and Decoding
+--------------------------
+JSON serialization is used instead of pickle for some classes.
+
+    >>> from nltk import jsontags
+    >>> from nltk.jsontags import JSONTaggedEncoder, JSONTaggedDecoder, register_tag
+    >>> @jsontags.register_tag
+    ... class JSONSerializable:
+    ...     json_tag = 'JSONSerializable'
+    ...
+    ...     def __init__(self, n):
+    ...         self.n = n
+    ...
+    ...     def encode_json_obj(self):
+    ...         return self.n
+    ...
+    ...     @classmethod
+    ...     def decode_json_obj(cls, obj):
+    ...         n = obj
+    ...         return cls(n)
+    ...
+    >>> JSONTaggedEncoder().encode(JSONSerializable(1))
+    '{"!JSONSerializable": 1}'
+    >>> JSONTaggedDecoder().decode('{"!JSONSerializable": 1}').n
+    1
 

@@ -1,10 +1,10 @@
 # Natural Language Toolkit: K-Means Clusterer
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 import copy
 import random
@@ -81,7 +81,7 @@ class KMeansClusterer(VectorSpaceClusterer):
         for trial in range(self._repeats):
             if trace: print('k-means trial', trial)
             if not self._means or trial > 1:
-                self._means = self._rng.sample(vectors, self._num_means)
+                self._means = self._rng.sample(list(vectors), self._num_means)
             self._cluster_vectorspace(vectors, trace)
             meanss.append(self._means)
 
@@ -121,7 +121,7 @@ class KMeansClusterer(VectorSpaceClusterer):
                     #print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
 
                 # recalculate cluster means by computing the centroid of each cluster
-                new_means = map(self._centroid, clusters, self._means)
+                new_means = list(map(self._centroid, clusters, self._means))
 
                 # measure the degree of change from the previous step for convergence
                 difference = self._sum_distances(self._means, new_means)
@@ -165,7 +165,7 @@ class KMeansClusterer(VectorSpaceClusterer):
             centroid = copy.copy(mean)
             for vector in cluster:
                 centroid += vector
-            return centroid / (1+float(len(cluster)))
+            return centroid / (1+len(cluster))
         else:
             if not len(cluster):
                 sys.stderr.write('Error: no centroid defined for empty cluster.\n')
@@ -174,7 +174,7 @@ class KMeansClusterer(VectorSpaceClusterer):
             centroid = copy.copy(cluster[0])
             for vector in cluster[1:]:
                 centroid += vector
-            return centroid / float(len(cluster))
+            return centroid / len(cluster)
 
     def __repr__(self):
         return '<KMeansClusterer means=%s repeats=%d>' % \

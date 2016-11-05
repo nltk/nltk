@@ -35,7 +35,6 @@ from __future__ import print_function, unicode_literals
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 from nltk import compat
-from warnings import warn
 
 try:
     from sklearn.feature_extraction import DictVectorizer
@@ -73,7 +72,7 @@ class SklearnClassifier(ClassifierI):
     def __repr__(self):
         return "<SklearnClassifier(%r)>" % self._clf
 
-    def batch_classify(self, featuresets):
+    def classify_many(self, featuresets):
         """Classify a batch of samples.
 
         :param featuresets: An iterable over featuresets, each a dict mapping
@@ -85,7 +84,7 @@ class SklearnClassifier(ClassifierI):
         classes = self._encoder.classes_
         return [classes[i] for i in self._clf.predict(X)]
 
-    def batch_prob_classify(self, featuresets):
+    def prob_classify_many(self, featuresets):
         """Compute per-class probabilities for a batch of samples.
 
         :param featuresets: An iterable over featuresets, each a dict mapping

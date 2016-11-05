@@ -1,9 +1,16 @@
 # Natural Language Toolkit: Verbnet Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+
+"""
+An NLTK interface to the VerbNet verb lexicon
+
+For details about VerbNet see:
+http://verbs.colorado.edu/~mpalmer/projects/verbnet.html
+"""
 from __future__ import unicode_literals
 
 import re
@@ -11,9 +18,21 @@ import textwrap
 from collections import defaultdict
 
 from nltk import compat
-from .xmldocs import XMLCorpusReader
+from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
 class VerbnetCorpusReader(XMLCorpusReader):
+    """
+    An NLTK interface to the VerbNet verb lexicon.
+    
+    From the VerbNet site: "VerbNet (VN) (Kipper-Schuler 2006) is the largest 
+    on-line verb lexicon currently available for English. It is a hierarchical 
+    domain-independent, broad-coverage verb lexicon with mappings to other 
+    lexical resources such as WordNet (Miller, 1990; Fellbaum, 1998), Xtag 
+    (XTAG Research Group, 2001), and FrameNet (Baker et al., 1998)."
+
+    For details about VerbNet see:
+    http://verbs.colorado.edu/~mpalmer/projects/verbnet.html
+    """
 
     # No unicode encoding param, since the data files are all XML.
     def __init__(self, root, fileids, wrap_etree=False):

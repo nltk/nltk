@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for Corpus Readers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -14,11 +14,12 @@ from __future__ import unicode_literals
 import os
 import re
 from collections import defaultdict
+from itertools import chain
 
 from nltk import compat
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
-from .util import *
+from nltk.corpus.reader.util import *
 
 @compat.python_2_unicode_compatible
 class CorpusReader(object):
@@ -30,7 +31,7 @@ class CorpusReader(object):
     identified by its ``file identifier``, which is the relative path
     to the file from the root directory.
 
-    A separate subclass is be defined for each corpus format.  These
+    A separate subclass is defined for each corpus format.  These
     subclasses define one or more methods that provide 'views' on the
     corpus contents, such as ``words()`` (for a list of words) and
     ``parsed_sents()`` (for a list of parsed sentences).  Called with
@@ -133,6 +134,18 @@ class CorpusReader(object):
         """
         return self.open("README").read()
 
+    def license(self):
+        """
+        Return the contents of the corpus LICENSE file, if it exists.
+        """
+        return self.open("LICENSE").read()
+
+    def citation(self):
+        """
+        Return the contents of the corpus citation.bib file, if it exists.
+        """
+        return self.open("citation.bib").read()
+
     def fileids(self):
         """
         Return a list of file identifiers for the fileids that make up
@@ -144,8 +157,8 @@ class CorpusReader(object):
         """
         Return the absolute path for the given file.
 
-        :type file: str
-        :param file: The file identifier for the file whose path
+        :type fileid: str
+        :param fileid: The file identifier for the file whose path
             should be returned.
         :rtype: PathPointer
         """
@@ -414,10 +427,10 @@ class SyntaxCorpusReader(CorpusReader):
     #{ Block Readers
 
     def _read_word_block(self, stream):
-        return sum(self._read_sent_block(stream), [])
+        return list(chain(*self._read_sent_block(stream)))
 
     def _read_tagged_word_block(self, stream, tagset=None):
-        return sum(self._read_tagged_sent_block(stream, tagset), [])
+        return list(chain(*self._read_tagged_sent_block(stream, tagset)))
 
     def _read_sent_block(self, stream):
         return list(filter(None, [self._word(t) for t in self._read_block(stream)]))

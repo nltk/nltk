@@ -130,8 +130,8 @@ from nltk import compat
 from nltk.tree import Tree
 from nltk.internals import import_from_stdlib
 
-from .util import *
-from .api import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 class TimitCorpusReader(CorpusReader):
     """

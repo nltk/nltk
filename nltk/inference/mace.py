@@ -15,7 +15,7 @@ import os
 import tempfile
 
 from nltk.sem.logic import is_indvar
-from nltk.sem import Valuation, LogicParser
+from nltk.sem import Valuation, Expression
 
 from nltk.inference.api import ModelBuilder, BaseModelBuilderCommand
 from nltk.inference.prover9 import Prover9CommandParent, Prover9Parent
@@ -63,32 +63,29 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         for line in valuation_standard_format.splitlines(False):
             l = line.strip()
 
-            if l.startswith(b'interpretation'):
+            if l.startswith('interpretation'):
                 # find the number of entities in the model
-                num_entities = int(l[l.index(b'(')+1:l.index(b',')].strip())
+                num_entities = int(l[l.index('(')+1:l.index(',')].strip())
 
-            elif l.startswith(b'function') and l.find(b'_') == -1:
+            elif l.startswith('function') and l.find('_') == -1:
                 # replace the integer identifier with a corresponding alphabetic character
-                name = l[l.index(b'(')+1:l.index(b',')].strip()
-                name = name.decode("utf8")
+                name = l[l.index('(')+1:l.index(',')].strip()
                 if is_indvar(name):
                     name = name.upper()
-                value = int(l[l.index(b'[')+1:l.index(b']')].strip())
+                value = int(l[l.index('[')+1:l.index(']')].strip())
                 val.append((name, MaceCommand._make_model_var(value)))
 
-            elif l.startswith(b'relation'):
-                l = l[l.index(b'(')+1:]
-                if b'(' in l:
+            elif l.startswith('relation'):
+                l = l[l.index('(')+1:]
+                if '(' in l:
                     #relation is not nullary
-                    name = l[:l.index(b'(')].strip()
-                    name = name.decode("utf8")
-                    values = [int(v.strip()) for v in l[l.index(b'[')+1:l.index(b']')].split(b',')]
+                    name = l[:l.index('(')].strip()
+                    values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
                     val.append((name, MaceCommand._make_relation_set(num_entities, values)))
                 else:
                     #relation is nullary
-                    name = l[:l.index(b',')].strip()
-                    name = name.decode("utf8")
-                    value = int(l[l.index(b'[')+1:l.index(b']')].strip())
+                    name = l[:l.index(',')].strip()
+                    value = int(l[l.index('[')+1:l.index(']')].strip())
                     val.append((name, value == 1))
 
         return Valuation(val)
@@ -241,9 +238,8 @@ def test_model_found(arguments):
     """
     Try some proofs and exhibit the results.
     """
-    lp = LogicParser()
     for (goal, assumptions) in arguments:
-        g = lp.parse(goal)
+        g = Expression.fromstring(goal)
         alist = [lp.parse(a) for a in assumptions]
         m = MaceCommand(g, assumptions=alist, max_models=50)
         found = m.build_model()
@@ -256,9 +252,8 @@ def test_build_model(arguments):
     """
     Try to build a ``nltk.sem.Valuation``.
     """
-    lp = LogicParser()
-    g = lp.parse('all x.man(x)')
-    alist = [lp.parse(a) for a in ['man(John)',
+    g = Expression.fromstring('all x.man(x)')
+    alist = [Expression.fromstring(a) for a in ['man(John)',
                                    'man(Socrates)',
                                    'man(Bill)',
                                    'some x.(-(x = John) & man(x) & sees(John,x))',
@@ -284,8 +279,7 @@ def test_transform_output(argument_pair):
     """
     Transform the model into various Mace4 ``interpformat`` formats.
     """
-    lp = LogicParser()
-    g = lp.parse(argument_pair[0])
+    g = Expression.fromstring(argument_pair[0])
     alist = [lp.parse(a) for a in argument_pair[1]]
     m = MaceCommand(g, assumptions=alist)
     m.build_model()

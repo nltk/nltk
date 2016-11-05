@@ -1,3 +1,183 @@
+Version 3.2.1 2016-04-09
+* Support for CCG semantics, Stanford segmenter, VADER lexicon
+* Fixes to BLEU score calculation, CHILDES corpus reader
+* Other miscellaneous fixes
+
+Thanks to the following contributors to 3.2.1:
+Andrew Giel, Casper Lehmann-Strøm, David Madl, Tanin Na Nakorn,
+Guilherme Nardari, Philippe Ombredanne, Nathan Schneider, Liling Tan,
+Josiah Wang, venticello
+	
+Version 3.2 2016-03-03
+* Fixes for Python 3.5
+* Code cleanups now Python 2.6 is no longer supported
+* Improvements to documentation
+* Comprehensive use of os.path for platform-specific path handling
+* Support for PanLex
+* Support for third party download locations for NLTK data
+* Fix bugs in IBM method 3 smoothing and BLEU calculation
+* Support smoothing for BLEU score and corpus-level BLEU
+* Support RIBES score
+* Improvements to TweetTokenizer
+* Updates for Stanford API
+* Add mathematical operators to ConditionalFreqDist
+* Fix bug in sentiwordnet for adjectives
+* Merged internal implementations of Trie
+
+Thanks to the following contributors to 3.2:
+Santiago Castro, Jihun Choi, Graham Christensen, Andrew Drozdov, Long
+Duong, Kyriakos Georgiou, Michael Wayne Goodman, Clark Grubb, Tah Wei
+Hoon, David Kamholz, Ewan Klein, Reed Loden, Rob Malouf, Philippe
+Ombredanne, Josh Owen, Pierpaolo Pantone, Mike Recachinas, Elijah
+Rippeth, Thomas Stieglmaier, Liling Tan, Philip Tzou, Pratap Vardhan.
+
+Version 3.1 2015-10-15
+* Fixes for Python 3.5 (drop support for capturing groups in regexp tokenizer)
+* Drop support for Python 2.6
+* Adopt perceptron tagger for new default POS tagger nltk.pos_tag
+* Stanford Neural Dependency Parser wrapper
+* Sentiment analysis package incl VADER
+* Improvements to twitter package
+* Multi word expression tokenizer
+* Support for everygram and skipgram
+* consistent evaluation metric interfaces, putting reference before hypothesis
+* new nltk.translate module, incorporating the old align module
+* implement stack decoder
+* clean up Alignment interface
+* CorpusReader method to support access to license and citation
+* Multext East Corpus and MTECorpusReader
+* include six module to streamline installation on MS Windows
+	
+Thanks to the following contributors to 3.1:
+Le Tuan Anh, Petra Barancikova, Alexander Böhm, Francis Bond,
+Long Duong, Anna Garbar, Matthew Honnibal, Tah Wei Hoon, Ewan Klein,
+Rob Malouf, Dmitrijs Milajevs, Will Monroe, Sergio Oller, Pierpaolo
+Pantone, Jacob Perkins, Lorenzo Rubio, Thomas Stieglmaier, Liling Tan,
+Pratap Vardhan
+	
+Version 3.0.5 2015-09-05
+* rewritten IBM models, and new IBM Model 4 and 5 implementations
+* new Twitter package
+* stabilized MaltParser API
+* improved regex tagger
+* improved documentation on contributing
+* minor improvements to documentation and testing
+
+Thanks to the following contributors to 3.0.5:
+Álvaro Justen, Dmitrijs Milajevs, Ewan Klein, Heran Lin, Justin Hammar,
+Liling Tan, Long Duong, Lorenzo Rubio, Pierpaolo Pantone, Tah Wei Hoon
+	
+Version 3.0.4 2015-07-13
+* minor bug fixes and enhancements
+
+Thanks to the following contributors to 3.0.4:
+Nicola Bova, Santiago Castro, Len Remmerswaal, Keith Suderman, kabayan55,
+pln-fing-udelar (NLP Group, Instituto de Computación, Facultad de Ingeniería, Universidad de la República, Uruguay).
+	
+Version 3.0.3 2015-06-12
+* bug fixes (Stanford NER, Boxer, Snowball, treebank tokenizer,
+    dependency graph, KneserNey, BLEU)
+* code clean-ups
+* default POS tagger permits tagset to be specified
+* gensim illustration
+* tgrep implementation
+* added PanLex Swadesh corpora
+* visualisation for aligned bitext
+* support for Google App Engine
+* POSTagger renamed StanfordPOSTagger, NERTagger renamed StanfordNERTagger
+
+Thanks to the following contributors to 3.0.3:
+
+Long Duong, Pedro Fialho, Dan Garrette, Helder, Saimadhav Heblikar,
+Chris Inskip, David Kamholz, Dmitrijs Milajevs, Smitha Milli,
+Tom Mortimer-Jones, Avital Pekker, Jonathan Pool, Sam Raker,
+Will Roberts, Dmitry Sadovnychyi, Nathan Schneider, Anirudh W
+	
+Version 3.0.2 2015-03-13
+* make pretty-printing method names consistent
+* improvements to Portuguese stemmer
+* transition-based dependency parsers
+* dependency graph visualisation for ipython notebook
+* interfaces for Senna, BLLIP, python-crfsuite
+* NKJP corpus reader
+* code clean ups, minor bug fixes
+
+Thanks to the following contributors to 3.0.2:
+	
+Long Duong, Saimadhav Heblikar, Helder, Mikhail Korobov, Denis Krusko,
+Alex Louden, Felipe Madrigal, David McClosky, Dmitrijs Milajevs,
+Ondrej Platek, Nathan Schneider, Dávid Márk Nemeskey, 0ssifrage, ducki13, kiwipi.
+
+Version 3.0.1 2015-01-12
+* fix setup.py for new version of setuptools
+	
+Version 3.0.0 2014-09-07
+* minor bugfixes
+* added phrase extraction code by Liling Tan and Fredrik Hedman
+
+Thanks to the following contributors to 3.0.0:
+Mark Amery, Ivan Barria, Ingolf Becker, Francis Bond, Lars
+Buitinck, Cristian Capdevila, Arthur Darcet, Michelle Fullwood,
+Dan Garrette, Dougal Graham, Dan Garrette, Dougal Graham, Lauri
+Hallila, Tyler Hartley, Fredrik Hedman, Ofer Helman, Bruce Hill,
+Marcus Huderle, Nancy Ide, Nick Johnson, Angelos Katharopoulos,
+Ewan Klein, Mikhail Korobov, Chris Liechti, Peter Ljunglof,
+Joseph Lynch, Haejoong Lee, Peter Ljunglöf, Dean Malmgren, Rob
+Malouf, Thorsten Marek, Dmitrijs Milajevs, Shari A’aidil
+Nasruddin, Lance Nathan, Joel Nothman, Alireza Nourian, Alexander
+Oleynikov, Ted Pedersen, Jacob Perkins, Will Roberts, Alex
+Rudnick, Nathan Schneider, Geraldine Sim Wei Ying, Lynn Soe,
+Liling Tan, Louis Tiao, Marcus Uneson, Yu Usami, Steven Xu, Zhe
+Wang, Chuck Wooters, lade, isnowfy, onesandzeros, pquentin, wvanlint
+
+Version 3.0b2 2014-08-21
+* minor bugfixes and clean-ups
+* renamed remaining parse_ methods to read_ or load_, cf issue #656
+* added Paice's method of evaluating stemming algorithms
+
+Thanks to the following contributors to 3.0.0b2: Lars Buitinck,
+Cristian Capdevila, Lauri Hallila, Ofer Helman, Dmitrijs Milajevs,
+lade, Liling Tan, Steven Xu
+
+Version 3.0.0b1 2014-07-11
+* Added SentiWordNet corpus and corpus reader
+* Fixed support for 10-column dependency file format
+* Changed Tree initialization to use fromstring
+
+Thanks to the following contributors to 3.0b1: Mark Amery, Ivan
+Barria, Ingolf Becker, Francis Bond, Lars Buitinck, Arthur Darcet,
+Michelle Fullwood, Dan Garrette, Dougal Graham, Dan Garrette, Dougal
+Graham, Tyler Hartley, Ofer Helman, Bruce Hill, Marcus Huderle, Nancy
+Ide, Nick Johnson, Angelos Katharopoulos, Ewan Klein, Mikhail Korobov,
+Chris Liechti, Peter Ljunglof, Joseph Lynch, Haejoong Lee, Peter
+Ljunglöf, Dean Malmgren, Rob Malouf, Thorsten Marek, Dmitrijs
+Milajevs, Shari A’aidil Nasruddin, Lance Nathan, Joel Nothman, Alireza
+Nourian, Alexander Oleynikov, Ted Pedersen, Jacob Perkins, Will
+Roberts, Alex Rudnick, Nathan Schneider, Geraldine Sim Wei Ying, Lynn
+Soe, Liling Tan, Louis Tiao, Marcus Uneson, Yu Usami, Steven Xu, Zhe
+Wang, Chuck Wooters, isnowfy, onesandzeros, pquentin, wvanlint
+	
+Version 3.0a4 2014-05-25
+* IBM Models 1-3, BLEU, Gale-Church aligner
+* Lesk algorithm for WSD
+* Open Multilingual WordNet
+* New implementation of Brill Tagger
+* Extend BNCCorpusReader to parse the whole BNC
+* MASC Tagged Corpus and corpus reader
+* Interface to Stanford Parser
+* Code speed-ups and clean-ups
+* API standardisation, including fromstring method for many objects
+* Improved regression testing setup
+* Removed PyYAML dependency
+
+Thanks to the following contributors to 3.0a4:
+Ivan Barria, Ingolf Becker, Francis Bond, Arthur Darcet, Dan Garrette,
+Ofer Helman, Dougal Graham, Nancy Ide, Ewan Klein, Mikhail Korobov,
+Chris Liechti, Peter Ljunglof, Joseph Lynch, Rob Malouf, Thorsten Marek,
+Dmitrijs Milajevs, Shari A’aidil Nasruddin, Lance Nathan, Joel Nothman,
+Jacob Perkins, Lynn Soe, Liling Tan, Louis Tiao, Marcus Uneson, Steven Xu,
+Geraldine Sim Wei Ying
+
 Version 3.0a3 2013-11-02
 * support for FrameNet contributed by Chuck Wooters
 * support for Universal Declaration of Human Rights Corpus (udhr2)
