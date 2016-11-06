@@ -29,7 +29,7 @@ class BaseNgramModel(object):
         self._ngrams = ngram_counter.ngrams
         self._order = ngram_counter.order
 
-        self._check_against_vocab = self.ngram_counter.check_against_vocab
+        self._check_against_vocab = self.ngram_counter.vocabulary.mask_oov
 
     def check_context(self, context):
         """Makes sure context not longer than model's ngram order and is a tuple."""

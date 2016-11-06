@@ -17,7 +17,7 @@ from nltk import compat
 
 def build_vocabulary(cutoff, *texts):
     combined_texts = chain(*texts)
-    return NgramModelVocabulary(cutoff, combined_texts)
+    return NgramModelVocabulary(combined_texts, unk_cutoff=cutoff)
 
 
 def count_ngrams(order, vocabulary, *training_texts, **counter_kwargs):
@@ -37,9 +37,10 @@ class NgramModelVocabulary(Counter):
     - Adds 1 to its size so as to account for "unknown" tokens.
     """
 
-    def __init__(self, unknown_cutoff, *counter_args):
+    def __init__(self, *counter_args, **vocab_kwargs):
         super(self.__class__, self).__init__(*counter_args)
-        self.cutoff = unknown_cutoff
+        self.cutoff = vocab_kwargs.pop("unk_cutoff", 1)
+        self.unk_label = vocab_kwargs.pop("unk_label", "<UNK>")
 
     @property
     def cutoff(self):
@@ -51,6 +52,14 @@ class NgramModelVocabulary(Counter):
             msg_template = "Cutoff value cannot be less than 1. Got: {0}"
             raise ValueError(msg_template.format(new_cutoff))
         self._cutoff = new_cutoff
+
+    def mask_oov(self, word):
+        """Replaces out-of-vocabulary word with unk_label.
+
+        Words with counts less than cutoff, aren't in the vocabulary.
+        :param: word
+        """
+        return word if word in self else self.unk_label
 
     def __contains__(self, item):
         """Only consider items with counts GE to cutoff as being in the vocabulary."""
@@ -73,7 +82,9 @@ class NgramModelVocabulary(Counter):
         return not self.__eq__(other)
 
     def __copy__(self):
-        return self.__class__(self._cutoff, self)
+        new = self.__class__(self)
+        new.__dict__.update(self.__dict__)
+        return new
 
 
 @compat.python_2_unicode_compatible
@@ -132,9 +143,8 @@ class NgramCounter(object):
                              "vocabulary contains more than one item.")
 
         for sent in training_text:
-            checked_sent = (self.check_against_vocab(word) for word in sent)
             sent_start = True
-            for ngram in self.to_ngrams(checked_sent):
+            for ngram in self.to_ngrams(sent):
                 context, word = tuple(ngram[:-1]), ngram[-1]
 
                 if sent_start:
@@ -147,11 +157,6 @@ class NgramCounter(object):
                     # note that above line doesn't affect context on first iteration
                     self.ngrams[ngram_order][trunc_context][word] += 1
                 self.unigrams[word] += 1
-
-    def check_against_vocab(self, word):
-        if word in self.vocabulary:
-            return word
-        return self.unk_label
 
     def to_ngrams(self, sequence):
         """Wrapper around util.ngrams with usefull options saved during initialization.

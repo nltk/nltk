@@ -17,6 +17,7 @@ from nltk.model import (build_vocabulary,
                         LidstoneNgramModel,
                         LaplaceNgramModel,
                         NEG_INF)
+from nltk.model.util import mask_oov_words_in_corpus
 
 
 class NgramModelBaseTest(unittest.TestCase):
@@ -25,10 +26,11 @@ class NgramModelBaseTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         # The base vocabulary contains 5 items: abcd and UNK
-        self.vocab = NgramModelVocabulary(1, ["a", "b", "c", "d"])
+        self.vocab = NgramModelVocabulary(["a", "b", "c", "d"], unk_cutoff=1)
         # NgramCounter.vocabulary contains 7 items (+2 for padding symbols)
+        normalized = mask_oov_words_in_corpus(['abcd', 'egadbe'], self.vocab)
         self.counter = NgramCounter(2, self.vocab)
-        self.counter.train_counts(['abcd', 'egadbe'])
+        self.counter.train_counts(normalized)
 
     def total_vocab_score(self, context):
         """Sums up scores for the whole vocabulary given some context.
@@ -50,7 +52,6 @@ class BaseNgramModelTests(NgramModelBaseTest):
     def test_aliases(self):
         self.assertEqual(self.model._order, 2)
         self.assertEqual(self.model._ngrams, self.counter.ngrams)
-        self.assertEqual(self.model._check_against_vocab, self.counter.check_against_vocab)
 
     def test_context_checker(self):
         ctx_tuple = self.model.check_context(('a',))
@@ -244,73 +245,3 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
 
         for context in mixed_contexts:
             self.assertAlmostEqual(self.total_vocab_score(context), 1)
-
-
-class ModelFuncsTests(unittest.TestCase):
-    """Tests for module functions.
-
-    They are essentially integration tests.
-    """
-
-    def test_build_vocabulary(self):
-        vocab = build_vocabulary(2, 'zabcfdegadbew')
-        assert "a" in vocab
-        assert "c" not in vocab
-
-    def test_build_vocabulary_multiple_texts(self):
-        vocab = build_vocabulary(2, 'zabcfdegadbew', "abcdeadbe")
-        assert "a" in vocab
-        assert "c" in vocab
-        assert "g" not in vocab
-
-    def test_build_vocabulary_no_texts(self):
-        vocab = build_vocabulary(2)
-        assert "a" not in vocab
-        assert "z" not in vocab
-
-    def test_count_ngrams(self):
-        vocab = build_vocabulary(2, 'abcdead')
-        counter = count_ngrams(2, vocab, ['abcfdezgadbew'])
-
-        bigrams = counter.ngrams[2]
-
-        self.assertEqual(bigrams[("a",)]['b'], 0)
-        self.assertEqual(bigrams[("a",)]['d'], 1)
-        self.assertEqual(bigrams[("<s>",)]['a'], 1)
-
-    def test_count_ngrams_multiple_texts(self):
-        vocab_text = ("the cow jumped over the blue moon . "
-                      "blue river jumped over the rainbow .")
-        vocab = build_vocabulary(2, vocab_text.split())
-
-        text1 = ['zabcfdegadbew']
-        text2 = ["blue moon".split(), "over the rainbow".split()]
-        counter = count_ngrams(2, vocab, text1, text2)
-
-        bigrams = counter.ngrams[2]
-
-        self.assertEqual(bigrams[("blue",)]['river'], 0)
-        self.assertEqual(bigrams[("blue",)]['<UNK>'], 1)
-        self.assertEqual(bigrams[("over",)]['the'], 1)
-
-    def test_count_ngrams_kwargs(self):
-        vocab_text = ("the cow jumped over the blue moon . "
-                      "blue river jumped over the rainbow .")
-        vocab = build_vocabulary(2, vocab_text.split())
-
-        text = ["blue moon".split(), "over the rainbow".split()]
-        counter = count_ngrams(2, vocab, text, left_pad_symbol="TEST")
-
-        self.assertEqual(counter.ngrams[2][("TEST",)]["blue"], 1)
-
-    def test_count_grams_bad_kwarg(self):
-        vocab_text = ("the cow jumped over the blue moon . "
-                      "blue river jumped over the rainbow .")
-        vocab = build_vocabulary(2, vocab_text.split())
-
-        text = ["blue moon".split()]
-        with self.assertRaises(TypeError) as exc_info:
-            count_ngrams(2, vocab, text, dummy_kwarg="TEST")
-
-        expected_error_msg = "ngrams() got an unexpected keyword argument 'dummy_kwarg'"
-        self.assertEqual(expected_error_msg, str(exc_info.exception))

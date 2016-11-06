@@ -10,6 +10,7 @@ import unittest
 from nltk import six
 
 from nltk.model import NgramModelVocabulary, NgramCounter
+from util import mask_oov_words_in_corpus
 
 
 class NgramCounterTests(unittest.TestCase):
@@ -17,14 +18,15 @@ class NgramCounterTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.vocab = NgramModelVocabulary(2, ["a", "b", "c", "d", "e",
-                                              "a", "d", "b", "e"])
+        self.vocab = NgramModelVocabulary(["a", "b", "c", "d", "e",
+                                           "a", "d", "b", "e"], unk_cutoff=2)
+        normalized = mask_oov_words_in_corpus(['abcd', 'egdbe'], self.vocab)
 
         self.trigram_counter = NgramCounter(3, self.vocab)
-        self.trigram_counter.train_counts(['abcd', 'egdbe'])
+        self.trigram_counter.train_counts(normalized)
 
         self.bigram_counter = NgramCounter(2, self.vocab)
-        self.bigram_counter.train_counts(['abcd', 'egdbe'])
+        self.bigram_counter.train_counts(normalized)
 
     def test_NgramCounter_order_attr(self):
         self.assertEqual(self.trigram_counter.order, 3)
@@ -36,7 +38,7 @@ class NgramCounterTests(unittest.TestCase):
         self.assertEqual(str(exc_info.exception), expected_error_msg)
 
     def test_NgramCounter_breaks_given_empty_vocab(self):
-        empty_vocab = NgramModelVocabulary(2, "abc")
+        empty_vocab = NgramModelVocabulary("abc", unk_cutoff=2)
         empty_counter = NgramCounter(2, empty_vocab, pad_left=False, pad_right=False)
 
         with self.assertRaises(ValueError) as exc_info:
@@ -45,12 +47,6 @@ class NgramCounterTests(unittest.TestCase):
         self.assertEqual(("Cannot start counting ngrams until "
                           "vocabulary contains more than one item."),
                          str(exc_info.exception))
-
-    def test_check_against_vocab(self):
-        unk_label = "<UNK>"
-
-        self.assertEqual("a", self.bigram_counter.check_against_vocab("a"))
-        self.assertEqual(unk_label, self.bigram_counter.check_against_vocab("c"))
 
     def test_ngram_conditional_freqdist(self):
         expected_trigram_contexts = [

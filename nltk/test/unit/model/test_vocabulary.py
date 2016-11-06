@@ -16,15 +16,15 @@ class NgramModelVocabularyTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.vocab = NgramModelVocabulary(2, ['z', 'a', 'b', 'c', 'f', 'd',
-                                             'e', 'g', 'a', 'd', 'b', 'e', 'w'])
+        self.vocab = NgramModelVocabulary(['z', 'a', 'b', 'c', 'f', 'd',
+                                             'e', 'g', 'a', 'd', 'b', 'e', 'w'], unk_cutoff=2)
 
     def test_cutoff_value_set_correctly(self):
         self.assertEqual(self.vocab.cutoff, 2)
 
     def test_cutoff_setter_checks_value(self):
         with self.assertRaises(ValueError) as exc_info:
-            NgramModelVocabulary(0, "abc")
+            NgramModelVocabulary("abc", unk_cutoff=0)
         expected_error_msg = "Cutoff value cannot be less than 1. Got: 0"
         self.assertEqual(expected_error_msg, str(exc_info.exception))
 
@@ -48,10 +48,14 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.assertEqual(expected_vocab_size, len(self.vocab))
 
     def test_copying_vs_recreating_vocabulary(self):
-        new_vocab = NgramModelVocabulary(1, self.vocab)
+        new_vocab = NgramModelVocabulary(self.vocab, unk_cutoff=1)
         copied_vocab = copy.copy(self.vocab)
 
         # Because of the different cutoff the two must also be unequal
         self.assertNotEqual(new_vocab, self.vocab)
         # Equality test should be True because copies are "equal"
         self.assertEqual(copied_vocab, self.vocab)
+
+    def test_mask_oov(self):
+        self.assertEqual(self.vocab.mask_oov("a"), "a")
+        self.assertEqual(self.vocab.mask_oov("c"), "<UNK>")
