@@ -6,5 +6,12 @@
 # URL: <http://nltk.org/
 # For license information, see LICENSE.TXT
 
-from nltk.model.ngram import *
-from nltk.model.counter import build_vocabulary, count_ngrams
+from nltk.model.api import BaseNgramModel, NEG_INF
+from nltk.model.models import (MLENgramModel,
+                               LidstoneNgramModel,
+                               LaplaceNgramModel)
+from nltk.model.counter import (build_vocabulary,
+                                count_ngrams,
+                                NgramModelVocabulary,
+                                NgramCounter,
+                                EmptyVocabularyError)

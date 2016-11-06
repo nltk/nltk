@@ -8,7 +8,7 @@
 import copy
 import unittest
 
-from nltk.model.counter import NgramModelVocabulary
+from nltk.model import NgramModelVocabulary
 
 
 class NgramModelVocabularyTests(unittest.TestCase):

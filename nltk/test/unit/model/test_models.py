@@ -6,16 +6,18 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import division
-
 import unittest
 
-from nltk.model import build_vocabulary, count_ngrams
-from nltk.model.counter import NgramModelVocabulary, EmptyVocabularyError, NgramCounter
-from nltk.model.ngram import (BaseNgramModel,
-                              MLENgramModel,
-                              LidstoneNgramModel,
-                              LaplaceNgramModel,
-                              NEG_INF)
+from nltk.model import (build_vocabulary,
+                        count_ngrams,
+                        NgramModelVocabulary,
+                        EmptyVocabularyError,
+                        NgramCounter,
+                        BaseNgramModel,
+                        MLENgramModel,
+                        LidstoneNgramModel,
+                        LaplaceNgramModel,
+                        NEG_INF)
 
 
 class NgramModelBaseTest(unittest.TestCase):

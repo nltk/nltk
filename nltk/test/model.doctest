@@ -231,7 +231,7 @@ an empty NgramCounter object so that it can be trained later.
 In this case though, it's probably more reader-friendly to use the NgramCounter
 class directly:
 
-    >>> from nltk.model.counter import NgramCounter
+    >>> from nltk.model import NgramCounter
     >>> no_initial_texts = NgramCounter(2, vocab)
 
 If you choose to do this, you can call the `train_counts` method and pass it some text
