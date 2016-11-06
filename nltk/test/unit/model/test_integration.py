@@ -9,7 +9,7 @@ import unittest
 from nltk.model import build_vocabulary, count_ngrams
 from nltk.model.util import mask_oov_words_in_corpus
 
-
+@unittest.skip("Pending overhaul of the interfaces.")
 class ModelFuncsTests(unittest.TestCase):
     """Tests for module functions.
 

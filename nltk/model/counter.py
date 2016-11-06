@@ -10,7 +10,6 @@ from collections import Counter, defaultdict
 from copy import copy
 from itertools import chain
 
-from nltk.util import ngrams
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
 
@@ -91,7 +90,7 @@ class NgramModelVocabulary(Counter):
 class NgramCounter(object):
     """Class for counting ngrams"""
 
-    def __init__(self, order, vocabulary, unk_cutoff=None, unk_label="<UNK>", **ngrams_kwargs):
+    def __init__(self, order, vocabulary, unk_cutoff=None, unk_label="<UNK>"):
         """
         :type training_text: List[List[str]]
         """
@@ -103,15 +102,6 @@ class NgramCounter(object):
         self.order = order
         self.unk_label = unk_label
 
-        # Preset some common defaults...
-        self.ngrams_kwargs = {
-            "pad_left": True,
-            "pad_right": True,
-            "left_pad_symbol": "<s>",
-            "right_pad_symbol": "</s>"
-        }
-        # While allowing whatever the user passes to override them
-        self.ngrams_kwargs.update(ngrams_kwargs)
         # Set up the vocabulary
         self._set_up_vocabulary(vocabulary, unk_cutoff)
 
@@ -123,14 +113,6 @@ class NgramCounter(object):
         if unk_cutoff is not None:
             # If cutoff value is provided, override vocab's cutoff
             self.vocabulary.cutoff = unk_cutoff
-
-        if self.ngrams_kwargs['pad_left']:
-            lpad_sym = self.ngrams_kwargs.get("left_pad_symbol")
-            self.vocabulary[lpad_sym] = self.vocabulary.cutoff
-
-        if self.ngrams_kwargs['pad_right']:
-            rpad_sym = self.ngrams_kwargs.get("right_pad_symbol")
-            self.vocabulary[rpad_sym] = self.vocabulary.cutoff
 
     def _enumerate_ngram_orders(self):
         return enumerate(range(self.order, 1, -1))
@@ -144,7 +126,10 @@ class NgramCounter(object):
 
         for sent in training_text:
             sent_start = True
-            for ngram in self.to_ngrams(sent):
+            for ngram in sent:
+                if len(ngram) > self.order:
+                    raise ValueError("Ngram larger than highest order: "
+                                     "{0}".format(ngram))
                 context, word = tuple(ngram[:-1]), ngram[-1]
 
                 if sent_start:
@@ -157,11 +142,3 @@ class NgramCounter(object):
                     # note that above line doesn't affect context on first iteration
                     self.ngrams[ngram_order][trunc_context][word] += 1
                 self.unigrams[word] += 1
-
-    def to_ngrams(self, sequence):
-        """Wrapper around util.ngrams with usefull options saved during initialization.
-
-        :param sequence: same as nltk.util.ngrams
-        :type sequence: any iterable
-        """
-        return ngrams(sequence, self.order, **self.ngrams_kwargs)

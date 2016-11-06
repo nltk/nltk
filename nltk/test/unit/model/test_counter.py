@@ -10,23 +10,30 @@ import unittest
 from nltk import six
 
 from nltk.model import NgramModelVocabulary, NgramCounter
-from util import mask_oov_words_in_corpus
+from nltk.model.util import NgramCounterSetUpMixin
 
 
-class NgramCounterTests(unittest.TestCase):
+class NgramCounterBaseTest(unittest.TestCase, NgramCounterSetUpMixin):
+    """Sets up vocabulary and adds a useful method with mixin"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.vocab = NgramModelVocabulary(["a", "b", "c", "d", "e",
+                                          "a", "d", "b", "e"], unk_cutoff=2)
+
+
+class NgramCounterTests(NgramCounterBaseTest):
     """Tests NgramCounter class"""
 
     @classmethod
-    def setUpClass(self):
-        self.vocab = NgramModelVocabulary(["a", "b", "c", "d", "e",
-                                           "a", "d", "b", "e"], unk_cutoff=2)
-        normalized = mask_oov_words_in_corpus(['abcd', 'egdbe'], self.vocab)
+    def setUpClass(cls):
+        super(NgramCounterTests, cls).setUpClass()
+        # cls.vocab = NgramModelVocabulary(["a", "b", "c", "d", "e",
+        #                                   "a", "d", "b", "e"], unk_cutoff=2)
 
-        self.trigram_counter = NgramCounter(3, self.vocab)
-        self.trigram_counter.train_counts(normalized)
-
-        self.bigram_counter = NgramCounter(2, self.vocab)
-        self.bigram_counter.train_counts(normalized)
+        text = ['abcd', 'egdbe']
+        cls.trigram_counter = cls.setUpNgramCounter(3, text)
+        cls.bigram_counter = cls.setUpNgramCounter(2, text)
 
     def test_NgramCounter_order_attr(self):
         self.assertEqual(self.trigram_counter.order, 3)
@@ -39,7 +46,7 @@ class NgramCounterTests(unittest.TestCase):
 
     def test_NgramCounter_breaks_given_empty_vocab(self):
         empty_vocab = NgramModelVocabulary("abc", unk_cutoff=2)
-        empty_counter = NgramCounter(2, empty_vocab, pad_left=False, pad_right=False)
+        empty_counter = NgramCounter(2, empty_vocab)
 
         with self.assertRaises(ValueError) as exc_info:
             empty_counter.train_counts(['ad', 'hominem'])
@@ -112,3 +119,19 @@ class NgramCounterTests(unittest.TestCase):
         unknown_count = 2
 
         self.assertEqual(unknown_count, unigrams['<UNK>'])
+
+
+class NgramCounterModificationTests(NgramCounterBaseTest):
+    """These tests require a fresh instance of NgramCounter per method."""
+
+    def setUp(self):
+        text = ['abcd', 'egdbe']
+        self.bigram_counter = self.setUpNgramCounter(2, text)
+
+    def test_NgramCounter_train_wrong_ngram_size(self):
+        trigrams = [[
+                    (1, 2, 3),
+                    (4, 5, 6)
+                    ]]
+        with self.assertRaises(ValueError):
+            self.bigram_counter.train_counts(trigrams)
