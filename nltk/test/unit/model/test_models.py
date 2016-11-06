@@ -11,7 +11,6 @@ import unittest
 from nltk.model import (build_vocabulary,
                         count_ngrams,
                         NgramModelVocabulary,
-                        EmptyVocabularyError,
                         NgramCounter,
                         BaseNgramModel,
                         MLENgramModel,

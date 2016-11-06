@@ -9,7 +9,7 @@ import unittest
 
 from nltk import six
 
-from nltk.model import NgramModelVocabulary, EmptyVocabularyError, NgramCounter
+from nltk.model import NgramModelVocabulary, NgramCounter
 
 
 class NgramCounterTests(unittest.TestCase):
@@ -39,7 +39,7 @@ class NgramCounterTests(unittest.TestCase):
         empty_vocab = NgramModelVocabulary(2, "abc")
         empty_counter = NgramCounter(2, empty_vocab, pad_left=False, pad_right=False)
 
-        with self.assertRaises(EmptyVocabularyError) as exc_info:
+        with self.assertRaises(ValueError) as exc_info:
             empty_counter.train_counts(['ad', 'hominem'])
 
         self.assertEqual(("Cannot start counting ngrams until "

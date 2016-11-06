@@ -77,11 +77,6 @@ class NgramModelVocabulary(Counter):
 
 
 @compat.python_2_unicode_compatible
-class EmptyVocabularyError(Exception):
-    pass
-
-
-@compat.python_2_unicode_compatible
 class NgramCounter(object):
     """Class for counting ngrams"""
 
@@ -133,8 +128,8 @@ class NgramCounter(object):
         # Note here "1" indicates an empty vocabulary!
         # See NgramModelVocabulary __len__ method for more.
         if len(self.vocabulary) <= 1:
-            raise EmptyVocabularyError("Cannot start counting ngrams until "
-                                       "vocabulary contains more than one item.")
+            raise ValueError("Cannot start counting ngrams until "
+                             "vocabulary contains more than one item.")
 
         for sent in training_text:
             checked_sent = (self.check_against_vocab(word) for word in sent)

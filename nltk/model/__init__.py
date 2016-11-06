@@ -13,5 +13,4 @@ from nltk.model.models import (MLENgramModel,
 from nltk.model.counter import (build_vocabulary,
                                 count_ngrams,
                                 NgramModelVocabulary,
-                                NgramCounter,
-                                EmptyVocabularyError)
+                                NgramCounter)
