@@ -86,8 +86,8 @@ class NgramCounter(object):
         """
 
         if order < 1:
-            message = "Order of NgramCounter cannot be less than 1. Got: {0}"
-            raise ValueError(message.format(order))
+            message = "Order of {0} cannot be less than 1. Got: {1}"
+            raise ValueError(message.format(self.__class__.__name__, order))
 
         self.order = order
         self.unk_label = unk_label
