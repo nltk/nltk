@@ -68,34 +68,63 @@ class BaseNgramModelTests(NgramModelBaseTest):
             self.model.score("d", ["c"])
 
 
+def bigram_model(cls):
+    """Decorator for adding bigram model testing helpers"""
+
+    handles_unseens = getattr(cls, "handles_unseens", True)
+
+    if handles_unseens:
+        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
+                    ('e',), ('r'), ('w',))
+    else:
+        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',))
+
+    def score_assertions(self, expected_score):
+        """Helper function for testing an ngram model's score method."""
+        got_score_list = self.model.score("d", ["c"])
+        got_score_tuple = self.model.score("d", ("c",))
+
+        self.assertAlmostEqual(expected_score, got_score_list, places=4)
+        self.assertEqual(got_score_list, got_score_tuple)
+
+    def entropy_perp_assertions(self, H, perplexity, corpus="ac-dc"):
+        """Helper function for testing entropy/perplexity."""
+        self.assertAlmostEqual(H, self.model.entropy(corpus), places=4)
+        self.assertAlmostEqual(perplexity, self.model.perplexity(corpus),
+                               places=4)
+
+    def test_score_context_too_long(self):
+        with self.assertRaises(ValueError) as exc_info:
+            self.model.score('d', ('a', 'b'))
+
+    def test_scores_sum_to_1(self):
+        # Laplace (like Lidstone) smoothing can handle contexts unseen during training
+        for context in contexts:
+            self.assertAlmostEqual(self.total_vocab_score(context), 1)
+
+    cls.test_score_context_too_long = test_score_context_too_long
+    cls.score_assertions = score_assertions
+    cls.entropy_perp_assertions = entropy_perp_assertions
+    cls.test_scores_sum_to_1 = test_scores_sum_to_1
+    return cls
+
+
+@bigram_model
 class MLENgramModelTests(NgramModelBaseTest):
     """unit tests for MLENgramModel class"""
+    handles_unseens = False
 
     def setUp(self):
         self.model = MLENgramModel(self.counter)
 
     def test_score(self):
-        score_ctx_list = self.model.score("d", ["c"])
-        score_ctx_tuple = self.model.score("b", ("a",))
-
-        self.assertEqual(score_ctx_list, 1)
-        self.assertEqual(score_ctx_tuple, 0.5)
-
-    def test_score_context_too_long(self):
-        with self.assertRaises(ValueError) as exc_info:
-            self.model.score('d', ('a', 'b'))
+        self.score_assertions(1)
 
     def test_score_unseen(self):
         # Unseen ngrams should yield 0
         score_unseen = self.model.score("d", ["e"])
 
         self.assertEqual(score_unseen, 0)
-
-    def test_score_sums_to_1(self):
-        seen_contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',))
-
-        for context in seen_contexts:
-            self.assertEqual(self.total_vocab_score(context), 1)
 
     def test_score_sum_of_unseen_contexts_is_0(self):
         # MLE will give 0 scores across the board for contexts not seen during training.
@@ -136,6 +165,7 @@ class MLENgramModelTests(NgramModelBaseTest):
         self.assertEqual(float("inf"), self.model.perplexity(unseen_ngram))
 
 
+@bigram_model
 class LidstoneNgramModelTests(NgramModelBaseTest):
     """unit tests for LidstoneNgramModel class"""
 
@@ -153,25 +183,7 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
         # *count(d | c) = 1.1
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 1.7
-        expected_score = 0.6471
-
-        got_score_list = self.model.score("d", ["c"])
-        got_score_tuple = self.model.score("d", ("c",))
-
-        self.assertAlmostEqual(expected_score, got_score_list, places=4)
-        self.assertEqual(got_score_list, got_score_tuple)
-
-    def test_score_context_too_long(self):
-        with self.assertRaises(ValueError) as exc_info:
-            self.model.score('d', ('a', 'b'))
-
-    def test_scores_sum_to_1(self):
-        # Lidstone smoothing can handle contexts unseen during training
-        mixed_contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
-                          ('e',), ('r'), ('w',))
-
-        for context in mixed_contexts:
-            self.assertAlmostEqual(self.total_vocab_score(context), 1)
+        self.score_assertions(0.6471)
 
     @unittest.skip
     def test_entropy_perplexity(self):
@@ -187,11 +199,10 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
         # Total Log Score: -24.1896
         expected_H = 4.0316
         expected_perplexity = 16.3543
-
-        self.assertAlmostEqual(expected_H, self.model.entropy(test_corp), places=4)
-        self.assertAlmostEqual(expected_perplexity, self.model.perplexity(test_corp), places=4)
+        self.entropy_perp_assertions(expected_H, expected_perplexity)
 
 
+@bigram_model
 class LaplaceNgramModelTests(NgramModelBaseTest):
     """unit tests for LaplaceNgramModel class"""
 
@@ -210,17 +221,7 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
         # *count(d | c) = 2
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 8
-        expected_score = 0.25
-
-        got_score_list = self.model.score("d", ["c"])
-        got_score_tuple = self.model.score("d", ("c",))
-
-        self.assertAlmostEqual(expected_score, got_score_list, places=4)
-        self.assertEqual(got_score_list, got_score_tuple)
-
-    def test_score_context_too_long(self):
-        with self.assertRaises(ValueError) as exc_info:
-            self.model.score('d', ('a', 'b'))
+        self.score_assertions(0.25)
 
     @unittest.skip
     def test_entropy_perplexity(self):
@@ -236,14 +237,4 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
         # Total Log Score: -17.8317
         expected_H = 2.972
         expected_perplexity = 7.846
-
-        self.assertAlmostEqual(expected_H, self.model.entropy(test_corp), places=4)
-        self.assertAlmostEqual(expected_perplexity, self.model.perplexity(test_corp), places=4)
-
-    def test_scores_sum_to_1(self):
-        # Laplace (like Lidstone) smoothing can handle contexts unseen during training
-        mixed_contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
-                          ('e',), ('r'), ('w',))
-
-        for context in mixed_contexts:
-            self.assertAlmostEqual(self.total_vocab_score(context), 1)
+        self.entropy_perp_assertions(expected_H, expected_perplexity)
