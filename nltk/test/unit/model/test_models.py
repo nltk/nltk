@@ -37,8 +37,7 @@ class NgramModelBaseTest(unittest.TestCase, NgramCounterSetUpMixin):
         Note that we *must* loop over the counter's vocabulary so as to include
         padding symbols.
         """
-        return (sum(self.model.score(w, context) for w in self.vocab)
-                + self.model.score(self.vocab.unk_label, context))
+        return sum(self.model.score(w, context) for w in self.vocab)
 
 
 class BaseNgramModelTests(NgramModelBaseTest):

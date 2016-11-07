@@ -66,14 +66,20 @@ class NgramModelVocabulary(Counter):
         """Only consider items with counts GE to cutoff as being in the vocabulary."""
         return self[item] >= self.cutoff
 
-    def __len__(self):
-        """This should reflect a) filtering items by count, b) accounting for unknowns.
+    def __iter__(self):
+        """Building on membership check define how to iterate over vocabulary."""
+        parent_iter = super(self.__class__, self).__iter__()
+        # During copying/instantiation Python calls this before we have
+        # a chance to add the "unk_label" attribute to the object.
+        # In those cases we fall back to Counter's __iter__ implementation.
+        if getattr(self, "unk_label", None) is None:
+            return parent_iter
+        return chain((item for item in parent_iter if item in self),
+                     [self.unk_label])
 
-        The first is achieved by relying on the membership check implementation.
-        The second is achieved by adding 1 to vocabulary size.
-        """
-        # the if-clause here looks a bit dumb, should we make it clearer?
-        return sum(1 for item in self if item in self) + 1
+    def __len__(self):
+        """Computing size of vocabulary reflects the cutoff."""
+        return sum(1 for item in self)
 
     def __eq__(self, other):
         return (super(self.__class__, self).__eq__(other)

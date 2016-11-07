@@ -8,6 +8,8 @@
 import copy
 import unittest
 
+from nltk import six
+
 from nltk.model import NgramModelVocabulary
 
 
@@ -44,8 +46,14 @@ class NgramModelVocabularyTests(unittest.TestCase):
     def test_vocab_len_respects_cutoff(self):
         # Vocab size is the number of unique tokens that occur at least as often
         # as the cutoff value, plus 1 to account for unknown words.
-        expected_vocab_size = 5
-        self.assertEqual(expected_vocab_size, len(self.vocab))
+        self.assertEqual(5, len(self.vocab))
+
+    def test_vocab_iter_respects_cutoff(self):
+        vocab_keys = ["a", "b", "c", "d", "e", "f", "g", "w", "z"]
+        vocab_items = ["a", "b", "d", "e", "<UNK>"]
+
+        six.assertCountEqual(self, vocab_keys, list(self.vocab.keys()))
+        six.assertCountEqual(self, vocab_items, list(self.vocab))
 
     def test_copying_vs_recreating_vocabulary(self):
         new_vocab = NgramModelVocabulary(self.vocab, unk_cutoff=1)
