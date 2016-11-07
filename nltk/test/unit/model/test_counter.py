@@ -10,7 +10,7 @@ import unittest
 from nltk import six
 
 from nltk.model import NgramModelVocabulary, NgramCounter
-from nltk.model.util import NgramCounterSetUpMixin
+from nltk.model.testutil import NgramCounterSetUpMixin
 
 
 class NgramCounterBaseTest(unittest.TestCase, NgramCounterSetUpMixin):

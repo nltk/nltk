@@ -15,9 +15,9 @@ from nltk.model import (build_vocabulary,
                         BaseNgramModel,
                         MLENgramModel,
                         LidstoneNgramModel,
-                        LaplaceNgramModel,
-                        NEG_INF)
-from nltk.model.util import NgramCounterSetUpMixin
+                        LaplaceNgramModel)
+from nltk.model.util import NEG_INF
+from nltk.model.testutil import NgramCounterSetUpMixin
 
 
 class NgramModelBaseTest(unittest.TestCase, NgramCounterSetUpMixin):

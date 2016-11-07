@@ -7,7 +7,8 @@
 
 from nltk.util import ngrams
 
-from nltk.model import NgramCounter
+NEG_INF = float("-inf")
+POS_INF = float("inf")
 
 NGRAMS_KWARGS = {
     "pad_left": True,
@@ -36,17 +37,3 @@ def mask_oov_words_in_corpus(corpus, ngram_vocab):
     return [list(map(ngram_vocab.mask_oov, sent)) for sent in corpus]
 
 
-class NgramCounterSetUpMixin(object):
-    """To be used with unittest.TestCase classes.
-
-    Requires them to have cls.vocab already defined.
-    """
-    @classmethod
-    def setUpNgramCounter(cls, order, corpus, vocab=None):
-        vocab = vocab or cls.vocab
-        vocab[NGRAMS_KWARGS['left_pad_symbol']] = vocab.cutoff
-        vocab[NGRAMS_KWARGS['right_pad_symbol']] = vocab.cutoff
-        normalized = mask_oov_words_in_corpus(corpus, vocab)
-        counter = NgramCounter(order, vocab)
-        counter.train_counts(map(default_ngrams(order), normalized))
-        return counter

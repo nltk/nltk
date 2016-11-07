@@ -8,9 +8,7 @@ from __future__ import unicode_literals, division
 from math import log
 
 from nltk import compat
-
-
-NEG_INF = float("-inf")
+from nltk.model.util import NEG_INF
 
 
 @compat.python_2_unicode_compatible
@@ -25,8 +23,8 @@ class BaseNgramModel(object):
 
         self.ngram_counter = ngram_counter
         # for convenient access save top-most ngram order ConditionalFreqDist
-        self.ngrams = ngram_counter.ngrams[ngram_counter.order]
-        self._ngrams = ngram_counter.ngrams
+        self.ngrams = ngram_counter[ngram_counter.order]
+        self._ngrams = ngram_counter._ngram_orders
         self._order = ngram_counter.order
 
         self._check_against_vocab = self.ngram_counter.vocabulary.mask_oov
@@ -38,7 +36,7 @@ class BaseNgramModel(object):
         # ensures the context argument is a tuple
         return tuple(context)
 
-    def score(self, word, context):
+    def score(self, word, context=None):
         """
         This is a dummy implementation. Child classes should define their own
         implementations.
