@@ -47,10 +47,6 @@ class BaseNgramModelTests(NgramModelBaseTest):
     def setUp(self):
         self.model = BaseNgramModel(self.counter)
 
-    def test_aliases(self):
-        self.assertEqual(self.model._order, 2)
-        self.assertEqual(self.model._ngrams, self.counter.ngrams)
-
     def test_context_checker(self):
         ctx_tuple = self.model.check_context(('a',))
         ctx_list = self.model.check_context(['a'])

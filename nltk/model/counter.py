@@ -13,6 +13,8 @@ from itertools import chain
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
 
+from nltk.model.util import check_ngram_order
+
 
 def build_vocabulary(cutoff, *texts):
     combined_texts = chain(*texts)
@@ -94,18 +96,13 @@ class NgramCounter(object):
         """
         :type training_text: List[List[str]]
         """
-
-        if order < 1:
-            message = "Order of {0} cannot be less than 1. Got: {1}"
-            raise ValueError(message.format(self.__class__.__name__, order))
-
-        self.order = order
+        self.order = check_ngram_order(order)
         self.unk_label = unk_label
 
         # Set up the vocabulary
         self._set_up_vocabulary(vocabulary, unk_cutoff)
 
-        self.ngrams = defaultdict(ConditionalFreqDist)
+        self._ngram_orders = defaultdict(ConditionalFreqDist)
         self.unigrams = FreqDist()
 
     def _set_up_vocabulary(self, vocabulary, unk_cutoff):
@@ -140,5 +137,12 @@ class NgramCounter(object):
                 for trunc_index, ngram_order in self._enumerate_ngram_orders():
                     trunc_context = context[trunc_index:]
                     # note that above line doesn't affect context on first iteration
-                    self.ngrams[ngram_order][trunc_context][word] += 1
+                    self[ngram_order][trunc_context][word] += 1
                 self.unigrams[word] += 1
+
+    def __getitem__(self, order_number):
+        """For convenience allow looking up ngram orders directly here."""
+        order_number = check_ngram_order(order_number, max_order=self.order)
+        if order_number == 1:
+            return self.unigrams
+        return self._ngram_orders[order_number]

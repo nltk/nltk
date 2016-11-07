@@ -10,6 +10,7 @@ import unittest
 from nltk import six
 
 from nltk.model import NgramModelVocabulary, NgramCounter
+from nltk.model.util import check_ngram_order, POS_INF
 from nltk.model.testutil import NgramCounterSetUpMixin
 
 
@@ -23,13 +24,11 @@ class NgramCounterBaseTest(unittest.TestCase, NgramCounterSetUpMixin):
 
 
 class NgramCounterTests(NgramCounterBaseTest):
-    """Tests NgramCounter class"""
+    """Tests for NgramCounter that only involve lookup, no modification."""
 
     @classmethod
     def setUpClass(cls):
         super(NgramCounterTests, cls).setUpClass()
-        # cls.vocab = NgramModelVocabulary(["a", "b", "c", "d", "e",
-        #                                   "a", "d", "b", "e"], unk_cutoff=2)
 
         text = ['abcd', 'egdbe']
         cls.trigram_counter = cls.setUpNgramCounter(3, text)
@@ -38,11 +37,16 @@ class NgramCounterTests(NgramCounterBaseTest):
     def test_NgramCounter_order_attr(self):
         self.assertEqual(self.trigram_counter.order, 3)
 
+    def test_ngram_order_access_unigrams(self):
+        self.assertEqual(self.bigram_counter[1], self.bigram_counter.unigrams)
+
+    def test_ngram_order_access_order_too_high(self):
+        with self.assertRaises(ValueError):
+            self.bigram_counter[3]
+
     def test_NgramCounter_breaks_given_invalid_order(self):
         with self.assertRaises(ValueError) as exc_info:
             NgramCounter(0, self.vocab)
-        expected_error_msg = "Order of NgramCounter cannot be less than 1. Got: 0"
-        self.assertEqual(str(exc_info.exception), expected_error_msg)
 
     def test_NgramCounter_breaks_given_empty_vocab(self):
         empty_vocab = NgramModelVocabulary("abc", unk_cutoff=2)
@@ -79,14 +83,14 @@ class NgramCounterTests(NgramCounterBaseTest):
             ("</s>",)
         ]
 
-        bigrams = self.trigram_counter.ngrams[2]
-        trigrams = self.trigram_counter.ngrams[3]
+        bigrams = self.trigram_counter[2]
+        trigrams = self.trigram_counter[3]
 
         six.assertCountEqual(self, expected_bigram_contexts, bigrams.conditions())
         six.assertCountEqual(self, expected_trigram_contexts, trigrams.conditions())
 
     def test_bigram_counts_seen_ngrams(self):
-        bigrams = self.bigram_counter.ngrams[2]
+        bigrams = self.bigram_counter[2]
         b_given_a_count = 1
         unk_given_b_count = 1
 
@@ -94,7 +98,7 @@ class NgramCounterTests(NgramCounterBaseTest):
         self.assertEqual(unk_given_b_count, bigrams[('b',)]['<UNK>'])
 
     def test_bigram_counts_unseen_ngrams(self):
-        bigrams = self.bigram_counter.ngrams[2]
+        bigrams = self.bigram_counter[2]
         c_given_b_count = 0
 
         self.assertEqual(c_given_b_count, bigrams[('b',)]['c'])
@@ -135,3 +139,22 @@ class NgramCounterModificationTests(NgramCounterBaseTest):
                     ]]
         with self.assertRaises(ValueError):
             self.bigram_counter.train_counts(trigrams)
+
+
+class CheckNgramOrderTests(unittest.TestCase):
+    """Cases for check_ngram_order function"""
+
+    def test_sane_inputs(self):
+        self.assertEqual(3, check_ngram_order(3))
+        self.assertEqual(3, check_ngram_order(3, max_order=5))
+
+    def test_pos_inf_input(self):
+        with self.assertRaises(ValueError):
+            check_ngram_order(POS_INF)
+
+    def test_inputs_less_than_one(self):
+        with self.assertRaises(ValueError):
+            check_ngram_order(0)
+
+        with self.assertRaises(ValueError):
+            check_ngram_order(-5)
