@@ -6,9 +6,21 @@
 
 from __future__ import unicode_literals, division
 from math import log
+from functools import wraps
 
 from nltk import compat
 from nltk.model.util import NEG_INF
+
+
+def check_args(score_func):
+    """Decorator that checks arguments for ngram model score methods."""
+    @wraps(score_func)
+    def checker(self, word, context=None):
+        word_chk = self._check_against_vocab(word)
+        context_chk = self._check_context(context) if context else None
+        return score_func(self, word_chk, context_chk)
+
+    return checker
 
 
 @compat.python_2_unicode_compatible
@@ -29,13 +41,14 @@ class BaseNgramModel(object):
 
         self._check_against_vocab = self.ngram_counter.vocabulary.mask_oov
 
-    def check_context(self, context):
+    def _check_context(self, context):
         """Makes sure context not longer than model's ngram order and is a tuple."""
         if len(context) >= self._order:
             raise ValueError("Context is too long for this ngram order: {0}".format(context))
         # ensures the context argument is a tuple
-        return tuple(context)
+        return tuple(map(self._check_against_vocab, context))
 
+    @check_args
     def score(self, word, context=None):
         """
         This is a dummy implementation. Child classes should define their own

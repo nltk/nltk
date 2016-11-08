@@ -6,7 +6,7 @@
 # URL: <http://nltk.org/
 # For license information, see LICENSE.TXT
 
-from nltk.model.api import BaseNgramModel
+from nltk.model.api import BaseNgramModel, check_args
 from nltk.model.models import (MLENgramModel,
                                LidstoneNgramModel,
                                LaplaceNgramModel)

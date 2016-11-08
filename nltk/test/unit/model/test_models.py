@@ -26,7 +26,7 @@ class NgramModelBaseTest(unittest.TestCase, NgramCounterSetUpMixin):
     @classmethod
     def setUpClass(cls):
         # The base vocabulary contains 5 items: abcd and UNK
-        cls.vocab = NgramModelVocabulary(["a", "b", "c", "d"], unk_cutoff=1)
+        cls.vocab = NgramModelVocabulary(["a", "b", "c", "d", "z"], unk_cutoff=1)
         # NgramCounter.vocabulary contains 7 items (+2 for padding symbols)
         cls.counter = cls.setUpNgramCounter(2, ['abcd', 'egadbe'])
 
@@ -47,16 +47,16 @@ class BaseNgramModelTests(NgramModelBaseTest):
         self.model = BaseNgramModel(self.counter)
 
     def test_context_checker(self):
-        ctx_tuple = self.model.check_context(('a',))
-        ctx_list = self.model.check_context(['a'])
+        ctx_tuple = self.model._check_context(('a',))
+        ctx_list = self.model._check_context(['a'])
 
         self.assertEqual(ctx_list, ctx_tuple)
 
         with self.assertRaises(ValueError):
-            self.model.check_context(['a', 'b'])
+            self.model._check_context(['a', 'b'])
 
         with self.assertRaises(TypeError):
-            self.model.check_context(None)
+            self.model._check_context(None)
 
     def test_score(self):
         with self.assertRaises(NotImplementedError):
@@ -66,13 +66,9 @@ class BaseNgramModelTests(NgramModelBaseTest):
 def bigram_model(cls):
     """Decorator for adding bigram model testing helpers"""
 
-    handles_unseens = getattr(cls, "handles_unseens", True)
-
-    if handles_unseens:
-        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
-                    ('e',), ('r'), ('w',))
-    else:
-        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',))
+    # Include some unseen contexts to test
+    contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
+                ('e',), ('r'), ('w',))
 
     def score_assertions(self, expected_score):
         """Helper function for testing an ngram model's score method."""
@@ -107,10 +103,17 @@ def bigram_model(cls):
 @bigram_model
 class MLENgramModelTests(NgramModelBaseTest):
     """unit tests for MLENgramModel class"""
-    handles_unseens = False
 
     def setUp(self):
         self.model = MLENgramModel(self.counter)
+
+    def test_unigram_score(self):
+        # total number of tokens is 14, of which "a" occured 2 times
+        self.assertEqual(self.model.score("a"), 2.0 / 14)
+        # in vocabulary but unseen
+        self.assertEqual(self.model.score("z"), 0)
+        # out of vocabulary should use "UNK" score
+        self.assertEqual(self.model.score("y"), 3.0 / 14)
 
     def test_score(self):
         self.score_assertions(1)
@@ -120,14 +123,6 @@ class MLENgramModelTests(NgramModelBaseTest):
         score_unseen = self.model.score("d", ["e"])
 
         self.assertEqual(score_unseen, 0)
-
-    def test_score_sum_of_unseen_contexts_is_0(self):
-        # MLE will give 0 scores across the board for contexts not seen during training.
-        # Note that due to heavy defaultdict usage this doesn't raise missing key errors.
-        unseen_contexts = (('e',), ('r',))
-
-        for context in unseen_contexts:
-            self.assertEqual(self.total_vocab_score(context), 0)
 
     def test_logscore_zero_score(self):
         # logscore of unseen ngrams should be -inf
@@ -169,16 +164,16 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
 
     def test_gamma_and_gamma_norm(self):
         self.assertEqual(0.1, self.model.gamma)
-        # There are 7 items in the vocabulary, so we expect gamma norm to be 0.7
+        # There are 8 items in the vocabulary, so we expect gamma norm to be 0.8
         # Due to floating point funkyness in Python, we use float assertion here
-        self.assertAlmostEqual(0.7, self.model.gamma_norm)
+        self.assertAlmostEqual(0.8, self.model.gamma_norm)
 
     def test_score(self):
         # count(d | c) = 1
         # *count(d | c) = 1.1
         # Count(w | c for w in vocab) = 1
-        # *Count(w | c for w in vocab) = 1.7
-        self.score_assertions(0.6471)
+        # *Count(w | c for w in vocab) = 1.8
+        self.score_assertions(0.6111)
 
     @unittest.skip
     def test_entropy_perplexity(self):
@@ -208,15 +203,15 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
         # Make sure the gamma is set to 1
         self.assertEqual(1, self.model.gamma)
         # Laplace Gamma norm is just the vocabulary size
-        self.assertEqual(7, self.model.gamma_norm)
+        self.assertEqual(len(self.vocab), self.model.gamma_norm)
 
     def test_score(self):
         # basic sanity-check:
         # count(d | c) = 1
         # *count(d | c) = 2
         # Count(w | c for w in vocab) = 1
-        # *Count(w | c for w in vocab) = 8
-        self.score_assertions(0.25)
+        # *Count(w | c for w in vocab) = 9
+        self.score_assertions(0.2222)
 
     @unittest.skip
     def test_entropy_perplexity(self):

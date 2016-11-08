@@ -8,7 +8,7 @@ from __future__ import unicode_literals, division
 
 from nltk import compat
 
-from nltk.model import BaseNgramModel
+from nltk.model import BaseNgramModel, check_args
 
 
 @compat.python_2_unicode_compatible
@@ -17,15 +17,16 @@ class MLENgramModel(BaseNgramModel):
 
     Inherits initialization from BaseNgramModel.
     """
-
-    def score(self, word, context):
+    @check_args
+    def score(self, word, context=None):
         """Returns the MLE score for a word given a context.
 
         Args:
         - word is expcected to be a string
         - context is expected to be something reasonably convertible to a tuple
         """
-        context = self.check_context(context)
+        if context is None:
+            return self.ngram_counter[1].freq(word)
         return self.ngrams[context].freq(word)
 
 
@@ -43,8 +44,8 @@ class LidstoneNgramModel(BaseNgramModel):
         # This gets added to the denominator to normalize the effect of gamma
         self.gamma_norm = len(self.ngram_counter.vocabulary) * gamma
 
+    @check_args
     def score(self, word, context):
-        context = self.check_context(context)
         context_freqdist = self.ngrams[context]
         word_count = context_freqdist[word]
         ctx_count = context_freqdist.N()
