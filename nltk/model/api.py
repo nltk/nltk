@@ -16,13 +16,13 @@ def check_args(score_func):
     """Decorator that checks arguments for ngram model score methods."""
     @wraps(score_func)
     def checker(self, word, context=None):
-        word_chk = self._check_against_vocab(word)
+        word_chk = self.mask_oov(word)
 
         if context is not None:
-            if len(context) >= self._order:
+            if len(context) >= self.order:
                 raise ValueError("Context is too long "
                                  "for this ngram order: {0}".format(context))
-            context = tuple(map(self._check_against_vocab, context))
+            context = tuple(map(self.mask_oov, context))
 
         return score_func(self, word_chk, context)
 
@@ -43,9 +43,13 @@ class BaseNgramModel(object):
         # for convenient access save top-most ngram order ConditionalFreqDist
         self.ngrams = ngram_counter[ngram_counter.order]
         self._ngrams = ngram_counter._ngram_orders
-        self._order = ngram_counter.order
 
-        self._check_against_vocab = self.ngram_counter.vocabulary.mask_oov
+        self.mask_oov = self.ngram_counter.vocabulary.mask_oov
+
+    @property
+    def order(self):
+        """Provide convenient access to NgramCounter.order."""
+        return self.ngram_counter.order
 
     @check_args
     def score(self, word, context=None):
