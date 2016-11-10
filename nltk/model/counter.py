@@ -98,24 +98,17 @@ class NgramModelVocabulary(Counter):
 class NgramCounter(object):
     """Class for counting ngrams"""
 
-    def __init__(self, order, vocabulary, unk_cutoff=None, unk_label="<UNK>"):
+    def __init__(self, order, vocabulary):
         """
         :type training_text: List[List[str]]
         """
         self.order = check_ngram_order(order)
-        self.unk_label = unk_label
 
         # Set up the vocabulary
-        self._set_up_vocabulary(vocabulary, unk_cutoff)
+        self.vocabulary = copy(vocabulary)  # copy needed to prevent state sharing
 
         self._ngram_orders = defaultdict(ConditionalFreqDist)
         self.unigrams = FreqDist()
-
-    def _set_up_vocabulary(self, vocabulary, unk_cutoff):
-        self.vocabulary = copy(vocabulary)  # copy needed to prevent state sharing
-        if unk_cutoff is not None:
-            # If cutoff value is provided, override vocab's cutoff
-            self.vocabulary.cutoff = unk_cutoff
 
     def _enumerate_ngram_orders(self):
         return enumerate(range(self.order, 1, -1))
