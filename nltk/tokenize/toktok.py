@@ -9,28 +9,28 @@
 # For license information, see LICENSE.TXT
 
 """
-The tok-tok tokenizer is a simple, general tokenizer, where the input has one 
+The tok-tok tokenizer is a simple, general tokenizer, where the input has one
 sentence per line; thus only final period is tokenized.
 
-Tok-tok has been tested on, and gives reasonably good results for English, 
-Persian, Russian, Czech, French, German, Vietnamese, Tajik, and a few others. 
+Tok-tok has been tested on, and gives reasonably good results for English,
+Persian, Russian, Czech, French, German, Vietnamese, Tajik, and a few others.
 The input should be in UTF-8 encoding.
 
 Reference:
-Jon Dehdari. 2014. A Neurophysiologically-Inspired Statistical Language 
-Model (Doctoral dissertation). Columbus, OH, USA: The Ohio State University. 
+Jon Dehdari. 2014. A Neurophysiologically-Inspired Statistical Language
+Model (Doctoral dissertation). Columbus, OH, USA: The Ohio State University.
 """
 
 import re
-from six import text_type
 
+from nltk.six import text_type
 from nltk.tokenize.api import TokenizerI
 
 class ToktokTokenizer(TokenizerI):
     """
     This is a Python port of the tok-tok.pl from
     https://github.com/jonsafari/tok-tok/blob/master/tok-tok.pl
-    
+
     >>> toktok = ToktokTokenizer()
     >>> text = u'Is 9.5 or 525,600 my favorite number?'
     >>> print (toktok.tokenize(text, return_str=True))
@@ -46,34 +46,34 @@ class ToktokTokenizer(TokenizerI):
     """
     # Replace non-breaking spaces with normal spaces.
     NON_BREAKING = re.compile(u"\u00A0"), " "
-    
+
     # Pad some funky punctuation.
     FUNKY_PUNCT_1 = re.compile(u'([،;؛¿!"\])}»›”؟%٪°±©®।॥…])'), r" \1 "
     # Pad more funky punctuation.
     FUNKY_PUNCT_2 = re.compile(u'([({\[“‘„‚«‹「『])'), r" \1 "
     # Pad En dash and em dash
     EN_EM_DASHES = re.compile(u'([–—])'), r" \1 "
-    
+
     # Replace problematic character with numeric character reference.
     AMPERCENT = re.compile('& '), '&amp; '
     TAB = re.compile('\t'), ' &#9; '
     PIPE = re.compile('\|'), ' &#124; '
-    
-    # Pad numbers with commas to keep them from further tokenization. 
+
+    # Pad numbers with commas to keep them from further tokenization.
     COMMA_IN_NUM = re.compile(r'(?<!,)([,،])(?![,\d])'), r' \1 '
-    
+
     # Just pad problematic (often neurotic) hyphen/single quote, etc.
     PROB_SINGLE_QUOTES = re.compile(r"(['’`])"), r' \1 '
     # Group ` ` stupid quotes ' ' into a single token.
     STUPID_QUOTES_1 = re.compile(r" ` ` "), r" `` "
     STUPID_QUOTES_2 = re.compile(r" ' ' "), r" '' "
-    
-    # Don't tokenize period unless it ends the line and that it isn't 
-    # preceded by another period, e.g.  
-    # "something ..." -> "something ..." 
-    # "something." -> "something ." 
+
+    # Don't tokenize period unless it ends the line and that it isn't
+    # preceded by another period, e.g.
+    # "something ..." -> "something ..."
+    # "something." -> "something ."
     FINAL_PERIOD_1 = re.compile(r"(?<!\.)\.$"), r" ."
-    # Don't tokenize period unless it ends the line eg. 
+    # Don't tokenize period unless it ends the line eg.
     # " ... stuff." ->  "... stuff ."
     FINAL_PERIOD_2 = re.compile(r"""(?<!\.)\.\s*(["'’»›”]) *$"""), r" . \1"
 
@@ -112,44 +112,44 @@ class ToktokTokenizer(TokenizerI):
                              u'\u20ac\u20ad\u20ae\u20af\u20b0\u20b1\u20b2\u20b3'
                              u'\u20b4\u20b5\u20b6\u20b7\u20b8\u20b9\u20ba\ua838'
                              u'\ufdfc\ufe69\uff04\uffe0\uffe1\uffe5\uffe6')
-    
+
     # Pad spaces after opening punctuations.
     OPEN_PUNCT_RE = re.compile(u'([{}])'.format(OPEN_PUNCT)), r'\1 '
     # Pad spaces before closing punctuations.
     CLOSE_PUNCT_RE = re.compile(u'([{}])'.format(CLOSE_PUNCT)), r'\1 '
     # Pad spaces after currency symbols.
     CURRENCY_SYM_RE = re.compile(u'([{}])'.format(CURRENCY_SYM)), r'\1 '
-    
+
     # Use for tokenizing URL-unfriendly characters: [:/?#]
     URL_FOE_1 = re.compile(r':(?!//)'), r' : ' # in perl s{:(?!//)}{ : }g;
     URL_FOE_2 = re.compile(r'\?(?!\S)'), r' ? ' # in perl s{\?(?!\S)}{ ? }g;
     # in perl: m{://} or m{\S+\.\S+/\S+} or s{/}{ / }g;
     URL_FOE_3 = re.compile(r'(:\/\/)[\S+\.\S+\/\S+][\/]'), ' / '
     URL_FOE_4 = re.compile(r' /'), r' / ' # s{ /}{ / }g;
-    
+
     # Left/Right strip, i.e. remove heading/trailing spaces.
     # These strip regexes should NOT be used,
-    # instead use str.lstrip(), str.rstrip() or str.strip() 
-    # (They are kept for reference purposes to the original toktok.pl code)  
+    # instead use str.lstrip(), str.rstrip() or str.strip()
+    # (They are kept for reference purposes to the original toktok.pl code)
     LSTRIP = re.compile(r'^ +'), ''
-    RSTRIP = re.compile(r'\s+$'),'\n' 
+    RSTRIP = re.compile(r'\s+$'),'\n'
     # Merge multiple spaces.
     ONE_SPACE = re.compile(r' {2,}'), ' '
-    
-    TOKTOK_REGEXES = [NON_BREAKING, FUNKY_PUNCT_1, 
+
+    TOKTOK_REGEXES = [NON_BREAKING, FUNKY_PUNCT_1,
                       URL_FOE_1, URL_FOE_2, URL_FOE_3, URL_FOE_4,
                       AMPERCENT, TAB, PIPE,
-                      OPEN_PUNCT_RE, CLOSE_PUNCT_RE, 
+                      OPEN_PUNCT_RE, CLOSE_PUNCT_RE,
                       MULTI_COMMAS, COMMA_IN_NUM, FINAL_PERIOD_2,
                       PROB_SINGLE_QUOTES, STUPID_QUOTES_1, STUPID_QUOTES_2,
                       CURRENCY_SYM_RE, EN_EM_DASHES, MULTI_DASHES, MULTI_DOTS,
                       FINAL_PERIOD_1, FINAL_PERIOD_2, ONE_SPACE]
-    
+
     def tokenize(self, text, return_str=False):
         text = text_type(text) # Converts input string into unicode.
         for regexp, subsitution in self.TOKTOK_REGEXES:
             text = regexp.sub(subsitution, text)
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
-        text = text_type(text.strip()) 
+        text = text_type(text.strip())
         return text if return_str else text.split()
