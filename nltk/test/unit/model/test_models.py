@@ -46,17 +46,9 @@ class BaseNgramModelTests(NgramModelBaseTest):
     def setUp(self):
         self.model = BaseNgramModel(self.counter)
 
-    def test_context_checker(self):
-        ctx_tuple = self.model._check_context(('a',))
-        ctx_list = self.model._check_context(['a'])
-
-        self.assertEqual(ctx_list, ctx_tuple)
-
+    def test_context_checking(self):
         with self.assertRaises(ValueError):
-            self.model._check_context(['a', 'b'])
-
-        with self.assertRaises(TypeError):
-            self.model._check_context(None)
+            self.model.score("a", context=['a', 'b'])
 
     def test_score(self):
         with self.assertRaises(NotImplementedError):

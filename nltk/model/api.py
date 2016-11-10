@@ -17,8 +17,14 @@ def check_args(score_func):
     @wraps(score_func)
     def checker(self, word, context=None):
         word_chk = self._check_against_vocab(word)
-        context_chk = self._check_context(context) if context else None
-        return score_func(self, word_chk, context_chk)
+
+        if context is not None:
+            if len(context) >= self._order:
+                raise ValueError("Context is too long "
+                                 "for this ngram order: {0}".format(context))
+            context = tuple(map(self._check_against_vocab, context))
+
+        return score_func(self, word_chk, context)
 
     return checker
 
@@ -40,13 +46,6 @@ class BaseNgramModel(object):
         self._order = ngram_counter.order
 
         self._check_against_vocab = self.ngram_counter.vocabulary.mask_oov
-
-    def _check_context(self, context):
-        """Makes sure context not longer than model's ngram order and is a tuple."""
-        if len(context) >= self._order:
-            raise ValueError("Context is too long for this ngram order: {0}".format(context))
-        # ensures the context argument is a tuple
-        return tuple(map(self._check_against_vocab, context))
 
     @check_args
     def score(self, word, context=None):
