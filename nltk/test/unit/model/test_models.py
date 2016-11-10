@@ -20,7 +20,7 @@ from nltk.model.util import NEG_INF
 from nltk.model.testutil import NgramCounterSetUpMixin
 
 
-class NgramModelBaseTest(unittest.TestCase, NgramCounterSetUpMixin):
+class NgramModelTestBase(unittest.TestCase, NgramCounterSetUpMixin):
     """Base test class for testing ngram model classes"""
 
     @classmethod
@@ -40,7 +40,7 @@ class NgramModelBaseTest(unittest.TestCase, NgramCounterSetUpMixin):
         return sum(self.model.score(w, context) for w in self.vocab)
 
 
-class BaseNgramModelTests(NgramModelBaseTest):
+class BaseNgramModelTests(NgramModelTestBase):
     """unit tests for BaseNgramModel class"""
 
     def setUp(self):
@@ -55,22 +55,19 @@ class BaseNgramModelTests(NgramModelBaseTest):
             self.model.score("d", ["c"])
 
 
-def bigram_model(cls):
-    """Decorator for adding bigram model testing helpers"""
+class BigramModelMixin(object):
+    """Shared tests and helper code specifically for bigram models."""
 
-    # Include some unseen contexts to test
-    contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
-                ('e',), ('r'), ('w',))
-
-    def score_assertions(self, expected_score):
+    def assertScoreEqual(self, expected_score, word="d", context=("c",)):
         """Helper function for testing an ngram model's score method."""
-        got_score_list = self.model.score("d", ["c"])
-        got_score_tuple = self.model.score("d", ("c",))
+        got_score = self.model.score(word, context=context)
 
-        self.assertAlmostEqual(expected_score, got_score_list, places=4)
-        self.assertEqual(got_score_list, got_score_tuple)
+        self.assertAlmostEqual(expected_score, got_score, places=4)
 
-    def entropy_perp_assertions(self, H, perplexity, corpus="ac-dc"):
+    def assertUnigramScoreEqual(self, expected_score, word="d"):
+        self.assertScoreEqual(expected_score, word, context=None)
+
+    def assertEntropyPerplexityEqual(self, H, perplexity, corpus="ac-dc"):
         """Helper function for testing entropy/perplexity."""
         self.assertAlmostEqual(H, self.model.entropy(corpus), places=4)
         self.assertAlmostEqual(perplexity, self.model.perplexity(corpus),
@@ -81,19 +78,15 @@ def bigram_model(cls):
             self.model.score('d', ('a', 'b'))
 
     def test_scores_sum_to_1(self):
+        # Include some unseen contexts to test
+        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
+                    ('e',), ('r'), ('w',))
         # Laplace (like Lidstone) smoothing can handle contexts unseen during training
         for context in contexts:
             self.assertAlmostEqual(self.total_vocab_score(context), 1)
 
-    cls.test_score_context_too_long = test_score_context_too_long
-    cls.score_assertions = score_assertions
-    cls.entropy_perp_assertions = entropy_perp_assertions
-    cls.test_scores_sum_to_1 = test_scores_sum_to_1
-    return cls
 
-
-@bigram_model
-class MLENgramModelTests(NgramModelBaseTest):
+class MLENgramModelTests(NgramModelTestBase, BigramModelMixin):
     """unit tests for MLENgramModel class"""
 
     def setUp(self):
@@ -101,14 +94,14 @@ class MLENgramModelTests(NgramModelBaseTest):
 
     def test_unigram_score(self):
         # total number of tokens is 14, of which "a" occured 2 times
-        self.assertEqual(self.model.score("a"), 2.0 / 14)
+        self.assertUnigramScoreEqual(2.0 / 14, "a")
         # in vocabulary but unseen
-        self.assertEqual(self.model.score("z"), 0)
+        self.assertUnigramScoreEqual(0, "z")
         # out of vocabulary should use "UNK" score
-        self.assertEqual(self.model.score("y"), 3.0 / 14)
+        self.assertUnigramScoreEqual(3.0 / 14, "y")
 
     def test_score(self):
-        self.score_assertions(1)
+        self.assertScoreEqual(1)
 
     def test_score_unseen(self):
         # Unseen ngrams should yield 0
@@ -134,9 +127,9 @@ class MLENgramModelTests(NgramModelBaseTest):
         # a, d      = -1
         # d, </s>   = -1
         # TOTAL    = -6.585
-        seen_entropy = 1.0975
+        entropy = 1.0975
 
-        self.assertAlmostEqual(seen_entropy, self.model.entropy(seen_ngrams), places=4)
+        self.assertAlmostEqual(entropy, self.model.entropy(seen_ngrams), places=4)
 
     @unittest.skip
     def test_entropy_perplexity_unseen(self):
@@ -147,8 +140,7 @@ class MLENgramModelTests(NgramModelBaseTest):
         self.assertEqual(float("inf"), self.model.perplexity(unseen_ngram))
 
 
-@bigram_model
-class LidstoneNgramModelTests(NgramModelBaseTest):
+class LidstoneNgramModelTests(NgramModelTestBase, BigramModelMixin):
     """unit tests for LidstoneNgramModel class"""
 
     def setUp(self):
@@ -165,7 +157,7 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
         # *count(d | c) = 1.1
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 1.8
-        self.score_assertions(0.6111)
+        self.assertScoreEqual(0.6111)
 
     @unittest.skip
     def test_entropy_perplexity(self):
@@ -179,13 +171,12 @@ class LidstoneNgramModelTests(NgramModelBaseTest):
         # d, c      = 0.037; -4.7563
         # c, </s>   = 0.0588; -4.088
         # Total Log Score: -24.1896
-        expected_H = 4.0316
-        expected_perplexity = 16.3543
-        self.entropy_perp_assertions(expected_H, expected_perplexity)
+        H = 4.0316
+        perplexity = 16.3543
+        self.assertEntropyPerplexityEqual(H, perplexity)
 
 
-@bigram_model
-class LaplaceNgramModelTests(NgramModelBaseTest):
+class LaplaceNgramModelTests(NgramModelTestBase, BigramModelMixin):
     """unit tests for LaplaceNgramModel class"""
 
     def setUp(self):
@@ -195,7 +186,7 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
         # Make sure the gamma is set to 1
         self.assertEqual(1, self.model.gamma)
         # Laplace Gamma norm is just the vocabulary size
-        self.assertEqual(len(self.vocab), self.model.gamma_norm)
+        self.assertEqual(8, self.model.gamma_norm)
 
     def test_score(self):
         # basic sanity-check:
@@ -203,7 +194,7 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
         # *count(d | c) = 2
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 9
-        self.score_assertions(0.2222)
+        self.assertScoreEqual(0.2222)
 
     @unittest.skip
     def test_entropy_perplexity(self):
@@ -217,6 +208,6 @@ class LaplaceNgramModelTests(NgramModelBaseTest):
         # d, c      = 0.(1); -3.1699
         # c, </s>   = 0.125; -3.0
         # Total Log Score: -17.8317
-        expected_H = 2.972
-        expected_perplexity = 7.846
-        self.entropy_perp_assertions(expected_H, expected_perplexity)
+        H = 2.972
+        perplexity = 7.846
+        self.assertEntropyPerplexityEqual(H, perplexity)
