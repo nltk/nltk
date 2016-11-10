@@ -45,11 +45,14 @@ class LidstoneNgramModel(BaseNgramModel):
         self.gamma_norm = len(self.ngram_counter.vocabulary) * gamma
 
     @check_args
-    def score(self, word, context):
-        context_freqdist = self.ngrams[context]
-        word_count = context_freqdist[word]
-        ctx_count = context_freqdist.N()
-        return (word_count + self.gamma) / (ctx_count + self.gamma_norm)
+    def score(self, word, context=None):
+        if context is None:
+            counts = self.ngram_counter.unigrams
+        else:
+            counts = self.ngram_counter[len(context) + 1][context]
+        word_count = counts[word]
+        norm_count = counts.N()
+        return (word_count + self.gamma) / (norm_count + self.gamma_norm)
 
 
 @compat.python_2_unicode_compatible

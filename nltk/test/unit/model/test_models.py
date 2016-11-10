@@ -159,6 +159,22 @@ class LidstoneNgramModelTests(NgramModelTestBase, BigramModelMixin):
         # *Count(w | c for w in vocab) = 1.8
         self.assertScoreEqual(0.6111)
 
+    def test_unigram_score(self):
+        # Total unigrams: 14
+        # Vocab size: 8
+        # Denominator: 14 + 0.8 = 14.8
+        # count("a") = 2
+        # *count("a") = 2.1
+        self.assertUnigramScoreEqual(2.1 / 14.8, "a")
+        # in vocabulary but unseen
+        # count("z") = 0
+        # *count("z") = 0.1
+        self.assertUnigramScoreEqual(0.1 / 14.8, "z")
+        # out of vocabulary should use "UNK" score
+        # count("<UNK>") = 3
+        # *count("<UNK>") = 3.1
+        self.assertUnigramScoreEqual(3.1 / 14.8, "y")
+
     @unittest.skip
     def test_entropy_perplexity(self):
         # Unlike MLE this should be able to handle completely novel ngrams
@@ -195,6 +211,22 @@ class LaplaceNgramModelTests(NgramModelTestBase, BigramModelMixin):
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 9
         self.assertScoreEqual(0.2222)
+
+    def test_unigram_score(self):
+        # Total unigrams: 14
+        # Vocab size: 8
+        # Denominator: 14 + 8 = 22
+        # count("a") = 2
+        # *count("a") = 3
+        self.assertUnigramScoreEqual(3.0 / 22, "a")
+        # in vocabulary but unseen
+        # count("z") = 0
+        # *count("z") = 1
+        self.assertUnigramScoreEqual(1.0 / 22, "z")
+        # out of vocabulary should use "UNK" score
+        # count("<UNK>") = 3
+        # *count("<UNK>") = 4
+        self.assertUnigramScoreEqual(4.0 / 22, "y")
 
     @unittest.skip
     def test_entropy_perplexity(self):
