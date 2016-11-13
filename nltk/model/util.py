@@ -5,7 +5,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.util import ngrams
+from nltk.util import ngrams, everygrams, pad_sequence
 
 NEG_INF = float("-inf")
 POS_INF = float("inf")
@@ -18,7 +18,13 @@ NGRAMS_KWARGS = {
 }
 
 
-def default_ngrams(order):
+def padded_everygrams(sequence, order, **padding_kwargs):
+    """Pads sequence *before* generating everygrams, not during."""
+    padded = list(pad_sequence(sequence, order, **padding_kwargs))
+    return everygrams(padded, max_len=order)
+
+
+def default_ngrams(order, only_ngrams=False):
     """Provides defaults for nltk.util.ngrams"""
 
     def to_ngrams(sequence):
@@ -27,7 +33,10 @@ def default_ngrams(order):
         :param sequence: same as nltk.util.ngrams
         :type sequence: any iterable
         """
-        return ngrams(sequence, order, **NGRAMS_KWARGS)
+        if only_ngrams:
+            return ngrams(sequence, order, **NGRAMS_KWARGS)
+
+        return padded_everygrams(sequence, order, **NGRAMS_KWARGS)
 
     return to_ngrams
 

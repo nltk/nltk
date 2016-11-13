@@ -110,9 +110,6 @@ class NgramCounter(object):
         self._ngram_orders = defaultdict(ConditionalFreqDist)
         self.unigrams = FreqDist()
 
-    def _enumerate_ngram_orders(self):
-        return enumerate(range(self.order, 1, -1))
-
     def train_counts(self, training_text):
         # Note here "1" indicates an empty vocabulary!
         # See NgramModelVocabulary __len__ method for more.
@@ -121,23 +118,17 @@ class NgramCounter(object):
                              "vocabulary contains more than one item.")
 
         for sent in training_text:
-            sent_start = True
             for ngram in sent:
-                if len(ngram) > self.order:
+                ngram_order = len(ngram)
+                if ngram_order > self.order:
                     raise ValueError("Ngram larger than highest order: "
                                      "{0}".format(ngram))
-                context, word = tuple(ngram[:-1]), ngram[-1]
+                if ngram_order == 1:
+                    self.unigrams[ngram[0]] += 1
+                    continue
 
-                if sent_start:
-                    for context_word in context:
-                        self.unigrams[context_word] += 1
-                    sent_start = False
-
-                for trunc_index, ngram_order in self._enumerate_ngram_orders():
-                    trunc_context = context[trunc_index:]
-                    # note that above line doesn't affect context on first iteration
-                    self[ngram_order][trunc_context][word] += 1
-                self.unigrams[word] += 1
+                context, word = ngram[:-1], ngram[-1]
+                self[ngram_order][context][word] += 1
 
     def __getitem__(self, order_number):
         """For convenience allow looking up ngram orders directly here."""

@@ -20,7 +20,7 @@ from nltk.model import (build_vocabulary,
 from nltk.model.util import NEG_INF, default_ngrams
 from nltk.model.testutil import NgramCounterSetUpMixin
 
-_default_bigrams = default_ngrams(2)
+_default_bigrams = default_ngrams(2, only_ngrams=True)
 
 
 class NgramModelTestBase(unittest.TestCase, NgramCounterSetUpMixin):
