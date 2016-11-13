@@ -65,7 +65,7 @@ class BaseNgramModel(object):
         """
         raise NotImplementedError()
 
-    def logscore(self, word, context):
+    def logscore(self, word, context=None):
         """
         Evaluate the log probability of this word in this context.
 
@@ -78,11 +78,15 @@ class BaseNgramModel(object):
         :type context: Tuple[str]
         """
         score = self.score(word, context)
+        return self._log_base2(score)
+
+    def _log_base2(self, score):
+        """Convenience function for computing logarithms with base 2"""
         if score == 0.0:
             return NEG_INF
         return log(score, 2)
 
-    def entropy(self, text):
+    def entropy(self, text_ngrams):
         """
         Calculate the approximate cross-entropy of the n-gram model for a
         given evaluation text.
@@ -92,14 +96,12 @@ class BaseNgramModel(object):
         :type text: Iterable[str]
         """
 
-        normed_text = (self._check_against_vocab(word) for word in text)
         H = 0.0     # entropy is conventionally denoted by "H"
-        processed_ngrams = 0
-        for ngram in self.ngram_counter.to_ngrams(normed_text):
+        for ngram in text_ngrams:
             context, word = tuple(ngram[:-1]), ngram[-1]
-            H += self.logscore(word, context)
-            processed_ngrams += 1
-        return - (H / processed_ngrams)
+            score = self.score(word, context)
+            H -= score * self._log_base2(score)
+        return H
 
     def perplexity(self, text):
         """

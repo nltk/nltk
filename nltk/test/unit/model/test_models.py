@@ -7,6 +7,7 @@
 
 from __future__ import division
 import unittest
+import math
 
 from nltk.model import (build_vocabulary,
                         count_ngrams,
@@ -16,8 +17,10 @@ from nltk.model import (build_vocabulary,
                         MLENgramModel,
                         LidstoneNgramModel,
                         LaplaceNgramModel)
-from nltk.model.util import NEG_INF
+from nltk.model.util import NEG_INF, default_ngrams
 from nltk.model.testutil import NgramCounterSetUpMixin
+
+_default_bigrams = default_ngrams(2)
 
 
 class NgramModelTestBase(unittest.TestCase, NgramCounterSetUpMixin):
@@ -69,9 +72,15 @@ class BigramModelMixin(object):
 
     def assertEntropyPerplexityEqual(self, H, perplexity, corpus="ac-dc"):
         """Helper function for testing entropy/perplexity."""
-        self.assertAlmostEqual(H, self.model.entropy(corpus), places=4)
-        self.assertAlmostEqual(perplexity, self.model.perplexity(corpus),
-                               places=4)
+        got_entropy = self.model.entropy(_default_bigrams(corpus))
+        got_perplexity = self.model.perplexity(_default_bigrams(corpus))
+        # We have to be able to deal with NaNs that occur in some cases
+        if math.isnan(H) and math.isnan(perplexity):
+            self.assertTrue(math.isnan(got_entropy))
+            self.assertTrue(math.isnan(got_perplexity))
+        else:
+            self.assertAlmostEqual(H, got_entropy, places=4)
+            self.assertAlmostEqual(perplexity, got_perplexity, places=4)
 
     def test_score_context_too_long(self):
         with self.assertRaises(ValueError) as exc_info:
@@ -115,29 +124,28 @@ class MLENgramModelTests(NgramModelTestBase, BigramModelMixin):
 
         self.assertEqual(logscore, NEG_INF)
 
-    @unittest.skip
-    def test_entropy(self):
+    def test_entropy_perplexity_seen(self):
         # ngrams seen during training
-        seen_ngrams = "abrad"
-        # Ngram = Log score
-        # <s>, a    = -1
-        # a, b      = -1
-        # b, UNK    = -1
-        # UNK, a    = -1.585
-        # a, d      = -1
-        # d, </s>   = -1
-        # TOTAL    = -6.585
-        entropy = 1.0975
+        trained = "abrad"
+        # Ngram = score; Log score; product
+        # <s>, a    = 0.5; -1; -0.5
+        # a, b      = 0.5; -1; -0.5
+        # b, UNK    = 0.5; -1; -0.5
+        # UNK, a    = 0.(3); -1.585; -0.5283
+        # a, d      = 0.5; -1; -0.5
+        # d, </s>   = 0.5; -1; -0.5
+        # TOTAL products   = -3.0283
+        H = 3.0283
+        perplexity = 8.1586
 
-        self.assertAlmostEqual(entropy, self.model.entropy(seen_ngrams), places=4)
+        self.assertEntropyPerplexityEqual(H, perplexity, corpus=trained)
 
-    @unittest.skip
     def test_entropy_perplexity_unseen(self):
-        # In MLE, even one unseen ngram should turn entropy and perplexity into INF
-        unseen_ngram = "acd"
+        # In MLE, even one unseen ngram should turn entropy and perplexity into NaN
+        untrained = "acd"
+        H = perplexity = float("nan")
 
-        self.assertEqual(float("inf"), self.model.entropy(unseen_ngram))
-        self.assertEqual(float("inf"), self.model.perplexity(unseen_ngram))
+        self.assertEntropyPerplexityEqual(H, perplexity, corpus=untrained)
 
 
 class LidstoneNgramModelTests(NgramModelTestBase, BigramModelMixin):
@@ -175,20 +183,18 @@ class LidstoneNgramModelTests(NgramModelTestBase, BigramModelMixin):
         # *count("<UNK>") = 3.1
         self.assertUnigramScoreEqual(3.1 / 14.8, "y")
 
-    @unittest.skip
     def test_entropy_perplexity(self):
         # Unlike MLE this should be able to handle completely novel ngrams
-        test_corp = "ac-dc"
-        # Ngram = score; log score
-        # <s>, a    = 0.4074; -1.2955
-        # a, c      = 0.1428; -4.7549
-        # c, -      = 0.0588; -4.0875
-        # -, d      = 0.027;  -5.2109
-        # d, c      = 0.037; -4.7563
-        # c, </s>   = 0.0588; -4.088
-        # Total Log Score: -24.1896
-        H = 4.0316
-        perplexity = 16.3543
+        # Ngram = score, log score, product
+        # <s>, a    = 0.3929, -1.3479, -0.5295
+        # a, c      = 0.0357, -4.8074, -0.1717
+        # c, -      = 0.0556, -4.1699, -0.2317
+        # -, d      = 0.0263,  -5.2479, -0.1381
+        # d, c      = 0.0357, -4.8074, -0.1717
+        # c, </s>   = 0.0556, -4.1699, -0.2317
+        # Total product: -1.4744
+        H = 1.4744
+        perplexity = 2.7786
         self.assertEntropyPerplexityEqual(H, perplexity)
 
 
@@ -228,18 +234,16 @@ class LaplaceNgramModelTests(NgramModelTestBase, BigramModelMixin):
         # *count("<UNK>") = 4
         self.assertUnigramScoreEqual(4.0 / 22, "y")
 
-    @unittest.skip
     def test_entropy_perplexity(self):
         # Unlike MLE this should be able to handle completely novel ngrams
-        test_corp = "ac-dc"
-        # Ngram = score; log score
-        # <s>, a    = 0.(2); -2.1699
-        # a, c      = 0.(1); -3.1699
-        # c, -      = 0.125; -3.0
-        # -, d      = 0.1;  -3.3219
-        # d, c      = 0.(1); -3.1699
-        # c, </s>   = 0.125; -3.0
-        # Total Log Score: -17.8317
-        H = 2.972
-        perplexity = 7.846
+        # Ngram = score, log score, product
+        # <s>, a    = 0.(2), -2.1699, -0.4339
+        # a, c      = 0.(1), -3.1699, -0.3169
+        # c, -      = 0.125, -3.0, -0.375
+        # -, d      = 0.1,  -3.3219, -0.3321
+        # d, c      = 0.(1) -3.1699, -0.3169
+        # c, </s>   = 0.125, -3.0, -0.375
+        # Total product: -2.1498
+        H = 2.1477
+        perplexity = 4.4312
         self.assertEntropyPerplexityEqual(H, perplexity)
