@@ -8,7 +8,7 @@ from __future__ import unicode_literals, division
 
 from nltk import compat
 
-from nltk.model import BaseNgramModel, check_args
+from nltk.model import BaseNgramModel, mask_oov_args
 
 
 @compat.python_2_unicode_compatible
@@ -17,7 +17,7 @@ class MLENgramModel(BaseNgramModel):
 
     Inherits initialization from BaseNgramModel.
     """
-    @check_args
+    @mask_oov_args
     def score(self, word, context=None):
         """Returns the MLE score for a word given a context.
 
@@ -43,7 +43,7 @@ class LidstoneNgramModel(BaseNgramModel):
         # This gets added to the denominator to normalize the effect of gamma
         self.gamma_norm = len(self.ngram_counter.vocabulary) * gamma
 
-    @check_args
+    @mask_oov_args
     def score(self, word, context=None):
         counts = self.context_counts(context)
         word_count = counts[word]

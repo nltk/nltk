@@ -13,17 +13,13 @@ from nltk import compat
 from nltk.model.util import NEG_INF
 
 
-def check_args(score_func):
+def mask_oov_args(score_func):
     """Decorator that checks arguments for ngram model score methods."""
     @wraps(score_func)
     def checker(self, word, context=None):
         word_chk = self.mask_oov(word)
 
-        if context is not None:
-            if len(context) >= self.order:
-                raise ValueError("Context is too long "
-                                 "for this ngram order: {0}".format(context))
-            context = tuple(map(self.mask_oov, context))
+        context = tuple(map(self.mask_oov, context)) if context else None
 
         return score_func(self, word_chk, context)
 
@@ -52,7 +48,7 @@ class BaseNgramModel(object):
         """Provide convenient access to NgramCounter.order."""
         return self.ngram_counter.order
 
-    @check_args
+    @mask_oov_args
     def score(self, word, context=None):
         """
         This is a dummy implementation. Child classes should define their own

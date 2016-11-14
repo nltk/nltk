@@ -51,9 +51,9 @@ class BaseNgramModelTests(NgramModelTestBase):
     def setUp(self):
         self.model = BaseNgramModel(self.bigram_counter)
 
-    def test_context_checking(self):
+    def test_context_counts(self):
         with self.assertRaises(ValueError):
-            self.model.score("a", context=['a', 'b'])
+            self.model.context_counts(['a', 'b'])
 
     def test_score(self):
         with self.assertRaises(NotImplementedError):
