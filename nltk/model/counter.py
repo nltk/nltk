@@ -13,18 +13,19 @@ from itertools import chain
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
 
-from nltk.model.util import check_ngram_order
+from nltk.model.util import check_ngram_order, default_ngrams
 
 
-def build_vocabulary(cutoff, *texts):
+def build_vocabulary(*texts, **vocab_kwargs):
     combined_texts = chain(*texts)
-    return NgramModelVocabulary(combined_texts, unk_cutoff=cutoff)
+    return NgramModelVocabulary(combined_texts, **vocab_kwargs)
 
 
-def count_ngrams(order, vocabulary, *training_texts, **counter_kwargs):
-    counter = NgramCounter(order, vocabulary, **counter_kwargs)
+def count_ngrams(order, vocabulary, *training_texts):
+    counter = NgramCounter(order, vocabulary)
+    ngram_gen = default_ngrams(order)
     for text in training_texts:
-        counter.train_counts(text)
+        counter.train_counts(map(ngram_gen, text))
     return counter
 
 
