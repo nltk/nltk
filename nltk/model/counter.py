@@ -119,7 +119,12 @@ class NgramCounter(object):
 
         for sent in training_text:
             for ngram in sent:
+                if not isinstance(ngram, tuple):
+                    raise TypeError("Ngram <{0}> isn't a tuple, "
+                                    "but {1}".format(ngram, type(ngram)))
+
                 ngram_order = len(ngram)
+
                 if ngram_order > self.order:
                     raise ValueError("Ngram larger than highest order: "
                                      "{0}".format(ngram))
