@@ -25,9 +25,8 @@ class MLENgramModel(BaseNgramModel):
         - word is expcected to be a string
         - context is expected to be something reasonably convertible to a tuple
         """
-        if context is None:
-            return self.ngram_counter[1].freq(word)
-        return self.ngrams[context].freq(word)
+        counts = self.context_counts(context)
+        return counts.freq(word)
 
 
 @compat.python_2_unicode_compatible
@@ -46,10 +45,7 @@ class LidstoneNgramModel(BaseNgramModel):
 
     @check_args
     def score(self, word, context=None):
-        if context is None:
-            counts = self.ngram_counter.unigrams
-        else:
-            counts = self.ngram_counter[len(context) + 1][context]
+        counts = self.context_counts(context)
         word_count = counts[word]
         norm_count = counts.N()
         return (word_count + self.gamma) / (norm_count + self.gamma_norm)

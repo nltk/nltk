@@ -31,7 +31,9 @@ class NgramModelTestBase(unittest.TestCase, NgramCounterSetUpMixin):
         # The base vocabulary contains 5 items: abcd and UNK
         cls.vocab = NgramModelVocabulary(["a", "b", "c", "d", "z"], unk_cutoff=1)
         # NgramCounter.vocabulary contains 7 items (+2 for padding symbols)
-        cls.counter = cls.setUpNgramCounter(2, ['abcd', 'egadbe'])
+        training_text = ['abcd', 'egadbe']
+        cls.bigram_counter = cls.setUpNgramCounter(2, training_text)
+        cls.trigram_counter = cls.setUpNgramCounter(3, training_text)
 
     def total_vocab_score(self, context):
         """Sums up scores for the whole vocabulary given some context.
@@ -47,7 +49,7 @@ class BaseNgramModelTests(NgramModelTestBase):
     """unit tests for BaseNgramModel class"""
 
     def setUp(self):
-        self.model = BaseNgramModel(self.counter)
+        self.model = BaseNgramModel(self.bigram_counter)
 
     def test_context_checking(self):
         with self.assertRaises(ValueError):
@@ -58,10 +60,10 @@ class BaseNgramModelTests(NgramModelTestBase):
             self.model.score("d", ["c"])
 
 
-class BigramModelMixin(object):
+class ScoreTestHelper(object):
     """Shared tests and helper code specifically for bigram models."""
 
-    def assertScoreEqual(self, expected_score, word="d", context=("c",)):
+    def assertScoreEqual(self, expected_score, word, context):
         """Helper function for testing an ngram model's score method."""
         got_score = self.model.score(word, context=context)
 
@@ -82,6 +84,10 @@ class BigramModelMixin(object):
             self.assertAlmostEqual(H, got_entropy, places=4)
             self.assertAlmostEqual(perplexity, got_perplexity, places=4)
 
+
+class BigramModelMixin(ScoreTestHelper):
+    """docstring for BigramModelMixin"""
+
     def test_score_context_too_long(self):
         with self.assertRaises(ValueError) as exc_info:
             self.model.score('d', ('a', 'b'))
@@ -94,12 +100,22 @@ class BigramModelMixin(object):
         for context in contexts:
             self.assertAlmostEqual(self.total_vocab_score(context), 1)
 
+    def assertScoreEqual(self, expected_score, word="d", context=("c",)):
+        super(BigramModelMixin, self).assertScoreEqual(expected_score, word, context)
 
-class MLENgramModelTests(NgramModelTestBase, BigramModelMixin):
+
+class TrigramModelMixin(ScoreTestHelper):
+    """Tests for trigram models."""
+
+    def assertScoreEqual(self, expected_score, word="d", context=("b", "c")):
+        super(TrigramModelMixin, self).assertScoreEqual(expected_score, word, context)
+
+
+class MleBigramModelTests(NgramModelTestBase, BigramModelMixin):
     """unit tests for MLENgramModel class"""
 
     def setUp(self):
-        self.model = MLENgramModel(self.counter)
+        self.model = MLENgramModel(self.bigram_counter)
 
     def test_unigram_score(self):
         # total number of tokens is 14, of which "a" occured 2 times
@@ -148,11 +164,36 @@ class MLENgramModelTests(NgramModelTestBase, BigramModelMixin):
         self.assertEntropyPerplexityEqual(H, perplexity, corpus=untrained)
 
 
-class LidstoneNgramModelTests(NgramModelTestBase, BigramModelMixin):
+class MleTrigramModelTests(NgramModelTestBase, TrigramModelMixin):
+    """MLE trigram model tests"""
+
+    def setUp(self):
+        self.model = MLENgramModel(self.trigram_counter)
+
+    def test_unigram_score(self):
+        # total number of tokens is 18, of which "a" occured 2 times
+        self.assertUnigramScoreEqual(2.0 / 18, "a")
+        # in vocabulary but unseen
+        self.assertUnigramScoreEqual(0, "z")
+        # out of vocabulary should use "UNK" score
+        self.assertUnigramScoreEqual(3.0 / 18, "y")
+
+    def test_score(self):
+        # count(d | b, c) = 1
+        # count(b, c) = 1
+        self.assertScoreEqual(1)
+
+    def test_bigram_score(self):
+        # count(d | c) = 1
+        # count(c) = 1
+        self.assertScoreEqual(1, context=("c",))
+
+
+class LidstoneBigramModelTests(NgramModelTestBase, BigramModelMixin):
     """unit tests for LidstoneNgramModel class"""
 
     def setUp(self):
-        self.model = LidstoneNgramModel(0.1, self.counter)
+        self.model = LidstoneNgramModel(0.1, self.bigram_counter)
 
     def test_gamma_and_gamma_norm(self):
         self.assertEqual(0.1, self.model.gamma)
@@ -198,11 +239,29 @@ class LidstoneNgramModelTests(NgramModelTestBase, BigramModelMixin):
         self.assertEntropyPerplexityEqual(H, perplexity)
 
 
-class LaplaceNgramModelTests(NgramModelTestBase, BigramModelMixin):
+class LidstoneTrigramModelTests(NgramModelTestBase, TrigramModelMixin):
+
+    def setUp(self):
+        self.model = LidstoneNgramModel(0.1, self.trigram_counter)
+
+    def test_score(self):
+        # Logic behind this is the same as for bigram model
+        self.assertScoreEqual(0.6111)
+        # if we choose a word that hasn't appeared after (b, c)
+        self.assertScoreEqual(0.1 / 1.8, word="e")
+
+    def test_bigram_score(self):
+        # Logic behind this is the same as for bigram model
+        self.assertScoreEqual(0.6111, context=("c",))
+        # if we choose a word that hasn't appeared after (b, c)
+        self.assertScoreEqual(0.1 / 1.8, word="e", context=("c",))
+
+
+class LaplaceBigramModelTests(NgramModelTestBase, BigramModelMixin):
     """unit tests for LaplaceNgramModel class"""
 
     def setUp(self):
-        self.model = LaplaceNgramModel(self.counter)
+        self.model = LaplaceNgramModel(self.bigram_counter)
 
     def test_gamma(self):
         # Make sure the gamma is set to 1

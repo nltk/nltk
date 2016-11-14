@@ -65,6 +65,17 @@ class BaseNgramModel(object):
         """
         raise NotImplementedError()
 
+    def context_counts(self, context_checked):
+        """Helper method for retrieving counts for a given context.
+
+        Assumes context has been checked and oov words in it masked.
+        """
+        if context_checked is None:
+            return self.ngram_counter.unigrams
+        else:
+            order =len(context_checked) + 1
+            return self.ngram_counter[order][context_checked]
+
     def logscore(self, word, context=None):
         """
         Evaluate the log probability of this word in this context.
