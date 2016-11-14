@@ -331,3 +331,58 @@ class LaplaceBigramModelTests(NgramModelTestBase, BigramModelMixin):
         H = 2.1477
         perplexity = 4.4312
         self.assertEntropyPerplexityEqual(H, perplexity)
+
+
+class NgramModelTextGenerationTests(NgramModelTestBase):
+    """Using MLE estimator, generate some text."""
+
+    def setUp(self):
+        self.model = MLENgramModel(self.trigram_counter)
+
+    def test_generate_one_no_context(self):
+        generated = self.model.generate_one()
+        self.assertIn(generated, self.model.ngram_counter.unigrams)
+
+    def test_generate_one_small_context(self):
+        context = ("c",)
+        generated = self.model.generate_one(context=context)
+
+        self.assertIn(generated, self.model.ngram_counter[2][context])
+
+    def test_generate_one_normal_context(self):
+        context = ("b", "c")
+        generated = self.model.generate_one(context=context)
+
+        self.assertIn(generated, self.model.ngram_counter[3][context])
+
+    def test_generate_one_backoff_to_smaller_context(self):
+        context_no_samples = ("a", "c")
+        expected_samples = self.model.ngram_counter[2][("c",)]
+        generated = self.model.generate_one(context_no_samples)
+
+        self.assertIn(generated, expected_samples)
+
+    def test_generate_one_backoff_to_unigrams(self):
+        context_no_samples = ("a", "</s>")
+        expected_samples = self.model.ngram_counter.unigrams
+        generated = self.model.generate_one(context_no_samples)
+
+        self.assertIn(generated, expected_samples)
+
+    def test_generate_no_seed_unigrams(self):
+        generated_text = self.model.generate(5)
+
+        self.assertEqual(5, len(generated_text))
+        # With no seed, first item should be one of unigrams
+        self.assertIn(generated_text[0], self.model.ngram_counter[1])
+
+    def test_generate_with_bigram_seed(self):
+        # seed has to be picked so as to make the test deterministic!
+        seed = ("c",)
+        seed_continuations = self.model.ngram_counter[2][seed]
+        generated_text = self.model.generate(5, seed=seed)
+
+        # seed should be the first item
+        self.assertEqual(generated_text[0], seed[0])
+        # Second item should depend on seed
+        self.assertIn(generated_text[1], seed_continuations)

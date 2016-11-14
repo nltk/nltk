@@ -7,6 +7,7 @@
 from __future__ import unicode_literals, division
 from math import log
 from functools import wraps
+import random
 
 from nltk import compat
 from nltk.model.util import NEG_INF
@@ -127,3 +128,30 @@ class BaseNgramModel(object):
         """
 
         return pow(2.0, self.entropy(text_ngrams))
+
+    def generate_one(self, context=None):
+        """Generate one word given some context."""
+        samples = self.context_counts(context)
+        if not samples:
+            smaller_context = context[1:] if len(context) > 1 else None
+            return self.generate_one(smaller_context)
+
+        rand = random.random()
+        scores = list(self.score(w, context) for w in samples)
+        for word, score in zip(samples, scores):
+            rand -= score
+            if rand <= 0:
+                return word
+
+    def generate(self, num_words, seed=()):
+        """Generate num_words with optional seed provided.
+
+        This essentially wraps the generate_one method to produce sequences.
+        """
+        text = list(seed) if seed else [self.generate_one()]
+        while len(text) < num_words:
+            index = -self.order if len(text) >= self.order else len(text)
+            relevant_context = tuple(text)[:index]
+            next_word = self.generate_one(relevant_context)
+            text.append(next_word)
+        return text
