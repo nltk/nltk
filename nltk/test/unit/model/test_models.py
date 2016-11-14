@@ -72,10 +72,16 @@ class ScoreTestHelper(object):
     def assertUnigramScoreEqual(self, expected_score, word="d"):
         self.assertScoreEqual(expected_score, word, context=None)
 
-    def assertEntropyPerplexityEqual(self, H, perplexity, corpus="ac-dc"):
+    def assertEntropyPerplexityEqual(self, H, perplexity,
+                                     corpus="ac-dc",
+                                     ngram_gen=True):
         """Helper function for testing entropy/perplexity."""
-        got_entropy = self.model.entropy(_default_bigrams(corpus))
-        got_perplexity = self.model.perplexity(_default_bigrams(corpus))
+        if ngram_gen:
+            got_entropy = self.model.entropy(_default_bigrams(corpus))
+            got_perplexity = self.model.perplexity(_default_bigrams(corpus))
+        else:
+            got_entropy = self.model.entropy(corpus)
+            got_perplexity = self.model.perplexity(corpus)
         # We have to be able to deal with NaNs that occur in some cases
         if math.isnan(H) and math.isnan(perplexity):
             self.assertTrue(math.isnan(got_entropy))
@@ -162,6 +168,25 @@ class MleBigramModelTests(NgramModelTestBase, BigramModelMixin):
         H = perplexity = float("nan")
 
         self.assertEntropyPerplexityEqual(H, perplexity, corpus=untrained)
+
+    def test_entropy_perplexity_unigrams(self):
+        # word = score, log score, product
+        # <s>   = 0.1429, -2.8074, -0.4011
+        # a     = 0.1429, -2.8074, -0.4011
+        # c     = 0.0714, -3.8073, -0.2720
+        # UNK   = 0.2143, -2.2224, -0.4762
+        # d     = 0.1429, -2.8074, -0.4011
+        # c     = 0.0714, -3.8073, -0.2720
+        # </s>  = 0.1429, -2.8074, -0.4011
+        # Total product = -2.6243
+        H = 2.6243
+        perplexity = 6.166
+
+        corpus = [("<s>",), ("a",), ("c",), ("-",),
+                  ("d",), ("c",), ("</s>",)]
+
+        self.assertEntropyPerplexityEqual(H, perplexity, corpus=corpus,
+                                          ngram_gen=False)
 
 
 class MleTrigramModelTests(NgramModelTestBase, TrigramModelMixin):

@@ -70,11 +70,11 @@ class BaseNgramModel(object):
 
         Assumes context has been checked and oov words in it masked.
         """
-        if context_checked is None:
-            return self.ngram_counter.unigrams
-        else:
-            order =len(context_checked) + 1
+        if context_checked:
+            order = len(context_checked) + 1
             return self.ngram_counter[order][context_checked]
+
+        return self.ngram_counter.unigrams
 
     def logscore(self, word, context=None):
         """
@@ -109,12 +109,15 @@ class BaseNgramModel(object):
 
         H = 0.0     # entropy is conventionally denoted by "H"
         for ngram in text_ngrams:
-            context, word = tuple(ngram[:-1]), ngram[-1]
+            if len(ngram) == 1:
+                context, word = None, ngram[0]
+            else:
+                context, word = ngram[:-1], ngram[-1]
             score = self.score(word, context)
             H -= score * self._log_base2(score)
         return H
 
-    def perplexity(self, text):
+    def perplexity(self, text_ngrams):
         """
         Calculates the perplexity of the given text.
         This is simply 2 ** cross-entropy for the text.
@@ -123,4 +126,4 @@ class BaseNgramModel(object):
         :type text: Iterable[str]
         """
 
-        return pow(2.0, self.entropy(text))
+        return pow(2.0, self.entropy(text_ngrams))
