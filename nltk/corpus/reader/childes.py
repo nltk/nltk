@@ -9,7 +9,7 @@
 """
 Corpus reader for the XML version of the CHILDES corpus.
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 __docformat__ = 'epytext en'
 
@@ -278,9 +278,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
             thisWordList = flatten(results)
             # count number of morphemes
             # (e.g., 'read' = 1 morpheme but 'read-PAST' is 2 morphemes)
-            numWords = float(len(flatten([word.split('-')
-                                          for word in thisWordList]))) - numFillers
-            numSents = float(len(results)) - sentDiscount
+            numWords = len(flatten([word.split('-')
+                                          for word in thisWordList])) - numFillers
+            numSents = len(results) - sentDiscount
             mlu = numWords/numSents
         except ZeroDivisionError:
             mlu = 0

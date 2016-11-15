@@ -10,6 +10,7 @@
 """
 Utility methods for Sentiment Analysis.
 """
+from __future__ import division
 
 from copy import deepcopy
 import codecs
@@ -72,8 +73,8 @@ def timer(method):
         result = method(*args, **kw)
         end = time.time()
         tot_time = end - start
-        hours = int(tot_time / 3600)
-        mins = int((tot_time / 60) % 60)
+        hours = tot_time // 3600
+        mins = tot_time // 60 % 60
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
