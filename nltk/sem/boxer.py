@@ -89,7 +89,7 @@ class Boxer(object):
         discourse_ids = ([discourse_id] if discourse_id is not None else None)
         d, = self.interpret_multi_sents([[input]], discourse_ids, question, verbose)
         if not d:
-            raise Exception('Unable to interpret: "%s"' % input)
+            raise Exception('Unable to interpret: "{0}"'.format(input))
         return d
 
     def interpret_multi(self, input, discourse_id=None, question=False, verbose=False):
@@ -104,7 +104,7 @@ class Boxer(object):
         discourse_ids = ([discourse_id] if discourse_id is not None else None)
         d, = self.interpret_multi_sents([input], discourse_ids, question, verbose)
         if not d:
-            raise Exception('Unable to interpret: "%s"' % input)
+            raise Exception('Unable to interpret: "{0}"'.format(input))
         return d
 
     def interpret_sents(self, inputs, discourse_ids=None, question=False, verbose=False):
@@ -155,7 +155,7 @@ class Boxer(object):
         """
         args = ['--models', os.path.join(self._candc_models_path, ['boxer','questions'][question]),
                 '--candc-printer', 'boxer']
-        return self._call('\n'.join(sum((["<META>'%s'" % id] + d for d,id in zip(inputs,discourse_ids)), [])), self._candc_bin, args, verbose)
+        return self._call('\n'.join(sum((["<META>'{0}'".format(id)] + d for d,id in zip(inputs,discourse_ids)), [])), self._candc_bin, args, verbose)
 
     def _call_boxer(self, candc_out, verbose=False):
         """
@@ -212,7 +212,7 @@ class Boxer(object):
             cmd = [binary] + args
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
-            cmd = 'echo "%s" | %s %s' % (input_str, binary, ' '.join(args))
+            cmd = 'echo "{0}" | {1} {2}'.format(input_str, binary, ' '.join(args))
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         stdout, stderr = p.communicate()
 
@@ -221,7 +221,7 @@ class Boxer(object):
             if stdout: print('stdout:\n', stdout, '\n')
             if stderr: print('stderr:\n', stderr, '\n')
         if p.returncode != 0:
-            raise Exception('ERROR CALLING: %s %s\nReturncode: %d\n%s' % (binary, ' '.join(args), p.returncode, stderr))
+            raise Exception('ERROR CALLING: {0} {1}\nReturncode: {2}\n{3}'.format(binary, ' '.join(args), p.returncode, stderr))
 
         return stdout
 
@@ -239,12 +239,12 @@ class Boxer(object):
                 drs_id = line[comma_idx+1:line.index(')')]
                 i += 1
                 line = lines[i]
-                assert line.startswith('sem(%s,' % drs_id)
+                assert line.startswith('sem({0},'.format(drs_id))
                 if line[-4:] == "').'":
                     line = line[:-4] + ")."
-                assert line.endswith(').'), "can't parse line: %s" % line
+                assert line.endswith(').'), "can't parse line: {0}".format(line)
 
-                search_start = len('sem(%s,[' % drs_id)
+                search_start = len('sem({0},['.format(drs_id))
                 brace_count = 1
                 drs_start = -1
                 for j,c in enumerate(line[search_start:]):
@@ -464,26 +464,26 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), '(')
         pol = self.token()
         self.assertToken(self.token(), ')')
-        conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_pol_%s' % (pol), 'a', 0))
+        conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_pol_{0}'.format(pol), 'a', 0))
         self.assertToken(self.token(), ',')
 
         (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
         year = self.token()
         if year != 'XXXX':
             year = year.replace(':', '_')
-            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_year_%s' % (year), 'a', 0))
+            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_year_{0}'.format(year), 'a', 0))
         self.assertToken(self.token(), ',')
 
         (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
         month = self.token()
         if month != 'XX':
-            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_month_%s' % (month), 'a', 0))
+            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_month_{0}'.format(month), 'a', 0))
         self.assertToken(self.token(), ',')
 
         (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
         day = self.token()
         if day != 'XX':
-            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_day_%s' % (day), 'a', 0))
+            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_day_{0}'.format(day), 'a', 0))
 
         return conds
 
@@ -864,7 +864,7 @@ class AbstractBoxerDrs(object):
         return self
 
     def __hash__(self):
-        return hash("%s" % self)
+        return hash("{0}".format(self))
 
 
 @python_2_unicode_compatible
