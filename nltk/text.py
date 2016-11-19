@@ -443,6 +443,13 @@ class Text(object):
         """
         from nltk.draw import dispersion_plot
         dispersion_plot(self, words)
+        
+    def generate(self, words):
+        """
+        Issues a reminder to users following the book online
+        """
+        import warnings
+        warnings.warn('The generate() method is not available in NLTK 3.0 but will be reinstated in a subsequent version.', DeprecationWarning)
 
     def plot(self, *args):
         """
