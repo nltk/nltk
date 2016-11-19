@@ -441,7 +441,7 @@ class Text(object):
         :type words: list(str)
         :seealso: nltk.draw.dispersion_plot()
         """
-        from nltk.draw import dispersion_plot
+        from nltk.draw.dispersion import dispersion_plot
         dispersion_plot(self, words)
 
     def plot(self, *args):
