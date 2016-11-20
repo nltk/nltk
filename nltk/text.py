@@ -449,7 +449,7 @@ class Text(object):
         Issues a reminder to users following the book online
         """
         import warnings
-        warnings.warn('The generate() method is not available in NLTK 3.0 but will be reinstated in a subsequent version.', DeprecationWarning)
+        warnings.warn('The generate() method is no longer available.', DeprecationWarning)
 
     def plot(self, *args):
         """
