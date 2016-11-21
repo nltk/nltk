@@ -424,7 +424,7 @@ def conllned(trace=1):
         if trace:
                 lcon = rcon = True
         for rel in extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN, window=10):
-            print(rtuple(rel, lcon=True, rcon=True))
+            print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 #############################################
 ## Spanish CONLL2002: (PER, ORG)

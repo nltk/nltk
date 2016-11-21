@@ -22,7 +22,7 @@ independent, given the label:
 |                                         P(features)
 
 Rather than computing P(featues) explicitly, the algorithm just
-calculates the denominator for each label, and normalizes them so they
+calculates the numerator for each label, and normalizes them so they
 sum to one:
 
 |                       P(label) * P(f1|label) * ... * P(fn|label)

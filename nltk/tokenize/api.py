@@ -11,7 +11,7 @@ Tokenizer Interface
 """
 
 from abc import ABCMeta, abstractmethod
-from nltk.six import add_metaclass
+from six import add_metaclass
 
 from nltk.internals import overridden
 from nltk.tokenize.util import string_span_tokenize

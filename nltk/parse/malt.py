@@ -10,8 +10,8 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
-from nltk.six import text_type
 
+from six import text_type
 import os
 import sys
 import tempfile

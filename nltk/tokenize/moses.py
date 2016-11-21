@@ -567,7 +567,7 @@ class MosesDetokenizer(TokenizerI):
                     quote_count[normalized_quo] += 1
             
             elif (self.lang == 'fi' and re.match(r':$', tokens[i-1])
-                  and re.match(FINNISH_REGEX, token)):
+                  and re.match(self.FINNISH_REGEX, token)):
                 # Finnish : without intervening space if followed by case suffix
                 # EU:N EU:n EU:ssa EU:sta EU:hun EU:iin ...
                 detokenized_text += prepend_space + token
