@@ -60,8 +60,7 @@ class StanfordSegmenter(TokenizerI):
                 verbose=verbose)
 
         # This is passed to java as the -cp option, the segmenter needs slf4j.
-        sep = ';' if os.name == 'nt' else ':'
-        self._stanford_jar = sep.join(
+        self._stanford_jar = os.pathsep.join(
             [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
 
         self._sihan_corpora_dict = path_to_sihan_corpora_dict
