@@ -1,3 +1,22 @@
+Version 3.2.2 2016-11-??
+* resolved issues with Python 3.5 support
+* added Kondrak's Aline algorithm
+* added ChrF and GLEU MT evaluation metrics
+* added Russian pos tagger model
+* added Moses detokenizer
+* fixes to stanford_segmenter.py, SentiText, CoNLL Corpus Reader
+* fixes to BLEU, naivebayes, Krippendorff's alpha, Punkt
+* fixes to tests for TransitionParser, Senna, edit distance
+* improvements to testing framework
+* rewrite Porter Stemmer
+
+Thanks to the following contributors to 3.2.2:
+Prasasto Adi, Mark Amery, George Berry, Colin Carroll, Alexis Dimitriadis,
+Nicholas Fabina, German Ferrero, Tsolak Ghukasyan, Igor Korolev, Tim Leslie,
+Rob Malouf, Heguang Miao, Dmitrijs Milajevs, Adam Nelson, Dennis O'Brien,
+Pierpaolo Pantone, Andy Reagan, Mike Recachinas, Nathan Schneider, Jānis Šlapiņš,
+Richard Snape, Liling Tan, Marcus Uneson, Linghao Zhang, drevicko, SaintNazaire
+
 Version 3.2.1 2016-04-09
 * Support for CCG semantics, Stanford segmenter, VADER lexicon
 * Fixes to BLEU score calculation, CHILDES corpus reader
