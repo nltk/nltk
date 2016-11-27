@@ -394,12 +394,14 @@ class FreqDist(Counter):
 class TextFreqDist(FreqDist):
     """
     A frequency counter for text objects. Has a new custom option in the
-    constructor to ignore non-alphanumeric characters:
+    constructor to ignore non-alphanumeric characters and strings:
 
         i.e. string.punctuation + string.whitespace
 
     :param samples: The samples to initialize the frequency distribution with.
     :type samples: Sequence or nltk.text.Text
+    :param alphanumerics_only: Whether to include alphanumeric strings only; False by default
+    :type alphanumerics_only: bool
 
     """
 
