@@ -9,6 +9,7 @@
 
 ## Contributors
 
+- Hyuckin David Lim
 - Rami Al-Rfou'
 - Mark Amery
 - Greg Aumann
