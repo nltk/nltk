@@ -120,6 +120,7 @@
 - Xinfan Meng
 - Dmitrijs Milajevs
 - Margaret Mitchell
+- Sandeep Murthy <https://github.com/sr-murthy>
 - Tomonori Nagano
 - Jason Narad
 - Shari A’aidil Nasruddin
