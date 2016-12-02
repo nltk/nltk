@@ -181,7 +181,7 @@ class TestBLEUvsMteval13a(unittest.TestCase):
                 # Note: split() automatically strip().
                 hypothesis = list(map(lambda x: x.split(), hyp_fin))
                 # Note that the corpus_bleu input is list of list of references.
-                references = list(map(lambda x: [x.split()],ref_fin))
+                references = list(map(lambda x: [x.split()], ref_fin))
                 # Without smoothing.
                 for i, mteval_bleu in zip(range(1,10), mteval_bleu_scores):
                     nltk_bleu = corpus_bleu(references, hypothesis, weights=(1.0/i,)*i)
