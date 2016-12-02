@@ -21,19 +21,7 @@ try:
     from fractions import Fraction
 except TypeError:
     from nltk.compat import Fraction
-
-import traceback
-import warnings
-import sys
-
-def warn_with_traceback(message, category, filename, lineno, file=None, line=None):
-    traceback.print_stack()
-    log = file if hasattr(file,'write') else sys.stderr
-    log.write(warnings.formatwarning(message, category, filename, lineno, line))
-    exit()
-
-warnings.showwarning = warn_with_traceback
-
+    
 
 def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
                   smoothing_function=None):
