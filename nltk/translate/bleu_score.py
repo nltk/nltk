@@ -22,6 +22,7 @@ try:
 except TypeError:
     from nltk.compat import Fraction
 
+
 def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
                   smoothing_function=None):
     """
