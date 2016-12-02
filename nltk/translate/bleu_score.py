@@ -22,6 +22,18 @@ try:
 except TypeError:
     from nltk.compat import Fraction
 
+import traceback
+import warnings
+import sys
+
+def warn_with_traceback(message, category, filename, lineno, file=None, line=None):
+    traceback.print_stack()
+    log = file if hasattr(file,'write') else sys.stderr
+    log.write(warnings.formatwarning(message, category, filename, lineno, line))
+    exit()
+
+warnings.showwarning = warn_with_traceback
+
 
 def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
                   smoothing_function=None):
@@ -267,13 +279,12 @@ def modified_precision(references, hypothesis, n):
     """
     # Extracts all ngrams in hypothesis
     # Set an empty Counter if hypothesis is empty.
-    counts = Counter(ngrams(hypothesis, n)) if hypothesis else Counter()
-
+    counts = Counter(ngrams(hypothesis, n)) if len(hypothesis) >= n else Counter()
     # Extract a union of references' counts.
     ## max_counts = reduce(or_, [Counter(ngrams(ref, n)) for ref in references])
     max_counts = {}
     for reference in references:
-        reference_counts = Counter(ngrams(reference, n)) if reference else Counter()
+        reference_counts = Counter(ngrams(reference, n)) if len(reference) >= n else Counter()
         for ngram in counts:
             max_counts[ngram] = max(max_counts.get(ngram, 0),
                                     reference_counts[ngram])
