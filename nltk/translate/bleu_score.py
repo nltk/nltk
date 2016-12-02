@@ -265,14 +265,15 @@ def modified_precision(references, hypothesis, n):
     :return: BLEU's modified precision for the nth order ngram.
     :rtype: Fraction
     """
-    # Extracts all ngrams in hypothesis.
-    counts = Counter(ngrams(hypothesis, n))
+    # Extracts all ngrams in hypothesis
+    # Set an empty Counter if hypothesis is empty.
+    counts = Counter(ngrams(hypothesis, n)) if hypothesis else Counter()
 
     # Extract a union of references' counts.
     ## max_counts = reduce(or_, [Counter(ngrams(ref, n)) for ref in references])
     max_counts = {}
     for reference in references:
-        reference_counts = Counter(ngrams(reference, n))
+        reference_counts = Counter(ngrams(reference, n)) if reference else Counter()
         for ngram in counts:
             max_counts[ngram] = max(max_counts.get(ngram, 0),
                                     reference_counts[ngram])
