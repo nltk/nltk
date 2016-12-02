@@ -273,7 +273,7 @@ def modified_precision(references, hypothesis, n):
     ## max_counts = reduce(or_, [Counter(ngrams(ref, n)) for ref in references])
     max_counts = {}
     for reference in references:
-        reference_counts = Counter(ngrams(reference, n))
+        reference_counts = Counter(ngrams(reference, n)) if reference else Counter()
         for ngram in counts:
             max_counts[ngram] = max(max_counts.get(ngram, 0),
                                     reference_counts[ngram])
