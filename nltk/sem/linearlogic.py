@@ -2,19 +2,83 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2013 NLTK Project
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2016 NLTK Project
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
 
 from nltk.internals import Counter
 from nltk.compat import string_types, python_2_unicode_compatible
-from .logic import LogicParser, APP
+from nltk.sem.logic import LogicParser, APP
 
 _counter = Counter()
 
+class Tokens(object):
+    #Punctuation
+    OPEN = '('
+    CLOSE = ')'
+
+    #Operations
+    IMP = '-o'
+
+    PUNCT = [OPEN, CLOSE]
+    TOKENS = PUNCT + [IMP]
+
+class LinearLogicParser(LogicParser):
+    """A linear logic expression parser."""
+    def __init__(self):
+        LogicParser.__init__(self)
+
+        self.operator_precedence = {APP: 1, Tokens.IMP: 2, None: 3}
+        self.right_associated_operations += [Tokens.IMP]
+
+    def get_all_symbols(self):
+        return Tokens.TOKENS
+
+    def handle(self, tok, context):
+        if tok not in Tokens.TOKENS:
+            return self.handle_variable(tok, context)
+        elif tok == Tokens.OPEN:
+            return self.handle_open(tok, context)
+
+    def get_BooleanExpression_factory(self, tok):
+        if tok == Tokens.IMP:
+            return ImpExpression
+        else:
+            return None
+
+    def make_BooleanExpression(self, factory, first, second):
+        return factory(first, second)
+
+    def attempt_ApplicationExpression(self, expression, context):
+        """Attempt to make an application expression.  If the next tokens
+        are an argument in parens, then the argument expression is a
+        function being applied to the arguments.  Otherwise, return the
+        argument expression."""
+        if self.has_priority(APP, context):
+            if self.inRange(0) and self.token(0) == Tokens.OPEN:
+                self.token() #swallow then open paren
+                argument = self.process_next_expression(APP)
+                self.assertNextToken(Tokens.CLOSE)
+                expression = ApplicationExpression(expression, argument, None)
+        return expression
+
+    def make_VariableExpression(self, name):
+        if name[0].isupper():
+            return VariableExpression(name)
+        else:
+            return ConstantExpression(name)
+
+
 @python_2_unicode_compatible
 class Expression(object):
+
+    _linear_logic_parser = LinearLogicParser()
+
+    @classmethod
+    def fromstring(cls, s):
+        return cls._linear_logic_parser.parse(s)
+
     def applyto(self, other, other_indices=None):
         return ApplicationExpression(self, other, other_indices)
 
@@ -274,14 +338,19 @@ class ApplicationExpression(Expression):
 
 @python_2_unicode_compatible
 class BindingDict(object):
-    def __init__(self, binding_list=None):
+    def __init__(self, bindings=None):
         """
-        :param binding_list: list of (``VariableExpression``, ``AtomicExpression``) to initialize the dictionary
+        :param bindings:
+            list [(``VariableExpression``, ``AtomicExpression``)] to initialize the dictionary
+            dict {``VariableExpression``: ``AtomicExpression``} to initialize the dictionary
         """
         self.d = {}
 
-        if binding_list:
-            for (v, b) in binding_list:
+        if isinstance(bindings, dict):
+            bindings = bindings.items()
+
+        if bindings:
+            for (v, b) in bindings:
                 self[v] = b
 
     def __setitem__(self, variable, binding):
@@ -298,10 +367,7 @@ class BindingDict(object):
 
         assert variable != binding
 
-        try:
-            existing = self.d[variable]
-        except KeyError:
-            existing = None
+        existing = self.d.get(variable, None)
 
         if not existing or binding == existing:
             self.d[variable] = binding
@@ -341,89 +407,42 @@ class BindingDict(object):
             raise VariableBindingException('Attempting to add two contradicting'\
                         ' VariableBindingsLists: %s, %s' % (self, other))
 
+    def __ne__(self, other):
+        return not self == other
+
+    def __eq__(self, other):
+        if not isinstance(other, BindingDict):
+            raise TypeError
+        return self.d == other.d
+
     def __str__(self):
         return '{' + ', '.join('%s: %s' % (v, self.d[v]) for v in self.d) + '}'
 
     def __repr__(self):
         return 'BindingDict: %s' % self
 
-class VariableBindingException(Exception): pass
+class VariableBindingException(Exception):
+    pass
 
 class UnificationException(Exception):
     def __init__(self, a, b, bindings):
         Exception.__init__(self, 'Cannot unify %s with %s given %s' % (a, b, bindings))
 
-class LinearLogicApplicationException(Exception): pass
+class LinearLogicApplicationException(Exception):
+    pass
 
-
-class Tokens(object):
-    #Punctuation
-    OPEN = '('
-    CLOSE = ')'
-
-    #Operations
-    IMP = '-o'
-
-    PUNCT = [OPEN, CLOSE]
-    TOKENS = PUNCT + [IMP]
-
-
-class LinearLogicParser(LogicParser):
-    """A linear logic expression parser."""
-    def __init__(self):
-        LogicParser.__init__(self)
-
-        self.operator_precedence = {APP: 1, Tokens.IMP: 2, None: 3}
-        self.right_associated_operations += [Tokens.IMP]
-
-    def get_all_symbols(self):
-        return Tokens.TOKENS
-
-    def handle(self, tok, context):
-        if tok not in Tokens.TOKENS:
-            return self.handle_variable(tok, context)
-        elif tok == Tokens.OPEN:
-            return self.handle_open(tok, context)
-
-    def get_BooleanExpression_factory(self, tok):
-        if tok == Tokens.IMP:
-            return ImpExpression
-        else:
-            return None
-
-    def make_BooleanExpression(self, factory, first, second):
-        return factory(first, second)
-
-    def attempt_ApplicationExpression(self, expression, context):
-        """Attempt to make an application expression.  If the next tokens
-        are an argument in parens, then the argument expression is a
-        function being applied to the arguments.  Otherwise, return the
-        argument expression."""
-        if self.has_priority(APP, context):
-            if self.inRange(0) and self.token(0) == Tokens.OPEN:
-                self.token() #swallow then open paren
-                argument = self.parse_Expression(APP)
-                self.assertNextToken(Tokens.CLOSE)
-                expression = ApplicationExpression(expression, argument, None)
-        return expression
-
-    def make_VariableExpression(self, name):
-        if name[0].isupper():
-            return VariableExpression(name)
-        else:
-            return ConstantExpression(name)
 
 def demo():
-    llp = LinearLogicParser()
+    lexpr = Expression.fromstring
 
-    print(llp.parse(r'f'))
-    print(llp.parse(r'(g -o f)'))
-    print(llp.parse(r'((g -o G) -o G)'))
-    print(llp.parse(r'g -o h -o f'))
-    print(llp.parse(r'(g -o f)(g)').simplify())
-    print(llp.parse(r'(H -o f)(g)').simplify())
-    print(llp.parse(r'((g -o G) -o G)((g -o f))').simplify())
-    print(llp.parse(r'(H -o H)((g -o f))').simplify())
+    print(lexpr(r'f'))
+    print(lexpr(r'(g -o f)'))
+    print(lexpr(r'((g -o G) -o G)'))
+    print(lexpr(r'g -o h -o f'))
+    print(lexpr(r'(g -o f)(g)').simplify())
+    print(lexpr(r'(H -o f)(g)').simplify())
+    print(lexpr(r'((g -o G) -o G)((g -o f))').simplify())
+    print(lexpr(r'(H -o H)((g -o f))').simplify())
 
 
 if __name__ == '__main__':

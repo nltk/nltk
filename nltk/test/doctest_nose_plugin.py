@@ -2,10 +2,13 @@
 from __future__ import print_function
 from nose.suite import ContextList
 import re
+import sys
+import os
+import codecs
 import doctest
 from nose.plugins.base import Plugin
-from nose.util import tolist
-from nose.plugins.doctests import Doctest
+from nose.util import tolist, anyp
+from nose.plugins.doctests import Doctest, log, DocFileCase
 
 ALLOW_UNICODE = doctest.register_optionflag('ALLOW_UNICODE')
 
@@ -34,11 +37,62 @@ class DoctestPluginHelper(object):
     """
     This mixin adds print_function future import to all test cases.
 
-    It also adds support for '#doctest +ALLOW_UNICODE' option that
-    makes DocTestCase think u'foo' == 'foo'.
+    It also adds support for:
+        '#doctest +ALLOW_UNICODE' option that
+        makes DocTestCase think u'foo' == 'foo'.
+
+        '#doctest doctestencoding=utf-8' option that
+        changes the encoding of doctest files
     """
+    OPTION_BY_NAME = ('doctestencoding',)
+
+    def loadTestsFromFileUnicode(self, filename):
+        if self.extension and anyp(filename.endswith, self.extension):
+            name = os.path.basename(filename)
+            dh = codecs.open(filename, 'r', self.options.get('doctestencoding'))
+            try:
+                doc = dh.read()
+            finally:
+                dh.close()
+
+            fixture_context = None
+            globs = {'__file__': filename}
+            if self.fixtures:
+                base, ext = os.path.splitext(name)
+                dirname = os.path.dirname(filename)
+                sys.path.append(dirname)
+                fixt_mod = base + self.fixtures
+                try:
+                    fixture_context = __import__(
+                        fixt_mod, globals(), locals(), ["nop"])
+                except ImportError as e:
+                    log.debug(
+                        "Could not import %s: %s (%s)", fixt_mod, e, sys.path)
+                log.debug("Fixture module %s resolved to %s",
+                    fixt_mod, fixture_context)
+                if hasattr(fixture_context, 'globs'):
+                    globs = fixture_context.globs(globs)
+            parser = doctest.DocTestParser()
+            test = parser.get_doctest(
+                doc, globs=globs, name=name,
+                filename=filename, lineno=0)
+            if test.examples:
+                case = DocFileCase(
+                    test,
+                    optionflags=self.optionflags,
+                    setUp=getattr(fixture_context, 'setup_test', None),
+                    tearDown=getattr(fixture_context, 'teardown_test', None),
+                    result_var=self.doctest_result_var)
+                if fixture_context:
+                    yield ContextList((case,), context=fixture_context)
+                else:
+                    yield case
+            else:
+                yield False # no tests to load
+
     def loadTestsFromFile(self, filename):
-        cases = super(DoctestPluginHelper, self).loadTestsFromFile(filename)
+
+        cases = self.loadTestsFromFileUnicode(filename)
 
         for case in cases:
             if isinstance(case, ContextList):
@@ -59,7 +113,6 @@ class DoctestPluginHelper(object):
             case._dt_checker = _checker
         return case
 
-
     def configure(self, options, config):
         # it is overriden in order to fix doctest options discovery
 
@@ -72,22 +125,31 @@ class DoctestPluginHelper(object):
 
         #super(DoctestPluginHelper, self).configure(options, config)
         self.optionflags = 0
-        if options.doctestOptions:
-            flags = ",".join(options.doctestOptions).split(',')
-            for flag in flags:
-                try:
-                    if flag.startswith('+'):
-                        self.optionflags |= doctest.OPTIONFLAGS_BY_NAME[flag[1:]]
-                    elif flag.startswith('-'):
-                        self.optionflags &= ~doctest.OPTIONFLAGS_BY_NAME[flag[1:]]
-                    else:
-                        raise ValueError(
-                            "Must specify doctest options with starting " +
-                            "'+' or '-'.  Got %s" % (flag,))
-                except (AttributeError, KeyError):
-                    raise ValueError("Unknown doctest option %s" %
-                                     (flag[1:],))
+        self.options = {}
 
+        if options.doctestOptions:
+            stroptions = ",".join(options.doctestOptions).split(',')
+            for stroption in stroptions:
+                try:
+                    if stroption.startswith('+'):
+                        self.optionflags |= doctest.OPTIONFLAGS_BY_NAME[stroption[1:]]
+                        continue
+                    elif stroption.startswith('-'):
+                        self.optionflags &= ~doctest.OPTIONFLAGS_BY_NAME[stroption[1:]]
+                        continue
+                    try:
+                        key,value=stroption.split('=')
+                    except ValueError:
+                        pass
+                    else:
+                        if not key in self.OPTION_BY_NAME:
+                            raise ValueError()
+                        self.options[key]=value
+                        continue
+                except (AttributeError, ValueError, KeyError):
+                    raise ValueError("Unknown doctest option {}".format(stroption))
+                else:
+                    raise ValueError("Doctest option is not a flag or a key/value pair: {} ".format(stroption))
 
 
 class DoctestFix(DoctestPluginHelper, Doctest):

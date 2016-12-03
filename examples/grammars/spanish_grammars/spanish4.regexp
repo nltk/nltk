@@ -1,5 +1,0 @@
-
-  SN: {<d.*>?<n.*>+<a.*>*}   # noun phrase chunks
-  SV: {<p.*>?<v.*>}          # verb phrase chunks
-  SP: {<sp.*>}               # prepositional phrase chunks
-  

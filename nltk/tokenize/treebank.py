@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
-#         
+#
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
@@ -40,7 +40,44 @@ class TreebankWordTokenizer(TokenizerI):
         >>> s = "They'll save and invest more."
         >>> TreebankWordTokenizer().tokenize(s)
         ['They', "'ll", 'save', 'and', 'invest', 'more', '.']
+        >>> s = "hi, my name can't hello,"
+        >>> TreebankWordTokenizer().tokenize(s)
+        ['hi', ',', 'my', 'name', 'ca', "n't", 'hello', ',']
     """
+
+    #starting quotes
+    STARTING_QUOTES = [
+        (re.compile(r'^\"'), r'``'),
+        (re.compile(r'(``)'), r' \1 '),
+        (re.compile(r'([ (\[{<])"'), r'\1 `` '),
+    ]
+
+    #punctuation
+    PUNCTUATION = [
+        (re.compile(r'([:,])([^\d])'), r' \1 \2'),
+        (re.compile(r'([:,])$'), r' \1 '),
+        (re.compile(r'\.\.\.'), r' ... '),
+        (re.compile(r'[;@#$%&]'), r' \g<0> '),
+        (re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'), r'\1 \2\3 '),
+        (re.compile(r'[?!]'), r' \g<0> '),
+
+        (re.compile(r"([^'])' "), r"\1 ' "),
+    ]
+
+    #parens, brackets, etc.
+    PARENS_BRACKETS = [
+        (re.compile(r'[\]\[\(\)\{\}\<\>]'), r' \g<0> '),
+        (re.compile(r'--'), r' -- '),
+    ]
+
+    #ending quotes
+    ENDING_QUOTES = [
+        (re.compile(r'"'), " '' "),
+        (re.compile(r'(\S)(\'\')'), r'\1 \2 '),
+
+        (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
+        (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
+    ]
 
     # List of contractions adapted from Robert MacIntyre's tokenizer.
     CONTRACTIONS2 = [re.compile(r"(?i)\b(can)(not)\b"),
@@ -57,34 +94,20 @@ class TreebankWordTokenizer(TokenizerI):
                      re.compile(r"(?i)\b(wha)(t)(cha)\b")]
 
     def tokenize(self, text):
-        #starting quotes
-        text = re.sub(r'^\"', r'``', text)
-        text = re.sub(r'(``)', r' \1 ', text)
-        text = re.sub(r'([ (\[{<])"', r'\1 `` ', text)
+        for regexp, substitution in self.STARTING_QUOTES:
+            text = regexp.sub(substitution, text)
 
-        #punctuation
-        text = re.sub(r'([:,])([^\d])', r' \1 \2', text)
-        text = re.sub(r'\.\.\.', r' ... ', text)
-        text = re.sub(r'[;@#$%&]', r' \g<0> ', text)
-        text = re.sub(r'([^\.])(\.)([\]\)}>"\']*)\s*$', r'\1 \2\3 ', text)
-        text = re.sub(r'[?!]', r' \g<0> ', text)
+        for regexp, substitution in self.PUNCTUATION:
+            text = regexp.sub(substitution, text)
 
-        text = re.sub(r"([^'])' ", r"\1 ' ", text)
-
-        #parens, brackets, etc.
-        text = re.sub(r'[\]\[\(\)\{\}\<\>]', r' \g<0> ', text)
-        text = re.sub(r'--', r' -- ', text)
+        for regexp, substitution in self.PARENS_BRACKETS:
+            text = regexp.sub(substitution, text)
 
         #add extra space to make things easier
         text = " " + text + " "
 
-        #ending quotes
-        text = re.sub(r'"', " '' ", text)
-        text = re.sub(r'(\S)(\'\')', r'\1 \2 ', text)
-
-        text = re.sub(r"([^' ])('[sS]|'[mM]|'[dD]|') ", r"\1 \2 ", text)
-        text = re.sub(r"([^' ])('ll|'re|'ve|n't|) ", r"\1 \2 ", text)
-        text = re.sub(r"([^' ])('LL|'RE|'VE|N'T|) ", r"\1 \2 ", text)
+        for regexp, substitution in self.ENDING_QUOTES:
+            text = regexp.sub(substitution, text)
 
         for regexp in self.CONTRACTIONS2:
             text = regexp.sub(r' \1 \2 ', text)
@@ -96,15 +119,6 @@ class TreebankWordTokenizer(TokenizerI):
         # for regexp in self.CONTRACTIONS4:
         #     text = regexp.sub(r' \1 \2 \3 ', text)
 
-        text = re.sub(" +", " ", text)
-        text = text.strip()
-
-        #add space at end to match up with MacIntyre's output (for debugging)
-        if text != "":
-            text += " "
-
         return text.split()
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+

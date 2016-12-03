@@ -1,32 +1,44 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 r"""
 NLTK Tokenizer Package
 
 Tokenizers divide strings into lists of substrings.  For example,
-tokenizers can be used to find the list of sentences or words in a
-string.
+tokenizers can be used to find the words and punctuation in a string:
 
-    >>> from nltk.tokenize import word_tokenize, wordpunct_tokenize, sent_tokenize
+    >>> from nltk.tokenize import word_tokenize
     >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
     ... two of them.\n\nThanks.'''
+    >>> word_tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+This particular tokenizer requires the Punkt sentence tokenization
+models to be installed. NLTK also provides a simpler,
+regular-expression based tokenizer, which splits text on whitespace
+and punctuation:
+
+    >>> from nltk.tokenize import wordpunct_tokenize
     >>> wordpunct_tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+We can also operate at the level of sentences, using the sentence
+tokenizer directly as follows:
+
+    >>> from nltk.tokenize import sent_tokenize, word_tokenize
     >>> sent_tokenize(s)
     ['Good muffins cost $3.88\nin New York.', 'Please buy me\ntwo of them.', 'Thanks.']
     >>> [word_tokenize(t) for t in sent_tokenize(s)]
     [['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.'],
     ['Please', 'buy', 'me', 'two', 'of', 'them', '.'], ['Thanks', '.']]
-
-Caution: only use ``word_tokenize()`` on individual sentences.
 
 Caution: when tokenizing a Unicode string, make sure you are not
 using an encoded version of the string (it may be necessary to
@@ -48,39 +60,52 @@ For further information, please see Chapter 3 of the NLTK book.
 """
 
 from nltk.data              import load
-from nltk.tokenize.simple   import (SpaceTokenizer, TabTokenizer, LineTokenizer,
-                                    line_tokenize)
+from nltk.tokenize.casual   import (TweetTokenizer, casual_tokenize)
+from nltk.tokenize.mwe      import MWETokenizer
+from nltk.tokenize.punkt    import PunktSentenceTokenizer
 from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
                                     BlanklineTokenizer, WordPunctTokenizer,
                                     wordpunct_tokenize, regexp_tokenize,
                                     blankline_tokenize)
-from nltk.tokenize.punkt    import PunktSentenceTokenizer, PunktWordTokenizer
+from nltk.tokenize.repp     import ReppTokenizer
 from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
-from nltk.tokenize.treebank import TreebankWordTokenizer
+from nltk.tokenize.simple   import (SpaceTokenizer, TabTokenizer, LineTokenizer,
+                                    line_tokenize)
+from nltk.tokenize.stanford import StanfordTokenizer
 from nltk.tokenize.texttiling import TextTilingTokenizer
+from nltk.tokenize.toktok   import ToktokTokenizer
+from nltk.tokenize.treebank import TreebankWordTokenizer
+from nltk.tokenize.util     import string_span_tokenize, regexp_span_tokenize
+from nltk.tokenize.stanford_segmenter import StanfordSegmenter
+
 
 # Standard sentence tokenizer.
-def sent_tokenize(text):
+def sent_tokenize(text, language='english'):
     """
     Return a sentence-tokenized copy of *text*,
     using NLTK's recommended sentence tokenizer
-    (currently :class:`.PunktSentenceTokenizer`).
+    (currently :class:`.PunktSentenceTokenizer`
+    for the specified language).
+
+    :param text: text to split into sentences
+    :param language: the model name in the Punkt corpus
     """
-    tokenizer = load('tokenizers/punkt/english.pickle')
+    tokenizer = load('tokenizers/punkt/{0}.pickle'.format(language))
     return tokenizer.tokenize(text)
 
 # Standard word tokenizer.
-_word_tokenize = TreebankWordTokenizer().tokenize
-def word_tokenize(text):
+_treebank_word_tokenize = TreebankWordTokenizer().tokenize
+def word_tokenize(text, language='english'):
     """
     Return a tokenized copy of *text*,
     using NLTK's recommended word tokenizer
-    (currently :class:`.TreebankWordTokenizer`).
-    This tokenizer is designed to work on a sentence at a time.
+    (currently :class:`.TreebankWordTokenizer`
+    along with :class:`.PunktSentenceTokenizer`
+    for the specified language).
+
+    :param text: text to split into sentences
+    :param language: the model name in the Punkt corpus
     """
-    return _word_tokenize(text)
+    return [token for sent in sent_tokenize(text, language)
+            for token in _treebank_word_tokenize(sent)]
 
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

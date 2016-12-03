@@ -3,7 +3,7 @@
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Dan Garrette <dhgarrette@gmail.com>
 #
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -43,8 +43,8 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 those threads which are consistent (taking into account any background assumptions).
 """
 from __future__ import print_function
-
 import os
+
 from operator import and_, add
 from functools import reduce
 
@@ -54,6 +54,7 @@ from nltk.parse import load_parser
 from nltk.parse.malt import MaltParser
 from nltk.sem.drt import resolve_anaphora, AnaphoraResolutionException
 from nltk.sem.glue import DrtGlue
+from nltk.sem.logic import Expression
 
 from nltk.inference.mace import MaceCommand
 from nltk.inference.prover9 import Prover9Command
@@ -87,11 +88,11 @@ class ReadingCommand(object):
         :rtype: Expression
         """
         raise NotImplementedError()
-    
+
     def to_fol(self, expression):
         """
         Convert this expression into a First-Order Logic expression.
-        
+
         :param expression: an expression
         :type expression: Expression
         :return: a FOL version of the input expression
@@ -113,13 +114,13 @@ class CfgReadingCommand(ReadingCommand):
         """:see: ReadingCommand.parse_to_readings()"""
         from nltk.sem import root_semrep
         tokens = sentence.split()
-        trees = self._parser.nbest_parse(tokens)
+        trees = self._parser.parse(tokens)
         return [root_semrep(tree) for tree in trees]
 
     def combine_readings(self, readings):
         """:see: ReadingCommand.combine_readings()"""
         return reduce(and_, readings)
-    
+
     def to_fol(self, expression):
         """:see: ReadingCommand.to_fol()"""
         return expression
@@ -134,7 +135,7 @@ class DrtGlueReadingCommand(ReadingCommand):
         :param depparser: the dependency parser
         """
         if semtype_file is None:
-            semtype_file = 'drt_glue.semtype'
+            semtype_file = os.path.join('grammars', 'sample_grammars','drt_glue.semtype')
         self._glue = DrtGlue(semtype_file=semtype_file,
                              remove_duplicates=remove_duplicates,
                              depparser=depparser)
@@ -154,7 +155,7 @@ class DrtGlueReadingCommand(ReadingCommand):
         """:see: ReadingCommand.combine_readings()"""
         thread_reading = reduce(add, readings)
         return resolve_anaphora(thread_reading.simplify())
-    
+
     def to_fol(self, expression):
         """:see: ReadingCommand.to_fol()"""
         return expression.fol()
@@ -275,11 +276,11 @@ class DiscourseTester(object):
         """
         # re-initialize self._readings in case we have retracted a sentence
         self._readings = {}
-        for sid in self._sentences:
+        for sid in sorted(self._sentences):
             sentence = self._sentences[sid]
             readings = self._get_readings(sentence)
             self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading.simplify())
-                                                        for rid, reading in enumerate(readings)])
+                                                        for rid, reading in enumerate(sorted(readings, key=str))])
 
     def _construct_threads(self):
         """
@@ -314,8 +315,7 @@ class DiscourseTester(object):
                 print() #'-' * 30
                 for rid in sorted(self._readings[sid]):
                     lf = self._readings[sid][rid]
-                    #TODO lf = lf.normalize('[xyz]\d*', 'z%d')
-                    print("%s: %s" % (rid, lf))
+                    print("%s: %s" % (rid, lf.normalize()))
 
     def _show_threads(self, filter=False, show_thread_readings=False):
         """
@@ -328,7 +328,7 @@ class DiscourseTester(object):
                             for rid in self._threads[tid]]
                 try:
                     thread_reading = ": %s" % \
-                              self._reading_command.combine_readings(readings)
+                              self._reading_command.combine_readings(readings).normalize()
                 except Exception as e:
                     thread_reading = ': INVALID: %s' % e.__class__.__name__
             else:
@@ -385,7 +385,7 @@ class DiscourseTester(object):
         results = []
         for tid in sorted(threads):
             assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
-            assumptions = map(self._reading_command.to_fol, self._reading_command.process_thread(assumptions))
+            assumptions = list(map(self._reading_command.to_fol, self._reading_command.process_thread(assumptions)))
             if assumptions:
                 assumptions += self._background
                 # if Mace4 finds a model, it always seems to find it quickly
@@ -425,13 +425,13 @@ class DiscourseTester(object):
 
             if not modelfound:
                 print("Inconsistent discourse: %s %s:" % (tid, idlist))
-                for  rid, reading in [(rid, str(reading))  for (rid, reading) in self.expand_threads(tid)]:
-                    print("    %s: %s" % (rid, reading))
+                for rid, reading in self.expand_threads(tid):
+                    print("    %s: %s" % (rid, reading.normalize()))
                 print()
             else:
                 print("Consistent discourse: %s %s:" % (tid, idlist))
-                for  rid, reading in [(rid, str(reading))  for (rid, reading) in self.expand_threads(tid)]:
-                    print("    %s: %s" % (rid, reading))
+                for rid, reading in self.expand_threads(tid):
+                    print("    %s: %s" % (rid, reading.normalize()))
                 print()
 
     def add_background(self, background, verbose=False):
@@ -492,7 +492,7 @@ class DiscourseTester(object):
 #L2 = ['a', 'b', 'c']
 #print multiply(L1,L2)
 
-def parse_fol(s):
+def load_fol(s):
     """
     Temporarily duplicated from ``nltk.sem.util``.
     Convert a  file of first order formulas into a list of ``Expression`` objects.
@@ -502,15 +502,13 @@ def parse_fol(s):
     :return: a list of parsed formulas.
     :rtype: list(Expression)
     """
-    from nltk.sem import LogicParser
     statements = []
-    lp = LogicParser()
     for linenum, line in enumerate(s.splitlines()):
         line = line.strip()
         if line.startswith('#') or line=='': continue
         try:
-            statements.append(lp.parse(line))
-        except Error:
+            statements.append(Expression.fromstring(line))
+        except Exception:
             raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     return statements
 
@@ -560,7 +558,9 @@ def discourse_demo(reading_command=None):
                           reading_command)
     dt.readings(filter=True)
     import nltk.data
-    background = nltk.data.load('/grammars/book_grammars/background.fol')
+    background_file = os.path.join('grammars', 'book_grammars', 'background.fol')
+    background = nltk.data.load(background_file)
+    
     print()
     dt.add_background(background, verbose=False)
     dt.background()

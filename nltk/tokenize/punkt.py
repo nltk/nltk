@@ -1,12 +1,13 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
-#         Edward Loper <edloper@gradient.cis.upenn.edu> (rewrite)
+#         Edward Loper <edloper@gmail.com> (rewrite)
 #         Joel Nothman <jnothman@student.usyd.edu.au> (almost rewrite)
-# URL: <http://www.nltk.org/>
+#         Arthur Darcet <arthur@darcet.fr> (fixes)
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 r"""
@@ -42,19 +43,46 @@ English.
 (Note that whitespace from the original text, including newlines, is
 retained in the output.)
 
-Punctuation following sentences can be included with the realign_boundaries
-flag:
+Punctuation following sentences is also included by default
+(from NLTK 3.0 onwards). It can be excluded with the realign_boundaries
+flag.
 
     >>> text = '''
     ... (How does it deal with this parenthesis?)  "It should be part of the
-    ... previous sentence."
+    ... previous sentence." "(And the same with this one.)" ('And this one!')
+    ... "('(And (this)) '?)" [(and this. )]
     ... '''
     >>> print('\n-----\n'.join(
-    ...     sent_detector.tokenize(text.strip(), realign_boundaries=True)))
+    ...     sent_detector.tokenize(text.strip())))
     (How does it deal with this parenthesis?)
     -----
     "It should be part of the
     previous sentence."
+    -----
+    "(And the same with this one.)"
+    -----
+    ('And this one!')
+    -----
+    "('(And (this)) '?)"
+    -----
+    [(and this. )]
+    >>> print('\n-----\n'.join(
+    ...     sent_detector.tokenize(text.strip(), realign_boundaries=False)))
+    (How does it deal with this parenthesis?
+    -----
+    )  "It should be part of the
+    previous sentence.
+    -----
+    " "(And the same with this one.
+    -----
+    )" ('And this one!
+    -----
+    ')
+    "('(And (this)) '?
+    -----
+    )" [(and this.
+    -----
+    )]
 
 However, Punkt is designed to learn parameters (a list of abbreviations, etc.)
 unsupervised from a corpus similar to the target domain. The pre-packaged models
@@ -66,21 +94,12 @@ parameters from the given text.
 allows for incremental training and modification of the hyper-parameters used
 to decide what is considered an abbreviation, etc.
 
-:class:`.PunktWordTokenizer` uses a regular expression to divide a text into tokens,
-leaving all periods attached to words, but separating off other punctuation:
-
-    >>> from nltk.tokenize.punkt import PunktWordTokenizer
-    >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
-    >>> PunktWordTokenizer().tokenize(s)
-    ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.', 'Please',
-    'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
-
 The algorithm for this tokenizer is described in::
 
   Kiss, Tibor and Strunk, Jan (2006): Unsupervised Multilingual Sentence
     Boundary Detection.  Computational Linguistics 32: 485-525.
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 # TODO: Make orthographic heuristic less susceptible to overtraining
 # TODO: Frequent sentence starters optionally exclude always-capitalised words
@@ -275,21 +294,6 @@ numeric tokens are changed to ##number## and hence contain alpha.)"""
 #}
 ######################################################################
 
-
-######################################################################
-#{ Punkt Word Tokenizer
-######################################################################
-
-class PunktWordTokenizer(TokenizerI):
-    # Retained for backward compatibility
-    def __init__(self, lang_vars=PunktLanguageVars()):
-        self._lang_vars = lang_vars
-
-    def tokenize(self, text):
-        return self._lang_vars.word_tokenize(text)
-
-#}
-######################################################################
 
 
 #////////////////////////////////////////////////////////////
@@ -728,7 +732,7 @@ class PunktTrainer(PunktBaseClass):
         # strip off final periods.)  Also keep track of the number of
         # tokens that end in periods.
         for aug_tok in tokens:
-            self._type_fdist.inc(aug_tok.type)
+            self._type_fdist[aug_tok.type] += 1
             if aug_tok.period_final:
                 self._num_period_toks += 1
 
@@ -773,12 +777,12 @@ class PunktTrainer(PunktBaseClass):
 
             # Does second token have a high likelihood of starting a sentence?
             if self._is_potential_sent_starter(aug_tok2, aug_tok1):
-                self._sent_starter_fdist.inc(aug_tok2.type)
+                self._sent_starter_fdist[aug_tok2.type] += 1
 
             # Is this bigram a potential collocation?
             if self._is_potential_collocation(aug_tok1, aug_tok2):
-                self._collocation_fdist.inc(
-                    (aug_tok1.type_no_period, aug_tok2.type_no_sentperiod))
+                self._collocation_fdist[
+                    (aug_tok1.type_no_period, aug_tok2.type_no_sentperiod)] += 1
 
     def _unique_types(self, tokens):
         return set(aug_tok.type for aug_tok in tokens)
@@ -843,8 +847,8 @@ class PunktTrainer(PunktBaseClass):
             if count < threshold:
                 num_removed += 1
             else:
-                res.inc(tok, count)
-        res.inc(None, num_removed)
+                res[tok] += count
+        res[None] += num_removed
         return res
 
     #////////////////////////////////////////////////////////////
@@ -1032,12 +1036,12 @@ class PunktTrainer(PunktBaseClass):
         ratio scores for abbreviation candidates.  The details of how
         this works is available in the paper.
         """
-        p1 = float(count_b) / N
+        p1 = count_b / N
         p2 = 0.99
 
-        null_hypo = (float(count_ab) * math.log(p1) +
+        null_hypo = (count_ab * math.log(p1) +
                      (count_a - count_ab) * math.log(1.0 - p1))
-        alt_hypo  = (float(count_ab) * math.log(p2) +
+        alt_hypo  = (count_ab * math.log(p2) +
                      (count_a - count_ab) * math.log(1.0 - p2))
 
         likelihood = null_hypo - alt_hypo
@@ -1056,23 +1060,34 @@ class PunktTrainer(PunktBaseClass):
         """
         import math
 
-        p = 1.0 * count_b / N
-        p1 = 1.0 * count_ab / count_a
-        p2 = 1.0 * (count_b - count_ab) / (N - count_a)
+        p = count_b / N
+        p1 = count_ab / count_a
+        try:
+            p2 = (count_b - count_ab) / (N - count_a)
+        except ZeroDivisionError as e:
+            p2 = 1
 
-        summand1 = (count_ab * math.log(p) +
-                    (count_a - count_ab) * math.log(1.0 - p))
+        print (p, p1, p2, N, count_a, count_b, count_ab)
 
-        summand2 = ((count_b - count_ab) * math.log(p) +
-                    (N - count_a - count_b + count_ab) * math.log(1.0 - p))
+        try:
+            summand1 = (count_ab * math.log(p) +
+                        (count_a - count_ab) * math.log(1.0 - p))
+        except ValueError as e:
+            summand1 = 0
 
-        if count_a == count_ab:
+        try:
+            summand2 = ((count_b - count_ab) * math.log(p) +
+                        (N - count_a - count_b + count_ab) * math.log(1.0 - p))
+        except ValueError as e:
+            summand2 = 0
+
+        if count_a == count_ab or p1 <= 0 or p1 >= 1:
             summand3 = 0
         else:
             summand3 = (count_ab * math.log(p1) +
                         (count_a - count_ab) * math.log(1.0 - p1))
 
-        if count_b == count_ab:
+        if count_b == count_ab or p2 <= 0 or p2 >= 1:
             summand4 = 0
         else:
             summand4 = ((count_b - count_ab) * math.log(p2) +
@@ -1122,8 +1137,8 @@ class PunktTrainer(PunktBaseClass):
                                               col_count, self._type_fdist.N())
                 # Filter out the not-so-collocative
                 if (ll >= self.COLLOCATION and
-                    (float(self._type_fdist.N())/typ1_count >
-                     float(typ2_count)/col_count)):
+                    (self._type_fdist.N()/typ1_count >
+                     typ2_count/col_count)):
                     yield (typ1, typ2), ll
 
     #////////////////////////////////////////////////////////////
@@ -1162,8 +1177,8 @@ class PunktTrainer(PunktBaseClass):
                                           self._type_fdist.N())
 
             if (ll >= self.SENT_STARTER and
-                float(self._type_fdist.N())/self._sentbreak_count >
-                float(typ_count)/typ_at_break_count):
+                self._type_fdist.N()/self._sentbreak_count >
+                typ_count/typ_at_break_count):
 
                 yield typ, ll
 
@@ -1215,7 +1230,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
     #{ Tokenization
     #////////////////////////////////////////////////////////////
 
-    def tokenize(self, text, realign_boundaries=False):
+    def tokenize(self, text, realign_boundaries=True):
         """
         Given a text, returns a list of the sentences in that text.
         """
@@ -1250,24 +1265,24 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                 break_decision=tokens[0].sentbreak,
             )
 
-    def span_tokenize(self, text):
+    def span_tokenize(self, text, realign_boundaries=True):
         """
         Given a text, returns a list of the (start, end) spans of sentences
         in the text.
         """
-        return [(sl.start, sl.stop) for sl in self._slices_from_text(text)]
+        slices = self._slices_from_text(text)
+        if realign_boundaries:
+            slices = self._realign_boundaries(text, slices)
+        return [(sl.start, sl.stop) for sl in slices]
 
-    def sentences_from_text(self, text, realign_boundaries=False):
+    def sentences_from_text(self, text, realign_boundaries=True):
         """
         Given a text, generates the sentences in that text by only
         testing candidate sentence breaks. If realign_boundaries is
         True, includes in the sentence closing punctuation that
         follows the period.
         """
-        sents = [text[sl] for sl in self._slices_from_text(text)]
-        if realign_boundaries:
-            sents = self._realign_boundaries(sents)
-        return sents
+        return [text[s:e] for s, e in self.span_tokenize(text, realign_boundaries)]
 
     def _slices_from_text(self, text):
         last_break = 0
@@ -1283,7 +1298,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                     last_break = match.end()
         yield slice(last_break, len(text))
 
-    def _realign_boundaries(self, sents):
+    def _realign_boundaries(self, text, slices):
         """
         Attempts to realign punctuation that falls after the period but
         should otherwise be included in the same sentence.
@@ -1297,21 +1312,21 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
             ["(Sent1.)", "Sent2."].
         """
         realign = 0
-        for s1, s2 in _pair_iter(sents):
-            s1 = s1[realign:]
-            if not s2:
-                if s1:
-                    yield s1
+        for sl1, sl2 in _pair_iter(slices):
+            sl1 = slice(sl1.start + realign, sl1.stop)
+            if not sl2:
+                if text[sl1]:
+                    yield sl1
                 continue
 
-            m = self._lang_vars.re_boundary_realignment.match(s2)
+            m = self._lang_vars.re_boundary_realignment.match(text[sl2])
             if m:
-                yield s1 + m.group(0).strip()
+                yield slice(sl1.start, sl2.start + len(m.group(0).rstrip()))
                 realign = m.end()
             else:
                 realign = 0
-                if s1:
-                    yield s1
+                if text[sl1]:
+                    yield sl1
 
     def text_contains_sentbreak(self, text):
         """
@@ -1426,17 +1441,16 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
     # [XX] TESTING
     def dump(self, tokens):
         print('writing to /tmp/punkt.new...')
-        out = open('/tmp/punkt.new', 'w')
-        for aug_tok in tokens:
-            if aug_tok.parastart:
-                out.write('\n\n')
-            elif aug_tok.linestart:
-                out.write('\n')
-            else:
-                out.write(' ')
+        with open('/tmp/punkt.new', 'w') as outfile:
+            for aug_tok in tokens:
+                if aug_tok.parastart:
+                    outfile.write('\n\n')
+                elif aug_tok.linestart:
+                    outfile.write('\n')
+                else:
+                    outfile.write(' ')
 
-            out.write(str(aug_tok))
-        out.close()
+                outfile.write(str(aug_tok))
 
     #////////////////////////////////////////////////////////////
     #{ Customization Variables
@@ -1592,10 +1606,7 @@ def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     trainer.INCLUDE_ALL_COLLOCS = True
     trainer.train(text)
     sbd = tok_cls(trainer.get_params())
-    for l in sbd.sentences_from_text(text, realign_boundaries=True):
+    for l in sbd.sentences_from_text(text):
         print(cleanup(l))
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

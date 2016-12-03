@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Decision Tree Classifiers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -10,7 +10,7 @@ A classifier model that decides which label to assign to a token on
 the basis of a tree structure, where branches correspond to conditions
 on feature values, and leaves correspond to label assignments.
 """
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 from collections import defaultdict
 
@@ -69,9 +69,9 @@ class DecisionTreeClassifier(ClassifierI):
         for featureset, label in labeled_featuresets:
             if self.classify(featureset) != label:
                 errors += 1
-        return float(errors)/len(labeled_featuresets)
+        return errors/len(labeled_featuresets)
 
-    def pp(self, width=70, prefix='', depth=4):
+    def pretty_format(self, width=70, prefix='', depth=4):
         """
         Return a string containing a pretty-printed version of this
         decision tree.  Each line in this string corresponds to a
@@ -81,19 +81,19 @@ class DecisionTreeClassifier(ClassifierI):
         # [xx] display default!!
         if self._fname is None:
             n = width-len(prefix)-15
-            return '%s%s %s\n' % (prefix, '.'*n, self._label)
+            return '{0}{1} {2}\n'.format(prefix, '.'*n, self._label)
         s = ''
         for i, (fval, result) in enumerate(sorted(self._decisions.items())):
-            hdr = '%s%s=%s? ' % (prefix, self._fname, fval)
+            hdr = '{0}{1}={2}? '.format(prefix, self._fname, fval)
             n = width-15-len(hdr)
-            s += '%s%s %s\n' % (hdr, '.'*(n), result._label)
+            s += '{0}{1} {2}\n'.format(hdr, '.'*(n), result._label)
             if result._fname is not None and depth>1:
-                s += result.pp(width, prefix+'  ', depth-1)
+                s += result.pretty_format(width, prefix+'  ', depth-1)
         if self._default is not None:
             n = width-len(prefix)-21
-            s += '%selse: %s %s\n' % (prefix, '.'*n, self._default._label)
+            s += '{0}else: {1} {2}\n'.format(prefix, '.'*n, self._default._label)
             if self._default._fname is not None and depth>1:
-                s += self._default.pp(width, prefix+'  ', depth-1)
+                s += self._default.pretty_format(width, prefix+'  ', depth-1)
         return s
 
     def pseudocode(self, prefix='', depth=4):
@@ -103,28 +103,28 @@ class DecisionTreeClassifier(ClassifierI):
         if statements.
         """
         if self._fname is None:
-            return "%sreturn %r\n" % (prefix, self._label)
+            return "{0}return {1!r}\n".format(prefix, self._label)
         s = ''
         for (fval, result) in sorted(self._decisions.items()):
-            s += '%sif %s == %r: ' % (prefix, self._fname, fval)
+            s += '{0}if {1} == {2!r}: '.format(prefix, self._fname, fval)
             if result._fname is not None and depth>1:
                 s += '\n'+result.pseudocode(prefix+'  ', depth-1)
             else:
-                s += 'return %r\n' % result._label
+                s += 'return {0!r}\n'.format(result._label)
         if self._default is not None:
             if len(self._decisions) == 1:
-                s += '%sif %s != %r: '% (prefix, self._fname,
+                s += '{0}if {1} != {2!r}: '.format(prefix, self._fname,
                                          list(self._decisions.keys())[0])
             else:
-                s += '%selse: ' % (prefix,)
+                s += '{0}else: '.format(prefix)
             if self._default._fname is not None and depth>1:
                 s += '\n'+self._default.pseudocode(prefix+'  ', depth-1)
             else:
-                s += 'return %r\n' % self._default._label
+                s += 'return {0!r}\n'.format(self._default._label)
         return s
 
     def __str__(self):
-        return self.pp()
+        return self.pretty_format()
 
     @staticmethod
     def train(labeled_featuresets, entropy_cutoff=0.05, depth_cutoff=100,
@@ -165,20 +165,20 @@ class DecisionTreeClassifier(ClassifierI):
 
     @staticmethod
     def leaf(labeled_featuresets):
-        label = FreqDist(label for (featureset,label)
+        label = FreqDist(label for (featureset, label)
                          in labeled_featuresets).max()
         return DecisionTreeClassifier(label)
 
     @staticmethod
     def stump(feature_name, labeled_featuresets):
-        label = FreqDist(label for (featureset,label)
+        label = FreqDist(label for (featureset, label)
                          in labeled_featuresets).max()
 
         # Find the best label for each value.
         freqs = defaultdict(FreqDist) # freq(label|value)
         for featureset, label in labeled_featuresets:
             feature_value = featureset.get(feature_name)
-            freqs[feature_value].inc(label)
+            freqs[feature_value][label] += 1
 
         decisions = dict((val, DecisionTreeClassifier(freqs[val].max()))
                          for val in freqs)
@@ -191,11 +191,11 @@ class DecisionTreeClassifier(ClassifierI):
         if self._fname is None: return
         if depth_cutoff <= 0: return
         for fval in self._decisions:
-            fval_featuresets = [(featureset,label) for (featureset,label)
+            fval_featuresets = [(featureset, label) for (featureset, label)
                                 in labeled_featuresets
                                 if featureset.get(self._fname) == fval]
 
-            label_freqs = FreqDist(label for (featureset,label)
+            label_freqs = FreqDist(label for (featureset, label)
                                    in fval_featuresets)
             if entropy(MLEProbDist(label_freqs)) > entropy_cutoff:
                 self._decisions[fval] = DecisionTreeClassifier.train(
@@ -206,7 +206,7 @@ class DecisionTreeClassifier(ClassifierI):
                                    in labeled_featuresets
                                    if featureset.get(self._fname) not in
                                    self._decisions]
-            label_freqs = FreqDist(label for (featureset,label)
+            label_freqs = FreqDist(label for (featureset, label)
                                    in default_featuresets)
             if entropy(MLEProbDist(label_freqs)) > entropy_cutoff:
                 self._default = DecisionTreeClassifier.train(
@@ -224,7 +224,7 @@ class DecisionTreeClassifier(ClassifierI):
                 best_error = stump_error
                 best_stump = stump
         if verbose:
-            print(('best stump for %6d toks uses %-20s err=%6.4f' %
+            print(('best stump for {:6d} toks uses {:20} err={:6.4f}'.format \
                    (len(labeled_featuresets), best_stump._fname, best_error)))
         return best_stump
 
@@ -238,9 +238,9 @@ class DecisionTreeClassifier(ClassifierI):
         neg_fdist = FreqDist()
         for featureset, label in labeled_featuresets:
             if featureset.get(feature_name) == feature_value:
-                pos_fdist.inc(label)
+                pos_fdist[label] += 1
             else:
-                neg_fdist.inc(label)
+                neg_fdist[label] += 1
 
 
         decisions = {}
@@ -267,12 +267,12 @@ class DecisionTreeClassifier(ClassifierI):
                     best_error = stump_error
                     best_stump = stump
         if best_stump._decisions:
-            descr = '%s=%s' % (best_stump._fname,
+            descr = '{0}={1}'.format(best_stump._fname,
                                list(best_stump._decisions.keys())[0])
         else:
             descr = '(default)'
         if verbose:
-            print(('best stump for %6d toks uses %-20s err=%6.4f' %
+            print(('best stump for {:6d} toks uses {:20} err={:6.4f}'.format \
                    (len(labeled_featuresets), descr, best_error)))
         return best_stump
 

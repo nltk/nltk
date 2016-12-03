@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Corpus Reader Utilities
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 import os
@@ -20,7 +20,7 @@ except ImportError:
 try: from xml.etree import cElementTree as ElementTree
 except ImportError: from xml.etree import ElementTree
 
-from nltk import compat
+from nltk.compat import string_types, text_type
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
@@ -280,7 +280,12 @@ class StreamBackedCorpusView(AbstractLazySequence):
         # Open the stream, if it's not open already.
         if self._stream is None:
             self._open()
-
+        
+        # If the file is empty, the while loop will never run.
+        # This *seems* to be all the state we need to set:
+        if self._eofpos == 0:
+            self._len = 0
+            
         # Each iteration through this loop, we read a single block
         # from the stream.
         while filepos < self._eofpos:
@@ -334,6 +339,9 @@ class StreamBackedCorpusView(AbstractLazySequence):
 
         # If we reach this point, then we should know our length.
         assert self._len is not None
+        # Enforce closing of stream once we reached end of file
+        # We should have reached EOF once we're out of the while loop.
+        self.close()
 
     # Use concat for these, so we can use a ConcatenatedCorpusView
     # when possible.
@@ -416,7 +424,7 @@ def concat(docs):
     types = set(d.__class__ for d in docs)
 
     # If they're all strings, use string concatenation.
-    if all(isinstance(doc, compat.string_types) for doc in docs):
+    if all(isinstance(doc, string_types) for doc in docs):
         return ''.join(docs)
 
     # If they're all corpus views, then use ConcatenatedCorpusView.
@@ -508,7 +516,7 @@ class PickleCorpusView(StreamBackedCorpusView):
 
     @classmethod
     def write(cls, sequence, output_file):
-        if isinstance(output_file, compat.string_types):
+        if isinstance(output_file, string_types):
             output_file = open(output_file, 'wb')
         for item in sequence:
             pickle.dump(item, output_file, cls.PROTOCOL)
@@ -643,7 +651,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
     start = stream.tell()
     block = stream.read(block_size)
     encoding = getattr(stream, 'encoding', None)
-    assert encoding is not None or isinstance(block, compat.text_type)
+    assert encoding is not None or isinstance(block, text_type)
     if encoding not in (None, 'utf-8'):
         import warnings
         warnings.warn('Parsing may fail, depending on the properties '

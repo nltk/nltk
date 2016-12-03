@@ -2,8 +2,8 @@
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# Copyright (C) 2001-2013 NLTK Project
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2016 NLTK Project
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -14,26 +14,25 @@ a first-order model.
 """
 from __future__ import print_function, unicode_literals
 
-import re
 import codecs
-from . import evaluate
+from nltk.sem import evaluate
 
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
 ##############################################################
 
-def batch_parse(inputs, grammar, trace=0):
+def parse_sents(inputs, grammar, trace=0):
     """
     Convert input sentences into syntactic trees.
 
     :param inputs: sentences to be parsed
-    :type inputs: list of str
+    :type inputs: list(str)
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
-    :rtype: dict
+    :type grammar: nltk.grammar.FeatureGrammar
+    :rtype: list(nltk.tree.Tree) or dict(list(str)): list(Tree)
     :return: a mapping from input sentences to a list of ``Tree``s
     """
-
     # put imports here to avoid circult dependencies
     from nltk.grammar import FeatureGrammar
     from nltk.parse import FeatureChartParser, load_parser
@@ -45,7 +44,7 @@ def batch_parse(inputs, grammar, trace=0):
     parses = []
     for sent in inputs:
         tokens = sent.split() # use a tokenizer?
-        syntrees = cp.nbest_parse(tokens)
+        syntrees = list(cp.parse(tokens))
         parses.append(syntrees)
     return parses
 
@@ -60,7 +59,7 @@ def root_semrep(syntree, semkey='SEM'):
     """
     from nltk.grammar import FeatStructNonterminal
 
-    node = syntree.node
+    node = syntree.label()
     assert isinstance(node, FeatStructNonterminal)
     try:
         return node[semkey]
@@ -69,103 +68,36 @@ def root_semrep(syntree, semkey='SEM'):
         print("has no specification for the feature %s" % semkey)
     raise
 
-def batch_interpret(inputs, grammar, semkey='SEM', trace=0):
+def interpret_sents(inputs, grammar, semkey='SEM', trace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
 
     :param inputs: a list of sentences
+    :type inputs: list(str)
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
+    :type grammar: nltk.grammar.FeatureGrammar
     :return: a mapping from sentences to lists of pairs (parse-tree, semantic-representations)
-    :rtype: dict
+    :rtype: list(list(tuple(nltk.tree.Tree, nltk.sem.logic.ConstantExpression)))
     """
     return [[(syn, root_semrep(syn, semkey)) for syn in syntrees]
-            for syntrees in batch_parse(inputs, grammar, trace=trace)]
+            for syntrees in parse_sents(inputs, grammar, trace=trace)]
 
-def batch_evaluate(inputs, grammar, model, assignment, trace=0):
+def evaluate_sents(inputs, grammar, model, assignment, trace=0):
     """
     Add the truth-in-a-model value to each semantic representation
     for each syntactic parse of each input sentences.
 
     :param inputs: a list of sentences
+    :type inputs: list(str)
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
+    :type grammar: nltk.grammar.FeatureGrammar
     :return: a mapping from sentences to lists of triples (parse-tree, semantic-representations, evaluation-in-model)
-    :rtype: dict
+    :rtype: list(list(tuple(nltk.tree.Tree, nltk.sem.logic.ConstantExpression, bool or dict(str): bool)))
     """
     return [[(syn, sem, model.evaluate("%s" % sem, assignment, trace=trace))
             for (syn, sem) in interpretations]
-            for interpretations in batch_interpret(inputs, grammar)]
-
-
-##########################################
-# REs used by the parse_valuation function
-##########################################
-_VAL_SPLIT_RE = re.compile(r'\s*=+>\s*')
-_ELEMENT_SPLIT_RE = re.compile(r'\s*,\s*')
-_TUPLES_RE = re.compile(r"""\s*
-                                (\([^)]+\))  # tuple-expression
-                                \s*""", re.VERBOSE)
-
-def parse_valuation_line(s, encoding=None):
-    """
-    Parse a line in a valuation file.
-
-    Lines are expected to be of the form::
-
-      noosa => n
-      girl => {g1, g2}
-      chase => {(b1, g1), (b2, g1), (g1, d1), (g2, d2)}
-
-    :param s: input line
-    :type s: str
-    :param encoding: the encoding of the input string, if it is binary
-    :type encoding: str
-    :return: a pair (symbol, value)
-    :rtype: tuple
-    """
-    if encoding is not None:
-        s = s.decode(encoding)
-    pieces = _VAL_SPLIT_RE.split(s)
-    symbol = pieces[0]
-    value = pieces[1]
-    # check whether the value is meant to be a set
-    if value.startswith('{'):
-        value = value[1:-1]
-        tuple_strings = _TUPLES_RE.findall(value)
-        # are the set elements tuples?
-        if tuple_strings:
-            set_elements = []
-            for ts in tuple_strings:
-                ts = ts[1:-1]
-                element = tuple(_ELEMENT_SPLIT_RE.split(ts))
-                set_elements.append(element)
-        else:
-            set_elements = _ELEMENT_SPLIT_RE.split(value)
-        value = set(set_elements)
-    return symbol, value
-
-def parse_valuation(s, encoding=None):
-    """
-    Convert a valuation file into a valuation.
-
-    :param s: the contents of a valuation file
-    :type s: str
-    :param encoding: the encoding of the input string, if it is binary
-    :type encoding: str
-    :return: a ``nltk.sem`` valuation
-    :rtype: Valuation
-    """
-    if encoding is not None:
-        s = s.decode(encoding)
-    statements = []
-    for linenum, line in enumerate(s.splitlines()):
-        line = line.strip()
-        if line.startswith('#') or line=='': continue
-        try: statements.append(parse_valuation_line(line))
-        except ValueError:
-            raise ValueError('Unable to parse line %s: %s' % (linenum, line))
-    val = evaluate.Valuation(statements)
-    return val
+            for interpretations in interpret_sents(inputs, grammar)]
 
 
 def demo_model0():
@@ -208,21 +140,21 @@ def read_sents(filename, encoding='utf8'):
 
 def demo_legacy_grammar():
     """
-    Check that batch_interpret() is compatible with legacy grammars that use
+    Check that interpret_sents() is compatible with legacy grammars that use
     a lowercase 'sem' feature.
 
     Define 'test.fcfg' to be the following
 
     """
-    from nltk.grammar import parse_fcfg
+    from nltk.grammar import FeatureGrammar
 
-    g = parse_fcfg("""
+    g = FeatureGrammar.fromstring("""
     % start S
     S[sem=<hello>] -> 'hello'
     """)
     print("Reading grammar: %s" % g)
     print("*" * 20)
-    for reading in batch_interpret(['hello'], g, semkey='sem'):
+    for reading in interpret_sents(['hello'], g, semkey='sem'):
         syn, sem = reading[0]
         print()
         print("output: ", sem)
@@ -289,10 +221,10 @@ def demo():
 
     if options.evaluate:
         evaluations = \
-            batch_evaluate(sents, gramfile, model, g, trace=options.semtrace)
+            evaluate_sents(sents, gramfile, model, g, trace=options.semtrace)
     else:
         semreps = \
-            batch_interpret(sents, gramfile, trace=options.syntrace)
+            interpret_sents(sents, gramfile, trace=options.syntrace)
 
     for i, sent in enumerate(sents):
         n = 1
@@ -313,5 +245,5 @@ def demo():
                 n += 1
 
 if __name__ == "__main__":
-    #demo()
+    demo()
     demo_legacy_grammar()

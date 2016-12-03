@@ -1,33 +1,36 @@
 # Natural Language Toolkit: Tokenizer Interface
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Tokenizer Interface
 """
 
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
+
 from nltk.internals import overridden
 from nltk.tokenize.util import string_span_tokenize
 
+@add_metaclass(ABCMeta)
 class TokenizerI(object):
     """
     A processing interface for tokenizing a string.
-    Subclasses must define ``tokenize()`` or ``batch_tokenize()`` (or both).
+    Subclasses must define ``tokenize()`` or ``tokenize_sents()`` (or both).
     """
+    @abstractmethod
     def tokenize(self, s):
         """
         Return a tokenized copy of *s*.
 
         :rtype: list of str
         """
-        if overridden(self.batch_tokenize):
-            return self.batch_tokenize([s])[0]
-        else:
-            raise NotImplementedError()
+        if overridden(self.tokenize_sents):
+            return self.tokenize_sents([s])[0]
 
     def span_tokenize(self, s):
         """
@@ -38,7 +41,7 @@ class TokenizerI(object):
         """
         raise NotImplementedError()
 
-    def batch_tokenize(self, strings):
+    def tokenize_sents(self, strings):
         """
         Apply ``self.tokenize()`` to each element of ``strings``.  I.e.:
 
@@ -48,7 +51,7 @@ class TokenizerI(object):
         """
         return [self.tokenize(s) for s in strings]
 
-    def batch_span_tokenize(self, strings):
+    def span_tokenize_sents(self, strings):
         """
         Apply ``self.span_tokenize()`` to each element of ``strings``.  I.e.:
 
@@ -73,6 +76,3 @@ class StringTokenizer(TokenizerI):
             yield span
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

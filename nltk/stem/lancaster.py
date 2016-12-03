@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Tomcavage <stomcava@law.upenn.edu>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -12,7 +12,7 @@ Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 from __future__ import unicode_literals
 import re
 
-from .api import StemmerI
+from nltk.stem.api import StemmerI
 from nltk.compat import python_2_unicode_compatible
 
 @python_2_unicode_compatible
@@ -181,7 +181,7 @@ class LancasterStemmer(StemmerI):
 
         for rule in rule_tuple:
             if not valid_rule.match(rule):
-                raise ValueError("The rule %s is invalid" % rule)
+                raise ValueError("The rule {0} is invalid".format(rule))
             first_letter = rule[0:1]
             if first_letter in self.rule_dictionary:
                 self.rule_dictionary[first_letter].append(rule)
@@ -308,6 +308,3 @@ class LancasterStemmer(StemmerI):
         return '<LancasterStemmer>'
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

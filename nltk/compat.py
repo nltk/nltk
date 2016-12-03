@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
+# Natural Language Toolkit: Compatibility
+#
+# Copyright (C) 2001-2016 NLTK Project
+#
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
+
 from __future__ import absolute_import, print_function
+import os
 import sys
 import types
+from functools import wraps
+import fractions
 
 # Python 2/3 compatibility layer. Based on six.
 
@@ -10,6 +20,7 @@ PY3 = sys.version_info[0] == 3
 if PY3:
     def b(s):
         return s.encode("latin-1")
+
     def u(s):
         return s
 
@@ -20,12 +31,12 @@ if PY3:
     binary_type = bytes
 
     MAXSIZE = sys.maxsize
-    im_class = lambda meth: meth.__self__.__class__
+    get_im_class = lambda meth: meth.__self__.__class__
     xrange = range
     _iterkeys = "keys"
     _itervalues = "values"
     _iteritems = "items"
-    from imp import reload
+    from importlib import reload
     raw_input = input
 
     imap = map
@@ -37,14 +48,27 @@ if PY3:
 
     import html.entities as htmlentitydefs
     from urllib.request import (urlopen, ProxyHandler, build_opener,
-        install_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
-        ProxyBasicAuthHandler, ProxyDigestAuthHandler, Request)
+                                install_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
+                                ProxyBasicAuthHandler, ProxyDigestAuthHandler, Request,
+                                url2pathname)
     from urllib.error import HTTPError, URLError
     from urllib.parse import quote_plus, unquote_plus, urlencode
+
+    from collections import Counter
+
+    from datetime import timezone
+    UTC = timezone.utc
+
+    from tempfile import TemporaryDirectory
+
+    unichr = chr
+    import operator
+    int2byte = operator.methodcaller("to_bytes", 1, "big")
 
 else:
     def b(s):
         return s
+
     def u(s):
         return unicode(s, "unicode_escape")
 
@@ -53,7 +77,7 @@ else:
     class_types = (type, types.ClassType)
     text_type = unicode
     binary_type = str
-    im_class = lambda meth: meth.im_class
+    get_im_class = lambda meth: meth.im_class
     xrange = xrange
     _iterkeys = "iterkeys"
     _itervalues = "itervalues"
@@ -71,16 +95,17 @@ else:
 
     import htmlentitydefs
     from urllib2 import (urlopen, HTTPError, URLError,
-        ProxyHandler, build_opener, install_opener,
-        HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler,
-        ProxyDigestAuthHandler, Request)
-    from urllib import getproxies, quote_plus, unquote_plus, urlencode
+                         ProxyHandler, build_opener, install_opener,
+                         HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler,
+                         ProxyDigestAuthHandler, Request)
+    from urllib import getproxies, quote_plus, unquote_plus, urlencode, url2pathname
 
     # Maps py2 tkinter package structure to py3 using import hook (PEP 302)
     class TkinterPackage(object):
         def __init__(self):
             self.mod = __import__("Tkinter")
             self.__path__ = ["nltk_py2_tkinter_package_path"]
+
         def __getattr__(self, name):
             return getattr(self.mod, name)
 
@@ -93,11 +118,13 @@ else:
                 "tkinter.font": "tkFont",
                 "tkinter.messagebox": "tkMessageBox",
             }
+
         def find_module(self, name, path=None):
             # we are only interested in tkinter modules listed
             # in self.module_map
             if name in self.module_map:
                 return self
+
         def load_module(self, name):
             if name not in sys.modules:
                 if name == 'tkinter':
@@ -106,17 +133,168 @@ else:
                     mod = __import__(self.module_map[name])
                 sys.modules[name] = mod
             return sys.modules[name]
-    
-    sys.meta_path = [TkinterLoader()]
+
+    sys.meta_path.insert(0, TkinterLoader())
+
+    from datetime import tzinfo, timedelta
+
+    ZERO = timedelta(0)
+    HOUR = timedelta(hours=1)
+
+    # A UTC class for python 2.7
+    class UTC(tzinfo):
+        """UTC"""
+
+        def utcoffset(self, dt):
+            return ZERO
+
+        def tzname(self, dt):
+            return "UTC"
+
+        def dst(self, dt):
+            return ZERO
+
+    UTC = UTC()
+
+    unichr = unichr
+    int2byte = chr
+
+    import csv
+    import codecs
+    import cStringIO
+
+    class UnicodeWriter:
+        """
+        A CSV writer which will write rows to CSV file "f",
+        which is encoded in the given encoding.
+        see https://docs.python.org/2/library/csv.html
+        """
+
+        def __init__(self, f, dialect=csv.excel, encoding="utf-8", errors='replace', **kwds):
+            # Redirect output to a queue
+            self.queue = cStringIO.StringIO()
+            self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+            self.stream = f
+            encoder_cls = codecs.getincrementalencoder(encoding)
+            self.encoder = encoder_cls(errors=errors)
+
+        def encode(self, data):
+            if isinstance(data, basestring):
+                return data.encode("utf-8")
+            else:
+                return data
+
+        def writerow(self, row):
+            self.writer.writerow([self.encode(s) for s in row])
+            # Fetch UTF-8 output from the queue ...
+            data = self.queue.getvalue()
+            data = data.decode("utf-8")
+            # ... and reencode it into the target encoding
+            data = self.encoder.encode(data, 'replace')
+            # write to the target stream
+            self.stream.write(data)
+            # empty queue
+            self.queue.truncate(0)
+
+    import warnings as _warnings
+    import os as _os
+    from tempfile import mkdtemp
+
+    class TemporaryDirectory(object):
+        """Create and return a temporary directory.  This has the same
+        behavior as mkdtemp but can be used as a context manager.  For
+        example:
+
+            with TemporaryDirectory() as tmpdir:
+                ...
+
+        Upon exiting the context, the directory and everything contained
+        in it are removed.
+
+        http://stackoverflow.com/questions/19296146/tempfile-temporarydirectory-context-manager-in-python-2-7
+        """
+
+        def __init__(self, suffix="", prefix="tmp", dir=None):
+            self._closed = False
+            self.name = None  # Handle mkdtemp raising an exception
+            self.name = mkdtemp(suffix, prefix, dir)
+
+        def __repr__(self):
+            return "<{} {!r}>".format(self.__class__.__name__, self.name)
+
+        def __enter__(self):
+            return self.name
+
+        def cleanup(self, _warn=False):
+            if self.name and not self._closed:
+                try:
+                    self._rmtree(self.name)
+                except (TypeError, AttributeError) as ex:
+                    # Issue #10188: Emit a warning on stderr
+                    # if the directory could not be cleaned
+                    # up due to missing globals
+                    if "None" not in str(ex):
+                        raise
+                    print("ERROR: {!r} while cleaning up {!r}".format(ex, self,),
+                          file=sys.stderr)
+                    return
+                self._closed = True
+                if _warn:
+                    self._warn("Implicitly cleaning up {!r}".format(self),
+                               Warning)
+
+        def __exit__(self, exc, value, tb):
+            self.cleanup()
+
+        def __del__(self):
+            # Issue a Warning if implicit cleanup needed
+            self.cleanup(_warn=True)
+
+        # XXX (ncoghlan): The following code attempts to make
+        # this class tolerant of the module nulling out process
+        # that happens during CPython interpreter shutdown
+        # Alas, it doesn't actually manage it. See issue #10188
+        _listdir = staticmethod(_os.listdir)
+        _path_join = staticmethod(_os.path.join)
+        _isdir = staticmethod(_os.path.isdir)
+        _islink = staticmethod(_os.path.islink)
+        _remove = staticmethod(_os.remove)
+        _rmdir = staticmethod(_os.rmdir)
+        _warn = _warnings.warn
+
+        def _rmtree(self, path):
+            # Essentially a stripped down version of shutil.rmtree.  We can't
+            # use globals because they may be None'ed out at shutdown.
+            for name in self._listdir(path):
+                fullname = self._path_join(path, name)
+                try:
+                    isdir = self._isdir(fullname) and not self._islink(fullname)
+                except OSError:
+                    isdir = False
+                if isdir:
+                    self._rmtree(fullname)
+                else:
+                    try:
+                        self._remove(fullname)
+                    except OSError:
+                        pass
+            try:
+                self._rmdir(path)
+            except OSError:
+                pass
+
+    from collections import Counter
 
 
 def iterkeys(d):
     """Return an iterator over the keys of a dictionary."""
     return getattr(d, _iterkeys)()
 
+
 def itervalues(d):
     """Return an iterator over the values of a dictionary."""
     return getattr(d, _itervalues)()
+
 
 def iteritems(d):
     """Return an iterator over the (key, value) pairs of a dictionary."""
@@ -124,7 +302,7 @@ def iteritems(d):
 
 try:
     from functools import total_ordering
-except ImportError: # python 2.6
+except ImportError:  # python 2.6
     def total_ordering(cls):
         """Class decorator that fills in missing ordering methods"""
         convert = {
@@ -143,7 +321,8 @@ except ImportError: # python 2.6
         }
         roots = set(dir(cls)) & set(convert)
         if not roots:
-            raise ValueError('must define at least one ordering operation: < > <= >=')
+            raise ValueError(
+                'must define at least one ordering operation: < > <= >=')
         root = max(roots)       # prefer __lt__ to __le__ to __gt__ to __ge__
         for opname, opfunc in convert[root]:
             if opname not in roots:
@@ -153,10 +332,45 @@ except ImportError: # python 2.6
         return cls
 
 
+# ======= Compatibility for datasets that care about Python versions ========
+
+# The following datasets have a /PY3 subdirectory containing
+# a full copy of the data which has been re-encoded or repickled.
+
+import os.path
+
+DATA_UPDATES = [("chunkers", "maxent_ne_chunker"),
+                ("help", "tagsets"),
+                ("taggers", "maxent_treebank_pos_tagger"),
+                ("tokenizers", "punkt")]
+
+_PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
+
+def add_py3_data(path):
+    if PY3:
+        for item in _PY3_DATA_UPDATES:
+            if item in str(path) and "/PY3" not in str(path):
+                pos = path.index(item) + len(item)
+                if path[pos:pos + 4] == ".zip":
+                    pos += 4
+                path = path[:pos] + "/PY3" + path[pos:]
+                break
+    return path
+
+
+# for use in adding /PY3 to the second (filename) argument
+# of the file pointers in data.py
+def py3_data(init_func):
+    def _decorator(*args, **kwargs):
+        args = (args[0], add_py3_data(args[1])) + args[2:]
+        return init_func(*args, **kwargs)
+    return wraps(init_func)(_decorator)
+
 # ======= Compatibility layer for __str__ and __repr__ ==========
 
 import unicodedata
 import functools
+
 
 def remove_accents(text):
 
@@ -212,7 +426,6 @@ def python_2_unicode_compatible(klass):
         klass.__unicode__ = klass.__str__
         if not PY3:
             klass.__str__ = _7bit(_transliterated(klass.__unicode__))
-
 
     if not _was_fixed(klass.__repr__):
         klass.unicode_repr = klass.__repr__
@@ -271,3 +484,28 @@ def _7bit(method):
 def _was_fixed(method):
     return (getattr(method, "_nltk_compat_7bit", False) or
             getattr(method, "_nltk_compat_transliterated", False))
+
+
+class Fraction(fractions.Fraction):
+    """
+    This is a simplified backwards compatible version of fractions.Fraction from
+    Python >=3.5. It adds the `_normalize` parameter such that it does
+    not normalize the denominator to the Greatest Common Divisor (gcd) when
+    the numerator is 0.
+    
+    This is most probably only used by the nltk.translate.bleu_score.py where
+    numerator and denominator of the different ngram precisions are mutable.
+    But the idea of "mutable" fraction might not be applicable to other usages, 
+    See http://stackoverflow.com/questions/34561265
+    
+    This objects should be deprecated once NLTK stops supporting Python < 3.5
+    See https://github.com/nltk/nltk/issues/1330
+    """
+    def __new__(cls, numerator=0, denominator=None, _normalize=True):
+        cls = super(Fraction, cls).__new__(cls, numerator, denominator)
+        # To emulate fraction.Fraction.from_float across Python >=2.7,
+        # check that numerator is an integer and denominator is not None.
+        if not _normalize and type(numerator) == int and denominator:
+            cls._numerator = numerator
+            cls._denominator = denominator
+        return cls

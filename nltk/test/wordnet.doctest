@@ -1,12 +1,12 @@
-.. Copyright (C) 2001-2013 NLTK Project
+.. Copyright (C) 2001-2016 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =================
 WordNet Interface
 =================
 
-WordNet is accessed just another NLTK corpus reader, and can be imported like this:
-
+WordNet is just another NLTK corpus reader, and can be imported like this:
+    >>> from __future__ import print_function, unicode_literals
     >>> from nltk.corpus import wordnet
 
 For more compact code, we recommend:
@@ -31,19 +31,53 @@ A synset is identified with a 3-part name of the form: word.pos.nn:
 
     >>> wn.synset('dog.n.01')
     Synset('dog.n.01')
-    >>> print(wn.synset('dog.n.01').definition)
+    >>> print(wn.synset('dog.n.01').definition())
     a member of the genus Canis (probably descended from the common wolf) that has been domesticated by man since prehistoric times; occurs in many breeds
-    >>> len(wn.synset('dog.n.01').examples)
+    >>> len(wn.synset('dog.n.01').examples())
     1
-    >>> print(wn.synset('dog.n.01').examples[0])
+    >>> print(wn.synset('dog.n.01').examples()[0])
     the dog barked all night
-    >>> wn.synset('dog.n.01').lemmas
+    >>> wn.synset('dog.n.01').lemmas()
     [Lemma('dog.n.01.dog'), Lemma('dog.n.01.domestic_dog'), Lemma('dog.n.01.Canis_familiaris')]
-    >>> [str(lemma.name) for lemma in wn.synset('dog.n.01').lemmas]
+    >>> [str(lemma.name()) for lemma in wn.synset('dog.n.01').lemmas()]
     ['dog', 'domestic_dog', 'Canis_familiaris']
-    >>> wn.lemma('dog.n.01.dog').synset
+    >>> wn.lemma('dog.n.01.dog').synset()
     Synset('dog.n.01')
 
+The WordNet corpus reader gives access to the Open Multilingual
+WordNet, using ISO-639 language codes.
+
+    >>> sorted(wn.langs()) # doctest: +NORMALIZE_WHITESPACE
+    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus', 'fas', 'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 
+    'ita', 'jpn', 'nno', 'nob', 'pol', 'por', 'qcn', 'slv', 'spa', 'swe', 'tha', 'zsm']
+    >>> wn.synsets(b'\xe7\x8a\xac'.decode('utf-8'), lang='jpn')
+    [Synset('dog.n.01'), Synset('spy.n.01')]
+    
+    wn.synset('spy.n.01').lemma_names('jpn') # doctest: +NORMALIZE_WHITESPACE
+    ['\u3044\u306c', '\u307e\u308f\u3057\u8005', '\u30b9\u30d1\u30a4', '\u56de\u3057\u8005',
+    '\u56de\u8005', '\u5bc6\u5075', '\u5de5\u4f5c\u54e1', '\u5efb\u3057\u8005',
+    '\u5efb\u8005', '\u63a2', '\u63a2\u308a', '\u72ac', '\u79d8\u5bc6\u635c\u67fb\u54e1',
+    '\u8adc\u5831\u54e1', '\u8adc\u8005', '\u9593\u8005', '\u9593\u8adc', '\u96a0\u5bc6']
+    
+    >>> wn.synset('dog.n.01').lemma_names('ita')
+    ['cane', 'Canis_familiaris']
+    >>> wn.lemmas('cane', lang='ita') # doctest: +NORMALIZE_WHITESPACE
+    [Lemma('dog.n.01.cane'), Lemma('cramp.n.02.cane'), Lemma('hammer.n.01.cane'), Lemma('bad_person.n.01.cane'), 
+    Lemma('incompetent.n.01.cane')]
+    >>> sorted(wn.synset('dog.n.01').lemmas('dan')) # doctest: +NORMALIZE_WHITESPACE
+    [Lemma('dog.n.01.hund'), Lemma('dog.n.01.k\xf8ter'),
+    Lemma('dog.n.01.vovhund'), Lemma('dog.n.01.vovse')]
+    
+    sorted(wn.synset('dog.n.01').lemmas('por'))
+	[Lemma('dog.n.01.cachorra'), Lemma('dog.n.01.cachorro'), Lemma('dog.n.01.cadela'), Lemma('dog.n.01.c\xe3o')]
+    
+    >>> dog_lemma = wn.lemma(b'dog.n.01.c\xc3\xa3o'.decode('utf-8'), lang='por')
+    >>> dog_lemma
+    Lemma('dog.n.01.c\xe3o')
+    >>> dog_lemma.lang()
+    'por'
+    >>> len(wordnet.all_lemma_names(pos='n', lang='jpn'))
+    64797
 
 -------
 Synsets
@@ -53,13 +87,15 @@ Synsets
 
     >>> dog = wn.synset('dog.n.01')
     >>> dog.hypernyms()
-    [Synset('domestic_animal.n.01'), Synset('canine.n.02')]
-    >>> dog.hyponyms() # doctest: +ELLIPSIS
-    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), ...]
+    [Synset('canine.n.02'), Synset('domestic_animal.n.01')]
+    >>> dog.hyponyms()  # doctest: +ELLIPSIS
+    [Synset('basenji.n.01'), Synset('corgi.n.01'), Synset('cur.n.01'), Synset('dalmatian.n.02'), ...]
     >>> dog.member_holonyms()
-    [Synset('pack.n.06'), Synset('canis.n.01')]
+    [Synset('canis.n.01'), Synset('pack.n.06')]
     >>> dog.root_hypernyms()
     [Synset('entity.n.01')]
+    >>> wn.synset('dog.n.01').lowest_common_hypernyms(wn.synset('cat.n.01'))
+    [Synset('carnivore.n.01')]
 
 Each synset contains one or more lemmas, which represent a specific
 sense of a specific word.
@@ -71,7 +107,7 @@ Note that some relations are defined by WordNet only over Lemmas:
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
     AttributeError: 'Synset' object has no attribute 'antonyms'
-    >>> good.lemmas[0].antonyms()
+    >>> good.lemmas()[0].antonyms()
     [Lemma('bad.a.01.bad')]
 
 The relations that are currently defined in this way are `antonyms`,
@@ -85,17 +121,17 @@ Lemmas
     >>> eat = wn.lemma('eat.v.03.eat')
     >>> eat
     Lemma('feed.v.06.eat')
-    >>> print(eat.key)
+    >>> print(eat.key())
     eat%2:34:02::
     >>> eat.count()
     4
-    >>> wn.lemma_from_key(eat.key)
+    >>> wn.lemma_from_key(eat.key())
     Lemma('feed.v.06.eat')
-    >>> wn.lemma_from_key(eat.key).synset
+    >>> wn.lemma_from_key(eat.key()).synset()
     Synset('feed.v.06')
     >>> wn.lemma_from_key('feebleminded%5:00:00:retarded:00')
     Lemma('backward.s.03.feebleminded')
-    >>> for lemma in wn.synset('eat.v.03').lemmas:
+    >>> for lemma in wn.synset('eat.v.03').lemmas():
     ...     print(lemma, lemma.count())
     ...
     Lemma('feed.v.06.feed') 3
@@ -126,11 +162,11 @@ The three relations above exist only on lemmas, not on synsets.
 Verb Frames
 -----------
 
-    >>> wn.synset('think.v.01').frame_ids
+    >>> wn.synset('think.v.01').frame_ids()
     [5, 9]
-    >>> for lemma in wn.synset('think.v.01').lemmas:
-    ...     print(lemma, lemma.frame_ids)
-    ...     print(" | ".join(lemma.frame_strings))
+    >>> for lemma in wn.synset('think.v.01').lemmas():
+    ...     print(lemma, lemma.frame_ids())
+    ...     print(" | ".join(lemma.frame_strings()))
     ...
     Lemma('think.v.01.think') [5, 9]
     Something think something Adjective/Noun | Somebody think somebody
@@ -140,11 +176,11 @@ Verb Frames
     Something consider something Adjective/Noun | Somebody consider somebody
     Lemma('think.v.01.conceive') [5, 9]
     Something conceive something Adjective/Noun | Somebody conceive somebody
-    >>> wn.synset('stretch.v.02').frame_ids
+    >>> wn.synset('stretch.v.02').frame_ids()
     [8]
-    >>> for lemma in wn.synset('stretch.v.02').lemmas:
-    ...     print(lemma, lemma.frame_ids)
-    ...     print(" | ".join(lemma.frame_strings))
+    >>> for lemma in wn.synset('stretch.v.02').lemmas():
+    ...     print(lemma, lemma.frame_ids())
+    ...     print(" | ".join(lemma.frame_strings()))
     ...
     Lemma('stretch.v.02.stretch') [8, 2]
     Somebody stretch something | Somebody stretch
@@ -379,13 +415,17 @@ Compute transitive closures of synsets
     True
     >>> list(dog.closure(hyper, depth=1)) == dog.hypernyms()
     True
-    >>> list(dog.closure(hypo)) # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
-    [Synset('puppy.n.01'), Synset('great_pyrenees.n.01'), Synset('basenji.n.01'), Synset('newfoundland.n.01'), Synset('lapdog.n.01'),
-    Synset('poodle.n.01'), Synset('leonberg.n.01'), Synset('toy_dog.n.01'), Synset('spitz.n.01'), ...]
+    >>> list(dog.closure(hypo)) # doctest: +NORMALIZE_WHITESPACE, +ELLIPSIS
+    [Synset('basenji.n.01'), Synset('corgi.n.01'), Synset('cur.n.01'),
+     Synset('dalmatian.n.02'), Synset('great_pyrenees.n.01'),
+     Synset('griffon.n.02'), Synset('hunting_dog.n.01'), Synset('lapdog.n.01'),
+     Synset('leonberg.n.01'), Synset('mexican_hairless.n.01'),
+     Synset('newfoundland.n.01'), Synset('pooch.n.01'), Synset('poodle.n.01'), ...]
     >>> list(dog.closure(hyper)) # doctest: +NORMALIZE_WHITESPACE
-    [Synset('domestic_animal.n.01'), Synset('canine.n.02'), Synset('animal.n.01'), Synset('carnivore.n.01'), Synset('organism.n.01'),
-    Synset('placental.n.01'), Synset('living_thing.n.01'), Synset('mammal.n.01'), Synset('whole.n.02'), Synset('vertebrate.n.01'),
-    Synset('object.n.01'), Synset('chordate.n.01'), Synset('physical_entity.n.01'), Synset('entity.n.01')]
+    [Synset('canine.n.02'), Synset('domestic_animal.n.01'), Synset('carnivore.n.01'), Synset('animal.n.01'), 
+    Synset('placental.n.01'), Synset('organism.n.01'), Synset('mammal.n.01'), Synset('living_thing.n.01'),
+    Synset('vertebrate.n.01'), Synset('whole.n.02'), Synset('chordate.n.01'), Synset('object.n.01'),
+    Synset('physical_entity.n.01'), Synset('entity.n.01')]
 
 
 ----------------
@@ -432,7 +472,7 @@ Bug 221: Verb root IC is zero
 
 Bug 161: Comparison between WN keys/lemmas should not be case sensitive
 
-    >>> k = wn.synsets("jefferson")[0].lemmas[0].key
+    >>> k = wn.synsets("jefferson")[0].lemmas()[0].key()
     >>> wn.lemma_from_key(k)
     Lemma('jefferson.n.01.Jefferson')
     >>> wn.lemma_from_key(k.upper())
@@ -443,7 +483,7 @@ Bug 99: WordNet root_hypernyms gives incorrect results
     >>> from nltk.corpus import wordnet as wn
     >>> for s in wn.all_synsets(wn.NOUN):
     ...     if s.root_hypernyms()[0] != wn.synset('entity.n.01'):
-    ...             print(s, s.root_hypernyms())
+    ...         print(s, s.root_hypernyms())
     ...
     >>>
 
@@ -535,3 +575,7 @@ Issue 629: wordnet failures when python run with -O optimizations
     >>> wn.synsets("brunch")
     [Synset('brunch.n.01'), Synset('brunch.v.01')]
 
+Issue 395: wordnet returns incorrect result for lowest_common_hypernyms of chef and policeman
+
+    >>> wn.synset('policeman.n.01').lowest_common_hypernyms(wn.synset('chef.n.01'))
+    [Synset('person.n.01')]

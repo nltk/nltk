@@ -1,8 +1,8 @@
 # Natural Language Toolkit: XML Corpus Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -158,8 +158,8 @@ class XMLCorpusView(StreamBackedCorpusView):
         if isinstance(fileid, PathPointer):
             s = fileid.open().readline()
         else:
-            with open(fileid, 'rb') as fp:
-                s = fp.readline()
+            with open(fileid, 'rb') as infile:
+                s = infile.readline()
         if s.startswith(codecs.BOM_UTF16_BE):
             return 'utf-16-be'
         if s.startswith(codecs.BOM_UTF16_LE):
@@ -171,9 +171,11 @@ class XMLCorpusView(StreamBackedCorpusView):
         if s.startswith(codecs.BOM_UTF8):
             return 'utf-8'
         m = re.match(br'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
-        if m: return m.group(1)
+        if m:
+            return m.group(1).decode()
         m = re.match(br"\s*<\?xml\b.*\bencoding='([^']+)'", s)
-        if m: return m.group(1)
+        if m:
+            return m.group(1).decode()
         # No encoding found -- what should the default be?
         return 'utf-8'
 
@@ -207,7 +209,7 @@ class XMLCorpusView(StreamBackedCorpusView):
           ((<!--.*?-->)                         |  # comment
            (<![CDATA[.*?]])                     |  # raw character data
            (<!DOCTYPE\s+[^\[]*(\[[^\]]*])?\s*>) |  # doctype decl
-           (<[^>]*>))                              # tag or PI
+           (<[^!>][^>]*>))                         # tag or PI
           [^<]*)*
         \Z""",
         re.DOTALL|re.VERBOSE)
@@ -243,9 +245,9 @@ class XMLCorpusView(StreamBackedCorpusView):
         """
         fragment = ''
 
+        if isinstance(stream, SeekableUnicodeStreamReader):
+            startpos = stream.tell()
         while True:
-            if isinstance(stream, SeekableUnicodeStreamReader):
-                startpos = stream.tell()
             # Read a block and add it to the fragment.
             xml_block = stream.read(self._BLOCK_SIZE)
             fragment += xml_block

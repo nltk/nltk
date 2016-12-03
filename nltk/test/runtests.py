@@ -4,20 +4,16 @@ from __future__ import absolute_import, print_function
 import sys
 import os
 import nose
+from nose.plugins.manager import PluginManager
+from nose.plugins.doctests import Doctest
+from nose.plugins import builtin
 
 NLTK_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.insert(0, NLTK_ROOT)
 
 NLTK_TEST_DIR = os.path.join(NLTK_ROOT, 'nltk')
 
-
 if __name__ == '__main__':
-    # XXX: imports can't be moved to the top of the file
-    # because nose loader raises an exception then. Why?
-    from nose.plugins.manager import PluginManager
-    from nose.plugins.doctests import Doctest
-    from nose.plugins import builtin
-
     # there shouldn't be import from NLTK for coverage to work properly
     from doctest_nose_plugin import DoctestFix
 
@@ -61,7 +57,7 @@ if __name__ == '__main__':
         #'--debug=nose,nose.importer,nose.inspector,nose.plugins,nose.result,nose.selector',
         '--doctest-extension=.doctest',
         '--doctest-fixtures=_fixt',
-        '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL,+ALLOW_UNICODE',
+        '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL,+ALLOW_UNICODE,doctestencoding=utf-8',
         #'--verbosity=3',
     ] + args
 

@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Parsers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -63,14 +63,18 @@ from nltk.parse.earleychart import (IncrementalChartParser, EarleyChartParser,
 from nltk.parse.pchart import (BottomUpProbabilisticChartParser, InsideChartParser,
                                RandomChartParser, UnsortedChartParser,
                                LongestChartParser)
-from nltk.parse.rd import RecursiveDescentParser, SteppingRecursiveDescentParser
-from nltk.parse.sr import ShiftReduceParser, SteppingShiftReduceParser
+from nltk.parse.recursivedescent import (RecursiveDescentParser,
+                                         SteppingRecursiveDescentParser)
+from nltk.parse.shiftreduce import (ShiftReduceParser, SteppingShiftReduceParser)
 from nltk.parse.util import load_parser, TestGrammar, extract_test_sentences
 from nltk.parse.viterbi import ViterbiParser
-from nltk.parse.dependencygraph import DependencyGraph, nx_graph
+from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.projectivedependencyparser import (ProjectiveDependencyParser,
                                                    ProbabilisticProjectiveDependencyParser)
 from nltk.parse.nonprojectivedependencyparser import (NonprojectiveDependencyParser,
                                                       NaiveBayesDependencyScorer,
                                                       ProbabilisticNonprojectiveParser)
-from .malt import MaltParser
+from nltk.parse.malt import MaltParser
+from nltk.parse.evaluate import DependencyEvaluator
+from nltk.parse.transitionparser import TransitionParser
+from nltk.parse.bllip import BllipParser

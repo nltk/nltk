@@ -1,0 +1,14 @@
+==========
+BLEU tests
+==========
+
+>>> from nltk.translate import bleu
+
+If the candidate has no alignment to any of the references, the BLEU score is 0.
+
+>>> bleu(
+...     ['The candidate has no alignment to any of the references'.split()],
+...     'John loves Mary'.split(),
+...     [1],
+... )
+0

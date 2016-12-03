@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Chart Parser Application
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -37,7 +37,7 @@ edge you wish to apply a rule to.
 # widget system.
 
 
-
+from __future__ import division
 import nltk.compat
 import pickle
 from tkinter.filedialog import asksaveasfilename, askopenfilename
@@ -51,7 +51,7 @@ from nltk.parse.chart import (BottomUpPredictCombineRule, BottomUpPredictRule,
                               SteppingChartParser, TopDownInitRule, TopDownPredictRule,
                               TreeEdge)
 from nltk.tree import Tree
-from nltk.grammar import Nonterminal, parse_cfg
+from nltk.grammar import Nonterminal, CFG
 from nltk.util import in_idle
 from nltk.draw.util import (CanvasFrame, ColorizedList,
                             EntryDialog, MutableOptionMenu,
@@ -394,7 +394,7 @@ class ChartResultsView(object):
                                              width=2, outline='#088')
 
     def _color(self, treewidget, color):
-        treewidget.node()['color'] = color
+        treewidget.label()['color'] = color
         for child in treewidget.subtrees():
             if isinstance(child, TreeSegmentWidget):
                 self._color(child, color)
@@ -695,7 +695,9 @@ class ChartComparer(object):
         filename = asksaveasfilename(filetypes=self.CHART_FILE_TYPES,
                                      defaultextension='.pickle')
         if not filename: return
-        try: pickle.dump((self._out_chart), open(filename, 'w'))
+        try:
+            with open(filename, 'wb') as outfile:
+                pickle.dump(self._out_chart, outfile)
         except Exception as e:
             tkinter.messagebox.showerror('Error Saving Chart',
                                    'Unable to open file: %r\n%s' %
@@ -712,7 +714,8 @@ class ChartComparer(object):
                                    (filename, e))
 
     def load_chart(self, filename):
-        chart = pickle.load(open(filename, 'r'))
+        with open(filename, 'rb') as infile:
+            chart = pickle.load(infile)
         name = os.path.basename(filename)
         if name.endswith('.pickle'): name = name[:-7]
         if name.endswith('.chart'): name = name[:-6]
@@ -1088,7 +1091,7 @@ class ChartView(object):
 
     def _edge_conflict(self, edge, lvl):
         """
-        Return 1 if the given edge overlaps with any edge on the given
+        Return True if the given edge overlaps with any edge on the given
         level.  This is used by _add_edge to figure out what level a
         new edge should be added to.
         """
@@ -1096,8 +1099,8 @@ class ChartView(object):
         for otheredge in self._edgelevels[lvl]:
             (s2, e2) = otheredge.span()
             if (s1 <= s2 < e1) or (s2 <= s1 < e2) or (s1==s2==e1==e2):
-                return 1
-        return 0
+                return True
+        return False
 
     def _analyze_edge(self, edge):
         """
@@ -1187,7 +1190,7 @@ class ChartView(object):
         self._chart_canvas.yview('moveto', 1.0)
         if self._chart_height != 0:
             self._chart_canvas.yview('moveto',
-                                     float(y-dy)/self._chart_height)
+                                     (y-dy)/self._chart_height)
 
     def _draw_edge(self, edge, lvl):
         """
@@ -1518,7 +1521,7 @@ class ChartView(object):
         # Draw the node
         nodey = depth * (ChartView._TREE_LEVEL_SIZE + self._text_height)
         tag = c.create_text(nodex, nodey, anchor='n', justify='center',
-                            text=str(treetok.node), fill='#042',
+                            text=str(treetok.label()), fill='#042',
                             font=self._boldfont)
         self._tree_tags.append(tag)
 
@@ -1598,10 +1601,10 @@ class EdgeRule(object):
         super = self.__class__.__bases__[1]
         self._edge = edge
         self.NUM_EDGES = super.NUM_EDGES-1
-    def apply_iter(self, chart, grammar, *edges):
+    def apply(self, chart, grammar, *edges):
         super = self.__class__.__bases__[1]
         edges += (self._edge,)
-        for e in super.apply_iter(self, chart, grammar, *edges): yield e
+        for e in super.apply(self, chart, grammar, *edges): yield e
     def __str__(self):
         super = self.__class__.__bases__[1]
         return super.__str__(self)
@@ -1687,7 +1690,8 @@ class ChartParserApp(object):
         self._chart = self._cp.chart()
 
         # Insert LeafEdges before the parsing starts.
-        LeafInitRule().apply(self._chart, self._grammar)
+        for _new_edge in LeafInitRule().apply(self._chart, self._grammar):
+            pass
 
         # The step iterator -- use this to generate new edges
         self._cpstep = self._cp.step()
@@ -1997,7 +2001,8 @@ class ChartParserApp(object):
                                    defaultextension='.pickle')
         if not filename: return
         try:
-            chart = pickle.load(open(filename, 'r'))
+            with open(filename, 'rb') as infile:
+                chart = pickle.load(infile)
             self._chart = chart
             self._cv.update(chart)
             if self._matrix: self._matrix.set_chart(chart)
@@ -2015,7 +2020,8 @@ class ChartParserApp(object):
                                      defaultextension='.pickle')
         if not filename: return
         try:
-            pickle.dump(self._chart, open(filename, 'w'))
+            with open(filename, 'wb') as outfile:
+                pickle.dump(self._chart, outfile)
         except Exception as e:
             raise
             tkinter.messagebox.showerror('Error Saving Chart',
@@ -2028,9 +2034,11 @@ class ChartParserApp(object):
         if not filename: return
         try:
             if filename.endswith('.pickle'):
-                grammar = pickle.load(open(filename, 'r'))
+                with open(filename, 'rb') as infile:
+                    grammar = pickle.load(infile)
             else:
-                grammar = parse_cfg(open(filename, 'r').read())
+                with open(filename, 'r') as infile:
+                    grammar = CFG.fromstring(infile.read())
             self.set_grammar(grammar)
         except Exception as e:
             tkinter.messagebox.showerror('Error Loading Grammar',
@@ -2042,15 +2050,15 @@ class ChartParserApp(object):
         if not filename: return
         try:
             if filename.endswith('.pickle'):
-                pickle.dump((self._chart, self._tokens), open(filename, 'w'))
+                with open(filename, 'wb') as outfile:
+                    pickle.dump((self._chart, self._tokens), outfile)
             else:
-                file = open(filename, 'w')
-                prods = self._grammar.productions()
-                start = [p for p in prods if p.lhs() == self._grammar.start()]
-                rest = [p for p in prods if p.lhs() != self._grammar.start()]
-                for prod in start: file.write('%s\n' % prod)
-                for prod in rest: file.write('%s\n' % prod)
-                file.close()
+                with open(filename, 'w') as outfile:
+                    prods = self._grammar.productions()
+                    start = [p for p in prods if p.lhs() == self._grammar.start()]
+                    rest = [p for p in prods if p.lhs() != self._grammar.start()]
+                    for prod in start: outfile.write('%s\n' % prod)
+                    for prod in rest: outfile.write('%s\n' % prod)
         except Exception as e:
             tkinter.messagebox.showerror('Error Saving Grammar',
                                    'Unable to open file: %r' % filename)
@@ -2222,7 +2230,7 @@ class ChartParserApp(object):
         self.apply_strategy(self._TD_STRATEGY, TopDownPredictEdgeRule)
 
 def app():
-    grammar = parse_cfg("""
+    grammar = CFG.fromstring("""
     # Grammatical productions.
         S -> NP VP
         VP -> VP PP | V NP | V

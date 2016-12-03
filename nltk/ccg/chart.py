@@ -1,13 +1,13 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 The lexicon is constructed by calling
-``lexicon.parseLexicon(<lexicon string>)``.
+``lexicon.fromstring(<lexicon string>)``.
 
 In order to construct a parser, you also need a rule set.
 The standard English rules are provided in chart as
@@ -17,7 +17,7 @@ The parser can then be constructed by calling, for example:
 ``parser = chart.CCGChartParser(<lexicon>, <ruleset>)``
 
 Parsing is then performed by running
-``parser.nbest_parse(<sentence>.split())``.
+``parser.parse(<sentence>.split())``.
 
 While this returns a list of trees, the default representation
 of the produced trees is not very enlightening, particularly
@@ -31,16 +31,21 @@ python chart.py
 """
 from __future__ import print_function, division, unicode_literals
 
+import itertools
+
 from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
 from nltk.tree import Tree
 
-from nltk.ccg.lexicon import parseLexicon
+from nltk.ccg.lexicon import fromstring, Token
 from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
                                  BackwardApplication, ForwardComposition,
                                  BackwardComposition, ForwardSubstitution,
                                  BackwardBx, BackwardSx)
 from nltk.compat import python_2_unicode_compatible, string_types
+from nltk.ccg.combinator import *
+from nltk.ccg.logic import *
+from nltk.sem.logic import *
 
 # Based on the EdgeI class from NLTK.
 # A number of the properties of the EdgeI interface don't
@@ -71,14 +76,14 @@ class CCGLeafEdge(EdgeI):
     '''
     Class representing leaf edges in a CCG derivation.
     '''
-    def __init__(self, pos, categ, leaf):
+    def __init__(self, pos, token, leaf):
         self._pos = pos
-        self._categ = categ
+        self._token = token
         self._leaf = leaf
-        self._comparison_key = (pos, categ, leaf)
+        self._comparison_key = (pos, token.categ(), leaf)
 
     # Accessors
-    def lhs(self): return self._categ
+    def lhs(self): return self._token.categ()
     def span(self): return (self._pos, self._pos+1)
     def start(self): return self._pos
     def end(self): return self._pos + 1
@@ -89,7 +94,8 @@ class CCGLeafEdge(EdgeI):
     def is_incomplete(self): return False
     def nextsym(self): return None
 
-    def categ(self): return self._categ
+    def token(self): return self._token
+    def categ(self): return self._token.categ()
     def leaf(self): return self._leaf
 
 @python_2_unicode_compatible
@@ -103,7 +109,7 @@ class BinaryCombinatorRule(AbstractChartRule):
         self._combinator = combinator
 
     # Apply a combinator
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         # The left & right edges must be touching.
         if not (left_edge.end() == right_edge.start()):
             return
@@ -131,7 +137,7 @@ class ForwardTypeRaiseRule(AbstractChartRule):
 
     def __init__(self):
        self._combinator = ForwardT
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
 
@@ -152,7 +158,7 @@ class BackwardTypeRaiseRule(AbstractChartRule):
 
     def __init__(self):
        self._combinator = BackwardT
-    def apply_iter(self, chart, grammar, left_edge, right_edge):
+    def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
 
@@ -193,15 +199,15 @@ class CCGChartParser(ParserI):
         return self._lexicon
 
    # Implements the CYK algorithm
-    def nbest_parse(self, tokens, n=None):
+    def parse(self, tokens):
         tokens = list(tokens)
         chart = CCGChart(list(tokens))
         lex = self._lexicon
 
         # Initialize leaf edges.
         for index in range(chart.num_leaves()):
-            for cat in lex.categories(chart.leaf(index)):
-                new_edge = CCGLeafEdge(index, cat, chart.leaf(index))
+            for token in lex.categories(chart.leaf(index)):
+                new_edge = CCGLeafEdge(index, token, chart.leaf(index))
                 chart.insert(new_edge, ())
 
 
@@ -220,11 +226,11 @@ class CCGChartParser(ParserI):
                             # Generate all possible combinations of the two edges
                             for rule in self._rules:
                                 edges_added_by_rule = 0
-                                for newedge in rule.apply_iter(chart,lex,left,right):
+                                for newedge in rule.apply(chart,lex,left,right):
                                     edges_added_by_rule += 1
 
         # Output the resulting parses
-        return chart.parses(lex.start())[:n]
+        return chart.parses(lex.start())
 
 class CCGChart(Chart):
     def __init__(self, tokens):
@@ -234,29 +240,53 @@ class CCGChart(Chart):
     # constructed slightly differently to those in the default Chart class, so it has to
     # be reimplemented
     def _trees(self, edge, complete, memo, tree_class):
+        assert complete, "CCGChart cannot build incomplete trees"
+
         if edge in memo:
             return memo[edge]
 
-        trees = []
-        memo[edge] = []
-
         if isinstance(edge,CCGLeafEdge):
-            word = tree_class(edge.lhs(),[self._tokens[edge.start()]])
-            leaf = tree_class((edge.lhs(),"Leaf"),[word])
-            memo[edge] = leaf
-            return leaf
+            word = tree_class(edge.token(), [self._tokens[edge.start()]])
+            leaf = tree_class((edge.token(), "Leaf"), [word])
+            memo[edge] = [leaf]
+            return [leaf]
+
+        memo[edge] = []
+        trees = []
 
         for cpl in self.child_pointer_lists(edge):
             child_choices = [self._trees(cp, complete, memo, tree_class)
-                                for cp in cpl]
-            if len(child_choices) > 0 and isinstance(child_choices[0], string_types):
-                child_choices = [child_choices]
-            for children in self._choose_children(child_choices):
-                lhs = (edge.lhs(), "%s" % edge.rule())
+                             for cp in cpl]
+            for children in itertools.product(*child_choices):
+                lhs = (Token(self._tokens[edge.start():edge.end()], edge.lhs(), compute_semantics(children, edge)), str(edge.rule()))
                 trees.append(tree_class(lhs, children))
 
         memo[edge] = trees
         return trees
+
+           
+def compute_semantics(children, edge):
+    if children[0].label()[0].semantics() is None:
+        return None
+        
+    if len(children) is 2:
+        if isinstance(edge.rule(), BackwardCombinator):
+            children = [children[1],children[0]]
+
+        combinator = edge.rule()._combinator
+        function = children[0].label()[0].semantics()
+        argument = children[1].label()[0].semantics()
+
+        if isinstance(combinator, UndirectedFunctionApplication):
+            return compute_function_semantics(function, argument)
+        elif isinstance(combinator, UndirectedComposition):
+            return compute_composition_semantics(function, argument)
+        elif isinstance(combinator, UndirectedSubstitution):
+            return compute_substitution_semantics(function, argument)
+        else:
+            raise AssertionError('Unsupported combinator \'' + combinator + '\'')
+    else:
+        return compute_type_raised_semantics(children[0].label()[0].semantics())
 
 #--------
 # Displaying derivations
@@ -271,8 +301,6 @@ def printCCGDerivation(tree):
     # category aligned.
     for (leaf, cat) in leafcats:
         str_cat = "%s" % cat
-#        print(cat.__class__)
-#        print("str_cat", str_cat)
         nextlen = 2 + max(len(leaf), len(str_cat))
         lcatlen = (nextlen - len(str_cat)) // 2
         rcatlen = lcatlen + (nextlen - len(str_cat)) % 2
@@ -280,8 +308,8 @@ def printCCGDerivation(tree):
         lleaflen = (nextlen - len(leaf)) // 2
         rleaflen = lleaflen + (nextlen - len(leaf)) % 2
         leafstr += ' '*lleaflen + leaf + ' '*rleaflen
-    print(leafstr)
-    print(catstr)
+    print(leafstr.rstrip())
+    print(catstr.rstrip())
 
     # Display the derivation steps
     printCCGTree(0,tree)
@@ -292,34 +320,39 @@ def printCCGTree(lwidth,tree):
 
     # Is a leaf (word).
     # Increment the span by the space occupied by the leaf.
-    if not isinstance(tree,Tree):
+    if not isinstance(tree, Tree):
         return 2 + lwidth + len(tree)
 
     # Find the width of the current derivation step
     for child in tree:
-        rwidth = max(rwidth,printCCGTree(rwidth,child))
+        rwidth = max(rwidth, printCCGTree(rwidth,child))
 
     # Is a leaf node.
     # Don't print anything, but account for the space occupied.
-    if not isinstance(tree.node, tuple):
-        return max(rwidth,2 + lwidth + len("%s" % tree.node),
+    if not isinstance(tree.label(), tuple):
+        return max(rwidth,2 + lwidth + len("%s" % tree.label()),
                   2 + lwidth + len(tree[0]))
 
-    (res,op) = tree.node
+    (token, op) = tree.label()
+
+    if op == 'Leaf':
+        return rwidth
+
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
     print(lwidth*' ' + (rwidth-lwidth)*'-' + "%s" % op)
     # Print the resulting category on a new line.
-    str_res = "%s" % res
+    str_res = "%s" % (token.categ())
+    if token.semantics() is not None:
+        str_res += " {" + str(token.semantics()) + "}"
     respadlen = (rwidth - lwidth - len(str_res)) // 2 + lwidth
     print(respadlen*' ' + str_res)
     return rwidth
 
-
 ### Demonstration code
 
 # Construct the lexicon
-lex = parseLexicon('''
+lex = fromstring('''
     :- S, NP, N, VP    # Primitive categories, S is the target primitive
 
     Det :: NP/N         # Family of words
@@ -352,7 +385,7 @@ lex = parseLexicon('''
 
 def demo():
     parser = CCGChartParser(lex, DefaultRuleSet)
-    for parse in parser.nbest_parse("I might cook and eat the bacon".split(), 3):
+    for parse in parser.parse("I might cook and eat the bacon".split()):
         printCCGDerivation(parse)
 
 if __name__ == '__main__':

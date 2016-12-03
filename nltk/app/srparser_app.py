@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Shift-Reduce Parser Application
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -389,7 +389,7 @@ class ShiftReduceApp(object):
                            'leaf_color': '#006060', 'leaf_font':self._font}
                 widget = tree_to_treesegment(self._canvas, tok,
                                              **attribs)
-                widget.node()['color'] = '#000000'
+                widget.label()['color'] = '#000000'
             else:
                 widget = TextWidget(self._canvas, tok,
                                     color='#000000', font=self._font)
@@ -465,10 +465,10 @@ class ShiftReduceApp(object):
         self._redraw()
 
     def step(self, *e):
-        if self.reduce(): return 1
-        elif self.shift(): return 1
+        if self.reduce(): return True
+        elif self.shift(): return True
         else:
-            if len(self._parser.parses()) > 0:
+            if list(self._parser.parses()):
                 self._lastoper1['text'] = 'Finished:'
                 self._lastoper2['text'] = 'Success'
             else:
@@ -485,8 +485,8 @@ class ShiftReduceApp(object):
                 self._animate_shift()
             else:
                 self._redraw()
-            return 1
-        return 0
+            return True
+        return False
 
     def reduce(self, *e):
         if self._animating_lock: return
@@ -665,7 +665,7 @@ class ShiftReduceApp(object):
 
         # How far are we moving?
         if isinstance(widgets[0], TreeSegmentWidget):
-            ydist = 15 + widgets[0].node().height()
+            ydist = 15 + widgets[0].label().height()
         else:
             ydist = 15 + widgets[0].height()
 
@@ -686,7 +686,7 @@ class ShiftReduceApp(object):
                 self._cframe.remove_widget(widget)
             tok = self._parser.stack()[-1]
             if not isinstance(tok, Tree): raise ValueError()
-            label = TextWidget(self._canvas, str(tok.node), color='#006060',
+            label = TextWidget(self._canvas, str(tok.label()), color='#006060',
                                font=self._boldfont)
             widget = TreeSegmentWidget(self._canvas, label, widgets,
                                        width=2)
@@ -748,7 +748,7 @@ class ShiftReduceApp(object):
             rhslen = len(self._productions[index].rhs())
             for stackwidget in self._stackwidgets[-rhslen:]:
                 if isinstance(stackwidget, TreeSegmentWidget):
-                    stackwidget.node()['color'] = '#00a000'
+                    stackwidget.label()['color'] = '#00a000'
                 else:
                     stackwidget['color'] = '#00a000'
 
@@ -761,7 +761,7 @@ class ShiftReduceApp(object):
         self._hover = -1
         for stackwidget in self._stackwidgets:
             if isinstance(stackwidget, TreeSegmentWidget):
-                stackwidget.node()['color'] = 'black'
+                stackwidget.label()['color'] = 'black'
             else:
                 stackwidget['color'] = 'black'
 
@@ -772,7 +772,7 @@ def app():
     text.
     """
 
-    from nltk.grammar import Nonterminal, Production, ContextFreeGrammar
+    from nltk.grammar import Nonterminal, Production, CFG
     nonterminals = 'S VP NP PP P N Name V Det'
     (S, VP, NP, PP, P, N, Name, V, Det) = [Nonterminal(s)
                                            for s in nonterminals.split()]
@@ -796,7 +796,7 @@ def app():
         Production(Det, ['my']),
         )
 
-    grammar = ContextFreeGrammar(S, productions)
+    grammar = CFG(S, productions)
 
     # tokenize the sentence
     sent = 'my dog saw a man in the park with a statue'.split()

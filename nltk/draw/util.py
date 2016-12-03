@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Drawing utilities
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -60,17 +60,15 @@ class CanvasWidget(object):
     is specified as the first argument to the ``CanvasWidget``'s
     constructor.
 
-    Attributes
-    ==========
-    Each canvas widget can support a variety of "attributes", which
-    control how the canvas widget is displayed.  Some typical examples
-    attributes are ``color``, ``font``, and ``radius``.  Each attribute
-    has a default value.  This default value can be overridden in the
-    constructor, using keyword arguments of the form
-    ``attribute=value``:
+    Attributes.  Each canvas widget can support a variety of
+    "attributes", which control how the canvas widget is displayed.
+    Some typical examples attributes are ``color``, ``font``, and
+    ``radius``.  Each attribute has a default value.  This default
+    value can be overridden in the constructor, using keyword
+    arguments of the form ``attribute=value``:
 
-        >>> from nltk.draw.util import CanvasText
-        >>> cn = CanvasText(c, 'test', color='red')
+        >>> from nltk.draw.util import TextWidget
+        >>> cn = TextWidget(c, 'test', color='red')
 
     Attribute values can also be changed after a canvas widget has
     been constructed, using the ``__setitem__`` operator:
@@ -86,11 +84,9 @@ class CanvasWidget(object):
     For a list of the attributes supported by a type of canvas widget,
     see its class documentation.
 
-    Interaction
-    ===========
-    The attribute ``'draggable'`` controls whether the user can drag a
-    canvas widget around the canvas.  By default, canvas widgets
-    are not draggable.
+    Interaction.  The attribute ``'draggable'`` controls whether the
+    user can drag a canvas widget around the canvas.  By default,
+    canvas widgets are not draggable.
 
     ``CanvasWidget`` provides callback support for two types of user
     interaction: clicking and dragging.  The method ``bind_click``
@@ -104,10 +100,8 @@ class CanvasWidget(object):
     can be deregistered with the ``unbind_click`` and ``unbind_drag``
     methods.
 
-    Subclassing
-    ===========
-    ``CanvasWidget`` is an abstract class.  Subclasses are required to
-    implement the following methods:
+    Subclassing.  ``CanvasWidget`` is an abstract class.  Subclasses
+    are required to implement the following methods:
 
       - ``__init__``: Builds a new canvas widget.  It must perform the
         following three tasks (in order):
@@ -1229,7 +1223,7 @@ class SequenceWidget(CanvasWidget):
         else: CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'align': return value
+        if attr == 'align': return self._align
         elif attr == 'space': return self._space
         elif attr == 'ordered': return self._ordered
         else: return CanvasWidget.__getitem__(self, attr)
@@ -1386,7 +1380,7 @@ class StackWidget(CanvasWidget):
         else: CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'align': return value
+        if attr == 'align': return self._align
         elif attr == 'space': return self._space
         elif attr == 'ordered': return self._ordered
         else: return CanvasWidget.__getitem__(self, attr)
@@ -1936,7 +1930,7 @@ class EntryDialog(object):
         self._original_text = original_text
         self._set_callback = set_callback
 
-        width = max(30, len(original_text)*3/2)
+        width = int(max(30, len(original_text)*3/2))
         self._top = Toplevel(parent)
 
         if title: self._top.title(title)

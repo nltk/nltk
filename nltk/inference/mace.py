@@ -3,7 +3,7 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
 
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -15,7 +15,7 @@ import os
 import tempfile
 
 from nltk.sem.logic import is_indvar
-from nltk.sem import Valuation, LogicParser
+from nltk.sem import Valuation, Expression
 
 from nltk.inference.api import ModelBuilder, BaseModelBuilderCommand
 from nltk.inference.prover9 import Prover9CommandParent, Prover9Parent
@@ -110,9 +110,9 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         if len(values) == 1:
             return []
         else:
-            sublist_size = len(values) / num_entities
-            sublist_start = position / sublist_size
-            sublist_position = position % sublist_size
+            sublist_size = len(values) // num_entities
+            sublist_start = position // sublist_size
+            sublist_position = int(position % sublist_size)
 
             sublist = values[sublist_start*sublist_size:(sublist_start+1)*sublist_size]
             return [MaceCommand._make_model_var(sublist_start)] + \
@@ -130,7 +130,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         letter = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
                   'o','p','q','r','s','t','u','v','w','x','y','z'][value]
-        num = int(value) / 26
+        num = value // 26
         return (letter + str(num) if num > 0 else letter)
 
     def _decorate_model(self, valuation_str, format):
@@ -238,11 +238,10 @@ def test_model_found(arguments):
     """
     Try some proofs and exhibit the results.
     """
-    lp = LogicParser()
     for (goal, assumptions) in arguments:
-        g = lp.parse(goal)
+        g = Expression.fromstring(goal)
         alist = [lp.parse(a) for a in assumptions]
-        m = MaceCommand(g, assumptions=alist, end_size=50)
+        m = MaceCommand(g, assumptions=alist, max_models=50)
         found = m.build_model()
         for a in alist:
             print('   %s' % a)
@@ -253,9 +252,8 @@ def test_build_model(arguments):
     """
     Try to build a ``nltk.sem.Valuation``.
     """
-    lp = LogicParser()
-    g = lp.parse('all x.man(x)')
-    alist = [lp.parse(a) for a in ['man(John)',
+    g = Expression.fromstring('all x.man(x)')
+    alist = [Expression.fromstring(a) for a in ['man(John)',
                                    'man(Socrates)',
                                    'man(Bill)',
                                    'some x.(-(x = John) & man(x) & sees(John,x))',
@@ -281,8 +279,7 @@ def test_transform_output(argument_pair):
     """
     Transform the model into various Mace4 ``interpformat`` formats.
     """
-    lp = LogicParser()
-    g = lp.parse(argument_pair[0])
+    g = Expression.fromstring(argument_pair[0])
     alist = [lp.parse(a) for a in argument_pair[1]]
     m = MaceCommand(g, assumptions=alist)
     m.build_model()

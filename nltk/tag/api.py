@@ -1,15 +1,17 @@
 # Natural Language Toolkit: Tagger Interface
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
+from itertools import chain
+
 from nltk.internals import overridden
 from nltk.metrics import accuracy
 
@@ -27,7 +29,7 @@ class TaggerI(object):
     ``FeaturesetTagger``, require that each token be a ``featureset``.
 
     Subclasses must define:
-      - either ``tag()`` or ``batch_tag()`` (or both)
+      - either ``tag()`` or ``tag_sents()`` (or both)
     """
     def tag(self, tokens):
         """
@@ -37,12 +39,12 @@ class TaggerI(object):
 
         :rtype: list(tuple(str, str))
         """
-        if overridden(self.batch_tag):
-            return self.batch_tag([tokens])[0]
+        if overridden(self.tag_sents):
+            return self.tag_sents([tokens])[0]
         else:
             raise NotImplementedError()
 
-    def batch_tag(self, sentences):
+    def tag_sents(self, sentences):
         """
         Apply ``self.tag()`` to each element of *sentences*.  I.e.:
 
@@ -61,9 +63,9 @@ class TaggerI(object):
         :rtype: float
         """
 
-        tagged_sents = self.batch_tag(untag(sent) for sent in gold)
-        gold_tokens = sum(gold, [])
-        test_tokens = sum(tagged_sents, [])
+        tagged_sents = self.tag_sents(untag(sent) for sent in gold)
+        gold_tokens = list(chain(*gold))
+        test_tokens = list(chain(*tagged_sents))
         return accuracy(gold_tokens, test_tokens)
 
     def _check_params(self, train, model):
@@ -79,6 +81,3 @@ class FeaturesetTaggerI(TaggerI):
     """
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

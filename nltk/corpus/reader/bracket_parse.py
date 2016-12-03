@@ -1,9 +1,9 @@
 # Natural Language Toolkit: Penn Treebank Reader
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Steven Bird <sb@ldc.upenn.edu>
-#         Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Steven Bird <stevenbird1@gmail.com>
+#         Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """
 Corpus reader for corpora that consist of parenthesis-delineated parse trees.
@@ -12,24 +12,27 @@ Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 import sys
 
 from nltk.tree import Tree
+from nltk.tag import map_tag
 
-from .util import *
-from .api import *
-
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
+SORTTAGWRD = re.compile(r'\((\d+) ([^\s()]+) ([^\s()]+)\)') 
 TAGWORD = re.compile(r'\(([^\s()]+) ([^\s()]+)\)')
 WORD = re.compile(r'\([^\s()]+ ([^\s()]+)\)')
 EMPTY_BRACKETS = re.compile(r'\s*\(\s*\(')
 
 class BracketParseCorpusReader(SyntaxCorpusReader):
     """
-    Reader for corpora that consist of parenthesis-delineated parse
-    trees.
+    Reader for corpora that consist of parenthesis-delineated parse trees,
+    like those found in the "combined" section of the Penn Treebank,
+    e.g. "(S (NP (DT the) (JJ little) (NN dog)) (VP (VBD barked)))".
+
     """
     def __init__(self, root, fileids, comment_char=None,
                  detect_blocks='unindented_paren', encoding='utf8',
-                 tag_mapping_function=None):
+                 tagset=None):
         """
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
@@ -39,11 +42,14 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
           in the corpus; can be 'unindented_paren' (every unindented
           parenthesis starts a new parse) or 'sexpr' (brackets are
           matched).
+        :param tagset: The name of the tagset used by this corpus, to be used
+              for normalizing or converting the POS tags returned by the
+              tagged_...() methods.
         """
         CorpusReader.__init__(self, root, fileids, encoding)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
-        self._tag_mapping_function = tag_mapping_function
+        self._tagset = tagset
 
     def _read_block(self, stream):
         if self._detect_blocks == 'sexpr':
@@ -75,7 +81,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
 
     def _parse(self, t):
         try:
-            return Tree.parse(self._normalize(t))
+            return Tree.fromstring(self._normalize(t))
 
         except ValueError as e:
             sys.stderr.write("Bad tree detected; trying to recover...\n")
@@ -83,7 +89,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             if e.args == ('mismatched parens',):
                 for n in range(1, 5):
                     try:
-                        v = Tree.parse(self._normalize(t+')'*n))
+                        v = Tree(self._normalize(t+')'*n))
                         sys.stderr.write("  Recovered by adding %d close "
                                          "paren(s)\n" % n)
                         return v
@@ -93,11 +99,10 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             #sys.stderr.write(' '.join(t.split())+'\n')
             return Tree('S', self._tag(t))
 
-    def _tag(self, t, simplify_tags=False):
-        tagged_sent = [(w,t) for (t,w) in TAGWORD.findall(self._normalize(t))]
-        if simplify_tags:
-            tagged_sent = [(w, self._tag_mapping_function(t))
-                           for (w,t) in tagged_sent]
+    def _tag(self, t, tagset=None):
+        tagged_sent = [(w,p) for (p,w) in TAGWORD.findall(self._normalize(t))]
+        if tagset and tagset != self._tagset:
+            tagged_sent = [(w, map_tag(self._tagset, tagset, p)) for (w,p) in tagged_sent]
         return tagged_sent
 
     def _word(self, t):
@@ -141,15 +146,15 @@ class CategorizedBracketParseCorpusReader(CategorizedCorpusReader,
     def paras(self, fileids=None, categories=None):
         return BracketParseCorpusReader.paras(
             self, self._resolve(fileids, categories))
-    def tagged_words(self, fileids=None, categories=None, simplify_tags=False):
+    def tagged_words(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_words(
-            self, self._resolve(fileids, categories), simplify_tags)
-    def tagged_sents(self, fileids=None, categories=None, simplify_tags=False):
+            self, self._resolve(fileids, categories), tagset)
+    def tagged_sents(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_sents(
-            self, self._resolve(fileids, categories), simplify_tags)
-    def tagged_paras(self, fileids=None, categories=None, simplify_tags=False):
+            self, self._resolve(fileids, categories), tagset)
+    def tagged_paras(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_paras(
-            self, self._resolve(fileids, categories), simplify_tags)
+            self, self._resolve(fileids, categories), tagset)
     def parsed_words(self, fileids=None, categories=None):
         return BracketParseCorpusReader.parsed_words(
             self, self._resolve(fileids, categories))
@@ -163,20 +168,60 @@ class CategorizedBracketParseCorpusReader(CategorizedCorpusReader,
 class AlpinoCorpusReader(BracketParseCorpusReader):
     """
     Reader for the Alpino Dutch Treebank.
+    This corpus has a lexical breakdown structure embedded, as read by _parse
+    Unfortunately this puts punctuation and some other words out of the sentence
+    order in the xml element tree. This is no good for tag_ and word_
+    _tag and _word will be overridden to use a non-default new parameter 'ordered'
+    to the overridden _normalize function. The _parse function can then remain 
+    untouched.
     """
-    def __init__(self, root, encoding='ISO-8859-1', tag_mapping_function=None):
+    def __init__(self, root, encoding='ISO-8859-1', tagset=None):
         BracketParseCorpusReader.__init__(self, root, 'alpino\.xml',
                                  detect_blocks='blankline',
                                  encoding=encoding,
-                                 tag_mapping_function=tag_mapping_function)
+                                 tagset=tagset)
 
-    def _normalize(self, t):
+    def _normalize(self, t, ordered = False):
+        """Normalize the xml sentence element in t.
+        The sentence elements <alpino_ds>, although embedded in a few overall 
+        xml elements, are seperated by blank lines. That's how the reader can 
+        deliver them one at a time.
+        Each sentence has a few category subnodes that are of no use to us.
+        The remaining word nodes may or may not appear in the proper order.
+        Each word node has attributes, among which:
+        - begin : the position of the word in the sentence
+        - pos   : Part of Speech: the Tag
+        - word  : the actual word
+        The return value is a string with all xml elementes replaced by 
+        clauses: either a cat clause with nested clauses, or a word clause.
+        The order of the bracket clauses closely follows the xml.
+        If ordered == True, the word clauses include an order sequence number.
+        If ordered == False, the word clauses only have pos and word parts.
+        """
         if t[:10] != "<alpino_ds":
             return ""
         # convert XML to sexpr notation
         t = re.sub(r'  <node .*? cat="(\w+)".*>', r"(\1", t)
-        t = re.sub(r'  <node .*? pos="(\w+)".*? word="([^"]+)".*/>', r"(\1 \2)", t)
+        if ordered:
+            t = re.sub(r'  <node. *?begin="(\d+)".*? pos="(\w+)".*? word="([^"]+)".*?/>', r"(\1 \2 \3)", t)
+        else: 
+            t = re.sub(r'  <node .*?pos="(\w+)".*? word="([^"]+)".*?/>', r"(\1 \2)", t)
         t = re.sub(r"  </node>", r")", t)
         t = re.sub(r"<sentence>.*</sentence>", r"", t)
         t = re.sub(r"</?alpino_ds.*>", r"", t)
         return t
+
+    def _tag(self, t, tagset=None):
+        tagged_sent = [(int(o), w, p) for (o,p,w) in SORTTAGWRD.findall(self._normalize(t, ordered = True))]
+        tagged_sent.sort()
+        if tagset and tagset != self._tagset:
+            tagged_sent = [(w, map_tag(self._tagset, tagset, p)) for (o,w,p) in tagged_sent]
+        else:
+            tagged_sent = [(w,p) for (o,w,p) in tagged_sent]
+        return tagged_sent
+
+    def _word(self, t):
+        """Return a correctly ordered list if words"""
+        tagged_sent = self._tag(t)
+        return [w for (w,p) in tagged_sent]      
+

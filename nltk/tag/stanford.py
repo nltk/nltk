@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Interface to the Stanford NER-tagger
+# Natural Language Toolkit: Interface to the Stanford Part-of-speech and Named-Entity Taggers
 #
-# Copyright (C) 2001-2013 NLTK Project
+# Copyright (C) 2001-2016 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
-# URL: <http://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 A module for interfacing with the Stanford taggers.
+
+Tagger models need to be downloaded from http://nlp.stanford.edu/software
+and the STANFORD_MODELS environment variable set (a colon-separated
+list of paths).
+
+For more details see the documentation for StanfordPOSTagger and StanfordNERTagger.
 """
 
 import os
@@ -16,7 +22,7 @@ import tempfile
 from subprocess import PIPE
 import warnings
 
-from nltk.internals import find_file, find_jar, config_java, java, _java_options
+from nltk.internals import find_file, find_jar, config_java, java, _java_options, find_jars_within_path
 from nltk.tag.api import TaggerI
 from nltk import compat
 
@@ -36,18 +42,23 @@ class StanfordTagger(TaggerI):
     _SEPARATOR = ''
     _JAR = ''
 
-    def __init__(self, path_to_model, path_to_jar=None, encoding='ascii', verbose=False, java_options='-mx1000m'):
+    def __init__(self, model_filename, path_to_jar=None, encoding='utf8', verbose=False, java_options='-mx1000m'):
 
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
-                    'instanciated directly. Did you mean POS- or NERTagger?')
+                    'instantiated directly. Did you mean StanfordPOSTagger or StanfordNERTagger?')
         self._stanford_jar = find_jar(
                 self._JAR, path_to_jar,
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 
-        self._stanford_model = find_file(path_to_model,
-                env_vars=('STANFORD_MODELS'), verbose=verbose)
+        self._stanford_model = find_file(model_filename,
+                env_vars=('STANFORD_MODELS',), verbose=verbose)
+        
+        # Adding logging jar files to classpath 
+        stanford_dir = os.path.split(self._stanford_jar)[0]
+        self._stanford_jar = tuple(find_jars_within_path(stanford_dir))
+        
         self._encoding = encoding
         self.java_options = java_options
 
@@ -56,9 +67,10 @@ class StanfordTagger(TaggerI):
       raise NotImplementedError
 
     def tag(self, tokens):
-        return self.batch_tag([tokens])[0]
+        # This function should return list of tuple rather than list of list 
+        return sum(self.tag_sents([tokens]), []) 
 
-    def batch_tag(self, sentences):
+    def tag_sents(self, sentences):
         encoding = self._encoding
         default_options = ' '.join(_java_options)
         config_java(options=self.java_options, verbose=False)
@@ -66,8 +78,9 @@ class StanfordTagger(TaggerI):
         # Create a temporary input file
         _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
 
-        self._cmd.extend(['-encoding', encoding])
-
+        cmd = list(self._cmd)
+        cmd.extend(['-encoding', encoding])
+        
         # Write the actual sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, 'wb')
         _input = '\n'.join((' '.join(x) for x in sentences))
@@ -75,23 +88,21 @@ class StanfordTagger(TaggerI):
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()
-
+        
         # Run the tagger and get the output
-        stanpos_output, _stderr = java(self._cmd,classpath=self._stanford_jar, \
+        stanpos_output, _stderr = java(cmd, classpath=self._stanford_jar,
                                                        stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
-        if (not compat.PY3) and encoding == 'ascii':
-            stanpos_output = str(stanpos_output)
-
+        
         # Delete the temporary file
-        os.unlink(self._input_file_path)
+        os.unlink(self._input_file_path) 
 
         # Return java configurations to their default values
         config_java(options=default_options, verbose=False)
+                
+        return self.parse_output(stanpos_output, sentences)
 
-        return self.parse_output(stanpos_output)
-
-    def parse_output(self, text):
+    def parse_output(self, text, sentences = None):
         # Output the tagged sentences
         tagged_sentences = []
         for tagged_sentence in text.strip().split("\n"):
@@ -102,19 +113,18 @@ class StanfordTagger(TaggerI):
             tagged_sentences.append(sentence)
         return tagged_sentences
 
-class POSTagger(StanfordTagger):
+class StanfordPOSTagger(StanfordTagger):
     """
     A class for pos tagging with Stanford Tagger. The input is the paths to:
      - a model trained on training data
      - (optionally) the path to the stanford tagger jar file. If not specified here,
        then this jar file must be specified in the CLASSPATH envinroment variable.
-     - (optionally) the encoding of the training data (default: ASCII)
+     - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:
 
-        >>> from nltk.tag.stanford import POSTagger
-        >>> st = POSTagger('/usr/share/stanford-postagger/models/english-bidirectional-distsim.tagger',
-        ...                '/usr/share/stanford-postagger/stanford-postagger.jar') # doctest: +SKIP
+        >>> from nltk.tag import StanfordPOSTagger
+        >>> st = StanfordPOSTagger('english-bidirectional-distsim.tagger') # doctest: +SKIP
         >>> st.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
@@ -123,28 +133,27 @@ class POSTagger(StanfordTagger):
     _JAR = 'stanford-postagger.jar'
 
     def __init__(self, *args, **kwargs):
-        super(POSTagger, self).__init__(*args, **kwargs)
+        super(StanfordPOSTagger, self).__init__(*args, **kwargs)
 
     @property
     def _cmd(self):
-        return ['edu.stanford.nlp.tagger.maxent.MaxentTagger', \
-                '-model', self._stanford_model, '-textFile', \
-                self._input_file_path, '-tokenize', 'false']
+        return ['edu.stanford.nlp.tagger.maxent.MaxentTagger',
+                '-model', self._stanford_model, '-textFile',
+                self._input_file_path, '-tokenize', 'false','-outputFormatOptions', 'keepEmptySentences']
 
-class NERTagger(StanfordTagger):
+class StanfordNERTagger(StanfordTagger):
     """
-    A class for ner tagging with Stanford Tagger. The input is the paths to:
+    A class for Named-Entity Tagging with Stanford Tagger. The input is the paths to:
 
     - a model trained on training data
     - (optionally) the path to the stanford tagger jar file. If not specified here,
       then this jar file must be specified in the CLASSPATH envinroment variable.
-    - (optionally) the encoding of the training data (default: ASCII)
+    - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:
 
-        >>> from nltk.tag.stanford import NERTagger
-        >>> st = NERTagger('/usr/share/stanford-ner/classifiers/all.3class.distsim.crf.ser.gz',
-        ...                '/usr/share/stanford-ner/stanford-ner.jar') # doctest: +SKIP
+        >>> from nltk.tag import StanfordNERTagger
+        >>> st = StanfordNERTagger('english.all.3class.distsim.crf.ser.gz') # doctest: +SKIP
         >>> st.tag('Rami Eid is studying at Stony Brook University in NY'.split()) # doctest: +SKIP
         [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'),
          ('at', 'O'), ('Stony', 'ORGANIZATION'), ('Brook', 'ORGANIZATION'),
@@ -156,20 +165,32 @@ class NERTagger(StanfordTagger):
     _FORMAT = 'slashTags'
 
     def __init__(self, *args, **kwargs):
-        super(NERTagger, self).__init__(*args, **kwargs)
+        super(StanfordNERTagger, self).__init__(*args, **kwargs)
 
     @property
     def _cmd(self):
-        return ['edu.stanford.nlp.ie.crf.CRFClassifier', \
-                '-loadClassifier', self._stanford_model, '-textFile', \
-                self._input_file_path, '-outputFormat', self._FORMAT]
+        # Adding -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerOptions tokenizeNLs=false for not using stanford Tokenizer  
+        return ['edu.stanford.nlp.ie.crf.CRFClassifier',
+                '-loadClassifier', self._stanford_model, '-textFile',
+                self._input_file_path, '-outputFormat', self._FORMAT, '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerOptions','\"tokenizeNLs=false\"']
 
-    def parse_output(self, text):
-      if self._FORMAT == 'slashTags':
-        return super(NERTagger, self).parse_output(text)
-      raise NotImplementedError
+    def parse_output(self, text, sentences):
+        if self._FORMAT == 'slashTags':
+            # Joint together to a big list    
+            tagged_sentences = []
+            for tagged_sentence in text.strip().split("\n"):
+                for tagged_word in tagged_sentence.strip().split():
+                    word_tags = tagged_word.strip().split(self._SEPARATOR)
+                    tagged_sentences.append((''.join(word_tags[:-1]), word_tags[-1]))
+                
+            # Separate it according to the input
+            result = []
+            start = 0 
+            for sent in sentences:
+                result.append(tagged_sentences[start:start + len(sent)])
+                start += len(sent);
+            return result 
+
+        raise NotImplementedError
 
 
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

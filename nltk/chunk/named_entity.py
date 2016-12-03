@@ -1,8 +1,8 @@
 # Natural Language Toolkit: Chunk parsing API
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -101,9 +101,9 @@ class NEChunkParserTagger(ClassifierBasedTagger):
             'nextpos': nextpos,
             'prevword': prevword,
             'nextword': nextword,
-            'word+nextpos': '%s+%s' % (word.lower(), nextpos),
-            'pos+prevtag': '%s+%s' % (pos, prevtag),
-            'shape+prevtag': '%s+%s' % (prevshape, prevtag),
+            'word+nextpos': '{0}+{1}'.format(word.lower(), nextpos),
+            'pos+prevtag': '{0}+{1}'.format(pos, prevtag),
+            'shape+prevtag': '{0}+{1}'.format(prevshape, prevtag),
             }
 
         return features
@@ -142,7 +142,7 @@ class NEChunkParser(ChunkParserI):
                 sent.append(Tree(tag[2:], [tok]))
             elif tag.startswith('I-'):
                 if (sent and isinstance(sent[-1], Tree) and
-                    sent[-1].node == tag[2:]):
+                    sent[-1].label() == tag[2:]):
                     sent[-1].append(tok)
                 else:
                     sent.append(Tree(tag[2:], [tok]))
@@ -159,24 +159,25 @@ class NEChunkParser(ChunkParserI):
                 if len(child) == 0:
                     print("Warning -- empty chunk in sentence")
                     continue
-                toks.append((child[0], 'B-%s' % child.node))
+                toks.append((child[0], 'B-{0}'.format(child.label())))
                 for tok in child[1:]:
-                    toks.append((tok, 'I-%s' % child.node))
+                    toks.append((tok, 'I-{0}'.format(child.label())))
             else:
                 toks.append((child, 'O'))
         return toks
 
 def shape(word):
-    if re.match('[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$', word):
+    if re.match('[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$', word, re.UNICODE):
         return 'number'
-    elif re.match('\W+$', word):
+    elif re.match('\W+$', word, re.UNICODE):
         return 'punct'
-    elif re.match('[A-Z][a-z]+$', word):
-        return 'upcase'
-    elif re.match('[a-z]+$', word):
-        return 'downcase'
-    elif re.match('\w+$', word):
-        return 'mixedcase'
+    elif re.match('\w+$', word, re.UNICODE):
+        if word.istitle():
+            return 'upcase'
+        elif word.islower():
+            return 'downcase'
+        else:
+            return 'mixedcase'
     else:
         return 'other'
 
@@ -191,7 +192,7 @@ def postag_tree(tree):
     newtree = Tree('S', [])
     for child in tree:
         if isinstance(child, Tree):
-            newtree.append(Tree(child.node, []))
+            newtree.append(Tree(child.label(), []))
             for subchild in child:
                 newtree[-1].append( (subchild, next(tag_iter)) )
         else:
@@ -209,12 +210,13 @@ def load_ace_data(roots, fmt='binary', skip_bnews=True):
                         yield sent
 
 def load_ace_file(textfile, fmt):
-    print('  - %s' % os.path.split(textfile)[1])
+    print('  - {0}'.format(os.path.split(textfile)[1]))
     annfile = textfile+'.tmx.rdc.xml'
 
     # Read the xml file, and get a list of entities
     entities = []
-    xml = ET.parse(open(annfile)).getroot()
+    with open(annfile, 'r') as infile:
+        xml = ET.parse(infile).getroot()
     for entity in xml.findall('document/entity'):
         typ = entity.find('entity_type').text
         for mention in entity.findall('entity_mention'):
@@ -224,8 +226,8 @@ def load_ace_file(textfile, fmt):
             entities.append( (s, e, typ) )
 
     # Read the text file, and mark the entities.
-    with open(textfile) as fp:
-        text = fp.read()
+    with open(textfile, 'r') as infile:
+        text = infile.read()
 
     # Strip XML tags, since they don't count towards the indices
     text = re.sub('<(?!/?TEXT)[^>]+>', '', text)
@@ -279,12 +281,12 @@ def cmp_chunks(correct, guessed):
     for (w, ct), (w, gt) in zip(correct, guessed):
         if ct == gt == 'O':
             if not ellipsis:
-                print("  %-15s %-15s %s" % (ct, gt, w))
-                print('  %-15s %-15s %s' % ('...', '...', '...'))
+                print("  {:15} {:15} {2}".format(ct, gt, w))
+                print('  {:15} {:15} {2}'.format('...', '...', '...'))
                 ellipsis = True
         else:
             ellipsis = False
-            print("  %-15s %-15s %s" % (ct, gt, w))
+            print("  {:15} {:15} {2}".format(ct, gt, w))
 
 def build_model(fmt='binary'):
     print('Loading training data...')
@@ -311,11 +313,11 @@ def build_model(fmt='binary'):
         if i < 3: cmp_chunks(correct, guess)
     print(chunkscore)
 
-    outfilename = '/tmp/ne_chunker_%s.pickle' % fmt
-    print('Saving chunker to %s...' % outfilename)
+    outfilename = '/tmp/ne_chunker_{0}.pickle'.format(fmt)
+    print('Saving chunker to {0}...'.format(outfilename))
 
-    with open(outfilename, 'wb') as out:
-        pickle.dump(cp, out, -1)
+    with open(outfilename, 'wb') as outfile:
+        pickle.dump(cp, outfile, -1)
 
     return cp
 

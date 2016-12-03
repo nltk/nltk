@@ -1,15 +1,14 @@
 # Natural Language Toolkit: Interface to Weka Classsifiers
 #
-# Copyright (C) 2001-2013 NLTK Project
-# Author: Edward Loper <edloper@gradient.cis.upenn.edu>
-# URL: <http://www.nltk.org/>
+# Copyright (C) 2001-2016 NLTK Project
+# Author: Edward Loper <edloper@gmail.com>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Classifiers that make use of the external 'Weka' package.
 """
 from __future__ import print_function
-
 import time
 import tempfile
 import os
@@ -17,6 +16,7 @@ import subprocess
 import re
 import zipfile
 
+from sys import stdin
 from nltk import compat
 from nltk.probability import DictionaryProbDist
 from nltk.internals import java, config_java
@@ -63,7 +63,7 @@ def config_weka(classpath=None):
 def _check_weka_version(jar):
     try:
         zf = zipfile.ZipFile(jar)
-    except SystemExit as KeyboardInterrupt:
+    except (SystemExit, KeyboardInterrupt):
         raise
     except:
         return None
@@ -80,13 +80,13 @@ class WekaClassifier(ClassifierI):
         self._formatter = formatter
         self._model = model_filename
 
-    def batch_prob_classify(self, featuresets):
-        return self._batch_classify(featuresets, ['-p', '0', '-distribution'])
+    def prob_classify_many(self, featuresets):
+        return self._classify_many(featuresets, ['-p', '0', '-distribution'])
 
-    def batch_classify(self, featuresets):
-        return self._batch_classify(featuresets, ['-p', '0'])
+    def classify_many(self, featuresets):
+        return self._classify_many(featuresets, ['-p', '0'])
 
-    def _batch_classify(self, featuresets, options):
+    def _classify_many(self, featuresets, options):
         # Make sure we can find java & weka.
         config_weka()
 
@@ -114,7 +114,7 @@ class WekaClassifier(ClassifierI):
                                      % stderr)
 
             # Parse weka's output.
-            return self.parse_weka_output(stdout.split('\n'))
+            return self.parse_weka_output(stdout.decode(stdin.encoding).split('\n'))
 
         finally:
             for f in os.listdir(temp_dir):
@@ -138,7 +138,7 @@ class WekaClassifier(ClassifierI):
             return [line.split()[2].split(':')[1]
                     for line in lines[1:] if line.strip()]
         elif lines[0].split() == ['inst#', 'actual', 'predicted',
-                                'error', 'distribution']:
+                                  'error', 'distribution']:
             return [self.parse_weka_distribution(line.split()[-1])
                     for line in lines[1:] if line.strip()]
 
@@ -147,7 +147,8 @@ class WekaClassifier(ClassifierI):
             return [line.split()[1] for line in lines if line.strip()]
 
         else:
-            for line in lines[:10]: print(line)
+            for line in lines[:10]:
+                print(line)
             raise ValueError('Unhandled output format -- your version '
                              'of weka may not be supported.\n'
                              '  Header: %s' % lines[0])
@@ -171,7 +172,7 @@ class WekaClassifier(ClassifierI):
         'C4.5': 'weka.classifiers.trees.J48',
         'log_regression': 'weka.classifiers.functions.Logistic',
         'svm': 'weka.classifiers.functions.SMO',
-        'kstar': 'weka.classifiers.lazy.kstar',
+        'kstar': 'weka.classifiers.lazy.KStar',
         'ripper': 'weka.classifiers.rules.JRip',
         }
     @classmethod
@@ -199,7 +200,8 @@ class WekaClassifier(ClassifierI):
             # Train the weka model.
             cmd = [javaclass, '-d', model_filename, '-t', train_filename]
             cmd += list(options)
-            if quiet: stdout = subprocess.PIPE
+            if quiet:
+                stdout = subprocess.PIPE
             else: stdout = None
             java(cmd, classpath=_weka_classpath, stdout=stdout)
 
@@ -255,7 +257,7 @@ class ARFF_Formatter:
         string (note: not nominal) types.
         """
         # Find the set of all attested labels.
-        labels = set(label for (tok,label) in tokens)
+        labels = set(label for (tok, label) in tokens)
 
         # Determine the types of all features.
         features = {}
