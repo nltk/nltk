@@ -83,6 +83,26 @@ natural language processing.  NLTK requires Python 2.7, or 3.4+.""",
             'gensim>=0.11.1',
             'pyparsing>=2.0.3',
             'twython>=3.2.0'
+        ],
+        'machine_learning': [
+            'gensim>=0.11.1',
+            'numpy>=1.8.0',
+            'pyparsing>=2.0.3',
+            'python-crfsuite>=0.8.2',
+            'scikit-learn>=0.14.1',
+            'scipy>=0.13.2'
+        ],
+        'plot': [
+            'matplotlib>=1.3.1',
+        ],
+        'tests': [
+            'coverage>=3.7.1',
+            'nose>=1.3.0',
+            'pylint>=1.1.0',
+            'tox>=1.6.1'
+        ],
+        'twitter': [
+            'twython>=3.2.0'
         ]
     },
     packages = find_packages(),
