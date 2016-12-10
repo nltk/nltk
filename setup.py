@@ -71,38 +71,38 @@ natural language processing.  NLTK requires Python 2.7, or 3.4+.""",
     install_requires = ['six>=1.10.0'],
     extras_require = {
         'all': [
-            'nose>=1.3.0',
-            'tox>=1.6.1',
-            'coverage>=3.7.1',
-            'pylint>=1.1.0',
-            'numpy>=1.8.0',
-            'scipy>=0.13.2',
-            'matplotlib>=1.3.1',
-            'scikit-learn>=0.14.1',
-            'python-crfsuite>=0.8.2',
-            'gensim>=0.11.1',
-            'pyparsing>=2.0.3',
-            'twython>=3.2.0'
+            'nose',
+            'tox',
+            'coverage',
+            'pylint',
+            'numpy',
+            'scipy',
+            'matplotlib',
+            'scikit-learn',
+            'python-crfsuite',
+            'gensim',
+            'pyparsing',
+            'twython'
         ],
         'machine_learning': [
-            'gensim>=0.11.1',
-            'numpy>=1.8.0',
-            'pyparsing>=2.0.3',
-            'python-crfsuite>=0.8.2',
-            'scikit-learn>=0.14.1',
-            'scipy>=0.13.2'
+            'gensim',
+            'numpy',
+            'pyparsing',
+            'python-crfsuite',
+            'scikit-learn',
+            'scipy'
         ],
         'plot': [
-            'matplotlib>=1.3.1',
+            'matplotlib',
         ],
         'tests': [
-            'coverage>=3.7.1',
-            'nose>=1.3.0',
-            'pylint>=1.1.0',
-            'tox>=1.6.1'
+            'coverage',
+            'nose',
+            'pylint',
+            'tox'
         ],
         'twitter': [
-            'twython>=3.2.0'
+            'twython'
         ]
     },
     packages = find_packages(),
