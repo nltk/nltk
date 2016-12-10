@@ -29,6 +29,33 @@ with open(version_file) as fh:
 # setuptools
 from setuptools import setup, find_packages
 
+# Specify groups of optional dependencies
+extras_require = {
+    'machine_learning': [
+        'gensim',
+        'numpy',
+        'pyparsing',
+        'python-crfsuite',
+        'scikit-learn',
+        'scipy'
+    ],
+    'plot': [
+        'matplotlib',
+    ],
+    'tests': [
+        'coverage',
+        'nose',
+        'pylint',
+        'tox'
+    ],
+    'twitter': [
+        'twython'
+    ]
+}
+
+# Add a group made up of all optional dependencies
+extras_require['all'] = set(package for group in extras_require.values() for package in group)
+
 setup(
     name = "nltk",
     description = "Natural Language Toolkit",
@@ -69,42 +96,7 @@ natural language processing.  NLTK requires Python 2.7, or 3.4+.""",
     ],
     package_data = {'nltk': ['test/*.doctest', 'VERSION']},
     install_requires = ['six>=1.10.0'],
-    extras_require = {
-        'all': [
-            'nose',
-            'tox',
-            'coverage',
-            'pylint',
-            'numpy',
-            'scipy',
-            'matplotlib',
-            'scikit-learn',
-            'python-crfsuite',
-            'gensim',
-            'pyparsing',
-            'twython'
-        ],
-        'machine_learning': [
-            'gensim',
-            'numpy',
-            'pyparsing',
-            'python-crfsuite',
-            'scikit-learn',
-            'scipy'
-        ],
-        'plot': [
-            'matplotlib',
-        ],
-        'tests': [
-            'coverage',
-            'nose',
-            'pylint',
-            'tox'
-        ],
-        'twitter': [
-            'twython'
-        ]
-    },
+    extras_require = extras_require,
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
     )
