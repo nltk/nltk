@@ -34,7 +34,6 @@ extras_require = {
     'machine_learning': [
         'gensim',
         'numpy',
-        'pyparsing',
         'python-crfsuite',
         'scikit-learn',
         'scipy'
@@ -47,6 +46,9 @@ extras_require = {
         'nose',
         'pylint',
         'tox'
+    ],
+    'tgrep': [
+        'pyparsing',
     ],
     'twitter': [
         'twython'
