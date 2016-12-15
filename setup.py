@@ -41,12 +41,6 @@ extras_require = {
     'plot': [
         'matplotlib',
     ],
-    'tests': [
-        'coverage',
-        'nose',
-        'pylint',
-        'tox'
-    ],
     'tgrep': [
         'pyparsing',
     ],
