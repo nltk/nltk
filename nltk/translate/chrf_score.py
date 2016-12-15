@@ -55,8 +55,8 @@ def sentence_chrf(reference, hypothesis, min_len=1, max_len=6, beta=3.0):
         ...            'always obeys the commands of the party')
         >>> sentence_chrf(ref1, hyp1) # doctest: +ELLIPSIS
         0.6768...
-        >>> type(ref1), type(hyp1)
-        (<type 'str'>, <type 'str'>)
+        >>> type(ref1) == type(hyp1) == str
+        True
         >>> sentence_chrf(ref1.split(), hyp1.split()) # doctest: +ELLIPSIS
         0.6768...
 
