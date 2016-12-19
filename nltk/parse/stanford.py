@@ -216,7 +216,7 @@ class GenericStanfordParser(ParserI):
                                       stdout=PIPE, stderr=PIPE)
                 
             stdout = stdout.replace(b'\xc2\xa0',b' ')
-            stdout = stdout.replace(b'\xa0',b' ')
+            stdout = stdout.replace(b'\x00\xa0',b' ')
             stdout = stdout.decode(encoding)
 
         os.unlink(input_file.name)
