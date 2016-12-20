@@ -540,15 +540,15 @@ class MosesDetokenizer(TokenizerI):
                 normalized_quo = token
                 if re.match(r'^[„“”]+$', token):
                     normalized_quo = '"'
-                quote_count.get(normalized_quo, 0)
+                quote_counts.get(normalized_quo, 0)
                 
                 if self.lang == 'cs' and token == u"„":
-                    quote_count[normalized_quo] = 0
+                    quote_counts[normalized_quo] = 0
                 if self.lang == 'cs' and token == u"“":
-                    quote_count[normalized_quo] = 1
+                    quote_counts[normalized_quo] = 1
             
             
-                if quote_count[normalized_quo] % 2 == 0:
+                if quote_counts[normalized_quo] % 2 == 0:
                     if (self.lang == 'en' and token == u"'" and i > 0 
                         and re.match(r'[s]$', tokens[i-1]) ):
                         # Left shift on single quote for possessives ending
@@ -559,12 +559,12 @@ class MosesDetokenizer(TokenizerI):
                         # Right shift.
                         detokenized_text += prepend_space + token
                         prepend_space = ""
-                        quote_count[normalized_quo] += 1
+                        quote_counts[normalized_quo] += 1
                 else:
                     # Left shift.
                     text += token
                     prepend_space = " "
-                    quote_count[normalized_quo] += 1
+                    quote_counts[normalized_quo] += 1
             
             elif (self.lang == 'fi' and re.match(r':$', tokens[i-1])
                   and re.match(self.FINNISH_REGEX, token)):
