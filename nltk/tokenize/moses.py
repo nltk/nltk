@@ -469,7 +469,7 @@ class MosesDetokenizer(TokenizerI):
         # Unescape the XML symbols.
         text = self.unescape_xml(text)
         # Keep track of no. of quotation marks.
-        quote_counts = {u"'":0 , u'"':0}
+        quote_counts = {u"'":0 , u'"':0, u"``":0, u"`":0, u"''":0}
         
         # The *prepend_space* variable is used to control the "effects" of 
         # detokenization as the function loops through the list of tokens and
