@@ -156,20 +156,24 @@ class MosesTokenizer(TokenizerI):
     CLEAN_EXTRA_SPACE_2 = r'^ *', r''
     CLEAN_EXTRA_SPACE_3 = r' *$', r''
 
-    # Escape special characters.
-    ESCAPE_AMPERSAND = r'\&', r'\&amp;'
-    ESCAPE_PIPE = r'\|', r'\&#124;'
-    ESCAPE_LEFT_ANGLE_BRACKET = r'\<', r'\&lt;'
-    ESCAPE_RIGHT_ANGLE_BRACKET = r'\>', r'\&gt;'
-    ESCAPE_SINGLE_QUOTE = r"\'", r"\&apos;"
-    ESCAPE_DOUBLE_QUOTE = r'\"', r'\&quot;'
-    ESCAPE_LEFT_SQUARE_BRACKET = r"\[", r"\&#91;"
-    ESCAPE_RIGHT_SQUARE_BRACKET = r"\]", r"\&#93;"
+    # Neurotic Perl regexes to escape special characters.
+    # These XML escaping regexes are kept such that tokens generated from
+    # NLTK's implementation is consistent with Moses' tokenizer's output.
+    # Outside of the MosesTokenizer function, it's strongly encouraged to use
+    # nltk.tokenize.util.xml_escape() function instead.
+    ESCAPE_AMPERSAND = r'&', r'&amp;'
+    ESCAPE_PIPE = r'\|', r'&#124;'
+    ESCAPE_LEFT_ANGLE_BRACKET = r'<', r'&lt;'
+    ESCAPE_RIGHT_ANGLE_BRACKET = r'>', r'&gt;'
+    ESCAPE_SINGLE_QUOTE = r"\'", r"&apos;"
+    ESCAPE_DOUBLE_QUOTE = r'\"', r'&quot;'
+    ESCAPE_LEFT_SQUARE_BRACKET = r"\[", r"&#91;"
+    ESCAPE_RIGHT_SQUARE_BRACKET = r"]", r"&#93;"
 
     EN_SPECIFIC_1 = u"([^{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
     EN_SPECIFIC_2 = u"([^{alpha}{isn}])[']([{alpha}])".format(alpha=IsAlpha, isn=IsN), r"\1 ' \2"
     EN_SPECIFIC_3 = u"([{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
-    EN_SPECIFIC_4 = u"([{alpha}])[']([{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
+    EN_SPECIFIC_4 = u"([{alpha}])[']([{alpha}])".format(alpha=IsAlpha), r"\1 '\2"
     EN_SPECIFIC_5 = u"([{isn}])[']([s])".format(isn=IsN), r"\1 '\2"
 
     ENGLISH_SPECIFIC_APOSTROPHE = [EN_SPECIFIC_1, EN_SPECIFIC_2, EN_SPECIFIC_3,
@@ -250,7 +254,7 @@ class MosesTokenizer(TokenizerI):
         return not set(text).difference(set(IsAlpha))
 
     def has_numeric_only(self, text):
-        return bool(re.match(r'(.*)[\s]+(\#NUMERIC_ONLY\#)', text))
+        return bool(re.search(r'(.*)[\s]+(\#NUMERIC_ONLY\#)', text))
 
     def handles_nonbreaking_prefixes(self, text):
         # Splits the text into tokens to check for nonbreaking prefixes.
@@ -258,7 +262,7 @@ class MosesTokenizer(TokenizerI):
         num_tokens = len(tokens)
         for i, token in enumerate(tokens):
             # Checks if token ends with a fullstop.
-            token_ends_with_period = re.match(r'^(\S+)\.$', text)
+            token_ends_with_period = re.search(r'^(\S+)\.$', text)
             if token_ends_with_period:
                 prefix = token_ends_with_period.group(0)
                 # Checks for 3 conditions if
@@ -275,7 +279,7 @@ class MosesTokenizer(TokenizerI):
                 # Checks if the prefix is in NUMERIC_ONLY_PREFIXES
                 # and ensures that the next word is a digit.
                 elif (prefix in self.NUMERIC_ONLY_PREFIXES and
-                      re.match(r'^[0-9]+', token[i+1])):
+                      re.search(r'^[0-9]+', token[i+1])):
                     pass # No change to the token.
                 else: # Otherwise, adds a space after the tokens before a dot.
                     tokens[i] = prefix + ' .'
@@ -397,18 +401,18 @@ class MosesDetokenizer(TokenizerI):
     ONE_SPACE = re.compile(r' {2,}'), ' '
 
     # Unescape special characters.
-    UNESCAPE_FACTOR_SEPARATOR = r'\&#124;', r'\|'
-    UNESCAPE_LEFT_ANGLE_BRACKET = r'\&lt;', r'\<'
-    UNESCAPE_RIGHT_ANGLE_BRACKET = r'\&gt;', r'\>'
-    UNESCAPE_DOUBLE_QUOTE = r'\&quot;', r'\"'
-    UNESCAPE_SINGLE_QUOTE = r"\&apos;", r"\'"
-    UNESCAPE_SYNTAX_NONTERMINAL_LEFT = r'\&#91;', r'\['
-    UNESCAPE_SYNTAX_NONTERMINAL_RIGHT = r'\&#93;', r'\]'
-    UNESCAPE_AMPERSAND = r'\&amp;', r'\&'
+    UNESCAPE_FACTOR_SEPARATOR = r'&#124;', r'|'
+    UNESCAPE_LEFT_ANGLE_BRACKET = r'&lt;', r'<'
+    UNESCAPE_RIGHT_ANGLE_BRACKET = r'&gt;', r'>'
+    UNESCAPE_DOUBLE_QUOTE = r'&quot;', r'"'
+    UNESCAPE_SINGLE_QUOTE = r"&apos;", r"'"
+    UNESCAPE_SYNTAX_NONTERMINAL_LEFT = r'&#91;', r'['
+    UNESCAPE_SYNTAX_NONTERMINAL_RIGHT = r'&#93;', r']'
+    UNESCAPE_AMPERSAND = r'&amp;', r'&'
     # The legacy regexes are used to support outputs from older Moses versions.
-    UNESCAPE_FACTOR_SEPARATOR_LEGACY = r'\&bar;', r'\|'
-    UNESCAPE_SYNTAX_NONTERMINAL_LEFT_LEGACY = r'\&bra;', r'\['
-    UNESCAPE_SYNTAX_NONTERMINAL_RIGHT_LEGACY = r'\&ket;', r'\]'
+    UNESCAPE_FACTOR_SEPARATOR_LEGACY = r'&bar;', r'|'
+    UNESCAPE_SYNTAX_NONTERMINAL_LEFT_LEGACY = r'&bra;', r'['
+    UNESCAPE_SYNTAX_NONTERMINAL_RIGHT_LEGACY = r'&ket;', r']'
 
 
     MOSES_UNESCAPE_XML_REGEXES = [UNESCAPE_FACTOR_SEPARATOR_LEGACY,
@@ -496,49 +500,49 @@ class MosesDetokenizer(TokenizerI):
                 detokenized_text += prepend_space + token
                 prepend_space = ""
 
-            elif re.match(r'^[\,\.\?\!\:\;\\\%\}\]\)]+$', token):
+            elif re.search(r'^[\,\.\?\!\:\;\\\%\}\]\)]+$', token):
                 # In French, these punctuations are prefixed with a non-breakable space.
-                if self.lang == 'fr' and re.match(r'^[\?\!\:\;\\\%]$', token):
+                if self.lang == 'fr' and re.search(r'^[\?\!\:\;\\\%]$', token):
                     detokenized_text += " "
                 # Perform left shift on punctuation items.
                 detokenized_text += token
                 prepend_space = " "
 
             elif (self.lang == 'en' and i > 0
-                  and re.match(u'^[\'][{}]'.format(self.IsAlpha), token)
-                  and re.match(u'[{}]'.format(self.IsAlnum), token)):
+                  and re.search(u"^[\'][{}]".format(self.IsAlpha), token)):
+                  #and re.search(u'[{}]$'.format(self.IsAlnum), tokens[i-1])):
                 # For English, left-shift the contraction.
                 detokenized_text += token
                 prepend_space = " "
 
             elif (self.lang == 'cs' and i > 1
-                  and re.match(r'^[0-9]+$', tokens[-2]) # If the previous previous token is a number.
-                  and re.match(r'^[.,]$', tokens[-1]) # If previous token is a dot.
-                  and re.match(r'^[0-9]+$', token)): # If the current token is a number.
+                  and re.search(r'^[0-9]+$', tokens[-2]) # If the previous previous token is a number.
+                  and re.search(r'^[.,]$', tokens[-1]) # If previous token is a dot.
+                  and re.search(r'^[0-9]+$', token)): # If the current token is a number.
                 # In Czech, left-shift floats that are decimal numbers.
                 detokenized_text += token
                 prepend_space = " "
 
             elif (self.lang in ['fr', 'it'] and i <= len(tokens)-2
-                  and re.match(u'[{}][\']$'.format(self.IsAlpha), token)
-                  and re.match(u'^[{}]$'.format(self.IsAlpha), tokens[i+1])): # If the next token is alpha.
+                  and re.search(u'[{}][\']$'.format(self.IsAlpha), token)
+                  and re.search(u'^[{}]$'.format(self.IsAlpha), tokens[i+1])): # If the next token is alpha.
                 # For French and Italian, right-shift the contraction.
                 detokenized_text += prepend_space + token
                 prepend_space = ""
 
             elif (self.lang == 'cs' and i <= len(tokens)-3
-                  and re.match(u'[{}][\']$'.format(self.IsAlpha), token)
-                  and re.match(u'^[-–]$', tokens[i+1])
-                  and re.match(u'^li$|^mail.*', tokens[i+2], re.IGNORECASE)): # In Perl, ($words[$i+2] =~ /^li$|^mail.*/i)
+                  and re.search(u'[{}][\']$'.format(self.IsAlpha), token)
+                  and re.search(u'^[-–]$', tokens[i+1])
+                  and re.search(u'^li$|^mail.*', tokens[i+2], re.IGNORECASE)): # In Perl, ($words[$i+2] =~ /^li$|^mail.*/i)
                 # In Czech, right-shift "-li" and a few Czech dashed words (e.g. e-mail)
                 detokenized_text += prepend_space + token + tokens[i+1]
                 next(tokens, None) # Advance over the dash
                 prepend_space = ""
 
             # Combine punctuation smartly.
-            elif re.match(r'''^[\'\"„“`]+$''', token):
+            elif re.search(r'''^[\'\"„“`]+$''', token):
                 normalized_quo = token
-                if re.match(r'^[„“”]+$', token):
+                if re.search(r'^[„“”]+$', token):
                     normalized_quo = '"'
                 quote_counts.get(normalized_quo, 0)
 
@@ -550,7 +554,7 @@ class MosesDetokenizer(TokenizerI):
 
                 if quote_counts[normalized_quo] % 2 == 0:
                     if (self.lang == 'en' and token == u"'" and i > 0
-                        and re.match(r'[s]$', tokens[i-1]) ):
+                        and re.search(r'[s]$', tokens[i-1]) ):
                         # Left shift on single quote for possessives ending
                         # in "s", e.g. "The Jones' house"
                         detokenized_text += token
@@ -566,8 +570,8 @@ class MosesDetokenizer(TokenizerI):
                     prepend_space = " "
                     quote_counts[normalized_quo] += 1
 
-            elif (self.lang == 'fi' and re.match(r':$', tokens[i-1])
-                  and re.match(self.FINNISH_REGEX, token)):
+            elif (self.lang == 'fi' and re.search(r':$', tokens[i-1])
+                  and re.search(self.FINNISH_REGEX, token)):
                 # Finnish : without intervening space if followed by case suffix
                 # EU:N EU:n EU:ssa EU:sta EU:hun EU:iin ...
                 detokenized_text += prepend_space + token
