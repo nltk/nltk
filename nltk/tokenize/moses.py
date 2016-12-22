@@ -389,6 +389,18 @@ class MosesDetokenizer(TokenizerI):
     >>> detokenized_text = detokenizer.detokenize(tokenized_text.split(), return_str=True)
     >>> detokenized_text == expected_detokenized
     True
+
+    >>> from nltk.tokenize.moses import MosesTokenizer, MosesDetokenizer
+    >>> t, d = MosesTokenizer(), MosesDetokenizer()
+    >>> sent = "This ain't funny. It's actually hillarious, yet double Ls. | [] < > [ ] & You're gonna shake it off? Don't?"
+    >>> expected_tokens = [u'This', u'ain', u'&apos;t', u'funny.', u'It', u'&apos;s', u'actually', u'hillarious', u',', u'yet', u'double', u'Ls.', u'&#124;', u'&#91;', u'&#93;', u'&lt;', u'&gt;', u'&#91;', u'&#93;', u'&amp;', u'You', u'&apos;re', u'gonna', u'shake', u'it', u'off', u'?', u'Don', u'&apos;t', u'?']
+    >>> expected_detokens = "This ain't funny. It's actually hillarious, yet double Ls. | [] < > [] & You're gonna shake it off? Don't?"
+    >>> tokens = t.tokenize(sent)
+    >>> tokens == expected_tokens
+    True
+    >>> detokens = d.detokenize(tokens)
+    >>> " ".join(detokens) == expected_detokens
+    True
     """
     # Currency Symbols.
     IsAlnum = text_type(''.join(perluniprops.chars('IsAlnum')))
