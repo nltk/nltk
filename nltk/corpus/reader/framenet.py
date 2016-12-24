@@ -441,11 +441,22 @@ def _annotation_ascii_frames(sent):
     s2 = ''
     i = 0
     adjust = 0
+    fAbbrevs = OrderedDict()
     for j,k,fname,asetIndex in overt:
         if not j>=i:
             assert j>=i,('Overlapping targets?'+(' UNANN' if any(aset.status=='UNANN' for aset in sent.annotationSet[1:]) else ''),(j,k,asetIndex))
         s1 += ' '*(j-i) + '*'*(k-j)
-        s11 += ' '*(j-i) + fname[:k-j].ljust(k-j)
+        short = fname[:k-j]
+        if (k-j)<len(fname):
+            r = 0
+            while short in fAbbrevs:
+                if fAbbrevs[short]==fname:
+                    break
+                r += 1
+                short = fname[:k-j-1] + str(r)
+            else:   # short not in fAbbrevs
+                fAbbrevs[short] = fname
+        s11 += ' '*(j-i) + short.ljust(k-j)
         if len(asetIndex)>(k-j):
             # add space in the sentence to make room for the annotation index
             amt = len(asetIndex)-(k-j)
@@ -458,7 +469,13 @@ def _annotation_ascii_frames(sent):
     
     long_lines = [s0, s1, s11, s2]
 
-    return '\n\n'.join(map('\n'.join, zip_longest(*mimic_wrap(long_lines), fillvalue=' '))).replace('~',' ')
+    outstr = '\n\n'.join(map('\n'.join, zip_longest(*mimic_wrap(long_lines), fillvalue=' '))).replace('~',' ')
+    outstr += '\n'
+    if fAbbrevs:
+        outstr += ' ('+', '.join('='.join(pair) for pair in fAbbrevs.items())+')'
+        assert len(fAbbrevs)==len(dict(fAbbrevs)),'Abbreviation clash'
+    
+    return outstr
 
 def _annotation_ascii_FE_layer(overt, ni, feAbbrevs):
     '''Helper for _annotation_ascii_FEs().'''
