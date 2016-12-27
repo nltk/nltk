@@ -580,6 +580,3 @@ class SmoothingFunction:
         p_n = self.method4(p_n, references, hypothesis, hyp_len)
         p_n = self.method5(p_n, references, hypothesis, hyp_len)
         return p_n
-
-
-# python -c "from nltk import bleu; from nltk.translate.bleu_score import SmoothingFunction; chencherry = SmoothingFunction(); print (bleu(['let it go'.split()], 'let go it'.split(), auto_reweigh=True, smoothing_function=chencherry.method4))"
