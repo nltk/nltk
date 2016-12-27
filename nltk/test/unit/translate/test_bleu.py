@@ -123,7 +123,11 @@ class TestBLEU(unittest.TestCase):
         references = ['John loves Mary'.split()]
         hypothesis = 'John loves Mary who loves Mike'.split()
         self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.4729, places=4)
-
+        # Checks that the warning has been raised because len(reference) < 4.
+        try:
+            self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
+        except AttributeError:
+            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
 
 #@unittest.skip("Skipping fringe cases for BLEU.")
 class TestBLEUFringeCases(unittest.TestCase):
@@ -135,6 +139,11 @@ class TestBLEUFringeCases(unittest.TestCase):
         n = len(hypothesis) + 1 #
         weights = [1.0/n] * n # Uniform weights.
         self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.7165, places=4)
+        # Checks that the warning has been raised because len(hypothesis) < 4.
+        try:
+            self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
+        except AttributeError:
+            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
 
         # Test case where n > len(hypothesis) but so is n > len(reference), and
         # it's a special case where reference == hypothesis.
@@ -160,6 +169,18 @@ class TestBLEUFringeCases(unittest.TestCase):
         hypothesis = []
         assert(sentence_bleu(references, hypothesis) == 0)
 
+    def test_reference_or_hypothesis_shorter_than_fourgrams(self):
+        # Tese case where the length of reference or hypothesis
+        # is shorter than 4.
+        references = ['let it go'.split()]
+        hypothesis = 'let go it'.split()
+        # Checks that the value the hypothesis and reference returns is 1.0
+        assert(sentence_bleu(references, hypothesis) == 1.0)
+        # Checks that the warning has been raised.
+        try:
+            self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
+        except AttributeError:
+            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
 
 class TestBLEUvsMteval13a(unittest.TestCase):
 
