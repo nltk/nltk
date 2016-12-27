@@ -12,6 +12,7 @@ from __future__ import division
 
 import math
 import fractions
+import warnings
 from collections import Counter
 
 from nltk.util import ngrams
@@ -24,7 +25,7 @@ except TypeError:
 
 
 def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
-                  smoothing_function=None):
+                  smoothing_function=None, auto_reweigh=False):
     """
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
@@ -64,8 +65,8 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     weights:
 
     >>> weights = (0.1666, 0.1666, 0.1666, 0.1666, 0.1666)
-    >>> sentence_bleu([reference1, reference2, reference3], hypothesis1, weights)
-    0.45838627164939455
+    >>> sentence_bleu([reference1, reference2, reference3], hypothesis1, weights) # doctest: +ELLIPSIS
+    0.4583...
 
     :param references: reference sentences
     :type references: list(list(str))
@@ -76,11 +77,12 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     :return: The sentence-level BLEU score.
     :rtype: float
     """
-    return corpus_bleu([references], [hypothesis], weights, smoothing_function)
+    return corpus_bleu([references], [hypothesis],
+                        weights, smoothing_function, auto_reweigh)
 
 
 def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25),
-                smoothing_function=None):
+                smoothing_function=None, auto_reweigh=False):
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
@@ -156,6 +158,12 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     # Calculate corpus-level brevity penalty.
     bp = brevity_penalty(ref_lengths, hyp_lengths)
 
+    # Uniformly re-weighting based on maximum hypothesis lengths if largest
+    # order of n-grams < 4 and weights is set at default.
+    if auto_reweigh:
+        if hyp_lengths < 4 and weights == (0.25, 0.25, 0.25, 0.25):
+            weights = ( 1 / hyp_lengths ,) * hyp_lengths
+
     # Collects the various precision values for the different ngram orders.
     p_n = [Fraction(p_numerators[i], p_denominators[i], _normalize=False)
            for i, _ in enumerate(weights, start=1)]
@@ -166,17 +174,16 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     if p_numerators[1] == 0:
         return 0
 
-    if not smoothing_function: # No smoothing, values remain as Fractions.
-        s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n))
-             if p_i.numerator != 0)
-    else: # Smoothen the modified precision.
-        # Note: smoothing_function() may convert values into floats;
-        #       it tries to retain the Fraction object as much as the
-        #       smoothing method allows.
-        p_n = smoothing_function(p_n, references=references,
-                                 hypothesis=hypothesis, hyp_len=hyp_len)
-        s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n)))
-
+    # If there's no smoothing, set use method0 from SmoothinFunction class.
+    if not smoothing_function:
+        smoothing_function = SmoothingFunction().method0
+    # Smoothen the modified precision.
+    # Note: smoothing_function() may convert values into floats;
+    #       it tries to retain the Fraction object as much as the
+    #       smoothing method allows.
+    p_n = smoothing_function(p_n, references=references,
+                             hypothesis=hypothesis, hyp_len=hyp_len)
+    s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n)))
     return bp * math.exp(math.fsum(s))
 
 
@@ -454,7 +461,19 @@ class SmoothingFunction:
 
     def method0(self, p_n, *args, **kwargs):
         """ No smoothing. """
-        return p_n
+        p_n_new = []
+        for i, p_i in enumerate(p_n):
+            if p_i.numerator != 0:
+                p_n_new.append(p_i)
+            else:
+                _msg = str("\nCorpus/Sentence contains 0 counts of {}-grams overlaps.\n"
+                           "BLEU scores might be undesireable; "
+                           "use SmoothingFunction().").format(i+1)
+                warnings.warn(_msg)
+                # If this order of n-gram returns 0 counts, the higher order
+                # n-gram would also return 0, thus breaking the loop here.
+                break
+        return p_n_new
 
     def method1(self, p_n, *args, **kwargs):
         """
@@ -502,11 +521,10 @@ class SmoothingFunction:
         smaller smoothed counts. Instead of scaling to 1/(2^k), Chen and Cherry
         suggests dividing by 1/ln(len(T)), where T is the length of the translation.
         """
-        incvnt = 1
         for i, p_i in enumerate(p_n):
             if p_i.numerator == 0 and hyp_len != 0:
-                p_n[i] = incvnt * self.k / math.log(hyp_len) # Note that this K is different from the K from NIST.
-                incvnt+=1
+                incvnt = i+1 * self.k / math.log(hyp_len) # Note that this K is different from the K from NIST.
+                p_n[i] = 1 / incvnt
         return p_n
 
 
@@ -531,8 +549,14 @@ class SmoothingFunction:
         Smoothing method 6:
         Interpolates the maximum likelihood estimate of the precision *p_n* with
         a prior estimate *pi0*. The prior is estimated by assuming that the ratio
-        between pn and pn−1 will be the same as that between pn−1 and pn−2.
+        between pn and pn−1 will be the same as that between pn−1 and pn−2; from
+        Gao and He (2013) Training MRF-Based Phrase Translation Models using
+        Gradient Ascent. In NAACL.
         """
+        # This smoothing only works when p_1 and p_2 is non-zero.
+        # Raise an error with an appropriate message when the input is too short
+        # to use this smoothing technique.
+        assert p_n[2], "This smoothing method requires non-zero precision for bigrams."
         for i, p_i in enumerate(p_n):
             if i in [0,1]: # Skips the first 2 orders of ngrams.
                 continue
