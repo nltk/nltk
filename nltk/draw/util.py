@@ -676,7 +676,6 @@ class CanvasWidget(object):
         """
         pass
 
-    @abstractmethod
     def _manage(self):
         """
         Arrange the child widgets of this canvas widget.  This method
@@ -688,7 +687,6 @@ class CanvasWidget(object):
         """
         pass
 
-    @abstractmethod
     def _update(self, child):
         """
         Update this canvas widget in response to a change in one of
