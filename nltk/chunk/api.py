@@ -10,10 +10,14 @@
 ##  Chunk Parser Interface
 ##//////////////////////////////////////////////////////
 
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
+
 from nltk.parse import ParserI
 
 from nltk.chunk.util import ChunkScore
 
+@add_metaclass(ABCMeta)
 class ChunkParserI(ParserI):
     """
     A processing interface for identifying non-overlapping groups in
@@ -22,6 +26,7 @@ class ChunkParserI(ParserI):
     ``ParserI``, ``ChunkParserI`` guarantees that the ``parse()`` method
     will always generate a parse.
     """
+    @abstractmethod
     def parse(self, tokens):
         """
         Return the best chunk structure for the given tokens
@@ -31,7 +36,7 @@ class ChunkParserI(ParserI):
         :type tokens: list(tuple)
         :rtype: Tree
         """
-        raise NotImplementedError()
+        pass
 
     def evaluate(self, gold):
         """
@@ -48,4 +53,3 @@ class ChunkParserI(ParserI):
         for correct in gold:
             chunkscore.score(correct, self.parse(correct.leaves()))
         return chunkscore
-
