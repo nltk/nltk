@@ -270,6 +270,7 @@ class BottomUpProbabilisticChartParser(ParserI):
 
         tree.set_prob(prob)
 
+    @abstractmethod
     def sort_queue(self, queue, chart):
         """
         Sort the given queue of ``Edge`` objects, placing the edge that should
@@ -286,7 +287,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         :type chart: Chart
         :rtype: None
         """
-        raise NotImplementedError()
+        pass
 
     def _prune(self, queue, chart):
         """ Discard items in the queue if the queue is longer than the beam."""

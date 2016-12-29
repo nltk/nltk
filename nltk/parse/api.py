@@ -7,10 +7,13 @@
 # For license information, see LICENSE.TXT
 #
 
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 import itertools
 
 from nltk.internals import overridden
 
+@add_metaclass(ABCMeta)
 class ParserI(object):
     """
     A processing class for deriving trees that represent possible
@@ -26,12 +29,14 @@ class ParserI(object):
     Subclasses may define:
       - ``grammar()``
     """
+    @abstractmethod
     def grammar(self):
         """
         :return: The grammar used by this parser.
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def parse(self, sent, *args, **kwargs):
         """
         :return: An iterator that generates parse trees for the sentence.
@@ -48,7 +53,7 @@ class ParserI(object):
         elif overridden(self.parse_all):
             return iter(self.parse_all(sent, *args, **kwargs))
         else:
-            raise NotImplementedError()
+            pass
 
     def parse_sents(self, sents, *args, **kwargs):
         """
