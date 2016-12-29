@@ -136,6 +136,7 @@
 - Alberto Planas
 - Ondrej Platek
 - Alessandro Presta
+- Qi Liu
 - Martin Thorsen Ranang
 - Michael Recachinas
 - Brandon Rhodes
