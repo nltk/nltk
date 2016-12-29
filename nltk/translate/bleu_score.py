@@ -466,8 +466,8 @@ class SmoothingFunction:
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
             else:
-                _msg = str("\nCorpus/Sentence contains 0 counts of {}-grams overlaps.\n"
-                           "BLEU scores might be undesireable; "
+                _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
+                           "BLEU scores might be undesirable; "
                            "use SmoothingFunction().").format(i+1)
                 warnings.warn(_msg)
                 # If this order of n-gram returns 0 counts, the higher order
