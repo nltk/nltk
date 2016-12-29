@@ -12,6 +12,8 @@ This module provides an interface for TweetHandlers, and support for timezone
 handling.
 """
 
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 from datetime import tzinfo, timedelta, datetime
 from nltk.compat import UTC
 import time as _time
@@ -44,6 +46,7 @@ class LocalTimezoneOffsetWithUTC(tzinfo):
 
 LOCAL = LocalTimezoneOffsetWithUTC()
 
+@add_metaclass(ABCMeta)
 class BasicTweetHandler(object):
     """
     Minimal implementation of `TweetHandler`.
@@ -101,17 +104,19 @@ class TweetHandlerI(BasicTweetHandler):
 
         self.startingup = True
 
+    @abstractmethod
     def handle(self, data):
         """
         Deal appropriately with data returned by the Twitter API
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def on_finish(self):
         """
         Actions when the tweet limit has been reached
         """
-        raise NotImplementedError
+        pass
 
     def check_date_limit(self, data, verbose=False):
         """
