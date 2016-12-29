@@ -5,10 +5,14 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
+
 from nltk.internals import raise_unorderable_types
 from nltk.compat import (total_ordering, python_2_unicode_compatible,
                          unicode_repr)
 
+@add_metaclass(ABCMeta)
 @total_ordering
 class AbstractCCGCategory(object):
     '''
@@ -16,32 +20,37 @@ class AbstractCCGCategory(object):
     '''
 
     # Returns true if the category is primitive
+    @abstractmethod
     def is_primitive(self):
-        raise NotImplementedError()
+        pass
 
     # Returns true if the category is a function application
+    @abstractmethod
     def is_function(self):
-        raise NotImplementedError()
+        pass
 
     # Returns true if the category is a variable
+    @abstractmethod
     def is_var(self):
-        raise NotImplementedError()
+        pass
 
     # Takes a set of (var, category) substitutions, and replaces every
     # occurrence of the variable with the corresponding category
+    @abstractmethod
     def substitute(self,substitutions):
-        raise NotImplementedError()
+        pass
 
     # Determines whether two categories can be unified.
     #  - Returns None if they cannot be unified
     #  - Returns a list of necessary substitutions if they can.'''
+    @abstractmethod
     def can_unify(self,other):
-        raise NotImplementedError()
+        pass
 
     # Utility functions: comparison, strings and hashing.
-
+    @abstractmethod
     def __str__(self):
-        raise NotImplementedError()
+        pass
 
     def __eq__(self, other):
         return (self.__class__ is other.__class__ and
@@ -335,5 +344,3 @@ class FunctionalCategory(AbstractCCGCategory):
 
     def __str__(self):
         return "(%s%s%s)" % (self._res, self._dir, self._arg)
-
-
