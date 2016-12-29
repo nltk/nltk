@@ -33,6 +33,8 @@ structures.  For more information, see the CLIG
 homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 from six.moves.tkinter import (Button, Canvas, Entry, Frame, Label, Menu,
                                Menubutton, Scrollbar, StringVar, Text, Tk,
                                Toplevel, Widget, RAISED)
@@ -44,6 +46,8 @@ from nltk.util import in_idle
 ##  CanvasWidget
 ##//////////////////////////////////////////////////////
 
+
+@add_metaclass(ABCMeta)
 class CanvasWidget(object):
     """
     A collection of graphical elements and bindings used to display a
@@ -661,6 +665,7 @@ class CanvasWidget(object):
     ##  Defined by subclass
     ##//////////////////////////////////////////////////////
 
+    @abstractmethod
     def _tags(self):
         """
         :return: a list of canvas tags for all graphical elements
@@ -668,7 +673,6 @@ class CanvasWidget(object):
             elements managed by its child widgets.
         :rtype: list of int
         """
-        raise NotImplementedError()
 
     def _manage(self):
         """
@@ -679,7 +683,6 @@ class CanvasWidget(object):
 
         :rtype: None
         """
-        pass
 
     def _update(self, child):
         """
@@ -690,7 +693,6 @@ class CanvasWidget(object):
         :type child: CanvasWidget
         :rtype: None
         """
-        pass
 
 ##//////////////////////////////////////////////////////
 ##  Basic widgets.
@@ -2034,15 +2036,15 @@ class ColorizedList(object):
     #////////////////////////////////////////////////////////////
     # Abstract methods
     #////////////////////////////////////////////////////////////
-
+    @abstractmethod
     def _init_colortags(self, textwidget, options):
         """
         Set up any colortags that will be used by this colorized list.
         E.g.:
             >>> textwidget.tag_config('terminal', foreground='black')
         """
-        raise NotImplementedError()
 
+    @abstractmethod
     def _item_repr(self, item):
         """
         Return a list of (text, colortag) tuples that make up the
@@ -2050,7 +2052,6 @@ class ColorizedList(object):
         representations may not span multiple lines.  I.e., the text
         strings returned may not contain newline characters.
         """
-        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Item Access
