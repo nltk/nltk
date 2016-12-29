@@ -88,6 +88,7 @@
 - Edward Ivanovic
 - Thomas Jakobsen
 - Nick Johnson
+- Naoya Kanai
 - Piotr Kasprzyk
 - Angelos Katharopoulos
 - Sudharshan Kaushik
