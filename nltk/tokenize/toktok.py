@@ -38,17 +38,17 @@ class ToktokTokenizer(TokenizerI):
     >>> text = u'The https://github.com/jonsafari/tok-tok/blob/master/tok-tok.pl is a website with/and/or slashes and sort of weird : things'
     >>> print (toktok.tokenize(text, return_str=True))
     The https://github.com/jonsafari/tok-tok/blob/master/tok-tok.pl is a website with/and/or slashes and sort of weird : things
-    >>> text = u'This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
-    >>> expected = u'This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
+    >>> text = u'\xa1This, is a sentence with weird\xbb symbols\u2026 appearing everywhere\xbf'
+    >>> expected = u'\xa1 This , is a sentence with weird \xbb symbols \u2026 appearing everywhere \xbf'
     >>> assert toktok.tokenize(text, return_str=True) == expected
-    >>> toktok.tokenize(text) == [u'This', u',', u'is', u'a', u'sentence', u'with', u'weird', u'\xbb', u'symbols', u'\u2026', u'appearing', u'everywhere', u'\xbf']
+    >>> toktok.tokenize(text) == [u'\xa1', u'This', u',', u'is', u'a', u'sentence', u'with', u'weird', u'\xbb', u'symbols', u'\u2026', u'appearing', u'everywhere', u'\xbf']
     True
     """
     # Replace non-breaking spaces with normal spaces.
     NON_BREAKING = re.compile(u"\u00A0"), " "
     
     # Pad some funky punctuation.
-    FUNKY_PUNCT_1 = re.compile(u'([،;؛¿!"\])}»›”؟%٪°±©®।॥…])'), r" \1 "
+    FUNKY_PUNCT_1 = re.compile(u'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "
     # Pad more funky punctuation.
     FUNKY_PUNCT_2 = re.compile(u'([({\[“‘„‚«‹「『])'), r" \1 "
     # Pad En dash and em dash

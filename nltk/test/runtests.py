@@ -16,17 +16,26 @@ NLTK_TEST_DIR = os.path.join(NLTK_ROOT, 'nltk')
 if __name__ == '__main__':
     # there shouldn't be import from NLTK for coverage to work properly
     from doctest_nose_plugin import DoctestFix
+    try:
+        # Import RedNose plugin for colored test output
+        from rednose import RedNose
+        rednose_available = True
+    except ImportError:
+        rednose_available = False
 
     class NltkPluginManager(PluginManager):
         """
         Nose plugin manager that replaces standard doctest plugin
-        with a patched version.
+        with a patched version and adds RedNose plugin for colored test output.
         """
         def loadPlugins(self):
             for plug in builtin.plugins:
                 if plug != Doctest:
                     self.addPlugin(plug())
             self.addPlugin(DoctestFix())
+            if rednose_available:
+                self.addPlugin(RedNose())
+
             super(NltkPluginManager, self).loadPlugins()
 
     manager = NltkPluginManager()
@@ -46,6 +55,13 @@ if __name__ == '__main__':
     if all(arg.startswith('-') for arg in args):
         # only extra options were passed
         args += [NLTK_TEST_DIR]
+
+    # Activate RedNose and hide skipped test messages from output
+    if rednose_available:
+        args += [
+            '--rednose',
+            '--hide-skips'
+        ]
 
     arguments = [
         '--exclude=', # why is this needed?

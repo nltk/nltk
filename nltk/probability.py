@@ -549,6 +549,7 @@ class RandomProbDist(ProbDistI):
         it can still be passed to MutableProbDist and called with identical
         syntax to UniformProbDist
         """
+        samples = set(samples)
         randrow = [random.random() for i in range(len(samples))]
         total = sum(randrow)
         for i, x in enumerate(randrow):

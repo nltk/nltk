@@ -1296,7 +1296,8 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                 else:
                     # next sentence starts at following punctuation
                     last_break = match.end()
-        yield slice(last_break, len(text))
+        # The last sentence should not contain trailing whitespace.
+        yield slice(last_break, len(text.rstrip()))
 
     def _realign_boundaries(self, text, slices):
         """
