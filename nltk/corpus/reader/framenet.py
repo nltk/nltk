@@ -1349,7 +1349,10 @@ class FramenetCorpusReader(XMLCorpusReader):
         {'ID': 256,
          'POS': 'V',
          '_type': 'lu',
+         'cBy': 'ChW',
+         'cDate': '02/08/2001 01:27:50 PST Thu',
          'definition': 'COD: be aware of beforehand; predict.',
+         'definitionMarkup': 'COD: be aware of beforehand; predict.',
          'frame': <frame ID=26 name=Expectation>,
          'lemmaID': 15082,
          'lexemes': [{'POS': 'V', 'breakBefore': 'false', 'headword': 'false', 'name': 'foresee', 'order': 1}],
@@ -1363,7 +1366,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         :return: Basic information about the lexical unit
         :rtype: dict
         """
-        return self.lu(fn_luid, ignorekeys=['subCorpus'])
+        return self.lu(fn_luid, ignorekeys=['subCorpus', 'exemplars'])
 
     def lu(self, fn_luid, ignorekeys=[], luName=None, frameID=None, frameName=None):
         """
@@ -1387,28 +1390,28 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         >>> fn.lu(227).exemplars[23]
         exemplar sentence (352962):
-        
+        <BLANKLINE>
         [sentNo] 0
         [aPos] 59699508
-        
+        <BLANKLINE>
         [LU] (227) guess.v in Coming_to_believe
-        
+        <BLANKLINE>
         [annotationSet] 2 annotation sets
-        
+        <BLANKLINE>
         [POS] 18 tags
-
+        <BLANKLINE>
         [POS_tagset] BNC
-
+        <BLANKLINE>
         [GF] 3 relations
-
+        <BLANKLINE>
         [PT] 3 phrases
-
+        <BLANKLINE>
         [text] + [Target] + [FE]
-        
+        <BLANKLINE>
         When he was inside the house , Culley noticed the characteristic
                                                       ------------------
                                                       Content
-
+        <BLANKLINE>
         he would n't have guessed at .
         --                ******* --
         Co                        C1 [Evidence:INI]
@@ -2283,7 +2286,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         >>> len(stypes)
         73
         >>> sorted(stypes[0].keys())
-        ['ID', '_type', 'abbrev', 'definition', 'name', 'rootType', 'subTypes', 'superType']
+        ['ID', '_type', 'abbrev', 'definition', 'definitionMarkup', 'name', 'rootType', 'subTypes', 'superType']
 
         :return: A list of all of the semantic types in framenet
         :rtype: list(dict)
