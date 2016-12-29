@@ -10,6 +10,8 @@
 API for corpus readers.
 """
 from __future__ import unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 import os
 import re
@@ -21,6 +23,7 @@ from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
 from nltk.corpus.reader.util import *
 
+@add_metaclass(ABCMeta)
 @compat.python_2_unicode_compatible
 class CorpusReader(object):
     """
@@ -381,14 +384,21 @@ class SyntaxCorpusReader(CorpusReader):
       - ``_parse``, which takes a block and returns a list of parsed
         sentences.
     """
+    @abstractmethod
     def _parse(self, s):
-        raise NotImplementedError()
+        pass
+
+    @abstractmethod
     def _word(self, s):
-        raise NotImplementedError()
+        pass
+
+    @abstractmethod
     def _tag(self, s):
-        raise NotImplementedError()
+        pass
+
+    @abstractmethod
     def _read_block(self, stream):
-        raise NotImplementedError()
+        pass
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
@@ -444,4 +454,3 @@ class SyntaxCorpusReader(CorpusReader):
 
     #} End of Block Readers
     #------------------------------------------------------------
-
