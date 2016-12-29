@@ -89,6 +89,7 @@ or if you plan to use them as dictionary keys, it is strongly
 recommended that you use full-fledged ``FeatStruct`` objects.
 """
 from __future__ import print_function, unicode_literals, division
+from abc import abstractmethod
 
 import re
 import copy
@@ -197,21 +198,24 @@ class FeatStruct(SubstituteBindingsI):
     # to treat all feature structures as mappings, even if they're
     # really lists.  (Lists are treated as mappings from ints to vals)
 
+    @abstractmethod
     def _keys(self):
         """Return an iterable of the feature identifiers used by this
         FeatStruct."""
-        raise NotImplementedError() # Implemented by subclasses.
+        pass
 
+    @abstractmethod
     def _values(self):
         """Return an iterable of the feature values directly defined
         by this FeatStruct."""
-        raise NotImplementedError() # Implemented by subclasses.
+        pass
 
+    @abstractmethod
     def _items(self):
         """Return an iterable of (fid,fval) pairs, where fid is a
         feature identifier and fval is the corresponding feature
         value, for all features defined by this FeatStruct."""
-        raise NotImplementedError() # Implemented by subclasses.
+        pass
 
     ##////////////////////////////////////////////////////////////
     #{ Equality & Hashing
@@ -414,8 +418,9 @@ class FeatStruct(SubstituteBindingsI):
 
     # Subclasses should define __deepcopy__ to ensure that the new
     # copy will not be frozen.
+    @abstractmethod
     def __deepcopy__(self, memo):
-        raise NotImplementedError() # Implemented by subclasses.
+        pass
 
     ##////////////////////////////////////////////////////////////
     #{ Structural Information
@@ -435,6 +440,7 @@ class FeatStruct(SubstituteBindingsI):
         """
         return self._walk(set())
 
+    @abstractmethod
     def _walk(self, visited):
         """
         Return an iterator that generates this feature structure, and
@@ -443,7 +449,7 @@ class FeatStruct(SubstituteBindingsI):
         :param visited: A set containing the ids of all feature
             structures we've already visited while freezing.
         """
-        raise NotImplementedError() # Implemented by subclasses.
+        pass
 
     def _walk(self, visited):
         if id(self) in visited: return
@@ -533,6 +539,7 @@ class FeatStruct(SubstituteBindingsI):
         """
         return self._repr(self._find_reentrances({}), {})
 
+    @abstractmethod
     def _repr(self, reentrances, reentrance_ids):
         """
         Return a string representation of this feature structure.
@@ -545,7 +552,7 @@ class FeatStruct(SubstituteBindingsI):
             by ``repr``: the first time a reentrant feature value is
             displayed, an identifier is added to ``reentrance_ids`` for it.
         """
-        raise NotImplementedError()
+        pass
 
 # Mutation: disable if frozen.
 _FROZEN_ERROR = "Frozen FeatStructs may not be modified."
@@ -1915,21 +1922,24 @@ class CustomFeatureValue(object):
     Subclasses must define ``unify()``, ``__eq__()`` and ``__lt__()``.
     Subclasses may also wish to define ``__hash__()``.
     """
+    @abstractmethod
     def unify(self, other):
         """
         If this base value unifies with ``other``, then return the
         unified value.  Otherwise, return ``UnificationFailure``.
         """
-        raise NotImplementedError('abstract base class')
+        pass
 
+    @abstractmethod
     def __eq__(self, other):
-        raise NotImplementedError('abstract base class')
+        pass
 
     def __ne__(self, other):
         return not self == other
 
+    @abstractmethod
     def __lt__(self, other):
-        raise NotImplementedError('abstract base class')
+        pass
 
     def __hash__(self):
         raise TypeError('%s objects or unhashable' % self.__class__.__name__)
