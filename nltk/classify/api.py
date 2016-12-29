@@ -51,7 +51,6 @@ class ClassifierI(object):
         """
         pass
 
-    @abstractmethod
     def classify(self, featureset):
         """
         :return: the most appropriate label for the given featureset.
@@ -59,8 +58,9 @@ class ClassifierI(object):
         """
         if overridden(self.classify_many):
             return self.classify_many([featureset])[0]
+        else:
+            raise NotImplementedError()
 
-    @abstractmethod
     def prob_classify(self, featureset):
         """
         :return: a probability distribution over labels for the given
@@ -69,6 +69,8 @@ class ClassifierI(object):
         """
         if overridden(self.prob_classify_many):
             return self.prob_classify_many([featureset])[0]
+        else:
+            raise NotImplementedError()
 
     def classify_many(self, featuresets):
         """
@@ -114,7 +116,6 @@ class MultiClassifierI(object):
         """
         pass
 
-    @abstractmethod
     def classify(self, featureset):
         """
         :return: the most appropriate set of labels for the given featureset.
@@ -122,8 +123,9 @@ class MultiClassifierI(object):
         """
         if overridden(self.classify_many):
             return self.classify_many([featureset])[0]
+        else:
+            raise NotImplementedError()
 
-    @abstractmethod
     def prob_classify(self, featureset):
         """
         :return: a probability distribution over sets of labels for the
@@ -132,6 +134,8 @@ class MultiClassifierI(object):
         """
         if overridden(self.prob_classify_many):
             return self.prob_classify_many([featureset])[0]
+        else:
+            raise NotImplementedError()
 
     def classify_many(self, featuresets):
         """

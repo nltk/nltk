@@ -29,12 +29,11 @@ class ParserI(object):
     Subclasses may define:
       - ``grammar()``
     """
-    @abstractmethod
     def grammar(self):
         """
         :return: The grammar used by this parser.
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def parse(self, sent, *args, **kwargs):

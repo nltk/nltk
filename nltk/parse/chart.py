@@ -135,7 +135,7 @@ class EdgeI(object):
 
         :rtype: int
         """
-        @abstractmethod
+        pass
 
     #////////////////////////////////////////////////////////////
     # Left Hand Side

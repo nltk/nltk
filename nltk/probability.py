@@ -413,7 +413,7 @@ class ProbDistI(object):
     """True if the probabilities of the samples in this probability
        distribution will always sum to one."""
 
-   @abstractmethod
+    @abstractmethod
     def __init__(self):
         pass
 
