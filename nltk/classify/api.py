@@ -18,12 +18,17 @@ category.
 classification", which is like single-category classification except
 that each text belongs to zero or more categories.
 """
+
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
+
 from nltk.internals import overridden
 
 ##//////////////////////////////////////////////////////
 #{ Classification Interfaces
 ##//////////////////////////////////////////////////////
 
+@add_metaclass(ABCMeta)
 class ClassifierI(object):
     """
     A processing interface for labeling tokens with a single category
@@ -38,13 +43,15 @@ class ClassifierI(object):
     Subclasses may define:
       - either ``prob_classify()`` or ``prob_classify_many()`` (or both)
     """
+    @abstractmethod
     def labels(self):
         """
         :return: the list of category labels used by this classifier.
         :rtype: list of (immutable)
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def classify(self, featureset):
         """
         :return: the most appropriate label for the given featureset.
@@ -52,9 +59,8 @@ class ClassifierI(object):
         """
         if overridden(self.classify_many):
             return self.classify_many([featureset])[0]
-        else:
-            raise NotImplementedError()
 
+    @abstractmethod
     def prob_classify(self, featureset):
         """
         :return: a probability distribution over labels for the given
@@ -63,8 +69,6 @@ class ClassifierI(object):
         """
         if overridden(self.prob_classify_many):
             return self.prob_classify_many([featureset])[0]
-        else:
-            raise NotImplementedError()
 
     def classify_many(self, featuresets):
         """
@@ -87,6 +91,7 @@ class ClassifierI(object):
         return [self.prob_classify(fs) for fs in featuresets]
 
 
+@add_metaclass(ABCMeta)
 class MultiClassifierI(object):
     """
     A processing interface for labeling tokens with zero or more
@@ -101,13 +106,15 @@ class MultiClassifierI(object):
     Subclasses may define:
       - either ``prob_classify()`` or ``prob_classify_many()`` (or both)
     """
+    @abstractmethod
     def labels(self):
         """
         :return: the list of category labels used by this classifier.
         :rtype: list of (immutable)
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def classify(self, featureset):
         """
         :return: the most appropriate set of labels for the given featureset.
@@ -115,9 +122,8 @@ class MultiClassifierI(object):
         """
         if overridden(self.classify_many):
             return self.classify_many([featureset])[0]
-        else:
-            raise NotImplementedError()
 
+    @abstractmethod
     def prob_classify(self, featureset):
         """
         :return: a probability distribution over sets of labels for the
@@ -126,8 +132,6 @@ class MultiClassifierI(object):
         """
         if overridden(self.prob_classify_many):
             return self.prob_classify_many([featureset])[0]
-        else:
-            raise NotImplementedError()
 
     def classify_many(self, featuresets):
         """
@@ -190,4 +194,3 @@ class MultiClassifierI(object):
 #         of ``featuresets``.
 #         """
 #         raise NotImplementedError()
-
