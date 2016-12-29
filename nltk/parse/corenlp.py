@@ -665,7 +665,10 @@ def setup_module(module):
     from nose import SkipTest
 
     global server
-    server = CoreNLPServer(port=9000)
+    try:
+        server = CoreNLPServer(port=9000)
+    except LookupError as e:
+        raise SkipTest('Could not instantiate CoreNLPServer.')
 
     try:
         server.start()
