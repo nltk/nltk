@@ -2,10 +2,11 @@
 #
 # Copyright (C) 2001-2016 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# Contributor: J Richard Snape 
+# Contributor: J Richard Snape
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals, division
+from abc import abstractmethod
 
 import copy
 from sys import stdout
@@ -61,11 +62,12 @@ class VectorSpaceClusterer(ClusterI):
         if assign_clusters:
             return [self.classify(vector) for vector in vectors]
 
+    @abstractmethod
     def cluster_vectorspace(self, vectors, trace):
         """
         Finds the clusters using the given set of vectors.
         """
-        raise NotImplementedError()
+        pass
 
     def classify(self, vector):
         if self._should_normalise:
@@ -75,11 +77,12 @@ class VectorSpaceClusterer(ClusterI):
         cluster = self.classify_vectorspace(vector)
         return self.cluster_name(cluster)
 
+    @abstractmethod
     def classify_vectorspace(self, vector):
         """
         Returns the index of the appropriate cluster for the vector.
         """
-        raise NotImplementedError()
+        pass
 
     def likelihood(self, vector, label):
         if self._should_normalise:
@@ -164,10 +167,10 @@ class _DendrogramNode(object):
         for priority, node in queue:
             groups.append(node.leaves())
         return groups
-    
+
     def __lt__(self, comparator):
         return cosine_distance(self._value, comparator._value) < 0
-    
+
 
 @python_2_unicode_compatible
 class Dendrogram(object):
@@ -289,5 +292,3 @@ class Dendrogram(object):
             root = self._items[0]
         leaves = root.leaves(False)
         return '<Dendrogram with %d leaves>' % len(leaves)
-
-
