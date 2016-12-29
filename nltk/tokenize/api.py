@@ -32,6 +32,7 @@ class TokenizerI(object):
         if overridden(self.tokenize_sents):
             return self.tokenize_sents([s])[0]
 
+    @abstractmethod
     def span_tokenize(self, s):
         """
         Identify the tokens using integer offsets ``(start_i, end_i)``,
@@ -39,7 +40,7 @@ class TokenizerI(object):
 
         :rtype: iter(tuple(int, int))
         """
-        raise NotImplementedError()
+        pass
 
     def tokenize_sents(self, strings):
         """
@@ -74,5 +75,3 @@ class StringTokenizer(TokenizerI):
     def span_tokenize(self, s):
         for span in string_span_tokenize(s, self._string):
             yield span
-
-
