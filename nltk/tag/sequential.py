@@ -18,6 +18,7 @@ consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
 from __future__ import print_function, unicode_literals
+from abc import abstractmethod
 
 import re
 
@@ -82,6 +83,7 @@ class SequentialBackoffTagger(TaggerI):
             if tag is not None:  break
         return tag
 
+    @abstractmethod
     def choose_tag(self, tokens, index, history):
         """
         Decide which tag should be used for the specified token, and
@@ -99,7 +101,7 @@ class SequentialBackoffTagger(TaggerI):
         :type history: list(str)
         :param history: A list of the tags for all words before *index*.
         """
-        raise NotImplementedError()
+        pass
 
 
 @python_2_unicode_compatible
@@ -125,6 +127,7 @@ class ContextTagger(SequentialBackoffTagger):
         SequentialBackoffTagger.__init__(self, backoff)
         self._context_to_tag = (context_to_tag if context_to_tag else {})
 
+    @abstractmethod
     def context(self, tokens, index, history):
         """
         :return: the context that should be used to look up the tag
@@ -132,7 +135,7 @@ class ContextTagger(SequentialBackoffTagger):
             should not be handled by this tagger.
         :rtype: (hashable)
         """
-        raise NotImplementedError()
+        pass
 
     def choose_tag(self, tokens, index, history):
         context = self.context(tokens, index, history)
@@ -732,5 +735,3 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
             'shape': shape,
             }
         return features
-
-
