@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2015 NLTK Project
+.. Copyright (C) 2001-2016 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ========
@@ -221,19 +221,12 @@ Annotated Documents
 -------------------
 
 The FrameNet corpus contains a small set of annotated documents. A list
-of these documents can be obtained by calling the `documents()` function:
+of these documents can be obtained by calling the `docs()` function:
 
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
-    >>> docs = fn.documents()
+    >>> docs = fn.docs()
     >>> len(docs)
     78
     >>> pprint(sorted(docs[0].keys()))
-    ['ID', 'corpid', 'corpname', 'description', 'filename']
-
-Detailed information about each sentence contained in each document can
-be obtained by calling the `annotated_document()` function and supplying
-the 'ID' number of the document. For detailed information about the info
-that is for each document, see the documentation on the
-`annotated_document()` function.
-
+    ['ID', '_type', 'corpid', 'corpname', 'description', 'filename', 'name', 'sentence']
