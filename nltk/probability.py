@@ -38,6 +38,8 @@ implementation of the ``ConditionalProbDistI`` interface is
 
 """
 from __future__ import print_function, unicode_literals, division
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 import math
 import random
@@ -297,8 +299,8 @@ class FreqDist(Counter):
         """
         return self.__class__(self)
 
-    # Mathematical operatiors 
-    
+    # Mathematical operatiors
+
     def __add__(self, other):
         """
         Add counts from two counters.
@@ -393,6 +395,7 @@ class FreqDist(Counter):
 ##  Probability Distributions
 ##//////////////////////////////////////////////////////
 
+@add_metaclass(ABCMeta)
 class ProbDistI(object):
     """
     A probability distribution for the outcomes of an experiment.  A
@@ -410,10 +413,11 @@ class ProbDistI(object):
     """True if the probabilities of the samples in this probability
        distribution will always sum to one."""
 
+   @abstractmethod
     def __init__(self):
-        if self.__class__ == ProbDistI:
-            raise NotImplementedError("Interfaces can't be instantiated")
+        pass
 
+    @abstractmethod
     def prob(self, sample):
         """
         Return the probability for a given sample.  Probabilities
@@ -424,7 +428,7 @@ class ProbDistI(object):
         :type sample: any
         :rtype: float
         """
-        raise NotImplementedError()
+        pass
 
     def logprob(self, sample):
         """
@@ -439,6 +443,7 @@ class ProbDistI(object):
         p = self.prob(sample)
         return (math.log(p, 2) if p != 0 else _NINF)
 
+    @abstractmethod
     def max(self):
         """
         Return the sample with the greatest probability.  If two or
@@ -447,8 +452,9 @@ class ProbDistI(object):
 
         :rtype: any
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def samples(self):
         """
         Return a list of all samples that have nonzero probabilities.
@@ -456,7 +462,7 @@ class ProbDistI(object):
 
         :rtype: list
         """
-        raise NotImplementedError()
+        pass
 
     # cf self.SUM_TO_ONE
     def discount(self):
@@ -1865,7 +1871,7 @@ class ConditionalFreqDist(defaultdict):
             print()
 
     # Mathematical operators
-    
+
     def __add__(self, other):
         """
         Add counts from two ConditionalFreqDists.
@@ -1921,7 +1927,7 @@ class ConditionalFreqDist(defaultdict):
         return result
 
     def __and__(self, other):
-        """ 
+        """
         Intersection is the minimum of corresponding counts.
         """
         if not isinstance(other, ConditionalFreqDist):
@@ -1962,6 +1968,7 @@ class ConditionalFreqDist(defaultdict):
 
 
 @compat.python_2_unicode_compatible
+@add_metaclass(ABCMeta)
 class ConditionalProbDistI(dict):
     """
     A collection of probability distributions for a single experiment
@@ -1975,8 +1982,9 @@ class ConditionalProbDistI(dict):
     condition to the ``ProbDist`` for the experiment under that
     condition.
     """
+    @abstractmethod
     def __init__(self):
-        raise NotImplementedError("Interfaces can't be instantiated")
+        pass
 
     def conditions(self):
         """
