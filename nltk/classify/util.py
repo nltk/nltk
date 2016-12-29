@@ -190,19 +190,22 @@ def names_demo(trainer, features=names_demo_features):
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
-    test_featuresets = [features(n) for (n, g) in test]
-    pdists = classifier.prob_classify_many(test_featuresets)
-    ll = [pdist.logprob(gold)
-          for ((name, gold), pdist) in zip(test, pdists)]
-    print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
-    print()
-    print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
-    for ((name, gender), pdist) in list(zip(test, pdists))[:5]:
-        if gender == 'male':
-            fmt = '  %-15s *%6.4f   %6.4f'
-        else:
-            fmt = '  %-15s  %6.4f  *%6.4f'
-        print(fmt % (name, pdist.prob('male'), pdist.prob('female')))
+    try:
+        test_featuresets = [features(n) for (n, g) in test]
+        pdists = classifier.prob_classify_many(test_featuresets)
+        ll = [pdist.logprob(gold)
+              for ((name, gold), pdist) in zip(test, pdists)]
+        print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
+        print()
+        print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
+        for ((name, gender), pdist) in list(zip(test, pdists))[:5]:
+            if gender == 'male':
+                fmt = '  %-15s *%6.4f   %6.4f'
+            else:
+                fmt = '  %-15s  %6.4f  *%6.4f'
+            print(fmt % (name, pdist.prob('male'), pdist.prob('female')))
+    except NotImplementedError:
+        pass
 
     # Return the classifier
     return classifier
@@ -241,19 +244,22 @@ def partial_names_demo(trainer, features=names_demo_features):
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
-    test_featuresets = [features(n) for (n, m) in test]
-    pdists = classifier.prob_classify_many(test_featuresets)
-    ll = [pdist.logprob(gold)
-          for ((name, gold), pdist) in zip(test, pdists)]
-    print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
-    print()
-    print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
-    for ((name, is_male), pdist) in zip(test, pdists)[:5]:
-        if is_male == True:
-            fmt = '  %-15s *%6.4f   %6.4f'
-        else:
-            fmt = '  %-15s  %6.4f  *%6.4f'
-        print(fmt % (name, pdist.prob(True), pdist.prob(False)))
+    try:
+        test_featuresets = [features(n) for (n, m) in test]
+        pdists = classifier.prob_classify_many(test_featuresets)
+        ll = [pdist.logprob(gold)
+              for ((name, gold), pdist) in zip(test, pdists)]
+        print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
+        print()
+        print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
+        for ((name, is_male), pdist) in zip(test, pdists)[:5]:
+            if is_male == True:
+                fmt = '  %-15s *%6.4f   %6.4f'
+            else:
+                fmt = '  %-15s  %6.4f  *%6.4f'
+            print(fmt % (name, pdist.prob(True), pdist.prob(False)))
+    except NotImplementedError:
+        pass
 
     # Return the classifier
     return classifier
@@ -292,11 +298,14 @@ def wsd_demo(trainer, word, features, n=1000):
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
-    test_featuresets = [features(i) for (i, n) in test]
-    pdists = classifier.prob_classify_many(test_featuresets)
-    ll = [pdist.logprob(gold)
-          for ((name, gold), pdist) in zip(test, pdists)]
-    print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
+    try:
+        test_featuresets = [features(i) for (i, n) in test]
+        pdists = classifier.prob_classify_many(test_featuresets)
+        ll = [pdist.logprob(gold)
+              for ((name, gold), pdist) in zip(test, pdists)]
+        print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
+    except NotImplementedError:
+        pass
 
     # Return the classifier
     return classifier
