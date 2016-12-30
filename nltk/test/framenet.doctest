@@ -225,42 +225,32 @@ of these documents can be obtained by calling the `docs()` function:
 
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
-    >>> d = fn.docs('TicketSplitting')[0]
+    >>> d = fn.docs('BellRinging')[0]
     >>> d.corpid, d.corpname
     (115, 'PropBank')
     >>> d.sentence[0]
-    full-text sentence (2824375) in TicketSplitting:
+    full-text sentence (2824197) in BellRinging:
     <BLANKLINE>
     <BLANKLINE>
-    [POS] 51 tags
+    [POS] 25 tags
     <BLANKLINE>
     [POS_tagset] PENN
     <BLANKLINE>
     [text] + [annotationSet]
     <BLANKLINE>
-    Tuesday 's rout of a GOP congressional hopeful in  a Mississippi
-    *******    ****                                **
-    Calendr    Beat                                In
-    [11] !     [9]                                 [1]
+    The art of change-ringing is peculiar to the English , and , like
+        ***                      ********        *******         ****
+        Cra                      Idiosync        People_         Simi
+        [1]                      [2]             [3]             [4]
     <BLANKLINE>
-    district that has n't backed a Democratic presidential candidate
-    ********              ******              ************
-    Politica              Taking              Leadership
-    [10]                  [12]                [8]
+     most English peculiarities , unintelligible to the rest of the
+     ****         *************   **************        ****
+     Prop         Idiosyncrasy    Grasp                 Rest
+     [9]          [5]             [6]                   [7]
     <BLANKLINE>
-    since Adlai Stevenson is another reminder that , at least at the
-    *****                    ******* ********
-    Time_                    Increme Evoking
-    [2]                      [3]     [5]
-    <BLANKLINE>
-    federal level , political `` ticket splitting '' has been on the
-    *******                             *********
-    Politic                             Separatin
-    [4]                                 [6]
-    <BLANKLINE>
-    rise over the past half century .
-    ****          ****      *******
-    Chan          Rela      Calendr
-    [7]           [13]      [14]
-     (Calendr=Calendric_unit, Beat=Beat_opponent, In=Interior_profile_relation, Politica=Political_locales, Taking=Taking_sides, Time_=Time_vector, Increme=Increment, Politic=Political_locales, Separatin=Separating, Chan=Change_position_on_a_scale, Rela=Relative_time)
+    world .
+    *****
+    Polit
+    [8]
+     (Cra=Craft, Idiosync=Idiosyncrasy, People_=People_by_origin, Simi=Similarity, Prop=Proportional_quantity, Polit=Political_locales)
     <BLANKLINE>
