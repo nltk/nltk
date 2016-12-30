@@ -1435,6 +1435,7 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> PrettyDict(fn.lu_basic(256), breakLines=True)
         {'ID': 256,
          'POS': 'V',
+         'URL': u'https://framenet2.icsi.berkeley.edu/fnReports/data/lu/lu256.xml',
          '_type': 'lu',
          'cBy': 'ChW',
          'cDate': '02/08/2001 01:27:50 PST Thu',
@@ -1477,11 +1478,12 @@ warnings(True) to display corpus consistency warnings when loading data
 
         >>> fn.lu(227).exemplars[23]
         exemplar sentence (352962):
-        <BLANKLINE>
         [sentNo] 0
         [aPos] 59699508
         <BLANKLINE>
         [LU] (227) guess.v in Coming_to_believe
+        <BLANKLINE>
+        [frame] (23) Coming_to_believe
         <BLANKLINE>
         [annotationSet] 2 annotation sets
         <BLANKLINE>
@@ -1493,6 +1495,8 @@ warnings(True) to display corpus consistency warnings when loading data
         <BLANKLINE>
         [PT] 3 phrases
         <BLANKLINE>
+        [Other] 1 entry
+        <BLANKLINE>
         [text] + [Target] + [FE]
         <BLANKLINE>
         When he was inside the house , Culley noticed the characteristic
@@ -1503,7 +1507,8 @@ warnings(True) to display corpus consistency warnings when loading data
         --                ******* --
         Co                        C1 [Evidence:INI]
          (Co=Cognizer, C1=Content)
-
+        <BLANKLINE>
+        <BLANKLINE>
         
         The dict that is returned from this function will contain most of the
         following information about the LU. Note that some LUs do not contain
