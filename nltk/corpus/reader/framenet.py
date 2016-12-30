@@ -188,6 +188,8 @@ def _pretty_lu(lu):
     if 'semTypes' in lukeys:
         outstr += "\n[semTypes] {0} semantic types\n".format(len(lu.semTypes))
         outstr += "  "*(len(lu.semTypes)>0) + ", ".join('{0}({1})'.format(x.name, x.ID) for x in lu.semTypes) + '\n'*(len(lu.semTypes)>0)
+    if 'URL' in lukeys:
+        outstr += "\n[URL] {0}\n".format(lu.URL)
     if 'subCorpus' in lukeys:
         subc = [x.name for x in lu.subCorpus]
         outstr += "\n[subCorpus] {0} subcorpora\n".format(len(lu.subCorpus))
@@ -227,7 +229,7 @@ def _pretty_fulltext_sentences(sents):
 
     outstr = ""
     outstr += "full-text document ({0.ID}) {0.name}:\n\n".format(sents)
-    outstr += "[corpid] {0.corpid}\n[corpname] {0.corpname}\n[description] {0.description}\n\n".format(sents)
+    outstr += "[corpid] {0.corpid}\n[corpname] {0.corpname}\n[description] {0.description}\n[URL] {0.URL}\n\n".format(sents)
     outstr += "[sentence]\n".format(sents)
     for i,sent in enumerate(sents.sentence):
         outstr += "[{0}] {1}\n".format(i, sent.text)
@@ -610,6 +612,7 @@ def _pretty_frame(frame):
 
     outstr = ""
     outstr += "frame ({0.ID}): {0.name}\n\n".format(frame)
+    outstr += "[URL] {0}\n\n".format(frame.URL)
     outstr += "[definition]\n"
     outstr += _pretty_longstring(frame.definition, '  ') + '\n'
 
@@ -971,6 +974,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         # sub dir containing the xml files for fulltext annotation files
         self._fulltext_dir = "fulltext"
 
+        # location of latest development version of FrameNet
+        self._fnweb_url = "https://framenet2.icsi.berkeley.edu/fnReports/data"
+
         # Indexes used for faster look-ups
         self._frame_idx = None
         self._cached_frames = {}    # name -> ID
@@ -982,7 +988,86 @@ class FramenetCorpusReader(XMLCorpusReader):
         self._ferel_idx = None  # FE-to-FE relation instances
         self._frel_f_idx = None # frame-to-frame relations associated with each frame
         
+    def help(self, attrname=None):
+        """Display help information summarizing the main methods."""
         
+        if attrname is not None:
+            return help(self.__getattribute__(attrname))
+        
+        # No need to mention frame_by_name() or frame_by_id(), 
+        # as it's easier to just call frame(). 
+        # Also not mentioning lu_basic().
+        
+        
+        msg = """
+Use the following methods to access data in FrameNet. 
+Provide a method name to `help()` for more information.
+
+FRAMES
+======
+
+frame() to look up a frame by its exact name or ID
+frames() to get frames matching a name pattern
+frames_by_lemma() to get frames containing an LU matching a name pattern
+frame_ids_and_names() to get a mapping from frame IDs to names
+
+FRAME ELEMENTS
+==============
+
+fes() to get frame elements (a.k.a. roles) matching a name pattern, optionally constrained 
+  by a frame name pattern
+
+LEXICAL UNITS
+=============
+
+lu() to look up a frame by its ID
+lus() to get lexical units matching a name pattern, optionally constrained by frame
+lu_ids_and_names() to get a mapping from LU IDs to names
+
+RELATIONS
+=========
+
+frame_relation_types() to get the different kinds of frame-to-frame relations 
+  (Inheritance, Subframe, Using, etc.).
+frame_relations() to get the relation instances, optionally constrained by 
+  frame(s) or relation type
+fe_relations() to get the frame element pairs belonging to a frame-to-frame relation
+
+SEMANTIC TYPES
+==============
+
+semtypes() to get the different kinds of semantic types that can be applied to 
+  FEs, LUs, and entire frames
+semtype() to look up a particular semtype by name, ID, or abbreviation
+semtype_inherits() to check whether two semantic types have a subtype-supertype 
+  relationship in the semtype hierarchy
+propagate_semtypes() to apply inference rules that distribute semtypes over relations 
+  between FEs
+
+ANNOTATIONS
+===========
+
+annotations() to get annotation sets, in which a token in a sentence is annotated 
+  with a lexical unit in a frame, along with its frame elements and their syntactic properties; 
+  can be constrained by LU name pattern and limited to lexicographic exemplars or full-text. 
+  Sentences of full-text annotation can have multiple annotation sets.
+sents() to get annotated sentences illustrating one or more lexical units
+exemplars() to get sentences of lexicographic annotation, most of which have 
+  just 1 annotation set; can be constrained by LU name pattern, frame, and overt FE(s)
+doc() to look up a document of full-text annotation by its ID
+docs() to get documents of full-text annotation that match a name pattern
+docs_metadata() to get metadata about all full-text documents without loading them
+ft_sents() to iterate over sentences of full-text annotation
+
+UTILITIES
+=========
+
+buildindexes() loads metadata about all frames, LUs, etc. into memory to avoid 
+  delay when one is accessed for the first time. It does not load annotations.
+readme() gives the text of the FrameNet README file
+warnings(True) to display corpus consistency warnings when loading data
+        """
+        print(msg)
 
     def _buildframeindex(self):
         # The total number of Frames in Framenet is fairly small (~1200) so
@@ -1067,7 +1152,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         # frame and FE relations
         self._buildrelationindex()
 
-    def annotated_doc(self, fn_docid):
+    def doc(self, fn_docid):
         """
         Returns the annotated document whose id number is
         ``fn_docid``. This id number can be obtained by calling the
@@ -1221,6 +1306,8 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         fentry = self._handle_frame_elt(elt, ignorekeys)
         assert fentry
+
+        fentry.URL = self._fnweb_url + '/' + self._frame_dir + '/' + fn_fname + '.xml'
 
         # INFERENCE RULE: propagate lexical semtypes from the frame to all its LUs
         for st in fentry.semTypes:
@@ -1536,6 +1623,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             raise FramenetError('Unknown LU id: {0}'.format(fn_luid))
 
         lu2 = self._handle_lexunit_elt(elt, ignorekeys)
+        lu.URL = self._fnweb_url + '/' + self._lu_dir + '/' + fname
         lu.subCorpus = lu2.subCorpus
         lu.exemplars = SpecialList('luexemplars', 
                                    [sent for subc in lu.subCorpus for sent in subc.sentence])
@@ -1950,7 +2038,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         Return an index of the annotated documents in Framenet.
 
         Details for a specific annotated document can be obtained using this
-        class's annotated_doc() function and pass it the value of the 'ID' field.
+        class's doc() function and pass it the value of the 'ID' field.
 
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.docs())
@@ -1995,7 +2083,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         Return a list of the annotated full-text documents in FrameNet,
         optionally filtered by a regex to be matched against the document name.
         """
-        return PrettyLazyMap((lambda x: self.annotated_doc(x.ID)), self.docs_metadata(name))
+        return PrettyLazyMap((lambda x: self.doc(x.ID)), self.docs_metadata(name))
 
     def sents(self, exemplars=True, full_text=True):
         """
@@ -2406,6 +2494,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                 else:
                     docname = doc.description
                 doc.filename = "{0}__{1}.xml".format(corpname, docname)
+                doc.URL = self._fnweb_url + '/' + self._fulltext_dir + '/' + doc.filename
                 doc.corpname = corpname
                 doc.corpid = corpid
                 retlist.append(doc)
@@ -2413,7 +2502,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         return retlist
 
     def _handle_frame_elt(self, elt, ignorekeys=[]):
-        """Load the info for a Frame from an frame xml file"""
+        """Load the info for a Frame from a frame xml file"""
         frinfo = self._load_xml_attributes(AttrDict(), elt)
 
         frinfo['_type'] = 'frame'
@@ -2445,6 +2534,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                     # problematic LU entry; ignore it
                     continue
                 luentry['frame'] = frinfo
+                luentry['URL'] = self._fnweb_url + '/' + self._lu_dir + '/' + "lu{0}.xml".format(luentry['ID'])
                 luentry['subCorpus'] = Future((lambda lu: lambda: self._lu_file(lu).subCorpus)(luentry))
                 luentry['exemplars'] = Future((lambda lu: lambda: self._lu_file(lu).exemplars)(luentry))
                 frinfo['lexUnit'][luentry.name] = luentry
