@@ -247,7 +247,7 @@ def _pretty_fulltext_sentence(sent):
     """
 
     outstr = ""
-    outstr += "full-text sentence ({0.ID}) in {0.doc.name}:\n\n".format(sent)
+    outstr += "full-text sentence ({0.ID}) in {1}:\n\n".format(sent, sent.doc.get('name',sent.doc.description))
     outstr += "\n[POS] {0} tags\n".format(len(sent.POS))
     outstr += "\n[POS_tagset] {0}\n\n".format(sent.POS_tagset)
     outstr += "[text] + [annotationSet]\n\n"
