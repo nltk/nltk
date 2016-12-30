@@ -80,6 +80,9 @@ class WekaClassifier(ClassifierI):
         self._formatter = formatter
         self._model = model_filename
 
+    def labels(self):
+        return self._formatter.labels()
+
     def prob_classify_many(self, featuresets):
         return self._classify_many(featuresets, ['-p', '0', '-distribution'])
 
