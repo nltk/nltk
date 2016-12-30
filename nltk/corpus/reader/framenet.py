@@ -1433,7 +1433,8 @@ warnings(True) to display corpus consistency warnings when loading data
 
         >>> from nltk.corpus import framenet as fn
         >>> lu = PrettyDict(fn.lu_basic(256), breakLines=True)
-        >>> if lu['cBy']==731: # different data format in FN 1.5
+        >>> # account for different data format in FN 1.5
+        >>> if lu['cBy']==731:
               lu['cBy'] = 'ChW'
         >>> lu
         {'ID': 256,
