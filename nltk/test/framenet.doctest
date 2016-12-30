@@ -226,8 +226,8 @@ of these documents can be obtained by calling the `docs()` function:
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
     >>> d = fn.docs('BellRinging')[0]
-    >>> d.corpid, d.corpname
-    (115, 'PropBank')
+    >>> d.corpname
+    'PropBank'
     >>> d.sentence[0]
     full-text sentence (2824197) in BellRinging:
     <BLANKLINE>
