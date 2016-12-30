@@ -228,8 +228,8 @@ of these documents can be obtained by calling the `docs()` function:
     >>> d = fn.docs('BellRinging')[0]
     >>> d.corpname
     'PropBank'
-    >>> d.sentence[0]
-    full-text sentence (2824197) in BellRinging:
+    >>> d.sentence[0] # doctest: +ELLIPSIS
+    full-text sentence (...) in BellRinging:
     <BLANKLINE>
     <BLANKLINE>
     [POS] 25 tags
