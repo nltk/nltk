@@ -1435,7 +1435,7 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> lu = PrettyDict(fn.lu_basic(256), breakLines=True)
         >>> # account for different data format in FN 1.5
         >>> if lu['cBy']==731:
-              lu['cBy'] = 'ChW'
+        ...   lu['cBy'] = 'ChW'
         >>> lu
         {'ID': 256,
          'POS': 'V',
