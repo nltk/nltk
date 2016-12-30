@@ -188,6 +188,8 @@ def _pretty_lu(lu):
     if 'semTypes' in lukeys:
         outstr += "\n[semTypes] {0} semantic types\n".format(len(lu.semTypes))
         outstr += "  "*(len(lu.semTypes)>0) + ", ".join('{0}({1})'.format(x.name, x.ID) for x in lu.semTypes) + '\n'*(len(lu.semTypes)>0)
+    if 'URL' in lukeys:
+        outstr += "\n[URL] {0}\n".format(lu.URL)
     if 'subCorpus' in lukeys:
         subc = [x.name for x in lu.subCorpus]
         outstr += "\n[subCorpus] {0} subcorpora\n".format(len(lu.subCorpus))
@@ -227,7 +229,7 @@ def _pretty_fulltext_sentences(sents):
 
     outstr = ""
     outstr += "full-text document ({0.ID}) {0.name}:\n\n".format(sents)
-    outstr += "[corpid] {0.corpid}\n[corpname] {0.corpname}\n[description] {0.description}\n\n".format(sents)
+    outstr += "[corpid] {0.corpid}\n[corpname] {0.corpname}\n[description] {0.description}\n[URL] {0.URL}\n\n".format(sents)
     outstr += "[sentence]\n".format(sents)
     for i,sent in enumerate(sents.sentence):
         outstr += "[{0}] {1}\n".format(i, sent.text)
@@ -610,6 +612,7 @@ def _pretty_frame(frame):
 
     outstr = ""
     outstr += "frame ({0.ID}): {0.name}\n\n".format(frame)
+    outstr += "[URL] {0}\n\n".format(frame.URL)
     outstr += "[definition]\n"
     outstr += _pretty_longstring(frame.definition, '  ') + '\n'
 
@@ -971,6 +974,9 @@ class FramenetCorpusReader(XMLCorpusReader):
         # sub dir containing the xml files for fulltext annotation files
         self._fulltext_dir = "fulltext"
 
+        # location of latest development version of FrameNet
+        self._fnweb_url = "https://framenet2.icsi.berkeley.edu/fnReports/data"
+
         # Indexes used for faster look-ups
         self._frame_idx = None
         self._cached_frames = {}    # name -> ID
@@ -1067,7 +1073,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         # frame and FE relations
         self._buildrelationindex()
 
-    def annotated_doc(self, fn_docid):
+    def doc(self, fn_docid):
         """
         Returns the annotated document whose id number is
         ``fn_docid``. This id number can be obtained by calling the
@@ -1221,6 +1227,8 @@ class FramenetCorpusReader(XMLCorpusReader):
 
         fentry = self._handle_frame_elt(elt, ignorekeys)
         assert fentry
+
+        fentry.URL = self._fnweb_url + '/' + self._frame_dir + '/' + fn_fname + '.xml'
 
         # INFERENCE RULE: propagate lexical semtypes from the frame to all its LUs
         for st in fentry.semTypes:
@@ -1536,6 +1544,7 @@ class FramenetCorpusReader(XMLCorpusReader):
             raise FramenetError('Unknown LU id: {0}'.format(fn_luid))
 
         lu2 = self._handle_lexunit_elt(elt, ignorekeys)
+        lu.URL = self._fnweb_url + '/' + self._lu_dir + '/' + fname
         lu.subCorpus = lu2.subCorpus
         lu.exemplars = SpecialList('luexemplars', 
                                    [sent for subc in lu.subCorpus for sent in subc.sentence])
@@ -1950,7 +1959,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         Return an index of the annotated documents in Framenet.
 
         Details for a specific annotated document can be obtained using this
-        class's annotated_doc() function and pass it the value of the 'ID' field.
+        class's doc() function and pass it the value of the 'ID' field.
 
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.docs())
@@ -1995,7 +2004,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         Return a list of the annotated full-text documents in FrameNet,
         optionally filtered by a regex to be matched against the document name.
         """
-        return PrettyLazyMap((lambda x: self.annotated_doc(x.ID)), self.docs_metadata(name))
+        return PrettyLazyMap((lambda x: self.doc(x.ID)), self.docs_metadata(name))
 
     def sents(self, exemplars=True, full_text=True):
         """
@@ -2406,6 +2415,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                 else:
                     docname = doc.description
                 doc.filename = "{0}__{1}.xml".format(corpname, docname)
+                doc.URL = self._fnweb_url + '/' + self._fulltext_dir + '/' + doc.filename
                 doc.corpname = corpname
                 doc.corpid = corpid
                 retlist.append(doc)
@@ -2413,7 +2423,7 @@ class FramenetCorpusReader(XMLCorpusReader):
         return retlist
 
     def _handle_frame_elt(self, elt, ignorekeys=[]):
-        """Load the info for a Frame from an frame xml file"""
+        """Load the info for a Frame from a frame xml file"""
         frinfo = self._load_xml_attributes(AttrDict(), elt)
 
         frinfo['_type'] = 'frame'
@@ -2445,6 +2455,7 @@ class FramenetCorpusReader(XMLCorpusReader):
                     # problematic LU entry; ignore it
                     continue
                 luentry['frame'] = frinfo
+                luentry['URL'] = self._fnweb_url + '/' + self._lu_dir + '/' + "lu{0}.xml".format(luentry['ID'])
                 luentry['subCorpus'] = Future((lambda lu: lambda: self._lu_file(lu).subCorpus)(luentry))
                 luentry['exemplars'] = Future((lambda lu: lambda: self._lu_file(lu).exemplars)(luentry))
                 frinfo['lexUnit'][luentry.name] = luentry
