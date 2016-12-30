@@ -229,4 +229,4 @@ of these documents can be obtained by calling the `docs()` function:
     >>> len(docs)
     78
     >>> pprint(sorted(docs[0].keys()))
-    ['ID', '_type', 'corpid', 'corpname', 'description', 'filename', 'name', 'sentence']
+    ['ID', 'URL', '_type', 'corpid', 'corpname', 'description', 'filename', 'name', 'sentence']
