@@ -1432,7 +1432,10 @@ warnings(True) to display corpus consistency warnings when loading data
         ``lu()`` function with "subCorpus" info excluded.
 
         >>> from nltk.corpus import framenet as fn
-        >>> PrettyDict(fn.lu_basic(256), breakLines=True)
+        >>> lu = PrettyDict(fn.lu_basic(256), breakLines=True)
+        >>> if lu['cBy']==731: # different data format in FN 1.5
+              lu['cBy'] = 'ChW'
+        >>> lu
         {'ID': 256,
          'POS': 'V',
          'URL': u'https://framenet2.icsi.berkeley.edu/fnReports/data/lu/lu256.xml',
