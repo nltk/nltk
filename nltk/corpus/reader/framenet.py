@@ -988,7 +988,86 @@ class FramenetCorpusReader(XMLCorpusReader):
         self._ferel_idx = None  # FE-to-FE relation instances
         self._frel_f_idx = None # frame-to-frame relations associated with each frame
         
+    def help(self, attrname=None):
+        """Display help information summarizing the main methods."""
         
+        if attrname is not None:
+            return help(self.__getattribute__(attrname))
+        
+        # No need to mention frame_by_name() or frame_by_id(), 
+        # as it's easier to just call frame(). 
+        # Also not mentioning lu_basic().
+        
+        
+        msg = """
+Use the following methods to access data in FrameNet. 
+Provide a method name to `help()` for more information.
+
+FRAMES
+======
+
+frame() to look up a frame by its exact name or ID
+frames() to get frames matching a name pattern
+frames_by_lemma() to get frames containing an LU matching a name pattern
+frame_ids_and_names() to get a mapping from frame IDs to names
+
+FRAME ELEMENTS
+==============
+
+fes() to get frame elements (a.k.a. roles) matching a name pattern, optionally constrained 
+  by a frame name pattern
+
+LEXICAL UNITS
+=============
+
+lu() to look up a frame by its ID
+lus() to get lexical units matching a name pattern, optionally constrained by frame
+lu_ids_and_names() to get a mapping from LU IDs to names
+
+RELATIONS
+=========
+
+frame_relation_types() to get the different kinds of frame-to-frame relations 
+  (Inheritance, Subframe, Using, etc.).
+frame_relations() to get the relation instances, optionally constrained by 
+  frame(s) or relation type
+fe_relations() to get the frame element pairs belonging to a frame-to-frame relation
+
+SEMANTIC TYPES
+==============
+
+semtypes() to get the different kinds of semantic types that can be applied to 
+  FEs, LUs, and entire frames
+semtype() to look up a particular semtype by name, ID, or abbreviation
+semtype_inherits() to check whether two semantic types have a subtype-supertype 
+  relationship in the semtype hierarchy
+propagate_semtypes() to apply inference rules that distribute semtypes over relations 
+  between FEs
+
+ANNOTATIONS
+===========
+
+annotations() to get annotation sets, in which a token in a sentence is annotated 
+  with a lexical unit in a frame, along with its frame elements and their syntactic properties; 
+  can be constrained by LU name pattern and limited to lexicographic exemplars or full-text. 
+  Sentences of full-text annotation can have multiple annotation sets.
+sents() to get annotated sentences illustrating one or more lexical units
+exemplars() to get sentences of lexicographic annotation, most of which have 
+  just 1 annotation set; can be constrained by LU name pattern, frame, and overt FE(s)
+doc() to look up a document of full-text annotation by its ID
+docs() to get documents of full-text annotation that match a name pattern
+docs_metadata() to get metadata about all full-text documents without loading them
+ft_sents() to iterate over sentences of full-text annotation
+
+UTILITIES
+=========
+
+buildindexes() loads metadata about all frames, LUs, etc. into memory to avoid 
+  delay when one is accessed for the first time. It does not load annotations.
+readme() gives the text of the FrameNet README file
+warnings(True) to display corpus consistency warnings when loading data
+        """
+        print(msg)
 
     def _buildframeindex(self):
         # The total number of Frames in Framenet is fairly small (~1200) so
