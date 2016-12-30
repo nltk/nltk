@@ -228,29 +228,50 @@ of these documents can be obtained by calling the `docs()` function:
     >>> d = fn.docs('BellRinging')[0]
     >>> d.corpname
     'PropBank'
-    >>> d.sentence[0] # doctest: +ELLIPSIS
+    >>> d.sentence[49] # doctest: +ELLIPSIS
     full-text sentence (...) in BellRinging:
     <BLANKLINE>
     <BLANKLINE>
-    [POS] 25 tags
+    [POS] 17 tags
     <BLANKLINE>
     [POS_tagset] PENN
     <BLANKLINE>
     [text] + [annotationSet]
     <BLANKLINE>
-    The art of change-ringing is peculiar to the English , and , like
-        ***                      ********        *******         ****
-        Cra                      Idiosync        People_         Simi
-        [1]                      [2]             [3]             [4]
+    `` I live in hopes that the ringers themselves will be drawn into
+                 *****          *******                    *****
+                 Desir          Cause_t                    Cause
+                 [1]            [3]                        [2]
     <BLANKLINE>
-     most English peculiarities , unintelligible to the rest of the
-     ****         *************   **************        ****
-     Prop         Idiosyncrasy    Grasp                 Rest
-     [9]          [5]             [6]                   [7]
+     that fuller life .
+          ******
+          Comple
+          [4]
+     (Desir=Desiring, Cause_t=Cause_to_make_noise, Cause=Cause_motion, Comple=Completeness)
     <BLANKLINE>
-    world .
-    *****
-    Polit
-    [8]
-     (Cra=Craft, Idiosync=Idiosyncrasy, People_=People_by_origin, Simi=Similarity, Prop=Proportional_quantity, Polit=Political_locales)
+
+    >>> d.sentence[49].annotationSet[1] # doctest: +ELLIPSIS
+    annotation set (...):
+    <BLANKLINE>
+    [status] MANUAL
+    <BLANKLINE>
+    [LU] (6605) hope.n in Desiring
+    <BLANKLINE>
+    [frame] (366) Desiring
+    <BLANKLINE>
+    [GF] 2 relations
+    <BLANKLINE>
+    [PT] 2 phrases
+    <BLANKLINE>
+    [text] + [Target] + [FE] + [Noun]
+    <BLANKLINE>
+    `` I live in hopes that the ringers themselves will be drawn into
+       - ^^^^ ^^ ***** ----------------------------------------------
+       E supp su       Event
+    <BLANKLINE>
+     that fuller life .
+    -----------------
+    <BLANKLINE>
+     (E=Experiencer, su=supp)
+    <BLANKLINE>
     <BLANKLINE>
