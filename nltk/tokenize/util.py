@@ -177,7 +177,7 @@ def xml_escape(text):
     some characters that Moses does so we have to manually add them to the
     entities dictionary.
         >>> escape(''')| & < > ' " ] [''')
-        '| &amp; &lt; &gt; \' " ] ['
+        ')| &amp; &lt; &gt; \' " ] ['
 
     :param text: The text that needs to be escaped.
     :type text: str
