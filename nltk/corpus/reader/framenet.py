@@ -2052,8 +2052,8 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.docs()) in (78, 107) # FN 1.5 and 1.7, resp.
         True
-        >>> set([x.corpname for x in fn.docs_metadata()])>=set(['ANC', 'C-4', 'KBEval', \
-                    'LUCorpus-v0.3', 'Miscellaneous', 'NTI', 'PropBank', 'QA', 'SemAnno'])
+        >>> set([x.corpname for x in fn.docs_metadata()])>=set(['ANC', 'KBEval', \
+                    'LUCorpus-v0.3', 'Miscellaneous', 'NTI', 'PropBank'])
         True
 
         :param name: A regular expression pattern used to search the
