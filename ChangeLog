@@ -7,6 +7,7 @@ Version 3.2.2 2016-12-31
 * rewrite FrameNet corpus reader
   (adds frame parameter to fes(), lus(), exemplars()
   see http://nltk.org/howto/framenet.html)
+* updated FrameNet Corpus to version 1.7
 * fixes to stanford_segmenter.py, SentiText, CoNLL Corpus Reader
 * fixes to BLEU, naivebayes, Krippendorff's alpha, Punkt
 * fixes to tests for TransitionParser, Senna, edit distance
