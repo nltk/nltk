@@ -71,7 +71,7 @@ that pattern:
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
     >>> pprint(fn.frames(r'(?i)crim'))
-    [<frame ID=200 name=Criminal_process>, <frame ID=500 name=Criminal_investigation>, ...]
+    [<frame ID=200 name=Criminal_process>, <frame ID=692 name=Crime_scenario>, ...]
 
 To get the details of a particular Frame, you can use the `frame()`
 function passing in the frame number:
