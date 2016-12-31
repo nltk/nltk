@@ -1417,8 +1417,8 @@ warnings(True) to display corpus consistency warnings when loading data
         search through ALL of the frame XML files in the db.
 
         >>> from nltk.corpus import framenet as fn
-        >>> fn.frames_by_lemma(r'(?i)a little')
-        [<frame ID=189 name=Quantity>, <frame ID=2001 name=Degree>]
+        >>> fn.frames_by_lemma(r'(?i)a little') # doctest: +ELLIPSIS
+        [<frame ID=189 name=Quanti...>, <frame ID=2001 name=Degree>]
 
         :return: A list of frame objects.
         :rtype: list(AttrDict)
@@ -1433,15 +1433,13 @@ warnings(True) to display corpus consistency warnings when loading data
 
         >>> from nltk.corpus import framenet as fn
         >>> lu = PrettyDict(fn.lu_basic(256), breakLines=True)
-        >>> # account for different data format in FN 1.5
-        >>> if lu['cBy']==731:
-        ...   lu['cBy'] = 'ChW'
-        >>> lu
+        >>> # ellipses account for differences between FN 1.5 and 1.7
+        >>> lu # doctest: +ELLIPSIS
         {'ID': 256,
          'POS': 'V',
          'URL': u'https://framenet2.icsi.berkeley.edu/fnReports/data/lu/lu256.xml',
          '_type': 'lu',
-         'cBy': 'ChW',
+         'cBy': ...,
          'cDate': '02/08/2001 01:27:50 PST Thu',
          'definition': 'COD: be aware of beforehand; predict.',
          'definitionMarkup': 'COD: be aware of beforehand; predict.',
@@ -1450,7 +1448,7 @@ warnings(True) to display corpus consistency warnings when loading data
          'lexemes': [{'POS': 'V', 'breakBefore': 'false', 'headword': 'false', 'name': 'foresee', 'order': 1}],
          'name': 'foresee.v',
          'semTypes': [],
-         'sentenceCount': {'annotated': 44, 'total': 227},
+         'sentenceCount': {'annotated': ..., 'total': ...},
          'status': 'FN1_Sent'}
 
         :param fn_luid: The id number of the desired LU
@@ -1687,11 +1685,11 @@ warnings(True) to display corpus consistency warnings when loading data
         to traverse the neighboring relations on demand for each FE semtype.)
 
         >>> from nltk.corpus import framenet as fn
-        >>> sum(1 for f in fn.frames() for fe in f.FE.values() if fe.semType)
-        4241
+        >>> x = sum(1 for f in fn.frames() for fe in f.FE.values() if fe.semType)
         >>> fn.propagate_semtypes()
-        >>> sum(1 for f in fn.frames() for fe in f.FE.values() if fe.semType)
-        5252
+        >>> y = sum(1 for f in fn.frames() for fe in f.FE.values() if fe.semType)
+        >>> y-x > 1000
+        True
         """
         if not self._semtypes:
             self._loadsemtypes()
@@ -1777,13 +1775,15 @@ warnings(True) to display corpus consistency warnings when loading data
         Obtain details for a specific frame.
 
         >>> from nltk.corpus import framenet as fn
-        >>> len(fn.frames())
-        1019
-        >>> PrettyList(fn.frames(r'(?i)medical'), maxReprSize=0, breakLines=True)
-        [<frame ID=256 name=Medical_specialties>,
-         <frame ID=257 name=Medical_instruments>,
-         <frame ID=255 name=Medical_professionals>,
-         <frame ID=239 name=Medical_conditions>]
+        >>> len(fn.frames()) in (1019, 1221)    # FN 1.5 and 1.7, resp.
+        True
+        >>> x = PrettyList(fn.frames(r'(?i)crim'), maxReprSize=0, breakLines=True)
+        >>> x.sort(key=lambda f: f.ID)
+        >>> x
+        [<frame ID=200 name=Criminal_process>,
+         <frame ID=500 name=Criminal_investigation>,
+         <frame ID=692 name=Crime_scenario>,
+         <frame ID=700 name=Committing_crime>]
 
         A brief intro to Frames (excerpted from "FrameNet II: Extended
         Theory and Practice" by Ruppenhofer et. al., 2010):
@@ -1905,8 +1905,8 @@ warnings(True) to display corpus consistency warnings when loading data
         or frames whose name matches a pattern.
 
         >>> from nltk.corpus import framenet as fn
-        >>> len(fn.lus())
-        11829
+        >>> len(fn.lus()) in (11829, 13572) # FN 1.5 and 1.7, resp.
+        True
         >>> PrettyList(fn.lus(r'(?i)a little'), maxReprSize=0, breakLines=True)
         [<lu ID=14744 name=a little bit.adv>,
          <lu ID=14733 name=a little.n>,
@@ -2050,9 +2050,9 @@ warnings(True) to display corpus consistency warnings when loading data
         class's doc() function and pass it the value of the 'ID' field.
 
         >>> from nltk.corpus import framenet as fn
-        >>> len(fn.docs())
-        78
-        >>> set([x.corpname for x in fn.docs_metadata()])==set(['ANC', 'C-4', 'KBEval', \
+        >>> len(fn.docs()) in (78, 107) # FN 1.5 and 1.7, resp.
+        True
+        >>> set([x.corpname for x in fn.docs_metadata()])>=set(['ANC', 'C-4', 'KBEval', \
                     'LUCorpus-v0.3', 'Miscellaneous', 'NTI', 'PropBank', 'QA', 'SemAnno'])
         True
 
@@ -2241,8 +2241,8 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> frts = list(fn.frame_relation_types())
         >>> isinstance(frts, list)
         True
-        >>> len(frts)
-        9
+        >>> len(frts) in (9, 10)    # FN 1.5 and 1.7, resp.
+        True
         >>> PrettyDict(frts[0], breakLines=True)
         {'ID': 1,
          '_type': 'framerelationtype',
@@ -2274,15 +2274,15 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> frels = fn.frame_relations()
         >>> isinstance(frels, list)
         True
-        >>> len(frels)
-        1676
+        >>> len(frels) in (1676, 2070)  # FN 1.5 and 1.7, resp.
+        True
         >>> PrettyList(fn.frame_relations('Cooking_creation'), maxReprSize=0, breakLines=True)
         [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>,
          <Parent=Apply_heat -- Using -> Child=Cooking_creation>,
          <MainEntry=Apply_heat -- See_also -> ReferringEntry=Cooking_creation>]
-        >>> PrettyList(fn.frame_relations(373), breakLines=True)
-        [<Parent=Topic -- Using -> Child=Communication>,
-         <Source=Discussion -- ReFraming_Mapping -> Target=Topic>, ...]
+        >>> PrettyList(fn.frame_relations(274), breakLines=True)
+        [<Parent=Avoiding -- Inheritance -> Child=Dodging>, 
+         <Parent=Avoiding -- Inheritance -> Child=Evading>, ...]
         >>> PrettyList(fn.frame_relations(fn.frame('Cooking_creation')), breakLines=True)
         [<Parent=Intentionally_create -- Inheritance -> Child=Cooking_creation>,
          <Parent=Apply_heat -- Using -> Child=Cooking_creation>, ...]
@@ -2349,8 +2349,8 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> ferels = fn.fe_relations()
         >>> isinstance(ferels, list)
         True
-        >>> len(ferels)
-        10020
+        >>> len(ferels) in (10020, 12393)   # FN 1.5 and 1.7, resp.
+        True
         >>> PrettyDict(ferels[0], breakLines=True)
         {'ID': 14642,
         '_type': 'ferelation',
@@ -2380,8 +2380,8 @@ warnings(True) to display corpus consistency warnings when loading data
 
         >>> from nltk.corpus import framenet as fn
         >>> stypes = fn.semtypes()
-        >>> len(stypes)
-        73
+        >>> len(stypes) in (73, 109) # FN 1.5 and 1.7, resp.
+        True
         >>> sorted(stypes[0].keys())
         ['ID', '_type', 'abbrev', 'definition', 'definitionMarkup', 'name', 'rootType', 'subTypes', 'superType']
 
