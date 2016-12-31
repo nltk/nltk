@@ -70,29 +70,38 @@ that pattern:
 
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
-    >>> len(fn.frames())
-    1019
-    >>> pprint(fn.frames(r'(?i)medical'))
-    [<frame ID=256 name=Medical_specialties>, <frame ID=257 name=Medical_instruments>, ...]
+    >>> pprint(fn.frames(r'(?i)crim'))
+    [<frame ID=200 name=Criminal_process>, <frame ID=500 name=Criminal_investigation>, ...]
 
 To get the details of a particular Frame, you can use the `frame()`
 function passing in the frame number:
 
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
-    >>> f = fn.frame(256)
+    >>> f = fn.frame(202)
     >>> f.ID
-    256
+    202
     >>> f.name
-    'Medical_specialties'
+    'Arrest'
     >>> f.definition # doctest: +ELLIPSIS
-    "This frame includes words that name ..."
+    "Authorities charge a Suspect, who is under suspicion of having committed a crime..."
     >>> len(f.lexUnit)
-    29
+    11
     >>> pprint(sorted([x for x in f.FE]))
-    ['Affliction', 'Body_system', 'Specialty', 'Type']
+    ['Authorities',
+     'Charges',
+     'Co-participant',
+     'Manner',
+     'Means',
+     'Offense',
+     'Place',
+     'Purpose',
+     'Source_of_legal_authority',
+     'Suspect',
+     'Time',
+     'Type']
     >>> pprint(f.frameRelations)
-    [<Parent=Cure -- Using -> Child=Medical_specialties>]
+    [<Parent=Intentionally_affect -- Inheritance -> Child=Arrest>, <Complex=Criminal_process -- Subframe -> Component=Arrest>, ...]
 
 The `frame()` function shown above returns a dict object containing
 detailed information about the Frame. See the documentation on the
@@ -106,8 +115,8 @@ expression. Note that LU names are composed of "lemma.POS", where the
 multiple lexemes (e.g. 'a little') (see below).
 
     >>> from nltk.corpus import framenet as fn
-    >>> fn.frames_by_lemma(r'(?i)a little')
-    [<frame ID=189 name=Quantity>, <frame ID=2001 name=Degree>]
+    >>> fn.frames_by_lemma(r'(?i)a little') # doctest: +ELLIPSIS
+    [<frame ID=189 name=Quanti...>, <frame ID=2001 name=Degree>]
 
 -------------
 Lexical Units
@@ -176,8 +185,6 @@ pattern that will be matched against the name of the lexical unit:
 
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
-    >>> len(fn.lus())
-    11829
     >>> pprint(fn.lus(r'(?i)a little'))
     [<lu ID=14744 name=a little bit.adv>, <lu ID=14733 name=a little.n>, ...]
 
