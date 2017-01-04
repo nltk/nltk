@@ -1630,7 +1630,7 @@ class WordNetCorpusReader(CorpusReader):
     # Morphy
     #////////////////////////////////////////////////////////////
     # Morphy, adapted from Oliver Steele's pywordnet
-    def morphy(self, form, pos=None):
+    def morphy(self, form, pos=None, check_exceptions=True):
         """
         Find a possible base form for the given form, with the given
         part of speech, by checking WordNet's list of exceptional
@@ -1656,7 +1656,7 @@ class WordNetCorpusReader(CorpusReader):
             morphy = self._morphy
             analyses = chain(a for p in POS_LIST for a in morphy(form, p))
         else:
-            analyses = self._morphy(form, pos)
+            analyses = self._morphy(form, pos, check_exceptions)
 
         # get the first one we find
         first = list(islice(analyses, 1))
