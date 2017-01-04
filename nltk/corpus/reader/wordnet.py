@@ -1406,7 +1406,7 @@ class WordNetCorpusReader(CorpusReader):
     # Retrieve synsets and lemmas.
     #////////////////////////////////////////////////////////////
 
-    def synsets(self, lemma, pos=None, lang='eng'):
+    def synsets(self, lemma, pos=None, lang='eng', check_exceptions=True):
         """Load all synsets with a given lemma and part of speech tag.
         If no pos is specified, all synsets for all parts of speech
         will be loaded. 
@@ -1422,7 +1422,7 @@ class WordNetCorpusReader(CorpusReader):
                 pos = POS_LIST
             return [get_synset(p, offset)
                     for p in pos
-                    for form in self._morphy(lemma, p)
+                    for form in self._morphy(lemma, p, check_exceptions)
                     for offset in index[form].get(p, [])]
 
         else:
@@ -1676,7 +1676,7 @@ class WordNetCorpusReader(CorpusReader):
 
     MORPHOLOGICAL_SUBSTITUTIONS[ADJ_SAT] = MORPHOLOGICAL_SUBSTITUTIONS[ADJ]
 
-    def _morphy(self, form, pos):
+    def _morphy(self, form, pos, check_exceptions=True):
         # from jordanbg:
         # Given an original string x
         # 1. Apply rules once to the input to get y1, y2, y3, etc.
@@ -1705,8 +1705,9 @@ class WordNetCorpusReader(CorpusReader):
             return result
 
         # 0. Check the exception lists
-        if form in exceptions:
-            return filter_forms([form] + exceptions[form])
+        if check_exceptions:
+            if form in exceptions:
+                return filter_forms([form] + exceptions[form])
 
         # 1. Apply rules once to the input to get y1, y2, y3, etc.
         forms = apply_rules([form])
