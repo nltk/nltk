@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: SentiWordNet
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

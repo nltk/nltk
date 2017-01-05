@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Europarl Corpus Readers
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author:  Nitin Madnani <nmadnani@umiacs.umd.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

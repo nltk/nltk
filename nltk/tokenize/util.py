@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizer Utilities
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -177,7 +177,7 @@ def xml_escape(text):
     some characters that Moses does so we have to manually add them to the
     entities dictionary.
         >>> escape(''')| & < > ' " ] [''')
-        '| &amp; &lt; &gt; \' " ] ['
+        ')| &amp; &lt; &gt; \' " ] ['
 
     :param text: The text that needs to be escaped.
     :type text: str

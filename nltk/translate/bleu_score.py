@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: BLEU Score
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
 # Contributors: Dmitrijs Milajevs, Liling Tan
 # URL: <http://nltk.org/>
@@ -466,8 +466,8 @@ class SmoothingFunction:
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
             else:
-                _msg = str("\nCorpus/Sentence contains 0 counts of {}-grams overlaps.\n"
-                           "BLEU scores might be undesireable; "
+                _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
+                           "BLEU scores might be undesirable; "
                            "use SmoothingFunction().").format(i+1)
                 warnings.warn(_msg)
                 # If this order of n-gram returns 0 counts, the higher order
