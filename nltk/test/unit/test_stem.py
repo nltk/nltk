@@ -84,8 +84,24 @@ class PorterTest(unittest.TestCase):
         # http://tartarus.org/martin/PorterStemmer/c.txt
         # and removing all the --DEPARTURE-- sections from it and
         # running it against Martin's test vocabulary.
+
         with closing(data.find('stemmers/porter_test/porter_original_output.txt').open(encoding='utf-8')) as fp:
             self._test_against_expected_output(
                 PorterStemmer.ORIGINAL_ALGORITHM,
                 fp.read().splitlines()
             )
+
+        self._test_against_expected_output(
+            PorterStemmer.ORIGINAL_ALGORITHM,
+            data.find('stemmers/porter_test/porter_original_output.txt')
+                .open(encoding='utf-8')
+                .read()
+                .splitlines()
+        )
+
+    def test_oed_bug(self):
+        """Test for bug https://github.com/nltk/nltk/issues/1581
+
+        Ensures that 'oed' can be stemmed without throwing an error.
+        """
+        assert PorterStemmer().stem('oed') == 'o'
