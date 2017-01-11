@@ -156,7 +156,8 @@ class XMLCorpusView(StreamBackedCorpusView):
 
     def _detect_encoding(self, fileid):
         if isinstance(fileid, PathPointer):
-            s = fileid.open().readline()
+            with fileid.open() as infile:
+                s = infile.readline()
         else:
             with open(fileid, 'rb') as infile:
                 s = infile.readline()
