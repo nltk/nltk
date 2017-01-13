@@ -54,14 +54,22 @@ if [[ ! -d $senna_folder_name ]]; then
 fi
 
 # Setup the Enviroment variable
+export CLASSPATH=$(pwd)"/${stanford_corenlp_package_name}"
+export CLASSPATH=${CLASSPATH}:$(pwd)"/${stanford_parser_package_name}"
+export CLASSPATH=${CLASSPATH}:$(pwd)"/${stanford_tagger_package_name}"
 export STANFORD_CORENLP=$(pwd)'/stanford-corenlp'
 export STANFORD_PARSER=$(pwd)'/stanford-parser'
-export STANFORD_MODELS=$(pwd)'/stanford-parser'
+export STANFORD_MODELS=$(pwd)'/stanford-postagger/models'
 export STANFORD_POSTAGGER=$(pwd)'/stanford-postagger'
 export SENNA=$(pwd)'/senna'
 
 popd
 popd
+
+echo "---- CLASSPATH: ----"
+echo $CLASSPATH
+echo "---- MODELS: ----"
+echo $STANFORD_MODELS
 
 #coverage
 coverage erase

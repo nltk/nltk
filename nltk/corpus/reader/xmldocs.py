@@ -1,6 +1,6 @@
 # Natural Language Toolkit: XML Corpus Reader
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -156,7 +156,8 @@ class XMLCorpusView(StreamBackedCorpusView):
 
     def _detect_encoding(self, fileid):
         if isinstance(fileid, PathPointer):
-            s = fileid.open().readline()
+            with fileid.open() as infile:
+                s = infile.readline()
         else:
             with open(fileid, 'rb') as infile:
                 s = infile.readline()

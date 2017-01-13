@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2016 NLTK Project
+.. Copyright (C) 2001-2017 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ========
@@ -70,29 +70,40 @@ that pattern:
 
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
-    >>> len(fn.frames())
-    1019
-    >>> pprint(fn.frames(r'(?i)medical'))
-    [<frame ID=256 name=Medical_specialties>, <frame ID=257 name=Medical_instruments>, ...]
+    >>> x = fn.frames(r'(?i)crim')
+    >>> x.sort(key=lambda f: f.ID)
+    >>> x
+    [<frame ID=200 name=Criminal_process>, <frame ID=500 name=Criminal_investigation>, ...]
 
 To get the details of a particular Frame, you can use the `frame()`
 function passing in the frame number:
 
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
-    >>> f = fn.frame(256)
+    >>> f = fn.frame(202)
     >>> f.ID
-    256
+    202
     >>> f.name
-    'Medical_specialties'
+    'Arrest'
     >>> f.definition # doctest: +ELLIPSIS
-    "This frame includes words that name ..."
+    "Authorities charge a Suspect, who is under suspicion of having committed a crime..."
     >>> len(f.lexUnit)
-    29
+    11
     >>> pprint(sorted([x for x in f.FE]))
-    ['Affliction', 'Body_system', 'Specialty', 'Type']
+    ['Authorities',
+     'Charges',
+     'Co-participant',
+     'Manner',
+     'Means',
+     'Offense',
+     'Place',
+     'Purpose',
+     'Source_of_legal_authority',
+     'Suspect',
+     'Time',
+     'Type']
     >>> pprint(f.frameRelations)
-    [<Parent=Cure -- Using -> Child=Medical_specialties>]
+    [<Parent=Intentionally_affect -- Inheritance -> Child=Arrest>, <Complex=Criminal_process -- Subframe -> Component=Arrest>, ...]
 
 The `frame()` function shown above returns a dict object containing
 detailed information about the Frame. See the documentation on the
@@ -106,8 +117,8 @@ expression. Note that LU names are composed of "lemma.POS", where the
 multiple lexemes (e.g. 'a little') (see below).
 
     >>> from nltk.corpus import framenet as fn
-    >>> fn.frames_by_lemma(r'(?i)a little')
-    [<frame ID=189 name=Quantity>, <frame ID=2001 name=Degree>]
+    >>> fn.frames_by_lemma(r'(?i)a little') # doctest: +ELLIPSIS
+    [<frame ID=189 name=Quanti...>, <frame ID=2001 name=Degree>]
 
 -------------
 Lexical Units
@@ -176,8 +187,6 @@ pattern that will be matched against the name of the lexical unit:
 
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
-    >>> len(fn.lus())
-    11829
     >>> pprint(fn.lus(r'(?i)a little'))
     [<lu ID=14744 name=a little bit.adv>, <lu ID=14733 name=a little.n>, ...]
 
@@ -221,19 +230,57 @@ Annotated Documents
 -------------------
 
 The FrameNet corpus contains a small set of annotated documents. A list
-of these documents can be obtained by calling the `documents()` function:
+of these documents can be obtained by calling the `docs()` function:
 
     >>> from pprint import pprint
     >>> from nltk.corpus import framenet as fn
-    >>> docs = fn.documents()
-    >>> len(docs)
-    78
-    >>> pprint(sorted(docs[0].keys()))
-    ['ID', 'corpid', 'corpname', 'description', 'filename']
+    >>> d = fn.docs('BellRinging')[0]
+    >>> d.corpname
+    'PropBank'
+    >>> d.sentence[49] # doctest: +ELLIPSIS
+    full-text sentence (...) in BellRinging:
+    <BLANKLINE>
+    <BLANKLINE>
+    [POS] 17 tags
+    <BLANKLINE>
+    [POS_tagset] PENN
+    <BLANKLINE>
+    [text] + [annotationSet]
+    <BLANKLINE>
+    `` I live in hopes that the ringers themselves will be drawn into
+                 *****          *******                    *****
+                 Desir          Cause_t                    Cause
+                 [1]            [3]                        [2]
+    <BLANKLINE>
+     that fuller life .
+          ******
+          Comple
+          [4]
+     (Desir=Desiring, Cause_t=Cause_to_make_noise, Cause=Cause_motion, Comple=Completeness)
+    <BLANKLINE>
 
-Detailed information about each sentence contained in each document can
-be obtained by calling the `annotated_document()` function and supplying
-the 'ID' number of the document. For detailed information about the info
-that is for each document, see the documentation on the
-`annotated_document()` function.
-
+    >>> d.sentence[49].annotationSet[1] # doctest: +ELLIPSIS
+    annotation set (...):
+    <BLANKLINE>
+    [status] MANUAL
+    <BLANKLINE>
+    [LU] (6605) hope.n in Desiring
+    <BLANKLINE>
+    [frame] (366) Desiring
+    <BLANKLINE>
+    [GF] 2 relations
+    <BLANKLINE>
+    [PT] 2 phrases
+    <BLANKLINE>
+    [text] + [Target] + [FE] + [Noun]
+    <BLANKLINE>
+    `` I live in hopes that the ringers themselves will be drawn into
+       - ^^^^ ^^ ***** ----------------------------------------------
+       E supp su       Event
+    <BLANKLINE>
+     that fuller life .
+    -----------------
+    <BLANKLINE>
+     (E=Experiencer, su=supp)
+    <BLANKLINE>
+    <BLANKLINE>

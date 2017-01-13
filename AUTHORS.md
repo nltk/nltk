@@ -137,6 +137,7 @@
 - Alberto Planas
 - Ondrej Platek
 - Alessandro Presta
+- Qi Liu
 - Martin Thorsen Ranang
 - Michael Recachinas
 - Brandon Rhodes
@@ -206,6 +207,7 @@
 - J Richard Snape
 - Tsolak Ghukasyan
 - Prasasto Adi
+- Safwan Kamarrudin
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer

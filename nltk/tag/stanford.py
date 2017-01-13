@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Part-of-speech and Named-Entity Taggers
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
@@ -23,7 +23,7 @@ import tempfile
 from subprocess import PIPE
 import warnings
 
-from nltk.internals import find_file, find_jar, config_java, java, _java_options, find_jars_within_path
+from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
 from nltk import compat
 
@@ -126,8 +126,8 @@ class StanfordPOSTagger(StanfordTagger):
     Example:
 
         >>> from nltk.tag import StanfordPOSTagger
-        >>> st = StanfordPOSTagger('english-bidirectional-distsim.tagger') # doctest: +SKIP
-        >>> st.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
+        >>> st = StanfordPOSTagger('english-bidirectional-distsim.tagger')
+        >>> st.tag('What is the airspeed of an unladen swallow ?'.split())
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
 

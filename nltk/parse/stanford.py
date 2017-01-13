@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Parser
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>
@@ -216,7 +216,7 @@ class GenericStanfordParser(ParserI):
                                       stdout=PIPE, stderr=PIPE)
                 
             stdout = stdout.replace(b'\xc2\xa0',b' ')
-            stdout = stdout.replace(b'\xa0',b' ')
+            stdout = stdout.replace(b'\x00\xa0',b' ')
             stdout = stdout.decode(encoding)
 
         os.unlink(input_file.name)
