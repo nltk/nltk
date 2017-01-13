@@ -1045,7 +1045,6 @@ class Expression(SubstituteBindingsI):
             result = result.replace(e.variable, newVar, True)
         return result
 
-    @abstractmethod
     def visit(self, function, combinator):
         """
         Recursively visit subexpressions.  Apply 'function' to each

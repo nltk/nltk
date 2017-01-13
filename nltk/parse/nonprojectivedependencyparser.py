@@ -212,6 +212,9 @@ class ProbabilisticNonprojectiveParser(object):
     directed graph.
 
     >>> class Scorer(DependencyScorerI):
+    ...     def __init__(self):
+    ...         pass
+    ...
     ...     def train(self, graphs):
     ...         pass
     ...

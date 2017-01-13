@@ -56,10 +56,6 @@ class StanfordTagger(TaggerI):
         self._stanford_model = find_file(model_filename,
                 env_vars=('STANFORD_MODELS',), verbose=verbose)
 
-        # Adding logging jar files to classpath
-        stanford_dir = os.path.split(self._stanford_jar)[0]
-        self._stanford_jar = tuple(find_jars_within_path(stanford_dir))
-
         self._encoding = encoding
         self.java_options = java_options
 

@@ -189,7 +189,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
 
         :type: str or PathPointer""")
 
-    @abstractmethod
     def read_block(self, stream):
         """
         Read a block from the input stream.
