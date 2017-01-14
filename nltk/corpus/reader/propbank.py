@@ -49,7 +49,7 @@ class PropbankCorpusReader(CorpusReader):
             necessary to resolve the tree pointers used by propbank.
         """
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, ):
+        if isinstance(framefiles, string_types):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
