@@ -20,7 +20,6 @@ PY3 = sys.version_info[0] == 3
 if PY3:
     MAXSIZE = sys.maxsize
     get_im_class = lambda meth: meth.__self__.__class__
-    xrange = range
     _iterkeys = "keys"
     _itervalues = "values"
     _iteritems = "items"
@@ -52,7 +51,6 @@ if PY3:
 
 else:
     get_im_class = lambda meth: meth.im_class
-    xrange = xrange
     _iterkeys = "iterkeys"
     _itervalues = "itervalues"
     _iteritems = "iteritems"

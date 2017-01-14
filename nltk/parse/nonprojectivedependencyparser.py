@@ -11,7 +11,7 @@ from __future__ import print_function
 import math
 import logging
 
-from nltk.compat import xrange
+from six import range
 
 from nltk.parse.dependencygraph import DependencyGraph
 
@@ -682,7 +682,7 @@ class NonprojectiveDependencyParser(object):
                     orig_length = len(possible_heads[i])
 
                     if index_on_stack and orig_length == 0:
-                        for j in xrange(len(stack) - 1, -1, -1):
+                        for j in range(len(stack) - 1, -1, -1):
                             stack_item = stack[j]
                             if stack_item[0] == i:
                                 possible_heads[i].append(stack.pop(j)[1])

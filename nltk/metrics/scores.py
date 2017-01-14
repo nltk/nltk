@@ -12,14 +12,13 @@ import operator
 from random import shuffle
 from functools import reduce
 
-from six import zip
+from six import range, zip
 
 try:
     from scipy.stats.stats import betai
 except ImportError:
     betai = None
 
-from nltk.compat import xrange
 from nltk.util import LazyConcatenation, LazyMap
 
 def accuracy(reference, test):
@@ -161,7 +160,7 @@ def approxrand(a, b, **kwargs):
     shuffles = kwargs.get('shuffles', 999)
     # there's no point in trying to shuffle beyond all possible permutations
     shuffles = \
-        min(shuffles, reduce(operator.mul, xrange(1, len(a) + len(b) + 1)))
+        min(shuffles, reduce(operator.mul, range(1, len(a) + len(b) + 1)))
     stat = kwargs.get('statistic', lambda lst: sum(lst) / len(lst))
     verbose = kwargs.get('verbose', False)
 
@@ -178,7 +177,7 @@ def approxrand(a, b, **kwargs):
     lst = LazyConcatenation([a, b])
     indices = list(range(len(a) + len(b)))
 
-    for i in xrange(shuffles):
+    for i in range(shuffles):
         if verbose and i % 10 == 0:
             print('shuffle: %d' % i)
 

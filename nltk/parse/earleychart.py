@@ -27,7 +27,8 @@ algorithm, originally formulated by Jay Earley (1970).
 """
 from __future__ import print_function, division
 
-from nltk.compat import xrange
+from six import range
+
 from nltk.parse.chart import (Chart, ChartParser, EdgeI, LeafEdge, LeafInitRule,
                               BottomUpPredictRule, BottomUpPredictCombineRule,
                               TopDownInitRule, SingleEdgeFundamentalRule,
@@ -108,7 +109,7 @@ class IncrementalChart(Chart):
         self._edgelists[edge.end()].append(edge)
 
     def _positions(self):
-        return xrange(self.num_leaves() + 1)
+        return range(self.num_leaves() + 1)
 
 
 class FeatureIncrementalChart(IncrementalChart, FeatureChart):

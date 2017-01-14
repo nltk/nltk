@@ -41,7 +41,8 @@ import itertools
 import re
 import warnings
 
-from nltk import compat
+from six import range
+
 from nltk.tree import Tree
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
 from nltk.util import OrderedDict
@@ -1147,7 +1148,7 @@ class EmptyPredictRule(AbstractChartRule):
     NUM_EDGES = 0
     def apply(self, chart, grammar):
         for prod in grammar.productions(empty=True):
-            for index in compat.xrange(chart.num_leaves() + 1):
+            for index in range(chart.num_leaves() + 1):
                 new_edge = TreeEdge.from_production(prod, index)
                 if chart.insert(new_edge, ()):
                     yield new_edge
@@ -1313,7 +1314,7 @@ class ChartParser(ParserI):
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
         if trace: print(chart.pretty_format_leaves(trace_edge_width))
-        
+
         if self._use_agenda:
             # Use an agenda-based algorithm.
             for axiom in self._axioms:
@@ -1630,7 +1631,7 @@ def demo(choice=None,
         t = time.time()
         chart = cp.chart_parse(tokens)
         parses = list(chart.parses(grammar.start()))
-        
+
         times[strategies[strategy][0]] = time.time()-t
         print("Nr edges in chart:", len(chart.edges()))
         if numparses:
