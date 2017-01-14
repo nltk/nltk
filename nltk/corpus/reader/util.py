@@ -10,6 +10,7 @@ import os
 import bisect
 import re
 import tempfile
+from six import string_types
 from functools import reduce
 try:
     import cPickle as pickle
@@ -20,7 +21,7 @@ except ImportError:
 try: from xml.etree import cElementTree as ElementTree
 except ImportError: from xml.etree import ElementTree
 
-from nltk.compat import string_types, text_type
+from nltk.compat import text_type
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
@@ -280,12 +281,12 @@ class StreamBackedCorpusView(AbstractLazySequence):
         # Open the stream, if it's not open already.
         if self._stream is None:
             self._open()
-        
+
         # If the file is empty, the while loop will never run.
         # This *seems* to be all the state we need to set:
         if self._eofpos == 0:
             self._len = 0
-            
+
         # Each iteration through this loop, we read a single block
         # from the stream.
         while filepos < self._eofpos:
@@ -802,4 +803,3 @@ def tagged_treebank_para_block_reader(stream):
         # Content line:
         else:
             para += line
-

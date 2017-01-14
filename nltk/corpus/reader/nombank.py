@@ -7,11 +7,13 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import unicode_literals
+from xml.etree import ElementTree
+
+from six import string_types
 
 from nltk.tree import Tree
-from xml.etree import ElementTree
 from nltk.internals import raise_unorderable_types
-from nltk.compat import total_ordering, python_2_unicode_compatible, string_types
+from nltk.compat import total_ordering, python_2_unicode_compatible
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
@@ -66,7 +68,7 @@ class NombankCorpusReader(CorpusReader):
         :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def instances(self, baseform=None):
@@ -418,4 +420,3 @@ class NombankTreePointer(NombankPointer):
                 else:
                     wordnum += 1
                     stack.pop()
-

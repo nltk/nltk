@@ -17,10 +17,11 @@ import operator
 from collections import defaultdict
 from functools import reduce
 
+from six import string_types
+
 from nltk.util import Trie
 from nltk.internals import Counter
-from nltk.compat import (total_ordering, string_types,
-                         python_2_unicode_compatible)
+from nltk.compat import (total_ordering, python_2_unicode_compatible)
 
 APP = 'APP'
 

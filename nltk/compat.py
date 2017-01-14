@@ -24,7 +24,6 @@ if PY3:
     def u(s):
         return s
 
-    string_types = str,
     integer_types = int,
     class_types = type,
     text_type = str
@@ -72,7 +71,6 @@ else:
     def u(s):
         return unicode(s, "unicode_escape")
 
-    string_types = basestring,
     integer_types = (int, long)
     class_types = (type, types.ClassType)
     text_type = unicode
@@ -492,12 +490,12 @@ class Fraction(fractions.Fraction):
     Python >=3.5. It adds the `_normalize` parameter such that it does
     not normalize the denominator to the Greatest Common Divisor (gcd) when
     the numerator is 0.
-    
+
     This is most probably only used by the nltk.translate.bleu_score.py where
     numerator and denominator of the different ngram precisions are mutable.
-    But the idea of "mutable" fraction might not be applicable to other usages, 
+    But the idea of "mutable" fraction might not be applicable to other usages,
     See http://stackoverflow.com/questions/34561265
-    
+
     This objects should be deprecated once NLTK stops supporting Python < 3.5
     See https://github.com/nltk/nltk/issues/1330
     """

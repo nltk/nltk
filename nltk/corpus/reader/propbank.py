@@ -9,7 +9,8 @@ from __future__ import unicode_literals
 import re
 from xml.etree import ElementTree
 
-from nltk import compat
+from six import string_types
+
 from nltk.tree import Tree
 from nltk.internals import raise_unorderable_types
 from nltk.compat import total_ordering
@@ -48,7 +49,7 @@ class PropbankCorpusReader(CorpusReader):
             necessary to resolve the tree pointers used by propbank.
         """
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, compat.string_types):
+        if isinstance(framefiles, ):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
         # Initialze the corpus reader.
@@ -67,7 +68,7 @@ class PropbankCorpusReader(CorpusReader):
         :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, ): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def instances(self, baseform=None):
@@ -472,10 +473,9 @@ class PropbankInflection(object):
 
     @staticmethod
     def parse(s):
-        if not isinstance(s, compat.string_types):
+        if not isinstance(s, string_types):
             raise TypeError('expected a string')
         if (len(s) != 5 or
             not PropbankInflection._VALIDATE.match(s)):
             raise ValueError('Bad propbank inflection string %r' % s)
         return PropbankInflection(*s)
-

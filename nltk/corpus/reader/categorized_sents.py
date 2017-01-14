@@ -34,6 +34,7 @@ Related papers:
     sentiment categorization with respect to rating scales". Proceedings of the
     ACL, 2005.
 """
+from six import string_types
 
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
@@ -133,7 +134,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.CorpusView(path, self._read_sent_block, encoding=enc)
             for (path, enc, fileid) in self.abspaths(fileids, True, True)])
@@ -153,7 +154,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
             for (path, enc, fileid) in self.abspaths(fileids, True, True)])

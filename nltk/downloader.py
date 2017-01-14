@@ -174,6 +174,9 @@ except:
     TclError = ValueError
 
 from xml.etree import ElementTree
+
+from six import string_types
+
 import nltk
 from nltk import compat
 #urllib2 = nltk.internals.import_from_stdlib('urllib2')
@@ -253,7 +256,7 @@ class Package(object):
 
     @staticmethod
     def fromxml(xml):
-        if isinstance(xml, compat.string_types):
+        if isinstance(xml, string_types):
             xml = ElementTree.parse(xml)
         for key in xml.attrib:
             xml.attrib[key] = compat.text_type(xml.attrib[key])
@@ -292,7 +295,7 @@ class Collection(object):
 
     @staticmethod
     def fromxml(xml):
-        if isinstance(xml, compat.string_types):
+        if isinstance(xml, string_types):
             xml = ElementTree.parse(xml)
         for key in xml.attrib:
             xml.attrib[key] = compat.text_type(xml.attrib[key])
@@ -504,7 +507,7 @@ class Downloader(object):
     #/////////////////////////////////////////////////////////////////
 
     def _info_or_id(self, info_or_id):
-        if isinstance(info_or_id, compat.string_types):
+        if isinstance(info_or_id, string_types):
             return self.info(info_or_id)
         else:
             return info_or_id
@@ -1441,7 +1444,7 @@ class DownloaderGUI(object):
 
     def _table_reprfunc(self, row, col, val):
         if self._table.column_names[col].endswith('Size'):
-            if isinstance(val, compat.string_types): return '  %s' % val
+            if isinstance(val, string_types): return '  %s' % val
             elif val < 1024**2: return '  %.1f KB' % (val/1024.**1)
             elif val < 1024**3: return '  %.1f MB' % (val/1024.**2)
             else: return '  %.1f GB' % (val/1024.**3)
@@ -1965,7 +1968,7 @@ def md5_hexdigest(file):
     Calculate and return the MD5 checksum for a given file.
     ``file`` may either be a filename or an open stream.
     """
-    if isinstance(file, compat.string_types):
+    if isinstance(file, string_types):
         with open(file, 'rb') as infile:
             return _md5_hexdigest(infile)
     return _md5_hexdigest(file)

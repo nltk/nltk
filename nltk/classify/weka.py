@@ -15,8 +15,10 @@ import os
 import subprocess
 import re
 import zipfile
-
 from sys import stdin
+
+from six import string_types
+
 from nltk import compat
 from nltk.probability import DictionaryProbDist
 from nltk.internals import java, config_java
@@ -267,7 +269,7 @@ class ARFF_Formatter:
                     ftype = '{True, False}'
                 elif issubclass(type(fval), (compat.integer_types, float, bool)):
                     ftype = 'NUMERIC'
-                elif issubclass(type(fval), compat.string_types):
+                elif issubclass(type(fval), string_types):
                     ftype = 'STRING'
                 elif fval is None:
                     continue # can't tell the type.

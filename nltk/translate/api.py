@@ -1,4 +1,4 @@
-# Natural Language Toolkit: API for alignment and translation objects 
+# Natural Language Toolkit: API for alignment and translation objects
 #
 # Copyright (C) 2001-2017 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
@@ -12,7 +12,7 @@ from __future__ import print_function, unicode_literals
 import subprocess
 from collections import namedtuple
 
-from nltk.compat import python_2_unicode_compatible, string_types
+from nltk.compat import python_2_unicode_compatible
 
 @python_2_unicode_compatible
 class AlignedSent(object):
@@ -63,7 +63,7 @@ class AlignedSent(object):
 
     def _get_alignment(self):
         return self._alignment
-        
+
     def _set_alignment(self, alignment):
         _check_alignment(len(self.words), len(self.mots), alignment)
         self._alignment = alignment
@@ -82,41 +82,41 @@ class AlignedSent(object):
 
     def _to_dot(self):
         """
-        Dot representation of the aligned sentence 
-        """ 
+        Dot representation of the aligned sentence
+        """
         s = 'graph align {\n'
         s += 'node[shape=plaintext]\n'
-        
-        # Declare node 
+
+        # Declare node
         for w in self._words:
             s += '"%s_source" [label="%s"] \n' % (w, w)
-            
+
         for w in self._mots:
             s += '"%s_target" [label="%s"] \n' % (w, w)
-            
-        # Alignment 
-        for u,v in self._alignment:           
+
+        # Alignment
+        for u,v in self._alignment:
             s += '"%s_source" -- "%s_target" \n' % (self._words[u] , self._mots[v] )
-             
-        # Connect the source words 
+
+        # Connect the source words
         for i in range(len(self._words)-1) :
             s += '"%s_source" -- "%s_source" [style=invis]\n' % (self._words[i] , self._words[i+1])
-            
-        # Connect the target words 
+
+        # Connect the target words
         for i in range(len(self._mots)-1) :
             s += '"%s_target" -- "%s_target" [style=invis]\n' % (self._mots[i] , self._mots[i+1])
-            
-        # Put it in the same rank 
+
+        # Put it in the same rank
         s  += '{rank = same; %s}\n' % (' '.join('"%s_source"' % w for w in self._words))
         s  += '{rank = same; %s}\n' % (' '.join('"%s_target"' % w for w in self._mots))
 
         s += '}'
-        
-        return s 
-        
+
+        return s
+
     def _repr_svg_(self):
         """
-        Ipython magic : show SVG representation of this ``AlignedSent``. 
+        Ipython magic : show SVG representation of this ``AlignedSent``.
         """
         dot_string = self._to_dot().encode('utf8')
         output_format = 'svg'
@@ -126,10 +126,10 @@ class AlignedSent(object):
         except OSError:
             raise Exception('Cannot find the dot binary from Graphviz package')
         out, err = process.communicate(dot_string)
-         
+
         return out.decode('utf8')
-    
-    
+
+
     def __str__(self):
         """
         Return a human-readable string representation for this ``AlignedSent``.

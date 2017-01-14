@@ -54,13 +54,14 @@ import re
 from tkinter import (Button, Canvas, Entry, Frame, IntVar, Label,
                      Scrollbar, Text, Tk, Toplevel)
 
+from six import string_types
+
 from nltk.grammar import (CFG, _read_cfg_production,
                           Nonterminal, nonterminals)
 from nltk.tree import Tree
 from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
 from nltk.draw.util import (CanvasFrame, ColorizedList, ShowText,
                             SymbolWidget, TextWidget)
-from nltk import compat
 
 ######################################################################
 # Production List
@@ -617,7 +618,7 @@ class CFGDemo(object):
                     isinstance(widget, TreeSegmentWidget) and
                     node.symbol == widget.label().text()):
                     pass # matching nonterminal
-                elif (isinstance(node, compat.string_types) and
+                elif (isinstance(node, string_types) and
                       isinstance(widget, TextWidget) and
                       node == widget.text()):
                     pass # matching nonterminal

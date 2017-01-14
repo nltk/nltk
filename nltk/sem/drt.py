@@ -11,7 +11,9 @@ import operator
 from functools import reduce
 from itertools import chain
 
-from nltk.compat import string_types, python_2_unicode_compatible
+from six import string_types
+
+from nltk.compat import python_2_unicode_compatible
 from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
                             AndExpression, ApplicationExpression, BinaryExpression,
                             BooleanExpression, ConstantExpression, EqualityExpression,
