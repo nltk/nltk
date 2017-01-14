@@ -176,6 +176,7 @@ except:
 from xml.etree import ElementTree
 
 from six import string_types, text_type
+from six.moves import input
 
 import nltk
 from nltk import compat
@@ -475,7 +476,7 @@ class Downloader(object):
                 print('  [%s] %s %s' % (prefix, info.id.ljust(20, '.'), name))
                 lines += len(name.split('\n')) # for more_prompt
                 if more_prompt and lines > 20:
-                    user_input = compat.raw_input("Hit Enter to continue: ")
+                    user_input = input("Hit Enter to continue: ")
                     if (user_input.lower() in ('x', 'q')): return
                     lines = 0
             print()
@@ -675,7 +676,7 @@ class Downloader(object):
                     self._errors = True
                     if not quiet:
                         print("Error installing package. Retry? [n/y/e]")
-                        choice = compat.raw_input().strip()
+                        choice = input().strip()
                         if choice in ['y', 'Y']:
                             if not self.download(msg.package.id, download_dir,
                                                  quiet, force, prefix,
@@ -998,7 +999,7 @@ class DownloaderShell(object):
         while True:
             self._simple_interactive_menu(
                 'd) Download', 'l) List', ' u) Update', 'c) Config', 'h) Help', 'q) Quit')
-            user_input = compat.raw_input('Downloader> ').strip()
+            user_input = input('Downloader> ').strip()
             if not user_input: print(); continue
             command = user_input.lower().split()[0]
             args = user_input.split()[1:]
@@ -1036,7 +1037,7 @@ class DownloaderShell(object):
             while True:
                 print()
                 print('Download which package (l=list; x=cancel)?')
-                user_input = compat.raw_input('  Identifier> ')
+                user_input = input('  Identifier> ')
                 if user_input.lower()=='l':
                     self._ds.list(self._ds.download_dir, header=False,
                                   more_prompt=True, skip_installed=True)
@@ -1066,7 +1067,7 @@ class DownloaderShell(object):
                     print('  [ ] %s %s' % (pid.ljust(20, '.'), name))
                 print()
 
-                user_input = compat.raw_input('  Identifier> ')
+                user_input = input('  Identifier> ')
                 if user_input.lower()=='o':
                     for pid, pname in stale_packages:
                         try: self._ds.download(pid, prefix='    ')
@@ -1104,11 +1105,11 @@ class DownloaderShell(object):
             self._simple_interactive_menu(
                 's) Show Config', 'u) Set Server URL',
                 'd) Set Data Dir', 'm) Main Menu')
-            user_input = compat.raw_input('Config> ').strip().lower()
+            user_input = input('Config> ').strip().lower()
             if user_input == 's':
                 self._show_config()
             elif user_input == 'd':
-                new_dl_dir = compat.raw_input('  New Directory> ').strip()
+                new_dl_dir = input('  New Directory> ').strip()
                 if new_dl_dir in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 elif os.path.isdir(new_dl_dir):
@@ -1117,7 +1118,7 @@ class DownloaderShell(object):
                     print(('Directory %r not found!  Create it first.' %
                            new_dl_dir))
             elif user_input == 'u':
-                new_url = compat.raw_input('  New URL> ').strip()
+                new_url = input('  New URL> ').strip()
                 if new_url in ('', 'x', 'q', 'X', 'Q'):
                     print('  Cancelled!')
                 else:
