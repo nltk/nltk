@@ -38,7 +38,10 @@ domains and tasks. The basic logic is this:
 
 from __future__ import unicode_literals
 import re
-from nltk.compat import htmlentitydefs, int2byte, unichr
+
+from six import int2byte, unichr
+
+from nltk.compat import htmlentitydefs
 
 
 ######################################################################
@@ -340,4 +343,3 @@ def casual_tokenize(text, preserve_case=True, reduce_len=False, strip_handles=Fa
                           strip_handles=strip_handles).tokenize(text)
 
 ###############################################################################
-

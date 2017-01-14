@@ -43,10 +43,6 @@ if PY3:
 
     from tempfile import TemporaryDirectory
 
-    unichr = chr
-    import operator
-    int2byte = operator.methodcaller("to_bytes", 1, "big")
-
 else:
     get_im_class = lambda meth: meth.im_class
     _iterkeys = "iterkeys"
@@ -121,9 +117,6 @@ else:
             return ZERO
 
     UTC = UTC()
-
-    unichr = unichr
-    int2byte = chr
 
     import csv
     import codecs
