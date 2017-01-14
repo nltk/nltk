@@ -25,7 +25,6 @@ if PY3:
     StringIO = io.StringIO
     BytesIO = io.BytesIO
 
-    import html.entities as htmlentitydefs
     from urllib.request import (urlopen, ProxyHandler, build_opener,
                                 install_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
                                 ProxyBasicAuthHandler, ProxyDigestAuthHandler, Request,
@@ -49,7 +48,6 @@ else:
         from StringIO import StringIO
     BytesIO = StringIO
 
-    import htmlentitydefs
     from urllib2 import (urlopen, HTTPError, URLError,
                          ProxyHandler, build_opener, install_opener,
                          HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler,
