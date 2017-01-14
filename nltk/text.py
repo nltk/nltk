@@ -21,12 +21,14 @@ from functools import reduce
 from itertools import islice
 import re
 
+from six import text_type
+
 from nltk.probability import FreqDist, LidstoneProbDist
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
-from nltk.compat import python_2_unicode_compatible, text_type, Counter
+from nltk.compat import python_2_unicode_compatible, Counter
 
 
 class ContextIndex(object):
@@ -443,7 +445,7 @@ class Text(object):
         """
         from nltk.draw import dispersion_plot
         dispersion_plot(self, words)
-        
+
     def generate(self, words):
         """
         Issues a reminder to users following the book online

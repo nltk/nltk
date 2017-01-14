@@ -14,11 +14,13 @@ import pydoc
 import bisect
 import os
 
+from six import text_type
+
 from itertools import islice, chain, combinations
 from collections import defaultdict, deque, Counter
 
 from nltk.internals import slice_bounds, raise_unorderable_types
-from nltk.compat import (text_type, total_ordering,
+from nltk.compat import (total_ordering,
                          python_2_unicode_compatible)
 
 

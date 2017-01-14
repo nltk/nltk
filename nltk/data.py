@@ -53,13 +53,13 @@ try:
 except ImportError:
     import pickle
 
-from six import string_types
+from six import string_types, text_type
 
 # this import should be more specific:
 import nltk
 
 from nltk.compat import py3_data, add_py3_data
-from nltk.compat import text_type, BytesIO, urlopen, url2pathname
+from nltk.compat import BytesIO, urlopen, url2pathname
 
 
 ######################################################################

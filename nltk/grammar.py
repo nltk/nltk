@@ -75,8 +75,8 @@ import re
 from six import string_types
 
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import (total_ordering, text_type,
-                         python_2_unicode_compatible, unicode_repr)
+from nltk.compat import (total_ordering, python_2_unicode_compatible,
+                         unicode_repr)
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn

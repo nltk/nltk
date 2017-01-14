@@ -21,15 +21,15 @@ from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info
 
-from six import class_types, string_types
+from six import class_types, string_types, text_type
 
 from nltk.internals import slice_bounds, raise_unorderable_types
 from nltk.collections import *
-from nltk.compat import (text_type, total_ordering,
-                         python_2_unicode_compatible, getproxies,
-			 ProxyHandler, build_opener, install_opener,
-			 HTTPPasswordMgrWithDefaultRealm,
-			 ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+from nltk.compat import (total_ordering, python_2_unicode_compatible,
+                         getproxies, ProxyHandler, build_opener,
+                         install_opener, HTTPPasswordMgrWithDefaultRealm,
+                         ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+
 
 ######################################################################
 # Short usage message

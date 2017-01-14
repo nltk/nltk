@@ -15,9 +15,10 @@ A module for interfacing with the HunPos open-source POS-tagger.
 import os
 from subprocess import Popen, PIPE
 
+from six import text_type
+
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI
-from nltk import compat
 
 _hunpos_url = 'http://code.google.com/p/hunpos/'
 
@@ -105,7 +106,7 @@ class HunposTagger(TaggerI):
         """
         for token in tokens:
             assert "\n" not in token, "Tokens should not contain newlines"
-            if isinstance(token, compat.text_type):
+            if isinstance(token, text_type):
                 token = token.encode(self._encoding)
             self._hunpos.stdin.write(token + b"\n")
         # We write a final empty line to tell hunpos that the sentence is finished:
@@ -129,4 +130,3 @@ def setup_module(module):
         HunposTagger('en_wsj.model')
     except LookupError:
         raise SkipTest("HunposTagger is not available")
-

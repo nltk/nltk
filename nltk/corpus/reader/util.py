@@ -10,7 +10,7 @@ import os
 import bisect
 import re
 import tempfile
-from six import string_types
+from six import string_types, text_type
 from functools import reduce
 try:
     import cPickle as pickle
@@ -21,7 +21,6 @@ except ImportError:
 try: from xml.etree import cElementTree as ElementTree
 except ImportError: from xml.etree import ElementTree
 
-from nltk.compat import text_type
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer

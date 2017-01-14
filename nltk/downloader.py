@@ -175,7 +175,7 @@ except:
 
 from xml.etree import ElementTree
 
-from six import string_types
+from six import string_types, text_type
 
 import nltk
 from nltk import compat
@@ -259,7 +259,7 @@ class Package(object):
         if isinstance(xml, string_types):
             xml = ElementTree.parse(xml)
         for key in xml.attrib:
-            xml.attrib[key] = compat.text_type(xml.attrib[key])
+            xml.attrib[key] = text_type(xml.attrib[key])
         return Package(**xml.attrib)
 
     def __lt__(self, other):
@@ -298,7 +298,7 @@ class Collection(object):
         if isinstance(xml, string_types):
             xml = ElementTree.parse(xml)
         for key in xml.attrib:
-            xml.attrib[key] = compat.text_type(xml.attrib[key])
+            xml.attrib[key] = text_type(xml.attrib[key])
         children = [child.get('ref') for child in xml.findall('item')]
         return Collection(children=children, **xml.attrib)
 

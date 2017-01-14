@@ -24,7 +24,6 @@ if PY3:
     def u(s):
         return s
 
-    text_type = str
     binary_type = bytes
 
     MAXSIZE = sys.maxsize
@@ -69,7 +68,6 @@ else:
     def u(s):
         return unicode(s, "unicode_escape")
 
-    text_type = unicode
     binary_type = str
     get_im_class = lambda meth: meth.im_class
     xrange = xrange

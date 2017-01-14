@@ -46,6 +46,9 @@ import array
 from operator import itemgetter
 from collections import defaultdict
 from functools import reduce
+
+from six import text_type
+
 from nltk import compat
 from nltk.compat import Counter
 
@@ -251,7 +254,7 @@ class FreqDist(Counter):
             pylab.title(kwargs["title"])
             del kwargs["title"]
         pylab.plot(freqs, **kwargs)
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
@@ -297,8 +300,8 @@ class FreqDist(Counter):
         """
         return self.__class__(self)
 
-    # Mathematical operatiors 
-    
+    # Mathematical operatiors
+
     def __add__(self, other):
         """
         Add counts from two counters.
@@ -1820,7 +1823,7 @@ class ConditionalFreqDist(defaultdict):
 
         pylab.legend(loc=legend_loc)
         pylab.grid(True, color="silver")
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
         if title:
             pylab.title(title)
         pylab.xlabel("Samples")
@@ -1865,7 +1868,7 @@ class ConditionalFreqDist(defaultdict):
             print()
 
     # Mathematical operators
-    
+
     def __add__(self, other):
         """
         Add counts from two ConditionalFreqDists.
@@ -1921,7 +1924,7 @@ class ConditionalFreqDist(defaultdict):
         return result
 
     def __and__(self, other):
-        """ 
+        """
         Intersection is the minimum of corresponding counts.
         """
         if not isinstance(other, ConditionalFreqDist):

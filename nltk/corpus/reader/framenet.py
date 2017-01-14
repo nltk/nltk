@@ -18,14 +18,14 @@ import textwrap
 import itertools
 import types
 
-from six import string_types
+from six import string_types, text_type
 from six.moves import zip_longest
 
 from collections import defaultdict, OrderedDict
 from pprint import pprint, pformat
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
-from nltk.compat import text_type, python_2_unicode_compatible
+from nltk.compat import python_2_unicode_compatible
 from nltk.util import AbstractLazySequence, LazyConcatenation, LazyMap, LazyIteratorList
 
 __docformat__ = 'epytext en'
