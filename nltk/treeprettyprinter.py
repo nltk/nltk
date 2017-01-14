@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Pretty-printing of discontinuous trees. 
+Pretty-printing of discontinuous trees.
 Adapted from the disco-dop project, by Andreas van Cranenburgh.
 https://github.com/andreasvc/disco-dop
 
@@ -21,7 +21,7 @@ http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 from __future__ import division, print_function, unicode_literals
 
 from nltk.util import slice_bounds, OrderedDict
-from nltk.compat import string_types, python_2_unicode_compatible, unicode_repr
+from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk.internals import raise_unorderable_types
 from nltk.tree import Tree
 
@@ -56,8 +56,8 @@ class TreePrettyPrinter(object):
     creates an object from which different visualizations can be created.
 
     :param tree: a Tree object.
-    :param sentence: a list of words (strings). If `sentence` is given, 
-        `tree` must contain integers as leaves, which are taken as indices 
+    :param sentence: a list of words (strings). If `sentence` is given,
+        `tree` must contain integers as leaves, which are taken as indices
         in `sentence`. Using this you can display a discontinuous tree.
     :param highlight: Optionally, a sequence of Tree objects in `tree` which
         should be highlighted. Has the effect of only applying colors to nodes
@@ -521,7 +521,7 @@ class TreePrettyPrinter(object):
             result += ['\t<text style="text-anchor: middle; fill: %s; '
                        'font-size: %dpx;" x="%g" y="%g">%s</text>' % (
                            color, fontsize, x, y,
-                           escape(node.label() if isinstance(node, Tree) 
+                           escape(node.label() if isinstance(node, Tree)
                                   else node))]
 
         result += ['</svg>']
