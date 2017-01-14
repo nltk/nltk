@@ -9,8 +9,6 @@ NLTK comes with a Python 2.x/3.x compatibility layer, nltk.compat
     >>> from nltk import compat
     >>> compat.PY3
     False
-    >>> compat.integer_types
-    (<type 'int'>, <type 'long'>)
     >>> # and so on
 
 @python_2_unicode_compatible

@@ -93,13 +93,13 @@ from __future__ import print_function, unicode_literals, division
 import re
 import copy
 
-from six import string_types
+from six import integer_types, string_types
 
 from nltk.internals import read_str, raise_unorderable_types
 from nltk.sem.logic import (Variable, Expression, SubstituteBindingsI,
                             LogicParser, LogicalExpressionException)
-from nltk.compat import (integer_types, total_ordering,
-                         python_2_unicode_compatible, unicode_repr)
+from nltk.compat import (total_ordering, python_2_unicode_compatible,
+                         unicode_repr)
 
 ######################################################################
 # Feature Structure

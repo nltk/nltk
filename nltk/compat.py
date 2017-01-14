@@ -24,7 +24,6 @@ if PY3:
     def u(s):
         return s
 
-    integer_types = int,
     class_types = type,
     text_type = str
     binary_type = bytes
@@ -71,7 +70,6 @@ else:
     def u(s):
         return unicode(s, "unicode_escape")
 
-    integer_types = (int, long)
     class_types = (type, types.ClassType)
     text_type = unicode
     binary_type = str
