@@ -56,7 +56,11 @@ def getinfo(func):
     'self, x, y, *args, **kw'
     """
     assert inspect.ismethod(func) or inspect.isfunction(func)
-    regargs, varargs, varkwargs, defaults = inspect.getargspec(func)
+    if sys.version_info[0] >= 3:
+        argspec = inspect.getfullargspec(func)
+    else:
+        argspec = inspect.getargspec(func)
+    regargs, varargs, varkwargs, defaults = argspec[:4]
     argnames = list(regargs)
     if varargs:
         argnames.append(varargs)
