@@ -24,7 +24,6 @@ if PY3:
     def u(s):
         return s
 
-    class_types = type,
     text_type = str
     binary_type = bytes
 
@@ -70,7 +69,6 @@ else:
     def u(s):
         return unicode(s, "unicode_escape")
 
-    class_types = (type, types.ClassType)
     text_type = unicode
     binary_type = str
     get_im_class = lambda meth: meth.im_class

@@ -18,7 +18,7 @@ from itertools import islice, chain, combinations
 from collections import defaultdict, deque, Counter
 
 from nltk.internals import slice_bounds, raise_unorderable_types
-from nltk.compat import (class_types, text_type, total_ordering,
+from nltk.compat import (text_type, total_ordering,
                          python_2_unicode_compatible)
 
 
