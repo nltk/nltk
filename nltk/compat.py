@@ -18,12 +18,6 @@ import fractions
 PY3 = sys.version_info[0] == 3
 
 if PY3:
-    def b(s):
-        return s.encode("latin-1")
-
-    def u(s):
-        return s
-
     MAXSIZE = sys.maxsize
     get_im_class = lambda meth: meth.__self__.__class__
     xrange = range
@@ -57,12 +51,6 @@ if PY3:
     int2byte = operator.methodcaller("to_bytes", 1, "big")
 
 else:
-    def b(s):
-        return s
-
-    def u(s):
-        return unicode(s, "unicode_escape")
-
     get_im_class = lambda meth: meth.im_class
     xrange = xrange
     _iterkeys = "iterkeys"

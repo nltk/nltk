@@ -15,7 +15,9 @@ from __future__ import print_function
 import os, re, codecs
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
 
-from nltk.compat import StringIO, u, PY3
+from six import u
+
+from nltk.compat import StringIO, PY3
 from nltk.data import PathPointer, ZipFilePathPointer, find
 
 
