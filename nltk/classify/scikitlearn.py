@@ -32,7 +32,7 @@ best 1000 features:
 """
 from __future__ import print_function, unicode_literals
 
-from six import zip
+from six.moves import zip
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist

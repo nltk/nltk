@@ -11,7 +11,7 @@ from __future__ import print_function
 import math
 import logging
 
-from six import range
+from six.moves import range
 
 from nltk.parse.dependencygraph import DependencyGraph
 

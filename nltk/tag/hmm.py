@@ -73,7 +73,7 @@ from __future__ import print_function, unicode_literals, division
 import re
 import itertools
 
-from six import map, zip
+from six.moves import map, zip
 
 try:
     import numpy as np

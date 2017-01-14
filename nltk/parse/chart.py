@@ -41,7 +41,7 @@ import itertools
 import re
 import warnings
 
-from six import range
+from six.moves import range
 
 from nltk.tree import Tree
 from nltk.grammar import PCFG, is_nonterminal, is_terminal

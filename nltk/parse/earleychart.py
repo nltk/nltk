@@ -27,7 +27,7 @@ algorithm, originally formulated by Jay Earley (1970).
 """
 from __future__ import print_function, division
 
-from six import range
+from six.moves import range
 
 from nltk.parse.chart import (Chart, ChartParser, EdgeI, LeafEdge, LeafInitRule,
                               BottomUpPredictRule, BottomUpPredictCombineRule,

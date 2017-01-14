@@ -12,7 +12,8 @@ Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
 from __future__ import print_function, unicode_literals
-from six import range
+
+from six.moves import range
 
 from nltk.compat import python_2_unicode_compatible
 from nltk.featstruct import FeatStruct, unify, TYPE, find_variables

@@ -46,7 +46,7 @@ try:
 except ImportError:
     pass
 
-from six import range
+from six.moves import range
 
 
 def windowdiff(seg1, seg2, k, boundary="1", weighted=False):

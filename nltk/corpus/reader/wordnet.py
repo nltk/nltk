@@ -38,7 +38,8 @@ from functools import total_ordering
 from operator import itemgetter
 from collections import defaultdict, deque
 
-from six import iteritems, range
+from six import iteritems
+from six.moves import range
 
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
