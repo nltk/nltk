@@ -23,8 +23,6 @@ if PY3:
     _iterkeys = "keys"
     _itervalues = "values"
     _iteritems = "items"
-    from importlib import reload
-    raw_input = input
 
     import io
     StringIO = io.StringIO
@@ -54,8 +52,6 @@ else:
     _iterkeys = "iterkeys"
     _itervalues = "itervalues"
     _iteritems = "iteritems"
-    reload = reload
-    raw_input = raw_input
 
     try:
         from cStringIO import StringIO
