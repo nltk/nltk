@@ -73,6 +73,8 @@ from __future__ import print_function, unicode_literals, division
 import re
 import itertools
 
+from six import map, zip
+
 try:
     import numpy as np
 except ImportError:
@@ -85,7 +87,7 @@ from nltk.probability import (FreqDist, ConditionalFreqDist,
                               MLEProbDist, RandomProbDist)
 from nltk.metrics import accuracy
 from nltk.util import LazyMap, unique_list
-from nltk.compat import python_2_unicode_compatible, izip, imap
+from nltk.compat import python_2_unicode_compatible
 from nltk.tag.api import TaggerI
 
 
@@ -269,7 +271,7 @@ class HiddenMarkovModelTagger(TaggerI):
 
     def _tag(self, unlabeled_sequence):
         path = self._best_path(unlabeled_sequence)
-        return list(izip(unlabeled_sequence, path))
+        return list(zip(unlabeled_sequence, path))
 
     def _output_logprob(self, state, symbol):
         """
@@ -778,10 +780,10 @@ class HiddenMarkovModelTagger(TaggerI):
             return list(itertools.chain(*seq))
 
         test_sequence = self._transform(test_sequence)
-        predicted_sequence = list(imap(self._tag, imap(words, test_sequence)))
+        predicted_sequence = list(map(self._tag, map(words, test_sequence)))
 
         if verbose:
-            for test_sent, predicted_sent in izip(test_sequence, predicted_sequence):
+            for test_sent, predicted_sent in zip(test_sequence, predicted_sequence):
                 print('Test:',
                     ' '.join('%s/%s' % (token, tag)
                              for (token, tag) in test_sent))
@@ -799,8 +801,8 @@ class HiddenMarkovModelTagger(TaggerI):
                 print()
                 print('-' * 60)
 
-        test_tags = flatten(imap(tags, test_sequence))
-        predicted_tags = flatten(imap(tags, predicted_sequence))
+        test_tags = flatten(map(tags, test_sequence))
+        predicted_tags = flatten(map(tags, predicted_sequence))
 
         acc = accuracy(test_tags, predicted_tags)
         count = sum(len(sent) for sent in test_sequence)
@@ -1271,7 +1273,3 @@ def demo_bw():
     trainer = HiddenMarkovModelTrainer(states, symbols)
     hmm = trainer.train_unsupervised(training, model=model,
                                      max_iterations=1000)
-
-
-
-

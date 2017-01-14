@@ -32,6 +32,8 @@ best 1000 features:
 """
 from __future__ import print_function, unicode_literals
 
+from six import zip
+
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
 from nltk import compat
@@ -111,7 +113,7 @@ class SklearnClassifier(ClassifierI):
             numbers, booleans or strings.
         """
 
-        X, y = list(compat.izip(*labeled_featuresets))
+        X, y = list(zip(*labeled_featuresets))
         X = self._vectorizer.fit_transform(X)
         y = self._encoder.fit_transform(y)
         self._clf.fit(X, y)

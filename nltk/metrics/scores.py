@@ -12,12 +12,14 @@ import operator
 from random import shuffle
 from functools import reduce
 
+from six import zip
+
 try:
     from scipy.stats.stats import betai
 except ImportError:
     betai = None
 
-from nltk.compat import xrange, izip
+from nltk.compat import xrange
 from nltk.util import LazyConcatenation, LazyMap
 
 def accuracy(reference, test):
@@ -37,7 +39,7 @@ def accuracy(reference, test):
     """
     if len(reference) != len(test):
         raise ValueError("Lists must have the same length.")
-    return sum(x == y for x, y in izip(reference, test)) / len(test)
+    return sum(x == y for x, y in zip(reference, test)) / len(test)
 
 def precision(reference, test):
     """
@@ -132,7 +134,7 @@ def log_likelihood(reference, test):
 
     # Return the average value of dist.logprob(val).
     total_likelihood = sum(dist.logprob(val)
-                            for (val, dist) in izip(reference, test))
+                            for (val, dist) in zip(reference, test))
     return total_likelihood / len(reference)
 
 def approxrand(a, b, **kwargs):
@@ -225,4 +227,3 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-

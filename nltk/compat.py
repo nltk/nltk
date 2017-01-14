@@ -33,9 +33,6 @@ if PY3:
     from importlib import reload
     raw_input = input
 
-    imap = map
-    izip = zip
-
     import io
     StringIO = io.StringIO
     BytesIO = io.BytesIO
@@ -73,8 +70,6 @@ else:
     _iteritems = "iteritems"
     reload = reload
     raw_input = raw_input
-
-    from itertools import imap, izip
 
     try:
         from cStringIO import StringIO
