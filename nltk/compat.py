@@ -24,8 +24,6 @@ if PY3:
     def u(s):
         return s
 
-    binary_type = bytes
-
     MAXSIZE = sys.maxsize
     get_im_class = lambda meth: meth.__self__.__class__
     xrange = range
@@ -68,7 +66,6 @@ else:
     def u(s):
         return unicode(s, "unicode_escape")
 
-    binary_type = str
     get_im_class = lambda meth: meth.im_class
     xrange = xrange
     _iterkeys = "iterkeys"

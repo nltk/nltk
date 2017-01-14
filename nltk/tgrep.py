@@ -115,7 +115,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import functools
 import re
 
-from six import text_type
+from six import binary_type, text_type
 
 try:
     import pyparsing
@@ -123,7 +123,6 @@ except ImportError:
     print('Warning: nltk.tgrep will not work without the `pyparsing` package')
     print('installed.')
 
-from nltk.compat import binary_type
 import nltk.tree
 
 class TgrepException(Exception):
