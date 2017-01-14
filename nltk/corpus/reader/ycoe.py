@@ -141,8 +141,8 @@ class YCOETaggedCorpusReader(TaggedCorpusReader):
 #: A list of all documents and their titles in ycoe.
 documents = {
     'coadrian.o34': 'Adrian and Ritheus',
-    'coaelhom.o3': '�lfric, Supplemental Homilies',
-    'coaelive.o3': '�lfric\'s Lives of Saints',
+    'coaelhom.o3': 'Ælfric, Supplemental Homilies',
+    'coaelive.o3': 'Ælfric\'s Lives of Saints',
     'coalcuin': 'Alcuin De virtutibus et vitiis',
     'coalex.o23': 'Alexander\'s Letter to Aristotle',
     'coapollo.o3': 'Apollonius of Tyre',
