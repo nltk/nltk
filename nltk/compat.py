@@ -20,9 +20,6 @@ PY3 = sys.version_info[0] == 3
 if PY3:
     MAXSIZE = sys.maxsize
     get_im_class = lambda meth: meth.__self__.__class__
-    _iterkeys = "keys"
-    _itervalues = "values"
-    _iteritems = "items"
 
     import io
     StringIO = io.StringIO
@@ -45,9 +42,6 @@ if PY3:
 
 else:
     get_im_class = lambda meth: meth.im_class
-    _iterkeys = "iterkeys"
-    _itervalues = "itervalues"
-    _iteritems = "iteritems"
 
     try:
         from cStringIO import StringIO
@@ -243,21 +237,6 @@ else:
                 pass
 
     from collections import Counter
-
-
-def iterkeys(d):
-    """Return an iterator over the keys of a dictionary."""
-    return getattr(d, _iterkeys)()
-
-
-def itervalues(d):
-    """Return an iterator over the values of a dictionary."""
-    return getattr(d, _itervalues)()
-
-
-def iteritems(d):
-    """Return an iterator over the (key, value) pairs of a dictionary."""
-    return getattr(d, _iteritems)()
 
 try:
     from functools import total_ordering

@@ -47,7 +47,7 @@ from operator import itemgetter
 from collections import defaultdict
 from functools import reduce
 
-from six import text_type
+from six import itervalues, text_type
 
 from nltk import compat
 from nltk.compat import Counter
@@ -1779,7 +1779,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in compat.itervalues(self))
+        return sum(fdist.N() for fdist in itervalues(self))
 
     def plot(self, *args, **kwargs):
         """
