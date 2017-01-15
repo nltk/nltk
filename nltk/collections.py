@@ -13,15 +13,14 @@ import textwrap
 import pydoc
 import bisect
 import os
+from itertools import islice, chain, combinations
+from functools import total_ordering
+from collections import defaultdict, deque, Counter
 
 from six import text_type
 
-from itertools import islice, chain, combinations
-from collections import defaultdict, deque, Counter
-
 from nltk.internals import slice_bounds, raise_unorderable_types
-from nltk.compat import (total_ordering,
-                         python_2_unicode_compatible)
+from nltk.compat import python_2_unicode_compatible
 
 
 ##########################################################################
