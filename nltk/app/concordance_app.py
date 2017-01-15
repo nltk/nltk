@@ -9,14 +9,12 @@
 import nltk.compat
 import re
 import threading
-if nltk.compat.PY3:
-    import queue as q
-else:
-    import Queue as q
-import tkinter.font
-from tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
-                     Label, Menu, OptionMenu, SUNKEN, Scrollbar,
-                     StringVar, Text)
+
+from six.moves import queue as q
+from six.moves.tkinter_font import Font
+from six.moves.tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
+                               Label, Menu, OptionMenu, SUNKEN, Scrollbar,
+                               StringVar, Text)
 
 from nltk.corpus import (cess_cat, brown, nps_chat, treebank, sinica_treebank,
                          alpino, indian, floresta, mac_morpho, cess_esp)
@@ -240,7 +238,7 @@ class ConcordanceSearchView(object):
         vscrollbar = Scrollbar(i1, borderwidth=1)
         hscrollbar = Scrollbar(i2, borderwidth=1, orient='horiz')
         self.results_box = Text(i1,
-                                font=tkinter.font.Font(family='courier', size='16'),
+                                font=Font(family='courier', size='16'),
                                 state='disabled', borderwidth=1,
                                                             yscrollcommand=vscrollbar.set,
                                 xscrollcommand=hscrollbar.set, wrap='none', width='40', height = '20', exportselection=1)
@@ -280,7 +278,7 @@ class ConcordanceSearchView(object):
         ABOUT = ("NLTK Concordance Search Demo\n")
         TITLE = 'About: NLTK Concordance Search Demo'
         try:
-            from tkinter.messagebox import Message
+            from six.moves.tkinter_messagebox import Message
             Message(message=ABOUT, title=TITLE, parent=self.main_frame).show()
         except:
             ShowText(self.top, TITLE, ABOUT)

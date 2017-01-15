@@ -25,10 +25,8 @@ from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
 
 # Import Tkinter-based modules if they are available
 try:
-    # imports are fixed for Python 2.x by nltk.compat
-    from tkinter import Canvas
-    from tkinter import Tk
-    from tkinter.font import Font
+    from six.moves.tkinter import Canvas, Tk
+    from six.moves.tkinter_font import Font
     from nltk.util import in_idle
 
 except ImportError:
@@ -1230,7 +1228,7 @@ def demo():
 
 def test_draw():
     try:
-        from tkinter import Tk
+        from six.moves.tkinter import Tk
     except ImportError:
         from nose import SkipTest
         raise SkipTest("tkinter is required, but it's not available.")

@@ -164,9 +164,9 @@ from hashlib import md5
 
 try:
     TKINTER = True
-    from tkinter import (Tk, Frame, Label, Entry, Button, Canvas, Menu, IntVar,
-                         TclError)
-    from tkinter.messagebox import showerror
+    from six.moves.tkinter import (Tk, Frame, Label, Entry, Button, Canvas,
+                                   Menu, IntVar, TclError)
+    from six.moves.tkinter_messagebox import showerror
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
 except:
@@ -1757,14 +1757,10 @@ class DownloaderGUI(object):
                  "Written by Edward Loper")
         TITLE = 'About: NLTK Downloader'
         try:
-            from tkMessageBox import Message
+            from six.moves.tkinter_messagebox import Message
             Message(message=ABOUT, title=TITLE).show()
         except ImportError:
-            try:
-                from tkinter.messagebox import Message
-                Message(message=ABOUT, title=TITLE).show()
-            except ImportError:
-                ShowText(self.top, TITLE, ABOUT)
+            ShowText(self.top, TITLE, ABOUT)
 
     #/////////////////////////////////////////////////////////////////
     # Progress Bar

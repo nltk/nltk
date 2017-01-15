@@ -7,8 +7,9 @@ Finding (and Replacing) Nemo
 Instant Regular Expressions
 Created by Aristide Grange
 """
-import nltk.compat
-import tkinter as tk
+
+from six.moves.tkinter import (Frame, Label, PhotoImage, Scrollbar, Text, Tk,
+                               SEL_FIRST, SEL_LAST)
 import re
 import itertools
 
@@ -50,30 +51,30 @@ textParams = {
 
 class Zone:
     def __init__(self, image, initialField, initialText):
-        frm = tk.Frame(root)
+        frm = Frame(root)
         frm.config(background="white")
-        self.image = tk.PhotoImage(format='gif',data=images[image.upper()])
-        self.imageDimmed = tk.PhotoImage(format='gif',data=images[image])
-        self.img = tk.Label(frm)
+        self.image = PhotoImage(format='gif',data=images[image.upper()])
+        self.imageDimmed = PhotoImage(format='gif',data=images[image])
+        self.img = Label(frm)
         self.img.config(borderwidth=0)
         self.img.pack(side = "left")
-        self.fld = tk.Text(frm, **fieldParams)
+        self.fld = Text(frm, **fieldParams)
         self.initScrollText(frm,self.fld,initialField)
-        frm = tk.Frame(root)
-        self.txt = tk.Text(frm, **textParams)
+        frm = Frame(root)
+        self.txt = Text(frm, **textParams)
         self.initScrollText(frm,self.txt,initialText)
         for i in range(2):
             self.txt.tag_config(colors[i], background = colors[i])
             self.txt.tag_config("emph"+colors[i], foreground = emphColors[i])
     def initScrollText(self,frm,txt,contents):
-        scl = tk.Scrollbar(frm)
+        scl = Scrollbar(frm)
         scl.config(command = txt.yview)
         scl.pack(side="right",fill="y")
         txt.pack(side = "left", expand=True, fill="x")
         txt.config(yscrollcommand = scl.set)
         txt.insert("1.0",contents)
         frm.pack(fill = "x")
-        tk.Frame(height=2, bd=1, relief="ridge").pack(fill="x")
+        Frame(height=2, bd=1, relief="ridge").pack(fill="x")
     def refresh(self):
         self.colorCycle = itertools.cycle(colors)
         try:
@@ -99,12 +100,12 @@ class FindZone(Zone):
         self.rex = re.compile("") # default value in case of misformed regexp
         self.rex = re.compile(self.fld.get("1.0","end")[:-1],re.MULTILINE)
         try:
-            re.compile("(?P<emph>%s)" % self.fld.get(tk.SEL_FIRST,
-                                                      tk.SEL_LAST))
+            re.compile("(?P<emph>%s)" % self.fld.get(SEL_FIRST,
+                                                      SEL_LAST))
             self.rexSel = re.compile("%s(?P<emph>%s)%s" % (
-                self.fld.get("1.0",tk.SEL_FIRST),
-                self.fld.get(tk.SEL_FIRST,tk.SEL_LAST),
-                self.fld.get(tk.SEL_LAST,"end")[:-1],
+                self.fld.get("1.0",SEL_FIRST),
+                self.fld.get(SEL_FIRST,SEL_LAST),
+                self.fld.get(SEL_LAST,"end")[:-1],
             ),re.MULTILINE)
         except:
             self.rexSel = self.rex
@@ -134,7 +135,7 @@ def launchRefresh(_):
 
 def app():
     global root, sz, rz, rex0
-    root = tk.Tk()
+    root = Tk()
     root.resizable(height=False,width=True)
     root.title(windowTitle)
     root.minsize(width=250,height=0)

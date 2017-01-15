@@ -33,13 +33,10 @@ structures.  For more information, see the CLIG
 homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
-
-
-import nltk.compat
-from tkinter import (Button, Canvas, Entry, Frame, Label, Menu, Menubutton,
-                     RAISED, Scrollbar, StringVar, Text, Tk, Toplevel, Widget)
-
-import tkinter.font, tkinter.messagebox, tkinter.filedialog
+from six.moves.tkinter import (Button, Canvas, Entry, Frame, Label, Menu,
+                               Menubutton, Scrollbar, StringVar, Text, Tk,
+                               Toplevel, Widget, RAISED)
+from six.moves.tkinter_tkfiledialog import asksaveasfilename
 
 from nltk.util import in_idle
 
@@ -1705,7 +1702,6 @@ class CanvasFrame(object):
         :rtype: None
         """
         if filename is None:
-            from tkinter.filedialog import asksaveasfilename
             ftypes = [('Postscript files', '.ps'),
                       ('All files', '*')]
             filename = asksaveasfilename(filetypes=ftypes,
@@ -2353,4 +2349,3 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-

@@ -59,9 +59,7 @@ Keyboard Shortcuts::
       [h]\t Help
       [Ctrl-p]\t Print
       [q]\t Quit
-"""
 
-"""
 Possible future improvements:
   - button/window to change and/or select text.  Just pop up a window
     with an entry, and let them modify the text; and then retokenize
@@ -73,10 +71,9 @@ Possible future improvements:
     responsible for that.
 """
 
-import nltk.compat
-import tkinter.font
-from tkinter import (IntVar, Listbox, Button, Frame, Label, Menu,
-                     Scrollbar, Tk)
+from six.moves.tkinter_font import Font
+from six.moves.tkinter import (IntVar, Listbox, Button, Frame, Label, Menu,
+                               Scrollbar, Tk)
 
 from nltk.tree import Tree
 from nltk.parse import SteppingShiftReduceParser
@@ -138,16 +135,16 @@ class ShiftReduceApp(object):
 
     def _init_fonts(self, root):
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
-        self._sysfont = tkinter.font.Font(font=Button()["font"])
+        self._sysfont = Font(font=Button()["font"])
         root.option_add("*Font", self._sysfont)
 
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget('size'))
 
-        self._boldfont = tkinter.font.Font(family='helvetica', weight='bold',
+        self._boldfont = Font(family='helvetica', weight='bold',
                                     size=self._size.get())
-        self._font = tkinter.font.Font(family='helvetica',
+        self._font = Font(family='helvetica',
                                     size=self._size.get())
 
     def _init_grammar(self, parent):
@@ -552,7 +549,7 @@ class ShiftReduceApp(object):
                  "Written by Edward Loper")
         TITLE = 'About: Shift-Reduce Parser Application'
         try:
-            from tkinter.messagebox import Message
+            from six.moves.tkinter_messagebox import Message
             Message(message=ABOUT, title=TITLE).show()
         except:
             ShowText(self._top, TITLE, ABOUT)
