@@ -16,7 +16,7 @@ distributional similarity.
 from __future__ import print_function, division, unicode_literals
 
 from math import log
-from collections import defaultdict
+from collections import defaultdict, Counter
 from functools import reduce
 from itertools import islice
 import re
@@ -28,7 +28,7 @@ from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
-from nltk.compat import python_2_unicode_compatible, Counter
+from nltk.compat import python_2_unicode_compatible
 
 
 class ContextIndex(object):

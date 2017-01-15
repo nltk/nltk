@@ -32,8 +32,6 @@ if PY3:
     from urllib.error import HTTPError, URLError
     from urllib.parse import quote_plus, unquote_plus, urlencode
 
-    from collections import Counter
-
     from datetime import timezone
     UTC = timezone.utc
 
@@ -233,8 +231,6 @@ else:
                 self._rmdir(path)
             except OSError:
                 pass
-
-    from collections import Counter
 
 try:
     from functools import total_ordering

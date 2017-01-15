@@ -44,13 +44,12 @@ import random
 import warnings
 import array
 from operator import itemgetter
-from collections import defaultdict
+from collections import defaultdict, Counter
 from functools import reduce
 
 from six import itervalues, text_type
 
 from nltk import compat
-from nltk.compat import Counter
 
 from nltk.internals import raise_unorderable_types
 

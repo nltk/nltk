@@ -34,7 +34,7 @@ from optparse import OptionParser
 import tempfile
 from functools import reduce
 
-from nltk.internals import Counter, find_binary
+from nltk.internals import find_binary
 
 from nltk.sem.logic import (ExpectedMoreTokensException, LogicalExpressionException,
                             UnexpectedTokenException, Variable)
