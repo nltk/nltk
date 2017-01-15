@@ -58,9 +58,8 @@ from six import string_types, text_type
 # this import should be more specific:
 import nltk
 
-from nltk.compat import py3_data, add_py3_data
-from nltk.compat import BytesIO, urlopen, url2pathname
-
+from nltk.compat import py3_data, add_py3_data, BytesIO
+from nltk.compat import urlopen, url2pathname
 
 ######################################################################
 # Search Path
