@@ -7,13 +7,13 @@
 
 from __future__ import unicode_literals
 import re
+from functools import total_ordering
 from xml.etree import ElementTree
 
 from six import string_types
 
 from nltk.tree import Tree
 from nltk.internals import raise_unorderable_types
-from nltk.compat import total_ordering
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *

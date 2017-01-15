@@ -40,6 +40,7 @@ from __future__ import print_function, division, unicode_literals
 import itertools
 import re
 import warnings
+from functools import total_ordering
 
 from six.moves import range
 
@@ -47,8 +48,7 @@ from nltk.tree import Tree
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
 from nltk.util import OrderedDict
 from nltk.internals import raise_unorderable_types
-from nltk.compat import (total_ordering, python_2_unicode_compatible,
-                         unicode_repr)
+from nltk.compat import python_2_unicode_compatible, unicode_repr
 
 from nltk.parse.api import ParserI
 
