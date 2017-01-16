@@ -181,11 +181,13 @@ def xml_escape(text):
         >>> expected_output =  ''')| &amp; &lt; &gt; ' " ] ['''
         >>> escape(input_str) == expected_output
         True
+        >>> xml_escape(input_str)
+        ')&#124; &amp; &lt; &gt; &apos; &quot; &#93; &#91;'
 
     :param text: The text that needs to be escaped.
     :type text: str
     :rtype: str
     """
-    return escape(text, entities={ r"'": "&apos;", r'"': r"&quot;",
-                                   r"|": "&amp;",  r"&": r"&#124;",
-                                   r"[": "&#91;",  r"]": r"&#93;", })
+    return escape(text, entities={ r"'": r"&apos;", r'"': r"&quot;",
+                                   r"|": r"&#124;",
+                                   r"[": r"&#91;",  r"]": r"&#93;", })
