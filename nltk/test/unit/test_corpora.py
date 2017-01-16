@@ -2,7 +2,8 @@
 from __future__ import absolute_import, unicode_literals
 import unittest
 from nltk.corpus import (sinica_treebank, conll2007, indian, cess_cat, cess_esp,
-                         floresta, ptb, udhr)
+                         floresta, ptb, udhr, mwa_ppdb)
+
 from nltk.tree import Tree
 from nltk.test.unit.utils import skipIf
 
@@ -178,6 +179,20 @@ class TestPTB(unittest.TestCase):
             ptb.words(categories=['humor','fiction'])[:6],
             ['Thirty-three', 'Scotty', 'did', 'not', 'go', 'back']
         )
+
+
+class TestMWAPPDB(unittest.TestCase):
+    def test_fileids(self):
+        self.assertEqual(mwa_ppdb.fileids(),
+            [u'ppdb-1.0-xxxl-lexical.extended.synonyms.uniquepairs'])
+
+    def test_entries(self):
+        self.assertEqual(mwa_ppdb.entries()[:10],
+            [(u'10/17/01', u'17/10/2001'), (u'102,70', u'102.70'),
+            (u'13,53', u'13.53'), (u'3.2.5.3.2.1', u'3.2.5.3.2.1.'),
+            (u'53,76', u'53.76'), (u'6.9.5', u'6.9.5.'),
+            (u'7.7.6.3', u'7.7.6.3.'), (u'76,20', u'76.20'),
+            (u'79,85', u'79.85'), (u'93,65', u'93.65')] )
 
 # unload corpora
 from nltk.corpus import teardown_module
