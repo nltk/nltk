@@ -2,7 +2,7 @@
 # Natural Language Toolkit: Interface to the CoreNLP REST API.
 #
 # Copyright (C) 2001-2016 NLTK Project
-# Author: Steven Xu <xxu@student.unimelb.edu.au>
+# Author: Dmitrijs Milajevs <dimazest@gmail.com>
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -24,7 +24,7 @@ from nltk.tokenize.api import TokenizerI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
 
-_stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
+_stanford_url = 'http://stanfordnlp.github.io/CoreNLP/'
 
 
 class CoreNLPServerError(EnvironmentError):
@@ -152,7 +152,7 @@ class CoreNLPServer(object):
 
 
 class GenericCoreNLPParser(ParserI, TokenizerI):
-    """Interface to the CoreNLP Parser"""
+    """Interface to the CoreNLP Parser."""
 
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
 
@@ -258,43 +258,6 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
             for parse in parsed_data['sentences']:
                 tree = self.make_tree(parse)
                 yield iter([tree])
-
-    def tagged_parse(self, sentence, verbose=False):
-        """Parse a sentence.
-
-        Takes a sentence as a list of (word, tag) tuples; the sentence must have
-        already been tokenized and tagged.
-
-        :param sentence: Input sentence to parse
-        :type sentence: list(tuple(str, str))
-        :rtype: iter(Tree)
-        """
-        return next(self.tagged_parse_sents([sentence], verbose))
-
-    def tagged_parse_sents(self, sentences, verbose=False):
-        """Parse multiple sentences.
-
-        Takes multiple sentences where each sentence is a list of (word, tag)
-        tuples. The sentences must have already been tokenized and tagged.
-
-        :param sentences: Input sentences to parse
-        :type sentences: list(list(tuple(str, str)))
-        :rtype: iter(iter(Tree))
-        """
-        tag_separator = '/'
-        cmd = [
-            self._MAIN_CLASS,
-            '-model', self.model_path,
-            '-sentences', 'newline',
-            '-outputFormat', self._OUTPUT_FORMAT,
-            '-tokenized',
-            '-tagSeparator', tag_separator,
-            '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer',
-            '-tokenizerMethod', 'newCoreLabelTokenizerFactory',
-        ]
-        # We don't need to escape slashes as "splitting is done on the last instance of the character in the token"
-        return self._parse_trees_output(self._execute(
-            cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
 
     def parse_text(self, text, *args, **kwargs):
         """Parse a piece of text.
