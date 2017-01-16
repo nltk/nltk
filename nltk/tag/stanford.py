@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Part-of-speech and Named-Entity Taggers
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
@@ -22,7 +22,7 @@ import tempfile
 from subprocess import PIPE
 import warnings
 
-from nltk.internals import find_file, find_jar, config_java, java, _java_options, find_jars_within_path
+from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
 from nltk import compat
 
@@ -54,11 +54,7 @@ class StanfordTagger(TaggerI):
 
         self._stanford_model = find_file(model_filename,
                 env_vars=('STANFORD_MODELS',), verbose=verbose)
-        
-        # Adding logging jar files to classpath 
-        stanford_dir = os.path.split(self._stanford_jar)[0]
-        self._stanford_jar = tuple(find_jars_within_path(stanford_dir))
-        
+
         self._encoding = encoding
         self.java_options = java_options
 
@@ -67,8 +63,8 @@ class StanfordTagger(TaggerI):
       raise NotImplementedError
 
     def tag(self, tokens):
-        # This function should return list of tuple rather than list of list 
-        return sum(self.tag_sents([tokens]), []) 
+        # This function should return list of tuple rather than list of list
+        return sum(self.tag_sents([tokens]), [])
 
     def tag_sents(self, sentences):
         encoding = self._encoding
@@ -80,7 +76,7 @@ class StanfordTagger(TaggerI):
 
         cmd = list(self._cmd)
         cmd.extend(['-encoding', encoding])
-        
+
         # Write the actual sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, 'wb')
         _input = '\n'.join((' '.join(x) for x in sentences))
@@ -88,18 +84,18 @@ class StanfordTagger(TaggerI):
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()
-        
+
         # Run the tagger and get the output
         stanpos_output, _stderr = java(cmd, classpath=self._stanford_jar,
                                                        stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
-        
+
         # Delete the temporary file
-        os.unlink(self._input_file_path) 
+        os.unlink(self._input_file_path)
 
         # Return java configurations to their default values
         config_java(options=default_options, verbose=False)
-                
+
         return self.parse_output(stanpos_output, sentences)
 
     def parse_output(self, text, sentences = None):
@@ -124,8 +120,8 @@ class StanfordPOSTagger(StanfordTagger):
     Example:
 
         >>> from nltk.tag import StanfordPOSTagger
-        >>> st = StanfordPOSTagger('english-bidirectional-distsim.tagger') # doctest: +SKIP
-        >>> st.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
+        >>> st = StanfordPOSTagger('english-bidirectional-distsim.tagger')
+        >>> st.tag('What is the airspeed of an unladen swallow ?'.split())
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
 
@@ -169,28 +165,26 @@ class StanfordNERTagger(StanfordTagger):
 
     @property
     def _cmd(self):
-        # Adding -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerOptions tokenizeNLs=false for not using stanford Tokenizer  
+        # Adding -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerOptions tokenizeNLs=false for not using stanford Tokenizer
         return ['edu.stanford.nlp.ie.crf.CRFClassifier',
                 '-loadClassifier', self._stanford_model, '-textFile',
                 self._input_file_path, '-outputFormat', self._FORMAT, '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerOptions','\"tokenizeNLs=false\"']
 
     def parse_output(self, text, sentences):
         if self._FORMAT == 'slashTags':
-            # Joint together to a big list    
+            # Joint together to a big list
             tagged_sentences = []
             for tagged_sentence in text.strip().split("\n"):
                 for tagged_word in tagged_sentence.strip().split():
                     word_tags = tagged_word.strip().split(self._SEPARATOR)
                     tagged_sentences.append((''.join(word_tags[:-1]), word_tags[-1]))
-                
+
             # Separate it according to the input
             result = []
-            start = 0 
+            start = 0
             for sent in sentences:
                 result.append(tagged_sentences[start:start + len(sent)])
                 start += len(sent);
-            return result 
+            return result
 
         raise NotImplementedError
-
-

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Parser
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>
@@ -62,8 +62,8 @@ class GenericStanfordParser(ParserI):
         )
 
         #self._classpath = (stanford_jar, model_jar)
-        
-        # Adding logging jar files to classpath 
+
+        # Adding logging jar files to classpath
         stanford_dir = os.path.split(stanford_jar)[0]
         self._classpath = tuple([model_jar] + find_jars_within_path(stanford_dir))
 
@@ -214,9 +214,9 @@ class GenericStanfordParser(ParserI):
                 cmd.append(input_file.name)
                 stdout, stderr = java(cmd, classpath=self._classpath,
                                       stdout=PIPE, stderr=PIPE)
-                
+
             stdout = stdout.replace(b'\xc2\xa0',b' ')
-            stdout = stdout.replace(b'\xa0',b' ')
+            stdout = stdout.replace(b'\x00\xa0',b' ')
             stdout = stdout.decode(encoding)
 
         os.unlink(input_file.name)
@@ -342,7 +342,7 @@ class StanfordDependencyParser(GenericStanfordParser):
 class StanfordNeuralDependencyParser(GenericStanfordParser):
     '''
     >>> from nltk.parse.stanford import StanfordNeuralDependencyParser
-    >>> dep_parser=StanfordNeuralDependencyParser()
+    >>> dep_parser=StanfordNeuralDependencyParser(java_options='-mx3g')
 
     >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
     [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy'])])]

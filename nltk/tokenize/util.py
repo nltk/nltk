@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizer Utilities
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -176,13 +176,18 @@ def xml_escape(text):
     Note that the default xml.sax.saxutils.escape() function don't escape
     some characters that Moses does so we have to manually add them to the
     entities dictionary.
-        >>> escape(''')| & < > ' " ] [''')
-        '| &amp; &lt; &gt; \' " ] ['
+
+        >>> input_str = ''')| & < > ' " ] ['''
+        >>> expected_output =  ''')| &amp; &lt; &gt; ' " ] ['''
+        >>> escape(input_str) == expected_output
+        True
+        >>> xml_escape(input_str)
+        ')&#124; &amp; &lt; &gt; &apos; &quot; &#93; &#91;'
 
     :param text: The text that needs to be escaped.
     :type text: str
     :rtype: str
     """
-    return escape(text, entities={ r"'": "&apos;", r'"': r"&quot;",
-                                   r"|": "&amp;",  r"&": r"&#124;",
-                                   r"[": "&#91;",  r"]": r"&#93;", })
+    return escape(text, entities={ r"'": r"&apos;", r'"': r"&quot;",
+                                   r"|": r"&#124;",
+                                   r"[": r"&#91;",  r"]": r"&#93;", })

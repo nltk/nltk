@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Internal utility functions
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
@@ -35,7 +35,7 @@ from nltk import compat
 _java_bin = None
 _java_options = []
 # [xx] add classpath option to config_java?
-def config_java(bin=None, options=None, verbose=True):
+def config_java(bin=None, options=None, verbose=False):
     """
     Configure nltk's java interface, by letting nltk know where it can
     find the Java binary, and what extra options (if any) should be
@@ -173,21 +173,21 @@ def read_str(s, start_position):
     containing the value of the string literal and the position where
     it ends.  Otherwise, raise a ``ReadError``.
 
-    :param s: A string that will be checked to see if within which a 
+    :param s: A string that will be checked to see if within which a
         Python string literal exists.
     :type s: str
-    
+
     :param start_position: The specified beginning position of the string ``s``
         to begin regex matching.
     :type start_position: int
-    
-    :return: A tuple containing the matched string literal evaluated as a 
+
+    :return: A tuple containing the matched string literal evaluated as a
         string and the end position of the string literal.
     :rtype: tuple(str, int)
 
     :raise ReadError: If the ``_STRING_START_RE`` regex doesn't return a
-        match in ``s`` at ``start_position``, i.e., open quote. If the 
-        ``_STRING_END_RE`` regex doesn't return a match in ``s`` at the 
+        match in ``s`` at ``start_position``, i.e., open quote. If the
+        ``_STRING_END_RE`` regex doesn't return a match in ``s`` at the
         end of the first match, i.e., close quote.
     :raise ValueError: If an invalid string (i.e., contains an invalid
         escape sequence) is passed into the ``eval``.
@@ -227,14 +227,14 @@ def read_int(s, start_position):
     value of the integer and the position where it ends.  Otherwise,
     raise a ``ReadError``.
 
-    :param s: A string that will be checked to see if within which a 
+    :param s: A string that will be checked to see if within which a
         Python integer exists.
     :type s: str
-    
+
     :param start_position: The specified beginning position of the string ``s``
         to begin regex matching.
     :type start_position: int
-    
+
     :return: A tuple containing the matched integer casted to an int,
         and the end position of the int in ``s``.
     :rtype: tuple(int, int)
@@ -246,7 +246,7 @@ def read_int(s, start_position):
     >>> from nltk.internals import read_int
     >>> read_int('42 is the answer', 0)
     (42, 2)
-    
+
     """
     m = _READ_INT_RE.match(s, start_position)
     if not m: raise ReadError('integer', start_position)
@@ -260,14 +260,14 @@ def read_number(s, start_position):
     containing the value of the number and the position where it ends.
     Otherwise, raise a ``ReadError``.
 
-    :param s: A string that will be checked to see if within which a 
+    :param s: A string that will be checked to see if within which a
         Python number exists.
     :type s: str
-    
+
     :param start_position: The specified beginning position of the string ``s``
         to begin regex matching.
     :type start_position: int
-    
+
     :return: A tuple containing the matched number casted to a ``float``,
         and the end position of the number in ``s``.
     :rtype: tuple(float, int)
@@ -279,7 +279,7 @@ def read_number(s, start_position):
     >>> from nltk.internals import read_number
     >>> read_number('Pi is 3.14159', 6)
     (3.14159, 13)
-    
+
     """
     m = _READ_NUMBER_VALUE.match(s, start_position)
     if not m or not (m.group(1) or m.group(2)):
@@ -451,7 +451,7 @@ class Counter:
 ##########################################################################
 
 def find_file_iter(filename, env_vars=(), searchpath=(),
-    file_names=None, url=None, verbose=True, finding_dir=False):
+    file_names=None, url=None, verbose=False, finding_dir=False):
     """
     Search for a file to be used by nltk.
 
@@ -498,7 +498,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
             if finding_dir: # This is to file a directory instead of file
                 yielded = True
                 yield os.environ[env_var]
-        		
+
             for env_dir in os.environ[env_var].split(os.pathsep):
                 # Check if the environment variable contains a direct path to the bin
                 if os.path.isfile(env_dir):
@@ -568,19 +568,19 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
 
 
 def find_file(filename, env_vars=(), searchpath=(),
-        file_names=None, url=None, verbose=True):
+        file_names=None, url=None, verbose=False):
     return next(find_file_iter(filename, env_vars, searchpath,
                                file_names, url, verbose))
 
 
 def find_dir(filename, env_vars=(), searchpath=(),
-        file_names=None, url=None, verbose=True):
+        file_names=None, url=None, verbose=False):
     return next(find_file_iter(filename, env_vars, searchpath,
                                file_names, url, verbose, finding_dir=True))
 
 
 def find_binary_iter(name, path_to_bin=None, env_vars=(), searchpath=(),
-                binary_names=None, url=None, verbose=True):
+                binary_names=None, url=None, verbose=False):
     """
     Search for a file to be used by nltk.
 
@@ -597,12 +597,12 @@ def find_binary_iter(name, path_to_bin=None, env_vars=(), searchpath=(),
         yield file
 
 def find_binary(name, path_to_bin=None, env_vars=(), searchpath=(),
-                binary_names=None, url=None, verbose=True):
+                binary_names=None, url=None, verbose=False):
     return next(find_binary_iter(name, path_to_bin, env_vars, searchpath,
                                  binary_names, url, verbose))
 
 def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
-        searchpath=(), url=None, verbose=True, is_regex=False):
+        searchpath=(), url=None, verbose=False, is_regex=False):
     """
     Search for a jar that is used by nltk.
 
@@ -648,7 +648,7 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
                                 print('[Found %s: %s]' % (name_pattern, cp))
                             yielded = True
                             yield cp
-                    # The case where user put directory containing the jar file in the classpath 
+                    # The case where user put directory containing the jar file in the classpath
                     if os.path.isdir(cp):
                         if not is_regex:
                             if os.path.isfile(os.path.join(cp,name_pattern)):
@@ -657,14 +657,14 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
                                 yielded = True
                                 yield os.path.join(cp,name_pattern)
                         else:
-                            # Look for file using regular expression 
+                            # Look for file using regular expression
                             for file_name in os.listdir(cp):
                                 if re.match(name_pattern,file_name):
                                     if verbose:
                                         print('[Found %s: %s]' % (name_pattern, os.path.join(cp,file_name)))
                                     yielded = True
                                     yield os.path.join(cp,file_name)
-                                
+
             else:
                 jar_env = os.environ[env_var]
                 jar_iter = ((os.path.join(jar_env, path_to_jar) for path_to_jar in os.listdir(jar_env))
@@ -714,21 +714,21 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
         raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
 
 def find_jar(name_pattern, path_to_jar=None, env_vars=(),
-        searchpath=(), url=None, verbose=True, is_regex=False):
+        searchpath=(), url=None, verbose=False, is_regex=False):
     return next(find_jar_iter(name_pattern, path_to_jar, env_vars,
                          searchpath, url, verbose, is_regex))
 
-                
+
 def find_jars_within_path(path_to_jars):
-	return [os.path.join(root, filename) 
-			for root, dirnames, filenames in os.walk(path_to_jars) 
+	return [os.path.join(root, filename)
+			for root, dirnames, filenames in os.walk(path_to_jars)
 			for filename in fnmatch.filter(filenames, '*.jar')]
 
 def _decode_stdoutdata(stdoutdata):
     """ Convert data read from stdout/stderr to unicode """
     if not isinstance(stdoutdata, bytes):
         return stdoutdata
-    
+
     encoding = getattr(sys.__stdout__, "encoding", locale.getpreferredencoding())
     if encoding is None:
         return stdoutdata.decode()
@@ -978,5 +978,3 @@ def is_writable(path):
 
 def raise_unorderable_types(ordering, a, b):
     raise TypeError("unorderable types: %s() %s %s()" % (type(a).__name__, ordering, type(b).__name__))
-
-
