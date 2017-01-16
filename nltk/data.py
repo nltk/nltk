@@ -54,12 +54,11 @@ except ImportError:
     import pickle
 
 from six import string_types, text_type
+from six.moves.urllib.request import urlopen, url2pathname
 
 # this import should be more specific:
 import nltk
-
 from nltk.compat import py3_data, add_py3_data, BytesIO
-from nltk.compat import urlopen, url2pathname
 
 ######################################################################
 # Search Path
