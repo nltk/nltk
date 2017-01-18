@@ -48,7 +48,7 @@ class GenericStanfordParser(ParserI):
                 searchpath=(), url=_stanford_url,
                 verbose=verbose, is_regex=True
             ),
-            key=lambda model_name: re.match(self._JAR, model_name)
+            key=lambda model_path: os.path.dirname(model_path)
         )
 
         model_jar=max(
@@ -58,8 +58,9 @@ class GenericStanfordParser(ParserI):
                 searchpath=(), url=_stanford_url,
                 verbose=verbose, is_regex=True
             ),
-            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
+            key=lambda model_path: os.path.dirname(model_path)
         )
+
 
         #self._classpath = (stanford_jar, model_jar)
 
