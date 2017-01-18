@@ -7,7 +7,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.compat import string_types
+from nltk.compat import string_types, python_2_unicode_compatible
 from nltk.tokenize import line_tokenize
 
 from nltk.corpus.reader.util import *
