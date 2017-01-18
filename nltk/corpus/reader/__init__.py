@@ -142,5 +142,6 @@ __all__ = [
     'MTECorpusReader', 'ReviewsCorpusReader', 'OpinionLexiconCorpusReader',
     'ProsConsCorpusReader', 'CategorizedSentencesCorpusReader',
     'ComparativeSentencesCorpusReader', 'PanLexLiteCorpusReader',
-    'NonbreakingPrefixesCorpusReader', 'UnicharsCorpusReader'
+    'NonbreakingPrefixesCorpusReader', 'UnicharsCorpusReader',
+    'MWAPPDBCorpusReader',
 ]
