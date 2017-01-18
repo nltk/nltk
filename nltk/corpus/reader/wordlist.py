@@ -7,7 +7,9 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk import compat
+from __future__ import unicode_literals
+
+from nltk.compat import string_types
 from nltk.tokenize import line_tokenize
 
 from nltk.corpus.reader.util import *
@@ -23,7 +25,7 @@ class WordListCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 
@@ -61,9 +63,9 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
         language(s).
 
         >>> from nltk.corpus import nonbreaking_prefixes as nbp
-        >>> nbp.words('en')[:10] == [u'A', u'B', u'C', u'D', u'E', u'F', u'G', u'H', u'I', u'J']
+        >>> nbp.words('en')[:10] == ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
         True
-        >>> nbp.words('ta')[:5] == [u'\u0b85', u'\u0b86', u'\u0b87', u'\u0b88', u'\u0b89']
+        >>> nbp.words('ta')[:5] == ['\u0b85', '\u0b86', '\u0b87', '\u0b88', '\u0b89']
         True
 
         :return: a list words for the specified language(s).
@@ -76,6 +78,7 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
             fileids = ['nonbreaking_prefix.'+lang]
         return [line for line in line_tokenize(self.raw(fileids))
                 if not line.startswith(ignore_lines_startswith)]
+
 
 class UnicharsCorpusReader(WordListCorpusReader):
     """
@@ -95,9 +98,9 @@ class UnicharsCorpusReader(WordListCorpusReader):
         They are very useful when porting Perl tokenizers to Python.
 
         >>> from nltk.corpus import perluniprops as pup
-        >>> pup.chars('Open_Punctuation')[:5] == [u'(', u'[', u'{', u'\u0f3a', u'\u0f3c']
+        >>> pup.chars('Open_Punctuation')[:5] == ['(', '[', '{', '\u0f3a', '\u0f3c']
         True
-        >>> pup.chars('Currency_Symbol')[:5] == [u'$', u'\xa2', u'\xa3', u'\xa4', u'\xa5']
+        >>> pup.chars('Currency_Symbol')[:5] == ['$', '\xa2', '\xa3', '\xa4', '\xa5']
         True
         >>> pup.available_categories
         ['Close_Punctuation', 'Currency_Symbol', 'IsAlnum', 'IsAlpha', 'IsLower', 'IsN', 'IsSc', 'IsSo', 'Open_Punctuation']
