@@ -7,8 +7,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import unicode_literals
-
 from nltk.compat import string_types
 from nltk.tokenize import line_tokenize
 
@@ -41,6 +39,7 @@ class SwadeshCorpusReader(WordListCorpusReader):
         return list(zip(*wordlists))
 
 
+@python_2_unicode_compatible
 class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
     """
     This is a class to read the nonbreaking prefixes textfiles from the
@@ -80,6 +79,7 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
                 if not line.startswith(ignore_lines_startswith)]
 
 
+@python_2_unicode_compatible
 class UnicharsCorpusReader(WordListCorpusReader):
     """
     This class is used to read lists of characters from the Perl Unicode
@@ -112,6 +112,7 @@ class UnicharsCorpusReader(WordListCorpusReader):
         return list(self.raw(fileids).strip())
 
 
+@python_2_unicode_compatible
 class MWAPPDBCorpusReader(WordListCorpusReader):
     """
     This class is used to read the list of word pairs from the subset of lexical

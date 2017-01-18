@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import
 import unittest
 
 from nltk.corpus import (sinica_treebank, conll2007, indian, cess_cat, cess_esp,
                          floresta, ptb, udhr, mwa_ppdb)
 
+from nltk.compat import python_2_unicode_compatible
 from nltk.tree import Tree
 from nltk.test.unit.utils import skipIf
 
@@ -26,6 +27,7 @@ class TestUdhr(unittest.TestCase):
             assert not isinstance(txt, bytes), name
 
 
+@python_2_unicode_compatible
 class TestIndian(unittest.TestCase):
 
     def test_words(self):
@@ -37,6 +39,7 @@ class TestIndian(unittest.TestCase):
         self.assertEqual(tagged_words, [('মহিষের', 'NN'), ('সন্তান', 'NN'), (':', 'SYM')])
 
 
+@python_2_unicode_compatible
 class TestCess(unittest.TestCase):
     def test_catalan(self):
         words = cess_cat.words()[:15]
@@ -51,12 +54,15 @@ class TestCess(unittest.TestCase):
         self.assertEqual(cess_esp.words()[115], "años")
 
 
+@python_2_unicode_compatible
 class TestFloresta(unittest.TestCase):
     def test_words(self):
         words = floresta.words()[:10]
         txt = "Um revivalismo refrescante O 7_e_Meio é um ex-libris de a"
         self.assertEqual(words, txt.split())
 
+
+@python_2_unicode_compatible
 class TestSinicaTreebank(unittest.TestCase):
 
     def test_sents(self):
@@ -81,6 +87,7 @@ class TestSinicaTreebank(unittest.TestCase):
             ]))
 
 
+@python_2_unicode_compatible
 class TestCoNLL2007(unittest.TestCase):
     # Reading the CoNLL 2007 Dependency Treebanks
 
@@ -144,6 +151,7 @@ class TestCoNLL2007(unittest.TestCase):
 
 
 @skipIf(not ptb.fileids(), "A full installation of the Penn Treebank is not available")
+@python_2_unicode_compatible
 class TestPTB(unittest.TestCase):
     def test_fileids(self):
         self.assertEqual(
@@ -182,6 +190,7 @@ class TestPTB(unittest.TestCase):
         )
 
 
+@python_2_unicode_compatible
 class TestMWAPPDB(unittest.TestCase):
     def test_fileids(self):
         self.assertEqual(mwa_ppdb.fileids(),
