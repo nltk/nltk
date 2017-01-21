@@ -10,7 +10,6 @@ from nltk.tree import Tree
 from nltk.test.unit.utils import skipIf
 
 
-
 class TestUdhr(unittest.TestCase):
 
     def test_words(self):
