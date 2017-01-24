@@ -285,6 +285,9 @@ nonbreaking_prefixes = LazyCorpusLoader(
 perluniprops = LazyCorpusLoader(
     'perluniprops', UnicharsCorpusReader, r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
 
+mwa_ppdb = LazyCorpusLoader(
+    'mwa_ppdb', MWAPPDBCorpusReader, r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
+
 
 def demo():
     # This is out-of-date:

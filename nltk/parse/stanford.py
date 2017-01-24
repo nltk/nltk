@@ -48,7 +48,7 @@ class GenericStanfordParser(ParserI):
                 searchpath=(), url=_stanford_url,
                 verbose=verbose, is_regex=True
             ),
-            key=lambda model_name: re.match(self._JAR, model_name)
+            key=lambda model_path: os.path.dirname(model_path)
         )
 
         model_jar=max(
@@ -58,8 +58,9 @@ class GenericStanfordParser(ParserI):
                 searchpath=(), url=_stanford_url,
                 verbose=verbose, is_regex=True
             ),
-            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
+            key=lambda model_path: os.path.dirname(model_path)
         )
+
 
         #self._classpath = (stanford_jar, model_jar)
 
@@ -345,26 +346,30 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
     >>> dep_parser=StanfordNeuralDependencyParser(java_options='-mx3g')
 
     >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
-    [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy'])])]
+    [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy']), '.'])]
 
     >>> [list(parse.triples()) for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
-    [[((u'jumps', u'VBZ'), u'nsubj', (u'fox', u'NN')), ((u'fox', u'NN'), u'det', (u'The', u'DT')),
-    ((u'fox', u'NN'), u'amod', (u'quick', u'JJ')), ((u'fox', u'NN'), u'amod', (u'brown', u'JJ')),
-    ((u'jumps', u'VBZ'), u'nmod', (u'dog', u'NN')), ((u'dog', u'NN'), u'case', (u'over', u'IN')),
-    ((u'dog', u'NN'), u'det', (u'the', u'DT')), ((u'dog', u'NN'), u'amod', (u'lazy', u'JJ'))]]
+    [[((u'jumps', u'VBZ'), u'nsubj', (u'fox', u'NN')), ((u'fox', u'NN'), u'det',
+    (u'The', u'DT')), ((u'fox', u'NN'), u'amod', (u'quick', u'JJ')), ((u'fox', u'NN'),
+    u'amod', (u'brown', u'JJ')), ((u'jumps', u'VBZ'), u'nmod', (u'dog', u'NN')),
+    ((u'dog', u'NN'), u'case', (u'over', u'IN')), ((u'dog', u'NN'), u'det',
+    (u'the', u'DT')), ((u'dog', u'NN'), u'amod', (u'lazy', u'JJ')), ((u'jumps', u'VBZ'),
+    u'punct', (u'.', u'.'))]]
 
     >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.raw_parse_sents((
     ...     "The quick brown fox jumps over the lazy dog.",
     ...     "The quick grey wolf jumps over the lazy fox."
     ... ))], []) # doctest: +NORMALIZE_WHITESPACE
-    [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy'])]),
-    Tree('jumps', [Tree('wolf', ['The', 'quick', 'grey']), Tree('fox', ['over', 'the', 'lazy'])])]
+    [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over',
+    'the', 'lazy']), '.']), Tree('jumps', [Tree('wolf', ['The', 'quick', 'grey']),
+    Tree('fox', ['over', 'the', 'lazy']), '.'])]
 
     >>> sum([[parse.tree() for parse in dep_graphs] for dep_graphs in dep_parser.parse_sents((
     ...     "I 'm a dog".split(),
     ...     "This is my friends ' cat ( the tabby )".split(),
     ... ))], []) # doctest: +NORMALIZE_WHITESPACE
-    [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends', ['my', "'"]), Tree('tabby', ['the'])])]
+    [Tree('dog', ['I', "'m", 'a']), Tree('cat', ['This', 'is', Tree('friends',
+    ['my', "'"]), Tree('tabby', ['-LRB-', 'the', '-RRB-'])])]
     '''
 
     _OUTPUT_FORMAT = 'conll'
