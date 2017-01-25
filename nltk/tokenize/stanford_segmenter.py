@@ -3,7 +3,7 @@
 # Natural Language Toolkit: Interface to the Stanford Segmenter
 # for Chinese and Arabic
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: 52nlp <52nlpcn@gmail.com>
 #         Casper Lehmann-Strøm <casperlehmann@gmail.com>
 #         Alex Constantin <alex@keyworder.ch>
@@ -70,9 +70,8 @@ class StanfordSegmenter(TokenizerI):
                 verbose=verbose)
 
         # This is passed to java as the -cp option, the segmenter needs slf4j.
-        sep = ';' if os.name == 'nt' else ':'
-        self._stanford_jar = sep.join(
-            [_ for _ in [stanford_segmenter, slf4j] if _ is not None])
+        self._stanford_jar = os.pathsep.join(
+            [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
 
         self._java_class = java_class
         self._model = path_to_model

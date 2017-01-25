@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Twitter Tokenizer
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <> (modifications)
@@ -324,8 +324,9 @@ def remove_handles(text):
     """
     Remove Twitter username handles from text.
     """
-    pattern = re.compile(r"(^|(?<=[^\w.-]))@[A-Za-z_]+\w+")
-    return pattern.sub('', text)
+    pattern = re.compile(r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){20}(?!@))|(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){1,19})(?![A-Za-z0-9_]*@)")
+    # Substitute hadnles with ' ' to ensure that text on either side of removed handles are tokenized correctly
+    return pattern.sub(' ', text)
 
 ######################################################################
 # Tokenization Function

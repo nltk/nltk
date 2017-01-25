@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2016 NLTK Project
+.. Copyright (C) 2001-2017 NLTK Project
 .. For license information, see LICENSE.TXT
 
 =======
@@ -62,7 +62,7 @@ Other distance measures:
     >>> print(jaccard_distance(s1, s2))
     0.6
     >>> print(masi_distance(s1, s2))
-    0.868...
+    0.198
 
 ----------------------
 Miscellaneous Measures

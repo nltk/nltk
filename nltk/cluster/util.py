@@ -1,11 +1,11 @@
 # Natural Language Toolkit: Clusterer Utilities
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Contributor: J Richard Snape 
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 import copy
 from sys import stdout
@@ -239,7 +239,7 @@ class Dendrogram(object):
 
         # find the bottom row and the best cell width
         width = max(map(len, last_row)) + 1
-        lhalf = int(width / 2)
+        lhalf = width // 2
         rhalf = int(width - lhalf - 1)
 
         # display functions

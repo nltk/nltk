@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Tokenizer
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>
@@ -15,7 +15,7 @@ import json
 from subprocess import PIPE
 
 from nltk import compat
-from nltk.internals import find_jar, config_java, java, _java_options, find_jars_within_path
+from nltk.internals import find_jar, config_java, java, _java_options
 
 from nltk.tokenize.api import TokenizerI
 
@@ -43,11 +43,7 @@ class StanfordTokenizer(TokenizerI):
             searchpath=(), url=_stanford_url,
             verbose=verbose
         )
-        
-        # Adding logging jar files to classpath 
-        stanford_dir = os.path.split(self._stanford_jar)[0]
-        self._stanford_jar = tuple(find_jars_within_path(stanford_dir))
-        
+
         self._encoding = encoding
         self.java_options = java_options
 
@@ -109,5 +105,3 @@ def setup_module(module):
         StanfordTokenizer()
     except LookupError:
         raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
-
-

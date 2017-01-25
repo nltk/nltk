@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2016 NLTK Project
+.. Copyright (C) 2001-2017 NLTK Project
 .. For license information, see LICENSE.TXT
 
     >>> from __future__ import print_function
@@ -164,3 +164,17 @@ It should not hang on long sequences of the same punctuation character.
     >>> s10 = "Photo: Aujourd'hui sur http://t.co/0gebOFDUzn Projet... http://t.co/bKfIUbydz2.............................. http://fb.me/3b6uXpz0L"
     >>> tknzr.tokenize(s10)
     [u'Photo', u':', u"Aujourd'hui", u'sur', u'http://t.co/0gebOFDUzn', u'Projet', u'...', u'http://t.co/bKfIUbydz2', u'...', u'http://fb.me/3b6uXpz0L']
+
+
+Regression Tests: PunktSentenceTokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The sentence splitter should remove whitespace following the sentence boundary.
+
+    >>> pst = PunktSentenceTokenizer()
+    >>> pst.tokenize('See Section 3).  Or Section 2).  ')
+    ['See Section 3).', 'Or Section 2).']
+    >>> pst.tokenize('See Section 3.)  Or Section 2.)  ')
+    ['See Section 3.)', 'Or Section 2.)']
+    >>> pst.tokenize('See Section 3.)  Or Section 2.)  ', realign_boundaries=False)
+    ['See Section 3.', ')  Or Section 2.', ')']

@@ -1,10 +1,10 @@
 # Natural Language Toolkit: Group Average Agglomerative Clusterer
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
+from __future__ import print_function, unicode_literals, division
 
 try:
     import numpy
@@ -109,7 +109,7 @@ class GAAClusterer(VectorSpaceClusterer):
                     centroid += self._normalise(vector)
                 else:
                     centroid += vector
-            centroid /= float(len(cluster))
+            centroid /= len(cluster)
             self._centroids.append(centroid)
         self._num_clusters = len(self._centroids)
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Taggers
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -76,7 +76,22 @@ from nltk.tag.mapping       import tagset_mapping, map_tag
 from nltk.tag.crf           import CRFTagger
 from nltk.tag.perceptron    import PerceptronTagger
 
-from nltk.data import load
+from nltk.data import load, find
+
+RUS_PICKLE = 'taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle'
+
+
+def _get_tagger(lang=None):
+    if lang == 'rus':
+        tagger = PerceptronTagger(False)
+        ap_russian_model_loc = 'file:' + str(find(RUS_PICKLE))
+        tagger.load(ap_russian_model_loc)
+    elif lang == 'eng':
+        tagger = PerceptronTagger()
+    else:
+        tagger = PerceptronTagger()
+    return tagger
+
 
 def _pos_tag(tokens, tagset, tagger):
     tagged_tokens = tagger.tag(tokens)
@@ -84,7 +99,8 @@ def _pos_tag(tokens, tagset, tagger):
         tagged_tokens = [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagged_tokens]
     return tagged_tokens
 
-def pos_tag(tokens, tagset=None):
+
+def pos_tag(tokens, tagset=None, lang='eng'):
     """
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
@@ -104,14 +120,16 @@ def pos_tag(tokens, tagset=None):
     :type tokens: list(str)
     :param tagset: the tagset to be used, e.g. universal, wsj, brown
     :type tagset: str
+    :param lang: the ISO 639 code of the language, e.g. 'eng' for English, 'rus' for Russian
+    :type lang: str
     :return: The tagged tokens
     :rtype: list(tuple(str, str))
     """
-    tagger = PerceptronTagger()
+    tagger = _get_tagger(lang)
     return _pos_tag(tokens, tagset, tagger)    
 
 
-def pos_tag_sents(sentences, tagset=None):
+def pos_tag_sents(sentences, tagset=None, lang='eng'):
     """
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.
@@ -120,8 +138,10 @@ def pos_tag_sents(sentences, tagset=None):
     :type tokens: list(list(str))
     :param tagset: the tagset to be used, e.g. universal, wsj, brown
     :type tagset: str
+    :param lang: the ISO 639 code of the language, e.g. 'eng' for English, 'rus' for Russian
+    :type lang: str
     :return: The list of tagged sentences
     :rtype: list(list(tuple(str, str)))
     """
-    tagger = PerceptronTagger()
+    tagger = _get_tagger(lang)
     return [_pos_tag(sent, tagset, tagger) for sent in sentences]

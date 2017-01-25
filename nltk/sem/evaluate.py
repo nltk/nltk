@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Models for first-order languages with lambda
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -19,6 +19,7 @@ from pprint import pformat
 import inspect
 import textwrap
 import re
+import sys
 
 from nltk.decorators import decorator # this used in code that is commented out
 from nltk.compat import string_types, python_2_unicode_compatible
@@ -36,7 +37,10 @@ class Error(Exception): pass
 class Undefined(Error):  pass
 
 def trace(f, *args, **kw):
-    argspec = inspect.getargspec(f)
+    if sys.version_info[0] >= 3:
+        argspec = inspect.getfullargspec(f)
+    else:
+        argspec = inspect.getargspec(f)
     d = dict(zip(argspec[0], args))
     if d.pop('trace', None):
         print()

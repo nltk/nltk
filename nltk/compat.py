@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Compatibility
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -241,13 +241,13 @@ else:
                 self._closed = True
                 if _warn:
                     self._warn("Implicitly cleaning up {!r}".format(self),
-                               ResourceWarning)
+                               Warning)
 
         def __exit__(self, exc, value, tb):
             self.cleanup()
 
         def __del__(self):
-            # Issue a ResourceWarning if implicit cleanup needed
+            # Issue a Warning if implicit cleanup needed
             self.cleanup(_warn=True)
 
         # XXX (ncoghlan): The following code attempts to make

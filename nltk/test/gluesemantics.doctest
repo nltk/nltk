@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2016 NLTK Project
+.. Copyright (C) 2001-2017 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==============================================================================
@@ -343,13 +343,12 @@ Dependency Graph to Glue Formulas
     ... 4	dog	_	NN	NN	_	2	OBJ	_	_
     ... """)
     >>> gfl = GlueDict('nltk:grammars/sample_grammars/glue.semtype').to_glueformula_list(depgraph)
-    >>> for gf in sorted(gfl):
-    ...     print(gf)
-    \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F2) -o F2))
-    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I5) -o I5))
-    \x y.sees(x,y) : (f -o (i -o g))
-    \x.John(x) : (fv -o fr)
-    \x.dog(x) : (iv -o ir)
+    >>> print(gfl) # doctest: +SKIP
+    [\x y.sees(x,y) : (f -o (i -o g)),
+     \x.dog(x) : (iv -o ir),
+     \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I3) -o I3)),
+     \P Q.exists x.(P(x) & Q(x)) : ((fv -o fr) -o ((f -o F4) -o F4)),
+     \x.John(x) : (fv -o fr)]
     >>> glue = Glue()
     >>> for r in sorted([r.simplify().normalize() for r in glue.get_readings(glue.gfl_to_compiled(gfl))], key=str):
     ...     print(r)
@@ -375,12 +374,11 @@ Dependency Graph to LFG f-structure
 ---------------------------------
 LFG f-structure to Glue
 ---------------------------------
-    >>> for gf in sorted(fstruct.to_glueformula_list(GlueDict('nltk:grammars/sample_grammars/glue.semtype'))):
-    ...     print(gf)
-    \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G5) -o G5))
-    \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I2) -o I2))
-    \x y.sees(x,y) : (i -o (g -o f))
-    \x.John(x) : (iv -o ir)
-    \x.dog(x) : (gv -o gr)
+    >>> fstruct.to_glueformula_list(GlueDict('nltk:grammars/sample_grammars/glue.semtype')) # doctest: +SKIP
+    [\x y.sees(x,y) : (i -o (g -o f)),
+     \x.dog(x) : (gv -o gr),
+     \P Q.exists x.(P(x) & Q(x)) : ((gv -o gr) -o ((g -o G3) -o G3)),
+     \P Q.exists x.(P(x) & Q(x)) : ((iv -o ir) -o ((i -o I4) -o I4)),
+     \x.John(x) : (iv -o ir)]
 
 .. see gluesemantics_malt.doctest for more

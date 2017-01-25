@@ -1,11 +1,13 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function
 
+import sys
+import inspect
 import locale
 import re
 import types
@@ -32,7 +34,6 @@ from nltk.compat import (class_types, text_type, string_types, total_ordering,
 ######################################################################
 
 def usage(obj, selfname='self'):
-    import inspect
     str(obj) # In case it's lazy, this will load it.
 
     if not isinstance(obj, class_types):
@@ -43,7 +44,11 @@ def usage(obj, selfname='self'):
         if name.startswith('_'): continue
         if getattr(method, '__deprecated__', False): continue
 
-        args, varargs, varkw, defaults = inspect.getargspec(method)
+        if sys.version_info[0] >= 3:
+            getargspec = inspect.getfullargspec
+        else:
+            getargspec = inspect.getargspec
+        args, varargs, varkw, defaults = getargspec(method)[:4]
         if (args and args[0]=='self' and
             (defaults is None or len(args)>len(defaults))):
             args = args[1:]
@@ -379,18 +384,18 @@ def flatten(*args):
 # Ngram iteration
 ##########################################################################
 
-def pad_sequence(sequence, n, pad_left=False, pad_right=False, 
+def pad_sequence(sequence, n, pad_left=False, pad_right=False,
                  left_pad_symbol=None, right_pad_symbol=None):
     """
     Returns a padded sequence of items before ngram extraction.
-    
+
         >>> list(pad_sequence([1,2,3,4,5], 2, pad_left=True, pad_right=True, left_pad_symbol='<s>', right_pad_symbol='</s>'))
         ['<s>', 1, 2, 3, 4, 5, '</s>']
         >>> list(pad_sequence([1,2,3,4,5], 2, pad_left=True, left_pad_symbol='<s>'))
         ['<s>', 1, 2, 3, 4, 5]
         >>> list(pad_sequence([1,2,3,4,5], 2, pad_right=True, right_pad_symbol='</s>'))
         [1, 2, 3, 4, 5, '</s>']
-    
+
     :param sequence: the source data to be padded
     :type sequence: sequence or iter
     :param n: the degree of the ngrams
@@ -414,7 +419,7 @@ def pad_sequence(sequence, n, pad_left=False, pad_right=False,
 
 # add a flag to pad the sequence so we get peripheral ngrams?
 
-def ngrams(sequence, n, pad_left=False, pad_right=False, 
+def ngrams(sequence, n, pad_left=False, pad_right=False,
            left_pad_symbol=None, right_pad_symbol=None):
     """
     Return the ngrams generated from a sequence of items, as an iterator.
@@ -453,7 +458,7 @@ def ngrams(sequence, n, pad_left=False, pad_right=False,
     """
     sequence = pad_sequence(sequence, n, pad_left, pad_right,
                             left_pad_symbol, right_pad_symbol)
-        
+
     history = []
     while n > 1:
         history.append(next(sequence))
@@ -504,13 +509,13 @@ def trigrams(sequence, **kwargs):
 def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
     """
     Returns all possible ngrams generated from a sequence of items, as an iterator.
-    
+
         >>> sent = 'a b c'.split()
         >>> list(everygrams(sent))
         [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c'), ('a', 'b', 'c')]
         >>> list(everygrams(sent, max_len=2))
         [('a',), ('b',), ('c',), ('a', 'b'), ('b', 'c')]
-        
+
     :param sequence: the source data to be converted into trigrams
     :type sequence: sequence or iter
     :param min_len: minimum length of the ngrams, aka. n-gram order/degree of ngram
@@ -519,7 +524,7 @@ def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
     :type  max_len: int
     :rtype: iter(tuple)
     """
-    
+
     if max_len == -1:
         max_len = len(sequence)
     for n in range(min_len, max_len+1):
@@ -531,13 +536,13 @@ def skipgrams(sequence, n, k, **kwargs):
     Returns all possible skipgrams generated from a sequence of items, as an iterator.
     Skipgrams are ngrams that allows tokens to be skipped.
     Refer to http://homepages.inf.ed.ac.uk/ballison/pdf/lrec_skipgrams.pdf
-    
+
         >>> sent = "Insurgents killed in ongoing fighting".split()
         >>> list(skipgrams(sent, 2, 2))
         [('Insurgents', 'killed'), ('Insurgents', 'in'), ('Insurgents', 'ongoing'), ('killed', 'in'), ('killed', 'ongoing'), ('killed', 'fighting'), ('in', 'ongoing'), ('in', 'fighting'), ('ongoing', 'fighting')]
         >>> list(skipgrams(sent, 3, 2))
         [('Insurgents', 'killed', 'in'), ('Insurgents', 'killed', 'ongoing'), ('Insurgents', 'killed', 'fighting'), ('Insurgents', 'in', 'ongoing'), ('Insurgents', 'in', 'fighting'), ('Insurgents', 'ongoing', 'fighting'), ('killed', 'in', 'ongoing'), ('killed', 'in', 'fighting'), ('killed', 'ongoing', 'fighting'), ('in', 'ongoing', 'fighting')]
-    
+
     :param sequence: the source data to be converted into trigrams
     :type sequence: sequence or iter
     :param n: the degree of the ngrams
@@ -546,13 +551,13 @@ def skipgrams(sequence, n, k, **kwargs):
     :type  k: int
     :rtype: iter(tuple)
     """
-    
+
     # Pads the sequence as desired by **kwargs.
     if 'pad_left' in kwargs or 'pad_right' in kwargs:
         sequence = pad_sequence(sequence, n, **kwargs)
-    
+
     # Note when iterating through the ngrams, the pad_right here is not
-    # the **kwargs padding, it's for the algorithm to detect the SENTINEL 
+    # the **kwargs padding, it's for the algorithm to detect the SENTINEL
     # object on the right pad to stop inner loop.
     SENTINEL = object()
     for ngram in ngrams(sequence, n + k, pad_right=True, right_pad_symbol=SENTINEL):
@@ -686,9 +691,9 @@ def elementtree_indent(elem, level=0):
     """
     Recursive function to indent an ElementTree._ElementInterface
     used for pretty printing. Run indent on elem and then output
-    in the normal way. 
-    
-    :param elem: element to be indented. will be modified. 
+    in the normal way.
+
+    :param elem: element to be indented. will be modified.
     :type elem: ElementTree._ElementInterface
     :param level: level of indentation for this element
     :type level: nonnegative integer
@@ -715,17 +720,17 @@ def elementtree_indent(elem, level=0):
 def choose(n, k):
     """
     This function is a fast way to calculate binomial coefficients, commonly
-    known as nCk, i.e. the number of combinations of n things taken k at a time. 
+    known as nCk, i.e. the number of combinations of n things taken k at a time.
     (https://en.wikipedia.org/wiki/Binomial_coefficient).
-    
-    This is the *scipy.special.comb()* with long integer computation but this 
+
+    This is the *scipy.special.comb()* with long integer computation but this
     approximation is faster, see https://github.com/nltk/nltk/issues/1181
-    
+
         >>> choose(4, 2)
         6
         >>> choose(6, 2)
         15
-    
+
     :param n: The number of things.
     :type n: int
     :param r: The number of times a thing is taken.

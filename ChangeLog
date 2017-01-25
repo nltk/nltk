@@ -1,3 +1,33 @@
+Version 3.2.2 2016-12-31
+* added Kondrak's Aline algorithm
+* added ChrF and GLEU MT evaluation metrics
+* added Russian pos tagger model
+* added Moses detokenizer
+* rewrite Porter Stemmer
+* rewrite FrameNet corpus reader
+  (adds frame parameter to fes(), lus(), exemplars()
+  see http://nltk.org/howto/framenet.html)
+* updated FrameNet Corpus to version 1.7
+* fixes to stanford_segmenter.py, SentiText, CoNLL Corpus Reader
+* fixes to BLEU, naivebayes, Krippendorff's alpha, Punkt
+* fixes to tests for TransitionParser, Senna, edit distance
+* fixes to Moses Tokenizer and Detokenizer
+* improved TweetTokenizer
+* strip trailing whitespace when splitting sentences
+* handle inverted exclamation mark in ToktokTokenizer
+* resolved some issues with Python 3.5 support
+* improvements to testing framework
+* clean up dependencies
+	
+Thanks to the following contributors to 3.2.2:
+	
+Prasasto Adi, Mark Amery, Geoff Bacon, George Berry, Colin Carroll, Alexis Dimitriadis,
+Nicholas Fabina, German Ferrero, Tsolak Ghukasyan, Hyuckin David Lim, Naoya Kanai,
+Greg Kondrak, Igor Korolev, Tim Leslie, Rob Malouf, Heguang Miao, Dmitrijs Milajevs,
+Adam Nelson, Dennis O'Brien, Qi Liu, Pierpaolo Pantone, Andy Reagan, Mike Recachinas,
+Nathan Schneider, Jānis Šlapiņš, Richard Snape, Liling Tan, Marcus Uneson,
+Linghao Zhang, drevicko, SaintNazaire
+
 Version 3.2.1 2016-04-09
 * Support for CCG semantics, Stanford segmenter, VADER lexicon
 * Fixes to BLEU score calculation, CHILDES corpus reader

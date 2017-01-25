@@ -1,0 +1,4 @@
+tox
+nose
+coverage
+pylint

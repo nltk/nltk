@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Crubadan N-grams Reader
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Avital Pekker <avital.pekker@utoronto.ca>
 #
 # URL: <http://nltk.org/>
@@ -93,7 +93,7 @@ class CrubadanCorpusReader(CorpusReader):
         ngram_file = path.join(self.root, crubadan_code + '-3grams.txt')
 
         if not path.isfile(ngram_file):
-            raise Runtime("No N-gram file found for requested language.")
+            raise RuntimeError("No N-gram file found for requested language.")
 
         counts = FreqDist()
         if PY3:

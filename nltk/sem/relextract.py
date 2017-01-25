@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Relation Extraction
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -424,7 +424,7 @@ def conllned(trace=1):
         if trace:
                 lcon = rcon = True
         for rel in extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN, window=10):
-            print(rtuple(rel, lcon=True, rcon=True))
+            print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 #############################################
 ## Spanish CONLL2002: (PER, ORG)

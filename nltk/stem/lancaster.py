@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Tomcavage <stomcava@law.upenn.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -181,7 +181,7 @@ class LancasterStemmer(StemmerI):
 
         for rule in rule_tuple:
             if not valid_rule.match(rule):
-                raise ValueError("The rule %s is invalid" % rule)
+                raise ValueError("The rule {0} is invalid".format(rule))
             first_letter = rule[0:1]
             if first_letter in self.rule_dictionary:
                 self.rule_dictionary[first_letter].append(rule)

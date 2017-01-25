@@ -2,7 +2,7 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Ewan Klein <ewan@inf.ed.ac.uk>
@@ -28,6 +28,29 @@ with open(version_file) as fh:
 
 # setuptools
 from setuptools import setup, find_packages
+
+# Specify groups of optional dependencies
+extras_require = {
+    'machine_learning': [
+        'gensim',
+        'numpy',
+        'python-crfsuite',
+        'scikit-learn',
+        'scipy'
+    ],
+    'plot': [
+        'matplotlib',
+    ],
+    'tgrep': [
+        'pyparsing',
+    ],
+    'twitter': [
+        'twython'
+    ]
+}
+
+# Add a group made up of all optional dependencies
+extras_require['all'] = set(package for group in extras_require.values() for package in group)
 
 setup(
     name = "nltk",
@@ -68,7 +91,8 @@ natural language processing.  NLTK requires Python 2.7, or 3.4+.""",
     'Topic :: Text Processing :: Linguistic',
     ],
     package_data = {'nltk': ['test/*.doctest', 'VERSION']},
-#    install_requires = ['six>=1.9.0'],
+    install_requires = ['six'],
+    extras_require = extras_require,
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
     )

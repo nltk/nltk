@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
@@ -376,8 +376,9 @@ class BrillTagger(TaggerI):
             usedtpls = set([int(tid) for tid in tids])
             unused = [(tid, tpl) for (tid, tpl) in enumerate(Template.ALLTEMPLATES) if tid not in usedtpls]
             print("UNUSED TEMPLATES ({0})".format(len(unused)))
+
             for (tid, tpl) in unused:
-                print("{0:03d} {1:s}".format(tid, tpl))
+                print("{0:03d} {1:s}".format(tid, str(tpl)))
 
         if test_stats is None:
             print_train_stats()

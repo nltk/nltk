@@ -4,14 +4,14 @@
 # Author: Dan Garrette <dhgarrette@gmail.com>
 # Contributor: Liling Tan, Mustufain, osamamukhtar11
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 from __future__ import print_function
 from __future__ import unicode_literals
-from nltk.six import text_type
 
+from six import text_type
 import os
 import sys
 import tempfile

@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
@@ -85,7 +85,7 @@ class SnowballStemmer(StemmerI):
 
     def __init__(self, language, ignore_stopwords=False):
         if language not in self.languages:
-            raise ValueError("The language '%s' is not supported." % language)
+            raise ValueError("The language '{0}' is not supported.".format(language))
         stemmerclass = globals()[language.capitalize() + "Stemmer"]
         self.stemmer = stemmerclass(ignore_stopwords)
         self.stem = self.stemmer.stem
@@ -120,15 +120,15 @@ class _LanguageSpecificStemmer(StemmerI):
                 for word in stopwords.words(language):
                     self.stopwords.add(word)
             except IOError:
-                raise ValueError("%r has no list of stopwords. Please set"
-                                 " 'ignore_stopwords' to 'False'." % self)
+                raise ValueError("{!r} has no list of stopwords. Please set"
+                                 " 'ignore_stopwords' to 'False'.".format(self))
 
     def __repr__(self):
         """
         Print out the string representation of the respective class.
 
         """
-        return "<%s>" % type(self).__name__
+        return "<{0}>".format(type(self).__name__)
 
 
 class PorterStemmer(_LanguageSpecificStemmer, porter.PorterStemmer):
