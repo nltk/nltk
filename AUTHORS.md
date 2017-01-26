@@ -98,6 +98,7 @@
 - Pierre-François Laquerre
 - Stefano Lattarini
 - Haejoong Lee
+- Jackson Lee
 - Max Leonov
 - Chris Liechti
 - Tom Lippincott
