@@ -183,9 +183,8 @@ class PerceptronTagger(TaggerI):
         for iter_ in range(nr_iter):
             c = 0
             n = 0
-            for sentence  in self._sentences:
-                words = [word for word,tag in sentence]
-                tags  = [tag for word,tag in sentence]
+            for sentence in self._sentences:
+                words, tags = zip(*sentence)
                 
                 prev, prev2 = self.START
                 context = self.START + [self.normalize(w) for w in words] \
