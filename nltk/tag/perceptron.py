@@ -201,6 +201,11 @@ class PerceptronTagger(TaggerI):
                     n += 1
             random.shuffle(self._sentences)
             logging.info("Iter {0}: {1}/{2}={3}".format(iter_, c, n, _pc(c, n)))
+
+        # We don't need the training sentences anymore, and we don't want to
+        # waste space on them when we pickle the trained tagger.
+        self._sentences = None
+
         self.model.average_weights()
         # Pickle as a binary file
         if save_loc is not None:
