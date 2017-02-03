@@ -253,8 +253,8 @@ wordnet_ic = LazyCorpusLoader(
     'wordnet_ic', WordNetICCorpusReader, '.*\.dat')
 words = LazyCorpusLoader(
     'words', WordListCorpusReader, r'(?!README|\.).*', encoding='ascii')
-ycoe = LazyCorpusLoader(
-    'ycoe', YCOECorpusReader)
+# ycoe = LazyCorpusLoader(
+#     'ycoe', YCOECorpusReader)
 # defined after treebank
 propbank = LazyCorpusLoader(
     'propbank', PropbankCorpusReader,
