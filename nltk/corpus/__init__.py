@@ -165,9 +165,10 @@ opinion_lexicon = LazyCorpusLoader(
     encoding='ISO-8859-2')
 panlex_lite = LazyCorpusLoader(
     'panlex_lite', PanLexLiteCorpusReader)
-pl196x = LazyCorpusLoader(
-    'pl196x', Pl196xCorpusReader, r'[a-z]-.*\.xml',
-    cat_file='cats.txt', textid_file='textids.txt', encoding='utf8')
+# [SB] this breaks in python35 https://github.com/nltk/nltk/issues/1579
+# pl196x = LazyCorpusLoader(
+#     'pl196x', Pl196xCorpusReader, r'[a-z]-.*\.xml',
+#     cat_file='cats.txt', textid_file='textids.txt', encoding='utf8')
 ppattach = LazyCorpusLoader(
     'ppattach', PPAttachmentCorpusReader, ['training', 'test', 'devset'])
 product_reviews_1 = LazyCorpusLoader(
