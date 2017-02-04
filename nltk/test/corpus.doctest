@@ -377,9 +377,10 @@ Parsed Corpus of Old English Prose (YCOE); but the corpus itself is
 not included in the NLTK data package.  If you install it yourself,
 you can use NLTK to access it:
 
+.. doctest: +SKIP
     >>> from nltk.corpus import ycoe
     >>> for tree in ycoe.parsed_sents('cocuraC')[:4]:
-    ...     print(tree) # doctest: +SKIP
+    ...     print(tree)
     (CP-THT
       (C +D+atte)
       (IP-SUB ...)
@@ -405,8 +406,9 @@ you can use NLTK to access it:
 If the YCOE corpus is not available, you will get an error message
 when you try to access it:
 
+.. doctest: +SKIP
     >>> from nltk.corpus import ycoe
-    >>> print(ycoe) # doctest: +SKIP
+    >>> print(ycoe)
     Traceback (most recent call last):
     LookupError:
     **********************************************************************
