@@ -131,8 +131,8 @@ inaugural = LazyCorpusLoader(
 indian = LazyCorpusLoader(
     'indian', IndianCorpusReader, r'(?!\.).*\.pos',
     tagset='unknown', encoding='utf8')
-ipipan = LazyCorpusLoader(
-    'ipipan', IPIPANCorpusReader, r'(?!\.).*morph\.xml')
+# ipipan = LazyCorpusLoader(
+#     'ipipan', IPIPANCorpusReader, r'(?!\.).*morph\.xml')
 jeita = LazyCorpusLoader(
     'jeita', ChasenCorpusReader, r'.*\.chasen', encoding='utf-8')
 knbc = LazyCorpusLoader(
