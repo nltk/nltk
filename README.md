@@ -1,5 +1,5 @@
 # Natural Language Toolkit (NLTK)
-[![PyPI](https://img.shields.io/pypi/v/nltk.svg)](https://pypi.python.org/pypi/nltk)
+[![PyPI](https://img.shields.io/pypi/v/nltk.svg)](https://pypi.python.org/pypi/nltk) [![Jenkins](https://img.shields.io/jenkins/s/https/nltk.ci.cloudbees.com/job/nltk.svg)](https://nltk.ci.cloudbees.com/job/nltk/lastCompletedBuild/testReport/)
 
 NLTK -- the Natural Language Toolkit -- is a suite of open source Python
 modules, data sets and tutorials supporting research and development in Natural
