@@ -667,7 +667,7 @@ def set_proxy(proxy, user=None, password=''):
             raise ValueError('Could not detect default proxy settings')
 
     # Set up the proxy handler
-    proxy_handler = ProxyHandler({'http': proxy})
+    proxy_handler = ProxyHandler({'https': proxy, 'http': proxy})
     opener = build_opener(proxy_handler)
 
     if user is not None:
