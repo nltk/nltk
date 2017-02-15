@@ -53,7 +53,6 @@ class LazyCorpusLoader(object):
         assert issubclass(reader_cls, CorpusReader)
         self.__name = self.__name__ = name
         self.__reader_cls = reader_cls
-        print (kwargs)
         # If nltk_data_subdir is set explicitly
         if 'nltk_data_subdir' in kwargs:
             # Use the specified subdirectory path
@@ -61,6 +60,7 @@ class LazyCorpusLoader(object):
             # Pops the `nltk_data_subdir` argument, we don't need it anymore.
             kwargs.pop('nltk_data_subdir', None)
         else: # Otherwise use 'nltk_data/corpora'
+            print (kwargs)
             self.subdir = 'corpora'
         self.__args = args
         self.__kwargs = kwargs
