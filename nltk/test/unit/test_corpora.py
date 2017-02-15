@@ -182,7 +182,7 @@ class TestPTB(unittest.TestCase):
             ['Thirty-three', 'Scotty', 'did', 'not', 'go', 'back']
         )
 
-@unittest.skip("Skipping test for mwa_ppdb.")
+#@unittest.skip("Skipping test for mwa_ppdb.")
 class TestMWAPPDB(unittest.TestCase):
     def test_fileids(self):
         self.assertEqual(mwa_ppdb.fileids(),
