@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import unittest
 
 from nltk.corpus import (sinica_treebank, conll2007, indian, cess_cat, cess_esp,
-                         floresta, ptb, udhr) # mwa_ppdb
+                         floresta, ptb, udhr, mwa_ppdb)
 
 from nltk.compat import python_2_unicode_compatible
 from nltk.tree import Tree
