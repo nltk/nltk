@@ -281,13 +281,13 @@ semcor = LazyCorpusLoader(
     wordnet) # Must be defined *after* wordnet corpus.
 
 nonbreaking_prefixes = LazyCorpusLoader(
-    'nonbreaking_prefixes', NonbreakingPrefixesCorpusReader, r'(?!README|\.).*', encoding='utf8')
+    'nonbreaking_prefixes', NonbreakingPrefixesCorpusReader, fileids=r'(?!README|\.).*', encoding='utf8')
 
 perluniprops = LazyCorpusLoader(
-    'perluniprops', UnicharsCorpusReader, r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
+    'perluniprops', UnicharsCorpusReader, fileids=r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
 
 mwa_ppdb = LazyCorpusLoader(
-    'mwa_ppdb', MWAPPDBCorpusReader, r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
+    'mwa_ppdb', MWAPPDBCorpusReader, fileids=r'(?!README|\.).*', nltk_data_subdir='misc', encoding='utf8')
 
 
 def demo():
