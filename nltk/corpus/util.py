@@ -53,21 +53,19 @@ class LazyCorpusLoader(object):
         assert issubclass(reader_cls, CorpusReader)
         self.__name = self.__name__ = name
         self.__reader_cls = reader_cls
-        print (name, kwargs)
         # If nltk_data_subdir is set explicitly
         if 'nltk_data_subdir' in kwargs:
             # Use the specified subdirectory path
             self.subdir = kwargs['nltk_data_subdir']
             # Pops the `nltk_data_subdir` argument, we don't need it anymore.
             kwargs.pop('nltk_data_subdir', None)
-            print (name, kwargs, self.subdir)
         else: # Otherwise use 'nltk_data/corpora'
             self.subdir = 'corpora'
-        print (name, self.subdir)
         self.__args = args
         self.__kwargs = kwargs
 
     def __load(self):
+        print(self.__name, self.subdir)
         # Find the corpus root directory.
         zip_name = re.sub(r'(([^/]*)(/.*)?)', r'\2.zip/\1/', self.__name)
         if TRY_ZIPFILE_FIRST:
