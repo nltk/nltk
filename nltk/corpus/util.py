@@ -65,6 +65,7 @@ class LazyCorpusLoader(object):
         self.__kwargs = kwargs
 
     def __load(self):
+        print(self.__name, self.subdir, self.__kwargs)
         # Find the corpus root directory.
         zip_name = re.sub(r'(([^/]*)(/.*)?)', r'\2.zip/\1/', self.__name)
         if TRY_ZIPFILE_FIRST:
