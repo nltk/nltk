@@ -9,17 +9,19 @@
 from __future__ import absolute_import, print_function
 import os
 import sys
-import types
-from functools import wraps
+from functools import update_wrapper, wraps
 import fractions
+import unicodedata
+
+from six import string_types, text_type
 
 # Python 2/3 compatibility layer. Based on six.
 
 PY3 = sys.version_info[0] == 3
 
 if PY3:
-    MAXSIZE = sys.maxsize
-    get_im_class = lambda meth: meth.__self__.__class__
+    def get_im_class(meth):
+        return meth.__self__.__class__
 
     import io
     StringIO = io.StringIO
@@ -31,7 +33,8 @@ if PY3:
     from tempfile import TemporaryDirectory
 
 else:
-    get_im_class = lambda meth: meth.im_class
+    def get_im_class(meth):
+        return meth.im_class
 
     try:
         from cStringIO import StringIO
@@ -70,7 +73,8 @@ else:
         see https://docs.python.org/2/library/csv.html
         """
 
-        def __init__(self, f, dialect=csv.excel, encoding="utf-8", errors='replace', **kwds):
+        def __init__(self, f, dialect=csv.excel, encoding="utf-8",
+                     errors='replace', **kwds):
             # Redirect output to a queue
             self.queue = cStringIO.StringIO()
             self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
@@ -79,7 +83,7 @@ else:
             self.encoder = encoder_cls(errors=errors)
 
         def encode(self, data):
-            if isinstance(data, basestring):
+            if isinstance(data, string_types):
                 return data.encode("utf-8")
             else:
                 return data
@@ -135,7 +139,8 @@ else:
                     # up due to missing globals
                     if "None" not in str(ex):
                         raise
-                    print("ERROR: {!r} while cleaning up {!r}".format(ex, self,),
+                    print("ERROR: {!r} while cleaning up {!r}".format(ex,
+                                                                      self),
                           file=sys.stderr)
                     return
                 self._closed = True
@@ -168,7 +173,8 @@ else:
             for name in self._listdir(path):
                 fullname = self._path_join(path, name)
                 try:
-                    isdir = self._isdir(fullname) and not self._islink(fullname)
+                    isdir = (self._isdir(fullname) and not
+                             self._islink(fullname))
                 except OSError:
                     isdir = False
                 if isdir:
@@ -187,15 +193,13 @@ else:
 
 # The following datasets have a /PY3 subdirectory containing
 # a full copy of the data which has been re-encoded or repickled.
-
-import os.path
-
 DATA_UPDATES = [("chunkers", "maxent_ne_chunker"),
                 ("help", "tagsets"),
                 ("taggers", "maxent_treebank_pos_tagger"),
                 ("tokenizers", "punkt")]
 
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
+
 
 def add_py3_data(path):
     if PY3:
@@ -217,12 +221,8 @@ def py3_data(init_func):
         return init_func(*args, **kwargs)
     return wraps(init_func)(_decorator)
 
+
 # ======= Compatibility layer for __str__ and __repr__ ==========
-
-import unicodedata
-import functools
-
-
 def remove_accents(text):
 
     if isinstance(text, bytes):
@@ -232,6 +232,7 @@ def remove_accents(text):
     return ''.join(
         c for c in unicodedata.normalize('NFKD', text) if category(c) != 'Mn'
     )
+
 
 # Select the best transliteration method:
 try:
@@ -301,7 +302,7 @@ def unicode_repr(obj):
     if hasattr(obj, 'unicode_repr'):
         return obj.unicode_repr()
 
-    if isinstance(obj, unicode):
+    if isinstance(obj, text_type):
         return repr(obj)[1:]  # strip "u" letter from output
 
     return repr(obj)
@@ -311,7 +312,7 @@ def _transliterated(method):
     def wrapper(self):
         return transliterate(method(self))
 
-    functools.update_wrapper(wrapper, method, ["__name__", "__doc__"])
+    update_wrapper(wrapper, method, ["__name__", "__doc__"])
     if hasattr(method, "_nltk_compat_7bit"):
         wrapper._nltk_compat_7bit = method._nltk_compat_7bit
 
@@ -323,10 +324,12 @@ def _7bit(method):
     def wrapper(self):
         return method(self).encode('ascii', 'backslashreplace')
 
-    functools.update_wrapper(wrapper, method, ["__name__", "__doc__"])
+    update_wrapper(wrapper, method, ["__name__", "__doc__"])
 
     if hasattr(method, "_nltk_compat_transliterated"):
-        wrapper._nltk_compat_transliterated = method._nltk_compat_transliterated
+        wrapper._nltk_compat_transliterated = (
+            method._nltk_compat_transliterated
+        )
 
     wrapper._nltk_compat_7bit = True
     return wrapper
@@ -339,8 +342,8 @@ def _was_fixed(method):
 
 class Fraction(fractions.Fraction):
     """
-    This is a simplified backwards compatible version of fractions.Fraction from
-    Python >=3.5. It adds the `_normalize` parameter such that it does
+    This is a simplified backwards compatible version of fractions.Fraction
+    from Python >=3.5. It adds the `_normalize` parameter such that it does
     not normalize the denominator to the Greatest Common Divisor (gcd) when
     the numerator is 0.
 
