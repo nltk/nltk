@@ -1712,11 +1712,15 @@ class CanvasFrame(object):
                                          defaultextension='.ps')
             if not filename: return
         (x0, y0, w, h) = self.scrollregion()
-        self._canvas.postscript(file=filename, x=x0, y=y0,
+        postscript = self._canvas.postscript(x=x0, y=y0,
                                 width=w+2, height=h+2,
                                 pagewidth=w+2, # points = 1/72 inch
                                 pageheight=h+2, # points = 1/72 inch
                                 pagex=0, pagey=0)
+        # workaround for bug in Tk font handling
+        postscript = postscript.replace(' 0 scalefont ', ' 9 scalefont ')
+        with open(filename, 'w') as f:
+            f.write(postscript.encode('utf8'))
 
     def scrollregion(self):
         """
