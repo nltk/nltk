@@ -61,7 +61,7 @@ class RTEFeatureExtractor(object):
         # Try to tokenize so that abbreviations, monetary amounts, email
         # addresses, URLs are single tokens.
         from nltk.tokenize import RegexpTokenizer
-        tokenizer = RegexpTokenizer('([\w.@:/])+|\w+|\$[\d.]+')
+        tokenizer = RegexpTokenizer('[\w.@:/]+|\w+|\$[\d.]+')
 
         #Get the set of word types for text and hypothesis
         self.text_tokens = tokenizer.tokenize(rtepair.text)
