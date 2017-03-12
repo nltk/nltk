@@ -1333,9 +1333,9 @@ def cfg_demo():
     # Create some nonterminals
     S, NP, VP, PP = nonterminals('S, NP, VP, PP')
     N, V, P, Det = nonterminals('N, V, P, Det')
-    VP_slash_NP = VP/NP
+    VP_slash_NP = VP.__div__(NP)
 
-    print('Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP/NP])
+    print('Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP_slash_NP])
     print('    S.symbol() =>', repr(S.symbol()))
     print()
 
