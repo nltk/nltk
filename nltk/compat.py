@@ -16,6 +16,7 @@ import fractions
 # Python 2/3 compatibility layer. Based on six.
 
 PY3 = sys.version_info[0] == 3
+PY3_IMP = sys.version_info[1] <= 3
 
 if PY3:
     def b(s):
@@ -36,7 +37,12 @@ if PY3:
     _iterkeys = "keys"
     _itervalues = "values"
     _iteritems = "items"
-    from importlib import reload
+
+    if PY3_IMP:
+        from imp import reload
+    else:
+        from importlib import reload
+
     raw_input = input
 
     imap = map
