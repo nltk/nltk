@@ -482,13 +482,13 @@ class SmoothingFunction:
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
             else:
+                _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
+                           "BLEU scores might be undesirable; "
+                           "use SmoothingFunction().").format(i+1)
+                warnings.warn(_msg)
                 if _emulate_multibleu and i < 5:
                     return [sys.float_info.min]
                 else:
-                    _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
-                               "BLEU scores might be undesirable; "
-                               "use SmoothingFunction().").format(i+1)
-                    warnings.warn(_msg)
                     # If this order of n-gram returns 0 counts, the higher order
                     # n-gram would also return 0, thus breaking the loop here.
                     break
