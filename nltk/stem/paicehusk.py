@@ -1,3 +1,33 @@
+# Whoosh: Paice-Husk Stemmeing Algorithm
+# URL: https://bitbucket.org/mchaput/whoosh/src
+#
+# Copyright 2011 Matt Chaput. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#    1. Redistributions of source code must retain the above copyright notice,
+#       this list of conditions and the following disclaimer.
+#
+#    2. Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY MATT CHAPUT ``AS IS'' AND ANY EXPRESS OR
+# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+# EVENT SHALL MATT CHAPUT OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+# OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# The views and conclusions contained in the software and documentation are
+# those of the authors and should not be interpreted as representing official
+# policies, either expressed or implied, of Matt Chaput.
+
 """
 Paice-Husk Stemmer
 
@@ -13,6 +43,8 @@ then use the object's stem method to stem words::
     stemmer = PaiceHuskStemmer(my_rules_string)
     stemmed_word = stemmer.stem(word)
 
+The base implementation was done by
+
 """
 
 import re
@@ -25,8 +57,6 @@ class PaiceHuskStemmer(object):
 
         >>> from nltk.stem.paicehusk import PaiceHuskStemmer
         >>> st = PaiceHuskStemmer()
-        >>> st.stem("determined")
-        'determin'
         >>> st.stem('maximum')     # Remove "-um" when word is intact
         'maxim'
         >>> st.stem('presumably')  # Don't remove "-um" when word is not intact
@@ -49,6 +79,8 @@ class PaiceHuskStemmer(object):
         'meant'
         >>> st.stem('cement')      # ditto
         'cem'
+        >>> st.stem('kilometer')      # ditto
+        'met'
     """
 
     rule_expr = re.compile(r"""
@@ -185,23 +217,18 @@ class PaiceHuskStemmer(object):
             by newlines.
         """
         self.rules = defaultdict(list)
-        if ruletable:
-            self.read_rules(ruletable)
-        else:
-            self.read_rules(self.defaultrules)
+        self._ruletable = ruletable if ruletable else self.defaultrules
+        self.read_rules(self._ruletable)
 
     def read_rules(self, ruletable):
         """Verify integrity of ruletable.
         """
-        rule_expr = self.rule_expr
-        rules = self.rules
-
         for line in ruletable.split("\n"):
             line = line.strip()
             if not line:
                 continue
 
-            match = rule_expr.match(line)
+            match = self.rule_expr.match(line)
             if match:
                 ending = match.group("ending")[::-1]
                 lastchar = ending[-1]
@@ -210,16 +237,23 @@ class PaiceHuskStemmer(object):
                 append = match.group("append")
                 cont = match.group("cont") == ">"
 
-                rules[lastchar].append((ending, intact, num, append, cont))
+                self.rules[lastchar].append((ending, intact, num,
+                                             append, cont))
             else:
                 raise Exception("Bad rule: %r" % line)
 
     def first_vowel(self, word):
         """Returns index of vowel or y.
         """
-        vp = min([p for p in [word.find(v) for v in "aeiou"]
-                  if p > -1])
+        find_vowel = [p for p in [word.find(v) for v in "aeiou"] if p > -1]
         yp = word.find("y")
+        # If find_vowel is empty, vowel pos always be greater than y pos
+        vp = min(find_vowel) if find_vowel else yp + 1
+
+        # If a word doesn't contain vowel and doesn't contain vowel return -1
+        if yp < 0 and not find_vowel:
+            return -1
+        # If y was found and comes before any vowels return y position
         if yp > 0 and yp < vp:
             return yp
         return vp
@@ -244,9 +278,13 @@ class PaiceHuskStemmer(object):
         stem = self.strip_prefix(match.group(0))
 
         is_intact = True
+        # While loop breaking condition
         continuing = True
         while continuing:
             pfv = self.first_vowel(stem)
+            # pfv returns -1 when there is no y or vowels inside of a word
+            if pfv is -1:
+                return word
             rulelist = rules.get(stem[-1])
             if not rulelist:
                 break
@@ -271,4 +309,7 @@ class PaiceHuskStemmer(object):
                     continuing = cont
                     break
 
-        return stem
+        if len(stem) > 0:
+            return stem
+        else:
+            return word
