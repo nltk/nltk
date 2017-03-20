@@ -45,16 +45,15 @@ then use the object's stem method to stem words::
     stemmed_word = paicehusk.stem(word)
 
 Guide for custom rules:
-    Ending  Intact+  Number (Append|Cont)
+    [Ending  Intact+  Number Append Cont]
 
     Ending is consist of alphabet (Specifically ending of a word). (a-z)
         - -ment -> tnem
     Intact is denoted by asterisk (*)
-    Number is denoted by integer (1 ~ n)
-    Append is denoted by plus sign (+)
-    Cont is denoted by greater than sign (>)
-
-
+    Number is denoted by integer (1 ~ length of Ending)
+        - How many letters are being replaced from original ending.
+    Append is consist of alphabet (Specifically letters to replace the ending) (a-z)
+    Cont is denoted by greater than sign or by period (>, .)
 """
 
 import re
@@ -271,10 +270,10 @@ class PaiceHuskStemmer(object):
     def strip_prefix(self, word):
         """Remove prefix from a word.
         """
-        for prefix in ("kilo", "micro", "milli", "intra", "ultra", "mega",
-                       "nano", "pico", "pseudo"):
-            if word.startswith(prefix):
-                return word[len(prefix):]
+        # for prefix in ("kilo", "micro", "milli", "intra", "ultra", "mega",
+        #                "nano", "pico", "pseudo"):
+        #     if word.startswith(prefix):
+        #         return word[len(prefix):]
         return word
 
     def stem(self, word):
