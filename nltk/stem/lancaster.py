@@ -47,9 +47,6 @@ class LancasterStemmer(StemmerI):
         >>> st_pre = LancasterStemmer(strip_prefix=True)
         >>> st_pre.stem('kilometer') # Test Prefix
         'met'
-        >>> st_custom = LancasterStemmer(rule_tuples=("ssen1t."))
-        >>> st_custom.stem('darkness')
-        'darknest'
     """
 
     # The rule list is static since it doesn't change between instances
