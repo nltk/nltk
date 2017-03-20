@@ -201,7 +201,8 @@ class LancasterStemmer(StemmerI):
         """Stem a word using the Lancaster stemmer.
         """
         # Lower-case the word, since all the rules are lower-cased
-        word = self.strip_prefix(word).lower() if self._strip_prefix else word.lower()
+        word = word.lower()
+        word = self.__strip_prefix(word) if self._strip_prefix else word
 
         # Save a copy of the original word
         intact_word = word
@@ -319,8 +320,12 @@ class LancasterStemmer(StemmerI):
             word += append_string
         return word
 
-    def strip_prefix(self, word):
+    def __strip_prefix(self, word):
         """Remove prefix from a word.
+
+        This function originally taken from Whoosh.
+        URL: https://bitbucket.org/mchaput/whoosh/src/e344fb64067e45d47ec62dc65a75a50be51264a7/src/whoosh/lang/paicehusk.py?fileviewer=file-view-default#paicehusk.py-73
+
         """
         for prefix in ("kilo", "micro", "milli", "intra", "ultra", "mega",
                        "nano", "pico", "pseudo"):
