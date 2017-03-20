@@ -10,7 +10,7 @@
 """
 A module for interfacing with the Stanford taggers.
 
-Tagger models need to be downloaded from http://nlp.stanford.edu/software
+Tagger models need to be downloaded from https://nlp.stanford.edu/software
 and the STANFORD_MODELS environment variable set (a colon-separated
 list of paths).
 
@@ -26,7 +26,7 @@ from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
 from nltk import compat
 
-_stanford_url = 'http://nlp.stanford.edu/software'
+_stanford_url = 'https://nlp.stanford.edu/software'
 
 class StanfordTagger(TaggerI):
     """

@@ -228,7 +228,7 @@ class PerceptronTagger(TaggerI):
         '''
         Normalization used in pre-processing.
         - All words are lower cased
-        - Digits in the range 1800-2100 are represented as !YEAR;
+        - Groups of digits of length 4 are represented as !YEAR;
         - Other digits are represented as !DIGITS
 
         :rtype: str
@@ -244,7 +244,7 @@ class PerceptronTagger(TaggerI):
 
     def _get_features(self, i, word, context, prev, prev2):
         '''Map tokens into a feature representation, implemented as a
-        {hashable: float} dict. If the features change, a new model must be
+        {hashable: int} dict. If the features change, a new model must be
         trained.
         '''
         def add(name, *args):
