@@ -531,7 +531,7 @@ class SmoothingFunction:
                 incvnt+=1
         return p_n
 
-    def method4(self, p_n, references, hypothesis, hyp_len):
+    def method4(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 4:
         Shorter translations may have inflated precision values due to having
@@ -546,7 +546,7 @@ class SmoothingFunction:
         return p_n
 
 
-    def method5(self, p_n, references, hypothesis, hyp_len):
+    def method5(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 5:
         The matched counts for similar values of n should be similar. To a
@@ -562,7 +562,7 @@ class SmoothingFunction:
             m[i] = p_n[i]
         return p_n
 
-    def method6(self, p_n, references, hypothesis, hyp_len):
+    def method6(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 6:
         Interpolates the maximum likelihood estimate of the precision *p_n* with
@@ -588,7 +588,7 @@ class SmoothingFunction:
                 p_n[i] = (m + self.alpha * pi0) / (l + self.alpha)
         return p_n
 
-    def method7(self, p_n, references, hypothesis, hyp_len):
+    def method7(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 6:
         Interpolates the maximum likelihood estimate of the precision *p_n* with
