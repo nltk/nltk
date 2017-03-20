@@ -218,3 +218,7 @@
 - Barry Wilkins
 - Hiranmay Ghosh
 - Chris Emerson
+
+### Contributors to Paice-Husk Stemmer
+- Matt Chaput
+- Others who are invovled with [Whoosh](https://bitbucket.org/mchaput/whoosh/wiki/Home)

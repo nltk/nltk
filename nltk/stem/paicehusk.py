@@ -34,16 +34,26 @@ Paice-Husk Stemmer
 If you just want to use the standard Paice-Husk stemming rules, use the
 module's stem()` function::
 
-    stemmed_word = stem(word)
+    paicehusk = PaiceHuskStemmer()
+    stemmed_word = paicehusk.stem(word)
 
 If you want to use a custom rule set, read the rules into a string where the
 rules are separated by newlines, and instantiate the object with the string,
 then use the object's stem method to stem words::
 
-    stemmer = PaiceHuskStemmer(my_rules_string)
-    stemmed_word = stemmer.stem(word)
+    paicehusk = PaiceHuskStemmer(custom_rule)
+    stemmed_word = paicehusk.stem(word)
 
-The base implementation was done by
+Guide for custom rules:
+    Ending  Intact+  Number (Append|Cont)
+
+    Ending is consist of alphabet (Specifically ending of a word). (a-z)
+        - -ment -> tnem
+    Intact is denoted by asterisk (*)
+    Number is denoted by integer (1 ~ n)
+    Append is denoted by plus sign (+)
+    Cont is denoted by greater than sign (>)
+
 
 """
 
@@ -231,12 +241,12 @@ class PaiceHuskStemmer(object):
             match = self.rule_expr.match(line)
             if match:
                 ending = match.group("ending")[::-1]
-                lastchar = ending[-1]
                 intact = match.group("intact") == "*"
                 num = int(match.group("num"))
                 append = match.group("append")
                 cont = match.group("cont") == ">"
 
+                lastchar = ending[-1]
                 self.rules[lastchar].append((ending, intact, num,
                                              append, cont))
             else:
@@ -277,6 +287,10 @@ class PaiceHuskStemmer(object):
             return word
         stem = self.strip_prefix(match.group(0))
 
+        # Check if word starts with vowel or constant with specified length of
+        # 2 and 3 respectively. If not break out of for loop.
+        # After this is_intact becomes true, while loop will end in the next
+        # cycle.
         is_intact = True
         # While loop breaking condition
         continuing = True
