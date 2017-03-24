@@ -86,8 +86,6 @@ def _get_tagger(lang=None):
         tagger = PerceptronTagger(False)
         ap_russian_model_loc = 'file:' + str(find(RUS_PICKLE))
         tagger.load(ap_russian_model_loc)
-    elif lang == 'eng':
-        tagger = PerceptronTagger()
     else:
         tagger = PerceptronTagger()
     return tagger
