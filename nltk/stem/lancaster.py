@@ -171,13 +171,13 @@ class LancasterStemmer(StemmerI):
         "zy1s."      # -yz > -ys
     )
 
-    def __init__(self, rule_tuples=None, strip_prefix=False):
+    def __init__(self, rule_tuples=None, strip_prefix_flag=False):
         """Create an instance of the Lancaster stemmer.
         """
         # Setup an empty rule dictionary - this will be filled in later
         self.rule_dictionary = {}
         # Check if a user wants to strip prefix
-        self._strip_prefix = strip_prefix
+        self._strip_prefix = strip_prefix_flag
         # Check if a user wants to use his/her own rule tuples.
         self._rule_tuples = rule_tuples if rule_tuples else self.default_rule_tuple
 
@@ -202,7 +202,7 @@ class LancasterStemmer(StemmerI):
         """
         # Lower-case the word, since all the rules are lower-cased
         word = word.lower()
-        word = self.__strip_prefix(word) if self._strip_prefix else word
+        word = self.__stripPrefix(word) if self._strip_prefix else word
 
         # Save a copy of the original word
         intact_word = word
@@ -320,7 +320,7 @@ class LancasterStemmer(StemmerI):
             word += append_string
         return word
 
-    def __strip_prefix(self, word):
+    def __stripPrefix(self, word):
         """Remove prefix from a word.
 
         This function originally taken from Whoosh.

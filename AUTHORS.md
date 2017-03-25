@@ -218,3 +218,8 @@
 - Barry Wilkins
 - Hiranmay Ghosh
 - Chris Emerson
+
+### Contributors to Lancaster Stemmer
+- Matt Chaput, [Whoosh](https://bitbucket.org/mchaput/whoosh/wiki/Home)
+    - Strip prefix
+    - Custom rule.
