@@ -188,3 +188,12 @@ class StanfordNERTagger(StanfordTagger):
             return result
 
         raise NotImplementedError
+
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordPOSTagger('english-bidirectional-distsim.tagger')
+    except LookupError:
+        raise SkipTest('Doctests from nltk.tag.stanford are skipped because one \
+                       of the stanford jars cannot be found.')
