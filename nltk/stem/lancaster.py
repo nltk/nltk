@@ -44,7 +44,7 @@ class LancasterStemmer(StemmerI):
         'meant'
         >>> st.stem('cement')      # ditto
         'cem'
-        >>> st_pre = LancasterStemmer(strip_prefix=True)
+        >>> st_pre = LancasterStemmer(strip_prefix_flag=True)
         >>> st_pre.stem('kilometer') # Test Prefix
         'met'
         >>> st_custom = LancasterStemmer(rule_tuples=("ssen4>", "s1t."))
