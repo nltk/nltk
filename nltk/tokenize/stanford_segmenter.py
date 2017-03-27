@@ -21,7 +21,7 @@ from nltk.internals import find_jar, config_java, java, _java_options
 
 from nltk.tokenize.api import TokenizerI
 
-_stanford_url = 'http://nlp.stanford.edu/software'
+_stanford_url = 'https://nlp.stanford.edu/software'
 
 class StanfordSegmenter(TokenizerI):
     r"""

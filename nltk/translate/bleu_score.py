@@ -11,6 +11,7 @@
 from __future__ import division
 
 import math
+import sys
 import fractions
 import warnings
 from collections import Counter
@@ -25,7 +26,8 @@ except TypeError:
 
 
 def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
-                  smoothing_function=None, auto_reweigh=False):
+                  smoothing_function=None, auto_reweigh=False,
+                  emulate_multibleu=False):
     """
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
@@ -74,15 +76,22 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     :type hypothesis: list(str)
     :param weights: weights for unigrams, bigrams, trigrams and so on
     :type weights: list(float)
+    :param smoothing_function:
+    :type smoothing_function: SmoothingFunction
+    :param auto_reweigh:
+    :type auto_reweigh: bool
+    :param emulate_multibleu: bool
     :return: The sentence-level BLEU score.
     :rtype: float
     """
     return corpus_bleu([references], [hypothesis],
-                        weights, smoothing_function, auto_reweigh)
+                        weights, smoothing_function, auto_reweigh,
+                        emulate_multibleu)
 
 
 def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25),
-                smoothing_function=None, auto_reweigh=False):
+                smoothing_function=None, auto_reweigh=False,
+                emulate_multibleu=False):
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
@@ -129,6 +138,11 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     :type hypotheses: list(list(str))
     :param weights: weights for unigrams, bigrams, trigrams and so on
     :type weights: list(float)
+    :param smoothing_function:
+    :type smoothing_function: SmoothingFunction
+    :param auto_reweigh:
+    :type auto_reweigh: bool
+    :param emulate_multibleu: bool
     :return: The corpus-level BLEU score.
     :rtype: float
     """
@@ -181,10 +195,11 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     # Note: smoothing_function() may convert values into floats;
     #       it tries to retain the Fraction object as much as the
     #       smoothing method allows.
-    p_n = smoothing_function(p_n, references=references,
-                             hypothesis=hypothesis, hyp_len=hyp_len)
+    p_n = smoothing_function(p_n, references=references, hypothesis=hypothesis,
+                             hyp_len=hyp_len, emulate_multibleu=emulate_multibleu)
     s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n)))
-    return bp * math.exp(math.fsum(s))
+    s =  bp * math.exp(math.fsum(s))
+    return round(s, 4) if emulate_multibleu else s
 
 
 def modified_precision(references, hypothesis, n):
@@ -462,9 +477,12 @@ class SmoothingFunction:
     def method0(self, p_n, *args, **kwargs):
         """ No smoothing. """
         p_n_new = []
+        _emulate_multibleu = kwargs['emulate_multibleu']
         for i, p_i in enumerate(p_n):
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
+            elif _emulate_multibleu and i < 5:
+                return [sys.float_info.min]
             else:
                 _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
                            "BLEU scores might be undesirable; "
@@ -513,7 +531,7 @@ class SmoothingFunction:
                 incvnt+=1
         return p_n
 
-    def method4(self, p_n, references, hypothesis, hyp_len):
+    def method4(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 4:
         Shorter translations may have inflated precision values due to having
@@ -528,7 +546,7 @@ class SmoothingFunction:
         return p_n
 
 
-    def method5(self, p_n, references, hypothesis, hyp_len):
+    def method5(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 5:
         The matched counts for similar values of n should be similar. To a
@@ -544,7 +562,7 @@ class SmoothingFunction:
             m[i] = p_n[i]
         return p_n
 
-    def method6(self, p_n, references, hypothesis, hyp_len):
+    def method6(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 6:
         Interpolates the maximum likelihood estimate of the precision *p_n* with
@@ -570,7 +588,7 @@ class SmoothingFunction:
                 p_n[i] = (m + self.alpha * pi0) / (l + self.alpha)
         return p_n
 
-    def method7(self, p_n, references, hypothesis, hyp_len):
+    def method7(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 6:
         Interpolates the maximum likelihood estimate of the precision *p_n* with
