@@ -248,10 +248,10 @@ class MosesTokenizer(TokenizerI):
         return re.sub(r'DOTMULTI', r'.', text)
 
     def islower(self, text):
-        return not set(text).difference(set(IsLower))
+        return not set(text).difference(set(self.IsLower))
 
     def isalpha(self, text):
-        return not set(text).difference(set(IsAlpha))
+        return not set(text).difference(set(self.IsAlpha))
 
     def has_numeric_only(self, text):
         return bool(re.search(r'(.*)[\s]+(\#NUMERIC_ONLY\#)', text))
