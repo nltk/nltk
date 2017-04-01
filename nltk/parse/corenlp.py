@@ -310,26 +310,26 @@ class CoreNLPParser(GenericCoreNLPParser):
     >>> parser = CoreNLPParser(url='http://localhost:9000')
 
     >>> next(
-    ...     parser.raw_parse('the quick brown fox jumps over the lazy dog')
+    ...     parser.raw_parse('The quick brown fox jumps over the lazy dog.')
     ... ).pretty_print()  # doctest: +NORMALIZE_WHITESPACE
                          ROOT
                           |
                           S
-           _______________|_________
-          |                         VP
-          |                _________|___
-          |               |             PP
-          |               |     ________|___
-          NP              |    |            NP
-      ____|__________     |    |     _______|____
-     DT   JJ    JJ   NN  VBZ   IN   DT      JJ   NN
-     |    |     |    |    |    |    |       |    |
-    the quick brown fox jumps over the     lazy dog
+           _______________|__________________________
+          |                         VP               |
+          |                _________|___             |
+          |               |             PP           |
+          |               |     ________|___         |
+          NP              |    |            NP       |
+      ____|__________     |    |     _______|____    |
+     DT   JJ    JJ   NN  VBZ   IN   DT      JJ   NN  .
+     |    |     |    |    |    |    |       |    |   |
+    The quick brown fox jumps over the     lazy dog  .
 
     >>> (parse_fox, ), (parse_wolf, ) = parser.raw_parse_sents(
     ...     [
-    ...         'the quick brown fox jumps over the lazy dog',
-    ...         'the quick grey wolf jumps over the lazy fox',
+    ...         'The quick brown fox jumps over the lazy dog.',
+    ...         'The quick grey wolf jumps over the lazy fox.',
     ...     ]
     ... )
 
@@ -337,31 +337,31 @@ class CoreNLPParser(GenericCoreNLPParser):
                          ROOT
                           |
                           S
-           _______________|_________
-          |                         VP
-          |                _________|___
-          |               |             PP
-          |               |     ________|___
-          NP              |    |            NP
-      ____|__________     |    |     _______|____
-     DT   JJ    JJ   NN  VBZ   IN   DT      JJ   NN
-     |    |     |    |    |    |    |       |    |
-    the quick brown fox jumps over the     lazy dog
+           _______________|__________________________
+          |                         VP               |
+          |                _________|___             |
+          |               |             PP           |
+          |               |     ________|___         |
+          NP              |    |            NP       |
+      ____|__________     |    |     _______|____    |
+     DT   JJ    JJ   NN  VBZ   IN   DT      JJ   NN  .
+     |    |     |    |    |    |    |       |    |   |
+    The quick brown fox jumps over the     lazy dog  .
 
     >>> parse_wolf.pretty_print()  # doctest: +NORMALIZE_WHITESPACE
                          ROOT
                           |
                           S
-           _______________|_________
-          |                         VP
-          |                _________|___
-          |               |             PP
-          |               |     ________|___
-          NP              |    |            NP
-      ____|_________      |    |     _______|____
-     DT   JJ   JJ   NN   VBZ   IN   DT      JJ   NN
-     |    |    |    |     |    |    |       |    |
-    the quick grey wolf jumps over the     lazy fox
+           _______________|__________________________
+          |                         VP               |
+          |                _________|___             |
+          |               |             PP           |
+          |               |     ________|___         |
+          NP              |    |            NP       |
+      ____|_________      |    |     _______|____    |
+     DT   JJ   JJ   NN   VBZ   IN   DT      JJ   NN  .
+     |    |    |    |     |    |    |       |    |   |
+    The quick grey wolf jumps over the     lazy fox  .
 
     >>> (parse_dog, ), (parse_friends, ) = parser.parse_sents(
     ...     [
@@ -438,7 +438,7 @@ class CoreNLPParser(GenericCoreNLPParser):
     ...         'that she was raped by her Iraqi captors.'
     ...     )
     ... ).height()
-    17
+    20
 
     >>> next(
     ...     parser.raw_parse(
@@ -446,7 +446,7 @@ class CoreNLPParser(GenericCoreNLPParser):
     ...         '0.05 percent, at 997.02.'
     ...     )
     ... ).height()
-    10
+    9
 
     """
 
@@ -458,8 +458,8 @@ class CoreNLPParser(GenericCoreNLPParser):
 
 
 class CoreNLPDependencyParser(GenericCoreNLPParser):
+    """Dependency parser.
 
-    """
     >>> dep_parser = CoreNLPDependencyParser(url='http://localhost:9000')
 
     >>> parse, = dep_parser.raw_parse(
