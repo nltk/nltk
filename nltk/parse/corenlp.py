@@ -50,17 +50,20 @@ class CoreNLPServer(object):
         self, path_to_jar=None, path_to_models_jar=None, verbose=False,
         java_options=None, corenlp_options=None, port=None,
     ):
+
+        jars = list(find_jar_iter(
+            self._JAR,
+            path_to_jar,
+            env_vars=('CORENLP', ),
+            searchpath=(),
+            url=_stanford_url,
+            verbose=verbose,
+            is_regex=True,
+        ))
+
         # find the most recent code and model jar
         stanford_jar = max(
-            find_jar_iter(
-                self._JAR,
-                path_to_jar,
-                env_vars=('STANFORD_PARSER', 'STANFORD_CORENLP'),
-                searchpath=(),
-                url=_stanford_url,
-                verbose=verbose,
-                is_regex=True,
-            ),
+            jars,
             key=lambda model_name: re.match(self._JAR, model_name)
         )
 
@@ -83,7 +86,7 @@ class CoreNLPServer(object):
             find_jar_iter(
                 self._MODEL_JAR_PATTERN,
                 path_to_models_jar,
-                env_vars=('STANFORD_MODELS', 'STANFORD_CORENLP'),
+                env_vars=('CORENLP_MODELS', ),
                 searchpath=(),
                 url=_stanford_url,
                 verbose=verbose,
