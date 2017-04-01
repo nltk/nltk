@@ -223,6 +223,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
                 'properties': json.dumps(default_properties),
             },
             data=data.encode(self.encoding),
+            timeout=60,
         )
 
         response.raise_for_status()
