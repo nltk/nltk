@@ -35,7 +35,7 @@ For example, to compute the cosine similarity between 2 words:
 
     >>> new_model.similarity('university','school') > 0.3
     True
-	
+
 ---------------------------
 Using the pre-trained model
 ---------------------------
@@ -45,8 +45,8 @@ The full model is from https://code.google.com/p/word2vec/ (about 3 GB).
 
     >>> from nltk.data import find
     >>> word2vec_sample = str(find('models/word2vec_sample/pruned.word2vec.txt'))
-    >>> model = gensim.models.Word2Vec.load_word2vec_format(word2vec_sample, binary=False)
-	
+    >>> model = gensim.models.KeyedVectors.load_word2vec_format(word2vec_sample, binary=False)
+
 We pruned the model to only include the most common words (~44k words).
 
     >>> len(model.vocab)
@@ -56,12 +56,12 @@ Each word is represented in the space of 300 dimensions:
 
     >>> len(model['university'])
     300
- 	
+
 Finding the top n words that are similar to a target word is simple. The result is the list of n words with the score.
 
     >>> model.most_similar(positive=['university'], topn = 3)
     [(u'universities', 0.70039...), (u'faculty', 0.67809...), (u'undergraduate', 0.65870...)]
- 	
+
 Finding a word that is not in a list is also supported, although, implementing this by yourself is simple.
 
     >>> model.doesnt_match('breakfast cereal dinner lunch'.split())
@@ -138,4 +138,3 @@ We use this code to get the `word2vec_sample` model.
 |        f.write('{} {}\n'.format(word, ' '.join(str(value) for value in model[word])))
 |
 |    f.close()
-

@@ -46,7 +46,8 @@ def sentence_gleu(reference, hypothesis, min_len=1, max_len=4):
          sentence reward objective."
 
     Note: The GLEU score is designed for sentence based evaluation thus there is
-          no corpus based scores implemented in NLTK.
+          no corpus based scores implemented in NLTK. Also, unlike
+          multi-reference BLEU, GLEU only supports a single reference.
 
     The infamous "the the the ... " example
 
@@ -68,15 +69,15 @@ def sentence_gleu(reference, hypothesis, min_len=1, max_len=4):
         >>> sentence_gleu(ref1, hyp2) # doctest: +ELLIPSIS
         0.1206...
 
-    :param references: reference sentence
-    :type references: list(str)
+    :param reference: a reference sentence
+    :type reference: list(str)
     :param hypothesis: a hypothesis sentence
     :type hypothesis: list(str)
     :param min_len: The minimum order of n-gram this function should extract.
     :type min_len: int
     :param max_len: The maximum order of n-gram this function should extract.
     :type max_len: int
-    :return: the sentence level CHRF score.
+    :return: the sentence level GLEU score.
     :rtype: float
     """
     # For each order of ngram, calculate the no. of ngram matches and
