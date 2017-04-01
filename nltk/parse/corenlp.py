@@ -190,7 +190,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
         :rtype: iter(Tree)
         """
         default_properties = {
-                    'tokenize.whitespace': 'false',
+            'tokenize.whitespace': 'false',
         }
 
         default_properties.update(properties or {})
