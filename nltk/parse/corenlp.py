@@ -102,7 +102,7 @@ class CoreNLPServer(object):
         self._classpath = (stanford_jar, model_jar) + self.other_jars
 
         self.corenlp_options = corenlp_options or []
-        self.java_options = java_options or ['-mx1g']
+        self.java_options = java_options or ['-mx2g']
 
     def start(self):
         cmd = ['edu.stanford.nlp.pipeline.StanfordCoreNLPServer']
@@ -121,6 +121,7 @@ class CoreNLPServer(object):
                 cmd,
                 classpath=self._classpath,
                 blocking=False,
+                stdout='pipe',
                 stderr='pipe',
             )
         finally:
@@ -195,7 +196,6 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
         default_properties = {
             'tokenize.whitespace': 'false',
         }
-
         default_properties.update(properties or {})
 
         return next(
@@ -605,13 +605,13 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
 
 
 def transform(sentence):
-    for dependency in sentence['basic-dependencies']:
+    for dependency in sentence['basicDependencies']:
 
         dependent_index = dependency['dependent']
         token = sentence['tokens'][dependent_index - 1]
 
-        # Return values we don't know as '_'. Also, consider tag and ctag to be
-        # equal.
+        # Return values that we don't know as '_'. Also, consider tag and ctag
+        # to be equal.
         yield (
             dependent_index,
             '_',
