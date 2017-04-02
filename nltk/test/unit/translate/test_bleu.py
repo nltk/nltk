@@ -219,3 +219,22 @@ class TestBLEUvsMteval13a(unittest.TestCase):
                                             weights=(1.0/i,)*i,
                                             smoothing_function=chencherry.method3)
                     assert abs(mteval_bleu - nltk_bleu) < 0.005
+
+class TestEmulateMultiBLEU(unittest.TestCase):
+    def test_corpus_bleu_with_emulate_multibleu(self):
+        hyp = "Teo S yb , oe uNb , R , T t , , t Tue Ar saln S , , 5istsi l , 5oe R ulO sae oR R"
+        ref = str("Their tasks include changing a pump on the faulty stokehold ."
+                  "Likewise , two species that are very similar in morphology "
+                  "were distinguished using genetics .")
+        references = [[ref.split()]]
+        hypothese = [hyp.split()]
+        try: # Check that the warning is raised since no. of 2-grams < 0.
+            with self.assertWarns(UserWarning):
+                # Verify that the BLEU output is undesired since no. of 2-grams < 0.
+                self.assertAlmostEqual(corpus_bleu(references, hypothese), 0.4309, places=4)
+        except AttributeError:
+            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+        desired_output = corpus_bleu(references, hypothese,
+                                     emulate_multibleu=True)
+        #assert
+        assert desired_output == 0.0

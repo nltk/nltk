@@ -10,7 +10,7 @@
 """
 A module for interfacing with the Stanford taggers.
 
-Tagger models need to be downloaded from http://nlp.stanford.edu/software
+Tagger models need to be downloaded from https://nlp.stanford.edu/software
 and the STANFORD_MODELS environment variable set (a colon-separated
 list of paths).
 
@@ -27,7 +27,7 @@ from six import text_type
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
 
-_stanford_url = 'http://nlp.stanford.edu/software'
+_stanford_url = 'https://nlp.stanford.edu/software'
 
 class StanfordTagger(TaggerI):
     """
@@ -189,3 +189,12 @@ class StanfordNERTagger(StanfordTagger):
             return result
 
         raise NotImplementedError
+
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordPOSTagger('english-bidirectional-distsim.tagger')
+    except LookupError:
+        raise SkipTest('Doctests from nltk.tag.stanford are skipped because one \
+                       of the stanford jars cannot be found.')

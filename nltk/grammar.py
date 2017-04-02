@@ -181,6 +181,21 @@ class Nonterminal(object):
         """
         return Nonterminal('%s/%s' % (self._symbol, rhs._symbol))
 
+
+    def __truediv__(self, rhs):
+        """
+        Return a new nonterminal whose symbol is ``A/B``, where ``A`` is
+        the symbol for this nonterminal, and ``B`` is the symbol for rhs.
+        This function allows use of the slash ``/`` operator with
+        the future import of division.
+
+        :param rhs: The nonterminal used to form the right hand side
+            of the new nonterminal.
+        :type rhs: Nonterminal
+        :rtype: Nonterminal
+        """
+        return self.__div__(rhs)
+
 def nonterminals(symbols):
     """
     Given a string containing a list of symbol names, return a list of
