@@ -15,14 +15,14 @@ The input is assumed to be in Malt-TAB format
 """
 from __future__ import print_function, unicode_literals
 
+import subprocess
+import warnings
 from collections import defaultdict
 from itertools import chain
 from pprint import pformat
-import subprocess
-import warnings
 
-from nltk.tree import Tree
 from nltk.compat import python_2_unicode_compatible, string_types
+from nltk.tree import Tree
 
 
 #################################################################
@@ -36,7 +36,8 @@ class DependencyGraph(object):
     A container for the nodes and labelled edges of a dependency structure.
     """
 
-    def __init__(self, tree_str=None, cell_extractor=None, zero_based=False, cell_separator=None, top_relation_label='ROOT'):
+    def __init__(self, tree_str=None, cell_extractor=None, zero_based=False, cell_separator=None,
+                 top_relation_label='ROOT'):
         """Dependency graph.
 
         We place a dummy `TOP` node with the index 0, since the root node is
@@ -54,16 +55,16 @@ class DependencyGraph(object):
         identified, for examlple, `ROOT`, `null` or `TOP`.
 
         """
-        self.nodes = defaultdict(lambda:  {'address': None,
-                                           'word': None,
-                                           'lemma': None,
-                                           'ctag': None,
-                                           'tag': None,
-                                           'feats': None,
-                                           'head': None,
-                                           'deps': defaultdict(list),
-                                           'rel': None,
-                                           })
+        self.nodes = defaultdict(lambda: {'address': None,
+                                          'word': None,
+                                          'lemma': None,
+                                          'ctag': None,
+                                          'tag': None,
+                                          'feats': None,
+                                          'head': None,
+                                          'deps': defaultdict(list),
+                                          'rel': None,
+                                          })
 
         self.nodes[0].update(
             {
@@ -113,8 +114,7 @@ class DependencyGraph(object):
         relation = self.nodes[mod_address]['rel']
         self.nodes[head_address]['deps'].setdefault(relation, [])
         self.nodes[head_address]['deps'][relation].append(mod_address)
-        #self.nodes[head_address]['deps'].append(mod_address)
-
+        # self.nodes[head_address]['deps'].append(mod_address)
 
     def connect_graph(self):
         """
@@ -127,7 +127,7 @@ class DependencyGraph(object):
                     relation = node2['rel']
                     node1['deps'].setdefault(relation, [])
                     node1['deps'][relation].append(node2['address'])
-                    #node1['deps'].append(node2['address'])
+                    # node1['deps'].append(node2['address'])
 
     def get_by_address(self, node_address):
         """Return the node with the given address."""
@@ -631,6 +631,7 @@ def cycle_finding_demo():
     cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3})
     cyclic_dg.add_node({'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4})
     print(cyclic_dg.contains_cycle())
+
 
 treebank_data = """Pierre  NNP     2       NMOD
 Vinken  NNP     8       SUB

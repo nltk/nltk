@@ -9,21 +9,18 @@
 
 from __future__ import unicode_literals
 
-import tempfile
 import os
-import re
-import warnings
+import tempfile
 from subprocess import PIPE
-from io import StringIO
 
 from nltk import compat
-from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_options, find_jars_within_path
-
+from nltk.internals import find_jar_iter, config_java, java, _java_options, find_jars_within_path
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
 
 _stanford_url = 'https://nlp.stanford.edu/software/lex-parser.shtml'
+
 
 class GenericStanfordParser(ParserI):
     """Interface to the Stanford Parser"""
@@ -51,7 +48,7 @@ class GenericStanfordParser(ParserI):
             key=lambda model_path: os.path.dirname(model_path)
         )
 
-        model_jar=max(
+        model_jar = max(
             find_jar_iter(
                 self._MODEL_JAR_PATTERN, path_to_models_jar,
                 env_vars=('STANFORD_MODELS', 'STANFORD_CORENLP'),
@@ -61,8 +58,7 @@ class GenericStanfordParser(ParserI):
             key=lambda model_path: os.path.dirname(model_path)
         )
 
-
-        #self._classpath = (stanford_jar, model_jar)
+        # self._classpath = (stanford_jar, model_jar)
 
         # Adding logging jar files to classpath
         stanford_dir = os.path.split(stanford_jar)[0]
@@ -185,7 +181,8 @@ class GenericStanfordParser(ParserI):
         ]
         # We don't need to escape slashes as "splitting is done on the last instance of the character in the token"
         return self._parse_trees_output(self._execute(
-            cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences), verbose))
+            cmd, '\n'.join(' '.join(tag_separator.join(tagged) for tagged in sentence) for sentence in sentences),
+            verbose))
 
     def _execute(self, cmd, input_, verbose=False):
         encoding = self._encoding
@@ -216,8 +213,8 @@ class GenericStanfordParser(ParserI):
                 stdout, stderr = java(cmd, classpath=self._classpath,
                                       stdout=PIPE, stderr=PIPE)
 
-            stdout = stdout.replace(b'\xc2\xa0',b' ')
-            stdout = stdout.replace(b'\x00\xa0',b' ')
+            stdout = stdout.replace(b'\xc2\xa0', b' ')
+            stdout = stdout.replace(b'\x00\xa0', b' ')
             stdout = stdout.decode(encoding)
 
         os.unlink(input_file.name)
@@ -226,6 +223,7 @@ class GenericStanfordParser(ParserI):
         config_java(options=default_options, verbose=False)
 
         return stdout
+
 
 class StanfordParser(GenericStanfordParser):
     """
@@ -285,7 +283,6 @@ class StanfordParser(GenericStanfordParser):
 
 
 class StanfordDependencyParser(GenericStanfordParser):
-
     """
     >>> dep_parser=StanfordDependencyParser(
     ...     model_path="edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz"
@@ -408,4 +405,5 @@ def setup_module(module):
         )
         StanfordNeuralDependencyParser()
     except LookupError:
-        raise SkipTest('doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn\'t exist')
+        raise SkipTest(
+            'doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn\'t exist')

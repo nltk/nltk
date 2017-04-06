@@ -8,14 +8,14 @@
 #
 from __future__ import print_function
 
-import math
 import logging
+import math
 
 from nltk.compat import xrange
-
 from nltk.parse.dependencygraph import DependencyGraph
 
 logger = logging.getLogger(__name__)
+
 
 #################################################################
 # DependencyScorerI - Interface for Graph-Edge Weight Calculation
@@ -72,6 +72,7 @@ class DependencyScorerI(object):
         with the positive training examples.
         """
         raise NotImplementedError()
+
 
 #################################################################
 # NaiveBayesDependencyScorer
@@ -169,7 +170,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         for pdist in self.classifier.prob_classify_many(edges):
             logger.debug('%.4f %.4f', pdist.prob('T'), pdist.prob('F'))
             # smoothing in case the probability = 0
-            row.append([math.log(pdist.prob("T")+0.00000000001)])
+            row.append([math.log(pdist.prob("T") + 0.00000000001)])
             count += 1
             if count == len(graph.nodes):
                 edge_scores.append(row)
@@ -188,10 +189,11 @@ class DemoScorer(DependencyScorerI):
 
     def score(self, graph):
         # scores for Keith Hall 'K-best Spanning Tree Parsing' paper
-        return [[[], [5],  [1],  [1]],
-                [[], [],   [11], [4]],
-                [[], [10], [],   [5]],
-                [[], [8],  [8],  []]]
+        return [[[], [5], [1], [1]],
+                [[], [], [11], [4]],
+                [[], [10], [], [5]],
+                [[], [8], [8], []]]
+
 
 #################################################################
 # Non-Projective Probabilistic Parsing
@@ -248,6 +250,7 @@ class ProbabilisticNonprojectiveParser(object):
     4
 
     """
+
     def __init__(self):
         """
         Creates a new non-projective parser.
@@ -322,9 +325,9 @@ class ProbabilisticNonprojectiveParser(object):
             for j, column in enumerate(self.scores[i]):
                 logger.debug(self.scores[i][j])
                 if (
-                    j in cycle_path
-                    and i not in cycle_path
-                    and self.scores[i][j]
+                                    j in cycle_path
+                            and i not in cycle_path
+                        and self.scores[i][j]
                 ):
                     subtract_val = self.compute_max_subtract_score(j, cycle_path)
 
@@ -462,7 +465,7 @@ class ProbabilisticNonprojectiveParser(object):
                     'address': index + 1,
                 }
             )
-        #print (g_graph.nodes)
+        # print (g_graph.nodes)
 
 
         # Fully connect non-root nodes in g_graph
@@ -474,7 +477,7 @@ class ProbabilisticNonprojectiveParser(object):
                     'word': token,
                     'tag': tags[index],
                     'rel': 'NTOP',
-                    'address': index+1,
+                    'address': index + 1,
                 }
             )
 
@@ -579,6 +582,7 @@ class ProbabilisticNonprojectiveParser(object):
         logger.debug('Done.')
         yield original_graph
 
+
 #################################################################
 # Rule-based Non-Projective Parser
 #################################################################
@@ -631,10 +635,10 @@ class NonprojectiveDependencyParser(object):
 
         for head_node in self._graph.nodes.values():
             deps = []
-            for dep_node in self._graph.nodes.values()  :
+            for dep_node in self._graph.nodes.values():
                 if (
-                    self._grammar.contains(head_node['word'], dep_node['word'])
-                    and head_node['word'] != dep_node['word']
+                            self._grammar.contains(head_node['word'], dep_node['word'])
+                        and head_node['word'] != dep_node['word']
                 ):
                     deps.append(dep_node['address'])
             head_node['deps'] = deps
@@ -778,6 +782,7 @@ def rule_based_demo():
     print('Graphs:')
     for graph in graphs:
         print(graph)
+
 
 if __name__ == '__main__':
     demo()

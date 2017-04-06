@@ -7,9 +7,8 @@
 # For license information, see LICENSE.TXT
 #
 
-import itertools
-
 from nltk.internals import overridden
+
 
 class ParserI(object):
     """
@@ -26,6 +25,7 @@ class ParserI(object):
     Subclasses may define:
       - ``grammar()``
     """
+
     def grammar(self):
         """
         :return: The grammar used by this parser.

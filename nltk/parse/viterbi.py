@@ -8,10 +8,11 @@
 from __future__ import print_function, unicode_literals
 
 from functools import reduce
-from nltk.tree import Tree, ProbabilisticTree
-from nltk.compat import python_2_unicode_compatible
 
+from nltk.compat import python_2_unicode_compatible
 from nltk.parse.api import ParserI
+from nltk.tree import Tree, ProbabilisticTree
+
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
@@ -73,6 +74,7 @@ class ViterbiParser(ParserI):
     :ivar _trace: The level of tracing output that should be generated
         when parsing a text.
     """
+
     def __init__(self, grammar, trace=0):
         """
         Create a new ``ViterbiParser`` parser, that uses ``grammar`` to
@@ -121,22 +123,22 @@ class ViterbiParser(ParserI):
 
         # Initialize the constituents dictionary with the words from
         # the text.
-        if self._trace: print(('Inserting tokens into the most likely'+
+        if self._trace: print(('Inserting tokens into the most likely' +
                                ' constituents table...'))
         for index in range(len(tokens)):
             token = tokens[index]
-            constituents[index,index+1,token] = token
+            constituents[index, index + 1, token] = token
             if self._trace > 1:
                 self._trace_lexical_insertion(token, index, len(tokens))
 
         # Consider each span of length 1, 2, ..., n; and add any trees
         # that might cover that span to the constituents dictionary.
-        for length in range(1, len(tokens)+1):
+        for length in range(1, len(tokens) + 1):
             if self._trace:
-                print(('Finding the most likely constituents'+
+                print(('Finding the most likely constituents' +
                        ' spanning %d text elements...' % length))
-            for start in range(len(tokens)-length+1):
-                span = (start, start+length)
+            for start in range(len(tokens) - length + 1):
+                span = (start, start + length)
                 self._add_constituents_spanning(span, constituents,
                                                 tokens)
 
@@ -195,7 +197,7 @@ class ViterbiParser(ParserI):
             # probability.
             for (production, children) in instantiations:
                 subtrees = [c for c in children if isinstance(c, Tree)]
-                p = reduce(lambda pr,t:pr*t.prob(),
+                p = reduce(lambda pr, t: pr * t.prob(),
                            subtrees, production.prob())
                 node = production.lhs().symbol()
                 tree = ProbabilisticTree(node, children, prob=p)
@@ -243,7 +245,7 @@ class ViterbiParser(ParserI):
             childlists = self._match_rhs(production.rhs(), span, constituents)
 
             for childlist in childlists:
-                rv.append( (production, childlist) )
+                rv.append((production, childlist))
         return rv
 
     def _match_rhs(self, rhs, span, constituents):
@@ -280,11 +282,11 @@ class ViterbiParser(ParserI):
 
         # Find everything that matches the 1st symbol of the RHS
         childlists = []
-        for split in range(start, end+1):
-            l=constituents.get((start,split,rhs[0]))
+        for split in range(start, end + 1):
+            l = constituents.get((start, split, rhs[0]))
             if l is not None:
-                rights = self._match_rhs(rhs[1:], (split,end), constituents)
-                childlists += [[l]+r for r in rights]
+                rights = self._match_rhs(rhs[1:], (split, end), constituents)
+                childlists += [[l] + r for r in rights]
 
         return childlists
 
@@ -311,7 +313,7 @@ class ViterbiParser(ParserI):
         print(str)
 
     def _trace_lexical_insertion(self, token, index, width):
-        str = '   Insert: |' + '.' * index + '=' + '.' * (width-index-1) + '| '
+        str = '   Insert: |' + '.' * index + '=' + '.' * (width - index - 1) + '| '
         str += '%s' % (token,)
         print(str)
 
@@ -331,7 +333,6 @@ def demo():
     summary of the results are displayed.
     """
     import sys, time
-    from nltk import tokenize
     from nltk.parse import ViterbiParser
     from nltk.grammar import toy_pcfg1, toy_pcfg2
 
@@ -342,12 +343,12 @@ def demo():
     # Ask the user which demo they want to use.
     print()
     for i in range(len(demos)):
-        print('%3s: %s' % (i+1, demos[i][0]))
+        print('%3s: %s' % (i + 1, demos[i][0]))
         print('     %r' % demos[i][1])
         print()
     print('Which demo (%d-%d)? ' % (1, len(demos)), end=' ')
     try:
-        snum = int(sys.stdin.readline().strip())-1
+        snum = int(sys.stdin.readline().strip()) - 1
         sent, grammar = demos[snum]
     except:
         print('Bad sentence number')
@@ -359,12 +360,12 @@ def demo():
     parser = ViterbiParser(grammar)
     all_parses = {}
 
-    print('\nsent: %s\nparser: %s\ngrammar: %s' % (sent,parser,grammar))
+    print('\nsent: %s\nparser: %s\ngrammar: %s' % (sent, parser, grammar))
     parser.trace(3)
     t = time.time()
     parses = parser.parse_all(tokens)
-    time = time.time()-t
-    average = (reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
+    time = time.time() - t
+    average = (reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses)
                if parses else 0)
     num_parses = len(parses)
     for p in parses:
@@ -377,8 +378,9 @@ def demo():
     print('%11.4f%11d%19.14f' % (time, num_parses, average))
     parses = all_parses.keys()
     if parses:
-        p = reduce(lambda a,b:a+b.prob(), parses, 0)/len(parses)
-    else: p = 0
+        p = reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses)
+    else:
+        p = 0
     print('------------------------------------------')
     print('%11s%11d%19.14f' % ('n/a', len(parses), p))
 
@@ -396,6 +398,7 @@ def demo():
     if sys.stdin.readline().strip().lower().startswith('y'):
         for parse in parses:
             print(parse)
+
 
 if __name__ == '__main__':
     demo()

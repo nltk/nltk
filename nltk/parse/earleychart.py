@@ -43,9 +43,10 @@ from nltk.parse.featurechart import (FeatureChart, FeatureChartParser,
                                      FeatureBottomUpPredictCombineRule,
                                      FeatureSingleEdgeFundamentalRule)
 
-#////////////////////////////////////////////////////////////
+
+# ////////////////////////////////////////////////////////////
 # Incremental Chart
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 class IncrementalChart(Chart):
     def initialize(self):
@@ -69,7 +70,7 @@ class IncrementalChart(Chart):
         edgelist = self._edgelists[end]
 
         # If there are no restrictions, then return all edges.
-        if restrictions=={}: return iter(edgelist)
+        if restrictions == {}: return iter(edgelist)
 
         # Find the index corresponding to the given restrictions.
         restr_keys = sorted(restrictions.keys())
@@ -116,7 +117,7 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
         edgelist = self._edgelists[end]
 
         # If there are no restrictions, then return all edges.
-        if restrictions=={}: return iter(edgelist)
+        if restrictions == {}: return iter(edgelist)
 
         # Find the index corresponding to the given restrictions.
         restr_keys = sorted(restrictions.keys())
@@ -154,9 +155,10 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
                          for key in restr_keys)
             index[end].setdefault(vals, []).append(edge)
 
-#////////////////////////////////////////////////////////////
+
+# ////////////////////////////////////////////////////////////
 # Incremental CFG Rules
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 class CompleteFundamentalRule(SingleEdgeFundamentalRule):
     def _apply_incomplete(self, chart, grammar, left_edge):
@@ -170,22 +172,28 @@ class CompleteFundamentalRule(SingleEdgeFundamentalRule):
             if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
                 yield new_edge
 
+
 class CompleterRule(CompleteFundamentalRule):
     _fundamental_rule = CompleteFundamentalRule()
+
     def apply(self, chart, grammar, edge):
         if not isinstance(edge, LeafEdge):
             for new_edge in self._fundamental_rule.apply(chart, grammar, edge):
                 yield new_edge
 
+
 class ScannerRule(CompleteFundamentalRule):
     _fundamental_rule = CompleteFundamentalRule()
+
     def apply(self, chart, grammar, edge):
         if isinstance(edge, LeafEdge):
             for new_edge in self._fundamental_rule.apply(chart, grammar, edge):
                 yield new_edge
 
+
 class PredictorRule(CachedTopDownPredictRule):
     pass
+
 
 class FilteredCompleteFundamentalRule(FilteredSingleEdgeFundamentalRule):
     def apply(self, chart, grammar, edge):
@@ -195,9 +203,10 @@ class FilteredCompleteFundamentalRule(FilteredSingleEdgeFundamentalRule):
             for new_edge in self._apply_complete(chart, grammar, edge):
                 yield new_edge
 
-#////////////////////////////////////////////////////////////
+
+# ////////////////////////////////////////////////////////////
 # Incremental FCFG Rules
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 class FeatureCompleteFundamentalRule(FeatureSingleEdgeFundamentalRule):
     def _apply_incomplete(self, chart, grammar, left_edge):
@@ -211,18 +220,22 @@ class FeatureCompleteFundamentalRule(FeatureSingleEdgeFundamentalRule):
             for new_edge in fr.apply(chart, grammar, left_edge, right_edge):
                 yield new_edge
 
+
 class FeatureCompleterRule(CompleterRule):
     _fundamental_rule = FeatureCompleteFundamentalRule()
+
 
 class FeatureScannerRule(ScannerRule):
     _fundamental_rule = FeatureCompleteFundamentalRule()
 
+
 class FeaturePredictorRule(FeatureTopDownPredictRule):
     pass
 
-#////////////////////////////////////////////////////////////
+
+# ////////////////////////////////////////////////////////////
 # Incremental CFG Chart Parsers
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 EARLEY_STRATEGY = [LeafInitRule(),
                    TopDownInitRule(),
@@ -246,6 +259,7 @@ LC_INCREMENTAL_STRATEGY = [LeafInitRule(),
                            FilteredBottomUpPredictCombineRule(),
                            FilteredCompleteFundamentalRule()]
 
+
 class IncrementalChartParser(ChartParser):
     """
     An *incremental* chart parser implementing Jay Earley's
@@ -261,6 +275,7 @@ class IncrementalChartParser(ChartParser):
     |       Apply CompleterRule to edge
     | Return any complete parses in the chart
     """
+
     def __init__(self, grammar, strategy=BU_LC_INCREMENTAL_STRATEGY,
                  trace=0, trace_chart_width=50,
                  chart_class=IncrementalChart):
@@ -316,7 +331,7 @@ class IncrementalChartParser(ChartParser):
             trace_new_edges(chart, axiom, new_edges, trace, trace_edge_width)
 
         inference_rules = self._inference_rules
-        for end in range(chart.num_leaves()+1):
+        for end in range(chart.num_leaves() + 1):
             if trace > 1: print("\n* Processing queue:", end, "\n")
             agenda = list(chart.select(end=end))
             while agenda:
@@ -325,27 +340,33 @@ class IncrementalChartParser(ChartParser):
                     new_edges = list(rule.apply(chart, grammar, edge))
                     trace_new_edges(chart, rule, new_edges, trace, trace_edge_width)
                     for new_edge in new_edges:
-                        if new_edge.end()==end:
+                        if new_edge.end() == end:
                             agenda.append(new_edge)
 
         return chart
 
+
 class EarleyChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         IncrementalChartParser.__init__(self, grammar, EARLEY_STRATEGY, **parser_args)
+
     pass
+
 
 class IncrementalTopDownChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         IncrementalChartParser.__init__(self, grammar, TD_INCREMENTAL_STRATEGY, **parser_args)
 
+
 class IncrementalBottomUpChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         IncrementalChartParser.__init__(self, grammar, BU_INCREMENTAL_STRATEGY, **parser_args)
 
+
 class IncrementalBottomUpLeftCornerChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         IncrementalChartParser.__init__(self, grammar, BU_LC_INCREMENTAL_STRATEGY, **parser_args)
+
 
 class IncrementalLeftCornerChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):
@@ -354,9 +375,10 @@ class IncrementalLeftCornerChartParser(IncrementalChartParser):
                              "without empty productions.")
         IncrementalChartParser.__init__(self, grammar, LC_INCREMENTAL_STRATEGY, **parser_args)
 
-#////////////////////////////////////////////////////////////
+
+# ////////////////////////////////////////////////////////////
 # Incremental FCFG Chart Parsers
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 EARLEY_FEATURE_STRATEGY = [LeafInitRule(),
                            FeatureTopDownInitRule(),
@@ -376,6 +398,7 @@ BU_LC_INCREMENTAL_FEATURE_STRATEGY = [LeafInitRule(),
                                       FeatureBottomUpPredictCombineRule(),
                                       FeatureCompleteFundamentalRule()]
 
+
 class FeatureIncrementalChartParser(IncrementalChartParser, FeatureChartParser):
     def __init__(self, grammar,
                  strategy=BU_LC_INCREMENTAL_FEATURE_STRATEGY,
@@ -388,26 +411,30 @@ class FeatureIncrementalChartParser(IncrementalChartParser, FeatureChartParser):
                                         chart_class=chart_class,
                                         **parser_args)
 
+
 class FeatureEarleyChartParser(FeatureIncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         FeatureIncrementalChartParser.__init__(self, grammar, EARLEY_FEATURE_STRATEGY, **parser_args)
+
 
 class FeatureIncrementalTopDownChartParser(FeatureIncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         FeatureIncrementalChartParser.__init__(self, grammar, TD_INCREMENTAL_FEATURE_STRATEGY, **parser_args)
 
+
 class FeatureIncrementalBottomUpChartParser(FeatureIncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         FeatureIncrementalChartParser.__init__(self, grammar, BU_INCREMENTAL_FEATURE_STRATEGY, **parser_args)
+
 
 class FeatureIncrementalBottomUpLeftCornerChartParser(FeatureIncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         FeatureIncrementalChartParser.__init__(self, grammar, BU_LC_INCREMENTAL_FEATURE_STRATEGY, **parser_args)
 
 
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 # Demonstration
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 def demo(print_times=True, print_grammar=False,
          print_trees=True, trace=2,
@@ -415,7 +442,7 @@ def demo(print_times=True, print_grammar=False,
     """
     A demonstration of the Earley parsers.
     """
-    import sys, time
+    import time
     from nltk.parse.chart import demo_grammar
 
     # The grammar for ChartParser and SteppingChartParser:
@@ -436,16 +463,17 @@ def demo(print_times=True, print_grammar=False,
     t = time.clock()
     chart = earley.chart_parse(tokens)
     parses = list(chart.parses(grammar.start()))
-    t = time.clock()-t
+    t = time.clock() - t
 
     # Print results.
     if numparses:
-        assert len(parses)==numparses, 'Not all parses found'
+        assert len(parses) == numparses, 'Not all parses found'
     if print_trees:
         for tree in parses: print(tree)
     else:
         print("Nr trees:", len(parses))
     if print_times:
         print("Time:", t)
+
 
 if __name__ == '__main__': demo()
