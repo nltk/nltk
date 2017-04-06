@@ -20,10 +20,10 @@ from __future__ import print_function
 
 _debug = 0
 
+
 ###
 
 class LazyModule:
-
     """ Lazy module class.
 
         Lazy modules are imported into the given namespaces whenever a
@@ -92,11 +92,11 @@ class LazyModule:
         if _debug:
             print('LazyModule: Loading module %r' % name)
         self.__lazymodule_locals[name] \
-             = module \
-             = __import__(name,
-                          self.__lazymodule_locals,
-                          self.__lazymodule_globals,
-                          '*')
+            = module \
+            = __import__(name,
+                         self.__lazymodule_locals,
+                         self.__lazymodule_globals,
+                         '*')
 
         # Fill namespace with all symbols from original module to
         # provide faster access.

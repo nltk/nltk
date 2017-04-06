@@ -22,8 +22,10 @@ if PY3:
     def b(s):
         return s.encode("latin-1")
 
+
     def u(s):
         return s
+
 
     string_types = str,
     integer_types = int,
@@ -41,7 +43,7 @@ if PY3:
     if PY3_IMP:
         from imp import reload
     else:
-        from importlib import reload
+        pass
 
     raw_input = input
 
@@ -49,34 +51,34 @@ if PY3:
     izip = zip
 
     import io
+
     StringIO = io.StringIO
     BytesIO = io.BytesIO
 
     import html.entities as htmlentitydefs
-    from urllib.request import (urlopen, ProxyHandler, build_opener,
-                                install_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
-                                ProxyBasicAuthHandler, ProxyDigestAuthHandler, Request,
-                                url2pathname)
     from urllib.error import HTTPError, URLError
-    from urllib.parse import quote_plus, unquote_plus, urlencode
 
     from collections import Counter
 
     from datetime import timezone
+
     UTC = timezone.utc
 
     from tempfile import TemporaryDirectory
 
     unichr = chr
     import operator
+
     int2byte = operator.methodcaller("to_bytes", 1, "big")
 
 else:
     def b(s):
         return s
 
+
     def u(s):
         return unicode(s, "unicode_escape")
+
 
     string_types = basestring,
     integer_types = (int, long)
@@ -91,8 +93,6 @@ else:
     reload = reload
     raw_input = raw_input
 
-    from itertools import imap, izip
-
     try:
         from cStringIO import StringIO
     except ImportError:
@@ -100,11 +100,8 @@ else:
     BytesIO = StringIO
 
     import htmlentitydefs
-    from urllib2 import (urlopen, HTTPError, URLError,
-                         ProxyHandler, build_opener, install_opener,
-                         HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler,
-                         ProxyDigestAuthHandler, Request)
     from urllib import getproxies, quote_plus, unquote_plus, urlencode, url2pathname
+
 
     # Maps py2 tkinter package structure to py3 using import hook (PEP 302)
     class TkinterPackage(object):
@@ -114,6 +111,7 @@ else:
 
         def __getattr__(self, name):
             return getattr(self.mod, name)
+
 
     class TkinterLoader(object):
         def __init__(self):
@@ -140,12 +138,14 @@ else:
                 sys.modules[name] = mod
             return sys.modules[name]
 
+
     sys.meta_path.insert(0, TkinterLoader())
 
     from datetime import tzinfo, timedelta
 
     ZERO = timedelta(0)
     HOUR = timedelta(hours=1)
+
 
     # A UTC class for python 2.7
     class UTC(tzinfo):
@@ -160,6 +160,7 @@ else:
         def dst(self, dt):
             return ZERO
 
+
     UTC = UTC()
 
     unichr = unichr
@@ -168,6 +169,7 @@ else:
     import csv
     import codecs
     import cStringIO
+
 
     class UnicodeWriter:
         """
@@ -202,9 +204,11 @@ else:
             # empty queue
             self.queue.truncate(0)
 
+
     import warnings as _warnings
     import os as _os
     from tempfile import mkdtemp
+
 
     class TemporaryDirectory(object):
         """Create and return a temporary directory.  This has the same
@@ -241,7 +245,7 @@ else:
                     # up due to missing globals
                     if "None" not in str(ex):
                         raise
-                    print("ERROR: {!r} while cleaning up {!r}".format(ex, self,),
+                    print("ERROR: {!r} while cleaning up {!r}".format(ex, self, ),
                           file=sys.stderr)
                     return
                 self._closed = True
@@ -289,6 +293,7 @@ else:
             except OSError:
                 pass
 
+
     from collections import Counter
 
 
@@ -305,6 +310,7 @@ def itervalues(d):
 def iteritems(d):
     """Return an iterator over the (key, value) pairs of a dictionary."""
     return getattr(d, _iteritems)()
+
 
 try:
     from functools import total_ordering
@@ -329,14 +335,13 @@ except ImportError:  # python 2.6
         if not roots:
             raise ValueError(
                 'must define at least one ordering operation: < > <= >=')
-        root = max(roots)       # prefer __lt__ to __le__ to __gt__ to __ge__
+        root = max(roots)  # prefer __lt__ to __le__ to __gt__ to __ge__
         for opname, opfunc in convert[root]:
             if opname not in roots:
                 opfunc.__name__ = opname
                 opfunc.__doc__ = getattr(int, opname).__doc__
                 setattr(cls, opname, opfunc)
         return cls
-
 
 # ======= Compatibility for datasets that care about Python versions ========
 
@@ -351,6 +356,7 @@ DATA_UPDATES = [("chunkers", "maxent_ne_chunker"),
                 ("tokenizers", "punkt")]
 
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
+
 
 def add_py3_data(path):
     if PY3:
@@ -370,7 +376,9 @@ def py3_data(init_func):
     def _decorator(*args, **kwargs):
         args = (args[0], add_py3_data(args[1])) + args[2:]
         return init_func(*args, **kwargs)
+
     return wraps(init_func)(_decorator)
+
 
 # ======= Compatibility layer for __str__ and __repr__ ==========
 
@@ -379,7 +387,6 @@ import functools
 
 
 def remove_accents(text):
-
     if isinstance(text, bytes):
         text = text.decode('ascii')
 
@@ -387,6 +394,7 @@ def remove_accents(text):
     return ''.join(
         c for c in unicodedata.normalize('NFKD', text) if category(c) != 'Mn'
     )
+
 
 # Select the best transliteration method:
 try:
@@ -507,6 +515,7 @@ class Fraction(fractions.Fraction):
     This objects should be deprecated once NLTK stops supporting Python < 3.5
     See https://github.com/nltk/nltk/issues/1330
     """
+
     def __new__(cls, numerator=0, denominator=None, _normalize=True):
         cls = super(Fraction, cls).__new__(cls, numerator, denominator)
         # To emulate fraction.Fraction.from_float across Python >=2.7,
