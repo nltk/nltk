@@ -9,7 +9,9 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
+
 import itertools as it
+
 from nltk.tbl.feature import Feature
 
 
@@ -19,9 +21,10 @@ class BrillTemplateI(object):
     apply at given sentence positions.  ``BrillTemplateI`` is used by
     ``Brill`` training algorithms to generate candidate rules.
     """
-    #!!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
+
+    # !!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
     # and metaclass=abc.ABCMeta rather than NotImplementedError
-    #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
+    # http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
     def applicable_rules(self, tokens, i, correctTag):
         """
         Return a list of the transformational rules that would correct
@@ -75,8 +78,9 @@ class Template(BrillTemplateI):
       - are applicable to the given token.
     """
     ALLTEMPLATES = []
-    #record a unique id of form "001", for each template created
-#    _ids = it.count(0)
+
+    # record a unique id of form "001", for each template created
+    #    _ids = it.count(0)
 
     def __init__(self, *features):
 
@@ -129,9 +133,9 @@ class Template(BrillTemplateI):
         :type features: list of Features
         :param features: the features to build this Template on
         """
-        #determine the calling form: either
-        #Template(Feature, args1, [args2, ...)]
-        #Template(Feature1(args),  Feature2(args), ...)
+        # determine the calling form: either
+        # Template(Feature, args1, [args2, ...)]
+        # Template(Feature1(args),  Feature2(args), ...)
         if all(isinstance(f, Feature) for f in features):
             self._features = features
         elif issubclass(features[0], Feature) and all(isinstance(a, tuple) for a in features[1:]):
@@ -168,25 +172,25 @@ class Template(BrillTemplateI):
         for feature in self._features:
             conditions.append([])
             for pos in feature.positions:
-                if not (0 <= index+pos < len(tokens)):
+                if not (0 <= index + pos < len(tokens)):
                     continue
-                value = feature.extract_property(tokens, index+pos)
-                conditions[-1].append( (feature, value) )
+                value = feature.extract_property(tokens, index + pos)
+                conditions[-1].append((feature, value))
         return conditions
 
     def get_neighborhood(self, tokens, index):
         # inherit docs from BrillTemplateI
 
         # applicable_rules(tokens, index, ...) depends on index.
-        neighborhood = set([index])  #set literal for python 2.7+
+        neighborhood = set([index])  # set literal for python 2.7+
 
         # applicable_rules(tokens, i, ...) depends on index if
         # i+start < index <= i+end.
 
         allpositions = [0] + [p for feat in self._features for p in feat.positions]
         start, end = min(allpositions), max(allpositions)
-        s = max(0, index+(-end))
-        e = min(index+(-start)+1, len(tokens))
+        s = max(0, index + (-end))
+        e = min(index + (-start) + 1, len(tokens))
         for i in range(s, e):
             neighborhood.add(i)
         return neighborhood
@@ -266,22 +270,24 @@ class Template(BrillTemplateI):
         :returns: generator of Templates
 
         """
-        def nonempty_powerset(xs): #xs is a list
-            #itertools docnonempty_powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
 
-            #find the correct tuple given combinations, one of {None, k, (k1,k2)}
-            k = combinations #for brevity
-            combrange = ((1, len(xs)+1) if k is None else     #n over 1 .. n over n (all non-empty combinations)
-                         (k, k+1) if isinstance(k, int) else  #n over k (only
-                         (k[0], k[1]+1))                      #n over k1, n over k1+1... n over k2
+        def nonempty_powerset(xs):  # xs is a list
+            # itertools docnonempty_powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
+
+            # find the correct tuple given combinations, one of {None, k, (k1,k2)}
+            k = combinations  # for brevity
+            combrange = ((1, len(xs) + 1) if k is None else  # n over 1 .. n over n (all non-empty combinations)
+                         (k, k + 1) if isinstance(k, int) else  # n over k (only
+                         (k[0], k[1] + 1))  # n over k1, n over k1+1... n over k2
             return it.chain.from_iterable(it.combinations(xs, r)
                                           for r in range(*combrange))
+
         seentemplates = set()
         for picks in nonempty_powerset(featurelists):
             for pick in it.product(*picks):
                 if any(i != j and x.issuperset(y)
                        for (i, x) in enumerate(pick)
-                       for (j,y) in enumerate(pick)):
+                       for (j, y) in enumerate(pick)):
                     continue
                 if skipintersecting and any(i != j and x.intersects(y)
                                             for (i, x) in enumerate(pick)
@@ -289,8 +295,8 @@ class Template(BrillTemplateI):
                     continue
                 thistemplate = cls(*sorted(pick))
                 strpick = str(thistemplate)
-                #!!FIXME --this is hackish
-                if strpick in seentemplates: #already added
+                # !!FIXME --this is hackish
+                if strpick in seentemplates:  # already added
                     cls._poptemplate()
                     continue
                 seentemplates.add(strpick)
@@ -303,6 +309,3 @@ class Template(BrillTemplateI):
     @classmethod
     def _poptemplate(cls):
         return cls.ALLTEMPLATES.pop() if cls.ALLTEMPLATES else None
-
-
-

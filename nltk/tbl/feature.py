@@ -80,11 +80,11 @@ class Feature(object):
         self.positions = None  # to avoid warnings
         if end is None:
             self.positions = tuple(sorted(set([int(i) for i in positions])))
-        else:                # positions was actually not a list, but only the start index
+        else:  # positions was actually not a list, but only the start index
             try:
                 if positions > end:
                     raise TypeError
-                self.positions = tuple(range(positions, end+1))
+                self.positions = tuple(range(positions, end + 1))
             except TypeError:
                 # let any kind of erroneous spec raise ValueError
                 raise ValueError("illegal interval specification: (start={0}, end={1})".format(positions, end))
@@ -156,7 +156,7 @@ class Feature(object):
         """
         if not all(x > 0 for x in winlens):
             raise ValueError("non-positive window length in {0}".format(winlens))
-        xs = (starts[i:i+w] for w in winlens for i in range(len(starts)-w+1))
+        xs = (starts[i:i + w] for w in winlens for i in range(len(starts) - w + 1))
         return [cls(x) for x in xs if not (excludezero and 0 in x)]
 
     def issuperset(self, other):
@@ -257,5 +257,3 @@ class Feature(object):
         :rtype: any (but usually scalar)
         """
         raise NotImplementedError
-
-
