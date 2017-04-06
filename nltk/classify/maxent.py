@@ -52,6 +52,7 @@ performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
 from __future__ import print_function, unicode_literals
+
 __docformat__ = 'epytext en'
 
 try:
@@ -74,8 +75,9 @@ from nltk.classify.megam import (call_megam,
                                  write_megam_file, parse_megam_weights)
 from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
 
+
 ######################################################################
-#{ Classifier Model
+# { Classifier Model
 ######################################################################
 
 @compat.python_2_unicode_compatible
@@ -97,6 +99,7 @@ class MaxentClassifier(ClassifierI):
 
       dotprod(a,b) = sum(x*y for (x,y) in zip(a,b))
     """
+
     def __init__(self, encoding, weights, logarithmic=True):
         """
         Construct a new maxent classifier model.  Typically, new
@@ -117,7 +120,7 @@ class MaxentClassifier(ClassifierI):
         self._encoding = encoding
         self._weights = weights
         self._logarithmic = logarithmic
-        #self._logarithmic = False
+        # self._logarithmic = False
         assert encoding.length() == len(weights)
 
     def labels(self):
@@ -170,14 +173,14 @@ class MaxentClassifier(ClassifierI):
         probabilities of each label for that featureset.
         """
         descr_width = 50
-        TEMPLATE = '  %-'+str(descr_width-2)+'s%s%8.3f'
+        TEMPLATE = '  %-' + str(descr_width - 2) + 's%s%8.3f'
 
         pdist = self.prob_classify(featureset)
         labels = sorted(pdist.samples(), key=pdist.prob, reverse=True)
         labels = labels[:columns]
-        print('  Feature'.ljust(descr_width)+''.join(
+        print('  Feature'.ljust(descr_width) + ''.join(
             '%8s' % (("%s" % l)[:7]) for l in labels))
-        print('  '+'-'*(descr_width-2+8*len(labels)))
+        print('  ' + '-' * (descr_width - 2 + 8 * len(labels)))
         sums = defaultdict(int)
         for i, label in enumerate(labels):
             feature_vector = self._encoding.encode(featureset, label)
@@ -186,18 +189,19 @@ class MaxentClassifier(ClassifierI):
             for (f_id, f_val) in feature_vector:
                 if self._logarithmic:
                     score = self._weights[f_id] * f_val
-                else: score = self._weights[f_id] ** f_val
+                else:
+                    score = self._weights[f_id] ** f_val
                 descr = self._encoding.describe(f_id)
-                descr = descr.split(' and label is ')[0] # hack
-                descr += ' (%s)' % f_val                 # hack
+                descr = descr.split(' and label is ')[0]  # hack
+                descr += ' (%s)' % f_val  # hack
                 if len(descr) > 47:
-                    descr = descr[:44]+'...'
-                print(TEMPLATE % (descr, i*8*' ', score))
+                    descr = descr[:44] + '...'
+                print(TEMPLATE % (descr, i * 8 * ' ', score))
                 sums[label] += score
-        print('  '+'-'*(descr_width-1+8*len(labels)))
-        print('  TOTAL:'.ljust(descr_width)+''.join(
+        print('  ' + '-' * (descr_width - 1 + 8 * len(labels)))
+        print('  TOTAL:'.ljust(descr_width) + ''.join(
             '%8.3f' % sums[l] for l in labels))
-        print('  PROBS:'.ljust(descr_width)+''.join(
+        print('  PROBS:'.ljust(descr_width) + ''.join(
             '%8.3f' % pdist.prob(l) for l in labels))
 
     def show_most_informative_features(self, n=10, show='all'):
@@ -311,7 +315,7 @@ ConditionalExponentialClassifier = MaxentClassifier
 
 
 ######################################################################
-#{ Feature Encodings
+# { Feature Encodings
 ######################################################################
 
 class MaxentFeatureEncodingI(object):
@@ -336,6 +340,7 @@ class MaxentFeatureEncodingI(object):
     input-feature values and labels that are present in a given
     corpus.
     """
+
     def encode(self, featureset, label):
         """
         Given a (featureset, label) pair, return the corresponding
@@ -385,11 +390,13 @@ class MaxentFeatureEncodingI(object):
         """
         raise NotImplementedError()
 
+
 class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
     """
     A feature encoding that calls a user-supplied function to map a
     given featureset/label pair to a sparse joint-feature vector.
     """
+
     def __init__(self, func, length, labels):
         """
         Construct a new feature encoding based on the given function.
@@ -429,6 +436,7 @@ class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, fid):
         return 'no description available'
+
 
 class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
     """
@@ -470,6 +478,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
     These always-on features allow the maxent model to directly model
     the prior probabilities of each label.
     """
+
     def __init__(self, labels, mapping, unseen_features=False,
                  alwayson_features=False):
         """
@@ -508,13 +517,13 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """dict mapping from fname -> fid"""
 
         if alwayson_features:
-            self._alwayson = dict((label, i+self._length)
+            self._alwayson = dict((label, i + self._length)
                                   for (i, label) in enumerate(labels))
             self._length += len(self._alwayson)
 
         if unseen_features:
             fnames = set(fname for (fname, fval, label) in mapping)
-            self._unseen = dict((fname, i+self._length)
+            self._unseen = dict((fname, i + self._length)
                                 for (i, fname) in enumerate(fnames))
             self._length += len(fnames)
 
@@ -533,7 +542,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
                 # Have we seen this fname/fval combination with any label?
                 for label2 in self._labels:
                     if (fname, fval, label2) in self._mapping:
-                        break # we've seen this fname/fval combo
+                        break  # we've seen this fname/fval combo
                 # We haven't -- fire the unseen-value feature
                 else:
                     if fname in self._unseen:
@@ -552,7 +561,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         try:
             self._inv_mapping
         except AttributeError:
-            self._inv_mapping = [-1]*len(self._mapping)
+            self._inv_mapping = [-1] * len(self._mapping)
             for (info, i) in self._mapping.items():
                 self._inv_mapping[i] = info
 
@@ -606,8 +615,8 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         :param options: Extra parameters for the constructor, such as
             ``unseen_features`` and ``alwayson_features``.
         """
-        mapping = {}              # maps (fname, fval, label) -> fid
-        seen_labels = set()       # The set of labels we've encountered
+        mapping = {}  # maps (fname, fval, label) -> fid
+        seen_labels = set()  # The set of labels we've encountered
         count = defaultdict(int)  # maps (fname, fval) -> count
 
         for (tok, label) in train_toks:
@@ -630,6 +639,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
             labels = seen_labels
         return cls(labels, mapping, **options)
 
+
 class GISEncoding(BinaryMaxentFeatureEncoding):
     """
     A binary feature encoding which adds one new joint-feature to the
@@ -644,6 +654,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
       - The feature vector must sum to a constant non-negative number
         for every token.
     """
+
     def __init__(self, labels, mapping, unseen_features=False,
                  alwayson_features=False, C=None):
         """
@@ -655,7 +666,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
         BinaryMaxentFeatureEncoding.__init__(
             self, labels, mapping, unseen_features, alwayson_features)
         if C is None:
-            C = len(set(fname for (fname, fval, label) in mapping))+1
+            C = len(set(fname for (fname, fval, label) in mapping)) + 1
         self._C = C
 
     @property
@@ -673,7 +684,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
         total = sum(v for (f, v) in encoding)
         if total >= self._C:
             raise ValueError('Correction feature is not high enough!')
-        encoding.append((base_length, self._C-total))
+        encoding.append((base_length, self._C - total))
 
         # Return the result
         return encoding
@@ -690,7 +701,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
 
 class TadmEventMaxentFeatureEncoding(BinaryMaxentFeatureEncoding):
     def __init__(self, labels, mapping, unseen_features=False,
-                       alwayson_features=False):
+                 alwayson_features=False):
         self._mapping = OrderedDict(mapping)
         self._label_mapping = OrderedDict()
         BinaryMaxentFeatureEncoding.__init__(self, labels, self._mapping,
@@ -800,6 +811,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
     These always-on features allow the maxent model to directly model
     the prior probabilities of each label.
     """
+
     def __init__(self, labels, mapping, unseen_features=False,
                  alwayson_features=False):
         """
@@ -838,13 +850,13 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """dict mapping from fname -> fid"""
 
         if alwayson_features:
-            self._alwayson = dict((label, i+self._length)
+            self._alwayson = dict((label, i + self._length)
                                   for (i, label) in enumerate(labels))
             self._length += len(self._alwayson)
 
         if unseen_features:
             fnames = set(fname for (fname, fval, label) in mapping)
-            self._unseen = dict((fname, i+self._length)
+            self._unseen = dict((fname, i + self._length)
                                 for (i, fname) in enumerate(fnames))
             self._length += len(fnames)
 
@@ -869,12 +881,11 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
                     # Have we seen this fname/fval combination with any label?
                     for label2 in self._labels:
                         if (fname, fval, label2) in self._mapping:
-                            break # we've seen this fname/fval combo
+                            break  # we've seen this fname/fval combo
                     # We haven't -- fire the unseen-value feature
                     else:
                         if fname in self._unseen:
                             encoding.append((self._unseen[fname], 1))
-
 
         # Add always-on features:
         if self._alwayson and label in self._alwayson:
@@ -889,7 +900,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         try:
             self._inv_mapping
         except AttributeError:
-            self._inv_mapping = [-1]*len(self._mapping)
+            self._inv_mapping = [-1] * len(self._mapping)
             for (info, i) in self._mapping.items():
                 self._inv_mapping[i] = info
 
@@ -946,8 +957,8 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         :param options: Extra parameters for the constructor, such as
             ``unseen_features`` and ``alwayson_features``.
         """
-        mapping = {}              # maps (fname, fval, label) -> fid
-        seen_labels = set()       # The set of labels we've encountered
+        mapping = {}  # maps (fname, fval, label) -> fid
+        seen_labels = set()  # The set of labels we've encountered
         count = defaultdict(int)  # maps (fname, fval) -> count
 
         for (tok, label) in train_toks:
@@ -972,10 +983,8 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         return cls(labels, mapping, **options)
 
 
-
-
 ######################################################################
-#{ Classifier Trainer: Generalized Iterative Scaling
+# { Classifier Trainer: Generalized Iterative Scaling
 ######################################################################
 
 def train_maxent_classifier_with_gis(train_toks, trace=3, encoding=None,
@@ -1003,7 +1012,7 @@ def train_maxent_classifier_with_gis(train_toks, trace=3, encoding=None,
     # Cinv is the inverse of the sum of each joint feature vector.
     # This controls the learning rate: higher Cinv (or lower C) gives
     # faster learning.
-    Cinv = 1.0/encoding.C
+    Cinv = 1.0 / encoding.C
 
     # Count how many times each feature occurs in the training data.
     empirical_fcount = calculate_empirical_fcount(train_toks, encoding)
@@ -1068,8 +1077,9 @@ def train_maxent_classifier_with_gis(train_toks, trace=3, encoding=None,
         acc = accuracy(classifier, train_toks)
         print('         Final    %14.5f    %9.3f' % (ll, acc))
 
-# Return the classifier.
+    # Return the classifier.
     return classifier
+
 
 def calculate_empirical_fcount(train_toks, encoding):
     fcount = numpy.zeros(encoding.length(), 'd')
@@ -1080,6 +1090,7 @@ def calculate_empirical_fcount(train_toks, encoding):
 
     return fcount
 
+
 def calculate_estimated_fcount(classifier, train_toks, encoding):
     fcount = numpy.zeros(encoding.length(), 'd')
 
@@ -1088,13 +1099,13 @@ def calculate_estimated_fcount(classifier, train_toks, encoding):
         for label in pdist.samples():
             prob = pdist.prob(label)
             for (fid, fval) in encoding.encode(tok, label):
-                fcount[fid] += prob*fval
+                fcount[fid] += prob * fval
 
     return fcount
 
 
 ######################################################################
-#{ Classifier Trainer: Improved Iterative Scaling
+# { Classifier Trainer: Improved Iterative Scaling
 ######################################################################
 
 def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
@@ -1173,7 +1184,6 @@ def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
     except:
         raise
 
-
     if trace > 2:
         ll = log_likelihood(classifier, train_toks)
         acc = accuracy(classifier, train_toks)
@@ -1181,6 +1191,7 @@ def train_maxent_classifier_with_iis(train_toks, trace=3, encoding=None,
 
     # Return the classifier.
     return classifier
+
 
 def calculate_nfmap(train_toks, encoding):
     """
@@ -1208,6 +1219,7 @@ def calculate_nfmap(train_toks, encoding):
         for label in encoding.labels():
             nfset.add(sum(val for (id, val) in encoding.encode(tok, label)))
     return dict((nf, i) for (i, nf) in enumerate(nfset))
+
 
 def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
                      nfmap, nfarray, nftranspose, encoding):
@@ -1320,15 +1332,16 @@ def calculate_deltas(train_toks, classifier, unattested, ffreq_empirical,
         deltas -= (ffreq_empirical - sum1) / -sum2
 
         # We can stop once we converge.
-        n_error = (numpy.sum(abs((ffreq_empirical-sum1)))/
+        n_error = (numpy.sum(abs((ffreq_empirical - sum1))) /
                    numpy.sum(abs(deltas)))
         if n_error < NEWTON_CONVERGE:
             return deltas
 
     return deltas
 
+
 ######################################################################
-#{ Classifier Trainer: megam
+# { Classifier Trainer: megam
 ######################################################################
 
 # [xx] possible extension: add support for using implicit file format;
@@ -1388,7 +1401,7 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
         # Lambda is just the precision of the Gaussian prior, i.e. it's the
         # inverse variance, so the parameter conversion is 1.0/sigma**2.
         # See http://www.umiacs.umd.edu/~hal/docs/daume04cg-bfgs.pdf.
-        inv_variance = 1.0 / gaussian_prior_sigma**2
+        inv_variance = 1.0 / gaussian_prior_sigma ** 2
     else:
         inv_variance = 0
     options += ['-lambda', '%.2f' % inv_variance, '-tune']
@@ -1420,8 +1433,9 @@ def train_maxent_classifier_with_megam(train_toks, trace=3, encoding=None,
     # Build the classifier
     return MaxentClassifier(encoding, weights)
 
+
 ######################################################################
-#{ Classifier Trainer: tadm
+# { Classifier Trainer: tadm
 ######################################################################
 
 class TadmMaxentClassifier(MaxentClassifier):
@@ -1455,7 +1469,7 @@ class TadmMaxentClassifier(MaxentClassifier):
         options.extend(['-monitor'])
         options.extend(['-method', algorithm])
         if sigma:
-            options.extend(['-l2', '%.6f' % sigma**2])
+            options.extend(['-l2', '%.6f' % sigma ** 2])
         if max_iter:
             options.extend(['-max_it', '%d' % max_iter])
         if ll_delta:
@@ -1481,12 +1495,14 @@ class TadmMaxentClassifier(MaxentClassifier):
         # Build the classifier
         return cls(encoding, weights)
 
+
 ######################################################################
-#{ Demo
+# { Demo
 ######################################################################
 def demo():
     from nltk.classify.util import names_demo
     classifier = names_demo(MaxentClassifier.train)
+
 
 if __name__ == '__main__':
     demo()
