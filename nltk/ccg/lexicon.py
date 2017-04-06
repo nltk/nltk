@@ -10,18 +10,13 @@ CCG Lexicons
 
 from __future__ import unicode_literals
 
-import re
-from collections import defaultdict
-
 from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategory
-from nltk.compat import python_2_unicode_compatible
 from nltk.internals import deprecated
-
 from nltk.sem.logic import *
 
-#------------
+# ------------
 # Regular expressions used for parsing components of the lexicon
-#------------
+# ------------
 
 # Parses a primitive category and subscripts
 PRIM_RE = re.compile(r'''([A-Za-z]+)(\[[A-Za-z,]+\])?''')
@@ -45,6 +40,7 @@ SEMANTICS_RE = re.compile(r'''\{([^}]+)\}''', re.UNICODE)
 # Strips comments from a line
 COMMENTS_RE = re.compile('''([^#]*)(?:#.*)?''')
 
+
 class Token(object):
     """
     Class representing a token.
@@ -56,27 +52,29 @@ class Token(object):
     * `categ` (string)
     * `semantics` (Expression)
     """
+
     def __init__(self, token, categ, semantics=None):
         self._token = token
         self._categ = categ
         self._semantics = semantics
-        
+
     def categ(self):
         return self._categ
-    
+
     def semantics(self):
         return self._semantics
-        
+
     def __str__(self):
         semantics_str = ""
         if self._semantics is not None:
             semantics_str = " {" + str(self._semantics) + "}"
         return "" + str(self._categ) + semantics_str
-    
+
     def __cmp__(self, other):
         if not isinstance(other, Token): return -1
-        return cmp((self._categ,self._semantics),
-                    other.categ(),other.semantics())
+        return cmp((self._categ, self._semantics),
+                   other.categ(), other.semantics())
+
 
 @python_2_unicode_compatible
 class CCGLexicon(object):
@@ -87,19 +85,18 @@ class CCGLexicon(object):
     * `families`: Families of categories
     * `entries`: A mapping of words to possible categories
     """
+
     def __init__(self, start, primitives, families, entries):
         self._start = PrimitiveCategory(start)
         self._primitives = primitives
         self._families = families
         self._entries = entries
 
-
     def categories(self, word):
         """
         Returns all the possible categories for a word
         """
         return self._entries[word]
-
 
     def start(self):
         """
@@ -128,9 +125,9 @@ class CCGLexicon(object):
         return string
 
 
-#-----------
+# -----------
 # Parsing lexicons
-#-----------
+# -----------
 
 
 def matchBrackets(string):
@@ -161,6 +158,7 @@ def nextCategory(string):
     if string.startswith('('):
         return matchBrackets(string)
     return NEXTPRIM_RE.match(string).groups()
+
 
 def parseApplication(app):
     """
@@ -217,8 +215,8 @@ def augParseCategory(line, primitives, families, var=None):
         (res, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
 
     else:
-#        print rePrim.match(str).groups()
-        (res, var) =\
+        #        print rePrim.match(str).groups()
+        (res, var) = \
             parsePrimitiveCategory(PRIM_RE.match(cat_string).groups(), primitives,
                                    families, var)
 
@@ -231,12 +229,13 @@ def augParseCategory(line, primitives, families, var=None):
         if cat_string.startswith('('):
             (arg, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
         else:
-            (arg, var) =\
+            (arg, var) = \
                 parsePrimitiveCategory(PRIM_RE.match(cat_string).groups(),
                                        primitives, families, var)
         res = FunctionalCategory(res, arg, direction)
 
     return (res, var)
+
 
 def fromstring(lex_str, include_semantics=False):
     """
@@ -283,6 +282,7 @@ def fromstring(lex_str, include_semantics=False):
 @deprecated('Use fromstring() instead.')
 def parseLexicon(lex_str):
     return fromstring(lex_str)
+
 
 openccg_tinytiny = fromstring("""
     # Rather minimal lexicon based on the openccg `tinytiny' grammar.
