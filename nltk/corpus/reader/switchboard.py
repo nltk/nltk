@@ -5,13 +5,9 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
-import re
 
-from nltk.tag import str2tuple, map_tag
-from nltk import compat
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.tag import str2tuple, map_tag
 
 
 @compat.python_2_unicode_compatible
@@ -23,6 +19,7 @@ class SwitchboardTurn(list):
     spearker identifier and utterance id.  Note that utterance ids
     are only unique within a given discourse.
     """
+
     def __init__(self, words, speaker, id):
         list.__init__(self, words)
         self.speaker = speaker
@@ -40,6 +37,7 @@ class SwitchboardTurn(list):
 
 class SwitchboardCorpusReader(CorpusReader):
     _FILES = ['tagged']
+
     # Use the "tagged" file even for non-tagged data methods, since
     # it's tokenized.
 
@@ -54,6 +52,7 @@ class SwitchboardCorpusReader(CorpusReader):
     def tagged_words(self, tagset=None):
         def tagged_words_block_reader(stream):
             return self._tagged_words_block_reader(stream, tagset)
+
         return StreamBackedCorpusView(self.abspath('tagged'),
                                       tagged_words_block_reader)
 
@@ -64,6 +63,7 @@ class SwitchboardCorpusReader(CorpusReader):
     def tagged_turns(self, tagset=None):
         def tagged_turns_block_reader(stream):
             return self._tagged_turns_block_reader(stream, tagset)
+
         return StreamBackedCorpusView(self.abspath('tagged'),
                                       tagged_turns_block_reader)
 
@@ -74,6 +74,7 @@ class SwitchboardCorpusReader(CorpusReader):
     def tagged_discourses(self, tagset=False):
         def tagged_discourses_block_reader(stream):
             return self._tagged_discourses_block_reader(stream, tagset)
+
         return StreamBackedCorpusView(self.abspath('tagged'),
                                       tagged_discourses_block_reader)
 
@@ -105,6 +106,7 @@ class SwitchboardCorpusReader(CorpusReader):
 
     _UTTERANCE_RE = re.compile('(\w+)\.(\d+)\:\s*(.*)')
     _SEP = '/'
+
     def _parse_utterance(self, utterance, include_tag, tagset=None):
         m = self._UTTERANCE_RE.match(utterance)
         if m is None:
@@ -112,8 +114,7 @@ class SwitchboardCorpusReader(CorpusReader):
         speaker, id, text = m.groups()
         words = [str2tuple(s, self._SEP) for s in text.split()]
         if not include_tag:
-            words = [w for (w,t) in words]
+            words = [w for (w, t) in words]
         elif tagset and tagset != self._tagset:
-            words = [(w, map_tag(self._tagset, tagset, t)) for (w,t) in words]
+            words = [(w, map_tag(self._tagset, tagset, t)) for (w, t) in words]
         return SwitchboardTurn(words, speaker, id)
-

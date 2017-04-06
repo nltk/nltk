@@ -30,13 +30,14 @@ X - other: foreign words, typos, abbreviations
 """
 
 from __future__ import print_function, unicode_literals, division
+
 from collections import defaultdict
 from os.path import join
 
 from nltk.data import load
 
 _UNIVERSAL_DATA = "taggers/universal_tagset"
-_UNIVERSAL_TAGS = ('VERB','NOUN','PRON','ADJ','ADV','ADP','CONJ','DET','NUM','PRT','X','.')
+_UNIVERSAL_TAGS = ('VERB', 'NOUN', 'PRON', 'ADJ', 'ADV', 'ADP', 'CONJ', 'DET', 'NUM', 'PRT', 'X', '.')
 
 # _MAPPINGS = defaultdict(lambda: defaultdict(dict))
 # the mapping between tagset T1 and T2 returns UNK if appied to an unrecognized tag
@@ -44,7 +45,7 @@ _MAPPINGS = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 'UNK')))
 
 
 def _load_universal_map(fileid):
-    contents = load(join(_UNIVERSAL_DATA, fileid+'.map'), format="text")
+    contents = load(join(_UNIVERSAL_DATA, fileid + '.map'), format="text")
 
     # When mapping to the Universal Tagset,
     # map unknown inputs to 'X' not 'UNK'
@@ -77,6 +78,7 @@ def tagset_mapping(source, target):
             _load_universal_map(source)
     return _MAPPINGS[source][target]
 
+
 def map_tag(source, target, source_tag):
     """
     Maps the tag from the source tagset to the target tagset.
@@ -97,5 +99,3 @@ def map_tag(source, target, source_tag):
             source = 'en-brown'
 
     return tagset_mapping(source, target)[source_tag]
-
-

@@ -15,14 +15,18 @@ from textwrap import wrap
 
 from nltk.data import load
 
+
 def brown_tagset(tagpattern=None):
     _format_tagset("brown_tagset", tagpattern)
+
 
 def claws5_tagset(tagpattern=None):
     _format_tagset("claws5_tagset", tagpattern)
 
+
 def upenn_tagset(tagpattern=None):
     _format_tagset("upenn_tagset", tagpattern)
+
 
 #####################################################################
 # UTILITIES
@@ -34,6 +38,7 @@ def _print_entries(tags, tagdict):
         defn = [tag + ": " + entry[0]]
         examples = wrap(entry[1], width=75, initial_indent='    ', subsequent_indent='    ')
         print("\n".join(defn + examples))
+
 
 def _format_tagset(tagset, tagpattern=None):
     tagdict = load("help/tagsets/" + tagset + ".pickle")
@@ -48,6 +53,7 @@ def _format_tagset(tagset, tagpattern=None):
             _print_entries(tags, tagdict)
         else:
             print("No matching tags found.")
+
 
 if __name__ == '__main__':
     brown_tagset(r'NN.*')

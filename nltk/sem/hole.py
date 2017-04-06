@@ -25,11 +25,10 @@ from functools import reduce
 
 from nltk import compat
 from nltk.parse import load_parser
-
-from nltk.sem.skolemize import skolemize
 from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,
                             ExistsExpression, IffExpression, ImpExpression,
                             LambdaExpression, NegatedExpression, OrExpression)
+from nltk.sem.skolemize import skolemize
 
 
 # Note that in this code there may be multiple types of trees being referred to:
@@ -71,6 +70,7 @@ class HoleSemantics(object):
     then provides some operations on the semantics dealing with holes, labels
     and finding legal ways to plug holes with labels.
     """
+
     def __init__(self, usr):
         """
         Constructor.  `usr' is a ``sem.Expression`` representing an
@@ -291,6 +291,7 @@ class Constraint(object):
     This class represents a constraint of the form (L =< N),
     where L is a label and N is a node (a label or a hole).
     """
+
     def __init__(self, lhs, rhs):
         self.lhs = lhs
         self.rhs = rhs

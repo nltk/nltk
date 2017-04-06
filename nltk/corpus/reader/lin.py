@@ -78,10 +78,11 @@ class LinThesaurusCorpusReader(CorpusReader):
                 return [(fid, 1.0) for fid in self._fileids]
         else:
             if fileid:
-                return self._thesaurus[fileid][ngram1][ngram2] if ngram2 in self._thesaurus[fileid][ngram1] else self._badscore
+                return self._thesaurus[fileid][ngram1][ngram2] if ngram2 in self._thesaurus[fileid][
+                    ngram1] else self._badscore
             else:
                 return [(fid, (self._thesaurus[fid][ngram1][ngram2] if ngram2 in self._thesaurus[fid][ngram1]
-                                  else self._badscore)) for fid in self._fileids]
+                               else self._badscore)) for fid in self._fileids]
 
     def scored_synonyms(self, ngram, fileid=None):
         '''

@@ -25,7 +25,6 @@ Related papers:
     Opinions on the Web". Proceedings of the 14th international World Wide Web
     conference (WWW-2005), May 10-14, 2005, in Chiba, Japan.
 """
-import re
 
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
@@ -78,7 +77,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         elif isinstance(fileids, compat.string_types):
             fileids = [fileids]
         return concat([self.CorpusView(path, self._read_sent_block, encoding=enc)
-            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+                       for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
     def words(self, fileids=None, categories=None):
         """
@@ -98,11 +97,11 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         elif isinstance(fileids, compat.string_types):
             fileids = [fileids]
         return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
-            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+                       for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
     def _read_sent_block(self, stream):
         sents = []
-        for i in range(20): # Read 20 lines at a time.
+        for i in range(20):  # Read 20 lines at a time.
             line = stream.readline()
             if not line:
                 continue

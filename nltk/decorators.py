@@ -6,6 +6,7 @@ http://www.phyast.pitt.edu/~micheles/python/documentation.html
 Included in NLTK for its support of a nice memoization decorator.
 """
 from __future__ import print_function
+
 __docformat__ = 'restructuredtext en'
 
 ## The basic trick is to generate the source code for the decorated function
@@ -22,12 +23,14 @@ import sys
 old_sys_path = sys.path[:]
 sys.path = [p for p in sys.path if "nltk" not in p]
 import inspect
+
 sys.path = old_sys_path
 
 try:
     set
 except NameError:
     from sets import Set as set
+
 
 def getinfo(func):
     """
@@ -78,9 +81,10 @@ def getinfo(func):
         _globals = func.func_globals
 
     return dict(name=func.__name__, argnames=argnames, signature=signature,
-                defaults = func.__defaults__, doc=func.__doc__,
+                defaults=func.__defaults__, doc=func.__doc__,
                 module=func.__module__, dict=func.__dict__,
                 globals=_globals, closure=_closure)
+
 
 # akin to functools.update_wrapper
 def update_wrapper(wrapper, model, infodict=None):
@@ -93,6 +97,7 @@ def update_wrapper(wrapper, model, infodict=None):
     wrapper.undecorated = model
     return wrapper
 
+
 def new_wrapper(wrapper, model):
     """
     An improvement over functools.update_wrapper. The wrapper is a generic
@@ -103,7 +108,7 @@ def new_wrapper(wrapper, model):
     """
     if isinstance(model, dict):
         infodict = model
-    else: # assume model is a function
+    else:  # assume model is a function
         infodict = getinfo(model)
     assert not '_wrapper_' in infodict["argnames"], (
         '"_wrapper_" is a reserved argument name!')
@@ -111,9 +116,11 @@ def new_wrapper(wrapper, model):
     funcopy = eval(src, dict(_wrapper_=wrapper))
     return update_wrapper(funcopy, model, infodict)
 
+
 # helper used in decorator_factory
 def __call__(self, func):
-    return new_wrapper(lambda *a, **k : self.call(func, *a, **k), func)
+    return new_wrapper(lambda *a, **k: self.call(func, *a, **k), func)
+
 
 def decorator_factory(cls):
     """
@@ -131,6 +138,7 @@ def decorator_factory(cls):
                         '.call method')
     cls.__call__ = __call__
     return cls
+
 
 def decorator(caller):
     """
@@ -164,7 +172,8 @@ def decorator(caller):
     """
     if inspect.isclass(caller):
         return decorator_factory(caller)
-    def _decorator(func): # the real meat is here
+
+    def _decorator(func):  # the real meat is here
         infodict = getinfo(func)
         argnames = infodict['argnames']
         assert not ('_call_' in argnames or '_func_' in argnames), (
@@ -173,7 +182,9 @@ def decorator(caller):
         # import sys; print >> sys.stderr, src # for debugging purposes
         dec_func = eval(src, dict(_func_=func, _call_=caller))
         return update_wrapper(dec_func, func, infodict)
+
     return update_wrapper(_decorator, caller)
+
 
 def getattr_(obj, name, default_thunk):
     "Similar to .setdefault in dictionaries."
@@ -183,6 +194,7 @@ def getattr_(obj, name, default_thunk):
         default = default_thunk()
         setattr(obj, name, default)
         return default
+
 
 @decorator
 def memoize(func, *args):
@@ -194,7 +206,6 @@ def memoize(func, *args):
         result = func(*args)
         dic[args] = result
         return result
-
 
 ##########################     LEGALESE    ###############################
 

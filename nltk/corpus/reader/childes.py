@@ -19,11 +19,11 @@ from collections import defaultdict
 from nltk.util import flatten, LazyMap, LazyConcatenation
 from nltk.compat import string_types
 
-from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
 
 # to resolve the namespace issue
 NS = 'http://www.talkbank.org/ns/talkbank'
+
 
 class CHILDESCorpusReader(XMLCorpusReader):
     """
@@ -36,12 +36,13 @@ class CHILDESCorpusReader(XMLCorpusReader):
     For access to the file text use the usual nltk functions,
     ``words()``, ``sents()``, ``tagged_words()`` and ``tagged_sents()``.
     """
+
     def __init__(self, root, fileids, lazy=True):
         XMLCorpusReader.__init__(self, root, fileids)
         self._lazy = lazy
 
     def words(self, fileids=None, speaker='ALL', stem=False,
-            relation=False, strip_space=True, replace=False):
+              relation=False, strip_space=True, replace=False):
         """
         :return: the given file(s) as a list of words
         :rtype: list(str)
@@ -58,18 +59,18 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :param replace: If true, then use the replaced (intended) word instead
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
-        sent=None
-        pos=False
+        sent = None
+        pos = False
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+                                    pos, strip_space, replace) for fileid in self.abspaths(fileids)]
 
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace)
+                                                   pos, strip_space, replace)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def tagged_words(self, fileids=None, speaker='ALL', stem=False,
-            relation=False, strip_space=True, replace=False):
+                     relation=False, strip_space=True, replace=False):
         """
         :return: the given file(s) as a list of tagged
             words and punctuation symbols, encoded as tuples
@@ -88,18 +89,18 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :param replace: If true, then use the replaced (intended) word instead
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
-        sent=None
-        pos=True
+        sent = None
+        pos = True
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+                                    pos, strip_space, replace) for fileid in self.abspaths(fileids)]
 
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace)
+                                                   pos, strip_space, replace)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def sents(self, fileids=None, speaker='ALL', stem=False,
-            relation=None, strip_space=True, replace=False):
+              relation=None, strip_space=True, replace=False):
         """
         :return: the given file(s) as a list of sentences or utterances, each
             encoded as a list of word strings.
@@ -118,18 +119,18 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :param replace: If true, then use the replaced (intended) word instead
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
-        sent=True
-        pos=False
+        sent = True
+        pos = False
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
-        
+                                    pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace)
+                                                   pos, strip_space, replace)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def tagged_sents(self, fileids=None, speaker='ALL', stem=False,
-            relation=None, strip_space=True, replace=False):
+                     relation=None, strip_space=True, replace=False):
         """
         :return: the given file(s) as a list of
             sentences, each encoded as a list of ``(word,tag)`` tuples.
@@ -148,14 +149,14 @@ class CHILDESCorpusReader(XMLCorpusReader):
         :param replace: If true, then use the replaced (intended) word instead
             of the original word (e.g., 'wat' will be replaced with 'watch')
         """
-        sent=True
-        pos=True
+        sent = True
+        pos = True
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
-                pos, strip_space, replace) for fileid in self.abspaths(fileids)]
-        
+                                    pos, strip_space, replace) for fileid in self.abspaths(fileids)]
+
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
-            pos, strip_space, replace)
+                                                   pos, strip_space, replace)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
 
     def corpus(self, fileids=None):
@@ -193,8 +194,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
         # getting participants' data
         pat = dictOfDicts()
         for participant in xmldoc.findall('.//{%s}Participants/{%s}participant'
-                                          % (NS,NS)):
-            for (key,value) in participant.items():
+                                                  % (NS, NS)):
+            for (key, value) in participant.items():
                 pat[participant.get('id')][key] = value
         return pat
 
@@ -207,14 +208,14 @@ class CHILDESCorpusReader(XMLCorpusReader):
         """
         if not self._lazy:
             return [self._get_age(fileid, speaker, month)
-                for fileid in self.abspaths(fileids)]
+                    for fileid in self.abspaths(fileids)]
         get_age = lambda fileid: self._get_age(fileid, speaker, month)
         return LazyMap(get_age, self.abspaths(fileids))
 
     def _get_age(self, fileid, speaker, month):
         xmldoc = ElementTree.parse(fileid).getroot()
         for pat in xmldoc.findall('.//{%s}Participants/{%s}participant'
-                                  % (NS,NS)):
+                                          % (NS, NS)):
             try:
                 if pat.get('id') == speaker:
                     age = pat.get('age')
@@ -227,8 +228,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def convert_age(self, age_year):
         "Caclculate age in months from a string in CHILDES format"
-        m = re.match("P(\d+)Y(\d+)M?(\d?\d?)D?",age_year)
-        age_month = int(m.group(1))*12 + int(m.group(2))
+        m = re.match("P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
+        age_month = int(m.group(1)) * 12 + int(m.group(2))
         try:
             if int(m.group(3)) > 15:
                 age_month += 1
@@ -244,19 +245,19 @@ class CHILDESCorpusReader(XMLCorpusReader):
         """
         if not self._lazy:
             return [self._getMLU(fileid, speaker=speaker)
-                for fileid in self.abspaths(fileids)]
+                    for fileid in self.abspaths(fileids)]
         get_MLU = lambda fileid: self._getMLU(fileid, speaker=speaker)
         return LazyMap(get_MLU, self.abspaths(fileids))
 
     def _getMLU(self, fileid, speaker):
         sents = self._get_words(fileid, speaker=speaker, sent=True, stem=True,
-                    relation=False, pos=True, strip_space=True, replace=True)
+                                relation=False, pos=True, strip_space=True, replace=True)
         results = []
         lastSent = []
         numFillers = 0
         sentDiscount = 0
         for sent in sents:
-            posList = [pos for (word,pos) in sent]
+            posList = [pos for (word, pos) in sent]
             # if any part of the sentence is intelligible
             if any(pos == 'unk' for pos in posList):
                 next
@@ -267,9 +268,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
             elif sent == lastSent:
                 next
             else:
-                results.append([word for (word,pos) in sent])
+                results.append([word for (word, pos) in sent])
                 # count number of fillers
-                if len(set(['co',None]).intersection(posList)) > 0:
+                if len(set(['co', None]).intersection(posList)) > 0:
                     numFillers += posList.count('co')
                     numFillers += posList.count(None)
                     sentDiscount += 1
@@ -279,18 +280,18 @@ class CHILDESCorpusReader(XMLCorpusReader):
             # count number of morphemes
             # (e.g., 'read' = 1 morpheme but 'read-PAST' is 2 morphemes)
             numWords = len(flatten([word.split('-')
-                                          for word in thisWordList])) - numFillers
+                                    for word in thisWordList])) - numFillers
             numSents = len(results) - sentDiscount
-            mlu = numWords/numSents
+            mlu = numWords / numSents
         except ZeroDivisionError:
             mlu = 0
         # return {'mlu':mlu,'wordNum':numWords,'sentNum':numSents}
         return mlu
 
     def _get_words(self, fileid, speaker, sent, stem, relation, pos,
-            strip_space, replace):
+                   strip_space, replace):
         if isinstance(speaker, string_types) and speaker != 'ALL':  # ensure we have a list of speakers
-            speaker = [ speaker ]
+            speaker = [speaker]
         xmldoc = ElementTree.parse(fileid).getroot()
         # processing each xml doc
         results = []
@@ -299,14 +300,16 @@ class CHILDESCorpusReader(XMLCorpusReader):
             # select speakers
             if speaker == 'ALL' or xmlsent.get('who') in speaker:
                 for xmlword in xmlsent.findall('.//{%s}w' % NS):
-                    infl = None ; suffixStem = None; suffixTag = None
+                    infl = None;
+                    suffixStem = None;
+                    suffixTag = None
                     # getting replaced words
                     if replace and xmlsent.find('.//{%s}w/{%s}replacement'
-                                                % (NS,NS)):
+                                                        % (NS, NS)):
                         xmlword = xmlsent.find('.//{%s}w/{%s}replacement/{%s}w'
-                                               % (NS,NS,NS))
-                    elif replace and xmlsent.find('.//{%s}w/{%s}wk' % (NS,NS)):
-                        xmlword = xmlsent.find('.//{%s}w/{%s}wk' % (NS,NS))
+                                               % (NS, NS, NS))
+                    elif replace and xmlsent.find('.//{%s}w/{%s}wk' % (NS, NS)):
+                        xmlword = xmlsent.find('.//{%s}w/{%s}wk' % (NS, NS))
                     # get text
                     if xmlword.text:
                         word = xmlword.text
@@ -325,50 +328,50 @@ class CHILDESCorpusReader(XMLCorpusReader):
                         # if there is an inflection
                         try:
                             xmlinfl = xmlword.find('.//{%s}mor/{%s}mw/{%s}mk'
-                                                   % (NS,NS,NS))
+                                                   % (NS, NS, NS))
                             word += '-' + xmlinfl.text
                         except:
                             pass
                         # if there is a suffix
                         try:
                             xmlsuffix = xmlword.find('.//{%s}mor/{%s}mor-post/{%s}mw/{%s}stem'
-                                                     % (NS,NS,NS,NS))
+                                                     % (NS, NS, NS, NS))
                             suffixStem = xmlsuffix.text
                         except AttributeError:
                             suffixStem = ""
                         if suffixStem:
-                            word += "~"+suffixStem
+                            word += "~" + suffixStem
                     # pos
                     if relation or pos:
                         try:
                             xmlpos = xmlword.findall(".//{%s}c" % NS)
                             xmlpos2 = xmlword.findall(".//{%s}s" % NS)
                             if xmlpos2 != []:
-                                tag = xmlpos[0].text+":"+xmlpos2[0].text
+                                tag = xmlpos[0].text + ":" + xmlpos2[0].text
                             else:
                                 tag = xmlpos[0].text
-                        except (AttributeError,IndexError) as e:
+                        except (AttributeError, IndexError) as e:
                             tag = ""
                         try:
                             xmlsuffixpos = xmlword.findall('.//{%s}mor/{%s}mor-post/{%s}mw/{%s}pos/{%s}c'
-                                                     % (NS,NS,NS,NS,NS))
+                                                           % (NS, NS, NS, NS, NS))
                             xmlsuffixpos2 = xmlword.findall('.//{%s}mor/{%s}mor-post/{%s}mw/{%s}pos/{%s}s'
-                                                     % (NS,NS,NS,NS,NS))
+                                                            % (NS, NS, NS, NS, NS))
                             if xmlsuffixpos2:
-                                suffixTag = xmlsuffixpos[0].text+":"+xmlsuffixpos2[0].text
+                                suffixTag = xmlsuffixpos[0].text + ":" + xmlsuffixpos2[0].text
                             else:
                                 suffixTag = xmlsuffixpos[0].text
                         except:
                             pass
                         if suffixTag:
-                            tag += "~"+suffixTag
+                            tag += "~" + suffixTag
                         word = (word, tag)
                     # relational
                     # the gold standard is stored in
                     # <mor></mor><mor type="trn"><gra type="grt">
                     if relation == True:
                         for xmlstem_rel in xmlword.findall('.//{%s}mor/{%s}gra'
-                                                           % (NS,NS)):
+                                                                   % (NS, NS)):
                             if not xmlstem_rel.get('type') == 'grt':
                                 word = (word[0], word[1],
                                         xmlstem_rel.get('index')
@@ -382,7 +385,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
                                         + "|" + xmlstem_rel.get('relation'))
                         try:
                             for xmlpost_rel in xmlword.findall('.//{%s}mor/{%s}mor-post/{%s}gra'
-                                                               % (NS,NS,NS)):
+                                                                       % (NS, NS, NS)):
                                 if not xmlpost_rel.get('type') == 'grt':
                                     suffixStem = (suffixStem[0],
                                                   suffixStem[1],
@@ -405,7 +408,6 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     results.extend(sents)
         return LazyMap(lambda x: x, results)
 
-
     # Ready-to-use browser opener
 
     """
@@ -414,7 +416,6 @@ class CHILDESCorpusReader(XMLCorpusReader):
     of their server or unless the user sets up their own corpus webserver.
     """
     childes_url_base = r'http://childes.psy.cmu.edu/browser/index.php?url='
-
 
     def webview_file(self, fileid, urlbase=None):
         """Map a corpus file to its web version on the CHILDES website,
@@ -440,7 +441,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         import webbrowser, re
 
         if urlbase:
-            path = urlbase+"/"+fileid
+            path = urlbase + "/" + fileid
         else:
             full = self.root + "/" + fileid
             full = re.sub(r'\\', '/', full)
@@ -457,7 +458,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
             path = path[:-4]
 
         if not path.endswith('.cha'):
-            path = path+'.cha'
+            path = path + '.cha'
 
         url = self.childes_url_base + path
 
@@ -465,7 +466,6 @@ class CHILDESCorpusReader(XMLCorpusReader):
         print("Opening in browser:", url)
         # Pausing is a good idea, but it's up to the user...
         # raw_input("Hit Return to continue")
-
 
 
 def demo(corpus_root=None):
@@ -483,21 +483,21 @@ def demo(corpus_root=None):
         for file in childes.fileids()[:5]:
             corpus = ''
             corpus_id = ''
-            for (key,value) in childes.corpus(file)[0].items():
+            for (key, value) in childes.corpus(file)[0].items():
                 if key == "Corpus": corpus = value
                 if key == "Id": corpus_id = value
-            print('Reading', corpus,corpus_id,' .....')
-            print("words:", childes.words(file)[:7],"...")
-            print("words with replaced words:", childes.words(file, replace=True)[:7]," ...")
-            print("words with pos tags:", childes.tagged_words(file)[:7]," ...")
+            print('Reading', corpus, corpus_id, ' .....')
+            print("words:", childes.words(file)[:7], "...")
+            print("words with replaced words:", childes.words(file, replace=True)[:7], " ...")
+            print("words with pos tags:", childes.tagged_words(file)[:7], " ...")
             print("words (only MOT):", childes.words(file, speaker='MOT')[:7], "...")
             print("words (only CHI):", childes.words(file, speaker='CHI')[:7], "...")
-            print("stemmed words:", childes.words(file, stem=True)[:7]," ...")
-            print("words with relations and pos-tag:", childes.words(file, relation=True)[:5]," ...")
-            print("sentence:", childes.sents(file)[:2]," ...")
+            print("stemmed words:", childes.words(file, stem=True)[:7], " ...")
+            print("words with relations and pos-tag:", childes.words(file, relation=True)[:5], " ...")
+            print("sentence:", childes.sents(file)[:2], " ...")
             for (participant, values) in childes.participants(file)[0].items():
-                    for (key, value) in values.items():
-                        print("\tparticipant", participant, key, ":", value)
+                for (key, value) in values.items():
+                    print("\tparticipant", participant, key, ":", value)
             print("num of sent:", len(childes.sents(file)))
             print("num of morphemes:", len(childes.words(file, stem=True)))
             print("age:", childes.age(file))
@@ -512,12 +512,11 @@ def demo(corpus_root=None):
             Alternately, you can call the demo with the path to a portion of the CHILDES corpus, e.g.:
         demo('/path/to/childes/data-xml/Eng-USA/")
         """)
-        #corpus_root_http = urllib2.urlopen('http://childes.psy.cmu.edu/data-xml/Eng-USA/Bates.zip')
-        #corpus_root_http_bates = zipfile.ZipFile(cStringIO.StringIO(corpus_root_http.read()))
+        # corpus_root_http = urllib2.urlopen('http://childes.psy.cmu.edu/data-xml/Eng-USA/Bates.zip')
+        # corpus_root_http_bates = zipfile.ZipFile(cStringIO.StringIO(corpus_root_http.read()))
         ##this fails
-        #childes = CHILDESCorpusReader(corpus_root_http_bates,corpus_root_http_bates.namelist())
+        # childes = CHILDESCorpusReader(corpus_root_http_bates,corpus_root_http_bates.namelist())
 
 
 if __name__ == "__main__":
     demo()
-

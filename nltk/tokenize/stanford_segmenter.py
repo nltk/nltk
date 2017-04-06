@@ -11,17 +11,17 @@
 
 from __future__ import unicode_literals, print_function
 
-import tempfile
-import os
 import json
+import os
+import tempfile
 from subprocess import PIPE
 
 from nltk import compat
 from nltk.internals import find_jar, config_java, java, _java_options
-
 from nltk.tokenize.api import TokenizerI
 
 _stanford_url = 'https://nlp.stanford.edu/software'
+
 
 class StanfordSegmenter(TokenizerI):
     r"""
@@ -44,20 +44,20 @@ class StanfordSegmenter(TokenizerI):
     _SLF4J = 'slf4j-api.jar'
 
     def __init__(self, path_to_jar=None, path_to_slf4j=None,
-            path_to_sihan_corpora_dict=None,
-            path_to_model=None, path_to_dict=None,
-            encoding='UTF-8', options=None,
-            verbose=False, java_options='-mx2g'):
+                 path_to_sihan_corpora_dict=None,
+                 path_to_model=None, path_to_dict=None,
+                 encoding='UTF-8', options=None,
+                 verbose=False, java_options='-mx2g'):
         stanford_segmenter = find_jar(
-                self._JAR, path_to_jar,
-                env_vars=('STANFORD_SEGMENTER',),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
+            self._JAR, path_to_jar,
+            env_vars=('STANFORD_SEGMENTER',),
+            searchpath=(), url=_stanford_url,
+            verbose=verbose)
         slf4j = find_jar(
-                self._SLF4J, path_to_slf4j,
-                env_vars=('SLF4J',),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
+            self._SLF4J, path_to_slf4j,
+            env_vars=('SLF4J',),
+            searchpath=(), url=_stanford_url,
+            verbose=verbose)
 
         # This is passed to java as the -cp option, the segmenter needs slf4j.
         self._stanford_jar = os.pathsep.join(
@@ -140,7 +140,7 @@ class StanfordSegmenter(TokenizerI):
         config_java(options=self.java_options, verbose=verbose)
 
         stdout, _stderr = java(
-            cmd,classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
+            cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
         stdout = stdout.decode(encoding)
 
         # Return java configurations to their default values.
@@ -148,10 +148,12 @@ class StanfordSegmenter(TokenizerI):
 
         return stdout
 
+
 def setup_module(module):
     from nose import SkipTest
 
     try:
         StanfordSegmenter()
     except LookupError:
-        raise SkipTest('doctests from nltk.tokenize.stanford_segmenter are skipped because the stanford segmenter jar doesn\'t exist')
+        raise SkipTest(
+            'doctests from nltk.tokenize.stanford_segmenter are skipped because the stanford segmenter jar doesn\'t exist')

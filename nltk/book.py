@@ -8,9 +8,8 @@
 from __future__ import print_function
 
 from nltk.corpus import (gutenberg, genesis, inaugural,
-                         nps_chat, webtext, treebank, wordnet)
+                         nps_chat, webtext, treebank)
 from nltk.text import Text
-from nltk.probability import FreqDist
 
 print("*** Introductory Examples for the NLTK Book ***")
 print("Loading text1, ..., text9 and sent1, ..., sent9")
@@ -56,6 +55,7 @@ def texts():
     print("text7:", text7.name)
     print("text8:", text8.name)
     print("text9:", text9.name)
+
 
 sent1 = ["Call", "me", "Ishmael", "."]
 sent2 = ["The", "family", "of", "Dashwood", "had", "long",

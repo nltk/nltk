@@ -33,19 +33,19 @@ For error codes see Twitter's
 from __future__ import print_function
 
 import datetime
-from functools import wraps
 import json
+from functools import wraps
 
 from nltk.compat import StringIO
-
-from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
-     credsfromfile
-
+from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter, \
+    credsfromfile
 
 SPACER = '###################################'
 
+
 def verbose(func):
     """Decorator for demo functions"""
+
     @wraps(func)
     def with_formatting(*args, **kwargs):
         print()
@@ -53,16 +53,19 @@ def verbose(func):
         print("Using %s" % (func.__name__))
         print(SPACER)
         return func(*args, **kwargs)
+
     return with_formatting
+
 
 def yesterday():
     """
     Get yesterday's datetime as a 5-tuple.
     """
-    date =  datetime.datetime.now()
+    date = datetime.datetime.now()
     date -= datetime.timedelta(days=1)
     date_tuple = date.timetuple()[:6]
     return date_tuple
+
 
 def setup():
     """
@@ -83,16 +86,16 @@ def twitterclass_demo():
     """
     tw = Twitter()
     print("Track from the public stream\n")
-    tw.tweets(keywords='love, hate', limit=10) #public stream
+    tw.tweets(keywords='love, hate', limit=10)  # public stream
     print(SPACER)
     print("Search past Tweets\n")
     tw = Twitter()
-    tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
+    tw.tweets(keywords='love, hate', stream=False, limit=10)  # search past tweets
     print(SPACER)
     print("Follow two accounts in the public stream" +
           " -- be prepared to wait a few minutes\n")
     tw = Twitter()
-    tw.tweets(follow=['759251', '6017542'], stream=True, limit=5) #public stream
+    tw.tweets(follow=['759251', '6017542'], stream=True, limit=5)  # public stream
 
 
 @verbose
@@ -240,7 +243,7 @@ def expand_tweetids_demo():
     corresponding full Tweets, if available.
 
     """
-    ids_f =\
+    ids_f = \
         StringIO("""\
         588665495492124672
         588665495487909888
@@ -257,13 +260,12 @@ def expand_tweetids_demo():
     hydrated = client.expand_tweetids(ids_f)
 
     for tweet in hydrated:
-            id_str = tweet['id_str']
-            print('id: {}'.format(id_str))
-            text = tweet['text']
-            if text.startswith('@null'):
-                text = "[Tweet not available]"
-            print(text + '\n')
-
+        id_str = tweet['id_str']
+        print('id: {}'.format(id_str))
+        text = tweet['text']
+        if text.startswith('@null'):
+            text = "[Tweet not available]"
+        print(text + '\n')
 
 
 ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
@@ -285,4 +287,3 @@ if __name__ == "__main__":
     print("\n" + SPACER)
     print("All demos completed")
     print(SPACER)
-

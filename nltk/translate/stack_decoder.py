@@ -76,6 +76,7 @@ class StackDecoder(object):
     ['nobody', 'expects', 'the', 'spanish', 'inquisition', '!']
 
     """
+
     def __init__(self, phrase_table, language_model):
         """
         :param phrase_table: Table of translations for source language
@@ -165,7 +166,7 @@ class StackDecoder(object):
                 for src_phrase_span in possible_expansions:
                     src_phrase = sentence[src_phrase_span[0]:src_phrase_span[1]]
                     for translation_option in (self.phrase_table.
-                                               translations_for(src_phrase)):
+                                                       translations_for(src_phrase)):
                         raw_score = self.expansion_score(
                             hypothesis, translation_option, src_phrase_span)
                         new_hypothesis = _Hypothesis(
@@ -341,6 +342,7 @@ class _Hypothesis(object):
     ``src_phrase_span`` in the hypothesis chain. Similarly, the
     translation output can be found by traversing up the chain.
     """
+
     def __init__(self, raw_score=0.0, src_phrase_span=(), trg_phrase=(),
                  previous=None, future_score=0.0):
         """
@@ -439,6 +441,7 @@ class _Stack(object):
     """
     Collection of _Hypothesis objects
     """
+
     def __init__(self, max_size=100, beam_threshold=0.0):
         """
         :param beam_threshold: Hypotheses that score less than this
@@ -471,7 +474,7 @@ class _Stack(object):
     def threshold_prune(self):
         if not self.items:
             return
-        #  log(score * beam_threshold) = log(score) + log(beam_threshold)
+        # log(score * beam_threshold) = log(score) + log(beam_threshold)
         threshold = self.items[0].score() + self.__log_beam_threshold
         for hypothesis in reversed(self.items):
             if hypothesis.score() < threshold:
@@ -496,4 +499,5 @@ class _Stack(object):
 
     def __bool__(self):
         return len(self.items) != 0
-    __nonzero__=__bool__
+
+    __nonzero__ = __bool__

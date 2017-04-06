@@ -21,12 +21,14 @@ json_tags = {}
 
 TAG_PREFIX = '!'
 
+
 def register_tag(cls):
     """
     Decorates a class to register it's json tag.
     """
-    json_tags[TAG_PREFIX+getattr(cls, 'json_tag')] = cls
+    json_tags[TAG_PREFIX + getattr(cls, 'json_tag')] = cls
     return cls
+
 
 class JSONTaggedEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -36,6 +38,7 @@ class JSONTaggedEncoder(json.JSONEncoder):
         obj_tag = TAG_PREFIX + obj_tag
         obj = obj.encode_json_obj()
         return {obj_tag: obj}
+
 
 class JSONTaggedDecoder(json.JSONDecoder):
     def decode(self, s):
@@ -58,6 +61,7 @@ class JSONTaggedDecoder(json.JSONDecoder):
             raise ValueError('Unknown tag', obj_tag)
         obj_cls = json_tags[obj_tag]
         return obj_cls.decode_json_obj(obj[obj_tag])
+
 
 __all__ = ['register_tag', 'json_tags',
            'JSONTaggedEncoder', 'JSONTaggedDecoder']

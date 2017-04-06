@@ -11,17 +11,16 @@ Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 
 import sys
 
-from nltk.tree import Tree
-from nltk.tag import map_tag
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.tag import map_tag
+from nltk.tree import Tree
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
-SORTTAGWRD = re.compile(r'\((\d+) ([^\s()]+) ([^\s()]+)\)') 
+SORTTAGWRD = re.compile(r'\((\d+) ([^\s()]+) ([^\s()]+)\)')
 TAGWORD = re.compile(r'\(([^\s()]+) ([^\s()]+)\)')
 WORD = re.compile(r'\([^\s()]+ ([^\s()]+)\)')
 EMPTY_BRACKETS = re.compile(r'\s*\(\s*\(')
+
 
 class BracketParseCorpusReader(SyntaxCorpusReader):
     """
@@ -30,6 +29,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
     e.g. "(S (NP (DT the) (JJ little) (NN dog)) (VP (VBD barked)))".
 
     """
+
     def __init__(self, root, fileids, comment_char=None,
                  detect_blocks='unindented_paren', encoding='utf8',
                  tagset=None):
@@ -61,7 +61,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             toks = read_regexp_block(stream, start_re=r'^\(')
             # Strip any comments out of the tokens.
             if self._comment_char:
-                toks = [re.sub('(?m)^%s.*'%re.escape(self._comment_char),
+                toks = [re.sub('(?m)^%s.*' % re.escape(self._comment_char),
                                '', tok)
                         for tok in toks]
             return toks
@@ -89,24 +89,26 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             if e.args == ('mismatched parens',):
                 for n in range(1, 5):
                     try:
-                        v = Tree(self._normalize(t+')'*n))
+                        v = Tree(self._normalize(t + ')' * n))
                         sys.stderr.write("  Recovered by adding %d close "
                                          "paren(s)\n" % n)
                         return v
-                    except ValueError: pass
+                    except ValueError:
+                        pass
             # Try something else:
             sys.stderr.write("  Recovered by returning a flat parse.\n")
-            #sys.stderr.write(' '.join(t.split())+'\n')
+            # sys.stderr.write(' '.join(t.split())+'\n')
             return Tree('S', self._tag(t))
 
     def _tag(self, t, tagset=None):
-        tagged_sent = [(w,p) for (p,w) in TAGWORD.findall(self._normalize(t))]
+        tagged_sent = [(w, p) for (p, w) in TAGWORD.findall(self._normalize(t))]
         if tagset and tagset != self._tagset:
-            tagged_sent = [(w, map_tag(self._tagset, tagset, p)) for (w,p) in tagged_sent]
+            tagged_sent = [(w, map_tag(self._tagset, tagset, p)) for (w, p) in tagged_sent]
         return tagged_sent
 
     def _word(self, t):
         return WORD.findall(self._normalize(t))
+
 
 class CategorizedBracketParseCorpusReader(CategorizedCorpusReader,
                                           BracketParseCorpusReader):
@@ -115,6 +117,7 @@ class CategorizedBracketParseCorpusReader(CategorizedCorpusReader,
     divided into categories based on their file identifiers.
     @author: Nathan Schneider <nschneid@cs.cmu.edu>
     """
+
     def __init__(self, *args, **kwargs):
         """
         Initialize the corpus reader.  Categorization arguments
@@ -134,36 +137,47 @@ class CategorizedBracketParseCorpusReader(CategorizedCorpusReader,
             return self.fileids(categories)
         else:
             return fileids
+
     def raw(self, fileids=None, categories=None):
         return BracketParseCorpusReader.raw(
             self, self._resolve(fileids, categories))
+
     def words(self, fileids=None, categories=None):
         return BracketParseCorpusReader.words(
             self, self._resolve(fileids, categories))
+
     def sents(self, fileids=None, categories=None):
         return BracketParseCorpusReader.sents(
             self, self._resolve(fileids, categories))
+
     def paras(self, fileids=None, categories=None):
         return BracketParseCorpusReader.paras(
             self, self._resolve(fileids, categories))
+
     def tagged_words(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_words(
             self, self._resolve(fileids, categories), tagset)
+
     def tagged_sents(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_sents(
             self, self._resolve(fileids, categories), tagset)
+
     def tagged_paras(self, fileids=None, categories=None, tagset=None):
         return BracketParseCorpusReader.tagged_paras(
             self, self._resolve(fileids, categories), tagset)
+
     def parsed_words(self, fileids=None, categories=None):
         return BracketParseCorpusReader.parsed_words(
             self, self._resolve(fileids, categories))
+
     def parsed_sents(self, fileids=None, categories=None):
         return BracketParseCorpusReader.parsed_sents(
             self, self._resolve(fileids, categories))
+
     def parsed_paras(self, fileids=None, categories=None):
         return BracketParseCorpusReader.parsed_paras(
             self, self._resolve(fileids, categories))
+
 
 class AlpinoCorpusReader(BracketParseCorpusReader):
     """
@@ -175,13 +189,14 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     to the overridden _normalize function. The _parse function can then remain 
     untouched.
     """
+
     def __init__(self, root, encoding='ISO-8859-1', tagset=None):
         BracketParseCorpusReader.__init__(self, root, 'alpino\.xml',
-                                 detect_blocks='blankline',
-                                 encoding=encoding,
-                                 tagset=tagset)
+                                          detect_blocks='blankline',
+                                          encoding=encoding,
+                                          tagset=tagset)
 
-    def _normalize(self, t, ordered = False):
+    def _normalize(self, t, ordered=False):
         """Normalize the xml sentence element in t.
         The sentence elements <alpino_ds>, although embedded in a few overall 
         xml elements, are seperated by blank lines. That's how the reader can 
@@ -204,7 +219,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         t = re.sub(r'  <node .*? cat="(\w+)".*>', r"(\1", t)
         if ordered:
             t = re.sub(r'  <node. *?begin="(\d+)".*? pos="(\w+)".*? word="([^"]+)".*?/>', r"(\1 \2 \3)", t)
-        else: 
+        else:
             t = re.sub(r'  <node .*?pos="(\w+)".*? word="([^"]+)".*?/>', r"(\1 \2)", t)
         t = re.sub(r"  </node>", r")", t)
         t = re.sub(r"<sentence>.*</sentence>", r"", t)
@@ -212,16 +227,15 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         return t
 
     def _tag(self, t, tagset=None):
-        tagged_sent = [(int(o), w, p) for (o,p,w) in SORTTAGWRD.findall(self._normalize(t, ordered = True))]
+        tagged_sent = [(int(o), w, p) for (o, p, w) in SORTTAGWRD.findall(self._normalize(t, ordered=True))]
         tagged_sent.sort()
         if tagset and tagset != self._tagset:
-            tagged_sent = [(w, map_tag(self._tagset, tagset, p)) for (o,w,p) in tagged_sent]
+            tagged_sent = [(w, map_tag(self._tagset, tagset, p)) for (o, w, p) in tagged_sent]
         else:
-            tagged_sent = [(w,p) for (o,w,p) in tagged_sent]
+            tagged_sent = [(w, p) for (o, w, p) in tagged_sent]
         return tagged_sent
 
     def _word(self, t):
         """Return a correctly ordered list if words"""
         tagged_sent = self._tag(t)
-        return [w for (w,p) in tagged_sent]      
-
+        return [w for (w, p) in tagged_sent]

@@ -9,17 +9,16 @@
 
 from __future__ import unicode_literals, print_function
 
-import tempfile
 import os
-import json
+import tempfile
 from subprocess import PIPE
 
 from nltk import compat
 from nltk.internals import find_jar, config_java, java, _java_options
-
 from nltk.tokenize.api import TokenizerI
 
 _stanford_url = 'https://nlp.stanford.edu/software/tokenizer.shtml'
+
 
 class StanfordTokenizer(TokenizerI):
     r"""
@@ -104,4 +103,5 @@ def setup_module(module):
     try:
         StanfordTokenizer()
     except LookupError:
-        raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
+        raise SkipTest(
+            'doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')

@@ -21,16 +21,15 @@ from __future__ import print_function, unicode_literals
 
 import re
 
-from nltk.probability import ConditionalFreqDist
+from nltk import jsontags
 from nltk.classify import NaiveBayesClassifier
 from nltk.compat import python_2_unicode_compatible
-
+from nltk.probability import ConditionalFreqDist
 from nltk.tag.api import TaggerI, FeaturesetTaggerI
 
-from nltk import jsontags
 
 ######################################################################
-#{ Abstract Base Classes
+# { Abstract Base Classes
 ######################################################################
 class SequentialBackoffTagger(TaggerI):
     """
@@ -43,6 +42,7 @@ class SequentialBackoffTagger(TaggerI):
     :ivar _taggers: A list of all the taggers that should be tried to
         tag a token (i.e., self and its backoff taggers).
     """
+
     def __init__(self, backoff=None):
         if backoff is None:
             self._taggers = [self]
@@ -117,6 +117,7 @@ class ContextTagger(SequentialBackoffTagger):
 
     :ivar _context_to_tag: Dictionary mapping contexts to tags.
     """
+
     def __init__(self, context_to_tag, backoff=None):
         """
         :param context_to_tag: A dictionary mapping contexts to tags.
@@ -184,7 +185,7 @@ class ContextTagger(SequentialBackoffTagger):
                 fd[context][tag] += 1
                 # If the backoff got it wrong, this context is useful:
                 if (self.backoff is None or
-                    tag != self.backoff.tag_one(tokens, index, tags[:index])):
+                            tag != self.backoff.tag_one(tokens, index, tags[:index])):
                     useful_contexts.add(context)
 
         # Build the context_to_tag table -- for each context, figure
@@ -200,14 +201,15 @@ class ContextTagger(SequentialBackoffTagger):
         # Display some stats, if requested.
         if verbose:
             size = len(self._context_to_tag)
-            backoff = 100 - (hit_count * 100.0)/ token_count
+            backoff = 100 - (hit_count * 100.0) / token_count
             pruning = 100 - (size * 100.0) / len(fd.conditions())
             print("[Trained Unigram tagger:", end=' ')
             print("size=%d, backoff=%.2f%%, pruning=%.2f%%]" % (
                 size, backoff, pruning))
 
+
 ######################################################################
-#{ Tagger Classes
+# { Tagger Classes
 ######################################################################
 
 @python_2_unicode_compatible
@@ -295,7 +297,7 @@ class NgramTagger(ContextTagger):
         return cls(_n, model=_context_to_tag, backoff=backoff)
 
     def context(self, tokens, index, history):
-        tag_context = tuple(history[max(0,index-self._n+1):index])
+        tag_context = tuple(history[max(0, index - self._n + 1):index])
         return tag_context, tokens[index]
 
 
@@ -595,6 +597,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         back on its backoff tagger if the probability of the most
         likely tag is less than *cutoff_prob*.
     """
+
     def __init__(self, feature_detector=None, train=None,
                  classifier_builder=NaiveBayesClassifier.train,
                  classifier=None, backoff=None,
@@ -651,8 +654,8 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
             untagged_sentence, tags = zip(*sentence)
             for index in range(len(sentence)):
                 featureset = self.feature_detector(untagged_sentence,
-                                                    index, history)
-                classifier_corpus.append( (featureset, tags[index]) )
+                                                   index, history)
+                classifier_corpus.append((featureset, tags[index]))
                 history.append(tags[index])
 
         if verbose:
@@ -683,25 +686,27 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         """
         return self._classifier
 
+
 class ClassifierBasedPOSTagger(ClassifierBasedTagger):
     """
     A classifier based part of speech tagger.
     """
+
     def feature_detector(self, tokens, index, history):
         word = tokens[index]
         if index == 0:
             prevword = prevprevword = None
             prevtag = prevprevtag = None
         elif index == 1:
-            prevword = tokens[index-1].lower()
+            prevword = tokens[index - 1].lower()
             prevprevword = None
-            prevtag = history[index-1]
+            prevtag = history[index - 1]
             prevprevtag = None
         else:
-            prevword = tokens[index-1].lower()
-            prevprevword = tokens[index-2].lower()
-            prevtag = history[index-1]
-            prevprevtag = history[index-2]
+            prevword = tokens[index - 1].lower()
+            prevprevword = tokens[index - 2].lower()
+            prevtag = history[index - 1]
+            prevprevtag = history[index - 2]
 
         if re.match('[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$', word):
             shape = 'number'
@@ -730,7 +735,5 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
             'prevprevtag+word': '%s+%s' % (prevprevtag, word.lower()),
             'prevword+word': '%s+%s' % (prevword, word.lower()),
             'shape': shape,
-            }
+        }
         return features
-
-

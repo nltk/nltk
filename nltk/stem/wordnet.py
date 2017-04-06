@@ -7,9 +7,10 @@
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
 
-from nltk.corpus.reader.wordnet import NOUN
-from nltk.corpus import wordnet
 from nltk.compat import python_2_unicode_compatible
+from nltk.corpus import wordnet
+from nltk.corpus.reader.wordnet import NOUN
+
 
 @python_2_unicode_compatible
 class WordNetLemmatizer(object):
@@ -48,4 +49,3 @@ class WordNetLemmatizer(object):
 def teardown_module(module=None):
     from nltk.corpus import wordnet
     wordnet._unload()
-

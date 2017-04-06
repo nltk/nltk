@@ -22,9 +22,11 @@ Model (Doctoral dissertation). Columbus, OH, USA: The Ohio State University.
 """
 
 import re
+
 from six import text_type
 
 from nltk.tokenize.api import TokenizerI
+
 
 class ToktokTokenizer(TokenizerI):
     """
@@ -46,28 +48,28 @@ class ToktokTokenizer(TokenizerI):
     """
     # Replace non-breaking spaces with normal spaces.
     NON_BREAKING = re.compile(u"\u00A0"), " "
-    
+
     # Pad some funky punctuation.
     FUNKY_PUNCT_1 = re.compile(u'([،;؛¿!"\])}»›”؟¡%٪°±©®।॥…])'), r" \1 "
     # Pad more funky punctuation.
     FUNKY_PUNCT_2 = re.compile(u'([({\[“‘„‚«‹「『])'), r" \1 "
     # Pad En dash and em dash
     EN_EM_DASHES = re.compile(u'([–—])'), r" \1 "
-    
+
     # Replace problematic character with numeric character reference.
     AMPERCENT = re.compile('& '), '&amp; '
     TAB = re.compile('\t'), ' &#9; '
     PIPE = re.compile('\|'), ' &#124; '
-    
+
     # Pad numbers with commas to keep them from further tokenization. 
     COMMA_IN_NUM = re.compile(r'(?<!,)([,،])(?![,\d])'), r' \1 '
-    
+
     # Just pad problematic (often neurotic) hyphen/single quote, etc.
     PROB_SINGLE_QUOTES = re.compile(r"(['’`])"), r' \1 '
     # Group ` ` stupid quotes ' ' into a single token.
     STUPID_QUOTES_1 = re.compile(r" ` ` "), r" `` "
     STUPID_QUOTES_2 = re.compile(r" ' ' "), r" '' "
-    
+
     # Don't tokenize period unless it ends the line and that it isn't 
     # preceded by another period, e.g.  
     # "something ..." -> "something ..." 
@@ -87,14 +89,14 @@ class ToktokTokenizer(TokenizerI):
     # This is the \p{Open_Punctuation} from Perl's perluniprops
     # see http://perldoc.perl.org/perluniprops.html
     OPEN_PUNCT = text_type(u'([{\u0f3a\u0f3c\u169b\u201a\u201e\u2045\u207d'
-                            u'\u208d\u2329\u2768\u276a\u276c\u276e\u2770\u2772'
-                            u'\u2774\u27c5\u27e6\u27e8\u27ea\u27ec\u27ee\u2983'
-                            u'\u2985\u2987\u2989\u298b\u298d\u298f\u2991\u2993'
-                            u'\u2995\u2997\u29d8\u29da\u29fc\u2e22\u2e24\u2e26'
-                            u'\u2e28\u3008\u300a\u300c\u300e\u3010\u3014\u3016'
-                            u'\u3018\u301a\u301d\ufd3e\ufe17\ufe35\ufe37\ufe39'
-                            u'\ufe3b\ufe3d\ufe3f\ufe41\ufe43\ufe47\ufe59\ufe5b'
-                            u'\ufe5d\uff08\uff3b\uff5b\uff5f\uff62')
+                           u'\u208d\u2329\u2768\u276a\u276c\u276e\u2770\u2772'
+                           u'\u2774\u27c5\u27e6\u27e8\u27ea\u27ec\u27ee\u2983'
+                           u'\u2985\u2987\u2989\u298b\u298d\u298f\u2991\u2993'
+                           u'\u2995\u2997\u29d8\u29da\u29fc\u2e22\u2e24\u2e26'
+                           u'\u2e28\u3008\u300a\u300c\u300e\u3010\u3014\u3016'
+                           u'\u3018\u301a\u301d\ufd3e\ufe17\ufe35\ufe37\ufe39'
+                           u'\ufe3b\ufe3d\ufe3f\ufe41\ufe43\ufe47\ufe59\ufe5b'
+                           u'\ufe5d\uff08\uff3b\uff5b\uff5f\uff62')
     # This is the \p{Close_Punctuation} from Perl's perluniprops
     CLOSE_PUNCT = text_type(u')]}\u0f3b\u0f3d\u169c\u2046\u207e\u208e\u232a'
                             u'\u2769\u276b\u276d\u276f\u2771\u2773\u2775\u27c6'
@@ -112,44 +114,44 @@ class ToktokTokenizer(TokenizerI):
                              u'\u20ac\u20ad\u20ae\u20af\u20b0\u20b1\u20b2\u20b3'
                              u'\u20b4\u20b5\u20b6\u20b7\u20b8\u20b9\u20ba\ua838'
                              u'\ufdfc\ufe69\uff04\uffe0\uffe1\uffe5\uffe6')
-    
+
     # Pad spaces after opening punctuations.
     OPEN_PUNCT_RE = re.compile(u'([{}])'.format(OPEN_PUNCT)), r'\1 '
     # Pad spaces before closing punctuations.
     CLOSE_PUNCT_RE = re.compile(u'([{}])'.format(CLOSE_PUNCT)), r'\1 '
     # Pad spaces after currency symbols.
     CURRENCY_SYM_RE = re.compile(u'([{}])'.format(CURRENCY_SYM)), r'\1 '
-    
+
     # Use for tokenizing URL-unfriendly characters: [:/?#]
-    URL_FOE_1 = re.compile(r':(?!//)'), r' : ' # in perl s{:(?!//)}{ : }g;
-    URL_FOE_2 = re.compile(r'\?(?!\S)'), r' ? ' # in perl s{\?(?!\S)}{ ? }g;
+    URL_FOE_1 = re.compile(r':(?!//)'), r' : '  # in perl s{:(?!//)}{ : }g;
+    URL_FOE_2 = re.compile(r'\?(?!\S)'), r' ? '  # in perl s{\?(?!\S)}{ ? }g;
     # in perl: m{://} or m{\S+\.\S+/\S+} or s{/}{ / }g;
     URL_FOE_3 = re.compile(r'(:\/\/)[\S+\.\S+\/\S+][\/]'), ' / '
-    URL_FOE_4 = re.compile(r' /'), r' / ' # s{ /}{ / }g;
-    
+    URL_FOE_4 = re.compile(r' /'), r' / '  # s{ /}{ / }g;
+
     # Left/Right strip, i.e. remove heading/trailing spaces.
     # These strip regexes should NOT be used,
     # instead use str.lstrip(), str.rstrip() or str.strip() 
     # (They are kept for reference purposes to the original toktok.pl code)  
     LSTRIP = re.compile(r'^ +'), ''
-    RSTRIP = re.compile(r'\s+$'),'\n' 
+    RSTRIP = re.compile(r'\s+$'), '\n'
     # Merge multiple spaces.
     ONE_SPACE = re.compile(r' {2,}'), ' '
-    
-    TOKTOK_REGEXES = [NON_BREAKING, FUNKY_PUNCT_1, 
+
+    TOKTOK_REGEXES = [NON_BREAKING, FUNKY_PUNCT_1,
                       URL_FOE_1, URL_FOE_2, URL_FOE_3, URL_FOE_4,
                       AMPERCENT, TAB, PIPE,
-                      OPEN_PUNCT_RE, CLOSE_PUNCT_RE, 
+                      OPEN_PUNCT_RE, CLOSE_PUNCT_RE,
                       MULTI_COMMAS, COMMA_IN_NUM, FINAL_PERIOD_2,
                       PROB_SINGLE_QUOTES, STUPID_QUOTES_1, STUPID_QUOTES_2,
                       CURRENCY_SYM_RE, EN_EM_DASHES, MULTI_DASHES, MULTI_DOTS,
                       FINAL_PERIOD_1, FINAL_PERIOD_2, ONE_SPACE]
-    
+
     def tokenize(self, text, return_str=False):
-        text = text_type(text) # Converts input string into unicode.
+        text = text_type(text)  # Converts input string into unicode.
         for regexp, subsitution in self.TOKTOK_REGEXES:
             text = regexp.sub(subsitution, text)
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
-        text = text_type(text.strip()) 
+        text = text_type(text.strip())
         return text if return_str else text.split()

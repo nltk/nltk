@@ -6,35 +6,31 @@
 # For license information, see LICENSE.TXT
 from __future__ import print_function
 
-import sys
 import inspect
 import locale
-import re
-import types
-import textwrap
-import pydoc
-import bisect
 import os
-
-from itertools import islice, chain, combinations
+import pydoc
+import re
+import sys
+import textwrap
+from itertools import combinations
 from pprint import pprint
-from collections import defaultdict, deque
 from sys import version_info
 
-from nltk.internals import slice_bounds, raise_unorderable_types
+from collections import deque
 from nltk.collections import *
-from nltk.compat import (class_types, text_type, string_types, total_ordering,
-                         python_2_unicode_compatible, getproxies,
-			 ProxyHandler, build_opener, install_opener,
-			 HTTPPasswordMgrWithDefaultRealm,
-			 ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+from nltk.compat import (class_types, text_type, string_types, getproxies,
+                         ProxyHandler, build_opener, install_opener,
+                         HTTPPasswordMgrWithDefaultRealm,
+                         ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+
 
 ######################################################################
 # Short usage message
 ######################################################################
 
 def usage(obj, selfname='self'):
-    str(obj) # In case it's lazy, this will load it.
+    str(obj)  # In case it's lazy, this will load it.
 
     if not isinstance(obj, class_types):
         obj = obj.__class__
@@ -49,15 +45,16 @@ def usage(obj, selfname='self'):
         else:
             getargspec = inspect.getargspec
         args, varargs, varkw, defaults = getargspec(method)[:4]
-        if (args and args[0]=='self' and
-            (defaults is None or len(args)>len(defaults))):
+        if (args and args[0] == 'self' and
+                (defaults is None or len(args) > len(defaults))):
             args = args[1:]
             name = '%s.%s' % (selfname, name)
         argspec = inspect.formatargspec(
             args, varargs, varkw, defaults)
         print(textwrap.fill('%s%s' % (name, argspec),
                             initial_indent='  - ',
-                            subsequent_indent=' '*(len(name)+5)))
+                            subsequent_indent=' ' * (len(name) + 5)))
+
 
 ##########################################################################
 # IDLE
@@ -77,6 +74,7 @@ def in_idle():
     import sys
     return sys.stdin.__class__.__name__ in ('PyShell', 'RPCProxy')
 
+
 ##########################################################################
 # PRETTY PRINTING
 ##########################################################################
@@ -94,6 +92,7 @@ def pr(data, start=0, end=None):
     """
     pprint(list(islice(data, start, end)))
 
+
 def print_string(s, width=70):
     """
     Pretty print a string, breaking lines on whitespace
@@ -104,6 +103,7 @@ def print_string(s, width=70):
     :type width: int
     """
     print('\n'.join(textwrap.wrap(s, width=width)))
+
 
 def tokenwrap(tokens, separator=" ", width=70):
     """
@@ -125,8 +125,12 @@ def tokenwrap(tokens, separator=" ", width=70):
 
 def py25():
     return version_info[0] == 2 and version_info[1] == 5
+
+
 def py26():
     return version_info[0] == 2 and version_info[1] == 6
+
+
 def py27():
     return version_info[0] == 2 and version_info[1] == 7
 
@@ -136,7 +140,6 @@ def py27():
 ##########################################################################
 
 class Index(defaultdict):
-
     def __init__(self, pairs):
         defaultdict.__init__(self, list)
         for key, value in pairs:
@@ -180,6 +183,7 @@ def filestring(f):
     else:
         raise ValueError("Must be called with a filename or file-like object")
 
+
 ##########################################################################
 # Breadth-First Search
 ##########################################################################
@@ -202,6 +206,7 @@ def breadth_first(tree, children=iter, maxdepth=-1):
                 queue.extend((c, depth + 1) for c in children(node))
             except TypeError:
                 pass
+
 
 ##########################################################################
 # Guess Character Encoding
@@ -257,11 +262,11 @@ def guess_encoding(data):
         else:
             break
     if not successful_encoding:
-         raise UnicodeError(
-        'Unable to decode input data.  Tried the following encodings: %s.'
-        % ', '.join([repr(enc) for enc in encodings if enc]))
+        raise UnicodeError(
+            'Unable to decode input data.  Tried the following encodings: %s.'
+            % ', '.join([repr(enc) for enc in encodings if enc]))
     else:
-         return (decoded, successful_encoding)
+        return (decoded, successful_encoding)
 
 
 ##########################################################################
@@ -272,6 +277,7 @@ def unique_list(xs):
     seen = set()
     # not seen.add(x) here acts to make the code shorter without using if statements, seen.add(x) always returns None.
     return [x for x in xs if x not in seen and not seen.add(x)]
+
 
 ##########################################################################
 # Invert a dictionary
@@ -343,16 +349,17 @@ def invert_graph(graph):
     return inverted
 
 
-
 ##########################################################################
 # HTML Cleaning
 ##########################################################################
 
 def clean_html(html):
-    raise NotImplementedError ("To remove HTML markup, use BeautifulSoup's get_text() function")
+    raise NotImplementedError("To remove HTML markup, use BeautifulSoup's get_text() function")
+
 
 def clean_url(url):
-    raise NotImplementedError ("To remove HTML markup, use BeautifulSoup's get_text() function")
+    raise NotImplementedError("To remove HTML markup, use BeautifulSoup's get_text() function")
+
 
 ##########################################################################
 # FLATTEN LISTS
@@ -379,6 +386,7 @@ def flatten(*args):
             else:
                 x.append(item)
     return x
+
 
 ##########################################################################
 # Ngram iteration
@@ -412,10 +420,11 @@ def pad_sequence(sequence, n, pad_left=False, pad_right=False,
     """
     sequence = iter(sequence)
     if pad_left:
-        sequence = chain((left_pad_symbol,) * (n-1), sequence)
+        sequence = chain((left_pad_symbol,) * (n - 1), sequence)
     if pad_right:
-        sequence = chain(sequence, (right_pad_symbol,) * (n-1))
+        sequence = chain(sequence, (right_pad_symbol,) * (n - 1))
     return sequence
+
 
 # add a flag to pad the sequence so we get peripheral ngrams?
 
@@ -468,6 +477,7 @@ def ngrams(sequence, n, pad_left=False, pad_right=False,
         yield tuple(history)
         del history[0]
 
+
 def bigrams(sequence, **kwargs):
     """
     Return the bigrams generated from a sequence of items, as an iterator.
@@ -487,6 +497,7 @@ def bigrams(sequence, **kwargs):
     for item in ngrams(sequence, 2, **kwargs):
         yield item
 
+
 def trigrams(sequence, **kwargs):
     """
     Return the trigrams generated from a sequence of items, as an iterator.
@@ -505,6 +516,7 @@ def trigrams(sequence, **kwargs):
 
     for item in ngrams(sequence, 3, **kwargs):
         yield item
+
 
 def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
     """
@@ -527,9 +539,10 @@ def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
 
     if max_len == -1:
         max_len = len(sequence)
-    for n in range(min_len, max_len+1):
+    for n in range(min_len, max_len + 1):
         for ng in ngrams(sequence, n, **kwargs):
             yield ng
+
 
 def skipgrams(sequence, n, k, **kwargs):
     """
@@ -567,6 +580,7 @@ def skipgrams(sequence, n, k, **kwargs):
             if skip_tail[-1] is SENTINEL:
                 continue
             yield head + skip_tail
+
 
 ######################################################################
 # Binary Search in a File
@@ -613,8 +627,8 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
                 line = file.readline()
                 if line != "": break
                 # at EOF; try to find start of the last line
-                middle = (start + middle)//2
-                if middle == end -1:
+                middle = (start + middle) // 2
+                if middle == end - 1:
                     return None
             if currentDepth < cacheDepth:
                 cache[middle] = (offset, line)
@@ -640,6 +654,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
 
     return None
 
+
 ######################################################################
 # Proxy configuration
 ######################################################################
@@ -657,7 +672,6 @@ def set_proxy(proxy, user=None, password=''):
         authentication.
     :param password: The password to authenticate with.
     """
-    from nltk import compat
 
     if proxy is None:
         # Try and find the system proxy settings
@@ -674,7 +688,7 @@ def set_proxy(proxy, user=None, password=''):
         # Set up basic proxy authentication if provided
         password_manager = HTTPPasswordMgrWithDefaultRealm()
         password_manager.add_password(realm=None, uri=proxy, user=user,
-                passwd=password)
+                                      passwd=password)
         opener.add_handler(ProxyBasicAuthHandler(password_manager))
         opener.add_handler(ProxyDigestAuthHandler(password_manager))
 
@@ -701,17 +715,18 @@ def elementtree_indent(elem, level=0):
     :return:  Contents of elem indented to reflect its structure
     """
 
-    i = "\n" + level*"  "
+    i = "\n" + level * "  "
     if len(elem):
         if not elem.text or not elem.text.strip():
             elem.text = i + "  "
         for elem in elem:
-            elementtree_indent(elem, level+1)
+            elementtree_indent(elem, level + 1)
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
     else:
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
+
 
 ######################################################################
 # Mathematical approximations

@@ -14,8 +14,8 @@ from itertools import chain
 
 from nltk.internals import overridden
 from nltk.metrics import accuracy
-
 from nltk.tag.util import untag
+
 
 class TaggerI(object):
     """
@@ -31,6 +31,7 @@ class TaggerI(object):
     Subclasses must define:
       - either ``tag()`` or ``tag_sents()`` (or both)
     """
+
     def tag(self, tokens):
         """
         Determine the most appropriate tag sequence for the given
@@ -72,6 +73,7 @@ class TaggerI(object):
         if (train and model) or (not train and not model):
             raise ValueError('Must specify either training data or trained model.')
 
+
 class FeaturesetTaggerI(TaggerI):
     """
     A tagger that requires tokens to be ``featuresets``.  A featureset
@@ -79,5 +81,3 @@ class FeaturesetTaggerI(TaggerI):
     values.  See ``nltk.classify`` for more information about features
     and featuresets.
     """
-
-

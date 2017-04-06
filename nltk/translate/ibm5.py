@@ -112,15 +112,17 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 """
 
 from __future__ import division
+
+import warnings
 from collections import defaultdict
 from math import factorial
+
 from nltk.translate import AlignedSent
 from nltk.translate import Alignment
 from nltk.translate import IBMModel
 from nltk.translate import IBMModel4
 from nltk.translate.ibm_model import Counts
 from nltk.translate.ibm_model import longest_target_sentence_length
-import warnings
 
 
 class IBMModel5(IBMModel):
@@ -284,11 +286,11 @@ class IBMModel5(IBMModel):
                 initial_prob = 1 / (2 * max_v)
                 self.head_vacancy_table[dv][max_v] = defaultdict(
                     lambda: initial_prob)
-                self.head_vacancy_table[-(dv-1)][max_v] = defaultdict(
+                self.head_vacancy_table[-(dv - 1)][max_v] = defaultdict(
                     lambda: initial_prob)
                 self.non_head_vacancy_table[dv][max_v] = defaultdict(
                     lambda: initial_prob)
-                self.non_head_vacancy_table[-(dv-1)][max_v] = defaultdict(
+                self.non_head_vacancy_table[-(dv - 1)][max_v] = defaultdict(
                     lambda: initial_prob)
 
     def train(self, parallel_corpus):
@@ -504,6 +506,7 @@ class IBMModel5(IBMModel):
                     return MIN_PROB
 
             return value
+
         # end nested functions
 
         # Abort computation whenever probability falls below MIN_PROB at
@@ -555,6 +558,7 @@ class Model5Counts(Counts):
     Data object to store counts of various parameters during training.
     Includes counts for vacancies.
     """
+
     def __init__(self):
         super(Model5Counts, self).__init__()
         self.head_vacancy = defaultdict(
@@ -616,6 +620,7 @@ class Slots(object):
     Represents positions in a target sentence. Used to keep track of
     which slot (position) is occupied.
     """
+
     def __init__(self, target_sentence_length):
         self._slots = [False] * (target_sentence_length + 1)  # 1-indexed
 

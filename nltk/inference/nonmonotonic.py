@@ -13,10 +13,12 @@ Michael R. Genesereth and Nils J. Nilsson.
 """
 from __future__ import print_function, unicode_literals
 
-from nltk.inference.prover9 import Prover9, Prover9Command
 from collections import defaultdict
 from functools import reduce
 
+from nltk.compat import python_2_unicode_compatible
+from nltk.inference.api import ProverCommandDecorator
+from nltk.inference.prover9 import Prover9, Prover9Command
 from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             ApplicationExpression, Expression,
                             AbstractVariableExpression, AllExpression,
@@ -24,10 +26,9 @@ from nltk.sem.logic import (VariableExpression, EqualityExpression,
                             ExistsExpression, Variable, ImpExpression,
                             AndExpression, unique_variable, operator)
 
-from nltk.inference.api import Prover, ProverCommandDecorator
-from nltk.compat import python_2_unicode_compatible
 
 class ProverParseError(Exception): pass
+
 
 def get_domain(goal, assumptions):
     if goal is None:
@@ -36,11 +37,13 @@ def get_domain(goal, assumptions):
         all_expressions = assumptions + [-goal]
     return reduce(operator.or_, (a.constants() for a in all_expressions), set())
 
+
 class ClosedDomainProver(ProverCommandDecorator):
     """
     This is a prover decorator that adds domain closure assumptions before
     proving.
     """
+
     def assumptions(self):
         assumptions = [a for a in self._command.assumptions()]
         goal = self._command.goal()
@@ -67,25 +70,27 @@ class ClosedDomainProver(ProverCommandDecorator):
             conjuncts = [ex.term.replace(ex.variable, VariableExpression(d))
                          for d in domain]
             conjuncts = [self.replace_quants(c, domain) for c in conjuncts]
-            return reduce(lambda x,y: x&y, conjuncts)
+            return reduce(lambda x, y: x & y, conjuncts)
         elif isinstance(ex, BooleanExpression):
             return ex.__class__(self.replace_quants(ex.first, domain),
-                                self.replace_quants(ex.second, domain) )
+                                self.replace_quants(ex.second, domain))
         elif isinstance(ex, NegatedExpression):
             return -self.replace_quants(ex.term, domain)
         elif isinstance(ex, ExistsExpression):
             disjuncts = [ex.term.replace(ex.variable, VariableExpression(d))
                          for d in domain]
             disjuncts = [self.replace_quants(d, domain) for d in disjuncts]
-            return reduce(lambda x,y: x|y, disjuncts)
+            return reduce(lambda x, y: x | y, disjuncts)
         else:
             return ex
+
 
 class UniqueNamesProver(ProverCommandDecorator):
     """
     This is a prover decorator that adds unique names assumptions before
     proving.
     """
+
     def assumptions(self):
         """
          - Domain = union([e.free()|e.constants() for e in all_expressions])
@@ -95,36 +100,38 @@ class UniqueNamesProver(ProverCommandDecorator):
 
         domain = list(get_domain(self._command.goal(), assumptions))
 
-        #build a dictionary of obvious equalities
+        # build a dictionary of obvious equalities
         eq_sets = SetHolder()
         for a in assumptions:
             if isinstance(a, EqualityExpression):
                 av = a.first.variable
                 bv = a.second.variable
-                #put 'a' and 'b' in the same set
+                # put 'a' and 'b' in the same set
                 eq_sets[av].add(bv)
 
         new_assumptions = []
-        for i,a in enumerate(domain):
-            for b in domain[i+1:]:
-                #if a and b are not already in the same equality set
+        for i, a in enumerate(domain):
+            for b in domain[i + 1:]:
+                # if a and b are not already in the same equality set
                 if b not in eq_sets[a]:
                     newEqEx = EqualityExpression(VariableExpression(a),
                                                  VariableExpression(b))
                     if Prover9().prove(newEqEx, assumptions):
-                        #we can prove that the names are the same entity.
-                        #remember that they are equal so we don't re-check.
+                        # we can prove that the names are the same entity.
+                        # remember that they are equal so we don't re-check.
                         eq_sets[a].add(b)
                     else:
-                        #we can't prove it, so assume unique names
+                        # we can't prove it, so assume unique names
                         new_assumptions.append(-newEqEx)
 
         return assumptions + new_assumptions
+
 
 class SetHolder(list):
     """
     A list of sets of Variables.
     """
+
     def __getitem__(self, item):
         """
         :param item: ``Variable``
@@ -134,10 +141,11 @@ class SetHolder(list):
         for s in self:
             if item in s:
                 return s
-        #item is not found in any existing set.  so create a new set
+        # item is not found in any existing set.  so create a new set
         new = set([item])
         self.append(new)
         return new
+
 
 class ClosedWorldProver(ProverCommandDecorator):
     """
@@ -170,6 +178,7 @@ class ClosedWorldProver(ProverCommandDecorator):
     -------------------
     -bird(Sam)
     """
+
     def assumptions(self):
         assumptions = self._command.assumptions()
 
@@ -183,32 +192,32 @@ class ClosedWorldProver(ProverCommandDecorator):
 
             disjuncts = []
 
-            #Turn the signatures into disjuncts
+            # Turn the signatures into disjuncts
             for sig in predHolder.signatures:
                 equality_exs = []
-                for v1,v2 in zip(new_sig_exs, sig):
-                    equality_exs.append(EqualityExpression(v1,v2))
-                disjuncts.append(reduce(lambda x,y: x&y, equality_exs))
+                for v1, v2 in zip(new_sig_exs, sig):
+                    equality_exs.append(EqualityExpression(v1, v2))
+                disjuncts.append(reduce(lambda x, y: x & y, equality_exs))
 
-            #Turn the properties into disjuncts
+            # Turn the properties into disjuncts
             for prop in predHolder.properties:
-                #replace variables from the signature with new sig variables
+                # replace variables from the signature with new sig variables
                 bindings = {}
-                for v1,v2 in zip(new_sig_exs, prop[0]):
+                for v1, v2 in zip(new_sig_exs, prop[0]):
                     bindings[v2] = v1
                 disjuncts.append(prop[1].substitute_bindings(bindings))
 
-            #make the assumption
+            # make the assumption
             if disjuncts:
-                #disjuncts exist, so make an implication
+                # disjuncts exist, so make an implication
                 antecedent = self._make_antecedent(p, new_sig)
-                consequent = reduce(lambda x,y: x|y, disjuncts)
+                consequent = reduce(lambda x, y: x | y, disjuncts)
                 accum = ImpExpression(antecedent, consequent)
             else:
-                #nothing has property 'p'
+                # nothing has property 'p'
                 accum = NegatedExpression(self._make_antecedent(p, new_sig))
 
-            #quantify the implication
+            # quantify the implication
             for new_sig_var in new_sig[::-1]:
                 accum = AllExpression(new_sig_var, accum)
             new_assumptions.append(accum)
@@ -253,7 +262,7 @@ class ClosedWorldProver(ProverCommandDecorator):
             self._map_predicates(expression.first, predDict)
             self._map_predicates(expression.second, predDict)
         elif isinstance(expression, AllExpression):
-            #collect all the universally quantified variables
+            # collect all the universally quantified variables
             sig = [expression.variable]
             term = expression.term
             while isinstance(term, AllExpression):
@@ -261,15 +270,16 @@ class ClosedWorldProver(ProverCommandDecorator):
                 term = term.term
             if isinstance(term, ImpExpression):
                 if isinstance(term.first, ApplicationExpression) and \
-                   isinstance(term.second, ApplicationExpression):
+                        isinstance(term.second, ApplicationExpression):
                     func1, args1 = term.first.uncurry()
                     func2, args2 = term.second.uncurry()
                     if isinstance(func1, AbstractVariableExpression) and \
-                       isinstance(func2, AbstractVariableExpression) and \
-                       sig == [v.variable for v in args1] and \
-                       sig == [v.variable for v in args2]:
+                            isinstance(func2, AbstractVariableExpression) and \
+                                    sig == [v.variable for v in args1] and \
+                                    sig == [v.variable for v in args2]:
                         predDict[func2].append_prop((tuple(sig), term.first))
                         predDict[func1].validate_sig_len(sig)
+
 
 @python_2_unicode_compatible
 class PredHolder(object):
@@ -287,6 +297,7 @@ class PredHolder(object):
     'all x.all y.(see(x,y) -> know(x,y))' would result in "((x,y),('see(x,y)'))"
     for 'know'.
     """
+
     def __init__(self):
         self.signatures = []
         self.properties = []
@@ -313,13 +324,14 @@ class PredHolder(object):
     def __repr__(self):
         return "%s" % self
 
+
 def closed_domain_demo():
     lexpr = Expression.fromstring
 
     p1 = lexpr(r'exists x.walk(x)')
     p2 = lexpr(r'man(Socrates)')
     c = lexpr(r'walk(Socrates)')
-    prover = Prover9Command(c, [p1,p2])
+    prover = Prover9Command(c, [p1, p2])
     print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print('assumptions:')
@@ -331,7 +343,7 @@ def closed_domain_demo():
     p2 = lexpr(r'man(Socrates)')
     p3 = lexpr(r'-walk(Bill)')
     c = lexpr(r'walk(Socrates)')
-    prover = Prover9Command(c, [p1,p2,p3])
+    prover = Prover9Command(c, [p1, p2, p3])
     print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print('assumptions:')
@@ -343,7 +355,7 @@ def closed_domain_demo():
     p2 = lexpr(r'man(Socrates)')
     p3 = lexpr(r'-walk(Bill)')
     c = lexpr(r'walk(Socrates)')
-    prover = Prover9Command(c, [p1,p2,p3])
+    prover = Prover9Command(c, [p1, p2, p3])
     print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print('assumptions:')
@@ -354,7 +366,7 @@ def closed_domain_demo():
     p1 = lexpr(r'walk(Socrates)')
     p2 = lexpr(r'walk(Bill)')
     c = lexpr(r'all x.walk(x)')
-    prover = Prover9Command(c, [p1,p2])
+    prover = Prover9Command(c, [p1, p2])
     print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print('assumptions:')
@@ -368,7 +380,7 @@ def closed_domain_demo():
     p4 = lexpr(r'all x.(dog(x) -> -girl(x))')
     p5 = lexpr(r'chase(mary, rover)')
     c = lexpr(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
-    prover = Prover9Command(c, [p1,p2,p3,p4,p5])
+    prover = Prover9Command(c, [p1, p2, p3, p4, p5])
     print(prover.prove())
     cdp = ClosedDomainProver(prover)
     print('assumptions:')
@@ -376,13 +388,14 @@ def closed_domain_demo():
     print('goal:', cdp.goal())
     print(cdp.prove())
 
+
 def unique_names_demo():
     lexpr = Expression.fromstring
 
     p1 = lexpr(r'man(Socrates)')
     p2 = lexpr(r'man(Bill)')
     c = lexpr(r'exists x.exists y.(x != y)')
-    prover = Prover9Command(c, [p1,p2])
+    prover = Prover9Command(c, [p1, p2])
     print(prover.prove())
     unp = UniqueNamesProver(prover)
     print('assumptions:')
@@ -394,7 +407,7 @@ def unique_names_demo():
     p2 = lexpr(r'Bill = William')
     p3 = lexpr(r'Bill = Billy')
     c = lexpr(r'-walk(William)')
-    prover = Prover9Command(c, [p1,p2,p3])
+    prover = Prover9Command(c, [p1, p2, p3])
     print(prover.prove())
     unp = UniqueNamesProver(prover)
     print('assumptions:')
@@ -402,13 +415,14 @@ def unique_names_demo():
     print('goal:', unp.goal())
     print(unp.prove())
 
+
 def closed_world_demo():
     lexpr = Expression.fromstring
 
     p1 = lexpr(r'walk(Socrates)')
     p2 = lexpr(r'(Socrates != Bill)')
     c = lexpr(r'-walk(Bill)')
-    prover = Prover9Command(c, [p1,p2])
+    prover = Prover9Command(c, [p1, p2])
     print(prover.prove())
     cwp = ClosedWorldProver(prover)
     print('assumptions:')
@@ -421,7 +435,7 @@ def closed_world_demo():
     p3 = lexpr(r'(Socrates != John)')
     p4 = lexpr(r'(John != Mary)')
     c = lexpr(r'-see(Socrates, Mary)')
-    prover = Prover9Command(c, [p1,p2,p3,p4])
+    prover = Prover9Command(c, [p1, p2, p3, p4])
     print(prover.prove())
     cwp = ClosedWorldProver(prover)
     print('assumptions:')
@@ -434,7 +448,7 @@ def closed_world_demo():
     p3 = lexpr(r'-ostrich(Sam)')
     p4 = lexpr(r'Sam != Tweety')
     c = lexpr(r'-bird(Sam)')
-    prover = Prover9Command(c, [p1,p2,p3,p4])
+    prover = Prover9Command(c, [p1, p2, p3, p4])
     print(prover.prove())
     cwp = ClosedWorldProver(prover)
     print('assumptions:')
@@ -442,48 +456,50 @@ def closed_world_demo():
     print('goal:', cwp.goal())
     print(cwp.prove())
 
+
 def combination_prover_demo():
     lexpr = Expression.fromstring
 
     p1 = lexpr(r'see(Socrates, John)')
     p2 = lexpr(r'see(John, Mary)')
     c = lexpr(r'-see(Socrates, Mary)')
-    prover = Prover9Command(c, [p1,p2])
+    prover = Prover9Command(c, [p1, p2])
     print(prover.prove())
     command = ClosedDomainProver(
-                  UniqueNamesProver(
-                      ClosedWorldProver(prover)))
+        UniqueNamesProver(
+            ClosedWorldProver(prover)))
     for a in command.assumptions(): print(a)
     print(command.prove())
+
 
 def default_reasoning_demo():
     lexpr = Expression.fromstring
 
     premises = []
 
-    #define taxonomy
+    # define taxonomy
     premises.append(lexpr(r'all x.(elephant(x)        -> animal(x))'))
     premises.append(lexpr(r'all x.(bird(x)            -> animal(x))'))
     premises.append(lexpr(r'all x.(dove(x)            -> bird(x))'))
     premises.append(lexpr(r'all x.(ostrich(x)         -> bird(x))'))
     premises.append(lexpr(r'all x.(flying_ostrich(x)  -> ostrich(x))'))
 
-    #default properties
-    premises.append(lexpr(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')) #normal animals don't fly
-    premises.append(lexpr(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))')) #normal birds fly
-    premises.append(lexpr(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')) #normal ostriches don't fly
+    # default properties
+    premises.append(lexpr(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))'))  # normal animals don't fly
+    premises.append(lexpr(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))'))  # normal birds fly
+    premises.append(lexpr(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))'))  # normal ostriches don't fly
 
-    #specify abnormal entities
-    premises.append(lexpr(r'all x.(bird(x)           -> Ab1(x))')) #flight
-    premises.append(lexpr(r'all x.(ostrich(x)        -> Ab2(x))')) #non-flying bird
-    premises.append(lexpr(r'all x.(flying_ostrich(x) -> Ab3(x))')) #flying ostrich
+    # specify abnormal entities
+    premises.append(lexpr(r'all x.(bird(x)           -> Ab1(x))'))  # flight
+    premises.append(lexpr(r'all x.(ostrich(x)        -> Ab2(x))'))  # non-flying bird
+    premises.append(lexpr(r'all x.(flying_ostrich(x) -> Ab3(x))'))  # flying ostrich
 
-    #define entities
+    # define entities
     premises.append(lexpr(r'elephant(E)'))
     premises.append(lexpr(r'dove(D)'))
     premises.append(lexpr(r'ostrich(O)'))
 
-    #print the assumptions
+    # print the assumptions
     prover = Prover9Command(None, premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
     for a in command.assumptions(): print(a)
@@ -492,11 +508,13 @@ def default_reasoning_demo():
     print_proof('fly(D)', premises)
     print_proof('-fly(O)', premises)
 
+
 def print_proof(goal, premises):
     lexpr = Expression.fromstring
     prover = Prover9Command(lexpr(goal), premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
     print(goal, prover.prove(), command.prove())
+
 
 def demo():
     closed_domain_demo()
@@ -504,6 +522,7 @@ def demo():
     closed_world_demo()
     combination_prover_demo()
     default_reasoning_demo()
+
 
 if __name__ == '__main__':
     demo()

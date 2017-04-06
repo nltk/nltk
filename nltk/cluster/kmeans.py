@@ -15,7 +15,6 @@ try:
 except ImportError:
     pass
 
-
 from nltk.cluster.util import VectorSpaceClusterer
 from nltk.compat import python_2_unicode_compatible
 
@@ -33,9 +32,9 @@ class KMeansClusterer(VectorSpaceClusterer):
     """
 
     def __init__(self, num_means, distance, repeats=1,
-                       conv_test=1e-6, initial_means=None,
-                       normalise=False, svd_dimensions=None,
-                       rng=None, avoid_empty_clusters=False):
+                 conv_test=1e-6, initial_means=None,
+                 normalise=False, svd_dimensions=None,
+                 rng=None, avoid_empty_clusters=False):
 
         """
         :param  num_means:  the number of means to use (may use fewer)
@@ -117,8 +116,8 @@ class KMeansClusterer(VectorSpaceClusterer):
                     clusters[index].append(vector)
 
                 if trace: print('iteration')
-                #for i in range(self._num_means):
-                    #print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
+                # for i in range(self._num_means):
+                # print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
 
                 # recalculate cluster means by computing the centroid of each cluster
                 new_means = list(map(self._centroid, clusters, self._means))
@@ -165,12 +164,12 @@ class KMeansClusterer(VectorSpaceClusterer):
             centroid = copy.copy(mean)
             for vector in cluster:
                 centroid += vector
-            return centroid / (1+len(cluster))
+            return centroid / (1 + len(cluster))
         else:
             if not len(cluster):
                 sys.stderr.write('Error: no centroid defined for empty cluster.\n')
                 sys.stderr.write('Try setting argument \'avoid_empty_clusters\' to True\n')
-                assert(False)
+                assert (False)
             centroid = copy.copy(cluster[0])
             for vector in cluster[1:]:
                 centroid += vector
@@ -178,7 +177,8 @@ class KMeansClusterer(VectorSpaceClusterer):
 
     def __repr__(self):
         return '<KMeansClusterer means=%s repeats=%d>' % \
-                    (self._means, self._repeats)
+               (self._means, self._repeats)
+
 
 #################################################################################
 
@@ -216,6 +216,6 @@ def demo():
     print(clusterer.classify(vector))
     print()
 
+
 if __name__ == '__main__':
     demo()
-

@@ -17,6 +17,7 @@ and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
 """
 
 import re
+
 from nltk.tokenize.api import TokenizerI
 
 
@@ -45,14 +46,14 @@ class TreebankWordTokenizer(TokenizerI):
         ['hi', ',', 'my', 'name', 'ca', "n't", 'hello', ',']
     """
 
-    #starting quotes
+    # starting quotes
     STARTING_QUOTES = [
         (re.compile(r'^\"'), r'``'),
         (re.compile(r'(``)'), r' \1 '),
         (re.compile(r'([ (\[{<])"'), r'\1 `` '),
     ]
 
-    #punctuation
+    # punctuation
     PUNCTUATION = [
         (re.compile(r'([:,])([^\d])'), r' \1 \2'),
         (re.compile(r'([:,])$'), r' \1 '),
@@ -64,13 +65,13 @@ class TreebankWordTokenizer(TokenizerI):
         (re.compile(r"([^'])' "), r"\1 ' "),
     ]
 
-    #parens, brackets, etc.
+    # parens, brackets, etc.
     PARENS_BRACKETS = [
         (re.compile(r'[\]\[\(\)\{\}\<\>]'), r' \g<0> '),
         (re.compile(r'--'), r' -- '),
     ]
 
-    #ending quotes
+    # ending quotes
     ENDING_QUOTES = [
         (re.compile(r'"'), " '' "),
         (re.compile(r'(\S)(\'\')'), r'\1 \2 '),
@@ -103,7 +104,7 @@ class TreebankWordTokenizer(TokenizerI):
         for regexp, substitution in self.PARENS_BRACKETS:
             text = regexp.sub(substitution, text)
 
-        #add extra space to make things easier
+        # add extra space to make things easier
         text = " " + text + " "
 
         for regexp, substitution in self.ENDING_QUOTES:
@@ -120,5 +121,3 @@ class TreebankWordTokenizer(TokenizerI):
         #     text = regexp.sub(r' \1 \2 \3 ', text)
 
         return text.split()
-
-

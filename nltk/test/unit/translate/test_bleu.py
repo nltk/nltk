@@ -3,7 +3,6 @@
 Tests for BLEU translation evaluation metric
 """
 
-import functools
 import io
 import unittest
 
@@ -28,14 +27,13 @@ class TestBLEU(unittest.TestCase):
         references = [ref1, ref2]
 
         # Testing modified unigram precision.
-        hyp1_unigram_precision =  float(modified_precision(references, hyp1, n=1))
+        hyp1_unigram_precision = float(modified_precision(references, hyp1, n=1))
         assert (round(hyp1_unigram_precision, 4) == 0.2857)
         # With assertAlmostEqual at 4 place precision.
         self.assertAlmostEqual(hyp1_unigram_precision, 0.28571428, places=4)
 
         # Testing modified bigram precision.
-        assert(float(modified_precision(references, hyp1, n=2)) == 0.0)
-
+        assert (float(modified_precision(references, hyp1, n=2)) == 0.0)
 
         # Example 2: the "of the" example.
         # Reference sentences
@@ -53,8 +51,7 @@ class TestBLEU(unittest.TestCase):
         assert (float(modified_precision(references, hyp1, n=1)) == 1.0)
 
         # Testing modified bigram precision.
-        assert(float(modified_precision(references, hyp1, n=2)) == 1.0)
-
+        assert (float(modified_precision(references, hyp1, n=2)) == 1.0)
 
         # Example 3: Proper MT outputs.
         hyp1 = str('It is a guide to action which ensures that the military '
@@ -90,13 +87,13 @@ class TestBLEU(unittest.TestCase):
         references = [['a'] * 11, ['a'] * 8]
         hypothesis = ['a'] * 7
         hyp_len = len(hypothesis)
-        closest_ref_len =  closest_ref_length(references, hyp_len)
+        closest_ref_len = closest_ref_length(references, hyp_len)
         self.assertAlmostEqual(brevity_penalty(closest_ref_len, hyp_len), 0.8669, places=4)
 
         references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
         hypothesis = ['a'] * 7
         hyp_len = len(hypothesis)
-        closest_ref_len =  closest_ref_length(references, hyp_len)
+        closest_ref_len = closest_ref_length(references, hyp_len)
         assert brevity_penalty(closest_ref_len, hyp_len) == 1.0
 
     def test_zero_matches(self):
@@ -105,9 +102,9 @@ class TestBLEU(unittest.TestCase):
         hypothesis = 'John loves Mary'.split()
 
         # Test BLEU to nth order of n-grams, where n is len(hypothesis).
-        for n in range(1,len(hypothesis)):
-            weights = [1.0/n] * n # Uniform weights.
-            assert(sentence_bleu(references, hypothesis, weights) == 0)
+        for n in range(1, len(hypothesis)):
+            weights = [1.0 / n] * n  # Uniform weights.
+            assert (sentence_bleu(references, hypothesis, weights) == 0)
 
     def test_full_matches(self):
         # Test case where there's 100% matches
@@ -115,9 +112,9 @@ class TestBLEU(unittest.TestCase):
         hypothesis = 'John loves Mary'.split()
 
         # Test BLEU to nth order of n-grams, where n is len(hypothesis).
-        for n in range(1,len(hypothesis)):
-            weights = [1.0/n] * n # Uniform weights.
-            assert(sentence_bleu(references, hypothesis, weights) == 1.0)
+        for n in range(1, len(hypothesis)):
+            weights = [1.0 / n] * n  # Uniform weights.
+            assert (sentence_bleu(references, hypothesis, weights) == 1.0)
 
     def test_partial_matches_hypothesis_longer_than_reference(self):
         references = ['John loves Mary'.split()]
@@ -127,47 +124,47 @@ class TestBLEU(unittest.TestCase):
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
-            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+            pass  # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
 
-#@unittest.skip("Skipping fringe cases for BLEU.")
+
+# @unittest.skip("Skipping fringe cases for BLEU.")
 class TestBLEUFringeCases(unittest.TestCase):
-
     def test_case_where_n_is_bigger_than_hypothesis_length(self):
         # Test BLEU to nth order of n-grams, where n > len(hypothesis).
         references = ['John loves Mary ?'.split()]
         hypothesis = 'John loves Mary'.split()
-        n = len(hypothesis) + 1 #
-        weights = [1.0/n] * n # Uniform weights.
+        n = len(hypothesis) + 1  #
+        weights = [1.0 / n] * n  # Uniform weights.
         self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.7165, places=4)
         # Checks that the warning has been raised because len(hypothesis) < 4.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
-            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+            pass  # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
 
         # Test case where n > len(hypothesis) but so is n > len(reference), and
         # it's a special case where reference == hypothesis.
         references = ['John loves Mary'.split()]
         hypothesis = 'John loves Mary'.split()
-        assert(sentence_bleu(references, hypothesis, weights) == 1.0)
+        assert (sentence_bleu(references, hypothesis, weights) == 1.0)
 
     def test_empty_hypothesis(self):
         # Test case where there's hypothesis is empty.
         references = ['The candidate has no alignment to any of the references'.split()]
         hypothesis = []
-        assert(sentence_bleu(references, hypothesis) == 0)
+        assert (sentence_bleu(references, hypothesis) == 0)
 
     def test_empty_references(self):
         # Test case where there's reference is empty.
         references = [[]]
         hypothesis = 'John loves Mary'.split()
-        assert(sentence_bleu(references, hypothesis) == 0)
+        assert (sentence_bleu(references, hypothesis) == 0)
 
     def test_empty_references_and_hypothesis(self):
         # Test case where both references and hypothesis is empty.
         references = [[]]
         hypothesis = []
-        assert(sentence_bleu(references, hypothesis) == 0)
+        assert (sentence_bleu(references, hypothesis) == 0)
 
     def test_reference_or_hypothesis_shorter_than_fourgrams(self):
         # Tese case where the length of reference or hypothesis
@@ -175,15 +172,15 @@ class TestBLEUFringeCases(unittest.TestCase):
         references = ['let it go'.split()]
         hypothesis = 'let go it'.split()
         # Checks that the value the hypothesis and reference returns is 1.0
-        assert(sentence_bleu(references, hypothesis) == 1.0)
+        assert (sentence_bleu(references, hypothesis) == 1.0)
         # Checks that the warning has been raised.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
-            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+            pass  # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+
 
 class TestBLEUvsMteval13a(unittest.TestCase):
-
     def test_corpus_bleu(self):
         ref_file = find('models/wmt15_eval/ref.ru')
         hyp_file = find('models/wmt15_eval/google.ru')
@@ -204,8 +201,8 @@ class TestBLEUvsMteval13a(unittest.TestCase):
                 # Note that the corpus_bleu input is list of list of references.
                 references = list(map(lambda x: [x.split()], ref_fin))
                 # Without smoothing.
-                for i, mteval_bleu in zip(range(1,10), mteval_bleu_scores):
-                    nltk_bleu = corpus_bleu(references, hypothesis, weights=(1.0/i,)*i)
+                for i, mteval_bleu in zip(range(1, 10), mteval_bleu_scores):
+                    nltk_bleu = corpus_bleu(references, hypothesis, weights=(1.0 / i,) * i)
                     # Check that the BLEU scores difference is less than 0.005 .
                     # Note: This is an approximate comparison; as much as
                     #       +/- 0.01 BLEU might be "statistically significant",
@@ -214,11 +211,12 @@ class TestBLEUvsMteval13a(unittest.TestCase):
 
                 # With the same smoothing method used in mteval-v13a.pl
                 chencherry = SmoothingFunction()
-                for i, mteval_bleu in zip(range(1,10), mteval_bleu_scores):
+                for i, mteval_bleu in zip(range(1, 10), mteval_bleu_scores):
                     nltk_bleu = corpus_bleu(references, hypothesis,
-                                            weights=(1.0/i,)*i,
+                                            weights=(1.0 / i,) * i,
                                             smoothing_function=chencherry.method3)
                     assert abs(mteval_bleu - nltk_bleu) < 0.005
+
 
 class TestEmulateMultiBLEU(unittest.TestCase):
     def test_corpus_bleu_with_emulate_multibleu(self):
@@ -228,13 +226,13 @@ class TestEmulateMultiBLEU(unittest.TestCase):
                   "were distinguished using genetics .")
         references = [[ref.split()]]
         hypothese = [hyp.split()]
-        try: # Check that the warning is raised since no. of 2-grams < 0.
+        try:  # Check that the warning is raised since no. of 2-grams < 0.
             with self.assertWarns(UserWarning):
                 # Verify that the BLEU output is undesired since no. of 2-grams < 0.
                 self.assertAlmostEqual(corpus_bleu(references, hypothese), 0.4309, places=4)
         except AttributeError:
-            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+            pass  # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
         desired_output = corpus_bleu(references, hypothese,
                                      emulate_multibleu=True)
-        #assert
+        # assert
         assert desired_output == 0.0

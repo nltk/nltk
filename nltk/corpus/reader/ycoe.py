@@ -19,16 +19,11 @@ an Old English prose text. Tags used within each text complies
 to the YCOE standard: http://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm
 """
 
-import os
-import re
-
-from nltk import compat
-from nltk.tokenize import RegexpTokenizer
+from nltk.corpus.reader.api import *
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
+from nltk.tokenize import RegexpTokenizer
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
 
 class YCOECorpusReader(CorpusReader):
     """
@@ -36,6 +31,7 @@ class YCOECorpusReader(CorpusReader):
     English Prose (YCOE), a 1.5 million word syntactically-annotated
     corpus of Old English prose texts.
     """
+
     def __init__(self, root, encoding='utf8'):
         CorpusReader.__init__(self, root, [], encoding)
 
@@ -51,7 +47,7 @@ class YCOECorpusReader(CorpusReader):
                              'subdirectories do not match.')
 
         fileids = sorted(['%s.psd' % doc for doc in documents] +
-                       ['%s.pos' % doc for doc in documents])
+                         ['%s.pos' % doc for doc in documents])
         CorpusReader.__init__(self, root, fileids, encoding)
         self._documents = sorted(documents)
 
@@ -108,16 +104,22 @@ class YCOECorpusReader(CorpusReader):
     # Delegate to one of our two sub-readers:
     def words(self, documents=None):
         return self._pos_reader.words(self._getfileids(documents, 'pos'))
+
     def sents(self, documents=None):
         return self._pos_reader.sents(self._getfileids(documents, 'pos'))
+
     def paras(self, documents=None):
         return self._pos_reader.paras(self._getfileids(documents, 'pos'))
+
     def tagged_words(self, documents=None):
         return self._pos_reader.tagged_words(self._getfileids(documents, 'pos'))
+
     def tagged_sents(self, documents=None):
         return self._pos_reader.tagged_sents(self._getfileids(documents, 'pos'))
+
     def tagged_paras(self, documents=None):
         return self._pos_reader.tagged_paras(self._getfileids(documents, 'pos'))
+
     def parsed_sents(self, documents=None):
         return self._psd_reader.parsed_sents(self._getfileids(documents, 'psd'))
 
@@ -125,10 +127,12 @@ class YCOECorpusReader(CorpusReader):
 class YCOEParseCorpusReader(BracketParseCorpusReader):
     """Specialized version of the standard bracket parse corpus reader
     that strips out (CODE ...) and (ID ...) nodes."""
+
     def _parse(self, t):
         t = re.sub(r'(?u)\((CODE|ID)[^\)]*\)', '', t)
         if re.match(r'\s*\(\s*\)\s*$', t): return None
         return BracketParseCorpusReader._parse(self, t)
+
 
 class YCOETaggedCorpusReader(TaggedCorpusReader):
     def __init__(self, root, items, encoding='utf8'):
@@ -136,6 +140,7 @@ class YCOETaggedCorpusReader(TaggedCorpusReader):
         sent_tokenizer = RegexpTokenizer(gaps_re, gaps=True)
         TaggedCorpusReader.__init__(self, root, items, sep='_',
                                     sent_tokenizer=sent_tokenizer)
+
 
 #: A list of all documents and their titles in ycoe.
 documents = {
@@ -239,4 +244,4 @@ documents = {
     'covinsal': 'Vindicta Salvatoris',
     'cowsgosp.o3': 'West-Saxon Gospels',
     'cowulf.o34': 'Wulfstan\'s Homilies'
-    }
+}

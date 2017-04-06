@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+
 # FIXME: the entire discourse.doctest is skipped if Prover9/Mace4 is
 # not installed, but there are pure-python parts that don't need Prover9.
 def setup_module(module):

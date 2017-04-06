@@ -30,6 +30,7 @@ increases the word ambiguities and changes the original root.
 
 """
 from __future__ import unicode_literals
+
 import re
 
 from nltk.stem.api import StemmerI
@@ -150,23 +151,23 @@ class ISRIStemmer(StemmerI):
         """
         Stemming a word token using the ISRI stemmer.
         """
-        token = self.norm(token, 1)   # remove diacritics which representing Arabic short vowels
+        token = self.norm(token, 1)  # remove diacritics which representing Arabic short vowels
         if token in self.stop_words:
-            return token              # exclude stop words from being processed
-        token = self.pre32(token)     # remove length three and length two prefixes in this order
-        token = self.suf32(token)     # remove length three and length two suffixes in this order
-        token = self.waw(token)       # remove connective ‘و’ if it precedes a word beginning with ‘و’
-        token = self.norm(token, 2)   # normalize initial hamza to bare alif
+            return token  # exclude stop words from being processed
+        token = self.pre32(token)  # remove length three and length two prefixes in this order
+        token = self.suf32(token)  # remove length three and length two suffixes in this order
+        token = self.waw(token)  # remove connective ‘و’ if it precedes a word beginning with ‘و’
+        token = self.norm(token, 2)  # normalize initial hamza to bare alif
         # if 4 <= word length <= 7, then stem; otherwise, no stemming
-        if len(token) == 4:           # length 4 word
+        if len(token) == 4:  # length 4 word
             token = self.pro_w4(token)
-        elif len(token) == 5:         # length 5 word
+        elif len(token) == 5:  # length 5 word
             token = self.pro_w53(token)
             token = self.end_w5(token)
-        elif len(token) == 6:         # length 6 word
+        elif len(token) == 6:  # length 6 word
             token = self.pro_w6(token)
             token = self.end_w6(token)
-        elif len(token) == 7:         # length 7 word
+        elif len(token) == 7:  # length 7 word
             token = self.suf1(token)
             if len(token) == 7:
                 token = self.pre1(token)
@@ -223,23 +224,23 @@ class ISRIStemmer(StemmerI):
 
     def pro_w4(self, word):
         """process length four patterns and extract length three roots"""
-        if word[0] in self.pr4[0]:      # مفعل
+        if word[0] in self.pr4[0]:  # مفعل
             word = word[1:]
-        elif word[1] in self.pr4[1]:    # فاعل
+        elif word[1] in self.pr4[1]:  # فاعل
             word = word[:1] + word[2:]
-        elif word[2] in self.pr4[2]:    # فعال - فعول - فعيل
+        elif word[2] in self.pr4[2]:  # فعال - فعول - فعيل
             word = word[:2] + word[3]
-        elif word[3] in self.pr4[3]:    # فعلة
+        elif word[3] in self.pr4[3]:  # فعلة
             word = word[:-1]
         else:
-            word = self.suf1(word)      # do - normalize short sufix
+            word = self.suf1(word)  # do - normalize short sufix
             if len(word) == 4:
                 word = self.pre1(word)  # do - normalize short prefix
         return word
 
     def pro_w53(self, word):
         """process length five patterns and extract length three roots"""
-        if word[2] in self.pr53[0] and word[0] == '\u0627':    # افتعل - افاعل
+        if word[2] in self.pr53[0] and word[0] == '\u0627':  # افتعل - افاعل
             word = word[1] + word[3:]
         elif word[3] in self.pr53[1] and word[0] == '\u0645':  # مفعول - مفعال - مفعيل
             word = word[1:3] + word[4]
@@ -253,24 +254,24 @@ class ISRIStemmer(StemmerI):
             word = word[:2] + word[3]
         elif word[0] in self.pr53[6] and word[1] == '\u0646':  # انفعل - منفعل
             word = word[2:]
-        elif word[3] == '\u0627' and word[0] == '\u0627':      # افعال
+        elif word[3] == '\u0627' and word[0] == '\u0627':  # افعال
             word = word[1:3] + word[4]
-        elif word[4] == '\u0646' and word[3] == '\u0627':      # فعلان
+        elif word[4] == '\u0646' and word[3] == '\u0627':  # فعلان
             word = word[:3]
-        elif word[3] == '\u064a' and word[0] == '\u062a':      # تفعيل
+        elif word[3] == '\u064a' and word[0] == '\u062a':  # تفعيل
             word = word[1:3] + word[4]
-        elif word[3] == '\u0648' and word[1] == '\u0627':      # فاعول
+        elif word[3] == '\u0648' and word[1] == '\u0627':  # فاعول
             word = word[0] + word[2] + word[4]
-        elif word[2] == '\u0627' and word[1] == '\u0648':      # فواعل
+        elif word[2] == '\u0627' and word[1] == '\u0648':  # فواعل
             word = word[0] + word[3:]
-        elif word[3] == '\u0626' and word[2] == '\u0627':      # فعائل
+        elif word[3] == '\u0626' and word[2] == '\u0627':  # فعائل
             word = word[:2] + word[4]
-        elif word[4] == '\u0629' and word[1] == '\u0627':      # فاعلة
+        elif word[4] == '\u0629' and word[1] == '\u0627':  # فاعلة
             word = word[0] + word[2:4]
-        elif word[4] == '\u064a' and word[2] == '\u0627':      # فعالي
+        elif word[4] == '\u064a' and word[2] == '\u0627':  # فعالي
             word = word[:2] + word[3]
         else:
-            word = self.suf1(word)      # do - normalize short sufix
+            word = self.suf1(word)  # do - normalize short sufix
             if len(word) == 5:
                 word = self.pre1(word)  # do - normalize short prefix
         return word
@@ -279,9 +280,9 @@ class ISRIStemmer(StemmerI):
         """process length five patterns and extract length four roots"""
         if word[0] in self.pr53[2]:  # تفعلل - افعلل - مفعلل
             word = word[1:]
-        elif word[4] == '\u0629':    # فعللة
+        elif word[4] == '\u0629':  # فعللة
             word = word[:4]
-        elif word[2] == '\u0627':    # فعالل
+        elif word[2] == '\u0627':  # فعالل
             word = word[:2] + word[3:]
         return word
 
@@ -297,16 +298,16 @@ class ISRIStemmer(StemmerI):
         """process length six patterns and extract length three roots"""
         if word.startswith('\u0627\u0633\u062a') or word.startswith('\u0645\u0633\u062a'):  # مستفعل - استفعل
             word = word[3:]
-        elif word[0] == '\u0645' and word[3] == '\u0627' and word[5] == '\u0629':           # مفعالة
+        elif word[0] == '\u0645' and word[3] == '\u0627' and word[5] == '\u0629':  # مفعالة
             word = word[1:3] + word[4]
-        elif word[0] == '\u0627' and word[2] == '\u062a' and word[4] == '\u0627':           # افتعال
+        elif word[0] == '\u0627' and word[2] == '\u062a' and word[4] == '\u0627':  # افتعال
             word = word[1] + word[3] + word[5]
-        elif word[0] == '\u0627' and word[3] == '\u0648' and word[2] == word[4]:            # افعوعل
+        elif word[0] == '\u0627' and word[3] == '\u0648' and word[2] == word[4]:  # افعوعل
             word = word[1] + word[4:]
-        elif word[0] == '\u062a' and word[2] == '\u0627' and word[4] == '\u064a':           # تفاعيل   new pattern
+        elif word[0] == '\u062a' and word[2] == '\u0627' and word[4] == '\u064a':  # تفاعيل   new pattern
             word = word[1] + word[3] + word[5]
         else:
-            word = self.suf1(word)      # do - normalize short sufix
+            word = self.suf1(word)  # do - normalize short sufix
             if len(word) == 6:
                 word = self.pre1(word)  # do - normalize short prefix
         return word
@@ -315,7 +316,7 @@ class ISRIStemmer(StemmerI):
         """process length six patterns and extract length four roots"""
         if word[0] == '\u0627' and word[4] == '\u0627':  # افعلال
             word = word[1:4] + word[5]
-        elif word.startswith('\u0645\u062a'):            # متفعلل
+        elif word.startswith('\u0645\u062a'):  # متفعلل
             word = word[2:]
         return word
 
@@ -341,5 +342,3 @@ class ISRIStemmer(StemmerI):
             if word.startswith(sp1):
                 return word[1:]
         return word
-
-

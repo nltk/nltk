@@ -33,15 +33,15 @@ from __future__ import print_function, unicode_literals
 
 import math
 import re
+from collections import defaultdict, deque
 from itertools import islice, chain
 from operator import itemgetter
-from collections import defaultdict, deque
 
-from nltk.corpus.reader import CorpusReader
-from nltk.util import binary_search_file as _binary_search_file
-from nltk.probability import FreqDist
 from nltk.compat import (iteritems, python_2_unicode_compatible,
                          total_ordering, xrange)
+from nltk.corpus.reader import CorpusReader
+from nltk.probability import FreqDist
+from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
 # Table of Contents
@@ -470,21 +470,21 @@ class Synset(_WordNetObject):
             if next_synset not in seen:
                 seen.add(next_synset)
                 next_hypernyms = next_synset.hypernyms() + \
-                    next_synset.instance_hypernyms()
+                                 next_synset.instance_hypernyms()
                 if not next_hypernyms:
                     result.append(next_synset)
                 else:
                     todo.extend(next_hypernyms)
         return result
 
-# Simpler implementation which makes incorrect assumption that
-# hypernym hierarchy is acyclic:
-#
-#        if not self.hypernyms():
-#            return [self]
-#        else:
-#            return list(set(root for h in self.hypernyms()
-#                            for root in h.root_hypernyms()))
+    # Simpler implementation which makes incorrect assumption that
+    # hypernym hierarchy is acyclic:
+    #
+    #        if not self.hypernyms():
+    #            return [self]
+    #        else:
+    #            return list(set(root for h in self.hypernyms()
+    #                            for root in h.root_hypernyms()))
     def max_depth(self):
         """
         :return: The length of the longest hypernym path from this
@@ -582,7 +582,7 @@ class Synset(_WordNetObject):
         return list(self._all_hypernyms.intersection(other._all_hypernyms))
 
     def lowest_common_hypernyms(
-        self, other, simulate_root=False, use_min_depth=False
+            self, other, simulate_root=False, use_min_depth=False
     ):
         """
         Get a list of lowest synset(s) that both synsets have as a hypernym.
@@ -661,14 +661,14 @@ class Synset(_WordNetObject):
         distances = set([(self, distance)])
         for hypernym in self._hypernyms() + self._instance_hypernyms():
             distances |= hypernym.hypernym_distances(
-                distance+1,
+                distance + 1,
                 simulate_root=False
             )
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = '*ROOT*'
             fake_synset_distance = max(distances, key=itemgetter(1))[1]
-            distances.add((fake_synset, fake_synset_distance+1))
+            distances.add((fake_synset, fake_synset_distance + 1))
         return distances
 
     def _shortest_hypernym_paths(self, simulate_root):
@@ -759,7 +759,7 @@ class Synset(_WordNetObject):
 
         tree = [self]
         if depth != 0:
-            tree += [x.tree(rel, depth-1, cut_mark) for x in rel(self)]
+            tree += [x.tree(rel, depth - 1, cut_mark) for x in rel(self)]
         elif cut_mark:
             tree += [cut_mark]
         return tree
@@ -1065,7 +1065,7 @@ class WordNetCorpusReader(CorpusReader):
     _FILES = ('cntlist.rev', 'lexnames', 'index.sense',
               'index.adj', 'index.adv', 'index.noun', 'index.verb',
               'data.adj', 'data.adv', 'data.noun', 'data.verb',
-              'adj.exc', 'adv.exc', 'noun.exc', 'verb.exc', )
+              'adj.exc', 'adv.exc', 'noun.exc', 'verb.exc',)
 
     def __init__(self, root, omw_reader):
         """
@@ -1111,8 +1111,8 @@ class WordNetCorpusReader(CorpusReader):
         # load the exception file data into memory
         self._load_exception_map()
 
-# Open Multilingual WordNet functions, contributed by
-# Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
+    # Open Multilingual WordNet functions, contributed by
+    # Nasruddin A’aidil Shari, Sim Wei Ying Geraldine, and Soe Lynn
 
     def of2ss(self, of):
         ''' take an id and return the synsets '''
@@ -1168,7 +1168,8 @@ class WordNetCorpusReader(CorpusReader):
 
                 _iter = iter(line.split())
 
-                def _next_token(): return next(_iter)
+                def _next_token():
+                    return next(_iter)
 
                 try:
 
@@ -1250,7 +1251,7 @@ class WordNetCorpusReader(CorpusReader):
         # cannot simply split on first '.',
         # e.g.: '.45_caliber.a.01..45_caliber'
         separator = SENSENUM_RE.search(name).start()
-        synset_name, lemma_name = name[:separator+3], name[separator+4:]
+        synset_name, lemma_name = name[:separator + 3], name[separator + 4:]
         synset = self.synset(synset_name)
         for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
@@ -1365,7 +1366,8 @@ class WordNetCorpusReader(CorpusReader):
             # split the other info into fields
             _iter = iter(columns_str.split())
 
-            def _next_token(): return next(_iter)
+            def _next_token():
+                return next(_iter)
 
             # get the offset
             synset._offset = int(_next_token())
@@ -1669,33 +1671,39 @@ class WordNetCorpusReader(CorpusReader):
             return 0
 
     def path_similarity(
-        self, synset1, synset2, verbose=False, simulate_root=True
+            self, synset1, synset2, verbose=False, simulate_root=True
     ):
         return synset1.path_similarity(synset2, verbose, simulate_root)
+
     path_similarity.__doc__ = Synset.path_similarity.__doc__
 
     def lch_similarity(
-        self, synset1, synset2, verbose=False, simulate_root=True
+            self, synset1, synset2, verbose=False, simulate_root=True
     ):
         return synset1.lch_similarity(synset2, verbose, simulate_root)
+
     lch_similarity.__doc__ = Synset.lch_similarity.__doc__
 
     def wup_similarity(
-        self, synset1, synset2, verbose=False, simulate_root=True
+            self, synset1, synset2, verbose=False, simulate_root=True
     ):
         return synset1.wup_similarity(synset2, verbose, simulate_root)
+
     wup_similarity.__doc__ = Synset.wup_similarity.__doc__
 
     def res_similarity(self, synset1, synset2, ic, verbose=False):
         return synset1.res_similarity(synset2, ic, verbose)
+
     res_similarity.__doc__ = Synset.res_similarity.__doc__
 
     def jcn_similarity(self, synset1, synset2, ic, verbose=False):
         return synset1.jcn_similarity(synset2, ic, verbose)
+
     jcn_similarity.__doc__ = Synset.jcn_similarity.__doc__
 
     def lin_similarity(self, synset1, synset2, ic, verbose=False):
         return synset1.lin_similarity(synset2, ic, verbose)
+
     lin_similarity.__doc__ = Synset.lin_similarity.__doc__
 
     #############################################################

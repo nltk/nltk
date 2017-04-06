@@ -9,26 +9,28 @@
 Classifiers that make use of the external 'Weka' package.
 """
 from __future__ import print_function
-import time
-import tempfile
+
 import os
-import subprocess
 import re
+import subprocess
+import tempfile
+import time
 import zipfile
-
 from sys import stdin
-from nltk import compat
-from nltk.probability import DictionaryProbDist
-from nltk.internals import java, config_java
 
+from nltk import compat
 from nltk.classify.api import ClassifierI
+from nltk.internals import java, config_java
+from nltk.probability import DictionaryProbDist
 
 _weka_classpath = None
 _weka_search = ['.',
                 '/usr/share/weka',
                 '/usr/local/share/weka',
                 '/usr/lib/weka',
-                '/usr/local/lib/weka',]
+                '/usr/local/lib/weka', ]
+
+
 def config_weka(classpath=None):
     global _weka_classpath
 
@@ -60,6 +62,7 @@ def config_weka(classpath=None):
                           'For more information about Weka, please see '
                           'http://www.cs.waikato.ac.nz/ml/weka/')
 
+
 def _check_weka_version(jar):
     try:
         zf = zipfile.ZipFile(jar)
@@ -74,6 +77,7 @@ def _check_weka_version(jar):
             return None
     finally:
         zf.close()
+
 
 class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
@@ -128,7 +132,7 @@ class WekaClassifier(ClassifierI):
 
     def parse_weka_output(self, lines):
         # Strip unwanted text from stdout
-        for i,line in enumerate(lines):
+        for i, line in enumerate(lines):
             if line.strip().startswith("inst#"):
                 lines = lines[i:]
                 break
@@ -153,7 +157,6 @@ class WekaClassifier(ClassifierI):
                              'of weka may not be supported.\n'
                              '  Header: %s' % lines[0])
 
-
     # [xx] full list of classifiers (some may be abstract?):
     # ADTree, AODE, BayesNet, ComplementNaiveBayes, ConjunctiveRule,
     # DecisionStump, DecisionTable, HyperPipes, IB1, IBk, Id3, J48,
@@ -174,7 +177,8 @@ class WekaClassifier(ClassifierI):
         'svm': 'weka.classifiers.functions.SMO',
         'kstar': 'weka.classifiers.lazy.KStar',
         'ripper': 'weka.classifiers.rules.JRip',
-        }
+    }
+
     @classmethod
     def train(cls, model_filename, featuresets,
               classifier='naivebayes', options=[], quiet=True):
@@ -202,7 +206,8 @@ class WekaClassifier(ClassifierI):
             cmd += list(options)
             if quiet:
                 stdout = subprocess.PIPE
-            else: stdout = None
+            else:
+                stdout = None
             java(cmd, classpath=_weka_classpath, stdout=stdout)
 
             # Return the new classifier.
@@ -270,7 +275,7 @@ class ARFF_Formatter:
                 elif issubclass(type(fval), compat.string_types):
                     ftype = 'STRING'
                 elif fval is None:
-                    continue # can't tell the type.
+                    continue  # can't tell the type.
                 else:
                     raise ValueError('Unsupported value type %r' % ftype)
 
@@ -339,7 +344,11 @@ class ARFF_Formatter:
 
 if __name__ == '__main__':
     from nltk.classify.util import names_demo, binary_names_demo_features
+
+
     def make_classifier(featuresets):
         return WekaClassifier.train('/tmp/name.model', featuresets,
                                     'C4.5')
+
+
     classifier = names_demo(make_classifier, binary_names_demo_features)

@@ -8,7 +8,6 @@
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
-
 PARA = re.compile(r'<p(?: [^>]*){0,1}>(.*?)</p>')
 SENT = re.compile(r'<s(?: [^>]*){0,1}>(.*?)</s>')
 
@@ -122,7 +121,6 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         tmp = None
         if len(filter(lambda accessor: accessor is None,
                       (fileids, categories, textids))) != 1:
-
             raise ValueError('Specify exactly one of: fileids, '
                              'categories or textids')
 

@@ -19,13 +19,14 @@ srparser:     Shift-Reduce Parser
 wordnet:      WordNet Browser
 """
 
-
 # Import Tkinter-based modules if Tkinter is installed
 import nltk.compat
+
 try:
     import tkinter
 except ImportError:
     import warnings
+
     warnings.warn("nltk.app package not loaded "
                   "(please install Tkinter library).")
 else:
@@ -42,10 +43,12 @@ else:
         from matplotlib import pylab
     except ImportError:
         import warnings
+
         warnings.warn("nltk.app.wordfreq not loaded "
                       "(requires the matplotlib library).")
     else:
         from nltk.app.wordfreq_app import app as wordfreq
+
 
 # skip doctests from this package
 def setup_module(module):

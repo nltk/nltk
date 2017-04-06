@@ -7,10 +7,12 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
+
 import re
 
-from nltk.stem.api import StemmerI
 from nltk.compat import python_2_unicode_compatible
+from nltk.stem.api import StemmerI
+
 
 @python_2_unicode_compatible
 class RegexpStemmer(StemmerI):
@@ -40,6 +42,7 @@ class RegexpStemmer(StemmerI):
     :type min: int
     :param min: The minimum length of string to stem
     """
+
     def __init__(self, regexp, min=0):
 
         if not hasattr(regexp, 'pattern'):
@@ -55,7 +58,3 @@ class RegexpStemmer(StemmerI):
 
     def __repr__(self):
         return '<RegexpStemmer: {!r}>'.format(self._regexp.pattern)
-
-
-
-

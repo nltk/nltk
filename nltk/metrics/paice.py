@@ -78,7 +78,7 @@ def _count_intersection(l1, l2):
 
     denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
-    if denominator == 0.0: # lines are parallel
+    if denominator == 0.0:  # lines are parallel
         if x1 == x2 == x3 == x4 == 0.0:
             # When lines are parallel, they must be on the y-axis.
             # We can ignore x-axis because we stop counting the
@@ -211,6 +211,7 @@ def _indexes(gumt, gdmt, gwmt, gdnt):
 
 class Paice(object):
     '''Class for storing lemmas, stems and evaluation metrics.'''
+
     def __init__(self, lemmas, stems):
         '''
         :param lemmas: A dictionary where keys are lemmas and values are sets

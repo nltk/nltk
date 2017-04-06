@@ -15,10 +15,7 @@ from __future__ import print_function, unicode_literals
 
 from nltk.compat import xrange, python_2_unicode_compatible
 from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
-from nltk.sem import logic
-from nltk.tree import Tree
-from nltk.grammar import (Nonterminal, Production, CFG,
-                          FeatStructNonterminal, is_nonterminal,
+from nltk.grammar import (FeatStructNonterminal, is_nonterminal,
                           is_terminal)
 from nltk.parse.chart import (TreeEdge, Chart, ChartParser, EdgeI,
                               FundamentalRule, LeafInitRule,
@@ -27,10 +24,13 @@ from nltk.parse.chart import (TreeEdge, Chart, ChartParser, EdgeI,
                               BottomUpPredictCombineRule,
                               CachedTopDownPredictRule,
                               TopDownInitRule)
+from nltk.sem import logic
+from nltk.tree import Tree
 
-#////////////////////////////////////////////////////////////
+
+# ////////////////////////////////////////////////////////////
 # Tree Edge
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 @python_2_unicode_compatible
 class FeatureTreeEdge(TreeEdge):
@@ -45,6 +45,7 @@ class FeatureTreeEdge(TreeEdge):
     every nonterminal in the edge whose symbol implements the
     interface ``SubstituteBindingsI``.
     """
+
     def __init__(self, span, lhs, rhs, dot=0, bindings=None):
         """
         Construct a new edge.  If the edge is incomplete (i.e., if
@@ -96,7 +97,7 @@ class FeatureTreeEdge(TreeEdge):
         """
         return FeatureTreeEdge(span=(self._span[0], new_end),
                                lhs=self._lhs, rhs=self._rhs,
-                               dot=self._dot+1, bindings=bindings)
+                               dot=self._dot + 1, bindings=bindings)
 
     def _bind(self, nt, bindings):
         if not isinstance(nt, FeatStructNonterminal): return nt
@@ -126,13 +127,13 @@ class FeatureTreeEdge(TreeEdge):
             return TreeEdge.__unicode__(self)
         else:
             bindings = '{%s}' % ', '.join('%s: %r' % item for item in
-                                           sorted(self._bindings.items()))
+                                          sorted(self._bindings.items()))
             return '%s %s' % (TreeEdge.__unicode__(self), bindings)
 
 
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 # A specialized Chart for feature grammars
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 # TODO: subsumes check when adding new edges
 
@@ -149,7 +150,7 @@ class FeatureChart(Chart):
         ``restrictions`` on the edges.
         """
         # If there are no restrictions, then return all edges.
-        if restrictions=={}: return iter(self._edges)
+        if restrictions == {}: return iter(self._edges)
 
         # Find the index corresponding to the given restrictions.
         restr_keys = sorted(restrictions.keys())
@@ -205,16 +206,16 @@ class FeatureChart(Chart):
     def parses(self, start, tree_class=Tree):
         for edge in self.select(start=0, end=self._num_leaves):
             if ((isinstance(edge, FeatureTreeEdge)) and
-                (edge.lhs()[TYPE] == start[TYPE]) and
-                (unify(edge.lhs(), start, rename_vars=True)) 
+                    (edge.lhs()[TYPE] == start[TYPE]) and
+                    (unify(edge.lhs(), start, rename_vars=True))
                 ):
                 for tree in self.trees(edge, complete=True, tree_class=tree_class):
                     yield tree
 
 
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 # Fundamental Rule
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 class FeatureFundamentalRule(FundamentalRule):
     """
@@ -237,12 +238,13 @@ class FeatureFundamentalRule(FundamentalRule):
 
     assuming that B1 and B2 can be unified to generate B3.
     """
+
     def apply(self, chart, grammar, left_edge, right_edge):
         # Make sure the rule is applicable.
         if not (left_edge.end() == right_edge.start() and
-                left_edge.is_incomplete() and
-                right_edge.is_complete() and
-                isinstance(left_edge, FeatureTreeEdge)):
+                    left_edge.is_incomplete() and
+                    right_edge.is_complete() and
+                    isinstance(left_edge, FeatureTreeEdge)):
             return
         found = right_edge.lhs()
         nextsym = left_edge.nextsym()
@@ -270,6 +272,7 @@ class FeatureFundamentalRule(FundamentalRule):
         if chart.insert_with_backpointer(new_edge, left_edge, right_edge):
             yield new_edge
 
+
 class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
     """
     A specialized version of the completer / single edge fundamental rule
@@ -296,9 +299,9 @@ class FeatureSingleEdgeFundamentalRule(SingleEdgeFundamentalRule):
                 yield new_edge
 
 
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 # Top-Down Prediction
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 class FeatureTopDownInitRule(TopDownInitRule):
     def apply(self, chart, grammar):
@@ -306,6 +309,7 @@ class FeatureTopDownInitRule(TopDownInitRule):
             new_edge = FeatureTreeEdge.from_production(prod, 0)
             if chart.insert(new_edge, ()):
                 yield new_edge
+
 
 class FeatureTopDownPredictRule(CachedTopDownPredictRule):
     """
@@ -325,6 +329,7 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
     for each grammar production ``B2 -> gamma``, assuming that B1
     and B2 can be unified.
     """
+
     def apply(self, chart, grammar, edge):
         if edge.is_complete(): return
         nextsym, index = edge.nextsym(), edge.end()
@@ -358,9 +363,9 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
         self._done[nextsym_with_bindings, index] = (chart, grammar)
 
 
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 # Bottom-Up Prediction
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 class FeatureBottomUpPredictRule(BottomUpPredictRule):
     def apply(self, chart, grammar, edge):
@@ -373,6 +378,7 @@ class FeatureBottomUpPredictRule(BottomUpPredictRule):
             new_edge = FeatureTreeEdge.from_production(prod, edge.start())
             if chart.insert(new_edge, ()):
                 yield new_edge
+
 
 class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
     def apply(self, chart, grammar, edge):
@@ -398,6 +404,7 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
             if chart.insert(new_edge, (edge,)):
                 yield new_edge
 
+
 class FeatureEmptyPredictRule(EmptyPredictRule):
     def apply(self, chart, grammar):
         for prod in grammar.productions(empty=True):
@@ -407,9 +414,9 @@ class FeatureEmptyPredictRule(EmptyPredictRule):
                     yield new_edge
 
 
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 # Feature Chart Parser
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 TD_FEATURE_STRATEGY = [LeafInitRule(),
                        FeatureTopDownInitRule(),
@@ -424,6 +431,7 @@ BU_LC_FEATURE_STRATEGY = [LeafInitRule(),
                           FeatureBottomUpPredictCombineRule(),
                           FeatureSingleEdgeFundamentalRule()]
 
+
 class FeatureChartParser(ChartParser):
     def __init__(self, grammar,
                  strategy=BU_LC_FEATURE_STRATEGY,
@@ -436,22 +444,25 @@ class FeatureChartParser(ChartParser):
                              chart_class=chart_class,
                              **parser_args)
 
+
 class FeatureTopDownChartParser(FeatureChartParser):
     def __init__(self, grammar, **parser_args):
         FeatureChartParser.__init__(self, grammar, TD_FEATURE_STRATEGY, **parser_args)
 
+
 class FeatureBottomUpChartParser(FeatureChartParser):
     def __init__(self, grammar, **parser_args):
         FeatureChartParser.__init__(self, grammar, BU_FEATURE_STRATEGY, **parser_args)
+
 
 class FeatureBottomUpLeftCornerChartParser(FeatureChartParser):
     def __init__(self, grammar, **parser_args):
         FeatureChartParser.__init__(self, grammar, BU_LC_FEATURE_STRATEGY, **parser_args)
 
 
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 # Instantiate Variable Chart
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 class InstantiateVarsChart(FeatureChart):
     """
@@ -461,6 +472,7 @@ class InstantiateVarsChart(FeatureChart):
     variables in the edge's ``lhs`` whose names start with '@' will be
     replaced by unique new ``Variable``s.
     """
+
     def __init__(self, tokens):
         FeatureChart.__init__(self, tokens)
 
@@ -504,9 +516,9 @@ class InstantiateVarsChart(FeatureChart):
                     if var.name.startswith('@'))
 
 
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 # Demo
-#////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////
 
 def demo_grammar():
     from nltk.grammar import FeatureGrammar
@@ -531,12 +543,13 @@ Prep -> "with"
 Prep -> "under"
 """)
 
+
 def demo(print_times=True, print_grammar=True,
          print_trees=True, print_sentence=True,
          trace=1,
          parser=FeatureChartParser,
          sent='I saw John with a dog with my cookie'):
-    import sys, time
+    import time
     print()
     grammar = demo_grammar()
     if print_grammar:
@@ -557,6 +570,7 @@ def demo(print_times=True, print_grammar=True,
     else:
         print("Nr trees:", len(trees))
 
+
 def run_profile():
     import profile
     profile.run('for i in range(1): demo()', '/tmp/profile.out')
@@ -565,8 +579,10 @@ def run_profile():
     p.strip_dirs().sort_stats('time', 'cum').print_stats(60)
     p.strip_dirs().sort_stats('cum', 'time').print_stats(60)
 
+
 if __name__ == '__main__':
     from nltk.data import load
+
     demo()
     print()
     grammar = load('grammars/book_grammars/feat0.fcfg')

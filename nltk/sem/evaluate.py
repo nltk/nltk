@@ -5,9 +5,9 @@
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
-#TODO:
-    #- fix tracing
-    #- fix iterator-based approach to existentials
+# TODO:
+# - fix tracing
+# - fix iterator-based approach to existentials
 
 """
 This module provides data structures for representing first-order
@@ -15,15 +15,13 @@ models.
 """
 from __future__ import print_function, unicode_literals
 
-from pprint import pformat
 import inspect
-import textwrap
 import re
 import sys
+import textwrap
+from pprint import pformat
 
-from nltk.decorators import decorator # this used in code that is commented out
 from nltk.compat import string_types, python_2_unicode_compatible
-
 from nltk.sem.logic import (AbstractVariableExpression, AllExpression, Expression,
                             AndExpression, ApplicationExpression, EqualityExpression,
                             ExistsExpression, IffExpression, ImpExpression,
@@ -34,7 +32,9 @@ from nltk.sem.logic import (AbstractVariableExpression, AllExpression, Expressio
 
 class Error(Exception): pass
 
+
 class Undefined(Error):  pass
+
 
 def trace(f, *args, **kw):
     if sys.version_info[0] >= 3:
@@ -48,6 +48,7 @@ def trace(f, *args, **kw):
             print("%s => %s" % item)
     return f(*args, **kw)
 
+
 def is_rel(s):
     """
     Check whether a set represents a relation (of any arity).
@@ -60,10 +61,11 @@ def is_rel(s):
     if len(s) == 0:
         return True
     # all the elements are tuples of the same length
-    elif all(isinstance(el, tuple) for el in s) and len(max(s))==len(min(s)):
+    elif all(isinstance(el, tuple) for el in s) and len(max(s)) == len(min(s)):
         return True
     else:
         raise ValueError("Set %r contains sequences of different lengths" % s)
+
 
 def set2rel(s):
     """
@@ -83,10 +85,11 @@ def set2rel(s):
         if isinstance(elem, string_types):
             new.add((elem,))
         elif isinstance(elem, int):
-            new.add((str(elem,)))
+            new.add((str(elem, )))
         else:
             new.add(elem)
     return new
+
 
 def arity(rel):
     """
@@ -111,6 +114,7 @@ class Valuation(dict):
     just behave like a standard  dictionary) if indexed with an expression that
     is not in its list of symbols.
     """
+
     def __init__(self, xs):
         """
         :param xs: a list of (symbol, value) pairs.
@@ -166,6 +170,7 @@ _TUPLES_RE = re.compile(r"""\s*
                                 (\([^)]+\))  # tuple-expression
                                 \s*""", re.VERBOSE)
 
+
 def _read_valuation_line(s):
     """
     Read a line in a valuation file.
@@ -200,6 +205,7 @@ def _read_valuation_line(s):
         value = set(set_elements)
     return symbol, value
 
+
 def read_valuation(s, encoding=None):
     """
     Convert a valuation string into a valuation.
@@ -216,7 +222,7 @@ def read_valuation(s, encoding=None):
     statements = []
     for linenum, line in enumerate(s.splitlines()):
         line = line.strip()
-        if line.startswith('#') or line=='': continue
+        if line.startswith('#') or line == '': continue
         try:
             statements.append(_read_valuation_line(line))
         except ValueError:
@@ -283,10 +289,10 @@ class Assignment(dict):
         self.domain = domain
         if assign:
             for (var, val) in assign:
-                assert val in self.domain,\
-                       "'%s' is not in the domain: %s" % (val, self.domain)
-                assert is_indvar(var),\
-                       "Wrong format for an Individual Variable: '%s'" % var
+                assert val in self.domain, \
+                    "'%s' is not in the domain: %s" % (val, self.domain)
+                assert is_indvar(var), \
+                    "Wrong format for an Individual Variable: '%s'" % var
                 self[var] = val
         self.variant = None
         self._addvariant()
@@ -344,10 +350,10 @@ class Assignment(dict):
         ``self.variant``.
 
         """
-        assert val in self.domain,\
-               "%s is not in the domain %s" % (val, self.domain)
-        assert is_indvar(var),\
-               "Wrong format for an Individual Variable: '%s'" % var
+        assert val in self.domain, \
+            "%s is not in the domain %s" % (val, self.domain)
+        assert is_indvar(var), \
+            "Wrong format for an Individual Variable: '%s'" % var
         self[var] = val
         self._addvariant()
         return self
@@ -377,8 +383,8 @@ class Model(object):
         self.domain = domain
         self.valuation = valuation
         if not domain.issuperset(valuation.domain):
-            raise Error("The valuation domain, %s, must be a subset of the model's domain, %s"\
-                  % (valuation.domain, domain))
+            raise Error("The valuation domain, %s, must be a subset of the model's domain, %s" \
+                        % (valuation.domain, domain))
 
     def __repr__(self):
         return "(%r, %r)" % (self.domain, self.valuation)
@@ -400,14 +406,13 @@ class Model(object):
             value = self.satisfy(parsed, g, trace=trace)
             if trace:
                 print()
-                print("'%s' evaluates to %s under M, %s" %  (expr, value, g))
+                print("'%s' evaluates to %s under M, %s" % (expr, value, g))
             return value
         except Undefined:
             if trace:
                 print()
-                print("'%s' is undefined under M, %s" %  (expr, g))
+                print("'%s' is undefined under M, %s" % (expr, g))
             return 'Undefined'
-
 
     def satisfy(self, parsed, g, trace=None):
         """
@@ -428,12 +433,12 @@ class Model(object):
         if isinstance(parsed, ApplicationExpression):
             function, arguments = parsed.uncurry()
             if isinstance(function, AbstractVariableExpression):
-                #It's a predicate expression ("P(x,y)"), so used uncurried arguments
+                # It's a predicate expression ("P(x,y)"), so used uncurried arguments
                 funval = self.satisfy(function, g)
                 argvals = tuple(self.satisfy(arg, g) for arg in arguments)
                 return argvals in funval
             else:
-                #It must be a lambda expression, so use curried form
+                # It must be a lambda expression, so use curried form
                 funval = self.satisfy(parsed.function, g)
                 argval = self.satisfy(parsed.argument, g)
                 return funval[argval]
@@ -482,7 +487,7 @@ class Model(object):
         else:
             return self.i(parsed, g, trace)
 
-    #@decorator(trace_eval)
+    # @decorator(trace_eval)
     def i(self, parsed, g, trace=False):
         """
         An interpretation function.
@@ -539,7 +544,7 @@ class Model(object):
                 new_g = g.copy()
                 new_g.add(var.name, u)
                 if trace and trace > 1:
-                    lowtrace = trace-1
+                    lowtrace = trace - 1
                 else:
                     lowtrace = 0
                 value = self.satisfy(parsed, new_g, lowtrace)
@@ -566,14 +571,12 @@ class Model(object):
         return result
 
 
-
-
-
-#//////////////////////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////////////////////
 # Demo..
-#//////////////////////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////////////////////
 # number of spacer chars
 mult = 30
+
 
 # Demo 1: Propositional Logic
 #################
@@ -595,23 +598,23 @@ def propdemo(trace=None):
     print("Model m1:\n", m1)
     print('*' * mult)
     sentences = [
-    '(P & Q)',
-    '(P & R)',
-    '- P',
-    '- R',
-    '- - P',
-    '- (P & R)',
-    '(P | R)',
-    '(R | P)',
-    '(R | R)',
-    '(- P | R)',
-    '(P | - P)',
-    '(P -> Q)',
-    '(P -> R)',
-    '(R -> P)',
-    '(P <-> P)',
-    '(R <-> R)',
-    '(P <-> R)',
+        '(P & Q)',
+        '(P & R)',
+        '- P',
+        '- R',
+        '- - P',
+        '- (P & R)',
+        '(P | R)',
+        '(R | P)',
+        '(R | R)',
+        '(- P | R)',
+        '(P | - P)',
+        '(P -> Q)',
+        '(P -> R)',
+        '(R -> P)',
+        '(P <-> P)',
+        '(R <-> R)',
+        '(P <-> R)',
     ]
 
     for sent in sentences:
@@ -621,6 +624,7 @@ def propdemo(trace=None):
         else:
             print("The value of '%s' is: %s" % (sent, m1.evaluate(sent, g1)))
 
+
 # Demo 2: FOL Model
 #############
 
@@ -629,9 +633,9 @@ def folmodel(quiet=False, trace=None):
 
     global val2, v2, dom2, m2, g2
 
-    v2 = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'),\
-         ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
-         ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
+    v2 = [('adam', 'b1'), ('betty', 'g1'), ('fido', 'd1'), \
+          ('girl', set(['g1', 'g2'])), ('boy', set(['b1', 'b2'])), ('dog', set(['d1'])),
+          ('love', set([('b1', 'g1'), ('b2', 'g2'), ('g1', 'b1'), ('g2', 'b1')]))]
     val2 = Valuation(v2)
     dom2 = val2.domain
     m2 = Model(dom2, val2)
@@ -642,7 +646,7 @@ def folmodel(quiet=False, trace=None):
         print('*' * mult)
         print("Models Demo")
         print("*" * mult)
-        print("Model m2:\n", "-" * 14,"\n", m2)
+        print("Model m2:\n", "-" * 14, "\n", m2)
         print("Variable assignment = ", g2)
 
         exprs = ['adam', 'boy', 'love', 'walks', 'x', 'y', 'z']
@@ -655,7 +659,6 @@ def folmodel(quiet=False, trace=None):
             except Undefined:
                 print("The interpretation of '%s' in m2 is Undefined" % parsed)
 
-
         applications = [('boy', ('adam')), ('walks', ('adam',)), ('love', ('adam', 'y')), ('love', ('y', 'adam'))]
 
         for (fun, args) in applications:
@@ -665,6 +668,7 @@ def folmodel(quiet=False, trace=None):
                 print("%s(%s) evaluates to %s" % (fun, args, argsval in funval))
             except Undefined:
                 print("%s(%s) evaluates to Undefined" % (fun, args))
+
 
 # Demo 3: FOL
 #########
@@ -681,26 +685,25 @@ def foldemo(trace=None):
     print('*' * mult)
 
     formulas = [
-    'love (adam, betty)',
-    '(adam = mia)',
-    '\\x. (boy(x) | girl(x))',
-    '\\x. boy(x)(adam)',
-    '\\x y. love(x, y)',
-    '\\x y. love(x, y)(adam)(betty)',
-    '\\x y. love(x, y)(adam, betty)',
-    '\\x y. (boy(x) & love(x, y))',
-    '\\x. exists y. (boy(x) & love(x, y))',
-    'exists z1. boy(z1)',
-    'exists x. (boy(x) &  -(x = adam))',
-    'exists x. (boy(x) & all y. love(y, x))',
-    'all x. (boy(x) | girl(x))',
-    'all x. (girl(x) -> exists y. boy(y) & love(x, y))',    #Every girl loves exists boy.
-    'exists x. (boy(x) & all y. (girl(y) -> love(y, x)))',  #There is exists boy that every girl loves.
-    'exists x. (boy(x) & all y. (girl(y) -> love(x, y)))',  #exists boy loves every girl.
-    'all x. (dog(x) -> - girl(x))',
-    'exists x. exists y. (love(x, y) & love(x, y))'
+        'love (adam, betty)',
+        '(adam = mia)',
+        '\\x. (boy(x) | girl(x))',
+        '\\x. boy(x)(adam)',
+        '\\x y. love(x, y)',
+        '\\x y. love(x, y)(adam)(betty)',
+        '\\x y. love(x, y)(adam, betty)',
+        '\\x y. (boy(x) & love(x, y))',
+        '\\x. exists y. (boy(x) & love(x, y))',
+        'exists z1. boy(z1)',
+        'exists x. (boy(x) &  -(x = adam))',
+        'exists x. (boy(x) & all y. love(y, x))',
+        'all x. (boy(x) | girl(x))',
+        'all x. (girl(x) -> exists y. boy(y) & love(x, y))',  # Every girl loves exists boy.
+        'exists x. (boy(x) & all y. (girl(y) -> love(y, x)))',  # There is exists boy that every girl loves.
+        'exists x. (boy(x) & all y. (girl(y) -> love(x, y)))',  # exists boy loves every girl.
+        'all x. (dog(x) -> - girl(x))',
+        'exists x. exists y. (love(x, y) & love(x, y))'
     ]
-
 
     for fmla in formulas:
         g2.purge()
@@ -724,26 +727,26 @@ def satdemo(trace=None):
     folmodel(quiet=True)
 
     formulas = [
-               'boy(x)',
-               '(x = x)',
-               '(boy(x) | girl(x))',
-               '(boy(x) & girl(x))',
-               'love(adam, x)',
-               'love(x, adam)',
-               '-(x = adam)',
-               'exists z22. love(x, z22)',
-               'exists y. love(y, x)',
-               'all y. (girl(y) -> love(x, y))',
-               'all y. (girl(y) -> love(y, x))',
-               'all y. (girl(y) -> (boy(x) & love(y, x)))',
-               '(boy(x) & all y. (girl(y) -> love(x, y)))',
-               '(boy(x) & all y. (girl(y) -> love(y, x)))',
-               '(boy(x) & exists y. (girl(y) & love(y, x)))',
-               '(girl(x) -> dog(x))',
-               'all y. (dog(y) -> (x = y))',
-               'exists y. love(y, x)',
-               'exists y. (love(adam, y) & love(y, x))'
-                ]
+        'boy(x)',
+        '(x = x)',
+        '(boy(x) | girl(x))',
+        '(boy(x) & girl(x))',
+        'love(adam, x)',
+        'love(x, adam)',
+        '-(x = adam)',
+        'exists z22. love(x, z22)',
+        'exists y. love(y, x)',
+        'all y. (girl(y) -> love(x, y))',
+        'all y. (girl(y) -> love(y, x))',
+        'all y. (girl(y) -> (boy(x) & love(y, x)))',
+        '(boy(x) & all y. (girl(y) -> love(x, y)))',
+        '(boy(x) & all y. (girl(y) -> love(y, x)))',
+        '(boy(x) & exists y. (girl(y) & love(y, x)))',
+        '(girl(x) -> dog(x))',
+        'all y. (dog(y) -> (x = y))',
+        'exists y. love(y, x)',
+        'exists y. (love(adam, y) & love(y, x))'
+    ]
 
     if trace:
         print(m2)

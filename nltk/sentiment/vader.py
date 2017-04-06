@@ -21,11 +21,11 @@ Sentiment Analysis of Social Media Text. Eighth International Conference on
 Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 """
 
-import codecs
 import math
 import re
 import string
 from itertools import product
+
 import nltk.data
 
 ##Constants##
@@ -46,36 +46,36 @@ REGEX_REMOVE_PUNCTUATION = re.compile('[{0}]'.format(re.escape(string.punctuatio
 PUNC_LIST = [".", "!", "?", ",", ";", ":", "-", "'", "\"",
              "!!", "!!!", "??", "???", "?!?", "!?!", "?!?!", "!?!?"]
 NEGATE = \
-["aint", "arent", "cannot", "cant", "couldnt", "darent", "didnt", "doesnt",
- "ain't", "aren't", "can't", "couldn't", "daren't", "didn't", "doesn't",
- "dont", "hadnt", "hasnt", "havent", "isnt", "mightnt", "mustnt", "neither",
- "don't", "hadn't", "hasn't", "haven't", "isn't", "mightn't", "mustn't",
- "neednt", "needn't", "never", "none", "nope", "nor", "not", "nothing", "nowhere",
- "oughtnt", "shant", "shouldnt", "uhuh", "wasnt", "werent",
- "oughtn't", "shan't", "shouldn't", "uh-uh", "wasn't", "weren't",
- "without", "wont", "wouldnt", "won't", "wouldn't", "rarely", "seldom", "despite"]
+    ["aint", "arent", "cannot", "cant", "couldnt", "darent", "didnt", "doesnt",
+     "ain't", "aren't", "can't", "couldn't", "daren't", "didn't", "doesn't",
+     "dont", "hadnt", "hasnt", "havent", "isnt", "mightnt", "mustnt", "neither",
+     "don't", "hadn't", "hasn't", "haven't", "isn't", "mightn't", "mustn't",
+     "neednt", "needn't", "never", "none", "nope", "nor", "not", "nothing", "nowhere",
+     "oughtnt", "shant", "shouldnt", "uhuh", "wasnt", "werent",
+     "oughtn't", "shan't", "shouldn't", "uh-uh", "wasn't", "weren't",
+     "without", "wont", "wouldnt", "won't", "wouldn't", "rarely", "seldom", "despite"]
 
 # booster/dampener 'intensifiers' or 'degree adverbs'
 # http://en.wiktionary.org/wiki/Category:English_degree_adverbs
 
 BOOSTER_DICT = \
-{"absolutely": B_INCR, "amazingly": B_INCR, "awfully": B_INCR, "completely": B_INCR, "considerably": B_INCR,
- "decidedly": B_INCR, "deeply": B_INCR, "effing": B_INCR, "enormously": B_INCR,
- "entirely": B_INCR, "especially": B_INCR, "exceptionally": B_INCR, "extremely": B_INCR,
- "fabulously": B_INCR, "flipping": B_INCR, "flippin": B_INCR,
- "fricking": B_INCR, "frickin": B_INCR, "frigging": B_INCR, "friggin": B_INCR, "fully": B_INCR, "fucking": B_INCR,
- "greatly": B_INCR, "hella": B_INCR, "highly": B_INCR, "hugely": B_INCR, "incredibly": B_INCR,
- "intensely": B_INCR, "majorly": B_INCR, "more": B_INCR, "most": B_INCR, "particularly": B_INCR,
- "purely": B_INCR, "quite": B_INCR, "really": B_INCR, "remarkably": B_INCR,
- "so": B_INCR, "substantially": B_INCR,
- "thoroughly": B_INCR, "totally": B_INCR, "tremendously": B_INCR,
- "uber": B_INCR, "unbelievably": B_INCR, "unusually": B_INCR, "utterly": B_INCR,
- "very": B_INCR,
- "almost": B_DECR, "barely": B_DECR, "hardly": B_DECR, "just enough": B_DECR,
- "kind of": B_DECR, "kinda": B_DECR, "kindof": B_DECR, "kind-of": B_DECR,
- "less": B_DECR, "little": B_DECR, "marginally": B_DECR, "occasionally": B_DECR, "partly": B_DECR,
- "scarcely": B_DECR, "slightly": B_DECR, "somewhat": B_DECR,
- "sort of": B_DECR, "sorta": B_DECR, "sortof": B_DECR, "sort-of": B_DECR}
+    {"absolutely": B_INCR, "amazingly": B_INCR, "awfully": B_INCR, "completely": B_INCR, "considerably": B_INCR,
+     "decidedly": B_INCR, "deeply": B_INCR, "effing": B_INCR, "enormously": B_INCR,
+     "entirely": B_INCR, "especially": B_INCR, "exceptionally": B_INCR, "extremely": B_INCR,
+     "fabulously": B_INCR, "flipping": B_INCR, "flippin": B_INCR,
+     "fricking": B_INCR, "frickin": B_INCR, "frigging": B_INCR, "friggin": B_INCR, "fully": B_INCR, "fucking": B_INCR,
+     "greatly": B_INCR, "hella": B_INCR, "highly": B_INCR, "hugely": B_INCR, "incredibly": B_INCR,
+     "intensely": B_INCR, "majorly": B_INCR, "more": B_INCR, "most": B_INCR, "particularly": B_INCR,
+     "purely": B_INCR, "quite": B_INCR, "really": B_INCR, "remarkably": B_INCR,
+     "so": B_INCR, "substantially": B_INCR,
+     "thoroughly": B_INCR, "totally": B_INCR, "tremendously": B_INCR,
+     "uber": B_INCR, "unbelievably": B_INCR, "unusually": B_INCR, "utterly": B_INCR,
+     "very": B_INCR,
+     "almost": B_DECR, "barely": B_DECR, "hardly": B_DECR, "just enough": B_DECR,
+     "kind of": B_DECR, "kinda": B_DECR, "kindof": B_DECR, "kind-of": B_DECR,
+     "less": B_DECR, "little": B_DECR, "marginally": B_DECR, "occasionally": B_DECR, "partly": B_DECR,
+     "scarcely": B_DECR, "slightly": B_DECR, "somewhat": B_DECR,
+     "sort of": B_DECR, "sorta": B_DECR, "sortof": B_DECR, "sort-of": B_DECR}
 
 # check for special case idioms using a sentiment-laden keyword known to SAGE
 SPECIAL_CASE_IDIOMS = {"the shit": 3, "the bomb": 3, "bad ass": 1.5, "yeah right": -2,
@@ -99,7 +99,7 @@ def negated(input_words, include_nt=True):
                 return True
     if "least" in input_words:
         i = input_words.index("least")
-        if i > 0 and input_words[i-1] != "at":
+        if i > 0 and input_words[i - 1] != "at":
             return True
     return False
 
@@ -109,7 +109,7 @@ def normalize(score, alpha=15):
     Normalize the score to be between -1 and 1 using an alpha that
     approximates the max expected value
     """
-    norm_score = score/math.sqrt((score*score) + alpha)
+    norm_score = score / math.sqrt((score * score) + alpha)
     return norm_score
 
 
@@ -142,17 +142,20 @@ def scalar_inc_dec(word, valence, is_cap_diff):
         scalar = BOOSTER_DICT[word_lower]
         if valence < 0:
             scalar *= -1
-        #check if booster/dampener word is in ALLCAPS (while others aren't)
+        # check if booster/dampener word is in ALLCAPS (while others aren't)
         if word.isupper() and is_cap_diff:
             if valence > 0:
                 scalar += C_INCR
-            else: scalar -= C_INCR
+            else:
+                scalar -= C_INCR
     return scalar
+
 
 class SentiText(object):
     """
     Identify sentiment-relevant string-level properties of input text.
     """
+
     def __init__(self, text):
         if not isinstance(text, str):
             text = str(text.encode('utf-8'))
@@ -174,7 +177,7 @@ class SentiText(object):
         # removes punctuation (but loses emoticons & contractions)
         words_only = no_punc_text.split()
         # remove singletons
-        words_only = set( w for w in words_only if len(w) > 1 )
+        words_only = set(w for w in words_only if len(w) > 1)
         # the product gives ('cat', ',') and (',', 'cat')
         punc_before = {''.join(p): p[1] for p in product(PUNC_LIST, words_only)}
         punc_after = {''.join(p): p[0] for p in product(words_only, PUNC_LIST)}
@@ -196,10 +199,12 @@ class SentiText(object):
                 wes[i] = words_punc_dict[we]
         return wes
 
+
 class SentimentIntensityAnalyzer(object):
     """
     Give a sentiment intensity score to sentences.
     """
+
     def __init__(self, lexicon_file="sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt"):
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.make_lex_dict()
@@ -221,7 +226,7 @@ class SentimentIntensityAnalyzer(object):
         valence.
         """
         sentitext = SentiText(text)
-        #text, words_and_emoticons, is_cap_diff = self.preprocess(text)
+        # text, words_and_emoticons, is_cap_diff = self.preprocess(text)
 
         sentiments = []
         words_and_emoticons = sentitext.words_and_emoticons
@@ -229,8 +234,8 @@ class SentimentIntensityAnalyzer(object):
             valence = 0
             i = words_and_emoticons.index(item)
             if (i < len(words_and_emoticons) - 1 and item.lower() == "kind" and \
-                words_and_emoticons[i+1].lower() == "of") or \
-                item.lower() in BOOSTER_DICT:
+                            words_and_emoticons[i + 1].lower() == "of") or \
+                            item.lower() in BOOSTER_DICT:
                 sentiments.append(valence)
                 continue
 
@@ -245,27 +250,27 @@ class SentimentIntensityAnalyzer(object):
         words_and_emoticons = sentitext.words_and_emoticons
         item_lowercase = item.lower()
         if item_lowercase in self.lexicon:
-            #get the sentiment valence
+            # get the sentiment valence
             valence = self.lexicon[item_lowercase]
 
-            #check if sentiment laden word is in ALL CAPS (while others aren't)
+            # check if sentiment laden word is in ALL CAPS (while others aren't)
             if item.isupper() and is_cap_diff:
                 if valence > 0:
                     valence += C_INCR
                 else:
                     valence -= C_INCR
 
-            for start_i in range(0,3):
-                if i > start_i and words_and_emoticons[i-(start_i+1)].lower() not in self.lexicon:
+            for start_i in range(0, 3):
+                if i > start_i and words_and_emoticons[i - (start_i + 1)].lower() not in self.lexicon:
                     # dampen the scalar modifier of preceding words and emoticons
                     # (excluding the ones that immediately preceed the item) based
                     # on their distance from the current item.
-                    s = scalar_inc_dec(words_and_emoticons[i-(start_i+1)], valence, is_cap_diff)
+                    s = scalar_inc_dec(words_and_emoticons[i - (start_i + 1)], valence, is_cap_diff)
                     if start_i == 1 and s != 0:
-                        s = s*0.95
+                        s = s * 0.95
                     if start_i == 2 and s != 0:
-                        s = s*0.9
-                    valence = valence+s
+                        s = s * 0.9
+                    valence = valence + s
                     valence = self._never_check(valence, words_and_emoticons, start_i, i)
                     if start_i == 2:
                         valence = self._idioms_check(valence, words_and_emoticons, i)
@@ -284,13 +289,13 @@ class SentimentIntensityAnalyzer(object):
 
     def _least_check(self, valence, words_and_emoticons, i):
         # check for negation case using "least"
-        if i > 1 and words_and_emoticons[i-1].lower() not in self.lexicon \
-           and words_and_emoticons[i-1].lower() == "least":
-            if words_and_emoticons[i-2].lower() != "at" and words_and_emoticons[i-2].lower() != "very":
-                valence = valence*N_SCALAR
-        elif i > 0 and words_and_emoticons[i-1].lower() not in self.lexicon \
-             and words_and_emoticons[i-1].lower() == "least":
-            valence = valence*N_SCALAR
+        if i > 1 and words_and_emoticons[i - 1].lower() not in self.lexicon \
+                and words_and_emoticons[i - 1].lower() == "least":
+            if words_and_emoticons[i - 2].lower() != "at" and words_and_emoticons[i - 2].lower() != "very":
+                valence = valence * N_SCALAR
+        elif i > 0 and words_and_emoticons[i - 1].lower() not in self.lexicon \
+                and words_and_emoticons[i - 1].lower() == "least":
+            valence = valence * N_SCALAR
         return valence
 
     def _but_check(self, words_and_emoticons, sentiments):
@@ -304,24 +309,24 @@ class SentimentIntensityAnalyzer(object):
                 si = sentiments.index(sentiment)
                 if si < bi:
                     sentiments.pop(si)
-                    sentiments.insert(si, sentiment*0.5)
+                    sentiments.insert(si, sentiment * 0.5)
                 elif si > bi:
                     sentiments.pop(si)
-                    sentiments.insert(si, sentiment*1.5)
+                    sentiments.insert(si, sentiment * 1.5)
         return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
-        onezero = "{0} {1}".format(words_and_emoticons[i-1], words_and_emoticons[i])
+        onezero = "{0} {1}".format(words_and_emoticons[i - 1], words_and_emoticons[i])
 
-        twoonezero = "{0} {1} {2}".format(words_and_emoticons[i-2],
-                                       words_and_emoticons[i-1], words_and_emoticons[i])
+        twoonezero = "{0} {1} {2}".format(words_and_emoticons[i - 2],
+                                          words_and_emoticons[i - 1], words_and_emoticons[i])
 
-        twoone = "{0} {1}".format(words_and_emoticons[i-2], words_and_emoticons[i-1])
+        twoone = "{0} {1}".format(words_and_emoticons[i - 2], words_and_emoticons[i - 1])
 
-        threetwoone = "{0} {1} {2}".format(words_and_emoticons[i-3],
-                                        words_and_emoticons[i-2], words_and_emoticons[i-1])
+        threetwoone = "{0} {1} {2}".format(words_and_emoticons[i - 3],
+                                           words_and_emoticons[i - 2], words_and_emoticons[i - 1])
 
-        threetwo = "{0} {1}".format(words_and_emoticons[i-3], words_and_emoticons[i-2])
+        threetwo = "{0} {1}".format(words_and_emoticons[i - 3], words_and_emoticons[i - 2])
 
         sequences = [onezero, twoonezero, twoone, threetwoone, threetwo]
 
@@ -330,45 +335,46 @@ class SentimentIntensityAnalyzer(object):
                 valence = SPECIAL_CASE_IDIOMS[seq]
                 break
 
-        if len(words_and_emoticons)-1 > i:
-            zeroone = "{0} {1}".format(words_and_emoticons[i], words_and_emoticons[i+1])
+        if len(words_and_emoticons) - 1 > i:
+            zeroone = "{0} {1}".format(words_and_emoticons[i], words_and_emoticons[i + 1])
             if zeroone in SPECIAL_CASE_IDIOMS:
                 valence = SPECIAL_CASE_IDIOMS[zeroone]
-        if len(words_and_emoticons)-1 > i+1:
-            zeroonetwo = "{0} {1} {2}".format(words_and_emoticons[i], words_and_emoticons[i+1], words_and_emoticons[i+2])
+        if len(words_and_emoticons) - 1 > i + 1:
+            zeroonetwo = "{0} {1} {2}".format(words_and_emoticons[i], words_and_emoticons[i + 1],
+                                              words_and_emoticons[i + 2])
             if zeroonetwo in SPECIAL_CASE_IDIOMS:
                 valence = SPECIAL_CASE_IDIOMS[zeroonetwo]
 
         # check for booster/dampener bi-grams such as 'sort of' or 'kind of'
         if threetwo in BOOSTER_DICT or twoone in BOOSTER_DICT:
-            valence = valence+B_DECR
+            valence = valence + B_DECR
         return valence
 
     def _never_check(self, valence, words_and_emoticons, start_i, i):
         if start_i == 0:
-            if negated([words_and_emoticons[i-1]]):
-                    valence = valence*N_SCALAR
+            if negated([words_and_emoticons[i - 1]]):
+                valence = valence * N_SCALAR
         if start_i == 1:
-            if words_and_emoticons[i-2] == "never" and\
-               (words_and_emoticons[i-1] == "so" or
-                words_and_emoticons[i-1] == "this"):
-                valence = valence*1.5
-            elif negated([words_and_emoticons[i-(start_i+1)]]):
-                valence = valence*N_SCALAR
+            if words_and_emoticons[i - 2] == "never" and \
+                    (words_and_emoticons[i - 1] == "so" or
+                             words_and_emoticons[i - 1] == "this"):
+                valence = valence * 1.5
+            elif negated([words_and_emoticons[i - (start_i + 1)]]):
+                valence = valence * N_SCALAR
         if start_i == 2:
-            if words_and_emoticons[i-3] == "never" and \
-               (words_and_emoticons[i-2] == "so" or words_and_emoticons[i-2] == "this") or \
-               (words_and_emoticons[i-1] == "so" or words_and_emoticons[i-1] == "this"):
-                valence = valence*1.25
-            elif negated([words_and_emoticons[i-(start_i+1)]]):
-                valence = valence*N_SCALAR
+            if words_and_emoticons[i - 3] == "never" and \
+                    (words_and_emoticons[i - 2] == "so" or words_and_emoticons[i - 2] == "this") or \
+                    (words_and_emoticons[i - 1] == "so" or words_and_emoticons[i - 1] == "this"):
+                valence = valence * 1.25
+            elif negated([words_and_emoticons[i - (start_i + 1)]]):
+                valence = valence * N_SCALAR
         return valence
 
     def _punctuation_emphasis(self, sum_s, text):
         # add emphasis from exclamation points and question marks
         ep_amplifier = self._amplify_ep(text)
         qm_amplifier = self._amplify_qm(text)
-        punct_emph_amplifier = ep_amplifier+qm_amplifier
+        punct_emph_amplifier = ep_amplifier + qm_amplifier
         return punct_emph_amplifier
 
     def _amplify_ep(self, text):
@@ -378,7 +384,7 @@ class SentimentIntensityAnalyzer(object):
             ep_count = 4
         # (empirically derived mean sentiment intensity rating increase for
         # exclamation points)
-        ep_amplifier = ep_count*0.292
+        ep_amplifier = ep_count * 0.292
         return ep_amplifier
 
     def _amplify_qm(self, text):
@@ -389,7 +395,7 @@ class SentimentIntensityAnalyzer(object):
             if qm_count <= 3:
                 # (empirically derived mean sentiment intensity rating increase for
                 # question marks)
-                qm_amplifier = qm_count*0.18
+                qm_amplifier = qm_count * 0.18
             else:
                 qm_amplifier = 0.96
         return qm_amplifier
@@ -401,9 +407,9 @@ class SentimentIntensityAnalyzer(object):
         neu_count = 0
         for sentiment_score in sentiments:
             if sentiment_score > 0:
-                pos_sum += (float(sentiment_score) +1) # compensates for neutral words that are counted as 1
+                pos_sum += (float(sentiment_score) + 1)  # compensates for neutral words that are counted as 1
             if sentiment_score < 0:
-                neg_sum += (float(sentiment_score) -1) # when used with math.fabs(), compensates for neutrals
+                neg_sum += (float(sentiment_score) - 1)  # when used with math.fabs(), compensates for neutrals
             if sentiment_score == 0:
                 neu_count += 1
         return pos_sum, neg_sum, neu_count
@@ -415,7 +421,7 @@ class SentimentIntensityAnalyzer(object):
             punct_emph_amplifier = self._punctuation_emphasis(sum_s, text)
             if sum_s > 0:
                 sum_s += punct_emph_amplifier
-            elif  sum_s < 0:
+            elif sum_s < 0:
                 sum_s -= punct_emph_amplifier
 
             compound = normalize(sum_s)
@@ -439,9 +445,9 @@ class SentimentIntensityAnalyzer(object):
             neu = 0.0
 
         sentiment_dict = \
-            {"neg" : round(neg, 3),
-             "neu" : round(neu, 3),
-             "pos" : round(pos, 3),
-             "compound" : round(compound, 4)}
+            {"neg": round(neg, 3),
+             "neu": round(neu, 3),
+             "pos": round(pos, 3),
+             "compound": round(compound, 4)}
 
         return sentiment_dict

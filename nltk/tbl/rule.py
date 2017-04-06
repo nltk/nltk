@@ -10,8 +10,9 @@
 
 from __future__ import print_function
 
-from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk import jsontags
+from nltk.compat import python_2_unicode_compatible, unicode_repr
+
 
 ######################################################################
 # Tag Rules
@@ -140,10 +141,10 @@ class Rule(TagRule):
 
     def encode_json_obj(self):
         return {
-            'templateid':   self.templateid,
-            'original':     self.original_tag,
-            'replacement':  self.replacement_tag,
-            'conditions':   self._conditions,
+            'templateid': self.templateid,
+            'original': self.original_tag,
+            'replacement': self.replacement_tag,
+            'conditions': self._conditions,
         }
 
     @classmethod
@@ -164,7 +165,7 @@ class Rule(TagRule):
             for pos in feature.positions:
                 if not (0 <= index + pos < len(tokens)):
                     continue
-                if feature.extract_property(tokens, index+pos) == val:
+                if feature.extract_property(tokens, index + pos) == val:
                     break
             else:
                 # No token satisfied the condition; return false.
@@ -286,6 +287,7 @@ class Rule(TagRule):
 
         Not sure how useful this is.
         """
+
         def condition_to_str(feature, value):
             return ('the %s of %s is "%s"' %
                     (feature.PROPERTY_NAME, range_to_str(feature.positions), value))
@@ -317,5 +319,3 @@ class Rule(TagRule):
             condition_to_str(f, v) for (f, v) in self._conditions
         )
         return replacement + conditions
-
-

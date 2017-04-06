@@ -38,7 +38,6 @@ except IOError as ex:
 if __doc__ is not None:  # fix for the ``python -OO``
     __doc__ += '\n@version: ' + __version__
 
-
 # Copyright notice
 __copyright__ = """\
 Copyright (C) 2001-2017 NLTK Project.
@@ -96,13 +95,18 @@ except ImportError:
 
 # Override missing methods on environments where it cannot be used like GAE.
 import subprocess
+
 if not hasattr(subprocess, 'PIPE'):
     def _fake_PIPE(*args, **kwargs):
         raise NotImplementedError('subprocess.PIPE is not supported.')
+
+
     subprocess.PIPE = _fake_PIPE
 if not hasattr(subprocess, 'Popen'):
     def _fake_Popen(*args, **kwargs):
         raise NotImplementedError('subprocess.Popen is not supported.')
+
+
     subprocess.Popen = _fake_Popen
 
 ###########################################################
@@ -142,6 +146,7 @@ from nltk.stem import *
 #     that can safely fail at run time
 
 from nltk import lazyimport
+
 app = lazyimport.LazyModule('nltk.app', locals(), globals())
 chat = lazyimport.LazyModule('nltk.chat', locals(), globals())
 corpus = lazyimport.LazyModule('nltk.corpus', locals(), globals())
@@ -158,6 +163,7 @@ else:
     from nltk import cluster
 
 from nltk.downloader import download, download_shell
+
 try:
     import tkinter
 except ImportError:
@@ -167,6 +173,7 @@ else:
         from nltk.downloader import download_gui
     except RuntimeError as e:
         import warnings
+
         warnings.warn("Corpus downloader GUI not loaded "
                       "(RuntimeError during import: %s)" % str(e))
 

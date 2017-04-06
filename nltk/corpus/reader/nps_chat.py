@@ -6,19 +6,11 @@
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
 
-import re
-import textwrap
-
-from nltk.util import LazyConcatenation
-from nltk.internals import ElementWrapper
+from nltk.corpus.reader.xmldocs import *
 from nltk.tag import map_tag
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.xmldocs import *
 
 class NPSChatCorpusReader(XMLCorpusReader):
-
     def __init__(self, root, fileids, wrap_etree=False, tagset=None):
         XMLCorpusReader.__init__(self, root, fileids, wrap_etree)
         self._tagset = tagset
@@ -40,6 +32,7 @@ class NPSChatCorpusReader(XMLCorpusReader):
     def tagged_posts(self, fileids=None, tagset=None):
         def reader(elt, handler):
             return self._elt_to_tagged_words(elt, handler, tagset)
+
         return concat([XMLCorpusView(fileid, 'Session/Posts/Post/terminals',
                                      reader)
                        for fileid in self.abspaths(fileids)])

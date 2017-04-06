@@ -4,8 +4,8 @@ Tests for IBM Model 1 training methods
 """
 
 import unittest
-
 from collections import defaultdict
+
 from nltk.translate import AlignedSent
 from nltk.translate import IBMModel
 from nltk.translate import IBMModel1

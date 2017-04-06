@@ -11,16 +11,11 @@ A reader for corpora that contain chunked (and optionally tagged)
 documents.
 """
 
-import os.path, codecs
-
-import nltk
-from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
-from nltk import compat
-from nltk.tree import Tree
-from nltk.tokenize import *
 from nltk.chunk import tagstr2tree
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.tokenize import *
+from nltk.tree import Tree
+
 
 class ChunkedCorpusReader(CorpusReader):
     """
@@ -33,6 +28,7 @@ class ChunkedCorpusReader(CorpusReader):
     on blank lines; sentences are listed one per line; and sentences
     are parsed into chunk trees using ``nltk.chunk.tagstr2tree``.
     """
+
     def __init__(self, root, fileids, extension='',
                  str2chunktree=tagstr2tree,
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
@@ -52,8 +48,10 @@ class ChunkedCorpusReader(CorpusReader):
         :return: the given file(s) as a single string.
         :rtype: str
         """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, compat.string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
@@ -154,6 +152,7 @@ class ChunkedCorpusReader(CorpusReader):
     def _read_block(self, stream):
         return [tagstr2tree(t) for t in read_blankline_block(stream)]
 
+
 class ChunkedCorpusView(StreamBackedCorpusView):
     def __init__(self, fileid, encoding, tagged, group_by_sent,
                  group_by_para, chunked, str2chunktree, sent_tokenizer,
@@ -209,4 +208,3 @@ class ChunkedCorpusView(StreamBackedCorpusView):
             else:
                 raise ValueError('expected child to be Tree or tuple')
         return tree
-

@@ -2,16 +2,17 @@
 A reader for corpora whose documents are in MTE format.
 """
 import os
+import re
 from functools import reduce
+
 from nltk import compat
 from nltk.corpus.reader import concat, TaggedCorpusReader
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 
-import xml.etree.ElementTree as etree
-import re
 
 def xpath(root, path, ns):
     return root.findall(path, ns)
+
 
 class MTECorpusView(XMLCorpusView):
     """
@@ -23,6 +24,7 @@ class MTECorpusView(XMLCorpusView):
 
     def read_block(self, stream, tagspec=None, elt_handler=None):
         return list(filter(lambda x: x is not None, XMLCorpusView.read_block(self, stream, tagspec, elt_handler)))
+
 
 class MTEFileReader:
     """
@@ -37,7 +39,6 @@ class MTEFileReader:
     word_path = "TEI/text/body/div/div/p/s/(w|c)"
     sent_path = "TEI/text/body/div/div/p/s"
     para_path = "TEI/text/body/div/div/p"
-
 
     def __init__(self, file_path):
         self.__file_path = file_path
@@ -156,6 +157,7 @@ class MTETagConverter:
 
         return MTETagConverter.mapping_msd_universal[indicator]
 
+
 class MTECorpusReader(TaggedCorpusReader):
     """
     Reader for corpora following the TEI-p5 xml scheme, such as MULTEXT-East.
@@ -178,12 +180,14 @@ class MTECorpusReader(TaggedCorpusReader):
         TaggedCorpusReader.__init__(self, root, fileids, encoding)
 
     def __fileids(self, fileids):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, compat.string_types):
+            fileids = [fileids]
         # filter wrong userinput
-        fileids = filter(lambda x : x in self._fileids, fileids)
+        fileids = filter(lambda x: x in self._fileids, fileids)
         # filter multext-east sourcefiles that are not compatible to the teip5 specification
-        fileids = filter(lambda x : x not in ["oana-bg.xml", "oana-mk.xml"], fileids)
+        fileids = filter(lambda x: x not in ["oana-bg.xml", "oana-mk.xml"], fileids)
         if not fileids:
             print("No valid multext-east file specified")
         return fileids
@@ -210,7 +214,7 @@ class MTECorpusReader(TaggedCorpusReader):
         :return: the given file(s) as a list of words and punctuation symbols.
         :rtype: list(str)
         """
-        return  concat([MTEFileReader(os.path.join(self._root, f)).words() for f in self.__fileids(fileids)])
+        return concat([MTEFileReader(os.path.join(self._root, f)).words() for f in self.__fileids(fileids)])
 
     def sents(self, fileids=None):
         """
@@ -219,7 +223,7 @@ class MTECorpusReader(TaggedCorpusReader):
                  each encoded as a list of word strings
         :rtype: list(list(str))
         """
-        return  concat([MTEFileReader(os.path.join(self._root, f)).sents() for f in self.__fileids(fileids)])
+        return concat([MTEFileReader(os.path.join(self._root, f)).sents() for f in self.__fileids(fileids)])
 
     def paras(self, fileids=None):
         """
@@ -228,7 +232,7 @@ class MTECorpusReader(TaggedCorpusReader):
                  of sentences, which are in turn encoded as lists of word string
         :rtype: list(list(list(str)))
         """
-        return  concat([MTEFileReader(os.path.join(self._root, f)).paras() for f in self.__fileids(fileids)])
+        return concat([MTEFileReader(os.path.join(self._root, f)).paras() for f in self.__fileids(fileids)])
 
     def lemma_words(self, fileids=None):
         """
@@ -237,7 +241,7 @@ class MTECorpusReader(TaggedCorpusReader):
                  and punctuation symbols, encoded as tuples (word, lemma)
         :rtype: list(tuple(str,str))
         """
-        return  concat([MTEFileReader(os.path.join(self._root, f)).lemma_words() for f in self.__fileids(fileids)])
+        return concat([MTEFileReader(os.path.join(self._root, f)).lemma_words() for f in self.__fileids(fileids)])
 
     def tagged_words(self, fileids=None, tagset="msd", tags=""):
         """
@@ -251,7 +255,8 @@ class MTECorpusReader(TaggedCorpusReader):
         :rtype: list(tuple(str, str))
         """
         if tagset == "universal" or tagset == "msd":
-            return concat([MTEFileReader(os.path.join(self._root, f)).tagged_words(tagset, tags) for f in self.__fileids(fileids)])
+            return concat([MTEFileReader(os.path.join(self._root, f)).tagged_words(tagset, tags) for f in
+                           self.__fileids(fileids)])
         else:
             print("Unknown tagset specified.")
 
@@ -263,8 +268,7 @@ class MTECorpusReader(TaggedCorpusReader):
                  lemma (word, lemma)
         :rtype: list(list(tuple(str, str)))
         """
-        return  concat([MTEFileReader(os.path.join(self._root, f)).lemma_sents() for f in self.__fileids(fileids)])
-
+        return concat([MTEFileReader(os.path.join(self._root, f)).lemma_sents() for f in self.__fileids(fileids)])
 
     def tagged_sents(self, fileids=None, tagset="msd", tags=""):
         """
@@ -278,7 +282,8 @@ class MTECorpusReader(TaggedCorpusReader):
         :rtype: list(list(tuple(str, str)))
         """
         if tagset == "universal" or tagset == "msd":
-            return concat([MTEFileReader(os.path.join(self._root, f)).tagged_sents(tagset, tags) for f in self.__fileids(fileids)])
+            return concat([MTEFileReader(os.path.join(self._root, f)).tagged_sents(tagset, tags) for f in
+                           self.__fileids(fileids)])
         else:
             print("Unknown tagset specified.")
 
@@ -305,6 +310,7 @@ class MTECorpusReader(TaggedCorpusReader):
         :rtype: list(list(list(tuple(str, str))))
         """
         if tagset == "universal" or tagset == "msd":
-            return concat([MTEFileReader(os.path.join(self._root, f)).tagged_paras(tagset, tags) for f in self.__fileids(fileids)])
+            return concat([MTEFileReader(os.path.join(self._root, f)).tagged_paras(tagset, tags) for f in
+                           self.__fileids(fileids)])
         else:
             print("Unknown tagset specified.")

@@ -22,12 +22,11 @@ StemmerI defines a standard interface for stemmers.
 """
 
 from nltk.stem.api import StemmerI
-from nltk.stem.regexp import RegexpStemmer
-from nltk.stem.lancaster import LancasterStemmer
 from nltk.stem.isri import ISRIStemmer
+from nltk.stem.lancaster import LancasterStemmer
 from nltk.stem.porter import PorterStemmer
+from nltk.stem.regexp import RegexpStemmer
+from nltk.stem.rslp import RSLPStemmer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.stem.rslp import RSLPStemmer
-
 

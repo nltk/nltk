@@ -19,14 +19,15 @@ For more details see the documentation for StanfordPOSTagger and StanfordNERTagg
 
 import os
 import tempfile
-from subprocess import PIPE
 import warnings
+from subprocess import PIPE
 
+from nltk import compat
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
-from nltk import compat
 
 _stanford_url = 'https://nlp.stanford.edu/software'
+
 
 class StanfordTagger(TaggerI):
     """
@@ -46,21 +47,21 @@ class StanfordTagger(TaggerI):
 
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
-                    'instantiated directly. Did you mean StanfordPOSTagger or StanfordNERTagger?')
+                          'instantiated directly. Did you mean StanfordPOSTagger or StanfordNERTagger?')
         self._stanford_jar = find_jar(
-                self._JAR, path_to_jar,
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
+            self._JAR, path_to_jar,
+            searchpath=(), url=_stanford_url,
+            verbose=verbose)
 
         self._stanford_model = find_file(model_filename,
-                env_vars=('STANFORD_MODELS',), verbose=verbose)
+                                         env_vars=('STANFORD_MODELS',), verbose=verbose)
 
         self._encoding = encoding
         self.java_options = java_options
 
     @property
     def _cmd(self):
-      raise NotImplementedError
+        raise NotImplementedError
 
     def tag(self, tokens):
         # This function should return list of tuple rather than list of list
@@ -87,7 +88,7 @@ class StanfordTagger(TaggerI):
 
         # Run the tagger and get the output
         stanpos_output, _stderr = java(cmd, classpath=self._stanford_jar,
-                                                       stdout=PIPE, stderr=PIPE)
+                                       stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
 
         # Delete the temporary file
@@ -98,7 +99,7 @@ class StanfordTagger(TaggerI):
 
         return self.parse_output(stanpos_output, sentences)
 
-    def parse_output(self, text, sentences = None):
+    def parse_output(self, text, sentences=None):
         # Output the tagged sentences
         tagged_sentences = []
         for tagged_sentence in text.strip().split("\n"):
@@ -108,6 +109,7 @@ class StanfordTagger(TaggerI):
                 sentence.append((''.join(word_tags[:-1]), word_tags[-1]))
             tagged_sentences.append(sentence)
         return tagged_sentences
+
 
 class StanfordPOSTagger(StanfordTagger):
     """
@@ -135,7 +137,8 @@ class StanfordPOSTagger(StanfordTagger):
     def _cmd(self):
         return ['edu.stanford.nlp.tagger.maxent.MaxentTagger',
                 '-model', self._stanford_model, '-textFile',
-                self._input_file_path, '-tokenize', 'false','-outputFormatOptions', 'keepEmptySentences']
+                self._input_file_path, '-tokenize', 'false', '-outputFormatOptions', 'keepEmptySentences']
+
 
 class StanfordNERTagger(StanfordTagger):
     """
@@ -168,7 +171,8 @@ class StanfordNERTagger(StanfordTagger):
         # Adding -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerOptions tokenizeNLs=false for not using stanford Tokenizer
         return ['edu.stanford.nlp.ie.crf.CRFClassifier',
                 '-loadClassifier', self._stanford_model, '-textFile',
-                self._input_file_path, '-outputFormat', self._FORMAT, '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerOptions','\"tokenizeNLs=false\"']
+                self._input_file_path, '-outputFormat', self._FORMAT, '-tokenizerFactory',
+                'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerOptions', '\"tokenizeNLs=false\"']
 
     def parse_output(self, text, sentences):
         if self._FORMAT == 'slashTags':
@@ -188,6 +192,7 @@ class StanfordNERTagger(StanfordTagger):
             return result
 
         raise NotImplementedError
+
 
 def setup_module(module):
     from nose import SkipTest

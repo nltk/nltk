@@ -30,18 +30,17 @@ resource file, given its URL: ``load()`` loads a given resource, and
 adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
-from __future__ import print_function, unicode_literals
 from __future__ import division
+from __future__ import print_function, unicode_literals
 
-import sys
+import codecs
 import io
 import os
-import textwrap
 import re
+import sys
+import textwrap
 import zipfile
-import codecs
-
-from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
+from gzip import GzipFile, WRITE as GZ_WRITE
 
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
@@ -58,7 +57,6 @@ import nltk
 
 from nltk.compat import py3_data, add_py3_data
 from nltk.compat import text_type, string_types, BytesIO, urlopen, url2pathname
-
 
 ######################################################################
 # Search Path
@@ -287,6 +285,7 @@ class FileSystemPathPointer(PathPointer, text_type):
     A path pointer that identifies a file which can be accessed
     directly via a given absolute path.
     """
+
     @py3_data
     def __init__(self, _path):
         """
@@ -457,6 +456,7 @@ class ZipFilePathPointer(PathPointer):
     A path pointer that identifies a file contained within a zipfile,
     which can be accessed by reading that zipfile.
     """
+
     @py3_data
     def __init__(self, zipfile, entry=''):
         """
@@ -535,6 +535,7 @@ class ZipFilePathPointer(PathPointer):
 
     def __str__(self):
         return os.path.normpath(os.path.join(self._zipfile.filename, self._entry))
+
 
 ######################################################################
 # Access Functions
@@ -685,6 +686,7 @@ def retrieve(resource_url, filename=None, verbose=True):
 
     infile.close()
 
+
 #: A dictionary describing the formats that are supported by NLTK's
 #: load() method.  Keys are format names, and values are format
 #: descriptions.
@@ -696,10 +698,10 @@ FORMATS = {
     'pcfg': "A probabilistic CFG.",
     'fcfg': "A feature CFG.",
     'fol': "A list of first order logic expressions, parsed with "
-            "nltk.sem.logic.Expression.fromstring.",
+           "nltk.sem.logic.Expression.fromstring.",
     'logic': "A list of first order logic expressions, parsed with "
-            "nltk.sem.logic.LogicParser.  Requires an additional logic_parser "
-            "parameter",
+             "nltk.sem.logic.LogicParser.  Requires an additional logic_parser "
+             "parameter",
     'val': "A semantic valuation, parsed by nltk.sem.Valuation.fromstring.",
     'raw': "The raw (byte string) contents of a file.",
     'text': "The raw (unicode string) contents of a file. "
@@ -930,6 +932,7 @@ def _open(resource_url):
     else:
         return urlopen(resource_url)
 
+
 ######################################################################
 # Lazy Resource Loader
 ######################################################################
@@ -939,7 +942,6 @@ def _open(resource_url):
 
 
 class LazyLoader(object):
-
     @py3_data
     def __init__(self, _path):
         self._path = _path
@@ -964,6 +966,7 @@ class LazyLoader(object):
         # __class__ to something new:
         return repr(self)
 
+
 ######################################################################
 # Open-On-Demand ZipFile
 ######################################################################
@@ -979,6 +982,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     file-like object (to allow re-opening).  ``OpenOnDemandZipFile`` is
     read-only (i.e. ``write()`` and ``writestr()`` are disabled.
     """
+
     @py3_data
     def __init__(self, filename):
         if not isinstance(filename, string_types):
@@ -1011,8 +1015,9 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     def __repr__(self):
         return repr(str('OpenOnDemandZipFile(%r)') % self.filename)
 
+
 ######################################################################
-#{ Seekable Unicode Stream Reader
+# { Seekable Unicode Stream Reader
 ######################################################################
 
 
@@ -1087,9 +1092,9 @@ class SeekableUnicodeStreamReader(object):
         """The length of the byte order marker at the beginning of
            the stream (or None for no byte order marker)."""
 
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
     # Read methods
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
 
     def read(self, size=None):
         """
@@ -1202,9 +1207,9 @@ class SeekableUnicodeStreamReader(object):
         """Return self"""
         return self
 
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
     # Pass-through methods & properties
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
 
     @property
     def closed(self):
@@ -1227,9 +1232,9 @@ class SeekableUnicodeStreamReader(object):
         """
         self.stream.close()
 
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
     # Seek and tell
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
 
     def seek(self, offset, whence=0):
         """
@@ -1346,9 +1351,9 @@ class SeekableUnicodeStreamReader(object):
         # Return the calculated filepos
         return filepos
 
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
     # Helper methods
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
 
     def _read(self, size=None):
         """
@@ -1450,6 +1455,7 @@ class SeekableUnicodeStreamReader(object):
                     return len(bom)
 
         return None
+
 
 __all__ = ['path', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
            'GzipFileSystemPathPointer', 'GzipFileSystemPathPointer',

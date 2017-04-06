@@ -13,12 +13,12 @@ package.
 """
 
 import os
-from nltk.compat import TemporaryDirectory
 import unittest
 
+from nltk.compat import TemporaryDirectory
+from nltk.compat import izip
 from nltk.corpus import twitter_samples
 from nltk.twitter.common import json2csv, json2csv_entities
-from nltk.compat import izip
 
 
 def are_files_identical(filename1, filename2, debug=False):
@@ -42,7 +42,6 @@ def are_files_identical(filename1, filename2, debug=False):
 
 
 class TestJSON2CSV(unittest.TestCase):
-
     def setUp(self):
         with open(twitter_samples.abspath("tweets.20150430-223406.json")) as infile:
             self.infile = [next(infile) for x in range(100)]
@@ -60,7 +59,6 @@ class TestJSON2CSV(unittest.TestCase):
             json2csv(self.infile, outfn, ['text'], gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-
     def test_tweet_metadata(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.tweet.csv.ref')
         fields = ['created_at', 'favorite_count', 'id',
@@ -72,7 +70,6 @@ class TestJSON2CSV(unittest.TestCase):
             json2csv(self.infile, outfn, fields, gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-
     def test_user_metadata(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.user.csv.ref')
         fields = ['id', 'text', 'user.id', 'user.followers_count', 'user.friends_count']
@@ -81,7 +78,6 @@ class TestJSON2CSV(unittest.TestCase):
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.user.csv')
             json2csv(self.infile, outfn, fields, gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
-
 
     def test_tweet_hashtag(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.hashtag.csv.ref')
@@ -92,7 +88,6 @@ class TestJSON2CSV(unittest.TestCase):
                               gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-
     def test_tweet_usermention(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.usermention.csv.ref')
         with TemporaryDirectory() as tempdir:
@@ -101,7 +96,6 @@ class TestJSON2CSV(unittest.TestCase):
                               ['id', 'text'], 'user_mentions', ['id', 'screen_name'],
                               gzip_compress=False)
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
-
 
     def test_tweet_media(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.media.csv.ref')
@@ -113,7 +107,6 @@ class TestJSON2CSV(unittest.TestCase):
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-
     def test_tweet_url(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.url.csv.ref')
         with TemporaryDirectory() as tempdir:
@@ -123,7 +116,6 @@ class TestJSON2CSV(unittest.TestCase):
                               gzip_compress=False)
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
-
 
     def test_userurl(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.userurl.csv.ref')
@@ -135,7 +127,6 @@ class TestJSON2CSV(unittest.TestCase):
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-
     def test_tweet_place(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.place.csv.ref')
         with TemporaryDirectory() as tempdir:
@@ -146,7 +137,6 @@ class TestJSON2CSV(unittest.TestCase):
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-
     def test_tweet_place_boundingbox(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.placeboundingbox.csv.ref')
         with TemporaryDirectory() as tempdir:
@@ -156,7 +146,6 @@ class TestJSON2CSV(unittest.TestCase):
                               gzip_compress=False)
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
-
 
     def test_retweet_original_tweet(self):
         ref_fn = os.path.join(self.subdir, 'tweets.20150430-223406.retweet.csv.ref')
@@ -170,7 +159,6 @@ class TestJSON2CSV(unittest.TestCase):
 
             self.assertTrue(are_files_identical(outfn, ref_fn), msg=self.msg)
 
-
     def test_file_is_wrong(self):
         """
         Sanity check that file comparison is not giving false positives.
@@ -180,7 +168,6 @@ class TestJSON2CSV(unittest.TestCase):
             outfn = os.path.join(tempdir, 'tweets.20150430-223406.text.csv')
             json2csv(self.infile, outfn, ['text'], gzip_compress=False)
             self.assertFalse(are_files_identical(outfn, ref_fn), msg=self.msg)
-
 
 
 if __name__ == "__main__":

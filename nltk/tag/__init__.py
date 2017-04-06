@@ -58,25 +58,24 @@ For more information, please consult chapter 5 of the NLTK Book.
 """
 from __future__ import print_function
 
-from nltk.tag.api           import TaggerI
-from nltk.tag.util          import str2tuple, tuple2str, untag
-from nltk.tag.sequential    import (SequentialBackoffTagger, ContextTagger,
-                                    DefaultTagger, NgramTagger, UnigramTagger,
-                                    BigramTagger, TrigramTagger, AffixTagger,
-                                    RegexpTagger, ClassifierBasedTagger,
-                                    ClassifierBasedPOSTagger)
-from nltk.tag.brill         import BrillTagger
+from nltk.data import find
+from nltk.tag.api import TaggerI
+from nltk.tag.brill import BrillTagger
 from nltk.tag.brill_trainer import BrillTaggerTrainer
-from nltk.tag.tnt           import TnT
-from nltk.tag.hunpos        import HunposTagger
-from nltk.tag.stanford      import StanfordTagger, StanfordPOSTagger, StanfordNERTagger
-from nltk.tag.hmm           import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
-from nltk.tag.senna         import SennaTagger, SennaChunkTagger, SennaNERTagger
-from nltk.tag.mapping       import tagset_mapping, map_tag
-from nltk.tag.crf           import CRFTagger
-from nltk.tag.perceptron    import PerceptronTagger
-
-from nltk.data import load, find
+from nltk.tag.crf import CRFTagger
+from nltk.tag.hmm import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
+from nltk.tag.hunpos import HunposTagger
+from nltk.tag.mapping import tagset_mapping, map_tag
+from nltk.tag.perceptron import PerceptronTagger
+from nltk.tag.senna import SennaTagger, SennaChunkTagger, SennaNERTagger
+from nltk.tag.sequential import (SequentialBackoffTagger, ContextTagger,
+                                 DefaultTagger, NgramTagger, UnigramTagger,
+                                 BigramTagger, TrigramTagger, AffixTagger,
+                                 RegexpTagger, ClassifierBasedTagger,
+                                 ClassifierBasedPOSTagger)
+from nltk.tag.stanford import StanfordTagger, StanfordPOSTagger, StanfordNERTagger
+from nltk.tag.tnt import TnT
+from nltk.tag.util import str2tuple, tuple2str, untag
 
 RUS_PICKLE = 'taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle'
 
@@ -124,7 +123,7 @@ def pos_tag(tokens, tagset=None, lang='eng'):
     :rtype: list(tuple(str, str))
     """
     tagger = _get_tagger(lang)
-    return _pos_tag(tokens, tagset, tagger)    
+    return _pos_tag(tokens, tagset, tagger)
 
 
 def pos_tag_sents(sentences, tagset=None, lang='eng'):

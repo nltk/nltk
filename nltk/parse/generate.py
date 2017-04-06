@@ -11,6 +11,7 @@ from __future__ import print_function
 
 import itertools
 import sys
+
 from nltk.grammar import Nonterminal
 
 
@@ -57,10 +58,11 @@ def _generate_one(grammar, item, depth):
     if depth > 0:
         if isinstance(item, Nonterminal):
             for prod in grammar.productions(lhs=item):
-                for frag in _generate_all(grammar, prod.rhs(), depth-1):
+                for frag in _generate_all(grammar, prod.rhs(), depth - 1):
                     yield frag
         else:
             yield [item]
+
 
 demo_grammar = """
   S -> NP VP

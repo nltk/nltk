@@ -73,16 +73,16 @@ Possible future improvements:
     responsible for that.
 """
 
-import nltk.compat
 import tkinter.font
 from tkinter import (IntVar, Listbox, Button, Frame, Label, Menu,
                      Scrollbar, Tk)
 
-from nltk.tree import Tree
-from nltk.parse import SteppingShiftReduceParser
-from nltk.util import in_idle
-from nltk.draw.util import CanvasFrame, EntryDialog, ShowText, TextWidget
 from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
+from nltk.draw.util import CanvasFrame, EntryDialog, ShowText, TextWidget
+from nltk.parse import SteppingShiftReduceParser
+from nltk.tree import Tree
+from nltk.util import in_idle
+
 
 class ShiftReduceApp(object):
     """
@@ -94,6 +94,7 @@ class ShiftReduceApp(object):
     the parsing process, performing the operations that
     ``nltk.parse.ShiftReduceParser`` would use.
     """
+
     def __init__(self, grammar, sent, trace=0):
         self._sent = sent
         self._parser = SteppingShiftReduceParser(grammar, trace)
@@ -106,7 +107,7 @@ class ShiftReduceApp(object):
         # from performing new operations while it's animating.
         self._animating_lock = 0
         self._animate = IntVar(self._top)
-        self._animate.set(10) # = medium
+        self._animate.set(10)  # = medium
 
         # The user can hide the grammar.
         self._show_grammar = IntVar(self._top)
@@ -146,9 +147,9 @@ class ShiftReduceApp(object):
         self._size.set(self._sysfont.cget('size'))
 
         self._boldfont = tkinter.font.Font(family='helvetica', weight='bold',
-                                    size=self._size.get())
+                                           size=self._size.get())
         self._font = tkinter.font.Font(family='helvetica',
-                                    size=self._size.get())
+                                       size=self._size.get())
 
     def _init_grammar(self, parent):
         # Grammar view.
@@ -173,10 +174,10 @@ class ShiftReduceApp(object):
         self._prodlist.config(height=min(len(self._productions), 25))
 
         # Add a scrollbar if there are more than 25 productions.
-        if 1:#len(self._productions) > 25:
+        if 1:  # len(self._productions) > 25:
             listscroll = Scrollbar(self._prodframe,
                                    orient='vertical')
-            self._prodlist.config(yscrollcommand = listscroll.set)
+            self._prodlist.config(yscrollcommand=listscroll.set)
             listscroll.config(command=self._prodlist.yview)
             listscroll.pack(side='left', fill='y')
 
@@ -218,9 +219,9 @@ class ShiftReduceApp(object):
         self._top.bind('<Control-t>', self.edit_sentence)
 
         # Animation speed control
-        self._top.bind('-', lambda e,a=self._animate:a.set(20))
-        self._top.bind('=', lambda e,a=self._animate:a.set(10))
-        self._top.bind('+', lambda e,a=self._animate:a.set(4))
+        self._top.bind('-', lambda e, a=self._animate: a.set(20))
+        self._top.bind('=', lambda e, a=self._animate: a.set(10))
+        self._top.bind('+', lambda e, a=self._animate: a.set(4))
 
     def _init_buttons(self, parent):
         # Set up the frames.
@@ -228,7 +229,7 @@ class ShiftReduceApp(object):
         buttonframe.pack(fill='none', side='bottom')
         Button(buttonframe, text='Step',
                background='#90c0d0', foreground='black',
-               command=self.step,).pack(side='left')
+               command=self.step, ).pack(side='left')
         Button(buttonframe, text='Shift', underline=0,
                background='#90f090', foreground='black',
                command=self.shift).pack(side='left')
@@ -304,7 +305,6 @@ class ShiftReduceApp(object):
                                     accelerator='+')
         menubar.add_cascade(label="Animate", underline=1, menu=animatemenu)
 
-
         helpmenu = Menu(menubar, tearoff=0)
         helpmenu.add_command(label='About', underline=0,
                              command=self.about)
@@ -339,11 +339,11 @@ class ShiftReduceApp(object):
 
         self._stackwidgets = []
         self._rtextwidgets = []
-        self._titlebar = canvas.create_rectangle(0,0,0,0, fill='#c0f0f0',
+        self._titlebar = canvas.create_rectangle(0, 0, 0, 0, fill='#c0f0f0',
                                                  outline='black')
-        self._exprline = canvas.create_line(0,0,0,0, dash='.')
-        self._stacktop = canvas.create_line(0,0,0,0, fill='#408080')
-        size = self._size.get()+4
+        self._exprline = canvas.create_line(0, 0, 0, 0, dash='.')
+        self._stacktop = canvas.create_line(0, 0, 0, 0, fill='#408080')
+        size = self._size.get() + 4
         self._stacklabel = TextWidget(canvas, 'Stack', color='#004040',
                                       font=self._boldfont)
         self._rtextlabel = TextWidget(canvas, 'Remaining Text',
@@ -369,15 +369,15 @@ class ShiftReduceApp(object):
 
         # Position the titlebar & exprline
         (x1, y1, x2, y2) = self._stacklabel.bbox()
-        y = y2-y1+10
-        self._canvas.coords(self._titlebar, -5000, 0, 5000, y-4)
-        self._canvas.coords(self._exprline, 0, y*2-10, 5000, y*2-10)
+        y = y2 - y1 + 10
+        self._canvas.coords(self._titlebar, -5000, 0, 5000, y - 4)
+        self._canvas.coords(self._exprline, 0, y * 2 - 10, 5000, y * 2 - 10)
 
         # Position the titlebar labels..
         (x1, y1, x2, y2) = self._stacklabel.bbox()
-        self._stacklabel.move(5-x1, 3-y1)
+        self._stacklabel.move(5 - x1, 3 - y1)
         (x1, y1, x2, y2) = self._rtextlabel.bbox()
-        self._rtextlabel.move(cx2-x2-5, 3-y1)
+        self._rtextlabel.move(cx2 - x2 - 5, 3 - y1)
 
         # Draw the stack.
         stackx = 5
@@ -386,7 +386,7 @@ class ShiftReduceApp(object):
                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
                            'node_font': self._boldfont,
                            'node_color': '#006060',
-                           'leaf_color': '#006060', 'leaf_font':self._font}
+                           'leaf_color': '#006060', 'leaf_font': self._font}
                 widget = tree_to_treesegment(self._canvas, tok,
                                              **attribs)
                 widget.label()['color'] = '#000000'
@@ -414,23 +414,26 @@ class ShiftReduceApp(object):
         # Move the remaining text to the correct location (keep it
         # right-justified, when possible); and move the remaining text
         # label, if necessary.
-        stackx = max(stackx, self._stacklabel.width()+25)
-        rlabelwidth = self._rtextlabel.width()+10
-        if stackx >= cx2-max(rtextwidth, rlabelwidth):
+        stackx = max(stackx, self._stacklabel.width() + 25)
+        rlabelwidth = self._rtextlabel.width() + 10
+        if stackx >= cx2 - max(rtextwidth, rlabelwidth):
             cx2 = stackx + max(rtextwidth, rlabelwidth)
         for rtextwidget in self._rtextwidgets:
-            rtextwidget.move(4+cx2-rtextwidth, 0)
-        self._rtextlabel.move(cx2-self._rtextlabel.bbox()[2]-5, 0)
+            rtextwidget.move(4 + cx2 - rtextwidth, 0)
+        self._rtextlabel.move(cx2 - self._rtextlabel.bbox()[2] - 5, 0)
 
-        midx = (stackx + cx2-max(rtextwidth, rlabelwidth))/2
+        midx = (stackx + cx2 - max(rtextwidth, rlabelwidth)) / 2
         self._canvas.coords(self._stacktop, midx, 0, midx, 5000)
         (x1, y1, x2, y2) = self._stacklabel.bbox()
 
         # Set up binding to allow them to shift a token by dragging it.
         if len(self._rtextwidgets) > 0:
             def drag_shift(widget, midx=midx, self=self):
-                if widget.bbox()[0] < midx: self.shift()
-                else: self._redraw()
+                if widget.bbox()[0] < midx:
+                    self.shift()
+                else:
+                    self._redraw()
+
             self._rtextwidgets[0].bind_drag(drag_shift)
             self._rtextwidgets[0].bind_click(self.shift)
 
@@ -439,7 +442,7 @@ class ShiftReduceApp(object):
 
     def _draw_stack_top(self, widget):
         # hack..
-        midx = widget.bbox()[2]+50
+        midx = widget.bbox()[2] + 50
         self._canvas.coords(self._stacktop, midx, 0, midx, 5000)
 
     def _highlight_productions(self):
@@ -465,8 +468,10 @@ class ShiftReduceApp(object):
         self._redraw()
 
     def step(self, *e):
-        if self.reduce(): return True
-        elif self.shift(): return True
+        if self.reduce():
+            return True
+        elif self.shift():
+            return True
         else:
             if list(self._parser.parses()):
                 self._lastoper1['text'] = 'Finished:'
@@ -529,13 +534,13 @@ class ShiftReduceApp(object):
         self._boldfont.configure(size=-(abs(size)))
         self._sysfont.configure(size=-(abs(size)))
 
-        #self._stacklabel['font'] = ('helvetica', -size-4, 'bold')
-        #self._rtextlabel['font'] = ('helvetica', -size-4, 'bold')
-        #self._lastoper_label['font'] = ('helvetica', -size)
-        #self._lastoper1['font'] = ('helvetica', -size)
-        #self._lastoper2['font'] = ('helvetica', -size)
-        #self._prodlist['font'] = ('helvetica', -size)
-        #self._prodlist_label['font'] = ('helvetica', -size-2, 'bold')
+        # self._stacklabel['font'] = ('helvetica', -size-4, 'bold')
+        # self._rtextlabel['font'] = ('helvetica', -size-4, 'bold')
+        # self._lastoper_label['font'] = ('helvetica', -size)
+        # self._lastoper1['font'] = ('helvetica', -size)
+        # self._lastoper2['font'] = ('helvetica', -size)
+        # self._prodlist['font'] = ('helvetica', -size)
+        # self._prodlist_label['font'] = ('helvetica', -size-2, 'bold')
         self._redraw()
 
     def help(self, *e):
@@ -548,7 +553,7 @@ class ShiftReduceApp(object):
                      (__doc__ or '').strip(), width=75)
 
     def about(self, *e):
-        ABOUT = ("NLTK Shift-Reduce Parser Application\n"+
+        ABOUT = ("NLTK Shift-Reduce Parser Application\n" +
                  "Written by Edward Loper")
         TITLE = 'About: Shift-Reduce Parser Application'
         try:
@@ -574,7 +579,7 @@ class ShiftReduceApp(object):
         EntryDialog(self._top, sentence, instr, self.set_sentence, title)
 
     def set_sentence(self, sent):
-        self._sent = sent.split() #[XX] use tagged?
+        self._sent = sent.split()  # [XX] use tagged?
         self.reset()
 
     #########################################
@@ -632,12 +637,14 @@ class ShiftReduceApp(object):
 
         # Where are we shifting from & to?
         right = widget.bbox()[0]
-        if len(self._stackwidgets) == 0: left = 5
-        else: left = self._stackwidgets[-1].bbox()[2]+10
+        if len(self._stackwidgets) == 0:
+            left = 5
+        else:
+            left = self._stackwidgets[-1].bbox()[2] + 10
 
         # Start animating.
         dt = self._animate.get()
-        dx = (left-right)*1.0/dt
+        dx = (left - right) * 1.0 / dt
         self._animate_shift_frame(dt, widget, dx)
 
     def _animate_shift_frame(self, frame, widget, dx):
@@ -645,7 +652,7 @@ class ShiftReduceApp(object):
             self._animating_lock = 1
             widget.move(dx, 0)
             self._top.after(10, self._animate_shift_frame,
-                            frame-1, widget, dx)
+                            frame - 1, widget, dx)
         else:
             # but: stacktop??
 
@@ -660,7 +667,7 @@ class ShiftReduceApp(object):
 
     def _animate_reduce(self):
         # What widgets are we shifting?
-        numwidgets = len(self._parser.stack()[-1]) # number of children
+        numwidgets = len(self._parser.stack()[-1])  # number of children
         widgets = self._stackwidgets[-numwidgets:]
 
         # How far are we moving?
@@ -671,15 +678,15 @@ class ShiftReduceApp(object):
 
         # Start animating.
         dt = self._animate.get()
-        dy = ydist*2.0/dt
-        self._animate_reduce_frame(dt/2, widgets, dy)
+        dy = ydist * 2.0 / dt
+        self._animate_reduce_frame(dt / 2, widgets, dy)
 
     def _animate_reduce_frame(self, frame, widgets, dy):
         if frame > 0:
             self._animating_lock = 1
             for widget in widgets: widget.move(0, dy)
             self._top.after(10, self._animate_reduce_frame,
-                            frame-1, widgets, dy)
+                            frame - 1, widgets, dy)
         else:
             del self._stackwidgets[-len(widgets):]
             for widget in widgets:
@@ -691,9 +698,11 @@ class ShiftReduceApp(object):
             widget = TreeSegmentWidget(self._canvas, label, widgets,
                                        width=2)
             (x1, y1, x2, y2) = self._stacklabel.bbox()
-            y = y2-y1+10
-            if not self._stackwidgets: x = 5
-            else: x = self._stackwidgets[-1].bbox()[2] + 10
+            y = y2 - y1 + 10
+            if not self._stackwidgets:
+                x = 5
+            else:
+                x = self._stackwidgets[-1].bbox()[2] + 10
             self._cframe.add_widget(widget, x, y)
             self._stackwidgets.append(widget)
 
@@ -701,32 +710,32 @@ class ShiftReduceApp(object):
             self._draw_stack_top(widget)
             self._highlight_productions()
 
-#             # Delete the old widgets..
-#             del self._stackwidgets[-len(widgets):]
-#             for widget in widgets:
-#                 self._cframe.destroy_widget(widget)
-#
-#             # Make a new one.
-#             tok = self._parser.stack()[-1]
-#             if isinstance(tok, Tree):
-#                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
-#                            'node_font': bold, 'node_color': '#006060',
-#                            'leaf_color': '#006060', 'leaf_font':self._font}
-#                 widget = tree_to_treesegment(self._canvas, tok.type(),
-#                                              **attribs)
-#                 widget.node()['color'] = '#000000'
-#             else:
-#                 widget = TextWidget(self._canvas, tok.type(),
-#                                     color='#000000', font=self._font)
-#             widget.bind_click(self._popup_reduce)
-#             (x1, y1, x2, y2) = self._stacklabel.bbox()
-#             y = y2-y1+10
-#             if not self._stackwidgets: x = 5
-#             else: x = self._stackwidgets[-1].bbox()[2] + 10
-#             self._cframe.add_widget(widget, x, y)
-#             self._stackwidgets.append(widget)
+            #             # Delete the old widgets..
+            #             del self._stackwidgets[-len(widgets):]
+            #             for widget in widgets:
+            #                 self._cframe.destroy_widget(widget)
+            #
+            #             # Make a new one.
+            #             tok = self._parser.stack()[-1]
+            #             if isinstance(tok, Tree):
+            #                 attribs = {'tree_color': '#4080a0', 'tree_width': 2,
+            #                            'node_font': bold, 'node_color': '#006060',
+            #                            'leaf_color': '#006060', 'leaf_font':self._font}
+            #                 widget = tree_to_treesegment(self._canvas, tok.type(),
+            #                                              **attribs)
+            #                 widget.node()['color'] = '#000000'
+            #             else:
+            #                 widget = TextWidget(self._canvas, tok.type(),
+            #                                     color='#000000', font=self._font)
+            #             widget.bind_click(self._popup_reduce)
+            #             (x1, y1, x2, y2) = self._stacklabel.bbox()
+            #             y = y2-y1+10
+            #             if not self._stackwidgets: x = 5
+            #             else: x = self._stackwidgets[-1].bbox()[2] + 10
+            #             self._cframe.add_widget(widget, x, y)
+            #             self._stackwidgets.append(widget)
 
-            #self._redraw()
+            # self._redraw()
             self._animating_lock = 0
 
     #########################################
@@ -788,13 +797,13 @@ def app():
         Production(PP, [P, NP]),
 
         # Lexical Productions
-        Production(NP, ['I']),   Production(Det, ['the']),
-        Production(Det, ['a']),  Production(N, ['man']),
-        Production(V, ['saw']),  Production(P, ['in']),
+        Production(NP, ['I']), Production(Det, ['the']),
+        Production(Det, ['a']), Production(N, ['man']),
+        Production(V, ['saw']), Production(P, ['in']),
         Production(P, ['with']), Production(N, ['park']),
-        Production(N, ['dog']),  Production(N, ['statue']),
+        Production(N, ['dog']), Production(N, ['statue']),
         Production(Det, ['my']),
-        )
+    )
 
     grammar = CFG(S, productions)
 
@@ -802,6 +811,7 @@ def app():
     sent = 'my dog saw a man in the park with a statue'.split()
 
     ShiftReduceApp(grammar, sent).mainloop()
+
 
 if __name__ == '__main__':
     app()

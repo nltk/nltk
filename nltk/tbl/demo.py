@@ -9,17 +9,17 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function, absolute_import, division
+
 import os
 import pickle
-
 import random
 import time
 
 from nltk.corpus import treebank
-
-from nltk.tbl import error_list, Template
-from nltk.tag.brill import Word, Pos
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
+from nltk.tag.brill import Word, Pos
+from nltk.tbl import error_list, Template
+
 
 def demo():
     """
@@ -28,11 +28,13 @@ def demo():
     """
     postag()
 
+
 def demo_repr_rule_format():
     """
     Exemplify repr(Rule) (see also str(Rule) and Rule.format("verbose"))
     """
     postag(ruleformat="repr")
+
 
 def demo_str_rule_format():
     """
@@ -40,11 +42,13 @@ def demo_str_rule_format():
     """
     postag(ruleformat="str")
 
+
 def demo_verbose_rule_format():
     """
     Exemplify Rule.format("verbose")
     """
     postag(ruleformat="verbose")
+
 
 def demo_multiposition_feature():
     """
@@ -58,13 +62,15 @@ def demo_multiposition_feature():
     points can also be used: Pos(-3, -1) is the same as the arg
     below.
     """
-    postag(templates=[Template(Pos([-3,-2,-1]))])
+    postag(templates=[Template(Pos([-3, -2, -1]))])
+
 
 def demo_multifeature_template():
     """
     Templates can have more than a single feature.
     """
-    postag(templates=[Template(Word([0]), Pos([-2,-1]))])
+    postag(templates=[Template(Word([0]), Pos([-2, -1]))])
+
 
 def demo_template_statistics():
     """
@@ -77,6 +83,7 @@ def demo_template_statistics():
     """
     postag(incremental_stats=True, template_stats=True)
 
+
 def demo_generated_templates():
     """
     Template.expand and Feature.expand are class methods facilitating
@@ -86,11 +93,12 @@ def demo_generated_templates():
     Note: training with 500 templates can easily fill all available
     even on relatively small corpora
     """
-    wordtpls = Word.expand([-1,0,1], [1,2], excludezero=False)
-    tagtpls = Pos.expand([-2,-1,0,1], [1,2], excludezero=True)
-    templates = list(Template.expand([wordtpls, tagtpls], combinations=(1,3)))
+    wordtpls = Word.expand([-1, 0, 1], [1, 2], excludezero=False)
+    tagtpls = Pos.expand([-2, -1, 0, 1], [1, 2], excludezero=True)
+    templates = list(Template.expand([wordtpls, tagtpls], combinations=(1, 3)))
     print("Generated {0} templates for transformation-based learning".format(len(templates)))
     postag(templates=templates, incremental_stats=True, template_stats=True)
+
 
 def demo_learning_curve():
     """
@@ -100,11 +108,13 @@ def demo_learning_curve():
     """
     postag(incremental_stats=True, separate_baseline_data=True, learning_curve_output="learningcurve.png")
 
+
 def demo_error_analysis():
     """
     Writes a file with context for each erroneous word after tagging testing data
     """
     postag(error_output="errors.txt")
+
 
 def demo_serialize_tagger():
     """
@@ -113,6 +123,7 @@ def demo_serialize_tagger():
     """
     postag(serialize_output="tagger.pcl")
 
+
 def demo_high_accuracy_rules():
     """
     Discard rules with low accuracy. This may hurt performance a bit,
@@ -120,26 +131,27 @@ def demo_high_accuracy_rules():
     """
     postag(num_sents=3000, min_acc=0.96, min_score=10)
 
+
 def postag(
-    templates=None,
-    tagged_data=None,
-    num_sents=1000,
-    max_rules=300,
-    min_score=3,
-    min_acc=None,
-    train=0.8,
-    trace=3,
-    randomize=False,
-    ruleformat="str",
-    incremental_stats=False,
-    template_stats=False,
-    error_output=None,
-    serialize_output=None,
-    learning_curve_output=None,
-    learning_curve_take=300,
-    baseline_backoff_tagger=None,
-    separate_baseline_data=False,
-    cache_baseline_tagger=None):
+        templates=None,
+        tagged_data=None,
+        num_sents=1000,
+        max_rules=300,
+        min_score=3,
+        min_acc=None,
+        train=0.8,
+        trace=3,
+        randomize=False,
+        ruleformat="str",
+        incremental_stats=False,
+        template_stats=False,
+        error_output=None,
+        serialize_output=None,
+        learning_curve_output=None,
+        learning_curve_take=300,
+        baseline_backoff_tagger=None,
+        separate_baseline_data=False,
+        cache_baseline_tagger=None):
     """
     Brill Tagger Demonstration
     :param templates: how many sentences of training and testing data to use
@@ -209,13 +221,13 @@ def postag(
     # defaults
     baseline_backoff_tagger = baseline_backoff_tagger or REGEXP_TAGGER
     if templates is None:
-        from nltk.tag.brill import describe_template_sets, brill24
+        from nltk.tag.brill import brill24
         # some pre-built template sets taken from typical systems or publications are
         # available. Print a list with describe_template_sets()
         # for instance:
         templates = brill24()
     (training_data, baseline_data, gold_data, testing_data) = \
-       _demo_prepare_data(tagged_data, train, num_sents, randomize, separate_baseline_data)
+        _demo_prepare_data(tagged_data, train, num_sents, randomize, separate_baseline_data)
 
     # creating (or reloading from cache) a baseline tagger (unigram tagger)
     # this is just a mechanism for getting deterministic output from the baseline between
@@ -227,7 +239,7 @@ def postag(
                 pickle.dump(baseline_tagger, print_rules)
             print("Trained baseline tagger, pickled it to {0}".format(cache_baseline_tagger))
         with open(cache_baseline_tagger, "r") as print_rules:
-            baseline_tagger= pickle.load(print_rules)
+            baseline_tagger = pickle.load(print_rules)
             print("Reloaded pickled tagger from {0}".format(cache_baseline_tagger))
     else:
         baseline_tagger = UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
@@ -247,13 +259,12 @@ def postag(
     # printing the learned rules, if learned silently
     if trace == 1:
         print("\nLearned rules: ")
-        for (ruleno, rule) in enumerate(brill_tagger.rules(),1):
+        for (ruleno, rule) in enumerate(brill_tagger.rules(), 1):
             print("{0:4d} {1:s}".format(ruleno, rule.format(ruleformat)))
-
 
     # printing template statistics (optionally including comparison with the training data)
     # note: if not separate_baseline_data, then baseline accuracy will be artificially high
-    if  incremental_stats:
+    if incremental_stats:
         print("Incrementally tagging the test data, collecting individual rule statistics")
         (taggedtest, teststats) = brill_tagger.batch_tag_incremental(testing_data, gold_data)
         print("    Rule statistics collected")
@@ -294,6 +305,7 @@ def postag(
         else:
             print("PROBLEM: Reloaded tagger gave different results on test set")
 
+
 def _demo_prepare_data(tagged_data, train, num_sents, randomize, separate_baseline_data):
     # train is the proportion of data used in training; the rest is reserved
     # for testing.
@@ -325,21 +337,21 @@ def _demo_prepare_data(tagged_data, train, num_sents, randomize, separate_baseli
 
 
 def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
-   testcurve = [teststats['initialerrors']]
-   for rulescore in teststats['rulescores']:
-       testcurve.append(testcurve[-1] - rulescore)
-   testcurve = [1 - x/teststats['tokencount'] for x in testcurve[:take]]
+    testcurve = [teststats['initialerrors']]
+    for rulescore in teststats['rulescores']:
+        testcurve.append(testcurve[-1] - rulescore)
+    testcurve = [1 - x / teststats['tokencount'] for x in testcurve[:take]]
 
-   traincurve = [trainstats['initialerrors']]
-   for rulescore in trainstats['rulescores']:
-       traincurve.append(traincurve[-1] - rulescore)
-   traincurve = [1 - x/trainstats['tokencount'] for x in traincurve[:take]]
+    traincurve = [trainstats['initialerrors']]
+    for rulescore in trainstats['rulescores']:
+        traincurve.append(traincurve[-1] - rulescore)
+    traincurve = [1 - x / trainstats['tokencount'] for x in traincurve[:take]]
 
-   import matplotlib.pyplot as plt
-   r = list(range(len(testcurve)))
-   plt.plot(r, testcurve, r, traincurve)
-   plt.axis([None, None, None, 1.0])
-   plt.savefig(learning_curve_output)
+    import matplotlib.pyplot as plt
+    r = list(range(len(testcurve)))
+    plt.plot(r, testcurve, r, traincurve)
+    plt.axis([None, None, None, 1.0])
+    plt.savefig(learning_curve_output)
 
 
 NN_CD_TAGGER = RegexpTagger(
@@ -347,20 +359,21 @@ NN_CD_TAGGER = RegexpTagger(
      (r'.*', 'NN')])
 
 REGEXP_TAGGER = RegexpTagger(
-    [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
-     (r'(The|the|A|a|An|an)$', 'AT'),   # articles
-     (r'.*able$', 'JJ'),                # adjectives
-     (r'.*ness$', 'NN'),                # nouns formed from adjectives
-     (r'.*ly$', 'RB'),                  # adverbs
-     (r'.*s$', 'NNS'),                  # plural nouns
-     (r'.*ing$', 'VBG'),                # gerunds
-     (r'.*ed$', 'VBD'),                 # past tense verbs
-     (r'.*', 'NN')                      # nouns (default)
-])
+    [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),  # cardinal numbers
+     (r'(The|the|A|a|An|an)$', 'AT'),  # articles
+     (r'.*able$', 'JJ'),  # adjectives
+     (r'.*ness$', 'NN'),  # nouns formed from adjectives
+     (r'.*ly$', 'RB'),  # adverbs
+     (r'.*s$', 'NNS'),  # plural nouns
+     (r'.*ing$', 'VBG'),  # gerunds
+     (r'.*ed$', 'VBD'),  # past tense verbs
+     (r'.*', 'NN')  # nouns (default)
+     ])
 
 
 def corpus_size(seqs):
     return (len(seqs), sum(len(x) for x in seqs))
+
 
 if __name__ == '__main__':
     demo_learning_curve()

@@ -9,12 +9,13 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-import tempfile
-import pickle
 
-from os import remove
+import pickle
+import tempfile
 from copy import deepcopy
 from operator import itemgetter
+from os import remove
+
 try:
     from numpy import array
     from scipy import sparse
@@ -23,8 +24,7 @@ try:
 except ImportError:
     pass
 
-from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
-
+from nltk.parse import ParserI, DependencyGraph
 
 
 class Configuration(object):
@@ -55,7 +55,7 @@ class Configuration(object):
 
     def __str__(self):
         return 'Stack : ' + \
-            str(self.stack) + '  Buffer : ' + str(self.buffer) + '   Arcs : ' + str(self.arcs)
+               str(self.stack) + '  Buffer : ' + str(self.buffer) + '   Arcs : ' + str(self.arcs)
 
     def _check_informative(self, feat, flag=False):
         """
@@ -192,10 +192,10 @@ class Transition(object):
         """
         self._algo = alg_option
         if alg_option not in [
-                TransitionParser.ARC_STANDARD,
-                TransitionParser.ARC_EAGER]:
+            TransitionParser.ARC_STANDARD,
+            TransitionParser.ARC_EAGER]:
             raise ValueError(" Currently we only support %s and %s " %
-                                        (TransitionParser.ARC_STANDARD, TransitionParser.ARC_EAGER))
+                             (TransitionParser.ARC_STANDARD, TransitionParser.ARC_EAGER))
 
     def left_arc(self, conf, relation):
         """
@@ -278,7 +278,6 @@ class Transition(object):
 
 
 class TransitionParser(ParserI):
-
     """
     Class for transition based parser. Implement 2 algorithms which are "arc-standard" and "arc-eager"
     """
@@ -290,9 +289,9 @@ class TransitionParser(ParserI):
         :param algorithm: the algorithm option of this parser. Currently support `arc-standard` and `arc-eager` algorithm
         :type algorithm: str
         """
-        if not(algorithm in [self.ARC_STANDARD, self.ARC_EAGER]):
+        if not (algorithm in [self.ARC_STANDARD, self.ARC_EAGER]):
             raise ValueError(" Currently we only support %s and %s " %
-                                        (self.ARC_STANDARD, self.ARC_EAGER))
+                             (self.ARC_STANDARD, self.ARC_EAGER))
         self._algorithm = algorithm
 
         self._dictionary = {}
@@ -564,9 +563,9 @@ class TransitionParser(ParserI):
 
                 # It's best to use decision function as follow BUT it's not supported yet for sparse SVM
                 # Using decision funcion to build the votes array
-                #dec_func = model.decision_function(x_test)[0]
-                #votes = {}
-                #k = 0
+                # dec_func = model.decision_function(x_test)[0]
+                # votes = {}
+                # k = 0
                 # for i in range(len(model.classes_)):
                 #    for j in range(i+1, len(model.classes_)):
                 #        #if  dec_func[k] > 0:
@@ -577,7 +576,7 @@ class TransitionParser(ParserI):
                 #           votes[j] +=1
                 #        k +=1
                 # Sort votes according to the values
-                #sorted_votes = sorted(votes.items(), key=itemgetter(1), reverse=True)
+                # sorted_votes = sorted(votes.items(), key=itemgetter(1), reverse=True)
 
                 # We will use predict_proba instead of decision_function
                 prob_dict = {}
@@ -591,7 +590,7 @@ class TransitionParser(ParserI):
 
                 # Note that SHIFT is always a valid operation
                 for (y_pred_idx, confidence) in sorted_Prob:
-                    #y_pred = model.predict(x_test)[0]
+                    # y_pred = model.predict(x_test)[0]
                     # From the prediction match to the operation
                     y_pred = model.classes_[y_pred_idx]
 
@@ -771,4 +770,3 @@ def demo():
 
     Note that result is very poor because of only one training example.
     """
-

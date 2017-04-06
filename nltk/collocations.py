@@ -30,14 +30,11 @@ from __future__ import print_function
 #   approximation is good enough for fragmented data, and mention it
 # - add a n-gram collocation finder with measures which only utilise n-gram
 #   and unigram counts (raw_freq, pmi, student_t)
-
 import itertools as _itertools
-from nltk.compat import iteritems
 
+from nltk.compat import iteritems
 from nltk.probability import FreqDist
 from nltk.util import ngrams
-from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures
-from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 
 
 class AbstractCollocationFinder(object):
@@ -72,7 +69,7 @@ class AbstractCollocationFinder(object):
         """Constructs a collocation finder given a collection of documents,
         each of which is a list (or iterable) of tokens.
         """
-        #return cls.from_words(_itertools.chain(*documents))
+        # return cls.from_words(_itertools.chain(*documents))
         return cls.from_words(cls._build_new_documents(documents, cls.default_ws, pad_right=True))
 
     @staticmethod
@@ -364,6 +361,7 @@ def demo(scorer=None, compare_scorer=None):
         print(file)
         print('\t', [' '.join(tup) for tup in cf.nbest(scorer, 15)])
         print('\t Correlation to %s: %0.4f' % (compare_scorer.__name__, corr))
+
 
 # Slows down loading too much
 # bigram_measures = BigramAssocMeasures()

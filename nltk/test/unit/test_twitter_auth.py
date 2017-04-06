@@ -5,6 +5,7 @@ Tests for static parts of Twitter package
 
 import os
 import unittest
+
 from nose import SkipTest
 
 try:
@@ -182,4 +183,3 @@ class TestCredentials(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

@@ -55,12 +55,14 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 """
 
 from __future__ import division
+
+import warnings
 from collections import defaultdict
+
 from nltk.translate import AlignedSent
 from nltk.translate import Alignment
 from nltk.translate import IBMModel
 from nltk.translate.ibm_model import Counts
-import warnings
 
 
 class IBMModel1(IBMModel):
@@ -137,7 +139,7 @@ class IBMModel1(IBMModel):
         if initial_prob < IBMModel.MIN_PROB:
             warnings.warn("Target language vocabulary is too large (" +
                           str(len(self.trg_vocab)) + " words). "
-                          "Results may be less accurate.")
+                                                     "Results may be less accurate.")
 
         for t in self.trg_vocab:
             self.translation_table[t] = defaultdict(lambda: initial_prob)

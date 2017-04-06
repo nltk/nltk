@@ -8,16 +8,17 @@
 # For license information, see LICENSE.TXT
 from __future__ import print_function
 
-import subprocess
-import os
 import fnmatch
-import re
-import warnings
-import textwrap
-import types
-import sys
-import stat
 import locale
+import os
+import re
+import stat
+import subprocess
+import sys
+import textwrap
+import warnings
+
+import types
 
 # Use the c version of ElementTree, which is faster, if possible:
 try:
@@ -25,7 +26,6 @@ try:
 except ImportError:
     from xml.etree import ElementTree
 
-from nltk import __file__
 from nltk import compat
 
 ##########################################################################
@@ -34,6 +34,8 @@ from nltk import compat
 
 _java_bin = None
 _java_options = []
+
+
 # [xx] add classpath option to config_java?
 def config_java(bin=None, options=None, verbose=False):
     """
@@ -59,6 +61,7 @@ def config_java(bin=None, options=None, verbose=False):
         if isinstance(options, compat.string_types):
             options = options.split()
         _java_options = list(options)
+
 
 def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
          blocking=True):
@@ -113,10 +116,10 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
 
     # Set up the classpath.
     if isinstance(classpath, compat.string_types):
-        classpaths=[classpath]
+        classpaths = [classpath]
     else:
-        classpaths=list(classpath)
-    classpath=os.path.pathsep.join(classpaths)
+        classpaths = list(classpath)
+    classpath = os.path.pathsep.join(classpaths)
 
     # Construct the full command string.
     cmd = list(cmd)
@@ -135,17 +138,18 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
 
     return (stdout, stderr)
 
+
 if 0:
-    #config_java(options='-Xmx512m')
+    # config_java(options='-Xmx512m')
     # Write:
-    #java('weka.classifiers.bayes.NaiveBayes',
+    # java('weka.classifiers.bayes.NaiveBayes',
     #     ['-d', '/tmp/names.model', '-t', '/tmp/train.arff'],
     #     classpath='/Users/edloper/Desktop/weka/weka.jar')
     # Read:
-    (a,b) = java(['weka.classifiers.bayes.NaiveBayes',
-                  '-l', '/tmp/names.model', '-T', '/tmp/test.arff',
-                  '-p', '0'],#, '-distribution'],
-                 classpath='/Users/edloper/Desktop/weka/weka.jar')
+    (a, b) = java(['weka.classifiers.bayes.NaiveBayes',
+                   '-l', '/tmp/names.model', '-T', '/tmp/test.arff',
+                   '-p', '0'],  # , '-distribution'],
+                  classpath='/Users/edloper/Desktop/weka/weka.jar')
 
 
 ######################################################################
@@ -158,14 +162,19 @@ class ReadError(ValueError):
     :param position: The index in the input string where an error occurred.
     :param expected: What was expected when an error occurred.
     """
+
     def __init__(self, expected, position):
         ValueError.__init__(self, expected, position)
         self.expected = expected
         self.position = position
+
     def __str__(self):
         return 'Expected %s at %s' % (self.expected, self.position)
 
+
 _STRING_START_RE = re.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
+
+
 def read_str(s, start_position):
     """
     If a Python string literal begins at the specified position in the
@@ -209,8 +218,10 @@ def read_str(s, start_position):
     while True:
         match = _STRING_END_RE.search(s, position)
         if not match: raise ReadError('close quote', position)
-        if match.group(0) == '\\': position = match.end()+1
-        else: break
+        if match.group(0) == '\\':
+            position = match.end() + 1
+        else:
+            break
 
     # Process it, using eval.  Strings with invalid escape sequences
     # might raise ValueEerror.
@@ -219,7 +230,10 @@ def read_str(s, start_position):
     except ValueError as e:
         raise ReadError('invalid string (%s)' % e)
 
+
 _READ_INT_RE = re.compile(r'-?\d+')
+
+
 def read_int(s, start_position):
     """
     If an integer begins at the specified position in the given
@@ -252,7 +266,10 @@ def read_int(s, start_position):
     if not m: raise ReadError('integer', start_position)
     return int(m.group()), m.end()
 
+
 _READ_NUMBER_VALUE = re.compile(r'-?(\d*)([.]?\d*)?')
+
+
 def read_number(s, start_position):
     """
     If an integer or float begins at the specified position in the
@@ -284,9 +301,10 @@ def read_number(s, start_position):
     m = _READ_NUMBER_VALUE.match(s, start_position)
     if not m or not (m.group(1) or m.group(2)):
         raise ReadError('number', start_position)
-    if m.group(2): return float(m.group()), m.end()
-    else: return int(m.group()), m.end()
-
+    if m.group(2):
+        return float(m.group()), m.end()
+    else:
+        return int(m.group()), m.end()
 
 
 ######################################################################
@@ -322,6 +340,7 @@ def overridden(method):
     else:
         raise TypeError('Expected an instance method.')
 
+
 def _mro(cls):
     """
     Return the method resolution order for ``cls`` -- i.e., a list
@@ -337,6 +356,7 @@ def _mro(cls):
         for base in cls.__bases__: mro.extend(_mro(base))
         return mro
 
+
 ######################################################################
 # Deprecation decorator & base class
 ######################################################################
@@ -348,7 +368,7 @@ def _add_epytext_field(obj, field, message):
     # If we already have a docstring, then add a blank line to separate
     # it from the new field, and check its indentation.
     if obj.__doc__:
-        obj.__doc__ = obj.__doc__.rstrip()+'\n\n'
+        obj.__doc__ = obj.__doc__.rstrip() + '\n\n'
         indents = re.findall(r'(?<=\n)[ ]+(?!\s)', obj.__doc__.expandtabs())
         if indents: indent = min(indents)
     # If we don't have a docstring, add an empty one.
@@ -357,7 +377,8 @@ def _add_epytext_field(obj, field, message):
 
     obj.__doc__ += textwrap.fill('@%s: %s' % (field, message),
                                  initial_indent=indent,
-                                 subsequent_indent=indent+'    ')
+                                 subsequent_indent=indent + '    ')
+
 
 def deprecated(message):
     """
@@ -376,6 +397,7 @@ def deprecated(message):
                % (func.__name__, message))
         msg = '\n' + textwrap.fill(msg, initial_indent='  ',
                                    subsequent_indent='  ')
+
         def newFunc(*args, **kwargs):
             warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
             return func(*args, **kwargs)
@@ -388,7 +410,9 @@ def deprecated(message):
         # Add a @deprecated field to the docstring.
         _add_epytext_field(newFunc, 'deprecated', message)
         return newFunc
+
     return decorator
+
 
 class Deprecated(object):
     """
@@ -405,12 +429,14 @@ class Deprecated(object):
     The docstring of the deprecated class will be used in the
     deprecation warning message.
     """
+
     def __new__(cls, *args, **kwargs):
         # Figure out which class is the deprecated one.
         dep_cls = None
         for base in _mro(cls):
             if Deprecated in base.__bases__:
-                dep_cls = base; break
+                dep_cls = base;
+                break
         assert dep_cls, 'Unable to determine which base is deprecated.'
 
         # Construct an appropriate warning.
@@ -432,6 +458,7 @@ class Deprecated(object):
         # Do the actual work of __new__.
         return object.__new__(cls)
 
+
 ##########################################################################
 # COUNTER, FOR UNIQUE NAMING
 ##########################################################################
@@ -440,18 +467,21 @@ class Counter:
     """
     A counter that auto-increments each time its value is read.
     """
+
     def __init__(self, initial_value=0):
         self._value = initial_value
+
     def get(self):
         self._value += 1
         return self._value
+
 
 ##########################################################################
 # Search for files/binaries
 ##########################################################################
 
 def find_file_iter(filename, env_vars=(), searchpath=(),
-    file_names=None, url=None, verbose=False, finding_dir=False):
+                   file_names=None, url=None, verbose=False, finding_dir=False):
     """
     Search for a file to be used by nltk.
 
@@ -495,7 +525,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
-            if finding_dir: # This is to file a directory instead of file
+            if finding_dir:  # This is to file a directory instead of file
                 yielded = True
                 yield os.environ[env_var]
 
@@ -503,7 +533,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
                 # Check if the environment variable contains a direct path to the bin
                 if os.path.isfile(env_dir):
                     if verbose:
-                        print('[Found %s: %s]'%(filename, env_dir))
+                        print('[Found %s: %s]' % (filename, env_dir))
                     yielded = True
                     yield env_dir
                 # Check if the possible bin names exist inside the environment variable directories
@@ -511,7 +541,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
                     path_to_file = os.path.join(env_dir, alternative)
                     if os.path.isfile(path_to_file):
                         if verbose:
-                            print('[Found %s: %s]'%(filename, path_to_file))
+                            print('[Found %s: %s]' % (filename, path_to_file))
                         yielded = True
                         yield path_to_file
                     # Check if the alternative is inside a 'file' directory
@@ -540,7 +570,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
         for alternative in file_names:
             try:
                 p = subprocess.Popen(['which', alternative],
-                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout, stderr = p.communicate()
                 path = _decode_stdoutdata(stdout).strip()
                 if path.endswith(alternative) and os.path.exists(path):
@@ -563,24 +593,24 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
             msg += ''.join('\n    - %s' % d for d in searchpath)
         if url: msg += ('\n\n  For more information on %s, see:\n    <%s>' %
                         (filename, url))
-        div = '='*75
+        div = '=' * 75
         raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
 
 
 def find_file(filename, env_vars=(), searchpath=(),
-        file_names=None, url=None, verbose=False):
+              file_names=None, url=None, verbose=False):
     return next(find_file_iter(filename, env_vars, searchpath,
                                file_names, url, verbose))
 
 
 def find_dir(filename, env_vars=(), searchpath=(),
-        file_names=None, url=None, verbose=False):
+             file_names=None, url=None, verbose=False):
     return next(find_file_iter(filename, env_vars, searchpath,
                                file_names, url, verbose, finding_dir=True))
 
 
 def find_binary_iter(name, path_to_bin=None, env_vars=(), searchpath=(),
-                binary_names=None, url=None, verbose=False):
+                     binary_names=None, url=None, verbose=False):
     """
     Search for a file to be used by nltk.
 
@@ -592,17 +622,19 @@ def find_binary_iter(name, path_to_bin=None, env_vars=(), searchpath=(),
     :param url: URL presented to user for download help.
     :param verbose: Whether or not to print path when a file is found.
     """
-    for file in  find_file_iter(path_to_bin or name, env_vars, searchpath, binary_names,
-                     url, verbose):
+    for file in find_file_iter(path_to_bin or name, env_vars, searchpath, binary_names,
+                               url, verbose):
         yield file
+
 
 def find_binary(name, path_to_bin=None, env_vars=(), searchpath=(),
                 binary_names=None, url=None, verbose=False):
     return next(find_binary_iter(name, path_to_bin, env_vars, searchpath,
                                  binary_names, url, verbose))
 
+
 def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
-        searchpath=(), url=None, verbose=False, is_regex=False):
+                  searchpath=(), url=None, verbose=False, is_regex=False):
     """
     Search for a jar that is used by nltk.
 
@@ -632,7 +664,7 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
             yield path_to_jar
         else:
             raise LookupError('Could not find %s jar file at %s' %
-                            (name_pattern, path_to_jar))
+                              (name_pattern, path_to_jar))
 
     # Check environment variables
     for env_var in env_vars:
@@ -641,7 +673,7 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
                 classpath = os.environ['CLASSPATH']
                 for cp in classpath.split(os.path.pathsep):
                     if os.path.isfile(cp):
-                        filename=os.path.basename(cp)
+                        filename = os.path.basename(cp)
                         if is_regex and re.match(name_pattern, filename) or \
                                 (not is_regex and filename == name_pattern):
                             if verbose:
@@ -651,19 +683,19 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
                     # The case where user put directory containing the jar file in the classpath
                     if os.path.isdir(cp):
                         if not is_regex:
-                            if os.path.isfile(os.path.join(cp,name_pattern)):
+                            if os.path.isfile(os.path.join(cp, name_pattern)):
                                 if verbose:
                                     print('[Found %s: %s]' % (name_pattern, cp))
                                 yielded = True
-                                yield os.path.join(cp,name_pattern)
+                                yield os.path.join(cp, name_pattern)
                         else:
                             # Look for file using regular expression
                             for file_name in os.listdir(cp):
-                                if re.match(name_pattern,file_name):
+                                if re.match(name_pattern, file_name):
                                     if verbose:
-                                        print('[Found %s: %s]' % (name_pattern, os.path.join(cp,file_name)))
+                                        print('[Found %s: %s]' % (name_pattern, os.path.join(cp, file_name)))
                                     yielded = True
-                                    yield os.path.join(cp,file_name)
+                                    yield os.path.join(cp, file_name)
 
             else:
                 jar_env = os.environ[env_var]
@@ -671,7 +703,7 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
                             if os.path.isdir(jar_env) else (jar_env,))
                 for path_to_jar in jar_iter:
                     if os.path.isfile(path_to_jar):
-                        filename=os.path.basename(path_to_jar)
+                        filename = os.path.basename(path_to_jar)
                         if is_regex and re.match(name_pattern, filename) or \
                                 (not is_regex and filename == name_pattern):
                             if verbose:
@@ -702,7 +734,7 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
         # If nothing was found, raise an error
         msg = ("NLTK was unable to find %s!" % name_pattern)
         if env_vars: msg += ' Set the %s environment variable' % env_vars[0]
-        msg = textwrap.fill(msg+'.', initial_indent='  ',
+        msg = textwrap.fill(msg + '.', initial_indent='  ',
                             subsequent_indent='  ')
         if searchpath:
             msg += '\n\n  Searched in:'
@@ -710,19 +742,21 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
         if url:
             msg += ('\n\n  For more information, on %s, see:\n    <%s>' %
                     (name_pattern, url))
-        div = '='*75
+        div = '=' * 75
         raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
 
+
 def find_jar(name_pattern, path_to_jar=None, env_vars=(),
-        searchpath=(), url=None, verbose=False, is_regex=False):
+             searchpath=(), url=None, verbose=False, is_regex=False):
     return next(find_jar_iter(name_pattern, path_to_jar, env_vars,
-                         searchpath, url, verbose, is_regex))
+                              searchpath, url, verbose, is_regex))
 
 
 def find_jars_within_path(path_to_jars):
-	return [os.path.join(root, filename)
-			for root, dirnames, filenames in os.walk(path_to_jars)
-			for filename in fnmatch.filter(filenames, '*.jar')]
+    return [os.path.join(root, filename)
+            for root, dirnames, filenames in os.walk(path_to_jars)
+            for filename in fnmatch.filter(filenames, '*.jar')]
+
 
 def _decode_stdoutdata(stdoutdata):
     """ Convert data read from stdout/stderr to unicode """
@@ -733,6 +767,7 @@ def _decode_stdoutdata(stdoutdata):
     if encoding is None:
         return stdoutdata.decode()
     return stdoutdata.decode(encoding)
+
 
 ##########################################################################
 # Import Stdlib Module
@@ -806,14 +841,14 @@ class ElementWrapper(object):
         return self._etree
 
     ##////////////////////////////////////////////////////////////
-    #{ String Representation
+    # { String Representation
     ##////////////////////////////////////////////////////////////
 
     def __repr__(self):
         s = ElementTree.tostring(self._etree, encoding='utf8').decode('utf8')
         if len(s) > 60:
             e = s.rfind('<')
-            if (len(s)-e) > 30: e = -20
+            if (len(s) - e) > 30: e = -20
             s = '%s...%s' % (s[:30], s[e:])
         return '<Element %r>' % s
 
@@ -825,7 +860,7 @@ class ElementWrapper(object):
         return ElementTree.tostring(self._etree, encoding='utf8').decode('utf8').rstrip()
 
     ##////////////////////////////////////////////////////////////
-    #{ Element interface Delegation (pass-through)
+    # { Element interface Delegation (pass-through)
     ##////////////////////////////////////////////////////////////
 
     def __getattr__(self, attrib):
@@ -853,7 +888,7 @@ class ElementWrapper(object):
         return len(self._etree)
 
     ##////////////////////////////////////////////////////////////
-    #{ Element interface Delegation (wrap result)
+    # { Element interface Delegation (wrap result)
     ##////////////////////////////////////////////////////////////
 
     def __getitem__(self, index):
@@ -874,11 +909,14 @@ class ElementWrapper(object):
 
     def find(self, path):
         elt = self._etree.find(path)
-        if elt is None: return elt
-        else: return ElementWrapper(elt)
+        if elt is None:
+            return elt
+        else:
+            return ElementWrapper(elt)
 
     def findall(self, path):
         return [ElementWrapper(elt) for elt in self._etree.findall(path)]
+
 
 ######################################################################
 # Helper for Handling Slicing
@@ -925,21 +963,24 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
     if stop is None: stop = len(sequence)
 
     # Handle negative indices.
-    if start < 0: start = max(0, len(sequence)+start)
-    if stop < 0: stop = max(0, len(sequence)+stop)
+    if start < 0: start = max(0, len(sequence) + start)
+    if stop < 0: stop = max(0, len(sequence) + stop)
 
     # Make sure stop doesn't go past the end of the list.  Note that
     # we avoid calculating len(sequence) if possible, because for lazy
     # sequences, calculating the length of a sequence can be expensive.
     if stop > 0:
-        try: sequence[stop-1]
-        except IndexError: stop = len(sequence)
+        try:
+            sequence[stop - 1]
+        except IndexError:
+            stop = len(sequence)
 
     # Make sure start isn't past stop.
     start = min(start, stop)
 
     # That's all folks!
     return start, stop
+
 
 ######################################################################
 # Permission Checking
@@ -962,7 +1003,7 @@ def is_writable(path):
             return True
         # are we in a group that can write to it?
         elif (statdata.st_gid in [os.getgid()] + os.getgroups()) \
-            and (perm & 0o020):
+                and (perm & 0o020):
             return True
         # otherwise, we can't write to it.
         else:
@@ -971,6 +1012,7 @@ def is_writable(path):
     # Otherwise, we'll assume it's writable.
     # [xx] should we do other checks on other platforms?
     return True
+
 
 ######################################################################
 # NLTK Error reporting

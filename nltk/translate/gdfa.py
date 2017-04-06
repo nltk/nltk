@@ -6,8 +6,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import codecs
 from collections import defaultdict
+
 
 def grow_diag_final_and(srclen, trglen, e2f, f2e):
     """
@@ -67,19 +67,19 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
     """
 
     # Converts pharaoh text format into list of tuples.
-    e2f = [tuple(map(int,a.split('-'))) for a in e2f.split()]
-    f2e = [tuple(map(int,a.split('-'))) for a in f2e.split()]
-    
-    neighbors = [(-1,0),(0,-1),(1,0),(0,1),(-1,-1),(-1,1),(1,-1),(1,1)]
-    alignment = set(e2f).intersection(set(f2e)) # Find the intersection.
+    e2f = [tuple(map(int, a.split('-'))) for a in e2f.split()]
+    f2e = [tuple(map(int, a.split('-'))) for a in f2e.split()]
+
+    neighbors = [(-1, 0), (0, -1), (1, 0), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
+    alignment = set(e2f).intersection(set(f2e))  # Find the intersection.
     union = set(e2f).union(set(f2e))
 
     # *aligned* is used to check if neighbors are aligned in grow_diag()
     aligned = defaultdict(set)
-    for i,j in alignment:
+    for i, j in alignment:
         aligned['e'].add(i)
         aligned['j'].add(j)
-    
+
     def grow_diag():
         """
         Search for the neighbor points and them to the intersected alignment
@@ -91,21 +91,22 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
             # for english word e = 0 ... en
             for e in range(srclen):
                 # for foreign word f = 0 ... fn
-                for f in range(trglen): 
+                for f in range(trglen):
                     # if ( e aligned with f)
-                    if (e,f) in alignment:
+                    if (e, f) in alignment:
                         # for each neighboring point (e-new, f-new)
                         for neighbor in neighbors:
-                            neighbor = tuple(i+j for i,j in zip((e,f),neighbor))
+                            neighbor = tuple(i + j for i, j in zip((e, f), neighbor))
                             e_new, f_new = neighbor
                             # if ( ( e-new not aligned and f-new not aligned) 
                             # and (e-new, f-new in union(e2f, f2e) )
-                            if (e_new not in aligned and f_new not in aligned)\
-                            and neighbor in union:
+                            if (e_new not in aligned and f_new not in aligned) \
+                                    and neighbor in union:
                                 alignment.add(neighbor)
-                                aligned['e'].add(e_new); aligned['f'].add(f_new)
-                                prev_len+=1
-                                                                    
+                                aligned['e'].add(e_new);
+                                aligned['f'].add(f_new)
+                                prev_len += 1
+
     def final_and(a):
         """
         Adds remaining points that are not in the intersection, not in the 
@@ -120,12 +121,11 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
                 if (e_new not in aligned
                     and f_new not in aligned
                     and (e_new, f_new) in a):
-
                     alignment.add((e_new, f_new))
-                    aligned['e'].add(e_new); aligned['f'].add(f_new)
+                    aligned['e'].add(e_new);
+                    aligned['f'].add(f_new)
 
     grow_diag()
     final_and(e2f)
     final_and(f2e)
     return alignment
-

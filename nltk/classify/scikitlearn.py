@@ -32,9 +32,9 @@ best 1000 features:
 """
 from __future__ import print_function, unicode_literals
 
+from nltk import compat
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
-from nltk import compat
 
 try:
     from sklearn.feature_extraction import DictVectorizer

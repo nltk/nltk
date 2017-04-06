@@ -8,8 +8,9 @@
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
 from __future__ import division
-from itertools import islice
+
 import math
+from itertools import islice
 
 from nltk.util import ngrams, choose
 
@@ -53,18 +54,18 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
         # Collects the *worder* from the ranked correlation alignments.
         worder = word_rank_alignment(reference, hypothesis)
         nkt = kendall_tau(worder)
-            
+
         # Calculates the brevity penalty
-        bp = min(1.0, math.exp(1.0 - len(reference)/len(hypothesis)))
-        
+        bp = min(1.0, math.exp(1.0 - len(reference) / len(hypothesis)))
+
         # Calculates the unigram precision, *p1*
         p1 = len(worder) / len(hypothesis)
-        
-        _ribes = nkt * (p1 ** alpha) *  (bp ** beta)
-        
-        if _ribes > best_ribes: # Keeps the best score.
+
+        _ribes = nkt * (p1 ** alpha) * (bp ** beta)
+
+        if _ribes > best_ribes:  # Keeps the best score.
             best_ribes = _ribes
-        
+
     return best_ribes
 
 
@@ -118,8 +119,8 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     for references, hypothesis in zip(list_of_references, hypotheses):
         corpus_best_ribes += sentence_ribes(references, hypothesis, alpha, beta)
     return corpus_best_ribes / len(hypotheses)
-    
-        
+
+
 def position_of_ngram(ngram, sentence):
     """
     This function returns the position of the first instance of the ngram 
@@ -142,7 +143,7 @@ def position_of_ngram(ngram, sentence):
     :type sentence: list(str)
     """
     # Iterates through the ngrams in sentence.
-    for i,sublist in enumerate(ngrams(sentence, len(ngram))):
+    for i, sublist in enumerate(ngrams(sentence, len(ngram))):
         # Returns the index of the word when ngram matches.
         if ngram == sublist:
             return i
@@ -189,7 +190,7 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
     # This is used for matching context window later in the algorithm.
     ref_ngrams = []
     hyp_ngrams = []
-    for n in range(1, len(reference)+1):
+    for n in range(1, len(reference) + 1):
         for ng in ngrams(reference, n):
             ref_ngrams.append(ng)
         for ng in ngrams(hypothesis, n):
@@ -203,33 +204,33 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
         elif hypothesis.count(h_word) == reference.count(h_word) == 1:
             worder.append(reference.index(h_word))
         else:
-            max_window_size = max(i, hyp_len-i+1)
+            max_window_size = max(i, hyp_len - i + 1)
             for window in range(1, max_window_size):
-                if i+window < hyp_len: # If searching the right context is possible.
+                if i + window < hyp_len:  # If searching the right context is possible.
                     # Retrieve the right context window.
-                    right_context_ngram = tuple(islice(hypothesis, i, i+window+1))
+                    right_context_ngram = tuple(islice(hypothesis, i, i + window + 1))
                     num_times_in_ref = ref_ngrams.count(right_context_ngram)
-                    num_times_in_hyp = hyp_ngrams.count(right_context_ngram) 
+                    num_times_in_hyp = hyp_ngrams.count(right_context_ngram)
                     # If ngram appears only once in both ref and hyp.
                     if num_times_in_ref == num_times_in_hyp == 1:
                         # Find the position of ngram that matched the reference.
                         pos = position_of_ngram(right_context_ngram, reference)
                         worder.append(pos)  # Add the positions of the ngram.
                         break
-                if window <= i: # If searching the left context is possible.
+                if window <= i:  # If searching the left context is possible.
                     # Retrieve the left context window.
-                    left_context_ngram = tuple(islice(hypothesis, i-window, i+1))
+                    left_context_ngram = tuple(islice(hypothesis, i - window, i + 1))
                     num_times_in_ref = ref_ngrams.count(left_context_ngram)
                     num_times_in_hyp = hyp_ngrams.count(left_context_ngram)
                     if num_times_in_ref == num_times_in_hyp == 1:
                         # Find the position of ngram that matched the reference.
                         pos = position_of_ngram(left_context_ngram, reference)
                         # Add the positions of the ngram.
-                        worder.append(pos+ len(left_context_ngram) -1)  
+                        worder.append(pos + len(left_context_ngram) - 1)
                         break
     return worder
 
-    
+
 def find_increasing_sequences(worder):
     """
     Given the *worder* list, this function groups monotonic +1 sequences. 
@@ -283,14 +284,14 @@ def kendall_tau(worder, normalize=True):
     # Extract the groups of increasing/monotonic sequences.
     increasing_sequences = find_increasing_sequences(worder)
     # Calculate no. of increasing_pairs in *worder* list.
-    num_increasing_pairs = sum(choose(len(seq),2) for seq in increasing_sequences) 
+    num_increasing_pairs = sum(choose(len(seq), 2) for seq in increasing_sequences)
     # Calculate no. of possible pairs.
     num_possible_pairs = choose(worder_len, 2)
     # Kendall's Tau computation.
-    tau = 2 * num_increasing_pairs / num_possible_pairs -1
-    if normalize: # If normalized, the tau output falls between 0.0 to 1.0
-        return (tau + 1) /2
-    else: # Otherwise, the tau outputs falls between -1.0 to +1.0
+    tau = 2 * num_increasing_pairs / num_possible_pairs - 1
+    if normalize:  # If normalized, the tau output falls between 0.0 to 1.0
+        return (tau + 1) / 2
+    else:  # Otherwise, the tau outputs falls between -1.0 to +1.0
         return tau
 
 
@@ -316,10 +317,10 @@ def spearman_rho(worder, normalize=True):
     :param type: list(int)
     """
     worder_len = len(worder)
-    sum_d_square = sum((wi - i)**2 for wi, i in zip(worder, range(worder_len)))
-    rho = 1 - sum_d_square / choose(worder_len+1, 3)
-    
-    if normalize: # If normalized, the rho output falls between 0.0 to 1.0
-        return (rho + 1) /2
-    else: # Otherwise, the rho outputs falls between -1.0 to +1.0
+    sum_d_square = sum((wi - i) ** 2 for wi, i in zip(worder, range(worder_len)))
+    rho = 1 - sum_d_square / choose(worder_len + 1, 3)
+
+    if normalize:  # If normalized, the rho output falls between 0.0 to 1.0
+        return (rho + 1) / 2
+    else:  # Otherwise, the rho outputs falls between -1.0 to +1.0
         return rho

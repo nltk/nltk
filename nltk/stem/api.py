@@ -13,6 +13,7 @@ class StemmerI(object):
     words.  This process is known as stemming.
 
     """
+
     def stem(self, token):
         """
         Strip affixes from the token and return the stem.
@@ -21,5 +22,3 @@ class StemmerI(object):
         :type token: str
         """
         raise NotImplementedError()
-
-

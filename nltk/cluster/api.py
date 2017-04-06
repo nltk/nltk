@@ -8,6 +8,7 @@
 
 from nltk.probability import DictionaryProbDist
 
+
 class ClusterI(object):
     """
     Interface covering basic clustering functionality.

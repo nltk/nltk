@@ -35,8 +35,10 @@ to specify the tokenization conventions when building a `CorpusReader`.
 
 """
 from __future__ import unicode_literals
+
 from nltk.tokenize.api import TokenizerI, StringTokenizer
 from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
+
 
 class SpaceTokenizer(StringTokenizer):
     r"""Tokenize a string using the space character as a delimiter,
@@ -51,6 +53,7 @@ class SpaceTokenizer(StringTokenizer):
 
     _string = ' '
 
+
 class TabTokenizer(StringTokenizer):
     r"""Tokenize a string use the tab character as a delimiter,
     the same as ``s.split('\t')``.
@@ -61,6 +64,7 @@ class TabTokenizer(StringTokenizer):
     """
 
     _string = '\t'
+
 
 class CharTokenizer(StringTokenizer):
     """Tokenize a string into individual characters.  If this functionality
@@ -73,6 +77,7 @@ class CharTokenizer(StringTokenizer):
     def span_tokenize(self, s):
         for i, j in enumerate(range(1, len(s) + 1)):
             yield i, j
+
 
 class LineTokenizer(TokenizerI):
     r"""Tokenize a string into its lines, optionally discarding blank lines.
@@ -124,13 +129,11 @@ class LineTokenizer(TokenizerI):
             for span in regexp_span_tokenize(s, r'\n(\s+\n)*'):
                 yield span
 
+
 ######################################################################
-#{ Tokenization Functions
+# { Tokenization Functions
 ######################################################################
 # XXX: it is stated in module docs that there is no function versions
 
 def line_tokenize(text, blanklines='discard'):
     return LineTokenizer(blanklines).tokenize(text)
-
-
-

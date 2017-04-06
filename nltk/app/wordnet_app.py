@@ -46,22 +46,18 @@ Options::
 # changes to other NLTK packages.
 from __future__ import print_function
 
+import base64
+import copy
+import getopt
 # Allow this program to run inside the NLTK source tree.
-from sys import path
-
 import os
+import pickle
 import sys
-from sys import argv
-from collections import defaultdict
-import webbrowser
-import datetime
-import re
 import threading
 import time
-import getopt
-import base64
-import pickle
-import copy
+import webbrowser
+from collections import defaultdict
+from sys import argv
 
 from nltk import compat
 from nltk.corpus import wordnet as wn
@@ -88,7 +84,6 @@ logfile = None
 
 
 class MyServerHandler(BaseHTTPRequestHandler):
-
     def do_HEAD(self):
         self.send_head()
 
@@ -103,7 +98,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 print('Server shutting down!')
                 os._exit(0)
 
-        elif sp == '': # First request.
+        elif sp == '':  # First request.
             type = 'text/html'
             if not server_mode and firstClient:
                 firstClient = False
@@ -112,7 +107,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 page = get_static_index_page(False)
             word = 'green'
 
-        elif sp.endswith('.html'): # Trying to fetch a HTML file TODO:
+        elif sp.endswith('.html'):  # Trying to fetch a HTML file TODO:
             type = 'text/html'
             usp = compat.unquote_plus(sp)
             if usp == 'NLTK Wordnet Browser Database Info.html':
@@ -122,11 +117,11 @@ class MyServerHandler(BaseHTTPRequestHandler):
                         page = infile.read()
                 else:
                     page = (html_header % word) + \
-                        '<p>The database info file:'\
-                        '<p><b>' + usp + '</b>' + \
-                        '<p>was not found. Run this:' + \
-                        '<p><b>python dbinfo_html.py</b>' + \
-                        '<p>to produce it.' + html_trailer
+                           '<p>The database info file:' \
+                           '<p><b>' + usp + '</b>' + \
+                           '<p>was not found. Run this:' + \
+                           '<p><b>python dbinfo_html.py</b>' + \
+                           '<p>to produce it.' + html_trailer
             else:
                 # Handle files here.
                 word = sp
@@ -156,7 +151,6 @@ class MyServerHandler(BaseHTTPRequestHandler):
         self.send_head(type)
         self.wfile.write(page.encode('utf8'))
 
-
     def send_head(self, type=None):
         self.send_response(200)
         self.send_header('Content-type', type)
@@ -170,7 +164,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 "%s - - [%s] %s\n" %
                 (self.address_string(),
                  self.log_date_time_string(),
-                 format%args))
+                 format % args))
 
 
 def get_unique_counter_from_url(sp):
@@ -220,7 +214,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # Setup logging.
     if logfilename:
         try:
-            logfile = open(logfilename, "a", 1) # 1 means 'line buffering'
+            logfile = open(logfilename, "a", 1)  # 1 means 'line buffering'
         except IOError as e:
             sys.stderr.write("Couldn't open %s for writing: %s",
                              logfilename, e)
@@ -261,12 +255,14 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
 def startBrowser(url, server_ready):
     def run():
         server_ready.wait()
-        time.sleep(1) # Wait a little bit more, there's still the chance of
-                      # a race condition.
-        webbrowser.open(url, new = 2, autoraise = 1)
+        time.sleep(1)  # Wait a little bit more, there's still the chance of
+        # a race condition.
+        webbrowser.open(url, new=2, autoraise=1)
+
     t = threading.Thread(target=run)
     t.start()
     return t
+
 
 #####################################################################
 # Utilities
@@ -279,7 +275,7 @@ WordNet Browser Utilities.
 This provides a backend to both wxbrowse and browserver.py.
 """
 
-
+
 ################################################################################
 #
 # Main logic for wordnet browser.
@@ -289,10 +285,11 @@ This provides a backend to both wxbrowse and browserver.py.
 # WordNet corpus is installed.
 def _pos_tuples():
     return [
-        (wn.NOUN,'N','noun'),
-        (wn.VERB,'V','verb'),
-        (wn.ADJ,'J','adj'),
-        (wn.ADV,'R','adv')]
+        (wn.NOUN, 'N', 'noun'),
+        (wn.VERB, 'V', 'verb'),
+        (wn.ADJ, 'J', 'adj'),
+        (wn.ADV, 'R', 'adv')]
+
 
 def _pos_match(pos_tuple):
     """
@@ -302,7 +299,7 @@ def _pos_match(pos_tuple):
     """
     if pos_tuple[0] == 's':
         pos_tuple = ('a', pos_tuple[1], pos_tuple[2])
-    for n,x in enumerate(pos_tuple):
+    for n, x in enumerate(pos_tuple):
         if x is not None:
             break
     for pt in _pos_tuples():
@@ -343,7 +340,6 @@ INDIRECT_HYPERNYMS = 26
 
 
 def lemma_property(word, synset, func):
-
     def flattern(l):
         if l == []:
             return []
@@ -366,72 +362,72 @@ def get_relations_data(word, synset):
     """
     if synset.pos() == wn.NOUN:
         return ((HYPONYM, 'Hyponyms',
-                   synset.hyponyms()),
-                (INSTANCE_HYPONYM , 'Instance hyponyms',
-                   synset.instance_hyponyms()),
+                 synset.hyponyms()),
+                (INSTANCE_HYPONYM, 'Instance hyponyms',
+                 synset.instance_hyponyms()),
                 (HYPERNYM, 'Direct hypernyms',
-                   synset.hypernyms()),
+                 synset.hypernyms()),
                 (INDIRECT_HYPERNYMS, 'Indirect hypernyms',
-                   rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
-#  hypernyms', 'Sister terms',
-                (INSTANCE_HYPERNYM , 'Instance hypernyms',
-                   synset.instance_hypernyms()),
-#            (CLASS_REGIONAL, ['domain term region'], ),
+                 rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
+                #  hypernyms', 'Sister terms',
+                (INSTANCE_HYPERNYM, 'Instance hypernyms',
+                 synset.instance_hypernyms()),
+                #            (CLASS_REGIONAL, ['domain term region'], ),
                 (PART_HOLONYM, 'Part holonyms',
-                   synset.part_holonyms()),
+                 synset.part_holonyms()),
                 (PART_MERONYM, 'Part meronyms',
-                   synset.part_meronyms()),
+                 synset.part_meronyms()),
                 (SUBSTANCE_HOLONYM, 'Substance holonyms',
-                   synset.substance_holonyms()),
+                 synset.substance_holonyms()),
                 (SUBSTANCE_MERONYM, 'Substance meronyms',
-                   synset.substance_meronyms()),
+                 synset.substance_meronyms()),
                 (MEMBER_HOLONYM, 'Member holonyms',
-                   synset.member_holonyms()),
+                 synset.member_holonyms()),
                 (MEMBER_MERONYM, 'Member meronyms',
-                   synset.member_meronyms()),
+                 synset.member_meronyms()),
                 (ATTRIBUTE, 'Attributes',
-                   synset.attributes()),
+                 synset.attributes()),
                 (ANTONYM, "Antonyms",
-                   lemma_property(word, synset, lambda l: l.antonyms())),
+                 lemma_property(word, synset, lambda l: l.antonyms())),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
-                   lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
+                 lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
     elif synset.pos() == wn.VERB:
         return ((ANTONYM, 'Antonym',
-                   lemma_property(word, synset, lambda l: l.antonyms())),
+                 lemma_property(word, synset, lambda l: l.antonyms())),
                 (HYPONYM, 'Hyponym',
-                   synset.hyponyms()),
+                 synset.hyponyms()),
                 (HYPERNYM, 'Direct hypernyms',
-                   synset.hypernyms()),
+                 synset.hypernyms()),
                 (INDIRECT_HYPERNYMS, 'Indirect hypernyms',
-                   rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
+                 rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
                 (ENTAILMENT, 'Entailments',
-                   synset.entailments()),
+                 synset.entailments()),
                 (CAUSE, 'Causes',
-                   synset.causes()),
+                 synset.causes()),
                 (ALSO_SEE, 'Also see',
-                   synset.also_sees()),
+                 synset.also_sees()),
                 (VERB_GROUP, 'Verb Groups',
-                   synset.verb_groups()),
+                 synset.verb_groups()),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
-                   lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
+                 lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
     elif synset.pos() == wn.ADJ or synset.pos == wn.ADJ_SAT:
         return ((ANTONYM, 'Antonym',
-                   lemma_property(word, synset, lambda l: l.antonyms())),
+                 lemma_property(word, synset, lambda l: l.antonyms())),
                 (SIMILAR, 'Similar to',
-                   synset.similar_tos()),
+                 synset.similar_tos()),
                 # Participle of verb - not supported by corpus
                 (PERTAINYM, 'Pertainyms',
-                   lemma_property(word, synset, lambda l: l.pertainyms())),
+                 lemma_property(word, synset, lambda l: l.pertainyms())),
                 (ATTRIBUTE, 'Attributes',
-                   synset.attributes()),
+                 synset.attributes()),
                 (ALSO_SEE, 'Also see',
-                   synset.also_sees()))
+                 synset.also_sees()))
     elif synset.pos() == wn.ADV:
         # This is weird. adverbs such as 'quick' and 'fast' don't seem
         # to have antonyms returned by the corpus.a
         return ((ANTONYM, 'Antonym',
-                   lemma_property(word, synset, lambda l: l.antonyms())),)
-                # Derived from adjective - not supported by corpus
+                 lemma_property(word, synset, lambda l: l.antonyms())),)
+        # Derived from adjective - not supported by corpus
     else:
         raise TypeError("Unhandles synset POS type: " + str(synset.pos()))
 
@@ -453,7 +449,7 @@ html_trailer = '''
 </html>
 '''
 
-explanation  = '''
+explanation = '''
 <h3>Search Help</h3>
 <ul><li>The display below the line is an example of the output the browser
 shows you when you enter a search word. The search word was <b>green</b>.</li>
@@ -474,17 +470,23 @@ synsets.</li>
 <hr width='100%'>
 '''
 
+
 # HTML oriented functions
 
 def _bold(txt): return '<b>%s</b>' % txt
 
+
 def _center(txt): return '<center>%s</center>' % txt
 
-def _hlev(n,txt): return '<h%d>%s</h%d>' % (n,txt,n)
+
+def _hlev(n, txt): return '<h%d>%s</h%d>' % (n, txt, n)
+
 
 def _italic(txt): return '<i>%s</i>' % txt
 
+
 def _li(txt): return '<li>%s</li>' % txt
+
 
 def pg(word, body):
     '''
@@ -500,13 +502,16 @@ def pg(word, body):
     '''
     return (html_header % word) + body + html_trailer
 
+
 def _ul(txt): return '<ul>' + txt + '</ul>'
+
 
 def _abbc(txt):
     """
     abbc = asterisks, breaks, bold, center
     """
-    return _center(_bold('<br>'*10 + '*'*10 + ' ' + txt + ' ' + '*'*10))
+    return _center(_bold('<br>' * 10 + '*' * 10 + ' ' + txt + ' ' + '*' * 10))
+
 
 full_hyponym_cont_text = \
     _ul(_li(_italic('(has full hyponym continuation)'))) + '\n'
@@ -518,6 +523,7 @@ def _get_synset(synset_key):
     retrived via synset.name()
     """
     return wn.synset(synset_key)
+
 
 def _collect_one_synset(word, synset, synset_relations):
     '''
@@ -533,7 +539,7 @@ def _collect_one_synset(word, synset, synset_relations):
     :return: The HTML string built for this synset
     :rtype: str
     '''
-    if isinstance(synset, tuple): # It's a word
+    if isinstance(synset, tuple):  # It's a word
         raise NotImplementedError("word not supported by _collect_one_synset")
 
     typ = 'S'
@@ -546,6 +552,7 @@ def _collect_one_synset(word, synset, synset_relations):
     if synset.name() in synset_relations:
         synset_label = _bold(synset_label)
     s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr)
+
     def format_lemma(w):
         w = w.replace('_', ' ')
         if w.lower() == word:
@@ -557,9 +564,10 @@ def _collect_one_synset(word, synset, synset_relations):
     s += ', '.join(format_lemma(l.name()) for l in synset.lemmas())
 
     gl = " (%s) <i>%s</i> " % \
-        (synset.definition(),
-         "; ".join("\"%s\"" % e for e in synset.examples()))
+         (synset.definition(),
+          "; ".join("\"%s\"" % e for e in synset.examples()))
     return s + gl + _synset_relations(word, synset, synset_relations) + '</li>\n'
+
 
 def _collect_all_synsets(word, pos, synset_relations=dict()):
     """
@@ -567,9 +575,10 @@ def _collect_all_synsets(word, pos, synset_relations=dict()):
     part of speech.
     """
     return '<ul>%s\n</ul>\n' % \
-        ''.join((_collect_one_synset(word, synset, synset_relations)
-                 for synset
-                 in wn.synsets(word, pos)))
+           ''.join((_collect_one_synset(word, synset, synset_relations)
+                    for synset
+                    in wn.synsets(word, pos)))
+
 
 def _synset_relations(word, synset, synset_relations):
     '''
@@ -598,28 +607,28 @@ def _synset_relations(word, synset, synset_relations):
             # It's probably a tuple containing a Synset and a list of
             # similar tuples.  This forms a tree of synsets.
             return "%s\n<ul>%s</ul>\n" % \
-                (relation_html(r[0]),
-                 ''.join('<li>%s</li>\n' % relation_html(sr) for sr in r[1]))
+                   (relation_html(r[0]),
+                    ''.join('<li>%s</li>\n' % relation_html(sr) for sr in r[1]))
         else:
             raise TypeError("r must be a synset, lemma or list, it was: type(r) = %s, r = %s" % (type(r), r))
 
     def make_synset_html(db_name, disp_name, rels):
         synset_html = '<i>%s</i>\n' % \
-            make_lookup_link(
-                copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
-                disp_name)
+                      make_lookup_link(
+                          copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
+                          disp_name)
 
         if db_name in ref.synset_relations[synset.name()]:
-             synset_html += '<ul>%s</ul>\n' % \
-                ''.join("<li>%s</li>\n" % relation_html(r) for r in rels)
+            synset_html += '<ul>%s</ul>\n' % \
+                           ''.join("<li>%s</li>\n" % relation_html(r) for r in rels)
 
         return synset_html
 
     html = '<ul>' + \
-        '\n'.join(("<li>%s</li>" % make_synset_html(*rel_data) for rel_data
-                   in get_relations_data(word, synset)
-                   if rel_data[2] != [])) + \
-        '</ul>'
+           '\n'.join(("<li>%s</li>" % make_synset_html(*rel_data) for rel_data
+                      in get_relations_data(word, synset)
+                      if rel_data[2] != [])) + \
+           '</ul>'
 
     return html
 
@@ -706,6 +715,7 @@ def page_from_word(word):
     """
     return page_from_reference(Reference(word))
 
+
 def page_from_href(href):
     '''
     Returns a tuple of the HTML page built and the new current word
@@ -718,6 +728,7 @@ def page_from_href(href):
     :rtype: A tuple (str,str)
     '''
     return page_from_reference(Reference.decode(href))
+
 
 def page_from_reference(href):
     '''
@@ -748,7 +759,7 @@ def page_from_reference(href):
             if form and form not in pos_forms[pos]:
                 pos_forms[pos].append(form)
     body = ''
-    for pos,pos_str,name in _pos_tuples():
+    for pos, pos_str, name in _pos_tuples():
         if pos in pos_forms:
             body += _hlev(3, name) + '\n'
             for w in pos_forms[pos]:
@@ -763,7 +774,6 @@ def page_from_reference(href):
     return body, word
 
 
-
 #####################################################################
 # Static pages
 #####################################################################
@@ -795,46 +805,46 @@ def get_static_web_help_page():
     Return the static web help page.
     """
     return \
-"""
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2017 NLTK Project
-            Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://nltk.org/>
-            For license information, see LICENSE.TXT -->
-     <head>
-          <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
-          <title>NLTK Wordnet Browser display of: * Help *</title>
-     </head>
-<body bgcolor='#F5F5F5' text='#000000'>
-<h2>NLTK Wordnet Browser Help</h2>
-<p>The NLTK Wordnet Browser is a tool to use in browsing the Wordnet database. It tries to behave like the Wordnet project's web browser but the difference is that the NLTK Wordnet Browser uses a local Wordnet database.
-<p><b>You are using the Javascript client part of the NLTK Wordnet BrowseServer.</b> We assume your browser is in tab sheets enabled mode.</p>
-<p>For background information on Wordnet, see the Wordnet project home page: <a href="http://wordnet.princeton.edu/"><b> http://wordnet.princeton.edu/</b></a>. For more information on the NLTK project, see the project home:
-<a href="http://nltk.sourceforge.net/"><b>http://nltk.sourceforge.net/</b></a>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
-<h3>Word search</h3>
-<p>The word to be searched is typed into the <b>New Word</b> field and the search started with Enter or by clicking the <b>Search</b> button. There is no uppercase/lowercase distinction: the search word is transformed to lowercase before the search.</p>
-<p>In addition, the word does not have to be in base form. The browser tries to find the possible base form(s) by making certain morphological substitutions. Typing <b>fLIeS</b> as an obscure example gives one <a href="MfLIeS">this</a>. Click the previous link to see what this kind of search looks like and then come back to this page by using the <b>Alt+LeftArrow</b> key combination.</p>
-<p>The result of a search is a display of one or more
-<b>synsets</b> for every part of speech in which a form of the
-search word was found to occur. A synset is a set of words
-having the same sense or meaning. Each word in a synset that is
-underlined is a hyperlink which can be clicked to trigger an
-automatic search for that word.</p>
-<p>Every synset has a hyperlink <b>S:</b> at the start of its
-display line. Clicking that symbol shows you the name of every
-<b>relation</b> that this synset is part of. Every relation name is a hyperlink that opens up a display for that relation. Clicking it another time closes the display again. Clicking another relation name on a line that has an opened relation closes the open relation and opens the clicked relation.</p>
-<p>It is also possible to give two or more words or collocations to be searched at the same time separating them with a comma like this <a href="Mcheer up,clear up">cheer up,clear up</a>, for example. Click the previous link to see what this kind of search looks like and then come back to this page by using the <b>Alt+LeftArrow</b> key combination. As you could see the search result includes the synsets found in the same order than the forms were given in the search field.</p>
-<p>
-There are also word level (lexical) relations recorded in the Wordnet database. Opening this kind of relation displays lines with a hyperlink <b>W:</b> at their beginning. Clicking this link shows more info on the word in question.</p>
-<h3>The Buttons</h3>
-<p>The <b>Search</b> and <b>Help</b> buttons need no more explanation. </p>
-<p>The <b>Show Database Info</b> button shows a collection of Wordnet database statistics.</p>
-<p>The <b>Shutdown the Server</b> button is shown for the first client of the BrowServer program i.e. for the client that is automatically launched when the BrowServer is started but not for the succeeding clients in order to protect the server from accidental shutdowns.
-</p></body>
-</html>
-"""
+        """
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+        <html>
+             <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+                    Copyright (C) 2001-2017 NLTK Project
+                    Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+                    URL: <http://nltk.org/>
+                    For license information, see LICENSE.TXT -->
+             <head>
+                  <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
+                  <title>NLTK Wordnet Browser display of: * Help *</title>
+             </head>
+        <body bgcolor='#F5F5F5' text='#000000'>
+        <h2>NLTK Wordnet Browser Help</h2>
+        <p>The NLTK Wordnet Browser is a tool to use in browsing the Wordnet database. It tries to behave like the Wordnet project's web browser but the difference is that the NLTK Wordnet Browser uses a local Wordnet database.
+        <p><b>You are using the Javascript client part of the NLTK Wordnet BrowseServer.</b> We assume your browser is in tab sheets enabled mode.</p>
+        <p>For background information on Wordnet, see the Wordnet project home page: <a href="http://wordnet.princeton.edu/"><b> http://wordnet.princeton.edu/</b></a>. For more information on the NLTK project, see the project home:
+        <a href="http://nltk.sourceforge.net/"><b>http://nltk.sourceforge.net/</b></a>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
+        <h3>Word search</h3>
+        <p>The word to be searched is typed into the <b>New Word</b> field and the search started with Enter or by clicking the <b>Search</b> button. There is no uppercase/lowercase distinction: the search word is transformed to lowercase before the search.</p>
+        <p>In addition, the word does not have to be in base form. The browser tries to find the possible base form(s) by making certain morphological substitutions. Typing <b>fLIeS</b> as an obscure example gives one <a href="MfLIeS">this</a>. Click the previous link to see what this kind of search looks like and then come back to this page by using the <b>Alt+LeftArrow</b> key combination.</p>
+        <p>The result of a search is a display of one or more
+        <b>synsets</b> for every part of speech in which a form of the
+        search word was found to occur. A synset is a set of words
+        having the same sense or meaning. Each word in a synset that is
+        underlined is a hyperlink which can be clicked to trigger an
+        automatic search for that word.</p>
+        <p>Every synset has a hyperlink <b>S:</b> at the start of its
+        display line. Clicking that symbol shows you the name of every
+        <b>relation</b> that this synset is part of. Every relation name is a hyperlink that opens up a display for that relation. Clicking it another time closes the display again. Clicking another relation name on a line that has an opened relation closes the open relation and opens the clicked relation.</p>
+        <p>It is also possible to give two or more words or collocations to be searched at the same time separating them with a comma like this <a href="Mcheer up,clear up">cheer up,clear up</a>, for example. Click the previous link to see what this kind of search looks like and then come back to this page by using the <b>Alt+LeftArrow</b> key combination. As you could see the search result includes the synsets found in the same order than the forms were given in the search field.</p>
+        <p>
+        There are also word level (lexical) relations recorded in the Wordnet database. Opening this kind of relation displays lines with a hyperlink <b>W:</b> at their beginning. Clicking this link shows more info on the word in question.</p>
+        <h3>The Buttons</h3>
+        <p>The <b>Search</b> and <b>Help</b> buttons need no more explanation. </p>
+        <p>The <b>Show Database Info</b> button shows a collection of Wordnet database statistics.</p>
+        <p>The <b>Shutdown the Server</b> button is shown for the first client of the BrowServer program i.e. for the client that is automatically launched when the BrowServer is started but not for the succeeding clients in order to protect the server from accidental shutdowns.
+        </p></body>
+        </html>
+        """
 
 
 def get_static_welcome_message():
@@ -842,48 +852,49 @@ def get_static_welcome_message():
     Get the static welcome page.
     """
     return \
-"""
-<h3>Search Help</h3>
-<ul><li>The display below the line is an example of the output the browser
-shows you when you enter a search word. The search word was <b>green</b>.</li>
-<li>The search result shows for different parts of speech the <b>synsets</b>
-i.e. different meanings for the word.</li>
-<li>All underlined texts are hypertext links. There are two types of links:
-word links and others. Clicking a word link carries out a search for the word
-in the Wordnet database.</li>
-<li>Clicking a link of the other type opens a display section of data attached
-to that link. Clicking that link a second time closes the section again.</li>
-<li>Clicking <u>S:</u> opens a section showing the relations for that synset.</li>
-<li>Clicking on a relation name opens a section that displays the associated
-synsets.</li>
-<li>Type a search word in the <b>Next Word</b> field and start the search by the
-<b>Enter/Return</b> key or click the <b>Search</b> button.</li>
-</ul>
-"""
+        """
+        <h3>Search Help</h3>
+        <ul><li>The display below the line is an example of the output the browser
+        shows you when you enter a search word. The search word was <b>green</b>.</li>
+        <li>The search result shows for different parts of speech the <b>synsets</b>
+        i.e. different meanings for the word.</li>
+        <li>All underlined texts are hypertext links. There are two types of links:
+        word links and others. Clicking a word link carries out a search for the word
+        in the Wordnet database.</li>
+        <li>Clicking a link of the other type opens a display section of data attached
+        to that link. Clicking that link a second time closes the section again.</li>
+        <li>Clicking <u>S:</u> opens a section showing the relations for that synset.</li>
+        <li>Clicking on a relation name opens a section that displays the associated
+        synsets.</li>
+        <li>Type a search word in the <b>Next Word</b> field and start the search by the
+        <b>Enter/Return</b> key or click the <b>Search</b> button.</li>
+        </ul>
+        """
+
 
 def get_static_index_page(with_shutdown):
     """
     Get the static index page.
     """
     template = \
-"""
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
-<HTML>
-     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2017 NLTK Project
-            Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <http://nltk.org/>
-            For license information, see LICENSE.TXT -->
-     <HEAD>
-         <TITLE>NLTK Wordnet Browser</TITLE>
-     </HEAD>
-
-<frameset rows="7%%,93%%">
-    <frame src="%s" name="header">
-    <frame src="start_page" name="body">
-</frameset>
-</HTML>
-"""
+        """
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
+        <HTML>
+             <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+                    Copyright (C) 2001-2017 NLTK Project
+                    Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+                    URL: <http://nltk.org/>
+                    For license information, see LICENSE.TXT -->
+             <HEAD>
+                 <TITLE>NLTK Wordnet Browser</TITLE>
+             </HEAD>
+        
+        <frameset rows="7%%,93%%">
+            <frame src="%s" name="header">
+            <frame src="start_page" name="body">
+        </frameset>
+        </HTML>
+        """
     if with_shutdown:
         upper_link = "upper.html"
     else:
@@ -900,30 +911,30 @@ def get_static_upper_page(with_shutdown):
     to shutdown the server.
     """
     template = \
-"""
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-    <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-        Copyright (C) 2001-2017 NLTK Project
-        Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-        URL: <http://nltk.org/>
-        For license information, see LICENSE.TXT -->
-    <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        <title>Untitled Document</title>
-    </head>
-    <body>
-    <form method="GET" action="search" target="body">
-            Current Word:&nbsp;<input type="text" id="currentWord" size="10" disabled>
-            Next Word:&nbsp;<input type="text" id="nextWord" name="nextWord" size="10">
-            <input name="searchButton" type="submit" value="Search">
-    </form>
-        <a target="body" href="web_help.html">Help</a>
-        %s
-
-</body>
-</html>
-"""
+        """
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+        <html>
+            <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
+                Copyright (C) 2001-2017 NLTK Project
+                Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
+                URL: <http://nltk.org/>
+                For license information, see LICENSE.TXT -->
+            <head>
+                        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+                <title>Untitled Document</title>
+            </head>
+            <body>
+            <form method="GET" action="search" target="body">
+                    Current Word:&nbsp;<input type="text" id="currentWord" size="10" disabled>
+                    Next Word:&nbsp;<input type="text" id="nextWord" name="nextWord" size="10">
+                    <input name="searchButton" type="submit" value="Search">
+            </form>
+                <a target="body" href="web_help.html">Help</a>
+                %s
+        
+        </body>
+        </html>
+        """
     if with_shutdown:
         shutdown_link = "<a href=\"SHUTDOWN THE SERVER\">Shutdown</a>"
     else:
@@ -932,12 +943,12 @@ def get_static_upper_page(with_shutdown):
     return template % shutdown_link
 
 
-
 def usage():
     """
     Display the command line help message.
     """
     print(__doc__)
+
 
 def app():
     # Parse and interpret options.
@@ -961,6 +972,7 @@ def app():
         usage()
     else:
         wnb(port, not server_mode, logfilename)
+
 
 if __name__ == '__main__':
     app()

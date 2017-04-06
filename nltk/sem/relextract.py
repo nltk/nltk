@@ -21,24 +21,24 @@ The two serialization outputs are "rtuple" and "clause".
 """
 from __future__ import print_function
 
-# todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
-
-from collections import defaultdict
 import re
+# todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
+from collections import defaultdict
+
 from nltk.compat import htmlentitydefs
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
     'ieer': ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION',
-            'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'],
+             'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE'],
     'conll2002': ['LOC', 'PER', 'ORG'],
     'ace': ['LOCATION', 'ORGANIZATION', 'PERSON', 'DURATION',
             'DATE', 'CARDINAL', 'PERCENT', 'MONEY', 'MEASURE', 'FACILITY', 'GPE'],
-    }
+}
 
 # Allow abbreviated class labels
-short2long = dict(LOC = 'LOCATION', ORG = 'ORGANIZATION', PER = 'PERSON')
-long2short = dict(LOCATION ='LOC', ORGANIZATION = 'ORG', PERSON = 'PER')
+short2long = dict(LOC='LOCATION', ORG='ORGANIZATION', PER='PERSON')
+long2short = dict(LOCATION='LOC', ORGANIZATION='ORG', PERSON='PER')
 
 
 def _expand(type):
@@ -51,6 +51,7 @@ def _expand(type):
         return short2long[type]
     except KeyError:
         return type
+
 
 def class_abbrev(type):
     """
@@ -79,6 +80,7 @@ def _join(lst, sep=' ', untag=False):
         from nltk.tag import tuple2str
         return sep.join(tuple2str(tup) for tup in lst)
 
+
 def descape_entity(m, defs=htmlentitydefs.entitydefs):
     """
     Translate one entity to its ISO Latin value.
@@ -86,17 +88,18 @@ def descape_entity(m, defs=htmlentitydefs.entitydefs):
 
 
     """
-    #s = 'mcglashan_&amp;_sarrail'
-    #l = ['mcglashan', '&amp;', 'sarrail']
-    #pattern = re.compile("&(\w+?);")
-    #new = list2sym(l)
-    #s = pattern.sub(descape_entity, s)
-    #print s, new
+    # s = 'mcglashan_&amp;_sarrail'
+    # l = ['mcglashan', '&amp;', 'sarrail']
+    # pattern = re.compile("&(\w+?);")
+    # new = list2sym(l)
+    # s = pattern.sub(descape_entity, s)
+    # print s, new
     try:
         return defs[m.group(1)]
 
     except KeyError:
-        return m.group(0) # use as is
+        return m.group(0)  # use as is
+
 
 def list2sym(lst):
     """
@@ -111,6 +114,7 @@ def list2sym(lst):
     sym = ENT.sub(descape_entity, sym)
     sym = sym.replace('.', '')
     return sym
+
 
 def tree2semi_rel(tree):
     """
@@ -173,6 +177,7 @@ def semi_rel2reldict(pairs, window=5, trace=False):
         pairs = pairs[1:]
     return result
 
+
 def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10):
     """
     Filter the output of ``semi_rel2reldict`` according to specified NE classes and a filler pattern.
@@ -209,7 +214,7 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
             objclass = _expand(objclass)
         else:
             raise ValueError("your value for the object type has not been recognized: %s" % objclass)
-        
+
     if corpus == 'ace' or corpus == 'conll2002':
         pairs = tree2semi_rel(doc)
     elif corpus == 'ieer':
@@ -233,7 +238,8 @@ def rtuple(reldict, lcon=False, rcon=False):
     :param reldict: a relation dictionary
     :type reldict: defaultdict
     """
-    items = [class_abbrev(reldict['subjclass']), reldict['subjtext'], reldict['filler'], class_abbrev(reldict['objclass']), reldict['objtext']]
+    items = [class_abbrev(reldict['subjclass']), reldict['subjtext'], reldict['filler'],
+             class_abbrev(reldict['objclass']), reldict['objtext']]
     format = '[%s: %r] %r [%s: %r]'
     if lcon:
         items = [reldict['lcon']] + items
@@ -243,6 +249,7 @@ def rtuple(reldict, lcon=False, rcon=False):
         format = format + '(%r...'
     printargs = tuple(items)
     return format % printargs
+
 
 def clause(reldict, relsym):
     """
@@ -276,15 +283,14 @@ def in_demo(trace=0, sql=True):
     if sql:
         try:
             import sqlite3
-            connection =  sqlite3.connect(":memory:")
+            connection = sqlite3.connect(":memory:")
             connection.text_factory = sqlite3.OptimizedUnicode
             cur = connection.cursor()
-            cur.execute("""create table Locations
-            (OrgName text, LocationName text, DocID text)""")
+            cur.execute("""CREATE TABLE Locations
+            (OrgName TEXT, LocationName TEXT, DocID TEXT)""")
         except ImportError:
             import warnings
             warnings.warn("Cannot import sqlite; sql flag will be ignored.")
-
 
     IN = re.compile(r'.*\bin\b(?!\b.+ing)')
 
@@ -302,16 +308,16 @@ def in_demo(trace=0, sql=True):
                 if sql:
                     try:
                         rtuple = (rel['subjtext'], rel['objtext'], doc.docno)
-                        cur.execute("""insert into Locations
-                                    values (?, ?, ?)""", rtuple)
+                        cur.execute("""INSERT INTO Locations
+                                    VALUES (?, ?, ?)""", rtuple)
                         connection.commit()
                     except NameError:
                         pass
 
     if sql:
         try:
-            cur.execute("""select OrgName from Locations
-                        where LocationName = 'Atlanta'""")
+            cur.execute("""SELECT OrgName FROM Locations
+                        WHERE LocationName = 'Atlanta'""")
             print()
             print("Extract data from SQL table: ORGs in Atlanta")
             print("-" * 15)
@@ -376,18 +382,15 @@ def roles_demo(trace=0):
 
 
 def ieer_headlines():
-
     from nltk.corpus import ieer
-    from nltk.tree import Tree
-    
+
     print("IEER: First 20 Headlines")
-    print("=" * 45)  
-    
+    print("=" * 45)
+
     trees = [(doc.docno, doc.headline) for file in ieer.fileids() for doc in ieer.parsed_docs(file)]
     for tree in trees[:20]:
         print()
         print("%s:\n%s" % tree)
-
 
 
 #############################################
@@ -418,13 +421,13 @@ def conllned(trace=1):
     print("Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:")
     print("=" * 45)
 
-
     for doc in conll2002.chunked_sents('ned.train'):
         lcon = rcon = False
         if trace:
-                lcon = rcon = True
+            lcon = rcon = True
         for rel in extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN, window=10):
             print(rtuple(rel, lcon=lcon, rcon=rcon))
+
 
 #############################################
 ## Spanish CONLL2002: (PER, ORG)
@@ -446,7 +449,7 @@ def conllesp():
     print("Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:")
     print("=" * 45)
     rels = [rel for doc in conll2002.chunked_sents('esp.train')
-            for rel in extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern = DE)]
+            for rel in extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern=DE)]
     for r in rels[:10]: print(clause(r, relsym='DE'))
     print()
 
@@ -466,18 +469,10 @@ def ne_chunked():
 
 if __name__ == '__main__':
     import nltk
-    from nltk.sem import relextract
+
     in_demo(trace=0)
     roles_demo(trace=0)
     conllned()
     conllesp()
     ieer_headlines()
     ne_chunked()
-
-
-
-
-
-
-
-

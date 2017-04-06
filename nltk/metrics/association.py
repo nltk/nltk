@@ -12,8 +12,10 @@ generic, abstract implementation in ``NgramAssocMeasures``, and n-specific
 """
 
 from __future__ import division
+
 import math as _math
 from functools import reduce
+
 _log2 = lambda x: _math.log(x, 2.0)
 _ln = _math.log
 
@@ -64,13 +66,13 @@ class NgramAssocMeasures(object):
     def _contingency(*marginals):
         """Calculates values of a contingency table from marginal values."""
         raise NotImplementedError("The contingency table is not available"
-                                    "in the general ngram case")
+                                  "in the general ngram case")
 
     @staticmethod
     def _marginals(*contingency):
         """Calculates values of contingency table marginals from its values."""
         raise NotImplementedError("The contingency table is not available"
-                                    "in the general ngram case")
+                                  "in the general ngram case")
 
     @classmethod
     def _expected_values(cls, cont):
@@ -97,8 +99,8 @@ class NgramAssocMeasures(object):
         for unigrams, as in Manning and Schutze 5.3.1.
         """
         return ((marginals[NGRAM] -
-                  _product(marginals[UNIGRAMS]) /
-                  (marginals[TOTAL] ** (cls._n - 1))) /
+                 _product(marginals[UNIGRAMS]) /
+                 (marginals[TOTAL] ** (cls._n - 1))) /
                 (marginals[NGRAM] + _SMALL) ** .5)
 
     @classmethod
@@ -209,7 +211,7 @@ class BigramAssocMeasures(NgramAssocMeasures):
         """
         n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
 
-        return ((n_ii*n_oo - n_io*n_oi)**2 /
+        return ((n_ii * n_oo - n_io * n_oi) ** 2 /
                 ((n_ii + n_io) * (n_ii + n_oi) * (n_io + n_oo) * (n_oi + n_oo)))
 
     @classmethod
@@ -402,9 +404,10 @@ class ContingencyMeasures(object):
         """From an association measure function, produces a new function which
         accepts contingency table values as its arguments.
         """
+
         def res(*contingency):
             return old_fn(*measures._marginals(*contingency))
+
         res.__doc__ = old_fn.__doc__
         res.__name__ = old_fn.__name__
         return res
-
