@@ -209,6 +209,7 @@
 - Prasasto Adi
 - Safwan Kamarrudin
 - Arthur Tilley
+- Guthrie Armstrong
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
