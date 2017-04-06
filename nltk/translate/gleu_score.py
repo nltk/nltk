@@ -9,9 +9,11 @@
 
 """ GLEU score implementation. """
 from __future__ import division
+
 from collections import Counter
 
-from nltk.util import ngrams, everygrams
+from nltk.util import everygrams
+
 
 def sentence_gleu(reference, hypothesis, min_len=1, max_len=4):
     """
@@ -85,9 +87,9 @@ def sentence_gleu(reference, hypothesis, min_len=1, max_len=4):
     ref_ngrams = Counter(everygrams(reference, min_len, max_len))
     hyp_ngrams = Counter(everygrams(hypothesis, min_len, max_len))
     overlap_ngrams = ref_ngrams & hyp_ngrams
-    tp = sum(overlap_ngrams.values()) # True positives.
-    tpfp = sum(hyp_ngrams.values()) # True positives + False positives.
-    tffn = sum(ref_ngrams.values()) # True posities + False negatives.
+    tp = sum(overlap_ngrams.values())  # True positives.
+    tpfp = sum(hyp_ngrams.values())  # True positives + False positives.
+    tffn = sum(ref_ngrams.values())  # True posities + False negatives.
 
     precision = tp / tpfp
     recall = tp / tffn

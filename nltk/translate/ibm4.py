@@ -102,15 +102,17 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 """
 
 from __future__ import division
+
+import warnings
 from collections import defaultdict
 from math import factorial
+
 from nltk.translate import AlignedSent
 from nltk.translate import Alignment
 from nltk.translate import IBMModel
 from nltk.translate import IBMModel3
 from nltk.translate.ibm_model import Counts
 from nltk.translate.ibm_model import longest_target_sentence_length
-import warnings
 
 
 class IBMModel4(IBMModel):
@@ -400,6 +402,7 @@ class IBMModel4(IBMModel):
             trg_class = ibm_model.trg_classes[t]
             dj = j - previous_position
             return ibm_model.non_head_distortion_table[dj][trg_class]
+
         # end nested functions
 
         # Abort computation whenever probability falls below MIN_PROB at
@@ -429,6 +432,7 @@ class Model4Counts(Counts):
     Data object to store counts of various parameters during training.
     Includes counts for distortion.
     """
+
     def __init__(self):
         super(Model4Counts, self).__init__()
         self.head_distortion = defaultdict(

@@ -9,9 +9,11 @@
 
 """ ChrF score implementation """
 from __future__ import division
+
 from collections import Counter
 
-from nltk.util import ngrams, everygrams
+from nltk.util import everygrams
+
 
 def sentence_chrf(reference, hypothesis, min_len=1, max_len=6, beta=3.0):
     """
@@ -114,7 +116,8 @@ def corpus_chrf(list_of_references, hypotheses, min_len=1, max_len=6, beta=3.0):
     :rtype: float
     """
 
-    assert len(list_of_references) == len(hypotheses), "The number of hypotheses and their references should be the same"
+    assert len(list_of_references) == len(
+        hypotheses), "The number of hypotheses and their references should be the same"
 
     # Iterate through each hypothesis and their corresponding references.
     for reference, hypothesis in zip(list_of_references, hypotheses):
@@ -126,12 +129,12 @@ def corpus_chrf(list_of_references, hypotheses, min_len=1, max_len=6, beta=3.0):
         ref_ngrams = Counter(everygrams(reference, min_len, max_len))
         hyp_ngrams = Counter(everygrams(hypothesis, min_len, max_len))
         overlap_ngrams = ref_ngrams & hyp_ngrams
-        tp = sum(overlap_ngrams.values()) # True positives.
-        tpfp = sum(hyp_ngrams.values()) # True positives + False positives.
-        tffn = sum(ref_ngrams.values()) # True posities + False negatives.
+        tp = sum(overlap_ngrams.values())  # True positives.
+        tpfp = sum(hyp_ngrams.values())  # True positives + False positives.
+        tffn = sum(ref_ngrams.values())  # True posities + False negatives.
 
     precision = tp / tpfp
     recall = tp / tffn
-    factor = beta**2
-    score = (1+ factor ) * (precision * recall) / ( factor * precision + recall)
+    factor = beta ** 2
+    score = (1 + factor) * (precision * recall) / (factor * precision + recall)
     return score

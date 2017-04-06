@@ -18,6 +18,7 @@ http://aclweb.org/anthology/J93-1004.pdf
 """
 
 from __future__ import division
+
 import math
 
 try:
@@ -55,7 +56,6 @@ except ImportError:
         except ValueError:
             return float('-inf')
 
-
 LOG2 = math.log(2)
 
 
@@ -91,11 +91,11 @@ def trace(backlinks, source_sents_lens, target_sents_lens):
     """
     links = []
     position = (len(source_sents_lens), len(target_sents_lens))
-    while position != (0, 0) and all(p >=0 for p in position):
+    while position != (0, 0) and all(p >= 0 for p in position):
         try:
             s, t = backlinks[position]
         except TypeError:
-            position = (position[0]-1 , position[1]-1)
+            position = (position[0] - 1, position[1] - 1)
             continue
         for i in range(s):
             for j in range(t):
@@ -131,7 +131,7 @@ def align_log_prob(i, j, source_sents, target_sents, alignment, params):
     return - (LOG2 + norm_logsf(abs(delta)) + math.log(params.PRIORS[alignment]))
 
 
-def align_blocks(source_sents_lens, target_sents_lens, params = LanguageIndependent):
+def align_blocks(source_sents_lens, target_sents_lens, params=LanguageIndependent):
     """Return the sentence alignment of two text blocks (usually paragraphs).
 
         >>> align_blocks([5,5,5], [7,7,7])
@@ -156,7 +156,7 @@ def align_blocks(source_sents_lens, target_sents_lens, params = LanguageIndepend
 
     backlinks = {}
 
-    for i in range(len(source_sents_lens) + 1): 
+    for i in range(len(source_sents_lens) + 1):
         for j in range(len(target_sents_lens) + 1):
             min_dist = float('inf')
             min_align = None
@@ -165,7 +165,7 @@ def align_blocks(source_sents_lens, target_sents_lens, params = LanguageIndepend
                 prev_j = j - a[1]
                 if prev_i < -len(D) or prev_j < 0:
                     continue
-                p = D[prev_i][prev_j] + align_log_prob(i, j, source_sents_lens, 
+                p = D[prev_i][prev_j] + align_log_prob(i, j, source_sents_lens,
                                                        target_sents_lens, a, params)
                 if p < min_dist:
                     min_dist = p
@@ -180,11 +180,11 @@ def align_blocks(source_sents_lens, target_sents_lens, params = LanguageIndepend
         if len(D) > 2:
             D.pop(0)
         D.append([])
-    
+
     return trace(backlinks, source_sents_lens, target_sents_lens)
 
 
-def align_texts(source_blocks, target_blocks, params = LanguageIndependent):
+def align_texts(source_blocks, target_blocks, params=LanguageIndependent):
     """Creates the sentence alignment of two texts.
 
     Texts can consist of several blocks. Block boundaries cannot be crossed by sentence 
@@ -201,8 +201,8 @@ def align_texts(source_blocks, target_blocks, params = LanguageIndependent):
     """
     if len(source_blocks) != len(target_blocks):
         raise ValueError("Source and target texts do not have the same number of blocks.")
-    
-    return [align_blocks(source_block, target_block, params) 
+
+    return [align_blocks(source_block, target_block, params)
             for source_block, target_block in zip(source_blocks, target_blocks)]
 
 
@@ -215,27 +215,25 @@ def split_at(it, split_value):
     subiterators which need to be consumed fully before the next subiterator
     can be used.
     """
+
     def _chunk_iterator(first):
         v = first
         while v != split_value:
             yield v
             v = it.next()
-    
+
     while True:
         yield _chunk_iterator(it.next())
-        
+
 
 def parse_token_stream(stream, soft_delimiter, hard_delimiter):
     """Parses a stream of tokens and splits it into sentences (using C{soft_delimiter} tokens) 
     and blocks (using C{hard_delimiter} tokens) for use with the L{align_texts} function.
     """
     return [
-        [sum(len(token) for token in sentence_it) 
+        [sum(len(token) for token in sentence_it)
          for sentence_it in split_at(block_it, soft_delimiter)]
         for block_it in split_at(stream, hard_delimiter)]
-
-
-
 
 #    Code for test files in nltk_contrib/align/data/*.tok
 #    import sys
@@ -244,5 +242,3 @@ def parse_token_stream(stream, soft_delimiter, hard_delimiter):
 #        source = parse_token_stream((l.strip() for l in s), ".EOS", ".EOP")
 #        target = parse_token_stream((l.strip() for l in t), ".EOS", ".EOP")
 #        print align_texts(source, target)
-
-

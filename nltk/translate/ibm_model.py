@@ -38,6 +38,7 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 from __future__ import division
+
 from bisect import insort_left
 from collections import defaultdict
 from copy import deepcopy
@@ -504,6 +505,7 @@ class Counts(object):
     """
     Data object to store counts of various parameters during training
     """
+
     def __init__(self):
         self.t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
         self.any_t_given_s = defaultdict(lambda: 0.0)

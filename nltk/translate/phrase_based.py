@@ -6,7 +6,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-def extract(f_start, f_end, e_start, e_end, 
+def extract(f_start, f_end, e_start, e_end,
             alignment, f_aligned,
             srctext, trgtext, srclen, trglen, max_phrase_length):
     """
@@ -48,7 +48,7 @@ def extract(f_start, f_end, e_start, e_end,
     if f_end < 0:  # 0-based indexing.
         return {}
     # Check if alignment points are consistent.
-    for e,f in alignment:
+    for e, f in alignment:
         if ((f_start <= f <= f_end) and (e < e_start or e > e_end)):
             return {}
 
@@ -60,18 +60,19 @@ def extract(f_start, f_end, e_start, e_end,
         while True:
             # add phrase pair ([e_start, e_end], [fs, fe]) to set E
             # Need to +1 in range  to include the end-point.
-            src_phrase = " ".join(srctext[e_start:e_end+1])
-            trg_phrase = " ".join(trgtext[fs:fe+1])
+            src_phrase = " ".join(srctext[e_start:e_end + 1])
+            trg_phrase = " ".join(trgtext[fs:fe + 1])
             # Include more data for later ordering.
-            phrases.add(((e_start, e_end+1), (f_start, f_end+1), 
+            phrases.add(((e_start, e_end + 1), (f_start, f_end + 1),
                          src_phrase, trg_phrase))
             fe += 1
             if fe in f_aligned or fe == trglen:
                 break
-        fs -=1 
+        fs -= 1
         if fs in f_aligned or fs < 0:
             break
     return phrases
+
 
 def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     """
@@ -141,13 +142,13 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
         it is set to a length of the longer sentence (srctext or trgtext).
     """
 
-    srctext = srctext.split()   # e
-    trgtext = trgtext.split()   # f
-    srclen = len(srctext)       # len(e)
-    trglen = len(trgtext)       # len(f)
+    srctext = srctext.split()  # e
+    trgtext = trgtext.split()  # f
+    srclen = len(srctext)  # len(e)
+    trglen = len(trgtext)  # len(f)
     # Keeps an index of which source/target words that are aligned.
-    f_aligned = [j for _,j in alignment]
-    max_phrase_length = max_phrase_length or max(srclen,trglen)
+    f_aligned = [j for _, j in alignment]
+    max_phrase_length = max_phrase_length or max(srclen, trglen)
 
     # set of phrase pairs BP
     bp = set()
@@ -158,18 +159,17 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
             # // find the minimally matching foreign phrase
             # (f start , f end ) = ( length(f), 0 )
             # f_start ∈ [0, len(f) - 1]; f_end ∈ [0, len(f) - 1]
-            f_start, f_end = trglen-1 , -1  #  0-based indexing
- 
-            for e,f in alignment:
+            f_start, f_end = trglen - 1, -1  # 0-based indexing
+
+            for e, f in alignment:
                 if e_start <= e <= e_end:
                     f_start = min(f, f_start)
                     f_end = max(f, f_end)
             # add extract (f start , f end , e start , e end ) to set BP
-            phrases = extract(f_start, f_end, e_start, e_end, 
+            phrases = extract(f_start, f_end, e_start, e_end,
                               alignment, f_aligned,
                               srctext, trgtext, srclen, trglen,
                               max_phrase_length)
             if phrases:
                 bp.update(phrases)
     return bp
-
