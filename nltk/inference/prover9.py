@@ -15,26 +15,26 @@ import os
 import subprocess
 
 import nltk
+from nltk.inference.api import BaseProverCommand, Prover
 from nltk.sem.logic import Expression, ExistsExpression, AllExpression, \
     NegatedExpression, AndExpression, IffExpression, OrExpression, \
     EqualityExpression, ImpExpression
-from nltk.inference.api import BaseProverCommand, Prover
 
 #
 # Following is not yet used. Return code for 2 actually realized as 512.
 #
 p9_return_codes = {
     0: True,
-    1:  "(FATAL)",      #A fatal error occurred (user's syntax error).
-    2: False,           # (SOS_EMPTY) Prover9 ran out of things to do
-                        #   (sos list exhausted).
-    3: "(MAX_MEGS)",    # The max_megs (memory limit) parameter was exceeded.
-    4: "(MAX_SECONDS)", # The max_seconds parameter was exceeded.
-    5: "(MAX_GIVEN)",   # The max_given parameter was exceeded.
-    6: "(MAX_KEPT)",    # The max_kept parameter was exceeded.
-    7: "(ACTION)",      # A Prover9 action terminated the search.
-    101: "(SIGSEGV)",   # Prover9 crashed, most probably due to a bug.
- }
+    1: "(FATAL)",  # A fatal error occurred (user's syntax error).
+    2: False,  # (SOS_EMPTY) Prover9 ran out of things to do
+    #   (sos list exhausted).
+    3: "(MAX_MEGS)",  # The max_megs (memory limit) parameter was exceeded.
+    4: "(MAX_SECONDS)",  # The max_seconds parameter was exceeded.
+    5: "(MAX_GIVEN)",  # The max_given parameter was exceeded.
+    6: "(MAX_KEPT)",  # The max_kept parameter was exceeded.
+    7: "(ACTION)",  # A Prover9 action terminated the search.
+    101: "(SIGSEGV)",  # Prover9 crashed, most probably due to a bug.
+}
 
 
 class Prover9CommandParent(object):
@@ -43,6 +43,7 @@ class Prover9CommandParent(object):
     which is responsible for maintaining a goal and a set of assumptions,
     and generating prover9-style input files from them.
     """
+
     def print_assumptions(self, output_format='nltk'):
         """
         Print the list of the current assumptions.
@@ -57,12 +58,14 @@ class Prover9CommandParent(object):
             raise NameError("Unrecognized value for 'output_format': %s" %
                             output_format)
 
+
 class Prover9Command(Prover9CommandParent, BaseProverCommand):
     """
     A ``ProverCommand`` specific to the ``Prover9`` prover.  It contains
     the a print_assumptions() method that is used to print the list
     of assumptions in multiple formats.
     """
+
     def __init__(self, goal=None, assumptions=None, timeout=60, prover=None):
         """
         :param goal: Input expression to prove
@@ -112,12 +115,12 @@ class Prover9Parent(object):
         else:
             name = 'prover9'
             self._prover9_bin = nltk.internals.find_binary(
-                                  name,
-                                  path_to_bin=binary_location,
-                                  env_vars=['PROVER9'],
-                                  url='http://www.cs.unm.edu/~mccune/prover9/',
-                                  binary_names=[name, name + '.exe'],
-                                  verbose=verbose)
+                name,
+                path_to_bin=binary_location,
+                env_vars=['PROVER9'],
+                url='http://www.cs.unm.edu/~mccune/prover9/',
+                binary_names=[name, name + '.exe'],
+                verbose=verbose)
             self._binary_location = self._prover9_bin.rsplit(os.path.sep, 1)
 
     def prover9_input(self, goal, assumptions):
@@ -159,11 +162,11 @@ class Prover9Parent(object):
         if self._binary_location is not None:
             binary_locations += [self._binary_location]
         return nltk.internals.find_binary(name,
-            searchpath=binary_locations,
-            env_vars=['PROVER9'],
-            url='http://www.cs.unm.edu/~mccune/prover9/',
-            binary_names=[name, name + '.exe'],
-            verbose=verbose)
+                                          searchpath=binary_locations,
+                                          env_vars=['PROVER9'],
+                                          url='http://www.cs.unm.edu/~mccune/prover9/',
+                                          binary_names=[name, name + '.exe'],
+                                          verbose=verbose)
 
     def _call(self, input_str, binary, args=[], verbose=False):
         """
@@ -219,6 +222,7 @@ def convert_to_prover9(input):
             print('input %s cannot be converted to Prover9 input syntax' % input)
             raise
 
+
 def _convert_to_prover9(expression):
     """
     Convert ``logic.Expression`` to Prover9 formatted string.
@@ -231,19 +235,19 @@ def _convert_to_prover9(expression):
         return '-(' + _convert_to_prover9(expression.term) + ')'
     elif isinstance(expression, AndExpression):
         return '(' + _convert_to_prover9(expression.first) + ' & ' + \
-                     _convert_to_prover9(expression.second) + ')'
+               _convert_to_prover9(expression.second) + ')'
     elif isinstance(expression, OrExpression):
         return '(' + _convert_to_prover9(expression.first) + ' | ' + \
-                     _convert_to_prover9(expression.second) + ')'
+               _convert_to_prover9(expression.second) + ')'
     elif isinstance(expression, ImpExpression):
         return '(' + _convert_to_prover9(expression.first) + ' -> ' + \
-                     _convert_to_prover9(expression.second) + ')'
+               _convert_to_prover9(expression.second) + ')'
     elif isinstance(expression, IffExpression):
         return '(' + _convert_to_prover9(expression.first) + ' <-> ' + \
-                     _convert_to_prover9(expression.second) + ')'
+               _convert_to_prover9(expression.second) + ')'
     elif isinstance(expression, EqualityExpression):
         return '(' + _convert_to_prover9(expression.first) + ' = ' + \
-                     _convert_to_prover9(expression.second) + ')'
+               _convert_to_prover9(expression.second) + ')'
     else:
         return str(expression)
 
@@ -276,7 +280,7 @@ class Prover9(Prover9Parent, Prover):
         """
         :see: Prover9Parent.prover9_input
         """
-        s = 'clear(auto_denials).\n' #only one proof required
+        s = 'clear(auto_denials).\n'  # only one proof required
         return s + Prover9Parent.prover9_input(self, goal, assumptions)
 
     def _call_prover9(self, input_str, args=[], verbose=False):
@@ -298,14 +302,14 @@ class Prover9(Prover9Parent, Prover):
 
         stdout, returncode = self._call(updated_input_str, self._prover9_bin, args, verbose)
 
-        if returncode not in [0,2]:
+        if returncode not in [0, 2]:
             errormsgprefix = '%%ERROR:'
             if errormsgprefix in stdout:
                 msgstart = stdout.index(errormsgprefix)
                 errormsg = stdout[msgstart:].strip()
             else:
                 errormsg = None
-            if returncode in [3,4,5,6]:
+            if returncode in [3, 4, 5, 6]:
                 raise Prover9LimitExceededException(returncode, errormsg)
             else:
                 raise Prover9FatalException(returncode, errormsg)
@@ -334,29 +338,30 @@ class Prover9Exception(Exception):
             msg += '\n%s' % message
         Exception.__init__(self, msg)
 
+
 class Prover9FatalException(Prover9Exception):
     pass
+
 
 class Prover9LimitExceededException(Prover9Exception):
     pass
 
 
-
 ######################################################################
-#{ Tests and Demos
+# { Tests and Demos
 ######################################################################
 
 def test_config():
-
     a = Expression.fromstring('(walk(j) & sing(j))')
     g = Expression.fromstring('walk(j)')
     p = Prover9Command(g, assumptions=[a])
     p._executable_path = None
-    p.prover9_search=[]
+    p.prover9_search = []
     p.prove()
-    #config_prover9('/usr/local/bin')
+    # config_prover9('/usr/local/bin')
     print(p.prove())
     print(p.proof())
+
 
 def test_convert_to_prover9(expr):
     """
@@ -365,6 +370,7 @@ def test_convert_to_prover9(expr):
     for t in expr:
         e = Expression.fromstring(t)
         print(convert_to_prover9(e))
+
 
 def test_prove(arguments):
     """
@@ -377,6 +383,7 @@ def test_prove(arguments):
         for a in alist:
             print('   %s' % a)
         print('|- %s: %s\n' % (g, p))
+
 
 arguments = [
     ('(man(x) <-> (not (not man(x))))', []),
@@ -394,9 +401,9 @@ arguments = [
     ('(all x.man(x) -> all x.man(x))', []),
     ('some x.all y.sees(x,y)', []),
     ('some e3.(walk(e3) & subj(e3, mary))',
-        ['some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))']),
+     ['some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))']),
     ('some x e1.(see(e1) & subj(e1, x) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))',
-       ['some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))'])
+     ['some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))'])
 ]
 
 expressions = [r'some x y.sees(x,y)',
@@ -411,8 +418,10 @@ expressions = [r'some x y.sees(x,y)',
                r'some x.(man(x) & (not walks(x)))',
                r'all x.(man(x) -> walks(x))']
 
+
 def spacer(num=45):
     print('-' * num)
+
 
 def demo():
     print("Testing configuration")
@@ -426,6 +435,7 @@ def demo():
     print("Testing proofs")
     spacer()
     test_prove(arguments)
+
 
 if __name__ == '__main__':
     demo()
