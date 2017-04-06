@@ -4,16 +4,16 @@ UDHR corpus reader. It mostly deals with encodings.
 """
 from __future__ import absolute_import, unicode_literals
 
-from nltk.corpus.reader.util import find_corpus_fileids
 from nltk.corpus.reader.plaintext import PlaintextCorpusReader
+from nltk.corpus.reader.util import find_corpus_fileids
+
 
 class UdhrCorpusReader(PlaintextCorpusReader):
-
     ENCODINGS = [
         ('.*-Latin1$', 'latin-1'),
         ('.*-Hebrew$', 'hebrew'),
         ('.*-Arabic$', 'cp1256'),
-        ('Czech_Cesky-UTF8', 'cp1250'), # yeah
+        ('Czech_Cesky-UTF8', 'cp1250'),  # yeah
         ('.*-Cyrillic$', 'cyrillic'),
         ('.*-SJIS$', 'SJIS'),
         ('.*-GB2312$', 'GB2312'),
@@ -52,13 +52,13 @@ class UdhrCorpusReader(PlaintextCorpusReader):
         'Vietnamese-TCVN',
         'Magahi-Agra',
         'Bhojpuri-Agra',
-        'Esperanto-T61', # latin3 raises an exception
+        'Esperanto-T61',  # latin3 raises an exception
 
         # The following files are encoded for specific fonts:
         'Burmese_Myanmar-WinResearcher',
         'Armenian-DallakHelv',
         'Tigrinya_Tigrigna-VG2Main',
-        'Amharic-Afenegus6..60375', # ?
+        'Amharic-Afenegus6..60375',  # ?
         'Navaho_Dine-Navajo-Navaho-font',
 
         # What are these?
@@ -69,7 +69,6 @@ class UdhrCorpusReader(PlaintextCorpusReader):
         'Czech-Latin2-err',
         'Russian_Russky-UTF8~',
     ])
-
 
     def __init__(self, root='udhr'):
         fileids = find_corpus_fileids(root, r'(?!README|\.).*')

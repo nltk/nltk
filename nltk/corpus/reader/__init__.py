@@ -53,60 +53,59 @@ For example, to read a list of the words in the Brown Corpus, use
 
 """
 
-from nltk.corpus.reader.plaintext import *
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.tagged import *
-from nltk.corpus.reader.cmudict import *
-from nltk.corpus.reader.conll import *
-from nltk.corpus.reader.chunked import *
-from nltk.corpus.reader.wordlist import *
-from nltk.corpus.reader.xmldocs import *
-from nltk.corpus.reader.ppattach import *
-from nltk.corpus.reader.senseval import *
-from nltk.corpus.reader.ieer import *
-from nltk.corpus.reader.sinica_treebank import *
-from nltk.corpus.reader.bracket_parse import *
-from nltk.corpus.reader.indian import *
-from nltk.corpus.reader.toolbox import *
-from nltk.corpus.reader.timit import *
-from nltk.corpus.reader.ycoe import *
-from nltk.corpus.reader.rte import *
-from nltk.corpus.reader.string_category import *
-from nltk.corpus.reader.propbank import *
-from nltk.corpus.reader.verbnet import *
-from nltk.corpus.reader.bnc import *
-from nltk.corpus.reader.nps_chat import *
-from nltk.corpus.reader.wordnet import *
-from nltk.corpus.reader.switchboard import *
-from nltk.corpus.reader.dependency import *
-from nltk.corpus.reader.nombank import *
-from nltk.corpus.reader.ipipan import *
-from nltk.corpus.reader.pl196x import *
-from nltk.corpus.reader.knbc import *
-from nltk.corpus.reader.chasen import *
-from nltk.corpus.reader.childes import *
-from nltk.corpus.reader.aligned import *
-from nltk.corpus.reader.lin import *
-from nltk.corpus.reader.semcor import *
-from nltk.corpus.reader.framenet import *
-from nltk.corpus.reader.udhr import *
-from nltk.corpus.reader.bnc import *
-from nltk.corpus.reader.sentiwordnet import *
-from nltk.corpus.reader.twitter import *
-from nltk.corpus.reader.nkjp import *
-from nltk.corpus.reader.crubadan import *
-from nltk.corpus.reader.mte import *
-from nltk.corpus.reader.reviews import *
-from nltk.corpus.reader.opinion_lexicon import *
-from nltk.corpus.reader.pros_cons import *
-from nltk.corpus.reader.categorized_sents import *
-from nltk.corpus.reader.comparative_sents import *
-from nltk.corpus.reader.panlex_lite import *
-
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
 from nltk.corpus.reader import bracket_parse
+from nltk.corpus.reader.aligned import *
+from nltk.corpus.reader.api import *
+from nltk.corpus.reader.bnc import *
+from nltk.corpus.reader.bnc import *
+from nltk.corpus.reader.bracket_parse import *
+from nltk.corpus.reader.categorized_sents import *
+from nltk.corpus.reader.chasen import *
+from nltk.corpus.reader.childes import *
+from nltk.corpus.reader.chunked import *
+from nltk.corpus.reader.cmudict import *
+from nltk.corpus.reader.comparative_sents import *
+from nltk.corpus.reader.conll import *
+from nltk.corpus.reader.crubadan import *
+from nltk.corpus.reader.dependency import *
+from nltk.corpus.reader.framenet import *
+from nltk.corpus.reader.ieer import *
+from nltk.corpus.reader.indian import *
+from nltk.corpus.reader.ipipan import *
+from nltk.corpus.reader.knbc import *
+from nltk.corpus.reader.lin import *
+from nltk.corpus.reader.mte import *
+from nltk.corpus.reader.nkjp import *
+from nltk.corpus.reader.nombank import *
+from nltk.corpus.reader.nps_chat import *
+from nltk.corpus.reader.opinion_lexicon import *
+from nltk.corpus.reader.panlex_lite import *
+from nltk.corpus.reader.pl196x import *
+from nltk.corpus.reader.plaintext import *
+from nltk.corpus.reader.ppattach import *
+from nltk.corpus.reader.propbank import *
+from nltk.corpus.reader.pros_cons import *
+from nltk.corpus.reader.reviews import *
+from nltk.corpus.reader.rte import *
+from nltk.corpus.reader.semcor import *
+from nltk.corpus.reader.senseval import *
+from nltk.corpus.reader.sentiwordnet import *
+from nltk.corpus.reader.sinica_treebank import *
+from nltk.corpus.reader.string_category import *
+from nltk.corpus.reader.switchboard import *
+from nltk.corpus.reader.tagged import *
+from nltk.corpus.reader.timit import *
+from nltk.corpus.reader.toolbox import *
+from nltk.corpus.reader.twitter import *
+from nltk.corpus.reader.udhr import *
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.verbnet import *
+from nltk.corpus.reader.wordlist import *
+from nltk.corpus.reader.wordnet import *
+from nltk.corpus.reader.xmldocs import *
+from nltk.corpus.reader.ycoe import *
 
 __all__ = [
     'CorpusReader', 'CategorizedCorpusReader',
@@ -120,7 +119,7 @@ __all__ = [
     'TimitCorpusReader', 'YCOECorpusReader',
     'MacMorphoCorpusReader', 'SyntaxCorpusReader',
     'AlpinoCorpusReader', 'RTECorpusReader',
-    'StringCategoryCorpusReader','EuroparlCorpusReader',
+    'StringCategoryCorpusReader', 'EuroparlCorpusReader',
     'CategorizedBracketParseCorpusReader',
     'CategorizedTaggedCorpusReader',
     'CategorizedPlaintextCorpusReader',

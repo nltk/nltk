@@ -11,15 +11,13 @@ API for corpus readers.
 """
 from __future__ import unicode_literals
 
-import os
-import re
 from collections import defaultdict
 from itertools import chain
 
 from nltk import compat
-from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
-
 from nltk.corpus.reader.util import *
+from nltk.data import PathPointer
+
 
 @compat.python_2_unicode_compatible
 class CorpusReader(object):
@@ -126,7 +124,7 @@ class CorpusReader(object):
         make sure a corpus is loaded -- e.g., in case a user wants to
         do help(some_corpus).
         """
-        pass # no need to actually do anything.
+        pass  # no need to actually do anything.
 
     def readme(self):
         """
@@ -222,7 +220,9 @@ class CorpusReader(object):
         else:
             return self._encoding
 
-    def _get_root(self): return self._root
+    def _get_root(self):
+        return self._root
+
     root = property(_get_root, doc="""
         The directory where this corpus is stored.
 
@@ -230,7 +230,7 @@ class CorpusReader(object):
 
 
 ######################################################################
-#{ Corpora containing categorized items
+# { Corpora containing categorized items
 ######################################################################
 
 class CategorizedCorpusReader(object):
@@ -272,13 +272,13 @@ class CategorizedCorpusReader(object):
         more than one argument is specified, an exception will be
         raised.
         """
-        self._f2c = None #: file-to-category mapping
-        self._c2f = None #: category-to-file mapping
+        self._f2c = None  #: file-to-category mapping
+        self._c2f = None  #: category-to-file mapping
 
-        self._pattern = None #: regexp specifying the mapping
-        self._map = None #: dict specifying the mapping
-        self._file = None #: fileid of file containing the mapping
-        self._delimiter = None #: delimiter for ``self._file``
+        self._pattern = None  #: regexp specifying the mapping
+        self._map = None  #: dict specifying the mapping
+        self._file = None  #: fileid of file containing the mapping
+        self._delimiter = None  #: delimiter for ``self._file``
 
         if 'cat_pattern' in kwargs:
             self._pattern = kwargs['cat_pattern']
@@ -296,9 +296,8 @@ class CategorizedCorpusReader(object):
             raise ValueError('Expected keyword argument cat_pattern or '
                              'cat_map or cat_file.')
 
-
         if ('cat_pattern' in kwargs or 'cat_map' in kwargs or
-            'cat_file' in kwargs):
+                    'cat_file' in kwargs):
             raise ValueError('Specify exactly one of: cat_pattern, '
                              'cat_map, cat_file.')
 
@@ -362,11 +361,12 @@ class CategorizedCorpusReader(object):
                 self._init()
             return sorted(set.union(*[self._c2f[c] for c in categories]))
 
+
 ######################################################################
-#{ Treebank readers
+# { Treebank readers
 ######################################################################
 
-#[xx] is it worth it to factor this out?
+# [xx] is it worth it to factor this out?
 class SyntaxCorpusReader(CorpusReader):
     """
     An abstract base class for reading corpora consisting of
@@ -381,18 +381,24 @@ class SyntaxCorpusReader(CorpusReader):
       - ``_parse``, which takes a block and returns a list of parsed
         sentences.
     """
+
     def _parse(self, s):
         raise NotImplementedError()
+
     def _word(self, s):
         raise NotImplementedError()
+
     def _tag(self, s):
         raise NotImplementedError()
+
     def _read_block(self, stream):
         raise NotImplementedError()
 
     def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, compat.string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def parsed_sents(self, fileids=None):
@@ -403,6 +409,7 @@ class SyntaxCorpusReader(CorpusReader):
     def tagged_sents(self, fileids=None, tagset=None):
         def reader(stream):
             return self._read_tagged_sent_block(stream, tagset)
+
         return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
                        for fileid, enc in self.abspaths(fileids, True)])
 
@@ -414,6 +421,7 @@ class SyntaxCorpusReader(CorpusReader):
     def tagged_words(self, fileids=None, tagset=None):
         def reader(stream):
             return self._read_tagged_word_block(stream, tagset)
+
         return concat([StreamBackedCorpusView(fileid, reader, encoding=enc)
                        for fileid, enc in self.abspaths(fileids, True)])
 
@@ -423,8 +431,8 @@ class SyntaxCorpusReader(CorpusReader):
                                               encoding=enc)
                        for fileid, enc in self.abspaths(fileids, True)])
 
-    #------------------------------------------------------------
-    #{ Block Readers
+    # ------------------------------------------------------------
+    # { Block Readers
 
     def _read_word_block(self, stream):
         return list(chain(*self._read_sent_block(stream)))
@@ -437,11 +445,10 @@ class SyntaxCorpusReader(CorpusReader):
 
     def _read_tagged_sent_block(self, stream, tagset=None):
         return list(filter(None, [self._tag(t, tagset)
-                             for t in self._read_block(stream)]))
+                                  for t in self._read_block(stream)]))
 
     def _read_parsed_sent_block(self, stream):
         return list(filter(None, [self._parse(t) for t in self._read_block(stream)]))
 
-    #} End of Block Readers
-    #------------------------------------------------------------
-
+        # } End of Block Readers
+        # ------------------------------------------------------------

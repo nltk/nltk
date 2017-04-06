@@ -33,9 +33,7 @@ file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
 from __future__ import unicode_literals
-from nltk import compat
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
+
 from nltk.corpus.reader.xmldocs import *
 
 
@@ -50,10 +48,11 @@ def norm(value_string):
     """
 
     valdict = {"TRUE": 1,
-                     "FALSE": 0,
-                     "YES": 1,
-                     "NO": 0}
+               "FALSE": 0,
+               "YES": 1,
+               "NO": 0}
     return valdict[value_string.upper()]
+
 
 @compat.python_2_unicode_compatible
 class RTEPair(object):
@@ -64,8 +63,9 @@ class RTEPair(object):
     ``entailment`` in RTE2 and RTE3. These both get mapped on to the ``entailment``
     attribute of this class.
     """
+
     def __init__(self, pair, challenge=None, id=None, text=None, hyp=None,
-             value=None, task=None, length=None):
+                 value=None, task=None, length=None):
         """
         :param challenge: version of the RTE challenge (i.e., RTE1, RTE2 or RTE3)
         :param id: identifier for the pair
@@ -75,7 +75,7 @@ class RTEPair(object):
         :param task: attribute for the particular NLP task that the data was drawn from
         :param length: attribute for the length of the text of the pair
         """
-        self.challenge =  challenge
+        self.challenge = challenge
         self.id = pair.attrib["id"]
         self.gid = "%s-%s" % (self.challenge, self.id)
         self.text = pair[0].text
@@ -128,7 +128,6 @@ class RTECorpusReader(XMLCorpusReader):
         return [RTEPair(pair, challenge=challenge)
                 for pair in doc.getiterator("pair")]
 
-
     def pairs(self, fileids):
         """
         Build a list of RTEPairs from a RTE corpus.
@@ -139,8 +138,3 @@ class RTECorpusReader(XMLCorpusReader):
         """
         if isinstance(fileids, compat.string_types): fileids = [fileids]
         return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])
-
-
-
-
-

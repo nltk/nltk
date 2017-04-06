@@ -9,14 +9,12 @@
 
 import codecs
 
+from nltk.corpus.reader.api import *
 from nltk.parse import DependencyGraph
 from nltk.tokenize import *
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
 
 class DependencyCorpusReader(SyntaxCorpusReader):
-
     def __init__(self, root, fileids, encoding='utf8',
                  word_tokenizer=TabTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
@@ -53,17 +51,17 @@ class DependencyCorpusReader(SyntaxCorpusReader):
                        for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def tagged_sents(self, fileids=None):
-            return concat([DependencyCorpusView(fileid, True, True, False, encoding=enc)
-                           for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        return concat([DependencyCorpusView(fileid, True, True, False, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def parsed_sents(self, fileids=None):
-        sents=concat([DependencyCorpusView(fileid, False, True, True, encoding=enc)
-                      for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        sents = concat([DependencyCorpusView(fileid, False, True, True, encoding=enc)
+                        for fileid, enc in self.abspaths(fileids, include_encoding=True)])
         return [DependencyGraph(sent) for sent in sents]
 
 
 class DependencyCorpusView(StreamBackedCorpusView):
-    _DOCSTART = '-DOCSTART- -DOCSTART- O\n' #dokumentu hasiera definitzen da
+    _DOCSTART = '-DOCSTART- -DOCSTART- O\n'  # dokumentu hasiera definitzen da
 
     def __init__(self, corpus_file, tagged, group_by_sent, dependencies,
                  chunk_types=None, encoding='utf8'):

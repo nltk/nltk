@@ -45,13 +45,9 @@ Y       yield   Y IY L D       Z       zee     Z IY
 ZH      seizure S IY ZH ER
 """
 
-import codecs
-
-from nltk import compat
+from nltk.corpus.reader.api import *
 from nltk.util import Index
 
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.api import *
 
 class CMUDictCorpusReader(CorpusReader):
     def entries(self):
@@ -85,11 +81,12 @@ class CMUDictCorpusReader(CorpusReader):
         """
         return dict(Index(self.entries()))
 
+
 def read_cmudict_block(stream):
     entries = []
-    while len(entries) < 100: # Read 100 at a time.
+    while len(entries) < 100:  # Read 100 at a time.
         line = stream.readline()
-        if line == '': return entries # end of file.
+        if line == '': return entries  # end of file.
         pieces = line.split()
-        entries.append( (pieces[0].lower(), pieces[2:]) )
+        entries.append((pieces[0].lower(), pieces[2:]))
     return entries

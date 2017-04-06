@@ -39,8 +39,6 @@ of the author.
 """
 from __future__ import unicode_literals
 
-from nltk import compat
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 
@@ -60,10 +58,12 @@ class PPAttachment(object):
                 (self.sent, self.verb, self.noun1, self.prep,
                  self.noun2, self.attachment))
 
+
 class PPAttachmentCorpusReader(CorpusReader):
     """
     sentence_id verb noun1 preposition noun2 attachment
     """
+
     def attachments(self, fileids):
         return concat([StreamBackedCorpusView(fileid, self._read_obj_block,
                                               encoding=enc)
@@ -75,8 +75,10 @@ class PPAttachmentCorpusReader(CorpusReader):
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
     def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, compat.string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _read_tuple_block(self, stream):
@@ -92,4 +94,3 @@ class PPAttachmentCorpusReader(CorpusReader):
             return [PPAttachment(*line.split())]
         else:
             return []
-

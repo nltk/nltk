@@ -121,17 +121,12 @@ The 4 functions are as follows.
 from __future__ import print_function, unicode_literals
 
 import sys
-import os
-import re
-import tempfile
 import time
 
-from nltk import compat
-from nltk.tree import Tree
-from nltk.internals import import_from_stdlib
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.internals import import_from_stdlib
+from nltk.tree import Tree
+
 
 class TimitCorpusReader(CorpusReader):
     """
@@ -198,7 +193,7 @@ class TimitCorpusReader(CorpusReader):
             raise ValueError('Bad value for filetype: %r' % filetype)
 
     def utteranceids(self, dialect=None, sex=None, spkrid=None,
-                   sent_type=None, sentid=None):
+                     sent_type=None, sentid=None):
         """
         :return: A list of the utterance identifiers for all
         utterances in this corpus, or for the given speaker, dialect
@@ -252,7 +247,7 @@ class TimitCorpusReader(CorpusReader):
         speaker.
         """
         return [utterance for utterance in self._utterances
-                if utterance.startswith(speaker+'/')]
+                if utterance.startswith(speaker + '/')]
 
     def spkrinfo(self, speaker):
         """
@@ -266,7 +261,7 @@ class TimitCorpusReader(CorpusReader):
             for line in self.open('spkrinfo.txt'):
                 if not line.strip() or line[0] == ';': continue
                 rec = line.strip().split(None, 9)
-                key = "dr%s-%s%s" % (rec[2],rec[1].lower(),rec[0].lower())
+                key = "dr%s-%s%s" % (rec[2], rec[1].lower(), rec[0].lower())
                 self._speakerinfo[key] = SpeakerInfo(*rec)
 
         return self._speakerinfo[speaker]
@@ -300,7 +295,7 @@ class TimitCorpusReader(CorpusReader):
                 for fileid in self._utterance_fileids(utterances, '.wrd')]
 
     def sent_times(self, utterances=None):
-        return [(line.split(None,2)[-1].strip(),
+        return [(line.split(None, 2)[-1].strip(),
                  int(line.split()[0]), int(line.split()[1]))
                 for fileid in self._utterance_fileids(utterances, '.txt')
                 for line in self.open(fileid) if line.strip()]
@@ -319,7 +314,7 @@ class TimitCorpusReader(CorpusReader):
                 (sent, sent_start, sent_end) = sent_times.pop(0)
                 trees.append(Tree('S', []))
                 while (word_times and phone_times and
-                       phone_times[0][2] <= word_times[0][1]):
+                               phone_times[0][2] <= word_times[0][1]):
                     trees[-1].append(phone_times.pop(0)[0])
                 while word_times and word_times[0][2] <= sent_end:
                     (word, word_start, word_end) = word_times.pop(0)
@@ -337,14 +332,14 @@ class TimitCorpusReader(CorpusReader):
         # nltk.chunk conflicts with the stdlib module 'chunk'
         wave = import_from_stdlib('wave')
 
-        w = wave.open(self.open(utterance+'.wav'), 'rb')
+        w = wave.open(self.open(utterance + '.wav'), 'rb')
 
         if end is None:
             end = w.getnframes()
 
         # Skip past frames before start, then read the frames we want
         w.readframes(start)
-        frames = w.readframes(end-start)
+        frames = w.readframes(end - start)
 
         # Open a new temporary file -- the wave module requires
         # an actual file, and won't work w/ stringio. :(
@@ -362,13 +357,13 @@ class TimitCorpusReader(CorpusReader):
         return tf.read()
 
     def audiodata(self, utterance, start=0, end=None):
-        assert(end is None or end > start)
+        assert (end is None or end > start)
         headersize = 44
         if end is None:
-            data = self.open(utterance+'.wav').read()
+            data = self.open(utterance + '.wav').read()
         else:
-            data = self.open(utterance+'.wav').read(headersize+end*2)
-        return data[headersize+start*2:]
+            data = self.open(utterance + '.wav').read(headersize + end * 2)
+        return data[headersize + start * 2:]
 
     def _utterance_fileids(self, utterances, extension):
         if utterances is None: utterances = self._utterances
@@ -393,7 +388,7 @@ class TimitCorpusReader(CorpusReader):
                 dsp.close()
             except IOError as e:
                 print(("can't acquire the audio device; please "
-                                     "activate your audio device."), file=sys.stderr)
+                       "activate your audio device."), file=sys.stderr)
                 print("system error message:", str(e), file=sys.stderr)
             return
         except ImportError:
@@ -414,7 +409,7 @@ class TimitCorpusReader(CorpusReader):
 
         # Method 3: complain. :)
         print(("you must install pygame or ossaudiodev "
-                             "for audio playback."), file=sys.stderr)
+               "for audio playback."), file=sys.stderr)
 
 
 @compat.python_2_unicode_compatible

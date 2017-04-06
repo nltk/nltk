@@ -11,14 +11,13 @@ from __future__ import print_function
 import re
 
 from nltk.compat import string_types
-from nltk.parse import DependencyGraph
-
+from nltk.corpus.reader.api import SyntaxCorpusReader, CorpusReader
 from nltk.corpus.reader.util import (
     FileSystemPathPointer,
     find_corpus_fileids,
     read_blankline_block,
 )
-from nltk.corpus.reader.api import SyntaxCorpusReader, CorpusReader
+from nltk.parse import DependencyGraph
 
 # default function to convert morphlist to str for tree representation
 _morphs2str_default = lambda morphs: '/'.join(m[0] for m in morphs if m[0] != 'EOS')
@@ -133,13 +132,13 @@ class KNBCorpusReader(SyntaxCorpusReader):
 
         return dg.tree()
 
+
 ######################################################################
 # Demo
 ######################################################################
 
 
 def demo():
-
     import nltk
     from nltk.corpus.util import LazyCorpusLoader
 
@@ -174,7 +173,6 @@ def demo():
 
 
 def test():
-
     from nltk.corpus.util import LazyCorpusLoader
     knbc = LazyCorpusLoader(
         'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
@@ -182,6 +180,7 @@ def test():
     assert isinstance(knbc.sents()[0][0], string_types)
     assert isinstance(knbc.tagged_words()[0], tuple)
     assert isinstance(knbc.tagged_sents()[0][0], tuple)
+
 
 if __name__ == '__main__':
     demo()

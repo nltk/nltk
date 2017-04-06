@@ -20,6 +20,7 @@ from collections import defaultdict
 from nltk import compat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
+
 class VerbnetCorpusReader(XMLCorpusReader):
     """
     An NLTK interface to the VerbNet verb lexicon.
@@ -92,7 +93,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         else:
             # [xx] should this include subclass members?
             vnclass = self.vnclass(classid)
-            return sum([member.get('wn','').split() for member in
+            return sum([member.get('wn', '').split() for member in
                         vnclass.findall('MEMBERS/MEMBER')], [])
 
     def classids(self, lemma=None, wordnetid=None, fileid=None, classid=None):
@@ -112,7 +113,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             raise ValueError('Specify at most one of: fileid, wordnetid, '
                              'fileid, classid')
         if fileid is not None:
-            return [c for (c,f) in self._class_to_fileid.items()
+            return [c for (c, f) in self._class_to_fileid.items()
                     if f == fileid]
         elif lemma is not None:
             return self._lemma_to_class[lemma]
@@ -152,7 +153,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
                     if classid == subclass.get('ID'):
                         return subclass
                 else:
-                    assert False # we saw it during _index()!
+                    assert False  # we saw it during _index()!
 
         else:
             raise ValueError('Unknown identifier %s' % fileid_or_classid)
@@ -171,9 +172,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
             return [self._class_to_fileid[self.longid(vnclass_id)]
                     for vnclass_id in vnclass_ids]
 
-
     ######################################################################
-    #{ Index Initialization
+    # { Index Initialization
     ######################################################################
 
     def _index(self):
@@ -212,7 +212,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         # nb: if we got rid of wordnet_to_class, this would run 2-3
         # times faster.
         for fileid in self._fileids:
-            vnclass = fileid[:-4] # strip the '.xml'
+            vnclass = fileid[:-4]  # strip the '.xml'
             self._class_to_fileid[vnclass] = fileid
             self._shortid_to_longid[self.shortid(vnclass)] = vnclass
             for m in self._INDEX_RE.finditer(self.open(fileid).read()):
@@ -223,13 +223,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
                         self._wordnet_to_class[wn].append(vnclass)
                 elif groups[2] is not None:
                     self._class_to_fileid[groups[2]] = fileid
-                    vnclass = groups[2] # for <MEMBER> elts.
+                    vnclass = groups[2]  # for <MEMBER> elts.
                     self._shortid_to_longid[self.shortid(vnclass)] = vnclass
                 else:
                     assert False, 'unexpected match condition'
 
     ######################################################################
-    #{ Identifier conversion
+    # { Identifier conversion
     ######################################################################
 
     def longid(self, shortid):
@@ -237,7 +237,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         to a long id (eg 'confess-37.10').  If ``shortid`` is already a
         long id, then return it as-is"""
         if self._LONGID_RE.match(shortid):
-            return shortid # it's already a longid.
+            return shortid  # it's already a longid.
         elif not self._SHORTID_RE.match(shortid):
             raise ValueError('vnclass identifier %r not found' % shortid)
         try:
@@ -250,7 +250,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         map it to a short id (eg '37.10').  If ``longid`` is already a
         short id, then return it as-is."""
         if self._SHORTID_RE.match(longid):
-            return longid # it's already a shortid.
+            return longid  # it's already a shortid.
         m = self._LONGID_RE.match(longid)
         if m:
             return m.group(2)
@@ -258,7 +258,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             raise ValueError('vnclass identifier %r not found' % longid)
 
     ######################################################################
-    #{ Pretty Printing
+    # { Pretty Printing
     ######################################################################
 
     def pprint(self, vnclass):
@@ -298,7 +298,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         if not subclasses: subclasses = ['(none)']
         s = 'Subclasses: ' + ' '.join(subclasses)
         return textwrap.fill(s, 70, initial_indent=indent,
-                             subsequent_indent=indent+'  ')
+                             subsequent_indent=indent + '  ')
 
     def pprint_members(self, vnclass, indent=''):
         """
@@ -316,7 +316,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         if not members: members = ['(none)']
         s = 'Members: ' + ' '.join(members)
         return textwrap.fill(s, 70, initial_indent=indent,
-                             subsequent_indent=indent+'  ')
+                             subsequent_indent=indent + '  ')
 
     def pprint_themroles(self, vnclass, indent=''):
         """
@@ -349,9 +349,9 @@ class VerbnetCorpusReader(XMLCorpusReader):
             a verbnet frame.
         """
         s = self.pprint_description(vnframe, indent) + '\n'
-        s += self.pprint_syntax(vnframe, indent+'  Syntax: ') + '\n'
+        s += self.pprint_syntax(vnframe, indent + '  Syntax: ') + '\n'
         s += indent + '  Semantics:\n'
-        s += self.pprint_semantics(vnframe, indent+'    ')
+        s += self.pprint_semantics(vnframe, indent + '    ')
         return s
 
     def pprint_description(self, vnframe, indent=''):
@@ -404,5 +404,3 @@ class VerbnetCorpusReader(XMLCorpusReader):
             args = [arg.get('value') for arg in pred.findall('ARGS/ARG')]
             pieces.append('%s(%s)' % (pred.get('value'), ', '.join(args)))
         return '\n'.join('%s* %s' % (indent, piece) for piece in pieces)
-
-
