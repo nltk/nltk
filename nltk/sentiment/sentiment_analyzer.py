@@ -14,21 +14,22 @@ purposes.
 """
 
 from __future__ import print_function
+
 from collections import defaultdict
 
 from nltk.classify.util import apply_features, accuracy as eval_accuracy
 from nltk.collocations import BigramCollocationFinder
 from nltk.metrics import (BigramAssocMeasures, precision as eval_precision,
-    recall as eval_recall, f_measure as eval_f_measure)
-
+                          recall as eval_recall, f_measure as eval_f_measure)
 from nltk.probability import FreqDist
+from nltk.sentiment.util import save_file
 
-from nltk.sentiment.util import save_file, timer
 
 class SentimentAnalyzer(object):
     """
     A Sentiment Analysis tool based on machine learning approaches.
     """
+
     def __init__(self, classifier=None):
         self.feat_extractors = defaultdict(list)
         self.classifier = classifier
@@ -210,15 +211,15 @@ class SentimentAnalyzer(object):
         for label in labels:
             if precision == True:
                 precision_score = eval_precision(gold_results[label],
-                    test_results[label])
+                                                 test_results[label])
                 metrics_results['Precision [{0}]'.format(label)] = precision_score
             if recall == True:
                 recall_score = eval_recall(gold_results[label],
-                    test_results[label])
+                                           test_results[label])
                 metrics_results['Recall [{0}]'.format(label)] = recall_score
             if f_measure == True:
                 f_measure_score = eval_f_measure(gold_results[label],
-                    test_results[label])
+                                                 test_results[label])
                 metrics_results['F-measure [{0}]'.format(label)] = f_measure_score
 
         # Print evaluation results (in alphabetical order)
