@@ -7,25 +7,28 @@
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
 
-from nltk.internals import Counter
 from nltk.compat import string_types, python_2_unicode_compatible
+from nltk.internals import Counter
 from nltk.sem.logic import LogicParser, APP
 
 _counter = Counter()
 
+
 class Tokens(object):
-    #Punctuation
+    # Punctuation
     OPEN = '('
     CLOSE = ')'
 
-    #Operations
+    # Operations
     IMP = '-o'
 
     PUNCT = [OPEN, CLOSE]
     TOKENS = PUNCT + [IMP]
 
+
 class LinearLogicParser(LogicParser):
     """A linear logic expression parser."""
+
     def __init__(self):
         LogicParser.__init__(self)
 
@@ -57,7 +60,7 @@ class LinearLogicParser(LogicParser):
         argument expression."""
         if self.has_priority(APP, context):
             if self.inRange(0) and self.token(0) == Tokens.OPEN:
-                self.token() #swallow then open paren
+                self.token()  # swallow then open paren
                 argument = self.process_next_expression(APP)
                 self.assertNextToken(Tokens.CLOSE)
                 expression = ApplicationExpression(expression, argument, None)
@@ -72,7 +75,6 @@ class LinearLogicParser(LogicParser):
 
 @python_2_unicode_compatible
 class Expression(object):
-
     _linear_logic_parser = LinearLogicParser()
 
     @classmethod
@@ -156,6 +158,7 @@ class AtomicExpression(Expression):
     def __hash__(self):
         return hash(self.name)
 
+
 class ConstantExpression(AtomicExpression):
     def unify(self, other, bindings):
         """
@@ -177,6 +180,7 @@ class ConstantExpression(AtomicExpression):
             return bindings
         raise UnificationException(self, other, bindings)
 
+
 class VariableExpression(AtomicExpression):
     def unify(self, other, bindings):
         """
@@ -195,6 +199,7 @@ class VariableExpression(AtomicExpression):
                 return bindings + BindingDict([(self, other)])
         except VariableBindingException:
             raise UnificationException(self, other, bindings)
+
 
 @python_2_unicode_compatible
 class ImpExpression(Expression):
@@ -222,7 +227,8 @@ class ImpExpression(Expression):
         """
         assert isinstance(other, ImpExpression)
         try:
-            return bindings + self.antecedent.unify(other.antecedent, bindings) + self.consequent.unify(other.consequent, bindings)
+            return bindings + self.antecedent.unify(other.antecedent, bindings) + self.consequent.unify(
+                other.consequent, bindings)
         except VariableBindingException:
             raise UnificationException(self, other, bindings)
 
@@ -236,7 +242,7 @@ class ImpExpression(Expression):
         """
         (a, a_new) = self.antecedent.compile_neg(index_counter, glueFormulaFactory)
         (c, c_new) = self.consequent.compile_pos(index_counter, glueFormulaFactory)
-        return (ImpExpression(a,c), a_new + c_new)
+        return (ImpExpression(a, c), a_new + c_new)
 
     def compile_neg(self, index_counter, glueFormulaFactory):
         """
@@ -259,7 +265,7 @@ class ImpExpression(Expression):
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
-                self.antecedent == other.antecedent and self.consequent == other.consequent
+               self.antecedent == other.antecedent and self.consequent == other.consequent
 
     def __ne__(self, other):
         return not self == other
@@ -270,6 +276,7 @@ class ImpExpression(Expression):
 
     def __hash__(self):
         return hash('%s%s%s' % (hash(self.antecedent), Tokens.IMP, hash(self.consequent)))
+
 
 @python_2_unicode_compatible
 class ApplicationExpression(Expression):
@@ -301,9 +308,13 @@ class ApplicationExpression(Expression):
         if argument_indices:
             # A.dependencies of (A -o (B -o C)) must be a proper subset of argument_indices
             if not set(function_simp.antecedent.dependencies) < argument_indices:
-                raise LinearLogicApplicationException('Dependencies unfulfilled when attempting to apply Linear Logic formula %s to %s' % (function_simp, argument_simp))
+                raise LinearLogicApplicationException(
+                    'Dependencies unfulfilled when attempting to apply Linear Logic formula %s to %s' % (
+                    function_simp, argument_simp))
             if set(function_simp.antecedent.dependencies) == argument_indices:
-                raise LinearLogicApplicationException('Dependencies not a proper subset of indices when attempting to apply Linear Logic formula %s to %s' % (function_simp, argument_simp))
+                raise LinearLogicApplicationException(
+                    'Dependencies not a proper subset of indices when attempting to apply Linear Logic formula %s to %s' % (
+                    function_simp, argument_simp))
 
         self.function = function
         self.argument = argument
@@ -325,7 +336,7 @@ class ApplicationExpression(Expression):
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and \
-                self.function == other.function and self.argument == other.argument
+               self.function == other.function and self.argument == other.argument
 
     def __ne__(self, other):
         return not self == other
@@ -335,6 +346,7 @@ class ApplicationExpression(Expression):
 
     def __hash__(self):
         return hash('%s%s%s' % (hash(self.antecedent), Tokens.OPEN, hash(self.consequent)))
+
 
 @python_2_unicode_compatible
 class BindingDict(object):
@@ -404,8 +416,8 @@ class BindingDict(object):
                 combined[v] = other.d[v]
             return combined
         except VariableBindingException:
-            raise VariableBindingException('Attempting to add two contradicting'\
-                        ' VariableBindingsLists: %s, %s' % (self, other))
+            raise VariableBindingException('Attempting to add two contradicting' \
+                                           ' VariableBindingsLists: %s, %s' % (self, other))
 
     def __ne__(self, other):
         return not self == other
@@ -421,12 +433,15 @@ class BindingDict(object):
     def __repr__(self):
         return 'BindingDict: %s' % self
 
+
 class VariableBindingException(Exception):
     pass
+
 
 class UnificationException(Exception):
     def __init__(self, a, b, bindings):
         Exception.__init__(self, 'Cannot unify %s with %s given %s' % (a, b, bindings))
+
 
 class LinearLogicApplicationException(Exception):
     pass

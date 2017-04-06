@@ -6,14 +6,16 @@
 # For license information, see LICENSE.TXT
 from __future__ import print_function
 
-from nltk.sem.logic import LambdaExpression, ApplicationExpression, Variable
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
+from nltk.sem.logic import LambdaExpression, ApplicationExpression
+
 
 class CooperStore(object):
     """
     A container for handling quantifier ambiguity via Cooper storage.
     """
+
     def __init__(self, featstruct):
         """
         :param featstruct: The value of the ``sem`` node in a tree from
@@ -35,12 +37,13 @@ class CooperStore(object):
         :type lst: list
         :rtype: iter
         """
-        remove = lambda lst0, index: lst0[:index] + lst0[index+1:]
+        remove = lambda lst0, index: lst0[:index] + lst0[index + 1:]
         if lst:
             for index, x in enumerate(lst):
                 for y in self._permute(remove(lst, index)):
-                    yield (x,)+y
-        else: yield ()
+                    yield (x,) + y
+        else:
+            yield ()
 
     def s_retrieve(self, trace=False):
         """
@@ -59,7 +62,7 @@ class CooperStore(object):
         """
         for perm, store_perm in enumerate(self._permute(self.store)):
             if trace:
-                print("Permutation %s" % (perm+1))
+                print("Permutation %s" % (perm + 1))
             term = self.core
             for bindop in store_perm:
                 # we just want the arguments that are wrapped by the 'bo' predicate
@@ -88,7 +91,7 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
 def demo():
     from nltk.sem import cooper_storage as cs
     sentence = "every girl chases a dog"
-    #sentence = "a man gives a bone to every dog"
+    # sentence = "a man gives a bone to every dog"
     print()
     print("Analyis of sentence '%s'" % sentence)
     print("=" * 50)
@@ -112,7 +115,8 @@ def demo():
         print("-" * 15)
 
         for i, reading in enumerate(semrep.readings):
-            print("%s: %s" % (i+1, reading))
+            print("%s: %s" % (i + 1, reading))
+
 
 if __name__ == '__main__':
     demo()
