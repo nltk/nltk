@@ -48,6 +48,7 @@ except ImportError:
 
 from nltk.compat import xrange
 
+
 def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
     """
     Compute the windowdiff score for a pair of segmentations.  A
@@ -84,13 +85,12 @@ def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
         raise ValueError("Window width k should be smaller or equal than segmentation lengths")
     wd = 0
     for i in range(len(seg1) - k + 1):
-        ndiff = abs(seg1[i:i+k].count(boundary) - seg2[i:i+k].count(boundary))
+        ndiff = abs(seg1[i:i + k].count(boundary) - seg2[i:i + k].count(boundary))
         if weighted:
             wd += ndiff
         else:
             wd += min(1, ndiff)
     return wd / (len(seg1) - k + 1.)
-
 
 
 # Generalized Hamming Distance
@@ -213,12 +213,12 @@ def pk(ref, hyp, k=None, boundary='1'):
         k = int(round(len(ref) / (ref.count(boundary) * 2.)))
 
     err = 0
-    for i in xrange(len(ref)-k +1):
-        r = ref[i:i+k].count(boundary) > 0
-        h = hyp[i:i+k].count(boundary) > 0
+    for i in xrange(len(ref) - k + 1):
+        r = ref[i:i + k].count(boundary) > 0
+        h = hyp[i:i + k].count(boundary) > 0
         if r != h:
-           err += 1
-    return err / (len(ref)-k +1.)
+            err += 1
+    return err / (len(ref) - k + 1.)
 
 
 # skip doctests if numpy is not installed
@@ -228,5 +228,3 @@ def setup_module(module):
         import numpy
     except ImportError:
         raise SkipTest("numpy is required for nltk.metrics.segmentation")
-
-

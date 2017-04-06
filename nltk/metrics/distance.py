@@ -19,8 +19,8 @@ As metrics, they must satisfy the following three requirements:
 3. d(a, c) <= d(a, b) + d(b, c)
 """
 
-from __future__ import print_function
 from __future__ import division
+from __future__ import print_function
 
 
 def _edit_dist_init(len1, len2):
@@ -28,9 +28,9 @@ def _edit_dist_init(len1, len2):
     for i in range(len1):
         lev.append([0] * len2)  # initialize 2D array to zero
     for i in range(len1):
-        lev[i][0] = i           # column 0: 0,1,2,3,4,...
+        lev[i][0] = i  # column 0: 0,1,2,3,4,...
     for j in range(len2):
-        lev[0][j] = j           # row 0: 0,1,2,3,4,...
+        lev[0][j] = j  # row 0: 0,1,2,3,4,...
     return lev
 
 
@@ -112,7 +112,7 @@ def jaccard_distance(label1, label2):
     """Distance metric comparing set-similarity.
 
     """
-    return (len(label1.union(label2)) - len(label1.intersection(label2)))/len(label1.union(label2))
+    return (len(label1.union(label2)) - len(label1.intersection(label2))) / len(label1.union(label2))
 
 
 def masi_distance(label1, label2):
@@ -143,7 +143,7 @@ def masi_distance(label1, label2):
     return (1 - (len_intersection / float(len_union))) * m
 
 
-def interval_distance(label1,label2):
+def interval_distance(label1, label2):
     """Krippendorff's interval distance metric
 
     >>> from nltk.metrics import interval_distance
@@ -155,7 +155,7 @@ def interval_distance(label1,label2):
 
     try:
         return pow(label1 - label2, 2)
-#        return pow(list(label1)[0]-list(label2)[0],2)
+    #        return pow(list(label1)[0]-list(label2)[0],2)
     except:
         print("non-numeric labels not supported with interval distance")
 
@@ -168,7 +168,7 @@ def presence(label):
 
 
 def fractional_presence(label):
-    return lambda x, y:\
+    return lambda x, y: \
         abs(((1.0 / len(x)) - (1.0 / len(y)))) * (label in x and label in y) \
         or 0.0 * (label not in x and label not in y) \
         or abs((1.0 / len(x))) * (label in x and label not in y) \
@@ -182,8 +182,8 @@ def custom_distance(file):
             labelA, labelB, dist = l.strip().split("\t")
             labelA = frozenset([labelA])
             labelB = frozenset([labelB])
-            data[frozenset([labelA,labelB])] = float(dist)
-    return lambda x,y:data[frozenset([x,y])]
+            data[frozenset([labelA, labelB])] = float(dist)
+    return lambda x, y: data[frozenset([x, y])]
 
 
 def demo():
@@ -193,7 +193,8 @@ def demo():
     for s1, s2 in edit_distance_examples:
         print("Edit distance between '%s' and '%s':" % (s1, s2), edit_distance(s1, s2))
     for s1, s2 in edit_distance_examples:
-        print("Edit distance with transpositions between '%s' and '%s':" % (s1, s2), edit_distance(s1, s2, transpositions=True))
+        print("Edit distance with transpositions between '%s' and '%s':" % (s1, s2),
+              edit_distance(s1, s2, transpositions=True))
 
     s1 = set([1, 2, 3, 4])
     s2 = set([3, 4, 5])
@@ -202,6 +203,7 @@ def demo():
     print("Binary distance:", binary_distance(s1, s2))
     print("Jaccard distance:", jaccard_distance(s1, s2))
     print("MASI distance:", masi_distance(s1, s2))
+
 
 if __name__ == '__main__':
     demo()
