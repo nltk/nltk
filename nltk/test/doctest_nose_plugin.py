@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-from nose.suite import ContextList
-import re
-import sys
-import os
+
 import codecs
 import doctest
+import os
+import re
+import sys
+
 from nose.plugins.base import Plugin
-from nose.util import tolist, anyp
 from nose.plugins.doctests import Doctest, log, DocFileCase
+from nose.suite import ContextList
+from nose.util import tolist, anyp
 
 ALLOW_UNICODE = doctest.register_optionflag('ALLOW_UNICODE')
+
 
 class _UnicodeOutputChecker(doctest.OutputChecker):
     _literal_re = re.compile(r"(\W|^)[uU]([rR]?[\'\"])", re.UNICODE)
@@ -31,7 +34,9 @@ class _UnicodeOutputChecker(doctest.OutputChecker):
         res = doctest.OutputChecker.check_output(self, cleaned_want, cleaned_got, optionflags)
         return res
 
+
 _checker = _UnicodeOutputChecker()
+
 
 class DoctestPluginHelper(object):
     """
@@ -69,7 +74,7 @@ class DoctestPluginHelper(object):
                     log.debug(
                         "Could not import %s: %s (%s)", fixt_mod, e, sys.path)
                 log.debug("Fixture module %s resolved to %s",
-                    fixt_mod, fixture_context)
+                          fixt_mod, fixture_context)
                 if hasattr(fixture_context, 'globs'):
                     globs = fixture_context.globs(globs)
             parser = doctest.DocTestParser()
@@ -88,7 +93,7 @@ class DoctestPluginHelper(object):
                 else:
                     yield case
             else:
-                yield False # no tests to load
+                yield False  # no tests to load
 
     def loadTestsFromFile(self, filename):
 
@@ -123,7 +128,7 @@ class DoctestPluginHelper(object):
         self.fixtures = options.doctestFixtures
         self.finder = doctest.DocTestFinder()
 
-        #super(DoctestPluginHelper, self).configure(options, config)
+        # super(DoctestPluginHelper, self).configure(options, config)
         self.optionflags = 0
         self.options = {}
 
@@ -138,13 +143,13 @@ class DoctestPluginHelper(object):
                         self.optionflags &= ~doctest.OPTIONFLAGS_BY_NAME[stroption[1:]]
                         continue
                     try:
-                        key,value=stroption.split('=')
+                        key, value = stroption.split('=')
                     except ValueError:
                         pass
                     else:
                         if not key in self.OPTION_BY_NAME:
                             raise ValueError()
-                        self.options[key]=value
+                        self.options[key] = value
                         continue
                 except (AttributeError, ValueError, KeyError):
                     raise ValueError("Unknown doctest option {}".format(stroption))

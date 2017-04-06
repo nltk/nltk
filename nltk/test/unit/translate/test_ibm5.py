@@ -4,8 +4,8 @@ Tests for IBM Model 5 training methods
 """
 
 import unittest
-
 from collections import defaultdict
+
 from nltk.translate import AlignedSent
 from nltk.translate import IBMModel
 from nltk.translate import IBMModel4
@@ -124,7 +124,7 @@ class TestIBMModel5(unittest.TestCase):
 
         # assert
         null_generation = 5 * pow(0.167, 1) * pow(0.833, 4)
-        fertility = 1*0.99 * 1*0.99 * 1*0.99 * 1*0.99 * 2*0.999
+        fertility = 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 2 * 0.999
         lexical_translation = 0.98 * 0.98 * 0.98 * 0.98 * 0.98 * 0.98
         vacancy = 0.97 * 0.97 * 1 * 0.97 * 0.97 * 0.96
         expected_probability = (null_generation * fertility *
@@ -145,7 +145,7 @@ class TestIBMModel5(unittest.TestCase):
         scores = {
             (1, 1): min(min_factor * 1.5, 1) * best_score,  # above threshold
             (1, 2): best_score,
-            (2, 1): min_factor * best_score,        # at threshold
+            (2, 1): min_factor * best_score,  # at threshold
             (2, 2): min_factor * best_score * 0.5,  # low score
             (0, 0): min(min_factor * 1.1, 1) * 1.2  # above threshold
         }

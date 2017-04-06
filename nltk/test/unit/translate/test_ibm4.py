@@ -4,8 +4,8 @@ Tests for IBM Model 4 training methods
 """
 
 import unittest
-
 from collections import defaultdict
+
 from nltk.translate import AlignedSent
 from nltk.translate import IBMModel
 from nltk.translate import IBMModel4
@@ -118,7 +118,7 @@ class TestIBMModel4(unittest.TestCase):
 
         # assert
         null_generation = 5 * pow(0.167, 1) * pow(0.833, 4)
-        fertility = 1*0.99 * 1*0.99 * 1*0.99 * 1*0.99 * 2*0.999
+        fertility = 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 2 * 0.999
         lexical_translation = 0.98 * 0.98 * 0.98 * 0.98 * 0.98 * 0.98
         distortion = 0.97 * 0.97 * 1 * 0.97 * 0.97 * 0.96
         expected_probability = (null_generation * fertility *

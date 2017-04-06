@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-from unittest import TestCase
+
 from functools import wraps
+from unittest import TestCase
+
 from nose.plugins.skip import SkipTest
+
 from nltk.util import py26
+
 
 def skip(reason):
     """
     Unconditionally skip a test.
     """
+
     def decorator(test_item):
         is_test_class = isinstance(test_item, type) and issubclass(test_item, TestCase)
 
@@ -24,12 +29,14 @@ def skip(reason):
             @wraps(test_item)
             def skip_wrapper(*args, **kwargs):
                 raise SkipTest(reason)
+
             skip_wrapper.__name__ = test_item.__name__
             test_item = skip_wrapper
 
         test_item.__unittest_skip__ = True
         test_item.__unittest_skip_why__ = reason
         return test_item
+
     return decorator
 
 

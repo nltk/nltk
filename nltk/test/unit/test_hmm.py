@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+
 from nltk.tag import hmm
+
 
 def _wikipedia_example_hmm():
     # Example from wikipedia
@@ -14,7 +16,7 @@ def _wikipedia_example_hmm():
     pi = [0.5, 0.5]  # initial probabilities
 
     seq = ['umbrella', 'umbrella', 'no umbrella', 'umbrella', 'umbrella']
-    seq = list(zip(seq, [None]*len(seq)))
+    seq = list(zip(seq, [None] * len(seq)))
 
     model = hmm._create_hmm_tagger(states, symbols, A, B, pi)
     return model, states, symbols, seq
@@ -31,7 +33,7 @@ def test_forward_probability():
         [0.1792, 0.0085, 0.0357]
     ]
 
-    fp = 2**model._forward_probability(seq)
+    fp = 2 ** model._forward_probability(seq)
 
     assert_array_almost_equal(fp, expected)
 
@@ -40,7 +42,7 @@ def test_forward_probability2():
     from numpy.testing import assert_array_almost_equal
 
     model, states, symbols, seq = _wikipedia_example_hmm()
-    fp = 2**model._forward_probability(seq)
+    fp = 2 ** model._forward_probability(seq)
 
     # examples in wikipedia are normalized
     fp = (fp.T / fp.sum(axis=1)).T
@@ -61,7 +63,7 @@ def test_backward_probability():
 
     model, states, symbols, seq = _wikipedia_example_hmm()
 
-    bp = 2**model._backward_probability(seq)
+    bp = 2 ** model._backward_probability(seq)
     # examples in wikipedia are normalized
 
     bp = (bp.T / bp.sum(axis=1)).T
