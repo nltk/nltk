@@ -12,10 +12,10 @@ from __future__ import print_function, division
 
 from collections import defaultdict
 
+from nltk import jsontags
 from nltk.compat import Counter
 from nltk.tag import TaggerI
 from nltk.tbl import Feature, Template
-from nltk import jsontags
 
 
 ######################################################################
@@ -307,7 +307,7 @@ class BrillTagger(TaggerI):
 
         trainscores = train_stats['rulescores']
         assert len(trainscores) == len(tids), "corrupt statistics: " \
-            "{0} train scores for {1} rules".format(trainscores, tids)
+                                              "{0} train scores for {1} rules".format(trainscores, tids)
         template_counts = Counter(tids)
         weighted_traincounts = Counter()
         for (tid, score) in zip(tids, trainscores):
@@ -335,9 +335,9 @@ class BrillTagger(TaggerI):
                 s = "{0} | {1:5d}   {2:5.3f} |{3:4d}   {4:.3f} | {5}".format(
                     tid,
                     trainscore,
-                    trainscore/tottrainscores,
+                    trainscore / tottrainscores,
                     template_counts[tid],
-                    template_counts[tid]/len(tids),
+                    template_counts[tid] / len(tids),
                     Template.ALLTEMPLATES[int(tid)],
                 )
                 print(s)
@@ -363,11 +363,11 @@ class BrillTagger(TaggerI):
                 s = "{0:s} |{1:5d}  {2:6.3f} |  {3:4d}   {4:.3f} |{5:4d}   {6:.3f} | {7:s}".format(
                     tid,
                     testscore,
-                    testscore/tottestscores,
+                    testscore / tottestscores,
                     weighted_traincounts[tid],
-                    weighted_traincounts[tid]/tottrainscores,
+                    weighted_traincounts[tid] / tottrainscores,
                     template_counts[tid],
-                    template_counts[tid]/len(tids),
+                    template_counts[tid] / len(tids),
                     Template.ALLTEMPLATES[int(tid)],
                 )
                 print(s)
@@ -405,14 +405,16 @@ class BrillTagger(TaggerI):
         :type gold: list of list of strings
         :returns: tuple of (tagged_sequences, ordered list of rule scores (one for each rule))
         """
+
         def counterrors(xs):
             return sum(t[1] != g[1] for pair in zip(xs, gold) for (t, g) in zip(*pair))
+
         testing_stats = {}
         testing_stats['tokencount'] = sum(len(t) for t in sequences)
         testing_stats['sequencecount'] = len(sequences)
         tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in sequences]
         testing_stats['initialerrors'] = counterrors(tagged_tokenses)
-        testing_stats['initialacc'] = 1 - testing_stats['initialerrors']/testing_stats['tokencount']
+        testing_stats['initialacc'] = 1 - testing_stats['initialerrors'] / testing_stats['tokencount']
         # Apply each rule to the entire corpus, in order
         errors = [testing_stats['initialerrors']]
         for rule in self._rules:
@@ -421,7 +423,5 @@ class BrillTagger(TaggerI):
             errors.append(counterrors(tagged_tokenses))
         testing_stats['rulescores'] = [err0 - err1 for (err0, err1) in zip(errors, errors[1:])]
         testing_stats['finalerrors'] = errors[-1]
-        testing_stats['finalacc'] = 1 - testing_stats['finalerrors']/testing_stats['tokencount']
+        testing_stats['finalacc'] = 1 - testing_stats['finalerrors'] / testing_stats['tokencount']
         return (tagged_tokenses, testing_stats)
-
-

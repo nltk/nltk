@@ -13,12 +13,13 @@ by Thorsten Brants
 http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 '''
 from __future__ import print_function, division
-from math import log
 
+from math import log
 from operator import itemgetter
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.tag.api import TaggerI
+
 
 class TnT(TaggerI):
     '''
@@ -112,17 +113,17 @@ class TnT(TaggerI):
         of the tagger
         '''
 
-        self._uni  = FreqDist()
-        self._bi   = ConditionalFreqDist()
-        self._tri  = ConditionalFreqDist()
-        self._wd   = ConditionalFreqDist()
-        self._eos  = ConditionalFreqDist()
-        self._l1   = 0.0
-        self._l2   = 0.0
-        self._l3   = 0.0
-        self._N    = N
-        self._C    = C
-        self._T    = Trained
+        self._uni = FreqDist()
+        self._bi = ConditionalFreqDist()
+        self._tri = ConditionalFreqDist()
+        self._wd = ConditionalFreqDist()
+        self._eos = ConditionalFreqDist()
+        self._l1 = 0.0
+        self._l2 = 0.0
+        self._l3 = 0.0
+        self._N = N
+        self._C = C
+        self._T = Trained
 
         self._unk = unk
 
@@ -147,20 +148,20 @@ class TnT(TaggerI):
             self._unk.train(data)
 
         for sent in data:
-            history = [('BOS',False), ('BOS',False)]
+            history = [('BOS', False), ('BOS', False)]
             for w, t in sent:
 
                 # if capitalization is requested,
                 # and the word begins with a capital
                 # set local flag C to True
-                if self._C and w[0].isupper(): C=True
+                if self._C and w[0].isupper(): C = True
 
                 self._wd[w][t] += 1
-                self._uni[(t,C)] += 1
-                self._bi[history[1]][(t,C)] += 1
-                self._tri[tuple(history)][(t,C)] += 1
+                self._uni[(t, C)] += 1
+                self._bi[history[1]][(t, C)] += 1
+                self._tri[tuple(history)][(t, C)] += 1
 
-                history.append((t,C))
+                history.append((t, C))
                 history.pop(0)
 
                 # set local flag C to false for the next word
@@ -168,14 +169,12 @@ class TnT(TaggerI):
 
             self._eos[t]['EOS'] += 1
 
-
         # compute lambda values from the trained frequency distributions
         self._compute_lambda()
 
-        #(debugging -- ignore or delete me)
-        #print "lambdas"
-        #print i, self._l1, i, self._l2, i, self._l3
-
+        # (debugging -- ignore or delete me)
+        # print "lambdas"
+        # print i, self._l1, i, self._l2, i, self._l3
 
     def _compute_lambda(self):
         '''
@@ -218,10 +217,9 @@ class TnT(TaggerI):
 
                 # safe_div provides a safe floating point division
                 # it returns -1 if the denominator is 0
-                c3 = self._safe_div((self._tri[history][tag]-1), (self._tri[history].N()-1))
-                c2 = self._safe_div((self._bi[h2][tag]-1), (self._bi[h2].N()-1))
-                c1 = self._safe_div((self._uni[tag]-1), (self._uni.N()-1))
-
+                c3 = self._safe_div((self._tri[history][tag] - 1), (self._tri[history].N() - 1))
+                c2 = self._safe_div((self._bi[h2][tag] - 1), (self._bi[h2].N() - 1))
+                c1 = self._safe_div((self._uni[tag] - 1), (self._uni.N() - 1))
 
                 # if c1 is the maximum value:
                 if (c1 > c3) and (c1 > c2):
@@ -249,16 +247,14 @@ class TnT(TaggerI):
                 # otherwise there might be a problem
                 # eg: all values = 0
                 else:
-                    #print "Problem", c1, c2 ,c3
+                    # print "Problem", c1, c2 ,c3
                     pass
 
         # Lambda normalisation:
         # ensures that l1+l2+l3 = 1
-        self._l1 = tl1 / (tl1+tl2+tl3)
-        self._l2 = tl2 / (tl1+tl2+tl3)
-        self._l3 = tl3 / (tl1+tl2+tl3)
-
-
+        self._l1 = tl1 / (tl1 + tl2 + tl3)
+        self._l2 = tl2 / (tl1 + tl2 + tl3)
+        self._l3 = tl3 / (tl1 + tl2 + tl3)
 
     def _safe_div(self, v1, v2):
         '''
@@ -288,7 +284,6 @@ class TnT(TaggerI):
             res.append(res1)
         return res
 
-
     def tag(self, data):
         '''
         Tags a single sentence
@@ -316,11 +311,10 @@ class TnT(TaggerI):
         res = []
         for i in range(len(sent)):
             # unpack and discard the C flags
-            (t,C) = tags[i+2]
+            (t, C) = tags[i + 2]
             res.append((sent[i], t))
 
         return res
-
 
     def _tagword(self, sent, current_states):
         '''
@@ -352,7 +346,7 @@ class TnT(TaggerI):
         # if the Capitalisation is requested,
         # initalise the flag for this word
         C = False
-        if self._C and word[0].isupper(): C=True
+        if self._C and word[0].isupper(): C = True
 
         # if word is known
         # compute the set of possible tags
@@ -364,15 +358,14 @@ class TnT(TaggerI):
                 logprobs = []
 
                 for t in self._wd[word].keys():
-                    p_uni = self._uni.freq((t,C))
-                    p_bi = self._bi[history[-1]].freq((t,C))
-                    p_tri = self._tri[tuple(history[-2:])].freq((t,C))
-                    p_wd = self._wd[word][t] / self._uni[(t,C)]
-                    p = self._l1 *p_uni + self._l2 *p_bi + self._l3 *p_tri
+                    p_uni = self._uni.freq((t, C))
+                    p_bi = self._bi[history[-1]].freq((t, C))
+                    p_tri = self._tri[tuple(history[-2:])].freq((t, C))
+                    p_wd = self._wd[word][t] / self._uni[(t, C)]
+                    p = self._l1 * p_uni + self._l2 * p_bi + self._l3 * p_tri
                     p2 = log(p, 2) + log(p_wd, 2)
 
-                    logprobs.append(((t,C), p2))
-
+                    logprobs.append(((t, C), p2))
 
                 # compute the result of appending each tag to this history
                 for (tag, logprob) in logprobs:
@@ -395,19 +388,17 @@ class TnT(TaggerI):
             # if no unknown word tagger has been specified
             # then use the tag 'Unk'
             if self._unk is None:
-                tag = ('Unk',C)
+                tag = ('Unk', C)
 
             # otherwise apply the unknown word tagger
-            else :
+            else:
                 [(_w, t)] = list(self._unk.tag([word]))
-                tag = (t,C)
+                tag = (t, C)
 
             for (history, logprob) in current_states:
                 history.append(tag)
 
             new_states = current_states
-
-
 
         # now have computed a set of possible new_states
 
@@ -419,7 +410,6 @@ class TnT(TaggerI):
         # this is the beam search cut
         if len(new_states) > self._N:
             new_states = new_states[:self._N]
-
 
         # compute the tags for the rest of the sentence
         # return the best list of tags for the sentence
@@ -457,8 +447,7 @@ def basic_sent_chop(data, raw=True):
 
     new_data = []
     curr_sent = []
-    sent_mark = [',','.','?','!']
-
+    sent_mark = [',', '.', '?', '!']
 
     if raw:
         for word in data:
@@ -470,15 +459,14 @@ def basic_sent_chop(data, raw=True):
                 curr_sent.append(word)
 
     else:
-        for (word,tag) in data:
+        for (word, tag) in data:
             if word in sent_mark:
-                curr_sent.append((word,tag))
+                curr_sent.append((word, tag))
                 new_data.append(curr_sent)
                 curr_sent = []
             else:
-                curr_sent.append((word,tag))
+                curr_sent.append((word, tag))
     return new_data
-
 
 
 def demo():
@@ -496,9 +484,9 @@ def demo():
     # print results
     for j in range(len(tagged_data)):
         s = tagged_data[j]
-        t = sents[j+100]
+        t = sents[j + 100]
         for i in range(len(s)):
-            print(s[i],'--', t[i])
+            print(s[i], '--', t[i])
         print()
 
 
@@ -509,11 +497,11 @@ def demo2():
 
     t = TnT(N=1000, C=False)
     s = TnT(N=1000, C=True)
-    t.train(d[(11)*100:])
-    s.train(d[(11)*100:])
+    t.train(d[(11) * 100:])
+    s.train(d[(11) * 100:])
 
     for i in range(10):
-        tacc = t.evaluate(d[i*100:((i+1)*100)])
+        tacc = t.evaluate(d[i * 100:((i + 1) * 100)])
         tp_un = t.unknown / (t.known + t.unknown)
         tp_kn = t.known / (t.known + t.unknown)
         t.unknown = 0
@@ -525,7 +513,7 @@ def demo2():
         print('Percentage unknown:', tp_un)
         print('Accuracy over known words:', (tacc / tp_kn))
 
-        sacc = s.evaluate(d[i*100:((i+1)*100)])
+        sacc = s.evaluate(d[i * 100:((i + 1) * 100)])
         sp_un = s.unknown / (s.known + s.unknown)
         sp_kn = s.known / (s.known + s.unknown)
         s.unknown = 0
@@ -537,6 +525,7 @@ def demo2():
         print('Percentage unknown:', sp_un)
         print('Accuracy over known words:', (sacc / sp_kn))
 
+
 def demo3():
     from nltk.corpus import treebank, brown
 
@@ -546,8 +535,8 @@ def demo3():
     d = d[:1000]
     e = e[:1000]
 
-    d10 = int(len(d)*0.1)
-    e10 = int(len(e)*0.1)
+    d10 = int(len(d) * 0.1)
+    e10 = int(len(e) * 0.1)
 
     tknacc = 0
     sknacc = 0
@@ -557,15 +546,14 @@ def demo3():
     sknown = 0
 
     for i in range(10):
-
         t = TnT(N=1000, C=False)
         s = TnT(N=1000, C=False)
 
-        dtest = d[(i*d10):((i+1)*d10)]
-        etest = e[(i*e10):((i+1)*e10)]
+        dtest = d[(i * d10):((i + 1) * d10)]
+        etest = e[(i * e10):((i + 1) * e10)]
 
-        dtrain = d[:(i*d10)] + d[((i+1)*d10):]
-        etrain = e[:(i*e10)] + e[((i+1)*e10):]
+        dtrain = d[:(i * d10)] + d[((i + 1) * d10):]
+        etrain = e[:(i * e10)] + e[((i + 1) * e10):]
 
         t.train(dtrain)
         s.train(etrain)
@@ -589,8 +577,7 @@ def demo3():
         tallacc += tacc
         sallacc += sacc
 
-        #print i+1, (tacc / tp_kn), i+1, (sacc / tp_kn), i+1, tacc, i+1, sacc
-
+        # print i+1, (tacc / tp_kn), i+1, (sacc / tp_kn), i+1, tacc, i+1, sacc
 
     print("brown: acc over words known:", 10 * tknacc)
     print("     : overall accuracy:", 10 * tallacc)
@@ -598,7 +585,3 @@ def demo3():
     print("treebank: acc over words known:", 10 * sknacc)
     print("        : overall accuracy:", 10 * sallacc)
     print("        : words known:", 10 * sknown)
-
-
-
-

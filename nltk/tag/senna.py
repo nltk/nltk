@@ -39,8 +39,9 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
     ('NY', 'B-LOC'), (',', 'O'), ('USA', 'B-LOC'), ('.', 'O')]
 """
 
-from nltk.compat import python_2_unicode_compatible
 from nltk.classify import Senna
+from nltk.compat import python_2_unicode_compatible
+
 
 @python_2_unicode_compatible
 class SennaTagger(Senna):
@@ -58,6 +59,7 @@ class SennaTagger(Senna):
                 annotations = tagged_sents[i][j]
                 tagged_sents[i][j] = (annotations['word'], annotations['pos'])
         return tagged_sents
+
 
 @python_2_unicode_compatible
 class SennaChunkTagger(Senna):
@@ -104,17 +106,17 @@ class SennaChunkTagger(Senna):
         current_chunk_position = []
         for idx, word_pos in enumerate(tagged_sent):
             word, pos = word_pos
-            if '-'+chunk_type in pos: # Append the word to the current_chunk.
+            if '-' + chunk_type in pos:  # Append the word to the current_chunk.
                 current_chunk.append((word))
                 current_chunk_position.append((idx))
             else:
-                if current_chunk: # Flush the full chunk when out of an NP.
+                if current_chunk:  # Flush the full chunk when out of an NP.
                     _chunk_str = ' '.join(current_chunk)
                     _chunk_pos_str = '-'.join(map(str, current_chunk_position))
                     yield _chunk_str, _chunk_pos_str
                     current_chunk = []
                     current_chunk_position = []
-        if current_chunk: # Flush the last chunk.
+        if current_chunk:  # Flush the last chunk.
             yield ' '.join(current_chunk), '-'.join(map(str, current_chunk_position))
 
 
@@ -136,7 +138,6 @@ class SennaNERTagger(Senna):
         return tagged_sents
 
 
-
 # skip doctests if Senna is not installed
 def setup_module(module):
     from nose import SkipTest
@@ -144,4 +145,3 @@ def setup_module(module):
         tagger = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     except OSError:
         raise SkipTest("Senna executable not found")
-

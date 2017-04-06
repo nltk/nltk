@@ -15,14 +15,15 @@ A module for interfacing with the HunPos open-source POS-tagger.
 import os
 from subprocess import Popen, PIPE
 
+from nltk import compat
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI
-from nltk import compat
 
 _hunpos_url = 'http://code.google.com/p/hunpos/'
 
 _hunpos_charset = 'ISO-8859-1'
 """The default encoding used by hunpos: ISO-8859-1."""
+
 
 class HunposTagger(TaggerI):
     """
@@ -96,6 +97,7 @@ class HunposTagger(TaggerI):
 
     def __enter__(self):
         return self
+
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
@@ -122,6 +124,7 @@ class HunposTagger(TaggerI):
 
         return tagged_tokens
 
+
 # skip doctests if Hunpos tagger is not installed
 def setup_module(module):
     from nose import SkipTest
@@ -129,4 +132,3 @@ def setup_module(module):
         HunposTagger('en_wsj.model')
     except LookupError:
         raise SkipTest("HunposTagger is not available")
-
