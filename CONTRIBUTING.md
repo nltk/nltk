@@ -46,21 +46,22 @@ We use the famous
 branches.
 
 Summary of our git branching model:
-- Fork the desired repository on GitHub to your account;
-- Clone your forked repository locally
+1. Fork the desired repository on GitHub to your account;
+2. Clone your forked repository locally
   (`git clone git@github.com:your-username:repository-name.git`);
-- Create a new branch off of `develop` with a descriptive name (for example:
+3. Change directories into your new local repository (`cd nltk`);
+4. Create a new branch off of `develop` with a descriptive name (for example:
   `feature/portuguese-sentiment-analysis`, `hotfix/bug-on-downloader`). You can
   do it switching to `develop` branch (`git checkout develop`) and then
   creating a new branch (`git checkout -b name-of-the-new-branch`);
-- Do many small commits on that branch locally (`git add files-changed`,
+5. Do many small commits on that branch locally (`git add files-changed`,
   `git commit -m "Add some change"`);
-- Add your name to the `AUTHORS.markdown` file as a contributor;
-- Push to your fork on GitHub (with the name as your local branch:
+6. Add your name to the `AUTHORS.markdown` file as a contributor;
+7. Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
-- Create a pull request using the GitHub Web interface (asking us to pull the
+8. Create a pull request using the GitHub Web interface (asking us to pull the
   changes from your new branch and add to our `develop` branch);
-- Wait for comments.
+9. Wait for comments.
 
 
 ### Tips
