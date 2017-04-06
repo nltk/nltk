@@ -19,8 +19,8 @@ import json
 
 import nltk.compat as compat
 
-
 HIER_SEPARATOR = "."
+
 
 def extract_fields(tweet, fields):
     """
@@ -38,6 +38,7 @@ def extract_fields(tweet, fields):
             raise RuntimeError('Fatal error when extracting fields. Cannot find field ', field)
     return out
 
+
 def _add_field_to_out(json, field, out):
     if _is_composed_key(field):
         key, value = _get_key_value_composed(field)
@@ -45,10 +46,12 @@ def _add_field_to_out(json, field, out):
     else:
         out += [json[field]]
 
+
 def _is_composed_key(field):
     if HIER_SEPARATOR in field:
         return True
     return False
+
 
 def _get_key_value_composed(field):
     out = field.split(HIER_SEPARATOR)
@@ -56,6 +59,7 @@ def _get_key_value_composed(field):
     key = out[0]
     value = HIER_SEPARATOR.join(out[1:])
     return key, value
+
 
 def _get_entity_recursive(json, entity):
     if not json:
@@ -81,6 +85,7 @@ def _get_entity_recursive(json, entity):
         return None
     else:
         return None
+
 
 def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
              gzip_compress=False):
@@ -207,6 +212,7 @@ def json2csv_entities(tweets_file, outfile, main_fields, entity_type, entity_fie
             _write_to_file(tweet_fields, items, entity_fields, writer)
     outf.close()
 
+
 def get_header_field_list(main_fields, entity_type, entity_fields):
     if _is_composed_key(entity_type):
         key, value = _get_key_value_composed(entity_type)
@@ -222,6 +228,7 @@ def get_header_field_list(main_fields, entity_type, entity_fields):
         output1 = main_fields
     output2 = [HIER_SEPARATOR.join([sub_entity, x]) for x in entity_fields]
     return output1 + output2
+
 
 def _write_to_file(object_fields, items, entity_fields, writer):
     if not items:
@@ -255,4 +262,3 @@ def _write_to_file(object_fields, items, entity_fields, writer):
     for item in items:
         row = object_fields + extract_fields(item, entity_fields)
         writer.writerow(row)
-
