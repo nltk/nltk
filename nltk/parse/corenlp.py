@@ -95,11 +95,9 @@ class CoreNLPServer(object):
             key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
         )
 
-        self.other_jars = tuple(find_jars_within_path(os.path.dirname(stanford_jar)))
-
         self.verbose = verbose
 
-        self._classpath = (stanford_jar, model_jar) + self.other_jars
+        self._classpath = stanford_jar, model_jar
 
         self.corenlp_options = corenlp_options or []
         self.java_options = java_options or ['-mx2g']
