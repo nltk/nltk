@@ -60,15 +60,6 @@ Keyboard Shortcuts::
       [Ctrl-p]\t Print
       [q]\t Quit
 
-Possible future improvements:
-  - button/window to change and/or select text.  Just pop up a window
-    with an entry, and let them modify the text; and then retokenize
-    it?  Maybe give a warning if it contains tokens whose types are
-    not in the grammar.
-  - button/window to change and/or select grammar.  Select from
-    several alternative grammars?  Or actually change the grammar?  If
-    the later, then I'd want to define nltk.draw.cfg, which would be
-    responsible for that.
 """
 
 from six.moves.tkinter_font import Font
@@ -80,6 +71,18 @@ from nltk.parse import SteppingShiftReduceParser
 from nltk.util import in_idle
 from nltk.draw.util import CanvasFrame, EntryDialog, ShowText, TextWidget
 from nltk.draw import CFGEditor, TreeSegmentWidget, tree_to_treesegment
+
+"""
+Possible future improvements:
+  - button/window to change and/or select text.  Just pop up a window
+    with an entry, and let them modify the text; and then retokenize
+    it?  Maybe give a warning if it contains tokens whose types are
+    not in the grammar.
+  - button/window to change and/or select grammar.  Select from
+    several alternative grammars?  Or actually change the grammar?  If
+    the later, then I'd want to define nltk.draw.cfg, which would be
+    responsible for that.
+"""
 
 class ShiftReduceApp(object):
     """
