@@ -116,6 +116,17 @@ class FreqDist(Counter):
         """
         return sum(self.values())
 
+    def freeze_N(self):
+        """
+        Set N permanently to its current value, making subsequent
+        calls to ``FreqDist.N()`` much faster. Use this for instance
+        after training a tagger, but before running it. After calling
+        ``FreqDist.freeze_N()``, no more samples should be added to the
+        FreqDist object.
+        """
+        n = self.N()
+        self.N = lambda: n
+
     def B(self):
         """
         Return the total number of sample values (or "bins") that
@@ -192,9 +203,10 @@ class FreqDist(Counter):
         :type sample: any
         :rtype: float
         """
-        if self.N() == 0:
+        n = self.N()
+        if n == 0:
             return 0
-        return self[sample] / self.N()
+        return self[sample] / n
 
     def max(self):
         """
@@ -1777,6 +1789,19 @@ class ConditionalFreqDist(defaultdict):
         :rtype: int
         """
         return sum(fdist.N() for fdist in compat.itervalues(self))
+
+    def freeze_N(self):
+        """
+        Set N permanently to its current value, making subsequent
+        calls to ``ConditionalFreqDist.N()`` much faster. Use this for
+        instance after training a tagger, but before running it. After
+        calling ``ConditionalFreqDist.freeze_N()``, no more samples
+        should be added to the ConditionalFreqDist object.
+        """
+        for fdist in compat.itervalues(self):
+            fdist.freeze_N()
+        n = self.N()
+        self.N = lambda: n
 
     def plot(self, *args, **kwargs):
         """
