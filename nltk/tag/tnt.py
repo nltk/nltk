@@ -176,13 +176,6 @@ class TnT(TaggerI):
         #print "lambdas"
         #print i, self._l1, i, self._l2, i, self._l3
 
-        # after training, freeze the frequency distributions
-        # to make subsequent frequency queries faster
-        self._uni.freeze_N()
-        self._bi.freeze_N()
-        self._tri.freeze_N()
-        self._wd.freeze_N()
-
 
     def _compute_lambda(self):
         '''
