@@ -44,10 +44,16 @@ class LancasterStemmer(StemmerI):
         'meant'
         >>> st.stem('cement')      # ditto
         'cem'
+        >>> st_pre = LancasterStemmer(strip_prefix=True)
+        >>> st_pre.stem('kilometer') # Test Prefix
+        'met'
+        >>> st_custom = LancasterStemmer(rule_tuples=("ssen4>", "s1t."))
+        >>> st_custom.stem("ness") # Change s to t
+        'nest'
     """
 
     # The rule list is static since it doesn't change between instances
-    rule_tuple = (
+    default_rule_tuple = (
         "ai*2.",     # -ia > -   if intact
         "a*1.",      # -a > -    if intact
         "bb1.",      # -bb > -b
@@ -165,12 +171,15 @@ class LancasterStemmer(StemmerI):
         "zy1s."      # -yz > -ys
     )
 
-
-    def __init__(self):
+    def __init__(self, rule_tuples=None, strip_prefix_flag=False):
         """Create an instance of the Lancaster stemmer.
         """
         # Setup an empty rule dictionary - this will be filled in later
         self.rule_dictionary = {}
+        # Check if a user wants to strip prefix
+        self._strip_prefix = strip_prefix_flag
+        # Check if a user wants to use his/her own rule tuples.
+        self._rule_tuples = rule_tuples if rule_tuples else self.default_rule_tuple
 
     def parseRules(self, rule_tuple):
         """Validate the set of rules used in this stemmer.
@@ -193,13 +202,20 @@ class LancasterStemmer(StemmerI):
         """
         # Lower-case the word, since all the rules are lower-cased
         word = word.lower()
+        word = self.__stripPrefix(word) if self._strip_prefix else word
 
         # Save a copy of the original word
         intact_word = word
+        # intact_word = word
+
+        # Strip prefix if variable is set
+        # if self._strip_prefix:
+        #     word = self.strip_prefix(word)
+        #     intact_word = self.strip_prefix(intact_word)
 
         # If the user hasn't supplied any rules, setup the default rules
         if len(self.rule_dictionary) == 0:
-            self.parseRules(LancasterStemmer.rule_tuple)
+            self.parseRules(self._rule_tuples)
 
         return self.__doStemming(word, intact_word)
 
@@ -304,7 +320,18 @@ class LancasterStemmer(StemmerI):
             word += append_string
         return word
 
+    def __stripPrefix(self, word):
+        """Remove prefix from a word.
+
+        This function originally taken from Whoosh.
+        URL: https://bitbucket.org/mchaput/whoosh/src/e344fb64067e45d47ec62dc65a75a50be51264a7/src/whoosh/lang/paicehusk.py?fileviewer=file-view-default#paicehusk.py-73
+
+        """
+        for prefix in ("kilo", "micro", "milli", "intra", "ultra", "mega",
+                       "nano", "pico", "pseudo"):
+            if word.startswith(prefix):
+                return word[len(prefix):]
+        return word
+
     def __repr__(self):
         return '<LancasterStemmer>'
-
-
