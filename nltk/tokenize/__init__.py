@@ -124,4 +124,4 @@ def word_tokenize(text, language='english'):
     :param language: the model name in the Punkt corpus
     """
     return [token for sent in sent_tokenize(text, language)
-            for token in _treebank_word_tokenize.tokenize(sent)]
+            for token in _treebank_word_tokenizer.tokenize(sent)]
