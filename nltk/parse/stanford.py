@@ -23,7 +23,7 @@ from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
 
-_stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
+_stanford_url = 'https://nlp.stanford.edu/software/lex-parser.shtml'
 
 class GenericStanfordParser(ParserI):
     """Interface to the Stanford Parser"""
