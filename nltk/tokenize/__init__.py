@@ -8,7 +8,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""
+r"""
 NLTK Tokenizer Package
 
 Tokenizers divide strings into lists of substrings.  For example,
