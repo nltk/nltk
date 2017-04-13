@@ -103,7 +103,7 @@ def word_tokenize(text, language='english'):
     along with :class:`.PunktSentenceTokenizer`
     for the specified language).
 
-    :param text: text to split into sentences
+    :param text: text to split into words
     :param language: the model name in the Punkt corpus
     """
     return [token for sent in sent_tokenize(text, language)
