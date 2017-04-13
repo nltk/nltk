@@ -1719,7 +1719,7 @@ class CanvasFrame(object):
                                 pagex=0, pagey=0)
         # workaround for bug in Tk font handling
         postscript = postscript.replace(' 0 scalefont ', ' 9 scalefont ')
-        with open(filename, 'w') as f:
+        with open(filename, 'wb') as f:
             f.write(postscript.encode('utf8'))
 
     def scrollregion(self):
