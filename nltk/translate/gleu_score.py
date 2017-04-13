@@ -12,8 +12,9 @@ from __future__ import division
 from collections import Counter
 
 from nltk.util import ngrams, everygrams
+from nltk.compat import string_types
 
-def sentence_gleu(reference, hypothesis, min_len=1, max_len=4):
+def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
     """
     Calculates the sentence level GLEU (Google-BLEU) score described in
 
@@ -45,14 +46,15 @@ def sentence_gleu(reference, hypothesis, min_len=1, max_len=4):
          metric on a corpus level but does not have its drawbacks for our per
          sentence reward objective."
 
-    Note: Unlike multi-reference BLEU, this implementation of GLEU only
-          supports a single reference.
+    Note: The previous implementation only allowed a single reference; in order
+          to maintain backward compatibility, the first argument may be given
+          as a single reference or a list of references.
 
     The infamous "the the the ... " example
 
         >>> ref = 'the cat is on the mat'.split()
         >>> hyp = 'the the the the the the the'.split()
-        >>> sentence_gleu(ref, hyp)  # doctest: +ELLIPSIS
+        >>> sentence_gleu([ref], hyp)  # doctest: +ELLIPSIS
         0.0909...
 
     An example to evaluate normal machine translation outputs
@@ -63,13 +65,13 @@ def sentence_gleu(reference, hypothesis, min_len=1, max_len=4):
         ...            'always obeys the commands of the party').split()
         >>> hyp2 = str('It is to insure the troops forever hearing the activity '
         ...            'guidebook that party direct').split()
-        >>> sentence_gleu(ref1, hyp1) # doctest: +ELLIPSIS
+        >>> sentence_gleu([ref1], hyp1) # doctest: +ELLIPSIS
         0.4393...
-        >>> sentence_gleu(ref1, hyp2) # doctest: +ELLIPSIS
+        >>> sentence_gleu([ref1], hyp2) # doctest: +ELLIPSIS
         0.1206...
 
-    :param reference: a reference sentence
-    :type reference: list(str)
+    :param references: a list of reference sentences
+    :type references: list(list(str))
     :param hypothesis: a hypothesis sentence
     :type hypothesis: list(str)
     :param min_len: The minimum order of n-gram this function should extract.
@@ -79,27 +81,19 @@ def sentence_gleu(reference, hypothesis, min_len=1, max_len=4):
     :return: the sentence level GLEU score.
     :rtype: float
     """
-    # For each order of ngram, calculate the no. of ngram matches and
-    # keep track of no. of ngram in references.
-    ref_ngrams = Counter(everygrams(reference, min_len, max_len))
-    hyp_ngrams = Counter(everygrams(hypothesis, min_len, max_len))
-    overlap_ngrams = ref_ngrams & hyp_ngrams
-    tp = sum(overlap_ngrams.values()) # True positives.
-    tpfp = sum(hyp_ngrams.values()) # True positives + False positives.
-    tpfn = sum(ref_ngrams.values()) # True positives + False negatives.
 
-    # While defined as the minimum of precision and recall, we can
-    # reduce the number of division operations by one by instead finding
-    # the maximum of the denominators for the precision and recall
-    # formulae, since the numerators are the same:
-    #     precision = tp / tpfp
-    #     recall = tp / tpfn
-    #     min(precision, recall) == tp / max(tpfp, tpfn)
+    # compatibility with previous single-reference API:
+    if not references or isinstance(references[0], string_types):
+        references = [references]
 
-    return tp / max(tpfp, tpfn)
+    return corpus_gleu(
+        [references],
+        [hypothesis],
+        min_len=min_len,
+        max_len=max_len
+    )
 
-
-def corpus_gleu(references, hypotheses, min_len=1, max_len=4):
+def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
     """
     Calculate a single corpus-level GLEU score (aka. system-level GLEU) for all
     the hypotheses and their respective references.
@@ -119,30 +113,36 @@ def corpus_gleu(references, hypotheses, min_len=1, max_len=4):
     >>> hyp1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
     ...         'ensures', 'that', 'the', 'military', 'always',
     ...         'obeys', 'the', 'commands', 'of', 'the', 'party']
-    >>> ref1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'that',
+    >>> ref1a = ['It', 'is', 'a', 'guide', 'to', 'action', 'that',
     ...          'ensures', 'that', 'the', 'military', 'will', 'forever',
     ...          'heed', 'Party', 'commands']
+    >>> ref1b = ['It', 'is', 'the', 'guiding', 'principle', 'which',
+    ...          'guarantees', 'the', 'military', 'forces', 'always',
+    ...          'being', 'under', 'the', 'command', 'of', 'the', 'Party']
+    >>> ref1c = ['It', 'is', 'the', 'practical', 'guide', 'for', 'the',
+    ...          'army', 'always', 'to', 'heed', 'the', 'directions',
+    ...          'of', 'the', 'party']
 
     >>> hyp2 = ['he', 'read', 'the', 'book', 'because', 'he', 'was',
     ...         'interested', 'in', 'world', 'history']
-    >>> ref2 = ['he', 'was', 'interested', 'in', 'world', 'history',
+    >>> ref2a = ['he', 'was', 'interested', 'in', 'world', 'history',
     ...          'because', 'he', 'read', 'the', 'book']
 
-    >>> references = [ref1, ref2]
+    >>> list_of_references = [[ref1a, ref1b, ref1c], [ref2a]]
     >>> hypotheses = [hyp1, hyp2]
-    >>> corpus_gleu(references, hypotheses) # doctest: +ELLIPSIS
+    >>> corpus_gleu(list_of_references, hypotheses) # doctest: +ELLIPSIS
     0.5673...
 
     The example below show that corpus_gleu() is different from averaging
     sentence_gleu() for hypotheses
 
-    >>> score1 = sentence_gleu(ref1, hyp1)
-    >>> score2 = sentence_gleu(ref2, hyp2)
+    >>> score1 = sentence_gleu([ref1a], hyp1)
+    >>> score2 = sentence_gleu([ref2a], hyp2)
     >>> (score1 + score2) / 2 # doctest: +ELLIPSIS
     0.6144...
 
-    :param references: a list of reference sentences, w.r.t. hypotheses
-    :type references: list(list(str))
+    :param list_of_references: a list of reference sentences, w.r.t. hypotheses
+    :type list_of_references: list(list(list(str)))
     :param hypotheses: a list of hypothesis sentences
     :type hypotheses: list(list(str))
     :param min_len: The minimum order of n-gram this function should extract.
@@ -152,26 +152,47 @@ def corpus_gleu(references, hypotheses, min_len=1, max_len=4):
     :return: The corpus-level GLEU score.
     :rtype: float
     """
-    # sanity checks
-    assert len(references) == len(hypotheses), "The number of hypotheses and references should be the same"
-    assert len(references) > 0, "Cannot compute GLEU score for an empty corpus."
-    # should the following use all()?
-    assert any(len(ref) for ref in references), "At least one reference must be non-empty."
+    # sanity check
+    assert len(list_of_references) == len(hypotheses), "The number of hypotheses and their reference(s) should be the same"
 
     # sum matches and max-token-lengths over all sentences
-    n_match = 0
-    n_all = 0
+    corpus_n_match = 0
+    corpus_n_all = 0
 
-    for reference, hypothesis in zip(references, hypotheses):    
-        ref_ngrams = Counter(everygrams(reference, min_len, max_len))
+    for references, hypothesis in zip(list_of_references, hypotheses):
         hyp_ngrams = Counter(everygrams(hypothesis, min_len, max_len))
-        overlap_ngrams = ref_ngrams & hyp_ngrams
+        tpfp = sum(hyp_ngrams.values())  # True positives + False positives.
+        
+        scores_by_ref = []
+        for reference in references:
+            ref_ngrams = Counter(everygrams(reference, min_len, max_len))
+            tpfn = sum(ref_ngrams.values())  # True positives + False negatives.
 
-        tp = sum(overlap_ngrams.values()) # True positives.
-        tpfp = sum(hyp_ngrams.values()) # True positives + False positives.
-        tpfn = sum(ref_ngrams.values()) # True positives + False negatives.
+            overlap_ngrams = ref_ngrams & hyp_ngrams
+            tp = sum(overlap_ngrams.values())  # True positives.
 
-        n_match += tp
-        n_all += max(tpfp, tpfn)
+            # While GLEU is defined as the minimum of precision and
+            # recall, we can reduce the number of division operations by one by
+            # instead finding the maximum of the denominators for the precision
+            # and recall formulae, since the numerators are the same:
+            #     precision = tp / tpfp
+            #     recall = tp / tpfn
+            #     gleu_score = min(precision, recall) == tp / max(tpfp, tpfn)
+            n_all = max(tpfp, tpfn)
 
-    return n_match / n_all
+            if n_all > 0:
+                scores_by_ref.append((tp/n_all, tp, n_all))
+
+        # use the reference yielding the highest score
+        if scores_by_ref:
+            _, n_match, n_all = max(scores_by_ref)
+            corpus_n_match += n_match
+            corpus_n_all += n_all
+
+    # corner case: empty corpus or empty references---don't divide by zero!
+    if corpus_n_all == 0:
+        gleu_score = 0.0
+    else:
+        gleu_score = corpus_n_match / corpus_n_all
+
+    return gleu_score
