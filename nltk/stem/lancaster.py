@@ -47,7 +47,7 @@ class LancasterStemmer(StemmerI):
         >>> st_pre = LancasterStemmer(strip_prefix_flag=True)
         >>> st_pre.stem('kilometer') # Test Prefix
         'met'
-        >>> st_custom = LancasterStemmer(rule_tuples=("ssen4>", "s1t."))
+        >>> st_custom = LancasterStemmer(rule_tuple=("ssen4>", "s1t."))
         >>> st_custom.stem("ness") # Change s to t
         'nest'
     """
