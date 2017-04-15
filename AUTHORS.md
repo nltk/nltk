@@ -209,6 +209,7 @@
 - Prasasto Adi
 - Safwan Kamarrudin
 - Arthur Tilley
+- Vilhjalmur Thorsteinsson
 - Jaehoon Hwang <https://github.com/jaehoonhwang>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
