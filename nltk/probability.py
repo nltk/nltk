@@ -41,6 +41,7 @@ from __future__ import print_function, unicode_literals, division
 
 import math
 import random
+import string
 import warnings
 import array
 from operator import itemgetter
@@ -423,6 +424,33 @@ class FreqDist(Counter):
         """
         return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
 
+
+@compat.python_2_unicode_compatible
+class TextFreqDist(FreqDist):
+    """
+    A frequency counter for text objects. Has a new custom option in the
+    constructor to ignore non-alphanumeric characters and strings:
+
+        i.e. string.punctuation + string.whitespace
+
+    :param samples: The samples to initialize the frequency distribution with.
+    :type samples: Sequence or nltk.text.Text
+    :param alphanumerics_only: Whether to include alphanumeric strings only; False by default
+    :type alphanumerics_only: bool
+
+    """
+
+    def __init__(self, samples=None, alphanumerics_only=False):
+        text_samples = (
+            list(
+                filter(
+                    lambda tk: not set(tk).issubset(string.punctuation + string.whitespace),
+                    list(samples) if isinstance(samples, list) else samples.tokens
+                )
+            ) if alphanumerics_only
+            else samples
+        )
+        super().__init__(text_samples)
 
 ##//////////////////////////////////////////////////////
 ##  Probability Distributions
