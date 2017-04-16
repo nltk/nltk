@@ -579,3 +579,10 @@ Issue 395: wordnet returns incorrect result for lowest_common_hypernyms of chef 
 
     >>> wn.synset('policeman.n.01').lowest_common_hypernyms(wn.synset('chef.n.01'))
     [Synset('person.n.01')]
+
+Bug https://github.com/nltk/nltk/issues/1641: Non-English lemmas containing capital letters cannot be looked up using wordnet.lemmas() or wordnet.synsets()
+
+    >>> wn.lemmas('Londres', lang='fra')
+    [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'), Lemma('london.n.02.Londres')]
+    >>> wn.lemmas('londres', lang='fra')
+    [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'), Lemma('london.n.02.Londres')]

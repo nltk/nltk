@@ -1493,8 +1493,8 @@ class WordNetCorpusReader(CorpusReader):
         name and part of speech tag. Matches any part of speech tag if none is
         specified."""
 
+        lemma = lemma.lower()
         if lang == 'eng':
-            lemma = lemma.lower()
             return [lemma_obj
                     for synset in self.synsets(lemma, pos)
                     for lemma_obj in synset.lemmas()
@@ -1507,11 +1507,9 @@ class WordNetCorpusReader(CorpusReader):
             for s in syn:
                 if pos is not None and s.pos() != pos:
                     continue
-                a = Lemma(
-                    self, s, lemma, self._lexnames.index(s.lexname()), 0, None
-                )
-                a._lang = lang
-                lemmas.append(a)
+                for lemma_obj in s.lemmas(lang=lang):
+                    if lemma_obj.name().lower() == lemma:
+                        lemmas.append(lemma_obj)
             return lemmas
 
     def all_lemma_names(self, pos=None, lang='eng'):
@@ -1880,7 +1878,7 @@ class WordNetCorpusReader(CorpusReader):
             if l[0] != '#':
                 word = l.split('\t')
                 self._lang_data[lang][0][word[0]].append(word[2])
-                self._lang_data[lang][1][word[2]].append(word[0])
+                self._lang_data[lang][1][word[2].lower()].append(word[0])
 
 
 ######################################################################
