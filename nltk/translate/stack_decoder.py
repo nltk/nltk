@@ -45,6 +45,7 @@ Cambridge University Press, New York.
 import warnings
 from collections import defaultdict
 from math import log
+from nltk.model import LanguageModel
 
 
 class StackDecoder(object):
@@ -61,14 +62,22 @@ class StackDecoder(object):
     >>> phrase_table.add(('die', 'spanische', 'inquisition'), ('the', 'spanish', 'inquisition'), log(0.8))
     >>> phrase_table.add(('!',), ('!',), log(0.8))
 
-    >>> #  nltk.model should be used here once it is implemented
-    >>> from collections import defaultdict
-    >>> language_prob = defaultdict(lambda: -999.0)
-    >>> language_prob[('nobody',)] = log(0.5)
-    >>> language_prob[('expects',)] = log(0.4)
-    >>> language_prob[('the', 'spanish', 'inquisition')] = log(0.2)
-    >>> language_prob[('!',)] = log(0.1)
-    >>> language_model = type('',(object,),{'probability_change': lambda self, context, phrase: language_prob[phrase], 'probability': lambda self, phrase: language_prob[phrase]})()
+    >>> # An exemplary language model should be used here once it is implemented
+    >>> class ToyLanguageModel(LanguageModel):
+    ...     def __init__(self):
+    ...         language_prob = defaultdict(lambda: -999.0)
+    ...         language_prob[('nobody',)] = log(0.5)
+    ...         language_prob[('expects',)] = log(0.4)
+    ...         language_prob[('the', 'spanish', 'inquisition')] = log(0.2)
+    ...         language_prob[('!',)] = log(0.1)
+    ...         self.language_prob = language_prob
+    ...
+    ...     def probability(self, words):
+    ...         return self.language_prob[words]
+    ...
+    ...     def probability_change(self, sentence, additional_words):
+    ...         return self.language_prob[additional_words]
+    >>> language_model = ToyLanguageModel()
 
     >>> stack_decoder = StackDecoder(phrase_table, language_model)
 
@@ -82,13 +91,8 @@ class StackDecoder(object):
             phrases and the log probabilities for those translations.
         :type phrase_table: PhraseTable
 
-        :param language_model: Target language model. Must define a
-            ``probability_change`` method that calculates the change in
-            log probability of a sentence, if a given string is appended
-            to it.
-            This interface is experimental and will likely be replaced
-            with nltk.model once it is implemented.
-        :type language_model: object
+        :param language_model: Target language model
+        :type language_model: LanguageModel
         """
         self.phrase_table = phrase_table
         self.language_model = language_model
@@ -237,7 +241,6 @@ class StackDecoder(object):
                 if phrase in self.phrase_table:
                     score = self.phrase_table.translations_for(
                         phrase)[0].log_prob  # pick best (first) translation
-                    # Warning: API of language_model is subject to change
                     score += self.language_model.probability(phrase)
                     scores[start][end] = score
 
@@ -276,10 +279,8 @@ class StackDecoder(object):
         """
         score = hypothesis.raw_score
         score += translation_option.log_prob
-        # The API of language_model is subject to change; it could accept
-        # a string, a list of words, and/or some other type
         score += self.language_model.probability_change(
-            hypothesis, translation_option.trg_phrase)
+            hypothesis.translation_so_far(), translation_option.trg_phrase)
         score += self.distortion_score(hypothesis, src_phrase_span)
         score -= self.word_penalty * len(translation_option.trg_phrase)
         return score
