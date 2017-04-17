@@ -1234,6 +1234,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         """
         Given a text, returns a list of the sentences in that text.
         """
+        text = text.strip()
         return list(self.sentences_from_text(text, realign_boundaries))
 
     def debug_decisions(self, text):
@@ -1270,6 +1271,7 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
         Given a text, returns a list of the (start, end) spans of sentences
         in the text.
         """
+        text = text.strip()
         slices = self._slices_from_text(text)
         if realign_boundaries:
             slices = self._realign_boundaries(text, slices)
