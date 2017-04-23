@@ -1126,24 +1126,14 @@ class WordNetCorpusReader(CorpusReader):
         ''' load the wordnet data of the requested language from the file to
         the cache, _lang_data '''
 
-        if lang not in self.langs():
-            raise WordNetError("Language is not supported.")
-
         if lang in self._lang_data.keys():
             return
 
+        if lang not in self.langs():
+            raise WordNetError("Language is not supported.")
+
         f = self._omw_reader.open('{0:}/wn-data-{0:}.tab'.format(lang))
-
-        self._lang_data[lang].append(defaultdict(list))
-        self._lang_data[lang].append(defaultdict(list))
-
-        for l in f.readlines():
-            l = l.replace('\n', '')
-            l = l.replace(' ', '_')
-            if l[0] != '#':
-                word = l.split('\t')
-                self._lang_data[lang][0][word[0]].append(word[2])
-                self._lang_data[lang][1][word[2]].append(word[0])
+        self.use_tab_file_for_language(f, lang)
         f.close()
 
     def langs(self):
@@ -1621,6 +1611,10 @@ class WordNetCorpusReader(CorpusReader):
         elif lang == 'omw':
             # under the assumption you don't mean Omwunra-Toqura
             return self._omw_reader.open("LICENSE").read()
+        elif lang in self._lang_data:
+            raise WordNetError(
+                "Cannot determine license for user-provided tab file"
+            )
         else:
             raise WordNetError("Language is not supported.")
 
@@ -1634,6 +1628,8 @@ class WordNetCorpusReader(CorpusReader):
         elif lang == 'omw':
             # under the assumption you don't mean Omwunra-Toqura
             return self._omw_reader.open("README").read()
+        elif lang in self._lang_data:
+            raise WordNetError("No README for user-provided tab file")
         else:
             raise WordNetError("Language is not supported.")
 
@@ -1647,6 +1643,8 @@ class WordNetCorpusReader(CorpusReader):
         elif lang == 'omw':
             # under the assumption you don't mean Omwunra-Toqura
             return self._omw_reader.open("citation.bib").read()
+        elif lang in self._lang_data:
+            raise WordNetError("citation not known for user-provided tab file")
         else:
             raise WordNetError("Language is not supported.")
 
@@ -1855,6 +1853,34 @@ class WordNetCorpusReader(CorpusReader):
                 # Add the weight to the root
                 ic[pos][0] += weight
         return ic
+
+    def use_tab_file_for_language(self, tab_file, lang):
+        """
+        Reads a custom tab file containing mappings of lemmas in the given
+        language to Princeton WordNet 3.0 synset offsets, allowing NLTK's
+        WordNet functions to then be used with that language.
+
+        See the "Tab files" section at http://compling.hss.ntu.edu.sg/omw/ for
+        documentation on the Multilingual WordNet tab file format.
+
+        :param tab_file: Tab file as a file or file-like object
+        :type  lang str
+        :param lang ISO 639-3 code of the language of the tab file
+        """
+        if len(lang) != 3:
+            raise ValueError('lang should be a (3 character) ISO 639-3 code')
+        self._lang_data[lang] = [defaultdict(list), defaultdict(list)]
+        for l in tab_file.readlines():
+            if isinstance(l, bytes):
+                # Support byte-stream files (e.g. as returned by Python 2's
+                # open() function) as well as text-stream ones
+                l = l.decode('utf-8')
+            l = l.replace('\n', '')
+            l = l.replace(' ', '_')
+            if l[0] != '#':
+                word = l.split('\t')
+                self._lang_data[lang][0][word[0]].append(word[2])
+                self._lang_data[lang][1][word[2]].append(word[0])
 
 
 ######################################################################
