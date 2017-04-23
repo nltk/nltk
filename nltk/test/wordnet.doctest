@@ -113,6 +113,12 @@ Note that some relations are defined by WordNet only over Lemmas:
 The relations that are currently defined in this way are `antonyms`,
 `derivationally_related_forms` and `pertainyms`.
 
+If you know the byte offset used to identify a synset in the original
+Princeton WordNet data file, you can use that to instantiate the synset
+in NLTK:
+
+    >>> wn.synset_from_pos_and_offset('n', 4543158)
+    Synset('wagon.n.01')
 
 ------
 Lemmas

@@ -293,7 +293,7 @@ class Lemma(_WordNetObject):
         return "%s('%s.%s')" % tup
 
     def _related(self, relation_symbol):
-        get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
+        get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
         return sorted([
             get_synset(pos, offset)._lemmas[lemma_index]
             for pos, offset, lemma_index
@@ -1028,7 +1028,7 @@ class Synset(_WordNetObject):
         return "%s('%s')" % (type(self).__name__, self._name)
 
     def _related(self, relation_symbol, sort=True):
-        get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
+        get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
         pointer_tuples = self._pointers[relation_symbol]
         r = [get_synset(pos, offset) for pos, offset in pointer_tuples]
         if sort:
@@ -1116,7 +1116,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def of2ss(self, of):
         ''' take an id and return the synsets '''
-        return self._synset_from_pos_and_offset(of[-1], int(of[:8]))
+        return self.synset_from_pos_and_offset(of[-1], int(of[:8]))
 
     def ss2of(self, ss):
         ''' return the ID of the synset '''
@@ -1264,7 +1264,7 @@ class WordNetCorpusReader(CorpusReader):
         if not synset_line:
             raise WordNetError("No synset found for key %r" % key)
         offset = int(synset_line.split()[1])
-        synset = self._synset_from_pos_and_offset(pos, offset)
+        synset = self.synset_from_pos_and_offset(pos, offset)
 
         # return the corresponding lemma
         for lemma in synset._lemmas:
@@ -1296,7 +1296,7 @@ class WordNetCorpusReader(CorpusReader):
             raise WordNetError(message % tup)
 
         # load synset information from the appropriate file
-        synset = self._synset_from_pos_and_offset(pos, offset)
+        synset = self.synset_from_pos_and_offset(pos, offset)
 
         # some basic sanity checks on loaded attributes
         if pos == 's' and synset._pos == 'a':
@@ -1320,7 +1320,7 @@ class WordNetCorpusReader(CorpusReader):
             self._data_file_map[pos] = self.open(fileid)
         return self._data_file_map[pos]
 
-    def _synset_from_pos_and_offset(self, pos, offset):
+    def synset_from_pos_and_offset(self, pos, offset):
         # Check to see if the synset is in the cache
         if offset in self._synset_offset_cache[pos]:
             return self._synset_offset_cache[pos][offset]
@@ -1332,6 +1332,11 @@ class WordNetCorpusReader(CorpusReader):
         assert synset._offset == offset
         self._synset_offset_cache[pos][offset] = synset
         return synset
+
+    # Hack to help people like the readers of
+    # http://stackoverflow.com/a/27145655/1709587
+    # who were using this function before it was officially a public method
+    _synset_from_pos_and_offset = synset_from_pos_and_offset
 
     def _synset_from_pos_and_line(self, pos, data_file_line):
         # Construct a new (empty) synset.
@@ -1470,7 +1475,7 @@ class WordNetCorpusReader(CorpusReader):
         lemma = lemma.lower()
 
         if lang == 'eng':
-            get_synset = self._synset_from_pos_and_offset
+            get_synset = self.synset_from_pos_and_offset
             index = self._lemma_pos_offset_map
             if pos is None:
                 pos = POS_LIST
