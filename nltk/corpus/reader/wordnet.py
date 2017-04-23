@@ -1334,11 +1334,14 @@ class WordNetCorpusReader(CorpusReader):
         self._synset_offset_cache[pos][offset] = synset
         return synset
 
-    # Hack to help people like the readers of
-    # http://stackoverflow.com/a/27145655/1709587
-    # who were using this function before it was officially a public method
     @deprecated('Use public method synset_from_pos_and_offset() instead')
-    _synset_from_pos_and_offset = synset_from_pos_and_offset
+    def _synset_from_pos_and_offset(self, *args, **kwargs):
+        """
+        Hack to help people like the readers of
+        http://stackoverflow.com/a/27145655/1709587
+        who were using this function before it was officially a public method
+        """
+        return self.synset_from_pos_and_offset(*args, *kwargs)
 
     def _synset_from_pos_and_line(self, pos, data_file_line):
         # Construct a new (empty) synset.
