@@ -10,14 +10,16 @@ dist/
 nltk.egg-info/
 web/_build
 
-# Unit test / coverage reports
+# Test artifacts and coverage reports
 *.tox
 *.errs
 .noseids
 .coverage
 nltk/test/*.html
 nltk/test/tweets*
-nltk/test/model.crf.tagger
+model.crf.tagger
+brown.embedding
+pylintoutput
 nosetests.xml
 nosetests_scrubbed.xml
 coverage.xml

@@ -105,6 +105,9 @@ class FreqDist(Counter):
         """
         Counter.__init__(self, samples)
 
+        # Cached number of samples in this FreqDist
+        self._N = None
+
     def N(self):
         """
         Return the total number of sample outcomes that have been
@@ -114,7 +117,38 @@ class FreqDist(Counter):
 
         :rtype: int
         """
-        return sum(self.values())
+        if self._N is None:
+            # Not already cached, or cache has been invalidated
+            self._N = sum(self.values())
+        return self._N
+
+    def __setitem__(self, key, val):
+        """
+        Override ``Counter.__setitem__()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).__setitem__(key, val)
+
+    def __delitem__(self, key):
+        """
+        Override ``Counter.__delitem__()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).__delitem__(key)
+
+    def update(self, *args, **kwargs):
+        """
+        Override ``Counter.update()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).update(*args, **kwargs)
+
+    def setdefault(self, key, val):
+        """
+        Override ``Counter.setdefault()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).setdefault(key, val)
 
     def B(self):
         """
@@ -192,9 +226,10 @@ class FreqDist(Counter):
         :type sample: any
         :rtype: float
         """
-        if self.N() == 0:
+        n = self.N()
+        if n == 0:
             return 0
-        return self[sample] / self.N()
+        return self[sample] / n
 
     def max(self):
         """
@@ -1749,6 +1784,7 @@ class ConditionalFreqDist(defaultdict):
         :type cond_samples: Sequence of (condition, sample) tuples
         """
         defaultdict.__init__(self, FreqDist)
+
         if cond_samples:
             for (cond, sample) in cond_samples:
                 self[cond][sample] += 1
