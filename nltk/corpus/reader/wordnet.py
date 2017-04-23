@@ -1341,7 +1341,7 @@ class WordNetCorpusReader(CorpusReader):
         http://stackoverflow.com/a/27145655/1709587
         who were using this function before it was officially a public method
         """
-        return self.synset_from_pos_and_offset(*args, *kwargs)
+        return self.synset_from_pos_and_offset(*args, **kwargs)
 
     def _synset_from_pos_and_line(self, pos, data_file_line):
         # Construct a new (empty) synset.
