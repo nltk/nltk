@@ -1133,7 +1133,7 @@ class WordNetCorpusReader(CorpusReader):
             raise WordNetError("Language is not supported.")
 
         f = self._omw_reader.open('{0:}/wn-data-{0:}.tab'.format(lang))
-        self.use_tab_file_for_language(f, lang)
+        self.custom_lemmas(f, lang)
         f.close()
 
     def langs(self):
@@ -1854,7 +1854,7 @@ class WordNetCorpusReader(CorpusReader):
                 ic[pos][0] += weight
         return ic
 
-    def use_tab_file_for_language(self, tab_file, lang):
+    def custom_lemmas(self, tab_file, lang):
         """
         Reads a custom tab file containing mappings of lemmas in the given
         language to Princeton WordNet 3.0 synset offsets, allowing NLTK's
