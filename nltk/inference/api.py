@@ -18,10 +18,13 @@ goal *G*, the model builder tries to find a counter-model, in the sense of a mod
 the assumptions plus the negation of *G*.
 """
 from __future__ import print_function
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 import threading
 import time
 
+@add_metaclass(ABCMeta)
 class Prover(object):
     """
     Interface for trying to prove a goal from assumptions.  Both the goal and
@@ -34,13 +37,15 @@ class Prover(object):
         """
         return self._prove(goal, assumptions, verbose)[0]
 
+    @abstractmethod
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
         :return: Whether the proof was successful or not, along with the proof
         :rtype: tuple: (bool, str)
         """
-        raise NotImplementedError()
+        pass
 
+@add_metaclass(ABCMeta)
 class ModelBuilder(object):
     """
     Interface for trying to build a model of set of formulas.
@@ -56,20 +61,23 @@ class ModelBuilder(object):
         """
         return self._build_model(goal, assumptions, verbose)[0]
 
+    @abstractmethod
     def _build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Perform the actual model building.
         :return: Whether a model was generated, and the model itself
         :rtype: tuple(bool, sem.Valuation)
         """
-        raise NotImplementedError()
+        pass
 
 
+@add_metaclass(ABCMeta)
 class TheoremToolCommand(object):
     """
     This class holds a goal and a list of assumptions to be used in proving
     or model building.
     """
+    @abstractmethod
     def add_assumptions(self, new_assumptions):
         """
         Add new assumptions to the assumption list.
@@ -77,8 +85,9 @@ class TheoremToolCommand(object):
         :param new_assumptions: new assumptions
         :type new_assumptions: list(sem.Expression)
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def retract_assumptions(self, retracted, debug=False):
         """
         Retract assumptions from the assumption list.
@@ -89,29 +98,32 @@ class TheoremToolCommand(object):
         :param retracted: assumptions to be retracted
         :type retracted: list(sem.Expression)
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def assumptions(self):
         """
         List the current assumptions.
 
         :return: list of ``Expression``
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def goal(self):
         """
         Return the goal
 
         :return: ``Expression``
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def print_assumptions(self):
         """
         Print the list of the current assumptions.
         """
-        raise NotImplementedError()
+        pass
 
 
 class ProverCommand(TheoremToolCommand):
@@ -119,26 +131,29 @@ class ProverCommand(TheoremToolCommand):
     This class holds a ``Prover``, a goal, and a list of assumptions.  When
     prove() is called, the ``Prover`` is executed with the goal and assumptions.
     """
+    @abstractmethod
     def prove(self, verbose=False):
         """
         Perform the actual proof.
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def proof(self, simplify=True):
         """
         Return the proof string
         :param simplify: bool simplify the proof?
         :return: str
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def get_prover(self):
         """
         Return the prover object
         :return: ``Prover``
         """
-        raise NotImplementedError()
+        pass
 
 
 class ModelBuilderCommand(TheoremToolCommand):
@@ -147,14 +162,16 @@ class ModelBuilderCommand(TheoremToolCommand):
     When build_model() is called, the ``ModelBuilder`` is executed with the goal
     and assumptions.
     """
+    @abstractmethod
     def build_model(self, verbose=False):
         """
         Perform the actual model building.
         :return: A model if one is generated; None otherwise.
         :rtype: sem.Valuation
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def model(self, format=None):
         """
         Return a string representation of the model
@@ -162,14 +179,15 @@ class ModelBuilderCommand(TheoremToolCommand):
         :param simplify: bool simplify the proof?
         :return: str
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def get_model_builder(self):
         """
         Return the model builder object
         :return: ``ModelBuilder``
         """
-        raise NotImplementedError()
+        pass
 
 
 class BaseTheoremToolCommand(TheoremToolCommand):

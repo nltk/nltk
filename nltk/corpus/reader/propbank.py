@@ -6,6 +6,8 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 import re
 from xml.etree import ElementTree
 
@@ -281,6 +283,7 @@ class PropbankInstance(object):
                                 roleset, inflection, predicate,
                                 arguments, parse_corpus)
 
+@add_metaclass(ABCMeta)
 class PropbankPointer(object):
     """
     A pointer used by propbank to identify one or more constituents in
@@ -295,9 +298,9 @@ class PropbankPointer(object):
         chains in a tree.  It consists of a sequence of pieces, which
         can be ``PropbankTreePointer`` or ``PropbankSplitTreePointer`` pointers.
     """
+    @abstractmethod
     def __init__(self):
-        if self.__class__ == PropbankPointer:
-            raise NotImplementedError()
+        pass
 
 @compat.python_2_unicode_compatible
 class PropbankChainTreePointer(PropbankPointer):
@@ -478,4 +481,3 @@ class PropbankInflection(object):
             not PropbankInflection._VALIDATE.match(s)):
             raise ValueError('Bad propbank inflection string %r' % s)
         return PropbankInflection(*s)
-

@@ -7,6 +7,8 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 from nltk.tree import Tree
 from xml.etree import ElementTree
@@ -271,6 +273,7 @@ class NombankInstance(object):
         return NombankInstance(fileid, sentnum, wordnum, baseform, sensenumber,
                                predicate, predid, arguments, parse_corpus)
 
+@add_metaclass(ABCMeta)
 class NombankPointer(object):
     """
     A pointer used by nombank to identify one or more constituents in
@@ -285,9 +288,9 @@ class NombankPointer(object):
       chains in a tree.  It consists of a sequence of pieces, which
       can be ``NombankTreePointer`` or ``NombankSplitTreePointer`` pointers.
     """
+    @abstractmethod
     def __init__(self):
-        if self.__class__ == NombankPointer:
-            raise NotImplementedError()
+        pass
 
 @python_2_unicode_compatible
 class NombankChainTreePointer(NombankPointer):
@@ -418,4 +421,3 @@ class NombankTreePointer(NombankPointer):
                 else:
                     wordnum += 1
                     stack.pop()
-

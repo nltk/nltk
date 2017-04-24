@@ -5,6 +5,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, absolute_import
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 import locale
 import re
@@ -118,6 +120,7 @@ class OrderedDict(dict):
 # Lazy Sequences
 ######################################################################
 
+@add_metaclass(ABCMeta)
 @total_ordering
 @python_2_unicode_compatible
 class AbstractLazySequence(object):
@@ -140,13 +143,15 @@ class AbstractLazySequence(object):
     Subclasses are required to define two methods: ``__len__()``
     and ``iterate_from()``.
     """
+    @abstractmethod
     def __len__(self):
         """
         Return the number of tokens in the corpus file underlying this
         corpus view.
         """
-        raise NotImplementedError('should be implemented by subclass')
+        pass
 
+    @abstractmethod
     def iterate_from(self, start):
         """
         Return an iterator that generates the tokens in the corpus
@@ -154,7 +159,7 @@ class AbstractLazySequence(object):
         ``start``.  If ``start>=len(self)``, then this iterator will
         generate no tokens.
         """
-        raise NotImplementedError('should be implemented by subclass')
+        pass
 
     def __getitem__(self, i):
         """
@@ -548,7 +553,7 @@ class LazyEnumerate(LazyZip):
 
 class LazyIteratorList(AbstractLazySequence):
     """
-    Wraps an iterator, loading its elements on demand 
+    Wraps an iterator, loading its elements on demand
     and making them subscriptable.
     __repr__ displays only the first few elements.
     """
@@ -597,12 +602,12 @@ class Trie(defaultdict):
 
     def __init__(self, strings=None):
         """Builds a Trie object, which is built around a ``defaultdict``
-        
+
         If ``strings`` is provided, it will add the ``strings``, which
-        consist of a ``list`` of ``strings``, to the Trie. 
+        consist of a ``list`` of ``strings``, to the Trie.
         Otherwise, it'll construct an empty Trie.
 
-        :param strings: List of strings to insert into the trie 
+        :param strings: List of strings to insert into the trie
             (Default is ``None``)
         :type strings: list(str)
 
@@ -644,10 +649,10 @@ class Trie(defaultdict):
         :return: Even though ``defaultdict`` is a subclass of ``dict`` and thus
             can be converted to a simple ``dict`` using ``dict()``, in our case
             it's a nested ``defaultdict``, so here's a quick trick to provide to
-            us the ``dict`` representation of the ``Trie`` without 
+            us the ``dict`` representation of the ``Trie`` without
             ``defaultdict(<class 'nltk.collections.Trie'>, ...``
         :rtype: dict(str -> dict(bool -> None))
-            Note: there can be an arbitrarily deeply nested 
+            Note: there can be an arbitrarily deeply nested
             ``dict(str -> dict(str -> dict(..))``, but the last
             level will have ``dict(str -> dict(bool -> None))``
 
@@ -683,5 +688,5 @@ class Trie(defaultdict):
             if isinstance(d, defaultdict):
                 d = {k: _default_to_regular(v) for k, v in d.items()}
             return d
-        
+
         return _default_to_regular(self)

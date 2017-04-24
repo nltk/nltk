@@ -11,6 +11,8 @@ A version of first order predicate logic, built on
 top of the typed lambda calculus.
 """
 from __future__ import print_function, unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 import re
 import operator
@@ -843,12 +845,13 @@ def typecheck(expressions, signature=None):
         expression.typecheck(signature)
     return signature
 
-
+@add_metaclass(ABCMeta)
 class SubstituteBindingsI(object):
     """
     An interface for classes that can perform substitutions for
     variables.
     """
+    @abstractmethod
     def substitute_bindings(self, bindings):
         """
         :return: The object that is obtained by replacing
@@ -856,13 +859,14 @@ class SubstituteBindingsI(object):
             Aliases are already resolved. (maybe?)
         :rtype: (any)
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def variables(self):
         """
         :return: A list of all variables in this object.
         """
-        raise NotImplementedError()
+        pass
 
 
 @python_2_unicode_compatible
@@ -917,8 +921,9 @@ class Expression(SubstituteBindingsI):
             raise TypeError("%s is not an Expression" % other)
         return IffExpression(self, other)
 
+    @abstractmethod
     def __eq__(self, other):
-        raise NotImplementedError()
+        pass
 
     def __ne__(self, other):
         return not self == other
@@ -982,6 +987,7 @@ class Expression(SubstituteBindingsI):
 
         return dict((key, sig[key][0].type) for key in sig)
 
+    @abstractmethod
     def findtype(self, variable):
         """
         Find the type of the given variable as it is used in this expression.
@@ -989,8 +995,9 @@ class Expression(SubstituteBindingsI):
 
         :param variable: Variable
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def _set_type(self, other_type=ANY_TYPE, signature=None):
         """
         Set the type of this expression to be the given type.  Raise type
@@ -999,7 +1006,7 @@ class Expression(SubstituteBindingsI):
         :param other_type: Type
         :param signature: dict(str -> list(AbstractVariableExpression))
         """
-        raise NotImplementedError()
+        pass
 
     def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
         """
@@ -1053,7 +1060,7 @@ class Expression(SubstituteBindingsI):
         function calls
         :return: result of combination ``R``
         """
-        raise NotImplementedError()
+        pass
 
     def visit_structured(self, function, combinator):
         """

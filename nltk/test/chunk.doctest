@@ -174,7 +174,7 @@ instantiated directly.
     >>> ChunkParserI().parse([])
     Traceback (most recent call last):
       . . .
-    NotImplementedError
+    TypeError: Can't instantiate abstract class ChunkParserI with abstract methods parse
 
 
 ChunkString
@@ -370,4 +370,3 @@ Illegal patterns give an error message:
     Traceback (most recent call last):
       . . .
     ValueError: Illegal chunk pattern: {<foo>} {<bar>}
-

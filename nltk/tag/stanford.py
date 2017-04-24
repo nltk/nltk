@@ -17,6 +17,7 @@ list of paths).
 For more details see the documentation for StanfordPOSTagger and StanfordNERTagger.
 """
 
+from abc import abstractmethod
 import os
 import tempfile
 from subprocess import PIPE
@@ -59,8 +60,9 @@ class StanfordTagger(TaggerI):
         self.java_options = java_options
 
     @property
+    @abstractmethod
     def _cmd(self):
-      raise NotImplementedError
+      pass
 
     def tag(self, tokens):
         # This function should return list of tuple rather than list of list

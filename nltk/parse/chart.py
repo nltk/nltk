@@ -36,6 +36,8 @@ defines three chart parsers:
     be used to step through the parsing process.
 """
 from __future__ import print_function, division, unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 import itertools
 import re
@@ -56,6 +58,7 @@ from nltk.parse.api import ParserI
 ##  Edges
 ########################################################################
 
+@add_metaclass(ABCMeta)
 @total_ordering
 class EdgeI(object):
     """
@@ -89,14 +92,14 @@ class EdgeI(object):
     The ``EdgeI`` interface provides a common interface to both types
     of edge, allowing chart parsers to treat them in a uniform manner.
     """
+    @abstractmethod
     def __init__(self):
-        if self.__class__ == EdgeI:
-            raise TypeError('Edge is an abstract interface')
+        pass
 
     #////////////////////////////////////////////////////////////
     # Span
     #////////////////////////////////////////////////////////////
-
+    @abstractmethod
     def span(self):
         """
         Return a tuple ``(s, e)``, where ``tokens[s:e]`` is the
@@ -105,36 +108,40 @@ class EdgeI(object):
 
         :rtype: tuple(int, int)
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def start(self):
         """
         Return the start index of this edge's span.
 
         :rtype: int
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def end(self):
         """
         Return the end index of this edge's span.
 
         :rtype: int
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def length(self):
         """
         Return the length of this edge's span.
 
         :rtype: int
         """
-        raise NotImplementedError()
+        pass
 
     #////////////////////////////////////////////////////////////
     # Left Hand Side
     #////////////////////////////////////////////////////////////
 
+    @abstractmethod
     def lhs(self):
         """
         Return this edge's left-hand side, which specifies what kind
@@ -143,12 +150,13 @@ class EdgeI(object):
         :see: ``TreeEdge`` and ``LeafEdge`` for a description of
             the left-hand side values for each edge type.
         """
-        raise NotImplementedError()
+        pass
 
     #////////////////////////////////////////////////////////////
     # Right Hand Side
     #////////////////////////////////////////////////////////////
 
+    @abstractmethod
     def rhs(self):
         """
         Return this edge's right-hand side, which specifies
@@ -157,8 +165,9 @@ class EdgeI(object):
         :see: ``TreeEdge`` and ``LeafEdge`` for a description of
             the right-hand side values for each edge type.
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def dot(self):
         """
         Return this edge's dot position, which indicates how much of
@@ -168,8 +177,9 @@ class EdgeI(object):
 
         :rtype: int
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def nextsym(self):
         """
         Return the element of this edge's right-hand side that
@@ -177,8 +187,9 @@ class EdgeI(object):
 
         :rtype: Nonterminal or terminal or None
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def is_complete(self):
         """
         Return True if this edge's structure is fully consistent
@@ -186,8 +197,9 @@ class EdgeI(object):
 
         :rtype: bool
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def is_incomplete(self):
         """
         Return True if this edge's structure is partially consistent
@@ -195,7 +207,7 @@ class EdgeI(object):
 
         :rtype: bool
         """
-        raise NotImplementedError()
+        pass
 
     #////////////////////////////////////////////////////////////
     # Comparisons & hashing
@@ -841,6 +853,7 @@ class Chart(object):
 ##  Chart Rules
 ########################################################################
 
+@add_metaclass(ABCMeta)
 class ChartRuleI(object):
     """
     A rule that specifies what new edges are licensed by any given set
@@ -860,6 +873,7 @@ class ChartRuleI(object):
         to license new edges.  Typically, this number ranges from zero
         to two.
     """
+    @abstractmethod
     def apply(self, chart, grammar, *edges):
         """
         Return a generator that will add edges licensed by this rule
@@ -873,8 +887,9 @@ class ChartRuleI(object):
             ``NUM_EDGES`` class variable.
         :rtype: iter(EdgeI)
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def apply_everywhere(self, chart, grammar):
         """
         Return a generator that will add all edges licensed by
@@ -884,7 +899,7 @@ class ChartRuleI(object):
 
         :rtype: iter(EdgeI)
         """
-        raise NotImplementedError()
+        pass
 
 
 @python_2_unicode_compatible
@@ -901,8 +916,9 @@ class AbstractChartRule(ChartRuleI):
     """
 
     # Subclasses must define apply.
+    @abstractmethod
     def apply(self, chart, grammar, *edges):
-        raise NotImplementedError()
+        pass
 
     # Default: loop through the given number of edges, and call
     # self.apply() for each set of edges.
@@ -1313,7 +1329,7 @@ class ChartParser(ParserI):
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
         if trace: print(chart.pretty_format_leaves(trace_edge_width))
-        
+
         if self._use_agenda:
             # Use an agenda-based algorithm.
             for axiom in self._axioms:
@@ -1630,7 +1646,7 @@ def demo(choice=None,
         t = time.time()
         chart = cp.chart_parse(tokens)
         parses = list(chart.parses(grammar.start()))
-        
+
         times[strategies[strategy][0]] = time.time()-t
         print("Nr edges in chart:", len(chart.edges()))
         if numparses:

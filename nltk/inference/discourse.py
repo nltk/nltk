@@ -43,6 +43,8 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 those threads which are consistent (taking into account any background assumptions).
 """
 from __future__ import print_function
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 import os
 
 from operator import and_, add
@@ -60,13 +62,15 @@ from nltk.inference.mace import MaceCommand
 from nltk.inference.prover9 import Prover9Command
 
 
+@add_metaclass(ABCMeta)
 class ReadingCommand(object):
+    @abstractmethod
     def parse_to_readings(self, sentence):
         """
         :param sentence: the sentence to read
         :type sentence: str
         """
-        raise NotImplementedError()
+        pass
 
     def process_thread(self, sentence_readings):
         """
@@ -80,6 +84,7 @@ class ReadingCommand(object):
         """
         return sentence_readings
 
+    @abstractmethod
     def combine_readings(self, readings):
         """
         :param readings: readings to combine
@@ -87,8 +92,9 @@ class ReadingCommand(object):
         :return: one combined reading
         :rtype: Expression
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def to_fol(self, expression):
         """
         Convert this expression into a First-Order Logic expression.
@@ -98,7 +104,7 @@ class ReadingCommand(object):
         :return: a FOL version of the input expression
         :rtype: Expression
         """
-        raise NotImplementedError()
+        pass
 
 
 class CfgReadingCommand(ReadingCommand):
@@ -560,7 +566,7 @@ def discourse_demo(reading_command=None):
     import nltk.data
     background_file = os.path.join('grammars', 'book_grammars', 'background.fol')
     background = nltk.data.load(background_file)
-    
+
     print()
     dt.add_background(background, verbose=False)
     dt.background()

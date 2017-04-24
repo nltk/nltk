@@ -309,4 +309,3 @@ def wsd_demo(trainer, word, features, n=1000):
 
     # Return the classifier
     return classifier
-

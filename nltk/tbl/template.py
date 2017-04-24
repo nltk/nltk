@@ -9,19 +9,20 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 import itertools as it
 from nltk.tbl.feature import Feature
 
 
+@add_metaclass(ABCMeta)
 class BrillTemplateI(object):
     """
     An interface for generating lists of transformational rules that
     apply at given sentence positions.  ``BrillTemplateI`` is used by
     ``Brill`` training algorithms to generate candidate rules.
     """
-    #!!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
-    # and metaclass=abc.ABCMeta rather than NotImplementedError
-    #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
+    @abstractmethod
     def applicable_rules(self, tokens, i, correctTag):
         """
         Return a list of the transformational rules that would correct
@@ -41,8 +42,9 @@ class BrillTemplateI(object):
         :type correctTag: any
         :rtype: list(BrillRule)
         """
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def get_neighborhood(self, token, index):
         """
         Returns the set of indices *i* such that
@@ -57,7 +59,7 @@ class BrillTemplateI(object):
         :type index: int
         :rtype: set
         """
-        raise NotImplementedError
+        pass
 
 
 from nltk.tbl.rule import Rule
@@ -303,6 +305,3 @@ class Template(BrillTemplateI):
     @classmethod
     def _poptemplate(cls):
         return cls.ALLTEMPLATES.pop() if cls.ALLTEMPLATES else None
-
-
-

@@ -9,10 +9,13 @@ CCG Combinators
 """
 
 from __future__ import unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 from nltk.compat import python_2_unicode_compatible
 from nltk.ccg.api import FunctionalCategory
 
+@add_metaclass(ABCMeta)
 class UndirectedBinaryCombinator(object):
     """
     Abstract class for representing a binary combinator.
@@ -24,12 +27,15 @@ class UndirectedBinaryCombinator(object):
     of the combinators; these restrictions must be added in the rule
     class.
     """
+    @abstractmethod
     def can_combine(self, function, argument):
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def combine (self, function, argument):
-        raise NotImplementedError()
+        pass
 
+@add_metaclass(ABCMeta)
 class DirectedBinaryCombinator(object):
     """
     Wrapper for the undirected binary combinator.
@@ -37,11 +43,13 @@ class DirectedBinaryCombinator(object):
     the function, and which the argument.
     It then decides whether or not they can be combined.
     """
+    @abstractmethod
     def can_combine(self, left, right):
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def combine(self, left, right):
-        raise NotImplementedError()
+        pass
 
 @python_2_unicode_compatible
 class ForwardCombinator(DirectedBinaryCombinator):

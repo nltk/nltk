@@ -32,6 +32,8 @@ to a local file.
 """
 from __future__ import print_function, unicode_literals
 from __future__ import division
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 import sys
 import io
@@ -241,6 +243,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
 # Path Pointers
 ######################################################################
 
+@add_metaclass(ABCMeta)
 class PathPointer(object):
     """
     An abstract base class for 'path pointers,' used by NLTK's data
@@ -251,6 +254,7 @@ class PathPointer(object):
     by reading that zipfile.
     """
 
+    @abstractmethod
     def open(self, encoding=None):
         """
         Return a seekable read-only stream that can be used to read
@@ -259,8 +263,9 @@ class PathPointer(object):
         :raise IOError: If the path specified by this pointer does
             not contain a readable file.
         """
-        raise NotImplementedError('abstract base class')
+        pass
 
+    @abstractmethod
     def file_size(self):
         """
         Return the size of the file pointed to by this path pointer,
@@ -269,8 +274,9 @@ class PathPointer(object):
         :raise IOError: If the path specified by this pointer does
             not contain a readable file.
         """
-        raise NotImplementedError('abstract base class')
+        pass
 
+    @abstractmethod
     def join(self, fileid):
         """
         Return a new path pointer formed by starting at the path
@@ -279,7 +285,7 @@ class PathPointer(object):
         should be separated by forward slashes, regardless of
         the underlying file system's path seperator character.
         """
-        raise NotImplementedError('abstract base class')
+        pass
 
 
 class FileSystemPathPointer(PathPointer, text_type):
@@ -986,7 +992,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
         zipfile.ZipFile.__init__(self, filename)
         assert self.filename == filename
         self.close()
-        # After closing a ZipFile object, the _fileRefCnt needs to be cleared 
+        # After closing a ZipFile object, the _fileRefCnt needs to be cleared
         # for Python2and3 compatible code.
         self._fileRefCnt = 0
 

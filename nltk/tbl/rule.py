@@ -9,6 +9,8 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk import jsontags
@@ -17,7 +19,7 @@ from nltk import jsontags
 # Tag Rules
 ######################################################################
 
-
+@add_metaclass(ABCMeta)
 class TagRule(object):
     """
     An interface for tag transformations on a tagged corpus, as
@@ -71,6 +73,7 @@ class TagRule(object):
 
         return change
 
+    @abstractmethod
     def applies(self, tokens, index):
         """
         :return: True if the rule would change the tag of
@@ -81,7 +84,7 @@ class TagRule(object):
         :param index: The index to check
         :type index: int
         """
-        raise NotImplementedError
+        pass
 
     # Rules must be comparable and hashable for the algorithm to work
     def __eq__(self, other):
@@ -317,5 +320,3 @@ class Rule(TagRule):
             condition_to_str(f, v) for (f, v) in self._conditions
         )
         return replacement + conditions
-
-

@@ -7,6 +7,8 @@
 # For license information, see LICENSE.TXT
 #
 from __future__ import print_function
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 import math
 import logging
@@ -21,7 +23,7 @@ logger = logging.getLogger(__name__)
 # DependencyScorerI - Interface for Graph-Edge Weight Calculation
 #################################################################
 
-
+@add_metaclass(ABCMeta)
 class DependencyScorerI(object):
     """
     A scorer for calculated the weights on the edges of a weighted
@@ -33,11 +35,11 @@ class DependencyScorerI(object):
     implement this interface.  As such, it has no necessary
     fields.
     """
-
+    @abstractmethod
     def __init__(self):
-        if self.__class__ == DependencyScorerI:
-            raise TypeError('DependencyScorerI is an abstract interface')
+        pass
 
+    @abstractmethod
     def train(self, graphs):
         """
         :type graphs: list(DependencyGraph)
@@ -46,8 +48,9 @@ class DependencyScorerI(object):
         positive training examples, and the edges not present as negative
         examples.
         """
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def score(self, graph):
         """
         :type graph: DependencyGraph
@@ -71,7 +74,7 @@ class DependencyScorerI(object):
         correspond to the confidence of a particular edge being classified
         with the positive training examples.
         """
-        raise NotImplementedError()
+        pass
 
 #################################################################
 # NaiveBayesDependencyScorer
@@ -209,6 +212,9 @@ class ProbabilisticNonprojectiveParser(object):
     directed graph.
 
     >>> class Scorer(DependencyScorerI):
+    ...     def __init__(self):
+    ...         pass
+    ...
     ...     def train(self, graphs):
     ...         pass
     ...

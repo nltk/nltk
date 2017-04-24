@@ -74,5 +74,3 @@ class StringTokenizer(TokenizerI):
     def span_tokenize(self, s):
         for span in string_span_tokenize(s, self._string):
             yield span
-
-
