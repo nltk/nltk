@@ -12,7 +12,7 @@ from __future__ import division
 from collections import Counter
 
 from nltk.util import ngrams, everygrams
-from nltk.compat import string_types
+
 
 def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
     """
@@ -158,7 +158,7 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
         hyp_ngrams = Counter(everygrams(hypothesis, min_len, max_len))
         tpfp = sum(hyp_ngrams.values())  # True positives + False positives.
         
-        scores_by_ref = []
+        hyp_counts = []
         for reference in references:
             ref_ngrams = Counter(everygrams(reference, min_len, max_len))
             tpfn = sum(ref_ngrams.values())  # True positives + False negatives.
@@ -176,11 +176,11 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
             n_all = max(tpfp, tpfn)
 
             if n_all > 0:
-                scores_by_ref.append((tp/n_all, tp, n_all))
+                hyp_counts.append((tp, n_all))
 
         # use the reference yielding the highest score
-        if scores_by_ref:
-            _, n_match, n_all = max(scores_by_ref)
+        if hyp_counts:
+            n_match, n_all = max(hyp_counts, key=lambda hc: hc[0]/hc[1])
             corpus_n_match += n_match
             corpus_n_all += n_all
 
