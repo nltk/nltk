@@ -46,9 +46,9 @@ def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
          metric on a corpus level but does not have its drawbacks for our per
          sentence reward objective."
 
-    Note: The previous implementation only allowed a single reference; in order
-          to maintain backward compatibility, the first argument may be given
-          as a single reference or a list of references.
+    Note: The initial implementation only allowed a single reference, but now
+          a list of references is required (which is consistent with
+          bleu_score.sentence_bleu()).
 
     The infamous "the the the ... " example
 
@@ -81,11 +81,6 @@ def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
     :return: the sentence level GLEU score.
     :rtype: float
     """
-
-    # compatibility with previous single-reference API:
-    if not references or isinstance(references[0], string_types):
-        references = [references]
-
     return corpus_gleu(
         [references],
         [hypothesis],
