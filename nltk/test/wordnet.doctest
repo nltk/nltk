@@ -113,6 +113,12 @@ Note that some relations are defined by WordNet only over Lemmas:
 The relations that are currently defined in this way are `antonyms`,
 `derivationally_related_forms` and `pertainyms`.
 
+If you know the byte offset used to identify a synset in the original
+Princeton WordNet data file, you can use that to instantiate the synset
+in NLTK:
+
+    >>> wn.synset_from_pos_and_offset('n', 4543158)
+    Synset('wagon.n.01')
 
 ------
 Lemmas
@@ -579,3 +585,10 @@ Issue 395: wordnet returns incorrect result for lowest_common_hypernyms of chef 
 
     >>> wn.synset('policeman.n.01').lowest_common_hypernyms(wn.synset('chef.n.01'))
     [Synset('person.n.01')]
+
+Bug https://github.com/nltk/nltk/issues/1641: Non-English lemmas containing capital letters cannot be looked up using wordnet.lemmas() or wordnet.synsets()
+
+    >>> wn.lemmas('Londres', lang='fra')
+    [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'), Lemma('london.n.02.Londres')]
+    >>> wn.lemmas('londres', lang='fra')
+    [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'), Lemma('london.n.02.Londres')]
