@@ -52,7 +52,6 @@ performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
 from __future__ import print_function, unicode_literals
-__docformat__ = 'epytext en'
 
 try:
     import numpy
@@ -62,6 +61,8 @@ except ImportError:
 import tempfile
 import os
 from collections import defaultdict
+
+from six import integer_types
 
 from nltk import compat
 from nltk.data import gzip_open_unicode
@@ -73,6 +74,8 @@ from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
 from nltk.classify.megam import (call_megam,
                                  write_megam_file, parse_megam_weights)
 from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
+
+__docformat__ = 'epytext en'
 
 ######################################################################
 #{ Classifier Model
@@ -547,7 +550,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, compat.integer_types):
+        if not isinstance(f_id, integer_types):
             raise TypeError('describe() expected an int')
         try:
             self._inv_mapping
@@ -854,7 +857,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         # Convert input-features to joint-features:
         for fname, fval in featureset.items():
-            if isinstance(fval, (compat.integer_types, float)):
+            if isinstance(fval, (integer_types, float)):
                 # Known feature name & value:
                 if (fname, type(fval), label) in self._mapping:
                     encoding.append((self._mapping[fname, type(fval),
@@ -884,7 +887,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, compat.integer_types):
+        if not isinstance(f_id, integer_types):
             raise TypeError('describe() expected an int')
         try:
             self._inv_mapping

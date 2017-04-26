@@ -33,6 +33,8 @@ from __future__ import print_function, division, unicode_literals
 
 import itertools
 
+from six import string_types
+
 from nltk.parse import ParserI
 from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
 from nltk.tree import Tree
@@ -42,7 +44,7 @@ from nltk.ccg.combinator import (ForwardT, BackwardT, ForwardApplication,
                                  BackwardApplication, ForwardComposition,
                                  BackwardComposition, ForwardSubstitution,
                                  BackwardBx, BackwardSx)
-from nltk.compat import python_2_unicode_compatible, string_types
+from nltk.compat import python_2_unicode_compatible
 from nltk.ccg.combinator import *
 from nltk.ccg.logic import *
 from nltk.sem.logic import *
@@ -264,11 +266,11 @@ class CCGChart(Chart):
         memo[edge] = trees
         return trees
 
-           
+
 def compute_semantics(children, edge):
     if children[0].label()[0].semantics() is None:
         return None
-        
+
     if len(children) is 2:
         if isinstance(edge.rule(), BackwardCombinator):
             children = [children[1],children[0]]

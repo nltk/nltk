@@ -129,8 +129,10 @@ import shelve
 import os
 import sys
 
+from six import string_types
+
 import nltk.data
-from nltk.compat import string_types, python_2_unicode_compatible
+from nltk.compat import python_2_unicode_compatible
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -505,7 +507,7 @@ def process_bundle(rels):
     :param rels: bundle of metadata needed for constructing a concept
     :type rels: list(dict)
     :return: a dictionary of concepts, indexed by the relation name.
-    :rtype: dict(str): Concept 
+    :rtype: dict(str): Concept
     """
     concepts = {}
     for rel in rels:
@@ -641,7 +643,7 @@ def make_lex(symbols):
     create a lexical rule for the proper name 'Zloty'.
 
     :param symbols: a list of individual constants in the semantic representation
-    :type symbols: sequence -- set(str) 
+    :type symbols: sequence -- set(str)
     :rtype: list(str)
     """
     lex = []
@@ -778,5 +780,3 @@ def sql_demo():
 if __name__ == '__main__':
     main()
     sql_demo()
-
-

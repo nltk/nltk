@@ -53,12 +53,12 @@ try:
 except ImportError:
     import pickle
 
+from six import string_types, text_type
+from six.moves.urllib.request import urlopen, url2pathname
+
 # this import should be more specific:
 import nltk
-
-from nltk.compat import py3_data, add_py3_data
-from nltk.compat import text_type, string_types, BytesIO, urlopen, url2pathname
-
+from nltk.compat import py3_data, add_py3_data, BytesIO
 
 ######################################################################
 # Search Path
@@ -986,7 +986,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
         zipfile.ZipFile.__init__(self, filename)
         assert self.filename == filename
         self.close()
-        # After closing a ZipFile object, the _fileRefCnt needs to be cleared 
+        # After closing a ZipFile object, the _fileRefCnt needs to be cleared
         # for Python2and3 compatible code.
         self._fileRefCnt = 0
 

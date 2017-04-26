@@ -33,6 +33,9 @@ file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
 from __future__ import unicode_literals
+
+from six import string_types
+
 from nltk import compat
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
@@ -137,10 +140,5 @@ class RTECorpusReader(XMLCorpusReader):
         :type: list
         :rtype: list(RTEPair)
         """
-        if isinstance(fileids, compat.string_types): fileids = [fileids]
+        if isinstance(fileids, string_types): fileids = [fileids]
         return concat([self._read_etree(self.xml(fileid)) for fileid in fileids])
-
-
-
-
-
