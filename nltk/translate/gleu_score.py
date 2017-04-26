@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2017 NLTK Project
 # Authors:
-# Contributors:
+# Contributors: Mike Schuster, Michael Wayne Goodman, Liling Tan
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
