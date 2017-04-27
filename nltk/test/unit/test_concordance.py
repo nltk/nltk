@@ -26,11 +26,14 @@ def stdout_redirect(where):
         sys.stdout = sys.__stdout__
 
 
-def clean(raw):
-    """Utility function to remove spaces and case when checking equality"""
-    if isinstance(raw, str):
-        return raw.lower().replace(" ", "")
-    return [clean(r) for r in raw]
+def clean(raw_str):
+    """Remove spaces and case"""
+    return raw_str.lower().replace(" ", "")
+
+
+def clean_list(input):
+    """Removes spaces and case in list elements"""
+    return [clean(raw_str) for raw_str in input]
 
 
 class TestConcordance(unittest.TestCase):
@@ -65,7 +68,7 @@ class TestConcordance(unittest.TestCase):
                     "of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u"]
 
         concordance_out = self.text.concordance(self.query, stdout=False)
-        self.assertListEqual(clean(list_out), clean(concordance_out))
+        self.assertListEqual(clean_list(list_out), clean_list(concordance_out))
         return
 
     def test_concordance_width(self):
@@ -76,7 +79,7 @@ class TestConcordance(unittest.TestCase):
 
         concordance_out = self.text.concordance(self.query, width=0,
                                                 stdout=False)
-        self.assertListEqual(clean(list_out), clean(concordance_out))
+        self.assertListEqual(clean_list(list_out), clean_list(concordance_out))
         return
 
     def test_concordance_lines(self):
@@ -87,7 +90,7 @@ class TestConcordance(unittest.TestCase):
         concordance_out = self.text.concordance(self.query, lines=3,
                                                 stdout=False)
 
-        self.assertListEqual(clean(list_out), clean(concordance_out))
+        self.assertListEqual(clean_list(list_out), clean_list(concordance_out))
         return
 
     def test_concordance_print(self):
