@@ -68,13 +68,15 @@ The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
-from __future__ import print_function, unicode_literals, division 
+from __future__ import print_function, unicode_literals, division
 
 import re
+from functools import total_ordering
+
+from six import string_types
 
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import (string_types, total_ordering, text_type,
-                         python_2_unicode_compatible, unicode_repr)
+from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
@@ -1528,4 +1530,3 @@ __all__ = ['Nonterminal', 'nonterminals',
 	   'DependencyGrammar', 'DependencyProduction',
            'ProbabilisticDependencyGrammar',
 	   'induce_pcfg', 'read_grammar']
-

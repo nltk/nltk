@@ -5,6 +5,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+from six import string_types
+
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
@@ -133,7 +135,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
             return self.fileids(categories), None
 
         if textids is not None:
-            if isinstance(textids, compat.string_types):
+            if isinstance(textids, string_types):
                 textids = [textids]
             files = sum((self._t2f[t] for t in textids), [])
             tdict = dict()
@@ -156,7 +158,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, _ = self._resolve(fileids, categories)
         if fileids is None: return sorted(self._t2f)
 
-        if isinstance(fileids, compat.string_types):
+        if isinstance(fileids, string_types):
             fileids = [fileids]
         return sorted(sum((self._f2t[d] for d in fileids), []))
 
@@ -164,7 +166,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
 
         if textids:
@@ -183,7 +185,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
 
         if textids:
@@ -202,7 +204,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
 
         if textids:
@@ -221,7 +223,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
 
         if textids:
@@ -240,7 +242,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
 
         if textids:
@@ -259,7 +261,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, textids = self._resolve(fileids, categories, textids)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
 
         if textids:
@@ -285,6 +287,6 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         fileids, _ = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])

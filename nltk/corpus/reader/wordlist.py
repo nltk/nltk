@@ -6,8 +6,8 @@
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+from six import string_types
 
-from nltk.compat import string_types
 from nltk.tokenize import line_tokenize
 
 from nltk.corpus.reader.util import *

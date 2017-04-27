@@ -34,14 +34,17 @@ from __future__ import print_function, unicode_literals
 import math
 import re
 from itertools import islice, chain
+from functools import total_ordering
 from operator import itemgetter
 from collections import defaultdict, deque
+
+from six import iteritems
+from six.moves import range
 
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
-from nltk.compat import (iteritems, python_2_unicode_compatible,
-                         total_ordering, xrange)
+from nltk.compat import python_2_unicode_compatible
 from nltk.internals import deprecated
 
 ######################################################################
@@ -1174,7 +1177,7 @@ class WordNetCorpusReader(CorpusReader):
                     # get and ignore the pointer symbols for all synsets of
                     # this lemma
                     n_pointers = int(_next_token())
-                    [_next_token() for _ in xrange(n_pointers)]
+                    [_next_token() for _ in range(n_pointers)]
 
                     # same as number of synsets
                     n_senses = int(_next_token())
@@ -1186,7 +1189,7 @@ class WordNetCorpusReader(CorpusReader):
 
                     # get synset offsets
                     synset_offsets = [
-                        int(_next_token()) for _ in xrange(n_synsets)
+                        int(_next_token()) for _ in range(n_synsets)
                     ]
 
                 # raise more informative error with file name and line number
@@ -1379,7 +1382,7 @@ class WordNetCorpusReader(CorpusReader):
 
             # create Lemma objects for each lemma
             n_lemmas = int(_next_token(), 16)
-            for _ in xrange(n_lemmas):
+            for _ in range(n_lemmas):
                 # get the lemma name
                 lemma_name = _next_token()
                 # get the lex_id (used for sense_keys)
@@ -1395,7 +1398,7 @@ class WordNetCorpusReader(CorpusReader):
 
             # collect the pointer tuples
             n_pointers = int(_next_token())
-            for _ in xrange(n_pointers):
+            for _ in range(n_pointers):
                 symbol = _next_token()
                 offset = int(_next_token())
                 pos = _next_token()
@@ -1416,7 +1419,7 @@ class WordNetCorpusReader(CorpusReader):
             except StopIteration:
                 pass
             else:
-                for _ in xrange(frame_count):
+                for _ in range(frame_count):
                     # read the plus sign
                     plus = _next_token()
                     assert plus == '+'

@@ -9,9 +9,10 @@ from __future__ import print_function
 
 import sys
 
+from six import string_types
+
 from nltk.corpus.reader import util
 
-from nltk import compat
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
@@ -23,7 +24,7 @@ class ChasenCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
@@ -132,7 +133,7 @@ def test():
     jeita = LazyCorpusLoader(
         'jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
 
-    assert isinstance(jeita.tagged_words()[0][1], compat.string_types)
+    assert isinstance(jeita.tagged_words()[0][1], string_types)
 
 if __name__ == '__main__':
     demo()

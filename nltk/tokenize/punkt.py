@@ -109,7 +109,9 @@ import re
 import math
 from collections import defaultdict
 
-from nltk.compat import unicode_repr, python_2_unicode_compatible, string_types
+from six import string_types
+
+from nltk.compat import unicode_repr, python_2_unicode_compatible
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
 
@@ -1609,5 +1611,3 @@ def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     sbd = tok_cls(trainer.get_params())
     for l in sbd.sentences_from_text(text):
         print(cleanup(l))
-
-

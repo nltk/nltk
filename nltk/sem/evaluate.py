@@ -21,8 +21,10 @@ import textwrap
 import re
 import sys
 
+from six import string_types
+
 from nltk.decorators import decorator # this used in code that is commented out
-from nltk.compat import string_types, python_2_unicode_compatible
+from nltk.compat import python_2_unicode_compatible
 
 from nltk.sem.logic import (AbstractVariableExpression, AllExpression, Expression,
                             AndExpression, ApplicationExpression, EqualityExpression,

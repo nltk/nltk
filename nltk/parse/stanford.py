@@ -16,7 +16,8 @@ import warnings
 from subprocess import PIPE
 from io import StringIO
 
-from nltk import compat
+from six import text_type
+
 from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_options, find_jars_within_path
 
 from nltk.parse.api import ParserI
@@ -201,7 +202,7 @@ class GenericStanfordParser(ParserI):
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
         with tempfile.NamedTemporaryFile(mode='wb', delete=False) as input_file:
             # Write the actual sentences to the temporary input file
-            if isinstance(input_, compat.text_type) and encoding:
+            if isinstance(input_, text_type) and encoding:
                 input_ = input_.encode(encoding)
             input_file.write(input_)
             input_file.flush()
