@@ -9,10 +9,7 @@
 Graphically display a Tree.
 """
 
-import nltk.compat
-import sys
-
-from tkinter import IntVar, Menu, Tk
+from six.moves.tkinter import IntVar, Menu, Tk
 
 from nltk.util import in_idle
 from nltk.tree import Tree

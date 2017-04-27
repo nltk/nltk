@@ -63,6 +63,8 @@ import base64
 import pickle
 import copy
 
+from six.moves.urllib.parse import unquote_plus
+
 from nltk import compat
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Synset, Lemma
@@ -95,7 +97,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         global firstClient
         sp = self.path[1:]
-        if compat.unquote_plus(sp) == 'SHUTDOWN THE SERVER':
+        if unquote_plus(sp) == 'SHUTDOWN THE SERVER':
             if server_mode:
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
@@ -114,7 +116,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
 
         elif sp.endswith('.html'): # Trying to fetch a HTML file TODO:
             type = 'text/html'
-            usp = compat.unquote_plus(sp)
+            usp = unquote_plus(sp)
             if usp == 'NLTK Wordnet Browser Database Info.html':
                 word = '* Database Info *'
                 if os.path.isfile(usp):

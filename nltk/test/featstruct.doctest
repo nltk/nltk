@@ -334,7 +334,7 @@ base value types that have custom unification methods.  For example,
 the following feature value type encodes a range, and defines
 unification as taking the intersection on the ranges:
 
-    >>> from nltk.compat import total_ordering
+    >>> from functools import total_ordering
     >>> from nltk.featstruct import CustomFeatureValue, UnificationFailure
     >>> @total_ordering
     ... class Range(CustomFeatureValue):
@@ -1227,4 +1227,3 @@ is present.)
 
 ..
     >>> del fs1, fs2 # clean-up
-

@@ -9,8 +9,8 @@
 from __future__ import print_function
 
 import re
+from six import string_types
 
-from nltk.compat import string_types
 from nltk.parse import DependencyGraph
 
 from nltk.corpus.reader.util import (

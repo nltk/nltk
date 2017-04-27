@@ -21,13 +21,17 @@ from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info
 
+from six import class_types, string_types, text_type
+from six.moves.urllib.request import (build_opener, install_opener, getproxies,
+                                      ProxyHandler, ProxyBasicAuthHandler,
+                                      ProxyDigestAuthHandler,
+                                      HTTPPasswordMgrWithDefaultRealm)
+
 from nltk.internals import slice_bounds, raise_unorderable_types
 from nltk.collections import *
-from nltk.compat import (class_types, text_type, string_types, total_ordering,
-                         python_2_unicode_compatible, getproxies,
-			 ProxyHandler, build_opener, install_opener,
-			 HTTPPasswordMgrWithDefaultRealm,
-			 ProxyBasicAuthHandler, ProxyDigestAuthHandler)
+from nltk.compat import python_2_unicode_compatible
+
+
 
 ######################################################################
 # Short usage message
