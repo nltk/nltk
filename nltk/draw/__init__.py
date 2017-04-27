@@ -7,9 +7,8 @@
 # For license information, see LICENSE.TXT
 
 # Import Tkinter-based modules if Tkinter is installed
-import nltk.compat
 try:
-    import tkinter
+    from six.moves import tkinter
 except ImportError:
     import warnings
     warnings.warn("nltk.draw package not loaded "

@@ -22,6 +22,8 @@ APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
 from __future__ import unicode_literals
 
+from six import string_types
+
 import nltk
 from nltk import compat
 from nltk.corpus.reader.api import *
@@ -66,7 +68,7 @@ class IEERCorpusReader(CorpusReader):
     """
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def docs(self, fileids=None):
@@ -108,4 +110,3 @@ class IEERCorpusReader(CorpusReader):
             if line.strip() == '</DOC>': break
         # Return the document
         return ['\n'.join(out)]
-

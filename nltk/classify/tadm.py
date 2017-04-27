@@ -9,7 +9,8 @@ from __future__ import print_function, unicode_literals
 import sys
 import subprocess
 
-from nltk import compat
+from six import string_types
+
 from nltk.internals import find_binary
 try:
     import numpy
@@ -73,7 +74,7 @@ def call_tadm(args):
     """
     Call the ``tadm`` binary with the given arguments.
     """
-    if isinstance(args, compat.string_types):
+    if isinstance(args, string_types):
         raise TypeError('args should be a list of strings')
     if _tadm_bin is None:
         config_tadm()

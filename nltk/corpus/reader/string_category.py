@@ -18,6 +18,7 @@ NUM:date When did Hawaii become a state ?
 """
 
 # based on PPAttachmentCorpusReader
+from six import string_types
 
 from nltk import compat
 from nltk.corpus.reader.util import *
@@ -38,7 +39,7 @@ class StringCategoryCorpusReader(CorpusReader):
 
     def tuples(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([StreamBackedCorpusView(fileid, self._read_tuple_block,
                                               encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
@@ -48,7 +49,7 @@ class StringCategoryCorpusReader(CorpusReader):
         :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _read_tuple_block(self, stream):

@@ -74,9 +74,11 @@ import logging
 from itertools import groupby
 from operator import itemgetter
 
+from six import iteritems
+
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
-from nltk.compat import python_2_unicode_compatible, iteritems
+from nltk.compat import python_2_unicode_compatible
 
 from nltk.metrics.distance import binary_distance
 
@@ -98,11 +100,11 @@ class AnnotationTask(object):
 
     def __init__(self, data=None, distance=binary_distance):
         """Initialize an annotation task.
-        
-        The data argument can be None (to create an empty annotation task) or a sequence of 3-tuples, 
+
+        The data argument can be None (to create an empty annotation task) or a sequence of 3-tuples,
         each representing a coder's labeling of an item:
             (coder,item,label)
-            
+
         The distance argument is a function taking two arguments (labels) and producing a numerical distance.
         The distance from a label to itself should be zero:
             distance(l,l) = 0
@@ -319,7 +321,7 @@ class AnnotationTask(object):
             return 1
         if len(self.C)==1 and len(self.I) == 1:
             raise ValueError("Cannot calculate alpha, only one coder and item present!")
-        
+
         De = 0.0
 
         label_freqs = FreqDist(x['labels'] for x in self.data)
@@ -417,4 +419,3 @@ if __name__ == '__main__':
         print(getattr(task, options.agreement)())
 
     logging.shutdown()
-

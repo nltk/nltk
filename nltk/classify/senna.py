@@ -44,8 +44,10 @@ from os import path, sep, environ
 from subprocess import Popen, PIPE
 from platform import architecture, system
 
+from six import text_type
+
 from nltk.tag.api import TaggerI
-from nltk.compat import text_type, python_2_unicode_compatible
+from nltk.compat import python_2_unicode_compatible
 
 _senna_url = 'http://ml.nec-labs.com/senna/'
 
@@ -179,5 +181,3 @@ def setup_module(module):
         tagger = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     except OSError:
         raise SkipTest("Senna executable not found")
-
-
