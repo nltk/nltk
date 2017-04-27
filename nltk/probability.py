@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
@@ -44,10 +44,12 @@ import random
 import warnings
 import array
 from operator import itemgetter
-from collections import defaultdict
+from collections import defaultdict, Counter
 from functools import reduce
+
+from six import itervalues, text_type
+
 from nltk import compat
-from nltk.compat import Counter
 
 from nltk.internals import raise_unorderable_types
 
@@ -105,6 +107,9 @@ class FreqDist(Counter):
         """
         Counter.__init__(self, samples)
 
+        # Cached number of samples in this FreqDist
+        self._N = None
+
     def N(self):
         """
         Return the total number of sample outcomes that have been
@@ -114,7 +119,38 @@ class FreqDist(Counter):
 
         :rtype: int
         """
-        return sum(self.values())
+        if self._N is None:
+            # Not already cached, or cache has been invalidated
+            self._N = sum(self.values())
+        return self._N
+
+    def __setitem__(self, key, val):
+        """
+        Override ``Counter.__setitem__()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).__setitem__(key, val)
+
+    def __delitem__(self, key):
+        """
+        Override ``Counter.__delitem__()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).__delitem__(key)
+
+    def update(self, *args, **kwargs):
+        """
+        Override ``Counter.update()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).update(*args, **kwargs)
+
+    def setdefault(self, key, val):
+        """
+        Override ``Counter.setdefault()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).setdefault(key, val)
 
     def B(self):
         """
@@ -192,9 +228,10 @@ class FreqDist(Counter):
         :type sample: any
         :rtype: float
         """
-        if self.N() == 0:
+        n = self.N()
+        if n == 0:
             return 0
-        return self[sample] / self.N()
+        return self[sample] / n
 
     def max(self):
         """
@@ -251,7 +288,7 @@ class FreqDist(Counter):
             pylab.title(kwargs["title"])
             del kwargs["title"]
         pylab.plot(freqs, **kwargs)
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
@@ -297,8 +334,8 @@ class FreqDist(Counter):
         """
         return self.__class__(self)
 
-    # Mathematical operatiors 
-    
+    # Mathematical operatiors
+
     def __add__(self, other):
         """
         Add counts from two counters.
@@ -549,6 +586,7 @@ class RandomProbDist(ProbDistI):
         it can still be passed to MutableProbDist and called with identical
         syntax to UniformProbDist
         """
+        samples = set(samples)
         randrow = [random.random() for i in range(len(samples))]
         total = sum(randrow)
         for i, x in enumerate(randrow):
@@ -1748,6 +1786,7 @@ class ConditionalFreqDist(defaultdict):
         :type cond_samples: Sequence of (condition, sample) tuples
         """
         defaultdict.__init__(self, FreqDist)
+
         if cond_samples:
             for (cond, sample) in cond_samples:
                 self[cond][sample] += 1
@@ -1775,7 +1814,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in compat.itervalues(self))
+        return sum(fdist.N() for fdist in itervalues(self))
 
     def plot(self, *args, **kwargs):
         """
@@ -1819,7 +1858,7 @@ class ConditionalFreqDist(defaultdict):
 
         pylab.legend(loc=legend_loc)
         pylab.grid(True, color="silver")
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
         if title:
             pylab.title(title)
         pylab.xlabel("Samples")
@@ -1864,7 +1903,7 @@ class ConditionalFreqDist(defaultdict):
             print()
 
     # Mathematical operators
-    
+
     def __add__(self, other):
         """
         Add counts from two ConditionalFreqDists.
@@ -1920,7 +1959,7 @@ class ConditionalFreqDist(defaultdict):
         return result
 
     def __and__(self, other):
-        """ 
+        """
         Intersection is the minimum of corresponding counts.
         """
         if not isinstance(other, ConditionalFreqDist):

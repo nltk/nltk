@@ -1,13 +1,14 @@
 # Natural Language Toolkit: CCG Categories
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import unicode_literals
+from functools import total_ordering
+
 from nltk.internals import raise_unorderable_types
-from nltk.compat import (total_ordering, python_2_unicode_compatible,
-                         unicode_repr)
+from nltk.compat import (python_2_unicode_compatible, unicode_repr)
 
 @total_ordering
 class AbstractCCGCategory(object):
@@ -335,5 +336,3 @@ class FunctionalCategory(AbstractCCGCategory):
 
     def __str__(self):
         return "(%s%s%s)" % (self._res, self._dir, self._arg)
-
-

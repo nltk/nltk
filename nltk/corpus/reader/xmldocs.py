@@ -1,6 +1,6 @@
 # Natural Language Toolkit: XML Corpus Reader
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -18,7 +18,8 @@ import codecs
 try: from xml.etree import cElementTree as ElementTree
 except ImportError: from xml.etree import ElementTree
 
-from nltk import compat
+from six import string_types
+
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.tokenize import WordPunctTokenizer
 from nltk.internals import ElementWrapper
@@ -42,7 +43,7 @@ class XMLCorpusReader(CorpusReader):
         # Make sure we have exactly one file -- no concatenating XML.
         if fileid is None and len(self._fileids) == 1:
             fileid = self._fileids[0]
-        if not isinstance(fileid, compat.string_types):
+        if not isinstance(fileid, string_types):
             raise TypeError('Expected a single file identifier string')
         # Read the XML in using ElementTree.
         elt = ElementTree.parse(self.abspath(fileid).open()).getroot()
@@ -79,7 +80,7 @@ class XMLCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 
@@ -156,7 +157,11 @@ class XMLCorpusView(StreamBackedCorpusView):
 
     def _detect_encoding(self, fileid):
         if isinstance(fileid, PathPointer):
-            s = fileid.open().readline()
+            try:
+                infile = fileid.open()
+                s = infile.readline()
+            finally:
+                infile.close()
         else:
             with open(fileid, 'rb') as infile:
                 s = infile.readline()

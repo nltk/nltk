@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Comparative Sentence Corpus Reader
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -34,6 +34,8 @@ Related papers:
     (Coling-2008), Manchester, 18-22 August, 2008.
 """
 import re
+
+from six import string_types
 
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
@@ -120,7 +122,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.CorpusView(path, self._read_comparison_block, encoding=enc)
             for (path, enc, fileid) in self.abspaths(fileids, True, True)])

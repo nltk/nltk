@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Drawing utilities
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -33,13 +33,10 @@ structures.  For more information, see the CLIG
 homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
-
-
-import nltk.compat
-from tkinter import (Button, Canvas, Entry, Frame, Label, Menu, Menubutton,
-                     RAISED, Scrollbar, StringVar, Text, Tk, Toplevel, Widget)
-
-import tkinter.font, tkinter.messagebox, tkinter.filedialog
+from six.moves.tkinter import (Button, Canvas, Entry, Frame, Label, Menu,
+                               Menubutton, Scrollbar, StringVar, Text, Tk,
+                               Toplevel, Widget, RAISED)
+from six.moves.tkinter_tkfiledialog import asksaveasfilename
 
 from nltk.util import in_idle
 
@@ -1705,18 +1702,21 @@ class CanvasFrame(object):
         :rtype: None
         """
         if filename is None:
-            from tkinter.filedialog import asksaveasfilename
             ftypes = [('Postscript files', '.ps'),
                       ('All files', '*')]
             filename = asksaveasfilename(filetypes=ftypes,
                                          defaultextension='.ps')
             if not filename: return
         (x0, y0, w, h) = self.scrollregion()
-        self._canvas.postscript(file=filename, x=x0, y=y0,
+        postscript = self._canvas.postscript(x=x0, y=y0,
                                 width=w+2, height=h+2,
                                 pagewidth=w+2, # points = 1/72 inch
                                 pageheight=h+2, # points = 1/72 inch
                                 pagex=0, pagey=0)
+        # workaround for bug in Tk font handling
+        postscript = postscript.replace(' 0 scalefont ', ' 9 scalefont ')
+        with open(filename, 'wb') as f:
+            f.write(postscript.encode('utf8'))
 
     def scrollregion(self):
         """
@@ -2353,4 +2353,3 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-

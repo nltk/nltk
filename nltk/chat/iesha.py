@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Teen Chatbot
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Selina Dennis <sjmd@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

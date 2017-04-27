@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
 #
@@ -21,8 +21,10 @@ from pprint import pformat
 import subprocess
 import warnings
 
+from six import string_types
+
 from nltk.tree import Tree
-from nltk.compat import python_2_unicode_compatible, string_types
+from nltk.compat import python_2_unicode_compatible
 
 
 #################################################################

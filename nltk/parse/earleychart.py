@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Incremental Earley Chart Parser
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Rob Speer <rspeer@mit.edu>
 #         Edward Loper <edloper@gmail.com>
@@ -27,7 +27,8 @@ algorithm, originally formulated by Jay Earley (1970).
 """
 from __future__ import print_function, division
 
-from nltk.compat import xrange
+from six.moves import range
+
 from nltk.parse.chart import (Chart, ChartParser, EdgeI, LeafEdge, LeafInitRule,
                               BottomUpPredictRule, BottomUpPredictCombineRule,
                               TopDownInitRule, SingleEdgeFundamentalRule,
@@ -108,7 +109,7 @@ class IncrementalChart(Chart):
         self._edgelists[edge.end()].append(edge)
 
     def _positions(self):
-        return xrange(self.num_leaves() + 1)
+        return range(self.num_leaves() + 1)
 
 
 class FeatureIncrementalChart(IncrementalChart, FeatureChart):

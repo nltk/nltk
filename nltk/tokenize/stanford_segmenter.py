@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Chinese Segmenter
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: 52nlp <52nlpcn@gmail.com>
 #         Casper Lehmann-Strøm <casperlehmann@gmail.com>
 #
@@ -16,12 +16,13 @@ import os
 import json
 from subprocess import PIPE
 
-from nltk import compat
+from six import text_type
+
 from nltk.internals import find_jar, config_java, java, _java_options
 
 from nltk.tokenize.api import TokenizerI
 
-_stanford_url = 'http://nlp.stanford.edu/software'
+_stanford_url = 'https://nlp.stanford.edu/software'
 
 class StanfordSegmenter(TokenizerI):
     r"""
@@ -60,7 +61,7 @@ class StanfordSegmenter(TokenizerI):
                 verbose=verbose)
 
         # This is passed to java as the -cp option, the segmenter needs slf4j.
-        self._stanford_jar = ':'.join(
+        self._stanford_jar = os.pathsep.join(
             [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
 
         self._sihan_corpora_dict = path_to_sihan_corpora_dict
@@ -105,7 +106,7 @@ class StanfordSegmenter(TokenizerI):
         # Write the actural sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, 'wb')
         _input = '\n'.join((' '.join(x) for x in sentences))
-        if isinstance(_input, compat.text_type) and encoding:
+        if isinstance(_input, text_type) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Senseval 2 Corpus Reader
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
 # URL: <http://nltk.org/>
@@ -22,6 +22,8 @@ Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """
 from __future__ import print_function, unicode_literals
+
+from six import string_types
 
 import re
 from xml.etree import ElementTree
@@ -56,7 +58,7 @@ class SensevalCorpusReader(CorpusReader):
         :return: the text contents of the given fileids, as a single string.
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _entry(self, tree):

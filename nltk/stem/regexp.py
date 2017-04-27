@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
@@ -54,7 +54,7 @@ class RegexpStemmer(StemmerI):
             return self._regexp.sub('', word)
 
     def __repr__(self):
-        return '<RegexpStemmer: %r>' % self._regexp.pattern
+        return '<RegexpStemmer: {!r}>'.format(self._regexp.pattern)
 
 
 

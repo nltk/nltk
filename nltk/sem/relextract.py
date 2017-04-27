@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Relation Extraction
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -25,7 +25,8 @@ from __future__ import print_function
 
 from collections import defaultdict
 import re
-from nltk.compat import htmlentitydefs
+
+from six.moves import html_entities
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
@@ -79,7 +80,7 @@ def _join(lst, sep=' ', untag=False):
         from nltk.tag import tuple2str
         return sep.join(tuple2str(tup) for tup in lst)
 
-def descape_entity(m, defs=htmlentitydefs.entitydefs):
+def descape_entity(m, defs=html_entities.entitydefs):
     """
     Translate one entity to its ISO Latin value.
     Inspired by example from effbot.org
@@ -114,7 +115,7 @@ def list2sym(lst):
 
 def tree2semi_rel(tree):
     """
-    Group a chunk structure into a list of 'semi-relations' of the form (list(str), ``Tree``). 
+    Group a chunk structure into a list of 'semi-relations' of the form (list(str), ``Tree``).
 
     In order to facilitate the construction of (``Tree``, string, ``Tree``) triples, this
     identifies pairs whose first member is a list (possibly empty) of terminal
@@ -209,7 +210,7 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
             objclass = _expand(objclass)
         else:
             raise ValueError("your value for the object type has not been recognized: %s" % objclass)
-        
+
     if corpus == 'ace' or corpus == 'conll2002':
         pairs = tree2semi_rel(doc)
     elif corpus == 'ieer':
@@ -334,7 +335,7 @@ def roles_demo(trace=0):
     commissioner|
     counsel|
     director|
-    economist|       
+    economist|
     editor|
     executive|
     foreman|
@@ -379,10 +380,10 @@ def ieer_headlines():
 
     from nltk.corpus import ieer
     from nltk.tree import Tree
-    
+
     print("IEER: First 20 Headlines")
-    print("=" * 45)  
-    
+    print("=" * 45)
+
     trees = [(doc.docno, doc.headline) for file in ieer.fileids() for doc in ieer.parsed_docs(file)]
     for tree in trees[:20]:
         print()
@@ -424,7 +425,7 @@ def conllned(trace=1):
         if trace:
                 lcon = rcon = True
         for rel in extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN, window=10):
-            print(rtuple(rel, lcon=True, rcon=True))
+            print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 #############################################
 ## Spanish CONLL2002: (PER, ORG)
@@ -473,11 +474,3 @@ if __name__ == '__main__':
     conllesp()
     ieer_headlines()
     ne_chunked()
-
-
-
-
-
-
-
-

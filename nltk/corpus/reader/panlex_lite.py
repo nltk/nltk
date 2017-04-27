@@ -1,6 +1,6 @@
 # Natural Language Toolkit: PanLex Corpus Reader
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: David Kamholz <kamholz@panlex.org>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

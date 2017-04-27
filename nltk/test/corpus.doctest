@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2016 NLTK Project
+.. Copyright (C) 2001-2017 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ================
@@ -371,50 +371,6 @@ Reading the CoNLL 2007 Dependency Treebanks:
             (a 0,9452_dólares)
             (frente_a , (0,9349_dólares los (de (mañana esta)))))))
       .)
-
-NLTK also provides a corpus reader for the York-Toronto-Helsinki
-Parsed Corpus of Old English Prose (YCOE); but the corpus itself is
-not included in the NLTK data package.  If you install it yourself,
-you can use NLTK to access it:
-
-    >>> from nltk.corpus import ycoe
-    >>> for tree in ycoe.parsed_sents('cocuraC')[:4]:
-    ...     print(tree) # doctest: +SKIP
-    (CP-THT
-      (C +D+atte)
-      (IP-SUB ...)
-      ...
-      (. .))
-    (IP-MAT
-      (IP-MAT-0
-        (PP (P On) (NP (ADJ o+dre) (N wisan)))...)
-      ...
-      (. .))
-    (IP-MAT
-      (NP-NOM-x-2 *exp*)
-      (NP-DAT-1 (D^D +D+am) (ADJ^D unge+dyldegum))
-      ...
-      (. .))
-    (IP-MAT
-      (ADVP (ADV Sw+a))
-      (NP-NOM-x (PRO^N hit))
-      (ADVP-TMP (ADV^T oft))
-      ...
-      (. .))
-
-If the YCOE corpus is not available, you will get an error message
-when you try to access it:
-
-    >>> from nltk.corpus import ycoe
-    >>> print(ycoe) # doctest: +SKIP
-    Traceback (most recent call last):
-    LookupError:
-    **********************************************************************
-      Resource 'corpora/ycoe' not found.  For installation
-      instructions, please see <http://nltk.org/index.php/Installation>.
-      Searched in:
-        - ...
-    **********************************************************************
 
 Word Lists and Lexicons
 =======================

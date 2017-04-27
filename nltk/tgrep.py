@@ -3,7 +3,7 @@
 #
 # Natural Language Toolkit: TGrep search
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Will Roberts <wildwilhelm@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -111,15 +111,19 @@ macro definitions to ``m`` and initialises ``l`` to an empty dictionary.
 '''
 
 from __future__ import absolute_import, print_function, unicode_literals
-from nltk.compat import binary_type, text_type
+
 import functools
-import nltk.tree
+import re
+
+from six import binary_type, text_type
+
 try:
     import pyparsing
 except ImportError:
     print('Warning: nltk.tgrep will not work without the `pyparsing` package')
     print('installed.')
-import re
+
+import nltk.tree
 
 class TgrepException(Exception):
     '''Tgrep exception type.'''
@@ -932,6 +936,3 @@ def tgrep_nodes(pattern, trees, search_leaves=True):
                       if pattern(tree[position])]
         except AttributeError:
             yield []
-
-
-

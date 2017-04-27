@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Collocations and Association Measures
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
@@ -32,7 +32,7 @@ from __future__ import print_function
 #   and unigram counts (raw_freq, pmi, student_t)
 
 import itertools as _itertools
-from nltk.compat import iteritems
+from six import iteritems
 
 from nltk.probability import FreqDist
 from nltk.util import ngrams

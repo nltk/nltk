@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Applications package
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -21,9 +21,8 @@ wordnet:      WordNet Browser
 
 
 # Import Tkinter-based modules if Tkinter is installed
-import nltk.compat
 try:
-    import tkinter
+    from six.moves import tkinter
 except ImportError:
     import warnings
     warnings.warn("nltk.app package not loaded "

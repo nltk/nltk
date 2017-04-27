@@ -118,7 +118,9 @@ scope of a complex symbol.
 
 import textwrap, random
 from itertools import chain, islice
-from nltk.compat import izip
+
+from six.moves import zip
+
 
 def generate_chomsky(times=5, line_length=72):
     parts = []
@@ -126,7 +128,7 @@ def generate_chomsky(times=5, line_length=72):
         phraselist = list(map(str.strip, part.splitlines()))
         random.shuffle(phraselist)
         parts.append(phraselist)
-    output = chain(*islice(izip(*parts), 0, times))
+    output = chain(*islice(zip(*parts), 0, times))
     print(textwrap.fill(" ".join(output), line_length))
 
 if __name__ == '__main__':

@@ -2,15 +2,18 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
 
 import operator
 from functools import reduce
+from itertools import chain
 
-from nltk.compat import string_types, python_2_unicode_compatible
+from six import string_types
+
+from nltk.compat import python_2_unicode_compatible
 from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
                             AndExpression, ApplicationExpression, BinaryExpression,
                             BooleanExpression, ConstantExpression, EqualityExpression,
@@ -22,10 +25,8 @@ from nltk.sem.logic import (APP, AbstractVariableExpression, AllExpression,
 
 # Import Tkinter-based modules if they are available
 try:
-    # imports are fixed for Python 2.x by nltk.compat
-    from tkinter import Canvas
-    from tkinter import Tk
-    from tkinter.font import Font
+    from six.moves.tkinter import Canvas, Tk
+    from six.moves.tkinter_font import Font
     from nltk.util import in_idle
 
 except ImportError:
@@ -339,7 +340,7 @@ class DRS(DrtExpression, Expression):
     def get_refs(self, recursive=False):
         """:see: AbstractExpression.get_refs()"""
         if recursive:
-            conds_refs = self.refs + sum((c.get_refs(True) for c in self.conds), [])
+            conds_refs = self.refs + list(chain(*(c.get_refs(True) for c in self.conds)))
             if self.consequent:
                 conds_refs.extend(self.consequent.get_refs(True))
             return conds_refs
@@ -1227,7 +1228,7 @@ def demo():
 
 def test_draw():
     try:
-        from tkinter import Tk
+        from six.moves.tkinter import Tk
     except ImportError:
         from nose import SkipTest
         raise SkipTest("tkinter is required, but it's not available.")

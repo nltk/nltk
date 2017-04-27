@@ -3,18 +3,14 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-
-from nltk import compat  # this fixes tkinter imports for Python 2.x
-
 try:
-    from tkinter.font import Font
-
-    from tkinter import (Button, Frame, IntVar, Label,
-                         Listbox, Menu, Scrollbar, Tk)
+    from six.moves.tkinter import (Button, Frame, IntVar, Label, Listbox, Menu,
+                                   Scrollbar, Tk)
+    from six.moves.tkinter_font import Font
     from nltk.draw.util import CanvasFrame, ShowText
 
 except ImportError:
@@ -346,7 +342,7 @@ class DrtGlueDemo(object):
                  "Written by Daniel H. Garrette")
         TITLE = 'About: NLTK DRT Glue Demo'
         try:
-            from tkMessageBox import Message
+            from six.moves.tkinter_messagebox import Message
             Message(message=ABOUT, title=TITLE).show()
         except:
             ShowText(self._top, TITLE, ABOUT)

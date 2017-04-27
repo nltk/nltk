@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to Megam Classifier
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -25,6 +25,8 @@ for details.
 from __future__ import print_function
 
 import subprocess
+
+from six import string_types
 
 from nltk import compat
 from nltk.internals import find_binary
@@ -155,7 +157,7 @@ def call_megam(args):
     """
     Call the ``megam`` binary with the given arguments.
     """
-    if isinstance(args, compat.string_types):
+    if isinstance(args, string_types):
         raise TypeError('args should be a list of strings')
     if _megam_bin is None:
         config_megam()
@@ -171,8 +173,7 @@ def call_megam(args):
         print(stderr)
         raise OSError('megam command failed!')
 
-    if isinstance(stdout, compat.string_types):
+    if isinstance(stdout, string_types):
         return stdout
     else:
         return stdout.decode('utf-8')
-

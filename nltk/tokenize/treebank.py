@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
 #
@@ -93,7 +93,7 @@ class TreebankWordTokenizer(TokenizerI):
     CONTRACTIONS4 = [re.compile(r"(?i)\b(whad)(dd)(ya)\b"),
                      re.compile(r"(?i)\b(wha)(t)(cha)\b")]
 
-    def tokenize(self, text):
+    def tokenize(self, text, return_str=False):
         for regexp, substitution in self.STARTING_QUOTES:
             text = regexp.sub(substitution, text)
 
@@ -119,6 +119,4 @@ class TreebankWordTokenizer(TokenizerI):
         # for regexp in self.CONTRACTIONS4:
         #     text = regexp.sub(r' \1 \2 \3 ', text)
 
-        return text.split()
-
-
+        return text if return_str else text.split() 

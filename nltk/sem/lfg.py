@@ -2,10 +2,12 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, division, unicode_literals
+
+from itertools import chain
 
 from nltk.internals import Counter
 from nltk.compat import python_2_unicode_compatible
@@ -117,7 +119,7 @@ class FStructure(dict):
             if not fstruct.pred:
                 fstruct.pred = (word, tag)
 
-            children = [depgraph.nodes[idx] for idx in sum(list(node['deps'].values()), [])]
+            children = [depgraph.nodes[idx] for idx in chain(*node['deps'].values())]
             for child in children:
                 fstruct.safeappend(child['rel'], FStructure._read_depgraph(child, depgraph, label_counter, fstruct))
 

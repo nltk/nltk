@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunk parsing API
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -101,9 +101,9 @@ class NEChunkParserTagger(ClassifierBasedTagger):
             'nextpos': nextpos,
             'prevword': prevword,
             'nextword': nextword,
-            'word+nextpos': '%s+%s' % (word.lower(), nextpos),
-            'pos+prevtag': '%s+%s' % (pos, prevtag),
-            'shape+prevtag': '%s+%s' % (prevshape, prevtag),
+            'word+nextpos': '{0}+{1}'.format(word.lower(), nextpos),
+            'pos+prevtag': '{0}+{1}'.format(pos, prevtag),
+            'shape+prevtag': '{0}+{1}'.format(prevshape, prevtag),
             }
 
         return features
@@ -159,9 +159,9 @@ class NEChunkParser(ChunkParserI):
                 if len(child) == 0:
                     print("Warning -- empty chunk in sentence")
                     continue
-                toks.append((child[0], 'B-%s' % child.label()))
+                toks.append((child[0], 'B-{0}'.format(child.label())))
                 for tok in child[1:]:
-                    toks.append((tok, 'I-%s' % child.label()))
+                    toks.append((tok, 'I-{0}'.format(child.label())))
             else:
                 toks.append((child, 'O'))
         return toks
@@ -210,7 +210,7 @@ def load_ace_data(roots, fmt='binary', skip_bnews=True):
                         yield sent
 
 def load_ace_file(textfile, fmt):
-    print('  - %s' % os.path.split(textfile)[1])
+    print('  - {0}'.format(os.path.split(textfile)[1]))
     annfile = textfile+'.tmx.rdc.xml'
 
     # Read the xml file, and get a list of entities
@@ -281,12 +281,12 @@ def cmp_chunks(correct, guessed):
     for (w, ct), (w, gt) in zip(correct, guessed):
         if ct == gt == 'O':
             if not ellipsis:
-                print("  %-15s %-15s %s" % (ct, gt, w))
-                print('  %-15s %-15s %s' % ('...', '...', '...'))
+                print("  {:15} {:15} {2}".format(ct, gt, w))
+                print('  {:15} {:15} {2}'.format('...', '...', '...'))
                 ellipsis = True
         else:
             ellipsis = False
-            print("  %-15s %-15s %s" % (ct, gt, w))
+            print("  {:15} {:15} {2}".format(ct, gt, w))
 
 def build_model(fmt='binary'):
     print('Loading training data...')
@@ -313,8 +313,8 @@ def build_model(fmt='binary'):
         if i < 3: cmp_chunks(correct, guess)
     print(chunkscore)
 
-    outfilename = '/tmp/ne_chunker_%s.pickle' % fmt
-    print('Saving chunker to %s...' % outfilename)
+    outfilename = '/tmp/ne_chunker_{0}.pickle'.format(fmt)
+    print('Saving chunker to {0}...'.format(outfilename))
 
     with open(outfilename, 'wb') as outfile:
         pickle.dump(cp, outfile, -1)

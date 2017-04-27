@@ -3,7 +3,7 @@
 # Author:     Peter Wang
 # Updated by: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -22,6 +22,8 @@ convert that representation into first-order logic formulas.
 from __future__ import print_function, unicode_literals
 
 from functools import reduce
+
+from six import itervalues
 
 from nltk import compat
 from nltk.parse import load_parser
@@ -129,7 +131,7 @@ class HoleSemantics(object):
 
     def _find_top_nodes(self, node_list):
         top_nodes = node_list.copy()
-        for f in compat.itervalues(self.fragments):
+        for f in itervalues(self.fragments):
             # the label is the first argument of the predicate
             args = f[1]
             for arg in args:

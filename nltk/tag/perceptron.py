@@ -165,18 +165,26 @@ class PerceptronTagger(TaggerI):
         '''Train a model from sentences, and save it at ``save_loc``. ``nr_iter``
         controls the number of Perceptron training iterations.
 
-        :param sentences: A list of (words, tags) tuples.
+        :param sentences: A list or iterator of sentences, where each sentence
+            is a list of (words, tags) tuples.
         :param save_loc: If not ``None``, saves a pickled model in this location.
         :param nr_iter: Number of training iterations.
         '''
+        # We'd like to allow ``sentences`` to be either a list or an iterator,
+        # the latter being especially important for a large training dataset.
+        # Because ``self._make_tagdict(sentences)`` runs regardless, we make
+        # it populate ``self._sentences`` (a list) with all the sentences.
+        # This saves the overheard of just iterating through ``sentences`` to
+        # get the list by ``sentences = list(sentences)``.
+
+        self._sentences = list()  # to be populated by self._make_tagdict...
         self._make_tagdict(sentences)
         self.model.classes = self.classes
         for iter_ in range(nr_iter):
             c = 0
             n = 0
-            for sentence  in sentences:
-                words = [word for word,tag in sentence]
-                tags  = [tag for word,tag in sentence]
+            for sentence in self._sentences:
+                words, tags = zip(*sentence)
                 
                 prev, prev2 = self.START
                 context = self.START + [self.normalize(w) for w in words] \
@@ -191,13 +199,19 @@ class PerceptronTagger(TaggerI):
                     prev = guess
                     c += guess == tags[i]
                     n += 1
-            random.shuffle(sentences)
+            random.shuffle(self._sentences)
             logging.info("Iter {0}: {1}/{2}={3}".format(iter_, c, n, _pc(c, n)))
+
+        # We don't need the training sentences anymore, and we don't want to
+        # waste space on them when we pickle the trained tagger.
+        self._sentences = None
+
         self.model.average_weights()
         # Pickle as a binary file
         if save_loc is not None:
             with open(save_loc, 'wb') as fout:
-                pickle.dump((self.model.weights, self.tagdict, self.classes), fout, -1)
+                # changed protocol from -1 to 2 to make pickling Python 2 compatible
+                pickle.dump((self.model.weights, self.tagdict, self.classes), fout, 2)
         
 
     def load(self, loc):
@@ -214,7 +228,7 @@ class PerceptronTagger(TaggerI):
         '''
         Normalization used in pre-processing.
         - All words are lower cased
-        - Digits in the range 1800-2100 are represented as !YEAR;
+        - Groups of digits of length 4 are represented as !YEAR;
         - Other digits are represented as !DIGITS
 
         :rtype: str
@@ -230,7 +244,7 @@ class PerceptronTagger(TaggerI):
 
     def _get_features(self, i, word, context, prev, prev2):
         '''Map tokens into a feature representation, implemented as a
-        {hashable: float} dict. If the features change, a new model must be
+        {hashable: int} dict. If the features change, a new model must be
         trained.
         '''
         def add(name, *args):
@@ -262,6 +276,7 @@ class PerceptronTagger(TaggerI):
         '''
         counts = defaultdict(lambda: defaultdict(int))
         for sentence in sentences:
+            self._sentences.append(sentence)
             for word, tag in sentence:
                 counts[word][tag] += 1
                 self.classes.add(tag)

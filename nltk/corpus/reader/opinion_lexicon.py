@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Opinion Lexicon Corpus Reader
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -27,8 +27,8 @@ Related papers:
     Comparing Opinions on the Web". Proceedings of the 14th International World
     Wide Web conference (WWW-2005), May 10-14, 2005, Chiba, Japan.
 """
+from six import string_types
 
-from nltk.compat import string_types
 from nltk.corpus.reader import WordListCorpusReader
 from nltk.corpus.reader.api import *
 
@@ -83,7 +83,7 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         :rtype: list(str)
         """
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
             for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 

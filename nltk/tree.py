@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Text Trees
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
@@ -19,10 +19,12 @@ from __future__ import print_function, unicode_literals
 
 import re
 
+from six import string_types
+
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
 from nltk.util import slice_bounds
-from nltk.compat import string_types, python_2_unicode_compatible, unicode_repr
+from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk.internals import raise_unorderable_types
 
 ######################################################################
@@ -694,7 +696,7 @@ class Tree(list):
         from nltk.treeprettyprinter import TreePrettyPrinter
         print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs),
               file=stream)
-        
+
     def __repr__(self):
         childstr = ", ".join(unicode_repr(c) for c in self)
         return '%s(%s, [%s])' % (type(self).__name__, unicode_repr(self._label), childstr)
@@ -1600,4 +1602,3 @@ __all__ = ['ImmutableProbabilisticTree', 'ImmutableTree', 'ProbabilisticMixIn',
            'ProbabilisticTree', 'Tree', 'bracket_parse',
            'sinica_parse', 'ParentedTree', 'MultiParentedTree',
            'ImmutableParentedTree', 'ImmutableMultiParentedTree']
-

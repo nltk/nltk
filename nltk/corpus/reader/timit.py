@@ -126,6 +126,8 @@ import re
 import tempfile
 import time
 
+from six import string_types
+
 from nltk import compat
 from nltk.tree import Tree
 from nltk.internals import import_from_stdlib
@@ -162,7 +164,7 @@ class TimitCorpusReader(CorpusReader):
         :param root: The root directory for this corpus.
         """
         # Ensure that wave files don't get treated as unicode data:
-        if isinstance(encoding, compat.string_types):
+        if isinstance(encoding, string_types):
             encoding = [('.*\.wav', None), ('.*', encoding)]
 
         CorpusReader.__init__(self, root,
@@ -205,11 +207,11 @@ class TimitCorpusReader(CorpusReader):
         region, gender, sentence type, or sentence number, if
         specified.
         """
-        if isinstance(dialect, compat.string_types): dialect = [dialect]
-        if isinstance(sex, compat.string_types): sex = [sex]
-        if isinstance(spkrid, compat.string_types): spkrid = [spkrid]
-        if isinstance(sent_type, compat.string_types): sent_type = [sent_type]
-        if isinstance(sentid, compat.string_types): sentid = [sentid]
+        if isinstance(dialect, string_types): dialect = [dialect]
+        if isinstance(sex, string_types): sex = [sex]
+        if isinstance(spkrid, string_types): spkrid = [spkrid]
+        if isinstance(sent_type, string_types): sent_type = [sent_type]
+        if isinstance(sentid, string_types): sentid = [sentid]
 
         utterances = self._utterances[:]
         if dialect is not None:
@@ -307,7 +309,7 @@ class TimitCorpusReader(CorpusReader):
 
     def phone_trees(self, utterances=None):
         if utterances is None: utterances = self._utterances
-        if isinstance(utterances, compat.string_types): utterances = [utterances]
+        if isinstance(utterances, string_types): utterances = [utterances]
 
         trees = []
         for utterance in utterances:
@@ -372,7 +374,7 @@ class TimitCorpusReader(CorpusReader):
 
     def _utterance_fileids(self, utterances, extension):
         if utterances is None: utterances = self._utterances
-        if isinstance(utterances, compat.string_types): utterances = [utterances]
+        if isinstance(utterances, string_types): utterances = [utterances]
         return ['%s%s' % (u, extension) for u in utterances]
 
     def play(self, utterance, start=0, end=None):

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Collections
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -13,13 +13,14 @@ import textwrap
 import pydoc
 import bisect
 import os
-
 from itertools import islice, chain, combinations
+from functools import total_ordering
 from collections import defaultdict, deque, Counter
 
+from six import text_type
+
 from nltk.internals import slice_bounds, raise_unorderable_types
-from nltk.compat import (class_types, text_type, string_types, total_ordering,
-                         python_2_unicode_compatible)
+from nltk.compat import python_2_unicode_compatible
 
 
 ##########################################################################
@@ -548,47 +549,45 @@ class LazyEnumerate(LazyZip):
 
 class LazyIteratorList(AbstractLazySequence):
     """
-    Wraps an iterator, loading its elements on demand 
+    Wraps an iterator, loading its elements on demand
     and making them subscriptable.
     __repr__ displays only the first few elements.
     """
-    def __init__(self, it, cache_limit=None, known_len=None):
+    def __init__(self, it, known_len=None):
         self._it = it
         self._len = known_len
         self._cache = []
-        self._cache_limit = cache_limit
-        self._i = 0 # Number of items consumed so far
 
     def __len__(self):
         if self._len:
             return self._len
         for x in self.iterate_from(len(self._cache)):
             pass
-        return len(self._cache)
+        self._len = len(self._cache)
+        return self._len
 
     def iterate_from(self, start):
-        while self._i<start:
+        """Create a new iterator over this list starting at the given offset."""
+        while len(self._cache)<start:
             v = next(self._it)
-            if self._cache_limit is None or len(self._cache)+1<self._cache_limit:
-                self._cache.append(v)
-            self._i += 1
+            self._cache.append(v)
         i = start
         while i<len(self._cache):
             yield self._cache[i]
             i += 1
         while True:
             v = next(self._it)
-            if self._cache_limit is None or len(self._cache)+1<self._cache_limit:
-                self._cache.append(v)
+            self._cache.append(v)
             yield v
+            i += 1
 
     def __add__(self, other):
         """Return a list concatenating self with other."""
-        return type(self)(itertools.chain(self, other))
+        return type(self)(chain(self, other))
 
     def __radd__(self, other):
         """Return a list concatenating other with self."""
-        return type(self)(itertools.chain(other, self))
+        return type(self)(chain(other, self))
 
 ######################################################################
 # Trie Implementation
@@ -599,12 +598,12 @@ class Trie(defaultdict):
 
     def __init__(self, strings=None):
         """Builds a Trie object, which is built around a ``defaultdict``
-        
+
         If ``strings`` is provided, it will add the ``strings``, which
-        consist of a ``list`` of ``strings``, to the Trie. 
+        consist of a ``list`` of ``strings``, to the Trie.
         Otherwise, it'll construct an empty Trie.
 
-        :param strings: List of strings to insert into the trie 
+        :param strings: List of strings to insert into the trie
             (Default is ``None``)
         :type strings: list(str)
 
@@ -646,10 +645,10 @@ class Trie(defaultdict):
         :return: Even though ``defaultdict`` is a subclass of ``dict`` and thus
             can be converted to a simple ``dict`` using ``dict()``, in our case
             it's a nested ``defaultdict``, so here's a quick trick to provide to
-            us the ``dict`` representation of the ``Trie`` without 
+            us the ``dict`` representation of the ``Trie`` without
             ``defaultdict(<class 'nltk.collections.Trie'>, ...``
         :rtype: dict(str -> dict(bool -> None))
-            Note: there can be an arbitrarily deeply nested 
+            Note: there can be an arbitrarily deeply nested
             ``dict(str -> dict(str -> dict(..))``, but the last
             level will have ``dict(str -> dict(bool -> None))``
 
@@ -685,5 +684,5 @@ class Trie(defaultdict):
             if isinstance(d, defaultdict):
                 d = {k: _default_to_regular(v) for k, v in d.items()}
             return d
-        
+
         return _default_to_regular(self)

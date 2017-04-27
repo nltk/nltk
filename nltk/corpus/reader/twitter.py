@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Twitter Corpus Reader
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -13,7 +13,8 @@ have been serialised into line-delimited JSON.
 import json
 import os
 
-from nltk import compat
+from six import string_types
+
 from nltk.tokenize import TweetTokenizer
 
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
@@ -135,7 +136,7 @@ class TwitterCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, compat.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
@@ -152,6 +153,3 @@ class TwitterCorpusReader(CorpusReader):
             tweet = json.loads(line)
             tweets.append(tweet)
         return tweets
-
-
-

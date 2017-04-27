@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chatbot Utilities
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -11,7 +11,9 @@ from __future__ import print_function
 
 import re
 import random
-from nltk import compat
+
+from six.moves import input
+
 
 reflections = {
   "i am"       : "you are",
@@ -109,12 +111,12 @@ class Chat(object):
 
     # Hold a conversation with a chatbot
     def converse(self, quit="quit"):
-        input = ""
-        while input != quit:
-            input = quit
-            try: input = compat.raw_input(">")
+        user_input = ""
+        while user_input != quit:
+            user_input = quit
+            try: user_input = input(">")
             except EOFError:
-                print(input)
-            if input:
-                while input[-1] in "!.": input = input[:-1]
-                print(self.respond(input))
+                print(user_input)
+            if user_input:
+                while user_input[-1] in "!.": user_input = user_input[:-1]
+                print(self.respond(user_input))

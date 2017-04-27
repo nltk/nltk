@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
@@ -109,7 +109,9 @@ import re
 import math
 from collections import defaultdict
 
-from nltk.compat import unicode_repr, python_2_unicode_compatible, string_types
+from six import string_types
+
+from nltk.compat import unicode_repr, python_2_unicode_compatible
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
 
@@ -1062,21 +1064,32 @@ class PunktTrainer(PunktBaseClass):
 
         p = count_b / N
         p1 = count_ab / count_a
-        p2 = (count_b - count_ab) / (N - count_a)
+        try:
+            p2 = (count_b - count_ab) / (N - count_a)
+        except ZeroDivisionError as e:
+            p2 = 1
 
-        summand1 = (count_ab * math.log(p) +
-                    (count_a - count_ab) * math.log(1.0 - p))
+        print (p, p1, p2, N, count_a, count_b, count_ab)
 
-        summand2 = ((count_b - count_ab) * math.log(p) +
-                    (N - count_a - count_b + count_ab) * math.log(1.0 - p))
+        try:
+            summand1 = (count_ab * math.log(p) +
+                        (count_a - count_ab) * math.log(1.0 - p))
+        except ValueError as e:
+            summand1 = 0
 
-        if count_a == count_ab:
+        try:
+            summand2 = ((count_b - count_ab) * math.log(p) +
+                        (N - count_a - count_b + count_ab) * math.log(1.0 - p))
+        except ValueError as e:
+            summand2 = 0
+
+        if count_a == count_ab or p1 <= 0 or p1 >= 1:
             summand3 = 0
         else:
             summand3 = (count_ab * math.log(p1) +
                         (count_a - count_ab) * math.log(1.0 - p1))
 
-        if count_b == count_ab:
+        if count_b == count_ab or p2 <= 0 or p2 >= 1:
             summand4 = 0
         else:
             summand4 = ((count_b - count_ab) * math.log(p2) +
@@ -1285,7 +1298,8 @@ class PunktSentenceTokenizer(PunktBaseClass,TokenizerI):
                 else:
                     # next sentence starts at following punctuation
                     last_break = match.end()
-        yield slice(last_break, len(text))
+        # The last sentence should not contain trailing whitespace.
+        yield slice(last_break, len(text.rstrip()))
 
     def _realign_boundaries(self, text, slices):
         """
@@ -1597,5 +1611,3 @@ def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     sbd = tok_cls(trainer.get_params())
     for l in sbd.sentences_from_text(text):
         print(cleanup(l))
-
-

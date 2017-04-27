@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagger Interface
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -10,6 +10,8 @@
 Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
+from itertools import chain
+
 from nltk.internals import overridden
 from nltk.metrics import accuracy
 
@@ -62,8 +64,8 @@ class TaggerI(object):
         """
 
         tagged_sents = self.tag_sents(untag(sent) for sent in gold)
-        gold_tokens = sum(gold, [])
-        test_tokens = sum(tagged_sents, [])
+        gold_tokens = list(chain(*gold))
+        test_tokens = list(chain(*tagged_sents))
         return accuracy(gold_tokens, test_tokens)
 
     def _check_params(self, train, model):

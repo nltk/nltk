@@ -1,6 +1,6 @@
 # CHILDES XML Corpus Reader
 
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
 # URL: <http://nltk.org/>
@@ -9,15 +9,15 @@
 """
 Corpus reader for the XML version of the CHILDES corpus.
 """
-from __future__ import print_function
+from __future__ import print_function, division
 
 __docformat__ = 'epytext en'
 
 import re
 from collections import defaultdict
+from six import string_types
 
 from nltk.util import flatten, LazyMap, LazyConcatenation
-from nltk.compat import string_types
 
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
@@ -123,7 +123,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
                 pos, strip_space, replace) for fileid in self.abspaths(fileids)]
-        
+
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
             pos, strip_space, replace)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
@@ -153,7 +153,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
                 pos, strip_space, replace) for fileid in self.abspaths(fileids)]
-        
+
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
             pos, strip_space, replace)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
@@ -278,9 +278,9 @@ class CHILDESCorpusReader(XMLCorpusReader):
             thisWordList = flatten(results)
             # count number of morphemes
             # (e.g., 'read' = 1 morpheme but 'read-PAST' is 2 morphemes)
-            numWords = float(len(flatten([word.split('-')
-                                          for word in thisWordList]))) - numFillers
-            numSents = float(len(results)) - sentDiscount
+            numWords = len(flatten([word.split('-')
+                                          for word in thisWordList])) - numFillers
+            numSents = len(results) - sentDiscount
             mlu = numWords/numSents
         except ZeroDivisionError:
             mlu = 0
@@ -520,4 +520,3 @@ def demo(corpus_root=None):
 
 if __name__ == "__main__":
     demo()
-

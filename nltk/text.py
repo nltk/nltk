@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Texts
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -16,17 +16,19 @@ distributional similarity.
 from __future__ import print_function, division, unicode_literals
 
 from math import log
-from collections import defaultdict
+from collections import defaultdict, Counter
 from functools import reduce
 from itertools import islice
 import re
+
+from six import text_type
 
 from nltk.probability import FreqDist, LidstoneProbDist
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
-from nltk.compat import python_2_unicode_compatible, text_type, Counter
+from nltk.compat import python_2_unicode_compatible
 
 
 class ContextIndex(object):
@@ -481,6 +483,13 @@ class Text(object):
         """
         from nltk.draw import dispersion_plot
         dispersion_plot(self, words)
+
+    def generate(self, words):
+        """
+        Issues a reminder to users following the book online
+        """
+        import warnings
+        warnings.warn('The generate() method is no longer available.', DeprecationWarning)
 
     def plot(self, *args):
         """

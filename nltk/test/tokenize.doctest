@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2016 NLTK Project
+.. Copyright (C) 2001-2017 NLTK Project
 .. For license information, see LICENSE.TXT
 
     >>> from __future__ import print_function
@@ -39,6 +39,19 @@ Some test strings.
     >>> s10 = "There were 300,000, but that wasn't enough."
     >>> word_tokenize(s10)
     ['There', 'were', '300,000', ',', 'but', 'that', 'was', "n't", 'enough', '.']
+
+
+Testing improvement made to the TreebankWordTokenizer
+
+    >>> sx1 = u'\xabNow that I can do.\xbb'
+    >>> expected = [u'\xab', u'Now', u'that', u'I', u'can', u'do', u'.', u'\xbb']
+    >>> word_tokenize(sx1) == expected
+    True
+    >>> sx2 = u'The unicode 201C and 201D \u201cLEFT(RIGHT) DOUBLE QUOTATION MARK\u201d is also OPEN_PUNCT and CLOSE_PUNCT.'
+    >>> expected = [u'The', u'unicode', u'201C', u'and', u'201D', u'\u201c', u'LEFT', u'(', u'RIGHT', u')', u'DOUBLE', u'QUOTATION', u'MARK', u'\u201d', u'is', u'also', u'OPEN_PUNCT', u'and', u'CLOSE_PUNCT', u'.']
+    >>> word_tokenize(sx2) == expected
+    True
+
 
 Sentence tokenization in word_tokenize:
 
@@ -164,3 +177,17 @@ It should not hang on long sequences of the same punctuation character.
     >>> s10 = "Photo: Aujourd'hui sur http://t.co/0gebOFDUzn Projet... http://t.co/bKfIUbydz2.............................. http://fb.me/3b6uXpz0L"
     >>> tknzr.tokenize(s10)
     [u'Photo', u':', u"Aujourd'hui", u'sur', u'http://t.co/0gebOFDUzn', u'Projet', u'...', u'http://t.co/bKfIUbydz2', u'...', u'http://fb.me/3b6uXpz0L']
+
+
+Regression Tests: PunktSentenceTokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The sentence splitter should remove whitespace following the sentence boundary.
+
+    >>> pst = PunktSentenceTokenizer()
+    >>> pst.tokenize('See Section 3).  Or Section 2).  ')
+    ['See Section 3).', 'Or Section 2).']
+    >>> pst.tokenize('See Section 3.)  Or Section 2.)  ')
+    ['See Section 3.)', 'Or Section 2.)']
+    >>> pst.tokenize('See Section 3.)  Or Section 2.)  ', realign_boundaries=False)
+    ['See Section 3.', ')  Or Section 2.', ')']

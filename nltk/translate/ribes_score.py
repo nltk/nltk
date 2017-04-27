@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: RIBES Score
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Contributors: Katsuhito Sudoh, Liling Tan, Kasramvd, J.F.Sebastian
 #               Mark Byers, ekhumoro, P. Ortiz
 # URL: <http://nltk.org/>

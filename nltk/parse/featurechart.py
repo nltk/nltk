@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Chart Parser for Feature-Based Grammars
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Rob Speer <rspeer@mit.edu>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <http://nltk.org/>
@@ -13,7 +13,9 @@ feature structures as nodes.
 """
 from __future__ import print_function, unicode_literals
 
-from nltk.compat import xrange, python_2_unicode_compatible
+from six.moves import range
+
+from nltk.compat import python_2_unicode_compatible
 from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
 from nltk.sem import logic
 from nltk.tree import Tree
@@ -206,7 +208,7 @@ class FeatureChart(Chart):
         for edge in self.select(start=0, end=self._num_leaves):
             if ((isinstance(edge, FeatureTreeEdge)) and
                 (edge.lhs()[TYPE] == start[TYPE]) and
-                (unify(edge.lhs(), start, rename_vars=True)) 
+                (unify(edge.lhs(), start, rename_vars=True))
                 ):
                 for tree in self.trees(edge, complete=True, tree_class=tree_class):
                     yield tree
@@ -401,7 +403,7 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
 class FeatureEmptyPredictRule(EmptyPredictRule):
     def apply(self, chart, grammar):
         for prod in grammar.productions(empty=True):
-            for index in xrange(chart.num_leaves() + 1):
+            for index in range(chart.num_leaves() + 1):
                 new_edge = FeatureTreeEdge.from_production(prod, index)
                 if chart.insert(new_edge, ()):
                     yield new_edge

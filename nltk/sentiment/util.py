@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Sentiment Analyzer
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,6 +10,7 @@
 """
 Utility methods for Sentiment Analysis.
 """
+from __future__ import division
 
 from copy import deepcopy
 import codecs
@@ -72,8 +73,8 @@ def timer(method):
         result = method(*args, **kw)
         end = time.time()
         tot_time = end - start
-        hours = int(tot_time / 3600)
-        mins = int((tot_time / 60) % 60)
+        hours = tot_time // 3600
+        mins = tot_time // 60 % 60
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:

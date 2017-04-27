@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Carnegie Mellon Pronouncing Dictionary Corpus Reader
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -47,6 +47,8 @@ ZH      seizure S IY ZH ER
 
 import codecs
 
+from six import string_types
+
 from nltk import compat
 from nltk.util import Index
 
@@ -68,7 +70,7 @@ class CMUDictCorpusReader(CorpusReader):
         :return: the cmudict lexicon as a raw string.
         """
         fileids = self._fileids
-        if isinstance(fileids, compat.string_types):
+        if isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 

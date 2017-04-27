@@ -4,9 +4,19 @@ NLTK News
 2016
 ----
 
+NLTK 3.2.2 released: December 2016
+   Support for Aline, ChrF and GLEU MT evaluation metrics,
+   Russian POS tagger model, Moses detokenizer,
+   rewrite Porter Stemmer and FrameNet corpus reader,
+   update FrameNet Corpus to version 1.7,
+   fixes: stanford_segmenter.py, SentiText, CoNLL Corpus Reader,
+   BLEU, naivebayes, Krippendorff's alpha, Punkt, Moses tokenizer,
+   TweetTokenizer, ToktokTokenizer;
+   improvements to testing framework
+
 NLTK 3.2.1 released: April 2016
-    Support for CCG semantics, Stanford segmenter, VADER lexicon;
-    Fixes to BLEU score calculation, CHILDES corpus reader.
+   Support for CCG semantics, Stanford segmenter, VADER lexicon;
+   Fixes to BLEU score calculation, CHILDES corpus reader.
 
 NLTK 3.2 released : March 2016
    Fixes for Python 3.5, code cleanups now Python 2.6 is no longer
@@ -100,7 +110,7 @@ NLTK 3.0a0 released : January 2013
 ----
 
 Python Grant : November 2012
-   The Python Software Foundation is sponsoring Mikhail Korborov's work on porting NLTK to Python 3.
+   The Python Software Foundation is sponsoring Mikhail Korobov's work on porting NLTK to Python 3.
    http://pyfound.blogspot.hu/2012/11/grants-to-assist-kivy-nltk-in-porting.html
 
 NLTK 2.0.4 released : November 2012

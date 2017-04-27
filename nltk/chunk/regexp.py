@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Regular Expression Chunkers
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -10,9 +10,11 @@ from __future__ import division
 
 import re
 
+from six import string_types
+
 from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
-from nltk.compat import python_2_unicode_compatible, string_types, unicode_repr
+from nltk.compat import python_2_unicode_compatible, unicode_repr
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunk format conversions
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -288,10 +288,10 @@ class ChunkScore(object):
         :rtype: str
         """
         return ("ChunkParse score:\n" +
-                ("    IOB Accuracy: %5.1f%%\n" % (self.accuracy()*100)) +
-                ("    Precision:    %5.1f%%\n" % (self.precision()*100)) +
-                ("    Recall:       %5.1f%%\n" % (self.recall()*100))+
-                ("    F-Measure:    %5.1f%%" % (self.f_measure()*100)))
+                ("    IOB Accuracy: {:5.1f}%%\n".format(self.accuracy()*100)) +
+                ("    Precision:    {:5.1f}%%\n".format(self.precision()*100)) +
+                ("    Recall:       {:5.1f}%%\n".format(self.recall()*100))+
+                ("    F-Measure:    {:5.1f}%%".format(self.f_measure()*100)))
 
 # extract chunks, and assign unique id, the absolute position of
 # the first word of the chunk
@@ -334,13 +334,13 @@ def tagstr2tree(s, chunk_label="NP", root_label="S", sep='/',
         text = match.group()
         if text[0] == '[':
             if len(stack) != 1:
-                raise ValueError('Unexpected [ at char %d' % match.start())
+                raise ValueError('Unexpected [ at char {:d}'.format(match.start()))
             chunk = Tree(chunk_label, [])
             stack[-1].append(chunk)
             stack.append(chunk)
         elif text[0] == ']':
             if len(stack) != 2:
-                raise ValueError('Unexpected ] at char %d' % match.start())
+                raise ValueError('Unexpected ] at char {:d}'.format(match.start()))
             stack.pop()
         else:
             if sep is None:
@@ -352,7 +352,7 @@ def tagstr2tree(s, chunk_label="NP", root_label="S", sep='/',
                 stack[-1].append((word, tag))
 
     if len(stack) != 1:
-        raise ValueError('Expected ] at char %d' % len(s))
+        raise ValueError('Expected ] at char {:d}'.format(len(s)))
     return stack[0]
 
 ### CONLL
@@ -384,7 +384,7 @@ def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), root_label="S"):
         # Decode the line.
         match = _LINE_RE.match(line)
         if match is None:
-            raise ValueError('Error on line %d' % lineno)
+            raise ValueError('Error on line {:d}'.format(lineno))
         (word, tag, state, chunk_type) = match.groups()
 
         # If it's a chunk type we don't care about, treat it as O.
@@ -461,7 +461,7 @@ def conlltags2tree(sentence, chunk_types=('NP','PP','VP'),
         elif chunktag == 'O':
             tree.append((word,postag))
         else:
-            raise ValueError("Bad conll tag %r" % chunktag)
+            raise ValueError("Bad conll tag {0!r}".format(chunktag))
     return tree
 
 def tree2conllstr(t):
@@ -512,8 +512,8 @@ def _ieer_read_text(s, root_label):
             else:
                 stack[-1].append(piece)
         except (IndexError, ValueError):
-            raise ValueError('Bad IEER string (error at character %d)' %
-                             piece_m.start())
+            raise ValueError('Bad IEER string (error at character {:d})'.format \
+                             (piece_m.start()))
     if len(stack) != 1:
         raise ValueError('Bad IEER string')
     return stack[0]

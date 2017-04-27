@@ -2,7 +2,7 @@
 #
 # Author: Long Duong <longdt219@gmail.com>
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -328,8 +328,8 @@ class TransitionParser(ParserI):
     def _is_projective(self, depgraph):
         arc_list = []
         for key in depgraph.nodes:
-            node = depgraph.nodes[key]           
-            
+            node = depgraph.nodes[key]
+
             if 'head' in node:
                 childIdx = node['address']
                 parentIdx = node['head']
@@ -490,7 +490,7 @@ class TransitionParser(ParserI):
         print(" Number of valid (projective) examples : " + str(countProj))
         return training_seq
 
-    def train(self, depgraphs, modelfile):
+    def train(self, depgraphs, modelfile, verbose=True):
         """
         :param depgraphs : list of DependencyGraph as the training data
         :type depgraphs : DependencyGraph
@@ -522,7 +522,7 @@ class TransitionParser(ParserI):
                 coef0=0,
                 gamma=0.2,
                 C=0.5,
-                verbose=True,
+                verbose=verbose,
                 probability=True)
 
             model.fit(x_train, y_train)
@@ -730,10 +730,9 @@ def demo():
      Number of valid (projective) examples : 1
     SHIFT, LEFTARC:ATT, SHIFT, LEFTARC:SBJ, SHIFT, SHIFT, LEFTARC:ATT, SHIFT, SHIFT, SHIFT, LEFTARC:ATT, RIGHTARC:PC, RIGHTARC:ATT, RIGHTARC:OBJ, SHIFT, RIGHTARC:PU, RIGHTARC:ROOT, SHIFT
 
-    >>> parser_std.train([gold_sent],'temp.arcstd.model')
+    >>> parser_std.train([gold_sent],'temp.arcstd.model', verbose=False)
      Number of training examples : 1
      Number of valid (projective) examples : 1
-    ...
     >>> remove(input_file.name)
 
     B. Check the ARC-EAGER training
@@ -745,10 +744,9 @@ def demo():
      Number of valid (projective) examples : 1
     SHIFT, LEFTARC:ATT, SHIFT, LEFTARC:SBJ, RIGHTARC:ROOT, SHIFT, LEFTARC:ATT, RIGHTARC:OBJ, RIGHTARC:ATT, SHIFT, LEFTARC:ATT, RIGHTARC:PC, REDUCE, REDUCE, REDUCE, RIGHTARC:PU
 
-    >>> parser_eager.train([gold_sent],'temp.arceager.model')
+    >>> parser_eager.train([gold_sent],'temp.arceager.model', verbose=False)
      Number of training examples : 1
      Number of valid (projective) examples : 1
-    ...
 
     >>> remove(input_file.name)
 
@@ -766,6 +764,10 @@ def demo():
     >>> de = DependencyEvaluator(result, [gold_sent])
     >>> de.eval() >= (0, 0)
     True
+
+    Remove test temporary files
+    >>> remove('temp.arceager.model')
+    >>> remove('temp.arcstd.model')
 
     Note that result is very poor because of only one training example.
     """

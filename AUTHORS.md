@@ -9,6 +9,7 @@
 
 ## Contributors
 
+- Hyuckin David Lim
 - Rami Al-Rfou'
 - Mark Amery
 - Greg Aumann
@@ -37,6 +38,7 @@
 - Graham Christensen
 - Trevor Cohn
 - David Coles
+- Claude Coulombe
 - Lucas Cooper
 - Robin Cooper
 - Chris Crowner
@@ -96,6 +98,7 @@
 - Pierre-François Laquerre
 - Stefano Lattarini
 - Haejoong Lee
+- Jackson Lee
 - Max Leonov
 - Chris Liechti
 - Tom Lippincott
@@ -134,6 +137,7 @@
 - Alberto Planas
 - Ondrej Platek
 - Alessandro Presta
+- Qi Liu
 - Martin Thorsen Ranang
 - Michael Recachinas
 - Brandon Rhodes
@@ -200,3 +204,18 @@
 - Heguang Miao
 - Hannah Aizenman (story645)
 - George Berry
+- Adam Nelson
+- J Richard Snape
+- Tsolak Ghukasyan
+- Prasasto Adi
+- Safwan Kamarrudin
+- Arthur Tilley
+- Vilhjalmur Thorsteinsson
+
+## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
+### Contributors to the Porter Stemmer
+- Martin Porter
+- Vivake Gupta
+- Barry Wilkins
+- Hiranmay Ghosh
+- Chris Emerson

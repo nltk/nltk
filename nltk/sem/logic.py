@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -15,12 +15,13 @@ from __future__ import print_function, unicode_literals
 import re
 import operator
 from collections import defaultdict
-from functools import reduce
+from functools import reduce, total_ordering
+
+from six import string_types
 
 from nltk.util import Trie
 from nltk.internals import Counter
-from nltk.compat import (total_ordering, string_types,
-                         python_2_unicode_compatible)
+from nltk.compat import python_2_unicode_compatible
 
 APP = 'APP'
 

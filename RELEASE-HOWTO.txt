@@ -11,8 +11,8 @@ A. PREPARE
 (1. Create a release branch from the develop branch
      git checkout -b release-3.X.Y develop)
 2. Check the copyright year is correct and update if necessary
-       e.g. ./tools/global_replace.py 2001-2015 2001-2016
-3. Modify nltk/VERSION with the version number
+       e.g. ./tools/global_replace.py 2001-2015 2001-2017
+3. Modify nltk/VERSION and web/conf.py with the version number
 4. Update the ChangeLog (for nltk, nltk_data)
        git log --since=20XX-YY-ZZ
 5. Update the data index (make data_index) and commit
@@ -46,8 +46,9 @@ B. RELEASE
   1. make clean
   2. make dist
   3. ls dist/
-  4. sudo python setup.py register
-  5. Log in to http://pypi.python.org/pypi and upload distributions
+  4. Log in to http://pypi.python.org/pypi
+     upload ./nltk.egg-info/PKG-INFO via the web form
+  5. Go to files tab and upload distributions
   6. rebuild the website with updated news page
   7. post announcement to NLTK the mailing lists:
        nltk-dev (for beta releases)

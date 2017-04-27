@@ -1,6 +1,6 @@
 # Natural Language Toolkit: TnT Tagger
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Sam Huston <sjh900@gmail.com>
 #
 # URL: <http://nltk.org/>
@@ -357,30 +357,24 @@ class TnT(TaggerI):
         # if word is known
         # compute the set of possible tags
         # and their associated log probabilities
-        if word in self._wd.conditions():
+        if word in self._wd:
             self.known += 1
 
             for (history, curr_sent_logprob) in current_states:
                 logprobs = []
 
                 for t in self._wd[word].keys():
-                    p_uni = self._uni.freq((t,C))
-                    p_bi = self._bi[history[-1]].freq((t,C))
-                    p_tri = self._tri[tuple(history[-2:])].freq((t,C))
-                    p_wd = self._wd[word][t] / self._uni[(t,C)]
+                    tC = (t,C)
+                    p_uni = self._uni.freq(tC)
+                    p_bi = self._bi[history[-1]].freq(tC)
+                    p_tri = self._tri[tuple(history[-2:])].freq(tC)
+                    p_wd = self._wd[word][t] / self._uni[tC]
                     p = self._l1 *p_uni + self._l2 *p_bi + self._l3 *p_tri
                     p2 = log(p, 2) + log(p_wd, 2)
 
-                    logprobs.append(((t,C), p2))
-
-
-                # compute the result of appending each tag to this history
-                for (tag, logprob) in logprobs:
-                    new_states.append((history + [tag],
-                                       curr_sent_logprob + logprob))
-
-
-
+                    # compute the result of appending each tag to this history
+                    new_states.append((history + [tC],
+                                       curr_sent_logprob + p2))
 
         # otherwise a new word, set of possible tags is unknown
         else:
@@ -398,7 +392,7 @@ class TnT(TaggerI):
                 tag = ('Unk',C)
 
             # otherwise apply the unknown word tagger
-            else :
+            else:
                 [(_w, t)] = list(self._unk.tag([word]))
                 tag = (t,C)
 
@@ -406,8 +400,6 @@ class TnT(TaggerI):
                 history.append(tag)
 
             new_states = current_states
-
-
 
         # now have computed a set of possible new_states
 
@@ -419,7 +411,6 @@ class TnT(TaggerI):
         # this is the beam search cut
         if len(new_states) > self._N:
             new_states = new_states[:self._N]
-
 
         # compute the tags for the rest of the sentence
         # return the best list of tags for the sentence
