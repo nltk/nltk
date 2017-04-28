@@ -171,7 +171,7 @@ class ConcordanceIndex(object):
         return '<ConcordanceIndex for %d tokens (%d types)>' % (
             len(self._tokens), len(self._offsets))
 
-    def generate_concordance(self, word, width=80):
+    def __concordance__(self, word, width=80):
         """Generate a concordance list of tuples(left, token, right)
         for ``word`` with the specified context window.
 
@@ -184,7 +184,7 @@ class ConcordanceIndex(object):
         self._concordance = []
 
         half_width = (width - len(word) - 2) // 2
-        context = width // 4 # approx number of words of context
+        context = width // 4  # approx number of words of context
         offsets = self.offsets(word)
         if offsets:
             for i in offsets:
@@ -194,16 +194,6 @@ class ConcordanceIndex(object):
                 left = left[-half_width:]
                 right = right[:half_width]
                 self._concordance.append((left, self._tokens[i], right))
-
-    def list_concordance(self, lines=None):
-        """
-        :rtype: list(str)
-        :return: list concordances as strings
-        :param length:  The number of concordances to return (default=None)
-        :type length: int
-        """
-        return [" ".join([left, token, right]) for
-                (left, token, right) in self._concordance[:lines]]
 
     def print_concordance(self, lines=25):
         """
@@ -341,7 +331,7 @@ class Text(object):
     # Interactive console methods
     #////////////////////////////////////////////////////////////
 
-    def concordance(self, word, width=79, lines=None, stdout=True):
+    def concordance(self, word, width=79, lines=None, print_out=True):
         """Generate a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
 
@@ -351,27 +341,25 @@ class Text(object):
         :type width: int
         :param lines: The number of lines to display (default=25)
 -       :type lines: int
-        :param stdout: print concordance [True] or return list [False]
-        :type stdout: bool
+        :param print_out: print concordance [True] or return list [False]
+        :type print_out: bool
 
-        :return: concordance, either printed to stdout or as a list
-        :rtype: None, list
-
-        :param stdout: print concordance to stdout
-        :type stdout: bool
+        :return: concordance
+        :rtype: list
 
         :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
-            # print("Building index...")
             self._concordance_index = ConcordanceIndex(self.tokens,
                                                        key=lambda s:s.lower())
-        self._concordance_index.generate_concordance(word, width)
 
-        if stdout:
+        self._concordance_index.__concordance__(word, width)
+
+        if print_out:
             self._concordance_index.print_concordance(lines)
-        else:
-            return self._concordance_index.list_concordance(lines)
+
+        return [" ".join([left, token, right]) for (left, token, right)
+                in self._concordance_index._concordance[:lines]]
 
     def collocations(self, num=20, window_size=2):
         """

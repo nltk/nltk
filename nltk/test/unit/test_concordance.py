@@ -67,7 +67,7 @@ class TestConcordance(unittest.TestCase):
                     "ght have been rummaged out of this monstrous cabinet there is no telling . But",
                     "of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u"]
 
-        concordance_out = self.text.concordance(self.query, stdout=False)
+        concordance_out = self.text.concordance(self.query, print_out=False)
         self.assertListEqual(clean_list(list_out), clean_list(concordance_out))
         return
 
@@ -78,7 +78,7 @@ class TestConcordance(unittest.TestCase):
                     "monstrous", "monstrous"]
 
         concordance_out = self.text.concordance(self.query, width=0,
-                                                stdout=False)
+                                                print_out=False)
         self.assertListEqual(clean_list(list_out), clean_list(concordance_out))
         return
 
@@ -88,7 +88,7 @@ class TestConcordance(unittest.TestCase):
                     "ll over with a heathenish array of monstrous clubs and spears . Some were thick",]
 
         concordance_out = self.text.concordance(self.query, lines=3,
-                                                stdout=False)
+                                                print_out=False)
 
         self.assertListEqual(clean_list(list_out), clean_list(concordance_out))
         return
@@ -109,6 +109,6 @@ class TestConcordance(unittest.TestCase):
             """
 
         with stdout_redirect(StringIO()) as stdout:
-            self.text.concordance(self.query, stdout=True)
+            self.text.concordance(self.query, print_out=True)
         self.assertEqual(clean(print_out), clean(stdout.getvalue()))
         return
