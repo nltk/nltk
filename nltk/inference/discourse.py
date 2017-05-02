@@ -43,6 +43,8 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 those threads which are consistent (taking into account any background assumptions).
 """
 from __future__ import print_function
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 import os
 
 from operator import and_, add
@@ -60,13 +62,14 @@ from nltk.inference.mace import MaceCommand
 from nltk.inference.prover9 import Prover9Command
 
 
+@add_metaclass(ABCMeta)
 class ReadingCommand(object):
+    @abstractmethod
     def parse_to_readings(self, sentence):
         """
         :param sentence: the sentence to read
         :type sentence: str
         """
-        raise NotImplementedError()
 
     def process_thread(self, sentence_readings):
         """
@@ -80,6 +83,7 @@ class ReadingCommand(object):
         """
         return sentence_readings
 
+    @abstractmethod
     def combine_readings(self, readings):
         """
         :param readings: readings to combine
@@ -87,8 +91,8 @@ class ReadingCommand(object):
         :return: one combined reading
         :rtype: Expression
         """
-        raise NotImplementedError()
 
+    @abstractmethod
     def to_fol(self, expression):
         """
         Convert this expression into a First-Order Logic expression.
@@ -98,7 +102,6 @@ class ReadingCommand(object):
         :return: a FOL version of the input expression
         :rtype: Expression
         """
-        raise NotImplementedError()
 
 
 class CfgReadingCommand(ReadingCommand):
@@ -299,7 +302,6 @@ class DiscourseTester(object):
             if (tid, True) in consistency_checked:
                 self._filtered_threads[tid] = thread
 
-
     def _show_readings(self, sentence=None):
         """
         Print out the readings for  the discourse (or a single sentence).
@@ -492,6 +494,7 @@ class DiscourseTester(object):
 #L2 = ['a', 'b', 'c']
 #print multiply(L1,L2)
 
+
 def load_fol(s):
     """
     Temporarily duplicated from ``nltk.sem.util``.
@@ -505,17 +508,18 @@ def load_fol(s):
     statements = []
     for linenum, line in enumerate(s.splitlines()):
         line = line.strip()
-        if line.startswith('#') or line=='': continue
+        if line.startswith('#') or line == '':
+            continue
         try:
             statements.append(Expression.fromstring(line))
         except Exception:
             raise ValueError('Unable to parse line %s: %s' % (linenum, line))
     return statements
 
+
 ###############################
 # Demo
 ###############################
-
 def discourse_demo(reading_command=None):
     """
     Illustrate the various methods of ``DiscourseTester``
@@ -524,7 +528,7 @@ def discourse_demo(reading_command=None):
                          reading_command)
     dt.models()
     print()
-    #dt.grammar()
+    # dt.grammar()
     print()
     dt.sentences()
     print()
@@ -555,12 +559,12 @@ def discourse_demo(reading_command=None):
     dt.add_sentence('A person dances', informchk=True)
     dt = DiscourseTester(['Vincent is a boxer', 'Fido is a boxer',
                           'Vincent is married', 'Fido barks'],
-                          reading_command)
+                         reading_command)
     dt.readings(filter=True)
     import nltk.data
     background_file = os.path.join('grammars', 'book_grammars', 'background.fol')
     background = nltk.data.load(background_file)
-    
+
     print()
     dt.add_background(background, verbose=False)
     dt.background()
@@ -590,19 +594,19 @@ def drt_discourse_demo(reading_command=None):
 def spacer(num=30):
     print('-' * num)
 
+
 def demo():
     discourse_demo()
 
-    tagger = RegexpTagger(
-        [('^(chases|runs)$', 'VB'),
-         ('^(a)$', 'ex_quant'),
-         ('^(every)$', 'univ_quant'),
-         ('^(dog|boy)$', 'NN'),
-         ('^(he)$', 'PRP')
-    ])
+    tagger = RegexpTagger([('^(chases|runs)$', 'VB'),
+                           ('^(a)$', 'ex_quant'),
+                           ('^(every)$', 'univ_quant'),
+                           ('^(dog|boy)$', 'NN'),
+                           ('^(he)$', 'PRP')])
     depparser = MaltParser(tagger=tagger)
     drt_discourse_demo(DrtGlueReadingCommand(remove_duplicates=False,
                                              depparser=depparser))
+
 
 if __name__ == '__main__':
     demo()

@@ -92,6 +92,9 @@ class SnowballStemmer(StemmerI):
         self.stemmer = stemmerclass(ignore_stopwords)
         self.stem = self.stemmer.stem
         self.stopwords = self.stemmer.stopwords
+    
+    def stem(self, token):
+        return self.stemmer.stem(self, token)
 
 
 @compat.python_2_unicode_compatible
