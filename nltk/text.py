@@ -171,7 +171,7 @@ class ConcordanceIndex(object):
         return '<ConcordanceIndex for %d tokens (%d types)>' % (
             len(self._tokens), len(self._offsets))
 
-    def __concordance__(self, word, width=80):
+    def _concordance_tuple_list(self, word, width=80):
         """Generate a concordance list of tuples(left, token, right)
         for ``word`` with the specified context window.
 
@@ -189,8 +189,8 @@ class ConcordanceIndex(object):
         if offsets:
             for i in offsets:
                 left = (' ' * half_width +
-                        ' '.join(self._tokens[i - context:i]))
-                right = ' '.join(self._tokens[i + 1:i + context])
+                        ' '.join(self._tokens[i-context:i]))
+                right = ' '.join(self._tokens[i+1:i+context])
                 left = left[-half_width:]
                 right = right[:half_width]
                 self._concordance.append((left, self._tokens[i], right))
@@ -353,7 +353,7 @@ class Text(object):
             self._concordance_index = ConcordanceIndex(self.tokens,
                                                        key=lambda s:s.lower())
 
-        self._concordance_index.__concordance__(word, width)
+        self._concordance_index._concordance_tuple_list(word, width)
 
         if print_out:
             self._concordance_index.print_concordance(lines)
