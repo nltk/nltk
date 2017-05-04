@@ -162,7 +162,7 @@ class TreebankWordDetokenizer(TokenizerI):
     #parens, brackets, etc.
     PARENS_BRACKETS = [
         (re.compile(r' -- '), r'--'),
-        (re.compile(r'[\]\[\(\)\{\}\<\>]'), r'\g<1>')
+        (re.compile(r'\s([\]\[\(\)\{\}\<\>])\s'), r'\g<1>')
         ]
 
     #punctuation
