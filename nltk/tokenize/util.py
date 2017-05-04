@@ -209,8 +209,8 @@ def align_tokens(tokens, sentence):
         ... (55, 60), (61, 67), (68, 72), (73, 75), (76, 83), (84, 89),
         ... (90, 98), (99, 103), (104, 109), (110, 119), (120, 122),
         ... (123, 131), (131, 132)]
-        >>> output = list(align_tokens(tokens, s))  # Check that length of tokens and tuples are the same.
-        >>> len(tokens) == len(expected) == len(output)
+        >>> output = list(align_tokens(tokens, s))
+        >>> len(tokens) == len(expected) == len(output)  # Check that length of tokens and tuples are the same.
         True
         >>> expected == list(align_tokens(tokens, s))  # Check that the output is as expected.
         True
