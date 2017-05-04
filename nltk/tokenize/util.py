@@ -209,15 +209,13 @@ def align_tokens(tokens, sentence):
         ... (55, 60), (61, 67), (68, 72), (73, 75), (76, 83), (84, 89),
         ... (90, 98), (99, 103), (104, 109), (110, 119), (120, 122),
         ... (123, 131), (131, 132)]
-        >>> output = list(align_tokens(tokens, s))
-        # Check that length of tokens and tuples are the same.
+        >>> output = list(align_tokens(tokens, s))  # Check that length of tokens and tuples are the same.
         >>> len(tokens) == len(expected) == len(output)
         True
-        # Check that the output is as expected.
-        >>> expected == list(align_tokens(tokens, s))
+        >>> expected == list(align_tokens(tokens, s))  # Check that the output is as expected.
         True
-        # Check that the slices of the string corresponds to the tokens.
-        >>> tokens == [s[start:end] for start, end in output]
+        >>> tokens == [s[start:end] for start, end in output]  # Check that the slices of the string corresponds to the tokens.
+        True
 
     :param tokens: The list of strings that are the result of tokenization
     :type tokens: list(str)
