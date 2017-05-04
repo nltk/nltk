@@ -214,7 +214,7 @@ def align_tokens(tokens, sentence):
         >>> len(tokens) == len(expected) == len(output)
         True
         # Check that the output is as expected.
-        >>> expected == list(align_tokens(, s))
+        >>> expected == list(align_tokens(tokens, s))
         True
         # Check that the slices of the string corresponds to the tokens.
         >>> tokens == [s[start:end] for start, end in output]
