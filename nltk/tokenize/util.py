@@ -194,7 +194,7 @@ def xml_escape(text):
 
 
 def align_tokens(tokens, sentence):
-    r"""
+    """
     This module attempt to find the offsets of the tokens in *s*, as a sequence
     of ``(start, end)`` tuples, given the tokens and also the source string.
 
@@ -208,6 +208,7 @@ def align_tokens(tokens, sentence):
         (34, 35), (36, 43), (44, 46), (47, 52), (52, 54), (55, 60), (61, 67),
         (68, 72), (73, 75), (76, 83), (84, 89), (90, 98), (99, 103), (104, 109),
         (110, 119), (120, 122), (123, 131), (131, 132)]
+
     :param tokens: the list of strings that are the result of tokenization
     :type s: list(str)
     :param sentence: the original string
