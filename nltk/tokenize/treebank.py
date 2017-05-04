@@ -134,8 +134,12 @@ class TreebankWordDetokenizer(TokenizerI):
     The Treebank detokenizer uses the reverse regex operations corresponding to
     the Treebank tokenizer's regexes.
 
-    Note: There're additional assumption mades when undoing the padding of
-    [;@#$%&] punctuation symbols that isn't presupposed in the TreebankTokenizer.
+    Note:
+    - There're additional assumption mades when undoing the padding of [;@#$%&]
+      punctuation symbols that isn't presupposed in the TreebankTokenizer.
+    - It's not possible to return the original whitespaces as they were because
+      there wasn't explicit records of where '\n', '\t' or '\s' were removed at
+      the text.split() operation.
 
         >>> from nltk.tokenize.treebank import TreebankWordTokenizer, TreebankWordDetokenizer
         >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'''
@@ -143,7 +147,7 @@ class TreebankWordDetokenizer(TokenizerI):
         >>> t = TreebankWordTokenizer()
         >>> toks = t.tokenize(s)
         >>> d.detokenize(toks)
-        'Good muffins cost $3.88\\nin New York. Please buy me\\ntwo of them.\\nThanks.'
+        'Good muffins cost $3.88 in New York. Please buy me two of them. Thanks.'
     """
     _contractions = MacIntyreContractions()
     CONTRACTIONS2 = [re.compile(pattern.replace('(?#X)', '\s'))
