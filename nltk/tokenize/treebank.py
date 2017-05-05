@@ -51,7 +51,7 @@ class TreebankWordTokenizer(TokenizerI):
     - separate periods that appear at the end of line
 
         >>> from nltk.tokenize import TreebankWordTokenizer
-        >>> s = 'Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'
+        >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'''
         >>> TreebankWordTokenizer().tokenize(s)
         ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks', '.']
         >>> s = "They'll save and invest more."
@@ -170,7 +170,7 @@ class TreebankWordDetokenizer(TokenizerI):
     The MXPOST parentheses substitution can be undone using the `convert_parentheses`
     parameter:
 
-    >>> s = 'Good muffins cost $3.88\nin New (York).  Please (buy) me\ntwo of them.\n(Thanks).'
+    >>> s = '''Good muffins cost $3.88\\nin New (York).  Please (buy) me\\ntwo of them.\\n(Thanks).'''
     >>> expected_tokens = ['Good', 'muffins', 'cost', '$', '3.88', 'in',
     ... 'New', '-LRB-', 'York', '-RRB-', '.', 'Please', '-LRB-', 'buy',
     ... '-RRB-', 'me', 'two', 'of', 'them.', '-LRB-', 'Thanks', '-RRB-', '.']
