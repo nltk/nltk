@@ -144,7 +144,7 @@ mac_morpho = LazyCorpusLoader(
 machado = LazyCorpusLoader(
     'machado', PortugueseCategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*', encoding='latin-1')
-masc_tagged = LazyCorpusLoader(
+ masc_tagged = LazyCorpusLoader(
     'masc_tagged', CategorizedTaggedCorpusReader, r'(spoken|written)/.*\.txt',
     cat_file='categories.txt', tagset='wsj', encoding="utf-8", sep="_")
 movie_reviews = LazyCorpusLoader(
@@ -197,7 +197,7 @@ shakespeare = LazyCorpusLoader(
 sinica_treebank = LazyCorpusLoader(
     'sinica_treebank', SinicaTreebankCorpusReader, ['parsed'],
     tagset='unknown', encoding='utf-8')
-laworderdata=LazyCorpusLoader('laworderdata',PlaintextCorpusReader,r'(?!\.).*\.txt', cat_pattern=r'(traindata|twitterdata)/.*',encoding='utf-8',CategorizedPlaintextCorpusReader, r'(traindata|twitterdata)/.*',encoding='utf-8',CategorizedSentencesCorpusReader, r'(traindata|twitterdata)/.*',
+laworderdata = LazyCorpusLoader('laworderdata',PlaintextCorpusReader,r'(?!\.).*\.txt', cat_pattern=r'(traindata|twitterdata)/.*',encoding='utf-8',CategorizedPlaintextCorpusReader, r'(traindata|twitterdata)/.*',encoding='utf-8',CategorizedSentencesCorpusReader, r'(traindata|twitterdata)/.*',
     cat_pattern=r'(traindata|twitterdata)\.*', encoding='utf-8',WordListCorpusReader, r'(?!\.).*\.txt', encoding='ascii',StringCategoryCorpusReader, r'(traindata|twitterdata)\.*', encoding='utf-8',PortugueseCategorizedPlaintextCorpusReader,EuroparlCorpusReader)
 state_union = LazyCorpusLoader(
     'state_union', PlaintextCorpusReader, r'(?!\.).*\.txt',
