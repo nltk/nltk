@@ -51,7 +51,7 @@ class TreebankWordTokenizer(TokenizerI):
     - separate periods that appear at the end of line
 
         >>> from nltk.tokenize import TreebankWordTokenizer
-        >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'''
+        >>> s = 'Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'
         >>> TreebankWordTokenizer().tokenize(s)
         ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks', '.']
         >>> s = "They'll save and invest more."
@@ -81,11 +81,17 @@ class TreebankWordTokenizer(TokenizerI):
         (re.compile(r"([^'])' "), r"\1 ' "),
     ]
 
-    #parens, brackets, etc.
-    PARENS_BRACKETS = [
-        (re.compile(r'[\]\[\(\)\{\}\<\>]'), r' \g<0> '),
-        (re.compile(r'--'), r' -- '),
+    # Pads parentheses
+    PARENS_BRACKETS = (re.compile(r'[\]\[\(\)\{\}\<\>]'), r' \g<0> ')
+
+    # Optionally: Convert parentheses, brackets and converts them to PTB symbols.
+    CONVERT_PARENTHESES = [
+        (re.compile(r'\('), '-LRB-'), (re.compile(r'\)'), '-RRB-'),
+        (re.compile(r'\['), '-LSB-'), (re.compile(r'\]'), '-RSB-'),
+        (re.compile(r'\{'), '-LCB-'), (re.compile(r'\}'), '-RCB-')
     ]
+
+    DOUBLE_DASHES = (re.compile(r'--'), r' -- ')
 
     #ending quotes
     ENDING_QUOTES = [
@@ -100,15 +106,24 @@ class TreebankWordTokenizer(TokenizerI):
     CONTRACTIONS2 = list(map(re.compile, _contractions.CONTRACTIONS2))
     CONTRACTIONS3 = list(map(re.compile, _contractions.CONTRACTIONS3))
 
-    def tokenize(self, text, return_str=False):
+    def tokenize(self, text, convert_parentheses=False, return_str=False):
         for regexp, substitution in self.STARTING_QUOTES:
             text = regexp.sub(substitution, text)
 
         for regexp, substitution in self.PUNCTUATION:
             text = regexp.sub(substitution, text)
 
-        for regexp, substitution in self.PARENS_BRACKETS:
-            text = regexp.sub(substitution, text)
+        # Handles parentheses.
+        regexp, substitution = self.PARENS_BRACKETS
+        text = regexp.sub(substitution, text)
+        # Optionally convert parentheses
+        if convert_parentheses:
+            for regexp, substitution in self.CONVERT_PARENTHESES:
+                text = regexp.sub(substitution, text)
+
+        # Handles double dash.
+        regexp, substitution = self.DOUBLE_DASHES
+        text = regexp.sub(substitution, text)
 
         #add extra space to make things easier
         text = " " + text + " "
@@ -137,6 +152,9 @@ class TreebankWordDetokenizer(TokenizerI):
     Note:
     - There're additional assumption mades when undoing the padding of [;@#$%&]
       punctuation symbols that isn't presupposed in the TreebankTokenizer.
+    - There're additional regexes added in reversing the parentheses tokenization,
+       - the r'([\]\)\}\>])\s([:;,.])' removes the additional right padding added
+         to the closing parentheses precedding [:;,.].
     - It's not possible to return the original whitespaces as they were because
       there wasn't explicit records of where '\n', '\t' or '\s' were removed at
       the text.split() operation.
@@ -148,6 +166,17 @@ class TreebankWordDetokenizer(TokenizerI):
         >>> toks = t.tokenize(s)
         >>> d.detokenize(toks)
         'Good muffins cost $3.88 in New York. Please buy me two of them. Thanks.'
+
+    The MXPOST parentheses substitution can be undone using the `convert_parentheses`
+    parameter:
+
+    >>> s = 'Good muffins cost $3.88\nin New (York).  Please (buy) me\ntwo of them.\n(Thanks).'
+    >>> expected_tokens = ['Good', 'muffins', 'cost', '$', '3.88', 'in',
+    ... 'New', '-LRB-', 'York', '-RRB-', '.', 'Please', '-LRB-', 'buy',
+    ... '-RRB-', 'me', 'two', 'of', 'them.', '-LRB-', 'Thanks', '-RRB-', '.']
+    >>> expected == t.tokenize(s, convert_parentheses=True)
+    >>> expected_detoken = 'Good muffins cost $3.88 in New (York). Please (buy) me two of them. (Thanks).'
+    >>> expected_detoken == d.detokenize(t.tokenize(s, convert_parentheses=True), convert_parentheses=True)
     """
     _contractions = MacIntyreContractions()
     CONTRACTIONS2 = [re.compile(pattern.replace('(?#X)', '\s'))
@@ -163,11 +192,20 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r" '' "), '"')
         ]
 
-    #parens, brackets, etc.
-    PARENS_BRACKETS = [
-        (re.compile(r' -- '), r'--'),
-        (re.compile(r'\s([\]\[\(\)\{\}\<\>])\s'), r'\g<1>')
-        ]
+    # Handles double dashes
+    DOUBLE_DASHES = (re.compile(r' -- '), r'--')
+
+    # Optionally: Convert parentheses, brackets and converts them from PTB symbols.
+    CONVERT_PARENTHESES = [
+        (re.compile('-LRB-'), '('), (re.compile('-RRB-'), ')'),
+        (re.compile('-LSB-'), '['), (re.compile('-RSB-'), ']'),
+        (re.compile('-LCB-'), '{'), (re.compile('-RCB-'), '}')
+    ]
+
+    # Undo padding on parentheses.
+    PARENS_BRACKETS = [(re.compile(r'\s([\[\(\{\<])\s'), r' \g<1>'),
+                       (re.compile(r'\s([\]\)\}\>])\s'), r'\g<1> '),
+                       (re.compile(r'([\]\)\}\>])\s([:;,.])'), r'\1\2')]
 
     #punctuation
     PUNCTUATION = [
@@ -193,7 +231,7 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r'^``'), r'\"'),
     ]
 
-    def tokenize(self, tokens):
+    def tokenize(self, tokens, convert_parentheses=False):
         """
         Python port of the Moses detokenizer.
 
@@ -216,7 +254,15 @@ class TreebankWordDetokenizer(TokenizerI):
         # Undo the space padding.
         text = text.strip()
 
-        # Reverse the regexes applied for parenthesis/brackets.
+        # Reverse the padding on double dashes.
+        regexp, substitution = self.DOUBLE_DASHES
+        text = regexp.sub(substitution, text)
+
+        if convert_parentheses:
+            for regexp, substitution in self.CONVERT_PARENTHESES:
+                text = regexp.sub(substitution, text)
+
+        # Reverse the padding regexes applied for parenthesis/brackets.
         for regexp, substitution in self.PARENS_BRACKETS:
             text = regexp.sub(substitution, text)
 
@@ -230,6 +276,6 @@ class TreebankWordDetokenizer(TokenizerI):
 
         return text.strip()
 
-    def detokenize(self, tokens):
+    def detokenize(self, tokens, convert_parentheses=False):
         """ Duck-typing the abstract *tokenize()*."""
-        return self.tokenize(tokens)
+        return self.tokenize(tokens, convert_parentheses)
