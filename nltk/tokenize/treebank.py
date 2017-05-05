@@ -150,10 +150,9 @@ class TreebankWordTokenizer(TokenizerI):
 
             >>> from nltk.tokenize import TreebankWordTokenizer
             >>> s = '''Good muffins cost $3.88\\nin New (York).  Please (buy) me\\ntwo of them.\\n(Thanks).'''
-            >>> expected = [(0, 4), (5, 12), (13, 17), (18, 19), (19, 27),
-            ... (28, 31), (32, 33), (33, 37), (37, 38), (38, 39), (41, 47),
-            ... (48, 49), (49, 52), (52, 53), (54, 61), (62, 64), (65, 72),
-            ... (72, 73), (73, 79), (79, 80), (80, 81)]
+            >>> expected = [(0, 4), (5, 12), (13, 17), (18, 19), (19, 23),
+            ... (24, 26), (27, 30), (31, 36), (38, 44), (45, 48), (49, 51),
+            ... (52, 55), (56, 58), (59, 64), (65, 71), (71, 72)]
             >>> TreebankWordTokenizer().span_tokenize(s) == expected
             True
         """
