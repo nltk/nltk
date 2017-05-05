@@ -174,7 +174,7 @@ class TreebankWordDetokenizer(TokenizerI):
     >>> expected_tokens = ['Good', 'muffins', 'cost', '$', '3.88', 'in',
     ... 'New', '-LRB-', 'York', '-RRB-', '.', 'Please', '-LRB-', 'buy',
     ... '-RRB-', 'me', 'two', 'of', 'them.', '-LRB-', 'Thanks', '-RRB-', '.']
-    >>> expected == t.tokenize(s, convert_parentheses=True)
+    >>> expected_tokens == t.tokenize(s, convert_parentheses=True)
     True
     >>> expected_detoken = 'Good muffins cost $3.88 in New (York). Please (buy) me two of them. (Thanks).'
     >>> expected_detoken == d.detokenize(t.tokenize(s, convert_parentheses=True), convert_parentheses=True)
