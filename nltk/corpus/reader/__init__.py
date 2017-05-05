@@ -1,9 +1,10 @@
+
 # Natural Language Toolkit: Corpus Readers
 #
 # Copyright (C) 2001-2017 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+o# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,7 +14,7 @@ functions can be used to read both the corpus fileids that are
 distributed in the NLTK corpus package, and corpus fileids that are part
 of external corpora.
 
-Corpus Reader Functions
+rCorpus Reader Functions
 =======================
 Each corpus module defines one or more "corpus reader functions",
 which can be used to read documents from that corpus.  These functions
@@ -54,6 +55,7 @@ For example, to read a list of the words in the Brown Corpus, use
 """
 
 from nltk.corpus.reader.plaintext import *
+from nltk.corpus.reader.laworderdata import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.tagged import *
