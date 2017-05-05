@@ -154,7 +154,10 @@ class TreebankWordTokenizer(TokenizerI):
             ... (24, 26), (27, 30), (31, 36), (38, 44), (45, 48), (49, 51),
             ... (52, 55), (56, 58), (59, 64), (65, 71), (71, 72)]
             >>> TreebankWordTokenizer().span_tokenize(s)
-            
+            []
+            >>> [s[start:end] for start, end in TreebankWordTokenizer().span_tokenize(s)]
+            []
+
         """
         tokens = self.tokenize(text)
         return align_tokens(tokens, text)
