@@ -191,3 +191,38 @@ The sentence splitter should remove whitespace following the sentence boundary.
     ['See Section 3.)', 'Or Section 2.)']
     >>> pst.tokenize('See Section 3.)  Or Section 2.)  ', realign_boundaries=False)
     ['See Section 3.', ')  Or Section 2.', ')']
+
+
+Regression Tests: aling_tokens
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Post-hoc alignment of tokens with a source string
+
+    >>> from nltk.tokenize.util import align_tokens
+    >>> list(align_tokens([''], ""))
+    [(0, 0)]
+    >>> list(align_tokens([''], " "))
+    [(0, 0)]
+    >>> list(align_tokens([], ""))
+    []
+    >>> list(align_tokens([], " "))
+    []
+    >>> list(align_tokens(['a'], "a"))
+    [(0, 1)]
+    >>> list(align_tokens(['abc', 'def'], "abcdef"))
+    [(0, 3), (3, 6)]
+    >>> list(align_tokens(['abc', 'def'], "abc def"))
+    [(0, 3), (4, 7)]
+    >>> list(align_tokens(['ab', 'cd'], "ab cd ef"))
+    [(0, 2), (3, 5)]
+    >>> list(align_tokens(['ab', 'cd', 'ef'], "ab cd ef"))
+    [(0, 2), (3, 5), (6, 8)]
+    >>> list(align_tokens(['ab', 'cd', 'efg'], "ab cd ef"))
+    Traceback (most recent call last):
+    ....
+    ValueError: substring "efg" not found in "ab cd ef"
+    >>> list(align_tokens(['ab', 'cd', 'ef', 'gh'], "ab cd ef"))
+    Traceback (most recent call last):
+    ....
+    ValueError: substring "gh" not found in "ab cd ef"
+    >>> list(align_tokens(['The', 'plane', ',', 'bound', 'for', 'St', 'Petersburg', ',', 'crashed', 'in', 'Egypt', "'s", 'Sinai', 'desert', 'just', '23', 'minutes', 'after', 'take-off', 'from', 'Sharm', 'el-Sheikh', 'on', 'Saturday', '.'], "The plane, bound for St Petersburg, crashed in Egypt's Sinai desert just 23 minutes after take-off from Sharm el-Sheikh on Saturday."))
+    [(0, 3), (4, 9), (9, 10), (11, 16), (17, 20), (21, 23), (24, 34), (34, 35), (36, 43), (44, 46), (47, 52), (52, 54), (55, 60), (61, 67), (68, 72), (73, 75), (76, 83), (84, 89), (90, 98), (99, 103), (104, 109), (110, 119), (120, 122), (123, 131), (131, 132)]
