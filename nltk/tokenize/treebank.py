@@ -18,6 +18,7 @@ and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
 
 import re
 from nltk.tokenize.api import TokenizerI
+from nltk.tokenize.util import align_tokens
 
 
 class MacIntyreContractions:
@@ -142,6 +143,22 @@ class TreebankWordTokenizer(TokenizerI):
         #     text = regexp.sub(r' \1 \2 \3 ', text)
 
         return text if return_str else text.split()
+
+    def span_tokenize(self, text):
+        """
+        Uses the post-hoc nltk.tokens.align_tokens to return the offset spans.
+
+            >>> from nltk.tokenize import TreebankWordTokenizer
+            >>> s = '''Good muffins cost $3.88\\nin New (York).  Please (buy) me\\ntwo of them.\\n(Thanks).'''
+            >>> expected = [(0, 4), (5, 12), (13, 17), (18, 19), (19, 27),
+            ... (28, 31), (32, 33), (33, 37), (37, 38), (38, 39), (41, 47),
+            ... (48, 49), (49, 52), (52, 53), (54, 61), (62, 64), (65, 72),
+            ... (72, 73), (73, 79), (79, 80), (80, 81)]
+            >>> TreebankWordTokenizer().span_tokenize(s) == expected
+            True
+        """
+        tokens = self.tokenize(text)
+        return align_tokens(tokens, text)
 
 
 class TreebankWordDetokenizer(TokenizerI):
