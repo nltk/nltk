@@ -210,6 +210,7 @@
 - Safwan Kamarrudin
 - Arthur Tilley
 - Vilhjalmur Thorsteinsson
+- Jaehoon Hwang <https://github.com/jaehoonhwang>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
@@ -218,3 +219,8 @@
 - Barry Wilkins
 - Hiranmay Ghosh
 - Chris Emerson
+
+### Contributors to Lancaster Stemmer
+- Matt Chaput, [Whoosh](https://bitbucket.org/mchaput/whoosh/wiki/Home)
+    - Strip prefix
+    - Custom rule.
