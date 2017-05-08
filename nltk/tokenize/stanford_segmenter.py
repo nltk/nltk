@@ -29,20 +29,20 @@ _stanford_url = 'https://nlp.stanford.edu/software'
 
 
 class StanfordSegmenter(TokenizerI):
-    r"""
+    """
     Interface to the Stanford Segmenter
     >>> from nltk.tokenize.stanford_segmenter import StanfordSegmenter
-    >>> segmenter = StanfordSegmenter(
-    ...     path_to_jar="stanford-segmenter-3.6.0.jar",
-    ...     path_to_slf4j = "slf4j-api.jar"
-    ...     path_to_sihan_corpora_dict="./data",
-    ...     path_to_model="./data/pku.gz",
-    ...     path_to_dict="./data/dict-chris6.ser.gz")
-    >>> sentence = u"这是斯坦福中文分词器测试"
-    >>> segmenter.segment(sentence)
-    >>> u'\u8fd9 \u662f \u65af\u5766\u798f \u4e2d\u6587 \u5206\u8bcd\u5668 \u6d4b\u8bd5\n'
-    >>> segmenter.segment_file("test.simp.utf8")
-    >>> u'\u9762\u5bf9 \u65b0 \u4e16\u7eaa \uff0c \u4e16\u754c \u5404\u56fd ...
+    >>> seg = StanfordSegmenter()
+    >>> seg.default_config('zh')
+    >>> sent = u'这是斯坦福中文分词器测试'
+    >>> print(seg.segment(sent))
+    \u8fd9 \u662f \u65af\u5766\u798f \u4e2d\u6587 \u5206\u8bcd\u5668 \u6d4b\u8bd5
+    <BLANKLINE>
+    >>> seg.default_config('ar')
+    >>> sent = u'هذا هو تصنيف ستانفورد العربي للكلمات'
+    >>> print(seg.segment(sent.split()))
+    \u0647\u0630\u0627 \u0647\u0648 \u062a\u0635\u0646\u064a\u0641 \u0633\u062a\u0627\u0646\u0641\u0648\u0631\u062f \u0627\u0644\u0639\u0631\u0628\u064a \u0644 \u0627\u0644\u0643\u0644\u0645\u0627\u062a
+    <BLANKLINE>
     """
 
     _JAR = 'stanford-segmenter.jar'
