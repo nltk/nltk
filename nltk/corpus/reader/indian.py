@@ -18,7 +18,8 @@ Contents:
   - Telugu: IIIT Hyderabad
 """
 
-from nltk import compat
+from six import string_types
+
 from nltk.tag import str2tuple, map_tag
 
 from nltk.corpus.reader.util import *
@@ -58,7 +59,7 @@ class IndianCorpusReader(CorpusReader):
 
     def raw(self, fileids=None):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 
@@ -82,5 +83,3 @@ class IndianCorpusView(StreamBackedCorpusView):
             return [sent]
         else:
             return sent
-
-

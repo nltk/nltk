@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 
 """
-A word stemmer based on the Lancaster stemming algorithm.
+A word stemmer based on the Lancaster (Paice/Husk) stemming algorithm.
 Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
 from __future__ import unicode_literals
@@ -44,10 +44,16 @@ class LancasterStemmer(StemmerI):
         'meant'
         >>> st.stem('cement')      # ditto
         'cem'
+        >>> st_pre = LancasterStemmer(strip_prefix_flag=True)
+        >>> st_pre.stem('kilometer') # Test Prefix
+        'met'
+        >>> st_custom = LancasterStemmer(rule_tuple=("ssen4>", "s1t."))
+        >>> st_custom.stem("ness") # Change s to t
+        'nest'
     """
 
     # The rule list is static since it doesn't change between instances
-    rule_tuple = (
+    default_rule_tuple = (
         "ai*2.",     # -ia > -   if intact
         "a*1.",      # -a > -    if intact
         "bb1.",      # -bb > -b
@@ -165,16 +171,26 @@ class LancasterStemmer(StemmerI):
         "zy1s."      # -yz > -ys
     )
 
-
-    def __init__(self):
+    def __init__(self, rule_tuple=None, strip_prefix_flag=False):
         """Create an instance of the Lancaster stemmer.
         """
         # Setup an empty rule dictionary - this will be filled in later
         self.rule_dictionary = {}
+        # Check if a user wants to strip prefix
+        self._strip_prefix = strip_prefix_flag
+        # Check if a user wants to use his/her own rule tuples.
+        self._rule_tuple = rule_tuple if rule_tuple else self.default_rule_tuple
 
-    def parseRules(self, rule_tuple):
+    def parseRules(self, rule_tuple=None):
         """Validate the set of rules used in this stemmer.
+
+        If this function is called as an individual method, without using stem
+        method, rule_tuple argument will be compiled into self.rule_dictionary.
+        If this function is called within stem, self._rule_tuple will be used.
+
         """
+        # If there is no argument for the function, use class' own rule tuple.
+        rule_tuple = rule_tuple if rule_tuple else self._rule_tuple
         valid_rule = re.compile("^[a-z]+\*?\d[a-z]*[>\.]?$")
         # Empty any old rules from the rule set before adding new ones
         self.rule_dictionary = {}
@@ -193,13 +209,14 @@ class LancasterStemmer(StemmerI):
         """
         # Lower-case the word, since all the rules are lower-cased
         word = word.lower()
+        word = self.__stripPrefix(word) if self._strip_prefix else word
 
         # Save a copy of the original word
         intact_word = word
 
-        # If the user hasn't supplied any rules, setup the default rules
-        if len(self.rule_dictionary) == 0:
-            self.parseRules(LancasterStemmer.rule_tuple)
+        # If rule dictionary is empty, parse rule tuple.
+        if not self.rule_dictionary:
+            self.parseRules()
 
         return self.__doStemming(word, intact_word)
 
@@ -304,7 +321,17 @@ class LancasterStemmer(StemmerI):
             word += append_string
         return word
 
+    def __stripPrefix(self, word):
+        """Remove prefix from a word.
+
+        This function originally taken from Whoosh.
+
+        """
+        for prefix in ("kilo", "micro", "milli", "intra", "ultra", "mega",
+                       "nano", "pico", "pseudo"):
+            if word.startswith(prefix):
+                return word[len(prefix):]
+        return word
+
     def __repr__(self):
         return '<LancasterStemmer>'
-
-

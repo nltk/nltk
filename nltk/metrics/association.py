@@ -12,6 +12,8 @@ generic, abstract implementation in ``NgramAssocMeasures``, and n-specific
 """
 
 from __future__ import division
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 import math as _math
 from functools import reduce
 _log2 = lambda x: _math.log(x, 2.0)
@@ -39,6 +41,7 @@ TOTAL = -1
 """Marginals index for the number of words in the data"""
 
 
+@add_metaclass(ABCMeta)
 class NgramAssocMeasures(object):
     """
     An abstract class defining a collection of generic association measures.
@@ -61,16 +64,18 @@ class NgramAssocMeasures(object):
     _n = 0
 
     @staticmethod
+    @abstractmethod
     def _contingency(*marginals):
         """Calculates values of a contingency table from marginal values."""
         raise NotImplementedError("The contingency table is not available"
-                                    "in the general ngram case")
+                                  "in the general ngram case")
 
     @staticmethod
+    @abstractmethod
     def _marginals(*contingency):
         """Calculates values of contingency table marginals from its values."""
         raise NotImplementedError("The contingency table is not available"
-                                    "in the general ngram case")
+                                  "in the general ngram case")
 
     @classmethod
     def _expected_values(cls, cont):
@@ -407,4 +412,3 @@ class ContingencyMeasures(object):
         res.__doc__ = old_fn.__doc__
         res.__name__ = old_fn.__name__
         return res
-

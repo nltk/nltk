@@ -30,6 +30,12 @@ class MosesTokenizer(TokenizerI):
     True
     >>> tokenizer.tokenize(text) == [u'This', u',', u'is', u'a', u'sentence', u'with', u'weird', u'\xbb', u'symbols', u'\u2026', u'appearing', u'everywhere', u'\xbf']
     True
+
+    The nonbreaking prefixes should tokenize the final fullstop.
+
+    >>> m = MosesTokenizer()
+    >>> m.tokenize('abc def.')
+    [u'abc', u'def', u'.']
     """
 
     # Perl Unicode Properties character sets.
@@ -248,10 +254,10 @@ class MosesTokenizer(TokenizerI):
         return re.sub(r'DOTMULTI', r'.', text)
 
     def islower(self, text):
-        return not set(text).difference(set(IsLower))
+        return not set(text).difference(set(self.IsLower))
 
     def isalpha(self, text):
-        return not set(text).difference(set(IsAlpha))
+        return not set(text).difference(set(self.IsAlpha))
 
     def has_numeric_only(self, text):
         return bool(re.search(r'(.*)[\s]+(\#NUMERIC_ONLY\#)', text))
@@ -262,16 +268,17 @@ class MosesTokenizer(TokenizerI):
         num_tokens = len(tokens)
         for i, token in enumerate(tokens):
             # Checks if token ends with a fullstop.
-            token_ends_with_period = re.search(r'^(\S+)\.$', text)
+            token_ends_with_period = re.search(r'^(\S+)\.$', token)
             if token_ends_with_period:
-                prefix = token_ends_with_period.group(0)
+                prefix = token_ends_with_period.group(1)
                 # Checks for 3 conditions if
-                # i.   the prefix is a token made up of chars within the IsAlpha
+                # i.   the prefix contains a fullstop and
+                #      any char in the prefix is within the IsAlpha charset
                 # ii.  the prefix is in the list of nonbreaking prefixes and
                 #      does not contain #NUMERIC_ONLY#
                 # iii. the token is not the last token and that the
                 #      next token contains all lowercase.
-                if ( (prefix and self.isalpha(prefix)) or
+                if ( ('.' in prefix and self.isalpha(prefix)) or
                      (prefix in self.NONBREAKING_PREFIXES and
                       prefix not in self.NUMERIC_ONLY_PREFIXES) or
                      (i != num_tokens-1 and self.islower(tokens[i+1])) ):
@@ -279,7 +286,7 @@ class MosesTokenizer(TokenizerI):
                 # Checks if the prefix is in NUMERIC_ONLY_PREFIXES
                 # and ensures that the next word is a digit.
                 elif (prefix in self.NUMERIC_ONLY_PREFIXES and
-                      re.search(r'^[0-9]+', token[i+1])):
+                      re.search(r'^[0-9]+', tokens[i+1])):
                     pass # No change to the token.
                 else: # Otherwise, adds a space after the tokens before a dot.
                     tokens[i] = prefix + ' .'
@@ -393,7 +400,7 @@ class MosesDetokenizer(TokenizerI):
     >>> from nltk.tokenize.moses import MosesTokenizer, MosesDetokenizer
     >>> t, d = MosesTokenizer(), MosesDetokenizer()
     >>> sent = "This ain't funny. It's actually hillarious, yet double Ls. | [] < > [ ] & You're gonna shake it off? Don't?"
-    >>> expected_tokens = [u'This', u'ain', u'&apos;t', u'funny.', u'It', u'&apos;s', u'actually', u'hillarious', u',', u'yet', u'double', u'Ls.', u'&#124;', u'&#91;', u'&#93;', u'&lt;', u'&gt;', u'&#91;', u'&#93;', u'&amp;', u'You', u'&apos;re', u'gonna', u'shake', u'it', u'off', u'?', u'Don', u'&apos;t', u'?']
+    >>> expected_tokens = [u'This', u'ain', u'&apos;t', u'funny', u'.', u'It', u'&apos;s', u'actually', u'hillarious', u',', u'yet', u'double', u'Ls', u'.', u'&#124;', u'&#91;', u'&#93;', u'&lt;', u'&gt;', u'&#91;', u'&#93;', u'&amp;', u'You', u'&apos;re', u'gonna', u'shake', u'it', u'off', u'?', u'Don', u'&apos;t', u'?']
     >>> expected_detokens = "This ain't funny. It's actually hillarious, yet double Ls. | [] < > [] & You're gonna shake it off? Don't?"
     >>> tokens = t.tokenize(sent)
     >>> tokens == expected_tokens

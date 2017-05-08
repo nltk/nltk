@@ -9,19 +9,21 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import print_function
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 import itertools as it
 from nltk.tbl.feature import Feature
+from nltk.tbl.rule import Rule
 
 
+@add_metaclass(ABCMeta)
 class BrillTemplateI(object):
     """
     An interface for generating lists of transformational rules that
     apply at given sentence positions.  ``BrillTemplateI`` is used by
     ``Brill`` training algorithms to generate candidate rules.
     """
-    #!!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
-    # and metaclass=abc.ABCMeta rather than NotImplementedError
-    #http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
+    @abstractmethod
     def applicable_rules(self, tokens, i, correctTag):
         """
         Return a list of the transformational rules that would correct
@@ -41,8 +43,8 @@ class BrillTemplateI(object):
         :type correctTag: any
         :rtype: list(BrillRule)
         """
-        raise NotImplementedError
 
+    @abstractmethod
     def get_neighborhood(self, token, index):
         """
         Returns the set of indices *i* such that
@@ -57,10 +59,6 @@ class BrillTemplateI(object):
         :type index: int
         :rtype: set
         """
-        raise NotImplementedError
-
-
-from nltk.tbl.rule import Rule
 
 
 class Template(BrillTemplateI):
@@ -75,8 +73,8 @@ class Template(BrillTemplateI):
       - are applicable to the given token.
     """
     ALLTEMPLATES = []
-    #record a unique id of form "001", for each template created
-#    _ids = it.count(0)
+    # record a unique id of form "001", for each template created
+    # _ids = it.count(0)
 
     def __init__(self, *features):
 
@@ -129,9 +127,9 @@ class Template(BrillTemplateI):
         :type features: list of Features
         :param features: the features to build this Template on
         """
-        #determine the calling form: either
-        #Template(Feature, args1, [args2, ...)]
-        #Template(Feature1(args),  Feature2(args), ...)
+        # determine the calling form: either
+        # Template(Feature, args1, [args2, ...)]
+        # Template(Feature1(args),  Feature2(args), ...)
         if all(isinstance(f, Feature) for f in features):
             self._features = features
         elif issubclass(features[0], Feature) and all(isinstance(a, tuple) for a in features[1:]):
@@ -267,13 +265,13 @@ class Template(BrillTemplateI):
 
         """
         def nonempty_powerset(xs): #xs is a list
-            #itertools docnonempty_powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
+            # itertools docnonempty_powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
 
-            #find the correct tuple given combinations, one of {None, k, (k1,k2)}
+            # find the correct tuple given combinations, one of {None, k, (k1,k2)}
             k = combinations #for brevity
-            combrange = ((1, len(xs)+1) if k is None else     #n over 1 .. n over n (all non-empty combinations)
-                         (k, k+1) if isinstance(k, int) else  #n over k (only
-                         (k[0], k[1]+1))                      #n over k1, n over k1+1... n over k2
+            combrange = ((1, len(xs)+1) if k is None else     # n over 1 .. n over n (all non-empty combinations)
+                         (k, k+1) if isinstance(k, int) else  # n over k (only
+                         (k[0], k[1]+1))                      # n over k1, n over k1+1... n over k2
             return it.chain.from_iterable(it.combinations(xs, r)
                                           for r in range(*combrange))
         seentemplates = set()
@@ -281,7 +279,7 @@ class Template(BrillTemplateI):
             for pick in it.product(*picks):
                 if any(i != j and x.issuperset(y)
                        for (i, x) in enumerate(pick)
-                       for (j,y) in enumerate(pick)):
+                       for (j, y) in enumerate(pick)):
                     continue
                 if skipintersecting and any(i != j and x.intersects(y)
                                             for (i, x) in enumerate(pick)
@@ -303,6 +301,3 @@ class Template(BrillTemplateI):
     @classmethod
     def _poptemplate(cls):
         return cls.ALLTEMPLATES.pop() if cls.ALLTEMPLATES else None
-
-
-

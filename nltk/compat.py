@@ -9,132 +9,38 @@
 from __future__ import absolute_import, print_function
 import os
 import sys
-import types
-from functools import wraps
+from functools import update_wrapper, wraps
 import fractions
+import unicodedata
+
+from six import string_types, text_type
 
 # Python 2/3 compatibility layer. Based on six.
 
 PY3 = sys.version_info[0] == 3
 
 if PY3:
-    def b(s):
-        return s.encode("latin-1")
-
-    def u(s):
-        return s
-
-    string_types = str,
-    integer_types = int,
-    class_types = type,
-    text_type = str
-    binary_type = bytes
-
-    MAXSIZE = sys.maxsize
-    get_im_class = lambda meth: meth.__self__.__class__
-    xrange = range
-    _iterkeys = "keys"
-    _itervalues = "values"
-    _iteritems = "items"
-    from importlib import reload
-    raw_input = input
-
-    imap = map
-    izip = zip
+    def get_im_class(meth):
+        return meth.__self__.__class__
 
     import io
     StringIO = io.StringIO
     BytesIO = io.BytesIO
-
-    import html.entities as htmlentitydefs
-    from urllib.request import (urlopen, ProxyHandler, build_opener,
-                                install_opener, getproxies, HTTPPasswordMgrWithDefaultRealm,
-                                ProxyBasicAuthHandler, ProxyDigestAuthHandler, Request,
-                                url2pathname)
-    from urllib.error import HTTPError, URLError
-    from urllib.parse import quote_plus, unquote_plus, urlencode
-
-    from collections import Counter
 
     from datetime import timezone
     UTC = timezone.utc
 
     from tempfile import TemporaryDirectory
 
-    unichr = chr
-    import operator
-    int2byte = operator.methodcaller("to_bytes", 1, "big")
-
 else:
-    def b(s):
-        return s
-
-    def u(s):
-        return unicode(s, "unicode_escape")
-
-    string_types = basestring,
-    integer_types = (int, long)
-    class_types = (type, types.ClassType)
-    text_type = unicode
-    binary_type = str
-    get_im_class = lambda meth: meth.im_class
-    xrange = xrange
-    _iterkeys = "iterkeys"
-    _itervalues = "itervalues"
-    _iteritems = "iteritems"
-    reload = reload
-    raw_input = raw_input
-
-    from itertools import imap, izip
+    def get_im_class(meth):
+        return meth.im_class
 
     try:
         from cStringIO import StringIO
     except ImportError:
         from StringIO import StringIO
     BytesIO = StringIO
-
-    import htmlentitydefs
-    from urllib2 import (urlopen, HTTPError, URLError,
-                         ProxyHandler, build_opener, install_opener,
-                         HTTPPasswordMgrWithDefaultRealm, ProxyBasicAuthHandler,
-                         ProxyDigestAuthHandler, Request)
-    from urllib import getproxies, quote_plus, unquote_plus, urlencode, url2pathname
-
-    # Maps py2 tkinter package structure to py3 using import hook (PEP 302)
-    class TkinterPackage(object):
-        def __init__(self):
-            self.mod = __import__("Tkinter")
-            self.__path__ = ["nltk_py2_tkinter_package_path"]
-
-        def __getattr__(self, name):
-            return getattr(self.mod, name)
-
-    class TkinterLoader(object):
-        def __init__(self):
-            # module name mapping from py3 to py2
-            self.module_map = {
-                "tkinter": "Tkinter",
-                "tkinter.filedialog": "tkFileDialog",
-                "tkinter.font": "tkFont",
-                "tkinter.messagebox": "tkMessageBox",
-            }
-
-        def find_module(self, name, path=None):
-            # we are only interested in tkinter modules listed
-            # in self.module_map
-            if name in self.module_map:
-                return self
-
-        def load_module(self, name):
-            if name not in sys.modules:
-                if name == 'tkinter':
-                    mod = TkinterPackage()
-                else:
-                    mod = __import__(self.module_map[name])
-                sys.modules[name] = mod
-            return sys.modules[name]
-
-    sys.meta_path.insert(0, TkinterLoader())
 
     from datetime import tzinfo, timedelta
 
@@ -156,9 +62,6 @@ else:
 
     UTC = UTC()
 
-    unichr = unichr
-    int2byte = chr
-
     import csv
     import codecs
     import cStringIO
@@ -170,7 +73,8 @@ else:
         see https://docs.python.org/2/library/csv.html
         """
 
-        def __init__(self, f, dialect=csv.excel, encoding="utf-8", errors='replace', **kwds):
+        def __init__(self, f, dialect=csv.excel, encoding="utf-8",
+                     errors='replace', **kwds):
             # Redirect output to a queue
             self.queue = cStringIO.StringIO()
             self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
@@ -179,7 +83,7 @@ else:
             self.encoder = encoder_cls(errors=errors)
 
         def encode(self, data):
-            if isinstance(data, basestring):
+            if isinstance(data, string_types):
                 return data.encode("utf-8")
             else:
                 return data
@@ -235,7 +139,8 @@ else:
                     # up due to missing globals
                     if "None" not in str(ex):
                         raise
-                    print("ERROR: {!r} while cleaning up {!r}".format(ex, self,),
+                    print("ERROR: {!r} while cleaning up {!r}".format(ex,
+                                                                      self),
                           file=sys.stderr)
                     return
                 self._closed = True
@@ -268,7 +173,8 @@ else:
             for name in self._listdir(path):
                 fullname = self._path_join(path, name)
                 try:
-                    isdir = self._isdir(fullname) and not self._islink(fullname)
+                    isdir = (self._isdir(fullname) and not
+                             self._islink(fullname))
                 except OSError:
                     isdir = False
                 if isdir:
@@ -283,68 +189,17 @@ else:
             except OSError:
                 pass
 
-    from collections import Counter
-
-
-def iterkeys(d):
-    """Return an iterator over the keys of a dictionary."""
-    return getattr(d, _iterkeys)()
-
-
-def itervalues(d):
-    """Return an iterator over the values of a dictionary."""
-    return getattr(d, _itervalues)()
-
-
-def iteritems(d):
-    """Return an iterator over the (key, value) pairs of a dictionary."""
-    return getattr(d, _iteritems)()
-
-try:
-    from functools import total_ordering
-except ImportError:  # python 2.6
-    def total_ordering(cls):
-        """Class decorator that fills in missing ordering methods"""
-        convert = {
-            '__lt__': [('__gt__', lambda self, other: not (self < other or self == other)),
-                       ('__le__', lambda self, other: self < other or self == other),
-                       ('__ge__', lambda self, other: not self < other)],
-            '__le__': [('__ge__', lambda self, other: not self <= other or self == other),
-                       ('__lt__', lambda self, other: self <= other and not self == other),
-                       ('__gt__', lambda self, other: not self <= other)],
-            '__gt__': [('__lt__', lambda self, other: not (self > other or self == other)),
-                       ('__ge__', lambda self, other: self > other or self == other),
-                       ('__le__', lambda self, other: not self > other)],
-            '__ge__': [('__le__', lambda self, other: (not self >= other) or self == other),
-                       ('__gt__', lambda self, other: self >= other and not self == other),
-                       ('__lt__', lambda self, other: not self >= other)]
-        }
-        roots = set(dir(cls)) & set(convert)
-        if not roots:
-            raise ValueError(
-                'must define at least one ordering operation: < > <= >=')
-        root = max(roots)       # prefer __lt__ to __le__ to __gt__ to __ge__
-        for opname, opfunc in convert[root]:
-            if opname not in roots:
-                opfunc.__name__ = opname
-                opfunc.__doc__ = getattr(int, opname).__doc__
-                setattr(cls, opname, opfunc)
-        return cls
-
-
 # ======= Compatibility for datasets that care about Python versions ========
 
 # The following datasets have a /PY3 subdirectory containing
 # a full copy of the data which has been re-encoded or repickled.
-
-import os.path
-
 DATA_UPDATES = [("chunkers", "maxent_ne_chunker"),
                 ("help", "tagsets"),
                 ("taggers", "maxent_treebank_pos_tagger"),
                 ("tokenizers", "punkt")]
 
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
+
 
 def add_py3_data(path):
     if PY3:
@@ -366,12 +221,8 @@ def py3_data(init_func):
         return init_func(*args, **kwargs)
     return wraps(init_func)(_decorator)
 
+
 # ======= Compatibility layer for __str__ and __repr__ ==========
-
-import unicodedata
-import functools
-
-
 def remove_accents(text):
 
     if isinstance(text, bytes):
@@ -381,6 +232,7 @@ def remove_accents(text):
     return ''.join(
         c for c in unicodedata.normalize('NFKD', text) if category(c) != 'Mn'
     )
+
 
 # Select the best transliteration method:
 try:
@@ -450,7 +302,7 @@ def unicode_repr(obj):
     if hasattr(obj, 'unicode_repr'):
         return obj.unicode_repr()
 
-    if isinstance(obj, unicode):
+    if isinstance(obj, text_type):
         return repr(obj)[1:]  # strip "u" letter from output
 
     return repr(obj)
@@ -460,7 +312,7 @@ def _transliterated(method):
     def wrapper(self):
         return transliterate(method(self))
 
-    functools.update_wrapper(wrapper, method, ["__name__", "__doc__"])
+    update_wrapper(wrapper, method, ["__name__", "__doc__"])
     if hasattr(method, "_nltk_compat_7bit"):
         wrapper._nltk_compat_7bit = method._nltk_compat_7bit
 
@@ -472,10 +324,12 @@ def _7bit(method):
     def wrapper(self):
         return method(self).encode('ascii', 'backslashreplace')
 
-    functools.update_wrapper(wrapper, method, ["__name__", "__doc__"])
+    update_wrapper(wrapper, method, ["__name__", "__doc__"])
 
     if hasattr(method, "_nltk_compat_transliterated"):
-        wrapper._nltk_compat_transliterated = method._nltk_compat_transliterated
+        wrapper._nltk_compat_transliterated = (
+            method._nltk_compat_transliterated
+        )
 
     wrapper._nltk_compat_7bit = True
     return wrapper
@@ -488,16 +342,16 @@ def _was_fixed(method):
 
 class Fraction(fractions.Fraction):
     """
-    This is a simplified backwards compatible version of fractions.Fraction from
-    Python >=3.5. It adds the `_normalize` parameter such that it does
+    This is a simplified backwards compatible version of fractions.Fraction
+    from Python >=3.5. It adds the `_normalize` parameter such that it does
     not normalize the denominator to the Greatest Common Divisor (gcd) when
     the numerator is 0.
-    
+
     This is most probably only used by the nltk.translate.bleu_score.py where
     numerator and denominator of the different ngram precisions are mutable.
-    But the idea of "mutable" fraction might not be applicable to other usages, 
+    But the idea of "mutable" fraction might not be applicable to other usages,
     See http://stackoverflow.com/questions/34561265
-    
+
     This objects should be deprecated once NLTK stops supporting Python < 3.5
     See https://github.com/nltk/nltk/issues/1330
     """

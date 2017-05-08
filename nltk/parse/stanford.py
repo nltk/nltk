@@ -16,14 +16,15 @@ import warnings
 from subprocess import PIPE
 from io import StringIO
 
-from nltk import compat
+from six import text_type
+
 from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_options, find_jars_within_path
 
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
 
-_stanford_url = 'http://nlp.stanford.edu/software/lex-parser.shtml'
+_stanford_url = 'https://nlp.stanford.edu/software/lex-parser.shtml'
 
 class GenericStanfordParser(ParserI):
     """Interface to the Stanford Parser"""
@@ -201,7 +202,7 @@ class GenericStanfordParser(ParserI):
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
         with tempfile.NamedTemporaryFile(mode='wb', delete=False) as input_file:
             # Write the actual sentences to the temporary input file
-            if isinstance(input_, compat.text_type) and encoding:
+            if isinstance(input_, text_type) and encoding:
                 input_ = input_.encode(encoding)
             input_file.write(input_)
             input_file.flush()

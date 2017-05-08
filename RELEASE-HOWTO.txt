@@ -12,7 +12,7 @@ A. PREPARE
      git checkout -b release-3.X.Y develop)
 2. Check the copyright year is correct and update if necessary
        e.g. ./tools/global_replace.py 2001-2015 2001-2017
-3. Modify nltk/VERSION with the version number
+3. Modify nltk/VERSION and web/conf.py with the version number
 4. Update the ChangeLog (for nltk, nltk_data)
        git log --since=20XX-YY-ZZ
 5. Update the data index (make data_index) and commit

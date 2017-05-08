@@ -11,10 +11,10 @@
 A reader for corpora that consist of plaintext documents.
 """
 
+from six import string_types
 import codecs
 
 import nltk.data
-from nltk.compat import string_types
 from nltk.tokenize import *
 
 from nltk.corpus.reader.util import *
@@ -75,7 +75,7 @@ class PlaintextCorpusReader(CorpusReader):
         for f in fileids:
             _fin = self.open(f)
             raw_texts.append(_fin.read())
-            _fin.close() 
+            _fin.close()
         return concat(raw_texts)
 
     def words(self, fileids=None):
@@ -230,4 +230,3 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
 
     def paras(self, fileids=None):
         raise NotImplementedError('The Europarl corpus reader does not support paragraphs. Please use chapters() instead.')
-

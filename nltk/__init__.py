@@ -159,7 +159,7 @@ else:
 
 from nltk.downloader import download, download_shell
 try:
-    import tkinter
+    from six.moves import tkinter
 except ImportError:
     pass
 else:

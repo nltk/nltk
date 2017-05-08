@@ -9,8 +9,11 @@
 # For license information, see  LICENSE.TXT
 
 from __future__ import division, print_function, unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 
+@add_metaclass(ABCMeta)
 class Feature(object):
     """
     An abstract base class for Features. A Feature is a combination of
@@ -29,9 +32,6 @@ class Feature(object):
     to the classname.
 
     """
-    # !!FOR_FUTURE: when targeting python3 only, consider @abc.abstractmethod
-    # and metaclass=abc.ABCMeta rather than NotImplementedError
-    # http://julien.danjou.info/blog/2013/guide-python-static-class-abstract-methods
 
     json_tag = 'nltk.tbl.Feature'
     PROPERTY_NAME = None
@@ -245,6 +245,7 @@ class Feature(object):
         return self < other or self == other
 
     @staticmethod
+    @abstractmethod
     def extract_property(tokens, index):
         """
         Any subclass of Feature must define static method extract_property(tokens, index)
@@ -256,6 +257,3 @@ class Feature(object):
         :return: feature value
         :rtype: any (but usually scalar)
         """
-        raise NotImplementedError
-
-

@@ -10,9 +10,8 @@
 
 from __future__ import print_function, division
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 
-from nltk.compat import Counter
 from nltk.tag import TaggerI
 from nltk.tbl import Feature, Template
 from nltk import jsontags
@@ -423,5 +422,3 @@ class BrillTagger(TaggerI):
         testing_stats['finalerrors'] = errors[-1]
         testing_stats['finalacc'] = 1 - testing_stats['finalerrors']/testing_stats['tokencount']
         return (tagged_tokenses, testing_stats)
-
-

@@ -21,8 +21,10 @@ from pprint import pformat
 import subprocess
 import warnings
 
+from six import string_types
+
 from nltk.tree import Tree
-from nltk.compat import python_2_unicode_compatible, string_types
+from nltk.compat import python_2_unicode_compatible
 
 
 #################################################################

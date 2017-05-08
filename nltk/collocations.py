@@ -32,7 +32,7 @@ from __future__ import print_function
 #   and unigram counts (raw_freq, pmi, student_t)
 
 import itertools as _itertools
-from nltk.compat import iteritems
+from six import iteritems
 
 from nltk.probability import FreqDist
 from nltk.util import ngrams

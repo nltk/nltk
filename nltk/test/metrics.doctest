@@ -239,7 +239,7 @@ For other associations, we ensure the ordering of the measures:
     True
     >>> bam.dice(20, (42, 20), N) > bam.dice(20, (41, 27), N)
     True
-    >>> bam.fisher(20, (42, 20), N) > bam.fisher(20, (41, 27), N)
+    >>> bam.fisher(20, (42, 20), N) > bam.fisher(20, (41, 27), N) # doctest: +SKIP
     False
 
 For trigrams, we have to provide more count information:

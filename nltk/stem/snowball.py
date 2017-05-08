@@ -20,6 +20,8 @@ There is also a demo function: `snowball.demo()`.
 """
 from __future__ import unicode_literals, print_function
 
+from six.moves import input
+
 from nltk import compat
 from nltk.corpus import stopwords
 from nltk.stem import porter
@@ -90,6 +92,9 @@ class SnowballStemmer(StemmerI):
         self.stemmer = stemmerclass(ignore_stopwords)
         self.stem = self.stemmer.stem
         self.stopwords = self.stemmer.stopwords
+    
+    def stem(self, token):
+        return self.stemmer.stem(self, token)
 
 
 @compat.python_2_unicode_compatible
@@ -3677,7 +3682,7 @@ def demo():
 
     while True:
 
-        language = compat.raw_input("Please enter the name of the language " +
+        language = input("Please enter the name of the language " +
                              "to be demonstrated\n" +
                              "/".join(SnowballStemmer.languages) +
                              "\n" +
@@ -3708,5 +3713,3 @@ def demo():
         print(stemmed)
         print('-' * 70)
         print("\n")
-
-

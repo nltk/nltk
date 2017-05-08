@@ -11,10 +11,10 @@ Tkinter widgets for displaying multi-column listboxes and tables.
 
 from __future__ import division
 
-import nltk.compat
+
 import operator
 
-from tkinter import (Frame, Label, Listbox, Scrollbar, Tk)
+from six.moves.tkinter import (Frame, Label, Listbox, Scrollbar, Tk)
 
 
 ######################################################################

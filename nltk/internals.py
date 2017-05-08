@@ -25,6 +25,8 @@ try:
 except ImportError:
     from xml.etree import ElementTree
 
+from six import string_types
+
 from nltk import __file__
 from nltk import compat
 
@@ -56,7 +58,7 @@ def config_java(bin=None, options=None, verbose=False):
     _java_bin = find_binary('java', bin, env_vars=['JAVAHOME', 'JAVA_HOME'], verbose=verbose, binary_names=['java.exe'])
 
     if options is not None:
-        if isinstance(options, compat.string_types):
+        if isinstance(options, string_types):
             options = options.split()
         _java_options = list(options)
 
@@ -104,7 +106,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
     if stdin == 'pipe': stdin = subprocess.PIPE
     if stdout == 'pipe': stdout = subprocess.PIPE
     if stderr == 'pipe': stderr = subprocess.PIPE
-    if isinstance(cmd, compat.string_types):
+    if isinstance(cmd, string_types):
         raise TypeError('cmd should be a list of strings')
 
     # Make sure we know where a java binary is.
@@ -112,7 +114,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None,
         config_java()
 
     # Set up the classpath.
-    if isinstance(classpath, compat.string_types):
+    if isinstance(classpath, string_types):
         classpaths=[classpath]
     else:
         classpaths=list(classpath)
@@ -463,10 +465,10 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
     :param verbose: Whether or not to print path when a file is found.
     """
     file_names = [filename] + (file_names or [])
-    assert isinstance(filename, compat.string_types)
-    assert not isinstance(file_names, compat.string_types)
-    assert not isinstance(searchpath, compat.string_types)
-    if isinstance(env_vars, compat.string_types):
+    assert isinstance(filename, string_types)
+    assert not isinstance(file_names, string_types)
+    assert not isinstance(searchpath, string_types)
+    if isinstance(env_vars, string_types):
         env_vars = env_vars.split()
     yielded = False
 
@@ -615,9 +617,9 @@ def find_jar_iter(name_pattern, path_to_jar=None, env_vars=(),
     :param is_regex: Whether name is a regular expression.
     """
 
-    assert isinstance(name_pattern, compat.string_types)
-    assert not isinstance(searchpath, compat.string_types)
-    if isinstance(env_vars, compat.string_types):
+    assert isinstance(name_pattern, string_types)
+    assert not isinstance(searchpath, string_types)
+    if isinstance(env_vars, string_types):
         env_vars = env_vars.split()
     yielded = False
 
@@ -795,7 +797,7 @@ class ElementWrapper(object):
             <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
 
         """
-        if isinstance(etree, compat.string_types):
+        if isinstance(etree, string_types):
             etree = ElementTree.fromstring(etree)
         self.__dict__['_etree'] = etree
 

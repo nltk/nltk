@@ -21,10 +21,11 @@ from subprocess import PIPE
 from nltk import compat
 from nltk.internals import find_jar, find_file, find_dir, \
                            config_java, java, _java_options
-
 from nltk.tokenize.api import TokenizerI
 
-_stanford_url = 'http://nlp.stanford.edu/software'
+from six import text_type
+
+_stanford_url = 'https://nlp.stanford.edu/software'
 
 
 class StanfordSegmenter(TokenizerI):
@@ -172,7 +173,7 @@ class StanfordSegmenter(TokenizerI):
         # Write the actural sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, 'wb')
         _input = '\n'.join((' '.join(x) for x in sentences))
-        if isinstance(_input, compat.text_type) and encoding:
+        if isinstance(_input, text_type) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()
