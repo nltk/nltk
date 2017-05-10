@@ -859,8 +859,10 @@ class Downloader(object):
             for child in queue:
                 if isinstance(child, Collection):
                     queue.extend(child.children)
-                else:
+                elif isinstance(child, Package):
                     packages[child.id] = child
+                else:
+                    print('Invalid package provided - {}'.format(child))
             collection.packages = packages.values()
 
         # Flush the status cache
