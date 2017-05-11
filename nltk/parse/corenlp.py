@@ -127,6 +127,15 @@ class CoreNLPServer(object):
             config_java(options=default_options, verbose=self.verbose)
 
         # Check that the server is istill running.
+        returncode = self.popen.poll()
+        if returncode is not None:
+            _, stderrdata = self.popen.communicate()
+            raise CoreNLPServerError(
+                returncode,
+                'Could not start the server. '
+                'The error was: {}'.format(stderrdata.decode('ascii'))
+            )
+
         for i in range(30):
             try:
                 response = requests.get(requests.compat.urljoin(self.url, 'live'))
@@ -138,15 +147,6 @@ class CoreNLPServer(object):
         else:
             raise CoreNLPServerError(
                 'Could not connect to the server.'
-            )
-
-        returncode = self.popen.poll()
-        if returncode is not None:
-            _, stderrdata = self.popen.communicate()
-            raise CoreNLPServerError(
-                returncode,
-                'Could not start the server. '
-                'The error was: {}'.format(stderrdata.decode('ascii'))
             )
 
         for i in range(60):
