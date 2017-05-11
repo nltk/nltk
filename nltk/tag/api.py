@@ -10,6 +10,8 @@
 Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 from itertools import chain
 
 from nltk.internals import overridden
@@ -17,6 +19,8 @@ from nltk.metrics import accuracy
 
 from nltk.tag.util import untag
 
+
+@add_metaclass(ABCMeta)
 class TaggerI(object):
     """
     A processing interface for assigning a tag to each token in a list.
@@ -31,6 +35,7 @@ class TaggerI(object):
     Subclasses must define:
       - either ``tag()`` or ``tag_sents()`` (or both)
     """
+    @abstractmethod
     def tag(self, tokens):
         """
         Determine the most appropriate tag sequence for the given
@@ -41,8 +46,6 @@ class TaggerI(object):
         """
         if overridden(self.tag_sents):
             return self.tag_sents([tokens])[0]
-        else:
-            raise NotImplementedError()
 
     def tag_sents(self, sentences):
         """
@@ -70,7 +73,9 @@ class TaggerI(object):
 
     def _check_params(self, train, model):
         if (train and model) or (not train and not model):
-            raise ValueError('Must specify either training data or trained model.')
+            raise ValueError(
+                    'Must specify either training data or trained model.')
+
 
 class FeaturesetTaggerI(TaggerI):
     """
@@ -79,5 +84,3 @@ class FeaturesetTaggerI(TaggerI):
     values.  See ``nltk.classify`` for more information about features
     and featuresets.
     """
-
-

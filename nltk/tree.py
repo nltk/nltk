@@ -14,6 +14,8 @@ Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
 from __future__ import print_function, unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 # TODO: add LabelledTree (can be used for dependency trees)
 
@@ -879,7 +881,7 @@ class ImmutableTree(Tree):
 ######################################################################
 ## Parented trees
 ######################################################################
-
+@add_metaclass(ABCMeta)
 class AbstractParentedTree(Tree):
     """
     An abstract base class for a ``Tree`` that automatically maintains
@@ -923,7 +925,7 @@ class AbstractParentedTree(Tree):
     #////////////////////////////////////////////////////////////
     # Parent management
     #////////////////////////////////////////////////////////////
-
+    @abstractmethod
     def _setparent(self, child, index, dry_run=False):
         """
         Update the parent pointer of ``child`` to point to ``self``.  This
@@ -944,8 +946,8 @@ class AbstractParentedTree(Tree):
             parent pointer; just check for any error conditions, and
             raise an exception if one is found.
         """
-        raise NotImplementedError()
 
+    @abstractmethod
     def _delparent(self, child, index):
         """
         Update the parent pointer of ``child`` to not point to self.  This
@@ -958,7 +960,6 @@ class AbstractParentedTree(Tree):
         :type index: int
         :param index: The index of ``child`` in ``self``.
         """
-        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Methods that add/remove children
