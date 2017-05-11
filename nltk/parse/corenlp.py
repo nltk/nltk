@@ -9,7 +9,6 @@
 
 from __future__ import unicode_literals
 
-import os
 import re
 import json
 import time
@@ -17,7 +16,7 @@ import socket
 
 import requests
 
-from nltk.internals import find_jar_iter, config_java, java, _java_options, find_jars_within_path
+from nltk.internals import find_jar_iter, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
 from nltk.tokenize.api import TokenizerI
@@ -51,6 +50,11 @@ class CoreNLPServer(object):
         java_options=None, corenlp_options=None, port=None,
     ):
 
+        if corenlp_options is None:
+            corenlp_options = [
+                '-preload', 'tokenize,ssplit,pos,lemma,parse,depparse',
+            ]
+
         jars = list(find_jar_iter(
             self._JAR,
             path_to_jar,
@@ -72,11 +76,7 @@ class CoreNLPServer(object):
                 port = try_port(9000)
             except socket.error:
                 port = try_port()
-
-            if corenlp_options:
                 corenlp_options.append(str(port))
-            else:
-                corenlp_options = [str(port)]
         else:
             try_port(port)
 
@@ -99,7 +99,7 @@ class CoreNLPServer(object):
 
         self._classpath = stanford_jar, model_jar
 
-        self.corenlp_options = corenlp_options or []
+        self.corenlp_options = corenlp_options
         self.java_options = java_options or ['-mx2g']
 
     def start(self):
@@ -127,9 +127,19 @@ class CoreNLPServer(object):
             config_java(options=default_options, verbose=self.verbose)
 
         # Check that the server is istill running.
-        # TODO: is there a better way of checking whether a server is ready to
-        #       accept connections?
-        time.sleep(5)
+        for i in range(30):
+            try:
+                response = requests.get(requests.compat.urljoin(self.url, 'live'))
+            except requests.exceptions.ConnectionError:
+                time.sleep(1)
+            else:
+                if response.ok:
+                    break
+        else:
+            raise CoreNLPServerError(
+                'Could not connect to the server.'
+            )
+
         returncode = self.popen.poll()
         if returncode is not None:
             _, stderrdata = self.popen.communicate()
@@ -137,6 +147,19 @@ class CoreNLPServer(object):
                 returncode,
                 'Could not start the server. '
                 'The error was: {}'.format(stderrdata.decode('ascii'))
+            )
+
+        for i in range(60):
+            try:
+                response = requests.get(requests.compat.urljoin(self.url, 'ready'))
+            except requests.exceptions.ConnectionError:
+                time.sleep(1)
+            else:
+                if response.ok:
+                    break
+        else:
+            raise CoreNLPServerError(
+                'The server is not ready.'
             )
 
     def stop(self):
