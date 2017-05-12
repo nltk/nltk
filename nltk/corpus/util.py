@@ -125,7 +125,7 @@ class LazyCorpusLoader(object):
             # __class__ to something new:
             return getattr(self, attr)
         except LookupError as e:
-            raise e
+            pass
         
     def __repr__(self):
         return '<%s in %r (not loaded yet)>' % (
