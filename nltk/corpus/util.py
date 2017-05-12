@@ -22,7 +22,7 @@ class LazyCorpusLoader(object):
     """
     To see the API documentation for this lazily loaded corpus, first
     run corpus.ensure_loaded(), and then run help(this_corpus).
-    
+
     LazyCorpusLoader is a proxy object which is used to stand in for a
     corpus object before the corpus is loaded.  This allows NLTK to
     create an object for each corpus, but defer the costs associated
@@ -38,7 +38,7 @@ class LazyCorpusLoader(object):
     NLTK data package.  Once they've properly installed the data
     package (or modified ``nltk.data.path`` to point to its location),
     they can then use the corpus object without restarting python.
-    
+
     :param name: The name of the corpus
     :type name: str
     :param reader_cls: The specific CorpusReader class, e.g. PlaintextCorpusReader, WordListCorpusReader
@@ -53,7 +53,7 @@ class LazyCorpusLoader(object):
         assert issubclass(reader_cls, CorpusReader)
         self.__name = self.__name__ = name
         self.__reader_cls = reader_cls
-        # If nltk_data_subdir is set explicitly 
+        # If nltk_data_subdir is set explicitly
         if 'nltk_data_subdir' in kwargs:
             # Use the specified subdirectory path
             self.subdir = kwargs['nltk_data_subdir']
