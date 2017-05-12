@@ -233,3 +233,6 @@ def align_tokens(tokens, sentence):
         point = start + len(token)
         offsets.append((start, point))
     return offsets
+
+def foobar(text):
+    return text
