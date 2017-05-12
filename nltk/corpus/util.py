@@ -125,6 +125,7 @@ class LazyCorpusLoader(object):
             # __class__ to something new:
             return getattr(self, attr)
         except LookupError as e:
+            print(attr)
             return None # If it doesn't exist, don't try to load it, just return None.
 
 
