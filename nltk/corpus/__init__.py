@@ -140,19 +140,17 @@ knbc = LazyCorpusLoader(
 lin_thesaurus = LazyCorpusLoader(
     'lin_thesaurus', LinThesaurusCorpusReader, r'.*\.lsp')
 mac_morpho = LazyCorpusLoader(
-    'mac_morpho', MacMorphoCorpusReader, r'(?!\.).*\.txt',
-    tagset='unknown', encoding='latin-1')
+    'mac_morpho', MacMorphoCorpusReader, r'(?!\.).*\.txt',    tagset='unknown', encoding='latin-1')
 machado = LazyCorpusLoader(
     'machado', PortugueseCategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'([a-z]*)/.*', encoding='latin-1')
-masc_tagged = LazyCorpusLoader(
+ masc_tagged = LazyCorpusLoader(
     'masc_tagged', CategorizedTaggedCorpusReader, r'(spoken|written)/.*\.txt',
     cat_file='categories.txt', tagset='wsj', encoding="utf-8", sep="_")
 movie_reviews = LazyCorpusLoader(
     'movie_reviews', CategorizedPlaintextCorpusReader,
     r'(?!\.).*\.txt', cat_pattern=r'(neg|pos)/.*',
-    encoding='ascii')
-multext_east = LazyCorpusLoader(
+    encoding='ascii')multext_east = LazyCorpusLoader(
     'mte_teip5', MTECorpusReader, r'(oana).*\.xml', encoding="utf-8")
 names = LazyCorpusLoader(
     'names', WordListCorpusReader, r'(?!\.).*\.txt', encoding='ascii')
@@ -162,8 +160,7 @@ nps_chat = LazyCorpusLoader(
     'nps_chat', NPSChatCorpusReader, r'(?!README|\.).*\.xml', tagset='wsj')
 opinion_lexicon = LazyCorpusLoader(
     'opinion_lexicon', OpinionLexiconCorpusReader, r'(\w+)\-words\.txt',
-    encoding='ISO-8859-2')
-panlex_lite = LazyCorpusLoader(
+    encoding='ISO-8859-2')panlex_lite = LazyCorpusLoader(
     'panlex_lite', PanLexLiteCorpusReader)
 # [SB] this breaks in python35 https://github.com/nltk/nltk/issues/1579
 # pl196x = LazyCorpusLoader(
@@ -200,6 +197,8 @@ shakespeare = LazyCorpusLoader(
 sinica_treebank = LazyCorpusLoader(
     'sinica_treebank', SinicaTreebankCorpusReader, ['parsed'],
     tagset='unknown', encoding='utf-8')
+laworderdata = LazyCorpusLoader('laworderdata',PlaintextCorpusReader,r'(?!\.).*\.txt', cat_pattern=r'(traindata|twitterdata)/.*',encoding='utf-8',CategorizedPlaintextCorpusReader, r'(traindata|twitterdata)/.*',encoding='utf-8',CategorizedSentencesCorpusReader, r'(traindata|twitterdata)/.*',
+    cat_pattern=r'(traindata|twitterdata)\.*', encoding='utf-8',WordListCorpusReader, r'(?!\.).*\.txt', encoding='ascii',StringCategoryCorpusReader, r'(traindata|twitterdata)\.*', encoding='utf-8',PortugueseCategorizedPlaintextCorpusReader,EuroparlCorpusReader)
 state_union = LazyCorpusLoader(
     'state_union', PlaintextCorpusReader, r'(?!\.).*\.txt',
     encoding='ISO-8859-2')
