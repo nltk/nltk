@@ -16,6 +16,7 @@ from six import add_metaclass
 from nltk.internals import overridden
 from nltk.tokenize.util import string_span_tokenize
 
+
 @add_metaclass(ABCMeta)
 class TokenizerI(object):
     """
@@ -74,5 +75,3 @@ class StringTokenizer(TokenizerI):
     def span_tokenize(self, s):
         for span in string_span_tokenize(s, self._string):
             yield span
-
-

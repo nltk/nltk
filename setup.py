@@ -45,8 +45,11 @@ extras_require = {
         'pyparsing',
     ],
     'twitter': [
-        'twython'
-    ]
+        'twython',
+    ],
+    'corenlp': [
+        'requests',
+    ],
 }
 
 # Add a group made up of all optional dependencies

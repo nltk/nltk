@@ -32,6 +32,8 @@ to a local file.
 """
 from __future__ import print_function, unicode_literals
 from __future__ import division
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 import sys
 import io
@@ -100,8 +102,8 @@ else:
 # Util Functions
 ######################################################################
 
-def gzip_open_unicode(filename, mode="rb", compresslevel=9,
-                      encoding='utf-8', fileobj=None, errors=None, newline=None):
+def gzip_open_unicode(filename, mode="rb", compresslevel=9, encoding='utf-8',
+                      fileobj=None, errors=None, newline=None):
     if fileobj is None:
         fileobj = GzipFile(filename, mode, compresslevel, fileobj)
     return io.TextIOWrapper(fileobj, encoding, errors, newline)
@@ -241,6 +243,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
 # Path Pointers
 ######################################################################
 
+@add_metaclass(ABCMeta)
 class PathPointer(object):
     """
     An abstract base class for 'path pointers,' used by NLTK's data
@@ -251,6 +254,7 @@ class PathPointer(object):
     by reading that zipfile.
     """
 
+    @abstractmethod
     def open(self, encoding=None):
         """
         Return a seekable read-only stream that can be used to read
@@ -259,8 +263,8 @@ class PathPointer(object):
         :raise IOError: If the path specified by this pointer does
             not contain a readable file.
         """
-        raise NotImplementedError('abstract base class')
 
+    @abstractmethod
     def file_size(self):
         """
         Return the size of the file pointed to by this path pointer,
@@ -269,8 +273,8 @@ class PathPointer(object):
         :raise IOError: If the path specified by this pointer does
             not contain a readable file.
         """
-        raise NotImplementedError('abstract base class')
 
+    @abstractmethod
     def join(self, fileid):
         """
         Return a new path pointer formed by starting at the path
@@ -279,7 +283,6 @@ class PathPointer(object):
         should be separated by forward slashes, regardless of
         the underlying file system's path seperator character.
         """
-        raise NotImplementedError('abstract base class')
 
 
 class FileSystemPathPointer(PathPointer, text_type):
@@ -534,7 +537,9 @@ class ZipFilePathPointer(PathPointer):
             self._zipfile.filename, self._entry)
 
     def __str__(self):
-        return os.path.normpath(os.path.join(self._zipfile.filename, self._entry))
+        return os.path.normpath(os.path.join(self._zipfile.filename,
+                                             self._entry))
+
 
 ######################################################################
 # Access Functions
@@ -684,6 +689,7 @@ def retrieve(resource_url, filename=None, verbose=True):
                 break
 
     infile.close()
+
 
 #: A dictionary describing the formats that are supported by NLTK's
 #: load() method.  Keys are format names, and values are format
@@ -1450,6 +1456,7 @@ class SeekableUnicodeStreamReader(object):
                     return len(bom)
 
         return None
+
 
 __all__ = ['path', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
            'GzipFileSystemPathPointer', 'GzipFileSystemPathPointer',
