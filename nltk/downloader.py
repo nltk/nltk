@@ -616,7 +616,6 @@ class Downloader(object):
         yield StartDownloadMessage(info)
         yield ProgressMessage(5)
         try:
-            print(info.url, info)
             infile = urlopen(info.url)
             with open(filepath, 'wb') as outfile:
                 #print info.size
