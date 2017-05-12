@@ -125,10 +125,8 @@ class LazyCorpusLoader(object):
             # __class__ to something new:
             return getattr(self, attr)
         except LookupError as e:
-            print(attr)
-            return None # If it doesn't exist, don't try to load it, just return None.
-
-
+            raise e
+        
     def __repr__(self):
         return '<%s in %r (not loaded yet)>' % (
             self.__reader_cls.__name__, '.../corpora/'+self.__name)
