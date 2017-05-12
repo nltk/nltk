@@ -182,7 +182,6 @@ class TestBLEUFringeCases(unittest.TestCase):
         except AttributeError:
             pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
 
-
 class TestBLEUvsMteval13a(unittest.TestCase):
 
     def test_corpus_bleu(self):
