@@ -117,7 +117,7 @@ class LazyCorpusLoader(object):
         # because all corpora gets loaded during test collection.
         if attr == '__bases__':
             raise AttributeError("LazyCorpusLoader object has no attribute '__bases__'")
-        print(attr)
+        #print(attr)
         try:
             self.__find() # First, find whether it exist.
             self.__load() # If it exists, load it.
