@@ -831,8 +831,12 @@ class ChunkRuleWithContext(RegexpChunkRule):
 # this should probably be made more strict than it is -- e.g., it
 # currently accepts 'foo'.
 CHUNK_TAG_PATTERN = re.compile(r'^((%s|<%s>)*)$' %
-                                ('([^\{\}<>]|\{\d+,?\d*\}|\{\d*,?\d+\})+',
+                                ('([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+',
                                  '[^\{\}<>]+'))
+
+
+
+
 
 def tag_pattern2re_pattern(tag_pattern):
     """
