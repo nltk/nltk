@@ -1,63 +1,74 @@
 Building an NLTK distribution
 ----------------------------------
 
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@ BUILD
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+1. Testing
+   - Ensure CI server isn't reporting any test failures
+     https://nltk.ci.cloudbees.com/job/nltk/
+   - Optionally test demonstration code locally
+     make demotest
+   - Optionally test individual modules:
+     tox-3.4 -e py34 nltk.package.module
+   - Check the data index is up-to-date:
+     cd ../nltk_data; make; push
 
+2. Documentation
+   - Check the copyright year is correct and update if necessary
+     e.g. ./tools/global_replace.py 2001-2015 2001-2017
+   - Check that installation instructions are up-to-date
+     (including the range of Python versions that are supported)
+     edit web/install.rst setup.py
+   - Rebuild the API docs
+     - make sure you have the current revision of the web pages
+       cd nltk.github.com; git pull
+     - build
+       cd ../nltk/web
+       make (slow; lots of warning messages about cross references)
+     - publish
+       cd ../../nltk.github.com
+       git add _modules _sources _static api *.html objects.inv searchindex.js
+       git status (missing any important looking files?)
+       git commit -m "updates for version 3.X.Y"
+       git push origin master
 
-A. PREPARE
+3. Create a new version
+   - Optionally do this in a release branch, branching from develop branch
+     git checkout -b release-3.X.Y develop
+   - Update version number
+     edit nltk/VERSION and web/conf.py
+   - Update the ChangeLog (for nltk, nltk_data)
+     git log --since=20XX-YY-ZZ
+     edit ChangeLog
+   - Add a new entry to the news page in nltk/web/news.rst
+   - Tag this version:
+     git tag -a 3.X.Y -m "version 3.X.Y"
+     git push --tags
+     verify that it shows up here: https://github.com/nltk/nltk/releases
+   - Optionally merge with master branch
+     git checkout master
+     git merge --no-ff release-3.X.Y
 
-(1. Create a release branch from the develop branch
-     git checkout -b release-3.X.Y develop)
-2. Check the copyright year is correct and update if necessary
-       e.g. ./tools/global_replace.py 2001-2015 2001-2017
-3. Modify nltk/VERSION and web/conf.py with the version number
-4. Update the ChangeLog (for nltk, nltk_data)
-       git log --since=20XX-YY-ZZ
-5. Update the data index (make data_index) and commit
-6. Continue with testing and bugfixing
-     - https://nltk.ci.cloudbees.com/job/nltk/
-     - install the new version locally, since its the installed code that is checked
-     - cd nltk/test; make (run the tests in nltk.test; or see Jenkins)
-     - make demotest (run the demonstration code including some graphical demos)
-     - test individual modules with, e.g.: tox-3.4 -e py34 nltk.package.module
-7. Check that installation instructions are up-to-date
-8. Update the news page in nltk/web/news.rst
-9. Rebuild the web docs
-     - cd nltk.github.com
-     - git pull
-     - cd ../nltk/web
-     - make (slow)
-     - cd ../../nltk.github.com
-     - git add _modules _sources _static api *.html objects.inv searchindex.js
-     - git commit -m "updates for version 3.X.Y"
-     - git push origin master
-10. Tag this version:
-     - git tag -a 3.X.Y -m "version 3.X.Y"
-     - git push --tags
-     Check that it shows up here: https://github.com/nltk/nltk/releases
-(11. Merge with master branch
-     - git checkout master
-     - git merge --no-ff release-3.X.Y)
-
-B. RELEASE
-
-  1. make clean
-  2. make dist
-  3. ls dist/
-  4. Log in to http://pypi.python.org/pypi
+4. Release
+   - Make the distributions
+     make clean; make dist; ls dist/
+   - Log in to http://pypi.python.org/pypi
+     go to the "Package Submission" page
      upload ./nltk.egg-info/PKG-INFO via the web form
-  5. Go to files tab and upload distributions
-  6. rebuild the website with updated news page
-  7. post announcement to NLTK the mailing lists:
-       nltk-dev (for beta releases)
-       nltk (for final releases)
-  8. post announcement to external mailing lists, for major N.N releases only
-       CORPORA@uib.no, linguist@linguistlist.org,
-       PythonSIL@lists.sil.org, edu-sig@python.org
-       mailing lists for any local courses using NLTK
+   - Go to files tab and upload tar.gz and exe distributions
+     only specify version, e.g. 3.4, for exe
 
+5. Announce
+   - Post announcement to NLTK the mailing lists:
+     nltk-dev (for beta releases)
+     nltk-users (for final releases)
+     nltk (for final releases)
+   - announce to external mailing lists, for major N.N releases only
+     CORPORA@uib.no, linguist@linguistlist.org,
+     PythonSIL@lists.sil.org, edu-sig@python.org
+     mailing lists for any local courses using NLTK
+
+6. Optionally update to new version
+   - we don't want builds from the repository to have the same release number
+     e.g. after release X.Y.4, update repository version to X.Y.5a (alpha)
 
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -70,19 +81,3 @@ The build requires docutils, pdflatex, python imaging library, epydoc,
   1. Check out a clean copy of the subversion repository (or make clean)
      and install locally with sudo python setup.py install; make clean
   2. make doc (slow; see doc/ for the results) and commit
-
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@ INSTALL
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-D. INSTALLATION
-
-  1. download and install new version on all machines
-  2. contact relevant sysads to install new version
-  3. copy dist directory to memory stick
-
-E. NEW VERSION NUMBER (optional)
-
-  1. update the version numbers in the repository so that builds
-     off the repository don't have the same version as the release,
-     e.g. after release 0.9.6, update repository version to 0.9.7a (alpha)
