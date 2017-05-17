@@ -61,6 +61,7 @@ Building an NLTK distribution
      nltk-dev (for beta releases)
      nltk-users (for final releases)
      nltk (for final releases)
+     nltk twitter account
    - announce to external mailing lists, for major N.N releases only
      CORPORA@uib.no, linguist@linguistlist.org,
      PythonSIL@lists.sil.org, edu-sig@python.org
