@@ -14,8 +14,6 @@ import json
 import time
 import socket
 
-import requests
-
 from nltk.internals import find_jar_iter, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
@@ -103,6 +101,8 @@ class CoreNLPServer(object):
         self.java_options = java_options or ['-mx2g']
 
     def start(self):
+        import requests
+
         cmd = ['edu.stanford.nlp.pipeline.StanfordCoreNLPServer']
 
         if self.corenlp_options:
@@ -180,6 +180,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
     """Interface to the CoreNLP Parser."""
 
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
+        import requests
 
         self.url = url
         self.encoding = encoding
