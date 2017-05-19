@@ -317,7 +317,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
                         'inconsistent block reader (num tokens returned)')
 
             # If we reached the end of the file, then update self._len
-            if new_filepos == self._eofpos:
+            if new_filepos >= self._eofpos:
                 self._len = toknum + num_toks
             # Generate the tokens in this block (but skip any tokens
             # before start_tok).  Note that between yields, our state
@@ -325,8 +325,8 @@ class StreamBackedCorpusView(AbstractLazySequence):
             for tok in tokens[max(0, start_tok-toknum):]:
                 yield tok
             # If we're at the end of the file, then we're done.
-            assert new_filepos <= self._eofpos
-            if new_filepos == self._eofpos:
+            #assert new_filepos <= self._eofpos
+            if new_filepos >= self._eofpos:
                 break
             # Update our indices
             toknum += num_toks

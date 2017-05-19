@@ -20,7 +20,6 @@ except ImportError: from xml.etree import ElementTree
 
 from six import string_types
 
-from nltk.data import SeekableUnicodeStreamReader
 from nltk.tokenize import WordPunctTokenizer
 from nltk.internals import ElementWrapper
 
@@ -249,7 +248,6 @@ class XMLCorpusView(StreamBackedCorpusView):
         another block.
         """
         fragment = ''
-
         startpos = stream.tell()
         while True:
             # Read a block and add it to the fragment.
@@ -276,7 +274,8 @@ class XMLCorpusView(StreamBackedCorpusView):
             last_open_bracket = fragment.rfind('<')
             if last_open_bracket > 0:
                 if self._VALID_XML_RE.match(fragment[:last_open_bracket]):
-                    stream.seek(startpos+last_open_bracket)
+                    stream.seek(startpos)
+                    stream.read(last_open_bracket-1)
                     return fragment[:last_open_bracket]
 
             # Otherwise, read another block. (i.e., return to the
@@ -304,7 +303,6 @@ class XMLCorpusView(StreamBackedCorpusView):
         while elts==[] or elt_start is not None:
             startpos = stream.tell()
             xml_fragment = self._read_xml_fragment(stream)
-
             # End of file.
             if not xml_fragment:
                 if elt_start is None: break
@@ -364,7 +362,8 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # we've gotten so far (elts is non-empty).
                     if self._DEBUG:
                         print(' '*36+'(backtrack)')
-                    stream.seek(startpos+elt_start)
+                    stream.seek(startpos)
+                    stream.read(elt_start-1)
                     context = context[:elt_depth-1]
                     elt_start = elt_depth = None
                     elt_text = ''
