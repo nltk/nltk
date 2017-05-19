@@ -266,6 +266,7 @@ class PathPointer(object):
 
     @abstractmethod
     def file_size(self):
+        # fixme
         """
         Return the size of the file pointed to by this path pointer,
         in bytes.
@@ -312,12 +313,15 @@ class FileSystemPathPointer(PathPointer, text_type):
         return self._path
 
     def open(self, encoding=None):
-        stream = open(self._path, 'rb')
-        if encoding is not None:
-            stream = SeekableUnicodeStreamReader(stream, encoding)
+        if encoding is None:
+            stream = open(self._path, 'rb')
+        else:
+            stream = io.open(self._path, 'rt', encoding=encoding)
         return stream
 
     def file_size(self):
+        # fixme
+        raise NotImplementedError
         return os.stat(self._path).st_size
 
     def join(self, fileid):
@@ -451,7 +455,7 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
         else:
             stream = GzipFile(self._path, 'rb')
         if encoding:
-            stream = SeekableUnicodeStreamReader(stream, encoding)
+            stream = io.TextIOWrapper(stream, encoding)
         return stream
 
 
@@ -522,10 +526,12 @@ class ZipFilePathPointer(PathPointer):
             else:
                 stream = GzipFile(self._entry, fileobj=stream)
         elif encoding is not None:
-            stream = SeekableUnicodeStreamReader(stream, encoding)
+            stream = io.TextIOWrapper(stream, encoding)
         return stream
 
     def file_size(self):
+        # fixme
+        raise NotImplementedError
         return self._zipfile.getinfo(self._entry).file_size
 
     def join(self, fileid):

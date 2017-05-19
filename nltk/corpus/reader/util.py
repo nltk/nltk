@@ -10,6 +10,7 @@ import os
 import bisect
 import re
 import tempfile
+import io
 from six import string_types, text_type
 from functools import reduce
 try:
@@ -24,7 +25,6 @@ except ImportError: from xml.etree import ElementTree
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
-from nltk.data import SeekableUnicodeStreamReader
 from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation, py25
 
 ######################################################################
@@ -169,16 +169,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
            reader, which under rare circumstances may need to know
            the current block number."""
 
-        # Find the length of the file.
-        try:
-            if isinstance(self._fileid, PathPointer):
-                self._eofpos = self._fileid.file_size()
-            else:
-                self._eofpos = os.stat(self._fileid).st_size
-        except Exception as exc:
-            raise ValueError('Unable to open or access %r -- %s' %
-                             (fileid, exc))
-
         # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
         self._cache = (-1, -1, None)
@@ -208,10 +198,15 @@ class StreamBackedCorpusView(AbstractLazySequence):
         if isinstance(self._fileid, PathPointer):
             self._stream = self._fileid.open(self._encoding)
         elif self._encoding:
-            self._stream = SeekableUnicodeStreamReader(
-                open(self._fileid, 'rb'), self._encoding)
+            self._stream = io.open(self._fileid, 'rt', encoding=self._encoding)
         else:
             self._stream = open(self._fileid, 'rb')
+
+        # Find length of file
+        self._stream.seek(0, 2)
+        self._eofpos = self._stream.tell()
+        self._stream.seek(0)
+
 
     def close(self):
         """
