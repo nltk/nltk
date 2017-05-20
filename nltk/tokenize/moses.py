@@ -563,7 +563,7 @@ class MosesDetokenizer(TokenizerI):
                 normalized_quo = token
                 if re.search(r'^[„“”]+$', token):
                     normalized_quo = '"'
-                quote_counts.get(normalized_quo, 0)
+                quote_counts[normalized_quo] = quote_counts.get(normalized_quo, 0)
 
                 if self.lang == 'cs' and token == u"„":
                     quote_counts[normalized_quo] = 0
@@ -585,7 +585,7 @@ class MosesDetokenizer(TokenizerI):
                         quote_counts[normalized_quo] += 1
                 else:
                     # Left shift.
-                    text += token
+                    detokenized_text += token
                     prepend_space = " "
                     quote_counts[normalized_quo] += 1
 
