@@ -585,7 +585,7 @@ class MosesDetokenizer(TokenizerI):
                         quote_counts[normalized_quo] += 1
                 else:
                     # Left shift.
-                    text += token
+                    detokenized_text += token
                     prepend_space = " "
                     quote_counts[normalized_quo] += 1
 
