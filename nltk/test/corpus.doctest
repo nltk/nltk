@@ -1017,17 +1017,41 @@ concise form.  The simplest such method is `pprint()`:
         * Theme[+concrete +force]
       Frames:
         Intransitive (Expletive Subject)
+          Example: It's raining.
           Syntax: LEX[it] LEX[[+be]] VERB
           Semantics:
             * weather(during(E), Weather_type, ?Theme)
         NP (Expletive Subject, Theme Object)
+          Example: It's raining cats and dogs.
           Syntax: LEX[it] LEX[[+be]] VERB NP[Theme]
           Semantics:
             * weather(during(E), Weather_type, Theme)
         PP (Expletive Subject, Theme-PP)
+          Example: It was pelting with rain.
           Syntax: LEX[it[+be]] VERB PREP[with] NP[Theme]
           Semantics:
             * weather(during(E), Weather_type, Theme)
+
+Verbnet gives us frames that link the syntax and semantics using an example.
+These frames are part of the corpus and we can use 'frames()' to get a frame
+for a given verbnet class.
+
+    >>> frame = verbnet.frames('57')
+    >>> frame == [{'semantics': [{'arguments': [{'value': 'during(E)', 'type': 'Event'}, {'value': 'Weather_type', 'type': 'VerbSpecific'}, {'value': '?Theme', 'type': 'ThemRole'}], 'predicate_value': 'weather'}], 'example': "It's raining.", 'syntax': [{'pos_tag': 'LEX', 'modifiers': {'value': 'it', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'LEX', 'modifiers': {'value': '[+be]', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'VERB', 'modifiers': {'value': '', 'synrestrs': [], 'selrestrs': []}}], 'description': {'primary': 'Intransitive', 'secondary': 'Expletive Subject'}}, {'semantics': [{'arguments': [{'value': 'during(E)', 'type': 'Event'}, {'value': 'Weather_type', 'type': 'VerbSpecific'}, {'value': 'Theme', 'type': 'ThemRole'}], 'predicate_value': 'weather'}], 'example': "It's raining cats and dogs.", 'syntax': [{'pos_tag': 'LEX', 'modifiers': {'value': 'it', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'LEX', 'modifiers': {'value': '[+be]', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'VERB', 'modifiers': {'value': '', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'NP', 'modifiers': {'value': 'Theme', 'synrestrs': [], 'selrestrs': []}}], 'description': {'primary': 'NP', 'secondary': 'Expletive Subject, Theme Object'}}, {'semantics': [{'arguments': [{'value': 'during(E)', 'type': 'Event'}, {'value': 'Weather_type', 'type': 'VerbSpecific'}, {'value': 'Theme', 'type': 'ThemRole'}], 'predicate_value': 'weather'}], 'example': 'It was pelting with rain.', 'syntax': [{'pos_tag': 'LEX', 'modifiers': {'value': 'it[+be]', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'VERB', 'modifiers': {'value': '', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'PREP', 'modifiers': {'value': 'with', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'NP', 'modifiers': {'value': 'Theme', 'synrestrs': [], 'selrestrs': []}}], 'description': {'primary': 'PP', 'secondary': 'Expletive Subject, Theme-PP'}}]
+    True
+
+Verbnet corpus lets us access thematic roles individually using 'themroles()'.
+
+    >>> themroles = verbnet.themroles('57')
+    >>> themroles == [{'modifiers': [{'type': 'concrete', 'value': '+'}, {'type': 'force', 'value': '+'}], 'type': 'Theme'}]
+    True
+
+Verbnet classes may also have subclasses sharing similar syntactic and semantic properties
+while having differences with the superclass. The Verbnet corpus allows us to access these
+subclasses using 'subclasses()'.
+
+    >>> print(verbnet.subclasses('9.1')) #Testing for 9.1 since '57' does not have subclasses
+    ['put-9.1-1', 'put-9.1-2']
 
 
 nps_chat
