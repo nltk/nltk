@@ -177,32 +177,54 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
 
         :param vnclass: 
-        :return: 
+        :return: frames - a list of frame dictionaries
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
         frames = list()
         vnframes = vnclass.findall('FRAMES/FRAME')
         for vnframe in vnframes:
-            example_text = vnframe.find('EXAMPLES/EXAMPLE').text
-            pos_syntax_within_single_frame = list()
-            for elt in vnframe.find('SYNTAX'):
-                piece = elt.tag
-                modifiers = []
-                if 'value' in elt.attrib:
-                    modifiers.append(elt.get('value'))
-                modifiers += ['%(Value)s%(type)s' % restr.attrib
-                              for restr in (elt.findall('SELRESTRS/SELRESTR') +
-                                            elt.findall('SYNRESTRS/SYNRESTR'))]
-                pos_syntax_within_single_frame.append({
-                    'pos': piece,
-                    'modifiers': modifiers
-                })
+            example_text = self._get_example_within_frame(vnframe)
+            pos_syntax_within_single_frame = self._get_syntactic_list_within_frame(vnframe)
+            semantics_within_single_frame = self._get_semantics_within_frame(vnframe)
             frames.append({
                 'example': example_text,
-                'syntax': pos_syntax_within_single_frame
+                'syntax': pos_syntax_within_single_frame,
+                'semantics': semantics_within_single_frame
             })
         return frames
+
+    def subclassids(self, vnclass):
+        """
+        
+        :param vnclass: 
+        :return: list of subclasses
+        """
+        if isinstance(vnclass, string_types):
+            vnclass = self.vnclass(vnclass)
+
+        subclasses = [subclass.get('ID') for subclass in
+                      vnclass.findall('SUBCLASSES/VNSUBCLASS')]
+        return subclasses
+
+    def themroles(self, vnclass):
+        """
+        
+        :param vnclass: 
+        :return: 
+        """
+        if isinstance(vnclass, string_types):
+            vnclass = self.vnclass(vnclass)
+
+        themroles = list()
+        for trole in vnclass.findall('THEMROLES/THEMROLE'):
+            modifiers = [{'value': restr.get('Value'), 'type': restr.get('type')}
+                         for restr in trole.findall('SELRESTRS/SELRESTR')]
+            themroles.append({
+                'type': trole.get('type'),
+                'modifiers': modifiers
+            })
+        return themroles
 
     ######################################################################
     # { Index Initialization
@@ -288,6 +310,45 @@ class VerbnetCorpusReader(XMLCorpusReader):
             return m.group(2)
         else:
             raise ValueError('vnclass identifier %r not found' % longid)
+
+    ######################################################################
+    # { Frame access utility functions
+    ######################################################################
+
+    def _get_semantics_within_frame(self, vnframe):
+        semantics_within_single_frame = []
+        for pred in vnframe.findall('SEMANTICS/PRED'):
+            arguments = [{'type': arg.get('type'), 'value': arg.get('value')}
+                         for arg in pred.findall('ARGS/ARG')]
+            semantics_within_single_frame.append({
+                'predicate_value': pred.get('value'),
+                'arguments': arguments
+            })
+        return semantics_within_single_frame
+
+    def _get_example_within_frame(self, vnframe):
+        example_element = vnframe.find('EXAMPLES/EXAMPLE')
+        if example_element is not None:
+            example_text = example_element.text
+        else:
+            example_text = ""
+        return example_text
+
+    def _get_syntactic_list_within_frame(self, vnframe):
+        pos_syntax_within_single_frame = list()
+        for elt in vnframe.find('SYNTAX'):
+            pos_tag = elt.tag
+            modifiers = dict()
+            modifiers['value'] = elt.get('value') if 'value' in elt.attrib else ""
+            modifiers['selrestrs'] = [{'value': restr.get('Value'), 'type': restr.get('type')}
+                                      for restr in elt.findall('SELRESTRS/SELRESTR')]
+            modifiers['synrestrs'] = [{'value': restr.get('Value'), 'type': restr.get('type')}
+                                      for restr in elt.findall('SYNRESTRS/SYNRESTR')]
+            pos_syntax_within_single_frame.append({
+                'pos': pos_tag,
+                'modifiers': modifiers
+            })
+        return pos_syntax_within_single_frame
 
     ######################################################################
     # { Pretty Printing
@@ -436,3 +497,10 @@ class VerbnetCorpusReader(XMLCorpusReader):
             args = [arg.get('value') for arg in pred.findall('ARGS/ARG')]
             pieces.append('%s(%s)' % (pred.get('value'), ', '.join(args)))
         return '\n'.join('%s* %s' % (indent, piece) for piece in pieces)
+
+
+if __name__ == '__main__':
+    from nltk.corpus import verbnet
+    import pprint
+
+    pprint.PrettyPrinter().pprint(verbnet.subclassids('9.1'))
