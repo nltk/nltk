@@ -205,6 +205,7 @@
 - George Berry
 - Adam Nelson
 - J Richard Snape
+- Alex Constantin <alex@keyworder.ch>
 - Tsolak Ghukasyan
 - Prasasto Adi
 - Safwan Kamarrudin
