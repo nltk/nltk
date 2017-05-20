@@ -159,7 +159,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
                     assert False  # we saw it during _index()!
 
         else:
-            raise ValueError('Unknown identifier %s' % fileid_or_classid)
+            raise ValueError('Unknown identifier {}'.format(fileid_or_classid))
 
     def fileids(self, vnclass_ids=None):
         """
@@ -486,7 +486,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             modifiers = [modifier['value'] + modifier['type']
                          for modifier in themrole['modifiers']]
             if modifiers:
-                piece += '[%s]' % ' '.join(modifiers)
+                piece += '[{}]'.format(' '.join(modifiers))
             pieces.append(piece)
         return '\n'.join(pieces)
 
@@ -541,7 +541,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         description = indent + vnframe['description']['primary']
         if vnframe['description']['secondary']:
-            description += ' (%s)' % vnframe['description']['secondary']
+            description += ' ({})'.format(vnframe['description']['secondary'])
         return description
 
     def _pprint_syntax_within_frame(self, vnframe, indent=''):
@@ -558,11 +558,11 @@ class VerbnetCorpusReader(XMLCorpusReader):
             modifier_list = []
             if 'value' in element['modifiers'] and element['modifiers']['value']:
                 modifier_list.append(element['modifiers']['value'])
-            modifier_list += ['%s%s' % (restr['value'], restr['type'])
+            modifier_list += ['{}{}'.format(restr['value'], restr['type'])
                               for restr in (element['modifiers']['selrestrs'] +
                                             element['modifiers']['synrestrs'])]
             if modifier_list:
-                piece += '[%s]' % ' '.join(modifier_list)
+                piece += '[{}]'.format(' '.join(modifier_list))
             pieces.append(piece)
 
         return indent + ' '.join(pieces)
@@ -578,5 +578,5 @@ class VerbnetCorpusReader(XMLCorpusReader):
         pieces = []
         for predicate in vnframe['semantics']:
             arguments = [argument['value'] for argument in predicate['arguments']]
-            pieces.append('%s(%s)' % (predicate['predicate_value'], ', '.join(arguments)))
-        return '\n'.join('%s* %s' % (indent, piece) for piece in pieces)
+            pieces.append('{}({})'.format(predicate['predicate_value'], ', '.join(arguments)))
+        return '\n'.join('{}* {}'.format(indent, piece) for piece in pieces)
