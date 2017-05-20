@@ -177,8 +177,14 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def frames(self, vnclass):
         """
-
-        :param vnclass: 
+        Given a verbnet class, this method returns frames with members-
+        1) Example
+        2) Description
+        3) Syntax
+        4) Semantics
+        
+        :param vnclass: A verbnet class identifier; or an ElementTree
+            containing the xml contents of a verbnet class.
         :return: frames - a list of frame dictionaries
         """
         if isinstance(vnclass, string_types):
@@ -200,8 +206,11 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def subclasses(self, vnclass):
         """
+        Given a verbnet class, this method returns subclass ids (if they exist)
+        in a list of strings.
         
-        :param vnclass: 
+        :param vnclass: A verbnet class identifier; or an ElementTree
+            containing the xml contents of a verbnet class.
         :return: list of subclasses
         """
         if isinstance(vnclass, string_types):
@@ -213,9 +222,14 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def themroles(self, vnclass):
         """
+        Given a verbnet class, this method returns thematic roles participating
+        in the verbnet class with members-
+        1) Type
+        2) Modifiers
         
-        :param vnclass: 
-        :return: 
+        :param vnclass: A verbnet class identifier; or an ElementTree
+            containing the xml contents of a verbnet class.
+        :return: themroles: A list of thematic roles in the verbnet class
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
@@ -320,6 +334,16 @@ class VerbnetCorpusReader(XMLCorpusReader):
     ######################################################################
 
     def _get_semantics_within_frame(self, vnframe):
+        """
+        A utility function to retrieve semantics within a frame in verbnet
+        Members of the semantics dictionary:
+        1) Predicate value 
+        2) Arguments
+        
+        :param vnframe: An ElementTree containing the xml contents of
+            a verbnet frame.
+        :return: semantics: semantics dictionary
+        """
         semantics_within_single_frame = []
         for pred in vnframe.findall('SEMANTICS/PRED'):
             arguments = [{'type': arg.get('type'), 'value': arg.get('value')}
@@ -331,6 +355,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return semantics_within_single_frame
 
     def _get_example_within_frame(self, vnframe):
+        """
+        A utility function to retrieve an example within a frame in verbnet.
+        
+        :param vnframe: An ElementTree containing the xml contents of
+            a verbnet frame.
+        :return: example_text: The example sentence for this particular frame
+        """
         example_element = vnframe.find('EXAMPLES/EXAMPLE')
         if example_element is not None:
             example_text = example_element.text
@@ -339,6 +370,14 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return example_text
 
     def _get_description_within_frame(self, vnframe):
+        """
+        A utility function to retrieve a description of participating members
+        within a frame in verbnet.
+        
+        :param vnframe: An ElementTree containing the xml contents of
+            a verbnet frame.
+        :return: description: a description dictionary with members - primary and secondary 
+        """
         description_element = vnframe.find('DESCRIPTION')
         return {
             'primary': description_element.attrib['primary'],
@@ -346,7 +385,17 @@ class VerbnetCorpusReader(XMLCorpusReader):
         }
 
     def _get_syntactic_list_within_frame(self, vnframe):
-        pos_syntax_within_single_frame = list()
+        """
+        A utility function to retrieve semantics within a frame in verbnet.
+        Members of the syntactic dictionary:
+        1) POS Tag
+        2) Modifiers
+        
+        :param vnframe: An ElementTree containing the xml contents of
+            a verbnet frame.
+        :return: syntax_within_single_frame
+        """
+        syntax_within_single_frame = list()
         for elt in vnframe.find('SYNTAX'):
             pos_tag = elt.tag
             modifiers = dict()
@@ -355,11 +404,11 @@ class VerbnetCorpusReader(XMLCorpusReader):
                                       for restr in elt.findall('SELRESTRS/SELRESTR')]
             modifiers['synrestrs'] = [{'value': restr.get('Value'), 'type': restr.get('type')}
                                       for restr in elt.findall('SYNRESTRS/SYNRESTR')]
-            pos_syntax_within_single_frame.append({
+            syntax_within_single_frame.append({
                 'pos_tag': pos_tag,
                 'modifiers': modifiers
             })
-        return pos_syntax_within_single_frame
+        return syntax_within_single_frame
 
     ######################################################################
     # { Pretty Printing
@@ -444,9 +493,10 @@ class VerbnetCorpusReader(XMLCorpusReader):
     def pprint_frames(self, vnclass, indent=''):
         """
         Return a string containing a pretty-printed representation of
-        the given verbnet frame.
+        the list of frames within the verbnet class.
 
-        :param vnclass: 
+        :param vnclass: A verbnet class identifier; or an ElementTree
+            containing the xml contents of a verbnet class.
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
@@ -457,13 +507,15 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def _pprint_single_frame(self, vnframe, indent=''):
         """
+        Returns a string containing a pretty-printed representation of
+        the given frame.
         
-        :param vnframe: 
-        :return: 
+        :param vnframe: An ElementTree containing the xml contents of
+            a verbnet frame.
         """
-        frame_string = self._pprint_description_within_frame(vnframe, indent)
-        frame_string += self._pprint_example_within_frame(vnframe, indent + ' ')
-        frame_string += self._pprint_syntax_within_frame(vnframe, indent + '  Syntax: ')
+        frame_string = self._pprint_description_within_frame(vnframe, indent) + '\n'
+        frame_string += self._pprint_example_within_frame(vnframe, indent + ' ') + '\n'
+        frame_string += self._pprint_syntax_within_frame(vnframe, indent + '  Syntax: ') + '\n'
         frame_string += indent + '  Semantics:\n'
         frame_string += self._pprint_semantics_within_frame(vnframe, indent + '    ')
         return frame_string
@@ -471,13 +523,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
     def _pprint_example_within_frame(self, vnframe, indent=''):
         """
         Return a string containing a pretty-printed representation of
-        the given verbnet frame description.
+        the given verbnet frame example.
 
         :param vnframe: An ElementTree containing the xml contents of
             a verbnet frame.
         """
         if vnframe['example']:
-            return indent + ' Example: ' + vnframe['example'] + '\n'
+            return indent + ' Example: ' + vnframe['example']
 
     def _pprint_description_within_frame(self, vnframe, indent=''):
         """
@@ -490,7 +542,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         description = indent + vnframe['description']['primary']
         if vnframe['description']['secondary']:
             description += ' (%s)' % vnframe['description']['secondary']
-        return description + '\n'
+        return description
 
     def _pprint_syntax_within_frame(self, vnframe, indent=''):
         """
@@ -513,7 +565,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
                 piece += '[%s]' % ' '.join(modifier_list)
             pieces.append(piece)
 
-        return indent + ' '.join(pieces) + '\n'
+        return indent + ' '.join(pieces)
 
     def _pprint_semantics_within_frame(self, vnframe, indent=''):
         """
