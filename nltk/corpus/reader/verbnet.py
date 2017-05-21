@@ -110,11 +110,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
         classes that contain that wordnetid as a member.  If a classid
         is specified, then return only identifiers for subclasses of
         the specified verbnet class.
+        If nothing is specified, return all classids within verbnet
         """
-        if len([x for x in [lemma, wordnetid, fileid, classid]
-                if x is not None]) > 1:
-            raise ValueError('Specify at most one of: fileid, wordnetid, '
-                             'fileid, classid')
         if fileid is not None:
             return [c for (c, f) in self._class_to_fileid.items()
                     if f == fileid]
