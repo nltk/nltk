@@ -189,26 +189,36 @@ class StreamBackedCorpusView(AbstractLazySequence):
         """
         raise NotImplementedError('Abstract Method')
 
+    _cache = dict()
+
     def _open(self):
         """
         Open the file stream associated with this corpus view.  This
         will be called performed if any value is read from the view
         while its file stream is closed.
         """
-        if isinstance(self._fileid, PathPointer):
-            self._back = self._fileid.open(self._encoding)
-        elif self._encoding:
-            self._back = io.open(self._fileid, 'rt', encoding=self._encoding)
-        else:
-            self._back = open(self._fileid, 'rb')
 
-        self._stream = io.StringIO(self._back.read())
+        key = repr(self._fileid)
+        if key in StreamBackedCorpusView._cache:
+            data = StreamBackedCorpusView._cache[key]
+        else:
+            if isinstance(self._fileid, PathPointer):
+                data = self._fileid.open(self._encoding).read()
+            else:
+                if self._encoding:
+                    data = io.open(self._fileid, 'rt', encoding=self._encoding).read()
+                else:
+                    data = open(self._fileid, 'rb').read()
+            StreamBackedCorpusView._cache[key] = data
+
+        self._stream = io.StringIO(data)
         #self._stream = self._back
 
         # Find length of file
-        self._stream.seek(0, 2)
-        self._eofpos = self._stream.tell()
-        self._stream.seek(0)
+        #self._stream.seek(0, 2)
+        #self._eofpos = self._stream.tell()
+        #self._stream.seek(0)
+        self._eofpos = len(data)
 
 
     def close(self):
