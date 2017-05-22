@@ -1,3 +1,12 @@
+Version 3.2.4 2017-05-21
+
+* remove load-time dependency on Python requests library
+* add support for Arabic in StanfordSegmenter
+* fix MosesDetokenizer on irregular quote tokens
+	
+Thanks to the following contributors to 3.2.4:
+Alex Constantin, Hatem Nassrat, Liling Tan
+	
 Version 3.2.3 2017-05-16
 
 * new interface to Stanford CoreNLP Web API

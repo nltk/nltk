@@ -4,6 +4,10 @@ NLTK News
 2017
 ----
 
+NLTK 3.2.4 released: May 2017
+   Remove load-time dependency on Python requests library,
+   Add support for Arabic in StanfordSegmenter
+
 NLTK 3.2.3 released: May 2017
    Interface to Stanford CoreNLP Web API, improved Lancaster stemmer,
    improved Treebank tokenizer, support custom tab files for extending WordNet,
