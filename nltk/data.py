@@ -526,6 +526,7 @@ class ZipFilePathPointer(PathPointer):
             else:
                 stream = GzipFile(self._entry, fileobj=stream)
         elif encoding is not None:
+            #fixme: this doesn't work in py2.7
             stream = io.TextIOWrapper(stream, encoding)
         return stream
 
