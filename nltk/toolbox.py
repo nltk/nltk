@@ -12,13 +12,13 @@ Toolbox databases and settings files.
 """
 from __future__ import print_function
 
-import os, re, codecs
+import re, io
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
 
 from six import u
 
-from nltk.compat import StringIO, PY3
-from nltk.data import PathPointer, ZipFilePathPointer, find
+from nltk.compat import PY3
+from nltk.data import PathPointer, find
 
 
 class StandardFormat(object):
@@ -42,7 +42,7 @@ class StandardFormat(object):
             #      (PathPointer.open doesn't take a mode option)
             self._file = sfm_file.open(self._encoding)
         else:
-            self._file = codecs.open(sfm_file, 'rU', self._encoding)
+            self._file = io.open(sfm_file, 'rU', encoding=self._encoding)
 
     def open_string(self, s):
         """
@@ -51,7 +51,7 @@ class StandardFormat(object):
         :param s: string to parse as a standard format marker input file
         :type s: str
         """
-        self._file = StringIO(s)
+        self._file = io.StringIO(s)
 
     def raw_fields(self):
         """
