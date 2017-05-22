@@ -189,8 +189,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
         """
         raise NotImplementedError('Abstract Method')
 
-    _cache = dict()
-
     def _open(self):
         """
         Open the file stream associated with this corpus view.  This
@@ -198,18 +196,13 @@ class StreamBackedCorpusView(AbstractLazySequence):
         while its file stream is closed.
         """
 
-        key = repr(self._fileid)
-        if key in StreamBackedCorpusView._cache:
-            data = StreamBackedCorpusView._cache[key]
+        if isinstance(self._fileid, PathPointer):
+            data = self._fileid.open(self._encoding).read()
         else:
-            if isinstance(self._fileid, PathPointer):
-                data = self._fileid.open(self._encoding).read()
+            if self._encoding:
+                data = io.open(self._fileid, 'rt', encoding=self._encoding).read()
             else:
-                if self._encoding:
-                    data = io.open(self._fileid, 'rt', encoding=self._encoding).read()
-                else:
-                    data = open(self._fileid, 'rb').read()
-            StreamBackedCorpusView._cache[key] = data
+                data = open(self._fileid, 'rb').read()
 
         self._stream = io.StringIO(data)
         #self._stream = self._back
