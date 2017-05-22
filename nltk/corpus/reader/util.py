@@ -196,11 +196,14 @@ class StreamBackedCorpusView(AbstractLazySequence):
         while its file stream is closed.
         """
         if isinstance(self._fileid, PathPointer):
-            self._stream = self._fileid.open(self._encoding)
+            self._back = self._fileid.open(self._encoding)
         elif self._encoding:
-            self._stream = io.open(self._fileid, 'rt', encoding=self._encoding)
+            self._back = io.open(self._fileid, 'rt', encoding=self._encoding)
         else:
-            self._stream = open(self._fileid, 'rb')
+            self._back = open(self._fileid, 'rb')
+
+        self._stream = io.StringIO(self._back.read())
+        #self._stream = self._back
 
         # Find length of file
         self._stream.seek(0, 2)
