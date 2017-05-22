@@ -242,12 +242,10 @@ class TaggedCorpusView(StreamBackedCorpusView):
         for para_str in self._para_block_reader(stream):
             para = []
             for sent_str in self._sent_tokenizer.tokenize(para_str):
-                sent = [str2tuple(s, self._sep) for s in
+                sent = [str2tuple(s, sep=self._sep, tag=self._tagged) for s in
                         self._word_tokenizer.tokenize(sent_str)]
-                if self._tag_mapping_function:
+                if self._tagged and self._tag_mapping_function:
                     sent = [(w, self._tag_mapping_function(t)) for (w,t) in sent]
-                if not self._tagged:
-                    sent = [w for (w,t) in sent]
                 if self._group_by_sent:
                     para.append(sent)
                 else:
