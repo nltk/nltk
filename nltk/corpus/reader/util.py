@@ -200,8 +200,14 @@ class StreamBackedCorpusView(AbstractLazySequence):
         else:
             stream = FileSystemPathPointer(self._fileid).open(self._encoding)
 
-        data = stream.read()
-        self._stream = io.StringIO(data)
+        try:
+            data = stream.read()
+            if self._encoding:
+                self._stream = io.StringIO(data)
+            else:
+                self._stream = io.BytesIO(data)
+        except MemoryError:
+            self._stream = stream
 
         # Find end of file
         self._stream.seek(0, 2)
