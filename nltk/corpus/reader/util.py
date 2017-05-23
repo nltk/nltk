@@ -173,10 +173,9 @@ class StreamBackedCorpusView(AbstractLazySequence):
         # increase efficiency of random access.
         self._cache = (-1, -1, None)
 
-    fileid = property(lambda self: self._fileid, doc="""
-        The fileid of the file that is accessed by this view.
-
-        :type: str or PathPointer""")
+    #fileid = property(lambda self: self._fileid, doc="""
+    #    The fileid of the file that is accessed by this view.
+    #    :type: str or PathPointer""")
 
     def read_block(self, stream):
         """
@@ -197,21 +196,17 @@ class StreamBackedCorpusView(AbstractLazySequence):
         """
 
         if isinstance(self._fileid, PathPointer):
-            data = self._fileid.open(self._encoding).read()
+            stream = self._fileid.open(self._encoding)
         else:
-            if self._encoding:
-                data = io.open(self._fileid, 'rt', encoding=self._encoding).read()
-            else:
-                data = open(self._fileid, 'rb').read()
+            stream = FileSystemPathPointer(self._fileid).open(self._encoding)
 
+        data = stream.read()
         self._stream = io.StringIO(data)
-        #self._stream = self._back
 
-        # Find length of file
-        #self._stream.seek(0, 2)
-        #self._eofpos = self._stream.tell()
-        #self._stream.seek(0)
-        self._eofpos = len(data)
+        # Find end of file
+        self._stream.seek(0, 2)
+        self._eofpos = self._stream.tell()
+        self._stream.seek(0)
 
 
     def close(self):

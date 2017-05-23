@@ -314,13 +314,13 @@ class FileSystemPathPointer(PathPointer, text_type):
 
     def open(self, encoding=None):
         if encoding is None:
-            stream = open(self._path, 'rb')
+            stream = io.open(self._path, 'rb')
         else:
             stream = io.open(self._path, 'rt', encoding=encoding)
         return stream
 
     def file_size(self):
-        # fixme
+        # fixme: gives wrong answer for encoded files
         raise NotImplementedError
         return os.stat(self._path).st_size
 
@@ -516,7 +516,6 @@ class ZipFilePathPointer(PathPointer):
 
     def open(self, encoding=None):
         data = self._zipfile.read(self._entry)
-        stream = BytesIO(data)
         if self._entry.endswith('.gz'):
             # Note: In >= Python3.5, GzipFile is already using a
             # buffered reader in the backend which has a variable self._buffer
@@ -525,13 +524,16 @@ class ZipFilePathPointer(PathPointer):
                 stream = BufferedGzipFile(self._entry, fileobj=stream)
             else:
                 stream = GzipFile(self._entry, fileobj=stream)
-        elif encoding is not None:
-            #fixme: this doesn't work in py2.7
-            stream = io.TextIOWrapper(stream, encoding)
+            if encoding:
+                stream = io.TextIOWrapper(stream, encoding)
+        elif encoding is None:
+            stream = io.BytesIO(data)
+        else:
+            stream = io.StringIO(data.decode(encoding))
         return stream
 
     def file_size(self):
-        # fixme
+        # fixme: gives length in bytes, not chars
         raise NotImplementedError
         return self._zipfile.getinfo(self._entry).file_size
 

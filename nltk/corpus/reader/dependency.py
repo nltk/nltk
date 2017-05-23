@@ -36,8 +36,7 @@ class DependencyCorpusReader(SyntaxCorpusReader):
             if isinstance(fileid, PathPointer):
                 result.append(fileid.open(encoding=encoding).read())
             else:
-                with codecs.open(fileid, "r", encoding) as fp:
-                    result.append(fp.read())
+                result.append(FileSystemPathPointer(fileid).open(encoding).read())
         return concat(result)
 
     def words(self, fileids=None):
