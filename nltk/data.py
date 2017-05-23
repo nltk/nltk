@@ -59,7 +59,7 @@ from six.moves.urllib.request import urlopen, url2pathname
 
 # this import should be more specific:
 import nltk
-from nltk.compat import py3_data, add_py3_data, BytesIO
+from nltk.compat import py3_data, add_py3_data
 
 ######################################################################
 # Search Path
@@ -375,14 +375,14 @@ class BufferedGzipFile(GzipFile):
         """
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
-        self._nltk_buffer = BytesIO()
+        self._nltk_buffer = io.BytesIO()
         # cStringIO does not support len.
         self._len = 0
 
     def _reset_buffer(self):
         # For some reason calling BytesIO.truncate() here will lead to
         # inconsistent writes so just set _buffer to a new BytesIO object.
-        self._nltk_buffer = BytesIO()
+        self._nltk_buffer = io.BytesIO()
         self._len = 0
 
     def _write_buffer(self, data):
@@ -412,7 +412,7 @@ class BufferedGzipFile(GzipFile):
     def read(self, size=None):
         if not size:
             size = self._size
-            contents = BytesIO()
+            contents = io.BytesIO()
             while True:
                 blocks = GzipFile.read(self, size)
                 if not blocks:
