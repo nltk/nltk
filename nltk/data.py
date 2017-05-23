@@ -41,7 +41,6 @@ import os
 import textwrap
 import re
 import zipfile
-import codecs
 
 from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
 

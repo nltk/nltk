@@ -27,7 +27,6 @@ from nltk.tree import Tree
 
 import re
 import sys
-import codecs
 from cgi import escape
 from collections import defaultdict
 from operator import itemgetter
