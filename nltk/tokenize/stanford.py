@@ -17,8 +17,8 @@ from subprocess import PIPE
 from six import text_type
 
 from nltk.internals import find_jar, config_java, java, _java_options
-
 from nltk.tokenize.api import TokenizerI
+from nltk.parse.corenlp import CoreNLPParser
 
 _stanford_url = 'https://nlp.stanford.edu/software/tokenizer.shtml'
 
@@ -97,6 +97,31 @@ class StanfordTokenizer(TokenizerI):
         config_java(options=default_options, verbose=False)
 
         return stdout
+
+
+class CoreNLPTokenizer(CoreNLPParser):
+    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+        """
+        This is a duck-type of CoreNLPParser that has the tokenizing
+        functionality similar to the original Stanford POS tagger.
+
+        >>> from nltk.tokenize.stanford import CoreNLPTokenizer
+        >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
+        >>> expected = [u'Good', u'muffins', u'cost', u'$', u'3.88', u'in',
+        ... u'New', u'York', u'.', u'Please', u'buy', u'me', u'two', u'of',
+        ... u'them', u'.', u'Thanks', u'.']
+        >>> CoreNLPTokenizer().tokenize(s) == expected
+        True
+        """
+        super(self.__class__, self).__init__(url, encoding)
+
+    def tokenize(self, text, properties=None):
+        """
+        Tokenize a string of text. Consistent with the StanfordTokenizer, This
+        function returns a list of string. The orignal CoreNLPParser.tokenize()
+        returns a generator of string.
+        """
+        return list(super(CoreNLPTokenizer, self).tokenize(text, properties))
 
 
 def setup_module(module):
