@@ -26,7 +26,7 @@ class StanfordTokenizer(TokenizerI):
     r"""
     Interface to the Stanford Tokenizer
 
-    >>> from nltk.tokenize import StanfordTokenizer
+    >>> from nltk.tokenize.stanford import StanfordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
     >>> StanfordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
@@ -106,7 +106,7 @@ class CoreNLPTokenizer(CoreNLPParser):
         functionality similar to the original Stanford POS tagger.
 
             >>> from nltk.tokenize.stanford import CoreNLPTokenizer
-            >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."  
+            >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
             >>> expected = [u'Good', u'muffins', u'cost', u'$', u'3.88', u'in',
             ... u'New', u'York', u'.', u'Please', u'buy', u'me', u'two', u'of',
             ... u'them', u'.', u'Thanks', u'.']

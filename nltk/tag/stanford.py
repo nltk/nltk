@@ -17,8 +17,6 @@ list of paths).
 For more details see the documentation for StanfordPOSTagger and StanfordNERTagger.
 """
 
-from __future__ import unicode_literals
-
 from abc import abstractmethod
 import os
 import tempfile
