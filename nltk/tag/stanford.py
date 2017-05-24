@@ -267,7 +267,7 @@ class CoreNLPNERTagger(CoreNLPTagger):
         >>> expected = [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'),
         ... ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'),
         ... ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'),
-        ... 'in', 'O'), ('NY', 'O')]
+        ... ('in', 'O'), ('NY', 'O')]
         >>> tagged == expected   # doctest: +SKIP
         True
     """
