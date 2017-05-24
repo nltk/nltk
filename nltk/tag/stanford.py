@@ -17,6 +17,8 @@ list of paths).
 For more details see the documentation for StanfordPOSTagger and StanfordNERTagger.
 """
 
+from __future__ import unicode_literals
+
 from abc import abstractmethod
 import os
 import tempfile
@@ -205,34 +207,77 @@ class StanfordNERTagger(StanfordTagger):
 
         raise NotImplementedError
 
-class CoreNLPPOSTagger(CoreNLPParser, TaggerI):
+class CoreNLPTagger(CoreNLPParser, TaggerI):
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
         """
-        This is a duck-type of the CoreNLP that returns the POS tags from the
-        parsed outputs.
+        This is a abstract, duck-type of the CoreNLP that returns the
+        POS/NER tags from the Stanford CoreNLP API at nltk.parse.corenlp.
+        """
+        super(CoreNLPTagger, self).__init__(url, encoding)
+
+    def tag_sents(self, sentences, tagtype):
+        sentences = (' '.join(words) for words in sentences)
+        return list(self.raw_tag_sents(sentences, tagtype))
+
+
+    def tag(self, sentence, tagtype):
+        return self.tag_sents([sentence], tagtype)
+
+    def raw_tag_sents(self, sentences, tagtype):
+        """
+        This function will interface the `GenericCoreNLPParser.api_call` to
+        retreive the JSON output and return the annotations required.
+        """
+        default_properties = {'ssplit.isOneSentence': 'true',
+                              'annotators': 'tokenize,' }
+        # Supports only 'pos' or 'ner' tags.
+        assert tagtype in ['pos', 'ner']
+        default_properties['annotators'] += tagtype
+        for sentence in sentences:
+            tagged_data = self.api_call(sentence, properties=default_properties)
+            assert len(tagged_data['sentences']) == 1
+            # Taggers only need to return 1-best sentence.
+            yield [(token['word'], token[tagtype]) for token in tagged_data['sentences'][0]['tokens']]
+
+
+class CoreNLPPOSTagger(CoreNLPTagger):
+    """
+    This is a duckling-type of the CoreNLPTagger that wraps around the
+    nltk.parse.CoreNLPParser for Part-of-Sppech tagging.
 
         >>> from nltk.tag.stanford import CoreNLPPOSTagger
-        >>> sents = [['This', 'is', 'a', 'foo', 'bar', 'sentence'], ['We', 'are', 'an', 'ABC', 'nation.']]
-        >>> st = CoreNLPPOSTagger()
-        >>> expected = [[('This', 'DT'), ('is', 'VBZ'), ('a', 'DT'),
-        ... ('foo', 'NN'), ('bar', 'NN'), ('sentence', 'NN')], [('We', 'PRP'),
-        ... ('are', 'VBP'), ('an', 'DT'), ('ABC', 'NNP'), ('nation', 'NN'), ('.', '.')]]
-        >>> st.tag_sents(sents) == expected
+        >>> tagged = CoreNLPPOSTagger().tag('What is the airspeed of an unladen swallow ?'.split())   # doctest: +SKIP
+        >>> expected == [[('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'),
+        ... ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'),
+        ... ('swallow', 'VB'), ('?', '.')]]
+        >>> expected = tagged # doctest: +SKIP
         True
-        >>> st.tag(sents[0]) == expected[0]
+    """
+    def tag_sents(self, sentences, tagtype='pos'):
+        return super(CoreNLPPOSTagger, self).tag_sents(sentences, tagtype)
+    def tag(self, sentence, tagtype='pos'):
+        return self.tag_sents([sentence], tagtype)
+
+
+class CoreNLPNERTagger(CoreNLPTagger):
+    """
+    This is a duckling-type of the CoreNLPTagger that wraps around the
+    nltk.parse.CoreNLPParser for Named-Entity tagging.
+
+        >>> from nltk.tag.stanford import CoreNLPNERTagger
+        >>> tagged = CoreNLPNERTagger().tag('Rami Eid is studying at Stony Brook University in NY'.split())   # doctest: +SKIP
+        >>> expected = [[('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'),
+        ... ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'),
+        ... ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'),
+        ... 'in', 'O'), ('NY', 'O')]]
+        >>> tagged == expected   # doctest: +SKIP
         True
-        """
-        super(self.__class__, self).__init__(url, encoding)
+    """
+    def tag_sents(self, sentences, tagtype='ner'):
+        return super(CoreNLPNERTagger, self).tag_sents(sentences, tagtype)
+    def tag(self, sentence, tagtype='ner'):
+        return self.tag_sents([sentence], tagtype)
 
-    def tag_sents(self, sentences):
-        sentences = (' '.join(words) for words in sentences)
-        results = self.raw_parse_sents(sentences)
-        # The `next(sent)` just takes the best parse since all POS tags
-        # in parse hypotheses should be the same.
-        return [next(sent).pos() for sent in results]
-
-    def tag(self, sentence):
-        return self.tag_sents([sentence])
 
 
 def setup_module(module):
