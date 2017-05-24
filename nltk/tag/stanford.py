@@ -221,7 +221,7 @@ class CoreNLPTagger(CoreNLPParser, TaggerI):
 
 
     def tag(self, sentence, tagtype):
-        return self.tag_sents([sentence], tagtype)
+        return self.tag_sents([sentence], tagtype)[0]
 
     def raw_tag_sents(self, sentences, tagtype):
         """
@@ -247,9 +247,9 @@ class CoreNLPPOSTagger(CoreNLPTagger):
 
         >>> from nltk.tag.stanford import CoreNLPPOSTagger
         >>> tagged = CoreNLPPOSTagger().tag('What is the airspeed of an unladen swallow ?'.split())   # doctest: +SKIP
-        >>> expected == [[('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'),
+        >>> expected == [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'),
         ... ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'),
-        ... ('swallow', 'VB'), ('?', '.')]]
+        ... ('swallow', 'VB'), ('?', '.')]
         >>> expected = tagged # doctest: +SKIP
         True
     """
@@ -266,10 +266,10 @@ class CoreNLPNERTagger(CoreNLPTagger):
 
         >>> from nltk.tag.stanford import CoreNLPNERTagger
         >>> tagged = CoreNLPNERTagger().tag('Rami Eid is studying at Stony Brook University in NY'.split())   # doctest: +SKIP
-        >>> expected = [[('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'),
+        >>> expected = [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'),
         ... ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'),
         ... ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'),
-        ... 'in', 'O'), ('NY', 'O')]]
+        ... 'in', 'O'), ('NY', 'O')]
         >>> tagged == expected   # doctest: +SKIP
         True
     """
@@ -288,3 +288,10 @@ def setup_module(module):
     except LookupError:
         raise SkipTest('Doctests from nltk.tag.stanford are skipped because one \
                        of the stanford jars cannot be found.')
+
+    try:
+        CoreNLPPOSTagger()
+        CoreNLPNERTagger()
+    except LookupError:
+        raise SkipTest('doctests from nltk.tag.stanford.CoreNLPTokenizer'
+                       'are skipped because the stanford corenlp server not started')

@@ -131,3 +131,9 @@ def setup_module(module):
         StanfordTokenizer()
     except LookupError:
         raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
+
+    try:
+        CoreNLPTokenizer()
+    except LookupError:
+        raise SkipTest('doctests from nltk.tokenize.stanford.CoreNLPTokenizer are skipped because the '
+                       'stanford corenlp server not started')
