@@ -155,15 +155,14 @@ class XMLCorpusView(StreamBackedCorpusView):
         StreamBackedCorpusView.__init__(self, fileid, encoding=encoding)
 
     def _detect_encoding(self, fileid):
-        if isinstance(fileid, PathPointer):
-            try:
+        try:
+            if isinstance(fileid, PathPointer):
                 infile = fileid.open()
-                s = infile.readline()
-            finally:
-                infile.close()
-        else:
-            with open(fileid, 'rb') as infile:
-                s = infile.readline()
+            else:
+                infile = FileSystemPathPointer(fileid).open()
+            s = infile.readline()
+        finally:
+            infile.close()
         if s.startswith(codecs.BOM_UTF16_BE):
             return 'utf-16-be'
         if s.startswith(codecs.BOM_UTF16_LE):
