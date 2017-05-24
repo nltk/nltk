@@ -27,6 +27,7 @@ from six import text_type
 
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
+from nltk.parse.corenlp import CoreNLPParser
 
 _stanford_url = 'https://nlp.stanford.edu/software'
 
@@ -203,6 +204,36 @@ class StanfordNERTagger(StanfordTagger):
             return result
 
         raise NotImplementedError
+
+class CoreNLPPOSTagger(CoreNLPParser, TaggerI):
+    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+        """
+        This is a duck-type of the CoreNLP that returns the POS tags from the
+        parsed outputs.
+
+        >>> from nltk.tag.stanford import CoreNLPPOSTagger
+        >>> sents = [['This', 'is', 'a', 'foo', 'bar', 'sentence'], ['We', 'are', 'an', 'ABC', 'nation.']]
+        >>> st = CoreNLPPOSTagger()
+        >>> expected = [[('This', 'DT'), ('is', 'VBZ'), ('a', 'DT'),
+        ... ('foo', 'NN'), ('bar', 'NN'), ('sentence', 'NN')], [('We', 'PRP'),
+        ... ('are', 'VBP'), ('an', 'DT'), ('ABC', 'NNP'), ('nation', 'NN'), ('.', '.')]]
+        >>> st.tag_sents(sents) == expected
+        True
+        >>> st.tag(sents[0]) == expected[0]
+        True
+        """
+        super(self.__class__, self).__init__(url, encoding)
+
+    def tag_sents(self, sentences):
+        sentences = (' '.join(words) for words in sentences)
+        results = self.raw_parse_sents(sentences)
+        # The `next(sent)` just takes the best parse since all POS tags
+        # in parse hypotheses should be the same.
+        return [next(sent).pos() for sent in results]
+
+    def tag(self, sentence):
+        return self.tag_sents([sentence])
+
 
 def setup_module(module):
     from nose import SkipTest
