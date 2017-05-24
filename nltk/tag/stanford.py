@@ -247,7 +247,7 @@ class CoreNLPPOSTagger(CoreNLPTagger):
 
         >>> from nltk.tag.stanford import CoreNLPPOSTagger
         >>> tagged = CoreNLPPOSTagger().tag('What is the airspeed of an unladen swallow ?'.split())   # doctest: +SKIP
-        >>> expected == [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'),
+        >>> expected = [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'),
         ... ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'),
         ... ('swallow', 'VB'), ('?', '.')]
         >>> expected = tagged # doctest: +SKIP
