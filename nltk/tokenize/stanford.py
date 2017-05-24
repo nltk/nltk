@@ -101,7 +101,7 @@ class StanfordTokenizer(TokenizerI):
 
 class CoreNLPTokenizer(CoreNLPParser):
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
-        """
+        r"""
         This is a duck-type of CoreNLPParser that has the tokenizing
         functionality similar to the original Stanford POS tagger.
 
