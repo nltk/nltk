@@ -235,7 +235,7 @@ class TreebankWordDetokenizer(TokenizerI):
     #punctuation
     PUNCTUATION = [
         (re.compile(r"([^'])\s'\s"), r"\1' "),
-        (re.compile(r'\s([?!])\s'), r'\g<1>'),
+        (re.compile(r'\s([?!])\s'), r'\g<1> '), # Strip left pad but keep right pad after [?!]
         (re.compile(r'([^\.])\s(\.)([\]\)}>"\']*)\s*$'), r'\1\2\3'),
         # When tokenizing, [;@#$%&] are padded with whitespace regardless of
         # whether there are spaces before or after them.
@@ -246,7 +246,7 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r'\s([&])\s'), r' \g<1> '), # Unknown pad.
         (re.compile(r'\s\.\.\.\s'), r'...'),
         (re.compile(r'\s([:,])\s$'), r'\1'),
-        (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')
+        (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2') # Keep right pad after comma/colon before non-digits.
         ]
 
     #starting quotes
