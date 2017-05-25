@@ -22,6 +22,10 @@ if [[ ! -d ${stanford_corenlp_package_name} ]]; then
 	unzip ${stanford_corenlp_package_zip_name}
 	rm ${stanford_corenlp_package_zip_name}
 	ln -s ${stanford_corenlp_package_name} 'stanford-corenlp'
+	cd nohup java -mx4g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 15000 &
+	# Log the job ID and kill it before the end.
+	CORENLP_PID=$!
+	cd ..
 fi
 
 stanford_parser_package_zip_name=$(curl -s 'https://nlp.stanford.edu/software/lex-parser.shtml' | grep -o 'stanford-parser-full-.*\.zip' | head -n1)
@@ -77,6 +81,9 @@ coverage run --source=nltk nltk/test/runtests.py --with-xunit
 coverage xml --omit=nltk/test/*
 iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
 pylint -f parseable nltk > pylintoutput
+
+# Kill the core NLP server.
+kill -9 $CORENLP_PID
 
 #script always succeeds
 true

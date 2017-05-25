@@ -110,7 +110,7 @@ class CoreNLPTokenizer(CoreNLPParser):
             >>> expected = [u'Good', u'muffins', u'cost', u'$', u'3.88', u'in',
             ... u'New', u'York', u'.', u'Please', u'buy', u'me', u'two', u'of',
             ... u'them', u'.', u'Thanks', u'.']
-            >>> CoreNLPTokenizer().tokenize(s) == expected  # doctest: +SKIP
+            >>> CoreNLPTokenizer().tokenize(s) == expected
             True
         """
         super(self.__class__, self).__init__(url, encoding)

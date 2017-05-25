@@ -244,11 +244,11 @@ class CoreNLPPOSTagger(CoreNLPTagger):
     nltk.parse.CoreNLPParser for Part-of-Sppech tagging.
 
         >>> from nltk.tag.stanford import CoreNLPPOSTagger
-        >>> tagged = CoreNLPPOSTagger().tag('What is the airspeed of an unladen swallow ?'.split())   # doctest: +SKIP
+        >>> tagged = CoreNLPPOSTagger().tag('What is the airspeed of an unladen swallow ?'.split())
         >>> expected = [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'),
         ... ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'),
         ... ('swallow', 'VB'), ('?', '.')]
-        >>> expected = tagged # doctest: +SKIP
+        >>> expected == tagged
         True
     """
     self.tagtype = 'pos'
@@ -264,12 +264,12 @@ class CoreNLPNERTagger(CoreNLPTagger):
     nltk.parse.CoreNLPParser for Named-Entity tagging.
 
         >>> from nltk.tag.stanford import CoreNLPNERTagger
-        >>> tagged = CoreNLPNERTagger().tag('Rami Eid is studying at Stony Brook University in NY'.split())   # doctest: +SKIP
+        >>> tagged = CoreNLPNERTagger().tag('Rami Eid is studying at Stony Brook University in NY'.split())
         >>> expected = [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'),
         ... ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'),
         ... ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'),
         ... ('in', 'O'), ('NY', 'O')]
-        >>> tagged == expected   # doctest: +SKIP
+        >>> tagged == expected
         True
     """
     self.tagtype = 'ner'
