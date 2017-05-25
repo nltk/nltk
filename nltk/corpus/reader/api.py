@@ -210,7 +210,12 @@ class CorpusReader(object):
         :param file: The file identifier of the file to read.
         """
         encoding = self.encoding(file)
-        stream = self._root.join(file).open(encoding)
+        data = self._root.join(file).open(encoding).read()
+        if encoding is not None:
+            stream = io.StringIO(data)
+        else:
+            stream = io.BytesIO(data)
+
         return stream
 
     def encoding(self, file):
