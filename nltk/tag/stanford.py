@@ -208,7 +208,7 @@ class StanfordNERTagger(StanfordTagger):
 class CoreNLPTagger(CoreNLPParser, TaggerI):
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
         """
-        This is a abstract, duck-type of the CoreNLP that returns the
+        An abstract interface to POS/NER taggers of CoreNLP that returns the
         POS/NER tags from the Stanford CoreNLP API at nltk.parse.corenlp.
         """
         super(CoreNLPTagger, self).__init__(url, encoding)
