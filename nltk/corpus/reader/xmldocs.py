@@ -77,11 +77,6 @@ class XMLCorpusReader(CorpusReader):
                 out.extend(toks)
         return out
 
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
 
 class XMLCorpusView(StreamBackedCorpusView):
     """

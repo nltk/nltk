@@ -65,15 +65,6 @@ class CMUDictCorpusReader(CorpusReader):
                                               encoding=enc)
                        for fileid, enc in self.abspaths(None, True)])
 
-    def raw(self):
-        """
-        :return: the cmudict lexicon as a raw string.
-        """
-        fileids = self._fileids
-        if isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
     def words(self):
         """
         :return: a list of all words defined in the cmudict lexicon.

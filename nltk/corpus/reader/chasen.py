@@ -22,11 +22,6 @@ class ChasenCorpusReader(CorpusReader):
         self._sent_splitter = sent_splitter
         CorpusReader.__init__(self, root, fileids, encoding)
 
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
     def words(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         False, False, False, self._sent_splitter)

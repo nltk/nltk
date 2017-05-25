@@ -130,11 +130,19 @@ class CorpusReader(object):
         """
         pass # no need to actually do anything.
 
+    def raw(self, fileids=None):
+        if fileids is None: fileids = self._fileids
+        elif isinstance(fileids, string_types): fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
+
     def readme(self):
         """
-        Return the contents of the corpus README file, if it exists.
+        Return the contents of the corpus README.txt or README file, if it exists.
         """
-        return self.open("README").read()
+        try:
+            return self.open("README.txt").read()
+        except IOError:
+            return self.open("README").read()
 
     def license(self):
         """
@@ -396,11 +404,6 @@ class SyntaxCorpusReader(CorpusReader):
         raise NotImplementedError()
     def _read_block(self, stream):
         raise NotImplementedError()
-
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
     def parsed_sents(self, fileids=None):
         reader = self._read_parsed_sent_block

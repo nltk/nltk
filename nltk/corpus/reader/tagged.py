@@ -60,15 +60,6 @@ class TaggedCorpusReader(CorpusReader):
         self._para_block_reader = para_block_reader
         self._tagset = tagset
 
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
     def words(self, fileids=None):
         """
         :return: the given file(s) as a list of words

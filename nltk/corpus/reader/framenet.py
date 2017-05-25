@@ -1133,15 +1133,6 @@ warnings(True) to display corpus consistency warnings when loading data
             kwargs.setdefault('file', sys.stderr)
             print(*message, **kwargs)
 
-    def readme(self):
-        """
-        Return the contents of the corpus README.txt (or README) file.
-        """
-        try:
-            return self.open("README.txt").read()
-        except IOError:
-            return self.open("README").read()
-
     def buildindexes(self):
         """
         Build the internal indexes to make look-ups faster.

@@ -213,25 +213,6 @@ class ReviewsCorpusReader(CorpusReader):
         return concat([self.CorpusView(fileid, self._read_features, encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, fileids=None):
-        """
-        :param fileids: a list or regexp specifying the fileids of the files that
-            have to be returned as a raw string.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
-    def readme(self):
-        """
-        Return the contents of the corpus README.txt file.
-        """
-        return self.open("README.txt").read()
-
     def reviews(self, fileids=None):
         """
         Return all the reviews as a list of Review objects. If `fileids` is

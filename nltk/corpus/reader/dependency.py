@@ -26,19 +26,6 @@ class DependencyCorpusReader(SyntaxCorpusReader):
 
     #########################################################
 
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        result = []
-        for fileid, encoding in self.abspaths(fileids, include_encoding=True):
-            if isinstance(fileid, PathPointer):
-                result.append(fileid.open(encoding=encoding).read())
-            else:
-                result.append(FileSystemPathPointer(fileid).open(encoding).read())
-        return concat(result)
-
     def words(self, fileids=None):
         return concat([DependencyCorpusView(fileid, False, False, False, encoding=enc)
                        for fileid, enc in self.abspaths(fileids, include_encoding=True)])
