@@ -23,12 +23,12 @@ if [[ ! -d ${stanford_corenlp_package_name} ]]; then
 	rm ${stanford_corenlp_package_zip_name}
 	ln -s ${stanford_corenlp_package_name} 'stanford-corenlp'
 	# Kill all Java instances.
-	pkill -f '*edu.stanford.nlp.pipeline.StanfordCoreNLPServer*'
-	cd stanford-corenlp
-	nohup java -mx4g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 15000 &
+	#pkill -f '*edu.stanford.nlp.pipeline.StanfordCoreNLPServer*'
+	#cd stanford-corenlp
+	##nohup java -mx4g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 15000 &
 	# Log the job ID and kill it before the end.
-	CORENLP_PID=$!
-	cd ..
+	#CORENLP_PID=$!
+	#cd ..
 fi
 
 stanford_parser_package_zip_name=$(curl -s 'https://nlp.stanford.edu/software/lex-parser.shtml' | grep -o 'stanford-parser-full-.*\.zip' | head -n1)
@@ -86,7 +86,7 @@ iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
 pylint -f parseable nltk > pylintoutput
 
 # Kill the core NLP server.
-kill -9 $CORENLP_PID
+#kill -9 $CORENLP_PID
 
 #script always succeeds
 true
