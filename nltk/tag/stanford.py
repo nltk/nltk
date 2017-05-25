@@ -251,11 +251,14 @@ class CoreNLPPOSTagger(CoreNLPTagger):
         >>> expected == tagged
         True
     """
-    self.tagtype = 'pos'
+    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+        self.tagtype = 'pos'
+        super(CoreNLPPOSTagger, self).__init__(url, encoding)
+
     def tag_sents(self, sentences):
         return super(CoreNLPPOSTagger, self).tag_sents(sentences, self.tagtype)
     def tag(self, sentence):
-        return self.tag_sents([sentence], self.tagtype)
+        return self.tag_sents([sentence])[0]
 
 
 class CoreNLPNERTagger(CoreNLPTagger):
@@ -272,12 +275,13 @@ class CoreNLPNERTagger(CoreNLPTagger):
         >>> tagged == expected
         True
     """
-    self.tagtype = 'ner'
+    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+        self.tagtype = 'ner'
+        super(CoreNLPNERTagger, self).__init__(url, encoding)
     def tag_sents(self, sentences):
         return super(CoreNLPNERTagger, self).tag_sents(sentences, self.tagtype)
     def tag(self, sentence):
-        return self.tag_sents([sentence], self.tagtype)
-
+        return self.tag_sents([sentence])[0]
 
 
 def setup_module(module):
