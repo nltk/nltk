@@ -204,13 +204,13 @@ class TreebankWordDetokenizer(TokenizerI):
     True
 
     During tokenization it's safe to add more spaces but during detokenization,
-    simply undoing the padding doesn't really help. We have to
+    simply undoing the padding doesn't really help. 
 
-    - during tokenization, left and right pad is added to [!?], when
+    - During tokenization, left and right pad is added to [!?], when
       detokenizing, only left shift the [!?] is needed.
       Thus (re.compile(r'\s([?!])'), r'\g<1>')
 
-    - during tokenization [:,] are left and right padded but when detokenizing,
+    - During tokenization [:,] are left and right padded but when detokenizing,
       only left shift is necessary and we keep right pad after comma/colon
       if the string after is a non-digit.
       Thus (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')
