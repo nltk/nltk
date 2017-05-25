@@ -251,10 +251,11 @@ class CoreNLPPOSTagger(CoreNLPTagger):
         >>> expected = tagged # doctest: +SKIP
         True
     """
-    def tag_sents(self, sentences, tagtype='pos'):
-        return super(CoreNLPPOSTagger, self).tag_sents(sentences, tagtype)
-    def tag(self, sentence, tagtype='pos'):
-        return self.tag_sents([sentence], tagtype)
+    self.tagtype = 'pos'
+    def tag_sents(self, sentences):
+        return super(CoreNLPPOSTagger, self).tag_sents(sentences, self.tagtype)
+    def tag(self, sentence):
+        return self.tag_sents([sentence], self.tagtype)
 
 
 class CoreNLPNERTagger(CoreNLPTagger):
@@ -271,10 +272,11 @@ class CoreNLPNERTagger(CoreNLPTagger):
         >>> tagged == expected   # doctest: +SKIP
         True
     """
-    def tag_sents(self, sentences, tagtype='ner'):
-        return super(CoreNLPNERTagger, self).tag_sents(sentences, tagtype)
-    def tag(self, sentence, tagtype='ner'):
-        return self.tag_sents([sentence], tagtype)
+    self.tagtype = 'ner'
+    def tag_sents(self, sentences):
+        return super(CoreNLPNERTagger, self).tag_sents(sentences, self.tagtype)
+    def tag(self, sentence):
+        return self.tag_sents([sentence], self.tagtype)
 
 
 
