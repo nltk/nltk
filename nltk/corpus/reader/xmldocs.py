@@ -274,7 +274,7 @@ class XMLCorpusView(StreamBackedCorpusView):
             if last_open_bracket > 0:
                 if self._VALID_XML_RE.match(fragment[:last_open_bracket]):
                     stream.seek(startpos)
-                    stream.read(last_open_bracket-1)
+                    stream.read(last_open_bracket)
                     return fragment[:last_open_bracket]
 
             # Otherwise, read another block. (i.e., return to the
@@ -302,6 +302,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         while elts==[] or elt_start is not None:
             startpos = stream.tell()
             xml_fragment = self._read_xml_fragment(stream)
+
             # End of file.
             if not xml_fragment:
                 if elt_start is None: break
@@ -362,7 +363,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     if self._DEBUG:
                         print(' '*36+'(backtrack)')
                     stream.seek(startpos)
-                    stream.read(elt_start-1)
+                    stream.read(elt_start)
                     context = context[:elt_depth-1]
                     elt_start = elt_depth = None
                     elt_text = ''
