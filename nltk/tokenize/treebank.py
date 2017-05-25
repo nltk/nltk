@@ -246,7 +246,7 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r'\s([&])\s'), r' \g<1> '), # Unknown pad.
         (re.compile(r'\s\.\.\.\s'), r'...'),
         (re.compile(r'\s([:,])\s$'), r'\1'),
-        (re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
+        (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')
         ]
 
     #starting quotes
