@@ -625,6 +625,26 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     disappear   VB  0   ROOT
     .           .   7   punct
 
+    >>> print(
+    ...     '\\n'.join(
+    ...         next(
+    ...             dep_parser.raw_parse(
+    ...                 'for all of its insights into the dream world of teen life , and its electronic expression through '
+    ...                 'cyber culture , the film gives no quarter to anyone seeking to pull a cohesive story out of its 2 '
+    ...                 '1/2-hour running time .'
+    ...             )
+    ...         ).to_conll(4).split('\\n')[-8:]
+    ...     )
+    ... )
+    its	PRP$	40	nmod:poss
+    2 1/2	CD	40	nummod
+    -	:	40	punct
+    hour	NN	31	nmod
+    running	VBG	42	amod
+    time	NN	40	dep
+    .	.	24	punct
+    <BLANKLINE>
+
     """
 
     _OUTPUT_FORMAT = 'conll2007'
