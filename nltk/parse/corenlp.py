@@ -611,6 +611,20 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     ... )
     10
 
+    >>> print(
+    ...     next(
+    ...         dep_parser.raw_parse('The underscore _ should not simply disappear.')
+    ...     ).to_conll(4)
+    ... )  # doctest: +NORMALIZE_WHITESPACE
+    The         DT  3   det
+    underscore  VBP 3   amod
+    _           NN  7   nsubj
+    should      MD  7   aux
+    not         RB  7   neg
+    simply      RB  7   advmod
+    disappear   VB  0   ROOT
+    .           .   7   punct
+
     """
 
     _OUTPUT_FORMAT = 'conll2007'
