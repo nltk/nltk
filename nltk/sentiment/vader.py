@@ -27,6 +27,7 @@ import re
 import string
 from itertools import product
 import nltk.data
+from .util import pairwise
 
 ##Constants##
 
@@ -88,15 +89,13 @@ def negated(input_words, include_nt=True):
     Determine if input contains negation words
     """
     neg_words = NEGATE
-    for word in input_words:
-        if word.lower() in neg_words:
-            return True
+    if any(word.lower() in neg_words for word in input_words):
+        return True
     if include_nt:
-        for word in input_words:
-            if "n't" in word.lower():
-                return True
-    for i, word in enumerate(input_words):
-        if i > 0 and word.lower() == "least" and input_words[i-1].lower() != 'at':
+        if any("n't" in word.lower() for word in input_words):
+            return True
+    for first, second in pairwise(input_words):
+        if second.lower() == "least" and first.lower() != 'at':
             return True
     return False
 
