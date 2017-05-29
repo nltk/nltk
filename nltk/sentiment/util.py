@@ -418,7 +418,7 @@ def demo_tweets(trainer, n_instances=None, output=None):
     """
     from nltk.tokenize import TweetTokenizer
     from nltk.sentiment import SentimentAnalyzer
-    from nltk.corpus import twitter_samples
+    from nltk.corpus import twitter_samples, stopwords
 
     # Different customizations for the TweetTokenizer
     tokenizer = TweetTokenizer(preserve_case=False)
