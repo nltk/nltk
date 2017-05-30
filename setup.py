@@ -47,9 +47,6 @@ extras_require = {
     'twitter': [
         'twython',
     ],
-    'corenlp': [
-        'requests',
-    ],
 }
 
 # Add a group made up of all optional dependencies
@@ -94,7 +91,7 @@ natural language processing.  NLTK requires Python 2.7, 3.4, or 3.5.""",
     'Topic :: Text Processing :: Linguistic',
     ],
     package_data = {'nltk': ['test/*.doctest', 'VERSION']},
-    install_requires = ['six'],
+    install_requires = ['six', 'requests'],
     extras_require = extras_require,
     packages = find_packages(),
     zip_safe=False, # since normal files will be present too?
