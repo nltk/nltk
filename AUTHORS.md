@@ -212,6 +212,7 @@
 - Arthur Tilley
 - Vilhjalmur Thorsteinsson
 - Jaehoon Hwang <https://github.com/jaehoonhwang>
+- Jasmin Abou Aldan <https://github.com/jabou>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
