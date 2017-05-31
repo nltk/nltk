@@ -563,7 +563,7 @@ class TextCollection(Text):
 
     def tf(self, term, text):
         """ The frequency of the term in text. """
-        return text.count(term) / len(text)
+        return text.count(term)
 
     def idf(self, term):
         """ The number of texts in the corpus divided by the
