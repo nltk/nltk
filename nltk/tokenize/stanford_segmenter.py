@@ -46,10 +46,9 @@ class StanfordSegmenter(TokenizerI):
     """
 
     _JAR = 'stanford-segmenter.jar'
-    _SLF4J = 'slf4j-api.jar'
 
     def __init__(self,
-                 path_to_jar=None, path_to_slf4j=None,
+                 path_to_jar=None,
                  java_class=None,
                  path_to_model=None,
                  path_to_dict=None,
@@ -62,11 +61,6 @@ class StanfordSegmenter(TokenizerI):
         stanford_segmenter = find_jar(
                 self._JAR, path_to_jar,
                 env_vars=('STANFORD_SEGMENTER',),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
-        slf4j = find_jar(
-                self._SLF4J, path_to_slf4j,
-                env_vars=('SLF4J', 'STANFORD_SEGMENTER',),
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 
