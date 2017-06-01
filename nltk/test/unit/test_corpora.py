@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import unittest
 
 from nltk.corpus import (sinica_treebank, conll2007, indian, cess_cat, cess_esp,
-                         floresta, ptb, udhr) # mwa_ppdb
+                         floresta, ptb, udhr, mwa_ppdb)
 
 from nltk.compat import python_2_unicode_compatible
 from nltk.tree import Tree
@@ -182,12 +182,11 @@ class TestPTB(unittest.TestCase):
             ['Thirty-three', 'Scotty', 'did', 'not', 'go', 'back']
         )
 
-@unittest.skip("Skipping test for mwa_ppdb.")
+#@unittest.skip("Skipping test for mwa_ppdb.")
 class TestMWAPPDB(unittest.TestCase):
     def test_fileids(self):
         self.assertEqual(mwa_ppdb.fileids(),
             ['ppdb-1.0-xxxl-lexical.extended.synonyms.uniquepairs'])
-
     def test_entries(self):
         self.assertEqual(mwa_ppdb.entries()[:10],
             [('10/17/01', '17/10/2001'), ('102,70', '102.70'),
