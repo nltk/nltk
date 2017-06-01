@@ -70,9 +70,8 @@ class StanfordSegmenter(TokenizerI):
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 
-        # This is passed to java as the -cp option, the segmenter needs slf4j.
-        self._stanford_jar = os.pathsep.join(
-            [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
+        # Update: The new version of stanford-segmenter-2016-10-31 don't need the path of slf4j
+        self._stanford_jar = stanford_segmenter
 
         self._java_class = java_class
         self._model = path_to_model
