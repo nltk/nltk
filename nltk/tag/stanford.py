@@ -228,7 +228,7 @@ class CoreNLPTagger(CoreNLPParser, TaggerI):
         retreive the JSON output and return the annotations required.
         """
         default_properties = {'ssplit.isOneSentence': 'true',
-                              'annotators': 'tokenize,' }
+                              'annotators': 'tokenize,ssplit,' }
         # Supports only 'pos' or 'ner' tags.
         assert self.tagtype in ['pos', 'ner']
         default_properties['annotators'] += self.tagtype
