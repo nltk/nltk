@@ -328,7 +328,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
 
         for sentence in result['sentences']:
             for token in sentence['tokens']:
-                yield token['originalText']
+                yield token['originalText'] or token['word']
 
 
 class CoreNLPParser(GenericCoreNLPParser):
