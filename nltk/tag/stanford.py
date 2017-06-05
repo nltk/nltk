@@ -206,20 +206,21 @@ class StanfordNERTagger(StanfordTagger):
         raise NotImplementedError
 
 class CoreNLPTagger(CoreNLPParser, TaggerI):
-    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+    def __init__(self, tagtype, url='http://localhost:9000', encoding='utf8'):
         """
         An abstract interface to POS/NER taggers of CoreNLP that returns the
         POS/NER tags from the Stanford CoreNLP API at nltk.parse.corenlp.
         """
+        self.tagtype = tagtype
         super(CoreNLPTagger, self).__init__(url, encoding)
 
-    def tag_sents(self, sentences, tagtype):
+    def tag_sents(self, sentences):
         sentences = (' '.join(words) for words in sentences)
-        return list(self.raw_tag_sents(sentences, tagtype))
+        return list(self.raw_tag_sents(sentences, self.tagtype))
 
 
-    def tag(self, sentence, tagtype):
-        return self.tag_sents([sentence], tagtype)[0]
+    def tag(self, sentence):
+        return self.tag_sents([sentence])[0]
 
     def raw_tag_sents(self, sentences, tagtype):
         """
@@ -240,7 +241,7 @@ class CoreNLPTagger(CoreNLPParser, TaggerI):
 
 class CoreNLPPOSTagger(CoreNLPTagger):
     """
-    This is a duckling-type of the CoreNLPTagger that wraps around the
+    This is a subclass of the CoreNLPTagger that wraps around the
     nltk.parse.CoreNLPParser for Part-of-Sppech tagging.
 
         >>> from nltk.tag.stanford import CoreNLPPOSTagger
@@ -251,19 +252,13 @@ class CoreNLPPOSTagger(CoreNLPTagger):
         >>> expected == tagged # doctest: +SKIP
         True
     """
-    def __init__(self, url='http://localhost:9000', encoding='utf8'):
-        self.tagtype = 'pos'
-        super(CoreNLPPOSTagger, self).__init__(url, encoding)
-
-    def tag_sents(self, sentences):
-        return super(CoreNLPPOSTagger, self).tag_sents(sentences, self.tagtype)
-    def tag(self, sentence):
-        return self.tag_sents([sentence])[0]
+    def __init__(self, tagtype='pos', url='http://localhost:9000', encoding='utf8'):
+        super(CoreNLPPOSTagger, self).__init__(tagtype, url, encoding)
 
 
 class CoreNLPNERTagger(CoreNLPTagger):
     """
-    This is a duckling-type of the CoreNLPTagger that wraps around the
+    This is a subclass of the CoreNLPTagger that wraps around the
     nltk.parse.CoreNLPParser for Named-Entity tagging.
 
         >>> from nltk.tag.stanford import CoreNLPNERTagger
@@ -275,13 +270,8 @@ class CoreNLPNERTagger(CoreNLPTagger):
         >>> tagged == expected # doctest: +SKIP
         True
     """
-    def __init__(self, url='http://localhost:9000', encoding='utf8'):
-        self.tagtype = 'ner'
-        super(CoreNLPNERTagger, self).__init__(url, encoding)
-    def tag_sents(self, sentences):
-        return super(CoreNLPNERTagger, self).tag_sents(sentences, self.tagtype)
-    def tag(self, sentence):
-        return self.tag_sents([sentence])[0]
+    def __init__(self, tagtype='ner', url='http://localhost:9000', encoding='utf8'):
+        super(CoreNLPNERTagger, self).__init__(tagtype, url, encoding)
 
 
 def setup_module(module):
@@ -297,5 +287,5 @@ def setup_module(module):
         CoreNLPPOSTagger()
         CoreNLPNERTagger()
     except LookupError:
-        raise SkipTest('doctests from nltk.tag.stanford.CoreNLPTokenizer'
+        raise SkipTest('Doctests from nltk.tag.stanford.CoreNLPTokenizer'
                        'are skipped because the stanford corenlp server not started')
