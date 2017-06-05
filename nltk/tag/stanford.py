@@ -216,13 +216,13 @@ class CoreNLPTagger(CoreNLPParser, TaggerI):
 
     def tag_sents(self, sentences):
         sentences = (' '.join(words) for words in sentences)
-        return list(self.raw_tag_sents(sentences, self.tagtype))
+        return list(self.raw_tag_sents(sentences))
 
 
     def tag(self, sentence):
         return self.tag_sents([sentence])[0]
 
-    def raw_tag_sents(self, sentences, tagtype):
+    def raw_tag_sents(self, sentences):
         """
         This function will interface the `GenericCoreNLPParser.api_call` to
         retreive the JSON output and return the annotations required.
@@ -230,13 +230,13 @@ class CoreNLPTagger(CoreNLPParser, TaggerI):
         default_properties = {'ssplit.isOneSentence': 'true',
                               'annotators': 'tokenize,' }
         # Supports only 'pos' or 'ner' tags.
-        assert tagtype in ['pos', 'ner']
-        default_properties['annotators'] += tagtype
+        assert self.tagtype in ['pos', 'ner']
+        default_properties['annotators'] += self.tagtype
         for sentence in sentences:
             tagged_data = self.api_call(sentence, properties=default_properties)
             assert len(tagged_data['sentences']) == 1
             # Taggers only need to return 1-best sentence.
-            yield [(token['word'], token[tagtype]) for token in tagged_data['sentences'][0]['tokens']]
+            yield [(token['word'], token[self.tagtype]) for token in tagged_data['sentences'][0]['tokens']]
 
 
 class CoreNLPPOSTagger(CoreNLPTagger):
@@ -252,8 +252,8 @@ class CoreNLPPOSTagger(CoreNLPTagger):
         >>> expected == tagged # doctest: +SKIP
         True
     """
-    def __init__(self, tagtype='pos', url='http://localhost:9000', encoding='utf8'):
-        super(CoreNLPPOSTagger, self).__init__(tagtype, url, encoding)
+    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+        super(CoreNLPPOSTagger, self).__init__('pos', url, encoding)
 
 
 class CoreNLPNERTagger(CoreNLPTagger):
@@ -270,8 +270,8 @@ class CoreNLPNERTagger(CoreNLPTagger):
         >>> tagged == expected # doctest: +SKIP
         True
     """
-    def __init__(self, tagtype='ner', url='http://localhost:9000', encoding='utf8'):
-        super(CoreNLPNERTagger, self).__init__(tagtype, url, encoding)
+    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+        super(CoreNLPNERTagger, self).__init__('ner', url, encoding)
 
 
 def setup_module(module):
