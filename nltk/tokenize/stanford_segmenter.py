@@ -46,7 +46,6 @@ class StanfordSegmenter(TokenizerI):
     """
 
     _JAR = 'stanford-segmenter.jar'
-    _SLF4J = 'slf4j-api.jar'
 
     def __init__(self,
                  path_to_jar=None,
@@ -67,7 +66,7 @@ class StanfordSegmenter(TokenizerI):
                 verbose=verbose)
         if path_to_slf4j is not None:
             slf4j = find_jar(
-                self._SLF4J, path_to_slf4j,
+                'slf4j-api.jar', path_to_slf4j,
                 env_vars=('SLF4J', 'STANFORD_SEGMENTER',),
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
@@ -76,7 +75,7 @@ class StanfordSegmenter(TokenizerI):
 
         # This is passed to java as the -cp option, the old version of segmenter needs slf4j.
         # The new version of stanford-segmenter-2016-10-31 doesn't need slf4j
-        # When using old version, set 'path_to_slf4j=YOUR_PATH' in the initilization of StanfordSegmenter
+        # When using old version, set path_to_slf4j='/YOUR_PATH/slf4j-api.jar' in the initilization of StanfordSegmenter
         self._stanford_jar = os.pathsep.join(
             [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
 
