@@ -248,7 +248,7 @@ class CoreNLPPOSTagger(CoreNLPTagger):
         >>> CoreNLPPOSTagger(url='http://localhost:9000').tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
-    def __init__(self,
+    def __init__(self, url='http://localhost:9000', encoding='utf8'):
         super(CoreNLPPOSTagger, self).__init__('pos', url, encoding)
 
 
