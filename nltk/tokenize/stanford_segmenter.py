@@ -29,10 +29,13 @@ _stanford_url = 'https://nlp.stanford.edu/software'
 
 
 class StanfordSegmenter(TokenizerI):
-    """
-    Interface to the Stanford Segmenter
-    If stanford-segmenter version is older than 2016-10-31, then path_to_slf4j should explicitly be set to '/YOUR_PATH/slf4j-api.jar'::
+    """Interface to the Stanford Segmenter
+    
+    If stanford-segmenter version is older than 2016-10-31, then path_to_slf4j
+    should be provieded, for example::
+
         seg = StanfordSegmenter(path_to_slf4j='/YOUR_PATH/slf4j-api.jar')
+
     >>> from nltk.tokenize.stanford_segmenter import StanfordSegmenter
     >>> seg = StanfordSegmenter()
     >>> seg.default_config('zh')
@@ -78,7 +81,8 @@ class StanfordSegmenter(TokenizerI):
         # This is passed to java as the -cp option, the old version of segmenter needs slf4j.
         # The new version of stanford-segmenter-2016-10-31 doesn't need slf4j
         self._stanford_jar = os.pathsep.join(
-            [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
+            _ for _ in [stanford_segmenter, slf4j] if _ is not None
+        )
 
         self._java_class = java_class
         self._model = path_to_model
