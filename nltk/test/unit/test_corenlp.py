@@ -7,10 +7,15 @@ Mock test for Stanford CoreNLP wrappers.
 import sys
 from itertools import chain
 from unittest import TestCase, skipIf
-from unittest.mock import patch
+
+try:
+    from unittest.mock import patch # Tries to import mock in Python3.
+except ImportError:
+    pass # Skips the import if in Python2.
 
 from nltk.tag.stanford import CoreNLPPOSTagger, CoreNLPNERTagger
 from nltk.tokenize.stanford import CoreNLPTokenizer
+
 
 @skipIf(sys.version_info[0] < 3, 'unittest.mock no supported in Python2')
 class TestTokenizerAPI(TestCase):
