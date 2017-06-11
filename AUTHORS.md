@@ -212,6 +212,8 @@
 - Arthur Tilley
 - Vilhjalmur Thorsteinsson
 - Jaehoon Hwang <https://github.com/jaehoonhwang>
+- sbagan
+- Zicheng Xu
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
