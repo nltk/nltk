@@ -29,8 +29,13 @@ _stanford_url = 'https://nlp.stanford.edu/software'
 
 
 class StanfordSegmenter(TokenizerI):
-    """
-    Interface to the Stanford Segmenter
+    """Interface to the Stanford Segmenter
+    
+    If stanford-segmenter version is older than 2016-10-31, then path_to_slf4j
+    should be provieded, for example::
+
+        seg = StanfordSegmenter(path_to_slf4j='/YOUR_PATH/slf4j-api.jar')
+
     >>> from nltk.tokenize.stanford_segmenter import StanfordSegmenter
     >>> seg = StanfordSegmenter()
     >>> seg.default_config('zh')
@@ -46,10 +51,10 @@ class StanfordSegmenter(TokenizerI):
     """
 
     _JAR = 'stanford-segmenter.jar'
-    _SLF4J = 'slf4j-api.jar'
 
     def __init__(self,
-                 path_to_jar=None, path_to_slf4j=None,
+                 path_to_jar=None,
+                 path_to_slf4j=None,
                  java_class=None,
                  path_to_model=None,
                  path_to_dict=None,
@@ -64,15 +69,20 @@ class StanfordSegmenter(TokenizerI):
                 env_vars=('STANFORD_SEGMENTER',),
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
-        slf4j = find_jar(
-                self._SLF4J, path_to_slf4j,
+        if path_to_slf4j is not None:
+            slf4j = find_jar(
+                'slf4j-api.jar', path_to_slf4j,
                 env_vars=('SLF4J', 'STANFORD_SEGMENTER',),
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
+        else:
+            slf4j = None
 
-        # This is passed to java as the -cp option, the segmenter needs slf4j.
+        # This is passed to java as the -cp option, the old version of segmenter needs slf4j.
+        # The new version of stanford-segmenter-2016-10-31 doesn't need slf4j
         self._stanford_jar = os.pathsep.join(
-            [_ for _ in [stanford_segmenter, slf4j] if not _ is None])
+            _ for _ in [stanford_segmenter, slf4j] if _ is not None
+        )
 
         self._java_class = java_class
         self._model = path_to_model
