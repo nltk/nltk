@@ -163,7 +163,22 @@ class TreebankWordTokenizer(TokenizerI):
             True
 
         """
-        tokens = self.tokenize(text)
+        raw_tokens = self.tokenize(text)
+
+        # Find double quotes and converted quotes
+        matched = [m.group() for m in re.finditer(r'[(``)('')(")]+', text)]
+
+        # Convert converted quotes back to original double quotes
+        index = 0
+        tokens = []
+        for tok in raw_tokens:
+            if tok in ["\"", "``", "''"]:
+                if matched[index] == "\"":
+                    tokens.append("\"")
+                    index += 1
+                    continue
+            tokens.append(tok)
+
         return align_tokens(tokens, text)
 
 
