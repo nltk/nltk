@@ -172,14 +172,7 @@ class TreebankWordTokenizer(TokenizerI):
             matched = [m.group() for m in re.finditer(r'[(``)(\'\')(")]+', text)]
             
             # Replace converted quotes back to double quotes
-            index = 0
-            tokens = []
-            for tok in raw_tokens:
-                if tok in ['"', "``", "''"]:
-                    tokens.append(matched[index])
-                    index += 1
-                else:
-                    tokens.append(tok)
+            tokens = [matched.pop(0) if tok in ['"', "``", "''"] else tok for tok in raw_tokens]
         else:
             tokens = raw_tokens
 
