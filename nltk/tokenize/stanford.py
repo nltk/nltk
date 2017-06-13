@@ -17,8 +17,8 @@ from subprocess import PIPE
 from six import text_type
 
 from nltk.internals import find_jar, config_java, java, _java_options
-
 from nltk.tokenize.api import TokenizerI
+from nltk.parse.corenlp import CoreNLPParser
 
 _stanford_url = 'https://nlp.stanford.edu/software/tokenizer.shtml'
 
@@ -26,7 +26,7 @@ class StanfordTokenizer(TokenizerI):
     r"""
     Interface to the Stanford Tokenizer
 
-    >>> from nltk.tokenize import StanfordTokenizer
+    >>> from nltk.tokenize.stanford import StanfordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
     >>> StanfordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
@@ -99,6 +99,28 @@ class StanfordTokenizer(TokenizerI):
         return stdout
 
 
+class CoreNLPTokenizer(CoreNLPParser):
+    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+        r"""
+        This is a duck-type of CoreNLPParser that has the tokenizing
+        functionality similar to the original Stanford POS tagger.
+
+            >>> from nltk.tokenize.stanford import CoreNLPTokenizer
+            >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
+            >>> CoreNLPTokenizer(url='http://localhost:9000').tokenize(s) == expected # doctest: +SKIP
+            [u'Good', u'muffins', u'cost', u'$', u'3.88', u'in', u'New', u'York', u'.', u'Please', u'buy', u'me', u'two', u'of', u'them', u'.', u'Thanks', u'.']
+        """
+        super(self.__class__, self).__init__(url, encoding)
+
+    def tokenize(self, text, properties=None):
+        """
+        Tokenize a string of text. Consistent with the StanfordTokenizer, This
+        function returns a list of string. The orignal CoreNLPParser.tokenize()
+        returns a generator of string.
+        """
+        return list(super(CoreNLPTokenizer, self).tokenize(text, properties))
+
+
 def setup_module(module):
     from nose import SkipTest
 
@@ -106,3 +128,9 @@ def setup_module(module):
         StanfordTokenizer()
     except LookupError:
         raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
+
+    try:
+        CoreNLPTokenizer()
+    except LookupError:
+        raise SkipTest('doctests from nltk.tokenize.stanford.CoreNLPTokenizer are skipped because the '
+                       'stanford corenlp server not started')
