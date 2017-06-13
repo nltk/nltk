@@ -193,7 +193,7 @@ The sentence splitter should remove whitespace following the sentence boundary.
     ['See Section 3.', ')  Or Section 2.', ')']
 
 
-Regression Tests: aling_tokens
+Regression Tests: align_tokens
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Post-hoc alignment of tokens with a source string
 
