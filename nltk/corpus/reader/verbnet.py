@@ -1,4 +1,4 @@
-# Natural Language Toolkit: Verbnet Corpus Reader
+# Natural Language Toolkit: VernNet Corpus Reader
 #
 # Copyright (C) 2001-2017 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
@@ -6,10 +6,10 @@
 # For license information, see LICENSE.TXT
 
 """
-An NLTK interface to the VerbNet verb lexicon
+An NLTK interface to the VernNet verb lexicon
 
-For details about VerbNet see:
-http://verbs.colorado.edu/~mpalmer/projects/verbnet.html
+For details about VernNet see:
+http://verbs.colorado.edu/~mpalmer/projects/VernNet.html
 """
 from __future__ import unicode_literals
 
@@ -22,18 +22,18 @@ from six import string_types
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
 
-class VerbnetCorpusReader(XMLCorpusReader):
+class VernNetCorpusReader(XMLCorpusReader):
     """
-    An NLTK interface to the VerbNet verb lexicon.
+    An NLTK interface to the VernNet verb lexicon.
 
-    From the VerbNet site: "VerbNet (VN) (Kipper-Schuler 2006) is the largest
+    From the VernNet site: "VernNet (VN) (Kipper-Schuler 2006) is the largest
     on-line verb lexicon currently available for English. It is a hierarchical
     domain-independent, broad-coverage verb lexicon with mappings to other
     lexical resources such as WordNet (Miller, 1990; Fellbaum, 1998), Xtag
     (XTAG Research Group, 2001), and FrameNet (Baker et al., 1998)."
 
-    For details about VerbNet see:
-    http://verbs.colorado.edu/~mpalmer/projects/verbnet.html
+    For details about VernNet see:
+    http://verbs.colorado.edu/~mpalmer/projects/VernNet.html
     """
 
     # No unicode encoding param, since the data files are all XML.
@@ -42,11 +42,11 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
         self._lemma_to_class = defaultdict(list)
         """A dictionary mapping from verb lemma strings to lists of
-        verbnet class identifiers."""
+        VernNet class identifiers."""
 
         self._wordnet_to_class = defaultdict(list)
         """A dictionary mapping from wordnet identifier strings to
-        lists of verbnet class identifiers."""
+        lists of VernNet class identifiers."""
 
         self._class_to_fileid = {}
         """A dictionary mapping from class identifiers to
@@ -101,16 +101,16 @@ class VerbnetCorpusReader(XMLCorpusReader):
 
     def classids(self, lemma=None, wordnetid=None, fileid=None, classid=None):
         """
-        Return a list of the verbnet class identifiers.  If a file
-        identifier is specified, then return only the verbnet class
+        Return a list of the VernNet class identifiers.  If a file
+        identifier is specified, then return only the VernNet class
         identifiers for classes (and subclasses) defined by that file.
-        If a lemma is specified, then return only verbnet class
+        If a lemma is specified, then return only VernNet class
         identifiers for classes that contain that lemma as a member.
         If a wordnetid is specified, then return only identifiers for
         classes that contain that wordnetid as a member.  If a classid
         is specified, then return only identifiers for subclasses of
-        the specified verbnet class.
-        If nothing is specified, return all classids within verbnet
+        the specified VernNet class.
+        If nothing is specified, return all classids within VernNet
         """
         if fileid is not None:
             return [c for (c, f) in self._class_to_fileid.items()
@@ -127,14 +127,15 @@ class VerbnetCorpusReader(XMLCorpusReader):
             return sorted(self._class_to_fileid.keys())
 
     def vnclass(self, fileid_or_classid):
-        """
+        """Returns VerbNet class ElementTree
+        
         Return an ElementTree containing the xml for the specified
-        verbnet class.
+        VernNet class.
 
         :param fileid_or_classid: An identifier specifying which class
             should be returned.  Can be a file identifier (such as
-            ``'put-9.1.xml'``), or a verbnet class identifier (such as
-            ``'put-9.1'``) or a short verbnet class identifier (such as
+            ``'put-9.1.xml'``), or a VernNet class identifier (such as
+            ``'put-9.1'``) or a short VernNet class identifier (such as
             ``'9.1'``).
         """
         # File identifier: just return the xml.
@@ -162,7 +163,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         Return a list of fileids that make up this corpus.  If
         ``vnclass_ids`` is specified, then return the fileids that make
-        up the specified verbnet class(es).
+        up the specified VernNet class(es).
         """
         if vnclass_ids is None:
             return self._fileids
@@ -173,41 +174,39 @@ class VerbnetCorpusReader(XMLCorpusReader):
                     for vnclass_id in vnclass_ids]
 
     def frames(self, vnclass):
-        """
-        Given a verbnet class, this method returns frames with members-
+        """Given a VernNet class, this method returns VernNet frames
+        
+        The members returned are:
         1) Example
         2) Description
         3) Syntax
         4) Semantics
         
-        :param vnclass: A verbnet class identifier; or an ElementTree
-            containing the xml contents of a verbnet class.
+        :param vnclass: A VernNet class identifier; or an ElementTree
+            containing the xml contents of a VernNet class.
         :return: frames - a list of frame dictionaries
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
-        frames = list()
+        frames = []
         vnframes = vnclass.findall('FRAMES/FRAME')
         for vnframe in vnframes:
-            example_text = self._get_example_within_frame(vnframe)
-            description = self._get_description_within_frame(vnframe)
-            pos_syntax = self._get_syntactic_list_within_frame(vnframe)
-            semantics = self._get_semantics_within_frame(vnframe)
             frames.append({
-                'example': example_text,
-                'description': description,
-                'syntax': pos_syntax,
-                'semantics': semantics
+                'example': self._get_example_within_frame(vnframe),
+                'description': self._get_description_within_frame(vnframe),
+                'syntax': self._get_syntactic_list_within_frame(vnframe),
+                'semantics': self._get_semantics_within_frame(vnframe)
             })
         return frames
 
     def subclasses(self, vnclass):
-        """
-        Given a verbnet class, this method returns subclass ids (if they exist)
+        """Returns subclass ids, if any exist 
+        
+        Given a VernNet class, this method returns subclass ids (if they exist)
         in a list of strings.
         
-        :param vnclass: A verbnet class identifier; or an ElementTree
-            containing the xml contents of a verbnet class.
+        :param vnclass: A VernNet class identifier; or an ElementTree
+            containing the xml contents of a VernNet class.
         :return: list of subclasses
         """
         if isinstance(vnclass, string_types):
@@ -218,26 +217,25 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return subclasses
 
     def themroles(self, vnclass):
-        """
-        Given a verbnet class, this method returns thematic roles participating
-        in the verbnet class with members-
+        """Returns thematic roles participating in a VernNet class
+        
+        Members returned as part of roles are-
         1) Type
         2) Modifiers
         
-        :param vnclass: A verbnet class identifier; or an ElementTree
-            containing the xml contents of a verbnet class.
-        :return: themroles: A list of thematic roles in the verbnet class
+        :param vnclass: A VernNet class identifier; or an ElementTree
+            containing the xml contents of a VernNet class.
+        :return: themroles: A list of thematic roles in the VernNet class
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
 
-        themroles = list()
+        themroles = []
         for trole in vnclass.findall('THEMROLES/THEMROLE'):
-            modifiers = [{'value': restr.get('Value'), 'type': restr.get('type')}
-                         for restr in trole.findall('SELRESTRS/SELRESTR')]
             themroles.append({
                 'type': trole.get('type'),
-                'modifiers': modifiers
+                'modifiers': [{'value': restr.get('Value'), 'type': restr.get('type')}
+                              for restr in trole.findall('SELRESTRS/SELRESTR')]
             })
         return themroles
 
@@ -273,7 +271,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         Initialize the indexes ``_lemma_to_class``,
         ``_wordnet_to_class``, and ``_class_to_fileid`` by scanning
         through the corpus fileids.  This doesn't do proper xml parsing,
-        but is good enough to find everything in the standard verbnet
+        but is good enough to find everything in the standard VernNet
         corpus -- and it runs about 30 times faster than xml parsing
         (with the python ElementTree; only 2-3 times faster with
         cElementTree).
@@ -302,7 +300,9 @@ class VerbnetCorpusReader(XMLCorpusReader):
     ######################################################################
 
     def longid(self, shortid):
-        """Given a short verbnet class identifier (eg '37.10'), map it
+        """Returns longid of a VerbNet class
+        
+        Given a short VernNet class identifier (eg '37.10'), map it
         to a long id (eg 'confess-37.10').  If ``shortid`` is already a
         long id, then return it as-is"""
         if self._LONGID_RE.match(shortid):
@@ -315,7 +315,9 @@ class VerbnetCorpusReader(XMLCorpusReader):
             raise ValueError('vnclass identifier %r not found' % shortid)
 
     def shortid(self, longid):
-        """Given a long verbnet class identifier (eg 'confess-37.10'),
+        """Returns shortid of a VerbNet class
+        
+        Given a long VernNet class identifier (eg 'confess-37.10'),
         map it to a short id (eg '37.10').  If ``longid`` is already a
         short id, then return it as-is."""
         if self._SHORTID_RE.match(longid):
@@ -331,14 +333,15 @@ class VerbnetCorpusReader(XMLCorpusReader):
     ######################################################################
 
     def _get_semantics_within_frame(self, vnframe):
-        """
-        A utility function to retrieve semantics within a frame in verbnet
+        """Returns semantics within a single frame
+        
+        A utility function to retrieve semantics within a frame in VernNet
         Members of the semantics dictionary:
         1) Predicate value 
         2) Arguments
         
         :param vnframe: An ElementTree containing the xml contents of
-            a verbnet frame.
+            a VernNet frame.
         :return: semantics: semantics dictionary
         """
         semantics_within_single_frame = []
@@ -352,11 +355,12 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return semantics_within_single_frame
 
     def _get_example_within_frame(self, vnframe):
-        """
-        A utility function to retrieve an example within a frame in verbnet.
+        """Returns example within a frame
+        
+        A utility function to retrieve an example within a frame in VernNet.
         
         :param vnframe: An ElementTree containing the xml contents of
-            a verbnet frame.
+            a VernNet frame.
         :return: example_text: The example sentence for this particular frame
         """
         example_element = vnframe.find('EXAMPLES/EXAMPLE')
@@ -367,12 +371,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return example_text
 
     def _get_description_within_frame(self, vnframe):
-        """
+        """Returns member description within frame
+         
         A utility function to retrieve a description of participating members
-        within a frame in verbnet.
+        within a frame in VernNet.
         
         :param vnframe: An ElementTree containing the xml contents of
-            a verbnet frame.
+            a VernNet frame.
         :return: description: a description dictionary with members - primary and secondary 
         """
         description_element = vnframe.find('DESCRIPTION')
@@ -382,17 +387,18 @@ class VerbnetCorpusReader(XMLCorpusReader):
         }
 
     def _get_syntactic_list_within_frame(self, vnframe):
-        """
-        A utility function to retrieve semantics within a frame in verbnet.
+        """Returns semantics within a frame
+        
+        A utility function to retrieve semantics within a frame in VernNet.
         Members of the syntactic dictionary:
         1) POS Tag
         2) Modifiers
         
         :param vnframe: An ElementTree containing the xml contents of
-            a verbnet frame.
+            a VernNet frame.
         :return: syntax_within_single_frame
         """
-        syntax_within_single_frame = list()
+        syntax_within_single_frame = []
         for elt in vnframe.find('SYNTAX'):
             pos_tag = elt.tag
             modifiers = dict()
@@ -412,12 +418,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
     ######################################################################
 
     def pprint(self, vnclass):
-        """
+        """Returns pretty printed version of a VerbNet class
+        
         Return a string containing a pretty-printed representation of
-        the given verbnet class.
+        the given VernNet class.
 
-        :param vnclass: A verbnet class identifier; or an ElementTree
-        containing the xml contents of a verbnet class.
+        :param vnclass: A VernNet class identifier; or an ElementTree
+        containing the xml contents of a VernNet class.
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
@@ -432,12 +439,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return s
 
     def pprint_subclasses(self, vnclass, indent=''):
-        """
+        """Returns pretty printed version of subclasses of VerbNet class
+        
         Return a string containing a pretty-printed representation of
-        the given verbnet class's subclasses.
+        the given VernNet class's subclasses.
 
-        :param vnclass: A verbnet class identifier; or an ElementTree
-            containing the xml contents of a verbnet class.
+        :param vnclass: A VernNet class identifier; or an ElementTree
+            containing the xml contents of a VernNet class.
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
@@ -449,12 +457,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
                              subsequent_indent=indent + '  ')
 
     def pprint_members(self, vnclass, indent=''):
-        """
+        """Returns pretty printed version of members in a VerbNet class
+        
         Return a string containing a pretty-printed representation of
-        the given verbnet class's member verbs.
+        the given VernNet class's member verbs.
 
-        :param vnclass: A verbnet class identifier; or an ElementTree
-            containing the xml contents of a verbnet class.
+        :param vnclass: A VernNet class identifier; or an ElementTree
+            containing the xml contents of a VernNet class.
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
@@ -467,12 +476,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
                              subsequent_indent=indent + '  ')
 
     def pprint_themroles(self, vnclass, indent=''):
-        """
+        """Returns pretty printed version of thematic roles in a VerbNet class
+        
         Return a string containing a pretty-printed representation of
-        the given verbnet class's thematic roles.
+        the given VernNet class's thematic roles.
 
-        :param vnclass: A verbnet class identifier; or an ElementTree
-            containing the xml contents of a verbnet class.
+        :param vnclass: A VernNet class identifier; or an ElementTree
+            containing the xml contents of a VernNet class.
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
@@ -488,12 +498,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return '\n'.join(pieces)
 
     def pprint_frames(self, vnclass, indent=''):
-        """
+        """Returns pretty version of all frames in a VerbNet class
+        
         Return a string containing a pretty-printed representation of
-        the list of frames within the verbnet class.
+        the list of frames within the VernNet class.
 
-        :param vnclass: A verbnet class identifier; or an ElementTree
-            containing the xml contents of a verbnet class.
+        :param vnclass: A VernNet class identifier; or an ElementTree
+            containing the xml contents of a VernNet class.
         """
         if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
@@ -503,12 +514,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return '\n'.join(pieces)
 
     def _pprint_single_frame(self, vnframe, indent=''):
-        """
+        """Returns pretty printed version of a single frame in a VerbNet class
+        
         Returns a string containing a pretty-printed representation of
         the given frame.
         
         :param vnframe: An ElementTree containing the xml contents of
-            a verbnet frame.
+            a VernNet frame.
         """
         frame_string = self._pprint_description_within_frame(vnframe, indent) + '\n'
         frame_string += self._pprint_example_within_frame(vnframe, indent + ' ') + '\n'
@@ -518,23 +530,25 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return frame_string
 
     def _pprint_example_within_frame(self, vnframe, indent=''):
-        """
+        """Returns pretty printed version of example within frame in a VerbNet class
+        
         Return a string containing a pretty-printed representation of
-        the given verbnet frame example.
+        the given VernNet frame example.
 
         :param vnframe: An ElementTree containing the xml contents of
-            a verbnet frame.
+            a VernNet frame.
         """
         if vnframe['example']:
             return indent + ' Example: ' + vnframe['example']
 
     def _pprint_description_within_frame(self, vnframe, indent=''):
-        """
+        """Returns pretty printed version of a VerbNet frame description
+        
         Return a string containing a pretty-printed representation of
-        the given verbnet frame description.
+        the given VernNet frame description.
 
         :param vnframe: An ElementTree containing the xml contents of
-            a verbnet frame.
+            a VernNet frame.
         """
         description = indent + vnframe['description']['primary']
         if vnframe['description']['secondary']:
@@ -542,12 +556,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return description
 
     def _pprint_syntax_within_frame(self, vnframe, indent=''):
-        """
+        """Returns pretty printed version of syntax within a frame in a VerbNet class 
+        
         Return a string containing a pretty-printed representation of
-        the given verbnet frame syntax.
+        the given VernNet frame syntax.
 
         :param vnframe: An ElementTree containing the xml contents of
-            a verbnet frame.
+            a VernNet frame.
         """
         pieces = []
         for element in vnframe['syntax']:
@@ -565,12 +580,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
         return indent + ' '.join(pieces)
 
     def _pprint_semantics_within_frame(self, vnframe, indent=''):
-        """
+        """Returns a pretty printed version of semantics within frame in a VerbNet class
+        
         Return a string containing a pretty-printed representation of
-        the given verbnet frame semantics.
+        the given VernNet frame semantics.
 
         :param vnframe: An ElementTree containing the xml contents of
-            a verbnet frame.
+            a VernNet frame.
         """
         pieces = []
         for predicate in vnframe['semantics']:
