@@ -22,7 +22,7 @@ from six import string_types
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
 
-class VernNetCorpusReader(XMLCorpusReader):
+class VerbnetCorpusReader(XMLCorpusReader):
     """
     An NLTK interface to the VernNet verb lexicon.
 
