@@ -9,7 +9,7 @@
 An NLTK interface to the Verbnet verb lexicon
 
 For details about Verbnet see:
-http://verbs.colorado.edu/~mpalmer/projects/Verbnet.html
+http://verbs.colorado.edu/~mpalmer/projects/verbnet.html
 """
 from __future__ import unicode_literals
 
