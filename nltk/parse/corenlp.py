@@ -66,7 +66,7 @@ class CoreNLPServer(object):
         # find the most recent code and model jar
         stanford_jar = max(
             jars,
-            key=lambda model_name: re.match(self._JAR, model_name)
+            key=lambda model_name: re.search(self._JAR, model_name).group()
         )
 
         if port is None:
