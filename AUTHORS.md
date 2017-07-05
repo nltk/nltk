@@ -215,6 +215,7 @@
 - sbagan
 - Zicheng Xu
 - Albert Au Yeung <https://github.com/albertauyeung>
+- Shenjian Zhao
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
