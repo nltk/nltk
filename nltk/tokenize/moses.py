@@ -36,6 +36,13 @@ class MosesTokenizer(TokenizerI):
     >>> m = MosesTokenizer()
     >>> m.tokenize('abc def.')
     [u'abc', u'def', u'.']
+
+    The nonbreaking prefixes should deal the situation when numeric only prefix is the last token.
+    In below example, "pp" is the last element, and there is no digit after it.
+
+    >>> m = MosesTokenizer()
+    >>> m.tokenize('2016, pp.')
+    [u'2016', u',', 'pp', '.']
     """
 
     # Perl Unicode Properties character sets.
