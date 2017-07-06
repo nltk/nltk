@@ -221,7 +221,8 @@ class CoreNLPTagger(CoreNLPParser, TaggerI):
         super(CoreNLPTagger, self).__init__(url, encoding)
 
     def tag_sents(self, sentences):
-        sentences = ('\n'.join(sent) for sent in sentences)
+        # Converting list(list(str)) -> list(str)
+        sentences = (' '.join(words) for words in sentences)
         return list(self.raw_tag_sents(sentences))
 
 
