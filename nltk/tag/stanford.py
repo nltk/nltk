@@ -48,7 +48,14 @@ class StanfordTagger(TaggerI):
 
     def __init__(self, model_filename, path_to_jar=None, encoding='utf8',
                  verbose=False, java_options='-mx1000m'):
-
+        # Raise deprecation warning.
+        warnings.simplefilter('always', DeprecationWarning)
+        warnings.warn(str("\nThe StanfordTokenizer will "
+                          "be deprecated in version 3.2.5.\n"
+                          "Please use \033[91mnltk.tag.corenlp.CoreNLPPOSTagger\033[0m "
+                          "or \033[91mnltk.tag.corenlp.CoreNLPNERTagger\033[0m instead."),
+                      DeprecationWarning, stacklevel=2)
+        warnings.simplefilter('ignore', DeprecationWarning)
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
                           'instantiated directly. Did you mean '
@@ -215,6 +222,7 @@ class CoreNLPTagger(CoreNLPParser, TaggerI):
         super(CoreNLPTagger, self).__init__(url, encoding)
 
     def tag_sents(self, sentences):
+        # Converting list(list(str)) -> list(str)
         sentences = (' '.join(words) for words in sentences)
         return list(self.raw_tag_sents(sentences))
 
