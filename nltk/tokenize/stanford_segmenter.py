@@ -17,6 +17,7 @@ import tempfile
 import os
 import json
 from subprocess import PIPE
+import warnings
 
 from nltk import compat
 from nltk.internals import find_jar, find_file, find_dir, \
@@ -30,7 +31,7 @@ _stanford_url = 'https://nlp.stanford.edu/software'
 
 class StanfordSegmenter(TokenizerI):
     """Interface to the Stanford Segmenter
-    
+
     If stanford-segmenter version is older than 2016-10-31, then path_to_slf4j
     should be provieded, for example::
 
@@ -63,6 +64,13 @@ class StanfordSegmenter(TokenizerI):
                  keep_whitespaces='false',
                  encoding='UTF-8', options=None,
                  verbose=False, java_options='-mx2g'):
+        # Raise deprecation warning.
+        warnings.simplefilter('always', DeprecationWarning)
+        warnings.warn(str("\nThe StanfordTokenizer will "
+                          "be deprecated in version 3.2.5.\n"
+                          "Please use \033[91mnltk.parse.corenlp.CoreNLPTokenizer\033[0m instead.'"),
+                      DeprecationWarning, stacklevel=2)
+        warnings.simplefilter('ignore', DeprecationWarning)
 
         stanford_segmenter = find_jar(
                 self._JAR, path_to_jar,
