@@ -201,7 +201,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
         :type sentences: list(list(str))
         :rtype: iter(iter(Tree))
         """
-
+        # Converting list(list(str)) -> list(str)
         sentences = (' '.join(words) for words in sentences)
         return self.raw_parse_sents(sentences, *args, **kwargs)
 
@@ -271,11 +271,13 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
 
         """
         default_properties = {
-            'ssplit.isOneSentence': 'true',
+            # Only splits on '\n', never inside the sentence.
+            'ssplit.ssplit.eolonly': 'true',
         }
 
         default_properties.update(properties or {})
 
+        """
         for sentence in sentences:
             parsed_data = self.api_call(sentence, properties=default_properties)
 
@@ -284,6 +286,12 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
             for parse in parsed_data['sentences']:
                 tree = self.make_tree(parse)
                 yield iter([tree])
+        """
+        parsed_data = self.api_call('\n'.join(sentences), properties=default_properties)
+        for parsed_sent in parsed_data['sentences']:
+            tree = self.make_tree(parsed_sent)
+            yield iter([tree])
+
 
     def parse_text(self, text, *args, **kwargs):
         """Parse a piece of text.
@@ -320,6 +328,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
         """
         default_properties = {
             'annotators': 'tokenize,ssplit',
+
         }
 
         default_properties.update(properties or {})
