@@ -42,7 +42,7 @@ class MosesTokenizer(TokenizerI):
 
     >>> m = MosesTokenizer()
     >>> m.tokenize('2016, pp.')
-    [u'2016', u',', 'pp', '.']
+    [u'2016', u',', u'pp', u'.']
     """
 
     # Perl Unicode Properties character sets.
