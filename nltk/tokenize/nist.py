@@ -28,19 +28,15 @@ class NISTTokenizer(TokenizerI):
     paragraph-based tokenization from mteval-14.pl; The sentence-based
     tokenization is consistent with the other tokenizers available in NLTK.
 
-
     >>> from six import text_type
     >>> from nltk.tokenize.nist import NISTTokenizer
     >>> nist = NISTTokenizer()
-    >>> s = text_type(u'''Но в тоже время сегодняшнее событие не праздник , '''
-    ...               u'''а день памяти о тех , кого не вернуло море &quot; , '''
-    ...               u'''- отметил председатель совета ветеранов Северного '''
-    ...               u'''морского пароходства Борис Карпов .''')
-    >>> expected = text_type(u'''но в тоже время сегодняшнее событие не праздник , '''
-    ...                      u'''а день памяти о тех , кого не вернуло море " , - '''
-    ...                      u'''отметил председатель совета ветеранов северного '''
-    ...                      u'''морского пароходства борис карпов .''')
-    >>> nist.tokenize(s, return_str=True) == expected
+    >>> s = "Good muffins cost $3.88 in New York."
+    >>> expected_lower = [u'good', u'muffins', u'cost', u'$', u'3.88', u'in', u'new', u'york', u'.']
+    >>> expected_cased = [u'Good', u'muffins', u'cost', u'$', u'3.88', u'in', u'New', u'York', u'.']
+    >>> nist.tokenize(s, preserve_case=True) == expected_cased
+    True
+    >>> nist.tokenize(s, preserve_case=False) == expected_lower  # Lowercased.
     True
     """
     # Strip "skipped" tags
@@ -68,7 +64,7 @@ class NISTTokenizer(TokenizerI):
         if western_lang:
             # Pad string with whitespace.
             text = ' ' + text + ' '
-            if preserve_case:
+            if not preserve_case:
                 text = text.lower()
             for regexp, subsitution in self.LANG_DEPENDENT_REGEXES:
                 text = regexp.sub(subsitution, text)

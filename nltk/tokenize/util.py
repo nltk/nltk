@@ -204,8 +204,9 @@ def xml_unescape(text):
 
         >>> from xml.sax.saxutils import unescape
         >>> s = ')&#124; &amp; &lt; &gt; &apos; &quot; &#93; &#91;'
-        >>> xml_unescape(s)
-        ')| & < > \' " ] ['
+        >>> expected = ')| & < > \' " ] ['
+        >>> xml_unescape(s) == expected
+        True
 
     :param text: The text that needs to be unescaped.
     :type text: str
