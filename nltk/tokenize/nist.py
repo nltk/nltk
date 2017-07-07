@@ -43,6 +43,7 @@ class NISTTokenizer(TokenizerI):
     >>> nist.tokenize(s, return_str=True) == expected
     True
     """
+    # Strip "skipped" tags
     STRIP_SKIP = re.compile('<skipped>'), ''
     # Tokenize punctuation.
     PUNCT = re.compile('([\{-\~\[-\` -\&\(-\+\:-\@\/])'), ' \\1 '
