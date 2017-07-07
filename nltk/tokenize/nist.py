@@ -13,7 +13,6 @@ This is a NLTK port of the tokenizer used in the NIST BLEU evaluation script,
 https://github.com/moses-smt/mosesdecoder/blob/master/scripts/generic/mteval-v14.pl#L926
 which was also ported into Python in
 https://github.com/lium-lst/nmtpy/blob/master/nmtpy/metrics/mtevalbleu.py#L162
-
 """
 
 import io
@@ -21,20 +20,38 @@ import re
 from six import text_type
 
 from nltk.tokenize.api import TokenizerI
+from nltk.tokenize.util import xml_unescape
 
 class NISTTokenizer(TokenizerI):
     """
+    This NIST tokenizer is sentence-based instead of the original
+    paragraph-based tokenization from mteval-14.pl; The sentence-based
+    tokenization is consistent with the other tokenizers available in NLTK.
 
+
+    >>> from six import text_type
+    >>> from nltk.tokenize.nist import NISTTokenizer
+    >>> nist = NISTTokenizer()
+    >>> s = text_type(u'''Но в тоже время сегодняшнее событие не праздник , '''
+    ...               u'''а день памяти о тех , кого не вернуло море &quot; , '''
+    ...               u'''- отметил председатель совета ветеранов Северного '''
+    ...               u'''морского пароходства Борис Карпов .''')
+    >>> expected = text_type(u'''но в тоже время сегодняшнее событие не праздник , '''
+    ...                      u'''а день памяти о тех , кого не вернуло море " , - '''
+    ...                      u'''отметил председатель совета ветеранов северного '''
+    ...                      u'''морского пароходства борис карпов .''')
+    >>> nist.tokenize(s, return_str=True) == expected
+    True
     """
-    STRIP_SKIP = '<skipped>', ''
+    STRIP_SKIP = re.compile('<skipped>'), ''
     # Tokenize punctuation.
-    PUNCT = '([\{-\~\[-\` -\&\(-\+\:-\@\/])', ' \\1 '
+    PUNCT = re.compile('([\{-\~\[-\` -\&\(-\+\:-\@\/])'), ' \\1 '
     # Tokenize period and comma unless preceded by a digit.
-    PERIOD_COMMA_PRECEED = '([^0-9])([\.,])', '\\1 \\2 '
+    PERIOD_COMMA_PRECEED = re.compile('([^0-9])([\.,])'), '\\1 \\2 '
     # Tokenize period and comma unless followed by a digit.
-    PERIOD_COMMA_FOLLOW = '([\.,])([^0-9])', ' \\1 \\2'
+    PERIOD_COMMA_FOLLOW = re.compile('([\.,])([^0-9])'), ' \\1 \\2'
     # Tokenize dash when preceded by a digit
-    DASH_PRECEED_DIGIT = '([0-9])(-)', '\\1 \\2 '
+    DASH_PRECEED_DIGIT = re.compile('([0-9])(-)'), '\\1 \\2 '
 
     LANG_DEPENDENT_REGEXES = [PUNCT, PERIOD_COMMA_PRECEED,
                               PERIOD_COMMA_FOLLOW, DASH_PRECEED_DIGIT]
@@ -43,8 +60,9 @@ class NISTTokenizer(TokenizerI):
                  western_lang=True, return_str=False):
         text = text_type(text)
         # Language independent regex.
-        regexp, subsitution = STRIP_SKIP
+        regexp, subsitution = self.STRIP_SKIP
         text = regexp.sub(subsitution, text)
+        text = xml_unescape(text)
         # Language dependent regex.
         if western_lang:
             # Pad string with whitespace.
