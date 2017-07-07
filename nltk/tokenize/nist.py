@@ -2,8 +2,8 @@
 # Natural Language Toolkit: Python port of the tok-tok.pl tokenizer.
 #
 # Copyright (C) 2001-2015 NLTK Project
-# Author: Ozan Caglayan
-# Contributors: Liling Tan
+# Author:
+# Contributors: Ozan Caglayan
 #
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
