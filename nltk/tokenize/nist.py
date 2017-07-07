@@ -41,6 +41,8 @@ class NISTTokenizer(TokenizerI):
     """
     # Strip "skipped" tags
     STRIP_SKIP = re.compile('<skipped>'), ''
+    #  Strip end-of-line hyphenation and join lines
+    STRIP_EOL_HYPHEN = re.compile(u'\u2028'), ' '
     # Tokenize punctuation.
     PUNCT = re.compile('([\{-\~\[-\` -\&\(-\+\:-\@\/])'), ' \\1 '
     # Tokenize period and comma unless preceded by a digit.
@@ -53,13 +55,23 @@ class NISTTokenizer(TokenizerI):
     LANG_DEPENDENT_REGEXES = [PUNCT, PERIOD_COMMA_PRECEED,
                               PERIOD_COMMA_FOLLOW, DASH_PRECEED_DIGIT]
 
+    def lang_independent_sub(self, text):
+        """Performs the language independent string substituitions. """
+        # It's a strange order of regexes.
+        # It'll be better to unescape after STRIP_EOL_HYPHEN
+        # but let's keep it close to the original NIST implementation.
+        regexp, subsitution = self.STRIP_SKIP
+        text = regexp.sub(subsitution, text)
+        text = xml_unescape(text)
+        regexp, subsitution = self.STRIP_EOL_HYPHEN
+        text = regexp.sub(subsitution, text)
+        return text
+
     def tokenize(self, text, preserve_case=True,
                  western_lang=True, return_str=False):
         text = text_type(text)
         # Language independent regex.
-        regexp, subsitution = self.STRIP_SKIP
-        text = regexp.sub(subsitution, text)
-        text = xml_unescape(text)
+        text = self.lang_independent_sub(text)
         # Language dependent regex.
         if western_lang:
             # Pad string with whitespace.
@@ -74,3 +86,9 @@ class NISTTokenizer(TokenizerI):
         # and converts output string into unicode.
         text = text_type(text.strip())
         return text if return_str else text.split()
+
+    def international_tokenize(self, text, preserve_case=True, return_str=False):
+        text = text_type(text)
+        # Language independent regex.
+        text = self.lang_independent_sub(text)
+        #
