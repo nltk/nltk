@@ -285,8 +285,8 @@ class MosesTokenizer(TokenizerI):
                     pass # No change to the token.
                 # Checks if the prefix is in NUMERIC_ONLY_PREFIXES
                 # and ensures that the next word is a digit.
-                elif (prefix in self.NUMERIC_ONLY_PREFIXES and
-                      re.search(r'^[0-9]+', tokens[i+1])):
+                elif (prefix in self.NUMERIC_ONLY_PREFIXES and i != num_tokens-1
+                      and re.search(r'^[0-9]+', tokens[i+1])):
                     pass # No change to the token.
                 else: # Otherwise, adds a space after the tokens before a dot.
                     tokens[i] = prefix + ' .'
