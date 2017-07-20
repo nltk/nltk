@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This module implements the dependency parsing algorithm presented by Danqi Chen and
 Christopher Manning at EMNLP 2014.
@@ -720,9 +721,9 @@ class DependencyParser(object):
 
 class DependencyTree(object):
     """ 
-	Represents a dependency parse tree. Stores a sentence's syntactic structure, but not its words.
-	Dependency relations and their types are stored in attributes 'head' and 'label' respectively.
-	"""
+    Represents a dependency parse tree. Stores a sentence's syntactic structure, but not its words.
+    Dependency relations and their types are stored in attributes 'head' and 'label' respectively.
+    """
 
     def __init__(self, tree=None):
 
