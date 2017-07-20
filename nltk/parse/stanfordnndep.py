@@ -1729,28 +1729,28 @@ def demo():
     """   
     Setup part-of-speech tagger:
     
-    >>> tagger = PerceptronTagger(False)
-    >>> tagger.load('averaged_perceptron_tagger_ud_ru.pickle')
+    # >>> tagger = PerceptronTagger(False)
+    # >>> tagger.load('averaged_perceptron_tagger_ud_ru.pickle')
     
     Setup parser:
     
-    >>> parser = DependencyParser.load_from_model_file('nn_dependency_parser_ud_ru.nndp')
-    >>> parser.config.tagger = tagger
+    # >>> parser = DependencyParser.load_from_model_file('nn_dependency_parser_ud_ru.nndp')
+    # >>> parser.config.tagger = tagger
       
     Setup example sentences:
     
-    >>> raw_sentence = ['Илья', 'оторопел', 'и', 'дважды', 'перечитал', 'бумажку', '.']
-    >>> tagged_sentence = tagger.tag(raw_sentence)
+    # >>> raw_sentence = ['Илья', 'оторопел', 'и', 'дважды', 'перечитал', 'бумажку', '.']
+    # >>> tagged_sentence = tagger.tag(raw_sentence)
     
     Parse a tagged sentence:
     
-    >>> dependency_parse1 = parser.parse(tagged_sentence)
-    >>> print(dependency_parse1.head)  # [-1, 2, 0, 2, 5, 2, 5, 2]
-    >>> print(dependency_parse1.label) # ['-UNKNOWN-', 'nsubj', 'root', 'cc', 'advmod', 'conj', 'dobj', 'punct']
+    # >>> dependency_parse1 = parser.parse(tagged_sentence)
+    # >>> print(dependency_parse1.head)  # [-1, 2, 0, 2, 5, 2, 5, 2]
+    # >>> print(dependency_parse1.label) # ['-UNKNOWN-', 'nsubj', 'root', 'cc', 'advmod', 'conj', 'dobj', 'punct']
     
     Parse a raw sentence:
     
-    >>> dependency_parse2 = parser.parse(raw_sentence, tagged=False)
-    >>> print(dependency_parse2.head)  # [-1, 2, 0, 2, 5, 2, 5, 2]
-    >>> print(dependency_parse2.label) # ['-UNKNOWN-', 'nsubj', 'root', 'cc', 'advmod', 'conj', 'dobj', 'punct']
+    # >>> dependency_parse2 = parser.parse(raw_sentence, tagged=False)
+    # >>> print(dependency_parse2.head)  # [-1, 2, 0, 2, 5, 2, 5, 2]
+    # >>> print(dependency_parse2.label) # ['-UNKNOWN-', 'nsubj', 'root', 'cc', 'advmod', 'conj', 'dobj', 'punct']
     """
