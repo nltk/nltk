@@ -1619,7 +1619,7 @@ def load_conll_file(conll_file, unlabeled, cPOS, encoding='utf-8'):
     Read sentences and their dependency parses from CoNLL-U file.
 
     :param conll_file: path to the CoNLL-U file
-    :param unlabeled: indicates whether to read dependency types (if True) or not
+    :param unlabeled: indicates whether to read dependency types (if False) or not
     :param cPOS: if True, reads coarse part-of-speech tags
     :param encoding: file's encoding
     :return: sentences and their dependency trees from the file
