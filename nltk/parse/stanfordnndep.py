@@ -734,8 +734,8 @@ class DependencyTree(object):
         self.label = []  # 'label' stores each token's dependency type from its head node
         self._counter = None
         if tree is not None:
-            self.n = tree.n
-            self.head = tree.head
+            self.n = list(tree.n)
+            self.head = list(tree.head)
             self.label = tree.label
         else:
             self.head.append(Config.NONEXIST)
