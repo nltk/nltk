@@ -20,7 +20,7 @@ the word ``'fly'`` with a noun part of speech tag (``'NN'``):
     >>> tagged_tok = ('fly', 'NN')
 
 An off-the-shelf tagger is available.  It uses the Penn Treebank tagset for English and 
-Russian National Corpus tagset for Russian:
+the Russian National Corpus tagset for Russian:
 
     >>> from nltk import pos_tag, word_tokenize
     >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
