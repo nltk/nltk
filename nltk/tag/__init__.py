@@ -28,7 +28,7 @@ the Russian National Corpus tagset for Russian:
     ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
     >>> pos_tag(word_tokenize("Илья оторопел и дважды перечитал бумажку."), lang='rus')
     [('Илья', 'S'), ('оторопел', 'V'), ('и', 'CONJ'), ('дважды', 'ADV'), ('перечитал', 'V'),
-	('бумажку', 'S'), ('.', 'NONLEX')]
+    ('бумажку', 'S'), ('.', 'NONLEX')]
 
 This package defines several taggers, which take a list of tokens,
 assign a tag to each one, and return the resulting list of tagged tokens.
