@@ -236,7 +236,7 @@ class MosesTokenizer(TokenizerI):
                                 ESCAPE_LEFT_SQUARE_BRACKET,
                                 ESCAPE_RIGHT_SQUARE_BRACKET]
 
-    def __init__(self, lang='en'):
+    def __init__(self, lang='en', no_escaping=False):
         # Initialize the object.
         super(MosesTokenizer, self).__init__()
         self.lang = lang
@@ -245,6 +245,7 @@ class MosesTokenizer(TokenizerI):
         self.NUMERIC_ONLY_PREFIXES = [w.rpartition(' ')[0] for w in
                                       self.NONBREAKING_PREFIXES if
                                       self.has_numeric_only(w)]
+        self.no_escaping = no_escaping
 
 
 
@@ -382,8 +383,9 @@ class MosesTokenizer(TokenizerI):
         text = re.sub(regexp,substitution, text).strip()
         # Restore multidots.
         text = self.restore_multidots(text)
-        # Escape XML symbols.
-        text = self.escape_xml(text)
+        if not self.no_escaping:
+            # Escape XML symbols.
+            text = self.escape_xml(text)
 
         return text if return_str else text.split()
 
