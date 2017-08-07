@@ -7,7 +7,7 @@
 # For license information, see LICENSE.TXT
 
 from re import finditer
-from xml.sax.saxutils import escape
+from xml.sax.saxutils import escape, unescape
 
 def string_span_tokenize(s, sep):
     r"""
@@ -191,6 +191,30 @@ def xml_escape(text):
     return escape(text, entities={ r"'": r"&apos;", r'"': r"&quot;",
                                    r"|": r"&#124;",
                                    r"[": r"&#91;",  r"]": r"&#93;", })
+
+
+def xml_unescape(text):
+    """
+    This function transforms the "escaped" version suitable
+    for well-formed XML formatting into humanly-readable string.
+
+    Note that the default xml.sax.saxutils.unescape() function don't unescape
+    some characters that Moses does so we have to manually add them to the
+    entities dictionary.
+
+        >>> from xml.sax.saxutils import unescape
+        >>> s = ')&#124; &amp; &lt; &gt; &apos; &quot; &#93; &#91;'
+        >>> expected = ''')| & < > \' " ] ['''
+        >>> xml_unescape(s) == expected
+        True
+
+    :param text: The text that needs to be unescaped.
+    :type text: str
+    :rtype: str
+    """
+    return unescape(text, entities={ r"&apos;":r"'", r"&quot;":r'"',
+                                     r"&#124;":r"|",
+                                     r"&#91;":r"[",  r"&#93;":r"]", })
 
 
 def align_tokens(tokens, sentence):

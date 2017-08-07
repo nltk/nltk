@@ -205,6 +205,7 @@
 - George Berry
 - Adam Nelson
 - J Richard Snape
+- Alex Constantin <alex@keyworder.ch>
 - Tsolak Ghukasyan
 - Prasasto Adi
 - Safwan Kamarrudin
@@ -212,6 +213,11 @@
 - Vilhjalmur Thorsteinsson
 - Jaehoon Hwang <https://github.com/jaehoonhwang>
 - Chintan Shah <https://github.com/chintanshah24>
+- sbagan
+- Zicheng Xu
+- Albert Au Yeung <https://github.com/albertauyeung>
+- Shenjian Zhao 
+- Deng Wang <https://github.com/lmatt-bit>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer

@@ -36,6 +36,13 @@ class MosesTokenizer(TokenizerI):
     >>> m = MosesTokenizer()
     >>> m.tokenize('abc def.')
     [u'abc', u'def', u'.']
+
+    The nonbreaking prefixes should deal the situation when numeric only prefix is the last token.
+    In below example, "pp" is the last element, and there is no digit after it.
+
+    >>> m = MosesTokenizer()
+    >>> m.tokenize('2016, pp.')
+    [u'2016', u',', u'pp', u'.']
     """
 
     # Perl Unicode Properties character sets.
@@ -286,6 +293,7 @@ class MosesTokenizer(TokenizerI):
                 # Checks if the prefix is in NUMERIC_ONLY_PREFIXES
                 # and ensures that the next word is a digit.
                 elif (prefix in self.NUMERIC_ONLY_PREFIXES and
+                      (i + 1) < num_tokens and
                       re.search(r'^[0-9]+', tokens[i+1])):
                     pass # No change to the token.
                 else: # Otherwise, adds a space after the tokens before a dot.
@@ -563,7 +571,7 @@ class MosesDetokenizer(TokenizerI):
                 normalized_quo = token
                 if re.search(r'^[„“”]+$', token):
                     normalized_quo = '"'
-                quote_counts.get(normalized_quo, 0)
+                quote_counts[normalized_quo] = quote_counts.get(normalized_quo, 0)
 
                 if self.lang == 'cs' and token == u"„":
                     quote_counts[normalized_quo] = 0
@@ -585,7 +593,7 @@ class MosesDetokenizer(TokenizerI):
                         quote_counts[normalized_quo] += 1
                 else:
                     # Left shift.
-                    text += token
+                    detokenized_text += token
                     prepend_space = " "
                     quote_counts[normalized_quo] += 1
 

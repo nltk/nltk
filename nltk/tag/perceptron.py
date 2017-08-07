@@ -28,7 +28,7 @@ class AveragedPerceptron(object):
     '''An averaged perceptron, as implemented by Matthew Honnibal.
 
     See more implementation details here:
-        http://spacy.io/blog/part-of-speech-POS-tagger-in-python/
+        https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
     '''
 
     def __init__(self):
@@ -101,7 +101,7 @@ class PerceptronTagger(TaggerI):
     '''
     Greedy Averaged Perceptron tagger, as implemented by Matthew Honnibal.
     See more implementation details here:
-        http://spacy.io/blog/part-of-speech-POS-tagger-in-python/
+        https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
     
     >>> from nltk.tag.perceptron import PerceptronTagger
 

@@ -14,8 +14,6 @@ import json
 import time
 import socket
 
-import requests
-
 from nltk.internals import find_jar_iter, config_java, java, _java_options
 
 from nltk.parse.api import ParserI
@@ -103,6 +101,8 @@ class CoreNLPServer(object):
         self.java_options = java_options or ['-mx2g']
 
     def start(self):
+        import requests
+
         cmd = ['edu.stanford.nlp.pipeline.StanfordCoreNLPServer']
 
         if self.corenlp_options:
@@ -180,6 +180,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
     """Interface to the CoreNLP Parser."""
 
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
+        import requests
 
         self.url = url
         self.encoding = encoding
@@ -200,7 +201,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
         :type sentences: list(list(str))
         :rtype: iter(iter(Tree))
         """
-
+        # Converting list(list(str)) -> list(str)
         sentences = (' '.join(words) for words in sentences)
         return self.raw_parse_sents(sentences, *args, **kwargs)
 
@@ -270,11 +271,13 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
 
         """
         default_properties = {
-            'ssplit.isOneSentence': 'true',
+            # Only splits on '\n', never inside the sentence.
+            'ssplit.ssplit.eolonly': 'true',
         }
 
         default_properties.update(properties or {})
 
+        """
         for sentence in sentences:
             parsed_data = self.api_call(sentence, properties=default_properties)
 
@@ -283,6 +286,12 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
             for parse in parsed_data['sentences']:
                 tree = self.make_tree(parse)
                 yield iter([tree])
+        """
+        parsed_data = self.api_call('\n'.join(sentences), properties=default_properties)
+        for parsed_sent in parsed_data['sentences']:
+            tree = self.make_tree(parsed_sent)
+            yield iter([tree])
+
 
     def parse_text(self, text, *args, **kwargs):
         """Parse a piece of text.
@@ -319,6 +328,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
         """
         default_properties = {
             'annotators': 'tokenize,ssplit',
+
         }
 
         default_properties.update(properties or {})
@@ -327,7 +337,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
 
         for sentence in result['sentences']:
             for token in sentence['tokens']:
-                yield token['originalText']
+                yield token['originalText'] or token['word']
 
 
 class CoreNLPParser(GenericCoreNLPParser):
@@ -609,6 +619,40 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
     ...     ).nodes
     ... )
     10
+
+    >>> print(
+    ...     next(
+    ...         dep_parser.raw_parse('The underscore _ should not simply disappear.')
+    ...     ).to_conll(4)
+    ... )  # doctest: +NORMALIZE_WHITESPACE
+    The         DT  3   det
+    underscore  VBP 3   amod
+    _           NN  7   nsubj
+    should      MD  7   aux
+    not         RB  7   neg
+    simply      RB  7   advmod
+    disappear   VB  0   ROOT
+    .           .   7   punct
+
+    >>> print(
+    ...     '\\n'.join(
+    ...         next(
+    ...             dep_parser.raw_parse(
+    ...                 'for all of its insights into the dream world of teen life , and its electronic expression through '
+    ...                 'cyber culture , the film gives no quarter to anyone seeking to pull a cohesive story out of its 2 '
+    ...                 '1/2-hour running time .'
+    ...             )
+    ...         ).to_conll(4).split('\\n')[-8:]
+    ...     )
+    ... )
+    its	PRP$	40	nmod:poss
+    2 1/2	CD	40	nummod
+    -	:	40	punct
+    hour	NN	31	nmod
+    running	VBG	42	amod
+    time	NN	40	dep
+    .	.	24	punct
+    <BLANKLINE>
 
     """
 
