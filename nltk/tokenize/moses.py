@@ -43,6 +43,12 @@ class MosesTokenizer(TokenizerI):
     >>> m = MosesTokenizer()
     >>> m.tokenize('2016, pp.')
     [u'2016', u',', u'pp', u'.']
+    
+    >>> sent = "This ain't funny. It's actually hillarious, yet double Ls. | [] < > [ ] & You're gonna shake it off? Don't?"
+    >>> m.tokenize(sent, escape=True)
+    ['This', 'ain', '&apos;t', 'funny', '.', 'It', '&apos;s', 'actually', 'hillarious', ',', 'yet', 'double', 'Ls', '.', '&#124;', '&#91;', '&#93;', '&lt;', '&gt;', '&#91;', '&#93;', '&amp;', 'You', '&apos;re', 'gonna', 'shake', 'it', 'off', '?', 'Don', '&apos;t', '?']
+    >>> m.tokenize(sent, escape=False)
+    ['This', 'ain', "'t", 'funny', '.', 'It', "'s", 'actually', 'hillarious', ',', 'yet', 'double', 'Ls', '.', '|', '[', ']', '<', '>', '[', ']', '&', 'You', "'re", 'gonna', 'shake', 'it', 'off', '?', 'Don', "'t", '?']
     """
 
     # Perl Unicode Properties character sets.
@@ -417,6 +423,11 @@ class MosesDetokenizer(TokenizerI):
     >>> detokens = d.detokenize(tokens)
     >>> " ".join(detokens) == expected_detokens
     True
+    
+    >>> d.detokenize(expected_tokens, unescape=True)
+    ['This', "ain't", 'funny.', "It's", 'actually', 'hillarious,', 'yet', 'double', 'Ls.', '|', '[]', '<', '>', '[]', '&', "You're", 'gonna', 'shake', 'it', 'off?', "Don't?"]
+    >>> d.detokenize(expected_tokens, unescape=False)
+    ['This', 'ain', '&apos;t', 'funny.', 'It', '&apos;s', 'actually', 'hillarious,', 'yet', 'double', 'Ls.', '&#124;', '&#91;', '&#93;', '&lt;', '&gt;', '&#91;', '&#93;', '&amp;', 'You', '&apos;re', 'gonna', 'shake', 'it', 'off?', 'Don', '&apos;t?']
     """
     # Currency Symbols.
     IsAlnum = text_type(''.join(perluniprops.chars('IsAlnum')))
@@ -618,6 +629,6 @@ class MosesDetokenizer(TokenizerI):
 
         return detokenized_text if return_str else detokenized_text.split()
 
-    def detokenize(self, tokens, return_str=False):
+    def detokenize(self, tokens, return_str=False, unescape=True):
         """ Duck-typing the abstract *tokenize()*."""
-        return self.tokenize(tokens, return_str)
+        return self.tokenize(tokens, return_str, unescape)
