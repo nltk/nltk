@@ -241,7 +241,7 @@ class MosesTokenizer(TokenizerI):
         super(MosesTokenizer, self).__init__()
         self.lang = lang
         # Initialize the language specific nonbreaking prefixes.
-        self.NONBREAKING_PREFIXES = nonbreaking_prefixes.words(lang)
+        self.NONBREAKING_PREFIXES = [_nbp.strip() for _nbp in nonbreaking_prefixes.words(lang)]
         self.NUMERIC_ONLY_PREFIXES = [w.rpartition(' ')[0] for w in
                                       self.NONBREAKING_PREFIXES if
                                       self.has_numeric_only(w)]
