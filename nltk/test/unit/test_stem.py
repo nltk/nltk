@@ -10,6 +10,20 @@ import os
 
 class SnowballTest(unittest.TestCase):
 
+    def test_arabic(self):
+        """
+        this unit testing for test the snowball arabic light stemmer
+        this stemmer deals with prefixes and suffixes
+        """
+        ar_stemmer = SnowballStemmer("arabic")
+        assert ar_stemmer.stem('الْعَرَبِــــــيَّة') == "عرب"
+        assert ar_stemmer.stem("العربية") == "عرب"
+        assert ar_stemmer.stem("فقالوا") == "قال"
+        assert ar_stemmer.stem("الطالبات") == "طالب"
+        assert ar_stemmer.stem("فالطالبات") == "طالب"
+        assert ar_stemmer.stem("والطالبات") == "طالب"
+        assert ar_stemmer.stem("الطالبون") == "طالب"
+
     def test_russian(self):
         # Russian words both consisting of Cyrillic
         # and Roman letters can be stemmed.
