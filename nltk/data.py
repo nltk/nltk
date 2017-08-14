@@ -35,15 +35,23 @@ from __future__ import division
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 
-import sys
+import functools
+import textwrap
 import io
 import os
-import textwrap
 import re
+import sys
 import zipfile
 import codecs
 
 from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
+
+try: # Python 3.
+    textwrap_indent = functools.partial(textwrap.indent, prefix='  ')
+except AttributeError: # Python 2; indent() not available for Python2.
+    textwrap_indent = functools.partial(textwrap.fill,
+                                        initial_indent='  ',
+                                        subsequent_indent='  ')
 
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
@@ -652,7 +660,7 @@ def find(resource_name, paths=None):
               ">>> import nltk\n"
               ">>> nltk.download(\'{resource}\')\n"
               "\033[0m").format(resource=resource_zipname)
-    msg = textwrap.indent(msg, '  ')
+    msg = textwrap_indent(msg)
 
     msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in paths)
     sep = '*' * 70
