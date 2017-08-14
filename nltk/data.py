@@ -49,9 +49,12 @@ from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
 try: # Python 3.
     textwrap_indent = functools.partial(textwrap.indent, prefix='  ')
 except AttributeError: # Python 2; indent() not available for Python2.
-    textwrap_indent = functools.partial(textwrap.fill,
+    textwrap_fill = functools.partial(textwrap.fill,
                                         initial_indent='  ',
-                                        subsequent_indent='  ')
+                                        subsequent_indent='  ',
+                                        replace_whitespace=False)
+    def textwrap_indent(text):
+        return '\n'.join(textwrap_fill(line) for line in text.splitlines())
 
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
