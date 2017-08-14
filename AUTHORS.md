@@ -208,17 +208,7 @@
 - Alex Constantin <alex@keyworder.ch>
 - Tsolak Ghukasyan
 - Prasasto Adi
-- Safwan Kamarrudin
-- Arthur Tilley
-- Vilhjalmur Thorsteinsson
-- Jaehoon Hwang <https://github.com/jaehoonhwang>
-- sbagan
-- Zicheng Xu
-- Albert Au Yeung <https://github.com/albertauyeung>
-- Shenjian Zhao 
-- Deng Wang <https://github.com/lmatt-bit>
-- Ali Abdullah
-- Stoytcho Stoytchev
+- Lakhdar Benzahia
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
@@ -228,7 +218,7 @@
 - Hiranmay Ghosh
 - Chris Emerson
 
-### Contributors to Lancaster Stemmer
-- Matt Chaput, [Whoosh](https://bitbucket.org/mchaput/whoosh/wiki/Home)
-    - Strip prefix
-    - Custom rule.
+### Authors of snowball arabic stemmer algorithm
+- Assem Chelli
+- Abdelkrim Aries
+- Lakhdar Benzahia

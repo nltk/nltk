@@ -5,7 +5,12 @@
 # Copyright (C) 2001-2017 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
+#         Lakhdar Benzahia <lakhdar.benzahia@gmail.com>  (co-writer)
+#         Assem Chelli <assem.ch@gmail.com>  (reviewer arabicstemmer)
+#         Abdelkrim Aries <ab_aries@esi.dz> (reviewer arabicstemmer)
 # Algorithms: Dr Martin Porter <martin@tartarus.org>
+#             Assem Chelli <assem.ch@gmail.com>  arabic stemming algorithm
+#             Benzahia Lakhdar <lakhdar.benzahia@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -20,12 +25,13 @@ There is also a demo function: `snowball.demo()`.
 """
 from __future__ import unicode_literals, print_function
 
-from six.moves import input
+
+import re
 
 from nltk import compat
 from nltk.corpus import stopwords
 from nltk.stem import porter
-from nltk.stem.util import suffix_replace
+from nltk.stem.util import suffix_replace, prefix_replace
 
 from nltk.stem.api import StemmerI
 
@@ -36,7 +42,7 @@ class SnowballStemmer(StemmerI):
     Snowball Stemmer
 
     The following languages are supported:
-    Danish, Dutch, English, Finnish, French, German,
+    Arabic, Danish, Dutch, English, Finnish, French, German,
     Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian,
     Spanish and Swedish.
 
@@ -55,7 +61,7 @@ class SnowballStemmer(StemmerI):
 
     >>> from nltk.stem import SnowballStemmer
     >>> print(" ".join(SnowballStemmer.languages)) # See which languages are supported
-    danish dutch english finnish french german hungarian
+    arabic danish dutch english finnish french german hungarian
     italian norwegian porter portuguese romanian russian
     spanish swedish
     >>> stemmer = SnowballStemmer("german") # Choose a language
@@ -81,7 +87,7 @@ class SnowballStemmer(StemmerI):
                            language, a ValueError is raised.
     """
 
-    languages = ("danish", "dutch", "english", "finnish", "french", "german",
+    languages = ("arabic", "danish", "dutch", "english", "finnish", "french", "german",
                  "hungarian", "italian", "norwegian", "porter", "portuguese",
                  "romanian", "russian", "spanish", "swedish")
 
@@ -287,6 +293,488 @@ class _StandardStemmer(_LanguageSpecificStemmer):
                 rv = word[3:]
 
         return rv
+
+class ArabicStemmer(_LanguageSpecificStemmer):
+    """
+        https://github.com/snowballstem/snowball/blob/master/algorithms/arabic/stem_Unicode.sbl (Original Algorithm)
+        The Snowball Arabic light Stemmer
+        Algorithm : Assem Chelli
+                    Abdelkrim Aries
+        Author : Benzahia Lakhdar
+    """
+    # Normalize_pre stes
+    __vocalization = re.compile(r'[\u064b-\u064c-\u064d-\u064e-\u064f-\u0650-\u0651-\u0652]')
+
+    __kasheeda = re.compile(r'[\u0640]')
+
+    __arabic_punctuation_marks = re.compile(r'[\u060C-\u061B-\u061F]')
+
+    # Normalize_post stes
+    __last_hamzat = ('\u0623', '\u0625', '\u0622', '\u0624', '\u0626')
+
+    # normalize other hamza's
+    __initial_hamzat = re.compile(r'^[\u0622\u0623\u0625]')
+
+    __waw_hamza = re.compile(r'[\u0624]')
+
+    __yeh_hamza = re.compile(r'[\u0626]')
+
+    __alefat = re.compile(r'[\u0623\u0622\u0625]')
+
+    # Checks
+    __checks1 = ('\u0643\u0627\u0644', '\u0628\u0627\u0644', '\u0627\u0644', '\u0644\u0644')
+
+    __checks2 = ('\u0629', '\u0627\u062a')
+
+    # Suffixes
+    __suffix_noun_step1a = ('\u064a', '\u0643', '\u0647',
+                            '\u0646\u0627', '\u0643\u0645', '\u0647\u0627', '\u0647\u0646', '\u0647\u0645',
+                            '\u0643\u0645\u0627', '\u0647\u0645\u0627'
+                            )
+
+    __suffix_noun_step1b = ('\u0646')
+
+    __suffix_noun_step2a = ('\u0627', '\u064a', '\u0648')
+
+    __suffix_noun_step2b = ('\u0627\u062a')
+
+    __suffix_noun_step2c1 = ('\u062a')
+
+    __suffix_noun_step2c2 = ('\u0629')
+
+    __suffix_noun_step3 = ('\u064a')
+
+    __suffix_verb_step1 = ('\u0647', '\u0643',
+                           '\u0646\u064a', '\u0646\u0627', '\u0647\u0627', '\u0647\u0645', '\u0647\u0646', '\u0643\u0645', '\u0643\u0646',
+                           '\u0647\u0645\u0627', '\u0643\u0645\u0627', '\u0643\u0645\u0648'
+                          )
+
+    __suffix_verb_step2a = ( '\u062a', '\u0627', '\u0646' , '\u064a',
+                             '\u0646\u0627', '\u062a\u0627', '\u062a\u0646', '\u0627\u0646', '\u0648\u0646', '\u064a\u0646',
+                             '\u062a\u0645\u0627'
+                           )
+
+    __suffix_verb_step2b = ('\u0648\u0627','\u062a\u0645')
+
+    __suffix_verb_step2c = ('\u0648',
+                            '\u062a\u0645\u0648'
+                           )
+
+    __suffix_all_alef_maqsura = ('\u0649')
+
+    # Prefixes
+    __prefix_step1 = ('\u0623',
+                      '\u0623\u0623', '\u0623\u0622', '\u0623\u0624', '\u0623\u0627', '\u0623\u0625',
+                      )
+
+    __prefix_step2a = ('\u0641\u0627\u0644', '\u0648\u0627\u0644')
+
+    __prefix_step2b = ('\u0641', '\u0648')
+
+    __prefix_step3a_noun = ('\u0627\u0644', '\u0644\u0644',
+                            '\u0643\u0627\u0644', '\u0628\u0627\u0644',
+                            )
+
+    __prefix_step3b_noun = ('\u0628', '\u0643', '\u0644',
+                            '\u0628\u0628', '\u0643\u0643'
+                           )
+
+    __prefix_step3_verb = ('\u0633\u064a', '\u0633\u062a', '\u0633\u0646', '\u0633\u0623')
+
+    __prefix_step4_verb = ('\u064a\u0633\u062a', '\u0646\u0633\u062a', '\u062a\u0633\u062a')
+
+    is_verb = True
+    is_noun = True
+    is_defined = False
+
+    suffixes_verb_step1_success = False
+    suffix_verb_step2a_success = False
+    suffix_verb_step2b_success = False
+    suffix_noun_step2c2_success = False
+    suffix_noun_step1a_success = False
+    suffix_noun_step2a_success = False
+    suffix_noun_step2b_success = False
+    suffixe_noun_step1b_success = False
+    prefix_step2a_success = False
+    prefix_step3a_noun_success = False
+    prefix_step3b_noun_success = False
+
+    def __normalize_pre(self, token):
+        """
+
+        :param token: string
+        :return: normalized token type string
+        """
+        # strip diacritics
+        token = self.__vocalization.sub('', token)
+        #strip kasheeda
+        token = self.__kasheeda.sub('', token)
+        # strip punctuation marks
+        token = self.__arabic_punctuation_marks.sub('', token)
+
+        return token
+
+    def __normalize_post(self, token):
+
+        # normalize last hamza
+        for hamza in self.__last_hamzat:
+            if token.endswith(hamza):
+                token = suffix_replace(token, hamza, '\u0621')
+                break
+        # normalize other hamzat
+        token = self.__initial_hamzat.sub('\u0627', token)
+        token = self.__waw_hamza.sub('\u0648', token)
+        token = self.__yeh_hamza.sub('\u064a', token)
+        token = self.__alefat.sub('\u0627', token)
+        return  token
+
+    def __checks_1(self, token):
+
+        for prefix in self.__checks1 :
+            if token.startswith(prefix):
+                if prefix in ('\u0643\u0627\u0644','\u0628\u0627\u0644') and len(token) > 4 :
+                    self.is_noun = True
+                    self.is_verb = False
+                    self.is_defined = True
+                    break
+                if prefix in ('\u0627\u0644','\u0644\u0644') and len(token) > 3 :
+                    self.is_noun = True
+                    self.is_verb = False
+                    self.is_defined = True
+                    break
+
+    def __checks_2(self, token):
+
+        for suffix in self.__checks2:
+            if token.endswith(suffix):
+                if suffix == '\u0629' and len(token) > 2:
+                    self.is_noun = True
+                    self.is_verb = False
+                    break
+                if suffix == '\u0627\u062a' and len(token) > 3:
+                    self.is_noun = True
+                    self.is_verb = False
+                    break
+
+    def __Suffix_Verb_Step1(self, token):
+
+        for suffix in self.__suffix_verb_step1:
+            if token.endswith(suffix):
+                if suffix in ('\u0647', '\u0643') and len(token) >= 4:
+                    token = token[:-1]
+                    self.suffixes_verb_step1_success = True
+                    break
+
+                if suffix in (
+                '\u0646\u064a', '\u0646\u0627', '\u0647\u0627', '\u0647\u0645', '\u0647\u0646', '\u0643\u0645',
+                '\u0643\u0646') and len(token) >= 5:
+                    token = token[:-2]
+                    self.suffixes_verb_step1_success = True
+                    break
+
+                if suffix in ('\u0647\u0645\u0627', '\u0643\u0645\u0627', '\u0643\u0645\u0648') and len(token) >= 6:
+                    token = token[:-3]
+                    self.suffixes_verb_step1_success = True
+                    break
+
+        return token
+
+    def __Suffix_Verb_Step2a(self, token):
+
+        for suffix in self.__suffix_verb_step2a:
+            if token.endswith(suffix):
+                if suffix == '\u062a' and len(token) >= 4:
+                    token = token[:-1]
+                    self.suffix_verb_step2a_success = True
+                    break
+                if suffix in ('\u0627', '\u0646', '\u064a',) and len(token) >= 4:
+                    token = token[:-1]
+                    self.suffix_verb_step2a_success = True
+                    break
+                if suffix in ('\u0646\u0627', '\u062a\u0627', '\u062a\u0646') and len(token) >= 5:
+                    token = token[:-2]  # past
+                    self.suffix_verb_step2a_success = True
+                    break
+                if suffix in ('\u0627\u0646', '\u0648\u0646', '\u064a\u0646') and len(token) > 5:
+                    token = token[:-2]  # present
+                    self.suffix_verb_step2a_success = True
+                    break
+                if suffix == '\u062a\u0645\u0627' and len(token) >= 6:
+                    token = token[:-3]
+                    self.suffix_verb_step2a_success = True
+                    break
+        return  token
+
+    def __Suffix_Verb_Step2c(self, token):
+
+        for suffix in self.__suffix_verb_step2c:
+            if token.endswith(suffix):
+                if suffix == '\u062a\u0645\u0648' and len(token) >= 6:
+                    token = token[:-3]
+                    break
+                if suffix == '\u0648' and len(token) >= 4:
+                    token = token[:-1]
+                    break
+
+        return token
+
+    def __Suffix_Verb_Step2b(self, token):
+
+        for suffix in self.__suffix_verb_step2b:
+            if token.endswith(suffix) and len(token) >= 5:
+                token = token[:-2]
+                self.suffix_verb_step2b_success = True
+                break
+        return  token
+
+    def __Suffix_Noun_Step2c2(self, token):
+        for suffix in self.__suffix_noun_step2c2:
+            if token.endswith(suffix) and len(token) >= 3:
+                token = token[:-1]
+                self.suffix_noun_step2c2_success = True
+                break
+        return token
+
+    def __Suffix_Noun_Step1a(self, token):
+
+        for suffix in self.__suffix_noun_step1a:
+            if token.endswith(suffix):
+                if suffix in ('\u064a', '\u0643', '\u0647') and len(token) >= 4:
+                    token = token[:-1]
+                    self.suffix_noun_step1a_success = True
+                    break
+                if suffix in ('\u0646\u0627', '\u0643\u0645', '\u0647\u0627', '\u0647\u0646', '\u0647\u0645') and len(token) >= 5:
+                    token = token[:-2]
+                    self.suffix_noun_step1a_success = True
+                    break
+                if suffix in ('\u0643\u0645\u0627', '\u0647\u0645\u0627') and len(token) >= 6:
+                    token = token[:-3]
+                    self.suffix_noun_step1a_success = True
+                    break
+        return token
+
+    def __Suffix_Noun_Step2a(self, token):
+
+        for suffix in self.__suffix_noun_step2a:
+            if token.endswith(suffix) and len(token) > 4:
+                token = token[:-1]
+                self.suffix_noun_step2a_success = True
+                break
+        return token
+
+    def __Suffix_Noun_Step2b(self, token):
+
+        for suffix in self.__suffix_noun_step2b:
+            if token.endswith(suffix) and len(token) >= 5:
+                token = token[:-2]
+                self.suffix_noun_step2b_success = True
+                break
+        return  token
+    def __Suffix_Noun_Step2c1(self, token):
+
+        for suffix in self.__suffix_noun_step2c1:
+            if token.endswith(suffix) and len(token) >= 4:
+                token = token[:-1]
+                break
+        return token
+    def __Suffix_Noun_Step1b(self, token):
+
+        for suffix in self.__suffix_noun_step1b:
+            if token.endswith(suffix) and len(token) > 5:
+                token = token[:-1]
+                self.suffixe_noun_step1b_success = True
+                break
+        return token
+    def __Suffix_Noun_Step3(self, token):
+
+        for suffix in self.__suffix_noun_step3:
+            if token.endswith(suffix) and len(token) >= 3:
+                token = token[:-1]  # ya' nisbiya
+                break
+        return token
+    def __Suffix_All_alef_maqsura(self, token):
+
+        for suffix in self.__suffix_all_alef_maqsura:
+            if token.endswith(suffix):
+                token = suffix_replace(token, suffix, '\u064a')
+        return  token
+
+    def __Prefix_Step1(self, token):
+
+        for prefix in self.__prefix_step1:
+            if token.startswith(prefix) and len(token) > 3:
+                if prefix == '\u0623\u0623':
+                    token = prefix_replace(token, prefix, '\u0623')
+                    break
+                elif prefix == '\u0623\u0622':
+                    token = prefix_replace(token, prefix, '\u0622')
+                    break
+                elif prefix == '\u0623\u0624':
+                    token = prefix_replace(token, prefix, '\u0624')
+                    break
+                elif prefix == '\u0623\u0627' :
+                    token = prefix_replace(token, prefix, '\u0627')
+                    break
+                elif prefix == '\u0623\u0625' :
+                    token = prefix_replace(token, prefix, '\u0625')
+                    break
+        return token
+
+    def __Prefix_Step2a(self, token):
+
+        for prefix in self.__prefix_step2a:
+            if token.startswith(prefix) and len(token) > 5:
+                token = token[len(prefix):]
+                self.prefix_step2a_success = True
+                break
+        return  token
+
+    def __Prefix_Step2b(self, token):
+
+        for prefix in self.__prefix_step2b:
+            if token.startswith(prefix) and len(token) > 3 :
+                if token[:2] not in ('\u0648\u0627','\u0641\u0627'):
+                    token = token[len(prefix):]
+                    break
+        return token
+
+    def __Prefix_Step3a_Noun(self, token):
+
+        for prefix in self.__prefix_step3a_noun:
+            if token.startswith(prefix):
+                if prefix in ('\u0627\u0644','\u0644\u0644') and len(token) > 4:
+                    token =  token[len(prefix):]
+                    self.prefix_step3a_noun_success = True
+                    break
+                if prefix in ( '\u0643\u0627\u0644', '\u0628\u0627\u0644') and len(token) > 5:
+                    token = token[len(prefix):]
+                    break
+        return token
+
+    def __Prefix_Step3b_Noun(self, token):
+
+        for prefix in self.__prefix_step3b_noun:
+            if token.startswith(prefix):
+                if prefix in ('\u0628', '\u0628\u0628', '\u0643\u0643') and len(token) > 3:
+                    if prefix == '\u0628':
+                        token = token[len(prefix):]
+                        self.prefix_step3b_noun_success = True
+                        break
+                    if prefix in ('\u0628\u0628', '\u0643\u0643'):
+                        token = prefix_replace(token, prefix, prefix[1])
+                        self.prefix_step3b_noun_success = True
+                        break
+                if prefix in ('\u0643', '\u0644') and len(token) > 4:
+                    token = token[len(prefix):]  # BUG: cause confusion
+                    self.prefix_step3b_noun_success = True
+                    break
+        return token
+
+    def __Prefix_Step3_Verb(self, token):
+
+        for prefix in self.__prefix_step3_verb:
+            if token.startswith(prefix) and len(token) > 4:
+                token = prefix_replace(token, prefix, prefix[1])
+                break
+        return token
+
+    def __Prefix_Step4_Verb(self, token):
+
+        for prefix in self.__prefix_step4_verb:
+            if token.startswith(prefix) and len(token) > 4:
+                token = prefix_replace(token, prefix, '\u0627\u0633\u062a')
+                self.is_verb = True
+                self.is_noun = False
+                break
+        return token
+    def stem(self, word):
+        """
+         Stem an Arabic word and return the stemmed form.
+        :param word: string
+        :return: string
+        """
+        # set initial values
+        self.is_verb = True
+        self.is_noun = True
+        self.is_defined = False
+
+        self.suffix_verb_step2a_success = False
+        self.suffix_verb_step2b_success = False
+        self.suffix_noun_step2c2_success = False
+        self.suffix_noun_step1a_success = False
+        self.suffix_noun_step2a_success = False
+        self.suffix_noun_step2b_success = False
+        self.suffixe_noun_step1b_success = False
+        self.prefix_step2a_success = False
+        self.prefix_step3a_noun_success = False
+        self.prefix_step3b_noun_success = False
+
+        modified_word = word
+        # guess type and properties
+        # checks1
+        self.__checks_1(modified_word)
+        # checks2
+        self.__checks_2(modified_word)
+        modified_word = self.__normalize_pre(modified_word)
+        if self.is_verb:
+            modified_word = self.__Suffix_Verb_Step1(modified_word)
+            if  self.suffixes_verb_step1_success:
+                modified_word = self.__Suffix_Verb_Step2a(modified_word)
+                if not self.suffix_verb_step2a_success :
+                    modified_word = self.__Suffix_Verb_Step2c(modified_word)
+                #or next
+            else:
+                modified_word = self.__Suffix_Verb_Step2b(modified_word)
+                if not self.suffix_verb_step2b_success:
+                    modified_word = self.__Suffix_Verb_Step2a(modified_word)
+        if self.is_noun:
+            modified_word = self.__Suffix_Noun_Step2c2(modified_word)
+            if not self.suffix_noun_step2c2_success:
+                if not self.is_defined:
+                    modified_word = self.__Suffix_Noun_Step1a(modified_word)
+                    #if self.suffix_noun_step1a_success:
+                    modified_word = self.__Suffix_Noun_Step2a(modified_word)
+                    if not self.suffix_noun_step2a_success:
+                         modified_word = self.__Suffix_Noun_Step2b(modified_word)
+                    if not self.suffix_noun_step2b_success and not self.suffix_noun_step2a_success:
+                        modified_word = self.__Suffix_Noun_Step2c1(modified_word)
+                    # or next ? todo : how to deal with or next
+                else:
+                    modified_word =  self.__Suffix_Noun_Step1b(modified_word)
+                    if self.suffixe_noun_step1b_success:
+                        modified_word = self.__Suffix_Noun_Step2a(modified_word)
+                        if not self.suffix_noun_step2a_success:
+                            modified_word = self.__Suffix_Noun_Step2b(modified_word)
+                        if not self.suffix_noun_step2b_success and not self.suffix_noun_step2a_success:
+                            modified_word = self.__Suffix_Noun_Step2c1(modified_word)
+                    else:
+                        if not self.is_defined:
+                            modified_word = self.__Suffix_Noun_Step2a(modified_word)
+                        modified_word = self.__Suffix_Noun_Step2b(modified_word)
+            modified_word = self.__Suffix_Noun_Step3(modified_word)
+
+        if not self.is_noun and self.is_verb:
+            modified_word = self.__Suffix_All_alef_maqsura(modified_word)
+
+        # prefixes
+        modified_word = self.__Prefix_Step1(modified_word)
+
+        modified_word = self.__Prefix_Step2a(modified_word)
+        if not self.prefix_step2a_success:
+            modified_word = self.__Prefix_Step2b(modified_word)
+
+        modified_word = self.__Prefix_Step3a_Noun(modified_word)
+        if not self.prefix_step3a_noun_success and self.is_noun:
+            modified_word = self.__Prefix_Step3b_Noun(modified_word)
+        else:
+            if not self.prefix_step3b_noun_success and self.is_verb:
+                modified_word = self.__Prefix_Step3_Verb(modified_word)
+                modified_word = self.__Prefix_Step4_Verb(modified_word)
+
+        # post normalization stemming
+        modified_word = self.__normalize_post(modified_word)
+        stemmed_word = modified_word
+        return stemmed_word
 
 class DanishStemmer(_ScandinavianStemmer):
 
@@ -3643,7 +4131,6 @@ class SwedishStemmer(_ScandinavianStemmer):
 
         return word
 
-
 def demo():
     """
     This function provides a demonstration of the Snowball stemmers.
@@ -3658,7 +4145,8 @@ def demo():
     import re
     from nltk.corpus import udhr
 
-    udhr_corpus = {"danish":     "Danish_Dansk-Latin1",
+    udhr_corpus = {"arabic":     "Arabic_Alarabia-Arabic",
+                   "danish":     "Danish_Dansk-Latin1",
                    "dutch":      "Dutch_Nederlands-Latin1",
                    "english":    "English-Latin1",
                    "finnish":    "Finnish_Suomi-Latin1",
