@@ -643,8 +643,9 @@ def find(resource_name, paths=None):
 
     # Identify the package (i.e. the .zip file) to download.
     resource_zipname = resource_name.split('/')[1]
+    if resource_zipname.endswith('.zip'):
+        resource_zipname = resource_zipname.rpartition('.')[0]
     # Display a friendly error message if the resource wasn't found:
-
     msg = str("Resource \33[93m{resource}\033[0m not found.\n"
               "Please use the NLTK Downloader to obtain the resource:\n\n"
               "\33[31m" # To display red text in terminal.
