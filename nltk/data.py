@@ -641,15 +641,21 @@ def find(resource_name, paths=None):
             except LookupError:
                 pass
 
+    # Identify the package (i.e. the .zip file) to download.
+    resource_zipname = resource_name.split('/')[1]
     # Display a friendly error message if the resource wasn't found:
-    msg = textwrap.fill(
-        'Resource %r not found.  Please use the NLTK Downloader to '
-        'obtain the resource:  >>> nltk.download()' %
-        (resource_name,), initial_indent='  ', subsequent_indent='  ',
-        width=66)
+
+    msg = str("Resource \33[93m{resource}\033[0m not found.\n"
+              "Please use the NLTK Downloader to obtain the resource:\n\n"
+              "\33[31m" # To display red text in terminal.
+              ">>> import nltk\n"
+              ">>> nltk.download(\'{resource}\')\n"
+              "\033[0m").format(resource=resource_zipname)
+    msg = textwrap.indent(msg, '  ')
+
     msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in paths)
     sep = '*' * 70
-    resource_not_found = '\n%s\n%s\n%s' % (sep, msg, sep)
+    resource_not_found = '\n%s\n%s\n%s\n' % (sep, msg, sep)
     raise LookupError(resource_not_found)
 
 
