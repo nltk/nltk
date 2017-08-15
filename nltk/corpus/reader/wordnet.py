@@ -905,7 +905,7 @@ class Synset(_WordNetObject):
         if len(subsumers) == 0:
             return None
 
-        subsumer = subsumers[0]
+        subsumer = self if self in subsumers else subsumers[0]
 
         # Get the longest path from the LCS to the root,
         # including a correction:
