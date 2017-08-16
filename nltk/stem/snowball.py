@@ -304,85 +304,126 @@ class ArabicStemmer(_LanguageSpecificStemmer):
         Nltk Version Author : Lakhdar Benzahia
     """
     # Normalize_pre stes
-    __vocalization = re.compile(r'[\u064b-\u064c-\u064d-\u064e-\u064f-\u0650-\u0651-\u0652]')
+    __vocalization = re.compile(r'[\u064b-\u064c-\u064d-\u064e-\u064f-\u0650-\u0651-\u0652]') # ً، ٌ، ٍ، َ، ُ، ِ، ّ، ْ
 
-    __kasheeda = re.compile(r'[\u0640]')
+    __kasheeda = re.compile(r'[\u0640]') # ـ tatweel/kasheeda
 
-    __arabic_punctuation_marks = re.compile(r'[\u060C-\u061B-\u061F]')
+    __arabic_punctuation_marks = re.compile(r'[\u060C-\u061B-\u061F]') #  ؛ ، ؟
 
-    # Normalize_post stes
-    __last_hamzat = ('\u0623', '\u0625', '\u0622', '\u0624', '\u0626')
+    # Normalize_post
+    __last_hamzat = ('\u0623', '\u0625', '\u0622', '\u0624', '\u0626') # أ، إ، آ، ؤ، ئ
 
     # normalize other hamza's
-    __initial_hamzat = re.compile(r'^[\u0622\u0623\u0625]')
+    __initial_hamzat = re.compile(r'^[\u0622\u0623\u0625]') #  أ، إ، آ
 
-    __waw_hamza = re.compile(r'[\u0624]')
+    __waw_hamza = re.compile(r'[\u0624]') # ؤ
 
-    __yeh_hamza = re.compile(r'[\u0626]')
+    __yeh_hamza = re.compile(r'[\u0626]') # ئ
 
-    __alefat = re.compile(r'[\u0623\u0622\u0625]')
+    __alefat = re.compile(r'[\u0623\u0622\u0625]') #  أ، إ، آ
 
     # Checks
-    __checks1 = ('\u0643\u0627\u0644', '\u0628\u0627\u0644', '\u0627\u0644', '\u0644\u0644')
+    __checks1 = ('\u0643\u0627\u0644', '\u0628\u0627\u0644',  # بال، كال
+                 '\u0627\u0644', '\u0644\u0644' # لل، ال
+                 )
 
-    __checks2 = ('\u0629', '\u0627\u062a')
+    __checks2 = ('\u0629', # ة
+                 '\u0627\u062a'  #  female plural ات
+                 )
 
     # Suffixes
-    __suffix_noun_step1a = ('\u064a', '\u0643', '\u0647',
-                            '\u0646\u0627', '\u0643\u0645', '\u0647\u0627', '\u0647\u0646', '\u0647\u0645',
-                            '\u0643\u0645\u0627', '\u0647\u0645\u0627'
+    __suffix_noun_step1a = ('\u064a', '\u0643', '\u0647', # ي، ك، ه
+                            '\u0646\u0627', '\u0643\u0645', '\u0647\u0627', '\u0647\u0646', '\u0647\u0645', # نا، كم، ها، هن، هم
+                            '\u0643\u0645\u0627', '\u0647\u0645\u0627' # كما، هما
                             )
 
-    __suffix_noun_step1b = ('\u0646')
+    __suffix_noun_step1b = ('\u0646') # ن
 
-    __suffix_noun_step2a = ('\u0627', '\u064a', '\u0648')
+    __suffix_noun_step2a = ('\u0627', '\u064a', '\u0648') # ا، ي، و
 
-    __suffix_noun_step2b = ('\u0627\u062a')
+    __suffix_noun_step2b = ('\u0627\u062a') # ات
 
-    __suffix_noun_step2c1 = ('\u062a')
+    __suffix_noun_step2c1 = ('\u062a') # ت
 
-    __suffix_noun_step2c2 = ('\u0629')
+    __suffix_noun_step2c2 = ('\u0629') # ة
 
-    __suffix_noun_step3 = ('\u064a')
+    __suffix_noun_step3 = ('\u064a') # ي
 
-    __suffix_verb_step1 = ('\u0647', '\u0643',
-                           '\u0646\u064a', '\u0646\u0627', '\u0647\u0627', '\u0647\u0645', '\u0647\u0646', '\u0643\u0645', '\u0643\u0646',
-                           '\u0647\u0645\u0627', '\u0643\u0645\u0627', '\u0643\u0645\u0648'
+    __suffix_verb_step1 = ('\u0647', '\u0643', # ه، ك
+                           '\u0646\u064a', '\u0646\u0627', '\u0647\u0627', '\u0647\u0645', # ني، نا، ها، هم
+                           '\u0647\u0646', '\u0643\u0645', '\u0643\u0646', # هن، كم، كن
+                           '\u0647\u0645\u0627', '\u0643\u0645\u0627', '\u0643\u0645\u0648' # هما، كما، كمو
                           )
 
-    __suffix_verb_step2a = ( '\u062a', '\u0627', '\u0646' , '\u064a',
-                             '\u0646\u0627', '\u062a\u0627', '\u062a\u0646', '\u0627\u0646', '\u0648\u0646', '\u064a\u0646',
-                             '\u062a\u0645\u0627'
+    __suffix_verb_step2a = ( '\u062a', '\u0627', '\u0646' , '\u064a', # ت، ا، ن، ي
+                             '\u0646\u0627', '\u062a\u0627', '\u062a\u0646', # نا، تا، تن Past
+                             '\u0627\u0646', '\u0648\u0646', '\u064a\u0646', # ان، هن، ين Present
+                             '\u062a\u0645\u0627' # تما
                            )
 
-    __suffix_verb_step2b = ('\u0648\u0627','\u062a\u0645')
+    __suffix_verb_step2b = ('\u0648\u0627','\u062a\u0645') # وا، تم
 
-    __suffix_verb_step2c = ('\u0648',
-                            '\u062a\u0645\u0648'
+    __suffix_verb_step2c = ('\u0648', # و
+                            '\u062a\u0645\u0648' # تمو
                            )
 
-    __suffix_all_alef_maqsura = ('\u0649')
+    __suffix_all_alef_maqsura = ('\u0649') # ى
 
     # Prefixes
-    __prefix_step1 = ('\u0623',
-                      '\u0623\u0623', '\u0623\u0622', '\u0623\u0624', '\u0623\u0627', '\u0623\u0625',
+    __prefix_step1 = ('\u0623', # أ
+                      '\u0623\u0623', '\u0623\u0622', '\u0623\u0624', '\u0623\u0627', '\u0623\u0625', # أأ، أآ، أؤ، أا، أإ
                       )
 
-    __prefix_step2a = ('\u0641\u0627\u0644', '\u0648\u0627\u0644')
+    __prefix_step2a = ('\u0641\u0627\u0644', '\u0648\u0627\u0644') # فال، وال
 
-    __prefix_step2b = ('\u0641', '\u0648')
+    __prefix_step2b = ('\u0641', '\u0648') # ف، و
 
-    __prefix_step3a_noun = ('\u0627\u0644', '\u0644\u0644',
-                            '\u0643\u0627\u0644', '\u0628\u0627\u0644',
+    __prefix_step3a_noun = ('\u0627\u0644', '\u0644\u0644', # لل، ال
+                            '\u0643\u0627\u0644', '\u0628\u0627\u0644', # بال، كال
                             )
 
-    __prefix_step3b_noun = ('\u0628', '\u0643', '\u0644',
-                            '\u0628\u0628', '\u0643\u0643'
+    __prefix_step3b_noun = ('\u0628', '\u0643', '\u0644', # ب، ك، ل
+                            '\u0628\u0628', '\u0643\u0643' # بب، كك
                            )
 
-    __prefix_step3_verb = ('\u0633\u064a', '\u0633\u062a', '\u0633\u0646', '\u0633\u0623')
+    __prefix_step3_verb = ('\u0633\u064a', '\u0633\u062a', '\u0633\u0646', '\u0633\u0623') # سي، ست، سن، سأ
 
-    __prefix_step4_verb = ('\u064a\u0633\u062a', '\u0646\u0633\u062a', '\u062a\u0633\u062a')
+    __prefix_step4_verb = ('\u064a\u0633\u062a', '\u0646\u0633\u062a', '\u062a\u0633\u062a') # يست، نست، تست
+
+    # Suffixes added due to Conjugation Verbs
+    __conjugation_suffix_verb_1 = ('\u0647', '\u0643') # ه، ك
+
+    __conjugation_suffix_verb_2 = ('\u0646\u064a', '\u0646\u0627','\u0647\u0627', # ني، نا، ها
+                                   '\u0647\u0645', '\u0647\u0646', '\u0643\u0645', # هم، هن، كم
+                                   '\u0643\u0646' # كن
+                                   )
+    __conjugation_suffix_verb_3 = ('\u0647\u0645\u0627', '\u0643\u0645\u0627', '\u0643\u0645\u0648') # هما، كما، كمو
+
+    __conjugation_suffix_verb_4 = ('\u0627', '\u0646', '\u064a') # ا، ن، ي
+
+    __conjugation_suffix_verb_past = ('\u0646\u0627', '\u062a\u0627', '\u062a\u0646') # نا، تا، تن
+
+    __conjugation_suffix_verb_presnet = ('\u0627\u0646', '\u0648\u0646', '\u064a\u0646') # ان، ون، ين
+
+    # Suffixes added due to derivation Names
+    __conjugation_suffix_noun_1 = ('\u064a', '\u0643', '\u0647') # ي، ك، ه
+
+    __conjugation_suffix_noun_2 = ('\u0646\u0627', '\u0643\u0645', # نا، كم
+                                   '\u0647\u0627', '\u0647\u0646', '\u0647\u0645' # ها، هن، هم
+                                   )
+
+    __conjugation_suffix_noun_3 = ('\u0643\u0645\u0627', '\u0647\u0645\u0627') # كما، هما
+
+    # Prefixes added due to derivation Names
+    __prefixes1 = ('\u0648\u0627', '\u0641\u0627') # فا، وا
+
+    __articles_3len = ('\u0643\u0627\u0644', '\u0628\u0627\u0644')  # بال كال
+
+    __articles_2len = ('\u0627\u0644', '\u0644\u0644')  # ال لل
+
+    # Prepositions letters
+    __prepositions1 = ('\u0643', '\u0644') # ك، ل
+    __prepositions2 = ('\u0628\u0628', '\u0643\u0643') # بب، كك
 
     is_verb = True
     is_noun = True
@@ -429,13 +470,13 @@ class ArabicStemmer(_LanguageSpecificStemmer):
     def __checks_1(self, token):
         for prefix in self.__checks1 :
             if token.startswith(prefix):
-                if prefix in ('\u0643\u0627\u0644','\u0628\u0627\u0644') and len(token) > 4 :
+                if prefix in self.__articles_3len and len(token) > 4 :
                     self.is_noun = True
                     self.is_verb = False
                     self.is_defined = True
                     break
 
-                if prefix in ('\u0627\u0644','\u0644\u0644') and len(token) > 3 :
+                if prefix in self.__articles_2len and len(token) > 3 :
                     self.is_noun = True
                     self.is_verb = False
                     self.is_defined = True
@@ -457,19 +498,17 @@ class ArabicStemmer(_LanguageSpecificStemmer):
     def __Suffix_Verb_Step1(self, token):
         for suffix in self.__suffix_verb_step1:
             if token.endswith(suffix):
-                if suffix in ('\u0647', '\u0643') and len(token) >= 4:
+                if suffix in self.__conjugation_suffix_verb_1 and len(token) >= 4:
                     token = token[:-1]
                     self.suffixes_verb_step1_success = True
                     break
 
-                if suffix in (
-                '\u0646\u064a', '\u0646\u0627', '\u0647\u0627', '\u0647\u0645', '\u0647\u0646', '\u0643\u0645',
-                '\u0643\u0646') and len(token) >= 5:
+                if suffix in self.__conjugation_suffix_verb_2 and len(token) >= 5:
                     token = token[:-2]
                     self.suffixes_verb_step1_success = True
                     break
 
-                if suffix in ('\u0647\u0645\u0627', '\u0643\u0645\u0627', '\u0643\u0645\u0648') and len(token) >= 6:
+                if suffix in self.__conjugation_suffix_verb_3 and len(token) >= 6:
                     token = token[:-3]
                     self.suffixes_verb_step1_success = True
                     break
@@ -483,17 +522,17 @@ class ArabicStemmer(_LanguageSpecificStemmer):
                     self.suffix_verb_step2a_success = True
                     break
 
-                if suffix in ('\u0627', '\u0646', '\u064a',) and len(token) >= 4:
+                if suffix in self.__conjugation_suffix_verb_4 and len(token) >= 4:
                     token = token[:-1]
                     self.suffix_verb_step2a_success = True
                     break
 
-                if suffix in ('\u0646\u0627', '\u062a\u0627', '\u062a\u0646') and len(token) >= 5:
+                if suffix in self.__conjugation_suffix_verb_past and len(token) >= 5:
                     token = token[:-2]  # past
                     self.suffix_verb_step2a_success = True
                     break
 
-                if suffix in ('\u0627\u0646', '\u0648\u0646', '\u064a\u0646') and len(token) > 5:
+                if suffix in self.__conjugation_suffix_verb_present and len(token) > 5:
                     token = token[:-2]  # present
                     self.suffix_verb_step2a_success = True
                     break
@@ -535,17 +574,17 @@ class ArabicStemmer(_LanguageSpecificStemmer):
     def __Suffix_Noun_Step1a(self, token):
         for suffix in self.__suffix_noun_step1a:
             if token.endswith(suffix):
-                if suffix in ('\u064a', '\u0643', '\u0647') and len(token) >= 4:
+                if suffix in self.__conjugation_suffix_noun_1 and len(token) >= 4:
                     token = token[:-1]
                     self.suffix_noun_step1a_success = True
                     break
 
-                if suffix in ('\u0646\u0627', '\u0643\u0645', '\u0647\u0627', '\u0647\u0646', '\u0647\u0645') and len(token) >= 5:
+                if suffix in self.__conjugation_suffix_noun_2 and len(token) >= 5:
                     token = token[:-2]
                     self.suffix_noun_step1a_success = True
                     break
 
-                if suffix in ('\u0643\u0645\u0627', '\u0647\u0645\u0627') and len(token) >= 6:
+                if suffix in self.__conjugation_suffix_noun_3 and len(token) >= 6:
                     token = token[:-3]
                     self.suffix_noun_step1a_success = True
                     break
@@ -630,7 +669,7 @@ class ArabicStemmer(_LanguageSpecificStemmer):
     def __Prefix_Step2b(self, token):
         for prefix in self.__prefix_step2b:
             if token.startswith(prefix) and len(token) > 3 :
-                if token[:2] not in ('\u0648\u0627','\u0641\u0627'):
+                if token[:2] not in self.__prefixes1:
                     token = token[len(prefix):]
                     break
         return token
@@ -638,11 +677,11 @@ class ArabicStemmer(_LanguageSpecificStemmer):
     def __Prefix_Step3a_Noun(self, token):
         for prefix in self.__prefix_step3a_noun:
             if token.startswith(prefix):
-                if prefix in ('\u0627\u0644','\u0644\u0644') and len(token) > 4:
+                if prefix in self.__articles_2len and len(token) > 4:
                     token =  token[len(prefix):]
                     self.prefix_step3a_noun_success = True
                     break
-                if prefix in ( '\u0643\u0627\u0644', '\u0628\u0627\u0644') and len(token) > 5:
+                if prefix in self.__articles_3len  and len(token) > 5:
                     token = token[len(prefix):]
                     break
         return token
@@ -650,18 +689,18 @@ class ArabicStemmer(_LanguageSpecificStemmer):
     def __Prefix_Step3b_Noun(self, token):
         for prefix in self.__prefix_step3b_noun:
             if token.startswith(prefix):
-                if prefix in ('\u0628', '\u0628\u0628', '\u0643\u0643') and len(token) > 3:
+                if len(token) > 3:
                     if prefix == '\u0628':
                         token = token[len(prefix):]
                         self.prefix_step3b_noun_success = True
                         break
 
-                    if prefix in ('\u0628\u0628', '\u0643\u0643'):
+                    if prefix in self.__prepositions2:
                         token = prefix_replace(token, prefix, prefix[1])
                         self.prefix_step3b_noun_success = True
                         break
 
-                if prefix in ('\u0643', '\u0644') and len(token) > 4:
+                if prefix in self.__prepositions1 and len(token) > 4:
                     token = token[len(prefix):]  # BUG: cause confusion
                     self.prefix_step3b_noun_success = True
                     break
