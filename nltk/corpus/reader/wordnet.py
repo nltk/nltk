@@ -112,7 +112,7 @@ VERB_FRAME_STRINGS = (
     "It %s that CLAUSE",
     "Something %s INFINITIVE")
 
-SENSENUM_RE = re.compile(r'\.\d\d\.')
+SENSENUM_RE = re.compile(r'\.[\d]+\.')
 
 
 ######################################################################
@@ -1244,7 +1244,13 @@ class WordNetCorpusReader(CorpusReader):
         # cannot simply split on first '.',
         # e.g.: '.45_caliber.a.01..45_caliber'
         separator = SENSENUM_RE.search(name).start()
-        synset_name, lemma_name = name[:separator+3], name[separator+4:]
+
+        leadingZero = int(name[separator+1]) == 0
+        if (leadingZero):
+            synset_name, lemma_name = name[:separator+3], name[separator+4:]
+        else:
+            synset_name, lemma_name = name[:separator+2], name[separator+3:]
+        
         synset = self.synset(synset_name)
         for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
