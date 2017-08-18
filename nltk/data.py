@@ -105,7 +105,9 @@ else:
         str('/usr/share/nltk_data'),
         str('/usr/local/share/nltk_data'),
         str('/usr/lib/nltk_data'),
-        str('/usr/local/lib/nltk_data')
+        str('/usr/local/lib/nltk_data'),
+        os.path.join(sys.prefix, str('nltk_data')),
+        os.path.join(sys.prefix, str('lib'), str('nltk_data'))
     ]
 
 
