@@ -144,7 +144,7 @@ class ARLSTem(StemmerI):
         token = self.re_alifMaqsura.sub('\u064A', token)
         # strip the Waaw from the word beginning if the remaining is 3 letters
         # at least
-        if(token.startswith('\u0648') and len(token) > 3):
+        if token.startswith('\u0648') and len(token) > 3:
             token = token[1:]
         return token
 
@@ -152,24 +152,24 @@ class ARLSTem(StemmerI):
         """
             remove prefixes from the words' beginning.
         """
-        if(len(token) > 5):
+        if len(token) > 5:
             for p3 in self.pr3:
-                if(token.startswith(p3)):
+                if token.startswith(p3):
                     token = token[3:]
                     return token
-        if(len(token) > 6):
+        if len(token) > 6:
             for p4 in self.pr4:
-                if(token.startswith(p4)):
+                if token.startswith(p4):
                     token = token[4:]
                     return token
-        if(len(token) > 5):
+        if len(token) > 5:
             for p3 in self.pr32:
-                if(token.startswith(p3)):
+                if token.startswith(p3):
                     token = token[3:]
                     return token
-        if(len(token) > 4):
+        if len(token) > 4:
             for p2 in self.pr2:
-                if(token.startswith(p2)):
+                if token.startswith(p2):
                     token = token[2:]
                     return token
         return None
@@ -178,33 +178,33 @@ class ARLSTem(StemmerI):
         """
             remove suffixes from the word's end.
         """
-        if(token.endswith('\u0643') and len(token) > 3):
+        if token.endswith('\u0643') and len(token) > 3:
             token = token[:-1]
             return token
-        if(len(token) > 4):
+        if len(token) > 4:
             for s2 in self.su2:
-                if(token.endswith(s2)):
+                if token.endswith(s2):
                     token = token[:-2]
                     return token
-        if(len(token) > 5):
+        if len(token) > 5:
             for s3 in self.su3:
-                if(token.endswith(s3)):
+                if token.endswith(s3):
                     token = token[:-3]
                     return token
-        if(token.endswith('\u0647') and len(token) > 3):
+        if token.endswith('\u0647') and len(token) > 3:
             token = token[:-1]
             return token
-        if(len(token) > 4):
+        if len(token) > 4:
             for s2 in self.su22:
-                if(token.endswith(s2)):
+                if token.endswith(s2):
                     token = token[:-2]
                     return token
-        if(len(token) > 5):
+        if len(token) > 5:
             for s3 in self.su32:
-                if(token.endswith(s3)):
+                if token.endswith(s3):
                     token = token[:-3]
                     return token
-        if(token.endswith('\u0646\u0627') and len(token) > 4):
+        if token.endswith('\u0646\u0627') and len(token) > 4:
             token = token[:-2]
             return token
         return token
@@ -213,7 +213,7 @@ class ARLSTem(StemmerI):
         """
             transform the word from the feminine form to the masculine form.
         """
-        if(token.endswith('\u0629') and len(token) > 3):
+        if token.endswith('\u0629') and len(token) > 3:
             token = token[:-1]
             return token
 
@@ -221,46 +221,49 @@ class ARLSTem(StemmerI):
         """
             transform the word from the plural form to the singular form.
         """
-        if(len(token) > 4):
+        if len(token) > 4:
             for ps2 in self.pl_si2:
-                if(token.endswith(ps2)):
+                if token.endswith(ps2):
                     token = token[:-2]
                     return token
-        if(len(token) > 5):
+        if len(token) > 5:
             for ps3 in self.pl_si3:
-                if(token.endswith(ps3)):
+                if token.endswith(ps3):
                     token = token[:-3]
                     return token
-        if(len(token) > 3 and token.endswith('\u0627\u062A')):
+        if len(token) > 3 and token.endswith('\u0627\u062A'):
             token = token[:-2]
             return token
         if(len(token) > 3 and token.startswith('\u0627')
-           and token[2] == '\u0627'):
-            token = token[0:2] + token[3:]
+           and token[2] == '\u0627'
+           ):
+            token = token[:2] + token[3:]
             return token
         if(len(token) > 4 and token.startswith('\u0627')
-           and token[-2] == '\u0627'):
-            token = token[1:]
-            token = token[:-2] + token[-1]
+           and token[-2] == '\u0627'
+           ):
+            token = token[1:-2] + token[-1]
             return token
 
     def verb(self, token):
         """
             stem the verb prefixes and suffixes or both
         """
-        vb = self.verb_t1(token)
-        if vb is None:
-            vb = self.verb_t2(token)
+        try:
+            vb = self.verb_t1(token)
             if vb is None:
-                vb = self.verb_t3(token)
+                vb = self.verb_t2(token)
                 if vb is None:
-                    vb = self.verb_t4(token)
+                    vb = self.verb_t3(token)
                     if vb is None:
-                        vb = self.verb_t5(token)
-                        if vb is not None:
-                            token = vb
+                        vb = self.verb_t4(token)
+                        if vb is None:
+                            vb = self.verb_t5(token)
+                            if vb is not None:
+                                token = vb
                             return token
                         else:
+                            token = vb
                             return token
                     else:
                         token = vb
@@ -271,125 +274,111 @@ class ARLSTem(StemmerI):
             else:
                 token = vb
                 return token
-        else:
-            token = vb
-            return token
+        except ValueError:
+            raise("Could not stem the word, it may not be a verb !")
 
     def verb_t1(self, token):
         """
             stem the present prefixes and suffixes
         """
-        if(len(token) > 5 and token.startswith('\u062A')):  # Taa
+        if len(token) > 5 and token.startswith('\u062A'):  # Taa
             for s2 in self.pl_si2:
-                if(token.endswith(s2)):
-                    token = token[1:]
-                    token = token[:-2]
+                if token.endswith(s2):
+                    token = token[1:-2]
                     return token
-        if(len(token) > 5 and token.startswith('\u064A')):  # Yaa
+        if len(token) > 5 and token.startswith('\u064A'):  # Yaa
             for s2 in self.verb_su2:
-                if(token.endswith(s2)):
-                    token = token[1:]
-                    token = token[:-2]
+                if token.endswith(s2):
+                    token = token[1:-2]
                     return token
-        if(len(token) > 4 and token.startswith('\u0627')):  # Alif
+        if len(token) > 4 and token.startswith('\u0627'):  # Alif
             # Waaw Alif
-            if(len(token) > 5 and token.endswith('\u0648\u0627')):
-                token = token[1:]
-                token = token[:-2]
+            if len(token) > 5 and token.endswith('\u0648\u0627'):
+                token = token[1:-2]
                 return token
             # Yaa
-            if(token.endswith('\u064A')):
-                token = token[1:]
-                token = token[:-1]
+            if token.endswith('\u064A'):
+                token = token[1:-1]
                 return token
             # Alif
-            if(token.endswith('\u0627')):
-                token = token[1:]
-                token = token[:-1]
+            if token.endswith('\u0627'):
+                token = token[1:-1]
                 return token
             # Noon
-            if(token.endswith('\u0646')):
-                token = token[1:]
-                token = token[:-1]
+            if token.endswith('\u0646'):
+                token = token[1:-1]
                 return token
         # ^Yaa, Noon$
         if(len(token) > 4
            and token.startswith('\u064A')
            and token.endswith('\u0646')
            ):
-            token = token[1:]
-            token = token[:-1]
+            token = token[1:-1]
             return token
         # ^Taa, Noon$
         if(len(token) > 4
            and token.startswith('\u062A')
            and token.endswith('\u0646')
            ):
-            token = token[1:]
-            token = token[:-1]
+            token = token[1:-1]
             return token
 
     def verb_t2(self, token):
         """
             stem the future prefixes and suffixes
         """
-        if(len(token) > 6):
+        if len(token) > 6:
             for s2 in self.pl_si2:
                 # ^Siin Taa
                 if(token.startswith(self.verb_pr2[0])
                    and token.endswith(s2)
                    ):
-                    token = token[2:]
-                    token = token[:-2]
+                    token = token[2:-2]
                     return token
             # ^Siin Yaa, Alif Noon$
             if(token.startswith(self.verb_pr2[1])
                and token.endswith(self.pl_si2[0])
                ):
-                token = token[2:]
-                token = token[:-2]
+                token = token[2:-2]
                 return token
             # ^Siin Yaa, Waaw Noon$
             if(token.startswith(self.verb_pr2[1])
                and token.endswith(self.pl_si2[2])
                ):
-                token = token[2:]
-                token = token[:-2]
+                token = token[2:-2]
                 return token
         # ^Siin Taa, Noon$
         if(len(token) > 5
            and token.startswith(self.verb_pr2[0])
            and token.endswith('\u0646')
            ):
-                        token = token[2:]
-                        token = token[:-1]
+                        token = token[2:-1]
                         return token
         # ^Siin Yaa, Noon$
         if(len(token) > 5
            and token.startswith(self.verb_pr2[1])
            and token.endswith('\u0646')
            ):
-                        token = token[2:]
-                        token = token[:-1]
+                        token = token[2:-1]
                         return token
 
     def verb_t3(self, token):
         """
             stem the present suffixes
         """
-        if(len(token) > 5):
+        if len(token) > 5:
             for su3 in self.verb_suf3:
                 if(token.endswith(su3)):
                     token = token[:-3]
                     return token
-        if(len(token) > 4):
+        if len(token) > 4:
             for su2 in self.verb_suf2:
-                if(token.endswith(su2)):
+                if token.endswith(su2):
                     token = token[:-2]
                     return token
-        if(len(token) > 3):
+        if len(token) > 3:
             for su1 in self.verb_suf1:
-                if(token.endswith(su1)):
+                if token.endswith(su1):
                     token = token[:-1]
                     return token
 
@@ -397,12 +386,12 @@ class ARLSTem(StemmerI):
         """
             stem the present prefixes
         """
-        if(len(token) > 3):
+        if len(token) > 3:
             for pr1 in self.verb_suf1:
-                if(token.startswith(pr1)):
+                if token.startswith(pr1):
                     token = token[1:]
                     return token
-            if(token.startswith('\u064A')):
+            if token.startswith('\u064A'):
                 token = token[1:]
                 return token
 
@@ -410,12 +399,12 @@ class ARLSTem(StemmerI):
         """
             stem the future prefixes
         """
-        if(len(token) > 4):
+        if len(token) > 4:
             for pr2 in self.verb_pr22:
-                if(token.startswith(pr2)):
+                if token.startswith(pr2):
                     token = token[2:]
                     return token
             for pr2 in self.verb_pr2:
-                if(token.startswith(pr2)):
+                if token.startswith(pr2):
                     token = token[2:]
                     return token
