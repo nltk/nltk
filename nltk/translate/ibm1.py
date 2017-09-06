@@ -16,7 +16,9 @@
 Lexical translation model that ignores word order.
 
 In IBM Model 1, word order is ignored for simplicity. Thus, the
-following two alignments are equally likely.
+following three alignments are equally likely. As long as the word
+alignments are equivalent, it doesn't matter where the word
+occurs in the source or target sentence.
 
 Source: je mange du jambon
 Target: i eat some ham
@@ -24,7 +26,11 @@ Alignment: (1,1) (2,2) (3,3) (4,4)
 
 Source: je mange du jambon
 Target: some ham eat i
-Alignment: (1,4) (2,3) (3,2) (4,1)
+Alignment: (1,4) (2,3) (3,1) (4,2)
+
+Source: du jambon je mange
+Target: eat i some ham
+Alignment: (1,3) (2,4) (3,2) (4,1)
 
 The EM algorithm used in Model 1 is:
 E step - In the training data, count how many times a source language
