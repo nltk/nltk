@@ -521,7 +521,9 @@ class PunktBaseClass(object):
     """
 
     def __init__(self, lang_vars=PunktLanguageVars(), token_cls=PunktToken,
-            params=PunktParameters()):
+            params=None):
+        if params is None:
+            params = PunktParameters() 
         self._params = params
         self._lang_vars = lang_vars
         self._Token = token_cls

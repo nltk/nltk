@@ -163,7 +163,19 @@ class TreebankWordTokenizer(TokenizerI):
             True
 
         """
-        tokens = self.tokenize(text)
+        raw_tokens = self.tokenize(text)
+
+        # Convert converted quotes back to original double quotes
+        # Do this only if original text contains double quote(s)
+        if '"' in text:
+            # Find double quotes and converted quotes
+            matched = [m.group() for m in re.finditer(r'[(``)(\'\')(")]+', text)]
+            
+            # Replace converted quotes back to double quotes
+            tokens = [matched.pop(0) if tok in ['"', "``", "''"] else tok for tok in raw_tokens]
+        else:
+            tokens = raw_tokens
+
         return align_tokens(tokens, text)
 
 
@@ -202,6 +214,29 @@ class TreebankWordDetokenizer(TokenizerI):
     >>> expected_detoken = 'Good muffins cost $3.88 in New (York). Please (buy) me two of them. (Thanks).'
     >>> expected_detoken == d.detokenize(t.tokenize(s, convert_parentheses=True), convert_parentheses=True)
     True
+
+    During tokenization it's safe to add more spaces but during detokenization,
+    simply undoing the padding doesn't really help. 
+
+    - During tokenization, left and right pad is added to [!?], when
+      detokenizing, only left shift the [!?] is needed.
+      Thus (re.compile(r'\s([?!])'), r'\g<1>')
+
+    - During tokenization [:,] are left and right padded but when detokenizing,
+      only left shift is necessary and we keep right pad after comma/colon
+      if the string after is a non-digit.
+      Thus (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')
+
+    >>> from nltk.tokenize.treebank import TreebankWordDetokenizer
+    >>> toks = ['hello', ',', 'i', 'ca', "n't", 'feel', 'my', 'feet', '!', 'Help', '!', '!']
+    >>> twd = TreebankWordDetokenizer()
+    >>> twd.detokenize(toks)
+    "hello, i can't feel my feet! Help!!"
+
+    >>> toks = ['hello', ',', 'i', "can't", 'feel', ';', 'my', 'feet', '!',
+    ... 'Help', '!', '!', 'He', 'said', ':', 'Help', ',', 'help', '?', '!']
+    >>> twd.detokenize(toks)
+    "hello, i can't feel; my feet! Help!! He said: Help, help?!"
     """
     _contractions = MacIntyreContractions()
     CONTRACTIONS2 = [re.compile(pattern.replace('(?#X)', '\s'))
@@ -235,7 +270,8 @@ class TreebankWordDetokenizer(TokenizerI):
     #punctuation
     PUNCTUATION = [
         (re.compile(r"([^'])\s'\s"), r"\1' "),
-        (re.compile(r'\s([?!])\s'), r'\g<1>'),
+        (re.compile(r'\s([?!])'), r'\g<1>'), # Strip left pad for [?!]
+        #(re.compile(r'\s([?!])\s'), r'\g<1>'),
         (re.compile(r'([^\.])\s(\.)([\]\)}>"\']*)\s*$'), r'\1\2\3'),
         # When tokenizing, [;@#$%&] are padded with whitespace regardless of
         # whether there are spaces before or after them.
@@ -246,7 +282,8 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r'\s([&])\s'), r' \g<1> '), # Unknown pad.
         (re.compile(r'\s\.\.\.\s'), r'...'),
         (re.compile(r'\s([:,])\s$'), r'\1'),
-        (re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
+        (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2') # Keep right pad after comma/colon before non-digits.
+        #(re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
         ]
 
     #starting quotes

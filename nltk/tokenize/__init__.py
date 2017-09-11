@@ -74,13 +74,11 @@ from nltk.tokenize.repp     import ReppTokenizer
 from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
 from nltk.tokenize.simple   import (SpaceTokenizer, TabTokenizer, LineTokenizer,
                                     line_tokenize)
-from nltk.tokenize.stanford import StanfordTokenizer
 from nltk.tokenize.texttiling import TextTilingTokenizer
 from nltk.tokenize.toktok   import ToktokTokenizer
 from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.util     import string_span_tokenize, regexp_span_tokenize
 from nltk.tokenize.stanford_segmenter import StanfordSegmenter
-
 
 # Standard sentence tokenizer.
 def sent_tokenize(text, language='english'):

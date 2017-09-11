@@ -36,6 +36,19 @@ class MosesTokenizer(TokenizerI):
     >>> m = MosesTokenizer()
     >>> m.tokenize('abc def.')
     [u'abc', u'def', u'.']
+
+    The nonbreaking prefixes should deal the situation when numeric only prefix is the last token.
+    In below example, "pp" is the last element, and there is no digit after it.
+
+    >>> m = MosesTokenizer()
+    >>> m.tokenize('2016, pp.')
+    [u'2016', u',', u'pp', u'.']
+    
+    >>> sent = "This ain't funny. It's actually hillarious, yet double Ls. | [] < > [ ] & You're gonna shake it off? Don't?"
+    >>> m.tokenize(sent, escape=True)
+    ['This', 'ain', '&apos;t', 'funny', '.', 'It', '&apos;s', 'actually', 'hillarious', ',', 'yet', 'double', 'Ls', '.', '&#124;', '&#91;', '&#93;', '&lt;', '&gt;', '&#91;', '&#93;', '&amp;', 'You', '&apos;re', 'gonna', 'shake', 'it', 'off', '?', 'Don', '&apos;t', '?']
+    >>> m.tokenize(sent, escape=False)
+    ['This', 'ain', "'t", 'funny', '.', 'It', "'s", 'actually', 'hillarious', ',', 'yet', 'double', 'Ls', '.', '|', '[', ']', '<', '>', '[', ']', '&', 'You', "'re", 'gonna', 'shake', 'it', 'off', '?', 'Don', "'t", '?']
     """
 
     # Perl Unicode Properties character sets.
@@ -234,7 +247,7 @@ class MosesTokenizer(TokenizerI):
         super(MosesTokenizer, self).__init__()
         self.lang = lang
         # Initialize the language specific nonbreaking prefixes.
-        self.NONBREAKING_PREFIXES = nonbreaking_prefixes.words(lang)
+        self.NONBREAKING_PREFIXES = [_nbp.strip() for _nbp in nonbreaking_prefixes.words(lang)]
         self.NUMERIC_ONLY_PREFIXES = [w.rpartition(' ')[0] for w in
                                       self.NONBREAKING_PREFIXES if
                                       self.has_numeric_only(w)]
@@ -286,6 +299,7 @@ class MosesTokenizer(TokenizerI):
                 # Checks if the prefix is in NUMERIC_ONLY_PREFIXES
                 # and ensures that the next word is a digit.
                 elif (prefix in self.NUMERIC_ONLY_PREFIXES and
+                      (i + 1) < num_tokens and
                       re.search(r'^[0-9]+', tokens[i+1])):
                     pass # No change to the token.
                 else: # Otherwise, adds a space after the tokens before a dot.
@@ -315,7 +329,7 @@ class MosesTokenizer(TokenizerI):
             text = re.sub(regexp, substitution, text)
         return text if return_str else text.split()
 
-    def tokenize(self, text, agressive_dash_splits=False, return_str=False):
+    def tokenize(self, text, agressive_dash_splits=False, return_str=False, escape=True):
         """
         Python port of the Moses tokenizer.
 
@@ -374,8 +388,9 @@ class MosesTokenizer(TokenizerI):
         text = re.sub(regexp,substitution, text).strip()
         # Restore multidots.
         text = self.restore_multidots(text)
-        # Escape XML symbols.
-        text = self.escape_xml(text)
+        if escape:
+            # Escape XML symbols.
+            text = self.escape_xml(text)
 
         return text if return_str else text.split()
 
@@ -408,6 +423,11 @@ class MosesDetokenizer(TokenizerI):
     >>> detokens = d.detokenize(tokens)
     >>> " ".join(detokens) == expected_detokens
     True
+    
+    >>> d.detokenize(expected_tokens, unescape=True)
+    ['This', "ain't", 'funny.', "It's", 'actually', 'hillarious,', 'yet', 'double', 'Ls.', '|', '[]', '<', '>', '[]', '&', "You're", 'gonna', 'shake', 'it', 'off?', "Don't?"]
+    >>> d.detokenize(expected_tokens, unescape=False)
+    ['This', 'ain', '&apos;t', 'funny.', 'It', '&apos;s', 'actually', 'hillarious,', 'yet', 'double', 'Ls.', '&#124;', '&#91;', '&#93;', '&lt;', '&gt;', '&#91;', '&#93;', '&amp;', 'You', '&apos;re', 'gonna', 'shake', 'it', 'off?', 'Don', '&apos;t?']
     """
     # Currency Symbols.
     IsAlnum = text_type(''.join(perluniprops.chars('IsAlnum')))
@@ -474,7 +494,7 @@ class MosesDetokenizer(TokenizerI):
         return text
 
 
-    def tokenize(self, tokens, return_str=False):
+    def tokenize(self, tokens, return_str=False, unescape=True):
         """
         Python port of the Moses detokenizer.
 
@@ -489,8 +509,9 @@ class MosesDetokenizer(TokenizerI):
         # Detokenize the agressive hyphen split.
         regexp, substitution = self.AGGRESSIVE_HYPHEN_SPLIT
         text = re.sub(regexp, substitution, text)
-        # Unescape the XML symbols.
-        text = self.unescape_xml(text)
+        if unescape:
+            # Unescape the XML symbols.
+            text = self.unescape_xml(text)
         # Keep track of no. of quotation marks.
         quote_counts = {u"'":0 , u'"':0, u"``":0, u"`":0, u"''":0}
 
@@ -608,6 +629,6 @@ class MosesDetokenizer(TokenizerI):
 
         return detokenized_text if return_str else detokenized_text.split()
 
-    def detokenize(self, tokens, return_str=False):
+    def detokenize(self, tokens, return_str=False, unescape=True):
         """ Duck-typing the abstract *tokenize()*."""
-        return self.tokenize(tokens, return_str)
+        return self.tokenize(tokens, return_str, unescape)
