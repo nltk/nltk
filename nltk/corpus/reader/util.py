@@ -173,10 +173,9 @@ class StreamBackedCorpusView(AbstractLazySequence):
         # increase efficiency of random access.
         self._cache = (-1, -1, None)
 
-    fileid = property(lambda self: self._fileid, doc="""
-        The fileid of the file that is accessed by this view.
-
-        :type: str or PathPointer""")
+    #fileid = property(lambda self: self._fileid, doc="""
+    #    The fileid of the file that is accessed by this view.
+    #    :type: str or PathPointer""")
 
     def read_block(self, stream):
         """
@@ -195,14 +194,19 @@ class StreamBackedCorpusView(AbstractLazySequence):
         will be called performed if any value is read from the view
         while its file stream is closed.
         """
-        if isinstance(self._fileid, PathPointer):
-            self._stream = self._fileid.open(self._encoding)
-        elif self._encoding:
-            self._stream = io.open(self._fileid, 'rt', encoding=self._encoding)
-        else:
-            self._stream = open(self._fileid, 'rb')
 
-        # Find length of file
+        if isinstance(self._fileid, PathPointer):
+            stream = self._fileid.open(self._encoding)
+        else:
+            stream = FileSystemPathPointer(self._fileid).open(self._encoding)
+
+        data = stream.read()
+        if self._encoding is not None:
+            self._stream = io.StringIO(data)
+        else:
+            self._stream = io.BytesIO(data)
+
+        # Find end of file
         self._stream.seek(0, 2)
         self._eofpos = self._stream.tell()
         self._stream.seek(0)
@@ -600,10 +604,14 @@ def read_regexp_block(stream, start_re, end_re=None):
     whenever the next line matching ``start_re`` or EOF is found.
     """
     # Scan until we find a line matching the start regexp.
+    start_re = re.compile(start_re)
+    if end_re:
+        end_re = re.compile(end_re)
+
     while True:
         line = stream.readline()
         if not line: return [] # end of file.
-        if re.match(start_re, line): break
+        if start_re.match(line): break
 
     # Scan until we find another line matching the regexp, or EOF.
     lines = [line]
@@ -614,11 +622,11 @@ def read_regexp_block(stream, start_re, end_re=None):
         if not line:
             return [''.join(lines)]
         # End of token:
-        if end_re is not None and re.match(end_re, line):
+        if end_re is not None and end_re.match(line):
             return [''.join(lines)]
         # Start of new token: backup to just before it starts, and
         # return the token we've already collected.
-        if end_re is None and re.match(start_re, line):
+        if end_re is None and start_re.match(line):
             stream.seek(oldpos)
             return [''.join(lines)]
         # Anything else is part of the token.

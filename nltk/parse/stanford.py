@@ -14,7 +14,6 @@ import os
 import re
 import warnings
 from subprocess import PIPE
-from io import StringIO
 
 from six import text_type
 

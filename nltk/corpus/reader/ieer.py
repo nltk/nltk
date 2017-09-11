@@ -66,11 +66,6 @@ class IEERDocument(object):
 class IEERCorpusReader(CorpusReader):
     """
     """
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
     def docs(self, fileids=None):
         return concat([StreamBackedCorpusView(fileid, self._read_block,
                                               encoding=enc)

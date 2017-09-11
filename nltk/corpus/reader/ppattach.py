@@ -76,11 +76,6 @@ class PPAttachmentCorpusReader(CorpusReader):
                                               encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
     def _read_tuple_block(self, stream):
         line = stream.readline()
         if line:

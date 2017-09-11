@@ -77,11 +77,6 @@ class XMLCorpusReader(CorpusReader):
                 out.extend(toks)
         return out
 
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
 
 class XMLCorpusView(StreamBackedCorpusView):
     """
@@ -155,15 +150,14 @@ class XMLCorpusView(StreamBackedCorpusView):
         StreamBackedCorpusView.__init__(self, fileid, encoding=encoding)
 
     def _detect_encoding(self, fileid):
-        if isinstance(fileid, PathPointer):
-            try:
+        try:
+            if isinstance(fileid, PathPointer):
                 infile = fileid.open()
-                s = infile.readline()
-            finally:
-                infile.close()
-        else:
-            with open(fileid, 'rb') as infile:
-                s = infile.readline()
+            else:
+                infile = FileSystemPathPointer(fileid).open()
+            s = infile.readline()
+        finally:
+            infile.close()
         if s.startswith(codecs.BOM_UTF16_BE):
             return 'utf-16-be'
         if s.startswith(codecs.BOM_UTF16_LE):
@@ -275,7 +269,7 @@ class XMLCorpusView(StreamBackedCorpusView):
             if last_open_bracket > 0:
                 if self._VALID_XML_RE.match(fragment[:last_open_bracket]):
                     stream.seek(startpos)
-                    stream.read(last_open_bracket-1)
+                    stream.read(last_open_bracket)
                     return fragment[:last_open_bracket]
 
             # Otherwise, read another block. (i.e., return to the
@@ -303,6 +297,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         while elts==[] or elt_start is not None:
             startpos = stream.tell()
             xml_fragment = self._read_xml_fragment(stream)
+
             # End of file.
             if not xml_fragment:
                 if elt_start is None: break
@@ -363,7 +358,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     if self._DEBUG:
                         print(' '*36+'(backtrack)')
                     stream.seek(startpos)
-                    stream.read(elt_start-1)
+                    stream.read(elt_start)
                     context = context[:elt_depth-1]
                     elt_start = elt_depth = None
                     elt_text = ''

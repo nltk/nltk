@@ -42,7 +42,6 @@ import os
 import re
 import sys
 import zipfile
-import codecs
 
 from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
 
@@ -71,7 +70,7 @@ from six.moves.urllib.request import urlopen, url2pathname
 
 # this import should be more specific:
 import nltk
-from nltk.compat import py3_data, add_py3_data, BytesIO
+from nltk.compat import py3_data, add_py3_data
 
 ######################################################################
 # Search Path
@@ -327,13 +326,13 @@ class FileSystemPathPointer(PathPointer, text_type):
 
     def open(self, encoding=None):
         if encoding is None:
-            stream = open(self._path, 'rb')
+            stream = io.open(self._path, 'rb')
         else:
             stream = io.open(self._path, 'rt', encoding=encoding)
         return stream
 
     def file_size(self):
-        # fixme
+        # fixme: gives wrong answer for encoded files
         raise NotImplementedError
         return os.stat(self._path).st_size
 
@@ -389,14 +388,14 @@ class BufferedGzipFile(GzipFile):
         """
         GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
         self._size = kwargs.get('size', self.SIZE)
-        self._nltk_buffer = BytesIO()
+        self._nltk_buffer = io.BytesIO()
         # cStringIO does not support len.
         self._len = 0
 
     def _reset_buffer(self):
         # For some reason calling BytesIO.truncate() here will lead to
         # inconsistent writes so just set _buffer to a new BytesIO object.
-        self._nltk_buffer = BytesIO()
+        self._nltk_buffer = io.BytesIO()
         self._len = 0
 
     def _write_buffer(self, data):
@@ -426,7 +425,7 @@ class BufferedGzipFile(GzipFile):
     def read(self, size=None):
         if not size:
             size = self._size
-            contents = BytesIO()
+            contents = io.BytesIO()
             while True:
                 blocks = GzipFile.read(self, size)
                 if not blocks:
@@ -529,7 +528,6 @@ class ZipFilePathPointer(PathPointer):
 
     def open(self, encoding=None):
         data = self._zipfile.read(self._entry)
-        stream = BytesIO(data)
         if self._entry.endswith('.gz'):
             # Note: In >= Python3.5, GzipFile is already using a
             # buffered reader in the backend which has a variable self._buffer
@@ -538,13 +536,16 @@ class ZipFilePathPointer(PathPointer):
                 stream = BufferedGzipFile(self._entry, fileobj=stream)
             else:
                 stream = GzipFile(self._entry, fileobj=stream)
-        elif encoding is not None:
-            #fixme: this doesn't work in py2.7
-            stream = io.TextIOWrapper(stream, encoding)
+            if encoding:
+                stream = io.TextIOWrapper(stream, encoding)
+        elif encoding is None:
+            stream = io.BytesIO(data)
+        else:
+            stream = io.StringIO(data.decode(encoding))
         return stream
 
     def file_size(self):
-        # fixme
+        # fixme: gives length in bytes, not chars
         raise NotImplementedError
         return self._zipfile.getinfo(self._entry).file_size
 
