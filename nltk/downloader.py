@@ -2258,7 +2258,8 @@ if __name__ == '__main__':
     parser.add_option("-e", "--exit-on-error", dest="halt_on_error", action="store_true",
         default=False, help="exit if an error occurs")
     parser.add_option("-u", "--url", dest="server_index_url",
-        default=None, help="download server index url")
+        default=os.environ.get('NLTK_DOWNLOAD_URL'),
+        help="download server index url")
 
     (options, args) = parser.parse_args()
 

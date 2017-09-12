@@ -35,15 +35,26 @@ from __future__ import division
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 
-import sys
+import functools
+import textwrap
 import io
 import os
-import textwrap
 import re
+import sys
 import zipfile
 import codecs
 
 from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
+
+try: # Python 3.
+    textwrap_indent = functools.partial(textwrap.indent, prefix='  ')
+except AttributeError: # Python 2; indent() not available for Python2.
+    textwrap_fill = functools.partial(textwrap.fill,
+                                        initial_indent='  ',
+                                        subsequent_indent='  ',
+                                        replace_whitespace=False)
+    def textwrap_indent(text):
+        return '\n'.join(textwrap_fill(line) for line in text.splitlines())
 
 try:
     from zlib import Z_SYNC_FLUSH as FLUSH
@@ -94,7 +105,9 @@ else:
         str('/usr/share/nltk_data'),
         str('/usr/local/share/nltk_data'),
         str('/usr/lib/nltk_data'),
-        str('/usr/local/lib/nltk_data')
+        str('/usr/local/lib/nltk_data'),
+        os.path.join(sys.prefix, str('nltk_data')),
+        os.path.join(sys.prefix, str('lib'), str('nltk_data'))
     ]
 
 
@@ -641,15 +654,22 @@ def find(resource_name, paths=None):
             except LookupError:
                 pass
 
+    # Identify the package (i.e. the .zip file) to download.
+    resource_zipname = resource_name.split('/')[1]
+    if resource_zipname.endswith('.zip'):
+        resource_zipname = resource_zipname.rpartition('.')[0]
     # Display a friendly error message if the resource wasn't found:
-    msg = textwrap.fill(
-        'Resource %r not found.  Please use the NLTK Downloader to '
-        'obtain the resource:  >>> nltk.download()' %
-        (resource_name,), initial_indent='  ', subsequent_indent='  ',
-        width=66)
+    msg = str("Resource \33[93m{resource}\033[0m not found.\n"
+              "Please use the NLTK Downloader to obtain the resource:\n\n"
+              "\33[31m" # To display red text in terminal.
+              ">>> import nltk\n"
+              ">>> nltk.download(\'{resource}\')\n"
+              "\033[0m").format(resource=resource_zipname)
+    msg = textwrap_indent(msg)
+
     msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in paths)
     sep = '*' * 70
-    resource_not_found = '\n%s\n%s\n%s' % (sep, msg, sep)
+    resource_not_found = '\n%s\n%s\n%s\n' % (sep, msg, sep)
     raise LookupError(resource_not_found)
 
 
