@@ -2,7 +2,7 @@
 # Natural Language Toolkit: Python port of the tok-tok.pl tokenizer.
 #
 # Copyright (C) 2001-2015 NLTK Project
-# Author:
+# Author: Liling Tan (ported from ftp://jaguar.ncsl.nist.gov/mt/resources/mteval-v14.pl)
 # Contributors: Ozan Caglayan, Wiktor Stribizew
 #
 # URL: <http://nltk.sourceforge.net>
@@ -83,15 +83,15 @@ class NISTTokenizer(TokenizerI):
                               PERIOD_COMMA_FOLLOW, DASH_PRECEED_DIGIT]
 
     # Perluniprops characters used in NIST tokenizer.
-    Number = text_type(''.join(set(perluniprops.chars('Number')))) # i.e. \p{N}
-    Punctuation = text_type(''.join(set(perluniprops.chars('Punctuation')))) # i.e. \p{P}
-    Symbol = text_type(''.join(set(perluniprops.chars('Symbol')))) # i.e. \p{S}
+    pup_number = text_type(''.join(set(perluniprops.chars('Number')))) # i.e. \p{N}
+    pup_punct = text_type(''.join(set(perluniprops.chars('Punctuation')))) # i.e. \p{P}
+    pup_symbol = text_type(''.join(set(perluniprops.chars('Symbol')))) # i.e. \p{S}
 
     # Python regexes needs to escape some special symbols, see
     # see https://stackoverflow.com/q/45670950/610569
-    Number = re.sub(r'[]^\\-]', r'\\\g<0>', Number)
-    Punctuation = re.sub(r'[]^\\-]', r'\\\g<0>', Punctuation)
-    Symbol = re.sub(r'[]^\\-]', r'\\\g<0>', Symbol)
+    number_regex = re.sub(r'[]^\\-]', r'\\\g<0>', pup_number)
+    punct_regex = re.sub(r'[]^\\-]', r'\\\g<0>', pup_punct)
+    symbol_regex = re.sub(r'[]^\\-]', r'\\\g<0>', pup_symbol)
 
     # Note: In the original perl implementation, \p{Z} and \p{Zl} were used to
     #       (i) strip trailing and heading spaces  and
@@ -104,10 +104,10 @@ class NISTTokenizer(TokenizerI):
     # Pads non-ascii strings with space.
     NONASCII = re.compile('([\x00-\x7f]+)'), r' \1 '
     #  Tokenize any punctuation unless followed AND preceded by a digit.
-    PUNCT_1 = re.compile(u"([{n}])([{p}])".format(n=Number, p=Punctuation)), '\\1 \\2 '
-    PUNCT_2 = re.compile(u"([{p}])([{n}])".format(n=Number, p=Punctuation)), ' \\1 \\2'
+    PUNCT_1 = re.compile(u"([{n}])([{p}])".format(n=number_regex, p=punct_regex)), '\\1 \\2 '
+    PUNCT_2 = re.compile(u"([{p}])([{n}])".format(n=number_regex, p=punct_regex)), ' \\1 \\2'
     # Tokenize symbols
-    SYMBOLS = re.compile(u"({s})".format(s=Symbol)), ' \\1 '
+    SYMBOLS = re.compile(u"({s})".format(s=symbol_regex)), ' \\1 '
 
     INTERNATIONAL_REGEXES = [NONASCII, PUNCT_1, PUNCT_2, SYMBOLS]
 
@@ -116,11 +116,11 @@ class NISTTokenizer(TokenizerI):
         # It's a strange order of regexes.
         # It'll be better to unescape after STRIP_EOL_HYPHEN
         # but let's keep it close to the original NIST implementation.
-        regexp, subsitution = self.STRIP_SKIP
-        text = regexp.sub(subsitution, text)
+        regexp, substitution = self.STRIP_SKIP
+        text = regexp.sub(substitution, text)
         text = xml_unescape(text)
-        regexp, subsitution = self.STRIP_EOL_HYPHEN
-        text = regexp.sub(subsitution, text)
+        regexp, substitution = self.STRIP_EOL_HYPHEN
+        text = regexp.sub(substitution, text)
         return text
 
     def tokenize(self, text, lowercase=False,
@@ -134,8 +134,8 @@ class NISTTokenizer(TokenizerI):
             text = ' ' + text + ' '
             if lowercase:
                 text = text.lower()
-            for regexp, subsitution in self.LANG_DEPENDENT_REGEXES:
-                text = regexp.sub(subsitution, text)
+            for regexp, substitution in self.LANG_DEPENDENT_REGEXES:
+                text = regexp.sub(substitution, text)
         # Remove contiguous whitespaces.
         text = ' '.join(text.split())
         # Finally, strips heading and trailing spaces
@@ -149,17 +149,17 @@ class NISTTokenizer(TokenizerI):
         text = text_type(text)
         # Different from the 'normal' tokenize(), STRIP_EOL_HYPHEN is applied
         # first before unescaping.
-        regexp, subsitution = self.STRIP_SKIP
-        text = regexp.sub(subsitution, text)
-        regexp, subsitution = self.STRIP_EOL_HYPHEN
-        text = regexp.sub(subsitution, text)
+        regexp, substitution = self.STRIP_SKIP
+        text = regexp.sub(substitution, text)
+        regexp, substitution = self.STRIP_EOL_HYPHEN
+        text = regexp.sub(substitution, text)
         text = xml_unescape(text)
 
         if lowercase:
             text = text.lower()
 
-        for regexp, subsitution in self.INTERNATIONAL_REGEXES:
-            text = regexp.sub(subsitution, text)
+        for regexp, substitution in self.INTERNATIONAL_REGEXES:
+            text = regexp.sub(substitution, text)
 
         # Make sure that there's only one space only between words.
         # Strip leading and trailing spaces.
