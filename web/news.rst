@@ -5,14 +5,14 @@ NLTK News
 ----
 
 NLTK 3.2.5 release: September 2017
-   Arabic stemmers (ARLSTem, Snowball)
-   NIST MT evaluation metric and added NIST international_tokenize
-   Moses tokenizer
-   Document Russian tagger
-   Fix to Stanford segmenter
-   Improve treebank detokenizer, VerbNet, Vader
-   Misc code and documentation cleanups
-   Implement fixes suggested by LGTM
+   Arabic stemmers (ARLSTem, Snowball), 
+   NIST MT evaluation metric and added NIST international_tokenize, 
+   Moses tokenizer, 
+   Document Russian tagger, 
+   Fix to Stanford segmenter, 
+   Improve treebank detokenizer, VerbNet, Vader, 
+   Misc code and documentation cleanups, 
+   Implement fixes suggested by LGTM 
 
 NLTK 3.2.4 released: May 2017
    Remove load-time dependency on Python requests library,
