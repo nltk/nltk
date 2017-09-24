@@ -118,7 +118,7 @@ class CoreNLPTokenizer(CoreNLPParser):
             >>> CoreNLPTokenizer(url='http://localhost:9000').tokenize(s) == expected # doctest: +SKIP
             [u'Good', u'muffins', u'cost', u'$', u'3.88', u'in', u'New', u'York', u'.', u'Please', u'buy', u'me', u'two', u'of', u'them', u'.', u'Thanks', u'.']
         """
-        super(self.__class__, self).__init__(url, encoding)
+        super(CoreNLPTokenizer, self).__init__(url, encoding)
 
     def tokenize(self, text, properties=None):
         """

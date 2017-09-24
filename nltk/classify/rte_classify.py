@@ -32,7 +32,7 @@ def ne(token):
         return True
     return False
 
-def lemmatize(word):
+def _lemmatize(word):
     """
     Use morphy from WordNet to find the base form of verbs.
     """
@@ -70,8 +70,8 @@ class RTEFeatureExtractor(object):
         self.hyp_words = set(self.hyp_tokens)
 
         if lemmatize:
-            self.text_words = set(lemmatize(token) for token in self.text_tokens)
-            self.hyp_words = set(lemmatize(token) for token in self.hyp_tokens)
+            self.text_words = set(_lemmatize(token) for token in self.text_tokens)
+            self.hyp_words = set(_lemmatize(token) for token in self.hyp_tokens)
 
         if self.stop:
             self.text_words = self.text_words - self.stopwords
