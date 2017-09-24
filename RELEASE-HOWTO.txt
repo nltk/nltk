@@ -11,7 +11,15 @@ Building an NLTK distribution
    - Check the data index is up-to-date:
      cd ../nltk_data; make; push
 
-2. Documentation
+2. Update Version Number and ChangeLog
+   - Update version number
+     edit nltk/VERSION and web/conf.py
+   - Add a new entry to the news page in nltk/web/news.rst
+   - Update the ChangeLog (for nltk, nltk_data)
+     git log --since=20XX-YY-ZZ
+     edit ChangeLog
+
+3. Build Documentation
    - Check the copyright year is correct and update if necessary
      e.g. ./tools/global_replace.py 2001-2015 2001-2017
    - Check that installation instructions are up-to-date
@@ -30,24 +38,18 @@ Building an NLTK distribution
        git commit -m "updates for version 3.X.Y"
        git push origin master
 
-3. Create a new version
-   - Optionally do this in a release branch, branching from develop branch
-     git checkout -b release-3.X.Y develop
-   - Update version number
-     edit nltk/VERSION and web/conf.py
-   - Update the ChangeLog (for nltk, nltk_data)
-     git log --since=20XX-YY-ZZ
-     edit ChangeLog
-   - Add a new entry to the news page in nltk/web/news.rst
+4. Create a new version
+   - (Optionally do this in a release branch, branching from develop branch
+     git checkout -b release-3.X.Y develop)
    - Tag this version:
      git tag -a 3.X.Y -m "version 3.X.Y"
      git push --tags
      verify that it shows up here: https://github.com/nltk/nltk/releases
-   - Optionally merge with master branch
+   - (Optionally merge with master branch
      git checkout master
-     git merge --no-ff release-3.X.Y
+     git merge --no-ff release-3.X.Y)
 
-4. Release
+5. Release
    - Make the distributions
      make clean; make dist; ls dist/
    - Log in to http://pypi.python.org/pypi
@@ -56,7 +58,7 @@ Building an NLTK distribution
    - Go to files tab and upload tar.gz and exe distributions
      only specify version, e.g. 3.4, for exe
 
-5. Announce
+6. Announce
    - Post announcement to NLTK the mailing lists:
      nltk-dev (for beta releases)
      nltk-users (for final releases)
@@ -67,7 +69,7 @@ Building an NLTK distribution
      PythonSIL@lists.sil.org, edu-sig@python.org
      mailing lists for any local courses using NLTK
 
-6. Optionally update to new version
+7. Optionally update to new version
    - we don't want builds from the repository to have the same release number
      e.g. after release X.Y.4, update repository version to X.Y.5a (alpha)
 
