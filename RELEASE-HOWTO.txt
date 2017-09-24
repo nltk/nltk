@@ -60,7 +60,6 @@ Building an NLTK distribution
    - Post announcement to NLTK the mailing lists:
      nltk-dev (for beta releases)
      nltk-users (for final releases)
-     nltk (for final releases)
      nltk twitter account
    - announce to external mailing lists, for major N.N releases only
      CORPORA@uib.no, linguist@linguistlist.org,
