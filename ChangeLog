@@ -1,4 +1,4 @@
-Version 3.2.5 2017-09-16
+Version 3.2.5 2017-09-24
 
 * Arabic stemmers (ARLSTem, Snowball)
 * NIST MT evaluation metric and added NIST international_tokenize
