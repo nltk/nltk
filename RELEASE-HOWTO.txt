@@ -52,11 +52,9 @@ Building an NLTK distribution
 5. Release
    - Make the distributions
      make clean; make dist; ls dist/
-   - Log in to http://pypi.python.org/pypi
-     go to the "Package Submission" page
-     upload ./nltk.egg-info/PKG-INFO via the web form
-   - Go to files tab and upload tar.gz and exe distributions
-     only specify version, e.g. 3.4, for exe
+   - twine register nltk
+     twine upload dist/*
+   - Check upload at https://pypi.python.org/pypi/nltk
 
 6. Announce
    - Post announcement to NLTK the mailing lists:
