@@ -21,6 +21,7 @@ from __future__ import print_function
 import nltk
 from nltk.classify.util import accuracy
 
+
 def ne(token):
     """
     This just assumes that words in all caps or titles are
@@ -32,6 +33,7 @@ def ne(token):
         return True
     return False
 
+
 def lemmatize(word):
     """
     Use morphy from WordNet to find the base form of verbs.
@@ -41,11 +43,13 @@ def lemmatize(word):
         return lemma
     return word
 
+
 class RTEFeatureExtractor(object):
     """
     This builds a bag of words for both the text and the hypothesis after
     throwing away some stopwords, then calculates overlap and difference.
     """
+
     def __init__(self, rtepair, stop=True, lemmatize=False):
         """
         :param rtepair: a ``RTEPair`` from which features should be extracted
@@ -53,17 +57,16 @@ class RTEFeatureExtractor(object):
         :type stop: bool
         """
         self.stop = stop
-        self.stopwords = set(['a', 'the', 'it', 'they', 'of', 'in', 'to', 'is',
-                              'have', 'are', 'were', 'and', 'very', '.', ','])
+        self.stopwords = {'a', 'the', 'it', 'they', 'of', 'in', 'to', 'is', 'have', 'are', 'were', 'and', 'very', '.',
+                          ','}
 
-        self.negwords = set(['no', 'not', 'never', 'failed', 'rejected',
-                             'denied'])
+        self.negwords = {'no', 'not', 'never', 'failed', 'rejected', 'denied'}
         # Try to tokenize so that abbreviations, monetary amounts, email
         # addresses, URLs are single tokens.
         from nltk.tokenize import RegexpTokenizer
         tokenizer = RegexpTokenizer('[\w.@:/]+|\w+|\$[\d.]+')
 
-        #Get the set of word types for text and hypothesis
+        # Get the set of word types for text and hypothesis
         self.text_tokens = tokenizer.tokenize(rtepair.text)
         self.hyp_tokens = tokenizer.tokenize(rtepair.hyp)
         self.text_words = set(self.text_tokens)
@@ -80,7 +83,6 @@ class RTEFeatureExtractor(object):
         self._overlap = self.hyp_words & self.text_words
         self._hyp_extra = self.hyp_words - self.text_words
         self._txt_extra = self.text_words - self.hyp_words
-
 
     def overlap(self, toktype, debug=False):
         """
@@ -184,8 +186,8 @@ def demo():
             trainer = nltk.MaxentClassifier.train
     nltk.classify.rte_classifier(trainer)
 
+
 if __name__ == '__main__':
     demo_features()
     demo_feature_extractor()
     demo()
-

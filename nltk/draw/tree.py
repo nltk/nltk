@@ -16,6 +16,7 @@ from nltk.tree import Tree
 from nltk.draw.util import (CanvasFrame, CanvasWidget, BoxWidget,
                             TextWidget, ParenWidget, OvalWidget)
 
+
 ##//////////////////////////////////////////////////////
 ##  Tree Segment
 ##//////////////////////////////////////////////////////
@@ -53,6 +54,7 @@ class TreeSegmentWidget(CanvasWidget):
         branch downwards).
       - ``draggable``: whether the widget can be dragged by the user.
     """
+
     def __init__(self, canvas, label, subtrees, **attribs):
         """
         :type node:
@@ -69,9 +71,9 @@ class TreeSegmentWidget(CanvasWidget):
         self._ordered = False
 
         # Create canvas objects.
-        self._lines = [canvas.create_line(0,0,0,0, fill='#006060')
+        self._lines = [canvas.create_line(0, 0, 0, 0, fill='#006060')
                        for c in subtrees]
-        self._polygon = canvas.create_polygon(0,0, fill='', state='hidden',
+        self._polygon = canvas.create_polygon(0, 0, fill='', state='hidden',
                                               outline='#006060')
 
         # Register child widgets (label + subtrees)
@@ -95,8 +97,10 @@ class TreeSegmentWidget(CanvasWidget):
                 for l in self._lines: canvas.itemconfig(l, state='normal')
                 canvas.itemconfig(self._polygon, state='hidden')
         elif attr == 'orientation':
-            if value == 'horizontal': self._horizontal = 1
-            elif value == 'vertical': self._horizontal = 0
+            if value == 'horizontal':
+                self._horizontal = 1
+            elif value == 'vertical':
+                self._horizontal = 0
             else:
                 raise ValueError('orientation must be horizontal or vertical')
         elif attr == 'color':
@@ -109,11 +113,13 @@ class TreeSegmentWidget(CanvasWidget):
         elif attr == 'fill':
             canvas.itemconfig(self._polygon, fill=value)
         elif attr == 'width':
-            canvas.itemconfig(self._polygon, {attr:value})
-            for l in self._lines: canvas.itemconfig(l, {attr:value})
+            canvas.itemconfig(self._polygon, {attr: value})
+            for l in self._lines: canvas.itemconfig(l, {attr: value})
         elif attr in ('xspace', 'yspace'):
-            if attr == 'xspace': self._xspace = value
-            elif attr == 'yspace': self._yspace = value
+            if attr == 'xspace':
+                self._xspace = value
+            elif attr == 'yspace':
+                self._yspace = value
             self.update(self._label)
         elif attr == 'ordered':
             self._ordered = value
@@ -121,7 +127,8 @@ class TreeSegmentWidget(CanvasWidget):
             CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'roof': return self._roof
+        if attr == 'roof':
+            return self._roof
         elif attr == 'width':
             return self.canvas().itemcget(self._polygon, attr)
         elif attr == 'color':
@@ -129,11 +136,15 @@ class TreeSegmentWidget(CanvasWidget):
         elif isinstance(attr, tuple) and attr[0] == 'color':
             l = self._lines[int(attr[1])]
             return self.canvas().itemcget(l, 'fill')
-        elif attr == 'xspace': return self._xspace
-        elif attr == 'yspace': return self._yspace
+        elif attr == 'xspace':
+            return self._xspace
+        elif attr == 'yspace':
+            return self._yspace
         elif attr == 'orientation':
-            if self._horizontal: return 'horizontal'
-            else: return 'vertical'
+            if self._horizontal:
+                return 'horizontal'
+            else:
+                return 'vertical'
         elif attr == 'ordered':
             return self._ordered
         else:
@@ -175,7 +186,7 @@ class TreeSegmentWidget(CanvasWidget):
         canvas = self.canvas()
         self._subtrees.insert(index, child)
         self._add_child_widget(child)
-        self._lines.append(canvas.create_line(0,0,0,0, fill='#006060'))
+        self._lines.append(canvas.create_line(0, 0, 0, 0, fill='#006060'))
         self.update(self._label)
 
     # but.. lines???
@@ -192,24 +203,26 @@ class TreeSegmentWidget(CanvasWidget):
         else:
             bbox = child.bbox()
         if self._horizontal:
-            return (bbox[0], (bbox[1]+bbox[3])/2.0)
+            return (bbox[0], (bbox[1] + bbox[3]) / 2.0)
         else:
-            return ((bbox[0]+bbox[2])/2.0, bbox[1])
+            return ((bbox[0] + bbox[2]) / 2.0, bbox[1])
 
     def _node_bottom(self):
         bbox = self._label.bbox()
         if self._horizontal:
-            return (bbox[2], (bbox[1]+bbox[3])/2.0)
+            return (bbox[2], (bbox[1] + bbox[3]) / 2.0)
         else:
-            return ((bbox[0]+bbox[2])/2.0, bbox[3])
+            return ((bbox[0] + bbox[2]) / 2.0, bbox[3])
 
     def _update(self, child):
         if len(self._subtrees) == 0: return
-        if self._label.bbox() is None: return # [XX] ???
+        if self._label.bbox() is None: return  # [XX] ???
 
         # Which lines need to be redrawn?
-        if child is self._label: need_update = self._subtrees
-        else: need_update = [child]
+        if child is self._label:
+            need_update = self._subtrees
+        else:
+            need_update = [child]
 
         if self._ordered and not self._managing:
             need_update = self._maintain_order(child)
@@ -251,8 +264,8 @@ class TreeSegmentWidget(CanvasWidget):
             # Check all the leaves
             for subtree in self._subtrees:
                 (x1, y1, x2, y2) = subtree.bbox()
-                if bot+self._yspace > y1:
-                    subtree.move(0,bot+self._yspace-y1)
+                if bot + self._yspace > y1:
+                    subtree.move(0, bot + self._yspace - y1)
 
             return self._subtrees
         else:
@@ -261,26 +274,26 @@ class TreeSegmentWidget(CanvasWidget):
 
             # Check leaves to our right.
             x = right + self._xspace
-            for i in range(index+1, len(self._subtrees)):
+            for i in range(index + 1, len(self._subtrees)):
                 (x1, y1, x2, y2) = self._subtrees[i].bbox()
                 if x > x1:
-                    self._subtrees[i].move(x-x1, 0)
-                    x += x2-x1 + self._xspace
+                    self._subtrees[i].move(x - x1, 0)
+                    x += x2 - x1 + self._xspace
                     moved.append(self._subtrees[i])
 
             # Check leaves to our left.
             x = left - self._xspace
-            for i in range(index-1, -1, -1):
+            for i in range(index - 1, -1, -1):
                 (x1, y1, x2, y2) = self._subtrees[i].bbox()
                 if x < x2:
-                    self._subtrees[i].move(x-x2, 0)
-                    x -= x2-x1 + self._xspace
+                    self._subtrees[i].move(x - x2, 0)
+                    x -= x2 - x1 + self._xspace
                     moved.append(self._subtrees[i])
 
             # Check the node
             (x1, y1, x2, y2) = self._label.bbox()
-            if y2 > top-self._yspace:
-                self._label.move(0, top-self._yspace-y2)
+            if y2 > top - self._yspace:
+                self._label.move(0, top - self._yspace - y2)
                 moved = self._subtrees
 
         # Return a list of the nodes we moved
@@ -293,8 +306,8 @@ class TreeSegmentWidget(CanvasWidget):
             # Check all the leaves
             for subtree in self._subtrees:
                 (x1, y1, x2, y2) = subtree.bbox()
-                if right+self._xspace > x1:
-                    subtree.move(right+self._xspace-x1)
+                if right + self._xspace > x1:
+                    subtree.move(right + self._xspace - x1)
 
             return self._subtrees
         else:
@@ -303,26 +316,26 @@ class TreeSegmentWidget(CanvasWidget):
 
             # Check leaves below us.
             y = bot + self._yspace
-            for i in range(index+1, len(self._subtrees)):
+            for i in range(index + 1, len(self._subtrees)):
                 (x1, y1, x2, y2) = self._subtrees[i].bbox()
                 if y > y1:
-                    self._subtrees[i].move(0, y-y1)
-                    y += y2-y1 + self._yspace
+                    self._subtrees[i].move(0, y - y1)
+                    y += y2 - y1 + self._yspace
                     moved.append(self._subtrees[i])
 
             # Check leaves above us
             y = top - self._yspace
-            for i in range(index-1, -1, -1):
+            for i in range(index - 1, -1, -1):
                 (x1, y1, x2, y2) = self._subtrees[i].bbox()
                 if y < y2:
-                    self._subtrees[i].move(0, y-y2)
-                    y -= y2-y1 + self._yspace
+                    self._subtrees[i].move(0, y - y2)
+                    y -= y2 - y1 + self._yspace
                     moved.append(self._subtrees[i])
 
             # Check the node
             (x1, y1, x2, y2) = self._label.bbox()
-            if x2 > left-self._xspace:
-                self._label.move(left-self._xspace-x2, 0)
+            if x2 > left - self._xspace:
+                self._label.move(left - self._xspace - x2, 0)
                 moved = self._subtrees
 
         # Return a list of the nodes we moved
@@ -348,7 +361,7 @@ class TreeSegmentWidget(CanvasWidget):
 
         # Center the subtrees with the node.
         for subtree in self._subtrees:
-            subtree.move(0, nodey-center)
+            subtree.move(0, nodey - center)
 
     def _manage_vertical(self):
         (nodex, nodey) = self._node_bottom()
@@ -365,19 +378,21 @@ class TreeSegmentWidget(CanvasWidget):
         # Find the center of their tops.
         center = 0.0
         for subtree in self._subtrees:
-            center += self._subtree_top(subtree)[0]/len(self._subtrees)
+            center += self._subtree_top(subtree)[0] / len(self._subtrees)
 
         # Center the subtrees with the node.
         for subtree in self._subtrees:
-            subtree.move(nodex-center, 0)
+            subtree.move(nodex - center, 0)
 
     def _manage(self):
         self._managing = True
         (nodex, nodey) = self._node_bottom()
         if len(self._subtrees) == 0: return
 
-        if self._horizontal: self._manage_horizontal()
-        else: self._manage_vertical()
+        if self._horizontal:
+            self._manage_horizontal()
+        else:
+            self._manage_vertical()
 
         # Update lines to subtrees.
         for subtree in self._subtrees:
@@ -387,6 +402,7 @@ class TreeSegmentWidget(CanvasWidget):
 
     def __repr__(self):
         return '[TreeSeg %s: %s]' % (self._label, self._subtrees)
+
 
 def _tree_to_treeseg(canvas, t, make_node, make_leaf,
                      tree_attribs, node_attribs,
@@ -400,6 +416,7 @@ def _tree_to_treeseg(canvas, t, make_node, make_leaf,
         return TreeSegmentWidget(canvas, label, subtrees, **tree_attribs)
     else:
         return make_leaf(canvas, t, **leaf_attribs)
+
 
 def tree_to_treesegment(canvas, t, make_node=TextWidget,
                         make_leaf=TextWidget, **attribs):
@@ -430,14 +447,20 @@ def tree_to_treesegment(canvas, t, make_node=TextWidget,
     loc_attribs = {}
 
     for (key, value) in list(attribs.items()):
-        if key[:5] == 'tree_': tree_attribs[key[5:]] = value
-        elif key[:5] == 'node_': node_attribs[key[5:]] = value
-        elif key[:5] == 'leaf_': leaf_attribs[key[5:]] = value
-        elif key[:4] == 'loc_': loc_attribs[key[4:]] = value
-        else: raise ValueError('Bad attribute: %s' % key)
+        if key[:5] == 'tree_':
+            tree_attribs[key[5:]] = value
+        elif key[:5] == 'node_':
+            node_attribs[key[5:]] = value
+        elif key[:5] == 'leaf_':
+            leaf_attribs[key[5:]] = value
+        elif key[:4] == 'loc_':
+            loc_attribs[key[4:]] = value
+        else:
+            raise ValueError('Bad attribute: %s' % key)
     return _tree_to_treeseg(canvas, t, make_node, make_leaf,
-                                tree_attribs, node_attribs,
-                                leaf_attribs, loc_attribs)
+                            tree_attribs, node_attribs,
+                            leaf_attribs, loc_attribs)
+
 
 ##//////////////////////////////////////////////////////
 ##  Tree Widget
@@ -483,6 +506,7 @@ class TreeWidget(CanvasWidget):
         segments.
       - ``draggable``: whether the widget can be dragged by the user.
     """
+
     def __init__(self, canvas, t, make_node=TextWidget,
                  make_leaf=TextWidget, **attribs):
         # Node & leaf canvas widget constructors
@@ -505,12 +529,12 @@ class TreeWidget(CanvasWidget):
         self._ordered = False
 
         # Build trees.
-        self._keys = {} # treeseg -> key
+        self._keys = {}  # treeseg -> key
         self._expanded_trees = {}
         self._collapsed_trees = {}
         self._nodes = []
         self._leaves = []
-        #self._locs = []
+        # self._locs = []
         self._make_collapsed_trees(canvas, t, ())
         self._treeseg = self._make_expanded_tree(canvas, t, ())
         self._add_child_widget(self._treeseg)
@@ -602,7 +626,7 @@ class TreeWidget(CanvasWidget):
 
         self._collapsed_trees[key] = treeseg
         self._keys[treeseg] = key
-        #self._add_child_widget(treeseg)
+        # self._add_child_widget(treeseg)
         treeseg.hide()
 
         # Build trees for children.
@@ -618,7 +642,7 @@ class TreeWidget(CanvasWidget):
             node = make_node(canvas, t.label(), **self._nodeattribs)
             self._nodes.append(node)
             children = t
-            subtrees = [self._make_expanded_tree(canvas, children[i], key+(i,))
+            subtrees = [self._make_expanded_tree(canvas, children[i], key + (i,))
                         for i in range(len(children))]
             treeseg = TreeSegmentWidget(canvas, node, subtrees,
                                         color=self._line_color,
@@ -683,7 +707,8 @@ class TreeWidget(CanvasWidget):
                 tseg['ordered'] = value
             for tseg in list(self._collapsed_trees.values()):
                 tseg['ordered'] = value
-        else: CanvasWidget.__setitem__(self, attr, value)
+        else:
+            CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
         if attr[:5] == 'node_':
@@ -692,17 +717,27 @@ class TreeWidget(CanvasWidget):
             return self._leafattribs.get(attr[5:], None)
         elif attr[:4] == 'loc_':
             return self._locattribs.get(attr[4:], None)
-        elif attr == 'line_color': return self._line_color
-        elif attr == 'line_width': return self._line_width
-        elif attr == 'roof_color': return self._roof_color
-        elif attr == 'roof_fill': return self._roof_fill
-        elif attr == 'shapeable': return self._shapeable
-        elif attr == 'xspace': return self._xspace
-        elif attr == 'yspace': return self._yspace
-        elif attr == 'orientation': return self._orientation
-        else: return CanvasWidget.__getitem__(self, attr)
+        elif attr == 'line_color':
+            return self._line_color
+        elif attr == 'line_width':
+            return self._line_width
+        elif attr == 'roof_color':
+            return self._roof_color
+        elif attr == 'roof_fill':
+            return self._roof_fill
+        elif attr == 'shapeable':
+            return self._shapeable
+        elif attr == 'xspace':
+            return self._xspace
+        elif attr == 'yspace':
+            return self._yspace
+        elif attr == 'orientation':
+            return self._orientation
+        else:
+            return CanvasWidget.__getitem__(self, attr)
 
-    def _tags(self): return []
+    def _tags(self):
+        return []
 
     def _manage(self):
         segs = list(self._expanded_trees.values()) + list(self._collapsed_trees.values())
@@ -735,7 +770,7 @@ class TreeWidget(CanvasWidget):
         new_treeseg.show()
         (newx, newy) = new_treeseg.label().bbox()[:2]
         (oldx, oldy) = old_treeseg.label().bbox()[:2]
-        new_treeseg.move(oldx-newx, oldy-newy)
+        new_treeseg.move(oldx - newx, oldy - newy)
 
         # Hide the old tree
         old_treeseg.hide()
@@ -743,9 +778,10 @@ class TreeWidget(CanvasWidget):
         # We could do parent.manage() here instead, if we wanted.
         new_treeseg.parent().update(new_treeseg)
 
-##//////////////////////////////////////////////////////
-##  draw_trees
-##//////////////////////////////////////////////////////
+
+# //////////////////////////////////////////////////////
+#  draw_trees
+# //////////////////////////////////////////////////////
 
 class TreeView(object):
     def __init__(self, *trees):
@@ -793,7 +829,7 @@ class TreeView(object):
             if i % width == 0:
                 y = ymax
                 x = 0
-            widget.move(x-oldx, y-oldy)
+            widget.move(x - oldx, y - oldy)
             x = widget.bbox()[2] + 10
             ymax = max(ymax, widget.bbox()[3] + 10)
 
@@ -833,9 +869,12 @@ class TreeView(object):
             widget['leaf_font'] = helv
             widget['xspace'] = xspace
             widget['yspace'] = yspace
-            if self._size.get() < 20: widget['line_width'] = 1
-            elif self._size.get() < 30: widget['line_width'] = 2
-            else: widget['line_width'] = 3
+            if self._size.get() < 20:
+                widget['line_width'] = 1
+            elif self._size.get() < 30:
+                widget['line_width'] = 2
+            else:
+                widget['line_width'] = 3
         self._layout()
 
     def destroy(self, *e):
@@ -853,6 +892,7 @@ class TreeView(object):
         if in_idle(): return
         self._top.mainloop(*args, **kwargs)
 
+
 def draw_trees(*trees):
     """
     Open a new window containing a graphical diagram of the given
@@ -863,14 +903,15 @@ def draw_trees(*trees):
     TreeView(*trees).mainloop()
     return
 
-##//////////////////////////////////////////////////////
-##  Demo Code
-##//////////////////////////////////////////////////////
+
+# //////////////////////////////////////////////////////
+#  Demo Code
+# //////////////////////////////////////////////////////
 
 def demo():
     import random
     def fill(cw):
-        cw['fill'] = '#%06d' % random.randint(0,999999)
+        cw['fill'] = '#%06d' % random.randint(0, 999999)
 
     cf = CanvasFrame(width=550, height=450, closeenough=2)
 
@@ -883,12 +924,13 @@ def demo():
                     leaf_font=('helvetica', -12, 'italic'),
                     roof_fill='white', roof_color='black',
                     leaf_color='green4', node_color='blue2')
-    cf.add_widget(tc,10,10)
+    cf.add_widget(tc, 10, 10)
 
     def boxit(canvas, text):
         big = ('helvetica', -16, 'bold')
         return BoxWidget(canvas, TextWidget(canvas, text,
                                             font=big), fill='green')
+
     def ovalit(canvas, text):
         return OvalWidget(canvas, TextWidget(canvas, text),
                           fill='cyan')
@@ -897,9 +939,10 @@ def demo():
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
 
     def color(node):
-        node['color'] = '#%04d00' % random.randint(0,9999)
+        node['color'] = '#%04d00' % random.randint(0, 9999)
+
     def color2(treeseg):
-        treeseg.label()['fill'] = '#%06d' % random.randint(0,9999)
+        treeseg.label()['fill'] = '#%06d' % random.randint(0, 9999)
         treeseg.label().child()['color'] = 'white'
 
     tc.bind_click_trees(tc.toggle_collapsed)
@@ -909,7 +952,7 @@ def demo():
     tc2.expanded_tree().bind_click(color2, 3)
 
     paren = ParenWidget(cf.canvas(), tc2)
-    cf.add_widget(paren, tc.bbox()[2]+10, 10)
+    cf.add_widget(paren, tc.bbox()[2] + 10, 10)
 
     tree3 = Tree.fromstring('''
     (S (NP this tree) (AUX was)
@@ -917,18 +960,18 @@ def demo():
     tc3 = tree_to_treesegment(cf.canvas(), tree3, tree_color='green4',
                               tree_xspace=2, tree_width=2)
     tc3['draggable'] = 1
-    cf.add_widget(tc3, 10, tc.bbox()[3]+10)
+    cf.add_widget(tc3, 10, tc.bbox()[3] + 10)
 
     def orientswitch(treewidget):
         if treewidget['orientation'] == 'horizontal':
-            treewidget.expanded_tree(1,1).subtrees()[0].set_text('vertical')
-            treewidget.collapsed_tree(1,1).subtrees()[0].set_text('vertical')
+            treewidget.expanded_tree(1, 1).subtrees()[0].set_text('vertical')
+            treewidget.collapsed_tree(1, 1).subtrees()[0].set_text('vertical')
             treewidget.collapsed_tree(1).subtrees()[1].set_text('vertical')
             treewidget.collapsed_tree().subtrees()[3].set_text('vertical')
             treewidget['orientation'] = 'vertical'
         else:
-            treewidget.expanded_tree(1,1).subtrees()[0].set_text('horizontal')
-            treewidget.collapsed_tree(1,1).subtrees()[0].set_text('horizontal')
+            treewidget.expanded_tree(1, 1).subtrees()[0].set_text('horizontal')
+            treewidget.collapsed_tree(1, 1).subtrees()[0].set_text('horizontal')
             treewidget.collapsed_tree(1).subtrees()[1].set_text('horizontal')
             treewidget.collapsed_tree().subtrees()[3].set_text('horizontal')
             treewidget['orientation'] = 'horizontal'
@@ -944,7 +987,7 @@ and OvalWidget).  The bottom-left tree is
 built from tree_to_treesegment."""
     twidget = TextWidget(cf.canvas(), text.strip())
     textbox = BoxWidget(cf.canvas(), twidget, fill='white', draggable=1)
-    cf.add_widget(textbox, tc3.bbox()[2]+10, tc2.bbox()[3]+10)
+    cf.add_widget(textbox, tc3.bbox()[2] + 10, tc2.bbox()[3] + 10)
 
     tree4 = Tree.fromstring('(S (NP this tree) (VP (V is) (Adj horizontal)))')
     tc4 = TreeWidget(cf.canvas(), tree4, draggable=1,
@@ -952,12 +995,13 @@ built from tree_to_treesegment."""
                      node_font=('helvetica', -12, 'bold'),
                      node_color='brown4', orientation='horizontal')
     tc4.manage()
-    cf.add_widget(tc4, tc3.bbox()[2]+10, textbox.bbox()[3]+10)
+    cf.add_widget(tc4, tc3.bbox()[2] + 10, textbox.bbox()[3] + 10)
     tc4.bind_click(orientswitch)
     tc4.bind_click_trees(tc4.toggle_collapsed, 3)
 
     # Run mainloop
     cf.mainloop()
+
 
 if __name__ == '__main__':
     demo()
