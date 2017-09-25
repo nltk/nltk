@@ -63,16 +63,17 @@ class RTEClassifierTest(unittest.TestCase):
         pairs = rte_corpus.pairs(['rte1_dev.xml'])[:6]
         test_output = ["%-15s => %s" % (key, rte_features(pair)[key])
                        for pair in pairs for key in sorted(rte_features(pair))]
-        expected_output = expected_from_rte_feature_extration.strip()
-        self.assertEqual('\n'.join(test_output), expected_output)
+        expected_output = expected_from_rte_feature_extration.strip().split('\n\n')
+        for output_feat, expected_feat in zip(test_output, expected_output):
+            self.assertEqual(output_feat.strip(), expected_feat.strip())
     # Test the RTEFeatureExtractor object.
     def test_feature_extractor_object(self):
         rtepair = rte_corpus.pairs(['rte3_dev.xml'])[33]
         extractor = RTEFeatureExtractor(rtepair)
-        self.assertItemsEqual(extractor.hyp_words, {'member', 'China', 'SCO.'})
-        self.assertItemsEqual(extractor.overlap('word'), set())
-        self.assertItemsEqual(extractor.overlap('ne'), {'China'})
-        self.assertItemsEqual(extractor.hyp_extra('word'), {'member'})
+        self.assertEqual(extractor.hyp_words, {'member', 'China', 'SCO.'})
+        self.assertEqual(extractor.overlap('word'), set())
+        self.assertEqual(extractor.overlap('ne'), {'China'})
+        self.assertEqual(extractor.hyp_extra('word'), {'member'})
     # Test the RTE classifier training.
     def test_rte_classification_without_megam(self):
         clf = rte_classifier('IIS')
