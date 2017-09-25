@@ -74,9 +74,10 @@ class RTEClassifierTest(unittest.TestCase):
         self.assertItemsEqual(extractor.overlap('ne'), {'China'})
         self.assertItemsEqual(extractor.hyp_extra('word'), {'member'})
     # Test the RTE classifier training.
-    def test_rte_classification(self):
+    def test_rte_classification_with_megam(self):
         nltk.config_megam('/usr/local/bin/megam')
         clf = rte_classifier('megam')
         clf = rte_classifier('BFGS')
+    def test_rte_classification_without_megam(self):
         clf = rte_classifier('IIS')
         clf = rte_classifier('GIS')

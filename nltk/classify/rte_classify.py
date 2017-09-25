@@ -146,7 +146,7 @@ def rte_classifier(algorithm):
     print('Training classifier...')
     if algorithm in ['megam', 'BFGS']: # MEGAM based algorithms.
         # Ensure that MEGAM is configured first.
-        check_megam()
+        check_megam_config()
         clf = lambda x: MaxentClassifier.train(featurized_train_set, algorithm)
     elif algorithm in ['GIS', 'IIS']: # Use default GIS/IIS MaxEnt algorithm
         clf = MaxentClassifier.train(featurized_train_set, algorithm)
