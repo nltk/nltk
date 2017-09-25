@@ -46,7 +46,7 @@ class RTEFeatureExtractor(object):
     This builds a bag of words for both the text and the hypothesis after
     throwing away some stopwords, then calculates overlap and difference.
     """
-    def __init__(self, rtepair, stop=True, lemmatize=False):
+    def __init__(self, rtepair, stop=True, use_lemmatize=False):
         """
         :param rtepair: a ``RTEPair`` from which features should be extracted
         :param stop: if ``True``, stopwords are thrown away.
@@ -69,7 +69,7 @@ class RTEFeatureExtractor(object):
         self.text_words = set(self.text_tokens)
         self.hyp_words = set(self.hyp_tokens)
 
-        if lemmatize:
+        if use_lemmatize:
             self.text_words = set(lemmatize(token) for token in self.text_tokens)
             self.hyp_words = set(lemmatize(token) for token in self.hyp_tokens)
 

@@ -213,6 +213,7 @@
 - Arthur Tilley
 - Vilhjalmur Thorsteinsson
 - Jaehoon Hwang <https://github.com/jaehoonhwang>
+- Chintan Shah <https://github.com/chintanshah24>
 - sbagan
 - Zicheng Xu
 - Albert Au Yeung <https://github.com/albertauyeung>
