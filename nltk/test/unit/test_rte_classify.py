@@ -69,15 +69,16 @@ class RTEClassifierTest(unittest.TestCase):
     def test_feature_extractor_object(self):
         rtepair = rte_corpus.pairs(['rte3_dev.xml'])[33]
         extractor = RTEFeatureExtractor(rtepair)
-        self.assertItemsEqual(extractor.hyp_words), {'member', 'China', 'SCO.'})
+        self.assertItemsEqual(extractor.hyp_words, {'member', 'China', 'SCO.'})
         self.assertItemsEqual(extractor.overlap('word'), set())
         self.assertItemsEqual(extractor.overlap('ne'), {'China'})
         self.assertItemsEqual(extractor.hyp_extra('word'), {'member'})
     # Test the RTE classifier training.
+    def test_rte_classification_without_megam(self):
+        clf = rte_classifier('IIS')
+        clf = rte_classifier('GIS')
+    @unittest.skip("Skipping tests with dependencies on MEGAM")
     def test_rte_classification_with_megam(self):
         nltk.config_megam('/usr/local/bin/megam')
         clf = rte_classifier('megam')
         clf = rte_classifier('BFGS')
-    def test_rte_classification_without_megam(self):
-        clf = rte_classifier('IIS')
-        clf = rte_classifier('GIS')
