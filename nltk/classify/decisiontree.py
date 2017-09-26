@@ -78,7 +78,7 @@ class DecisionTreeClassifier(ClassifierI):
         decision tree.  Each line in this string corresponds to a
         single decision tree node or leaf, and indentation is used to
         display the structure of the decision tree.
-        :rtype : str
+        :rtype: str
         """
         # [xx] display default!!
         if self._fname is None:
@@ -103,7 +103,7 @@ class DecisionTreeClassifier(ClassifierI):
         Return a string representation of this decision tree that
         expresses the decisions it makes as a nested set of pseudocode
         if statements.
-        :rtype : str
+        :rtype: str
         """
         if self._fname is None:
             return "{0}return {1!r}\n".format(prefix, self._label)
