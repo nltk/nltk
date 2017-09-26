@@ -63,9 +63,10 @@ class RTEClassifierTest(unittest.TestCase):
         pairs = rte_corpus.pairs(['rte1_dev.xml'])[:6]
         test_output = ["%-15s => %s" % (key, rte_features(pair)[key])
                        for pair in pairs for key in sorted(rte_features(pair))]
-        expected_output = expected_from_rte_feature_extration.strip().split('\n\n')
-        for output_feat, expected_feat in zip(test_output, expected_output):
-            self.assertEqual(output_feat.strip(), expected_feat.strip())
+        expected_output = expected_from_rte_feature_extration.strip().split('\n')
+        # Remove null strings.
+        expected_output = list(filter(None, expected_output))
+        self.assertEqual(test_output, expected_output)
     # Test the RTEFeatureExtractor object.
     def test_feature_extractor_object(self):
         rtepair = rte_corpus.pairs(['rte3_dev.xml'])[33]
