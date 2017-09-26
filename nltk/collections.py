@@ -228,8 +228,7 @@ class AbstractLazySequence(object):
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
                 return '[%s, ...]' % text_type(', ').join(pieces[:-1])
-        else:
-            return '[%s]' % text_type(', ').join(pieces)
+        return '[%s]' % text_type(', ').join(pieces)
 
     def __eq__(self, other):
         return (type(self) == type(other) and list(self) == list(other))

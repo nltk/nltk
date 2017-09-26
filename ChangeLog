@@ -1,4 +1,4 @@
-Version 3.2.5 2017-09-16
+Version 3.2.5 2017-09-24
 
 * Arabic stemmers (ARLSTem, Snowball)
 * NIST MT evaluation metric and added NIST international_tokenize
@@ -7,11 +7,13 @@ Version 3.2.5 2017-09-16
 * Fix to Stanford segmenter
 * Improve treebank detokenizer, VerbNet, Vader
 * Misc code and documentation cleanups
+* Implement fixes suggested by LGTM
 
 Thanks to the following contributors to 3.2.5:
-Ali Abdullah, Lakhdar Benzahia, Henry Elder, Campion Fellin, Tsolak
-Ghukasyan, Thanh Ha, Nelson Liu, Nathan Schneider, Chintan Shah, Fábio
-Silva, Liling Tan, Ziyao Wei, Zicheng Xu, Albert Au Yeung, AbdealiJK,
+Ali Abdullah, Lakhdar Benzahia, Henry Elder, Campion Fellin,
+Tsolak Ghukasyan, Thanh Ha, Jean Helie, Nelson Liu,
+Nathan Schneider, Chintan Shah, Fábio Silva, Liling Tan,
+Ziyao Wei, Zicheng Xu, Albert Au Yeung, AbdealiJK,
 porqupine, sbagan, xprogramer
 
 Version 3.2.4 2017-05-21

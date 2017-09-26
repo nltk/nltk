@@ -132,13 +132,13 @@ class _WordNetObject(object):
         return self._related('@')
 
     def _hypernyms(self):
-        return self._related('@', sort=False)
+        return self._related('@')
 
     def instance_hypernyms(self):
         return self._related('@i')
 
     def _instance_hypernyms(self):
-        return self._related('@i', sort=False)
+        return self._related('@i')
 
     def hyponyms(self):
         return self._related('~')
