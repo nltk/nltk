@@ -117,7 +117,7 @@ def corpus_nist(list_of_references, hypotheses, n=5):
 
     # Eqn 2 in Doddington (2002):
     # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
-    info = [p_numerators[i] / p_numerators[i+1] for i in range(1, len(p_numerators))]
+    info = [math.log(p_numerators[i] / p_numerators[i+1]) for i in range(1, len(p_numerators))]
     # Eqn 3 in Doddington (2002)
     score = sum(info_i/p_denominators[i] for i, info_i in enumerate(info, start=1)) * bp
     return score
