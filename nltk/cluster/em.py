@@ -5,6 +5,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, unicode_literals
+
 try:
     import numpy
 except ImportError:
@@ -12,6 +13,7 @@ except ImportError:
 
 from nltk.compat import python_2_unicode_compatible
 from nltk.cluster.util import VectorSpaceClusterer
+
 
 @python_2_unicode_compatible
 class EMClusterer(VectorSpaceClusterer):
@@ -30,8 +32,8 @@ class EMClusterer(VectorSpaceClusterer):
     """
 
     def __init__(self, initial_means, priors=None, covariance_matrices=None,
-                       conv_threshold=1e-6, bias=0.1, normalise=False,
-                       svd_dimensions=None):
+                 conv_threshold=1e-6, bias=0.1, normalise=False,
+                 svd_dimensions=None):
         """
         Creates an EM clusterer with the given starting parameters,
         convergence threshold and vector mangling parameters.
@@ -74,12 +76,12 @@ class EMClusterer(VectorSpaceClusterer):
         priors = self._priors
         if not priors:
             priors = self._priors = numpy.ones(self._num_clusters,
-                                        numpy.float64) / self._num_clusters
+                                               numpy.float64) / self._num_clusters
         covariances = self._covariance_matrices
         if not covariances:
             covariances = self._covariance_matrices = \
-                [ numpy.identity(dimensions, numpy.float64)
-                  for i in range(self._num_clusters) ]
+                [numpy.identity(dimensions, numpy.float64)
+                 for i in range(self._num_clusters)]
 
         # do the E and M steps until the likelihood plateaus
         lastl = self._loglikelihood(vectors, priors, means, covariances)
@@ -89,33 +91,33 @@ class EMClusterer(VectorSpaceClusterer):
             if trace: print('iteration; loglikelihood', lastl)
             # E-step, calculate hidden variables, h[i,j]
             h = numpy.zeros((len(vectors), self._num_clusters),
-                numpy.float64)
+                            numpy.float64)
             for i in range(len(vectors)):
                 for j in range(self._num_clusters):
-                    h[i,j] = priors[j] * self._gaussian(means[j],
-                                               covariances[j], vectors[i])
-                h[i,:] /= sum(h[i,:])
+                    h[i, j] = priors[j] * self._gaussian(means[j],
+                                                         covariances[j], vectors[i])
+                h[i, :] /= sum(h[i, :])
 
             # M-step, update parameters - cvm, p, mean
             for j in range(self._num_clusters):
                 covariance_before = covariances[j]
                 new_covariance = numpy.zeros((dimensions, dimensions),
-                            numpy.float64)
+                                             numpy.float64)
                 new_mean = numpy.zeros(dimensions, numpy.float64)
                 sum_hj = 0.0
                 for i in range(len(vectors)):
                     delta = vectors[i] - means[j]
-                    new_covariance += h[i,j] * \
-                        numpy.multiply.outer(delta, delta)
-                    sum_hj += h[i,j]
-                    new_mean += h[i,j] * vectors[i]
+                    new_covariance += h[i, j] * \
+                                      numpy.multiply.outer(delta, delta)
+                    sum_hj += h[i, j]
+                    new_mean += h[i, j] * vectors[i]
                 covariances[j] = new_covariance / sum_hj
                 means[j] = new_mean / sum_hj
                 priors[j] = sum_hj / len(vectors)
 
                 # bias term to stop covariance matrix being singular
                 covariances[j] += self._bias * \
-                    numpy.identity(dimensions, numpy.float64)
+                                  numpy.identity(dimensions, numpy.float64)
 
             # calculate likelihood - FIXME: may be broken
             l = self._loglikelihood(vectors, priors, means, covariances)
@@ -129,7 +131,7 @@ class EMClusterer(VectorSpaceClusterer):
         best = None
         for j in range(self._num_clusters):
             p = self._priors[j] * self._gaussian(self._means[j],
-                                    self._covariance_matrices[j], vector)
+                                                 self._covariance_matrices[j], vector)
             if not best or p > best[0]:
                 best = (p, j)
         return best[1]
@@ -137,7 +139,7 @@ class EMClusterer(VectorSpaceClusterer):
     def likelihood_vectorspace(self, vector, cluster):
         cid = self.cluster_names().index(cluster)
         return self._priors[cluster] * self._gaussian(self._means[cluster],
-                                self._covariance_matrices[cluster], vector)
+                                                      self._covariance_matrices[cluster], vector)
 
     def _gaussian(self, mean, cvm, x):
         m = len(mean)
@@ -149,7 +151,7 @@ class EMClusterer(VectorSpaceClusterer):
             a = det ** -0.5 * (2 * numpy.pi) ** (-m / 2.0)
             dx = x - mean
             print(dx, inv)
-            b = -0.5 * numpy.dot( numpy.dot(dx, inv), dx)
+            b = -0.5 * numpy.dot(numpy.dot(dx, inv), dx)
             return a * numpy.exp(b)
         except OverflowError:
             # happens when the exponent is negative infinity - i.e. b = 0
@@ -162,12 +164,13 @@ class EMClusterer(VectorSpaceClusterer):
             p = 0
             for j in range(len(priors)):
                 p += priors[j] * \
-                         self._gaussian(means[j], covariances[j], vector)
+                     self._gaussian(means[j], covariances[j], vector)
             llh += numpy.log(p)
         return llh
 
     def __repr__(self):
         return '<EMClusterer means=%s>' % list(self._means)
+
 
 def demo():
     """
@@ -206,7 +209,8 @@ def demo():
     pdist = clusterer.classification_probdist(vector)
     for sample in pdist.samples():
         print('%s => %.0f%%' % (sample,
-                    pdist.prob(sample) *100))
+                                pdist.prob(sample) * 100))
+
 
 #
 #     The following demo code is broken.
