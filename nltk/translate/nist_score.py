@@ -120,9 +120,6 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     info = [p_numerators[i] / p_numerators[i+1] for i in range(1, len(p_numerators))]
     # Eqn 3 in Doddington (2002)
     score = sum(info_i/p_denominators[i] for i, info_i in enumerate(info, start=1)) * bp
-
-    print(info)
-    print(p_numerators, p_denominators)
     return score
 
 def nist_length_penalty(closest_ref_len, hyp_len):
