@@ -95,19 +95,16 @@ def corpus_nist(list_of_references, hypotheses, n=5):
 
     p_numerators = Counter() # Key = ngram order, and value = no. of ngram matches.
     p_denominators = Counter() # Key = ngram order, and value = no. of ngram in ref.
-    sysoutput_lengths = Counter() # Key = ngram order, and value = no. of ngram in hyp.
     hyp_lengths, ref_lengths = 0, 0
 
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
         # For each order of ngram, calculate the numerator and
         # denominator for the corpus-level modified precision.
-        for i, _ in enumerate(range(1,n+1)):
+        for i, _ in enumerate(range(n+1), start=1):
             p_i = modified_precision(references, hypothesis, i)
             p_numerators[i] += p_i.numerator
             p_denominators[i] += p_i.denominator
-            # Adds the no. of ngrams in the hypothesis.
-            sysoutput_lengths[i] += len(hypothesis) - (i - 1)
 
         # Calculate the hypothesis length and the closest reference length.
         # Adds them to the corpus-level hypothesis and reference counts.
@@ -118,17 +115,15 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     # Calculate corpus-level brevity penalty.
     bp = nist_length_penalty(ref_lengths, hyp_lengths)
 
-    # Collects the various precision values for the different ngram orders.
-    p_n = [Fraction(p_numerators[i], p_denominators[i], _normalize=False)
-           for i, _ in enumerate(range(1,n+1))]
-
     # Eqn 2 in Doddington (2002):
     # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
-    info = [0 if p_n[i].numerator == 0 or p_n[i+1].numerator == 0 # Handles math domain and zero division errors.
-            else math.log(p_n[i].numerator / p_n[i+1].numerator)
-            for i in range(len(p_n)-1)]
-    return sum(info_i/sysoutput_lengths[i] for i, info_i in enumerate(info)) * bp
+    info = [p_numerators[i] / p_numerators[i+1] for i in range(1, len(p_numerators))]
+    # Eqn 3 in Doddington (2002)
+    score = sum(info_i/p_denominators[i] for i, info_i in enumerate(info, start=1)) * bp
 
+    print(info)
+    print(p_numerators, p_denominators)
+    return score
 
 def nist_length_penalty(closest_ref_len, hyp_len):
     """
