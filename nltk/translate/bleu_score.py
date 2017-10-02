@@ -197,7 +197,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     #       smoothing method allows.
     p_n = smoothing_function(p_n, references=references, hypothesis=hypothesis,
                              hyp_len=hyp_len, emulate_multibleu=emulate_multibleu)
-    s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n)))
+    s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
     s =  bp * math.exp(math.fsum(s))
     return round(s, 4) if emulate_multibleu else s
 
@@ -482,13 +482,13 @@ class SmoothingFunction:
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
             else:
+                # To avoid math error when math.log(0) we replace 0 with
+                # sys.float_info.min
                 _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
                            "BLEU score will be zero; consider "
                            "using SmoothingFunction().").format(i+1)
                 warnings.warn(_msg)
-                return [sys.float_info.min]
-                # If this order of n-gram returns 0 counts, the higher order
-                # n-gram would also return 0, thus returning here.
+                p_n_new.append(sys.float_info.min)
         return p_n_new
 
     def method1(self, p_n, *args, **kwargs):

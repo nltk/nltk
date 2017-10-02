@@ -125,7 +125,7 @@ class TestBLEU(unittest.TestCase):
         # Since no 4-grams matches were found the result should be zero
         # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
         self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.0, places=4)
-        # Checks that the warning has been raised.
+        # Checks that the warning has been raised because len(reference) < 4.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
@@ -143,7 +143,7 @@ class TestBLEUFringeCases(unittest.TestCase):
         # Since no n-grams matches were found the result should be zero
         # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
         self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.0, places=4)
-        # Checks that the warning has been raised.
+        # Checks that the warning has been raised because len(hypothesis) < 4.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
