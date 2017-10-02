@@ -282,14 +282,14 @@ class StanfordParser(GenericStanfordParser):
 
     _OUTPUT_FORMAT = 'penn'
 
-    def __init__():
+    def __init__(self, *args, **kwargs):
         warnings.simplefilter('always', DeprecationWarning)
         warnings.warn(str("\nThe StanfordParser will "
                           "be deprecated\n"
                           "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead.'"),
                       DeprecationWarning, stacklevel=2)
         warnings.simplefilter('ignore', DeprecationWarning)
-        super(GenericStanfordParser, self).__init__(*args, **kwargs)
+        super(StanfordParser, self).__init__(*args, **kwargs)
 
     def _make_tree(self, result):
         return Tree.fromstring(result)
@@ -347,14 +347,14 @@ class StanfordDependencyParser(GenericStanfordParser):
 
     _OUTPUT_FORMAT = 'conll2007'
 
-    def __init__():
+    def __init__(self, *args, **kwargs):
         warnings.simplefilter('always', DeprecationWarning)
         warnings.warn(str("\nThe StanfordDependencyParser will "
                           "be deprecated\n"
                           "Please use \033[91mnltk.parse.corenlp.CoreNLPDependencyParser\033[0m instead.'"),
                       DeprecationWarning, stacklevel=2)
         warnings.simplefilter('ignore', DeprecationWarning)
-        super(GenericStanfordParser, self).__init__(*args, **kwargs)
+        super(StanfordDependencyParser, self).__init__(*args, **kwargs)
 
     def _make_tree(self, result):
         return DependencyGraph(result, top_relation_label='root')
