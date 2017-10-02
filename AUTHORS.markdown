@@ -1,1 +1,0 @@
-Björn Mattsson
