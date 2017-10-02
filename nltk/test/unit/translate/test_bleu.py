@@ -122,8 +122,10 @@ class TestBLEU(unittest.TestCase):
     def test_partial_matches_hypothesis_longer_than_reference(self):
         references = ['John loves Mary'.split()]
         hypothesis = 'John loves Mary who loves Mike'.split()
-        self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.4729, places=4)
-        # Checks that the warning has been raised because len(reference) < 4.
+        # Since no 4-grams matches were found the result should be zero
+        # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.0, places=4)
+        # Checks that the warning has been raised.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
@@ -138,8 +140,10 @@ class TestBLEUFringeCases(unittest.TestCase):
         hypothesis = 'John loves Mary'.split()
         n = len(hypothesis) + 1 #
         weights = [1.0/n] * n # Uniform weights.
-        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.7165, places=4)
-        # Checks that the warning has been raised because len(hypothesis) < 4.
+        # Since no n-grams matches were found the result should be zero
+        # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.0, places=4)
+        # Checks that the warning has been raised.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
@@ -149,7 +153,9 @@ class TestBLEUFringeCases(unittest.TestCase):
         # it's a special case where reference == hypothesis.
         references = ['John loves Mary'.split()]
         hypothesis = 'John loves Mary'.split()
-        assert(sentence_bleu(references, hypothesis, weights) == 1.0)
+        # Since no 4-grams matches were found the result should be zero
+        # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.0, places=4)
 
     def test_empty_hypothesis(self):
         # Test case where there's hypothesis is empty.
@@ -174,8 +180,9 @@ class TestBLEUFringeCases(unittest.TestCase):
         # is shorter than 4.
         references = ['let it go'.split()]
         hypothesis = 'let go it'.split()
-        # Checks that the value the hypothesis and reference returns is 1.0
-        assert(sentence_bleu(references, hypothesis) == 1.0)
+        # Checks that the value the hypothesis and reference returns is 0.0
+        # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.0, places=4)
         # Checks that the warning has been raised.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)

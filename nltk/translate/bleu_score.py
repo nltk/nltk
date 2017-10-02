@@ -481,16 +481,14 @@ class SmoothingFunction:
         for i, p_i in enumerate(p_n):
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
-            elif _emulate_multibleu and i < 5:
-                return [sys.float_info.min]
             else:
                 _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
-                           "BLEU scores might be undesirable; "
-                           "use SmoothingFunction().").format(i+1)
+                           "BLEU score will be zero; consider "
+                           "using SmoothingFunction().").format(i+1)
                 warnings.warn(_msg)
+                return [sys.float_info.min]
                 # If this order of n-gram returns 0 counts, the higher order
-                # n-gram would also return 0, thus breaking the loop here.
-                break
+                # n-gram would also return 0, thus returning here.
         return p_n_new
 
     def method1(self, p_n, *args, **kwargs):
