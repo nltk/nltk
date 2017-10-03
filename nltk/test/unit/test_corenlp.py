@@ -15,7 +15,7 @@ except ImportError:
 from nltk.tree import Tree
 from nltk.tag.stanford import CoreNLPPOSTagger, CoreNLPNERTagger
 from nltk.tokenize.stanford import CoreNLPTokenizer
-from nltk.parse.stanford import CoreNLPParser, CoreNLPDependencyParser, CoreNLPNeuralDependencyParser
+from nltk.parse import stanford
 
 from unittest.mock import MagicMock
 
@@ -655,7 +655,7 @@ class TestParserAPI(TestCase):
     }
 
     def test_parse(self):
-        corenlp_parser = CoreNLPParser()
+        corenlp_parser = stanford.StanfordCoreNLPParser()
 
         corenlp_parser.api_call = MagicMock(return_value=self.return_value)
 
@@ -669,7 +669,7 @@ class TestParserAPI(TestCase):
         self.assertEqual(expected_output, parsed_data)
 
     def test_dependency_parser(self):
-        corenlp_parser = CoreNLPDependencyParser('http://localhost:9000')
+        corenlp_parser = stanford.StanfordCoreNLPDependencyParser('http://localhost:9000')
 
         corenlp_parser.api_call = MagicMock(return_value=self.return_value)
 
@@ -683,7 +683,7 @@ class TestParserAPI(TestCase):
         self.assertEqual(expected_output, parsed_data.tree())
 
     def test_dependency_neural_parser(self):
-        corenlp_parser = CoreNLPNeuralDependencyParser('http://localhost:9000')
+        corenlp_parser = stanford.StanfordCoreNLPNeuralDependencyParser('http://localhost:9000')
 
         corenlp_parser.api_call = MagicMock(return_value=self.return_value)
 

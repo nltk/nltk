@@ -23,9 +23,10 @@ from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_opt
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
-from nltk.parse.corenlp import CoreNLPParser, CoreNLPDependencyParser
+from nltk.parse import corenlp
 
 _stanford_url = 'https://nlp.stanford.edu/software/lex-parser.shtml'
+
 
 class GenericStanfordParser(ParserI):
     """Interface to the Stanford Parser"""
@@ -283,12 +284,10 @@ class StanfordParser(GenericStanfordParser):
     _OUTPUT_FORMAT = 'penn'
 
     def __init__(self, *args, **kwargs):
-        warnings.simplefilter('always', DeprecationWarning)
-        warnings.warn(str("\nThe StanfordParser will "
-                          "be deprecated\n"
-                          "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead.'"),
+        warnings.warn("The StanfordParser will be deprecated\n"
+                      "Please use \033[91mnltk.parse.corenlp.StanforCoreNLPParser\033[0m instead.",
                       DeprecationWarning, stacklevel=2)
-        warnings.simplefilter('ignore', DeprecationWarning)
+
         super(StanfordParser, self).__init__(*args, **kwargs)
 
     def _make_tree(self, result):
@@ -348,12 +347,10 @@ class StanfordDependencyParser(GenericStanfordParser):
     _OUTPUT_FORMAT = 'conll2007'
 
     def __init__(self, *args, **kwargs):
-        warnings.simplefilter('always', DeprecationWarning)
-        warnings.warn(str("\nThe StanfordDependencyParser will "
-                          "be deprecated\n"
-                          "Please use \033[91mnltk.parse.corenlp.CoreNLPDependencyParser\033[0m instead.'"),
+        warnings.warn("The StanfordDependencyParser will be deprecated\n"
+                      "Please use \033[91mnltk.parse.corenlp.StanforCoreNLPDependencyParser\033[0m instead.",
                       DeprecationWarning, stacklevel=2)
-        warnings.simplefilter('ignore', DeprecationWarning)
+
         super(StanfordDependencyParser, self).__init__(*args, **kwargs)
 
     def _make_tree(self, result):
@@ -400,12 +397,9 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
     _DOUBLE_SPACED_OUTPUT = True
 
     def __init__(self, *args, **kwargs):
-        warnings.simplefilter('always', DeprecationWarning)
-        warnings.warn(str("\nThe StanfordNeuralDependencyParser will "
-                          "be deprecated\n"
-                          "Please use \033[91mnltk.parse.corenlp.CoreNLPNeuralDependencyParser\033[0m instead.'"),
+        warnings.warn("The StanfordNeuralDependencyParser will be deprecated\n"
+                      "Please use \033[91mnltk.parse.corenlp.StanforCoreNLPNeuralDependencyParser\033[0m instead.",
                       DeprecationWarning, stacklevel=2)
-        warnings.simplefilter('ignore', DeprecationWarning)
 
         super(StanfordNeuralDependencyParser, self).__init__(*args, **kwargs)
         self.corenlp_options += '-annotators tokenize,ssplit,pos,depparse'
@@ -426,7 +420,7 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
         return DependencyGraph(result, top_relation_label='ROOT')
 
 
-class CoreNLPParser(CoreNLPParser):
+class StanfordCoreNLPParser(corenlp.CoreNLPParser):
 
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
         """
@@ -441,7 +435,7 @@ class CoreNLPParser(CoreNLPParser):
             Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])])]
         """
 
-        super(CoreNLPParser, self).__init__(url, encoding)
+        super(StanfordCoreNLPParser, self).__init__(url, encoding)
 
     def parse(self, text, properties=None):
         """
@@ -451,7 +445,7 @@ class CoreNLPParser(CoreNLPParser):
         return self.raw_parse(text, properties)
 
 
-class CoreNLPDependencyParser(CoreNLPDependencyParser):
+class StanfordCoreNLPDependencyParser(corenlp.CoreNLPDependencyParser):
 
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
         """
@@ -463,7 +457,7 @@ class CoreNLPDependencyParser(CoreNLPDependencyParser):
             >>> CoreNLPDependencyParser(url='http://localhost:9000').parse(s) # doctest: +SKIP
             [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy']), '.'])]
         """
-        super(CoreNLPDependencyParser, self).__init__(url, encoding)
+        super(StanfordCoreNLPDependencyParser, self).__init__(url, encoding)
 
     def parse(self, text, properties=None):
         """
@@ -473,7 +467,7 @@ class CoreNLPDependencyParser(CoreNLPDependencyParser):
         return self.raw_parse(text, properties)
 
 
-class CoreNLPNeuralDependencyParser(CoreNLPDependencyParser):
+class StanfordCoreNLPNeuralDependencyParser(corenlp.CoreNLPDependencyParser):
 
     def __init__(self, url='http://localhost:9000', encoding='utf8'):
         """
@@ -486,7 +480,7 @@ class CoreNLPNeuralDependencyParser(CoreNLPDependencyParser):
             [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy']), '.'])]
         """
 
-        super(CoreNLPDependencyParser, self).__init__(url, encoding)
+        super(StanfordCoreNLPNeuralDependencyParser, self).__init__(url, encoding)
 
     def parse(self, text, properties=None):
         """
