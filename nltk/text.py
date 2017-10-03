@@ -311,7 +311,7 @@ class Text(object):
 
     def __getitem__(self, i):
         if isinstance(i, slice):
-            return self.tokens[i.start:i.stop]
+            return self.tokens[i.start:i.stop:i.step]
         else:
             return self.tokens[i]
 
