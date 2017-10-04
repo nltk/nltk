@@ -122,6 +122,9 @@ class TestBLEU(unittest.TestCase):
     def test_partial_matches_hypothesis_longer_than_reference(self):
         references = ['John loves Mary'.split()]
         hypothesis = 'John loves Mary who loves Mike'.split()
+        # Test with 3-gram BLEU scores
+        weights = [1.0/3] * 3  # Uniform weights
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.36840, places=4)
         # Since no 4-grams matches were found the result should be zero
         # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
         self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.0, places=4)
@@ -156,6 +159,11 @@ class TestBLEUFringeCases(unittest.TestCase):
         # Since no 4-grams matches were found the result should be zero
         # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
         self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.0, places=4)
+        # Checks that the warning has been raised because len(hypothesis)
+        try:
+            self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
+        except AttributeError:
+            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
 
     def test_empty_hypothesis(self):
         # Test case where there's hypothesis is empty.

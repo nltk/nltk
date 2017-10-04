@@ -58,17 +58,28 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1) # doctest: +ELLIPSIS
     0.5045...
 
-    >>> sentence_bleu([reference1, reference2, reference3], hypothesis2) # doctest: +ELLIPSIS
-    0.3969...
-
     The default BLEU calculates a score for up to 4grams using uniform
     weights. To evaluate your translations with higher/lower order ngrams,
-    use customized weights. E.g. when accounting for up to 6grams with uniform
+    use customized weights. E.g. when accounting for up to 5grams with uniform
     weights:
 
     >>> weights = (0.1666, 0.1666, 0.1666, 0.1666, 0.1666)
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1, weights) # doctest: +ELLIPSIS
     0.4583...
+
+    If no ngram overlap exists for any of the orders that are used to evaluate BLEU
+    it will return the value zero. This since BLEU is a geometric mean of the precisions
+    for the different ngram orders (no overlap means a precision of 0).
+
+    >>> round(sentence_bleu([reference1, reference2, reference3], hypothesis2), 4) # doctest: +ELLIPSIS
+    0.0
+
+    To avoid this harsh behaviour when no ngram overlaps are found a smoothing function can be used.
+
+    >>> chencherry = SmoothingFunction()
+    >>> sentence_bleu([reference1, reference2, reference3], hypothesis2,
+    ...     smoothing_function=chencherry.method1) # doctest: +ELLIPSIS
+    0.0370...
 
     :param references: reference sentences
     :type references: list(list(str))
@@ -479,16 +490,17 @@ class SmoothingFunction:
         p_n_new = []
         _emulate_multibleu = kwargs['emulate_multibleu']
         for i, p_i in enumerate(p_n):
-            if p_i.numerator != 0:
-                p_n_new.append(p_i)
-            else:
-                # To avoid math error when math.log(0) we replace 0 with
-                # sys.float_info.min
-                _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
-                           "BLEU score will be zero; consider "
-                           "using SmoothingFunction().").format(i+1)
-                warnings.warn(_msg)
+            if p_i.numerator == 0:
+                # We have 0/den where den might be 0 or !=0. The result should equal 0, or undefined
+                # However, math.log(0) gives math error. Therefore we replace 0 with sys.float_info.min
                 p_n_new.append(sys.float_info.min)
+                _msg = str("\nThe hypothesis contains 0 counts of {}-gram overlaps. Therefore\n"
+                           "the BLEU score evaluates to 0, independently of how many N-gram\n"
+                           "overlaps of lower order it contains. Consider using BLEU score\n"
+                           "of lower order or SmoothingFunction().").format(i+1, i+1)
+                warnings.warn(_msg)
+            else:
+                p_n_new.append(p_i)
         return p_n_new
 
     def method1(self, p_n, *args, **kwargs):
