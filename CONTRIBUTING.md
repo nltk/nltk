@@ -53,8 +53,8 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
 - Install the dependencies (`pip install -r pip-req.txt`);
 - Install the `nltk` library in development mode
   (`python setup.py develop`);
-- Download the datasets (`python -c "import nltk; nltk.download('all')"`) --
-  they are needed for running tests locally;
+- Download the datasets for running tests
+  (`python -c "import nltk; nltk.download('tests')"`);
 - Create a remote link from your local repository to the
   upstream `nltk/nltk` on GitHub
   (`git remote add upstream https://github.com/nltk/nltk.git`) --
