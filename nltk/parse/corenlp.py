@@ -16,6 +16,7 @@ import socket
 
 from nltk.internals import find_jar_iter, config_java, java, _java_options
 
+from nltk.tag.api import TaggerI
 from nltk.parse.api import ParserI
 from nltk.tokenize.api import TokenizerI
 from nltk.parse.dependencygraph import DependencyGraph
@@ -176,14 +177,17 @@ class CoreNLPServer(object):
         return False
 
 
-class GenericCoreNLPParser(ParserI, TokenizerI):
+class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
     """Interface to the CoreNLP Parser."""
 
-    def __init__(self, url='http://localhost:9000', encoding='utf8'):
+    def __init__(self, url='http://localhost:9000', encoding='utf8', tagtype=None):
         import requests
 
         self.url = url
         self.encoding = encoding
+
+        assert tagtype in ['pos', 'ner', None]
+        self.tagtype = tagtype
 
         self.session = requests.Session()
 
@@ -339,6 +343,30 @@ class GenericCoreNLPParser(ParserI, TokenizerI):
             for token in sentence['tokens']:
                 yield token['originalText'] or token['word']
 
+    def tag_sents(self, sentences):
+        # Converting list(list(str)) -> list(str)
+        sentences = (' '.join(words) for words in sentences)
+        return list(self.raw_tag_sents(sentences))
+
+
+    def tag(self, sentence):
+        return self.tag_sents([sentence])[0]
+
+    def raw_tag_sents(self, sentences):
+        """
+        This function will interface the `GenericCoreNLPParser.api_call` to
+        retreive the JSON output and return the annotations required.
+        """
+        default_properties = {'ssplit.isOneSentence': 'true',
+                              'annotators': 'tokenize,ssplit,' }
+        # Supports only 'pos' or 'ner' tags.
+        assert self.tagtype in ['pos', 'ner']
+        default_properties['annotators'] += self.tagtype
+        for sentence in sentences:
+            tagged_data = self.api_call(sentence, properties=default_properties)
+            assert len(tagged_data['sentences']) == 1
+            # Taggers only need to return 1-best sentence.
+            yield [(token['word'], token[self.tagtype]) for token in tagged_data['sentences'][0]['tokens']]
 
 class CoreNLPParser(GenericCoreNLPParser):
     """
