@@ -186,7 +186,9 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         self.url = url
         self.encoding = encoding
 
-        assert tagtype in ['pos', 'ner', None]
+        if tagtype not in ['pos', 'ner', None]:
+            raise ValueError("tagtype must be either 'pos', 'ner' or None")
+            
         self.tagtype = tagtype
 
         self.session = requests.Session()
@@ -344,29 +346,61 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
                 yield token['originalText'] or token['word']
 
     def tag_sents(self, sentences):
+        """
+        Tag multiple sentences.
+
+        Takes multiple sentences as a list where each sentence is a list of
+        tokens.
+        
+        :param sentences: Input sentences to tag
+        :type sentences: list(list(str))
+        :rtype: list(list(tuple(str, str))
+        """
         # Converting list(list(str)) -> list(str)
         sentences = (' '.join(words) for words in sentences)
-        return list(self.raw_tag_sents(sentences))
-
+        return [sentences[0] for sentences in self.raw_tag_sents(sentences)]
 
     def tag(self, sentence):
+        """
+        Tag a list of tokens.
+
+        :rtype: list(tuple(str, str))
+
+        >>> parser = CoreNLPParser(url='http://localhost:9000', tagtype='ner')
+        >>> tokens = 'Rami Eid is studying at Stony Brook University in NY'.split()
+        >>> parser.tag(tokens)
+        [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'),
+        ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'O')]
+
+        >>> parser = CoreNLPParser(url='http://localhost:9000', tagtype='pos')
+        >>> tokens = "What is the airspeed of an unladen swallow ?".split()
+        >>> parser.tag(tokens)
+        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'),
+        ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'),
+        ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
+        """
         return self.tag_sents([sentence])[0]
 
     def raw_tag_sents(self, sentences):
         """
-        This function will interface the `GenericCoreNLPParser.api_call` to
-        retreive the JSON output and return the annotations required.
+        Tag multiple sentences.
+
+        Takes multiple sentences as a list where each sentence is a string.
+        
+        :param sentences: Input sentences to tag
+        :type sentences: list(str)
+        :rtype: list(list(list(tuple(str, str)))
         """
         default_properties = {'ssplit.isOneSentence': 'true',
                               'annotators': 'tokenize,ssplit,' }
+                              
         # Supports only 'pos' or 'ner' tags.
         assert self.tagtype in ['pos', 'ner']
         default_properties['annotators'] += self.tagtype
         for sentence in sentences:
             tagged_data = self.api_call(sentence, properties=default_properties)
-            assert len(tagged_data['sentences']) == 1
-            # Taggers only need to return 1-best sentence.
-            yield [(token['word'], token[self.tagtype]) for token in tagged_data['sentences'][0]['tokens']]
+            yield [[(token['word'], token[self.tagtype]) for token in tagged_sentence['tokens']]
+                    for tagged_sentence in tagged_data['sentences']]
 
 class CoreNLPParser(GenericCoreNLPParser):
     """

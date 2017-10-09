@@ -9,12 +9,11 @@ from itertools import chain
 from unittest import TestCase, SkipTest
 
 try:
-    from unittest.mock import patch  # Tries to import mock in Python3.
+    from unittest.mock import MagicMock
 except ImportError:
     raise SkipTest('unittest.mock no supported in Python2')
 from nltk.tree import Tree
 from nltk.parse import corenlp
-from unittest.mock import MagicMock
 
 
 class TestTokenizerAPI(TestCase):
@@ -522,6 +521,9 @@ class TestTaggerAPI(TestCase):
                                                                                                                             'annotators': 'tokenize,ssplit,ner'})
         self.assertEqual(expected_output, tagged_output)
 
+    def test_unexpected_tagtype(self):
+        with self.assertRaises(ValueError):
+            corenlp_tagger = corenlp.CoreNLPParser(tagtype='test')
 
 class TestParserAPI(TestCase):
 
