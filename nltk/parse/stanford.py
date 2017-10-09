@@ -23,7 +23,6 @@ from nltk.internals import find_jar, find_jar_iter, config_java, java, _java_opt
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tree import Tree
-from nltk.parse import corenlp
 
 _stanford_url = 'https://nlp.stanford.edu/software/lex-parser.shtml'
 

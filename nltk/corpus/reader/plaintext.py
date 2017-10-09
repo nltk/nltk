@@ -14,7 +14,7 @@ A reader for corpora that consist of plaintext documents.
 from six import string_types
 import codecs
 
-from nltk.data import LazyLoader
+import nltk.data
 from nltk.tokenize import *
 
 from nltk.corpus.reader.util import *
@@ -39,7 +39,7 @@ class PlaintextCorpusReader(CorpusReader):
 
     def __init__(self, root, fileids,
                  word_tokenizer=WordPunctTokenizer(),
-                 sent_tokenizer=LazyLoader(
+                 sent_tokenizer=nltk.data.LazyLoader(
                      'tokenizers/punkt/english.pickle'),
                  para_block_reader=read_blankline_block,
                  encoding='utf8'):
@@ -177,7 +177,7 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader,
 class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
     def __init__(self, *args, **kwargs):
         CategorizedCorpusReader.__init__(self, kwargs)
-        kwargs['sent_tokenizer'] = LazyLoader('tokenizers/punkt/portuguese.pickle')
+        kwargs['sent_tokenizer'] = nltk.data.LazyLoader('tokenizers/punkt/portuguese.pickle')
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
 
 class EuroparlCorpusReader(PlaintextCorpusReader):

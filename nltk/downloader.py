@@ -181,7 +181,6 @@ from six.moves.urllib.request import urlopen
 from six.moves.urllib.error import HTTPError, URLError
 
 import nltk
-from nltk import data, internals
 from nltk.compat import python_2_unicode_compatible
 #urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
@@ -939,9 +938,9 @@ class Downloader(object):
 
         # Check if we have sufficient permissions to install in a
         # variety of system-wide locations.
-        for nltkdir in data.path:
+        for nltkdir in nltk.data.path:
             if (os.path.exists(nltkdir) and
-                internals.is_writable(nltkdir)):
+                nltk.internals.is_writable(nltkdir)):
                 return nltkdir
 
         # On Windows, use %APPDATA%
