@@ -40,12 +40,11 @@ class StanfordTokenizer(TokenizerI):
 
     def __init__(self, path_to_jar=None, encoding='utf8', options=None, verbose=False, java_options='-mx1000m'):
         # Raise deprecation warning.
-        warnings.simplefilter('always', DeprecationWarning)
         warnings.warn(str("\nThe StanfordTokenizer will "
                           "be deprecated in version 3.2.5.\n"
-                          "Please use \033[91mnltk.parse.corenlp.CoreNLPTokenizer\033[0m instead.'"),
+                          "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead.'"),
                       DeprecationWarning, stacklevel=2)
-        warnings.simplefilter('ignore', DeprecationWarning)
+
         self._stanford_jar = find_jar(
             self._JAR, path_to_jar,
             env_vars=('STANFORD_POSTAGGER',),
