@@ -530,30 +530,6 @@ class Downloader(object):
             download_dir = self._download_dir
             yield SelectDownloadDirMessage(download_dir)
 
-        # Resources for running tests
-        if info_or_id == 'tests':
-            info_or_id = [
-                'averaged_perceptron_tagger',
-                'porter_test',
-                'twitter_samples',
-                'wmt15_eval',
-                'subjectivity',
-                'framenet_v17',
-                'product_reviews_1',
-                'product_reviews_2',
-                'vader_lexicon',
-                'crubadan',
-                'mte_teip5',
-                'sentence_polarity',
-                'universal_treebanks_v20',
-                'panlex_swadesh',
-                'nonbreaking_prefixes',
-                'perluniprops',
-                'pros_cons',
-                'opinion_lexicon',
-                'comparative_sentences',
-            ]
-
         # If they gave us a list of ids, then download each one.
         if isinstance(info_or_id, (list,tuple)):
             for msg in self._download_list(info_or_id, download_dir, force):
