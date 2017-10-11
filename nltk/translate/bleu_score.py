@@ -525,7 +525,6 @@ class SmoothingFunction:
         if _emulate_multibleu:
             _backoff = False
 
-        if _emulate_multibleu:
         for i, p_i in enumerate(p_n):
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
@@ -534,7 +533,7 @@ class SmoothingFunction:
                     _msg = str("\nThe hypothesis contains 0 counts of {}-gram overlaps.\n"
                                "Therefore the BLEU score evaluates to 0, independently of\n"
                                "how many N-gram overlaps of lower order it contains.\n"
-                               "Consider using the SmoothingFunction().").format(i+1)
+                               "Consider using lower n-gram order or use SmoothingFunction()").format(i+1)
                     warnings.warn(_msg)
                     # When numerator==0 where denonminator==0 or !=0, the result
                     # for the precision score should be equal to 0 or undefined.
