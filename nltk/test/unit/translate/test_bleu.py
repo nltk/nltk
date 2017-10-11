@@ -125,12 +125,13 @@ class TestBLEU(unittest.TestCase):
         self.assertAlmostEqual(sentence_bleu(references, hypothesis, backoff=True), 0.4729, places=4)
         # Since no 4-grams matches were found the result should be zero
         # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
-        self.assertAlmostEqual(sentence_bleu(references, hypothesis, enable_multibleu=True), 0.0, places=4)
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, emulate_multibleu=True), 0.0, places=4)
         # Checks that the warning has been raised because len(reference) < 4.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
             pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+
 
 #@unittest.skip("Skipping fringe cases for BLEU.")
 class TestBLEUFringeCases(unittest.TestCase):
@@ -144,7 +145,7 @@ class TestBLEUFringeCases(unittest.TestCase):
         self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights, backoff=True), 0.7165, places=4)
         # Since no n-grams matches were found the result should be zero
         # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
-        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights, enable_multibleu=True), 0.0, places=4)
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights, emulate_multibleu=True), 0.0, places=4)
         # Checks that the warning has been raised because len(hypothesis) < 4.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
@@ -158,7 +159,7 @@ class TestBLEUFringeCases(unittest.TestCase):
         assert(sentence_bleu(references, hypothesis, weights, backoff=True) == 1.0)
         # Since no 4-grams matches were found the result should be zero
         # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
-        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights, enable_multibleu=True), 0.0, places=4)
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights, emulate_multibleu=True), 0.0, places=4)
 
     def test_empty_hypothesis(self):
         # Test case where there's hypothesis is empty.
@@ -187,7 +188,7 @@ class TestBLEUFringeCases(unittest.TestCase):
         assert(sentence_bleu(references, hypothesis, backoff=True) == 1.0)
         # Checks that the value the hypothesis and reference returns is 0.0
         # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
-        self.assertAlmostEqual(sentence_bleu(references, hypothesis, enable_multibleu=True), 0.0, places=4)
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, emulate_multibleu=True), 0.0, places=4)
         # Checks that the warning has been raised.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
