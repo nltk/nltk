@@ -142,7 +142,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     :type smoothing_function: SmoothingFunction
     :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
-    :param emulate_multibleu: Option to emulate multi-bleu.pl behavior
+    :param emulate_multibleu: Option to return 0 BLEU score if there's less than one 4-gram overlap.
     :type emulate_multibleu: bool
     :param backoff: Option to backoff to the largest n-gram overlap if there's less than one 4-gram overlap.
     :type backoff: bool
