@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2017 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
-# Contributors: Dmitrijs Milajevs, Liling Tan
+# Contributors: Björn Mattsson, Dmitrijs Milajevs, Liling Tan
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
