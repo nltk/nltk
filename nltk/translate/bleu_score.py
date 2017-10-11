@@ -145,8 +145,8 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     :param emulate_multibleu: Option to emulate multi-bleu.pl behavior
     :type emulate_multibleu: bool
     :param backoff: Option to backoff to the largest n-gram overlap if there's less than one 4-gram overlap.
+    :type backoff: bool
     :return: The corpus-level BLEU score.
-    :param backoff: bool
     :
     :rtype: float
     """
