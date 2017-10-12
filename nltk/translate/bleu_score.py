@@ -80,7 +80,6 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     :type smoothing_function: SmoothingFunction
     :param auto_reweigh:
     :type auto_reweigh: bool
-    :param emulate_multibleu: bool
     :return: The sentence-level BLEU score.
     :rtype: float
     """
@@ -90,8 +89,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
 
 
 def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25),
-                smoothing_function=None, auto_reweigh=False,
-                emulate_multibleu=False, backoff=True):
+                smoothing_function=None, auto_reweigh=False):
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
@@ -142,10 +140,6 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     :type smoothing_function: SmoothingFunction
     :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
-    :param emulate_multibleu: Option to return 0 BLEU score if there's less than one 4-gram overlap.
-    :type emulate_multibleu: bool
-    :param backoff: Option to backoff to the largest n-gram overlap if there's less than one 4-gram overlap.
-    :type backoff: bool
     :return: The corpus-level BLEU score.
     :
     :rtype: float
@@ -200,11 +194,10 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     #       it tries to retain the Fraction object as much as the
     #       smoothing method allows.
     p_n = smoothing_function(p_n, references=references, hypothesis=hypothesis,
-                             hyp_len=hyp_len, emulate_multibleu=emulate_multibleu,
-                             backoff=backoff)
+                             hyp_len=hyp_len)
     s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n)))
     s =  bp * math.exp(math.fsum(s))
-    return round(s, 4) if emulate_multibleu else s
+    return s
 
 
 def modified_precision(references, hypothesis, n):
@@ -482,74 +475,23 @@ class SmoothingFunction:
     def method0(self, p_n, *args, **kwargs):
         """
         No smoothing.
-
-        The original BLEU score (Papineni et al. 1992) is focused on corpus
-        level BLEU where the assumption is that there is at least 1 n-gram overlap
-        between the hypothesis and the reference for the largest n-th order of ngrams.
-
-        There is no explicit strategy to handle fringe cases otherwise, e.g.
-        where there are < 1 4-grams overlap.
-
-        There are two options to handle:
-
-         1. Traditionally, the multi-bleu.pl and mteval-v13a.pl scripts returns 0
-            BLEU score for these fringe cases even when its a perfect sentence:
-
-                $ cat ref.txt
-                1 2 3
-                $ cat hyp.txt
-                1 2 3
-                $ perl multi-bleu.perl ref.txt < hyp.txt
-                BLEU = 0.00, 100.0/100.0/100.0/0.0 (BP=1.000, ratio=1.000, hyp_len=3, ref_len=3)
-
-         2. Alternatively, we can backoff the to the previous n-grams precision
-            and skip the values of the higher order n-grams that returns 0 overlaps
-
-        To toggle between strategy (1) and (2), we have the `emulate_multibleu`
-        and `backoff` option where users can choose between either strategies
-        to handle, where (1) is seeing the glass should-be-empty by being
-        overly conservative setting BLEU score to 0 and (2) is seeing th glass
-        should-have-something by being overly confident and backing off precision
-        to the previous n-gram overlap value that gives a non-zero BLEU score.
-
-        The default is to use the backoff strategy (perhaps unique to NLTK)
-        because we had more user issues/complaints when we followed the (1)
-        paradigm, see the wack-a-mole issues linked to https://github.com/nltk/nltk/issues/1330
-
-        Note that the `emulate_multibleu` option always overrides `backoff` but
-        the `backoff` option is set as the default.
         """
         p_n_new = []
-        _emulate_multibleu = kwargs['emulate_multibleu']
-        _backoff = kwargs['backoff']
-
-        if _emulate_multibleu:
-            _backoff = False
-
         for i, p_i in enumerate(p_n):
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
             else:
-                if _emulate_multibleu:
-                    _msg = str("\nThe hypothesis contains 0 counts of {}-gram overlaps.\n"
-                               "Therefore the BLEU score evaluates to 0, independently of\n"
-                               "how many N-gram overlaps of lower order it contains.\n"
-                               "Consider using lower n-gram order or use SmoothingFunction()").format(i+1)
-                    warnings.warn(_msg)
-                    # When numerator==0 where denonminator==0 or !=0, the result
-                    # for the precision score should be equal to 0 or undefined.
-                    # Due to BLEU geometric mean computation in logarithm space,
-                    # we we need to take the return sys.float_info.min such that
-                    # math.log(sys.float_info.min) returns a 0 precision score.
-                    p_n_new.append(sys.float_info.min)
-                elif _backoff:
-                    _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
-                               "BLEU scores might be undesirable; "
-                               "use SmoothingFunction()").format(i+1)
-                    warnings.warn(_msg)
-                    # If this order of n-gram returns 0 counts, the higher order
-                    # n-gram would also return 0, thus breaking the loop here.
-                    break
+                _msg = str("\nThe hypothesis contains 0 counts of {}-gram overlaps.\n"
+                           "Therefore the BLEU score evaluates to 0, independently of\n"
+                           "how many N-gram overlaps of lower order it contains.\n"
+                           "Consider using lower n-gram order or use SmoothingFunction()").format(i+1)
+                warnings.warn(_msg)
+                # When numerator==0 where denonminator==0 or !=0, the result
+                # for the precision score should be equal to 0 or undefined.
+                # Due to BLEU geometric mean computation in logarithm space,
+                # we we need to take the return sys.float_info.min such that
+                # math.log(sys.float_info.min) returns a 0 precision score.
+                p_n_new.append(sys.float_info.min)
         return p_n_new
 
     def method1(self, p_n, *args, **kwargs):
