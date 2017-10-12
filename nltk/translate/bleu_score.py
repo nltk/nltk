@@ -58,8 +58,8 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1) # doctest: +ELLIPSIS
     0.5045...
 
-    >>> sentence_bleu([reference1, reference2, reference3], hypothesis2) # doctest: +ELLIPSIS
-    0.3969...
+    >>> round(sentence_bleu([reference1, reference2, reference3], hypothesis2),4) # doctest: +ELLIPSIS
+    0.0
 
     The default BLEU calculates a score for up to 4grams using uniform
     weights. To evaluate your translations with higher/lower order ngrams,
@@ -84,8 +84,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     :rtype: float
     """
     return corpus_bleu([references], [hypothesis],
-                        weights, smoothing_function, auto_reweigh,
-                        emulate_multibleu, backoff)
+                        weights, smoothing_function, auto_reweigh)
 
 
 def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25),
