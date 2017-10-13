@@ -294,7 +294,7 @@ class _StandardStemmer(_LanguageSpecificStemmer):
 
         return rv
 
-class ArabicStemmer(_LanguageSpecificStemmer):
+class ArabicStemmer(_StandardStemmer):
     """
         https://github.com/snowballstem/snowball/blob/master/algorithms/arabic/stem_Unicode.sbl (Original Algorithm)
         The Snowball Arabic light Stemmer
@@ -516,7 +516,7 @@ class ArabicStemmer(_LanguageSpecificStemmer):
 
     def __Suffix_Verb_Step2a(self, token):
         for suffix in self.__suffix_verb_step2a:
-            if token.endswith(suffix):
+            if token.endswith(suffix) and len(token) > 3:
                 if suffix == '\u062a' and len(token) >= 4:
                     token = token[:-1]
                     self.suffix_verb_step2a_success = True
@@ -750,14 +750,19 @@ class ArabicStemmer(_LanguageSpecificStemmer):
         self.__checks_1(modified_word)
         # checks2
         self.__checks_2(modified_word)
+        # Pre_Normalization
         modified_word = self.__normalize_pre(modified_word)
+        # Avoid stopwords
+        if modified_word in self.stopwords or len(modified_word) <= 2:
+            return modified_word
+        # Start stemming
         if self.is_verb:
             modified_word = self.__Suffix_Verb_Step1(modified_word)
             if  self.suffixes_verb_step1_success:
                 modified_word = self.__Suffix_Verb_Step2a(modified_word)
                 if not self.suffix_verb_step2a_success :
                     modified_word = self.__Suffix_Verb_Step2c(modified_word)
-                #or next
+                #or next TODO: How to deal with or next instruction
             else:
                 modified_word = self.__Suffix_Verb_Step2b(modified_word)
                 if not self.suffix_verb_step2b_success:
