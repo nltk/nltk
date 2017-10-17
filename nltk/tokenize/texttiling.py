@@ -312,7 +312,7 @@ class TextTilingTokenizer(TokenizerI):
         #that a section shouldn't be smaller than at least 2
         #pseudosentences for small texts and around 5 for larger ones.
 
-        clip = min(max(len(scores)/10, 2), 5)
+        clip = int(min(max(len(scores)/10, 2), 5))
         index = clip
 
         for gapscore in scores[clip:-clip]:
