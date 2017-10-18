@@ -58,12 +58,23 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1) # doctest: +ELLIPSIS
     0.5045...
 
+    If no ngram overlap exists for any of the orders that are used to evaluate BLEU
+    it will return the value zero. This since BLEU is a geometric mean of the precisions
+    for the different ngram orders (no overlap means a precision of 0).
+
     >>> round(sentence_bleu([reference1, reference2, reference3], hypothesis2),4) # doctest: +ELLIPSIS
     0.0
 
+    To avoid this harsh behaviour when no ngram overlaps are found a smoothing function can be used.
+
+    >>> chencherry = SmoothingFunction()
+    >>> sentence_bleu([reference1, reference2, reference3], hypothesis2,
+    ...     smoothing_function=chencherry.method1) # doctest: +ELLIPSIS
+    0.0370...
+
     The default BLEU calculates a score for up to 4grams using uniform
     weights. To evaluate your translations with higher/lower order ngrams,
-    use customized weights. E.g. when accounting for up to 6grams with uniform
+    use customized weights. E.g. when accounting for up to 5grams with uniform
     weights:
 
     >>> weights = (0.1666, 0.1666, 0.1666, 0.1666, 0.1666)
@@ -78,7 +89,7 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     :type weights: list(float)
     :param smoothing_function:
     :type smoothing_function: SmoothingFunction
-    :param auto_reweigh:
+    :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
     :return: The sentence-level BLEU score.
     :rtype: float
@@ -140,7 +151,6 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
     :return: The corpus-level BLEU score.
-    :
     :rtype: float
     """
     # Before proceeding to compute BLEU, perform sanity checks.
@@ -194,7 +204,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     #       smoothing method allows.
     p_n = smoothing_function(p_n, references=references, hypothesis=hypothesis,
                              hyp_len=hyp_len)
-    s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n)))
+    s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
     s =  bp * math.exp(math.fsum(s))
     return s
 
