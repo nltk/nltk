@@ -26,8 +26,7 @@ except TypeError:
 
 
 def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
-                  smoothing_function=None, auto_reweigh=False,
-                  emulate_multibleu=False, backoff=True):
+                  smoothing_function=None, auto_reweigh=False):
     """
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
@@ -60,7 +59,8 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
 
     If no ngram overlap exists for any of the orders that are used to evaluate BLEU
     it will return the value zero. This since BLEU is a geometric mean of the precisions
-    for the different ngram orders (no overlap means a precision of 0).
+    for the different ngram orders (no overlap means a precision of 0). The following example
+    has zero 3gram overlaps:
 
     >>> round(sentence_bleu([reference1, reference2, reference3], hypothesis2),4) # doctest: +ELLIPSIS
     0.0
