@@ -100,9 +100,7 @@ class PropbankCorpusReader(CorpusReader):
         for roleset in etree.findall('predicate/roleset'):
             if roleset.attrib['id'] == roleset_id:
                 return roleset
-        else:
-            raise ValueError('Roleset %s not found in %s' %
-                             (roleset_id, framefile))
+        raise ValueError('Roleset %s not found in %s' % (roleset_id, framefile))
 
     def rolesets(self, baseform=None):
         """

@@ -18,35 +18,16 @@ TO DO: add lemmatization
 """
 from __future__ import print_function
 
-import nltk
-from nltk.classify.util import accuracy
-
-def ne(token):
-    """
-    This just assumes that words in all caps or titles are
-    named entities.
-
-    :type token: str
-    """
-    if token.istitle() or token.isupper():
-        return True
-    return False
-
-def lemmatize(word):
-    """
-    Use morphy from WordNet to find the base form of verbs.
-    """
-    lemma = nltk.corpus.wordnet.morphy(word, pos=nltk.corpus.wordnet.VERB)
-    if lemma is not None:
-        return lemma
-    return word
+from nltk.tokenize import RegexpTokenizer
+from nltk.classify.util import accuracy, check_megam_config
+from nltk.classify.maxent import MaxentClassifier
 
 class RTEFeatureExtractor(object):
     """
     This builds a bag of words for both the text and the hypothesis after
     throwing away some stopwords, then calculates overlap and difference.
     """
-    def __init__(self, rtepair, stop=True, lemmatize=False):
+    def __init__(self, rtepair, stop=True, use_lemmatize=False):
         """
         :param rtepair: a ``RTEPair`` from which features should be extracted
         :param stop: if ``True``, stopwords are thrown away.
@@ -60,7 +41,6 @@ class RTEFeatureExtractor(object):
                              'denied'])
         # Try to tokenize so that abbreviations, monetary amounts, email
         # addresses, URLs are single tokens.
-        from nltk.tokenize import RegexpTokenizer
         tokenizer = RegexpTokenizer('[\w.@:/]+|\w+|\$[\d.]+')
 
         #Get the set of word types for text and hypothesis
@@ -69,9 +49,9 @@ class RTEFeatureExtractor(object):
         self.text_words = set(self.text_tokens)
         self.hyp_words = set(self.hyp_tokens)
 
-        if lemmatize:
-            self.text_words = set(lemmatize(token) for token in self.text_tokens)
-            self.hyp_words = set(lemmatize(token) for token in self.hyp_tokens)
+        if use_lemmatize:
+            self.text_words = set(self._lemmatize(token) for token in self.text_tokens)
+            self.hyp_words = set(self._lemmatize(token) for token in self.hyp_tokens)
 
         if self.stop:
             self.text_words = self.text_words - self.stopwords
@@ -89,7 +69,7 @@ class RTEFeatureExtractor(object):
         :param toktype: distinguish Named Entities from ordinary words
         :type toktype: 'ne' or 'word'
         """
-        ne_overlap = set(token for token in self._overlap if ne(token))
+        ne_overlap = set(token for token in self._overlap if self._ne(token))
         if toktype == 'ne':
             if debug:
                 print("ne overlap", ne_overlap)
@@ -108,13 +88,35 @@ class RTEFeatureExtractor(object):
         :param toktype: distinguish Named Entities from ordinary words
         :type toktype: 'ne' or 'word'
         """
-        ne_extra = set(token for token in self._hyp_extra if ne(token))
+        ne_extra = set(token for token in self._hyp_extra if self._ne(token))
         if toktype == 'ne':
             return ne_extra
         elif toktype == 'word':
             return self._hyp_extra - ne_extra
         else:
             raise ValueError("Type not recognized: '%s'" % toktype)
+
+    @staticmethod
+    def _ne(token):
+        """
+        This just assumes that words in all caps or titles are
+        named entities.
+
+        :type token: str
+        """
+        if token.istitle() or token.isupper():
+            return True
+        return False
+
+    @staticmethod
+    def _lemmatize(word):
+        """
+        Use morphy from WordNet to find the base form of verbs.
+        """
+        lemma = nltk.corpus.wordnet.morphy(word, pos=nltk.corpus.wordnet.VERB)
+        if lemma is not None:
+            return lemma
+        return word
 
 
 def rte_features(rtepair):
@@ -130,62 +132,29 @@ def rte_features(rtepair):
     return features
 
 
-def rte_classifier(trainer, features=rte_features):
-    """
-    Classify RTEPairs
-    """
-    train = ((pair, pair.value) for pair in
-             nltk.corpus.rte.pairs(['rte1_dev.xml', 'rte2_dev.xml',
-                                    'rte3_dev.xml']))
-    test = ((pair, pair.value) for pair in
-            nltk.corpus.rte.pairs(['rte1_test.xml', 'rte2_test.xml',
-                                   'rte3_test.xml']))
+def rte_featurize(rte_pairs):
+    return [(rte_features(pair), pair.value) for pair in rte_pairs]
 
-    # Train up a classifier.
+
+def rte_classifier(algorithm):
+    from nltk.corpus import rte as rte_corpus
+    train_set  = rte_corpus.pairs(['rte1_dev.xml', 'rte2_dev.xml', 'rte3_dev.xml'])
+    test_set = rte_corpus.pairs(['rte1_test.xml', 'rte2_test.xml', 'rte3_test.xml'])
+    featurized_train_set = rte_featurize(train_set)
+    featurized_test_set = rte_featurize(test_set)
+    # Train the classifier
     print('Training classifier...')
-    classifier = trainer([(features(pair), label) for (pair, label) in train])
-
-    # Run the classifier on the test data.
+    if algorithm in ['megam', 'BFGS']: # MEGAM based algorithms.
+        # Ensure that MEGAM is configured first.
+        check_megam_config()
+        clf = lambda x: MaxentClassifier.train(featurized_train_set, algorithm)
+    elif algorithm in ['GIS', 'IIS']: # Use default GIS/IIS MaxEnt algorithm
+        clf = MaxentClassifier.train(featurized_train_set, algorithm)
+    else:
+        err_msg = str("RTEClassifier only supports these algorithms:\n "
+                      "'megam', 'BFGS', 'GIS', 'IIS'.\n")
+        raise Exception(err_msg)
     print('Testing classifier...')
-    acc = accuracy(classifier, [(features(pair), label)
-                                for (pair, label) in test])
+    acc = accuracy(clf, featurized_test_set)
     print('Accuracy: %6.4f' % acc)
-
-    # Return the classifier
-    return classifier
-
-
-def demo_features():
-    pairs = nltk.corpus.rte.pairs(['rte1_dev.xml'])[:6]
-    for pair in pairs:
-        print()
-        for key in sorted(rte_features(pair)):
-            print("%-15s => %s" % (key, rte_features(pair)[key]))
-
-
-def demo_feature_extractor():
-    rtepair = nltk.corpus.rte.pairs(['rte3_dev.xml'])[33]
-    extractor = RTEFeatureExtractor(rtepair)
-    print(extractor.hyp_words)
-    print(extractor.overlap('word'))
-    print(extractor.overlap('ne'))
-    print(extractor.hyp_extra('word'))
-
-
-def demo():
-    import nltk
-    try:
-        nltk.config_megam('/usr/local/bin/megam')
-        trainer = lambda x: nltk.MaxentClassifier.train(x, 'megam')
-    except ValueError:
-        try:
-            trainer = lambda x: nltk.MaxentClassifier.train(x, 'BFGS')
-        except ValueError:
-            trainer = nltk.MaxentClassifier.train
-    nltk.classify.rte_classifier(trainer)
-
-if __name__ == '__main__':
-    demo_features()
-    demo_feature_extractor()
-    demo()
-
+    return clf

@@ -290,8 +290,7 @@ class SteppingShiftReduceParser(ShiftReduceParser):
     :see: ``nltk.grammar``
     """
     def __init__(self, grammar, trace=0):
-        self._grammar = grammar
-        self._trace = trace
+        super(SteppingShiftReduceParser, self).__init__(grammar, trace)
         self._stack = None
         self._remaining_text = None
         self._history = []

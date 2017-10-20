@@ -83,7 +83,9 @@ class UnicharsCorpusReader(WordListCorpusReader):
     # These are categories similar to the Perl Unicode Properties
     available_categories = ['Close_Punctuation', 'Currency_Symbol',
                             'IsAlnum', 'IsAlpha', 'IsLower', 'IsN', 'IsSc',
-                            'IsSo', 'Open_Punctuation']
+                            'IsSo', 'IsUpper', 'Line_Separator', 'Number',
+                            'Open_Punctuation', 'Punctuation', 'Separator',
+                            'Symbol']
 
     def chars(self, category=None, fileids=None):
         """
@@ -96,7 +98,7 @@ class UnicharsCorpusReader(WordListCorpusReader):
         >>> pup.chars('Currency_Symbol')[:5] == [u'$', u'\xa2', u'\xa3', u'\xa4', u'\xa5']
         True
         >>> pup.available_categories
-        ['Close_Punctuation', 'Currency_Symbol', 'IsAlnum', 'IsAlpha', 'IsLower', 'IsN', 'IsSc', 'IsSo', 'Open_Punctuation']
+        ['Close_Punctuation', 'Currency_Symbol', 'IsAlnum', 'IsAlpha', 'IsLower', 'IsN', 'IsSc', 'IsSo', 'IsUpper', 'Line_Separator', 'Number', 'Open_Punctuation', 'Punctuation', 'Separator', 'Symbol']
 
         :return: a list of characters given the specific unicode character category
         """

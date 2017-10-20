@@ -877,8 +877,7 @@ class PrettyLazyMap(LazyMap):
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
                 return "[%s, ...]" % text_type(', ').join(pieces[:-1])
-        else:
-            return "[%s]" % text_type(', ').join(pieces)
+        return "[%s]" % text_type(', ').join(pieces)
 
 @python_2_unicode_compatible
 class PrettyLazyIteratorList(LazyIteratorList):
@@ -900,8 +899,7 @@ class PrettyLazyIteratorList(LazyIteratorList):
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
                 return "[%s, ...]" % text_type(', ').join(pieces[:-1])
-        else:
-            return "[%s]" % text_type(', ').join(pieces)
+        return "[%s]" % text_type(', ').join(pieces)
 
 @python_2_unicode_compatible
 class PrettyLazyConcatenation(LazyConcatenation):
@@ -923,8 +921,7 @@ class PrettyLazyConcatenation(LazyConcatenation):
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
                 return "[%s, ...]" % text_type(', ').join(pieces[:-1])
-        else:
-            return "[%s]" % text_type(', ').join(pieces)
+        return "[%s]" % text_type(', ').join(pieces)
 
     def __add__(self, other):
         """Return a list concatenating self with other."""
