@@ -16,15 +16,13 @@ import re
 from collections import defaultdict
 from itertools import chain
 
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
+from six import string_types
 
 from nltk import compat
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
 from nltk.corpus.reader.util import *
 
-@add_metaclass(ABCMeta)
 @compat.python_2_unicode_compatible
 class CorpusReader(object):
     """
@@ -398,18 +396,14 @@ class SyntaxCorpusReader(CorpusReader):
       - ``_parse``, which takes a block and returns a list of parsed
         sentences.
     """
-    @abstractmethod
     def _parse(self, s):
-        pass
-    @abstractmethod
+        raise NotImplementedError()
     def _word(self, s):
-        pass
-    @abstractmethod
+        raise NotImplementedError()
     def _tag(self, s):
-        pass
-    @abstractmethod
+        raise NotImplementedError()
     def _read_block(self, stream):
-        pass
+        raise NotImplementedError()
 
     def parsed_sents(self, fileids=None):
         reader = self._read_parsed_sent_block
