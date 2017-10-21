@@ -53,20 +53,12 @@ class TextTilingTokenizer(TokenizerI):
       `HC` (default) or `LC`
     :type cutoff_policy: constant
 
-   Fix text size because sometimes pycharm thinks that line breaks are differences
-
-    If cast len(scores) to int:
     >>> from nltk.corpus import brown
     >>> tt = TextTilingTokenizer(demo_mode=True)
     >>> text = brown.raw()[:4000]
     >>> s, ss, d, b = tt.tokenize(text)
     >>> b
     [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]
-
-    If you don't cast and don't call "b" you get:
-    Traceback (most recent call last):
-    ...
-    TypeError: slice indices must be integers or None or have an __index__ method
     """
 
     def __init__(self,
@@ -312,11 +304,11 @@ class TextTilingTokenizer(TokenizerI):
         """Calculates the depth of each gap, i.e. the average difference
         between the left and right peaks and the gap's score"""
 
-        depth_scores = [0 for _ in scores]
-        """clip boundaries: this holds on the rule of thumb(my thumb)
-        that a section shouldn't be smaller than at least 2
-        pseudosentences for small texts and around 5 for larger ones.
-        """
+        depth_scores = [0 for x in scores]
+        #clip boundaries: this holds on the rule of thumb(my thumb)
+        #that a section shouldn't be smaller than at least 2
+        #pseudosentences for small texts and around 5 for larger ones.
+
         clip = min(max(len(scores) // 10, 2), 5)
         index = clip
 
