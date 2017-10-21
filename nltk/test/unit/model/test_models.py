@@ -9,8 +9,7 @@ from __future__ import division
 import unittest
 import math
 
-from nltk.model import (build_vocabulary,
-                        count_ngrams,
+from nltk.model import (count_ngrams,
                         NgramModelVocabulary,
                         NgramCounter,
                         BaseNgramModel,

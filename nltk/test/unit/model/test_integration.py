@@ -6,7 +6,7 @@
 # For license information, see LICENSE.TXT
 import unittest
 
-from nltk.model import build_vocabulary, count_ngrams
+from nltk.model import count_ngrams, NgramModelVocabulary
 from nltk.model.util import mask_oov_words_in_corpus
 
 
@@ -16,24 +16,8 @@ class ModelFuncsTests(unittest.TestCase):
     They are essentially integration tests.
     """
 
-    def test_build_vocabulary(self):
-        vocab = build_vocabulary('zabcfdegadbew', unk_cutoff=2)
-        assert "a" in vocab
-        assert "c" not in vocab
-
-    def test_build_vocabulary_multiple_texts(self):
-        vocab = build_vocabulary('zabcfdegadbew', "abcdeadbe", unk_cutoff=2)
-        assert "a" in vocab
-        assert "c" in vocab
-        assert "g" not in vocab
-
-    def test_build_vocabulary_no_texts(self):
-        vocab = build_vocabulary(unk_cutoff=2)
-        assert "a" not in vocab
-        assert "z" not in vocab
-
     def test_count_ngrams(self):
-        vocab = build_vocabulary('abcdead', unk_cutoff=2)
+        vocab = NgramModelVocabulary('abcdead', unk_cutoff=2)
         normalized = mask_oov_words_in_corpus(['abcfdezgadbew'], vocab)
         counter = count_ngrams(2, vocab, normalized)
 
@@ -46,11 +30,10 @@ class ModelFuncsTests(unittest.TestCase):
     def test_count_ngrams_multiple_texts(self):
         vocab_text = ("the cow jumped over the blue moon . "
                       "blue river jumped over the rainbow .")
-        vocab = build_vocabulary(vocab_text.split(), unk_cutoff=2)
+        vocab = NgramModelVocabulary(vocab_text.split(), unk_cutoff=2)
 
         text1 = mask_oov_words_in_corpus(['zabcfdegadbew'], vocab)
-        text2 = mask_oov_words_in_corpus(["blue moon".split(),
-                                          "over the rainbow".split()], vocab)
+        text2 = mask_oov_words_in_corpus(["blue moon".split(), "over the rainbow".split()], vocab)
         counter = count_ngrams(2, vocab, text1, text2)
 
         bigrams = counter[2]
@@ -62,7 +45,7 @@ class ModelFuncsTests(unittest.TestCase):
     def test_count_grams_bad_kwarg(self):
         vocab_text = ("the cow jumped over the blue moon . "
                       "blue river jumped over the rainbow .")
-        vocab = build_vocabulary(vocab_text.split(), unk_cutoff=2)
+        vocab = NgramModelVocabulary(vocab_text.split(), unk_cutoff=2)
 
         text = ["blue moon".split()]
         with self.assertRaises(TypeError) as exc_info:

@@ -16,11 +16,6 @@ from nltk import compat
 from nltk.model.util import check_ngram_order, default_ngrams
 
 
-def build_vocabulary(*texts, **vocab_kwargs):
-    combined_texts = chain(*texts)
-    return NgramModelVocabulary(combined_texts, **vocab_kwargs)
-
-
 def count_ngrams(order, vocabulary, *training_texts):
     counter = NgramCounter(order, vocabulary)
     ngram_gen = default_ngrams(order)
@@ -103,30 +98,35 @@ class NgramModelVocabulary(Counter):
 
     @property
     def cutoff(self):
+        """ Cutoff value.
+
+        Items with count below this value are not considered part of the vocabulary.
+        """
         return self._cutoff
 
     @cutoff.setter
     def cutoff(self, new_cutoff):
         if new_cutoff < 1:
-            msg_template = "Cutoff value cannot be less than 1. Got: {0}"
-            raise ValueError(msg_template.format(new_cutoff))
+            raise ValueError("Cutoff value cannot be less than 1. Got: {0}".format(new_cutoff))
         self._cutoff = new_cutoff
         self[self.unk_label] = new_cutoff
 
     def lookup_one(self, word):
         """Looks up one word in the vocabulary.
 
-        If it isn't found, returns unk_label token.
-
-        Words with counts less than cutoff, aren't in the vocabulary.
-        :param: word
+        :param str word: The word to look up.
+        :return: `word` or `self.unk_label` if `word` isn't in vocabulary.
+        :rtype: str
         """
         return word if word in self else self.unk_label
 
     def lookup(self, words):
         """Look up a sequence of words in the vocabulary.
 
-        Returns an iterator over words.
+        Returns an iterator over looked up words.
+
+        :param Iterable(str) words: Sequence of words to look up.
+        :rtype: Iterable(str)
         """
         return map(self.lookup_one, words)
 
@@ -143,15 +143,13 @@ class NgramModelVocabulary(Counter):
         return sum(1 for item in self)
 
     def __eq__(self, other):
-        return (super(self.__class__, self).__eq__(other)
-                and (self.cutoff == other.cutoff))
+        return (super(self.__class__, self).__eq__(other) and (self.cutoff == other.cutoff))
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __copy__(self):
-        new = self.__class__(self, unk_cutoff=self.cutoff, unk_label=self.unk_label)
-        return new
+        return self.__class__(self, unk_cutoff=self.cutoff, unk_label=self.unk_label)
 
 
 @compat.python_2_unicode_compatible
@@ -186,8 +184,7 @@ class NgramCounter(object):
                 ngram_order = len(ngram)
 
                 if ngram_order > self.order:
-                    raise ValueError("Ngram larger than highest order: "
-                                     "{0}".format(ngram))
+                    raise ValueError("Ngram larger than highest order: " "{0}".format(ngram))
                 if ngram_order == 1:
                     self.unigrams[ngram[0]] += 1
                     continue
