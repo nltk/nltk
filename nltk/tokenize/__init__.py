@@ -119,7 +119,7 @@ def word_tokenize(text, language='english', preserve_line=False):
     for the specified language).
 
     :param text: text to split into words
-    :param text: str
+    :type text: str
     :param language: the model name in the Punkt corpus
     :type language: str
     :param preserve_line: An option to keep the preserve the sentence and not sentence tokenize it.
