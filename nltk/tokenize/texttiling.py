@@ -54,14 +54,6 @@ class TextTilingTokenizer(TokenizerI):
     :type cutoff_policy: constant
 
    Fix text size because sometimes pycharm thinks that line breaks are differences
-   For python 3 if don't change 323:
-    >>> from nltk.corpus import brown
-    >>> tt = TextTilingTokenizer(demo_mode=True)
-    >>> text = brown.raw()[:4000]
-    >>> s, ss, d, b = tt.tokenize(text)
-    Traceback (most recent call last):
-    ...
-    TypeError: slice indices must be integers or None or have an __index__ method
 
     If cast len(scores) to int:
     >>> from nltk.corpus import brown
@@ -70,6 +62,11 @@ class TextTilingTokenizer(TokenizerI):
     >>> s, ss, d, b = tt.tokenize(text)
     >>> b
     [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]
+
+    If you don't cast and don't call "b" you get:
+    Traceback (most recent call last):
+    ...
+    TypeError: slice indices must be integers or None or have an __index__ method
     """
 
     def __init__(self,
