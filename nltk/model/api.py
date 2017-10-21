@@ -41,7 +41,7 @@ class BaseNgramModel(object):
         self.ngrams = ngram_counter[ngram_counter.order]
         self._ngrams = ngram_counter._ngram_orders
 
-        self.mask_oov = self.ngram_counter.vocabulary.mask_oov
+        self.mask_oov = self.ngram_counter.vocabulary.lookup_one
 
     @property
     def order(self):

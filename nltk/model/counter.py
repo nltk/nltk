@@ -115,13 +115,22 @@ class NgramModelVocabulary(Counter):
             raise ValueError(msg_template.format(new_cutoff))
         self._cutoff = new_cutoff
 
-    def mask_oov(self, word):
-        """Replaces out-of-vocabulary word with unk_label.
+    def lookup_one(self, word):
+        """Looks up one word in the vocabulary.
+
+        If it isn't found, returns unk_label token.
 
         Words with counts less than cutoff, aren't in the vocabulary.
         :param: word
         """
         return word if word in self else self.unk_label
+
+    def lookup(self, words):
+        """Look up a sequence of words in the vocabulary.
+
+        Returns an iterator over words.
+        """
+        return map(self.lookup_one, words)
 
     def __contains__(self, item):
         """Only consider items with counts GE to cutoff as being in the vocabulary."""

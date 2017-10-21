@@ -43,7 +43,7 @@ def default_ngrams(order, only_ngrams=False):
 
 def mask_oov_words_in_corpus(corpus, ngram_vocab):
     """Replace all out-of-vocabulary words in a corpus label for unknowns."""
-    return [list(map(ngram_vocab.mask_oov, sent)) for sent in corpus]
+    return [ngram_vocab.lookup(sent) for sent in corpus]
 
 
 def check_ngram_order(order_to_check, max_order=POS_INF):
