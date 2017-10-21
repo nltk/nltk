@@ -53,14 +53,23 @@ class TextTilingTokenizer(TokenizerI):
       `HC` (default) or `LC`
     :type cutoff_policy: constant
 
+   Fix text size because sometimes pycharm thinks that line breaks are differences
+   For python 3 if don't change 323:
     >>> from nltk.corpus import brown
     >>> tt = TextTilingTokenizer(demo_mode=True)
-    >>> text = brown.raw()[:10000]
+    >>> text = brown.raw()[:4000]
+    >>> s, ss, d, b = tt.tokenize(text)
+    Traceback (most recent call last):
+    ...
+    TypeError: slice indices must be integers or None or have an __index__ method
+
+    If cast len(scores) to int:
+    >>> from nltk.corpus import brown
+    >>> tt = TextTilingTokenizer(demo_mode=True)
+    >>> text = brown.raw()[:4000]
     >>> s, ss, d, b = tt.tokenize(text)
     >>> b
-    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
-     0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
-     0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]
     """
 
     def __init__(self,
@@ -199,7 +208,6 @@ class TextTilingTokenizer(TokenizerI):
     def _mark_paragraph_breaks(self, text):
         """Identifies indented text or line breaks as the beginning of
         paragraphs"""
-
         MIN_PARAGRAPH = 100
         pattern = re.compile("[ \t\r\f\v]*\n[ \t\r\f\v]*\n[ \t\r\f\v]*")
         matches = pattern.finditer(text)
@@ -307,12 +315,12 @@ class TextTilingTokenizer(TokenizerI):
         """Calculates the depth of each gap, i.e. the average difference
         between the left and right peaks and the gap's score"""
 
-        depth_scores = [0 for x in scores]
-        #clip boundaries: this holds on the rule of thumb(my thumb)
-        #that a section shouldn't be smaller than at least 2
-        #pseudosentences for small texts and around 5 for larger ones.
-
-        clip = int(min(max(len(scores)/10, 2), 5))
+        depth_scores = [0 for _ in scores]
+        """clip boundaries: this holds on the rule of thumb(my thumb)
+        that a section shouldn't be smaller than at least 2
+        pseudosentences for small texts and around 5 for larger ones.
+        """
+        clip = min(max(len(scores) // 10, 2), 5)
         index = clip
 
         for gapscore in scores[clip:-clip]:
@@ -388,6 +396,7 @@ class TokenSequence(object):
         original_length=original_length or len(wrdindex_list)
         self.__dict__.update(locals())
         del self.__dict__['self']
+
 
 #Pasted from the SciPy cookbook: http://www.scipy.org/Cookbook/SignalSmooth
 def smooth(x,window_len=11,window='flat'):
