@@ -36,7 +36,67 @@ class NgramModelVocabulary(Counter):
     Satisfies two common language modeling requirements for a vocabulary:
     - When checking membership and calculating its size, filters items by comparing
       their counts to a cutoff value.
-    - Adds 1 to its size so as to account for "unknown" tokens.
+    - Adds 1 to its size to account for "unknown" tokens.
+
+    >>> from nltk.corpus import gutenberg
+    >>> sents = gutenberg.sents("burgess-busterbrown.txt")
+    >>> test_words = [w for s in sents[3:5] for w in s]
+    >>> test_words[:5]
+    ['Buster', 'Bear', 'yawned', 'as', 'he']
+
+    >>> from nltk.model import NgramModelVocabulary
+    >>> vocab = NgramModelVocabulary(test_words, unk_cutoff=2)
+
+    Tokens with counts greater than or equal to the cuttoff value will
+    be considered part of the vocabulary.
+
+    >>> vocab['the']
+    3
+    >>> 'the' in vocab
+    True
+    >>> vocab['he']
+    2
+    >>> 'he' in vocab
+    True
+
+    Tokens with frequency counts less than the cutoff value will be considered not
+    part of the vocabulary even though their entries in the count dictionary are
+    preserved.
+
+    >>> vocab['Buster']
+    1
+    >>> 'Buster' in vocab
+    False
+    >>> vocab['aliens']
+    0
+    >>> 'aliens' in vocab
+    False
+
+    Keeping the count entries for seen words allows us to change the cutoff value
+    without having to recalculate the counts.
+
+    >>> vocab.cutoff = 1
+    >>> "Buster" in vocab
+    True
+    >>> "aliens" in vocab
+    False
+
+    The cutoff value influences not only membership checking but also the result of
+    getting the size of the vocabulary using the built-in `len`.
+    Note that while the number of keys in the vocab dictionary stays the same,
+    the result of calling `len` on the vocabulary differs depending on the cutoff.
+
+    >>> len(vocab.keys())
+    37
+    >>> len(vocab)
+    38
+    >>> vocab.cutoff = 2
+    >>> len(vocab)
+    8
+
+    Note also that we add 1 to the size of the vocabulary, so even when cutoff=1
+    `len(vocab) > len(vocab.keys())`. This is done because it needs to account for
+    the unknown token label.
     """
 
     def __init__(self, *counter_args, **vocab_kwargs):
