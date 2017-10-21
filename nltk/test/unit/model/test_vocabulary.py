@@ -49,7 +49,7 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.assertEqual(5, len(self.vocab))
 
     def test_vocab_iter_respects_cutoff(self):
-        vocab_keys = ["a", "b", "c", "d", "e", "f", "g", "w", "z"]
+        vocab_keys = ["a", "b", "c", "d", "e", "f", "g", "w", "z", "<UNK>"]
         vocab_items = ["a", "b", "d", "e", "<UNK>"]
 
         six.assertCountEqual(self, vocab_keys, list(self.vocab.keys()))

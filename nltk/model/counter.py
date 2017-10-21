@@ -36,7 +36,7 @@ class NgramModelVocabulary(Counter):
     Satisfies two common language modeling requirements for a vocabulary:
     - When checking membership and calculating its size, filters items by comparing
       their counts to a cutoff value.
-    - Adds 1 to its size to account for "unknown" tokens.
+    - Adds a special "unknown" token which unseen words are mapped to.
 
     >>> from nltk.corpus import gutenberg
     >>> sents = gutenberg.sents("burgess-busterbrown.txt")
@@ -78,8 +78,6 @@ class NgramModelVocabulary(Counter):
     >>> vocab.cutoff = 1
     >>> "Buster" in vocab
     True
-    >>> "aliens" in vocab
-    False
 
     The cutoff value influences not only membership checking but also the result of
     getting the size of the vocabulary using the built-in `len`.
@@ -87,22 +85,21 @@ class NgramModelVocabulary(Counter):
     the result of calling `len` on the vocabulary differs depending on the cutoff.
 
     >>> len(vocab.keys())
-    37
+    38
     >>> len(vocab)
     38
     >>> vocab.cutoff = 2
+    >>> len(vocab.keys())
+    38
     >>> len(vocab)
     8
 
-    Note also that we add 1 to the size of the vocabulary, so even when cutoff=1
-    `len(vocab) > len(vocab.keys())`. This is done because it needs to account for
-    the unknown token label.
     """
 
-    def __init__(self, *counter_args, **vocab_kwargs):
+    def __init__(self, *counter_args, unk_label="<UNK>", unk_cutoff=1):
         super(self.__class__, self).__init__(*counter_args)
-        self.cutoff = vocab_kwargs.pop("unk_cutoff", 1)
-        self.unk_label = vocab_kwargs.pop("unk_label", "<UNK>")
+        self.unk_label = unk_label
+        self.cutoff = unk_cutoff
 
     @property
     def cutoff(self):
@@ -114,6 +111,7 @@ class NgramModelVocabulary(Counter):
             msg_template = "Cutoff value cannot be less than 1. Got: {0}"
             raise ValueError(msg_template.format(new_cutoff))
         self._cutoff = new_cutoff
+        self[self.unk_label] = new_cutoff
 
     def lookup_one(self, word):
         """Looks up one word in the vocabulary.
@@ -138,14 +136,7 @@ class NgramModelVocabulary(Counter):
 
     def __iter__(self):
         """Building on membership check define how to iterate over vocabulary."""
-        parent_iter = super(self.__class__, self).__iter__()
-        # During copying/instantiation Python calls this before we have
-        # a chance to add the "unk_label" attribute to the object.
-        # In those cases we fall back to Counter's __iter__ implementation.
-        if getattr(self, "unk_label", None) is None:
-            return parent_iter
-        return chain((item for item in parent_iter if item in self),
-                     [self.unk_label])
+        return (item for item in super(NgramModelVocabulary, self).__iter__() if item in self)
 
     def __len__(self):
         """Computing size of vocabulary reflects the cutoff."""
@@ -159,8 +150,7 @@ class NgramModelVocabulary(Counter):
         return not self.__eq__(other)
 
     def __copy__(self):
-        new = self.__class__(self)
-        new.__dict__.update(self.__dict__)
+        new = self.__class__(self, unk_cutoff=self.cutoff, unk_label=self.unk_label)
         return new
 
 
