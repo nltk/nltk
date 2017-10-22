@@ -18,7 +18,7 @@ class ModelFuncsTests(unittest.TestCase):
 
     def test_count_ngrams(self):
         vocab = NgramModelVocabulary('abcdead', unk_cutoff=2)
-        normalized = mask_oov_words_in_corpus(['abcfdezgadbew'], vocab)
+        normalized = mask_oov_words_in_corpus([list('abcfdezgadbew')], vocab)
         counter = count_ngrams(2, vocab, normalized)
 
         bigrams = counter[2]
@@ -32,7 +32,7 @@ class ModelFuncsTests(unittest.TestCase):
                       "blue river jumped over the rainbow .")
         vocab = NgramModelVocabulary(vocab_text.split(), unk_cutoff=2)
 
-        text1 = mask_oov_words_in_corpus(['zabcfdegadbew'], vocab)
+        text1 = mask_oov_words_in_corpus([list('zabcfdegadbew')], vocab)
         text2 = mask_oov_words_in_corpus(["blue moon".split(), "over the rainbow".split()], vocab)
         counter = count_ngrams(2, vocab, text1, text2)
 

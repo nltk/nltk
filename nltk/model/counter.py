@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 from collections import Counter, defaultdict
 from copy import copy
 from itertools import chain
+from functools import singledispatch
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
@@ -22,6 +23,29 @@ def count_ngrams(order, vocabulary, *training_texts):
     for text in training_texts:
         counter.train_counts(map(ngram_gen, text))
     return counter
+
+
+@singledispatch
+def _dispatched_lookup(words, vocab):
+    """Look up a sequence of words in the vocabulary.
+
+    Returns an iterator over looked up words.
+
+    :param Iterable(str) words: Sequence of words to look up.
+    :rtype: Iterable(str)
+    """
+    return (w if w in vocab else vocab.unk_label for w in words)
+
+
+@_dispatched_lookup.register(str)
+def _(word, vocab):
+    """Looks up one word in the vocabulary.
+
+    :param str word: The word to look up.
+    :return: `word` or `self.unk_label` if `word` isn't in vocabulary.
+    :rtype: str
+    """
+    return word if word in vocab else vocab.unk_label
 
 
 @compat.python_2_unicode_compatible
@@ -89,6 +113,20 @@ class NgramModelVocabulary(Counter):
     >>> len(vocab)
     8
 
+    We can look up words in a vocabulary using its `lookup` method.
+    "Unseen" words (with counts less than cutoff) are looked up as the unknown label.
+    If given one word (a string) as an input this method will return a string
+
+    >>> vocab.lookup("he")
+    'he'
+    >>> vocab.lookup("aliens")
+    '<UNK>'
+
+    If given a sequence (anything other than a string), it will return an iterator over
+    the looked up words.
+
+    >>> list(vocab.lookup(sents[5][:5]))
+    ['<UNK>', 'he', '<UNK>', '<UNK>', 'to']
     """
 
     def __init__(self, *counter_args, unk_label="<UNK>", unk_cutoff=1):
@@ -111,24 +149,18 @@ class NgramModelVocabulary(Counter):
         self._cutoff = new_cutoff
         self[self.unk_label] = new_cutoff
 
-    def lookup_one(self, word):
-        """Looks up one word in the vocabulary.
-
-        :param str word: The word to look up.
-        :return: `word` or `self.unk_label` if `word` isn't in vocabulary.
-        :rtype: str
-        """
-        return word if word in self else self.unk_label
-
     def lookup(self, words):
-        """Look up a sequence of words in the vocabulary.
+        """Look up one or more words in the vocabulary.
 
-        Returns an iterator over looked up words.
+        If passed one word as a string will return that word or `self.unk_label`.
+        Otherwise will assume it was passed a sequence of words, will try to look
+        each of them up and return an iterator over the looked up words.
 
-        :param Iterable(str) words: Sequence of words to look up.
-        :rtype: Iterable(str)
+        :param words: Word(s) to look up.
+        :type words: generator(str) or str
+        :rtype: generator(str) or str
         """
-        return map(self.lookup_one, words)
+        return _dispatched_lookup(words, self)
 
     def __contains__(self, item):
         """Only consider items with counts GE to cutoff as being in the vocabulary."""

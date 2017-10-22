@@ -64,6 +64,6 @@ class NgramModelVocabularyTests(unittest.TestCase):
         # Equality test should be True because copies are "equal"
         self.assertEqual(copied_vocab, self.vocab)
 
-    def test_lookup_one(self):
-        self.assertEqual(self.vocab.lookup_one("a"), "a")
-        self.assertEqual(self.vocab.lookup_one("c"), "<UNK>")
+    def test_lookup(self):
+        self.assertEqual(self.vocab.lookup("a"), "a")
+        self.assertEqual(self.vocab.lookup("c"), "<UNK>")

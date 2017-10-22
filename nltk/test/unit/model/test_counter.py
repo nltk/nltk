@@ -30,7 +30,7 @@ class NgramCounterTests(NgramCounterTestBase):
     def setUpClass(cls):
         super(NgramCounterTests, cls).setUpClass()
 
-        text = ['abcd', 'egdbe']
+        text = [list('abcd'), list('egdbe')]
         cls.trigram_counter = cls.setUpNgramCounter(3, text)
         cls.bigram_counter = cls.setUpNgramCounter(2, text)
 
@@ -53,7 +53,7 @@ class NgramCounterTests(NgramCounterTestBase):
         empty_counter = NgramCounter(2, empty_vocab)
 
         with self.assertRaises(ValueError) as exc_info:
-            empty_counter.train_counts(['ad', 'hominem'])
+            empty_counter.train_counts([list('ad'), list('hominem')])
 
         self.assertEqual(("Cannot start counting ngrams until "
                           "vocabulary contains more than one item."),

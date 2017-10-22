@@ -30,7 +30,7 @@ class NgramModelTestBase(unittest.TestCase, NgramCounterSetUpMixin):
         # The base vocabulary contains 5 items: abcd and UNK
         cls.vocab = NgramModelVocabulary(["a", "b", "c", "d", "z"], unk_cutoff=1)
         # NgramCounter.vocabulary contains 7 items (+2 for padding symbols)
-        training_text = ['abcd', 'egadbe']
+        training_text = [list('abcd'), list('egadbe')]
         cls.bigram_counter = cls.setUpNgramCounter(2, training_text)
         cls.trigram_counter = cls.setUpNgramCounter(3, training_text)
 
