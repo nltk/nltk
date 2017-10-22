@@ -10,7 +10,6 @@ from nltk.model.api import BaseNgramModel, mask_oov_args
 from nltk.model.models import (MLENgramModel,
                                LidstoneNgramModel,
                                LaplaceNgramModel)
-from nltk.model.counter import (count_ngrams,
-                                NgramModelVocabulary,
-                                NgramCounter)
+from nltk.model.counter import count_ngrams, NgramCounter
+from nltk.model.vocabulary import NgramModelVocabulary
 from nltk.model.util import padded_everygrams
