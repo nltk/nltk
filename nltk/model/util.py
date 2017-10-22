@@ -44,16 +44,3 @@ def default_ngrams(order, only_ngrams=False):
 def mask_oov_words_in_corpus(corpus, ngram_vocab):
     """Replace all out-of-vocabulary words in a corpus label for unknowns."""
     return [ngram_vocab.lookup(sent) for sent in corpus]
-
-
-def check_ngram_order(order_to_check, max_order=POS_INF):
-    """Sanity-check ngram order number."""
-    if order_to_check < 1:
-        raise ValueError("Ngram order cannot be less than 1. "
-                         "Got: {0}".format(order_to_check))
-    if order_to_check == POS_INF:
-        raise ValueError("Ngram order cannot be infinity!")
-    if order_to_check > max_order:
-        raise ValueError("Ngram order cannot be greater than {0}. "
-                         "Got: {1}".format(max_order, order_to_check))
-    return order_to_check
