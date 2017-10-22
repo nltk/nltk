@@ -10,6 +10,7 @@ from nltk.model import count_ngrams, NgramModelVocabulary
 from nltk.model.util import mask_oov_words_in_corpus
 
 
+@unittest.skip
 class ModelFuncsTests(unittest.TestCase):
     """Tests for module functions.
 

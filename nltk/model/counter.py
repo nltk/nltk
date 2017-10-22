@@ -27,24 +27,16 @@ def count_ngrams(order, vocabulary, *training_texts):
 class NgramCounter(object):
     """Class for counting ngrams"""
 
-    def __init__(self, order, vocabulary):
+    def __init__(self, order):
         """
         :type training_text: List[List[str]]
         """
         self.order = check_ngram_order(order)
 
-        # Set up the vocabulary
-        self.vocabulary = copy(vocabulary)  # copy needed to prevent state sharing
-
         self._ngram_orders = defaultdict(ConditionalFreqDist)
         self.unigrams = FreqDist()
 
     def train_counts(self, training_text):
-        # Note here "1" indicates an empty vocabulary!
-        # See NgramModelVocabulary __len__ method for more.
-        if len(self.vocabulary) <= 1:
-            raise ValueError("Cannot start counting ngrams until "
-                             "vocabulary contains more than one item.")
 
         for sent in training_text:
             for ngram in sent:
