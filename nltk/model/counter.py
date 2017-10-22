@@ -12,18 +12,16 @@ from copy import copy
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
 
-from nltk.model.util import default_ngrams, POS_INF
+from nltk.model.util import default_ngrams
 
 
-def check_ngram_order(order_to_check, max_order=POS_INF):
+def check_ngram_order(order_to_check, max_order=1000):
     """Sanity-check ngram order number."""
     if order_to_check < 1:
-        raise ValueError("Ngram order cannot be less than 1. " "Got: {0}".format(order_to_check))
-    if order_to_check == POS_INF:
-        raise ValueError("Ngram order cannot be infinity!")
+        raise ValueError("Ngram order cannot be less than 1. Got: {0}".format(order_to_check))
     if order_to_check > max_order:
-        raise ValueError("Ngram order cannot be greater than {0}. "
-                         "Got: {1}".format(max_order, order_to_check))
+        raise ValueError("Ngram order cannot be greater than {0}. Got: {1}".format(
+            max_order, order_to_check))
     return order_to_check
 
 
