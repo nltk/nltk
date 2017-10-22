@@ -4,58 +4,13 @@
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+"""
+=================================
+Functionality for Counting Ngrams
+=================================
 
-from __future__ import unicode_literals
-from collections import Counter, defaultdict
-from copy import copy
-from itertools import chain
-from functools import singledispatch
-
-from nltk.probability import FreqDist, ConditionalFreqDist
-from nltk import compat
-
-from nltk.model.util import check_ngram_order, default_ngrams
-
-
-def count_ngrams(order, vocabulary, *training_texts):
-    counter = NgramCounter(order, vocabulary)
-    ngram_gen = default_ngrams(order)
-    for text in training_texts:
-        counter.train_counts(map(ngram_gen, text))
-    return counter
-
-
-@singledispatch
-def _dispatched_lookup(words, vocab):
-    """Look up a sequence of words in the vocabulary.
-
-    Returns an iterator over looked up words.
-
-    :param Iterable(str) words: Sequence of words to look up.
-    :rtype: Iterable(str)
-    """
-    return (w if w in vocab else vocab.unk_label for w in words)
-
-
-@_dispatched_lookup.register(str)
-def _(word, vocab):
-    """Looks up one word in the vocabulary.
-
-    :param str word: The word to look up.
-    :return: `word` or `self.unk_label` if `word` isn't in vocabulary.
-    :rtype: str
-    """
-    return word if word in vocab else vocab.unk_label
-
-
-@compat.python_2_unicode_compatible
-class NgramModelVocabulary(Counter):
-    """Stores language model vocabulary.
-
-    Satisfies two common language modeling requirements for a vocabulary:
-    - When checking membership and calculating its size, filters items by comparing
-      their counts to a cutoff value.
-    - Adds a special "unknown" token which unseen words are mapped to.
+Building a Vocabulary
+---------------------
 
     >>> from nltk.corpus import gutenberg
     >>> sents = gutenberg.sents("burgess-busterbrown.txt")
@@ -115,7 +70,7 @@ class NgramModelVocabulary(Counter):
 
     We can look up words in a vocabulary using its `lookup` method.
     "Unseen" words (with counts less than cutoff) are looked up as the unknown label.
-    If given one word (a string) as an input this method will return a string
+    If given one word (a string) as an input, this method will return a string.
 
     >>> vocab.lookup("he")
     'he'
@@ -127,10 +82,73 @@ class NgramModelVocabulary(Counter):
 
     >>> list(vocab.lookup(sents[5][:5]))
     ['<UNK>', 'he', '<UNK>', '<UNK>', 'to']
+
+"""
+
+from __future__ import unicode_literals
+from collections import Counter, defaultdict
+from copy import copy
+from functools import singledispatch
+
+from nltk.probability import FreqDist, ConditionalFreqDist
+from nltk import compat
+
+from nltk.model.util import check_ngram_order, default_ngrams
+
+
+def count_ngrams(order, vocabulary, *training_texts):
+    counter = NgramCounter(order, vocabulary)
+    ngram_gen = default_ngrams(order)
+    for text in training_texts:
+        counter.train_counts(map(ngram_gen, text))
+    return counter
+
+
+@singledispatch
+def _dispatched_lookup(words, vocab):
+    """Look up a sequence of words in the vocabulary.
+
+    Returns an iterator over looked up words.
+    """
+    return (w if w in vocab else vocab.unk_label for w in words)
+
+
+@_dispatched_lookup.register(str)
+def _(word, vocab):
+    """Looks up one word in the vocabulary."""
+    return word if word in vocab else vocab.unk_label
+
+
+@compat.python_2_unicode_compatible
+class NgramModelVocabulary(Counter):
+    """Stores language model vocabulary.
+
+    Satisfies two common language modeling requirements for a vocabulary:
+    - When checking membership and calculating its size, filters items
+      by comparing their counts to a cutoff value.
+    - Adds a special "unknown" token which unseen words are mapped to.
+
+    >>> from nltk.model import NgramModelVocabulary
+    >>> vocab = NgramModelVocabulary(["a", "b", "c", "a", "b"], unk_cutoff=2)
+    >>> "a" in vocab
+    True
+    >>> "c" in vocab
+    False
+    >>> len(vocab)
+    3
+    >>> len(vocab.keys())
+    4
     """
 
-    def __init__(self, *counter_args, unk_label="<UNK>", unk_cutoff=1):
-        super(self.__class__, self).__init__(*counter_args)
+    def __init__(self, *counter_args, unk_cutoff=1, unk_label="<UNK>"):
+        """Create a new NgramModelVocabulary.
+
+        :param *counter_args: Same arguments as for `collections.Counter`.
+        :param int unk_cutoff: Words that occur less frequently than this value
+                               are not considered part of the vocabulary.
+        :param unk_label: Label for marking words not considered part of the vocabulary.
+        """
+        super(NgramModelVocabulary, self).__init__(*counter_args)
         self.unk_label = unk_label
         self.cutoff = unk_cutoff
 
@@ -157,8 +175,17 @@ class NgramModelVocabulary(Counter):
         each of them up and return an iterator over the looked up words.
 
         :param words: Word(s) to look up.
-        :type words: generator(str) or str
+        :type words: Iterable(str) or str
         :rtype: generator(str) or str
+
+        >>> from nltk.model import NgramModelVocabulary
+        >>> vocab = NgramModelVocabulary(["a", "b", "c", "a", "b"], unk_cutoff=2)
+        >>> vocab.lookup("a")
+        'a'
+        >>> vocab.lookup("aliens")
+        '<UNK>'
+        >>> list(vocab.lookup(["a", "b", "c"]))
+        ['a', 'b', '<UNK>']
         """
         return _dispatched_lookup(words, self)
 
@@ -175,7 +202,7 @@ class NgramModelVocabulary(Counter):
         return sum(1 for item in self)
 
     def __eq__(self, other):
-        return (super(self.__class__, self).__eq__(other) and (self.cutoff == other.cutoff))
+        return super(NgramModelVocabulary, self).__eq__(other) and (self.cutoff == other.cutoff)
 
     def __ne__(self, other):
         return not self.__eq__(other)
