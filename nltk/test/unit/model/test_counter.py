@@ -21,24 +21,11 @@ class NgramCounterTests(unittest.TestCase):
     def setUpClass(cls):
 
         text = [list('abcd'), list('egdbe')]
-        cls.trigram_counter = NgramCounter(3)
-        cls.trigram_counter.train_counts(map(default_ngrams(3), text))
-        cls.bigram_counter = NgramCounter(2)
-        cls.bigram_counter.train_counts(map(default_ngrams(2), text))
-
-    def test_NgramCounter_order_attr(self):
-        self.assertEqual(self.trigram_counter.order, 3)
+        cls.trigram_counter = NgramCounter(map(default_ngrams(3), text))
+        cls.bigram_counter = NgramCounter(map(default_ngrams(2), text))
 
     def test_ngram_order_access_unigrams(self):
         self.assertEqual(self.bigram_counter[1], self.bigram_counter.unigrams)
-
-    def test_ngram_order_access_order_too_high(self):
-        with self.assertRaises(ValueError):
-            self.bigram_counter[3]
-
-    def test_NgramCounter_breaks_given_invalid_order(self):
-        with self.assertRaises(ValueError) as exc_info:
-            NgramCounter(0)
 
     def test_ngram_conditional_freqdist(self):
         expected_trigram_contexts = [
@@ -99,23 +86,6 @@ class NgramCounterTests(unittest.TestCase):
         self.assertEqual(unseen_count, unigrams['z'])
 
 
-class NgramCounterModificationTests(unittest.TestCase):
-    """These tests require a fresh instance of NgramCounter per method."""
-
-    def setUp(self):
-        text = [list('abcd'), list('egdbe')]
-        self.bigram_counter = NgramCounter(2)
-        self.bigram_counter.train_counts(map(default_ngrams(2), text))
-
-    def test_NgramCounter_train_wrong_ngram_size(self):
-        trigrams = [[
-                    (1, 2, 3),
-                    (4, 5, 6)
-                    ]]
-        with self.assertRaises(ValueError):
-            self.bigram_counter.train_counts(trigrams)
-
-
 class CheckNgramOrderTests(unittest.TestCase):
     """Cases for check_ngram_order function"""
 
@@ -138,12 +108,12 @@ class CheckNgramOrderTests(unittest.TestCase):
 class TrigramCounterDifferentInputs(unittest.TestCase):
 
     def setUp(self):
-        self.counter = NgramCounter(3)
+        self.counter = NgramCounter()
 
     def test_train_on_unigrams(self):
         words = list("abcd")
         unigram_sent = [(w,) for w in words]
-        self.counter.train_counts([unigram_sent])
+        self.counter.update([unigram_sent])
 
         self.assertFalse(bool(self.counter[3]))
         self.assertFalse(bool(self.counter[2]))
@@ -154,20 +124,20 @@ class TrigramCounterDifferentInputs(unittest.TestCase):
         list_sent = [["Check", "this"], ["this", "out"], ["out", "!"]]
 
         with self.assertRaises(TypeError):
-            self.counter.train_counts([str_sent])
+            self.counter.update([str_sent])
 
         with self.assertRaises(TypeError):
-            self.counter.train_counts([list_sent])
+            self.counter.update([list_sent])
 
     def test_train_on_bigrams(self):
         bigram_sent = [("a", 'b'), ("c", "d")]
-        self.counter.train_counts([bigram_sent])
+        self.counter.update([bigram_sent])
 
         self.assertFalse(bool(self.counter[3]))
 
     def test_train_on_mix(self):
         mixed_sent = [("a", 'b'), ("c", "d"), ("e", "f", "g"), ("h",)]
-        self.counter.train_counts([mixed_sent])
+        self.counter.update([mixed_sent])
         unigrams = ["h"]
         bigram_contexts = [("a",), ("c",)]
         trigram_contexts = [("e", "f")]

@@ -37,27 +37,24 @@ def count_ngrams(order, vocabulary, *training_texts):
 class NgramCounter(object):
     """Class for counting ngrams"""
 
-    def __init__(self, order):
+    def __init__(self, ngram_text=None):
         """
-        :type training_text: List[List[str]]
+        :param Iterable(Iterable(tuple(str))) ngram_text: Text containing senteces of ngrams.
         """
-        self.order = check_ngram_order(order)
-
         self._ngram_orders = defaultdict(ConditionalFreqDist)
         self.unigrams = FreqDist()
+        if ngram_text:
+            self.update(ngram_text)
 
-    def train_counts(self, training_text):
+    def update(self, ngram_text):
 
-        for sent in training_text:
+        for sent in ngram_text:
             for ngram in sent:
                 if not isinstance(ngram, tuple):
-                    raise TypeError("Ngram <{0}> isn't a tuple, "
-                                    "but {1}".format(ngram, type(ngram)))
+                    raise TypeError("Ngram <{0}> isn't a tuple, but {1}".format(ngram, type(ngram)))
 
                 ngram_order = len(ngram)
 
-                if ngram_order > self.order:
-                    raise ValueError("Ngram larger than highest order: " "{0}".format(ngram))
                 if ngram_order == 1:
                     self.unigrams[ngram[0]] += 1
                     continue
@@ -67,7 +64,6 @@ class NgramCounter(object):
 
     def __getitem__(self, order_number):
         """For convenience allow looking up ngram orders directly here."""
-        order_number = check_ngram_order(order_number, max_order=self.order)
         if order_number == 1:
             return self.unigrams
         return self._ngram_orders[order_number]
