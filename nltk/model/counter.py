@@ -12,7 +12,7 @@ First we need to make sure we are feeding the counter ngrams.
 
     >>> text = [list("abcd"), list("acdc")]
     >>> from nltk.util import everygrams
-    >>> text_ngrams = map(lambda seq: everygrams(seq, max_len=2), text)
+    >>> text_ngrams = (everygrams(sent, max_len=2) for sent in text)
 
 The counting itself is very simple.
 

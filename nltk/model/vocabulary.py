@@ -17,8 +17,8 @@ Building a Vocabulary
     >>> from nltk.model import NgramModelVocabulary
     >>> vocab = NgramModelVocabulary(test_words, unk_cutoff=2)
 
-    Tokens with counts greater than or equal to the cuttoff value will
-    be considered part of the vocabulary.
+Tokens with counts greater than or equal to the cuttoff value will
+be considered part of the vocabulary.
 
     >>> vocab['the']
     3
@@ -29,9 +29,9 @@ Building a Vocabulary
     >>> 'he' in vocab
     True
 
-    Tokens with frequency counts less than the cutoff value will be considered not
-    part of the vocabulary even though their entries in the count dictionary are
-    preserved.
+Tokens with frequency counts less than the cutoff value will be considered not
+part of the vocabulary even though their entries in the count dictionary are
+preserved.
 
     >>> vocab['Buster']
     1
@@ -42,17 +42,17 @@ Building a Vocabulary
     >>> 'aliens' in vocab
     False
 
-    Keeping the count entries for seen words allows us to change the cutoff value
-    without having to recalculate the counts.
+Keeping the count entries for seen words allows us to change the cutoff value
+without having to recalculate the counts.
 
     >>> vocab.cutoff = 1
     >>> "Buster" in vocab
     True
 
-    The cutoff value influences not only membership checking but also the result of
-    getting the size of the vocabulary using the built-in `len`.
-    Note that while the number of keys in the vocab dictionary stays the same,
-    the result of calling `len` on the vocabulary differs depending on the cutoff.
+The cutoff value influences not only membership checking but also the result of
+getting the size of the vocabulary using the built-in `len`.
+Note that while the number of keys in the vocab dictionary stays the same,
+the result of calling `len` on the vocabulary differs depending on the cutoff.
 
     >>> len(vocab.keys())
     38
@@ -64,17 +64,17 @@ Building a Vocabulary
     >>> len(vocab)
     8
 
-    We can look up words in a vocabulary using its `lookup` method.
-    "Unseen" words (with counts less than cutoff) are looked up as the unknown label.
-    If given one word (a string) as an input, this method will return a string.
+We can look up words in a vocabulary using its `lookup` method.
+"Unseen" words (with counts less than cutoff) are looked up as the unknown label.
+If given one word (a string) as an input, this method will return a string.
 
     >>> vocab.lookup("he")
     'he'
     >>> vocab.lookup("aliens")
     '<UNK>'
 
-    If given a sequence (anything other than a string), it will return an iterator over
-    the looked up words.
+If given a sequence (anything other than a string), it will return an iterator over
+the looked up words.
 
     >>> list(vocab.lookup(sents[5][:5]))
     ['<UNK>', 'he', '<UNK>', '<UNK>', 'to']
