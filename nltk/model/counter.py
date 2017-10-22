@@ -75,7 +75,7 @@ def count_ngrams(order, vocabulary, *training_texts):
 
 
 @compat.python_2_unicode_compatible
-class NgramCounter(object):
+class NgramCounter(defaultdict):
     """Class for counting ngrams.
 
     Will count any ngram sequence you give it.
@@ -104,8 +104,10 @@ class NgramCounter(object):
         :param ngram_text: Optional text containing senteces of ngrams, as for `update` method.
         :type ngram_text: Iterable(Iterable(tuple(str))) or None
         """
-        self._ngram_orders = defaultdict(ConditionalFreqDist)
-        self.unigrams = FreqDist()
+        super(NgramCounter, self).__init__(ConditionalFreqDist)
+        self[1] = FreqDist()
+        self.unigrams = self[1]
+
         if ngram_text:
             self.update(ngram_text)
 
@@ -132,8 +134,6 @@ class NgramCounter(object):
                 context, word = ngram[:-1], ngram[-1]
                 self[ngram_order][context][word] += 1
 
-    def __getitem__(self, order_number):
-        """For convenience allow looking up ngram orders directly here."""
-        if order_number == 1:
-            return self.unigrams
-        return self._ngram_orders[order_number]
+    def __str__(self):
+        return "<{0} with {1} ngram orders and {2} ngrams>".format(self.__class__.__name__,
+                                                                   len(self), self.N())
