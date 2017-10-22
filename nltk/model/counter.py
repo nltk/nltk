@@ -1,13 +1,54 @@
 # Natural Language Toolkit: Language Model Counters
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2017 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+"""
+Counting Ngrams
+---------------
+
+First we need to make sure we are feeding the counter ngrams.
+
+    >>> text = [list("abcd"), list("acdc")]
+    >>> from nltk.util import everygrams
+    >>> text_ngrams = map(lambda seq: everygrams(seq, max_len=2), text)
+
+The counting itself is very simple.
+
+    >>> from nltk.model import NgramCounter
+    >>> ngram_counts = NgramCounter(text_ngrams)
+
+The counts are stored by ngram order. I.e. here's how you access bigrams.
+
+    >>> ngram_counts[2]
+    <ConditionalFreqDist with 4 conditions>
+
+The keys of this `ConditionalFreqDist` are the contexts preceding a word.
+Each context has a `FreqDist` of tokens found following it in the text.
+
+    >>> ngram_counts[2][('a',)]
+    FreqDist({'b': 1, 'c': 1})
+
+Accessing unigram counts works a little differently because they don't have any
+preceding context. They are stored as a simple `FreqDist` in the `unigrams`
+attribute.
+
+    >>> print(ngram_counts.unigrams)
+    <FreqDist with 4 samples and 8 outcomes>
+    >>> ngram_counts.unigrams['a']
+    2
+    >>> ngram_counts.unigrams['c']
+    3
+
+You can also access them using square bracket notation.
+
+    >>> ngram_counts[1]['b']
+    1
+"""
 
 from __future__ import unicode_literals
 from collections import defaultdict
-from copy import copy
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
@@ -35,11 +76,33 @@ def count_ngrams(order, vocabulary, *training_texts):
 
 @compat.python_2_unicode_compatible
 class NgramCounter(object):
-    """Class for counting ngrams"""
+    """Class for counting ngrams.
+
+    Will count any ngram sequence you give it.
+
+    >>> from nltk.model import NgramCounter
+    >>> counts = NgramCounter([[('a', 'b'), ('b', 'c')], [('d', 'e'), ('e', 'f')]])
+    >>> counts[2]
+    <ConditionalFreqDist with 4 conditions>
+    >>> counts[2][('a',)]['b']
+    1
+    >>> counts.unigrams
+    FreqDist({})
+    >>> counts.update([[('a',), ('b',), ('b',)]])
+    >>> counts.unigrams
+    FreqDist({'b': 2, 'a': 1})
+    >>> counts.unigrams['b']
+    2
+    """
 
     def __init__(self, ngram_text=None):
-        """
-        :param Iterable(Iterable(tuple(str))) ngram_text: Text containing senteces of ngrams.
+        """Creates a new NgramCounter.
+
+        If `ngram_text` is specified, counts ngrams from it, otherwise waits for
+        `update` method to be called explicitly.
+
+        :param ngram_text: Optional text containing senteces of ngrams, as for `update` method.
+        :type ngram_text: Iterable(Iterable(tuple(str))) or None
         """
         self._ngram_orders = defaultdict(ConditionalFreqDist)
         self.unigrams = FreqDist()
@@ -47,6 +110,14 @@ class NgramCounter(object):
             self.update(ngram_text)
 
     def update(self, ngram_text):
+        """Updates ngram counts from `ngram_text`.
+
+        Expects `ngram_text` to be a sequence of sentences (sequences).
+        Each sentence consists of ngrams as tuples of strings.
+
+        :param Iterable(Iterable(tuple(str))) ngram_text: Text containing senteces of ngrams.
+        :raises TypeError: if the ngrams are not tuples.
+        """
 
         for sent in ngram_text:
             for ngram in sent:
@@ -54,7 +125,6 @@ class NgramCounter(object):
                     raise TypeError("Ngram <{0}> isn't a tuple, but {1}".format(ngram, type(ngram)))
 
                 ngram_order = len(ngram)
-
                 if ngram_order == 1:
                     self.unigrams[ngram[0]] += 1
                     continue
