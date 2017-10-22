@@ -134,6 +134,50 @@ class NgramCounter(defaultdict):
                 context, word = ngram[:-1], ngram[-1]
                 self[ngram_order][context][word] += 1
 
+    def N(self):
+        """Returns grand total number of ngrams stored.
+
+        This includes ngrams from all orders, so some duplication is expected.
+        :rtype: int
+
+        >>> from nltk.model import NgramCounter
+        >>> counts = NgramCounter([[("a", "b"), ("c",), ("d", "e")]])
+        >>> counts.N()
+        3
+        """
+        return sum(self[order].N() for order in self)
+
+    def freq_of_freq(self):
+        """Maps frequencies of ngrams to how many ngrams occurred with each frequency.
+
+        Equivalent to `FreqDist.r_Nr`, but more explicitly named.
+        Returns a dictionary where the keys are the ngram orders of NgramCounter instance.
+        The values are defaultdicts of ints to ints.
+        In the defaultdicts each key is an ngram frequency and its corresponding value
+        is how many ngrams occurred with that frequency.
+
+        :rtype: dict(defaultdict(int))
+
+        >>> from nltk.model import NgramCounter
+        >>> counts = NgramCounter([[("a", "c"), ("d", "c"), ("c",)]])
+        >>> r_Nr = counts.freq_of_freq()
+        >>> r_Nr[1]
+        defaultdict(<class 'int'>, {1: 1, 0: 0})
+        >>> r_Nr[2]
+        defaultdict(<class 'int'>, {1: 2})
+        """
+        _r_Nr = {}
+        for order in self:
+            if order == 1:
+                _r_Nr[order] = self[order].r_Nr()
+                continue
+
+            _r_Nr[order] = defaultdict(int)
+            for fdist in self[order].values():
+                for freq in fdist.values():
+                    _r_Nr[order][freq] += 1
+        return _r_Nr
+
     def __str__(self):
         return "<{0} with {1} ngram orders and {2} ngrams>".format(self.__class__.__name__,
                                                                    len(self), self.N())
