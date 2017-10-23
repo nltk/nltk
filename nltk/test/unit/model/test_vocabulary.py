@@ -55,6 +55,15 @@ class NgramModelVocabularyTests(unittest.TestCase):
         six.assertCountEqual(self, vocab_keys, list(self.vocab.keys()))
         six.assertCountEqual(self, vocab_items, list(self.vocab))
 
+    def test_update_empty_vocab(self):
+        empty = NgramModelVocabulary(unk_cutoff=2)
+        self.assertEqual(len(empty), 0)
+        self.assertFalse(empty)
+        self.assertNotIn(empty.unk_label, empty)
+
+        empty.update(list("abcde"))
+        self.assertIn(empty.unk_label, empty)
+
     def test_copying_vs_recreating_vocabulary(self):
         new_vocab = NgramModelVocabulary(self.vocab, unk_cutoff=1)
         copied_vocab = copy.copy(self.vocab)

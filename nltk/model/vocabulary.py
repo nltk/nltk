@@ -132,9 +132,9 @@ class NgramModelVocabulary(Counter):
                                are not considered part of the vocabulary.
         :param unk_label: Label for marking words not considered part of the vocabulary.
         """
-        super(NgramModelVocabulary, self).__init__(*counter_args)
         self.unk_label = unk_label
         self.cutoff = unk_cutoff
+        super(NgramModelVocabulary, self).__init__(*counter_args)
 
     @property
     def cutoff(self):
@@ -149,7 +149,20 @@ class NgramModelVocabulary(Counter):
         if new_cutoff < 1:
             raise ValueError("Cutoff value cannot be less than 1. Got: {0}".format(new_cutoff))
         self._cutoff = new_cutoff
-        self[self.unk_label] = new_cutoff
+        self._update_unk_label()
+
+    def update(self, *counter_args, **counter_kwargs):
+        """Update vocabulary counts.
+
+        Same as `collections.Counter.update` method but additionally creates
+        an entry for the unknown label.
+        """
+        super(NgramModelVocabulary, self).update(*counter_args, **counter_kwargs)
+        self._update_unk_label()
+
+    def _update_unk_label(self):
+        if self.keys():
+            self[self.unk_label] = self.cutoff
 
     def lookup(self, words):
         """Look up one or more words in the vocabulary.
