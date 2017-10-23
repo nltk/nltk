@@ -358,39 +358,41 @@ class LaplaceBigramModelTests(unittest.TestCase, BigramModelMixin):
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
-@unittest.skip
-class NgramModelTextGenerationTests(NgramModelTestBase):
+class NgramModelTextGenerationTests(unittest.TestCase):
     """Using MLE estimator, generate some text."""
 
     def setUp(self):
-        self.model = MLENgramModel(self.trigram_counter)
+        vocab = NgramModelVocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+        training_text = [list('abcd'), list('egadbe')]
+        self.model = MleLanguageModel(3, vocabulary=vocab)
+        self.model.fit(training_text)
 
     def test_generate_one_no_context(self):
         generated = self.model.generate_one()
-        self.assertIn(generated, self.model.ngram_counter.unigrams)
+        self.assertIn(generated, self.model.counts.unigrams)
 
     def test_generate_one_small_context(self):
         context = ("c",)
         generated = self.model.generate_one(context=context)
 
-        self.assertIn(generated, self.model.ngram_counter[2][context])
+        self.assertIn(generated, self.model.counts[2][context])
 
     def test_generate_one_normal_context(self):
         context = ("b", "c")
         generated = self.model.generate_one(context=context)
 
-        self.assertIn(generated, self.model.ngram_counter[3][context])
+        self.assertIn(generated, self.model.counts[3][context])
 
     def test_generate_one_backoff_to_smaller_context(self):
         context_no_samples = ("a", "c")
-        expected_samples = self.model.ngram_counter[2][("c",)]
+        expected_samples = self.model.counts[2][("c",)]
         generated = self.model.generate_one(context_no_samples)
 
         self.assertIn(generated, expected_samples)
 
     def test_generate_one_backoff_to_unigrams(self):
         context_no_samples = ("a", "</s>")
-        expected_samples = self.model.ngram_counter.unigrams
+        expected_samples = self.model.counts.unigrams
         generated = self.model.generate_one(context_no_samples)
 
         self.assertIn(generated, expected_samples)
@@ -400,12 +402,12 @@ class NgramModelTextGenerationTests(NgramModelTestBase):
 
         self.assertEqual(5, len(generated_text))
         # With no seed, first item should be one of unigrams
-        self.assertIn(generated_text[0], self.model.ngram_counter[1])
+        self.assertIn(generated_text[0], self.model.counts[1])
 
     def test_generate_with_bigram_seed(self):
         # seed has to be picked so as to make the test deterministic!
         seed = ("c",)
-        seed_continuations = self.model.ngram_counter[2][seed]
+        seed_continuations = self.model.counts[2][seed]
         generated_text = self.model.generate(5, seed=seed)
 
         # seed should be the first item
