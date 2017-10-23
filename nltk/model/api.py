@@ -4,7 +4,7 @@
 # Authors: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-"""Language Model Interface"""
+"""Language Model Interface."""
 from __future__ import unicode_literals, division
 from functools import wraps, partial
 import random
@@ -36,13 +36,23 @@ def mask_oov_args(score_func):
 
 @add_metaclass(ABCMeta)
 class LanguageModelI(object):
-    """Interface for Language Models"""
+    """ABC for Language Models.
+
+    Cannot be directly instantiated itself.
+
+    """
 
     def __init__(self, order, vocabulary=None, ngrams_fn=None, pad_fn=None):
-        """
+        """Creatse new LanguageModelI.
 
-        :param vocabulary:
+        :param vocabulary: If provided, this vocabulary will be used instead
+        of creating a new one when training.
         :type vocabulary: `nltk.model.NgramModelVocabulary` or None
+        :param ngrams_fn: If given, defines how sentences in training text are turned to ngram sequences.
+        :type ngrams_fn: function or None
+        :param pad_fn: If given, defines how senteces in training text are padded.
+        :type pad_fn: function or None
+
         """
         self.order = order
         self.vocab = NgramModelVocabulary() if vocabulary is None else vocabulary
@@ -72,28 +82,32 @@ class LanguageModelI(object):
         self.counts.update(ngram_text)
 
     def preprocess(self, sent):
+        """Preprocess a sentence for training.
+
+        :param Iterable(str) sent: Sentence (sequence of words).
+        :rtype: Iterable(tuple(str))
+
+        """
         return self.ngrams(list(self.vocab.lookup(self.padder(sent))))
 
     @abstractmethod
     def score(self, word, context=None):
         """Score a word given some optional context.
 
-        :param str word: the word to get the probability of
-        :param tuple(str) context: the context the word is in
+        :param str word: Word for which we want the score
+        :param tuple(str) context: Context the word is in.
+        If `None`, compute unigram score.
+        :param context: tuple(str) or None
         :rtype: float
+
         """
         raise NotImplementedError()
 
     def logscore(self, word, context=None):
-        """Evaluate the log probability of this word in this context.
+        """Evaluate the log score of this word in this context.
 
-        This implementation actually works, child classes don't have to
-        redefine it.
+        The arguments are the same as for `score`.
 
-        :param word: the word to get the probability of
-        :type word: str
-        :param context: the context the word is in
-        :type context: Tuple[str]
         """
         score = self.score(word, context)
         return log_base2(score)
@@ -102,6 +116,8 @@ class LanguageModelI(object):
         """Helper method for retrieving counts for a given context.
 
         Assumes context has been checked and oov words in it masked.
+        :type context_checked: tuple(str) or None
+
         """
         if context_checked:
             order = len(context_checked) + 1
@@ -112,10 +128,9 @@ class LanguageModelI(object):
     def entropy(self, text_ngrams):
         """Calculate cross-entropy of model for given evaluation text.
 
-        This is the average log probability of each word in the text.
+        :param Iterable(tuple(str)) text_ngrams: A sequence of ngram tuples.
+        :rtype: float
 
-        :param text: words to use for evaluation
-        :type text: Iterable[str]
         """
 
         H = 0.0  # entropy is conventionally denoted by "H"
@@ -131,16 +146,18 @@ class LanguageModelI(object):
     def perplexity(self, text_ngrams):
         """Calculates the perplexity of the given text.
 
-        This is simply 2 ** cross-entropy for the text.
+        This is simply 2 ** cross-entropy for the text, so the arguments are the same.
 
-        :param text: words to calculate perplexity of
-        :type text: Iterable[str]
         """
 
         return pow(2.0, self.entropy(text_ngrams))
 
     def generate_one(self, context=None):
-        """Generate one word given some context."""
+        """Generate one word given some context.
+
+        :param context: Same as for `context_counts` method.
+
+        """
         samples = self.context_counts(context)
         if not samples:
             smaller_context = context[1:] if len(context) > 1 else None
@@ -157,6 +174,7 @@ class LanguageModelI(object):
         """Generate num_words with optional seed provided.
 
         This essentially wraps the generate_one method to produce sequences.
+
         """
         text = list(seed) if seed else [self.generate_one()]
         while len(text) < num_words:
