@@ -14,6 +14,7 @@ from collections import namedtuple
 
 from nltk.compat import python_2_unicode_compatible
 
+
 @python_2_unicode_compatible
 class AlignedSent(object):
     """
@@ -67,6 +68,7 @@ class AlignedSent(object):
     def _set_alignment(self, alignment):
         _check_alignment(len(self.words), len(self.mots), alignment)
         self._alignment = alignment
+
     alignment = property(_get_alignment, _set_alignment)
 
     def __repr__(self):
@@ -95,20 +97,20 @@ class AlignedSent(object):
             s += '"%s_target" [label="%s"] \n' % (w, w)
 
         # Alignment
-        for u,v in self._alignment:
-            s += '"%s_source" -- "%s_target" \n' % (self._words[u] , self._mots[v] )
+        for u, v in self._alignment:
+            s += '"%s_source" -- "%s_target" \n' % (self._words[u], self._mots[v])
 
         # Connect the source words
-        for i in range(len(self._words)-1) :
-            s += '"%s_source" -- "%s_source" [style=invis]\n' % (self._words[i] , self._words[i+1])
+        for i in range(len(self._words) - 1):
+            s += '"%s_source" -- "%s_source" [style=invis]\n' % (self._words[i], self._words[i + 1])
 
         # Connect the target words
-        for i in range(len(self._mots)-1) :
-            s += '"%s_target" -- "%s_target" [style=invis]\n' % (self._mots[i] , self._mots[i+1])
+        for i in range(len(self._mots) - 1):
+            s += '"%s_target" -- "%s_target" [style=invis]\n' % (self._mots[i], self._mots[i + 1])
 
         # Put it in the same rank
-        s  += '{rank = same; %s}\n' % (' '.join('"%s_source"' % w for w in self._words))
-        s  += '{rank = same; %s}\n' % (' '.join('"%s_target"' % w for w in self._mots))
+        s += '{rank = same; %s}\n' % (' '.join('"%s_source"' % w for w in self._words))
+        s += '{rank = same; %s}\n' % (' '.join('"%s_target"' % w for w in self._mots))
 
         s += '}'
 
@@ -129,7 +131,6 @@ class AlignedSent(object):
 
         return out.decode('utf8')
 
-
     def __str__(self):
         """
         Return a human-readable string representation for this ``AlignedSent``.
@@ -147,7 +148,8 @@ class AlignedSent(object):
         :rtype: AlignedSent
         """
         return AlignedSent(self._mots, self._words,
-                               self._alignment.invert())
+                           self._alignment.invert())
+
 
 @python_2_unicode_compatible
 class Alignment(frozenset):
@@ -223,7 +225,7 @@ class Alignment(frozenset):
         if not positions:
             positions = list(range(len(self._index)))
         for p in positions:
-            image.update(f for _,f in self._index[p])
+            image.update(f for _, f in self._index[p])
         return sorted(image)
 
     def __repr__(self):
@@ -252,9 +254,11 @@ def _giza2pair(pair_string):
     i, j = pair_string.split("-")
     return int(i), int(j)
 
+
 def _naacl2pair(pair_string):
     i, j, p = pair_string.split("-")
     return int(i), int(j)
+
 
 def _check_alignment(num_words, num_mots, alignment):
     """
@@ -278,11 +282,14 @@ def _check_alignment(num_words, num_mots, alignment):
 
 
 PhraseTableEntry = namedtuple('PhraseTableEntry', ['trg_phrase', 'log_prob'])
+
+
 class PhraseTable(object):
     """
     In-memory store of translations for a given phrase, and the log
     probability of the those translations
     """
+
     def __init__(self):
         self.src_phrases = dict()
 
