@@ -51,8 +51,6 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
   (`git clone https://github.com/<your-github-username>/nltk.git`);
 - Run `cd nltk` to get to the root directory of the `nltk` code base;
 - Install the dependencies (`pip install -r pip-req.txt`);
-- Install the `nltk` library in development mode
-  (`python setup.py develop`);
 - Download the datasets for running tests
   (`python -m nltk.downloader tests`);
 - Create a remote link from your local repository to the
