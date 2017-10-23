@@ -49,9 +49,8 @@ class StanfordTagger(TaggerI):
                  verbose=False, java_options='-mx1000m'):
         # Raise deprecation warning.
         warnings.warn(str("\nThe StanfordTokenizer will "
-                          "be deprecated in version 3.2.5.\n"
-                          "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m "
-                          "or \033[91mnltk.tag.corenlp.CoreNLPNERTagger\033[0m instead."),
+                          "be deprecated in version 3.2.6.\n"
+                          "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead."),
                       DeprecationWarning, stacklevel=2)
 
         if not self._JAR:

@@ -1,4 +1,4 @@
-﻿# Natural Language Toolkit (NLTK) Authors
+# Natural Language Toolkit (NLTK) Authors
 
 ## Original Authors
 
@@ -223,6 +223,7 @@
 - Stoytcho Stoytchev
 - Lakhdar Benzahia
 - Artiem Krinitsyn
+- Oleg Chislov
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer

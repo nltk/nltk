@@ -310,10 +310,7 @@ class Text(object):
     #////////////////////////////////////////////////////////////
 
     def __getitem__(self, i):
-        if isinstance(i, slice):
-            return self.tokens[i.start:i.stop]
-        else:
-            return self.tokens[i]
+        return self.tokens[i]
 
     def __len__(self):
         return len(self.tokens)
