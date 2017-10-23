@@ -93,6 +93,7 @@ def _dispatched_lookup(words, vocab):
     """Look up a sequence of words in the vocabulary.
 
     Returns an iterator over looked up words.
+
     """
     return (w if w in vocab else vocab.unk_label for w in words)
 
@@ -122,6 +123,7 @@ class NgramModelVocabulary(Counter):
     3
     >>> len(vocab.keys())
     4
+
     """
 
     def __init__(self, *counter_args, unk_cutoff=1, unk_label="<UNK>"):
@@ -131,6 +133,7 @@ class NgramModelVocabulary(Counter):
         :param int unk_cutoff: Words that occur less frequently than this value
                                are not considered part of the vocabulary.
         :param unk_label: Label for marking words not considered part of the vocabulary.
+
         """
         self.unk_label = unk_label
         self.cutoff = unk_cutoff
@@ -138,9 +141,10 @@ class NgramModelVocabulary(Counter):
 
     @property
     def cutoff(self):
-        """ Cutoff value.
+        """Cutoff value.
 
         Items with count below this value are not considered part of the vocabulary.
+
         """
         return self._cutoff
 
@@ -154,8 +158,9 @@ class NgramModelVocabulary(Counter):
     def update(self, *counter_args, **counter_kwargs):
         """Update vocabulary counts.
 
-        Same as `collections.Counter.update` method but additionally creates
-        an entry for the unknown label.
+        Same as `collections.Counter.update` method but additionally creates an entry for the
+        unknown label.
+
         """
         super(NgramModelVocabulary, self).update(*counter_args, **counter_kwargs)
         self._update_unk_label()
@@ -183,15 +188,18 @@ class NgramModelVocabulary(Counter):
         '<UNK>'
         >>> list(vocab.lookup(["a", "b", "c"]))
         ['a', 'b', '<UNK>']
+
         """
         return _dispatched_lookup(words, self)
 
     def __contains__(self, item):
-        """Only consider items with counts GE to cutoff as being in the vocabulary."""
+        """Only consider items with counts GE to cutoff as being in the
+        vocabulary."""
         return self[item] >= self.cutoff
 
     def __iter__(self):
-        """Building on membership check define how to iterate over vocabulary."""
+        """Building on membership check define how to iterate over
+        vocabulary."""
         return (item for item in super(NgramModelVocabulary, self).__iter__() if item in self)
 
     def __len__(self):

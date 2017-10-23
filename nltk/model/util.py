@@ -22,7 +22,7 @@ NGRAMS_KWARGS = {
 
 
 def log_base2(score):
-    """Convenience function for computing logarithms with base 2"""
+    """Convenience function for computing logarithms with base 2."""
     if score == 0.0:
         return NEG_INF
     return log(score, 2)
@@ -47,7 +47,7 @@ def padded_everygrams(order,
 
 
 def default_ngrams(order):
-    """Provides defaults for nltk.util.ngrams"""
+    """Provides defaults for nltk.util.ngrams."""
 
     return partial(padded_everygrams, order)
 

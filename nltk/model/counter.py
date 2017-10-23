@@ -85,6 +85,7 @@ class NgramCounter(defaultdict):
     FreqDist({'b': 2, 'a': 1})
     >>> counts.unigrams['b']
     2
+
     """
 
     def __init__(self, ngram_text=None):
@@ -95,6 +96,7 @@ class NgramCounter(defaultdict):
 
         :param ngram_text: Optional text containing senteces of ngrams, as for `update` method.
         :type ngram_text: Iterable(Iterable(tuple(str))) or None
+
         """
         super(NgramCounter, self).__init__(ConditionalFreqDist)
         self[1] = FreqDist()
@@ -111,6 +113,7 @@ class NgramCounter(defaultdict):
 
         :param Iterable(Iterable(tuple(str))) ngram_text: Text containing senteces of ngrams.
         :raises TypeError: if the ngrams are not tuples.
+
         """
 
         for sent in ngram_text:
@@ -136,11 +139,13 @@ class NgramCounter(defaultdict):
         >>> counts = NgramCounter([[("a", "b"), ("c",), ("d", "e")]])
         >>> counts.N()
         3
+
         """
         return sum(self[order].N() for order in self)
 
     def freq_of_freq(self):
-        """Maps frequencies of ngrams to how many ngrams occurred with each frequency.
+        """Maps frequencies of ngrams to how many ngrams occurred with each
+        frequency.
 
         Equivalent to `FreqDist.r_Nr`, but more explicitly named.
         Returns a dictionary where the keys are the ngram orders of NgramCounter instance.
@@ -157,6 +162,7 @@ class NgramCounter(defaultdict):
         defaultdict(<class 'int'>, {1: 1, 0: 0})
         >>> r_Nr[2]
         defaultdict(<class 'int'>, {1: 2})
+
         """
         _r_Nr = {}
         for order in self:
