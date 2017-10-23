@@ -9,38 +9,11 @@ from __future__ import division
 import unittest
 import math
 
-from nltk.model import (count_ngrams,
-                        NgramModelVocabulary,
-                        NgramCounter,
+from nltk.model import (NgramModelVocabulary,
                         MleLanguageModel,
                         LidstoneNgramModel,
                         LaplaceNgramModel)
-from nltk.model.util import NEG_INF, default_ngrams
-from nltk.model.testutil import NgramCounterSetUpMixin
-
-_default_bigrams = default_ngrams(2)
-
-
-class NgramModelTestBase(unittest.TestCase, NgramCounterSetUpMixin):
-    """Base test class for testing ngram model classes"""
-
-    @classmethod
-    def setUpClass(cls):
-        # The base vocabulary contains 5 items: abcd and UNK
-        cls.vocab = NgramModelVocabulary(["a", "b", "c", "d", "z"], unk_cutoff=1)
-        # NgramCounter.vocabulary contains 7 items (+2 for padding symbols)
-        training_text = [list('abcd'), list('egadbe')]
-        cls.bigram_counter = cls.setUpNgramCounter(2, training_text)
-        cls.trigram_counter = cls.setUpNgramCounter(3, training_text)
-
-    def total_vocab_score(self, context):
-        """Sums up scores for the whole vocabulary given some context.
-
-        Used to make sure they sum to 1.
-        Note that we *must* loop over the counter's vocabulary so as to include
-        padding symbols.
-        """
-        return sum(self.model.score(w, context) for w in self.vocab)
+from nltk.model.util import NEG_INF
 
 
 class ScoreTestHelper(object):
@@ -57,24 +30,6 @@ class ScoreTestHelper(object):
 
     def assertUnigramScoreEqual(self, expected_score, word="d"):
         self.assertScoreEqual(expected_score, word, context=None)
-
-    def assertEntropyPerplexityEqual(self, H, perplexity,
-                                     corpus="ac-dc",
-                                     ngram_gen=True):
-        """Helper function for testing entropy/perplexity."""
-        if ngram_gen:
-            got_entropy = self.model.entropy(_default_bigrams(corpus))
-            got_perplexity = self.model.perplexity(_default_bigrams(corpus))
-        else:
-            got_entropy = self.model.entropy(corpus)
-            got_perplexity = self.model.perplexity(corpus)
-        # We have to be able to deal with NaNs that occur in some cases
-        if math.isnan(H) and math.isnan(perplexity):
-            self.assertTrue(math.isnan(got_entropy))
-            self.assertTrue(math.isnan(got_perplexity))
-        else:
-            self.assertAlmostEqual(H, got_entropy, places=4)
-            self.assertAlmostEqual(perplexity, got_perplexity, places=4)
 
     def total_vocab_score(self, context):
         """Sums up scores for the whole vocabulary given some context.
@@ -185,11 +140,12 @@ class MleBigramModelTests(unittest.TestCase, BigramModelMixin):
         H = 2.6243
         perplexity = 6.166
 
-        corpus = [("<s>",), ("a",), ("c",), ("-",),
+        text = [("<s>",), ("a",), ("c",), ("-",),
                   ("d",), ("c",), ("</s>",)]
 
-        self.assertEntropyPerplexityEqual(H, perplexity, corpus=corpus,
-                                          ngram_gen=False)
+
+        self.assertAlmostEqual(H, self.model.entropy(text), places=4)
+        self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
 class MleTrigramModelTests(unittest.TestCase, TrigramModelMixin):
