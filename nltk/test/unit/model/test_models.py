@@ -267,8 +267,8 @@ class LidstoneBigramModelTests(unittest.TestCase, BigramModelMixin):
         # Ngram = score, log score, product
         # <s>, a    = 0.3929, -1.3479, -0.5295
         # a, c      = 0.0357, -4.8074, -0.1717
-        # c, -      = 0.0556, -4.1699, -0.2317
-        # -, d      = 0.0263,  -5.2479, -0.1381
+        # c, UNK      = 0.0556, -4.1699, -0.2317
+        # UNK, d      = 0.0263,  -5.2479, -0.1381
         # d, c      = 0.0357, -4.8074, -0.1717
         # c, </s>   = 0.0556, -4.1699, -0.2317
         # Total product: -1.4744
@@ -299,18 +299,18 @@ class LidstoneTrigramModelTests(unittest.TestCase, TrigramModelMixin):
         self.assertScoreEqual(0.1 / 1.8, word="e", context=("c",))
 
 
-@unittest.skip
-class LaplaceBigramModelTests(NgramModelTestBase, BigramModelMixin):
+class LaplaceBigramModelTests(unittest.TestCase, BigramModelMixin):
     """unit tests for LaplaceNgramModel class"""
 
     def setUp(self):
-        self.model = LaplaceNgramModel(self.bigram_counter)
+        vocab = NgramModelVocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+        training_text = [list('abcd'), list('egadbe')]
+        self.model = LaplaceNgramModel(2, vocabulary=vocab)
+        self.model.fit(training_text)
 
     def test_gamma(self):
         # Make sure the gamma is set to 1
         self.assertEqual(1, self.model.gamma)
-        # Laplace Gamma norm is just the vocabulary size
-        self.assertEqual(8, self.model.gamma_norm)
 
     def test_score(self):
         # basic sanity-check:
@@ -337,18 +337,25 @@ class LaplaceBigramModelTests(NgramModelTestBase, BigramModelMixin):
         self.assertUnigramScoreEqual(4.0 / 22, "y")
 
     def test_entropy_perplexity(self):
+        text = [('<s>', 'a'),
+                ('a', 'c'),
+                ('c', '<UNK>'),
+                ('<UNK>', 'd'),
+                ('d', 'c'),
+                ('c', '</s>')]
         # Unlike MLE this should be able to handle completely novel ngrams
         # Ngram = score, log score, product
         # <s>, a    = 0.(2), -2.1699, -0.4339
         # a, c      = 0.(1), -3.1699, -0.3169
-        # c, -      = 0.125, -3.0, -0.375
-        # -, d      = 0.1,  -3.3219, -0.3321
+        # c, UNK      = 0.125, -3.0, -0.375
+        # UNK, d      = 0.1,  -3.3219, -0.3321
         # d, c      = 0.(1) -3.1699, -0.3169
         # c, </s>   = 0.125, -3.0, -0.375
         # Total product: -2.1498
         H = 2.1477
         perplexity = 4.4312
-        self.assertEntropyPerplexityEqual(H, perplexity)
+        self.assertAlmostEqual(H, self.model.entropy(text), places=4)
+        self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
 @unittest.skip

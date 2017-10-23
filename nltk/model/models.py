@@ -56,5 +56,5 @@ class LaplaceNgramModel(LidstoneNgramModel):
     Initialization identical to BaseNgramModel because gamma is always 1.
     """
 
-    def __init__(self, *args):
-        super(LaplaceNgramModel, self).__init__(1, *args)
+    def __init__(self, *args, **kwargs):
+        super(LaplaceNgramModel, self).__init__(1, *args, **kwargs)
