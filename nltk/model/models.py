@@ -8,7 +8,7 @@ from __future__ import unicode_literals, division
 
 from nltk import compat
 
-from nltk.model.api import LanguageModelI, mask_oov_args, BaseNgramModel
+from nltk.model.api import LanguageModelI, mask_oov_args
 
 
 @compat.python_2_unicode_compatible

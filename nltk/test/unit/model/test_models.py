@@ -15,7 +15,6 @@ from nltk.model import (count_ngrams,
                         MleLanguageModel,
                         LidstoneNgramModel,
                         LaplaceNgramModel)
-from nltk.model.api import BaseNgramModel
 from nltk.model.util import NEG_INF, default_ngrams
 from nltk.model.testutil import NgramCounterSetUpMixin
 
