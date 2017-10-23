@@ -221,18 +221,17 @@ class MleTrigramModelTests(unittest.TestCase, TrigramModelMixin):
         self.assertScoreEqual(1, context=("c",))
 
 
-@unittest.skip
-class LidstoneBigramModelTests(NgramModelTestBase, BigramModelMixin):
+class LidstoneBigramModelTests(unittest.TestCase, BigramModelMixin):
     """unit tests for LidstoneNgramModel class"""
 
     def setUp(self):
-        self.model = LidstoneNgramModel(0.1, self.bigram_counter)
+        vocab = NgramModelVocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+        training_text = [list('abcd'), list('egadbe')]
+        self.model = LidstoneNgramModel(0.1, 2, vocabulary=vocab)
+        self.model.fit(training_text)
 
-    def test_gamma_and_gamma_norm(self):
+    def test_gamma(self):
         self.assertEqual(0.1, self.model.gamma)
-        # There are 8 items in the vocabulary, so we expect gamma norm to be 0.8
-        # Due to floating point funkyness in Python, we use float assertion here
-        self.assertAlmostEqual(0.8, self.model.gamma_norm)
 
     def test_score(self):
         # count(d | c) = 1
@@ -258,6 +257,12 @@ class LidstoneBigramModelTests(NgramModelTestBase, BigramModelMixin):
         self.assertUnigramScoreEqual(3.1 / 14.8, "y")
 
     def test_entropy_perplexity(self):
+        text = [('<s>', 'a'),
+                ('a', 'c'),
+                ('c', '<UNK>'),
+                ('<UNK>', 'd'),
+                ('d', 'c'),
+                ('c', '</s>')]
         # Unlike MLE this should be able to handle completely novel ngrams
         # Ngram = score, log score, product
         # <s>, a    = 0.3929, -1.3479, -0.5295
@@ -269,14 +274,17 @@ class LidstoneBigramModelTests(NgramModelTestBase, BigramModelMixin):
         # Total product: -1.4744
         H = 1.4744
         perplexity = 2.7786
-        self.assertEntropyPerplexityEqual(H, perplexity)
+        self.assertAlmostEqual(H, self.model.entropy(text), places=4)
+        self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
-@unittest.skip
-class LidstoneTrigramModelTests(NgramModelTestBase, TrigramModelMixin):
+class LidstoneTrigramModelTests(unittest.TestCase, TrigramModelMixin):
 
     def setUp(self):
-        self.model = LidstoneNgramModel(0.1, self.trigram_counter)
+        vocab = NgramModelVocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+        training_text = [list('abcd'), list('egadbe')]
+        self.model = LidstoneNgramModel(0.1, 3, vocabulary=vocab)
+        self.model.fit(training_text)
 
     def test_score(self):
         # Logic behind this is the same as for bigram model

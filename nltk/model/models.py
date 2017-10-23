@@ -30,25 +30,23 @@ class MleLanguageModel(LanguageModelI):
 
 
 @compat.python_2_unicode_compatible
-class LidstoneNgramModel(BaseNgramModel):
+class LidstoneNgramModel(LanguageModelI):
     """Provides Lidstone-smoothed scores.
 
     In addition to initialization arguments from BaseNgramModel also requires
     a number by which to increase the counts, gamma.
     """
 
-    def __init__(self, gamma, *args):
-        super(LidstoneNgramModel, self).__init__(*args)
+    def __init__(self, gamma, *args, **kwargs):
+        super(LidstoneNgramModel, self).__init__(*args, **kwargs)
         self.gamma = gamma
-        # This gets added to the denominator to normalize the effect of gamma
-        self.gamma_norm = len(self.ngram_counter.vocabulary) * gamma
 
     @mask_oov_args
     def score(self, word, context=None):
         counts = self.context_counts(context)
         word_count = counts[word]
         norm_count = counts.N()
-        return (word_count + self.gamma) / (norm_count + self.gamma_norm)
+        return (word_count + self.gamma) / (norm_count + len(self.vocab) * self.gamma)
 
 
 @compat.python_2_unicode_compatible
