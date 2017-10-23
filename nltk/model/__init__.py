@@ -6,8 +6,8 @@
 # URL: <http://nltk.org/
 # For license information, see LICENSE.TXT
 
-from nltk.model.api import BaseNgramModel, mask_oov_args
-from nltk.model.models import (MLENgramModel,
+
+from nltk.model.models import (MleLanguageModel,
                                LidstoneNgramModel,
                                LaplaceNgramModel)
 from nltk.model.counter import count_ngrams, NgramCounter

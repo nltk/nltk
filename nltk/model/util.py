@@ -5,6 +5,9 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+from functools import partial
+from math import log
+
 from nltk.util import ngrams, everygrams, pad_sequence
 
 NEG_INF = float("-inf")
@@ -18,27 +21,35 @@ NGRAMS_KWARGS = {
 }
 
 
-def padded_everygrams(sequence, order, **padding_kwargs):
+def log_base2(score):
+    """Convenience function for computing logarithms with base 2"""
+    if score == 0.0:
+        return NEG_INF
+    return log(score, 2)
+
+
+def padded_everygrams(order,
+                      sequence,
+                      pad_left=True,
+                      pad_right=True,
+                      right_pad_symbol="</s>",
+                      left_pad_symbol="<s>"):
     """Pads sequence *before* generating everygrams, not during."""
-    padded = list(pad_sequence(sequence, order, **padding_kwargs))
+    padded = list(
+        pad_sequence(
+            sequence,
+            order,
+            pad_left=True,
+            pad_right=True,
+            right_pad_symbol="</s>",
+            left_pad_symbol="<s>"))
     return everygrams(padded, max_len=order)
 
 
-def default_ngrams(order, only_ngrams=False):
+def default_ngrams(order):
     """Provides defaults for nltk.util.ngrams"""
 
-    def to_ngrams(sequence):
-        """Wrapper around util.ngrams with usefull options saved during initialization.
-
-        :param sequence: same as nltk.util.ngrams
-        :type sequence: any iterable
-        """
-        if only_ngrams:
-            return ngrams(sequence, order, **NGRAMS_KWARGS)
-
-        return padded_everygrams(sequence, order, **NGRAMS_KWARGS)
-
-    return to_ngrams
+    return partial(padded_everygrams, order)
 
 
 def mask_oov_words_in_corpus(corpus, ngram_vocab):

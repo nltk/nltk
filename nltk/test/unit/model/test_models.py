@@ -12,14 +12,14 @@ import math
 from nltk.model import (count_ngrams,
                         NgramModelVocabulary,
                         NgramCounter,
-                        BaseNgramModel,
-                        MLENgramModel,
+                        MleLanguageModel,
                         LidstoneNgramModel,
                         LaplaceNgramModel)
+from nltk.model.api import BaseNgramModel
 from nltk.model.util import NEG_INF, default_ngrams
 from nltk.model.testutil import NgramCounterSetUpMixin
 
-_default_bigrams = default_ngrams(2, only_ngrams=True)
+_default_bigrams = default_ngrams(2)
 
 
 class NgramModelTestBase(unittest.TestCase, NgramCounterSetUpMixin):
@@ -44,22 +44,6 @@ class NgramModelTestBase(unittest.TestCase, NgramCounterSetUpMixin):
         return sum(self.model.score(w, context) for w in self.vocab)
 
 
-@unittest.skip
-class BaseNgramModelTests(NgramModelTestBase):
-    """unit tests for BaseNgramModel class"""
-
-    def setUp(self):
-        self.model = BaseNgramModel(self.bigram_counter)
-
-    def test_context_counts(self):
-        with self.assertRaises(ValueError):
-            self.model.context_counts(['a', 'b'])
-
-    def test_score(self):
-        with self.assertRaises(NotImplementedError):
-            self.model.score("d", ["c"])
-
-
 class ScoreTestHelper(object):
     """Shared tests and helper code specifically for bigram models."""
 
@@ -68,6 +52,9 @@ class ScoreTestHelper(object):
         got_score = self.model.score(word, context=context)
 
         self.assertAlmostEqual(expected_score, got_score, places=4)
+
+    def assertIsNan(self, value):
+        self.assertTrue(math.isnan(value))
 
     def assertUnigramScoreEqual(self, expected_score, word="d"):
         self.assertScoreEqual(expected_score, word, context=None)
@@ -90,13 +77,18 @@ class ScoreTestHelper(object):
             self.assertAlmostEqual(H, got_entropy, places=4)
             self.assertAlmostEqual(perplexity, got_perplexity, places=4)
 
+    def total_vocab_score(self, context):
+        """Sums up scores for the whole vocabulary given some context.
+
+        Used to make sure they sum to 1.
+        Note that we *must* loop over the counter's vocabulary so as to include
+        padding symbols.
+        """
+        return sum(self.model.score(w, context) for w in self.model.vocab)
+
 
 class BigramModelMixin(ScoreTestHelper):
     """docstring for BigramModelMixin"""
-
-    def test_score_context_too_long(self):
-        with self.assertRaises(ValueError) as exc_info:
-            self.model.score('d', ('a', 'b'))
 
     def test_scores_sum_to_1(self):
         # Include some unseen contexts to test
@@ -117,12 +109,14 @@ class TrigramModelMixin(ScoreTestHelper):
         super(TrigramModelMixin, self).assertScoreEqual(expected_score, word, context)
 
 
-@unittest.skip
-class MleBigramModelTests(NgramModelTestBase, BigramModelMixin):
+class MleBigramModelTests(unittest.TestCase, BigramModelMixin):
     """unit tests for MLENgramModel class"""
 
     def setUp(self):
-        self.model = MLENgramModel(self.bigram_counter)
+        vocab = NgramModelVocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+        training_text = [list('abcd'), list('egadbe')]
+        self.model = MleLanguageModel(2, vocabulary=vocab)
+        self.model.fit(training_text)
 
     def test_unigram_score(self):
         # total number of tokens is 14, of which "a" occured 2 times
@@ -149,7 +143,12 @@ class MleBigramModelTests(NgramModelTestBase, BigramModelMixin):
 
     def test_entropy_perplexity_seen(self):
         # ngrams seen during training
-        trained = "abrad"
+        trained = [('<s>', 'a'),
+                   ('a', 'b'),
+                   ('b', '<UNK>'),
+                   ('<UNK>', 'a'),
+                   ('a', 'd'),
+                   ('d', '</s>')]
         # Ngram = score; Log score; product
         # <s>, a    = 0.5; -1; -0.5
         # a, b      = 0.5; -1; -0.5
@@ -161,14 +160,18 @@ class MleBigramModelTests(NgramModelTestBase, BigramModelMixin):
         H = 3.0283
         perplexity = 8.1586
 
-        self.assertEntropyPerplexityEqual(H, perplexity, corpus=trained)
+        self.assertAlmostEqual(H, self.model.entropy(trained), places=4)
+        self.assertAlmostEqual(perplexity, self.model.perplexity(trained), places=4)
 
     def test_entropy_perplexity_unseen(self):
         # In MLE, even one unseen ngram should turn entropy and perplexity into NaN
-        untrained = "acd"
-        H = perplexity = float("nan")
+        untrained = [('<s>', 'a'),
+                     ('a', 'c'),
+                     ('c', 'd'),
+                     ('d', '</s>')]
 
-        self.assertEntropyPerplexityEqual(H, perplexity, corpus=untrained)
+        self.assertIsNan(self.model.entropy(untrained))
+        self.assertIsNan(self.model.perplexity(untrained))
 
     def test_entropy_perplexity_unigrams(self):
         # word = score, log score, product
@@ -190,12 +193,14 @@ class MleBigramModelTests(NgramModelTestBase, BigramModelMixin):
                                           ngram_gen=False)
 
 
-@unittest.skip
-class MleTrigramModelTests(NgramModelTestBase, TrigramModelMixin):
+class MleTrigramModelTests(unittest.TestCase, TrigramModelMixin):
     """MLE trigram model tests"""
 
     def setUp(self):
-        self.model = MLENgramModel(self.trigram_counter)
+        vocab = NgramModelVocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+        training_text = [list('abcd'), list('egadbe')]
+        self.model = MleLanguageModel(3, vocabulary=vocab)
+        self.model.fit(training_text)
 
     def test_unigram_score(self):
         # total number of tokens is 18, of which "a" occured 2 times

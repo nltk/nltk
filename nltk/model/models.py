@@ -8,11 +8,11 @@ from __future__ import unicode_literals, division
 
 from nltk import compat
 
-from nltk.model import BaseNgramModel, mask_oov_args
+from nltk.model.api import LanguageModelI, mask_oov_args, BaseNgramModel
 
 
 @compat.python_2_unicode_compatible
-class MLENgramModel(BaseNgramModel):
+class MleLanguageModel(LanguageModelI):
     """Class for providing MLE ngram model scores.
 
     Inherits initialization from BaseNgramModel.
