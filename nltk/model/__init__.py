@@ -10,6 +10,6 @@
 from nltk.model.models import (MleLanguageModel,
                                LidstoneNgramModel,
                                LaplaceNgramModel)
-from nltk.model.counter import count_ngrams, NgramCounter
+from nltk.model.counter import NgramCounter
 from nltk.model.vocabulary import NgramModelVocabulary
 from nltk.model.util import padded_everygrams

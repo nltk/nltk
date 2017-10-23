@@ -66,14 +66,6 @@ def check_ngram_order(order_to_check, max_order=1000):
     return order_to_check
 
 
-def count_ngrams(order, vocabulary, *training_texts):
-    counter = NgramCounter(order, vocabulary)
-    ngram_gen = default_ngrams(order)
-    for text in training_texts:
-        counter.train_counts(map(ngram_gen, text))
-    return counter
-
-
 @compat.python_2_unicode_compatible
 class NgramCounter(defaultdict):
     """Class for counting ngrams.
