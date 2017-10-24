@@ -14,8 +14,7 @@ from itertools import chain
 from nltk.six import add_metaclass
 from nltk.util import everygrams, pad_sequence
 
-from nltk import compat
-from nltk.model.util import NEG_INF, padded_everygrams, log_base2
+from nltk.model.util import log_base2
 from nltk.model.counter import NgramCounter
 from nltk.model.vocabulary import NgramModelVocabulary
 

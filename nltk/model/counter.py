@@ -53,8 +53,6 @@ from collections import defaultdict
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
 
-from nltk.model.util import default_ngrams
-
 
 def check_ngram_order(order_to_check, max_order=1000):
     """Sanity-check ngram order number."""
