@@ -8,34 +8,29 @@
 Building a Vocabulary
 ---------------------
 
-    >>> from nltk.corpus import gutenberg
-    >>> sents = gutenberg.sents("burgess-busterbrown.txt")
-    >>> test_words = [w for s in sents[3:5] for w in s]
-    >>> test_words[:5]
-    ['Buster', 'Bear', 'yawned', 'as', 'he']
-
+    >>> words = ['a', 'c', '-', 'd', 'c', 'a', 'b', 'r', 'a', 'c', 'd']
     >>> from nltk.model import NgramModelVocabulary
-    >>> vocab = NgramModelVocabulary(test_words, unk_cutoff=2)
+    >>> vocab = NgramModelVocabulary(words, unk_cutoff=2)
 
 Tokens with counts greater than or equal to the cuttoff value will
 be considered part of the vocabulary.
 
-    >>> vocab['the']
+    >>> vocab['c']
     3
-    >>> 'the' in vocab
+    >>> 'c' in vocab
     True
-    >>> vocab['he']
+    >>> vocab['d']
     2
-    >>> 'he' in vocab
+    >>> 'd' in vocab
     True
 
 Tokens with frequency counts less than the cutoff value will be considered not
 part of the vocabulary even though their entries in the count dictionary are
 preserved.
 
-    >>> vocab['Buster']
+    >>> vocab['b']
     1
-    >>> 'Buster' in vocab
+    >>> 'b' in vocab
     False
     >>> vocab['aliens']
     0
@@ -46,7 +41,7 @@ Keeping the count entries for seen words allows us to change the cutoff value
 without having to recalculate the counts.
 
     >>> vocab.cutoff = 1
-    >>> "Buster" in vocab
+    >>> "b" in vocab
     True
 
 The cutoff value influences not only membership checking but also the result of
@@ -55,41 +50,61 @@ Note that while the number of keys in the vocab dictionary stays the same,
 the result of calling `len` on the vocabulary differs depending on the cutoff.
 
     >>> len(vocab.keys())
-    38
+    7
     >>> len(vocab)
-    38
+    7
     >>> vocab.cutoff = 2
     >>> len(vocab.keys())
-    38
+    7
     >>> len(vocab)
-    8
+    4
+
+In addition to items shown during its creation, the vocabulary stores a special
+token that stands in for "unknown" itenms.
+By default it's "<UNK>".
+
+    >>> "<UNK>" in vocab
+    True
 
 We can look up words in a vocabulary using its `lookup` method.
 "Unseen" words (with counts less than cutoff) are looked up as the unknown label.
 If given one word (a string) as an input, this method will return a string.
 
-    >>> vocab.lookup("he")
-    'he'
+    >>> vocab.lookup("a")
+    'a'
     >>> vocab.lookup("aliens")
     '<UNK>'
 
-If given a sequence (anything other than a string), it will return an iterator over
-the looked up words.
+If given a sequence, it will return an iterator over the looked up words.
 
-    >>> list(vocab.lookup(sents[5][:5]))
-    ['<UNK>', 'he', '<UNK>', '<UNK>', 'to']
+    >>> list(vocab.lookup(["p", 'a', 'r', 'd', 'b', 'c']))
+    ['<UNK>', 'a', '<UNK>', 'd', '<UNK>', 'c']
+
+`NgramModelVocabulary` inherits from `collections.Counter`, so it's possible to
+update the counts after its creation.
+
+    >>> vocab['b']
+    1
+    >>> vocab.update(["b", "b", "c"])
+    >>> vocab['b']
+    3
 
 """
 
 from __future__ import unicode_literals
 from functools import singledispatch
-from collections import Counter
+from collections import Counter, Iterable
 
 from nltk import compat
 
 
 @singledispatch
 def _dispatched_lookup(words, vocab):
+    raise TypeError("Unsupported type for looking up in vocabulary: {0}".format(type(words)))
+
+
+@_dispatched_lookup.register(Iterable)
+def _(words, vocab):
     """Look up a sequence of words in the vocabulary.
 
     Returns an iterator over looked up words.
@@ -179,6 +194,7 @@ class NgramModelVocabulary(Counter):
         :param words: Word(s) to look up.
         :type words: Iterable(str) or str
         :rtype: generator(str) or str
+        :raises: TypeError for types other than strings or iterables
 
         >>> from nltk.model import NgramModelVocabulary
         >>> vocab = NgramModelVocabulary(["a", "b", "c", "a", "b"], unk_cutoff=2)
@@ -214,3 +230,7 @@ class NgramModelVocabulary(Counter):
 
     def __copy__(self):
         return self.__class__(self, unk_cutoff=self.cutoff, unk_label=self.unk_label)
+
+    def __str__(self):
+        return "<{0} with cutoff {1}, unk_label '{2}' and {3} items>".format(
+            self.__class__.__name__, self.cutoff, self.unk_label, len(self))
