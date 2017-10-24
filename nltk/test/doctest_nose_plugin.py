@@ -4,7 +4,7 @@ from nose.suite import ContextList
 import re
 import sys
 import os
-import codecs
+import io
 import doctest
 from nose.plugins.base import Plugin
 from nose.util import tolist, anyp
@@ -49,11 +49,8 @@ class DoctestPluginHelper(object):
     def loadTestsFromFileUnicode(self, filename):
         if self.extension and anyp(filename.endswith, self.extension):
             name = os.path.basename(filename)
-            dh = codecs.open(filename, 'r', self.options.get('doctestencoding'))
-            try:
+            with io.open(filename, 'rt', encoding=self.options.get('doctestencoding')) as dh:
                 doc = dh.read()
-            finally:
-                dh.close()
 
             fixture_context = None
             globs = {'__file__': filename}

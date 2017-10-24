@@ -53,14 +53,6 @@ class SensevalCorpusReader(CorpusReader):
         return concat([SensevalCorpusView(fileid, enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, fileids=None):
-        """
-        :return: the text contents of the given fileids, as a single string.
-        """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
     def _entry(self, tree):
         elts = []
         for lexelt in tree.findall('lexelt'):

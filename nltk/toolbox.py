@@ -12,20 +12,22 @@ Toolbox databases and settings files.
 """
 from __future__ import print_function
 
-import os, re, codecs
+import re
+import io
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement
 
-from six import u
+from six import u, binary_type
 
-from nltk.compat import StringIO, PY3
-from nltk.data import PathPointer, ZipFilePathPointer, find
+
+from nltk.compat import PY3
+from nltk.data import PathPointer, FileSystemPathPointer, find
 
 
 class StandardFormat(object):
     """
     Class for reading and processing standard format marker files and strings.
     """
-    def __init__(self, filename=None, encoding=None):
+    def __init__(self, filename=None, encoding='utf-8-sig'):
         self._encoding = encoding
         if filename is not None:
             self.open(filename)
@@ -38,11 +40,9 @@ class StandardFormat(object):
         :type sfm_file: str
         """
         if isinstance(sfm_file, PathPointer):
-            # [xx] We don't use 'rU' mode here -- do we need to?
-            #      (PathPointer.open doesn't take a mode option)
             self._file = sfm_file.open(self._encoding)
         else:
-            self._file = codecs.open(sfm_file, 'rU', self._encoding)
+            self._file = FileSystemPathPointer(sfm_file).open(self._encoding)
 
     def open_string(self, s):
         """
@@ -51,7 +51,9 @@ class StandardFormat(object):
         :param s: string to parse as a standard format marker input file
         :type s: str
         """
-        self._file = StringIO(s)
+        if isinstance(s, binary_type):
+            s = s.decode(self._encoding)
+        self._file = io.StringIO(s)
 
     def raw_fields(self):
         """
@@ -62,15 +64,12 @@ class StandardFormat(object):
         :rtype: iter(tuple(str, str))
         """
         join_string = '\n'
-        line_regexp = r'^%s(?:\\(\S+)\s*)?(.*)$'
-        # discard a BOM in the first line
-        first_line_pat = re.compile(line_regexp % '(?:\xef\xbb\xbf)?')
-        line_pat = re.compile(line_regexp % '')
+        line_pat = re.compile(r'^(?:\\(\S+)\s*)?(.*)$')
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
         file_iter = iter(self._file)
         line = next(file_iter)
-        mobj = re.match(first_line_pat, line)
+        mobj = re.match(line_pat, line)
         mkr, line_value = mobj.groups()
         value_lines = [line_value,]
         self.line_num = 0

@@ -20,7 +20,6 @@ except ImportError: from xml.etree import ElementTree
 
 from six import string_types
 
-from nltk.data import SeekableUnicodeStreamReader
 from nltk.tokenize import WordPunctTokenizer
 from nltk.internals import ElementWrapper
 
@@ -77,11 +76,6 @@ class XMLCorpusReader(CorpusReader):
                 toks = word_tokenizer.tokenize(text)
                 out.extend(toks)
         return out
-
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
 
 class XMLCorpusView(StreamBackedCorpusView):
@@ -156,15 +150,14 @@ class XMLCorpusView(StreamBackedCorpusView):
         StreamBackedCorpusView.__init__(self, fileid, encoding=encoding)
 
     def _detect_encoding(self, fileid):
-        if isinstance(fileid, PathPointer):
-            try:
+        try:
+            if isinstance(fileid, PathPointer):
                 infile = fileid.open()
-                s = infile.readline()
-            finally:
-                infile.close()
-        else:
-            with open(fileid, 'rb') as infile:
-                s = infile.readline()
+            else:
+                infile = FileSystemPathPointer(fileid).open()
+            s = infile.readline()
+        finally:
+            infile.close()
         if s.startswith(codecs.BOM_UTF16_BE):
             return 'utf-16-be'
         if s.startswith(codecs.BOM_UTF16_LE):
@@ -249,9 +242,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         another block.
         """
         fragment = ''
-
-        if isinstance(stream, SeekableUnicodeStreamReader):
-            startpos = stream.tell()
+        startpos = stream.tell()
         while True:
             # Read a block and add it to the fragment.
             xml_block = stream.read(self._BLOCK_SIZE)
@@ -277,11 +268,8 @@ class XMLCorpusView(StreamBackedCorpusView):
             last_open_bracket = fragment.rfind('<')
             if last_open_bracket > 0:
                 if self._VALID_XML_RE.match(fragment[:last_open_bracket]):
-                    if isinstance(stream, SeekableUnicodeStreamReader):
-                        stream.seek(startpos)
-                        stream.char_seek_forward(last_open_bracket)
-                    else:
-                        stream.seek(-(len(fragment)-last_open_bracket), 1)
+                    stream.seek(startpos)
+                    stream.read(last_open_bracket)
                     return fragment[:last_open_bracket]
 
             # Otherwise, read another block. (i.e., return to the
@@ -307,8 +295,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         elt_text = ''
 
         while elts==[] or elt_start is not None:
-            if isinstance(stream, SeekableUnicodeStreamReader):
-                startpos = stream.tell()
+            startpos = stream.tell()
             xml_fragment = self._read_xml_fragment(stream)
 
             # End of file.
@@ -370,11 +357,8 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # we've gotten so far (elts is non-empty).
                     if self._DEBUG:
                         print(' '*36+'(backtrack)')
-                    if isinstance(stream, SeekableUnicodeStreamReader):
-                        stream.seek(startpos)
-                        stream.char_seek_forward(elt_start)
-                    else:
-                        stream.seek(-(len(xml_fragment)-elt_start), 1)
+                    stream.seek(startpos)
+                    stream.read(elt_start)
                     context = context[:elt_depth-1]
                     elt_start = elt_depth = None
                     elt_text = ''

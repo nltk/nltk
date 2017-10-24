@@ -107,17 +107,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         :rtype: str
         """
         fileids = self._resolve(fileids, categories)
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
-    def readme(self):
-        """
-        Return the contents of the corpus Readme.txt file.
-        """
-        return self.open("README").read()
+        return CorpusReader.raw(self, fileids)
 
     def sents(self, fileids=None, categories=None):
         """

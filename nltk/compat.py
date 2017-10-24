@@ -23,10 +23,6 @@ if PY3:
     def get_im_class(meth):
         return meth.__self__.__class__
 
-    import io
-    StringIO = io.StringIO
-    BytesIO = io.BytesIO
-
     from datetime import timezone
     UTC = timezone.utc
 
@@ -35,12 +31,6 @@ if PY3:
 else:
     def get_im_class(meth):
         return meth.im_class
-
-    try:
-        from cStringIO import StringIO
-    except ImportError:
-        from StringIO import StringIO
-    BytesIO = StringIO
 
     from datetime import tzinfo, timedelta
 

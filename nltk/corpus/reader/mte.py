@@ -197,14 +197,6 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return self.open("00README.txt").read()
 
-    def raw(self, fileids=None):
-        """
-	    :param fileids: A list specifying the fileids that should be used.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        return reduce([self.open(f).read() for f in self.__fileids(fileids)], [])
-
     def words(self, fileids=None):
         """
 	    :param fileids: A list specifying the fileids that should be used.

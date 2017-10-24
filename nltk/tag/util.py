@@ -6,7 +6,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-def str2tuple(s, sep='/'):
+def str2tuple(s, sep='/', tag=True):
     """
     Given the string representation of a tagged token, return the
     corresponding tuple representation.  The rightmost occurrence of
@@ -16,18 +16,29 @@ def str2tuple(s, sep='/'):
         >>> from nltk.tag.util import str2tuple
         >>> str2tuple('fly/NN')
         ('fly', 'NN')
+        >>> str2tuple('fly/NN', tag=False)
+        'fly'
+
 
     :type s: str
     :param s: The string representation of a tagged token.
     :type sep: str
     :param sep: The separator string used to separate word strings
         from tags.
+    :type tag: bool
+    :param tag: fixme
     """
     loc = s.rfind(sep)
     if loc >= 0:
-        return (s[:loc], s[loc+len(sep):].upper())
+        if tag:
+            return (s[:loc], s[loc+len(sep):].upper())
+        else:
+            return s[:loc]
     else:
-        return (s, None)
+        if tag:
+            return (s, None)
+        else:
+            return s
 
 def tuple2str(tagged_token, sep='/'):
     """

@@ -10,6 +10,7 @@ import os
 import bisect
 import re
 import tempfile
+import io
 from six import string_types, text_type
 from functools import reduce
 try:
@@ -24,7 +25,6 @@ except ImportError: from xml.etree import ElementTree
 from nltk.tokenize import wordpunct_tokenize
 from nltk.internals import slice_bounds
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
-from nltk.data import SeekableUnicodeStreamReader
 from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation, py25
 
 ######################################################################
@@ -169,24 +169,13 @@ class StreamBackedCorpusView(AbstractLazySequence):
            reader, which under rare circumstances may need to know
            the current block number."""
 
-        # Find the length of the file.
-        try:
-            if isinstance(self._fileid, PathPointer):
-                self._eofpos = self._fileid.file_size()
-            else:
-                self._eofpos = os.stat(self._fileid).st_size
-        except Exception as exc:
-            raise ValueError('Unable to open or access %r -- %s' %
-                             (fileid, exc))
-
         # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
         self._cache = (-1, -1, None)
 
-    fileid = property(lambda self: self._fileid, doc="""
-        The fileid of the file that is accessed by this view.
-
-        :type: str or PathPointer""")
+    #fileid = property(lambda self: self._fileid, doc="""
+    #    The fileid of the file that is accessed by this view.
+    #    :type: str or PathPointer""")
 
     def read_block(self, stream):
         """
@@ -205,13 +194,23 @@ class StreamBackedCorpusView(AbstractLazySequence):
         will be called performed if any value is read from the view
         while its file stream is closed.
         """
+
         if isinstance(self._fileid, PathPointer):
-            self._stream = self._fileid.open(self._encoding)
-        elif self._encoding:
-            self._stream = SeekableUnicodeStreamReader(
-                open(self._fileid, 'rb'), self._encoding)
+            stream = self._fileid.open(self._encoding)
         else:
-            self._stream = open(self._fileid, 'rb')
+            stream = FileSystemPathPointer(self._fileid).open(self._encoding)
+
+        data = stream.read()
+        if self._encoding is not None:
+            self._stream = io.StringIO(data)
+        else:
+            self._stream = io.BytesIO(data)
+
+        # Find end of file
+        self._stream.seek(0, 2)
+        self._eofpos = self._stream.tell()
+        self._stream.seek(0)
+
 
     def close(self):
         """
@@ -322,7 +321,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
                         'inconsistent block reader (num tokens returned)')
 
             # If we reached the end of the file, then update self._len
-            if new_filepos == self._eofpos:
+            if new_filepos >= self._eofpos:
                 self._len = toknum + num_toks
             # Generate the tokens in this block (but skip any tokens
             # before start_tok).  Note that between yields, our state
@@ -330,8 +329,8 @@ class StreamBackedCorpusView(AbstractLazySequence):
             for tok in tokens[max(0, start_tok-toknum):]:
                 yield tok
             # If we're at the end of the file, then we're done.
-            assert new_filepos <= self._eofpos
-            if new_filepos == self._eofpos:
+            #assert new_filepos <= self._eofpos
+            if new_filepos >= self._eofpos:
                 break
             # Update our indices
             toknum += num_toks
@@ -605,10 +604,14 @@ def read_regexp_block(stream, start_re, end_re=None):
     whenever the next line matching ``start_re`` or EOF is found.
     """
     # Scan until we find a line matching the start regexp.
+    start_re = re.compile(start_re)
+    if end_re:
+        end_re = re.compile(end_re)
+
     while True:
         line = stream.readline()
         if not line: return [] # end of file.
-        if re.match(start_re, line): break
+        if start_re.match(line): break
 
     # Scan until we find another line matching the regexp, or EOF.
     lines = [line]
@@ -619,11 +622,11 @@ def read_regexp_block(stream, start_re, end_re=None):
         if not line:
             return [''.join(lines)]
         # End of token:
-        if end_re is not None and re.match(end_re, line):
+        if end_re is not None and end_re.match(line):
             return [''.join(lines)]
         # Start of new token: backup to just before it starts, and
         # return the token we've already collected.
-        if end_re is None and re.match(start_re, line):
+        if end_re is None and start_re.match(line):
             stream.seek(oldpos)
             return [''.join(lines)]
         # Anything else is part of the token.

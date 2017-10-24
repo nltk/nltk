@@ -57,11 +57,6 @@ class IndianCorpusReader(CorpusReader):
                                         True, True, tag_mapping_function)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
 
 class IndianCorpusView(StreamBackedCorpusView):
     def __init__(self, corpus_file, encoding, tagged,

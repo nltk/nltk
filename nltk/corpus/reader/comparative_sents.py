@@ -156,25 +156,6 @@ class ComparativeSentencesCorpusReader(CorpusReader):
             keywords.append(line.strip())
         return keywords
 
-    def raw(self, fileids=None):
-        """
-        :param fileids: a list or regexp specifying the fileids that have to be
-            returned as a raw string.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
-    def readme(self):
-        """
-        Return the contents of the corpus readme file.
-        """
-        return self.open("README.txt").read()
-
     def sents(self, fileids=None):
         """
         Return all sentences in the corpus.
