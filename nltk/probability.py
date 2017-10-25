@@ -603,6 +603,11 @@ class RandomProbDist(ProbDistI):
 
         return dict((s, randrow[i]) for i, s in enumerate(samples))
 
+    def max(self):
+        if not hasattr(self, '_max'):
+            self._max = max((p,v) for (v,p) in self._probs.items())[1]
+        return self._max
+
     def prob(self, sample):
         return self._probs.get(sample, 0)
 
@@ -1521,6 +1526,10 @@ class MutableProbDist(ProbDistI):
             else:
                 self._data[i] = prob_dist.prob(samples[i])
         self._logs = store_logs
+
+    def max(self):
+        # inherit documentation
+        return max((p,v) for (v,p) in self._sample_dict.items())[1]
 
     def samples(self):
         # inherit documentation
