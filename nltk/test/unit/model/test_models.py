@@ -9,11 +9,33 @@ from __future__ import division
 import unittest
 import math
 
+from six import add_metaclass
+
 from nltk.model import (NgramModelVocabulary,
                         MleLanguageModel,
                         LidstoneNgramModel,
                         LaplaceNgramModel)
 from nltk.model.util import NEG_INF
+
+
+def create_sum_to_1_test(context):
+
+    def test(self):
+        s = sum(self.model.score(w, context) for w in self.model.vocab)
+        self.assertAlmostEqual(s, 1.0)
+
+    return test
+
+
+class SumTo1Meta(type):
+    """Metaclass for testing that bigram contexts sum to one."""
+    def __new__(cls, name, bases, dct):
+        print(bases)
+        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
+                    ('e',), ('r'), ('w',))
+        for i, c in enumerate(contexts):
+            dct["test_sumto1_{0}".format(i)] = create_sum_to_1_test(c)
+        return super(SumTo1Meta, cls).__new__(cls, name, bases, dct)
 
 
 class ScoreTestHelper(object):
@@ -31,39 +53,9 @@ class ScoreTestHelper(object):
     def assertUnigramScoreEqual(self, expected_score, word="d"):
         self.assertScoreEqual(expected_score, word, context=None)
 
-    def total_vocab_score(self, context):
-        """Sums up scores for the whole vocabulary given some context.
 
-        Used to make sure they sum to 1.
-        Note that we *must* loop over the counter's vocabulary so as to include
-        padding symbols.
-        """
-        return sum(self.model.score(w, context) for w in self.model.vocab)
-
-
-class BigramModelMixin(ScoreTestHelper):
-    """docstring for BigramModelMixin"""
-
-    def test_scores_sum_to_1(self):
-        # Include some unseen contexts to test
-        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
-                    ('e',), ('r'), ('w',))
-        # Laplace (like Lidstone) smoothing can handle contexts unseen during training
-        for context in contexts:
-            self.assertAlmostEqual(self.total_vocab_score(context), 1)
-
-    def assertScoreEqual(self, expected_score, word="d", context=("c",)):
-        super(BigramModelMixin, self).assertScoreEqual(expected_score, word, context)
-
-
-class TrigramModelMixin(ScoreTestHelper):
-    """Tests for trigram models."""
-
-    def assertScoreEqual(self, expected_score, word="d", context=("b", "c")):
-        super(TrigramModelMixin, self).assertScoreEqual(expected_score, word, context)
-
-
-class MleBigramModelTests(unittest.TestCase, BigramModelMixin):
+@add_metaclass(SumTo1Meta)
+class MleBigramModelTests(unittest.TestCase, ScoreTestHelper):
     """unit tests for MLENgramModel class"""
 
     def setUp(self):
@@ -81,7 +73,7 @@ class MleBigramModelTests(unittest.TestCase, BigramModelMixin):
         self.assertUnigramScoreEqual(3.0 / 14, "y")
 
     def test_score(self):
-        self.assertScoreEqual(1)
+        self.assertScoreEqual(1, word="d", context=("c",))
 
     def test_score_unseen(self):
         # Unseen ngrams should yield 0
@@ -141,14 +133,13 @@ class MleBigramModelTests(unittest.TestCase, BigramModelMixin):
         perplexity = 6.166
 
         text = [("<s>",), ("a",), ("c",), ("-",),
-                  ("d",), ("c",), ("</s>",)]
-
+                ("d",), ("c",), ("</s>",)]
 
         self.assertAlmostEqual(H, self.model.entropy(text), places=4)
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
-class MleTrigramModelTests(unittest.TestCase, TrigramModelMixin):
+class MleTrigramModelTests(unittest.TestCase, ScoreTestHelper):
     """MLE trigram model tests"""
 
     def setUp(self):
@@ -168,15 +159,16 @@ class MleTrigramModelTests(unittest.TestCase, TrigramModelMixin):
     def test_score(self):
         # count(d | b, c) = 1
         # count(b, c) = 1
-        self.assertScoreEqual(1)
+        self.assertScoreEqual(1, word="d", context=("b", "c"))
 
     def test_bigram_score(self):
         # count(d | c) = 1
         # count(c) = 1
-        self.assertScoreEqual(1, context=("c",))
+        self.assertScoreEqual(1, word="d", context=("c",))
 
 
-class LidstoneBigramModelTests(unittest.TestCase, BigramModelMixin):
+@add_metaclass(SumTo1Meta)
+class LidstoneBigramModelTests(unittest.TestCase, ScoreTestHelper):
     """unit tests for LidstoneNgramModel class"""
 
     def setUp(self):
@@ -193,7 +185,7 @@ class LidstoneBigramModelTests(unittest.TestCase, BigramModelMixin):
         # *count(d | c) = 1.1
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 1.8
-        self.assertScoreEqual(0.6111)
+        self.assertScoreEqual(0.6111, word="d", context=("c",))
 
     def test_unigram_score(self):
         # Total unigrams: 14
@@ -233,7 +225,7 @@ class LidstoneBigramModelTests(unittest.TestCase, BigramModelMixin):
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
-class LidstoneTrigramModelTests(unittest.TestCase, TrigramModelMixin):
+class LidstoneTrigramModelTests(unittest.TestCase, ScoreTestHelper):
 
     def setUp(self):
         vocab = NgramModelVocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
@@ -243,18 +235,19 @@ class LidstoneTrigramModelTests(unittest.TestCase, TrigramModelMixin):
 
     def test_score(self):
         # Logic behind this is the same as for bigram model
-        self.assertScoreEqual(0.6111)
-        # if we choose a word that hasn't appeared after (b, c)
-        self.assertScoreEqual(0.1 / 1.8, word="e")
-
-    def test_bigram_score(self):
-        # Logic behind this is the same as for bigram model
-        self.assertScoreEqual(0.6111, context=("c",))
+        self.assertScoreEqual(0.6111, word="d", context=("c",))
         # if we choose a word that hasn't appeared after (b, c)
         self.assertScoreEqual(0.1 / 1.8, word="e", context=("c",))
 
+    def test_bigram_score(self):
+        # Logic behind this is the same as for bigram model
+        self.assertScoreEqual(0.6111, word="d", context=("c",))
+        # if we choose a word that hasn't appeared after c
+        self.assertScoreEqual(0.1 / 1.8, word="e", context=("c",))
 
-class LaplaceBigramModelTests(unittest.TestCase, BigramModelMixin):
+
+@add_metaclass(SumTo1Meta)
+class LaplaceBigramModelTests(unittest.TestCase, ScoreTestHelper):
     """unit tests for LaplaceNgramModel class"""
 
     def setUp(self):
@@ -273,7 +266,7 @@ class LaplaceBigramModelTests(unittest.TestCase, BigramModelMixin):
         # *count(d | c) = 2
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 9
-        self.assertScoreEqual(0.2222)
+        self.assertScoreEqual(0.2222, word="d", context=("c",))
 
     def test_unigram_score(self):
         # Total unigrams: 14
