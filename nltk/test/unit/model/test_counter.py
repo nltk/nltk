@@ -23,6 +23,24 @@ class NgramCounterTests(unittest.TestCase):
         cls.trigram_counter = NgramCounter((everygrams(sent, max_len=3) for sent in text))
         cls.bigram_counter = NgramCounter((everygrams(sent, max_len=2) for sent in text))
 
+    def test_N(self):
+        self.assertEqual(self.bigram_counter.N(), 16)
+        self.assertEqual(self.trigram_counter.N(), 21)
+
+    def test_freq_of_freq(self):
+        fof = self.bigram_counter.freq_of_freq()
+        self.assertIn(1, fof)
+        self.assertIn(2, fof)
+        self.assertNotIn(3, fof)
+
+        self.assertEqual(fof[1][1], 3)
+        self.assertEqual(fof[1][2], 3)
+
+        self.assertEqual(fof[1][0], 0)
+        self.assertEqual(fof[1][50], 0)
+        self.assertEqual(fof[1][None], 0)
+
+
     def test_ngram_order_access_unigrams(self):
         self.assertEqual(self.bigram_counter[1], self.bigram_counter.unigrams)
 
