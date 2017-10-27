@@ -136,7 +136,7 @@ class NgramCounter(defaultdict):
         3
 
         """
-        return sum(self[order].N() for order in self)
+        return sum(val.N() for val in self.values())
 
     def freq_of_freq(self):
         """Maps frequencies of ngrams to how many ngrams occurred with each
