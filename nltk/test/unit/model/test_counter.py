@@ -9,6 +9,7 @@ import unittest
 
 from nltk import six
 from nltk.util import everygrams
+from nltk import FreqDist
 
 from nltk.model import NgramModelVocabulary, NgramCounter
 
@@ -94,43 +95,57 @@ class NgramCounterTests(unittest.TestCase):
         self.assertEqual(unseen_count, self.bigram_counter['z'])
 
 
-class TrigramCounterDifferentInputs(unittest.TestCase):
+class NgramCounterTrainingTests(unittest.TestCase):
 
     def setUp(self):
         self.counter = NgramCounter()
 
+    def test_empty_string(self):
+        test = NgramCounter("")
+        self.assertNotIn(2, test)
+        self.assertEqual(test[1], FreqDist())
+
+    def test_empty_list(self):
+        test = NgramCounter([])
+        self.assertNotIn(2, test)
+        self.assertEqual(test[1], FreqDist())
+
+    def test_None(self):
+        test = NgramCounter(None)
+        self.assertNotIn(2, test)
+        self.assertEqual(test[1], FreqDist())
+
     def test_train_on_unigrams(self):
         words = list("abcd")
-        unigram_sent = [(w,) for w in words]
-        self.counter.update([unigram_sent])
+        counter = NgramCounter([[(w,) for w in words]])
 
-        self.assertFalse(bool(self.counter[3]))
-        self.assertFalse(bool(self.counter[2]))
-        six.assertCountEqual(self, words, self.counter[1].keys())
+        self.assertFalse(bool(counter[3]))
+        self.assertFalse(bool(counter[2]))
+        six.assertCountEqual(self, words, counter[1].keys())
 
     def test_train_on_illegal_sentences(self):
         str_sent = ['Check', 'this', 'out', '!']
         list_sent = [["Check", "this"], ["this", "out"], ["out", "!"]]
 
         with self.assertRaises(TypeError):
-            self.counter.update([str_sent])
+            NgramCounter([str_sent])
 
         with self.assertRaises(TypeError):
-            self.counter.update([list_sent])
+            NgramCounter([list_sent])
 
     def test_train_on_bigrams(self):
         bigram_sent = [("a", 'b'), ("c", "d")]
-        self.counter.update([bigram_sent])
+        counter= NgramCounter([bigram_sent])
 
-        self.assertFalse(bool(self.counter[3]))
+        self.assertFalse(bool(counter[3]))
 
     def test_train_on_mix(self):
         mixed_sent = [("a", 'b'), ("c", "d"), ("e", "f", "g"), ("h",)]
-        self.counter.update([mixed_sent])
+        counter = NgramCounter([mixed_sent])
         unigrams = ["h"]
         bigram_contexts = [("a",), ("c",)]
         trigram_contexts = [("e", "f")]
 
-        six.assertCountEqual(self, unigrams, self.counter[1].keys())
-        six.assertCountEqual(self, bigram_contexts, self.counter[2].keys())
-        six.assertCountEqual(self, trigram_contexts, self.counter[3].keys())
+        six.assertCountEqual(self, unigrams, counter[1].keys())
+        six.assertCountEqual(self, bigram_contexts, counter[2].keys())
+        six.assertCountEqual(self, trigram_contexts, counter[3].keys())
