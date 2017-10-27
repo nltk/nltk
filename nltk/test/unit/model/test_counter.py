@@ -40,6 +40,10 @@ class NgramCounterTests(unittest.TestCase):
         self.assertEqual(fof[1][50], 0)
         self.assertEqual(fof[1][None], 0)
 
+    def test_counter_len_changes_with_lookup(self):
+        self.assertEqual(len(self.bigram_counter), 2)
+        _ = self.bigram_counter[50]
+        self.assertEqual(len(self.bigram_counter), 3)
 
     def test_ngram_order_access_unigrams(self):
         self.assertEqual(self.bigram_counter[1], self.bigram_counter.unigrams)
