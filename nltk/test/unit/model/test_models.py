@@ -22,7 +22,7 @@ def create_sum_to_1_test(context):
 
     def test(self):
         s = sum(self.model.score(w, context) for w in self.model.vocab)
-        self.assertAlmostEqual(s, 1.0)
+        self.assertAlmostEqual(s, 1.0, msg="The context is {}".format(context))
 
     return test
 
@@ -30,9 +30,8 @@ def create_sum_to_1_test(context):
 class SumTo1Meta(type):
     """Metaclass for testing that bigram contexts sum to one."""
     def __new__(cls, name, bases, dct):
-        print(bases)
         contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
-                    ('e',), ('r'), ('w',))
+                    ('e',), ('r',), ('w',))
         for i, c in enumerate(contexts):
             dct["test_sumto1_{0}".format(i)] = create_sum_to_1_test(c)
         return super(SumTo1Meta, cls).__new__(cls, name, bases, dct)
