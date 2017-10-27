@@ -61,16 +61,6 @@ from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
 
 
-def check_ngram_order(order_to_check, max_order=1000):
-    """Sanity-check ngram order number."""
-    if order_to_check < 1:
-        raise ValueError("Ngram order cannot be less than 1. Got: {0}".format(order_to_check))
-    if order_to_check > max_order:
-        raise ValueError("Ngram order cannot be greater than {0}. Got: {1}".format(
-            max_order, order_to_check))
-    return order_to_check
-
-
 @compat.python_2_unicode_compatible
 class NgramCounter(defaultdict):
     """Class for counting ngrams.

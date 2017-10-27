@@ -10,7 +10,6 @@ import unittest
 from nltk import six
 
 from nltk.model import NgramModelVocabulary, NgramCounter
-from nltk.model.counter import check_ngram_order
 from nltk.model.util import default_ngrams
 
 
@@ -80,25 +79,6 @@ class NgramCounterTests(unittest.TestCase):
         unseen_count = 0
 
         self.assertEqual(unseen_count, self.bigram_counter['z'])
-
-
-class CheckNgramOrderTests(unittest.TestCase):
-    """Cases for check_ngram_order function"""
-
-    def test_sane_inputs(self):
-        self.assertEqual(3, check_ngram_order(3))
-        self.assertEqual(3, check_ngram_order(3, max_order=5))
-
-    def test_pos_inf_input(self):
-        with self.assertRaises(ValueError):
-            check_ngram_order(float("inf"))
-
-    def test_inputs_less_than_one(self):
-        with self.assertRaises(ValueError):
-            check_ngram_order(0)
-
-        with self.assertRaises(ValueError):
-            check_ngram_order(-5)
 
 
 class TrigramCounterDifferentInputs(unittest.TestCase):
