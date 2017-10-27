@@ -8,9 +8,9 @@
 import unittest
 
 from nltk import six
+from nltk.util import everygrams
 
 from nltk.model import NgramModelVocabulary, NgramCounter
-from nltk.model.util import default_ngrams
 
 
 class NgramCounterTests(unittest.TestCase):
@@ -20,26 +20,19 @@ class NgramCounterTests(unittest.TestCase):
     def setUpClass(cls):
 
         text = [list('abcd'), list('egdbe')]
-        cls.trigram_counter = NgramCounter(map(default_ngrams(3), text))
-        cls.bigram_counter = NgramCounter(map(default_ngrams(2), text))
+        cls.trigram_counter = NgramCounter((everygrams(sent, max_len=3) for sent in text))
+        cls.bigram_counter = NgramCounter((everygrams(sent, max_len=2) for sent in text))
 
     def test_ngram_order_access_unigrams(self):
         self.assertEqual(self.bigram_counter[1], self.bigram_counter.unigrams)
 
     def test_ngram_conditional_freqdist(self):
         expected_trigram_contexts = [
-            ("<s>", "<s>"),
-            ("<s>", "a"),
             ("a", "b"),
             ("b", "c"),
-            ("c", "d"),
-            ("d", "</s>"),
-            ("<s>", "e"),
             ("e", "g"),
             ("g", "d"),
             ("d", "b"),
-            ("b", "e"),
-            ("e", "</s>",)
         ]
         expected_bigram_contexts = [
             ("a",),
@@ -48,8 +41,6 @@ class NgramCounterTests(unittest.TestCase):
             ("e",),
             ("c",),
             ("g",),
-            ("<s>",),
-            ("</s>",)
         ]
 
         bigrams = self.trigram_counter[2]
