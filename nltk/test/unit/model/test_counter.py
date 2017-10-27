@@ -60,30 +60,26 @@ class NgramCounterTests(unittest.TestCase):
         six.assertCountEqual(self, expected_trigram_contexts, trigrams.conditions())
 
     def test_bigram_counts_seen_ngrams(self):
-        bigrams = self.bigram_counter[2]
         b_given_a_count = 1
         unk_given_b_count = 1
 
-        self.assertEqual(b_given_a_count, bigrams[('a',)]['b'])
-        self.assertEqual(unk_given_b_count, bigrams[('b',)]['c'])
+        self.assertEqual(b_given_a_count, self.bigram_counter[['a']]['b'])
+        self.assertEqual(unk_given_b_count, self.bigram_counter[['b']]['c'])
 
     def test_bigram_counts_unseen_ngrams(self):
-        bigrams = self.bigram_counter[2]
         z_given_b_count = 0
 
-        self.assertEqual(z_given_b_count, bigrams[('b',)]['z'])
+        self.assertEqual(z_given_b_count, self.bigram_counter[['b']]['z'])
 
     def test_unigram_counts_seen_words(self):
-        unigrams = self.bigram_counter.unigrams
         expected_count_b = 2
 
-        self.assertEqual(expected_count_b, unigrams['b'])
+        self.assertEqual(expected_count_b, self.bigram_counter['b'])
 
     def test_unigram_counts_completely_unseen_words(self):
-        unigrams = self.bigram_counter.unigrams
         unseen_count = 0
 
-        self.assertEqual(unseen_count, unigrams['z'])
+        self.assertEqual(unseen_count, self.bigram_counter['z'])
 
 
 class CheckNgramOrderTests(unittest.TestCase):

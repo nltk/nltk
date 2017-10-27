@@ -19,36 +19,43 @@ The counting itself is very simple.
     >>> from nltk.model import NgramCounter
     >>> ngram_counts = NgramCounter(text_ngrams)
 
-The counts are stored by ngram order. I.e. here's how you access bigrams.
+You can conveniently access ngram counts using standard python dictionary notation.
+String keys will give you unigram counts.
+
+    >>> ngram_counts['a']
+    2
+    >>> ngram_counts['c']
+    3
+
+If you want to access counts for higher order ngrams, use a list or a tuple.
+These are treated as "context" keys, so what you get is a frequency distribution
+over all continuations after the given context.
+
+    >>> ngram_counts[['a']]
+    FreqDist({'b': 1, 'c': 1})
+    >>> ngram_counts[('a',)]
+    FreqDist({'b': 1, 'c': 1})
+
+To get the count of the full ngram "a b", do this:
+
+    >>> ngram_counts[['a']]['b']
+    1
+
+Finally, you can look up all the ngrams of a certain order, for instance bigrams.
 
     >>> ngram_counts[2]
     <ConditionalFreqDist with 4 conditions>
 
-The keys of this `ConditionalFreqDist` are the contexts preceding a word.
-Each context has a `FreqDist` of tokens found following it in the text.
+The keys of this `ConditionalFreqDist` are the contexts we discussed earlier.
 
-    >>> ngram_counts[2][('a',)]
-    FreqDist({'b': 1, 'c': 1})
+    >>> ngram_counts[2][('a',)] is ngram_counts[['a']]
+    True
 
-Accessing unigram counts works a little differently because they don't have any
-preceding context. They are stored as a simple `FreqDist` in the `unigrams`
-attribute.
-
-    >>> print(ngram_counts.unigrams)
-    <FreqDist with 4 samples and 8 outcomes>
-    >>> ngram_counts.unigrams['a']
-    2
-    >>> ngram_counts.unigrams['c']
-    3
-
-You can also access them using square bracket notation.
-
-    >>> ngram_counts[1]['b']
-    1
+Please note that the keys in `ConditionalFreqDist` are tuples, not lists!
 """
 
 from __future__ import unicode_literals
-from collections import defaultdict
+from collections import defaultdict, Sequence
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk import compat
@@ -173,6 +180,15 @@ class NgramCounter(defaultdict):
                 for freq in fdist.values():
                     _r_Nr[order][freq] += 1
         return _r_Nr
+
+    def __getitem__(self, item):
+        """User-friendly access to ngram counts."""
+        if isinstance(item, int):
+            return super(NgramCounter, self).__getitem__(item)
+        elif isinstance(item, str):
+            return super(NgramCounter, self).__getitem__(1)[item]
+        elif isinstance(item, Sequence):
+            return super(NgramCounter, self).__getitem__(len(item) + 1)[tuple(item)]
 
     def __str__(self):
         return "<{0} with {1} ngram orders and {2} ngrams>".format(self.__class__.__name__,
