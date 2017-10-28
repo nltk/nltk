@@ -108,18 +108,18 @@ part of the vocabulary and as a result we never counted anything as "<UNK>" duri
 
 Here's how you can access counts for bigrams etc.
 
-    >>> print(lm.counts[2][("a",)])
+    >>> print(lm.counts[["a"]])
     <FreqDist with 2 samples and 2 outcomes>
 
-    >>> lm.counts[2][("a",)]["b"]
+    >>> lm.counts[["a"]]["b"]
     1
-    >>> lm.counts[2][("a",)].N()
+    >>> lm.counts[["a"]].N()
     2
 
 Here's how you get the score for a word given some preceding context.
 For example we want to know what is the chance that "b" is preceded by "a".
 
-    >>> lm.score("b", ("a",))
+    >>> lm.score("b", ["a"])
     0.5
 
 In addition to scores for individual bigrams we can also evaluate our model's
