@@ -88,7 +88,7 @@ class WittenBellTests(unittest.TestCase):
         # Being based on MLE, this returns 0 for unseen items
         ('b', ['c'], 0),
         # can also handle unigrams
-        ('b', None, 2 / 10),
+        ('d', [], 2 / 10),
         ('<UNK>', None, 3 / 10)
 
     ]
