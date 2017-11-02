@@ -103,6 +103,8 @@ crubadan = LazyCorpusLoader(
 dependency_treebank = LazyCorpusLoader(
     'dependency_treebank', DependencyCorpusReader, '.*\.dp',
     encoding='ascii')
+excuses = LazyCorpusLoader(
+    'excuses', XMLCorpusReader, r'(?!\.).*\.xml')
 floresta = LazyCorpusLoader(
     'floresta', BracketParseCorpusReader, r'(?!\.).*\.ptb', '#',
     tagset='unknown', encoding='ISO-8859-15')
