@@ -140,7 +140,7 @@ def masi_distance(label1, label2):
     else:
         m = 0
 
-    return 1 - len_intersection / float(len_union) * m
+    return 1 - len_intersection / len_union * m
 
 
 def interval_distance(label1,label2):
