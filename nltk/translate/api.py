@@ -39,9 +39,9 @@ class AlignedSent(object):
         >>> print(comtrans.aligned_sents()[54].alignment)
         0-0 0-1 1-0 2-2 3-4 3-5 4-7 5-8 6-3 7-9 8-9 9-10 9-11 10-12 11-6 12-6 13-13
 
-    :param words: Words in the first sentence
+    :param words: Words in the target language sentence
     :type words: list(str)
-    :param mots: Words in the second sentence
+    :param mots: Words in the source language sentence
     :type mots: list(str)
     :param alignment: Word-level alignments between ``words`` and ``mots``.
         Each alignment is represented as a 2-tuple (words_index, mots_index).
