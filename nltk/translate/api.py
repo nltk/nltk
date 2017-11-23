@@ -21,27 +21,30 @@ class AlignedSent(object):
     Return an aligned sentence object, which encapsulates two sentences
     along with an ``Alignment`` between them.
 
+    Typically used in machine translation to represent a sentence and
+    its translation.
+
         >>> from nltk.translate import AlignedSent, Alignment
         >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
-        ...     ['the', 'house', 'is', 'small'], Alignment.fromstring('0-2 1-3 2-1 3-0'))
+        ...     ['the', 'house', 'is', 'small'], Alignment.fromstring('0-3 1-2 2-0 3-1'))
         >>> algnsent.words
         ['klein', 'ist', 'das', 'Haus']
         >>> algnsent.mots
         ['the', 'house', 'is', 'small']
         >>> algnsent.alignment
-        Alignment([(0, 2), (1, 3), (2, 1), (3, 0)])
+        Alignment([(0, 3), (1, 2), (2, 0), (3, 1)])
         >>> from nltk.corpus import comtrans
         >>> print(comtrans.aligned_sents()[54])
         <AlignedSent: 'Weshalb also sollten...' -> 'So why should EU arm...'>
         >>> print(comtrans.aligned_sents()[54].alignment)
         0-0 0-1 1-0 2-2 3-4 3-5 4-7 5-8 6-3 7-9 8-9 9-10 9-11 10-12 11-6 12-6 13-13
 
-    :param words: source language words
+    :param words: Words in the target language sentence
     :type words: list(str)
-    :param mots: target language words
+    :param mots: Words in the source language sentence
     :type mots: list(str)
-    :param alignment: the word-level alignments between the source
-        and target language
+    :param alignment: Word-level alignments between ``words`` and ``mots``.
+        Each alignment is represented as a 2-tuple (words_index, mots_index).
     :type alignment: Alignment
     """
 
