@@ -1,4 +1,4 @@
-﻿# Natural Language Toolkit (NLTK) Authors
+# Natural Language Toolkit (NLTK) Authors
 
 ## Original Authors
 
@@ -223,6 +223,8 @@
 - Stoytcho Stoytchev
 - Lakhdar Benzahia
 - Björn Mattsson
+- Oleg Chislov
+- Pavan Gururaj Joshi <https://github.com/PavanGJ>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
