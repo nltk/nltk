@@ -222,6 +222,7 @@
 - Ali Abdullah
 - Stoytcho Stoytchev
 - Lakhdar Benzahia
+- Artiem Krinitsyn
 - Björn Mattsson
 - Oleg Chislov
 - Pavan Gururaj Joshi <https://github.com/PavanGJ>
