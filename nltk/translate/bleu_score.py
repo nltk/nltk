@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2017 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
-# Contributors: Dmitrijs Milajevs, Liling Tan
+# Contributors: Björn Mattsson, Dmitrijs Milajevs, Liling Tan
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -26,8 +26,7 @@ except TypeError:
 
 
 def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
-                  smoothing_function=None, auto_reweigh=False,
-                  emulate_multibleu=False):
+                  smoothing_function=None, auto_reweigh=False):
     """
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
@@ -58,17 +57,32 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1) # doctest: +ELLIPSIS
     0.5045...
 
-    >>> sentence_bleu([reference1, reference2, reference3], hypothesis2) # doctest: +ELLIPSIS
-    0.3969...
+    If there is no ngrams overlap for any order of n-grams, BLEU returns the
+    value 0. This is because the precision for the order of n-grams without
+    overlap is 0, and the geometric mean in the final BLEU score computation
+    multiplies the 0 with the precision of other n-grams. This results in 0
+    (independently of the precision of the othe n-gram orders). The following
+    example has zero 3-gram and 4-gram overlaps:
 
-    The default BLEU calculates a score for up to 4grams using uniform
-    weights. To evaluate your translations with higher/lower order ngrams,
-    use customized weights. E.g. when accounting for up to 6grams with uniform
-    weights:
+    >>> round(sentence_bleu([reference1, reference2, reference3], hypothesis2),4) # doctest: +ELLIPSIS
+    0.0
 
-    >>> weights = (0.1666, 0.1666, 0.1666, 0.1666, 0.1666)
+    To avoid this harsh behaviour when no ngram overlaps are found a smoothing
+    function can be used.
+
+    >>> chencherry = SmoothingFunction()
+    >>> sentence_bleu([reference1, reference2, reference3], hypothesis2,
+    ...     smoothing_function=chencherry.method1) # doctest: +ELLIPSIS
+    0.0370...
+
+    The default BLEU calculates a score for up to 4-grams using uniform
+    weights (this is called BLEU-4). To evaluate your translations with
+    higher/lower order ngrams, use customized weights. E.g. when accounting
+    for up to 5-grams with uniform weights (this is called BLEU-5) use:
+
+    >>> weights = (1./5., 1./5., 1./5., 1./5., 1./5.)
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1, weights) # doctest: +ELLIPSIS
-    0.4583...
+    0.3920...
 
     :param references: reference sentences
     :type references: list(list(str))
@@ -78,20 +92,17 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     :type weights: list(float)
     :param smoothing_function:
     :type smoothing_function: SmoothingFunction
-    :param auto_reweigh:
+    :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
-    :param emulate_multibleu: bool
     :return: The sentence-level BLEU score.
     :rtype: float
     """
     return corpus_bleu([references], [hypothesis],
-                       weights, smoothing_function, auto_reweigh,
-                       emulate_multibleu)
+                       weights, smoothing_function, auto_reweigh)
 
 
 def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25),
-                smoothing_function=None, auto_reweigh=False,
-                emulate_multibleu=False):
+                smoothing_function=None, auto_reweigh=False):
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
@@ -140,9 +151,8 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     :type weights: list(float)
     :param smoothing_function:
     :type smoothing_function: SmoothingFunction
-    :param auto_reweigh:
+    :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
-    :param emulate_multibleu: bool
     :return: The corpus-level BLEU score.
     :rtype: float
     """
@@ -197,10 +207,10 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     #       it tries to retain the Fraction object as much as the
     #       smoothing method allows.
     p_n = smoothing_function(p_n, references=references, hypothesis=hypothesis,
-                             hyp_len=hyp_len, emulate_multibleu=emulate_multibleu)
-    s = (w * math.log(p_i) for i, (w, p_i) in enumerate(zip(weights, p_n)))
-    s = bp * math.exp(math.fsum(s))
-    return round(s, 4) if emulate_multibleu else s
+                             hyp_len=hyp_len)
+    s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
+    s =  bp * math.exp(math.fsum(s))
+    return s
 
 
 def modified_precision(references, hypothesis, n):
@@ -477,22 +487,26 @@ class SmoothingFunction:
         self.k = k
 
     def method0(self, p_n, *args, **kwargs):
-        """ No smoothing. """
+        """
+        No smoothing.
+        """
         p_n_new = []
-        _emulate_multibleu = kwargs['emulate_multibleu']
         for i, p_i in enumerate(p_n):
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
-            elif _emulate_multibleu and i < 5:
-                return [sys.float_info.min]
             else:
-                _msg = str("\nCorpus/Sentence contains 0 counts of {}-gram overlaps.\n"
-                           "BLEU scores might be undesirable; "
-                           "use SmoothingFunction().").format(i + 1)
+                _msg = str("\nThe hypothesis contains 0 counts of {}-gram overlaps.\n"
+                           "Therefore the BLEU score evaluates to 0, independently of\n"
+                           "how many N-gram overlaps of lower order it contains.\n"
+                           "Consider using lower n-gram order or use "
+                           "SmoothingFunction()").format(i+1)
                 warnings.warn(_msg)
-                # If this order of n-gram returns 0 counts, the higher order
-                # n-gram would also return 0, thus breaking the loop here.
-                break
+                # When numerator==0 where denonminator==0 or !=0, the result
+                # for the precision score should be equal to 0 or undefined.
+                # Due to BLEU geometric mean computation in logarithm space,
+                # we we need to take the return sys.float_info.min such that
+                # math.log(sys.float_info.min) returns a 0 precision score.
+                p_n_new.append(sys.float_info.min)
         return p_n_new
 
     def method1(self, p_n, *args, **kwargs):
