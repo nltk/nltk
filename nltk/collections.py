@@ -15,7 +15,7 @@ import bisect
 import os
 from itertools import islice, chain, combinations
 from functools import total_ordering
-from collections import defaultdict, deque, Counter
+from collections import deque, Counter
 
 from six import text_type
 
@@ -596,7 +596,7 @@ class Trie(dict):
     LEAF = True
 
     def __init__(self, strings=None):
-        """Builds a Trie object, which is built around a ``defaultdict``
+        """Builds a Trie object, which is built around a ``dict``
 
         If ``strings`` is provided, it will add the ``strings``, which
         consist of a ``list`` of ``strings``, to the Trie.
