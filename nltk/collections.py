@@ -15,7 +15,7 @@ import bisect
 import os
 from itertools import islice, chain, combinations
 from functools import total_ordering
-from collections import deque, Counter
+from collections import defaultdict, deque, Counter
 
 from six import text_type
 
