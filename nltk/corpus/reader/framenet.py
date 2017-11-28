@@ -686,6 +686,10 @@ class AttrDict(dict):
             return v._data()
         return v
 
+    def __lt__(self, other):
+        """ Comparison operator used mainly to sort a list of AttrDict by ID. """
+        return self['ID'] < other['ID']
+
     def _short_repr(self):
         if '_type' in self:
             if self['_type'].endswith('relation'):
