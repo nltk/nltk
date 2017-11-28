@@ -1425,7 +1425,8 @@ warnings(True) to display corpus consistency warnings when loading data
         search through ALL of the frame XML files in the db.
 
         >>> from nltk.corpus import framenet as fn
-        >>> fn.frames_by_lemma(r'(?i)a little') # doctest: +ELLIPSIS
+        >>> from nltk.corpus.reader.framenet import PrettyList
+        >>> PrettyList(sorted(fn.frames_by_lemma(r'(?i)a little'))) # doctest: +ELLIPSIS
         [<frame ID=189 name=Quanti...>, <frame ID=2001 name=Degree>]
 
         :return: A list of frame objects.
