@@ -117,8 +117,9 @@ expression. Note that LU names are composed of "lemma.POS", where the
 multiple lexemes (e.g. 'a little') (see below).
 
     >>> from nltk.corpus import framenet as fn
-    >>> fn.frames_by_lemma(r'(?i)a little') # doctest: +ELLIPSIS
-    [<frame ID=189 name=Quanti...>, <frame ID=2001 name=Degree>]
+    >>> from nltk.corpus.reader.framenet import PrettyList
+    >>> PrettyList(sorted(fn.frames_by_lemma(r'(?i)a little'))) # doctest: +ELLIPSIS
+    [<frame ID=2001 name=Degree>, <frame ID=189 name=Quanti...>]
 
 -------------
 Lexical Units
