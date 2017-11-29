@@ -563,7 +563,7 @@ class MosesDetokenizer(TokenizerI):
                 detokenized_text += token
                 prepend_space = " "
 
-            elif (self.lang in ['fr', 'it'] and i <= len(tokens)-2
+            elif (self.lang in ['fr', 'it', 'ga'] and i <= len(tokens)-2
                   and re.search(u'[{}][\']$'.format(self.IsAlpha), token)
                   and re.search(u'^[{}]$'.format(self.IsAlpha), tokens[i+1])): # If the next token is alpha.
                 # For French and Italian, right-shift the contraction.

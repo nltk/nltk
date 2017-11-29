@@ -27,7 +27,6 @@ from six import text_type
 
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
-from nltk.parse.corenlp import CoreNLPParser
 
 _stanford_url = 'https://nlp.stanford.edu/software'
 
@@ -49,13 +48,11 @@ class StanfordTagger(TaggerI):
     def __init__(self, model_filename, path_to_jar=None, encoding='utf8',
                  verbose=False, java_options='-mx1000m'):
         # Raise deprecation warning.
-        warnings.simplefilter('always', DeprecationWarning)
         warnings.warn(str("\nThe StanfordTokenizer will "
-                          "be deprecated in version 3.2.5.\n"
-                          "Please use \033[91mnltk.tag.corenlp.CoreNLPPOSTagger\033[0m "
-                          "or \033[91mnltk.tag.corenlp.CoreNLPNERTagger\033[0m instead."),
+                          "be deprecated in version 3.2.6.\n"
+                          "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead."),
                       DeprecationWarning, stacklevel=2)
-        warnings.simplefilter('ignore', DeprecationWarning)
+
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
                           'instantiated directly. Did you mean '
@@ -212,67 +209,6 @@ class StanfordNERTagger(StanfordTagger):
 
         raise NotImplementedError
 
-class CoreNLPTagger(CoreNLPParser, TaggerI):
-    def __init__(self, tagtype, url='http://localhost:9000', encoding='utf8'):
-        """
-        An abstract interface to POS/NER taggers of CoreNLP that returns the
-        POS/NER tags from the Stanford CoreNLP API at nltk.parse.corenlp.
-        """
-        self.tagtype = tagtype
-        super(CoreNLPTagger, self).__init__(url, encoding)
-
-    def tag_sents(self, sentences):
-        # Converting list(list(str)) -> list(str)
-        sentences = (' '.join(words) for words in sentences)
-        return list(self.raw_tag_sents(sentences))
-
-
-    def tag(self, sentence):
-        return self.tag_sents([sentence])[0]
-
-    def raw_tag_sents(self, sentences):
-        """
-        This function will interface the `GenericCoreNLPParser.api_call` to
-        retreive the JSON output and return the annotations required.
-        """
-        default_properties = {'ssplit.isOneSentence': 'true',
-                              'annotators': 'tokenize,ssplit,' }
-        # Supports only 'pos' or 'ner' tags.
-        assert self.tagtype in ['pos', 'ner']
-        default_properties['annotators'] += self.tagtype
-        for sentence in sentences:
-            tagged_data = self.api_call(sentence, properties=default_properties)
-            assert len(tagged_data['sentences']) == 1
-            # Taggers only need to return 1-best sentence.
-            yield [(token['word'], token[self.tagtype]) for token in tagged_data['sentences'][0]['tokens']]
-
-
-class CoreNLPPOSTagger(CoreNLPTagger):
-    """
-    This is a subclass of the CoreNLPTagger that wraps around the
-    nltk.parse.CoreNLPParser for Part-of-Sppech tagging.
-
-        >>> from nltk.tag.stanford import CoreNLPPOSTagger
-        >>> CoreNLPPOSTagger(url='http://localhost:9000').tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
-        [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
-    """
-    def __init__(self, url='http://localhost:9000', encoding='utf8'):
-        super(CoreNLPPOSTagger, self).__init__('pos', url, encoding)
-
-
-class CoreNLPNERTagger(CoreNLPTagger):
-    """
-    This is a subclass of the CoreNLPTagger that wraps around the
-    nltk.parse.CoreNLPParser for Named-Entity tagging.
-
-        >>> from nltk.tag.stanford import CoreNLPNERTagger
-        >>> CoreNLPNERTagger(url='http://localhost:9000').tag('Rami Eid is studying at Stony Brook University in NY'.split()) # doctest: +SKIP
-        [('Rami', 'PERSON'), ('Eid', 'PERSON'), ('is', 'O'), ('studying', 'O'), ('at', 'O'), ('Stony', 'ORGANIZATION'), ('Brook', 'ORGANIZATION'), ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'O')]
-    """
-    def __init__(self, url='http://localhost:9000', encoding='utf8'):
-        super(CoreNLPNERTagger, self).__init__('ner', url, encoding)
-
-
 def setup_module(module):
     from nose import SkipTest
 
@@ -281,10 +217,3 @@ def setup_module(module):
     except LookupError:
         raise SkipTest('Doctests from nltk.tag.stanford are skipped because one \
                        of the stanford jars cannot be found.')
-
-    try:
-        CoreNLPPOSTagger()
-        CoreNLPNERTagger()
-    except LookupError:
-        raise SkipTest('Doctests from nltk.tag.stanford.CoreNLPTokenizer'
-                       'are skipped because the stanford corenlp server not started')

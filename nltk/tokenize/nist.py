@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: Python port of the tok-tok.pl tokenizer.
+# Natural Language Toolkit: Python port of the mteval-v14.pl tokenizer.
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Author: Liling Tan (ported from ftp://jaguar.ncsl.nist.gov/mt/resources/mteval-v14.pl)
