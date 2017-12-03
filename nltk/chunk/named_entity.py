@@ -9,6 +9,7 @@
 Named entity chunker
 """
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import os, re, pickle
 from xml.etree import ElementTree as ET
@@ -328,4 +329,3 @@ if __name__ == '__main__':
 
     build_model('binary')
     build_model('multiclass')
-
