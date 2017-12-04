@@ -22,6 +22,7 @@ from six import string_types, text_type
 from six.moves import zip_longest
 
 from collections import defaultdict, OrderedDict
+from operator import itemgetter
 from pprint import pprint, pformat
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
@@ -685,10 +686,6 @@ class AttrDict(dict):
         if isinstance(v,Future):
             return v._data()
         return v
-
-    def __lt__(self, other):
-        """ Comparison operator used mainly to sort a list of AttrDict by ID. """
-        return self['ID'] < other['ID']
 
     def _short_repr(self):
         if '_type' in self:
@@ -1426,7 +1423,7 @@ warnings(True) to display corpus consistency warnings when loading data
 
         >>> from nltk.corpus import framenet as fn
         >>> from nltk.corpus.reader.framenet import PrettyList
-        >>> PrettyList(sorted(fn.frames_by_lemma(r'(?i)a little'))) # doctest: +ELLIPSIS
+        >>> PrettyList(sorted(fn.frames_by_lemma(r'(?i)a little'), key=itemgetter('ID'))) # doctest: +ELLIPSIS
         [<frame ID=189 name=Quanti...>, <frame ID=2001 name=Degree>]
 
         :return: A list of frame objects.
@@ -1787,7 +1784,7 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> len(fn.frames()) in (1019, 1221)    # FN 1.5 and 1.7, resp.
         True
         >>> x = PrettyList(fn.frames(r'(?i)crim'), maxReprSize=0, breakLines=True)
-        >>> x.sort(key=lambda f: f.ID)
+        >>> x.sort(key=itemgetter('ID'))
         >>> x
         [<frame ID=200 name=Criminal_process>,
          <frame ID=500 name=Criminal_investigation>,
@@ -1916,11 +1913,11 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.lus()) in (11829, 13572) # FN 1.5 and 1.7, resp.
         True
-        >>> PrettyList(sorted(fn.lus(r'(?i)a little')), maxReprSize=0, breakLines=True)
+        >>> PrettyList(sorted(fn.lus(r'(?i)a little'), key=itemgetter('ID')), maxReprSize=0, breakLines=True)
         [<lu ID=14733 name=a little.n>,
          <lu ID=14743 name=a little.adv>,
          <lu ID=14744 name=a little bit.adv>]
-        >>> PrettyList(sorted(fn.lus(r'interest', r'(?i)stimulus')))
+        >>> PrettyList(sorted(fn.lus(r'interest', r'(?i)stimulus'), key=itemgetter('ID')))
         [<lu ID=14894 name=interested.a>, <lu ID=14920 name=interesting.a>]
 
         A brief intro to Lexical Units (excerpted from "FrameNet II:
@@ -2247,7 +2244,7 @@ warnings(True) to display corpus consistency warnings when loading data
         Obtain a list of frame relation types.
 
         >>> from nltk.corpus import framenet as fn
-        >>> frts = sorted(fn.frame_relation_types())
+        >>> frts = sorted(fn.frame_relation_types(), key=itemgetter('ID'))
         >>> isinstance(frts, list)
         True
         >>> len(frts) in (9, 10)    # FN 1.5 and 1.7, resp.
