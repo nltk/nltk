@@ -2247,7 +2247,7 @@ warnings(True) to display corpus consistency warnings when loading data
         Obtain a list of frame relation types.
 
         >>> from nltk.corpus import framenet as fn
-        >>> frts = sorted(list(fn.frame_relation_types()))
+        >>> frts = sorted(fn.frame_relation_types())
         >>> isinstance(frts, list)
         True
         >>> len(frts) in (9, 10)    # FN 1.5 and 1.7, resp.
