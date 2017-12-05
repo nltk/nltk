@@ -22,6 +22,7 @@ from six import string_types, text_type
 from six.moves import zip_longest
 
 from collections import defaultdict, OrderedDict
+from operator import itemgetter
 from pprint import pprint, pformat
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
@@ -352,10 +353,10 @@ def _pretty_annotation(sent, aset_level=False):
     Gov (governor), X. Gov and X always cooccur.
 
     >>> from nltk.corpus import framenet as fn
->>> def f(luRE, lyr, ignore=set()):
-...   for i,ex in enumerate(fn.exemplars(luRE)):
-...     if lyr in ex and ex[lyr] and set(zip(*ex[lyr])[2]) - ignore:
-...       print(i,ex[lyr])
+    >>> def f(luRE, lyr, ignore=set()):
+    ...   for i,ex in enumerate(fn.exemplars(luRE)):
+    ...     if lyr in ex and ex[lyr] and set(zip(*ex[lyr])[2]) - ignore:
+    ...       print(i,ex[lyr])
 
     - Verb: Asp, Non-Asp
     - Noun: Cop, Supp, Ctrlr, Gov, X
@@ -1000,8 +1001,8 @@ class FramenetCorpusReader(XMLCorpusReader):
 
 
         msg = """
-Citation: Nathan Schneider and Chuck Wooters (2017), 
-"The NLTK FrameNet API: Designing for Discoverability with a Rich Linguistic Resource". 
+Citation: Nathan Schneider and Chuck Wooters (2017),
+"The NLTK FrameNet API: Designing for Discoverability with a Rich Linguistic Resource".
 Proceedings of EMNLP: System Demonstrations. https://arxiv.org/abs/1703.07438
 
 Use the following methods to access data in FrameNet.
@@ -1421,7 +1422,8 @@ warnings(True) to display corpus consistency warnings when loading data
         search through ALL of the frame XML files in the db.
 
         >>> from nltk.corpus import framenet as fn
-        >>> fn.frames_by_lemma(r'(?i)a little') # doctest: +ELLIPSIS
+        >>> from nltk.corpus.reader.framenet import PrettyList
+        >>> PrettyList(sorted(fn.frames_by_lemma(r'(?i)a little'), key=itemgetter('ID'))) # doctest: +ELLIPSIS
         [<frame ID=189 name=Quanti...>, <frame ID=2001 name=Degree>]
 
         :return: A list of frame objects.
@@ -1782,7 +1784,7 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> len(fn.frames()) in (1019, 1221)    # FN 1.5 and 1.7, resp.
         True
         >>> x = PrettyList(fn.frames(r'(?i)crim'), maxReprSize=0, breakLines=True)
-        >>> x.sort(key=lambda f: f.ID)
+        >>> x.sort(key=itemgetter('ID'))
         >>> x
         [<frame ID=200 name=Criminal_process>,
          <frame ID=500 name=Criminal_investigation>,
@@ -1911,12 +1913,12 @@ warnings(True) to display corpus consistency warnings when loading data
         >>> from nltk.corpus import framenet as fn
         >>> len(fn.lus()) in (11829, 13572) # FN 1.5 and 1.7, resp.
         True
-        >>> PrettyList(fn.lus(r'(?i)a little'), maxReprSize=0, breakLines=True)
-        [<lu ID=14744 name=a little bit.adv>,
-         <lu ID=14733 name=a little.n>,
-         <lu ID=14743 name=a little.adv>]
-        >>> fn.lus(r'interest', r'(?i)stimulus')
-        [<lu ID=14920 name=interesting.a>, <lu ID=14894 name=interested.a>]
+        >>> PrettyList(sorted(fn.lus(r'(?i)a little'), key=itemgetter('ID')), maxReprSize=0, breakLines=True)
+        [<lu ID=14733 name=a little.n>,
+         <lu ID=14743 name=a little.adv>,
+         <lu ID=14744 name=a little bit.adv>]
+        >>> PrettyList(sorted(fn.lus(r'interest', r'(?i)stimulus'), key=itemgetter('ID')))
+        [<lu ID=14894 name=interested.a>, <lu ID=14920 name=interesting.a>]
 
         A brief intro to Lexical Units (excerpted from "FrameNet II:
         Extended Theory and Practice" by Ruppenhofer et. al., 2010):
@@ -2242,7 +2244,7 @@ warnings(True) to display corpus consistency warnings when loading data
         Obtain a list of frame relation types.
 
         >>> from nltk.corpus import framenet as fn
-        >>> frts = list(fn.frame_relation_types())
+        >>> frts = sorted(fn.frame_relation_types(), key=itemgetter('ID'))
         >>> isinstance(frts, list)
         True
         >>> len(frts) in (9, 10)    # FN 1.5 and 1.7, resp.
