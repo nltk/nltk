@@ -180,7 +180,7 @@ class ConcordanceIndex(object):
 
         :param word: The target word
         :type word: str
-        :param max_context: The maximum no. of context words for the target
+        :param max_context: The maximum number of context words for the target
         :type max_context: int
         """
         concordance_list = []
