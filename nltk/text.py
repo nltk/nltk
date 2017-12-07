@@ -30,7 +30,7 @@ from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
 from nltk.compat import python_2_unicode_compatible
 
-ConcordanceLine = namedtuple('ConcordanceLine', 'left query right offset')
+ConcordanceLine = namedtuple('ConcordanceLine', ['left', 'query', 'right', 'offset'])
 
 class ContextIndex(object):
     """
