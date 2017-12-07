@@ -13,10 +13,10 @@ Functionality includes: concordancing, collocation discovery,
 regular expression search over tokenized strings, and
 distributional similarity.
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import print_function, division, unicode_literals
 
 from math import log
-from collections import defaultdict, Counter, namedtuple
+from collections import defaultdict, Counter
 from functools import reduce
 from itertools import islice
 import re
@@ -30,7 +30,6 @@ from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
 from nltk.compat import python_2_unicode_compatible
 
-ConcordanceLine = namedtuple('ConcordanceLine', ['left', 'query', 'right', 'offset'])
 
 class ContextIndex(object):
     """
@@ -126,8 +125,7 @@ class ConcordanceIndex(object):
     a given word occurs in a document.
     """
     def __init__(self, tokens, key=lambda x:x):
-        """
-        Construct a new concordance index.
+        """ Construct a new concordance index.
 
         :param tokens: The document (list of tokens) that this
             concordance index was created from.  This list can be used
@@ -173,53 +171,47 @@ class ConcordanceIndex(object):
         return '<ConcordanceIndex for %d tokens (%d types)>' % (
             len(self._tokens), len(self._offsets))
 
-    def _concordance_tuple_list(self, word, max_context=20):
-        """
-        Generate a concordance list of tuples(left, token, right)
+    def _concordance_tuple_list(self, word, width=80):
+        """Generate a concordance list of tuples(left, token, right)
         for ``word`` with the specified context window.
 
         :param word: The target word
         :type word: str
-        :param max_context: The maximum number of context words for the target
-        :type max_context: int
+        :param width: The width of each line, in characters (default=80)
+        :type width: int
         """
-        concordance_list = []
+
+        self._concordance = []
+
+        half_width = (width - len(word) - 2) // 2
+        context = width // 4  # approx number of words of context
         offsets = self.offsets(word)
         if offsets:
             for i in offsets:
-                left_context = self._tokens[i-max_context:i]
-                query_word = self._tokens[i]
-                right_context = self._tokens[i+1:i+max_context]
-                concordance_line = ConcordanceLine(left_context, query_word,
-                                                   right_context, offset=i)
-                concordance_list.append(concordance_line)
-        return concordance_list
+                left = (' ' * half_width +
+                        ' '.join(self._tokens[i-context:i]))
+                right = ' '.join(self._tokens[i+1:i+context])
+                left = left[-half_width:]
+                right = right[:half_width]
+                self._concordance.append((left, self._tokens[i], right))
 
-    def print_concordance(self, word, width=80, lines=25):
+    def print_concordance(self, lines=25):
         """
         Print self._concordance
-        :param word: The target word
-        :type word: str
-        :param lines: The number of lines to display (default=25)
-        :type lines: int
-        :param width: The width of each line, in characters (default=80)
-        :type width: int
-        :param max_context: The maximum no. of context words for the target
-        :type max_context: int
+        :parama lines: The number of lines to display (default=25)
+        :type lines: int:
         """
-        half_width = (width - len(word) - 2) // 2
-        context = width // 4  # approx number of words of context
-        concordance_list = self._concordance_tuple_list(word, max_context=context)
-        if not concordance_list:
+        if not self._concordance:
             print("no matches")
         else:
-            lines = min(lines, len(concordance_list))
-            print("Displaying {} of {} matches:".format(lines,len(concordance_list)))
-            for i, concordance_line in enumerate(concordance_list[:lines]):
-                left = ' '.join(concordance_line.left)[-half_width:]
-                right = ' '.join(concordance_line.right)[:half_width]
-                print(left, word, right)
-        return concordance_list
+            if not lines or lines > len(self._concordance):
+                lines = len(self._concordance)
+            print("Displaying %s of %s matches:" %
+                  (lines, len(self._concordance)))
+            for (left, token, right) in self._concordance[:lines]:
+                print(left, token, right)
+        return
+
 
 class TokenSearcher(object):
     """
@@ -358,12 +350,16 @@ class Text(object):
         :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
-            self._concordance_index = ConcordanceIndex(self.tokens, key=lambda s:s.lower())
+            self._concordance_index = ConcordanceIndex(self.tokens,
+                                                       key=lambda s:s.lower())
+
+        self._concordance_index._concordance_tuple_list(word, width)
 
         if print_out:
-            return self._concordance_index.print_concordance(word)
-        else:
-            return self._concordance_index._concordance_tuple_list(word)
+            self._concordance_index.print_concordance(lines)
+
+        return [" ".join([left, token, right]) for (left, token, right)
+                in self._concordance_index._concordance[:lines]]
 
     def collocations(self, num=20, window_size=2):
         """
@@ -423,7 +419,7 @@ class Text(object):
                                                     filter=lambda x:x.isalpha(),
                                                     key=lambda s:s.lower())
 
-        # words = self._word_context_index.similar_words(word, num)
+#        words = self._word_context_index.similar_words(word, num)
 
         word = word.lower()
         wci = self._word_context_index._word_to_contexts
