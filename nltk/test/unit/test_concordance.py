@@ -61,10 +61,10 @@ class TestConcordance(unittest.TestCase):
         self.assertEqual(self.list_out, [c.line for c in concordance_out])
 
     def test_concordance_width(self):
-        list_out = [" monstrous ", " monstrous ", " monstrous ",
-                    " monstrous ", " monstrous ", " monstrous ",
-                    " Monstrous ", " monstrous ", " monstrous ",
-                    " monstrous ", " monstrous "]
+        list_out = ["monstrous", "monstrous", "monstrous",
+                    "monstrous", "monstrous", "monstrous",
+                    "Monstrous", "monstrous", "monstrous",
+                    "monstrous", "monstrous"]
 
         concordance_out = self.text.concordance(self.query, width=0, save=True)
         self.assertEqual(list_out, [c.query for c in concordance_out])
