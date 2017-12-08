@@ -229,7 +229,7 @@ class MaxentClassifier(ClassifierI):
             fids = [fid for fid in fids if self._weights[fid] > 0]
         elif show == 'neg':
             fids = [fid for fid in fids if self._weights[fid] < 0]
-        for fid in fids[:n]
+        for fid in fids[:n]:
             print('%8.3f %s' % (self._weights[fid],
                                 self._encoding.describe(fid)))
 
