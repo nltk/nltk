@@ -57,8 +57,8 @@ class TestConcordance(unittest.TestCase):
         pass
 
     def test_concordance_list(self):
-        concordance_out = self.text.concordance(self.query, print_out=False)
-        self.assertEqual(self.list_out, concordance_out)
+        concordance_out = self.text.concordance(self.query, save=True)
+        self.assertEqual(self.list_out, [c.line for c in concordance_out])
 
     def test_concordance_width(self):
         list_out = [" monstrous ", " monstrous ", " monstrous ",
@@ -66,14 +66,12 @@ class TestConcordance(unittest.TestCase):
                     " Monstrous ", " monstrous ", " monstrous ",
                     " monstrous ", " monstrous "]
 
-        concordance_out = self.text.concordance(self.query, width=0,
-                                                print_out=False)
-        self.assertEqual(list_out, concordance_out)
+        concordance_out = self.text.concordance(self.query, width=0, save=True)
+        self.assertEqual(list_out, [c.query for c in concordance_out])
 
     def test_concordance_lines(self):
-        concordance_out = self.text.concordance(self.query, lines=3,
-                                                print_out=False)
-        self.assertEqual(self.list_out[:3], concordance_out)
+        concordance_out = self.text.concordance(self.query, lines=3, save=True)
+        self.assertEqual(self.list_out[:3], [c.line for c in concordance_out])
 
     def test_concordance_print(self):
         print_out = """Displaying 11 of 11 matches:
@@ -91,7 +89,7 @@ class TestConcordance(unittest.TestCase):
         """
 
         with stdout_redirect(StringIO()) as stdout:
-            self.text.concordance(self.query, print_out=True)
+            self.text.concordance(self.query)
 
         def strip_space(raw_str):
             return raw_str.replace(" ", "")
