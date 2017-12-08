@@ -521,7 +521,9 @@ class PunktBaseClass(object):
     """
 
     def __init__(self, lang_vars=PunktLanguageVars(), token_cls=PunktToken,
-            params=PunktParameters()):
+            params=None):
+        if params is None:
+            params = PunktParameters() 
         self._params = params
         self._lang_vars = lang_vars
         self._Token = token_cls
@@ -1060,16 +1062,12 @@ class PunktTrainer(PunktBaseClass):
         unlike the previous log_l function where it used modified
         Dunning log-likelihood values
         """
-        import math
-
         p = count_b / N
         p1 = count_ab / count_a
         try:
             p2 = (count_b - count_ab) / (N - count_a)
         except ZeroDivisionError as e:
             p2 = 1
-
-        print (p, p1, p2, N, count_a, count_b, count_ab)
 
         try:
             summand1 = (count_ab * math.log(p) +

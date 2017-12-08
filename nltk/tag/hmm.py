@@ -842,9 +842,11 @@ class HiddenMarkovModelTrainer(object):
         :rtype: HiddenMarkovModelTagger
         :param labelled_sequences: the supervised training data, a set of
             labelled sequences of observations
+            ex: [ (word_1, tag_1),...,(word_n,tag_n) ] 
         :type labelled_sequences: list
         :param unlabeled_sequences: the unsupervised training data, a set of
             sequences of observations
+            ex: [ word_1, ..., word_n ]
         :type unlabeled_sequences: list
         :param kwargs: additional arguments to pass to the training methods
         """

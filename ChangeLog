@@ -1,3 +1,56 @@
+Version 3.2.5 2017-09-24
+
+* Arabic stemmers (ARLSTem, Snowball)
+* NIST MT evaluation metric and added NIST international_tokenize
+* Moses tokenizer
+* Document Russian tagger
+* Fix to Stanford segmenter
+* Improve treebank detokenizer, VerbNet, Vader
+* Misc code and documentation cleanups
+* Implement fixes suggested by LGTM
+
+Thanks to the following contributors to 3.2.5:
+Ali Abdullah, Lakhdar Benzahia, Henry Elder, Campion Fellin,
+Tsolak Ghukasyan, Thanh Ha, Jean Helie, Nelson Liu,
+Nathan Schneider, Chintan Shah, Fábio Silva, Liling Tan,
+Ziyao Wei, Zicheng Xu, Albert Au Yeung, AbdealiJK,
+porqupine, sbagan, xprogramer
+
+Version 3.2.4 2017-05-21
+
+* remove load-time dependency on Python requests library
+* add support for Arabic in StanfordSegmenter
+* fix MosesDetokenizer on irregular quote tokens
+	
+Thanks to the following contributors to 3.2.4:
+Alex Constantin, Hatem Nassrat, Liling Tan
+	
+Version 3.2.3 2017-05-16
+
+* new interface to Stanford CoreNLP Web API
+* improved Lancaster stemmer with customizable rules from Whoosh
+* improved Treebank tokenizer
+* improved support for GLEU score
+* adopt new Abstract base class style
+* support custom tab files for extending WordNet
+* make synset_from_pos_and_offset a public method
+* make non-English WordNet lemma lookups case-insensitive
+* speed up TnT tagger
+* speed up FreqDist and ConditionalFreqDist
+* support additional quotes in TreebankWordTokenizer
+* clean up Tk's postscript output
+* drop explicit support for corpora not distributed with NLTK to streamline testing
+* allow iterator in perceptron tagger training
+* allow for curly bracket quantifiers in chunk.regexp.CHUNK_TAG_PATTERN
+* new corpus reader for MWA subset of PPDB
+* improved testing framework
+	
+Thanks to the following contributors to 3.2.3:
+Mark Amery, Carl Bolz, Abdelhak Bougouffa, Matt Chaput, Michael Goodman,
+Jaehoon Hwang, Naoya Kanai, Jackson Lee, Christian Meyer, Dmitrijs Milajevs,
+Adam Nelson, Pierpaolo Pantone, Liling Tan, Vilhjalmur Thorsteinsson,
+Arthur Tilley, jmhutch, Yorwba, eromoe and others
+
 Version 3.2.2 2016-12-31
 * added Kondrak's Aline algorithm
 * added ChrF and GLEU MT evaluation metrics

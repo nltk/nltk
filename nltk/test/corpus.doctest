@@ -386,7 +386,7 @@ examples illustrate the use of the wordlist corpora:
     ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
 
     >>> stopwords.fileids() # doctest: +ELLIPSIS
-    ['danish', 'dutch', 'english', 'finnish', 'french', 'german', 'hungarian', ...]
+    ['arabic', 'danish', 'dutch', 'english', 'finnish', 'french', 'german', ...]
     >>> stopwords.words('portuguese') # doctest: +ELLIPSIS
     ['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', ...]
     >>> names.fileids()
@@ -977,6 +977,12 @@ a given lemma belongs to:
     >>> verbnet.classids('accept')
     ['approve-77', 'characterize-29.2-1-1', 'obtain-13.5.2']
 
+The `classids()` method may additionally be used to retrieve all classes
+within verbnet if nothing is passed:
+
+    >>> verbnet.classids()
+    ['accompany-51.7', 'admire-31.2', 'admire-31.2-1', 'admit-65', 'adopt-93', 'advise-37.9', 'advise-37.9-1', 'allow-64', 'amalgamate-22.2', 'amalgamate-22.2-1', 'amalgamate-22.2-1-1', 'amalgamate-22.2-2', 'amalgamate-22.2-2-1', 'amalgamate-22.2-3', 'amalgamate-22.2-3-1', 'amalgamate-22.2-3-1-1', 'amalgamate-22.2-3-2', 'amuse-31.1', 'animal_sounds-38', 'appeal-31.4', 'appeal-31.4-1', 'appeal-31.4-2', 'appeal-31.4-3', 'appear-48.1.1', 'appoint-29.1', 'approve-77', 'assessment-34', 'assuming_position-50', 'avoid-52', 'banish-10.2', 'battle-36.4', 'battle-36.4-1', 'begin-55.1', 'begin-55.1-1', 'being_dressed-41.3.3', 'bend-45.2', 'berry-13.7', 'bill-54.5', 'body_internal_motion-49', 'body_internal_states-40.6', 'braid-41.2.2', 'break-45.1', 'breathe-40.1.2', 'breathe-40.1.2-1', 'bring-11.3', 'bring-11.3-1', 'build-26.1', 'build-26.1-1', 'bulge-47.5.3', 'bump-18.4', 'bump-18.4-1', 'butter-9.9', 'calibratable_cos-45.6', 'calibratable_cos-45.6-1', 'calve-28', 'captain-29.8', 'captain-29.8-1', 'captain-29.8-1-1', 'care-88', 'care-88-1', 'carry-11.4', 'carry-11.4-1', 'carry-11.4-1-1', 'carve-21.2', 'carve-21.2-1', 'carve-21.2-2', 'change_bodily_state-40.8.4', 'characterize-29.2', 'characterize-29.2-1', 'characterize-29.2-1-1', 'characterize-29.2-1-2', 'chase-51.6', 'cheat-10.6', 'cheat-10.6-1', 'cheat-10.6-1-1', 'chew-39.2', 'chew-39.2-1', 'chew-39.2-2', 'chit_chat-37.6', 'clear-10.3', 'clear-10.3-1', 'cling-22.5', 'coil-9.6', 'coil-9.6-1', 'coloring-24', 'complain-37.8', 'complete-55.2', 'concealment-16', 'concealment-16-1', 'confess-37.10', 'confine-92', 'confine-92-1', 'conjecture-29.5', 'conjecture-29.5-1', 'conjecture-29.5-2', 'consider-29.9', 'consider-29.9-1', 'consider-29.9-1-1', 'consider-29.9-1-1-1', 'consider-29.9-2', 'conspire-71', 'consume-66', 'consume-66-1', 'contiguous_location-47.8', 'contiguous_location-47.8-1', 'contiguous_location-47.8-2', 'continue-55.3', 'contribute-13.2', 'contribute-13.2-1', 'contribute-13.2-1-1', 'contribute-13.2-1-1-1', 'contribute-13.2-2', 'contribute-13.2-2-1', 'convert-26.6.2', 'convert-26.6.2-1', 'cooking-45.3', 'cooperate-73', 'cooperate-73-1', 'cooperate-73-2', 'cooperate-73-3', 'cope-83', 'cope-83-1', 'cope-83-1-1', 'correlate-86', 'correspond-36.1', 'correspond-36.1-1', 'correspond-36.1-1-1', 'cost-54.2', 'crane-40.3.2', 'create-26.4', 'create-26.4-1', 'curtsey-40.3.3', 'cut-21.1', 'cut-21.1-1', 'debone-10.8', 'declare-29.4', 'declare-29.4-1', 'declare-29.4-1-1', 'declare-29.4-1-1-1', 'declare-29.4-1-1-2', 'declare-29.4-1-1-3', 'declare-29.4-2', 'dedicate-79', 'defend-85', 'destroy-44', 'devour-39.4', 'devour-39.4-1', 'devour-39.4-2', 'differ-23.4', 'dine-39.5', 'disappearance-48.2', 'disassemble-23.3', 'discover-84', 'discover-84-1', 'discover-84-1-1', 'dress-41.1.1', 'dressing_well-41.3.2', 'drive-11.5', 'drive-11.5-1', 'dub-29.3', 'dub-29.3-1', 'eat-39.1', 'eat-39.1-1', 'eat-39.1-2', 'enforce-63', 'engender-27', 'entity_specific_cos-45.5', 'entity_specific_modes_being-47.2', 'equip-13.4.2', 'equip-13.4.2-1', 'equip-13.4.2-1-1', 'escape-51.1', 'escape-51.1-1', 'escape-51.1-2', 'escape-51.1-2-1', 'exceed-90', 'exchange-13.6', 'exchange-13.6-1', 'exchange-13.6-1-1', 'exhale-40.1.3', 'exhale-40.1.3-1', 'exhale-40.1.3-2', 'exist-47.1', 'exist-47.1-1', 'exist-47.1-1-1', 'feeding-39.7', 'ferret-35.6', 'fill-9.8', 'fill-9.8-1', 'fit-54.3', 'flinch-40.5', 'floss-41.2.1', 'focus-87', 'forbid-67', 'force-59', 'force-59-1', 'free-80', 'free-80-1', 'fulfilling-13.4.1', 'fulfilling-13.4.1-1', 'fulfilling-13.4.1-2', 'funnel-9.3', 'funnel-9.3-1', 'funnel-9.3-2', 'funnel-9.3-2-1', 'future_having-13.3', 'get-13.5.1', 'get-13.5.1-1', 'give-13.1', 'give-13.1-1', 'gobble-39.3', 'gobble-39.3-1', 'gobble-39.3-2', 'gorge-39.6', 'groom-41.1.2', 'grow-26.2', 'help-72', 'help-72-1', 'herd-47.5.2', 'hiccup-40.1.1', 'hit-18.1', 'hit-18.1-1', 'hold-15.1', 'hold-15.1-1', 'hunt-35.1', 'hurt-40.8.3', 'hurt-40.8.3-1', 'hurt-40.8.3-1-1', 'hurt-40.8.3-2', 'illustrate-25.3', 'image_impression-25.1', 'indicate-78', 'indicate-78-1', 'indicate-78-1-1', 'inquire-37.1.2', 'instr_communication-37.4', 'investigate-35.4', 'judgement-33', 'keep-15.2', 'knead-26.5', 'learn-14', 'learn-14-1', 'learn-14-2', 'learn-14-2-1', 'leave-51.2', 'leave-51.2-1', 'lecture-37.11', 'lecture-37.11-1', 'lecture-37.11-1-1', 'lecture-37.11-2', 'light_emission-43.1', 'limit-76', 'linger-53.1', 'linger-53.1-1', 'lodge-46', 'long-32.2', 'long-32.2-1', 'long-32.2-2', 'manner_speaking-37.3', 'marry-36.2', 'marvel-31.3', 'marvel-31.3-1', 'marvel-31.3-2', 'marvel-31.3-3', 'marvel-31.3-4', 'marvel-31.3-5', 'marvel-31.3-6', 'marvel-31.3-7', 'marvel-31.3-8', 'marvel-31.3-9', 'masquerade-29.6', 'masquerade-29.6-1', 'masquerade-29.6-2', 'matter-91', 'meander-47.7', 'meet-36.3', 'meet-36.3-1', 'meet-36.3-2', 'mine-10.9', 'mix-22.1', 'mix-22.1-1', 'mix-22.1-1-1', 'mix-22.1-2', 'mix-22.1-2-1', 'modes_of_being_with_motion-47.3', 'murder-42.1', 'murder-42.1-1', 'neglect-75', 'neglect-75-1', 'neglect-75-1-1', 'neglect-75-2', 'nonvehicle-51.4.2', 'nonverbal_expression-40.2', 'obtain-13.5.2', 'obtain-13.5.2-1', 'occurrence-48.3', 'order-60', 'order-60-1', 'orphan-29.7', 'other_cos-45.4', 'pain-40.8.1', 'pay-68', 'peer-30.3', 'pelt-17.2', 'performance-26.7', 'performance-26.7-1', 'performance-26.7-1-1', 'performance-26.7-2', 'performance-26.7-2-1', 'pit-10.7', 'pocket-9.10', 'pocket-9.10-1', 'poison-42.2', 'poke-19', 'pour-9.5', 'preparing-26.3', 'preparing-26.3-1', 'preparing-26.3-2', 'price-54.4', 'push-12', 'push-12-1', 'push-12-1-1', 'put-9.1', 'put-9.1-1', 'put-9.1-2', 'put_direction-9.4', 'put_spatial-9.2', 'put_spatial-9.2-1', 'reach-51.8', 'reflexive_appearance-48.1.2', 'refrain-69', 'register-54.1', 'rely-70', 'remove-10.1', 'risk-94', 'risk-94-1', 'roll-51.3.1', 'rummage-35.5', 'run-51.3.2', 'rush-53.2', 'say-37.7', 'say-37.7-1', 'say-37.7-1-1', 'say-37.7-2', 'scribble-25.2', 'search-35.2', 'see-30.1', 'see-30.1-1', 'see-30.1-1-1', 'send-11.1', 'send-11.1-1', 'separate-23.1', 'separate-23.1-1', 'separate-23.1-2', 'settle-89', 'shake-22.3', 'shake-22.3-1', 'shake-22.3-1-1', 'shake-22.3-2', 'shake-22.3-2-1', 'sight-30.2', 'simple_dressing-41.3.1', 'slide-11.2', 'slide-11.2-1-1', 'smell_emission-43.3', 'snooze-40.4', 'sound_emission-43.2', 'sound_existence-47.4', 'spank-18.3', 'spatial_configuration-47.6', 'split-23.2', 'spray-9.7', 'spray-9.7-1', 'spray-9.7-1-1', 'spray-9.7-2', 'stalk-35.3', 'steal-10.5', 'stimulus_subject-30.4', 'stop-55.4', 'stop-55.4-1', 'substance_emission-43.4', 'succeed-74', 'succeed-74-1', 'succeed-74-1-1', 'succeed-74-2', 'suffocate-40.7', 'suspect-81', 'swarm-47.5.1', 'swarm-47.5.1-1', 'swarm-47.5.1-2', 'swarm-47.5.1-2-1', 'swat-18.2', 'talk-37.5', 'tape-22.4', 'tape-22.4-1', 'tell-37.2', 'throw-17.1', 'throw-17.1-1', 'throw-17.1-1-1', 'tingle-40.8.2', 'touch-20', 'touch-20-1', 'transcribe-25.4', 'transfer_mesg-37.1.1', 'transfer_mesg-37.1.1-1', 'transfer_mesg-37.1.1-1-1', 'try-61', 'turn-26.6.1', 'turn-26.6.1-1', 'urge-58', 'vehicle-51.4.1', 'vehicle-51.4.1-1', 'waltz-51.5', 'want-32.1', 'want-32.1-1', 'want-32.1-1-1', 'weather-57', 'weekend-56', 'wink-40.3.1', 'wink-40.3.1-1', 'wipe_instr-10.4.2', 'wipe_instr-10.4.2-1', 'wipe_manner-10.4.1', 'wipe_manner-10.4.1-1', 'wish-62', 'withdraw-82', 'withdraw-82-1', 'withdraw-82-2', 'withdraw-82-3']
+
 The primary object in the lexicon is a class record, which is stored
 as an ElementTree xml object.  The class record for a given class
 identifier is returned by the `vnclass()` method:
@@ -1017,17 +1023,41 @@ concise form.  The simplest such method is `pprint()`:
         * Theme[+concrete +force]
       Frames:
         Intransitive (Expletive Subject)
+          Example: It's raining.
           Syntax: LEX[it] LEX[[+be]] VERB
           Semantics:
             * weather(during(E), Weather_type, ?Theme)
         NP (Expletive Subject, Theme Object)
+          Example: It's raining cats and dogs.
           Syntax: LEX[it] LEX[[+be]] VERB NP[Theme]
           Semantics:
             * weather(during(E), Weather_type, Theme)
         PP (Expletive Subject, Theme-PP)
+          Example: It was pelting with rain.
           Syntax: LEX[it[+be]] VERB PREP[with] NP[Theme]
           Semantics:
             * weather(during(E), Weather_type, Theme)
+
+Verbnet gives us frames that link the syntax and semantics using an example.
+These frames are part of the corpus and we can use `frames()` to get a frame
+for a given verbnet class.
+
+    >>> frame = verbnet.frames('57')
+    >>> frame == [{'semantics': [{'arguments': [{'value': 'during(E)', 'type': 'Event'}, {'value': 'Weather_type', 'type': 'VerbSpecific'}, {'value': '?Theme', 'type': 'ThemRole'}], 'predicate_value': 'weather'}], 'example': "It's raining.", 'syntax': [{'pos_tag': 'LEX', 'modifiers': {'value': 'it', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'LEX', 'modifiers': {'value': '[+be]', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'VERB', 'modifiers': {'value': '', 'synrestrs': [], 'selrestrs': []}}], 'description': {'primary': 'Intransitive', 'secondary': 'Expletive Subject'}}, {'semantics': [{'arguments': [{'value': 'during(E)', 'type': 'Event'}, {'value': 'Weather_type', 'type': 'VerbSpecific'}, {'value': 'Theme', 'type': 'ThemRole'}], 'predicate_value': 'weather'}], 'example': "It's raining cats and dogs.", 'syntax': [{'pos_tag': 'LEX', 'modifiers': {'value': 'it', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'LEX', 'modifiers': {'value': '[+be]', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'VERB', 'modifiers': {'value': '', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'NP', 'modifiers': {'value': 'Theme', 'synrestrs': [], 'selrestrs': []}}], 'description': {'primary': 'NP', 'secondary': 'Expletive Subject, Theme Object'}}, {'semantics': [{'arguments': [{'value': 'during(E)', 'type': 'Event'}, {'value': 'Weather_type', 'type': 'VerbSpecific'}, {'value': 'Theme', 'type': 'ThemRole'}], 'predicate_value': 'weather'}], 'example': 'It was pelting with rain.', 'syntax': [{'pos_tag': 'LEX', 'modifiers': {'value': 'it[+be]', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'VERB', 'modifiers': {'value': '', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'PREP', 'modifiers': {'value': 'with', 'synrestrs': [], 'selrestrs': []}}, {'pos_tag': 'NP', 'modifiers': {'value': 'Theme', 'synrestrs': [], 'selrestrs': []}}], 'description': {'primary': 'PP', 'secondary': 'Expletive Subject, Theme-PP'}}]
+    True
+
+Verbnet corpus lets us access thematic roles individually using `themroles()`.
+
+    >>> themroles = verbnet.themroles('57')
+    >>> themroles == [{'modifiers': [{'type': 'concrete', 'value': '+'}, {'type': 'force', 'value': '+'}], 'type': 'Theme'}]
+    True
+
+Verbnet classes may also have subclasses sharing similar syntactic and semantic properties
+while having differences with the superclass. The Verbnet corpus allows us to access these
+subclasses using `subclasses()`.
+
+    >>> print(verbnet.subclasses('9.1')) #Testing for 9.1 since '57' does not have subclasses
+    ['put-9.1-1', 'put-9.1-2']
 
 
 nps_chat

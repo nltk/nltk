@@ -13,12 +13,13 @@ import tempfile
 import os
 import json
 from subprocess import PIPE
+import warnings
 
 from six import text_type
 
 from nltk.internals import find_jar, config_java, java, _java_options
-
 from nltk.tokenize.api import TokenizerI
+from nltk.parse.corenlp import CoreNLPParser
 
 _stanford_url = 'https://nlp.stanford.edu/software/tokenizer.shtml'
 
@@ -26,7 +27,7 @@ class StanfordTokenizer(TokenizerI):
     r"""
     Interface to the Stanford Tokenizer
 
-    >>> from nltk.tokenize import StanfordTokenizer
+    >>> from nltk.tokenize.stanford import StanfordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
     >>> StanfordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
@@ -38,6 +39,12 @@ class StanfordTokenizer(TokenizerI):
     _JAR = 'stanford-postagger.jar'
 
     def __init__(self, path_to_jar=None, encoding='utf8', options=None, verbose=False, java_options='-mx1000m'):
+        # Raise deprecation warning.
+        warnings.warn(str("\nThe StanfordTokenizer will "
+                          "be deprecated in version 3.2.5.\n"
+                          "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead.'"),
+                      DeprecationWarning, stacklevel=2)
+
         self._stanford_jar = find_jar(
             self._JAR, path_to_jar,
             env_vars=('STANFORD_POSTAGGER',),

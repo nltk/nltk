@@ -136,7 +136,7 @@ class IBMModel2(IBMModel):
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
 
-        self.__align_all(sentence_aligned_corpus)
+        self.align_all(sentence_aligned_corpus)
 
     def set_uniform_probabilities(self, sentence_aligned_corpus):
         # a(i | j,l,m) = 1 / (l+1) for all i, j, l, m
@@ -245,11 +245,11 @@ class IBMModel2(IBMModel):
 
         return max(prob, IBMModel.MIN_PROB)
 
-    def __align_all(self, parallel_corpus):
+    def align_all(self, parallel_corpus):
         for sentence_pair in parallel_corpus:
-            self.__align(sentence_pair)
+            self.align(sentence_pair)
 
-    def __align(self, sentence_pair):
+    def align(self, sentence_pair):
         """
         Determines the best word alignment for one sentence pair from
         the corpus that the model was trained on.

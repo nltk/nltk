@@ -55,12 +55,10 @@ class TextTilingTokenizer(TokenizerI):
 
     >>> from nltk.corpus import brown
     >>> tt = TextTilingTokenizer(demo_mode=True)
-    >>> text = brown.raw()[:10000]
+    >>> text = brown.raw()[:4000]
     >>> s, ss, d, b = tt.tokenize(text)
     >>> b
-    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
-     0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
-     0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]
     """
 
     def __init__(self,
@@ -199,7 +197,6 @@ class TextTilingTokenizer(TokenizerI):
     def _mark_paragraph_breaks(self, text):
         """Identifies indented text or line breaks as the beginning of
         paragraphs"""
-
         MIN_PARAGRAPH = 100
         pattern = re.compile("[ \t\r\f\v]*\n[ \t\r\f\v]*\n[ \t\r\f\v]*")
         matches = pattern.finditer(text)
@@ -312,7 +309,7 @@ class TextTilingTokenizer(TokenizerI):
         #that a section shouldn't be smaller than at least 2
         #pseudosentences for small texts and around 5 for larger ones.
 
-        clip = min(max(len(scores)/10, 2), 5)
+        clip = min(max(len(scores) // 10, 2), 5)
         index = clip
 
         for gapscore in scores[clip:-clip]:
@@ -388,6 +385,7 @@ class TokenSequence(object):
         original_length=original_length or len(wrdindex_list)
         self.__dict__.update(locals())
         del self.__dict__['self']
+
 
 #Pasted from the SciPy cookbook: http://www.scipy.org/Cookbook/SignalSmooth
 def smooth(x,window_len=11,window='flat'):

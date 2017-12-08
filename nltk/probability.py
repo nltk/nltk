@@ -46,11 +46,11 @@ import array
 from operator import itemgetter
 from collections import defaultdict, Counter
 from functools import reduce
+from abc import ABCMeta, abstractmethod
 
-from six import itervalues, text_type
+from six import itervalues, text_type, add_metaclass
 
 from nltk import compat
-
 from nltk.internals import raise_unorderable_types
 
 _NINF = float('-1e300')
@@ -430,6 +430,7 @@ class FreqDist(Counter):
 ##  Probability Distributions
 ##//////////////////////////////////////////////////////
 
+@add_metaclass(ABCMeta)
 class ProbDistI(object):
     """
     A probability distribution for the outcomes of an experiment.  A
@@ -447,10 +448,13 @@ class ProbDistI(object):
     """True if the probabilities of the samples in this probability
        distribution will always sum to one."""
 
+    @abstractmethod
     def __init__(self):
-        if self.__class__ == ProbDistI:
-            raise NotImplementedError("Interfaces can't be instantiated")
+        """
+        Classes inheriting from ProbDistI should implement __init__.
+        """
 
+    @abstractmethod
     def prob(self, sample):
         """
         Return the probability for a given sample.  Probabilities
@@ -461,7 +465,6 @@ class ProbDistI(object):
         :type sample: any
         :rtype: float
         """
-        raise NotImplementedError()
 
     def logprob(self, sample):
         """
@@ -476,6 +479,7 @@ class ProbDistI(object):
         p = self.prob(sample)
         return (math.log(p, 2) if p != 0 else _NINF)
 
+    @abstractmethod
     def max(self):
         """
         Return the sample with the greatest probability.  If two or
@@ -484,8 +488,8 @@ class ProbDistI(object):
 
         :rtype: any
         """
-        raise NotImplementedError()
 
+    @abstractmethod
     def samples(self):
         """
         Return a list of all samples that have nonzero probabilities.
@@ -493,7 +497,6 @@ class ProbDistI(object):
 
         :rtype: list
         """
-        raise NotImplementedError()
 
     # cf self.SUM_TO_ONE
     def discount(self):
@@ -599,6 +602,11 @@ class RandomProbDist(ProbDistI):
             randrow[-1] -= total - 1
 
         return dict((s, randrow[i]) for i, s in enumerate(samples))
+
+    def max(self):
+        if not hasattr(self, '_max'):
+            self._max = max((p,v) for (v,p) in self._probs.items())[1]
+        return self._max
 
     def prob(self, sample):
         return self._probs.get(sample, 0)
@@ -1519,6 +1527,10 @@ class MutableProbDist(ProbDistI):
                 self._data[i] = prob_dist.prob(samples[i])
         self._logs = store_logs
 
+    def max(self):
+        # inherit documentation
+        return max((p,v) for (v,p) in self._sample_dict.items())[1]
+
     def samples(self):
         # inherit documentation
         return self._samples
@@ -2000,6 +2012,7 @@ class ConditionalFreqDist(defaultdict):
 
 
 @compat.python_2_unicode_compatible
+@add_metaclass(ABCMeta)
 class ConditionalProbDistI(dict):
     """
     A collection of probability distributions for a single experiment
@@ -2013,8 +2026,11 @@ class ConditionalProbDistI(dict):
     condition to the ``ProbDist`` for the experiment under that
     condition.
     """
+    @abstractmethod
     def __init__(self):
-        raise NotImplementedError("Interfaces can't be instantiated")
+        """
+        Classes inheriting from ConditionalProbDistI should implement __init__.
+        """
 
     def conditions(self):
         """

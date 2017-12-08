@@ -496,6 +496,9 @@ class AlignmentInfo(object):
     def __eq__(self, other):
         return self.alignment == other.alignment
 
+    def __ne__(self, other):
+        return not self == other
+
     def __hash__(self):
         return hash(self.alignment)
 
