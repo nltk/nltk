@@ -212,7 +212,7 @@ class ConcordanceIndex(object):
             print("no matches")
         else:
             if save: # Optionally, return the concordance_list
-                return concordance_list
+                return concordance_list[:lines]
             else: # Prints the concordance to stdout.
                 lines = min(lines, len(concordance_list))
                 print("Displaying {} of {} matches:".format(lines,len(concordance_list)))
