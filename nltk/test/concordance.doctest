@@ -41,8 +41,8 @@ to false:
 >>> from nltk.text import Text
 >>> corpus = gutenberg.words('melville-moby_dick.txt')
 >>> text = Text(corpus)
->>> con_list = text.concordance("monstrous", print_out=False)
->>> con_list[2]
+>>> con_list = text.concordance("monstrous", save=True)
+>>> con_list[2].line
 'll over with a heathenish array of monstrous clubs and spears . Some were thick'
 >>> len(con_list)
 11
