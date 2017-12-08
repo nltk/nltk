@@ -30,7 +30,7 @@ from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
 from nltk.compat import python_2_unicode_compatible
 
-ConcordanceLine = namedtuple('ConcordanceLine', 'left query right offset left_print right_print')
+ConcordanceLine = namedtuple('ConcordanceLine', 'left query right offset left_print right_print line')
 
 class ContextIndex(object):
     """
@@ -200,10 +200,12 @@ class ConcordanceIndex(object):
                 # Create the pretty lines with the query_word in the middle.
                 left_print= ' '.join(left_context)[-half_width:]
                 right_print = ' '.join(right_context)[:half_width]
+                # The WYSIWYG line of the concordance.
+                line_print = ' '.join([left_print, query_word, right_print])
                 # Create the ConcordanceLine
                 concordance_line = ConcordanceLine(left_context, query_word,
                                                     right_context, i,
-                                                    left_print, right_print)
+                                                    left_print, right_print, line_print)
                 concordance_list.append(concordance_line)
 
         if not concordance_list:
@@ -215,7 +217,7 @@ class ConcordanceIndex(object):
                 lines = min(lines, len(concordance_list))
                 print("Displaying {} of {} matches:".format(lines,len(concordance_list)))
                 for i, concordance_line in enumerate(concordance_list[:lines]):
-                    print(concordance_line.left_print, word, concordance_line.right_print)
+                    print(concordance_line.line)
 
 
 class TokenSearcher(object):
