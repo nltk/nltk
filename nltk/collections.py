@@ -591,12 +591,12 @@ class LazyIteratorList(AbstractLazySequence):
 ######################################################################
 # Trie Implementation
 ######################################################################
-class Trie(defaultdict):
+class Trie(dict):
     """A Trie implementation for strings"""
     LEAF = True
 
     def __init__(self, strings=None):
-        """Builds a Trie object, which is built around a ``defaultdict``
+        """Builds a Trie object, which is built around a ``dict``
 
         If ``strings`` is provided, it will add the ``strings``, which
         consist of a ``list`` of ``strings``, to the Trie.
@@ -607,7 +607,7 @@ class Trie(defaultdict):
         :type strings: list(str)
 
         """
-        defaultdict.__init__(self, Trie)
+        super(Trie, self).__init__()
         if strings:
             for string in strings:
                 self.insert(string)
@@ -621,9 +621,11 @@ class Trie(defaultdict):
         :Example:
 
         >>> from nltk.collections import Trie
-        >>> trie = Trie(["ab"])
-        >>> trie
-        defaultdict(<class 'nltk.collections.Trie'>, {'a': defaultdict(<class 'nltk.collections.Trie'>, {'b': defaultdict(<class 'nltk.collections.Trie'>, {True: None})})})
+        >>> trie = Trie(["abc", "def"])
+        >>> expected = {'a': {'b': {'c': {True: None}}}, \
+                        'd': {'e': {'f': {True: None}}}}
+        >>> trie == expected
+        True
 
         """
         if len(string):
@@ -632,56 +634,7 @@ class Trie(defaultdict):
             # mark the string is complete
             self[Trie.LEAF] = None
 
-    def __str__(self):
-        return str(self.as_dict())
+    def __missing__(self, key):
+        self[key] = Trie()
+        return self[key]
 
-    def as_dict(self, d=None):
-        """Convert ``defaultdict`` to common ``dict`` representation.
-
-        :param: A defaultdict containing strings mapped to nested defaultdicts.
-            This is the structure of the trie. (Default is None)
-        :type: defaultdict(str -> defaultdict)
-        :return: Even though ``defaultdict`` is a subclass of ``dict`` and thus
-            can be converted to a simple ``dict`` using ``dict()``, in our case
-            it's a nested ``defaultdict``, so here's a quick trick to provide to
-            us the ``dict`` representation of the ``Trie`` without
-            ``defaultdict(<class 'nltk.collections.Trie'>, ...``
-        :rtype: dict(str -> dict(bool -> None))
-            Note: there can be an arbitrarily deeply nested
-            ``dict(str -> dict(str -> dict(..))``, but the last
-            level will have ``dict(str -> dict(bool -> None))``
-
-        :Example:
-
-        >>> from nltk.collections import Trie
-        >>> trie = Trie(["abc", "def"])
-        >>> expected = {'a': {'b': {'c': {True: None}}}, 'd': {'e': {'f': {True: None}}}}
-        >>> trie.as_dict() == expected
-        True
-
-        """
-        def _default_to_regular(d):
-            """
-            Source: http://stackoverflow.com/a/26496899/4760801
-
-            :param d: Nested ``defaultdict`` to convert to regular ``dict``
-            :type d: defaultdict(str -> defaultdict(...))
-            :return: A dict representation of the defaultdict
-            :rtype: dict(str -> dict(str -> ...))
-
-            :Example:
-
-            >>> from collections import defaultdict
-            >>> d = defaultdict(defaultdict)
-            >>> d["one"]["two"] = "three"
-            >>> d
-            defaultdict(<type 'collections.defaultdict'>, {'one': defaultdict(None, {'two': 'three'})})
-            >>> _default_to_regular(d)
-            {'one': {'two': 'three'}}
-
-            """
-            if isinstance(d, defaultdict):
-                d = {k: _default_to_regular(v) for k, v in d.items()}
-            return d
-
-        return _default_to_regular(self)
