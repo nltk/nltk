@@ -60,6 +60,7 @@ except ImportError:
 
 import tempfile
 import os
+import re
 from collections import defaultdict
 
 from six import integer_types
@@ -203,13 +204,27 @@ class MaxentClassifier(ClassifierI):
         print('  PROBS:'.ljust(descr_width)+''.join(
             '%8.3f' % pdist.prob(l) for l in labels))
 
+    def most_informative_features(self, n=10):
+        """
+        Generates the ranked list of informative features from most to least.
+        """
+        if hasattr(self, '_most_informative_features'):
+            return self._most_informative_features[:n]
+        else:
+            self._most_informative_features = sorted(list(range(len(self._weights))),
+                                                key=lambda fid: abs(self._weights[fid]),
+                                                reverse=True)
+            return self._most_informative_features[:n]
+
     def show_most_informative_features(self, n=10, show='all'):
         """
         :param show: all, neg, or pos (for negative-only or positive-only)
+        :type show: str
+        :param n: The no. of top features
+        :type n: int
         """
-        fids = sorted(list(range(len(self._weights))),
-                      key=lambda fid: abs(self._weights[fid]),
-                      reverse=True)
+        # Use None the full list of ranked features.
+        fids = self.most_informative_features(None)
         if show == 'pos':
             fids = [fid for fid in fids if self._weights[fid] > 0]
         elif show == 'neg':
