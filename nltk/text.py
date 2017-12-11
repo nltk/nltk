@@ -191,22 +191,21 @@ class ConcordanceIndex(object):
         # Find the instances of the word to create the ConcordanceLine
         concordance_list = []
         offsets = self.offsets(word)
-        if offsets:
-            for i in offsets:
-                query_word = self._tokens[i]
-                # Find the context of query word.
-                left_context = self._tokens[i-context:i]
-                right_context = self._tokens[i+1:i+context]
-                # Create the pretty lines with the query_word in the middle.
-                left_print= ' '.join(left_context)[-half_width:]
-                right_print = ' '.join(right_context)[:half_width]
-                # The WYSIWYG line of the concordance.
-                line_print = ' '.join([left_print, query_word, right_print])
-                # Create the ConcordanceLine
-                concordance_line = ConcordanceLine(left_context, query_word,
-                                                    right_context, i,
-                                                    left_print, right_print, line_print)
-                concordance_list.append(concordance_line)
+        for i in offsets:
+            query_word = self._tokens[i]
+            # Find the context of query word.
+            left_context = self._tokens[i-context:i]
+            right_context = self._tokens[i+1:i+context]
+            # Create the pretty lines with the query_word in the middle.
+            left_print= ' '.join(left_context)[-half_width:]
+            right_print = ' '.join(right_context)[:half_width]
+            # The WYSIWYG line of the concordance.
+            line_print = ' '.join([left_print, query_word, right_print])
+            # Create the ConcordanceLine
+            concordance_line = ConcordanceLine(left_context, query_word,
+                                                right_context, i,
+                                                left_print, right_print, line_print)
+            concordance_list.append(concordance_line)
 
         if not concordance_list:
             print("no matches")
