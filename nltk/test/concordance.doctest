@@ -14,7 +14,8 @@ concordance, and then placing "monstrous" in parentheses:
 >>> from nltk.text import Text
 >>> corpus = gutenberg.words('melville-moby_dick.txt')
 >>> text = Text(corpus)
->>> text.concordance("monstrous") # doctest:+ELLIPSIS, +NORMALIZE_WHITESPACE
+
+>>> text.concordance("monstrous") # doctest:+NORMALIZE_WHITESPACE
 Displaying 11 of 11 matches:
 ong the former , one was of a most monstrous size . ... This came towards us ,
 ON OF THE PSALMS . " Touching that monstrous bulk of the whale or ork we have r
@@ -27,6 +28,12 @@ ing Scenes . In connexion with the monstrous pictures of whales , I am strongly
 ere to enter upon those still more monstrous stories of them which are to be fo
 ght have been rummaged out of this monstrous cabinet there is no telling . But
 of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u
+
+>>> text.concordance("monstrous") # doctest:+ELLIPSIS, +NORMALIZE_WHITESPACE
+Displaying 11 of 11 matches:
+ong the former , one was of a most monstrous size . ... This came towards us ,
+ON OF THE PSALMS . " Touching that monstrous bulk of the whale or ork we have r
+ll over with a heathenish array of monstrous clubs and spears . Some were thick
 ...
 
 =================================
