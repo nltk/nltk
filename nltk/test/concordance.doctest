@@ -49,7 +49,7 @@ to false:
 >>> corpus = gutenberg.words('melville-moby_dick.txt')
 >>> text = Text(corpus)
 >>> con_list = text.save_concordance("monstrous")
->>> con_list[2]
+>>> con_list[2].line
 'll over with a heathenish array of monstrous clubs and spears . Some were thick'
 >>> len(con_list)
 11
