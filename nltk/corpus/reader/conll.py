@@ -194,7 +194,7 @@ class ConllCorpusReader(CorpusReader):
             block = block.strip()
             if not block: continue
 
-            grid = [line.split() for line in block.split('\n')]
+            grid = [line.split('\t') for line in block.split('\n')]
 
             # If there's a docstart row, then discard. ([xx] eventually it
             # would be good to actually use it)
