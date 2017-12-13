@@ -30,7 +30,9 @@ from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
 from nltk.compat import python_2_unicode_compatible
 
-ConcordanceLine = namedtuple('ConcordanceLine', 'left query right offset left_print right_print line')
+ConcordanceLine = namedtuple('ConcordanceLine',
+                             ['left', 'query', 'right', 'offset',
+                              'left_print', 'right_print', 'line'])
 
 class ContextIndex(object):
     """
@@ -173,9 +175,37 @@ class ConcordanceIndex(object):
         return '<ConcordanceIndex for %d tokens (%d types)>' % (
             len(self._tokens), len(self._offsets))
 
-    def print_concordance(self, word, width=80, lines=25, save=False):
+    def find_concordance(self, word, width=80, lines=25):
         """
-        Print self._concordance
+        Find the concordance lines given the query word.
+        """
+        half_width = (width - len(word) - 2) // 2
+        context = width // 4  # approx number of words of context
+
+        # Find the instances of the word to create the ConcordanceLine
+        concordance_list = []
+        offsets = self.offsets(word)
+        if offsets:
+            for i in offsets:
+                query_word = self._tokens[i]
+                # Find the context of query word.
+                left_context = self._tokens[i-context:i]
+                right_context = self._tokens[i+1:i+context]
+                # Create the pretty lines with the query_word in the middle.
+                left_print= ' '.join(left_context)[-half_width:]
+                right_print = ' '.join(right_context)[:half_width]
+                # The WYSIWYG line of the concordance.
+                line_print = ' '.join([left_print, query_word, right_print])
+                # Create the ConcordanceLine
+                concordance_line = ConcordanceLine(left_context, query_word,
+                                                    right_context, i,
+                                                    left_print, right_print, line_print)
+                concordance_list.append(concordance_line)
+        return concordance_list
+
+    def print_concordance(self, word, width=80, lines=25):
+        """
+        Print concordance lines given the query word.
         :param word: The target word
         :type word: str
         :param lines: The number of lines to display (default=25)
@@ -185,38 +215,15 @@ class ConcordanceIndex(object):
         :param save: The option to save the concordance.
         :type save: bool
         """
-        half_width = (width - len(word) - 2) // 2
-        context = width // 4  # approx number of words of context
-
-        # Find the instances of the word to create the ConcordanceLine
-        concordance_list = []
-        offsets = self.offsets(word)
-        for i in offsets:
-            query_word = self._tokens[i]
-            # Find the context of query word.
-            left_context = self._tokens[i-context:i]
-            right_context = self._tokens[i+1:i+context]
-            # Create the pretty lines with the query_word in the middle.
-            left_print= ' '.join(left_context)[-half_width:]
-            right_print = ' '.join(right_context)[:half_width]
-            # The WYSIWYG line of the concordance.
-            line_print = ' '.join([left_print, query_word, right_print])
-            # Create the ConcordanceLine
-            concordance_line = ConcordanceLine(left_context, query_word,
-                                                right_context, i,
-                                                left_print, right_print, line_print)
-            concordance_list.append(concordance_line)
+        concordance_list = self.find_concordance(word, width=80, lines=25)
 
         if not concordance_list:
             print("no matches")
         else:
-            if save: # Optionally, return the concordance_list
-                return concordance_list[:lines]
-            else: # Prints the concordance to stdout.
-                lines = min(lines, len(concordance_list))
-                print("Displaying {} of {} matches:".format(lines,len(concordance_list)))
-                for i, concordance_line in enumerate(concordance_list[:lines]):
-                    print(concordance_line.line)
+            lines = min(lines, len(concordance_list))
+            print("Displaying {} of {} matches:".format(lines,len(concordance_list)))
+            for i, concordance_line in enumerate(concordance_list[:lines]):
+                print(concordance_line.line)
 
 
 class TokenSearcher(object):
@@ -325,7 +332,10 @@ class Text(object):
     #////////////////////////////////////////////////////////////
 
     def __getitem__(self, i):
-        return self.tokens[i]
+        if isinstance(i, slice):
+            return self.tokens[i.start:i.stop]
+        else:
+            return self.tokens[i]
 
     def __len__(self):
         return len(self.tokens)
@@ -334,8 +344,9 @@ class Text(object):
     # Interactive console methods
     #////////////////////////////////////////////////////////////
 
-    def concordance(self, word, width=79, lines=25, save=False):
-        """Generate a concordance for ``word`` with the specified context window.
+    def concordance(self, word, width=79, lines=25):
+        """
+        Prints a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
 
         :param word: The target word
@@ -343,19 +354,32 @@ class Text(object):
         :param width: The width of each line, in characters (default=80)
         :type width: int
         :param lines: The number of lines to display (default=25)
--       :type lines: int
-        :param print_out: print concordance [True] or return list [False]
-        :type print_out: bool
-
-        :return: concordance
-        :rtype: list
+        :type lines: int
 
         :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
             self._concordance_index = ConcordanceIndex(self.tokens, key=lambda s:s.lower())
 
-        return self._concordance_index.print_concordance(word, width, lines, save)
+        return self._concordance_index.print_concordance(word, width, lines)
+
+    def save_concordance(self,  word, width=79, lines=25):
+        """
+        Generate a concordance for ``word`` with the specified context window.
+        Word matching is not case-sensitive.
+
+        :param word: The target word
+        :type word: str
+        :param width: The width of each line, in characters (default=80)
+        :type width: int
+        :param lines: The number of lines to display (default=25)
+        :type lines: int
+
+        :seealso: ``ConcordanceIndex``
+        """
+        if '_concordance_index' not in self.__dict__:
+            self._concordance_index = ConcordanceIndex(self.tokens, key=lambda s:s.lower())
+        return self._concordance_index.find_concordance(word, width, lines)
 
     def collocations(self, num=20, window_size=2):
         """
