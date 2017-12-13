@@ -6,7 +6,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import codecs
 from collections import defaultdict
 
 def grow_diag_final_and(srclen, trglen, e2f, f2e):
@@ -73,12 +72,12 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
     neighbors = [(-1,0),(0,-1),(1,0),(0,1),(-1,-1),(-1,1),(1,-1),(1,1)]
     alignment = set(e2f).intersection(set(f2e)) # Find the intersection.
     union = set(e2f).union(set(f2e))
-
+    
     # *aligned* is used to check if neighbors are aligned in grow_diag()
     aligned = defaultdict(set)
     for i,j in alignment:
         aligned['e'].add(i)
-        aligned['j'].add(j)
+        aligned['f'].add(j)
     
     def grow_diag():
         """
@@ -87,6 +86,7 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
         """
         prev_len = len(alignment) - 1
         # iterate until no new points added
+        no_new_points = True
         while prev_len < len(alignment):
             # for english word e = 0 ... en
             for e in range(srclen):
@@ -105,6 +105,11 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
                                 alignment.add(neighbor)
                                 aligned['e'].add(e_new); aligned['f'].add(f_new)
                                 prev_len+=1
+                                no_new_points = False
+            # iterate until no new points added
+            if no_new_points:
+                break
+
                                                                     
     def final_and(a):
         """
@@ -119,13 +124,12 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
                 # and (e-new, f-new in union(e2f, f2e) )
                 if (e_new not in aligned
                     and f_new not in aligned
-                    and (e_new, f_new) in a):
-
+                    and (e_new, f_new) in union):
                     alignment.add((e_new, f_new))
                     aligned['e'].add(e_new); aligned['f'].add(f_new)
 
+    
     grow_diag()
     final_and(e2f)
     final_and(f2e)
-    return alignment
-
+    return sorted(alignment)
