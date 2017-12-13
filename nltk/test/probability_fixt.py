@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+
 # probability.doctest uses HMM which requires numpy;
 # skip probability.doctest if numpy is not available
 
