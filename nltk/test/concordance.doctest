@@ -27,6 +27,7 @@ ing Scenes . In connexion with the monstrous pictures of whales , I am strongly
 ere to enter upon those still more monstrous stories of them which are to be fo
 ght have been rummaged out of this monstrous cabinet there is no telling . But
 of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u
+...
 
 =================================
 Concordance List
@@ -40,8 +41,8 @@ to false:
 >>> from nltk.text import Text
 >>> corpus = gutenberg.words('melville-moby_dick.txt')
 >>> text = Text(corpus)
->>> con_list = text.concordance("monstrous", save=True)
->>> con_list[2].line
+>>> con_list = text.save_concordance("monstrous")
+>>> con_list[2]
 'll over with a heathenish array of monstrous clubs and spears . Some were thick'
 >>> len(con_list)
 11
