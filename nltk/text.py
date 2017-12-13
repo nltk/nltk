@@ -201,7 +201,7 @@ class ConcordanceIndex(object):
                                                     right_context, i,
                                                     left_print, right_print, line_print)
                 concordance_list.append(concordance_line)
-        return concordance_list
+        return concordance_list[:lines]
 
     def print_concordance(self, word, width=80, lines=25):
         """
