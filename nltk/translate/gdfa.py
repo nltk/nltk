@@ -86,8 +86,8 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
         """
         prev_len = len(alignment) - 1
         # iterate until no new points added
-        no_new_points = True
         while prev_len < len(alignment):
+            no_new_points = True
             # for english word e = 0 ... en
             for e in range(srclen):
                 # for foreign word f = 0 ... fn
