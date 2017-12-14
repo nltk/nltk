@@ -363,7 +363,7 @@ class Text(object):
 
         return self._concordance_index.print_concordance(word, width, lines)
 
-    def save_concordance(self,  word, width=79, lines=25):
+    def concordance_list(self,  word, width=79, lines=25):
         """
         Generate a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
