@@ -57,7 +57,7 @@ class TestConcordance(unittest.TestCase):
         pass
 
     def test_concordance_list(self):
-        concordance_out = self.text.save_concordance(self.query)
+        concordance_out = self.text.concordance_list(self.query)
         self.assertEqual(self.list_out, [c.line for c in concordance_out])
 
     def test_concordance_width(self):
@@ -66,11 +66,11 @@ class TestConcordance(unittest.TestCase):
                     "Monstrous", "monstrous", "monstrous",
                     "monstrous", "monstrous"]
 
-        concordance_out = self.text.save_concordance(self.query, width=0)
+        concordance_out = self.text.concordance_list(self.query, width=0)
         self.assertEqual(list_out, [c.query for c in concordance_out])
 
     def test_concordance_lines(self):
-        concordance_out = self.text.save_concordance(self.query, lines=3)
+        concordance_out = self.text.concordance_list(self.query, lines=3)
         self.assertEqual(self.list_out[:3], [c.line for c in concordance_out])
 
     def test_concordance_print(self):
