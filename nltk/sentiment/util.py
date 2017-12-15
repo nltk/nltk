@@ -57,13 +57,13 @@ HAPPY = set([
     '=-3', '=3', ':-))', ":'-)", ":')", ':*', ':^*', '>:P', ':-P', ':P', 'X-P',
     'x-p', 'xp', 'XP', ':-p', ':p', '=p', ':-b', ':b', '>:)', '>;)', '>:-)',
     '<3'
-    ])
+])
 
 SAD = set([
     ':L', ':-/', '>:/', ':S', '>:[', ':@', ':-(', ':[', ':-||', '=L', ':<',
     ':-[', ':-<', '=\\', '=/', '>:(', ':(', '>.<', ":'-(", ":'(", ':\\', ':-c',
     ':c', ':{', '>:\\', ';('
-    ])
+])
 
 
 def timer(method):
@@ -80,9 +80,11 @@ def timer(method):
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
-            print('[TIMER] {0}(): {:.3f} seconds'.format(method.__name__, tot_time))
+            print('[TIMER] {0}(): {:.3f} seconds'.format(
+                method.__name__, tot_time))
         else:
-            print('[TIMER] {0}(): {1}h {2}m {3}s'.format(method.__name__, hours, mins, secs))
+            print('[TIMER] {0}(): {1}h {2}m {3}s'.format(
+                method.__name__, hours, mins, secs))
         return result
     return timed
 
@@ -93,6 +95,7 @@ def pairwise(iterable):
     next(b, None)
     return zip(a, b)
 
+
 #////////////////////////////////////////////////////////////
 #{ Feature extractor functions
 #////////////////////////////////////////////////////////////
@@ -101,6 +104,7 @@ Feature extractor functions are declared outside the SentimentAnalyzer class.
 Users should have the possibility to create their own feature extractors
 without modifying SentimentAnalyzer.
 """
+
 
 def extract_unigram_feats(document, unigrams, handle_negation=False):
     """
@@ -126,6 +130,7 @@ def extract_unigram_feats(document, unigrams, handle_negation=False):
         features['contains({0})'.format(word)] = word in set(document)
     return features
 
+
 def extract_bigram_feats(document, bigrams):
     """
     Populate a dictionary of bigram features, reflecting the presence/absence in
@@ -145,12 +150,14 @@ def extract_bigram_feats(document, bigrams):
     """
     features = {}
     for bigr in bigrams:
-        features['contains({0} - {1})'.format(bigr[0], bigr[1])] = bigr in nltk.bigrams(document)
+        features['contains({0} - {1})'.format(bigr[0], bigr[1])
+                 ] = bigr in nltk.bigrams(document)
     return features
 
 #////////////////////////////////////////////////////////////
 #{ Helper Functions
 #////////////////////////////////////////////////////////////
+
 
 def mark_negation(document, double_neg_flip=False, shallow=False):
     """
@@ -192,6 +199,7 @@ def mark_negation(document, double_neg_flip=False, shallow=False):
 
     return document
 
+
 def output_markdown(filename, **kwargs):
     """
     Write the output of an analysis to a file.
@@ -204,7 +212,8 @@ def output_markdown(filename, **kwargs):
                 dictionary = kwargs[k]
                 text += '  - **{0}:**\n'.format(k)
                 for entry in sorted(dictionary):
-                    text += '    - {0}: {1} \n'.format(entry, dictionary[entry])
+                    text += '    - {0}: {1} \n'.format(entry,
+                                                       dictionary[entry])
             elif isinstance(kwargs[k], list):
                 text += '  - **{0}:**\n'.format(k)
                 for entry in kwargs[k]:
@@ -212,6 +221,7 @@ def output_markdown(filename, **kwargs):
             else:
                 text += '  - **{0}:** {1} \n'.format(k, kwargs[k])
         outfile.write(text)
+
 
 def save_file(content, filename):
     """
@@ -221,6 +231,7 @@ def save_file(content, filename):
     with codecs.open(filename, 'wb') as storage_file:
         # The protocol=2 parameter is for python2 compatibility
         pickle.dump(content, storage_file, protocol=2)
+
 
 def split_train_test(all_instances, n=None):
     """
@@ -236,17 +247,18 @@ def split_train_test(all_instances, n=None):
     random.shuffle(all_instances)
     if not n or n > len(all_instances):
         n = len(all_instances)
-    train_set = all_instances[:int(.8*n)]
-    test_set = all_instances[int(.8*n):n]
+    train_set = all_instances[:int(.8 * n)]
+    test_set = all_instances[int(.8 * n):n]
 
     return train_set, test_set
+
 
 def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
     try:
         import matplotlib.pyplot as plt
     except ImportError:
         raise ImportError('The plot function requires matplotlib to be installed.'
-                         'See http://matplotlib.org/')
+                          'See http://matplotlib.org/')
 
     plt.locator_params(axis='y', nbins=3)
     axes = plt.axes()
@@ -266,10 +278,11 @@ def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
 #{ Parsing and conversion functions
 #////////////////////////////////////////////////////////////
 
+
 def json2csv_preprocess(json_file, outfile, fields, encoding='utf8', errors='replace',
-            gzip_compress=False, skip_retweets=True, skip_tongue_tweets=True,
-            skip_ambiguous_tweets=True, strip_off_emoticons=True, remove_duplicates=True,
-            limit=None):
+                        gzip_compress=False, skip_retweets=True, skip_tongue_tweets=True,
+                        skip_ambiguous_tweets=True, strip_off_emoticons=True, remove_duplicates=True,
+                        limit=None):
     """
     Convert json file to csv file, preprocessing each row to obtain a suitable
     dataset for tweets Semantic Analysis.
@@ -294,7 +307,8 @@ def json2csv_preprocess(json_file, outfile, fields, encoding='utf8', errors='rep
         subsets of the original tweets json data.
     """
     with codecs.open(json_file, encoding=encoding) as fp:
-        (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
+        (writer, outf) = outf_writer_compat(
+            outfile, encoding, errors, gzip_compress)
         # write the list of fields as header
         writer.writerow(fields)
 
@@ -322,7 +336,8 @@ def json2csv_preprocess(json_file, outfile, fields, encoding='utf8', errors='rep
                             continue
                 # Strip off emoticons from all tweets
                 if strip_off_emoticons == True:
-                    row[fields.index('text')] = re.sub(r'(?!\n)\s+', ' ', EMOTICON_RE.sub('', text))
+                    row[fields.index('text')] = re.sub(
+                        r'(?!\n)\s+', ' ', EMOTICON_RE.sub('', text))
                 # Remove duplicate tweets
                 if remove_duplicates == True:
                     if row[fields.index('text')] in tweets_cache:
@@ -336,6 +351,7 @@ def json2csv_preprocess(json_file, outfile, fields, encoding='utf8', errors='rep
             if limit and i >= limit:
                 break
         outf.close()
+
 
 def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
                      skip_header=True):
@@ -363,7 +379,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
         with codecs.open(filename, 'rt') as csvfile:
             reader = csv.reader(csvfile)
             if skip_header == True:
-                next(reader, None) # skip the header
+                next(reader, None)  # skip the header
             i = 0
             for tweet_id, text in reader:
                 # text = text[1]
@@ -372,7 +388,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
                 # Apply sentence and word tokenizer to text
                 if word_tokenizer:
                     tweet = [w for sent in sent_tokenizer.tokenize(text)
-                                       for w in word_tokenizer.tokenize(sent)]
+                             for w in word_tokenizer.tokenize(sent)]
                 else:
                     tweet = text
                 tweets.append((tweet, label))
@@ -381,7 +397,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
         with codecs.open(filename) as csvfile:
             reader = csv.reader(csvfile)
             if skip_header == True:
-                next(reader, None) # skip the header
+                next(reader, None)  # skip the header
             i = 0
             for row in reader:
                 unicode_row = [x.decode('utf8') for x in row]
@@ -391,7 +407,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
                 # Apply sentence and word tokenizer to text
                 if word_tokenizer:
                     tweet = [w.encode('utf8') for sent in sent_tokenizer.tokenize(text)
-                                       for w in word_tokenizer.tokenize(sent)]
+                             for w in word_tokenizer.tokenize(sent)]
                 else:
                     tweet = text
                 tweets.append((tweet, label))
@@ -401,6 +417,7 @@ def parse_tweets_set(filename, label, word_tokenizer=None, sent_tokenizer=None,
 #////////////////////////////////////////////////////////////
 #{ Demos
 #////////////////////////////////////////////////////////////
+
 
 def demo_tweets(trainer, n_instances=None, output=None):
     """
@@ -426,7 +443,7 @@ def demo_tweets(trainer, n_instances=None, output=None):
     # tokenizer = TweetTokenizer(reduce_len=True, strip_handles=True)
 
     if n_instances is not None:
-        n_instances = int(n_instances/2)
+        n_instances = int(n_instances / 2)
 
     fields = ['id', 'text']
     positive_json = twitter_samples.abspath("positive_tweets.json")
@@ -437,16 +454,18 @@ def demo_tweets(trainer, n_instances=None, output=None):
     negative_csv = 'negative_tweets.csv'
     json2csv_preprocess(negative_json, negative_csv, fields, limit=n_instances)
 
-    neg_docs = parse_tweets_set(negative_csv, label='neg', word_tokenizer=tokenizer)
-    pos_docs = parse_tweets_set(positive_csv, label='pos', word_tokenizer=tokenizer)
+    neg_docs = parse_tweets_set(
+        negative_csv, label='neg', word_tokenizer=tokenizer)
+    pos_docs = parse_tweets_set(
+        positive_csv, label='pos', word_tokenizer=tokenizer)
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
     train_pos_docs, test_pos_docs = split_train_test(pos_docs)
     train_neg_docs, test_neg_docs = split_train_test(neg_docs)
 
-    training_tweets = train_pos_docs+train_neg_docs
-    testing_tweets = test_pos_docs+test_neg_docs
+    training_tweets = train_pos_docs + train_neg_docs
+    testing_tweets = test_pos_docs + test_neg_docs
 
     sentim_analyzer = SentimentAnalyzer()
     # stopwords = stopwords.words('english')
@@ -455,12 +474,14 @@ def demo_tweets(trainer, n_instances=None, output=None):
 
     # Add simple unigram word features
     unigram_feats = sentim_analyzer.unigram_word_feats(all_words, top_n=1000)
-    sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+    sentim_analyzer.add_feat_extractor(
+        extract_unigram_feats, unigrams=unigram_feats)
 
     # Add bigram collocation features
     bigram_collocs_feats = sentim_analyzer.bigram_collocation_feats([tweet[0] for tweet in training_tweets],
-        top_n=100, min_freq=12)
-    sentim_analyzer.add_feat_extractor(extract_bigram_feats, bigrams=bigram_collocs_feats)
+                                                                    top_n=100, min_freq=12)
+    sentim_analyzer.add_feat_extractor(
+        extract_bigram_feats, bigrams=bigram_collocs_feats)
 
     training_set = sentim_analyzer.apply_features(training_tweets)
     test_set = sentim_analyzer.apply_features(testing_tweets)
@@ -478,6 +499,7 @@ def demo_tweets(trainer, n_instances=None, output=None):
         output_markdown(output, Dataset='labeled_tweets', Classifier=type(classifier).__name__,
                         Tokenizer=tokenizer.__class__.__name__, Feats=extr,
                         Results=results, Instances=n_instances)
+
 
 def demo_movie_reviews(trainer, n_instances=None, output=None):
     """
@@ -497,24 +519,27 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
     from nltk.sentiment import SentimentAnalyzer
 
     if n_instances is not None:
-        n_instances = int(n_instances/2)
+        n_instances = int(n_instances / 2)
 
-    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos') for pos_id in movie_reviews.fileids('pos')[:n_instances]]
-    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg') for neg_id in movie_reviews.fileids('neg')[:n_instances]]
+    pos_docs = [(list(movie_reviews.words(pos_id)), 'pos')
+                for pos_id in movie_reviews.fileids('pos')[:n_instances]]
+    neg_docs = [(list(movie_reviews.words(neg_id)), 'neg')
+                for neg_id in movie_reviews.fileids('neg')[:n_instances]]
     # We separately split positive and negative instances to keep a balanced
     # uniform class distribution in both train and test sets.
     train_pos_docs, test_pos_docs = split_train_test(pos_docs)
     train_neg_docs, test_neg_docs = split_train_test(neg_docs)
 
-    training_docs = train_pos_docs+train_neg_docs
-    testing_docs = test_pos_docs+test_neg_docs
+    training_docs = train_pos_docs + train_neg_docs
+    testing_docs = test_pos_docs + test_neg_docs
 
     sentim_analyzer = SentimentAnalyzer()
     all_words = sentim_analyzer.all_words(training_docs)
 
     # Add simple unigram word features
     unigram_feats = sentim_analyzer.unigram_word_feats(all_words, min_freq=4)
-    sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+    sentim_analyzer.add_feat_extractor(
+        extract_unigram_feats, unigrams=unigram_feats)
     # Apply features to obtain a feature-value representation of our datasets
     training_set = sentim_analyzer.apply_features(training_docs)
     test_set = sentim_analyzer.apply_features(testing_docs)
@@ -531,6 +556,7 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
         output_markdown(output, Dataset='Movie_reviews', Classifier=type(classifier).__name__,
                         Tokenizer='WordPunctTokenizer', Feats=extr, Results=results,
                         Instances=n_instances)
+
 
 def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=None):
     """
@@ -550,25 +576,30 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
     from nltk.corpus import subjectivity
 
     if n_instances is not None:
-        n_instances = int(n_instances/2)
+        n_instances = int(n_instances / 2)
 
-    subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
-    obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
+    subj_docs = [(sent, 'subj')
+                 for sent in subjectivity.sents(categories='subj')[:n_instances]]
+    obj_docs = [(sent, 'obj')
+                for sent in subjectivity.sents(categories='obj')[:n_instances]]
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
     train_subj_docs, test_subj_docs = split_train_test(subj_docs)
     train_obj_docs, test_obj_docs = split_train_test(obj_docs)
 
-    training_docs = train_subj_docs+train_obj_docs
-    testing_docs = test_subj_docs+test_obj_docs
+    training_docs = train_subj_docs + train_obj_docs
+    testing_docs = test_subj_docs + test_obj_docs
 
     sentim_analyzer = SentimentAnalyzer()
-    all_words_neg = sentim_analyzer.all_words([mark_negation(doc) for doc in training_docs])
+    all_words_neg = sentim_analyzer.all_words(
+        [mark_negation(doc) for doc in training_docs])
 
     # Add simple unigram word features handling negation
-    unigram_feats = sentim_analyzer.unigram_word_feats(all_words_neg, min_freq=4)
-    sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+    unigram_feats = sentim_analyzer.unigram_word_feats(
+        all_words_neg, min_freq=4)
+    sentim_analyzer.add_feat_extractor(
+        extract_unigram_feats, unigrams=unigram_feats)
 
     # Apply features to obtain a feature-value representation of our datasets
     training_set = sentim_analyzer.apply_features(training_docs)
@@ -592,6 +623,7 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
 
     return sentim_analyzer
 
+
 def demo_sent_subjectivity(text):
     """
     Classify a single sentence as subjective or objective using a stored
@@ -613,6 +645,7 @@ def demo_sent_subjectivity(text):
     tokenized_text = [word.lower() for word in word_tokenizer.tokenize(text)]
     print(sentim_analyzer.classify(tokenized_text))
 
+
 def demo_liu_hu_lexicon(sentence, plot=False):
     """
     Basic example of sentiment classification using Liu and Hu opinion lexicon.
@@ -631,18 +664,18 @@ def demo_liu_hu_lexicon(sentence, plot=False):
     neg_words = 0
     tokenized_sent = [word.lower() for word in tokenizer.tokenize(sentence)]
 
-    x = list(range(len(tokenized_sent))) # x axis for the plot
+    x = list(range(len(tokenized_sent)))  # x axis for the plot
     y = []
 
     for word in tokenized_sent:
         if word in opinion_lexicon.positive():
             pos_words += 1
-            y.append(1) # positive
+            y.append(1)  # positive
         elif word in opinion_lexicon.negative():
             neg_words += 1
-            y.append(-1) # negative
+            y.append(-1)  # negative
         else:
-            y.append(0) # neutral
+            y.append(0)  # neutral
 
     if pos_words > neg_words:
         print('Positive')
@@ -652,7 +685,9 @@ def demo_liu_hu_lexicon(sentence, plot=False):
         print('Neutral')
 
     if plot == True:
-        _show_plot(x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive'])
+        _show_plot(x, y, x_labels=tokenized_sent, y_labels=[
+                   'Negative', 'Neutral', 'Positive'])
+
 
 def demo_vader_instance(text):
     """
@@ -663,6 +698,7 @@ def demo_vader_instance(text):
     from nltk.sentiment import SentimentIntensityAnalyzer
     vader_analyzer = SentimentIntensityAnalyzer()
     print(vader_analyzer.polarity_scores(text))
+
 
 def demo_vader_tweets(n_instances=None, output=None):
     """
@@ -675,10 +711,10 @@ def demo_vader_tweets(n_instances=None, output=None):
     from nltk.corpus import twitter_samples
     from nltk.sentiment import SentimentIntensityAnalyzer
     from nltk.metrics import (accuracy as eval_accuracy, precision as eval_precision,
-        recall as eval_recall, f_measure as eval_f_measure)
+                              recall as eval_recall, f_measure as eval_f_measure)
 
     if n_instances is not None:
-        n_instances = int(n_instances/2)
+        n_instances = int(n_instances / 2)
 
     fields = ['id', 'text']
     positive_json = twitter_samples.abspath("positive_tweets.json")
@@ -699,8 +735,8 @@ def demo_vader_tweets(n_instances=None, output=None):
     train_pos_docs, test_pos_docs = split_train_test(pos_docs)
     train_neg_docs, test_neg_docs = split_train_test(neg_docs)
 
-    training_tweets = train_pos_docs+train_neg_docs
-    testing_tweets = test_pos_docs+test_neg_docs
+    training_tweets = train_pos_docs + train_neg_docs
+    testing_tweets = test_pos_docs + test_neg_docs
 
     vader_analyzer = SentimentIntensityAnalyzer()
 
@@ -725,24 +761,25 @@ def demo_vader_tweets(n_instances=None, output=None):
     metrics_results = {}
     for label in labels:
         accuracy_score = eval_accuracy(acc_gold_results,
-            acc_test_results)
+                                       acc_test_results)
         metrics_results['Accuracy'] = accuracy_score
         precision_score = eval_precision(gold_results[label],
-            test_results[label])
+                                         test_results[label])
         metrics_results['Precision [{0}]'.format(label)] = precision_score
         recall_score = eval_recall(gold_results[label],
-            test_results[label])
+                                   test_results[label])
         metrics_results['Recall [{0}]'.format(label)] = recall_score
         f_measure_score = eval_f_measure(gold_results[label],
-            test_results[label])
+                                         test_results[label])
         metrics_results['F-measure [{0}]'.format(label)] = f_measure_score
 
     for result in sorted(metrics_results):
-            print('{0}: {1}'.format(result, metrics_results[result]))
+        print('{0}: {1}'.format(result, metrics_results[result]))
 
     if output:
         output_markdown(output, Approach='Vader', Dataset='labeled_tweets',
-            Instances=n_instances, Results=metrics_results)
+                        Instances=n_instances, Results=metrics_results)
+
 
 if __name__ == '__main__':
     from nltk.classify import NaiveBayesClassifier, MaxentClassifier

@@ -76,7 +76,8 @@ class TreebankWordTokenizer(TokenizerI):
         (re.compile(r'([:,])$'), r' \1 '),
         (re.compile(r'\.\.\.'), r' ... '),
         (re.compile(r'[;@#$%&]'), r' \g<0> '),
-        (re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'), r'\1 \2\3 '),  # Handles the final period.
+        # Handles the final period.
+        (re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'), r'\1 \2\3 '),
         (re.compile(r'[?!]'), r' \g<0> '),
 
         (re.compile(r"([^'])' "), r"\1 ' "),
@@ -190,7 +191,8 @@ class TreebankWordTokenizer(TokenizerI):
             matched = [m.group() for m in re.finditer(r"``|'{2}|\"", text)]
 
             # Replace converted quotes back to double quotes
-            tokens = [matched.pop(0) if tok in ['"', "``", "''"] else tok for tok in raw_tokens]
+            tokens = [matched.pop(0) if tok in ['"', "``", "''"]
+                      else tok for tok in raw_tokens]
         else:
             tokens = raw_tokens
 
@@ -300,7 +302,8 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r'\s([&])\s'), r' \g<1> '),  # Unknown pad.
         (re.compile(r'\s\.\.\.\s'), r'...'),
         (re.compile(r'\s([:,])\s$'), r'\1'),
-        (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')  # Keep right pad after comma/colon before non-digits.
+        # Keep right pad after comma/colon before non-digits.
+        (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')
         # (re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
     ]
 

@@ -91,7 +91,8 @@ class CoreNLPServer(object):
                 verbose=verbose,
                 is_regex=True,
             ),
-            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name)
+            key=lambda model_name: re.match(
+                self._MODEL_JAR_PATTERN, model_name)
         )
 
         self.verbose = verbose
@@ -139,7 +140,8 @@ class CoreNLPServer(object):
 
         for i in range(30):
             try:
-                response = requests.get(requests.compat.urljoin(self.url, 'live'))
+                response = requests.get(
+                    requests.compat.urljoin(self.url, 'live'))
             except requests.exceptions.ConnectionError:
                 time.sleep(1)
             else:
@@ -152,7 +154,8 @@ class CoreNLPServer(object):
 
         for i in range(60):
             try:
-                response = requests.get(requests.compat.urljoin(self.url, 'ready'))
+                response = requests.get(
+                    requests.compat.urljoin(self.url, 'ready'))
             except requests.exceptions.ConnectionError:
                 time.sleep(1)
             else:
@@ -188,7 +191,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
         if tagtype not in ['pos', 'ner', None]:
             raise ValueError("tagtype must be either 'pos', 'ner' or None")
-            
+
         self.tagtype = tagtype
 
         self.session = requests.Session()
@@ -293,11 +296,11 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
                 tree = self.make_tree(parse)
                 yield iter([tree])
         """
-        parsed_data = self.api_call('\n'.join(sentences), properties=default_properties)
+        parsed_data = self.api_call(
+            '\n'.join(sentences), properties=default_properties)
         for parsed_sent in parsed_data['sentences']:
             tree = self.make_tree(parsed_sent)
             yield iter([tree])
-
 
     def parse_text(self, text, *args, **kwargs):
         """Parse a piece of text.
@@ -351,7 +354,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
         Takes multiple sentences as a list where each sentence is a list of
         tokens.
-        
+
         :param sentences: Input sentences to tag
         :type sentences: list(list(str))
         :rtype: list(list(tuple(str, str))
@@ -386,21 +389,23 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         Tag multiple sentences.
 
         Takes multiple sentences as a list where each sentence is a string.
-        
+
         :param sentences: Input sentences to tag
         :type sentences: list(str)
         :rtype: list(list(list(tuple(str, str)))
         """
         default_properties = {'ssplit.isOneSentence': 'true',
-                              'annotators': 'tokenize,ssplit,' }
-                              
+                              'annotators': 'tokenize,ssplit,'}
+
         # Supports only 'pos' or 'ner' tags.
         assert self.tagtype in ['pos', 'ner']
         default_properties['annotators'] += self.tagtype
         for sentence in sentences:
-            tagged_data = self.api_call(sentence, properties=default_properties)
+            tagged_data = self.api_call(
+                sentence, properties=default_properties)
             yield [[(token['word'], token[self.tagtype]) for token in tagged_sentence['tokens']]
-                    for tagged_sentence in tagged_data['sentences']]
+                   for tagged_sentence in tagged_data['sentences']]
+
 
 class CoreNLPParser(GenericCoreNLPParser):
     """
@@ -728,7 +733,8 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
                 ' '.join(n_items[1:])  # NLTK expects an iterable of strings...
                 for n_items in sorted(transform(result))
             ),
-            cell_separator=' ',  # To make sure that a non-breaking space is kept inside of a token.
+            # To make sure that a non-breaking space is kept inside of a token.
+            cell_separator=' ',
         )
 
 

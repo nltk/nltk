@@ -36,7 +36,8 @@ class TestIBMModel5(unittest.TestCase):
         self.assertEqual(model5.head_vacancy_table[4][4][0], expected_prob)
         self.assertEqual(model5.head_vacancy_table[-3][1][2], expected_prob)
         self.assertEqual(model5.non_head_vacancy_table[4][4][0], expected_prob)
-        self.assertEqual(model5.non_head_vacancy_table[-3][1][2], expected_prob)
+        self.assertEqual(
+            model5.non_head_vacancy_table[-3][1][2], expected_prob)
 
     def test_set_uniform_vacancy_probabilities_of_non_domain_values(self):
         # arrange
@@ -124,7 +125,7 @@ class TestIBMModel5(unittest.TestCase):
 
         # assert
         null_generation = 5 * pow(0.167, 1) * pow(0.833, 4)
-        fertility = 1*0.99 * 1*0.99 * 1*0.99 * 1*0.99 * 2*0.999
+        fertility = 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 2 * 0.999
         lexical_translation = 0.98 * 0.98 * 0.98 * 0.98 * 0.98 * 0.98
         vacancy = 0.97 * 0.97 * 1 * 0.97 * 0.97 * 0.96
         expected_probability = (null_generation * fertility *

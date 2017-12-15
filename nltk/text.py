@@ -41,11 +41,11 @@ class ContextIndex(object):
     @staticmethod
     def _default_context(tokens, i):
         """One left token and one right token, normalized to lowercase"""
-        left = (tokens[i-1].lower() if i != 0 else '*START*')
-        right = (tokens[i+1].lower() if i != len(tokens) - 1 else '*END*')
+        left = (tokens[i - 1].lower() if i != 0 else '*START*')
+        right = (tokens[i + 1].lower() if i != len(tokens) - 1 else '*END*')
         return (left, right)
 
-    def __init__(self, tokens, context_func=None, filter=None, key=lambda x:x):
+    def __init__(self, tokens, context_func=None, filter=None, key=lambda x: x):
         self._key = key
         self._tokens = tokens
         if context_func:
@@ -87,7 +87,8 @@ class ContextIndex(object):
         for c in self._word_to_contexts[self._key(word)]:
             for w in self._context_to_words[c]:
                 if w != word:
-                    scores[w] += self._context_to_words[c][word] * self._context_to_words[c][w]
+                    scores[w] += self._context_to_words[c][word] * \
+                        self._context_to_words[c][w]
         return sorted(scores, key=scores.get, reverse=True)[:n]
 
     def common_contexts(self, words, fail_on_unknown=False):
@@ -117,13 +118,15 @@ class ContextIndex(object):
                           if c in common)
             return fd
 
+
 @python_2_unicode_compatible
 class ConcordanceIndex(object):
     """
     An index that can be used to look up the offset locations at which
     a given word occurs in a document.
     """
-    def __init__(self, tokens, key=lambda x:x):
+
+    def __init__(self, tokens, key=lambda x: x):
         """
         Construct a new concordance index.
 
@@ -185,7 +188,7 @@ class ConcordanceIndex(object):
         :type lines: int
         """
         half_width = (width - len(word) - 2) // 2
-        context = width // 4 # approx number of words of context
+        context = width // 4  # approx number of words of context
 
         offsets = self.offsets(word)
         if offsets:
@@ -195,14 +198,15 @@ class ConcordanceIndex(object):
                 if lines <= 0:
                     break
                 left = (' ' * half_width +
-                        ' '.join(self._tokens[i-context:i]))
-                right = ' '.join(self._tokens[i+1:i+context])
+                        ' '.join(self._tokens[i - context:i]))
+                right = ' '.join(self._tokens[i + 1:i + context])
                 left = left[-half_width:]
                 right = right[:half_width]
                 print(left, self._tokens[i], right)
                 lines -= 1
         else:
             print("No matches")
+
 
 class TokenSearcher(object):
     """
@@ -214,8 +218,9 @@ class TokenSearcher(object):
     brackets as non-capturing parentheses, in addition to matching the
     token boundaries; and to have ``'.'`` not match the angle brackets.
     """
+
     def __init__(self, tokens):
-        self._raw = ''.join('<'+w+'>' for w in tokens)
+        self._raw = ''.join('<' + w + '>' for w in tokens)
 
     def findall(self, regexp):
         """
@@ -328,7 +333,7 @@ class Text(object):
         if '_concordance_index' not in self.__dict__:
             #print("Building index...")
             self._concordance_index = ConcordanceIndex(self.tokens,
-                                                       key=lambda s:s.lower())
+                                                       key=lambda s: s.lower())
 
         self._concordance_index.print_concordance(word, width, lines)
 
@@ -349,12 +354,15 @@ class Text(object):
             #print("Building collocations list")
             from nltk.corpus import stopwords
             ignored_words = stopwords.words('english')
-            finder = BigramCollocationFinder.from_words(self.tokens, window_size)
+            finder = BigramCollocationFinder.from_words(
+                self.tokens, window_size)
             finder.apply_freq_filter(2)
-            finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
+            finder.apply_word_filter(lambda w: len(
+                w) < 3 or w.lower() in ignored_words)
             bigram_measures = BigramAssocMeasures()
-            self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)
-        colloc_strings = [w1+' '+w2 for w1, w2 in self._collocations]
+            self._collocations = finder.nbest(
+                bigram_measures.likelihood_ratio, num)
+        colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations]
         print(tokenwrap(colloc_strings, separator="; "))
 
     def count(self, word):
@@ -387,8 +395,8 @@ class Text(object):
         if '_word_context_index' not in self.__dict__:
             #print('Building word-context index...')
             self._word_context_index = ContextIndex(self.tokens,
-                                                    filter=lambda x:x.isalpha(),
-                                                    key=lambda s:s.lower())
+                                                    filter=lambda x: x.isalpha(),
+                                                    key=lambda s: s.lower())
 
 #        words = self._word_context_index.similar_words(word, num)
 
@@ -397,12 +405,11 @@ class Text(object):
         if word in wci.conditions():
             contexts = set(wci[word])
             fd = Counter(w for w in wci.conditions() for c in wci[w]
-                          if c in contexts and not w == word)
+                         if c in contexts and not w == word)
             words = [w for w, _ in fd.most_common(num)]
             print(tokenwrap(words))
         else:
             print("No matches")
-
 
     def common_contexts(self, words, num=20):
         """
@@ -418,7 +425,7 @@ class Text(object):
         if '_word_context_index' not in self.__dict__:
             #print('Building word-context index...')
             self._word_context_index = ContextIndex(self.tokens,
-                                                    key=lambda s:s.lower())
+                                                    key=lambda s: s.lower())
 
         try:
             fd = self._word_context_index.common_contexts(words, True)
@@ -426,7 +433,7 @@ class Text(object):
                 print("No common contexts were found")
             else:
                 ranked_contexts = [w for w, _ in fd.most_common(num)]
-                print(tokenwrap(w1+"_"+w2 for w1,w2 in ranked_contexts))
+                print(tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts))
 
         except ValueError as e:
             print(e)
@@ -448,7 +455,8 @@ class Text(object):
         Issues a reminder to users following the book online
         """
         import warnings
-        warnings.warn('The generate() method is no longer available.', DeprecationWarning)
+        warnings.warn(
+            'The generate() method is no longer available.', DeprecationWarning)
 
     def plot(self, *args):
         """
@@ -502,6 +510,7 @@ class Text(object):
     #////////////////////////////////////////////////////////////
 
     _CONTEXT_RE = re.compile('\w+|[\.\!\?]')
+
     def _context(self, tokens, i):
         """
         One left & one right token, both case-normalized.  Skip over
@@ -509,14 +518,14 @@ class Text(object):
         that is created for ``similar()`` and ``common_contexts()``.
         """
         # Left context
-        j = i-1
-        while j>=0 and not self._CONTEXT_RE.match(tokens[j]):
+        j = i - 1
+        while j >= 0 and not self._CONTEXT_RE.match(tokens[j]):
             j -= 1
         left = (tokens[j] if j != 0 else '*START*')
 
         # Right context
-        j = i+1
-        while j<len(tokens) and not self._CONTEXT_RE.match(tokens[j]):
+        j = i + 1
+        while j < len(tokens) and not self._CONTEXT_RE.match(tokens[j]):
             j += 1
         right = (tokens[j] if j != len(tokens) else '*END*')
 
@@ -550,8 +559,9 @@ class TextCollection(Text):
     Iterating over a TextCollection produces all the tokens of all the
     texts in order.
     """
+
     def __init__(self, source):
-        if hasattr(source, 'words'): # bridge to the text corpus reader
+        if hasattr(source, 'words'):  # bridge to the text corpus reader
             source = [source.words(f) for f in source.fileids()]
 
         self._texts = source
@@ -579,6 +589,7 @@ class TextCollection(Text):
     def tf_idf(self, term, text):
         return self.tf(term, text) * self.idf(term)
 
+
 def demo():
     from nltk.corpus import brown
     text = Text(brown.words(categories='news'))
@@ -594,8 +605,8 @@ def demo():
     text.collocations()
     print()
     #print("Automatically generated text:")
-    #text.generate()
-    #print()
+    # text.generate()
+    # print()
     print("Dispersion plot:")
     text.dispersion_plot(['news', 'report', 'said', 'announced'])
     print()
@@ -606,6 +617,7 @@ def demo():
     print("text[3]:", text[3])
     print("text[3:5]:", text[3:5])
     print("text.vocab()['news']:", text.vocab()['news'])
+
 
 if __name__ == '__main__':
     demo()

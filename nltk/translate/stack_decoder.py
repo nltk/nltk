@@ -76,6 +76,7 @@ class StackDecoder(object):
     ['nobody', 'expects', 'the', 'spanish', 'inquisition', '!']
 
     """
+
     def __init__(self, phrase_table, language_model):
         """
         :param phrase_table: Table of translations for source language
@@ -163,7 +164,8 @@ class StackDecoder(object):
                 possible_expansions = StackDecoder.valid_phrases(all_phrases,
                                                                  hypothesis)
                 for src_phrase_span in possible_expansions:
-                    src_phrase = sentence[src_phrase_span[0]:src_phrase_span[1]]
+                    src_phrase = sentence[src_phrase_span[0]
+                        :src_phrase_span[1]]
                     for translation_option in (self.phrase_table.
                                                translations_for(src_phrase)):
                         raw_score = self.expansion_score(
@@ -341,6 +343,7 @@ class _Hypothesis(object):
     ``src_phrase_span`` in the hypothesis chain. Similarly, the
     translation output can be found by traversing up the chain.
     """
+
     def __init__(self, raw_score=0.0, src_phrase_span=(), trg_phrase=(),
                  previous=None, future_score=0.0):
         """
@@ -439,6 +442,7 @@ class _Stack(object):
     """
     Collection of _Hypothesis objects
     """
+
     def __init__(self, max_size=100, beam_threshold=0.0):
         """
         :param beam_threshold: Hypotheses that score less than this
@@ -496,4 +500,4 @@ class _Stack(object):
 
     def __bool__(self):
         return len(self.items) != 0
-    __nonzero__=__bool__
+    __nonzero__ = __bool__

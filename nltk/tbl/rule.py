@@ -166,7 +166,7 @@ class Rule(TagRule):
             for pos in feature.positions:
                 if not (0 <= index + pos < len(tokens)):
                     continue
-                if feature.extract_property(tokens, index+pos) == val:
+                if feature.extract_property(tokens, index + pos) == val:
                     break
             else:
                 # No token satisfied the condition; return false.
@@ -210,7 +210,8 @@ class Rule(TagRule):
 
                     # list(self._conditions) would be simpler but will not generate
                     # the same Rule.__repr__ in python 2 and 3 and thus break some tests
-                    ', '.join("({0},{1})".format(f, unicode_repr(v)) for (f, v) in self._conditions)
+                    ', '.join("({0},{1})".format(f, unicode_repr(v))
+                              for (f, v) in self._conditions)
                 )
             )
 
@@ -228,7 +229,8 @@ class Rule(TagRule):
                 ",".join(str(w) for w in feature.positions)
             )
 
-        conditions = ' & '.join([_condition_to_logic(f, v) for (f, v) in self._conditions])
+        conditions = ' & '.join([_condition_to_logic(f, v)
+                                 for (f, v) in self._conditions])
         s = '{0}->{1} if {2}'.format(
             self.original_tag,
             self.replacement_tag,

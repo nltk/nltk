@@ -8,10 +8,10 @@ Included in NLTK for its support of a nice memoization decorator.
 from __future__ import print_function
 __docformat__ = 'restructuredtext en'
 
-## The basic trick is to generate the source code for the decorated function
-## with the right signature and to evaluate it.
-## Uncomment the statement 'print >> sys.stderr, func_src'  in _decorator
-## to understand what is going on.
+# The basic trick is to generate the source code for the decorated function
+# with the right signature and to evaluate it.
+# Uncomment the statement 'print >> sys.stderr, func_src'  in _decorator
+# to understand what is going on.
 
 __all__ = ["decorator", "new_wrapper", "getinfo"]
 
@@ -28,6 +28,7 @@ try:
     set
 except NameError:
     from sets import Set as set
+
 
 def getinfo(func):
     """
@@ -78,11 +79,13 @@ def getinfo(func):
         _globals = func.func_globals
 
     return dict(name=func.__name__, argnames=argnames, signature=signature,
-                defaults = func.__defaults__, doc=func.__doc__,
+                defaults=func.__defaults__, doc=func.__doc__,
                 module=func.__module__, dict=func.__dict__,
                 globals=_globals, closure=_closure)
 
 # akin to functools.update_wrapper
+
+
 def update_wrapper(wrapper, model, infodict=None):
     infodict = infodict or getinfo(model)
     wrapper.__name__ = infodict['name']
@@ -92,6 +95,7 @@ def update_wrapper(wrapper, model, infodict=None):
     wrapper.__defaults__ = infodict['defaults']
     wrapper.undecorated = model
     return wrapper
+
 
 def new_wrapper(wrapper, model):
     """
@@ -103,7 +107,7 @@ def new_wrapper(wrapper, model):
     """
     if isinstance(model, dict):
         infodict = model
-    else: # assume model is a function
+    else:  # assume model is a function
         infodict = getinfo(model)
     assert not '_wrapper_' in infodict["argnames"], (
         '"_wrapper_" is a reserved argument name!')
@@ -112,8 +116,11 @@ def new_wrapper(wrapper, model):
     return update_wrapper(funcopy, model, infodict)
 
 # helper used in decorator_factory
+
+
 def __call__(self, func):
-    return new_wrapper(lambda *a, **k : self.call(func, *a, **k), func)
+    return new_wrapper(lambda *a, **k: self.call(func, *a, **k), func)
+
 
 def decorator_factory(cls):
     """
@@ -131,6 +138,7 @@ def decorator_factory(cls):
                         '.call method')
     cls.__call__ = __call__
     return cls
+
 
 def decorator(caller):
     """
@@ -164,7 +172,8 @@ def decorator(caller):
     """
     if inspect.isclass(caller):
         return decorator_factory(caller)
-    def _decorator(func): # the real meat is here
+
+    def _decorator(func):  # the real meat is here
         infodict = getinfo(func)
         argnames = infodict['argnames']
         assert not ('_call_' in argnames or '_func_' in argnames), (
@@ -175,6 +184,7 @@ def decorator(caller):
         return update_wrapper(dec_func, func, infodict)
     return update_wrapper(_decorator, caller)
 
+
 def getattr_(obj, name, default_thunk):
     "Similar to .setdefault in dictionaries."
     try:
@@ -183,6 +193,7 @@ def getattr_(obj, name, default_thunk):
         default = default_thunk()
         setattr(obj, name, default)
         return default
+
 
 @decorator
 def memoize(func, *args):
@@ -198,22 +209,22 @@ def memoize(func, *args):
 
 ##########################     LEGALESE    ###############################
 
-##   Redistributions of source code must retain the above copyright
-##   notice, this list of conditions and the following disclaimer.
-##   Redistributions in bytecode form must reproduce the above copyright
-##   notice, this list of conditions and the following disclaimer in
-##   the documentation and/or other materials provided with the
-##   distribution.
+# Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# Redistributions in bytecode form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in
+# the documentation and/or other materials provided with the
+# distribution.
 
-##   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-##   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-##   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-##   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-##   HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-##   INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-##   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
-##   OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-##   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-##   TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-##   USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-##   DAMAGE.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+# OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+# USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+# DAMAGE.

@@ -112,7 +112,7 @@ def jaccard_distance(label1, label2):
     """Distance metric comparing set-similarity.
 
     """
-    return (len(label1.union(label2)) - len(label1.intersection(label2)))/len(label1.union(label2))
+    return (len(label1.union(label2)) - len(label1.intersection(label2))) / len(label1.union(label2))
 
 
 def masi_distance(label1, label2):
@@ -143,7 +143,7 @@ def masi_distance(label1, label2):
     return 1 - len_intersection / len_union * m
 
 
-def interval_distance(label1,label2):
+def interval_distance(label1, label2):
     """Krippendorff's interval distance metric
 
     >>> from nltk.metrics import interval_distance
@@ -182,8 +182,8 @@ def custom_distance(file):
             labelA, labelB, dist = l.strip().split("\t")
             labelA = frozenset([labelA])
             labelB = frozenset([labelB])
-            data[frozenset([labelA,labelB])] = float(dist)
-    return lambda x,y:data[frozenset([x,y])]
+            data[frozenset([labelA, labelB])] = float(dist)
+    return lambda x, y: data[frozenset([x, y])]
 
 
 def demo():
@@ -191,9 +191,11 @@ def demo():
         ("rain", "shine"), ("abcdef", "acbdef"), ("language", "lnaguaeg"),
         ("language", "lnaugage"), ("language", "lngauage")]
     for s1, s2 in edit_distance_examples:
-        print("Edit distance between '%s' and '%s':" % (s1, s2), edit_distance(s1, s2))
+        print("Edit distance between '%s' and '%s':" %
+              (s1, s2), edit_distance(s1, s2))
     for s1, s2 in edit_distance_examples:
-        print("Edit distance with transpositions between '%s' and '%s':" % (s1, s2), edit_distance(s1, s2, transpositions=True))
+        print("Edit distance with transpositions between '%s' and '%s':" %
+              (s1, s2), edit_distance(s1, s2, transpositions=True))
 
     s1 = set([1, 2, 3, 4])
     s2 = set([3, 4, 5])
@@ -202,6 +204,7 @@ def demo():
     print("Binary distance:", binary_distance(s1, s2))
     print("Jaccard distance:", jaccard_distance(s1, s2))
     print("MASI distance:", masi_distance(s1, s2))
+
 
 if __name__ == '__main__':
     demo()

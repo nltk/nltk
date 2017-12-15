@@ -47,6 +47,8 @@ else:
         from nltk.app.wordfreq_app import app as wordfreq
 
 # skip doctests from this package
+
+
 def setup_module(module):
     from nose import SkipTest
     raise SkipTest("nltk.app examples are not doctests")

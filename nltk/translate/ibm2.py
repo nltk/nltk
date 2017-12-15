@@ -291,6 +291,7 @@ class Model2Counts(Counts):
     Data object to store counts of various parameters during training.
     Includes counts for alignment.
     """
+
     def __init__(self):
         super(Model2Counts, self).__init__()
         self.alignment = defaultdict(

@@ -14,11 +14,13 @@ from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat,\
     read_alignedsent_block
 
+
 class AlignedCorpusReader(CorpusReader):
     """
     Reader for corpora of word-aligned sentences.  Tokens are assumed
     to be separated by whitespace.  Sentences begin on separate lines.
     """
+
     def __init__(self, root, fileids,
                  sep='/', word_tokenizer=WhitespaceTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
@@ -45,8 +47,10 @@ class AlignedCorpusReader(CorpusReader):
         :return: the given file(s) as a single string.
         :rtype: str
         """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
@@ -85,12 +89,14 @@ class AlignedCorpusReader(CorpusReader):
                                              self._alignedsent_block_reader)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
+
 class AlignedSentCorpusView(StreamBackedCorpusView):
     """
     A specialized corpus view for aligned sentences.
     ``AlignedSentCorpusView`` objects are typically created by
     ``AlignedCorpusReader`` (not directly by nltk users).
     """
+
     def __init__(self, corpus_file, encoding, aligned, group_by_sent,
                  word_tokenizer, sent_tokenizer, alignedsent_block_reader):
         self._aligned = aligned
@@ -105,7 +111,8 @@ class AlignedSentCorpusView(StreamBackedCorpusView):
                  for alignedsent_str in self._alignedsent_block_reader(stream)
                  for sent_str in self._sent_tokenizer.tokenize(alignedsent_str)]
         if self._aligned:
-            block[2] = Alignment.fromstring(" ".join(block[2])) # kludge; we shouldn't have tokenized the alignment string
+            # kludge; we shouldn't have tokenized the alignment string
+            block[2] = Alignment.fromstring(" ".join(block[2]))
             block = [AlignedSent(*block)]
         elif self._group_by_sent:
             block = [block[0]]

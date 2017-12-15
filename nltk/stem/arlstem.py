@@ -51,13 +51,13 @@ class ARLSTem(StemmerI):
         self.pr2 = [
             '\u0627\u0644', '\u0644\u0644',
             '\u0641\u0644', '\u0641\u0628'
-            ]
+        ]
         # Ba Alif Laam, Kaaf Alif Laam, Waaw Alif Laam
         self.pr3 = [
             '\u0628\u0627\u0644',
             '\u0643\u0627\u0644',
             '\u0648\u0627\u0644'
-            ]
+        ]
         # Fa Laam Laam, Waaw Laam Laam
         self.pr32 = ['\u0641\u0644\u0644', '\u0648\u0644\u0644']
         # Fa Ba Alif Laam, Waaw Ba Alif Laam, Fa Kaaf Alif Laam
@@ -65,13 +65,13 @@ class ARLSTem(StemmerI):
             '\u0641\u0628\u0627\u0644',
             '\u0648\u0628\u0627\u0644',
             '\u0641\u0643\u0627\u0644'
-            ]
+        ]
 
         # Kaf Yaa, Kaf Miim
         self.su2 = [
             '\u0643\u064A',
             '\u0643\u0645'
-            ]
+        ]
         # Ha Alif, Ha Miim
         self.su22 = ['\u0647\u0627', '\u0647\u0645']
         # Kaf Miim Alif, Kaf Noon Shadda
@@ -97,7 +97,7 @@ class ARLSTem(StemmerI):
         self.verb_suf2 = [
             '\u0646\u0627', '\u062A\u0645',
             '\u062A\u0627', '\u0648\u0627'
-            ]
+        ]
         # Taa, Alif, Noon
         self.verb_suf1 = ['\u062A', '\u0627', '\u0646']
 
@@ -224,10 +224,10 @@ class ARLSTem(StemmerI):
         if len(token) > 3 and token.endswith('\u0627\u062A'):
             return token[:-2]
         if (len(token) > 3 and token.startswith('\u0627')
-           and token[2] == '\u0627'):
+                and token[2] == '\u0627'):
             return token[:2] + token[3:]
         if (len(token) > 4 and token.startswith('\u0627')
-           and token[-2] == '\u0627'):
+                and token[-2] == '\u0627'):
             return token[1:-2] + token[-1]
 
     def verb(self, token):
@@ -275,13 +275,13 @@ class ARLSTem(StemmerI):
                 return token[1:-1]
         # ^Yaa, Noon$
         if (len(token) > 4
-           and token.startswith('\u064A')
-           and token.endswith('\u0646')):
+            and token.startswith('\u064A')
+                and token.endswith('\u0646')):
             return token[1:-1]
         # ^Taa, Noon$
         if (len(token) > 4
-           and token.startswith('\u062A')
-           and token.endswith('\u0646')):
+            and token.startswith('\u062A')
+                and token.endswith('\u0646')):
             return token[1:-1]
 
     def verb_t2(self, token):
@@ -292,25 +292,25 @@ class ARLSTem(StemmerI):
             for s2 in self.pl_si2:
                 # ^Siin Taa
                 if (token.startswith(self.verb_pr2[0])
-                   and token.endswith(s2)):
+                        and token.endswith(s2)):
                     return token[2:-2]
             # ^Siin Yaa, Alif Noon$
             if (token.startswith(self.verb_pr2[1])
-               and token.endswith(self.pl_si2[0])):
+                    and token.endswith(self.pl_si2[0])):
                 return token[2:-2]
             # ^Siin Yaa, Waaw Noon$
             if (token.startswith(self.verb_pr2[1])
-               and token.endswith(self.pl_si2[2])):
+                    and token.endswith(self.pl_si2[2])):
                 return token[2:-2]
         # ^Siin Taa, Noon$
         if (len(token) > 5
-           and token.startswith(self.verb_pr2[0])
-           and token.endswith('\u0646')):
+            and token.startswith(self.verb_pr2[0])
+                and token.endswith('\u0646')):
             return token[2:-1]
         # ^Siin Yaa, Noon$
         if (len(token) > 5
-           and token.startswith(self.verb_pr2[1])
-           and token.endswith('\u0646')):
+            and token.startswith(self.verb_pr2[1])
+                and token.endswith('\u0646')):
             return token[2:-1]
 
     def verb_t3(self, token):

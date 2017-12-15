@@ -5,12 +5,14 @@ from functools import wraps
 from nose.plugins.skip import SkipTest
 from nltk.util import py26
 
+
 def skip(reason):
     """
     Unconditionally skip a test.
     """
     def decorator(test_item):
-        is_test_class = isinstance(test_item, type) and issubclass(test_item, TestCase)
+        is_test_class = isinstance(
+            test_item, type) and issubclass(test_item, TestCase)
 
         if is_test_class and py26():
             # Patch all test_ methods to raise SkipText exception.

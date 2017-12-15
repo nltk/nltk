@@ -62,25 +62,27 @@ For further information, please see Chapter 3 of the NLTK book.
 
 import re
 
-from nltk.data              import load
-from nltk.tokenize.casual   import (TweetTokenizer, casual_tokenize)
-from nltk.tokenize.mwe      import MWETokenizer
-from nltk.tokenize.punkt    import PunktSentenceTokenizer
-from nltk.tokenize.regexp   import (RegexpTokenizer, WhitespaceTokenizer,
-                                    BlanklineTokenizer, WordPunctTokenizer,
-                                    wordpunct_tokenize, regexp_tokenize,
-                                    blankline_tokenize)
-from nltk.tokenize.repp     import ReppTokenizer
-from nltk.tokenize.sexpr    import SExprTokenizer, sexpr_tokenize
-from nltk.tokenize.simple   import (SpaceTokenizer, TabTokenizer, LineTokenizer,
-                                    line_tokenize)
+from nltk.data import load
+from nltk.tokenize.casual import (TweetTokenizer, casual_tokenize)
+from nltk.tokenize.mwe import MWETokenizer
+from nltk.tokenize.punkt import PunktSentenceTokenizer
+from nltk.tokenize.regexp import (RegexpTokenizer, WhitespaceTokenizer,
+                                  BlanklineTokenizer, WordPunctTokenizer,
+                                  wordpunct_tokenize, regexp_tokenize,
+                                  blankline_tokenize)
+from nltk.tokenize.repp import ReppTokenizer
+from nltk.tokenize.sexpr import SExprTokenizer, sexpr_tokenize
+from nltk.tokenize.simple import (SpaceTokenizer, TabTokenizer, LineTokenizer,
+                                  line_tokenize)
 from nltk.tokenize.texttiling import TextTilingTokenizer
-from nltk.tokenize.toktok   import ToktokTokenizer
+from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.tokenize.treebank import TreebankWordTokenizer
-from nltk.tokenize.util     import string_span_tokenize, regexp_span_tokenize
+from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
 from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
 # Standard sentence tokenizer.
+
+
 def sent_tokenize(text, language='english'):
     """
     Return a sentence-tokenized copy of *text*,
@@ -94,6 +96,7 @@ def sent_tokenize(text, language='english'):
     tokenizer = load('tokenizers/punkt/{0}.pickle'.format(language))
     return tokenizer.tokenize(text)
 
+
 # Standard word tokenizer.
 _treebank_word_tokenizer = TreebankWordTokenizer()
 
@@ -104,10 +107,14 @@ _treebank_word_tokenizer = TreebankWordTokenizer()
 
 improved_open_quote_regex = re.compile(u'([«“‘])', re.U)
 improved_close_quote_regex = re.compile(u'([»”’])', re.U)
-improved_punct_regex = re.compile(r'([^\.])(\.)([\]\)}>"\'' u'»”’ ' r']*)\s*$', re.U)
-_treebank_word_tokenizer.STARTING_QUOTES.insert(0, (improved_open_quote_regex, r' \1 '))
-_treebank_word_tokenizer.ENDING_QUOTES.insert(0, (improved_close_quote_regex, r' \1 '))
-_treebank_word_tokenizer.PUNCTUATION.insert(0, (improved_punct_regex, r'\1 \2 \3 '))
+improved_punct_regex = re.compile(
+    r'([^\.])(\.)([\]\)}>"\'' u'»”’ ' r']*)\s*$', re.U)
+_treebank_word_tokenizer.STARTING_QUOTES.insert(
+    0, (improved_open_quote_regex, r' \1 '))
+_treebank_word_tokenizer.ENDING_QUOTES.insert(
+    0, (improved_close_quote_regex, r' \1 '))
+_treebank_word_tokenizer.PUNCTUATION.insert(
+    0, (improved_punct_regex, r'\1 \2 \3 '))
 
 
 def word_tokenize(text, language='english', preserve_line=False):

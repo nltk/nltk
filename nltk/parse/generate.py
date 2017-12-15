@@ -46,7 +46,8 @@ def _generate_all(grammar, items, depth):
         except RuntimeError as _error:
             if _error.message == "maximum recursion depth exceeded":
                 # Helpful error message while still showing the recursion stack.
-                raise RuntimeError("The grammar has rule(s) that yield infinite recursion!!")
+                raise RuntimeError(
+                    "The grammar has rule(s) that yield infinite recursion!!")
             else:
                 raise
     else:
@@ -57,10 +58,11 @@ def _generate_one(grammar, item, depth):
     if depth > 0:
         if isinstance(item, Nonterminal):
             for prod in grammar.productions(lhs=item):
-                for frag in _generate_all(grammar, prod.rhs(), depth-1):
+                for frag in _generate_all(grammar, prod.rhs(), depth - 1):
                     yield frag
         else:
             yield [item]
+
 
 demo_grammar = """
   S -> NP VP

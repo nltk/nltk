@@ -43,7 +43,7 @@ class MultiListbox(Frame):
     #: Default configurations for the column labels.
     LABEL_CONFIG = dict(borderwidth=1, relief='raised',
                         font='helvetica -16 bold',
-                      background='#444', foreground='white')
+                        background='#444', foreground='white')
 
     #: Default configuration for the column listboxes.
     LISTBOX_CONFIG = dict(borderwidth=1,
@@ -168,12 +168,12 @@ class MultiListbox(Frame):
         self._resize_column_index = None
         if event.widget is self:
             for i, lb in enumerate(self._listboxes):
-                if abs(event.x-(lb.winfo_x()+lb.winfo_width())) < 10:
+                if abs(event.x - (lb.winfo_x() + lb.winfo_width())) < 10:
                     self._resize_column_index = i
-        elif event.x > (event.widget.winfo_width()-5):
+        elif event.x > (event.widget.winfo_width() - 5):
             self._resize_column_index = event.widget.column_index
         elif event.x < 5 and event.widget.column_index != 0:
-            self._resize_column_index = event.widget.column_index-1
+            self._resize_column_index = event.widget.column_index - 1
 
         # Bind callbacks that are used to resize it.
         if self._resize_column_index is not None:
@@ -191,7 +191,7 @@ class MultiListbox(Frame):
         x1 = event.x + event.widget.winfo_x()
         x2 = lb.winfo_x() + lb.winfo_width()
 
-        lb['width'] = max(3, lb['width'] + (x1-x2) // charwidth)
+        lb['width'] = max(3, lb['width'] + (x1 - x2) // charwidth)
 
     def _resize_column_buttonrelease_cb(self, event):
         event.widget.unbind('<ButtonRelease-%d>' % event.num)
@@ -283,10 +283,11 @@ class MultiListbox(Frame):
 
         # Select the specified index
         if index is not None:
-            index = min(max(index, 0), self.size()-1)
-            #self.activate(index)
+            index = min(max(index, 0), self.size() - 1)
+            # self.activate(index)
             self.selection_set(index)
-            if see: self.see(index)
+            if see:
+                self.see(index)
 
     #/////////////////////////////////////////////////////////////////
     # Configuration
@@ -310,14 +311,14 @@ class MultiListbox(Frame):
                 for listbox in self._listboxes:
                     listbox.configure({key[8:]: val})
             else:
-                Frame.configure(self, {key:val})
+                Frame.configure(self, {key: val})
 
     def __setitem__(self, key, val):
         """
         Configure this widget.  This is equivalent to
         ``self.configure({key,val``)}.  See ``configure()``.
         """
-        self.configure({key:val})
+        self.configure({key: val})
 
     def rowconfigure(self, row_index, cnf={}, **kw):
         """
@@ -325,7 +326,8 @@ class MultiListbox(Frame):
         arguments are: ``background``, ``bg``, ``foreground``, ``fg``,
         ``selectbackground``, ``selectforeground``.
         """
-        for lb in self._listboxes: lb.itemconfigure(row_index, cnf, **kw)
+        for lb in self._listboxes:
+            lb.itemconfigure(row_index, cnf, **kw)
 
     def columnconfigure(self, col_index, cnf={}, **kw):
         """
@@ -339,9 +341,10 @@ class MultiListbox(Frame):
         for (key, val) in list(cnf.items()):
             if key in ('background', 'bg', 'foreground', 'fg',
                        'selectbackground', 'selectforeground'):
-                for i in range(lb.size()): lb.itemconfigure(i, {key:val})
+                for i in range(lb.size()):
+                    lb.itemconfigure(i, {key: val})
             else:
-                lb.configure({key:val})
+                lb.configure({key: val})
 
     def itemconfigure(self, row_index, col_index, cnf=None, **kw):
         """
@@ -368,7 +371,7 @@ class MultiListbox(Frame):
             if len(elt) != len(self._column_names):
                 raise ValueError('rows should be tuples whose length '
                                  'is equal to the number of columns')
-        for (lb,elts) in zip(self._listboxes, list(zip(*rows))):
+        for (lb, elts) in zip(self._listboxes, list(zip(*rows))):
             lb.insert(index, *elts)
 
     def get(self, first, last=None):
@@ -392,7 +395,7 @@ class MultiListbox(Frame):
         """
         dx, dy, _, _ = self.grid_bbox(row=0, column=col)
         x, y, w, h = self._listboxes[col].bbox(row)
-        return int(x)+int(dx), int(y)+int(dy), int(w), int(h)
+        return int(x) + int(dx), int(y) + int(dy), int(w), int(h)
 
     #/////////////////////////////////////////////////////////////////
     # Hide/Show Columns
@@ -475,41 +478,67 @@ class MultiListbox(Frame):
     # These methods delegate to the first listbox:
     def curselection(self, *args, **kwargs):
         return self._listboxes[0].curselection(*args, **kwargs)
+
     def selection_includes(self, *args, **kwargs):
         return self._listboxes[0].selection_includes(*args, **kwargs)
+
     def itemcget(self, *args, **kwargs):
         return self._listboxes[0].itemcget(*args, **kwargs)
+
     def size(self, *args, **kwargs):
         return self._listboxes[0].size(*args, **kwargs)
+
     def index(self, *args, **kwargs):
         return self._listboxes[0].index(*args, **kwargs)
+
     def nearest(self, *args, **kwargs):
         return self._listboxes[0].nearest(*args, **kwargs)
 
     # These methods delegate to each listbox (and return None):
     def activate(self, *args, **kwargs):
-        for lb in self._listboxes: lb.activate(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.activate(*args, **kwargs)
+
     def delete(self, *args, **kwargs):
-        for lb in self._listboxes: lb.delete(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.delete(*args, **kwargs)
+
     def scan_mark(self, *args, **kwargs):
-        for lb in self._listboxes: lb.scan_mark(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.scan_mark(*args, **kwargs)
+
     def scan_dragto(self, *args, **kwargs):
-        for lb in self._listboxes: lb.scan_dragto(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.scan_dragto(*args, **kwargs)
+
     def see(self, *args, **kwargs):
-        for lb in self._listboxes: lb.see(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.see(*args, **kwargs)
+
     def selection_anchor(self, *args, **kwargs):
-        for lb in self._listboxes: lb.selection_anchor(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.selection_anchor(*args, **kwargs)
+
     def selection_clear(self, *args, **kwargs):
-        for lb in self._listboxes: lb.selection_clear(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.selection_clear(*args, **kwargs)
+
     def selection_set(self, *args, **kwargs):
-        for lb in self._listboxes: lb.selection_set(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.selection_set(*args, **kwargs)
+
     def yview(self, *args, **kwargs):
-        for lb in self._listboxes: v = lb.yview(*args, **kwargs)
-        return v # if called with no arguments
+        for lb in self._listboxes:
+            v = lb.yview(*args, **kwargs)
+        return v  # if called with no arguments
+
     def yview_moveto(self, *args, **kwargs):
-        for lb in self._listboxes: lb.yview_moveto(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.yview_moveto(*args, **kwargs)
+
     def yview_scroll(self, *args, **kwargs):
-        for lb in self._listboxes: lb.yview_scroll(*args, **kwargs)
+        for lb in self._listboxes:
+            lb.yview_scroll(*args, **kwargs)
 
     #/////////////////////////////////////////////////////////////////
     # Aliases
@@ -533,6 +562,7 @@ class MultiListbox(Frame):
 ######################################################################
 # Table
 ######################################################################
+
 
 class Table(object):
     """
@@ -572,6 +602,7 @@ class Table(object):
         table.  Each element of _rows is a row value, i.e., a list of
         cell values, one for each column in the row.
     """
+
     def __init__(self, master, column_names, rows=None,
                  column_weights=None,
                  scrollbar=True, click_to_sort=True,
@@ -611,13 +642,16 @@ class Table(object):
         self._reprfunc = reprfunc
         self._frame = Frame(master)
 
-        self._column_name_to_index = dict((c,i) for (i,c) in
+        self._column_name_to_index = dict((c, i) for (i, c) in
                                           enumerate(column_names))
 
         # Make a copy of the rows & check that it's valid.
-        if rows is None: self._rows = []
-        else: self._rows = [[v for v in row] for row in rows]
-        for row in self._rows: self._checkrow(row)
+        if rows is None:
+            self._rows = []
+        else:
+            self._rows = [[v for v in row] for row in rows]
+        for row in self._rows:
+            self._checkrow(row)
 
         # Create our multi-list box.
         self._mlb = MultiListbox(self._frame, column_names,
@@ -629,7 +663,7 @@ class Table(object):
             sb = Scrollbar(self._frame, orient='vertical',
                            command=self._mlb.yview)
             self._mlb.listboxes[0]['yscrollcommand'] = sb.set
-            #for listbox in self._mlb.listboxes:
+            # for listbox in self._mlb.listboxes:
             #    listbox['yscrollcommand'] = sb.set
             sb.pack(side='right', fill='y')
             self._scrollbar = sb
@@ -714,10 +748,11 @@ class Table(object):
         self._checkrow(rowvalue)
         self._rows.insert(row_index, rowvalue)
         if self._reprfunc is not None:
-            rowvalue = [self._reprfunc(row_index,j,v)
-                        for (j,v) in enumerate(rowvalue)]
+            rowvalue = [self._reprfunc(row_index, j, v)
+                        for (j, v) in enumerate(rowvalue)]
         self._mlb.insert(row_index, rowvalue)
-        if self._DEBUG: self._check_table_vs_mlb()
+        if self._DEBUG:
+            self._check_table_vs_mlb()
 
     def extend(self, rowvalues):
         """
@@ -727,8 +762,10 @@ class Table(object):
             table.  Each row value should be a tuple of cell values,
             one for each column in the row.
         """
-        for rowvalue in rowvalues: self.append(rowvalue)
-        if self._DEBUG: self._check_table_vs_mlb()
+        for rowvalue in rowvalues:
+            self.append(rowvalue)
+        if self._DEBUG:
+            self._check_table_vs_mlb()
 
     def append(self, rowvalue):
         """
@@ -738,7 +775,8 @@ class Table(object):
             in the new row.
         """
         self.insert(len(self._rows), rowvalue)
-        if self._DEBUG: self._check_table_vs_mlb()
+        if self._DEBUG:
+            self._check_table_vs_mlb()
 
     def clear(self):
         """
@@ -746,7 +784,8 @@ class Table(object):
         """
         self._rows = []
         self._mlb.delete(0, 'end')
-        if self._DEBUG: self._check_table_vs_mlb()
+        if self._DEBUG:
+            self._check_table_vs_mlb()
 
     def __getitem__(self, index):
         """
@@ -759,7 +798,7 @@ class Table(object):
         """
         if isinstance(index, slice):
             raise ValueError('Slicing not supported')
-        elif isinstance(index, tuple) and len(index)==2:
+        elif isinstance(index, tuple) and len(index) == 2:
             return self._rows[index[0]][self.column_index(index[1])]
         else:
             return tuple(self._rows[index])
@@ -781,16 +820,15 @@ class Table(object):
         if isinstance(index, slice):
             raise ValueError('Slicing not supported')
 
-
         # table[i,j] = val
-        elif isinstance(index, tuple) and len(index)==2:
+        elif isinstance(index, tuple) and len(index) == 2:
             i, j = index[0], self.column_index(index[1])
             config_cookie = self._save_config_info([i])
             self._rows[i][j] = val
             if self._reprfunc is not None:
                 val = self._reprfunc(i, j, val)
             self._mlb.listboxes[j].insert(i, val)
-            self._mlb.listboxes[j].delete(i+1)
+            self._mlb.listboxes[j].delete(i + 1)
             self._restore_config_info(config_cookie)
 
         # table[i] = val
@@ -799,9 +837,10 @@ class Table(object):
             self._checkrow(val)
             self._rows[index] = list(val)
             if self._reprfunc is not None:
-                val = [self._reprfunc(index,j,v) for (j,v) in enumerate(val)]
+                val = [self._reprfunc(index, j, v)
+                       for (j, v) in enumerate(val)]
             self._mlb.insert(index, val)
-            self._mlb.delete(index+1)
+            self._mlb.delete(index + 1)
             self._restore_config_info(config_cookie)
 
     def __delitem__(self, row_index):
@@ -810,11 +849,12 @@ class Table(object):
         """
         if isinstance(row_index, slice):
             raise ValueError('Slicing not supported')
-        if isinstance(row_index, tuple) and len(row_index)==2:
+        if isinstance(row_index, tuple) and len(row_index) == 2:
             raise ValueError('Cannot delete a single cell!')
         del self._rows[row_index]
         self._mlb.delete(row_index)
-        if self._DEBUG: self._check_table_vs_mlb()
+        if self._DEBUG:
+            self._check_table_vs_mlb()
 
     def __len__(self):
         """
@@ -872,8 +912,10 @@ class Table(object):
         ``table[table.selected_row()]``.
         """
         sel = self._mlb.curselection()
-        if sel: return int(sel[0])
-        else: return None
+        if sel:
+            return int(sel[0])
+        else:
+            return None
 
     def select(self, index=None, delta=None, see=True):
         """:see: ``MultiListbox.select()``"""
@@ -913,13 +955,14 @@ class Table(object):
             self._rows.reverse()
         else:
             self._rows.sort(key=operator.itemgetter(column_index),
-                            reverse=(order=='descending'))
+                            reverse=(order == 'descending'))
             self._sortkey = column_index
 
         # Redraw the table.
         self._fill_table()
         self._restore_config_info(config_cookie, index_by_id=True, see=True)
-        if self._DEBUG: self._check_table_vs_mlb()
+        if self._DEBUG:
+            self._check_table_vs_mlb()
 
     def _sort(self, event):
         """Event handler for clicking on a column label -- sort by
@@ -952,13 +995,13 @@ class Table(object):
         self._mlb.delete(0, 'end')
         for i, row in enumerate(self._rows):
             if self._reprfunc is not None:
-                row = [self._reprfunc(i,j,v) for (j,v) in enumerate(row)]
+                row = [self._reprfunc(i, j, v) for (j, v) in enumerate(row)]
             self._mlb.insert('end', row)
 
     def _get_itemconfig(self, r, c):
-        return dict( (k, self._mlb.itemconfig(r, c, k)[-1])
-                     for k in ('foreground', 'selectforeground',
-                               'background', 'selectbackground') )
+        return dict((k, self._mlb.itemconfig(r, c, k)[-1])
+                    for k in ('foreground', 'selectforeground',
+                              'background', 'selectbackground'))
 
     def _save_config_info(self, row_indices=None, index_by_id=False):
         """
@@ -987,13 +1030,12 @@ class Table(object):
         # Look up the color configuration info for each row.
         if index_by_id:
             config = dict((id(self._rows[r]), [self._get_itemconfig(r, c)
-                                        for c in range(self._num_columns)])
+                                               for c in range(self._num_columns)])
                           for r in row_indices)
         else:
             config = dict((r, [self._get_itemconfig(r, c)
                                for c in range(self._num_columns)])
                           for r in row_indices)
-
 
         return selection, config
 
@@ -1055,19 +1097,22 @@ class Table(object):
 ######################################################################
 
 # update this to use new WordNet API
+
+
 def demo():
     root = Tk()
     root.bind('<Control-q>', lambda e: root.destroy())
 
     table = Table(root, 'Word Synset Hypernym Hyponym'.split(),
                   column_weights=[0, 1, 1, 1],
-                  reprfunc=(lambda i,j,s: '  %s' % s))
+                  reprfunc=(lambda i, j, s: '  %s' % s))
     table.pack(expand=True, fill='both')
 
     from nltk.corpus import wordnet
     from nltk.corpus import brown
     for word, pos in sorted(set(brown.tagged_words()[:500])):
-        if pos[0] != 'N': continue
+        if pos[0] != 'N':
+            continue
         word = word.lower()
         for synset in wordnet.synsets(word):
             try:
@@ -1093,6 +1138,7 @@ def demo():
                 table.itemconfig(row, column, foreground='#666',
                                  selectforeground='#666')
     root.mainloop()
+
 
 if __name__ == '__main__':
     demo()

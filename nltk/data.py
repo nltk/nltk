@@ -46,13 +46,14 @@ import codecs
 
 from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
 
-try: # Python 3.
+try:  # Python 3.
     textwrap_indent = functools.partial(textwrap.indent, prefix='  ')
-except AttributeError: # Python 2; indent() not available for Python2.
+except AttributeError:  # Python 2; indent() not available for Python2.
     textwrap_fill = functools.partial(textwrap.fill,
-                                        initial_indent='  ',
-                                        subsequent_indent='  ',
-                                        replace_whitespace=False)
+                                      initial_indent='  ',
+                                      subsequent_indent='  ',
+                                      replace_whitespace=False)
+
     def textwrap_indent(text):
         return '\n'.join(textwrap_fill(line) for line in text.splitlines())
 
@@ -234,7 +235,8 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     >>> windows or normalize_resource_name('/dir/file', True, '/') == '/dir/file'
     True
     """
-    is_dir = bool(re.search(r'[\\/.]$', resource_name)) or resource_name.endswith(os.path.sep)
+    is_dir = bool(re.search(r'[\\/.]$', resource_name)
+                  ) or resource_name.endswith(os.path.sep)
     if sys.platform.startswith('win'):
         resource_name = resource_name.lstrip('/')
     else:
@@ -663,7 +665,7 @@ def find(resource_name, paths=None):
     # Display a friendly error message if the resource wasn't found:
     msg = str("Resource \33[93m{resource}\033[0m not found.\n"
               "Please use the NLTK Downloader to obtain the resource:\n\n"
-              "\33[31m" # To display red text in terminal.
+              "\33[31m"  # To display red text in terminal.
               ">>> import nltk\n"
               ">>> nltk.download(\'{resource}\')\n"
               "\033[0m").format(resource=resource_zipname)

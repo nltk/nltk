@@ -169,7 +169,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         for pdist in self.classifier.prob_classify_many(edges):
             logger.debug('%.4f %.4f', pdist.prob('T'), pdist.prob('F'))
             # smoothing in case the probability = 0
-            row.append([math.log(pdist.prob("T")+0.00000000001)])
+            row.append([math.log(pdist.prob("T") + 0.00000000001)])
             count += 1
             if count == len(graph.nodes):
                 edge_scores.append(row)
@@ -248,6 +248,7 @@ class ProbabilisticNonprojectiveParser(object):
     4
 
     """
+
     def __init__(self):
         """
         Creates a new non-projective parser.
@@ -326,7 +327,8 @@ class ProbabilisticNonprojectiveParser(object):
                     and i not in cycle_path
                     and self.scores[i][j]
                 ):
-                    subtract_val = self.compute_max_subtract_score(j, cycle_path)
+                    subtract_val = self.compute_max_subtract_score(
+                        j, cycle_path)
 
                     logger.debug('%s - %s', self.scores[i][j], subtract_val)
 
@@ -464,7 +466,6 @@ class ProbabilisticNonprojectiveParser(object):
             )
         #print (g_graph.nodes)
 
-
         # Fully connect non-root nodes in g_graph
         g_graph.connect_graph()
         original_graph = DependencyGraph()
@@ -474,7 +475,7 @@ class ProbabilisticNonprojectiveParser(object):
                     'word': token,
                     'tag': tags[index],
                     'rel': 'NTOP',
-                    'address': index+1,
+                    'address': index + 1,
                 }
             )
 
@@ -511,7 +512,8 @@ class ProbabilisticNonprojectiveParser(object):
             # Get best in-edge node b for current node
             best_in_edge = self.best_incoming_arc(current_vertex)
             betas[current_vertex] = self.original_best_arc(current_vertex)
-            logger.debug('best in arc: %s --> %s', best_in_edge, current_vertex)
+            logger.debug('best in arc: %s --> %s',
+                         best_in_edge, current_vertex)
             # b_graph = Union(b_graph, b)
             for new_vertex in [current_vertex, best_in_edge]:
                 b_graph.nodes[new_vertex].update(
@@ -536,7 +538,8 @@ class ProbabilisticNonprojectiveParser(object):
                 c_graph.add_node(new_node)
                 # Collapse all nodes in cycle C into v_n+1
                 self.update_edge_scores(new_node, cycle_path)
-                self.collapse_nodes(new_node, cycle_path, g_graph, b_graph, c_graph)
+                self.collapse_nodes(new_node, cycle_path,
+                                    g_graph, b_graph, c_graph)
                 for cycle_index in cycle_path:
                     c_graph.add_arc(new_node['address'], cycle_index)
                     # self.replaced_by[cycle_index] = new_node['address']
@@ -631,7 +634,7 @@ class NonprojectiveDependencyParser(object):
 
         for head_node in self._graph.nodes.values():
             deps = []
-            for dep_node in self._graph.nodes.values()  :
+            for dep_node in self._graph.nodes.values():
                 if (
                     self._grammar.contains(head_node['word'], dep_node['word'])
                     and head_node['word'] != dep_node['word']
@@ -774,10 +777,12 @@ def rule_based_demo():
     """)
     print(grammar)
     ndp = NonprojectiveDependencyParser(grammar)
-    graphs = ndp.parse(['the', 'man', 'in', 'the', 'corner', 'taught', 'his', 'dachshund', 'to', 'play', 'golf'])
+    graphs = ndp.parse(['the', 'man', 'in', 'the', 'corner',
+                        'taught', 'his', 'dachshund', 'to', 'play', 'golf'])
     print('Graphs:')
     for graph in graphs:
         print(graph)
+
 
 if __name__ == '__main__':
     demo()

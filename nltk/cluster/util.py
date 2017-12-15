@@ -27,6 +27,7 @@ class VectorSpaceClusterer(ClusterI):
     Optionally performs singular value decomposition to reduce the
     dimensionality.
     """
+
     def __init__(self, normalise=False, svd_dimensions=None):
         """
         :param normalise:       should vectors be normalised to length 1
@@ -49,7 +50,7 @@ class VectorSpaceClusterer(ClusterI):
         # use SVD to reduce the dimensionality
         if self._svd_dimensions and self._svd_dimensions < len(vectors[0]):
             [u, d, vt] = numpy.linalg.svd(numpy.transpose(
-                            numpy.array(vectors)))
+                numpy.array(vectors)))
             S = d[:self._svd_dimensions] * \
                 numpy.identity(self._svd_dimensions, numpy.float64)
             T = u[:, :self._svd_dimensions]
@@ -252,7 +253,7 @@ class Dendrogram(object):
 
         # display functions
         def format(centre, left=' ', right=' '):
-            return '%s%s%s' % (lhalf*left, centre, right*rhalf)
+            return '%s%s%s' % (lhalf * left, centre, right * rhalf)
 
         def display(str):
             stdout.write(str)
@@ -263,7 +264,7 @@ class Dendrogram(object):
         while queue:
             priority, node = queue.pop()
             child_left_leaf = list(map(
-                                lambda c: c.leaves(False)[0], node._children))
+                lambda c: c.leaves(False)[0], node._children))
             indices = list(map(leaves.index, child_left_leaf))
             if child_left_leaf:
                 min_idx = min(indices)

@@ -72,7 +72,7 @@ class AbstractCollocationFinder(object):
         """Constructs a collocation finder given a collection of documents,
         each of which is a list (or iterable) of tokens.
         """
-        #return cls.from_words(_itertools.chain(*documents))
+        # return cls.from_words(_itertools.chain(*documents))
         return cls.from_words(cls._build_new_documents(documents, cls.default_ws, pad_right=True))
 
     @staticmethod
@@ -349,7 +349,8 @@ def demo(scorer=None, compare_scorer=None):
     from nltk.corpus import stopwords, webtext
 
     ignored_words = stopwords.words('english')
-    word_filter = lambda w: len(w) < 3 or w.lower() in ignored_words
+
+    def word_filter(w): return len(w) < 3 or w.lower() in ignored_words
 
     for file in webtext.fileids():
         words = [word.lower()
@@ -368,6 +369,7 @@ def demo(scorer=None, compare_scorer=None):
 # Slows down loading too much
 # bigram_measures = BigramAssocMeasures()
 # trigram_measures = TrigramAssocMeasures()
+
 
 if __name__ == '__main__':
     import sys

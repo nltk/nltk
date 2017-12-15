@@ -23,6 +23,7 @@ class SwitchboardTurn(list):
     spearker identifier and utterance id.  Note that utterance ids
     are only unique within a given discourse.
     """
+
     def __init__(self, words, speaker, id):
         list.__init__(self, words)
         self.speaker = speaker
@@ -105,6 +106,7 @@ class SwitchboardCorpusReader(CorpusReader):
 
     _UTTERANCE_RE = re.compile('(\w+)\.(\d+)\:\s*(.*)')
     _SEP = '/'
+
     def _parse_utterance(self, utterance, include_tag, tagset=None):
         m = self._UTTERANCE_RE.match(utterance)
         if m is None:
@@ -112,8 +114,7 @@ class SwitchboardCorpusReader(CorpusReader):
         speaker, id, text = m.groups()
         words = [str2tuple(s, self._SEP) for s in text.split()]
         if not include_tag:
-            words = [w for (w,t) in words]
+            words = [w for (w, t) in words]
         elif tagset and tagset != self._tagset:
-            words = [(w, map_tag(self._tagset, tagset, t)) for (w,t) in words]
+            words = [(w, map_tag(self._tagset, tagset, t)) for (w, t) in words]
         return SwitchboardTurn(words, speaker, id)
-

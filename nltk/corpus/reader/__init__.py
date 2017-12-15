@@ -120,7 +120,7 @@ __all__ = [
     'TimitCorpusReader', 'YCOECorpusReader',
     'MacMorphoCorpusReader', 'SyntaxCorpusReader',
     'AlpinoCorpusReader', 'RTECorpusReader',
-    'StringCategoryCorpusReader','EuroparlCorpusReader',
+    'StringCategoryCorpusReader', 'EuroparlCorpusReader',
     'CategorizedBracketParseCorpusReader',
     'CategorizedTaggedCorpusReader',
     'CategorizedPlaintextCorpusReader',

@@ -43,7 +43,7 @@ class MosesTokenizer(TokenizerI):
     >>> m = MosesTokenizer()
     >>> m.tokenize('2016, pp.')
     [u'2016', u',', u'pp', u'.']
-    
+
     >>> sent = "This ain't funny. It's actually hillarious, yet double Ls. | [] < > [ ] & You're gonna shake it off? Don't?"
     >>> m.tokenize(sent, escape=True)
     ['This', 'ain', '&apos;t', 'funny', '.', 'It', '&apos;s', 'actually', 'hillarious', ',', 'yet', 'double', 'Ls', '.', '&#124;', '&#91;', '&#93;', '&lt;', '&gt;', '&#91;', '&#93;', '&amp;', 'You', '&apos;re', 'gonna', 'shake', 'it', 'off', '?', 'Don', '&apos;t', '?']
@@ -74,7 +74,8 @@ class MosesTokenizer(TokenizerI):
 
     # Splits all hypens (regardless of circumstances), e.g.
     # 'foo -- bar' -> 'foo @-@ @-@ bar' , 'foo-bar' -> 'foo @-@ bar'
-    AGGRESSIVE_HYPHEN_SPLIT = u'([{alphanum}])\-(?=[{alphanum}])'.format(alphanum=IsAlnum), r'\1 \@-\@ '
+    AGGRESSIVE_HYPHEN_SPLIT = u'([{alphanum}])\-(?=[{alphanum}])'.format(
+        alphanum=IsAlnum), r'\1 \@-\@ '
 
     # Make multi-dots stay together.
     REPLACE_DOT_WITH_LITERALSTRING_1 = r'\.([\.]+)', ' DOTMULTI\1'
@@ -106,7 +107,8 @@ class MosesTokenizer(TokenizerI):
 
     # Pad , with tailing space except if within numbers, e.g. 5,300
     # These are used in nltk.tokenize.moses.penn_tokenize()
-    COMMA_1 = u'([^{numbers}])[,]([^{numbers}])'.format(numbers=IsN), r'\1 , \2'
+    COMMA_1 = u'([^{numbers}])[,]([^{numbers}])'.format(
+        numbers=IsN), r'\1 , \2'
     COMMA_2 = u'([{numbers}])[,]([^{numbers}])'.format(numbers=IsN), r'\1 , \2'
     COMMA_3 = u'([^{numbers}])[,]([{numbers}])'.format(numbers=IsN), r'\1 , \2'
 
@@ -116,7 +118,8 @@ class MosesTokenizer(TokenizerI):
     # Separate out intra-token slashes.  PTB tokenization doesn't do this, so
     # the tokens should be merged prior to parsing with a PTB-trained parser.
     # e.g. "and/or" -> "and @/@ or"
-    INTRATOKEN_SLASHES = u'([{alphanum}])\/([{alphanum}])'.format(alphanum=IsAlnum), r'$1 \@\/\@ $2'
+    INTRATOKEN_SLASHES = u'([{alphanum}])\/([{alphanum}])'.format(
+        alphanum=IsAlnum), r'$1 \@\/\@ $2'
 
     # Splits final period at end of string.
     FINAL_PERIOD = r"""([^.])([.])([\]\)}>"']*) ?$""", r'\1 \2\3'
@@ -189,19 +192,27 @@ class MosesTokenizer(TokenizerI):
     ESCAPE_LEFT_SQUARE_BRACKET = r"\[", r"&#91;"
     ESCAPE_RIGHT_SQUARE_BRACKET = r"]", r"&#93;"
 
-    EN_SPECIFIC_1 = u"([^{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
-    EN_SPECIFIC_2 = u"([^{alpha}{isn}])[']([{alpha}])".format(alpha=IsAlpha, isn=IsN), r"\1 ' \2"
-    EN_SPECIFIC_3 = u"([{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
-    EN_SPECIFIC_4 = u"([{alpha}])[']([{alpha}])".format(alpha=IsAlpha), r"\1 '\2"
+    EN_SPECIFIC_1 = u"([^{alpha}])[']([^{alpha}])".format(
+        alpha=IsAlpha), r"\1 ' \2"
+    EN_SPECIFIC_2 = u"([^{alpha}{isn}])[']([{alpha}])".format(
+        alpha=IsAlpha, isn=IsN), r"\1 ' \2"
+    EN_SPECIFIC_3 = u"([{alpha}])[']([^{alpha}])".format(
+        alpha=IsAlpha), r"\1 ' \2"
+    EN_SPECIFIC_4 = u"([{alpha}])[']([{alpha}])".format(
+        alpha=IsAlpha), r"\1 '\2"
     EN_SPECIFIC_5 = u"([{isn}])[']([s])".format(isn=IsN), r"\1 '\2"
 
     ENGLISH_SPECIFIC_APOSTROPHE = [EN_SPECIFIC_1, EN_SPECIFIC_2, EN_SPECIFIC_3,
                                    EN_SPECIFIC_4, EN_SPECIFIC_5]
 
-    FR_IT_SPECIFIC_1 = u"([^{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
-    FR_IT_SPECIFIC_2 = u"([^{alpha}])[']([{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
-    FR_IT_SPECIFIC_3 = u"([{alpha}])[']([^{alpha}])".format(alpha=IsAlpha), r"\1 ' \2"
-    FR_IT_SPECIFIC_4 = u"([{alpha}])[']([{alpha}])".format(alpha=IsAlpha), r"\1' \2"
+    FR_IT_SPECIFIC_1 = u"([^{alpha}])[']([^{alpha}])".format(
+        alpha=IsAlpha), r"\1 ' \2"
+    FR_IT_SPECIFIC_2 = u"([^{alpha}])[']([{alpha}])".format(
+        alpha=IsAlpha), r"\1 ' \2"
+    FR_IT_SPECIFIC_3 = u"([{alpha}])[']([^{alpha}])".format(
+        alpha=IsAlpha), r"\1 ' \2"
+    FR_IT_SPECIFIC_4 = u"([{alpha}])[']([{alpha}])".format(
+        alpha=IsAlpha), r"\1' \2"
 
     FR_IT_SPECIFIC_APOSTROPHE = [FR_IT_SPECIFIC_1, FR_IT_SPECIFIC_2,
                                  FR_IT_SPECIFIC_3, FR_IT_SPECIFIC_4]
@@ -247,7 +258,8 @@ class MosesTokenizer(TokenizerI):
         super(MosesTokenizer, self).__init__()
         self.lang = lang
         # Initialize the language specific nonbreaking prefixes.
-        self.NONBREAKING_PREFIXES = [_nbp.strip() for _nbp in nonbreaking_prefixes.words(lang)]
+        self.NONBREAKING_PREFIXES = [_nbp.strip()
+                                     for _nbp in nonbreaking_prefixes.words(lang)]
         self.NUMERIC_ONLY_PREFIXES = [w.rpartition(' ')[0] for w in
                                       self.NONBREAKING_PREFIXES if
                                       self.has_numeric_only(w)]
@@ -421,7 +433,7 @@ class MosesDetokenizer(TokenizerI):
     >>> detokens = d.detokenize(tokens)
     >>> " ".join(detokens) == expected_detokens
     True
-    
+
     >>> d.detokenize(expected_tokens, unescape=True)
     ['This', "ain't", 'funny.', "It's", 'actually', 'hillarious,', 'yet', 'double', 'Ls.', '|', '[]', '<', '>', '[]', '&', "You're", 'gonna', 'shake', 'it', 'off?', "Don't?"]
     >>> d.detokenize(expected_tokens, unescape=False)
@@ -476,7 +488,8 @@ class MosesDetokenizer(TokenizerI):
                           u'kaan', u'k\xe4\xe4n', u'kin']
 
     FINNISH_REGEX = u'^({})({})?({})$'.format(text_type('|'.join(FINNISH_MORPHSET_1)),
-                                              text_type('|'.join(FINNISH_MORPHSET_2)),
+                                              text_type(
+                                                  '|'.join(FINNISH_MORPHSET_2)),
                                               text_type('|'.join(FINNISH_MORPHSET_3)))
 
     def __init__(self, lang='en'):
@@ -550,8 +563,10 @@ class MosesDetokenizer(TokenizerI):
                 prepend_space = " "
 
             elif (self.lang == 'cs' and i > 1
-                  and re.search(r'^[0-9]+$', tokens[-2])  # If the previous previous token is a number.
-                  and re.search(r'^[.,]$', tokens[-1])  # If previous token is a dot.
+                  # If the previous previous token is a number.
+                  and re.search(r'^[0-9]+$', tokens[-2])
+                  # If previous token is a dot.
+                  and re.search(r'^[.,]$', tokens[-1])
                   and re.search(r'^[0-9]+$', token)):  # If the current token is a number.
                 # In Czech, left-shift floats that are decimal numbers.
                 detokenized_text += token
@@ -579,7 +594,8 @@ class MosesDetokenizer(TokenizerI):
                 normalized_quo = token
                 if re.search(r'^[„“”]+$', token):
                     normalized_quo = '"'
-                quote_counts[normalized_quo] = quote_counts.get(normalized_quo, 0)
+                quote_counts[normalized_quo] = quote_counts.get(
+                    normalized_quo, 0)
 
                 if self.lang == 'cs' and token == u"„":
                     quote_counts[normalized_quo] = 0

@@ -105,7 +105,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 print('Server shutting down!')
                 os._exit(0)
 
-        elif sp == '': # First request.
+        elif sp == '':  # First request.
             type = 'text/html'
             if not server_mode and firstClient:
                 firstClient = False
@@ -114,7 +114,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 page = get_static_index_page(False)
             word = 'green'
 
-        elif sp.endswith('.html'): # Trying to fetch a HTML file TODO:
+        elif sp.endswith('.html'):  # Trying to fetch a HTML file TODO:
             type = 'text/html'
             usp = unquote_plus(sp)
             if usp == 'NLTK Wordnet Browser Database Info.html':
@@ -158,7 +158,6 @@ class MyServerHandler(BaseHTTPRequestHandler):
         self.send_head(type)
         self.wfile.write(page.encode('utf8'))
 
-
     def send_head(self, type=None):
         self.send_response(200)
         self.send_header('Content-type', type)
@@ -172,7 +171,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 "%s - - [%s] %s\n" %
                 (self.address_string(),
                  self.log_date_time_string(),
-                 format%args))
+                 format % args))
 
 
 def get_unique_counter_from_url(sp):
@@ -222,7 +221,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # Setup logging.
     if logfilename:
         try:
-            logfile = open(logfilename, "a", 1) # 1 means 'line buffering'
+            logfile = open(logfilename, "a", 1)  # 1 means 'line buffering'
         except IOError as e:
             sys.stderr.write("Couldn't open %s for writing: %s",
                              logfilename, e)
@@ -263,9 +262,9 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
 def startBrowser(url, server_ready):
     def run():
         server_ready.wait()
-        time.sleep(1) # Wait a little bit more, there's still the chance of
-                      # a race condition.
-        webbrowser.open(url, new = 2, autoraise = 1)
+        time.sleep(1)  # Wait a little bit more, there's still the chance of
+        # a race condition.
+        webbrowser.open(url, new=2, autoraise=1)
     t = threading.Thread(target=run)
     t.start()
     return t
@@ -281,7 +280,7 @@ WordNet Browser Utilities.
 This provides a backend to both wxbrowse and browserver.py.
 """
 
-
+
 ################################################################################
 #
 # Main logic for wordnet browser.
@@ -291,10 +290,11 @@ This provides a backend to both wxbrowse and browserver.py.
 # WordNet corpus is installed.
 def _pos_tuples():
     return [
-        (wn.NOUN,'N','noun'),
-        (wn.VERB,'V','verb'),
-        (wn.ADJ,'J','adj'),
-        (wn.ADV,'R','adv')]
+        (wn.NOUN, 'N', 'noun'),
+        (wn.VERB, 'V', 'verb'),
+        (wn.ADJ, 'J', 'adj'),
+        (wn.ADV, 'R', 'adv')]
+
 
 def _pos_match(pos_tuple):
     """
@@ -304,11 +304,12 @@ def _pos_match(pos_tuple):
     """
     if pos_tuple[0] == 's':
         pos_tuple = ('a', pos_tuple[1], pos_tuple[2])
-    for n,x in enumerate(pos_tuple):
+    for n, x in enumerate(pos_tuple):
         if x is not None:
             break
     for pt in _pos_tuples():
-        if pt[n] == pos_tuple[n]: return pt
+        if pt[n] == pos_tuple[n]:
+            return pt
     return None
 
 
@@ -368,72 +369,72 @@ def get_relations_data(word, synset):
     """
     if synset.pos() == wn.NOUN:
         return ((HYPONYM, 'Hyponyms',
-                   synset.hyponyms()),
-                (INSTANCE_HYPONYM , 'Instance hyponyms',
-                   synset.instance_hyponyms()),
+                 synset.hyponyms()),
+                (INSTANCE_HYPONYM, 'Instance hyponyms',
+                 synset.instance_hyponyms()),
                 (HYPERNYM, 'Direct hypernyms',
-                   synset.hypernyms()),
+                 synset.hypernyms()),
                 (INDIRECT_HYPERNYMS, 'Indirect hypernyms',
-                   rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
-#  hypernyms', 'Sister terms',
-                (INSTANCE_HYPERNYM , 'Instance hypernyms',
-                   synset.instance_hypernyms()),
-#            (CLASS_REGIONAL, ['domain term region'], ),
+                 rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
+                #  hypernyms', 'Sister terms',
+                (INSTANCE_HYPERNYM, 'Instance hypernyms',
+                 synset.instance_hypernyms()),
+                #            (CLASS_REGIONAL, ['domain term region'], ),
                 (PART_HOLONYM, 'Part holonyms',
-                   synset.part_holonyms()),
+                 synset.part_holonyms()),
                 (PART_MERONYM, 'Part meronyms',
-                   synset.part_meronyms()),
+                 synset.part_meronyms()),
                 (SUBSTANCE_HOLONYM, 'Substance holonyms',
-                   synset.substance_holonyms()),
+                 synset.substance_holonyms()),
                 (SUBSTANCE_MERONYM, 'Substance meronyms',
-                   synset.substance_meronyms()),
+                 synset.substance_meronyms()),
                 (MEMBER_HOLONYM, 'Member holonyms',
-                   synset.member_holonyms()),
+                 synset.member_holonyms()),
                 (MEMBER_MERONYM, 'Member meronyms',
-                   synset.member_meronyms()),
+                 synset.member_meronyms()),
                 (ATTRIBUTE, 'Attributes',
-                   synset.attributes()),
+                 synset.attributes()),
                 (ANTONYM, "Antonyms",
-                   lemma_property(word, synset, lambda l: l.antonyms())),
+                 lemma_property(word, synset, lambda l: l.antonyms())),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
-                   lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
+                 lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
     elif synset.pos() == wn.VERB:
         return ((ANTONYM, 'Antonym',
-                   lemma_property(word, synset, lambda l: l.antonyms())),
+                 lemma_property(word, synset, lambda l: l.antonyms())),
                 (HYPONYM, 'Hyponym',
-                   synset.hyponyms()),
+                 synset.hyponyms()),
                 (HYPERNYM, 'Direct hypernyms',
-                   synset.hypernyms()),
+                 synset.hypernyms()),
                 (INDIRECT_HYPERNYMS, 'Indirect hypernyms',
-                   rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
+                 rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1]),
                 (ENTAILMENT, 'Entailments',
-                   synset.entailments()),
+                 synset.entailments()),
                 (CAUSE, 'Causes',
-                   synset.causes()),
+                 synset.causes()),
                 (ALSO_SEE, 'Also see',
-                   synset.also_sees()),
+                 synset.also_sees()),
                 (VERB_GROUP, 'Verb Groups',
-                   synset.verb_groups()),
+                 synset.verb_groups()),
                 (DERIVATIONALLY_RELATED_FORM, "Derivationally related form",
-                   lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
+                 lemma_property(word, synset, lambda l: l.derivationally_related_forms())))
     elif synset.pos() == wn.ADJ or synset.pos == wn.ADJ_SAT:
         return ((ANTONYM, 'Antonym',
-                   lemma_property(word, synset, lambda l: l.antonyms())),
+                 lemma_property(word, synset, lambda l: l.antonyms())),
                 (SIMILAR, 'Similar to',
-                   synset.similar_tos()),
+                 synset.similar_tos()),
                 # Participle of verb - not supported by corpus
                 (PERTAINYM, 'Pertainyms',
-                   lemma_property(word, synset, lambda l: l.pertainyms())),
+                 lemma_property(word, synset, lambda l: l.pertainyms())),
                 (ATTRIBUTE, 'Attributes',
-                   synset.attributes()),
+                 synset.attributes()),
                 (ALSO_SEE, 'Also see',
-                   synset.also_sees()))
+                 synset.also_sees()))
     elif synset.pos() == wn.ADV:
         # This is weird. adverbs such as 'quick' and 'fast' don't seem
         # to have antonyms returned by the corpus.a
         return ((ANTONYM, 'Antonym',
-                   lemma_property(word, synset, lambda l: l.antonyms())),)
-                # Derived from adjective - not supported by corpus
+                 lemma_property(word, synset, lambda l: l.antonyms())),)
+        # Derived from adjective - not supported by corpus
     else:
         raise TypeError("Unhandles synset POS type: " + str(synset.pos()))
 
@@ -455,7 +456,7 @@ html_trailer = '''
 </html>
 '''
 
-explanation  = '''
+explanation = '''
 <h3>Search Help</h3>
 <ul><li>The display below the line is an example of the output the browser
 shows you when you enter a search word. The search word was <b>green</b>.</li>
@@ -478,15 +479,21 @@ synsets.</li>
 
 # HTML oriented functions
 
+
 def _bold(txt): return '<b>%s</b>' % txt
+
 
 def _center(txt): return '<center>%s</center>' % txt
 
-def _hlev(n,txt): return '<h%d>%s</h%d>' % (n,txt,n)
+
+def _hlev(n, txt): return '<h%d>%s</h%d>' % (n, txt, n)
+
 
 def _italic(txt): return '<i>%s</i>' % txt
 
+
 def _li(txt): return '<li>%s</li>' % txt
+
 
 def pg(word, body):
     '''
@@ -502,13 +509,16 @@ def pg(word, body):
     '''
     return (html_header % word) + body + html_trailer
 
+
 def _ul(txt): return '<ul>' + txt + '</ul>'
+
 
 def _abbc(txt):
     """
     abbc = asterisks, breaks, bold, center
     """
-    return _center(_bold('<br>'*10 + '*'*10 + ' ' + txt + ' ' + '*'*10))
+    return _center(_bold('<br>' * 10 + '*' * 10 + ' ' + txt + ' ' + '*' * 10))
+
 
 full_hyponym_cont_text = \
     _ul(_li(_italic('(has full hyponym continuation)'))) + '\n'
@@ -520,6 +530,7 @@ def _get_synset(synset_key):
     retrived via synset.name()
     """
     return wn.synset(synset_key)
+
 
 def _collect_one_synset(word, synset, synset_relations):
     '''
@@ -535,7 +546,7 @@ def _collect_one_synset(word, synset, synset_relations):
     :return: The HTML string built for this synset
     :rtype: str
     '''
-    if isinstance(synset, tuple): # It's a word
+    if isinstance(synset, tuple):  # It's a word
         raise NotImplementedError("word not supported by _collect_one_synset")
 
     typ = 'S'
@@ -548,6 +559,7 @@ def _collect_one_synset(word, synset, synset_relations):
     if synset.name() in synset_relations:
         synset_label = _bold(synset_label)
     s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr)
+
     def format_lemma(w):
         w = w.replace('_', ' ')
         if w.lower() == word:
@@ -563,6 +575,7 @@ def _collect_one_synset(word, synset, synset_relations):
          "; ".join("\"%s\"" % e for e in synset.examples()))
     return s + gl + _synset_relations(word, synset, synset_relations) + '</li>\n'
 
+
 def _collect_all_synsets(word, pos, synset_relations=dict()):
     """
     Return a HTML unordered list of synsets for the given word and
@@ -572,6 +585,7 @@ def _collect_all_synsets(word, pos, synset_relations=dict()):
         ''.join((_collect_one_synset(word, synset, synset_relations)
                  for synset
                  in wn.synsets(word, pos)))
+
 
 def _synset_relations(word, synset, synset_relations):
     '''
@@ -603,16 +617,18 @@ def _synset_relations(word, synset, synset_relations):
                 (relation_html(r[0]),
                  ''.join('<li>%s</li>\n' % relation_html(sr) for sr in r[1]))
         else:
-            raise TypeError("r must be a synset, lemma or list, it was: type(r) = %s, r = %s" % (type(r), r))
+            raise TypeError(
+                "r must be a synset, lemma or list, it was: type(r) = %s, r = %s" % (type(r), r))
 
     def make_synset_html(db_name, disp_name, rels):
         synset_html = '<i>%s</i>\n' % \
             make_lookup_link(
-                copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
+                copy.deepcopy(ref).toggle_synset_relation(
+                    synset, db_name).encode(),
                 disp_name)
 
         if db_name in ref.synset_relations[synset.name()]:
-             synset_html += '<ul>%s</ul>\n' % \
+            synset_html += '<ul>%s</ul>\n' % \
                 ''.join("<li>%s</li>\n" % relation_html(r) for r in rels)
 
         return synset_html
@@ -708,6 +724,7 @@ def page_from_word(word):
     """
     return page_from_reference(Reference(word))
 
+
 def page_from_href(href):
     '''
     Returns a tuple of the HTML page built and the new current word
@@ -720,6 +737,7 @@ def page_from_href(href):
     :rtype: A tuple (str,str)
     '''
     return page_from_reference(Reference.decode(href))
+
 
 def page_from_reference(href):
     '''
@@ -750,7 +768,7 @@ def page_from_reference(href):
             if form and form not in pos_forms[pos]:
                 pos_forms[pos].append(form)
     body = ''
-    for pos,pos_str,name in _pos_tuples():
+    for pos, pos_str, name in _pos_tuples():
         if pos in pos_forms:
             body += _hlev(3, name) + '\n'
             for w in pos_forms[pos]:
@@ -765,7 +783,6 @@ def page_from_reference(href):
     return body, word
 
 
-
 #####################################################################
 # Static pages
 #####################################################################
@@ -797,7 +814,7 @@ def get_static_web_help_page():
     Return the static web help page.
     """
     return \
-"""
+        """
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
@@ -844,7 +861,7 @@ def get_static_welcome_message():
     Get the static welcome page.
     """
     return \
-"""
+        """
 <h3>Search Help</h3>
 <ul><li>The display below the line is an example of the output the browser
 shows you when you enter a search word. The search word was <b>green</b>.</li>
@@ -863,12 +880,13 @@ synsets.</li>
 </ul>
 """
 
+
 def get_static_index_page(with_shutdown):
     """
     Get the static index page.
     """
     template = \
-"""
+        """
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
 <HTML>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
@@ -902,7 +920,7 @@ def get_static_upper_page(with_shutdown):
     to shutdown the server.
     """
     template = \
-"""
+        """
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
@@ -934,12 +952,12 @@ def get_static_upper_page(with_shutdown):
     return template % shutdown_link
 
 
-
 def usage():
     """
     Display the command line help message.
     """
     print(__doc__)
+
 
 def app():
     # Parse and interpret options.
@@ -963,6 +981,7 @@ def app():
         usage()
     else:
         wnb(port, not server_mode, logfilename)
+
 
 if __name__ == '__main__':
     app()

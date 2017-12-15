@@ -16,11 +16,12 @@
 """
 from __future__ import print_function
 
-### Constants
+# Constants
 
 _debug = 0
 
 ###
+
 
 class LazyModule:
 
@@ -60,7 +61,6 @@ class LazyModule:
     __lazymodule_globals = None
 
     def __init__(self, name, locals, globals=None):
-
         """ Create a LazyModule instance wrapping module name.
 
             The module will later on be registered in locals under the
@@ -82,7 +82,6 @@ class LazyModule:
         self.__lazymodule_init = 1
 
     def __lazymodule_import(self):
-
         """ Import the module now.
         """
         # Load and register module
@@ -92,11 +91,11 @@ class LazyModule:
         if _debug:
             print('LazyModule: Loading module %r' % name)
         self.__lazymodule_locals[name] \
-             = module \
-             = __import__(name,
-                          self.__lazymodule_locals,
-                          self.__lazymodule_globals,
-                          '*')
+            = module \
+            = __import__(name,
+                         self.__lazymodule_locals,
+                         self.__lazymodule_globals,
+                         '*')
 
         # Fill namespace with all symbols from original module to
         # provide faster access.
@@ -110,19 +109,17 @@ class LazyModule:
         return module
 
     def __getattr__(self, name):
-
         """ Import the module on demand and get the attribute.
         """
         if self.__lazymodule_loaded:
             raise AttributeError(name)
         if _debug:
-            print('LazyModule: ' \
+            print('LazyModule: '
                   'Module load triggered by attribute %r read access' % name)
         module = self.__lazymodule_import()
         return getattr(module, name)
 
     def __setattr__(self, name, value):
-
         """ Import the module on demand and set the attribute.
         """
         if not self.__lazymodule_init:
@@ -133,7 +130,7 @@ class LazyModule:
             self.__dict__[name] = value
             return
         if _debug:
-            print('LazyModule: ' \
+            print('LazyModule: '
                   'Module load triggered by attribute %r write access' % name)
         module = self.__lazymodule_import()
         setattr(module, name, value)

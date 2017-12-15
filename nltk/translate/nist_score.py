@@ -78,6 +78,7 @@ def sentence_nist(references, hypothesis, n=5):
     """
     return corpus_nist([references], [hypothesis], n)
 
+
 def corpus_nist(list_of_references, hypotheses, n=5):
     """
     Calculate a single corpus-level NIST score (aka. system-level BLEU) for all
@@ -91,18 +92,22 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     :type n: int
     """
     # Before proceeding to compute NIST, perform sanity checks.
-    assert len(list_of_references) == len(hypotheses), "The number of hypotheses and their reference(s) should be the same"
+    assert len(list_of_references) == len(
+        hypotheses), "The number of hypotheses and their reference(s) should be the same"
 
-    p_numerators = Counter() # Key = ngram order, and value = no. of ngram matches.
-    p_denominators = Counter() # Key = ngram order, and value = no. of ngram in ref.
-    sysoutput_lengths = Counter() # Key = ngram order, and value = no. of ngram in hyp.
+    # Key = ngram order, and value = no. of ngram matches.
+    p_numerators = Counter()
+    # Key = ngram order, and value = no. of ngram in ref.
+    p_denominators = Counter()
+    # Key = ngram order, and value = no. of ngram in hyp.
+    sysoutput_lengths = Counter()
     hyp_lengths, ref_lengths = 0, 0
 
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
         # For each order of ngram, calculate the numerator and
         # denominator for the corpus-level modified precision.
-        for i, _ in enumerate(range(1,n+1)):
+        for i, _ in enumerate(range(1, n + 1)):
             p_i = modified_precision(references, hypothesis, i)
             p_numerators[i] += p_i.numerator
             p_denominators[i] += p_i.denominator
@@ -111,7 +116,7 @@ def corpus_nist(list_of_references, hypotheses, n=5):
 
         # Calculate the hypothesis length and the closest reference length.
         # Adds them to the corpus-level hypothesis and reference counts.
-        hyp_len =  len(hypothesis)
+        hyp_len = len(hypothesis)
         hyp_lengths += hyp_len
         ref_lengths += closest_ref_length(references, hyp_len)
 
@@ -120,14 +125,14 @@ def corpus_nist(list_of_references, hypotheses, n=5):
 
     # Collects the various precision values for the different ngram orders.
     p_n = [Fraction(p_numerators[i], p_denominators[i], _normalize=False)
-           for i, _ in enumerate(range(1,n+1))]
+           for i, _ in enumerate(range(1, n + 1))]
 
     # Eqn 2 in Doddington (2002):
     # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
-    info = [0 if p_n[i].numerator == 0 or p_n[i+1].numerator == 0 # Handles math domain and zero division errors.
-            else math.log(p_n[i].numerator / p_n[i+1].numerator)
-            for i in range(len(p_n)-1)]
-    return sum(info_i/sysoutput_lengths[i] for i, info_i in enumerate(info)) * bp
+    info = [0 if p_n[i].numerator == 0 or p_n[i + 1].numerator == 0  # Handles math domain and zero division errors.
+            else math.log(p_n[i].numerator / p_n[i + 1].numerator)
+            for i in range(len(p_n) - 1)]
+    return sum(info_i / sysoutput_lengths[i] for i, info_i in enumerate(info)) * bp
 
 
 def nist_length_penalty(closest_ref_len, hyp_len):
@@ -151,5 +156,5 @@ def nist_length_penalty(closest_ref_len, hyp_len):
         ratio_x, score_x = 1.5, 0.5
         beta = math.log(score_x) / math.log(score_x)**2
         return math.exp(beta * math.log(ratio)**2)
-    else: # ratio <= 0 or ratio >= 1
+    else:  # ratio <= 0 or ratio >= 1
         return max(min(ratio, 1.0), 0.0)

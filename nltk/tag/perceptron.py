@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # This module is a port of the Textblob Averaged Perceptron Tagger
-# Author: Matthew Honnibal <honnibal+gh@gmail.com>, 
+# Author: Matthew Honnibal <honnibal+gh@gmail.com>,
 #         Long Duong <longdt219@gmail.com> (NLTK port)
 # URL: <https://github.com/sloria/textblob-aptagger>
 #      <http://nltk.org/>
@@ -23,8 +23,8 @@ from nltk.compat import python_2_unicode_compatible
 
 PICKLE = "averaged_perceptron_tagger.pickle"
 
-class AveragedPerceptron(object):
 
+class AveragedPerceptron(object):
     '''An averaged perceptron, as implemented by Matthew Honnibal.
 
     See more implementation details here:
@@ -59,6 +59,7 @@ class AveragedPerceptron(object):
 
     def update(self, truth, guess, features):
         '''Update the feature weights.'''
+
         def upd_feat(c, f, w, v):
             param = (f, c)
             self._totals[param] += (self.i - self._tstamps[param]) * w
@@ -95,40 +96,40 @@ class AveragedPerceptron(object):
         '''Load the pickled model weights.'''
         self.weights = load(path)
 
+
 @python_2_unicode_compatible
 class PerceptronTagger(TaggerI):
-
     '''
     Greedy Averaged Perceptron tagger, as implemented by Matthew Honnibal.
     See more implementation details here:
         https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
-    
+
     >>> from nltk.tag.perceptron import PerceptronTagger
 
     Train the model 
-    
+
     >>> tagger = PerceptronTagger(load=False)
-    
+
     >>> tagger.train([[('today','NN'),('is','VBZ'),('good','JJ'),('day','NN')],
     ... [('yes','NNS'),('it','PRP'),('beautiful','JJ')]])
-    
+
     >>> tagger.tag(['today','is','a','beautiful','day'])
     [('today', 'NN'), ('is', 'PRP'), ('a', 'PRP'), ('beautiful', 'JJ'), ('day', 'NN')]
-    
+
     Use the pretrain model (the default constructor) 
-    
+
     >>> pretrain = PerceptronTagger()
-    
+
     >>> pretrain.tag('The quick brown fox jumps over the lazy dog'.split())
     [('The', 'DT'), ('quick', 'JJ'), ('brown', 'NN'), ('fox', 'NN'), ('jumps', 'VBZ'), ('over', 'IN'), ('the', 'DT'), ('lazy', 'JJ'), ('dog', 'NN')]
-    
+
     >>> pretrain.tag("The red cat".split())
     [('The', 'DT'), ('red', 'JJ'), ('cat', 'NN')]
     '''
 
     START = ['-START-', '-START2-']
     END = ['-END-', '-END2-']
-    
+
     def __init__(self, load=True):
         '''
         :param load: Load the pickled model upon instantiation.
@@ -137,7 +138,8 @@ class PerceptronTagger(TaggerI):
         self.tagdict = {}
         self.classes = set()
         if load:
-            AP_MODEL_LOC = 'file:'+str(find('taggers/averaged_perceptron_tagger/'+PICKLE))
+            AP_MODEL_LOC = 'file:' + \
+                str(find('taggers/averaged_perceptron_tagger/' + PICKLE))
             self.load(AP_MODEL_LOC)
 
     def tag(self, tokens):
@@ -148,7 +150,7 @@ class PerceptronTagger(TaggerI):
         '''
         prev, prev2 = self.START
         output = []
-        
+
         context = self.START + [self.normalize(w) for w in tokens] + self.END
         for i, word in enumerate(tokens):
             tag = self.tagdict.get(word)
@@ -185,14 +187,15 @@ class PerceptronTagger(TaggerI):
             n = 0
             for sentence in self._sentences:
                 words, tags = zip(*sentence)
-                
+
                 prev, prev2 = self.START
                 context = self.START + [self.normalize(w) for w in words] \
-                                                                    + self.END
+                    + self.END
                 for i, word in enumerate(words):
                     guess = self.tagdict.get(word)
                     if not guess:
-                        feats = self._get_features(i, word, context, prev, prev2)
+                        feats = self._get_features(
+                            i, word, context, prev, prev2)
                         guess = self.model.predict(feats)
                         self.model.update(tags[i], guess, feats)
                     prev2 = prev
@@ -200,7 +203,8 @@ class PerceptronTagger(TaggerI):
                     c += guess == tags[i]
                     n += 1
             random.shuffle(self._sentences)
-            logging.info("Iter {0}: {1}/{2}={3}".format(iter_, c, n, _pc(c, n)))
+            logging.info(
+                "Iter {0}: {1}/{2}={3}".format(iter_, c, n, _pc(c, n)))
 
         # We don't need the training sentences anymore, and we don't want to
         # waste space on them when we pickle the trained tagger.
@@ -211,8 +215,8 @@ class PerceptronTagger(TaggerI):
         if save_loc is not None:
             with open(save_loc, 'wb') as fout:
                 # changed protocol from -1 to 2 to make pickling Python 2 compatible
-                pickle.dump((self.model.weights, self.tagdict, self.classes), fout, 2)
-        
+                pickle.dump(
+                    (self.model.weights, self.tagdict, self.classes), fout, 2)
 
     def load(self, loc):
         '''
@@ -222,7 +226,6 @@ class PerceptronTagger(TaggerI):
 
         self.model.weights, self.tagdict, self.classes = load(loc)
         self.model.classes = self.classes
-        
 
     def normalize(self, word):
         '''
@@ -247,6 +250,7 @@ class PerceptronTagger(TaggerI):
         {hashable: int} dict. If the features change, a new model must be
         trained.
         '''
+
         def add(name, *args):
             features[' '.join((name,) + tuple(args))] += 1
 
@@ -261,12 +265,12 @@ class PerceptronTagger(TaggerI):
         add('i tag+i-2 tag', prev, prev2)
         add('i word', context[i])
         add('i-1 tag+i word', prev, context[i])
-        add('i-1 word', context[i-1])
-        add('i-1 suffix', context[i-1][-3:])
-        add('i-2 word', context[i-2])
-        add('i+1 word', context[i+1])
-        add('i+1 suffix', context[i+1][-3:])
-        add('i+2 word', context[i+2])
+        add('i-1 word', context[i - 1])
+        add('i-1 suffix', context[i - 1][-3:])
+        add('i-2 word', context[i - 2])
+        add('i+1 word', context[i + 1])
+        add('i+1 suffix', context[i + 1][-3:])
+        add('i+2 word', context[i + 2])
         return features
 
     def _make_tagdict(self, sentences):
@@ -294,36 +298,39 @@ class PerceptronTagger(TaggerI):
 def _pc(n, d):
     return (n / d) * 100
 
+
 def _load_data_conll_format(filename):
-    print ('Read from file: ', filename)
-    with open(filename,'rb') as fin:
+    print('Read from file: ', filename)
+    with open(filename, 'rb') as fin:
         sentences = []
         sentence = []
         for line in fin.readlines():
             line = line.strip()
-            #print line
-            if len(line) ==0:
+            # print line
+            if len(line) == 0:
                 sentences.append(sentence)
                 sentence = []
                 continue
             tokens = line.split('\t')
             word = tokens[1]
             tag = tokens[4]
-            sentence.append((word,tag)) 
+            sentence.append((word, tag))
         return sentences
+
 
 def _get_pretrain_model():
     # Train and test on English part of ConLL data (WSJ part of Penn Treebank)
-    # Train: section 2-11 
+    # Train: section 2-11
     # Test : section 23
     tagger = PerceptronTagger()
     training = _load_data_conll_format('english_ptb_train.conll')
     testing = _load_data_conll_format('english_ptb_test.conll')
-    print ('Size of training and testing (sentence)', len(training), len(testing))
-    # Train and save the model 
-    tagger.train(training, PICKLE) 
-    print ('Accuracy : ',tagger.evaluate(testing))
-    
+    print('Size of training and testing (sentence)', len(training), len(testing))
+    # Train and save the model
+    tagger.train(training, PICKLE)
+    print('Accuracy : ', tagger.evaluate(testing))
+
+
 if __name__ == '__main__':
-    #_get_pretrain_model()
+    # _get_pretrain_model()
     pass

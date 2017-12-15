@@ -78,7 +78,7 @@ def _count_intersection(l1, l2):
 
     denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
-    if denominator == 0.0: # lines are parallel
+    if denominator == 0.0:  # lines are parallel
         if x1 == x2 == x3 == x4 == 0.0:
             # When lines are parallel, they must be on the y-axis.
             # We can ignore x-axis because we stop counting the
@@ -87,8 +87,10 @@ def _count_intersection(l1, l2):
             # OI (y-axis) diminishes when we go along the truncation line.
             return (0.0, y4)
 
-    x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denominator
-    y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denominator
+    x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2)
+         * (x3 * y4 - y3 * x4)) / denominator
+    y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2)
+         * (x3 * y4 - y3 * x4)) / denominator
     return (x, y)
 
 
@@ -211,6 +213,7 @@ def _indexes(gumt, gdmt, gwmt, gdnt):
 
 class Paice(object):
     '''Class for storing lemmas, stems and evaluation metrics.'''
+
     def __init__(self, lemmas, stems):
         '''
         :param lemmas: A dictionary where keys are lemmas and values are sets
@@ -236,7 +239,8 @@ class Paice(object):
         text.append('Understemming Index (GUMT / GDMT): %s\n' % self.ui)
         text.append('Overstemming Index (GWMT / GDNT): %s\n' % self.oi)
         text.append('Stemming Weight (OI / UI): %s\n' % self.sw)
-        text.append('Error-Rate Relative to Truncation (ERRT): %s\r\n' % self.errt)
+        text.append(
+            'Error-Rate Relative to Truncation (ERRT): %s\r\n' % self.errt)
         coordinates = ' '.join(['(%s, %s)' % item for item in self.coords])
         text.append('Truncation line: %s' % coordinates)
         return ''.join(text)
@@ -330,8 +334,10 @@ class Paice(object):
 
     def update(self):
         '''Update statistics after lemmas and stems have been set.'''
-        self.gumt, self.gdmt, self.gwmt, self.gdnt = _calculate(self.lemmas, self.stems)
-        self.ui, self.oi, self.sw = _indexes(self.gumt, self.gdmt, self.gwmt, self.gdnt)
+        self.gumt, self.gdmt, self.gwmt, self.gdnt = _calculate(
+            self.lemmas, self.stems)
+        self.ui, self.oi, self.sw = _indexes(
+            self.gumt, self.gdmt, self.gwmt, self.gdnt)
         self.errt = self._errt()
 
 

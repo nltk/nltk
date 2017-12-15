@@ -31,6 +31,7 @@ class Prover(object):
     Interface for trying to prove a goal from assumptions.  Both the goal and
     the assumptions are constrained to be formulas of ``logic.Expression``.
     """
+
     def prove(self, goal=None, assumptions=None, verbose=False):
         """
         :return: Whether the proof was successful or not.
@@ -54,6 +55,7 @@ class ModelBuilder(object):
     Both the goal and the assumptions are constrained to be formulas
     of ``logic.Expression``.
     """
+
     def build_model(self, goal=None, assumptions=None, verbose=False):
         """
         Perform the actual model building.
@@ -184,6 +186,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
     This class holds a goal and a list of assumptions to be used in proving
     or model building.
     """
+
     def __init__(self, goal=None, assumptions=None):
         """
         :param goal: Input expression to prove
@@ -223,7 +226,8 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         :type retracted: list(sem.Expression)
         """
         retracted = set(retracted)
-        result_list = list(filter(lambda a: a not in retracted, self._assumptions))
+        result_list = list(
+            filter(lambda a: a not in retracted, self._assumptions))
         if debug and result_list == self._assumptions:
             print(Warning("Assumptions list has not been changed:"))
             self.print_assumptions()
@@ -261,6 +265,7 @@ class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
     This class holds a ``Prover``, a goal, and a list of assumptions.  When
     prove() is called, the ``Prover`` is executed with the goal and assumptions.
     """
+
     def __init__(self, prover, goal=None, assumptions=None):
         """
         :param prover: The theorem tool to execute with the assumptions
@@ -315,6 +320,7 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
     build_model() is called, the ``ModelBuilder`` is executed with the goal and
     assumptions.
     """
+
     def __init__(self, modelbuilder, goal=None, assumptions=None):
         """
         :param modelbuilder: The theorem tool to execute with the assumptions
@@ -335,9 +341,9 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         """
         if self._result is None:
             self._result, self._model = \
-                    self._modelbuilder._build_model(self.goal(),
-                                                    self.assumptions(),
-                                                    verbose)
+                self._modelbuilder._build_model(self.goal(),
+                                                self.assumptions(),
+                                                verbose)
         return self._result
 
     def model(self, format=None):
@@ -370,6 +376,7 @@ class TheoremToolCommandDecorator(TheoremToolCommand):
     A base decorator for the ``ProverCommandDecorator`` and
     ``ModelBuilderCommandDecorator`` classes from which decorators can extend.
     """
+
     def __init__(self, command):
         """
         :param command: ``TheoremToolCommand`` to decorate
@@ -403,6 +410,7 @@ class ProverCommandDecorator(TheoremToolCommandDecorator, ProverCommand):
     A base decorator for the ``ProverCommand`` class from which other
     prover command decorators can extend.
     """
+
     def __init__(self, proverCommand):
         """
         :param proverCommand: ``ProverCommand`` to decorate
@@ -450,6 +458,7 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
     A base decorator for the ``ModelBuilderCommand`` class from which other
     prover command decorators can extend.
     """
+
     def __init__(self, modelBuilderCommand):
         """
         :param modelBuilderCommand: ``ModelBuilderCommand`` to decorate
@@ -468,9 +477,9 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
         if self._result is None:
             modelbuilder = self.get_model_builder()
             self._result, self._model = \
-                            modelbuilder._build_model(self.goal(),
-                                                      self.assumptions(),
-                                                      verbose)
+                modelbuilder._build_model(self.goal(),
+                                          self.assumptions(),
+                                          verbose)
         return self._result
 
     def model(self, format=None):
@@ -506,6 +515,7 @@ class ParallelProverBuilder(Prover, ModelBuilder):
     parallel.  Whichever finishes first, the prover or the model builder, is the
     result that will be used.
     """
+
     def __init__(self, prover, modelbuilder):
         self._prover = prover
         self._modelbuilder = modelbuilder
@@ -518,8 +528,10 @@ class ParallelProverBuilder(Prover, ModelBuilder):
 
     def _run(self, goal, assumptions, verbose):
         # Set up two thread, Prover and ModelBuilder to run in parallel
-        tp_thread = TheoremToolThread(lambda: self._prover.prove(goal, assumptions, verbose), verbose, 'TP')
-        mb_thread = TheoremToolThread(lambda: self._modelbuilder.build_model(goal, assumptions, verbose), verbose, 'MB')
+        tp_thread = TheoremToolThread(lambda: self._prover.prove(
+            goal, assumptions, verbose), verbose, 'TP')
+        mb_thread = TheoremToolThread(lambda: self._modelbuilder.build_model(
+            goal, assumptions, verbose), verbose, 'MB')
 
         tp_thread.start()
         mb_thread.start()
@@ -546,6 +558,7 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
     Because the theorem prover result is the opposite of the model builder
     result, we will treat self._result as meaning "proof found/no model found".
     """
+
     def __init__(self, prover, modelbuilder, goal=None, assumptions=None):
         BaseProverCommand.__init__(self, prover, goal, assumptions)
         BaseModelBuilderCommand.__init__(self, modelbuilder, goal, assumptions)
@@ -558,8 +571,10 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
 
     def _run(self, verbose):
         # Set up two thread, Prover and ModelBuilder to run in parallel
-        tp_thread = TheoremToolThread(lambda: BaseProverCommand.prove(self, verbose), verbose, 'TP')
-        mb_thread = TheoremToolThread(lambda: BaseModelBuilderCommand.build_model(self, verbose), verbose, 'MB')
+        tp_thread = TheoremToolThread(
+            lambda: BaseProverCommand.prove(self, verbose), verbose, 'TP')
+        mb_thread = TheoremToolThread(
+            lambda: BaseModelBuilderCommand.build_model(self, verbose), verbose, 'MB')
 
         tp_thread.start()
         mb_thread.start()
@@ -587,7 +602,7 @@ class TheoremToolThread(threading.Thread):
         try:
             self._result = self._command()
             if self._verbose:
-                print('Thread %s finished with result %s at %s' % \
+                print('Thread %s finished with result %s at %s' %
                       (self._name, self._result, time.localtime(time.time())))
         except Exception as e:
             print(e)

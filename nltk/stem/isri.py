@@ -150,12 +150,16 @@ class ISRIStemmer(StemmerI):
         """
         Stemming a word token using the ISRI stemmer.
         """
-        token = self.norm(token, 1)   # remove diacritics which representing Arabic short vowels
+        token = self.norm(
+            token, 1)   # remove diacritics which representing Arabic short vowels
         if token in self.stop_words:
             return token              # exclude stop words from being processed
-        token = self.pre32(token)     # remove length three and length two prefixes in this order
-        token = self.suf32(token)     # remove length three and length two suffixes in this order
-        token = self.waw(token)       # remove connective ‘و’ if it precedes a word beginning with ‘و’
+        # remove length three and length two prefixes in this order
+        token = self.pre32(token)
+        # remove length three and length two suffixes in this order
+        token = self.suf32(token)
+        # remove connective ‘و’ if it precedes a word beginning with ‘و’
+        token = self.waw(token)
         token = self.norm(token, 2)   # normalize initial hamza to bare alif
         # if 4 <= word length <= 7, then stem; otherwise, no stemming
         if len(token) == 4:           # length 4 word
@@ -303,7 +307,8 @@ class ISRIStemmer(StemmerI):
             word = word[1] + word[3] + word[5]
         elif word[0] == '\u0627' and word[3] == '\u0648' and word[2] == word[4]:            # افعوعل
             word = word[1] + word[4:]
-        elif word[0] == '\u062a' and word[2] == '\u0627' and word[4] == '\u064a':           # تفاعيل   new pattern
+        # تفاعيل   new pattern
+        elif word[0] == '\u062a' and word[2] == '\u0627' and word[4] == '\u064a':
             word = word[1] + word[3] + word[5]
         else:
             word = self.suf1(word)      # do - normalize short sufix
@@ -341,5 +346,3 @@ class ISRIStemmer(StemmerI):
             if word.startswith(sp1):
                 return word[1:]
         return word
-
-

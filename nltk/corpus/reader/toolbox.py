@@ -22,6 +22,7 @@ from nltk.toolbox import ToolboxData
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class ToolboxCorpusReader(CorpusReader):
     def xml(self, fileids, key=None):
         return concat([ToolboxData(path, enc).parse(key=key)
@@ -29,10 +30,10 @@ class ToolboxCorpusReader(CorpusReader):
 
     def fields(self, fileids, strip=True, unwrap=True, encoding='utf8',
                errors='strict', unicode_fields=None):
-        return concat([list(ToolboxData(fileid,enc).fields(
-                             strip, unwrap, encoding, errors, unicode_fields))
-                       for (fileid, enc)
-                       in self.abspaths(fileids, include_encoding=True)])
+        return concat([list(ToolboxData(fileid, enc).fields(
+            strip, unwrap, encoding, errors, unicode_fields))
+            for (fileid, enc)
+            in self.abspaths(fileids, include_encoding=True)])
 
     # should probably be done lazily:
     def entries(self, fileids, **kwargs):
@@ -56,13 +57,16 @@ class ToolboxCorpusReader(CorpusReader):
         return [contents for marker, contents in self.fields(fileids) if marker == key]
 
     def raw(self, fileids):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 
 def demo():
     pass
+
 
 if __name__ == '__main__':
     demo()

@@ -352,7 +352,8 @@ class IBMModel4(IBMModel):
             p0 = 1 - p1
             null_fertility = alignment_info.fertility_of_i(0)
             m = len(alignment_info.trg_sentence) - 1
-            value *= (pow(p1, null_fertility) * pow(p0, m - 2 * null_fertility))
+            value *= (pow(p1, null_fertility) *
+                      pow(p0, m - 2 * null_fertility))
             if value < MIN_PROB:
                 return MIN_PROB
 
@@ -429,6 +430,7 @@ class Model4Counts(Counts):
     Data object to store counts of various parameters during training.
     Includes counts for distortion.
     """
+
     def __init__(self):
         super(Model4Counts, self).__init__()
         self.head_distortion = defaultdict(

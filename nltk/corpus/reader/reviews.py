@@ -68,10 +68,11 @@ import re
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
-TITLE = re.compile(r'^\[t\](.*)$') # [t] Title
-FEATURES = re.compile(r'((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]') # find 'feature' in feature[+3]
-NOTES = re.compile(r'\[(?!t)(p|u|s|cc|cs)\]') # find 'p' in camera[+2][p]
-SENT = re.compile(r'##(.*)$') # find tokenized sentence
+TITLE = re.compile(r'^\[t\](.*)$')  # [t] Title
+# find 'feature' in feature[+3]
+FEATURES = re.compile(r'((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]')
+NOTES = re.compile(r'\[(?!t)(p|u|s|cc|cs)\]')  # find 'p' in camera[+2][p]
+SENT = re.compile(r'##(.*)$')  # find tokenized sentence
 
 
 @compat.python_2_unicode_compatible
@@ -79,6 +80,7 @@ class Review(object):
     """
     A Review is the main block of a ReviewsCorpusReader.
     """
+
     def __init__(self, title=None, review_lines=None):
         """
         :param title: the title of the review.
@@ -131,6 +133,7 @@ class ReviewLine(object):
     A ReviewLine represents a sentence of the review, together with (optional)
     annotations of its features and notes about the reviewed item.
     """
+
     def __init__(self, sent, features=None, notes=None):
         self.sent = sent
         if features is None:
@@ -287,10 +290,11 @@ class ReviewsCorpusReader(CorpusReader):
         while True:
             line = stream.readline()
             if not line:
-                return [] # end of file.
+                return []  # end of file.
             title_match = re.match(TITLE, line)
             if title_match:
-                review = Review(title=title_match.group(1).strip()) # We create a new review
+                review = Review(title=title_match.group(
+                    1).strip())  # We create a new review
                 break
 
         # Scan until we find another line matching the regexp, or EOF.
@@ -322,7 +326,7 @@ class ReviewsCorpusReader(CorpusReader):
 
     def _read_word_block(self, stream):
         words = []
-        for i in range(20): # Read 20 lines at a time.
+        for i in range(20):  # Read 20 lines at a time.
             line = stream.readline()
             sent = re.findall(SENT, line)
             if sent:

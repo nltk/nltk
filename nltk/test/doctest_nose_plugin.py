@@ -29,7 +29,8 @@ class _UnicodeOutputChecker(doctest.OutputChecker):
         # ALLOW_UNICODE is active and want != got
         cleaned_want = self._remove_u_prefixes(want)
         cleaned_got = self._remove_u_prefixes(got)
-        res = doctest.OutputChecker.check_output(self, cleaned_want, cleaned_got, optionflags)
+        res = doctest.OutputChecker.check_output(
+            self, cleaned_want, cleaned_got, optionflags)
         return res
 
 
@@ -52,7 +53,8 @@ class DoctestPluginHelper(object):
     def loadTestsFromFileUnicode(self, filename):
         if self.extension and anyp(filename.endswith, self.extension):
             name = os.path.basename(filename)
-            dh = codecs.open(filename, 'r', self.options.get('doctestencoding'))
+            dh = codecs.open(
+                filename, 'r', self.options.get('doctestencoding'))
             try:
                 doc = dh.read()
             finally:
@@ -150,9 +152,11 @@ class DoctestPluginHelper(object):
                         self.options[key] = value
                         continue
                 except (AttributeError, ValueError, KeyError):
-                    raise ValueError("Unknown doctest option {}".format(stroption))
+                    raise ValueError(
+                        "Unknown doctest option {}".format(stroption))
                 else:
-                    raise ValueError("Doctest option is not a flag or a key/value pair: {} ".format(stroption))
+                    raise ValueError(
+                        "Doctest option is not a flag or a key/value pair: {} ".format(stroption))
 
 
 class DoctestFix(DoctestPluginHelper, Doctest):

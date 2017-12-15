@@ -12,7 +12,7 @@ A module for POS tagging using CRFSuite
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import unicodedata
-import re 
+import re
 from nltk.tag.api import TaggerI
 
 try:
@@ -20,34 +20,34 @@ try:
 except ImportError:
     pass
 
+
 class CRFTagger(TaggerI):
     """
     A module for POS tagging using CRFSuite https://pypi.python.org/pypi/python-crfsuite
-    
+
     >>> from nltk.tag import CRFTagger
     >>> ct = CRFTagger()
- 
+
     >>> train_data = [[('University','Noun'), ('is','Verb'), ('a','Det'), ('good','Adj'), ('place','Noun')],
     ... [('dog','Noun'),('eat','Verb'),('meat','Noun')]]
-    
+
     >>> ct.train(train_data,'model.crf.tagger')
     >>> ct.tag_sents([['dog','is','good'], ['Cat','eat','meat']])
     [[('dog', 'Noun'), ('is', 'Verb'), ('good', 'Adj')], [('Cat', 'Noun'), ('eat', 'Verb'), ('meat', 'Noun')]]
-    
+
     >>> gold_sentences = [[('dog','Noun'),('is','Verb'),('good','Adj')] , [('Cat','Noun'),('eat','Verb'), ('meat','Noun')]] 
     >>> ct.evaluate(gold_sentences) 
     1.0
-    
+
     Setting learned model file  
     >>> ct = CRFTagger() 
     >>> ct.set_model_file('model.crf.tagger')
     >>> ct.evaluate(gold_sentences)
     1.0
-    
+
     """
-    
-    
-    def __init__(self,  feature_func = None, verbose = False, training_opt = {}):
+
+    def __init__(self,  feature_func=None, verbose=False, training_opt={}):
         """
         Initialize the CRFSuite tagger 
         :param feature_func: The function that extracts features for each token of a sentence. This function should take 
@@ -57,7 +57,7 @@ class CRFTagger(TaggerI):
         :type verbose: boolean  
         :param training_opt: python-crfsuite training options
         :type training_opt : dictionary 
-        
+
         Set of possible training options (using LBFGS training algorithm).  
          'feature.minfreq' : The minimum frequency of features.
          'feature.possible_states' : Force to generate possible state features.
@@ -76,25 +76,25 @@ class CRFTagger(TaggerI):
                               'StrongBacktracking': Backtracking method with strong Wolfe condition
                            } 
          'max_linesearch' :  The maximum number of trials for the line search algorithm.
-         
+
         """
-                   
+
         self._model_file = ''
         self._tagger = pycrfsuite.Tagger()
-        
+
         if feature_func is None:
-            self._feature_func =  self._get_features
+            self._feature_func = self._get_features
         else:
-            self._feature_func =  feature_func
-        
-        self._verbose = verbose 
+            self._feature_func = feature_func
+
+        self._verbose = verbose
         self._training_options = training_opt
         self._pattern = re.compile(r'\d')
-        
+
     def set_model_file(self, model_file):
         self._model_file = model_file
         self._tagger.open(self._model_file)
-            
+
     def _get_features(self, tokens, idx):
         """
         Extract basic features about this word including 
@@ -104,43 +104,43 @@ class CRFTagger(TaggerI):
              - Has Number ?
              - Suffixes up to length 3
         Note that : we might include feature over previous word, next word ect. 
-        
+
         :return : a list which contains the features
         :rtype : list(str)    
-        
-        """ 
+
+        """
         token = tokens[idx]
-        
+
         feature_list = []
-        
+
         if not token:
             return feature_list
-            
-        # Capitalization 
+
+        # Capitalization
         if token[0].isupper():
             feature_list.append('CAPITALIZATION')
-        
-        # Number 
+
+        # Number
         if re.search(self._pattern, token) is not None:
-            feature_list.append('HAS_NUM') 
-        
+            feature_list.append('HAS_NUM')
+
         # Punctuation
         punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
-        if all (unicodedata.category(x) in punc_cat for x in token):
+        if all(unicodedata.category(x) in punc_cat for x in token):
             feature_list.append('PUNCTUATION')
-        
+
         # Suffix up to length 3
         if len(token) > 1:
-            feature_list.append('SUF_' + token[-1:]) 
-        if len(token) > 2: 
-            feature_list.append('SUF_' + token[-2:])    
-        if len(token) > 3: 
+            feature_list.append('SUF_' + token[-1:])
+        if len(token) > 2:
+            feature_list.append('SUF_' + token[-2:])
+        if len(token) > 3:
             feature_list.append('SUF_' + token[-3:])
-            
-        feature_list.append('WORD_' + token )
-        
+
+        feature_list.append('WORD_' + token)
+
         return feature_list
-        
+
     def tag_sents(self, sents):
         '''
         Tag a list of sentences. NB before using this function, user should specify the mode_file either by 
@@ -152,42 +152,46 @@ class CRFTagger(TaggerI):
         :rtype : list (list (tuple(str,str))) 
         '''
         if self._model_file == '':
-            raise Exception(' No model file is found !! Please use train or set_model_file function')
-        
+            raise Exception(
+                ' No model file is found !! Please use train or set_model_file function')
+
         # We need the list of sentences instead of the list generator for matching the input and output
-        result = []  
+        result = []
         for tokens in sents:
-            features = [self._feature_func(tokens,i) for i in range(len(tokens))]
+            features = [self._feature_func(tokens, i)
+                        for i in range(len(tokens))]
             labels = self._tagger.tag(features)
-                
+
             if len(labels) != len(tokens):
-                raise Exception(' Predicted Length Not Matched, Expect Errors !')
-            
-            tagged_sent = list(zip(tokens,labels))
+                raise Exception(
+                    ' Predicted Length Not Matched, Expect Errors !')
+
+            tagged_sent = list(zip(tokens, labels))
             result.append(tagged_sent)
-            
-        return result 
-    
+
+        return result
+
     def train(self, train_data, model_file):
         '''
         Train the CRF tagger using CRFSuite  
         :params train_data : is the list of annotated sentences.        
         :type train_data : list (list(tuple(str,str)))
         :params model_file : the model will be saved to this file.     
-         
+
         '''
         trainer = pycrfsuite.Trainer(verbose=self._verbose)
         trainer.set_params(self._training_options)
-        
+
         for sent in train_data:
-            tokens,labels = zip(*sent)
-            features = [self._feature_func(tokens,i) for i in range(len(tokens))]
-            trainer.append(features,labels)
-                        
+            tokens, labels = zip(*sent)
+            features = [self._feature_func(tokens, i)
+                        for i in range(len(tokens))]
+            trainer.append(features, labels)
+
         # Now train the model, the output should be model_file
         trainer.train(model_file)
         # Save the model file
-        self.set_model_file(model_file) 
+        self.set_model_file(model_file)
 
     def tag(self, tokens):
         '''
@@ -199,6 +203,5 @@ class CRFTagger(TaggerI):
         :return : list of tagged tokens. 
         :rtype : list (tuple(str,str)) 
         '''
-        
-        return self.tag_sents([tokens])[0]
 
+        return self.tag_sents([tokens])[0]

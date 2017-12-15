@@ -15,8 +15,10 @@ from __future__ import print_function, unicode_literals
 import codecs
 
 # Use the c version of ElementTree, which is faster, if possible:
-try: from xml.etree import cElementTree as ElementTree
-except ImportError: from xml.etree import ElementTree
+try:
+    from xml.etree import cElementTree as ElementTree
+except ImportError:
+    from xml.etree import ElementTree
 
 from six import string_types
 
@@ -27,6 +29,7 @@ from nltk.internals import ElementWrapper
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
 
+
 class XMLCorpusReader(CorpusReader):
     """
     Corpus reader for corpora whose documents are xml files.
@@ -35,6 +38,7 @@ class XMLCorpusReader(CorpusReader):
     ``encoding`` argument, because the unicode encoding is specified by
     the XML files themselves.  See the XML specs for more info.
     """
+
     def __init__(self, root, fileids, wrap_etree=False):
         self._wrap_etree = wrap_etree
         CorpusReader.__init__(self, root, fileids)
@@ -65,7 +69,7 @@ class XMLCorpusReader(CorpusReader):
 
         elt = self.xml(fileid)
         encoding = self.encoding(fileid)
-        word_tokenizer=WordPunctTokenizer()
+        word_tokenizer = WordPunctTokenizer()
         iterator = elt.getiterator()
         out = []
 
@@ -79,8 +83,10 @@ class XMLCorpusReader(CorpusReader):
         return out
 
     def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 
@@ -141,9 +147,10 @@ class XMLCorpusView(StreamBackedCorpusView):
 
                 elt_handler(elt, tagspec) -> value
         """
-        if elt_handler: self.handle_elt = elt_handler
+        if elt_handler:
+            self.handle_elt = elt_handler
 
-        self._tagspec = re.compile(tagspec+r'\Z')
+        self._tagspec = re.compile(tagspec + r'\Z')
         """The tag specification for this corpus view."""
 
         self._tag_context = {0: ()}
@@ -217,7 +224,7 @@ class XMLCorpusView(StreamBackedCorpusView):
            (<[^!>][^>]*>))                         # tag or PI
           [^<]*)*
         \Z""",
-        re.DOTALL|re.VERBOSE)
+                               re.DOTALL | re.VERBOSE)
 
     #: A regular expression used to extract the tag name from a start tag,
     #: end tag, or empty-elt tag string.
@@ -237,7 +244,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         (?P<EMPTY_ELT_TAG>  <\s*[^>/\?!\s][^>]*/\s*>            )|
         (?P<START_TAG>      <\s*[^>/\?!\s][^>]*>                )|
         (?P<END_TAG>        <\s*/[^>/\?!\s][^>]*>               )""",
-        re.DOTALL|re.VERBOSE)
+                            re.DOTALL | re.VERBOSE)
 
     def _read_xml_fragment(self, stream):
         """
@@ -264,7 +271,7 @@ class XMLCorpusView(StreamBackedCorpusView):
             # Do we have a fragment that will never be well-formed?
             if re.search('[<>]', fragment).group(0) == '>':
                 pos = stream.tell() - (
-                    len(fragment)-re.search('[<>]', fragment).end())
+                    len(fragment) - re.search('[<>]', fragment).end())
                 raise ValueError('Unexpected ">" near char %s' % pos)
 
             # End of file?
@@ -281,7 +288,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                         stream.seek(startpos)
                         stream.char_seek_forward(last_open_bracket)
                     else:
-                        stream.seek(-(len(fragment)-last_open_bracket), 1)
+                        stream.seek(-(len(fragment) - last_open_bracket), 1)
                     return fragment[:last_open_bracket]
 
             # Otherwise, read another block. (i.e., return to the
@@ -293,28 +300,32 @@ class XMLCorpusView(StreamBackedCorpusView):
         matches ``tagspec``, and return the result of applying
         ``elt_handler`` to each element found.
         """
-        if tagspec is None: tagspec = self._tagspec
-        if elt_handler is None: elt_handler = self.handle_elt
+        if tagspec is None:
+            tagspec = self._tagspec
+        if elt_handler is None:
+            elt_handler = self.handle_elt
 
         # Use a stack of strings to keep track of our context:
         context = list(self._tag_context.get(stream.tell()))
-        assert context is not None # check this -- could it ever happen?
+        assert context is not None  # check this -- could it ever happen?
 
         elts = []
 
-        elt_start = None # where does the elt start
-        elt_depth = None # what context depth
+        elt_start = None  # where does the elt start
+        elt_depth = None  # what context depth
         elt_text = ''
 
-        while elts==[] or elt_start is not None:
+        while elts == [] or elt_start is not None:
             if isinstance(stream, SeekableUnicodeStreamReader):
                 startpos = stream.tell()
             xml_fragment = self._read_xml_fragment(stream)
 
             # End of file.
             if not xml_fragment:
-                if elt_start is None: break
-                else: raise ValueError('Unexpected end of file')
+                if elt_start is None:
+                    break
+                else:
+                    raise ValueError('Unexpected end of file')
 
             # Process each <tag> in the xml fragment.
             for piece in self._XML_PIECE.finditer(xml_fragment):
@@ -342,7 +353,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # Is this the end of an element?
                     if elt_start is not None and elt_depth == len(context):
                         elt_text += xml_fragment[elt_start:piece.end()]
-                        elts.append( (elt_text, '/'.join(context)) )
+                        elts.append((elt_text, '/'.join(context)))
                         elt_start = elt_depth = None
                         elt_text = ''
                     # Keep context up-to-date
@@ -351,9 +362,9 @@ class XMLCorpusView(StreamBackedCorpusView):
                 elif piece.group('EMPTY_ELT_TAG'):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     if elt_start is None:
-                        if re.match(tagspec, '/'.join(context)+'/'+name):
+                        if re.match(tagspec, '/'.join(context) + '/' + name):
                             elts.append((piece.group(),
-                                         '/'.join(context)+'/'+name))
+                                         '/'.join(context) + '/' + name))
 
             if elt_start is not None:
                 # If we haven't found any elements yet, then keep
@@ -369,13 +380,13 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # take back the last start-tag, and return what
                     # we've gotten so far (elts is non-empty).
                     if self._DEBUG:
-                        print(' '*36+'(backtrack)')
+                        print(' ' * 36 + '(backtrack)')
                     if isinstance(stream, SeekableUnicodeStreamReader):
                         stream.seek(startpos)
                         stream.char_seek_forward(elt_start)
                     else:
-                        stream.seek(-(len(xml_fragment)-elt_start), 1)
-                    context = context[:elt_depth-1]
+                        stream.seek(-(len(xml_fragment) - elt_start), 1)
+                    context = context[:elt_depth - 1]
                     elt_start = elt_depth = None
                     elt_text = ''
 
@@ -387,6 +398,6 @@ class XMLCorpusView(StreamBackedCorpusView):
             self._tag_context[pos] = tuple(context)
 
         return [elt_handler(ElementTree.fromstring(
-                                  elt.encode('ascii', 'xmlcharrefreplace')),
-                            context)
-                for (elt, context) in elts]
+            elt.encode('ascii', 'xmlcharrefreplace')),
+            context)
+            for (elt, context) in elts]
