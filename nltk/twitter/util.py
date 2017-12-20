@@ -17,6 +17,7 @@ import os
 import pprint
 from twython import Twython
 
+
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
     """
     Convenience function for authentication
@@ -28,6 +29,7 @@ class Authenticate(object):
     """
     Methods for authenticating with Twitter.
     """
+
     def __init__(self):
         self.creds_file = 'credentials.txt'
         self.creds_fullpath = None
@@ -39,7 +41,6 @@ class Authenticate(object):
         except KeyError:
             self.twitter_dir = None
             self.creds_subdir = None
-
 
     def load_creds(self, creds_file=None, subdir=None, verbose=False):
         """
@@ -70,13 +71,13 @@ class Authenticate(object):
 
         if subdir is None:
             if self.creds_subdir is None:
-                msg = "Supply a value to the 'subdir' parameter or" +\
+                msg = "Supply a value to the 'subdir' parameter or" + \
                       " set the TWITTER environment variable."
                 raise ValueError(msg)
         else:
             self.creds_subdir = subdir
 
-        self.creds_fullpath =\
+        self.creds_fullpath = \
             os.path.normpath(os.path.join(self.creds_subdir, self.creds_file))
 
         if not os.path.isfile(self.creds_fullpath):
@@ -98,7 +99,8 @@ class Authenticate(object):
     def _validate_creds_file(self, verbose=False):
         """Check validity of a credentials file."""
         oauth1 = False
-        oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
+        oauth1_keys = ['app_key', 'app_secret',
+                       'oauth_token', 'oauth_token_secret']
         oauth2 = False
         oauth2_keys = ['app_key', 'app_secret', 'access_token']
         if all(k in self.oauth for k in oauth1_keys):
@@ -107,7 +109,8 @@ class Authenticate(object):
             oauth2 = True
 
         if not (oauth1 or oauth2):
-            msg = 'Missing or incorrect entries in {}\n'.format(self.creds_file)
+            msg = 'Missing or incorrect entries in {}\n'.format(
+                self.creds_file)
             msg += pprint.pformat(self.oauth)
             raise ValueError(msg)
         elif verbose:

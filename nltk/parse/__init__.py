@@ -65,7 +65,8 @@ from nltk.parse.pchart import (BottomUpProbabilisticChartParser, InsideChartPars
                                LongestChartParser)
 from nltk.parse.recursivedescent import (RecursiveDescentParser,
                                          SteppingRecursiveDescentParser)
-from nltk.parse.shiftreduce import (ShiftReduceParser, SteppingShiftReduceParser)
+from nltk.parse.shiftreduce import (
+    ShiftReduceParser, SteppingShiftReduceParser)
 from nltk.parse.util import load_parser, TestGrammar, extract_test_sentences
 from nltk.parse.viterbi import ViterbiParser
 from nltk.parse.dependencygraph import DependencyGraph

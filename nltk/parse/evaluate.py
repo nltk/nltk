@@ -92,7 +92,8 @@ class DependencyEvaluator(object):
         :return : tuple(float,float)
         """
         if (len(self._parsed_sents) != len(self._gold_sents)):
-            raise ValueError(" Number of parsed sentence is different with number of gold sentence.")
+            raise ValueError(
+                " Number of parsed sentence is different with number of gold sentence.")
 
         corr = 0
         corrL = 0
@@ -125,5 +126,3 @@ class DependencyEvaluator(object):
                         corrL += 1
 
         return corr / total, corrL / total
-
-

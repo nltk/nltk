@@ -177,7 +177,8 @@ def describe_template_sets():
     import sys
 
     # a bit of magic to get all functions in this module
-    templatesets = inspect.getmembers(sys.modules[__name__], inspect.isfunction)
+    templatesets = inspect.getmembers(
+        sys.modules[__name__], inspect.isfunction)
     for (name, obj) in templatesets:
         if name == "describe_template_sets":
             continue
@@ -329,14 +330,15 @@ class BrillTagger(TaggerI):
                   "final: {finalerrors:5d} {finalacc:.4f} ".format(**train_stats))
             head = "#ID | Score (train) |  #Rules     | Template"
             print(head, "\n", "-" * len(head), sep="")
-            train_tplscores = sorted(weighted_traincounts.items(), key=det_tplsort, reverse=True)
+            train_tplscores = sorted(
+                weighted_traincounts.items(), key=det_tplsort, reverse=True)
             for (tid, trainscore) in train_tplscores:
                 s = "{0} | {1:5d}   {2:5.3f} |{3:4d}   {4:.3f} | {5}".format(
                     tid,
                     trainscore,
-                    trainscore/tottrainscores,
+                    trainscore / tottrainscores,
                     template_counts[tid],
-                    template_counts[tid]/len(tids),
+                    template_counts[tid] / len(tids),
                     Template.ALLTEMPLATES[int(tid)],
                 )
                 print(s)
@@ -357,23 +359,25 @@ class BrillTagger(TaggerI):
             tottestscores = sum(testscores)
             head = "#ID | Score (test) | Score (train) |  #Rules     | Template"
             print(head, "\n", "-" * len(head), sep="")
-            test_tplscores = sorted(weighted_testcounts.items(), key=det_tplsort, reverse=True)
+            test_tplscores = sorted(
+                weighted_testcounts.items(), key=det_tplsort, reverse=True)
             for (tid, testscore) in test_tplscores:
                 s = "{0:s} |{1:5d}  {2:6.3f} |  {3:4d}   {4:.3f} |{5:4d}   {6:.3f} | {7:s}".format(
                     tid,
                     testscore,
-                    testscore/tottestscores,
+                    testscore / tottestscores,
                     weighted_traincounts[tid],
-                    weighted_traincounts[tid]/tottrainscores,
+                    weighted_traincounts[tid] / tottrainscores,
                     template_counts[tid],
-                    template_counts[tid]/len(tids),
+                    template_counts[tid] / len(tids),
                     Template.ALLTEMPLATES[int(tid)],
                 )
                 print(s)
 
         def print_unused_templates():
             usedtpls = set([int(tid) for tid in tids])
-            unused = [(tid, tpl) for (tid, tpl) in enumerate(Template.ALLTEMPLATES) if tid not in usedtpls]
+            unused = [(tid, tpl) for (tid, tpl) in enumerate(
+                Template.ALLTEMPLATES) if tid not in usedtpls]
             print("UNUSED TEMPLATES ({0})".format(len(unused)))
 
             for (tid, tpl) in unused:
@@ -409,16 +413,20 @@ class BrillTagger(TaggerI):
         testing_stats = {}
         testing_stats['tokencount'] = sum(len(t) for t in sequences)
         testing_stats['sequencecount'] = len(sequences)
-        tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in sequences]
+        tagged_tokenses = [self._initial_tagger.tag(
+            tokens) for tokens in sequences]
         testing_stats['initialerrors'] = counterrors(tagged_tokenses)
-        testing_stats['initialacc'] = 1 - testing_stats['initialerrors']/testing_stats['tokencount']
+        testing_stats['initialacc'] = 1 - \
+            testing_stats['initialerrors'] / testing_stats['tokencount']
         # Apply each rule to the entire corpus, in order
         errors = [testing_stats['initialerrors']]
         for rule in self._rules:
             for tagged_tokens in tagged_tokenses:
                 rule.apply(tagged_tokens)
             errors.append(counterrors(tagged_tokenses))
-        testing_stats['rulescores'] = [err0 - err1 for (err0, err1) in zip(errors, errors[1:])]
+        testing_stats['rulescores'] = [
+            err0 - err1 for (err0, err1) in zip(errors, errors[1:])]
         testing_stats['finalerrors'] = errors[-1]
-        testing_stats['finalacc'] = 1 - testing_stats['finalerrors']/testing_stats['tokencount']
+        testing_stats['finalacc'] = 1 - \
+            testing_stats['finalerrors'] / testing_stats['tokencount']
         return (tagged_tokenses, testing_stats)

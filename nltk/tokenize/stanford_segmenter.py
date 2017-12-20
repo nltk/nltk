@@ -21,7 +21,7 @@ import warnings
 
 from nltk import compat
 from nltk.internals import find_jar, find_file, find_dir, \
-                           config_java, java, _java_options
+    config_java, java, _java_options
 from nltk.tokenize.api import TokenizerI
 
 from six import text_type
@@ -73,10 +73,10 @@ class StanfordSegmenter(TokenizerI):
         warnings.simplefilter('ignore', DeprecationWarning)
 
         stanford_segmenter = find_jar(
-                self._JAR, path_to_jar,
-                env_vars=('STANFORD_SEGMENTER',),
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
+            self._JAR, path_to_jar,
+            env_vars=('STANFORD_SEGMENTER',),
+            searchpath=(), url=_stanford_url,
+            verbose=verbose)
         if path_to_slf4j is not None:
             slf4j = find_jar(
                 'slf4j-api.jar', path_to_slf4j,
@@ -102,7 +102,8 @@ class StanfordSegmenter(TokenizerI):
         self._encoding = encoding
         self.java_options = java_options
         options = {} if options is None else options
-        self._options_cmd = ','.join('{0}={1}'.format(key, json.dumps(val)) for key, val in options.items())
+        self._options_cmd = ','.join('{0}={1}'.format(
+            key, json.dumps(val)) for key, val in options.items())
 
     def default_config(self, lang):
         """
@@ -112,7 +113,8 @@ class StanfordSegmenter(TokenizerI):
 
         search_path = ()
         if os.environ.get('STANFORD_SEGMENTER'):
-            search_path = {os.path.join(os.environ.get('STANFORD_SEGMENTER'), 'data')}
+            search_path = {os.path.join(
+                os.environ.get('STANFORD_SEGMENTER'), 'data')}
 
         # init for Chinese-specific files
         self._dict = None
@@ -135,17 +137,18 @@ class StanfordSegmenter(TokenizerI):
                                        env_vars=('STANFORD_MODELS',))
             except LookupError:
                 raise LookupError("Could not find '%s' (tried using env. "
-                    "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)" % path_to_dict)
+                                  "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)" % path_to_dict)
 
             sihan_dir = './data/'
             try:
                 path_to_sihan_dir = find_dir(sihan_dir,
                                              url=_stanford_url, verbose=False,
                                              env_vars=('STANFORD_SEGMENTER',))
-                self._sihan_corpora_dict = os.path.join(path_to_sihan_dir, sihan_dir)
+                self._sihan_corpora_dict = os.path.join(
+                    path_to_sihan_dir, sihan_dir)
             except LookupError:
                 raise LookupError("Could not find '%s' (tried using the "
-                    "STANFORD_SEGMENTER environment variable)" % sihan_dir)
+                                  "STANFORD_SEGMENTER environment variable)" % sihan_dir)
         else:
             raise LookupError("Unsupported language '%'" % lang)
 
@@ -155,7 +158,7 @@ class StanfordSegmenter(TokenizerI):
                                     env_vars=('STANFORD_MODELS', 'STANFORD_SEGMENTER',))
         except LookupError:
             raise LookupError("Could not find '%s' (tried using env. "
-                "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)" % model)
+                              "variables STANFORD_MODELS and <STANFORD_SEGMENTER>/data/)" % model)
 
     def tokenize(self, s):
         super().tokenize(s)
@@ -226,7 +229,8 @@ class StanfordSegmenter(TokenizerI):
         # Configure java.
         config_java(options=self.java_options, verbose=verbose)
 
-        stdout, _stderr = java(cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
+        stdout, _stderr = java(
+            cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE)
         stdout = stdout.decode(encoding)
 
         # Return java configurations to their default values.
@@ -243,4 +247,5 @@ def setup_module(module):
         seg.default_config('ar')
         seg.default_config('zh')
     except LookupError as e:
-        raise SkipTest('Tests for nltk.tokenize.stanford_segmenter skipped: %s' % str(e))
+        raise SkipTest(
+            'Tests for nltk.tokenize.stanford_segmenter skipped: %s' % str(e))

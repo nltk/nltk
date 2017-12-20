@@ -72,7 +72,6 @@ class TextTilingTokenizer(TokenizerI):
                  cutoff_policy=HC,
                  demo_mode=False):
 
-
         if stopwords is None:
             from nltk.corpus import stopwords
             stopwords = stopwords.words('english')
@@ -115,7 +114,8 @@ class TextTilingTokenizer(TokenizerI):
         if self.similarity_method == BLOCK_COMPARISON:
             gap_scores = self._block_comparison(tokseqs, token_table)
         elif self.similarity_method == VOCABULARY_INTRODUCTION:
-            raise NotImplementedError("Vocabulary introduction not implemented")
+            raise NotImplementedError(
+                "Vocabulary introduction not implemented")
 
         if self.smoothing_method == DEFAULT_SMOOTHING:
             smooth_scores = self._smooth_scores(gap_scores)
@@ -138,7 +138,7 @@ class TextTilingTokenizer(TokenizerI):
             segmented_text.append(text[prevb:b])
             prevb = b
 
-        if prevb < text_length: # append any text that may be remaining
+        if prevb < text_length:  # append any text that may be remaining
             segmented_text.append(text[prevb:])
 
         if not segmented_text:
@@ -157,33 +157,33 @@ class TextTilingTokenizer(TokenizerI):
             return freq
 
         gap_scores = []
-        numgaps = len(tokseqs)-1
+        numgaps = len(tokseqs) - 1
 
         for curr_gap in range(numgaps):
             score_dividend, score_divisor_b1, score_divisor_b2 = 0.0, 0.0, 0.0
             score = 0.0
-            #adjust window size for boundary conditions
-            if curr_gap < self.k-1:
+            # adjust window size for boundary conditions
+            if curr_gap < self.k - 1:
                 window_size = curr_gap + 1
-            elif curr_gap > numgaps-self.k:
+            elif curr_gap > numgaps - self.k:
                 window_size = numgaps - curr_gap
             else:
                 window_size = self.k
 
             b1 = [ts.index
-                  for ts in tokseqs[curr_gap-window_size+1 : curr_gap+1]]
+                  for ts in tokseqs[curr_gap - window_size + 1: curr_gap + 1]]
             b2 = [ts.index
-                  for ts in tokseqs[curr_gap+1 : curr_gap+window_size+1]]
+                  for ts in tokseqs[curr_gap + 1: curr_gap + window_size + 1]]
 
             for t in token_table:
-                score_dividend += blk_frq(t, b1)*blk_frq(t, b2)
+                score_dividend += blk_frq(t, b1) * blk_frq(t, b2)
                 score_divisor_b1 += blk_frq(t, b1)**2
                 score_divisor_b2 += blk_frq(t, b2)**2
             try:
-                score = score_dividend/math.sqrt(score_divisor_b1*
-                                                 score_divisor_b2)
+                score = score_dividend / math.sqrt(score_divisor_b1 *
+                                                   score_divisor_b2)
             except ZeroDivisionError:
-                pass # score += 0.0
+                pass  # score += 0.0
 
             gap_scores.append(score)
 
@@ -192,7 +192,7 @@ class TextTilingTokenizer(TokenizerI):
     def _smooth_scores(self, gap_scores):
         "Wraps the smooth function from the SciPy Cookbook"
         return list(smooth(numpy.array(gap_scores[:]),
-                           window_len = self.smoothing_width+1))
+                           window_len=self.smoothing_width + 1))
 
     def _mark_paragraph_breaks(self, text):
         """Identifies indented text or line breaks as the beginning of
@@ -204,7 +204,7 @@ class TextTilingTokenizer(TokenizerI):
         last_break = 0
         pbreaks = [0]
         for pb in matches:
-            if pb.start()-last_break < MIN_PARAGRAPH:
+            if pb.start() - last_break < MIN_PARAGRAPH:
                 continue
             else:
                 pbreaks.append(pb.start())
@@ -219,7 +219,7 @@ class TextTilingTokenizer(TokenizerI):
         matches = re.finditer("\w+", text)
         for match in matches:
             wrdindex_list.append((match.group(), match.start()))
-        return [TokenSequence(i/w, wrdindex_list[i:i+w])
+        return [TokenSequence(i / w, wrdindex_list[i:i + w])
                 for i in range(0, len(wrdindex_list), w)]
 
     def _create_token_table(self, token_sequences, par_breaks):
@@ -231,11 +231,11 @@ class TextTilingTokenizer(TokenizerI):
         current_par_break = next(pb_iter)
         if current_par_break == 0:
             try:
-                current_par_break = next(pb_iter) #skip break at 0
+                current_par_break = next(pb_iter)  # skip break at 0
             except StopIteration:
                 raise ValueError(
                     "No paragraph breaks were found(text too short perhaps?)"
-                    )
+                )
         for ts in token_sequences:
             for word, index in ts.wrdindex_list:
                 try:
@@ -243,7 +243,7 @@ class TextTilingTokenizer(TokenizerI):
                         current_par_break = next(pb_iter)
                         current_par += 1
                 except StopIteration:
-                    #hit bottom
+                    # hit bottom
                     pass
 
                 if word in token_table:
@@ -256,18 +256,17 @@ class TextTilingTokenizer(TokenizerI):
                     if token_table[word].last_tok_seq != current_tok_seq:
                         token_table[word].last_tok_seq = current_tok_seq
                         token_table[word]\
-                                .ts_occurences.append([current_tok_seq,1])
+                            .ts_occurences.append([current_tok_seq, 1])
                     else:
                         token_table[word].ts_occurences[-1][1] += 1
-                else: #new word
+                else:  # new word
                     token_table[word] = TokenTableField(first_pos=index,
-                                                        ts_occurences= \
-                                                          [[current_tok_seq,1]],
+                                                        ts_occurences=[
+                                                            [current_tok_seq, 1]],
                                                         total_count=1,
                                                         par_count=1,
                                                         last_par=current_par,
-                                                        last_tok_seq= \
-                                                          current_tok_seq)
+                                                        last_tok_seq=current_tok_seq)
 
             current_tok_seq += 1
 
@@ -279,24 +278,24 @@ class TextTilingTokenizer(TokenizerI):
 
         boundaries = [0 for x in depth_scores]
 
-        avg = sum(depth_scores)/len(depth_scores)
+        avg = sum(depth_scores) / len(depth_scores)
         stdev = numpy.std(depth_scores)
 
-        #SB: what is the purpose of this conditional?
+        # SB: what is the purpose of this conditional?
         if self.cutoff_policy == LC:
-            cutoff = avg-stdev/2.0
+            cutoff = avg - stdev / 2.0
         else:
-            cutoff = avg-stdev/2.0
+            cutoff = avg - stdev / 2.0
 
         depth_tuples = sorted(zip(depth_scores, range(len(depth_scores))))
         depth_tuples.reverse()
-        hp = list(filter(lambda x:x[0]>cutoff, depth_tuples))
+        hp = list(filter(lambda x: x[0] > cutoff, depth_tuples))
 
         for dt in hp:
             boundaries[dt[1]] = 1
-            for dt2 in hp: #undo if there is a boundary close already
-                if dt[1] != dt2[1] and abs(dt2[1]-dt[1]) < 4 \
-                       and boundaries[dt2[1]] == 1:
+            for dt2 in hp:  # undo if there is a boundary close already
+                if dt[1] != dt2[1] and abs(dt2[1] - dt[1]) < 4 \
+                        and boundaries[dt2[1]] == 1:
                     boundaries[dt[1]] = 0
         return boundaries
 
@@ -305,9 +304,9 @@ class TextTilingTokenizer(TokenizerI):
         between the left and right peaks and the gap's score"""
 
         depth_scores = [0 for x in scores]
-        #clip boundaries: this holds on the rule of thumb(my thumb)
-        #that a section shouldn't be smaller than at least 2
-        #pseudosentences for small texts and around 5 for larger ones.
+        # clip boundaries: this holds on the rule of thumb(my thumb)
+        # that a section shouldn't be smaller than at least 2
+        # pseudosentences for small texts and around 5 for larger ones.
 
         clip = min(max(len(scores) // 10, 2), 5)
         index = clip
@@ -344,19 +343,19 @@ class TextTilingTokenizer(TokenizerI):
                 seen_word = False
                 word_count += 1
             if char not in " \t\n" and not seen_word:
-                seen_word=True
+                seen_word = True
             if gaps_seen < len(boundaries) and word_count > \
-                                               (max(gaps_seen*self.w, self.w)):
+                    (max(gaps_seen * self.w, self.w)):
                 if boundaries[gaps_seen] == 1:
-                    #find closest paragraph break
+                    # find closest paragraph break
                     best_fit = len(text)
                     for br in paragraph_breaks:
-                        if best_fit > abs(br-char_count):
-                            best_fit = abs(br-char_count)
+                        if best_fit > abs(br - char_count):
+                            best_fit = abs(br - char_count)
                             bestbr = br
                         else:
                             break
-                    if bestbr not in norm_boundaries: #avoid duplicates
+                    if bestbr not in norm_boundaries:  # avoid duplicates
                         norm_boundaries.append(bestbr)
                 gaps_seen += 1
 
@@ -366,6 +365,7 @@ class TextTilingTokenizer(TokenizerI):
 class TokenTableField(object):
     """A field in the token table holding parameters for each token,
     used later in the process"""
+
     def __init__(self,
                  first_pos,
                  ts_occurences,
@@ -376,19 +376,21 @@ class TokenTableField(object):
         self.__dict__.update(locals())
         del self.__dict__['self']
 
+
 class TokenSequence(object):
     "A token list with its original length and its index"
+
     def __init__(self,
                  index,
                  wrdindex_list,
                  original_length=None):
-        original_length=original_length or len(wrdindex_list)
+        original_length = original_length or len(wrdindex_list)
         self.__dict__.update(locals())
         del self.__dict__['self']
 
 
-#Pasted from the SciPy cookbook: http://www.scipy.org/Cookbook/SignalSmooth
-def smooth(x,window_len=11,window='flat'):
+# Pasted from the SciPy cookbook: http://www.scipy.org/Cookbook/SignalSmooth
+def smooth(x, window_len=11, window='flat'):
     """smooth the data using a window with requested size.
 
     This method is based on the convolution of a scaled window with the signal.
@@ -425,26 +427,29 @@ def smooth(x,window_len=11,window='flat'):
         return x
 
     if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
+        raise ValueError(
+            "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
 
-    s=numpy.r_[2*x[0]-x[window_len:1:-1],x,2*x[-1]-x[-1:-window_len:-1]]
+    s = numpy.r_[2 * x[0] - x[window_len:1:-1],
+                 x, 2 * x[-1] - x[-1:-window_len:-1]]
 
-    #print(len(s))
-    if window == 'flat': #moving average
-        w = numpy.ones(window_len,'d')
+    # print(len(s))
+    if window == 'flat':  # moving average
+        w = numpy.ones(window_len, 'd')
     else:
         w = eval('numpy.' + window + '(window_len)')
 
-    y = numpy.convolve(w/w.sum(), s, mode='same')
+    y = numpy.convolve(w / w.sum(), s, mode='same')
 
-    return y[window_len-1:-window_len+1]
+    return y[window_len - 1:-window_len + 1]
 
 
 def demo(text=None):
     from nltk.corpus import brown
     from matplotlib import pylab
     tt = TextTilingTokenizer(demo_mode=True)
-    if text is None: text = brown.raw()[:10000]
+    if text is None:
+        text = brown.raw()[:10000]
     s, ss, d, b = tt.tokenize(text)
     pylab.xlabel("Sentence Gap index")
     pylab.ylabel("Gap Scores")
@@ -454,5 +459,3 @@ def demo(text=None):
     pylab.stem(range(len(b)), b)
     pylab.legend()
     pylab.show()
-
-

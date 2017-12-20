@@ -42,9 +42,12 @@ class TestIBMModel3(unittest.TestCase):
 
         # assert
         # examine i and j values that are not in the training data domain
-        self.assertEqual(model3.distortion_table[0][0][3][2], IBMModel.MIN_PROB)
-        self.assertEqual(model3.distortion_table[9][2][2][4], IBMModel.MIN_PROB)
-        self.assertEqual(model3.distortion_table[2][9][2][4], IBMModel.MIN_PROB)
+        self.assertEqual(
+            model3.distortion_table[0][0][3][2], IBMModel.MIN_PROB)
+        self.assertEqual(
+            model3.distortion_table[9][2][2][4], IBMModel.MIN_PROB)
+        self.assertEqual(
+            model3.distortion_table[2][9][2][4], IBMModel.MIN_PROB)
 
     def test_prob_t_a_given_s(self):
         # arrange
@@ -97,7 +100,7 @@ class TestIBMModel3(unittest.TestCase):
 
         # assert
         null_generation = 5 * pow(0.167, 1) * pow(0.833, 4)
-        fertility = 1*0.99 * 1*0.99 * 1*0.99 * 1*0.99 * 2*0.999
+        fertility = 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 2 * 0.999
         lexical_translation = 0.98 * 0.98 * 0.98 * 0.98 * 0.98 * 0.98
         distortion = 0.97 * 0.97 * 0.97 * 0.97 * 0.97 * 0.97
         expected_probability = (null_generation * fertility *

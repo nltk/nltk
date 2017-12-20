@@ -19,7 +19,7 @@ from nltk.sem import evaluate
 
 
 ##############################################################
-## Utility functions for connecting parse output to semantics
+# Utility functions for connecting parse output to semantics
 ##############################################################
 
 def parse_sents(inputs, grammar, trace=0):
@@ -43,10 +43,11 @@ def parse_sents(inputs, grammar, trace=0):
         cp = load_parser(grammar, trace=trace)
     parses = []
     for sent in inputs:
-        tokens = sent.split() # use a tokenizer?
+        tokens = sent.split()  # use a tokenizer?
         syntrees = list(cp.parse(tokens))
         parses.append(syntrees)
     return parses
+
 
 def root_semrep(syntree, semkey='SEM'):
     """
@@ -68,6 +69,7 @@ def root_semrep(syntree, semkey='SEM'):
         print("has no specification for the feature %s" % semkey)
     raise
 
+
 def interpret_sents(inputs, grammar, semkey='SEM', trace=0):
     """
     Add the semantic representation to each syntactic parse tree
@@ -83,6 +85,7 @@ def interpret_sents(inputs, grammar, semkey='SEM', trace=0):
     return [[(syn, root_semrep(syn, semkey)) for syn in syntrees]
             for syntrees in parse_sents(inputs, grammar, trace=trace)]
 
+
 def evaluate_sents(inputs, grammar, model, assignment, trace=0):
     """
     Add the truth-in-a-model value to each semantic representation
@@ -96,36 +99,38 @@ def evaluate_sents(inputs, grammar, model, assignment, trace=0):
     :rtype: list(list(tuple(nltk.tree.Tree, nltk.sem.logic.ConstantExpression, bool or dict(str): bool)))
     """
     return [[(syn, sem, model.evaluate("%s" % sem, assignment, trace=trace))
-            for (syn, sem) in interpretations]
+             for (syn, sem) in interpretations]
             for interpretations in interpret_sents(inputs, grammar)]
 
 
 def demo_model0():
     global m0, g0
-    #Initialize a valuation of non-logical constants."""
+    # Initialize a valuation of non-logical constants."""
     v = [('john', 'b1'),
-        ('mary', 'g1'),
-        ('suzie', 'g2'),
-        ('fido', 'd1'),
-        ('tess', 'd2'),
-        ('noosa', 'n'),
-        ('girl', set(['g1', 'g2'])),
-        ('boy', set(['b1', 'b2'])),
-        ('dog', set(['d1', 'd2'])),
-        ('bark', set(['d1', 'd2'])),
-        ('walk', set(['b1', 'g2', 'd1'])),
-        ('chase', set([('b1', 'g1'), ('b2', 'g1'), ('g1', 'd1'), ('g2', 'd2')])),
-        ('see', set([('b1', 'g1'), ('b2', 'd2'), ('g1', 'b1'),('d2', 'b1'), ('g2', 'n')])),
-        ('in', set([('b1', 'n'), ('b2', 'n'), ('d2', 'n')])),
-        ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')]))
-     ]
-    #Read in the data from ``v``
+         ('mary', 'g1'),
+         ('suzie', 'g2'),
+         ('fido', 'd1'),
+         ('tess', 'd2'),
+         ('noosa', 'n'),
+         ('girl', set(['g1', 'g2'])),
+         ('boy', set(['b1', 'b2'])),
+         ('dog', set(['d1', 'd2'])),
+         ('bark', set(['d1', 'd2'])),
+         ('walk', set(['b1', 'g2', 'd1'])),
+         ('chase', set(
+             [('b1', 'g1'), ('b2', 'g1'), ('g1', 'd1'), ('g2', 'd2')])),
+         ('see', set([('b1', 'g1'), ('b2', 'd2'),
+                      ('g1', 'b1'), ('d2', 'b1'), ('g2', 'n')])),
+         ('in', set([('b1', 'n'), ('b2', 'n'), ('d2', 'n')])),
+         ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')]))
+         ]
+    # Read in the data from ``v``
     val = evaluate.Valuation(v)
-    #Bind ``dom`` to the ``domain`` property of ``val``
+    # Bind ``dom`` to the ``domain`` property of ``val``
     dom = val.domain
-    #Initialize a model with parameters ``dom`` and ``val``.
+    # Initialize a model with parameters ``dom`` and ``val``.
     m0 = evaluate.Model(dom, val)
-    #Initialize a variable assignment with parameter ``dom``
+    # Initialize a variable assignment with parameter ``dom``
     g0 = evaluate.Assignment(dom)
 
 
@@ -137,6 +142,7 @@ def read_sents(filename, encoding='utf8'):
     sents = [l for l in sents if len(l) > 0]
     sents = [l for l in sents if not l[0] == '#']
     return sents
+
 
 def demo_legacy_grammar():
     """
@@ -159,11 +165,12 @@ def demo_legacy_grammar():
         print()
         print("output: ", sem)
 
+
 def demo():
     import sys
     from optparse import OptionParser
     description = \
-    """
+        """
     Parse and evaluate some sentences.
     """
 
@@ -177,9 +184,9 @@ def demo():
     opts.add_option("-g", "--gram", dest="grammar",
                     help="read in grammar G", metavar="G")
     opts.add_option("-m", "--model", dest="model",
-                        help="import model M (omit '.py' suffix)", metavar="M")
+                    help="import model M (omit '.py' suffix)", metavar="M")
     opts.add_option("-s", "--sentences", dest="sentences",
-                        help="read in a file of test sentences S", metavar="S")
+                    help="read in a file of test sentences S", metavar="S")
     opts.add_option("-e", "--no-eval", action="store_false", dest="evaluate",
                     help="just do a syntactic analysis")
     opts.add_option("-b", "--no-beta-reduction", action="store_false",
@@ -196,12 +203,12 @@ def demo():
     demo_model0()
 
     sents = [
-    'Fido sees a boy with Mary',
-    'John sees Mary',
-    'every girl chases a dog',
-    'every boy chases a girl',
-    'John walks with a girl in Noosa',
-    'who walks']
+        'Fido sees a boy with Mary',
+        'John sees Mary',
+        'every girl chases a dog',
+        'every boy chases a girl',
+        'John walks with a girl in Noosa',
+        'who walks']
 
     gramfile = 'grammars/sample_grammars/sem2.fcfg'
 
@@ -243,6 +250,7 @@ def demo():
             for (syntree, semrep) in semreps[i]:
                 print('%d:  %s' % (n, semrep))
                 n += 1
+
 
 if __name__ == "__main__":
     demo()

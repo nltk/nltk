@@ -67,8 +67,8 @@ from nltk.corpus.reader import *
 
 abc = LazyCorpusLoader(
     'abc', PlaintextCorpusReader, r'(?!\.).*\.txt', encoding=[
-            ('science', 'latin_1'),
-            ('rural', 'utf8')])
+        ('science', 'latin_1'),
+        ('rural', 'utf8')])
 alpino = LazyCorpusLoader(
     'alpino', AlpinoCorpusReader, tagset='alpino')
 brown = LazyCorpusLoader(
@@ -89,7 +89,7 @@ comparative_sentences = LazyCorpusLoader(
     encoding='latin-1')
 conll2000 = LazyCorpusLoader(
     'conll2000', ConllChunkCorpusReader,
-    ['train.txt', 'test.txt'], ('NP','VP','PP'),
+    ['train.txt', 'test.txt'], ('NP', 'VP', 'PP'),
     tagset='wsj', encoding='ascii')
 conll2002 = LazyCorpusLoader(
     'conll2002', ConllChunkCorpusReader, '.*\.(test|train).*',
@@ -107,9 +107,9 @@ floresta = LazyCorpusLoader(
     'floresta', BracketParseCorpusReader, r'(?!\.).*\.ptb', '#',
     tagset='unknown', encoding='ISO-8859-15')
 framenet15 = LazyCorpusLoader(
-    'framenet_v15', FramenetCorpusReader, ['frRelation.xml','frameIndex.xml','fulltextIndex.xml','luIndex.xml','semTypes.xml'])
+    'framenet_v15', FramenetCorpusReader, ['frRelation.xml', 'frameIndex.xml', 'fulltextIndex.xml', 'luIndex.xml', 'semTypes.xml'])
 framenet = LazyCorpusLoader(
-    'framenet_v17', FramenetCorpusReader, ['frRelation.xml','frameIndex.xml','fulltextIndex.xml','luIndex.xml','semTypes.xml'])
+    'framenet_v17', FramenetCorpusReader, ['frRelation.xml', 'frameIndex.xml', 'fulltextIndex.xml', 'luIndex.xml', 'semTypes.xml'])
 gazetteers = LazyCorpusLoader(
     'gazetteers', WordListCorpusReader, r'(?!LICENSE|\.).*\.txt',
     encoding='ISO-8859-2')
@@ -166,7 +166,7 @@ product_reviews_2 = LazyCorpusLoader(
 pros_cons = LazyCorpusLoader(
     'pros_cons', ProsConsCorpusReader, r'Integrated(Cons|Pros)\.txt',
     cat_pattern=r'Integrated(Cons|Pros)\.txt', encoding='ISO-8859-2')
-ptb = LazyCorpusLoader( # Penn Treebank v3: WSJ and Brown portions
+ptb = LazyCorpusLoader(  # Penn Treebank v3: WSJ and Brown portions
     'ptb', CategorizedBracketParseCorpusReader, r'(WSJ/\d\d/WSJ_\d\d|BROWN/C[A-Z]/C[A-Z])\d\d.MRG',
     cat_file='allcats.txt', tagset='wsj')
 qc = LazyCorpusLoader(
@@ -195,7 +195,7 @@ stopwords = LazyCorpusLoader(
     'stopwords', WordListCorpusReader, r'(?!README|\.).*', encoding='utf8')
 subjectivity = LazyCorpusLoader(
     'subjectivity', CategorizedSentencesCorpusReader, r'(quote.tok.gt9|plot.tok.gt9)\.5000',
-    cat_map={'quote.tok.gt9.5000':['subj'], 'plot.tok.gt9.5000':['obj']}, encoding='latin-1')
+    cat_map={'quote.tok.gt9.5000': ['subj'], 'plot.tok.gt9.5000': ['obj']}, encoding='latin-1')
 swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*', encoding='utf8')
 swadesh110 = LazyCorpusLoader(
@@ -228,8 +228,8 @@ udhr2 = LazyCorpusLoader(
     'udhr2', PlaintextCorpusReader, r'.*\.txt', encoding='utf8')
 universal_treebanks = LazyCorpusLoader(
     'universal_treebanks_v20', ConllCorpusReader, r'.*\.conll',
-    columntypes = ('ignore', 'words', 'ignore', 'ignore', 'pos',
-                   'ignore', 'ignore', 'ignore', 'ignore', 'ignore'))
+    columntypes=('ignore', 'words', 'ignore', 'ignore', 'pos',
+                 'ignore', 'ignore', 'ignore', 'ignore', 'ignore'))
 verbnet = LazyCorpusLoader(
     'verbnet', VerbnetCorpusReader, r'(?!\.).*\.xml')
 webtext = LazyCorpusLoader(
@@ -247,25 +247,25 @@ propbank = LazyCorpusLoader(
     'propbank', PropbankCorpusReader,
     'prop.txt', 'frames/.*\.xml', 'verbs.txt',
     lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
-    treebank) # Must be defined *after* treebank corpus.
+    treebank)  # Must be defined *after* treebank corpus.
 nombank = LazyCorpusLoader(
     'nombank.1.0', NombankCorpusReader,
     'nombank.1.0', 'frames/.*\.xml', 'nombank.1.0.words',
     lambda filename: re.sub(r'^wsj/\d\d/', '', filename),
-    treebank) # Must be defined *after* treebank corpus.
+    treebank)  # Must be defined *after* treebank corpus.
 propbank_ptb = LazyCorpusLoader(
     'propbank', PropbankCorpusReader,
     'prop.txt', 'frames/.*\.xml', 'verbs.txt',
     lambda filename: filename.upper(),
-    ptb) # Must be defined *after* ptb corpus.
+    ptb)  # Must be defined *after* ptb corpus.
 nombank_ptb = LazyCorpusLoader(
     'nombank.1.0', NombankCorpusReader,
     'nombank.1.0', 'frames/.*\.xml', 'nombank.1.0.words',
     lambda filename: filename.upper(),
-    ptb) # Must be defined *after* ptb corpus.
+    ptb)  # Must be defined *after* ptb corpus.
 semcor = LazyCorpusLoader(
     'semcor', SemcorCorpusReader, r'brown./tagfiles/br-.*\.xml',
-    wordnet) # Must be defined *after* wordnet corpus.
+    wordnet)  # Must be defined *after* wordnet corpus.
 
 nonbreaking_prefixes = LazyCorpusLoader(
     'nonbreaking_prefixes', NonbreakingPrefixesCorpusReader, r'(?!README|\.).*', encoding='utf8')
@@ -288,14 +288,14 @@ perluniprops = LazyCorpusLoader(
 # nkjp = LazyCorpusLoader(
 #     'nkjp', NKJPCorpusReader, r'', encoding='utf8')
 #
-#panlex_lite = LazyCorpusLoader(
+# panlex_lite = LazyCorpusLoader(
 #    'panlex_lite', PanLexLiteCorpusReader)
 #
 # ycoe = LazyCorpusLoader(
 #     'ycoe', YCOECorpusReader)
 #
 # corpus not available with NLTK; these lines caused help(nltk.corpus) to break
-#hebrew_treebank = LazyCorpusLoader(
+# hebrew_treebank = LazyCorpusLoader(
 #    'hebrew_treebank', BracketParseCorpusReader, r'.*\.txt')
 
 
@@ -327,12 +327,15 @@ def demo():
     words.demo()
 #    ycoe.demo()
 
+
 if __name__ == '__main__':
-    #demo()
+    # demo()
     pass
 
 # ** this is for nose **
 # unload all corpus after tests
+
+
 def teardown_module(module=None):
     import nltk.corpus
     for name in dir(nltk.corpus):

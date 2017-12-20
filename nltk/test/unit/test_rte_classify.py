@@ -68,6 +68,7 @@ class RTEClassifierTest(unittest.TestCase):
         expected_output = list(filter(None, expected_output))
         self.assertEqual(test_output, expected_output)
     # Test the RTEFeatureExtractor object.
+
     def test_feature_extractor_object(self):
         rtepair = rte_corpus.pairs(['rte3_dev.xml'])[33]
         extractor = RTEFeatureExtractor(rtepair)
@@ -76,9 +77,11 @@ class RTEClassifierTest(unittest.TestCase):
         self.assertEqual(extractor.overlap('ne'), {'China'})
         self.assertEqual(extractor.hyp_extra('word'), {'member'})
     # Test the RTE classifier training.
+
     def test_rte_classification_without_megam(self):
         clf = rte_classifier('IIS')
         clf = rte_classifier('GIS')
+
     @unittest.skip("Skipping tests with dependencies on MEGAM")
     def test_rte_classification_with_megam(self):
         nltk.config_megam('/usr/local/bin/megam')

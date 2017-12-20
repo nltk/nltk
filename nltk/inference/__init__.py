@@ -17,4 +17,4 @@ from nltk.inference.prover9 import Prover9, Prover9Command
 from nltk.inference.resolution import ResolutionProver, ResolutionProverCommand
 from nltk.inference.tableau import TableauProver, TableauProverCommand
 from nltk.inference.discourse import (ReadingCommand, CfgReadingCommand,
-                       DrtGlueReadingCommand, DiscourseTester)
+                                      DrtGlueReadingCommand, DiscourseTester)

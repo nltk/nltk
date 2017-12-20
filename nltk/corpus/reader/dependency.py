@@ -15,6 +15,7 @@ from nltk.tokenize import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class DependencyCorpusReader(SyntaxCorpusReader):
 
     def __init__(self, root, fileids, encoding='utf8',
@@ -53,17 +54,17 @@ class DependencyCorpusReader(SyntaxCorpusReader):
                        for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def tagged_sents(self, fileids=None):
-            return concat([DependencyCorpusView(fileid, True, True, False, encoding=enc)
-                           for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        return concat([DependencyCorpusView(fileid, True, True, False, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def parsed_sents(self, fileids=None):
-        sents=concat([DependencyCorpusView(fileid, False, True, True, encoding=enc)
-                      for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        sents = concat([DependencyCorpusView(fileid, False, True, True, encoding=enc)
+                        for fileid, enc in self.abspaths(fileids, include_encoding=True)])
         return [DependencyGraph(sent) for sent in sents]
 
 
 class DependencyCorpusView(StreamBackedCorpusView):
-    _DOCSTART = '-DOCSTART- -DOCSTART- O\n' #dokumentu hasiera definitzen da
+    _DOCSTART = '-DOCSTART- -DOCSTART- O\n'  # dokumentu hasiera definitzen da
 
     def __init__(self, corpus_file, tagged, group_by_sent, dependencies,
                  chunk_types=None, encoding='utf8'):
@@ -88,7 +89,8 @@ class DependencyCorpusView(StreamBackedCorpusView):
             elif len(lines[0]) == 10:
                 sent = [(line[1], line[4]) for line in lines]
             else:
-                raise ValueError('Unexpected number of fields in dependency tree file')
+                raise ValueError(
+                    'Unexpected number of fields in dependency tree file')
 
             # discard tags if they weren't requested
             if not self._tagged:

@@ -490,7 +490,7 @@ class PunktToken(object):
         annotations.
         """
         typestr = (' type=%s,' % unicode_repr(self.type)
-        if self.type != self.tok else '')
+                   if self.type != self.tok else '')
 
         propvals = ', '.join(
             '%s=%s' % (p, unicode_repr(getattr(self, p)))
@@ -1262,11 +1262,13 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                        type1_is_initial=bool(tokens[0].is_initial),
                        type2_is_sent_starter=tokens[1].type_no_sentperiod in self._params.sent_starters,
                        type2_ortho_heuristic=self._ortho_heuristic(tokens[1]),
-                       type2_ortho_contexts=set(self._params._debug_ortho_context(tokens[1].type_no_sentperiod)),
+                       type2_ortho_contexts=set(
+                           self._params._debug_ortho_context(tokens[1].type_no_sentperiod)),
                        collocation=(tokens[0].type_no_sentperiod,
                                     tokens[1].type_no_sentperiod) in self._params.collocations,
 
-                       reason=self._second_pass_annotation(tokens[0], tokens[1]) or REASON_DEFAULT_DECISION,
+                       reason=self._second_pass_annotation(
+                           tokens[0], tokens[1]) or REASON_DEFAULT_DECISION,
                        break_decision=tokens[0].sentbreak,
                        )
 
@@ -1385,7 +1387,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         # sentence breaks, abbreviations, and ellipsis occurs.
         tokens = self._annotate_second_pass(tokens)
 
-        ## [XX] TESTING
+        # [XX] TESTING
         # tokens = list(tokens)
         # self.dump(tokens)
 
@@ -1422,7 +1424,8 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             if text[pos:pos + len(tok)] != tok:
                 pat = '\s*'.join(re.escape(c) for c in tok)
                 m = re.compile(pat).match(text, pos)
-                if m: tok = m.group()
+                if m:
+                    tok = m.group()
 
             # Move our position pointer to the end of the token.
             assert text[pos:pos + len(tok)] == tok
@@ -1610,7 +1613,8 @@ def format_debug_decision(d):
 
 def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     """Builds a punkt model and applies it to the same text"""
-    cleanup = lambda s: re.compile(r'(?:\r|^\s+)', re.MULTILINE).sub('', s).replace('\n', ' ')
+    def cleanup(s): return re.compile(r'(?:\r|^\s+)',
+                                      re.MULTILINE).sub('', s).replace('\n', ' ')
     trainer = train_cls()
     trainer.INCLUDE_ALL_COLLOCS = True
     trainer.train(text)

@@ -36,9 +36,10 @@ from collections import defaultdict
 from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist, sum_logs
 from nltk.classify.api import ClassifierI
 
-##//////////////////////////////////////////////////////
-##  Naive Bayes Classifier
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Naive Bayes Classifier
+# //////////////////////////////////////////////////////
+
 
 class NaiveBayesClassifier(ClassifierI):
     """
@@ -60,6 +61,7 @@ class NaiveBayesClassifier(ClassifierI):
     you generally should not use 'None' as a feature value for one of
     your own features.
     """
+
     def __init__(self, label_probdist, feature_probdist):
         """
         :param label_probdist: P(label), the probability distribution
@@ -97,7 +99,7 @@ class NaiveBayesClassifier(ClassifierI):
                 if (label, fname) in self._feature_probdist:
                     break
             else:
-                #print 'Ignoring unseen feature %s' % fname
+                # print 'Ignoring unseen feature %s' % fname
                 del featureset[fname]
 
         # Find the log probabilty of each label, given the features.
@@ -116,7 +118,7 @@ class NaiveBayesClassifier(ClassifierI):
                     # nb: This case will never come up if the
                     # classifier was created by
                     # NaiveBayesClassifier.train().
-                    logprob[label] += sum_logs([]) # = -INF.
+                    logprob[label] += sum_logs([])  # = -INF.
 
         return DictionaryProbDist(logprob, normalize=True, log=True)
 
@@ -177,8 +179,8 @@ class NaiveBayesClassifier(ClassifierI):
             # Convert features to a list, & sort it by how informative
             # features are.
             self._most_informative_features = sorted(features,
-                                                key=lambda feature_:
-                                                minprob[feature_]/maxprob[feature_])
+                                                     key=lambda feature_:
+                                                     minprob[feature_] / maxprob[feature_])
         return self._most_informative_features[:n]
 
     @classmethod
@@ -230,16 +232,16 @@ class NaiveBayesClassifier(ClassifierI):
 
         return cls(label_probdist, feature_probdist)
 
-##//////////////////////////////////////////////////////
-##  Demo
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Demo
+# //////////////////////////////////////////////////////
+
 
 def demo():
     from nltk.classify.util import names_demo
     classifier = names_demo(NaiveBayesClassifier.train)
     classifier.show_most_informative_features()
 
+
 if __name__ == '__main__':
     demo()
-
-

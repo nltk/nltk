@@ -96,14 +96,13 @@ class TreePrettyPrinter(object):
                                 a[n] = len(sentence)
                                 sentence.append('%s' % b)
         self.nodes, self.coords, self.edges, self.highlight = self.nodecoords(
-                tree, sentence, highlight)
+            tree, sentence, highlight)
 
     def __str__(self):
         return self.text()
 
     def __repr__(self):
         return '<TreePrettyPrinter with %d nodes>' % len(self.nodes)
-
 
     @staticmethod
     def nodecoords(tree, sentence, highlight):
@@ -162,27 +161,27 @@ class TreePrettyPrinter(object):
             for rowidx in range(startoflevel, len(matrix) + 1):
                 if rowidx == len(matrix):  # need to add a new row
                     matrix.append([vertline if a not in (corner, None)
-                            else None for a in matrix[-1]])
+                                   else None for a in matrix[-1]])
                 row = matrix[rowidx]
                 i = j = center
                 if len(children[m]) == 1:  # place unaries directly above child
                     return rowidx, next(iter(children[m]))[1]
                 elif all(a is None or a == vertline for a
-                        in row[min(candidates):max(candidates) + 1]):
+                         in row[min(candidates):max(candidates) + 1]):
                     # find free column
                     for n in range(scale):
                         i = j = center + n
                         while j > minidx or i < maxidx:
                             if i < maxidx and (matrix[rowidx][i] is None
-                                    or i in candidates):
+                                               or i in candidates):
                                 return rowidx, i
                             elif j > minidx and (matrix[rowidx][j] is None
-                                    or j in candidates):
+                                                 or j in candidates):
                                 return rowidx, j
                             i += scale
                             j -= scale
             raise ValueError('could not find a free cell for:\n%s\n%s'
-                    'min=%d; max=%d' % (tree[m], minidx, maxidx, dumpmatrix()))
+                             'min=%d; max=%d' % (tree[m], minidx, maxidx, dumpmatrix()))
 
         def dumpmatrix():
             """Dump matrix contents for debugging purposes."""
@@ -197,8 +196,8 @@ class TreePrettyPrinter(object):
             raise ValueError('Indices must occur at most once.')
         if not all(0 <= n < len(sentence) for n in leaves):
             raise ValueError('All leaves must be in the interval 0..n '
-                    'with n=len(sentence)\ntokens: %d indices: '
-                    '%r\nsentence: %s' % (len(sentence), tree.leaves(), sentence))
+                             'with n=len(sentence)\ntokens: %d indices: '
+                             '%r\nsentence: %s' % (len(sentence), tree.leaves(), sentence))
         vertline, corner = -1, -2  # constants
         tree = tree.copy(True)
         for a in tree.subtrees():
@@ -225,7 +224,7 @@ class TreePrettyPrinter(object):
 
         for n in levels:
             levels[n].sort(key=lambda n: max(tree[n].leaves())
-                    - min(tree[n].leaves()))
+                           - min(tree[n].leaves()))
         terminals.sort()
         positions = set(positions)
 
@@ -247,7 +246,7 @@ class TreePrettyPrinter(object):
             nodesatdepth = levels[n]
             startoflevel = len(matrix)
             matrix.append([vertline if a not in (corner, None) else None
-                    for a in matrix[-1]])
+                           for a in matrix[-1]])
             for m in nodesatdepth:  # [::-1]:
                 if n < maxdepth - 1 and childcols[m]:
                     _, pivot = min(childcols[m], key=itemgetter(1))
@@ -276,13 +275,13 @@ class TreePrettyPrinter(object):
         # remove unused columns, right to left
         for m in range(scale * len(sentence) - 1, -1, -1):
             if not any(isinstance(row[m], (Tree, int))
-                    for row in matrix):
+                       for row in matrix):
                 for row in matrix:
                     del row[m]
 
         # remove unused rows, reverse
         matrix = [row for row in reversed(matrix)
-                if not all(a is None or a == vertline for a in row)]
+                  if not all(a is None or a == vertline for a in row)]
 
         # collect coordinates of nodes
         coords = {}
@@ -293,7 +292,7 @@ class TreePrettyPrinter(object):
 
         # move crossed edges last
         positions = sorted([a for level in levels.values()
-                for a in level], key=lambda a: a[:-1] in crossed)
+                            for a in level], key=lambda a: a[:-1] in crossed)
 
         # collect edges from node to node
         edges = OrderedDict()
@@ -302,7 +301,6 @@ class TreePrettyPrinter(object):
                 edges[ids[i + (j, )]] = ids[i]
 
         return nodes, coords, edges, highlighted_nodes
-
 
     def text(self, nodedist=1, unicodelines=False, html=False, ansi=False,
              nodecolor='blue', leafcolor='red', funccolor='green',
@@ -358,7 +356,7 @@ class TreePrettyPrinter(object):
         childcols = defaultdict(set)
         labels = {}
         wrapre = re.compile('(.{%d,%d}\\b\\W*|.{%d})' % (
-                maxwidth - 4, maxwidth, maxwidth))
+            maxwidth - 4, maxwidth, maxwidth))
         # collect labels and coordinates
         for a in self.nodes:
             row, column = self.coords[a]
@@ -372,7 +370,8 @@ class TreePrettyPrinter(object):
                 label = wrapre.sub(r'\1\n', label).strip()
             label = label.split('\n')
             maxnodeheight[row] = max(maxnodeheight[row], len(label))
-            maxnodewith[column] = max(maxnodewith[column], max(map(len, label)))
+            maxnodewith[column] = max(
+                maxnodewith[column], max(map(len, label)))
             labels[a] = label
             if a not in self.edges:
                 continue  # e.g., root
@@ -383,8 +382,9 @@ class TreePrettyPrinter(object):
         # bottom up level order traversal
         for row in sorted(matrix, reverse=True):
             noderows = [[''.center(maxnodewith[col]) for col in range(maxcol + 1)]
-                    for _ in range(maxnodeheight[row])]
-            branchrow = [''.center(maxnodewith[col]) for col in range(maxcol + 1)]
+                        for _ in range(maxnodeheight[row])]
+            branchrow = [''.center(maxnodewith[col])
+                         for col in range(maxcol + 1)]
             for col in matrix[row]:
                 n = matrix[row][col]
                 node = self.nodes[n]
@@ -393,11 +393,12 @@ class TreePrettyPrinter(object):
                     # draw horizontal branch towards children for this node
                     if n in minchildcol and minchildcol[n] < maxchildcol[n]:
                         i, j = minchildcol[n], maxchildcol[n]
-                        a, b = (maxnodewith[i] + 1) // 2 - 1, maxnodewith[j] // 2
+                        a, b = (maxnodewith[i] + 1) // 2 - \
+                            1, maxnodewith[j] // 2
                         branchrow[i] = ((' ' * a) + leftcorner).ljust(
-                                maxnodewith[i], horzline)
+                            maxnodewith[i], horzline)
                         branchrow[j] = (rightcorner + (' ' * b)).rjust(
-                                maxnodewith[j], horzline)
+                            maxnodewith[j], horzline)
                         for i in range(minchildcol[n] + 1, maxchildcol[n]):
                             if i == col and any(
                                     a == i for _, a in childcols[n]):
@@ -408,7 +409,8 @@ class TreePrettyPrinter(object):
                                 line = tee
                             else:
                                 line = horzline
-                            branchrow[i] = line.center(maxnodewith[i], horzline)
+                            branchrow[i] = line.center(
+                                maxnodewith[i], horzline)
                     else:  # if n and n in minchildcol:
                         branchrow[col] = crosscell(branchrow[col])
                 text = [a.center(maxnodewith[col]) for a in text]
@@ -427,8 +429,8 @@ class TreePrettyPrinter(object):
                     # draw vertical lines in partially filled multiline node
                     # labels, but only if it's not a frontier node.
                     noderows[x][col] = (text[x] if x < len(text)
-                            else (vertline if childcols[n] else ' ').center(
-                                maxnodewith[col], ' '))
+                                        else (vertline if childcols[n] else ' ').center(
+                        maxnodewith[col], ' '))
             # for each column, if there is a node below us which has a parent
             # above us, draw a vertical branch in that column.
             if row != max(matrix):
@@ -440,12 +442,11 @@ class TreePrettyPrinter(object):
                             for noderow in noderows:
                                 noderow[col] = crosscell(noderow[col])
                 branchrow = [a + ((a[-1] if a[-1] != ' ' else b[0]) * nodedist)
-                        for a, b in zip(branchrow, branchrow[1:] + [' '])]
+                             for a, b in zip(branchrow, branchrow[1:] + [' '])]
                 result.append(''.join(branchrow))
             result.extend((' ' * nodedist).join(noderow)
-                    for noderow in reversed(noderows))
+                          for noderow in reversed(noderows))
         return '\n'.join(reversed(result)) + '\n'
-
 
     def svg(self, nodecolor='blue', leafcolor='red', funccolor='green'):
         """
@@ -464,7 +465,7 @@ class TreePrettyPrinter(object):
                       -hstart, -vstart,
                       width * hscale + 3 * hstart,
                       height * vscale + 3 * vstart)
-                      ]
+                  ]
 
         children = defaultdict(set)
         for n in self.nodes:
@@ -505,7 +506,7 @@ class TreePrettyPrinter(object):
                 ' points="%g,%g %g,%g" />' % (childx, childy, childx, y + 5),
                 '\t<polyline style="stroke:black; stroke-width:1; fill:none;"'
                 ' points="%g,%g %g,%g" />' % (childx, childy, childx, y),
-                ]
+            ]
 
         # write nodes with coordinates
         for n, (row, column) in self.coords.items():

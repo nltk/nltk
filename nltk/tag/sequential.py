@@ -45,6 +45,7 @@ class SequentialBackoffTagger(TaggerI):
     :ivar _taggers: A list of all the taggers that should be tried to
         tag a token (i.e., self and its backoff taggers).
     """
+
     def __init__(self, backoff=None):
         if backoff is None:
             self._taggers = [self]
@@ -120,6 +121,7 @@ class ContextTagger(SequentialBackoffTagger):
 
     :ivar _context_to_tag: Dictionary mapping contexts to tags.
     """
+
     def __init__(self, context_to_tag, backoff=None):
         """
         :param context_to_tag: A dictionary mapping contexts to tags.
@@ -300,7 +302,7 @@ class NgramTagger(ContextTagger):
         return cls(_n, model=_context_to_tag, backoff=backoff)
 
     def context(self, tokens, index, history):
-        tag_context = tuple(history[max(0, index-self._n+1):index])
+        tag_context = tuple(history[max(0, index - self._n + 1):index])
         return tag_context, tokens[index]
 
 
@@ -600,6 +602,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         back on its backoff tagger if the probability of the most
         likely tag is less than *cutoff_prob*.
     """
+
     def __init__(self, feature_detector=None, train=None,
                  classifier_builder=NaiveBayesClassifier.train,
                  classifier=None, backoff=None,
@@ -661,7 +664,8 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
                 history.append(tags[index])
 
         if verbose:
-            print('Training classifier (%d instances)' % len(classifier_corpus))
+            print('Training classifier (%d instances)' %
+                  len(classifier_corpus))
         self._classifier = classifier_builder(classifier_corpus)
 
     def __repr__(self):
@@ -693,21 +697,22 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
     """
     A classifier based part of speech tagger.
     """
+
     def feature_detector(self, tokens, index, history):
         word = tokens[index]
         if index == 0:
             prevword = prevprevword = None
             prevtag = prevprevtag = None
         elif index == 1:
-            prevword = tokens[index-1].lower()
+            prevword = tokens[index - 1].lower()
             prevprevword = None
-            prevtag = history[index-1]
+            prevtag = history[index - 1]
             prevprevtag = None
         else:
-            prevword = tokens[index-1].lower()
-            prevprevword = tokens[index-2].lower()
-            prevtag = history[index-1]
-            prevprevtag = history[index-2]
+            prevword = tokens[index - 1].lower()
+            prevprevword = tokens[index - 2].lower()
+            prevtag = history[index - 1]
+            prevprevtag = history[index - 2]
 
         if re.match('[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$', word):
             shape = 'number'
@@ -736,5 +741,5 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
             'prevprevtag+word': '%s+%s' % (prevprevtag, word.lower()),
             'prevword+word': '%s+%s' % (prevword, word.lower()),
             'shape': shape,
-            }
+        }
         return features

@@ -73,6 +73,7 @@ class HoleSemantics(object):
     then provides some operations on the semantics dealing with holes, labels
     and finding legal ways to plug holes with labels.
     """
+
     def __init__(self, usr):
         """
         Constructor.  `usr' is a ``sem.Expression`` representing an
@@ -161,7 +162,8 @@ class HoleSemantics(object):
         holes) of this semantics given the constraints.
         """
         record = []
-        self._plug_nodes([(self.top_hole, [])], self.top_most_labels, {}, record)
+        self._plug_nodes([(self.top_hole, [])],
+                         self.top_most_labels, {}, record)
         return record
 
     def _plug_nodes(self, queue, potential_labels, plug_acc, record):
@@ -184,14 +186,16 @@ class HoleSemantics(object):
             (node, ancestors) = queue[0]
             if node in self.holes:
                 # The node is a hole, try to plug it.
-                self._plug_hole(node, ancestors, queue[1:], potential_labels, plug_acc, record)
+                self._plug_hole(node, ancestors,
+                                queue[1:], potential_labels, plug_acc, record)
             else:
                 assert node in self.labels
                 # The node is a label.  Replace it in the queue by the holes and
                 # labels in the formula fragment named by that label.
                 args = self.fragments[node][1]
                 head = [(a, ancestors) for a in args if self.is_node(a)]
-                self._plug_nodes(head + queue[1:], potential_labels, plug_acc, record)
+                self._plug_nodes(
+                    head + queue[1:], potential_labels, plug_acc, record)
         else:
             raise Exception('queue empty')
 
@@ -235,7 +239,8 @@ class HoleSemantics(object):
                 # before filling level i+1.
                 # A depth-first search would work as well since the trees must
                 # be finite but the bookkeeping would be harder.
-                self._plug_nodes(queue + [(l, ancestors)], potential_labels, plug_acc, record)
+                self._plug_nodes(
+                    queue + [(l, ancestors)], potential_labels, plug_acc, record)
 
     def _violates_constraints(self, label, ancestors):
         """
@@ -293,6 +298,7 @@ class Constraint(object):
     This class represents a constraint of the form (L =< N),
     where L is a label and N is a node (a label or a hole).
     """
+
     def __init__(self, lhs, rhs):
         self.lhs = lhs
         self.rhs = rhs

@@ -165,9 +165,9 @@ circle_of_lat = {'rel_name': 'circle_of_latitude',
                  'filename': 'world1.pl'}
 
 circle_of_long = {'rel_name': 'circle_of_longitude',
-                 'closures': [],
-                 'schema': ['circle_of_longitude', 'degrees'],
-                 'filename': 'world1.pl'}
+                  'closures': [],
+                  'schema': ['circle_of_longitude', 'degrees'],
+                  'filename': 'world1.pl'}
 
 continent = {'rel_name': 'continent',
              'closures': [],
@@ -190,7 +190,6 @@ sea = {'rel_name': 'sea',
        'filename': 'world1.pl'}
 
 
-
 items = ['borders', 'contains', 'city', 'country', 'circle_of_lat',
          'circle_of_long', 'continent', 'region', 'ocean', 'sea']
 items = tuple(sorted(items))
@@ -206,7 +205,7 @@ item_metadata = {
     'region': region,
     'ocean': ocean,
     'sea': sea
-    }
+}
 
 rels = item_metadata.values()
 
@@ -214,12 +213,14 @@ not_unary = ['borders.pl', 'contain.pl']
 
 ###########################################################################
 
+
 @python_2_unicode_compatible
 class Concept(object):
     """
     A Concept class, loosely based on SKOS
     (http://www.w3.org/TR/swbp-skos-core-guide/).
     """
+
     def __init__(self, prefLabel, arity, altLabels=[], closures=[], extension=set()):
         """
         :param prefLabel: the preferred label for the concept
@@ -238,15 +239,15 @@ class Concept(object):
         self.arity = arity
         self.altLabels = altLabels
         self.closures = closures
-        #keep _extension internally as a set
+        # keep _extension internally as a set
         self._extension = extension
-        #public access is via a list (for slicing)
+        # public access is via a list (for slicing)
         self.extension = sorted(list(extension))
 
     def __str__(self):
         #_extension = ''
-        #for element in sorted(self.extension):
-            #if isinstance(element, tuple):
+        # for element in sorted(self.extension):
+            # if isinstance(element, tuple):
                 #element = '(%s, %s)' % (element)
             #_extension += element + ', '
         #_extension = _extension[:-1]
@@ -269,7 +270,6 @@ class Concept(object):
         self._extension.add(data)
         self.extension = sorted(list(self._extension))
         return self._extension
-
 
     def _make_graph(self, s):
         """
@@ -306,7 +306,6 @@ class Concept(object):
                 pairs.append((node, adjacent))
         return set(pairs)
 
-
     def close(self):
         """
         Close a binary relation in the ``Concept``'s extension set.
@@ -323,10 +322,10 @@ class Concept(object):
             sym = set(pairs)
             self._extension = self._extension.union(sym)
         if 'transitive' in self.closures:
-            all =  self._make_graph(self._extension)
-            closed =  self._transclose(all)
+            all = self._make_graph(self._extension)
+            closed = self._transclose(all)
             trans = self._make_pairs(closed)
-            #print sorted(trans)
+            # print sorted(trans)
             self._extension = self._extension.union(trans)
         self.extension = sorted(list(self._extension))
 
@@ -370,6 +369,7 @@ def clause2concepts(filename, rel_name, schema, closures=[]):
 
     return concepts
 
+
 def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     """
     Convert a file of Prolog clauses into a database table.
@@ -390,7 +390,7 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     """
     import sqlite3
     records = _str2records(filename, rel_name)
-    connection =  sqlite3.connect(dbname)
+    connection = sqlite3.connect(dbname)
     cur = connection.cursor()
     if setup:
         cur.execute('''CREATE TABLE city_table
@@ -406,6 +406,7 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
         print("Committing update to %s" % dbname)
     cur.close()
 
+
 def sql_query(dbname, query):
     """
     Execute an SQL query over a database.
@@ -417,13 +418,15 @@ def sql_query(dbname, query):
     import sqlite3
     try:
         path = nltk.data.find(dbname)
-        connection =  sqlite3.connect(str(path))
+        connection = sqlite3.connect(str(path))
         cur = connection.cursor()
         return cur.execute(query)
     except (ValueError, sqlite3.OperationalError):
         import warnings
-        warnings.warn("Make sure the database file %s is installed and uncompressed." % dbname)
+        warnings.warn(
+            "Make sure the database file %s is installed and uncompressed." % dbname)
         raise
+
 
 def _str2records(filename, rel):
     """
@@ -433,11 +436,12 @@ def _str2records(filename, rel):
     contents = nltk.data.load("corpora/chat80/%s" % filename, format="text")
     for line in contents.splitlines():
         if line.startswith(rel):
-            line = re.sub(rel+r'\(', '', line)
+            line = re.sub(rel + r'\(', '', line)
             line = re.sub(r'\)\.$', '', line)
             record = line.split(',')
             recs.append(record)
     return recs
+
 
 def unary_concept(label, subj, records):
     """
@@ -460,6 +464,7 @@ def unary_concept(label, subj, records):
     for record in records:
         c.augment(record[subj])
     return c
+
 
 def binary_concept(label, closures, subj, obj, records):
     """
@@ -543,7 +548,8 @@ def make_valuation(concepts, read=False, lexicon=False):
 
     for c in concepts:
         vals.append((c.prefLabel, c.extension))
-    if lexicon: read = True
+    if lexicon:
+        read = True
     if read:
         from nltk.sem import Valuation
         val = Valuation({})
@@ -583,7 +589,7 @@ def val_load(db):
                The suffix '.db' should be omitted from the name.
     :type db: str
     """
-    dbname = db+".db"
+    dbname = db + ".db"
 
     if not os.access(dbname, os.R_OK):
         sys.exit("Cannot read file: %s" % dbname)
@@ -595,21 +601,21 @@ def val_load(db):
         return val
 
 
-#def alpha(str):
+# def alpha(str):
     #"""
-    #Utility to filter out non-alphabetic constants.
+    # Utility to filter out non-alphabetic constants.
 
     #:param str: candidate constant
     #:type str: string
     #:rtype: bool
     #"""
-    #try:
-        #int(str)
-        #return False
-    #except ValueError:
-        ## some unknown values in records are labeled '?'
-        #if not str == '?':
-            #return True
+    # try:
+        # int(str)
+        # return False
+    # except ValueError:
+        # some unknown values in records are labeled '?'
+        # if not str == '?':
+        # return True
 
 
 def label_indivs(valuation, lexicon=False):
@@ -634,6 +640,7 @@ def label_indivs(valuation, lexicon=False):
     # read the pairs into the valuation
     valuation.update(pairs)
     return valuation
+
 
 def make_lex(symbols):
     """
@@ -669,7 +676,7 @@ def make_lex(symbols):
 # Interface function to emulate other corpus readers
 ###########################################################################
 
-def concepts(items = items):
+def concepts(items=items):
     """
     Build a list of concepts corresponding to the relation names in ``items``.
 
@@ -678,14 +685,13 @@ def concepts(items = items):
     :return: the ``Concept`` objects which are extracted from the relations
     :rtype: list(Concept)
     """
-    if isinstance(items, string_types): items = (items,)
+    if isinstance(items, string_types):
+        items = (items,)
 
     rels = [item_metadata[r] for r in items]
 
     concept_map = process_bundle(rels)
     return concept_map.values()
-
-
 
 
 ###########################################################################
@@ -695,7 +701,7 @@ def main():
     import sys
     from optparse import OptionParser
     description = \
-    """
+        """
 Extract data from the Chat-80 Prolog files and convert them into a
 Valuation object for use in the NLTK semantics package.
     """
@@ -715,24 +721,23 @@ Valuation object for use in the NLTK semantics package.
     opts.add_option("-x", "--lex", action="store_true", dest="lex",
                     help="write a file of lexical entries for country names, then exit")
     opts.add_option("-v", "--vocab", action="store_true", dest="vocab",
-                        help="print out the vocabulary of concept labels and their arity, then exit")
+                    help="print out the vocabulary of concept labels and their arity, then exit")
 
     (options, args) = opts.parse_args()
     if options.outdb and options.indb:
         opts.error("Options --store and --load are mutually exclusive")
 
-
     if options.outdb:
         # write the valuation to a persistent database
         if options.verbose:
-            outdb = options.outdb+".db"
+            outdb = options.outdb + ".db"
             print("Dumping a valuation to %s" % outdb)
         val_dump(rels, options.outdb)
         sys.exit(0)
     else:
         # try to read in a valuation from a database
         if options.indb is not None:
-            dbname = options.indb+".db"
+            dbname = options.indb + ".db"
             if not os.access(dbname, os.R_OK):
                 sys.exit("Cannot read file: %s" % dbname)
             else:

@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from nltk.tag import hmm
 
+
 def _wikipedia_example_hmm():
     # Example from wikipedia
     # (http://en.wikipedia.org/wiki/Forward%E2%80%93backward_algorithm)
@@ -14,7 +15,7 @@ def _wikipedia_example_hmm():
     pi = [0.5, 0.5]  # initial probabilities
 
     seq = ['umbrella', 'umbrella', 'no umbrella', 'umbrella', 'umbrella']
-    seq = list(zip(seq, [None]*len(seq)))
+    seq = list(zip(seq, [None] * len(seq)))
 
     model = hmm._create_hmm_tagger(states, symbols, A, B, pi)
     return model, states, symbols, seq

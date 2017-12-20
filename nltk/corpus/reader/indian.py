@@ -25,10 +25,12 @@ from nltk.tag import str2tuple, map_tag
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class IndianCorpusReader(CorpusReader):
     """
     List of words, one per line.  Blank lines are ignored.
     """
+
     def words(self, fileids=None):
         return concat([IndianCorpusView(fileid, enc,
                                         False, False)
@@ -36,7 +38,8 @@ class IndianCorpusReader(CorpusReader):
 
     def tagged_words(self, fileids=None, tagset=None):
         if tagset and tagset != self._tagset:
-            tag_mapping_function = lambda t: map_tag(self._tagset, tagset, t)
+            def tag_mapping_function(t): return map_tag(
+                self._tagset, tagset, t)
         else:
             tag_mapping_function = None
         return concat([IndianCorpusView(fileid, enc,
@@ -50,7 +53,8 @@ class IndianCorpusReader(CorpusReader):
 
     def tagged_sents(self, fileids=None, tagset=None):
         if tagset and tagset != self._tagset:
-            tag_mapping_function = lambda t: map_tag(self._tagset, tagset, t)
+            def tag_mapping_function(t): return map_tag(
+                self._tagset, tagset, t)
         else:
             tag_mapping_function = None
         return concat([IndianCorpusView(fileid, enc,
@@ -58,8 +62,10 @@ class IndianCorpusReader(CorpusReader):
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
     def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
 
@@ -77,8 +83,9 @@ class IndianCorpusView(StreamBackedCorpusView):
             return []
         sent = [str2tuple(word, sep='_') for word in line.split()]
         if self._tag_mapping_function:
-            sent = [(w, self._tag_mapping_function(t)) for (w,t) in sent]
-        if not self._tagged: sent = [w for (w,t) in sent]
+            sent = [(w, self._tag_mapping_function(t)) for (w, t) in sent]
+        if not self._tagged:
+            sent = [w for (w, t) in sent]
         if self._group_by_sent:
             return [sent]
         else:

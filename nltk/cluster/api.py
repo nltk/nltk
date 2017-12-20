@@ -11,6 +11,7 @@ from six import add_metaclass
 
 from nltk.probability import DictionaryProbDist
 
+
 @add_metaclass(ABCMeta)
 class ClusterI(object):
     """

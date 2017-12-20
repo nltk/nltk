@@ -80,8 +80,8 @@ class OrderedDict(dict):
                 return keys
             else:
                 assert isinstance(data, dict) or \
-                       isinstance(data, OrderedDict) or \
-                       isinstance(data, list)
+                    isinstance(data, OrderedDict) or \
+                    isinstance(data, list)
                 if isinstance(data, dict) or isinstance(data, OrderedDict):
                     return data.keys()
                 elif isinstance(data, list):
@@ -119,6 +119,7 @@ class OrderedDict(dict):
 # Lazy Sequences
 ######################################################################
 
+
 @total_ordering
 @python_2_unicode_compatible
 class AbstractLazySequence(object):
@@ -141,6 +142,7 @@ class AbstractLazySequence(object):
     Subclasses are required to define two methods: ``__len__()``
     and ``iterate_from()``.
     """
+
     def __len__(self):
         """
         Return the number of tokens in the corpus file underlying this
@@ -167,8 +169,10 @@ class AbstractLazySequence(object):
             return LazySubsequence(self, start, stop)
         else:
             # Handle negative indices
-            if i < 0: i += len(self)
-            if i < 0: raise IndexError('index out of range')
+            if i < 0:
+                i += len(self)
+            if i < 0:
+                raise IndexError('index out of range')
             # Use iterate_from to extract it.
             try:
                 return next(self.iterate_from(i))
@@ -182,7 +186,7 @@ class AbstractLazySequence(object):
 
     def count(self, value):
         """Return the number of times this list contains ``value``."""
-        return sum(1 for elt in self if elt==value)
+        return sum(1 for elt in self if elt == value)
 
     def index(self, value, start=None, stop=None):
         """Return the index of the first occurrence of ``value`` in this
@@ -191,7 +195,8 @@ class AbstractLazySequence(object):
         slice bounds -- i.e., they count from the end of the list."""
         start, stop = slice_bounds(self, slice(start, stop))
         for i, elt in enumerate(islice(self, start, stop)):
-            if elt == value: return i+start
+            if elt == value:
+                return i + start
         raise ValueError('index(x): x not in list')
 
     def __contains__(self, value):
@@ -215,6 +220,7 @@ class AbstractLazySequence(object):
         return LazyConcatenation([self] * count)
 
     _MAX_REPR_SIZE = 60
+
     def __repr__(self):
         """
         Return a string representation for this corpus view that is
@@ -271,8 +277,8 @@ class LazySubsequence(AbstractLazySequence):
         of a list) or greater than the length of ``source``.
         """
         # If the slice is small enough, just use a tuple.
-        if stop-start < cls.MIN_SIZE:
-            return list(islice(source.iterate_from(start), stop-start))
+        if stop - start < cls.MIN_SIZE:
+            return list(islice(source.iterate_from(start), stop - start))
         else:
             return object.__new__(cls)
 
@@ -285,8 +291,8 @@ class LazySubsequence(AbstractLazySequence):
         return self._stop - self._start
 
     def iterate_from(self, start):
-        return islice(self._source.iterate_from(start+self._start),
-                      max(0, len(self)-start))
+        return islice(self._source.iterate_from(start + self._start),
+                      max(0, len(self) - start))
 
 
 class LazyConcatenation(AbstractLazySequence):
@@ -297,20 +303,22 @@ class LazyConcatenation(AbstractLazySequence):
     between offsets in the concatenated lists and offsets in the
     sublists.
     """
+
     def __init__(self, list_of_lists):
         self._list = list_of_lists
         self._offsets = [0]
 
     def __len__(self):
         if len(self._offsets) <= len(self._list):
-            for tok in self.iterate_from(self._offsets[-1]): pass
+            for tok in self.iterate_from(self._offsets[-1]):
+                pass
         return self._offsets[-1]
 
     def iterate_from(self, start_index):
         if start_index < self._offsets[-1]:
-            sublist_index = bisect.bisect_right(self._offsets, start_index)-1
+            sublist_index = bisect.bisect_right(self._offsets, start_index) - 1
         else:
-            sublist_index = len(self._offsets)-1
+            sublist_index = len(self._offsets) - 1
 
         index = self._offsets[sublist_index]
 
@@ -321,15 +329,15 @@ class LazyConcatenation(AbstractLazySequence):
             sublist_iter = islice(self._list, sublist_index, None)
 
         for sublist in sublist_iter:
-            if sublist_index == (len(self._offsets)-1):
-                assert index+len(sublist) >= self._offsets[-1], (
-                        'offests not monotonic increasing!')
-                self._offsets.append(index+len(sublist))
+            if sublist_index == (len(self._offsets) - 1):
+                assert index + len(sublist) >= self._offsets[-1], (
+                    'offests not monotonic increasing!')
+                self._offsets.append(index + len(sublist))
             else:
-                assert self._offsets[sublist_index+1] == index+len(sublist), (
-                        'inconsistent list value (num elts)')
+                assert self._offsets[sublist_index + 1] == index + len(sublist), (
+                    'inconsistent list value (num elts)')
 
-            for value in sublist[max(0, start_index-index):]:
+            for value in sublist[max(0, start_index - index):]:
                 yield value
 
             index += len(sublist)
@@ -370,6 +378,7 @@ class LazyMap(AbstractLazySequence):
     using a ``LazyMap`` can significantly reduce memory usage when
     training and running classifiers.
     """
+
     def __init__(self, function, *lists, **config):
         """
         :param function: The function that should be applied to
@@ -403,8 +412,10 @@ class LazyMap(AbstractLazySequence):
         # Special case: one non-lazy sublist
         elif len(self._lists) == 1:
             while True:
-                try: yield self._func(self._lists[0][index])
-                except IndexError: return
+                try:
+                    yield self._func(self._lists[0][index])
+                except IndexError:
+                    return
                 index += 1
 
         # Special case: n lazy sublists
@@ -413,8 +424,10 @@ class LazyMap(AbstractLazySequence):
             while True:
                 elements = []
                 for iterator in iterators:
-                    try: elements.append(next(iterator))
-                    except: elements.append(None)
+                    try:
+                        elements.append(next(iterator))
+                    except:
+                        elements.append(None)
                 if elements == [None] * len(self._lists):
                     return
                 yield self._func(*elements)
@@ -423,12 +436,15 @@ class LazyMap(AbstractLazySequence):
         # general case
         else:
             while True:
-                try: elements = [lst[index] for lst in self._lists]
+                try:
+                    elements = [lst[index] for lst in self._lists]
                 except IndexError:
                     elements = [None] * len(self._lists)
                     for i, lst in enumerate(self._lists):
-                        try: elements[i] = lst[index]
-                        except IndexError: pass
+                        try:
+                            elements[i] = lst[index]
+                        except IndexError:
+                            pass
                     if elements == [None] * len(self._lists):
                         return
                 yield self._func(*elements)
@@ -440,19 +456,22 @@ class LazyMap(AbstractLazySequence):
             return LazyMap(self._func, *sliced_lists)
         else:
             # Handle negative indices
-            if index < 0: index += len(self)
-            if index < 0: raise IndexError('index out of range')
+            if index < 0:
+                index += len(self)
+            if index < 0:
+                raise IndexError('index out of range')
             # Check the cache
             if self._cache is not None and index in self._cache:
                 return self._cache[index]
             # Calculate the value
-            try: val = next(self.iterate_from(index))
+            try:
+                val = next(self.iterate_from(index))
             except StopIteration:
                 raise IndexError('index out of range')
             # Update the cache
             if self._cache is not None:
                 if len(self._cache) > self._cache_size:
-                    self._cache.popitem() # discard random entry
+                    self._cache.popitem()  # discard random entry
                 self._cache[index] = val
             # Return the value
             return val
@@ -492,6 +511,7 @@ class LazyZip(LazyMap):
     avoiding the creation of an additional long sequence, memory usage can be
     significantly reduced.
     """
+
     def __init__(self, *lists):
         """
         :param lists: the underlying lists
@@ -546,12 +566,14 @@ class LazyEnumerate(LazyZip):
         """
         LazyZip.__init__(self, range(len(lst)), lst)
 
+
 class LazyIteratorList(AbstractLazySequence):
     """
     Wraps an iterator, loading its elements on demand
     and making them subscriptable.
     __repr__ displays only the first few elements.
     """
+
     def __init__(self, it, known_len=None):
         self._it = it
         self._len = known_len
@@ -567,11 +589,11 @@ class LazyIteratorList(AbstractLazySequence):
 
     def iterate_from(self, start):
         """Create a new iterator over this list starting at the given offset."""
-        while len(self._cache)<start:
+        while len(self._cache) < start:
             v = next(self._it)
             self._cache.append(v)
         i = start
-        while i<len(self._cache):
+        while i < len(self._cache):
             yield self._cache[i]
             i += 1
         while True:
@@ -591,6 +613,8 @@ class LazyIteratorList(AbstractLazySequence):
 ######################################################################
 # Trie Implementation
 ######################################################################
+
+
 class Trie(dict):
     """A Trie implementation for strings"""
     LEAF = True
@@ -637,4 +661,3 @@ class Trie(dict):
     def __missing__(self, key):
         self[key] = Trie()
         return self[key]
-

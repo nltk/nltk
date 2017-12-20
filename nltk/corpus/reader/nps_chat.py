@@ -17,6 +17,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import *
 
+
 class NPSChatCorpusReader(XMLCorpusReader):
 
     def __init__(self, root, fileids, wrap_etree=False, tagset=None):
@@ -61,7 +62,8 @@ class NPSChatCorpusReader(XMLCorpusReader):
         tagged_post = [(self._simplify_username(t.attrib['word']),
                         t.attrib['pos']) for t in elt.findall('t')]
         if tagset and tagset != self._tagset:
-            tagged_post = [(w, map_tag(self._tagset, tagset, t)) for (w, t) in tagged_post]
+            tagged_post = [(w, map_tag(self._tagset, tagset, t))
+                           for (w, t) in tagged_post]
         return tagged_post
 
     @staticmethod

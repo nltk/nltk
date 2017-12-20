@@ -81,9 +81,10 @@ from nltk.probability import FreqDist, DictionaryProbDist, ELEProbDist
 
 from nltk.classify.naivebayes import NaiveBayesClassifier
 
-##//////////////////////////////////////////////////////
-##  Positive Naive Bayes Classifier
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Positive Naive Bayes Classifier
+# //////////////////////////////////////////////////////
+
 
 class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
     @staticmethod
@@ -144,13 +145,14 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
             feature_probdist[True, fname] = probdist
 
         for fname, freqdist in unlabeled_feature_freqdist.items():
-            global_probdist = estimator(freqdist, bins=len(feature_values[fname]))
+            global_probdist = estimator(
+                freqdist, bins=len(feature_values[fname]))
             negative_feature_probs = {}
             for fval in feature_values[fname]:
                 prob = (global_probdist.prob(fval)
                         - positive_prob_prior *
                         feature_probdist[True, fname].prob(fval)) \
-                        / negative_prob_prior
+                    / negative_prob_prior
                 # TODO: We need to add some kind of smoothing here, instead of
                 # setting negative probabilities to zero and normalizing.
                 negative_feature_probs[fval] = max(prob, 0.0)
@@ -159,12 +161,12 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
 
         return PositiveNaiveBayesClassifier(label_probdist, feature_probdist)
 
-##//////////////////////////////////////////////////////
-##  Demo
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Demo
+# //////////////////////////////////////////////////////
+
 
 def demo():
     from nltk.classify.util import partial_names_demo
     classifier = partial_names_demo(PositiveNaiveBayesClassifier.train)
     classifier.show_most_informative_features()
-

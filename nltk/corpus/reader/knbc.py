@@ -21,7 +21,10 @@ from nltk.corpus.reader.util import (
 from nltk.corpus.reader.api import SyntaxCorpusReader, CorpusReader
 
 # default function to convert morphlist to str for tree representation
-_morphs2str_default = lambda morphs: '/'.join(m[0] for m in morphs if m[0] != 'EOS')
+
+
+def _morphs2str_default(
+    morphs): return '/'.join(m[0] for m in morphs if m[0] != 'EOS')
 
 
 class KNBCorpusReader(SyntaxCorpusReader):
@@ -182,6 +185,7 @@ def test():
     assert isinstance(knbc.sents()[0][0], string_types)
     assert isinstance(knbc.tagged_words()[0], tuple)
     assert isinstance(knbc.tagged_sents()[0][0], tuple)
+
 
 if __name__ == '__main__':
     demo()

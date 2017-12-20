@@ -62,6 +62,7 @@ class ForwardCombinator(DirectedBinaryCombinator):
     Takes an undirected combinator, and a predicate which adds constraints
     restricting the cases in which it may apply.
     """
+
     def __init__(self, combinator, predicate, suffix=''):
         self._combinator = combinator
         self._predicate = predicate
@@ -84,6 +85,7 @@ class BackwardCombinator(DirectedBinaryCombinator):
     """
     The backward equivalent of the ForwardCombinator class.
     """
+
     def __init__(self, combinator, predicate, suffix=''):
         self._combinator = combinator
         self._predicate = predicate
@@ -157,6 +159,7 @@ class UndirectedComposition(UndirectedBinaryCombinator):
     X/Y Y/Z -> X/Z (B>)
     And the corresponding backwards and crossed variations.
     """
+
     def can_combine(self, function, argument):
         # Can only combine two functions, and both functions must
         # allow composition.
@@ -224,6 +227,7 @@ class UndirectedSubstitution(UndirectedBinaryCombinator):
     Y/Z (X\Y)/Z -> X/Z (<Sx)
     And other variations.
     """
+
     def can_combine(self, function, argument):
         if function.is_primitive() or argument.is_primitive():
             return False
@@ -284,6 +288,7 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
     """
     Undirected combinator for type raising.
     """
+
     def can_combine(self, function, arg):
         # The argument must be a function.
         # The restriction that arg.res() must be a function

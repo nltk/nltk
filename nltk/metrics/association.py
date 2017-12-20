@@ -16,10 +16,16 @@ from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 import math as _math
 from functools import reduce
-_log2 = lambda x: _math.log(x, 2.0)
+
+
+def _log2(x): return _math.log(x, 2.0)
+
+
 _ln = _math.log
 
-_product = lambda s: reduce(lambda x, y: x * y, s)
+
+def _product(s): return reduce(lambda x, y: x * y, s)
+
 
 _SMALL = 1e-20
 
@@ -29,7 +35,7 @@ except ImportError:
     def fisher_exact(*_args, **_kwargs):
         raise NotImplementedError
 
-### Indices to marginals arguments:
+# Indices to marginals arguments:
 
 NGRAM = 0
 """Marginals index for the ngram count"""
@@ -102,8 +108,8 @@ class NgramAssocMeasures(object):
         for unigrams, as in Manning and Schutze 5.3.1.
         """
         return ((marginals[NGRAM] -
-                  _product(marginals[UNIGRAMS]) /
-                  (marginals[TOTAL] ** (cls._n - 1))) /
+                 _product(marginals[UNIGRAMS]) /
+                 (marginals[TOTAL] ** (cls._n - 1))) /
                 (marginals[NGRAM] + _SMALL) ** .5)
 
     @classmethod
@@ -214,7 +220,7 @@ class BigramAssocMeasures(NgramAssocMeasures):
         """
         n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
 
-        return ((n_ii*n_oo - n_io*n_oi)**2 /
+        return ((n_ii * n_oo - n_io * n_oi)**2 /
                 ((n_ii + n_io) * (n_ii + n_oi) * (n_io + n_oo) * (n_oi + n_oo)))
 
     @classmethod
@@ -234,7 +240,8 @@ class BigramAssocMeasures(NgramAssocMeasures):
 
         n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
 
-        (odds, pvalue) = fisher_exact([[n_ii, n_io], [n_oi, n_oo]], alternative='less')
+        (odds, pvalue) = fisher_exact(
+            [[n_ii, n_io], [n_oi, n_oo]], alternative='less')
         return pvalue
 
     @staticmethod
@@ -345,7 +352,7 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
         n_oioo = n_xixx - n_iiii - n_oiii - n_iioi - n_iiio - n_oioi - n_oiio - n_iioo
         n_iooo = n_ixxx - n_iiii - n_ioii - n_iioi - n_iiio - n_iooi - n_iioo - n_ioio
         n_oooo = n_xxxx - n_iiii - n_oiii - n_ioii - n_iioi - n_ooii - n_oioi - n_iooi - \
-                 n_oooi - n_iiio - n_oiio - n_ioio - n_ooio - n_iioo - n_oioo - n_iooo
+            n_oooi - n_iiio - n_oiio - n_ioio - n_ooio - n_iioo - n_oioo - n_iooo
 
         return (n_iiii, n_oiii, n_ioii, n_ooii, n_iioi,
                 n_oioi, n_iooi, n_oooi, n_iiio, n_oiio,
@@ -358,7 +365,7 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
         (1, (2, 553, 3, 1), (7804, 6, 3132, 1378, 49, 2), (38970, 17660, 100, 38970), 440540)
         """
         n_iiii, n_oiii, n_ioii, n_ooii, n_iioi, n_oioi, n_iooi, n_oooi, n_iiio, n_oiio, n_ioio, n_ooio, \
-        n_iioo, n_oioo, n_iooo, n_oooo = contingency
+            n_iioo, n_oioo, n_iooo, n_oooo = contingency
 
         n_iiix = n_iiii + n_iiio
         n_iixi = n_iiii + n_iioi

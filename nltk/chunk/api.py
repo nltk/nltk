@@ -6,13 +6,14 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-##//////////////////////////////////////////////////////
-##  Chunk Parser Interface
-##//////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////
+# Chunk Parser Interface
+# //////////////////////////////////////////////////////
 
 from nltk.parse import ParserI
 
 from nltk.chunk.util import ChunkScore
+
 
 class ChunkParserI(ParserI):
     """
@@ -22,6 +23,7 @@ class ChunkParserI(ParserI):
     ``ParserI``, ``ChunkParserI`` guarantees that the ``parse()`` method
     will always generate a parse.
     """
+
     def parse(self, tokens):
         """
         Return the best chunk structure for the given tokens
@@ -48,4 +50,3 @@ class ChunkParserI(ParserI):
         for correct in gold:
             chunkscore.score(correct, self.parse(correct.leaves()))
         return chunkscore
-

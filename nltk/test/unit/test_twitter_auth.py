@@ -163,7 +163,8 @@ class TestCredentials(unittest.TestCase):
         subdir.
         """
         self.auth.load_creds(subdir=self.subdir)
-        self.auth.creds_fullpath = os.path.join(self.subdir, self.auth.creds_file)
+        self.auth.creds_fullpath = os.path.join(
+            self.subdir, self.auth.creds_file)
 
     def test_correct_file1(self):
         """
@@ -182,4 +183,3 @@ class TestCredentials(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
