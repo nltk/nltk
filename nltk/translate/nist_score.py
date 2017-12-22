@@ -93,34 +93,47 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     # Before proceeding to compute NIST, perform sanity checks.
     assert len(list_of_references) == len(hypotheses), "The number of hypotheses and their reference(s) should be the same"
 
-    p_numerators = Counter() # Key = ngram order, and value = no. of ngram matches.
-    p_denominators = Counter() # Key = ngram order, and value = no. of ngram in ref.
-    hyp_lengths, ref_lengths = 0, 0
+    # Compute the information weights based on the reference sentences.
+    ngram_freq = Counter()
+    for references in list_of_references: # For each source sent, there's a list of reference sents.
+        for reference in references:
+            # For each order of ngram, count the ngram occurrences.
+            for i, _ in enumerate(range(1,n+1)):
+                ngram_freq.update(ngrams(reference, i))
 
+    hyp_lengths, ref_lengths = 0, 0
+    sysoutput_lengths = Counter()    # Key = ngram order, and value = no. of ngram in hyp.
+    information_weights = Counter()  # Key = ngram order, and value = sum of info weights per nth order.
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
-        # For each order of ngram, calculate the numerator and
-        # denominator for the corpus-level modified precision.
-        for i, _ in enumerate(range(n+1), start=1):
-            p_i = modified_precision(references, hypothesis, i)
-            p_numerators[i] += p_i.numerator
-            p_denominators[i] += p_i.denominator
-
         # Calculate the hypothesis length and the closest reference length.
         # Adds them to the corpus-level hypothesis and reference counts.
         hyp_len =  len(hypothesis)
         hyp_lengths += hyp_len
         ref_lengths += closest_ref_length(references, hyp_len)
 
+        # For each order of ngram.
+        for i, _ in enumerate(range(1,n+1)):
+            # Counter of ngrams in hypothesis.
+            hyp_ngrams = Counter(ngrams(hypothesis, i)) if len(hypothesis) >= i else Counter()
+            # Adds the no. of ngrams in the hypothesis.
+            sysoutput_lengths[i] += len(hyp_ngrams)
+            # Compute the information weights per overlapped ngram.
+            for ng in hyp_ngrams:
+                # Eqn 2 in Doddington (2002):
+                # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
+                numerator = ngram_freq[ng]
+                denominator = ngram_freq[ng[:-1]] if i > 1 else len(ng)
+                if numerator == 0 or denominator == 0:
+                    information_weights[i] += 0
+                else:
+                    information_weights[i] += -1 * math.log(numerator/ denominator, 2)
+
     # Calculate corpus-level brevity penalty.
     bp = nist_length_penalty(ref_lengths, hyp_lengths)
 
-    # Eqn 2 in Doddington (2002):
-    # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
-    info = [math.log(p_numerators[i] / p_numerators[i+1]) for i in range(1, len(p_numerators))]
-    # Eqn 3 in Doddington (2002)
-    score = sum(info_i/p_denominators[i] for i, info_i in enumerate(info, start=1)) * bp
-    return score
+    return sum(info_i/sysoutput_lengths[i] for i, info_i in information_weights.items()) * bp
+
 
 def nist_length_penalty(closest_ref_len, hyp_len):
     """
