@@ -123,7 +123,7 @@ def corpus_nist(list_of_references, hypotheses, n=5):
                 # Eqn 2 in Doddington (2002):
                 # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
                 numerator = ngram_freq[ng]
-                denominator = ngram_freq[ng[:-1]] if i > 1 else len(ng)
+                denominator = ngram_freq[ng[:-1]] if i > 1 else hyp_len
                 if numerator == 0 or denominator == 0:
                     information_weights[i] += 0
                 else:
