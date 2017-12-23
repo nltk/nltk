@@ -98,7 +98,7 @@ except ImportError as ie:
 def _ensure_ascii(words):
     try:
         for i, word in enumerate(words):
-            word.decode('ascii')
+            word.encode('ascii')
     except UnicodeDecodeError:
         raise ValueError("Token %d (%r) is non-ASCII. BLLIP Parser "
                          "currently doesn't support non-ASCII inputs." %
