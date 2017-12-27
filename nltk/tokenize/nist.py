@@ -68,8 +68,9 @@ class NISTTokenizer(TokenizerI):
 
     # Doctest for patching issue #1926
     >>> sent = u'this is a foo\u2604sentence.'
-    >>> nist.tokenize(sent)
-    [u'this', u'is', u'a', u'foo', u'\u2604', u'sentence.']
+    >>> expected_sent = [u'this', u'is', u'a', u'foo', u'\u2604', u'sentence.']
+    >>> nist.international_tokenize(sent) == expected_sent
+    True
     """
     # Strip "skipped" tags
     STRIP_SKIP = re.compile('<skipped>'), ''
