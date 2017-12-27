@@ -48,8 +48,9 @@ The WordNet corpus reader gives access to the Open Multilingual
 WordNet, using ISO-639 language codes.
 
     >>> sorted(wn.langs()) # doctest: +NORMALIZE_WHITESPACE
-    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus', 'fas', 'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 
-    'ita', 'jpn', 'nno', 'nob', 'pol', 'por', 'qcn', 'slv', 'spa', 'swe', 'tha', 'zsm']
+    ['als', 'arb', 'bul', 'cat', 'cmn', 'dan', 'ell', 'eng', 'eus', 'fas',
+    'fin', 'fra', 'glg', 'heb', 'hrv', 'ind', 'ita', 'jpn', 'nld', 'nno',
+    'nob', 'pol', 'por', 'qcn', 'slv', 'spa', 'swe', 'tha', 'zsm']
     >>> wn.synsets(b'\xe7\x8a\xac'.decode('utf-8'), lang='jpn')
     [Synset('dog.n.01'), Synset('spy.n.01')]
     
