@@ -609,6 +609,7 @@ class TextCollection(Text):
 
     def tf(self, term, text):
         """ The frequency of the term in text. """
+		if len(text) == 0: raise ValueError('Text is empty')
         return text.count(term) / len(text)
 
     def idf(self, term):
