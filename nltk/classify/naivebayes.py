@@ -154,29 +154,32 @@ class NaiveBayesClassifier(ClassifierI):
 
         |  max[ P(fname=fval|label1) / P(fname=fval|label2) ]
         """
-        # The set of (fname, fval) pairs used by this classifier.
-        features = set()
-        # The max & min probability associated w/ each (fname, fval)
-        # pair.  Maps (fname,fval) -> float.
-        maxprob = defaultdict(lambda: 0.0)
-        minprob = defaultdict(lambda: 1.0)
+        if hasattr(self, '_most_informative_features'):
+            return self._most_informative_features[:n]
+        else:
+            # The set of (fname, fval) pairs used by this classifier.
+            features = set()
+            # The max & min probability associated w/ each (fname, fval)
+            # pair.  Maps (fname,fval) -> float.
+            maxprob = defaultdict(lambda: 0.0)
+            minprob = defaultdict(lambda: 1.0)
 
-        for (label, fname), probdist in self._feature_probdist.items():
-            for fval in probdist.samples():
-                feature = (fname, fval)
-                features.add(feature)
-                p = probdist.prob(fval)
-                maxprob[feature] = max(p, maxprob[feature])
-                minprob[feature] = min(p, minprob[feature])
-                if minprob[feature] == 0:
-                    features.discard(feature)
+            for (label, fname), probdist in self._feature_probdist.items():
+                for fval in probdist.samples():
+                    feature = (fname, fval)
+                    features.add(feature)
+                    p = probdist.prob(fval)
+                    maxprob[feature] = max(p, maxprob[feature])
+                    minprob[feature] = min(p, minprob[feature])
+                    if minprob[feature] == 0:
+                        features.discard(feature)
 
-        # Convert features to a list, & sort it by how informative
-        # features are.
-        features = sorted(features,
-                          key=lambda feature_:
-                          minprob[feature_]/maxprob[feature_])
-        return features[:n]
+            # Convert features to a list, & sort it by how informative
+            # features are.
+            self._most_informative_features = sorted(features,
+                                                key=lambda feature_:
+                                                minprob[feature_]/maxprob[feature_])
+        return self._most_informative_features[:n]
 
     @classmethod
     def train(cls, labeled_featuresets, estimator=ELEProbDist):

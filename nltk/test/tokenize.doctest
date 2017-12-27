@@ -233,3 +233,18 @@ Post-hoc alignment of tokens with a source string
     ValueError: substring "gh" not found in "ab cd ef"
     >>> list(align_tokens(['The', 'plane', ',', 'bound', 'for', 'St', 'Petersburg', ',', 'crashed', 'in', 'Egypt', "'s", 'Sinai', 'desert', 'just', '23', 'minutes', 'after', 'take-off', 'from', 'Sharm', 'el-Sheikh', 'on', 'Saturday', '.'], "The plane, bound for St Petersburg, crashed in Egypt's Sinai desert just 23 minutes after take-off from Sharm el-Sheikh on Saturday."))
     [(0, 3), (4, 9), (9, 10), (11, 16), (17, 20), (21, 23), (24, 34), (34, 35), (36, 43), (44, 46), (47, 52), (52, 54), (55, 60), (61, 67), (68, 72), (73, 75), (76, 83), (84, 89), (90, 98), (99, 103), (104, 109), (110, 119), (120, 122), (123, 131), (131, 132)]
+
+
+Regression Tests: MWETokenizer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pickle an MWETokenizer
+
+    >>> from nltk.tokenize import MWETokenizer
+    >>> import pickle
+
+    >>> tokenizer = MWETokenizer([('hors', "d'oeuvre")], separator='+')
+    >>> p = pickle.dumps(tokenizer)
+    >>> unpickeled = pickle.loads(p)
+    >>> unpickeled.tokenize("An hors d'oeuvre tonight, sir?".split())
+    ['An', "hors+d'oeuvre", 'tonight,', 'sir?']
+

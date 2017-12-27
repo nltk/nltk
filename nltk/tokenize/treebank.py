@@ -63,20 +63,20 @@ class TreebankWordTokenizer(TokenizerI):
         ['hi', ',', 'my', 'name', 'ca', "n't", 'hello', ',']
     """
 
-    #starting quotes
+    # starting quotes
     STARTING_QUOTES = [
         (re.compile(r'^\"'), r'``'),
         (re.compile(r'(``)'), r' \1 '),
-        (re.compile(r'([ (\[{<])"'), r'\1 `` '),
+        (re.compile(r"([ (\[{<])(\"|\'{2})"), r'\1 `` '),
     ]
 
-    #punctuation
+    # punctuation
     PUNCTUATION = [
         (re.compile(r'([:,])([^\d])'), r' \1 \2'),
         (re.compile(r'([:,])$'), r' \1 '),
         (re.compile(r'\.\.\.'), r' ... '),
         (re.compile(r'[;@#$%&]'), r' \g<0> '),
-        (re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'), r'\1 \2\3 '), # Handles the final period.
+        (re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'), r'\1 \2\3 '),  # Handles the final period.
         (re.compile(r'[?!]'), r' \g<0> '),
 
         (re.compile(r"([^'])' "), r"\1 ' "),
@@ -94,7 +94,7 @@ class TreebankWordTokenizer(TokenizerI):
 
     DOUBLE_DASHES = (re.compile(r'--'), r' -- ')
 
-    #ending quotes
+    # ending quotes
     ENDING_QUOTES = [
         (re.compile(r'"'), " '' "),
         (re.compile(r'(\S)(\'\')'), r'\1 \2 '),
@@ -126,7 +126,7 @@ class TreebankWordTokenizer(TokenizerI):
         regexp, substitution = self.DOUBLE_DASHES
         text = regexp.sub(substitution, text)
 
-        #add extra space to make things easier
+        # add extra space to make things easier
         text = " " + text + " "
 
         for regexp, substitution in self.ENDING_QUOTES:
@@ -162,15 +162,33 @@ class TreebankWordTokenizer(TokenizerI):
             >>> [s[start:end] for start, end in TreebankWordTokenizer().span_tokenize(s)] == expected
             True
 
+            Additional example
+            >>> from nltk.tokenize import TreebankWordTokenizer
+            >>> s = '''I said, "I'd like to buy some ''good muffins" which cost $3.88\\n each in New (York)."'''
+            >>> expected = [(0, 1), (2, 6), (6, 7), (8, 9), (9, 10), (10, 12),
+            ... (13, 17), (18, 20), (21, 24), (25, 29), (30, 32), (32, 36),
+            ... (37, 44), (44, 45), (46, 51), (52, 56), (57, 58), (58, 62),
+            ... (64, 68), (69, 71), (72, 75), (76, 77), (77, 81), (81, 82),
+            ... (82, 83), (83, 84)]
+            >>> TreebankWordTokenizer().span_tokenize(s) == expected
+            True
+            >>> expected = ['I', 'said', ',', '"', 'I', "'d", 'like', 'to',
+            ... 'buy', 'some', "''", "good", 'muffins', '"', 'which', 'cost',
+            ... '$', '3.88', 'each', 'in', 'New', '(', 'York', ')', '.', '"']
+            >>> [s[start:end] for start, end in TreebankWordTokenizer().span_tokenize(s)] == expected
+            True
+
         """
         raw_tokens = self.tokenize(text)
 
         # Convert converted quotes back to original double quotes
-        # Do this only if original text contains double quote(s)
-        if '"' in text:
+        # Do this only if original text contains double quote(s) or double
+        # single-quotes (because '' might be transformed to `` if it is
+        # treated as starting quotes).
+        if ('"' in text) or ("''" in text):
             # Find double quotes and converted quotes
-            matched = [m.group() for m in re.finditer(r'[(``)(\'\')(")]+', text)]
-            
+            matched = [m.group() for m in re.finditer(r"``|'{2}|\"", text)]
+
             # Replace converted quotes back to double quotes
             tokens = [matched.pop(0) if tok in ['"', "``", "''"] else tok for tok in raw_tokens]
         else:
@@ -240,17 +258,17 @@ class TreebankWordDetokenizer(TokenizerI):
     """
     _contractions = MacIntyreContractions()
     CONTRACTIONS2 = [re.compile(pattern.replace('(?#X)', '\s'))
-                    for pattern in _contractions.CONTRACTIONS2]
+                     for pattern in _contractions.CONTRACTIONS2]
     CONTRACTIONS3 = [re.compile(pattern.replace('(?#X)', '\s'))
-                    for pattern in _contractions.CONTRACTIONS3]
+                     for pattern in _contractions.CONTRACTIONS3]
 
-    #ending quotes
+    # ending quotes
     ENDING_QUOTES = [
         (re.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
         (re.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
         (re.compile(r'(\S)(\'\')'), r'\1\2 '),
         (re.compile(r" '' "), '"')
-        ]
+    ]
 
     # Handles double dashes
     DOUBLE_DASHES = (re.compile(r' -- '), r'--')
@@ -267,26 +285,26 @@ class TreebankWordDetokenizer(TokenizerI):
                        (re.compile(r'\s([\]\)\}\>])\s'), r'\g<1> '),
                        (re.compile(r'([\]\)\}\>])\s([:;,.])'), r'\1\2')]
 
-    #punctuation
+    # punctuation
     PUNCTUATION = [
         (re.compile(r"([^'])\s'\s"), r"\1' "),
-        (re.compile(r'\s([?!])'), r'\g<1>'), # Strip left pad for [?!]
-        #(re.compile(r'\s([?!])\s'), r'\g<1>'),
+        (re.compile(r'\s([?!])'), r'\g<1>'),  # Strip left pad for [?!]
+        # (re.compile(r'\s([?!])\s'), r'\g<1>'),
         (re.compile(r'([^\.])\s(\.)([\]\)}>"\']*)\s*$'), r'\1\2\3'),
         # When tokenizing, [;@#$%&] are padded with whitespace regardless of
         # whether there are spaces before or after them.
         # But during detokenization, we need to distinguish between left/right
         # pad, so we split this up.
-        (re.compile(r'\s([#$])\s'), r' \g<1>'), # Left pad.
-        (re.compile(r'\s([;%])\s'), r'\g<1> '), # Right pad.
-        (re.compile(r'\s([&])\s'), r' \g<1> '), # Unknown pad.
+        (re.compile(r'\s([#$])\s'), r' \g<1>'),  # Left pad.
+        (re.compile(r'\s([;%])\s'), r'\g<1> '),  # Right pad.
+        (re.compile(r'\s([&])\s'), r' \g<1> '),  # Unknown pad.
         (re.compile(r'\s\.\.\.\s'), r'...'),
         (re.compile(r'\s([:,])\s$'), r'\1'),
-        (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2') # Keep right pad after comma/colon before non-digits.
-        #(re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
-        ]
+        (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')  # Keep right pad after comma/colon before non-digits.
+        # (re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
+    ]
 
-    #starting quotes
+    # starting quotes
     STARTING_QUOTES = [
         (re.compile(r'([ (\[{<])\s``'), r'\1"'),
         (re.compile(r'\s(``)\s'), r'\1'),

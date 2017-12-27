@@ -23,6 +23,7 @@ from nltk.parse.corenlp import CoreNLPParser
 
 _stanford_url = 'https://nlp.stanford.edu/software/tokenizer.shtml'
 
+
 class StanfordTokenizer(TokenizerI):
     r"""
     Interface to the Stanford Tokenizer
@@ -112,4 +113,5 @@ def setup_module(module):
     try:
         StanfordTokenizer()
     except LookupError:
-        raise SkipTest('doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
+        raise SkipTest(
+            'doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
