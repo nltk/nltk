@@ -298,11 +298,11 @@ class Lemma(_WordNetObject):
 
     def _related(self, relation_symbol):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
-        return sorted([
+        return [
             get_synset(pos, offset)._lemmas[lemma_index]
             for pos, offset, lemma_index
             in self._synset._lemma_pointers[self._name, relation_symbol]
-        ])
+        ]
 
     def count(self):
         """Return the frequency count for this Lemma"""
@@ -395,7 +395,7 @@ class Synset(_WordNetObject):
         self._all_hypernyms = None
 
         self._pointers = defaultdict(set)
-        self._lemma_pointers = defaultdict(set)
+        self._lemma_pointers = defaultdict(list)
 
     def pos(self):
         return self._pos
@@ -1417,7 +1417,7 @@ class WordNetCorpusReader(CorpusReader):
                     source_lemma_name = synset._lemmas[source_index]._name
                     lemma_pointers = synset._lemma_pointers
                     tups = lemma_pointers[source_lemma_name, symbol]
-                    tups.add((pos, offset, target_index))
+                    tups.append((pos, offset, target_index))
 
             # read the verb frames
             try:
