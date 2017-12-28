@@ -65,6 +65,12 @@ class NISTTokenizer(TokenizerI):
     True
     >>> nist.international_tokenize(rkt)[:10] == expected_rkt
     True
+
+    # Doctest for patching issue #1926
+    >>> sent = u'this is a foo\u2604sentence.'
+    >>> expected_sent = [u'this', u'is', u'a', u'foo', u'\u2604', u'sentence', u'.']
+    >>> nist.international_tokenize(sent) == expected_sent
+    True
     """
     # Strip "skipped" tags
     STRIP_SKIP = re.compile('<skipped>'), ''
@@ -107,7 +113,7 @@ class NISTTokenizer(TokenizerI):
     PUNCT_1 = re.compile(u"([{n}])([{p}])".format(n=number_regex, p=punct_regex)), '\\1 \\2 '
     PUNCT_2 = re.compile(u"([{p}])([{n}])".format(n=number_regex, p=punct_regex)), ' \\1 \\2'
     # Tokenize symbols
-    SYMBOLS = re.compile(u"({s})".format(s=symbol_regex)), ' \\1 '
+    SYMBOLS = re.compile(u"([{s}])".format(s=symbol_regex)), ' \\1 '
 
     INTERNATIONAL_REGEXES = [NONASCII, PUNCT_1, PUNCT_2, SYMBOLS]
 
