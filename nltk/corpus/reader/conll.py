@@ -70,7 +70,7 @@ class ConllCorpusReader(CorpusReader):
     def __init__(self, root, fileids, columntypes,
                  chunk_types=None, root_label='S', pos_in_tree=False,
                  srl_includes_roleset=True, encoding='utf8',
-                 tree_class=Tree, tagset=None, separator=''):
+                 tree_class=Tree, tagset=None, separator=None):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError('Bad column type %r' % columntype)
