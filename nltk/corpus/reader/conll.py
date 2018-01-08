@@ -70,7 +70,7 @@ class ConllCorpusReader(CorpusReader):
     def __init__(self, root, fileids, columntypes,
                  chunk_types=None, root_label='S', pos_in_tree=False,
                  srl_includes_roleset=True, encoding='utf8',
-                 tree_class=Tree, tagset=None):
+                 tree_class=Tree, tagset=None, separator=' '):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError('Bad column type %r' % columntype)
@@ -84,6 +84,7 @@ class ConllCorpusReader(CorpusReader):
         self._tree_class = tree_class
         CorpusReader.__init__(self, root, fileids, encoding)
         self._tagset = tagset
+        self.sep = separator
 
     #/////////////////////////////////////////////////////////////////
     # Data Access Methods
@@ -194,7 +195,7 @@ class ConllCorpusReader(CorpusReader):
             block = block.strip()
             if not block: continue
 
-            grid = [line.split('\t') for line in block.split('\n')]
+            grid = [line.split(self.sep) for line in block.split('\n')]
 
             # If there's a docstart row, then discard. ([xx] eventually it
             # would be good to actually use it)
