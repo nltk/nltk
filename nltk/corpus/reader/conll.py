@@ -35,7 +35,11 @@ class ConllCorpusReader(CorpusReader):
     annotation type.  The set of columns used by CoNLL-style files can
     vary from corpus to corpus; the ``ConllCorpusReader`` constructor
     therefore takes an argument, ``columntypes``, which is used to
-    specify the columns that are used by a given corpus.
+    specify the columns that are used by a given corpus. By default
+    columns are split by consecutive whitespaces, with the
+    ``separator`` argument you can set a string to split by (e.g.
+    ``\'\t\'``).
+
 
     @todo: Add support for reading from corpora where different
         parallel files contain different columns.
