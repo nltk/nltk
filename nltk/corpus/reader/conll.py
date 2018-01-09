@@ -517,8 +517,8 @@ class ConllChunkCorpusReader(ConllCorpusReader):
     pos, and chunk.
     """
     def __init__(self, root, fileids, chunk_types, encoding='utf8',
-                 tagset=None):
+                 tagset=None, separator=None):
         ConllCorpusReader.__init__(
             self, root, fileids, ('words', 'pos', 'chunk'),
             chunk_types=chunk_types, encoding=encoding,
-            tagset=tagset)
+            tagset=tagset, separator=separator)
