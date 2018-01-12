@@ -23,7 +23,7 @@ def find_all_names(stoplist):
     docindex = epydoc.docbuilder.build_doc_index(ROOT, add_submodules=True)
     valdocs = sorted(docindex.reachable_valdocs(
         imports=False,
-        #packages=False, bases=False, submodules=False,
+        # packages=False, bases=False, submodules=False,
         # subclasses=False,
         private=False))
     logger._verbosity = 5
@@ -45,6 +45,7 @@ def find_all_names(stoplist):
     log.info('Found {} names from {} objects'.format(len(names), n))
 
     return names
+
 
 SCAN_RE1 = "<programlisting>[\s\S]*?</programlisting>"
 SCAN_RE2 = "<literal>[\s\S]*?</literal>"
@@ -103,5 +104,6 @@ def main():
 
     log.info('Scanning xml files...')
     scan_xml(FILENAMES, names)
+
 
 main()
