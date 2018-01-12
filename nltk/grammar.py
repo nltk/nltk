@@ -545,13 +545,13 @@ class CFG(object):
     @classmethod
     def fromstring(cls, input, encoding=None):
         """
-        Return the ``CFG`` corresponding to the input string(s).
+        Return the grammar instance corresponding to the input string(s).
 
         :param input: a grammar, either in the form of a string or as a list of strings.
         """
         start, productions = read_grammar(input, standard_nonterm_parser,
                                           encoding=encoding)
-        return CFG(start, productions)
+        return cls(start, productions)
 
     def start(self):
         """
@@ -807,7 +807,7 @@ class FeatureGrammar(CFG):
     def fromstring(cls, input, features=None, logic_parser=None, fstruct_reader=None,
                    encoding=None):
         """
-        Return a feature structure based ``FeatureGrammar``.
+        Return a feature structure based grammar.
 
         :param input: a grammar, either in the form of a string or else
         as a list of strings.
@@ -829,7 +829,7 @@ class FeatureGrammar(CFG):
 
         start, productions = read_grammar(input, fstruct_reader.read_partial,
                                           encoding=encoding)
-        return FeatureGrammar(start, productions)
+        return cls(start, productions)
 
     def productions(self, lhs=None, rhs=None, empty=False):
         """
@@ -956,7 +956,7 @@ class DependencyGrammar(object):
                                  (linenum, line))
         if len(productions) == 0:
             raise ValueError('No productions found!')
-        return DependencyGrammar(productions)
+        return cls(productions)
 
     def contains(self, head, mod):
         """
@@ -1126,7 +1126,7 @@ class PCFG(CFG):
     @classmethod
     def fromstring(cls, input, encoding=None):
         """
-        Return a probabilistic ``PCFG`` corresponding to the
+        Return a probabilistic context-free grammar corresponding to the
         input string(s).
 
         :param input: a grammar, either in the form of a string or else
@@ -1134,7 +1134,7 @@ class PCFG(CFG):
         """
         start, productions = read_grammar(input, standard_nonterm_parser,
                                           probabilistic=True, encoding=encoding)
-        return PCFG(start, productions)
+        return cls(start, productions)
 
 
 #################################################################
