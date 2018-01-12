@@ -42,6 +42,7 @@ types_map = {
 def usage():
     exit("Usage: svnmime files")
 
+
 for file in sys.argv[1:]:
     if "." in file:
         extension = file.rsplit('.', 1)[1]
