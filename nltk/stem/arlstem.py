@@ -247,7 +247,7 @@ class ARLSTem(StemmerI):
         vb = self.verb_t4(token)
         if vb is not None:
             return vb
-        return self.verb_t5(token)
+        vb = self.verb_t5(token)
         if vb is not None:
             return vb
         return self.verb_t6(token)
