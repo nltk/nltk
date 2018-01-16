@@ -90,7 +90,8 @@ class ARLSTem(StemmerI):
         self.verb_pr2 = ['\u0633\u062A', '\u0633\u064A']
         # Siin Alif, Siin Noon
         self.verb_pr22 = ['\u0633\u0627', '\u0633\u0646']
-
+        # Lam Noon, Lam Taa, Lam Yaa, Lam Hamza
+        self.verb_pr33 = ['\u0644\u0646', '\u0644\u062A', '\u0644\u064A', '\u0644\u0623']
         # Taa Miim Alif, Taa Noon Shadda
         self.verb_suf3 = ['\u062A\u0645\u0627', '\u062A\u0646\u0651']
         # Noon Alif, Taa Miim, Taa Alif, Waaw Alif
@@ -247,6 +248,9 @@ class ARLSTem(StemmerI):
         if vb is not None:
             return vb
         return self.verb_t5(token)
+        if vb is not None:
+            return vb
+        return self.verb_t6(token)
 
     def verb_t1(self, token):
         """
@@ -351,5 +355,15 @@ class ARLSTem(StemmerI):
                     return token[2:]
             for pr2 in self.verb_pr2:
                 if token.startswith(pr2):
+                    return token[2:]
+        return token
+
+    def verb_t6(self, token):
+        """
+            stem the order prefixes
+        """
+        if len(token) > 4:
+            for pr3 in self.verb_pr33:
+                if token.startswith(pr3):
                     return token[2:]
         return token
