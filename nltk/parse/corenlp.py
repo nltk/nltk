@@ -757,7 +757,6 @@ def transform(sentence):
 
 def setup_module(module):
     from nose import SkipTest
-
     global server
     try:
         server = CoreNLPServer(port=9000)
