@@ -4,6 +4,7 @@ cd `dirname $0`
 
 #download nltk python dependencies
 pip install --upgrade -r pip-req.txt --allow-external matplotlib --allow-unverified matplotlib
+pip install --upgrade https://github.com/PyCQA/pylint/archive/master.zip 
 
 #download nltk data packages
 python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
