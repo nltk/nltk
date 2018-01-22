@@ -23,16 +23,6 @@ if [[ ! -d ${stanford_corenlp_package_name} ]]; then
 	unzip ${stanford_corenlp_package_zip_name}
 	rm ${stanford_corenlp_package_zip_name}
 	ln -sf ${stanford_corenlp_package_name} 'stanford-corenlp'
-	# Kill all Java instances.
-	pkill -f '*edu.stanford.nlp.pipeline.StanfordCoreNLPServer*'
-	cd stanford-corenlp
-	# Start the CoreNLP server
-	nohup java -Xmx4g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer \
-	-preload tokenize,ssplit,pos,parse \
-	-status_port 9000  -port 9000 -timeout 15000 &
-	# Log the job ID and kill it before the end.
-	CORENLP_PID=$!
-	cd ..
 fi
 
 
@@ -95,8 +85,6 @@ iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
 # Create a default pylint configuration file. 
 touch ~/.pylintrc
 pylint -f parseable nltk > pylintoutput
-
-kill -9 $CORENLP_PID
 
 #script always succeeds
 true
