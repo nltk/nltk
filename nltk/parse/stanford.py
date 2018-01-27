@@ -26,6 +26,7 @@ from nltk.tree import Tree
 
 _stanford_url = 'https://nlp.stanford.edu/software/lex-parser.shtml'
 
+
 class GenericStanfordParser(ParserI):
     """Interface to the Stanford Parser"""
 
@@ -52,7 +53,7 @@ class GenericStanfordParser(ParserI):
             key=lambda model_path: os.path.dirname(model_path)
         )
 
-        model_jar=max(
+        model_jar = max(
             find_jar_iter(
                 self._MODEL_JAR_PATTERN, path_to_models_jar,
                 env_vars=('STANFORD_MODELS', 'STANFORD_CORENLP'),
@@ -61,7 +62,6 @@ class GenericStanfordParser(ParserI):
             ),
             key=lambda model_path: os.path.dirname(model_path)
         )
-
 
         #self._classpath = (stanford_jar, model_jar)
 
@@ -217,8 +217,8 @@ class GenericStanfordParser(ParserI):
                 stdout, stderr = java(cmd, classpath=self._classpath,
                                       stdout=PIPE, stderr=PIPE)
 
-            stdout = stdout.replace(b'\xc2\xa0',b' ')
-            stdout = stdout.replace(b'\x00\xa0',b' ')
+            stdout = stdout.replace(b'\xc2\xa0', b' ')
+            stdout = stdout.replace(b'\x00\xa0', b' ')
             stdout = stdout.decode(encoding)
 
         os.unlink(input_file.name)
@@ -227,6 +227,7 @@ class GenericStanfordParser(ParserI):
         config_java(options=default_options, verbose=False)
 
         return stdout
+
 
 class StanfordParser(GenericStanfordParser):
     """
@@ -280,6 +281,13 @@ class StanfordParser(GenericStanfordParser):
     """
 
     _OUTPUT_FORMAT = 'penn'
+
+    def __init__(self, *args, **kwargs):
+        warnings.warn("The StanfordParser will be deprecated\n"
+                      "Please use \033[91mnltk.parse.corenlp.StanforCoreNLPParser\033[0m instead.",
+                      DeprecationWarning, stacklevel=2)
+
+        super(StanfordParser, self).__init__(*args, **kwargs)
 
     def _make_tree(self, result):
         return Tree.fromstring(result)
@@ -337,6 +345,13 @@ class StanfordDependencyParser(GenericStanfordParser):
 
     _OUTPUT_FORMAT = 'conll2007'
 
+    def __init__(self, *args, **kwargs):
+        warnings.warn("The StanfordDependencyParser will be deprecated\n"
+                      "Please use \033[91mnltk.parse.corenlp.StanforCoreNLPDependencyParser\033[0m instead.",
+                      DeprecationWarning, stacklevel=2)
+
+        super(StanfordDependencyParser, self).__init__(*args, **kwargs)
+
     def _make_tree(self, result):
         return DependencyGraph(result, top_relation_label='root')
 
@@ -381,6 +396,10 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
     _DOUBLE_SPACED_OUTPUT = True
 
     def __init__(self, *args, **kwargs):
+        warnings.warn("The StanfordNeuralDependencyParser will be deprecated\n"
+                      "Please use \033[91mnltk.parse.corenlp.StanforCoreNLPNeuralDependencyParser\033[0m instead.",
+                      DeprecationWarning, stacklevel=2)
+
         super(StanfordNeuralDependencyParser, self).__init__(*args, **kwargs)
         self.corenlp_options += '-annotators tokenize,ssplit,pos,depparse'
 

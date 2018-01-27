@@ -63,6 +63,7 @@ class ClusterI(object):
     def cluster_names(self):
         """
         Returns the names of the clusters.
+        :rtype: list
         """
         return list(range(self.num_clusters()))
 

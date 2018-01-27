@@ -122,12 +122,15 @@ class TestBLEU(unittest.TestCase):
     def test_partial_matches_hypothesis_longer_than_reference(self):
         references = ['John loves Mary'.split()]
         hypothesis = 'John loves Mary who loves Mike'.split()
-        self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.4729, places=4)
+        # Since no 4-grams matches were found the result should be zero
+        # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.0, places=4)
         # Checks that the warning has been raised because len(reference) < 4.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
         except AttributeError:
             pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+
 
 #@unittest.skip("Skipping fringe cases for BLEU.")
 class TestBLEUFringeCases(unittest.TestCase):
@@ -138,7 +141,9 @@ class TestBLEUFringeCases(unittest.TestCase):
         hypothesis = 'John loves Mary'.split()
         n = len(hypothesis) + 1 #
         weights = [1.0/n] * n # Uniform weights.
-        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.7165, places=4)
+        # Since no n-grams matches were found the result should be zero
+        # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.0, places=4)
         # Checks that the warning has been raised because len(hypothesis) < 4.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
@@ -149,7 +154,9 @@ class TestBLEUFringeCases(unittest.TestCase):
         # it's a special case where reference == hypothesis.
         references = ['John loves Mary'.split()]
         hypothesis = 'John loves Mary'.split()
-        assert(sentence_bleu(references, hypothesis, weights) == 1.0)
+        # Since no 4-grams matches were found the result should be zero
+        # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis, weights), 0.0, places=4)
 
     def test_empty_hypothesis(self):
         # Test case where there's hypothesis is empty.
@@ -174,8 +181,9 @@ class TestBLEUFringeCases(unittest.TestCase):
         # is shorter than 4.
         references = ['let it go'.split()]
         hypothesis = 'let go it'.split()
-        # Checks that the value the hypothesis and reference returns is 1.0
-        assert(sentence_bleu(references, hypothesis) == 1.0)
+        # Checks that the value the hypothesis and reference returns is 0.0
+        # exp(w_1 * 1 * w_2 * 1 * w_3 * 1 * w_4 * -inf) = 0
+        self.assertAlmostEqual(sentence_bleu(references, hypothesis), 0.0, places=4)
         # Checks that the warning has been raised.
         try:
             self.assertWarns(UserWarning, sentence_bleu, references, hypothesis)
@@ -220,21 +228,17 @@ class TestBLEUvsMteval13a(unittest.TestCase):
                                             smoothing_function=chencherry.method3)
                     assert abs(mteval_bleu - nltk_bleu) < 0.005
 
-class TestEmulateMultiBLEU(unittest.TestCase):
-    def test_corpus_bleu_with_emulate_multibleu(self):
+class TestBLEUWithBadSentence(unittest.TestCase):
+    def test_corpus_bleu_with_bad_sentence(self):
         hyp = "Teo S yb , oe uNb , R , T t , , t Tue Ar saln S , , 5istsi l , 5oe R ulO sae oR R"
         ref = str("Their tasks include changing a pump on the faulty stokehold ."
                   "Likewise , two species that are very similar in morphology "
                   "were distinguished using genetics .")
         references = [[ref.split()]]
-        hypothese = [hyp.split()]
+        hypotheses = [hyp.split()]
         try: # Check that the warning is raised since no. of 2-grams < 0.
             with self.assertWarns(UserWarning):
                 # Verify that the BLEU output is undesired since no. of 2-grams < 0.
-                self.assertAlmostEqual(corpus_bleu(references, hypothese), 0.4309, places=4)
-        except AttributeError:
-            pass # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
-        desired_output = corpus_bleu(references, hypothese,
-                                     emulate_multibleu=True)
-        #assert
-        assert desired_output == 0.0
+                self.assertAlmostEqual(corpus_bleu(references, hypotheses), 0.0, places=4)
+        except AttributeError: # unittest.TestCase.assertWarns is only supported in Python >= 3.2.
+            self.assertAlmostEqual(corpus_bleu(references, hypotheses), 0.0, places=4)

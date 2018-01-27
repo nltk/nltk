@@ -310,3 +310,15 @@ def wsd_demo(trainer, word, features, n=1000):
     # Return the classifier
     return classifier
 
+
+
+def check_megam_config(self):
+    """
+    Checks whether the MEGAM binary is configured.
+    """
+    try:
+        _megam_bin
+    except NameError:
+        err_msg = str("Please configure your megam binary first, e.g.\n"
+                      ">>> nltk.config_megam('/usr/bin/local/megam')")
+        raise NameError(err_msg)

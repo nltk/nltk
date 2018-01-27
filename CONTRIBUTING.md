@@ -39,23 +39,45 @@ contribute is to learn how to use it and put your changes on a Git repository.
 There's a plenty of documentation about Git -- you can start with the [Pro Git
 book](http://git-scm.com/book/).
 
-### Forks + GitHub Pull requests
+
+### Setting up a Development Environment
+
+To set up your local development environment for contributing to the main
+repository [nltk/nltk](https://github.com/nltk/nltk/):
+
+- Fork the [nltk/nltk](https://github.com/nltk/nltk/) repository on GitHub
+  to your account;
+- Clone your forked repository locally
+  (`git clone https://github.com/<your-github-username>/nltk.git`);
+- Run `cd nltk` to get to the root directory of the `nltk` code base;
+- Install the dependencies (`pip install -r pip-req.txt`);
+- Download the datasets for running tests
+  (`python -m nltk.downloader tests`);
+- Create a remote link from your local repository to the
+  upstream `nltk/nltk` on GitHub
+  (`git remote add upstream https://github.com/nltk/nltk.git`) --
+  you will need to use this `upstream` link when updating your local repository
+  with all the latest contributions.
+
+### GitHub Pull requests
 
 We use the famous
 [gitflow](http://nvie.com/posts/a-successful-git-branching-model/) to manage our
 branches.
 
 Summary of our git branching model:
-- Fork the desired repository on GitHub to your account;
-- Clone your forked repository locally
-  (`git clone git@github.com:your-username:repository-name.git`);
+- Go to the `develop` branch (`git checkout develop`);
+- Get all the latest work from the upstream `nltk/nltk` repository
+  (`git pull upstream develop`);
 - Create a new branch off of `develop` with a descriptive name (for example:
   `feature/portuguese-sentiment-analysis`, `hotfix/bug-on-downloader`). You can
   do it switching to `develop` branch (`git checkout develop`) and then
   creating a new branch (`git checkout -b name-of-the-new-branch`);
 - Do many small commits on that branch locally (`git add files-changed`,
   `git commit -m "Add some change"`);
-- Add your name to the `AUTHORS.markdown` file as a contributor;
+- Run the tests to make sure nothing breaks
+  (`tox -e py35` if you are on Python 3.5);
+- Add your name to the `AUTHORS.md` file as a contributor;
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
 - Create a pull request using the GitHub Web interface (asking us to pull the

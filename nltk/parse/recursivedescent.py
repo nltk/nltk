@@ -351,8 +351,7 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
     :see: ``nltk.grammar``
     """
     def __init__(self, grammar, trace=0):
-        self._grammar = grammar
-        self._trace = trace
+        super(SteppingRecursiveDescentParser, self).__init__(grammar, trace)
         self._rtext = None
         self._tree = None
         self._frontier = [()]

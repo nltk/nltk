@@ -74,7 +74,7 @@ class SentiWordNetCorpusReader(CorpusReader):
             pos, offset = vals
             if pos == 's':
                 pos = 'a'
-            synset = wn._synset_from_pos_and_offset(pos, offset)
+            synset = wn.synset_from_pos_and_offset(pos, offset)
             return SentiSynset(pos_score, neg_score, synset)
         else:
             synset = wn.synset(vals[0])
@@ -102,7 +102,7 @@ class SentiWordNetCorpusReader(CorpusReader):
         for key, fields in self._db.items():
             pos, offset = key
             pos_score, neg_score = fields
-            synset = wn._synset_from_pos_and_offset(pos, offset)
+            synset = wn.synset_from_pos_and_offset(pos, offset)
             yield SentiSynset(pos_score, neg_score, synset)
 
 
