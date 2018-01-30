@@ -403,7 +403,7 @@ class ArabicStemmer(_LanguageSpecificStemmer):
 
     __conjugation_suffix_verb_past = ('\u0646\u0627', '\u062a\u0627', '\u062a\u0646') # نا، تا، تن
 
-    __conjugation_suffix_verb_presnet = ('\u0627\u0646', '\u0648\u0646', '\u064a\u0646') # ان، ون، ين
+    __conjugation_suffix_verb_present = ('\u0627\u0646', '\u0648\u0646', '\u064a\u0646') # ان، ون، ين
 
     # Suffixes added due to derivation Names
     __conjugation_suffix_noun_1 = ('\u064a', '\u0643', '\u0647') # ي، ك، ه
