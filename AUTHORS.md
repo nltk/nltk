@@ -230,6 +230,7 @@
 - Pavan Gururaj Joshi <https://github.com/PavanGJ>
 - Ethan Hill <https://github.com/hill1303>
 - Vivek Lakshmanan
+- Somnath Rakshit <https://github.com/somnathrakshit>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
