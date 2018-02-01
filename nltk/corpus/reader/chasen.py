@@ -16,6 +16,7 @@ from nltk.corpus.reader import util
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class ChasenCorpusReader(CorpusReader):
 
     def __init__(self, root, fileids, encoding='utf8', sent_splitter=None):
@@ -23,39 +24,41 @@ class ChasenCorpusReader(CorpusReader):
         CorpusReader.__init__(self, root, fileids, encoding)
 
     def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         False, False, False, self._sent_splitter)
-            for (fileid, enc) in self.abspaths(fileids, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
     def tagged_words(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         True, False, False, self._sent_splitter)
-            for (fileid, enc) in self.abspaths(fileids, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
     def sents(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         False, True, False, self._sent_splitter)
-            for (fileid, enc) in self.abspaths(fileids, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
     def tagged_sents(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         True, True, False, self._sent_splitter)
-            for (fileid, enc) in self.abspaths(fileids, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
     def paras(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         False, True, True, self._sent_splitter)
-            for (fileid, enc) in self.abspaths(fileids, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
     def tagged_paras(self, fileids=None):
         return concat([ChasenCorpusView(fileid, enc,
                                         True, True, True, self._sent_splitter)
-            for (fileid, enc) in self.abspaths(fileids, True)])
+                       for (fileid, enc) in self.abspaths(fileids, True)])
 
 
 class ChasenCorpusView(StreamBackedCorpusView):
@@ -72,7 +75,6 @@ class ChasenCorpusView(StreamBackedCorpusView):
         self._sent_splitter = sent_splitter
         StreamBackedCorpusView.__init__(self, corpus_file, encoding=encoding)
 
-
     def read_block(self, stream):
         """Reads one paragraph at a time."""
         block = []
@@ -86,20 +88,21 @@ class ChasenCorpusView(StreamBackedCorpusView):
                 _eos = line.strip() == 'EOS'
                 _cells = line.split('\t')
                 w = (_cells[0], '\t'.join(_cells[1:]))
-                if not _eos: sent.append(w)
+                if not _eos:
+                    sent.append(w)
 
                 if _eos or (self._sent_splitter and self._sent_splitter(w)):
                     if not self._tagged:
-                        sent = [w for (w,t) in sent]
+                        sent = [w for (w, t) in sent]
                     if self._group_by_sent:
                         para.append(sent)
                     else:
                         para.extend(sent)
                     sent = []
 
-            if len(sent)>0:
+            if len(sent) > 0:
                 if not self._tagged:
-                    sent = [w for (w,t) in sent]
+                    sent = [w for (w, t) in sent]
 
                 if self._group_by_sent:
                     para.append(sent)
@@ -113,6 +116,7 @@ class ChasenCorpusView(StreamBackedCorpusView):
 
         return block
 
+
 def demo():
 
     import nltk
@@ -120,11 +124,11 @@ def demo():
 
     jeita = LazyCorpusLoader(
         'jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
-    print('/'.join( jeita.words()[22100:22140] ))
+    print('/'.join(jeita.words()[22100:22140]))
 
+    print('\nEOS\n'.join('\n'.join("%s/%s" % (w[0], w[1].split('\t')[2]) for w in sent)
+                         for sent in jeita.tagged_sents()[2170:2173]))
 
-    print('\nEOS\n'.join('\n'.join("%s/%s" % (w[0],w[1].split('\t')[2]) for w in sent)
-                          for sent in jeita.tagged_sents()[2170:2173]))
 
 def test():
 
@@ -134,6 +138,7 @@ def test():
         'jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
 
     assert isinstance(jeita.tagged_words()[0][1], string_types)
+
 
 if __name__ == '__main__':
     demo()

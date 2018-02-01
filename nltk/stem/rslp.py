@@ -35,6 +35,7 @@ from nltk.data import load
 
 from nltk.stem.api import StemmerI
 
+
 class RSLPStemmer(StemmerI):
     """
     A stemmer for Portuguese.
@@ -52,19 +53,20 @@ class RSLPStemmer(StemmerI):
         uma cas de port e janel , em cim dum coxilh .
     """
 
-    def __init__ (self):
+    def __init__(self):
         self._model = []
 
-        self._model.append( self.read_rule("step0.pt") )
-        self._model.append( self.read_rule("step1.pt") )
-        self._model.append( self.read_rule("step2.pt") )
-        self._model.append( self.read_rule("step3.pt") )
-        self._model.append( self.read_rule("step4.pt") )
-        self._model.append( self.read_rule("step5.pt") )
-        self._model.append( self.read_rule("step6.pt") )
+        self._model.append(self.read_rule("step0.pt"))
+        self._model.append(self.read_rule("step1.pt"))
+        self._model.append(self.read_rule("step2.pt"))
+        self._model.append(self.read_rule("step3.pt"))
+        self._model.append(self.read_rule("step4.pt"))
+        self._model.append(self.read_rule("step5.pt"))
+        self._model.append(self.read_rule("step6.pt"))
 
-    def read_rule (self, filename):
-        rules = load('nltk:stemmers/rslp/' + filename, format='raw').decode("utf8")
+    def read_rule(self, filename):
+        rules = load('nltk:stemmers/rslp/' + filename,
+                     format='raw').decode("utf8")
         lines = rules.split("\n")
 
         lines = [line for line in lines if line != ""]     # remove blank lines
@@ -80,16 +82,16 @@ class RSLPStemmer(StemmerI):
             tokens = line.split("\t")
 
             # text to be searched for at the end of the string
-            rule.append( tokens[0][1:-1] ) # remove quotes
+            rule.append(tokens[0][1:-1])  # remove quotes
 
             # minimum stem size to perform the replacement
-            rule.append( int(tokens[1]) )
+            rule.append(int(tokens[1]))
 
             # text to be replaced into
-            rule.append( tokens[2][1:-1] ) # remove quotes
+            rule.append(tokens[2][1:-1])  # remove quotes
 
             # exceptions to this rule
-            rule.append( [token[1:-1] for token in tokens[3].split(",")] )
+            rule.append([token[1:-1] for token in tokens[3].split(",")])
 
             # append to the results
             rules.append(rule)
@@ -131,12 +133,10 @@ class RSLPStemmer(StemmerI):
         for rule in rules:
             suffix_length = len(rule[0])
             if word[-suffix_length:] == rule[0]:       # if suffix matches
-                if len(word) >= suffix_length + rule[1]: # if we have minimum size
+                # if we have minimum size
+                if len(word) >= suffix_length + rule[1]:
                     if word not in rule[3]:                # if not an exception
                         word = word[:-suffix_length] + rule[2]
                         break
 
         return word
-
-
-

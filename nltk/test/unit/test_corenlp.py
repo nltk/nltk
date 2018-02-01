@@ -525,6 +525,7 @@ class TestTaggerAPI(TestCase):
         with self.assertRaises(ValueError):
             corenlp_tagger = corenlp.CoreNLPParser(tagtype='test')
 
+
 class TestParserAPI(TestCase):
 
     def test_parse(self):
@@ -755,8 +756,8 @@ class TestParserAPI(TestCase):
 
         input_string = "The quick brown fox jumps over the lazy dog".split()
         expected_output = Tree('ROOT', [Tree('NP', [Tree('NP', [Tree('DT', ['The']), Tree('JJ', ['quick']),
-                          Tree('JJ', ['brown']), Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]),
-                          Tree('PP', [Tree('IN', ['over']), Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])])
+                                                                Tree('JJ', ['brown']), Tree('NN', ['fox'])]), Tree('NP', [Tree('NP', [Tree('NNS', ['jumps'])]),
+                                                                                                                          Tree('PP', [Tree('IN', ['over']), Tree('NP', [Tree('DT', ['the']), Tree('JJ', ['lazy']), Tree('NN', ['dog'])])])])])])
 
         parsed_data = next(corenlp_parser.parse(input_string))
 

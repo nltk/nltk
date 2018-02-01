@@ -84,10 +84,11 @@ class Feature(object):
             try:
                 if positions > end:
                     raise TypeError
-                self.positions = tuple(range(positions, end+1))
+                self.positions = tuple(range(positions, end + 1))
             except TypeError:
                 # let any kind of erroneous spec raise ValueError
-                raise ValueError("illegal interval specification: (start={0}, end={1})".format(positions, end))
+                raise ValueError(
+                    "illegal interval specification: (start={0}, end={1})".format(positions, end))
 
         # set property name given in subclass, or otherwise name of subclass
         self.PROPERTY_NAME = self.__class__.PROPERTY_NAME or self.__class__.__name__
@@ -155,8 +156,10 @@ class Feature(object):
         :raises ValueError: for non-positive window lengths
         """
         if not all(x > 0 for x in winlens):
-            raise ValueError("non-positive window length in {0}".format(winlens))
-        xs = (starts[i:i+w] for w in winlens for i in range(len(starts)-w+1))
+            raise ValueError(
+                "non-positive window length in {0}".format(winlens))
+        xs = (starts[i:i + w]
+              for w in winlens for i in range(len(starts) - w + 1))
         return [cls(x) for x in xs if not (excludezero and 0 in x)]
 
     def issuperset(self, other):

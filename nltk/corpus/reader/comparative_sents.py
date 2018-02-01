@@ -49,10 +49,12 @@ NON_GRAD_COMPARISON = re.compile(r'<cs-4>')
 ENTITIES_FEATS = re.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
 KEYWORD = re.compile(r'\((?!.*\()(.*)\)$')
 
+
 class Comparison(object):
     """
     A Comparison represents a comparative sentence and its constituents.
     """
+
     def __init__(self, text=None, comp_type=None, entity_1=None, entity_2=None,
                  feature=None, keyword=None):
         """
@@ -75,7 +77,8 @@ class Comparison(object):
     def __repr__(self):
         return ("Comparison(text=\"{}\", comp_type={}, entity_1=\"{}\", entity_2=\"{}\", "
                 "feature=\"{}\", keyword=\"{}\")").format(self.text, self.comp_type,
-                self.entity_1, self.entity_2, self.feature, self.keyword)
+                                                          self.entity_1, self.entity_2, self.feature, self.keyword)
+
 
 class ComparativeSentencesCorpusReader(CorpusReader):
     """
@@ -125,7 +128,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.CorpusView(path, self._read_comparison_block, encoding=enc)
-            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+                       for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
     def keywords(self, fileids=None):
         """
@@ -137,10 +140,11 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         :rtype: set(str)
         """
         all_keywords = concat([self.CorpusView(path, self._read_keyword_block, encoding=enc)
-                       for (path, enc, fileid)
-                       in self.abspaths(fileids, True, True)])
+                               for (path, enc, fileid)
+                               in self.abspaths(fileids, True, True)])
 
-        keywords_set = set([keyword.lower() for keyword in all_keywords if keyword])
+        keywords_set = set([keyword.lower()
+                            for keyword in all_keywords if keyword])
         return keywords_set
 
     def keywords_readme(self):
@@ -186,7 +190,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         :rtype: list(list(str)) or list(str)
         """
         return concat([self.CorpusView(path, self._read_sent_block, encoding=enc)
-            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+                       for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
     def words(self, fileids=None):
         """
@@ -205,7 +209,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         while True:
             line = stream.readline()
             if not line:
-                return [] # end of file.
+                return []  # end of file.
             comparison_tags = re.findall(COMPARISON, line)
             if comparison_tags:
                 grad_comparisons = re.findall(GRAD_COMPARISON, line)
@@ -213,7 +217,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                 # Advance to the next line (it contains the comparative sentence)
                 comparison_text = stream.readline().strip()
                 if self._word_tokenizer:
-                    comparison_text = self._word_tokenizer.tokenize(comparison_text)
+                    comparison_text = self._word_tokenizer.tokenize(
+                        comparison_text)
                 # Skip the next line (it contains closing comparison tags)
                 stream.readline()
                 # If gradable comparisons are found, create Comparison instances
@@ -223,7 +228,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                     # Each comparison tag has its own relations on a separate line
                     for comp in grad_comparisons:
                         comp_type = int(re.match(r'<cs-(\d)>', comp).group(1))
-                        comparison = Comparison(text=comparison_text, comp_type=comp_type)
+                        comparison = Comparison(
+                            text=comparison_text, comp_type=comp_type)
                         line = stream.readline()
                         entities_feats = ENTITIES_FEATS.findall(line)
                         if entities_feats:
@@ -244,7 +250,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                     for comp in non_grad_comparisons:
                         # comp_type in this case should always be 4.
                         comp_type = int(re.match(r'<cs-(\d)>', comp).group(1))
-                        comparison = Comparison(text=comparison_text, comp_type=comp_type)
+                        comparison = Comparison(
+                            text=comparison_text, comp_type=comp_type)
                         comparison_bundle.append(comparison)
                 # Flatten the list of comparisons before returning them
                 # return concat([comparison_bundle])
@@ -266,10 +273,10 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                         break
                 continue
             if not re.findall(COMPARISON, line) and not ENTITIES_FEATS.findall(line) \
-            and not re.findall(CLOSE_COMPARISON, line):
+                    and not re.findall(CLOSE_COMPARISON, line):
                 if self._sent_tokenizer:
                     return [self._word_tokenizer.tokenize(sent)
-                        for sent in self._sent_tokenizer.tokenize(line)]
+                            for sent in self._sent_tokenizer.tokenize(line)]
                 else:
                     return [self._word_tokenizer.tokenize(line)]
 

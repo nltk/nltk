@@ -67,7 +67,8 @@ class GenericStanfordParser(ParserI):
 
         # Adding logging jar files to classpath
         stanford_dir = os.path.split(stanford_jar)[0]
-        self._classpath = tuple([model_jar] + find_jars_within_path(stanford_dir))
+        self._classpath = tuple(
+            [model_jar] + find_jars_within_path(stanford_dir))
 
         self.model_path = model_path
         self._encoding = encoding
@@ -428,4 +429,5 @@ def setup_module(module):
         )
         StanfordNeuralDependencyParser()
     except LookupError:
-        raise SkipTest('doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn\'t exist')
+        raise SkipTest(
+            'doctests from nltk.parse.stanford are skipped because one of the stanford parser or CoreNLP jars doesn\'t exist')

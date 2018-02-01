@@ -22,7 +22,7 @@ except ImportError:
 else:
     from nltk.twitter.util import Authenticate, credsfromfile
     from nltk.twitter.twitterclient import Streamer, Query, Twitter,\
-         TweetViewer, TweetWriter
+        TweetViewer, TweetWriter
 
 
 from nltk.twitter.common import json2csv

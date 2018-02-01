@@ -32,40 +32,42 @@ from nltk.collections import *
 from nltk.compat import python_2_unicode_compatible
 
 
-
 ######################################################################
 # Short usage message
 ######################################################################
 
 def usage(obj, selfname='self'):
-    str(obj) # In case it's lazy, this will load it.
+    str(obj)  # In case it's lazy, this will load it.
 
     if not isinstance(obj, class_types):
         obj = obj.__class__
 
     print('%s supports the following operations:' % obj.__name__)
     for (name, method) in sorted(pydoc.allmethods(obj).items()):
-        if name.startswith('_'): continue
-        if getattr(method, '__deprecated__', False): continue
+        if name.startswith('_'):
+            continue
+        if getattr(method, '__deprecated__', False):
+            continue
 
         if sys.version_info[0] >= 3:
             getargspec = inspect.getfullargspec
         else:
             getargspec = inspect.getargspec
         args, varargs, varkw, defaults = getargspec(method)[:4]
-        if (args and args[0]=='self' and
-            (defaults is None or len(args)>len(defaults))):
+        if (args and args[0] == 'self' and
+                (defaults is None or len(args) > len(defaults))):
             args = args[1:]
             name = '%s.%s' % (selfname, name)
         argspec = inspect.formatargspec(
             args, varargs, varkw, defaults)
         print(textwrap.fill('%s%s' % (name, argspec),
                             initial_indent='  - ',
-                            subsequent_indent=' '*(len(name)+5)))
+                            subsequent_indent=' ' * (len(name) + 5)))
 
 ##########################################################################
 # IDLE
 ##########################################################################
+
 
 def in_idle():
     """
@@ -85,6 +87,7 @@ def in_idle():
 # PRETTY PRINTING
 ##########################################################################
 
+
 def pr(data, start=0, end=None):
     """
     Pretty print a sequence of data items
@@ -98,6 +101,7 @@ def pr(data, start=0, end=None):
     """
     pprint(list(islice(data, start, end)))
 
+
 def print_string(s, width=70):
     """
     Pretty print a string, breaking lines on whitespace
@@ -108,6 +112,7 @@ def print_string(s, width=70):
     :type width: int
     """
     print('\n'.join(textwrap.wrap(s, width=width)))
+
 
 def tokenwrap(tokens, separator=" ", width=70):
     """
@@ -129,8 +134,12 @@ def tokenwrap(tokens, separator=" ", width=70):
 
 def py25():
     return version_info[0] == 2 and version_info[1] == 5
+
+
 def py26():
     return version_info[0] == 2 and version_info[1] == 6
+
+
 def py27():
     return version_info[0] == 2 and version_info[1] == 7
 
@@ -148,7 +157,7 @@ class Index(defaultdict):
 
 
 ######################################################################
-## Regexp display (thanks to David Mertz)
+# Regexp display (thanks to David Mertz)
 ######################################################################
 
 def re_show(regexp, string, left="{", right="}"):
@@ -167,7 +176,8 @@ def re_show(regexp, string, left="{", right="}"):
     :type right: str
     :rtype: str
     """
-    print(re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip()))
+    print(re.compile(regexp, re.M).sub(
+        left + r"\g<0>" + right, string.rstrip()))
 
 
 ##########################################################################
@@ -187,6 +197,7 @@ def filestring(f):
 ##########################################################################
 # Breadth-First Search
 ##########################################################################
+
 
 def breadth_first(tree, children=iter, maxdepth=-1):
     """Traverse the nodes of a tree in breadth-first order.
@@ -213,6 +224,7 @@ def breadth_first(tree, children=iter, maxdepth=-1):
 
 # adapted from io.py in the docutils extension module (http://docutils.sourceforge.net)
 # http://www.pyzine.com/Issue008/Section_Articles/article_Encodings.html
+
 
 def guess_encoding(data):
     """
@@ -261,11 +273,11 @@ def guess_encoding(data):
         else:
             break
     if not successful_encoding:
-         raise UnicodeError(
-        'Unable to decode input data.  Tried the following encodings: %s.'
-        % ', '.join([repr(enc) for enc in encodings if enc]))
+        raise UnicodeError(
+            'Unable to decode input data.  Tried the following encodings: %s.'
+            % ', '.join([repr(enc) for enc in encodings if enc]))
     else:
-         return (decoded, successful_encoding)
+        return (decoded, successful_encoding)
 
 
 ##########################################################################
@@ -280,6 +292,7 @@ def unique_list(xs):
 ##########################################################################
 # Invert a dictionary
 ##########################################################################
+
 
 def invert_dict(d):
     inverted_dict = defaultdict(list)
@@ -312,9 +325,9 @@ def transitive_closure(graph, reflexive=False):
     :rtype: dict(set)
     """
     if reflexive:
-        base_set = lambda k: set([k])
+        def base_set(k): return set([k])
     else:
-        base_set = lambda k: set()
+        def base_set(k): return set()
     # The graph U_i in the article:
     agenda_graph = dict((k, graph[k].copy()) for k in graph)
     # The graph M_i in the article:
@@ -347,20 +360,23 @@ def invert_graph(graph):
     return inverted
 
 
-
 ##########################################################################
 # HTML Cleaning
 ##########################################################################
 
 def clean_html(html):
-    raise NotImplementedError ("To remove HTML markup, use BeautifulSoup's get_text() function")
+    raise NotImplementedError(
+        "To remove HTML markup, use BeautifulSoup's get_text() function")
+
 
 def clean_url(url):
-    raise NotImplementedError ("To remove HTML markup, use BeautifulSoup's get_text() function")
+    raise NotImplementedError(
+        "To remove HTML markup, use BeautifulSoup's get_text() function")
 
 ##########################################################################
 # FLATTEN LISTS
 ##########################################################################
+
 
 def flatten(*args):
     """
@@ -376,7 +392,8 @@ def flatten(*args):
 
     x = []
     for l in args:
-        if not isinstance(l, (list, tuple)): l = [l]
+        if not isinstance(l, (list, tuple)):
+            l = [l]
         for item in l:
             if isinstance(item, (list, tuple)):
                 x.extend(flatten(item))
@@ -387,6 +404,7 @@ def flatten(*args):
 ##########################################################################
 # Ngram iteration
 ##########################################################################
+
 
 def pad_sequence(sequence, n, pad_left=False, pad_right=False,
                  left_pad_symbol=None, right_pad_symbol=None):
@@ -416,12 +434,13 @@ def pad_sequence(sequence, n, pad_left=False, pad_right=False,
     """
     sequence = iter(sequence)
     if pad_left:
-        sequence = chain((left_pad_symbol,) * (n-1), sequence)
+        sequence = chain((left_pad_symbol,) * (n - 1), sequence)
     if pad_right:
-        sequence = chain(sequence, (right_pad_symbol,) * (n-1))
+        sequence = chain(sequence, (right_pad_symbol,) * (n - 1))
     return sequence
 
 # add a flag to pad the sequence so we get peripheral ngrams?
+
 
 def ngrams(sequence, n, pad_left=False, pad_right=False,
            left_pad_symbol=None, right_pad_symbol=None):
@@ -472,6 +491,7 @@ def ngrams(sequence, n, pad_left=False, pad_right=False,
         yield tuple(history)
         del history[0]
 
+
 def bigrams(sequence, **kwargs):
     """
     Return the bigrams generated from a sequence of items, as an iterator.
@@ -491,6 +511,7 @@ def bigrams(sequence, **kwargs):
     for item in ngrams(sequence, 2, **kwargs):
         yield item
 
+
 def trigrams(sequence, **kwargs):
     """
     Return the trigrams generated from a sequence of items, as an iterator.
@@ -509,6 +530,7 @@ def trigrams(sequence, **kwargs):
 
     for item in ngrams(sequence, 3, **kwargs):
         yield item
+
 
 def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
     """
@@ -531,9 +553,10 @@ def everygrams(sequence, min_len=1, max_len=-1, **kwargs):
 
     if max_len == -1:
         max_len = len(sequence)
-    for n in range(min_len, max_len+1):
+    for n in range(min_len, max_len + 1):
         for ng in ngrams(sequence, n, **kwargs):
             yield ng
+
 
 def skipgrams(sequence, n, k, **kwargs):
     """
@@ -577,6 +600,8 @@ def skipgrams(sequence, n, k, **kwargs):
 ######################################################################
 
 # inherited from pywordnet, by Oliver Steele
+
+
 def binary_search_file(file, key, cache={}, cacheDepth=-1):
     """
     Return the line from the file with first word key.
@@ -615,10 +640,11 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
                     file.readline()
                 offset = file.tell()
                 line = file.readline()
-                if line != "": break
+                if line != "":
+                    break
                 # at EOF; try to find start of the last line
-                middle = (start + middle)//2
-                if middle == end -1:
+                middle = (start + middle) // 2
+                if middle == end - 1:
                     return None
             if currentDepth < cacheDepth:
                 cache[middle] = (offset, line)
@@ -647,6 +673,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
 ######################################################################
 # Proxy configuration
 ######################################################################
+
 
 def set_proxy(proxy, user=None, password=''):
     """
@@ -678,7 +705,7 @@ def set_proxy(proxy, user=None, password=''):
         # Set up basic proxy authentication if provided
         password_manager = HTTPPasswordMgrWithDefaultRealm()
         password_manager.add_password(realm=None, uri=proxy, user=user,
-                passwd=password)
+                                      passwd=password)
         opener.add_handler(ProxyBasicAuthHandler(password_manager))
         opener.add_handler(ProxyDigestAuthHandler(password_manager))
 
@@ -705,12 +732,12 @@ def elementtree_indent(elem, level=0):
     :return:  Contents of elem indented to reflect its structure
     """
 
-    i = "\n" + level*"  "
+    i = "\n" + level * "  "
     if len(elem):
         if not elem.text or not elem.text.strip():
             elem.text = i + "  "
         for elem in elem:
-            elementtree_indent(elem, level+1)
+            elementtree_indent(elem, level + 1)
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
     else:
@@ -720,6 +747,7 @@ def elementtree_indent(elem, level=0):
 ######################################################################
 # Mathematical approximations
 ######################################################################
+
 
 def choose(n, k):
     """

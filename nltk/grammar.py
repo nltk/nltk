@@ -426,7 +426,7 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 
     def __str__(self):
         return Production.__unicode__(self) + \
-               (' [1.0]' if (self.prob() == 1.0) else ' [%g]' % self.prob())
+            (' [1.0]' if (self.prob() == 1.0) else ' [%g]' % self.prob())
 
     def __eq__(self, other):
         return (type(self) == type(other) and
@@ -508,8 +508,10 @@ class CFG(object):
 
     def _calculate_leftcorners(self):
         # Calculate leftcorner relations, for use in optimized parsing.
-        self._immediate_leftcorner_categories = dict((cat, set([cat])) for cat in self._categories)
-        self._immediate_leftcorner_words = dict((cat, set()) for cat in self._categories)
+        self._immediate_leftcorner_categories = dict(
+            (cat, set([cat])) for cat in self._categories)
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories)
         for prod in self.productions():
             if len(prod) > 0:
                 cat, left = prod.lhs(), prod.rhs()[0]
@@ -518,12 +520,15 @@ class CFG(object):
                 else:
                     self._immediate_leftcorner_words[cat].add(left)
 
-        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        lc = transitive_closure(
+            self._immediate_leftcorner_categories, reflexive=True)
         self._leftcorners = lc
         self._leftcorner_parents = invert_graph(lc)
 
-        nr_leftcorner_categories = sum(map(len, self._immediate_leftcorner_categories.values()))
-        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values()))
+        nr_leftcorner_words = sum(
+            map(len, self._immediate_leftcorner_words.values()))
         if nr_leftcorner_words > nr_leftcorner_categories > 10000:
             # If the grammar is big, the leftcorner-word dictionary will be too large.
             # In that case it is better to calculate the relation on demand.
@@ -942,11 +947,13 @@ class DependencyGrammar(object):
         productions = []
         for linenum, line in enumerate(input.split('\n')):
             line = line.strip()
-            if line.startswith('#') or line == '': continue
+            if line.startswith('#') or line == '':
+                continue
             try:
                 productions += _read_dependency_production(line)
             except ValueError:
-                raise ValueError('Unable to parse line %s: %s' % (linenum, line))
+                raise ValueError('Unable to parse line %s: %s' %
+                                 (linenum, line))
         if len(productions) == 0:
             raise ValueError('No productions found!')
         return cls(productions)
@@ -1048,7 +1055,8 @@ class ProbabilisticDependencyGrammar(object):
 
         :rtype: str
         """
-        str = 'Statistical dependency grammar with %d productions' % len(self._productions)
+        str = 'Statistical dependency grammar with %d productions' % len(
+            self._productions)
         for production in self._productions:
             str += '\n  %s' % production
         str += '\nEvents:'
@@ -1211,7 +1219,8 @@ def _read_production(line, nonterm_parser, probabilistic=False):
 
     # Skip over the arrow.
     m = _ARROW_RE.match(line, pos)
-    if not m: raise ValueError('Expected an arrow')
+    if not m:
+        raise ValueError('Expected an arrow')
     pos = m.end()
 
     # Parse the right hand side.
@@ -1231,7 +1240,8 @@ def _read_production(line, nonterm_parser, probabilistic=False):
         # String -- add terminal.
         elif line[pos] in "\'\"":
             m = _TERMINAL_RE.match(line, pos)
-            if not m: raise ValueError('Unterminated string')
+            if not m:
+                raise ValueError('Unterminated string')
             rhsides[-1].append(m.group(1)[1:-1])
             pos = m.end()
 
@@ -1285,7 +1295,8 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     continue_line = ''
     for linenum, line in enumerate(lines):
         line = continue_line + line.strip()
-        if line.startswith('#') or line == '': continue
+        if line.startswith('#') or line == '':
+            continue
         if line.endswith('\\'):
             continue_line = line[:-1].rstrip() + ' '
             continue
@@ -1301,7 +1312,8 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                     raise ValueError('Bad directive')
             else:
                 # expand out the disjunctions on the RHS
-                productions += _read_production(line, nonterm_parser, probabilistic)
+                productions += _read_production(line,
+                                                nonterm_parser, probabilistic)
         except ValueError as e:
             raise ValueError('Unable to parse line %s: %s\n%s' %
                              (linenum + 1, line, e))
@@ -1318,8 +1330,9 @@ _STANDARD_NONTERM_RE = re.compile('( [\w/][\w/^<>-]* ) \s*', re.VERBOSE)
 
 def standard_nonterm_parser(string, pos):
     m = _STANDARD_NONTERM_RE.match(string, pos)
-    if not m: raise ValueError('Expected a nonterminal, found: '
-                               + string[pos:])
+    if not m:
+        raise ValueError('Expected a nonterminal, found: '
+                         + string[pos:])
     return (Nonterminal(m.group(1)), m.end())
 
 

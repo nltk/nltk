@@ -17,7 +17,8 @@ class TestAline(unittest.TestCase):
 
     def test_aline(self):
         result = aline.align('θin', 'tenwis')
-        expected = [[('θ', 't'), ('i', 'e'), ('n', 'n'), ('-', 'w'), ('-', 'i'), ('-', 's')]]
+        expected = [[('θ', 't'), ('i', 'e'), ('n', 'n'),
+                     ('-', 'w'), ('-', 'i'), ('-', 's')]]
 
         self.assertEqual(result, expected)
 
@@ -33,7 +34,8 @@ class TestAline(unittest.TestCase):
         self.assertEqual(result, expected)
 
         result = aline.align('tuwθ', 'dentis')
-        expected = [[('t', 'd'), ('u', 'e'), ('w', '-'), ('-', 'n'), ('-', 't'), ('-', 'i'), ('θ', 's')]]
+        expected = [[('t', 'd'), ('u', 'e'), ('w', '-'),
+                     ('-', 'n'), ('-', 't'), ('-', 'i'), ('θ', 's')]]
 
         self.assertEqual(result, expected)
 

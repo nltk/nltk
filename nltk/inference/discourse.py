@@ -110,7 +110,8 @@ class CfgReadingCommand(ReadingCommand):
         :param gramfile: name of file where grammar can be loaded
         :type gramfile: str
         """
-        self._gramfile = (gramfile if gramfile else 'grammars/book_grammars/discourse.fcfg')
+        self._gramfile = (
+            gramfile if gramfile else 'grammars/book_grammars/discourse.fcfg')
         self._parser = load_parser(self._gramfile)
 
     def parse_to_readings(self, sentence):
@@ -138,7 +139,8 @@ class DrtGlueReadingCommand(ReadingCommand):
         :param depparser: the dependency parser
         """
         if semtype_file is None:
-            semtype_file = os.path.join('grammars', 'sample_grammars','drt_glue.semtype')
+            semtype_file = os.path.join(
+                'grammars', 'sample_grammars', 'drt_glue.semtype')
         self._glue = DrtGlue(semtype_file=semtype_file,
                              remove_duplicates=remove_duplicates,
                              depparser=depparser)
@@ -168,6 +170,7 @@ class DiscourseTester(object):
     """
     Check properties of an ongoing discourse.
     """
+
     def __init__(self, input, reading_command=None, background=None):
         """
         Initialize a ``DiscourseTester``.
@@ -178,10 +181,12 @@ class DiscourseTester(object):
         :type background: list(Expression)
         """
         self._input = input
-        self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(input)])
+        self._sentences = dict([('s%s' % i, sent)
+                                for i, sent in enumerate(input)])
         self._models = None
         self._readings = {}
-        self._reading_command = (reading_command if reading_command else CfgReadingCommand())
+        self._reading_command = (
+            reading_command if reading_command else CfgReadingCommand())
         self._threads = {}
         self._filtered_threads = {}
         if background is not None:
@@ -218,16 +223,20 @@ class DiscourseTester(object):
         if informchk:
             self.readings(verbose=False)
             for tid in sorted(self._threads):
-                assumptions = [reading for (rid, reading) in self.expand_threads(tid)]
+                assumptions = [reading for (
+                    rid, reading) in self.expand_threads(tid)]
                 assumptions += self._background
                 for sent_reading in self._get_readings(sentence):
-                    tp = Prover9Command(goal=sent_reading, assumptions=assumptions)
+                    tp = Prover9Command(goal=sent_reading,
+                                        assumptions=assumptions)
                     if tp.prove():
-                        print("Sentence '%s' under reading '%s':" % (sentence, str(sent_reading)))
+                        print("Sentence '%s' under reading '%s':" %
+                              (sentence, str(sent_reading)))
                         print("Not informative relative to thread '%s'" % tid)
 
         self._input.append(sentence)
-        self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(self._input)])
+        self._sentences = dict([('s%s' % i, sent)
+                                for i, sent in enumerate(self._input)])
         # check whether adding the new sentence to the discourse preserves consistency (i.e. a model can be found for the combined set of
         # of assumptions
         if consistchk:
@@ -246,10 +255,12 @@ class DiscourseTester(object):
         try:
             self._input.remove(sentence)
         except ValueError:
-            print("Retraction failed. The sentence '%s' is not part of the current discourse:" % sentence)
+            print(
+                "Retraction failed. The sentence '%s' is not part of the current discourse:" % sentence)
             self.sentences()
             return None
-        self._sentences = dict([('s%s' % i, sent) for i, sent in enumerate(self._input)])
+        self._sentences = dict([('s%s' % i, sent)
+                                for i, sent in enumerate(self._input)])
         self.readings(verbose=False)
         if verbose:
             print("Current sentences are ")
@@ -283,7 +294,7 @@ class DiscourseTester(object):
             sentence = self._sentences[sid]
             readings = self._get_readings(sentence)
             self._readings[sid] = dict([("%s-r%s" % (sid, rid), reading.simplify())
-                                                        for rid, reading in enumerate(sorted(readings, key=str))])
+                                        for rid, reading in enumerate(sorted(readings, key=str))])
 
     def _construct_threads(self):
         """
@@ -292,8 +303,10 @@ class DiscourseTester(object):
         """
         thread_list = [[]]
         for sid in sorted(self._readings):
-            thread_list = self.multiply(thread_list, sorted(self._readings[sid]))
-        self._threads = dict([("d%s" % tid, thread) for tid, thread in enumerate(thread_list)])
+            thread_list = self.multiply(
+                thread_list, sorted(self._readings[sid]))
+        self._threads = dict([("d%s" % tid, thread)
+                              for tid, thread in enumerate(thread_list)])
         # re-initialize the filtered threads
         self._filtered_threads = {}
         # keep the same ids, but only include threads which get models
@@ -314,7 +327,7 @@ class DiscourseTester(object):
             for sid in sorted(self._readings):
                 print()
                 print('%s readings:' % sid)
-                print() #'-' * 30
+                print()  # '-' * 30
                 for rid in sorted(self._readings[sid]):
                     lf = self._readings[sid][rid]
                     print("%s: %s" % (rid, lf.normalize()))
@@ -330,14 +343,14 @@ class DiscourseTester(object):
                             for rid in self._threads[tid]]
                 try:
                     thread_reading = ": %s" % \
-                              self._reading_command.combine_readings(readings).normalize()
+                        self._reading_command.combine_readings(
+                            readings).normalize()
                 except Exception as e:
                     thread_reading = ': INVALID: %s' % e.__class__.__name__
             else:
                 thread_reading = ''
 
             print("%s:" % tid, self._threads[tid], thread_reading)
-
 
     def readings(self, sentence=None, threaded=False, verbose=True,
                  filter=False, show_thread_readings=False):
@@ -378,7 +391,6 @@ class DiscourseTester(object):
             threads = self._threads
         return [(rid, self._readings[sid][rid]) for rid in threads[thread_id] for sid in rid.split('-')[:1]]
 
-
     ###############################
     # Models and Background
     ###############################
@@ -386,8 +398,10 @@ class DiscourseTester(object):
     def _check_consistency(self, threads, show=False, verbose=False):
         results = []
         for tid in sorted(threads):
-            assumptions = [reading for (rid, reading) in self.expand_threads(tid, threads=threads)]
-            assumptions = list(map(self._reading_command.to_fol, self._reading_command.process_thread(assumptions)))
+            assumptions = [reading for (
+                rid, reading) in self.expand_threads(tid, threads=threads)]
+            assumptions = list(map(self._reading_command.to_fol,
+                                   self._reading_command.process_thread(assumptions)))
             if assumptions:
                 assumptions += self._background
                 # if Mace4 finds a model, it always seems to find it quickly
@@ -420,7 +434,8 @@ class DiscourseTester(object):
         """
         self._construct_readings()
         self._construct_threads()
-        threads = ({thread_id: self._threads[thread_id]} if thread_id else self._threads)
+        threads = (
+            {thread_id: self._threads[thread_id]} if thread_id else self._threads)
 
         for (tid, modelfound) in self._check_consistency(threads, show=show, verbose=verbose):
             idlist = [rid for rid in threads[tid]]
@@ -451,7 +466,7 @@ class DiscourseTester(object):
                 print("Adding assumption %s to background" % count)
             self._background.append(e)
 
-        #update the state
+        # update the state
         self._construct_readings()
         self._construct_threads()
 
@@ -492,7 +507,7 @@ class DiscourseTester(object):
 #multiply = DiscourseTester.multiply
 #L1 = [['A'], ['B']]
 #L2 = ['a', 'b', 'c']
-#print multiply(L1,L2)
+# print multiply(L1,L2)
 
 
 def load_fol(s):
@@ -562,7 +577,8 @@ def discourse_demo(reading_command=None):
                          reading_command)
     dt.readings(filter=True)
     import nltk.data
-    background_file = os.path.join('grammars', 'book_grammars', 'background.fol')
+    background_file = os.path.join(
+        'grammars', 'book_grammars', 'background.fol')
     background = nltk.data.load(background_file)
 
     print()

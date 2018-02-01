@@ -300,7 +300,7 @@ class IBMModel3(IBMModel):
         for i in range(1, l + 1):
             fertility = alignment_info.fertility_of_i(i)
             probability *= (factorial(fertility) *
-                self.fertility_table[fertility][src_sentence[i]])
+                            self.fertility_table[fertility][src_sentence[i]])
             if probability < MIN_PROB:
                 return MIN_PROB
 
@@ -311,7 +311,7 @@ class IBMModel3(IBMModel):
             s = src_sentence[i]
 
             probability *= (self.translation_table[t][s] *
-                self.distortion_table[j][i][l][m])
+                            self.distortion_table[j][i][l][m])
             if probability < MIN_PROB:
                 return MIN_PROB
 
@@ -323,6 +323,7 @@ class Model3Counts(Counts):
     Data object to store counts of various parameters during training.
     Includes counts for distortion.
     """
+
     def __init__(self):
         super(Model3Counts, self).__init__()
         self.distortion = defaultdict(

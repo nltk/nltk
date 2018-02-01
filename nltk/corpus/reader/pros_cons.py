@@ -80,7 +80,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.CorpusView(path, self._read_sent_block, encoding=enc)
-            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+                       for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
     def words(self, fileids=None, categories=None):
         """
@@ -100,17 +100,19 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
-            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+                       for (path, enc, fileid) in self.abspaths(fileids, True, True)])
 
     def _read_sent_block(self, stream):
         sents = []
-        for i in range(20): # Read 20 lines at a time.
+        for i in range(20):  # Read 20 lines at a time.
             line = stream.readline()
             if not line:
                 continue
-            sent = re.match(r"^(?!\n)\s*<(Pros|Cons)>(.*)</(?:Pros|Cons)>", line)
+            sent = re.match(
+                r"^(?!\n)\s*<(Pros|Cons)>(.*)</(?:Pros|Cons)>", line)
             if sent:
-                sents.append(self._word_tokenizer.tokenize(sent.group(2).strip()))
+                sents.append(self._word_tokenizer.tokenize(
+                    sent.group(2).strip()))
         return sents
 
     def _read_word_block(self, stream):

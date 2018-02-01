@@ -19,6 +19,7 @@ from __future__ import print_function, division
 # Selection Sort
 ##################################################################
 
+
 def selection(a):
     """
     Selection Sort: scan the list to find its smallest element, then
@@ -30,19 +31,20 @@ def selection(a):
     for i in range(len(a) - 1):
         min = i
 
-        for j in range(i+1, len(a)):
+        for j in range(i + 1, len(a)):
             if a[j] < a[min]:
                 min = j
 
             count += 1
 
-        a[min],a[i] = a[i],a[min]
+        a[min], a[i] = a[i], a[min]
 
     return count
 
 ##################################################################
 # Bubble Sort
 ##################################################################
+
 
 def bubble(a):
     """
@@ -53,10 +55,10 @@ def bubble(a):
     apply the same method to this list, and so on.
     """
     count = 0
-    for i in range(len(a)-1):
-        for j in range(len(a)-i-1):
-            if a[j+1] < a[j]:
-                a[j],a[j+1] = a[j+1],a[j]
+    for i in range(len(a) - 1):
+        for j in range(len(a) - i - 1):
+            if a[j + 1] < a[j]:
+                a[j], a[j + 1] = a[j + 1], a[j]
                 count += 1
     return count
 
@@ -83,6 +85,7 @@ def _merge_lists(b, c):
         a += b[i:]
     return a, count
 
+
 def merge(a):
     """
     Merge Sort: split the list in half, and sort each half, then
@@ -96,7 +99,7 @@ def merge(a):
         count_b = merge(b)
         count_c = merge(c)
         result, count_a = _merge_lists(b, c)
-        a[:] = result # copy the result back into a.
+        a[:] = result  # copy the result back into a.
         count = count_a + count_b + count_c
     return count
 
@@ -104,37 +107,46 @@ def merge(a):
 # Quick Sort
 ##################################################################
 
+
 def _partition(a, l, r):
-    p = a[l]; i = l; j = r+1
+    p = a[l]
+    i = l
+    j = r + 1
     count = 0
     while True:
         while i < r:
             i += 1
-            if a[i] >= p: break
+            if a[i] >= p:
+                break
         while j > l:
             j -= 1
-            if j < l or a[j] <= p: break
-        a[i],a[j] = a[j],a[i]               # swap
+            if j < l or a[j] <= p:
+                break
+        a[i], a[j] = a[j], a[i]               # swap
         count += 1
-        if i >= j: break
-    a[i],a[j] = a[j],a[i]                   # undo last swap
-    a[l],a[j] = a[j],a[l]
+        if i >= j:
+            break
+    a[i], a[j] = a[j], a[i]                   # undo last swap
+    a[l], a[j] = a[j], a[l]
     return j, count
+
 
 def _quick(a, l, r):
     count = 0
-    if l<r:
+    if l < r:
         s, count = _partition(a, l, r)
-        count += _quick(a, l, s-1)
-        count += _quick(a, s+1, r)
+        count += _quick(a, l, s - 1)
+        count += _quick(a, s + 1, r)
     return count
 
+
 def quick(a):
-    return _quick(a, 0, len(a)-1)
+    return _quick(a, 0, len(a) - 1)
 
 ##################################################################
 # Demonstration
 ##################################################################
+
 
 def demo():
     from random import shuffle
@@ -143,15 +155,20 @@ def demo():
         a = list(range(size))
 
         # various sort methods
-        shuffle(a); count_selection = selection(a)
-        shuffle(a); count_bubble    = bubble(a)
-        shuffle(a); count_merge     = merge(a)
-        shuffle(a); count_quick     = quick(a)
+        shuffle(a)
+        count_selection = selection(a)
+        shuffle(a)
+        count_bubble = bubble(a)
+        shuffle(a)
+        count_merge = merge(a)
+        shuffle(a)
+        count_quick = quick(a)
 
         print((("size=%5d:  selection=%8d,  bubble=%8d,  "
                 "merge=%6d,  quick=%6d") %
                (size, count_selection, count_bubble,
                 count_merge, count_quick)))
+
 
 if __name__ == '__main__':
     demo()

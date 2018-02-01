@@ -32,7 +32,8 @@ class TestStackDecoder(unittest.TestCase):
         self.assertEqual(src_phrase_spans[0], [2])  # 'my hovercraft'
         self.assertEqual(src_phrase_spans[1], [2])  # 'hovercraft'
         self.assertEqual(src_phrase_spans[2], [3])  # 'is'
-        self.assertEqual(src_phrase_spans[3], [5, 6])  # 'full of', 'full of eels'
+        # 'full of', 'full of eels'
+        self.assertEqual(src_phrase_spans[3], [5, 6])
         self.assertFalse(src_phrase_spans[4])  # no entry starting with 'of'
         self.assertEqual(src_phrase_spans[5], [6])  # 'eels'
 
@@ -136,7 +137,8 @@ class TestStackDecoder(unittest.TestCase):
         phrase_spans = StackDecoder.valid_phrases(all_phrases_from, hypothesis)
 
         # assert
-        self.assertEqual(phrase_spans, [(0, 1), (1, 2), (3, 5), (4, 5), (4, 6)])
+        self.assertEqual(
+            phrase_spans, [(0, 1), (1, 2), (3, 5), (4, 5), (4, 6)])
 
     @staticmethod
     def create_fake_phrase_table():

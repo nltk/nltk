@@ -253,7 +253,8 @@ class IBMModel(object):
         while True:
             old_alignment = alignment
             for neighbor_alignment in self.neighboring(alignment, j_pegged):
-                neighbor_probability = self.prob_t_a_given_s(neighbor_alignment)
+                neighbor_probability = self.prob_t_a_given_s(
+                    neighbor_alignment)
 
                 if neighbor_probability > max_probability:
                     alignment = neighbor_alignment
@@ -507,6 +508,7 @@ class Counts(object):
     """
     Data object to store counts of various parameters during training
     """
+
     def __init__(self):
         self.t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
         self.any_t_given_s = defaultdict(lambda: 0.0)

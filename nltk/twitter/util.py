@@ -99,7 +99,8 @@ class Authenticate(object):
     def _validate_creds_file(self, verbose=False):
         """Check validity of a credentials file."""
         oauth1 = False
-        oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
+        oauth1_keys = ['app_key', 'app_secret',
+                       'oauth_token', 'oauth_token_secret']
         oauth2 = False
         oauth2_keys = ['app_key', 'app_secret', 'access_token']
         if all(k in self.oauth for k in oauth1_keys):
@@ -108,7 +109,8 @@ class Authenticate(object):
             oauth2 = True
 
         if not (oauth1 or oauth2):
-            msg = 'Missing or incorrect entries in {}\n'.format(self.creds_file)
+            msg = 'Missing or incorrect entries in {}\n'.format(
+                self.creds_file)
             msg += pprint.pformat(self.oauth)
             raise ValueError(msg)
         elif verbose:

@@ -205,7 +205,7 @@ def print_deprecated_uses_in(readline, path, dep_files, dep_names,
         line = re.sub(r'\b{}\b'.format(esctok), sub, line)
         # Print the offending line.
         print('  {}[{:5d}]{} {}'.format(term.YELLOW, start[0] + lineno_offset,
-                                  term.NORMAL, line.rstrip()))
+                                        term.NORMAL, line.rstrip()))
 
 
 def main():

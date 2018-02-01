@@ -115,8 +115,7 @@ class DependencyGraph(object):
         relation = self.nodes[mod_address]['rel']
         self.nodes[head_address]['deps'].setdefault(relation, [])
         self.nodes[head_address]['deps'][relation].append(mod_address)
-        #self.nodes[head_address]['deps'].append(mod_address)
-
+        # self.nodes[head_address]['deps'].append(mod_address)
 
     def connect_graph(self):
         """
@@ -129,7 +128,7 @@ class DependencyGraph(object):
                     relation = node2['rel']
                     node1['deps'].setdefault(relation, [])
                     node1['deps'][relation].append(node2['address'])
-                    #node1['deps'].append(node2['address'])
+                    # node1['deps'].append(node2['address'])
 
     def get_by_address(self, node_address):
         """Return the node with the given address."""
@@ -172,11 +171,13 @@ class DependencyGraph(object):
 
         # Draw the remaining nodes
         for node in sorted(self.nodes.values(), key=lambda v: v['address']):
-            s += '\n%s [label="%s (%s)"]' % (node['address'], node['address'], node['word'])
+            s += '\n%s [label="%s (%s)"]' % (node['address'],
+                                             node['address'], node['word'])
             for rel, deps in node['deps'].items():
                 for dep in deps:
                     if rel is not None:
-                        s += '\n%s -> %s [label="%s"]' % (node['address'], dep, rel)
+                        s += '\n%s -> %s [label="%s"]' % (
+                            node['address'], dep, rel)
                     else:
                         s += '\n%s -> %s ' % (node['address'], dep)
         s += "\n}"
@@ -339,12 +340,14 @@ class DependencyGraph(object):
                     )
 
             try:
-                index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells, index)
+                index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(
+                    cells, index)
             except (TypeError, ValueError):
                 # cell_extractor doesn't take 2 arguments or doesn't return 8
                 # values; assume the cell_extractor is an older external
                 # extractor and doesn't accept or return an index.
-                word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
+                word, lemma, ctag, tag, feats, head, rel = cell_extractor(
+                    cells)
 
             if head == '_':
                 continue
@@ -488,7 +491,8 @@ class DependencyGraph(object):
             for pair in new_entries:
                 distances[pair] = new_entries[pair]
                 if pair[0] == pair[1]:
-                    path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0])
+                    path = self.get_cycle_path(
+                        self.get_by_address(pair[0]), pair[0])
                     return path
 
         return False  # return []?
@@ -498,7 +502,8 @@ class DependencyGraph(object):
             if dep == goal_node_index:
                 return [curr_node['address']]
         for dep in curr_node['deps']:
-            path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)
+            path = self.get_cycle_path(
+                self.get_by_address(dep), goal_node_index)
             if len(path) > 0:
                 path.insert(0, curr_node['address'])
                 return path
@@ -628,11 +633,16 @@ def cycle_finding_demo():
     print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
     cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0})
-    cyclic_dg.add_node({'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1})
-    cyclic_dg.add_node({'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2})
-    cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3})
-    cyclic_dg.add_node({'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4})
+    cyclic_dg.add_node(
+        {'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1})
+    cyclic_dg.add_node(
+        {'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2})
+    cyclic_dg.add_node(
+        {'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3})
+    cyclic_dg.add_node(
+        {'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4})
     print(cyclic_dg.contains_cycle())
+
 
 treebank_data = """Pierre  NNP     2       NMOD
 Vinken  NNP     8       SUB

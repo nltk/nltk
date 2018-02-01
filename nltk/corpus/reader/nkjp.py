@@ -57,7 +57,8 @@ class NKJPCorpusReader(XMLCorpusReader):
         if isinstance(fileids, string_types):
             XMLCorpusReader.__init__(self, root, fileids + '.*/header.xml')
         else:
-            XMLCorpusReader.__init__(self, root, [fileid + '/header.xml' for fileid in fileids])
+            XMLCorpusReader.__init__(
+                self, root, [fileid + '/header.xml' for fileid in fileids])
         self._paths = self.get_paths()
 
     def get_paths(self):
@@ -185,7 +186,8 @@ class NKJPCorpus_Header_View(XMLCorpusView):
         publishers = elt.findall('bibl/publisher')
         publisher = []
         if publishers:
-            publisher = '\n'.join(publisher.text.strip() for publisher in publishers)
+            publisher = '\n'.join(publisher.text.strip()
+                                  for publisher in publishers)
 
         idnos = elt.findall('bibl/idno')
         idno = []
@@ -207,6 +209,7 @@ class XML_Tool():
     That's needed because the XMLCorpusView assumes that one can find short substrings
     of XML that are valid XML, which is not true if a namespace is declared at top level
     """
+
     def __init__(self, root, filename):
         self.read_file = os.path.join(root, filename)
         self.write_file = tempfile.NamedTemporaryFile(delete=False)
@@ -218,15 +221,15 @@ class XML_Tool():
             line = ' '
             while len(line):
                 line = fr.readline()
-                x = re.split(r'nkjp:[^ ]* ', line)  #in all files
+                x = re.split(r'nkjp:[^ ]* ', line)  # in all files
                 ret = ' '.join(x)
-                x = re.split('<nkjp:paren>', ret)   #in ann_segmentation.xml
+                x = re.split('<nkjp:paren>', ret)  # in ann_segmentation.xml
                 ret = ' '.join(x)
-                x = re.split('</nkjp:paren>', ret)  #in ann_segmentation.xml
+                x = re.split('</nkjp:paren>', ret)  # in ann_segmentation.xml
                 ret = ' '.join(x)
-                x = re.split('<choice>', ret)   #in ann_segmentation.xml
+                x = re.split('<choice>', ret)  # in ann_segmentation.xml
                 ret = ' '.join(x)
-                x = re.split('</choice>', ret)  #in ann_segmentation.xml
+                x = re.split('</choice>', ret)  # in ann_segmentation.xml
                 ret = ' '.join(x)
                 fw.write(ret)
             fr.close()
@@ -249,32 +252,34 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
 
     def __init__(self, filename, **kwargs):
         self.tagspec = '.*p/.*s'
-        #intersperse NKJPCorpus_Text_View
-        self.text_view = NKJPCorpus_Text_View(filename, mode=NKJPCorpus_Text_View.SENTS_MODE)
+        # intersperse NKJPCorpus_Text_View
+        self.text_view = NKJPCorpus_Text_View(
+            filename, mode=NKJPCorpus_Text_View.SENTS_MODE)
         self.text_view.handle_query()
-        #xml preprocessing
+        # xml preprocessing
         self.xml_tool = XML_Tool(filename, 'ann_segmentation.xml')
-        #base class init
-        XMLCorpusView.__init__(self, self.xml_tool.build_preprocessed_file(), self.tagspec)
+        # base class init
+        XMLCorpusView.__init__(
+            self, self.xml_tool.build_preprocessed_file(), self.tagspec)
 
     def get_segm_id(self, example_word):
         return example_word.split('(')[1].split(',')[0]
 
     def get_sent_beg(self, beg_word):
-        #returns index of beginning letter in sentence
+        # returns index of beginning letter in sentence
         return int(beg_word.split(',')[1])
 
     def get_sent_end(self, end_word):
-        #returns index of end letter in sentence
+        # returns index of end letter in sentence
         splitted = end_word.split(')')[0].split(',')
         return int(splitted[1]) + int(splitted[2])
 
     def get_sentences(self, sent_segm):
-        #returns one sentence
+        # returns one sentence
         id = self.get_segm_id(sent_segm[0])
-        segm = self.text_view.segm_dict[id]    #text segment
+        segm = self.text_view.segm_dict[id]  # text segment
         beg = self.get_sent_beg(sent_segm[0])
-        end = self.get_sent_end(sent_segm[len(sent_segm)-1])
+        end = self.get_sent_end(sent_segm[len(sent_segm) - 1])
         return segm[beg:end]
 
     def remove_choice(self, segm):
@@ -283,8 +288,8 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
         prev_txt_nr = -1
         for word in segm:
             txt_nr = self.get_segm_id(word)
-            #get increasing sequence of ids: in case of choice get first possibility
-            if self.get_sent_beg(word) > prev_txt_end-1 or prev_txt_nr != txt_nr:
+            # get increasing sequence of ids: in case of choice get first possibility
+            if self.get_sent_beg(word) > prev_txt_end - 1 or prev_txt_nr != txt_nr:
                 ret.append(word)
                 prev_txt_end = self.get_sent_end(word)
             prev_txt_nr = txt_nr
@@ -328,10 +333,11 @@ class NKJPCorpus_Text_View(XMLCorpusView):
         self.mode = kwargs.pop('mode', 0)
         self.tagspec = '.*/div/ab'
         self.segm_dict = dict()
-        #xml preprocessing
+        # xml preprocessing
         self.xml_tool = XML_Tool(filename, 'text.xml')
-        #base class init
-        XMLCorpusView.__init__(self, self.xml_tool.build_preprocessed_file(), self.tagspec)
+        # base class init
+        XMLCorpusView.__init__(
+            self, self.xml_tool.build_preprocessed_file(), self.tagspec)
 
     def handle_query(self):
         try:
@@ -364,7 +370,7 @@ class NKJPCorpus_Text_View(XMLCorpusView):
                 return elt.get(attr)
 
     def handle_elt(self, elt, context):
-        #fill dictionary to use later in sents mode
+        # fill dictionary to use later in sents mode
         if self.mode is NKJPCorpus_Text_View.SENTS_MODE:
             self.segm_dict[self.get_segm_id(elt)] = elt.text
         return elt.text
@@ -380,7 +386,8 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
         self.tags = kwargs.pop('tags', None)
         self.tagspec = '.*/seg/fs'
         self.xml_tool = XML_Tool(filename, 'ann_morphosyntax.xml')
-        XMLCorpusView.__init__(self, self.xml_tool.build_preprocessed_file(), self.tagspec)
+        XMLCorpusView.__init__(
+            self, self.xml_tool.build_preprocessed_file(), self.tagspec)
 
     def handle_query(self):
         try:
@@ -404,13 +411,13 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
         word = ''
         flag = False
         is_not_interp = True
-        #if tags not specified, then always return word
+        # if tags not specified, then always return word
         if self.tags is None:
             flag = True
 
         for child in elt:
 
-            #get word
+            # get word
             if 'name' in child.keys() and child.attrib['name'] == 'orth':
                 for symbol in child:
                     if symbol.tag == 'string':

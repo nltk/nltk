@@ -101,19 +101,24 @@ class AlignedSent(object):
 
         # Alignment
         for u, v in self._alignment:
-            s += '"%s_source" -- "%s_target" \n' % (self._words[u], self._mots[v])
+            s += '"%s_source" -- "%s_target" \n' % (
+                self._words[u], self._mots[v])
 
         # Connect the source words
         for i in range(len(self._words) - 1):
-            s += '"%s_source" -- "%s_source" [style=invis]\n' % (self._words[i], self._words[i + 1])
+            s += '"%s_source" -- "%s_source" [style=invis]\n' % (
+                self._words[i], self._words[i + 1])
 
         # Connect the target words
         for i in range(len(self._mots) - 1):
-            s += '"%s_target" -- "%s_target" [style=invis]\n' % (self._mots[i], self._mots[i + 1])
+            s += '"%s_target" -- "%s_target" [style=invis]\n' % (
+                self._mots[i], self._mots[i + 1])
 
         # Put it in the same rank
-        s += '{rank = same; %s}\n' % (' '.join('"%s_source"' % w for w in self._words))
-        s += '{rank = same; %s}\n' % (' '.join('"%s_target"' % w for w in self._mots))
+        s += '{rank = same; %s}\n' % (' '.join('"%s_source"' %
+                                               w for w in self._words))
+        s += '{rank = same; %s}\n' % (' '.join('"%s_target"' %
+                                               w for w in self._mots))
 
         s += '}'
 

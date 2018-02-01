@@ -132,16 +132,20 @@ class CJKChars(object):
     Hangul_Syllables = (44032, 55215)  # (ord(u"\uAC00"), ord(u"\uD7AF"))
 
     # CJK Compatibility Ideographs (F900–FAFF)
-    CJK_Compatibility_Ideographs = (63744, 64255)  # (ord(u"\uF900"), ord(u"\uFAFF"))
+    # (ord(u"\uF900"), ord(u"\uFAFF"))
+    CJK_Compatibility_Ideographs = (63744, 64255)
 
     # CJK Compatibility Forms (FE30–FE4F)
-    CJK_Compatibility_Forms = (65072, 65103)  # (ord(u"\uFE30"), ord(u"\uFE4F"))
+    # (ord(u"\uFE30"), ord(u"\uFE4F"))
+    CJK_Compatibility_Forms = (65072, 65103)
 
     # Range U+FF65–FFDC encodes halfwidth forms, of Katakana and Hangul characters
-    Katakana_Hangul_Halfwidth = (65381, 65500)  # (ord(u"\uFF65"), ord(u"\uFFDC"))
+    # (ord(u"\uFF65"), ord(u"\uFFDC"))
+    Katakana_Hangul_Halfwidth = (65381, 65500)
 
     # Supplementary Ideographic Plane 20000–2FFFF
-    Supplementary_Ideographic_Plane = (131072, 196607)  # (ord(u"\U00020000"), ord(u"\U0002FFFF"))
+    # (ord(u"\U00020000"), ord(u"\U0002FFFF"))
+    Supplementary_Ideographic_Plane = (131072, 196607)
 
     ranges = [Hangul_Jamo, CJK_Radicals, Phags_Pa, Hangul_Syllables,
               CJK_Compatibility_Ideographs, CJK_Compatibility_Forms,
@@ -255,7 +259,8 @@ def align_tokens(tokens, sentence):
         try:
             start = sentence.index(token, point)
         except ValueError:
-            raise ValueError('substring "{}" not found in "{}"'.format(token, sentence))
+            raise ValueError(
+                'substring "{}" not found in "{}"'.format(token, sentence))
         point = start + len(token)
         offsets.append((start, point))
     return offsets

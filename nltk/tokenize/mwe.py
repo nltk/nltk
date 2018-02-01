@@ -90,7 +90,7 @@ class MWETokenizer(TokenizerI):
         >>> tokenizer = MWETokenizer([('hors', "d'oeuvre")], separator='+')
         >>> tokenizer.tokenize("An hors d'oeuvre tonight, sir?".split())
         ['An', "hors+d'oeuvre", 'tonight,', 'sir?']
-        
+
         """
         i = 0
         n = len(text)

@@ -35,7 +35,8 @@ def extract_fields(tweet, fields):
         try:
             _add_field_to_out(tweet, field, out)
         except TypeError:
-            raise RuntimeError('Fatal error when extracting fields. Cannot find field ', field)
+            raise RuntimeError(
+                'Fatal error when extracting fields. Cannot find field ', field)
     return out
 
 
@@ -120,7 +121,8 @@ def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
 
     :param gzip_compress: if `True`, output files are compressed with gzip
     """
-    (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
+    (writer, outf) = outf_writer_compat(
+        outfile, encoding, errors, gzip_compress)
     # write the list of fields as header
     writer.writerow(fields)
     # process the file
@@ -192,7 +194,8 @@ def json2csv_entities(tweets_file, outfile, main_fields, entity_type, entity_fie
     :param gzip_compress: if `True`, ouput files are compressed with gzip
     """
 
-    (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
+    (writer, outf) = outf_writer_compat(
+        outfile, encoding, errors, gzip_compress)
     header = get_header_field_list(main_fields, entity_type, entity_fields)
     writer.writerow(header)
     for line in tweets_file:
@@ -240,8 +243,10 @@ def _write_to_file(object_fields, items, entity_fields, writer):
         # this happens e.g. for "place" of a tweet
         row = object_fields
         # there might be composed keys in de list of required fields
-        entity_field_values = [x for x in entity_fields if not _is_composed_key(x)]
-        entity_field_composed = [x for x in entity_fields if _is_composed_key(x)]
+        entity_field_values = [
+            x for x in entity_fields if not _is_composed_key(x)]
+        entity_field_composed = [
+            x for x in entity_fields if _is_composed_key(x)]
         for field in entity_field_values:
             value = items[field]
             if isinstance(value, list):

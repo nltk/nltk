@@ -164,6 +164,7 @@ from nltk.chunk.regexp import RegexpChunkParser, RegexpParser
 _BINARY_NE_CHUNKER = 'chunkers/maxent_ne_chunker/english_ace_binary.pickle'
 _MULTICLASS_NE_CHUNKER = 'chunkers/maxent_ne_chunker/english_ace_multiclass.pickle'
 
+
 def ne_chunk(tagged_tokens, binary=False):
     """
     Use NLTK's currently recommended named entity chunker to
@@ -176,6 +177,7 @@ def ne_chunk(tagged_tokens, binary=False):
     chunker = load(chunker_pickle)
     return chunker.parse(tagged_tokens)
 
+
 def ne_chunk_sents(tagged_sentences, binary=False):
     """
     Use NLTK's currently recommended named entity chunker to chunk the
@@ -187,4 +189,3 @@ def ne_chunk_sents(tagged_sentences, binary=False):
         chunker_pickle = _MULTICLASS_NE_CHUNKER
     chunker = load(chunker_pickle)
     return chunker.parse_sents(tagged_sentences)
-

@@ -33,7 +33,6 @@ domains and tasks. The basic logic is this:
 """
 
 
-
 ######################################################################
 
 from __future__ import unicode_literals
@@ -137,26 +136,19 @@ REGEXPS = (
       \d{3}          # exchange
       [\-\s.]*
       \d{4}          # base
-    )"""
-    ,
+    )""",
     # ASCII Emoticons
-    EMOTICONS
-    ,
+    EMOTICONS,
     # HTML tags:
-    r"""<[^>\s]+>"""
-    ,
+    r"""<[^>\s]+>""",
     # ASCII Arrows
-    r"""[\-]+>|<[\-]+"""
-    ,
+    r"""[\-]+>|<[\-]+""",
     # Twitter username:
-    r"""(?:@[\w_]+)"""
-    ,
+    r"""(?:@[\w_]+)""",
     # Twitter hashtags:
-    r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)"""
-    ,
+    r"""(?:\#+[\w_]+[\w\'_\-]*[\w_]+)""",
     # email addresses
-    r"""[\w.+-]+@[\w-]+\.(?:[\w-]\.?)+[\w-]"""
-    ,
+    r"""[\w.+-]+@[\w-]+\.(?:[\w-]\.?)+[\w-]""",
     # Remaining word types:
     r"""
     (?:[^\W\d_](?:[^\W\d_]|['\-_])+[^\W\d_]) # Words with apostrophes or dashes.
@@ -169,7 +161,7 @@ REGEXPS = (
     |
     (?:\S)                         # Everything else that isn't whitespace.
     """
-    )
+)
 
 ######################################################################
 # This is the core tokenizing regex:
@@ -198,6 +190,7 @@ def _str_to_unicode(text, encoding=None, errors='strict'):
     if isinstance(text, bytes):
         return text.decode(encoding, errors)
     return text
+
 
 def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8'):
     """
@@ -305,13 +298,14 @@ class TweetTokenizer:
         words = WORD_RE.findall(safe_text)
         # Possibly alter the case, but avoid changing emoticons like :D into :d:
         if not self.preserve_case:
-            words = list(map((lambda x : x if EMOTICON_RE.search(x) else
+            words = list(map((lambda x: x if EMOTICON_RE.search(x) else
                               x.lower()), words))
         return words
 
 ######################################################################
 # Normalization Functions
 ######################################################################
+
 
 def reduce_lengthening(text):
     """
@@ -321,17 +315,20 @@ def reduce_lengthening(text):
     pattern = re.compile(r"(.)\1{2,}")
     return pattern.sub(r"\1\1\1", text)
 
+
 def remove_handles(text):
     """
     Remove Twitter username handles from text.
     """
-    pattern = re.compile(r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){20}(?!@))|(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){1,19})(?![A-Za-z0-9_]*@)")
+    pattern = re.compile(
+        r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){20}(?!@))|(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){1,19})(?![A-Za-z0-9_]*@)")
     # Substitute hadnles with ' ' to ensure that text on either side of removed handles are tokenized correctly
     return pattern.sub(' ', text)
 
 ######################################################################
 # Tokenization Function
 ######################################################################
+
 
 def casual_tokenize(text, preserve_case=True, reduce_len=False, strip_handles=False):
     """

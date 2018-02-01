@@ -156,7 +156,8 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
         of required chunks---giving much more control to the user.
         """
         fileids, _ = self._resolve(fileids, categories)
-        if fileids is None: return sorted(self._t2f)
+        if fileids is None:
+            return sorted(self._t2f)
 
         if isinstance(fileids, string_types):
             fileids = [fileids]

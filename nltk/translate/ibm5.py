@@ -284,11 +284,11 @@ class IBMModel5(IBMModel):
                 initial_prob = 1 / (2 * max_v)
                 self.head_vacancy_table[dv][max_v] = defaultdict(
                     lambda: initial_prob)
-                self.head_vacancy_table[-(dv-1)][max_v] = defaultdict(
+                self.head_vacancy_table[-(dv - 1)][max_v] = defaultdict(
                     lambda: initial_prob)
                 self.non_head_vacancy_table[dv][max_v] = defaultdict(
                     lambda: initial_prob)
-                self.non_head_vacancy_table[-(dv-1)][max_v] = defaultdict(
+                self.non_head_vacancy_table[-(dv - 1)][max_v] = defaultdict(
                     lambda: initial_prob)
 
     def train(self, parallel_corpus):
@@ -439,7 +439,8 @@ class IBMModel5(IBMModel):
             p0 = 1 - p1
             null_fertility = alignment_info.fertility_of_i(0)
             m = len(alignment_info.trg_sentence) - 1
-            value *= (pow(p1, null_fertility) * pow(p0, m - 2 * null_fertility))
+            value *= (pow(p1, null_fertility) *
+                      pow(p0, m - 2 * null_fertility))
             if value < MIN_PROB:
                 return MIN_PROB
 
@@ -555,6 +556,7 @@ class Model5Counts(Counts):
     Data object to store counts of various parameters during training.
     Includes counts for vacancies.
     """
+
     def __init__(self):
         super(Model5Counts, self).__init__()
         self.head_vacancy = defaultdict(
@@ -616,6 +618,7 @@ class Slots(object):
     Represents positions in a target sentence. Used to keep track of
     which slot (position) is occupied.
     """
+
     def __init__(self, target_sentence_length):
         self._slots = [False] * (target_sentence_length + 1)  # 1-indexed
 

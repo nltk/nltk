@@ -135,6 +135,7 @@ from nltk.internals import import_from_stdlib
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class TimitCorpusReader(CorpusReader):
     """
     Reader for the TIMIT corpus (or any other corpus with the same
@@ -200,18 +201,23 @@ class TimitCorpusReader(CorpusReader):
             raise ValueError('Bad value for filetype: %r' % filetype)
 
     def utteranceids(self, dialect=None, sex=None, spkrid=None,
-                   sent_type=None, sentid=None):
+                     sent_type=None, sentid=None):
         """
         :return: A list of the utterance identifiers for all
         utterances in this corpus, or for the given speaker, dialect
         region, gender, sentence type, or sentence number, if
         specified.
         """
-        if isinstance(dialect, string_types): dialect = [dialect]
-        if isinstance(sex, string_types): sex = [sex]
-        if isinstance(spkrid, string_types): spkrid = [spkrid]
-        if isinstance(sent_type, string_types): sent_type = [sent_type]
-        if isinstance(sentid, string_types): sentid = [sentid]
+        if isinstance(dialect, string_types):
+            dialect = [dialect]
+        if isinstance(sex, string_types):
+            sex = [sex]
+        if isinstance(spkrid, string_types):
+            spkrid = [spkrid]
+        if isinstance(sent_type, string_types):
+            sent_type = [sent_type]
+        if isinstance(sentid, string_types):
+            sentid = [sentid]
 
         utterances = self._utterances[:]
         if dialect is not None:
@@ -233,9 +239,11 @@ class TimitCorpusReader(CorpusReader):
         """
         _transcriptions = {}
         for line in self.open('timitdic.txt'):
-            if not line.strip() or line[0] == ';': continue
+            if not line.strip() or line[0] == ';':
+                continue
             m = re.match(r'\s*(\S+)\s+/(.*)/\s*$', line)
-            if not m: raise ValueError('Bad line: %r' % line)
+            if not m:
+                raise ValueError('Bad line: %r' % line)
             _transcriptions[m.group(1)] = m.group(2).split()
         return _transcriptions
 
@@ -254,7 +262,7 @@ class TimitCorpusReader(CorpusReader):
         speaker.
         """
         return [utterance for utterance in self._utterances
-                if utterance.startswith(speaker+'/')]
+                if utterance.startswith(speaker + '/')]
 
     def spkrinfo(self, speaker):
         """
@@ -266,9 +274,10 @@ class TimitCorpusReader(CorpusReader):
         if self._speakerinfo is None:
             self._speakerinfo = {}
             for line in self.open('spkrinfo.txt'):
-                if not line.strip() or line[0] == ';': continue
+                if not line.strip() or line[0] == ';':
+                    continue
                 rec = line.strip().split(None, 9)
-                key = "dr%s-%s%s" % (rec[2],rec[1].lower(),rec[0].lower())
+                key = "dr%s-%s%s" % (rec[2], rec[1].lower(), rec[0].lower())
                 self._speakerinfo[key] = SpeakerInfo(*rec)
 
         return self._speakerinfo[speaker]
@@ -302,14 +311,16 @@ class TimitCorpusReader(CorpusReader):
                 for fileid in self._utterance_fileids(utterances, '.wrd')]
 
     def sent_times(self, utterances=None):
-        return [(line.split(None,2)[-1].strip(),
+        return [(line.split(None, 2)[-1].strip(),
                  int(line.split()[0]), int(line.split()[1]))
                 for fileid in self._utterance_fileids(utterances, '.txt')
                 for line in self.open(fileid) if line.strip()]
 
     def phone_trees(self, utterances=None):
-        if utterances is None: utterances = self._utterances
-        if isinstance(utterances, string_types): utterances = [utterances]
+        if utterances is None:
+            utterances = self._utterances
+        if isinstance(utterances, string_types):
+            utterances = [utterances]
 
         trees = []
         for utterance in utterances:
@@ -339,14 +350,14 @@ class TimitCorpusReader(CorpusReader):
         # nltk.chunk conflicts with the stdlib module 'chunk'
         wave = import_from_stdlib('wave')
 
-        w = wave.open(self.open(utterance+'.wav'), 'rb')
+        w = wave.open(self.open(utterance + '.wav'), 'rb')
 
         if end is None:
             end = w.getnframes()
 
         # Skip past frames before start, then read the frames we want
         w.readframes(start)
-        frames = w.readframes(end-start)
+        frames = w.readframes(end - start)
 
         # Open a new temporary file -- the wave module requires
         # an actual file, and won't work w/ stringio. :(
@@ -367,14 +378,16 @@ class TimitCorpusReader(CorpusReader):
         assert(end is None or end > start)
         headersize = 44
         if end is None:
-            data = self.open(utterance+'.wav').read()
+            data = self.open(utterance + '.wav').read()
         else:
-            data = self.open(utterance+'.wav').read(headersize+end*2)
-        return data[headersize+start*2:]
+            data = self.open(utterance + '.wav').read(headersize + end * 2)
+        return data[headersize + start * 2:]
 
     def _utterance_fileids(self, utterances, extension):
-        if utterances is None: utterances = self._utterances
-        if isinstance(utterances, string_types): utterances = [utterances]
+        if utterances is None:
+            utterances = self._utterances
+        if isinstance(utterances, string_types):
+            utterances = [utterances]
         return ['%s%s' % (u, extension) for u in utterances]
 
     def play(self, utterance, start=0, end=None):
@@ -395,7 +408,7 @@ class TimitCorpusReader(CorpusReader):
                 dsp.close()
             except IOError as e:
                 print(("can't acquire the audio device; please "
-                                     "activate your audio device."), file=sys.stderr)
+                       "activate your audio device."), file=sys.stderr)
                 print("system error message:", str(e), file=sys.stderr)
             return
         except ImportError:
@@ -404,7 +417,8 @@ class TimitCorpusReader(CorpusReader):
         # Method 2: pygame
         try:
             # FIXME: this won't work under python 3
-            import pygame.mixer, StringIO
+            import pygame.mixer
+            import StringIO
             pygame.mixer.init(16000)
             f = StringIO.StringIO(self.wav(utterance, start, end))
             pygame.mixer.Sound(f).play()
@@ -416,7 +430,7 @@ class TimitCorpusReader(CorpusReader):
 
         # Method 3: complain. :)
         print(("you must install pygame or ossaudiodev "
-                             "for audio playback."), file=sys.stderr)
+               "for audio playback."), file=sys.stderr)
 
 
 @compat.python_2_unicode_compatible
@@ -447,6 +461,7 @@ def read_timit_block(stream):
     number that will be ignored.
     """
     line = stream.readline()
-    if not line: return []
+    if not line:
+        return []
     n, sent = line.split(' ', 1)
     return [sent]

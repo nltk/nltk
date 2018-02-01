@@ -77,7 +77,6 @@ class Template(BrillTemplateI):
     # _ids = it.count(0)
 
     def __init__(self, *features):
-
         """
         Construct a Template for generating Rules.
 
@@ -166,32 +165,32 @@ class Template(BrillTemplateI):
         for feature in self._features:
             conditions.append([])
             for pos in feature.positions:
-                if not (0 <= index+pos < len(tokens)):
+                if not (0 <= index + pos < len(tokens)):
                     continue
-                value = feature.extract_property(tokens, index+pos)
-                conditions[-1].append( (feature, value) )
+                value = feature.extract_property(tokens, index + pos)
+                conditions[-1].append((feature, value))
         return conditions
 
     def get_neighborhood(self, tokens, index):
         # inherit docs from BrillTemplateI
 
         # applicable_rules(tokens, index, ...) depends on index.
-        neighborhood = set([index])  #set literal for python 2.7+
+        neighborhood = set([index])  # set literal for python 2.7+
 
         # applicable_rules(tokens, i, ...) depends on index if
         # i+start < index <= i+end.
 
-        allpositions = [0] + [p for feat in self._features for p in feat.positions]
+        allpositions = [0] + \
+            [p for feat in self._features for p in feat.positions]
         start, end = min(allpositions), max(allpositions)
-        s = max(0, index+(-end))
-        e = min(index+(-start)+1, len(tokens))
+        s = max(0, index + (-end))
+        e = min(index + (-start) + 1, len(tokens))
         for i in range(s, e):
             neighborhood.add(i)
         return neighborhood
 
     @classmethod
     def expand(cls, featurelists, combinations=None, skipintersecting=True):
-
         """
         Factory method to mass generate Templates from a list L of lists of  Features.
 
@@ -264,14 +263,14 @@ class Template(BrillTemplateI):
         :returns: generator of Templates
 
         """
-        def nonempty_powerset(xs): #xs is a list
+        def nonempty_powerset(xs):  # xs is a list
             # itertools docnonempty_powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)
 
             # find the correct tuple given combinations, one of {None, k, (k1,k2)}
-            k = combinations #for brevity
-            combrange = ((1, len(xs)+1) if k is None else     # n over 1 .. n over n (all non-empty combinations)
-                         (k, k+1) if isinstance(k, int) else  # n over k (only
-                         (k[0], k[1]+1))                      # n over k1, n over k1+1... n over k2
+            k = combinations  # for brevity
+            combrange = ((1, len(xs) + 1) if k is None else     # n over 1 .. n over n (all non-empty combinations)
+                         (k, k + 1) if isinstance(k, int) else  # n over k (only
+                         (k[0], k[1] + 1))                      # n over k1, n over k1+1... n over k2
             return it.chain.from_iterable(it.combinations(xs, r)
                                           for r in range(*combrange))
         seentemplates = set()
@@ -288,7 +287,7 @@ class Template(BrillTemplateI):
                 thistemplate = cls(*sorted(pick))
                 strpick = str(thistemplate)
                 #!!FIXME --this is hackish
-                if strpick in seentemplates: #already added
+                if strpick in seentemplates:  # already added
                     cls._poptemplate()
                     continue
                 seentemplates.add(strpick)

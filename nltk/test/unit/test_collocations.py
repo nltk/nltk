@@ -5,7 +5,7 @@ import unittest
 from nltk.collocations import BigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures
 
-## Test bigram counters with discontinuous bigrams and repeated words
+# Test bigram counters with discontinuous bigrams and repeated words
 
 _EPSILON = 1e-8
 
@@ -37,7 +37,8 @@ class TestBigram(unittest.TestCase):
             sorted(b.word_fd.items()),
             sorted([('a', 2), ('is', 2), ('test', 2), ('this', 2)])
         )
-        self.assertTrue(len(sent) == sum(b.word_fd.values()) == sum(b.ngram_fd.values()) + 1)
+        self.assertTrue(len(sent) == sum(b.word_fd.values())
+                        == sum(b.ngram_fd.values()) + 1)
         self.assertTrue(close_enough(
             sorted(b.score_ngrams(BigramAssocMeasures.pmi)),
             sorted([(('a', 'a'), 1.0), (('a', 'test'), 1.0), (('is', 'a'), 1.0), (('is', 'is'), 1.0),
@@ -57,11 +58,13 @@ class TestBigram(unittest.TestCase):
             sorted(b.word_fd.items()),
             sorted([('a', 2), ('is', 2), ('test', 2), ('this', 2)])
         )
-        self.assertTrue(len(sent) == sum(b.word_fd.values()) == (sum(b.ngram_fd.values()) + 2 + 1) / 2.0)
+        self.assertTrue(len(sent) == sum(b.word_fd.values()) ==
+                        (sum(b.ngram_fd.values()) + 2 + 1) / 2.0)
         self.assertTrue(close_enough(
             sorted(b.score_ngrams(BigramAssocMeasures.pmi)),
             sorted([(('a', 'test'), 1.584962500721156), (('is', 'a'), 1.584962500721156),
-                    (('this', 'is'), 1.584962500721156), (('a', 'a'), 0.0), (('is', 'is'), 0.0),
+                    (('this', 'is'), 1.584962500721156), ((
+                        'a', 'a'), 0.0), (('is', 'is'), 0.0),
                     (('test', 'test'), 0.0), (('this', 'this'), 0.0)])
         ))
 
@@ -78,11 +81,13 @@ class TestBigram(unittest.TestCase):
             sorted(b.word_fd.items()),
             sorted([('a', 2), ('is', 2), ('test', 2), ('this', 2)])
         )
-        self.assertTrue(len(sent) == sum(b.word_fd.values()) == (sum(b.ngram_fd.values()) + 4 + 3 + 2 + 1) / 4.0)
+        self.assertTrue(len(sent) == sum(b.word_fd.values()) == (
+            sum(b.ngram_fd.values()) + 4 + 3 + 2 + 1) / 4.0)
         self.assertTrue(close_enough(
             sorted(b.score_ngrams(BigramAssocMeasures.pmi)),
             sorted(
                 [(('a', 'test'), 1.0), (('is', 'a'), 1.0), (('this', 'is'), 1.0), (('is', 'test'), 0.5849625007211562),
-                 (('this', 'a'), 0.5849625007211562), (('a', 'a'), -1.0), (('is', 'is'), -1.0),
+                 (('this', 'a'), 0.5849625007211562), ((
+                     'a', 'a'), -1.0), (('is', 'is'), -1.0),
                  (('test', 'test'), -1.0), (('this', 'this'), -1.0)])
         ))

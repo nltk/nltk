@@ -33,10 +33,9 @@ class KMeansClusterer(VectorSpaceClusterer):
     """
 
     def __init__(self, num_means, distance, repeats=1,
-                       conv_test=1e-6, initial_means=None,
-                       normalise=False, svd_dimensions=None,
-                       rng=None, avoid_empty_clusters=False):
-
+                 conv_test=1e-6, initial_means=None,
+                 normalise=False, svd_dimensions=None,
+                 rng=None, avoid_empty_clusters=False):
         """
         :param  num_means:  the number of means to use (may use fewer)
         :type   num_means:  int
@@ -79,7 +78,8 @@ class KMeansClusterer(VectorSpaceClusterer):
 
         meanss = []
         for trial in range(self._repeats):
-            if trace: print('k-means trial', trial)
+            if trace:
+                print('k-means trial', trial)
             if not self._means or trial > 1:
                 self._means = self._rng.sample(list(vectors), self._num_means)
             self._cluster_vectorspace(vectors, trace)
@@ -116,9 +116,10 @@ class KMeansClusterer(VectorSpaceClusterer):
                     index = self.classify_vectorspace(vector)
                     clusters[index].append(vector)
 
-                if trace: print('iteration')
-                #for i in range(self._num_means):
-                    #print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
+                if trace:
+                    print('iteration')
+                # for i in range(self._num_means):
+                   # print '  mean', i, 'allocated', len(clusters[i]), 'vectors'
 
                 # recalculate cluster means by computing the centroid of each cluster
                 new_means = list(map(self._centroid, clusters, self._means))
@@ -165,11 +166,13 @@ class KMeansClusterer(VectorSpaceClusterer):
             centroid = copy.copy(mean)
             for vector in cluster:
                 centroid += vector
-            return centroid / (1+len(cluster))
+            return centroid / (1 + len(cluster))
         else:
             if not len(cluster):
-                sys.stderr.write('Error: no centroid defined for empty cluster.\n')
-                sys.stderr.write('Try setting argument \'avoid_empty_clusters\' to True\n')
+                sys.stderr.write(
+                    'Error: no centroid defined for empty cluster.\n')
+                sys.stderr.write(
+                    'Try setting argument \'avoid_empty_clusters\' to True\n')
                 assert(False)
             centroid = copy.copy(cluster[0])
             for vector in cluster[1:]:
@@ -178,9 +181,10 @@ class KMeansClusterer(VectorSpaceClusterer):
 
     def __repr__(self):
         return '<KMeansClusterer means=%s repeats=%d>' % \
-                    (self._means, self._repeats)
+            (self._means, self._repeats)
 
 #################################################################################
+
 
 def demo():
     # example from figure 14.9, page 517, Manning and Schutze
@@ -198,7 +202,8 @@ def demo():
     print('Means:', clusterer.means())
     print()
 
-    vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
+    vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [
+        4, 2], [4, 0], [2, 3], [3, 1]]]
 
     # test k-means using the euclidean distance metric, 2 means and repeat
     # clustering 10 times with random seeds
@@ -216,6 +221,6 @@ def demo():
     print(clusterer.classify(vector))
     print()
 
+
 if __name__ == '__main__':
     demo()
-

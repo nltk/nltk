@@ -665,14 +665,14 @@ class Synset(_WordNetObject):
         distances = set([(self, distance)])
         for hypernym in self._hypernyms() + self._instance_hypernyms():
             distances |= hypernym.hypernym_distances(
-                distance+1,
+                distance + 1,
                 simulate_root=False
             )
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = '*ROOT*'
             fake_synset_distance = max(distances, key=itemgetter(1))[1]
-            distances.add((fake_synset, fake_synset_distance+1))
+            distances.add((fake_synset, fake_synset_distance + 1))
         return distances
 
     def _shortest_hypernym_paths(self, simulate_root):
@@ -763,7 +763,7 @@ class Synset(_WordNetObject):
 
         tree = [self]
         if depth != 0:
-            tree += [x.tree(rel, depth-1, cut_mark) for x in rel(self)]
+            tree += [x.tree(rel, depth - 1, cut_mark) for x in rel(self)]
         elif cut_mark:
             tree += [cut_mark]
         return tree
@@ -1245,12 +1245,14 @@ class WordNetCorpusReader(CorpusReader):
         # e.g.: '.45_caliber.a.01..45_caliber'
         separator = SENSENUM_RE.search(name).start()
 
-        leadingZero = int(name[separator+1]) == 0
+        leadingZero = int(name[separator + 1]) == 0
         if (leadingZero):
-            synset_name, lemma_name = name[:separator+3], name[separator+4:]
+            synset_name, lemma_name = name[:separator +
+                                           3], name[separator + 4:]
         else:
-            synset_name, lemma_name = name[:separator+2], name[separator+3:]
-        
+            synset_name, lemma_name = name[:separator +
+                                           2], name[separator + 3:]
+
         synset = self.synset(synset_name)
         for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
@@ -2061,4 +2063,3 @@ def _get_pos(field):
 def teardown_module(module=None):
     from nltk.corpus import wordnet
     wordnet._unload()
-

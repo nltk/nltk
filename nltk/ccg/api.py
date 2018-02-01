@@ -155,6 +155,7 @@ class Direction(object):
     Also contains maintains information as to which combinators
     may be used with the category.
     '''
+
     def __init__(self, dir, restrictions):
         self._dir = dir
         self._restrs = restrictions
@@ -254,6 +255,7 @@ class PrimitiveCategory(AbstractCCGCategory):
     Takes a string representation of the category, and a
     list of strings specifying the morphological subcategories.
     '''
+
     def __init__(self, categ, restrictions=[]):
         self._categ = categ
         self._restrs = restrictions
@@ -307,6 +309,7 @@ class FunctionalCategory(AbstractCCGCategory):
     Consists of argument and result categories, together with
     an application direction.
     '''
+
     def __init__(self, res, arg, dir):
         self._res = res
         self._arg = arg

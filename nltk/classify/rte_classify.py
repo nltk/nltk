@@ -22,11 +22,13 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.classify.util import accuracy, check_megam_config
 from nltk.classify.maxent import MaxentClassifier
 
+
 class RTEFeatureExtractor(object):
     """
     This builds a bag of words for both the text and the hypothesis after
     throwing away some stopwords, then calculates overlap and difference.
     """
+
     def __init__(self, rtepair, stop=True, use_lemmatize=False):
         """
         :param rtepair: a ``RTEPair`` from which features should be extracted
@@ -43,15 +45,17 @@ class RTEFeatureExtractor(object):
         # addresses, URLs are single tokens.
         tokenizer = RegexpTokenizer('[\w.@:/]+|\w+|\$[\d.]+')
 
-        #Get the set of word types for text and hypothesis
+        # Get the set of word types for text and hypothesis
         self.text_tokens = tokenizer.tokenize(rtepair.text)
         self.hyp_tokens = tokenizer.tokenize(rtepair.hyp)
         self.text_words = set(self.text_tokens)
         self.hyp_words = set(self.hyp_tokens)
 
         if use_lemmatize:
-            self.text_words = set(self._lemmatize(token) for token in self.text_tokens)
-            self.hyp_words = set(self._lemmatize(token) for token in self.hyp_tokens)
+            self.text_words = set(self._lemmatize(token)
+                                  for token in self.text_tokens)
+            self.hyp_words = set(self._lemmatize(token)
+                                 for token in self.hyp_tokens)
 
         if self.stop:
             self.text_words = self.text_words - self.stopwords
@@ -60,7 +64,6 @@ class RTEFeatureExtractor(object):
         self._overlap = self.hyp_words & self.text_words
         self._hyp_extra = self.hyp_words - self.text_words
         self._txt_extra = self.text_words - self.hyp_words
-
 
     def overlap(self, toktype, debug=False):
         """
@@ -138,17 +141,21 @@ def rte_featurize(rte_pairs):
 
 def rte_classifier(algorithm):
     from nltk.corpus import rte as rte_corpus
-    train_set  = rte_corpus.pairs(['rte1_dev.xml', 'rte2_dev.xml', 'rte3_dev.xml'])
-    test_set = rte_corpus.pairs(['rte1_test.xml', 'rte2_test.xml', 'rte3_test.xml'])
+    train_set = rte_corpus.pairs(
+        ['rte1_dev.xml', 'rte2_dev.xml', 'rte3_dev.xml'])
+    test_set = rte_corpus.pairs(
+        ['rte1_test.xml', 'rte2_test.xml', 'rte3_test.xml'])
     featurized_train_set = rte_featurize(train_set)
     featurized_test_set = rte_featurize(test_set)
     # Train the classifier
     print('Training classifier...')
-    if algorithm in ['megam', 'BFGS']: # MEGAM based algorithms.
+    if algorithm in ['megam', 'BFGS']:  # MEGAM based algorithms.
         # Ensure that MEGAM is configured first.
         check_megam_config()
-        clf = lambda x: MaxentClassifier.train(featurized_train_set, algorithm)
-    elif algorithm in ['GIS', 'IIS']: # Use default GIS/IIS MaxEnt algorithm
+
+        def clf(x): return MaxentClassifier.train(
+            featurized_train_set, algorithm)
+    elif algorithm in ['GIS', 'IIS']:  # Use default GIS/IIS MaxEnt algorithm
         clf = MaxentClassifier.train(featurized_train_set, algorithm)
     else:
         err_msg = str("RTEClassifier only supports these algorithms:\n "

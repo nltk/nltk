@@ -58,6 +58,7 @@ def texts():
     print("text8:", text8.name)
     print("text9:", text9.name)
 
+
 sent1 = ["Call", "me", "Ishmael", "."]
 sent2 = ["The", "family", "of", "Dashwood", "had", "long",
          "been", "settled", "in", "Sussex", "."]

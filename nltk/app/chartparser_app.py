@@ -66,13 +66,14 @@ from nltk.draw import CFGEditor, tree_to_treesegment, TreeSegmentWidget
 # Edge List
 #######################################################################
 
+
 class EdgeList(ColorizedList):
     ARROW = SymbolWidget.SYMBOLS['rightarrow']
 
     def _init_colortags(self, textwidget, options):
         textwidget.tag_config('terminal', foreground='#006000')
         textwidget.tag_config('arrow', font='symbol', underline='0')
-        textwidget.tag_config('dot', foreground = '#000000')
+        textwidget.tag_config('dot', foreground='#000000')
         textwidget.tag_config('nonterminal', foreground='blue',
                               font=('helvetica', -12, 'bold'))
 
@@ -95,10 +96,12 @@ class EdgeList(ColorizedList):
 # Chart Matrix View
 #######################################################################
 
+
 class ChartMatrixView(object):
     """
     A view of a chart that displays the contents of the corresponding matrix.
     """
+
     def __init__(self, parent, chart, toplevel=True, title='Chart Matrix',
                  show_numedges=False):
         self._chart = chart
@@ -136,7 +139,7 @@ class ChartMatrixView(object):
         cframe = Frame(root, border=2, relief='sunken')
         cframe.pack(expand=0, fill='none', padx=1, pady=3, side='top')
         self._canvas = Canvas(cframe, width=200, height=200,
-                                      background='white')
+                              background='white')
         self._canvas.pack(expand=0, fill='none')
 
     def _init_numedges(self, root):
@@ -146,14 +149,18 @@ class ChartMatrixView(object):
     def _init_list(self, root):
         self._list = EdgeList(root, [], width=20, height=5)
         self._list.pack(side='top', expand=1, fill='both', pady=3)
+
         def cb(edge, self=self): self._fire_callbacks('select', edge)
         self._list.add_callback('select', cb)
         self._list.focus()
 
     def destroy(self, *e):
-        if self._root is None: return
-        try: self._root.destroy()
-        except: pass
+        if self._root is None:
+            return
+        try:
+            self._root.destroy()
+        except:
+            pass
         self._root = None
 
     def set_chart(self, chart):
@@ -163,7 +170,8 @@ class ChartMatrixView(object):
             self.draw()
 
     def update(self):
-        if self._root is None: return
+        if self._root is None:
+            return
 
         # Count the edges in each cell
         N = len(self._cells)
@@ -178,11 +186,11 @@ class ChartMatrixView(object):
                     color = 'gray20'
                 else:
                     color = ('#00%02x%02x' %
-                             (min(255, 50+128*cell_edges[i][j]/10),
-                              max(0, 128-128*cell_edges[i][j]/10)))
+                             (min(255, 50 + 128 * cell_edges[i][j] / 10),
+                              max(0, 128 - 128 * cell_edges[i][j] / 10)))
                 cell_tag = self._cells[i][j]
                 self._canvas.itemconfig(cell_tag, fill=color)
-                if (i,j) == self._selected_cell:
+                if (i, j) == self._selected_cell:
                     self._canvas.itemconfig(cell_tag, outline='#00ffff',
                                             width=3)
                     self._canvas.tag_raise(cell_tag)
@@ -208,40 +216,48 @@ class ChartMatrixView(object):
         self.update()
 
     def add_callback(self, event, func):
-        self._callbacks.setdefault(event,{})[func] = 1
+        self._callbacks.setdefault(event, {})[func] = 1
 
     def remove_callback(self, event, func=None):
-        if func is None: del self._callbacks[event]
+        if func is None:
+            del self._callbacks[event]
         else:
-            try: del self._callbacks[event][func]
-            except: pass
+            try:
+                del self._callbacks[event][func]
+            except:
+                pass
 
     def _fire_callbacks(self, event, *args):
-        if event not in self._callbacks: return
-        for cb_func in list(self._callbacks[event].keys()): cb_func(*args)
+        if event not in self._callbacks:
+            return
+        for cb_func in list(self._callbacks[event].keys()):
+            cb_func(*args)
 
     def select_cell(self, i, j):
-        if self._root is None: return
+        if self._root is None:
+            return
 
         # If the cell is already selected (and the chart contents
         # haven't changed), then do nothing.
-        if ((i,j) == self._selected_cell and
-            self._chart.num_edges() == self._num_edges): return
+        if ((i, j) == self._selected_cell and
+                self._chart.num_edges() == self._num_edges):
+            return
 
-        self._selected_cell = (i,j)
+        self._selected_cell = (i, j)
         self.update()
 
         # Fire the callback.
         self._fire_callbacks('select_cell', i, j)
 
     def deselect_cell(self):
-        if self._root is None: return
+        if self._root is None:
+            return
         self._selected_cell = None
         self._list.set([])
         self.update()
 
     def _click_cell(self, i, j):
-        if self._selected_cell == (i,j):
+        if self._selected_cell == (i, j):
             self.deselect_cell()
         else:
             self.select_cell(i, j)
@@ -251,62 +267,67 @@ class ChartMatrixView(object):
         self._list.view(edge)
 
     def mark_edge(self, edge):
-        if self._root is None: return
+        if self._root is None:
+            return
         self.select_cell(*edge.span())
         self._list.mark(edge)
 
     def unmark_edge(self, edge=None):
-        if self._root is None: return
+        if self._root is None:
+            return
         self._list.unmark(edge)
 
     def markonly_edge(self, edge):
-        if self._root is None: return
+        if self._root is None:
+            return
         self.select_cell(*edge.span())
         self._list.markonly(edge)
 
     def draw(self):
-        if self._root is None: return
+        if self._root is None:
+            return
         LEFT_MARGIN = BOT_MARGIN = 15
         TOP_MARGIN = 5
         c = self._canvas
         c.delete('all')
-        N = self._chart.num_leaves()+1
-        dx = (int(c['width'])-LEFT_MARGIN)/N
-        dy = (int(c['height'])-TOP_MARGIN-BOT_MARGIN)/N
+        N = self._chart.num_leaves() + 1
+        dx = (int(c['width']) - LEFT_MARGIN) / N
+        dy = (int(c['height']) - TOP_MARGIN - BOT_MARGIN) / N
 
         c.delete('all')
 
         # Labels and dotted lines
         for i in range(N):
-            c.create_text(LEFT_MARGIN-2, i*dy+dy/2+TOP_MARGIN,
+            c.create_text(LEFT_MARGIN - 2, i * dy + dy / 2 + TOP_MARGIN,
                           text=repr(i), anchor='e')
-            c.create_text(i*dx+dx/2+LEFT_MARGIN, N*dy+TOP_MARGIN+1,
+            c.create_text(i * dx + dx / 2 + LEFT_MARGIN, N * dy + TOP_MARGIN + 1,
                           text=repr(i), anchor='n')
-            c.create_line(LEFT_MARGIN, dy*(i+1)+TOP_MARGIN,
-                          dx*N+LEFT_MARGIN, dy*(i+1)+TOP_MARGIN, dash='.')
-            c.create_line(dx*i+LEFT_MARGIN, TOP_MARGIN,
-                          dx*i+LEFT_MARGIN, dy*N+TOP_MARGIN, dash='.')
+            c.create_line(LEFT_MARGIN, dy * (i + 1) + TOP_MARGIN,
+                          dx * N + LEFT_MARGIN, dy * (i + 1) + TOP_MARGIN, dash='.')
+            c.create_line(dx * i + LEFT_MARGIN, TOP_MARGIN,
+                          dx * i + LEFT_MARGIN, dy * N + TOP_MARGIN, dash='.')
 
         # A box around the whole thing
         c.create_rectangle(LEFT_MARGIN, TOP_MARGIN,
-                           LEFT_MARGIN+dx*N, dy*N+TOP_MARGIN,
+                           LEFT_MARGIN + dx * N, dy * N + TOP_MARGIN,
                            width=2)
 
         # Cells
         self._cells = [[None for i in range(N)] for j in range(N)]
         for i in range(N):
             for j in range(i, N):
-                t = c.create_rectangle(j*dx+LEFT_MARGIN, i*dy+TOP_MARGIN,
-                                       (j+1)*dx+LEFT_MARGIN,
-                                       (i+1)*dy+TOP_MARGIN,
+                t = c.create_rectangle(j * dx + LEFT_MARGIN, i * dy + TOP_MARGIN,
+                                       (j + 1) * dx + LEFT_MARGIN,
+                                       (i + 1) * dy + TOP_MARGIN,
                                        fill='gray20')
                 self._cells[i][j] = t
-                def cb(event, self=self, i=i, j=j): self._click_cell(i,j)
+
+                def cb(event, self=self, i=i, j=j): self._click_cell(i, j)
                 c.tag_bind(t, '<Button-1>', cb)
 
         # Inactive box
         xmax, ymax = int(c['width']), int(c['height'])
-        t = c.create_rectangle(-100, -100, xmax+100, ymax+100,
+        t = c.create_rectangle(-100, -100, xmax + 100, ymax + 100,
                                fill='gray50', state='hidden',
                                tag='inactivebox')
         c.tag_lower(t)
@@ -320,6 +341,7 @@ class ChartMatrixView(object):
 #######################################################################
 # Chart Results View
 #######################################################################
+
 
 class ChartResultsView(object):
     def __init__(self, parent, chart, grammar, toplevel=True):
@@ -343,11 +365,11 @@ class ChartResultsView(object):
             buttons = Frame(self._root)
             buttons.pack(side='bottom', expand=0, fill='x')
             Button(buttons, text='Quit',
-                           command=self.destroy).pack(side='right')
+                   command=self.destroy).pack(side='right')
             Button(buttons, text='Print All',
-                           command=self.print_all).pack(side='left')
+                   command=self.print_all).pack(side='left')
             Button(buttons, text='Print Selection',
-                           command=self.print_selection).pack(side='left')
+                   command=self.print_selection).pack(side='left')
 
         # Canvas frame.
         self._cframe = CanvasFrame(self._root, closeenough=20)
@@ -357,11 +379,14 @@ class ChartResultsView(object):
         self.update()
 
     def update(self, edge=None):
-        if self._root is None: return
+        if self._root is None:
+            return
         # If the edge isn't a parse edge, do nothing.
         if edge is not None:
-            if edge.lhs() != self._grammar.start(): return
-            if edge.span() != (0, self._chart.num_leaves()): return
+            if edge.lhs() != self._grammar.start():
+                return
+            if edge.span() != (0, self._chart.num_leaves()):
+                return
 
         for parse in self._chart.parses(self._grammar.start()):
             if parse not in self._trees:
@@ -403,11 +428,13 @@ class ChartResultsView(object):
                 child['color'] = color
 
     def print_all(self, *e):
-        if self._root is None: return
+        if self._root is None:
+            return
         self._cframe.print_to_file()
 
     def print_selection(self, *e):
-        if self._root is None: return
+        if self._root is None:
+            return
         if self._selection is None:
             showerror('Print Error', 'No tree selected')
         else:
@@ -416,9 +443,9 @@ class ChartResultsView(object):
                 if widget is not self._selection:
                     self._cframe.destroy_widget(widget)
             c.delete(self._selectbox)
-            (x1,y1,x2,y2) = self._selection.bbox()
-            self._selection.move(10-x1,10-y1)
-            c['scrollregion'] = '0 0 %s %s' % (x2-x1+20, y2-y1+20)
+            (x1, y1, x2, y2) = self._selection.bbox()
+            self._selection.move(10 - x1, 10 - y1)
+            c['scrollregion'] = '0 0 %s %s' % (x2 - x1 + 20, y2 - y1 + 20)
             self._cframe.print_to_file()
 
             # Restore our state.
@@ -427,7 +454,8 @@ class ChartResultsView(object):
             self.update()
 
     def clear(self):
-        if self._root is None: return
+        if self._root is None:
+            return
         for treewidget in self._treewidgets:
             self._cframe.destroy_widget(treewidget)
         self._trees = []
@@ -448,9 +476,12 @@ class ChartResultsView(object):
         self.update()
 
     def destroy(self, *e):
-        if self._root is None: return
-        try: self._root.destroy()
-        except: pass
+        if self._root is None:
+            return
+        try:
+            self._root.destroy()
+        except:
+            pass
         self._root = None
 
     def pack(self, *args, **kwargs):
@@ -459,6 +490,7 @@ class ChartResultsView(object):
 #######################################################################
 # Chart Comparer
 #######################################################################
+
 
 class ChartComparer(object):
     """
@@ -531,9 +563,12 @@ class ChartComparer(object):
             self.load_chart(filename)
 
     def destroy(self, *e):
-        if self._root is None: return
-        try: self._root.destroy()
-        except: pass
+        if self._root is None:
+            return
+        try:
+            self._root.destroy()
+        except:
+            pass
         self._root = None
 
     def mainloop(self, *args, **kwargs):
@@ -582,8 +617,8 @@ class ChartComparer(object):
         divider.pack(side='top', fill='x', ipady=2)
 
     def _init_chartviews(self, root):
-        opfont=('symbol', -36) # Font for operator.
-        eqfont=('helvetica', -36) # Font for equals sign.
+        opfont = ('symbol', -36)  # Font for operator.
+        eqfont = ('helvetica', -36)  # Font for equals sign.
 
         frame = Frame(root, background='#c0c0c0')
         frame.pack(side='top', expand=1, fill='both')
@@ -605,7 +640,7 @@ class ChartComparer(object):
 
         # The operator.
         self._op_label = Label(frame, text=' ', width=3,
-                                       background='#c0c0c0', font=opfont)
+                               background='#c0c0c0', font=opfont)
         self._op_label.pack(side='left', padx=5, pady=5)
 
         # The right matrix.
@@ -615,17 +650,17 @@ class ChartComparer(object):
             cv2_frame, list(self._charts.keys()), command=self._select_right)
         self._right_selector.pack(side='top', pady=5, fill='x')
         self._right_matrix = ChartMatrixView(cv2_frame, self._emptychart,
-                                            toplevel=False,
-                                            show_numedges=True)
+                                             toplevel=False,
+                                             show_numedges=True)
         self._right_matrix.pack(side='bottom', padx=5, pady=5,
-                               expand=1, fill='both')
+                                expand=1, fill='both')
         self._right_matrix.add_callback('select', self.select_edge)
         self._right_matrix.add_callback('select_cell', self.select_cell)
         self._right_matrix.inactivate()
 
         # The equals sign
         Label(frame, text='=', width=3, background='#c0c0c0',
-                      font=eqfont).pack(side='left', padx=5, pady=5)
+              font=eqfont).pack(side='left', padx=5, pady=5)
 
         # The output matrix.
         out_frame = Frame(frame, border=3, relief='groove')
@@ -633,10 +668,10 @@ class ChartComparer(object):
         self._out_label = Label(out_frame, text='Output')
         self._out_label.pack(side='top', pady=9)
         self._out_matrix = ChartMatrixView(out_frame, self._emptychart,
-                                            toplevel=False,
-                                            show_numedges=True)
+                                           toplevel=False,
+                                           show_numedges=True)
         self._out_matrix.pack(side='bottom', padx=5, pady=5,
-                                 expand=1, fill='both')
+                              expand=1, fill='both')
         self._out_matrix.add_callback('select', self.select_edge)
         self._out_matrix.add_callback('select_cell', self.select_cell)
         self._out_matrix.inactivate()
@@ -645,17 +680,17 @@ class ChartComparer(object):
         buttons = Frame(root)
         buttons.pack(side='bottom', pady=5, fill='x', expand=0)
         Button(buttons, text='Intersection',
-                       command=self._intersection).pack(side='left')
+               command=self._intersection).pack(side='left')
         Button(buttons, text='Union',
-                       command=self._union).pack(side='left')
+               command=self._union).pack(side='left')
         Button(buttons, text='Difference',
-                       command=self._difference).pack(side='left')
+               command=self._difference).pack(side='left')
         Frame(buttons, width=20).pack(side='left')
         Button(buttons, text='Swap Charts',
-                       command=self._swapcharts).pack(side='left')
+               command=self._swapcharts).pack(side='left')
 
         Button(buttons, text='Detatch Output',
-                       command=self._detatch_out).pack(side='right')
+               command=self._detatch_out).pack(side='right')
 
     def _init_bindings(self, root):
         #root.bind('<Control-s>', self.save_chart)
@@ -670,21 +705,25 @@ class ChartComparer(object):
         self._left_name = name
         self._left_chart = self._charts[name]
         self._left_matrix.set_chart(self._left_chart)
-        if name == 'None': self._left_matrix.inactivate()
+        if name == 'None':
+            self._left_matrix.inactivate()
         self._apply_op()
 
     def _select_right(self, name):
         self._right_name = name
         self._right_chart = self._charts[name]
         self._right_matrix.set_chart(self._right_chart)
-        if name == 'None': self._right_matrix.inactivate()
+        if name == 'None':
+            self._right_matrix.inactivate()
         self._apply_op()
 
     def _apply_op(self):
-        if self._operator == '-': self._difference()
-        elif self._operator == 'or': self._union()
-        elif self._operator == 'and': self._intersection()
-
+        if self._operator == '-':
+            self._difference()
+        elif self._operator == 'or':
+            self._union()
+        elif self._operator == 'and':
+            self._intersection()
 
     #////////////////////////////////////////////////////////////
     # File
@@ -695,31 +734,36 @@ class ChartComparer(object):
     def save_chart_dialog(self, *args):
         filename = asksaveasfilename(filetypes=self.CHART_FILE_TYPES,
                                      defaultextension='.pickle')
-        if not filename: return
+        if not filename:
+            return
         try:
             with open(filename, 'wb') as outfile:
                 pickle.dump(self._out_chart, outfile)
         except Exception as e:
             showerror('Error Saving Chart',
-                                   'Unable to open file: %r\n%s' %
-                                   (filename, e))
+                      'Unable to open file: %r\n%s' %
+                      (filename, e))
 
     def load_chart_dialog(self, *args):
         filename = askopenfilename(filetypes=self.CHART_FILE_TYPES,
                                    defaultextension='.pickle')
-        if not filename: return
-        try: self.load_chart(filename)
+        if not filename:
+            return
+        try:
+            self.load_chart(filename)
         except Exception as e:
             showerror('Error Loading Chart',
-                                   'Unable to open file: %r\n%s' %
-                                   (filename, e))
+                      'Unable to open file: %r\n%s' %
+                      (filename, e))
 
     def load_chart(self, filename):
         with open(filename, 'rb') as infile:
             chart = pickle.load(infile)
         name = os.path.basename(filename)
-        if name.endswith('.pickle'): name = name[:-7]
-        if name.endswith('.chart'): name = name[:-6]
+        if name.endswith('.pickle'):
+            name = name[:-7]
+        if name.endswith('.chart'):
+            name = name[:-6]
         self._charts[name] = chart
         self._left_selector.add(name)
         self._right_selector.add(name)
@@ -764,7 +808,8 @@ class ChartComparer(object):
     #////////////////////////////////////////////////////////////
 
     def _difference(self):
-        if not self._checkcompat(): return
+        if not self._checkcompat():
+            return
 
         out_chart = Chart(self._left_chart.tokens())
         for edge in self._left_chart:
@@ -774,7 +819,8 @@ class ChartComparer(object):
         self._update('-', out_chart)
 
     def _intersection(self):
-        if not self._checkcompat(): return
+        if not self._checkcompat():
+            return
 
         out_chart = Chart(self._left_chart.tokens())
         for edge in self._left_chart:
@@ -784,7 +830,8 @@ class ChartComparer(object):
         self._update('and', out_chart)
 
     def _union(self):
-        if not self._checkcompat(): return
+        if not self._checkcompat():
+            return
 
         out_chart = Chart(self._left_chart.tokens())
         for edge in self._left_chart:
@@ -804,7 +851,7 @@ class ChartComparer(object):
             self._left_chart.property_names() !=
             self._right_chart.property_names() or
             self._left_chart == self._emptychart or
-            self._right_chart == self._emptychart):
+                self._right_chart == self._emptychart):
             # Clear & inactivate the output chart.
             self._out_chart = self._emptychart
             self._out_matrix.set_chart(self._out_chart)
@@ -833,12 +880,6 @@ class ChartComparer(object):
     def _detatch_out(self):
         ChartMatrixView(self._root, self._out_chart,
                         title=self._out_label['text'])
-
-
-
-
-
-
 
 
 #######################################################################
@@ -935,7 +976,9 @@ class ChartView(object):
         if root is None:
             top = Tk()
             top.title('Chart View')
+
             def destroy1(e, top=top): top.destroy()
+
             def destroy2(top=top): top.destroy()
             top.bind('q', destroy1)
             b = Button(top, text='Done', command=destroy2)
@@ -983,9 +1026,9 @@ class ChartView(object):
 
     def _init_fonts(self, root):
         self._boldfont = Font(family='helvetica', weight='bold',
-                                    size=self._fontsize)
+                              size=self._fontsize)
         self._font = Font(family='helvetica',
-                                    size=self._fontsize)
+                          size=self._fontsize)
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
         self._sysfont = Font(font=Button()["font"])
         root.option_add("*Font", self._sysfont)
@@ -1005,7 +1048,7 @@ class ChartView(object):
         canvas.pack(side='left', fill=fill, expand='yes')
 
         # Connect the scrollbars to the canvas.
-        sb['command']= canvas.yview
+        sb['command'] = canvas.yview
         canvas['yscrollcommand'] = sb.set
 
         return (sb, canvas)
@@ -1029,14 +1072,14 @@ class ChartView(object):
         # Grow, if need-be
         N = self._chart.num_leaves()
         width = max(int(self._chart_canvas['width']),
-                    N * self._unitsize + ChartView._MARGIN * 2 )
+                    N * self._unitsize + ChartView._MARGIN * 2)
 
         # It won't resize without the second (height) line, but I
         # don't understand why not.
         self._chart_canvas.configure(width=width)
         self._chart_canvas.configure(height=self._chart_canvas['height'])
 
-        self._unitsize = (width - 2*ChartView._MARGIN) / N
+        self._unitsize = (width - 2 * ChartView._MARGIN) / N
 
         # Reset the height for the sentence window.
         if self._sentence_canvas is not None:
@@ -1061,7 +1104,7 @@ class ChartView(object):
         canvas.
         """
         N = self._chart.num_leaves()
-        self._unitsize = (e.width - 2*ChartView._MARGIN) / N
+        self._unitsize = (e.width - 2 * ChartView._MARGIN) / N
         self.draw()
 
     def update(self, chart=None):
@@ -1089,7 +1132,6 @@ class ChartView(object):
                     self._add_edge(edge)
             self._resize()
 
-
     def _edge_conflict(self, edge, lvl):
         """
         Return True if the given edge overlaps with any edge on the given
@@ -1099,7 +1141,7 @@ class ChartView(object):
         (s1, e1) = edge.span()
         for otheredge in self._edgelevels[lvl]:
             (s2, e2) = otheredge.span()
-            if (s1 <= s2 < e1) or (s2 <= s1 < e2) or (s1==s2==e1==e2):
+            if (s1 <= s2 < e1) or (s2 <= s1 < e2) or (s1 == s2 == e1 == e2):
                 return True
         return False
 
@@ -1127,14 +1169,14 @@ class ChartView(object):
             rhs = ''
 
         for s in (lhs, rhs):
-            tag = c.create_text(0,0, text=s,
+            tag = c.create_text(0, 0, text=s,
                                 font=self._boldfont,
                                 anchor='nw', justify='left')
             bbox = c.bbox(tag)
             c.delete(tag)
-            width = bbox[2] #+ ChartView._LEAF_SPACING
+            width = bbox[2]  # + ChartView._LEAF_SPACING
             edgelen = max(edge.length(), 1)
-            self._unitsize = max(self._unitsize, width/edgelen)
+            self._unitsize = max(self._unitsize, width / edgelen)
             self._text_height = max(self._text_height, bbox[3] - bbox[1])
 
     def _add_edge(self, edge, minlvl=0):
@@ -1146,15 +1188,17 @@ class ChartView(object):
             - Call _draw_edge
         """
         # Do NOT show leaf edges in the chart.
-        if isinstance(edge, LeafEdge): return
+        if isinstance(edge, LeafEdge):
+            return
 
-        if edge in self._edgetags: return
+        if edge in self._edgetags:
+            return
         self._analyze_edge(edge)
         self._grow()
 
         if not self._compact:
             self._edgelevels.append([edge])
-            lvl = len(self._edgelevels)-1
+            lvl = len(self._edgelevels) - 1
             self._draw_edge(edge, lvl)
             self._resize()
             return
@@ -1168,7 +1212,7 @@ class ChartView(object):
                 self._resize()
 
             # Check if we can fit the edge in this level.
-            if lvl>=minlvl and not self._edge_conflict(edge, lvl):
+            if lvl >= minlvl and not self._edge_conflict(edge, lvl):
                 # Go ahead and draw it.
                 self._edgelevels[lvl].append(edge)
                 break
@@ -1184,14 +1228,15 @@ class ChartView(object):
             if edge in self._edgelevels[i]:
                 level = i
                 break
-        if level is None: return
+        if level is None:
+            return
         # Try to view the new edge..
-        y = (level+1) * self._chart_level_size
+        y = (level + 1) * self._chart_level_size
         dy = self._text_height + 10
         self._chart_canvas.yview('moveto', 1.0)
         if self._chart_height != 0:
             self._chart_canvas.yview('moveto',
-                                     (y-dy)/self._chart_height)
+                                     (y - dy) / self._chart_height)
 
     def _draw_edge(self, edge, lvl):
         """
@@ -1202,8 +1247,9 @@ class ChartView(object):
         # Draw the arrow.
         x1 = (edge.start() * self._unitsize + ChartView._MARGIN)
         x2 = (edge.end() * self._unitsize + ChartView._MARGIN)
-        if x2 == x1: x2 += max(4, self._unitsize/5)
-        y = (lvl+1) * self._chart_level_size
+        if x2 == x1:
+            x2 += max(4, self._unitsize / 5)
+        y = (lvl + 1) * self._chart_level_size
         linetag = c.create_line(x1, y, x2, y, arrow='last', width=3)
 
         # Draw a label for the edge.
@@ -1221,18 +1267,18 @@ class ChartView(object):
 
         rhs1 = " ".join(rhs[:pos])
         rhs2 = " ".join(rhs[pos:])
-        rhstag1 = c.create_text(x1+3, y, text=rhs1,
+        rhstag1 = c.create_text(x1 + 3, y, text=rhs1,
                                 font=self._font,
                                 anchor='nw')
         dotx = c.bbox(rhstag1)[2] + 6
-        doty = (c.bbox(rhstag1)[1]+c.bbox(rhstag1)[3])/2
-        dottag = c.create_oval(dotx-2, doty-2, dotx+2, doty+2)
-        rhstag2 = c.create_text(dotx+6, y, text=rhs2,
+        doty = (c.bbox(rhstag1)[1] + c.bbox(rhstag1)[3]) / 2
+        dottag = c.create_oval(dotx - 2, doty - 2, dotx + 2, doty + 2)
+        rhstag2 = c.create_text(dotx + 6, y, text=rhs2,
                                 font=self._font,
                                 anchor='nw')
-        lhstag =  c.create_text((x1+x2)/2, y, text=str(edge.lhs()),
-                                anchor='s',
-                                font=self._boldfont)
+        lhstag = c.create_text((x1 + x2) / 2, y, text=str(edge.lhs()),
+                               anchor='s',
+                               font=self._boldfont)
 
         # Keep track of the edge's tags.
         self._edgetags[edge] = (linetag, rhstag1,
@@ -1255,7 +1301,8 @@ class ChartView(object):
         If no colors are specified, use intelligent defaults
         (dependent on selection, etc.)
         """
-        if edge not in self._edgetags: return
+        if edge not in self._edgetags:
+            return
         c = self._chart_canvas
 
         if linecolor is not None and textcolor is not None:
@@ -1310,13 +1357,13 @@ class ChartView(object):
         to be, How big the tree should be, etc.
         """
         # Figure out the text height and the unit size.
-        unitsize = 70 # min unitsize
+        unitsize = 70  # min unitsize
         text_height = 0
         c = self._chart_canvas
 
         # Check against all tokens
         for leaf in self._chart.leaves():
-            tag = c.create_text(0,0, text=repr(leaf),
+            tag = c.create_text(0, 0, text=repr(leaf),
                                 font=self._font,
                                 anchor='nw', justify='left')
             bbox = c.bbox(tag)
@@ -1328,7 +1375,7 @@ class ChartView(object):
         self._unitsize = unitsize
         self._text_height = text_height
         self._sentence_height = (self._text_height +
-                               2*ChartView._MARGIN)
+                                 2 * ChartView._MARGIN)
 
         # Check against edges.
         for edge in self._chart.edges():
@@ -1354,12 +1401,12 @@ class ChartView(object):
         c = self._chart_canvas
 
         # Reset the chart scroll region
-        width = ( self._chart.num_leaves() * self._unitsize +
-                  ChartView._MARGIN * 2 )
+        width = (self._chart.num_leaves() * self._unitsize +
+                 ChartView._MARGIN * 2)
 
         levels = len(self._edgelevels)
-        self._chart_height = (levels+2)*self._chart_level_size
-        c['scrollregion']=(0,0,width,self._chart_height)
+        self._chart_height = (levels + 2) * self._chart_level_size
+        c['scrollregion'] = (0, 0, width, self._chart_height)
 
         # Reset the tree scroll region
         if self._tree_canvas:
@@ -1377,36 +1424,41 @@ class ChartView(object):
         c3 = self._chart_canvas
         margin = ChartView._MARGIN
         self._loclines = []
-        for i in range(0, self._chart.num_leaves()+1):
-            x = i*self._unitsize + margin
+        for i in range(0, self._chart.num_leaves() + 1):
+            x = i * self._unitsize + margin
 
             if c1:
-                t1=c1.create_line(x, 0, x, BOTTOM)
+                t1 = c1.create_line(x, 0, x, BOTTOM)
                 c1.tag_lower(t1)
             if c2:
-                t2=c2.create_line(x, 0, x, self._sentence_height)
+                t2 = c2.create_line(x, 0, x, self._sentence_height)
                 c2.tag_lower(t2)
-            t3=c3.create_line(x, 0, x, BOTTOM)
+            t3 = c3.create_line(x, 0, x, BOTTOM)
             c3.tag_lower(t3)
-            t4=c3.create_text(x+2, 0, text=repr(i), anchor='nw',
-                              font=self._font)
+            t4 = c3.create_text(x + 2, 0, text=repr(i), anchor='nw',
+                                font=self._font)
             c3.tag_lower(t4)
-            #if i % 4 == 0:
+            # if i % 4 == 0:
             #    if c1: c1.itemconfig(t1, width=2, fill='gray60')
             #    if c2: c2.itemconfig(t2, width=2, fill='gray60')
             #    c3.itemconfig(t3, width=2, fill='gray60')
             if i % 2 == 0:
-                if c1: c1.itemconfig(t1, fill='gray60')
-                if c2: c2.itemconfig(t2, fill='gray60')
+                if c1:
+                    c1.itemconfig(t1, fill='gray60')
+                if c2:
+                    c2.itemconfig(t2, fill='gray60')
                 c3.itemconfig(t3, fill='gray60')
             else:
-                if c1: c1.itemconfig(t1, fill='gray80')
-                if c2: c2.itemconfig(t2, fill='gray80')
+                if c1:
+                    c1.itemconfig(t1, fill='gray80')
+                if c2:
+                    c2.itemconfig(t2, fill='gray80')
                 c3.itemconfig(t3, fill='gray80')
 
     def _draw_sentence(self):
         """Draw the sentence string."""
-        if self._chart.num_leaves() == 0: return
+        if self._chart.num_leaves() == 0:
+            return
         c = self._sentence_canvas
         margin = ChartView._MARGIN
         y = ChartView._MARGIN
@@ -1414,25 +1466,29 @@ class ChartView(object):
         for i, leaf in enumerate(self._chart.leaves()):
             x1 = i * self._unitsize + margin
             x2 = x1 + self._unitsize
-            x = (x1+x2)/2
+            x = (x1 + x2) / 2
             tag = c.create_text(x, y, text=repr(leaf),
                                 font=self._font,
                                 anchor='n', justify='left')
             bbox = c.bbox(tag)
-            rt=c.create_rectangle(x1+2, bbox[1]-(ChartView._LEAF_SPACING/2),
-                                  x2-2, bbox[3]+(ChartView._LEAF_SPACING/2),
-                                  fill='#f0f0f0', outline='#f0f0f0')
+            rt = c.create_rectangle(x1 + 2, bbox[1] - (ChartView._LEAF_SPACING / 2),
+                                    x2 - 2, bbox[3] +
+                                    (ChartView._LEAF_SPACING / 2),
+                                    fill='#f0f0f0', outline='#f0f0f0')
             c.tag_lower(rt)
 
     def erase_tree(self):
-        for tag in self._tree_tags: self._tree_canvas.delete(tag)
+        for tag in self._tree_tags:
+            self._tree_canvas.delete(tag)
         self._treetoks = []
         self._treetoks_edge = None
         self._treetoks_index = 0
 
     def draw_tree(self, edge=None):
-        if edge is None and self._treetoks_edge is None: return
-        if edge is None: edge = self._treetoks_edge
+        if edge is None and self._treetoks_edge is None:
+            return
+        if edge is None:
+            edge = self._treetoks_edge
 
         # If it's a new edge, then get a new list of treetoks.
         if self._treetoks_edge != edge:
@@ -1442,10 +1498,12 @@ class ChartView(object):
             self._treetoks_index = 0
 
         # Make sure there's something to draw.
-        if len(self._treetoks) == 0: return
+        if len(self._treetoks) == 0:
+            return
 
         # Erase the old tree.
-        for tag in self._tree_tags: self._tree_canvas.delete(tag)
+        for tag in self._tree_tags:
+            self._tree_canvas.delete(tag)
 
         # Draw the new tree.
         tree = self._treetoks[self._treetoks_index]
@@ -1455,22 +1513,23 @@ class ChartView(object):
         self._draw_treecycle()
 
         # Update the scroll region.
-        w = self._chart.num_leaves()*self._unitsize+2*ChartView._MARGIN
-        h = tree.height() * (ChartView._TREE_LEVEL_SIZE+self._text_height)
+        w = self._chart.num_leaves() * self._unitsize + 2 * ChartView._MARGIN
+        h = tree.height() * (ChartView._TREE_LEVEL_SIZE + self._text_height)
         self._tree_canvas['scrollregion'] = (0, 0, w, h)
 
     def cycle_tree(self):
-        self._treetoks_index = (self._treetoks_index+1)%len(self._treetoks)
+        self._treetoks_index = (self._treetoks_index + 1) % len(self._treetoks)
         self.draw_tree(self._treetoks_edge)
 
     def _draw_treecycle(self):
-        if len(self._treetoks) <= 1: return
+        if len(self._treetoks) <= 1:
+            return
 
         # Draw the label.
         label = '%d Trees' % len(self._treetoks)
         c = self._tree_canvas
         margin = ChartView._MARGIN
-        right = self._chart.num_leaves()*self._unitsize+margin-2
+        right = self._chart.num_leaves() * self._unitsize + margin - 2
         tag = c.create_text(right, 2, anchor='ne', text=label,
                             font=self._boldfont)
         self._tree_tags.append(tag)
@@ -1478,11 +1537,13 @@ class ChartView(object):
 
         # Draw the triangles.
         for i in range(len(self._treetoks)):
-            x = right - 20*(len(self._treetoks)-i-1)
-            if i == self._treetoks_index: fill = '#084'
-            else: fill = '#fff'
-            tag = c.create_polygon(x, y+10, x-5, y, x-10, y+10,
-                             fill=fill, outline='black')
+            x = right - 20 * (len(self._treetoks) - i - 1)
+            if i == self._treetoks_index:
+                fill = '#084'
+            else:
+                fill = '#fff'
+            tag = c.create_polygon(x, y + 10, x - 5, y, x - 10, y + 10,
+                                   fill=fill, outline='black')
             self._tree_tags.append(tag)
 
             # Set up a callback: show the tree if they click on its
@@ -1504,19 +1565,19 @@ class ChartView(object):
         child_xs = []
         for child in treetok:
             if isinstance(child, Tree):
-                child_x, index = self._draw_treetok(child, index, depth+1)
+                child_x, index = self._draw_treetok(child, index, depth + 1)
                 child_xs.append(child_x)
             else:
-                child_xs.append((2*index+1)*self._unitsize/2 + margin)
+                child_xs.append((2 * index + 1) * self._unitsize / 2 + margin)
                 index += 1
 
         # If we have children, then get the node's x by averaging their
         # node x's.  Otherwise, make room for ourselves.
         if child_xs:
-            nodex = sum(child_xs)/len(child_xs)
+            nodex = sum(child_xs) / len(child_xs)
         else:
             # [XX] breaks for null productions.
-            nodex = (2*index+1)*self._unitsize/2 + margin
+            nodex = (2 * index + 1) * self._unitsize / 2 + margin
             index += 1
 
         # Draw the node
@@ -1574,17 +1635,22 @@ class ChartView(object):
         self._draw_loclines()
 
     def add_callback(self, event, func):
-        self._callbacks.setdefault(event,{})[func] = 1
+        self._callbacks.setdefault(event, {})[func] = 1
 
     def remove_callback(self, event, func=None):
-        if func is None: del self._callbacks[event]
+        if func is None:
+            del self._callbacks[event]
         else:
-            try: del self._callbacks[event][func]
-            except: pass
+            try:
+                del self._callbacks[event][func]
+            except:
+                pass
 
     def _fire_callbacks(self, event, *args):
-        if event not in self._callbacks: return
-        for cb_func in list(self._callbacks[event].keys()): cb_func(*args)
+        if event not in self._callbacks:
+            return
+        for cb_func in list(self._callbacks[event].keys()):
+            cb_func(*args)
 
 #######################################################################
 # Edge Rules
@@ -1592,36 +1658,49 @@ class ChartView(object):
 # These version of the chart rules only apply to a specific edge.
 # This lets the user select an edge, and then apply a rule.
 
+
 class EdgeRule(object):
     """
     To create an edge rule, make an empty base class that uses
     EdgeRule as the first base class, and the basic rule as the
     second base class.  (Order matters!)
     """
+
     def __init__(self, edge):
         super = self.__class__.__bases__[1]
         self._edge = edge
-        self.NUM_EDGES = super.NUM_EDGES-1
+        self.NUM_EDGES = super.NUM_EDGES - 1
+
     def apply(self, chart, grammar, *edges):
         super = self.__class__.__bases__[1]
         edges += (self._edge,)
-        for e in super.apply(self, chart, grammar, *edges): yield e
+        for e in super.apply(self, chart, grammar, *edges):
+            yield e
+
     def __str__(self):
         super = self.__class__.__bases__[1]
         return super.__str__(self)
 
+
 class TopDownPredictEdgeRule(EdgeRule, TopDownPredictRule):
     pass
+
+
 class BottomUpEdgeRule(EdgeRule, BottomUpPredictRule):
     pass
+
+
 class BottomUpLeftCornerEdgeRule(EdgeRule, BottomUpPredictCombineRule):
     pass
+
+
 class FundamentalEdgeRule(EdgeRule, SingleEdgeFundamentalRule):
     pass
 
 #######################################################################
 # Chart Parser Application
 #######################################################################
+
 
 class ChartParserApp(object):
     def __init__(self, grammar, tokens, title='Chart Parser Application'):
@@ -1662,7 +1741,8 @@ class ChartParserApp(object):
             raise
 
     def destroy(self, *args):
-        if self._root is None: return
+        if self._root is None:
+            return
         self._root.destroy()
         self._root = None
 
@@ -1673,7 +1753,8 @@ class ChartParserApp(object):
         from a secript); otherwise, the demo will close as soon as
         the script completes.
         """
-        if in_idle(): return
+        if in_idle():
+            return
         self._root.mainloop(*args, **kwargs)
 
     #////////////////////////////////////////////////////////////
@@ -1710,9 +1791,9 @@ class ChartParserApp(object):
         self._size.set(self._sysfont.cget('size'))
 
         self._boldfont = Font(family='helvetica', weight='bold',
-                                    size=self._size.get())
+                              size=self._size.get())
         self._font = Font(family='helvetica',
-                                    size=self._size.get())
+                          size=self._size.get())
 
     def _init_animation(self):
         # Are we stepping? (default=yes)
@@ -1721,7 +1802,7 @@ class ChartParserApp(object):
 
         # What's our animation speed (default=fast)
         self._animate = IntVar(self._root)
-        self._animate.set(3) # Default speed = fast
+        self._animate.set(3)  # Default speed = fast
 
         # Are we currently animating?
         self._animating = 0
@@ -1734,15 +1815,15 @@ class ChartParserApp(object):
     def _init_rulelabel(self, parent):
         ruletxt = 'Last edge generated by:'
 
-        self._rulelabel1 = Label(parent,text=ruletxt,
-                                         font=self._boldfont)
+        self._rulelabel1 = Label(parent, text=ruletxt,
+                                 font=self._boldfont)
         self._rulelabel2 = Label(parent, width=40,
-                                         relief='groove', anchor='w',
-                                         font=self._boldfont)
+                                 relief='groove', anchor='w',
+                                 font=self._boldfont)
         self._rulelabel1.pack(side='left')
         self._rulelabel2.pack(side='left')
         step = Checkbutton(parent, variable=self._step,
-                                   text='Step')
+                           text='Step')
         step.pack(side='right')
 
     def _init_buttons(self, parent):
@@ -1752,43 +1833,43 @@ class ChartParserApp(object):
         frame2.pack(side='top', fill='none')
 
         Button(frame1, text='Reset\nParser',
-                       background='#90c0d0', foreground='black',
-                       command=self.reset).pack(side='right')
+               background='#90c0d0', foreground='black',
+               command=self.reset).pack(side='right')
         # Button(frame1, text='Pause',
         #               background='#90c0d0', foreground='black',
         #               command=self.pause).pack(side='left')
 
         Button(frame1, text='Top Down\nStrategy',
-                       background='#90c0d0', foreground='black',
-                       command=self.top_down_strategy).pack(side='left')
+               background='#90c0d0', foreground='black',
+               command=self.top_down_strategy).pack(side='left')
         Button(frame1, text='Bottom Up\nStrategy',
-                       background='#90c0d0', foreground='black',
-                       command=self.bottom_up_strategy).pack(side='left')
+               background='#90c0d0', foreground='black',
+               command=self.bottom_up_strategy).pack(side='left')
         Button(frame1, text='Bottom Up\nLeft-Corner Strategy',
-                       background='#90c0d0', foreground='black',
-                       command=self.bottom_up_leftcorner_strategy).pack(side='left')
+               background='#90c0d0', foreground='black',
+               command=self.bottom_up_leftcorner_strategy).pack(side='left')
 
         Button(frame2, text='Top Down Init\nRule',
-                       background='#90f090', foreground='black',
-                       command=self.top_down_init).pack(side='left')
+               background='#90f090', foreground='black',
+               command=self.top_down_init).pack(side='left')
         Button(frame2, text='Top Down Predict\nRule',
-                       background='#90f090', foreground='black',
-                       command=self.top_down_predict).pack(side='left')
+               background='#90f090', foreground='black',
+               command=self.top_down_predict).pack(side='left')
         Frame(frame2, width=20).pack(side='left')
 
         Button(frame2, text='Bottom Up Predict\nRule',
-                       background='#90f090', foreground='black',
-                       command=self.bottom_up).pack(side='left')
+               background='#90f090', foreground='black',
+               command=self.bottom_up).pack(side='left')
         Frame(frame2, width=20).pack(side='left')
 
         Button(frame2, text='Bottom Up Left-Corner\nPredict Rule',
-                       background='#90f090', foreground='black',
-                       command=self.bottom_up_leftcorner).pack(side='left')
+               background='#90f090', foreground='black',
+               command=self.bottom_up_leftcorner).pack(side='left')
         Frame(frame2, width=20).pack(side='left')
 
         Button(frame2, text='Fundamental\nRule',
-                       background='#90f090', foreground='black',
-                       command=self.fundamental).pack(side='left')
+               background='#90f090', foreground='black',
+               command=self.fundamental).pack(side='left')
 
     def _init_bindings(self):
         self._root.bind('<Up>', self._cv.scroll_up)
@@ -1812,12 +1893,12 @@ class ChartParserApp(object):
         self._root.bind('<Control-t>', self.edit_sentence)
 
         # Animation speed control
-        self._root.bind('-', lambda e,a=self._animate:a.set(1))
-        self._root.bind('=', lambda e,a=self._animate:a.set(2))
-        self._root.bind('+', lambda e,a=self._animate:a.set(3))
+        self._root.bind('-', lambda e, a=self._animate: a.set(1))
+        self._root.bind('=', lambda e, a=self._animate: a.set(2))
+        self._root.bind('+', lambda e, a=self._animate: a.set(3))
 
         # Step control
-        self._root.bind('s', lambda e,s=self._step:s.set(not s.get()))
+        self._root.bind('s', lambda e, s=self._step: s.set(not s.get()))
 
     def _init_menubar(self):
         menubar = Menu(self._root)
@@ -1942,8 +2023,10 @@ class ChartParserApp(object):
         self._cv.markonly_edge(edge, '#f00')
         self._cv.draw_tree(edge)
         # Update the matrix view.
-        if self._matrix: self._matrix.markonly_edge(edge)
-        if self._matrix: self._matrix.view_edge(edge)
+        if self._matrix:
+            self._matrix.markonly_edge(edge)
+        if self._matrix:
+            self._matrix.view_edge(edge)
 
     def _deselect_edge(self):
         self._selection = None
@@ -1951,7 +2034,8 @@ class ChartParserApp(object):
         self._cv.unmark_edge()
         self._cv.erase_tree()
         # Update the matrix view
-        if self._matrix: self._matrix.unmark_edge()
+        if self._matrix:
+            self._matrix.unmark_edge()
 
     def _show_new_edge(self, edge):
         self._display_rule(self._cp.current_chartrule())
@@ -1961,11 +2045,15 @@ class ChartParserApp(object):
         self._cv.markonly_edge(edge, '#0df')
         self._cv.view_edge(edge)
         # Update the matrix view.
-        if self._matrix: self._matrix.update()
-        if self._matrix: self._matrix.markonly_edge(edge)
-        if self._matrix: self._matrix.view_edge(edge)
+        if self._matrix:
+            self._matrix.update()
+        if self._matrix:
+            self._matrix.markonly_edge(edge)
+        if self._matrix:
+            self._matrix.view_edge(edge)
         # Update the results view.
-        if self._results: self._results.update(edge)
+        if self._results:
+            self._results.update(edge)
 
     #////////////////////////////////////////////////////////////
     # Help/usage
@@ -1982,7 +2070,7 @@ class ChartParserApp(object):
                      (__doc__ or '').strip(), width=75)
 
     def about(self, *e):
-        ABOUT = ("NLTK Chart Parser Application\n"+
+        ABOUT = ("NLTK Chart Parser Application\n" +
                  "Written by Edward Loper")
         showinfo('About: Chart Parser Application', ABOUT)
 
@@ -2000,39 +2088,45 @@ class ChartParserApp(object):
         "Load a chart from a pickle file"
         filename = askopenfilename(filetypes=self.CHART_FILE_TYPES,
                                    defaultextension='.pickle')
-        if not filename: return
+        if not filename:
+            return
         try:
             with open(filename, 'rb') as infile:
                 chart = pickle.load(infile)
             self._chart = chart
             self._cv.update(chart)
-            if self._matrix: self._matrix.set_chart(chart)
-            if self._matrix: self._matrix.deselect_cell()
-            if self._results: self._results.set_chart(chart)
+            if self._matrix:
+                self._matrix.set_chart(chart)
+            if self._matrix:
+                self._matrix.deselect_cell()
+            if self._results:
+                self._results.set_chart(chart)
             self._cp.set_chart(chart)
         except Exception as e:
             raise
             showerror('Error Loading Chart',
-                                   'Unable to open file: %r' % filename)
+                      'Unable to open file: %r' % filename)
 
     def save_chart(self, *args):
         "Save a chart to a pickle file"
         filename = asksaveasfilename(filetypes=self.CHART_FILE_TYPES,
                                      defaultextension='.pickle')
-        if not filename: return
+        if not filename:
+            return
         try:
             with open(filename, 'wb') as outfile:
                 pickle.dump(self._chart, outfile)
         except Exception as e:
             raise
             showerror('Error Saving Chart',
-                                   'Unable to open file: %r' % filename)
+                      'Unable to open file: %r' % filename)
 
     def load_grammar(self, *args):
         "Load a grammar from a pickle file"
         filename = askopenfilename(filetypes=self.GRAMMAR_FILE_TYPES,
                                    defaultextension='.cfg')
-        if not filename: return
+        if not filename:
+            return
         try:
             if filename.endswith('.pickle'):
                 with open(filename, 'rb') as infile:
@@ -2043,12 +2137,13 @@ class ChartParserApp(object):
             self.set_grammar(grammar)
         except Exception as e:
             showerror('Error Loading Grammar',
-                                   'Unable to open file: %r' % filename)
+                      'Unable to open file: %r' % filename)
 
     def save_grammar(self, *args):
         filename = asksaveasfilename(filetypes=self.GRAMMAR_FILE_TYPES,
                                      defaultextension='.cfg')
-        if not filename: return
+        if not filename:
+            return
         try:
             if filename.endswith('.pickle'):
                 with open(filename, 'wb') as outfile:
@@ -2056,21 +2151,28 @@ class ChartParserApp(object):
             else:
                 with open(filename, 'w') as outfile:
                     prods = self._grammar.productions()
-                    start = [p for p in prods if p.lhs() == self._grammar.start()]
-                    rest = [p for p in prods if p.lhs() != self._grammar.start()]
-                    for prod in start: outfile.write('%s\n' % prod)
-                    for prod in rest: outfile.write('%s\n' % prod)
+                    start = [p for p in prods if p.lhs() ==
+                             self._grammar.start()]
+                    rest = [p for p in prods if p.lhs() !=
+                            self._grammar.start()]
+                    for prod in start:
+                        outfile.write('%s\n' % prod)
+                    for prod in rest:
+                        outfile.write('%s\n' % prod)
         except Exception as e:
             showerror('Error Saving Grammar',
-                                   'Unable to open file: %r' % filename)
+                      'Unable to open file: %r' % filename)
 
     def reset(self, *args):
         self._animating = 0
         self._reset_parser()
         self._cv.update(self._chart)
-        if self._matrix: self._matrix.set_chart(self._chart)
-        if self._matrix: self._matrix.deselect_cell()
-        if self._results: self._results.set_chart(self._chart)
+        if self._matrix:
+            self._matrix.set_chart(self._chart)
+        if self._matrix:
+            self._matrix.deselect_cell()
+        if self._results:
+            self._results.set_chart(self._chart)
 
     #////////////////////////////////////////////////////////////
     # Edit
@@ -2082,7 +2184,8 @@ class ChartParserApp(object):
     def set_grammar(self, grammar):
         self._grammar = grammar
         self._cp.set_grammar(grammar)
-        if self._results: self._results.set_grammar(grammar)
+        if self._results:
+            self._results.set_grammar(grammar)
 
     def edit_sentence(self, *e):
         sentence = " ".join(self._tokens)
@@ -2099,12 +2202,14 @@ class ChartParserApp(object):
     #////////////////////////////////////////////////////////////
 
     def view_matrix(self, *e):
-        if self._matrix is not None: self._matrix.destroy()
+        if self._matrix is not None:
+            self._matrix.destroy()
         self._matrix = ChartMatrixView(self._root, self._chart)
         self._matrix.add_callback('select', self._select_matrix_edge)
 
     def view_results(self, *e):
-        if self._results is not None: self._results.destroy()
+        if self._results is not None:
+            self._results.destroy()
         self._results = ChartResultsView(self._root, self._chart,
                                          self._grammar)
 
@@ -2137,7 +2242,7 @@ class ChartParserApp(object):
 
         # Clear the rule display & mark.
         self._display_rule(None)
-        #self._cv.unmark_edge()
+        # self._cv.unmark_edge()
 
         if self._step.get():
             selection = self._selection
@@ -2161,16 +2266,20 @@ class ChartParserApp(object):
                 self._animate_strategy()
             else:
                 for edge in self._cpstep:
-                    if edge is None: break
+                    if edge is None:
+                        break
                 self._cv.update()
-                if self._matrix: self._matrix.update()
-                if self._results: self._results.update()
+                if self._matrix:
+                    self._matrix.update()
+                if self._results:
+                    self._results.update()
 
     def _stop_animation(self, *e):
         self._animating = 0
 
     def _animate_strategy(self, speed=1):
-        if self._animating == 0: return
+        if self._animating == 0:
+            return
         if self._apply_strategy() is not None:
             if self._animate.get() == 0 or self._step.get() == 1:
                 return
@@ -2201,34 +2310,42 @@ class ChartParserApp(object):
     #////////////////////////////////////////////////////////////
 
     # Basic rules:
-    _TD_INIT     = [TopDownInitRule()]
-    _TD_PREDICT  = [TopDownPredictRule()]
-    _BU_RULE     = [BottomUpPredictRule()]
-    _BU_LC_RULE  = [BottomUpPredictCombineRule()]
+    _TD_INIT = [TopDownInitRule()]
+    _TD_PREDICT = [TopDownPredictRule()]
+    _BU_RULE = [BottomUpPredictRule()]
+    _BU_LC_RULE = [BottomUpPredictCombineRule()]
     _FUNDAMENTAL = [SingleEdgeFundamentalRule()]
 
     # Complete strategies:
-    _TD_STRATEGY =  _TD_INIT + _TD_PREDICT + _FUNDAMENTAL
+    _TD_STRATEGY = _TD_INIT + _TD_PREDICT + _FUNDAMENTAL
     _BU_STRATEGY = _BU_RULE + _FUNDAMENTAL
     _BU_LC_STRATEGY = _BU_LC_RULE + _FUNDAMENTAL
 
     # Button callback functions:
     def top_down_init(self, *e):
         self.apply_strategy(self._TD_INIT, None)
+
     def top_down_predict(self, *e):
         self.apply_strategy(self._TD_PREDICT, TopDownPredictEdgeRule)
+
     def bottom_up(self, *e):
         self.apply_strategy(self._BU_RULE, BottomUpEdgeRule)
+
     def bottom_up_leftcorner(self, *e):
         self.apply_strategy(self._BU_LC_RULE, BottomUpLeftCornerEdgeRule)
+
     def fundamental(self, *e):
         self.apply_strategy(self._FUNDAMENTAL, FundamentalEdgeRule)
+
     def bottom_up_strategy(self, *e):
         self.apply_strategy(self._BU_STRATEGY, BottomUpEdgeRule)
+
     def bottom_up_leftcorner_strategy(self, *e):
         self.apply_strategy(self._BU_LC_STRATEGY, BottomUpLeftCornerEdgeRule)
+
     def top_down_strategy(self, *e):
         self.apply_strategy(self._TD_STRATEGY, TopDownPredictEdgeRule)
+
 
 def app():
     grammar = CFG.fromstring("""
@@ -2251,20 +2368,21 @@ def app():
 
     print('grammar= (')
     for rule in grammar.productions():
-        print(('    ', repr(rule)+','))
+        print(('    ', repr(rule) + ','))
     print(')')
     print(('tokens = %r' % tokens))
     print('Calling "ChartParserApp(grammar, tokens)"...')
     ChartParserApp(grammar, tokens).mainloop()
 
+
 if __name__ == '__main__':
     app()
 
     # Chart comparer:
-    #charts = ['/tmp/earley.pickle',
+    # charts = ['/tmp/earley.pickle',
     #          '/tmp/topdown.pickle',
     #          '/tmp/bottomup.pickle']
-    #ChartComparer(*charts).mainloop()
+    # ChartComparer(*charts).mainloop()
 
     #import profile
     #profile.run('demo2()', '/tmp/profile.out')

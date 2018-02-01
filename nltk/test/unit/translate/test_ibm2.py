@@ -42,8 +42,10 @@ class TestIBMModel2(unittest.TestCase):
 
         # assert
         # examine i and j values that are not in the training data domain
-        self.assertEqual(model2.alignment_table[99][1][3][2], IBMModel.MIN_PROB)
-        self.assertEqual(model2.alignment_table[2][99][2][4], IBMModel.MIN_PROB)
+        self.assertEqual(
+            model2.alignment_table[99][1][3][2], IBMModel.MIN_PROB)
+        self.assertEqual(
+            model2.alignment_table[2][99][2][4], IBMModel.MIN_PROB)
 
     def test_prob_t_a_given_s(self):
         # arrange

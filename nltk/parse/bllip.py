@@ -95,6 +95,7 @@ except ImportError as ie:
     def _ensure_bllip_import_or_error(ie=ie):
         raise ImportError("Couldn't import bllipparser module: %s" % ie)
 
+
 def _ensure_ascii(words):
     try:
         for i, word in enumerate(words):
@@ -104,8 +105,10 @@ def _ensure_ascii(words):
                          "currently doesn't support non-ASCII inputs." %
                          (i, word))
 
+
 def _scored_parse_to_nltk_tree(scored_parse):
     return Tree.fromstring(str(scored_parse.ptb_parse))
+
 
 class BllipParser(ParserI):
     """
@@ -113,6 +116,7 @@ class BllipParser(ParserI):
     constructed with the ``BllipParser.from_unified_model_dir`` class
     method or manually using the ``BllipParser`` constructor.
     """
+
     def __init__(self, parser_model=None, reranker_features=None,
                  reranker_weights=None, parser_options=None,
                  reranker_options=None):
@@ -230,6 +234,7 @@ class BllipParser(ParserI):
                           reranker_weights_filename, parser_options,
                           reranker_options)
 
+
 def demo():
     """This assumes the Python module bllipparser is installed."""
 
@@ -270,6 +275,7 @@ def demo():
     print("forcing 'A' to be 'NNP':",
           next(bllip.tagged_parse([('A', 'NNP'), ('tree', None)])))
 
+
 def setup_module(module):
     from nose import SkipTest
 
@@ -278,5 +284,3 @@ def setup_module(module):
     except ImportError:
         raise SkipTest('doctests from nltk.parse.bllip are skipped because '
                        'the bllipparser module is not installed')
-
-

@@ -6,7 +6,8 @@ runs all of our doctests, and return it for processing by the setuptools
 test harness.
 
 """
-import doctest, unittest
+import doctest
+import unittest
 from glob import glob
 import os.path
 

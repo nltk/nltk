@@ -39,10 +39,11 @@ import json
 from nltk.compat import StringIO
 
 from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
-     credsfromfile
+    credsfromfile
 
 
 SPACER = '###################################'
+
 
 def verbose(func):
     """Decorator for demo functions"""
@@ -55,14 +56,16 @@ def verbose(func):
         return func(*args, **kwargs)
     return with_formatting
 
+
 def yesterday():
     """
     Get yesterday's datetime as a 5-tuple.
     """
-    date =  datetime.datetime.now()
+    date = datetime.datetime.now()
     date -= datetime.timedelta(days=1)
     date_tuple = date.timetuple()[:6]
     return date_tuple
+
 
 def setup():
     """
@@ -83,16 +86,18 @@ def twitterclass_demo():
     """
     tw = Twitter()
     print("Track from the public stream\n")
-    tw.tweets(keywords='love, hate', limit=10) #public stream
+    tw.tweets(keywords='love, hate', limit=10)  # public stream
     print(SPACER)
     print("Search past Tweets\n")
     tw = Twitter()
-    tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
+    tw.tweets(keywords='love, hate', stream=False,
+              limit=10)  # search past tweets
     print(SPACER)
     print("Follow two accounts in the public stream" +
           " -- be prepared to wait a few minutes\n")
     tw = Twitter()
-    tw.tweets(follow=['759251', '6017542'], stream=True, limit=5) #public stream
+    tw.tweets(follow=['759251', '6017542'],
+              stream=True, limit=5)  # public stream
 
 
 @verbose
@@ -151,7 +156,8 @@ def lookup_by_userid_demo():
         name = info['screen_name']
         followers = info['followers_count']
         following = info['friends_count']
-        print("{0}, followers: {1}, following: {2}".format(name, followers, following))
+        print("{0}, followers: {1}, following: {2}".format(
+            name, followers, following))
 
 
 @verbose
@@ -257,13 +263,12 @@ def expand_tweetids_demo():
     hydrated = client.expand_tweetids(ids_f)
 
     for tweet in hydrated:
-            id_str = tweet['id_str']
-            print('id: {}'.format(id_str))
-            text = tweet['text']
-            if text.startswith('@null'):
-                text = "[Tweet not available]"
-            print(text + '\n')
-
+        id_str = tweet['id_str']
+        print('id: {}'.format(id_str))
+        text = tweet['text']
+        if text.startswith('@null'):
+            text = "[Tweet not available]"
+        print(text + '\n')
 
 
 ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
@@ -285,4 +290,3 @@ if __name__ == "__main__":
     print("\n" + SPACER)
     print("All demos completed")
     print(SPACER)
-

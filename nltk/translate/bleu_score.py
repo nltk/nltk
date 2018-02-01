@@ -158,8 +158,10 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     """
     # Before proceeding to compute BLEU, perform sanity checks.
 
-    p_numerators = Counter()  # Key = ngram order, and value = no. of ngram matches.
-    p_denominators = Counter()  # Key = ngram order, and value = no. of ngram in ref.
+    # Key = ngram order, and value = no. of ngram matches.
+    p_numerators = Counter()
+    # Key = ngram order, and value = no. of ngram in ref.
+    p_denominators = Counter()
     hyp_lengths, ref_lengths = 0, 0
 
     assert len(list_of_references) == len(hypotheses), "The number of hypotheses and their reference(s) should be the " \
@@ -209,7 +211,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     p_n = smoothing_function(p_n, references=references, hypothesis=hypothesis,
                              hyp_len=hyp_len)
     s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
-    s =  bp * math.exp(math.fsum(s))
+    s = bp * math.exp(math.fsum(s))
     return s
 
 
@@ -300,12 +302,14 @@ def modified_precision(references, hypothesis, n):
     """
     # Extracts all ngrams in hypothesis
     # Set an empty Counter if hypothesis is empty.
-    counts = Counter(ngrams(hypothesis, n)) if len(hypothesis) >= n else Counter()
+    counts = Counter(ngrams(hypothesis, n)) if len(
+        hypothesis) >= n else Counter()
     # Extract a union of references' counts.
     # max_counts = reduce(or_, [Counter(ngrams(ref, n)) for ref in references])
     max_counts = {}
     for reference in references:
-        reference_counts = Counter(ngrams(reference, n)) if len(reference) >= n else Counter()
+        reference_counts = Counter(ngrams(reference, n)) if len(
+            reference) >= n else Counter()
         for ngram in counts:
             max_counts[ngram] = max(max_counts.get(ngram, 0),
                                     reference_counts[ngram])
@@ -337,7 +341,7 @@ def closest_ref_length(references, hyp_len):
     """
     ref_lens = (len(reference) for reference in references)
     closest_ref_len = min(ref_lens, key=lambda ref_len:
-    (abs(ref_len - hyp_len), ref_len))
+                          (abs(ref_len - hyp_len), ref_len))
     return closest_ref_len
 
 
@@ -499,7 +503,7 @@ class SmoothingFunction:
                            "Therefore the BLEU score evaluates to 0, independently of\n"
                            "how many N-gram overlaps of lower order it contains.\n"
                            "Consider using lower n-gram order or use "
-                           "SmoothingFunction()").format(i+1)
+                           "SmoothingFunction()").format(i + 1)
                 warnings.warn(_msg)
                 # When numerator==0 where denonminator==0 or !=0, the result
                 # for the precision score should be equal to 0 or undefined.
@@ -557,7 +561,8 @@ class SmoothingFunction:
         """
         for i, p_i in enumerate(p_n):
             if p_i.numerator == 0 and hyp_len != 0:
-                incvnt = i + 1 * self.k / math.log(hyp_len)  # Note that this K is different from the K from NIST.
+                # Note that this K is different from the K from NIST.
+                incvnt = i + 1 * self.k / math.log(hyp_len)
                 p_n[i] = 1 / incvnt
         return p_n
 

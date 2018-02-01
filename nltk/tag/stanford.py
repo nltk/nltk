@@ -58,9 +58,9 @@ class StanfordTagger(TaggerI):
                           'instantiated directly. Did you mean '
                           'StanfordPOSTagger or StanfordNERTagger?')
         self._stanford_jar = find_jar(
-                self._JAR, path_to_jar,
-                searchpath=(), url=_stanford_url,
-                verbose=verbose)
+            self._JAR, path_to_jar,
+            searchpath=(), url=_stanford_url,
+            verbose=verbose)
 
         self._stanford_model = find_file(model_filename,
                                          env_vars=('STANFORD_MODELS',),
@@ -208,6 +208,7 @@ class StanfordNERTagger(StanfordTagger):
             return result
 
         raise NotImplementedError
+
 
 def setup_module(module):
     from nose import SkipTest

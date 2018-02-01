@@ -26,7 +26,6 @@ except ImportError:
 from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
 
 
-
 class Configuration(object):
     """
     Class for holding configuration which is the partial analysis of the input sentence.
@@ -48,14 +47,16 @@ class Configuration(object):
         """
         # dep_graph.nodes contain list of token for a sentence
         self.stack = [0]  # The root element
-        self.buffer = list(range(1, len(dep_graph.nodes)))  # The rest is in the buffer
+        self.buffer = list(range(1, len(dep_graph.nodes))
+                           )  # The rest is in the buffer
         self.arcs = []  # empty set of arc
         self._tokens = dep_graph.nodes
         self._max_address = len(self.buffer)
 
     def __str__(self):
         return 'Stack : ' + \
-            str(self.stack) + '  Buffer : ' + str(self.buffer) + '   Arcs : ' + str(self.arcs)
+            str(self.stack) + '  Buffer : ' + \
+            str(self.buffer) + '   Arcs : ' + str(self.arcs)
 
     def _check_informative(self, feat, flag=False):
         """
@@ -195,7 +196,7 @@ class Transition(object):
                 TransitionParser.ARC_STANDARD,
                 TransitionParser.ARC_EAGER]:
             raise ValueError(" Currently we only support %s and %s " %
-                                        (TransitionParser.ARC_STANDARD, TransitionParser.ARC_EAGER))
+                             (TransitionParser.ARC_STANDARD, TransitionParser.ARC_EAGER))
 
     def left_arc(self, conf, relation):
         """
@@ -292,7 +293,7 @@ class TransitionParser(ParserI):
         """
         if not(algorithm in [self.ARC_STANDARD, self.ARC_EAGER]):
             raise ValueError(" Currently we only support %s and %s " %
-                                        (self.ARC_STANDARD, self.ARC_EAGER))
+                             (self.ARC_STANDARD, self.ARC_EAGER))
         self._algorithm = algorithm
 
         self._dictionary = {}
@@ -560,7 +561,8 @@ class TransitionParser(ParserI):
                 np_row = array(row)
                 np_data = array(data)
 
-                x_test = sparse.csr_matrix((np_data, (np_row, np_col)), shape=(1, len(self._dictionary)))
+                x_test = sparse.csr_matrix(
+                    (np_data, (np_row, np_col)), shape=(1, len(self._dictionary)))
 
                 # It's best to use decision function as follow BUT it's not supported yet for sparse SVM
                 # Using decision funcion to build the votes array
@@ -612,7 +614,8 @@ class TransitionParser(ParserI):
                             if operation.shift(conf) != -1:
                                 break
                     else:
-                        raise ValueError("The predicted transition is not recognized, expected errors")
+                        raise ValueError(
+                            "The predicted transition is not recognized, expected errors")
 
             # Finish with operations build the dependency graph from Conf.arcs
 
@@ -771,4 +774,3 @@ def demo():
 
     Note that result is very poor because of only one training example.
     """
-

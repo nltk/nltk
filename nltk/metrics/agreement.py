@@ -84,6 +84,7 @@ from nltk.metrics.distance import binary_distance
 
 log = logging.getLogger(__file__)
 
+
 @python_2_unicode_compatible
 class AnnotationTask(object):
     """Represents an annotation task, i.e. people assign labels to items.
@@ -118,7 +119,7 @@ class AnnotationTask(object):
             self.load_array(data)
 
     def __str__(self):
-        return "\r\n".join(map(lambda x:"%s\t%s\t%s" %
+        return "\r\n".join(map(lambda x: "%s\t%s\t%s" %
                                (x['coder'], x['item'].replace('_', "\t"),
                                 ",".join(x['labels'])), self.data))
 
@@ -132,7 +133,7 @@ class AnnotationTask(object):
             self.C.add(coder)
             self.K.add(labels)
             self.I.add(item)
-            self.data.append({'coder':coder, 'labels':labels, 'item':item})
+            self.data.append({'coder': coder, 'labels': labels, 'item': item})
 
     def agr(self, cA, cB, i, data=None):
         """Agreement between two coders on a given item
@@ -142,17 +143,18 @@ class AnnotationTask(object):
         # cfedermann: we don't know what combination of coder/item will come
         # first in x; to avoid StopIteration problems due to assuming an order
         # cA,cB, we allow either for k1 and then look up the missing as k2.
-        k1 = next((x for x in data if x['coder'] in (cA,cB) and x['item']==i))
+        k1 = next((x for x in data if x['coder']
+                   in (cA, cB) and x['item'] == i))
         if k1['coder'] == cA:
-            k2 = next((x for x in data if x['coder']==cB and x['item']==i))
+            k2 = next((x for x in data if x['coder'] == cB and x['item'] == i))
         else:
-            k2 = next((x for x in data if x['coder']==cA and x['item']==i))
+            k2 = next((x for x in data if x['coder'] == cA and x['item'] == i))
 
         ret = 1.0 - float(self.distance(k1['labels'], k2['labels']))
         log.debug("Observed agreement between %s and %s on %s: %f",
-                      cA, cB, i, ret)
+                  cA, cB, i, ret)
         log.debug("Distance between \"%r\" and \"%r\": %f",
-                      k1['labels'], k2['labels'], 1.0 - ret)
+                  k1['labels'], k2['labels'], 1.0 - ret)
         return ret
 
     def Nk(self, k):
@@ -176,7 +178,8 @@ class AnnotationTask(object):
         elif k is not None and c is not None and i is None:
             ret = self.Nck(c, k)
         else:
-            raise ValueError("You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c))
+            raise ValueError(
+                "You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c))
         log.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
         return ret
 
@@ -188,8 +191,10 @@ class AnnotationTask(object):
         """Observed agreement between two coders on all items.
 
         """
-        data = self._grouped_data('item', (x for x in self.data if x['coder'] in (cA, cB)))
-        ret = sum(self.agr(cA, cB, item, item_data) for item, item_data in data) / len(self.I)
+        data = self._grouped_data(
+            'item', (x for x in self.data if x['coder'] in (cA, cB)))
+        ret = sum(self.agr(cA, cB, item, item_data)
+                  for item, item_data in data) / len(self.I)
         log.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
         return ret
 
@@ -233,7 +238,7 @@ class AnnotationTask(object):
         log.debug("Observed disagreement: %f", ret)
         return ret
 
-    def Do_Kw_pairwise(self,cA,cB,max_distance=1.0):
+    def Do_Kw_pairwise(self, cA, cB, max_distance=1.0):
         """The observed disagreement for the weighted kappa coefficient.
 
         """
@@ -252,7 +257,8 @@ class AnnotationTask(object):
         """Averaged over all labelers
 
         """
-        ret = self._pairwise_average(lambda cA, cB: self.Do_Kw_pairwise(cA, cB, max_distance))
+        ret = self._pairwise_average(
+            lambda cA, cB: self.Do_Kw_pairwise(cA, cB, max_distance))
         log.debug("Observed disagreement: %f", ret)
         return ret
 
@@ -280,7 +286,8 @@ class AnnotationTask(object):
     def Ae_kappa(self, cA, cB):
         Ae = 0.0
         nitems = float(len(self.I))
-        label_freqs = ConditionalFreqDist((x['labels'], x['coder']) for x in self.data)
+        label_freqs = ConditionalFreqDist(
+            (x['labels'], x['coder']) for x in self.data)
         for k in label_freqs.conditions():
             Ae += (label_freqs[k][cA] / nitems) * (label_freqs[k][cB] / nitems)
         return Ae
@@ -314,13 +321,14 @@ class AnnotationTask(object):
 
         """
         # check for degenerate cases
-        if len(self.K)==0:
+        if len(self.K) == 0:
             raise ValueError("Cannot calculate alpha, no data present!")
         if len(self.K) == 1:
             log.debug("Only one annotation value, allpha returning 1.")
             return 1
-        if len(self.C)==1 and len(self.I) == 1:
-            raise ValueError("Cannot calculate alpha, only one coder and item present!")
+        if len(self.C) == 1 and len(self.I) == 1:
+            raise ValueError(
+                "Cannot calculate alpha, only one coder and item present!")
 
         De = 0.0
 
@@ -330,11 +338,13 @@ class AnnotationTask(object):
             for l in self.K:
                 De += float(nj * label_freqs[l]) * self.distance(j, l)
         try:
-            De = (1.0 / (len(self.I) * len(self.C) * (len(self.I) * len(self.C) - 1))) * De
+            De = (1.0 / (len(self.I) * len(self.C) *
+                         (len(self.I) * len(self.C) - 1))) * De
             log.debug("Expected disagreement: %f", De)
             ret = 1.0 - (self.Do_alpha() / De)
         except ZeroDivisionError:
-            raise ValueError("Cannot calculate alpha, expected disagreement zero, check the distance function!")
+            raise ValueError(
+                "Cannot calculate alpha, expected disagreement zero, check the distance function!")
         return ret
 
     def weighted_kappa_pairwise(self, cA, cB, max_distance=1.0):
@@ -343,11 +353,12 @@ class AnnotationTask(object):
         """
         total = 0.0
         label_freqs = ConditionalFreqDist((x['coder'], x['labels'])
-                for x in self.data
-                if x['coder'] in (cA, cB))
+                                          for x in self.data
+                                          if x['coder'] in (cA, cB))
         for j in self.K:
             for l in self.K:
-                total += label_freqs[cA][j] * label_freqs[cB][l] * self.distance(j, l)
+                total += label_freqs[cA][j] * \
+                    label_freqs[cB][l] * self.distance(j, l)
         De = total / (max_distance * pow(len(self.I), 2))
         log.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
         Do = self.Do_Kw_pairwise(cA, cB)
@@ -402,14 +413,16 @@ if __name__ == '__main__':
     with open(options.file, 'r') as infile:
         for l in infile:
             toks = l.split(options.columnsep)
-            coder, object_, labels = toks[0], str(toks[1:-1]), frozenset(toks[-1].strip().split(options.labelsep))
+            coder, object_, labels = toks[0], str(
+                toks[1:-1]), frozenset(toks[-1].strip().split(options.labelsep))
             if ((options.include == options.exclude) or
                 (len(options.include) > 0 and coder in options.include) or
-                (len(options.exclude) > 0 and coder not in options.exclude)):
+                    (len(options.exclude) > 0 and coder not in options.exclude)):
                 data.append((coder, object_, labels))
 
     if options.presence:
-        task = AnnotationTask(data, getattr(distance, options.distance)(options.presence))
+        task = AnnotationTask(data, getattr(
+            distance, options.distance)(options.presence))
     else:
         task = AnnotationTask(data, getattr(distance, options.distance))
 
