@@ -757,8 +757,9 @@ def transform(sentence):
 
 def setup_module(module):
     from nose import SkipTest
-
+    raise SkipTest('Skipping all CoreNLP tests.')
     global server
+    
     try:
         server = CoreNLPServer(port=9000)
     except LookupError as e:
@@ -775,4 +776,5 @@ def setup_module(module):
 
 
 def teardown_module(module):
+    return
     server.stop()
