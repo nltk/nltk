@@ -1044,7 +1044,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
 ######################################################################
 
 
-class SeekableUnicodeStreamReader(object):
+class SeekableUnicodeStreamReader(io.BufferedReader):
     """
     A stream reader that automatically encodes the source byte stream
     into unicode (like ``codecs.StreamReader``); but still supports the
