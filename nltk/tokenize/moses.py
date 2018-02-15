@@ -327,7 +327,7 @@ class MosesTokenizer(TokenizerI):
             text = re.sub(regexp, substitution, text)
         return text if return_str else text.split()
 
-    def tokenize(self, text, agressive_dash_splits=False, return_str=False, escape=True):
+    def tokenize(self, text, aggressive_dash_splits=False, return_str=False, escape=True):
         """
         Python port of the Moses tokenizer.
 
@@ -344,8 +344,8 @@ class MosesTokenizer(TokenizerI):
 
         :param tokens: A single string, i.e. sentence text.
         :type tokens: str
-        :param agressive_dash_splits: Option to trigger dash split rules .
-        :type agressive_dash_splits: bool
+        :param aggressive_dash_splits: Option to trigger dash split rules .
+        :type aggressive_dash_splits: bool
         """
         # Converts input string into unicode.
         text = text_type(text)
@@ -359,7 +359,7 @@ class MosesTokenizer(TokenizerI):
         regexp, substitution = self.PAD_NOT_ISALNUM
         text = re.sub(regexp, substitution, text)
         # Aggressively splits dashes
-        if agressive_dash_splits:
+        if aggressive_dash_splits:
             regexp, substitution = self.AGGRESSIVE_HYPHEN_SPLIT
             text = re.sub(regexp, substitution, text)
         # Replaces multidots with "DOTDOTMULTI" literal strings.
