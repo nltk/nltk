@@ -101,7 +101,7 @@ URLS = r"""			# Capture 1: entire matched URL
   (?:					# End with:
     \([^\s()]*?\([^\s()]+\)[^\s()]*?\) # balanced parens, one level deep: (...(...)...)
     |
-    \([^\s]+?\)				# balanced parens, non-recursive: (...)
+    \([^\s]+?\)				# balanced parens, n on-recursive: (...)
     |					#   or
     [^\s`!()\[\]{};:'".,<>?«»“”‘’]	# not a space or one of these punct chars
   )

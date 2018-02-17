@@ -54,6 +54,25 @@ class TestTokenize(unittest.TestCase):
         except LookupError as e:
             raise SkipTest(str(e))
 
+    def test_phone_tokenizer(self):
+        """
+        Test a string that resembles a phone number but contains a newline
+        """
+
+        # Should be recognized as a phone number, albeit one with multiple spaces
+        tokenizer = TweetTokenizer()
+        test1 = "(393)  928 -3010"
+        expected = ['(393)  928 -3010']
+        result = tokenizer.tokenize(test1)
+        self.assertEqual(result, expected)
+
+        # Due to newline, first three elements aren't part of a phone number;
+        # fourth is
+        test2= "(393)\n928 -3010"
+        expected = ['(', '393', ')', "928 -3010"]
+        result = tokenizer.tokenize(test2)
+        self.assertEqual(result, expected)
+
     def test_remove_handle(self):
         """
         Test remove_handle() from casual.py with specially crafted edge cases
