@@ -132,3 +132,8 @@ class WordnNetDemo(unittest.TestCase):
         self.assertAlmostEqual(S('dog.n.01').jcn_similarity(S('cat.n.01'), brown_ic), 0.4497, places=3)
         semcor_ic = wnic.ic('ic-semcor.dat')
         self.assertAlmostEqual(S('dog.n.01').lin_similarity(S('cat.n.01'), semcor_ic), 0.8863, places=3)
+
+    def test_wordnet_compare(self):
+        self.assertEqual(True, S('dog.n.01') == (S('dog.n.01')))
+        self.assertEqual(True, S('dog.n.01') != S('cat.n.01'))
+        self.assertEqual(False, S('dog.n.01') == 'dog')

@@ -195,13 +195,20 @@ class _WordNetObject(object):
         return hash(self._name)
 
     def __eq__(self, other):
-        return self._name == other._name
+        try:
+            return self.name() == other.name()
+        except (AttributeError, TypeError):
+            return False
+
 
     def __ne__(self, other):
-        return self._name != other._name
+        return not self.__eq__(other)
 
     def __lt__(self, other):
-        return self._name < other._name
+        try:
+            return self.name() < other.name()
+        except (AttributeError, TypeError):
+            return False
 
 
 @python_2_unicode_compatible
