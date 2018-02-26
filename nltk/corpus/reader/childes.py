@@ -15,9 +15,9 @@ __docformat__ = 'epytext en'
 
 import re
 from collections import defaultdict
+from six import string_types
 
 from nltk.util import flatten, LazyMap, LazyConcatenation
-from nltk.compat import string_types
 
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
@@ -123,7 +123,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
                 pos, strip_space, replace) for fileid in self.abspaths(fileids)]
-        
+
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
             pos, strip_space, replace)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
@@ -153,7 +153,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         if not self._lazy:
             return [self._get_words(fileid, speaker, sent, stem, relation,
                 pos, strip_space, replace) for fileid in self.abspaths(fileids)]
-        
+
         get_words = lambda fileid: self._get_words(fileid, speaker, sent, stem, relation,
             pos, strip_space, replace)
         return LazyConcatenation(LazyMap(get_words, self.abspaths(fileids)))
@@ -520,4 +520,3 @@ def demo(corpus_root=None):
 
 if __name__ == "__main__":
     demo()
-

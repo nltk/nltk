@@ -2,13 +2,14 @@
 A reader for corpora whose documents are in MTE format.
 """
 import os
+import re
 from functools import reduce
-from nltk import compat
+
+from six import string_types
+
 from nltk.corpus.reader import concat, TaggedCorpusReader
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 
-import xml.etree.ElementTree as etree
-import re
 
 def xpath(root, path, ns):
     return root.findall(path, ns)
@@ -179,7 +180,7 @@ class MTECorpusReader(TaggedCorpusReader):
 
     def __fileids(self, fileids):
         if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, compat.string_types): fileids = [fileids]
+        elif isinstance(fileids, string_types): fileids = [fileids]
         # filter wrong userinput
         fileids = filter(lambda x : x in self._fileids, fileids)
         # filter multext-east sourcefiles that are not compatible to the teip5 specification

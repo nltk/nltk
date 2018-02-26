@@ -13,7 +13,9 @@ Unit tests for nltk.tgrep.
 '''
 
 from __future__ import absolute_import, print_function, unicode_literals
-from nltk.compat import b
+
+from six import b
+
 from nltk.tree import ParentedTree
 from nltk import tgrep
 import unittest

@@ -121,7 +121,7 @@ def masi_distance(label1, label2):
 
     >>> from nltk.metrics import masi_distance
     >>> masi_distance(set([1, 2]), set([1, 2, 3, 4]))
-    0.335
+    0.665
 
     Passonneau 2006, Measuring Agreement on Set-Valued Items (MASI)
     for Semantic and Pragmatic Annotation.
@@ -140,7 +140,7 @@ def masi_distance(label1, label2):
     else:
         m = 0
 
-    return (1 - (len_intersection / float(len_union))) * m
+    return 1 - len_intersection / len_union * m
 
 
 def interval_distance(label1,label2):

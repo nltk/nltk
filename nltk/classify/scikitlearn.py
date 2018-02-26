@@ -8,7 +8,7 @@ scikit-learn (http://scikit-learn.org) is a machine learning library for
 Python. It supports many classification algorithms, including SVMs,
 Naive Bayes, logistic regression (MaxEnt) and decision trees.
 
-This package implement a wrapper around scikit-learn classifiers. To use this
+This package implements a wrapper around scikit-learn classifiers. To use this
 wrapper, construct a scikit-learn estimator object, then use that to construct
 a SklearnClassifier. E.g., to wrap a linear SVM with default settings:
 
@@ -31,6 +31,8 @@ best 1000 features:
 >>> classif = SklearnClassifier(pipeline)
 """
 from __future__ import print_function, unicode_literals
+
+from six.moves import zip
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
@@ -111,7 +113,7 @@ class SklearnClassifier(ClassifierI):
             numbers, booleans or strings.
         """
 
-        X, y = list(compat.izip(*labeled_featuresets))
+        X, y = list(zip(*labeled_featuresets))
         X = self._vectorizer.fit_transform(X)
         y = self._encoder.fit_transform(y)
         self._clf.fit(X, y)

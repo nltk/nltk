@@ -68,17 +68,20 @@ The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
-from __future__ import print_function, unicode_literals, division 
+from __future__ import print_function, unicode_literals, division
 
 import re
+from functools import total_ordering
+
+from six import string_types
 
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import (string_types, total_ordering, text_type,
-                         python_2_unicode_compatible, unicode_repr)
+from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
 from nltk.featstruct import FeatStruct, FeatDict, FeatStructReader, SLASH, TYPE
+
 
 #################################################################
 # Nonterminal
@@ -104,6 +107,7 @@ class Nonterminal(object):
     :ivar _symbol: The node value corresponding to this
         ``Nonterminal``.  This value must be immutable and hashable.
     """
+
     def __init__(self, symbol):
         """
         Construct a new non-terminal from the given symbol.
@@ -179,7 +183,6 @@ class Nonterminal(object):
         """
         return Nonterminal('%s/%s' % (self._symbol, rhs._symbol))
 
-
     def __truediv__(self, rhs):
         """
         Return a new nonterminal whose symbol is ``A/B``, where ``A`` is
@@ -194,6 +197,7 @@ class Nonterminal(object):
         """
         return self.__div__(rhs)
 
+
 def nonterminals(symbols):
     """
     Given a string containing a list of symbol names, return a list of
@@ -207,18 +211,24 @@ def nonterminals(symbols):
         in the same order as the symbols names.
     :rtype: list(Nonterminal)
     """
-    if ',' in symbols: symbol_list = symbols.split(',')
-    else: symbol_list = symbols.split()
+    if ',' in symbols:
+        symbol_list = symbols.split(',')
+    else:
+        symbol_list = symbols.split()
     return [Nonterminal(s.strip()) for s in symbol_list]
+
 
 class FeatStructNonterminal(FeatDict, Nonterminal):
     """A feature structure that's also a nonterminal.  It acts as its
     own symbol, and automatically freezes itself when hashed."""
+
     def __hash__(self):
         self.freeze()
         return FeatStruct.__hash__(self)
+
     def symbol(self):
         return self
+
 
 def is_nonterminal(item):
     """
@@ -375,6 +385,7 @@ class DependencyProduction(Production):
     A dependency grammar production.  Each production maps a single
     head word to an unordered list of one or more modifier words.
     """
+
     def __str__(self):
         """
         Return a verbose string representation of the ``DependencyProduction``.
@@ -399,6 +410,7 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 
     :see: ``Production``
     """
+
     def __init__(self, lhs, rhs, **prob):
         """
         Construct a new ``ProbabilisticProduction``.
@@ -414,7 +426,7 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 
     def __str__(self):
         return Production.__unicode__(self) + \
-            (' [1.0]' if (self.prob() == 1.0) else ' [%g]' % self.prob())
+               (' [1.0]' if (self.prob() == 1.0) else ' [%g]' % self.prob())
 
     def __eq__(self, other):
         return (type(self) == type(other) and
@@ -427,6 +439,7 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 
     def __hash__(self):
         return hash((self._lhs, self._rhs, self.prob()))
+
 
 #################################################################
 # Grammars
@@ -442,6 +455,7 @@ class CFG(object):
     If you need efficient key-based access to productions, you
     can use a subclass to implement it.
     """
+
     def __init__(self, start, productions, calculate_leftcorners=True):
         """
         Create a new context-free grammar, from the given start state
@@ -526,13 +540,13 @@ class CFG(object):
     @classmethod
     def fromstring(cls, input, encoding=None):
         """
-        Return the ``CFG`` corresponding to the input string(s).
+        Return the grammar instance corresponding to the input string(s).
 
         :param input: a grammar, either in the form of a string or as a list of strings.
         """
         start, productions = read_grammar(input, standard_nonterm_parser,
                                           encoding=encoding)
-        return CFG(start, productions)
+        return cls(start, productions)
 
     def start(self):
         """
@@ -738,6 +752,7 @@ class FeatureGrammar(CFG):
     productions.  The set of terminals and nonterminals
     is implicitly specified by the productions.
     """
+
     def __init__(self, start, productions):
         """
         Create a new feature-based grammar, from the given start
@@ -785,9 +800,9 @@ class FeatureGrammar(CFG):
 
     @classmethod
     def fromstring(cls, input, features=None, logic_parser=None, fstruct_reader=None,
-               encoding=None):
+                   encoding=None):
         """
-        Return a feature structure based ``FeatureGrammar``.
+        Return a feature structure based grammar.
 
         :param input: a grammar, either in the form of a string or else
         as a list of strings.
@@ -809,8 +824,7 @@ class FeatureGrammar(CFG):
 
         start, productions = read_grammar(input, fstruct_reader.read_partial,
                                           encoding=encoding)
-        return FeatureGrammar(start, productions)
-
+        return cls(start, productions)
 
     def productions(self, lhs=None, rhs=None, empty=False):
         """
@@ -874,6 +888,7 @@ class FeatureGrammar(CFG):
         else:
             return item
 
+
 @total_ordering
 @python_2_unicode_compatible
 class FeatureValueType(object):
@@ -882,6 +897,7 @@ class FeatureValueType(object):
     from ordinary strings.  This is to stop the ``FeatStruct``
     ``FOO[]`` from being compare equal to the terminal "FOO".
     """
+
     def __init__(self, value):
         self._value = value
         self._hash = hash(value)
@@ -911,6 +927,7 @@ class DependencyGrammar(object):
     productions.  Each production specifies a head/modifier relationship
     between a pair of words.
     """
+
     def __init__(self, productions):
         """
         Create a new dependency grammar, from the set of ``Productions``.
@@ -925,13 +942,14 @@ class DependencyGrammar(object):
         productions = []
         for linenum, line in enumerate(input.split('\n')):
             line = line.strip()
-            if line.startswith('#') or line=='': continue
-            try: productions += _read_dependency_production(line)
+            if line.startswith('#') or line == '': continue
+            try:
+                productions += _read_dependency_production(line)
             except ValueError:
                 raise ValueError('Unable to parse line %s: %s' % (linenum, line))
         if len(productions) == 0:
             raise ValueError('No productions found!')
-        return DependencyGrammar(productions)
+        return cls(productions)
 
     def contains(self, head, mod):
         """
@@ -946,7 +964,7 @@ class DependencyGrammar(object):
         """
         for production in self._productions:
             for possibleMod in production._rhs:
-                if(production._lhs == head and possibleMod == mod):
+                if (production._lhs == head and possibleMod == mod):
                     return True
         return False
 
@@ -963,7 +981,7 @@ class DependencyGrammar(object):
         """
         for production in self._productions:
             for possibleMod in production._rhs:
-                if(production._lhs == head and possibleMod == mod):
+                if (production._lhs == head and possibleMod == mod):
                     return True
         return False
 
@@ -977,7 +995,6 @@ class DependencyGrammar(object):
     #               if(set1 == set2):
     #                   return True
     #   return False
-
 
     def __str__(self):
         """
@@ -1021,7 +1038,7 @@ class ProbabilisticDependencyGrammar(object):
         """
         for production in self._productions:
             for possibleMod in production._rhs:
-                if(production._lhs == head and possibleMod == mod):
+                if (production._lhs == head and possibleMod == mod):
                     return True
         return False
 
@@ -1094,15 +1111,14 @@ class PCFG(CFG):
             probs[production.lhs()] = (probs.get(production.lhs(), 0) +
                                        production.prob())
         for (lhs, p) in probs.items():
-            if not ((1-PCFG.EPSILON) < p <
-                    (1+PCFG.EPSILON)):
+            if not ((1 - PCFG.EPSILON) < p <
+                    (1 + PCFG.EPSILON)):
                 raise ValueError("Productions for %r do not sum to 1" % lhs)
-
 
     @classmethod
     def fromstring(cls, input, encoding=None):
         """
-        Return a probabilistic ``PCFG`` corresponding to the
+        Return a probabilistic context-free grammar corresponding to the
         input string(s).
 
         :param input: a grammar, either in the form of a string or else
@@ -1110,7 +1126,7 @@ class PCFG(CFG):
         """
         start, productions = read_grammar(input, standard_nonterm_parser,
                                           probabilistic=True, encoding=encoding)
-        return PCFG(start, productions)
+        return cls(start, productions)
 
 
 #################################################################
@@ -1142,10 +1158,10 @@ def induce_pcfg(start, productions):
 
     for prod in productions:
         lcount[prod.lhs()] = lcount.get(prod.lhs(), 0) + 1
-        pcount[prod]       = pcount.get(prod,       0) + 1
+        pcount[prod] = pcount.get(prod, 0) + 1
 
     prods = [ProbabilisticProduction(p.lhs(), p.rhs(),
-                                prob=pcount[p] / lcount[p.lhs()])
+                                     prob=pcount[p] / lcount[p.lhs()])
              for p in pcount]
     return PCFG(start, prods)
 
@@ -1160,11 +1176,13 @@ def _read_cfg_production(input):
     """
     return _read_production(input, standard_nonterm_parser)
 
+
 def _read_pcfg_production(input):
     """
     Return a list of PCFG ``ProbabilisticProductions``.
     """
     return _read_production(input, standard_nonterm_parser, probabilistic=True)
+
 
 def _read_fcfg_production(input, fstruct_reader):
     """
@@ -1179,6 +1197,7 @@ _ARROW_RE = re.compile(r'\s* -> \s*', re.VERBOSE)
 _PROBABILITY_RE = re.compile(r'( \[ [\d\.]+ \] ) \s*', re.VERBOSE)
 _TERMINAL_RE = re.compile(r'( "[^"]+" | \'[^\']+\' ) \s*', re.VERBOSE)
 _DISJUNCTION_RE = re.compile(r'\| \s*', re.VERBOSE)
+
 
 def _read_production(line, nonterm_parser, probabilistic=False):
     """
@@ -1266,9 +1285,9 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     continue_line = ''
     for linenum, line in enumerate(lines):
         line = continue_line + line.strip()
-        if line.startswith('#') or line=='': continue
+        if line.startswith('#') or line == '': continue
         if line.endswith('\\'):
-            continue_line = line[:-1].rstrip()+' '
+            continue_line = line[:-1].rstrip() + ' '
             continue
         continue_line = ''
         try:
@@ -1285,7 +1304,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                 productions += _read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
             raise ValueError('Unable to parse line %s: %s\n%s' %
-                             (linenum+1, line, e))
+                             (linenum + 1, line, e))
 
     if not productions:
         raise ValueError('No productions found!')
@@ -1293,7 +1312,9 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
         start = productions[0].lhs()
     return (start, productions)
 
+
 _STANDARD_NONTERM_RE = re.compile('( [\w/][\w/^<>-]* ) \s*', re.VERBOSE)
+
 
 def standard_nonterm_parser(string, pos):
     m = _STANDARD_NONTERM_RE.match(string, pos)
@@ -1315,15 +1336,16 @@ _READ_DG_RE = re.compile(r'''^\s*                # leading whitespace
                                  | \|              # disjunction
                                  )
                                  \s*)              # trailing space
-                                 *$''',            # zero or more copies
-                             re.VERBOSE)
+                                 *$''',  # zero or more copies
+                         re.VERBOSE)
 _SPLIT_DG_RE = re.compile(r'''('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)''')
+
 
 def _read_dependency_production(s):
     if not _READ_DG_RE.match(s):
         raise ValueError('Bad production string')
     pieces = _SPLIT_DG_RE.split(s)
-    pieces = [p for i,p in enumerate(pieces) if i%2==1]
+    pieces = [p for i, p in enumerate(pieces) if i % 2 == 1]
     lhside = pieces[0].strip('\'\"')
     rhsides = [[]]
     for piece in pieces[2:]:
@@ -1348,9 +1370,9 @@ def cfg_demo():
     # Create some nonterminals
     S, NP, VP, PP = nonterminals('S, NP, VP, PP')
     N, V, P, Det = nonterminals('N, V, P, Det')
-    VP_slash_NP = VP/NP
+    VP_slash_NP = VP / NP
 
-    print('Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP/NP])
+    print('Some nonterminals:', [S, NP, VP, PP, N, V, P, Det, VP / NP])
     print('    S.symbol() =>', repr(S.symbol()))
     print()
 
@@ -1372,8 +1394,9 @@ def cfg_demo():
     print('    grammar.start()       =>', repr(grammar.start()))
     print('    grammar.productions() =>', end=' ')
     # Use string.replace(...) is to line-wrap the output.
-    print(repr(grammar.productions()).replace(',', ',\n'+' '*25))
+    print(repr(grammar.productions()).replace(',', ',\n' + ' ' * 25))
     print()
+
 
 toy_pcfg1 = PCFG.fromstring("""
     S -> NP VP [1.0]
@@ -1412,6 +1435,7 @@ toy_pcfg2 = PCFG.fromstring("""
     Det  -> 'my'          [.28]
     """)
 
+
 def pcfg_demo():
     """
     A demonstration showing how a ``PCFG`` can be created and used.
@@ -1436,7 +1460,7 @@ def pcfg_demo():
     print('    grammar.start()       =>', repr(grammar.start()))
     print('    grammar.productions() =>', end=' ')
     # Use .replace(...) is to line-wrap the output.
-    print(repr(grammar.productions()).replace(',', ',\n'+' '*26))
+    print(repr(grammar.productions()).replace(',', ',\n' + ' ' * 26))
     print()
 
     # extract productions from three trees and induce the PCFG
@@ -1446,8 +1470,8 @@ def pcfg_demo():
     item = treebank._fileids[0]
     for tree in treebank.parsed_sents(item)[:3]:
         # perform optional tree transformations, e.g.:
-        tree.collapse_unary(collapsePOS = False)
-        tree.chomsky_normal_form(horzMarkov = 2)
+        tree.collapse_unary(collapsePOS=False)
+        tree.chomsky_normal_form(horzMarkov=2)
 
         productions += tree.productions()
 
@@ -1462,18 +1486,20 @@ def pcfg_demo():
     parser.trace(3)
 
     # doesn't work as tokens are different:
-    #sent = treebank.tokenized('wsj_0001.mrg')[0]
+    # sent = treebank.tokenized('wsj_0001.mrg')[0]
 
     sent = treebank.parsed_sents(item)[0].leaves()
     print(sent)
     for parse in parser.parse(sent):
         print(parse)
 
+
 def fcfg_demo():
     import nltk.data
     g = nltk.data.load('grammars/book_grammars/feat0.fcfg')
     print(g)
     print()
+
 
 def dg_demo():
     """
@@ -1486,6 +1512,7 @@ def dg_demo():
     'cats' -> 'the'
     """)
     print(grammar)
+
 
 def sdg_demo():
     """
@@ -1512,6 +1539,7 @@ def sdg_demo():
     tree = dg.tree()
     print(tree.pprint())
 
+
 def demo():
     cfg_demo()
     pcfg_demo()
@@ -1519,13 +1547,13 @@ def demo():
     dg_demo()
     sdg_demo()
 
+
 if __name__ == '__main__':
     demo()
 
 __all__ = ['Nonterminal', 'nonterminals',
            'CFG', 'Production',
-	   'PCFG', 'ProbabilisticProduction',
-	   'DependencyGrammar', 'DependencyProduction',
+           'PCFG', 'ProbabilisticProduction',
+           'DependencyGrammar', 'DependencyProduction',
            'ProbabilisticDependencyGrammar',
-	   'induce_pcfg', 'read_grammar']
-
+           'induce_pcfg', 'read_grammar']

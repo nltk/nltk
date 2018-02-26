@@ -34,14 +34,18 @@ from __future__ import print_function, unicode_literals
 import math
 import re
 from itertools import islice, chain
+from functools import total_ordering
 from operator import itemgetter
 from collections import defaultdict, deque
+
+from six import iteritems
+from six.moves import range
 
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
-from nltk.compat import (iteritems, python_2_unicode_compatible,
-                         total_ordering, xrange)
+from nltk.compat import python_2_unicode_compatible
+from nltk.internals import deprecated
 
 ######################################################################
 # Table of Contents
@@ -108,7 +112,7 @@ VERB_FRAME_STRINGS = (
     "It %s that CLAUSE",
     "Something %s INFINITIVE")
 
-SENSENUM_RE = re.compile(r'\.\d\d\.')
+SENSENUM_RE = re.compile(r'\.[\d]+\.')
 
 
 ######################################################################
@@ -128,13 +132,13 @@ class _WordNetObject(object):
         return self._related('@')
 
     def _hypernyms(self):
-        return self._related('@', sort=False)
+        return self._related('@')
 
     def instance_hypernyms(self):
         return self._related('@i')
 
     def _instance_hypernyms(self):
-        return self._related('@i', sort=False)
+        return self._related('@i')
 
     def hyponyms(self):
         return self._related('~')
@@ -293,12 +297,12 @@ class Lemma(_WordNetObject):
         return "%s('%s.%s')" % tup
 
     def _related(self, relation_symbol):
-        get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
-        return sorted([
+        get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
+        return [
             get_synset(pos, offset)._lemmas[lemma_index]
             for pos, offset, lemma_index
             in self._synset._lemma_pointers[self._name, relation_symbol]
-        ])
+        ]
 
     def count(self):
         """Return the frequency count for this Lemma"""
@@ -391,7 +395,7 @@ class Synset(_WordNetObject):
         self._all_hypernyms = None
 
         self._pointers = defaultdict(set)
-        self._lemma_pointers = defaultdict(set)
+        self._lemma_pointers = defaultdict(list)
 
     def pos(self):
         return self._pos
@@ -901,7 +905,7 @@ class Synset(_WordNetObject):
         if len(subsumers) == 0:
             return None
 
-        subsumer = subsumers[0]
+        subsumer = self if self in subsumers else subsumers[0]
 
         # Get the longest path from the LCS to the root,
         # including a correction:
@@ -1028,7 +1032,7 @@ class Synset(_WordNetObject):
         return "%s('%s')" % (type(self).__name__, self._name)
 
     def _related(self, relation_symbol, sort=True):
-        get_synset = self._wordnet_corpus_reader._synset_from_pos_and_offset
+        get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
         pointer_tuples = self._pointers[relation_symbol]
         r = [get_synset(pos, offset) for pos, offset in pointer_tuples]
         if sort:
@@ -1116,7 +1120,7 @@ class WordNetCorpusReader(CorpusReader):
 
     def of2ss(self, of):
         ''' take an id and return the synsets '''
-        return self._synset_from_pos_and_offset(of[-1], int(of[:8]))
+        return self.synset_from_pos_and_offset(of[-1], int(of[:8]))
 
     def ss2of(self, ss):
         ''' return the ID of the synset '''
@@ -1126,24 +1130,14 @@ class WordNetCorpusReader(CorpusReader):
         ''' load the wordnet data of the requested language from the file to
         the cache, _lang_data '''
 
-        if lang not in self.langs():
-            raise WordNetError("Language is not supported.")
-
         if lang in self._lang_data.keys():
             return
 
+        if lang not in self.langs():
+            raise WordNetError("Language is not supported.")
+
         f = self._omw_reader.open('{0:}/wn-data-{0:}.tab'.format(lang))
-
-        self._lang_data[lang].append(defaultdict(list))
-        self._lang_data[lang].append(defaultdict(list))
-
-        for l in f.readlines():
-            l = l.replace('\n', '')
-            l = l.replace(' ', '_')
-            if l[0] != '#':
-                word = l.split('\t')
-                self._lang_data[lang][0][word[0]].append(word[2])
-                self._lang_data[lang][1][word[2]].append(word[0])
+        self.custom_lemmas(f, lang)
         f.close()
 
     def langs(self):
@@ -1183,7 +1177,7 @@ class WordNetCorpusReader(CorpusReader):
                     # get and ignore the pointer symbols for all synsets of
                     # this lemma
                     n_pointers = int(_next_token())
-                    [_next_token() for _ in xrange(n_pointers)]
+                    [_next_token() for _ in range(n_pointers)]
 
                     # same as number of synsets
                     n_senses = int(_next_token())
@@ -1195,7 +1189,7 @@ class WordNetCorpusReader(CorpusReader):
 
                     # get synset offsets
                     synset_offsets = [
-                        int(_next_token()) for _ in xrange(n_synsets)
+                        int(_next_token()) for _ in range(n_synsets)
                     ]
 
                 # raise more informative error with file name and line number
@@ -1250,7 +1244,13 @@ class WordNetCorpusReader(CorpusReader):
         # cannot simply split on first '.',
         # e.g.: '.45_caliber.a.01..45_caliber'
         separator = SENSENUM_RE.search(name).start()
-        synset_name, lemma_name = name[:separator+3], name[separator+4:]
+
+        leadingZero = int(name[separator+1]) == 0
+        if (leadingZero):
+            synset_name, lemma_name = name[:separator+3], name[separator+4:]
+        else:
+            synset_name, lemma_name = name[:separator+2], name[separator+3:]
+        
         synset = self.synset(synset_name)
         for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
@@ -1274,7 +1274,7 @@ class WordNetCorpusReader(CorpusReader):
         if not synset_line:
             raise WordNetError("No synset found for key %r" % key)
         offset = int(synset_line.split()[1])
-        synset = self._synset_from_pos_and_offset(pos, offset)
+        synset = self.synset_from_pos_and_offset(pos, offset)
 
         # return the corresponding lemma
         for lemma in synset._lemmas:
@@ -1306,7 +1306,7 @@ class WordNetCorpusReader(CorpusReader):
             raise WordNetError(message % tup)
 
         # load synset information from the appropriate file
-        synset = self._synset_from_pos_and_offset(pos, offset)
+        synset = self.synset_from_pos_and_offset(pos, offset)
 
         # some basic sanity checks on loaded attributes
         if pos == 's' and synset._pos == 'a':
@@ -1330,7 +1330,7 @@ class WordNetCorpusReader(CorpusReader):
             self._data_file_map[pos] = self.open(fileid)
         return self._data_file_map[pos]
 
-    def _synset_from_pos_and_offset(self, pos, offset):
+    def synset_from_pos_and_offset(self, pos, offset):
         # Check to see if the synset is in the cache
         if offset in self._synset_offset_cache[pos]:
             return self._synset_offset_cache[pos][offset]
@@ -1342,6 +1342,15 @@ class WordNetCorpusReader(CorpusReader):
         assert synset._offset == offset
         self._synset_offset_cache[pos][offset] = synset
         return synset
+
+    @deprecated('Use public method synset_from_pos_and_offset() instead')
+    def _synset_from_pos_and_offset(self, *args, **kwargs):
+        """
+        Hack to help people like the readers of
+        http://stackoverflow.com/a/27145655/1709587
+        who were using this function before it was officially a public method
+        """
+        return self.synset_from_pos_and_offset(*args, **kwargs)
 
     def _synset_from_pos_and_line(self, pos, data_file_line):
         # Construct a new (empty) synset.
@@ -1379,7 +1388,7 @@ class WordNetCorpusReader(CorpusReader):
 
             # create Lemma objects for each lemma
             n_lemmas = int(_next_token(), 16)
-            for _ in xrange(n_lemmas):
+            for _ in range(n_lemmas):
                 # get the lemma name
                 lemma_name = _next_token()
                 # get the lex_id (used for sense_keys)
@@ -1395,7 +1404,7 @@ class WordNetCorpusReader(CorpusReader):
 
             # collect the pointer tuples
             n_pointers = int(_next_token())
-            for _ in xrange(n_pointers):
+            for _ in range(n_pointers):
                 symbol = _next_token()
                 offset = int(_next_token())
                 pos = _next_token()
@@ -1408,7 +1417,7 @@ class WordNetCorpusReader(CorpusReader):
                     source_lemma_name = synset._lemmas[source_index]._name
                     lemma_pointers = synset._lemma_pointers
                     tups = lemma_pointers[source_lemma_name, symbol]
-                    tups.add((pos, offset, target_index))
+                    tups.append((pos, offset, target_index))
 
             # read the verb frames
             try:
@@ -1416,7 +1425,7 @@ class WordNetCorpusReader(CorpusReader):
             except StopIteration:
                 pass
             else:
-                for _ in xrange(frame_count):
+                for _ in range(frame_count):
                     # read the plus sign
                     plus = _next_token()
                     assert plus == '+'
@@ -1480,7 +1489,7 @@ class WordNetCorpusReader(CorpusReader):
         lemma = lemma.lower()
 
         if lang == 'eng':
-            get_synset = self._synset_from_pos_and_offset
+            get_synset = self.synset_from_pos_and_offset
             index = self._lemma_pos_offset_map
             if pos is None:
                 pos = POS_LIST
@@ -1503,8 +1512,8 @@ class WordNetCorpusReader(CorpusReader):
         name and part of speech tag. Matches any part of speech tag if none is
         specified."""
 
+        lemma = lemma.lower()
         if lang == 'eng':
-            lemma = lemma.lower()
             return [lemma_obj
                     for synset in self.synsets(lemma, pos)
                     for lemma_obj in synset.lemmas()
@@ -1517,11 +1526,9 @@ class WordNetCorpusReader(CorpusReader):
             for s in syn:
                 if pos is not None and s.pos() != pos:
                     continue
-                a = Lemma(
-                    self, s, lemma, self._lexnames.index(s.lexname()), 0, None
-                )
-                a._lang = lang
-                lemmas.append(a)
+                for lemma_obj in s.lemmas(lang=lang):
+                    if lemma_obj.name().lower() == lemma:
+                        lemmas.append(lemma_obj)
             return lemmas
 
     def all_lemma_names(self, pos=None, lang='eng'):
@@ -1621,6 +1628,10 @@ class WordNetCorpusReader(CorpusReader):
         elif lang == 'omw':
             # under the assumption you don't mean Omwunra-Toqura
             return self._omw_reader.open("LICENSE").read()
+        elif lang in self._lang_data:
+            raise WordNetError(
+                "Cannot determine license for user-provided tab file"
+            )
         else:
             raise WordNetError("Language is not supported.")
 
@@ -1634,6 +1645,8 @@ class WordNetCorpusReader(CorpusReader):
         elif lang == 'omw':
             # under the assumption you don't mean Omwunra-Toqura
             return self._omw_reader.open("README").read()
+        elif lang in self._lang_data:
+            raise WordNetError("No README for user-provided tab file")
         else:
             raise WordNetError("Language is not supported.")
 
@@ -1647,6 +1660,8 @@ class WordNetCorpusReader(CorpusReader):
         elif lang == 'omw':
             # under the assumption you don't mean Omwunra-Toqura
             return self._omw_reader.open("citation.bib").read()
+        elif lang in self._lang_data:
+            raise WordNetError("citation not known for user-provided tab file")
         else:
             raise WordNetError("Language is not supported.")
 
@@ -1856,6 +1871,34 @@ class WordNetCorpusReader(CorpusReader):
                 ic[pos][0] += weight
         return ic
 
+    def custom_lemmas(self, tab_file, lang):
+        """
+        Reads a custom tab file containing mappings of lemmas in the given
+        language to Princeton WordNet 3.0 synset offsets, allowing NLTK's
+        WordNet functions to then be used with that language.
+
+        See the "Tab files" section at http://compling.hss.ntu.edu.sg/omw/ for
+        documentation on the Multilingual WordNet tab file format.
+
+        :param tab_file: Tab file as a file or file-like object
+        :type  lang str
+        :param lang ISO 639-3 code of the language of the tab file
+        """
+        if len(lang) != 3:
+            raise ValueError('lang should be a (3 character) ISO 639-3 code')
+        self._lang_data[lang] = [defaultdict(list), defaultdict(list)]
+        for l in tab_file.readlines():
+            if isinstance(l, bytes):
+                # Support byte-stream files (e.g. as returned by Python 2's
+                # open() function) as well as text-stream ones
+                l = l.decode('utf-8')
+            l = l.replace('\n', '')
+            l = l.replace(' ', '_')
+            if l[0] != '#':
+                word = l.split('\t')
+                self._lang_data[lang][0][word[0]].append(word[2])
+                self._lang_data[lang][1][word[2].lower()].append(word[0])
+
 
 ######################################################################
 # WordNet Information Content Corpus Reader
@@ -2019,98 +2062,3 @@ def teardown_module(module=None):
     from nltk.corpus import wordnet
     wordnet._unload()
 
-
-######################################################################
-# Demo
-######################################################################
-
-def demo():
-    import nltk
-    print('loading wordnet')
-    wn = WordNetCorpusReader(nltk.data.find('corpora/wordnet'), None)
-    print('done loading')
-    S = wn.synset
-    L = wn.lemma
-
-    print('getting a synset for go')
-    move_synset = S('go.v.21')
-    print(move_synset.name(), move_synset.pos(), move_synset.lexname())
-    print(move_synset.lemma_names())
-    print(move_synset.definition())
-    print(move_synset.examples())
-
-    zap_n = ['zap.n.01']
-    zap_v = ['zap.v.01', 'zap.v.02', 'nuke.v.01', 'microwave.v.01']
-
-    def _get_synsets(synset_strings):
-        return [S(synset) for synset in synset_strings]
-
-    zap_n_synsets = _get_synsets(zap_n)
-    zap_v_synsets = _get_synsets(zap_v)
-
-    print(zap_n_synsets)
-    print(zap_v_synsets)
-
-    print("Navigations:")
-    print(S('travel.v.01').hypernyms())
-    print(S('travel.v.02').hypernyms())
-    print(S('travel.v.03').hypernyms())
-
-    print(L('zap.v.03.nuke').derivationally_related_forms())
-    print(L('zap.v.03.atomize').derivationally_related_forms())
-    print(L('zap.v.03.atomise').derivationally_related_forms())
-    print(L('zap.v.03.zap').derivationally_related_forms())
-
-    print(S('dog.n.01').member_holonyms())
-    print(S('dog.n.01').part_meronyms())
-
-    print(S('breakfast.n.1').hypernyms())
-    print(S('meal.n.1').hyponyms())
-    print(S('Austen.n.1').instance_hypernyms())
-    print(S('composer.n.1').instance_hyponyms())
-
-    print(S('faculty.n.2').member_meronyms())
-    print(S('copilot.n.1').member_holonyms())
-
-    print(S('table.n.2').part_meronyms())
-    print(S('course.n.7').part_holonyms())
-
-    print(S('water.n.1').substance_meronyms())
-    print(S('gin.n.1').substance_holonyms())
-
-    print(L('leader.n.1.leader').antonyms())
-    print(L('increase.v.1.increase').antonyms())
-
-    print(S('snore.v.1').entailments())
-    print(S('heavy.a.1').similar_tos())
-    print(S('light.a.1').attributes())
-    print(S('heavy.a.1').attributes())
-
-    print(L('English.a.1.English').pertainyms())
-
-    print(S('person.n.01').root_hypernyms())
-    print(S('sail.v.01').root_hypernyms())
-    print(S('fall.v.12').root_hypernyms())
-
-    print(S('person.n.01').lowest_common_hypernyms(S('dog.n.01')))
-    print(S('woman.n.01').lowest_common_hypernyms(S('girlfriend.n.02')))
-
-    print(S('dog.n.01').path_similarity(S('cat.n.01')))
-    print(S('dog.n.01').lch_similarity(S('cat.n.01')))
-    print(S('dog.n.01').wup_similarity(S('cat.n.01')))
-
-    wnic = WordNetICCorpusReader(nltk.data.find('corpora/wordnet_ic'),
-                                 '.*\.dat')
-    ic = wnic.ic('ic-brown.dat')
-    print(S('dog.n.01').jcn_similarity(S('cat.n.01'), ic))
-
-    ic = wnic.ic('ic-semcor.dat')
-    print(S('dog.n.01').lin_similarity(S('cat.n.01'), ic))
-
-    print(S('code.n.03').topic_domains())
-    print(S('pukka.a.01').region_domains())
-    print(S('freaky.a.01').usage_domains())
-
-
-if __name__ == '__main__':
-    demo()

@@ -33,13 +33,12 @@ structures.  For more information, see the CLIG
 homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
-
-
-import nltk.compat
-from tkinter import (Button, Canvas, Entry, Frame, Label, Menu, Menubutton,
-                     RAISED, Scrollbar, StringVar, Text, Tk, Toplevel, Widget)
-
-import tkinter.font, tkinter.messagebox, tkinter.filedialog
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
+from six.moves.tkinter import (Button, Canvas, Entry, Frame, Label, Menu,
+                               Menubutton, Scrollbar, StringVar, Text, Tk,
+                               Toplevel, Widget, RAISED)
+from six.moves.tkinter_tkfiledialog import asksaveasfilename
 
 from nltk.util import in_idle
 
@@ -47,6 +46,8 @@ from nltk.util import in_idle
 ##  CanvasWidget
 ##//////////////////////////////////////////////////////
 
+
+@add_metaclass(ABCMeta)
 class CanvasWidget(object):
     """
     A collection of graphical elements and bindings used to display a
@@ -664,6 +665,7 @@ class CanvasWidget(object):
     ##  Defined by subclass
     ##//////////////////////////////////////////////////////
 
+    @abstractmethod
     def _tags(self):
         """
         :return: a list of canvas tags for all graphical elements
@@ -671,7 +673,6 @@ class CanvasWidget(object):
             elements managed by its child widgets.
         :rtype: list of int
         """
-        raise NotImplementedError()
 
     def _manage(self):
         """
@@ -682,7 +683,6 @@ class CanvasWidget(object):
 
         :rtype: None
         """
-        pass
 
     def _update(self, child):
         """
@@ -693,7 +693,6 @@ class CanvasWidget(object):
         :type child: CanvasWidget
         :rtype: None
         """
-        pass
 
 ##//////////////////////////////////////////////////////
 ##  Basic widgets.
@@ -1705,7 +1704,6 @@ class CanvasFrame(object):
         :rtype: None
         """
         if filename is None:
-            from tkinter.filedialog import asksaveasfilename
             ftypes = [('Postscript files', '.ps'),
                       ('All files', '*')]
             filename = asksaveasfilename(filetypes=ftypes,
@@ -1719,7 +1717,7 @@ class CanvasFrame(object):
                                 pagex=0, pagey=0)
         # workaround for bug in Tk font handling
         postscript = postscript.replace(' 0 scalefont ', ' 9 scalefont ')
-        with open(filename, 'w') as f:
+        with open(filename, 'wb') as f:
             f.write(postscript.encode('utf8'))
 
     def scrollregion(self):
@@ -2038,15 +2036,15 @@ class ColorizedList(object):
     #////////////////////////////////////////////////////////////
     # Abstract methods
     #////////////////////////////////////////////////////////////
-
+    @abstractmethod
     def _init_colortags(self, textwidget, options):
         """
         Set up any colortags that will be used by this colorized list.
         E.g.:
             >>> textwidget.tag_config('terminal', foreground='black')
         """
-        raise NotImplementedError()
 
+    @abstractmethod
     def _item_repr(self, item):
         """
         Return a list of (text, colortag) tuples that make up the
@@ -2054,7 +2052,6 @@ class ColorizedList(object):
         representations may not span multiple lines.  I.e., the text
         strings returned may not contain newline characters.
         """
-        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Item Access
@@ -2357,4 +2354,3 @@ def demo():
 
 if __name__ == '__main__':
     demo()
-

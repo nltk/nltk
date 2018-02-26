@@ -16,16 +16,15 @@ parser ``nltk.chunk.RegexpChunkParser``.
 # and what part of the data is being used as the development set.
 
 from __future__ import division
-import nltk.compat
 import time
 import textwrap
 import re
 import random
-import tkinter.filedialog, tkinter.font
 
-from tkinter import (Button, Canvas, Checkbutton,
-                     Frame, IntVar, Label, Menu,
-                     Scrollbar, Text, Tk)
+from six.moves.tkinter import (Button, Canvas, Checkbutton, Frame, IntVar,
+                               Label, Menu, Scrollbar, Text, Tk)
+from six.moves.tkinter_tkfiledialog import askopenfilename, asksaveasfilename
+from six.moves.tkinter_font import Font
 
 from nltk.tree import Tree
 from nltk.util import in_idle
@@ -376,9 +375,9 @@ class RegexpChunkApp(object):
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(top)
         self._size.set(20)
-        self._font = tkinter.font.Font(family='helvetica',
+        self._font = Font(family='helvetica',
                                  size=-self._size.get())
-        self._smallfont = tkinter.font.Font(family='helvetica',
+        self._smallfont = Font(family='helvetica',
                                       size=-(int(self._size.get()*14//20)))
 
     def _init_menubar(self, parent):
@@ -1159,7 +1158,7 @@ class RegexpChunkApp(object):
         if not filename:
             ftypes = [('Chunk Gramamr', '.chunk'),
                       ('All files', '*')]
-            filename = tkinter.filedialog.asksaveasfilename(filetypes=ftypes,
+            filename = asksaveasfilename(filetypes=ftypes,
                                                       defaultextension='.chunk')
             if not filename: return
         if (self._history and self.normalized_grammar ==
@@ -1181,7 +1180,7 @@ class RegexpChunkApp(object):
         if not filename:
             ftypes = [('Chunk Gramamr', '.chunk'),
                       ('All files', '*')]
-            filename = tkinter.filedialog.askopenfilename(filetypes=ftypes,
+            filename = askopenfilename(filetypes=ftypes,
                                                     defaultextension='.chunk')
             if not filename: return
         self.grammarbox.delete('1.0', 'end')
@@ -1197,7 +1196,7 @@ class RegexpChunkApp(object):
         if not filename:
             ftypes = [('Chunk Gramamr History', '.txt'),
                       ('All files', '*')]
-            filename = tkinter.filedialog.asksaveasfilename(filetypes=ftypes,
+            filename = asksaveasfilename(filetypes=ftypes,
                                                       defaultextension='.txt')
             if not filename: return
 
@@ -1226,7 +1225,7 @@ class RegexpChunkApp(object):
                  "Written by Edward Loper")
         TITLE = 'About: Regular Expression Chunk Parser Application'
         try:
-            from tkinter.messagebox import Message
+            from six.moves.tkinter_messagebox import Message
             Message(message=ABOUT, title=TITLE).show()
         except:
             ShowText(self.top, TITLE, ABOUT)
@@ -1261,4 +1260,3 @@ if __name__ == '__main__':
     app()
 
 __all__ = ['app']
-

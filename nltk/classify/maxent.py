@@ -52,7 +52,6 @@ performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
 from __future__ import print_function, unicode_literals
-__docformat__ = 'epytext en'
 
 try:
     import numpy
@@ -61,7 +60,10 @@ except ImportError:
 
 import tempfile
 import os
+import re
 from collections import defaultdict
+
+from six import integer_types
 
 from nltk import compat
 from nltk.data import gzip_open_unicode
@@ -73,6 +75,8 @@ from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
 from nltk.classify.megam import (call_megam,
                                  write_megam_file, parse_megam_weights)
 from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
+
+__docformat__ = 'epytext en'
 
 ######################################################################
 #{ Classifier Model
@@ -200,13 +204,27 @@ class MaxentClassifier(ClassifierI):
         print('  PROBS:'.ljust(descr_width)+''.join(
             '%8.3f' % pdist.prob(l) for l in labels))
 
+    def most_informative_features(self, n=10):
+        """
+        Generates the ranked list of informative features from most to least.
+        """
+        if hasattr(self, '_most_informative_features'):
+            return self._most_informative_features[:n]
+        else:
+            self._most_informative_features = sorted(list(range(len(self._weights))),
+                                                key=lambda fid: abs(self._weights[fid]),
+                                                reverse=True)
+            return self._most_informative_features[:n]
+
     def show_most_informative_features(self, n=10, show='all'):
         """
         :param show: all, neg, or pos (for negative-only or positive-only)
+        :type show: str
+        :param n: The no. of top features
+        :type n: int
         """
-        fids = sorted(list(range(len(self._weights))),
-                      key=lambda fid: abs(self._weights[fid]),
-                      reverse=True)
+        # Use None the full list of ranked features.
+        fids = self.most_informative_features(None)
         if show == 'pos':
             fids = [fid for fid in fids if self._weights[fid] > 0]
         elif show == 'neg':
@@ -547,7 +565,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, compat.integer_types):
+        if not isinstance(f_id, integer_types):
             raise TypeError('describe() expected an int')
         try:
             self._inv_mapping
@@ -854,7 +872,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         # Convert input-features to joint-features:
         for fname, fval in featureset.items():
-            if isinstance(fval, (compat.integer_types, float)):
+            if isinstance(fval, (integer_types, float)):
                 # Known feature name & value:
                 if (fname, type(fval), label) in self._mapping:
                     encoding.append((self._mapping[fname, type(fval),
@@ -884,7 +902,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
     def describe(self, f_id):
         # Inherit docs.
-        if not isinstance(f_id, compat.integer_types):
+        if not isinstance(f_id, integer_types):
             raise TypeError('describe() expected an int')
         try:
             self._inv_mapping

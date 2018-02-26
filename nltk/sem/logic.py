@@ -15,12 +15,13 @@ from __future__ import print_function, unicode_literals
 import re
 import operator
 from collections import defaultdict
-from functools import reduce
+from functools import reduce, total_ordering
+
+from six import string_types
 
 from nltk.util import Trie
 from nltk.internals import Counter
-from nltk.compat import (total_ordering, string_types,
-                         python_2_unicode_compatible)
+from nltk.compat import python_2_unicode_compatible
 
 APP = 'APP'
 
@@ -802,7 +803,7 @@ def read_type(type_string):
 
 class TypeException(Exception):
     def __init__(self, msg):
-        Exception.__init__(self, msg)
+        super(TypeException, self).__init__(msg)
 
 class InconsistentTypeHierarchyException(TypeException):
     def __init__(self, variable, expression=None):
@@ -812,21 +813,20 @@ class InconsistentTypeHierarchyException(TypeException):
         else:
             msg = "The variable '%s' was found in multiple places with different"\
                 " types." % (variable)
-        Exception.__init__(self, msg)
+        super(InconsistentTypeHierarchyException, self).__init__(msg)
 
 class TypeResolutionException(TypeException):
     def __init__(self, expression, other_type):
-        Exception.__init__(self, "The type of '%s', '%s', cannot be "
-                           "resolved with type '%s'" % \
-                           (expression, expression.type, other_type))
+        super(TypeResolutionException, self).__init__(
+            "The type of '%s', '%s', cannot be resolved with type '%s'" %
+            (expression, expression.type, other_type))
 
 class IllegalTypeException(TypeException):
     def __init__(self, expression, other_type, allowed_type):
-        Exception.__init__(self, "Cannot set type of %s '%s' to '%s'; "
-                           "must match type '%s'." %
-                           (expression.__class__.__name__, expression,
-                            other_type, allowed_type))
-
+        super(IllegalTypeException, self).__init__(
+            "Cannot set type of %s '%s' to '%s'; must match type '%s'." %
+            (expression.__class__.__name__, expression, other_type,
+            allowed_type))
 
 def typecheck(expressions, signature=None):
     """

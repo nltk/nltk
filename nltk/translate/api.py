@@ -1,4 +1,4 @@
-# Natural Language Toolkit: API for alignment and translation objects 
+# Natural Language Toolkit: API for alignment and translation objects
 #
 # Copyright (C) 2001-2017 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
@@ -12,7 +12,8 @@ from __future__ import print_function, unicode_literals
 import subprocess
 from collections import namedtuple
 
-from nltk.compat import python_2_unicode_compatible, string_types
+from nltk.compat import python_2_unicode_compatible
+
 
 @python_2_unicode_compatible
 class AlignedSent(object):
@@ -20,27 +21,30 @@ class AlignedSent(object):
     Return an aligned sentence object, which encapsulates two sentences
     along with an ``Alignment`` between them.
 
+    Typically used in machine translation to represent a sentence and
+    its translation.
+
         >>> from nltk.translate import AlignedSent, Alignment
         >>> algnsent = AlignedSent(['klein', 'ist', 'das', 'Haus'],
-        ...     ['the', 'house', 'is', 'small'], Alignment.fromstring('0-2 1-3 2-1 3-0'))
+        ...     ['the', 'house', 'is', 'small'], Alignment.fromstring('0-3 1-2 2-0 3-1'))
         >>> algnsent.words
         ['klein', 'ist', 'das', 'Haus']
         >>> algnsent.mots
         ['the', 'house', 'is', 'small']
         >>> algnsent.alignment
-        Alignment([(0, 2), (1, 3), (2, 1), (3, 0)])
+        Alignment([(0, 3), (1, 2), (2, 0), (3, 1)])
         >>> from nltk.corpus import comtrans
         >>> print(comtrans.aligned_sents()[54])
         <AlignedSent: 'Weshalb also sollten...' -> 'So why should EU arm...'>
         >>> print(comtrans.aligned_sents()[54].alignment)
         0-0 0-1 1-0 2-2 3-4 3-5 4-7 5-8 6-3 7-9 8-9 9-10 9-11 10-12 11-6 12-6 13-13
 
-    :param words: source language words
+    :param words: Words in the target language sentence
     :type words: list(str)
-    :param mots: target language words
+    :param mots: Words in the source language sentence
     :type mots: list(str)
-    :param alignment: the word-level alignments between the source
-        and target language
+    :param alignment: Word-level alignments between ``words`` and ``mots``.
+        Each alignment is represented as a 2-tuple (words_index, mots_index).
     :type alignment: Alignment
     """
 
@@ -63,10 +67,11 @@ class AlignedSent(object):
 
     def _get_alignment(self):
         return self._alignment
-        
+
     def _set_alignment(self, alignment):
         _check_alignment(len(self.words), len(self.mots), alignment)
         self._alignment = alignment
+
     alignment = property(_get_alignment, _set_alignment)
 
     def __repr__(self):
@@ -82,41 +87,41 @@ class AlignedSent(object):
 
     def _to_dot(self):
         """
-        Dot representation of the aligned sentence 
-        """ 
+        Dot representation of the aligned sentence
+        """
         s = 'graph align {\n'
         s += 'node[shape=plaintext]\n'
-        
-        # Declare node 
+
+        # Declare node
         for w in self._words:
             s += '"%s_source" [label="%s"] \n' % (w, w)
-            
+
         for w in self._mots:
             s += '"%s_target" [label="%s"] \n' % (w, w)
-            
-        # Alignment 
-        for u,v in self._alignment:           
-            s += '"%s_source" -- "%s_target" \n' % (self._words[u] , self._mots[v] )
-             
-        # Connect the source words 
-        for i in range(len(self._words)-1) :
-            s += '"%s_source" -- "%s_source" [style=invis]\n' % (self._words[i] , self._words[i+1])
-            
-        # Connect the target words 
-        for i in range(len(self._mots)-1) :
-            s += '"%s_target" -- "%s_target" [style=invis]\n' % (self._mots[i] , self._mots[i+1])
-            
-        # Put it in the same rank 
-        s  += '{rank = same; %s}\n' % (' '.join('"%s_source"' % w for w in self._words))
-        s  += '{rank = same; %s}\n' % (' '.join('"%s_target"' % w for w in self._mots))
+
+        # Alignment
+        for u, v in self._alignment:
+            s += '"%s_source" -- "%s_target" \n' % (self._words[u], self._mots[v])
+
+        # Connect the source words
+        for i in range(len(self._words) - 1):
+            s += '"%s_source" -- "%s_source" [style=invis]\n' % (self._words[i], self._words[i + 1])
+
+        # Connect the target words
+        for i in range(len(self._mots) - 1):
+            s += '"%s_target" -- "%s_target" [style=invis]\n' % (self._mots[i], self._mots[i + 1])
+
+        # Put it in the same rank
+        s += '{rank = same; %s}\n' % (' '.join('"%s_source"' % w for w in self._words))
+        s += '{rank = same; %s}\n' % (' '.join('"%s_target"' % w for w in self._mots))
 
         s += '}'
-        
-        return s 
-        
+
+        return s
+
     def _repr_svg_(self):
         """
-        Ipython magic : show SVG representation of this ``AlignedSent``. 
+        Ipython magic : show SVG representation of this ``AlignedSent``.
         """
         dot_string = self._to_dot().encode('utf8')
         output_format = 'svg'
@@ -126,10 +131,9 @@ class AlignedSent(object):
         except OSError:
             raise Exception('Cannot find the dot binary from Graphviz package')
         out, err = process.communicate(dot_string)
-         
+
         return out.decode('utf8')
-    
-    
+
     def __str__(self):
         """
         Return a human-readable string representation for this ``AlignedSent``.
@@ -147,7 +151,8 @@ class AlignedSent(object):
         :rtype: AlignedSent
         """
         return AlignedSent(self._mots, self._words,
-                               self._alignment.invert())
+                           self._alignment.invert())
+
 
 @python_2_unicode_compatible
 class Alignment(frozenset):
@@ -223,7 +228,7 @@ class Alignment(frozenset):
         if not positions:
             positions = list(range(len(self._index)))
         for p in positions:
-            image.update(f for _,f in self._index[p])
+            image.update(f for _, f in self._index[p])
         return sorted(image)
 
     def __repr__(self):
@@ -252,9 +257,11 @@ def _giza2pair(pair_string):
     i, j = pair_string.split("-")
     return int(i), int(j)
 
+
 def _naacl2pair(pair_string):
     i, j, p = pair_string.split("-")
     return int(i), int(j)
+
 
 def _check_alignment(num_words, num_mots, alignment):
     """
@@ -278,11 +285,14 @@ def _check_alignment(num_words, num_mots, alignment):
 
 
 PhraseTableEntry = namedtuple('PhraseTableEntry', ['trg_phrase', 'log_prob'])
+
+
 class PhraseTable(object):
     """
     In-memory store of translations for a given phrase, and the log
     probability of the those translations
     """
+
     def __init__(self):
         self.src_phrases = dict()
 

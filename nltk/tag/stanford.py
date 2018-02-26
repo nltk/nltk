@@ -17,16 +17,19 @@ list of paths).
 For more details see the documentation for StanfordPOSTagger and StanfordNERTagger.
 """
 
+from abc import abstractmethod
 import os
 import tempfile
 from subprocess import PIPE
 import warnings
 
+from six import text_type
+
 from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
-from nltk import compat
 
 _stanford_url = 'https://nlp.stanford.edu/software'
+
 
 class StanfordTagger(TaggerI):
     """
@@ -42,25 +45,36 @@ class StanfordTagger(TaggerI):
     _SEPARATOR = ''
     _JAR = ''
 
-    def __init__(self, model_filename, path_to_jar=None, encoding='utf8', verbose=False, java_options='-mx1000m'):
+    def __init__(self, model_filename, path_to_jar=None, encoding='utf8',
+                 verbose=False, java_options='-mx1000m'):
+        # Raise deprecation warning.
+        warnings.warn(str("\nThe StanfordTokenizer will "
+                          "be deprecated in version 3.2.6.\n"
+                          "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead."),
+                      DeprecationWarning, stacklevel=2)
 
         if not self._JAR:
             warnings.warn('The StanfordTagger class is not meant to be '
-                    'instantiated directly. Did you mean StanfordPOSTagger or StanfordNERTagger?')
+                          'instantiated directly. Did you mean '
+                          'StanfordPOSTagger or StanfordNERTagger?')
         self._stanford_jar = find_jar(
                 self._JAR, path_to_jar,
                 searchpath=(), url=_stanford_url,
                 verbose=verbose)
 
         self._stanford_model = find_file(model_filename,
-                env_vars=('STANFORD_MODELS',), verbose=verbose)
+                                         env_vars=('STANFORD_MODELS',),
+                                         verbose=verbose)
 
         self._encoding = encoding
         self.java_options = java_options
 
     @property
+    @abstractmethod
     def _cmd(self):
-      raise NotImplementedError
+        """
+        A property that returns the command that will be executed.
+        """
 
     def tag(self, tokens):
         # This function should return list of tuple rather than list of list
@@ -80,14 +94,14 @@ class StanfordTagger(TaggerI):
         # Write the actual sentences to the temporary input file
         _input_fh = os.fdopen(_input_fh, 'wb')
         _input = '\n'.join((' '.join(x) for x in sentences))
-        if isinstance(_input, compat.text_type) and encoding:
+        if isinstance(_input, text_type) and encoding:
             _input = _input.encode(encoding)
         _input_fh.write(_input)
         _input_fh.close()
 
         # Run the tagger and get the output
         stanpos_output, _stderr = java(cmd, classpath=self._stanford_jar,
-                                                       stdout=PIPE, stderr=PIPE)
+                                       stdout=PIPE, stderr=PIPE)
         stanpos_output = stanpos_output.decode(encoding)
 
         # Delete the temporary file
@@ -98,7 +112,7 @@ class StanfordTagger(TaggerI):
 
         return self.parse_output(stanpos_output, sentences)
 
-    def parse_output(self, text, sentences = None):
+    def parse_output(self, text, sentences=None):
         # Output the tagged sentences
         tagged_sentences = []
         for tagged_sentence in text.strip().split("\n"):
@@ -108,6 +122,7 @@ class StanfordTagger(TaggerI):
                 sentence.append((''.join(word_tags[:-1]), word_tags[-1]))
             tagged_sentences.append(sentence)
         return tagged_sentences
+
 
 class StanfordPOSTagger(StanfordTagger):
     """
@@ -124,7 +139,6 @@ class StanfordPOSTagger(StanfordTagger):
         >>> st.tag('What is the airspeed of an unladen swallow ?'.split())
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
-
     _SEPARATOR = '_'
     _JAR = 'stanford-postagger.jar'
 
@@ -135,7 +149,9 @@ class StanfordPOSTagger(StanfordTagger):
     def _cmd(self):
         return ['edu.stanford.nlp.tagger.maxent.MaxentTagger',
                 '-model', self._stanford_model, '-textFile',
-                self._input_file_path, '-tokenize', 'false','-outputFormatOptions', 'keepEmptySentences']
+                self._input_file_path, '-tokenize', 'false',
+                '-outputFormatOptions', 'keepEmptySentences']
+
 
 class StanfordNERTagger(StanfordTagger):
     """
@@ -168,7 +184,10 @@ class StanfordNERTagger(StanfordTagger):
         # Adding -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerOptions tokenizeNLs=false for not using stanford Tokenizer
         return ['edu.stanford.nlp.ie.crf.CRFClassifier',
                 '-loadClassifier', self._stanford_model, '-textFile',
-                self._input_file_path, '-outputFormat', self._FORMAT, '-tokenizerFactory', 'edu.stanford.nlp.process.WhitespaceTokenizer', '-tokenizerOptions','\"tokenizeNLs=false\"']
+                self._input_file_path, '-outputFormat', self._FORMAT,
+                '-tokenizerFactory',
+                'edu.stanford.nlp.process.WhitespaceTokenizer',
+                '-tokenizerOptions', '\"tokenizeNLs=false\"']
 
     def parse_output(self, text, sentences):
         if self._FORMAT == 'slashTags':
@@ -177,14 +196,15 @@ class StanfordNERTagger(StanfordTagger):
             for tagged_sentence in text.strip().split("\n"):
                 for tagged_word in tagged_sentence.strip().split():
                     word_tags = tagged_word.strip().split(self._SEPARATOR)
-                    tagged_sentences.append((''.join(word_tags[:-1]), word_tags[-1]))
+                    tagged_sentences.append((''.join(word_tags[:-1]),
+                                             word_tags[-1]))
 
             # Separate it according to the input
             result = []
             start = 0
             for sent in sentences:
                 result.append(tagged_sentences[start:start + len(sent)])
-                start += len(sent);
+                start += len(sent)
             return result
 
         raise NotImplementedError

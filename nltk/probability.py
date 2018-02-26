@@ -44,11 +44,13 @@ import random
 import warnings
 import array
 from operator import itemgetter
-from collections import defaultdict
+from collections import defaultdict, Counter
 from functools import reduce
-from nltk import compat
-from nltk.compat import Counter
+from abc import ABCMeta, abstractmethod
 
+from six import itervalues, text_type, add_metaclass
+
+from nltk import compat
 from nltk.internals import raise_unorderable_types
 
 _NINF = float('-1e300')
@@ -105,6 +107,9 @@ class FreqDist(Counter):
         """
         Counter.__init__(self, samples)
 
+        # Cached number of samples in this FreqDist
+        self._N = None
+
     def N(self):
         """
         Return the total number of sample outcomes that have been
@@ -114,7 +119,38 @@ class FreqDist(Counter):
 
         :rtype: int
         """
-        return sum(self.values())
+        if self._N is None:
+            # Not already cached, or cache has been invalidated
+            self._N = sum(self.values())
+        return self._N
+
+    def __setitem__(self, key, val):
+        """
+        Override ``Counter.__setitem__()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).__setitem__(key, val)
+
+    def __delitem__(self, key):
+        """
+        Override ``Counter.__delitem__()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).__delitem__(key)
+
+    def update(self, *args, **kwargs):
+        """
+        Override ``Counter.update()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).update(*args, **kwargs)
+
+    def setdefault(self, key, val):
+        """
+        Override ``Counter.setdefault()`` to invalidate the cached N
+        """
+        self._N = None
+        super(FreqDist, self).setdefault(key, val)
 
     def B(self):
         """
@@ -192,9 +228,10 @@ class FreqDist(Counter):
         :type sample: any
         :rtype: float
         """
-        if self.N() == 0:
+        n = self.N()
+        if n == 0:
             return 0
-        return self[sample] / self.N()
+        return self[sample] / n
 
     def max(self):
         """
@@ -251,7 +288,7 @@ class FreqDist(Counter):
             pylab.title(kwargs["title"])
             del kwargs["title"]
         pylab.plot(freqs, **kwargs)
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
         pylab.xlabel("Samples")
         pylab.ylabel(ylabel)
         pylab.show()
@@ -297,8 +334,8 @@ class FreqDist(Counter):
         """
         return self.__class__(self)
 
-    # Mathematical operatiors 
-    
+    # Mathematical operatiors
+
     def __add__(self, other):
         """
         Add counts from two counters.
@@ -393,6 +430,7 @@ class FreqDist(Counter):
 ##  Probability Distributions
 ##//////////////////////////////////////////////////////
 
+@add_metaclass(ABCMeta)
 class ProbDistI(object):
     """
     A probability distribution for the outcomes of an experiment.  A
@@ -410,10 +448,13 @@ class ProbDistI(object):
     """True if the probabilities of the samples in this probability
        distribution will always sum to one."""
 
+    @abstractmethod
     def __init__(self):
-        if self.__class__ == ProbDistI:
-            raise NotImplementedError("Interfaces can't be instantiated")
+        """
+        Classes inheriting from ProbDistI should implement __init__.
+        """
 
+    @abstractmethod
     def prob(self, sample):
         """
         Return the probability for a given sample.  Probabilities
@@ -424,7 +465,6 @@ class ProbDistI(object):
         :type sample: any
         :rtype: float
         """
-        raise NotImplementedError()
 
     def logprob(self, sample):
         """
@@ -439,6 +479,7 @@ class ProbDistI(object):
         p = self.prob(sample)
         return (math.log(p, 2) if p != 0 else _NINF)
 
+    @abstractmethod
     def max(self):
         """
         Return the sample with the greatest probability.  If two or
@@ -447,8 +488,8 @@ class ProbDistI(object):
 
         :rtype: any
         """
-        raise NotImplementedError()
 
+    @abstractmethod
     def samples(self):
         """
         Return a list of all samples that have nonzero probabilities.
@@ -456,7 +497,6 @@ class ProbDistI(object):
 
         :rtype: list
         """
-        raise NotImplementedError()
 
     # cf self.SUM_TO_ONE
     def discount(self):
@@ -562,6 +602,11 @@ class RandomProbDist(ProbDistI):
             randrow[-1] -= total - 1
 
         return dict((s, randrow[i]) for i, s in enumerate(samples))
+
+    def max(self):
+        if not hasattr(self, '_max'):
+            self._max = max((p,v) for (v,p) in self._probs.items())[1]
+        return self._max
 
     def prob(self, sample):
         return self._probs.get(sample, 0)
@@ -1482,6 +1527,10 @@ class MutableProbDist(ProbDistI):
                 self._data[i] = prob_dist.prob(samples[i])
         self._logs = store_logs
 
+    def max(self):
+        # inherit documentation
+        return max((p,v) for (v,p) in self._sample_dict.items())[1]
+
     def samples(self):
         # inherit documentation
         return self._samples
@@ -1749,6 +1798,7 @@ class ConditionalFreqDist(defaultdict):
         :type cond_samples: Sequence of (condition, sample) tuples
         """
         defaultdict.__init__(self, FreqDist)
+
         if cond_samples:
             for (cond, sample) in cond_samples:
                 self[cond][sample] += 1
@@ -1776,7 +1826,7 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in compat.itervalues(self))
+        return sum(fdist.N() for fdist in itervalues(self))
 
     def plot(self, *args, **kwargs):
         """
@@ -1820,7 +1870,7 @@ class ConditionalFreqDist(defaultdict):
 
         pylab.legend(loc=legend_loc)
         pylab.grid(True, color="silver")
-        pylab.xticks(range(len(samples)), [compat.text_type(s) for s in samples], rotation=90)
+        pylab.xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
         if title:
             pylab.title(title)
         pylab.xlabel("Samples")
@@ -1865,7 +1915,7 @@ class ConditionalFreqDist(defaultdict):
             print()
 
     # Mathematical operators
-    
+
     def __add__(self, other):
         """
         Add counts from two ConditionalFreqDists.
@@ -1921,7 +1971,7 @@ class ConditionalFreqDist(defaultdict):
         return result
 
     def __and__(self, other):
-        """ 
+        """
         Intersection is the minimum of corresponding counts.
         """
         if not isinstance(other, ConditionalFreqDist):
@@ -1962,6 +2012,7 @@ class ConditionalFreqDist(defaultdict):
 
 
 @compat.python_2_unicode_compatible
+@add_metaclass(ABCMeta)
 class ConditionalProbDistI(dict):
     """
     A collection of probability distributions for a single experiment
@@ -1975,8 +2026,11 @@ class ConditionalProbDistI(dict):
     condition to the ``ProbDist`` for the experiment under that
     condition.
     """
+    @abstractmethod
     def __init__(self):
-        raise NotImplementedError("Interfaces can't be instantiated")
+        """
+        Classes inheriting from ConditionalProbDistI should implement __init__.
+        """
 
     def conditions(self):
         """

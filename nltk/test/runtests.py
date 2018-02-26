@@ -16,18 +16,22 @@ NLTK_TEST_DIR = os.path.join(NLTK_ROOT, 'nltk')
 if __name__ == '__main__':
     # there shouldn't be import from NLTK for coverage to work properly
     from doctest_nose_plugin import DoctestFix
+
     try:
         # Import RedNose plugin for colored test output
         from rednose import RedNose
+
         rednose_available = True
     except ImportError:
         rednose_available = False
+
 
     class NltkPluginManager(PluginManager):
         """
         Nose plugin manager that replaces standard doctest plugin
         with a patched version and adds RedNose plugin for colored test output.
         """
+
         def loadPlugins(self):
             for plug in builtin.plugins:
                 if plug != Doctest:
@@ -37,6 +41,7 @@ if __name__ == '__main__':
                 self.addPlugin(RedNose())
 
             super(NltkPluginManager, self).loadPlugins()
+
 
     manager = NltkPluginManager()
     manager.loadPlugins()
@@ -64,17 +69,18 @@ if __name__ == '__main__':
         ]
 
     arguments = [
-        '--exclude=', # why is this needed?
-        #'--with-xunit',
-        #'--xunit-file=$WORKSPACE/nosetests.xml',
-        #'--nocapture',
-        '--with-doctest',
-        #'--doctest-tests',
-        #'--debug=nose,nose.importer,nose.inspector,nose.plugins,nose.result,nose.selector',
-        '--doctest-extension=.doctest',
-        '--doctest-fixtures=_fixt',
-        '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL,+ALLOW_UNICODE,doctestencoding=utf-8',
-        #'--verbosity=3',
-    ] + args
+                    '--exclude=',  # why is this needed?
+                    # '--with-xunit',
+                    # '--xunit-file=$WORKSPACE/nosetests.xml',
+                    # '--nocapture',
+                    '--with-doctest',
+                    # '--doctest-tests',
+                    # '--debug=nose,nose.importer,nose.inspector,nose.plugins,nose.result,nose.selector',
+                    '--doctest-extension=.doctest',
+                    '--doctest-fixtures=_fixt',
+                    '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL,+ALLOW_UNICODE,'
+                    'doctestencoding=utf-8',
+                    # '--verbosity=3',
+                ] + args
 
     nose.main(argv=arguments, plugins=manager.plugins)

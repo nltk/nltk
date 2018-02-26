@@ -14,15 +14,19 @@ Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
 from __future__ import print_function, unicode_literals
+from abc import ABCMeta, abstractmethod
+from six import add_metaclass
 
 # TODO: add LabelledTree (can be used for dependency trees)
 
 import re
 
+from six import string_types
+
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
 from nltk.util import slice_bounds
-from nltk.compat import string_types, python_2_unicode_compatible, unicode_repr
+from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk.internals import raise_unorderable_types
 
 ######################################################################
@@ -694,7 +698,7 @@ class Tree(list):
         from nltk.treeprettyprinter import TreePrettyPrinter
         print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs),
               file=stream)
-        
+
     def __repr__(self):
         childstr = ", ".join(unicode_repr(c) for c in self)
         return '%s(%s, [%s])' % (type(self).__name__, unicode_repr(self._label), childstr)
@@ -877,7 +881,7 @@ class ImmutableTree(Tree):
 ######################################################################
 ## Parented trees
 ######################################################################
-
+@add_metaclass(ABCMeta)
 class AbstractParentedTree(Tree):
     """
     An abstract base class for a ``Tree`` that automatically maintains
@@ -921,7 +925,7 @@ class AbstractParentedTree(Tree):
     #////////////////////////////////////////////////////////////
     # Parent management
     #////////////////////////////////////////////////////////////
-
+    @abstractmethod
     def _setparent(self, child, index, dry_run=False):
         """
         Update the parent pointer of ``child`` to point to ``self``.  This
@@ -942,8 +946,8 @@ class AbstractParentedTree(Tree):
             parent pointer; just check for any error conditions, and
             raise an exception if one is found.
         """
-        raise NotImplementedError()
 
+    @abstractmethod
     def _delparent(self, child, index):
         """
         Update the parent pointer of ``child`` to not point to self.  This
@@ -956,7 +960,6 @@ class AbstractParentedTree(Tree):
         :type index: int
         :param index: The index of ``child`` in ``self``.
         """
-        raise NotImplementedError()
 
     #////////////////////////////////////////////////////////////
     # Methods that add/remove children
@@ -1600,4 +1603,3 @@ __all__ = ['ImmutableProbabilisticTree', 'ImmutableTree', 'ProbabilisticMixIn',
            'ProbabilisticTree', 'Tree', 'bracket_parse',
            'sinica_parse', 'ParentedTree', 'MultiParentedTree',
            'ImmutableParentedTree', 'ImmutableMultiParentedTree']
-

@@ -46,7 +46,7 @@ Unit tests for Snowball stemmer
 See which languages are supported.
 
     >>> print(" ".join(SnowballStemmer.languages))
-    danish dutch english finnish french german hungarian italian
+    arabic danish dutch english finnish french german hungarian italian
     norwegian porter portuguese romanian russian spanish swedish
 
 Create a new instance of a language specific subclass.

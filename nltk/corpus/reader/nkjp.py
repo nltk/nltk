@@ -8,7 +8,8 @@
 import functools
 import os
 import tempfile
-from nltk import compat
+
+from six import string_types
 
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
@@ -53,7 +54,7 @@ class NKJPCorpusReader(XMLCorpusReader):
         x.header(fileids=['WilkDom', '/home/USER/nltk_data/corpora/nkjp/WilkWilczy'])
         x.tagged_words(fileids=['WilkDom', '/home/USER/nltk_data/corpora/nkjp/WilkWilczy'], tags=['subst', 'comp'])
         """
-        if isinstance(fileids, compat.string_types):
+        if isinstance(fileids, string_types):
             XMLCorpusReader.__init__(self, root, fileids + '.*/header.xml')
         else:
             XMLCorpusReader.__init__(self, root, [fileid + '/header.xml' for fileid in fileids])
