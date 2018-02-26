@@ -124,6 +124,4 @@ class DependencyEvaluator(object):
                     if parsed_node["rel"] == gold_node["rel"]:
                         corrL += 1
 
-        return corr / total, corrL / total
-
-
+        return corrL / total, corr / total
