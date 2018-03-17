@@ -154,7 +154,7 @@ class TreebankWordTokenizer(TokenizerI):
             ... (24, 26), (27, 30), (31, 32), (32, 36), (36, 37), (37, 38),
             ... (40, 46), (47, 48), (48, 51), (51, 52), (53, 55), (56, 59),
             ... (60, 62), (63, 68), (69, 70), (70, 76), (76, 77), (77, 78)]
-            >>> TreebankWordTokenizer().span_tokenize(s) == expected
+            >>> list(TreebankWordTokenizer().span_tokenize(s)) == expected
             True
             >>> expected = ['Good', 'muffins', 'cost', '$', '3.88', 'in',
             ... 'New', '(', 'York', ')', '.', 'Please', '(', 'buy', ')',
@@ -170,7 +170,7 @@ class TreebankWordTokenizer(TokenizerI):
             ... (37, 44), (44, 45), (46, 51), (52, 56), (57, 58), (58, 62),
             ... (64, 68), (69, 71), (72, 75), (76, 77), (77, 81), (81, 82),
             ... (82, 83), (83, 84)]
-            >>> TreebankWordTokenizer().span_tokenize(s) == expected
+            >>> list(TreebankWordTokenizer().span_tokenize(s)) == expected
             True
             >>> expected = ['I', 'said', ',', '"', 'I', "'d", 'like', 'to',
             ... 'buy', 'some', "''", "good", 'muffins', '"', 'which', 'cost',
@@ -194,7 +194,8 @@ class TreebankWordTokenizer(TokenizerI):
         else:
             tokens = raw_tokens
 
-        return align_tokens(tokens, text)
+        for tok in align_tokens(tokens, text):
+            yield tok
 
 
 class TreebankWordDetokenizer(TokenizerI):
@@ -234,7 +235,7 @@ class TreebankWordDetokenizer(TokenizerI):
     True
 
     During tokenization it's safe to add more spaces but during detokenization,
-    simply undoing the padding doesn't really help. 
+    simply undoing the padding doesn't really help.
 
     - During tokenization, left and right pad is added to [!?], when
       detokenizing, only left shift the [!?] is needed.
