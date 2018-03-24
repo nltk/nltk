@@ -225,7 +225,7 @@ class ConllCorpusReader(CorpusReader):
         return list(zip(self._get_column(grid, self._colmap['words']), pos_tags))
 
     def _get_iob_words(self, grid, tagset=None, columns=None):
-        columns = columns if columns else ["chunk"]
+        columns = columns if columns else ['chunk']
         pos_tags = self._get_column(grid, self._colmap['pos'])
         if tagset and tagset != self._tagset:
             pos_tags = [map_tag(self._tagset, tagset, t) for t in pos_tags]
