@@ -233,6 +233,7 @@
 - Somnath Rakshit <https://github.com/somnathrakshit>
 - Anlan Du
 - Pulkit Maloo <https://github.com/pulkitmaloo>
+- Brandon M. Burroughs <https://github.com/brandonmburroughs>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer

@@ -116,9 +116,13 @@ class TextTilingTokenizer(TokenizerI):
             gap_scores = self._block_comparison(tokseqs, token_table)
         elif self.similarity_method == VOCABULARY_INTRODUCTION:
             raise NotImplementedError("Vocabulary introduction not implemented")
+        else:
+            raise ValueError("Similarity method {} not recognized".format(self.similarity_method))
 
         if self.smoothing_method == DEFAULT_SMOOTHING:
             smooth_scores = self._smooth_scores(gap_scores)
+        else:
+            raise ValueError("Smoothing method {} not recognized".format(self.smoothing_method))
         # End of Lexical score Determination
 
         # Boundary identification
