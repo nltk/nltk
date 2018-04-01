@@ -35,7 +35,11 @@ class ConllCorpusReader(CorpusReader):
     annotation type.  The set of columns used by CoNLL-style files can
     vary from corpus to corpus; the ``ConllCorpusReader`` constructor
     therefore takes an argument, ``columntypes``, which is used to
-    specify the columns that are used by a given corpus.
+    specify the columns that are used by a given corpus. By default
+    columns are split by consecutive whitespaces, with the
+    ``separator`` argument you can set a string to split by (e.g.
+    ``\'\t\'``).
+
 
     @todo: Add support for reading from corpora where different
         parallel files contain different columns.
@@ -70,7 +74,7 @@ class ConllCorpusReader(CorpusReader):
     def __init__(self, root, fileids, columntypes,
                  chunk_types=None, root_label='S', pos_in_tree=False,
                  srl_includes_roleset=True, encoding='utf8',
-                 tree_class=Tree, tagset=None):
+                 tree_class=Tree, tagset=None, separator=None):
         for columntype in columntypes:
             if columntype not in self.COLUMN_TYPES:
                 raise ValueError('Bad column type %r' % columntype)
@@ -84,6 +88,7 @@ class ConllCorpusReader(CorpusReader):
         self._tree_class = tree_class
         CorpusReader.__init__(self, root, fileids, encoding)
         self._tagset = tagset
+        self.sep = separator
 
     #/////////////////////////////////////////////////////////////////
     # Data Access Methods
@@ -194,7 +199,7 @@ class ConllCorpusReader(CorpusReader):
             block = block.strip()
             if not block: continue
 
-            grid = [line.split() for line in block.split('\n')]
+            grid = [line.split(self.sep) for line in block.split('\n')]
 
             # If there's a docstart row, then discard. ([xx] eventually it
             # would be good to actually use it)
@@ -516,8 +521,8 @@ class ConllChunkCorpusReader(ConllCorpusReader):
     pos, and chunk.
     """
     def __init__(self, root, fileids, chunk_types, encoding='utf8',
-                 tagset=None):
+                 tagset=None, separator=None):
         ConllCorpusReader.__init__(
             self, root, fileids, ('words', 'pos', 'chunk'),
             chunk_types=chunk_types, encoding=encoding,
-            tagset=tagset)
+            tagset=tagset, separator=separator)
