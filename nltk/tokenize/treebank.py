@@ -23,7 +23,7 @@ from nltk.tokenize.util import align_tokens
 
 class MacIntyreContractions:
     """
-    List of contractions adapted from Robert MacIntyre's tokenizer.
+    List of contractions from Robert MacIntyre's tokenizer.
     """
     CONTRACTIONS2 = [r"(?i)\b(can)(?#X)(not)\b",
                      r"(?i)\b(d)(?#X)('ye)\b",
