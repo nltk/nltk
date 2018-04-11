@@ -67,7 +67,7 @@ class TreebankWordTokenizer(TokenizerI):
     STARTING_QUOTES = [
         (re.compile(r'^\"'), r'``'),
         (re.compile(r'(``)'), r' \1 '),
-        (re.compile(r"([ (\[{<])(\"|\'{2})"), r'\1 `` '),
+        (re.compile(r"([ \(\[{<])(\"|\'{2})"), r'\1 `` '),
     ]
 
     # punctuation
