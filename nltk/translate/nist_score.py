@@ -93,49 +93,59 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     # Before proceeding to compute NIST, perform sanity checks.
     assert len(list_of_references) == len(hypotheses), "The number of hypotheses and their reference(s) should be the same"
 
-    # Compute the information weights based on the reference sentences.
+    # Collect the ngram coounts from the reference sentences.
     ngram_freq = Counter()
+    total_reference_words = 0
     for references in list_of_references: # For each source sent, there's a list of reference sents.
         for reference in references:
             # For each order of ngram, count the ngram occurrences.
-            for i, _ in enumerate(range(1,n+1)):
+            for i in range(1,n+1):
                 ngram_freq.update(ngrams(reference, i))
+            total_reference_words += len(reference)
 
-    hyp_lengths, ref_lengths = 0, 0
-    sysoutput_lengths = Counter()    # Key = ngram order, and value = no. of ngram in hyp.
-    information_weights = Counter()  # Key = ngram order, and value = sum of info weights per nth order.
-    # Iterate through each hypothesis and their corresponding references.
-    for references, hypothesis in zip(list_of_references, hypotheses):
-        # Calculate the hypothesis length and the closest reference length.
-        # Adds them to the corpus-level hypothesis and reference counts.
-        hyp_len =  len(hypothesis)
-        hyp_lengths += hyp_len
-        ref_lengths += closest_ref_length(references, hyp_len)
-
-        # For each order of ngram.
-        for i, _ in enumerate(range(1,n+1)):
-            # Counter of ngrams in hypothesis.
-            hyp_ngrams = Counter(ngrams(hypothesis, i)) if len(hypothesis) >= i else Counter()
-            # Adds the no. of ngrams in the hypothesis.
-            sysoutput_lengths[i] += len(hyp_ngrams)
-            # Compute the information weights per overlapped ngram.
-            for ng in hyp_ngrams:
-                # Eqn 2 in Doddington (2002):
-                # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
-                numerator = ngram_freq[ng]
-                denominator = ngram_freq[ng[:-1]] if i > 1 else hyp_len
-                if numerator == 0 or denominator == 0:
-                    information_weights[i] += 0
-                else:
-                    information_weights[i] += -1 * math.log(numerator/ denominator, 2)
-
-    # Calculate corpus-level brevity penalty.
-    bp = nist_length_penalty(ref_lengths, hyp_lengths)
-
-    return sum(info_i/sysoutput_lengths[i] for i, info_i in information_weights.items()) * bp
+    # Compute the information weights based on the reference sentences.
+    information_weights = {}
+    for _ngram in ngram_freq: # w_1 ... w_n
+        _mgram = _ngram[:-1] #  w_1 ... w_n-1
+        if _mgram and _mgram in ngram_freq:
+            denominator = ngram_freq[_mgram]
+        else:
+            denominator = total_reference_words
+        # Eqn 2 in Doddington (2002):
+        # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
+        information_weights[_ngram] = -1 * math.log(ngram_freq[_ngram]/denominator) / math.log(2)
 
 
-def nist_length_penalty(closest_ref_len, hyp_len):
+    nist_scores_per_ngram = Counter()
+
+    # For each order of ngram.
+    for i in range(1,n+1):
+        # Iterate through each hypothesis and their corresponding references.
+        for references, hypothesis in zip(list_of_references, hypotheses):
+            hyp_len = len(hypothesis)
+            nist_score_per_ref = []
+            # For each reference.
+            for reference in references:
+                ref_len = len(reference)
+                # Counter of ngrams in hypothesis.
+                hyp_ngrams = Counter(ngrams(hypothesis, i)) if len(hypothesis) >= i else Counter()
+                ref_ngrams = Counter(ngrams(reference, i)) if len(reference) >=i else Counter()
+                ngram_overlaps = hyp_ngrams & ref_ngrams
+                # Precision part of the score in Eqn 3
+                numerator = sum([information_weights[_ngram]
+                                 for _ngram in ngram_overlaps])
+                denominator = sum(hyp_ngrams.values())
+                # Brevity penalty part of the score in Eqn 3
+                bp = nist_length_penalty(ref_len, hyp_len)
+                score = numerator/denominator * bp
+                nist_score_per_ref.append(score)
+                #print(numerator, denominator, score)
+            nist_scores_per_ngram[i] += max(nist_score_per_ref)
+
+    return sum(nist_scores_per_ngram.values()) / len(list_of_references)
+
+
+def nist_length_penalty(ref_len, hyp_len):
     """
     Calculates the NIST length penalty, from Eq. 3 in Doddington (2002)
 
@@ -151,10 +161,10 @@ def nist_length_penalty(closest_ref_len, hyp_len):
     of the score of small variations in the length of a translation.
     See Fig. 4 in  Doddington (2002)
     """
-    ratio = closest_ref_len / hyp_len
+    ratio = hyp_len / ref_len
     if 0 < ratio < 1:
         ratio_x, score_x = 1.5, 0.5
-        beta = math.log(score_x) / math.log(score_x)**2
-        return math.exp(beta * math.log(ratio)**2)
+        beta = math.log(score_x) / math.log(ratio_x) / math.log(ratio_x)
+        return math.exp(beta * math.log(ratio) * math.log(ratio))
     else: # ratio <= 0 or ratio >= 1
         return max(min(ratio, 1.0), 0.0)
