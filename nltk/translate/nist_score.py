@@ -64,10 +64,10 @@ def sentence_nist(references, hypothesis, n=5):
     ...               'of', 'the', 'party']
 
     >>> sentence_nist([reference1, reference2, reference3], hypothesis1) # doctest: +ELLIPSIS
-    0.0854...
+    3.3709...
 
     >>> sentence_nist([reference1, reference2, reference3], hypothesis2) # doctest: +ELLIPSIS
-    0.1485...
+    1.6910...
 
     :param references: reference sentences
     :type references: list(list(str))
@@ -115,7 +115,6 @@ def corpus_nist(list_of_references, hypotheses, n=5):
         # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
         information_weights[_ngram] = -1 * math.log(ngram_freq[_ngram]/denominator) / math.log(2)
 
-
     nist_scores_per_ngram = Counter()
 
     # For each order of ngram.
@@ -124,6 +123,7 @@ def corpus_nist(list_of_references, hypotheses, n=5):
         for references, hypothesis in zip(list_of_references, hypotheses):
             hyp_len = len(hypothesis)
             nist_score_per_ref = []
+
             # For each reference.
             for reference in references:
                 ref_len = len(reference)
@@ -137,7 +137,7 @@ def corpus_nist(list_of_references, hypotheses, n=5):
                 denominator = sum(hyp_ngrams.values())
                 # Brevity penalty part of the score in Eqn 3
                 bp = nist_length_penalty(ref_len, hyp_len)
-                score = numerator/denominator * bp
+                score = 0 if denominator == 0 else numerator/denominator * bp
                 nist_score_per_ref.append(score)
                 #print(numerator, denominator, score)
             nist_scores_per_ngram[i] += max(nist_score_per_ref)
