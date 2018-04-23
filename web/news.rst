@@ -1,6 +1,18 @@
 NLTK News
 =========
 
+2018
+----
+
+NLTK 3.3 release: April 2018
+   Support Python 3.6,
+   New interface to CoreNLP,
+   Support synset retrieval by sense key,
+   Minor fixes to CoNLL Corpus Reader, AlignedSent,
+   Fixed minor inconsistencies in APIs and API documentation,
+   Better conformance to PEP8,
+   Drop Moses Tokenizer (incompatible license)
+
 2017
 ----
 

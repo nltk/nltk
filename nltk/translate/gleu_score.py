@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: GLEU Score
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2018 NLTK Project
 # Authors:
 # Contributors: Mike Schuster, Michael Wayne Goodman, Liling Tan
 # URL: <http://nltk.org/>

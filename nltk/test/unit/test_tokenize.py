@@ -54,6 +54,25 @@ class TestTokenize(unittest.TestCase):
         except LookupError as e:
             raise SkipTest(str(e))
 
+    def test_phone_tokenizer(self):
+        """
+        Test a string that resembles a phone number but contains a newline
+        """
+
+        # Should be recognized as a phone number, albeit one with multiple spaces
+        tokenizer = TweetTokenizer()
+        test1 = "(393)  928 -3010"
+        expected = ['(393)  928 -3010']
+        result = tokenizer.tokenize(test1)
+        self.assertEqual(result, expected)
+
+        # Due to newline, first three elements aren't part of a phone number;
+        # fourth is
+        test2= "(393)\n928 -3010"
+        expected = ['(', '393', ')', "928 -3010"]
+        result = tokenizer.tokenize(test2)
+        self.assertEqual(result, expected)
+
     def test_remove_handle(self):
         """
         Test remove_handle() from casual.py with specially crafted edge cases
@@ -123,7 +142,7 @@ class TestTokenize(unittest.TestCase):
             (40, 46), (47, 48), (48, 51), (51, 52), (53, 55), (56, 59),
             (60, 62), (63, 68), (69, 70), (70, 76), (76, 77), (77, 78)
         ]
-        result = tokenizer.span_tokenize(test1)
+        result = list(tokenizer.span_tokenize(test1))
         self.assertEqual(result, expected)
 
         # Test case with double quotation
@@ -134,7 +153,7 @@ class TestTokenize(unittest.TestCase):
             (65, 68), (69, 74), (75, 76), (77, 85), (86, 92), (93, 95), (96, 102),
             (103, 109)
         ]
-        result = tokenizer.span_tokenize(test2)
+        result = list(tokenizer.span_tokenize(test2))
         self.assertEqual(result, expected)
 
         # Test case with double qoutation as well as converted quotations
@@ -145,5 +164,5 @@ class TestTokenize(unittest.TestCase):
             (65, 68), (69, 74), (75, 76), (77, 79), (79, 87), (87, 89), (90, 96),
             (97, 99), (100, 106), (107, 113)
         ]
-        result = tokenizer.span_tokenize(test3)
+        result = list(tokenizer.span_tokenize(test3))
         self.assertEqual(result, expected)

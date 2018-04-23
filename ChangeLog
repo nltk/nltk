@@ -1,3 +1,15 @@
+Version 3.3 2018-04-21
+* Support Python 3.6
+* New interface to CoreNLP
+* Support synset retrieval by sense key
+* Minor fixes to CoNLL Corpus Reader, AlignedSent
+* Fixed minor inconsistencies in APIs and API documentation
+* Better conformance to PEP8
+* Drop moses.py (incompatible license)
+
+Special thanks to Liling Tan for leading our transition to Python 3.6.
+Thanks to other contributors listed here: https://github.com/nltk/nltk/blob/develop/AUTHORS.md
+
 Version 3.2.5 2017-09-24
 
 * Arabic stemmers (ARLSTem, Snowball)

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Punkt sentence tokenizer
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2018 NLTK Project
 # Algorithm: Kiss & Strunk (2006)
 # Author: Willy <willy@csse.unimelb.edu.au> (original Python port)
 #         Steven Bird <stevenbird1@gmail.com> (additions)
@@ -1272,13 +1272,14 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
     def span_tokenize(self, text, realign_boundaries=True):
         """
-        Given a text, returns a list of the (start, end) spans of sentences
+        Given a text, generates (start, end) spans of sentences
         in the text.
         """
         slices = self._slices_from_text(text)
         if realign_boundaries:
             slices = self._realign_boundaries(text, slices)
-        return [(sl.start, sl.stop) for sl in slices]
+        for sl in slices:
+            yield (sl.start, sl.stop)
 
     def sentences_from_text(self, text, realign_boundaries=True):
         """

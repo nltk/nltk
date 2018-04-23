@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: ChrF score
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2018 NLTK Project
 # Authors: Maja Popovic
 # Contributors: Liling Tan
 # URL: <http://nltk.org/>

@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2017 NLTK Project
+.. Copyright (C) 2001-2018 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ================
@@ -1472,9 +1472,12 @@ constructor will first call its base class's constructor, and then
 store the customizable parameters.  For example, the
 `ConllChunkCorpusReader`\ 's constructor is defined as follows:
 
-    >>> def __init__(self, root, files, chunk_types):
-    ...     CorpusReader.__init__(self, root, files)
-    ...     self.chunk_types = tuple(chunk_types)
+    def __init__(self, root, fileids, chunk_types, encoding='utf8',
+                 tagset=None, separator=None):
+        ConllCorpusReader.__init__(
+                self, root, fileids, ('words', 'pos', 'chunk'),
+                chunk_types=chunk_types, encoding=encoding,
+                tagset=tagset, separator=separator)
 
 If your corpus reader does not implement any customization parameters,
 then you can often just inherit the base class's constructor.

@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Twitter Tokenizer
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2018 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <> (modifications)
@@ -127,15 +127,15 @@ REGEXPS = (
     (?:
       (?:            # (international)
         \+?[01]
-        [\-\s.]*
+        [ *\-.\)]*
       )?
       (?:            # (area code)
         [\(]?
         \d{3}
-        [\-\s.\)]*
+        [ *\-.\)]*
       )?
       \d{3}          # exchange
-      [\-\s.]*
+      [ *\-.\)]*
       \d{4}          # base
     )"""
     ,

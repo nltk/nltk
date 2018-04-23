@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2018 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 #         Lakhdar Benzahia <lakhdar.benzahia@gmail.com>  (co-writer)
