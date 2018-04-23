@@ -34,4 +34,4 @@ class TestNIST(unittest.TestCase):
                 for i, mteval_nist in zip(range(1,10), mteval_nist_scores):
                     nltk_nist = corpus_nist(references, hypotheses, i)
                     # Check that the NIST scores difference is less than 0.5
-                    assert abs(mteval_nist - nltk_nist) < 0.5
+                    assert abs(mteval_nist - nltk_nist) < 0.005
