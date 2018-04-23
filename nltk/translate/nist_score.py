@@ -104,28 +104,64 @@ def corpus_nist(list_of_references, hypotheses, n=5):
             total_reference_words += len(reference)
 
     # Compute the information weights based on the reference sentences.
+    # Eqn 2 in Doddington (2002):
+    # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
     information_weights = {}
     for _ngram in ngram_freq: # w_1 ... w_n
         _mgram = _ngram[:-1] #  w_1 ... w_n-1
+        # From https://github.com/moses-smt/mosesdecoder/blob/master/scripts/generic/mteval-v13a.pl#L546
+        # it's computed as such:
+        #     denominator = ngram_freq[_mgram] if _mgram and _mgram in ngram_freq else denominator = total_reference_words
+        #     information_weights[_ngram] = -1 * math.log(ngram_freq[_ngram]/denominator) / math.log(2)
+        #
+        # Mathematically, it's equivalent to the our implementation:
         if _mgram and _mgram in ngram_freq:
-            denominator = ngram_freq[_mgram]
+            numerator = ngram_freq[_mgram]
         else:
-            denominator = total_reference_words
-        # Eqn 2 in Doddington (2002):
-        # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
-        information_weights[_ngram] = -1 * math.log(ngram_freq[_ngram]/denominator) / math.log(2)
+            numerator = total_reference_words
+        information_weights[_ngram] = math.log(numerator/ngram_freq[_ngram], 2)
 
-    nist_scores_per_ngram = Counter()
-
+    # Micro-average.
+    nist_precision_numerator_per_ngram = Counter()
+    nist_precision_denominator_per_ngram = Counter()
+    ref_lens, hyp_lens = 0, 0
     # For each order of ngram.
     for i in range(1,n+1):
         # Iterate through each hypothesis and their corresponding references.
         for references, hypothesis in zip(list_of_references, hypotheses):
             hyp_len = len(hypothesis)
+            # Find reference with the best NIST score.
             nist_score_per_ref = []
+            reference = references[0]
+            ref_len = len(reference)
+            # Counter of ngrams in hypothesis.
+            hyp_ngrams = Counter(ngrams(hypothesis, i)) if len(hypothesis) >= i else Counter()
+            ref_ngrams = Counter(ngrams(reference, i)) if len(reference) >=i else Counter()
+            ngram_overlaps = hyp_ngrams & ref_ngrams
+            # Precision part of the score in Eqn 3
+            for _ngram in ngram_overlaps:
+                nist_precision_numerator_per_ngram[i] += information_weights[_ngram]
+            nist_precision_denominator_per_ngram[i] += sum(hyp_ngrams.values())
+            ref_lens += ref_len
+            hyp_lens += hyp_len
 
-            # For each reference.
-            for reference in references:
+    nist_precision = 0
+    for i in nist_precision_numerator_per_ngram:
+        precision = nist_precision_numerator_per_ngram[i] / nist_precision_denominator_per_ngram[i]
+        nist_precision+= precision
+    return nist_precision * nist_length_penalty(ref_len, hyp_len)
+
+
+    # Macro-average.
+    nist_scores_per_ngram = Counter()
+    # For each order of ngram.
+    for i in range(1,n+1):
+        # Iterate through each hypothesis and their corresponding references.
+        for references, hypothesis in zip(list_of_references, hypotheses):
+            hyp_len = len(hypothesis)
+            # Find reference with the best NIST score.
+            nist_score_per_ref = []
+            for reference in references: # For each reference.
                 ref_len = len(reference)
                 # Counter of ngrams in hypothesis.
                 hyp_ngrams = Counter(ngrams(hypothesis, i)) if len(hypothesis) >= i else Counter()
@@ -139,7 +175,6 @@ def corpus_nist(list_of_references, hypotheses, n=5):
                 bp = nist_length_penalty(ref_len, hyp_len)
                 score = 0 if denominator == 0 else numerator/denominator * bp
                 nist_score_per_ref.append(score)
-                #print(numerator, denominator, score)
             nist_scores_per_ngram[i] += max(nist_score_per_ref)
 
     return sum(nist_scores_per_ngram.values()) / len(list_of_references)
@@ -164,7 +199,7 @@ def nist_length_penalty(ref_len, hyp_len):
     ratio = hyp_len / ref_len
     if 0 < ratio < 1:
         ratio_x, score_x = 1.5, 0.5
-        beta = math.log(score_x) / math.log(ratio_x) / math.log(ratio_x)
-        return math.exp(beta * math.log(ratio) * math.log(ratio))
+        beta = math.log(score_x) / math.log(ratio_x)**2
+        return math.exp(beta * math.log(ratio)**2)
     else: # ratio <= 0 or ratio >= 1
         return max(min(ratio, 1.0), 0.0)
