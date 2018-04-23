@@ -63,8 +63,10 @@ class DependencyEvaluator(object):
     >>> de = DependencyEvaluator([parsed_sent],[gold_sent])
     >>> las, uas = de.eval()
     >>> las
+    0.6...
+    >>> uas
     0.8...
-    >>> abs(uas - 0.6) < 0.00001
+    >>> abs(uas - 0.8) < 0.00001
     True
     """
 
