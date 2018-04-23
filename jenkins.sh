@@ -3,7 +3,8 @@
 cd `dirname $0`
 
 #download nltk python dependencies
-pip install --upgrade -r pip-req.txt --allow-external matplotlib --allow-unverified matplotlib
+pip install --upgrade -r pip-req.txt --allow-unverified matplotlib --allow-external matplotlib
+pip install --upgrade scikit-learn
 pip install --upgrade https://github.com/PyCQA/pylint/archive/master.zip 
 
 #download nltk data packages
