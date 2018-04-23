@@ -15,14 +15,6 @@ import fractions
 from collections import Counter
 
 from nltk.util import ngrams
-from nltk.translate.bleu_score import modified_precision, closest_ref_length
-
-try:
-    fractions.Fraction(0, 1000, _normalize=False)
-    from fractions import Fraction
-except TypeError:
-    from nltk.compat import Fraction
-
 
 def sentence_nist(references, hypothesis, n=5):
     """
@@ -124,60 +116,41 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     # Micro-average.
     nist_precision_numerator_per_ngram = Counter()
     nist_precision_denominator_per_ngram = Counter()
-    ref_lens, hyp_lens = 0, 0
+    l_ref, l_sys = 0, 0
     # For each order of ngram.
     for i in range(1,n+1):
         # Iterate through each hypothesis and their corresponding references.
         for references, hypothesis in zip(list_of_references, hypotheses):
             hyp_len = len(hypothesis)
+
             # Find reference with the best NIST score.
             nist_score_per_ref = []
-            reference = references[0]
-            ref_len = len(reference)
-            # Counter of ngrams in hypothesis.
-            hyp_ngrams = Counter(ngrams(hypothesis, i)) if len(hypothesis) >= i else Counter()
-            ref_ngrams = Counter(ngrams(reference, i)) if len(reference) >=i else Counter()
-            ngram_overlaps = hyp_ngrams & ref_ngrams
-            # Precision part of the score in Eqn 3
-            for _ngram in ngram_overlaps:
-                nist_precision_numerator_per_ngram[i] += information_weights[_ngram]
-            nist_precision_denominator_per_ngram[i] += sum(hyp_ngrams.values())
-            ref_lens += ref_len
-            hyp_lens += hyp_len
-
-    nist_precision = 0
-    for i in nist_precision_numerator_per_ngram:
-        precision = nist_precision_numerator_per_ngram[i] / nist_precision_denominator_per_ngram[i]
-        nist_precision+= precision
-    return nist_precision * nist_length_penalty(ref_len, hyp_len)
-
-
-    # Macro-average.
-    nist_scores_per_ngram = Counter()
-    # For each order of ngram.
-    for i in range(1,n+1):
-        # Iterate through each hypothesis and their corresponding references.
-        for references, hypothesis in zip(list_of_references, hypotheses):
-            hyp_len = len(hypothesis)
-            # Find reference with the best NIST score.
-            nist_score_per_ref = []
-            for reference in references: # For each reference.
-                ref_len = len(reference)
+            for reference in references:
+                _ref_len = len(reference)
                 # Counter of ngrams in hypothesis.
                 hyp_ngrams = Counter(ngrams(hypothesis, i)) if len(hypothesis) >= i else Counter()
                 ref_ngrams = Counter(ngrams(reference, i)) if len(reference) >=i else Counter()
                 ngram_overlaps = hyp_ngrams & ref_ngrams
                 # Precision part of the score in Eqn 3
-                numerator = sum([information_weights[_ngram]
-                                 for _ngram in ngram_overlaps])
-                denominator = sum(hyp_ngrams.values())
-                # Brevity penalty part of the score in Eqn 3
-                bp = nist_length_penalty(ref_len, hyp_len)
-                score = 0 if denominator == 0 else numerator/denominator * bp
-                nist_score_per_ref.append(score)
-            nist_scores_per_ngram[i] += max(nist_score_per_ref)
+                _numerator = sum(information_weights[_ngram] * count
+                                for _ngram, count in ngram_overlaps.items())
+                _denominator = sum(hyp_ngrams.values())
+                _precision = 0 if _denominator == 0 else _numerator/_denominator
+                nist_score_per_ref.append((_precision, _numerator, _denominator, _ref_len))
+            # Best reference.
+            precision, numerator, denominator, ref_len = max(nist_score_per_ref)
+            nist_precision_numerator_per_ngram[i] += numerator
+            nist_precision_denominator_per_ngram[i] += denominator
+            l_ref += ref_len
+            l_sys += hyp_len
 
-    return sum(nist_scores_per_ngram.values()) / len(list_of_references)
+    # Final NIST micro-average mean aggregation.
+    nist_precision = 0
+    for i in nist_precision_numerator_per_ngram:
+        precision = nist_precision_numerator_per_ngram[i] / nist_precision_denominator_per_ngram[i]
+        nist_precision+= precision
+    # Eqn 3 in Doddington(2002)
+    return nist_precision * nist_length_penalty(l_ref, l_sys)
 
 
 def nist_length_penalty(ref_len, hyp_len):
