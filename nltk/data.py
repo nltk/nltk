@@ -491,7 +491,7 @@ class ZipFilePathPointer(PathPointer):
         entry = normalize_resource_name(entry, True, '/').lstrip('/')
 
         # Check that the entry exists:
-        if entry:
+        if entry != '.':
             try:
                 zipfile.getinfo(entry)
             except Exception:
