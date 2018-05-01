@@ -100,7 +100,7 @@ class TextTilingTokenizer(TokenizerI):
         # implementation states that it offers no benefit to the
         # process. It might be interesting to test the existing
         # stemmers though.
-        # words = _stem_words(words)
+        #words = _stem_words(words)
 
         # Filter stopwords
         for ts in tokseqs:
@@ -174,9 +174,9 @@ class TextTilingTokenizer(TokenizerI):
                 window_size = self.k
 
             b1 = [ts.index
-                  for ts in tokseqs[curr_gap-window_size+1:curr_gap+1]]
+                  for ts in tokseqs[curr_gap-window_size+1 : curr_gap+1]]
             b2 = [ts.index
-                  for ts in tokseqs[curr_gap+1:curr_gap+window_size+1]]
+                  for ts in tokseqs[curr_gap+1 : curr_gap+window_size+1]]
 
             for t in token_table:
                 score_dividend += blk_frq(t, b1)*blk_frq(t, b2)
@@ -258,8 +258,7 @@ class TextTilingTokenizer(TokenizerI):
 
                     if token_table[word].last_tok_seq != current_tok_seq:
                         token_table[word].last_tok_seq = current_tok_seq
-                        token_table[word]\
-                            .ts_occurences.append([current_tok_seq, 1])
+                        token_table[word].ts_occurences.append([current_tok_seq, 1])
                     else:
                         token_table[word].ts_occurences[-1][1] += 1
                 else:  # new word
