@@ -52,9 +52,10 @@ Building an NLTK distribution
 5. Release
    - Make the distributions
      make clean; make dist; ls dist/
-   - twine register nltk
-     twine upload dist/*
-   - Check upload at https://pypi.python.org/pypi/nltk
+   - Upload the distributions
+     python -m twine upload -r pypi dist/*
+   - Check upload
+     https://pypi.python.org/pypi/nltk
 
 6. Announce
    - Post announcement to NLTK the mailing lists:
