@@ -62,7 +62,7 @@ setup(
     url = "http://nltk.org/",
     long_description = """\
 The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 2.7, 3.4, or 3.5.""",
+natural language processing.  NLTK requires Python 2.7, 3.4, 3.5, or 3.6.""",
     license = "Apache License, Version 2.0",
     keywords = ['NLP', 'CL', 'natural language processing',
                 'computational linguistics', 'parsing', 'tagging',
@@ -83,6 +83,7 @@ natural language processing.  NLTK requires Python 2.7, 3.4, or 3.5.""",
     'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6',
     'Topic :: Scientific/Engineering',
     'Topic :: Scientific/Engineering :: Artificial Intelligence',
     'Topic :: Scientific/Engineering :: Human Machine Interfaces',
