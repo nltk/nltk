@@ -281,7 +281,6 @@ WordNet Browser Utilities.
 This provides a backend to both wxbrowse and browserver.py.
 """
 
-
 ################################################################################
 #
 # Main logic for wordnet browser.
@@ -699,11 +698,11 @@ def page_from_word(word):
     """
     Return a HTML page for the given word.
 
-    :param word: The currently active word
     :type word: str
+    :param word: The currently active word
     :return: A tuple (page,word), where page is the new current HTML page
-             to be sent to the browser and
-             word is the new current word
+        to be sent to the browser and
+        word is the new current word
     :rtype: A tuple (str,str)
     """
     return page_from_reference(Reference(word))
@@ -765,7 +764,6 @@ def page_from_reference(href):
     return body, word
 
 
-
 #####################################################################
 # Static pages
 #####################################################################
