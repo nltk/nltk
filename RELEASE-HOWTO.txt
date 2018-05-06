@@ -7,7 +7,7 @@ Building an NLTK distribution
    - Optionally test demonstration code locally
      make demotest
    - Optionally test individual modules:
-     tox-3.4 -e py34 nltk.package.module
+     tox-3.6 -e py36 nltk.package.module
    - Check the data index is up-to-date:
      cd ../nltk_data; make; push
 
