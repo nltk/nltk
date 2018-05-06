@@ -14,7 +14,7 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     """Return a synset for an ambiguous word in a context.
 
     :param iter context_sentence: The context sentence where the ambiguous word
-    occurs, passed as an iterable of words.
+         occurs, passed as an iterable of words.
     :param str ambiguous_word: The ambiguous word that requires WSD.
     :param str pos: A specified Part-of-Speech (POS).
     :param iter synsets: Possible synsets of the ambiguous word.
