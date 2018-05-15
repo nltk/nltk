@@ -234,10 +234,10 @@ class BrillTagger(TaggerI):
 
     def rules(self):
         """
-        Return the ordered list of  transformation rules that this tagger has learnt
+        Return the tuple of  transformation rules that this tagger has learnt
 
-        :return: the ordered list of transformation rules that correct the initial tagging
-        :rtype: list of Rules
+        :return: the tuple of transformation rules that correct the initial tagging
+        :rtype: tuple of Rules
         """
         return self._rules
 
