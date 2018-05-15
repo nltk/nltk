@@ -19,6 +19,9 @@ from nltk.tbl.rule import TagRule
 from nltk.tbl import Feature, Template
 from nltk import jsontags
 
+# Type aliases
+Token = Tuple[str,str]
+Tokens = List[Token]
 
 ######################################################################
 # Brill Templates
@@ -259,9 +262,8 @@ class BrillTagger(TaggerI):
         else:
             return self._training_stats.get(statistic)
 
-    def tag(self, tokens:List[Tuple[str,str]]) -> List[Tuple[str,str]]:
+    def tag(self, tokens:Tokens) -> Tokens:
         # Inherit documentation from TaggerI
-
         # Run the initial tagger.
         tagged_tokens = self._initial_tagger.tag(tokens)
 
