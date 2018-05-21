@@ -1,4 +1,4 @@
-;# Natural Language Toolkit: Sinica Treebank Reader
+# Natural Language Toolkit: Sinica Treebank Reader
 #
 # Copyright (C) 2001-2018 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
