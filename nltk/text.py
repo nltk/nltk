@@ -215,7 +215,7 @@ class ConcordanceIndex(object):
         :param save: The option to save the concordance.
         :type save: bool
         """
-        concordance_list = self.find_concordance(word, width=80, lines=25)
+        concordance_list = self.find_concordance(word, width=width, lines=lines)
 
         if not concordance_list:
             print("no matches")
