@@ -175,9 +175,9 @@ class ConcordanceIndex(object):
         return '<ConcordanceIndex for %d tokens (%d types)>' % (
             len(self._tokens), len(self._offsets))
 
-    def find_concordance(self, word, width=80, lines=25):
+    def find_concordance(self, word, width=80):
         """
-        Find the concordance lines given the query word.
+        Find all concordance lines given the query word.
         """
         half_width = (width - len(word) - 2) // 2
         context = width // 4  # approx number of words of context
