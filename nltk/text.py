@@ -215,7 +215,7 @@ class ConcordanceIndex(object):
         :param save: The option to save the concordance.
         :type save: bool
         """
-        concordance_list = self.find_concordance(word, width=width, lines=lines)
+        concordance_list = self.find_concordance(word, width=width)
 
         if not concordance_list:
             print("no matches")
@@ -376,7 +376,7 @@ class Text(object):
         """
         if '_concordance_index' not in self.__dict__:
             self._concordance_index = ConcordanceIndex(self.tokens, key=lambda s:s.lower())
-        return self._concordance_index.find_concordance(word, width, lines)
+        return self._concordance_index.find_concordance(word, width)
 
     def collocations(self, num=20, window_size=2):
         """
