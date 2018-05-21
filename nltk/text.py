@@ -201,7 +201,7 @@ class ConcordanceIndex(object):
                                                     right_context, i,
                                                     left_print, right_print, line_print)
                 concordance_list.append(concordance_line)
-        return concordance_list[:lines]
+        return concordance_list
 
     def print_concordance(self, word, width=80, lines=25):
         """
@@ -215,13 +215,14 @@ class ConcordanceIndex(object):
         :param save: The option to save the concordance.
         :type save: bool
         """
-        concordance_list = self.find_concordance(word, width=80, lines=25)
+        concordance_list = self.find_concordance(word, width=width, lines=lines)
+        print("list length is: {}".format(len(concordance_list)))
 
         if not concordance_list:
             print("no matches")
         else:
             lines = min(lines, len(concordance_list))
-            print("Displaying {} of {} matches:".format(lines,len(concordance_list)))
+            print("Displaying {} of {} matches:".format(lines, len(concordance_list)))
             for i, concordance_line in enumerate(concordance_list[:lines]):
                 print(concordance_line.line)
 
@@ -360,7 +361,7 @@ class Text(object):
 
         return self._concordance_index.print_concordance(word, width, lines)
 
-    def concordance_list(self,  word, width=79, lines=25):
+    def concordance_list(self,  word, width=80, lines=25):
         """
         Generate a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
