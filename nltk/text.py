@@ -376,7 +376,7 @@ class Text(object):
         """
         if '_concordance_index' not in self.__dict__:
             self._concordance_index = ConcordanceIndex(self.tokens, key=lambda s:s.lower())
-        return self._concordance_index.find_concordance(word, width)
+        return self._concordance_index.find_concordance(word, width)[:lines]
 
     def collocations(self, num=20, window_size=2):
         """
