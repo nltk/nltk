@@ -175,9 +175,9 @@ class ConcordanceIndex(object):
         return '<ConcordanceIndex for %d tokens (%d types)>' % (
             len(self._tokens), len(self._offsets))
 
-    def find_concordance(self, word, width=80, lines=25):
+    def find_concordance(self, word, width=80):
         """
-        Find the concordance lines given the query word.
+        Find all concordance lines given the query word.
         """
         half_width = (width - len(word) - 2) // 2
         context = width // 4  # approx number of words of context
@@ -201,7 +201,7 @@ class ConcordanceIndex(object):
                                                     right_context, i,
                                                     left_print, right_print, line_print)
                 concordance_list.append(concordance_line)
-        return concordance_list[:lines]
+        return concordance_list
 
     def print_concordance(self, word, width=80, lines=25):
         """
@@ -215,7 +215,7 @@ class ConcordanceIndex(object):
         :param save: The option to save the concordance.
         :type save: bool
         """
-        concordance_list = self.find_concordance(word, width=80, lines=25)
+        concordance_list = self.find_concordance(word, width=width)
 
         if not concordance_list:
             print("no matches")
@@ -376,7 +376,7 @@ class Text(object):
         """
         if '_concordance_index' not in self.__dict__:
             self._concordance_index = ConcordanceIndex(self.tokens, key=lambda s:s.lower())
-        return self._concordance_index.find_concordance(word, width, lines)
+        return self._concordance_index.find_concordance(word, width)[:lines]
 
     def collocations(self, num=20, window_size=2):
         """
