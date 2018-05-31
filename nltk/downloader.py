@@ -159,7 +159,7 @@ they didn't download that model.
 default: unzip or not?
 
 """
-import time, os, zipfile, sys, textwrap, threading, itertools, shutil
+import time, os, zipfile, sys, textwrap, threading, itertools, shutil, functools
 from hashlib import md5
 
 try:
@@ -651,7 +651,9 @@ class Downloader(object):
 
     def download(self, info_or_id=None, download_dir=None, quiet=False,
                  force=False, prefix='[nltk_data] ', halt_on_error=True,
-                 raise_on_error=False):
+                 raise_on_error=False, print_error_to=sys.stderr):
+
+        print_to = functools.partial(print, file=print_error_to)
         # If no info or id is given, then use the interactive shell.
         if info_or_id is None:
             # [xx] hmm -- changing self._download_dir here seems like
@@ -664,7 +666,7 @@ class Downloader(object):
         else:
             # Define a helper function for displaying output:
             def show(s, prefix2=''):
-                print(textwrap.fill(s, initial_indent=prefix+prefix2,
+                print_to(textwrap.fill(s, initial_indent=prefix+prefix2,
                                     subsequent_indent=prefix+prefix2+' '*4))
 
             for msg in self.incr_download(info_or_id, download_dir, force):
@@ -677,7 +679,7 @@ class Downloader(object):
                         return False
                     self._errors = True
                     if not quiet:
-                        print("Error installing package. Retry? [n/y/e]")
+                        print_to("Error installing package. Retry? [n/y/e]")
                         choice = input().strip()
                         if choice in ['y', 'Y']:
                             if not self.download(msg.package.id, download_dir,
@@ -693,9 +695,9 @@ class Downloader(object):
                     if isinstance(msg, StartCollectionMessage):
                         show('Downloading collection %r' % msg.collection.id)
                         prefix += '   | '
-                        print(prefix)
+                        print_to(prefix)
                     elif isinstance(msg, FinishCollectionMessage):
-                        print(prefix)
+                        print_to(prefix)
                         prefix = prefix[:-4]
                         if self._errors:
                             show('Downloaded collection %r with errors' %
