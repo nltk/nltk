@@ -94,6 +94,20 @@ def sent_tokenize(text, language='english'):
     tokenizer = load('tokenizers/punkt/{0}.pickle'.format(language))
     return tokenizer.tokenize(text)
 
+# Standard sentence span tokenizer.
+def sent_span_tokenize(text, language='english'):
+    """
+    Return a list of spans for sentences of *text*,
+    using NLTK's recommended sentence tokenizer
+    (currently :class:`.PunktSentenceTokenizer`
+    for the specified language).
+
+    :param text: text to split into sentences
+    :param language: the model name in the Punkt corpus
+    """
+    tokenizer = load('tokenizers/punkt/{0}.pickle'.format(language))
+    return tokenizer.span_tokenize(text)
+
 # Standard word tokenizer.
 _treebank_word_tokenizer = TreebankWordTokenizer()
 
@@ -128,3 +142,22 @@ def word_tokenize(text, language='english', preserve_line=False):
     sentences = [text] if preserve_line else sent_tokenize(text, language)
     return [token for sent in sentences
             for token in _treebank_word_tokenizer.tokenize(sent)]
+
+def word_span_tokenize(text, language='english', preserve_line=False):
+    """
+    Return a list of spans of word tokens of *text*,
+    using NLTK's recommended word tokenizer
+    (currently an improved :class:`.TreebankWordTokenizer`
+    along with :class:`.PunktSentenceTokenizer`
+    for the specified language).
+
+    :param text: text to split into words
+    :type text: str
+    :param language: the model name in the Punkt corpus
+    :type language: str
+    :param preserve_line: An option to keep the preserve the sentence and not sentence tokenize it.
+    :type preserver_line: bool
+    """
+    sentences = [text] if preserve_line else sent_tokenize(text, language)
+    return [token for sent in sentences
+            for token in _treebank_word_tokenizer.span_tokenize(sent)]
