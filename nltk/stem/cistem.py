@@ -11,7 +11,9 @@
 from __future__ import unicode_literals
 import re
 from nltk.stem.api import StemmerI
+from nltk.compat import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class Cistem(StemmerI):
     """
     CISTEM Stemmer for German
@@ -146,7 +148,7 @@ class Cistem(StemmerI):
         >>> from nltk.stem.cistem import Cistem
         >>> stemmer = Cistem()
         >>> s1 = "Speicherbehältern"
-        >>> stemmer.segment(s1)
+        >>> print("('" + stemmer.segment(s1)[0] + "', '" + stemmer.segment(s1)[1] + "')")
         ('speicherbehält', 'ern')
         >>> s2 = "Grenzpostens"
         >>> stemmer.segment(s2)
@@ -155,7 +157,7 @@ class Cistem(StemmerI):
         >>> stemmer.segment(s3)
         ('ausgefeilt', 'ere')
         >>> stemmer = Cistem(True)
-        >>> stemmer.segment(s1)
+        >>> print("('" + stemmer.segment(s1)[0] + "', '" + stemmer.segment(s1)[1] + "')")
         ('speicherbehäl', 'tern')
         >>> stemmer.segment(s2)
         ('grenzpo', 'stens')
