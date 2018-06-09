@@ -50,7 +50,4 @@ def teardown_module(module=None):
     wordnet._unload()
 
 
-from nltk.stem import WordNetLemmatizer
-
-print(WordNetLemmatizer().lemmatize('requiring',pos=None))  
 
