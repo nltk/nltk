@@ -11,7 +11,7 @@ import math
 
 from six import add_metaclass
 
-from nltk.lm import (Vocabulary, MleLanguageModel, LidstoneNgramModel, LaplaceNgramModel)
+from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace)
 from nltk.lm.util import NEG_INF
 
 
@@ -76,7 +76,7 @@ class MleBigramModelTests(unittest.TestCase, ScoreTestHelper):
     def setUp(self):
         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
         training_text = [list('abcd'), list('egadbe')]
-        self.model = MleLanguageModel(2, vocabulary=vocab)
+        self.model = MLE(2, vocabulary=vocab)
         self.model.fit(training_text)
 
     def test_logscore_zero_score(self):
@@ -159,13 +159,13 @@ class MleTrigramModelTests(unittest.TestCase, ScoreTestHelper):
     def setUp(self):
         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
         training_text = [list('abcd'), list('egadbe')]
-        self.model = MleLanguageModel(3, vocabulary=vocab)
+        self.model = MLE(3, vocabulary=vocab)
         self.model.fit(training_text)
 
 
 @add_metaclass(ParametrizeTestsMeta)
 class LidstoneBigramModelTests(unittest.TestCase, ScoreTestHelper):
-    """unit tests for LidstoneNgramModel class"""
+    """unit tests for Lidstone class"""
 
     score_tests = [
         # count(d | c) = 1
@@ -192,7 +192,7 @@ class LidstoneBigramModelTests(unittest.TestCase, ScoreTestHelper):
     def setUp(self):
         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
         training_text = [list('abcd'), list('egadbe')]
-        self.model = LidstoneNgramModel(0.1, 2, vocabulary=vocab)
+        self.model = Lidstone(0.1, 2, vocabulary=vocab)
         self.model.fit(training_text)
 
     def test_gamma(self):
@@ -236,13 +236,13 @@ class LidstoneTrigramModelTests(unittest.TestCase, ScoreTestHelper):
     def setUp(self):
         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
         training_text = [list('abcd'), list('egadbe')]
-        self.model = LidstoneNgramModel(0.1, 3, vocabulary=vocab)
+        self.model = Lidstone(0.1, 3, vocabulary=vocab)
         self.model.fit(training_text)
 
 
 @add_metaclass(ParametrizeTestsMeta)
 class LaplaceBigramModelTests(unittest.TestCase, ScoreTestHelper):
-    """unit tests for LaplaceNgramModel class"""
+    """unit tests for Laplace class"""
 
     score_tests = [
         # basic sanity-check:
@@ -270,7 +270,7 @@ class LaplaceBigramModelTests(unittest.TestCase, ScoreTestHelper):
     def setUp(self):
         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
         training_text = [list('abcd'), list('egadbe')]
-        self.model = LaplaceNgramModel(2, vocabulary=vocab)
+        self.model = Laplace(2, vocabulary=vocab)
         self.model.fit(training_text)
 
     def test_gamma(self):
@@ -305,7 +305,7 @@ class NgramModelTextGenerationTests(unittest.TestCase):
     def setUp(self):
         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
         training_text = [list('abcd'), list('egadbe')]
-        self.model = MleLanguageModel(3, vocabulary=vocab)
+        self.model = MLE(3, vocabulary=vocab)
         self.model.fit(training_text)
 
     def test_generate_one_no_context(self):

@@ -8,11 +8,11 @@ from __future__ import unicode_literals, division
 
 from nltk import compat
 
-from nltk.lm.api import LanguageModelI, mask_oov_args
+from nltk.lm.api import LanguageModel, mask_oov_args
 
 
 @compat.python_2_unicode_compatible
-class MleLanguageModel(LanguageModelI):
+class MLE(LanguageModel):
     """Class for providing MLE ngram model scores.
 
     Inherits initialization from BaseNgramModel.
@@ -31,7 +31,7 @@ class MleLanguageModel(LanguageModelI):
 
 
 @compat.python_2_unicode_compatible
-class LidstoneNgramModel(LanguageModelI):
+class Lidstone(LanguageModel):
     """Provides Lidstone-smoothed scores.
 
     In addition to initialization arguments from BaseNgramModel also requires
@@ -39,7 +39,7 @@ class LidstoneNgramModel(LanguageModelI):
     """
 
     def __init__(self, gamma, *args, **kwargs):
-        super(LidstoneNgramModel, self).__init__(*args, **kwargs)
+        super(Lidstone, self).__init__(*args, **kwargs)
         self.gamma = gamma
 
     @mask_oov_args
@@ -51,11 +51,11 @@ class LidstoneNgramModel(LanguageModelI):
 
 
 @compat.python_2_unicode_compatible
-class LaplaceNgramModel(LidstoneNgramModel):
+class Laplace(Lidstone):
     """Implements Laplace (add one) smoothing.
 
     Initialization identical to BaseNgramModel because gamma is always 1.
     """
 
     def __init__(self, *args, **kwargs):
-        super(LaplaceNgramModel, self).__init__(1, *args, **kwargs)
+        super(Laplace, self).__init__(1, *args, **kwargs)

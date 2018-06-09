@@ -34,7 +34,7 @@ def mask_oov_args(score_func):
 
 
 @add_metaclass(ABCMeta)
-class LanguageModelI(object):
+class LanguageModel(object):
     """ABC for Language Models.
 
     Cannot be directly instantiated itself.
@@ -42,7 +42,7 @@ class LanguageModelI(object):
     """
 
     def __init__(self, order, vocabulary=None, ngrams_fn=None, pad_fn=None):
-        """Creatse new LanguageModelI.
+        """Creates new LanguageModel.
 
         :param vocabulary: If provided, this vocabulary will be used instead
         of creating a new one when training.

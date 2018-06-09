@@ -18,8 +18,8 @@ We start by defining some simple data.
 Then we import and instantiate a language model.
 We only need to specify the highest ngram order for it.
 
-    >>> from nltk.lm import MleLanguageModel
-    >>> lm = MleLanguageModel(2)
+    >>> from nltk.lm import MLE
+    >>> lm = MLE(2)
 
 This automatically creates an empty vocabulary for the model.
 
@@ -48,13 +48,13 @@ As you can see, by default we pad the sequence out and use `nltk.util.everygrams
 all ngrams up to the highest order.
 These two behaviors can be changed by specifying the `pad_fn` and `ngrams_fn` to the model constructor.
 
-    >>> no_padding = MleLanguageModel(2, pad_fn=lambda sent: sent)
+    >>> no_padding = MLE(2, pad_fn=lambda sent: sent)
     >>> no_padding.fit(sents)
     >>> list(no_padding.preprocess(["a", "b", "r"]))
     [('a',), ('b',), ('<UNK>',), ('a', 'b'), ('b', '<UNK>')]
 
     >>> from nltk.util import bigrams
-    >>> only_bigrams = MleLanguageModel(2, ngrams_fn=bigrams)
+    >>> only_bigrams = MLE(2, ngrams_fn=bigrams)
     >>> only_bigrams.fit(sents)
     >>> list(only_bigrams.preprocess(["a", "b", "r"]))
     [('<s>', 'a'), ('a', 'b'), ('b', '<UNK>'), ('<UNK>', '</s>')]

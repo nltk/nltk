@@ -15,10 +15,10 @@ https://github.com/nltk/nltk/issues/367
 Reproducing @dan-blanchard's example:
 https://github.com/nltk/nltk/issues/367#issuecomment-14646110
 
-    >>> from nltk.lm import LidstoneNgramModel, Vocabulary
+    >>> from nltk.lm import Lidstone, Vocabulary
     >>> word_seq = list('aaaababaaccbacb')
     >>> V = Vocabulary(['a', 'b', 'c', ''])
-    >>> lm = LidstoneNgramModel(0.2, 2, vocabulary=V, pad_fn=lambda sent: sent)
+    >>> lm = Lidstone(0.2, 2, vocabulary=V, pad_fn=lambda sent: sent)
     >>> lm.fit([word_seq])
     >>> round(sum(lm.score(w, ("b",)) for w in V), 6)
     1.0
@@ -35,8 +35,8 @@ Here's reproducing @afourney's comment:
 https://github.com/nltk/nltk/issues/367#issuecomment-15686289
 
     >>> sent = ['foo', 'foo', 'foo', 'foo', 'bar', 'baz']
-    >>> from nltk.lm import LidstoneNgramModel
-    >>> lm = LidstoneNgramModel(0.2, 3)
+    >>> from nltk.lm import Lidstone
+    >>> lm = Lidstone(0.2, 3)
     >>> lm.fit([sent])
 
 The vocabulary includes the "UNK" symbol as well as two padding symbols.
@@ -78,8 +78,8 @@ For speed take only the first 100 sentences of reuters. Shouldn't affect the tes
     >>> from nltk.corpus import reuters
     >>> sents = reuters.sents()[:100]
 
-    >>> from nltk.lm import LidstoneNgramModel
-    >>> lm = LidstoneNgramModel(0.2, 3)
+    >>> from nltk.lm import Lidstone
+    >>> lm = Lidstone(0.2, 3)
     >>> lm.fit(sents)
     >>> lm.score("said", ("",)) < 1
     True

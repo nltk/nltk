@@ -1,15 +1,15 @@
 """Smoothing algorithms for language modeling."""
 
-from .models import MleLanguageModel
+from .models import MLE
 
 
 class WittenBell:
     """Witten-Bell smoothing."""
 
-    def __init__(self, counter, vocabulary, beta_model=MleLanguageModel):
+    def __init__(self, counter, vocabulary, beta_model=MLE):
         self.counts = counter
         self.vocab = vocabulary
-        self.mle = MleLanguageModel(2)
+        self.mle = MLE(2)
         self.mle.vocab = vocabulary
         self.mle.counts = counter
         self.beta_model = beta_model(2)
