@@ -9,7 +9,7 @@ import unittest
 from collections import Counter
 
 from nltk import six
-from nltk.model import Vocabulary
+from nltk.lm import Vocabulary
 
 
 class NgramModelVocabularyTests(unittest.TestCase):

@@ -18,7 +18,7 @@ We start by defining some simple data.
 Then we import and instantiate a language model.
 We only need to specify the highest ngram order for it.
 
-    >>> from nltk.model import MleLanguageModel
+    >>> from nltk.lm import MleLanguageModel
     >>> lm = MleLanguageModel(2)
 
 This automatically creates an empty vocabulary for the model.
@@ -135,6 +135,6 @@ We can also generate text, using `generate` and `generate_one` methods!
 
 """
 
-from nltk.model.models import (MleLanguageModel, LidstoneNgramModel, LaplaceNgramModel)
-from nltk.model.counter import NgramCounter
-from nltk.model.vocabulary import Vocabulary
+from nltk.lm.models import *
+from nltk.lm.counter import NgramCounter
+from nltk.lm.vocabulary import Vocabulary

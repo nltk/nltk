@@ -10,8 +10,8 @@ import unittest
 
 from six import add_metaclass
 from nltk.util import everygrams
-from nltk.model import NgramCounter, Vocabulary
-from nltk.model.smoothing import WittenBell
+from nltk.lm import NgramCounter, Vocabulary
+from nltk.lm.smoothing import WittenBell
 
 
 class ParametrizeTestsMeta(type):

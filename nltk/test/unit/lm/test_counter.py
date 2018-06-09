@@ -7,11 +7,10 @@
 
 import unittest
 
-from nltk import six
-from nltk.util import everygrams
 from nltk import FreqDist
-
-from nltk.model import Vocabulary, NgramCounter
+from nltk import six
+from nltk.lm import NgramCounter
+from nltk.util import everygrams
 
 
 class NgramCounterTests(unittest.TestCase):

@@ -16,7 +16,7 @@ First we need to make sure we are feeding the counter ngrams.
 
 The counting itself is very simple.
 
-    >>> from nltk.model import NgramCounter
+    >>> from nltk.lm import NgramCounter
     >>> ngram_counts = NgramCounter(text_ngrams)
 
 You can conveniently access ngram counts using standard python dictionary notation.
@@ -67,7 +67,7 @@ class NgramCounter(defaultdict):
 
     Will count any ngram sequence you give it.
 
-    >>> from nltk.model import NgramCounter
+    >>> from nltk.lm import NgramCounter
     >>> counts = NgramCounter([[('a', 'b'), ('b', 'c')], [('d', 'e'), ('e', 'f')]])
     >>> counts[2]
     <ConditionalFreqDist with 4 conditions>
@@ -131,7 +131,7 @@ class NgramCounter(defaultdict):
         This includes ngrams from all orders, so some duplication is expected.
         :rtype: int
 
-        >>> from nltk.model import NgramCounter
+        >>> from nltk.lm import NgramCounter
         >>> counts = NgramCounter([[("a", "b"), ("c",), ("d", "e")]])
         >>> counts.N()
         3
@@ -151,7 +151,7 @@ class NgramCounter(defaultdict):
 
         :rtype: dict(defaultdict(int))
 
-        >>> from nltk.model import NgramCounter
+        >>> from nltk.lm import NgramCounter
         >>> counts = NgramCounter([[("a", "c"), ("d", "c"), ("c",)]])
         >>> r_Nr = counts.freq_of_freq()
         >>> r_Nr[1]

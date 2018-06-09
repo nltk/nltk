@@ -14,9 +14,9 @@ from itertools import chain
 from nltk.six import add_metaclass
 from nltk.util import everygrams, pad_sequence
 
-from nltk.model.util import log_base2
-from nltk.model.counter import NgramCounter
-from nltk.model.vocabulary import Vocabulary
+from nltk.lm.util import log_base2
+from nltk.lm.counter import NgramCounter
+from nltk.lm.vocabulary import Vocabulary
 
 
 def mask_oov_args(score_func):

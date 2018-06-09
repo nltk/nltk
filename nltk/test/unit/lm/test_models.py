@@ -11,8 +11,8 @@ import math
 
 from six import add_metaclass
 
-from nltk.model import (Vocabulary, MleLanguageModel, LidstoneNgramModel, LaplaceNgramModel)
-from nltk.model.util import NEG_INF
+from nltk.lm import (Vocabulary, MleLanguageModel, LidstoneNgramModel, LaplaceNgramModel)
+from nltk.lm.util import NEG_INF
 
 
 class ParametrizeTestsMeta(type):
