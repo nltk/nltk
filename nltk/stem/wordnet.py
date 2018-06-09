@@ -36,7 +36,7 @@ class WordNetLemmatizer(object):
     def __init__(self):
         pass
 
-    def lemmatize(self, word, pos=None):
+    def lemmatize(self, word, pos):
         lemmas = wordnet._morphy(word, pos)
         return min(lemmas, key=len) if lemmas else word
 
