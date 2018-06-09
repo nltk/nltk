@@ -1,39 +1,42 @@
 # Natural Language Toolkit: Language Model Unit Tests
 #
-# Copyright (C) 2001-2016 NLTK Project
+# Copyright (C) 2001-2018 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import copy
 import unittest
+from collections import Counter
 
 from nltk import six
-
-from nltk.model import NgramModelVocabulary
+from nltk.model import Vocabulary
 
 
 class NgramModelVocabularyTests(unittest.TestCase):
-    """tests NgramModelVocabulary Class"""
+    """tests Vocabulary Class"""
 
     @classmethod
     def setUpClass(self):
-        self.vocab = NgramModelVocabulary(['z', 'a', 'b', 'c', 'f', 'd',
-                                             'e', 'g', 'a', 'd', 'b', 'e', 'w'], unk_cutoff=2)
+        self.vocab = Vocabulary(
+            ['z', 'a', 'b', 'c', 'f', 'd', 'e', 'g', 'a', 'd', 'b', 'e', 'w'], unk_cutoff=2)
 
     def test_cutoff_value_set_correctly(self):
         self.assertEqual(self.vocab.cutoff, 2)
 
+    def test_unable_to_change_cutoff(self):
+        with self.assertRaises(AttributeError):
+            self.vocab.cutoff = 3
+
     def test_cutoff_setter_checks_value(self):
         with self.assertRaises(ValueError) as exc_info:
-            NgramModelVocabulary("abc", unk_cutoff=0)
+            Vocabulary("abc", unk_cutoff=0)
         expected_error_msg = "Cutoff value cannot be less than 1. Got: 0"
         self.assertEqual(expected_error_msg, str(exc_info.exception))
 
     def test_counts_set_correctly(self):
-        self.assertEqual(self.vocab['a'], 2)
-        self.assertEqual(self.vocab['b'], 2)
-        self.assertEqual(self.vocab['c'], 1)
+        self.assertEqual(self.vocab.counts['a'], 2)
+        self.assertEqual(self.vocab.counts['b'], 2)
+        self.assertEqual(self.vocab.counts['c'], 1)
 
     def test_membership_check_respects_cutoff(self):
         # a was seen 2 times, so it should be considered part of the vocabulary
@@ -49,29 +52,20 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.assertEqual(5, len(self.vocab))
 
     def test_vocab_iter_respects_cutoff(self):
-        vocab_keys = ["a", "b", "c", "d", "e", "f", "g", "w", "z", "<UNK>"]
+        vocab_counts = ["a", "b", "c", "d", "e", "f", "g", "w", "z"]
         vocab_items = ["a", "b", "d", "e", "<UNK>"]
 
-        six.assertCountEqual(self, vocab_keys, list(self.vocab.keys()))
+        six.assertCountEqual(self, vocab_counts, list(self.vocab.counts.keys()))
         six.assertCountEqual(self, vocab_items, list(self.vocab))
 
     def test_update_empty_vocab(self):
-        empty = NgramModelVocabulary(unk_cutoff=2)
+        empty = Vocabulary(unk_cutoff=2)
         self.assertEqual(len(empty), 0)
         self.assertFalse(empty)
-        self.assertNotIn(empty.unk_label, empty)
+        self.assertIn(empty.unk_label, empty)
 
         empty.update(list("abcde"))
         self.assertIn(empty.unk_label, empty)
-
-    def test_copying_vs_recreating_vocabulary(self):
-        new_vocab = NgramModelVocabulary(self.vocab, unk_cutoff=1)
-        copied_vocab = copy.copy(self.vocab)
-
-        # Because of the different cutoff the two must also be unequal
-        self.assertNotEqual(new_vocab, self.vocab)
-        # Equality test should be True because copies are "equal"
-        self.assertEqual(copied_vocab, self.vocab)
 
     def test_lookup(self):
         self.assertEqual(self.vocab.lookup("a"), "a")
@@ -97,3 +91,28 @@ class NgramModelVocabularyTests(unittest.TestCase):
 
     def test_lookup_empty_str(self):
         self.assertEqual(self.vocab.lookup(""), "<UNK>")
+
+    def test_eqality(self):
+        v1 = Vocabulary(['a', 'b', 'c'], unk_cutoff=1)
+        v2 = Vocabulary(['a', 'b', 'c'], unk_cutoff=1)
+        v3 = Vocabulary(['a', 'b', 'c'], unk_cutoff=1, unk_label="blah")
+        v4 = Vocabulary(
+            ['a', 'b'],
+            unk_cutoff=1,
+        )
+
+        self.assertEqual(v1, v2)
+        self.assertNotEqual(v1, v3)
+        self.assertNotEqual(v1, v4)
+
+    def test_str(self):
+        self.assertEqual(
+            str(self.vocab), ("<Vocabulary with cutoff=2 "
+                              "unk_label='<UNK>' and 5 items>"))
+
+    def test_creation_with_counter(self):
+        self.assertEqual(self.vocab,
+                         Vocabulary(
+                             Counter(
+                                 ['z', 'a', 'b', 'c', 'f', 'd', 'e', 'g', 'a', 'd', 'b', 'e', 'w']),
+                             unk_cutoff=2))

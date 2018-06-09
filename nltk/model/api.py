@@ -16,7 +16,7 @@ from nltk.util import everygrams, pad_sequence
 
 from nltk.model.util import log_base2
 from nltk.model.counter import NgramCounter
-from nltk.model.vocabulary import NgramModelVocabulary
+from nltk.model.vocabulary import Vocabulary
 
 
 def mask_oov_args(score_func):
@@ -46,7 +46,7 @@ class LanguageModelI(object):
 
         :param vocabulary: If provided, this vocabulary will be used instead
         of creating a new one when training.
-        :type vocabulary: `nltk.model.NgramModelVocabulary` or None
+        :type vocabulary: `nltk.model.Vocabulary` or None
         :param ngrams_fn: If given, defines how sentences in training text are turned to ngram sequences.
         :type ngrams_fn: function or None
         :param pad_fn: If given, defines how senteces in training text are padded.
@@ -54,7 +54,7 @@ class LanguageModelI(object):
 
         """
         self.order = order
-        self.vocab = NgramModelVocabulary() if vocabulary is None else vocabulary
+        self.vocab = Vocabulary() if vocabulary is None else vocabulary
         self.counts = NgramCounter()
         self.ngrams = partial(everygrams, max_len=order) if ngrams_fn is None else ngrams_fn
         if pad_fn is None:

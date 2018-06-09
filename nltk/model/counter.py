@@ -114,7 +114,8 @@ class NgramCounter(defaultdict):
         for sent in ngram_text:
             for ngram in sent:
                 if not isinstance(ngram, tuple):
-                    raise TypeError("Ngram <{0}> isn't a tuple, but {1}".format(ngram, type(ngram)))
+                    raise TypeError("Ngram <{0}> isn't a tuple, "
+                                    "but {1}".format(ngram, type(ngram)))
 
                 ngram_order = len(ngram)
                 if ngram_order == 1:

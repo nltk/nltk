@@ -15,9 +15,9 @@ https://github.com/nltk/nltk/issues/367
 Reproducing @dan-blanchard's example:
 https://github.com/nltk/nltk/issues/367#issuecomment-14646110
 
-    >>> from nltk.model import LidstoneNgramModel, NgramModelVocabulary
+    >>> from nltk.model import LidstoneNgramModel, Vocabulary
     >>> word_seq = list('aaaababaaccbacb')
-    >>> V = NgramModelVocabulary(['a', 'b', 'c', ''])
+    >>> V = Vocabulary(['a', 'b', 'c', ''])
     >>> lm = LidstoneNgramModel(0.2, 2, vocabulary=V, pad_fn=lambda sent: sent)
     >>> lm.fit([word_seq])
     >>> round(sum(lm.score(w, ("b",)) for w in V), 6)

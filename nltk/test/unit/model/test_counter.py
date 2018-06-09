@@ -11,7 +11,7 @@ from nltk import six
 from nltk.util import everygrams
 from nltk import FreqDist
 
-from nltk.model import NgramModelVocabulary, NgramCounter
+from nltk.model import Vocabulary, NgramCounter
 
 
 class NgramCounterTests(unittest.TestCase):
@@ -135,7 +135,7 @@ class NgramCounterTrainingTests(unittest.TestCase):
 
     def test_train_on_bigrams(self):
         bigram_sent = [("a", 'b'), ("c", "d")]
-        counter= NgramCounter([bigram_sent])
+        counter = NgramCounter([bigram_sent])
 
         self.assertFalse(bool(counter[3]))
 

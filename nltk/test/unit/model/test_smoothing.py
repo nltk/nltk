@@ -10,12 +10,13 @@ import unittest
 
 from six import add_metaclass
 from nltk.util import everygrams
-from nltk.model import NgramCounter, NgramModelVocabulary
+from nltk.model import NgramCounter, Vocabulary
 from nltk.model.smoothing import WittenBell
 
 
 class ParametrizeTestsMeta(type):
     """Metaclass for generating parametrized tests."""
+
     def __new__(cls, name, bases, dct):
         alphas = dct.get("alpha_tests", [])
         for i, (word, context, expected_score) in enumerate(alphas):
@@ -90,11 +91,10 @@ class WittenBellTests(unittest.TestCase):
         # can also handle unigrams
         ('d', [], 2 / 10),
         ('<UNK>', None, 3 / 10)
-
     ]
 
     def setUp(self):
-        vocab = NgramModelVocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
         training_text = [list('abcd'), list('egadbe')]
         counter = NgramCounter((everygrams(list(vocab.lookup(sent)), max_len=2)
                                 for sent in training_text))

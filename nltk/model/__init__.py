@@ -71,7 +71,7 @@ The `fit` method populated our vocabulary added some ngram counts to our model.
 These also include the padding symbols and the symbol for "unknown" words.
 
     >>> print(lm.vocab)
-    <NgramModelVocabulary with cutoff 1, unk_label '<UNK>' and 9 items>
+    <Vocabulary with cutoff=1 unk_label='<UNK>' and 9 items>
     >>> print(lm.counts)
     <NgramCounter with 2 ngram orders and 24 ngrams>
 
@@ -137,4 +137,4 @@ We can also generate text, using `generate` and `generate_one` methods!
 
 from nltk.model.models import (MleLanguageModel, LidstoneNgramModel, LaplaceNgramModel)
 from nltk.model.counter import NgramCounter
-from nltk.model.vocabulary import NgramModelVocabulary
+from nltk.model.vocabulary import Vocabulary

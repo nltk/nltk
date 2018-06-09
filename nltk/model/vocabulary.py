@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Language Model Vocabulary
 #
-# Copyright (C) 2001-2017 NLTK Project
+# Copyright (C) 2001-2018 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,8 +9,8 @@ Building a Vocabulary
 ---------------------
 
     >>> words = ['a', 'c', '-', 'd', 'c', 'a', 'b', 'r', 'a', 'c', 'd']
-    >>> from nltk.model import NgramModelVocabulary
-    >>> vocab = NgramModelVocabulary(words, unk_cutoff=2)
+    >>> from nltk.model import Vocabulary
+    >>> vocab = Vocabulary(words, unk_cutoff=2)
 
 Tokens with counts greater than or equal to the cuttoff value will
 be considered part of the vocabulary.
@@ -40,24 +40,24 @@ preserved.
 Keeping the count entries for seen words allows us to change the cutoff value
 without having to recalculate the counts.
 
-    >>> vocab.cutoff = 1
-    >>> "b" in vocab
+    >>> vocab2 = Vocabulary(vocab.counts, unk_cutoff=1)
+    >>> "b" in vocab2
     True
 
 The cutoff value influences not only membership checking but also the result of
 getting the size of the vocabulary using the built-in `len`.
-Note that while the number of keys in the vocab dictionary stays the same,
-the result of calling `len` on the vocabulary differs depending on the cutoff.
+Note that while the number of keys in the vocabulary's counter stays the same,
+the items in the vocabulary differ depending on the cutoff.
+We use `sorted` to demonstrate because it keeps the order consistent.
 
-    >>> len(vocab.keys())
-    7
-    >>> len(vocab)
-    7
-    >>> vocab.cutoff = 2
-    >>> len(vocab.keys())
-    7
-    >>> len(vocab)
-    4
+    >>> sorted(vocab2.counts)
+    ['-', 'a', 'b', 'c', 'd', 'r']
+    >>> sorted(vocab2)
+    ['-', '<UNK>', 'a', 'b', 'c', 'd', 'r']
+    >>> sorted(vocab.counts)
+    ['-', 'a', 'b', 'c', 'd', 'r']
+    >>> sorted(vocab)
+    ['<UNK>', 'a', 'c', 'd']
 
 In addition to items shown during its creation, the vocabulary stores a special
 token that stands in for "unknown" itenms.
@@ -80,8 +80,7 @@ If given a sequence, it will return an iterator over the looked up words.
     >>> list(vocab.lookup(["p", 'a', 'r', 'd', 'b', 'c']))
     ['<UNK>', 'a', '<UNK>', 'd', '<UNK>', 'c']
 
-`NgramModelVocabulary` inherits from `collections.Counter`, so it's possible to
-update the counts after its creation.
+It's possible to update the counts after its creation.
 
     >>> vocab['b']
     1
@@ -92,8 +91,11 @@ update the counts after its creation.
 """
 
 from __future__ import unicode_literals
+
+import sys
 from functools import singledispatch
-from collections import Counter, Iterable
+from collections import Counter, Iterable, Set
+from itertools import chain
 
 from nltk import compat
 
@@ -120,7 +122,7 @@ def _(word, vocab):
 
 
 @compat.python_2_unicode_compatible
-class NgramModelVocabulary(Counter):
+class Vocabulary(object):
     """Stores language model vocabulary.
 
     Satisfies two common language modeling requirements for a vocabulary:
@@ -128,61 +130,57 @@ class NgramModelVocabulary(Counter):
       by comparing their counts to a cutoff value.
     - Adds a special "unknown" token which unseen words are mapped to.
 
-    >>> from nltk.model import NgramModelVocabulary
-    >>> vocab = NgramModelVocabulary(["a", "b", "c", "a", "b"], unk_cutoff=2)
+    >>> from nltk.model import Vocabulary
+    >>> vocab = Vocabulary(["a", "b", "c", "a", "b"], unk_cutoff=2)
     >>> "a" in vocab
     True
     >>> "c" in vocab
     False
-    >>> len(vocab)
-    3
-    >>> len(vocab.keys())
-    4
+    >>> sorted(vocab)
+    ['<UNK>', 'a', 'b']
+    >>> sorted(vocab.counts)
+    ['a', 'b', 'c']
 
     """
 
-    def __init__(self, *counter_args, unk_cutoff=1, unk_label="<UNK>"):
-        """Create a new NgramModelVocabulary.
+    def __init__(self, counts=None, unk_cutoff=1, unk_label="<UNK>"):
+        """Create a new Vocabulary.
 
-        :param *counter_args: Same arguments as for `collections.Counter`.
+        :param counts: Optional iterable or `collections.Counter` instance to
+                       pre-seed the Vocabulary. In case it is iterable, counts
+                       are calculated.
         :param int unk_cutoff: Words that occur less frequently than this value
                                are not considered part of the vocabulary.
-        :param unk_label: Label for marking words not considered part of the vocabulary.
+        :param unk_label: Label for marking words not part of vocabulary.
 
         """
+        if isinstance(counts, Counter):
+            self.counts = counts
+        else:
+            self.counts = Counter()
+            if isinstance(counts, Iterable):
+                self.counts.update(counts)
         self.unk_label = unk_label
-        self.cutoff = unk_cutoff
-        super(NgramModelVocabulary, self).__init__(*counter_args)
+        if unk_cutoff < 1:
+            raise ValueError("Cutoff value cannot be less than 1. Got: {0}".format(unk_cutoff))
+        self._cutoff = unk_cutoff
 
     @property
     def cutoff(self):
         """Cutoff value.
 
-        Items with count below this value are not considered part of the vocabulary.
+        Items with count below this value are not considered part of vocabulary.
 
         """
         return self._cutoff
 
-    @cutoff.setter
-    def cutoff(self, new_cutoff):
-        if new_cutoff < 1:
-            raise ValueError("Cutoff value cannot be less than 1. Got: {0}".format(new_cutoff))
-        self._cutoff = new_cutoff
-        self._update_unk_label()
-
     def update(self, *counter_args, **counter_kwargs):
         """Update vocabulary counts.
 
-        Same as `collections.Counter.update` method but additionally creates an entry for the
-        unknown label.
+        Wraps `collections.Counter.update` method.
 
         """
-        super(NgramModelVocabulary, self).update(*counter_args, **counter_kwargs)
-        self._update_unk_label()
-
-    def _update_unk_label(self):
-        if self.keys():
-            self[self.unk_label] = self.cutoff
+        self.counts.update(*counter_args, **counter_kwargs)
 
     def lookup(self, words):
         """Look up one or more words in the vocabulary.
@@ -196,8 +194,8 @@ class NgramModelVocabulary(Counter):
         :rtype: generator(str) or str
         :raises: TypeError for types other than strings or iterables
 
-        >>> from nltk.model import NgramModelVocabulary
-        >>> vocab = NgramModelVocabulary(["a", "b", "c", "a", "b"], unk_cutoff=2)
+        >>> from nltk.model import Vocabulary
+        >>> vocab = Vocabulary(["a", "b", "c", "a", "b"], unk_cutoff=2)
         >>> vocab.lookup("a")
         'a'
         >>> vocab.lookup("aliens")
@@ -208,6 +206,9 @@ class NgramModelVocabulary(Counter):
         """
         return _dispatched_lookup(words, self)
 
+    def __getitem__(self, item):
+        return self._cutoff if item == self.unk_label else self.counts[item]
+
     def __contains__(self, item):
         """Only consider items with counts GE to cutoff as being in the
         vocabulary."""
@@ -216,21 +217,23 @@ class NgramModelVocabulary(Counter):
     def __iter__(self):
         """Building on membership check define how to iterate over
         vocabulary."""
-        return (item for item in super(NgramModelVocabulary, self).__iter__() if item in self)
+        return chain((item for item in self.counts if item in self), [self.unk_label] if self.counts
+                     else [])
 
     def __len__(self):
         """Computing size of vocabulary reflects the cutoff."""
-        return sum(1 for item in self)
+        return sum(1 for _ in self)
 
     def __eq__(self, other):
-        return super(NgramModelVocabulary, self).__eq__(other) and (self.cutoff == other.cutoff)
+        return (self.unk_label == other.unk_label and self.cutoff == other.cutoff and
+                self.counts == other.counts)
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __copy__(self):
-        return self.__class__(self, unk_cutoff=self.cutoff, unk_label=self.unk_label)
+    if sys.version_info[0] == 2:
+        # see https://stackoverflow.com/a/35781654/4501212
+        def __ne__(self, other):
+            equal = self.__eq__(other)
+            return equal if equal is NotImplemented else not equal
 
     def __str__(self):
-        return "<{0} with cutoff {1}, unk_label '{2}' and {3} items>".format(
+        return "<{0} with cutoff={1} unk_label='{2}' and {3} items>".format(
             self.__class__.__name__, self.cutoff, self.unk_label, len(self))
