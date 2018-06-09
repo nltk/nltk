@@ -1807,7 +1807,7 @@ class WordNetCorpusReader(CorpusReader):
 
     MORPHOLOGICAL_SUBSTITUTIONS[ADJ_SAT] = MORPHOLOGICAL_SUBSTITUTIONS[ADJ]
 
-    def _morphy(self, form, pos, check_exceptions=True):
+    def _morphy(self, form, pos=None, check_exceptions=True):
         # from jordanbg:
         # Given an original string x
         # 1. Apply rules once to the input to get y1, y2, y3, etc.
@@ -1815,6 +1815,10 @@ class WordNetCorpusReader(CorpusReader):
         # 3. If there are no matches, keep applying rules until you either
         #    find a match or you can't go any further
 
+        if pos==None:
+            pos=NOUN
+        else:
+            pos=pos    
         exceptions = self._exception_map[pos]
         substitutions = self.MORPHOLOGICAL_SUBSTITUTIONS[pos]
 

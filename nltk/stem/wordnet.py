@@ -37,7 +37,7 @@ class WordNetLemmatizer(object):
         pass
 
     def lemmatize(self, word, pos=None):
-        pos=NOUN if pos == None else pos=pos
+        pos=NOUN if pos == None else pos
         lemmas = wordnet._morphy(word, pos)
         return min(lemmas, key=len) if lemmas else word
 
@@ -49,4 +49,9 @@ class WordNetLemmatizer(object):
 def teardown_module(module=None):
     from nltk.corpus import wordnet
     wordnet._unload()
+
+
+from nltk.stem import WordNetLemmatizer
+
+print(WordNetLemmatizer().lemmatize('requiring',pos=None))  
 

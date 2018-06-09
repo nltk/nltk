@@ -21,6 +21,7 @@ As metrics, they must satisfy the following three requirements:
 
 from __future__ import print_function
 from __future__ import division
+import numpy as np
 
 
 def _edit_dist_init(len1, len2):
@@ -185,6 +186,57 @@ def custom_distance(file):
             data[frozenset([labelA,labelB])] = float(dist)
     return lambda x,y:data[frozenset([x,y])]
 
+import numpy as np 
+from numpy import floor
+
+def jaro_winkler_distance(s1 , s2 , p=0.1):
+
+    """ Details about this implementation can be found at 
+    https://en.wikipedia.org/wiki/Jaro-Winkler_distance
+    
+    dist_bound = type int ,  upper bound of distance for a character common to s1 and s2 being a matched character 
+    match_counter= type int , no.of matched characters in s1 and s2
+    transposition_count= half of the number of transpositions between s1 and s2
+    jaro_similarity = type float ,jaro similarity between s1 and s2
+    p = type float , weight parameter with a standard value of 0.1
+    len_count = type int , length of common prefix at the start of the string up to a maximum of four characters
+    jw_similarity= type float , jaro winkler similarity between s1 and s2
+    jw_distance = type float , it is equal to 1 - jw_similarity
+
+    """                 
+
+    s1=s1.lower()
+    s2=s2.lower()
+    match_counter=0
+    dist_bound=np.floor(max(len(s1),len(s2))/2)-1
+    transposition_count=0
+    len_count=0
+    
+    for ch1 in s1:
+        if ch1 in s2:
+            pos1=s1.index(ch1)
+            pos2=s2.index(ch1)
+            if(abs(pos1-pos2)<=dist_bound):
+                match_counter=match_counter+1
+                if(pos1!=pos2):
+                    transposition_count=transposition_count+1
+
+    transposition_count=transposition_count//2
+    
+    jaro_similarity = 0 if match_counter==0 else ((match_counter/len(s1)+ match_counter/len(s2)+ (match_counter-transposition_count)/match_counter)/3)
+
+    for i in range(len(s1)):
+        if(s1[i]==s2[i]):
+            len_count=len_count+1
+        else:
+            break
+        if(len_count==4):
+            break
+
+    jw_similarity= jaro_similarity + (len_count*p*(1- jaro_similarity)) 
+    jw_distance = 1 - jw_similarity
+    
+    return jw_distance
 
 def demo():
     edit_distance_examples = [
@@ -202,6 +254,8 @@ def demo():
     print("Binary distance:", binary_distance(s1, s2))
     print("Jaccard distance:", jaccard_distance(s1, s2))
     print("MASI distance:", masi_distance(s1, s2))
+    print("Jaro-Winkler_distance:" , jaro_winkler_distance('JONES','JohnSon'))
+    print("jaro-Winkler_similarity:" , 1 -jaro_winkler_distance('JONES','JohnSon'))
 
 if __name__ == '__main__':
     demo()
