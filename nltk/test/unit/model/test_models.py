@@ -17,9 +17,9 @@ from nltk.model.util import NEG_INF
 
 class ParametrizeTestsMeta(type):
     """Metaclass for generating parametrized tests."""
+
     def __new__(cls, name, bases, dct):
-        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',),
-                    ('e',), ('r',), ('w',))
+        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',), ('e',), ('r',), ('w',))
         for i, c in enumerate(contexts):
             dct["test_sumto1_{0}".format(i)] = cls.add_sum_to_1_test(c)
         scores = dct.get("score_tests", [])
@@ -41,9 +41,11 @@ class ParametrizeTestsMeta(type):
 
     @classmethod
     def add_sum_to_1_test(cls, context):
+
         def test(self):
             s = sum(self.model.score(w, context) for w in self.model.vocab)
             self.assertAlmostEqual(s, 1.0, msg="The context is {}".format(context))
+
         return test
 
 

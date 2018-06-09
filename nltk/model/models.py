@@ -17,6 +17,7 @@ class MleLanguageModel(LanguageModelI):
 
     Inherits initialization from BaseNgramModel.
     """
+
     @mask_oov_args
     def score(self, word, context=None):
         """Returns the MLE score for a word given a context.
