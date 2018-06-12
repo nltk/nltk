@@ -14,7 +14,7 @@ before_script:
   - ./cc-test-reporter before-build
 script:
   - coverage erase
-  - coverage run --source=nltk nltk/test/runtests.py -v --with-xunit
+  - coverage run --source=nltk nltk/test/runtests.py
 after_script:
-  - coverage xml
+  - coverage xml --omit=nltk/test/*
   - if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
