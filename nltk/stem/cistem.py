@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: CISTEM Stemmer for German
 # Copyright (C) 2001-2018 NLTK Project
@@ -34,31 +33,44 @@ class Cistem(StemmerI):
     is thrice as fast as the Snowball stemmer for German while being about as fast
     as most other stemmers.
 
+    case_insensitive is a a boolean specifiying if case-insensitive stemming
+    should be used. Case insensitivity improves performance only if words in the
+    text may be incorrectly upper case. For all-lowercase and correctly cased
+    text, best performance is achieved by using the case-sensitive version.
+
     :param case_insensitive: if True, the stemming is case insensitive. False by default.
     :type case_insensitive: bool
     """
+    strip_ge = re.compile(r"^ge(.{4,})")
+    repl_xx = re.compile(r"(.)\1")
+    repl_xx_back = re.compile(r"(.)\*")
+    strip_emr = re.compile(r"e[mr]$")
+    strip_nd = re.compile(r"nd$")
+    strip_t = re.compile(r"t$")
+    strip_esn = re.compile(r"[esn]$")
 
     def __init__(self, case_insensitive=False):
         self._case_insensitive = case_insensitive
-        self._strip_ge = re.compile(r"^ge(.{4,})")
-        self._repl_xx = re.compile(r"(.)\1")
-        self._repl_xx_back = re.compile(r"(.)\*")
-        self._strip_emr = re.compile(r"e[mr]$")
-        self._strip_nd = re.compile(r"nd$")
-        self._strip_t = re.compile(r"t$")
-        self._strip_esn = re.compile(r"[esn]$")
+
+    def replace_to(word):
+        word = word.replace("sch", "$")
+        word = word.replace("ei", "%")
+        word = word.replace("ie", "&")
+        word = Cistem.repl_xx.sub(r"\1*", word)
+
+        return word
+
+    def replace_back(word):
+        word = Cistem.repl_xx_back.sub(r"\1\1", word)
+        word = word.replace("%", "ei")
+        word = word.replace("&", "ie")
+        word = word.replace("$", "sch")
+
+        return word
 
     def stem(self, word):
         """
-        This method takes the word to be stemmed and a boolean specifiying if
-        case-insensitive stemming should be used and returns the stemmed word. If only
-        the word is passed to the method or the second parameter is 0, normal
-        case-sensitive stemming is used, if the second parameter is 1,
-        case-insensitive stemming is used.
-
-        Case sensitivity improves performance only if words in the text may be
-        incorrectly upper case. For all-lowercase and correctly cased text, best
-        performance is achieved byusing the case-sensitive version.
+        This method takes the word to be stemmed and returns the stemmed word.
 
         :param word: the word that is to be stemmed
         :type word: unicode
@@ -95,44 +107,38 @@ class Cistem(StemmerI):
         word = word.replace("ä", "a")
         word = word.replace("ß", "ss")
 
-        word = self._strip_ge.sub(r"\1", word)
-        word = word.replace("sch", "$")
-        word = word.replace("ei", "%")
-        word = word.replace("ie", "&")
-        word = self._repl_xx.sub(r"\1*", word)
+        word = Cistem.strip_ge.sub(r"\1", word)
+        word = Cistem.replace_to(word)
 
         while len(word) > 3:
             if len(word) > 5:
-                (word, success) = self._strip_emr.subn("", word)
+                (word, success) = Cistem.strip_emr.subn("", word)
                 if success != 0:
                     continue
 
-                (word, success) = self._strip_nd.subn("", word)
+                (word, success) = Cistem.strip_nd.subn("", word)
                 if success != 0:
                     continue
 
             if not upper or self._case_insensitive:
-                (word, success) = self._strip_t.subn("", word)
+                (word, success) = Cistem.strip_t.subn("", word)
                 if success != 0:
                     continue
 
-            (word, success) = self._strip_esn.subn("", word)
+            (word, success) = Cistem.strip_esn.subn("", word)
             if success != 0:
                 continue
             else:
                 break
 
-        word = self._repl_xx_back.sub(r"\1\1", word)
-        word = word.replace("%", "ei")
-        word = word.replace("&", "ie")
-        word = word.replace("$", "sch")
+        word = Cistem.replace_back(word)
 
         return word
 
 
     def segment(self, word):
         """
-        This method works very similarly to stem. The difference is that in
+        This method works very similarly to stem (:func:'cistem.stem'). The difference is that in
         addition to returning the stem, it also returns the rest that was removed at
         the end. To be able to return the stem unchanged so the stem and the rest
         can be concatenated to form the original word, all subsitutions that altered
@@ -175,40 +181,34 @@ class Cistem(StemmerI):
 
         original = word[:]
 
-        word = word.replace("sch", "$")
-        word = word.replace("ei", "%")
-        word = word.replace("ie", "&")
-        word = self._repl_xx.sub(r"\1*", word)
+        word = Cistem.replace_to(word)
 
         while len(word) > 3:
             if len(word) > 5:
-                (word, success) = self._strip_emr.subn("", word)
+                (word, success) = Cistem.strip_emr.subn("", word)
                 if success != 0:
                     rest_length += 2
                     continue
 
-                (word, success) = self._strip_nd.subn("", word)
+                (word, success) = Cistem.strip_nd.subn("", word)
                 if success != 0:
                     rest_length += 2
                     continue
 
             if not upper or self._case_insensitive:
-                (word, success) = self._strip_t.subn("", word)
+                (word, success) = Cistem.strip_t.subn("", word)
                 if success != 0:
                     rest_length += 1
                     continue
 
-            (word, success) = self._strip_esn.subn("", word)
+            (word, success) = Cistem.strip_esn.subn("", word)
             if success != 0:
                 rest_length += 1
                 continue
             else:
                 break
 
-        word = self._repl_xx_back.sub(r"\1\1", word)
-        word = word.replace("%", "ei")
-        word = word.replace("&", "ie")
-        word = word.replace("$", "sch")
+        word = Cistem.replace_back(word)
 
         if rest_length:
             rest = original[-rest_length:]
