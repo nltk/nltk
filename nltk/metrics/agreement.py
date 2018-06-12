@@ -216,23 +216,6 @@ class AnnotationTask(object):
         log.debug("Average observed agreement: %f", ret)
         return ret
 
-    def Do_alpha(self):
-        """The observed disagreement for the alpha coefficient.
-
-        The alpha coefficient, unlike the other metrics, uses this rather than
-        observed agreement.
-        """
-        total = 0.0
-        for i, itemdata in self._grouped_data('item'):
-            label_freqs = FreqDist(x['labels'] for x in itemdata)
-
-            for j, nj in iteritems(label_freqs):
-                for l, nl in iteritems(label_freqs):
-                    total += float(nj * nl) * self.distance(l, j)
-        ret = (1.0 / (len(self.I) * len(self.C) * (len(self.C) - 1))) * total
-        log.debug("Observed disagreement: %f", ret)
-        return ret
-
     def Do_Kw_pairwise(self,cA,cB,max_distance=1.0):
         """The observed disagreement for the weighted kappa coefficient.
 
@@ -309,6 +292,14 @@ class AnnotationTask(object):
         Ae = self._pairwise_average(self.Ae_kappa)
         return (self.avg_Ao() - Ae) / (1.0 - Ae)
 
+    def Disagreement(self, label_freqs):
+        total_labels = sum(label_freqs.values())
+        pairs = 0.0
+        for j, nj in iteritems(label_freqs):
+            for l, nl in iteritems(label_freqs):
+                pairs += float(nj * nl) * self.distance(l, j)
+        return 1.0 * pairs / (total_labels * (total_labels - 1))
+
     def alpha(self):
         """Krippendorff 1980
 
@@ -322,20 +313,26 @@ class AnnotationTask(object):
         if len(self.C)==1 and len(self.I) == 1:
             raise ValueError("Cannot calculate alpha, only one coder and item present!")
 
-        De = 0.0
+        total_disagreement = 0.0
+        total_ratings = 0
+        all_valid_labels_freq = FreqDist([])
 
-        label_freqs = FreqDist(x['labels'] for x in self.data)
-        for j in self.K:
-            nj = label_freqs[j]
-            for l in self.K:
-                De += float(nj * label_freqs[l]) * self.distance(j, l)
-        try:
-            De = (1.0 / (len(self.I) * len(self.C) * (len(self.I) * len(self.C) - 1))) * De
-            log.debug("Expected disagreement: %f", De)
-            ret = 1.0 - (self.Do_alpha() / De)
-        except ZeroDivisionError:
-            raise ValueError("Cannot calculate alpha, expected disagreement zero, check the distance function!")
-        return ret
+        total_do = 0.0 # Total observed disagreement for all items.
+        for i, itemdata in self._grouped_data('item'):
+            label_freqs = FreqDist(x['labels'] for x in itemdata)
+            labels_count = sum(label_freqs.values())
+            if labels_count < 2:
+                # Ignore the item.
+                continue
+            all_valid_labels_freq += label_freqs
+            total_do += self.Disagreement(label_freqs) * labels_count
+
+        do = total_do / sum(all_valid_labels_freq.values())
+
+        de = self.Disagreement(all_valid_labels_freq) # Expected disagreement.
+        k_alpha = 1.0 - do / de
+
+        return k_alpha
 
     def weighted_kappa_pairwise(self, cA, cB, max_distance=1.0):
         """Cohen 1968
