@@ -36,7 +36,8 @@ def _edit_dist_init(len1, len2):
 
 
 def _edit_dist_step(lev, i, j, s1, s2,
-                    substitution_cost=1, transpositions=False):
+                    substitution_cost=1,
+                    transpositions=False):
     c1 = s1[i - 1]
     c2 = s2[j - 1]
 
@@ -68,7 +69,8 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     been done in other orders, but at least three steps are needed.
 
     Allows specifying the cost of substitution edits (e.g., "a" -> "b"),
-    because often it makes sense to assign bigger penalties to substitutions.
+    because sometimes it makes sense to assign greater penalties to
+    substitutions.
 
     This also optionally allows transposition edits (e.g., "ab" -> "ba"),
     though this is disabled by default.
@@ -190,36 +192,45 @@ def custom_distance(file):
     return lambda x, y: data[frozenset([x, y])]
 
 
-def jaro_winkler_distance(s1, s2, p=0.1):
+def jaro_winkler_distance(s1, s2, p=0.1, lowercase=True):
     """ Details about this implementation can be found at
     https://en.wikipedia.org/wiki/Jaro-Winkler_distance
+
+s1 = first string under comparision
+s2 = second string under comparision
 dist_bound = type int, upper bound of distance for being a matched character
-mtch = type int, no.of matched characters in s1 and s2
-t_cnt= half of the number of transpositions between s1 and s2
+match = type int, no.of matched characters in s1 and s2
+transposition_count = half of the number of transpositions between s1 and s2
 j_sim = type float ,jaro similarity between s1 and s2
 p = type float , weight parameter with a standard value of 0.1
 l_cnt = type int, common prefix at the start of the string (max val = 4)
 jw_sim= type float, jaro winkler similarity between s1 and s2
-jw_dist = type float, it is equal to 1 - jw_sim """
-    s1 = s1.lower()
-    s2 = s2.lower()
-    mtch = 0
-    dist_bound = np.floor(max(len(s1), len(s2)) / 2) - 1
-    t_cnt = 0
+jw_dist = type float, it is equal to 1 - jw_sim
+
+The Jaro Winkler distance(jw_dist) is calculated as follows:
+jw_sim = j_sim+(l_cnt*p*(1-j_sim))
+jw-dist = 1-jw_sim
+ """
+    if lowercase:
+        s1, s2 = s1.lower(), s2.lower()
+    match = 0
+    dist_bound = np.floor(max(len(s1), len(s2))/2)-1
+    transposition_count = 0
     l_cnt = 0
     for ch1 in s1:
         if ch1 in s2:
             pos1 = s1.index(ch1)
             pos2 = s2.index(ch1)
-            if(abs(pos1 - pos2) <= dist_bound):
-                mtch = mtch + 1
+            if(abs(pos1-pos2) <= dist_bound):
+                match = match + 1
                 if(pos1 != pos2):
-                    t_cnt = t_cnt + 1
-    t_cnt = t_cnt // 2
-    if mtch == 0:
+                    transposition_count = transposition_count+1
+    transposition_count = transposition_count//2
+    if match == 0:
         j_sim = 0
     else:
-        j_sim = (mtch / len(s1) + mtch / len(s2) + (mtch - t_cnt) / mtch) / 3
+        j_sim = (match/len(s1) + match/len(s2) +
+                 (match-transposition_count)/match)/3
     for i in range(len(s1)):
         if(s1[i] == s2[i]):
             l_cnt = l_cnt + 1
@@ -228,8 +239,7 @@ jw_dist = type float, it is equal to 1 - jw_sim """
         if(l_cnt == 4):
             break
     jw_sim = j_sim+(l_cnt*p*(1-j_sim))
-    jw_dist = 1 - jw_sim
-    return jw_dist
+    return 1 - jw_sim
 
 
 def demo():
@@ -242,7 +252,10 @@ def demo():
     for s1, s2 in edit_distance_examples:
         print("Edit dist with transpositions btwn '%s' and '%s':" % (s1, s2),
               edit_distance(s1, s2, transpositions=True))
-
+    for s1, s2 in edit_distance_examples:
+        print("Jaro-Winkler_distance: ", jaro_winkler_distance(s1, s2))
+    for s1, s2 in edit_distance_examples:
+        print("Jaro-Winkler_similarity: ", 1-jaro_winkler_distance(s1, s2))
     s1 = set([1, 2, 3, 4])
     s2 = set([3, 4, 5])
     print("s1:", s1)
@@ -250,9 +263,6 @@ def demo():
     print("Binary distance:", binary_distance(s1, s2))
     print("Jaccard distance:", jaccard_distance(s1, s2))
     print("MASI distance:", masi_distance(s1, s2))
-    print("Jaro-Winkler_distance:", jaro_winkler_distance('JONES', 'JohnSon'))
-    print("Jaro-Winkler_similarity:",
-          1-jaro_winkler_distance('JONES', 'JohnSon'))
 
 
 if __name__ == '__main__':
