@@ -52,6 +52,7 @@ class Cistem(StemmerI):
     def __init__(self, case_insensitive=False):
         self._case_insensitive = case_insensitive
 
+    @staticmethod
     def replace_to(word):
         word = word.replace("sch", "$")
         word = word.replace("ei", "%")
@@ -60,6 +61,7 @@ class Cistem(StemmerI):
 
         return word
 
+    @staticmethod
     def replace_back(word):
         word = Cistem.repl_xx_back.sub(r"\1\1", word)
         word = word.replace("%", "ei")
