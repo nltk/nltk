@@ -198,7 +198,7 @@ def jaro_similarity(s1, s2):
 
         Matthew A. Jaro (1989). Advances in record linkage methodology
         as applied to the 1985 census of Tampa Florida. Journal of the
-        American Statistical Association. 84 (406): 414–20.
+        American Statistical Association. 84 (406): 414-20.
 
     The Jaro distance between is the min no. of single-character transpositions
     required to change one word into another. The Jaro similarity formula from
