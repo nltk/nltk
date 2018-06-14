@@ -21,7 +21,7 @@ As metrics, they must satisfy the following three requirements:
 
 from __future__ import print_function
 from __future__ import division
-import numpy as np
+import math
 
 
 def _edit_dist_init(len1, len2):
