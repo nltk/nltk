@@ -192,6 +192,54 @@ def custom_distance(file):
     return lambda x, y: data[frozenset([x, y])]
 
 
+def jaro_distance(s1, s2):
+    """
+    Computes the Jaro distance between 2 sequences from:
+
+        Matthew A. Jaro (1989). Advances in record linkage methodology
+        as applied to the 1985 census of Tampa Florida. Journal of the
+        American Statistical Association. 84 (406): 414–20.
+
+    The Jaro distance between is the min no. of single-character transpositions
+    required to change one word into another. The Jaro similarity formula from
+    https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance :
+
+        jaro_sim = 0 if m = 0 else 1/3 * (m/|s_1| + m/s_2 + (m-t)/m)
+
+    where:
+        - |s_i| is the length of string s_i
+        - m is the no. of matching characters
+        - t is the no. of transpositions.
+    """
+    # First, store the length of the strings
+    # because they will be re-used several times.
+    len_s1, len_s2 = len(s1), len(s2)
+
+    # The upper bound of the distanc for being a matched character.
+    match_bound = math.floor( max(len(s1), len(s2)) / 2 ) - 1
+
+    # Initialize the counts for matches and transpositions.
+    matches = 0  # no.of matched characters in s1 and s2
+    transpositions = 0  # no. transpositions between s1 and s2
+
+    # Iterate through sequences, check for matches and compute transpositions.
+    for ch1 in s1:     # Iterate through each character.
+        if ch1 in s2:  # Check whether the
+            pos1 = s1.index(ch1)
+            pos2 = s2.index(ch1)
+            if(abs(pos1-pos2) <= dist_bound):
+                match = match + 1
+                if(pos1 != pos2):
+                    transposition_count = transposition_count+1
+    
+    # Return the Jaro similiarty as described in dosctring. 
+    if matches = 0:
+        return 0
+    else:
+        return 1/3 * ( m/len_s1 + m/len_s2 + (matches-transposition/2)/matches )
+
+
+
 def jaro_winkler_distance(s1, s2, p=0.1, lowercase=True):
     """ Details about this implementation can be found at
     https://en.wikipedia.org/wiki/Jaro-Winkler_distance
