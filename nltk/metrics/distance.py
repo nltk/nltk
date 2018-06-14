@@ -239,55 +239,41 @@ def jaro_similarity(s1, s2):
         return 1/3 * ( m/len_s1 + m/len_s2 + (matches-transposition/2)/matches )
 
 
+def jaro_winkler_similarity(s1, s2, p=0.1):
+    """
+    The Jaro Winkler distance is an extension of the Jaro similarity in:
 
-def jaro_winkler_distance(s1, s2, p=0.1, lowercase=True):
-    """ Details about this implementation can be found at
-    https://en.wikipedia.org/wiki/Jaro-Winkler_distance
+        William E. Winkler. 1990. String Comparator Metrics and Enhanced
+        Decision Rules in the Fellegi-Sunter Model of Record Linkage.
+        Proceedings of the Section on Survey Research Methods.
+        American Statistical Association: 354–359.
 
-s1 = first string under comparision
-s2 = second string under comparision
-dist_bound = type int, upper bound of distance for being a matched character
-match = type int, no.of matched characters in s1 and s2
-transposition_count = half of the number of transpositions between s1 and s2
-j_sim = type float ,jaro similarity between s1 and s2
-p = type float , weight parameter with a standard value of 0.1
-l_cnt = type int, common prefix at the start of the string (max val = 4)
-jw_sim= type float, jaro winkler similarity between s1 and s2
-jw_dist = type float, it is equal to 1 - jw_sim
+    such that:
 
-The Jaro Winkler distance(jw_dist) is calculated as follows:
-jw_sim = j_sim+(l_cnt*p*(1-j_sim))
-jw-dist = 1-jw_sim
- """
-    if lowercase:
-        s1, s2 = s1.lower(), s2.lower()
-    match = 0
-    dist_bound = np.floor(max(len(s1), len(s2))/2)-1
-    transposition_count = 0
-    l_cnt = 0
-    for ch1 in s1:
-        if ch1 in s2:
-            pos1 = s1.index(ch1)
-            pos2 = s2.index(ch1)
-            if(abs(pos1-pos2) <= dist_bound):
-                match = match + 1
-                if(pos1 != pos2):
-                    transposition_count = transposition_count+1
-    transposition_count = transposition_count//2
-    if match == 0:
-        j_sim = 0
-    else:
-        j_sim = (match/len(s1) + match/len(s2) +
-                 (match-transposition_count)/match)/3
-    for i in range(len(s1)):
+        jaro_winkler_sim = jaro_sim + ( l * p * (1 - jaro_sim) )
+
+    where,
+
+        - jaro_sim is the output from the Jaro Similarity, see jaro_similarity()
+        - l is the length of common prefix at the start of the string
+        - p is the constant scaling factor to overweigh common prefixes.
+          The Jaro-Winkler similarity will fall within the [0, 1] bound,
+          given that max(p)<=0.25 , default is p=0.1 in Winkler (1990)
+
+    """
+    jaro_sim = jaro_similarity(s1, s2)
+
+    or i in range(len(s1)):
         if(s1[i] == s2[i]):
-            l_cnt = l_cnt + 1
+            l = l + 1
         else:
             break
-        if(l_cnt == 4):
+        if(l == 4):
             break
-    jw_sim = j_sim+(l_cnt*p*(1-j_sim))
-    return 1 - jw_sim
+
+    return jaro_sim + ( l * p * (1 - jaro_sim) )
+
+
 
 
 def demo():
