@@ -209,7 +209,7 @@ def jaro_similarity(s1, s2):
     where:
         - |s_i| is the length of string s_i
         - m is the no. of matching characters
-        - t is the no. of transpositions.
+        - t is the half no. of possible transpositions.
     """
     # First, store the length of the strings
     # because they will be re-used several times.
