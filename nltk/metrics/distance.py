@@ -192,9 +192,9 @@ def custom_distance(file):
     return lambda x, y: data[frozenset([x, y])]
 
 
-def jaro_distance(s1, s2):
+def jaro_similarity(s1, s2):
     """
-    Computes the Jaro distance between 2 sequences from:
+    Computes the Jaro similarity between 2 sequences from:
 
         Matthew A. Jaro (1989). Advances in record linkage methodology
         as applied to the 1985 census of Tampa Florida. Journal of the
