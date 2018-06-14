@@ -248,8 +248,8 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=None):
         William E. Winkler. 1990. String Comparator Metrics and Enhanced
         Decision Rules in the Fellegi-Sunter Model of Record Linkage.
         Proceedings of the Section on Survey Research Methods.
-        American Statistical Association: 354–359.
-
+        American Statistical Association: 354-359.
+    
     such that:
 
         jaro_winkler_sim = jaro_sim + ( l * p * (1 - jaro_sim) )
