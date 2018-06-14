@@ -232,7 +232,7 @@ def jaro_similarity(s1, s2):
                 if(pos1 != pos2):
                     transpositions += 1
                     
-    if matches = 0:
+    if matches == 0:
         return 0
     else:
         return 1/3 * ( matches/len_s1 + 
