@@ -227,19 +227,21 @@ def jaro_similarity(s1, s2):
         if ch1 in s2:  # Check whether the
             pos1 = s1.index(ch1)
             pos2 = s2.index(ch1)
-            if(abs(pos1-pos2) <= dist_bound):
-                match = match + 1
+            if(abs(pos1-pos2) <= match_bound):
+                matches += 1
                 if(pos1 != pos2):
-                    transposition_count = transposition_count+1
-    
-    # Return the Jaro similiarty as described in dosctring. 
+                    transpositions += 1
+                    
     if matches = 0:
         return 0
     else:
-        return 1/3 * ( m/len_s1 + m/len_s2 + (matches-transposition/2)/matches )
+        return 1/3 * ( matches/len_s1 + 
+                       matches/len_s2 + 
+                      (matches-transposition//2) / matches 
+                     )
 
 
-def jaro_winkler_similarity(s1, s2, p=0.1):
+def jaro_winkler_similarity(s1, s2, p=0.1, max_l=None):
     """
     The Jaro Winkler distance is an extension of the Jaro similarity in:
 
@@ -256,24 +258,31 @@ def jaro_winkler_similarity(s1, s2, p=0.1):
 
         - jaro_sim is the output from the Jaro Similarity, see jaro_similarity()
         - l is the length of common prefix at the start of the string
+            - this implementation provides an upperbound for the l value
+              to keep the prefixes
         - p is the constant scaling factor to overweigh common prefixes.
           The Jaro-Winkler similarity will fall within the [0, 1] bound,
           given that max(p)<=0.25 , default is p=0.1 in Winkler (1990)
 
     """
+    # Compute the Jaro similarity
     jaro_sim = jaro_similarity(s1, s2)
 
-    or i in range(len(s1)):
-        if(s1[i] == s2[i]):
-            l = l + 1
+    # Initialize the upper bound for the no. of prefixes.
+    # if user did not pre-define the upperbound, use length of s1
+    max_l = max_l if max_l else len(s1)
+
+    # Compute the prefix matches.
+    l = 0
+    for i in range(len(s1)):
+        if s1[i] == s2[i]:
+            l += 1
         else:
             break
-        if(l == 4):
+        if l == max_l:
             break
-
+    # Return the similarity value as described in docstring.
     return jaro_sim + ( l * p * (1 - jaro_sim) )
-
-
 
 
 def demo():
