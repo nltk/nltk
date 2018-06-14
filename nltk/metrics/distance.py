@@ -237,7 +237,7 @@ def jaro_similarity(s1, s2):
     else:
         return 1/3 * ( matches/len_s1 + 
                        matches/len_s2 + 
-                      (matches-transposition//2) / matches 
+                      (matches-transpositions//2) / matches 
                      )
 
 
