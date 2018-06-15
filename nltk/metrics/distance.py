@@ -21,7 +21,6 @@ As metrics, they must satisfy the following three requirements:
 
 from __future__ import print_function
 from __future__ import division
-import math
 
 
 def _edit_dist_init(len1, len2):
@@ -215,23 +214,30 @@ def jaro_similarity(s1, s2):
     # because they will be re-used several times.
     len_s1, len_s2 = len(s1), len(s2)
 
-    # The upper bound of the distanc for being a matched character.
-    match_bound = math.floor( max(len(s1), len(s2)) / 2 ) - 1
-
+    # The upper bound of the distance for being a matched character.
+    match_bound = max(len_s1, len_s2) // 2 - 1
+    
     # Initialize the counts for matches and transpositions.
     matches = 0  # no.of matched characters in s1 and s2
-    transpositions = 0  # no. transpositions between s1 and s2
+    transpositions = 0  # no. of transpositions between s1 and s2
+    flagged_1 = [] # positions in s1 which are matches to some character in s2
+    flagged_2 = [] # positions in s2 which are matches to some character in s1
 
     # Iterate through sequences, check for matches and compute transpositions.
-    for ch1 in s1:     # Iterate through each character.
-        if ch1 in s2:  # Check whether the
-            pos1 = s1.index(ch1)
-            pos2 = s2.index(ch1)
-            if(abs(pos1-pos2) <= match_bound):
+    for i in range(len_s1):     # Iterate through each character.
+        upperbound = min(i+match_bound, len_s2-1)
+        lowerbound = max(0, i-match_bound)
+        for j in range(lowerbound, upperbound+1):
+            if s1[i] == s2[j] and j not in flagged_2:
                 matches += 1
-                if(pos1 != pos2):
-                    transpositions += 1
-                    
+                flagged_1.append(i)
+                flagged_2.append(j)
+                break
+    flagged_2.sort()
+    for i,j in zip(flagged_1,flagged_2):
+        if s1[i] != s2[j]:
+            transpositions += 1
+
     if matches == 0:
         return 0
     else:
@@ -241,7 +247,7 @@ def jaro_similarity(s1, s2):
                      )
 
 
-def jaro_winkler_similarity(s1, s2, p=0.1, max_l=None):
+def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     """
     The Jaro Winkler distance is an extension of the Jaro similarity in:
 
@@ -259,7 +265,7 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=None):
         - jaro_sim is the output from the Jaro Similarity, see jaro_similarity()
         - l is the length of common prefix at the start of the string
             - this implementation provides an upperbound for the l value
-              to keep the prefixes
+              to keep the prefixes.A common value of this upperbound is 4.
         - p is the constant scaling factor to overweigh common prefixes.
           The Jaro-Winkler similarity will fall within the [0, 1] bound,
           given that max(p)<=0.25 , default is p=0.1 in Winkler (1990)
@@ -269,9 +275,9 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=None):
     jaro_sim = jaro_similarity(s1, s2)
 
     # Initialize the upper bound for the no. of prefixes.
-    # if user did not pre-define the upperbound, use length of s1
-    max_l = max_l if max_l else len(s1)
-
+    # if user did not pre-define the upperbound, use smaller among length of s1
+    # and length of s2 
+        
     # Compute the prefix matches.
     l = 0
     for i in range(len(s1)):
@@ -285,12 +291,9 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=None):
     return jaro_sim + ( l * p * (1 - jaro_sim) )
 
 
-
 def demo():
-    string_distance_examples = [
-        ("rain", "shine"), ("abcdef", "acbdef"), ("language", "lnaguaeg"),
-        ("language", "lnaugage"), ("language", "lngauage")]
-
+    string_distance_examples = [("rain", "shine"), ("abcdef", "acbdef"), ("language", "lnaguaeg"),
+                                ("language", "lnaugage"), ("language", "lngauage")]
     for s1, s2 in string_distance_examples:
         print("Edit distance btwn '%s' and '%s':" % (s1, s2),
               edit_distance(s1, s2))
@@ -300,10 +303,8 @@ def demo():
               jaro_similarity(s1, s2))
         print("Jaro-Winkler similarity btwn '%s' and '%s':" % (s1, s2),
               jaro_winkler_similarity(s1, s2))
-        print("Jaro-Winkler similarity btwn '%s' and '%s':" % (s1, s2),
+        print("Jaro-Winkler distance btwn '%s' and '%s':" % (s1, s2),
               1 - jaro_winkler_similarity(s1, s2))
-        print()
-
     s1 = set([1, 2, 3, 4])
     s2 = set([3, 4, 5])
     print("s1:", s1)
