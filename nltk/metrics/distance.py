@@ -280,7 +280,7 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 
     # Compute the prefix matches.
     l_ = 0
-    for i in range(len(s1)):
+    for i in range(min(len(s1), len(s2))):
         if s1[i] == s2[i]:
             l_ += 1
         else:
