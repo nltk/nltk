@@ -216,12 +216,12 @@ def jaro_similarity(s1, s2):
 
     # The upper bound of the distance for being a matched character.
     match_bound = max(len_s1, len_s2) // 2 - 1
-    
+
     # Initialize the counts for matches and transpositions.
     matches = 0  # no.of matched characters in s1 and s2
     transpositions = 0  # no. of transpositions between s1 and s2
-    flagged_1 = [] # positions in s1 which are matches to some character in s2
-    flagged_2 = [] # positions in s2 which are matches to some character in s1
+    flagged_1 = []  # positions in s1 which are matches to some character in s2
+    flagged_2 = []  # positions in s2 which are matches to some character in s1
 
     # Iterate through sequences, check for matches and compute transpositions.
     for i in range(len_s1):     # Iterate through each character.
@@ -234,17 +234,17 @@ def jaro_similarity(s1, s2):
                 flagged_2.append(j)
                 break
     flagged_2.sort()
-    for i,j in zip(flagged_1,flagged_2):
+    for i, j in zip(flagged_1, flagged_2):
         if s1[i] != s2[j]:
             transpositions += 1
 
     if matches == 0:
         return 0
     else:
-        return 1/3 * ( matches/len_s1 + 
-                       matches/len_s2 + 
-                      (matches-transpositions//2) / matches 
-                     )
+        return 1/3 * (matches/len_s1 +
+                      matches/len_s2 +
+                      (matches-transpositions//2)/matches
+                      )
 
 
 def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
@@ -255,14 +255,14 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
         Decision Rules in the Fellegi-Sunter Model of Record Linkage.
         Proceedings of the Section on Survey Research Methods.
         American Statistical Association: 354-359.
-    
     such that:
 
         jaro_winkler_sim = jaro_sim + ( l * p * (1 - jaro_sim) )
 
     where,
 
-        - jaro_sim is the output from the Jaro Similarity, see jaro_similarity()
+        - jaro_sim is the output from the Jaro Similarity,
+        see jaro_similarity()
         - l is the length of common prefix at the start of the string
             - this implementation provides an upperbound for the l value
               to keep the prefixes.A common value of this upperbound is 4.
@@ -276,24 +276,25 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 
     # Initialize the upper bound for the no. of prefixes.
     # if user did not pre-define the upperbound, use smaller among length of s1
-    # and length of s2 
-        
+    # and length of s2
+
     # Compute the prefix matches.
-    l = 0
+    l_ = 0
     for i in range(len(s1)):
         if s1[i] == s2[i]:
-            l += 1
+            l_ += 1
         else:
             break
-        if l == max_l:
+        if l_ == max_l:
             break
     # Return the similarity value as described in docstring.
-    return jaro_sim + ( l * p * (1 - jaro_sim) )
+    return jaro_sim + (l_ * p * (1 - jaro_sim))
 
 
 def demo():
-    string_distance_examples = [("rain", "shine"), ("abcdef", "acbdef"), ("language", "lnaguaeg"),
-                                ("language", "lnaugage"), ("language", "lngauage")]
+    string_distance_examples = [("rain", "shine"), ("abcdef", "acbdef"),
+                                ("language", "lnaguaeg"), ("language",
+                                "lnaugage"), ("language", "lngauage")]
     for s1, s2 in string_distance_examples:
         print("Edit distance btwn '%s' and '%s':" % (s1, s2),
               edit_distance(s1, s2))
