@@ -36,7 +36,7 @@ class Cistem(StemmerI):
     case_insensitive is a a boolean specifiying if case-insensitive stemming
     should be used. Case insensitivity improves performance only if words in the
     text may be incorrectly upper case. For all-lowercase and correctly cased
-    text, best performance is achieved by using the case-sensitive version.
+    text, best performance is achieved by setting case_insensitive for false.
 
     :param case_insensitive: if True, the stemming is case insensitive. False by default.
     :type case_insensitive: bool
