@@ -43,11 +43,11 @@ class Cistem(StemmerI):
     """
     strip_ge = re.compile(r"^ge(.{4,})")
     repl_xx = re.compile(r"(.)\1")
-    repl_xx_back = re.compile(r"(.)\*")
     strip_emr = re.compile(r"e[mr]$")
     strip_nd = re.compile(r"nd$")
     strip_t = re.compile(r"t$")
     strip_esn = re.compile(r"[esn]$")
+    repl_xx_back = re.compile(r"(.)\*")
 
     def __init__(self, case_insensitive=False):
         self._case_insensitive = case_insensitive
