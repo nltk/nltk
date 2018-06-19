@@ -1,71 +1,114 @@
-import numpy as np
+''' UTILITY Functions'''
 
 
 def jacknifing(score_list, averaging=True):
         ''' This is a averaging function for calculating ROUGE score
     when multiple references are present. This technique has been
     referred to as the Jacknifing technique in the original paper.
-    score_list = list of scores over which averaging occurs
+
+    param score_list : list of scores over which averaging occurs
+    type (score_list) : list
+
+    param averaging : Jacknifing occurs if averaging is True
+    type (averaging) : boolean
+
     '''
         if(len(score_list) == 1):
-            return np.mean(score_list)
+            return sum(score_list)/len(score_list)
         elif((len(score_list) > 1) and (averaging is False)):
             return score_list
         else:
             average = []
+            '''
+            average : store the maximum scores
+            from the m combos of m-1 scores.
+            Here m is the len(score_list)
+            '''
             for i in score_list:
+                # dummy : list a particular combo of m-1 scores
                 dummy = [j for j in score_list if i != j]
                 average.append(max(dummy))
-            return(np.mean(average))
+            return sum(average)/len(average)
 
 
-def lcs(X, Y, m, n):
-        '''This function returns the length of the
-        longest common subsequence(LCS) between two
-        given strings and also the LCS.
-        X = list containing all the tokens of the first string
-        Y = list containing all the tokens of the second string
-        m = no. of tokens of the first string
-        n = no.of tokens of the second string
+def f(k):
+    '''Weighting function of the Longest-Common-Subsequence
 
-        Note: Tokenization of the strings can be done at both
-        character-level and word-level.
-        '''
-        L = [[0 for x in range(n+1)] for x in range(m+1)]
-        for i in range(m+1):
-            for j in range(n+1):
-                if i == 0 or j == 0:
-                    L[i][j] = 0
-                elif X[i-1] == Y[j-1]:
-                    L[i][j] = L[i-1][j-1] + 1
-                else:
-                    L[i][j] = max(L[i-1][j], L[i][j-1])
-        index = L[m][n]
-        lcs = [""] * (index+1)
-        lcs[index] = ""
-        i = m
-        j = n
-        while i > 0 and j > 0:
-            if X[i-1] == Y[j-1]:
-                lcs[index-1] = X[i-1]
-                i -= 1
-                j -= 1
-                index -= 1
-            elif L[i-1][j] > L[i][j-1]:
-                i -= 1
+    param k : parameter entered by user
+    type (k) : float
+    '''
+    return k**0.5
+
+
+def rouge_lcs(X, Y, weighted=True, return_string=False):
+    '''This function returns the longest common subsequence
+    of two strings using the dynamic programming algorithm.
+
+    param X : first string or sequence in tokenized form
+    type (X) : list
+
+    param Y : second string or sequence in tokenized form
+    type (Y) : list
+
+    param weighted : Weighted LCS is done if weighted is True
+    type (weighted) : Boolean
+    '''
+    m, n = len(X), len(Y)
+
+    # Initialize the c-table
+    c_table = [[0]*(n+1) for i in range(m+1)]
+    # Initialize the w-table
+    w_table = [[0]*(n+1) for i in range(m+1)]
+
+    for i in range(m+1):
+        for j in range(n+1):
+            if i == 0 or j == 0:
+                continue
+            # The length of consecutive matches at
+            # position i-1 and j-1
+            elif X[i-1] == Y[j-1]:
+                # Increment would be +1 for normal LCS
+                k = w_table[i-1][j-1]
+                increment = f(k+1) - f(k) if weighted else 1
+                # Add the increment
+                c_table[i][j] = c_table[i-1][j-1] + increment
+                w_table[i][j] = k + 1
             else:
-                j -= 1
-        s = " ".join(lcs)
-        return(len(s.split()), s)
+                if c_table[i-1][j] > c_table[i][j-1]:
+                    c_table[i][j] = c_table[i-1][j]
+                    w_table[i][j] = 0  # no match at i,j
+                else:
+                    c_table[i][j] = c_table[i][j-1]
+                    w_table[i][j] = 0  # no match at i,j
+    lcs_length = c_table[m][n]
+    if not return_string:
+        return lcs_length
+    lcs = [""] * (lcs_length+1)
+    lcs[lcs_length] = ""
+    i = m
+    j = n
+    while i > 0 and j > 0:
+        if X[i-1] == Y[j-1]:
+            lcs[lcs_length-1] = X[i-1]
+            i -= 1
+            j -= 1
+            lcs_length -= 1
+        elif c_table[i-1][j] > c_table[i][j-1]:
+            i -= 1
+        else:
+            j -= 1
+    return (" ".join(lcs))  # the lcs string
 
 
 def demo():
     string_1 = 'police killed the gunman'
     string_2 = 'police kill the gunman'
-    lcs_var = lcs(string_1.split(), string_2.split(),
-                  len(string_1.split()), len(string_2.split()))
-    print(" Length of the LCS btw string_1 and string_2 :", lcs_var[0])
-    print(" LCS of string_1 and string_2 :", lcs_var[1])
+    lcs_var = rouge_lcs(string_1.split(), string_2.split(),
+                        weighted=False, return_string=False)
+    print(" Length of the LCS btw string_1 and string_2 :", lcs_var)
+    lcs_var = rouge_lcs(string_1.split(), string_2.split(),
+                        weighted=False, return_string=True)
+    print(" LCS of string_1 and string_2 :", lcs_var)
     scores = [10, 20, 30, 40]
     print('Averaged value:', jacknifing(scores))
     print('Unaveraged value:', jacknifing(scores, averaging=False))
