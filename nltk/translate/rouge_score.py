@@ -6,7 +6,7 @@ http://www.aclweb.org/anthology/W04-1013
 from nltk.util import ngrams
 from nltk.tokenize import TreebankWordTokenizer, PunktSentenceTokenizer
 from nltk import skipgrams
-from nltk.translate.util import jacknifing, lcs
+from nltk.translate.util import jacknifing, rouge_lcs
 import numpy as np
 
 
@@ -91,8 +91,6 @@ def rouge_l_sentence(references, candidate, beta, averaging=True):
     
     rouge_l_list : list containing all the rouge scores for
                    every reference against the candidate
-    arg1 = list of words in a reference
-    arg2  list of words in the candidate
     r_lcs : recall factor
     p_lcs : precision factor
     score : rouge-l score between a reference sentence and 
@@ -100,8 +98,8 @@ def rouge_l_sentence(references, candidate, beta, averaging=True):
     '''
     rouge_l_list = []
     for ref in references:
-        r_lcs = lcs(ref, candidate, len(arg1), len(arg2))[0]/len(arg1)
-        p_lcs = lcs(ref, candidate, len(arg1), len(arg2))[0]/len(arg2)
+        r_lcs = rouge_lcs(ref, candidate, return_string=False)/len(ref)
+        p_lcs = rouge_lcs(ref, candidate, return_string=False)/len(candidate)
         score = get_score(r_lcs, p_lcs, beta=beta)
         rouge_l_list.append(score)
     return jacknifing(rouge_l_list, averaging=averaging)
@@ -110,16 +108,23 @@ def rouge_l_sentence(references, candidate, beta, averaging=True):
 def rouge_l_summary(references, candidate, beta, averaging=True):
     ''' It calculates the rouge-l score between the candidate
     and the reference at the summary level.
-    references = list of reference summaries
-    candidate = candidate summary
-    beta = parameter
-    rouge_l_list = list containing all the rouge scores for
+    
+    param references : list of reference summaries. Each of the summaries 
+                       must be tokenized list of words 
+    type (references) : list
+    
+    param candidate : candidate summary tokenized into list of words
+    type (candidate) : list
+
+    param beta : user-defined parameter
+    type (beta) : float
+    
+    rouge_l_list : list containing all the rouge scores for
                    every reference against the candidate
-    arg1 = list of words in a reference summary
-    arg2 = list of words in the candidate summary
-    r_lcs = recall factor
-    p_lcs = precision factor
-    score = rouge-l score between a reference and the candidate
+    
+    r_lcs : recall factor
+    p_lcs : precision factor
+    score : rouge-l score between a reference and the candidate
     '''
     rouge_l_list = []
     cand_sent_list = sentence_tokenizer.tokenize(candidate)
