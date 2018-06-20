@@ -271,7 +271,7 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
           given that max(p)<=0.25 , default is p=0.1 in Winkler (1990)
 
     """
-    # Compute Jaro similarity
+    # Compute the Jaro similarity
     jaro_sim = jaro_similarity(s1, s2)
 
     # Initialize the upper bound for the no. of prefixes.
