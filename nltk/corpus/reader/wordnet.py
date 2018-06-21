@@ -1943,6 +1943,9 @@ class WordNetCorpusReader(CorpusReader):
                 word = l.split('\t')
                 self._lang_data[lang][0][word[0]].append(word[2])
                 self._lang_data[lang][1][word[2].lower()].append(word[0])
+        # Make sure no more entries are accidentally added subsequently
+        self._lang_data[lang][0].default_factory = None
+        self._lang_data[lang][1].default_factory = None
 
 
 ######################################################################
