@@ -298,6 +298,8 @@ class Lemma(_WordNetObject):
 
     def _related(self, relation_symbol):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
+        if (self._name, relation_symbol) not in self._synset._lemma_pointers:
+            return []
         return [
             get_synset(pos, offset)._lemmas[lemma_index]
             for pos, offset, lemma_index
@@ -1033,6 +1035,8 @@ class Synset(_WordNetObject):
 
     def _related(self, relation_symbol, sort=True):
         get_synset = self._wordnet_corpus_reader.synset_from_pos_and_offset
+        if relation_symbol not in self._pointers:
+            return []
         pointer_tuples = self._pointers[relation_symbol]
         r = [get_synset(pos, offset) for pos, offset in pointer_tuples]
         if sort:
