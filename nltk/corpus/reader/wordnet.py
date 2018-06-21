@@ -1545,10 +1545,11 @@ class WordNetCorpusReader(CorpusReader):
         else:
             self._load_lang_data(lang)
             synset_list = []
-            for l in self._lang_data[lang][1][lemma]:
-                if pos is not None and l[-1] != pos:
-                    continue
-                synset_list.append(self.of2ss(l))
+            if lemma in self._lang_data[lang][1]:
+                for l in self._lang_data[lang][1][lemma]:
+                    if pos is not None and l[-1] != pos:
+                        continue
+                    synset_list.append(self.of2ss(l))
             return synset_list
 
     def lemmas(self, lemma, pos=None, lang='eng'):
