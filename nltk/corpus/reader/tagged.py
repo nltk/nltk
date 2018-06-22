@@ -22,6 +22,7 @@ from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.timit import read_timit_block
 
+
 class TaggedCorpusReader(CorpusReader):
     """
     Reader for simple part-of-speech tagged corpora.  Paragraphs are
@@ -59,15 +60,6 @@ class TaggedCorpusReader(CorpusReader):
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
         self._tagset = tagset
-
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
         """
@@ -170,6 +162,7 @@ class TaggedCorpusReader(CorpusReader):
                                         tag_mapping_function)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
+
 class CategorizedTaggedCorpusReader(CategorizedCorpusReader,
                                     TaggedCorpusReader):
     """
@@ -193,27 +186,35 @@ class CategorizedTaggedCorpusReader(CategorizedCorpusReader,
             return self.fileids(categories)
         else:
             return fileids
+
     def raw(self, fileids=None, categories=None):
         return TaggedCorpusReader.raw(
             self, self._resolve(fileids, categories))
+
     def words(self, fileids=None, categories=None):
         return TaggedCorpusReader.words(
             self, self._resolve(fileids, categories))
+
     def sents(self, fileids=None, categories=None):
         return TaggedCorpusReader.sents(
             self, self._resolve(fileids, categories))
+
     def paras(self, fileids=None, categories=None):
         return TaggedCorpusReader.paras(
             self, self._resolve(fileids, categories))
+
     def tagged_words(self, fileids=None, categories=None, tagset=None):
         return TaggedCorpusReader.tagged_words(
             self, self._resolve(fileids, categories), tagset)
+
     def tagged_sents(self, fileids=None, categories=None, tagset=None):
         return TaggedCorpusReader.tagged_sents(
             self, self._resolve(fileids, categories), tagset)
+
     def tagged_paras(self, fileids=None, categories=None, tagset=None):
         return TaggedCorpusReader.tagged_paras(
             self, self._resolve(fileids, categories), tagset)
+
 
 class TaggedCorpusView(StreamBackedCorpusView):
     """
@@ -245,9 +246,9 @@ class TaggedCorpusView(StreamBackedCorpusView):
                 sent = [str2tuple(s, self._sep) for s in
                         self._word_tokenizer.tokenize(sent_str)]
                 if self._tag_mapping_function:
-                    sent = [(w, self._tag_mapping_function(t)) for (w,t) in sent]
+                    sent = [(w, self._tag_mapping_function(t)) for (w, t) in sent]
                 if not self._tagged:
-                    sent = [w for (w,t) in sent]
+                    sent = [w for (w, t) in sent]
                 if self._group_by_sent:
                     para.append(sent)
                 else:
@@ -257,6 +258,7 @@ class TaggedCorpusView(StreamBackedCorpusView):
             else:
                 block.extend(para)
         return block
+
 
 # needs to implement simplified tags
 class MacMorphoCorpusReader(TaggedCorpusReader):
@@ -279,6 +281,7 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
 
     def _read_block(self, stream):
         return read_regexp_block(stream, r'.*', r'.*_\.')
+
 
 class TimitTaggedCorpusReader(TaggedCorpusReader):
     """

@@ -34,6 +34,7 @@ from nltk.tokenize import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 @compat.python_2_unicode_compatible
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
@@ -53,14 +54,6 @@ class SensevalCorpusReader(CorpusReader):
         return concat([SensevalCorpusView(fileid, enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, fileids=None):
-        """
-        :return: the text contents of the given fileids, as a single string.
-        """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
     def _entry(self, tree):
         elts = []
         for lexelt in tree.findall('lexelt'):
@@ -68,7 +61,7 @@ class SensevalCorpusReader(CorpusReader):
                 sense = inst[0].attrib['senseid']
                 context = [(w.text, w.attrib['pos'])
                            for w in inst[1]]
-                elts.append( (sense, context) )
+                elts.append((sense, context))
         return elts
 
 
@@ -77,8 +70,8 @@ class SensevalCorpusView(StreamBackedCorpusView):
         StreamBackedCorpusView.__init__(self, fileid, encoding=encoding)
 
         self._word_tokenizer = WhitespaceTokenizer()
-        self._lexelt_starts = [0] # list of streampos
-        self._lexelts = [None] # list of lexelt names
+        self._lexelt_starts = [0]  # list of streampos
+        self._lexelts = [None]  # list of lexelt names
 
     def read_block(self, stream):
         # Decide which lexical element we're in.
@@ -97,7 +90,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             if line.lstrip().startswith('<lexelt'):
                 lexelt_num += 1
                 m = re.search('item=("[^"]+"|\'[^\']+\')', line)
-                assert m is not None # <lexelt> has no 'item=...'
+                assert m is not None  # <lexelt> has no 'item=...'
                 lexelt = m.group(1)[1:-1]
                 if lexelt_num < len(self._lexelts):
                     assert lexelt == self._lexelts[lexelt_num]
@@ -132,13 +125,13 @@ class SensevalCorpusView(StreamBackedCorpusView):
                 context += self._word_tokenizer.tokenize(child.text)
                 for cword in child:
                     if cword.tag == 'compound':
-                        cword = cword[0] # is this ok to do?
+                        cword = cword[0]  # is this ok to do?
 
                     if cword.tag == 'head':
                         # Some santiy checks:
                         assert position is None, 'head specified twice'
-                        assert cword.text.strip() or len(cword)==1
-                        assert not (cword.text.strip() and len(cword)==1)
+                        assert cword.text.strip() or len(cword) == 1
+                        assert not (cword.text.strip() and len(cword) == 1)
                         # Record the position of the head:
                         position = len(context)
                         # Addd on the head word itself:
@@ -155,7 +148,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                     elif cword.tag == 'wf':
                         context.append((cword.text, cword.attrib['pos']))
                     elif cword.tag == 's':
-                        pass # Sentence boundary marker.
+                        pass  # Sentence boundary marker.
 
                     else:
                         print('ACK', cword.tag)
@@ -165,6 +158,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             else:
                 assert False, 'unexpected tag %s' % child.tag
         return SensevalInstance(lexelt, position, context, senses)
+
 
 def _fixXML(text):
     """

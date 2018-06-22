@@ -20,6 +20,7 @@ from nltk.tokenize import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class PlaintextCorpusReader(CorpusReader):
     """
     Reader for corpora that consist of plaintext documents.  Paragraphs
@@ -64,20 +65,6 @@ class PlaintextCorpusReader(CorpusReader):
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
 
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        raw_texts = []
-        for f in fileids:
-            _fin = self.open(f)
-            raw_texts.append(_fin.read())
-            _fin.close()
-        return concat(raw_texts)
-
     def words(self, fileids=None):
         """
         :return: the given file(s) as a list of words
@@ -118,7 +105,7 @@ class PlaintextCorpusReader(CorpusReader):
 
     def _read_word_block(self, stream):
         words = []
-        for i in range(20): # Read 20 lines at a time.
+        for i in range(20):  # Read 20 lines at a time.
             words.extend(self._word_tokenizer.tokenize(stream.readline()))
         return words
 
@@ -138,7 +125,7 @@ class PlaintextCorpusReader(CorpusReader):
 
 
 class CategorizedPlaintextCorpusReader(CategorizedCorpusReader,
-                                    PlaintextCorpusReader):
+                                       PlaintextCorpusReader):
     """
     A reader for plaintext corpora whose documents are divided into
     categories based on their file identifiers.
@@ -160,15 +147,19 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader,
             return self.fileids(categories)
         else:
             return fileids
+
     def raw(self, fileids=None, categories=None):
         return PlaintextCorpusReader.raw(
             self, self._resolve(fileids, categories))
+
     def words(self, fileids=None, categories=None):
         return PlaintextCorpusReader.words(
             self, self._resolve(fileids, categories))
+
     def sents(self, fileids=None, categories=None):
         return PlaintextCorpusReader.sents(
             self, self._resolve(fileids, categories))
+
     def paras(self, fileids=None, categories=None):
         return PlaintextCorpusReader.paras(
             self, self._resolve(fileids, categories))
@@ -179,6 +170,7 @@ class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReade
         CategorizedCorpusReader.__init__(self, kwargs)
         kwargs['sent_tokenizer'] = nltk.data.LazyLoader('tokenizers/punkt/portuguese.pickle')
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
+
 
 class EuroparlCorpusReader(PlaintextCorpusReader):
 
@@ -201,7 +193,7 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
 
     def _read_word_block(self, stream):
         words = []
-        for i in range(20): # Read 20 lines at a time.
+        for i in range(20):  # Read 20 lines at a time.
             words.extend(stream.readline().split())
         return words
 

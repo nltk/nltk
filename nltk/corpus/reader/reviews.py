@@ -68,10 +68,10 @@ import re
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
-TITLE = re.compile(r'^\[t\](.*)$') # [t] Title
-FEATURES = re.compile(r'((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]') # find 'feature' in feature[+3]
-NOTES = re.compile(r'\[(?!t)(p|u|s|cc|cs)\]') # find 'p' in camera[+2][p]
-SENT = re.compile(r'##(.*)$') # find tokenized sentence
+TITLE = re.compile(r'^\[t\](.*)$')  # [t] Title
+FEATURES = re.compile(r'((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]')  # find 'feature' in feature[+3]
+NOTES = re.compile(r'\[(?!t)(p|u|s|cc|cs)\]')  # find 'p' in camera[+2][p]
+SENT = re.compile(r'##(.*)$')  # find tokenized sentence
 
 
 @compat.python_2_unicode_compatible
@@ -213,19 +213,6 @@ class ReviewsCorpusReader(CorpusReader):
         return concat([self.CorpusView(fileid, self._read_features, encoding=enc)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, fileids=None):
-        """
-        :param fileids: a list or regexp specifying the fileids of the files that
-            have to be returned as a raw string.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
     def readme(self):
         """
         Return the contents of the corpus README.txt file.
@@ -287,10 +274,10 @@ class ReviewsCorpusReader(CorpusReader):
         while True:
             line = stream.readline()
             if not line:
-                return [] # end of file.
+                return []  # end of file.
             title_match = re.match(TITLE, line)
             if title_match:
-                review = Review(title=title_match.group(1).strip()) # We create a new review
+                review = Review(title=title_match.group(1).strip())  # We create a new review
                 break
 
         # Scan until we find another line matching the regexp, or EOF.
@@ -322,7 +309,7 @@ class ReviewsCorpusReader(CorpusReader):
 
     def _read_word_block(self, stream):
         words = []
-        for i in range(20): # Read 20 lines at a time.
+        for i in range(20):  # Read 20 lines at a time.
             line = stream.readline()
             sent = re.findall(SENT, line)
             if sent:

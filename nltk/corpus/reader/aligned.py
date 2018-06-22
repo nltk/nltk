@@ -14,6 +14,7 @@ from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat,\
     read_alignedsent_block
 
+
 class AlignedCorpusReader(CorpusReader):
     """
     Reader for corpora of word-aligned sentences.  Tokens are assumed
@@ -39,15 +40,6 @@ class AlignedCorpusReader(CorpusReader):
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
         self._alignedsent_block_reader = alignedsent_block_reader
-
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
         """
@@ -85,6 +77,7 @@ class AlignedCorpusReader(CorpusReader):
                                              self._alignedsent_block_reader)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
+
 class AlignedSentCorpusView(StreamBackedCorpusView):
     """
     A specialized corpus view for aligned sentences.
@@ -105,7 +98,7 @@ class AlignedSentCorpusView(StreamBackedCorpusView):
                  for alignedsent_str in self._alignedsent_block_reader(stream)
                  for sent_str in self._sent_tokenizer.tokenize(alignedsent_str)]
         if self._aligned:
-            block[2] = Alignment.fromstring(" ".join(block[2])) # kludge; we shouldn't have tokenized the alignment string
+            block[2] = Alignment.fromstring(" ".join(block[2]))  # kludge; we shouldn't have tokenized the alignment string
             block = [AlignedSent(*block)]
         elif self._group_by_sent:
             block = [block[0]]
