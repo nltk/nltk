@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 import unittest
+import os.path
 
 from nltk.corpus.reader import *
 
@@ -13,7 +14,7 @@ class TestRaw(unittest.TestCase):
                TaggedCorpusReader, ToolboxCorpusReader, TwitterCorpusReader,
                WordListCorpusReader, XMLCorpusReader, SyntaxCorpusReader)
 
-    FILE_PATH = 'unit/files'
+    FILE_PATH = os.path.join(os.path.dirname(__file__), 'files')
     def test_raw(self):
         for reader in self.CORPORA:
             r = reader(self.FILE_PATH, '.*\.json')
