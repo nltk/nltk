@@ -112,7 +112,7 @@ def _(words, vocab):
     Returns an iterator over looked up words.
 
     """
-    return (w if w in vocab else vocab.unk_label for w in words)
+    return (_dispatched_lookup(w, vocab) for w in words)
 
 
 @_dispatched_lookup.register(str)

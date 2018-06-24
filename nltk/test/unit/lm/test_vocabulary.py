@@ -20,6 +20,9 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.vocab = Vocabulary(
             ['z', 'a', 'b', 'c', 'f', 'd', 'e', 'g', 'a', 'd', 'b', 'e', 'w'], unk_cutoff=2)
 
+    def test_truthiness(self):
+        self.assertTrue(self.vocab)
+
     def test_cutoff_value_set_correctly(self):
         self.assertEqual(self.vocab.cutoff, 2)
 
@@ -80,14 +83,14 @@ class NgramModelVocabularyTests(unittest.TestCase):
     def test_lookup_None(self):
         with self.assertRaises(TypeError):
             self.vocab.lookup(None)
-
-        self.assertEqual(list(self.vocab.lookup([None, None])), ["<UNK>", "<UNK>"])
+        with self.assertRaises(TypeError):
+            list(self.vocab.lookup([None, None]))
 
     def test_lookup_int(self):
         with self.assertRaises(TypeError):
             self.vocab.lookup(1)
-
-        self.assertEqual(list(self.vocab.lookup([1, 2])), ["<UNK>", "<UNK>"])
+        with self.assertRaises(TypeError):
+            list(self.vocab.lookup([1, 2]))
 
     def test_lookup_empty_str(self):
         self.assertEqual(self.vocab.lookup(""), "<UNK>")
