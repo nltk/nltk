@@ -11,6 +11,8 @@ import random
 from abc import ABCMeta, abstractmethod
 from itertools import chain
 
+import numpy as np
+
 from nltk.six import add_metaclass
 from nltk.util import everygrams, pad_sequence
 
@@ -76,9 +78,7 @@ class LanguageModel(object):
         """
         if not self.vocab:
             self.vocab.update(chain.from_iterable(map(self.padder, text)))
-
-        ngram_text = map(self.preprocess, text)
-        self.counts.update(ngram_text)
+        self.counts.update(self.preprocess(sent) for sent in text)
 
     def preprocess(self, sent):
         """Preprocess a sentence for training.
@@ -108,21 +108,16 @@ class LanguageModel(object):
         The arguments are the same as for `score`.
 
         """
-        score = self.score(word, context)
-        return log_base2(score)
+        return log_base2(self.score(word, context))
 
-    def context_counts(self, context_checked):
+    def context_counts(self, context):
         """Helper method for retrieving counts for a given context.
 
         Assumes context has been checked and oov words in it masked.
-        :type context_checked: tuple(str) or None
+        :type context: tuple(str) or None
 
         """
-        if context_checked:
-            order = len(context_checked) + 1
-            return self.counts[order][context_checked]
-
-        return self.counts.unigrams
+        return self.counts[len(context) + 1][context] if context else self.counts.unigrams
 
     def entropy(self, text_ngrams):
         """Calculate cross-entropy of model for given evaluation text.
@@ -131,16 +126,7 @@ class LanguageModel(object):
         :rtype: float
 
         """
-
-        H = 0.0  # entropy is conventionally denoted by "H"
-        for ngram in text_ngrams:
-            if len(ngram) == 1:
-                context, word = None, ngram[0]
-            else:
-                context, word = ngram[:-1], ngram[-1]
-            score = self.score(word, context)
-            H -= score * log_base2(score)
-        return H
+        return -1 * np.mean([self.logscore(ngram[-1], ngram[:-1]) for ngram in text_ngrams])
 
     def perplexity(self, text_ngrams):
         """Calculates the perplexity of the given text.

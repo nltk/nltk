@@ -12,7 +12,6 @@ import math
 from six import add_metaclass
 
 from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace)
-from nltk.lm.util import NEG_INF
 
 
 class ParametrizeTestsMeta(type):
@@ -49,15 +48,8 @@ class ParametrizeTestsMeta(type):
         return test
 
 
-class ScoreTestHelper(object):
-    """Shared tests and helper code specifically for bigram models."""
-
-    def assertIsNan(self, value):
-        self.assertTrue(math.isnan(value))
-
-
 @add_metaclass(ParametrizeTestsMeta)
-class MleBigramModelTests(unittest.TestCase, ScoreTestHelper):
+class MleBigramModelTests(unittest.TestCase):
     """unit tests for MLENgramModel class"""
 
     score_tests = [
@@ -83,7 +75,7 @@ class MleBigramModelTests(unittest.TestCase, ScoreTestHelper):
         # logscore of unseen ngrams should be -inf
         logscore = self.model.logscore("d", ["e"])
 
-        self.assertEqual(logscore, NEG_INF)
+        self.assertTrue(math.isinf(logscore))
 
     def test_entropy_perplexity_seen(self):
         # ngrams seen during training
@@ -93,42 +85,44 @@ class MleBigramModelTests(unittest.TestCase, ScoreTestHelper):
                    ('<UNK>', 'a'),
                    ('a', 'd'),
                    ('d', '</s>')]
-        # Ngram = score; Log score; product
-        # <s>, a    = 0.5; -1; -0.5
-        # a, b      = 0.5; -1; -0.5
-        # b, UNK    = 0.5; -1; -0.5
-        # UNK, a    = 0.(3); -1.585; -0.5283
-        # a, d      = 0.5; -1; -0.5
-        # d, </s>   = 0.5; -1; -0.5
-        # TOTAL products   = -3.0283
-        H = 3.0283
-        perplexity = 8.1586
+        # Ngram = Log score
+        # <s>, a    = -1
+        # a, b      = -1
+        # b, UNK    = -1
+        # UNK, a    = -1.585
+        # a, d      = -1
+        # d, </s>   = -1
+        # TOTAL logscores   = -6.585
+        # - AVG logscores   = 1.0975
+        H = 1.0975
+        perplexity = 2.1398
 
         self.assertAlmostEqual(H, self.model.entropy(trained), places=4)
         self.assertAlmostEqual(perplexity, self.model.perplexity(trained), places=4)
 
     def test_entropy_perplexity_unseen(self):
-        # In MLE, even one unseen ngram should turn entropy and perplexity into NaN
+        # In MLE, even one unseen ngram should make entropy and perplexity infinite
         untrained = [('<s>', 'a'),
                      ('a', 'c'),
                      ('c', 'd'),
                      ('d', '</s>')]
 
-        self.assertIsNan(self.model.entropy(untrained))
-        self.assertIsNan(self.model.perplexity(untrained))
+        self.assertTrue(math.isinf(self.model.entropy(untrained)))
+        self.assertTrue(math.isinf(self.model.perplexity(untrained)))
 
     def test_entropy_perplexity_unigrams(self):
-        # word = score, log score, product
-        # <s>   = 0.1429, -2.8074, -0.4011
-        # a     = 0.1429, -2.8074, -0.4011
-        # c     = 0.0714, -3.8073, -0.2720
-        # UNK   = 0.2143, -2.2224, -0.4762
-        # d     = 0.1429, -2.8074, -0.4011
-        # c     = 0.0714, -3.8073, -0.2720
-        # </s>  = 0.1429, -2.8074, -0.4011
-        # Total product = -2.6243
-        H = 2.6243
-        perplexity = 6.166
+        # word = score, log score
+        # <s>   = 0.1429, -2.8074
+        # a     = 0.1429, -2.8074
+        # c     = 0.0714, -3.8073
+        # UNK   = 0.2143, -2.2224
+        # d     = 0.1429, -2.8074
+        # c     = 0.0714, -3.8073
+        # </s>  = 0.1429, -2.8074
+        # TOTAL logscores = -21.6243
+        # - AVG logscores = 3.0095
+        H = 3.0095
+        perplexity = 8.0529
 
         text = [("<s>",), ("a",), ("c",), ("-",),
                 ("d",), ("c",), ("</s>",)]
@@ -138,7 +132,7 @@ class MleBigramModelTests(unittest.TestCase, ScoreTestHelper):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class MleTrigramModelTests(unittest.TestCase, ScoreTestHelper):
+class MleTrigramModelTests(unittest.TestCase):
     """MLE trigram model tests"""
 
     score_tests = [
@@ -164,7 +158,7 @@ class MleTrigramModelTests(unittest.TestCase, ScoreTestHelper):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class LidstoneBigramModelTests(unittest.TestCase, ScoreTestHelper):
+class LidstoneBigramModelTests(unittest.TestCase):
     """unit tests for Lidstone class"""
 
     score_tests = [
@@ -206,23 +200,23 @@ class LidstoneBigramModelTests(unittest.TestCase, ScoreTestHelper):
                 ('d', 'c'),
                 ('c', '</s>')]
         # Unlike MLE this should be able to handle completely novel ngrams
-        # Ngram = score, log score, product
-        # <s>, a    = 0.3929, -1.3479, -0.5295
-        # a, c      = 0.0357, -4.8074, -0.1717
-        # c, UNK      = 0.0556, -4.1699, -0.2317
-        # UNK, d      = 0.0263,  -5.2479, -0.1381
-        # d, c      = 0.0357, -4.8074, -0.1717
-        # c, </s>   = 0.0556, -4.1699, -0.2317
-        # Total product: -1.4744
-        H = 1.4744
-        perplexity = 2.7786
+        # Ngram = score, log score
+        # <s>, a    = 0.3929, -1.3479
+        # a, c      = 0.0357, -4.8074
+        # c, UNK    = 0.0(5), -4.1699
+        # UNK, d    = 0.0263,  -5.2479
+        # d, c      = 0.0357, -4.8074
+        # c, </s>   = 0.0(5), -4.1699
+        # TOTAL logscore: −24.5504
+        # - AVG logscore: 4.0917
+        H = 4.0917
+        perplexity = 17.0504
         self.assertAlmostEqual(H, self.model.entropy(text), places=4)
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class LidstoneTrigramModelTests(unittest.TestCase, ScoreTestHelper):
-
+class LidstoneTrigramModelTests(unittest.TestCase):
     score_tests = [
         # Logic behind this is the same as for bigram model
         ('d', ['c'], 1.1 / 1.8),
@@ -241,7 +235,7 @@ class LidstoneTrigramModelTests(unittest.TestCase, ScoreTestHelper):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class LaplaceBigramModelTests(unittest.TestCase, ScoreTestHelper):
+class LaplaceBigramModelTests(unittest.TestCase):
     """unit tests for Laplace class"""
 
     score_tests = [
@@ -285,16 +279,17 @@ class LaplaceBigramModelTests(unittest.TestCase, ScoreTestHelper):
                 ('d', 'c'),
                 ('c', '</s>')]
         # Unlike MLE this should be able to handle completely novel ngrams
-        # Ngram = score, log score, product
-        # <s>, a    = 0.(2), -2.1699, -0.4339
-        # a, c      = 0.(1), -3.1699, -0.3169
-        # c, UNK      = 0.125, -3.0, -0.375
-        # UNK, d      = 0.1,  -3.3219, -0.3321
-        # d, c      = 0.(1) -3.1699, -0.3169
-        # c, </s>   = 0.125, -3.0, -0.375
-        # Total product: -2.1498
-        H = 2.1477
-        perplexity = 4.4312
+        # Ngram = score, log score
+        # <s>, a    = 0.2, -2.3219
+        # a, c      = 0.1, -3.3219
+        # c, UNK    = 0.(1), -3.1699
+        # UNK, d    = 0.(09), 3.4594
+        # d, c      = 0.1 -3.3219
+        # c, </s>   = 0.(1), -3.1699
+        # Total logscores: −18.7651
+        # - AVG logscores: 3.1275
+        H = 3.1275
+        perplexity = 8.7393
         self.assertAlmostEqual(H, self.model.entropy(text), places=4)
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
 
