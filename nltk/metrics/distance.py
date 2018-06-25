@@ -193,7 +193,7 @@ def custom_distance(file):
 
 def jaro_similarity(s1, s2):
     """
-    Computes the Jaro similarity between 2 sequences from:
+   	Computes the Jaro similarity between 2 sequences from:
 
         Matthew A. Jaro (1989). Advances in record linkage methodology
         as applied to the 1985 census of Tampa Florida. Journal of the
@@ -249,7 +249,72 @@ def jaro_similarity(s1, s2):
 
 def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     """
-    The Jaro Winkler distance is an extension of the Jaro similarity in:
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','billy')))
+	1.000
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','bill',p=0.125)))
+	0.967
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','blily',p=0.20)))
+	0.947
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('massie','massey',p=0.125)))
+	0.944
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','bolly',p=0.20)))
+	0.893
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('dwayne','duane',p=0.20)))
+	0.858
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','susan')))
+	0.000
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('dixon','dickson',p=0.15)))
+	0.853
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('yvette','yevett',p=0.20)))
+	0.911
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('SHACKLEFORD','SHACKELFORD')))
+	0.982
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('DUNNINGHAM','CUNNIGHAM')))
+	0.896
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('NICHLESON','NICHULSON')))
+	0.956
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('JONES','JOHNSON')))
+	0.832
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('ABROMS','ABRAMS')))
+	0.922
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('HARDIN','MARTINEZ')))
+	0.722
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('ITMAN','SMITH')))
+	0.467
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('JERALDINE','GERALDINE')))
+	0.926
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('MARHTA','MARTHA')))
+	0.961
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('MICHELLE','MICHAEL')))
+	0.921
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('JULIES','JULIUS')))
+	0.933
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('TANYA','TONYA')))
+	0.880
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('SEAN','SUSAN')))
+	0.805
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('JON','JOHN')))
+	0.933
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('JON','JAN')))
+	0.000
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('BROOKHAVEN','BRROKHAVEN')))
+	0.947
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('BROOK HALLOW','BROOK HLLW')))
+	0.967
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('DECATUR','DECATIR')))
+	0.943
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('FITZRUREITER','FITZENREITER')))
+	0.913
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('HIGBEE','HIGHEE')))
+	0.922
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('HIGBEE','HIGVEE')))
+	0.922
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('LACURA','LOCURA')))
+	0.900
+	>>> print("{0:.3f}".format(jaro_winkler_similarity('IOWA','IONA')))
+	0.867
+
+	The Jaro Winkler distance is an extension of the Jaro similarity in:
 
         William E. Winkler. 1990. String Comparator Metrics and Enhanced
         Decision Rules in the Fellegi-Sunter Model of Record Linkage.
