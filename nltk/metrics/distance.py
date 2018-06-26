@@ -1,3 +1,4 @@
+	# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Distance Metrics
 #
 # Copyright (C) 2001-2018 NLTK Project
@@ -209,6 +210,7 @@ def jaro_similarity(s1, s2):
         - |s_i| is the length of string s_i
         - m is the no. of matching characters
         - t is the half no. of possible transpositions.
+
     """
     # First, store the length of the strings
     # because they will be re-used several times.
@@ -249,72 +251,8 @@ def jaro_similarity(s1, s2):
 
 def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     """
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','billy')))
-	1.000
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','bill',p=0.125)))
-	0.967
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','blily',p=0.20)))
-	0.947
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('massie','massey',p=0.125)))
-	0.944
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','bolly',p=0.20)))
-	0.893
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('dwayne','duane',p=0.20)))
-	0.858
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('billy','susan')))
-	0.000
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('dixon','dickson',p=0.15)))
-	0.853
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('yvette','yevett',p=0.20)))
-	0.911
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('SHACKLEFORD','SHACKELFORD')))
-	0.982
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('DUNNINGHAM','CUNNIGHAM')))
-	0.896
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('NICHLESON','NICHULSON')))
-	0.956
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('JONES','JOHNSON')))
-	0.832
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('ABROMS','ABRAMS')))
-	0.922
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('HARDIN','MARTINEZ')))
-	0.722
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('ITMAN','SMITH')))
-	0.467
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('JERALDINE','GERALDINE')))
-	0.926
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('MARHTA','MARTHA')))
-	0.961
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('MICHELLE','MICHAEL')))
-	0.921
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('JULIES','JULIUS')))
-	0.933
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('TANYA','TONYA')))
-	0.880
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('SEAN','SUSAN')))
-	0.805
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('JON','JOHN')))
-	0.933
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('JON','JAN')))
-	0.000
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('BROOKHAVEN','BRROKHAVEN')))
-	0.947
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('BROOK HALLOW','BROOK HLLW')))
-	0.967
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('DECATUR','DECATIR')))
-	0.943
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('FITZRUREITER','FITZENREITER')))
-	0.913
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('HIGBEE','HIGHEE')))
-	0.922
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('HIGBEE','HIGVEE')))
-	0.922
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('LACURA','LOCURA')))
-	0.900
-	>>> print("{0:.3f}".format(jaro_winkler_similarity('IOWA','IONA')))
-	0.867
-
-	The Jaro Winkler distance is an extension of the Jaro similarity in:
+  
+    The Jaro Winkler distance is an extension of the Jaro similarity in:
 
         William E. Winkler. 1990. String Comparator Metrics and Enhanced
         Decision Rules in the Fellegi-Sunter Model of Record Linkage.
@@ -334,6 +272,46 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
         - p is the constant scaling factor to overweigh common prefixes.
           The Jaro-Winkler similarity will fall within the [0, 1] bound,
           given that max(p)<=0.25 , default is p=0.1 in Winkler (1990)
+
+	
+    Test using outputs from https://www.census.gov/srd/papers/pdf/rr93-8.pdf  
+    from "Table 5 Comparison of String Comparators Rescaled between 0 and 1"
+	
+        >>> winkler_examples = [("billy", "billy"), ("billy", "bill"), ("billy", "blily"), 
+	... ("massie", "massey"), ("yvette", "yevett"), ("billy", "bolly"), ("dwayne", "duane"), 
+	... ("dixson", "dickson"), ("billy", "susan")]
+	
+	>>> winkler_scores = [1.000, 0.967, 0.947, 0.944, 0.911, 0.893, 0.858, 0.853, 0.000]
+	>>> jaro_scores =    [1.000, 0.933, 0.933, 0.889, 0.889, 0.867, 0.822, 0.791, 0.000]
+	
+	>>> for (s1, s2), jscore, wscore in zip(winkler_examples, jaro_scores, winkler_score):
+	...     assert jaro_winkler_similarity(s1, s2) == wscore
+	...     assert jaro_similarity(s1, s2) == jscore
+	
+    Test using outputs from https://www.census.gov/srd/papers/pdf/rr94-5.pdf from 
+    "Table 2.1. Comparison of String Comparators Using Last Names, First Names, and Street Names"
+    
+	>>> winkler_examples = [('SHACKLEFORD', 'SHACKELFORD'), ('DUNNINGHAM', 'CUNNIGHAM'), 
+	... ('NICHLESON', 'NICHULSON'), ('JONES', 'JOHNSON'), ('MASSEY', 'MASSIE'), 
+	... ('ABROMS', 'ABRAMS'), ('HARDIN', 'MARTINEZ'), ('ITMAN', 'SMITH'), 
+	... ('JERALDINE', 'GERALDINE'), ('MARHTA', 'MARTHA'), ('MICHELLE', 'MICHAEL'), 
+	... ('JULIES', 'JULIUS'), ('TANYA', 'TONYA'), ('DWAYNE', 'DUANE'), ('SEAN', 'SUSAN'), 
+	... ('JON', 'JOHN'), ('JON', 'JAN'), ('BROOKHAVEN', 'BRROKHAVEN'), 
+	... ('BROOK HALLOW', 'BROOK HLLW'), , ('DECATUR', 'DECATIR'), ('FITZRUREITER', 'FITZENREITER'), 
+	... ('HIGBEE', 'HIGHEE'), ('HIGBEE', 'HIGVEE'), ('LACURA', 'LOCURA'), ('IOWA', 'IONA'), ('1ST', 'IST')]
+	
+	>>> jaro_scores =   [0.970, 0.896, 0.926, 0.790, 0.889, 0.889, 0.722, 0.467, 0.926, 
+	... 0.944, 0.869, 0.889, 0.867, 0.822, 0.783, 0.917, 0.000, 0.933, 0.944, 0.905, 
+	... 0.856, 0.889, 0.889, 0.889, 0.833, 0.000]
+	
+	>>> winkler_scores = [0.982, 0.896, 0.956, 0.832, 0.933, 0.922, 0.722, 0.467, 0.926, 
+	... 0.961, 0.921, 0.933, 0.880, 0.840, 0.805, 0.933, 0.000, 0.947, 0.967, 0.943, 
+	... 0.913, 0.922, 0.922, 0.900, 0.867, 0.000]
+    
+    
+	>>> for (s1, s2), jscore, wscore in zip(winkler_examples, jaro_scores, winkler_score):
+	...     assert jaro_winkler_similarity(s1, s2) == wscore
+	...     assert jaro_similarity(s1, s2) == jscore
 
     """
     # Compute the Jaro similarity
