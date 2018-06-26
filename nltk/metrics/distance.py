@@ -317,7 +317,7 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 	...         continue  # Skip bad examples from the paper.
 	...     if round(jaro_similarity(s1, s2), 3) != jscore:
 	...         print(s1, s2, jscore, round(jaro_similarity(s1, s2), 3))
-	...     if round(jaro_winkler_similarity(s1, s2), 3) != jscore:
+	...     if round(jaro_winkler_similarity(s1, s2), 3) != wscore:
         ...         print(s1, s2, wscore, round(jaro_winkler_similarity(s1, s2), 3))
 	...     ##assert round(jaro_winkler_similarity(s1, s2), 3)  == wscore
 	...     ##assert round(jaro_similarity(s1, s2), 3) == jscore
