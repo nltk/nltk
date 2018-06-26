@@ -285,10 +285,9 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 	
 	>>> for (s1, s2), jscore, wscore in zip(winkler_examples, jaro_scores, winkler_scores):
 	...     if round(jaro_similarity(s1, s2), 3) != jscore:
-	...         print(s1, s2, jscore, jaro_similarity(s1, s2))
+	...         print(s1, s2, jscore, round(jaro_similarity(s1, s2), 3))
 	...     if round(jaro_winkler_similarity(s1, s2), 3) != jscore:
-        ...         print(s1, s2, wscore, jaro_winkler_similarity(s1, s2))
-        ...     print(s1, s2, wscore, jaro_winkler_similarity(s1, s2))
+        ...         print(s1, s2, wscore, round(jaro_winkler_similarity(s1, s2), 3))
 	...     ##assert round(jaro_winkler_similarity(s1, s2), 3) == wscore
 	...     ##assert round(jaro_similarity(s1, s2), 3) == jscore
 	
@@ -317,9 +316,9 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 	...     if (s1, s2) in [('JON', 'JAN'), ('1ST', 'IST')]: 
 	...         continue  # Skip bad examples from the paper.
 	...     if round(jaro_similarity(s1, s2), 3) != jscore:
-	...         print(s1, s2, jscore, jaro_similarity(s1, s2))
+	...         print(s1, s2, jscore, round(jaro_similarity(s1, s2), 3))
 	...     if round(jaro_winkler_similarity(s1, s2), 3) != jscore:
-        ...         print(s1, s2, wscore, jaro_winkler_similarity(s1, s2))
+        ...         print(s1, s2, wscore, round(jaro_winkler_similarity(s1, s2), 3))
 	...     ##assert round(jaro_winkler_similarity(s1, s2), 3)  == wscore
 	...     ##assert round(jaro_similarity(s1, s2), 3) == jscore
 
