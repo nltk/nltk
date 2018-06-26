@@ -119,8 +119,10 @@ def corpus_chrf(list_of_references, hypotheses, min_len=1, max_len=6, beta=3.0):
     # Iterate through each hypothesis and their corresponding references.
     for reference, hypothesis in zip(list_of_references, hypotheses):
         # Cheating condition to allow users to input strings instead of tokens.
-        if type(reference) and type(hypothesis) != str:
-            reference, hypothesis = ' '.join(reference), ' '.join(hypothesis)
+        if type(reference) != str:
+            reference = ' '.join(reference)
+        if type(hypothesis) != str:
+            hypothesis = ' '.join(hypothesis)
         # For each order of ngram, calculate the no. of ngram matches and
         # keep track of no. of ngram in references.
         ref_ngrams = Counter(everygrams(reference, min_len, max_len))
@@ -129,6 +131,11 @@ def corpus_chrf(list_of_references, hypotheses, min_len=1, max_len=6, beta=3.0):
         tp = sum(overlap_ngrams.values()) # True positives.
         tpfp = sum(hyp_ngrams.values()) # True positives + False positives.
         tffn = sum(ref_ngrams.values()) # True posities + False negatives.
+
+    # Avoid division by zero errors. We also return 0 when both reference
+    # and hypothesis are empty.
+    if 0 in (tp, tpfp, tffn):
+        return 0.0
 
     precision = tp / tpfp
     recall = tp / tffn
