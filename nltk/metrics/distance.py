@@ -194,7 +194,7 @@ def custom_distance(file):
 
 def jaro_similarity(s1, s2):
     """
-   	Computes the Jaro similarity between 2 sequences from:
+   Computes the Jaro similarity between 2 sequences from:
 
         Matthew A. Jaro (1989). Advances in record linkage methodology
         as applied to the 1985 census of Tampa Florida. Journal of the
@@ -251,7 +251,6 @@ def jaro_similarity(s1, s2):
 
 def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     """
-  
     The Jaro Winkler distance is an extension of the Jaro similarity in:
 
         William E. Winkler. 1990. String Comparator Metrics and Enhanced
@@ -285,8 +284,8 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 	>>> jaro_scores =    [1.000, 0.933, 0.933, 0.889, 0.889, 0.867, 0.822, 0.791, 0.000]
 	
 	>>> for (s1, s2), jscore, wscore in zip(winkler_examples, jaro_scores, winkler_scores):
-	...     assert jaro_winkler_similarity(s1, s2) == wscore
-	...     assert jaro_similarity(s1, s2) == jscore
+	...     assert round(jaro_winkler_similarity(s1, s2), 3) == wscore
+	...     assert round(jaro_similarity(s1, s2), 3) == jscore
 	
     Test using outputs from https://www.census.gov/srd/papers/pdf/rr94-5.pdf from 
     "Table 2.1. Comparison of String Comparators Using Last Names, First Names, and Street Names"
@@ -310,10 +309,10 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     
     
 	>>> for (s1, s2), jscore, wscore in zip(winkler_examples, jaro_scores, winkler_scores):
-	...     if (s1, s2) in [('JON', 'JAN'), ('1ST', 'IST')]:
-	...         continue
-	...     assert jaro_winkler_similarity(s1, s2) == wscore
-	...     assert jaro_similarity(s1, s2) == jscore
+	...     if (s1, s2) in [('JON', 'JAN'), ('1ST', 'IST')]: 
+	...         continue  # Skip bad examples from the paper.
+	...     assert round(jaro_winkler_similarity(s1, s2), 3)  == wscore
+	...     assert round(jaro_similarity(s1, s2), 3) == jscore
 
     """
     # Compute the Jaro similarity
