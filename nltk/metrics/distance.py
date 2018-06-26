@@ -284,6 +284,7 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 	>>> jaro_scores =    [1.000, 0.933, 0.933, 0.889, 0.889, 0.867, 0.822, 0.791, 0.000]
 	
 	>>> for (s1, s2), jscore, wscore in zip(winkler_examples, jaro_scores, winkler_scores):
+	...     print(score, jaro_winkler_similarity(s1, s2))
 	...     assert round(jaro_winkler_similarity(s1, s2), 3) == wscore
 	...     assert round(jaro_similarity(s1, s2), 3) == jscore
 	
@@ -311,6 +312,7 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 	>>> for (s1, s2), jscore, wscore in zip(winkler_examples, jaro_scores, winkler_scores):
 	...     if (s1, s2) in [('JON', 'JAN'), ('1ST', 'IST')]: 
 	...         continue  # Skip bad examples from the paper.
+	...     print(score, jaro_winkler_similarity(s1, s2))
 	...     assert round(jaro_winkler_similarity(s1, s2), 3)  == wscore
 	...     assert round(jaro_similarity(s1, s2), 3) == jscore
 
