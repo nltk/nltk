@@ -59,6 +59,8 @@ if [[ ! -d $senna_folder_name ]]; then
         rm ${senna_file_name}
 fi
 
+ls /home/jenkins/third/senna/data/
+
 # Setup the Enviroment variable
 export CLASSPATH=$(pwd)"/${stanford_corenlp_package_name}"
 export CLASSPATH=${CLASSPATH}:$(pwd)"/${stanford_parser_package_name}"
