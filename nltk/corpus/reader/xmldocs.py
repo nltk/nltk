@@ -15,8 +15,10 @@ from __future__ import print_function, unicode_literals
 import codecs
 
 # Use the c version of ElementTree, which is faster, if possible:
-try: from xml.etree import cElementTree as ElementTree
-except ImportError: from xml.etree import ElementTree
+try:
+    from xml.etree import cElementTree as ElementTree
+except ImportError:
+    from xml.etree import ElementTree
 
 from six import string_types
 
@@ -26,6 +28,7 @@ from nltk.internals import ElementWrapper
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
+
 
 class XMLCorpusReader(CorpusReader):
     """
@@ -65,7 +68,7 @@ class XMLCorpusReader(CorpusReader):
 
         elt = self.xml(fileid)
         encoding = self.encoding(fileid)
-        word_tokenizer=WordPunctTokenizer()
+        word_tokenizer = WordPunctTokenizer()
         iterator = elt.getiterator()
         out = []
 
@@ -77,11 +80,6 @@ class XMLCorpusReader(CorpusReader):
                 toks = word_tokenizer.tokenize(text)
                 out.extend(toks)
         return out
-
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
 
 class XMLCorpusView(StreamBackedCorpusView):
@@ -141,7 +139,8 @@ class XMLCorpusView(StreamBackedCorpusView):
 
                 elt_handler(elt, tagspec) -> value
         """
-        if elt_handler: self.handle_elt = elt_handler
+        if elt_handler:
+            self.handle_elt = elt_handler
 
         self._tagspec = re.compile(tagspec+r'\Z')
         """The tag specification for this corpus view."""
@@ -217,7 +216,7 @@ class XMLCorpusView(StreamBackedCorpusView):
            (<[^!>][^>]*>))                         # tag or PI
           [^<]*)*
         \Z""",
-        re.DOTALL|re.VERBOSE)
+        re.DOTALL | re.VERBOSE)
 
     #: A regular expression used to extract the tag name from a start tag,
     #: end tag, or empty-elt tag string.
@@ -293,28 +292,32 @@ class XMLCorpusView(StreamBackedCorpusView):
         matches ``tagspec``, and return the result of applying
         ``elt_handler`` to each element found.
         """
-        if tagspec is None: tagspec = self._tagspec
-        if elt_handler is None: elt_handler = self.handle_elt
+        if tagspec is None:
+            tagspec = self._tagspec
+        if elt_handler is None:
+            elt_handler = self.handle_elt
 
         # Use a stack of strings to keep track of our context:
         context = list(self._tag_context.get(stream.tell()))
-        assert context is not None # check this -- could it ever happen?
+        assert context is not None  # check this -- could it ever happen?
 
         elts = []
 
-        elt_start = None # where does the elt start
-        elt_depth = None # what context depth
+        elt_start = None  # where does the elt start
+        elt_depth = None  # what context depth
         elt_text = ''
 
-        while elts==[] or elt_start is not None:
+        while elts == [] or elt_start is not None:
             if isinstance(stream, SeekableUnicodeStreamReader):
                 startpos = stream.tell()
             xml_fragment = self._read_xml_fragment(stream)
 
             # End of file.
             if not xml_fragment:
-                if elt_start is None: break
-                else: raise ValueError('Unexpected end of file')
+                if elt_start is None:
+                    break
+                else:
+                    raise ValueError('Unexpected end of file')
 
             # Process each <tag> in the xml fragment.
             for piece in self._XML_PIECE.finditer(xml_fragment):
@@ -342,7 +345,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # Is this the end of an element?
                     if elt_start is not None and elt_depth == len(context):
                         elt_text += xml_fragment[elt_start:piece.end()]
-                        elts.append( (elt_text, '/'.join(context)) )
+                        elts.append((elt_text, '/'.join(context)))
                         elt_start = elt_depth = None
                         elt_text = ''
                     # Keep context up-to-date

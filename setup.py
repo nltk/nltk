@@ -56,7 +56,7 @@ extras_require = {
 extras_require['all'] = set(package for group in extras_require.values() for package in group)
 
 setup(
-    name = "nltk",
+    name = "nltk-pppp",
     description = "Natural Language Toolkit",
     version = nltk_version,
     url = "http://nltk.org/",

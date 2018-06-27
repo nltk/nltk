@@ -49,6 +49,7 @@ NON_GRAD_COMPARISON = re.compile(r'<cs-4>')
 ENTITIES_FEATS = re.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
 KEYWORD = re.compile(r'\((?!.*\()(.*)\)$')
 
+
 class Comparison(object):
     """
     A Comparison represents a comparative sentence and its constituents.
@@ -76,6 +77,7 @@ class Comparison(object):
         return ("Comparison(text=\"{}\", comp_type={}, entity_1=\"{}\", entity_2=\"{}\", "
                 "feature=\"{}\", keyword=\"{}\")").format(self.text, self.comp_type,
                 self.entity_1, self.entity_2, self.feature, self.keyword)
+
 
 class ComparativeSentencesCorpusReader(CorpusReader):
     """
@@ -137,8 +139,8 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         :rtype: set(str)
         """
         all_keywords = concat([self.CorpusView(path, self._read_keyword_block, encoding=enc)
-                       for (path, enc, fileid)
-                       in self.abspaths(fileids, True, True)])
+                              for (path, enc, fileid)
+                              in self.abspaths(fileids, True, True)])
 
         keywords_set = set([keyword.lower() for keyword in all_keywords if keyword])
         return keywords_set
@@ -155,19 +157,6 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                 continue
             keywords.append(line.strip())
         return keywords
-
-    def raw(self, fileids=None):
-        """
-        :param fileids: a list or regexp specifying the fileids that have to be
-            returned as a raw string.
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
     def readme(self):
         """
@@ -205,7 +194,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         while True:
             line = stream.readline()
             if not line:
-                return [] # end of file.
+                return []  # end of file.
             comparison_tags = re.findall(COMPARISON, line)
             if comparison_tags:
                 grad_comparisons = re.findall(GRAD_COMPARISON, line)
@@ -266,10 +255,10 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                         break
                 continue
             if not re.findall(COMPARISON, line) and not ENTITIES_FEATS.findall(line) \
-            and not re.findall(CLOSE_COMPARISON, line):
+              and not re.findall(CLOSE_COMPARISON, line):
                 if self._sent_tokenizer:
                     return [self._word_tokenizer.tokenize(sent)
-                        for sent in self._sent_tokenizer.tokenize(line)]
+                            for sent in self._sent_tokenizer.tokenize(line)]
                 else:
                     return [self._word_tokenizer.tokenize(line)]
 

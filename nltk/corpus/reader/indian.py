@@ -25,6 +25,7 @@ from nltk.tag import str2tuple, map_tag
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class IndianCorpusReader(CorpusReader):
     """
     List of words, one per line.  Blank lines are ignored.
@@ -57,11 +58,6 @@ class IndianCorpusReader(CorpusReader):
                                         True, True, tag_mapping_function)
                        for (fileid, enc) in self.abspaths(fileids, True)])
 
-    def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
 
 class IndianCorpusView(StreamBackedCorpusView):
     def __init__(self, corpus_file, encoding, tagged,
@@ -77,8 +73,9 @@ class IndianCorpusView(StreamBackedCorpusView):
             return []
         sent = [str2tuple(word, sep='_') for word in line.split()]
         if self._tag_mapping_function:
-            sent = [(w, self._tag_mapping_function(t)) for (w,t) in sent]
-        if not self._tagged: sent = [w for (w,t) in sent]
+            sent = [(w, self._tag_mapping_function(t)) for (w, t) in sent]
+        if not self._tagged:
+            sent = [w for (w, t) in sent]
         if self._group_by_sent:
             return [sent]
         else:

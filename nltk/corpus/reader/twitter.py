@@ -82,8 +82,6 @@ class TwitterCorpusReader(CorpusReader):
 
         self._word_tokenizer = word_tokenizer
 
-
-
     def docs(self, fileids=None):
         """
         Returns the full Tweet objects, as specified by `Twitter
@@ -96,7 +94,6 @@ class TwitterCorpusReader(CorpusReader):
         """
         return concat([self.CorpusView(path, self._read_tweets, encoding=enc)
                        for (path, enc, fileid) in self.abspaths(fileids, True, True)])
-
 
     def strings(self, fileids=None):
         """
@@ -117,7 +114,6 @@ class TwitterCorpusReader(CorpusReader):
                 pass
         return tweets
 
-
     def tokenized(self, fileids=None):
         """
         :return: the given file(s) as a list of the text content of Tweets as
@@ -128,18 +124,6 @@ class TwitterCorpusReader(CorpusReader):
         tweets = self.strings(fileids)
         tokenizer = self._word_tokenizer
         return [tokenizer.tokenize(t) for t in tweets]
-
-
-    def raw(self, fileids=None):
-        """
-        Return the corpora in their raw form.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
 
     def _read_tweets(self, stream):
         """

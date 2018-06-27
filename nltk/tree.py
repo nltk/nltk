@@ -117,12 +117,7 @@ class Tree(list):
                 (self._label, list(self)) == (other._label, list(other)))
 
     def __lt__(self, other):
-        if not isinstance(other, Tree):
-            # raise_unorderable_types("<", self, other)
-            # Sometimes children can be pure strings,
-            # so we need to be able to compare with non-trees:
-            return self.__class__.__name__ < other.__class__.__name__
-        elif self.__class__ is other.__class__:
+        if self.__class__ is other.__class__:
             return (self._label, list(self)) < (other._label, list(other))
         else:
             return self.__class__.__name__ < other.__class__.__name__
