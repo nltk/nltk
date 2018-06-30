@@ -29,13 +29,16 @@ class LanguageModel(object):
 
     """
 
-    def __init__(self, order, vocabulary=None, ngrams_fn=None, pad_fn=None):
+    def __init__(self, order, vocabulary=None, counter=None, ngrams_fn=None, pad_fn=None):
         """Creates new LanguageModel.
 
         :param vocabulary: If provided, this vocabulary will be used instead
         of creating a new one when training.
-        :type vocabulary: `nltk.model.Vocabulary` or None
-        :param ngrams_fn: If given, defines how sentences in training text are turned to ngram sequences.
+        :type vocabulary: `nltk.lm.Vocabulary` or None
+        :param counter: If provided, use this object to count ngrams.
+        :type vocabulary: `nltk.lm.NgramCounter` or None
+        :param ngrams_fn: If given, defines how sentences in training text are turned to ngram
+                          sequences.
         :type ngrams_fn: function or None
         :param pad_fn: If given, defines how senteces in training text are padded.
         :type pad_fn: function or None
@@ -43,7 +46,7 @@ class LanguageModel(object):
         """
         self.order = order
         self.vocab = Vocabulary() if vocabulary is None else vocabulary
-        self.counts = NgramCounter()
+        self.counts = NgramCounter() if counter is None else counter
         self.ngrams = partial(everygrams, max_len=order) if ngrams_fn is None else ngrams_fn
         if pad_fn is None:
             self.padder = partial(
