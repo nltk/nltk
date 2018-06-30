@@ -7,8 +7,7 @@
 from __future__ import unicode_literals, division
 
 from nltk import compat
-
-from nltk.lm.api import LanguageModel, mask_oov_args
+from nltk.lm.api import LanguageModel
 
 
 @compat.python_2_unicode_compatible
@@ -18,8 +17,7 @@ class MLE(LanguageModel):
     Inherits initialization from BaseNgramModel.
     """
 
-    @mask_oov_args
-    def score(self, word, context=None):
+    def unmasked_score(self, word, context=None):
         """Returns the MLE score for a word given a context.
 
         Args:
@@ -42,8 +40,12 @@ class Lidstone(LanguageModel):
         super(Lidstone, self).__init__(*args, **kwargs)
         self.gamma = gamma
 
-    @mask_oov_args
-    def score(self, word, context=None):
+    def unmasked_score(self, word, context=None):
+        """Add-one smoothing: Lidstone or Laplace.
+
+        To see what kind, look at `gamma` attribute on the class.
+
+        """
         counts = self.context_counts(context)
         word_count = counts[word]
         norm_count = counts.N()

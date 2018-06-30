@@ -6,33 +6,19 @@
 # For license information, see LICENSE.TXT
 """Language Model Interface."""
 from __future__ import unicode_literals, division
-from functools import wraps, partial
+
 import random
 from abc import ABCMeta, abstractmethod
+from functools import partial
 from itertools import chain
 
 import numpy as np
 
+from nltk.lm.counter import NgramCounter
+from nltk.lm.util import log_base2
+from nltk.lm.vocabulary import Vocabulary
 from nltk.six import add_metaclass
 from nltk.util import everygrams, pad_sequence
-
-from nltk.lm.util import log_base2
-from nltk.lm.counter import NgramCounter
-from nltk.lm.vocabulary import Vocabulary
-
-
-def mask_oov_args(score_func):
-    """Decorator that checks arguments for ngram model score methods."""
-
-    @wraps(score_func)
-    def checker(self, word, context=None):
-        word_chk = self.vocab.lookup(word)
-
-        context = tuple(map(self.vocab.lookup, context)) if context else None
-
-        return score_func(self, word_chk, context)
-
-    return checker
 
 
 @add_metaclass(ABCMeta)
@@ -87,10 +73,14 @@ class LanguageModel(object):
         :rtype: Iterable(tuple(str))
 
         """
-        return self.ngrams(list(self.vocab.lookup(self.padder(sent))))
+        return self.ngrams(list(self.padder(self.vocab.lookup(sent))))
+
+    def score(self, word, context=None):
+        return self.unmasked_score(
+            self.vocab.lookup(word), tuple(self.vocab.lookup(context)) if context else None)
 
     @abstractmethod
-    def score(self, word, context=None):
+    def unmasked_score(self, word, context=None):
         """Score a word given some optional context.
 
         :param str word: Word for which we want the score
