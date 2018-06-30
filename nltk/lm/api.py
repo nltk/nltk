@@ -79,6 +79,10 @@ class LanguageModel(object):
         return self.ngrams(list(self.padder(self.vocab.lookup(sent))))
 
     def score(self, word, context=None):
+        """Masks out of vocab (OOV) words and passes them to `self.unmasked_score`.
+
+        For model-specific logic of calculating scores, see `unmasked_score` method.
+        """
         return self.unmasked_score(
             self.vocab.lookup(word), tuple(self.vocab.lookup(context)) if context else None)
 

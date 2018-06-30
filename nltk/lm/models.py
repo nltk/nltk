@@ -24,8 +24,7 @@ class MLE(LanguageModel):
         - word is expcected to be a string
         - context is expected to be something reasonably convertible to a tuple
         """
-        counts = self.context_counts(context)
-        return counts.freq(word)
+        return self.context_counts(context).freq(word)
 
 
 @compat.python_2_unicode_compatible
