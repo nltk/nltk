@@ -11,7 +11,7 @@ import math
 
 from six import add_metaclass
 
-from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace, WittenBell)
+from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace, WittenBell, InterpolatedKneserNey)
 
 
 class ParametrizeTestsMeta(type):
@@ -322,6 +322,37 @@ class WittenBellTrigramModelTests(unittest.TestCase):
         # gamma(['a', 'b']) = 0.0667
         # mle("c", ["a", "b"]) = 1
         ('c', ['a', 'b'], (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+    ]
+
+
+@add_metaclass(ParametrizeTestsMeta)
+class InterpolatedKneserNeyTrigramModelTests(unittest.TestCase):
+
+    def setUp(self):
+        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+        training_text = [list('abcd'), list('egadbe')]
+        self.model = InterpolatedKneserNey(3, vocabulary=vocab)
+        self.model.fit(training_text)
+
+    score_tests = [
+        # For unigram scores revert to uniform
+        # Vocab size: 8
+        # count('c'): 1
+        ('c', None, 1. / 8),
+        # in vocabulary but unseen, still uses uniform
+        ('z', None, 1 / 8),
+        # out of vocabulary should use "UNK" score, i.e. again uniform
+        ('y', None, 1. / 8),
+        # alpha = count('bc') - discount = 1 - 0.1 = 0.9
+        # gamma(['b']) = discount * number of unique words that follow ['b'] = 0.1 * 2
+        # normalizer = total number of bigrams with this context = 2
+        # the final should be: (alpha + gamma * unigram_score("c"))
+        ('c', ['b'], (0.9 + 0.2 * (1 / 8)) / 2),
+        # building on that, let's try 'a b c' as the trigram
+        # alpha = count('abc') - discount = 1 - 0.1 = 0.9
+        # gamma(['a', 'b']) = 0.1 * 1
+        # normalizer = total number of trigrams with prefix "ab" = 1 => we can ignore it!
+        ('c', ['a', 'b'], 0.9 + 0.1 * ((0.9 + 0.2 * (1 / 8)) / 2)),
     ]
 
 

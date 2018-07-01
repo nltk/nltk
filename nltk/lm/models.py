@@ -84,3 +84,21 @@ class WittenBell(InterpolatedLanguageModel):
     def gamma(self, context):
         n_plus = sum(1 for c in self.counts[context].values() if c > 0)
         return n_plus / (n_plus + self.counts[len(context) + 1].N())
+
+
+class InterpolatedKneserNey(InterpolatedLanguageModel):
+    def __init__(self, *args, discount=0.1, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.discount = discount
+
+    def unmasked_score(self, word, context=None):
+        if not context:
+            return 1. / len(self.vocab)
+        alpha = max(self.counts[context][word] - self.discount, 0.0)
+        normalizer = self.counts[context].N()
+        return (
+            alpha + self.gamma(context) * self.unmasked_score(word, context[1:])
+        ) / normalizer
+
+    def gamma(self, context):
+        return self.discount * len(self.counts[context])
