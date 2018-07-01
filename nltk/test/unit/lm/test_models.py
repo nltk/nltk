@@ -49,7 +49,7 @@ class ParametrizeTestsMeta(type):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class MleBigramModelTests(unittest.TestCase):
+class MleBigramTests(unittest.TestCase):
     """unit tests for MLENgramModel class"""
 
     score_tests = [
@@ -132,7 +132,7 @@ class MleBigramModelTests(unittest.TestCase):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class MleTrigramModelTests(unittest.TestCase):
+class MleTrigramTests(unittest.TestCase):
     """MLE trigram model tests"""
 
     score_tests = [
@@ -158,7 +158,7 @@ class MleTrigramModelTests(unittest.TestCase):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class LidstoneBigramModelTests(unittest.TestCase):
+class LidstoneBigramTests(unittest.TestCase):
     """unit tests for Lidstone class"""
 
     score_tests = [
@@ -216,7 +216,7 @@ class LidstoneBigramModelTests(unittest.TestCase):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class LidstoneTrigramModelTests(unittest.TestCase):
+class LidstoneTrigramTests(unittest.TestCase):
     score_tests = [
         # Logic behind this is the same as for bigram model
         ('d', ['c'], 1.1 / 1.8),
@@ -235,7 +235,7 @@ class LidstoneTrigramModelTests(unittest.TestCase):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class LaplaceBigramModelTests(unittest.TestCase):
+class LaplaceBigramTests(unittest.TestCase):
     """unit tests for Laplace class"""
 
     score_tests = [
