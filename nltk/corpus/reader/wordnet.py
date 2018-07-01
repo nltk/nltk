@@ -1128,7 +1128,10 @@ class WordNetCorpusReader(CorpusReader):
 
     def ss2of(self, ss):
         ''' return the ID of the synset '''
-        return ("{:08d}-{}".format(ss.offset(), ss.pos()))
+        pos = ss.pos()
+        if pos == 's':
+            pos = 'a'
+        return ("{:08d}-{}".format(ss.offset(), pos))
 
     def _load_lang_data(self, lang):
         ''' load the wordnet data of the requested language from the file to
