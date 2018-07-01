@@ -22,6 +22,22 @@ from nltk.util import everygrams, pad_sequence
 
 
 @add_metaclass(ABCMeta)
+class Smoothing(object):
+
+    def __init__(self, vocabulary, counter):
+        self.vocab = vocabulary
+        self.counts = counter
+
+    @abstractmethod
+    def unigram_score(self, word):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def alpha_gamma(self, word, context):
+        raise NotImplementedError()
+
+
+@add_metaclass(ABCMeta)
 class LanguageModel(object):
     """ABC for Language Models.
 
@@ -131,7 +147,6 @@ class LanguageModel(object):
         This is simply 2 ** cross-entropy for the text, so the arguments are the same.
 
         """
-
         return pow(2.0, self.entropy(text_ngrams))
 
     def generate_one(self, context=None):

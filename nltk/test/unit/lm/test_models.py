@@ -11,7 +11,7 @@ import math
 
 from six import add_metaclass
 
-from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace, WittenBell, InterpolatedKneserNey)
+from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace, WittenBellInterpolated, KneserNeyInterpolated)
 
 
 class ParametrizeTestsMeta(type):
@@ -295,12 +295,12 @@ class LaplaceBigramModelTests(unittest.TestCase):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class WittenBellTrigramModelTests(unittest.TestCase):
+class WittenBellInterpolatedTrigramTests(unittest.TestCase):
 
     def setUp(self):
         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
         training_text = [list('abcd'), list('egadbe')]
-        self.model = WittenBell(3, vocabulary=vocab)
+        self.model = WittenBellInterpolated(3, vocabulary=vocab)
         self.model.fit(training_text)
 
     score_tests = [
@@ -326,12 +326,12 @@ class WittenBellTrigramModelTests(unittest.TestCase):
 
 
 @add_metaclass(ParametrizeTestsMeta)
-class InterpolatedKneserNeyTrigramModelTests(unittest.TestCase):
+class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
 
     def setUp(self):
         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
         training_text = [list('abcd'), list('egadbe')]
-        self.model = InterpolatedKneserNey(3, vocabulary=vocab)
+        self.model = KneserNeyInterpolated(3, vocabulary=vocab)
         self.model.fit(training_text)
 
     score_tests = [
@@ -354,6 +354,15 @@ class InterpolatedKneserNeyTrigramModelTests(unittest.TestCase):
         # normalizer = total number of trigrams with prefix "ab" = 1 => we can ignore it!
         ('c', ['a', 'b'], 0.9 + 0.1 * ((0.9 + 0.2 * (1 / 8)) / 2)),
     ]
+
+# @add_metaclass(ParametrizeTestsMeta)
+# class BackoffKneserNeyTrigramTests(unittest.TestCase):
+#
+#     def setUp(self):
+#         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+#         training_text = [list('abcd'), list('egadbe')]
+#         self.model = BackoffKneserNey(3, vocabulary=vocab)
+#         self.model.fit(training_text)
 
 
 class NgramModelTextGenerationTests(unittest.TestCase):

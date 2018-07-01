@@ -7,7 +7,8 @@
 from __future__ import unicode_literals, division
 
 from nltk import compat
-from nltk.lm.api import LanguageModel
+from nltk.lm.api import LanguageModel, Smoothing
+from nltk.lm.smoothing import WittenBell, KneserNey
 
 
 @compat.python_2_unicode_compatible
@@ -63,42 +64,27 @@ class Laplace(Lidstone):
 
 
 class InterpolatedLanguageModel(LanguageModel):
-    pass
+
+    def __init__(self, smoothing_cls, *args, **kwargs):
+        assert issubclass(smoothing_cls, Smoothing)
+        params = kwargs.pop("params", {})
+        super().__init__(*args, **kwargs)
+        self.estimator = smoothing_cls(self.vocab, self.counts, **params)
+
+    def unmasked_score(self, word, context=None):
+        if not context:
+            return self.estimator.unigram_score(word)
+        alpha, gamma = self.estimator.alpha_gamma(word, context)
+        return alpha + gamma * self.unmasked_score(
+            word, context[1:]
+        )
 
 
-class WittenBell(InterpolatedLanguageModel):
-    """Witten-Bell smoothing."""
-
+class WittenBellInterpolated(InterpolatedLanguageModel):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # in line below, order argument to MLE doesn't matter
-        self.mle = MLE(1, vocabulary=self.vocab, counter=self.counts)
-
-    def unmasked_score(self, word, context=None):
-        if not context:
-            return self.mle.unmasked_score(word)
-        gamma = self.gamma(context)
-        return ((1 - gamma) * self.mle.unmasked_score(word, context)
-                + gamma * self.unmasked_score(word, context[1:]))
-
-    def gamma(self, context):
-        n_plus = sum(1 for c in self.counts[context].values() if c > 0)
-        return n_plus / (n_plus + self.counts[len(context) + 1].N())
+        super().__init__(WittenBell, *args, **kwargs)
 
 
-class InterpolatedKneserNey(InterpolatedLanguageModel):
+class KneserNeyInterpolated(InterpolatedLanguageModel):
     def __init__(self, *args, discount=0.1, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.discount = discount
-
-    def unmasked_score(self, word, context=None):
-        if not context:
-            return 1. / len(self.vocab)
-        alpha = max(self.counts[context][word] - self.discount, 0.0)
-        normalizer = self.counts[context].N()
-        return (
-            alpha + self.gamma(context) * self.unmasked_score(word, context[1:])
-        ) / normalizer
-
-    def gamma(self, context):
-        return self.discount * len(self.counts[context])
+        super().__init__(KneserNey, *args, params={"discount": discount}, **kwargs)

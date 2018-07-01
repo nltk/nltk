@@ -12,10 +12,10 @@ Issue 167
 ---------
 https://github.com/nltk/nltk/issues/167
 
-    >>> from nltk.lm import WittenBell
+    >>> from nltk.lm import WittenBellInterpolated
     >>> from nltk.corpus import brown
     >>> from nltk.util import ngrams
-    >>> lm = WittenBell(3)
+    >>> lm = WittenBellInterpolated(3)
     >>> lm.fit(brown.sents(categories="news"))
 
 Sentence containing an unseen word should result in infinite entropy because Witten-Bell
