@@ -11,7 +11,7 @@ import math
 
 from six import add_metaclass
 
-from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace)
+from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace, WittenBell)
 
 
 class ParametrizeTestsMeta(type):
@@ -292,6 +292,37 @@ class LaplaceBigramModelTests(unittest.TestCase):
         perplexity = 8.7393
         self.assertAlmostEqual(H, self.model.entropy(text), places=4)
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
+
+
+@add_metaclass(ParametrizeTestsMeta)
+class WittenBellTrigramModelTests(unittest.TestCase):
+
+    def setUp(self):
+        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
+        training_text = [list('abcd'), list('egadbe')]
+        self.model = WittenBell(3, vocabulary=vocab)
+        self.model.fit(training_text)
+
+    score_tests = [
+        # For unigram scores by default revert to MLE
+        # Total unigrams: 18
+        # count('c'): 1
+        ('c', None, 1. / 18),
+        # in vocabulary but unseen
+        # count("z") = 0
+        ('z', None, 0. / 18),
+        # out of vocabulary should use "UNK" score
+        # count("<UNK>") = 3
+        ('y', None, 3. / 18),
+        # gamma(['b']) = 0.1111
+        # mle.score('c', ['b']) = 0.5
+        # (1 - gamma) * mle + gamma * mle('c') ~= 0.45 + .3 / 18
+        ('c', ['b'], (1 - 0.1111) * 0.5 + 0.1111 * 1 / 18),
+        # building on that, let's try 'a b c' as the trigram
+        # gamma(['a', 'b']) = 0.0667
+        # mle("c", ["a", "b"]) = 1
+        ('c', ['a', 'b'], (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+    ]
 
 
 class NgramModelTextGenerationTests(unittest.TestCase):

@@ -60,3 +60,27 @@ class Laplace(Lidstone):
 
     def __init__(self, *args, **kwargs):
         super(Laplace, self).__init__(1, *args, **kwargs)
+
+
+class InterpolatedLanguageModel(LanguageModel):
+    pass
+
+
+class WittenBell(InterpolatedLanguageModel):
+    """Witten-Bell smoothing."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # in line below, order argument to MLE doesn't matter
+        self.mle = MLE(1, vocabulary=self.vocab, counter=self.counts)
+
+    def unmasked_score(self, word, context=None):
+        if not context:
+            return self.mle.unmasked_score(word)
+        gamma = self.gamma(context)
+        return ((1 - gamma) * self.mle.unmasked_score(word, context)
+                + gamma * self.unmasked_score(word, context[1:]))
+
+    def gamma(self, context):
+        n_plus = sum(1 for c in self.counts[context].values() if c > 0)
+        return n_plus / (n_plus + self.counts[len(context) + 1].N())

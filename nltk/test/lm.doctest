@@ -8,6 +8,32 @@ Regression Tests
 ================
 
 
+Issue 167
+---------
+https://github.com/nltk/nltk/issues/167
+
+    >>> from nltk.lm import WittenBell
+    >>> from nltk.corpus import brown
+    >>> from nltk.util import ngrams
+    >>> lm = WittenBell(3)
+    >>> lm.fit(brown.sents(categories="news"))
+
+Sentence containing an unseen word should result in infinite entropy because Witten-Bell
+is based ultimately on MLE, which cannot handle unseen ngrams.
+Crucially, it shouldn't raise any exceptions for unseen words.
+
+    >>> sent = ngrams("This is a sentence with the word aaddvark".split(), 3)
+    >>> lm.entropy(sent)
+    inf
+
+If we remove all unseen ngrams from the sentence, we'll get a non-infinite value
+for the entropy.
+
+    >>> sent = ngrams("This is a sentence".split(), 3)
+    >>> lm.entropy(sent)
+    17.413655884559361
+
+
 Issue 367
 ---------
 https://github.com/nltk/nltk/issues/367
