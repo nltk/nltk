@@ -436,7 +436,7 @@ class Synset(_WordNetObject):
         else:
             self._wordnet_corpus_reader._load_lang_data(lang)
 
-            i = self._wordnet_corpus_reader.ss2of(self)
+            i = self._wordnet_corpus_reader.ss2of(self, lang)
             if i in self._wordnet_corpus_reader._lang_data[lang][0]:
                 return self._wordnet_corpus_reader._lang_data[lang][0][i]
             else:
@@ -1126,10 +1126,11 @@ class WordNetCorpusReader(CorpusReader):
         ''' take an id and return the synsets '''
         return self.synset_from_pos_and_offset(of[-1], int(of[:8]))
 
-    def ss2of(self, ss):
+    def ss2of(self, ss, lang=None):
         ''' return the ID of the synset '''
         pos = ss.pos()
-        if pos == 's':
+        # Only these 3 WordNets retain the satellite pos tag
+        if lang not in ["nld", "lit", "slk"] and pos == 's':
             pos = 'a'
         return ("{:08d}-{}".format(ss.offset(), pos))
 
