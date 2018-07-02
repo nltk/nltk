@@ -282,9 +282,9 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 	
 	>>> winkler_scores = [1.000, 0.967, 0.947, 0.944, 0.911, 0.893, 0.858, 0.853, 0.000]
 	>>> jaro_scores =    [1.000, 0.933, 0.933, 0.889, 0.889, 0.867, 0.822, 0.790, 0.000]
-	>>> p_values = [0.1, 0.125, 0.20, 0.125, 0.20, 0.20, 0.20, 0.15, 0.1]
+	>>> p_value = [0.1, 0.125, 0.20, 0.125, 0.20, 0.20, 0.20, 0.15, 0.1]
 	
-	>>> for (s1, s2), jscore, wscore, p_val in zip(winkler_examples, jaro_scores, winkler_scores, p_values):
+	>>> for (s1, s2), jscore, wscore, p_val in zip(winkler_examples, jaro_scores, winkler_scores, p_value):
 	...     if round(jaro_similarity(s1, s2), 3) != jscore:
 	...         print(s1, s2, jscore, round(jaro_similarity(s1, s2), 3))
 	...     if round(jaro_winkler_similarity(s1, s2, p=p_val), 3) != wscore:
@@ -312,11 +312,11 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 	... 0.961, 0.921, 0.933, 0.880, 0.858, 0.805, 0.933, 0.000, 0.947, 0.967, 0.943, 
 	... 0.913, 0.922, 0.922, 0.900, 0.867, 0.000]
 
-	>>> p_values = [0.1, 0.1, 0.1, 0.1, 0.125, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.20, 
+	>>> p_value = [0.1, 0.1, 0.1, 0.1, 0.125, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.20, 
 	... 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
     
     
-	>>> for (s1, s2), jscore, wscore, p_val in zip(winkler_examples, jaro_scores, winkler_scores, p_values):
+	>>> for (s1, s2), jscore, wscore, p_val in zip(winkler_examples, jaro_scores, winkler_scores, p_value):
 	...     if (s1, s2) in [('JON', 'JAN'), ('1ST', 'IST')]: 
 	...         continue  # Skip bad examples from the paper.
 	...     if round(jaro_similarity(s1, s2), 3) != jscore:
