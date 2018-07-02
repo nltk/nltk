@@ -355,14 +355,6 @@ class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
         ('c', ['a', 'b'], 0.9 + 0.1 * ((0.9 + 0.2 * (1 / 8)) / 2)),
     ]
 
-# @add_metaclass(ParametrizeTestsMeta)
-# class BackoffKneserNeyTrigramTests(unittest.TestCase):
-#
-#     def setUp(self):
-#         vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
-#         training_text = [list('abcd'), list('egadbe')]
-#         self.model = BackoffKneserNey(3, vocabulary=vocab)
-#         self.model.fit(training_text)
 
 
 class NgramModelTextGenerationTests(unittest.TestCase):

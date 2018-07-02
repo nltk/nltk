@@ -2,6 +2,9 @@
 
 from nltk.lm.api import Smoothing
 
+def _count_non_zero_vals(dictionary):
+    return sum(1 for c in dictionary.values() if c > 0)
+
 
 class WittenBell(Smoothing):
     """Witten-Bell smoothing."""
@@ -17,7 +20,7 @@ class WittenBell(Smoothing):
         return self.counts[context].freq(word)
 
     def gamma(self, context):
-        n_plus = sum(1 for c in self.counts[context].values() if c > 0)
+        n_plus = _count_non_zero_vals(self.counts[context])
         return n_plus / (n_plus + self.counts[len(context) + 1].N())
 
 
@@ -37,4 +40,4 @@ class KneserNey(Smoothing):
         return max(prefix_counts[word] - self.discount, 0.0) / prefix_counts.N()
 
     def gamma(self, prefix_counts):
-        return self.discount * len(prefix_counts) / prefix_counts.N()
+        return self.discount * _count_non_zero_vals(prefix_counts) / prefix_counts.N()
