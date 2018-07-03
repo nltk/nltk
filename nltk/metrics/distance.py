@@ -260,80 +260,90 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
         American Statistical Association: 354-359.
     such that:
 
-        jaro_winkler_sim = jaro_sim + ( l * p * (1 - jaro_sim) )
+        jaro_winkler_sim = jaro_sim + ( l_ * p * (1 - jaro_sim) )
 
     where,
 
         - jaro_sim is the output from the Jaro Similarity,
         see jaro_similarity()
-        - l is the length of common prefix at the start of the string
+        - l_ is the length of common prefix at the start of the string
             - this implementation provides an upperbound for the l value
               to keep the prefixes.A common value of this upperbound is 4.
         - p is the constant scaling factor to overweigh common prefixes.
           The Jaro-Winkler similarity will fall within the [0, 1] bound,
           given that max(p)<=0.25 , default is p=0.1 in Winkler (1990)
 
-	
+    
     Test using outputs from https://www.census.gov/srd/papers/pdf/rr93-8.pdf  
     from "Table 5 Comparison of String Comparators Rescaled between 0 and 1"
-	
-        >>> winkler_examples = [("billy", "billy"), ("billy", "bill"), ("billy", "blily"), 
-	... ("massie", "massey"), ("yvette", "yevett"), ("billy", "bolly"), ("dwayne", "duane"), 
-	... ("dixon", "dickson"), ("billy", "susan")]
-	
-	>>> winkler_scores = [1.000, 0.967, 0.947, 0.944, 0.911, 0.893, 0.858, 0.853, 0.000]
-	>>> jaro_scores =    [1.000, 0.933, 0.933, 0.889, 0.889, 0.867, 0.822, 0.790, 0.000]
+    
+    >>> winkler_examples = [("billy", "billy"), ("billy", "bill"), ("billy", "blily"), 
+    ... ("massie", "massey"), ("yvette", "yevett"), ("billy", "bolly"), ("dwayne", "duane"), 
+    ... ("dixon", "dickson"), ("billy", "susan")]
+    
+    >>> winkler_scores = [1.000, 0.967, 0.947, 0.944, 0.911, 0.893, 0.858, 0.853, 0.000]
+    >>> jaro_scores =    [1.000, 0.933, 0.933, 0.889, 0.889, 0.867, 0.822, 0.790, 0.000]
 
         # One way to match the values on the Winkler's paper is to provide a different 
-	# p scaling factor for different pairs of strings, e.g. 
-	>>> p_factors = [0.1, 0.125, 0.20, 0.125, 0.20, 0.20, 0.20, 0.15, 0.1]
-	
-	>>> for (s1, s2), jscore, wscore, p in zip(winkler_examples, jaro_scores, winkler_scores, p_factors):
-	...     assert round(jaro_similarity(s1, s2), 3) == jscore
-	...     assert round(jaro_winkler_similarity(s1, s2, p=p), 3) == wscore
+    # p scaling factor for different pairs of strings, e.g. 
+    >>> p_factors = [0.1, 0.125, 0.20, 0.125, 0.20, 0.20, 0.20, 0.15, 0.1]
+    
+    >>> for (s1, s2), jscore, wscore, p in zip(winkler_examples, jaro_scores, winkler_scores, p_factors):
+    ...     assert round(jaro_similarity(s1, s2), 3) == jscore
+    ...     assert round(jaro_winkler_similarity(s1, s2, p=p), 3) == wscore
 
-	
+    
     Test using outputs from https://www.census.gov/srd/papers/pdf/rr94-5.pdf from 
     "Table 2.1. Comparison of String Comparators Using Last Names, First Names, and Street Names"
     
-	>>> winkler_examples = [('SHACKLEFORD', 'SHACKELFORD'), ('DUNNINGHAM', 'CUNNIGHAM'), 
-	... ('NICHLESON', 'NICHULSON'), ('JONES', 'JOHNSON'), ('MASSEY', 'MASSIE'), 
-	... ('ABROMS', 'ABRAMS'), ('HARDIN', 'MARTINEZ'), ('ITMAN', 'SMITH'), 
-	... ('JERALDINE', 'GERALDINE'), ('MARHTA', 'MARTHA'), ('MICHELLE', 'MICHAEL'), 
-	... ('JULIES', 'JULIUS'), ('TANYA', 'TONYA'), ('DWAYNE', 'DUANE'), ('SEAN', 'SUSAN'), 
-	... ('JON', 'JOHN'), ('JON', 'JAN'), ('BROOKHAVEN', 'BRROKHAVEN'), 
-	... ('BROOK HALLOW', 'BROOK HLLW'), ('DECATUR', 'DECATIR'), ('FITZRUREITER', 'FITZENREITER'), 
-	... ('HIGBEE', 'HIGHEE'), ('HIGBEE', 'HIGVEE'), ('LACURA', 'LOCURA'), ('IOWA', 'IONA'), ('1ST', 'IST')]
-	
-	>>> jaro_scores =   [0.970, 0.896, 0.926, 0.790, 0.889, 0.889, 0.722, 0.467, 0.926, 
-	... 0.944, 0.869, 0.889, 0.867, 0.822, 0.783, 0.917, 0.000, 0.933, 0.944, 0.905, 
-	... 0.856, 0.889, 0.889, 0.889, 0.833, 0.000]
-	
-	>>> winkler_scores = [0.982, 0.896, 0.956, 0.832, 0.944, 0.922, 0.722, 0.467, 0.926, 
-	... 0.961, 0.921, 0.933, 0.880, 0.858, 0.805, 0.933, 0.000, 0.947, 0.967, 0.943, 
-	... 0.913, 0.922, 0.922, 0.900, 0.867, 0.000]
+    >>> winkler_examples = [('SHACKLEFORD', 'SHACKELFORD'), ('DUNNINGHAM', 'CUNNIGHAM'), 
+    ... ('NICHLESON', 'NICHULSON'), ('JONES', 'JOHNSON'), ('MASSEY', 'MASSIE'), 
+    ... ('ABROMS', 'ABRAMS'), ('HARDIN', 'MARTINEZ'), ('ITMAN', 'SMITH'), 
+    ... ('JERALDINE', 'GERALDINE'), ('MARHTA', 'MARTHA'), ('MICHELLE', 'MICHAEL'), 
+    ... ('JULIES', 'JULIUS'), ('TANYA', 'TONYA'), ('DWAYNE', 'DUANE'), ('SEAN', 'SUSAN'), 
+    ... ('JON', 'JOHN'), ('JON', 'JAN'), ('BROOKHAVEN', 'BRROKHAVEN'), 
+    ... ('BROOK HALLOW', 'BROOK HLLW'), ('DECATUR', 'DECATIR'), ('FITZRUREITER', 'FITZENREITER'), 
+    ... ('HIGBEE', 'HIGHEE'), ('HIGBEE', 'HIGVEE'), ('LACURA', 'LOCURA'), ('IOWA', 'IONA'), ('1ST', 'IST')]
+    
+    >>> jaro_scores =   [0.970, 0.896, 0.926, 0.790, 0.889, 0.889, 0.722, 0.467, 0.926, 
+    ... 0.944, 0.869, 0.889, 0.867, 0.822, 0.783, 0.917, 0.000, 0.933, 0.944, 0.905, 
+    ... 0.856, 0.889, 0.889, 0.889, 0.833, 0.000]
+    
+    >>> winkler_scores = [0.982, 0.896, 0.956, 0.832, 0.944, 0.922, 0.722, 0.467, 0.926, 
+    ... 0.961, 0.921, 0.933, 0.880, 0.858, 0.805, 0.933, 0.000, 0.947, 0.967, 0.943, 
+    ... 0.913, 0.922, 0.922, 0.900, 0.867, 0.000]
 
         # One way to match the values on the Winkler's paper is to provide a different 
-	# p scaling factor for different pairs of strings, e.g. 
-	>>> p_factors = [0.1, 0.1, 0.1, 0.1, 0.125, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.20, 
-	... 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+    # p scaling factor for different pairs of strings, e.g. 
+    >>> p_factors = [0.1, 0.1, 0.1, 0.1, 0.125, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.20, 
+    ... 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
   
     
-	>>> for (s1, s2), jscore, wscore, p in zip(winkler_examples, jaro_scores, winkler_scores, p_factors):
-	...     if (s1, s2) in [('JON', 'JAN'), ('1ST', 'IST')]: 
-	...         continue  # Skip bad examples from the paper.
-	...     assert round(jaro_similarity(s1, s2), 3) == jscore
-	...     assert round(jaro_winkler_similarity(s1, s2, p=p), 3) == wscore
+    >>> for (s1, s2), jscore, wscore, p in zip(winkler_examples, jaro_scores, winkler_scores, p_factors):
+    ...     if (s1, s2) in [('JON', 'JAN'), ('1ST', 'IST')]: 
+    ...         continue  # Skip bad examples from the paper.
+    ...     assert round(jaro_similarity(s1, s2), 3) == jscore
+    ...     assert round(jaro_winkler_similarity(s1, s2, p=p), 3) == wscore
+
+    
+
+    This test-case proves that the output of Jaro-Winkler similarity depends on 
+    the product  l_ * p and not on the product max_l * p. Here the product max_l * p > 1
+    however the product l_ * p <= 1
+    
+    >>> round(jaro_winkler_similarity('TANYA', 'TONYA', p=0.1, max_l=100), 3)
+    0.88
 
 
     """
     # To ensure that the output of the Jaro-Winkler's similarity 
-    # falls between [0,1], the product of max_l * p needs to be 
+    # falls between [0,1], the product of l_ * p needs to be 
     # also fall between [0,1].
     if not 0 <= max_l * p <= 1:
-        warnings.warn(str("The product of `max_l * p` doesn't fall between [0,1]."
-			  "Jaro-Winkler similarity will not be between 0 and 1.")
-		     )
+        warnings.warn(str("The product  `l_ * p` might not fall between [0,1]."
+              "Jaro-Winkler similarity might not be between 0 and 1.")
+             )
+
 
     # Compute the Jaro similarity
     jaro_sim = jaro_similarity(s1, s2)
@@ -350,8 +360,8 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
             l_ += 1
         else:
             break
-	if l_ > max_l:
-	    break
+        if l_ == max_l:
+            break
     # Return the similarity value as described in docstring.
     return jaro_sim + (l_ * p * (1 - jaro_sim))
 
