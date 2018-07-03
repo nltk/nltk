@@ -330,7 +330,7 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     # To ensure that the output of the Jaro-Winkler's similarity 
     # falls between [0,1], the product of max_l * p needs to be 
     # also fall between [0,1].
-    if not 0 <= max_l * p <0:
+    if not 0 <= max_l * p <= 1:
         warnings.warn(str("The product of `max_l * p` doesn't fall between [0,1]."
 			  "Jaro-Winkler similarity will not be between 0 and 1.")
 		     )
