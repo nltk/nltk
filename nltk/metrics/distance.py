@@ -260,13 +260,13 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
         American Statistical Association: 354-359.
     such that:
 
-        jaro_winkler_sim = jaro_sim + ( l_ * p * (1 - jaro_sim) )
+        jaro_winkler_sim = jaro_sim + ( l * p * (1 - jaro_sim) )
 
     where,
 
         - jaro_sim is the output from the Jaro Similarity,
         see jaro_similarity()
-        - l_ is the length of common prefix at the start of the string
+        - l is the length of common prefix at the start of the string
             - this implementation provides an upperbound for the l value
               to keep the prefixes.A common value of this upperbound is 4.
         - p is the constant scaling factor to overweigh common prefixes.
@@ -328,8 +328,8 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     
 
     This test-case proves that the output of Jaro-Winkler similarity depends on 
-    the product  l_ * p and not on the product max_l * p. Here the product max_l * p > 1
-    however the product l_ * p <= 1
+    the product  l * p and not on the product max_l * p. Here the product max_l * p > 1
+    however the product l * p <= 1
     
     >>> round(jaro_winkler_similarity('TANYA', 'TONYA', p=0.1, max_l=100), 3)
     0.88
@@ -337,10 +337,10 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 
     """
     # To ensure that the output of the Jaro-Winkler's similarity 
-    # falls between [0,1], the product of l_ * p needs to be 
+    # falls between [0,1], the product of l * p needs to be 
     # also fall between [0,1].
     if not 0 <= max_l * p <= 1:
-        warnings.warn(str("The product  `l_ * p` might not fall between [0,1]."
+        warnings.warn(str("The product  `max_l * p` might not fall between [0,1]."
               "Jaro-Winkler similarity might not be between 0 and 1.")
              )
 
@@ -353,17 +353,17 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     # use shorter length between s1 and s2
 
     # Compute the prefix matches.
-    l_ = 0
+    l = 0
     # zip() will automatically loop until the end of shorter string.
     for s1_i, s2_i in zip(s1, s2): 
         if s1_i == s2_i:
-            l_ += 1
+            l += 1
         else:
             break
-        if l_ == max_l:
+        if l == max_l:
             break
     # Return the similarity value as described in docstring.
-    return jaro_sim + (l_ * p * (1 - jaro_sim))
+    return jaro_sim + (l * p * (1 - jaro_sim))
 
 
 def demo():
