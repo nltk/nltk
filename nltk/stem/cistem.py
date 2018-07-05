@@ -69,3 +69,152 @@ class Cistem(StemmerI):
         word = word.replace("$", "sch")
 
         return word
+
+    def stem(self, word):
+        """
+        This method takes the word to be stemmed and returns the stemmed word.
+
+        :param word: the word that is to be stemmed
+        :type word: unicode
+        :return word: the stemmed word
+        :rtype: unicode
+
+        >>> from nltk.stem.cistem import Cistem
+        >>> stemmer = Cistem()
+        >>> s1 = "Speicherbehältern"
+        >>> stemmer.stem(s1)
+        'speicherbehalt'
+        >>> s2 = "Grenzpostens"
+        >>> stemmer.stem(s2)
+        'grenzpost'
+        >>> s3 = "Ausgefeiltere"
+        >>> stemmer.stem(s3)
+        'ausgefeilt'
+        >>> stemmer = Cistem(True)
+        >>> stemmer.stem(s1)
+        'speicherbehal'
+        >>> stemmer.stem(s2)
+        'grenzpo'
+        >>> stemmer.stem(s3)
+        'ausgefeil'
+        """
+        if len(word) == 0:
+            return word
+
+        upper = word[0].isupper()
+        word = word.lower()
+
+        word = word.replace("ü", "u")
+        word = word.replace("ö", "o")
+        word = word.replace("ä", "a")
+        word = word.replace("ß", "ss")
+
+        word = Cistem.strip_ge.sub(r"\1", word)
+        word = Cistem.replace_to(word)
+
+        while len(word) > 3:
+            if len(word) > 5:
+                (word, success) = Cistem.strip_emr.subn("", word)
+                if success != 0:
+                    continue
+
+                (word, success) = Cistem.strip_nd.subn("", word)
+                if success != 0:
+                    continue
+
+            if not upper or self._case_insensitive:
+                (word, success) = Cistem.strip_t.subn("", word)
+                if success != 0:
+                    continue
+
+            (word, success) = Cistem.strip_esn.subn("", word)
+            if success != 0:
+                continue
+            else:
+                break
+
+        word = Cistem.replace_back(word)
+
+        return word
+
+
+    def segment(self, word):
+        """
+        This method works very similarly to stem (:func:'cistem.stem'). The difference is that in
+        addition to returning the stem, it also returns the rest that was removed at
+        the end. To be able to return the stem unchanged so the stem and the rest
+        can be concatenated to form the original word, all subsitutions that altered
+        the stem in any other way than by removing letters at the end were left out.
+
+        :param word: the word that is to be stemmed
+        :type word: unicode
+        :return word: the stemmed word
+        :rtype: unicode
+        :return word: the removed suffix
+        :rtype: unicode
+
+        >>> from nltk.stem.cistem import Cistem
+        >>> stemmer = Cistem()
+        >>> s1 = "Speicherbehältern"
+        >>> print("('" + stemmer.segment(s1)[0] + "', '" + stemmer.segment(s1)[1] + "')")
+        ('speicherbehält', 'ern')
+        >>> s2 = "Grenzpostens"
+        >>> stemmer.segment(s2)
+        ('grenzpost', 'ens')
+        >>> s3 = "Ausgefeiltere"
+        >>> stemmer.segment(s3)
+        ('ausgefeilt', 'ere')
+        >>> stemmer = Cistem(True)
+        >>> print("('" + stemmer.segment(s1)[0] + "', '" + stemmer.segment(s1)[1] + "')")
+        ('speicherbehäl', 'tern')
+        >>> stemmer.segment(s2)
+        ('grenzpo', 'stens')
+        >>> stemmer.segment(s3)
+        ('ausgefeil', 'tere')
+        """
+
+        rest_length = 0
+
+        if len(word) == 0:
+            return ("", "")
+
+        upper = word[0].isupper()
+        word = word.lower()
+
+        original = word[:]
+
+        word = Cistem.replace_to(word)
+
+        while len(word) > 3:
+            if len(word) > 5:
+                (word, success) = Cistem.strip_emr.subn("", word)
+                if success != 0:
+                    rest_length += 2
+                    continue
+
+                (word, success) = Cistem.strip_nd.subn("", word)
+                if success != 0:
+                    rest_length += 2
+                    continue
+
+            if not upper or self._case_insensitive:
+                (word, success) = Cistem.strip_t.subn("", word)
+                if success != 0:
+                    rest_length += 1
+                    continue
+
+            (word, success) = Cistem.strip_esn.subn("", word)
+            if success != 0:
+                rest_length += 1
+                continue
+            else:
+                break
+
+        word = Cistem.replace_back(word)
+
+        if rest_length:
+            rest = original[-rest_length:]
+        else:
+            rest = ""
+
+        return (word, rest)
