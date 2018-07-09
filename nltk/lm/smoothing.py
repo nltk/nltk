@@ -1,3 +1,9 @@
+# Natural Language Toolkit: Language Model Unit Tests
+#
+# Copyright (C) 2001-2018 NLTK Project
+# Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
+# URL: <http://nltk.org/>
+# For license information, see LICENSE.TXT
 """Smoothing algorithms for language modeling."""
 
 from nltk.lm.api import Smoothing
