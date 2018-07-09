@@ -129,7 +129,7 @@ cross-entropy and perplexity with respect to sequences of ngrams.
     >>> lm.entropy(test)
     1.292481250360578
     >>> lm.perplexity(test)
-    2.4494897427831779
+    2.449489742783178
 
 We can also generate text, using `generate` and `generate_one` methods!
 

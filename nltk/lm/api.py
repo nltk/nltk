@@ -12,8 +12,6 @@ from abc import ABCMeta, abstractmethod
 from functools import partial
 from itertools import chain
 
-import numpy as np
-
 from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
@@ -35,6 +33,11 @@ class Smoothing(object):
     @abstractmethod
     def alpha_gamma(self, word, context):
         raise NotImplementedError()
+
+
+def _mean(items):
+    """Return average (aka mean) for sequence of items."""
+    return sum(items) / len(items)
 
 
 @add_metaclass(ABCMeta)
@@ -139,7 +142,7 @@ class LanguageModel(object):
         :rtype: float
 
         """
-        return -1 * np.mean([self.logscore(ngram[-1], ngram[:-1]) for ngram in text_ngrams])
+        return -1 * _mean([self.logscore(ngram[-1], ngram[:-1]) for ngram in text_ngrams])
 
     def perplexity(self, text_ngrams):
         """Calculates the perplexity of the given text.
