@@ -62,7 +62,7 @@ from nltk import compat
 
 
 @compat.python_2_unicode_compatible
-class NgramCounter(defaultdict):
+class NgramCounter(object):
     """Class for counting ngrams.
 
     Will count any ngram sequence you give it.
@@ -93,9 +93,10 @@ class NgramCounter(defaultdict):
         :type ngram_text: Iterable(Iterable(tuple(str))) or None
 
         """
-        super(NgramCounter, self).__init__(ConditionalFreqDist)
-        self[1] = FreqDist()
-        self.unigrams = self[1]
+        self._counts = defaultdict(ConditionalFreqDist)
+        # super(NgramCounter, self).__init__(ConditionalFreqDist)
+        self._counts[1] = self.unigrams = FreqDist()
+        # self.unigrams = self[1]
 
         if ngram_text:
             self.update(ngram_text)
@@ -137,7 +138,7 @@ class NgramCounter(defaultdict):
         3
 
         """
-        return sum(val.N() for val in self.values())
+        return sum(val.N() for val in self._counts.values())
 
     def freq_of_freq(self):
         """Maps frequencies of ngrams to how many ngrams occurred with each
@@ -161,7 +162,7 @@ class NgramCounter(defaultdict):
 
         """
         _r_Nr = {}
-        for order in self:
+        for order in self._counts:
             if order == 1:
                 _r_Nr[order] = self[order].r_Nr()
                 continue
@@ -175,12 +176,18 @@ class NgramCounter(defaultdict):
     def __getitem__(self, item):
         """User-friendly access to ngram counts."""
         if isinstance(item, int):
-            return super(NgramCounter, self).__getitem__(item)
+            return self._counts[item]
         elif isinstance(item, str):
-            return super(NgramCounter, self).__getitem__(1)[item]
+            return self._counts.__getitem__(1)[item]
         elif isinstance(item, Sequence):
-            return super(NgramCounter, self).__getitem__(len(item) + 1)[tuple(item)]
+            return self._counts.__getitem__(len(item) + 1)[tuple(item)]
 
     def __str__(self):
         return "<{0} with {1} ngram orders and {2} ngrams>".format(self.__class__.__name__,
-                                                                   len(self), self.N())
+                                                                   len(self._counts), self.N())
+
+    def __len__(self):
+        return self._counts.__len__()
+
+    def __contains__(self, item):
+        return item in self._counts
