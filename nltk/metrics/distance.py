@@ -401,6 +401,7 @@ def levenshtein_distance(s1, s2):
                     cost = 1
                 # __setitem__() is done in O(1) time.
                 v2.__setitem__(j, min(v2[j-1] + 1, v1[j] + 1, v1[j-1] + cost))
+
     # pop() is done in O(1) as it recalls only the last element.
     return v2.pop()
 
@@ -454,8 +455,13 @@ def damerau_levenshtein_distance(s1, s2):
 
 def hamming_distance(s1, s2):
     """
-    The Hamming Distance simply determines the number of characters that two strings
-    have uniquely given their respective index position.
+    The Hamming distance measures the distance between two equal length strings
+    and it is determined by counting the positions where the two strings have different
+    characters.
+
+    Source(s):
+
+        (1) https://en.wikipedia.org/wiki/Hamming_distance
 
     :param s1, s2: The strings to be analysed
     :type s1: str
@@ -477,6 +483,10 @@ def lee_distance(s1, s2):
 
     for each value i in the length of string1 or string2 (these are interchangeable because
     both strings must be of equivalent length).
+
+    Source(s):
+
+        (1) https://en.wikipedia.org/wiki/Lee_distance
 
     :param s1, s2: The strings to be analysed
     :type s1: str
@@ -531,6 +541,8 @@ def demo():
               damerau_levenshtein_distance(s1, s2))
         print("Hamming Distance between '%s' and '%s':" % (s1, s2),
               hamming_distance(s1, s2))
+        print("Lee Distance between '%s' and '%s':" % (s1, s2),
+              lee_distance(s1, s2))
 
     s1 = set([1, 2, 3, 4])
     s2 = set([3, 4, 5])
