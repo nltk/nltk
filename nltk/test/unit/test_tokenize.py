@@ -166,3 +166,14 @@ class TestTokenize(unittest.TestCase):
         ]
         result = list(tokenizer.span_tokenize(test3))
         self.assertEqual(result, expected)
+
+        # Test case with double quotes at start
+        test4 = "''The DUP is similar to the \"religious right\" in the United States and takes a ``hardline'' stance on social issues''"
+        expected = [
+            (0, 2), (2, 5), (6, 9), (10, 12), (13, 20), (21, 23), (24, 27),
+            (28, 29), (29, 38), (39, 44), (44, 45), (46, 48), (49, 52), (53, 59),
+            (60, 66), (67, 70), (71, 76), (77, 78), (79, 81), (81, 89), (89, 91),
+            (92, 98), (99, 101), (102, 108), (109, 115), (115, 117)
+        ]
+        result = list(tokenizer.span_tokenize(test4))
+        self.assertEqual(result, expected)
