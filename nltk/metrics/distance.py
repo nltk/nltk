@@ -366,93 +366,6 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     return jaro_sim + (l * p * (1 - jaro_sim))
 
 
-def levenshtein_distance(s1, s2):
-    """
-    Calculates the distance between 2 strings as a the number of single-character
-    insertions, deletions, or substitutions that it takes to make
-    the two strings equivalent.
-
-    Source(s):
-        (1) Levenshtein, Vladimir I. (February 1966).
-            "Binary codes capable of correcting deletions, insertions, and reversals".
-            Soviet Physics Doklady. 10 (8): 707–710.
-
-        (2) https://www.codeproject.com/Articles/13525/Fast-memory-efficient-Levenshtein-algorithm
-
-    :param s1, s2: The strings to be analysed
-    :type s1: str
-    :type s2: str
-    :rtype int
-    """
-    n1, n2 = len(s1), len(s2)
-    mx = max([n1, n2])
-    if min([n1, n2]) == 0:
-        return mx
-    else:
-        # must initialize both vectors to the max size so that the longer/shorter string
-        # are interchangeable
-
-        v1, v2 = list(range(mx + 1)), list(range(mx + 1))
-        for j in v1[1:n1]:
-            for i in v2[1:n2]:
-                if s1[i] == s2[j]:
-                    cost = 0
-                else:
-                    cost = 1
-                # __setitem__() is done in O(1) time.
-                v2.__setitem__(j, min(v2[j-1] + 1, v1[j] + 1, v1[j-1] + cost))
-
-    # pop() is done in O(1) as it recalls only the last element.
-    return v2.pop()
-
-
-def damerau_levenshtein_distance(s1, s2):
-    """
-    Like the Levenshtein Distance, this metric calculates the
-    distance between 2 strings as a the number of single-character
-    insertions, deletions, or substitutions that it takes to make
-    the strings equivalent. However, in this case, transpositions
-    are added into the list of available transformation operations.
-
-    Source(s):
-
-        (1) https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance
-
-    Note(s):
-        The recursive nature of the function makes it less efficient
-        than the one used for levenshtein distance (above).
-
-    :param s1, s2: The strings to be analysed
-    :type s1: str
-    :type s2: str
-    :rtype int
-
-    """
-
-    n1, n2 = len(s1), len(s2)
-    if min([len(s1), len(s2)]) == 0:
-        return max([len(s1), len(s2)])
-    else:
-        if s1[len(s1)-1] == s2[len(s2)-1]:
-            cost = 0
-        else:
-            cost = 1
-
-        dist = min(
-            [damerau_levenshtein_distance(s1=s1[:len(s1) - 1],
-                                          s2=s2) + 1,
-             damerau_levenshtein_distance(s1=s1,
-                                          s2=s2[:len(s2) - 1]) + 1,
-             damerau_levenshtein_distance(s1=s1[:len(s1) - 1],
-                                          s2=s2[:len(s2) - 1]) + cost])
-
-        if min([n1, n2]) >= 2 and s1[n1] == s2[n2-1] and s1[n1-1] == s2[n2-1]:
-            return min([dist, damerau_levenshtein_distance(s1=s1[:len(s1)-2],
-                                                           s2=s2[:len(s2)-2]) + cost])
-        else:
-            return dist
-
-
 def hamming_distance(s1, s2):
     """
     The Hamming distance measures the distance between two equal length strings
@@ -462,6 +375,8 @@ def hamming_distance(s1, s2):
     Source(s):
 
         (1) https://en.wikipedia.org/wiki/Hamming_distance
+        (2) Hamming, R. W. (April 1950). "Error detecting and error correcting codes".
+            The Bell System Technical Journal. 29 (2): 147–160.
 
     :param s1, s2: The strings to be analysed
     :type s1: str
@@ -470,7 +385,7 @@ def hamming_distance(s1, s2):
 
     """
     assert len(s1) == len(s2), "Strings must be the same length."
-    return sum(x[0] != x[1] for x in zip(s1, s2))
+    return sum(i != j for i, j in zip(s1, s2))
 
 
 def lee_distance(s1, s2):
@@ -496,20 +411,14 @@ def lee_distance(s1, s2):
     """
     assert len(s1) == len(s2), "Strings must be the same length."
 
-    alphabet = set()
-    n1, n2 = len(s1), len(s2)
-    sx = s1 + s2
-    for i in range(n1+n2):
-        alphabet.add(sx[i])
-
+    alphabet = sorted(set(s1).union(set(s2)))
     q = len(alphabet)
 
-    if q >= 2:
-        s1_enc = _lee_string_encoder(s1, alphabet=list(alphabet))
-        s2_enc = _lee_string_encoder(s2, alphabet=list(alphabet))
-        return sum([min([abs(s1_enc[i]-s2_enc[i]), q-abs(s1_enc[i]-s2_enc[i])]) for i in range(len(s1))])
-    else:
-        raise ValueError("number of distinct strings must be greater than 1")
+    assert q > 1, "number of distinct characters must be greater than 1"
+
+    s1_enc = _lee_string_encoder(s1, alphabet=list(alphabet))
+    s2_enc = _lee_string_encoder(s2, alphabet=list(alphabet))
+    return sum(min(abs(i - j), q - abs(i - j)) for i, j in zip(s1_enc, s2_enc))
 
 
 def _lee_string_encoder(string, alphabet):
@@ -523,7 +432,8 @@ def _lee_string_encoder(string, alphabet):
 def demo():
     string_distance_examples = [("rain", "shine"), ("abcdef", "acbdef"),
                                 ("language", "lnaguaeg"), ("language",
-                                "lnaugage"), ("language", "lngauage")]
+                                "lnaugage"), ("language", "lngauage"),
+                                ("kit", "bin"), ('go', 'hi')]
     for s1, s2 in string_distance_examples:
         print("Edit distance btwn '%s' and '%s':" % (s1, s2),
               edit_distance(s1, s2))
@@ -535,14 +445,18 @@ def demo():
               jaro_winkler_similarity(s1, s2))
         print("Jaro-Winkler distance btwn '%s' and '%s':" % (s1, s2),
               1 - jaro_winkler_similarity(s1, s2))
-        print("Levenshtein Distance between '%s' and '%s':" % (s1, s2),
-              levenshtein_distance(s1, s2))
-        print("Damerau-Levenshtein Distance between '%s' and '%s':" % (s1, s2),
-              damerau_levenshtein_distance(s1, s2))
-        print("Hamming Distance between '%s' and '%s':" % (s1, s2),
-              hamming_distance(s1, s2))
-        print("Lee Distance between '%s' and '%s':" % (s1, s2),
-              lee_distance(s1, s2))
+        if len(s1) == len(s2):
+            if 2 <= len(s1) <= 3:
+                print("Hamming Distance == Lee Distance between '%s' and '%s':" % (s1, s2),
+                      "\n\tHamming: ", hamming_distance(s1, s2), "\n\tLee: ", lee_distance(s1, s2))
+            else:
+                print("Hamming Distance between '%s' and '%s':" % (s1, s2),
+                      hamming_distance(s1, s2))
+                print("Lee Distance between '%s' and '%s':" % (s1, s2),
+                      lee_distance(s1, s2))
+        else:
+            print("Hamming distance and Lee distance are invalid between '%s' and '%s':" % (s1, s2),
+                  "Cause: String lengths are not equivalent.")
 
     s1 = set([1, 2, 3, 4])
     s2 = set([3, 4, 5])
