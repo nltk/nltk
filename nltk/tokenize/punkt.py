@@ -524,8 +524,10 @@ class PunktBaseClass(object):
     Includes common components of PunktTrainer and PunktSentenceTokenizer.
     """
 
-    def __init__(self, lang_vars=PunktLanguageVars(), token_cls=PunktToken,
+    def __init__(self, lang_vars=None, token_cls=PunktToken,
                  params=None):
+        if lang_vars is None:
+            lang_vars = PunktLanguageVars()
         if params is None:
             params = PunktParameters()
         self._params = params
@@ -616,7 +618,7 @@ class PunktTrainer(PunktBaseClass):
     """Learns parameters used in Punkt sentence boundary detection."""
 
     def __init__(self, train_text=None, verbose=False,
-                 lang_vars=PunktLanguageVars(), token_cls=PunktToken):
+                 lang_vars=None, token_cls=PunktToken):
 
         PunktBaseClass.__init__(self, lang_vars=lang_vars,
                                 token_cls=token_cls)
@@ -1208,7 +1210,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
     """
 
     def __init__(self, train_text=None, verbose=False,
-                 lang_vars=PunktLanguageVars(), token_cls=PunktToken):
+                 lang_vars=None, token_cls=PunktToken):
         """
         train_text can either be the sole training text for this sentence
         boundary detector, or can be a PunktParameters object.
