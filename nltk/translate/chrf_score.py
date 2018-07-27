@@ -38,15 +38,15 @@ def sentence_chrf(reference, hypothesis, min_len=1, max_len=6, beta=3.0,
     http://www.aclweb.org/anthology/P02-1040.pdf
 
         >>> ref1 = str('It is a guide to action that ensures that the military '
-        ...            'military will forever heed Party commands').split()
+        ...            'will forever heed Party commands').split()
         >>> hyp1 = str('It is a guide to action which ensures that the military '
         ...            'always obeys the commands of the party').split()
         >>> hyp2 = str('It is to insure the troops forever hearing the activity '
         ...            'guidebook that party direct').split()
         >>> sentence_chrf(ref1, hyp1) # doctest: +ELLIPSIS
-        0.5801...
+        0.6349...
         >>> sentence_chrf(ref1, hyp2) # doctest: +ELLIPSIS
-        0.3085...
+        0.3330...
 
     The infamous "the the the ... " example
 
@@ -120,7 +120,7 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
         >>> hyp2 = str('It is to insure the troops forever hearing the activity '
         ...            'guidebook that party direct')
         >>> corpus_chrf([ref1, ref2, ref1, ref2], [hyp1, hyp2, hyp2, hyp1]) # doctest: +ELLIPSIS
-        0.4915...  # TODO fix value
+        0.3910...
 
     :param references: a corpus of list of reference sentences, w.r.t. hypotheses
     :type references: list(list(str)) / list(str)
