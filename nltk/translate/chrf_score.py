@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2018 NLTK Project
 # Authors: Maja Popovic
-# Contributors: Liling Tan
+# Contributors: Liling Tan, Aleš Tamchyna (Memsource)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
