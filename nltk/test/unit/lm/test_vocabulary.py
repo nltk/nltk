@@ -75,10 +75,15 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.assertEqual(self.vocab.lookup("c"), "<UNK>")
 
     def test_lookup_sequences(self):
-        self.assertEqual(list(self.vocab.lookup(["a", "b"])), ["a", "b"])
+        self.assertEqual(self.vocab.lookup(["a", "b"]), ("a", "b"))
         self.assertEqual(list(self.vocab.lookup(("a", "b"))), ["a", "b"])
         self.assertEqual(list(self.vocab.lookup(map(str, range(3)))), ["<UNK>", "<UNK>", "<UNK>"])
         self.assertEqual(list(self.vocab.lookup(["a", "c"])), ["a", "<UNK>"])
+
+    def test_lookup_recursive(self):
+        self.assertEqual(self.vocab.lookup([['a', 'b'], ['a', 'c']]), (('a', 'b'), ('a', '<UNK>')))
+        self.assertEqual(self.vocab.lookup([['a', 'b'], 'c']), (('a', 'b'), '<UNK>'))
+        self.assertEqual(self.vocab.lookup([[[[['a', 'b']]]]]), ((((('a', 'b'),),),),))
 
     def test_lookup_None(self):
         with self.assertRaises(TypeError):

@@ -112,7 +112,7 @@ def _(words, vocab):
     Returns an iterator over looked up words.
 
     """
-    return (_dispatched_lookup(w, vocab) for w in words)
+    return tuple(_dispatched_lookup(w, vocab) for w in words)
 
 
 @_dispatched_lookup.register(str)
@@ -200,8 +200,8 @@ class Vocabulary(object):
         'a'
         >>> vocab.lookup("aliens")
         '<UNK>'
-        >>> list(vocab.lookup(["a", "b", "c"]))
-        ['a', 'b', '<UNK>']
+        >>> vocab.lookup(["a", "b", "c", ["x", "b"]])
+        ('a', 'b', '<UNK>', ('<UNK>', 'b'))
 
         """
         return _dispatched_lookup(words, self)
