@@ -98,9 +98,10 @@ class LanguageModel(object):
         return self.ngrams(list(self.padder(self.vocab.lookup(sent))))
 
     def score(self, word, context=None):
-        """Masks out of vocab (OOV) words and passes them to `self.unmasked_score`.
+        """Masks out of vocab (OOV) words and computes their model score.
 
-        For model-specific logic of calculating scores, see `unmasked_score` method.
+        For model-specific logic of calculating scores, see the `unmasked_score`
+        method.
         """
         return self.unmasked_score(
             self.vocab.lookup(word), tuple(self.vocab.lookup(context)) if context else None)
@@ -108,6 +109,10 @@ class LanguageModel(object):
     @abstractmethod
     def unmasked_score(self, word, context=None):
         """Score a word given some optional context.
+
+        Concrete models are expected to provide an implementation.
+        Note that this method does not mask its arguments with the OOV label.
+        Use the `score` method for that.
 
         :param str word: Word for which we want the score
         :param tuple(str) context: Context the word is in.
