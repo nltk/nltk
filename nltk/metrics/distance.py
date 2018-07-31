@@ -381,7 +381,7 @@ def hamming_distance(s1, s2):
     :param s1, s2: The strings to be analysed
     :type s1: str
     :type s2: str
-    :rtype int
+    :rtype: int
 
     """
     assert len(s1) == len(s2), "Strings must be the same length."
@@ -406,7 +406,7 @@ def lee_distance(s1, s2):
     :param s1, s2: The strings to be analysed
     :type s1: str
     :type s2: str
-    :rtype int
+    :rtype: int
 
     """
     assert len(s1) == len(s2), "Strings must be the same length."
@@ -416,8 +416,8 @@ def lee_distance(s1, s2):
 
     assert q > 1, "number of distinct characters must be greater than 1"
 
-    s1_enc = _lee_string_encoder(s1, alphabet=list(alphabet))
-    s2_enc = _lee_string_encoder(s2, alphabet=list(alphabet))
+    s1_enc = _lee_string_encoder(s1, alphabet=sorted(alphabet))
+    s2_enc = _lee_string_encoder(s2, alphabet=sorted(alphabet))
     return sum(min(abs(i - j), q - abs(i - j)) for i, j in zip(s1_enc, s2_enc))
 
 
