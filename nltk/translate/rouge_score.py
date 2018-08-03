@@ -5,7 +5,6 @@ http://www.aclweb.org/anthology/W04-1013
 
 from nltk.util import ngrams, skipgrams
 from util import jacknifing, rouge_lcs, f
-import numpy as np
 
 
 def get_score(r_lcs, p_lcs, beta=1):
