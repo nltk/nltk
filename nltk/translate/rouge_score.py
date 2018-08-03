@@ -4,7 +4,7 @@ http://www.aclweb.org/anthology/W04-1013
 '''
 
 from nltk.util import ngrams, skipgrams
-from util import jacknifing, rouge_lcs, f
+from nltk.translate.util import jacknifing, rouge_lcs, f
 
 
 def get_score(r_lcs, p_lcs, beta=1):
