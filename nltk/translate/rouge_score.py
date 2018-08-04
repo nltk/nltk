@@ -4,7 +4,7 @@ http://www.aclweb.org/anthology/W04-1013
 '''
 
 from nltk.util import ngrams, skipgrams
-from nltk.translate.util import jacknifing, rouge_lcs, f
+from util import *
 
 
 def get_score(r_lcs, p_lcs, beta=1):
@@ -316,12 +316,9 @@ def normalized_pairwise_lcs(references, candidate, beta, averaging=True):
                 and every candidate sentence
             '''    
 
-            s = [] 
-            
-            for c_sent in candidate: #iterating over the sentences of the candidate #SHORTEN THIS 
-                
-                s.append(rouge_lcs(r_sent, c_sent))
+            s = [rouge_lcs(r_sent, c_sent) for c_sent in candidate] 
             scr.append(max(s))
+        
         r_lcs = 2*sum(scr)/reference_word_count
         p_lcs = 2*sum(scr)/candidate_word_count
         score = get_score(r_lcs, p_lcs, beta=beta)
