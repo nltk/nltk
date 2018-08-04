@@ -9,14 +9,11 @@ from __future__ import unicode_literals, division
 
 import random
 from abc import ABCMeta, abstractmethod
-from functools import partial
-from itertools import chain
 
 from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
 from nltk.six import add_metaclass
-from nltk.util import everygrams, pad_sequence
 
 
 @add_metaclass(ABCMeta)
@@ -48,7 +45,7 @@ class LanguageModel(object):
 
     """
 
-    def __init__(self, order, vocabulary=None, counter=None, ngrams_fn=None, pad_fn=None):
+    def __init__(self, order, vocabulary=None, counter=None):
         """Creates new LanguageModel.
 
         :param vocabulary: If provided, this vocabulary will be used instead
@@ -66,36 +63,19 @@ class LanguageModel(object):
         self.order = order
         self.vocab = Vocabulary() if vocabulary is None else vocabulary
         self.counts = NgramCounter() if counter is None else counter
-        self.ngrams = partial(everygrams, max_len=order) if ngrams_fn is None else ngrams_fn
-        if pad_fn is None:
-            self.padder = partial(
-                pad_sequence,
-                n=order,
-                pad_left=True,
-                pad_right=True,
-                right_pad_symbol="</s>",
-                left_pad_symbol="<s>")
-        else:
-            self.padder = pad_fn
 
-    def fit(self, text):
+    def fit(self, text, vocabulary_text=None):
         """Trains the model on a text.
 
-        :param Iterable(Iterable(str)) text: Training text as a sequence of sentences.
+        :param text: Training text as a sequence of sentences.
 
         """
         if not self.vocab:
-            self.vocab.update(chain.from_iterable(map(self.padder, text)))
-        self.counts.update(self.preprocess(sent) for sent in text)
-
-    def preprocess(self, sent):
-        """Preprocess a sentence for training.
-
-        :param Iterable(str) sent: Sentence (sequence of words).
-        :rtype: Iterable(tuple(str))
-
-        """
-        return self.ngrams(list(self.padder(self.vocab.lookup(sent))))
+            if vocabulary_text is None:
+                raise ValueError("Cannot fit without a vocabulary or text to "
+                                 "create it from.")
+            self.vocab.update(vocabulary_text)
+        self.counts.update(self.vocab.lookup(sent) for sent in text)
 
     def score(self, word, context=None):
         """Masks out of vocab (OOV) words and computes their model score.
@@ -104,7 +84,9 @@ class LanguageModel(object):
         method.
         """
         return self.unmasked_score(
-            self.vocab.lookup(word), tuple(self.vocab.lookup(context)) if context else None)
+            self.vocab.lookup(word),
+            self.vocab.lookup(context) if context else None
+        )
 
     @abstractmethod
     def unmasked_score(self, word, context=None):

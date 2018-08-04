@@ -12,16 +12,23 @@ Issue 167
 ---------
 https://github.com/nltk/nltk/issues/167
 
-    >>> from nltk.lm import WittenBellInterpolated
     >>> from nltk.corpus import brown
-    >>> from nltk.util import ngrams
-    >>> lm = WittenBellInterpolated(3)
-    >>> lm.fit(brown.sents(categories="news"))
+    >>> from nltk.lm.preprocessing import padded_everygram_pipeline
+    >>> ngram_order = 3
+    >>> train_data, vocab_data = padded_everygram_pipeline(
+    ...     ngram_order,
+    ...     brown.sents(categories="news")
+    ... )
 
-Sentence containing an unseen word should result in infinite entropy because Witten-Bell
-is based ultimately on MLE, which cannot handle unseen ngrams.
+    >>> from nltk.lm import WittenBellInterpolated
+    >>> lm = WittenBellInterpolated(ngram_order)
+    >>> lm.fit(train_data, vocab_data)
+
+Sentence containing an unseen word should result in infinite entropy because
+Witten-Bell is based ultimately on MLE, which cannot handle unseen ngrams.
 Crucially, it shouldn't raise any exceptions for unseen words.
 
+    >>> from nltk.util import ngrams
     >>> sent = ngrams("This is a sentence with the word aaddvark".split(), 3)
     >>> lm.entropy(sent)
     inf
@@ -38,14 +45,17 @@ Issue 367
 ---------
 https://github.com/nltk/nltk/issues/367
 
-Reproducing @dan-blanchard's example:
+Reproducing Dan Blanchard's example:
 https://github.com/nltk/nltk/issues/367#issuecomment-14646110
 
     >>> from nltk.lm import Lidstone, Vocabulary
     >>> word_seq = list('aaaababaaccbacb')
+    >>> ngram_order = 2
+    >>> from nltk.util import everygrams
+    >>> train_data = [everygrams(word_seq, max_len=ngram_order)]
     >>> V = Vocabulary(['a', 'b', 'c', ''])
-    >>> lm = Lidstone(0.2, 2, vocabulary=V, pad_fn=lambda sent: sent)
-    >>> lm.fit([word_seq])
+    >>> lm = Lidstone(0.2, ngram_order, vocabulary=V)
+    >>> lm.fit(train_data)
     >>> round(sum(lm.score(w, ("b",)) for w in V), 6)
     1.0
     >>> round(sum(lm.score(w, ("a",)) for w in V), 6)
@@ -61,9 +71,12 @@ Here's reproducing @afourney's comment:
 https://github.com/nltk/nltk/issues/367#issuecomment-15686289
 
     >>> sent = ['foo', 'foo', 'foo', 'foo', 'bar', 'baz']
+    >>> ngram_order = 3
+    >>> from nltk.lm.preprocessing import padded_everygram_pipeline
+    >>> train_data, vocab_data = padded_everygram_pipeline(ngram_order, [sent])
     >>> from nltk.lm import Lidstone
-    >>> lm = Lidstone(0.2, 3)
-    >>> lm.fit([sent])
+    >>> lm = Lidstone(0.2, ngram_order)
+    >>> lm.fit(train_data, vocab_data)
 
 The vocabulary includes the "UNK" symbol as well as two padding symbols.
 
@@ -103,9 +116,12 @@ https://github.com/nltk/nltk/issues/380#issue-12879030
 For speed take only the first 100 sentences of reuters. Shouldn't affect the test.
     >>> from nltk.corpus import reuters
     >>> sents = reuters.sents()[:100]
+    >>> ngram_order = 3
+    >>> from nltk.lm.preprocessing import padded_everygram_pipeline
+    >>> train_data, vocab_data = padded_everygram_pipeline(ngram_order, sents)
 
     >>> from nltk.lm import Lidstone
-    >>> lm = Lidstone(0.2, 3)
-    >>> lm.fit(sents)
+    >>> lm = Lidstone(0.2, ngram_order)
+    >>> lm.fit(train_data, vocab_data)
     >>> lm.score("said", ("",)) < 1
     True

@@ -6,12 +6,22 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import division
-import unittest
+
 import math
+import unittest
 
 from six import add_metaclass
 
-from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace, WittenBellInterpolated, KneserNeyInterpolated)
+from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace, WittenBellInterpolated,
+                     KneserNeyInterpolated)
+from nltk.lm.preprocessing import padded_everygrams
+
+
+def _prepare_test_data(ngram_order):
+    return (
+        Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1),
+        [list(padded_everygrams(ngram_order, sent)) for sent in (list('abcd'), list('egadbe'))]
+    )
 
 
 class ParametrizeTestsMeta(type):
@@ -66,8 +76,7 @@ class MleBigramTests(unittest.TestCase):
     ]
 
     def setUp(self):
-        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
-        training_text = [list('abcd'), list('egadbe')]
+        vocab, training_text = _prepare_test_data(2)
         self.model = MLE(2, vocabulary=vocab)
         self.model.fit(training_text)
 
@@ -151,8 +160,7 @@ class MleTrigramTests(unittest.TestCase):
     ]
 
     def setUp(self):
-        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
-        training_text = [list('abcd'), list('egadbe')]
+        vocab, training_text = _prepare_test_data(3)
         self.model = MLE(3, vocabulary=vocab)
         self.model.fit(training_text)
 
@@ -184,8 +192,7 @@ class LidstoneBigramTests(unittest.TestCase):
     ]
 
     def setUp(self):
-        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
-        training_text = [list('abcd'), list('egadbe')]
+        vocab, training_text = _prepare_test_data(2)
         self.model = Lidstone(0.1, 2, vocabulary=vocab)
         self.model.fit(training_text)
 
@@ -228,8 +235,7 @@ class LidstoneTrigramTests(unittest.TestCase):
     ]
 
     def setUp(self):
-        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
-        training_text = [list('abcd'), list('egadbe')]
+        vocab, training_text = _prepare_test_data(3)
         self.model = Lidstone(0.1, 3, vocabulary=vocab)
         self.model.fit(training_text)
 
@@ -262,8 +268,7 @@ class LaplaceBigramTests(unittest.TestCase):
     ]
 
     def setUp(self):
-        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
-        training_text = [list('abcd'), list('egadbe')]
+        vocab, training_text = _prepare_test_data(2)
         self.model = Laplace(2, vocabulary=vocab)
         self.model.fit(training_text)
 
@@ -298,8 +303,7 @@ class LaplaceBigramTests(unittest.TestCase):
 class WittenBellInterpolatedTrigramTests(unittest.TestCase):
 
     def setUp(self):
-        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
-        training_text = [list('abcd'), list('egadbe')]
+        vocab, training_text = _prepare_test_data(3)
         self.model = WittenBellInterpolated(3, vocabulary=vocab)
         self.model.fit(training_text)
 
@@ -329,8 +333,7 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase):
 class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
 
     def setUp(self):
-        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
-        training_text = [list('abcd'), list('egadbe')]
+        vocab, training_text = _prepare_test_data(3)
         self.model = KneserNeyInterpolated(3, vocabulary=vocab)
         self.model.fit(training_text)
 
@@ -361,8 +364,7 @@ class NgramModelTextGenerationTests(unittest.TestCase):
     """Using MLE estimator, generate some text."""
 
     def setUp(self):
-        vocab = Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1)
-        training_text = [list('abcd'), list('egadbe')]
+        vocab, training_text = _prepare_test_data(3)
         self.model = MLE(3, vocabulary=vocab)
         self.model.fit(training_text)
 
