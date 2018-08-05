@@ -369,49 +369,52 @@ class NgramModelTextGenerationTests(unittest.TestCase):
         self.model.fit(training_text)
 
     def test_generate_one_no_context(self):
-        generated = self.model.generate_one()
-        self.assertIn(generated, self.model.counts.unigrams)
+        self.assertEqual(self.model.generate(random_seed=3), "<UNK>")
 
-    def test_generate_one_small_context(self):
-        context = ("c",)
-        generated = self.model.generate_one(context=context)
+    def test_generate_one_limiting_context(self):
+        # We don't need random_seed for contexts with only one continuation
+        self.assertEqual(self.model.generate(text_seed=["c"]), "d")
+        self.assertEqual(
+            self.model.generate(text_seed=["b", "c"]),
+            "d",
+        )
+        self.assertEqual(
+            self.model.generate(text_seed=["a", "c"]),
+            "d"
+        )
 
-        self.assertIn(generated, self.model.counts[2][context])
-
-    def test_generate_one_normal_context(self):
-        context = ("b", "c")
-        generated = self.model.generate_one(context=context)
-
-        self.assertIn(generated, self.model.counts[3][context])
-
-    def test_generate_one_backoff_to_smaller_context(self):
-        context_no_samples = ("a", "c")
-        expected_samples = self.model.counts[2][("c",)]
-        generated = self.model.generate_one(context_no_samples)
-
-        self.assertIn(generated, expected_samples)
-
-    def test_generate_one_backoff_to_unigrams(self):
-        context_no_samples = ("a", "</s>")
-        expected_samples = self.model.counts.unigrams
-        generated = self.model.generate_one(context_no_samples)
-
-        self.assertIn(generated, expected_samples)
+    def test_generate_one_varied_context(self):
+        # When context doesn't limit our options enough, seed the random choice
+        self.assertEqual(
+            self.model.generate(text_seed=("a", "<s>"), random_seed=2),
+            "a"
+        )
 
     def test_generate_no_seed_unigrams(self):
-        generated_text = self.model.generate(5)
+        self.assertEqual(
+            self.model.generate(5, random_seed=3),
+            ['<UNK>', '</s>', '</s>', '</s>', '</s>']
+        )
 
-        self.assertEqual(5, len(generated_text))
-        # With no seed, first item should be one of unigrams
-        self.assertIn(generated_text[0], self.model.counts[1])
+    def test_generate_with_text_seed(self):
+        self.assertEqual(
+            self.model.generate(5, text_seed=("<s>", "e"), random_seed=3),
+            ['<UNK>', 'a', 'd', 'b', '<UNK>']
+        )
 
-    def test_generate_with_bigram_seed(self):
-        # seed has to be picked so as to make the test deterministic!
-        seed = ("c",)
-        seed_continuations = self.model.counts[2][seed]
-        generated_text = self.model.generate(5, seed=seed)
+    def test_generate_oov_text_seed(self):
+        self.assertEqual(
+            self.model.generate(text_seed=('aliens',), random_seed=3),
+            self.model.generate(text_seed=('<UNK>',), random_seed=3)
+        )
 
-        # seed should be the first item
-        self.assertEqual(generated_text[0], seed[0])
-        # Second item should depend on seed
-        self.assertIn(generated_text[1], seed_continuations)
+    def test_generate_None_text_seed(self):
+        # should crash with type error when we try to look it up in vocabulary
+        with self.assertRaises(TypeError):
+            self.model.generate(text_seed=(None,))
+
+        # This will work
+        self.assertEqual(
+            self.model.generate(text_seed=None, random_seed=3),
+            self.model.generate(random_seed=3)
+        )

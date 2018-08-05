@@ -9,6 +9,8 @@ from __future__ import unicode_literals, division
 
 import random
 from abc import ABCMeta, abstractmethod
+from bisect import bisect
+from itertools import accumulate
 
 from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
@@ -35,6 +37,27 @@ class Smoothing(object):
 def _mean(items):
     """Return average (aka mean) for sequence of items."""
     return sum(items) / len(items)
+
+
+def _random_generator(seed_or_generator):
+    if isinstance(seed_or_generator, random.Random):
+        return seed_or_generator
+    return random.Random(seed_or_generator)
+
+
+def _weighted_choice(population, weights, random_seed=None):
+    """Like random.choice, but with weights.
+
+    Heavily inspired by python 3.6 `random.choices`.
+    """
+    if len(population) != len(weights):
+        raise ValueError("The number of weights does not match the population")
+    if len(population) == 0:
+        raise ValueError("Can't choose from empty population")
+    cum_weights = list(accumulate(weights))
+    total = cum_weights[-1]
+    threshold = _random_generator(random_seed).random()
+    return population[bisect(cum_weights, total * threshold)]
 
 
 @add_metaclass(ABCMeta)
@@ -139,34 +162,54 @@ class LanguageModel(object):
         """
         return pow(2.0, self.entropy(text_ngrams))
 
-    def generate_one(self, context=None):
-        """Generate one word given some context.
+    def generate(self, num_words=1, text_seed=None, random_seed=None):
+        """Generate words from the model.
 
-        :param context: Same as for `context_counts` method.
+        :param int num_words: How many words to generate. By default 1.
+        :param text_seed: Generation can be conditioned on preceding context.
+        :param random_seed: If provided, makes the random sampling part of
+        generation reproducible.
+        :return: One (str) word or a list of words generated from model.
 
-        """
-        samples = self.context_counts(context)
-        if not samples:
-            smaller_context = context[1:] if len(context) > 1 else None
-            return self.generate_one(smaller_context)
+        Examples:
 
-        rand = random.random()
-        scores = list(self.score(w, context) for w in samples)
-        for word, score in zip(samples, scores):
-            rand -= score
-            if rand <= 0:
-                return word
-
-    def generate(self, num_words, seed=()):
-        """Generate num_words with optional seed provided.
-
-        This essentially wraps the generate_one method to produce sequences.
+        >>> from nltk.lm import MLE
+        >>> lm = MLE(2)
+        >>> lm.fit([[("a", "b"), ("b", "c")]], vocabulary_text=['a', 'b', 'c'])
+        >>> lm.fit([[("a",), ("b",), ("c",)]])
+        >>> lm.generate(random_seed=3)
+        'a'
+        >>> lm.generate(text_seed=['a'])
+        'b'
 
         """
-        text = list(seed) if seed else [self.generate_one()]
-        while len(text) < num_words:
-            index = -self.order if len(text) >= self.order else len(text)
-            relevant_context = tuple(text)[:index]
-            next_word = self.generate_one(relevant_context)
-            text.append(next_word)
-        return text
+        text_seed = [] if text_seed is None else list(text_seed)
+        # base recursion case
+        if num_words == 1:
+            context = (
+                text_seed[-self.order + 1 :]
+                if len(text_seed) >= self.order
+                else text_seed
+            )
+            samples = self.context_counts(self.vocab.lookup(context))
+            while not samples and len(context) > 0:
+                context = context[1:] if len(context) > 1 else []
+                samples = self.context_counts(self.vocab.lookup(context))
+            # sorting achieves two things:
+            # - reproducible randomness when sampling
+            # - turning Mapping into Sequence which _weighted_choice expects
+            samples = sorted(samples)
+            return _weighted_choice(
+                samples, tuple(self.score(w, context) for w in samples), random_seed
+            )
+        # build up text one word at a time
+        generated = []
+        for i in range(num_words):
+            generated.append(
+                self.generate(
+                    num_words=1,
+                    text_seed=text_seed + generated,
+                    random_seed=random_seed,
+                )
+            )
+        return generated
