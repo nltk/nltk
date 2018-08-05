@@ -108,7 +108,7 @@ class LanguageModel(object):
     def logscore(self, word, context=None):
         """Evaluate the log score of this word in this context.
 
-        The arguments are the same as for `score`.
+        The arguments are the same as for `score` and `unmasked_score`.
 
         """
         return log_base2(self.score(word, context))
