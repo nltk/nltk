@@ -1,5 +1,6 @@
 ''' UTILITY Functions for ROUGE score for Machine Translation'''
 
+from __future__ import division
 
 def jacknifing(score_list, averaging=True):
         ''' This is a averaging function for calculating ROUGE score

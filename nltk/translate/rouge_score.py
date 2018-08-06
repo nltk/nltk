@@ -5,6 +5,7 @@ http://www.aclweb.org/anthology/W04-1013
 
 from nltk.util import ngrams, skipgrams
 from util import *
+from __future__ import division
 
 
 def get_score(r_lcs, p_lcs, beta=1):
