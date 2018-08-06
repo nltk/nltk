@@ -167,12 +167,21 @@ class _WordNetObject(object):
     def topic_domains(self):
         return self._related(';c')
 
+    def in_topic_domains(self):
+        return self._related('-c')
+
     def region_domains(self):
         return self._related(';r')
 
+    def in_region_domains(self):
+        return self._related('-r')
+    
     def usage_domains(self):
         return self._related(';u')
 
+    def in_usage_domains(self):
+        return self._related('-u')
+    
     def attributes(self):
         return self._related('=')
 
