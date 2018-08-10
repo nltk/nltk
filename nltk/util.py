@@ -612,7 +612,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
             while True:
                 file.seek(max(0, middle - 1))
                 if middle > 0:
-                    file.readline()
+                    file.discard_line()
                 offset = file.tell()
                 line = file.readline()
                 if line != "": break
