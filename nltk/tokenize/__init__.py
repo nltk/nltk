@@ -81,7 +81,7 @@ from nltk.tokenize.util     import string_span_tokenize, regexp_span_tokenize
 from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
 # Standard sentence tokenizer.
-def sent_tokenize(text, language='english'):
+def sent_tokenize(text, language='english',seperate=True):
     """
     Return a sentence-tokenized copy of *text*,
     using NLTK's recommended sentence tokenizer
@@ -92,6 +92,10 @@ def sent_tokenize(text, language='english'):
     :param language: the model name in the Punkt corpus
     """
     tokenizer = load('tokenizers/punkt/{0}.pickle'.format(language))
+    if seperate:
+        matches = re.findall(r'[a-z]+[.][A-Z][a-z]+',text)
+        for m in matches:
+            text = text.replace(m,m.replace('.','. '))        
     return tokenizer.tokenize(text)
 
 # Standard word tokenizer.
