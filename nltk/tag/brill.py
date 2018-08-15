@@ -12,10 +12,16 @@ from __future__ import print_function, division
 
 from collections import defaultdict, Counter
 
+from typing import List, Dict, Tuple, Optional, Any, Set, Sequence
+
 from nltk.tag import TaggerI
+from nltk.tbl.rule import TagRule
 from nltk.tbl import Feature, Template
 from nltk import jsontags
 
+# Type aliases
+Token = Tuple[str,str]
+Tokens = List[Token]
 
 ######################################################################
 # Brill Templates
@@ -206,7 +212,7 @@ class BrillTagger(TaggerI):
 
     json_tag = 'nltk.tag.BrillTagger'
 
-    def __init__(self, initial_tagger, rules, training_stats=None):
+    def __init__(self, initial_tagger:TaggerI, rules:List[TagRule], training_stats:Dict=None) -> None:
         """
         :param initial_tagger: The initial tagger
         :type initial_tagger: TaggerI
@@ -224,24 +230,24 @@ class BrillTagger(TaggerI):
         self._rules = tuple(rules)
         self._training_stats = training_stats
 
-    def encode_json_obj(self):
+    def encode_json_obj(self) -> Tuple[TaggerI, Tuple[TagRule, ...], Optional[Dict]]:
         return self._initial_tagger, self._rules, self._training_stats
 
     @classmethod
-    def decode_json_obj(cls, obj):
+    def decode_json_obj(cls, obj:List[Any]) -> "BrillTagger":
         _initial_tagger, _rules, _training_stats = obj
         return cls(_initial_tagger, _rules, _training_stats)
 
-    def rules(self):
+    def rules(self) -> Tuple[TagRule, ...]:
         """
-        Return the ordered list of  transformation rules that this tagger has learnt
+        Return the tuple of  transformation rules that this tagger has learnt
 
-        :return: the ordered list of transformation rules that correct the initial tagging
-        :rtype: list of Rules
+        :return: the tuple of transformation rules that correct the initial tagging
+        :rtype: tuple of Rules
         """
         return self._rules
 
-    def train_stats(self, statistic=None):
+    def train_stats(self, statistic:str=None) -> Any:
         """
         Return a named statistic collected during training, or a dictionary of all
         available statistics if no name given
@@ -249,22 +255,21 @@ class BrillTagger(TaggerI):
         :param statistic: name of statistic
         :type statistic: str
         :return: some statistic collected during training of this tagger
-        :rtype: any (but usually a number)
+        :rtype: any (but usually a number) or None
         """
-        if statistic is None:
+        if statistic is None or self._training_stats is None:
             return self._training_stats
         else:
             return self._training_stats.get(statistic)
 
-    def tag(self, tokens):
+    def tag(self, tokens:Tokens) -> Tokens:
         # Inherit documentation from TaggerI
-
         # Run the initial tagger.
         tagged_tokens = self._initial_tagger.tag(tokens)
 
         # Create a dictionary that maps each tag to a list of the
         # indices of tokens that have that tag.
-        tag_to_positions = defaultdict(set)
+        tag_to_positions:Dict[str, Set[int]] = defaultdict(set)
         for i, (token, tag) in enumerate(tagged_tokens):
             tag_to_positions[tag].add(i)
 
@@ -283,7 +288,7 @@ class BrillTagger(TaggerI):
 
         return tagged_tokens
 
-    def print_template_statistics(self, test_stats=None, printunused=True):
+    def print_template_statistics(self, test_stats:Dict[str, Any]=None, printunused:bool=True) -> None:
         """
         Print a list of all templates, ranked according to efficiency.
 
@@ -308,7 +313,7 @@ class BrillTagger(TaggerI):
         assert len(trainscores) == len(tids), "corrupt statistics: " \
             "{0} train scores for {1} rules".format(trainscores, tids)
         template_counts = Counter(tids)
-        weighted_traincounts = Counter()
+        weighted_traincounts:Dict[int,int] = Counter()
         for (tid, score) in zip(tids, trainscores):
             weighted_traincounts[tid] += score
         tottrainscores = sum(trainscores)
@@ -317,7 +322,7 @@ class BrillTagger(TaggerI):
         # the otherwise convenient Counter.most_common() unfortunately
         # does not break ties deterministically
         # between python versions and will break cross-version tests
-        def det_tplsort(tpl_value):
+        def det_tplsort(tpl_value:Sequence[Any]) -> Sequence[Any]:
             return (tpl_value[1], repr(tpl_value[0]))
 
         def print_train_stats():
@@ -388,7 +393,7 @@ class BrillTagger(TaggerI):
             print_unused_templates()
         print()
 
-    def batch_tag_incremental(self, sequences, gold):
+    def batch_tag_incremental(self, sequences:List[str], gold:List[str]) -> Tuple[List[str], Dict[str, Any]]:
         """
         Tags by applying each rule to the entire corpus (rather than all rules to a
         single sequence). The point is to collect statistics on the test set for
@@ -406,7 +411,7 @@ class BrillTagger(TaggerI):
         """
         def counterrors(xs):
             return sum(t[1] != g[1] for pair in zip(xs, gold) for (t, g) in zip(*pair))
-        testing_stats = {}
+        testing_stats:Dict[str, Any] = {}
         testing_stats['tokencount'] = sum(len(t) for t in sequences)
         testing_stats['sequencecount'] = len(sequences)
         tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in sequences]
