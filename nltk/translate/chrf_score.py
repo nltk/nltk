@@ -9,7 +9,7 @@
 
 """ ChrF score implementation """
 from __future__ import division
-from collections import Counter
+from collections import Counter, defaultdict
 import re
 
 from nltk.util import ngrams
@@ -142,7 +142,7 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
         "The number of hypotheses and their references should be the same")
 
     # Keep f-scores for each n-gram order separate
-    n_gram_fscores = {k: [] for k in range(min_len, max_len + 1)}
+    n_gram_fscores = defaultdict(lambda: list())
 
     num_sents = 0  # we don't call len() in case these are generators
 
