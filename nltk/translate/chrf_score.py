@@ -145,8 +145,7 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
     n_gram_fscores = defaultdict(lambda: list())
 
     # Iterate through each hypothesis and their corresponding references.
-    for num_sents, (reference, hypothesis) in enumerate(
-            zip(references, hypotheses), start=1):
+    for reference, hypothesis in zip(references, hypotheses):
 
         # preprocess both reference and hypothesis
         reference = _preprocess(reference, ignore_whitespace)
@@ -175,6 +174,8 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
                 f_score = 0.0
 
             n_gram_fscores[order].append(f_score)
+
+    num_sents = len(n_gram_fscores[min_len])
 
     # This is not specified in the paper but the author's implementation
     # computes macro-averages both over n-gram lengths and sentences.
