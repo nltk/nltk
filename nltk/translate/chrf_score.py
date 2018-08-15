@@ -166,16 +166,17 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
             tpfp = sum(hyp_ngrams.values())  # True positives + False positives.
             tffn = sum(ref_ngrams.values())  # True posities + False negatives.
 
-            # Avoid division by zero errors. We also return 0 when both
-            # reference and hypothesis are empty.
-            if 0 in (tp, tpfp, tffn):
-                n_gram_fscores[order].append(0.0)
-            else:
+            try:
                 prec = tp / tpfp  # precision
                 rec = tp / tffn  # recall
                 factor = beta**2
                 f_score = (1 + factor) * (prec * rec) / (factor * prec + rec)
-                n_gram_fscores[order].append(f_score)
+            except ZeroDivisionError:
+                # Note that we will also return 0.0 when both hypothesis and
+                # reference are empty.
+                f_score = 0.0
+
+            n_gram_fscores[order].append(f_score)
 
     # This is not specified in the paper but the author's implementation
     # computes macro-averages both over n-gram lengths and sentences.
