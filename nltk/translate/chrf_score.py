@@ -144,11 +144,9 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
     # Keep f-scores for each n-gram order separate
     n_gram_fscores = defaultdict(lambda: list())
 
-    num_sents = 0  # we don't call len() in case these are generators
-
     # Iterate through each hypothesis and their corresponding references.
-    for reference, hypothesis in zip(references, hypotheses):
-        num_sents += 1
+    for num_sents, (reference, hypothesis) in enumerate(
+            zip(references, hypotheses), start=1):
 
         # preprocess both reference and hypothesis
         reference = _preprocess(reference, ignore_whitespace)
