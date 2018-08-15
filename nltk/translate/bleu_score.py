@@ -207,7 +207,7 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     #       it tries to retain the Fraction object as much as the
     #       smoothing method allows.
     p_n = smoothing_function(p_n, references=references, hypothesis=hypothesis,
-                             hyp_len=hyp_len)
+                             hyp_len=hyp_lengths)
     s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
     s =  bp * math.exp(math.fsum(s))
     return s
