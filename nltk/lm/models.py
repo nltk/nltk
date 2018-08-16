@@ -1,15 +1,16 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Models
 #
 # Copyright (C) 2001-2018 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-
-from __future__ import unicode_literals, division
+"""Language Models"""
+from __future__ import division, unicode_literals
 
 from nltk import compat
 from nltk.lm.api import LanguageModel, Smoothing
-from nltk.lm.smoothing import WittenBell, KneserNey
+from nltk.lm.smoothing import KneserNey, WittenBell
 
 
 @compat.python_2_unicode_compatible
@@ -65,27 +66,33 @@ class Laplace(Lidstone):
 
 
 class InterpolatedLanguageModel(LanguageModel):
+    """Logic common to all interpolated language models.
 
-    def __init__(self, smoothing_cls, *args, **kwargs):
+    The idea to abstract this comes from Chen & Goodman 1995.
+    """
+
+    def __init__(self, smoothing_cls, order, **kwargs):
         assert issubclass(smoothing_cls, Smoothing)
         params = kwargs.pop("params", {})
-        super().__init__(*args, **kwargs)
+        super().__init__(order, **kwargs)
         self.estimator = smoothing_cls(self.vocab, self.counts, **params)
 
     def unmasked_score(self, word, context=None):
         if not context:
             return self.estimator.unigram_score(word)
         alpha, gamma = self.estimator.alpha_gamma(word, context)
-        return alpha + gamma * self.unmasked_score(
-            word, context[1:]
-        )
+        return alpha + gamma * self.unmasked_score(word, context[1:])
 
 
 class WittenBellInterpolated(InterpolatedLanguageModel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(WittenBell, *args, **kwargs)
+    """Interpolated version of Witten-Bell smoothing."""
+
+    def __init__(self, order, **kwargs):
+        super().__init__(WittenBell, order, **kwargs)
 
 
 class KneserNeyInterpolated(InterpolatedLanguageModel):
-    def __init__(self, *args, discount=0.1, **kwargs):
-        super().__init__(KneserNey, *args, params={"discount": discount}, **kwargs)
+    """Interpolated version of Kneser-Ney smoothing."""
+
+    def __init__(self, order, discount=0.1, **kwargs):
+        super().__init__(KneserNey, order, params={"discount": discount}, **kwargs)

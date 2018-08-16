@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
 # Copyright (C) 2001-2018 NLTK Project
@@ -10,26 +11,21 @@ from nltk.lm.preprocessing import padded_everygram_pipeline
 
 
 class TestPreprocessing(unittest.TestCase):
-
     def test_padded_everygram_pipeline(self):
-        expected_train = [[
-            ("<s>",),
-            ("a",),
-            ("b",),
-            ("c",),
-            ("</s>",),
-            ("<s>", 'a'),
-            ("a", 'b'),
-            ('b', 'c'),
-            ('c', '</s>'),
-        ]]
-        expected_vocab = [
-            "<s>",
-            "a",
-            "b",
-            "c",
-            "</s>",
+        expected_train = [
+            [
+                ("<s>",),
+                ("a",),
+                ("b",),
+                ("c",),
+                ("</s>",),
+                ("<s>", "a"),
+                ("a", "b"),
+                ("b", "c"),
+                ("c", "</s>"),
+            ]
         ]
-        train_data, vocab_data = padded_everygram_pipeline(2, [["a", 'b', 'c']])
+        expected_vocab = ["<s>", "a", "b", "c", "</s>"]
+        train_data, vocab_data = padded_everygram_pipeline(2, [["a", "b", "c"]])
         self.assertEqual([list(sent) for sent in train_data], expected_train)
         self.assertEqual(list(vocab_data), expected_vocab)

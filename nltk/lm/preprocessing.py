@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
 # Copyright (C) 2001-2018 NLTK Project
@@ -7,7 +8,7 @@
 from functools import partial
 from itertools import chain
 
-from nltk import everygrams, pad_sequence
+from nltk.util import everygrams, pad_sequence
 
 flatten = chain.from_iterable
 pad_both_ends = partial(
@@ -17,12 +18,10 @@ pad_both_ends = partial(
     pad_right=True,
     right_pad_symbol="</s>",
 )
-pad_both_ends.__doc__ = (
-    """Pads both ends of a sentence to length specified by ngram order.
+pad_both_ends.__doc__ = """Pads both ends of a sentence to length specified by ngram order.
 
     Following convention <s> pads the start of sentence </s> pads its end.
     """
-)
 
 
 def padded_everygrams(order, sentence):
@@ -48,5 +47,5 @@ def padded_everygram_pipeline(order, text):
     padding_fn = partial(pad_both_ends, n=order)
     return (
         (everygrams(list(padding_fn(sent)), max_len=order) for sent in text),
-        flatten(map(padding_fn, text))
+        flatten(map(padding_fn, text)),
     )

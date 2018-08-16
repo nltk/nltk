@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2015 NLTK Project
+.. Copyright (C) 2001-2018 NLTK Project
 .. For license information, see LICENSE.TXT
 
 .. -*- coding: utf-8 -*-
@@ -56,15 +56,19 @@ https://github.com/nltk/nltk/issues/367#issuecomment-14646110
     >>> V = Vocabulary(['a', 'b', 'c', ''])
     >>> lm = Lidstone(0.2, ngram_order, vocabulary=V)
     >>> lm.fit(train_data)
-    >>> round(sum(lm.score(w, ("b",)) for w in V), 6)
+
+For doctest to work we have to sort the vocabulary keys.
+
+    >>> V_keys = sorted(V)
+    >>> round(sum(lm.score(w, ("b",)) for w in V_keys), 6)
     1.0
-    >>> round(sum(lm.score(w, ("a",)) for w in V), 6)
+    >>> round(sum(lm.score(w, ("a",)) for w in V_keys), 6)
     1.0
 
-    >>> [lm.score(w, ("b",)) for w in V]
-    [0.8, 0.05, 0.05, 0.05, 0.05]
-    >>> [round(lm.score(w, ("a",)), 4) for w in V]
-    [0.4667, 0.2444, 0.2444, 0.0222, 0.0222]
+    >>> [lm.score(w, ("b",)) for w in V_keys]
+    [0.05, 0.05, 0.8, 0.05, 0.05]
+    >>> [round(lm.score(w, ("a",)), 4) for w in V_keys]
+    [0.0222, 0.0222, 0.4667, 0.2444, 0.2444]
 
 
 Here's reproducing @afourney's comment:

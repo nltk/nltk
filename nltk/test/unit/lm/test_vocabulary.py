@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
 # Copyright (C) 2001-2018 NLTK Project
@@ -8,7 +9,7 @@
 import unittest
 from collections import Counter
 
-from nltk import six
+import six
 from nltk.lm import Vocabulary
 
 
@@ -18,7 +19,9 @@ class NgramModelVocabularyTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.vocab = Vocabulary(
-            ['z', 'a', 'b', 'c', 'f', 'd', 'e', 'g', 'a', 'd', 'b', 'e', 'w'], unk_cutoff=2)
+            ["z", "a", "b", "c", "f", "d", "e", "g", "a", "d", "b", "e", "w"],
+            unk_cutoff=2,
+        )
 
     def test_truthiness(self):
         self.assertTrue(self.vocab)
@@ -37,17 +40,17 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.assertEqual(expected_error_msg, str(exc_info.exception))
 
     def test_counts_set_correctly(self):
-        self.assertEqual(self.vocab.counts['a'], 2)
-        self.assertEqual(self.vocab.counts['b'], 2)
-        self.assertEqual(self.vocab.counts['c'], 1)
+        self.assertEqual(self.vocab.counts["a"], 2)
+        self.assertEqual(self.vocab.counts["b"], 2)
+        self.assertEqual(self.vocab.counts["c"], 1)
 
     def test_membership_check_respects_cutoff(self):
         # a was seen 2 times, so it should be considered part of the vocabulary
-        self.assertTrue('a' in self.vocab)
+        self.assertTrue("a" in self.vocab)
         # "c" was seen once, it shouldn't be considered part of the vocab
-        self.assertFalse('c' in self.vocab)
+        self.assertFalse("c" in self.vocab)
         # "z" was never seen at all, also shouldn't be considered in the vocab
-        self.assertFalse('z' in self.vocab)
+        self.assertFalse("z" in self.vocab)
 
     def test_vocab_len_respects_cutoff(self):
         # Vocab size is the number of unique tokens that occur at least as often
@@ -74,16 +77,26 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.assertEqual(self.vocab.lookup("a"), "a")
         self.assertEqual(self.vocab.lookup("c"), "<UNK>")
 
-    def test_lookup_sequences(self):
+    def test_lookup_iterables(self):
         self.assertEqual(self.vocab.lookup(["a", "b"]), ("a", "b"))
-        self.assertEqual(list(self.vocab.lookup(("a", "b"))), ["a", "b"])
-        self.assertEqual(list(self.vocab.lookup(map(str, range(3)))), ["<UNK>", "<UNK>", "<UNK>"])
-        self.assertEqual(list(self.vocab.lookup(["a", "c"])), ["a", "<UNK>"])
+        self.assertEqual(self.vocab.lookup(("a", "b")), ("a", "b"))
+        self.assertEqual(self.vocab.lookup(("a", "c")), ("a", "<UNK>"))
+        self.assertEqual(
+            self.vocab.lookup(map(str, range(3))), ("<UNK>", "<UNK>", "<UNK>")
+        )
+
+    def test_lookup_empty_iterables(self):
+        self.assertEqual(self.vocab.lookup(()), ())
+        self.assertEqual(self.vocab.lookup([]), ())
+        self.assertEqual(self.vocab.lookup(iter([])), ())
+        self.assertEqual(self.vocab.lookup(n for n in range(0, 0)), ())
 
     def test_lookup_recursive(self):
-        self.assertEqual(self.vocab.lookup([['a', 'b'], ['a', 'c']]), (('a', 'b'), ('a', '<UNK>')))
-        self.assertEqual(self.vocab.lookup([['a', 'b'], 'c']), (('a', 'b'), '<UNK>'))
-        self.assertEqual(self.vocab.lookup([[[[['a', 'b']]]]]), ((((('a', 'b'),),),),))
+        self.assertEqual(
+            self.vocab.lookup([["a", "b"], ["a", "c"]]), (("a", "b"), ("a", "<UNK>"))
+        )
+        self.assertEqual(self.vocab.lookup([["a", "b"], "c"]), (("a", "b"), "<UNK>"))
+        self.assertEqual(self.vocab.lookup([[[[["a", "b"]]]]]), ((((("a", "b"),),),),))
 
     def test_lookup_None(self):
         with self.assertRaises(TypeError):
@@ -101,13 +114,10 @@ class NgramModelVocabularyTests(unittest.TestCase):
         self.assertEqual(self.vocab.lookup(""), "<UNK>")
 
     def test_eqality(self):
-        v1 = Vocabulary(['a', 'b', 'c'], unk_cutoff=1)
-        v2 = Vocabulary(['a', 'b', 'c'], unk_cutoff=1)
-        v3 = Vocabulary(['a', 'b', 'c'], unk_cutoff=1, unk_label="blah")
-        v4 = Vocabulary(
-            ['a', 'b'],
-            unk_cutoff=1,
-        )
+        v1 = Vocabulary(["a", "b", "c"], unk_cutoff=1)
+        v2 = Vocabulary(["a", "b", "c"], unk_cutoff=1)
+        v3 = Vocabulary(["a", "b", "c"], unk_cutoff=1, unk_label="blah")
+        v4 = Vocabulary(["a", "b"], unk_cutoff=1)
 
         self.assertEqual(v1, v2)
         self.assertNotEqual(v1, v3)
@@ -115,12 +125,17 @@ class NgramModelVocabularyTests(unittest.TestCase):
 
     def test_str(self):
         self.assertEqual(
-            str(self.vocab), ("<Vocabulary with cutoff=2 "
-                              "unk_label='<UNK>' and 5 items>"))
+            str(self.vocab),
+            ("<Vocabulary with cutoff=2 " "unk_label='<UNK>' and 5 items>"),
+        )
 
     def test_creation_with_counter(self):
-        self.assertEqual(self.vocab,
-                         Vocabulary(
-                             Counter(
-                                 ['z', 'a', 'b', 'c', 'f', 'd', 'e', 'g', 'a', 'd', 'b', 'e', 'w']),
-                             unk_cutoff=2))
+        self.assertEqual(
+            self.vocab,
+            Vocabulary(
+                Counter(
+                    ["z", "a", "b", "c", "f", "d", "e", "g", "a", "d", "b", "e", "w"]
+                ),
+                unk_cutoff=2,
+            ),
+        )

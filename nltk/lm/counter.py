@@ -1,85 +1,91 @@
-# Natural Language Toolkit: Language Model Counters
+# -*- coding: utf-8 -*-
+# Natural Language Toolkit
 #
 # Copyright (C) 2001-2018 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """
-Counting Ngrams
----------------
-
-First we need to make sure we are feeding the counter ngrams.
-
-    >>> text = [list("abcd"), list("acdc")]
-    >>> from nltk.util import everygrams
-    >>> text_ngrams = (everygrams(sent, max_len=2) for sent in text)
-
-The counting itself is very simple.
-
-    >>> from nltk.lm import NgramCounter
-    >>> ngram_counts = NgramCounter(text_ngrams)
-
-You can conveniently access ngram counts using standard python dictionary notation.
-String keys will give you unigram counts.
-
-    >>> ngram_counts['a']
-    2
-    >>> ngram_counts['c']
-    3
-
-If you want to access counts for higher order ngrams, use a list or a tuple.
-These are treated as "context" keys, so what you get is a frequency distribution
-over all continuations after the given context.
-
-    >>> ngram_counts[['a']]
-    FreqDist({'b': 1, 'c': 1})
-    >>> ngram_counts[('a',)]
-    FreqDist({'b': 1, 'c': 1})
-
-To get the count of the full ngram "a b", do this:
-
-    >>> ngram_counts[['a']]['b']
-    1
-
-Finally, you can look up all the ngrams of a certain order, for instance bigrams.
-
-    >>> ngram_counts[2]
-    <ConditionalFreqDist with 4 conditions>
-
-The keys of this `ConditionalFreqDist` are the contexts we discussed earlier.
-
-    >>> ngram_counts[2][('a',)] is ngram_counts[['a']]
-    True
-
-Please note that the keys in `ConditionalFreqDist` are tuples, not lists!
+Language Model Counter
+----------------------
 """
 
 from __future__ import unicode_literals
-from collections import defaultdict, Sequence
 
-from nltk.probability import FreqDist, ConditionalFreqDist
+from collections import Sequence, defaultdict
+
 from nltk import compat
+from nltk.probability import ConditionalFreqDist, FreqDist
 
 
 @compat.python_2_unicode_compatible
 class NgramCounter(object):
     """Class for counting ngrams.
 
-    Will count any ngram sequence you give it.
+    Will count any ngram sequence you give it ;)
+
+    First we need to make sure we are feeding the counter sentences of ngrams.
+
+    >>> text = [["a", "b", "c", "d"], ["a", "c", "d", "c"]]
+    >>> from nltk.util import ngrams
+    >>> text_bigrams = [ngrams(sent, 2) for sent in text]
+    >>> text_unigrams = [ngrams(sent, 1) for sent in text]
+
+    The counting itself is very simple.
 
     >>> from nltk.lm import NgramCounter
-    >>> counts = NgramCounter([[('a', 'b'), ('b', 'c')], [('d', 'e'), ('e', 'f')]])
-    >>> counts[2]
-    <ConditionalFreqDist with 4 conditions>
-    >>> counts[2][('a',)]['b']
-    1
-    >>> counts.unigrams
-    FreqDist({})
-    >>> counts.update([[('a',), ('b',), ('b',)]])
-    >>> counts.unigrams
-    FreqDist({'b': 2, 'a': 1})
-    >>> counts.unigrams['b']
+    >>> ngram_counts = NgramCounter(text_bigrams + text_unigrams)
+
+    You can conveniently access ngram counts using standard python dictionary notation.
+    String keys will give you unigram counts.
+
+    >>> ngram_counts['a']
     2
+    >>> ngram_counts['aliens']
+    0
+
+    If you want to access counts for higher order ngrams, use a list or a tuple.
+    These are treated as "context" keys, so what you get is a frequency distribution
+    over all continuations after the given context.
+
+    >>> sorted(ngram_counts[['a']].items())
+    [('b', 1), ('c', 1)]
+    >>> sorted(ngram_counts[('a',)].items())
+    [('b', 1), ('c', 1)]
+
+    This is equivalent to specifying explicitly the order of the ngram (in this case
+    2 for bigram) and indexing on the context.
+    >>> ngram_counts[2][('a',)] is ngram_counts[['a']]
+    True
+
+    Note that the keys in `ConditionalFreqDist` cannot be lists, only tuples!
+    It is generally advisable to use the less verbose and more flexible square
+    bracket notation.
+
+    To get the count of the full ngram "a b", do this:
+
+    >>> ngram_counts[['a']]['b']
+    1
+
+    Specifying the ngram order as a number can be useful for accessing all ngrams
+    in that order.
+
+    >>> ngram_counts[2]
+    <ConditionalFreqDist with 4 conditions>
+
+    The keys of this `ConditionalFreqDist` are the contexts we discussed earlier.
+    Unigrams can also be accessed with a human-friendly alias.
+
+    >>> ngram_counts.unigrams is ngram_counts[1]
+    True
+
+    Similarly to `collections.Counter`, you can update counts after initialization.
+
+    >>> ngram_counts['e']
+    0
+    >>> ngram_counts.update([ngrams(["d", "e", "f"], 1)])
+    >>> ngram_counts['e']
+    1
 
     """
 
@@ -115,8 +121,10 @@ class NgramCounter(object):
         for sent in ngram_text:
             for ngram in sent:
                 if not isinstance(ngram, tuple):
-                    raise TypeError("Ngram <{0}> isn't a tuple, "
-                                    "but {1}".format(ngram, type(ngram)))
+                    raise TypeError(
+                        "Ngram <{0}> isn't a tuple, "
+                        "but {1}".format(ngram, type(ngram))
+                    )
 
                 ngram_order = len(ngram)
                 if ngram_order == 1:
@@ -140,39 +148,6 @@ class NgramCounter(object):
         """
         return sum(val.N() for val in self._counts.values())
 
-    def freq_of_freq(self):
-        """Maps frequencies of ngrams to how many ngrams occurred with each
-        frequency.
-
-        Equivalent to `FreqDist.r_Nr`, but more explicitly named.
-        Returns a dictionary where the keys are the ngram orders of NgramCounter instance.
-        The values are defaultdicts of ints to ints.
-        In the defaultdicts each key is an ngram frequency and its corresponding value
-        is how many ngrams occurred with that frequency.
-
-        :rtype: dict(defaultdict(int))
-
-        >>> from nltk.lm import NgramCounter
-        >>> counts = NgramCounter([[("a", "c"), ("d", "c"), ("c",)]])
-        >>> r_Nr = counts.freq_of_freq()
-        >>> r_Nr[1]
-        defaultdict(<class 'int'>, {1: 1, 0: 0})
-        >>> r_Nr[2]
-        defaultdict(<class 'int'>, {1: 2})
-
-        """
-        _r_Nr = {}
-        for order in self._counts:
-            if order == 1:
-                _r_Nr[order] = self[order].r_Nr()
-                continue
-
-            _r_Nr[order] = defaultdict(int)
-            for fdist in self[order].values():
-                for freq in fdist.values():
-                    _r_Nr[order][freq] += 1
-        return _r_Nr
-
     def __getitem__(self, item):
         """User-friendly access to ngram counts."""
         if isinstance(item, int):
@@ -183,8 +158,9 @@ class NgramCounter(object):
             return self._counts.__getitem__(len(item) + 1)[tuple(item)]
 
     def __str__(self):
-        return "<{0} with {1} ngram orders and {2} ngrams>".format(self.__class__.__name__,
-                                                                   len(self._counts), self.N())
+        return "<{0} with {1} ngram orders and {2} ngrams>".format(
+            self.__class__.__name__, len(self._counts), self.N()
+        )
 
     def __len__(self):
         return self._counts.__len__()

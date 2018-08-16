@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
 # Copyright (C) 2001-2018 NLTK Project
@@ -12,15 +13,24 @@ import unittest
 
 from six import add_metaclass
 
-from nltk.lm import (Vocabulary, MLE, Lidstone, Laplace, WittenBellInterpolated,
-                     KneserNeyInterpolated)
+from nltk.lm import (
+    Vocabulary,
+    MLE,
+    Lidstone,
+    Laplace,
+    WittenBellInterpolated,
+    KneserNeyInterpolated,
+)
 from nltk.lm.preprocessing import padded_everygrams
 
 
 def _prepare_test_data(ngram_order):
     return (
         Vocabulary(["a", "b", "c", "d", "z", "<s>", "</s>"], unk_cutoff=1),
-        [list(padded_everygrams(ngram_order, sent)) for sent in (list('abcd'), list('egadbe'))]
+        [
+            list(padded_everygrams(ngram_order, sent))
+            for sent in (list("abcd"), list("egadbe"))
+        ],
     )
 
 
@@ -28,29 +38,40 @@ class ParametrizeTestsMeta(type):
     """Metaclass for generating parametrized tests."""
 
     def __new__(cls, name, bases, dct):
-        contexts = (('a',), ('c',), (u'<s>',), ('b',), (u'<UNK>',), ('d',), ('e',), ('r',), ('w',))
+        contexts = (
+            ("a",),
+            ("c",),
+            (u"<s>",),
+            ("b",),
+            (u"<UNK>",),
+            ("d",),
+            ("e",),
+            ("r",),
+            ("w",),
+        )
         for i, c in enumerate(contexts):
             dct["test_sumto1_{0}".format(i)] = cls.add_sum_to_1_test(c)
         scores = dct.get("score_tests", [])
         for i, (word, context, expected_score) in enumerate(scores):
-            dct["test_score_{0}".format(i)] = cls.add_score_test(word, context, expected_score)
+            dct["test_score_{0}".format(i)] = cls.add_score_test(
+                word, context, expected_score
+            )
         return super(ParametrizeTestsMeta, cls).__new__(cls, name, bases, dct)
 
     @classmethod
     def add_score_test(cls, word, context, expected_score):
-
         def test_method(self):
             self.assertAlmostEqual(
                 self.model.score(word, context),
                 expected_score,
                 msg="word='{0}', context={1}".format(word, context),
-                places=4)
+                places=4,
+            )
 
         return test_method
 
     @classmethod
     def add_sum_to_1_test(cls, context):
-
         def test(self):
             s = sum(self.model.score(w, context) for w in self.model.vocab)
             self.assertAlmostEqual(s, 1.0, msg="The context is {}".format(context))
@@ -70,9 +91,9 @@ class MleBigramTests(unittest.TestCase):
         ("z", None, 0),
         # N unigrams = 14
         # count('a') = 2
-        ('a', None, 2. / 14),
+        ("a", None, 2. / 14),
         # count('y') = 3
-        ('y', None, 3. / 14),
+        ("y", None, 3. / 14),
     ]
 
     def setUp(self):
@@ -88,12 +109,14 @@ class MleBigramTests(unittest.TestCase):
 
     def test_entropy_perplexity_seen(self):
         # ngrams seen during training
-        trained = [('<s>', 'a'),
-                   ('a', 'b'),
-                   ('b', '<UNK>'),
-                   ('<UNK>', 'a'),
-                   ('a', 'd'),
-                   ('d', '</s>')]
+        trained = [
+            ("<s>", "a"),
+            ("a", "b"),
+            ("b", "<UNK>"),
+            ("<UNK>", "a"),
+            ("a", "d"),
+            ("d", "</s>"),
+        ]
         # Ngram = Log score
         # <s>, a    = -1
         # a, b      = -1
@@ -111,10 +134,7 @@ class MleBigramTests(unittest.TestCase):
 
     def test_entropy_perplexity_unseen(self):
         # In MLE, even one unseen ngram should make entropy and perplexity infinite
-        untrained = [('<s>', 'a'),
-                     ('a', 'c'),
-                     ('c', 'd'),
-                     ('d', '</s>')]
+        untrained = [("<s>", "a"), ("a", "c"), ("c", "d"), ("d", "</s>")]
 
         self.assertTrue(math.isinf(self.model.entropy(untrained)))
         self.assertTrue(math.isinf(self.model.perplexity(untrained)))
@@ -133,8 +153,7 @@ class MleBigramTests(unittest.TestCase):
         H = 3.0095
         perplexity = 8.0529
 
-        text = [("<s>",), ("a",), ("c",), ("-",),
-                ("d",), ("c",), ("</s>",)]
+        text = [("<s>",), ("a",), ("c",), ("-",), ("d",), ("c",), ("</s>",)]
 
         self.assertAlmostEqual(H, self.model.entropy(text), places=4)
         self.assertAlmostEqual(perplexity, self.model.perplexity(text), places=4)
@@ -156,7 +175,7 @@ class MleTrigramTests(unittest.TestCase):
         # in vocabulary but unseen
         ("z", None, 0),
         # out of vocabulary should use "UNK" score
-        ("y", None, 3.0 / 18)
+        ("y", None, 3.0 / 18),
     ]
 
     def setUp(self):
@@ -174,21 +193,21 @@ class LidstoneBigramTests(unittest.TestCase):
         # *count(d | c) = 1.1
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 1.8
-        ('d', ['c'], 1.1 / 1.8),
+        ("d", ["c"], 1.1 / 1.8),
         # Total unigrams: 14
         # Vocab size: 8
         # Denominator: 14 + 0.8 = 14.8
         # count("a") = 2
         # *count("a") = 2.1
-        ('a', None, 2.1 / 14.8),
+        ("a", None, 2.1 / 14.8),
         # in vocabulary but unseen
         # count("z") = 0
         # *count("z") = 0.1
-        ('z', None, 0.1 / 14.8),
+        ("z", None, 0.1 / 14.8),
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
         # *count("<UNK>") = 3.1
-        ('y', None, 3.1 / 14.8),
+        ("y", None, 3.1 / 14.8),
     ]
 
     def setUp(self):
@@ -200,12 +219,14 @@ class LidstoneBigramTests(unittest.TestCase):
         self.assertEqual(0.1, self.model.gamma)
 
     def test_entropy_perplexity(self):
-        text = [('<s>', 'a'),
-                ('a', 'c'),
-                ('c', '<UNK>'),
-                ('<UNK>', 'd'),
-                ('d', 'c'),
-                ('c', '</s>')]
+        text = [
+            ("<s>", "a"),
+            ("a", "c"),
+            ("c", "<UNK>"),
+            ("<UNK>", "d"),
+            ("d", "c"),
+            ("c", "</s>"),
+        ]
         # Unlike MLE this should be able to handle completely novel ngrams
         # Ngram = score, log score
         # <s>, a    = 0.3929, -1.3479
@@ -226,12 +247,12 @@ class LidstoneBigramTests(unittest.TestCase):
 class LidstoneTrigramTests(unittest.TestCase):
     score_tests = [
         # Logic behind this is the same as for bigram model
-        ('d', ['c'], 1.1 / 1.8),
+        ("d", ["c"], 1.1 / 1.8),
         # if we choose a word that hasn't appeared after (b, c)
-        ('e', ['c'], 0.1 / 1.8),
+        ("e", ["c"], 0.1 / 1.8),
         # Trigram score now
-        ('d', ['b', 'c'], 1.1 / 1.8),
-        ('e', ['b', 'c'], 0.1 / 1.8),
+        ("d", ["b", "c"], 1.1 / 1.8),
+        ("e", ["b", "c"], 0.1 / 1.8),
     ]
 
     def setUp(self):
@@ -250,21 +271,21 @@ class LaplaceBigramTests(unittest.TestCase):
         # *count(d | c) = 2
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 9
-        ('d', ['c'], 2. / 9),
+        ("d", ["c"], 2. / 9),
         # Total unigrams: 14
         # Vocab size: 8
         # Denominator: 14 + 8 = 22
         # count("a") = 2
         # *count("a") = 3
-        ('a', None, 3. / 22),
+        ("a", None, 3. / 22),
         # in vocabulary but unseen
         # count("z") = 0
         # *count("z") = 1
-        ('z', None, 1. / 22),
+        ("z", None, 1. / 22),
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
         # *count("<UNK>") = 4
-        ('y', None, 4. / 22)
+        ("y", None, 4. / 22),
     ]
 
     def setUp(self):
@@ -277,12 +298,14 @@ class LaplaceBigramTests(unittest.TestCase):
         self.assertEqual(1, self.model.gamma)
 
     def test_entropy_perplexity(self):
-        text = [('<s>', 'a'),
-                ('a', 'c'),
-                ('c', '<UNK>'),
-                ('<UNK>', 'd'),
-                ('d', 'c'),
-                ('c', '</s>')]
+        text = [
+            ("<s>", "a"),
+            ("a", "c"),
+            ("c", "<UNK>"),
+            ("<UNK>", "d"),
+            ("d", "c"),
+            ("c", "</s>"),
+        ]
         # Unlike MLE this should be able to handle completely novel ngrams
         # Ngram = score, log score
         # <s>, a    = 0.2, -2.3219
@@ -301,7 +324,6 @@ class LaplaceBigramTests(unittest.TestCase):
 
 @add_metaclass(ParametrizeTestsMeta)
 class WittenBellInterpolatedTrigramTests(unittest.TestCase):
-
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = WittenBellInterpolated(3, vocabulary=vocab)
@@ -311,27 +333,26 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase):
         # For unigram scores by default revert to MLE
         # Total unigrams: 18
         # count('c'): 1
-        ('c', None, 1. / 18),
+        ("c", None, 1. / 18),
         # in vocabulary but unseen
         # count("z") = 0
-        ('z', None, 0. / 18),
+        ("z", None, 0. / 18),
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
-        ('y', None, 3. / 18),
+        ("y", None, 3. / 18),
         # gamma(['b']) = 0.1111
         # mle.score('c', ['b']) = 0.5
         # (1 - gamma) * mle + gamma * mle('c') ~= 0.45 + .3 / 18
-        ('c', ['b'], (1 - 0.1111) * 0.5 + 0.1111 * 1 / 18),
+        ("c", ["b"], (1 - 0.1111) * 0.5 + 0.1111 * 1 / 18),
         # building on that, let's try 'a b c' as the trigram
         # gamma(['a', 'b']) = 0.0667
         # mle("c", ["a", "b"]) = 1
-        ('c', ['a', 'b'], (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+        ("c", ["a", "b"], (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
     ]
 
 
 @add_metaclass(ParametrizeTestsMeta)
 class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
-
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)
         self.model = KneserNeyInterpolated(3, vocabulary=vocab)
@@ -341,23 +362,22 @@ class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
         # For unigram scores revert to uniform
         # Vocab size: 8
         # count('c'): 1
-        ('c', None, 1. / 8),
+        ("c", None, 1. / 8),
         # in vocabulary but unseen, still uses uniform
-        ('z', None, 1 / 8),
+        ("z", None, 1 / 8),
         # out of vocabulary should use "UNK" score, i.e. again uniform
-        ('y', None, 1. / 8),
+        ("y", None, 1. / 8),
         # alpha = count('bc') - discount = 1 - 0.1 = 0.9
         # gamma(['b']) = discount * number of unique words that follow ['b'] = 0.1 * 2
         # normalizer = total number of bigrams with this context = 2
         # the final should be: (alpha + gamma * unigram_score("c"))
-        ('c', ['b'], (0.9 + 0.2 * (1 / 8)) / 2),
+        ("c", ["b"], (0.9 + 0.2 * (1 / 8)) / 2),
         # building on that, let's try 'a b c' as the trigram
         # alpha = count('abc') - discount = 1 - 0.1 = 0.9
         # gamma(['a', 'b']) = 0.1 * 1
         # normalizer = total number of trigrams with prefix "ab" = 1 => we can ignore it!
-        ('c', ['a', 'b'], 0.9 + 0.1 * ((0.9 + 0.2 * (1 / 8)) / 2)),
+        ("c", ["a", "b"], 0.9 + 0.1 * ((0.9 + 0.2 * (1 / 8)) / 2)),
     ]
-
 
 
 class NgramModelTextGenerationTests(unittest.TestCase):
@@ -374,38 +394,31 @@ class NgramModelTextGenerationTests(unittest.TestCase):
     def test_generate_one_limiting_context(self):
         # We don't need random_seed for contexts with only one continuation
         self.assertEqual(self.model.generate(text_seed=["c"]), "d")
-        self.assertEqual(
-            self.model.generate(text_seed=["b", "c"]),
-            "d",
-        )
-        self.assertEqual(
-            self.model.generate(text_seed=["a", "c"]),
-            "d"
-        )
+        self.assertEqual(self.model.generate(text_seed=["b", "c"]), "d")
+        self.assertEqual(self.model.generate(text_seed=["a", "c"]), "d")
 
     def test_generate_one_varied_context(self):
         # When context doesn't limit our options enough, seed the random choice
         self.assertEqual(
-            self.model.generate(text_seed=("a", "<s>"), random_seed=2),
-            "a"
+            self.model.generate(text_seed=("a", "<s>"), random_seed=2), "a"
         )
 
     def test_generate_no_seed_unigrams(self):
         self.assertEqual(
             self.model.generate(5, random_seed=3),
-            ['<UNK>', '</s>', '</s>', '</s>', '</s>']
+            ["<UNK>", "</s>", "</s>", "</s>", "</s>"],
         )
 
     def test_generate_with_text_seed(self):
         self.assertEqual(
             self.model.generate(5, text_seed=("<s>", "e"), random_seed=3),
-            ['<UNK>', 'a', 'd', 'b', '<UNK>']
+            ["<UNK>", "a", "d", "b", "<UNK>"],
         )
 
     def test_generate_oov_text_seed(self):
         self.assertEqual(
-            self.model.generate(text_seed=('aliens',), random_seed=3),
-            self.model.generate(text_seed=('<UNK>',), random_seed=3)
+            self.model.generate(text_seed=("aliens",), random_seed=3),
+            self.model.generate(text_seed=("<UNK>",), random_seed=3),
         )
 
     def test_generate_None_text_seed(self):
@@ -416,5 +429,5 @@ class NgramModelTextGenerationTests(unittest.TestCase):
         # This will work
         self.assertEqual(
             self.model.generate(text_seed=None, random_seed=3),
-            self.model.generate(random_seed=3)
+            self.model.generate(random_seed=3),
         )

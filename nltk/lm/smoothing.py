@@ -1,12 +1,18 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
 # Copyright (C) 2001-2018 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-"""Smoothing algorithms for language modeling."""
+"""Smoothing algorithms for language modeling.
+
+According to Chen & Goodman 1995 these should work with both Backoff and
+Interpolation.
+"""
 
 from nltk.lm.api import Smoothing
+
 
 def _count_non_zero_vals(dictionary):
     return sum(1 for c in dictionary.values() if c > 0)
@@ -31,8 +37,10 @@ class WittenBell(Smoothing):
 
 
 class KneserNey(Smoothing):
-    def __init__(self, *args, discount=0.1, **kwargs):
-        super().__init__(*args, *kwargs)
+    """Kneser-Ney Smoothing."""
+
+    def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
+        super().__init__(vocabulary, counter, *kwargs)
         self.discount = discount
 
     def unigram_score(self, word):
@@ -40,7 +48,7 @@ class KneserNey(Smoothing):
 
     def alpha_gamma(self, word, context):
         prefix_counts = self.counts[context]
-        return (self.alpha(word, prefix_counts), self.gamma(prefix_counts))
+        return self.alpha(word, prefix_counts), self.gamma(prefix_counts)
 
     def alpha(self, word, prefix_counts):
         return max(prefix_counts[word] - self.discount, 0.0) / prefix_counts.N()

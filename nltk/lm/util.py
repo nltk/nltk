@@ -1,9 +1,11 @@
-# Natural Language Toolkit: Language Model Unit Tests
+# -*- coding: utf-8 -*-
+# Natural Language Toolkit
 #
 # Copyright (C) 2001-2018 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+"""Language Model Utilities"""
 
 from math import log
 

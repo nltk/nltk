@@ -1,108 +1,31 @@
-# Natural Language Toolkit: Language Model Vocabulary
+# -*- coding: utf-8 -*-
+# Natural Language Toolkit
 #
 # Copyright (C) 2001-2018 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-"""
-Building a Vocabulary
----------------------
-
-    >>> words = ['a', 'c', '-', 'd', 'c', 'a', 'b', 'r', 'a', 'c', 'd']
-    >>> from nltk.lm import Vocabulary
-    >>> vocab = Vocabulary(words, unk_cutoff=2)
-
-Tokens with counts greater than or equal to the cuttoff value will
-be considered part of the vocabulary.
-
-    >>> vocab['c']
-    3
-    >>> 'c' in vocab
-    True
-    >>> vocab['d']
-    2
-    >>> 'd' in vocab
-    True
-
-Tokens with frequency counts less than the cutoff value will be considered not
-part of the vocabulary even though their entries in the count dictionary are
-preserved.
-
-    >>> vocab['b']
-    1
-    >>> 'b' in vocab
-    False
-    >>> vocab['aliens']
-    0
-    >>> 'aliens' in vocab
-    False
-
-Keeping the count entries for seen words allows us to change the cutoff value
-without having to recalculate the counts.
-
-    >>> vocab2 = Vocabulary(vocab.counts, unk_cutoff=1)
-    >>> "b" in vocab2
-    True
-
-The cutoff value influences not only membership checking but also the result of
-getting the size of the vocabulary using the built-in `len`.
-Note that while the number of keys in the vocabulary's counter stays the same,
-the items in the vocabulary differ depending on the cutoff.
-We use `sorted` to demonstrate because it keeps the order consistent.
-
-    >>> sorted(vocab2.counts)
-    ['-', 'a', 'b', 'c', 'd', 'r']
-    >>> sorted(vocab2)
-    ['-', '<UNK>', 'a', 'b', 'c', 'd', 'r']
-    >>> sorted(vocab.counts)
-    ['-', 'a', 'b', 'c', 'd', 'r']
-    >>> sorted(vocab)
-    ['<UNK>', 'a', 'c', 'd']
-
-In addition to items shown during its creation, the vocabulary stores a special
-token that stands in for "unknown" itenms.
-By default it's "<UNK>".
-
-    >>> "<UNK>" in vocab
-    True
-
-We can look up words in a vocabulary using its `lookup` method.
-"Unseen" words (with counts less than cutoff) are looked up as the unknown label.
-If given one word (a string) as an input, this method will return a string.
-
-    >>> vocab.lookup("a")
-    'a'
-    >>> vocab.lookup("aliens")
-    '<UNK>'
-
-If given a sequence, it will return an iterator over the looked up words.
-
-    >>> list(vocab.lookup(["p", 'a', 'r', 'd', 'b', 'c']))
-    ['<UNK>', 'a', '<UNK>', 'd', '<UNK>', 'c']
-
-It's possible to update the counts after its creation.
-
-    >>> vocab['b']
-    1
-    >>> vocab.update(["b", "b", "c"])
-    >>> vocab['b']
-    3
-
-"""
+"""Language Model Vocabulary"""
 
 from __future__ import unicode_literals
 
 import sys
-from functools import singledispatch
-from collections import Counter, Iterable, Set
+from collections import Counter, Iterable
 from itertools import chain
 
 from nltk import compat
 
+try:
+    from functools import singledispatch
+except ImportError:
+    from singledispatch import singledispatch
+
 
 @singledispatch
 def _dispatched_lookup(words, vocab):
-    raise TypeError("Unsupported type for looking up in vocabulary: {0}".format(type(words)))
+    raise TypeError(
+        "Unsupported type for looking up in vocabulary: {0}".format(type(words))
+    )
 
 
 @_dispatched_lookup.register(Iterable)
@@ -130,17 +53,85 @@ class Vocabulary(object):
       by comparing their counts to a cutoff value.
     - Adds a special "unknown" token which unseen words are mapped to.
 
+    >>> words = ['a', 'c', '-', 'd', 'c', 'a', 'b', 'r', 'a', 'c', 'd']
     >>> from nltk.lm import Vocabulary
-    >>> vocab = Vocabulary(["a", "b", "c", "a", "b"], unk_cutoff=2)
-    >>> "a" in vocab
-    True
-    >>> "c" in vocab
-    False
-    >>> sorted(vocab)
-    ['<UNK>', 'a', 'b']
-    >>> sorted(vocab.counts)
-    ['a', 'b', 'c']
+    >>> vocab = Vocabulary(words, unk_cutoff=2)
 
+    Tokens with counts greater than or equal to the cutoff value will
+    be considered part of the vocabulary.
+
+    >>> vocab['c']
+    3
+    >>> 'c' in vocab
+    True
+    >>> vocab['d']
+    2
+    >>> 'd' in vocab
+    True
+
+    Tokens with frequency counts less than the cutoff value will be considered not
+    part of the vocabulary even though their entries in the count dictionary are
+    preserved.
+
+    >>> vocab['b']
+    1
+    >>> 'b' in vocab
+    False
+    >>> vocab['aliens']
+    0
+    >>> 'aliens' in vocab
+    False
+
+    Keeping the count entries for seen words allows us to change the cutoff value
+    without having to recalculate the counts.
+
+    >>> vocab2 = Vocabulary(vocab.counts, unk_cutoff=1)
+    >>> "b" in vocab2
+    True
+
+    The cutoff value influences not only membership checking but also the result of
+    getting the size of the vocabulary using the built-in `len`.
+    Note that while the number of keys in the vocabulary's counter stays the same,
+    the items in the vocabulary differ depending on the cutoff.
+    We use `sorted` to demonstrate because it keeps the order consistent.
+
+    >>> sorted(vocab2.counts)
+    ['-', 'a', 'b', 'c', 'd', 'r']
+    >>> sorted(vocab2)
+    ['-', '<UNK>', 'a', 'b', 'c', 'd', 'r']
+    >>> sorted(vocab.counts)
+    ['-', 'a', 'b', 'c', 'd', 'r']
+    >>> sorted(vocab)
+    ['<UNK>', 'a', 'c', 'd']
+
+    In addition to items it gets populated with, the vocabulary stores a special
+    token that stands in for so-called "unknown" items. By default it's "<UNK>".
+
+    >>> "<UNK>" in vocab
+    True
+
+    We can look up words in a vocabulary using its `lookup` method.
+    "Unseen" words (with counts less than cutoff) are looked up as the unknown label.
+    If given one word (a string) as an input, this method will return a string.
+
+    >>> vocab.lookup("a")
+    'a'
+    >>> vocab.lookup("aliens")
+    '<UNK>'
+
+    If given a sequence, it will return an tuple of the looked up words.
+
+    >>> vocab.lookup(["p", 'a', 'r', 'd', 'b', 'c'])
+    ('<UNK>', 'a', '<UNK>', 'd', '<UNK>', 'c')
+
+    It's possible to update the counts after the vocabulary has been created.
+    The interface follows that of `collections.Counter`.
+
+    >>> vocab['b']
+    1
+    >>> vocab.update(["b", "b", "c"])
+    >>> vocab['b']
+    3
     """
 
     def __init__(self, counts=None, unk_cutoff=1, unk_label="<UNK>"):
@@ -162,7 +153,9 @@ class Vocabulary(object):
                 self.counts.update(counts)
         self.unk_label = unk_label
         if unk_cutoff < 1:
-            raise ValueError("Cutoff value cannot be less than 1. Got: {0}".format(unk_cutoff))
+            raise ValueError(
+                "Cutoff value cannot be less than 1. Got: {0}".format(unk_cutoff)
+            )
         self._cutoff = unk_cutoff
 
     @property
@@ -217,16 +210,21 @@ class Vocabulary(object):
     def __iter__(self):
         """Building on membership check define how to iterate over
         vocabulary."""
-        return chain((item for item in self.counts if item in self), [self.unk_label] if self.counts
-                     else [])
+        return chain(
+            (item for item in self.counts if item in self),
+            [self.unk_label] if self.counts else [],
+        )
 
     def __len__(self):
         """Computing size of vocabulary reflects the cutoff."""
         return sum(1 for _ in self)
 
     def __eq__(self, other):
-        return (self.unk_label == other.unk_label and self.cutoff == other.cutoff and
-                self.counts == other.counts)
+        return (
+            self.unk_label == other.unk_label
+            and self.cutoff == other.cutoff
+            and self.counts == other.counts
+        )
 
     if sys.version_info[0] == 2:
         # see https://stackoverflow.com/a/35781654/4501212
@@ -236,4 +234,5 @@ class Vocabulary(object):
 
     def __str__(self):
         return "<{0} with cutoff={1} unk_label='{2}' and {3} items>".format(
-            self.__class__.__name__, self.cutoff, self.unk_label, len(self))
+            self.__class__.__name__, self.cutoff, self.unk_label, len(self)
+        )

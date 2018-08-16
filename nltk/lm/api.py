@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Models
 #
 # Copyright (C) 2001-2018 NLTK Project
@@ -5,21 +6,47 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """Language Model Interface."""
-from __future__ import unicode_literals, division
+from __future__ import division, unicode_literals
 
 import random
 from abc import ABCMeta, abstractmethod
 from bisect import bisect
-from itertools import accumulate
+
+from six import add_metaclass
 
 from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
-from nltk.six import add_metaclass
+
+try:
+    from itertools import accumulate
+except ImportError:
+    import operator
+
+
+    def accumulate(iterable, func=operator.add):
+        """Return running totals"""
+        # accumulate([1,2,3,4,5]) --> 1 3 6 10 15
+        # accumulate([1,2,3,4,5], operator.mul) --> 1 2 6 24 120
+        it = iter(iterable)
+        try:
+            total = next(it)
+        except StopIteration:
+            return
+        yield total
+        for element in it:
+            total = func(total, element)
+            yield total
 
 
 @add_metaclass(ABCMeta)
 class Smoothing(object):
+    """Ngram Smoothing Interface
+
+    Implements Chen & Goodman 1995's idea that all smoothing algorithms have
+    certain features in common. This should ideally allow smoothing algoritms to
+    work both with Backoff and Interpolation.
+    """
 
     def __init__(self, vocabulary, counter):
         self.vocab = vocabulary
@@ -50,10 +77,10 @@ def _weighted_choice(population, weights, random_seed=None):
 
     Heavily inspired by python 3.6 `random.choices`.
     """
+    if not population:
+        raise ValueError("Can't choose from empty population")
     if len(population) != len(weights):
         raise ValueError("The number of weights does not match the population")
-    if len(population) == 0:
-        raise ValueError("Can't choose from empty population")
     cum_weights = list(accumulate(weights))
     total = cum_weights[-1]
     threshold = _random_generator(random_seed).random()
@@ -95,8 +122,9 @@ class LanguageModel(object):
         """
         if not self.vocab:
             if vocabulary_text is None:
-                raise ValueError("Cannot fit without a vocabulary or text to "
-                                 "create it from.")
+                raise ValueError(
+                    "Cannot fit without a vocabulary or text to " "create it from."
+                )
             self.vocab.update(vocabulary_text)
         self.counts.update(self.vocab.lookup(sent) for sent in text)
 
@@ -107,8 +135,7 @@ class LanguageModel(object):
         method.
         """
         return self.unmasked_score(
-            self.vocab.lookup(word),
-            self.vocab.lookup(context) if context else None
+            self.vocab.lookup(word), self.vocab.lookup(context) if context else None
         )
 
     @abstractmethod
@@ -143,7 +170,9 @@ class LanguageModel(object):
         :type context: tuple(str) or None
 
         """
-        return self.counts[len(context) + 1][context] if context else self.counts.unigrams
+        return (
+            self.counts[len(context) + 1][context] if context else self.counts.unigrams
+        )
 
     def entropy(self, text_ngrams):
         """Calculate cross-entropy of model for given evaluation text.
@@ -152,7 +181,9 @@ class LanguageModel(object):
         :rtype: float
 
         """
-        return -1 * _mean([self.logscore(ngram[-1], ngram[:-1]) for ngram in text_ngrams])
+        return -1 * _mean(
+            [self.logscore(ngram[-1], ngram[:-1]) for ngram in text_ngrams]
+        )
 
     def perplexity(self, text_ngrams):
         """Calculates the perplexity of the given text.
@@ -192,7 +223,7 @@ class LanguageModel(object):
                 else text_seed
             )
             samples = self.context_counts(self.vocab.lookup(context))
-            while not samples and len(context) > 0:
+            while context and not samples:
                 context = context[1:] if len(context) > 1 else []
                 samples = self.context_counts(self.vocab.lookup(context))
             # sorting achieves two things:
@@ -204,7 +235,7 @@ class LanguageModel(object):
             )
         # build up text one word at a time
         generated = []
-        for i in range(num_words):
+        for _ in range(num_words):
             generated.append(
                 self.generate(
                     num_words=1,
