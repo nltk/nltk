@@ -103,11 +103,11 @@ def _preprocess(sent, ignore_whitespace):
     return sent
 
 
-def chrf_precision_recall_fscore_support(reference, hypothesis, n, beta=3.0,
+def chrf_precision_recall_fscore_support(reference, hypothesis, beta=3.0,
                                          epsilon=1e-16):
     """
     This function computes the precision, recall and fscore from the ngram
-    overlaps. It returns the `support` which is the true positive scoreself.
+    overlaps. It returns the `support` which is the true positive score.
 
     By underspecifying the input type, the function will be agnostic as to how
     it computes the ngrams and simply take the whichever element in the list;
@@ -117,11 +117,9 @@ def chrf_precision_recall_fscore_support(reference, hypothesis, n, beta=3.0,
     :type reference: list
     :param hypothesis: The hypothesis sentence.
     :type hypothesis: list
-    :param n: The ngram order.
-    :type n: int
     :param beta: The parameter to assign more importance to recall over precision.
     :type beta: float
-    :param epsilon: The fallback value if the hypotheis or reference is empty.
+    :param epsilon: The fallback value if the hypothesis or reference is empty.
     :type epsilon: float
     :return: Returns the precision, recall and f-score and support (true positive).
     :rtype: tuple(float)
@@ -183,6 +181,7 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
 
     assert len(references) == len(hypotheses), (
         "The number of hypotheses and their references should be the same")
+    num_sents = len(hypotheses)
 
     # Keep f-scores for each n-gram order separate
     ngram_fscores = defaultdict(lambda: list())
@@ -199,12 +198,8 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
         for n in range(min_len, max_len+1):
             # Compute the precision, recall, fscore and support.
             prec, rec, fscore, tp = chrf_precision_recall_fscore_support(
-                reference, hypothesis, n, beta=beta)
+                reference, hypothesis, beta=beta)
             ngram_fscores[n].append(fscore)
-
-    # This is not specified in the paper but the author's implementation
-    # computes macro-averages both over n-gram lengths and sentences.
-    num_sents = len(ngram_fscores[min_len])
 
     # how many n-gram sizes
     num_ngram_sizes = len(ngram_fscores)
