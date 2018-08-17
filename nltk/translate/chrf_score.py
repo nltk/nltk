@@ -104,7 +104,7 @@ def _preprocess(sent, ignore_whitespace):
 
 
 def chrf_precision_recall_fscore_support(reference, hypothesis, n, beta=3.0,
-                                          epsilon=1e-16):
+                                         epsilon=1e-16):
     """
     This function computes the precision, recall and fscore from the ngram
     overlaps. It returns the `support` which is the true positive scoreself.
@@ -198,7 +198,8 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
         # separately.
         for n in range(min_len, max_len+1):
             # Compute the precision, recall, fscore and support.
-            prec, rec, fscore, tp = chrf_precision_recall_fscore_support(reference, hypothesis, n)
+            prec, rec, fscore, tp = chrf_precision_recall_fscore_support(
+                reference, hypothesis, n, beta=beta)
             ngram_fscores[n].append(fscore)
 
     # This is not specified in the paper but the author's implementation
