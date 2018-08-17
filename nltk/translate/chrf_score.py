@@ -89,7 +89,8 @@ def sentence_chrf(reference, hypothesis, min_len=1, max_len=6, beta=3.0,
     :return: the sentence level CHRF score.
     :rtype: float
     """
-    return corpus_chrf([reference], [hypothesis], min_len, max_len, beta=beta)
+    return corpus_chrf([reference], [hypothesis], min_len, max_len, beta=beta,
+                       ignore_whitespace=ignore_whitespace)
 
 
 def _preprocess(sent, ignore_whitespace):
