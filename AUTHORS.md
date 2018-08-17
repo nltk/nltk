@@ -214,6 +214,7 @@
 - Arthur Tilley
 - Vilhjalmur Thorsteinsson
 - Jaehoon Hwang <https://github.com/jaehoonhwang>
+- Jasmin Abou Aldan <https://github.com/jabou>
 - Chintan Shah <https://github.com/chintanshah24>
 - sbagan
 - Zicheng Xu

@@ -62,6 +62,7 @@ import tempfile
 import os
 import re
 from collections import defaultdict
+import re
 
 from six import integer_types
 
@@ -232,6 +233,38 @@ class MaxentClassifier(ClassifierI):
         for fid in fids[:n]:
             print('%8.3f %s' % (self._weights[fid],
                                 self._encoding.describe(fid)))
+
+    def most_informative_features(self, n=10, show='all'):
+        """
+        Return a list of the 'most informative' features used by this
+        classifier.  For the purpose of this function, the
+        informativeness of a feature ``(fname,fval)`` is equal to the
+        highest value of P(fname=fval|label), for any label, divided by
+        the lowest value of P(fname=fval|label), for any label:
+
+        |  max[ P(fname=fval|label1) / P(fname=fval|label2) ]
+
+        :param show: all, neg, or pos (for negative-only or positive-only)
+
+        """
+
+        # The set of (fname, fval) pairs used by this classifier.
+        features = set()
+
+        fids = sorted(list(range(len(self._weights))),
+                      key=lambda fid: abs(self._weights[fid]),
+                      reverse=True)
+        if show == 'pos':
+            fids = [fid for fid in fids if self._weights[fid] > 0]
+        elif show == 'neg':
+            fids = [fid for fid in fids if self._weights[fid] < 0]
+
+        for fid in fids[:n]:
+            name, _, value = self._encoding.describe(fid).partition('==')
+            value = re.sub('[^\d]', '', value)
+            features.add((name, int(value)))
+
+        return features
 
     def __repr__(self):
         return ('<ConditionalExponentialClassifier: %d labels, %d features>' %
