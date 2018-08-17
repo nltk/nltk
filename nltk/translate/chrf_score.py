@@ -205,7 +205,7 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
     num_ngram_sizes = len(ngram_fscores)
 
     # sum of f-scores over all sentences for each n-gram order
-    total_scores = [sum(ngram_fscores[n]) for n in range(min_len, max_len + 1)]
+    total_scores = [sum(fscores) for n, fscores in ngram_fscores.items()]
 
     # macro-average over n-gram orders and over all sentences
     return (sum(total_scores) / num_ngram_sizes) / num_sents
