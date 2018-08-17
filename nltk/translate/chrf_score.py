@@ -102,6 +102,44 @@ def _preprocess(sent, ignore_whitespace):
     return sent
 
 
+def chrf_precision_recall_fscore_support(reference, hypothesis, n, beta=3.0,
+                                          epsilon=1e-16):
+    """
+    This function computes the precision, recall and fscore from the ngram
+    overlaps. It returns the `support` which is the true positive scoreself.
+
+    By underspecifying the input type, the function will be agnostic as to how
+    it computes the ngrams and simply take the whichever element in the list;
+    it could be either token or character.
+
+    :param reference: The reference sentence.
+    :type reference: list
+    :param hypothesis: The hypothesis sentence.
+    :type hypothesis: list
+    :param n: The ngram order.
+    :type n: int
+    :return: An NgramOverlapScores object that contains the TP, TPFP, TPFN, P, R and F scores.
+    :rtype: NgramOverlapScores
+    """
+    ref_ngrams = Counter(ngrams(reference, order))
+    hyp_ngrams = Counter(ngrams(hypothesis, order))
+
+    # calculate the number of ngram matches
+    overlap_ngrams = ref_ngrams & hyp_ngrams
+    tp = sum(overlap_ngrams.values())  # True positives.
+    tpfp = sum(hyp_ngrams.values())    # True positives + False positives.
+    tffn = sum(ref_ngrams.values())    # True positives + False negatives.
+
+    try:
+        prec = tp / tpfp  # precision
+        rec = tp / tffn   # recall
+        factor = beta**2
+        fscore = (1 + factor) * (prec * rec) / (factor * prec + rec)
+    except ZeroDivisionError:
+        prec = rec = fscore = epsilon
+    return prec, rec, fscore, tp
+
+
 def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
                 ignore_whitespace=True):
     """
@@ -153,27 +191,10 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
 
         # Calculate f-scores for each sentence and for each n-gram order
         # separately.
-        for order in range(min_len, max_len + 1):
-            ref_ngrams = Counter(ngrams(reference, order))
-            hyp_ngrams = Counter(ngrams(hypothesis, order))
-
-            # calculate the number of ngram matches
-            overlap_ngrams = ref_ngrams & hyp_ngrams
-            tp = sum(overlap_ngrams.values())  # True positives.
-            tpfp = sum(hyp_ngrams.values())  # True positives + False positives.
-            tffn = sum(ref_ngrams.values())  # True posities + False negatives.
-
-            try:
-                prec = tp / tpfp  # precision
-                rec = tp / tffn  # recall
-                factor = beta**2
-                f_score = (1 + factor) * (prec * rec) / (factor * prec + rec)
-            except ZeroDivisionError:
-                # Note that we will also return 0.0 when both hypothesis and
-                # reference are empty.
-                f_score = 0.0
-
-            n_gram_fscores[order].append(f_score)
+        for n in range(min_len, max_len + 1):
+            # Compute the precision, recall, fscore and support.
+            prec, rec, fscore, tp = chrf_precision_recall_fscore_support(reference, hypothesis, n)
+            n_gram_fscores[n].append(fscore)
 
     num_sents = len(n_gram_fscores[min_len])
 
