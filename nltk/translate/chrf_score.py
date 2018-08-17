@@ -180,7 +180,7 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
         "The number of hypotheses and their references should be the same")
 
     # Keep f-scores for each n-gram order separate
-    n_gram_fscores = defaultdict(lambda: list())
+    ngram_fscores = defaultdict(lambda: list())
 
     # Iterate through each hypothesis and their corresponding references.
     for reference, hypothesis in zip(references, hypotheses):
@@ -194,18 +194,18 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
         for n in range(min_len, max_len + 1):
             # Compute the precision, recall, fscore and support.
             prec, rec, fscore, tp = chrf_precision_recall_fscore_support(reference, hypothesis, n)
-            n_gram_fscores[n].append(fscore)
+            ngram_fscores[n].append(fscore)
 
-    num_sents = len(n_gram_fscores[min_len])
+    num_sents = len(ngram_fscores[min_len])
 
     # This is not specified in the paper but the author's implementation
     # computes macro-averages both over n-gram lengths and sentences.
 
     # how many n-gram sizes
-    num_ngram_sizes = len(n_gram_fscores)
+    num_ngram_sizes = len(ngram_fscores)
 
     # sum of f-scores over all sentences for each n-gram order
-    total_scores = [sum(n_gram_fscores[n]) for n in range(min_len, max_len + 1)]
+    total_scores = [sum(ngram_fscores[n]) for n in range(min_len, max_len + 1)]
 
     # macro-average over n-gram orders and over all sentences
     return (sum(total_scores) / num_ngram_sizes) / num_sents
