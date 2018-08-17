@@ -118,21 +118,25 @@ def chrf_precision_recall_fscore_support(reference, hypothesis, n, beta=3.0,
     :type hypothesis: list
     :param n: The ngram order.
     :type n: int
-    :return: An NgramOverlapScores object that contains the TP, TPFP, TPFN, P, R and F scores.
-    :rtype: NgramOverlapScores
+    :param beta: The parameter to assign more importance to recall over precision.
+    :type beta: float
+    :param epsilon: The fallback value if the hypotheis or reference is empty.
+    :type epsilon: float
+    :return: Returns the precision, recall and f-score and support (true positive).
+    :rtype: tuple(float)
     """
-    ref_ngrams = Counter(ngrams(reference, order))
-    hyp_ngrams = Counter(ngrams(hypothesis, order))
+    ref_ngrams = Counter(ngrams(reference, n))
+    hyp_ngrams = Counter(ngrams(hypothesis, n))
 
     # calculate the number of ngram matches
     overlap_ngrams = ref_ngrams & hyp_ngrams
     tp = sum(overlap_ngrams.values())  # True positives.
     tpfp = sum(hyp_ngrams.values())    # True positives + False positives.
-    tffn = sum(ref_ngrams.values())    # True positives + False negatives.
+    tpfn = sum(ref_ngrams.values())    # True positives + False negatives.
 
     try:
         prec = tp / tpfp  # precision
-        rec = tp / tffn   # recall
+        rec = tp / tpfn   # recall
         factor = beta**2
         fscore = (1 + factor) * (prec * rec) / (factor * prec + rec)
     except ZeroDivisionError:
@@ -161,9 +165,9 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
         0.3910...
 
     :param references: a corpus of list of reference sentences, w.r.t. hypotheses
-    :type references: list(list(str)) / list(str)
+    :type references: list(list(str))
     :param hypotheses: a list of hypothesis sentences
-    :type hypotheses: list(list(str)) / list(str)
+    :type hypotheses: list(list(str))
     :param min_len: The minimum order of n-gram this function should extract.
     :type min_len: int
     :param max_len: The maximum order of n-gram this function should extract.
@@ -191,15 +195,14 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
 
         # Calculate f-scores for each sentence and for each n-gram order
         # separately.
-        for n in range(min_len, max_len + 1):
+        for n in range(min_len, max_len+1):
             # Compute the precision, recall, fscore and support.
             prec, rec, fscore, tp = chrf_precision_recall_fscore_support(reference, hypothesis, n)
             ngram_fscores[n].append(fscore)
 
-    num_sents = len(ngram_fscores[min_len])
-
     # This is not specified in the paper but the author's implementation
     # computes macro-averages both over n-gram lengths and sentences.
+    num_sents = len(ngram_fscores[min_len])
 
     # how many n-gram sizes
     num_ngram_sizes = len(ngram_fscores)
