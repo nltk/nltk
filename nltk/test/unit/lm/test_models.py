@@ -9,6 +9,7 @@
 from __future__ import division
 
 import math
+import sys
 import unittest
 
 from six import add_metaclass
@@ -60,11 +61,22 @@ class ParametrizeTestsMeta(type):
 
     @classmethod
     def add_score_test(cls, word, context, expected_score):
+        if sys.version_info > (3, 5):
+            message = "word='{word}', context={context}"
+        else:
+            # Python 2 doesn't report the mismatched values if we pass a custom
+            # message, so we have to report them manually.
+            message = (
+                "{score} != {expected_score} within 4 places, "
+                "word='{word}', context={context}"
+            )
+
         def test_method(self):
+            score = self.model.score(word, context)
             self.assertAlmostEqual(
-                self.model.score(word, context),
+                score,
                 expected_score,
-                msg="word='{0}', context={1}".format(word, context),
+                msg=message.format(**locals()),
                 places=4,
             )
 

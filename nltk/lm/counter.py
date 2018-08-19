@@ -14,6 +14,7 @@ from __future__ import unicode_literals
 
 from collections import Sequence, defaultdict
 
+from six import string_types
 from nltk import compat
 from nltk.probability import ConditionalFreqDist, FreqDist
 
@@ -100,9 +101,7 @@ class NgramCounter(object):
 
         """
         self._counts = defaultdict(ConditionalFreqDist)
-        # super(NgramCounter, self).__init__(ConditionalFreqDist)
         self._counts[1] = self.unigrams = FreqDist()
-        # self.unigrams = self[1]
 
         if ngram_text:
             self.update(ngram_text)
@@ -152,7 +151,7 @@ class NgramCounter(object):
         """User-friendly access to ngram counts."""
         if isinstance(item, int):
             return self._counts[item]
-        elif isinstance(item, str):
+        elif isinstance(item, string_types):
             return self._counts.__getitem__(1)[item]
         elif isinstance(item, Sequence):
             return self._counts.__getitem__(len(item) + 1)[tuple(item)]

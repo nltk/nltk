@@ -12,9 +12,6 @@ NLTK Language Modeling Module.
 Currently this module covers only ngram language models, but it should be easy
 to extend to neural models.
 
-This documentation contains examples that are automatically tested with Python's
-`doctest` module. Some of this code has comments containing directives for
-`doctest`, please ignore them.
 
 Preparing Data
 ==============
@@ -76,7 +73,7 @@ While not the most efficient, it is conceptually simple.
 
     >>> from nltk.util import everygrams
     >>> padded_bigrams = list(pad_both_ends(text[0], n=2))
-    >>> list(everygrams(padded_bigrams, max_len=2)) # doctest: +NORMALIZE_WHITESPACE
+    >>> list(everygrams(padded_bigrams, max_len=2))
     [('<s>',),
      ('a',),
      ('b',),

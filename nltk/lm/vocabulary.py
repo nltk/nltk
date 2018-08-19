@@ -16,8 +16,10 @@ from itertools import chain
 from nltk import compat
 
 try:
+    # Python >= 3.4
     from functools import singledispatch
 except ImportError:
+    # Python < 3.4
     from singledispatch import singledispatch
 
 
@@ -38,8 +40,16 @@ def _(words, vocab):
     return tuple(_dispatched_lookup(w, vocab) for w in words)
 
 
-@_dispatched_lookup.register(str)
-def _(word, vocab):
+try:
+    # Python 2 unicode + str type
+    basestring
+except NameError:
+    # Python 3 unicode + str type
+    basestring = str
+
+
+@_dispatched_lookup.register(basestring)
+def _string_lookup(word, vocab):
     """Looks up one word in the vocabulary."""
     return word if word in vocab else vocab.unk_label
 

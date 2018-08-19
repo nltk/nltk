@@ -15,7 +15,7 @@ from nltk.lm.api import Smoothing
 
 
 def _count_non_zero_vals(dictionary):
-    return sum(1 for c in dictionary.values() if c > 0)
+    return sum(1.0 for c in dictionary.values() if c > 0)
 
 
 class WittenBell(Smoothing):
@@ -23,7 +23,7 @@ class WittenBell(Smoothing):
 
     def alpha_gamma(self, word, context):
         gamma = self.gamma(context)
-        return (1 - gamma) * self.alpha(word, context), gamma
+        return (1.0 - gamma) * self.alpha(word, context), gamma
 
     def unigram_score(self, word):
         return self.counts.unigrams.freq(word)
@@ -40,7 +40,7 @@ class KneserNey(Smoothing):
     """Kneser-Ney Smoothing."""
 
     def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
-        super().__init__(vocabulary, counter, *kwargs)
+        super(KneserNey, self).__init__(vocabulary, counter, *kwargs)
         self.discount = discount
 
     def unigram_score(self, word):
