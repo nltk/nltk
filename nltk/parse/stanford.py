@@ -284,7 +284,7 @@ class StanfordParser(GenericStanfordParser):
 
     def __init__(self, *args, **kwargs):
         warnings.warn("The StanfordParser will be deprecated\n"
-                      "Please use \033[91mnltk.parse.corenlp.StanforCoreNLPParser\033[0m instead.",
+                      "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead.",
                       DeprecationWarning, stacklevel=2)
 
         super(StanfordParser, self).__init__(*args, **kwargs)
@@ -347,7 +347,7 @@ class StanfordDependencyParser(GenericStanfordParser):
 
     def __init__(self, *args, **kwargs):
         warnings.warn("The StanfordDependencyParser will be deprecated\n"
-                      "Please use \033[91mnltk.parse.corenlp.StanforCoreNLPDependencyParser\033[0m instead.",
+                      "Please use \033[91mnltk.parse.corenlp.CoreNLPDependencyParser\033[0m instead.",
                       DeprecationWarning, stacklevel=2)
 
         super(StanfordDependencyParser, self).__init__(*args, **kwargs)
@@ -397,7 +397,7 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
 
     def __init__(self, *args, **kwargs):
         warnings.warn("The StanfordNeuralDependencyParser will be deprecated\n"
-                      "Please use \033[91mnltk.parse.corenlp.StanforCoreNLPNeuralDependencyParser\033[0m instead.",
+                      "Please use \033[91mnltk.parse.corenlp.CoreNLPDependencyParser\033[0m instead.",
                       DeprecationWarning, stacklevel=2)
 
         super(StanfordNeuralDependencyParser, self).__init__(*args, **kwargs)
