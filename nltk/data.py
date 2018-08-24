@@ -1139,6 +1139,13 @@ class SeekableUnicodeStreamReader(object):
 
         return chars
 
+    def discard_line(self):
+        if self.linebuffer and len(self.linebuffer) > 1:
+            line = self.linebuffer.pop(0)
+            self._rewind_numchars += len(line)
+        else:
+            self.stream.readline()
+
     def readline(self, size=None):
         """
         Read a line of text, decode it using this reader's encoding,
