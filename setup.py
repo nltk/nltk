@@ -55,6 +55,30 @@ extras_require = {
 # Add a group made up of all optional dependencies
 extras_require['all'] = set(package for group in extras_require.values() for package in group)
 
+
+MODULES_TO_COMPILE = [
+    'nltk.grammar',
+    'nltk.parse.chart',
+]
+
+
+def compile_modules(modules):
+    """
+    Compile the named modules using Cython, using the clearer Python 3 semantics.
+    """
+    import Cython
+    from Cython.Build import cythonize
+    files = [name.replace('.', os.path.sep) + '.py' for name in modules]
+    print("Compiling %d modules using Cython %s" % (len(modules), Cython.__version__))
+    return cythonize(files, language_level=3)
+
+
+if os.getenv('CYTHONIZE_NLTK') == 'true':
+    ext_modules = compile_modules(MODULES_TO_COMPILE)
+else:
+    ext_modules = None
+
+
 setup(
     name = "nltk",
     description = "Natural Language Toolkit",
@@ -98,5 +122,6 @@ natural language processing.  NLTK requires Python 2.7, 3.4, 3.5, or 3.6.""",
     install_requires = ['six'],
     extras_require = extras_require,
     packages = find_packages(),
+    ext_modules=ext_modules,
     zip_safe=False, # since normal files will be present too?
     )

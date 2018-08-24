@@ -1,6 +1,8 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*.so
+*.c
 *.class
 *.jar
 
@@ -9,6 +11,7 @@ build/
 dist/
 nltk.egg-info/
 web/_build
+wheelhouse*/
 
 # Test artifacts and coverage reports
 *.tox
