@@ -1,4 +1,4 @@
-Introduce project Spanish corpus reader
+Introduce the new project Spanish corpus reader
 
 This project’s goals are to contribute a corpus reader tailored to
 the style of 19th century Spanish literature. It is optimized to 
