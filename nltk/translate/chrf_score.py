@@ -200,7 +200,7 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
         for n in range(min_len, max_len+1):
             # Compute the precision, recall, fscore and support.
             prec, rec, fscore, tp = chrf_precision_recall_fscore_support(
-                reference, hypothesis, beta=beta)
+                reference, hypothesis, n, beta=beta)
             ngram_fscores[n].append(fscore)
 
     # how many n-gram sizes
