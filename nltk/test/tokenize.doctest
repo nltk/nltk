@@ -213,7 +213,7 @@ Testing mutable default arguments for https://github.com/nltk/nltk/pull/2067
     >>> type(pt._lang_vars)
     <class 'nltk.tokenize.punkt.PunktLanguageVars'>
     >>> pst = PunktSentenceTokenizer(lang_vars=None)
-    >>> pst._lang_vars
+    >>> type(pst._lang_vars)
     <class 'nltk.tokenize.punkt.PunktLanguageVars'>
     
 
