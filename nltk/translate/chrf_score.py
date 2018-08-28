@@ -103,7 +103,7 @@ def _preprocess(sent, ignore_whitespace):
     return sent
 
 
-def chrf_precision_recall_fscore_support(reference, hypothesis, beta=3.0,
+def chrf_precision_recall_fscore_support(reference, hypothesis, n, beta=3.0,
                                          epsilon=1e-16):
     """
     This function computes the precision, recall and fscore from the ngram
@@ -117,6 +117,8 @@ def chrf_precision_recall_fscore_support(reference, hypothesis, beta=3.0,
     :type reference: list
     :param hypothesis: The hypothesis sentence.
     :type hypothesis: list
+    :param n: Extract up to the n-th order ngrams
+    :type n: int
     :param beta: The parameter to assign more importance to recall over precision.
     :type beta: float
     :param epsilon: The fallback value if the hypothesis or reference is empty.
