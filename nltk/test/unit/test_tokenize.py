@@ -6,6 +6,7 @@ See also nltk/test/tokenize.doctest
 
 from __future__ import unicode_literals
 from nltk.tokenize import TweetTokenizer, StanfordSegmenter, TreebankWordTokenizer
+from nltk.tokenize import word_tokenize
 from nose import SkipTest
 import unittest
 import os
@@ -166,3 +167,18 @@ class TestTokenize(unittest.TestCase):
         ]
         result = list(tokenizer.span_tokenize(test3))
         self.assertEqual(result, expected)
+
+        
+    def test_word_tokenize(self):
+        """
+        Test word_tokenize function
+        """
+        
+        sentence = "The 'v', I've been fooled but I'll seek revenge."
+        expected = ['The', "'", 'v', "'", ',', 'I', "'ve", 'been', 'fooled', 
+                    'but', 'I', "'ll", 'seek', 'revenge', '.']
+        self.assertEqual(word_tokenize(sentence), expected)
+        
+        sentence = "'v' 're'"
+        expected = ["'", 'v', "'", "'re", "'"]
+        self.assertEqual(word_tokenize(sentence), expected)
