@@ -59,7 +59,7 @@ extras_require['all'] = set(package for group in extras_require.values() for pac
 MODULES_TO_COMPILE = [
     'nltk.grammar',
     'nltk.parse.chart',
-    'nltk.tokenize'
+    'nltk.tokenize.*'
 ]
 
 
