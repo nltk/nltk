@@ -36,7 +36,22 @@ class SpanishPlaintextCorpusReader(PlaintextCorpusReader):
 #(Excsmo.), and older variants of some (Vd.). Some technical abbreviations, found in non-fiction
 #and scientific texts, are also included.
     
-    abbreviations = u'\.\.\.|[^—✚§/#´<>+’=:$,“”»«";¿?¡!_\s.()\[\]{}*^-]\.|Arqueol\.|&c\.|Mme\.|Lib\.|Lic\.|Antrop\.|núm\.|Dres\.|Descrip\.|—tom\.|rs\.|lám\.|Sec\.|Liv\.|Introd\.|Excmo\.|Caps\.|Amer\.|oct\.|Antigs\.|Ses\.|Moderns\.|Moralíz\.|Esp\.|Lam\.|act\.|Europ\.|Geog\.|CC\.|Eneid\.|Nat\.|M\.|Crón\.|Ntra\.|men\.|Láms\.|Orth\.|Gam\.|tam\.|Arg\.|Op\.|caps\.|Agust\.|fol\.|Sr\.|Tam\.|Janr\.|MS\.|Bol\.|Mr\.|S.A.S\.|Núms\.|Civiliz\.|Figs\.|DR\.|Orígs\.|Vocabuls\.|cits\.|L.E\.|Dicc\.|paj\.|Amér\.|Lám\.|ESQ\.|op\.|Argent\.|NE\.|Sres\.|Esp\.|Lam\.|Exmo\.|Espagn\.|pag\.|Conq\.|Cont\.|Sr\.|SR\.|SO\.|Ind\.|ded\.|cuads\.|Oct\.|Psch\.|Ed\.|Sta\.|Fot\.|sec\.|Part\.|JUV\.|Arqueolog\.|Sto\.|pp\.|Antig\.|vol.Cod\.|Srta\.|Col\.|lib\.|Congr\.|lin\.|Colec\.|Instit\.|Cong\.|Cient\.|Mlle\.|Rev\.|LLOR\.|nat\.|gr\.|ROB\.|Ge\.|Ord\.|lec\.|FR\.|Fr\.|ILMO\.|Colecc\.|Pág\.|Tuc\.|Prov\.|EXCMO\.|Págs\.|p.m\.|sc\.|capits\.|Pl\.|PP\.|lug\.|Sra\.|a.m\.|Antich\.|Gen\.|Apénd\.|Cap\.|Bs\.|pags\.|MSS\.|cap\.|Vds\.|nos\.|tom\.|Lug\.|Dr\.|págs\.|id\.|pág\.|verb\.|Or\.|sigtes\.|SEB\.|Hist\.|Vd\.|ci\.|vol\.|cit\.|etc\.|Cía\.|Id\.|Nos\.|Ibid\.|LLO\.|Ud\.|Fig\.|Geográf\.|Internat\.|Sant\.|ps\.|part\.|Luxemburg\.'
+    abbreviations = (u'\.\.\.|[^—✚§/#´<>+’=:$,“”»«";¿?¡!_\s.()\[\]{}*^-]\.|Arqueol\.|&c\.|Mme\.'
+                     u'|Lib\.|Lic\.|Antrop\.|núm\.|Dres\.|Descrip\.|—tom\.|rs\.|lám\.|Sec\.|Liv\.'
+                     u'|Introd\.|Excmo\.|Caps\.|Amer\.|oct\.|Antigs\.|Ses\.|Moderns\.|Moralíz\.'
+                     u'|Esp\.|Lam\.|act\.|Europ\.|Geog\.|CC\.|Eneid\.|Nat\.|M\.|Crón\.|Ntra\.|men\.'
+                     u'|Láms\.|Orth\.|Gam\.|tam\.|Arg\.|Op\.|caps\.|Agust\.|fol\.|Sr\.|Tam\.|Janr\.'
+                     u'|MS\.|Bol\.|Mr\.|S.A.S\.|Núms\.|Civiliz\.|Figs\.|DR\.|Orígs\.|Vocabuls\.'
+                     u'|cits\.|L.E\.|Dicc\.|paj\.|Amér\.|Lám\.|ESQ\.|op\.|Argent\.|NE\.|Sres\.'
+                     u'|Esp\.|Lam\.|Exmo\.|Espagn\.|pag\.|Conq\.|Cont\.|Sr\.|SR\.|SO\.|Ind\.|ded\.'
+                     u'|cuads\.|Oct\.|Psch\.|Ed\.|Sta\.|Fot\.|sec\.|Part\.|JUV\.|Arqueolog\.|Sto\.'
+                     u'|pp\.|Antig\.|vol.Cod\.|Srta\.|Col\.|lib\.|Congr\.|lin\.|Colec\.|Instit\.'
+                     u'|Cong\.|Cient\.|Mlle\.|Rev\.|LLOR\.|nat\.|gr\.|ROB\.|Ge\.|Ord\.|lec\.|FR\.'
+                     u'|Fr\.|ILMO\.|Colecc\.|Pág\.|Tuc\.|Prov\.|EXCMO\.|Págs\.|p.m\.|sc\.|capits\.'
+                     u'|Pl\.|PP\.|lug\.|Sra\.|a.m\.|Antich\.|Gen\.|Apénd\.|Cap\.|Bs\.|pags\.|MSS\.'
+                     u'|cap\.|Vds\.|nos\.|tom\.|Lug\.|Dr\.|págs\.|id\.|pág\.|verb\.|Or\.|sigtes\.'
+                     u'|SEB\.|Hist\.|Vd\.|ci\.|vol\.|cit\.|etc\.|Cía\.|Id\.|Nos\.|Ibid\.|LLO\.|Ud\.'
+                     u'|Fig\.|Geográf\.|Internat\.|Sant\.|ps\.|part\.|Luxemburg\.')
 
 #The punctuation and alphanumeric character sets are almost complementary. Punctuation includes
 #the double dash "--" used in Project Gutenberg as an m-dash, and common Spanish marks like the
@@ -71,7 +86,7 @@ class SpanishPlaintextCorpusReader(PlaintextCorpusReader):
     # token is a string of characters that matches a numeral expression, an abbreviation, a
     # punctuation mark, or a sequence of one or more alphanumeric characters.
     
-        par_words = re.findall(u'%s|%s|%s|%s+' % (self.numerals, self.abbreviations, 
+        par_words = re.findall(u'{:s}|{:s}|{:s}|{:s}+'.format(self.numerals, self.abbreviations, 
                                 self.punctuation, self.alphanum), paragraph, flags=re.U)
         return par_words
     
@@ -94,8 +109,8 @@ class SpanishPlaintextCorpusReader(PlaintextCorpusReader):
                 
     # Tokenize paragraph into words
     
-        par_words = re.findall(u'%s|%s|%s|%s+' % (self.numerals, self.abbreviations, 
-                            self.punctuation, self.alphanum), paragraph, flags=re.U)        
+        par_words = re.findall(u'{:s}|{:s}|{:s}|{:s}+'.format(self.numerals, self.abbreviations, 
+                                self.punctuation, self.alphanum), paragraph, flags=re.U)        
         
     # Start grouping words into sentences, paying attention to tokens corresponding to punctuation
     # marks and the punctuation conventions of Spanish.
