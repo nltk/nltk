@@ -1,0 +1,29 @@
+sudo: false
+
+language: python
+
+cache:
+  apt: true
+  directories:
+  - $HOME/.cache/pip
+  - $HOME/.ccache
+  - $HOME/.pip-cache
+
+dist: trusty
+
+matrix:
+  include:
+    - python: '2.7'
+      env: TOXENV="flake8"
+
+    - python: '2.7'
+      env: TOXENV="py27-linux"
+
+    - python: '3.5'
+      env: TOXENV="py35-linux"
+
+    - python: '3.6'
+      env: TOXENV="py36-linux"
+
+install: pip install tox
+script: tox -vv
