@@ -25,8 +25,11 @@ matrix:
     - python: '3.6'
       env: TOXENV="py36-linux"
 
-install:
-  - pip install tox
+before_install:
   - source tools/travis/install.sh
+
+install:
+  - source jenkins.sh
+  - pip install tox
 
 script: tox -e tox.ini -vv
