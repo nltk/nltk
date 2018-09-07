@@ -153,13 +153,78 @@ class SpanishPlaintextCorpusReader(PlaintextCorpusReader):
                     eos_flag = True
 
         return(sentences)
+
+#===============================================================================================
+
+#Block reader that reads an entire paragraph and returns a paragraph.
+#A paragraph is a list of tokenized sentences.
+
+#NOTE: hyphenated words are split, fix it in next version.
+
+    def par_para_reader(self, stream):
+        paragraph = ''
+        for line in stream:
+            if re.match('^\n', line):          #stop at a blank line
+                break
+            else:
+                paragraph = paragraph + line   #until then, keep fetching lines from file
+                
+    # Tokenize paragraph into words
+    
+        par_words = re.findall(u'{:s}|{:s}|{:s}|{:s}+'.format(self.numerals, self.abbreviations, 
+                                self.punctuation, self.alphanum), paragraph, flags=re.U)        
+        
+    # Start grouping words into sentences, paying attention to tokens corresponding to punctuation
+    # marks and the punctuation conventions of Spanish.
+    
+        sentence = []
+        sentences = []
+        eos_flag = False
+        for i, wrd in enumerate(par_words):
+            if eos_flag !=False:                # Define special behaviors after [.?!]
+                if wrd in [u'»', u'”', u'" ', u'"/n']: # a [.?!] followed by » starts another sentence after »
+                    sentence.append(wrd)
+                    sentences.append(sentence)
+                    sentence = []
+                    eos_flag = False
+                elif wrd in [u'.', u'?', u'!']: # Multiple [.?!] at eos are kept within same sentence
+                    sentence.append(wrd)
+                    eos_flag = True
+                elif wrd in [u',', u';']:       # [?!] followed by [,;] do not start a new sentence 
+                    sentence.append(wrd)
+                    eos_flag = False
+                else:
+                    sentences.append(sentence)
+                    sentence = []
+                    sentence.append(wrd)
+                    eos_flag = False
+            else:        
+                sentence.append(wrd)
+
+        #Once the last word in the paragraph is reached, split a sentence regardless of the final
+        #word.
+        
+                if i == len(par_words)-1:
+                    sentences.append(sentence)
+                
+        #Signal to break sentences at [.?!]. If the eos mark is followed by another
+        #token from (», ..., ?, !, ;, ,,), then special behavior is required. The eos_flag = Bool
+        #will be checked at the beginning of the loop to see if special behavior is triggered.
+        
+                elif wrd in [u'.', u'?', u'!']:
+                    eos_flag = True
+
+        # We already have a list of tokenized sentences. A paragraph is a list that contains that
+        # list of sentences as its only element.
+        
+        return([sentences])
     
 #===============================================================================================
 
 #Using the block readers defined in the previous sections, I define the usual methos to read
-#the corpus into words or sentences.
+#the corpus into words or sentences. The `raw()` method is inherited from the parent class.
     
-    #Methods for reading words and sentences
+    #Methods for reading words, sentences, and paragraphs
     
     def words(self, fileids=None):
         return concat([StreamBackedCorpusView(fileid, block_reader=self.par_word_reader)
@@ -167,4 +232,8 @@ class SpanishPlaintextCorpusReader(PlaintextCorpusReader):
     
     def sents(self, fileids=None):
         return concat([StreamBackedCorpusView(fileid, block_reader=self.par_sent_reader)
+                        for fileid in self.abspaths(fileids)])
+
+    def paras(self, fileids=None):
+        return concat([StreamBackedCorpusView(fileid, block_reader=self.par_para_reader)
                         for fileid in self.abspaths(fileids)])
