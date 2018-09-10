@@ -9,6 +9,7 @@ cache:
   - $HOME/.ccache
   - $HOME/.pip-cache
   - $HOME/third
+  = $HOME/nltk_data
 
 dist: xenial
 
@@ -36,4 +37,4 @@ install:
   - source tools/travis/third-party.sh
   - pip install tox
 
-script: tox -e tox.ini -vv
+script: tox -e $TOXENV tox.ini -vv
