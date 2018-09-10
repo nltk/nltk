@@ -19,13 +19,13 @@ matrix:
 #      env: TOXENV="flake8"
 
     - python: '2.7'
-      env: TOXENV="py2.7.14-jenkins"
+      env: TOXENV="py-travis"
 
     - python: '3.5'
-      env: TOXENV="py3.5.4-jenkins"
+      env: TOXENV="py-travis"
 
     - python: '3.6'
-      env: TOXENV="py3.6.4-jenkins"
+      env: TOXENV="py-travis"
 
 before_install:
   - source tools/travis/pre-install.sh # Checks Java and Python versions.
