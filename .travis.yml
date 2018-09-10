@@ -9,7 +9,7 @@ cache:
   - $HOME/.ccache
   - $HOME/.pip-cache
   - $HOME/third
-  = $HOME/nltk_data
+  - $HOME/nltk_data
 
 dist: xenial
 
