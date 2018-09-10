@@ -40,7 +40,7 @@ class GenericStanfordParser(ParserI):
     def __init__(self, path_to_jar=None, path_to_models_jar=None,
                  model_path='edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz',
                  encoding='utf8', verbose=False,
-                 java_options='-mx1000m', corenlp_options=''):
+                 java_options='-mx4g', corenlp_options=''):
 
         # find the most recent code and model jar
         stanford_jar = max(
@@ -254,11 +254,11 @@ class StanfordParser(GenericStanfordParser):
     >>> sum([list(dep_graphs) for dep_graphs in parser.parse_sents((
     ...     "I 'm a dog".split(),
     ...     "This is my friends ' cat ( the tabby )".split(),
-    ... ))], []) # doctest: +NORMALIZE_WHITESPACE    
-    [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]), 
-    Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP', 
-    [Tree('DT', ['This'])]), Tree('VP', [Tree('VBZ', ['is']), Tree('NP', [Tree('NP', [Tree('NP', [Tree('PRP$', ['my']), 
-    Tree('NNS', ['friends']), Tree('POS', ["'"])]), Tree('NN', ['cat'])]), Tree('PRN', [Tree('-LRB-', [Tree('', []), 
+    ... ))], []) # doctest: +NORMALIZE_WHITESPACE
+    [Tree('ROOT', [Tree('S', [Tree('NP', [Tree('PRP', ['I'])]), Tree('VP', [Tree('VBP', ["'m"]),
+    Tree('NP', [Tree('DT', ['a']), Tree('NN', ['dog'])])])])]), Tree('ROOT', [Tree('S', [Tree('NP',
+    [Tree('DT', ['This'])]), Tree('VP', [Tree('VBZ', ['is']), Tree('NP', [Tree('NP', [Tree('NP', [Tree('PRP$', ['my']),
+    Tree('NNS', ['friends']), Tree('POS', ["'"])]), Tree('NN', ['cat'])]), Tree('PRN', [Tree('-LRB-', [Tree('', []),
     Tree('NP', [Tree('DT', ['the']), Tree('NN', ['tabby'])]), Tree('-RRB-', [])])])])])])])]
 
     >>> sum([list(dep_graphs) for dep_graphs in parser.tagged_parse_sents((
@@ -358,8 +358,8 @@ class StanfordDependencyParser(GenericStanfordParser):
 
 class StanfordNeuralDependencyParser(GenericStanfordParser):
     '''
-    >>> from nltk.parse.stanford import StanfordNeuralDependencyParser  
-    >>> dep_parser=StanfordNeuralDependencyParser(java_options='-mx4g')
+    >>> from nltk.parse.stanford import StanfordNeuralDependencyParser
+    >>> dep_parser=StanfordNeuralDependencyParser(java_options='-mx8g')
 
     >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
     [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy']), '.'])]
