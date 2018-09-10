@@ -8,13 +8,14 @@ cache:
   - $HOME/.cache/pip
   - $HOME/.ccache
   - $HOME/.pip-cache
+  - $HOME/third
 
 dist: xenial
 
 matrix:
   include:
-    - python: 3.6
-      env: TOXENV="py36-linux"
+    - python: '3.6'
+      env: TOXENV="py3.6.4-jenkins"
 #    - python: '2.7'
 #      env: TOXENV="flake8"
 
