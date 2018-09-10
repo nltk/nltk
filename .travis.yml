@@ -15,22 +15,20 @@ dist: xenial
 
 matrix:
   include:
-    - python: '3.6'
-      env: TOXENV="py3.6.4-jenkins"
 #    - python: '2.7'
 #      env: TOXENV="flake8"
 
-#    - python: '2.7'
-#      env: TOXENV="py27-linux"
+    - python: '2.7'
+      env: TOXENV="py2.7.14-jenkins"
 
-#    - python: '3.5'
-#      env: TOXENV="py35-linux"
+    - python: '3.5'
+      env: TOXENV="py3.5.4-jenkins"
 
-#    - python: '3.6'
-#      env: TOXENV="py36-linux"
+    - python: '3.6'
+      env: TOXENV="py3.6.4-jenkins"
 
 before_install:
-  - source tools/travis/pre-install.sh
+  - source tools/travis/pre-install.sh # Checks Java and Python versions.
 
 install:
   - source tools/travis/install.sh
