@@ -1,6 +1,6 @@
 #!/bin/bash
-# This install script is used by the "install" step defined in travis.yml
-# See https://docs.travis-ci.com/user/installing-dependencies/
+# This install script is pre-installation environment setup for old jenkins CI:
+# https://nltk.ci.cloudbees.com/job/pull_request_tests/configure
 
 set -e # Exit immediately if a command exits with a non-zero status.
 set -x # Print all executed commands to the terminal.
@@ -13,7 +13,7 @@ PATH=$PATH:/scratch/jenkins/python/python-3.6.4-x86_64/bin
 
 PATH=$PATH:/opt/local/bin:/opt/local/sbin
 PATH=$PATH:/usr/bin:/bin:/usr/sbin
-PATH=$PATH:/s # Heh? Not sure why this exist in CI?? Leaving it here first.
+PATH=$PATH:/s # Heh? Not sure why does this exist in CI?? Leaving it here first.
 PATH=$PATH:/usr/local/bin
 
 JAVA_HOME=/opt/jdk/jdk8.latest/bin

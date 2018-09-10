@@ -9,27 +9,30 @@ cache:
   - $HOME/.ccache
   - $HOME/.pip-cache
 
-dist: trusty
+dist: xenial
 
 matrix:
   include:
-    - python: '2.7'
-      env: TOXENV="flake8"
-
-    - python: '2.7'
-      env: TOXENV="py27-linux"
-
-    - python: '3.5'
-      env: TOXENV="py35-linux"
-
-    - python: '3.6'
+    - python: 3.6
       env: TOXENV="py36-linux"
+#    - python: '2.7'
+#      env: TOXENV="flake8"
+
+#    - python: '2.7'
+#      env: TOXENV="py27-linux"
+
+#    - python: '3.5'
+#      env: TOXENV="py35-linux"
+
+#    - python: '3.6'
+#      env: TOXENV="py36-linux"
 
 before_install:
-  - source tools/travis/install.sh
+  - source tools/travis/pre-install.sh
 
 install:
-  - source jenkins.sh
+  - source tools/travis/install.sh
+  - source tools/travis/third-party.sh
   - pip install tox
 
 script: tox -e tox.ini -vv
