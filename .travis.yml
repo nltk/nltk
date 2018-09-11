@@ -25,10 +25,7 @@ matrix:
       env: TOXENV="py-travis"
 
     - python: '3.6'
-      env: TOXENV="py-travis"
-
-    - python: '3.7'
-      env: TOXENV="py-travis"
+      env: TOXENV="py-travis"aa
 
 before_install:
   - source tools/travis/pre-install.sh # Checks Java and Python versions.
@@ -36,7 +33,7 @@ before_install:
 
 install:
   - source tools/travis/install.sh
-  - source tools/travis/third-party.sh
+  #- source tools/travis/third-party.sh
   - pip install tox
 
 script: tox -e $TOXENV tox.ini -vv
