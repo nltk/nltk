@@ -27,8 +27,12 @@ matrix:
     - python: '3.6'
       env: TOXENV="py-travis"
 
+    - python: '3.7'
+      env: TOXENV="py-travis"
+
 before_install:
   - source tools/travis/pre-install.sh # Checks Java and Python versions.
+  - chmod +x tools/travis/coverage-pylint.sh
 
 install:
   - source tools/travis/install.sh

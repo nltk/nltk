@@ -8,13 +8,13 @@ python --version
 
 #coverage
 coverage erase
-coverage run --source=nltk nltk/test/runtests.py -v --with-xunit
-coverage xml --omit=nltk/test/*
+coverage run --source=nltk $HOME/build/nltk/nltk/test/runtests.py -v --with-xunit
+coverage xml --omit=$HOME/build/nltk/nltk/test/*
 iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
 
 # Create a default pylint configuration file.
 touch $HOME/.pylintrc
-pylint -f parseable nltk > pylintoutput
+pylint -f parseable nltk > $HOME/build/pylintoutput
 
 #script always succeeds
 true
