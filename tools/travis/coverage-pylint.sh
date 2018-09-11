@@ -6,18 +6,17 @@ set -x # Print all executed commands to the terminal.
 # Check python versions
 python --version
 
-echo "$(pwd)"
-ls -lah *
+echo "$(pwd)"  # Know which directory tox is running this shell from.
 
 #coverage
 coverage erase
-coverage run --source=nltk $HOME/build/nltk/nltk/test/runtests.py -v --with-xunit
-coverage xml --omit=$HOME/build/nltk/nltk/test/*
+coverage run --source=nltk $(pwd)/runtests.py -v --with-xunit
+coverage xml --omit=$(pwd)/test/*
 iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
 
 # Create a default pylint configuration file.
 touch $HOME/.pylintrc
-pylint -f parseable nltk > $HOME/build/pylintoutput
+pylint -f parseable nltk > $(pwd)/pylintoutput
 
 #script always succeeds
 true
