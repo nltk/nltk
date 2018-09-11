@@ -160,6 +160,7 @@ The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file c
    - install `tox` for testing
     
  - `py-travis` tox test environment generally 
+   - the `extras = all` dependencies in needed to emulate `pip install nltk[all]`, see https://tox.readthedocs.io/en/latest/config.html#confval-extras=MULTI-LINE-LIST
    - calls `tools/travis/coverage-pylint.sh` shell script that calls the `nltk/nltk/test/runtests.py` with [`coverage`](https://pypi.org/project/coverage/) and 
    - calls `pylint` 
    - before returning a `true` to state that the build is successful
