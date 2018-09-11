@@ -5,6 +5,7 @@
 # Install the requirements.
 pip install --upgrade -r pip-req.txt
 pip install --upgrade matplotlib
+pip install --upgrade scikit-learn # For classify.doctest and nltk.parse.transitionparser.demo
 pip install --upgrade https://github.com/PyCQA/pylint/archive/master.zip
 
 #download nltk data packages

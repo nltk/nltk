@@ -421,6 +421,7 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
 
 def setup_module(module):
     from nose import SkipTest
+    raise SkipTest("doctests from nltk.parse.stanford are skipped because it's deprecated")
 
     try:
         StanfordParser(
