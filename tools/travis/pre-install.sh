@@ -10,3 +10,8 @@ JAVA_HOME=/opt/jdk/jdk8.latest/bin
 # Checking Java and Python version.
 java -version
 python --version
+
+# Which Python / pip
+which python
+which pip
+pip -V
