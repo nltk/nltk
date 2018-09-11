@@ -22,8 +22,8 @@ coverage xml --omit=$(pwd)/*
 iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
 
 # Create a default pylint configuration file.
-touch $HOME/.pylintrc
-pylint -f parseable nltk > pylintoutput
+##touch $HOME/.pylintrc
+##pylint -f parseable nltk > pylintoutput
 
 #script always succeeds
 true

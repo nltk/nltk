@@ -33,6 +33,7 @@ matrix:
 before_install:
   - source tools/travis/pre-install.sh # Checks Java and Python versions.
   - chmod +x tools/travis/coverage-pylint.sh
+  - chmod +x tools/travis/third-party.sh
 
 install:
   - source tools/travis/install.sh
