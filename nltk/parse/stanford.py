@@ -359,7 +359,7 @@ class StanfordDependencyParser(GenericStanfordParser):
 class StanfordNeuralDependencyParser(GenericStanfordParser):
     '''
     >>> from nltk.parse.stanford import StanfordNeuralDependencyParser
-    >>> dep_parser=StanfordNeuralDependencyParser(java_options='-mx8g')
+    >>> dep_parser=StanfordNeuralDependencyParser(java_options='-mx4g')
 
     >>> [parse.tree() for parse in dep_parser.raw_parse("The quick brown fox jumps over the lazy dog.")] # doctest: +NORMALIZE_WHITESPACE
     [Tree('jumps', [Tree('fox', ['The', 'quick', 'brown']), Tree('dog', ['over', 'the', 'lazy']), '.'])]
