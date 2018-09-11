@@ -6,9 +6,8 @@ set -x # Print all executed commands to the terminal.
 # Check python versions
 python --version
 
+echo "$(pwd)"
 ls -lah *
-
-echo $pwd
 
 #coverage
 coverage erase
