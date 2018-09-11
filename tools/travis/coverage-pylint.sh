@@ -13,10 +13,6 @@ which python
 which pip
 pip -V
 
-# Sanity check on sklearn
-python -c "import sklearn; print(sklearn.__version__)"
-python -c "import matplotlib as plt; print(plt.__version__)"
-
 echo "$(pwd)"  # Know which directory tox is running this shell from.
 
 #coverage
