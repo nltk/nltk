@@ -37,5 +37,4 @@ install:
   - pip install tox
 
 script:
-
-    - tox -e $TOXENV tox.ini -vv
+  - tox -e $TOXENV tox.ini --sitepackages -vv

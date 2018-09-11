@@ -3,6 +3,16 @@
 set -e # Exit immediately if a command exits with a non-zero status.
 set -x # Print all executed commands to the terminal.
 
+# Paranoid checks.
+# Checking Java and Python version.
+java -version
+python --version
+
+# Which Python / pip
+which python
+which pip
+pip -V
+
 # Sanity check on sklearn
 python -c "import sklearn; print(sklearn.__version__)"
 python -c "import matplotlib as plt; print(plt.__version__)"
