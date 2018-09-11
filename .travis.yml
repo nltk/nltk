@@ -25,10 +25,10 @@ matrix:
       env: TOXENV="py-travis"
 
     - python: '3.6'
-      env: TOXENV="py-travis"aa
+      env: TOXENV="py-travis"
 
 before_install:
-  - source tools/travis/pre-install.sh # Checks Java and Python versions.
+  - source tools/travis/pre-install.sh         # Checks Java and Python versions.
   - chmod +x tools/travis/coverage-pylint.sh
 
 install:
@@ -37,4 +37,4 @@ install:
   - pip install tox
 
 script:
-  - tox -e $TOXENV tox.ini --sitepackages -vv
+  - tox -e $TOXENV tox.ini -vv
