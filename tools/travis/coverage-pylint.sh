@@ -6,6 +6,10 @@ set -x # Print all executed commands to the terminal.
 # Check python versions
 python --version
 
+ls -lah *
+
+echo $pwd
+
 #coverage
 coverage erase
 coverage run --source=nltk $HOME/build/nltk/nltk/test/runtests.py -v --with-xunit
