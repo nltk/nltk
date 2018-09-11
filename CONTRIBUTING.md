@@ -165,6 +165,21 @@ The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file c
    - calls `pylint` 
    - before returning a `true` to state that the build is successful
     
+    
+#### To test with `tox` locally
+
+First setup a new virtual environment, see https://docs.python-guide.org/dev/virtualenvs/
+Then run `tox -e py36`.
+
+For example, using `pipenv`:
+
+```
+git clone https://github.com/nltk/nltk.git
+cd nltk
+pipenv install -r pip-req.txt
+pipenv install tox
+tox -e py36
+```
  
 
 # Discussion
