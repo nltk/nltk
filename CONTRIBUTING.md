@@ -141,8 +141,30 @@ the desired feature.
 
 ## Continuous Integration
 
-NLTK uses [Cloudbees](https://nltk.ci.cloudbees.com/) for continuous integration.
-Tests can be run locally using tox, e.g. `sudo tox -e py34`.
+**Deprecated:** NLTK uses [Cloudbees](https://nltk.ci.cloudbees.com/) for continuous integration.
+
+NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration. 
+
+The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file configures the server:
+
+ - `matrix: include:` section tests against supported Python versions (2.7, 3.5, 3.6 and 3.7) 
+   - all python versions run the `py-travis` tox test environment in the [`tox.ini`](https://github.com/nltk/nltk/blob/travis/tox.ini#L105) file
+
+ - `before_install:` section 
+   - checks the Java and Python version calling the `tools/travis/pre-install.sh` script
+   - changes the permission for `tools/travis/coverage-pylint.sh` to allow it to be executable
+   
+ - `install` section
+   - the `tools/travis/install.sh` installs the `pip-req.txt` for NLTK and the necessary python packages for CI testing
+   - the `tools/travis/third-party.sh` installs the Stanford NLP and SENNA third-party tools
+   - install `tox` for testing
+    
+ - `py-travis` tox test environment generally 
+   - calls `tools/travis/coverage-pylint.sh` shell script that calls the `nltk/nltk/test/runtests.py` with [`coverage`](https://pypi.org/project/coverage/) and 
+   - calls `pylint` 
+   - before returning a `true` to state that the build is successful
+    
+ 
 
 # Discussion
 
