@@ -27,6 +27,9 @@ matrix:
     - python: '3.6'
       env: TOXENV="py-travis"
 
+    - python: '3.6' # Only runs checks on 3rd party for latest Python distribution
+      env: TOXENV="py-travis-third-party"
+
 before_install:
   - source tools/travis/pre-install.sh # Checks Java and Python versions.
   - chmod +x tools/travis/coverage-pylint.sh
