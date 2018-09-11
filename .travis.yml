@@ -36,4 +36,6 @@ install:
   #- source tools/travis/third-party.sh
   - pip install tox
 
-script: tox -e $TOXENV tox.ini -vv
+script:
+
+    - tox -e $TOXENV tox.ini -vv

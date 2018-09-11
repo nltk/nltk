@@ -23,14 +23,3 @@ pip -V
 # Sanity check on sklearn
 python -c "import sklearn; print(sklearn.__version__)"
 python -c "import matplotlib as plt; print(plt.__version__)"
-
-
-# Paranoid checks.
-# Checking Java and Python version.
-java -version
-python --version
-
-# Which Python / pip
-which python
-which pip
-pip -V
