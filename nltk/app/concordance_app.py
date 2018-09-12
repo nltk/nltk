@@ -325,7 +325,7 @@ class ConcordanceSearchView(object):
         if len(results) == 0:
             self.status['text'] = 'No results found for ' + self.model.query
         else:
-                self.current_page = self.model.last_requested_page
+            self.current_page = self.model.last_requested_page
         self.unfreeze_editable()
         self.results_box.xview_moveto(self._FRACTION_LEFT_TEXT)
 
