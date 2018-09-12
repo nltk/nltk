@@ -343,7 +343,7 @@ class SentimentIntensityAnalyzer(object):
     def _never_check(self, valence, words_and_emoticons, start_i, i):
         if start_i == 0:
             if negated([words_and_emoticons[i-1]]):
-                    valence = valence*N_SCALAR
+                valence = valence*N_SCALAR
         if start_i == 1:
             if words_and_emoticons[i-2] == "never" and\
                (words_and_emoticons[i-1] == "so" or
