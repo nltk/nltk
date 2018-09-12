@@ -181,5 +181,3 @@ Regression tests for TypedMaxentFeatureEncoding
 
     >>> classifier.classify_many(test)
     ['y', 'x']
-
-

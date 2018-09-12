@@ -60,19 +60,19 @@ class Token(object):
         self._token = token
         self._categ = categ
         self._semantics = semantics
-        
+
     def categ(self):
         return self._categ
-    
+
     def semantics(self):
         return self._semantics
-        
+
     def __str__(self):
         semantics_str = ""
         if self._semantics is not None:
             semantics_str = " {" + str(self._semantics) + "}"
         return "" + str(self._categ) + semantics_str
-    
+
     def __cmp__(self, other):
         if not isinstance(other, Token): return -1
         return cmp((self._categ,self._semantics),

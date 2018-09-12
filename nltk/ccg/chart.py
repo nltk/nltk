@@ -138,7 +138,7 @@ class ForwardTypeRaiseRule(AbstractChartRule):
     NUMEDGES = 2
 
     def __init__(self):
-       self._combinator = ForwardT
+        self._combinator = ForwardT
     def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
@@ -159,7 +159,7 @@ class BackwardTypeRaiseRule(AbstractChartRule):
     NUMEDGES = 2
 
     def __init__(self):
-       self._combinator = BackwardT
+        self._combinator = BackwardT
     def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
@@ -271,7 +271,7 @@ def compute_semantics(children, edge):
     if children[0].label()[0].semantics() is None:
         return None
 
-    if len(children) is 2:
+    if len(children) == 2:
         if isinstance(edge.rule(), BackwardCombinator):
             children = [children[1],children[0]]
 

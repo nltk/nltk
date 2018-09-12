@@ -496,8 +496,8 @@ def demo(corpus_root=None):
             print("words with relations and pos-tag:", childes.words(file, relation=True)[:5]," ...")
             print("sentence:", childes.sents(file)[:2]," ...")
             for (participant, values) in childes.participants(file)[0].items():
-                    for (key, value) in values.items():
-                        print("\tparticipant", participant, key, ":", value)
+                for (key, value) in values.items():
+                    print("\tparticipant", participant, key, ":", value)
             print("num of sent:", len(childes.sents(file)))
             print("num of morphemes:", len(childes.words(file, stem=True)))
             print("age:", childes.age(file))

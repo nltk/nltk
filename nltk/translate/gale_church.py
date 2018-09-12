@@ -80,8 +80,8 @@ class LanguageIndependent(object):
 def trace(backlinks, source_sents_lens, target_sents_lens):
     """
     Traverse the alignment cost from the tracebacks and retrieves
-    appropriate sentence pairs. 
-    
+    appropriate sentence pairs.
+
     :param backlinks: A dictionary where the key is the alignment points and value is the cost (referencing the LanguageIndependent.PRIORS)
     :type backlinks: dict
     :param source_sents_lens: A list of target sentences' lengths
@@ -156,7 +156,7 @@ def align_blocks(source_sents_lens, target_sents_lens, params = LanguageIndepend
 
     backlinks = {}
 
-    for i in range(len(source_sents_lens) + 1): 
+    for i in range(len(source_sents_lens) + 1):
         for j in range(len(target_sents_lens) + 1):
             min_dist = float('inf')
             min_align = None
@@ -165,7 +165,7 @@ def align_blocks(source_sents_lens, target_sents_lens, params = LanguageIndepend
                 prev_j = j - a[1]
                 if prev_i < -len(D) or prev_j < 0:
                     continue
-                p = D[prev_i][prev_j] + align_log_prob(i, j, source_sents_lens, 
+                p = D[prev_i][prev_j] + align_log_prob(i, j, source_sents_lens,
                                                        target_sents_lens, a, params)
                 if p < min_dist:
                     min_dist = p
@@ -180,19 +180,19 @@ def align_blocks(source_sents_lens, target_sents_lens, params = LanguageIndepend
         if len(D) > 2:
             D.pop(0)
         D.append([])
-    
+
     return trace(backlinks, source_sents_lens, target_sents_lens)
 
 
 def align_texts(source_blocks, target_blocks, params = LanguageIndependent):
     """Creates the sentence alignment of two texts.
 
-    Texts can consist of several blocks. Block boundaries cannot be crossed by sentence 
-    alignment links. 
+    Texts can consist of several blocks. Block boundaries cannot be crossed by sentence
+    alignment links.
 
     Each block consists of a list that contains the lengths (in characters) of the sentences
     in this block.
-    
+
     @param source_blocks: The list of blocks in the source text.
     @param target_blocks: The list of blocks in the target text.
     @param params: the sentence alignment parameters.
@@ -201,15 +201,15 @@ def align_texts(source_blocks, target_blocks, params = LanguageIndependent):
     """
     if len(source_blocks) != len(target_blocks):
         raise ValueError("Source and target texts do not have the same number of blocks.")
-    
-    return [align_blocks(source_block, target_block, params) 
+
+    return [align_blocks(source_block, target_block, params)
             for source_block, target_block in zip(source_blocks, target_blocks)]
 
 
 # File I/O functions; may belong in a corpus reader
 
 def split_at(it, split_value):
-    """Splits an iterator C{it} at values of C{split_value}. 
+    """Splits an iterator C{it} at values of C{split_value}.
 
     Each instance of C{split_value} is swallowed. The iterator produces
     subiterators which need to be consumed fully before the next subiterator
@@ -220,17 +220,17 @@ def split_at(it, split_value):
         while v != split_value:
             yield v
             v = it.next()
-    
+
     while True:
         yield _chunk_iterator(it.next())
-        
+
 
 def parse_token_stream(stream, soft_delimiter, hard_delimiter):
-    """Parses a stream of tokens and splits it into sentences (using C{soft_delimiter} tokens) 
+    """Parses a stream of tokens and splits it into sentences (using C{soft_delimiter} tokens)
     and blocks (using C{hard_delimiter} tokens) for use with the L{align_texts} function.
     """
     return [
-        [sum(len(token) for token in sentence_it) 
+        [sum(len(token) for token in sentence_it)
          for sentence_it in split_at(block_it, soft_delimiter)]
         for block_it in split_at(stream, hard_delimiter)]
 
@@ -244,5 +244,3 @@ def parse_token_stream(stream, soft_delimiter, hard_delimiter):
 #        source = parse_token_stream((l.strip() for l in s), ".EOS", ".EOP")
 #        target = parse_token_stream((l.strip() for l in t), ".EOS", ".EOP")
 #        print align_texts(source, target)
-
-

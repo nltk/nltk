@@ -1,16 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# This install script is used by the "install" step defined in travis.yml
+# See https://docs.travis-ci.com/user/installing-dependencies/
 
-cd `dirname $0`
-
-#download nltk python dependencies
-pip install --upgrade -r pip-req.txt
-pip install --upgrade matplotlib
-pip install --upgrade https://github.com/PyCQA/pylint/archive/master.zip
-
-#download nltk data packages
-python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
-
-#download external dependencies
+# Installing the third-party software and the appropriate env variables.
 pushd ${HOME}
 [[ ! -d 'third' ]] && mkdir 'third'
 pushd 'third'
@@ -76,17 +68,3 @@ echo "---- CLASSPATH: ----"
 echo $CLASSPATH
 echo "---- MODELS: ----"
 echo $STANFORD_MODELS
-echo "---- NLTK runtests.py ----"
-
-#coverage
-coverage erase
-coverage run --source=nltk nltk/test/runtests.py -v --with-xunit
-coverage xml --omit=nltk/test/*
-iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
-
-# Create a default pylint configuration file.
-touch ~/.pylintrc
-pylint -f parseable nltk > pylintoutput
-
-#script always succeeds
-true

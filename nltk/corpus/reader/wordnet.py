@@ -169,10 +169,10 @@ class _WordNetObject(object):
 
     def in_topic_domains(self):
         return self._related('-c')
-    
+
     def region_domains(self):
         return self._related(';r')
-    
+
     def in_region_domains(self):
         return self._related('-r')
 
@@ -1264,7 +1264,7 @@ class WordNetCorpusReader(CorpusReader):
             synset_name, lemma_name = name[:separator+3], name[separator+4:]
         else:
             synset_name, lemma_name = name[:separator+2], name[separator+3:]
-        
+
         synset = self.synset(synset_name)
         for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
@@ -2123,4 +2123,3 @@ def _get_pos(field):
 def teardown_module(module=None):
     from nltk.corpus import wordnet
     wordnet._unload()
-

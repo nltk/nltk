@@ -131,7 +131,7 @@ def pos_tag(tokens, tagset=None, lang='eng'):
     :rtype: list(tuple(str, str))
     """
     tagger = _get_tagger(lang)
-    return _pos_tag(tokens, tagset, tagger)    
+    return _pos_tag(tokens, tagset, tagger)
 
 
 def pos_tag_sents(sentences, tagset=None, lang='eng'):
