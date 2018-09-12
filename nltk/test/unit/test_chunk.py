@@ -9,7 +9,7 @@ class TestChunkRule(unittest.TestCase):
 
     def test_tag_pattern2re_pattern_quantifier(self):
         """Test for bug https://github.com/nltk/nltk/issues/1597
-    
+
         Ensures that curly bracket quantifiers can be used inside a chunk rule.
         This type of quantifier has been used for the supplementary example
         in http://www.nltk.org/book/ch07.html#exploring-text-corpora.
