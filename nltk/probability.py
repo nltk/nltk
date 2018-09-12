@@ -286,7 +286,7 @@ class FreqDist(Counter):
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
         pylab.grid(True, color="silver")
-        if not "linewidth" in kwargs:
+        if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
         if "title" in kwargs:
             pylab.title(kwargs["title"])
@@ -1857,7 +1857,7 @@ class ConditionalFreqDist(defaultdict):
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(kwargs, 'samples',
                              sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
-        if not "linewidth" in kwargs:
+        if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
 
         for condition in conditions:

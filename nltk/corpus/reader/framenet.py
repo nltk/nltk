@@ -704,7 +704,7 @@ class AttrDict(dict):
     def _str(self):
         outstr = ""
 
-        if not '_type' in self:
+        if '_type' not in self:
             outstr = _pretty_any(self)
         elif self['_type'] == 'frame':
             outstr = _pretty_frame(self)
