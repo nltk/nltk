@@ -138,7 +138,7 @@ class ForwardTypeRaiseRule(AbstractChartRule):
     NUMEDGES = 2
 
     def __init__(self):
-       self._combinator = ForwardT
+        self._combinator = ForwardT
     def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
@@ -159,7 +159,7 @@ class BackwardTypeRaiseRule(AbstractChartRule):
     NUMEDGES = 2
 
     def __init__(self):
-       self._combinator = BackwardT
+        self._combinator = BackwardT
     def apply(self, chart, grammar, left_edge, right_edge):
         if not (left_edge.end() == right_edge.start()):
             return
