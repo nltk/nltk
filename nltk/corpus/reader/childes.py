@@ -259,13 +259,13 @@ class CHILDESCorpusReader(XMLCorpusReader):
             posList = [pos for (word,pos) in sent]
             # if any part of the sentence is intelligible
             if any(pos == 'unk' for pos in posList):
-                next
+                continue
             # if the sentence is null
             elif sent == []:
-                next
+                continue
             # if the sentence is the same as the last sent
             elif sent == lastSent:
-                next
+                continue
             else:
                 results.append([word for (word,pos) in sent])
                 # count number of fillers
