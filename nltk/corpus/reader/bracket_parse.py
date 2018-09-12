@@ -18,7 +18,7 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
-SORTTAGWRD = re.compile(r'\((\d+) ([^\s()]+) ([^\s()]+)\)') 
+SORTTAGWRD = re.compile(r'\((\d+) ([^\s()]+) ([^\s()]+)\)')
 TAGWORD = re.compile(r'\(([^\s()]+) ([^\s()]+)\)')
 WORD = re.compile(r'\([^\s()]+ ([^\s()]+)\)')
 EMPTY_BRACKETS = re.compile(r'\s*\(\s*\(')
@@ -172,7 +172,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     Unfortunately this puts punctuation and some other words out of the sentence
     order in the xml element tree. This is no good for tag_ and word_
     _tag and _word will be overridden to use a non-default new parameter 'ordered'
-    to the overridden _normalize function. The _parse function can then remain 
+    to the overridden _normalize function. The _parse function can then remain
     untouched.
     """
     def __init__(self, root, encoding='ISO-8859-1', tagset=None):
@@ -183,8 +183,8 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
 
     def _normalize(self, t, ordered = False):
         """Normalize the xml sentence element in t.
-        The sentence elements <alpino_ds>, although embedded in a few overall 
-        xml elements, are seperated by blank lines. That's how the reader can 
+        The sentence elements <alpino_ds>, although embedded in a few overall
+        xml elements, are seperated by blank lines. That's how the reader can
         deliver them one at a time.
         Each sentence has a few category subnodes that are of no use to us.
         The remaining word nodes may or may not appear in the proper order.
@@ -192,7 +192,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         - begin : the position of the word in the sentence
         - pos   : Part of Speech: the Tag
         - word  : the actual word
-        The return value is a string with all xml elementes replaced by 
+        The return value is a string with all xml elementes replaced by
         clauses: either a cat clause with nested clauses, or a word clause.
         The order of the bracket clauses closely follows the xml.
         If ordered == True, the word clauses include an order sequence number.
@@ -204,7 +204,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         t = re.sub(r'  <node .*? cat="(\w+)".*>', r"(\1", t)
         if ordered:
             t = re.sub(r'  <node. *?begin="(\d+)".*? pos="(\w+)".*? word="([^"]+)".*?/>', r"(\1 \2 \3)", t)
-        else: 
+        else:
             t = re.sub(r'  <node .*?pos="(\w+)".*? word="([^"]+)".*?/>', r"(\1 \2)", t)
         t = re.sub(r"  </node>", r")", t)
         t = re.sub(r"<sentence>.*</sentence>", r"", t)
@@ -223,5 +223,4 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     def _word(self, t):
         """Return a correctly ordered list if words"""
         tagged_sent = self._tag(t)
-        return [w for (w,p) in tagged_sent]      
-
+        return [w for (w,p) in tagged_sent]
