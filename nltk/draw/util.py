@@ -641,7 +641,7 @@ class CanvasWidget(object):
         """
         if not hasattr(self, '_CanvasWidget__children'): self.__children = []
         if child.__parent is not None:
-            raise ValueError('%s already has a parent', child)
+            raise ValueError('{} already has a parent'.format(child))
         child.__parent = self
         self.__children.append(child)
 
@@ -2337,9 +2337,9 @@ def demo():
                               TextWidget(c, 'y'))
     space = SpaceWidget(c, 0, 30)
     cstack = StackWidget(c, cb, ct3, space, co, equation, align='center')
-    foo = TextWidget(c, 'try clicking\nand dragging',
+    prompt_msg = TextWidget(c, 'try clicking\nand dragging',
                      draggable=1, justify='center')
-    cs = SequenceWidget(c, cstack, foo)
+    cs = SequenceWidget(c, cstack, prompt_msg)
     zz = BracketWidget(c, cs, color='green4', width=3)
     cf.add_widget(zz, 60, 30)
 

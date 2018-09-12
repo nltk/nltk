@@ -271,7 +271,7 @@ def compute_semantics(children, edge):
     if children[0].label()[0].semantics() is None:
         return None
 
-    if len(children) is 2:
+    if len(children) == 2:
         if isinstance(edge.rule(), BackwardCombinator):
             children = [children[1],children[0]]
 

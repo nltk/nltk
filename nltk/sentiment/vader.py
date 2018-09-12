@@ -122,7 +122,7 @@ def allcap_differential(words):
         if word.isupper():
             allcap_words += 1
     cap_differential = len(words) - allcap_words
-    if cap_differential > 0 and cap_differential < len(words):
+    if 0 < cap_differential < len(words):
         is_different = True
     return is_different
 

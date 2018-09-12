@@ -147,7 +147,7 @@ class StanfordSegmenter(TokenizerI):
                 raise LookupError("Could not find '%s' (tried using the "
                     "STANFORD_SEGMENTER environment variable)" % sihan_dir)
         else:
-            raise LookupError("Unsupported language '%'" % lang)
+            raise LookupError("Unsupported language {}".format(lang))
 
         try:
             self._model = find_file(model, searchpath=search_path,
