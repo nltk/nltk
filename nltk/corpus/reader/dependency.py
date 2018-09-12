@@ -53,8 +53,8 @@ class DependencyCorpusReader(SyntaxCorpusReader):
                        for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def tagged_sents(self, fileids=None):
-            return concat([DependencyCorpusView(fileid, True, True, False, encoding=enc)
-                           for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        return concat([DependencyCorpusView(fileid, True, True, False, encoding=enc)
+                       for fileid, enc in self.abspaths(fileids, include_encoding=True)])
 
     def parsed_sents(self, fileids=None):
         sents=concat([DependencyCorpusView(fileid, False, True, True, encoding=enc)
