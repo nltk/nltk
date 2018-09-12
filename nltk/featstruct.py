@@ -2551,10 +2551,10 @@ def interactive_demo(trace=False):
                         print('   Trace = %s' % trace)
                         continue
                     if input in ('h', 'H', '?'):
-                        print(HELP % len(fstructs));
+                        print(HELP % len(fstructs))
                         continue
                     if input in ('l', 'L'):
-                        list_fstructs(all_fstructs);
+                        list_fstructs(all_fstructs)
                         continue
                     num = int(input) - 1
                     selected[i] = all_fstructs[num][1]

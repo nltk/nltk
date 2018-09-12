@@ -100,7 +100,7 @@ class TableauProver(Prover):
             return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
         else:
             #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
-            agenda.mark_alls_fresh();
+            agenda.mark_alls_fresh()
             return self._attempt_proof(agenda, accessible_vars|set(current.args), atoms|set([(current, False)]), debug+1)
 
     def _attempt_proof_n_atom(self, current, context, agenda, accessible_vars, atoms, debug):
@@ -116,7 +116,7 @@ class TableauProver(Prover):
             return self._attempt_proof(agenda, accessible_vars, atoms, debug+1)
         else:
             #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
-            agenda.mark_alls_fresh();
+            agenda.mark_alls_fresh()
             return self._attempt_proof(agenda, accessible_vars|set(current.term.args), atoms|set([(current.term, True)]), debug+1)
 
     def _attempt_proof_prop(self, current, context, agenda, accessible_vars, atoms, debug):
@@ -126,7 +126,7 @@ class TableauProver(Prover):
             return True
 
         #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
-        agenda.mark_alls_fresh();
+        agenda.mark_alls_fresh()
         return self._attempt_proof(agenda, accessible_vars, atoms|set([(current, False)]), debug+1)
 
     def _attempt_proof_n_prop(self, current, context, agenda, accessible_vars, atoms, debug):
@@ -136,7 +136,7 @@ class TableauProver(Prover):
             return True
 
         #mark all AllExpressions as 'not exhausted' into the agenda since we are (potentially) adding new accessible vars
-        agenda.mark_alls_fresh();
+        agenda.mark_alls_fresh()
         return self._attempt_proof(agenda, accessible_vars, atoms|set([(current.term, True)]), debug+1)
 
     def _attempt_proof_app(self, current, context, agenda, accessible_vars, atoms, debug):
@@ -256,7 +256,7 @@ class TableauProver(Prover):
         agenda.put_atoms(atoms)
         agenda.replace_all(current.first, current.second)
         accessible_vars.discard(current.first)
-        agenda.mark_neqs_fresh();
+        agenda.mark_neqs_fresh()
         return self._attempt_proof(agenda, accessible_vars, set(), debug+1)
 
     def _attempt_proof_some(self, current, context, agenda, accessible_vars, atoms, debug):
