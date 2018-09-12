@@ -160,15 +160,14 @@ class Senna(TaggerI):
             tags = tagged_word.split('\t')
             result = {}
             for tag in map_:
-              result[tag] = tags[map_[tag]].strip()
+                result[tag] = tags[map_[tag]].strip()
             try:
-              result['word'] = sentences[sentence_index][token_index]
+                result['word'] = sentences[sentence_index][token_index]
             except IndexError:
-              raise IndexError(
+                raise IndexError(
                 "Misalignment error occurred at sentence number %d. Possible reason"
                 " is that the sentence size exceeded the maximum size. Check the "
-                "documentation of Senna class for more information."
-                % sentence_index)
+                "documentation of Senna class for more information." % sentence_index)
             tagged_sentences[-1].append(result)
             token_index += 1
         return tagged_sentences
