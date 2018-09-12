@@ -60,7 +60,7 @@ class Boxer(object):
         :param elimeq: When set to true, Boxer removes all equalities from the
         DRSs and discourse referents standing in the equality relation are
         unified, but only if this can be done in a meaning-preserving manner.
-        :param resolve: When set to true, Boxer will resolve all anaphoric DRSs and perform merge-reduction. 
+        :param resolve: When set to true, Boxer will resolve all anaphoric DRSs and perform merge-reduction.
         Resolution follows Van der Sandt's theory of binding and accommodation.
         """
         if boxer_drs_interpreter is None:
@@ -347,7 +347,7 @@ class BoxerOutputDrsParser(DrtParser):
         elif tok == 'whq':
             conds = [self._handle_whq()]
         elif tok == 'duplex':
-                conds = [self._handle_duplex()]
+            conds = [self._handle_duplex()]
 
         else:
             conds = []
@@ -396,7 +396,7 @@ class BoxerOutputDrsParser(DrtParser):
         #     else:
         #         ans_types.append(self.token())
         # self.token() #swallow the ']'
-      
+
         self.assertToken(self.token(), 'whq')
         self.assertToken(self.token(), ',')
         d1 = self.process_next_expression(None)
