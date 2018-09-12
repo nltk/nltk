@@ -156,18 +156,15 @@ class MaltParser(ParserI):
         if not self._trained:
             raise Exception("Parser has not been trained. Call train() first.")
 
-        with tempfile.NamedTemporaryFile(prefix='malt_input.conll.',
-              dir=self.working_dir, mode='w', delete=False) as input_file:
-              with tempfile.NamedTemporaryFile(prefix='malt_output.conll.',
-                     dir=self.working_dir, mode='w', delete=False) as output_file:
+        with tempfile.NamedTemporaryFile(prefix='malt_input.conll.', dir=self.working_dir, mode='w', delete=False) as input_file:
+            with tempfile.NamedTemporaryFile(prefix='malt_output.conll.', dir=self.working_dir, mode='w', delete=False) as output_file:
                 # Convert list of sentences to CONLL format.
                 for line in taggedsents_to_conll(sentences):
                     input_file.write(text_type(line))
                 input_file.close()
 
                 # Generate command to run maltparser.
-                cmd =self.generate_malt_command(input_file.name,
-                                output_file.name, mode="parse")
+                cmd =self.generate_malt_command(input_file.name, output_file.name, mode="parse")
 
                 # This is a maltparser quirk, it needs to be run
                 # where the model file is. otherwise it goes into an awkward
