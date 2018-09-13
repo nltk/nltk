@@ -413,8 +413,10 @@ class LazyMap(AbstractLazySequence):
             while True:
                 elements = []
                 for iterator in iterators:
-                    try: elements.append(next(iterator))
-                    except: elements.append(None)
+                    try:
+                        elements.append(next(iterator))
+                    except: #FIXME: What is this except really catching? StopIteration?
+                        elements.append(None)
                 if elements == [None] * len(self._lists):
                     return
                 yield self._func(*elements)
