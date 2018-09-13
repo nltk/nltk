@@ -171,7 +171,7 @@ try:
     from six.moves.tkinter_messagebox import showerror
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
-except:
+except ImportError:
     TKINTER = False
     TclError = ValueError
 

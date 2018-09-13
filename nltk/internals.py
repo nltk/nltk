@@ -552,7 +552,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
                     yield path
             except (KeyboardInterrupt, SystemExit, OSError):
                 raise
-            except:
+            finally:
                 pass
 
     if not yielded:
