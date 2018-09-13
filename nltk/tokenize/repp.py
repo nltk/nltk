@@ -9,7 +9,6 @@
 # For license information, see LICENSE.TXT
 
 from __future__ import unicode_literals, print_function
-from six import text_type
 
 import os
 import re
@@ -17,6 +16,7 @@ import sys
 import subprocess
 import tempfile
 
+from six import text_type
 
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_dir

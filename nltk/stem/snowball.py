@@ -25,8 +25,8 @@ There is also a demo function: `snowball.demo()`.
 """
 from __future__ import unicode_literals, print_function
 
-from six.moves import input
 import re
+from six.moves import input
 
 from nltk import compat
 from nltk.corpus import stopwords

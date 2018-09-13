@@ -8,15 +8,15 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals
 
-from six import text_type
 import os
 import sys
 import tempfile
 import subprocess
 import inspect
+
+from six import text_type
 
 from nltk.data import ZipFilePathPointer
 from nltk.internals import find_dir, find_file, find_jars_within_path
