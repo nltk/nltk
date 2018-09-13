@@ -682,7 +682,7 @@ class BoxerDrsParser(DrtParser):
 #                 return BoxerDrs(label, refs, conds)
             if tok == 'pred':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
+                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -699,7 +699,7 @@ class BoxerDrsParser(DrtParser):
                 return BoxerPred(disc_id, sent_id, word_ids, variable, name, pos, sense)
             elif tok == 'named':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
+                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -716,7 +716,7 @@ class BoxerDrsParser(DrtParser):
                 return BoxerNamed(disc_id, sent_id, word_ids, variable, name, type, sense)
             elif tok == 'rel':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
+                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -733,7 +733,7 @@ class BoxerDrsParser(DrtParser):
                 return BoxerRel(disc_id, sent_id, word_ids, var1, var2, rel, sense)
             elif tok == 'prop':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
+                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -758,7 +758,7 @@ class BoxerDrsParser(DrtParser):
                 return BoxerDrs(drs1.refs, drs1.conds, drs2)
             elif tok == 'or':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
+                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -771,7 +771,7 @@ class BoxerDrsParser(DrtParser):
                 return BoxerOr(disc_id, sent_id, word_ids, drs1, drs2)
             elif tok == 'eq':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
+                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -784,7 +784,7 @@ class BoxerDrsParser(DrtParser):
                 return BoxerEq(disc_id, sent_id, word_ids, var1, var2)
             elif tok == 'card':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
+                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -799,7 +799,7 @@ class BoxerDrsParser(DrtParser):
                 return BoxerCard(disc_id, sent_id, word_ids, var, value, type)
             elif tok == 'whq':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = (self.token(), self.discourse_id)[self.discourse_id is not None]
+                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -820,7 +820,7 @@ class BoxerDrsParser(DrtParser):
 
     def nullableIntToken(self):
         t = self.token()
-        return [None,int(t)][t != 'None']
+        return int(t) if t != 'None' else None
 
     def get_next_token_variable(self, description):
         try:
