@@ -273,8 +273,8 @@ class TestSequenceFunctions(unittest.TestCase):
         '''
         tree = ParentedTree.fromstring('(S (NP-SBJ x) (NP x) (NNP x) (VP x))')
         # test all tree positions that are not leaves
-        leaf_positions = set([tree.leaf_treeposition(x)
-                              for x in range(len(tree.leaves()))])
+        leaf_positions = set(tree.leaf_treeposition(x)
+                              for x in range(len(tree.leaves())))
         tree_positions = [x for x in tree.treepositions()
                           if x not in leaf_positions]
         for position in tree_positions:

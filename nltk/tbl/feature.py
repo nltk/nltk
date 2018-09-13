@@ -79,7 +79,7 @@ class Feature(object):
         """
         self.positions = None  # to avoid warnings
         if end is None:
-            self.positions = tuple(sorted(set([int(i) for i in positions])))
+            self.positions = tuple(sorted(set(int(i) for i in positions)))
         else:                # positions was actually not a list, but only the start index
             try:
                 if positions > end:

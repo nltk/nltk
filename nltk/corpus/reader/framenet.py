@@ -3031,7 +3031,7 @@ def demo():
     # Get a list of all of the corpora used for fulltext annotation
     #
     print('\nNames of all of the corpora used for fulltext annotation:')
-    allcorpora = set([x.corpname for x in fn.docs_metadata()])
+    allcorpora = set(x.corpname for x in fn.docs_metadata())
     pprint(list(allcorpora))
 
     #
