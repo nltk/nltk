@@ -11,8 +11,9 @@
 A reader for corpora that consist of plaintext documents.
 """
 
-from six import string_types
 import codecs
+
+from six import string_types
 
 import nltk.data
 from nltk.tokenize import *

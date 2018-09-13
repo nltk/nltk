@@ -61,9 +61,9 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
 
 from __future__ import division
 
-from six import string_types
-
 import re
+
+from six import string_types
 
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *

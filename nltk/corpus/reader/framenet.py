@@ -12,18 +12,19 @@ Corpus reader for the FrameNet 1.7 lexicon and corpus.
 """
 from __future__ import print_function, unicode_literals
 
-import os, sys
+import os
 import re
 import textwrap
 import itertools
+import sys
 import types
+from collections import defaultdict, OrderedDict
+from operator import itemgetter
 
 from six import string_types, text_type
 from six.moves import zip_longest
-
-from collections import defaultdict, OrderedDict
-from operator import itemgetter
 from pprint import pprint, pformat
+
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
 from nltk.compat import python_2_unicode_compatible
