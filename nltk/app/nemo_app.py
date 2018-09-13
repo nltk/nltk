@@ -7,11 +7,12 @@ Finding (and Replacing) Nemo
 Instant Regular Expressions
 Created by Aristide Grange
 """
+import re
+import itertools
 
 from six.moves.tkinter import (Frame, Label, PhotoImage, Scrollbar, Text, Tk,
                                SEL_FIRST, SEL_LAST)
-import re
-import itertools
+
 
 windowTitle = "Finding (and Replacing) Nemo"
 initialFind = r"n(.*?)e(.*?)m(.*?)o"

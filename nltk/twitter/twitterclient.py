@@ -27,10 +27,10 @@ import datetime
 import itertools
 import json
 import os
-import requests
 import time
 import gzip
 
+import requests
 
 from twython import Twython, TwythonStreamer
 from twython.exceptions import TwythonRateLimitError, TwythonError

@@ -14,11 +14,13 @@ Unit tests for nltk.tgrep.
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import unittest
+
 from six import b
 
 from nltk.tree import ParentedTree
 from nltk import tgrep
-import unittest
+
 
 class TestSequenceFunctions(unittest.TestCase):
 

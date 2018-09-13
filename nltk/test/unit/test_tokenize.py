@@ -5,10 +5,13 @@ See also nltk/test/tokenize.doctest
 """
 
 from __future__ import unicode_literals
-from nltk.tokenize import TweetTokenizer, StanfordSegmenter, TreebankWordTokenizer
-from nose import SkipTest
-import unittest
+
 import os
+import unittest
+
+from nose import SkipTest
+
+from nltk.tokenize import TweetTokenizer, StanfordSegmenter, TreebankWordTokenizer
 
 
 class TestTokenize(unittest.TestCase):
