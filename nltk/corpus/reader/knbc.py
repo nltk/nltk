@@ -62,6 +62,8 @@ class KNBCorpusReader(SyntaxCorpusReader):
         morphs2str is a function to convert morphlist to str for tree representation
         for _parse()
         """
+        #FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
+        #       from CorpusReader?
         CorpusReader.__init__(self, root, fileids, encoding)
         self.morphs2str = morphs2str
 
