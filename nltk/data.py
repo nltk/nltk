@@ -30,10 +30,7 @@ resource file, given its URL: ``load()`` loads a given resource, and
 adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
-from __future__ import print_function, unicode_literals
-from __future__ import division
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
+from __future__ import print_function, unicode_literals, division
 
 import functools
 import textwrap
@@ -44,7 +41,17 @@ import sys
 import zipfile
 import codecs
 
+from abc import ABCMeta, abstractmethod
 from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
+
+from six import add_metaclass
+from six import string_types, text_type
+from six.moves.urllib.request import urlopen, url2pathname
+
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 try: # Python 3.
     textwrap_indent = functools.partial(textwrap.indent, prefix='  ')
@@ -60,14 +67,6 @@ try:
     from zlib import Z_SYNC_FLUSH as FLUSH
 except ImportError:
     from zlib import Z_FINISH as FLUSH
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-
-from six import string_types, text_type
-from six.moves.urllib.request import urlopen, url2pathname
 
 # this import should be more specific:
 import nltk

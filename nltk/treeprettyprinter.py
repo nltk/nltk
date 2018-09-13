@@ -20,11 +20,6 @@ http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 
 from __future__ import division, print_function, unicode_literals
 
-from nltk.util import slice_bounds, OrderedDict
-from nltk.compat import python_2_unicode_compatible, unicode_repr
-from nltk.internals import raise_unorderable_types
-from nltk.tree import Tree
-
 import re
 import sys
 import codecs
@@ -33,6 +28,10 @@ from collections import defaultdict
 from operator import itemgetter
 from itertools import chain, islice
 
+from nltk.util import slice_bounds, OrderedDict
+from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.internals import raise_unorderable_types
+from nltk.tree import Tree
 
 ANSICOLOR = {
     'black': 30,
