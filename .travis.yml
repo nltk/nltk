@@ -42,3 +42,6 @@ install:
 
 script:
   - tox -e $TOXENV tox.ini -vv
+
+after_success:
+  - tools/travis/travis-ci-commenter.sh
