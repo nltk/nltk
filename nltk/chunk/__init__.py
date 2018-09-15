@@ -187,4 +187,3 @@ def ne_chunk_sents(tagged_sentences, binary=False):
         chunker_pickle = _MULTICLASS_NE_CHUNKER
     chunker = load(chunker_pickle)
     return chunker.parse_sents(tagged_sentences)
-

@@ -80,4 +80,3 @@ class MinimalSet(object):
 
     def targets(self):
         return self._targets
-

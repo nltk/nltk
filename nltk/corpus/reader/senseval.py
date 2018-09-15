@@ -23,10 +23,10 @@ is tagged with a sense identifier, and supplied with context.
 """
 from __future__ import print_function, unicode_literals
 
-from six import string_types
-
 import re
 from xml.etree import ElementTree
+
+from six import string_types
 
 from nltk import compat
 from nltk.tokenize import *

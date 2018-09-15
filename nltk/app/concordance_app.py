@@ -5,8 +5,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-
-import nltk.compat
 import re
 import threading
 
@@ -16,6 +14,7 @@ from six.moves.tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
                                Label, Menu, OptionMenu, SUNKEN, Scrollbar,
                                StringVar, Text)
 
+import nltk.compat
 from nltk.corpus import (cess_cat, brown, nps_chat, treebank, sinica_treebank,
                          alpino, indian, floresta, mac_morpho, cess_esp)
 from nltk.util import in_idle

@@ -21,7 +21,8 @@ class DependencyCorpusReader(SyntaxCorpusReader):
                  word_tokenizer=TabTokenizer(),
                  sent_tokenizer=RegexpTokenizer('\n', gaps=True),
                  para_block_reader=read_blankline_block):
-
+        #FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
+        #       from CorpusReader?
         CorpusReader.__init__(self, root, fileids, encoding)
 
     #########################################################

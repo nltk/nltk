@@ -22,8 +22,9 @@ http://borel.slu.edu/crubadan/index.html
 from __future__ import print_function, unicode_literals
 
 import re
-from nltk.compat import PY3
 from os import path
+
+from nltk.compat import PY3
 from nltk.corpus.reader import CorpusReader
 from nltk.probability import FreqDist
 from nltk.data import ZipFilePathPointer

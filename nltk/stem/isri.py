@@ -341,5 +341,3 @@ class ISRIStemmer(StemmerI):
             if word.startswith(sp1):
                 return word[1:]
         return word
-
-

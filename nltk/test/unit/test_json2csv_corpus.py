@@ -13,11 +13,11 @@ package.
 """
 
 import os
-from nltk.compat import TemporaryDirectory
 import unittest
 
 from six.moves import zip
 
+from nltk.compat import TemporaryDirectory
 from nltk.corpus import twitter_samples
 from nltk.twitter.common import json2csv, json2csv_entities
 

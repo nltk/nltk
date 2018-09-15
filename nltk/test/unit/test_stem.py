@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
+
+import os
 import unittest
 from contextlib import closing
+
 from nltk import data
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.porter import PorterStemmer
-import os
 
 
 class SnowballTest(unittest.TestCase):

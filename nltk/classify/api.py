@@ -190,4 +190,3 @@ class MultiClassifierI(object):
 #         of ``featuresets``.
 #         """
 #         raise NotImplementedError()
-

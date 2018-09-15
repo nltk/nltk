@@ -67,6 +67,3 @@ def untag(tagged_sentence):
 
     """
     return [w for (w, t) in tagged_sentence]
-
-
-

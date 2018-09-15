@@ -604,5 +604,3 @@ class BrillTaggerTrainer(object):
         print(prefix, ('  - %d rule applications added (%d novel)' %
                        (num_new, num_unseen)))
         print(prefix)
-
-

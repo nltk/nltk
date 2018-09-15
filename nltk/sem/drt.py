@@ -216,8 +216,8 @@ class DrtExpression(object):
         """
         assert isinstance(other, DrtExpression)
 
-        f1 = self.simplify().fol();
-        f2 = other.simplify().fol();
+        f1 = self.simplify().fol()
+        f2 = other.simplify().fol()
         return f1.equiv(f2, prover)
 
     @property

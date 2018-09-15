@@ -14,20 +14,19 @@ Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
 from __future__ import print_function, unicode_literals
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
-
-# TODO: add LabelledTree (can be used for dependency trees)
 
 import re
+from abc import ABCMeta, abstractmethod
 
-from six import string_types
+from six import string_types, add_metaclass
 
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
 from nltk.util import slice_bounds
 from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk.internals import raise_unorderable_types
+
+# TODO: add LabelledTree (can be used for dependency trees)
 
 ######################################################################
 ## Trees

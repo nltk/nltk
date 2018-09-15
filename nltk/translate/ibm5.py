@@ -112,15 +112,17 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 """
 
 from __future__ import division
+
+import warnings
 from collections import defaultdict
 from math import factorial
+
 from nltk.translate import AlignedSent
 from nltk.translate import Alignment
 from nltk.translate import IBMModel
 from nltk.translate import IBMModel4
 from nltk.translate.ibm_model import Counts
 from nltk.translate.ibm_model import longest_target_sentence_length
-import warnings
 
 
 class IBMModel5(IBMModel):
