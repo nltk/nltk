@@ -273,16 +273,20 @@ class FreqDist(Counter):
         samples = [item for item, _ in self.most_common(*args)]
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
+        percents = _get_kwarg(kwargs, 'percents', False)
         if cumulative:
             freqs = list(self._cumulative_frequencies(samples))
             ylabel = "Cumulative Counts"
+            if percents:
+                freqs = [f/freqs[len(freqs) - 1]*100 for f in freqs]
+                ylabel = "Cumulative Percents"
         else:
             freqs = [self[sample] for sample in samples]
             ylabel = "Counts"
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
         pylab.grid(True, color="silver")
-        if not "linewidth" in kwargs:
+        if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
         if "title" in kwargs:
             pylab.title(kwargs["title"])
@@ -1848,11 +1852,12 @@ class ConditionalFreqDist(defaultdict):
                          'See http://matplotlib.org/')
 
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
+        percents = _get_kwarg(kwargs, 'percents', False)
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(kwargs, 'samples',
                              sorted(set(v for c in conditions for v in self[c])))  # this computation could be wasted
-        if not "linewidth" in kwargs:
+        if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
 
         for condition in conditions:
@@ -1860,6 +1865,9 @@ class ConditionalFreqDist(defaultdict):
                 freqs = list(self[condition]._cumulative_frequencies(samples))
                 ylabel = "Cumulative Counts"
                 legend_loc = 'lower right'
+                if percents:
+                    freqs = [f/freqs[len(freqs) - 1]*100 for f in freqs]
+                    ylabel = "Cumulative Percents"
             else:
                 freqs = [self[condition][sample] for sample in samples]
                 ylabel = "Counts"

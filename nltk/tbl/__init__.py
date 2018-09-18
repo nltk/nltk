@@ -25,4 +25,3 @@ from nltk.tbl.rule import Rule
 #API: Rule.format(...), Rule.templatetid
 
 from nltk.tbl.erroranalysis import error_list
-

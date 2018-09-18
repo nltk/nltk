@@ -2,13 +2,13 @@
 from __future__ import absolute_import, unicode_literals
 
 import unittest
+import contextlib
+import sys
+
 from nose import with_setup
 
 from nltk.corpus import gutenberg
 from nltk.text import Text
-
-import contextlib
-import sys
 
 try:
     from StringIO import StringIO

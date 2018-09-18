@@ -82,7 +82,7 @@ from nltk.compat import python_2_unicode_compatible
 
 from nltk.metrics.distance import binary_distance
 
-log = logging.getLogger(__file__)
+log = logging.getLogger(__name__)
 
 @python_2_unicode_compatible
 class AnnotationTask(object):

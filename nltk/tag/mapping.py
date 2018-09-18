@@ -97,5 +97,3 @@ def map_tag(source, target, source_tag):
             source = 'en-brown'
 
     return tagset_mapping(source, target)[source_tag]
-
-

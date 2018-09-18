@@ -218,7 +218,7 @@ def pk(ref, hyp, k=None, boundary='1'):
         r = ref[i:i+k].count(boundary) > 0
         h = hyp[i:i+k].count(boundary) > 0
         if r != h:
-           err += 1
+            err += 1
     return err / (len(ref)-k +1.)
 
 

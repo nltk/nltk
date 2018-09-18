@@ -125,5 +125,3 @@ class DependencyEvaluator(object):
                         corrL += 1
 
         return corr / total, corrL / total
-
-

@@ -11,8 +11,9 @@
 A reader for corpora that consist of plaintext documents.
 """
 
-from six import string_types
 import codecs
+
+from six import string_types
 
 import nltk.data
 from nltk.tokenize import *
@@ -173,7 +174,9 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader,
         return PlaintextCorpusReader.paras(
             self, self._resolve(fileids, categories))
 
-# is there a better way?
+#FIXME: Is there a better way? How to not hardcode this?
+#       Possibly, add a language kwargs to CategorizedPlaintextCorpusReader to
+#       override the `sent_tokenizer`.
 class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
     def __init__(self, *args, **kwargs):
         CategorizedCorpusReader.__init__(self, kwargs)

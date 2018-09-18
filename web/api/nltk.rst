@@ -84,7 +84,7 @@ nltk Package
     :show-inheritance:
 
 :mod:`translate` Module
--------------------
+-----------------------
 
 .. automodule:: nltk.translate
     :members:
@@ -137,11 +137,9 @@ Subpackages
     nltk.cluster
     nltk.corpus
     nltk.draw
-    nltk.examples
     nltk.inference
     nltk.metrics
     nltk.misc
-    nltk.model
     nltk.parse
     nltk.sem
     nltk.stem

@@ -173,7 +173,7 @@ class SemcorCorpusReader(XMLCorpusReader):
                     except Exception:
                         # cannot retrieve the wordnet.Lemma object. possible reasons:
                         #  (a) the wordnet corpus is not downloaded;
-                        #  (b) a nonexistant sense is annotated: e.g., such.s.00 triggers: 
+                        #  (b) a nonexistant sense is annotated: e.g., such.s.00 triggers:
                         #  nltk.corpus.reader.wordnet.WordNetError: No synset found for key u'such%5:00:01:specified:00'
                         # solution: just use the lemma name as a string
                         try:

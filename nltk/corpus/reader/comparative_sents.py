@@ -140,7 +140,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                        for (path, enc, fileid)
                        in self.abspaths(fileids, True, True)])
 
-        keywords_set = set([keyword.lower() for keyword in all_keywords if keyword])
+        keywords_set = set(keyword.lower() for keyword in all_keywords if keyword)
         return keywords_set
 
     def keywords_readme(self):

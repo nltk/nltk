@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-from nose.suite import ContextList
 import re
 import sys
 import os
 import codecs
 import doctest
-from nose.plugins.base import Plugin
 from nose.util import tolist, anyp
+from nose.plugins.base import Plugin
+from nose.suite import ContextList
 from nose.plugins.doctests import Doctest, log, DocFileCase
 
 ALLOW_UNICODE = doctest.register_optionflag('ALLOW_UNICODE')

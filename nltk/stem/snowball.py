@@ -25,8 +25,8 @@ There is also a demo function: `snowball.demo()`.
 """
 from __future__ import unicode_literals, print_function
 
-from six.moves import input
 import re
+from six.moves import input
 
 from nltk import compat
 from nltk.corpus import stopwords
@@ -98,7 +98,7 @@ class SnowballStemmer(StemmerI):
         self.stemmer = stemmerclass(ignore_stopwords)
         self.stem = self.stemmer.stem
         self.stopwords = self.stemmer.stopwords
-    
+
     def stem(self, token):
         return self.stemmer.stem(self, token)
 
@@ -770,7 +770,7 @@ class ArabicStemmer(_LanguageSpecificStemmer):
                     #if self.suffix_noun_step1a_success:
                     modified_word = self.__Suffix_Noun_Step2a(modified_word)
                     if not self.suffix_noun_step2a_success:
-                         modified_word = self.__Suffix_Noun_Step2b(modified_word)
+                        modified_word = self.__Suffix_Noun_Step2b(modified_word)
                     if not self.suffix_noun_step2b_success and not self.suffix_noun_step2a_success:
                         modified_word = self.__Suffix_Noun_Step2c1(modified_word)
                     # or next ? todo : how to deal with or next
