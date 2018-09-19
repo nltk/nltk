@@ -21,6 +21,8 @@ from nltk.tag.api import TaggerI
 from nltk.data import find, load
 from nltk.compat import python_2_unicode_compatible
 
+import numpy as np  
+
 PICKLE = "averaged_perceptron_tagger.pickle"
 
 class AveragedPerceptron(object):
@@ -45,7 +47,15 @@ class AveragedPerceptron(object):
         # Number of instances seen
         self.i = 0
 
-    def predict(self, features):
+
+    def _softmax(self, scores):
+        print(scores)
+        s = np.fromiter(scores.values(), dtype=float)
+        exps = np.exp(s)
+        return exps / np.sum(exps)
+
+
+    def predict(self, features, conf=False):
         '''Dot-product the features and current weights and return the best label.'''
         scores = defaultdict(float)
         for feat, value in features.items():
@@ -54,8 +64,18 @@ class AveragedPerceptron(object):
             weights = self.weights[feat]
             for label, weight in weights.items():
                 scores[label] += value * weight
+        print(scores)
+        print(len(scores))
+        #print(type(scores))
+        #print(scores.keys())
+        #print(scores)
         # Do a secondary alphabetic sort, for stability
-        return max(self.classes, key=lambda label: (scores[label], label))
+        if conf == False:
+            return max(self.classes, key=lambda label: (scores[label], label))
+        else:
+            maxscore = max(self._softmax(scores))
+            return (max(self.classes, key=lambda label: (scores[label], label)), maxscore)
+
 
     def update(self, truth, guess, features):
         '''Update the feature weights.'''
@@ -140,7 +160,7 @@ class PerceptronTagger(TaggerI):
             AP_MODEL_LOC = 'file:'+str(find('taggers/averaged_perceptron_tagger/'+PICKLE))
             self.load(AP_MODEL_LOC)
 
-    def tag(self, tokens):
+    def tag(self, tokens, conf=False):
         '''
         Tag tokenized sentences.
         :params tokens: list of word
@@ -154,10 +174,14 @@ class PerceptronTagger(TaggerI):
             tag = self.tagdict.get(word)
             if not tag:
                 features = self._get_features(i, word, context, prev, prev2)
-                tag = self.model.predict(features)
+                tag = self.model.predict(features, conf)
             output.append((word, tag))
+            
             prev2 = prev
-            prev = tag
+            if conf == True:
+                prev = tag[0]
+            else:
+                prev = tag
 
         return output
 
