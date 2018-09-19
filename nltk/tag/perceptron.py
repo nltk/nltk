@@ -49,7 +49,6 @@ class AveragedPerceptron(object):
 
 
     def _softmax(self, scores):
-        print(scores)
         s = np.fromiter(scores.values(), dtype=float)
         exps = np.exp(s)
         return exps / np.sum(exps)
@@ -64,17 +63,13 @@ class AveragedPerceptron(object):
             weights = self.weights[feat]
             for label, weight in weights.items():
                 scores[label] += value * weight
-        print(scores)
-        print(len(scores))
-        #print(type(scores))
-        #print(scores.keys())
-        #print(scores)
+
         # Do a secondary alphabetic sort, for stability
         if conf == False:
             return max(self.classes, key=lambda label: (scores[label], label))
         else:
-            maxscore = max(self._softmax(scores))
-            return (max(self.classes, key=lambda label: (scores[label], label)), maxscore)
+            max_score = max(self._softmax(scores))
+            return (max(self.classes, key=lambda label: (scores[label], label)), max_score)
 
 
     def update(self, truth, guess, features):
