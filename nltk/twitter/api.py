@@ -12,11 +12,13 @@ This module provides an interface for TweetHandlers, and support for timezone
 handling.
 """
 
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
-from datetime import tzinfo, timedelta, datetime
-from nltk.compat import UTC
 import time as _time
+from abc import ABCMeta, abstractmethod
+from datetime import tzinfo, timedelta, datetime
+
+from six import add_metaclass
+
+from nltk.compat import UTC
 
 
 class LocalTimezoneOffsetWithUTC(tzinfo):

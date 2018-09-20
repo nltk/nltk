@@ -5,9 +5,11 @@ See also nltk/test/wordnet.doctest
 """
 
 from __future__ import unicode_literals
-from nose import SkipTest
-import unittest
+
 import os
+import unittest
+
+from nose import SkipTest
 
 from nltk.corpus.reader.wordnet import WordNetCorpusReader
 from nltk.corpus import wordnet as wn

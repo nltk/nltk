@@ -107,7 +107,7 @@ class PanLexLiteCorpusReader(CorpusReader):
         :param from_tt: the source expression's text.
         :param to_uid: the target language variety, as a seven-character
             uniform identifier.
-        :return a list of translation tuples. The first element is the expression 
+        :return a list of translation tuples. The first element is the expression
             text and the second element is the translation quality.
         :rtype: list(tuple)
         """

@@ -11,12 +11,12 @@ Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
 from abc import ABCMeta, abstractmethod
-from six import add_metaclass
 from itertools import chain
+
+from six import add_metaclass
 
 from nltk.internals import overridden
 from nltk.metrics import accuracy
-
 from nltk.tag.util import untag
 
 

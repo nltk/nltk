@@ -167,4 +167,3 @@ def demo():
     from nltk.classify.util import partial_names_demo
     classifier = partial_names_demo(PositiveNaiveBayesClassifier.train)
     classifier.show_most_informative_features()
-

@@ -771,4 +771,3 @@ def demo():
 
     Note that result is very poor because of only one training example.
     """
-

@@ -372,7 +372,7 @@ class BrillTagger(TaggerI):
                 print(s)
 
         def print_unused_templates():
-            usedtpls = set([int(tid) for tid in tids])
+            usedtpls = set(int(tid) for tid in tids)
             unused = [(tid, tpl) for (tid, tpl) in enumerate(Template.ALLTEMPLATES) if tid not in usedtpls]
             print("UNUSED TEMPLATES ({0})".format(len(unused)))
 

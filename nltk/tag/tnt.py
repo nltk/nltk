@@ -589,7 +589,3 @@ def demo3():
     print("treebank: acc over words known:", 10 * sknacc)
     print("        : overall accuracy:", 10 * sallacc)
     print("        : words known:", 10 * sknown)
-
-
-
-
