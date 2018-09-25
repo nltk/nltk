@@ -49,6 +49,8 @@ class AveragedPerceptron(object):
 
 
     def _softmax(self, scores):
+        print(type(scores.values()))
+        np.exp(scores.values())
         s = np.fromiter(scores.values(), dtype=float)
         exps = np.exp(s)
         return exps / np.sum(exps)
