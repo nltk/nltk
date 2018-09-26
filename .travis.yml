@@ -13,6 +13,11 @@ cache:
 
 dist: xenial
 
+addons:
+  apt:
+    packages:
+      - expect-dev # for unbuffer, see https://github.com/travis-ci/travis-ci/issues/7967
+
 matrix:
   include:
 #    - python: '2.7'
@@ -41,7 +46,7 @@ install:
   - pip install tox
 
 script:
-  - tox -e $TOXENV tox.ini -vv
+  - unbuffer tox --color=auto -e $TOXENV tox.ini -vv
 
 after_success:
   - tools/travis/travis-ci-commenter.sh
