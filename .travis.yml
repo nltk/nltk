@@ -46,7 +46,7 @@ install:
   - pip install tox
 
 script:
-  - unbuffer tox --color=auto -e $TOXENV tox.ini -vv
+  - unbuffer tox -e $TOXENV tox.ini -vv
 
 after_success:
   - tools/travis/travis-ci-commenter.sh
