@@ -166,7 +166,7 @@ class PerceptronTagger(TaggerI):
 
         context = self.START + [self.normalize(w) for w in tokens] + self.END
         for i, word in enumerate(tokens):
-            tag, conf = self.tagdict.get(word), 1.0 if use_tagdict == True else (None, None)
+            tag, conf = (self.tagdict.get(word), 1.0) if use_tagdict == True else (None, None)
             if not tag:
                 features = self._get_features(i, word, context, prev, prev2)
                 tag, conf = self.model.predict(features, return_conf)
