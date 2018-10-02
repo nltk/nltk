@@ -144,4 +144,3 @@ def setup_module(module):
         tagger = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     except OSError:
         raise SkipTest("Senna executable not found")
-

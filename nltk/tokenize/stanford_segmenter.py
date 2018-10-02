@@ -16,15 +16,16 @@ from __future__ import unicode_literals, print_function
 import tempfile
 import os
 import json
-from subprocess import PIPE
 import warnings
+from subprocess import PIPE
+
+from six import text_type
 
 from nltk import compat
 from nltk.internals import find_jar, find_file, find_dir, \
                            config_java, java, _java_options
 from nltk.tokenize.api import TokenizerI
 
-from six import text_type
 
 _stanford_url = 'https://nlp.stanford.edu/software'
 
@@ -147,7 +148,7 @@ class StanfordSegmenter(TokenizerI):
                 raise LookupError("Could not find '%s' (tried using the "
                     "STANFORD_SEGMENTER environment variable)" % sihan_dir)
         else:
-            raise LookupError("Unsupported language '%'" % lang)
+            raise LookupError("Unsupported language {}".format(lang))
 
         try:
             self._model = find_file(model, searchpath=search_path,

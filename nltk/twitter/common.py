@@ -17,7 +17,7 @@ import csv
 import gzip
 import json
 
-import nltk.compat as compat
+from nltk import compat
 
 HIER_SEPARATOR = "."
 

@@ -132,13 +132,13 @@ class ChunkScore(object):
 
     def _updateMeasures(self):
         if (self._measuresNeedUpdate):
-           self._tp = self._guessed & self._correct
-           self._fn = self._correct - self._guessed
-           self._fp = self._guessed - self._correct
-           self._tp_num = len(self._tp)
-           self._fp_num = len(self._fp)
-           self._fn_num = len(self._fn)
-           self._measuresNeedUpdate = False
+            self._tp = self._guessed & self._correct
+            self._fn = self._correct - self._guessed
+            self._fp = self._guessed - self._correct
+            self._tp_num = len(self._tp)
+            self._fp_num = len(self._fp)
+            self._fn_num = len(self._fn)
+            self._measuresNeedUpdate = False
 
     def score(self, correct, guessed):
         """
@@ -597,4 +597,3 @@ better JJR I-ADJP
 
 if __name__ == '__main__':
     demo()
-

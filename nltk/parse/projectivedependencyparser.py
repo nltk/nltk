@@ -194,7 +194,7 @@ class ProjectiveDependencyParser(object):
             for i in range(len(tokens)):
 #                malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
                 #conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'null', '-', '-')
-                # Modify to comply with the new Dependency Graph requirement (at least must have an root elements) 
+                # Modify to comply with the new Dependency Graph requirement (at least must have an root elements)
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], 'null', 'null', 'null', parse._arcs[i] + 1, 'ROOT', '-', '-')
             dg = DependencyGraph(conll_format)
 #           if self.meets_arity(dg):
@@ -299,9 +299,9 @@ class ProbabilisticProjectiveDependencyParser(object):
             for j in range(i-2,-1,-1):
                 for k in range(i-1,j,-1):
                     for span1 in chart[k][j]._entries:
-                            for span2 in chart[i][k]._entries:
-                                for newspan in self.concatenate(span1, span2):
-                                    chart[i][j].add(newspan)
+                        for span2 in chart[i][k]._entries:
+                            for newspan in self.concatenate(span1, span2):
+                                chart[i][j].add(newspan)
         trees = []
         max_parse = None
         max_score = 0
@@ -311,10 +311,10 @@ class ProbabilisticProjectiveDependencyParser(object):
             for i in range(len(tokens)):
                 malt_format += '%s\t%s\t%d\t%s\n' % (tokens[i], 'null', parse._arcs[i] + 1, 'null')
                 #conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'null', '-', '-')
-                # Modify to comply with recent change in dependency graph such that there must be a ROOT element. 
+                # Modify to comply with recent change in dependency graph such that there must be a ROOT element.
                 conll_format += '\t%d\t%s\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%s\n' % (i+1, tokens[i], tokens[i], parse._tags[i], parse._tags[i], 'null', parse._arcs[i] + 1, 'ROOT', '-', '-')
             dg = DependencyGraph(conll_format)
-            score = self.compute_prob(dg)            
+            score = self.compute_prob(dg)
             trees.append((score, dg.tree()))
         trees.sort()
         return (tree for (score, tree) in trees)
@@ -370,7 +370,7 @@ class ProbabilisticProjectiveDependencyParser(object):
             for node_index in range(1, len(dg.nodes)):
                 #children = dg.nodes[node_index]['deps']
                 children = list(chain(*dg.nodes[node_index]['deps'].values()))
-                
+
                 nr_left_children = dg.left_children(node_index)
                 nr_right_children = dg.right_children(node_index)
                 nr_children = nr_left_children + nr_right_children
@@ -430,7 +430,7 @@ class ProbabilisticProjectiveDependencyParser(object):
         for node_index in range(1, len(dg.nodes)):
             #children = dg.nodes[node_index]['deps']
             children = list(chain(*dg.nodes[node_index]['deps'].values()))
-            
+
             nr_left_children = dg.left_children(node_index)
             nr_right_children = dg.right_children(node_index)
             nr_children = nr_left_children + nr_right_children
@@ -453,13 +453,13 @@ class ProbabilisticProjectiveDependencyParser(object):
                     mod_event = '(mods (%s, %s, %s) left))' % (prev_tag, head_word, head_tag)
                     h_count = self._grammar._events[head_event]
                     m_count = self._grammar._events[mod_event]
-                    
-                    # If the grammar is not covered 
+
+                    # If the grammar is not covered
                     if m_count != 0:
                         prob *= (h_count / m_count)
                     else:
-                        prob = 0.00000001  # Very small number  
-                    
+                        prob = 0.00000001  # Very small number
+
                 elif child_index > 0:
                     array_index = child_index + nr_left_children - 1
                     if array_index < nr_children:
@@ -476,7 +476,7 @@ class ProbabilisticProjectiveDependencyParser(object):
                     if m_count != 0:
                         prob *= (h_count / m_count)
                     else:
-                        prob = 0.00000001  # Very small number  
+                        prob = 0.00000001  # Very small number
 
         return prob
 
@@ -568,7 +568,7 @@ def projective_prob_parse_demo():
     ppdp = ProbabilisticProjectiveDependencyParser()
     print('Training Probabilistic Projective Dependency Parser...')
     ppdp.train(graphs)
-    
+
     sent = ['Cathy', 'zag', 'hen', 'wild', 'zwaaien', '.']
     print('Parsing \'', " ".join(sent), '\'...')
     print('Parse:')

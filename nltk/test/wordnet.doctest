@@ -152,6 +152,8 @@ Lemmas
     Lemma('eat.v.04.eat') 0
     Lemma('consume.v.05.eat') 0
     Lemma('corrode.v.01.eat') 0
+    >>> wn.lemma('jump.v.11.jump')
+    Lemma('jump.v.11.jump')
 
 Lemmas can also have relations between them:
 

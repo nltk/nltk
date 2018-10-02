@@ -175,7 +175,7 @@ class _WordNetObject(object):
 
     def in_region_domains(self):
         return self._related('-r')
-    
+
     def usage_domains(self):
         return self._related(';u')
 
@@ -1260,14 +1260,10 @@ class WordNetCorpusReader(CorpusReader):
         '''Return lemma object that matches the name'''
         # cannot simply split on first '.',
         # e.g.: '.45_caliber.a.01..45_caliber'
-        separator = SENSENUM_RE.search(name).start()
+        separator = SENSENUM_RE.search(name).end()
 
-        leadingZero = int(name[separator+1]) == 0
-        if (leadingZero):
-            synset_name, lemma_name = name[:separator+3], name[separator+4:]
-        else:
-            synset_name, lemma_name = name[:separator+2], name[separator+3:]
-        
+        synset_name, lemma_name = name[:separator-1], name[separator:]
+
         synset = self.synset(synset_name)
         for lemma in synset.lemmas(lang):
             if lemma._name == lemma_name:
@@ -2126,4 +2122,3 @@ def _get_pos(field):
 def teardown_module(module=None):
     from nltk.corpus import wordnet
     wordnet._unload()
-

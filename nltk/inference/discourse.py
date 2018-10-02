@@ -43,12 +43,13 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 those threads which are consistent (taking into account any background assumptions).
 """
 from __future__ import print_function
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
-import os
 
+import os
+from abc import ABCMeta, abstractmethod
 from operator import and_, add
 from functools import reduce
+
+from six import add_metaclass
 
 from nltk.data import show_cfg
 from nltk.tag import RegexpTagger

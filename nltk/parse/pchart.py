@@ -38,6 +38,7 @@ from __future__ import print_function, unicode_literals
 # [XX] This might not be implemented quite right -- it would be better
 # to associate probabilities with child pointer lists.
 
+import random
 from functools import reduce
 from nltk.tree import Tree, ProbabilisticTree
 from nltk.grammar import Nonterminal, PCFG
@@ -357,7 +358,7 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
 #     def sort_queue(self, queue, chart):
 #         queue.sort(key=self._sortkey)
 
-import random
+
 class RandomChartParser(BottomUpProbabilisticChartParser):
     """
     A bottom-up parser for ``PCFG`` grammars that tries edges in random order.

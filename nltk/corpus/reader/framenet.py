@@ -12,18 +12,19 @@ Corpus reader for the FrameNet 1.7 lexicon and corpus.
 """
 from __future__ import print_function, unicode_literals
 
-import os, sys
+import os
 import re
 import textwrap
 import itertools
+import sys
 import types
+from collections import defaultdict, OrderedDict
+from operator import itemgetter
 
 from six import string_types, text_type
 from six.moves import zip_longest
-
-from collections import defaultdict, OrderedDict
-from operator import itemgetter
 from pprint import pprint, pformat
+
 from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
 from nltk.compat import python_2_unicode_compatible
@@ -704,7 +705,7 @@ class AttrDict(dict):
     def _str(self):
         outstr = ""
 
-        if not '_type' in self:
+        if '_type' not in self:
             outstr = _pretty_any(self)
         elif self['_type'] == 'frame':
             outstr = _pretty_frame(self)
@@ -3031,7 +3032,7 @@ def demo():
     # Get a list of all of the corpora used for fulltext annotation
     #
     print('\nNames of all of the corpora used for fulltext annotation:')
-    allcorpora = set([x.corpname for x in fn.docs_metadata()])
+    allcorpora = set(x.corpname for x in fn.docs_metadata())
     pprint(list(allcorpora))
 
     #
