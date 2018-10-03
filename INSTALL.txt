@@ -1,6 +1,8 @@
-To install NLTK, run setup.py from an administrator account, e.g.:
+We encourage you to setup a virtual environment before installing NLTK, see https://docs.python-guide.org/dev/virtualenvs/
 
-    sudo python setup.py install
+To install NLTK using `setup.py` for a user:
+
+    python setup.py install --user
 
 For full installation instructions, please see http://nltk.github.com/install.html
 

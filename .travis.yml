@@ -39,6 +39,7 @@ before_install:
   - source tools/travis/pre-install.sh # Checks Java and Python versions.
   - chmod +x tools/travis/coverage-pylint.sh
   - chmod +x tools/travis/third-party.sh
+  - chmod +x tools/travis/travis-ci-commenter.sh
 
 install:
   - source tools/travis/install.sh
