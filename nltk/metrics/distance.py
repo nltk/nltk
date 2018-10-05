@@ -366,10 +366,74 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     return jaro_sim + (l * p * (1 - jaro_sim))
 
 
+def hamming_distance(s1, s2):
+    """
+    The Hamming distance measures the distance between two equal length strings
+    and it is determined by counting the positions where the two strings have different
+    characters.
+
+    Source(s):
+
+        (1) https://en.wikipedia.org/wiki/Hamming_distance
+        (2) Hamming, R. W. (April 1950). "Error detecting and error correcting codes".
+            The Bell System Technical Journal. 29 (2): 147–160.
+
+    :param s1, s2: The strings to be analysed
+    :type s1: str
+    :type s2: str
+    :rtype: int
+
+    """
+    assert len(s1) == len(s2), "Strings must be the same length."
+    return sum(i != j for i, j in zip(s1, s2))
+
+
+def lee_distance(s1, s2):
+    """
+    Lee Distance metric calculates the distance between two strings by re-encoding them
+    using a q-ary alphabet of all the unique characters present in one or both strings.
+    Then using the q-ary alphabet index values provides the sum of
+
+        min(| string1_i - string2_i | , alphabet_size - | string1_i - string2_i |)
+
+    for each value i in the length of string1 or string2 (these are interchangeable because
+    both strings must be of equivalent length).
+
+    Source(s):
+
+        (1) https://en.wikipedia.org/wiki/Lee_distance
+
+    :param s1, s2: The strings to be analysed
+    :type s1: str
+    :type s2: str
+    :rtype: int
+
+    """
+    assert len(s1) == len(s2), "Strings must be the same length."
+
+    alphabet = sorted(set(s1).union(set(s2)))
+    q = len(alphabet)
+
+    assert q > 1, "number of distinct characters must be greater than 1"
+
+    s1_enc = _lee_string_encoder(s1, alphabet=sorted(alphabet))
+    s2_enc = _lee_string_encoder(s2, alphabet=sorted(alphabet))
+    return sum(min(abs(i - j), q - abs(i - j)) for i, j in zip(s1_enc, s2_enc))
+
+
+def _lee_string_encoder(string, alphabet):
+    for i in range(len(alphabet)):
+        for j in range(len(string)):
+            if alphabet[i] == string[j]:
+                string[j] = i
+    return string
+
+
 def demo():
     string_distance_examples = [("rain", "shine"), ("abcdef", "acbdef"),
                                 ("language", "lnaguaeg"), ("language",
-                                "lnaugage"), ("language", "lngauage")]
+                                "lnaugage"), ("language", "lngauage"),
+                                ("kit", "bin"), ('go', 'hi')]
     for s1, s2 in string_distance_examples:
         print("Edit distance btwn '%s' and '%s':" % (s1, s2),
               edit_distance(s1, s2))
@@ -381,6 +445,19 @@ def demo():
               jaro_winkler_similarity(s1, s2))
         print("Jaro-Winkler distance btwn '%s' and '%s':" % (s1, s2),
               1 - jaro_winkler_similarity(s1, s2))
+        if len(s1) == len(s2):
+            if 2 <= len(s1) <= 3:
+                print("Hamming Distance == Lee Distance between '%s' and '%s':" % (s1, s2),
+                      "\n\tHamming: ", hamming_distance(s1, s2), "\n\tLee: ", lee_distance(s1, s2))
+            else:
+                print("Hamming Distance between '%s' and '%s':" % (s1, s2),
+                      hamming_distance(s1, s2))
+                print("Lee Distance between '%s' and '%s':" % (s1, s2),
+                      lee_distance(s1, s2))
+        else:
+            print("Hamming distance and Lee distance are invalid between '%s' and '%s':" % (s1, s2),
+                  "Cause: String lengths are not equivalent.")
+
     s1 = set([1, 2, 3, 4])
     s2 = set([3, 4, 5])
     print("s1:", s1)
