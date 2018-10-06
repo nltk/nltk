@@ -1257,13 +1257,9 @@ class WordNetCorpusReader(CorpusReader):
         '''Return lemma object that matches the name'''
         # cannot simply split on first '.',
         # e.g.: '.45_caliber.a.01..45_caliber'
-        separator = SENSENUM_RE.search(name).start()
+        separator = SENSENUM_RE.search(name).end()
 
-        leadingZero = int(name[separator+1]) == 0
-        if (leadingZero):
-            synset_name, lemma_name = name[:separator+3], name[separator+4:]
-        else:
-            synset_name, lemma_name = name[:separator+2], name[separator+3:]
+        synset_name, lemma_name = name[:separator-1], name[separator:]
 
         synset = self.synset(synset_name)
         for lemma in synset.lemmas(lang):
