@@ -595,3 +595,11 @@ Bug https://github.com/nltk/nltk/issues/1641: Non-English lemmas containing capi
     [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'), Lemma('london.n.02.Londres')]
     >>> wn.lemmas('londres', lang='fra')
     [Lemma('united_kingdom.n.01.Londres'), Lemma('london.n.01.Londres'), Lemma('london.n.02.Londres')]
+
+Patch-1 https://github.com/nltk/nltk/pull/2065  Adding 3 functions (relations) to WordNet class
+    >>> wn.synsets("computer_science")[0].in_topic_domains()[2]
+    Synset('access_time.n.01')
+    >>> wn.synsets("France")[0].in_region_domains()[18]
+    Synset('french.n.01')
+    >>> wn.synsets("slang")[1].in_usage_domains()[18]
+    Synset('can-do.s.01')

@@ -179,6 +179,9 @@ class _WordNetObject(object):
     def usage_domains(self):
         return self._related(';u')
 
+    def in_usage_domains(self):
+        return self._related('-u')
+    
     def attributes(self):
         return self._related('=')
 
