@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 # This module is a port of the Textblob Averaged Perceptron Tagger
 # Author: Matthew Honnibal <honnibal+gh@gmail.com>,
 #         Long Duong <longdt219@gmail.com> (NLTK port)
@@ -54,7 +54,7 @@ class AveragedPerceptron(object):
         return exps / np.sum(exps)
 
 
-    def predict(self, features, conf=False):
+    def predict(self, features, return_conf=False):
         '''Dot-product the features and current weights and return the best label.'''
         scores = defaultdict(float)
         for feat, value in features.items():
@@ -65,11 +65,11 @@ class AveragedPerceptron(object):
                 scores[label] += value * weight
 
         # Do a secondary alphabetic sort, for stability
-        if conf == False:
-            return max(self.classes, key=lambda label: (scores[label], label))
-        else:
-            max_score = max(self._softmax(scores))
-            return (max(self.classes, key=lambda label: (scores[label], label)), max_score)
+        best_label =  max(self.classes, key=lambda label: (scores[label], label))
+        # compute the confidence
+        conf = max(self._softmax(scores)) if return_conf == True else None
+
+        return best_label, conf
 
 
     def update(self, truth, guess, features):
@@ -155,7 +155,7 @@ class PerceptronTagger(TaggerI):
             AP_MODEL_LOC = 'file:'+str(find('taggers/averaged_perceptron_tagger/'+PICKLE))
             self.load(AP_MODEL_LOC)
 
-    def tag(self, tokens, conf=False):
+    def tag(self, tokens, return_conf=False, use_tagdict=True):
         '''
         Tag tokenized sentences.
         :params tokens: list of word
@@ -166,17 +166,14 @@ class PerceptronTagger(TaggerI):
 
         context = self.START + [self.normalize(w) for w in tokens] + self.END
         for i, word in enumerate(tokens):
-            tag = self.tagdict.get(word)
+            tag, conf = (self.tagdict.get(word), 1.0) if use_tagdict == True else (None, None)
             if not tag:
                 features = self._get_features(i, word, context, prev, prev2)
-                tag = self.model.predict(features, conf)
-            output.append((word, tag))
+                tag, conf = self.model.predict(features, return_conf)
+            output.append((word, tag, conf) if return_conf == True else (word, tag))
             
             prev2 = prev
-            if conf == True:
-                prev = tag[0]
-            else:
-                prev = tag
+            prev = tag
 
         return output
 
@@ -212,7 +209,7 @@ class PerceptronTagger(TaggerI):
                     guess = self.tagdict.get(word)
                     if not guess:
                         feats = self._get_features(i, word, context, prev, prev2)
-                        guess = self.model.predict(feats)
+                        guess,_ = self.model.predict(feats)
                         self.model.update(tags[i], guess, feats)
                     prev2 = prev
                     prev = guess
