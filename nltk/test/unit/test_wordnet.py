@@ -123,6 +123,12 @@ class WordnNetDemo(unittest.TestCase):
         self.assertEqual(S('pukka.a.01').region_domains(), [S('india.n.01')])
         self.assertEqual(S('freaky.a.01').usage_domains(), [S('slang.n.02')])
 
+    def test_in_topic_domains(self):
+        # Test in domains.
+        self.assertEqual(S('computer_science.n.01').in_topic_domains()[0], [S('access.n.05')])
+        self.assertEqual(S('germany.n.01').in_region_domains()[23], [S('trillion.n.02')])
+        self.assertEqual(S('slang.n.02').in_usage_domains()[1], [S('airhead.n.01')])
+
     def test_wordnet_similarities(self):
         # Path based similarities.
         self.assertAlmostEqual(S('cat.n.01').path_similarity(S('cat.n.01')), 1.0)

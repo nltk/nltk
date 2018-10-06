@@ -199,6 +199,23 @@ Two instances of PunktSentenceTokenizer should not share PunktParameters.
     >>> pst2 = PunktSentenceTokenizer()
     >>> pst._params is pst2._params
     False
+    
+Testing mutable default arguments for https://github.com/nltk/nltk/pull/2067
+
+    >>> from nltk.tokenize.punkt import PunktBaseClass, PunktTrainer, PunktSentenceTokenizer
+    >>> from nltk.tokenize.punkt import PunktLanguageVars, PunktParameters
+    >>> pbc = PunktBaseClass(lang_vars=None, params=None)
+    >>> type(pbc._params)
+    <class 'nltk.tokenize.punkt.PunktParameters'>
+    >>> type(pbc._lang_vars)
+    <class 'nltk.tokenize.punkt.PunktLanguageVars'>
+    >>> pt = PunktTrainer(lang_vars=None)
+    >>> type(pt._lang_vars)
+    <class 'nltk.tokenize.punkt.PunktLanguageVars'>
+    >>> pst = PunktSentenceTokenizer(lang_vars=None)
+    >>> type(pst._lang_vars)
+    <class 'nltk.tokenize.punkt.PunktLanguageVars'>
+    
 
 Regression Tests: align_tokens
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
