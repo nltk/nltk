@@ -160,7 +160,9 @@ default: unzip or not?
 
 """
 import time, os, zipfile, sys, textwrap, threading, itertools, shutil, functools
+import subprocess
 from hashlib import md5
+from xml.etree import ElementTree
 
 try:
     TKINTER = True
@@ -169,11 +171,9 @@ try:
     from six.moves.tkinter_messagebox import showerror
     from nltk.draw.table import Table
     from nltk.draw.util import ShowText
-except:
+except ImportError:
     TKINTER = False
     TclError = ValueError
-
-from xml.etree import ElementTree
 
 from six import string_types, text_type
 from six.moves import input
@@ -2053,7 +2053,6 @@ def _unzip_iter(filename, root, verbose=True):
 # Index Builder
 ######################################################################
 # This may move to a different file sometime.
-import subprocess, zipfile
 
 def build_index(root, base_url):
     """

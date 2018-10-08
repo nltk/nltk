@@ -611,8 +611,7 @@ def _synset_relations(word, synset, synset_relations):
                 disp_name)
 
         if db_name in ref.synset_relations[synset.name()]:
-             synset_html += '<ul>%s</ul>\n' % \
-                ''.join("<li>%s</li>\n" % relation_html(r) for r in rels)
+            synset_html += '<ul>%s</ul>\n' % ''.join("<li>%s</li>\n" % relation_html(r) for r in rels)
 
         return synset_html
 

@@ -12,10 +12,13 @@ generic, abstract implementation in ``NgramAssocMeasures``, and n-specific
 """
 
 from __future__ import division
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
+
 import math as _math
+from abc import ABCMeta, abstractmethod
 from functools import reduce
+
+from six import add_metaclass
+
 _log2 = lambda x: _math.log(x, 2.0)
 _ln = _math.log
 

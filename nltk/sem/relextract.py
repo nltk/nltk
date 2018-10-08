@@ -423,7 +423,7 @@ def conllned(trace=1):
     for doc in conll2002.chunked_sents('ned.train'):
         lcon = rcon = False
         if trace:
-                lcon = rcon = True
+            lcon = rcon = True
         for rel in extract_rels('PER', 'ORG', doc, corpus='conll2002', pattern=VAN, window=10):
             print(rtuple(rel, lcon=lcon, rcon=rcon))
 

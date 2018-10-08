@@ -552,7 +552,7 @@ def find_file_iter(filename, env_vars=(), searchpath=(),
                     yield path
             except (KeyboardInterrupt, SystemExit, OSError):
                 raise
-            except:
+            finally:
                 pass
 
     if not yielded:
@@ -722,7 +722,7 @@ def find_jar(name_pattern, path_to_jar=None, env_vars=(),
 
 
 def find_jars_within_path(path_to_jars):
-	return [os.path.join(root, filename)
+    return [os.path.join(root, filename)
 			for root, dirnames, filenames in os.walk(path_to_jars)
 			for filename in fnmatch.filter(filenames, '*.jar')]
 

@@ -189,7 +189,7 @@ class ConcordanceIndex(object):
             for i in offsets:
                 query_word = self._tokens[i]
                 # Find the context of query word.
-                left_context = self._tokens[i-context:i]
+                left_context = self._tokens[max(0, i-context):i]
                 right_context = self._tokens[i+1:i+context]
                 # Create the pretty lines with the query_word in the middle.
                 left_print= ' '.join(left_context)[-half_width:]

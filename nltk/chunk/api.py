@@ -48,4 +48,3 @@ class ChunkParserI(ParserI):
         for correct in gold:
             chunkscore.score(correct, self.parse(correct.leaves()))
         return chunkscore
-

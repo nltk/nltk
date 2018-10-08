@@ -55,7 +55,3 @@ class RegexpStemmer(StemmerI):
 
     def __repr__(self):
         return '<RegexpStemmer: {!r}>'.format(self._regexp.pattern)
-
-
-
-

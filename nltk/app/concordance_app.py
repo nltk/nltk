@@ -5,8 +5,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-
-import nltk.compat
 import re
 import threading
 
@@ -16,6 +14,7 @@ from six.moves.tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
                                Label, Menu, OptionMenu, SUNKEN, Scrollbar,
                                StringVar, Text)
 
+import nltk.compat
 from nltk.corpus import (cess_cat, brown, nps_chat, treebank, sinica_treebank,
                          alpino, indian, floresta, mac_morpho, cess_esp)
 from nltk.util import in_idle
@@ -325,7 +324,7 @@ class ConcordanceSearchView(object):
         if len(results) == 0:
             self.status['text'] = 'No results found for ' + self.model.query
         else:
-                self.current_page = self.model.last_requested_page
+            self.current_page = self.model.last_requested_page
         self.unfreeze_editable()
         self.results_box.xview_moveto(self._FRACTION_LEFT_TEXT)
 

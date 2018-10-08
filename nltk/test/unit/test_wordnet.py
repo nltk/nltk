@@ -5,9 +5,11 @@ See also nltk/test/wordnet.doctest
 """
 
 from __future__ import unicode_literals
-from nose import SkipTest
-import unittest
+
 import os
+import unittest
+
+from nose import SkipTest
 
 from nltk.corpus.reader.wordnet import WordNetCorpusReader
 from nltk.corpus import wordnet as wn
@@ -120,6 +122,12 @@ class WordnNetDemo(unittest.TestCase):
         self.assertEqual(S('code.n.03').topic_domains(), [S('computer_science.n.01')])
         self.assertEqual(S('pukka.a.01').region_domains(), [S('india.n.01')])
         self.assertEqual(S('freaky.a.01').usage_domains(), [S('slang.n.02')])
+
+    def test_in_topic_domains(self):
+        # Test in domains.
+        self.assertEqual(S('computer_science.n.01').in_topic_domains()[0], [S('access.n.05')])
+        self.assertEqual(S('germany.n.01').in_region_domains()[23], [S('trillion.n.02')])
+        self.assertEqual(S('slang.n.02').in_usage_domains()[1], [S('airhead.n.01')])
 
     def test_wordnet_similarities(self):
         # Path based similarities.

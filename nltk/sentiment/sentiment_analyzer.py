@@ -167,7 +167,7 @@ class SentimentAnalyzer(object):
         :param kwargs: additional parameters that will be passed as arguments to
             the classifier `train` function.
         :return: A classifier instance trained on the training set.
-        :rtype: 
+        :rtype:
         """
         print("Training classifier")
         self.classifier = trainer(training_set, **kwargs)

@@ -7,13 +7,13 @@
 
 import functools
 import os
+import re
 import tempfile
 
 from six import string_types
 
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
-import re
 
 
 def _parse_args(fun):

@@ -97,7 +97,7 @@ class ShiftReduceParser(ParserI):
             while self._reduce(stack, remaining_text): pass
 
         # Did we reduce everything?
-        if len(stack) == 1: 
+        if len(stack) == 1:
             # Did we end up with the right category?
             if stack[0].label() == self._grammar.start().symbol():
                 yield stack[0]

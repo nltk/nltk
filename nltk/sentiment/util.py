@@ -738,7 +738,7 @@ def demo_vader_tweets(n_instances=None, output=None):
         metrics_results['F-measure [{0}]'.format(label)] = f_measure_score
 
     for result in sorted(metrics_results):
-            print('{0}: {1}'.format(result, metrics_results[result]))
+        print('{0}: {1}'.format(result, metrics_results[result]))
 
     if output:
         output_markdown(output, Approach='Vader', Dataset='labeled_tweets',

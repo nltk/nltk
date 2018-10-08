@@ -606,7 +606,7 @@ class CFGDemo(object):
         if tree is None: tree = self._tree
         for i in range(len(tree.subtrees())-len(prod.rhs())):
             if tree['color', i] == 'white':
-                self._markproduction
+                self._markproduction #FIXME: Is this necessary at all?
 
             for j, node in enumerate(prod.rhs()):
                 widget = tree.subtrees()[i+j]

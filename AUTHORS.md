@@ -9,7 +9,6 @@
 
 ## Contributors
 
-- Hyuckin David Lim
 - Rami Al-Rfou'
 - Mark Amery
 - Greg Aumann
@@ -95,6 +94,7 @@
 - Chris Koenig
 - Mikhail Korobov
 - Denis Krusko
+- Ilia Kurenkov
 - Stefano Lattarini
 - Pierre-François Laquerre
 - Stefano Lattarini
@@ -102,6 +102,7 @@
 - Jackson Lee
 - Max Leonov
 - Chris Liechti
+- Hyuckin David Lim
 - Tom Lippincott
 - Peter Ljunglöf
 - Alex Louden
@@ -235,6 +236,7 @@
 - Pulkit Maloo <https://github.com/pulkitmaloo>
 - Brandon M. Burroughs <https://github.com/brandonmburroughs>
 - Aleš Tamchyna
+- Tim Gianitsos <https://github.com/timgianitsos>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
