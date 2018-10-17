@@ -464,7 +464,13 @@ def ngrams(sequence, n, pad_left=False, pad_right=False,
 
     history = []
     while n > 1:
-        history.append(next(sequence))
+        # PEP 479, prevent RuntimeError from being raised when StopIteration bubbles out of generator
+        try:
+            next_item = next(sequence)
+        except StopIteration:
+            # no more data, terminate the generator
+            return
+        history.append(next_item)
         n -= 1
     for item in sequence:
         history.append(item)
