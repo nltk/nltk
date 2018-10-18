@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Tests for BLEU translation evaluation metric
+Tests for nltk.pos_tag
 """
 
 import unittest
