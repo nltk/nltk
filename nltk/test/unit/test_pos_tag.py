@@ -7,18 +7,6 @@ import unittest
 
 from nltk.tag import word_tokenize, pos_tag
 
-    >>> from nltk import pos_tag, word_tokenize
-    >>> pos_tag(word_tokenize("John's big idea isn't all that bad."))
-    [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is', 'VBZ'),
-    ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
-
-A Russian tagger is also available if you specify lang="rus". It uses
-the Russian National Corpus tagset:
-
-    >>> pos_tag(word_tokenize("Илья оторопел и дважды перечитал бумажку."), lang='rus')
-
-
-
 class TestPosTag(unittest.TestCase):
     def test_pos_tag_eng(self):
         text = "John's big idea isn't all that bad."
