@@ -75,6 +75,13 @@ def tagset_mapping(source, target):
     if source not in _MAPPINGS or target not in _MAPPINGS[source]:
         if target == 'universal':
             _load_universal_map(source)
+            # Added the new Russian National Corpus mappings because the
+            # Russian model for nltk.pos_tag() uses it.
+            _MAPPINGS['ru-rnc-new']['universal'] = {
+                'A': 'ADJ', 'ADV': 'ADV', 'ADVPRO': 'ADV', 'ANUM': 'ADJ',
+                'APRO': 'DET', 'COM': 'ADJ', 'CONJ': 'SCONJ', 'INTJ': 'INTJ',
+                'NONLEX': 'X', 'NUM': 'NUM', 'PART': 'PART', 'PR': 'ADP',
+                'S': 'NOUN', 'SPRO': 'PRON', 'UNKN': 'X', 'V': 'VERB'}
     return _MAPPINGS[source][target]
 
 def map_tag(source, target, source_tag):

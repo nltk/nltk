@@ -26,7 +26,7 @@ An off-the-shelf tagger is available for English. It uses the Penn Treebank tags
     [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is', 'VBZ'),
     ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
 
-A Russian tagger is also available if you specify lang="rus". It uses 
+A Russian tagger is also available if you specify lang="rus". It uses
 the Russian National Corpus tagset:
 
     >>> pos_tag(word_tokenize("Илья оторопел и дважды перечитал бумажку."), lang='rus')    # doctest: +SKIP
@@ -98,10 +98,18 @@ def _get_tagger(lang=None):
     return tagger
 
 
-def _pos_tag(tokens, tagset, tagger):
+def _pos_tag(tokens, tagset, tagger, lang):
     tagged_tokens = tagger.tag(tokens)
     if tagset:
-        tagged_tokens = [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagged_tokens]
+        if lang == 'en':
+            tagged_tokens = [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagged_tokens]
+        elif lang == 'ru':
+            # Note that the new Russion pos tags from the model contains suffixes,
+            # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
+            tagged_tokens = [(token, map_tag('en-ptb', tagset, tag.partition('=')[0]))
+                              for (token, tag) in tagged_tokens]
+        else:
+            raise NotImplementedError("Currently, NLTK pos_tag only supports `lang='en'`` and `lang='ru'`.")
     return tagged_tokens
 
 
@@ -131,7 +139,7 @@ def pos_tag(tokens, tagset=None, lang='eng'):
     :rtype: list(tuple(str, str))
     """
     tagger = _get_tagger(lang)
-    return _pos_tag(tokens, tagset, tagger)
+    return _pos_tag(tokens, tagset, tagger, lang)
 
 
 def pos_tag_sents(sentences, tagset=None, lang='eng'):
