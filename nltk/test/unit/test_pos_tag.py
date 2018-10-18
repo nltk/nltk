@@ -5,7 +5,7 @@ Tests for nltk.pos_tag
 
 import unittest
 
-from nltk.tag import word_tokenize, pos_tag
+from nltk import word_tokenize, pos_tag
 
 class TestPosTag(unittest.TestCase):
     def test_pos_tag_eng(self):
