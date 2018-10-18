@@ -101,12 +101,12 @@ def _get_tagger(lang=None):
 def _pos_tag(tokens, tagset, tagger, lang):
     tagged_tokens = tagger.tag(tokens)
     if tagset:
-        if lang == 'en':
+        if lang == 'eng':
             tagged_tokens = [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagged_tokens]
-        elif lang == 'ru':
+        elif lang == 'rus':
             # Note that the new Russion pos tags from the model contains suffixes,
             # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
-            tagged_tokens = [(token, map_tag('en-ptb', tagset, tag.partition('=')[0]))
+            tagged_tokens = [(token, map_tag('ru-rnc-new', tagset, tag.partition('=')[0]))
                               for (token, tag) in tagged_tokens]
         else:
             raise NotImplementedError("Currently, NLTK pos_tag only supports `lang='en'`` and `lang='ru'`.")
