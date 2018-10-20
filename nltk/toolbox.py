@@ -69,7 +69,12 @@ class StandardFormat(object):
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
         file_iter = iter(self._file)
-        line = next(file_iter)
+        # PEP 479, prevent RuntimeError when StopIteration is raised inside generator
+        try:
+            line = next(file_iter)
+        except StopIteration:
+            # no more data is available, terminate the generator
+            return
         mobj = re.match(first_line_pat, line)
         mkr, line_value = mobj.groups()
         value_lines = [line_value,]
