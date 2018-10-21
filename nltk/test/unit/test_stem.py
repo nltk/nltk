@@ -17,7 +17,8 @@ class SnowballTest(unittest.TestCase):
         this unit testing for test the snowball arabic light stemmer
         this stemmer deals with prefixes and suffixes
         """
-        ar_stemmer = SnowballStemmer("arabic")
+        # Test where the ignore_stopwords=True.
+        ar_stemmer = SnowballStemmer("arabic", True)
         assert ar_stemmer.stem('الْعَرَبِــــــيَّة') == "عرب"
         assert ar_stemmer.stem("العربية") == "عرب"
         assert ar_stemmer.stem("فقالوا") == "قال"
@@ -25,6 +26,20 @@ class SnowballTest(unittest.TestCase):
         assert ar_stemmer.stem("فالطالبات") == "طالب"
         assert ar_stemmer.stem("والطالبات") == "طالب"
         assert ar_stemmer.stem("الطالبون") == "طالب"
+        assert ar_stemmer.stem("اللذان") == "اللذان"
+        assert ar_stemmer.stem("من") == "من"
+        #Test where the ignore_stopwords=False.
+        ar_stemmer = SnowballStemmer("arabic", False)
+        assert ar_stemmer.stem("اللذان") == "اللذ" # this is a stop word
+        assert ar_stemmer.stem("الطالبات") == "طالب"
+        assert ar_stemmer.stem("الكلمات") == "كلم"
+        # test where create the arabic stemmer without given init value to ignore_stopwords
+        ar_stemmer = SnowballStemmer("arabic")
+        assert ar_stemmer.stem('الْعَرَبِــــــيَّة') == "عرب"
+        assert ar_stemmer.stem("العربية") == "عرب"
+        assert ar_stemmer.stem("فقالوا") == "قال"
+        assert ar_stemmer.stem("الطالبات") == "طالب"
+        assert ar_stemmer.stem("الكلمات") == "كلم"
 
     def test_russian(self):
         # Russian words both consisting of Cyrillic
