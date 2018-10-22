@@ -78,10 +78,12 @@ def tagset_mapping(source, target):
             # Added the new Russian National Corpus mappings because the
             # Russian model for nltk.pos_tag() uses it.
             _MAPPINGS['ru-rnc-new']['universal'] = {
-                'A': 'ADJ', 'ADV': 'ADV', 'ADVPRO': 'ADV', 'ANUM': 'ADJ',
-                'APRO': 'DET', 'COM': 'ADJ', 'CONJ': 'SCONJ', 'INTJ': 'INTJ',
-                'NONLEX': 'X', 'NUM': 'NUM', 'PART': 'PART', 'PR': 'ADP',
-                'S': 'NOUN', 'SPRO': 'PRON', 'UNKN': 'X', 'V': 'VERB'}
+                'A': 'ADJ', 'A-PRO': 'PRON', 'ADV': 'ADV', 'ADV-PRO': 'PRON',
+                'ANUM': 'ADJ', 'CONJ': 'CONJ', 'INTJ': 'X', 'NONLEX': '.',
+                'NUM': 'NUM', 'PARENTH': 'PRT', 'PART': 'PRT', 'PR': 'ADP',
+                'PRAEDIC': 'PRT', 'PRAEDIC-PRO': 'PRON', 'S': 'NOUN',
+                'S-PRO': 'PRON', 'V': 'VERB'}
+
     return _MAPPINGS[source][target]
 
 def map_tag(source, target, source_tag):
