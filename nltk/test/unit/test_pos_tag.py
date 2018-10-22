@@ -33,12 +33,12 @@ class TestPosTag(unittest.TestCase):
                            ('бумажку', 'S'), ('.', 'NONLEX')]
         assert pos_tag(word_tokenize(text), lang='rus') == expected_tagged
 
-    def test_pos_tag_rus(self):
+    def test_pos_tag_rus_universal(self):
         text = u"Илья оторопел и дважды перечитал бумажку."
         expected_tagged = [('Илья', 'NOUN'), ('оторопел', 'VERB'),
-                           ('и', 'SCONJ'), ('дважды', 'ADV'),
+                           ('и', 'CONJ'), ('дважды', 'ADV'),
                            ('перечитал', 'VERB'), ('бумажку', 'NOUN'),
-                           ('.', 'X')]
+                           ('.', '.')]
         assert pos_tag(word_tokenize(text),  tagset='universal', lang='rus') == expected_tagged
 
     def test_pos_tag_unknown_lang(self):
