@@ -98,7 +98,7 @@ def _get_tagger(lang=None):
     return tagger
 
 
-def _pos_tag(tokens, tagset, tagger, lang):
+def _pos_tag(tokens, tagset, tagger, lang=None):
     tagged_tokens = tagger.tag(tokens)
     if tagset:
         if lang == 'eng':
@@ -109,7 +109,7 @@ def _pos_tag(tokens, tagset, tagger, lang):
             tagged_tokens = [(token, map_tag('ru-rnc-new', tagset, tag.partition('=')[0]))
                               for (token, tag) in tagged_tokens]
         else:
-            raise NotImplementedError("Currently, NLTK pos_tag only supports `lang='en'`` and `lang='ru'`.")
+            raise NotImplementedError("Currently, NLTK pos_tag only supports `lang='eng'`` and `lang='rus'`.")
     return tagged_tokens
 
 
