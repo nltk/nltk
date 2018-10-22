@@ -40,3 +40,9 @@ class TestPosTag(unittest.TestCase):
                            ('перечитал', 'VERB'), ('бумажку', 'NOUN'),
                            ('.', 'X')]
         assert pos_tag(word_tokenize(text),  tagset='universal', lang='rus') == expected_tagged
+
+    def test_pos_tag_unknown_lang(self):
+        text = u"모르겠 습니 다"
+        self.assertRaises(NotImplementedError, pos_tag(word_tokenize(text, lang='kor')))
+        # Test for default kwarg, `lang=None`
+        self.assertRaises(NotImplementedError, pos_tag(word_tokenize(text)))
