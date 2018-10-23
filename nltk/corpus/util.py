@@ -66,7 +66,7 @@ class LazyCorpusLoader(object):
 
     def __load(self):
         # Find the corpus root directory.
-        zip_name = re.sub(r'(([^/]*)(/.*)?)', r'\2.zip/\1/', self.__name)
+        zip_name = re.sub(r'(([^/]+)(/.*)?)', r'\2.zip/\1/', self.__name)
         if TRY_ZIPFILE_FIRST:
             try:
                 root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
