@@ -97,8 +97,7 @@ def _get_tagger(lang=None):
         tagger = PerceptronTagger()
     return tagger
 
-
-def _pos_tag(tokens, tagger, tagset=None, lang=None):
+def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
     # Currently only supoorts English and Russian.
     if lang not in ['eng', 'rus']:
         raise NotImplementedError("Currently, NLTK pos_tag only supports English and Russian "
