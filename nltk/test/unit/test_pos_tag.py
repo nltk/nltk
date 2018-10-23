@@ -46,4 +46,9 @@ class TestPosTag(unittest.TestCase):
         self.assertRaises(NotImplementedError, pos_tag, word_tokenize(text), lang='kor')
         # Test for default kwarg, `lang=None`
         self.assertRaises(NotImplementedError, pos_tag, word_tokenize(text), lang=None)
-        self.assertRaises(NotImplementedError, pos_tag, word_tokenize(text))
+
+    def test_unspecified_lang(self):
+        # Tries to force the lang='eng' option.
+        text = u"모르겠 습니 다"
+        expected_but_wrong = [('모르겠', 'JJ'), ('습니', 'NNP'), ('다', 'NN')]
+        assert pos_tag(word_tokenize(text)) == expected_but_wrong
