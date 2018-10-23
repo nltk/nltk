@@ -98,19 +98,22 @@ def _get_tagger(lang=None):
     return tagger
 
 
-def _pos_tag(tokens, tagset, tagger, lang=None):
-    tagged_tokens = tagger.tag(tokens)
-    if tagset:
-        if lang == 'eng':
-            tagged_tokens = [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagged_tokens]
-        elif lang == 'rus':
-            # Note that the new Russion pos tags from the model contains suffixes,
-            # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
-            tagged_tokens = [(token, map_tag('ru-rnc-new', tagset, tag.partition('=')[0]))
-                              for (token, tag) in tagged_tokens]
-        else:
-            raise NotImplementedError("Currently, NLTK pos_tag only supports `lang='eng'`` and `lang='rus'`.")
-    return tagged_tokens
+def _pos_tag(tokens, tagger, tagset=None, lang=None):
+    # Currently only supoorts English and Russian.
+    if lang not in ['eng', 'rus']:
+        raise NotImplementedError("Currently, NLTK pos_tag only supports English and Russian "
+                                  "(i.e. lang='eng' or lang='rus')")
+    else:
+        tagged_tokens = tagger.tag(tokens)
+        if tagset: # Maps to the specified tagset.
+            if lang == 'eng':
+                tagged_tokens = [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagged_tokens]
+            elif lang == 'rus':
+                # Note that the new Russion pos tags from the model contains suffixes,
+                # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
+                tagged_tokens = [(token, map_tag('ru-rnc-new', tagset, tag.partition('=')[0]))
+                                  for (token, tag) in tagged_tokens]
+        return tagged_tokens
 
 
 def pos_tag(tokens, tagset=None, lang='eng'):
