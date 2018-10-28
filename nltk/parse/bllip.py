@@ -200,7 +200,7 @@ class BllipParser(ParserI):
             yield _scored_parse_to_nltk_tree(scored_parse)
 
     @classmethod
-    def from_unified_model_dir(this_class, model_dir, parser_options=None,
+    def from_unified_model_dir(cls, model_dir, parser_options=None,
                                reranker_options=None):
         """
         Create a ``BllipParser`` object from a unified parsing model
@@ -226,7 +226,7 @@ class BllipParser(ParserI):
         """
         (parser_model_dir, reranker_features_filename,
          reranker_weights_filename) = get_unified_model_parameters(model_dir)
-        return this_class(parser_model_dir, reranker_features_filename,
+        return cls(parser_model_dir, reranker_features_filename,
                           reranker_weights_filename, parser_options,
                           reranker_options)
 

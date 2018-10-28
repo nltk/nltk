@@ -44,30 +44,30 @@ class MTEFileReader:
         self.__file_path = file_path
 
     @classmethod
-    def _word_elt(self, elt, context):
+    def _word_elt(cls, elt, context):
         return elt.text
 
     @classmethod
-    def _sent_elt(self, elt, context):
-        return [self._word_elt(w, None) for w in xpath(elt, '*', self.ns)]
+    def _sent_elt(cls, elt, context):
+        return [cls._word_elt(w, None) for w in xpath(elt, '*', cls.ns)]
 
     @classmethod
-    def _para_elt(self, elt, context):
-        return [self._sent_elt(s, None) for s in xpath(elt, '*', self.ns)]
+    def _para_elt(cls, elt, context):
+        return [cls._sent_elt(s, None) for s in xpath(elt, '*', cls.ns)]
 
     @classmethod
-    def _tagged_word_elt(self, elt, context):
+    def _tagged_word_elt(cls, elt, context):
         if ('ana' not in elt.attrib):
             return (elt.text, '')
 
-        if self.__tags == "" and self.__tagset == "msd":
+        if cls.__tags == "" and cls.__tagset == "msd":
             return (elt.text, elt.attrib['ana'])
-        elif self.__tags == "" and self.__tagset == "universal":
+        elif cls.__tags == "" and cls.__tagset == "universal":
             return (elt.text, MTETagConverter.msd_to_universal(elt.attrib['ana']))
         else:
-            tags = re.compile('^' + re.sub("-", ".", self.__tags) + '.*$')
+            tags = re.compile('^' + re.sub("-", ".", cls.__tags) + '.*$')
             if (tags.match(elt.attrib['ana'])):
-                if self.__tagset == "msd":
+                if cls.__tagset == "msd":
                     return (elt.text, elt.attrib['ana'])
                 else:
                     return (elt.text, MTETagConverter.msd_to_universal(elt.attrib['ana']))
@@ -75,27 +75,27 @@ class MTEFileReader:
                 return None
 
     @classmethod
-    def _tagged_sent_elt(self, elt, context):
-        return list(filter(lambda x: x is not None, [self._tagged_word_elt(w, None) for w in xpath(elt, '*', self.ns)]))
+    def _tagged_sent_elt(cls, elt, context):
+        return list(filter(lambda x: x is not None, [cls._tagged_word_elt(w, None) for w in xpath(elt, '*', cls.ns)]))
 
     @classmethod
-    def _tagged_para_elt(self, elt, context):
-        return list(filter(lambda x: x is not None, [self._tagged_sent_elt(s, None) for s in xpath(elt, '*', self.ns)]))
+    def _tagged_para_elt(cls, elt, context):
+        return list(filter(lambda x: x is not None, [cls._tagged_sent_elt(s, None) for s in xpath(elt, '*', cls.ns)]))
 
     @classmethod
-    def _lemma_word_elt(self, elt, context):
+    def _lemma_word_elt(cls, elt, context):
         if ('lemma' not in elt.attrib):
             return (elt.text, '')
         else:
             return (elt.text, elt.attrib['lemma'])
 
     @classmethod
-    def _lemma_sent_elt(self, elt, context):
-        return [self._lemma_word_elt(w, None) for w in xpath(elt, '*', self.ns)]
+    def _lemma_sent_elt(cls, elt, context):
+        return [cls._lemma_word_elt(w, None) for w in xpath(elt, '*', cls.ns)]
 
     @classmethod
-    def _lemma_para_elt(self, elt, context):
-        return [self._lemma_sent_elt(s, None) for s in xpath(elt, '*', self.ns)]
+    def _lemma_para_elt(cls, elt, context):
+        return [cls._lemma_sent_elt(s, None) for s in xpath(elt, '*', cls.ns)]
 
     def words(self):
         return MTECorpusView(self.__file_path, MTEFileReader.word_path, MTEFileReader._word_elt)
