@@ -17,7 +17,9 @@ class TestAline(unittest.TestCase):
 
     def test_aline(self):
         result = aline.align('θin', 'tenwis')
-        expected = [[('θ', 't'), ('i', 'e'), ('n', 'n'), ('-', 'w'), ('-', 'i'), ('-', 's')]]
+        expected = [
+            [('θ', 't'), ('i', 'e'), ('n', 'n'), ('-', 'w'), ('-', 'i'), ('-', 's')]
+        ]
 
         self.assertEqual(result, expected)
 
@@ -27,13 +29,37 @@ class TestAline(unittest.TestCase):
         self.assertEqual(result, expected)
 
         result = aline.align('pematesiweni', 'pematesewen')
-        expected = [[('p', 'p'), ('e', 'e'), ('m', 'm'), ('a', 'a'), ('t', 't'), ('e', 'e'),
-                     ('s', 's'), ('i', 'e'), ('w', 'w'), ('e', 'e'), ('n', 'n'), ('i', '-')]]
+        expected = [
+            [
+                ('p', 'p'),
+                ('e', 'e'),
+                ('m', 'm'),
+                ('a', 'a'),
+                ('t', 't'),
+                ('e', 'e'),
+                ('s', 's'),
+                ('i', 'e'),
+                ('w', 'w'),
+                ('e', 'e'),
+                ('n', 'n'),
+                ('i', '-'),
+            ]
+        ]
 
         self.assertEqual(result, expected)
 
         result = aline.align('tuwθ', 'dentis')
-        expected = [[('t', 'd'), ('u', 'e'), ('w', '-'), ('-', 'n'), ('-', 't'), ('-', 'i'), ('θ', 's')]]
+        expected = [
+            [
+                ('t', 'd'),
+                ('u', 'e'),
+                ('w', '-'),
+                ('-', 'n'),
+                ('-', 't'),
+                ('-', 'i'),
+                ('θ', 's'),
+            ]
+        ]
 
         self.assertEqual(result, expected)
 

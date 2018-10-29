@@ -120,8 +120,7 @@ class TestCredentials(unittest.TestCase):
         Credentials file 'bad_oauth1-1.txt' is incomplete
         """
         try:
-            self.auth.load_creds(creds_file='bad_oauth1-1.txt',
-                                 subdir=self.subdir)
+            self.auth.load_creds(creds_file='bad_oauth1-1.txt', subdir=self.subdir)
         except ValueError:
             pass
         except Exception as e:
@@ -134,8 +133,7 @@ class TestCredentials(unittest.TestCase):
         First key in credentials file 'bad_oauth1-2.txt' is ill-formed
         """
         try:
-            self.auth.load_creds(creds_file='bad_oauth1-2.txt',
-                                 subdir=self.subdir)
+            self.auth.load_creds(creds_file='bad_oauth1-2.txt', subdir=self.subdir)
         except ValueError:
             pass
         except Exception as e:
@@ -148,8 +146,7 @@ class TestCredentials(unittest.TestCase):
         First key in credentials file 'bad_oauth1-2.txt' is ill-formed
         """
         try:
-            self.auth.load_creds(creds_file='bad_oauth1-3.txt',
-                                 subdir=self.subdir)
+            self.auth.load_creds(creds_file='bad_oauth1-3.txt', subdir=self.subdir)
         except ValueError:
             pass
         except Exception as e:
@@ -182,4 +179,3 @@ class TestCredentials(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

@@ -23,7 +23,6 @@ try:
 except ImportError:
     import operator
 
-
     def accumulate(iterable, func=operator.add):
         """Return running totals"""
         # accumulate([1,2,3,4,5]) --> 1 3 6 10 15

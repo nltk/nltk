@@ -29,6 +29,7 @@ from nltk.corpus.reader import CorpusReader
 from nltk.probability import FreqDist
 from nltk.data import ZipFilePathPointer
 
+
 class CrubadanCorpusReader(CorpusReader):
     """
     A corpus reader used to access language An Crubadan n-gram files.
@@ -70,7 +71,9 @@ class CrubadanCorpusReader(CorpusReader):
     def _load_lang_mapping_data(self):
         ''' Load language mappings between codes and description from table.txt '''
         if isinstance(self.root, ZipFilePathPointer):
-            raise RuntimeError("Please install the 'crubadan' corpus first, use nltk.download()")
+            raise RuntimeError(
+                "Please install the 'crubadan' corpus first, use nltk.download()"
+            )
 
         mapper_file = path.join(self.root, self._LANG_MAPPER_FILE)
         if self._LANG_MAPPER_FILE not in self.fileids():

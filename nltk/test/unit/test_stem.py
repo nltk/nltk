@@ -11,7 +11,6 @@ from nltk.stem.porter import PorterStemmer
 
 
 class SnowballTest(unittest.TestCase):
-
     def test_arabic(self):
         """
         this unit testing for test the snowball arabic light stemmer
@@ -28,9 +27,9 @@ class SnowballTest(unittest.TestCase):
         assert ar_stemmer.stem("الطالبون") == "طالب"
         assert ar_stemmer.stem("اللذان") == "اللذان"
         assert ar_stemmer.stem("من") == "من"
-        #Test where the ignore_stopwords=False.
+        # Test where the ignore_stopwords=False.
         ar_stemmer = SnowballStemmer("arabic", False)
-        assert ar_stemmer.stem("اللذان") == "اللذ" # this is a stop word
+        assert ar_stemmer.stem("اللذان") == "اللذ"  # this is a stop word
         assert ar_stemmer.stem("الطالبات") == "طالب"
         assert ar_stemmer.stem("الكلمات") == "كلم"
         # test where create the arabic stemmer without given init value to ignore_stopwords
@@ -70,10 +69,14 @@ class SnowballTest(unittest.TestCase):
         stemmer = SnowballStemmer('english')
         assert stemmer.stem("y's") == 'y'
 
-class PorterTest(unittest.TestCase):
 
+class PorterTest(unittest.TestCase):
     def _vocabulary(self):
-        with closing(data.find('stemmers/porter_test/porter_vocabulary.txt').open(encoding='utf-8')) as fp:
+        with closing(
+            data.find('stemmers/porter_test/porter_vocabulary.txt').open(
+                encoding='utf-8'
+            )
+        ) as fp:
             return fp.read().splitlines()
 
     def _test_against_expected_output(self, stemmer_mode, expected_stems):
@@ -81,9 +84,8 @@ class PorterTest(unittest.TestCase):
         for word, true_stem in zip(self._vocabulary(), expected_stems):
             our_stem = stemmer.stem(word)
             assert our_stem == true_stem, (
-                "%s should stem to %s in %s mode but got %s" % (
-                    word, true_stem, stemmer_mode, our_stem
-                )
+                "%s should stem to %s in %s mode but got %s"
+                % (word, true_stem, stemmer_mode, our_stem)
             )
 
     def test_vocabulary_martin_mode(self):
@@ -96,17 +98,23 @@ class PorterTest(unittest.TestCase):
         at
             http://tartarus.org/martin/PorterStemmer/
         """
-        with closing(data.find('stemmers/porter_test/porter_martin_output.txt').open(encoding='utf-8')) as fp:
+        with closing(
+            data.find('stemmers/porter_test/porter_martin_output.txt').open(
+                encoding='utf-8'
+            )
+        ) as fp:
             self._test_against_expected_output(
-                PorterStemmer.MARTIN_EXTENSIONS,
-                fp.read().splitlines()
+                PorterStemmer.MARTIN_EXTENSIONS, fp.read().splitlines()
             )
 
     def test_vocabulary_nltk_mode(self):
-        with closing(data.find('stemmers/porter_test/porter_nltk_output.txt').open(encoding='utf-8')) as fp:
+        with closing(
+            data.find('stemmers/porter_test/porter_nltk_output.txt').open(
+                encoding='utf-8'
+            )
+        ) as fp:
             self._test_against_expected_output(
-                PorterStemmer.NLTK_EXTENSIONS,
-                fp.read().splitlines()
+                PorterStemmer.NLTK_EXTENSIONS, fp.read().splitlines()
             )
 
     def test_vocabulary_original_mode(self):
@@ -116,18 +124,21 @@ class PorterTest(unittest.TestCase):
         # and removing all the --DEPARTURE-- sections from it and
         # running it against Martin's test vocabulary.
 
-        with closing(data.find('stemmers/porter_test/porter_original_output.txt').open(encoding='utf-8')) as fp:
+        with closing(
+            data.find('stemmers/porter_test/porter_original_output.txt').open(
+                encoding='utf-8'
+            )
+        ) as fp:
             self._test_against_expected_output(
-                PorterStemmer.ORIGINAL_ALGORITHM,
-                fp.read().splitlines()
+                PorterStemmer.ORIGINAL_ALGORITHM, fp.read().splitlines()
             )
 
         self._test_against_expected_output(
             PorterStemmer.ORIGINAL_ALGORITHM,
             data.find('stemmers/porter_test/porter_original_output.txt')
-                .open(encoding='utf-8')
-                .read()
-                .splitlines()
+            .open(encoding='utf-8')
+            .read()
+            .splitlines(),
         )
 
     def test_oed_bug(self):

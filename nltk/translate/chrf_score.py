@@ -15,8 +15,9 @@ import re
 from nltk.util import ngrams
 
 
-def sentence_chrf(reference, hypothesis, min_len=1, max_len=6, beta=3.0,
-                  ignore_whitespace=True):
+def sentence_chrf(
+    reference, hypothesis, min_len=1, max_len=6, beta=3.0, ignore_whitespace=True
+):
     """
     Calculates the sentence level CHRF (Character n-gram F-score) described in
      - Maja Popovic. 2015. CHRF: Character n-gram F-score for Automatic MT Evaluation.
@@ -89,8 +90,14 @@ def sentence_chrf(reference, hypothesis, min_len=1, max_len=6, beta=3.0,
     :return: the sentence level CHRF score.
     :rtype: float
     """
-    return corpus_chrf([reference], [hypothesis], min_len, max_len, beta=beta,
-                       ignore_whitespace=ignore_whitespace)
+    return corpus_chrf(
+        [reference],
+        [hypothesis],
+        min_len,
+        max_len,
+        beta=beta,
+        ignore_whitespace=ignore_whitespace,
+    )
 
 
 def _preprocess(sent, ignore_whitespace):
@@ -103,8 +110,9 @@ def _preprocess(sent, ignore_whitespace):
     return sent
 
 
-def chrf_precision_recall_fscore_support(reference, hypothesis, n, beta=3.0,
-                                         epsilon=1e-16):
+def chrf_precision_recall_fscore_support(
+    reference, hypothesis, n, beta=3.0, epsilon=1e-16
+):
     """
     This function computes the precision, recall and fscore from the ngram
     overlaps. It returns the `support` which is the true positive score.
@@ -132,21 +140,22 @@ def chrf_precision_recall_fscore_support(reference, hypothesis, n, beta=3.0,
     # calculate the number of ngram matches
     overlap_ngrams = ref_ngrams & hyp_ngrams
     tp = sum(overlap_ngrams.values())  # True positives.
-    tpfp = sum(hyp_ngrams.values())    # True positives + False positives.
-    tpfn = sum(ref_ngrams.values())    # True positives + False negatives.
+    tpfp = sum(hyp_ngrams.values())  # True positives + False positives.
+    tpfn = sum(ref_ngrams.values())  # True positives + False negatives.
 
     try:
         prec = tp / tpfp  # precision
-        rec = tp / tpfn   # recall
-        factor = beta**2
+        rec = tp / tpfn  # recall
+        factor = beta ** 2
         fscore = (1 + factor) * (prec * rec) / (factor * prec + rec)
     except ZeroDivisionError:
         prec = rec = fscore = epsilon
     return prec, rec, fscore, tp
 
 
-def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
-                ignore_whitespace=True):
+def corpus_chrf(
+    references, hypotheses, min_len=1, max_len=6, beta=3.0, ignore_whitespace=True
+):
     """
     Calculates the corpus level CHRF (Character n-gram F-score), it is the
     macro-averaged value of the sentence/segment level CHRF score.
@@ -181,8 +190,9 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
     :rtype: float
     """
 
-    assert len(references) == len(hypotheses), (
-        "The number of hypotheses and their references should be the same")
+    assert len(references) == len(
+        hypotheses
+    ), "The number of hypotheses and their references should be the same"
     num_sents = len(hypotheses)
 
     # Keep f-scores for each n-gram order separate
@@ -197,10 +207,11 @@ def corpus_chrf(references, hypotheses, min_len=1, max_len=6, beta=3.0,
 
         # Calculate f-scores for each sentence and for each n-gram order
         # separately.
-        for n in range(min_len, max_len+1):
+        for n in range(min_len, max_len + 1):
             # Compute the precision, recall, fscore and support.
             prec, rec, fscore, tp = chrf_precision_recall_fscore_support(
-                reference, hypothesis, n, beta=beta)
+                reference, hypothesis, n, beta=beta
+            )
             ngram_fscores[n].append(fscore)
 
     # how many n-gram sizes
