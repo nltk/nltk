@@ -6,8 +6,8 @@ NLTK requires Python versions 2.7, 3.4, 3.5, or 3.6
 Mac/Unix
 --------
 
-#. Install NLTK: run ``sudo pip install -U nltk``
-#. Install Numpy (optional): run ``sudo pip install -U numpy``
+#. Install NLTK: run ``pip install --user -U nltk``
+#. Install Numpy (optional): run ``pip install --user -U numpy``
 #. Test installation: run ``python`` then type ``import nltk``
 
 For older versions of Python it might be necessary to install setuptools (see http://pypi.python.org/pypi/setuptools) and to install pip (``sudo easy_install pip``).
