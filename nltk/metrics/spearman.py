@@ -10,6 +10,7 @@ from __future__ import division
 Tools for comparing ranked lists.
 """
 
+
 def _rank_dists(ranks1, ranks2):
     """Finds the difference between the values in ranks1 and ranks2 for keys
     present in both dicts. If the arguments are not dicts, they are converted
@@ -36,7 +37,7 @@ def spearman_correlation(ranks1, ranks2):
         res += d * d
         n += 1
     try:
-        return 1 - (6 * res / (n * (n*n - 1)))
+        return 1 - (6 * res / (n * (n * n - 1)))
     except ZeroDivisionError:
         # Result is undefined if only one item is ranked
         return 0.0

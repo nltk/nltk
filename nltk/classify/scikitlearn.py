@@ -122,13 +122,13 @@ class SklearnClassifier(ClassifierI):
 
     def _make_probdist(self, y_proba):
         classes = self._encoder.classes_
-        return DictionaryProbDist(dict((classes[i], p)
-                                       for i, p in enumerate(y_proba)))
+        return DictionaryProbDist(dict((classes[i], p) for i, p in enumerate(y_proba)))
 
 
 # skip doctests if scikit-learn is not installed
 def setup_module(module):
     from nose import SkipTest
+
     try:
         import sklearn
     except ImportError:
@@ -143,11 +143,15 @@ if __name__ == "__main__":
     # Bernoulli Naive Bayes is designed for binary classification. We set the
     # binarize option to False since we know we're passing boolean features.
     print("scikit-learn Naive Bayes:")
-    names_demo(SklearnClassifier(BernoulliNB(binarize=False)).train,
-               features=names_demo_features)
+    names_demo(
+        SklearnClassifier(BernoulliNB(binarize=False)).train,
+        features=names_demo_features,
+    )
 
     # The C parameter on logistic regression (MaxEnt) controls regularization.
     # The higher it's set, the less regularized the classifier is.
     print("\n\nscikit-learn logistic regression:")
-    names_demo(SklearnClassifier(LogisticRegression(C=1000)).train,
-               features=names_demo_features)
+    names_demo(
+        SklearnClassifier(LogisticRegression(C=1000)).train,
+        features=names_demo_features,
+    )

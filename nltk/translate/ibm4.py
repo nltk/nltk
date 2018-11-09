@@ -167,9 +167,14 @@ class IBMModel4(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations,
-                 source_word_classes, target_word_classes,
-                 probability_tables=None):
+    def __init__(
+        self,
+        sentence_aligned_corpus,
+        iterations,
+        source_word_classes,
+        target_word_classes,
+        probability_tables=None,
+    ):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, distortion models, a fertility model, and a
@@ -221,10 +226,10 @@ class IBMModel4(IBMModel):
             self.alignment_table = probability_tables['alignment_table']
             self.fertility_table = probability_tables['fertility_table']
             self.p1 = probability_tables['p1']
-            self.head_distortion_table = probability_tables[
-                'head_distortion_table']
+            self.head_distortion_table = probability_tables['head_distortion_table']
             self.non_head_distortion_table = probability_tables[
-                'non_head_distortion_table']
+                'non_head_distortion_table'
+            ]
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
@@ -232,7 +237,8 @@ class IBMModel4(IBMModel):
     def reset_probabilities(self):
         super(IBMModel4, self).reset_probabilities()
         self.head_distortion_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: self.MIN_PROB)))
+            lambda: defaultdict(lambda: defaultdict(lambda: self.MIN_PROB))
+        )
         """
         dict[int][int][int]: float. Probability(displacement of head
         word | word class of previous cept,target word class).
@@ -240,7 +246,8 @@ class IBMModel4(IBMModel):
         """
 
         self.non_head_distortion_table = defaultdict(
-            lambda: defaultdict(lambda: self.MIN_PROB))
+            lambda: defaultdict(lambda: self.MIN_PROB)
+        )
         """
         dict[int][int]: float. Probability(displacement of non-head
         word | target word class).
@@ -265,18 +272,21 @@ class IBMModel4(IBMModel):
         else:
             initial_prob = 1 / (2 * (max_m - 1))
         if initial_prob < IBMModel.MIN_PROB:
-            warnings.warn("A target sentence is too long (" + str(max_m) +
-                          " words). Results may be less accurate.")
+            warnings.warn(
+                "A target sentence is too long ("
+                + str(max_m)
+                + " words). Results may be less accurate."
+            )
 
         for dj in range(1, max_m):
             self.head_distortion_table[dj] = defaultdict(
-                lambda: defaultdict(lambda: initial_prob))
+                lambda: defaultdict(lambda: initial_prob)
+            )
             self.head_distortion_table[-dj] = defaultdict(
-                lambda: defaultdict(lambda: initial_prob))
-            self.non_head_distortion_table[dj] = defaultdict(
-                lambda: initial_prob)
-            self.non_head_distortion_table[-dj] = defaultdict(
-                lambda: initial_prob)
+                lambda: defaultdict(lambda: initial_prob)
+            )
+            self.non_head_distortion_table[dj] = defaultdict(lambda: initial_prob)
+            self.non_head_distortion_table[-dj] = defaultdict(lambda: initial_prob)
 
     def train(self, parallel_corpus):
         counts = Model4Counts()
@@ -287,7 +297,8 @@ class IBMModel4(IBMModel):
             sampled_alignments, best_alignment = self.sample(aligned_sentence)
             # Record the most probable alignment
             aligned_sentence.alignment = Alignment(
-                best_alignment.zero_indexed_alignment())
+                best_alignment.zero_indexed_alignment()
+            )
 
             # E step (a): Compute normalization factors to weigh counts
             total_count = self.prob_of_alignments(sampled_alignments)
@@ -299,10 +310,15 @@ class IBMModel4(IBMModel):
 
                 for j in range(1, m + 1):
                     counts.update_lexical_translation(
-                        normalized_count, alignment_info, j)
+                        normalized_count, alignment_info, j
+                    )
                     counts.update_distortion(
-                        normalized_count, alignment_info, j,
-                        self.src_classes, self.trg_classes)
+                        normalized_count,
+                        alignment_info,
+                        j,
+                        self.src_classes,
+                        self.trg_classes,
+                    )
 
                 counts.update_null_generation(normalized_count, alignment_info)
                 counts.update_fertility(normalized_count, alignment_info)
@@ -323,16 +339,19 @@ class IBMModel4(IBMModel):
         for dj, src_classes in counts.head_distortion.items():
             for s_cls, trg_classes in src_classes.items():
                 for t_cls in trg_classes:
-                    estimate = (counts.head_distortion[dj][s_cls][t_cls] /
-                                counts.head_distortion_for_any_dj[s_cls][t_cls])
-                    head_d_table[dj][s_cls][t_cls] = max(estimate,
-                                                         IBMModel.MIN_PROB)
+                    estimate = (
+                        counts.head_distortion[dj][s_cls][t_cls]
+                        / counts.head_distortion_for_any_dj[s_cls][t_cls]
+                    )
+                    head_d_table[dj][s_cls][t_cls] = max(estimate, IBMModel.MIN_PROB)
 
         non_head_d_table = self.non_head_distortion_table
         for dj, trg_classes in counts.non_head_distortion.items():
             for t_cls in trg_classes:
-                estimate = (counts.non_head_distortion[dj][t_cls] /
-                            counts.non_head_distortion_for_any_dj[t_cls])
+                estimate = (
+                    counts.non_head_distortion[dj][t_cls]
+                    / counts.non_head_distortion_for_any_dj[t_cls]
+                )
                 non_head_d_table[dj][t_cls] = max(estimate, IBMModel.MIN_PROB)
 
     def prob_t_a_given_s(self, alignment_info):
@@ -354,7 +373,7 @@ class IBMModel4(IBMModel):
             p0 = 1 - p1
             null_fertility = alignment_info.fertility_of_i(0)
             m = len(alignment_info.trg_sentence) - 1
-            value *= (pow(p1, null_fertility) * pow(p0, m - 2 * null_fertility))
+            value *= pow(p1, null_fertility) * pow(p0, m - 2 * null_fertility)
             if value < MIN_PROB:
                 return MIN_PROB
 
@@ -368,8 +387,10 @@ class IBMModel4(IBMModel):
             src_sentence = alignment_info.src_sentence
             for i in range(1, len(src_sentence)):
                 fertility = alignment_info.fertility_of_i(i)
-                value *= (factorial(fertility) *
-                          ibm_model.fertility_table[fertility][src_sentence[i]])
+                value *= (
+                    factorial(fertility)
+                    * ibm_model.fertility_table[fertility][src_sentence[i]]
+                )
                 if value < MIN_PROB:
                     return MIN_PROB
             return value
@@ -402,6 +423,7 @@ class IBMModel4(IBMModel):
             trg_class = ibm_model.trg_classes[t]
             dj = j - previous_position
             return ibm_model.non_head_distortion_table[dj][trg_class]
+
         # end nested functions
 
         # Abort computation whenever probability falls below MIN_PROB at
@@ -431,18 +453,17 @@ class Model4Counts(Counts):
     Data object to store counts of various parameters during training.
     Includes counts for distortion.
     """
+
     def __init__(self):
         super(Model4Counts, self).__init__()
         self.head_distortion = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
-        self.head_distortion_for_any_dj = defaultdict(
-            lambda: defaultdict(lambda: 0.0))
-        self.non_head_distortion = defaultdict(
-            lambda: defaultdict(lambda: 0.0))
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
+        )
+        self.head_distortion_for_any_dj = defaultdict(lambda: defaultdict(lambda: 0.0))
+        self.non_head_distortion = defaultdict(lambda: defaultdict(lambda: 0.0))
         self.non_head_distortion_for_any_dj = defaultdict(lambda: 0.0)
 
-    def update_distortion(self, count, alignment_info, j,
-                          src_classes, trg_classes):
+    def update_distortion(self, count, alignment_info, j, src_classes, trg_classes):
         i = alignment_info.alignment[j]
         t = alignment_info.trg_sentence[j]
         if i == 0:

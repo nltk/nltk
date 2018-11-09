@@ -25,6 +25,7 @@ class StandardFormat(object):
     """
     Class for reading and processing standard format marker files and strings.
     """
+
     def __init__(self, filename=None, encoding=None):
         self._encoding = encoding
         if filename is not None:
@@ -77,7 +78,7 @@ class StandardFormat(object):
             return
         mobj = re.match(first_line_pat, line)
         mkr, line_value = mobj.groups()
-        value_lines = [line_value,]
+        value_lines = [line_value]
         self.line_num = 0
         for line in file_iter:
             self.line_num += 1
@@ -86,13 +87,20 @@ class StandardFormat(object):
             if line_mkr:
                 yield (mkr, join_string.join(value_lines))
                 mkr = line_mkr
-                value_lines = [line_value,]
+                value_lines = [line_value]
             else:
                 value_lines.append(line_value)
         self.line_num += 1
         yield (mkr, join_string.join(value_lines))
 
-    def fields(self, strip=True, unwrap=True, encoding=None, errors='strict', unicode_fields=None):
+    def fields(
+        self,
+        strip=True,
+        unwrap=True,
+        encoding=None,
+        errors='strict',
+        unicode_fields=None,
+    ):
         """
         Return an iterator that returns the next field in a ``(marker, value)``
         tuple, where ``marker`` and ``value`` are unicode strings if an ``encoding``
@@ -120,7 +128,7 @@ class StandardFormat(object):
             raise ValueError('unicode_fields is set but not encoding.')
         unwrap_pat = re.compile(r'\n+')
         for mkr, val in self.raw_fields():
-            if encoding and not PY3: # kludge - already decoded in PY3?
+            if encoding and not PY3:  # kludge - already decoded in PY3?
                 if unicode_fields is not None and mkr in unicode_fields:
                     val = val.decode('utf8', errors)
                 else:
@@ -140,10 +148,11 @@ class StandardFormat(object):
         except AttributeError:
             pass
 
+
 class ToolboxData(StandardFormat):
-    def parse(self, grammar=None,  **kwargs):
+    def parse(self, grammar=None, **kwargs):
         if grammar:
-            return self._chunk_parse(grammar=grammar,  **kwargs)
+            return self._chunk_parse(grammar=grammar, **kwargs)
         else:
             return self._record_parse(**kwargs)
 
@@ -269,7 +278,9 @@ class ToolboxData(StandardFormat):
             tb_etree.append(self._tree2etree(parsed))
         return tb_etree
 
+
 _is_value = re.compile(r"\S")
+
 
 def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     """
@@ -295,7 +306,9 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
     if tree.tag != 'toolbox_data':
         raise ValueError("not a toolbox_data element structure")
     if encoding is None and unicode_fields is not None:
-        raise ValueError("if encoding is not specified then neither should unicode_fields")
+        raise ValueError(
+            "if encoding is not specified then neither should unicode_fields"
+        )
     l = []
     for rec in tree:
         l.append('\n')
@@ -308,15 +321,20 @@ def to_sfm_string(tree, encoding=None, errors='strict', unicode_fields=None):
                 else:
                     cur_encoding = encoding
                 if re.search(_is_value, value):
-                    l.append((u("\\%s %s\n") % (mkr, value)).encode(cur_encoding, errors))
+                    l.append(
+                        (u("\\%s %s\n") % (mkr, value)).encode(cur_encoding, errors)
+                    )
                 else:
-                    l.append((u("\\%s%s\n") % (mkr, value)).encode(cur_encoding, errors))
+                    l.append(
+                        (u("\\%s%s\n") % (mkr, value)).encode(cur_encoding, errors)
+                    )
             else:
                 if re.search(_is_value, value):
                     l.append("\\%s %s\n" % (mkr, value))
                 else:
                     l.append("\\%s%s\n" % (mkr, value))
     return ''.join(l[1:])
+
 
 class ToolboxSettings(StandardFormat):
     """This class is the base class for settings files."""
@@ -340,11 +358,11 @@ class ToolboxSettings(StandardFormat):
         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
             # Check whether the first char of the field marker
             # indicates a block start (+) or end (-)
-            block=mkr[0]
+            block = mkr[0]
             if block in ("+", "-"):
-                mkr=mkr[1:]
+                mkr = mkr[1:]
             else:
-                block=None
+                block = None
             # Build tree on the basis of block char
             if block == "+":
                 builder.start(mkr, {})
@@ -357,11 +375,19 @@ class ToolboxSettings(StandardFormat):
                 builder.end(mkr)
         return builder.close()
 
+
 def to_settings_string(tree, encoding=None, errors='strict', unicode_fields=None):
     # write XML to file
     l = list()
-    _to_settings_string(tree.getroot(), l, encoding=encoding, errors=errors, unicode_fields=unicode_fields)
+    _to_settings_string(
+        tree.getroot(),
+        l,
+        encoding=encoding,
+        errors=errors,
+        unicode_fields=unicode_fields,
+    )
     return ''.join(l)
+
 
 def _to_settings_string(node, l, **kwargs):
     # write XML to file
@@ -382,6 +408,7 @@ def _to_settings_string(node, l, **kwargs):
         l.append('\\-%s\n' % tag)
     return
 
+
 def remove_blanks(elem):
     """
     Remove all elements and subelements with no text and no child elements.
@@ -396,6 +423,7 @@ def remove_blanks(elem):
             out.append(child)
     elem[:] = out
 
+
 def add_default_fields(elem, default_fields):
     """
     Add blank elements and subelements specified in default_fields.
@@ -405,11 +433,12 @@ def add_default_fields(elem, default_fields):
     :param default_fields: fields to add to each type of element and subelement
     :type default_fields: dict(tuple)
     """
-    for field in default_fields.get(elem.tag,  []):
+    for field in default_fields.get(elem.tag, []):
         if elem.find(field) is None:
             SubElement(elem, field)
     for child in elem:
         add_default_fields(child, default_fields)
+
 
 def sort_fields(elem, field_orders):
     """
@@ -427,6 +456,7 @@ def sort_fields(elem, field_orders):
             order_key[subfield] = i
     _sort_fields(elem, order_dicts)
 
+
 def _sort_fields(elem, orders_dicts):
     """sort the children of elem"""
     try:
@@ -434,11 +464,14 @@ def _sort_fields(elem, orders_dicts):
     except KeyError:
         pass
     else:
-        tmp = sorted([((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)])
+        tmp = sorted(
+            [((order.get(child.tag, 1e9), i), child) for i, child in enumerate(elem)]
+        )
         elem[:] = [child for key, child in tmp]
     for child in elem:
         if len(child):
             _sort_fields(child, orders_dicts)
+
 
 def add_blank_lines(tree, blanks_before, blanks_between):
     """
@@ -472,11 +505,12 @@ def add_blank_lines(tree, blanks_before, blanks_between):
                 add_blank_lines(elem, blanks_before, blanks_between)
             last_elem = elem
 
+
 def demo():
     from itertools import islice
 
-#    zip_path = find('corpora/toolbox.zip')
-#    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()
+    #    zip_path = find('corpora/toolbox.zip')
+    #    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()
     file_path = find('corpora/toolbox/rotokas.dic')
     lexicon = ToolboxData(file_path).parse()
     print('first field in fourth record:')
@@ -494,11 +528,12 @@ def demo():
     settings = ToolboxSettings()
     file_path = find('corpora/toolbox/MDF/MDF_AltH.typ')
     settings.open(file_path)
-#    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
+    #    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
     tree = settings.parse(unwrap=False, encoding='cp1252')
     print(tree.find('expset/expMDF/rtfPageSetup/paperSize').text)
     settings_tree = ElementTree(tree)
     print(to_settings_string(settings_tree).encode('utf8'))
+
 
 if __name__ == '__main__':
     demo()
