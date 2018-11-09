@@ -1270,6 +1270,11 @@ class SeekableUnicodeStreamReader(object):
         """Return self"""
         return self
 
+    def __del__(self):
+        # let garbage collector deal with still opened streams
+        if not self.closed:
+            self.close()
+
     def xreadlines(self):
         """Return self"""
         return self
