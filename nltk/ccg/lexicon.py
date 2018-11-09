@@ -17,7 +17,7 @@ from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategor
 from nltk.compat import python_2_unicode_compatible
 from nltk.internals import deprecated
 
-from nltk.sem.logic import *
+from nltk.sem.logic import Expression
 
 # ------------
 # Regular expressions used for parsing components of the lexicon
