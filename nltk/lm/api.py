@@ -45,6 +45,8 @@ class Smoothing(object):
     Implements Chen & Goodman 1995's idea that all smoothing algorithms have
     certain features in common. This should ideally allow smoothing algoritms to
     work both with Backoff and Interpolation.
+
+    counter represents the number of counts for ngrams
     """
 
     def __init__(self, vocabulary, counter):
