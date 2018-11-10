@@ -49,7 +49,7 @@ class KneserNey(Smoothing):
         self.vocabulary = vocabulary
 
     def unigram_score(self, word):
-        return 1. / len(self.vocabulary)
+        return 1.0 / len(self.vocabulary)
 
     def alpha_gamma(self, word, context):
         prefix_counts = self.counts[context]

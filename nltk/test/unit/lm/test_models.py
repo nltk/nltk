@@ -74,10 +74,7 @@ class ParametrizeTestsMeta(type):
         def test_method(self):
             score = self.model.score(word, context)
             self.assertAlmostEqual(
-                score,
-                expected_score,
-                msg=message.format(**locals()),
-                places=4,
+                score, expected_score, msg=message.format(**locals()), places=4
             )
 
         return test_method
@@ -103,9 +100,9 @@ class MleBigramTests(unittest.TestCase):
         ("z", None, 0),
         # N unigrams = 14
         # count('a') = 2
-        ("a", None, 2. / 14),
+        ("a", None, 2.0 / 14),
         # count('y') = 3
-        ("y", None, 3. / 14),
+        ("y", None, 3.0 / 14),
     ]
 
     def setUp(self):
@@ -283,21 +280,21 @@ class LaplaceBigramTests(unittest.TestCase):
         # *count(d | c) = 2
         # Count(w | c for w in vocab) = 1
         # *Count(w | c for w in vocab) = 9
-        ("d", ["c"], 2. / 9),
+        ("d", ["c"], 2.0 / 9),
         # Total unigrams: 14
         # Vocab size: 8
         # Denominator: 14 + 8 = 22
         # count("a") = 2
         # *count("a") = 3
-        ("a", None, 3. / 22),
+        ("a", None, 3.0 / 22),
         # in vocabulary but unseen
         # count("z") = 0
         # *count("z") = 1
-        ("z", None, 1. / 22),
+        ("z", None, 1.0 / 22),
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
         # *count("<UNK>") = 4
-        ("y", None, 4. / 22),
+        ("y", None, 4.0 / 22),
     ]
 
     def setUp(self):
@@ -345,13 +342,13 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase):
         # For unigram scores by default revert to MLE
         # Total unigrams: 18
         # count('c'): 1
-        ("c", None, 1. / 18),
+        ("c", None, 1.0 / 18),
         # in vocabulary but unseen
         # count("z") = 0
-        ("z", None, 0. / 18),
+        ("z", None, 0.0 / 18),
         # out of vocabulary should use "UNK" score
         # count("<UNK>") = 3
-        ("y", None, 3. / 18),
+        ("y", None, 3.0 / 18),
         # gamma(['b']) = 0.1111
         # mle.score('c', ['b']) = 0.5
         # (1 - gamma) * mle + gamma * mle('c') ~= 0.45 + .3 / 18
@@ -374,11 +371,11 @@ class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
         # For unigram scores revert to uniform
         # Vocab size: 8
         # count('c'): 1
-        ("c", None, 1. / 8),
+        ("c", None, 1.0 / 8),
         # in vocabulary but unseen, still uses uniform
         ("z", None, 1 / 8),
         # out of vocabulary should use "UNK" score, i.e. again uniform
-        ("y", None, 1. / 8),
+        ("y", None, 1.0 / 8),
         # alpha = count('bc') - discount = 1 - 0.1 = 0.9
         # gamma(['b']) = discount * number of unique words that follow ['b'] = 0.1 * 2
         # normalizer = total number of bigrams with this context = 2

@@ -31,7 +31,7 @@ class TestNIST(unittest.TestCase):
                 # Note that the corpus_bleu input is list of list of references.
                 references = list(map(lambda x: [x.split()], ref_fin))
                 # Without smoothing.
-                for i, mteval_nist in zip(range(1,10), mteval_nist_scores):
+                for i, mteval_nist in zip(range(1, 10), mteval_nist_scores):
                     nltk_nist = corpus_nist(references, hypotheses, i)
                     # Check that the NIST scores difference is less than 0.5
                     assert abs(mteval_nist - nltk_nist) < 0.05

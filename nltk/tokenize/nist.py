@@ -72,6 +72,7 @@ class NISTTokenizer(TokenizerI):
     >>> nist.international_tokenize(sent) == expected_sent
     True
     """
+
     # Strip "skipped" tags
     STRIP_SKIP = re.compile('<skipped>'), ''
     #  Strip end-of-line hyphenation and join lines
@@ -85,13 +86,17 @@ class NISTTokenizer(TokenizerI):
     # Tokenize dash when preceded by a digit
     DASH_PRECEED_DIGIT = re.compile('([0-9])(-)'), '\\1 \\2 '
 
-    LANG_DEPENDENT_REGEXES = [PUNCT, PERIOD_COMMA_PRECEED,
-                              PERIOD_COMMA_FOLLOW, DASH_PRECEED_DIGIT]
+    LANG_DEPENDENT_REGEXES = [
+        PUNCT,
+        PERIOD_COMMA_PRECEED,
+        PERIOD_COMMA_FOLLOW,
+        DASH_PRECEED_DIGIT,
+    ]
 
     # Perluniprops characters used in NIST tokenizer.
-    pup_number = text_type(''.join(set(perluniprops.chars('Number')))) # i.e. \p{N}
-    pup_punct = text_type(''.join(set(perluniprops.chars('Punctuation')))) # i.e. \p{P}
-    pup_symbol = text_type(''.join(set(perluniprops.chars('Symbol')))) # i.e. \p{S}
+    pup_number = text_type(''.join(set(perluniprops.chars('Number'))))  # i.e. \p{N}
+    pup_punct = text_type(''.join(set(perluniprops.chars('Punctuation'))))  # i.e. \p{P}
+    pup_symbol = text_type(''.join(set(perluniprops.chars('Symbol'))))  # i.e. \p{S}
 
     # Python regexes needs to escape some special symbols, see
     # see https://stackoverflow.com/q/45670950/610569
@@ -104,14 +109,20 @@ class NISTTokenizer(TokenizerI):
     #       (ii) de-deuplicate spaces.
     #       In Python, this would do: ' '.join(str.strip().split())
     # Thus, the next two lines were commented out.
-    #Line_Separator = text_type(''.join(perluniprops.chars('Line_Separator'))) # i.e. \p{Zl}
-    #Separator = text_type(''.join(perluniprops.chars('Separator'))) # i.e. \p{Z}
+    # Line_Separator = text_type(''.join(perluniprops.chars('Line_Separator'))) # i.e. \p{Zl}
+    # Separator = text_type(''.join(perluniprops.chars('Separator'))) # i.e. \p{Z}
 
     # Pads non-ascii strings with space.
     NONASCII = re.compile('([\x00-\x7f]+)'), r' \1 '
     #  Tokenize any punctuation unless followed AND preceded by a digit.
-    PUNCT_1 = re.compile(u"([{n}])([{p}])".format(n=number_regex, p=punct_regex)), '\\1 \\2 '
-    PUNCT_2 = re.compile(u"([{p}])([{n}])".format(n=number_regex, p=punct_regex)), ' \\1 \\2'
+    PUNCT_1 = (
+        re.compile(u"([{n}])([{p}])".format(n=number_regex, p=punct_regex)),
+        '\\1 \\2 ',
+    )
+    PUNCT_2 = (
+        re.compile(u"([{p}])([{n}])".format(n=number_regex, p=punct_regex)),
+        ' \\1 \\2',
+    )
     # Tokenize symbols
     SYMBOLS = re.compile(u"([{s}])".format(s=symbol_regex)), ' \\1 '
 
@@ -129,8 +140,7 @@ class NISTTokenizer(TokenizerI):
         text = regexp.sub(substitution, text)
         return text
 
-    def tokenize(self, text, lowercase=False,
-                 western_lang=True, return_str=False):
+    def tokenize(self, text, lowercase=False, western_lang=True, return_str=False):
         text = text_type(text)
         # Language independent regex.
         text = self.lang_independent_sub(text)
@@ -149,9 +159,9 @@ class NISTTokenizer(TokenizerI):
         text = text_type(text.strip())
         return text if return_str else text.split()
 
-    def international_tokenize(self, text, lowercase=False,
-                               split_non_ascii=True,
-                               return_str=False):
+    def international_tokenize(
+        self, text, lowercase=False, split_non_ascii=True, return_str=False
+    ):
         text = text_type(text)
         # Different from the 'normal' tokenize(), STRIP_EOL_HYPHEN is applied
         # first before unescaping.

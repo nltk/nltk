@@ -52,31 +52,28 @@ class TestIBMModel4(unittest.TestCase):
 
         # assert
         # examine displacement values that are not in the training data domain
-        self.assertEqual(model4.head_distortion_table[4][0][0],
-                         IBMModel.MIN_PROB)
-        self.assertEqual(model4.head_distortion_table[100][1][2],
-                         IBMModel.MIN_PROB)
-        self.assertEqual(model4.non_head_distortion_table[4][0],
-                         IBMModel.MIN_PROB)
-        self.assertEqual(model4.non_head_distortion_table[100][2],
-                         IBMModel.MIN_PROB)
+        self.assertEqual(model4.head_distortion_table[4][0][0], IBMModel.MIN_PROB)
+        self.assertEqual(model4.head_distortion_table[100][1][2], IBMModel.MIN_PROB)
+        self.assertEqual(model4.non_head_distortion_table[4][0], IBMModel.MIN_PROB)
+        self.assertEqual(model4.non_head_distortion_table[100][2], IBMModel.MIN_PROB)
 
     def test_prob_t_a_given_s(self):
         # arrange
         src_sentence = ["ich", 'esse', 'ja', 'gern', 'räucherschinken']
         trg_sentence = ['i', 'love', 'to', 'eat', 'smoked', 'ham']
-        src_classes = {'räucherschinken': 0, 'ja': 1, 'ich': 2, 'esse': 3,
-                       'gern': 4}
-        trg_classes = {'ham': 0, 'smoked': 1, 'i': 3, 'love': 4, 'to': 2,
-                       'eat': 4}
+        src_classes = {'räucherschinken': 0, 'ja': 1, 'ich': 2, 'esse': 3, 'gern': 4}
+        trg_classes = {'ham': 0, 'smoked': 1, 'i': 3, 'love': 4, 'to': 2, 'eat': 4}
         corpus = [AlignedSent(trg_sentence, src_sentence)]
-        alignment_info = AlignmentInfo((0, 1, 4, 0, 2, 5, 5),
-                                       [None] + src_sentence,
-                                       ['UNUSED'] + trg_sentence,
-                                       [[3], [1], [4], [], [2], [5, 6]])
+        alignment_info = AlignmentInfo(
+            (0, 1, 4, 0, 2, 5, 5),
+            [None] + src_sentence,
+            ['UNUSED'] + trg_sentence,
+            [[3], [1], [4], [], [2], [5, 6]],
+        )
 
         head_distortion_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(float)))
+            lambda: defaultdict(lambda: defaultdict(float))
+        )
         head_distortion_table[1][None][3] = 0.97  # None, i
         head_distortion_table[3][2][4] = 0.97  # ich, eat
         head_distortion_table[-2][3][4] = 0.97  # esse, love
@@ -107,20 +104,20 @@ class TestIBMModel4(unittest.TestCase):
             'head_distortion_table': head_distortion_table,
             'non_head_distortion_table': non_head_distortion_table,
             'fertility_table': fertility_table,
-            'alignment_table': None
+            'alignment_table': None,
         }
 
-        model4 = IBMModel4(corpus, 0, src_classes, trg_classes,
-                           probabilities)
+        model4 = IBMModel4(corpus, 0, src_classes, trg_classes, probabilities)
 
         # act
         probability = model4.prob_t_a_given_s(alignment_info)
 
         # assert
         null_generation = 5 * pow(0.167, 1) * pow(0.833, 4)
-        fertility = 1*0.99 * 1*0.99 * 1*0.99 * 1*0.99 * 2*0.999
+        fertility = 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 1 * 0.99 * 2 * 0.999
         lexical_translation = 0.98 * 0.98 * 0.98 * 0.98 * 0.98 * 0.98
         distortion = 0.97 * 0.97 * 1 * 0.97 * 0.97 * 0.96
-        expected_probability = (null_generation * fertility *
-                                lexical_translation * distortion)
+        expected_probability = (
+            null_generation * fertility * lexical_translation * distortion
+        )
         self.assertEqual(round(probability, 4), round(expected_probability, 4))

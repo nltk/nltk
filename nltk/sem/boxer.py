@@ -36,14 +36,27 @@ from functools import reduce
 
 from nltk.internals import find_binary
 
-from nltk.sem.logic import (ExpectedMoreTokensException, LogicalExpressionException,
-                            UnexpectedTokenException, Variable)
+from nltk.sem.logic import (
+    ExpectedMoreTokensException,
+    LogicalExpressionException,
+    UnexpectedTokenException,
+    Variable,
+)
 
-from nltk.sem.drt import (DRS, DrtApplicationExpression, DrtEqualityExpression,
-                          DrtNegatedExpression, DrtOrExpression, DrtParser,
-                          DrtProposition, DrtTokens, DrtVariableExpression)
+from nltk.sem.drt import (
+    DRS,
+    DrtApplicationExpression,
+    DrtEqualityExpression,
+    DrtNegatedExpression,
+    DrtOrExpression,
+    DrtParser,
+    DrtProposition,
+    DrtTokens,
+    DrtVariableExpression,
+)
 
 from nltk.compat import python_2_unicode_compatible
+
 
 class Boxer(object):
     """
@@ -51,7 +64,14 @@ class Boxer(object):
     semantic parser that produces Discourse Representation Structures (DRSs).
     """
 
-    def __init__(self, boxer_drs_interpreter=None, elimeq=False, bin_dir=None, verbose=False, resolve=True):
+    def __init__(
+        self,
+        boxer_drs_interpreter=None,
+        elimeq=False,
+        bin_dir=None,
+        verbose=False,
+        resolve=True,
+    ):
         """
         :param boxer_drs_interpreter: A class that converts from the
         ``AbstractBoxerDrs`` object hierarchy to a different object.  The
@@ -74,7 +94,9 @@ class Boxer(object):
 
     def set_bin_dir(self, bin_dir, verbose=False):
         self._candc_bin = self._find_binary('candc', bin_dir, verbose)
-        self._candc_models_path = os.path.normpath(os.path.join(self._candc_bin[:-5], '../models'))
+        self._candc_models_path = os.path.normpath(
+            os.path.join(self._candc_bin[:-5], '../models')
+        )
         self._boxer_bin = self._find_binary('boxer', bin_dir, verbose)
 
     def interpret(self, input, discourse_id=None, question=False, verbose=False):
@@ -86,7 +108,7 @@ class Boxer(object):
         :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
         :return: ``drt.DrtExpression``
         """
-        discourse_ids = ([discourse_id] if discourse_id is not None else None)
+        discourse_ids = [discourse_id] if discourse_id is not None else None
         d, = self.interpret_multi_sents([[input]], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "{0}"'.format(input))
@@ -101,13 +123,15 @@ class Boxer(object):
         :param discourse_id: str An identifier to be inserted to each occurrence-indexed predicate.
         :return: ``drt.DrtExpression``
         """
-        discourse_ids = ([discourse_id] if discourse_id is not None else None)
+        discourse_ids = [discourse_id] if discourse_id is not None else None
         d, = self.interpret_multi_sents([input], discourse_ids, question, verbose)
         if not d:
             raise Exception('Unable to interpret: "{0}"'.format(input))
         return d
 
-    def interpret_sents(self, inputs, discourse_ids=None, question=False, verbose=False):
+    def interpret_sents(
+        self, inputs, discourse_ids=None, question=False, verbose=False
+    ):
         """
         Use Boxer to give a first order representation.
 
@@ -116,9 +140,13 @@ class Boxer(object):
         :param discourse_ids: list of str Identifiers to be inserted to each occurrence-indexed predicate.
         :return: list of ``drt.DrtExpression``
         """
-        return self.interpret_multi_sents([[input] for input in inputs], discourse_ids, question, verbose)
+        return self.interpret_multi_sents(
+            [[input] for input in inputs], discourse_ids, question, verbose
+        )
 
-    def interpret_multi_sents(self, inputs, discourse_ids=None, question=False, verbose=False):
+    def interpret_multi_sents(
+        self, inputs, discourse_ids=None, question=False, verbose=False
+    ):
         """
         Use Boxer to give a first order representation.
 
@@ -138,8 +166,8 @@ class Boxer(object):
         candc_out = self._call_candc(inputs, discourse_ids, question, verbose=verbose)
         boxer_out = self._call_boxer(candc_out, verbose=verbose)
 
-#        if 'ERROR: input file contains no ccg/2 terms.' in boxer_out:
-#            raise UnparseableInputException('Could not parse with candc: "%s"' % input_str)
+        #        if 'ERROR: input file contains no ccg/2 terms.' in boxer_out:
+        #            raise UnparseableInputException('Could not parse with candc: "%s"' % input_str)
 
         drs_dict = self._parse_to_drs_dict(boxer_out, use_disc_id)
         return [drs_dict.get(id, None) for id in discourse_ids]
@@ -153,9 +181,26 @@ class Boxer(object):
         :param filename: str A filename for the output file
         :return: stdout
         """
-        args = ['--models', os.path.join(self._candc_models_path, ['boxer','questions'][question]),
-                '--candc-printer', 'boxer']
-        return self._call('\n'.join(sum((["<META>'{0}'".format(id)] + d for d,id in zip(inputs,discourse_ids)), [])), self._candc_bin, args, verbose)
+        args = [
+            '--models',
+            os.path.join(self._candc_models_path, ['boxer', 'questions'][question]),
+            '--candc-printer',
+            'boxer',
+        ]
+        return self._call(
+            '\n'.join(
+                sum(
+                    (
+                        ["<META>'{0}'".format(id)] + d
+                        for d, id in zip(inputs, discourse_ids)
+                    ),
+                    [],
+                )
+            ),
+            self._candc_bin,
+            args,
+            verbose,
+        )
 
     def _call_boxer(self, candc_out, verbose=False):
         """
@@ -166,31 +211,45 @@ class Boxer(object):
         """
         f = None
         try:
-            fd, temp_filename = tempfile.mkstemp(prefix='boxer-', suffix='.in', text=True)
+            fd, temp_filename = tempfile.mkstemp(
+                prefix='boxer-', suffix='.in', text=True
+            )
             f = os.fdopen(fd, 'w')
             f.write(candc_out)
         finally:
-            if f: f.close()
+            if f:
+                f.close()
 
-        args = ['--box', 'false',
-                '--semantics', 'drs',
-                #'--flat', 'false', # removed from boxer
-                '--resolve', ['false','true'][self._resolve],
-                '--elimeq', ['false','true'][self._elimeq],
-                '--format', 'prolog',
-                '--instantiate', 'true',
-                '--input', temp_filename]
+        args = [
+            '--box',
+            'false',
+            '--semantics',
+            'drs',
+            #'--flat', 'false', # removed from boxer
+            '--resolve',
+            ['false', 'true'][self._resolve],
+            '--elimeq',
+            ['false', 'true'][self._elimeq],
+            '--format',
+            'prolog',
+            '--instantiate',
+            'true',
+            '--input',
+            temp_filename,
+        ]
         stdout = self._call(None, self._boxer_bin, args, verbose)
         os.remove(temp_filename)
         return stdout
 
     def _find_binary(self, name, bin_dir, verbose=False):
-        return find_binary(name,
+        return find_binary(
+            name,
             path_to_bin=bin_dir,
             env_vars=['CANDC'],
             url='http://svn.ask.it.usyd.edu.au/trac/candc/',
             binary_names=[name, name + '.exe'],
-            verbose=verbose)
+            verbose=verbose,
+        )
 
     def _call(self, input_str, binary, args=[], verbose=False):
         """
@@ -213,15 +272,23 @@ class Boxer(object):
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
             cmd = 'echo "{0}" | {1} {2}'.format(input_str, binary, ' '.join(args))
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            p = subprocess.Popen(
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+            )
         stdout, stderr = p.communicate()
 
         if verbose:
             print('Return code:', p.returncode)
-            if stdout: print('stdout:\n', stdout, '\n')
-            if stderr: print('stderr:\n', stderr, '\n')
+            if stdout:
+                print('stdout:\n', stdout, '\n')
+            if stderr:
+                print('stderr:\n', stderr, '\n')
         if p.returncode != 0:
-            raise Exception('ERROR CALLING: {0} {1}\nReturncode: {2}\n{3}'.format(binary, ' '.join(args), p.returncode, stderr))
+            raise Exception(
+                'ERROR CALLING: {0} {1}\nReturncode: {2}\n{3}'.format(
+                    binary, ' '.join(args), p.returncode, stderr
+                )
+            )
 
         return stdout
 
@@ -236,7 +303,7 @@ class Boxer(object):
                 discourse_id = line[3:comma_idx]
                 if discourse_id[0] == "'" and discourse_id[-1] == "'":
                     discourse_id = discourse_id[1:-1]
-                drs_id = line[comma_idx+1:line.index(')')]
+                drs_id = line[comma_idx + 1 : line.index(')')]
                 i += 1
                 line = lines[i]
                 assert line.startswith('sem({0},'.format(drs_id))
@@ -247,14 +314,14 @@ class Boxer(object):
                 search_start = len('sem({0},['.format(drs_id))
                 brace_count = 1
                 drs_start = -1
-                for j,c in enumerate(line[search_start:]):
-                    if(c == '['):
+                for j, c in enumerate(line[search_start:]):
+                    if c == '[':
                         brace_count += 1
-                    if(c == ']'):
+                    if c == ']':
                         brace_count -= 1
-                        if(brace_count == 0):
+                        if brace_count == 0:
                             drs_start = search_start + j + 1
-                            if line[drs_start:drs_start+3] == "','":
+                            if line[drs_start : drs_start + 3] == "','":
                                 drs_start = drs_start + 3
                             else:
                                 drs_start = drs_start + 1
@@ -268,7 +335,7 @@ class Boxer(object):
         return drs_dict
 
     def _parse_drs(self, drs_string, discourse_id, use_disc_id):
-        return BoxerOutputDrsParser([None,discourse_id][use_disc_id]).parse(drs_string)
+        return BoxerOutputDrsParser([None, discourse_id][use_disc_id]).parse(drs_string)
 
 
 class BoxerOutputDrsParser(DrtParser):
@@ -286,7 +353,7 @@ class BoxerOutputDrsParser(DrtParser):
         return DrtParser.parse(self, data, signature)
 
     def get_all_symbols(self):
-        return ['(', ')', ',', '[', ']',':']
+        return ['(', ')', ',', '[', ']', ':']
 
     def handle(self, tok, context):
         return self.handle_drs(tok)
@@ -352,7 +419,13 @@ class BoxerOutputDrsParser(DrtParser):
         else:
             conds = []
 
-        return sum([[cond(sent_index, word_indices) for cond in conds] for sent_index, word_indices in self._sent_and_word_indices(indices)], [])
+        return sum(
+            [
+                [cond(sent_index, word_indices) for cond in conds]
+                for sent_index, word_indices in self._sent_and_word_indices(indices)
+            ],
+            [],
+        )
 
     def _handle_not(self):
         self.assertToken(self.token(), '(')
@@ -361,7 +434,7 @@ class BoxerOutputDrsParser(DrtParser):
         return BoxerNot(drs)
 
     def _handle_pred(self):
-        #pred(_G3943, dog, n, 0)
+        # pred(_G3943, dog, n, 0)
         self.assertToken(self.token(), '(')
         variable = self.parse_variable()
         self.assertToken(self.token(), ',')
@@ -373,11 +446,14 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ')')
 
         def _handle_pred_f(sent_index, word_indices):
-            return BoxerPred(self.discourse_id, sent_index, word_indices, variable, name, pos, sense)
+            return BoxerPred(
+                self.discourse_id, sent_index, word_indices, variable, name, pos, sense
+            )
+
         return _handle_pred_f
 
     def _handle_duplex(self):
-        #duplex(whq, drs(...), var, drs(...))
+        # duplex(whq, drs(...), var, drs(...))
         self.assertToken(self.token(), '(')
         # self.assertToken(self.token(), '[')
         ans_types = []
@@ -405,11 +481,12 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         d2 = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
-        return lambda sent_index, word_indices: BoxerWhq(self.discourse_id, sent_index, word_indices, ans_types, d1, ref, d2)
-
+        return lambda sent_index, word_indices: BoxerWhq(
+            self.discourse_id, sent_index, word_indices, ans_types, d1, ref, d2
+        )
 
     def _handle_named(self):
-        #named(x0, john, per, 0)
+        # named(x0, john, per, 0)
         self.assertToken(self.token(), '(')
         variable = self.parse_variable()
         self.assertToken(self.token(), ',')
@@ -417,12 +494,14 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         type = self.token()
         self.assertToken(self.token(), ',')
-        sense = self.token() # as per boxer rev 2554
+        sense = self.token()  # as per boxer rev 2554
         self.assertToken(self.token(), ')')
-        return lambda sent_index, word_indices: BoxerNamed(self.discourse_id, sent_index, word_indices, variable, name, type, sense)
+        return lambda sent_index, word_indices: BoxerNamed(
+            self.discourse_id, sent_index, word_indices, variable, name, type, sense
+        )
 
     def _handle_rel(self):
-        #rel(_G3993, _G3943, agent, 0)
+        # rel(_G3993, _G3943, agent, 0)
         self.assertToken(self.token(), '(')
         var1 = self.parse_variable()
         self.assertToken(self.token(), ',')
@@ -432,10 +511,12 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         sense = int(self.token())
         self.assertToken(self.token(), ')')
-        return lambda sent_index, word_indices: BoxerRel(self.discourse_id, sent_index, word_indices, var1, var2, rel, sense)
+        return lambda sent_index, word_indices: BoxerRel(
+            self.discourse_id, sent_index, word_indices, var1, var2, rel, sense
+        )
 
     def _handle_timex(self):
-        #timex(_G18322, date([]: (+), []:'XXXX', [1004]:'04', []:'XX'))
+        # timex(_G18322, date([]: (+), []:'XXXX', [1004]:'04', []:'XX'))
         self.assertToken(self.token(), '(')
         arg = self.parse_variable()
         self.assertToken(self.token(), ',')
@@ -444,7 +525,7 @@ class BoxerOutputDrsParser(DrtParser):
         return new_conds
 
     def _handle_time_expression(self, arg):
-        #date([]: (+), []:'XXXX', [1004]:'04', []:'XX')
+        # date([]: (+), []:'XXXX', [1004]:'04', []:'XX')
         tok = self.token()
         self.assertToken(self.token(), '(')
         if tok == 'date':
@@ -454,63 +535,114 @@ class BoxerOutputDrsParser(DrtParser):
         else:
             return None
         self.assertToken(self.token(), ')')
-        return [lambda sent_index, word_indices: BoxerPred(self.discourse_id, sent_index, word_indices, arg, tok, 'n', 0)] + \
-               [lambda sent_index, word_indices: cond for cond in conds]
+        return [
+            lambda sent_index, word_indices: BoxerPred(
+                self.discourse_id, sent_index, word_indices, arg, tok, 'n', 0
+            )
+        ] + [lambda sent_index, word_indices: cond for cond in conds]
 
     def _handle_date(self, arg):
-        #[]: (+), []:'XXXX', [1004]:'04', []:'XX'
+        # []: (+), []:'XXXX', [1004]:'04', []:'XX'
         conds = []
-        (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
+        (sent_index, word_indices), = self._sent_and_word_indices(
+            self._parse_index_list()
+        )
         self.assertToken(self.token(), '(')
         pol = self.token()
         self.assertToken(self.token(), ')')
-        conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_pol_{0}'.format(pol), 'a', 0))
+        conds.append(
+            BoxerPred(
+                self.discourse_id,
+                sent_index,
+                word_indices,
+                arg,
+                'date_pol_{0}'.format(pol),
+                'a',
+                0,
+            )
+        )
         self.assertToken(self.token(), ',')
 
-        (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
+        (sent_index, word_indices), = self._sent_and_word_indices(
+            self._parse_index_list()
+        )
         year = self.token()
         if year != 'XXXX':
             year = year.replace(':', '_')
-            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_year_{0}'.format(year), 'a', 0))
+            conds.append(
+                BoxerPred(
+                    self.discourse_id,
+                    sent_index,
+                    word_indices,
+                    arg,
+                    'date_year_{0}'.format(year),
+                    'a',
+                    0,
+                )
+            )
         self.assertToken(self.token(), ',')
 
-        (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
+        (sent_index, word_indices), = self._sent_and_word_indices(
+            self._parse_index_list()
+        )
         month = self.token()
         if month != 'XX':
-            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_month_{0}'.format(month), 'a', 0))
+            conds.append(
+                BoxerPred(
+                    self.discourse_id,
+                    sent_index,
+                    word_indices,
+                    arg,
+                    'date_month_{0}'.format(month),
+                    'a',
+                    0,
+                )
+            )
         self.assertToken(self.token(), ',')
 
-        (sent_index, word_indices), = self._sent_and_word_indices(self._parse_index_list())
+        (sent_index, word_indices), = self._sent_and_word_indices(
+            self._parse_index_list()
+        )
         day = self.token()
         if day != 'XX':
-            conds.append(BoxerPred(self.discourse_id, sent_index, word_indices, arg, 'date_day_{0}'.format(day), 'a', 0))
+            conds.append(
+                BoxerPred(
+                    self.discourse_id,
+                    sent_index,
+                    word_indices,
+                    arg,
+                    'date_day_{0}'.format(day),
+                    'a',
+                    0,
+                )
+            )
 
         return conds
 
     def _handle_time(self, arg):
-        #time([1018]:'18', []:'XX', []:'XX')
+        # time([1018]:'18', []:'XX', []:'XX')
         conds = []
         self._parse_index_list()
         hour = self.token()
         if hour != 'XX':
-            conds.append(self._make_atom('r_hour_2',arg,hour))
+            conds.append(self._make_atom('r_hour_2', arg, hour))
         self.assertToken(self.token(), ',')
 
         self._parse_index_list()
         min = self.token()
         if min != 'XX':
-            conds.append(self._make_atom('r_min_2',arg,min))
+            conds.append(self._make_atom('r_min_2', arg, min))
         self.assertToken(self.token(), ',')
 
         self._parse_index_list()
         sec = self.token()
         if sec != 'XX':
-            conds.append(self._make_atom('r_sec_2',arg,sec))
+            conds.append(self._make_atom('r_sec_2', arg, sec))
 
         return conds
 
     def _handle_card(self):
-        #card(_G18535, 28, ge)
+        # card(_G18535, 28, ge)
         self.assertToken(self.token(), '(')
         variable = self.parse_variable()
         self.assertToken(self.token(), ',')
@@ -518,31 +650,35 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         type = self.token()
         self.assertToken(self.token(), ')')
-        return lambda sent_index, word_indices: BoxerCard(self.discourse_id, sent_index, word_indices, variable, value, type)
+        return lambda sent_index, word_indices: BoxerCard(
+            self.discourse_id, sent_index, word_indices, variable, value, type
+        )
 
     def _handle_prop(self):
-        #prop(_G15949, drs(...))
+        # prop(_G15949, drs(...))
         self.assertToken(self.token(), '(')
         variable = self.parse_variable()
         self.assertToken(self.token(), ',')
         drs = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
-        return lambda sent_index, word_indices: BoxerProp(self.discourse_id, sent_index, word_indices, variable, drs)
+        return lambda sent_index, word_indices: BoxerProp(
+            self.discourse_id, sent_index, word_indices, variable, drs
+        )
 
     def _parse_index_list(self):
-        #[1001,1002]:
+        # [1001,1002]:
         indices = []
         self.assertToken(self.token(), '[')
         while self.token(0) != ']':
             indices.append(self.parse_index())
             if self.token(0) == ',':
-                self.token() #swallow ','
-        self.token() #swallow ']'
+                self.token()  # swallow ','
+        self.token()  # swallow ']'
         self.assertToken(self.token(), ':')
         return indices
 
     def parse_drs(self):
-        #drs([[1001]:_G3943],
+        # drs([[1001]:_G3943],
         #    [[1002]:pred(_G3943, dog, n, 0)]
         #   )
         self.assertToken(self.token(), '(')
@@ -552,8 +688,8 @@ class BoxerOutputDrsParser(DrtParser):
             indices = self._parse_index_list()
             refs.add(self.parse_variable())
             if self.token(0) == ',':
-                self.token() #swallow ','
-        self.token() #swallow ']'
+                self.token()  # swallow ','
+        self.token()  # swallow ']'
         self.assertToken(self.token(), ',')
         self.assertToken(self.token(), '[')
         conds = []
@@ -561,8 +697,8 @@ class BoxerOutputDrsParser(DrtParser):
             indices = self._parse_index_list()
             conds.extend(self.parse_condition(indices))
             if self.token(0) == ',':
-                self.token() #swallow ','
-        self.token() #swallow ']'
+                self.token()  # swallow ','
+        self.token()  # swallow ']'
         self.assertToken(self.token(), ')')
         return BoxerDrs(list(refs), conds)
 
@@ -572,7 +708,9 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         drs2 = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
-        return lambda sent_index, word_indices: make_callback(sent_index, word_indices, drs1, drs2)
+        return lambda sent_index, word_indices: make_callback(
+            sent_index, word_indices, drs1, drs2
+        )
 
     def _handle_alfa(self, make_callback):
         self.assertToken(self.token(), '(')
@@ -582,7 +720,9 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         drs2 = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
-        return lambda sent_index, word_indices: make_callback(sent_index, word_indices, drs1, drs2)
+        return lambda sent_index, word_indices: make_callback(
+            sent_index, word_indices, drs1, drs2
+        )
 
     def _handle_eq(self):
         self.assertToken(self.token(), '(')
@@ -590,8 +730,9 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         var2 = self.parse_variable()
         self.assertToken(self.token(), ')')
-        return lambda sent_index, word_indices: BoxerEq(self.discourse_id, sent_index, word_indices, var1, var2)
-
+        return lambda sent_index, word_indices: BoxerEq(
+            self.discourse_id, sent_index, word_indices, var1, var2
+        )
 
     def _handle_whq(self):
         self.assertToken(self.token(), '(')
@@ -611,7 +752,7 @@ class BoxerOutputDrsParser(DrtParser):
                     ans_types.append(typ)
             else:
                 ans_types.append(self.token())
-        self.token() #swallow the ']'
+        self.token()  # swallow the ']'
 
         self.assertToken(self.token(), ',')
         d1 = self.process_next_expression(None)
@@ -620,7 +761,9 @@ class BoxerOutputDrsParser(DrtParser):
         self.assertToken(self.token(), ',')
         d2 = self.process_next_expression(None)
         self.assertToken(self.token(), ')')
-        return lambda sent_index, word_indices: BoxerWhq(self.discourse_id, sent_index, word_indices, ans_types, d1, ref, d2)
+        return lambda sent_index, word_indices: BoxerWhq(
+            self.discourse_id, sent_index, word_indices, ans_types, d1, ref, d2
+        )
 
     def _make_merge_expression(self, sent_index, word_indices, drs1, drs2):
         return BoxerDrs(drs1.refs + drs2.refs, drs1.conds + drs2.conds)
@@ -643,15 +786,17 @@ class BoxerOutputDrsParser(DrtParser):
         """
         :return: list of (sent_index, word_indices) tuples
         """
-        sent_indices = set((i / 1000)-1 for i in indices if i>=0)
+        sent_indices = set((i / 1000) - 1 for i in indices if i >= 0)
         if sent_indices:
             pairs = []
             for sent_index in sent_indices:
-                word_indices = [(i % 1000)-1 for i in indices if sent_index == (i / 1000)-1]
+                word_indices = [
+                    (i % 1000) - 1 for i in indices if sent_index == (i / 1000) - 1
+                ]
                 pairs.append((sent_index, word_indices))
             return pairs
         else:
-            word_indices = [(i % 1000)-1 for i in indices]
+            word_indices = [(i % 1000) - 1 for i in indices]
             return [(None, word_indices)]
 
 
@@ -659,30 +804,39 @@ class BoxerDrsParser(DrtParser):
     """
     Reparse the str form of subclasses of ``AbstractBoxerDrs``
     """
+
     def __init__(self, discourse_id=None):
         DrtParser.__init__(self)
         self.discourse_id = discourse_id
 
     def get_all_symbols(self):
-        return [DrtTokens.OPEN, DrtTokens.CLOSE, DrtTokens.COMMA, DrtTokens.OPEN_BRACKET, DrtTokens.CLOSE_BRACKET]
+        return [
+            DrtTokens.OPEN,
+            DrtTokens.CLOSE,
+            DrtTokens.COMMA,
+            DrtTokens.OPEN_BRACKET,
+            DrtTokens.CLOSE_BRACKET,
+        ]
 
     def attempt_adjuncts(self, expression, context):
         return expression
 
     def handle(self, tok, context):
         try:
-#             if tok == 'drs':
-#                 self.assertNextToken(DrtTokens.OPEN)
-#                 label = int(self.token())
-#                 self.assertNextToken(DrtTokens.COMMA)
-#                 refs = list(map(int, self.handle_refs()))
-#                 self.assertNextToken(DrtTokens.COMMA)
-#                 conds = self.handle_conds(None)
-#                 self.assertNextToken(DrtTokens.CLOSE)
-#                 return BoxerDrs(label, refs, conds)
+            #             if tok == 'drs':
+            #                 self.assertNextToken(DrtTokens.OPEN)
+            #                 label = int(self.token())
+            #                 self.assertNextToken(DrtTokens.COMMA)
+            #                 refs = list(map(int, self.handle_refs()))
+            #                 self.assertNextToken(DrtTokens.COMMA)
+            #                 conds = self.handle_conds(None)
+            #                 self.assertNextToken(DrtTokens.CLOSE)
+            #                 return BoxerDrs(label, refs, conds)
             if tok == 'pred':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
+                disc_id = (
+                    self.discourse_id if self.discourse_id is not None else self.token()
+                )
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -699,7 +853,9 @@ class BoxerDrsParser(DrtParser):
                 return BoxerPred(disc_id, sent_id, word_ids, variable, name, pos, sense)
             elif tok == 'named':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
+                disc_id = (
+                    self.discourse_id if self.discourse_id is not None else self.token()
+                )
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -713,10 +869,14 @@ class BoxerDrsParser(DrtParser):
                 self.assertNextToken(DrtTokens.COMMA)
                 sense = int(self.token())
                 self.assertNextToken(DrtTokens.CLOSE)
-                return BoxerNamed(disc_id, sent_id, word_ids, variable, name, type, sense)
+                return BoxerNamed(
+                    disc_id, sent_id, word_ids, variable, name, type, sense
+                )
             elif tok == 'rel':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
+                disc_id = (
+                    self.discourse_id if self.discourse_id is not None else self.token()
+                )
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -733,7 +893,9 @@ class BoxerDrsParser(DrtParser):
                 return BoxerRel(disc_id, sent_id, word_ids, var1, var2, rel, sense)
             elif tok == 'prop':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
+                disc_id = (
+                    self.discourse_id if self.discourse_id is not None else self.token()
+                )
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = int(self.token())
                 self.assertNextToken(DrtTokens.COMMA)
@@ -758,7 +920,9 @@ class BoxerDrsParser(DrtParser):
                 return BoxerDrs(drs1.refs, drs1.conds, drs2)
             elif tok == 'or':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
+                disc_id = (
+                    self.discourse_id if self.discourse_id is not None else self.token()
+                )
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -771,7 +935,9 @@ class BoxerDrsParser(DrtParser):
                 return BoxerOr(disc_id, sent_id, word_ids, drs1, drs2)
             elif tok == 'eq':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
+                disc_id = (
+                    self.discourse_id if self.discourse_id is not None else self.token()
+                )
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -784,7 +950,9 @@ class BoxerDrsParser(DrtParser):
                 return BoxerEq(disc_id, sent_id, word_ids, var1, var2)
             elif tok == 'card':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
+                disc_id = (
+                    self.discourse_id if self.discourse_id is not None else self.token()
+                )
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -799,7 +967,9 @@ class BoxerDrsParser(DrtParser):
                 return BoxerCard(disc_id, sent_id, word_ids, var, value, type)
             elif tok == 'whq':
                 self.assertNextToken(DrtTokens.OPEN)
-                disc_id = self.discourse_id if self.discourse_id is not None else self.token()
+                disc_id = (
+                    self.discourse_id if self.discourse_id is not None else self.token()
+                )
                 self.assertNextToken(DrtTokens.COMMA)
                 sent_id = self.nullableIntToken()
                 self.assertNextToken(DrtTokens.COMMA)
@@ -829,7 +999,6 @@ class BoxerDrsParser(DrtParser):
             raise ExpectedMoreTokensException(e.index, 'Variable expected.')
 
 
-
 class AbstractBoxerDrs(object):
     def variables(self):
         """
@@ -840,7 +1009,7 @@ class AbstractBoxerDrs(object):
 
     def variable_types(self):
         vartypes = {}
-        for t,vars in zip(('z','e','p'), self.variables()):
+        for t, vars in zip(('z', 'e', 'p'), self.variables()):
             for v in vars:
                 vartypes[v] = t
         return vartypes
@@ -858,7 +1027,7 @@ class AbstractBoxerDrs(object):
         return self
 
     def _clean_name(self, name):
-        return name.replace('-','_').replace("'", "_")
+        return name.replace('-', '_').replace("'", "_")
 
     def renumber_sentences(self, f):
         return self
@@ -878,10 +1047,10 @@ class BoxerDrs(AbstractBoxerDrs):
     def _variables(self):
         variables = (set(), set(), set())
         for cond in self.conds:
-            for s,v in zip(variables, cond._variables()):
+            for s, v in zip(variables, cond._variables()):
                 s.update(v)
         if self.consequent is not None:
-            for s,v in zip(variables, self.consequent._variables()):
+            for s, v in zip(variables, self.consequent._variables()):
                 s.update(v)
         return variables
 
@@ -892,26 +1061,34 @@ class BoxerDrs(AbstractBoxerDrs):
         return atoms
 
     def clean(self):
-        consequent = (self.consequent.clean() if self.consequent else None)
+        consequent = self.consequent.clean() if self.consequent else None
         return BoxerDrs(self.refs, [c.clean() for c in self.conds], consequent)
 
     def renumber_sentences(self, f):
-        consequent = (self.consequent.renumber_sentences(f) if self.consequent else None)
-        return BoxerDrs(self.refs, [c.renumber_sentences(f) for c in self.conds], consequent)
+        consequent = self.consequent.renumber_sentences(f) if self.consequent else None
+        return BoxerDrs(
+            self.refs, [c.renumber_sentences(f) for c in self.conds], consequent
+        )
 
     def __repr__(self):
-        s = 'drs([%s], [%s])' % (', '.join("%s" % r for r in self.refs),
-                                 ', '.join("%s" % c for c in self.conds))
+        s = 'drs([%s], [%s])' % (
+            ', '.join("%s" % r for r in self.refs),
+            ', '.join("%s" % c for c in self.conds),
+        )
         if self.consequent is not None:
             s = 'imp(%s, %s)' % (s, self.consequent)
         return s
 
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and \
-               self.refs == other.refs and \
-               len(self.conds) == len(other.conds) and \
-               reduce(operator.and_, (c1==c2 for c1,c2 in zip(self.conds, other.conds))) and \
-               self.consequent == other.consequent
+        return (
+            self.__class__ == other.__class__
+            and self.refs == other.refs
+            and len(self.conds) == len(other.conds)
+            and reduce(
+                operator.and_, (c1 == c2 for c1, c2 in zip(self.conds, other.conds))
+            )
+            and self.consequent == other.consequent
+        )
 
     def __ne__(self, other):
         return not self == other
@@ -948,6 +1125,7 @@ class BoxerNot(AbstractBoxerDrs):
 
     __hash__ = AbstractBoxerDrs.__hash__
 
+
 @python_2_unicode_compatible
 class BoxerIndexed(AbstractBoxerDrs):
     def __init__(self, discourse_id, sent_index, word_indices):
@@ -960,11 +1138,13 @@ class BoxerIndexed(AbstractBoxerDrs):
         return set([self])
 
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and \
-               self.discourse_id == other.discourse_id and \
-               self.sent_index == other.sent_index and \
-               self.word_indices == other.word_indices and \
-               reduce(operator.and_, (s==o for s,o in zip(self, other)))
+        return (
+            self.__class__ == other.__class__
+            and self.discourse_id == other.discourse_id
+            and self.sent_index == other.sent_index
+            and self.word_indices == other.word_indices
+            and reduce(operator.and_, (s == o for s, o in zip(self, other)))
+        )
 
     def __ne__(self, other):
         return not self == other
@@ -972,11 +1152,16 @@ class BoxerIndexed(AbstractBoxerDrs):
     __hash__ = AbstractBoxerDrs.__hash__
 
     def __repr__(self):
-        s = '%s(%s, %s, [%s]' % (self._pred(), self.discourse_id,
-                                 self.sent_index, ', '.join("%s" % wi for wi in self.word_indices))
+        s = '%s(%s, %s, [%s]' % (
+            self._pred(),
+            self.discourse_id,
+            self.sent_index,
+            ', '.join("%s" % wi for wi in self.word_indices),
+        )
         for v in self:
             s += ', %s' % v
         return s + ')'
+
 
 class BoxerPred(BoxerIndexed):
     def __init__(self, discourse_id, sent_index, word_indices, var, name, pos, sense):
@@ -990,20 +1175,45 @@ class BoxerPred(BoxerIndexed):
         return (set([self.var]), set(), set())
 
     def change_var(self, var):
-        return BoxerPred(self.discourse_id, self.sent_index, self.word_indices, var, self.name, self.pos, self.sense)
+        return BoxerPred(
+            self.discourse_id,
+            self.sent_index,
+            self.word_indices,
+            var,
+            self.name,
+            self.pos,
+            self.sense,
+        )
 
     def clean(self):
-        return BoxerPred(self.discourse_id, self.sent_index, self.word_indices, self.var, self._clean_name(self.name), self.pos, self.sense)
+        return BoxerPred(
+            self.discourse_id,
+            self.sent_index,
+            self.word_indices,
+            self.var,
+            self._clean_name(self.name),
+            self.pos,
+            self.sense,
+        )
 
     def renumber_sentences(self, f):
         new_sent_index = f(self.sent_index)
-        return BoxerPred(self.discourse_id, new_sent_index, self.word_indices, self.var, self.name, self.pos, self.sense)
+        return BoxerPred(
+            self.discourse_id,
+            new_sent_index,
+            self.word_indices,
+            self.var,
+            self.name,
+            self.pos,
+            self.sense,
+        )
 
     def __iter__(self):
         return iter((self.var, self.name, self.pos, self.sense))
 
     def _pred(self):
         return 'pred'
+
 
 class BoxerNamed(BoxerIndexed):
     def __init__(self, discourse_id, sent_index, word_indices, var, name, type, sense):
@@ -1017,19 +1227,44 @@ class BoxerNamed(BoxerIndexed):
         return (set([self.var]), set(), set())
 
     def change_var(self, var):
-        return BoxerNamed(self.discourse_id, self.sent_index, self.word_indices, var, self.name, self.type, self.sense)
+        return BoxerNamed(
+            self.discourse_id,
+            self.sent_index,
+            self.word_indices,
+            var,
+            self.name,
+            self.type,
+            self.sense,
+        )
 
     def clean(self):
-        return BoxerNamed(self.discourse_id, self.sent_index, self.word_indices, self.var, self._clean_name(self.name), self.type, self.sense)
+        return BoxerNamed(
+            self.discourse_id,
+            self.sent_index,
+            self.word_indices,
+            self.var,
+            self._clean_name(self.name),
+            self.type,
+            self.sense,
+        )
 
     def renumber_sentences(self, f):
-        return BoxerNamed(self.discourse_id, f(self.sent_index), self.word_indices, self.var, self.name, self.type, self.sense)
+        return BoxerNamed(
+            self.discourse_id,
+            f(self.sent_index),
+            self.word_indices,
+            self.var,
+            self.name,
+            self.type,
+            self.sense,
+        )
 
     def __iter__(self):
         return iter((self.var, self.name, self.type, self.sense))
 
     def _pred(self):
         return 'named'
+
 
 class BoxerRel(BoxerIndexed):
     def __init__(self, discourse_id, sent_index, word_indices, var1, var2, rel, sense):
@@ -1043,16 +1278,33 @@ class BoxerRel(BoxerIndexed):
         return (set([self.var1, self.var2]), set(), set())
 
     def clean(self):
-        return BoxerRel(self.discourse_id, self.sent_index, self.word_indices, self.var1, self.var2, self._clean_name(self.rel), self.sense)
+        return BoxerRel(
+            self.discourse_id,
+            self.sent_index,
+            self.word_indices,
+            self.var1,
+            self.var2,
+            self._clean_name(self.rel),
+            self.sense,
+        )
 
     def renumber_sentences(self, f):
-        return BoxerRel(self.discourse_id, f(self.sent_index), self.word_indices, self.var1, self.var2, self.rel, self.sense)
+        return BoxerRel(
+            self.discourse_id,
+            f(self.sent_index),
+            self.word_indices,
+            self.var1,
+            self.var2,
+            self.rel,
+            self.sense,
+        )
 
     def __iter__(self):
         return iter((self.var1, self.var2, self.rel, self.sense))
 
     def _pred(self):
         return 'rel'
+
 
 class BoxerProp(BoxerIndexed):
     def __init__(self, discourse_id, sent_index, word_indices, var, drs):
@@ -1061,7 +1313,9 @@ class BoxerProp(BoxerIndexed):
         self.drs = drs
 
     def _variables(self):
-        return tuple(map(operator.or_, (set(), set(), set([self.var])), self.drs._variables()))
+        return tuple(
+            map(operator.or_, (set(), set(), set([self.var])), self.drs._variables())
+        )
 
     def referenced_labels(self):
         return set([self.drs])
@@ -1070,16 +1324,29 @@ class BoxerProp(BoxerIndexed):
         return self.drs.atoms()
 
     def clean(self):
-        return BoxerProp(self.discourse_id, self.sent_index, self.word_indices, self.var, self.drs.clean())
+        return BoxerProp(
+            self.discourse_id,
+            self.sent_index,
+            self.word_indices,
+            self.var,
+            self.drs.clean(),
+        )
 
     def renumber_sentences(self, f):
-        return BoxerProp(self.discourse_id, f(self.sent_index), self.word_indices, self.var, self.drs.renumber_sentences(f))
+        return BoxerProp(
+            self.discourse_id,
+            f(self.sent_index),
+            self.word_indices,
+            self.var,
+            self.drs.renumber_sentences(f),
+        )
 
     def __iter__(self):
         return iter((self.var, self.drs))
 
     def _pred(self):
         return 'prop'
+
 
 class BoxerEq(BoxerIndexed):
     def __init__(self, discourse_id, sent_index, word_indices, var1, var2):
@@ -1094,13 +1361,20 @@ class BoxerEq(BoxerIndexed):
         return set()
 
     def renumber_sentences(self, f):
-        return BoxerEq(self.discourse_id, f(self.sent_index), self.word_indices, self.var1, self.var2)
+        return BoxerEq(
+            self.discourse_id,
+            f(self.sent_index),
+            self.word_indices,
+            self.var1,
+            self.var2,
+        )
 
     def __iter__(self):
         return iter((self.var1, self.var2))
 
     def _pred(self):
         return 'eq'
+
 
 class BoxerCard(BoxerIndexed):
     def __init__(self, discourse_id, sent_index, word_indices, var, value, type):
@@ -1113,13 +1387,21 @@ class BoxerCard(BoxerIndexed):
         return (set([self.var]), set(), set())
 
     def renumber_sentences(self, f):
-        return BoxerCard(self.discourse_id, f(self.sent_index), self.word_indices, self.var, self.value, self.type)
+        return BoxerCard(
+            self.discourse_id,
+            f(self.sent_index),
+            self.word_indices,
+            self.var,
+            self.value,
+            self.type,
+        )
 
     def __iter__(self):
         return iter((self.var, self.value, self.type))
 
     def _pred(self):
         return 'card'
+
 
 class BoxerOr(BoxerIndexed):
     def __init__(self, discourse_id, sent_index, word_indices, drs1, drs2):
@@ -1134,10 +1416,22 @@ class BoxerOr(BoxerIndexed):
         return self.drs1.atoms() | self.drs2.atoms()
 
     def clean(self):
-        return BoxerOr(self.discourse_id, self.sent_index, self.word_indices, self.drs1.clean(), self.drs2.clean())
+        return BoxerOr(
+            self.discourse_id,
+            self.sent_index,
+            self.word_indices,
+            self.drs1.clean(),
+            self.drs2.clean(),
+        )
 
     def renumber_sentences(self, f):
-        return BoxerOr(self.discourse_id, f(self.sent_index), self.word_indices, self.drs1, self.drs2)
+        return BoxerOr(
+            self.discourse_id,
+            f(self.sent_index),
+            self.word_indices,
+            self.drs1,
+            self.drs2,
+        )
 
     def __iter__(self):
         return iter((self.drs1, self.drs2))
@@ -1145,8 +1439,11 @@ class BoxerOr(BoxerIndexed):
     def _pred(self):
         return 'or'
 
+
 class BoxerWhq(BoxerIndexed):
-    def __init__(self, discourse_id, sent_index, word_indices, ans_types, drs1, variable, drs2):
+    def __init__(
+        self, discourse_id, sent_index, word_indices, ans_types, drs1, variable, drs2
+    ):
         BoxerIndexed.__init__(self, discourse_id, sent_index, word_indices)
         self.ans_types = ans_types
         self.drs1 = drs1
@@ -1154,23 +1451,47 @@ class BoxerWhq(BoxerIndexed):
         self.drs2 = drs2
 
     def _variables(self):
-        return tuple(map(operator.or_, (set([self.variable]), set(), set()), self.drs1._variables(), self.drs2._variables()))
+        return tuple(
+            map(
+                operator.or_,
+                (set([self.variable]), set(), set()),
+                self.drs1._variables(),
+                self.drs2._variables(),
+            )
+        )
 
     def atoms(self):
         return self.drs1.atoms() | self.drs2.atoms()
 
     def clean(self):
-        return BoxerWhq(self.discourse_id, self.sent_index, self.word_indices, self.ans_types, self.drs1.clean(), self.variable, self.drs2.clean())
+        return BoxerWhq(
+            self.discourse_id,
+            self.sent_index,
+            self.word_indices,
+            self.ans_types,
+            self.drs1.clean(),
+            self.variable,
+            self.drs2.clean(),
+        )
 
     def renumber_sentences(self, f):
-        return BoxerWhq(self.discourse_id, f(self.sent_index), self.word_indices, self.ans_types, self.drs1, self.variable, self.drs2)
+        return BoxerWhq(
+            self.discourse_id,
+            f(self.sent_index),
+            self.word_indices,
+            self.ans_types,
+            self.drs1,
+            self.variable,
+            self.drs2,
+        )
 
     def __iter__(self):
-        return iter(('['+','.join(self.ans_types)+']', self.drs1, self.variable, self.drs2))
+        return iter(
+            ('[' + ','.join(self.ans_types) + ']', self.drs1, self.variable, self.drs2)
+        )
 
     def _pred(self):
         return 'whq'
-
 
 
 class PassthroughBoxerDrsInterpreter(object):
@@ -1188,7 +1509,9 @@ class NltkDrtBoxerDrsInterpreter(object):
         :return: ``DrtExpression``
         """
         if isinstance(ex, BoxerDrs):
-            drs = DRS([Variable(r) for r in ex.refs], list(map(self.interpret, ex.conds)))
+            drs = DRS(
+                [Variable(r) for r in ex.refs], list(map(self.interpret, ex.conds))
+            )
             if ex.consequent is not None:
                 drs.consequent = self.interpret(ex.consequent)
             return drs
@@ -1206,8 +1529,10 @@ class NltkDrtBoxerDrsInterpreter(object):
         elif isinstance(ex, BoxerProp):
             return DrtProposition(Variable(ex.var), self.interpret(ex.drs))
         elif isinstance(ex, BoxerEq):
-            return DrtEqualityExpression(DrtVariableExpression(Variable(ex.var1)),
-                                         DrtVariableExpression(Variable(ex.var2)))
+            return DrtEqualityExpression(
+                DrtVariableExpression(Variable(ex.var1)),
+                DrtVariableExpression(Variable(ex.var2)),
+            )
         elif isinstance(ex, BoxerCard):
             pred = self._add_occur_indexing('card_%s_%s' % (ex.type, ex.value), ex)
             return self._make_atom(pred, ex.var)
@@ -1222,13 +1547,15 @@ class NltkDrtBoxerDrsInterpreter(object):
     def _make_atom(self, pred, *args):
         accum = DrtVariableExpression(Variable(pred))
         for arg in args:
-            accum = DrtApplicationExpression(accum, DrtVariableExpression(Variable(arg)))
+            accum = DrtApplicationExpression(
+                accum, DrtVariableExpression(Variable(arg))
+            )
         return accum
 
     def _add_occur_indexing(self, base, ex):
         if self._occur_index and ex.sent_index is not None:
             if ex.discourse_id:
-                base += '_%s'  % ex.discourse_id
+                base += '_%s' % ex.discourse_id
             base += '_s%s' % ex.sent_index
             base += '_w%s' % sorted(ex.word_indices)[0]
         return base
@@ -1240,17 +1567,42 @@ class UnparseableInputException(Exception):
 
 if __name__ == '__main__':
     opts = OptionParser("usage: %prog TEXT [options]")
-    opts.add_option("--verbose", "-v", help="display verbose logs", action="store_true", default=False, dest="verbose")
-    opts.add_option("--fol", "-f", help="output FOL", action="store_true", default=False, dest="fol")
-    opts.add_option("--question", "-q", help="input is a question", action="store_true", default=False, dest="question")
-    opts.add_option("--occur", "-o", help="occurrence index", action="store_true", default=False, dest="occur_index")
+    opts.add_option(
+        "--verbose",
+        "-v",
+        help="display verbose logs",
+        action="store_true",
+        default=False,
+        dest="verbose",
+    )
+    opts.add_option(
+        "--fol", "-f", help="output FOL", action="store_true", default=False, dest="fol"
+    )
+    opts.add_option(
+        "--question",
+        "-q",
+        help="input is a question",
+        action="store_true",
+        default=False,
+        dest="question",
+    )
+    opts.add_option(
+        "--occur",
+        "-o",
+        help="occurrence index",
+        action="store_true",
+        default=False,
+        dest="occur_index",
+    )
     (options, args) = opts.parse_args()
 
     if len(args) != 1:
         opts.error("incorrect number of arguments")
 
     interpreter = NltkDrtBoxerDrsInterpreter(occur_index=options.occur_index)
-    drs = Boxer(interpreter).interpret_multi(args[0].split(r'\n'), question=options.question, verbose=options.verbose)
+    drs = Boxer(interpreter).interpret_multi(
+        args[0].split(r'\n'), question=options.question, verbose=options.verbose
+    )
     if drs is None:
         print(None)
     else:

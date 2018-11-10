@@ -21,8 +21,9 @@ that each text belongs to zero or more categories.
 from nltk.internals import overridden
 
 ##//////////////////////////////////////////////////////
-#{ Classification Interfaces
+# { Classification Interfaces
 ##//////////////////////////////////////////////////////
+
 
 class ClassifierI(object):
     """
@@ -38,6 +39,7 @@ class ClassifierI(object):
     Subclasses may define:
       - either ``prob_classify()`` or ``prob_classify_many()`` (or both)
     """
+
     def labels(self):
         """
         :return: the list of category labels used by this classifier.
@@ -101,6 +103,7 @@ class MultiClassifierI(object):
     Subclasses may define:
       - either ``prob_classify()`` or ``prob_classify_many()`` (or both)
     """
+
     def labels(self):
         """
         :return: the list of category labels used by this classifier.

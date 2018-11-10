@@ -25,20 +25,19 @@ from __future__ import division
 
 import warnings
 
+
 def _edit_dist_init(len1, len2):
     lev = []
     for i in range(len1):
         lev.append([0] * len2)  # initialize 2D array to zero
     for i in range(len1):
-        lev[i][0] = i           # column 0: 0,1,2,3,4,...
+        lev[i][0] = i  # column 0: 0,1,2,3,4,...
     for j in range(len2):
-        lev[0][j] = j           # row 0: 0,1,2,3,4,...
+        lev[0][j] = j  # row 0: 0,1,2,3,4,...
     return lev
 
 
-def _edit_dist_step(lev, i, j, s1, s2,
-                    substitution_cost=1,
-                    transpositions=False):
+def _edit_dist_step(lev, i, j, s1, s2, substitution_cost=1, transpositions=False):
     c1 = s1[i - 1]
     c2 = s2[j - 1]
 
@@ -92,9 +91,15 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     # iterate over the array
     for i in range(len1):
         for j in range(len2):
-            _edit_dist_step(lev, i + 1, j + 1, s1, s2,
-                            substitution_cost=substitution_cost,
-                            transpositions=transpositions)
+            _edit_dist_step(
+                lev,
+                i + 1,
+                j + 1,
+                s1,
+                s2,
+                substitution_cost=substitution_cost,
+                transpositions=transpositions,
+            )
     return lev[len1][len2]
 
 
@@ -118,8 +123,9 @@ def jaccard_distance(label1, label2):
     """Distance metric comparing set-similarity.
 
     """
-    return (len(label1.union(label2)) -
-            len(label1.intersection(label2)))/len(label1.union(label2))
+    return (len(label1.union(label2)) - len(label1.intersection(label2))) / len(
+        label1.union(label2)
+    )
 
 
 def masi_distance(label1, label2):
@@ -162,7 +168,7 @@ def interval_distance(label1, label2):
 
     try:
         return pow(label1 - label2, 2)
-#        return pow(list(label1)[0]-list(label2)[0],2)
+    #        return pow(list(label1)[0]-list(label2)[0],2)
     except:
         print("non-numeric labels not supported with interval distance")
 
@@ -175,11 +181,13 @@ def presence(label):
 
 
 def fractional_presence(label):
-    return lambda x, y:\
-        abs(((1.0 / len(x)) - (1.0 / len(y)))) * (label in x and label in y) \
-        or 0.0 * (label not in x and label not in y) \
-        or abs((1.0 / len(x))) * (label in x and label not in y) \
+    return (
+        lambda x, y: abs(((1.0 / len(x)) - (1.0 / len(y))))
+        * (label in x and label in y)
+        or 0.0 * (label not in x and label not in y)
+        or abs((1.0 / len(x))) * (label in x and label not in y)
         or ((1.0 / len(y))) * (label not in x and label in y)
+    )
 
 
 def custom_distance(file):
@@ -227,10 +235,10 @@ def jaro_similarity(s1, s2):
     flagged_2 = []  # positions in s2 which are matches to some character in s1
 
     # Iterate through sequences, check for matches and compute transpositions.
-    for i in range(len_s1):     # Iterate through each character.
-        upperbound = min(i+match_bound, len_s2-1)
-        lowerbound = max(0, i-match_bound)
-        for j in range(lowerbound, upperbound+1):
+    for i in range(len_s1):  # Iterate through each character.
+        upperbound = min(i + match_bound, len_s2 - 1)
+        lowerbound = max(0, i - match_bound)
+        for j in range(lowerbound, upperbound + 1):
             if s1[i] == s2[j] and j not in flagged_2:
                 matches += 1
                 flagged_1.append(i)
@@ -244,10 +252,15 @@ def jaro_similarity(s1, s2):
     if matches == 0:
         return 0
     else:
-        return 1/3 * (matches/len_s1 +
-                      matches/len_s2 +
-                      (matches-transpositions//2)/matches
-                      )
+        return (
+            1
+            / 3
+            * (
+                matches / len_s1
+                + matches / len_s2
+                + (matches - transpositions // 2) / matches
+            )
+        )
 
 
 def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
@@ -340,10 +353,12 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     # falls between [0,1], the product of l * p needs to be
     # also fall between [0,1].
     if not 0 <= max_l * p <= 1:
-        warnings.warn(str("The product  `max_l * p` might not fall between [0,1]."
-              "Jaro-Winkler similarity might not be between 0 and 1.")
-             )
-
+        warnings.warn(
+            str(
+                "The product  `max_l * p` might not fall between [0,1]."
+                "Jaro-Winkler similarity might not be between 0 and 1."
+            )
+        )
 
     # Compute the Jaro similarity
     jaro_sim = jaro_similarity(s1, s2)
@@ -367,20 +382,28 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
 
 
 def demo():
-    string_distance_examples = [("rain", "shine"), ("abcdef", "acbdef"),
-                                ("language", "lnaguaeg"), ("language",
-                                "lnaugage"), ("language", "lngauage")]
+    string_distance_examples = [
+        ("rain", "shine"),
+        ("abcdef", "acbdef"),
+        ("language", "lnaguaeg"),
+        ("language", "lnaugage"),
+        ("language", "lngauage"),
+    ]
     for s1, s2 in string_distance_examples:
-        print("Edit distance btwn '%s' and '%s':" % (s1, s2),
-              edit_distance(s1, s2))
-        print("Edit dist with transpositions btwn '%s' and '%s':" % (s1, s2),
-              edit_distance(s1, s2, transpositions=True))
-        print("Jaro similarity btwn '%s' and '%s':" % (s1, s2),
-              jaro_similarity(s1, s2))
-        print("Jaro-Winkler similarity btwn '%s' and '%s':" % (s1, s2),
-              jaro_winkler_similarity(s1, s2))
-        print("Jaro-Winkler distance btwn '%s' and '%s':" % (s1, s2),
-              1 - jaro_winkler_similarity(s1, s2))
+        print("Edit distance btwn '%s' and '%s':" % (s1, s2), edit_distance(s1, s2))
+        print(
+            "Edit dist with transpositions btwn '%s' and '%s':" % (s1, s2),
+            edit_distance(s1, s2, transpositions=True),
+        )
+        print("Jaro similarity btwn '%s' and '%s':" % (s1, s2), jaro_similarity(s1, s2))
+        print(
+            "Jaro-Winkler similarity btwn '%s' and '%s':" % (s1, s2),
+            jaro_winkler_similarity(s1, s2),
+        )
+        print(
+            "Jaro-Winkler distance btwn '%s' and '%s':" % (s1, s2),
+            1 - jaro_winkler_similarity(s1, s2),
+        )
     s1 = set([1, 2, 3, 4])
     s2 = set([3, 4, 5])
     print("s1:", s1)

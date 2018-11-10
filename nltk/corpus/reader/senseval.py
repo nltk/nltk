@@ -34,6 +34,7 @@ from nltk.tokenize import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 @compat.python_2_unicode_compatible
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
@@ -43,22 +44,31 @@ class SensevalInstance(object):
         self.context = context
 
     def __repr__(self):
-        return ('SensevalInstance(word=%r, position=%r, '
-                'context=%r, senses=%r)' %
-                (self.word, self.position, self.context, self.senses))
+        return 'SensevalInstance(word=%r, position=%r, ' 'context=%r, senses=%r)' % (
+            self.word,
+            self.position,
+            self.context,
+            self.senses,
+        )
 
 
 class SensevalCorpusReader(CorpusReader):
     def instances(self, fileids=None):
-        return concat([SensevalCorpusView(fileid, enc)
-                       for (fileid, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                SensevalCorpusView(fileid, enc)
+                for (fileid, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def raw(self, fileids=None):
         """
         :return: the text contents of the given fileids, as a single string.
         """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def _entry(self, tree):
@@ -66,9 +76,8 @@ class SensevalCorpusReader(CorpusReader):
         for lexelt in tree.findall('lexelt'):
             for inst in lexelt.findall('instance'):
                 sense = inst[0].attrib['senseid']
-                context = [(w.text, w.attrib['pos'])
-                           for w in inst[1]]
-                elts.append( (sense, context) )
+                context = [(w.text, w.attrib['pos']) for w in inst[1]]
+                elts.append((sense, context))
         return elts
 
 
@@ -77,12 +86,12 @@ class SensevalCorpusView(StreamBackedCorpusView):
         StreamBackedCorpusView.__init__(self, fileid, encoding=encoding)
 
         self._word_tokenizer = WhitespaceTokenizer()
-        self._lexelt_starts = [0] # list of streampos
-        self._lexelts = [None] # list of lexelt names
+        self._lexelt_starts = [0]  # list of streampos
+        self._lexelts = [None]  # list of lexelt names
 
     def read_block(self, stream):
         # Decide which lexical element we're in.
-        lexelt_num = bisect.bisect_right(self._lexelt_starts, stream.tell())-1
+        lexelt_num = bisect.bisect_right(self._lexelt_starts, stream.tell()) - 1
         lexelt = self._lexelts[lexelt_num]
 
         instance_lines = []
@@ -97,7 +106,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             if line.lstrip().startswith('<lexelt'):
                 lexelt_num += 1
                 m = re.search('item=("[^"]+"|\'[^\']+\')', line)
-                assert m is not None # <lexelt> has no 'item=...'
+                assert m is not None  # <lexelt> has no 'item=...'
                 lexelt = m.group(1)[1:-1]
                 if lexelt_num < len(self._lexelts):
                     assert lexelt == self._lexelts[lexelt_num]
@@ -132,30 +141,28 @@ class SensevalCorpusView(StreamBackedCorpusView):
                 context += self._word_tokenizer.tokenize(child.text)
                 for cword in child:
                     if cword.tag == 'compound':
-                        cword = cword[0] # is this ok to do?
+                        cword = cword[0]  # is this ok to do?
 
                     if cword.tag == 'head':
                         # Some santiy checks:
                         assert position is None, 'head specified twice'
-                        assert cword.text.strip() or len(cword)==1
-                        assert not (cword.text.strip() and len(cword)==1)
+                        assert cword.text.strip() or len(cword) == 1
+                        assert not (cword.text.strip() and len(cword) == 1)
                         # Record the position of the head:
                         position = len(context)
                         # Addd on the head word itself:
                         if cword.text.strip():
                             context.append(cword.text.strip())
                         elif cword[0].tag == 'wf':
-                            context.append((cword[0].text,
-                                            cword[0].attrib['pos']))
+                            context.append((cword[0].text, cword[0].attrib['pos']))
                             if cword[0].tail:
-                                context += self._word_tokenizer.tokenize(
-                                    cword[0].tail)
+                                context += self._word_tokenizer.tokenize(cword[0].tail)
                         else:
                             assert False, 'expected CDATA or wf in <head>'
                     elif cword.tag == 'wf':
                         context.append((cword.text, cword.attrib['pos']))
                     elif cword.tag == 's':
-                        pass # Sentence boundary marker.
+                        pass  # Sentence boundary marker.
 
                     else:
                         print('ACK', cword.tag)
@@ -165,6 +172,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             else:
                 assert False, 'unexpected tag %s' % child.tag
         return SensevalInstance(lexelt, position, context, senses)
+
 
 def _fixXML(text):
     """
@@ -197,7 +205,8 @@ def _fixXML(text):
     # and remove the & for those patterns that aren't regular XML
     text = re.sub(r'&(?!amp|gt|lt|apos|quot)', r'', text)
     # fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
-    text = re.sub(r'[ \t]*([^<>\s]+?)[ \t]*<p="([^"]*"?)"/>',
-                  r' <wf pos="\2">\1</wf>', text)
+    text = re.sub(
+        r'[ \t]*([^<>\s]+?)[ \t]*<p="([^"]*"?)"/>', r' <wf pos="\2">\1</wf>', text
+    )
     text = re.sub(r'\s*"\s*<p=\'"\'/>', " <wf pos='\"'>\"</wf>", text)
     return text
