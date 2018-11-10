@@ -89,7 +89,7 @@ def find_malt_model(model_filename):
     """
     A module to find pre-trained MaltParser model.
     """
-    if model_filename == None:
+    if model_filename is None:
         return 'malt_temp.mco'
     elif os.path.exists(model_filename):  # If a full path is given.
         return model_filename
