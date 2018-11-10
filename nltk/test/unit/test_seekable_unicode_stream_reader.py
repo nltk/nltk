@@ -127,6 +127,13 @@ def test_reader_on_large_string():
             pass
 
 
+def test_reader_stream_is_closed():
+    reader = SeekableUnicodeStreamReader(BytesIO(b''), 'ascii')
+    assert reader.stream.closed is False
+    reader.__del__()
+    assert reader.stream.closed is True
+
+
 def teardown_module(module=None):
     import gc
 
