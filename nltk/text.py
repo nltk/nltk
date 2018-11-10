@@ -18,12 +18,11 @@ from __future__ import print_function, division, unicode_literals, absolute_impo
 from math import log
 from collections import defaultdict, Counter, namedtuple
 from functools import reduce
-from itertools import islice
 import re
 
 from six import text_type
 
-from nltk.probability import FreqDist, LidstoneProbDist
+from nltk.probability import FreqDist
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
 from nltk.metrics import f_measure, BigramAssocMeasures

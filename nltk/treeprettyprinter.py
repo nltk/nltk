@@ -21,16 +21,12 @@ http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 from __future__ import division, print_function, unicode_literals
 
 import re
-import sys
-import codecs
 from cgi import escape
 from collections import defaultdict
 from operator import itemgetter
-from itertools import chain, islice
 
-from nltk.util import slice_bounds, OrderedDict
-from nltk.compat import python_2_unicode_compatible, unicode_repr
-from nltk.internals import raise_unorderable_types
+from nltk.util import OrderedDict
+from nltk.compat import python_2_unicode_compatible
 from nltk.tree import Tree
 
 ANSICOLOR = {

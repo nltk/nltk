@@ -60,7 +60,6 @@ except ImportError:
 
 import tempfile
 import os
-import re
 from collections import defaultdict
 
 from six import integer_types
