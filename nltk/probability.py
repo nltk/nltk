@@ -43,7 +43,6 @@ import math
 import random
 import warnings
 import array
-from operator import itemgetter
 from collections import defaultdict, Counter
 from functools import reduce
 from abc import ABCMeta, abstractmethod

@@ -36,6 +36,7 @@ from six import iteritems
 
 from nltk.probability import FreqDist
 from nltk.util import ngrams
+# these two unused imports are referenced in collocations.doctest
 from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures
 from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 

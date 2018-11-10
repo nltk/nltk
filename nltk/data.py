@@ -42,7 +42,7 @@ import zipfile
 import codecs
 
 from abc import ABCMeta, abstractmethod
-from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
+from gzip import GzipFile, WRITE as GZ_WRITE
 
 from six import add_metaclass
 from six import string_types, text_type

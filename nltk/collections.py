@@ -6,15 +6,10 @@
 # For license information, see LICENSE.TXT
 from __future__ import print_function, absolute_import
 
-import locale
-import re
-import types
-import textwrap
-import pydoc
 import bisect
-import os
-from itertools import islice, chain, combinations
+from itertools import islice, chain
 from functools import total_ordering
+# this unused import is for python 2.7
 from collections import defaultdict, deque, Counter
 
 from six import text_type
