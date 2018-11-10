@@ -1092,7 +1092,7 @@ def align(str1, str2, epsilon=0):
 
     (Kondrak 2002: 51)
     """
-    if np == None:
+    if np is None:
         raise ImportError('You need numpy in order to use the align function')
 
     assert 0.0 <= epsilon <= 1.0, "Epsilon must be between 0.0 and 1.0."

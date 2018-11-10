@@ -64,7 +64,7 @@ class PanLexLiteCorpusReader(CorpusReader):
         :rtype: list(tuple)
         """
 
-        if lc == None:
+        if lc is None:
             return self._c.execute('SELECT uid, tt FROM lv ORDER BY uid').fetchall()
         else:
             return self._c.execute(
