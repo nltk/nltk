@@ -27,7 +27,6 @@ except ImportError:
 
 from six import string_types
 
-from nltk import __file__
 from nltk import compat
 
 ##########################################################################
