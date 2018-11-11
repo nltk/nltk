@@ -141,8 +141,50 @@ the desired feature.
 
 ## Continuous Integration
 
-NLTK uses [Cloudbees](https://nltk.ci.cloudbees.com/) for continuous integration.
-Tests can be run locally using tox, e.g. `sudo tox -e py34`.
+**Deprecated:** NLTK uses [Cloudbees](https://nltk.ci.cloudbees.com/) for continuous integration.
+
+NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration. 
+
+The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file configures the server:
+
+ - `matrix: include:` section 
+   - tests against supported Python versions (2.7, 3.5 and 3.6) 
+     - all python versions run the `py-travis` tox test environment in the [`tox.ini`](https://github.com/nltk/nltk/blob/travis/tox.ini#L105) file
+   - tests against Python 3.6 for third-party tools APIs
+
+ - `before_install:` section 
+   - checks the Java and Python version calling the `tools/travis/pre-install.sh` script
+   - changes the permission for `tools/travis/coverage-pylint.sh` to allow it to be executable
+   - changes the permission for `tools/travis/third-party.sh` to allow it to be executable
+   
+ - `install` section
+   - the `tools/travis/install.sh` installs the `pip-req.txt` for NLTK and the necessary python packages for CI testing
+   - install `tox` for testing
+    
+ - `py-travis` tox test environment generally 
+   - the `extras = all` dependencies in needed to emulate `pip install nltk[all]`, see https://tox.readthedocs.io/en/latest/config.html#confval-extras=MULTI-LINE-LIST
+   - for the `py-travis-third-party` build, it will run `tools/travis/third-party.sh` to install third-party tools (Stanford NLP tools and CoreNLP and SENNA)
+   - calls `tools/travis/coverage-pylint.sh` shell script that calls the `nltk/nltk/test/runtests.py` with [`coverage`](https://pypi.org/project/coverage/) and 
+   - calls `pylint` # Currently, disabled because there's lots to clean...
+
+   - before returning a `true` to state that the build is successful
+    
+    
+#### To test with `tox` locally
+
+First setup a new virtual environment, see https://docs.python-guide.org/dev/virtualenvs/
+Then run `tox -e py36`.
+
+For example, using `pipenv`:
+
+```
+git clone https://github.com/nltk/nltk.git
+cd nltk
+pipenv install -r pip-req.txt
+pipenv install tox
+tox -e py36
+```
+ 
 
 # Discussion
 

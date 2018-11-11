@@ -31,28 +31,31 @@ from nltk.corpus.reader.tagged import TaggedCorpusReader
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class YCOECorpusReader(CorpusReader):
     """
     Corpus reader for the York-Toronto-Helsinki Parsed Corpus of Old
     English Prose (YCOE), a 1.5 million word syntactically-annotated
     corpus of Old English prose texts.
     """
+
     def __init__(self, root, encoding='utf8'):
         CorpusReader.__init__(self, root, [], encoding)
 
         self._psd_reader = YCOEParseCorpusReader(
-            self.root.join('psd'), '.*', '.psd', encoding=encoding)
-        self._pos_reader = YCOETaggedCorpusReader(
-            self.root.join('pos'), '.*', '.pos')
+            self.root.join('psd'), '.*', '.psd', encoding=encoding
+        )
+        self._pos_reader = YCOETaggedCorpusReader(self.root.join('pos'), '.*', '.pos')
 
         # Make sure we have a consistent set of items:
         documents = set(f[:-4] for f in self._psd_reader.fileids())
         if set(f[:-4] for f in self._pos_reader.fileids()) != documents:
-            raise ValueError('Items in "psd" and "pos" '
-                             'subdirectories do not match.')
+            raise ValueError('Items in "psd" and "pos" ' 'subdirectories do not match.')
 
-        fileids = sorted(['%s.psd' % doc for doc in documents] +
-                       ['%s.pos' % doc for doc in documents])
+        fileids = sorted(
+            ['%s.psd' % doc for doc in documents]
+            + ['%s.pos' % doc for doc in documents]
+        )
         CorpusReader.__init__(self, root, fileids, encoding)
         self._documents = sorted(documents)
 
@@ -81,8 +84,12 @@ class YCOECorpusReader(CorpusReader):
             return self._fileids
         elif isinstance(documents, string_types):
             documents = [documents]
-        return sorted(set(['%s.pos' % doc for doc in documents] +
-                          ['%s.psd' % doc for doc in documents]))
+        return sorted(
+            set(
+                ['%s.pos' % doc for doc in documents]
+                + ['%s.psd' % doc for doc in documents]
+            )
+        )
 
     def _getfileids(self, documents, subcorpus):
         """
@@ -100,25 +107,31 @@ class YCOECorpusReader(CorpusReader):
                         raise ValueError(
                             'Expected a document identifier, not a file '
                             'identifier.  (Use corpus.documents() to get '
-                            'a list of document identifiers.')
+                            'a list of document identifiers.'
+                        )
                     else:
-                        raise ValueError('Document identifier %s not found'
-                                         % document)
+                        raise ValueError('Document identifier %s not found' % document)
         return ['%s.%s' % (d, subcorpus) for d in documents]
 
     # Delegate to one of our two sub-readers:
     def words(self, documents=None):
         return self._pos_reader.words(self._getfileids(documents, 'pos'))
+
     def sents(self, documents=None):
         return self._pos_reader.sents(self._getfileids(documents, 'pos'))
+
     def paras(self, documents=None):
         return self._pos_reader.paras(self._getfileids(documents, 'pos'))
+
     def tagged_words(self, documents=None):
         return self._pos_reader.tagged_words(self._getfileids(documents, 'pos'))
+
     def tagged_sents(self, documents=None):
         return self._pos_reader.tagged_sents(self._getfileids(documents, 'pos'))
+
     def tagged_paras(self, documents=None):
         return self._pos_reader.tagged_paras(self._getfileids(documents, 'pos'))
+
     def parsed_sents(self, documents=None):
         return self._psd_reader.parsed_sents(self._getfileids(documents, 'psd'))
 
@@ -126,17 +139,22 @@ class YCOECorpusReader(CorpusReader):
 class YCOEParseCorpusReader(BracketParseCorpusReader):
     """Specialized version of the standard bracket parse corpus reader
     that strips out (CODE ...) and (ID ...) nodes."""
+
     def _parse(self, t):
         t = re.sub(r'(?u)\((CODE|ID)[^\)]*\)', '', t)
-        if re.match(r'\s*\(\s*\)\s*$', t): return None
+        if re.match(r'\s*\(\s*\)\s*$', t):
+            return None
         return BracketParseCorpusReader._parse(self, t)
+
 
 class YCOETaggedCorpusReader(TaggedCorpusReader):
     def __init__(self, root, items, encoding='utf8'):
         gaps_re = r'(?u)(?<=/\.)\s+|\s*\S*_CODE\s*|\s*\S*_ID\s*'
         sent_tokenizer = RegexpTokenizer(gaps_re, gaps=True)
-        TaggedCorpusReader.__init__(self, root, items, sep='_',
-                                    sent_tokenizer=sent_tokenizer)
+        TaggedCorpusReader.__init__(
+            self, root, items, sep='_', sent_tokenizer=sent_tokenizer
+        )
+
 
 #: A list of all documents and their titles in ycoe.
 documents = {
@@ -239,5 +257,5 @@ documents = {
     'covinceB': 'Saint Vincent (Bodley 343)',
     'covinsal': 'Vindicta Salvatoris',
     'cowsgosp.o3': 'West-Saxon Gospels',
-    'cowulf.o34': 'Wulfstan\'s Homilies'
-    }
+    'cowulf.o34': 'Wulfstan\'s Homilies',
+}

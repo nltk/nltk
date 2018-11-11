@@ -18,6 +18,7 @@ class StemmerI(object):
     words.  This process is known as stemming.
 
     """
+
     @abstractmethod
     def stem(self, token):
         """

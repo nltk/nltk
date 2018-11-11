@@ -16,13 +16,15 @@ currently used by nltk.tag.BrillTagger.
 """
 
 from nltk.tbl.template import Template
-#API: Template(...), Template.expand(...)
+
+# API: Template(...), Template.expand(...)
 
 from nltk.tbl.feature import Feature
-#API: Feature(...), Feature.expand(...)
+
+# API: Feature(...), Feature.expand(...)
 
 from nltk.tbl.rule import Rule
-#API: Rule.format(...), Rule.templatetid
+
+# API: Rule.format(...), Rule.templatetid
 
 from nltk.tbl.erroranalysis import error_list
-

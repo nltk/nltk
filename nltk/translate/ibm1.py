@@ -105,8 +105,7 @@ class IBMModel1(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations,
-                 probability_tables=None):
+    def __init__(self, sentence_aligned_corpus, iterations, probability_tables=None):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model.
@@ -144,9 +143,12 @@ class IBMModel1(IBMModel):
     def set_uniform_probabilities(self, sentence_aligned_corpus):
         initial_prob = 1 / len(self.trg_vocab)
         if initial_prob < IBMModel.MIN_PROB:
-            warnings.warn("Target language vocabulary is too large (" +
-                          str(len(self.trg_vocab)) + " words). "
-                          "Results may be less accurate.")
+            warnings.warn(
+                "Target language vocabulary is too large ("
+                + str(len(self.trg_vocab))
+                + " words). "
+                "Results may be less accurate."
+            )
 
         for t in self.trg_vocab:
             self.translation_table[t] = defaultdict(lambda: initial_prob)
@@ -236,8 +238,7 @@ class IBMModel1(IBMModel):
 
         for j, trg_word in enumerate(sentence_pair.words):
             # Initialize trg_word to align with the NULL token
-            best_prob = max(self.translation_table[trg_word][None],
-                            IBMModel.MIN_PROB)
+            best_prob = max(self.translation_table[trg_word][None], IBMModel.MIN_PROB)
             best_alignment_point = None
             for i, src_word in enumerate(sentence_pair.mots):
                 align_prob = self.translation_table[trg_word][src_word]

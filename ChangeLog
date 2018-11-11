@@ -1,4 +1,4 @@
-Version 3.3 2018-04-21
+Version 3.3 2018-05-06
 * Support Python 3.6
 * New interface to CoreNLP
 * Support synset retrieval by sense key

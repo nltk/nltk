@@ -38,10 +38,11 @@ demotest:
 # DISTRIBUTIONS
 ########################################################################
 
-dist: zipdist gztardist windist
+dist: zipdist windist
 
-gztardist: clean_code
-	$(PYTHON) setup.py -q sdist --format=gztar
+# twine only permits one source distribution
+#gztardist: clean_code
+#	$(PYTHON) setup.py -q sdist --format=gztar
 zipdist: clean_code
 	$(PYTHON) setup.py -q sdist --format=zip
 windist: clean_code

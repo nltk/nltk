@@ -85,10 +85,15 @@ from nltk.classify.naivebayes import NaiveBayesClassifier
 ##  Positive Naive Bayes Classifier
 ##//////////////////////////////////////////////////////
 
+
 class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
     @staticmethod
-    def train(positive_featuresets, unlabeled_featuresets, positive_prob_prior=0.5,
-              estimator=ELEProbDist):
+    def train(
+        positive_featuresets,
+        unlabeled_featuresets,
+        positive_prob_prior=0.5,
+        estimator=ELEProbDist,
+    ):
         """
         :param positive_featuresets: A list of featuresets that are known as positive
             examples (i.e., their label is ``True``).
@@ -134,8 +139,9 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
         negative_prob_prior = 1.0 - positive_prob_prior
 
         # Create the P(label) distribution.
-        label_probdist = DictionaryProbDist({True: positive_prob_prior,
-                                             False: negative_prob_prior})
+        label_probdist = DictionaryProbDist(
+            {True: positive_prob_prior, False: negative_prob_prior}
+        )
 
         # Create the P(fval|label, fname) distribution.
         feature_probdist = {}
@@ -147,24 +153,27 @@ class PositiveNaiveBayesClassifier(NaiveBayesClassifier):
             global_probdist = estimator(freqdist, bins=len(feature_values[fname]))
             negative_feature_probs = {}
             for fval in feature_values[fname]:
-                prob = (global_probdist.prob(fval)
-                        - positive_prob_prior *
-                        feature_probdist[True, fname].prob(fval)) \
-                        / negative_prob_prior
+                prob = (
+                    global_probdist.prob(fval)
+                    - positive_prob_prior * feature_probdist[True, fname].prob(fval)
+                ) / negative_prob_prior
                 # TODO: We need to add some kind of smoothing here, instead of
                 # setting negative probabilities to zero and normalizing.
                 negative_feature_probs[fval] = max(prob, 0.0)
-            feature_probdist[False, fname] = DictionaryProbDist(negative_feature_probs,
-                                                                normalize=True)
+            feature_probdist[False, fname] = DictionaryProbDist(
+                negative_feature_probs, normalize=True
+            )
 
         return PositiveNaiveBayesClassifier(label_probdist, feature_probdist)
+
 
 ##//////////////////////////////////////////////////////
 ##  Demo
 ##//////////////////////////////////////////////////////
 
+
 def demo():
     from nltk.classify.util import partial_names_demo
+
     classifier = partial_names_demo(PositiveNaiveBayesClassifier.train)
     classifier.show_most_informative_features()
-

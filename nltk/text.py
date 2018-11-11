@@ -18,21 +18,22 @@ from __future__ import print_function, division, unicode_literals, absolute_impo
 from math import log
 from collections import defaultdict, Counter, namedtuple
 from functools import reduce
-from itertools import islice
 import re
 
 from six import text_type
 
-from nltk.probability import FreqDist, LidstoneProbDist
+from nltk.probability import FreqDist
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
 from nltk.compat import python_2_unicode_compatible
 
-ConcordanceLine = namedtuple('ConcordanceLine',
-                             ['left', 'query', 'right', 'offset',
-                              'left_print', 'right_print', 'line'])
+ConcordanceLine = namedtuple(
+    'ConcordanceLine',
+    ['left', 'query', 'right', 'offset', 'left_print', 'right_print', 'line'],
+)
+
 
 class ContextIndex(object):
     """
@@ -41,14 +42,15 @@ class ContextIndex(object):
     in a fixed window around the word; but other definitions may also
     be used by providing a custom context function.
     """
+
     @staticmethod
     def _default_context(tokens, i):
         """One left token and one right token, normalized to lowercase"""
-        left = (tokens[i-1].lower() if i != 0 else '*START*')
-        right = (tokens[i+1].lower() if i != len(tokens) - 1 else '*END*')
+        left = tokens[i - 1].lower() if i != 0 else '*START*'
+        right = tokens[i + 1].lower() if i != len(tokens) - 1 else '*END*'
         return (left, right)
 
-    def __init__(self, tokens, context_func=None, filter=None, key=lambda x:x):
+    def __init__(self, tokens, context_func=None, filter=None, key=lambda x: x):
         self._key = key
         self._tokens = tokens
         if context_func:
@@ -57,10 +59,12 @@ class ContextIndex(object):
             self._context_func = self._default_context
         if filter:
             tokens = [t for t in tokens if filter(t)]
-        self._word_to_contexts = CFD((self._key(w), self._context_func(tokens, i))
-                                     for i, w in enumerate(tokens))
-        self._context_to_words = CFD((self._context_func(tokens, i), self._key(w))
-                                     for i, w in enumerate(tokens))
+        self._word_to_contexts = CFD(
+            (self._key(w), self._context_func(tokens, i)) for i, w in enumerate(tokens)
+        )
+        self._context_to_words = CFD(
+            (self._context_func(tokens, i), self._key(w)) for i, w in enumerate(tokens)
+        )
 
     def tokens(self):
         """
@@ -90,7 +94,9 @@ class ContextIndex(object):
         for c in self._word_to_contexts[self._key(word)]:
             for w in self._context_to_words[c]:
                 if w != word:
-                    scores[w] += self._context_to_words[c][word] * self._context_to_words[c][w]
+                    scores[w] += (
+                        self._context_to_words[c][word] * self._context_to_words[c][w]
+                    )
         return sorted(scores, key=scores.get, reverse=True)[:n]
 
     def common_contexts(self, words, fail_on_unknown=False):
@@ -109,15 +115,14 @@ class ContextIndex(object):
         empty = [words[i] for i in range(len(words)) if not contexts[i]]
         common = reduce(set.intersection, contexts)
         if empty and fail_on_unknown:
-            raise ValueError("The following word(s) were not found:",
-                             " ".join(words))
+            raise ValueError("The following word(s) were not found:", " ".join(words))
         elif not common:
             # nothing in common -- just return an empty freqdist.
             return FreqDist()
         else:
-            fd = FreqDist(c for w in words
-                          for c in self._word_to_contexts[w]
-                          if c in common)
+            fd = FreqDist(
+                c for w in words for c in self._word_to_contexts[w] if c in common
+            )
             return fd
 
 
@@ -127,7 +132,8 @@ class ConcordanceIndex(object):
     An index that can be used to look up the offset locations at which
     a given word occurs in a document.
     """
-    def __init__(self, tokens, key=lambda x:x):
+
+    def __init__(self, tokens, key=lambda x: x):
         """
         Construct a new concordance index.
 
@@ -173,11 +179,13 @@ class ConcordanceIndex(object):
 
     def __repr__(self):
         return '<ConcordanceIndex for %d tokens (%d types)>' % (
-            len(self._tokens), len(self._offsets))
+            len(self._tokens),
+            len(self._offsets),
+        )
 
-    def find_concordance(self, word, width=80, lines=25):
+    def find_concordance(self, word, width=80):
         """
-        Find the concordance lines given the query word.
+        Find all concordance lines given the query word.
         """
         half_width = (width - len(word) - 2) // 2
         context = width // 4  # approx number of words of context
@@ -189,19 +197,25 @@ class ConcordanceIndex(object):
             for i in offsets:
                 query_word = self._tokens[i]
                 # Find the context of query word.
-                left_context = self._tokens[i-context:i]
-                right_context = self._tokens[i+1:i+context]
+                left_context = self._tokens[max(0, i - context) : i]
+                right_context = self._tokens[i + 1 : i + context]
                 # Create the pretty lines with the query_word in the middle.
-                left_print= ' '.join(left_context)[-half_width:]
+                left_print = ' '.join(left_context)[-half_width:]
                 right_print = ' '.join(right_context)[:half_width]
                 # The WYSIWYG line of the concordance.
                 line_print = ' '.join([left_print, query_word, right_print])
                 # Create the ConcordanceLine
-                concordance_line = ConcordanceLine(left_context, query_word,
-                                                    right_context, i,
-                                                    left_print, right_print, line_print)
+                concordance_line = ConcordanceLine(
+                    left_context,
+                    query_word,
+                    right_context,
+                    i,
+                    left_print,
+                    right_print,
+                    line_print,
+                )
                 concordance_list.append(concordance_line)
-        return concordance_list[:lines]
+        return concordance_list
 
     def print_concordance(self, word, width=80, lines=25):
         """
@@ -215,13 +229,13 @@ class ConcordanceIndex(object):
         :param save: The option to save the concordance.
         :type save: bool
         """
-        concordance_list = self.find_concordance(word, width=80, lines=25)
+        concordance_list = self.find_concordance(word, width=width)
 
         if not concordance_list:
             print("no matches")
         else:
             lines = min(lines, len(concordance_list))
-            print("Displaying {} of {} matches:".format(lines,len(concordance_list)))
+            print("Displaying {} of {} matches:".format(lines, len(concordance_list)))
             for i, concordance_line in enumerate(concordance_list[:lines]):
                 print(concordance_line.line)
 
@@ -236,8 +250,9 @@ class TokenSearcher(object):
     brackets as non-capturing parentheses, in addition to matching the
     token boundaries; and to have ``'.'`` not match the angle brackets.
     """
+
     def __init__(self, tokens):
-        self._raw = ''.join('<'+w+'>' for w in tokens)
+        self._raw = ''.join('<' + w + '>' for w in tokens)
 
     def findall(self, regexp):
         """
@@ -302,6 +317,7 @@ class Text(object):
     >>> moby = Text(nltk.corpus.gutenberg.words('melville-moby_dick.txt'))
 
     """
+
     # This defeats lazy loading, but makes things faster.  This
     # *shouldn't* be necessary because the corpus view *should* be
     # doing intelligent caching, but without this it's running slow.
@@ -327,9 +343,9 @@ class Text(object):
         else:
             self.name = " ".join(text_type(tok) for tok in tokens[:8]) + "..."
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # Support item & slice access
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
 
     def __getitem__(self, i):
         return self.tokens[i]
@@ -337,9 +353,9 @@ class Text(object):
     def __len__(self):
         return len(self.tokens)
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # Interactive console methods
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
 
     def concordance(self, word, width=79, lines=25):
         """
@@ -356,11 +372,13 @@ class Text(object):
         :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
-            self._concordance_index = ConcordanceIndex(self.tokens, key=lambda s:s.lower())
+            self._concordance_index = ConcordanceIndex(
+                self.tokens, key=lambda s: s.lower()
+            )
 
         return self._concordance_index.print_concordance(word, width, lines)
 
-    def concordance_list(self,  word, width=79, lines=25):
+    def concordance_list(self, word, width=79, lines=25):
         """
         Generate a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
@@ -375,8 +393,10 @@ class Text(object):
         :seealso: ``ConcordanceIndex``
         """
         if '_concordance_index' not in self.__dict__:
-            self._concordance_index = ConcordanceIndex(self.tokens, key=lambda s:s.lower())
-        return self._concordance_index.find_concordance(word, width, lines)
+            self._concordance_index = ConcordanceIndex(
+                self.tokens, key=lambda s: s.lower()
+            )
+        return self._concordance_index.find_concordance(word, width)[:lines]
 
     def collocations(self, num=20, window_size=2):
         """
@@ -388,19 +408,24 @@ class Text(object):
         :param window_size: The number of tokens spanned by a collocation (default=2)
         :type window_size: int
         """
-        if not ('_collocations' in self.__dict__ and self._num == num and self._window_size == window_size):
+        if not (
+            '_collocations' in self.__dict__
+            and self._num == num
+            and self._window_size == window_size
+        ):
             self._num = num
             self._window_size = window_size
 
-            #print("Building collocations list")
+            # print("Building collocations list")
             from nltk.corpus import stopwords
+
             ignored_words = stopwords.words('english')
             finder = BigramCollocationFinder.from_words(self.tokens, window_size)
             finder.apply_freq_filter(2)
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
             bigram_measures = BigramAssocMeasures()
             self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)
-        colloc_strings = [w1+' '+w2 for w1, w2 in self._collocations]
+        colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations]
         print(tokenwrap(colloc_strings, separator="; "))
 
     def count(self, word):
@@ -431,10 +456,10 @@ class Text(object):
         :seealso: ContextIndex.similar_words()
         """
         if '_word_context_index' not in self.__dict__:
-            #print('Building word-context index...')
-            self._word_context_index = ContextIndex(self.tokens,
-                                                    filter=lambda x:x.isalpha(),
-                                                    key=lambda s:s.lower())
+            # print('Building word-context index...')
+            self._word_context_index = ContextIndex(
+                self.tokens, filter=lambda x: x.isalpha(), key=lambda s: s.lower()
+            )
 
         # words = self._word_context_index.similar_words(word, num)
 
@@ -442,13 +467,16 @@ class Text(object):
         wci = self._word_context_index._word_to_contexts
         if word in wci.conditions():
             contexts = set(wci[word])
-            fd = Counter(w for w in wci.conditions() for c in wci[w]
-                          if c in contexts and not w == word)
+            fd = Counter(
+                w
+                for w in wci.conditions()
+                for c in wci[w]
+                if c in contexts and not w == word
+            )
             words = [w for w, _ in fd.most_common(num)]
             print(tokenwrap(words))
         else:
             print("No matches")
-
 
     def common_contexts(self, words, num=20):
         """
@@ -462,9 +490,10 @@ class Text(object):
         :seealso: ContextIndex.common_contexts()
         """
         if '_word_context_index' not in self.__dict__:
-            #print('Building word-context index...')
-            self._word_context_index = ContextIndex(self.tokens,
-                                                    key=lambda s:s.lower())
+            # print('Building word-context index...')
+            self._word_context_index = ContextIndex(
+                self.tokens, key=lambda s: s.lower()
+            )
 
         try:
             fd = self._word_context_index.common_contexts(words, True)
@@ -472,7 +501,7 @@ class Text(object):
                 print("No common contexts were found")
             else:
                 ranked_contexts = [w for w, _ in fd.most_common(num)]
-                print(tokenwrap(w1+"_"+w2 for w1,w2 in ranked_contexts))
+                print(tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts))
 
         except ValueError as e:
             print(e)
@@ -487,6 +516,7 @@ class Text(object):
         :seealso: nltk.draw.dispersion_plot()
         """
         from nltk.draw import dispersion_plot
+
         dispersion_plot(self, words)
 
     def generate(self, words):
@@ -494,7 +524,10 @@ class Text(object):
         Issues a reminder to users following the book online
         """
         import warnings
-        warnings.warn('The generate() method is no longer available.', DeprecationWarning)
+
+        warnings.warn(
+            'The generate() method is no longer available.', DeprecationWarning
+        )
 
     def plot(self, *args):
         """
@@ -508,7 +541,7 @@ class Text(object):
         :seealso: nltk.prob.FreqDist
         """
         if "_vocab" not in self.__dict__:
-            #print("Building vocabulary index...")
+            # print("Building vocabulary index...")
             self._vocab = FreqDist(self)
         return self._vocab
 
@@ -543,11 +576,12 @@ class Text(object):
         hits = [' '.join(h) for h in hits]
         print(tokenwrap(hits, "; "))
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # Helper Methods
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
 
     _CONTEXT_RE = re.compile('\w+|[\.\!\?]')
+
     def _context(self, tokens, i):
         """
         One left & one right token, both case-normalized.  Skip over
@@ -555,22 +589,22 @@ class Text(object):
         that is created for ``similar()`` and ``common_contexts()``.
         """
         # Left context
-        j = i-1
-        while j>=0 and not self._CONTEXT_RE.match(tokens[j]):
+        j = i - 1
+        while j >= 0 and not self._CONTEXT_RE.match(tokens[j]):
             j -= 1
-        left = (tokens[j] if j != 0 else '*START*')
+        left = tokens[j] if j != 0 else '*START*'
 
         # Right context
-        j = i+1
-        while j<len(tokens) and not self._CONTEXT_RE.match(tokens[j]):
+        j = i + 1
+        while j < len(tokens) and not self._CONTEXT_RE.match(tokens[j]):
             j += 1
-        right = (tokens[j] if j != len(tokens) else '*END*')
+        right = tokens[j] if j != len(tokens) else '*END*'
 
         return (left, right)
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # String Display
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
 
     def __str__(self):
         return '<Text: %s>' % self.name
@@ -596,8 +630,9 @@ class TextCollection(Text):
     Iterating over a TextCollection produces all the tokens of all the
     texts in order.
     """
+
     def __init__(self, source):
-        if hasattr(source, 'words'): # bridge to the text corpus reader
+        if hasattr(source, 'words'):  # bridge to the text corpus reader
             source = [source.words(f) for f in source.fileids()]
 
         self._texts = source
@@ -618,15 +653,17 @@ class TextCollection(Text):
             matches = len([True for text in self._texts if term in text])
             if len(self._texts) == 0:
                 raise ValueError('IDF undefined for empty document collection')
-            idf = (log(len(self._texts) / matches) if matches else 0.0)
+            idf = log(len(self._texts) / matches) if matches else 0.0
             self._idf_cache[term] = idf
         return idf
 
     def tf_idf(self, term, text):
         return self.tf(term, text) * self.idf(term)
 
+
 def demo():
     from nltk.corpus import brown
+
     text = Text(brown.words(categories='news'))
     print(text)
     print()
@@ -639,9 +676,9 @@ def demo():
     print("Collocations:")
     text.collocations()
     print()
-    #print("Automatically generated text:")
-    #text.generate()
-    #print()
+    # print("Automatically generated text:")
+    # text.generate()
+    # print()
     print("Dispersion plot:")
     text.dispersion_plot(['news', 'report', 'said', 'announced'])
     print()
@@ -653,11 +690,14 @@ def demo():
     print("text[3:5]:", text[3:5])
     print("text.vocab()['news']:", text.vocab()['news'])
 
+
 if __name__ == '__main__':
     demo()
 
-__all__ = ["ContextIndex",
-           "ConcordanceIndex",
-           "TokenSearcher",
-           "Text",
-           "TextCollection"]
+__all__ = [
+    "ContextIndex",
+    "ConcordanceIndex",
+    "TokenSearcher",
+    "Text",
+    "TextCollection",
+]

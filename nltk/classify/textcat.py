@@ -10,10 +10,10 @@
 """
 A module for language identification using the TextCat algorithm.
 An implementation of the text categorization algorithm
-presented in Cavnar, W. B. and J. M. Trenkle, 
+presented in Cavnar, W. B. and J. M. Trenkle,
 "N-Gram-Based Text Categorization".
 
-The algorithm takes advantage of Zipf's law and uses 
+The algorithm takes advantage of Zipf's law and uses
 n-gram frequencies to profile languages and text-yet to
 be identified-then compares using a distance measure.
 
@@ -51,39 +51,43 @@ except ImportError:
 ##  Language identification using TextCat
 ######################################################################
 
+
 class TextCat(object):
 
     _corpus = None
     fingerprints = {}
     _START_CHAR = "<"
     _END_CHAR = ">"
-    
+
     last_distances = {}
-    
+
     def __init__(self):
         if not re:
-            raise EnvironmentError("classify.textcat requires the regex module that "
-                                   "supports unicode. Try '$ pip install regex' and "
-                                   "see https://pypi.python.org/pypi/regex for "
-                                   "further details.")
+            raise EnvironmentError(
+                "classify.textcat requires the regex module that "
+                "supports unicode. Try '$ pip install regex' and "
+                "see https://pypi.python.org/pypi/regex for "
+                "further details."
+            )
 
         from nltk.corpus import crubadan
+
         self._corpus = crubadan
         # Load all language ngrams into cache
         for lang in self._corpus.langs():
             self._corpus.lang_freq(lang)
-        
+
     def remove_punctuation(self, text):
         ''' Get rid of punctuation except apostrophes '''
         return re.sub(r"[^\P{P}\']+", "", text)
-    
+
     def profile(self, text):
         ''' Create FreqDist of trigrams within text '''
         from nltk import word_tokenize, FreqDist
 
         clean_text = self.remove_punctuation(text)
         tokens = word_tokenize(clean_text)
-        
+
         fingerprint = FreqDist()
         for t in tokens:
             token_trigram_tuples = trigrams(self._START_CHAR + t + self._END_CHAR)
@@ -96,7 +100,7 @@ class TextCat(object):
                     fingerprint[cur_trigram] = 1
 
         return fingerprint
-        
+
     def calc_dist(self, lang, trigram, text_profile):
         ''' Calculate the "out-of-place" measure between the
             text and language profile for a single trigram '''
@@ -108,8 +112,8 @@ class TextCat(object):
             idx_lang_profile = list(lang_fd.keys()).index(trigram)
             idx_text = list(text_profile.keys()).index(trigram)
 
-            #print(idx_lang_profile, ", ", idx_text)
-            dist = abs(idx_lang_profile - idx_text) 
+            # print(idx_lang_profile, ", ", idx_text)
+            dist = abs(idx_lang_profile - idx_text)
         else:
             # Arbitrary but should be larger than
             # any possible trigram file length
@@ -120,11 +124,11 @@ class TextCat(object):
                 dist = maxint
 
         return dist
-        
+
     def lang_dists(self, text):
         ''' Calculate the "out-of-place" measure between
             the text and all languages '''
-        
+
         distances = {}
         profile = self.profile(text)
         # For all the languages
@@ -134,36 +138,47 @@ class TextCat(object):
             lang_dist = 0
             for trigram in profile:
                 lang_dist += self.calc_dist(lang, trigram, profile)
-        
+
             distances[lang] = lang_dist
-            
+
         return distances
-    
+
     def guess_language(self, text):
         ''' Find the language with the min distance
             to the text and return its ISO 639-3 code '''
         self.last_distances = self.lang_dists(text)
-        
+
         return min(self.last_distances, key=self.last_distances.get)
         #################################################')
+
 
 def demo():
     from nltk.corpus import udhr
 
-    langs = ['Kurdish-UTF8', 'Abkhaz-UTF8', 'Farsi_Persian-UTF8',
-             'Hindi-UTF8', 'Hawaiian-UTF8', 'Russian-UTF8', 'Vietnamese-UTF8',
-             'Serbian_Srpski-UTF8','Esperanto-UTF8']
+    langs = [
+        'Kurdish-UTF8',
+        'Abkhaz-UTF8',
+        'Farsi_Persian-UTF8',
+        'Hindi-UTF8',
+        'Hawaiian-UTF8',
+        'Russian-UTF8',
+        'Vietnamese-UTF8',
+        'Serbian_Srpski-UTF8',
+        'Esperanto-UTF8',
+    ]
 
-    friendly = {'kmr':'Northern Kurdish',
-                'abk':'Abkhazian',
-                'pes':'Iranian Persian',
-                'hin':'Hindi',
-                'haw':'Hawaiian',
-                'rus':'Russian',
-                'vie':'Vietnamese',
-                'srp':'Serbian',
-                'epo':'Esperanto'}
-        
+    friendly = {
+        'kmr': 'Northern Kurdish',
+        'abk': 'Abkhazian',
+        'pes': 'Iranian Persian',
+        'hin': 'Hindi',
+        'haw': 'Hawaiian',
+        'rus': 'Russian',
+        'vie': 'Vietnamese',
+        'srp': 'Serbian',
+        'epo': 'Esperanto',
+    }
+
     tc = TextCat()
 
     for cur_lang in langs:
@@ -173,15 +188,15 @@ def demo():
         cols = list(map(len, raw_sentences))
 
         sample = ''
-          
+
         # Generate a sample text of the language
         for i in range(0, rows):
             cur_sent = ''
             for j in range(0, cols[i]):
                 cur_sent += ' ' + raw_sentences[i][j]
-            
+
             sample += cur_sent
-          
+
         # Try to detect what it is
         print('Language snippet: ' + sample[0:140] + '...')
         guess = tc.guess_language(sample)

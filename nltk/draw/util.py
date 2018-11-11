@@ -35,9 +35,22 @@ homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 """
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
-from six.moves.tkinter import (Button, Canvas, Entry, Frame, Label, Menu,
-                               Menubutton, Scrollbar, StringVar, Text, Tk,
-                               Toplevel, Widget, RAISED)
+from six.moves.tkinter import (
+    Button,
+    Canvas,
+    Entry,
+    Frame,
+    Label,
+    Menu,
+    Menubutton,
+    Scrollbar,
+    StringVar,
+    Text,
+    Tk,
+    Toplevel,
+    Widget,
+    RAISED,
+)
 from six.moves.tkinter_tkfiledialog import asksaveasfilename
 
 from nltk.util import in_idle
@@ -162,6 +175,7 @@ class CanvasWidget(object):
         argument, which is the ``CanvasWidget`` that triggered the
         callback.
     """
+
     def __init__(self, canvas, parent=None, **attribs):
         """
         Create a new canvas widget.  This constructor should only be
@@ -186,7 +200,8 @@ class CanvasWidget(object):
 
         # If the subclass constructor called _add_child_widget, then
         # self.__children will already exist.
-        if not hasattr(self, '_CanvasWidget__children'): self.__children = []
+        if not hasattr(self, '_CanvasWidget__children'):
+            self.__children = []
 
         # Is this widget hidden?
         self.__hidden = 0
@@ -201,19 +216,17 @@ class CanvasWidget(object):
         self.__draggable = 0
 
         # Set up attributes.
-        for (attr, value) in list(attribs.items()): self[attr] = value
+        for (attr, value) in list(attribs.items()):
+            self[attr] = value
 
         # Manage this canvas widget
         self._manage()
 
         # Register any new bindings
         for tag in self._tags():
-            self.__canvas.tag_bind(tag, '<ButtonPress-1>',
-                                   self.__press_cb)
-            self.__canvas.tag_bind(tag, '<ButtonPress-2>',
-                                   self.__press_cb)
-            self.__canvas.tag_bind(tag, '<ButtonPress-3>',
-                                   self.__press_cb)
+            self.__canvas.tag_bind(tag, '<ButtonPress-1>', self.__press_cb)
+            self.__canvas.tag_bind(tag, '<ButtonPress-2>', self.__press_cb)
+            self.__canvas.tag_bind(tag, '<ButtonPress-3>', self.__press_cb)
 
     ##//////////////////////////////////////////////////////
     ##  Inherited methods.
@@ -228,8 +241,10 @@ class CanvasWidget(object):
             specified with respect to the coordinate space of the ``Canvas``.
         :rtype: tuple(int, int, int, int)
         """
-        if self.__hidden: return (0,0,0,0)
-        if len(self.tags()) == 0: raise ValueError('No tags')
+        if self.__hidden:
+            return (0, 0, 0, 0)
+        if len(self.tags()) == 0:
+            raise ValueError('No tags')
         return self.__canvas.bbox(*self.tags())
 
     def width(self):
@@ -238,9 +253,10 @@ class CanvasWidget(object):
             its ``Canvas``'s coordinate space.
         :rtype: int
         """
-        if len(self.tags()) == 0: raise ValueError('No tags')
+        if len(self.tags()) == 0:
+            raise ValueError('No tags')
         bbox = self.__canvas.bbox(*self.tags())
-        return bbox[2]-bbox[0]
+        return bbox[2] - bbox[0]
 
     def height(self):
         """
@@ -248,9 +264,10 @@ class CanvasWidget(object):
             its ``Canvas``'s coordinate space.
         :rtype: int
         """
-        if len(self.tags()) == 0: raise ValueError('No tags')
+        if len(self.tags()) == 0:
+            raise ValueError('No tags')
         bbox = self.__canvas.bbox(*self.tags())
-        return bbox[3]-bbox[1]
+        return bbox[3] - bbox[1]
 
     def parent(self):
         """
@@ -292,10 +309,12 @@ class CanvasWidget(object):
             downwards.
         :rtype: None
         """
-        if dx == dy == 0: return
+        if dx == dy == 0:
+            return
         for tag in self.tags():
             self.__canvas.move(tag, dx, dy)
-        if self.__parent: self.__parent.update(self)
+        if self.__parent:
+            self.__parent.update(self)
 
     def moveto(self, x, y, anchor='NW'):
         """
@@ -311,15 +330,23 @@ class CanvasWidget(object):
             specifies the top center; ``'NE'`` specifies the top right
             corner; etc.
         """
-        x1,y1,x2,y2 = self.bbox()
-        if anchor == 'NW': self.move(x-x1,        y-y1)
-        if anchor == 'N':  self.move(x-x1/2-x2/2, y-y1)
-        if anchor == 'NE': self.move(x-x2,        y-y1)
-        if anchor == 'E':  self.move(x-x2,        y-y1/2-y2/2)
-        if anchor == 'SE': self.move(x-x2,        y-y2)
-        if anchor == 'S':  self.move(x-x1/2-x2/2, y-y2)
-        if anchor == 'SW': self.move(x-x1,        y-y2)
-        if anchor == 'W':  self.move(x-x1,        y-y1/2-y2/2)
+        x1, y1, x2, y2 = self.bbox()
+        if anchor == 'NW':
+            self.move(x - x1, y - y1)
+        if anchor == 'N':
+            self.move(x - x1 / 2 - x2 / 2, y - y1)
+        if anchor == 'NE':
+            self.move(x - x2, y - y1)
+        if anchor == 'E':
+            self.move(x - x2, y - y1 / 2 - y2 / 2)
+        if anchor == 'SE':
+            self.move(x - x2, y - y2)
+        if anchor == 'S':
+            self.move(x - x1 / 2 - x2 / 2, y - y2)
+        if anchor == 'SW':
+            self.move(x - x1, y - y2)
+        if anchor == 'W':
+            self.move(x - x1, y - y1 / 2 - y2 / 2)
 
     def destroy(self):
         """
@@ -355,17 +382,20 @@ class CanvasWidget(object):
         :param child: The child widget that changed.
         :type child: CanvasWidget
         """
-        if self.__hidden or child.__hidden: return
+        if self.__hidden or child.__hidden:
+            return
         # If we're already updating, then do nothing.  This prevents
         # infinite loops when _update modifies its children.
-        if self.__updating: return
+        if self.__updating:
+            return
         self.__updating = 1
 
         # Update this CanvasWidget.
         self._update(child)
 
         # Propagate update request to the parent.
-        if self.__parent: self.__parent.update(self)
+        if self.__parent:
+            self.__parent.update(self)
 
         # We're done updating.
         self.__updating = 0
@@ -376,8 +406,10 @@ class CanvasWidget(object):
 
         :rtype: None
         """
-        if self.__hidden: return
-        for child in self.__children: child.manage()
+        if self.__hidden:
+            return
+        for child in self.__children:
+            child.manage()
         self._manage()
 
     def tags(self):
@@ -497,15 +529,19 @@ class CanvasWidget(object):
             this ``CanvasWidget``.  Typically, this should be 1 (left
             button), 3 (right button), or 2 (middle button).
         """
-        try: del self.__callbacks[button]
-        except: pass
+        try:
+            del self.__callbacks[button]
+        except:
+            pass
 
     def unbind_drag(self):
         """
         Remove a callback that was registered with ``bind_drag``.
         """
-        try: del self.__callbacks['drag']
-        except: pass
+        try:
+            del self.__callbacks['drag']
+        except:
+            pass
 
     ##//////////////////////////////////////////////////////
     ##  Callback internals
@@ -521,9 +557,11 @@ class CanvasWidget(object):
         """
         # If we're already waiting for a button release, then ignore
         # this new button press.
-        if (self.__canvas.bind('<ButtonRelease-1>') or
-            self.__canvas.bind('<ButtonRelease-2>') or
-            self.__canvas.bind('<ButtonRelease-3>')):
+        if (
+            self.__canvas.bind('<ButtonRelease-1>')
+            or self.__canvas.bind('<ButtonRelease-2>')
+            or self.__canvas.bind('<ButtonRelease-3>')
+        ):
             return
 
         # Unbind motion (just in case; this shouldn't be necessary)
@@ -543,8 +581,7 @@ class CanvasWidget(object):
                 widget = widget.parent()
 
         # Set up the button release callback.
-        self.__canvas.bind('<ButtonRelease-%d>' % event.num,
-                          self.__release_cb)
+        self.__canvas.bind('<ButtonRelease-%d>' % event.num, self.__release_cb)
 
     def __start_drag(self, event):
         """
@@ -562,7 +599,7 @@ class CanvasWidget(object):
           - move this object to the new location
           - record the new drag coordinates
         """
-        self.move(event.x-self.__drag_x, event.y-self.__drag_y)
+        self.move(event.x - self.__drag_x, event.y - self.__drag_y)
         self.__drag_x = event.x
         self.__drag_y = event.y
 
@@ -578,12 +615,15 @@ class CanvasWidget(object):
         self.__canvas.unbind('<Motion>')
 
         # Is it a click or a drag?
-        if (event.time - self.__press.time < 100 and
-            abs(event.x-self.__press.x) + abs(event.y-self.__press.y) < 5):
+        if (
+            event.time - self.__press.time < 100
+            and abs(event.x - self.__press.x) + abs(event.y - self.__press.y) < 5
+        ):
             # Move it back, if we were dragging.
             if self.__draggable and event.num == 1:
-                self.move(self.__press.x - self.__drag_x,
-                          self.__press.y - self.__drag_y)
+                self.move(
+                    self.__press.x - self.__drag_x, self.__press.y - self.__drag_y
+                )
             self.__click(event.num)
         elif event.num == 1:
             self.__drag()
@@ -614,9 +654,9 @@ class CanvasWidget(object):
         """
         if button in self.__callbacks:
             cb = self.__callbacks[button]
-            #try:
+            # try:
             cb(self)
-            #except:
+            # except:
             #    print 'Error in click callback for %r' % self
             #    raise
         elif self.__parent is not None:
@@ -639,9 +679,10 @@ class CanvasWidget(object):
             have a parent.
         :type child: CanvasWidget
         """
-        if not hasattr(self, '_CanvasWidget__children'): self.__children = []
+        if not hasattr(self, '_CanvasWidget__children'):
+            self.__children = []
         if child.__parent is not None:
-            raise ValueError('%s already has a parent', child)
+            raise ValueError('{} already has a parent'.format(child))
         child.__parent = self
         self.__children.append(child)
 
@@ -694,9 +735,11 @@ class CanvasWidget(object):
         :rtype: None
         """
 
+
 ##//////////////////////////////////////////////////////
 ##  Basic widgets.
 ##//////////////////////////////////////////////////////
+
 
 class TextWidget(CanvasWidget):
     """
@@ -711,6 +754,7 @@ class TextWidget(CanvasWidget):
         this width, it will be line-wrapped at whitespace.
       - ``draggable``: whether the text can be dragged by the user.
     """
+
     def __init__(self, canvas, text, **attribs):
         """
         Create a new text widget.
@@ -727,8 +771,9 @@ class TextWidget(CanvasWidget):
 
     def __setitem__(self, attr, value):
         if attr in ('color', 'font', 'justify', 'width'):
-            if attr == 'color': attr = 'fill'
-            self.canvas().itemconfig(self._tag, {attr:value})
+            if attr == 'color':
+                attr = 'fill'
+            self.canvas().itemconfig(self._tag, {attr: value})
         else:
             CanvasWidget.__setitem__(self, attr, value)
 
@@ -736,12 +781,14 @@ class TextWidget(CanvasWidget):
         if attr == 'width':
             return int(self.canvas().itemcget(self._tag, attr))
         elif attr in ('color', 'font', 'justify'):
-            if attr == 'color': attr = 'fill'
+            if attr == 'color':
+                attr = 'fill'
             return self.canvas().itemcget(self._tag, attr)
         else:
             return CanvasWidget.__getitem__(self, attr)
 
-    def _tags(self): return [self._tag]
+    def _tags(self):
+        return [self._tag]
 
     def text(self):
         """
@@ -765,6 +812,7 @@ class TextWidget(CanvasWidget):
     def __repr__(self):
         return '[Text: %r]' % self._text
 
+
 class SymbolWidget(TextWidget):
     """
     A canvas widget that displays special symbols, such as the
@@ -782,16 +830,27 @@ class SymbolWidget(TextWidget):
     :cvar SYMBOLS: A dictionary mapping from symbols to the character
         in the ``symbol`` font used to render them.
     """
-    SYMBOLS = {'neg':'\330', 'disj':'\332', 'conj': '\331',
-               'lambda': '\154', 'merge': '\304',
-               'forall': '\042', 'exists': '\044',
-               'subseteq': '\315', 'subset': '\314',
-               'notsubset': '\313', 'emptyset': '\306',
-               'imp': '\336', 'rightarrow': chr(222), #'\256',
-               'equal': '\75', 'notequal': '\271',
-               'intersection': '\307', 'union': '\310',
-               'epsilon': 'e',
-               }
+
+    SYMBOLS = {
+        'neg': '\330',
+        'disj': '\332',
+        'conj': '\331',
+        'lambda': '\154',
+        'merge': '\304',
+        'forall': '\042',
+        'exists': '\044',
+        'subseteq': '\315',
+        'subset': '\314',
+        'notsubset': '\313',
+        'emptyset': '\306',
+        'imp': '\336',
+        'rightarrow': chr(222),  #'\256',
+        'equal': '\75',
+        'notequal': '\271',
+        'intersection': '\307',
+        'union': '\310',
+        'epsilon': 'e',
+    }
 
     def __init__(self, canvas, symbol, **attribs):
         """
@@ -838,18 +897,22 @@ class SymbolWidget(TextWidget):
         ``SymbolWidget.SYMBOLS`` dictionary.
         """
         top = Tk()
-        def destroy(e, top=top): top.destroy()
+
+        def destroy(e, top=top):
+            top.destroy()
+
         top.bind('q', destroy)
         Button(top, text='Quit', command=top.destroy).pack(side='bottom')
         text = Text(top, font=('helvetica', -size), width=20, height=30)
         text.pack(side='left')
-        sb=Scrollbar(top, command=text.yview)
-        text['yscrollcommand']=sb.set
+        sb = Scrollbar(top, command=text.yview)
+        text['yscrollcommand'] = sb.set
         sb.pack(side='right', fill='y')
         text.tag_config('symbol', font=('symbol', -size))
         for i in range(256):
-            if i in (0,10): continue # null and newline
-            for k,v in list(SymbolWidget.SYMBOLS.items()):
+            if i in (0, 10):
+                continue  # null and newline
+            for k, v in list(SymbolWidget.SYMBOLS.items()):
                 if v == chr(i):
                     text.insert('end', '%-10s\t' % k)
                     break
@@ -869,6 +932,7 @@ class AbstractContainerWidget(CanvasWidget):
     and any subclasses that define attributes should define
     ``__setitem__`` and ``__getitem__``.
     """
+
     def __init__(self, canvas, child, **attribs):
         """
         Create a new container widget.  This constructor should only
@@ -911,8 +975,10 @@ class AbstractContainerWidget(CanvasWidget):
 
     def __repr__(self):
         name = self.__class__.__name__
-        if name[-6:] == 'Widget': name = name[:-6]
+        if name[-6:] == 'Widget':
+            name = name[:-6]
         return '[%s: %r]' % (name, self._child)
+
 
 class BoxWidget(AbstractContainerWidget):
     """
@@ -926,6 +992,7 @@ class BoxWidget(AbstractContainerWidget):
         and the box.
       - ``draggable``: whether the text can be dragged by the user.
     """
+
     def __init__(self, canvas, child, **attribs):
         """
         Create a new box widget.
@@ -939,19 +1006,21 @@ class BoxWidget(AbstractContainerWidget):
         """
         self._child = child
         self._margin = 1
-        self._box = canvas.create_rectangle(1,1,1,1)
+        self._box = canvas.create_rectangle(1, 1, 1, 1)
         canvas.tag_lower(self._box)
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
 
     def __setitem__(self, attr, value):
-        if attr == 'margin': self._margin = value
+        if attr == 'margin':
+            self._margin = value
         elif attr in ('outline', 'fill', 'width'):
-            self.canvas().itemconfig(self._box, {attr:value})
+            self.canvas().itemconfig(self._box, {attr: value})
         else:
             CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'margin': return self._margin
+        if attr == 'margin':
+            return self._margin
         elif attr == 'width':
             return float(self.canvas().itemcget(self._box, attr))
         elif attr in ('outline', 'fill', 'width'):
@@ -961,11 +1030,14 @@ class BoxWidget(AbstractContainerWidget):
 
     def _update(self, child):
         (x1, y1, x2, y2) = child.bbox()
-        margin = self._margin + self['width']/2
-        self.canvas().coords(self._box, x1-margin, y1-margin,
-                             x2+margin, y2+margin)
+        margin = self._margin + self['width'] / 2
+        self.canvas().coords(
+            self._box, x1 - margin, y1 - margin, x2 + margin, y2 + margin
+        )
 
-    def _tags(self): return [self._box]
+    def _tags(self):
+        return [self._box]
+
 
 class OvalWidget(AbstractContainerWidget):
     """
@@ -980,6 +1052,7 @@ class OvalWidget(AbstractContainerWidget):
       - ``draggable``: whether the text can be dragged by the user.
       - ``double``: If true, then a double-oval is drawn.
     """
+
     def __init__(self, canvas, child, **attribs):
         """
         Create a new oval widget.
@@ -993,11 +1066,11 @@ class OvalWidget(AbstractContainerWidget):
         """
         self._child = child
         self._margin = 1
-        self._oval = canvas.create_oval(1,1,1,1)
+        self._oval = canvas.create_oval(1, 1, 1, 1)
         self._circle = attribs.pop('circle', False)
         self._double = attribs.pop('double', False)
         if self._double:
-            self._oval2 = canvas.create_oval(1,1,1,1)
+            self._oval2 = canvas.create_oval(1, 1, 1, 1)
         else:
             self._oval2 = None
         canvas.tag_lower(self._oval)
@@ -1005,31 +1078,39 @@ class OvalWidget(AbstractContainerWidget):
 
     def __setitem__(self, attr, value):
         c = self.canvas()
-        if attr == 'margin': self._margin = value
+        if attr == 'margin':
+            self._margin = value
         elif attr == 'double':
-            if value==True and self._oval2 is None:
+            if value == True and self._oval2 is None:
                 # Copy attributes & position from self._oval.
                 x1, y1, x2, y2 = c.bbox(self._oval)
-                w = self['width']*2
-                self._oval2 = c.create_oval(x1-w, y1-w, x2+w, y2+w,
-                                outline=c.itemcget(self._oval, 'outline'),
-                                width=c.itemcget(self._oval, 'width'))
+                w = self['width'] * 2
+                self._oval2 = c.create_oval(
+                    x1 - w,
+                    y1 - w,
+                    x2 + w,
+                    y2 + w,
+                    outline=c.itemcget(self._oval, 'outline'),
+                    width=c.itemcget(self._oval, 'width'),
+                )
                 c.tag_lower(self._oval2)
-            if value==False and self._oval2 is not None:
+            if value == False and self._oval2 is not None:
                 c.delete(self._oval2)
                 self._oval2 = None
         elif attr in ('outline', 'fill', 'width'):
-            c.itemconfig(self._oval, {attr:value})
-            if self._oval2 is not None and attr!='fill':
-                c.itemconfig(self._oval2, {attr:value})
-            if self._oval2 is not None and attr!='fill':
-                self.canvas().itemconfig(self._oval2, {attr:value})
+            c.itemconfig(self._oval, {attr: value})
+            if self._oval2 is not None and attr != 'fill':
+                c.itemconfig(self._oval2, {attr: value})
+            if self._oval2 is not None and attr != 'fill':
+                self.canvas().itemconfig(self._oval2, {attr: value})
         else:
             CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'margin': return self._margin
-        elif attr == 'double': return self._double is not None
+        if attr == 'margin':
+            return self._margin
+        elif attr == 'double':
+            return self._double is not None
         elif attr == 'width':
             return float(self.canvas().itemcget(self._oval, attr))
         elif attr in ('outline', 'fill', 'width'):
@@ -1047,30 +1128,37 @@ class OvalWidget(AbstractContainerWidget):
 
         # If we're a circle, pretend our contents are square.
         if self._circle:
-            dx, dy = abs(x1-x2), abs(y1-y2)
+            dx, dy = abs(x1 - x2), abs(y1 - y2)
             if dx > dy:
-                y = (y1+y2)/2
-                y1, y2 = y-dx/2, y+dx/2
+                y = (y1 + y2) / 2
+                y1, y2 = y - dx / 2, y + dx / 2
             elif dy > dx:
-                x = (x1+x2)/2
-                x1, x2 = x-dy/2, x+dy/2
+                x = (x1 + x2) / 2
+                x1, x2 = x - dy / 2, x + dy / 2
 
         # Find the four corners.
-        left = int(( x1*(1+R) + x2*(1-R) ) / 2)
-        right = left + int((x2-x1)*R)
-        top = int(( y1*(1+R) + y2*(1-R) ) / 2)
-        bot = top + int((y2-y1)*R)
-        self.canvas().coords(self._oval, left-margin, top-margin,
-                             right+margin, bot+margin)
+        left = int((x1 * (1 + R) + x2 * (1 - R)) / 2)
+        right = left + int((x2 - x1) * R)
+        top = int((y1 * (1 + R) + y2 * (1 - R)) / 2)
+        bot = top + int((y2 - y1) * R)
+        self.canvas().coords(
+            self._oval, left - margin, top - margin, right + margin, bot + margin
+        )
         if self._oval2 is not None:
-            self.canvas().coords(self._oval2, left-margin+2, top-margin+2,
-                                 right+margin-2, bot+margin-2)
+            self.canvas().coords(
+                self._oval2,
+                left - margin + 2,
+                top - margin + 2,
+                right + margin - 2,
+                bot + margin - 2,
+            )
 
     def _tags(self):
         if self._oval2 is None:
             return [self._oval]
         else:
             return [self._oval, self._oval2]
+
 
 class ParenWidget(AbstractContainerWidget):
     """
@@ -1082,6 +1170,7 @@ class ParenWidget(AbstractContainerWidget):
       - ``width``: The width of the parenthases.
       - ``draggable``: whether the text can be dragged by the user.
     """
+
     def __init__(self, canvas, child, **attribs):
         """
         Create a new parenthasis widget.
@@ -1094,10 +1183,8 @@ class ParenWidget(AbstractContainerWidget):
         :param attribs: The new canvas widget's attributes.
         """
         self._child = child
-        self._oparen = canvas.create_arc(1,1,1,1, style='arc',
-                                         start=90, extent=180)
-        self._cparen = canvas.create_arc(1,1,1,1, style='arc',
-                                         start=-90, extent=180)
+        self._oparen = canvas.create_arc(1, 1, 1, 1, style='arc', start=90, extent=180)
+        self._cparen = canvas.create_arc(1, 1, 1, 1, style='arc', start=-90, extent=180)
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
 
     def __setitem__(self, attr, value):
@@ -1120,11 +1207,13 @@ class ParenWidget(AbstractContainerWidget):
 
     def _update(self, child):
         (x1, y1, x2, y2) = child.bbox()
-        width = max((y2-y1)/6, 4)
-        self.canvas().coords(self._oparen, x1-width, y1, x1+width, y2)
-        self.canvas().coords(self._cparen, x2-width, y1, x2+width, y2)
+        width = max((y2 - y1) / 6, 4)
+        self.canvas().coords(self._oparen, x1 - width, y1, x1 + width, y2)
+        self.canvas().coords(self._cparen, x2 - width, y1, x2 + width, y2)
 
-    def _tags(self): return [self._oparen, self._cparen]
+    def _tags(self):
+        return [self._oparen, self._cparen]
+
 
 class BracketWidget(AbstractContainerWidget):
     """
@@ -1136,6 +1225,7 @@ class BracketWidget(AbstractContainerWidget):
       - ``width``: The width of the brackets.
       - ``draggable``: whether the text can be dragged by the user.
     """
+
     def __init__(self, canvas, child, **attribs):
         """
         Create a new bracket widget.
@@ -1148,8 +1238,8 @@ class BracketWidget(AbstractContainerWidget):
         :param attribs: The new canvas widget's attributes.
         """
         self._child = child
-        self._obrack = canvas.create_line(1,1,1,1,1,1,1,1)
-        self._cbrack = canvas.create_line(1,1,1,1,1,1,1,1)
+        self._obrack = canvas.create_line(1, 1, 1, 1, 1, 1, 1, 1)
+        self._cbrack = canvas.create_line(1, 1, 1, 1, 1, 1, 1, 1)
         AbstractContainerWidget.__init__(self, canvas, child, **attribs)
 
     def __setitem__(self, attr, value):
@@ -1172,13 +1262,17 @@ class BracketWidget(AbstractContainerWidget):
 
     def _update(self, child):
         (x1, y1, x2, y2) = child.bbox()
-        width = max((y2-y1)/8, 2)
-        self.canvas().coords(self._obrack, x1, y1, x1-width, y1,
-                             x1-width, y2, x1, y2)
-        self.canvas().coords(self._cbrack, x2, y1, x2+width, y1,
-                             x2+width, y2, x2, y2)
+        width = max((y2 - y1) / 8, 2)
+        self.canvas().coords(
+            self._obrack, x1, y1, x1 - width, y1, x1 - width, y2, x1, y2
+        )
+        self.canvas().coords(
+            self._cbrack, x2, y1, x2 + width, y1, x2 + width, y2, x2, y2
+        )
 
-    def _tags(self): return [self._obrack, self._cbrack]
+    def _tags(self):
+        return [self._obrack, self._cbrack]
+
 
 class SequenceWidget(CanvasWidget):
     """
@@ -1194,6 +1288,7 @@ class SequenceWidget(CanvasWidget):
       - ``ordered``: If true, then keep the children in their
         original order.
     """
+
     def __init__(self, canvas, *children, **attribs):
         """
         Create a new sequence widget.
@@ -1209,7 +1304,8 @@ class SequenceWidget(CanvasWidget):
         self._space = 1
         self._ordered = False
         self._children = list(children)
-        for child in children: self._add_child_widget(child)
+        for child in children:
+            self._add_child_widget(child)
         CanvasWidget.__init__(self, canvas, **attribs)
 
     def __setitem__(self, attr, value):
@@ -1217,22 +1313,33 @@ class SequenceWidget(CanvasWidget):
             if value not in ('top', 'bottom', 'center'):
                 raise ValueError('Bad alignment: %r' % value)
             self._align = value
-        elif attr == 'space': self._space = value
-        elif attr == 'ordered': self._ordered = value
-        else: CanvasWidget.__setitem__(self, attr, value)
+        elif attr == 'space':
+            self._space = value
+        elif attr == 'ordered':
+            self._ordered = value
+        else:
+            CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'align': return self._align
-        elif attr == 'space': return self._space
-        elif attr == 'ordered': return self._ordered
-        else: return CanvasWidget.__getitem__(self, attr)
+        if attr == 'align':
+            return self._align
+        elif attr == 'space':
+            return self._space
+        elif attr == 'ordered':
+            return self._ordered
+        else:
+            return CanvasWidget.__getitem__(self, attr)
 
-    def _tags(self): return []
+    def _tags(self):
+        return []
 
     def _yalign(self, top, bot):
-        if self._align == 'top': return top
-        if self._align == 'bottom': return bot
-        if self._align == 'center': return (top+bot)/2
+        if self._align == 'top':
+            return top
+        if self._align == 'bottom':
+            return bot
+        if self._align == 'center':
+            return (top + bot) / 2
 
     def _update(self, child):
         # Align all children with child.
@@ -1240,27 +1347,28 @@ class SequenceWidget(CanvasWidget):
         y = self._yalign(top, bot)
         for c in self._children:
             (x1, y1, x2, y2) = c.bbox()
-            c.move(0, y-self._yalign(y1,y2))
+            c.move(0, y - self._yalign(y1, y2))
 
         if self._ordered and len(self._children) > 1:
             index = self._children.index(child)
 
             x = right + self._space
-            for i in range(index+1, len(self._children)):
+            for i in range(index + 1, len(self._children)):
                 (x1, y1, x2, y2) = self._children[i].bbox()
                 if x > x1:
-                    self._children[i].move(x-x1, 0)
-                    x += x2-x1 + self._space
+                    self._children[i].move(x - x1, 0)
+                    x += x2 - x1 + self._space
 
             x = left - self._space
-            for i in range(index-1, -1, -1):
+            for i in range(index - 1, -1, -1):
                 (x1, y1, x2, y2) = self._children[i].bbox()
                 if x < x2:
-                    self._children[i].move(x-x2, 0)
-                    x -= x2-x1 + self._space
+                    self._children[i].move(x - x2, 0)
+                    x -= x2 - x1 + self._space
 
     def _manage(self):
-        if len(self._children) == 0: return
+        if len(self._children) == 0:
+            return
         child = self._children[0]
 
         # Align all children with child.
@@ -1271,20 +1379,20 @@ class SequenceWidget(CanvasWidget):
 
         # Line up children to the right of child.
         x = right + self._space
-        for i in range(index+1, len(self._children)):
+        for i in range(index + 1, len(self._children)):
             (x1, y1, x2, y2) = self._children[i].bbox()
-            self._children[i].move(x-x1, y-self._yalign(y1,y2))
-            x += x2-x1 + self._space
+            self._children[i].move(x - x1, y - self._yalign(y1, y2))
+            x += x2 - x1 + self._space
 
         # Line up children to the left of child.
         x = left - self._space
-        for i in range(index-1, -1, -1):
+        for i in range(index - 1, -1, -1):
             (x1, y1, x2, y2) = self._children[i].bbox()
-            self._children[i].move(x-x2, y-self._yalign(y1,y2))
-            x -= x2-x1 + self._space
+            self._children[i].move(x - x2, y - self._yalign(y1, y2))
+            x -= x2 - x1 + self._space
 
     def __repr__(self):
-        return '[Sequence: ' + repr(self._children)[1:-1]+']'
+        return '[Sequence: ' + repr(self._children)[1:-1] + ']'
 
     # Provide an alias for the child_widgets() member.
     children = CanvasWidget.child_widgets
@@ -1336,6 +1444,7 @@ class SequenceWidget(CanvasWidget):
         """
         self._children.insert(index, child)
         self._add_child_widget(child)
+
 
 class StackWidget(CanvasWidget):
     """
@@ -1351,6 +1460,7 @@ class StackWidget(CanvasWidget):
       - ``ordered``: If true, then keep the children in their
         original order.
     """
+
     def __init__(self, canvas, *children, **attribs):
         """
         Create a new stack widget.
@@ -1366,7 +1476,8 @@ class StackWidget(CanvasWidget):
         self._space = 1
         self._ordered = False
         self._children = list(children)
-        for child in children: self._add_child_widget(child)
+        for child in children:
+            self._add_child_widget(child)
         CanvasWidget.__init__(self, canvas, **attribs)
 
     def __setitem__(self, attr, value):
@@ -1374,22 +1485,33 @@ class StackWidget(CanvasWidget):
             if value not in ('left', 'right', 'center'):
                 raise ValueError('Bad alignment: %r' % value)
             self._align = value
-        elif attr == 'space': self._space = value
-        elif attr == 'ordered': self._ordered = value
-        else: CanvasWidget.__setitem__(self, attr, value)
+        elif attr == 'space':
+            self._space = value
+        elif attr == 'ordered':
+            self._ordered = value
+        else:
+            CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'align': return self._align
-        elif attr == 'space': return self._space
-        elif attr == 'ordered': return self._ordered
-        else: return CanvasWidget.__getitem__(self, attr)
+        if attr == 'align':
+            return self._align
+        elif attr == 'space':
+            return self._space
+        elif attr == 'ordered':
+            return self._ordered
+        else:
+            return CanvasWidget.__getitem__(self, attr)
 
-    def _tags(self): return []
+    def _tags(self):
+        return []
 
     def _xalign(self, left, right):
-        if self._align == 'left': return left
-        if self._align == 'right': return right
-        if self._align == 'center': return (left+right)/2
+        if self._align == 'left':
+            return left
+        if self._align == 'right':
+            return right
+        if self._align == 'center':
+            return (left + right) / 2
 
     def _update(self, child):
         # Align all children with child.
@@ -1397,27 +1519,28 @@ class StackWidget(CanvasWidget):
         x = self._xalign(left, right)
         for c in self._children:
             (x1, y1, x2, y2) = c.bbox()
-            c.move(x-self._xalign(x1,x2), 0)
+            c.move(x - self._xalign(x1, x2), 0)
 
         if self._ordered and len(self._children) > 1:
             index = self._children.index(child)
 
             y = bot + self._space
-            for i in range(index+1, len(self._children)):
+            for i in range(index + 1, len(self._children)):
                 (x1, y1, x2, y2) = self._children[i].bbox()
                 if y > y1:
-                    self._children[i].move(0, y-y1)
-                    y += y2-y1 + self._space
+                    self._children[i].move(0, y - y1)
+                    y += y2 - y1 + self._space
 
             y = top - self._space
-            for i in range(index-1, -1, -1):
+            for i in range(index - 1, -1, -1):
                 (x1, y1, x2, y2) = self._children[i].bbox()
                 if y < y2:
-                    self._children[i].move(0, y-y2)
-                    y -= y2-y1 + self._space
+                    self._children[i].move(0, y - y2)
+                    y -= y2 - y1 + self._space
 
     def _manage(self):
-        if len(self._children) == 0: return
+        if len(self._children) == 0:
+            return
         child = self._children[0]
 
         # Align all children with child.
@@ -1428,20 +1551,20 @@ class StackWidget(CanvasWidget):
 
         # Line up children below the child.
         y = bot + self._space
-        for i in range(index+1, len(self._children)):
+        for i in range(index + 1, len(self._children)):
             (x1, y1, x2, y2) = self._children[i].bbox()
-            self._children[i].move(x-self._xalign(x1,x2), y-y1)
-            y += y2-y1 + self._space
+            self._children[i].move(x - self._xalign(x1, x2), y - y1)
+            y += y2 - y1 + self._space
 
         # Line up children above the child.
         y = top - self._space
-        for i in range(index-1, -1, -1):
+        for i in range(index - 1, -1, -1):
             (x1, y1, x2, y2) = self._children[i].bbox()
-            self._children[i].move(x-self._xalign(x1,x2), y-y2)
-            y -= y2-y1 + self._space
+            self._children[i].move(x - self._xalign(x1, x2), y - y2)
+            y -= y2 - y1 + self._space
 
     def __repr__(self):
-        return '[Stack: ' + repr(self._children)[1:-1]+']'
+        return '[Stack: ' + repr(self._children)[1:-1] + ']'
 
     # Provide an alias for the child_widgets() member.
     children = CanvasWidget.child_widgets
@@ -1494,6 +1617,7 @@ class StackWidget(CanvasWidget):
         self._children.insert(index, child)
         self._add_child_widget(child)
 
+
 class SpaceWidget(CanvasWidget):
     """
     A canvas widget that takes up space but does not display
@@ -1503,6 +1627,7 @@ class SpaceWidget(CanvasWidget):
     height of zero; and if you wish to only create vertical space, use
     a width of zero.
     """
+
     def __init__(self, canvas, width, height, **attribs):
         """
         Create a new space widget.
@@ -1516,8 +1641,10 @@ class SpaceWidget(CanvasWidget):
         :param attribs: The new canvas widget's attributes.
         """
         # For some reason,
-        if width > 4: width -= 4
-        if height > 4: height -= 4
+        if width > 4:
+            width -= 4
+        if height > 4:
+            height -= 4
         self._tag = canvas.create_line(1, 1, width, height, fill='')
         CanvasWidget.__init__(self, canvas, **attribs)
 
@@ -1531,7 +1658,7 @@ class SpaceWidget(CanvasWidget):
         :rtype: None
         """
         [x1, y1, x2, y2] = self.bbox()
-        self.canvas().coords(self._tag, x1, y1, x1+width, y2)
+        self.canvas().coords(self._tag, x1, y1, x1 + width, y2)
 
     def set_height(self, height):
         """
@@ -1542,11 +1669,14 @@ class SpaceWidget(CanvasWidget):
         :rtype: None
         """
         [x1, y1, x2, y2] = self.bbox()
-        self.canvas().coords(self._tag, x1, y1, x2, y1+height)
+        self.canvas().coords(self._tag, x1, y1, x2, y1 + height)
 
-    def _tags(self): return [self._tag]
+    def _tags(self):
+        return [self._tag]
 
-    def __repr__(self): return '[Space]'
+    def __repr__(self):
+        return '[Space]'
+
 
 class ScrollWatcherWidget(CanvasWidget):
     """
@@ -1555,6 +1685,7 @@ class ScrollWatcherWidget(CanvasWidget):
     scroll-watcher widget will only increase the size of the
     ``Canvas``'s scrollregion; it will never decrease it.
     """
+
     def __init__(self, canvas, *children, **attribs):
         """
         Create a new scroll-watcher widget.
@@ -1568,7 +1699,8 @@ class ScrollWatcherWidget(CanvasWidget):
             scrollregion.
         :param attribs: The new canvas widget's attributes.
         """
-        for child in children: self._add_child_widget(child)
+        for child in children:
+            self._add_child_widget(child)
         CanvasWidget.__init__(self, canvas, **attribs)
 
     def add_child(self, canvaswidget):
@@ -1596,7 +1728,8 @@ class ScrollWatcherWidget(CanvasWidget):
         """
         self._remove_child_widget(canvaswidget)
 
-    def _tags(self): return []
+    def _tags(self):
+        return []
 
     def _update(self, child):
         self._adjust_scrollregion()
@@ -1609,19 +1742,27 @@ class ScrollWatcherWidget(CanvasWidget):
         bbox = self.bbox()
         canvas = self.canvas()
         scrollregion = [int(n) for n in canvas['scrollregion'].split()]
-        if len(scrollregion) != 4: return
-        if (bbox[0] < scrollregion[0] or bbox[1] < scrollregion[1] or
-            bbox[2] > scrollregion[2] or bbox[3] > scrollregion[3]):
-            scrollregion = ('%d %d %d %d' %
-                            (min(bbox[0], scrollregion[0]),
-                             min(bbox[1], scrollregion[1]),
-                             max(bbox[2], scrollregion[2]),
-                         max(bbox[3], scrollregion[3])))
+        if len(scrollregion) != 4:
+            return
+        if (
+            bbox[0] < scrollregion[0]
+            or bbox[1] < scrollregion[1]
+            or bbox[2] > scrollregion[2]
+            or bbox[3] > scrollregion[3]
+        ):
+            scrollregion = '%d %d %d %d' % (
+                min(bbox[0], scrollregion[0]),
+                min(bbox[1], scrollregion[1]),
+                max(bbox[2], scrollregion[2]),
+                max(bbox[3], scrollregion[3]),
+            )
             canvas['scrollregion'] = scrollregion
+
 
 ##//////////////////////////////////////////////////////
 ##  Canvas Frame
 ##//////////////////////////////////////////////////////
+
 
 class CanvasFrame(object):
     """
@@ -1637,6 +1778,7 @@ class CanvasFrame(object):
     its own main window, including a "Done" button and a "Print"
     button.
     """
+
     def __init__(self, parent=None, **kw):
         """
         Create a new ``CanvasFrame``.
@@ -1686,10 +1828,15 @@ class CanvasFrame(object):
         menubar = Menu(self._parent)
 
         filemenu = Menu(menubar, tearoff=0)
-        filemenu.add_command(label='Print to Postscript', underline=0,
-                             command=self.print_to_file, accelerator='Ctrl-p')
-        filemenu.add_command(label='Exit', underline=1,
-                             command=self.destroy, accelerator='Ctrl-x')
+        filemenu.add_command(
+            label='Print to Postscript',
+            underline=0,
+            command=self.print_to_file,
+            accelerator='Ctrl-p',
+        )
+        filemenu.add_command(
+            label='Exit', underline=1, command=self.destroy, accelerator='Ctrl-x'
+        )
         menubar.add_cascade(label='File', underline=0, menu=filemenu)
 
         self._parent.config(menu=menubar)
@@ -1704,17 +1851,21 @@ class CanvasFrame(object):
         :rtype: None
         """
         if filename is None:
-            ftypes = [('Postscript files', '.ps'),
-                      ('All files', '*')]
-            filename = asksaveasfilename(filetypes=ftypes,
-                                         defaultextension='.ps')
-            if not filename: return
+            ftypes = [('Postscript files', '.ps'), ('All files', '*')]
+            filename = asksaveasfilename(filetypes=ftypes, defaultextension='.ps')
+            if not filename:
+                return
         (x0, y0, w, h) = self.scrollregion()
-        postscript = self._canvas.postscript(x=x0, y=y0,
-                                width=w+2, height=h+2,
-                                pagewidth=w+2, # points = 1/72 inch
-                                pageheight=h+2, # points = 1/72 inch
-                                pagex=0, pagey=0)
+        postscript = self._canvas.postscript(
+            x=x0,
+            y=y0,
+            width=w + 2,
+            height=h + 2,
+            pagewidth=w + 2,  # points = 1/72 inch
+            pageheight=h + 2,  # points = 1/72 inch
+            pagex=0,
+            pagey=0,
+        )
         # workaround for bug in Tk font handling
         postscript = postscript.replace(' 0 scalefont ', ' 9 scalefont ')
         with open(filename, 'wb') as f:
@@ -1760,8 +1911,8 @@ class CanvasFrame(object):
             (x, y) = self._find_room(canvaswidget, x, y)
 
         # Move to (x,y)
-        (x1,y1,x2,y2) = canvaswidget.bbox()
-        canvaswidget.move(x-x1,y-y1)
+        (x1, y1, x2, y2) = canvaswidget.bbox()
+        canvaswidget.move(x - x1, y - y1)
 
         # Register with scrollwatcher.
         self._scrollwatcher.add_child(canvaswidget)
@@ -1774,30 +1925,38 @@ class CanvasFrame(object):
         w = widget.width()
         h = widget.height()
 
-        if w >= (right-left): return (0,0)
-        if h >= (bot-top): return (0,0)
+        if w >= (right - left):
+            return (0, 0)
+        if h >= (bot - top):
+            return (0, 0)
 
         # Move the widget out of the way, for now.
-        (x1,y1,x2,y2) = widget.bbox()
-        widget.move(left-x2-50, top-y2-50)
+        (x1, y1, x2, y2) = widget.bbox()
+        widget.move(left - x2 - 50, top - y2 - 50)
 
         if desired_x is not None:
             x = desired_x
-            for y in range(top, bot-h, int((bot-top-h)/10)):
-                if not self._canvas.find_overlapping(x-5, y-5, x+w+5, y+h+5):
-                    return (x,y)
+            for y in range(top, bot - h, int((bot - top - h) / 10)):
+                if not self._canvas.find_overlapping(
+                    x - 5, y - 5, x + w + 5, y + h + 5
+                ):
+                    return (x, y)
 
         if desired_y is not None:
             y = desired_y
-            for x in range(left, right-w, int((right-left-w)/10)):
-                if not self._canvas.find_overlapping(x-5, y-5, x+w+5, y+h+5):
-                    return (x,y)
+            for x in range(left, right - w, int((right - left - w) / 10)):
+                if not self._canvas.find_overlapping(
+                    x - 5, y - 5, x + w + 5, y + h + 5
+                ):
+                    return (x, y)
 
-        for y in range(top, bot-h, int((bot-top-h)/10)):
-            for x in range(left, right-w, int((right-left-w)/10)):
-                if not self._canvas.find_overlapping(x-5, y-5, x+w+5, y+h+5):
-                    return (x,y)
-        return (0,0)
+        for y in range(top, bot - h, int((bot - top - h) / 10)):
+            for x in range(left, right - w, int((right - left - w) / 10)):
+                if not self._canvas.find_overlapping(
+                    x - 5, y - 5, x + w + 5, y + h + 5
+                ):
+                    return (x, y)
+        return (0, 0)
 
     def destroy_widget(self, canvaswidget):
         """
@@ -1824,7 +1983,8 @@ class CanvasFrame(object):
         Destroy this ``CanvasFrame``.  If this ``CanvasFrame`` created a
         top-level window, then this will close that window.
         """
-        if self._parent is None: return
+        if self._parent is None:
+            return
         self._parent.destroy()
         self._parent = None
 
@@ -1835,12 +1995,15 @@ class CanvasFrame(object):
         from a secript); otherwise, the frame will close as soon as
         the script completes.
         """
-        if in_idle(): return
+        if in_idle():
+            return
         self._parent.mainloop(*args, **kwargs)
+
 
 ##//////////////////////////////////////////////////////
 ##  Text display
 ##//////////////////////////////////////////////////////
+
 
 class ShowText(object):
     """
@@ -1848,8 +2011,8 @@ class ShowText(object):
     typically used by graphical tools to display help text, or similar
     information.
     """
-    def __init__(self, root, title, text, width=None, height=None,
-                 **textbox_options):
+
+    def __init__(self, root, title, text, width=None, height=None, **textbox_options):
         if width is None or height is None:
             (width, height) = self.find_dimentions(text, width, height)
 
@@ -1867,8 +2030,7 @@ class ShowText(object):
         tbf.pack(expand=1, fill='both')
         scrollbar = Scrollbar(tbf, orient='vertical')
         scrollbar.pack(side='right', fill='y')
-        textbox = Text(tbf, wrap='word', width=width,
-                       height=height, **textbox_options)
+        textbox = Text(tbf, wrap='word', width=width, height=height, **textbox_options)
         textbox.insert('end', text)
         textbox['state'] = 'disabled'
         textbox.pack(side='left', expand=1, fill='both')
@@ -1904,7 +2066,8 @@ class ShowText(object):
         return (width, height)
 
     def destroy(self, *e):
-        if self._top is None: return
+        if self._top is None:
+            return
         self._top.destroy()
         self._top = None
 
@@ -1915,33 +2078,39 @@ class ShowText(object):
         from a secript); otherwise, the window will close as soon as
         the script completes.
         """
-        if in_idle(): return
+        if in_idle():
+            return
         self._top.mainloop(*args, **kwargs)
+
 
 ##//////////////////////////////////////////////////////
 ##  Entry dialog
 ##//////////////////////////////////////////////////////
 
+
 class EntryDialog(object):
     """
     A dialog box for entering
     """
-    def __init__(self, parent, original_text='', instructions='',
-                 set_callback=None, title=None):
+
+    def __init__(
+        self, parent, original_text='', instructions='', set_callback=None, title=None
+    ):
         self._parent = parent
         self._original_text = original_text
         self._set_callback = set_callback
 
-        width = int(max(30, len(original_text)*3/2))
+        width = int(max(30, len(original_text) * 3 / 2))
         self._top = Toplevel(parent)
 
-        if title: self._top.title(title)
+        if title:
+            self._top.title(title)
 
         # The text entry box.
         entryframe = Frame(self._top)
-        entryframe.pack(expand=1, fill='both', padx=5, pady=5,ipady=10)
+        entryframe.pack(expand=1, fill='both', padx=5, pady=5, ipady=10)
         if instructions:
-            l=Label(entryframe, text=instructions)
+            l = Label(entryframe, text=instructions)
             l.pack(side='top', anchor='w', padx=30)
         self._entry = Entry(entryframe, width=width)
         self._entry.pack(expand=1, fill='x', padx=30)
@@ -1956,8 +2125,7 @@ class EntryDialog(object):
         buttons.pack(expand=0, fill='x', padx=5, pady=5)
         b = Button(buttons, text='Cancel', command=self._cancel, width=8)
         b.pack(side='right', padx=5)
-        b = Button(buttons, text='Ok', command=self._ok,
-                   width=8, default='active')
+        b = Button(buttons, text='Ok', command=self._ok, width=8, default='active')
         b.pack(side='left', padx=5)
         b = Button(buttons, text='Apply', command=self._apply, width=8)
         b.pack(side='left')
@@ -1969,14 +2137,16 @@ class EntryDialog(object):
         self._entry.focus()
 
     def _reset(self, *e):
-        self._entry.delete(0,'end')
+        self._entry.delete(0, 'end')
         self._entry.insert(0, self._original_text)
         if self._set_callback:
             self._set_callback(self._original_text)
 
     def _cancel(self, *e):
-        try: self._reset()
-        except: pass
+        try:
+            self._reset()
+        except:
+            pass
         self._destroy()
 
     def _ok(self, *e):
@@ -1988,13 +2158,16 @@ class EntryDialog(object):
             self._set_callback(self._entry.get())
 
     def _destroy(self, *e):
-        if self._top is None: return
+        if self._top is None:
+            return
         self._top.destroy()
         self._top = None
+
 
 ##//////////////////////////////////////////////////////
 ##  Colorized List
 ##//////////////////////////////////////////////////////
+
 
 class ColorizedList(object):
     """
@@ -2008,6 +2181,7 @@ class ColorizedList(object):
     :note: Typically, you will want to register a callback for
         ``'select'`` that calls ``mark`` on the given item.
     """
+
     def __init__(self, parent, items=[], **options):
         """
         Construct a new list.
@@ -2033,9 +2207,9 @@ class ColorizedList(object):
         self._items = None
         self.set(items)
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # Abstract methods
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     @abstractmethod
     def _init_colortags(self, textwidget, options):
         """
@@ -2053,9 +2227,9 @@ class ColorizedList(object):
         strings returned may not contain newline characters.
         """
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # Item Access
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
 
     def get(self, index=None):
         """
@@ -2071,7 +2245,8 @@ class ColorizedList(object):
         Modify the list of items contained by this list.
         """
         items = list(items)
-        if self._items == items: return
+        if self._items == items:
+            return
         self._items = list(items)
 
         self._textwidget['state'] = 'normal'
@@ -2101,7 +2276,7 @@ class ColorizedList(object):
         else:
             index = self._items.index(item)
             del self._marks[item]
-            (start, end) = ('%d.0' % (index+1), '%d.0' % (index+2))
+            (start, end) = ('%d.0' % (index + 1), '%d.0' % (index + 2))
             self._textwidget.tag_remove('highlight', start, end)
 
     def mark(self, item):
@@ -2111,7 +2286,7 @@ class ColorizedList(object):
         """
         self._marks[item] = 1
         index = self._items.index(item)
-        (start, end) = ('%d.0' % (index+1), '%d.0' % (index+2))
+        (start, end) = ('%d.0' % (index + 1), '%d.0' % (index + 2))
         self._textwidget.tag_add('highlight', start, end)
 
     def markonly(self, item):
@@ -2128,11 +2303,11 @@ class ColorizedList(object):
         the item is already visible, then do nothing.
         """
         index = self._items.index(item)
-        self._textwidget.see('%d.0' % (index+1))
+        self._textwidget.see('%d.0' % (index + 1))
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # Callbacks
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
 
     def add_callback(self, event, func):
         """
@@ -2147,48 +2322,58 @@ class ColorizedList(object):
             single item as its argument.  (The item selected
             or the item moved to).
         """
-        if event == 'select': events = ['click1', 'space', 'return']
-        elif event == 'move': events = ['up', 'down', 'next', 'prior']
-        else: events = [event]
+        if event == 'select':
+            events = ['click1', 'space', 'return']
+        elif event == 'move':
+            events = ['up', 'down', 'next', 'prior']
+        else:
+            events = [event]
 
         for e in events:
-            self._callbacks.setdefault(e,{})[func] = 1
+            self._callbacks.setdefault(e, {})[func] = 1
 
     def remove_callback(self, event, func=None):
         """
         Deregister a callback function.  If ``func`` is none, then
         all callbacks are removed for the given event.
         """
-        if event is None: events = list(self._callbacks.keys())
-        elif event == 'select': events = ['click1', 'space', 'return']
-        elif event == 'move': events = ['up', 'down', 'next', 'prior']
-        else: events = [event]
+        if event is None:
+            events = list(self._callbacks.keys())
+        elif event == 'select':
+            events = ['click1', 'space', 'return']
+        elif event == 'move':
+            events = ['up', 'down', 'next', 'prior']
+        else:
+            events = [event]
 
         for e in events:
-            if func is None: del self._callbacks[e]
+            if func is None:
+                del self._callbacks[e]
             else:
-                try: del self._callbacks[e][func]
-                except: pass
+                try:
+                    del self._callbacks[e][func]
+                except:
+                    pass
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # Tkinter Methods
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
 
     def pack(self, cnf={}, **kw):
-#        "@include: Tkinter.Pack.pack"
+        #        "@include: Tkinter.Pack.pack"
         self._itemframe.pack(cnf, **kw)
 
     def grid(self, cnf={}, **kw):
-#        "@include: Tkinter.Grid.grid"
+        #        "@include: Tkinter.Grid.grid"
         self._itemframe.grid(cnf, *kw)
 
     def focus(self):
-#        "@include: Tkinter.Widget.focus"
+        #        "@include: Tkinter.Widget.focus"
         self._textwidget.focus()
 
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
     # Internal Methods
-    #////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////
 
     def _init_itemframe(self, options):
         self._itemframe = Frame(self._parent)
@@ -2196,26 +2381,28 @@ class ColorizedList(object):
         # Create the basic Text widget & scrollbar.
         options.setdefault('background', '#e0e0e0')
         self._textwidget = Text(self._itemframe, **options)
-        self._textscroll = Scrollbar(self._itemframe, takefocus=0,
-                                     orient='vertical')
-        self._textwidget.config(yscrollcommand = self._textscroll.set)
+        self._textscroll = Scrollbar(self._itemframe, takefocus=0, orient='vertical')
+        self._textwidget.config(yscrollcommand=self._textscroll.set)
         self._textscroll.config(command=self._textwidget.yview)
         self._textscroll.pack(side='right', fill='y')
         self._textwidget.pack(expand=1, fill='both', side='left')
 
         # Initialize the colorization tags
-        self._textwidget.tag_config('highlight', background='#e0ffff',
-                                    border='1', relief='raised')
+        self._textwidget.tag_config(
+            'highlight', background='#e0ffff', border='1', relief='raised'
+        )
         self._init_colortags(self._textwidget, options)
 
         # How do I want to mark keyboard selection?
         self._textwidget.tag_config('sel', foreground='')
-        self._textwidget.tag_config('sel', foreground='', background='',
-                                    border='', underline=1)
+        self._textwidget.tag_config(
+            'sel', foreground='', background='', border='', underline=1
+        )
         self._textwidget.tag_lower('highlight', 'sel')
 
     def _fire_callback(self, event, itemnum):
-        if event not in self._callbacks: return
+        if event not in self._callbacks:
+            return
         if 0 <= itemnum < len(self._items):
             item = self._items[itemnum]
         else:
@@ -2224,65 +2411,83 @@ class ColorizedList(object):
             cb_func(item)
 
     def _buttonpress(self, event):
-        clickloc = '@%d,%d' % (event.x,event.y)
+        clickloc = '@%d,%d' % (event.x, event.y)
         insert_point = self._textwidget.index(clickloc)
-        itemnum = int(insert_point.split('.')[0])-1
+        itemnum = int(insert_point.split('.')[0]) - 1
         self._fire_callback('click%d' % event.num, itemnum)
 
     def _keypress(self, event):
         if event.keysym == 'Return' or event.keysym == 'space':
             insert_point = self._textwidget.index('insert')
-            itemnum = int(insert_point.split('.')[0])-1
+            itemnum = int(insert_point.split('.')[0]) - 1
             self._fire_callback(event.keysym.lower(), itemnum)
             return
-        elif event.keysym == 'Down': delta='+1line'
-        elif event.keysym == 'Up': delta='-1line'
-        elif event.keysym == 'Next': delta='+10lines'
-        elif event.keysym == 'Prior': delta='-10lines'
-        else: return 'continue'
+        elif event.keysym == 'Down':
+            delta = '+1line'
+        elif event.keysym == 'Up':
+            delta = '-1line'
+        elif event.keysym == 'Next':
+            delta = '+10lines'
+        elif event.keysym == 'Prior':
+            delta = '-10lines'
+        else:
+            return 'continue'
 
-        self._textwidget.mark_set('insert', 'insert'+delta)
+        self._textwidget.mark_set('insert', 'insert' + delta)
         self._textwidget.see('insert')
         self._textwidget.tag_remove('sel', '1.0', 'end+1char')
         self._textwidget.tag_add('sel', 'insert linestart', 'insert lineend')
 
         insert_point = self._textwidget.index('insert')
-        itemnum = int(insert_point.split('.')[0])-1
+        itemnum = int(insert_point.split('.')[0]) - 1
         self._fire_callback(event.keysym.lower(), itemnum)
 
         return 'break'
+
 
 ##//////////////////////////////////////////////////////
 ##  Improved OptionMenu
 ##//////////////////////////////////////////////////////
 
+
 class MutableOptionMenu(Menubutton):
     def __init__(self, master, values, **options):
         self._callback = options.get('command')
-        if 'command' in options: del options['command']
+        if 'command' in options:
+            del options['command']
 
         # Create a variable
         self._variable = variable = StringVar()
         if len(values) > 0:
             variable.set(values[0])
 
-        kw = {"borderwidth": 2, "textvariable": variable,
-              "indicatoron": 1, "relief": RAISED, "anchor": "c",
-              "highlightthickness": 2}
+        kw = {
+            "borderwidth": 2,
+            "textvariable": variable,
+            "indicatoron": 1,
+            "relief": RAISED,
+            "anchor": "c",
+            "highlightthickness": 2,
+        }
         kw.update(options)
         Widget.__init__(self, master, "menubutton", kw)
         self.widgetName = 'tk_optionMenu'
-        self._menu = Menu(self, name="menu", tearoff=0,)
+        self._menu = Menu(self, name="menu", tearoff=0)
         self.menuname = self._menu._w
 
         self._values = []
-        for value in values: self.add(value)
+        for value in values:
+            self.add(value)
 
         self["menu"] = self._menu
 
     def add(self, value):
-        if value in self._values: return
-        def set(value=value): self.set(value)
+        if value in self._values:
+            return
+
+        def set(value=value):
+            self.set(value)
+
         self._menu.add_command(label=value, command=set)
         self._values.append(value)
 
@@ -2307,20 +2512,26 @@ class MutableOptionMenu(Menubutton):
         Menubutton.destroy(self)
         self._menu = None
 
+
 ##//////////////////////////////////////////////////////
 ##  Test code.
 ##//////////////////////////////////////////////////////
+
 
 def demo():
     """
     A simple demonstration showing how to use canvas widgets.
     """
+
     def fill(cw):
         from random import randint
-        cw['fill'] = '#00%04d' % randint(0,9999)
+
+        cw['fill'] = '#00%04d' % randint(0, 9999)
+
     def color(cw):
         from random import randint
-        cw['color'] = '#ff%04d' % randint(0,9999)
+
+        cw['color'] = '#ff%04d' % randint(0, 9999)
 
     cf = CanvasFrame(closeenough=10, width=300, height=300)
     c = cf.canvas()
@@ -2330,16 +2541,22 @@ def demo():
     ct = TextWidget(c, 'o  o\n||\n\\___/', draggable=1, justify='center')
     cp = ParenWidget(c, ct, color='red')
     cb = BoxWidget(c, cp, fill='cyan', draggable=1, width=3, margin=10)
-    equation = SequenceWidget(c,
-                              SymbolWidget(c, 'forall'), TextWidget(c, 'x'),
-                              SymbolWidget(c, 'exists'), TextWidget(c, 'y: '),
-                              TextWidget(c, 'x'), SymbolWidget(c, 'notequal'),
-                              TextWidget(c, 'y'))
+    equation = SequenceWidget(
+        c,
+        SymbolWidget(c, 'forall'),
+        TextWidget(c, 'x'),
+        SymbolWidget(c, 'exists'),
+        TextWidget(c, 'y: '),
+        TextWidget(c, 'x'),
+        SymbolWidget(c, 'notequal'),
+        TextWidget(c, 'y'),
+    )
     space = SpaceWidget(c, 0, 30)
     cstack = StackWidget(c, cb, ct3, space, co, equation, align='center')
-    foo = TextWidget(c, 'try clicking\nand dragging',
-                     draggable=1, justify='center')
-    cs = SequenceWidget(c, cstack, foo)
+    prompt_msg = TextWidget(
+        c, 'try clicking\nand dragging', draggable=1, justify='center'
+    )
+    cs = SequenceWidget(c, cstack, prompt_msg)
     zz = BracketWidget(c, cs, color='green4', width=3)
     cf.add_widget(zz, 60, 30)
 
@@ -2350,7 +2567,8 @@ def demo():
     ct3.bind_click(color)
 
     cf.mainloop()
-    #ShowText(None, 'title', ((('this is text'*150)+'\n')*5))
+    # ShowText(None, 'title', ((('this is text'*150)+'\n')*5))
+
 
 if __name__ == '__main__':
     demo()

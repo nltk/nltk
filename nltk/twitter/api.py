@@ -12,11 +12,13 @@ This module provides an interface for TweetHandlers, and support for timezone
 handling.
 """
 
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
-from datetime import tzinfo, timedelta, datetime
-from nltk.compat import UTC
 import time as _time
+from abc import ABCMeta, abstractmethod
+from datetime import tzinfo, timedelta, datetime
+
+from six import add_metaclass
+
+from nltk.compat import UTC
 
 
 class LocalTimezoneOffsetWithUTC(tzinfo):
@@ -31,6 +33,7 @@ class LocalTimezoneOffsetWithUTC(tzinfo):
 
     Reference: https://docs.python.org/3/library/datetime.html
     """
+
     STDOFFSET = timedelta(seconds=-_time.timezone)
 
     if _time.daylight:
@@ -56,6 +59,7 @@ class BasicTweetHandler(object):
     Counts the number of Tweets and decides when the client should stop
     fetching them.
     """
+
     def __init__(self, limit=20):
         self.limit = limit
         self.counter = 0
@@ -77,11 +81,13 @@ class BasicTweetHandler(object):
         """
         return self.counter < self.limit and not self.do_stop
 
+
 class TweetHandlerI(BasicTweetHandler):
     """
     Interface class whose subclasses should implement a handle method that
     Twitter clients can delegate to.
     """
+
     def __init__(self, limit=20, upper_date_limit=None, lower_date_limit=None):
         """
         :param int limit: The number of data items to process in the current\
@@ -124,11 +130,12 @@ class TweetHandlerI(BasicTweetHandler):
         """
         if self.upper_date_limit or self.lower_date_limit:
             date_fmt = '%a %b %d %H:%M:%S +0000 %Y'
-            tweet_date = \
-                datetime.strptime(data['created_at'],
-                                  date_fmt).replace(tzinfo=UTC)
-            if (self.upper_date_limit and tweet_date > self.upper_date_limit) or \
-               (self.lower_date_limit and tweet_date < self.lower_date_limit):
+            tweet_date = datetime.strptime(data['created_at'], date_fmt).replace(
+                tzinfo=UTC
+            )
+            if (self.upper_date_limit and tweet_date > self.upper_date_limit) or (
+                self.lower_date_limit and tweet_date < self.lower_date_limit
+            ):
                 if self.upper_date_limit:
                     message = "earlier"
                     date_limit = self.upper_date_limit
@@ -136,6 +143,9 @@ class TweetHandlerI(BasicTweetHandler):
                     message = "later"
                     date_limit = self.lower_date_limit
                 if verbose:
-                    print("Date limit {0} is {1} than date of current tweet {2}".\
-                      format(date_limit, message, tweet_date))
+                    print(
+                        "Date limit {0} is {1} than date of current tweet {2}".format(
+                            date_limit, message, tweet_date
+                        )
+                    )
                 self.do_stop = True

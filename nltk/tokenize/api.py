@@ -23,6 +23,7 @@ class TokenizerI(object):
     A processing interface for tokenizing a string.
     Subclasses must define ``tokenize()`` or ``tokenize_sents()`` (or both).
     """
+
     @abstractmethod
     def tokenize(self, s):
         """

@@ -12,10 +12,13 @@ generic, abstract implementation in ``NgramAssocMeasures``, and n-specific
 """
 
 from __future__ import division
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
+
 import math as _math
+from abc import ABCMeta, abstractmethod
 from functools import reduce
+
+from six import add_metaclass
+
 _log2 = lambda x: _math.log(x, 2.0)
 _ln = _math.log
 
@@ -26,8 +29,10 @@ _SMALL = 1e-20
 try:
     from scipy.stats import fisher_exact
 except ImportError:
+
     def fisher_exact(*_args, **_kwargs):
         raise NotImplementedError
+
 
 ### Indices to marginals arguments:
 
@@ -67,15 +72,17 @@ class NgramAssocMeasures(object):
     @abstractmethod
     def _contingency(*marginals):
         """Calculates values of a contingency table from marginal values."""
-        raise NotImplementedError("The contingency table is not available"
-                                  "in the general ngram case")
+        raise NotImplementedError(
+            "The contingency table is not available" "in the general ngram case"
+        )
 
     @staticmethod
     @abstractmethod
     def _marginals(*contingency):
         """Calculates values of contingency table marginals from its values."""
-        raise NotImplementedError("The contingency table is not available"
-                                  "in the general ngram case")
+        raise NotImplementedError(
+            "The contingency table is not available" "in the general ngram case"
+        )
 
     @classmethod
     def _expected_values(cls, cont):
@@ -86,10 +93,13 @@ class NgramAssocMeasures(object):
         # For each contingency table cell
         for i in range(len(cont)):
             # Yield the expected value
-            yield (_product(sum(cont[x] for x in range(2 ** cls._n)
-                                if (x & j) == (i & j))
-                            for j in bits) /
-                   (n_all ** (cls._n - 1)))
+            yield (
+                _product(
+                    sum(cont[x] for x in range(2 ** cls._n) if (x & j) == (i & j))
+                    for j in bits
+                )
+                / (n_all ** (cls._n - 1))
+            )
 
     @staticmethod
     def raw_freq(*marginals):
@@ -101,10 +111,10 @@ class NgramAssocMeasures(object):
         """Scores ngrams using Student's t test with independence hypothesis
         for unigrams, as in Manning and Schutze 5.3.1.
         """
-        return ((marginals[NGRAM] -
-                  _product(marginals[UNIGRAMS]) /
-                  (marginals[TOTAL] ** (cls._n - 1))) /
-                (marginals[NGRAM] + _SMALL) ** .5)
+        return (
+            marginals[NGRAM]
+            - _product(marginals[UNIGRAMS]) / (marginals[TOTAL] ** (cls._n - 1))
+        ) / (marginals[NGRAM] + _SMALL) ** 0.5
 
     @classmethod
     def chi_sq(cls, *marginals):
@@ -113,8 +123,7 @@ class NgramAssocMeasures(object):
         """
         cont = cls._contingency(*marginals)
         exps = cls._expected_values(cont)
-        return sum((obs - exp) ** 2 / (exp + _SMALL)
-                   for obs, exp in zip(cont, exps))
+        return sum((obs - exp) ** 2 / (exp + _SMALL) for obs, exp in zip(cont, exps))
 
     @staticmethod
     def mi_like(*marginals, **kwargs):
@@ -122,31 +131,33 @@ class NgramAssocMeasures(object):
         argument power sets an exponent (default 3) for the numerator. No
         logarithm of the result is calculated.
         """
-        return (marginals[NGRAM] ** kwargs.get('power', 3) /
-                _product(marginals[UNIGRAMS]))
+        return marginals[NGRAM] ** kwargs.get('power', 3) / _product(
+            marginals[UNIGRAMS]
+        )
 
     @classmethod
     def pmi(cls, *marginals):
         """Scores ngrams by pointwise mutual information, as in Manning and
         Schutze 5.4.
         """
-        return (_log2(marginals[NGRAM] * marginals[TOTAL] ** (cls._n - 1)) -
-                _log2(_product(marginals[UNIGRAMS])))
+        return _log2(marginals[NGRAM] * marginals[TOTAL] ** (cls._n - 1)) - _log2(
+            _product(marginals[UNIGRAMS])
+        )
 
     @classmethod
     def likelihood_ratio(cls, *marginals):
         """Scores ngrams using likelihood ratios as in Manning and Schutze 5.3.4.
         """
         cont = cls._contingency(*marginals)
-        return (cls._n *
-                sum(obs * _ln(obs / (exp + _SMALL) + _SMALL)
-                    for obs, exp in zip(cont, cls._expected_values(cont))))
+        return cls._n * sum(
+            obs * _ln(obs / (exp + _SMALL) + _SMALL)
+            for obs, exp in zip(cont, cls._expected_values(cont))
+        )
 
     @classmethod
     def poisson_stirling(cls, *marginals):
         """Scores ngrams using the Poisson-Stirling measure."""
-        exp = (_product(marginals[UNIGRAMS]) /
-               (marginals[TOTAL] ** (cls._n - 1)))
+        exp = _product(marginals[UNIGRAMS]) / (marginals[TOTAL] ** (cls._n - 1))
         return marginals[NGRAM] * (_log2(marginals[NGRAM] / exp) - 1)
 
     @classmethod
@@ -214,8 +225,9 @@ class BigramAssocMeasures(NgramAssocMeasures):
         """
         n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
 
-        return ((n_ii*n_oo - n_io*n_oi)**2 /
-                ((n_ii + n_io) * (n_ii + n_oi) * (n_io + n_oo) * (n_oi + n_oo)))
+        return (n_ii * n_oo - n_io * n_oi) ** 2 / (
+            (n_ii + n_io) * (n_ii + n_oi) * (n_io + n_oo) * (n_oi + n_oo)
+        )
 
     @classmethod
     def chi_sq(cls, n_ii, n_ix_xi_tuple, n_xx):
@@ -282,8 +294,7 @@ class TrigramAssocMeasures(NgramAssocMeasures):
         n_ioo = n_ixx - n_iii - n_ioi - n_iio
         n_ooo = n_xxx - n_iii - n_oii - n_ioi - n_iio - n_ooi - n_oio - n_ioo
 
-        return (n_iii, n_oii, n_ioi, n_ooi,
-                n_iio, n_oio, n_ioo, n_ooo)
+        return (n_iii, n_oii, n_ioi, n_ooi, n_iio, n_oio, n_ioo, n_ooo)
 
     @staticmethod
     def _marginals(*contingency):
@@ -292,12 +303,16 @@ class TrigramAssocMeasures(NgramAssocMeasures):
         (1, (1, 1, 1), (1, 73, 1), 2000)
         """
         n_iii, n_oii, n_ioi, n_ooi, n_iio, n_oio, n_ioo, n_ooo = contingency
-        return (n_iii,
-                (n_iii + n_iio, n_iii + n_ioi, n_iii + n_oii),
-                (n_iii + n_ioi + n_iio + n_ioo,
-                 n_iii + n_oii + n_iio + n_oio,
-                 n_iii + n_oii + n_ioi + n_ooi),
-                sum(contingency))
+        return (
+            n_iii,
+            (n_iii + n_iio, n_iii + n_ioi, n_iii + n_oii),
+            (
+                n_iii + n_ioi + n_iio + n_ioo,
+                n_iii + n_oii + n_iio + n_oio,
+                n_iii + n_oii + n_ioi + n_ooi,
+            ),
+            sum(contingency),
+        )
 
 
 class QuadgramAssocMeasures(NgramAssocMeasures):
@@ -344,12 +359,43 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
         n_iioo = n_iixx - n_iiii - n_iioi - n_iiio
         n_oioo = n_xixx - n_iiii - n_oiii - n_iioi - n_iiio - n_oioi - n_oiio - n_iioo
         n_iooo = n_ixxx - n_iiii - n_ioii - n_iioi - n_iiio - n_iooi - n_iioo - n_ioio
-        n_oooo = n_xxxx - n_iiii - n_oiii - n_ioii - n_iioi - n_ooii - n_oioi - n_iooi - \
-                 n_oooi - n_iiio - n_oiio - n_ioio - n_ooio - n_iioo - n_oioo - n_iooo
+        n_oooo = (
+            n_xxxx
+            - n_iiii
+            - n_oiii
+            - n_ioii
+            - n_iioi
+            - n_ooii
+            - n_oioi
+            - n_iooi
+            - n_oooi
+            - n_iiio
+            - n_oiio
+            - n_ioio
+            - n_ooio
+            - n_iioo
+            - n_oioo
+            - n_iooo
+        )
 
-        return (n_iiii, n_oiii, n_ioii, n_ooii, n_iioi,
-                n_oioi, n_iooi, n_oooi, n_iiio, n_oiio,
-                n_ioio, n_ooio, n_iioo, n_oioo, n_iooo, n_oooo)
+        return (
+            n_iiii,
+            n_oiii,
+            n_ioii,
+            n_ooii,
+            n_iioi,
+            n_oioi,
+            n_iooi,
+            n_oooi,
+            n_iiio,
+            n_oiio,
+            n_ioio,
+            n_ooio,
+            n_iioo,
+            n_oioo,
+            n_iooo,
+            n_oooo,
+        )
 
     @staticmethod
     def _marginals(*contingency):
@@ -357,8 +403,9 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
         QuadgramAssocMeasures._marginals(1, 0, 2, 46, 552, 825, 2577, 34967, 1, 0, 2, 48, 7250, 9031, 28585, 356653)
         (1, (2, 553, 3, 1), (7804, 6, 3132, 1378, 49, 2), (38970, 17660, 100, 38970), 440540)
         """
-        n_iiii, n_oiii, n_ioii, n_ooii, n_iioi, n_oioi, n_iooi, n_oooi, n_iiio, n_oiio, n_ioio, n_ooio, \
-        n_iioo, n_oioo, n_iooo, n_oooo = contingency
+        n_iiii, n_oiii, n_ioii, n_ooii, n_iioi, n_oioi, n_iooi, n_oooi, n_iiio, n_oiio, n_ioio, n_ooio, n_iioo, n_oioo, n_iooo, n_oooo = (
+            contingency
+        )
 
         n_iiix = n_iiii + n_iiio
         n_iixi = n_iiii + n_iioi
@@ -379,11 +426,13 @@ class QuadgramAssocMeasures(NgramAssocMeasures):
 
         n_all = sum(contingency)
 
-        return (n_iiii,
-                (n_iiix, n_iixi, n_ixii, n_xiii),
-                (n_iixx, n_ixix, n_ixxi, n_xixi, n_xxii, n_xiix),
-                (n_ixxx, n_xixx, n_xxix, n_xxxi),
-                n_all)
+        return (
+            n_iiii,
+            (n_iiix, n_iixi, n_ixii, n_xiii),
+            (n_iixx, n_ixix, n_ixxi, n_xixi, n_xxii, n_xiix),
+            (n_ixxx, n_xixx, n_xxix, n_xxxi),
+            n_all,
+        )
 
 
 class ContingencyMeasures(object):
@@ -407,8 +456,10 @@ class ContingencyMeasures(object):
         """From an association measure function, produces a new function which
         accepts contingency table values as its arguments.
         """
+
         def res(*contingency):
             return old_fn(*measures._marginals(*contingency))
+
         res.__doc__ = old_fn.__doc__
         res.__name__ = old_fn.__name__
         return res

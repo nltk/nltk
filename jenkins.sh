@@ -3,8 +3,9 @@
 cd `dirname $0`
 
 #download nltk python dependencies
-pip install --upgrade -r pip-req.txt --allow-external matplotlib --allow-unverified matplotlib
-pip install --upgrade https://github.com/PyCQA/pylint/archive/master.zip 
+pip install --upgrade -r pip-req.txt
+pip install --upgrade matplotlib
+pip install --upgrade https://github.com/PyCQA/pylint/archive/master.zip
 
 #download nltk data packages
 python -c "import nltk; nltk.download('all')" || echo "NLTK data download failed: $?"
@@ -83,7 +84,7 @@ coverage run --source=nltk nltk/test/runtests.py -v --with-xunit
 coverage xml --omit=nltk/test/*
 iconv -c -f utf-8 -t utf-8 nosetests.xml > nosetests_scrubbed.xml
 
-# Create a default pylint configuration file. 
+# Create a default pylint configuration file.
 touch ~/.pylintrc
 pylint -f parseable nltk > pylintoutput
 
