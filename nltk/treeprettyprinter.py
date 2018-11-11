@@ -92,6 +92,8 @@ class TreePrettyPrinter(object):
                         for n, b in enumerate(a):
                             if not isinstance(b, Tree):
                                 a[n] = len(sentence)
+                                if type(b) == tuple:
+                                    b = '/'.join(b)
                                 sentence.append('%s' % b)
         self.nodes, self.coords, self.edges, self.highlight = self.nodecoords(
             tree, sentence, highlight
