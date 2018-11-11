@@ -49,5 +49,3 @@ def lesk(context_sentence, ambiguous_word, pos=None, synsets=None):
     )
 
     return sense
-
-

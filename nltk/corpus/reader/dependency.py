@@ -15,13 +15,19 @@ from nltk.tokenize import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class DependencyCorpusReader(SyntaxCorpusReader):
-
-    def __init__(self, root, fileids, encoding='utf8',
-                 word_tokenizer=TabTokenizer(),
-                 sent_tokenizer=RegexpTokenizer('\n', gaps=True),
-                 para_block_reader=read_blankline_block):
-
+    def __init__(
+        self,
+        root,
+        fileids,
+        encoding='utf8',
+        word_tokenizer=TabTokenizer(),
+        sent_tokenizer=RegexpTokenizer('\n', gaps=True),
+        para_block_reader=read_blankline_block,
+    ):
+        # FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
+        #       from CorpusReader?
         CorpusReader.__init__(self, root, fileids, encoding)
 
     #########################################################
@@ -41,32 +47,59 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         return concat(result)
 
     def words(self, fileids=None):
-        return concat([DependencyCorpusView(fileid, False, False, False, encoding=enc)
-                       for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        return concat(
+            [
+                DependencyCorpusView(fileid, False, False, False, encoding=enc)
+                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+            ]
+        )
 
     def tagged_words(self, fileids=None):
-        return concat([DependencyCorpusView(fileid, True, False, False, encoding=enc)
-                       for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        return concat(
+            [
+                DependencyCorpusView(fileid, True, False, False, encoding=enc)
+                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+            ]
+        )
 
     def sents(self, fileids=None):
-        return concat([DependencyCorpusView(fileid, False, True, False, encoding=enc)
-                       for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        return concat(
+            [
+                DependencyCorpusView(fileid, False, True, False, encoding=enc)
+                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+            ]
+        )
 
     def tagged_sents(self, fileids=None):
-            return concat([DependencyCorpusView(fileid, True, True, False, encoding=enc)
-                           for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        return concat(
+            [
+                DependencyCorpusView(fileid, True, True, False, encoding=enc)
+                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+            ]
+        )
 
     def parsed_sents(self, fileids=None):
-        sents=concat([DependencyCorpusView(fileid, False, True, True, encoding=enc)
-                      for fileid, enc in self.abspaths(fileids, include_encoding=True)])
+        sents = concat(
+            [
+                DependencyCorpusView(fileid, False, True, True, encoding=enc)
+                for fileid, enc in self.abspaths(fileids, include_encoding=True)
+            ]
+        )
         return [DependencyGraph(sent) for sent in sents]
 
 
 class DependencyCorpusView(StreamBackedCorpusView):
-    _DOCSTART = '-DOCSTART- -DOCSTART- O\n' #dokumentu hasiera definitzen da
+    _DOCSTART = '-DOCSTART- -DOCSTART- O\n'  # dokumentu hasiera definitzen da
 
-    def __init__(self, corpus_file, tagged, group_by_sent, dependencies,
-                 chunk_types=None, encoding='utf8'):
+    def __init__(
+        self,
+        corpus_file,
+        tagged,
+        group_by_sent,
+        dependencies,
+        chunk_types=None,
+        encoding='utf8',
+    ):
         self._tagged = tagged
         self._dependencies = dependencies
         self._group_by_sent = group_by_sent
@@ -78,7 +111,7 @@ class DependencyCorpusView(StreamBackedCorpusView):
         sent = read_blankline_block(stream)[0].strip()
         # Strip off the docstart marker, if present.
         if sent.startswith(self._DOCSTART):
-            sent = sent[len(self._DOCSTART):].lstrip()
+            sent = sent[len(self._DOCSTART) :].lstrip()
 
         # extract word and tag from any of the formats
         if not self._dependencies:

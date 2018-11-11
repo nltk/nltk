@@ -25,12 +25,7 @@ TEST = [
     (dict(a=0, b=1, c=0)),  # seen 1 time, label=x
 ]
 
-RESULTS = [
-    (0.16, 0.84),
-    (0.46, 0.54),
-    (0.41, 0.59),
-    (0.76, 0.24),
-]
+RESULTS = [(0.16, 0.84), (0.46, 0.54), (0.41, 0.59), (0.76, 0.24)]
 
 
 def assert_classifier_correct(algorithm):

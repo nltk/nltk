@@ -30,10 +30,7 @@ resource file, given its URL: ``load()`` loads a given resource, and
 adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
-from __future__ import print_function, unicode_literals
-from __future__ import division
-from abc import ABCMeta, abstractmethod
-from six import add_metaclass
+from __future__ import print_function, unicode_literals, division
 
 import functools
 import textwrap
@@ -44,30 +41,36 @@ import sys
 import zipfile
 import codecs
 
-from gzip import GzipFile, READ as GZ_READ, WRITE as GZ_WRITE
+from abc import ABCMeta, abstractmethod
+from gzip import GzipFile, WRITE as GZ_WRITE
 
-try: # Python 3.
-    textwrap_indent = functools.partial(textwrap.indent, prefix='  ')
-except AttributeError: # Python 2; indent() not available for Python2.
-    textwrap_fill = functools.partial(textwrap.fill,
-                                        initial_indent='  ',
-                                        subsequent_indent='  ',
-                                        replace_whitespace=False)
-    def textwrap_indent(text):
-        return '\n'.join(textwrap_fill(line) for line in text.splitlines())
-
-try:
-    from zlib import Z_SYNC_FLUSH as FLUSH
-except ImportError:
-    from zlib import Z_FINISH as FLUSH
+from six import add_metaclass
+from six import string_types, text_type
+from six.moves.urllib.request import urlopen, url2pathname
 
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
 
-from six import string_types, text_type
-from six.moves.urllib.request import urlopen, url2pathname
+try:  # Python 3.
+    textwrap_indent = functools.partial(textwrap.indent, prefix='  ')
+except AttributeError:  # Python 2; indent() not available for Python2.
+    textwrap_fill = functools.partial(
+        textwrap.fill,
+        initial_indent='  ',
+        subsequent_indent='  ',
+        replace_whitespace=False,
+    )
+
+    def textwrap_indent(text):
+        return '\n'.join(textwrap_fill(line) for line in text.splitlines())
+
+
+try:
+    from zlib import Z_SYNC_FLUSH as FLUSH
+except ImportError:
+    from zlib import Z_FINISH as FLUSH
 
 # this import should be more specific:
 import nltk
@@ -93,23 +96,24 @@ if 'APPENGINE_RUNTIME' not in os.environ and os.path.expanduser('~/') != '~/':
 if sys.platform.startswith('win'):
     # Common locations on Windows:
     path += [
-        str(r'C:\nltk_data'), str(r'D:\nltk_data'), str(r'E:\nltk_data'),
         os.path.join(sys.prefix, str('nltk_data')),
         os.path.join(sys.prefix, str('share'), str('nltk_data')),
         os.path.join(sys.prefix, str('lib'), str('nltk_data')),
-        os.path.join(
-            os.environ.get(str('APPDATA'), str('C:\\')), str('nltk_data'))
+        os.path.join(os.environ.get(str('APPDATA'), str('C:\\')), str('nltk_data')),
+        str(r'C:\nltk_data'),
+        str(r'D:\nltk_data'),
+        str(r'E:\nltk_data'),
     ]
 else:
     # Common locations on UNIX & OS X:
     path += [
+        os.path.join(sys.prefix, str('nltk_data')),
+        os.path.join(sys.prefix, str('share'), str('nltk_data')),
+        os.path.join(sys.prefix, str('lib'), str('nltk_data')),
         str('/usr/share/nltk_data'),
         str('/usr/local/share/nltk_data'),
         str('/usr/lib/nltk_data'),
         str('/usr/local/lib/nltk_data'),
-        os.path.join(sys.prefix, str('nltk_data')),
-        os.path.join(sys.prefix, str('share'), str('nltk_data')),
-        os.path.join(sys.prefix, str('lib'), str('nltk_data'))
     ]
 
 
@@ -117,8 +121,16 @@ else:
 # Util Functions
 ######################################################################
 
-def gzip_open_unicode(filename, mode="rb", compresslevel=9, encoding='utf-8',
-                      fileobj=None, errors=None, newline=None):
+
+def gzip_open_unicode(
+    filename,
+    mode="rb",
+    compresslevel=9,
+    encoding='utf-8',
+    fileobj=None,
+    errors=None,
+    newline=None,
+):
     if fileobj is None:
         fileobj = GzipFile(filename, mode, compresslevel, fileobj)
     return io.TextIOWrapper(fileobj, encoding, errors, newline)
@@ -234,7 +246,9 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     >>> windows or normalize_resource_name('/dir/file', True, '/') == '/dir/file'
     True
     """
-    is_dir = bool(re.search(r'[\\/.]$', resource_name)) or resource_name.endswith(os.path.sep)
+    is_dir = bool(re.search(r'[\\/.]$', resource_name)) or resource_name.endswith(
+        os.path.sep
+    )
     if sys.platform.startswith('win'):
         resource_name = resource_name.lstrip('/')
     else:
@@ -244,8 +258,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     else:
         if relative_path is None:
             relative_path = os.curdir
-        resource_name = os.path.abspath(
-            os.path.join(relative_path, resource_name))
+        resource_name = os.path.abspath(os.path.join(relative_path, resource_name))
     resource_name = resource_name.replace('\\', '/').replace(os.path.sep, '/')
     if sys.platform.startswith('win') and os.path.isabs(resource_name):
         resource_name = '/' + resource_name
@@ -257,6 +270,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
 ######################################################################
 # Path Pointers
 ######################################################################
+
 
 @add_metaclass(ABCMeta)
 class PathPointer(object):
@@ -305,6 +319,7 @@ class FileSystemPathPointer(PathPointer, text_type):
     A path pointer that identifies a file which can be accessed
     directly via a given absolute path.
     """
+
     @py3_data
     def __init__(self, _path):
         """
@@ -360,12 +375,14 @@ class BufferedGzipFile(GzipFile):
     ``BufferedGzipFile`` is useful for loading large gzipped pickle objects
     as well as writing large encoded feature files for classifier training.
     """
+
     MB = 2 ** 20
     SIZE = 2 * MB
 
     @py3_data
-    def __init__(self, filename=None, mode=None, compresslevel=9,
-                 fileobj=None, **kwargs):
+    def __init__(
+        self, filename=None, mode=None, compresslevel=9, fileobj=None, **kwargs
+    ):
         """
         Return a buffered gzip file object.
 
@@ -475,6 +492,7 @@ class ZipFilePathPointer(PathPointer):
     A path pointer that identifies a file contained within a zipfile,
     which can be accessed by reading that zipfile.
     """
+
     @py3_data
     def __init__(self, zipfile, entry=''):
         """
@@ -499,13 +517,15 @@ class ZipFilePathPointer(PathPointer):
                 # the zip file.  So if `entry` is a directory name,
                 # then check if the zipfile contains any files that
                 # are under the given directory.
-                if (entry.endswith('/') and
-                        [n for n in zipfile.namelist() if n.startswith(entry)]):
+                if entry.endswith('/') and [
+                    n for n in zipfile.namelist() if n.startswith(entry)
+                ]:
                     pass  # zipfile contains a file in that directory.
                 else:
                     # Otherwise, complain.
-                    raise IOError('Zipfile %r does not contain %r' %
-                                  (zipfile.filename, entry))
+                    raise IOError(
+                        'Zipfile %r does not contain %r' % (zipfile.filename, entry)
+                    )
         self._zipfile = zipfile
         self._entry = entry
 
@@ -548,12 +568,10 @@ class ZipFilePathPointer(PathPointer):
         return ZipFilePathPointer(self._zipfile, entry)
 
     def __repr__(self):
-        return str('ZipFilePathPointer(%r, %r)') % (
-            self._zipfile.filename, self._entry)
+        return str('ZipFilePathPointer(%r, %r)') % (self._zipfile.filename, self._entry)
 
     def __str__(self):
-        return os.path.normpath(os.path.join(self._zipfile.filename,
-                                             self._entry))
+        return os.path.normpath(os.path.join(self._zipfile.filename, self._entry))
 
 
 ######################################################################
@@ -649,8 +667,7 @@ def find(resource_name, paths=None):
     if zipfile is None:
         pieces = resource_name.split('/')
         for i in range(len(pieces)):
-            modified_name = '/'.join(pieces[:i] +
-                                     [pieces[i] + '.zip'] + pieces[i:])
+            modified_name = '/'.join(pieces[:i] + [pieces[i] + '.zip'] + pieces[i:])
             try:
                 return find(modified_name, paths)
             except LookupError:
@@ -661,12 +678,14 @@ def find(resource_name, paths=None):
     if resource_zipname.endswith('.zip'):
         resource_zipname = resource_zipname.rpartition('.')[0]
     # Display a friendly error message if the resource wasn't found:
-    msg = str("Resource \33[93m{resource}\033[0m not found.\n"
-              "Please use the NLTK Downloader to obtain the resource:\n\n"
-              "\33[31m" # To display red text in terminal.
-              ">>> import nltk\n"
-              ">>> nltk.download(\'{resource}\')\n"
-              "\033[0m").format(resource=resource_zipname)
+    msg = str(
+        "Resource \33[93m{resource}\033[0m not found.\n"
+        "Please use the NLTK Downloader to obtain the resource:\n\n"
+        "\33[31m"  # To display red text in terminal.
+        ">>> import nltk\n"
+        ">>> nltk.download(\'{resource}\')\n"
+        "\033[0m"
+    ).format(resource=resource_zipname)
     msg = textwrap_indent(msg)
 
     msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in paths)
@@ -724,13 +743,13 @@ FORMATS = {
     'pcfg': "A probabilistic CFG.",
     'fcfg': "A feature CFG.",
     'fol': "A list of first order logic expressions, parsed with "
-            "nltk.sem.logic.Expression.fromstring.",
+    "nltk.sem.logic.Expression.fromstring.",
     'logic': "A list of first order logic expressions, parsed with "
-            "nltk.sem.logic.LogicParser.  Requires an additional logic_parser "
-            "parameter",
+    "nltk.sem.logic.LogicParser.  Requires an additional logic_parser "
+    "parameter",
     'val': "A semantic valuation, parsed by nltk.sem.Valuation.fromstring.",
     'raw': "The raw (byte string) contents of a file.",
-    'text': "The raw (unicode string) contents of a file. "
+    'text': "The raw (unicode string) contents of a file. ",
 }
 
 #: A dictionary mapping from file extensions to format names, used
@@ -751,8 +770,15 @@ AUTO_FORMATS = {
 }
 
 
-def load(resource_url, format='auto', cache=True, verbose=False,
-         logic_parser=None, fstruct_reader=None, encoding=None):
+def load(
+    resource_url,
+    format='auto',
+    cache=True,
+    verbose=False,
+    logic_parser=None,
+    fstruct_reader=None,
+    encoding=None,
+):
     """
     Load a given resource from the NLTK data package.  The following
     resource formats are currently supported:
@@ -812,10 +838,11 @@ def load(resource_url, format='auto', cache=True, verbose=False,
             ext = resource_url_parts[-2]
         format = AUTO_FORMATS.get(ext)
         if format is None:
-            raise ValueError('Could not determine format for %s based '
-                             'on its file\nextension; use the "format" '
-                             'argument to specify the format explicitly.'
-                             % resource_url)
+            raise ValueError(
+                'Could not determine format for %s based '
+                'on its file\nextension; use the "format" '
+                'argument to specify the format explicitly.' % resource_url
+            )
 
     if format not in FORMATS:
         raise ValueError('Unknown format type: %s!' % (format,))
@@ -842,6 +869,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
     elif format == 'json':
         import json
         from nltk.jsontags import json_tags
+
         resource_val = json.load(opened_resource)
         tag = None
         if len(resource_val) != 1:
@@ -850,6 +878,7 @@ def load(resource_url, format='auto', cache=True, verbose=False,
             raise ValueError('Unknown json tag.')
     elif format == 'yaml':
         import yaml
+
         resource_val = yaml.load(opened_resource)
     else:
         # The resource is a text format.
@@ -864,28 +893,33 @@ def load(resource_url, format='auto', cache=True, verbose=False,
         if format == 'text':
             resource_val = string_data
         elif format == 'cfg':
-            resource_val = nltk.grammar.CFG.fromstring(
-                string_data, encoding=encoding)
+            resource_val = nltk.grammar.CFG.fromstring(string_data, encoding=encoding)
         elif format == 'pcfg':
-            resource_val = nltk.grammar.PCFG.fromstring(
-                string_data, encoding=encoding)
+            resource_val = nltk.grammar.PCFG.fromstring(string_data, encoding=encoding)
         elif format == 'fcfg':
             resource_val = nltk.grammar.FeatureGrammar.fromstring(
-                string_data, logic_parser=logic_parser,
-                fstruct_reader=fstruct_reader, encoding=encoding)
+                string_data,
+                logic_parser=logic_parser,
+                fstruct_reader=fstruct_reader,
+                encoding=encoding,
+            )
         elif format == 'fol':
             resource_val = nltk.sem.read_logic(
-                string_data, logic_parser=nltk.sem.logic.LogicParser(),
-                encoding=encoding)
+                string_data,
+                logic_parser=nltk.sem.logic.LogicParser(),
+                encoding=encoding,
+            )
         elif format == 'logic':
             resource_val = nltk.sem.read_logic(
-                string_data, logic_parser=logic_parser, encoding=encoding)
+                string_data, logic_parser=logic_parser, encoding=encoding
+            )
         elif format == 'val':
-            resource_val = nltk.sem.read_valuation(
-                string_data, encoding=encoding)
+            resource_val = nltk.sem.read_valuation(string_data, encoding=encoding)
         else:
-            raise AssertionError("Internal NLTK error: Format %s isn't "
-                                 "handled by nltk.data.load()" % (format,))
+            raise AssertionError(
+                "Internal NLTK error: Format %s isn't "
+                "handled by nltk.data.load()" % (format,)
+            )
 
     opened_resource.close()
 
@@ -958,6 +992,7 @@ def _open(resource_url):
     else:
         return urlopen(resource_url)
 
+
 ######################################################################
 # Lazy Resource Loader
 ######################################################################
@@ -967,7 +1002,6 @@ def _open(resource_url):
 
 
 class LazyLoader(object):
-
     @py3_data
     def __init__(self, _path):
         self._path = _path
@@ -992,6 +1026,7 @@ class LazyLoader(object):
         # __class__ to something new:
         return repr(self)
 
+
 ######################################################################
 # Open-On-Demand ZipFile
 ######################################################################
@@ -1007,6 +1042,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     file-like object (to allow re-opening).  ``OpenOnDemandZipFile`` is
     read-only (i.e. ``write()`` and ``writestr()`` are disabled.
     """
+
     @py3_data
     def __init__(self, filename):
         if not isinstance(filename, string_types):
@@ -1039,8 +1075,9 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     def __repr__(self):
         return repr(str('OpenOnDemandZipFile(%r)') % self.filename)
 
+
 ######################################################################
-#{ Seekable Unicode Stream Reader
+# { Seekable Unicode Stream Reader
 ######################################################################
 
 
@@ -1060,6 +1097,7 @@ class SeekableUnicodeStreamReader(object):
     this shouldn't cause a problem with any of python's builtin
     unicode encodings.
     """
+
     DEBUG = True  # : If true, then perform extra sanity checks.
 
     @py3_data
@@ -1115,9 +1153,9 @@ class SeekableUnicodeStreamReader(object):
         """The length of the byte order marker at the beginning of
            the stream (or None for no byte order marker)."""
 
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
     # Read methods
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
 
     def read(self, size=None):
         """
@@ -1138,6 +1176,13 @@ class SeekableUnicodeStreamReader(object):
             self._rewind_numchars = None
 
         return chars
+
+    def discard_line(self):
+        if self.linebuffer and len(self.linebuffer) > 1:
+            line = self.linebuffer.pop(0)
+            self._rewind_numchars += len(line)
+        else:
+            self.stream.readline()
 
     def readline(self, size=None):
         """
@@ -1179,8 +1224,7 @@ class SeekableUnicodeStreamReader(object):
             if len(lines) > 1:
                 line = lines[0]
                 self.linebuffer = lines[1:]
-                self._rewind_numchars = (len(new_chars) -
-                                         (len(chars) - len(line)))
+                self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
                 self._rewind_checkpoint = startpos
                 break
             elif len(lines) == 1:
@@ -1226,13 +1270,18 @@ class SeekableUnicodeStreamReader(object):
         """Return self"""
         return self
 
+    def __del__(self):
+        # let garbage collector deal with still opened streams
+        if not self.closed:
+            self.close()
+
     def xreadlines(self):
         """Return self"""
         return self
 
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
     # Pass-through methods & properties
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
 
     @property
     def closed(self):
@@ -1255,9 +1304,9 @@ class SeekableUnicodeStreamReader(object):
         """
         self.stream.close()
 
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
     # Seek and tell
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
 
     def seek(self, offset, whence=0):
         """
@@ -1272,9 +1321,11 @@ class SeekableUnicodeStreamReader(object):
             typically be negative).
         """
         if whence == 1:
-            raise ValueError('Relative seek is not supported for '
-                             'SeekableUnicodeStreamReader -- consider '
-                             'using char_seek_forward() instead.')
+            raise ValueError(
+                'Relative seek is not supported for '
+                'SeekableUnicodeStreamReader -- consider '
+                'using char_seek_forward() instead.'
+            )
         self.stream.seek(offset, whence)
         self.linebuffer = None
         self.bytebuffer = b''
@@ -1350,11 +1401,11 @@ class SeekableUnicodeStreamReader(object):
         orig_filepos = self.stream.tell()
 
         # Calculate an estimate of where we think the newline is.
-        bytes_read = ((orig_filepos - len(self.bytebuffer)) -
-                      self._rewind_checkpoint)
+        bytes_read = (orig_filepos - len(self.bytebuffer)) - self._rewind_checkpoint
         buf_size = sum(len(line) for line in self.linebuffer)
-        est_bytes = int((bytes_read * self._rewind_numchars /
-                         (self._rewind_numchars + buf_size)))
+        est_bytes = int(
+            (bytes_read * self._rewind_numchars / (self._rewind_numchars + buf_size))
+        )
 
         self.stream.seek(self._rewind_checkpoint)
         self._char_seek_forward(self._rewind_numchars, est_bytes)
@@ -1374,9 +1425,9 @@ class SeekableUnicodeStreamReader(object):
         # Return the calculated filepos
         return filepos
 
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
     # Helper methods
-    #/////////////////////////////////////////////////////////////////
+    # /////////////////////////////////////////////////////////////////
 
     def _read(self, size=None):
         """
@@ -1435,7 +1486,7 @@ class SeekableUnicodeStreamReader(object):
                 # If the exception occurs at the end of the string,
                 # then assume that it's a truncation error.
                 if exc.end == len(bytes):
-                    return self.decode(bytes[:exc.start], self.errors)
+                    return self.decode(bytes[: exc.start], self.errors)
 
                 # Otherwise, if we're being strict, then raise it.
                 elif self.errors == 'strict':
@@ -1448,12 +1499,10 @@ class SeekableUnicodeStreamReader(object):
 
     _BOM_TABLE = {
         'utf8': [(codecs.BOM_UTF8, None)],
-        'utf16': [(codecs.BOM_UTF16_LE, 'utf16-le'),
-                  (codecs.BOM_UTF16_BE, 'utf16-be')],
+        'utf16': [(codecs.BOM_UTF16_LE, 'utf16-le'), (codecs.BOM_UTF16_BE, 'utf16-be')],
         'utf16le': [(codecs.BOM_UTF16_LE, None)],
         'utf16be': [(codecs.BOM_UTF16_BE, None)],
-        'utf32': [(codecs.BOM_UTF32_LE, 'utf32-le'),
-                  (codecs.BOM_UTF32_BE, 'utf32-be')],
+        'utf32': [(codecs.BOM_UTF32_LE, 'utf32-le'), (codecs.BOM_UTF32_BE, 'utf32-be')],
         'utf32le': [(codecs.BOM_UTF32_LE, None)],
         'utf32be': [(codecs.BOM_UTF32_BE, None)],
     }
@@ -1480,8 +1529,22 @@ class SeekableUnicodeStreamReader(object):
         return None
 
 
-__all__ = ['path', 'PathPointer', 'FileSystemPathPointer', 'BufferedGzipFile',
-           'GzipFileSystemPathPointer', 'GzipFileSystemPathPointer',
-           'find', 'retrieve', 'FORMATS', 'AUTO_FORMATS', 'load',
-           'show_cfg', 'clear_cache', 'LazyLoader', 'OpenOnDemandZipFile',
-           'GzipFileSystemPathPointer', 'SeekableUnicodeStreamReader']
+__all__ = [
+    'path',
+    'PathPointer',
+    'FileSystemPathPointer',
+    'BufferedGzipFile',
+    'GzipFileSystemPathPointer',
+    'GzipFileSystemPathPointer',
+    'find',
+    'retrieve',
+    'FORMATS',
+    'AUTO_FORMATS',
+    'load',
+    'show_cfg',
+    'clear_cache',
+    'LazyLoader',
+    'OpenOnDemandZipFile',
+    'GzipFileSystemPathPointer',
+    'SeekableUnicodeStreamReader',
+]

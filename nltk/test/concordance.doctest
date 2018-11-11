@@ -53,3 +53,16 @@ to false:
 'll over with a heathenish array of monstrous clubs and spears . Some were thick'
 >>> len(con_list)
 11
+
+=================================
+Patching Issue #2088
+=================================
+
+Patching https://github.com/nltk/nltk/issues/2088
+The left slice of the left context should be clip to 0 if the `i-context` < 0.
+
+>>> from nltk import Text, word_tokenize
+>>> jane_eyre = 'Chapter 1\nTHERE was no possibility of taking a walk that day. We had been wandering, indeed, in the leafless shrubbery an hour in the morning; but since dinner (Mrs. Reed, when there was no company, dined early) the cold winter wind had brought with it clouds so sombre, and a rain so penetrating, that further outdoor exercise was now out of the question.'
+>>> text = Text(word_tokenize(jane_eyre))
+>>> text.concordance_list('taking')[0].left
+['Chapter', '1', 'THERE', 'was', 'no', 'possibility', 'of']

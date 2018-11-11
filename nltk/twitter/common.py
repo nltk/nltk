@@ -17,7 +17,7 @@ import csv
 import gzip
 import json
 
-import nltk.compat as compat
+from nltk import compat
 
 HIER_SEPARATOR = "."
 
@@ -35,7 +35,9 @@ def extract_fields(tweet, fields):
         try:
             _add_field_to_out(tweet, field, out)
         except TypeError:
-            raise RuntimeError('Fatal error when extracting fields. Cannot find field ', field)
+            raise RuntimeError(
+                'Fatal error when extracting fields. Cannot find field ', field
+            )
     return out
 
 
@@ -87,8 +89,9 @@ def _get_entity_recursive(json, entity):
         return None
 
 
-def json2csv(fp, outfile, fields, encoding='utf8', errors='replace',
-             gzip_compress=False):
+def json2csv(
+    fp, outfile, fields, encoding='utf8', errors='replace', gzip_compress=False
+):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -150,8 +153,16 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
     return (writer, outf)
 
 
-def json2csv_entities(tweets_file, outfile, main_fields, entity_type, entity_fields,
-                      encoding='utf8', errors='replace', gzip_compress=False):
+def json2csv_entities(
+    tweets_file,
+    outfile,
+    main_fields,
+    entity_type,
+    entity_fields,
+    encoding='utf8',
+    errors='replace',
+    gzip_compress=False,
+):
     """
     Extract selected fields from a file of line-separated JSON tweets and
     write to a file in CSV format.
@@ -253,8 +264,12 @@ def _write_to_file(object_fields, items, entity_fields, writer):
             kd, vd = _get_key_value_composed(d)
             json_dict = items[kd]
             if not isinstance(json_dict, dict):
-                raise RuntimeError("""Key {0} does not contain a dictionary
-                in the json file""".format(kd))
+                raise RuntimeError(
+                    """Key {0} does not contain a dictionary
+                in the json file""".format(
+                        kd
+                    )
+                )
             row += [json_dict[vd]]
         writer.writerow(row)
         return

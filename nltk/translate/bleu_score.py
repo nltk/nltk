@@ -25,8 +25,13 @@ except TypeError:
     from nltk.compat import Fraction
 
 
-def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
-                  smoothing_function=None, auto_reweigh=False):
+def sentence_bleu(
+    references,
+    hypothesis,
+    weights=(0.25, 0.25, 0.25, 0.25),
+    smoothing_function=None,
+    auto_reweigh=False,
+):
     """
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
@@ -97,12 +102,18 @@ def sentence_bleu(references, hypothesis, weights=(0.25, 0.25, 0.25, 0.25),
     :return: The sentence-level BLEU score.
     :rtype: float
     """
-    return corpus_bleu([references], [hypothesis],
-                       weights, smoothing_function, auto_reweigh)
+    return corpus_bleu(
+        [references], [hypothesis], weights, smoothing_function, auto_reweigh
+    )
 
 
-def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25),
-                smoothing_function=None, auto_reweigh=False):
+def corpus_bleu(
+    list_of_references,
+    hypotheses,
+    weights=(0.25, 0.25, 0.25, 0.25),
+    smoothing_function=None,
+    auto_reweigh=False,
+):
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
@@ -162,8 +173,9 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     p_denominators = Counter()  # Key = ngram order, and value = no. of ngram in ref.
     hyp_lengths, ref_lengths = 0, 0
 
-    assert len(list_of_references) == len(hypotheses), "The number of hypotheses and their reference(s) should be the " \
-                                                       "same "
+    assert len(list_of_references) == len(hypotheses), (
+        "The number of hypotheses and their reference(s) should be the " "same "
+    )
 
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
@@ -190,8 +202,10 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
             weights = (1 / hyp_lengths,) * hyp_lengths
 
     # Collects the various precision values for the different ngram orders.
-    p_n = [Fraction(p_numerators[i], p_denominators[i], _normalize=False)
-           for i, _ in enumerate(weights, start=1)]
+    p_n = [
+        Fraction(p_numerators[i], p_denominators[i], _normalize=False)
+        for i, _ in enumerate(weights, start=1)
+    ]
 
     # Returns 0 if there's no matching n-grams
     # We only need to check for p_numerators[1] == 0, since if there's
@@ -206,10 +220,11 @@ def corpus_bleu(list_of_references, hypotheses, weights=(0.25, 0.25, 0.25, 0.25)
     # Note: smoothing_function() may convert values into floats;
     #       it tries to retain the Fraction object as much as the
     #       smoothing method allows.
-    p_n = smoothing_function(p_n, references=references, hypothesis=hypothesis,
-                             hyp_len=hyp_len)
+    p_n = smoothing_function(
+        p_n, references=references, hypothesis=hypothesis, hyp_len=hyp_lengths
+    )
     s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
-    s =  bp * math.exp(math.fsum(s))
+    s = bp * math.exp(math.fsum(s))
     return s
 
 
@@ -305,14 +320,16 @@ def modified_precision(references, hypothesis, n):
     # max_counts = reduce(or_, [Counter(ngrams(ref, n)) for ref in references])
     max_counts = {}
     for reference in references:
-        reference_counts = Counter(ngrams(reference, n)) if len(reference) >= n else Counter()
+        reference_counts = (
+            Counter(ngrams(reference, n)) if len(reference) >= n else Counter()
+        )
         for ngram in counts:
-            max_counts[ngram] = max(max_counts.get(ngram, 0),
-                                    reference_counts[ngram])
+            max_counts[ngram] = max(max_counts.get(ngram, 0), reference_counts[ngram])
 
     # Assigns the intersection between hypothesis and references' counts.
-    clipped_counts = {ngram: min(count, max_counts[ngram])
-                      for ngram, count in counts.items()}
+    clipped_counts = {
+        ngram: min(count, max_counts[ngram]) for ngram, count in counts.items()
+    }
 
     numerator = sum(clipped_counts.values())
     # Ensures that denominator is minimum 1 to avoid ZeroDivisionError.
@@ -336,8 +353,9 @@ def closest_ref_length(references, hyp_len):
     :rtype: int
     """
     ref_lens = (len(reference) for reference in references)
-    closest_ref_len = min(ref_lens, key=lambda ref_len:
-    (abs(ref_len - hyp_len), ref_len))
+    closest_ref_len = min(
+        ref_lens, key=lambda ref_len: (abs(ref_len - hyp_len), ref_len)
+    )
     return closest_ref_len
 
 
@@ -495,11 +513,13 @@ class SmoothingFunction:
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
             else:
-                _msg = str("\nThe hypothesis contains 0 counts of {}-gram overlaps.\n"
-                           "Therefore the BLEU score evaluates to 0, independently of\n"
-                           "how many N-gram overlaps of lower order it contains.\n"
-                           "Consider using lower n-gram order or use "
-                           "SmoothingFunction()").format(i+1)
+                _msg = str(
+                    "\nThe hypothesis contains 0 counts of {}-gram overlaps.\n"
+                    "Therefore the BLEU score evaluates to 0, independently of\n"
+                    "how many N-gram overlaps of lower order it contains.\n"
+                    "Consider using lower n-gram order or use "
+                    "SmoothingFunction()"
+                ).format(i + 1)
                 warnings.warn(_msg)
                 # When numerator==0 where denonminator==0 or !=0, the result
                 # for the precision score should be equal to 0 or undefined.
@@ -513,8 +533,12 @@ class SmoothingFunction:
         """
         Smoothing method 1: Add *epsilon* counts to precision with 0 counts.
         """
-        return [(p_i.numerator + self.epsilon) / p_i.denominator
-                if p_i.numerator == 0 else p_i for p_i in p_n]
+        return [
+            (p_i.numerator + self.epsilon) / p_i.denominator
+            if p_i.numerator == 0
+            else p_i
+            for p_i in p_n
+        ]
 
     def method2(self, p_n, *args, **kwargs):
         """
@@ -523,7 +547,10 @@ class SmoothingFunction:
         machine translation quality using longest common subsequence and
         skip-bigram statistics. In ACL04.
         """
-        return [Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False) for p_i in p_n]
+        return [
+            Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False)
+            for p_i in p_n
+        ]
 
     def method3(self, p_n, *args, **kwargs):
         """
@@ -557,7 +584,9 @@ class SmoothingFunction:
         """
         for i, p_i in enumerate(p_n):
             if p_i.numerator == 0 and hyp_len != 0:
-                incvnt = i + 1 * self.k / math.log(hyp_len)  # Note that this K is different from the K from NIST.
+                incvnt = i + 1 * self.k / math.log(
+                    hyp_len
+                )  # Note that this K is different from the K from NIST.
                 p_n[i] = 1 / incvnt
         return p_n
 

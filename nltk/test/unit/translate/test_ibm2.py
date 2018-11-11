@@ -50,10 +50,12 @@ class TestIBMModel2(unittest.TestCase):
         src_sentence = ["ich", 'esse', 'ja', 'gern', 'räucherschinken']
         trg_sentence = ['i', 'love', 'to', 'eat', 'smoked', 'ham']
         corpus = [AlignedSent(trg_sentence, src_sentence)]
-        alignment_info = AlignmentInfo((0, 1, 4, 0, 2, 5, 5),
-                                       [None] + src_sentence,
-                                       ['UNUSED'] + trg_sentence,
-                                       None)
+        alignment_info = AlignmentInfo(
+            (0, 1, 4, 0, 2, 5, 5),
+            [None] + src_sentence,
+            ['UNUSED'] + trg_sentence,
+            None,
+        )
 
         translation_table = defaultdict(lambda: defaultdict(float))
         translation_table['i']['ich'] = 0.98
@@ -64,8 +66,8 @@ class TestIBMModel2(unittest.TestCase):
         translation_table['ham']['räucherschinken'] = 0.98
 
         alignment_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(
-                lambda: defaultdict(float))))
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
+        )
         alignment_table[0][3][5][6] = 0.97  # None -> to
         alignment_table[1][1][5][6] = 0.97  # ich -> i
         alignment_table[2][4][5][6] = 0.97  # esse -> eat

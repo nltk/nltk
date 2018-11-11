@@ -91,8 +91,10 @@ class DependencyEvaluator(object):
 
         :return : tuple(float,float)
         """
-        if (len(self._parsed_sents) != len(self._gold_sents)):
-            raise ValueError(" Number of parsed sentence is different with number of gold sentence.")
+        if len(self._parsed_sents) != len(self._gold_sents):
+            raise ValueError(
+                " Number of parsed sentence is different with number of gold sentence."
+            )
 
         corr = 0
         corrL = 0
@@ -102,7 +104,7 @@ class DependencyEvaluator(object):
             parsed_sent_nodes = self._parsed_sents[i].nodes
             gold_sent_nodes = self._gold_sents[i].nodes
 
-            if (len(parsed_sent_nodes) != len(gold_sent_nodes)):
+            if len(parsed_sent_nodes) != len(gold_sent_nodes):
                 raise ValueError("Sentences must have equal length.")
 
             for parsed_node_address, parsed_node in parsed_sent_nodes.items():
@@ -125,5 +127,3 @@ class DependencyEvaluator(object):
                         corrL += 1
 
         return corr / total, corrL / total
-
-

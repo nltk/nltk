@@ -27,6 +27,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
     a print_assumptions() method that is used to print the list
     of assumptions in multiple formats.
     """
+
     _interpformat_bin = None
 
     def __init__(self, goal=None, assumptions=None, max_models=500, model_builder=None):
@@ -48,7 +49,8 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         BaseModelBuilderCommand.__init__(self, model_builder, goal, assumptions)
 
     @property
-    def valuation(mbc): return mbc.model('valuation')
+    def valuation(mbc):
+        return mbc.model('valuation')
 
     def _convert2val(self, valuation_str):
         """
@@ -65,27 +67,32 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
 
             if l.startswith('interpretation'):
                 # find the number of entities in the model
-                num_entities = int(l[l.index('(')+1:l.index(',')].strip())
+                num_entities = int(l[l.index('(') + 1 : l.index(',')].strip())
 
             elif l.startswith('function') and l.find('_') == -1:
                 # replace the integer identifier with a corresponding alphabetic character
-                name = l[l.index('(')+1:l.index(',')].strip()
+                name = l[l.index('(') + 1 : l.index(',')].strip()
                 if is_indvar(name):
                     name = name.upper()
-                value = int(l[l.index('[')+1:l.index(']')].strip())
+                value = int(l[l.index('[') + 1 : l.index(']')].strip())
                 val.append((name, MaceCommand._make_model_var(value)))
 
             elif l.startswith('relation'):
-                l = l[l.index('(')+1:]
+                l = l[l.index('(') + 1 :]
                 if '(' in l:
-                    #relation is not nullary
-                    name = l[:l.index('(')].strip()
-                    values = [int(v.strip()) for v in l[l.index('[')+1:l.index(']')].split(',')]
-                    val.append((name, MaceCommand._make_relation_set(num_entities, values)))
+                    # relation is not nullary
+                    name = l[: l.index('(')].strip()
+                    values = [
+                        int(v.strip())
+                        for v in l[l.index('[') + 1 : l.index(']')].split(',')
+                    ]
+                    val.append(
+                        (name, MaceCommand._make_relation_set(num_entities, values))
+                    )
                 else:
-                    #relation is nullary
-                    name = l[:l.index(',')].strip()
-                    value = int(l[l.index('[')+1:l.index(']')].strip())
+                    # relation is nullary
+                    name = l[: l.index(',')].strip()
+                    value = int(l[l.index('[') + 1 : l.index(']')].strip())
                     val.append((name, value == 1))
 
         return Valuation(val)
@@ -101,8 +108,10 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         :type values: list of int
         """
         r = set()
-        for position in [pos for (pos,v) in enumerate(values) if v == 1]:
-            r.add(tuple(MaceCommand._make_relation_tuple(position, values, num_entities)))
+        for position in [pos for (pos, v) in enumerate(values) if v == 1]:
+            r.add(
+                tuple(MaceCommand._make_relation_tuple(position, values, num_entities))
+            )
         return r
 
     @staticmethod
@@ -114,11 +123,14 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
             sublist_start = position // sublist_size
             sublist_position = int(position % sublist_size)
 
-            sublist = values[sublist_start*sublist_size:(sublist_start+1)*sublist_size]
-            return [MaceCommand._make_model_var(sublist_start)] + \
-                   MaceCommand._make_relation_tuple(sublist_position,
-                                                    sublist,
-                                                    num_entities)
+            sublist = values[
+                sublist_start * sublist_size : (sublist_start + 1) * sublist_size
+            ]
+            return [
+                MaceCommand._make_model_var(sublist_start)
+            ] + MaceCommand._make_relation_tuple(
+                sublist_position, sublist, num_entities
+            )
 
     @staticmethod
     def _make_model_var(value):
@@ -128,10 +140,36 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         :param value: where to index into the list of characters
         :type value: int
         """
-        letter = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
-                  'o','p','q','r','s','t','u','v','w','x','y','z'][value]
+        letter = [
+            'a',
+            'b',
+            'c',
+            'd',
+            'e',
+            'f',
+            'g',
+            'h',
+            'i',
+            'j',
+            'k',
+            'l',
+            'm',
+            'n',
+            'o',
+            'p',
+            'q',
+            'r',
+            's',
+            't',
+            'u',
+            'v',
+            'w',
+            'x',
+            'y',
+            'z',
+        ][value]
         num = value // 26
-        return (letter + str(num) if num > 0 else letter)
+        return letter + str(num) if num > 0 else letter
 
     def _decorate_model(self, valuation_str, format):
         """
@@ -157,8 +195,16 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         :param format: Output format for displaying models.
         :type format: str
         """
-        if format in ['standard', 'standard2', 'portable', 'tabular',
-                      'raw', 'cooked', 'xml', 'tex']:
+        if format in [
+            'standard',
+            'standard2',
+            'portable',
+            'tabular',
+            'raw',
+            'cooked',
+            'xml',
+            'tex',
+        ]:
             return self._call_interpformat(valuation_str, [format])[0]
         else:
             raise LookupError("The specified format does not exist")
@@ -174,10 +220,12 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         if self._interpformat_bin is None:
             self._interpformat_bin = self._modelbuilder._find_binary(
-                                                'interpformat', verbose)
+                'interpformat', verbose
+            )
 
-        return self._modelbuilder._call(input_str, self._interpformat_bin,
-                                        args, verbose)
+        return self._modelbuilder._call(
+            input_str, self._interpformat_bin, args, verbose
+        )
 
 
 class Mace(Prover9Parent, ModelBuilder):
@@ -198,8 +246,9 @@ class Mace(Prover9Parent, ModelBuilder):
         if not assumptions:
             assumptions = []
 
-        stdout, returncode = self._call_mace4(self.prover9_input(goal, assumptions),
-                                              verbose=verbose)
+        stdout, returncode = self._call_mace4(
+            self.prover9_input(goal, assumptions), verbose=verbose
+        )
         return (returncode == 0, stdout)
 
     def _call_mace4(self, input_str, args=[], verbose=False):
@@ -225,6 +274,7 @@ class Mace(Prover9Parent, ModelBuilder):
 def spacer(num=30):
     print('-' * num)
 
+
 def decode_result(found):
     """
     Decode the result of model_found()
@@ -232,7 +282,10 @@ def decode_result(found):
     :param found: The output of model_found()
     :type found: bool
     """
-    return {True: 'Countermodel found', False: 'No countermodel found', None: 'None'}[found]
+    return {True: 'Countermodel found', False: 'No countermodel found', None: 'None'}[
+        found
+    ]
+
 
 def test_model_found(arguments):
     """
@@ -253,12 +306,17 @@ def test_build_model(arguments):
     Try to build a ``nltk.sem.Valuation``.
     """
     g = Expression.fromstring('all x.man(x)')
-    alist = [Expression.fromstring(a) for a in ['man(John)',
-                                   'man(Socrates)',
-                                   'man(Bill)',
-                                   'some x.(-(x = John) & man(x) & sees(John,x))',
-                                   'some x.(-(x = Bill) & man(x))',
-                                   'all x.some y.(man(x) -> gives(Socrates,x,y))']]
+    alist = [
+        Expression.fromstring(a)
+        for a in [
+            'man(John)',
+            'man(Socrates)',
+            'man(Bill)',
+            'some x.(-(x = John) & man(x) & sees(John,x))',
+            'some x.(-(x = Bill) & man(x))',
+            'all x.some y.(man(x) -> gives(Socrates,x,y))',
+        ]
+    ]
 
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
@@ -269,11 +327,12 @@ def test_build_model(arguments):
         print('   %s' % a)
     print('|- %s: %s\n' % (g, decode_result(m.build_model())))
     spacer()
-    #print m.model('standard')
-    #print m.model('cooked')
+    # print m.model('standard')
+    # print m.model('cooked')
     print("Valuation")
     spacer()
     print(m.valuation, '\n')
+
 
 def test_transform_output(argument_pair):
     """
@@ -292,20 +351,35 @@ def test_transform_output(argument_pair):
         spacer()
         print(m.model(format=format))
 
+
 def test_make_relation_set():
-    print(MaceCommand._make_relation_set(num_entities=3, values=[1,0,1]) == set([('c',), ('a',)]))
-    print(MaceCommand._make_relation_set(num_entities=3, values=[0,0,0,0,0,0,1,0,0]) == set([('c', 'a')]))
-    print(MaceCommand._make_relation_set(num_entities=2, values=[0,0,1,0,0,0,1,0]) == set([('a', 'b', 'a'), ('b', 'b', 'a')]))
+    print(
+        MaceCommand._make_relation_set(num_entities=3, values=[1, 0, 1])
+        == set([('c',), ('a',)])
+    )
+    print(
+        MaceCommand._make_relation_set(
+            num_entities=3, values=[0, 0, 0, 0, 0, 0, 1, 0, 0]
+        )
+        == set([('c', 'a')])
+    )
+    print(
+        MaceCommand._make_relation_set(num_entities=2, values=[0, 0, 1, 0, 0, 0, 1, 0])
+        == set([('a', 'b', 'a'), ('b', 'b', 'a')])
+    )
+
 
 arguments = [
     ('mortal(Socrates)', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),
-    ('(not mortal(Socrates))', ['all x.(man(x) -> mortal(x))', 'man(Socrates)'])
+    ('(not mortal(Socrates))', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),
 ]
+
 
 def demo():
     test_model_found(arguments)
     test_build_model(arguments)
     test_transform_output(arguments[1])
+
 
 if __name__ == '__main__':
     demo()

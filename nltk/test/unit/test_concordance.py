@@ -2,13 +2,13 @@
 from __future__ import absolute_import, unicode_literals
 
 import unittest
+import contextlib
+import sys
+
 from nose import with_setup
 
 from nltk.corpus import gutenberg
 from nltk.text import Text
-
-import contextlib
-import sys
 
 try:
     from StringIO import StringIO
@@ -51,7 +51,8 @@ class TestConcordance(unittest.TestCase):
             'ing Scenes . In connexion with the monstrous pictures of whales , I am strongly',
             'ere to enter upon those still more monstrous stories of them which are to be fo',
             'ght have been rummaged out of this monstrous cabinet there is no telling . But ',
-            'of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u']
+            'of Whale - Bones ; for Whales of a monstrous size are oftentimes cast up dead u',
+        ]
 
     def tearDown(self):
         pass
@@ -61,10 +62,19 @@ class TestConcordance(unittest.TestCase):
         self.assertEqual(self.list_out, [c.line for c in concordance_out])
 
     def test_concordance_width(self):
-        list_out = ["monstrous", "monstrous", "monstrous",
-                    "monstrous", "monstrous", "monstrous",
-                    "Monstrous", "monstrous", "monstrous",
-                    "monstrous", "monstrous"]
+        list_out = [
+            "monstrous",
+            "monstrous",
+            "monstrous",
+            "monstrous",
+            "monstrous",
+            "monstrous",
+            "Monstrous",
+            "monstrous",
+            "monstrous",
+            "monstrous",
+            "monstrous",
+        ]
 
         concordance_out = self.text.concordance_list(self.query, width=0)
         self.assertEqual(list_out, [c.query for c in concordance_out])
@@ -94,5 +104,4 @@ class TestConcordance(unittest.TestCase):
         def strip_space(raw_str):
             return raw_str.replace(" ", "")
 
-        self.assertEqual(strip_space(print_out),
-                         strip_space(stdout.getvalue()))
+        self.assertEqual(strip_space(print_out), strip_space(stdout.getvalue()))
