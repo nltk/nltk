@@ -6,5 +6,6 @@ messages for people following the NLTK Book 2.0.
 """
 from __future__ import print_function
 
+
 def babelize_shell():
     print("Babelfish online translation service is no longer available.")

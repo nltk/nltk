@@ -102,8 +102,13 @@ class RegexpTokenizer(TokenizerI):
 
     """
 
-    def __init__(self, pattern, gaps=False, discard_empty=True,
-                 flags=re.UNICODE | re.MULTILINE | re.DOTALL):
+    def __init__(
+        self,
+        pattern,
+        gaps=False,
+        discard_empty=True,
+        flags=re.UNICODE | re.MULTILINE | re.DOTALL,
+    ):
         # If they gave us a regexp object, extract the pattern.
         pattern = getattr(pattern, 'pattern', pattern)
 
@@ -142,9 +147,13 @@ class RegexpTokenizer(TokenizerI):
                 yield m.span()
 
     def __repr__(self):
-        return ('%s(pattern=%r, gaps=%r, discard_empty=%r, flags=%r)' %
-                (self.__class__.__name__, self._pattern, self._gaps,
-                 self._discard_empty, self._flags))
+        return '%s(pattern=%r, gaps=%r, discard_empty=%r, flags=%r)' % (
+            self.__class__.__name__,
+            self._pattern,
+            self._gaps,
+            self._discard_empty,
+            self._flags,
+        )
 
 
 class WhitespaceTokenizer(RegexpTokenizer):
@@ -194,8 +203,14 @@ class WordPunctTokenizer(RegexpTokenizer):
 # { Tokenization Functions
 ######################################################################
 
-def regexp_tokenize(text, pattern, gaps=False, discard_empty=True,
-                    flags=re.UNICODE | re.MULTILINE | re.DOTALL):
+
+def regexp_tokenize(
+    text,
+    pattern,
+    gaps=False,
+    discard_empty=True,
+    flags=re.UNICODE | re.MULTILINE | re.DOTALL,
+):
     """
     Return a tokenized copy of *text*.  See :class:`.RegexpTokenizer`
     for descriptions of the arguments.

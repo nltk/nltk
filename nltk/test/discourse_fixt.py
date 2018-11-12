@@ -7,6 +7,7 @@ from __future__ import absolute_import
 def setup_module(module):
     from nose import SkipTest
     from nltk.inference.mace import Mace
+
     try:
         m = Mace()
         m._find_binary('mace4')

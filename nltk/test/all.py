@@ -17,8 +17,8 @@ def additional_tests():
     dir = os.path.dirname(__file__)
     paths = glob(os.path.join(dir, '*.doctest'))
     files = [os.path.basename(path) for path in paths]
-    return unittest.TestSuite(
-        [doctest.DocFileSuite(file) for file in files]
-    )
+    return unittest.TestSuite([doctest.DocFileSuite(file) for file in files])
+
+
 # if os.path.split(path)[-1] != 'index.rst'
 # skips time-dependent doctest in index.rst

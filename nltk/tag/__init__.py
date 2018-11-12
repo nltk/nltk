@@ -26,7 +26,7 @@ An off-the-shelf tagger is available for English. It uses the Penn Treebank tags
     [('John', 'NNP'), ("'s", 'POS'), ('big', 'JJ'), ('idea', 'NN'), ('is', 'VBZ'),
     ("n't", 'RB'), ('all', 'PDT'), ('that', 'DT'), ('bad', 'JJ'), ('.', '.')]
 
-A Russian tagger is also available if you specify lang="rus". It uses 
+A Russian tagger is also available if you specify lang="rus". It uses
 the Russian National Corpus tagset:
 
     >>> pos_tag(word_tokenize("Илья оторопел и дважды перечитал бумажку."), lang='rus')    # doctest: +SKIP
@@ -65,27 +65,37 @@ For more information, please consult chapter 5 of the NLTK Book.
 """
 from __future__ import print_function
 
-from nltk.tag.api           import TaggerI
-from nltk.tag.util          import str2tuple, tuple2str, untag
-from nltk.tag.sequential    import (SequentialBackoffTagger, ContextTagger,
-                                    DefaultTagger, NgramTagger, UnigramTagger,
-                                    BigramTagger, TrigramTagger, AffixTagger,
-                                    RegexpTagger, ClassifierBasedTagger,
-                                    ClassifierBasedPOSTagger)
-from nltk.tag.brill         import BrillTagger
+from nltk.tag.api import TaggerI
+from nltk.tag.util import str2tuple, tuple2str, untag
+from nltk.tag.sequential import (
+    SequentialBackoffTagger,
+    ContextTagger,
+    DefaultTagger,
+    NgramTagger,
+    UnigramTagger,
+    BigramTagger,
+    TrigramTagger,
+    AffixTagger,
+    RegexpTagger,
+    ClassifierBasedTagger,
+    ClassifierBasedPOSTagger,
+)
+from nltk.tag.brill import BrillTagger
 from nltk.tag.brill_trainer import BrillTaggerTrainer
-from nltk.tag.tnt           import TnT
-from nltk.tag.hunpos        import HunposTagger
-from nltk.tag.stanford      import StanfordTagger, StanfordPOSTagger, StanfordNERTagger
-from nltk.tag.hmm           import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
-from nltk.tag.senna         import SennaTagger, SennaChunkTagger, SennaNERTagger
-from nltk.tag.mapping       import tagset_mapping, map_tag
-from nltk.tag.crf           import CRFTagger
-from nltk.tag.perceptron    import PerceptronTagger
+from nltk.tag.tnt import TnT
+from nltk.tag.hunpos import HunposTagger
+from nltk.tag.stanford import StanfordTagger, StanfordPOSTagger, StanfordNERTagger
+from nltk.tag.hmm import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
+from nltk.tag.senna import SennaTagger, SennaChunkTagger, SennaNERTagger
+from nltk.tag.mapping import tagset_mapping, map_tag
+from nltk.tag.crf import CRFTagger
+from nltk.tag.perceptron import PerceptronTagger
 
 from nltk.data import load, find
 
-RUS_PICKLE = 'taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle'
+RUS_PICKLE = (
+    'taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle'
+)
 
 
 def _get_tagger(lang=None):
@@ -98,11 +108,29 @@ def _get_tagger(lang=None):
     return tagger
 
 
-def _pos_tag(tokens, tagset, tagger):
-    tagged_tokens = tagger.tag(tokens)
-    if tagset:
-        tagged_tokens = [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagged_tokens]
-    return tagged_tokens
+def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
+    # Currently only supoorts English and Russian.
+    if lang not in ['eng', 'rus']:
+        raise NotImplementedError(
+            "Currently, NLTK pos_tag only supports English and Russian "
+            "(i.e. lang='eng' or lang='rus')"
+        )
+    else:
+        tagged_tokens = tagger.tag(tokens)
+        if tagset:  # Maps to the specified tagset.
+            if lang == 'eng':
+                tagged_tokens = [
+                    (token, map_tag('en-ptb', tagset, tag))
+                    for (token, tag) in tagged_tokens
+                ]
+            elif lang == 'rus':
+                # Note that the new Russion pos tags from the model contains suffixes,
+                # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
+                tagged_tokens = [
+                    (token, map_tag('ru-rnc-new', tagset, tag.partition('=')[0]))
+                    for (token, tag) in tagged_tokens
+                ]
+        return tagged_tokens
 
 
 def pos_tag(tokens, tagset=None, lang='eng'):
@@ -131,7 +159,7 @@ def pos_tag(tokens, tagset=None, lang='eng'):
     :rtype: list(tuple(str, str))
     """
     tagger = _get_tagger(lang)
-    return _pos_tag(tokens, tagset, tagger)
+    return _pos_tag(tokens, tagset, tagger, lang)
 
 
 def pos_tag_sents(sentences, tagset=None, lang='eng'):

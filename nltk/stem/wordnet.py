@@ -11,6 +11,7 @@ from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet
 from nltk.compat import python_2_unicode_compatible
 
+
 @python_2_unicode_compatible
 class WordNetLemmatizer(object):
     """
@@ -47,4 +48,5 @@ class WordNetLemmatizer(object):
 # unload wordnet
 def teardown_module(module=None):
     from nltk.corpus import wordnet
+
     wordnet._unload()

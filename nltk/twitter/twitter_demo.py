@@ -38,14 +38,22 @@ import json
 
 from nltk.compat import StringIO
 
-from nltk.twitter import Query, Streamer, Twitter, TweetViewer, TweetWriter,\
-     credsfromfile
+from nltk.twitter import (
+    Query,
+    Streamer,
+    Twitter,
+    TweetViewer,
+    TweetWriter,
+    credsfromfile,
+)
 
 
 SPACER = '###################################'
 
+
 def verbose(func):
     """Decorator for demo functions"""
+
     @wraps(func)
     def with_formatting(*args, **kwargs):
         print()
@@ -53,16 +61,19 @@ def verbose(func):
         print("Using %s" % (func.__name__))
         print(SPACER)
         return func(*args, **kwargs)
+
     return with_formatting
+
 
 def yesterday():
     """
     Get yesterday's datetime as a 5-tuple.
     """
-    date =  datetime.datetime.now()
+    date = datetime.datetime.now()
     date -= datetime.timedelta(days=1)
     date_tuple = date.timetuple()[:6]
     return date_tuple
+
 
 def setup():
     """
@@ -83,16 +94,18 @@ def twitterclass_demo():
     """
     tw = Twitter()
     print("Track from the public stream\n")
-    tw.tweets(keywords='love, hate', limit=10) #public stream
+    tw.tweets(keywords='love, hate', limit=10)  # public stream
     print(SPACER)
     print("Search past Tweets\n")
     tw = Twitter()
-    tw.tweets(keywords='love, hate', stream=False, limit=10) # search past tweets
+    tw.tweets(keywords='love, hate', stream=False, limit=10)  # search past tweets
     print(SPACER)
-    print("Follow two accounts in the public stream" +
-          " -- be prepared to wait a few minutes\n")
+    print(
+        "Follow two accounts in the public stream"
+        + " -- be prepared to wait a few minutes\n"
+    )
     tw = Twitter()
-    tw.tweets(follow=['759251', '6017542'], stream=True, limit=5) #public stream
+    tw.tweets(follow=['759251', '6017542'], stream=True, limit=5)  # public stream
 
 
 @verbose
@@ -240,8 +253,8 @@ def expand_tweetids_demo():
     corresponding full Tweets, if available.
 
     """
-    ids_f =\
-        StringIO("""\
+    ids_f = StringIO(
+        """\
         588665495492124672
         588665495487909888
         588665495508766721
@@ -251,7 +264,8 @@ def expand_tweetids_demo():
         588665495525588992
         588665495487844352
         588665495492014081
-        588665495512948737""")
+        588665495512948737"""
+    )
     oauth = credsfromfile()
     client = Query(**oauth)
     hydrated = client.expand_tweetids(ids_f)
@@ -265,10 +279,19 @@ def expand_tweetids_demo():
         print(text + '\n')
 
 
-
-ALL = [twitterclass_demo, sampletoscreen_demo, tracktoscreen_demo,
-       search_demo, tweets_by_user_demo, lookup_by_userid_demo, followtoscreen_demo,
-       streamtofile_demo, limit_by_time_demo, corpusreader_demo, expand_tweetids_demo]
+ALL = [
+    twitterclass_demo,
+    sampletoscreen_demo,
+    tracktoscreen_demo,
+    search_demo,
+    tweets_by_user_demo,
+    lookup_by_userid_demo,
+    followtoscreen_demo,
+    streamtofile_demo,
+    limit_by_time_demo,
+    corpusreader_demo,
+    expand_tweetids_demo,
+]
 
 """
 Select demo functions to run. E.g. replace the following line with "DEMOS =

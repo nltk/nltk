@@ -17,8 +17,8 @@ class NgramModelVocabularyTests(unittest.TestCase):
     """tests Vocabulary Class"""
 
     @classmethod
-    def setUpClass(self):
-        self.vocab = Vocabulary(
+    def setUpClass(cls):
+        cls.vocab = Vocabulary(
             ["z", "a", "b", "c", "f", "d", "e", "g", "a", "d", "b", "e", "w"],
             unk_cutoff=2,
         )

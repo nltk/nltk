@@ -15,6 +15,7 @@ import pickle
 from os import remove
 from copy import deepcopy
 from operator import itemgetter
+
 try:
     from numpy import array
     from scipy import sparse
@@ -24,7 +25,6 @@ except ImportError:
     pass
 
 from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
-
 
 
 class Configuration(object):
@@ -54,8 +54,14 @@ class Configuration(object):
         self._max_address = len(self.buffer)
 
     def __str__(self):
-        return 'Stack : ' + \
-            str(self.stack) + '  Buffer : ' + str(self.buffer) + '   Arcs : ' + str(self.arcs)
+        return (
+            'Stack : '
+            + str(self.stack)
+            + '  Buffer : '
+            + str(self.buffer)
+            + '   Arcs : '
+            + str(self.arcs)
+        )
 
     def _check_informative(self, feat, flag=False):
         """
@@ -179,6 +185,7 @@ class Transition(object):
     This class defines a set of transition which is applied to a configuration to get another configuration
     Note that for different parsing algorithm, the transition is different.
     """
+
     # Define set of transitions
     LEFT_ARC = 'LEFTARC'
     RIGHT_ARC = 'RIGHTARC'
@@ -192,10 +199,13 @@ class Transition(object):
         """
         self._algo = alg_option
         if alg_option not in [
-                TransitionParser.ARC_STANDARD,
-                TransitionParser.ARC_EAGER]:
-            raise ValueError(" Currently we only support %s and %s " %
-                                        (TransitionParser.ARC_STANDARD, TransitionParser.ARC_EAGER))
+            TransitionParser.ARC_STANDARD,
+            TransitionParser.ARC_EAGER,
+        ]:
+            raise ValueError(
+                " Currently we only support %s and %s "
+                % (TransitionParser.ARC_STANDARD, TransitionParser.ARC_EAGER)
+            )
 
     def left_arc(self, conf, relation):
         """
@@ -282,6 +292,7 @@ class TransitionParser(ParserI):
     """
     Class for transition based parser. Implement 2 algorithms which are "arc-standard" and "arc-eager"
     """
+
     ARC_STANDARD = 'arc-standard'
     ARC_EAGER = 'arc-eager'
 
@@ -290,9 +301,11 @@ class TransitionParser(ParserI):
         :param algorithm: the algorithm option of this parser. Currently support `arc-standard` and `arc-eager` algorithm
         :type algorithm: str
         """
-        if not(algorithm in [self.ARC_STANDARD, self.ARC_EAGER]):
-            raise ValueError(" Currently we only support %s and %s " %
-                                        (self.ARC_STANDARD, self.ARC_EAGER))
+        if not (algorithm in [self.ARC_STANDARD, self.ARC_EAGER]):
+            raise ValueError(
+                " Currently we only support %s and %s "
+                % (self.ARC_STANDARD, self.ARC_EAGER)
+            )
         self._algorithm = algorithm
 
         self._dictionary = {}
@@ -323,7 +336,9 @@ class TransitionParser(ParserI):
             unsorted_result.append(self._dictionary[feature])
 
         # Default value of each feature is 1.0
-        return ' '.join(str(featureID) + ':1.0' for featureID in sorted(unsorted_result))
+        return ' '.join(
+            str(featureID) + ':1.0' for featureID in sorted(unsorted_result)
+        )
 
     def _is_projective(self, depgraph):
         arc_list = []
@@ -408,10 +423,7 @@ class TransitionParser(ParserI):
 
                         if precondition:
                             key = Transition.RIGHT_ARC + ':' + rel
-                            self._write_to_file(
-                                key,
-                                binary_features,
-                                input_file)
+                            self._write_to_file(key, binary_features, input_file)
                             operation.right_arc(conf, rel)
                             training_seq.append(key)
                             continue
@@ -500,9 +512,8 @@ class TransitionParser(ParserI):
 
         try:
             input_file = tempfile.NamedTemporaryFile(
-                prefix='transition_parse.train',
-                dir=tempfile.gettempdir(),
-                delete=False)
+                prefix='transition_parse.train', dir=tempfile.gettempdir(), delete=False
+            )
 
             if self._algorithm == self.ARC_STANDARD:
                 self._create_training_examples_arc_std(depgraphs, input_file)
@@ -523,7 +534,8 @@ class TransitionParser(ParserI):
                 gamma=0.2,
                 C=0.5,
                 verbose=verbose,
-                probability=True)
+                probability=True,
+            )
 
             model.fit(x_train, y_train)
             # Save the model to file name (as pickle)
@@ -560,13 +572,15 @@ class TransitionParser(ParserI):
                 np_row = array(row)
                 np_data = array(data)
 
-                x_test = sparse.csr_matrix((np_data, (np_row, np_col)), shape=(1, len(self._dictionary)))
+                x_test = sparse.csr_matrix(
+                    (np_data, (np_row, np_col)), shape=(1, len(self._dictionary))
+                )
 
                 # It's best to use decision function as follow BUT it's not supported yet for sparse SVM
                 # Using decision funcion to build the votes array
-                #dec_func = model.decision_function(x_test)[0]
-                #votes = {}
-                #k = 0
+                # dec_func = model.decision_function(x_test)[0]
+                # votes = {}
+                # k = 0
                 # for i in range(len(model.classes_)):
                 #    for j in range(i+1, len(model.classes_)):
                 #        #if  dec_func[k] > 0:
@@ -577,21 +591,18 @@ class TransitionParser(ParserI):
                 #           votes[j] +=1
                 #        k +=1
                 # Sort votes according to the values
-                #sorted_votes = sorted(votes.items(), key=itemgetter(1), reverse=True)
+                # sorted_votes = sorted(votes.items(), key=itemgetter(1), reverse=True)
 
                 # We will use predict_proba instead of decision_function
                 prob_dict = {}
                 pred_prob = model.predict_proba(x_test)[0]
                 for i in range(len(pred_prob)):
                     prob_dict[i] = pred_prob[i]
-                sorted_Prob = sorted(
-                    prob_dict.items(),
-                    key=itemgetter(1),
-                    reverse=True)
+                sorted_Prob = sorted(prob_dict.items(), key=itemgetter(1), reverse=True)
 
                 # Note that SHIFT is always a valid operation
                 for (y_pred_idx, confidence) in sorted_Prob:
-                    #y_pred = model.predict(x_test)[0]
+                    # y_pred = model.predict(x_test)[0]
                     # From the prediction match to the operation
                     y_pred = model.classes_[y_pred_idx]
 
@@ -600,10 +611,16 @@ class TransitionParser(ParserI):
                         baseTransition = strTransition.split(":")[0]
 
                         if baseTransition == Transition.LEFT_ARC:
-                            if operation.left_arc(conf, strTransition.split(":")[1]) != -1:
+                            if (
+                                operation.left_arc(conf, strTransition.split(":")[1])
+                                != -1
+                            ):
                                 break
                         elif baseTransition == Transition.RIGHT_ARC:
-                            if operation.right_arc(conf, strTransition.split(":")[1]) != -1:
+                            if (
+                                operation.right_arc(conf, strTransition.split(":")[1])
+                                != -1
+                            ):
                                 break
                         elif baseTransition == Transition.REDUCE:
                             if operation.reduce(conf) != -1:
@@ -612,7 +629,9 @@ class TransitionParser(ParserI):
                             if operation.shift(conf) != -1:
                                 break
                     else:
-                        raise ValueError("The predicted transition is not recognized, expected errors")
+                        raise ValueError(
+                            "The predicted transition is not recognized, expected errors"
+                        )
 
             # Finish with operations build the dependency graph from Conf.arcs
 

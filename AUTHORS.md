@@ -236,6 +236,8 @@
 - Pulkit Maloo <https://github.com/pulkitmaloo>
 - Brandon M. Burroughs <https://github.com/brandonmburroughs>
 - John Stewart <https://github.com/free-variation>
+- Iaroslav Tymchenko <https://github.com/myproblemchild>
+- Aleš Tamchyna
 - Tim Gianitsos <https://github.com/timgianitsos>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:

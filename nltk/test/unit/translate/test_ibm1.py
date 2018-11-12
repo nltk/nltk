@@ -42,18 +42,19 @@ class TestIBMModel1(unittest.TestCase):
 
         # assert
         # examine target words that are not in the training data domain
-        self.assertEqual(model1.translation_table['parrot']['eier'],
-                         IBMModel.MIN_PROB)
+        self.assertEqual(model1.translation_table['parrot']['eier'], IBMModel.MIN_PROB)
 
     def test_prob_t_a_given_s(self):
         # arrange
         src_sentence = ["ich", 'esse', 'ja', 'gern', 'räucherschinken']
         trg_sentence = ['i', 'love', 'to', 'eat', 'smoked', 'ham']
         corpus = [AlignedSent(trg_sentence, src_sentence)]
-        alignment_info = AlignmentInfo((0, 1, 4, 0, 2, 5, 5),
-                                       [None] + src_sentence,
-                                       ['UNUSED'] + trg_sentence,
-                                       None)
+        alignment_info = AlignmentInfo(
+            (0, 1, 4, 0, 2, 5, 5),
+            [None] + src_sentence,
+            ['UNUSED'] + trg_sentence,
+            None,
+        )
 
         translation_table = defaultdict(lambda: defaultdict(float))
         translation_table['i']['ich'] = 0.98

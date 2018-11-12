@@ -32,8 +32,16 @@ matrix:
     - python: '3.6'
       env: TOXENV="py-travis"
 
-    - python: '3.6' # Only runs checks on 3rd party for latest Python distribution
+    - python: '3.6' # To be removed when 3.7 doesn't need sudo.
       env: TOXENV="py-travis-third-party"
+      
+    - python: '3.7'
+      env: TOXENV="py-travis"
+      sudo: required #FIXME: To be removed once, Travis supports 3.7 properly.
+      
+    - python: '3.7' # Only runs checks on 3rd party for latest Python distribution
+      env: TOXENV="py-travis-third-party"
+      sudo: required #FIXME: To be removed once, Travis supports 3.7 properly.
 
 before_install:
   - source tools/travis/pre-install.sh # Checks Java and Python versions.

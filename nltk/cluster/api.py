@@ -11,11 +11,13 @@ from six import add_metaclass
 
 from nltk.probability import DictionaryProbDist
 
+
 @add_metaclass(ABCMeta)
 class ClusterI(object):
     """
     Interface covering basic clustering functionality.
     """
+
     @abstractmethod
     def cluster(self, vectors, assign_clusters=False):
         """

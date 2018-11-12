@@ -25,7 +25,6 @@ if __name__ == '__main__':
     except ImportError:
         rednose_available = False
 
-
     class NltkPluginManager(PluginManager):
         """
         Nose plugin manager that replaces standard doctest plugin
@@ -41,7 +40,6 @@ if __name__ == '__main__':
                 self.addPlugin(RedNose())
 
             super(NltkPluginManager, self).loadPlugins()
-
 
     manager = NltkPluginManager()
     manager.loadPlugins()
@@ -63,24 +61,21 @@ if __name__ == '__main__':
 
     # Activate RedNose and hide skipped test messages from output
     if rednose_available:
-        args += [
-            '--rednose',
-            '--hide-skips'
-        ]
+        args += ['--rednose', '--hide-skips']
 
     arguments = [
-                    '--exclude=',  # why is this needed?
-                    # '--with-xunit',
-                    # '--xunit-file=$WORKSPACE/nosetests.xml',
-                    # '--nocapture',
-                    '--with-doctest',
-                    # '--doctest-tests',
-                    # '--debug=nose,nose.importer,nose.inspector,nose.plugins,nose.result,nose.selector',
-                    '--doctest-extension=.doctest',
-                    '--doctest-fixtures=_fixt',
-                    '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL,+ALLOW_UNICODE,'
-                    'doctestencoding=utf-8',
-                    # '--verbosity=3',
-                ] + args
+        '--exclude=',  # why is this needed?
+        # '--with-xunit',
+        # '--xunit-file=$WORKSPACE/nosetests.xml',
+        # '--nocapture',
+        '--with-doctest',
+        # '--doctest-tests',
+        # '--debug=nose,nose.importer,nose.inspector,nose.plugins,nose.result,nose.selector',
+        '--doctest-extension=.doctest',
+        '--doctest-fixtures=_fixt',
+        '--doctest-options=+ELLIPSIS,+NORMALIZE_WHITESPACE,+IGNORE_EXCEPTION_DETAIL,+ALLOW_UNICODE,'
+        'doctestencoding=utf-8',
+        # '--verbosity=3',
+    ] + args
 
     nose.main(argv=arguments, plugins=manager.plugins)

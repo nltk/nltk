@@ -23,7 +23,6 @@ try:
 except ImportError:
     import operator
 
-
     def accumulate(iterable, func=operator.add):
         """Return running totals"""
         # accumulate([1,2,3,4,5]) --> 1 3 6 10 15
@@ -46,6 +45,8 @@ class Smoothing(object):
     Implements Chen & Goodman 1995's idea that all smoothing algorithms have
     certain features in common. This should ideally allow smoothing algoritms to
     work both with Backoff and Interpolation.
+
+    counter represents the number of counts for ngrams
     """
 
     def __init__(self, vocabulary, counter):

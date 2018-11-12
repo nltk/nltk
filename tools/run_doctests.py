@@ -15,4 +15,4 @@ for root, dirs, filenames in os.walk('.'):
             path = os.path.join(root, filename)
             for pyver in ["python2.6", "python2.7", "python3.2"]:
                 print(pyver, filename, file=sys.stderr)
-                subprocess.call([pyver,  "-m", "doctest", path])
+                subprocess.call([pyver, "-m", "doctest", path])
