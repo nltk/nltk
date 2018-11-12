@@ -27,7 +27,6 @@ import nltk
 from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
 from nltk.tokenize.casual import EMOTICON_RE
-from nltk.twitter.common import outf_writer_compat, extract_fields
 
 # ////////////////////////////////////////////////////////////
 # { Regular expressions
@@ -924,6 +923,7 @@ if __name__ == '__main__':
     from nltk.classify import NaiveBayesClassifier, MaxentClassifier
     from nltk.classify.scikitlearn import SklearnClassifier
     from sklearn.svm import LinearSVC
+    from nltk.twitter.common import outf_writer_compat, extract_fields
 
     naive_bayes = NaiveBayesClassifier.train
     svm = SklearnClassifier(LinearSVC()).train
