@@ -89,6 +89,7 @@ from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
 from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
+
 # Standard sentence tokenizer.
 def sent_tokenize(text, language='english'):
     """
@@ -137,7 +138,7 @@ def word_tokenize(text, language='english', preserve_line=False):
     :param language: the model name in the Punkt corpus
     :type language: str
     :param preserve_line: An option to keep the preserve the sentence and not sentence tokenize it.
-    :type preserver_line: bool
+    :type preserve_line: bool
     """
     sentences = [text] if preserve_line else sent_tokenize(text, language)
     return [
