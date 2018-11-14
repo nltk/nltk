@@ -689,6 +689,10 @@ def find(resource_name, paths=None):
     ).format(resource=resource_zipname)
     msg = textwrap_indent(msg)
 
+    msg += '\n  Attempted to load \33[93m{resource_name}\033[0m\n'.format(
+        resource_name=resource_name
+    )
+
     msg += '\n  Searched in:' + ''.join('\n    - %r' % d for d in paths)
     sep = '*' * 70
     resource_not_found = '\n%s\n%s\n%s\n' % (sep, msg, sep)
