@@ -21,7 +21,6 @@ Sentiment Analysis of Social Media Text. Eighth International Conference on
 Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 """
 
-import codecs
 import math
 import re
 import string
