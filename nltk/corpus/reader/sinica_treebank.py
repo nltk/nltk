@@ -38,9 +38,6 @@ Chen Keh-Jiann and Yu-Ming Hsieh (2004) Chinese Treebanks and Grammar
 Extraction, Proceedings of IJCNLP-04, pp560-565.
 """
 
-import os
-import re
-
 from nltk.tree import sinica_parse
 from nltk.tag import map_tag
 
