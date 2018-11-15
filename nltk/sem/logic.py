@@ -871,7 +871,7 @@ def read_type(type_string):
     elif type_string[0] == "%s" % ANY_TYPE:
         return ANY_TYPE
     else:
-        raise LogicalExpressionException("Unexpected character: '%s'." % type_string[0])
+        raise LogicalExpressionException(None, "Unexpected character: '%s'." % type_string[0])
 
 
 class TypeException(Exception):
