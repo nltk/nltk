@@ -656,7 +656,7 @@ class Glue(object):
                     # may not be understandable by the prover, so don't
                     # throw out the reading.
                     print('Error when checking logical equality of statements', e)
-                    pass
+                    
         if add_reading:
             reading_list.append(glueformula.meaning)
 
