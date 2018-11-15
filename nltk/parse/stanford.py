@@ -11,15 +11,13 @@ from __future__ import unicode_literals
 
 import tempfile
 import os
-import re
 import warnings
+from unittest import skip
 from subprocess import PIPE
-from io import StringIO
 
 from six import text_type
 
 from nltk.internals import (
-    find_jar,
     find_jar_iter,
     config_java,
     java,
@@ -479,12 +477,9 @@ class StanfordNeuralDependencyParser(GenericStanfordParser):
         return DependencyGraph(result, top_relation_label='ROOT')
 
 
+@skip("doctests from nltk.parse.stanford are skipped because it's deprecated")
 def setup_module(module):
     from nose import SkipTest
-
-    raise SkipTest(
-        "doctests from nltk.parse.stanford are skipped because it's deprecated"
-    )
 
     try:
         StanfordParser(
