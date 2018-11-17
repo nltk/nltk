@@ -1,7 +1,7 @@
 # encoding: utf-8
 # Natural Language Toolkit: Senna Interface
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

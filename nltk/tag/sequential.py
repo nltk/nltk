@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sequential Backoff Taggers
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 #         Tiago Tresoldi <tresoldi@users.sf.net> (original affix tagger)

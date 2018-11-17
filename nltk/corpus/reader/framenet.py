@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Framenet Corpus Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Authors: Chuck Wooters <wooters@icsi.berkeley.edu>,
 #          Nathan Schneider <nathan.schneider@georgetown.edu>
 # URL: <http://nltk.org/>

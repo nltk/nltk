@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the CoreNLP REST API.
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Dmitrijs Milajevs <dimazest@gmail.com>
 #
 # URL: <http://nltk.org/>

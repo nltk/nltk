@@ -1,6 +1,6 @@
 # Multi-Word Expression tokenizer
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Rob Malouf <rmalouf@mail.sdsu.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

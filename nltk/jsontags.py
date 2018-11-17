@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: JSON Encoder/Decoder Helpers
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>

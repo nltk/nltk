@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT

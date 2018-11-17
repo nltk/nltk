@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for alignment and translation objects
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
 #         Steven Bird <stevenbird1@gmail.com>

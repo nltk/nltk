@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Eliza
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
