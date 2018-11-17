@@ -3,7 +3,7 @@ Building an NLTK distribution
 
 1. Testing
    - Ensure CI server isn't reporting any test failures
-     https://nltk.ci.cloudbees.com/job/nltk/
+     https://www.travis-ci.org/nltk/nltk
    - Optionally test demonstration code locally
      make demotest
    - Optionally test individual modules:
