@@ -4,6 +4,15 @@ NLTK News
 2018
 ----
 
+NLTK 3.4 release: November 2018
+  Support Python 3.7,
+  New Language Modeling package,
+  Cistem Stemmer for German,
+  Support Russian National Corpus incl POS tag model,
+  Krippendorf Alpha inter-rater reliability test,
+  Comprehensive code clean-ups,
+  Switch continuous integration from Jenkins to Travis
+
 NLTK 3.3 release: May 2018
    Support Python 3.6,
    New interface to CoreNLP,
