@@ -45,10 +45,6 @@ Y       yield   Y IY L D       Z       zee     Z IY
 ZH      seizure S IY ZH ER
 """
 
-import codecs
-
-from six import string_types
-
 from nltk import compat
 from nltk.util import Index
 

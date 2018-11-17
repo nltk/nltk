@@ -26,11 +26,6 @@ import inspect
 
 sys.path = old_sys_path
 
-try:
-    set
-except NameError:
-    from sets import Set as set
-
 
 def getinfo(func):
     """

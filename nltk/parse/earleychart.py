@@ -389,8 +389,6 @@ class EarleyChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):
         IncrementalChartParser.__init__(self, grammar, EARLEY_STRATEGY, **parser_args)
 
-    pass
-
 
 class IncrementalTopDownChartParser(IncrementalChartParser):
     def __init__(self, grammar, **parser_args):

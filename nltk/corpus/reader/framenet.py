@@ -23,12 +23,11 @@ from operator import itemgetter
 
 from six import string_types, text_type
 from six.moves import zip_longest
-from pprint import pprint, pformat
+from pprint import pprint
 
-from nltk.internals import ElementWrapper
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
 from nltk.compat import python_2_unicode_compatible
-from nltk.util import AbstractLazySequence, LazyConcatenation, LazyMap, LazyIteratorList
+from nltk.util import LazyConcatenation, LazyMap, LazyIteratorList
 
 __docformat__ = 'epytext en'
 

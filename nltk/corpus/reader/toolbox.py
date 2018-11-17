@@ -12,12 +12,6 @@ Module for reading, writing and manipulating
 Toolbox databases and settings fileids.
 """
 
-import os
-import re
-import codecs
-
-from six import string_types
-
 from nltk.toolbox import ToolboxData
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *

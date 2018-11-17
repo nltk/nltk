@@ -280,7 +280,6 @@ class XML_Tool:
 
     def remove_preprocessed_file(self):
         os.remove(self.write_file.name)
-        pass
 
 
 class NKJPCorpus_Segmentation_View(XMLCorpusView):

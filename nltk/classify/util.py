@@ -330,7 +330,7 @@ def wsd_demo(trainer, word, features, n=1000):
     return classifier
 
 
-def check_megam_config(self):
+def check_megam_config():
     """
     Checks whether the MEGAM binary is configured.
     """

@@ -12,11 +12,7 @@ Read CoNLL-style chunk fileids.
 
 from __future__ import unicode_literals
 
-import os
-import codecs
 import textwrap
-
-from six import string_types
 
 from nltk import compat
 from nltk.tree import Tree
