@@ -138,7 +138,7 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     :param srctext: The sentence string from the source language.
     :type trgtext: str
     :param trgtext: The sentence string from the target language.
-    :type alignment: str
+    :type alignment: list
     :param alignment: The word alignment outputs as list of tuples, where
         the first elements of tuples are the source words' indices and
         second elements are the target words' indices. This is also the output

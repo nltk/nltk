@@ -238,6 +238,7 @@
 - Iaroslav Tymchenko <https://github.com/myproblemchild>
 - Aleš Tamchyna
 - Tim Gianitsos <https://github.com/timgianitsos>
+- Gaurab Das Gupta <https://github.com/gaurabdasgupta>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
