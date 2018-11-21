@@ -1088,7 +1088,7 @@ class TestParserAPI(TestCase):
 
         corenlp_parser.api_call.assert_called_once_with(
             "The quick brown fox jumps over the lazy dog",
-            properties={'ssplit.ssplit.eolonly': 'true'},
+            properties={'ssplit.eolonly': 'true'},
         )
         self.assertEqual(expected_output, parsed_data)
 
@@ -1414,6 +1414,6 @@ class TestParserAPI(TestCase):
 
         corenlp_parser.api_call.assert_called_once_with(
             "The quick brown fox jumps over the lazy dog",
-            properties={'ssplit.ssplit.eolonly': 'true'},
+            properties={'ssplit.eolonly': 'true'},
         )
         self.assertEqual(expected_output, parsed_data.tree())
