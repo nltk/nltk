@@ -266,7 +266,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         """
         default_properties = {
             # Only splits on '\n', never inside the sentence.
-            'ssplit.ssplit.eolonly': 'true'
+            'ssplit.eolonly': 'true'
         }
 
         default_properties.update(properties or {})
