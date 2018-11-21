@@ -238,6 +238,7 @@
 - Iaroslav Tymchenko <https://github.com/myproblemchild>
 - Aleš Tamchyna
 - Tim Gianitsos <https://github.com/timgianitsos>
+- Andrew Owen Martin
 - Adrian Ellis <https://github.com/adrianjellis>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
