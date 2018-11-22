@@ -6,13 +6,18 @@ See also nltk/test/tokenize.doctest
 
 from __future__ import unicode_literals
 
-import os
 import unittest
 
 from nose import SkipTest
+from nose.tools import assert_equal
 
-from nltk.tokenize import word_tokenize
-from nltk.tokenize import TweetTokenizer, StanfordSegmenter, TreebankWordTokenizer
+from nltk.tokenize import (
+    punkt,
+    word_tokenize,
+    TweetTokenizer,
+    StanfordSegmenter,
+    TreebankWordTokenizer,
+)
 
 
 class TestTokenize(unittest.TestCase):
@@ -346,7 +351,6 @@ class TestTokenize(unittest.TestCase):
         result = list(tokenizer.span_tokenize(test3))
         self.assertEqual(result, expected)
 
-        
     def test_word_tokenize(self):
         """
         Test word_tokenize function
@@ -360,3 +364,35 @@ class TestTokenize(unittest.TestCase):
         sentence = "'v' 're'"
         expected = ["'", 'v', "'", "'re", "'"]
         self.assertEqual(word_tokenize(sentence), expected)
+
+    def test_punkt_pair_iter(self):
+
+        test_cases = [
+            ('12', [('1', '2'), ('2', None)]),
+            ('123', [('1', '2'), ('2', '3'), ('3', None)]),
+            ('1234', [('1', '2'), ('2', '3'), ('3', '4'), ('4', None)]),
+        ]
+
+        for (test_input, expected_output) in test_cases:
+            actual_output = [x for x in punkt._pair_iter(test_input)]
+
+            assert_equal(actual_output, expected_output)
+
+    def test_punkt_pair_iter_handles_stop_iteration_exception(self):
+        # test input to trigger StopIteration from next()
+        it = iter([])
+        # call method under test and produce a generator
+        gen = punkt._pair_iter(it)
+        # unpack generator, ensure that no error is raised
+        list(gen)
+
+    def test_punkt_tokenize_words_handles_stop_iteration_exception(self):
+        obj = punkt.PunktBaseClass()
+
+        class TestPunktTokenizeWordsMock:
+            def word_tokenize(self, s):
+                return iter([])
+
+        obj._lang_vars = TestPunktTokenizeWordsMock()
+        # unpack generator, ensure that no error is raised
+        list(obj._tokenize_words('test'))
