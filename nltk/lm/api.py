@@ -45,11 +45,15 @@ class Smoothing(object):
     Implements Chen & Goodman 1995's idea that all smoothing algorithms have
     certain features in common. This should ideally allow smoothing algoritms to
     work both with Backoff and Interpolation.
-
-    counter represents the number of counts for ngrams
     """
 
     def __init__(self, vocabulary, counter):
+        """
+        :param vocabulary: The Ngram vocabulary object.
+        :type vocabulary: nltk.lm.vocab.Vocabulary
+        :param counter: The counts of the vocabulary items.
+        :type counter: nltk.lm.counter.NgramCounter
+        """
         self.vocab = vocabulary
         self.counts = counter
 
