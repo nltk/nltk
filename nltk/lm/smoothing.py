@@ -23,7 +23,6 @@ class WittenBell(Smoothing):
 
     def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
         super(WittenBell, self).__init__(vocabulary, counter, *kwargs)
-        self.counts = counter
 
     def alpha_gamma(self, word, context):
         gamma = self.gamma(context)
