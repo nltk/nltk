@@ -46,10 +46,9 @@ class KneserNey(Smoothing):
     def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
         super(KneserNey, self).__init__(vocabulary, counter, *kwargs)
         self.discount = discount
-        self.vocabulary = vocabulary
 
     def unigram_score(self, word):
-        return 1.0 / len(self.vocabulary)
+        return 1.0 / len(self.vocab)
 
     def alpha_gamma(self, word, context):
         prefix_counts = self.counts[context]
