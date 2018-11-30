@@ -1165,6 +1165,9 @@ class CrossValidationProbDist(ProbDistI):
     def discount(self):
         raise NotImplementedError()
 
+    def max(self):
+        raise NotImplementedError()
+
     def __repr__(self):
         """
         Return a string representation of this ``ProbDist``.
