@@ -25,7 +25,7 @@ from __future__ import unicode_literals
 from nltk.tokenize.api import TokenizerI
 
 
-class SonoritySequencingPrinciple:
+class SonoritySequencingPrinciple(TokenizerI):
     '''
     Syllabifies words based on the Sonority Sequencing Principle (SSP)
 
