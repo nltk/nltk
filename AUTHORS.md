@@ -78,6 +78,7 @@
 - Helder
 - Michael Heilman
 - Ofer Helman
+- Christopher Hench
 - Bruce Hill
 - Amy Holland
 - Kristy Hollingshead
