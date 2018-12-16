@@ -42,6 +42,14 @@ class TestTokenize(unittest.TestCase):
             'français',
         ]
         self.assertEqual(tokens, expected)
+        
+    def test_ssp_tokenizer(self):
+        """
+        Test SonoritySequencingPrinciple tokenizer.
+        """
+        tokenizer = SonoritySequencingPrinciple()
+        tokens = tokenizer.tokenize('justification')
+        self.assertEqual(tokens, ['jus', 'ti', 'fi', 'ca', 'tion'])
 
     def test_stanford_segmenter_arabic(self):
         """
