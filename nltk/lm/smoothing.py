@@ -59,18 +59,3 @@ class KneserNey(Smoothing):
     def gamma(self, prefix_counts):
         return self.discount * _count_non_zero_vals(prefix_counts) / prefix_counts.N()
 
-
-class GoodTuring(Smoothing):
-    """Good-Turing Smoothing"""
-    def __init__(self, vocabulary, counter, **kwargs):
-        super(GoodTuring, self).__init__(vocabulary, counter, *kwargs)
-        self.counts = counter
-        self.vocabulary = vocabulary
-
-    def unigram_score(self, word):
-        word_count = self.counts[word]
-        count_plus_1 = 0.
-        for everyContext in self.counts.keys():
-            if len(everyContext.split()) == word_count+1:
-                count_plus_1 += 1
-        return count_plus_1 / len(self.vocabulary)
