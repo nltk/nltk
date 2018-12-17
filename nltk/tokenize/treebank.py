@@ -337,7 +337,8 @@ class TreebankWordDetokenizer(TokenizerI):
 
     def tokenize(self, tokens, convert_parentheses=False):
         """
-        Python port of the Moses detokenizer.
+        Treebank detokenizer, created by undoing the regexes from 
+        the TreebankWordTokenizer.tokenize.
 
         :param tokens: A list of strings, i.e. tokenized text.
         :type tokens: list(str)
