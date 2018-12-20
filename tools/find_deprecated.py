@@ -28,7 +28,6 @@ import re
 import sys
 import tokenize
 import textwrap
-import nltk
 import nltk.corpus
 from doctest import DocTestParser, register_optionflag
 from cStringIO import StringIO

@@ -536,7 +536,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         corpus root points to the Cornell folder, urlbase='Eng-USA/Cornell'.
         """
 
-        import webbrowser, re
+        import webbrowser
 
         if urlbase:
             path = urlbase + "/" + fileid
