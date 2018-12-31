@@ -5878,7 +5878,6 @@ def demo():
 
     """
 
-    import re
     from nltk.corpus import udhr
 
     udhr_corpus = {
