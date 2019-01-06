@@ -44,11 +44,11 @@ class TestTokenize(unittest.TestCase):
         ]
         self.assertEqual(tokens, expected)
         
-    def test_ssp_tokenizer(self):
+    def test_sonority_sequencing_syllable_tokenizer(self):
         """
-        Test SonoritySequencingPrinciple tokenizer.
+        Test SyllableTokenizer tokenizer.
         """
-        tokenizer = SonoritySequencingPrinciple()
+        tokenizer = SyllableTokenizer()
         tokens = tokenizer.tokenize('justification')
         self.assertEqual(tokens, ['jus', 'ti', 'fi', 'ca', 'tion'])
 
