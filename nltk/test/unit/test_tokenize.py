@@ -17,7 +17,7 @@ from nltk.tokenize import (
     TweetTokenizer,
     StanfordSegmenter,
     TreebankWordTokenizer,
-    SonoritySequencingPrinciple,
+    SyllableTokenizer,
 )
 
 
