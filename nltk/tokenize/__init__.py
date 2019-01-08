@@ -1,142 +1,147 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
 # Copyright (C) 2001-2019 NLTK Project
-# Author: Christopher Hench <chris.l.hench@gmail.com>
-#         Alex Estes
-# URL: <http://nltk.sourceforge.net>
+# Author: Edward Loper <edloper@gmail.com>
+#         Steven Bird <stevenbird1@gmail.com> (minor additions)
+# Contributors: matthewmc, clouds56
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+r"""
+NLTK Tokenizer Package
+
+Tokenizers divide strings into lists of substrings.  For example,
+tokenizers can be used to find the words and punctuation in a string:
+
+    >>> from nltk.tokenize import word_tokenize
+    >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me
+    ... two of them.\n\nThanks.'''
+    >>> word_tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+This particular tokenizer requires the Punkt sentence tokenization
+models to be installed. NLTK also provides a simpler,
+regular-expression based tokenizer, which splits text on whitespace
+and punctuation:
+
+    >>> from nltk.tokenize import wordpunct_tokenize
+    >>> wordpunct_tokenize(s)
+    ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York', '.',
+    'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
+
+We can also operate at the level of sentences, using the sentence
+tokenizer directly as follows:
+
+    >>> from nltk.tokenize import sent_tokenize, word_tokenize
+    >>> sent_tokenize(s)
+    ['Good muffins cost $3.88\nin New York.', 'Please buy me\ntwo of them.', 'Thanks.']
+    >>> [word_tokenize(t) for t in sent_tokenize(s)]
+    [['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.'],
+    ['Please', 'buy', 'me', 'two', 'of', 'them', '.'], ['Thanks', '.']]
+
+Caution: when tokenizing a Unicode string, make sure you are not
+using an encoded version of the string (it may be necessary to
+decode it first, e.g. with ``s.decode("utf8")``.
+
+NLTK tokenizers can produce token-spans, represented as tuples of integers
+having the same semantics as string slices, to support efficient comparison
+of tokenizers.  (These methods are implemented as generators.)
+
+    >>> from nltk.tokenize import WhitespaceTokenizer
+    >>> list(WhitespaceTokenizer().span_tokenize(s))
+    [(0, 4), (5, 12), (13, 17), (18, 23), (24, 26), (27, 30), (31, 36), (38, 44),
+    (45, 48), (49, 51), (52, 55), (56, 58), (59, 64), (66, 73)]
+
+There are numerous ways to tokenize text.  If you need more control over
+tokenization, see the other methods provided in this package.
+
+For further information, please see Chapter 3 of the NLTK book.
 """
-The Sonority Sequencing Principle (SSP) is a language agnostic algorithm proposed
-by Otto Jesperson in 1904. The sonorous quality of a phoneme is judged by the
-openness of the lips. Syllable breaks occur before troughs in sonority. For more
-on the SSP see Selkirk (1984).
-
-The default implementation uses the English alphabet, but the `sonority_hiearchy`
-can be modified to IPA or any other alphabet for the use-case. The SSP is a
-universal syllabification algorithm, but that does not mean it performs equally
-across languages. Bartlett et al. (2009) is a good benchmark for English accuracy
-if utilizing IPA (pg. 311).
-
-Importantly, if a custom hiearchy is supplied and vowels span across more than
-one level, they should be given separately to the `vowels` class attribute.
-
-References:
-- Otto Jespersen. 1904. Lehrbuch der Phonetik.
-  Leipzig, Teubner. Chapter 13, Silbe, pp. 185-203.
-- Elisabeth Selkirk. 1984. On the major class features and syllable theory.
-  In Aronoff & Oehrle (eds.) Language Sound Structure: Studies in Phonology.
-  Cambridge, MIT Press. pp. 107-136.
-- Susan Bartlett, et al. 2009. On the Syllabification of Phonemes.
-  In HLT-NAACL. pp. 308-316.
-"""
-
-from __future__ import unicode_literals
 
 import re
 
-from nltk.tokenize.api import TokenizerI
-from nltk.util import ngrams
+from nltk.data import load
+from nltk.tokenize.casual import TweetTokenizer, casual_tokenize
+from nltk.tokenize.mwe import MWETokenizer
+from nltk.tokenize.punkt import PunktSentenceTokenizer
+from nltk.tokenize.regexp import (
+    RegexpTokenizer,
+    WhitespaceTokenizer,
+    BlanklineTokenizer,
+    WordPunctTokenizer,
+    wordpunct_tokenize,
+    regexp_tokenize,
+    blankline_tokenize,
+)
+from nltk.tokenize.repp import ReppTokenizer
+from nltk.tokenize.sexpr import SExprTokenizer, sexpr_tokenize
+from nltk.tokenize.simple import (
+    SpaceTokenizer,
+    TabTokenizer,
+    LineTokenizer,
+    line_tokenize,
+)
+from nltk.tokenize.texttiling import TextTilingTokenizer
+from nltk.tokenize.toktok import ToktokTokenizer
+from nltk.tokenize.treebank import TreebankWordTokenizer
+from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
+from nltk.tokenize.stanford_segmenter import StanfordSegmenter
+from nltk.tokenize.sonority_sequencing import SyllableTokenizer
 
 
-class SyllableTokenizer(TokenizerI):
+# Standard sentence tokenizer.
+def sent_tokenize(text, language='english'):
     """
-    Syllabifies words based on the Sonority Sequencing Principle (SSP).
+    Return a sentence-tokenized copy of *text*,
+    using NLTK's recommended sentence tokenizer
+    (currently :class:`.PunktSentenceTokenizer`
+    for the specified language).
 
-    >>> SSP = SyllableTokenizer()
-    >>> SSP.tokenize('justification')
-    ['jus', 'ti', 'fi', 'ca', 'tion']
+    :param text: text to split into sentences
+    :param language: the model name in the Punkt corpus
     """
+    tokenizer = load('tokenizers/punkt/{0}.pickle'.format(language))
+    return tokenizer.tokenize(text)
 
-    def __init__(self, lang='en', sonority_hierarchy=False):
-        # Sonority hierarchy should be provided in descending order.
-        # If vowels are spread across multiple levels, they should be
-        # passed assigned self.vowels var together, otherwise should be
-        # placed in first index of hierarchy.
-        if not sonority_hierarchy and lang == 'en':
-            sonority_hierarchy = ['aeiouy',  # vowels.
-                                  'lmnrw',  # nasals.
-                                  'zvsf',  # fricatives.
-                                  'bcdgtkpqxhj'  # stops.
-                                  ]
 
-        self.vowels = sonority_hierarchy[0]
-        self.phoneme_map = {}
-        for i, level in enumerate(sonority_hierarchy):
-            for c in level:
-                self.phoneme_map[c] = len(sonority_hierarchy) - i
+# Standard word tokenizer.
+_treebank_word_tokenizer = TreebankWordTokenizer()
 
-    def assign_values(self, token):
-        '''
-        Assigns each phoneme its value from the sonority hierarchy
-        '''
-        syllables_values = []
-        for c in token:
-            try:
-                syllables_values.append((c, self.phoneme_map[c]))
-            except KeyError:
-                print("Warning: '{}' not defined in hierarchy".format(c))
-        return syllables_values
+# See discussion on https://github.com/nltk/nltk/pull/1437
+# Adding to TreebankWordTokenizer, nltk.word_tokenize now splits on
+# - chervon quotes u'\xab' and u'\xbb' .
+# - unicode quotes u'\u2018', u'\u2019', u'\u201c' and u'\u201d'
+# See https://github.com/nltk/nltk/issues/1995#issuecomment-376741608
+# Also, behavior of splitting on clitics now follows Stanford CoreNLP
+# - clitics covered (?!re|ve|ll|m|t|s|d)(\w)\b
+improved_open_quote_regex = re.compile(u'([«“‘„]|[`]+)', re.U)
+improved_open_single_quote_regex = re.compile(r"(?i)(\')(?!re|ve|ll|m|t|s|d)(\w)\b", re.U)
+improved_close_quote_regex = re.compile(u'([»”’])', re.U)
+improved_punct_regex = re.compile(r'([^\.])(\.)([\]\)}>"\'' u'»”’ ' r']*)\s*$', re.U)
+_treebank_word_tokenizer.STARTING_QUOTES.insert(0, (improved_open_quote_regex, r' \1 '))
+_treebank_word_tokenizer.STARTING_QUOTES.append((improved_open_single_quote_regex, r'\1 \2'))
+_treebank_word_tokenizer.ENDING_QUOTES.insert(0, (improved_close_quote_regex, r' \1 '))
+_treebank_word_tokenizer.PUNCTUATION.insert(0, (improved_punct_regex, r'\1 \2 \3 '))
 
-    def validate_syllables(self, syllabified):
-        '''
-        Ensures each syllable has at least one vowel.
-        If the following syllable doesn't have vowel,
-        add it to the current one.
-        '''
-        valid_syllables = []
-        front = ""
-        for i, syllable in enumerate(syllabified):
 
-            if not re.search('|'.join(self.vowels), syllable):
-                if len(valid_syllables) == 0:
-                    front += syllable
-                else:
-                    valid_syllables = valid_syllables[:-1] + [valid_syllables[-1] + syllable]
-            else:
-                if len(valid_syllables) == 0:
-                    valid_syllables.append(front + syllable)
-                else:
-                    valid_syllables.append(syllable)
+def word_tokenize(text, language='english', preserve_line=False):
+    """
+    Return a tokenized copy of *text*,
+    using NLTK's recommended word tokenizer
+    (currently an improved :class:`.TreebankWordTokenizer`
+    along with :class:`.PunktSentenceTokenizer`
+    for the specified language).
 
-        return valid_syllables
-
-    def tokenize(self, token):
-        '''
-        Apply the SSP to return a list of syllables.
-        '''
-        # if only one vowel return word
-        if sum(token.count(x) for x in self.vowels) <= 1:
-            return [token]
-
-        # assign values from hierarchy
-        syllables_values = self.assign_values(token)
-
-        syllable_list = []
-        syllable = syllables_values[0][0]  # start syllable with first phoneme
-        for trigram in ngrams(syllables_values, n=3):
-            phonemes, values = zip(*trigram)
-            # Sonority of previous, focal and following phoneme
-            prev_value, focal_value, next_value = values
-            # Focal phoneme.
-            focal_phoneme = phonemes[1]
-
-            # these cases trigger syllable break
-            if prev_value >= focal_value == next_value:
-                syllable += focal_phoneme
-                syllable_list.append(syllable)
-                syllable = ""
-
-            elif prev_value > focal_value < next_value:
-                syllable_list.append(syllable)
-                syllable = ""
-                syllable += focal_phoneme
-
-            # no syllable break
-            else:
-                syllable += focal_phoneme
-
-        syllable += syllables_values[-1][0]  # append last phoneme
-        syllable_list.append(syllable)
-
-        return self.validate_syllables(syllable_list)
+    :param text: text to split into words
+    :type text: str
+    :param language: the model name in the Punkt corpus
+    :type language: str
+    :param preserve_line: An option to keep the preserve the sentence and not sentence tokenize it.
+    :type preserve_line: bool
+    """
+    sentences = [text] if preserve_line else sent_tokenize(text, language)
+    return [
+        token for sent in sentences for token in _treebank_word_tokenizer.tokenize(sent)
+    ]
