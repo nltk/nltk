@@ -5,19 +5,6 @@
 #         Alex Estes
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
-#
-# References: Otto Jespersen, Lehrbuch der Phonetik.
-#             University of Toronto (Leipzig, Teubner, 1904).
-#             Chapter 13, Silbe, pp. 185-203.
-#
-#             Elisabeth Selkirk, On the major class features and syllable theory. 
-#             In Aronoff & Oehrle (eds.) Language Sound Structure: Studies in Phonology.
-#             (Cambridge, MIT Press, 1984). pp. 107-136.
-#
-#             Susan Bartlett, et al. On the Syllabification of Phonemes.
-#             Human Language Technologies: The 2009 Annual Conference
-#             of the North American Chapter of the ACL.
-#             (Association for Computational Linguistics, 2009). pp. 308-316.
 
 """
 The Sonority Sequencing Principle (SSP) is a language agnostic algorithm proposed
@@ -33,37 +20,45 @@ if utilizing IPA (pg. 311).
 
 Importantly, if a custom hiearchy is supplied and vowels span across more than
 one level, they should be given separately to the `vowels` class attribute.
+
+References:
+- Otto Jespersen. 1904. Lehrbuch der Phonetik.
+  Leipzig, Teubner. Chapter 13, Silbe, pp. 185-203.
+- Elisabeth Selkirk. 1984. On the major class features and syllable theory.
+  In Aronoff & Oehrle (eds.) Language Sound Structure: Studies in Phonology.
+  Cambridge, MIT Press. pp. 107-136.
+- Susan Bartlett, et al. 2009. On the Syllabification of Phonemes.
+  In HLT-NAACL. pp. 308-316.
 """
 
 from __future__ import unicode_literals
-from nltk.tokenize.api import TokenizerI
+
 import re
+
+from nltk.tokenize.api import TokenizerI
+from nltk.util import ngrams
 
 
 class SyllableTokenizer(TokenizerI):
-    '''
-    Syllabifies words based on the Sonority Sequencing Principle (SSP)
+    """
+    Syllabifies words based on the Sonority Sequencing Principle (SSP).
 
     >>> SSP = SyllableTokenizer()
     >>> SSP.tokenize('justification')
     ['jus', 'ti', 'fi', 'ca', 'tion']
-    '''
+    """
 
     def __init__(self, lang='en', sonority_hierarchy=False):
-        '''
-        Sonority hierarchy should be provided in descending order.
-        If vowels are spread across multiple levels, they should be
-        passed assigned self.vowels var together, otherwise should be
-        placed in first index of hierarchy.
-        '''
-
+        # Sonority hierarchy should be provided in descending order.
+        # If vowels are spread across multiple levels, they should be
+        # passed assigned self.vowels var together, otherwise should be
+        # placed in first index of hierarchy.
         if not sonority_hierarchy and lang == 'en':
-            sonority_hierarchy = [
-                'aeiouy',  # vowels
-                'lmnrw',  # nasals
-                'zvsf',  # fricatives
-                'bcdgtkpqxhj'  # stops
-            ]
+            sonority_hierarchy = ['aeiouy',  # vowels.
+                                  'lmnrw',  # nasals.
+                                  'zvsf',  # fricatives.
+                                  'bcdgtkpqxhj'  # stops.
+                                  ]
 
         self.vowels = sonority_hierarchy[0]
         self.phoneme_map = {}
@@ -72,22 +67,22 @@ class SyllableTokenizer(TokenizerI):
                 self.phoneme_map[c] = len(sonority_hierarchy) - i
 
     def assign_values(self, token):
-        '''
+        """
         Assigns each phoneme its value from the sonority hierarchy
-        '''
-        self.syllables_values = []
+        """
+        syllables_values = []
         for c in token:
             try:
-                self.syllables_values.append((c, self.phoneme_map[c]))
+                syllables_values.append((c, self.phoneme_map[c]))
             except KeyError:
                 print("Warning: '{}' not defined in hierarchy".format(c))
+        return syllables_values
 
     def validate_syllables(self, syllabified):
-        '''
+        """
         Ensures each syllable has at least one vowel.
-        If the following syllable doesn't have vowel,
-        add it to the current one.
-        '''
+        If the following syllable doesn't have vowel, add it to the current one.
+        """
         valid_syllables = []
         front = ""
         for i, syllable in enumerate(syllabified):
@@ -106,23 +101,24 @@ class SyllableTokenizer(TokenizerI):
         return valid_syllables
 
     def tokenize(self, token):
-        '''
+        """
         Apply the SSP to return a list of syllables.
-        '''
+        """
         # if only one vowel return word
         if sum(token.count(x) for x in self.vowels) <= 1:
             return [token]
 
         # assign values from hierarchy
-        self.assign_values(token)
+        syllables_values = self.assign_values(token)
 
         syllable_list = []
-        syllable = self.syllables_values[0][0]  # start syllable with first phoneme
-        for trigram in zip(*[self.syllables_values[i:] for i in range(3)]):
-            prev_value = trigram[0][1]  # sonority of previous phoneme
-            focal_value = trigram[1][1]  # sonority of focal phoneme
-            next_value = trigram[2][1]  # sonority of following phoneme
-            focal_phoneme = trigram[1][0]  # focal phoneme
+        syllable = syllables_values[0][0]  # start syllable with first phoneme
+        for trigram in ngrams(syllables_values, n=3):
+            phonemes, values = zip(*trigram)
+            # Sonority of previous, focal and following phoneme
+            prev_value, focal_value, next_value = values
+            # Focal phoneme.
+            focal_phoneme = phonemes[1]
 
             # these cases trigger syllable break
             if prev_value >= focal_value == next_value:
@@ -139,7 +135,7 @@ class SyllableTokenizer(TokenizerI):
             else:
                 syllable += focal_phoneme
 
-        syllable += self.syllables_values[-1][0]  # append last phoneme
+        syllable += syllables_values[-1][0]  # append last phoneme
         syllable_list.append(syllable)
 
         return self.validate_syllables(syllable_list)
