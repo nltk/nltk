@@ -86,7 +86,9 @@ class SyllableTokenizer(TokenizerI):
                 syllables_values.append((c, self.phoneme_map[c]))
             except KeyError:
                 if c not in punctuation:
-                    warnings.warn("Character not defined in sonority_hierarchy: '{}'".format(c))
+                    warnings.warn("Character not defined in sonority_hierarchy, assigning as vowel: '{}'".format(c))
+                    syllables_values.append((c, max(self.phoneme_map.values())))
+                    self.vowels += c
         return syllables_values
 
     def validate_syllables(self, syllabified):
