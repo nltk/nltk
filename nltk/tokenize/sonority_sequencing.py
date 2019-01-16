@@ -32,8 +32,10 @@ References:
 """
 
 from __future__ import unicode_literals
+import warnings
 
 import re
+from string import punctuation
 
 from nltk.tokenize.api import TokenizerI
 from nltk.util import ngrams
@@ -49,6 +51,12 @@ class SyllableTokenizer(TokenizerI):
     """
 
     def __init__(self, lang='en', sonority_hierarchy=False):
+        """
+        :param lang: Language parameter, default is English, 'en'
+        :type lang: str
+        :param sonority_hierarchy: Sonority hierarchy according to the Sonority Sequencing Principle.
+        :type sonority_hierarchy: list(str)
+        """
         # Sonority hierarchy should be provided in descending order.
         # If vowels are spread across multiple levels, they should be
         # passed assigned self.vowels var together, otherwise should be
@@ -64,7 +72,9 @@ class SyllableTokenizer(TokenizerI):
         self.phoneme_map = {}
         for i, level in enumerate(sonority_hierarchy):
             for c in level:
-                self.phoneme_map[c] = len(sonority_hierarchy) - i
+                sonority_level = len(sonority_hierarchy) - i
+                self.phoneme_map[c] = sonority_level
+                self.phoneme_map[c.upper()] = sonority_level
 
     def assign_values(self, token):
         """
@@ -75,7 +85,8 @@ class SyllableTokenizer(TokenizerI):
             try:
                 syllables_values.append((c, self.phoneme_map[c]))
             except KeyError:
-                print("Warning: '{}' not defined in hierarchy".format(c))
+                if c not in punctuation:
+                    warnings.warn("Character not defined in sonority_hierarchy: '{}'".format(c))
         return syllables_values
 
     def validate_syllables(self, syllabified):
@@ -104,12 +115,12 @@ class SyllableTokenizer(TokenizerI):
         """
         Apply the SSP to return a list of syllables.
         """
+        # assign values from hierarchy
+        syllables_values = self.assign_values(token)
+        
         # if only one vowel return word
         if sum(token.count(x) for x in self.vowels) <= 1:
             return [token]
-
-        # assign values from hierarchy
-        syllables_values = self.assign_values(token)
 
         syllable_list = []
         syllable = syllables_values[0][0]  # start syllable with first phoneme
