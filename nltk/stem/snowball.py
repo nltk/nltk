@@ -3189,6 +3189,23 @@ class HungarianStemmer(_LanguageSpecificStemmer):
 
         return r1
 
+class KurmanjiStemmer(_StandardStemmer):
+    '''
+
+    '''
+    __suffixes = ['é','í', 'a', 'ek', 'van', 'dar', 'kar', 'xane', 'stan', 'geh', 'én', 'an', 'yan', 'mend', 'em', 'émin', 'in', 'tir']
+
+    def stem(self,token):
+        '''
+
+        :param token:
+        :return:
+        '''
+        for end in self.__suffixes:
+            if token.endswith(end):
+                word = word[:-len(end)]
+        return word
+
 
 class ItalianStemmer(_StandardStemmer):
 
