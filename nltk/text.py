@@ -432,7 +432,7 @@ class Text(object):
             finder = BigramCollocationFinder.from_words(self.tokens, window_size)
             finder.apply_freq_filter(2)
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
-            finder.apply_ngram_filter(lambda bg: bg in ignored_bigrams)
+            finder.apply_ngram_filter(lambda w1, w2: (w1, w2) in ignored_bigrams)
 
             bigram_measures = BigramAssocMeasures()
             self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)
