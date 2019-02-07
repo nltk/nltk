@@ -402,7 +402,6 @@ class Text(object):
         """
         Print collocations derived from the text, ignoring stopwords.
 
-        :seealso: find_collocations
         :param num: The maximum number of collocations to print.
         :type num: int
         :param window_size: The number of tokens spanned by a collocation (default=2)
