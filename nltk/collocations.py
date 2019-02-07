@@ -30,6 +30,7 @@ from __future__ import print_function
 #   approximation is good enough for fragmented data, and mention it
 # - add a n-gram collocation finder with measures which only utilise n-gram
 #   and unigram counts (raw_freq, pmi, student_t)
+# - allow case-insensitive ngram searching through AbstractCollocationFinder
 
 import itertools as _itertools
 from six import iteritems

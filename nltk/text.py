@@ -398,34 +398,60 @@ class Text(object):
             )
         return self._concordance_index.find_concordance(word, width)[:lines]
 
-    def collocations(self, num=20, window_size=2):
+    def collocation_list(self, num=20, window_size=2, ignored_words=[], ignored_bigrams=[], language='english'):
         """
-        Print collocations derived from the text, ignoring stopwords.
+        Retrieve list of collocations derived from the text, ignoring stopwords.
 
-        :seealso: find_collocations
         :param num: The maximum number of collocations to print.
         :type num: int
         :param window_size: The number of tokens spanned by a collocation (default=2)
         :type window_size: int
+        :param ignored_words: List of words to exclude from collocations
+        :param ignored_bigrams: List of bigrams to exclude from collocations
+        :param language: Language whose stopwords should be used
         """
         if not (
             '_collocations' in self.__dict__
             and self._num == num
             and self._window_size == window_size
+            and self._ignored_words == ignored_words
+            and self._ignored_bigrams == ignored_bigrams
+            and self._language == language
         ):
             self._num = num
             self._window_size = window_size
+            self._ignored_words = ignored_words
+            self._ignored_bigrams = ignored_bigrams
+            self._language = language
 
             # print("Building collocations list")
             from nltk.corpus import stopwords
 
-            ignored_words = stopwords.words('english')
+            # Ignore standard stopwords in addition to the ignore words provided
+            ignored_words.extend(stopwords.words(language))
             finder = BigramCollocationFinder.from_words(self.tokens, window_size)
             finder.apply_freq_filter(2)
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
+            finder.apply_ngram_filter(lambda bg: bg in ignored_bigrams)
+
             bigram_measures = BigramAssocMeasures()
             self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)
-        colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations]
+        return self._collocations
+
+
+    def collocations(self, num=20, window_size=2):
+        """
+        Print collocations derived from the text, ignoring stopwords.
+
+        :param num: The maximum number of collocations to print.
+        :type num: int
+        :param window_size: The number of tokens spanned by a collocation (default=2)
+        :type window_size: int
+        :param ignored_words: List of words to exclude from collocations
+        :param ignored_bigrams: List of bigrams to exclude from collocations
+        :param language: Language whose stopwords should be used
+        """
+        colloc_strings = [w1 + ' ' + w2 for w1, w2 in self.collocation_list()]
         print(tokenwrap(colloc_strings, separator="; "))
 
     def count(self, word):
