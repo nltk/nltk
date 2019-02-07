@@ -18,10 +18,12 @@ will then requiring filtering to only retain useful content terms. Each ngram
 of words may then be scored according to some association measure, in order
 to determine the relative likelihood of each ngram being a collocation.
 
-The ``BigramCollocationFinder`` and ``TrigramCollocationFinder`` classes provide
-these functionalities, dependent on being provided a function which scores a
-ngram given appropriate frequency counts. A number of standard association
-measures are provided in bigram_measures and trigram_measures.
+The ``BigramCollocationFinder``, ``TrigramCollocationFinder``, and
+``QuadgramCollocationFinder`` classes provide these functionalities, dependent 
+on being provided a function which scores a ngram given appropriate frequency
+counts. A number of standard association measures for each of these are 
+provided as classes in ``nltk.metrics``: ``BigramAssocMeasures()``, 
+``TrigramAssocMeasures()``, and ``QuadgramAssocMeasures()``.
 """
 from __future__ import print_function
 
@@ -165,6 +167,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
         sequence.  When window_size > 2, count non-contiguous bigrams, in the
         style of Church and Hanks's (1990) association ratio.
         """
+        # Count word frequencies and bigram frequencies
         wfd = FreqDist()
         bfd = FreqDist()
 
@@ -176,6 +179,7 @@ class BigramCollocationFinder(AbstractCollocationFinder):
             if w1 is None:
                 continue
             wfd[w1] += 1
+            # Consider each pair of words in each valid window
             for w2 in window[1:]:
                 if w2 is not None:
                     bfd[(w1, w2)] += 1
@@ -220,22 +224,29 @@ class TrigramCollocationFinder(AbstractCollocationFinder):
         if window_size < 3:
             raise ValueError("Specify window_size at least 3")
 
+        # Track individual word frequencies, adjacent word pair frequencies,
+        # non-adjacent word pair frequencies, and word trio frequencies.
         wfd = FreqDist()
-        wildfd = FreqDist()
         bfd = FreqDist()
+        wildfd = FreqDist()
         tfd = FreqDist()
         for window in ngrams(words, window_size, pad_right=True):
             w1 = window[0]
             if w1 is None:
                 continue
             for w2, w3 in _itertools.combinations(window[1:], 2):
+                # Count this word
+                # FIXME this would increase individual word frequency multiple times per word--shouldn't this happen outside the combinations() loop?
                 wfd[w1] += 1
                 if w2 is None:
                     continue
+                # Count this adjacent word pair
                 bfd[(w1, w2)] += 1
                 if w3 is None:
                     continue
+                # Count this non-adjacent word pair
                 wildfd[(w1, w3)] += 1
+                # Count this trigram
                 tfd[(w1, w2, w3)] += 1
         return cls(wfd, bfd, wildfd, tfd)
 
@@ -301,6 +312,7 @@ class QuadgramCollocationFinder(AbstractCollocationFinder):
             if w1 is None:
                 continue
             for w2, w3, w4 in _itertools.combinations(window[1:], 3):
+                # FIXME this would increase individual word frequency multiple times per word--shouldn't this happen outside the combinations() loop?
                 ixxx[w1] += 1
                 if w2 is None:
                     continue
@@ -385,6 +397,7 @@ def demo(scorer=None, compare_scorer=None):
 # Slows down loading too much
 # bigram_measures = BigramAssocMeasures()
 # trigram_measures = TrigramAssocMeasures()
+# quadgram_measures = QuadgramAssocMeasures()
 
 if __name__ == '__main__':
     import sys
