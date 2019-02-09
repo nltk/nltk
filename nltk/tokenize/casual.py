@@ -231,7 +231,7 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding='utf-8')
                 # Numeric character references in the 80-9F range are typically
                 # interpreted by browsers as representing the characters mapped
                 # to bytes 80-9F in the Windows-1252 encoding. For more info
-                # see: http://en.wikipedia.org/wiki/Character_encodings_in_HTML
+                # see: https://en.wikipedia.org/wiki/ISO/IEC_8859-1#Similar_character_sets
                 if 0x80 <= number <= 0x9F:
                     return int2byte(number).decode('cp1252')
             except ValueError:
@@ -326,7 +326,7 @@ def remove_handles(text):
     pattern = re.compile(
         r"(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){20}(?!@))|(?<![A-Za-z0-9_!@#\$%&*])@(([A-Za-z0-9_]){1,19})(?![A-Za-z0-9_]*@)"
     )
-    # Substitute hadnles with ' ' to ensure that text on either side of removed handles are tokenized correctly
+    # Substitute handles with ' ' to ensure that text on either side of removed handles are tokenized correctly
     return pattern.sub(' ', text)
 
 
