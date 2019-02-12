@@ -108,12 +108,13 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
 
     :raise OSError: If the java command returns a nonzero return code.
     """
-    if stdin == 'pipe':
-        stdin = subprocess.PIPE
-    if stdout == 'pipe':
-        stdout = subprocess.PIPE
-    if stderr == 'pipe':
-        stderr = subprocess.PIPE
+
+    subprocess_output_dict = {'pipe': subprocess.PIPE, 'stdout': subprocess.STDOUT, 'devnull': subprocess.DEVNULL}
+
+    stdin = subprocess_output_dict.get(stdin)
+    stdout = subprocess_output_dict.get(stdout)
+    stderr = subprocess_output_dict.get(stderr)
+
     if isinstance(cmd, string_types):
         raise TypeError('cmd should be a list of strings')
 
