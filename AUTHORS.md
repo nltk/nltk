@@ -241,6 +241,7 @@
 - Andrew Owen Martin
 - Adrian Ellis <https://github.com/adrianjellis>
 - Nat Quayle Nelson <https://github.com/nqnstudios>
+- Matan Rak <https://github.com/matanrak>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
