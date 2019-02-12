@@ -105,7 +105,12 @@ class CoreNLPServer(object):
         self.corenlp_options = corenlp_options
         self.java_options = java_options or ['-mx2g']
 
-    def start(self):
+    def start(self, stdout='devnull', stderr='devnull'):
+        """ Starts the CoreNLP server
+
+        :param stdout: Specifies the subprocess's loc Either 'devnull', 'stdout' or 'pipe'
+        :param stderr: Specifies the subprocess's stdout loc Either 'devnull', 'stdout' or 'pipe'
+        """
         import requests
 
         cmd = ['edu.stanford.nlp.pipeline.StanfordCoreNLPServer']
@@ -118,14 +123,12 @@ class CoreNLPServer(object):
         config_java(options=self.java_options, verbose=self.verbose)
 
         try:
-            # TODO: it's probably a bad idea to pipe stdout, as it will
-            #       accumulate when lots of text is being parsed.
             self.popen = java(
                 cmd,
                 classpath=self._classpath,
                 blocking=False,
-                stdout='pipe',
-                stderr='pipe',
+                stdout=stdout,
+                stderr=stderr,
             )
         finally:
             # Return java configurations to their default values.
