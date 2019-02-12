@@ -230,7 +230,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             )
         )
 
-    def api_call(self, data, properties=None):
+    def api_call(self, data, properties=None, timeout=60):
         default_properties = {
             'outputFormat': 'json',
             'annotators': 'tokenize,pos,lemma,ssplit,{parser_annotator}'.format(
@@ -244,7 +244,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             self.url,
             params={'properties': json.dumps(default_properties)},
             data=data.encode(self.encoding),
-            timeout=60,
+            timeout=timeout,
         )
 
         response.raise_for_status()
