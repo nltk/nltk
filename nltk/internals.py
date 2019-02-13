@@ -88,7 +88,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
         standard input, standard output and standard error file
         handles, respectively.  Valid values are ``subprocess.PIPE``,
         an existing file descriptor (a positive integer), an existing
-        file object, and None.  ``subprocess.PIPE`` indicates that a
+        file object, 'pipe', 'stdout', 'devnull' and None.  ``subprocess.PIPE`` indicates that a
         new pipe to the child should be created.  With None, no
         redirection will occur; the child's file handles will be
         inherited from the parent.  Additionally, stderr can be
