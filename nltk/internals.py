@@ -111,9 +111,9 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
 
     subprocess_output_dict = {'pipe': subprocess.PIPE, 'stdout': subprocess.STDOUT, 'devnull': subprocess.DEVNULL}
 
-    stdin = subprocess_output_dict.get(stdin)
-    stdout = subprocess_output_dict.get(stdout)
-    stderr = subprocess_output_dict.get(stderr)
+    stdin = subprocess_output_dict.get(stdin, stdin)
+    stdout = subprocess_output_dict.get(stdout, stdout)
+    stderr = subprocess_output_dict.get(stderr, stdout)
 
     if isinstance(cmd, string_types):
         raise TypeError('cmd should be a list of strings')
