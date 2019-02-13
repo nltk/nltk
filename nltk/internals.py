@@ -113,7 +113,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
 
     stdin = subprocess_output_dict.get(stdin, stdin)
     stdout = subprocess_output_dict.get(stdout, stdout)
-    stderr = subprocess_output_dict.get(stderr, stdout)
+    stderr = subprocess_output_dict.get(stderr, stderr)
 
     if isinstance(cmd, string_types):
         raise TypeError('cmd should be a list of strings')
