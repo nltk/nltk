@@ -108,8 +108,7 @@ class CoreNLPServer(object):
     def start(self, stdout='devnull', stderr='devnull'):
         """ Starts the CoreNLP server
 
-        :param stdout: Specifies the subprocess's loc Either 'devnull', 'stdout' or 'pipe'
-        :param stderr: Specifies the subprocess's stdout loc Either 'devnull', 'stdout' or 'pipe'
+        :param stdout, stderr: Specifies where CoreNLP output is redirected. Valid values are 'devnull', 'stdout', 'pipe'
         """
         import requests
 
