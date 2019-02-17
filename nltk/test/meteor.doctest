@@ -1,0 +1,44 @@
+.. Copyright (C) 2001-2019 NLTK Project
+.. For license information, see LICENSE.TXT
+
+.. -*- coding: utf-8 -*-
+
+=============
+METEOR tests
+=============
+
+No Allignment test
+------------------
+
+>>> from nltk.translate import meteor
+
+If the candidate has no alignment to any of the references, the BLEU score is 0.
+
+>>> meteor(
+...     ['The candidate has no alignment to any of the references'],
+...     'John loves Mary'
+... )
+0
+
+Tests based on wikipedia examples
+---------------------------------
+
+Testing on `wikipedia examples <https://en.wikipedia.org/wiki/METEOR#Examples>`_
+
+>>> round(meteor(
+...       ['The cat sat on the mat'], 
+...       'The cat sat on the mat'
+...       ),4)
+0.9977
+
+>>> meteor(
+...       ['The cat sat on the mat'], 
+...       'on the mat sat the cat'
+...       )
+0.5
+
+>>> meteor(
+...       ['The cat sat on the mat'], 
+...       'The cat was sat on the mat'
+...       )
+0.9654
