@@ -18,18 +18,19 @@ If the candidate has no alignment to any of the references, the METEOR score is 
     ...     ['The candidate has no alignment to any of the references'],
     ...     'John loves Mary'
     ... ),4)
-    0
+    0.0
 
 Tests based on wikipedia examples
 ---------------------------------
 
 Testing on `wikipedia examples <https://en.wikipedia.org/wiki/METEOR#Examples>`_
 
-    >>> round(meteor(
+    >>> same_res = round(meteor(
     ...       ['The cat sat on the mat'], 
     ...       'The cat sat on the mat'
     ...       ),4)
-    0.9977
+    >>> abs(same_res - 0.9977) < 1e-2
+    True
 
     >>> meteor(
     ...       ['The cat sat on the mat'], 

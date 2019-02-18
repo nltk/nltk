@@ -264,15 +264,15 @@ def single_meteor_score(reference,
     >>> reference1 = 'It is a guide to action that ensures that the military will forever heed Party commands'
 
 
-    >>> single_meteor_score(reference1, hypothesis1)
-    0.7398...
+    >>> round(single_meteor_score(reference1, hypothesis1),4)
+    0.7398
 
         If there is no words match during the alignment the method returns the 
         score as 0. We can safely  return a zero instead of raising a 
         division by zero error as no match usually implies a bad translation. 
 
     >>> round(meteor_score('this is a cat', 'non matching hypothesis'),4) 
-    0
+    0.0
 
     :param references: reference sentences
     :type references: list(str)
@@ -302,10 +302,10 @@ def single_meteor_score(reference,
     matches, _, _ = _enum_allign_words(enum_hypothesis, enum_reference)
     matches_count = len(matches)
     try:
-        precision = matches_count/translation_length
-        recall = matches_count/reference_length
+        precision = float(matches_count)/translation_length
+        recall = float(matches_count)/reference_length
         fmean = (precision*recall)/(alpha*precision+(1-alpha)*recall)
-        chunk_count = _count_chunks(matches)
+        chunk_count = float(_count_chunks(matches))
         frag_frac = chunk_count/matches_count
     except ZeroDivisionError:
         return 0.0        
@@ -339,8 +339,8 @@ def meteor_score(references,
     >>> reference2 = 'It is the guiding principle which guarantees the military forces always being under the command of the Party'
     >>> reference3 = 'It is the practical guide for the army always to heed the directions of the party'
 
-    >>> meteor_score([reference1, reference2, reference3], hypothesis1)
-    0.7398...
+    >>> round(meteor_score([reference1, reference2, reference3], hypothesis1),4)
+    0.7398
 
         If there is no words match during the alignment the method returns the 
         score as 0. We can safely  return a zero instead of raising a 
