@@ -259,11 +259,9 @@ def single_meteor_score(reference,
     http://www.cs.cmu.edu/~alavie/METEOR/pdf/Lavie-Agarwal-2007-METEOR.pdf
 
 
-    >>> hypothesis1 = 'It is a guide to action which ensures that \
-    ...                the military always obeys the commands of the party'
+    >>> hypothesis1 = 'It is a guide to action which ensures that the military always obeys the commands of the party'
 
-    >>> reference1 = 'It is a guide to action that ensures that the \
-    ...               military will forever heed Party commands'
+    >>> reference1 = 'It is a guide to action that ensures that the military will forever heed Party commands'
 
 
     >>> single_meteor_score(reference1, hypothesis1)
@@ -310,7 +308,7 @@ def single_meteor_score(reference,
         chunk_count = _count_chunks(matches)
         frag_frac = chunk_count/matches_count
     except ZeroDivisionError:
-        return 0        
+        return 0.0        
     penalty = gamma*frag_frac**beta
     return (1-penalty)*fmean
 
@@ -334,17 +332,12 @@ def meteor_score(references,
     iterates over single_meteor_score and picks the best pair among all 
     the references for a given hypothesis
 
-    >>> hypothesis1 = 'It is a guide to action which ensures that \
-    ...               the military always obeys the commands of the party'
-    >>> hypothesis2 = 'It is to insure the troops forever hearing \
-    ...                the activity guidebook that party direct'
+    >>> hypothesis1 = 'It is a guide to action which ensures that the military always obeys the commands of the party'
+    >>> hypothesis2 = 'It is to insure the troops forever hearing the activity guidebook that party direct'
 
-    >>> reference1 = 'It is a guide to action that ensures that the \
-    ...               military will forever heed Party commands'
-    >>> reference2 = 'It is the guiding principle which guarantees \
-    ...               the military forces always being under the command of the Party'
-    >>> reference3 = 'It is the practical guide for the army always 
-    ...               to heed the directions of the party'
+    >>> reference1 = 'It is a guide to action that ensures that the military will forever heed Party commands'
+    >>> reference2 = 'It is the guiding principle which guarantees the military forces always being under the command of the Party'
+    >>> reference3 = 'It is the practical guide for the army always to heed the directions of the party'
 
     >>> meteor_score([reference1, reference2, reference3], hypothesis1)
     0.7398...
@@ -354,7 +347,7 @@ def meteor_score(references,
         division by zero error as no match usually implies a bad translation. 
 
     >>> round(meteor_score(['this is a cat'], 'non matching hypothesis'),4) 
-    0
+    0.0
 
     :param references: reference sentences
     :type references: list(str)
