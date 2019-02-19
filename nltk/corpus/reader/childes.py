@@ -29,8 +29,8 @@ NS = 'http://www.talkbank.org/ns/talkbank'
 class CHILDESCorpusReader(XMLCorpusReader):
     """
     Corpus reader for the XML version of the CHILDES corpus.
-    The CHILDES corpus is available at ``http://childes.psy.cmu.edu/``. The XML
-    version of CHILDES is located at ``http://childes.psy.cmu.edu/data-xml/``.
+    The CHILDES corpus is available at ``https://childes.talkbank.org/``. The XML
+    version of CHILDES is located at ``https://childes.talkbank.org/data-xml/``.
     Copy the needed parts of the CHILDES XML corpus into the NLTK data directory
     (``nltk_data/corpora/CHILDES/``).
 
@@ -513,7 +513,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
     shouldn't need to be changed, unless CHILDES changes the configuration
     of their server or unless the user sets up their own corpus webserver.
     """
-    childes_url_base = r'http://childes.psy.cmu.edu/browser/index.php?url='
+    childes_url_base = r'https://childes.talkbank.org/browser/index.php?url='
 
     def webview_file(self, fileid, urlbase=None):
         """Map a corpus file to its web version on the CHILDES website,
@@ -617,13 +617,13 @@ def demo(corpus_root=None):
     except LookupError as e:
         print(
             """The CHILDES corpus, or the parts you need, should be manually
-        downloaded from http://childes.psy.cmu.edu/data-xml/ and saved at
+        downloaded from https://childes.talkbank.org/data-xml/ and saved at
         [NLTK_Data_Dir]/corpora/childes/
             Alternately, you can call the demo with the path to a portion of the CHILDES corpus, e.g.:
         demo('/path/to/childes/data-xml/Eng-USA/")
         """
         )
-        # corpus_root_http = urllib2.urlopen('http://childes.psy.cmu.edu/data-xml/Eng-USA/Bates.zip')
+        # corpus_root_http = urllib2.urlopen('https://childes.talkbank.org/data-xml/Eng-USA/Bates.zip')
         # corpus_root_http_bates = zipfile.ZipFile(cStringIO.StringIO(corpus_root_http.read()))
         ##this fails
         # childes = CHILDESCorpusReader(corpus_root_http_bates,corpus_root_http_bates.namelist())
