@@ -264,7 +264,7 @@ class FreqDist(Counter):
         :type title: bool
         """
         try:
-            from matplotlib import pylab
+            import matplotlib.pyplot as plt
         except ImportError:
             raise ValueError(
                 'The plot function requires matplotlib to be installed.'
@@ -288,17 +288,24 @@ class FreqDist(Counter):
             ylabel = "Counts"
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
-        pylab.grid(True, color="silver")
+        ax = plt.gca()
+        ax.grid(True, color = "silver")
+
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
         if "title" in kwargs:
-            pylab.title(kwargs["title"])
+            ax.set_title(kwargs["title"])
             del kwargs["title"]
-        pylab.plot(freqs, **kwargs)
-        pylab.xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
-        pylab.xlabel("Samples")
-        pylab.ylabel(ylabel)
-        pylab.show()
+
+        ax.plot(freqs, **kwargs)
+        ax.set_xticks(range(len(samples)))
+        ax.set_xticklabels([text_type(s) for s in samples], rotation=90)
+        ax.set_xlabel("Samples")
+        ax.set_ylabel(ylabel)
+
+        plt.show()
+
+        return ax
 
     def tabulate(self, *args, **kwargs):
         """
