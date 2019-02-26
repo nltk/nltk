@@ -483,8 +483,8 @@ class Text(object):
         Find contexts where the specified words appear; list
         most frequent common contexts first.
 
-        :param word: The word used to seed the similarity search
-        :type word: str
+        :param words: The words used to seed the similarity search
+        :type words: str
         :param num: The number of words to generate (default=20)
         :type num: int
         :seealso: ContextIndex.common_contexts()
