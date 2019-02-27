@@ -180,6 +180,7 @@
 - Chuck Wooters
 - Steven Xu
 - Beracah Yankama
+- Lei Ye (叶磊)
 - Patrick Ye
 - Geraldine Sim Wei Ying
 - Jason Yoder
