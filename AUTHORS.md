@@ -242,6 +242,7 @@
 - Adrian Ellis <https://github.com/adrianjellis>
 - Nat Quayle Nelson <https://github.com/nqnstudios>
 - Matan Rak <https://github.com/matanrak>
+- Uday Krishna <https://github.com/udaykrishna>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
