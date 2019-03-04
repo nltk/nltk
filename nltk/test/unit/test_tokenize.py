@@ -320,7 +320,7 @@ class TestTokenize(unittest.TestCase):
         result = list(tokenizer.span_tokenize(test2))
         self.assertEqual(result, expected)
 
-        # Test case with double qoutation as well as converted quotations
+        # Test case with double quotation as well as converted quotations
         test3 = "The DUP is similar to the \"religious right\" in the United States and takes a ``hardline'' stance on social issues"
         expected = [
             (0, 3),
@@ -363,6 +363,10 @@ class TestTokenize(unittest.TestCase):
         
         sentence = "'v' 're'"
         expected = ["'", 'v', "'", "'re", "'"]
+        self.assertEqual(word_tokenize(sentence), expected)
+
+        sentence = "Here is a ''double quoted'' text"
+        expected = ['Here', 'is', 'a', '``', 'double', 'quoted', '``', 'text']
         self.assertEqual(word_tokenize(sentence), expected)
 
     def test_punkt_pair_iter(self):

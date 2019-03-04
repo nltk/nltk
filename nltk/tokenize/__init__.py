@@ -110,12 +110,12 @@ _treebank_word_tokenizer = TreebankWordTokenizer()
 
 # See discussion on https://github.com/nltk/nltk/pull/1437
 # Adding to TreebankWordTokenizer, nltk.word_tokenize now splits on
-# - chervon quotes u'\xab' and u'\xbb' .
+# - chevron quotes u'\xab' and u'\xbb' .
 # - unicode quotes u'\u2018', u'\u2019', u'\u201c' and u'\u201d'
 # See https://github.com/nltk/nltk/issues/1995#issuecomment-376741608
 # Also, behavior of splitting on clitics now follows Stanford CoreNLP
 # - clitics covered (?!re|ve|ll|m|t|s|d)(\w)\b
-improved_open_quote_regex = re.compile(u'([«“‘„]|[`]+)', re.U)
+improved_open_quote_regex = re.compile(u'([«“‘„]|[\']{2}|[`]+)', re.U)
 improved_open_single_quote_regex = re.compile(r"(?i)(\')(?!re|ve|ll|m|t|s|d)(\w)\b", re.U)
 improved_close_quote_regex = re.compile(u'([»”’])', re.U)
 improved_punct_regex = re.compile(r'([^\.])(\.)([\]\)}>"\'' u'»”’ ' r']*)\s*$', re.U)

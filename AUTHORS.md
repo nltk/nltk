@@ -40,6 +40,7 @@
 - Claude Coulombe
 - Lucas Cooper
 - Robin Cooper
+- Piero Cornice
 - Chris Crowner
 - James Curran
 - Arthur Darcet
