@@ -41,11 +41,8 @@ class SnowballTest(unittest.TestCase):
         assert ar_stemmer.stem("الكلمات") == "كلم"
 
     def test_russian(self):
-        # Russian words both consisting of Cyrillic
-        # and Roman letters can be stemmed.
         stemmer_russian = SnowballStemmer("russian")
         assert stemmer_russian.stem("авантненькая") == "авантненьк"
-        assert stemmer_russian.stem("avenantnen'kai^a") == "avenantnen'k"
 
     def test_german(self):
         stemmer_german = SnowballStemmer("german")
