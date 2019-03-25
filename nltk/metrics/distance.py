@@ -103,6 +103,76 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     return lev[len1][len2]
 
 
+def _edit_dist_backtrace(lev_map):
+    i, j = len(lev_map) - 1, len(lev_map[1]) - 1
+    alignment = [(i, j)]
+
+    while (i, j) != (0, 0):
+        # find direction of minimum cost
+        s1_skip_cost = s2_skip_cost = sub_cost = float('inf')
+        if i - 1 >= 0:
+            s1_skip_cost = lev_map[i - 1][j]
+        if j - 1 >= 0:
+            s2_skip_cost = lev_map[i][j - 1]
+        if i - 1 >= 0 and j - 1 >= 0:
+            sub_cost = lev_map[i - 1][j - 1]
+
+        # move in direction of minimum cost
+        if sub_cost <= s1_skip_cost and sub_cost <= s2_skip_cost:
+            i, j = i - 1, j - 1
+        elif s2_skip_cost <= s1_skip_cost:
+            i, j = i, j - 1
+        else:
+            i, j = i - 1, j
+
+        alignment.append((i, j))
+    alignment.reverse()
+    return alignment
+
+
+def edit_distance_align(s1, s2, substitution_cost=1):
+    """
+    Calculate the minimum Levenshtein edit-distance based alignment
+    mapping between two strings. The alignment finds the mapping
+    from string s1 to s2 that minimizes the edit distance cost.
+    For example, mapping "rain" to "shine" would involve 2
+    substitutions, 2 matches and an insertion resulting in
+    the following mapping:
+    [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (4, 5)]
+    NB: (0, 0) is the start state without any letters associated
+    See more: https://web.stanford.edu/class/cs124/lec/med.pdf
+
+    This function does not support transposition.
+
+    :param s1, s2: The strings to be aligned
+    :type s1: str
+    :type s2: str
+    :type substitution_cost: int
+    :rtype List[Tuple(int, int)]
+    """
+    # set up a 2-D array
+    len1 = len(s1)
+    len2 = len(s2)
+    lev = _edit_dist_init(len1 + 1, len2 + 1)
+
+    # iterate over the array
+    for i in range(len1):
+        for j in range(len2):
+            _edit_dist_step(
+                lev,
+                i + 1,
+                j + 1,
+                s1,
+                s2,
+                substitution_cost=substitution_cost,
+                transpositions=False,
+            )
+
+    # backtrace to find alignment
+    alignment = _edit_dist_backtrace(lev)
+    return alignment
+
+
 def binary_distance(label1, label2):
     """Simple equality test.
 
