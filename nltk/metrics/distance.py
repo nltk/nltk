@@ -24,7 +24,7 @@ from __future__ import print_function
 from __future__ import division
 
 import warnings
-
+import operator
 
 def _edit_dist_init(len1, len2):
     lev = []
@@ -134,6 +134,13 @@ def edit_distance_align(s1, s2, substitution_cost=1):
     [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (4, 5)]
     NB: (0, 0) is the start state without any letters associated
     See more: https://web.stanford.edu/class/cs124/lec/med.pdf
+
+    In case of multiple valid minimum-distance alignments, the
+    backtrace has the following operation precedence:
+    1. Skip s1 character
+    2. Skip s2 character
+    3. Substitute s1 and s2 characters
+    The backtrace is carried out in reverse string order.
 
     This function does not support transposition.
 
