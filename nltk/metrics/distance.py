@@ -103,31 +103,24 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     return lev[len1][len2]
 
 
-def _edit_dist_backtrace(lev_map):
-    i, j = len(lev_map) - 1, len(lev_map[1]) - 1
+def _edit_dist_backtrace(lev):
+    i, j = len(lev) - 1, len(lev[0]) - 1
     alignment = [(i, j)]
 
     while (i, j) != (0, 0):
-        # find direction of minimum cost
-        s1_skip_cost = s2_skip_cost = sub_cost = float('inf')
-        if i - 1 >= 0:
-            s1_skip_cost = lev_map[i - 1][j]
-        if j - 1 >= 0:
-            s2_skip_cost = lev_map[i][j - 1]
-        if i - 1 >= 0 and j - 1 >= 0:
-            sub_cost = lev_map[i - 1][j - 1]
+        directions = [
+            (i - 1, j),  # skip s1
+            (i, j - 1),  # skip s2
+            (i - 1, j - 1),  # substitution
+        ]
 
-        # move in direction of minimum cost
-        if sub_cost <= s1_skip_cost and sub_cost <= s2_skip_cost:
-            i, j = i - 1, j - 1
-        elif s2_skip_cost <= s1_skip_cost:
-            i, j = i, j - 1
-        else:
-            i, j = i - 1, j
+        direction_costs = (
+            (lev[i][j] if (i >= 0 and j >= 0) else float('inf'), (i, j)) for i, j in directions
+        )
+        _, (i, j) = min(direction_costs, key=operator.itemgetter(0))
 
         alignment.append((i, j))
-    alignment.reverse()
-    return alignment
+    return list(reversed(alignment))
 
 
 def edit_distance_align(s1, s2, substitution_cost=1):
