@@ -753,6 +753,113 @@ class CFG(object):
         """
         return self.is_flexible_chomsky_normal_form() and self._all_unary_are_lexical
 
+    def chomsky_normal_form(self, new_token_padding='@$@', flexible=False):
+        """
+        Returns a new Grammer that is in chomsky normal
+        :param: new_token_padding
+            Customise new rule formation during binarisation
+        """
+        if self.is_chomsky_normal_form():
+            return
+        if self.productions(empty=True):
+            raise ValueError(('Grammar has Empty rules. '
+                              'Cannot deal with them at the moment'))
+
+        # check for mixed rules
+        for rule in self.productions():
+            if rule.is_lexical() and len(rule.rhs()) > 1:
+                raise ValueError(
+                    'Cannot handled mixed rule {} => {}'.format(rule.lhs(),
+                                                                rule.rhs()))
+
+        step1 = CFG.eliminate_start(self)
+        step2 = CFG.binarize(step1, new_token_padding)
+        if flexible:
+            return step2
+        step3 = CFG.remove_unitary_rules(step2)
+        return step3
+
+    @classmethod
+    def remove_unitary_rules(cls, grammar):
+        """
+        Remove nonlexical unitary rules and convert them to
+        lexical
+        """
+        result = []
+        unitary = []
+        for rule in grammar.productions():
+            if len(rule) == 1 and rule.is_nonlexical():
+                unitary.append(rule)
+            else:
+                result.append(rule)
+
+        while unitary:
+            rule = unitary.pop(0)
+            for item in grammar.productions(lhs=rule.rhs()[0]):
+                new_rule = Production(rule.lhs(), item.rhs())
+                if len(new_rule) != 1 or new_rule.is_lexical():
+                    result.append(new_rule)
+                else:
+                    unitary.append(new_rule)
+
+        n_grammar = CFG(grammar.start(), result)
+        return n_grammar
+
+    @classmethod
+    def binarize(cls, grammar, padding='@$@'):
+        """
+        Convert all non-binary rules into binary by introducing
+        new tokens.
+        Example::
+        Original:
+            A => B C D
+        After Conversion:
+            A => B A@$@B
+            A@$@B => C D
+        """
+        result = []
+
+        for rule in grammar.productions():
+            if len(rule.rhs()) > 2:
+                # this rule needs to be broken down
+                left_side = rule.lhs()
+                for k in range(0, len(rule.rhs()) - 2):
+                    tsym = rule.rhs()[k]
+                    new_sym = Nonterminal(
+                        left_side.symbol() + padding + tsym.symbol()
+                    )
+                    new_production = Production(left_side, (tsym, new_sym))
+                    left_side = new_sym
+                    result.append(new_production)
+                last_prd = Production(left_side, rule.rhs()[-2:])
+                result.append(last_prd)
+            else:
+                result.append(rule)
+
+        n_grammar = CFG(grammar.start(), result)
+        return n_grammar
+
+    @classmethod
+    def eliminate_start(cls, grammar):
+        """
+        Eliminate start rule in case it appears on RHS
+        Example: S -> S0 S1 and S0 -> S1 S
+        Then another rule S0_Sigma -> S is added
+        """
+        start = grammar.start()
+        result = []
+        need_to_add = None
+        for rule in grammar.productions():
+            if start in rule.rhs():
+                need_to_add = True
+            result.append(rule)
+        if need_to_add:
+            start = Nonterminal('S0_SIGMA')
+            result.append(Production(start, grammar.start()))
+            n_grammar = CFG(start, result)
+            return n_grammar
+        return grammar
+
     def __repr__(self):
         return '<Grammar with %d productions>' % len(self._productions)
 
