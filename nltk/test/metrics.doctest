@@ -52,6 +52,14 @@ String edit distance (Levenshtein):
 
     >>> edit_distance("rain", "shine")
     3
+    >>> edit_distance_align("shine", "shine")
+    [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)]
+    >>> edit_distance_align("rain", "brainy")
+    [(0, 0), (1, 1), (1, 2), (2, 3), (3, 4), (4, 5), (4, 6)]
+    >>> edit_distance_align("", "brainy")
+    [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6)]
+    >>> edit_distance_align("", "")
+    [(0, 0)]
 
 Other distance measures:
 
