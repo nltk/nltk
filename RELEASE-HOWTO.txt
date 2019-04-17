@@ -13,7 +13,7 @@ Building an NLTK distribution
 
 2. Update Version Number and ChangeLog
    - Update version number
-     edit nltk/VERSION and web/conf.py
+     edit nltk/VERSION and web/conf.py (version and release)
    - Add a new entry to the news page in nltk/web/news.rst
    - Update the ChangeLog (for nltk, nltk_data)
      git log --since=20XX-YY-ZZ

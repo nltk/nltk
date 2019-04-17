@@ -1,3 +1,19 @@
+Version 3.4.1 2019-04-17
+
+* add chomsky_normal_form for CFGs
+* add meteor score
+* add minimum edit/Levenshtein distance based alignment function
+* allow access to collocation list via text.collocation_list()
+* support corenlp server options
+* drop support for Python 3.4
+* other minor fixes
+
+Thanks to the following contributors to 3.4.1:
+Adrian Ellis Andrew Martin, Ayush Kaushal, BLKSerene, Bharat
+Raghunathan, Franklin Chen, KMiNT21 Kevin Brown, Liling Tan,
+Matan Rak, Nat Quayle Nelson, Osman Zubair, Purificant,
+Uday Krishna, Viresh Gupta
+	
 Version 3.4 2018-11-17
 * Support Python 3.7	
 * Language Modeling incl Kneser-Ney, Witten-Bell, Good-Turing
