@@ -53,7 +53,7 @@ Building an NLTK distribution
    - Make the distributions
      make clean; make dist; ls dist/
    - Upload the distributions
-     twine upload dist/*
+     python -m twine upload dist/*
    - Check upload
      https://pypi.python.org/pypi/nltk
 
