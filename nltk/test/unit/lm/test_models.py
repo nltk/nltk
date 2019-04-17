@@ -412,10 +412,14 @@ class NgramModelTextGenerationTests(unittest.TestCase):
             self.model.generate(text_seed=("a", "<s>"), random_seed=2), "a"
         )
 
-    def test_generate_no_seed_unigrams(self):
+    def test_generate_cycle(self):
+        # Add a cycle to the model: bd -> b, db -> d
+        more_training_text = [list(padded_everygrams(self.model.order, list("bdbdbd")))]
+        self.model.fit(more_training_text)
+        # Test that we can escape the cycle
         self.assertEqual(
-            self.model.generate(5, random_seed=3),
-            ["<UNK>", "</s>", "</s>", "</s>", "</s>"],
+            self.model.generate(7, text_seed=("b", "d"), random_seed=5),
+            ["b", "d", "b", "d", "b", "d", "</s>"],
         )
 
     def test_generate_with_text_seed(self):
