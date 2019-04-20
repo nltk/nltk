@@ -230,7 +230,7 @@ class Lemma(_WordNetObject):
     'salt.n.03' has the Lemmas 'salt.n.03.salt', 'salt.n.03.saltiness' and
     'salt.n.03.salinity'.
 
-    Lemma attributes, accessible via methods with the same name::
+    Lemma attributes, accessible via methods with the same name:
 
     - name: The canonical name of this lemma.
     - synset: The synset that this lemma belongs to.
