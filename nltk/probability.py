@@ -1790,7 +1790,7 @@ def entropy(pdist):
 
 ##//////////////////////////////////////////////////////
 ##  Conditional Distributions
-##//////////////////////////////////////////////////////
+##//////////////////////////////////////////////////////https://github.com/nltk/nltk/blob/develop/nltk/probability.py
 
 
 @compat.python_2_unicode_compatible
@@ -1909,7 +1909,9 @@ class ConditionalFreqDist(defaultdict):
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(
-            kwargs, 'samples', sorted(set(v for c in conditions for v in self[c]))
+            kwargs, 'samples', sorted(set(v for c in conditions
+                                          #if v in self
+                                          for v in self[c]))
         )  # this computation could be wasted
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
@@ -1954,8 +1956,9 @@ class ConditionalFreqDist(defaultdict):
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         samples = _get_kwarg(
-            kwargs, 'samples', sorted(set(v for c in conditions for v in self[c]))
-        )  # this computation could be wasted
+            kwargs, 'samples', sorted(set(v for c in conditions
+                                          if c in self
+                                          for v in self[c])))  # this computation could be wasted
 
         width = max(len("%s" % s) for s in samples)
         freqs = dict()
