@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to TADM Classifier
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -12,19 +12,21 @@ import subprocess
 from six import string_types
 
 from nltk.internals import find_binary
+
 try:
     import numpy
 except ImportError:
     pass
 
 _tadm_bin = None
+
+
 def config_tadm(bin=None):
     global _tadm_bin
     _tadm_bin = find_binary(
-        'tadm', bin,
-        env_vars=['TADM'],
-        binary_names=['tadm'],
-        url='http://tadm.sf.net')
+        'tadm', bin, env_vars=['TADM'], binary_names=['tadm'], url='http://tadm.sf.net'
+    )
+
 
 def write_tadm_file(train_toks, encoding, stream):
     """
@@ -55,9 +57,10 @@ def write_tadm_file(train_toks, encoding, stream):
             line = '%d %d %s\n' % (
                 int(label == known_label),
                 len(v),
-                ' '.join('%d %d' % u for u in v)
+                ' '.join('%d %d' % u for u in v),
             )
             stream.write(line)
+
 
 def parse_tadm_weights(paramfile):
     """
@@ -69,6 +72,7 @@ def parse_tadm_weights(paramfile):
     for line in paramfile:
         weights.append(float(line.strip()))
     return numpy.array(weights, 'd')
+
 
 def call_tadm(args):
     """
@@ -90,23 +94,30 @@ def call_tadm(args):
         print(stderr)
         raise OSError('tadm command failed!')
 
+
 def names_demo():
     from nltk.classify.util import names_demo
     from nltk.classify.maxent import TadmMaxentClassifier
+
     classifier = names_demo(TadmMaxentClassifier.train)
+
 
 def encoding_demo():
     import sys
     from nltk.classify.maxent import TadmEventMaxentFeatureEncoding
-    tokens = [({'f0':1, 'f1':1, 'f3':1}, 'A'),
-              ({'f0':1, 'f2':1, 'f4':1}, 'B'),
-              ({'f0':2, 'f2':1, 'f3':1, 'f4':1}, 'A')]
+
+    tokens = [
+        ({'f0': 1, 'f1': 1, 'f3': 1}, 'A'),
+        ({'f0': 1, 'f2': 1, 'f4': 1}, 'B'),
+        ({'f0': 2, 'f2': 1, 'f3': 1, 'f4': 1}, 'A'),
+    ]
     encoding = TadmEventMaxentFeatureEncoding.train(tokens)
     write_tadm_file(tokens, encoding, sys.stdout)
     print()
     for i in range(encoding.length()):
         print('%s --> %d' % (encoding.describe(i), i))
     print()
+
 
 if __name__ == '__main__':
     encoding_demo()

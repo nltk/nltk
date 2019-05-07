@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -41,7 +41,7 @@ if __doc__ is not None:  # fix for the ``python -OO``
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2018 NLTK Project.
+Copyright (C) 2001-2019 NLTK Project.
 
 Distributed and Licensed under the Apache License, Version 2.0,
 which is included by reference.
@@ -52,10 +52,20 @@ __license__ = "Apache License, Version 2.0"
 __longdescr__ = """\
 The Natural Language Toolkit (NLTK) is a Python package for
 natural language processing.  NLTK requires Python 2.6 or higher."""
-__keywords__ = ['NLP', 'CL', 'natural language processing',
-                'computational linguistics', 'parsing', 'tagging',
-                'tokenizing', 'syntax', 'linguistics', 'language',
-                'natural language', 'text analytics']
+__keywords__ = [
+    'NLP',
+    'CL',
+    'natural language processing',
+    'computational linguistics',
+    'parsing',
+    'tagging',
+    'tokenizing',
+    'syntax',
+    'linguistics',
+    'language',
+    'natural language',
+    'text analytics',
+]
 __url__ = "http://nltk.org/"
 
 # Maintainer, contributors, etc.
@@ -96,13 +106,18 @@ except ImportError:
 
 # Override missing methods on environments where it cannot be used like GAE.
 import subprocess
+
 if not hasattr(subprocess, 'PIPE'):
+
     def _fake_PIPE(*args, **kwargs):
         raise NotImplementedError('subprocess.PIPE is not supported.')
+
     subprocess.PIPE = _fake_PIPE
 if not hasattr(subprocess, 'Popen'):
+
     def _fake_Popen(*args, **kwargs):
         raise NotImplementedError('subprocess.Popen is not supported.')
+
     subprocess.Popen = _fake_Popen
 
 ###########################################################
@@ -142,6 +157,7 @@ from nltk.stem import *
 #     that can safely fail at run time
 
 from nltk import lazyimport
+
 app = lazyimport.LazyModule('nltk.app', locals(), globals())
 chat = lazyimport.LazyModule('nltk.chat', locals(), globals())
 corpus = lazyimport.LazyModule('nltk.corpus', locals(), globals())
@@ -158,6 +174,7 @@ else:
     from nltk import cluster
 
 from nltk.downloader import download, download_shell
+
 try:
     from six.moves import tkinter
 except ImportError:
@@ -167,8 +184,11 @@ else:
         from nltk.downloader import download_gui
     except RuntimeError as e:
         import warnings
-        warnings.warn("Corpus downloader GUI not loaded "
-                      "(RuntimeError during import: %s)" % str(e))
+
+        warnings.warn(
+            "Corpus downloader GUI not loaded "
+            "(RuntimeError during import: %s)" % str(e)
+        )
 
 # explicitly import all top-level modules (ensuring
 # they override the same names inadvertently imported
@@ -180,6 +200,6 @@ from nltk import misc, parse, probability, sem, stem, wsd
 from nltk import tag, tbl, text, tokenize, translate, tree, treetransforms, util
 
 
-#FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116
+# FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116
 def demo():
     print("To run the demo code for a module, type nltk.module.demo()")

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Plaintext Corpus Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -86,12 +86,19 @@ class BNCCorpusReader(XMLCorpusReader):
         :param stem: If true, then use word stems instead of word strings.
         """
         tag = 'c5' if c5 else 'pos'
-        return self._views(fileids, sent=True, tag=tag, strip_space=strip_space, stem=stem)
+        return self._views(
+            fileids, sent=True, tag=tag, strip_space=strip_space, stem=stem
+        )
 
     def _views(self, fileids=None, sent=False, tag=False, strip_space=True, stem=False):
         """A helper function that instantiates BNCWordViews or the list of words/sentences."""
         f = BNCWordView if self._lazy else self._words
-        return concat([f(fileid, sent, tag, strip_space, stem) for fileid in self.abspaths(fileids)])
+        return concat(
+            [
+                f(fileid, sent, tag, strip_space, stem)
+                for fileid in self.abspaths(fileids)
+            ]
+        )
 
     def _words(self, fileid, bracket_sent, tag, strip_space, stem):
         """
@@ -147,6 +154,7 @@ class BNCSentence(list):
     A list of words, augmented by an attribute ``num`` used to record
     the sentence identifier (the ``n`` attribute from the XML).
     """
+
     def __init__(self, num, items):
         self.num = num
         list.__init__(self, items)
@@ -215,9 +223,7 @@ class BNCWordView(XMLCorpusView):
         resps = elt.findall('titleStmt/respStmt')
         if resps:
             self.resps = '\n\n'.join(
-                '\n'.join(
-                    resp_elt.text.strip() for resp_elt in resp
-                ) for resp in resps
+                '\n'.join(resp_elt.text.strip() for resp_elt in resp) for resp in resps
             )
 
     def handle_elt(self, elt, context):

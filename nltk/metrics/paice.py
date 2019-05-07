@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Lauri Hallila <laurihallila@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -78,7 +78,7 @@ def _count_intersection(l1, l2):
 
     denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
 
-    if denominator == 0.0: # lines are parallel
+    if denominator == 0.0:  # lines are parallel
         if x1 == x2 == x3 == x4 == 0.0:
             # When lines are parallel, they must be on the y-axis.
             # We can ignore x-axis because we stop counting the
@@ -87,8 +87,12 @@ def _count_intersection(l1, l2):
             # OI (y-axis) diminishes when we go along the truncation line.
             return (0.0, y4)
 
-    x = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denominator
-    y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denominator
+    x = (
+        (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)
+    ) / denominator
+    y = (
+        (x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)
+    ) / denominator
     return (x, y)
 
 
@@ -211,6 +215,7 @@ def _indexes(gumt, gdmt, gwmt, gdnt):
 
 class Paice(object):
     '''Class for storing lemmas, stems and evaluation metrics.'''
+
     def __init__(self, lemmas, stems):
         '''
         :param lemmas: A dictionary where keys are lemmas and values are sets
@@ -318,9 +323,9 @@ class Paice(object):
         # Count the intersection point
         # Note that (self.ui, self.oi) cannot be (0.0, 0.0) and self.coords has different coordinates
         # so we have actual line segments instead of a line segment and a point
-        intersection = _count_intersection(((0, 0), (self.ui, self.oi)),
-                                           self.coords[-2:]
-                                           )
+        intersection = _count_intersection(
+            ((0, 0), (self.ui, self.oi)), self.coords[-2:]
+        )
         # Count OP (length of the line from origo to (ui, oi))
         op = sqrt(self.ui ** 2 + self.oi ** 2)
         # Count OT (length of the line from origo to truncation line that goes through (ui, oi))
@@ -338,17 +343,19 @@ class Paice(object):
 def demo():
     '''Demonstration of the module.'''
     # Some words with their real lemmas
-    lemmas = {'kneel': ['kneel', 'knelt'],
-              'range': ['range', 'ranged'],
-              'ring': ['ring', 'rang', 'rung']
-              }
+    lemmas = {
+        'kneel': ['kneel', 'knelt'],
+        'range': ['range', 'ranged'],
+        'ring': ['ring', 'rang', 'rung'],
+    }
     # Same words with stems from a stemming algorithm
-    stems = {'kneel': ['kneel'],
-             'knelt': ['knelt'],
-             'rang': ['rang', 'range', 'ranged'],
-             'ring': ['ring'],
-             'rung': ['rung']
-             }
+    stems = {
+        'kneel': ['kneel'],
+        'knelt': ['knelt'],
+        'rang': ['rang', 'range', 'ranged'],
+        'ring': ['ring'],
+        'rung': ['rung'],
+    }
     print('Words grouped by their lemmas:')
     for lemma in sorted(lemmas):
         print('%s => %s' % (lemma, ' '.join(lemmas[lemma])))
@@ -361,13 +368,14 @@ def demo():
     print(p)
     print()
     # Let's "change" results from a stemming algorithm
-    stems = {'kneel': ['kneel'],
-             'knelt': ['knelt'],
-             'rang': ['rang'],
-             'range': ['range', 'ranged'],
-             'ring': ['ring'],
-             'rung': ['rung']
-             }
+    stems = {
+        'kneel': ['kneel'],
+        'knelt': ['knelt'],
+        'rang': ['rang'],
+        'range': ['range', 'ranged'],
+        'ring': ['ring'],
+        'rung': ['rung'],
+    }
     print('Counting stats after changing stemming results:')
     for stem in sorted(stems):
         print('%s => %s' % (stem, ' '.join(stems[stem])))

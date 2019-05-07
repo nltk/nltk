@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Word Finder
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -14,9 +14,10 @@ import random
 
 # reverse a word with probability 0.5
 def revword(word):
-    if random.randint(1,2) == 1:
+    if random.randint(1, 2) == 1:
         return word[::-1]
     return word
+
 
 # try to insert word at position x,y; direction encoded in xf,yf
 def step(word, x, xf, y, yf, grid):
@@ -27,27 +28,28 @@ def step(word, x, xf, y, yf, grid):
         grid[xf(i)][yf(i)] = word[i]
     return True
 
+
 # try to insert word at position x,y, in direction dir
 def check(word, dir, x, y, grid, rows, cols):
-    if dir==1:
-        if x-len(word)<0 or y-len(word)<0:
+    if dir == 1:
+        if x - len(word) < 0 or y - len(word) < 0:
             return False
-        return step(word, x, lambda i:x-i, y, lambda i:y-i, grid)
-    elif dir==2:
-        if x-len(word)<0:
+        return step(word, x, lambda i: x - i, y, lambda i: y - i, grid)
+    elif dir == 2:
+        if x - len(word) < 0:
             return False
-        return step(word, x, lambda i:x-i, y, lambda i:y, grid)
-    elif dir==3:
-        if x-len(word)<0 or y+(len(word)-1)>=cols:
+        return step(word, x, lambda i: x - i, y, lambda i: y, grid)
+    elif dir == 3:
+        if x - len(word) < 0 or y + (len(word) - 1) >= cols:
             return False
-        return step(word, x, lambda i:x-i, y, lambda i:y+i, grid)
-    elif dir==4:
-        if y-len(word)<0:
+        return step(word, x, lambda i: x - i, y, lambda i: y + i, grid)
+    elif dir == 4:
+        if y - len(word) < 0:
             return False
-        return step(word, x, lambda i:x, y, lambda i:y-i, grid)
+        return step(word, x, lambda i: x, y, lambda i: y - i, grid)
 
-def wordfinder(words, rows=20, cols=20, attempts=50,
-               alph='ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+
+def wordfinder(words, rows=20, cols=20, attempts=50, alph='ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
     """
     Attempt to arrange words into a letter-grid with the specified
     number of rows and columns.  Try each word in several positions
@@ -82,20 +84,26 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
     # try to place each word
     for word in words:
         word = word.strip().upper()  # normalize
-        save = word                  # keep a record of the word
+        save = word  # keep a record of the word
         word = revword(word)
         for attempt in range(attempts):
             r = random.randint(0, len(word))
-            dir = random.choice([1,2,3,4])
-            x = random.randint(0,rows)
-            y = random.randint(0,cols)
-            if   dir==1: x+=r; y+=r
-            elif dir==2: x+=r
-            elif dir==3: x+=r; y-=r
-            elif dir==4: y+=r
-            if 0<=x<rows and 0<=y<cols:
+            dir = random.choice([1, 2, 3, 4])
+            x = random.randint(0, rows)
+            y = random.randint(0, cols)
+            if dir == 1:
+                x += r
+                y += r
+            elif dir == 2:
+                x += r
+            elif dir == 3:
+                x += r
+                y -= r
+            elif dir == 4:
+                y += r
+            if 0 <= x < rows and 0 <= y < cols:
                 if check(word, dir, x, y, grid, rows, cols):
-#                   used.append((save, dir, x, y, word))
+                    #                   used.append((save, dir, x, y, word))
                     used.append(save)
                     break
 
@@ -107,8 +115,10 @@ def wordfinder(words, rows=20, cols=20, attempts=50,
 
     return grid, used
 
+
 def word_finder():
     from nltk.corpus import words
+
     wordlist = words.words()
     random.shuffle(wordlist)
     wordlist = wordlist[:200]
@@ -123,7 +133,8 @@ def word_finder():
     print()
 
     for i in range(len(used)):
-        print("%d:" % (i+1), used[i])
+        print("%d:" % (i + 1), used[i])
+
 
 if __name__ == '__main__':
     word_finder()

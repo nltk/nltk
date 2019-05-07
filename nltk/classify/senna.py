@@ -1,7 +1,7 @@
 # encoding: utf-8
 # Natural Language Toolkit: Senna Interface
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -62,19 +62,21 @@ class Senna(TaggerI):
         self._path = path.normpath(senna_path) + sep
 
         # Verifies the existence of the executable on the self._path first
-        #senna_binary_file_1 = self.executable(self._path)
+        # senna_binary_file_1 = self.executable(self._path)
         exe_file_1 = self.executable(self._path)
         if not path.isfile(exe_file_1):
             # Check for the system environment
             if 'SENNA' in environ:
-                #self._path = path.join(environ['SENNA'],'')
+                # self._path = path.join(environ['SENNA'],'')
                 self._path = path.normpath(environ['SENNA']) + sep
                 exe_file_2 = self.executable(self._path)
                 if not path.isfile(exe_file_2):
-                    raise OSError("Senna executable expected at %s or %s but not found" % (exe_file_1,exe_file_2))
+                    raise OSError(
+                        "Senna executable expected at %s or %s but not found"
+                        % (exe_file_1, exe_file_2)
+                    )
 
         self.operations = operations
-
 
     def executable(self, base_path):
         """
@@ -104,7 +106,7 @@ class Senna(TaggerI):
         for operation in Senna.SUPPORTED_OPERATIONS:
             if operation in self.operations:
                 _map[operation] = i
-                i+= 1
+                i += 1
         return _map
 
     def tag(self, tokens):
@@ -122,15 +124,23 @@ class Senna(TaggerI):
         encoding = self._encoding
 
         if not path.isfile(self.executable(self._path)):
-            raise OSError("Senna executable expected at %s but not found" % self.executable(self._path))
-
+            raise OSError(
+                "Senna executable expected at %s but not found"
+                % self.executable(self._path)
+            )
 
         # Build the senna command to run the tagger
-        _senna_cmd = [self.executable(self._path), '-path', self._path, '-usrtokens', '-iobtags']
-        _senna_cmd.extend(['-'+op for op in self.operations])
+        _senna_cmd = [
+            self.executable(self._path),
+            '-path',
+            self._path,
+            '-usrtokens',
+            '-iobtags',
+        ]
+        _senna_cmd.extend(['-' + op for op in self.operations])
 
         # Serialize the actual sentences to a temporary string
-        _input = '\n'.join((' '.join(x) for x in sentences))+'\n'
+        _input = '\n'.join((' '.join(x) for x in sentences)) + '\n'
         if isinstance(_input, text_type) and encoding:
             _input = _input.encode(encoding)
 
@@ -165,9 +175,11 @@ class Senna(TaggerI):
                 result['word'] = sentences[sentence_index][token_index]
             except IndexError:
                 raise IndexError(
-                "Misalignment error occurred at sentence number %d. Possible reason"
-                " is that the sentence size exceeded the maximum size. Check the "
-                "documentation of Senna class for more information." % sentence_index)
+                    "Misalignment error occurred at sentence number %d. Possible reason"
+                    " is that the sentence size exceeded the maximum size. Check the "
+                    "documentation of Senna class for more information."
+                    % sentence_index
+                )
             tagged_sentences[-1].append(result)
             token_index += 1
         return tagged_sentences
@@ -176,6 +188,7 @@ class Senna(TaggerI):
 # skip doctests if Senna is not installed
 def setup_module(module):
     from nose import SkipTest
+
     try:
         tagger = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
     except OSError:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizer Utilities
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
@@ -101,6 +101,7 @@ class CJKChars(object):
     This is a Python port of the CJK code point enumerations of Moses tokenizer:
     https://github.com/moses-smt/mosesdecoder/blob/master/scripts/tokenizer/detokenizer.perl#L309
     """
+
     # Hangul Jamo (1100–11FF)
     Hangul_Jamo = (4352, 4607)  # (ord(u"\u1100"), ord(u"\u11ff"))
 
@@ -141,11 +142,21 @@ class CJKChars(object):
     Katakana_Hangul_Halfwidth = (65381, 65500)  # (ord(u"\uFF65"), ord(u"\uFFDC"))
 
     # Supplementary Ideographic Plane 20000–2FFFF
-    Supplementary_Ideographic_Plane = (131072, 196607)  # (ord(u"\U00020000"), ord(u"\U0002FFFF"))
+    Supplementary_Ideographic_Plane = (
+        131072,
+        196607,
+    )  # (ord(u"\U00020000"), ord(u"\U0002FFFF"))
 
-    ranges = [Hangul_Jamo, CJK_Radicals, Phags_Pa, Hangul_Syllables,
-              CJK_Compatibility_Ideographs, CJK_Compatibility_Forms,
-              Katakana_Hangul_Halfwidth, Supplementary_Ideographic_Plane]
+    ranges = [
+        Hangul_Jamo,
+        CJK_Radicals,
+        Phags_Pa,
+        Hangul_Syllables,
+        CJK_Compatibility_Ideographs,
+        CJK_Compatibility_Forms,
+        Katakana_Hangul_Halfwidth,
+        Supplementary_Ideographic_Plane,
+    ]
 
 
 def is_cjk(character):
@@ -163,11 +174,21 @@ def is_cjk(character):
     :type character: char
     :return: bool
     """
-    return any([start <= ord(character) <= end for start, end in
-                [(4352, 4607), (11904, 42191), (43072, 43135), (44032, 55215),
-                 (63744, 64255), (65072, 65103), (65381, 65500),
-                 (131072, 196607)]
-                ])
+    return any(
+        [
+            start <= ord(character) <= end
+            for start, end in [
+                (4352, 4607),
+                (11904, 42191),
+                (43072, 43135),
+                (44032, 55215),
+                (63744, 64255),
+                (65072, 65103),
+                (65381, 65500),
+                (131072, 196607),
+            ]
+        ]
+    )
 
 
 def xml_escape(text):
@@ -190,9 +211,16 @@ def xml_escape(text):
     :type text: str
     :rtype: str
     """
-    return escape(text, entities={r"'": r"&apos;", r'"': r"&quot;",
-                                  r"|": r"&#124;",
-                                  r"[": r"&#91;", r"]": r"&#93;", })
+    return escape(
+        text,
+        entities={
+            r"'": r"&apos;",
+            r'"': r"&quot;",
+            r"|": r"&#124;",
+            r"[": r"&#91;",
+            r"]": r"&#93;",
+        },
+    )
 
 
 def xml_unescape(text):
@@ -214,9 +242,16 @@ def xml_unescape(text):
     :type text: str
     :rtype: str
     """
-    return unescape(text, entities={r"&apos;": r"'", r"&quot;": r'"',
-                                    r"&#124;": r"|",
-                                    r"&#91;": r"[", r"&#93;": r"]", })
+    return unescape(
+        text,
+        entities={
+            r"&apos;": r"'",
+            r"&quot;": r'"',
+            r"&#124;": r"|",
+            r"&#91;": r"[",
+            r"&#93;": r"]",
+        },
+    )
 
 
 def align_tokens(tokens, sentence):

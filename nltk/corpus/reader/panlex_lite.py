@@ -1,6 +1,6 @@
 # Natural Language Toolkit: PanLex Corpus Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: David Kamholz <kamholz@panlex.org>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -15,6 +15,7 @@ import os
 import sqlite3
 
 from nltk.corpus.reader.api import CorpusReader
+
 
 class PanLexLiteCorpusReader(CorpusReader):
     MEANING_Q = """
@@ -63,10 +64,12 @@ class PanLexLiteCorpusReader(CorpusReader):
         :rtype: list(tuple)
         """
 
-        if lc == None:
+        if lc is None:
             return self._c.execute('SELECT uid, tt FROM lv ORDER BY uid').fetchall()
         else:
-            return self._c.execute('SELECT uid, tt FROM lv WHERE lc = ? ORDER BY uid', (lc,)).fetchall()
+            return self._c.execute(
+                'SELECT uid, tt FROM lv WHERE lc = ? ORDER BY uid', (lc,)
+            ).fetchall()
 
     def meanings(self, expr_uid, expr_tt):
         """
@@ -88,14 +91,19 @@ class PanLexLiteCorpusReader(CorpusReader):
             uid = self._lv_uid[i[5]]
 
             if not mn in mn_info:
-                mn_info[mn] = { 'uq': i[1], 'ap': i[2], 'ui': i[3], 'ex': { expr_uid: [expr_tt] } }
+                mn_info[mn] = {
+                    'uq': i[1],
+                    'ap': i[2],
+                    'ui': i[3],
+                    'ex': {expr_uid: [expr_tt]},
+                }
 
             if not uid in mn_info[mn]['ex']:
                 mn_info[mn]['ex'][uid] = []
 
             mn_info[mn]['ex'][uid].append(i[4])
 
-        return [ Meaning(mn, mn_info[mn]) for mn in mn_info ]
+        return [Meaning(mn, mn_info[mn]) for mn in mn_info]
 
     def translations(self, from_uid, from_tt, to_uid):
         """
@@ -116,6 +124,7 @@ class PanLexLiteCorpusReader(CorpusReader):
         to_lv = self._uid_lv[to_uid]
 
         return self._c.execute(self.TRANSLATION_Q, (from_lv, from_tt, to_lv)).fetchall()
+
 
 class Meaning(dict):
     """

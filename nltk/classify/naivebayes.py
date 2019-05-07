@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Naive Bayes Classifiers
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -40,6 +40,7 @@ from nltk.classify.api import ClassifierI
 ##  Naive Bayes Classifier
 ##//////////////////////////////////////////////////////
 
+
 class NaiveBayesClassifier(ClassifierI):
     """
     A Naive Bayes classifier.  Naive Bayes classifiers are
@@ -60,6 +61,7 @@ class NaiveBayesClassifier(ClassifierI):
     you generally should not use 'None' as a feature value for one of
     your own features.
     """
+
     def __init__(self, label_probdist, feature_probdist):
         """
         :param label_probdist: P(label), the probability distribution
@@ -97,7 +99,7 @@ class NaiveBayesClassifier(ClassifierI):
                 if (label, fname) in self._feature_probdist:
                     break
             else:
-                #print 'Ignoring unseen feature %s' % fname
+                # print 'Ignoring unseen feature %s' % fname
                 del featureset[fname]
 
         # Find the log probabilty of each label, given the features.
@@ -116,7 +118,7 @@ class NaiveBayesClassifier(ClassifierI):
                     # nb: This case will never come up if the
                     # classifier was created by
                     # NaiveBayesClassifier.train().
-                    logprob[label] += sum_logs([]) # = -INF.
+                    logprob[label] += sum_logs([])  # = -INF.
 
         return DictionaryProbDist(logprob, normalize=True, log=True)
 
@@ -126,12 +128,14 @@ class NaiveBayesClassifier(ClassifierI):
         print('Most Informative Features')
 
         for (fname, fval) in self.most_informative_features(n):
+
             def labelprob(l):
                 return cpdist[l, fname].prob(fval)
 
-            labels = sorted([l for l in self._labels
-                             if fval in cpdist[l, fname].samples()],
-                            key=labelprob)
+            labels = sorted(
+                [l for l in self._labels if fval in cpdist[l, fname].samples()],
+                key=labelprob,
+            )
             if len(labels) == 1:
                 continue
             l0 = labels[0]
@@ -139,10 +143,15 @@ class NaiveBayesClassifier(ClassifierI):
             if cpdist[l0, fname].prob(fval) == 0:
                 ratio = 'INF'
             else:
-                ratio = '%8.1f' % (cpdist[l1, fname].prob(fval) /
-                                   cpdist[l0, fname].prob(fval))
-            print(('%24s = %-14r %6s : %-6s = %s : 1.0' %
-                   (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)))
+                ratio = '%8.1f' % (
+                    cpdist[l1, fname].prob(fval) / cpdist[l0, fname].prob(fval)
+                )
+            print(
+                (
+                    '%24s = %-14r %6s : %-6s = %s : 1.0'
+                    % (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)
+                )
+            )
 
     def most_informative_features(self, n=100):
         """
@@ -176,9 +185,9 @@ class NaiveBayesClassifier(ClassifierI):
 
             # Convert features to a list, & sort it by how informative
             # features are.
-            self._most_informative_features = sorted(features,
-                                                key=lambda feature_:
-                                                minprob[feature_]/maxprob[feature_])
+            self._most_informative_features = sorted(
+                features, key=lambda feature_: minprob[feature_] / maxprob[feature_]
+            )
         return self._most_informative_features[:n]
 
     @classmethod
@@ -230,14 +239,18 @@ class NaiveBayesClassifier(ClassifierI):
 
         return cls(label_probdist, feature_probdist)
 
+
 ##//////////////////////////////////////////////////////
 ##  Demo
 ##//////////////////////////////////////////////////////
 
+
 def demo():
     from nltk.classify.util import names_demo
+
     classifier = names_demo(NaiveBayesClassifier.train)
     classifier.show_most_informative_features()
+
 
 if __name__ == '__main__':
     demo()

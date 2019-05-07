@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -20,6 +20,9 @@ def _count_non_zero_vals(dictionary):
 
 class WittenBell(Smoothing):
     """Witten-Bell smoothing."""
+
+    def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
+        super(WittenBell, self).__init__(vocabulary, counter, *kwargs)
 
     def alpha_gamma(self, word, context):
         gamma = self.gamma(context)
@@ -44,7 +47,7 @@ class KneserNey(Smoothing):
         self.discount = discount
 
     def unigram_score(self, word):
-        return 1. / len(self.vocab)
+        return 1.0 / len(self.vocab)
 
     def alpha_gamma(self, word, context):
         prefix_counts = self.counts[context]
@@ -55,3 +58,4 @@ class KneserNey(Smoothing):
 
     def gamma(self, prefix_counts):
         return self.discount * _count_non_zero_vals(prefix_counts) / prefix_counts.N()
+

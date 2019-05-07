@@ -1,10 +1,11 @@
 # Natural Language Toolkit: Tagger Utilities
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+
 
 def str2tuple(s, sep='/'):
     """
@@ -25,9 +26,10 @@ def str2tuple(s, sep='/'):
     """
     loc = s.rfind(sep)
     if loc >= 0:
-        return (s[:loc], s[loc+len(sep):].upper())
+        return (s[:loc], s[loc + len(sep) :].upper())
     else:
         return (s, None)
+
 
 def tuple2str(tagged_token, sep='/'):
     """
@@ -54,6 +56,7 @@ def tuple2str(tagged_token, sep='/'):
     else:
         assert sep not in tag, 'tag may not contain sep!'
         return '%s%s%s' % (word, sep, tag)
+
 
 def untag(tagged_sentence):
     """

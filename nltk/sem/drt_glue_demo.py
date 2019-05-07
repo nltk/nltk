@@ -3,13 +3,21 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 try:
-    from six.moves.tkinter import (Button, Frame, IntVar, Label, Listbox, Menu,
-                                   Scrollbar, Tk)
+    from six.moves.tkinter import (
+        Button,
+        Frame,
+        IntVar,
+        Label,
+        Listbox,
+        Menu,
+        Scrollbar,
+        Tk,
+    )
     from six.moves.tkinter_font import Font
     from nltk.draw.util import CanvasFrame, ShowText
 
@@ -68,15 +76,20 @@ class DrtGlueDemo(object):
 
     def _init_glue(self):
         tagger = RegexpTagger(
-            [('^(David|Mary|John)$', 'NNP'),
-             ('^(walks|sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$', 'VB'),
-             ('^(go|order|vanish|find|approach)$', 'VB'),
-             ('^(a)$', 'ex_quant'),
-             ('^(every)$', 'univ_quant'),
-             ('^(sandwich|man|dog|pizza|unicorn|cat|senator)$', 'NN'),
-             ('^(big|gray|former)$', 'JJ'),
-             ('^(him|himself)$', 'PRP')
-        ])
+            [
+                ('^(David|Mary|John)$', 'NNP'),
+                (
+                    '^(walks|sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$',
+                    'VB',
+                ),
+                ('^(go|order|vanish|find|approach)$', 'VB'),
+                ('^(a)$', 'ex_quant'),
+                ('^(every)$', 'univ_quant'),
+                ('^(sandwich|man|dog|pizza|unicorn|cat|senator)$', 'NN'),
+                ('^(big|gray|former)$', 'JJ'),
+                ('^(him|himself)$', 'PRP'),
+            ]
+        )
 
         depparser = MaltParser(tagger=tagger)
         self._glue = DrtGlue(depparser=depparser, remove_duplicates=False)
@@ -90,26 +103,31 @@ class DrtGlueDemo(object):
         self._size = IntVar(root)
         self._size.set(self._sysfont.cget('size'))
 
-        self._boldfont = Font(family='helvetica', weight='bold',
-                                    size=self._size.get())
-        self._font = Font(family='helvetica',
-                                    size=self._size.get())
-        if self._size.get() < 0: big = self._size.get()-2
-        else: big = self._size.get()+2
-        self._bigfont = Font(family='helvetica', weight='bold',
-                                    size=big)
+        self._boldfont = Font(family='helvetica', weight='bold', size=self._size.get())
+        self._font = Font(family='helvetica', size=self._size.get())
+        if self._size.get() < 0:
+            big = self._size.get() - 2
+        else:
+            big = self._size.get() + 2
+        self._bigfont = Font(family='helvetica', weight='bold', size=big)
 
     def _init_exampleListbox(self, parent):
         self._exampleFrame = listframe = Frame(parent)
         self._exampleFrame.pack(fill='both', side='left', padx=2)
-        self._exampleList_label = Label(self._exampleFrame, font=self._boldfont,
-                                     text='Examples')
+        self._exampleList_label = Label(
+            self._exampleFrame, font=self._boldfont, text='Examples'
+        )
         self._exampleList_label.pack()
-        self._exampleList = Listbox(self._exampleFrame, selectmode='single',
-                                 relief='groove', background='white',
-                                 foreground='#909090', font=self._font,
-                                 selectforeground='#004040',
-                                 selectbackground='#c0f0c0')
+        self._exampleList = Listbox(
+            self._exampleFrame,
+            selectmode='single',
+            relief='groove',
+            background='white',
+            foreground='#909090',
+            font=self._font,
+            selectforeground='#004040',
+            selectbackground='#c0f0c0',
+        )
 
         self._exampleList.pack(side='right', fill='both', expand=1)
 
@@ -119,9 +137,8 @@ class DrtGlueDemo(object):
 
         # Add a scrollbar if there are more than 25 examples.
         if len(self._examples) > 25:
-            listscroll = Scrollbar(self._exampleFrame,
-                                   orient='vertical')
-            self._exampleList.config(yscrollcommand = listscroll.set)
+            listscroll = Scrollbar(self._exampleFrame, orient='vertical')
+            self._exampleList.config(yscrollcommand=listscroll.set)
             listscroll.config(command=self._exampleList.yview)
             listscroll.pack(side='left', fill='y')
 
@@ -131,21 +148,26 @@ class DrtGlueDemo(object):
     def _init_readingListbox(self, parent):
         self._readingFrame = listframe = Frame(parent)
         self._readingFrame.pack(fill='both', side='left', padx=2)
-        self._readingList_label = Label(self._readingFrame, font=self._boldfont,
-                                     text='Readings')
+        self._readingList_label = Label(
+            self._readingFrame, font=self._boldfont, text='Readings'
+        )
         self._readingList_label.pack()
-        self._readingList = Listbox(self._readingFrame, selectmode='single',
-                                 relief='groove', background='white',
-                                 foreground='#909090', font=self._font,
-                                 selectforeground='#004040',
-                                 selectbackground='#c0f0c0')
+        self._readingList = Listbox(
+            self._readingFrame,
+            selectmode='single',
+            relief='groove',
+            background='white',
+            foreground='#909090',
+            font=self._font,
+            selectforeground='#004040',
+            selectbackground='#c0f0c0',
+        )
 
         self._readingList.pack(side='right', fill='both', expand=1)
 
         # Add a scrollbar if there are more than 25 examples.
-        listscroll = Scrollbar(self._readingFrame,
-                               orient='vertical')
-        self._readingList.config(yscrollcommand = listscroll.set)
+        listscroll = Scrollbar(self._readingFrame, orient='vertical')
+        self._readingList.config(yscrollcommand=listscroll.set)
         listscroll.config(command=self._readingList.yview)
         listscroll.pack(side='right', fill='y')
 
@@ -155,7 +177,7 @@ class DrtGlueDemo(object):
         # Populate the listbox with integers
         self._readingList.delete(0, 'end')
         for i in range(len(self._readings)):
-            self._readingList.insert('end', ('  %s' % (i+1)))
+            self._readingList.insert('end', ('  %s' % (i + 1)))
         self._readingList.config(height=min(len(self._readings), 25), width=5)
 
         # If they select a example, apply it.
@@ -175,25 +197,37 @@ class DrtGlueDemo(object):
         # Set up the frames.
         self._buttonframe = buttonframe = Frame(parent)
         buttonframe.pack(fill='none', side='bottom', padx=3, pady=2)
-        Button(buttonframe, text='Prev',
-               background='#90c0d0', foreground='black',
-               command=self.prev,).pack(side='left')
-        Button(buttonframe, text='Next',
-               background='#90c0d0', foreground='black',
-               command=self.next,).pack(side='left')
+        Button(
+            buttonframe,
+            text='Prev',
+            background='#90c0d0',
+            foreground='black',
+            command=self.prev,
+        ).pack(side='left')
+        Button(
+            buttonframe,
+            text='Next',
+            background='#90c0d0',
+            foreground='black',
+            command=self.next,
+        ).pack(side='left')
 
     def _configure(self, event):
         self._autostep = 0
         (x1, y1, x2, y2) = self._cframe.scrollregion()
         y2 = event.height - 6
-        self._canvas['scrollregion'] = '%d %d %d %d' % (x1,y1,x2,y2)
+        self._canvas['scrollregion'] = '%d %d %d %d' % (x1, y1, x2, y2)
         self._redraw()
 
     def _init_canvas(self, parent):
-        self._cframe = CanvasFrame(parent, background='white',
-                                   #width=525, height=250,
-                                   closeenough=10,
-                                   border=2, relief='sunken')
+        self._cframe = CanvasFrame(
+            parent,
+            background='white',
+            # width=525, height=250,
+            closeenough=10,
+            border=2,
+            relief='sunken',
+        )
         self._cframe.pack(expand=1, fill='both', side='top', pady=2)
         canvas = self._canvas = self._cframe.canvas()
 
@@ -206,40 +240,70 @@ class DrtGlueDemo(object):
         menubar = Menu(parent)
 
         filemenu = Menu(menubar, tearoff=0)
-        filemenu.add_command(label='Exit', underline=1,
-                             command=self.destroy, accelerator='q')
+        filemenu.add_command(
+            label='Exit', underline=1, command=self.destroy, accelerator='q'
+        )
         menubar.add_cascade(label='File', underline=0, menu=filemenu)
 
         actionmenu = Menu(menubar, tearoff=0)
-        actionmenu.add_command(label='Next', underline=0,
-                               command=self.next, accelerator='n, Space')
-        actionmenu.add_command(label='Previous', underline=0,
-                               command=self.prev, accelerator='p, Backspace')
+        actionmenu.add_command(
+            label='Next', underline=0, command=self.next, accelerator='n, Space'
+        )
+        actionmenu.add_command(
+            label='Previous', underline=0, command=self.prev, accelerator='p, Backspace'
+        )
         menubar.add_cascade(label='Action', underline=0, menu=actionmenu)
 
         optionmenu = Menu(menubar, tearoff=0)
-        optionmenu.add_checkbutton(label='Remove Duplicates', underline=0,
-                                   variable=self._glue.remove_duplicates,
-                                   command=self._toggle_remove_duplicates,
-                                   accelerator='r')
+        optionmenu.add_checkbutton(
+            label='Remove Duplicates',
+            underline=0,
+            variable=self._glue.remove_duplicates,
+            command=self._toggle_remove_duplicates,
+            accelerator='r',
+        )
         menubar.add_cascade(label='Options', underline=0, menu=optionmenu)
 
         viewmenu = Menu(menubar, tearoff=0)
-        viewmenu.add_radiobutton(label='Tiny', variable=self._size,
-                                 underline=0, value=10, command=self.resize)
-        viewmenu.add_radiobutton(label='Small', variable=self._size,
-                                 underline=0, value=12, command=self.resize)
-        viewmenu.add_radiobutton(label='Medium', variable=self._size,
-                                 underline=0, value=14, command=self.resize)
-        viewmenu.add_radiobutton(label='Large', variable=self._size,
-                                 underline=0, value=18, command=self.resize)
-        viewmenu.add_radiobutton(label='Huge', variable=self._size,
-                                 underline=0, value=24, command=self.resize)
+        viewmenu.add_radiobutton(
+            label='Tiny',
+            variable=self._size,
+            underline=0,
+            value=10,
+            command=self.resize,
+        )
+        viewmenu.add_radiobutton(
+            label='Small',
+            variable=self._size,
+            underline=0,
+            value=12,
+            command=self.resize,
+        )
+        viewmenu.add_radiobutton(
+            label='Medium',
+            variable=self._size,
+            underline=0,
+            value=14,
+            command=self.resize,
+        )
+        viewmenu.add_radiobutton(
+            label='Large',
+            variable=self._size,
+            underline=0,
+            value=18,
+            command=self.resize,
+        )
+        viewmenu.add_radiobutton(
+            label='Huge',
+            variable=self._size,
+            underline=0,
+            value=24,
+            command=self.resize,
+        )
         menubar.add_cascade(label='View', underline=0, menu=viewmenu)
 
         helpmenu = Menu(menubar, tearoff=0)
-        helpmenu.add_command(label='About', underline=0,
-                             command=self.about)
+        helpmenu.add_command(label='About', underline=0, command=self.about)
         menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
 
         parent.config(menu=menubar)
@@ -256,11 +320,11 @@ class DrtGlueDemo(object):
             self._drsWidget.clear()
 
         if self._drs:
-            self._drsWidget = DrsWidget( self._canvas, self._drs )
+            self._drsWidget = DrsWidget(self._canvas, self._drs)
             self._drsWidget.draw()
 
         if self._error:
-            self._drsWidget = DrsWidget( self._canvas, self._error )
+            self._drsWidget = DrsWidget(self._canvas, self._error)
             self._drsWidget.draw()
 
     #########################################
@@ -269,7 +333,8 @@ class DrtGlueDemo(object):
 
     def destroy(self, *e):
         self._autostep = 0
-        if self._top is None: return
+        if self._top is None:
+            return
         self._top.destroy()
         self._top = None
 
@@ -287,23 +352,22 @@ class DrtGlueDemo(object):
                 if index <= 0:
                     self._select_previous_example()
                 else:
-                    self._readingList_store_selection(index-1)
+                    self._readingList_store_selection(index - 1)
 
             else:
-                #select its first reading
-                self._readingList_store_selection(readingListSize-1)
+                # select its first reading
+                self._readingList_store_selection(readingListSize - 1)
 
         else:
             self._select_previous_example()
 
-
     def _select_previous_example(self):
-        #if the current example is not the first example
+        # if the current example is not the first example
         if self._curExample > 0:
-            self._exampleList_store_selection(self._curExample-1)
+            self._exampleList_store_selection(self._curExample - 1)
         else:
-            #go to the last example
-            self._exampleList_store_selection(len(self._examples)-1)
+            # go to the last example
+            self._exampleList_store_selection(len(self._examples) - 1)
 
     def next(self, *e):
         selection = self._readingList.curselection()
@@ -316,33 +380,35 @@ class DrtGlueDemo(object):
                 index = int(selection[0])
 
                 # if it's on (or past) the last item
-                if index >= (readingListSize-1):
+                if index >= (readingListSize - 1):
                     self._select_next_example()
                 else:
-                    self._readingList_store_selection(index+1)
+                    self._readingList_store_selection(index + 1)
 
             else:
-                #select its first reading
+                # select its first reading
                 self._readingList_store_selection(0)
 
         else:
             self._select_next_example()
 
     def _select_next_example(self):
-        #if the current example is not the last example
-        if self._curExample < len(self._examples)-1:
-            self._exampleList_store_selection(self._curExample+1)
+        # if the current example is not the last example
+        if self._curExample < len(self._examples) - 1:
+            self._exampleList_store_selection(self._curExample + 1)
         else:
-            #go to the first example
+            # go to the first example
             self._exampleList_store_selection(0)
 
-
     def about(self, *e):
-        ABOUT = ("NLTK Discourse Representation Theory (DRT) Glue Semantics Demo\n"+
-                 "Written by Daniel H. Garrette")
+        ABOUT = (
+            "NLTK Discourse Representation Theory (DRT) Glue Semantics Demo\n"
+            + "Written by Daniel H. Garrette"
+        )
         TITLE = 'About: NLTK DRT Glue Demo'
         try:
             from six.moves.tkinter_messagebox import Message
+
             Message(message=ABOUT, title=TITLE).show()
         except:
             ShowText(self._top, TITLE, ABOUT)
@@ -358,16 +424,18 @@ class DrtGlueDemo(object):
         from a secript); otherwise, the demo will close as soon as
         the script completes.
         """
-        if in_idle(): return
+        if in_idle():
+            return
         self._top.mainloop(*args, **kwargs)
 
     def resize(self, size=None):
-        if size is not None: self._size.set(size)
+        if size is not None:
+            self._size.set(size)
         size = self._size.get()
         self._font.configure(size=-(abs(size)))
         self._boldfont.configure(size=-(abs(size)))
         self._sysfont.configure(size=-(abs(size)))
-        self._bigfont.configure(size=-(abs(size+2)))
+        self._bigfont.configure(size=-(abs(size + 2)))
         self._redraw()
 
     def _toggle_remove_duplicates(self):
@@ -383,10 +451,10 @@ class DrtGlueDemo(object):
         self._drs = None
         self._redraw()
 
-
     def _exampleList_select(self, event):
         selection = self._exampleList.curselection()
-        if len(selection) != 1: return
+        if len(selection) != 1:
+            return
         self._exampleList_store_selection(int(selection[0]))
 
     def _exampleList_store_selection(self, index):
@@ -413,10 +481,12 @@ class DrtGlueDemo(object):
                     self._error = DrtVariableExpression(Variable('Error: ' + str(e)))
                     self._readingCache[index] = self._error
 
-                    #add a star to the end of the example
+                    # add a star to the end of the example
                     self._exampleList.delete(index)
                     self._exampleList.insert(index, ('  %s *' % example))
-                    self._exampleList.config(height=min(len(self._examples), 25), width=40)
+                    self._exampleList.config(
+                        height=min(len(self._examples), 25), width=40
+                    )
 
             self._populate_readingListbox()
 
@@ -425,10 +495,10 @@ class DrtGlueDemo(object):
             self._drs = None
             self._redraw()
 
-
     def _readingList_select(self, event):
         selection = self._readingList.curselection()
-        if len(selection) != 1: return
+        if len(selection) != 1:
+            return
         self._readingList_store_selection(int(selection[0]))
 
     def _readingList_store_selection(self, index):
@@ -447,39 +517,45 @@ class DrsWidget(object):
     def __init__(self, canvas, drs, **attribs):
         self._drs = drs
         self._canvas = canvas
-        canvas.font = Font(font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font'))
+        canvas.font = Font(
+            font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font')
+        )
         canvas._BUFFER = 3
         self.bbox = (0, 0, 0, 0)
 
     def draw(self):
         (right, bottom) = DrsDrawer(self._drs, canvas=self._canvas).draw()
-        self.bbox = (0, 0, right+1, bottom+1)
+        self.bbox = (0, 0, right + 1, bottom + 1)
 
     def clear(self):
-        self._canvas.create_rectangle(self.bbox, fill="white", width="0" )
+        self._canvas.create_rectangle(self.bbox, fill="white", width="0")
+
 
 def demo():
-    examples = ['John walks',
-                'David sees Mary',
-                'David eats a sandwich',
-                'every man chases a dog',
-#                'every man believes a dog yawns',
-#                'John gives David a sandwich',
-                'John chases himself',
-#                'John persuades David to order a pizza',
-#                'John tries to go',
-#                'John tries to find a unicorn',
-#                'John seems to vanish',
-#                'a unicorn seems to approach',
-#                'every big cat leaves',
-#                'every gray cat leaves',
-#                'every big gray cat leaves',
-#                'a former senator leaves',
-#                'John likes a cat',
-#                'John likes every cat',
-#                'he walks',
-#                'John walks and he leaves'
-                ]
+    examples = [
+        'John walks',
+        'David sees Mary',
+        'David eats a sandwich',
+        'every man chases a dog',
+        #                'every man believes a dog yawns',
+        #                'John gives David a sandwich',
+        'John chases himself',
+        #                'John persuades David to order a pizza',
+        #                'John tries to go',
+        #                'John tries to find a unicorn',
+        #                'John seems to vanish',
+        #                'a unicorn seems to approach',
+        #                'every big cat leaves',
+        #                'every gray cat leaves',
+        #                'every big gray cat leaves',
+        #                'a former senator leaves',
+        #                'John likes a cat',
+        #                'John likes every cat',
+        #                'he walks',
+        #                'John walks and he leaves'
+    ]
     DrtGlueDemo(examples).mainloop()
 
-if __name__ == '__main__': demo()
+
+if __name__ == '__main__':
+    demo()

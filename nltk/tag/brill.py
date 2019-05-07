@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Transformation-based learning
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
@@ -20,6 +20,7 @@ from nltk import jsontags
 ######################################################################
 # Brill Templates
 ######################################################################
+
 
 @jsontags.register_tag
 class Word(Feature):
@@ -133,7 +134,7 @@ def fntbl37():
         Template(Pos([-1]), Word([0]), Word([1])),
         Template(Pos([-2]), Pos([-1])),
         Template(Pos([1]), Pos([2])),
-        Template(Pos([1]), Pos([2]), Word([1]))
+        Template(Pos([1]), Pos([2]), Word([1])),
     ]
 
 
@@ -187,6 +188,7 @@ def describe_template_sets():
 ######################################################################
 # The Brill Tagger
 ######################################################################
+
 
 @jsontags.register_tag
 class BrillTagger(TaggerI):
@@ -305,8 +307,10 @@ class BrillTagger(TaggerI):
         train_stats = self.train_stats()
 
         trainscores = train_stats['rulescores']
-        assert len(trainscores) == len(tids), "corrupt statistics: " \
+        assert len(trainscores) == len(tids), (
+            "corrupt statistics: "
             "{0} train scores for {1} rules".format(trainscores, tids)
+        )
         template_counts = Counter(tids)
         weighted_traincounts = Counter()
         for (tid, score) in zip(tids, trainscores):
@@ -321,59 +325,75 @@ class BrillTagger(TaggerI):
             return (tpl_value[1], repr(tpl_value[0]))
 
         def print_train_stats():
-            print("TEMPLATE STATISTICS (TRAIN)  {0} templates, {1} rules)".format(
-                len(template_counts),
-                len(tids))
+            print(
+                "TEMPLATE STATISTICS (TRAIN)  {0} templates, {1} rules)".format(
+                    len(template_counts), len(tids)
+                )
             )
-            print("TRAIN ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
-                  "final: {finalerrors:5d} {finalacc:.4f} ".format(**train_stats))
+            print(
+                "TRAIN ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
+                "final: {finalerrors:5d} {finalacc:.4f} ".format(**train_stats)
+            )
             head = "#ID | Score (train) |  #Rules     | Template"
             print(head, "\n", "-" * len(head), sep="")
-            train_tplscores = sorted(weighted_traincounts.items(), key=det_tplsort, reverse=True)
+            train_tplscores = sorted(
+                weighted_traincounts.items(), key=det_tplsort, reverse=True
+            )
             for (tid, trainscore) in train_tplscores:
                 s = "{0} | {1:5d}   {2:5.3f} |{3:4d}   {4:.3f} | {5}".format(
                     tid,
                     trainscore,
-                    trainscore/tottrainscores,
+                    trainscore / tottrainscores,
                     template_counts[tid],
-                    template_counts[tid]/len(tids),
+                    template_counts[tid] / len(tids),
                     Template.ALLTEMPLATES[int(tid)],
                 )
                 print(s)
 
         def print_testtrain_stats():
             testscores = test_stats['rulescores']
-            print("TEMPLATE STATISTICS (TEST AND TRAIN) ({0} templates, {1} rules)".format(
-                len(template_counts),
-                len(tids)),
+            print(
+                "TEMPLATE STATISTICS (TEST AND TRAIN) ({0} templates, {1} rules)".format(
+                    len(template_counts), len(tids)
+                )
             )
-            print("TEST  ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
-                  "final: {finalerrors:5d} {finalacc:.4f} ".format(**test_stats))
-            print("TRAIN ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
-                  "final: {finalerrors:5d} {finalacc:.4f} ".format(**train_stats))
+            print(
+                "TEST  ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
+                "final: {finalerrors:5d} {finalacc:.4f} ".format(**test_stats)
+            )
+            print(
+                "TRAIN ({tokencount:7d} tokens) initial {initialerrors:5d} {initialacc:.4f} "
+                "final: {finalerrors:5d} {finalacc:.4f} ".format(**train_stats)
+            )
             weighted_testcounts = Counter()
             for (tid, score) in zip(tids, testscores):
                 weighted_testcounts[tid] += score
             tottestscores = sum(testscores)
             head = "#ID | Score (test) | Score (train) |  #Rules     | Template"
             print(head, "\n", "-" * len(head), sep="")
-            test_tplscores = sorted(weighted_testcounts.items(), key=det_tplsort, reverse=True)
+            test_tplscores = sorted(
+                weighted_testcounts.items(), key=det_tplsort, reverse=True
+            )
             for (tid, testscore) in test_tplscores:
                 s = "{0:s} |{1:5d}  {2:6.3f} |  {3:4d}   {4:.3f} |{5:4d}   {6:.3f} | {7:s}".format(
                     tid,
                     testscore,
-                    testscore/tottestscores,
+                    testscore / tottestscores,
                     weighted_traincounts[tid],
-                    weighted_traincounts[tid]/tottrainscores,
+                    weighted_traincounts[tid] / tottrainscores,
                     template_counts[tid],
-                    template_counts[tid]/len(tids),
+                    template_counts[tid] / len(tids),
                     Template.ALLTEMPLATES[int(tid)],
                 )
                 print(s)
 
         def print_unused_templates():
             usedtpls = set(int(tid) for tid in tids)
-            unused = [(tid, tpl) for (tid, tpl) in enumerate(Template.ALLTEMPLATES) if tid not in usedtpls]
+            unused = [
+                (tid, tpl)
+                for (tid, tpl) in enumerate(Template.ALLTEMPLATES)
+                if tid not in usedtpls
+            ]
             print("UNUSED TEMPLATES ({0})".format(len(unused)))
 
             for (tid, tpl) in unused:
@@ -404,21 +424,29 @@ class BrillTagger(TaggerI):
         :type gold: list of list of strings
         :returns: tuple of (tagged_sequences, ordered list of rule scores (one for each rule))
         """
+
         def counterrors(xs):
             return sum(t[1] != g[1] for pair in zip(xs, gold) for (t, g) in zip(*pair))
+
         testing_stats = {}
         testing_stats['tokencount'] = sum(len(t) for t in sequences)
         testing_stats['sequencecount'] = len(sequences)
         tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in sequences]
         testing_stats['initialerrors'] = counterrors(tagged_tokenses)
-        testing_stats['initialacc'] = 1 - testing_stats['initialerrors']/testing_stats['tokencount']
+        testing_stats['initialacc'] = (
+            1 - testing_stats['initialerrors'] / testing_stats['tokencount']
+        )
         # Apply each rule to the entire corpus, in order
         errors = [testing_stats['initialerrors']]
         for rule in self._rules:
             for tagged_tokens in tagged_tokenses:
                 rule.apply(tagged_tokens)
             errors.append(counterrors(tagged_tokenses))
-        testing_stats['rulescores'] = [err0 - err1 for (err0, err1) in zip(errors, errors[1:])]
+        testing_stats['rulescores'] = [
+            err0 - err1 for (err0, err1) in zip(errors, errors[1:])
+        ]
         testing_stats['finalerrors'] = errors[-1]
-        testing_stats['finalacc'] = 1 - testing_stats['finalerrors']/testing_stats['tokencount']
+        testing_stats['finalacc'] = (
+            1 - testing_stats['finalerrors'] / testing_stats['tokencount']
+        )
         return (tagged_tokenses, testing_stats)

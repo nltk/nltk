@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Simple Tokenizers
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.sourceforge.net>
@@ -104,8 +104,9 @@ class LineTokenizer(TokenizerI):
     def __init__(self, blanklines='discard'):
         valid_blanklines = ('discard', 'keep', 'discard-eof')
         if blanklines not in valid_blanklines:
-            raise ValueError('Blank lines must be one of: %s' %
-                             ' '.join(valid_blanklines))
+            raise ValueError(
+                'Blank lines must be one of: %s' % ' '.join(valid_blanklines)
+            )
 
         self._blanklines = blanklines
 
@@ -133,6 +134,7 @@ class LineTokenizer(TokenizerI):
 # { Tokenization Functions
 ######################################################################
 # XXX: it is stated in module docs that there is no function versions
+
 
 def line_tokenize(text, blanklines='discard'):
     return LineTokenizer(blanklines).tokenize(text)

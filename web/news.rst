@@ -1,8 +1,29 @@
 NLTK News
 =========
 
+2019
+----
+
+NLTK 3.4.1 release: April 2019
+  Add chomsky_normal_form for CFGs
+  Add meteor score
+  Add minimum edit/Levenshtein distance based alignment function
+  Allow access to collocation list via text.collocation_list()
+  Support corenlp server options
+  Drop support for Python 3.4
+  Other minor fixes
+
 2018
 ----
+
+NLTK 3.4 release: November 2018
+  Support Python 3.7,
+  New Language Modeling package,
+  Cistem Stemmer for German,
+  Support Russian National Corpus incl POS tag model,
+  Krippendorf Alpha inter-rater reliability test,
+  Comprehensive code clean-ups,
+  Switch continuous integration from Jenkins to Travis
 
 NLTK 3.3 release: May 2018
    Support Python 3.6,
@@ -76,9 +97,6 @@ NLTK 3.1 released : October 2015
    skipgram and everygram methods,
    Multext East Corpus and MTECorpusReader,
    minor bugfixes and enhancements
-   For details see:
-   https://github.com/nltk/nltk/blob/develop/ChangeLog
-
 
 NLTK 3.0.5 released : September 2015
    New Twitter package; updates to IBM models 1-3, new models 4 and 5,
@@ -152,13 +170,13 @@ NLTK 2.0.4 released : November 2012
     Minor fix to remove numpy dependency.
 
 NLTK 2.0.3 released : September 2012
-    This release contains minor improvements and bugfixes.  This is the final release compatible with Python 2.5.  For details see https://github.com/nltk/nltk/blob/develop/ChangeLog
+    This release contains minor improvements and bugfixes.  This is the final release compatible with Python 2.5.
 
 NLTK 2.0.2 released : July 2012
-    This release contains minor improvements and bugfixes.  For details see https://github.com/nltk/nltk/blob/develop/ChangeLog
+    This release contains minor improvements and bugfixes.
 
 NLTK 2.0.1 released : May 2012
-    The final release of NLTK 2.  For details see https://github.com/nltk/nltk/blob/develop/ChangeLog
+    The final release of NLTK 2.
 
 NLTK 2.0.1rc4 released : February 2012
     The fourth release candidate for NLTK 2.

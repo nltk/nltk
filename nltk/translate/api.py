@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for alignment and translation objects
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
 #         Steven Bird <stevenbird1@gmail.com>
@@ -105,11 +105,17 @@ class AlignedSent(object):
 
         # Connect the source words
         for i in range(len(self._words) - 1):
-            s += '"%s_source" -- "%s_source" [style=invis]\n' % (self._words[i], self._words[i + 1])
+            s += '"%s_source" -- "%s_source" [style=invis]\n' % (
+                self._words[i],
+                self._words[i + 1],
+            )
 
         # Connect the target words
         for i in range(len(self._mots) - 1):
-            s += '"%s_target" -- "%s_target" [style=invis]\n' % (self._mots[i], self._mots[i + 1])
+            s += '"%s_target" -- "%s_target" [style=invis]\n' % (
+                self._mots[i],
+                self._mots[i + 1],
+            )
 
         # Put it in the same rank
         s += '{rank = same; %s}\n' % (' '.join('"%s_source"' % w for w in self._words))
@@ -126,8 +132,12 @@ class AlignedSent(object):
         dot_string = self._to_dot().encode('utf8')
         output_format = 'svg'
         try:
-            process = subprocess.Popen(['dot', '-T%s' % output_format], stdin=subprocess.PIPE,
-                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen(
+                ['dot', '-T%s' % output_format],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
         except OSError:
             raise Exception('Cannot find the dot binary from Graphviz package')
         out, err = process.communicate(dot_string)
@@ -150,8 +160,7 @@ class AlignedSent(object):
 
         :rtype: AlignedSent
         """
-        return AlignedSent(self._mots, self._words,
-                           self._alignment.invert())
+        return AlignedSent(self._mots, self._words, self._alignment.invert())
 
 
 @python_2_unicode_compatible
@@ -183,7 +192,7 @@ class Alignment(frozenset):
 
     def __new__(cls, pairs):
         self = frozenset.__new__(cls, pairs)
-        self._len = (max(p[0] for p in self) if self != frozenset([]) else 0)
+        self._len = max(p[0] for p in self) if self != frozenset([]) else 0
         self._index = None
         return self
 
@@ -324,8 +333,7 @@ class PhraseTable(object):
         if src_phrase not in self.src_phrases:
             self.src_phrases[src_phrase] = []
         self.src_phrases[src_phrase].append(entry)
-        self.src_phrases[src_phrase].sort(key=lambda e: e.log_prob,
-                                          reverse=True)
+        self.src_phrases[src_phrase].sort(key=lambda e: e.log_prob, reverse=True)
 
     def __contains__(self, src_phrase):
         return src_phrase in self.src_phrases

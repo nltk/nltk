@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: GLEU Score
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Authors:
 # Contributors: Mike Schuster, Michael Wayne Goodman, Liling Tan
 # URL: <http://nltk.org/>
@@ -81,12 +81,8 @@ def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
     :return: the sentence level GLEU score.
     :rtype: float
     """
-    return corpus_gleu(
-        [references],
-        [hypothesis],
-        min_len=min_len,
-        max_len=max_len
-    )
+    return corpus_gleu([references], [hypothesis], min_len=min_len, max_len=max_len)
+
 
 def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
     """
@@ -148,7 +144,9 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
     :rtype: float
     """
     # sanity check
-    assert len(list_of_references) == len(hypotheses), "The number of hypotheses and their reference(s) should be the same"
+    assert len(list_of_references) == len(
+        hypotheses
+    ), "The number of hypotheses and their reference(s) should be the same"
 
     # sum matches and max-token-lengths over all sentences
     corpus_n_match = 0
@@ -157,7 +155,7 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
     for references, hypothesis in zip(list_of_references, hypotheses):
         hyp_ngrams = Counter(everygrams(hypothesis, min_len, max_len))
         tpfp = sum(hyp_ngrams.values())  # True positives + False positives.
-        
+
         hyp_counts = []
         for reference in references:
             ref_ngrams = Counter(everygrams(reference, min_len, max_len))
@@ -180,7 +178,7 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
 
         # use the reference yielding the highest score
         if hyp_counts:
-            n_match, n_all = max(hyp_counts, key=lambda hc: hc[0]/hc[1])
+            n_match, n_all = max(hyp_counts, key=lambda hc: hc[0] / hc[1])
             corpus_n_match += n_match
             corpus_n_all += n_all
 

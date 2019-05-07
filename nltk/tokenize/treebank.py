@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
 #
@@ -25,17 +25,19 @@ class MacIntyreContractions:
     """
     List of contractions adapted from Robert MacIntyre's tokenizer.
     """
-    CONTRACTIONS2 = [r"(?i)\b(can)(?#X)(not)\b",
-                     r"(?i)\b(d)(?#X)('ye)\b",
-                     r"(?i)\b(gim)(?#X)(me)\b",
-                     r"(?i)\b(gon)(?#X)(na)\b",
-                     r"(?i)\b(got)(?#X)(ta)\b",
-                     r"(?i)\b(lem)(?#X)(me)\b",
-                     r"(?i)\b(mor)(?#X)('n)\b",
-                     r"(?i)\b(wan)(?#X)(na)\s"]
+
+    CONTRACTIONS2 = [
+        r"(?i)\b(can)(?#X)(not)\b",
+        r"(?i)\b(d)(?#X)('ye)\b",
+        r"(?i)\b(gim)(?#X)(me)\b",
+        r"(?i)\b(gon)(?#X)(na)\b",
+        r"(?i)\b(got)(?#X)(ta)\b",
+        r"(?i)\b(lem)(?#X)(me)\b",
+        r"(?i)\b(mor)(?#X)('n)\b",
+        r"(?i)\b(wan)(?#X)(na)\s",
+    ]
     CONTRACTIONS3 = [r"(?i) ('t)(?#X)(is)\b", r"(?i) ('t)(?#X)(was)\b"]
-    CONTRACTIONS4 = [r"(?i)\b(whad)(dd)(ya)\b",
-                     r"(?i)\b(wha)(t)(cha)\b"]
+    CONTRACTIONS4 = [r"(?i)\b(whad)(dd)(ya)\b", r"(?i)\b(wha)(t)(cha)\b"]
 
 
 class TreebankWordTokenizer(TokenizerI):
@@ -76,9 +78,11 @@ class TreebankWordTokenizer(TokenizerI):
         (re.compile(r'([:,])$'), r' \1 '),
         (re.compile(r'\.\.\.'), r' ... '),
         (re.compile(r'[;@#$%&]'), r' \g<0> '),
-        (re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'), r'\1 \2\3 '),  # Handles the final period.
+        (
+            re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
+            r'\1 \2\3 ',
+        ),  # Handles the final period.
         (re.compile(r'[?!]'), r' \g<0> '),
-
         (re.compile(r"([^'])' "), r"\1 ' "),
     ]
 
@@ -87,9 +91,12 @@ class TreebankWordTokenizer(TokenizerI):
 
     # Optionally: Convert parentheses, brackets and converts them to PTB symbols.
     CONVERT_PARENTHESES = [
-        (re.compile(r'\('), '-LRB-'), (re.compile(r'\)'), '-RRB-'),
-        (re.compile(r'\['), '-LSB-'), (re.compile(r'\]'), '-RSB-'),
-        (re.compile(r'\{'), '-LCB-'), (re.compile(r'\}'), '-RCB-')
+        (re.compile(r'\('), '-LRB-'),
+        (re.compile(r'\)'), '-RRB-'),
+        (re.compile(r'\['), '-LSB-'),
+        (re.compile(r'\]'), '-RSB-'),
+        (re.compile(r'\{'), '-LCB-'),
+        (re.compile(r'\}'), '-RCB-'),
     ]
 
     DOUBLE_DASHES = (re.compile(r'--'), r' -- ')
@@ -190,8 +197,10 @@ class TreebankWordTokenizer(TokenizerI):
             matched = [m.group() for m in re.finditer(r"``|'{2}|\"", text)]
 
             # Replace converted quotes back to double quotes
-            tokens = [matched.pop(0) if tok in ['"', "``", "''"] else tok
-                      for tok in raw_tokens]
+            tokens = [
+                matched.pop(0) if tok in ['"', "``", "''"] else tok
+                for tok in raw_tokens
+            ]
         else:
             tokens = raw_tokens
 
@@ -258,18 +267,23 @@ class TreebankWordDetokenizer(TokenizerI):
     >>> twd.detokenize(toks)
     "hello, i can't feel; my feet! Help!! He said: Help, help?!"
     """
+
     _contractions = MacIntyreContractions()
-    CONTRACTIONS2 = [re.compile(pattern.replace('(?#X)', '\s'))
-                     for pattern in _contractions.CONTRACTIONS2]
-    CONTRACTIONS3 = [re.compile(pattern.replace('(?#X)', '\s'))
-                     for pattern in _contractions.CONTRACTIONS3]
+    CONTRACTIONS2 = [
+        re.compile(pattern.replace('(?#X)', '\s'))
+        for pattern in _contractions.CONTRACTIONS2
+    ]
+    CONTRACTIONS3 = [
+        re.compile(pattern.replace('(?#X)', '\s'))
+        for pattern in _contractions.CONTRACTIONS3
+    ]
 
     # ending quotes
     ENDING_QUOTES = [
         (re.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
         (re.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
         (re.compile(r'(\S)(\'\')'), r'\1\2 '),
-        (re.compile(r" '' "), '"')
+        (re.compile(r" '' "), '"'),
     ]
 
     # Handles double dashes
@@ -277,15 +291,20 @@ class TreebankWordDetokenizer(TokenizerI):
 
     # Optionally: Convert parentheses, brackets and converts them from PTB symbols.
     CONVERT_PARENTHESES = [
-        (re.compile('-LRB-'), '('), (re.compile('-RRB-'), ')'),
-        (re.compile('-LSB-'), '['), (re.compile('-RSB-'), ']'),
-        (re.compile('-LCB-'), '{'), (re.compile('-RCB-'), '}')
+        (re.compile('-LRB-'), '('),
+        (re.compile('-RRB-'), ')'),
+        (re.compile('-LSB-'), '['),
+        (re.compile('-RSB-'), ']'),
+        (re.compile('-LCB-'), '{'),
+        (re.compile('-RCB-'), '}'),
     ]
 
     # Undo padding on parentheses.
-    PARENS_BRACKETS = [(re.compile(r'\s([\[\(\{\<])\s'), r' \g<1>'),
-                       (re.compile(r'\s([\]\)\}\>])\s'), r'\g<1> '),
-                       (re.compile(r'([\]\)\}\>])\s([:;,.])'), r'\1\2')]
+    PARENS_BRACKETS = [
+        (re.compile(r'\s([\[\(\{\<])\s'), r' \g<1>'),
+        (re.compile(r'\s([\]\)\}\>])\s'), r'\g<1> '),
+        (re.compile(r'([\]\)\}\>])\s([:;,.])'), r'\1\2'),
+    ]
 
     # punctuation
     PUNCTUATION = [
@@ -302,7 +321,10 @@ class TreebankWordDetokenizer(TokenizerI):
         (re.compile(r'\s([&])\s'), r' \g<1> '),  # Unknown pad.
         (re.compile(r'\s\.\.\.\s'), r'...'),
         (re.compile(r'\s([:,])\s$'), r'\1'),
-        (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')  # Keep right pad after comma/colon before non-digits.
+        (
+            re.compile(r'\s([:,])\s([^\d])'),
+            r'\1 \2',
+        )  # Keep right pad after comma/colon before non-digits.
         # (re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
     ]
 
@@ -315,7 +337,8 @@ class TreebankWordDetokenizer(TokenizerI):
 
     def tokenize(self, tokens, convert_parentheses=False):
         """
-        Python port of the Moses detokenizer.
+        Treebank detokenizer, created by undoing the regexes from 
+        the TreebankWordTokenizer.tokenize.
 
         :param tokens: A list of strings, i.e. tokenized text.
         :type tokens: list(str)

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunked Corpus Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -23,6 +23,7 @@ from nltk.chunk import tagstr2tree
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+
 class ChunkedCorpusReader(CorpusReader):
     """
     Reader for chunked (and optionally tagged) corpora.  Paragraphs
@@ -34,11 +35,18 @@ class ChunkedCorpusReader(CorpusReader):
     on blank lines; sentences are listed one per line; and sentences
     are parsed into chunk trees using ``nltk.chunk.tagstr2tree``.
     """
-    def __init__(self, root, fileids, extension='',
-                 str2chunktree=tagstr2tree,
-                 sent_tokenizer=RegexpTokenizer('\n', gaps=True),
-                 para_block_reader=read_blankline_block,
-                 encoding='utf8', tagset=None):
+
+    def __init__(
+        self,
+        root,
+        fileids,
+        extension='',
+        str2chunktree=tagstr2tree,
+        sent_tokenizer=RegexpTokenizer('\n', gaps=True),
+        para_block_reader=read_blankline_block,
+        encoding='utf8',
+        tagset=None,
+    ):
         """
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.
@@ -53,8 +61,10 @@ class ChunkedCorpusReader(CorpusReader):
         :return: the given file(s) as a single string.
         :rtype: str
         """
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
@@ -63,8 +73,12 @@ class ChunkedCorpusReader(CorpusReader):
             and punctuation symbols.
         :rtype: list(str)
         """
-        return concat([ChunkedCorpusView(f, enc, 0, 0, 0, 0, *self._cv_args)
-                       for (f, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                ChunkedCorpusView(f, enc, 0, 0, 0, 0, *self._cv_args)
+                for (f, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def sents(self, fileids=None):
         """
@@ -73,8 +87,12 @@ class ChunkedCorpusReader(CorpusReader):
             strings.
         :rtype: list(list(str))
         """
-        return concat([ChunkedCorpusView(f, enc, 0, 1, 0, 0, *self._cv_args)
-                       for (f, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                ChunkedCorpusView(f, enc, 0, 1, 0, 0, *self._cv_args)
+                for (f, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def paras(self, fileids=None):
         """
@@ -83,8 +101,12 @@ class ChunkedCorpusReader(CorpusReader):
             in turn encoded as lists of word strings.
         :rtype: list(list(list(str)))
         """
-        return concat([ChunkedCorpusView(f, enc, 0, 1, 1, 0, *self._cv_args)
-                       for (f, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                ChunkedCorpusView(f, enc, 0, 1, 1, 0, *self._cv_args)
+                for (f, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def tagged_words(self, fileids=None, tagset=None):
         """
@@ -93,8 +115,14 @@ class ChunkedCorpusReader(CorpusReader):
             ``(word,tag)``.
         :rtype: list(tuple(str,str))
         """
-        return concat([ChunkedCorpusView(f, enc, 1, 0, 0, 0, *self._cv_args, target_tagset=tagset)
-                       for (f, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                ChunkedCorpusView(
+                    f, enc, 1, 0, 0, 0, *self._cv_args, target_tagset=tagset
+                )
+                for (f, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def tagged_sents(self, fileids=None, tagset=None):
         """
@@ -103,8 +131,14 @@ class ChunkedCorpusReader(CorpusReader):
 
         :rtype: list(list(tuple(str,str)))
         """
-        return concat([ChunkedCorpusView(f, enc, 1, 1, 0, 0, *self._cv_args, target_tagset=tagset)
-                       for (f, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                ChunkedCorpusView(
+                    f, enc, 1, 1, 0, 0, *self._cv_args, target_tagset=tagset
+                )
+                for (f, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def tagged_paras(self, fileids=None, tagset=None):
         """
@@ -113,8 +147,14 @@ class ChunkedCorpusReader(CorpusReader):
             in turn encoded as lists of ``(word,tag)`` tuples.
         :rtype: list(list(list(tuple(str,str))))
         """
-        return concat([ChunkedCorpusView(f, enc, 1, 1, 1, 0, *self._cv_args, target_tagset=tagset)
-                       for (f, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                ChunkedCorpusView(
+                    f, enc, 1, 1, 1, 0, *self._cv_args, target_tagset=tagset
+                )
+                for (f, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def chunked_words(self, fileids=None, tagset=None):
         """
@@ -125,8 +165,14 @@ class ChunkedCorpusReader(CorpusReader):
             trees over ``(word,tag)`` tuples or word strings.
         :rtype: list(tuple(str,str) and Tree)
         """
-        return concat([ChunkedCorpusView(f, enc, 1, 0, 0, 1, *self._cv_args, target_tagset=tagset)
-                       for (f, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                ChunkedCorpusView(
+                    f, enc, 1, 0, 0, 1, *self._cv_args, target_tagset=tagset
+                )
+                for (f, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def chunked_sents(self, fileids=None, tagset=None):
         """
@@ -137,8 +183,14 @@ class ChunkedCorpusReader(CorpusReader):
             tags).
         :rtype: list(Tree)
         """
-        return concat([ChunkedCorpusView(f, enc, 1, 1, 0, 1, *self._cv_args, target_tagset=tagset)
-                       for (f, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                ChunkedCorpusView(
+                    f, enc, 1, 1, 0, 1, *self._cv_args, target_tagset=tagset
+                )
+                for (f, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def chunked_paras(self, fileids=None, tagset=None):
         """
@@ -149,16 +201,34 @@ class ChunkedCorpusReader(CorpusReader):
             has tags) or word strings (if the corpus has no tags).
         :rtype: list(list(Tree))
         """
-        return concat([ChunkedCorpusView(f, enc, 1, 1, 1, 1, *self._cv_args, target_tagset=tagset)
-                       for (f, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                ChunkedCorpusView(
+                    f, enc, 1, 1, 1, 1, *self._cv_args, target_tagset=tagset
+                )
+                for (f, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def _read_block(self, stream):
         return [tagstr2tree(t) for t in read_blankline_block(stream)]
 
+
 class ChunkedCorpusView(StreamBackedCorpusView):
-    def __init__(self, fileid, encoding, tagged, group_by_sent,
-                 group_by_para, chunked, str2chunktree, sent_tokenizer,
-                 para_block_reader, source_tagset=None, target_tagset=None):
+    def __init__(
+        self,
+        fileid,
+        encoding,
+        tagged,
+        group_by_sent,
+        group_by_para,
+        chunked,
+        str2chunktree,
+        sent_tokenizer,
+        para_block_reader,
+        source_tagset=None,
+        target_tagset=None,
+    ):
         StreamBackedCorpusView.__init__(self, fileid, encoding=encoding)
         self._tagged = tagged
         self._group_by_sent = group_by_sent
@@ -175,8 +245,11 @@ class ChunkedCorpusView(StreamBackedCorpusView):
         for para_str in self._para_block_reader(stream):
             para = []
             for sent_str in self._sent_tokenizer.tokenize(para_str):
-                sent = self._str2chunktree(sent_str, source_tagset=self._source_tagset,
-                                           target_tagset=self._target_tagset)
+                sent = self._str2chunktree(
+                    sent_str,
+                    source_tagset=self._source_tagset,
+                    target_tagset=self._target_tagset,
+                )
 
                 # If requested, throw away the tags.
                 if not self._tagged:

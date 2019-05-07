@@ -22,6 +22,7 @@ _debug = 0
 
 ###
 
+
 class LazyModule:
 
     """ Lazy module class.
@@ -44,6 +45,7 @@ class LazyModule:
         t = ISO.Week(1998,1,1)
 
     """
+
     # Flag which inidicates whether the LazyModule is initialized or not
     __lazymodule_init = 0
 
@@ -91,12 +93,9 @@ class LazyModule:
             return self.__lazymodule_locals[name]
         if _debug:
             print('LazyModule: Loading module %r' % name)
-        self.__lazymodule_locals[name] \
-             = module \
-             = __import__(name,
-                          self.__lazymodule_locals,
-                          self.__lazymodule_globals,
-                          '*')
+        self.__lazymodule_locals[name] = module = __import__(
+            name, self.__lazymodule_locals, self.__lazymodule_globals, '*'
+        )
 
         # Fill namespace with all symbols from original module to
         # provide faster access.
@@ -116,8 +115,10 @@ class LazyModule:
         if self.__lazymodule_loaded:
             raise AttributeError(name)
         if _debug:
-            print('LazyModule: ' \
-                  'Module load triggered by attribute %r read access' % name)
+            print(
+                'LazyModule: '
+                'Module load triggered by attribute %r read access' % name
+            )
         module = self.__lazymodule_import()
         return getattr(module, name)
 
@@ -133,8 +134,10 @@ class LazyModule:
             self.__dict__[name] = value
             return
         if _debug:
-            print('LazyModule: ' \
-                  'Module load triggered by attribute %r write access' % name)
+            print(
+                'LazyModule: '
+                'Module load triggered by attribute %r write access' % name
+            )
         module = self.__lazymodule_import()
         setattr(module, name, value)
 

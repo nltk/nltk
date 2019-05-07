@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: SentiWordNet
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Christopher Potts <cgpotts@stanford.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -40,6 +40,7 @@ import re
 from nltk.compat import python_2_unicode_compatible
 from nltk.corpus.reader import CorpusReader
 
+
 @python_2_unicode_compatible
 class SentiWordNetCorpusReader(CorpusReader):
     def __init__(self, root, fileids, encoding='utf-8'):
@@ -47,8 +48,7 @@ class SentiWordNetCorpusReader(CorpusReader):
         Construct a new SentiWordNet Corpus Reader, using data from
    	the specified file.
         """
-        super(SentiWordNetCorpusReader, self).__init__(root, fileids,
-                                                  encoding=encoding)
+        super(SentiWordNetCorpusReader, self).__init__(root, fileids, encoding=encoding)
         if len(self._fileids) != 1:
             raise ValueError('Exactly one file must be specified')
         self._db = {}
@@ -56,7 +56,7 @@ class SentiWordNetCorpusReader(CorpusReader):
 
     def _parse_src_file(self):
         lines = self.open(self._fileids[0]).read().splitlines()
-        lines = filter((lambda x : not re.search(r"^\s*#", x)), lines)
+        lines = filter((lambda x: not re.search(r"^\s*#", x)), lines)
         for i, line in enumerate(lines):
             fields = [field.strip() for field in re.split(r"\t+", line)]
             try:
@@ -69,6 +69,7 @@ class SentiWordNetCorpusReader(CorpusReader):
 
     def senti_synset(self, *vals):
         from nltk.corpus import wordnet as wn
+
         if tuple(vals) in self._db:
             pos_score, neg_score = self._db[tuple(vals)]
             pos, offset = vals
@@ -90,15 +91,17 @@ class SentiWordNetCorpusReader(CorpusReader):
 
     def senti_synsets(self, string, pos=None):
         from nltk.corpus import wordnet as wn
+
         sentis = []
         synset_list = wn.synsets(string, pos)
         for synset in synset_list:
             sentis.append(self.senti_synset(synset.name()))
-        sentis = filter(lambda x : x, sentis)
+        sentis = filter(lambda x: x, sentis)
         return sentis
 
     def all_senti_synsets(self):
         from nltk.corpus import wordnet as wn
+
         for key, fields in self._db.items():
             pos, offset = key
             pos_score, neg_score = fields

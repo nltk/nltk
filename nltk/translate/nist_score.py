@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: NIST Score
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Authors:
 # Contributors:
 # URL: <http://nltk.org/>
@@ -15,6 +15,7 @@ import fractions
 from collections import Counter
 
 from nltk.util import ngrams
+
 
 def sentence_nist(references, hypothesis, n=5):
     """
@@ -70,6 +71,7 @@ def sentence_nist(references, hypothesis, n=5):
     """
     return corpus_nist([references], [hypothesis], n)
 
+
 def corpus_nist(list_of_references, hypotheses, n=5):
     """
     Calculate a single corpus-level NIST score (aka. system-level BLEU) for all
@@ -83,15 +85,19 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     :type n: int
     """
     # Before proceeding to compute NIST, perform sanity checks.
-    assert len(list_of_references) == len(hypotheses), "The number of hypotheses and their reference(s) should be the same"
+    assert len(list_of_references) == len(
+        hypotheses
+    ), "The number of hypotheses and their reference(s) should be the same"
 
     # Collect the ngram coounts from the reference sentences.
     ngram_freq = Counter()
     total_reference_words = 0
-    for references in list_of_references: # For each source sent, there's a list of reference sents.
+    for (
+        references
+    ) in list_of_references:  # For each source sent, there's a list of reference sents.
         for reference in references:
             # For each order of ngram, count the ngram occurrences.
-            for i in range(1,n+1):
+            for i in range(1, n + 1):
                 ngram_freq.update(ngrams(reference, i))
             total_reference_words += len(reference)
 
@@ -99,8 +105,8 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     # Eqn 2 in Doddington (2002):
     # Info(w_1 ... w_n) = log_2 [ (# of occurrences of w_1 ... w_n-1) / (# of occurrences of w_1 ... w_n) ]
     information_weights = {}
-    for _ngram in ngram_freq: # w_1 ... w_n
-        _mgram = _ngram[:-1] #  w_1 ... w_n-1
+    for _ngram in ngram_freq:  # w_1 ... w_n
+        _mgram = _ngram[:-1]  #  w_1 ... w_n-1
         # From https://github.com/moses-smt/mosesdecoder/blob/master/scripts/generic/mteval-v13a.pl#L546
         # it's computed as such:
         #     denominator = ngram_freq[_mgram] if _mgram and _mgram in ngram_freq else denominator = total_reference_words
@@ -111,14 +117,14 @@ def corpus_nist(list_of_references, hypotheses, n=5):
             numerator = ngram_freq[_mgram]
         else:
             numerator = total_reference_words
-        information_weights[_ngram] = math.log(numerator/ngram_freq[_ngram], 2)
+        information_weights[_ngram] = math.log(numerator / ngram_freq[_ngram], 2)
 
     # Micro-average.
     nist_precision_numerator_per_ngram = Counter()
     nist_precision_denominator_per_ngram = Counter()
     l_ref, l_sys = 0, 0
     # For each order of ngram.
-    for i in range(1,n+1):
+    for i in range(1, n + 1):
         # Iterate through each hypothesis and their corresponding references.
         for references, hypothesis in zip(list_of_references, hypotheses):
             hyp_len = len(hypothesis)
@@ -128,15 +134,25 @@ def corpus_nist(list_of_references, hypotheses, n=5):
             for reference in references:
                 _ref_len = len(reference)
                 # Counter of ngrams in hypothesis.
-                hyp_ngrams = Counter(ngrams(hypothesis, i)) if len(hypothesis) >= i else Counter()
-                ref_ngrams = Counter(ngrams(reference, i)) if len(reference) >=i else Counter()
+                hyp_ngrams = (
+                    Counter(ngrams(hypothesis, i))
+                    if len(hypothesis) >= i
+                    else Counter()
+                )
+                ref_ngrams = (
+                    Counter(ngrams(reference, i)) if len(reference) >= i else Counter()
+                )
                 ngram_overlaps = hyp_ngrams & ref_ngrams
                 # Precision part of the score in Eqn 3
-                _numerator = sum(information_weights[_ngram] * count
-                                for _ngram, count in ngram_overlaps.items())
+                _numerator = sum(
+                    information_weights[_ngram] * count
+                    for _ngram, count in ngram_overlaps.items()
+                )
                 _denominator = sum(hyp_ngrams.values())
-                _precision = 0 if _denominator == 0 else _numerator/_denominator
-                nist_score_per_ref.append((_precision, _numerator, _denominator, _ref_len))
+                _precision = 0 if _denominator == 0 else _numerator / _denominator
+                nist_score_per_ref.append(
+                    (_precision, _numerator, _denominator, _ref_len)
+                )
             # Best reference.
             precision, numerator, denominator, ref_len = max(nist_score_per_ref)
             nist_precision_numerator_per_ngram[i] += numerator
@@ -147,8 +163,11 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     # Final NIST micro-average mean aggregation.
     nist_precision = 0
     for i in nist_precision_numerator_per_ngram:
-        precision = nist_precision_numerator_per_ngram[i] / nist_precision_denominator_per_ngram[i]
-        nist_precision+= precision
+        precision = (
+            nist_precision_numerator_per_ngram[i]
+            / nist_precision_denominator_per_ngram[i]
+        )
+        nist_precision += precision
     # Eqn 3 in Doddington(2002)
     return nist_precision * nist_length_penalty(l_ref, l_sys)
 
@@ -172,7 +191,7 @@ def nist_length_penalty(ref_len, hyp_len):
     ratio = hyp_len / ref_len
     if 0 < ratio < 1:
         ratio_x, score_x = 1.5, 0.5
-        beta = math.log(score_x) / math.log(ratio_x)**2
-        return math.exp(beta * math.log(ratio)**2)
-    else: # ratio <= 0 or ratio >= 1
+        beta = math.log(score_x) / math.log(ratio_x) ** 2
+        return math.exp(beta * math.log(ratio) ** 2)
+    else:  # ratio <= 0 or ratio >= 1
         return max(min(ratio, 1.0), 0.0)

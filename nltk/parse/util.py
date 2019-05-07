@@ -2,7 +2,7 @@
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -19,9 +19,10 @@ from nltk.parse.chart import Chart, ChartParser
 from nltk.parse.pchart import InsideChartParser
 from nltk.parse.featurechart import FeatureChart, FeatureChartParser
 
-def load_parser(grammar_url, trace=0,
-                parser=None, chart_class=None,
-                beam_size=0, **load_args):
+
+def load_parser(
+    grammar_url, trace=0, parser=None, chart_class=None, beam_size=0, **load_args
+):
     """
     Load a grammar from a file, and build a parser based on that grammar.
     The parser depends on the grammar format, and might also depend
@@ -55,8 +56,7 @@ def load_parser(grammar_url, trace=0,
     """
     grammar = load(grammar_url, **load_args)
     if not isinstance(grammar, CFG):
-        raise ValueError("The grammar must be a CFG, "
-                         "or a subclass thereof.")
+        raise ValueError("The grammar must be a CFG, " "or a subclass thereof.")
     if isinstance(grammar, PCFG):
         if parser is None:
             parser = InsideChartParser
@@ -69,12 +69,13 @@ def load_parser(grammar_url, trace=0,
             chart_class = FeatureChart
         return parser(grammar, trace=trace, chart_class=chart_class)
 
-    else: # Plain CFG.
+    else:  # Plain CFG.
         if parser is None:
             parser = ChartParser
         if chart_class is None:
             chart_class = Chart
         return parser(grammar, trace=trace, chart_class=chart_class)
+
 
 def taggedsent_to_conll(sentence):
     """
@@ -140,14 +141,17 @@ def taggedsents_to_conll(sentences):
             yield input_str
         yield '\n\n'
 
+
 ######################################################################
-#{ Test Suites
+# { Test Suites
 ######################################################################
+
 
 class TestGrammar(object):
     """
     Unit tests for  CFG.
     """
+
     def __init__(self, grammar, suite, accept=None, reject=None):
         self.test_grammar = grammar
 
@@ -155,7 +159,6 @@ class TestGrammar(object):
         self.suite = suite
         self._accept = accept
         self._reject = reject
-
 
     def run(self, show_trees=False):
         """
@@ -190,6 +193,7 @@ class TestGrammar(object):
             if accepted and rejected:
                 print("All tests passed!")
 
+
 def extract_test_sentences(string, comment_chars="#%;", encoding=None):
     """
     Parses a string with one test sentence per line.
@@ -215,8 +219,8 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
         split_info = sentence.split(':', 1)
         result = None
         if len(split_info) == 2:
-            if split_info[0] in ['True','true','False','false']:
-                result = split_info[0] in ['True','true']
+            if split_info[0] in ['True', 'true', 'False', 'false']:
+                result = split_info[0] in ['True', 'true']
                 sentence = split_info[1]
             else:
                 result = int(split_info[0])
@@ -226,6 +230,7 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
             continue
         sentences += [(tokens, result)]
     return sentences
+
 
 # nose thinks it is a test
 extract_test_sentences.__test__ = False

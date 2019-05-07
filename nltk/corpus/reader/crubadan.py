@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Crubadan N-grams Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Avital Pekker <avital.pekker@utoronto.ca>
 #
 # URL: <http://nltk.org/>
@@ -28,6 +28,7 @@ from nltk.compat import PY3
 from nltk.corpus.reader import CorpusReader
 from nltk.probability import FreqDist
 from nltk.data import ZipFilePathPointer
+
 
 class CrubadanCorpusReader(CorpusReader):
     """
@@ -70,7 +71,9 @@ class CrubadanCorpusReader(CorpusReader):
     def _load_lang_mapping_data(self):
         ''' Load language mappings between codes and description from table.txt '''
         if isinstance(self.root, ZipFilePathPointer):
-            raise RuntimeError("Please install the 'crubadan' corpus first, use nltk.download()")
+            raise RuntimeError(
+                "Please install the 'crubadan' corpus first, use nltk.download()"
+            )
 
         mapper_file = path.join(self.root, self._LANG_MAPPER_FILE)
         if self._LANG_MAPPER_FILE not in self.fileids():

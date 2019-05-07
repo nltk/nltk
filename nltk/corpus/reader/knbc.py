@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # KNB Corpus reader
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -62,7 +62,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
         morphs2str is a function to convert morphlist to str for tree representation
         for _parse()
         """
-        #FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
+        # FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
         #       from CorpusReader?
         CorpusReader.__init__(self, root, fileids, encoding)
         self.morphs2str = morphs2str
@@ -106,13 +106,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
                 assert m is not None
 
                 node = dg.nodes[i]
-                node.update(
-                    {
-                        'address': i,
-                        'rel': m.group(2),
-                        'word': [],
-                    }
-                )
+                node.update({'address': i, 'rel': m.group(2), 'word': []})
 
                 dep_parent = int(m.group(1))
 
@@ -135,6 +129,7 @@ class KNBCorpusReader(SyntaxCorpusReader):
 
         return dg.tree()
 
+
 ######################################################################
 # Demo
 ######################################################################
@@ -146,15 +141,22 @@ def demo():
     from nltk.corpus.util import LazyCorpusLoader
 
     root = nltk.data.find('corpora/knbc/corpus1')
-    fileids = [f for f in find_corpus_fileids(FileSystemPathPointer(root), ".*")
-               if re.search(r"\d\-\d\-[\d]+\-[\d]+", f)]
+    fileids = [
+        f
+        for f in find_corpus_fileids(FileSystemPathPointer(root), ".*")
+        if re.search(r"\d\-\d\-[\d]+\-[\d]+", f)
+    ]
 
     def _knbc_fileids_sort(x):
         cells = x.split('-')
         return (cells[0], int(cells[1]), int(cells[2]), int(cells[3]))
 
-    knbc = LazyCorpusLoader('knbc/corpus1', KNBCorpusReader,
-                            sorted(fileids, key=_knbc_fileids_sort), encoding='euc-jp')
+    knbc = LazyCorpusLoader(
+        'knbc/corpus1',
+        KNBCorpusReader,
+        sorted(fileids, key=_knbc_fileids_sort),
+        encoding='euc-jp',
+    )
 
     print(knbc.fileids()[:10])
     print(''.join(knbc.words()[:100]))
@@ -178,12 +180,15 @@ def demo():
 def test():
 
     from nltk.corpus.util import LazyCorpusLoader
+
     knbc = LazyCorpusLoader(
-        'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
+        'knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp'
+    )
     assert isinstance(knbc.words()[0], string_types)
     assert isinstance(knbc.sents()[0][0], string_types)
     assert isinstance(knbc.tagged_words()[0], tuple)
     assert isinstance(knbc.tagged_sents()[0][0], tuple)
+
 
 if __name__ == '__main__':
     demo()

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Lin's Thesaurus
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Dan Blanchard <dblanchard@ets.org>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.txt
@@ -38,7 +38,9 @@ class LinThesaurusCorpusReader(CorpusReader):
         super(LinThesaurusCorpusReader, self).__init__(root, r'sim[A-Z]\.lsp')
         self._thesaurus = defaultdict(LinThesaurusCorpusReader.__defaultdict_factory)
         self._badscore = badscore
-        for path, encoding, fileid in self.abspaths(include_encoding=True, include_fileid=True):
+        for path, encoding, fileid in self.abspaths(
+            include_encoding=True, include_fileid=True
+        ):
             with open(path) as lin_file:
                 first = True
                 for line in lin_file:
@@ -55,7 +57,9 @@ class LinThesaurusCorpusReader(CorpusReader):
                         split_line = line.split('\t')
                         if len(split_line) == 2:
                             ngram, score = split_line
-                            self._thesaurus[fileid][key][ngram.strip('"')] = float(score)
+                            self._thesaurus[fileid][key][ngram.strip('"')] = float(
+                                score
+                            )
 
     def similarity(self, ngram1, ngram2, fileid=None):
         '''
@@ -78,10 +82,23 @@ class LinThesaurusCorpusReader(CorpusReader):
                 return [(fid, 1.0) for fid in self._fileids]
         else:
             if fileid:
-                return self._thesaurus[fileid][ngram1][ngram2] if ngram2 in self._thesaurus[fileid][ngram1] else self._badscore
+                return (
+                    self._thesaurus[fileid][ngram1][ngram2]
+                    if ngram2 in self._thesaurus[fileid][ngram1]
+                    else self._badscore
+                )
             else:
-                return [(fid, (self._thesaurus[fid][ngram1][ngram2] if ngram2 in self._thesaurus[fid][ngram1]
-                                  else self._badscore)) for fid in self._fileids]
+                return [
+                    (
+                        fid,
+                        (
+                            self._thesaurus[fid][ngram1][ngram2]
+                            if ngram2 in self._thesaurus[fid][ngram1]
+                            else self._badscore
+                        ),
+                    )
+                    for fid in self._fileids
+                ]
 
     def scored_synonyms(self, ngram, fileid=None):
         '''
@@ -98,7 +115,10 @@ class LinThesaurusCorpusReader(CorpusReader):
         if fileid:
             return self._thesaurus[fileid][ngram].items()
         else:
-            return [(fileid, self._thesaurus[fileid][ngram].items()) for fileid in self._fileids]
+            return [
+                (fileid, self._thesaurus[fileid][ngram].items())
+                for fileid in self._fileids
+            ]
 
     def synonyms(self, ngram, fileid=None):
         '''
@@ -114,7 +134,10 @@ class LinThesaurusCorpusReader(CorpusReader):
         if fileid:
             return self._thesaurus[fileid][ngram].keys()
         else:
-            return [(fileid, self._thesaurus[fileid][ngram].keys()) for fileid in self._fileids]
+            return [
+                (fileid, self._thesaurus[fileid][ngram].keys())
+                for fileid in self._fileids
+            ]
 
     def __contains__(self, ngram):
         '''
@@ -124,12 +147,17 @@ class LinThesaurusCorpusReader(CorpusReader):
         :type ngram: C{string}
         :return: whether the given ngram is in the thesaurus.
         '''
-        return reduce(lambda accum, fileid: accum or (ngram in self._thesaurus[fileid]), self._fileids, False)
+        return reduce(
+            lambda accum, fileid: accum or (ngram in self._thesaurus[fileid]),
+            self._fileids,
+            False,
+        )
 
 
 ######################################################################
 # Demo
 ######################################################################
+
 
 def demo():
     from nltk.corpus import lin_thesaurus as thes

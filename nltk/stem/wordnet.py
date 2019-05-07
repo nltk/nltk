@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet stemmer interface
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -10,6 +10,7 @@ from __future__ import unicode_literals
 from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet
 from nltk.compat import python_2_unicode_compatible
+
 
 @python_2_unicode_compatible
 class WordNetLemmatizer(object):
@@ -47,4 +48,5 @@ class WordNetLemmatizer(object):
 # unload wordnet
 def teardown_module(module=None):
     from nltk.corpus import wordnet
+
     wordnet._unload()

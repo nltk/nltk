@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: Sentiment Analyzer
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -18,17 +18,23 @@ from collections import defaultdict
 
 from nltk.classify.util import apply_features, accuracy as eval_accuracy
 from nltk.collocations import BigramCollocationFinder
-from nltk.metrics import (BigramAssocMeasures, precision as eval_precision,
-    recall as eval_recall, f_measure as eval_f_measure)
+from nltk.metrics import (
+    BigramAssocMeasures,
+    precision as eval_precision,
+    recall as eval_recall,
+    f_measure as eval_f_measure,
+)
 
 from nltk.probability import FreqDist
 
 from nltk.sentiment.util import save_file, timer
 
+
 class SentimentAnalyzer(object):
     """
     A Sentiment Analysis tool based on machine learning approaches.
     """
+
     def __init__(self, classifier=None):
         self.feat_extractors = defaultdict(list)
         self.classifier = classifier
@@ -82,11 +88,15 @@ class SentimentAnalyzer(object):
         """
         # Stopwords are not removed
         unigram_feats_freqs = FreqDist(word for word in words)
-        return [w for w, f in unigram_feats_freqs.most_common(top_n)
-                if unigram_feats_freqs[w] > min_freq]
+        return [
+            w
+            for w, f in unigram_feats_freqs.most_common(top_n)
+            if unigram_feats_freqs[w] > min_freq
+        ]
 
-    def bigram_collocation_feats(self, documents, top_n=None, min_freq=3,
-                                 assoc_measure=BigramAssocMeasures.pmi):
+    def bigram_collocation_feats(
+        self, documents, top_n=None, min_freq=3, assoc_measure=BigramAssocMeasures.pmi
+    ):
         """
         Return `top_n` bigram features (using `assoc_measure`).
         Note that this method is based on bigram collocations measures, and not
@@ -176,8 +186,16 @@ class SentimentAnalyzer(object):
 
         return self.classifier
 
-    def evaluate(self, test_set, classifier=None, accuracy=True, f_measure=True,
-                 precision=True, recall=True, verbose=False):
+    def evaluate(
+        self,
+        test_set,
+        classifier=None,
+        accuracy=True,
+        f_measure=True,
+        precision=True,
+        recall=True,
+        verbose=False,
+    ):
         """
         Evaluate and print classifier performance on the test set.
 
@@ -209,16 +227,17 @@ class SentimentAnalyzer(object):
 
         for label in labels:
             if precision == True:
-                precision_score = eval_precision(gold_results[label],
-                    test_results[label])
+                precision_score = eval_precision(
+                    gold_results[label], test_results[label]
+                )
                 metrics_results['Precision [{0}]'.format(label)] = precision_score
             if recall == True:
-                recall_score = eval_recall(gold_results[label],
-                    test_results[label])
+                recall_score = eval_recall(gold_results[label], test_results[label])
                 metrics_results['Recall [{0}]'.format(label)] = recall_score
             if f_measure == True:
-                f_measure_score = eval_f_measure(gold_results[label],
-                    test_results[label])
+                f_measure_score = eval_f_measure(
+                    gold_results[label], test_results[label]
+                )
                 metrics_results['F-measure [{0}]'.format(label)] = f_measure_score
 
         # Print evaluation results (in alphabetical order)

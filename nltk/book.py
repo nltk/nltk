@@ -1,14 +1,21 @@
 # Natural Language Toolkit: Some texts for exploration in chapter 1 of the book
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function
 
-from nltk.corpus import (gutenberg, genesis, inaugural,
-                         nps_chat, webtext, treebank, wordnet)
+from nltk.corpus import (
+    gutenberg,
+    genesis,
+    inaugural,
+    nps_chat,
+    webtext,
+    treebank,
+    wordnet,
+)
 from nltk.text import Text
 from nltk.probability import FreqDist
 from nltk.util import bigrams
@@ -33,8 +40,7 @@ print("text4:", text4.name)
 text5 = Text(nps_chat.words(), name="Chat Corpus")
 print("text5:", text5.name)
 
-text6 = Text(webtext.words('grail.txt'),
-             name="Monty Python and the Holy Grail")
+text6 = Text(webtext.words('grail.txt'), name="Monty Python and the Holy Grail")
 print("text6:", text6.name)
 
 text7 = Text(treebank.words(), name="Wall Street Journal")
@@ -58,25 +64,142 @@ def texts():
     print("text8:", text8.name)
     print("text9:", text9.name)
 
+
 sent1 = ["Call", "me", "Ishmael", "."]
-sent2 = ["The", "family", "of", "Dashwood", "had", "long",
-         "been", "settled", "in", "Sussex", "."]
-sent3 = ["In", "the", "beginning", "God", "created", "the",
-         "heaven", "and", "the", "earth", "."]
-sent4 = ["Fellow", "-", "Citizens", "of", "the", "Senate",
-         "and", "of", "the", "House", "of", "Representatives", ":"]
-sent5 = ["I", "have", "a", "problem", "with", "people",
-         "PMing", "me", "to", "lol", "JOIN"]
-sent6 = ['SCENE', '1', ':', '[', 'wind', ']', '[', 'clop', 'clop',
-         'clop', ']', 'KING', 'ARTHUR', ':', 'Whoa', 'there', '!']
-sent7 = ["Pierre", "Vinken", ",", "61", "years", "old", ",",
-         "will", "join", "the", "board", "as", "a", "nonexecutive",
-         "director", "Nov.", "29", "."]
-sent8 = ['25', 'SEXY', 'MALE', ',', 'seeks', 'attrac', 'older',
-         'single', 'lady', ',', 'for', 'discreet', 'encounters', '.']
-sent9 = ["THE", "suburb", "of", "Saffron", "Park", "lay", "on", "the",
-         "sunset", "side", "of", "London", ",", "as", "red", "and",
-         "ragged", "as", "a", "cloud", "of", "sunset", "."]
+sent2 = [
+    "The",
+    "family",
+    "of",
+    "Dashwood",
+    "had",
+    "long",
+    "been",
+    "settled",
+    "in",
+    "Sussex",
+    ".",
+]
+sent3 = [
+    "In",
+    "the",
+    "beginning",
+    "God",
+    "created",
+    "the",
+    "heaven",
+    "and",
+    "the",
+    "earth",
+    ".",
+]
+sent4 = [
+    "Fellow",
+    "-",
+    "Citizens",
+    "of",
+    "the",
+    "Senate",
+    "and",
+    "of",
+    "the",
+    "House",
+    "of",
+    "Representatives",
+    ":",
+]
+sent5 = [
+    "I",
+    "have",
+    "a",
+    "problem",
+    "with",
+    "people",
+    "PMing",
+    "me",
+    "to",
+    "lol",
+    "JOIN",
+]
+sent6 = [
+    'SCENE',
+    '1',
+    ':',
+    '[',
+    'wind',
+    ']',
+    '[',
+    'clop',
+    'clop',
+    'clop',
+    ']',
+    'KING',
+    'ARTHUR',
+    ':',
+    'Whoa',
+    'there',
+    '!',
+]
+sent7 = [
+    "Pierre",
+    "Vinken",
+    ",",
+    "61",
+    "years",
+    "old",
+    ",",
+    "will",
+    "join",
+    "the",
+    "board",
+    "as",
+    "a",
+    "nonexecutive",
+    "director",
+    "Nov.",
+    "29",
+    ".",
+]
+sent8 = [
+    '25',
+    'SEXY',
+    'MALE',
+    ',',
+    'seeks',
+    'attrac',
+    'older',
+    'single',
+    'lady',
+    ',',
+    'for',
+    'discreet',
+    'encounters',
+    '.',
+]
+sent9 = [
+    "THE",
+    "suburb",
+    "of",
+    "Saffron",
+    "Park",
+    "lay",
+    "on",
+    "the",
+    "sunset",
+    "side",
+    "of",
+    "London",
+    ",",
+    "as",
+    "red",
+    "and",
+    "ragged",
+    "as",
+    "a",
+    "cloud",
+    "of",
+    "sunset",
+    ".",
+]
 
 
 def sents():

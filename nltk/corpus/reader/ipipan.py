@@ -1,6 +1,6 @@
 # Natural Language Toolkit: IPI PAN Corpus Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Konrad Goluchowski <kodie@mimuw.edu.pl>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -12,6 +12,7 @@ from six import string_types
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat
 from nltk.corpus.reader.api import CorpusReader
 
+
 def _parse_args(fun):
     @functools.wraps(fun)
     def decorator(self, fileids=None, **kwargs):
@@ -19,7 +20,9 @@ def _parse_args(fun):
         if not fileids:
             fileids = self.fileids()
         return fun(self, fileids, **kwargs)
+
     return decorator
+
 
 class IPIPANCorpusReader(CorpusReader):
     """
@@ -83,16 +86,17 @@ class IPIPANCorpusReader(CorpusReader):
     def categories(self, fileids=None):
         if not fileids:
             fileids = self.fileids()
-        return [self._map_category(cat)
-                for cat in self._parse_header(fileids, 'keyTerm')]
+        return [
+            self._map_category(cat) for cat in self._parse_header(fileids, 'keyTerm')
+        ]
 
     def fileids(self, channels=None, domains=None, categories=None):
-        if channels is not None and domains is not None and \
-                categories is not None:
-            raise ValueError('You can specify only one of channels, domains '
-                             'and categories parameter at once')
-        if channels is None and domains is None and \
-                categories is None:
+        if channels is not None and domains is not None and categories is not None:
+            raise ValueError(
+                'You can specify only one of channels, domains '
+                'and categories parameter at once'
+            )
+        if channels is None and domains is None and categories is None:
             return CorpusReader.fileids(self)
         if isinstance(channels, string_types):
             channels = [channels]
@@ -105,49 +109,73 @@ class IPIPANCorpusReader(CorpusReader):
         elif domains:
             return self._list_morph_files_by('domain', domains)
         else:
-            return self._list_morph_files_by('keyTerm', categories,
-                    map=self._map_category)
+            return self._list_morph_files_by(
+                'keyTerm', categories, map=self._map_category
+            )
 
     @_parse_args
     def sents(self, fileids=None, **kwargs):
-        return concat([self._view(fileid,
-            mode=IPIPANCorpusView.SENTS_MODE, tags=False, **kwargs)
-            for fileid in self._list_morph_files(fileids)])
+        return concat(
+            [
+                self._view(
+                    fileid, mode=IPIPANCorpusView.SENTS_MODE, tags=False, **kwargs
+                )
+                for fileid in self._list_morph_files(fileids)
+            ]
+        )
 
     @_parse_args
     def paras(self, fileids=None, **kwargs):
-        return concat([self._view(fileid,
-            mode=IPIPANCorpusView.PARAS_MODE, tags=False, **kwargs)
-            for fileid in self._list_morph_files(fileids)])
+        return concat(
+            [
+                self._view(
+                    fileid, mode=IPIPANCorpusView.PARAS_MODE, tags=False, **kwargs
+                )
+                for fileid in self._list_morph_files(fileids)
+            ]
+        )
 
     @_parse_args
     def words(self, fileids=None, **kwargs):
-        return concat([self._view(fileid, tags=False, **kwargs)
-            for fileid in self._list_morph_files(fileids)])
+        return concat(
+            [
+                self._view(fileid, tags=False, **kwargs)
+                for fileid in self._list_morph_files(fileids)
+            ]
+        )
 
     @_parse_args
     def tagged_sents(self, fileids=None, **kwargs):
-        return concat([self._view(fileid, mode=IPIPANCorpusView.SENTS_MODE,
-            **kwargs)
-            for fileid in self._list_morph_files(fileids)])
+        return concat(
+            [
+                self._view(fileid, mode=IPIPANCorpusView.SENTS_MODE, **kwargs)
+                for fileid in self._list_morph_files(fileids)
+            ]
+        )
 
     @_parse_args
     def tagged_paras(self, fileids=None, **kwargs):
-        return concat([self._view(fileid, mode=IPIPANCorpusView.PARAS_MODE,
-            **kwargs)
-            for fileid in self._list_morph_files(fileids)])
+        return concat(
+            [
+                self._view(fileid, mode=IPIPANCorpusView.PARAS_MODE, **kwargs)
+                for fileid in self._list_morph_files(fileids)
+            ]
+        )
 
     @_parse_args
     def tagged_words(self, fileids=None, **kwargs):
-        return concat([self._view(fileid, **kwargs)
-            for fileid in self._list_morph_files(fileids)])
+        return concat(
+            [self._view(fileid, **kwargs) for fileid in self._list_morph_files(fileids)]
+        )
 
     def _list_morph_files(self, fileids):
         return [f for f in self.abspaths(fileids)]
 
     def _list_header_files(self, fileids):
-        return [f.replace('morph.xml', 'header.xml')
-                for f in self._list_morph_files(fileids)]
+        return [
+            f.replace('morph.xml', 'header.xml')
+            for f in self._list_morph_files(fileids)
+        ]
 
     def _parse_header(self, fileids, tag):
         values = set()
@@ -176,17 +204,18 @@ class IPIPANCorpusReader(CorpusReader):
             header = infile.read()
         tag_end = 0
         while True:
-            tag_pos = header.find('<'+tag, tag_end)
-            if tag_pos < 0: return tags
-            tag_end = header.find('</'+tag+'>', tag_pos)
-            tags.append(header[tag_pos+len(tag)+2:tag_end])
+            tag_pos = header.find('<' + tag, tag_end)
+            if tag_pos < 0:
+                return tags
+            tag_end = header.find('</' + tag + '>', tag_pos)
+            tags.append(header[tag_pos + len(tag) + 2 : tag_end])
 
     def _map_category(self, cat):
         pos = cat.find('>')
         if pos == -1:
             return cat
         else:
-            return cat[pos+1:]
+            return cat[pos + 1 :]
 
     def _view(self, filename, **kwargs):
         tags = kwargs.pop('tags', True)
@@ -201,19 +230,26 @@ class IPIPANCorpusReader(CorpusReader):
         if len(kwargs) > 0:
             raise ValueError('Unexpected arguments: %s' % kwargs.keys())
         if not one_tag and not disamb_only:
-            raise ValueError('You cannot specify both one_tag=False and '
-                             'disamb_only=False')
+            raise ValueError(
+                'You cannot specify both one_tag=False and ' 'disamb_only=False'
+            )
         if not tags and (simplify_tags or not one_tag or not disamb_only):
-            raise ValueError('You cannot specify simplify_tags, one_tag or '
-                             'disamb_only with functions other than tagged_*')
+            raise ValueError(
+                'You cannot specify simplify_tags, one_tag or '
+                'disamb_only with functions other than tagged_*'
+            )
 
-        return IPIPANCorpusView(filename,
-                 tags=tags, mode=mode, simplify_tags=simplify_tags,
-                 one_tag=one_tag, disamb_only=disamb_only,
-                 append_no_space=append_no_space,
-                 append_space=append_space,
-                 replace_xmlentities=replace_xmlentities
-                 )
+        return IPIPANCorpusView(
+            filename,
+            tags=tags,
+            mode=mode,
+            simplify_tags=simplify_tags,
+            one_tag=one_tag,
+            disamb_only=disamb_only,
+            append_no_space=append_no_space,
+            append_space=append_space,
+            replace_xmlentities=replace_xmlentities,
+        )
 
 
 class IPIPANCorpusView(StreamBackedCorpusView):
@@ -292,7 +328,7 @@ class IPIPANCorpusView(StreamBackedCorpusView):
                     orth = orth.replace('&quot;', '"').replace('&amp;', '&')
             elif line.startswith('<lex'):
                 if not self.disamb_only or line.find('disamb=') != -1:
-                    tag = line[line.index('<ctag')+6 : line.index('</ctag') ]
+                    tag = line[line.index('<ctag') + 6 : line.index('</ctag')]
                     tags.add(tag)
             elif line.startswith('</tok'):
                 if self.show_tags:

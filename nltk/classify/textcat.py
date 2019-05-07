@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language ID module using TextCat algorithm
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Avital Pekker <avital.pekker@utoronto.ca>
 #
 # URL: <http://nltk.org/>
@@ -51,6 +51,7 @@ except ImportError:
 ##  Language identification using TextCat
 ######################################################################
 
+
 class TextCat(object):
 
     _corpus = None
@@ -62,12 +63,15 @@ class TextCat(object):
 
     def __init__(self):
         if not re:
-            raise EnvironmentError("classify.textcat requires the regex module that "
-                                   "supports unicode. Try '$ pip install regex' and "
-                                   "see https://pypi.python.org/pypi/regex for "
-                                   "further details.")
+            raise EnvironmentError(
+                "classify.textcat requires the regex module that "
+                "supports unicode. Try '$ pip install regex' and "
+                "see https://pypi.python.org/pypi/regex for "
+                "further details."
+            )
 
         from nltk.corpus import crubadan
+
         self._corpus = crubadan
         # Load all language ngrams into cache
         for lang in self._corpus.langs():
@@ -108,7 +112,7 @@ class TextCat(object):
             idx_lang_profile = list(lang_fd.keys()).index(trigram)
             idx_text = list(text_profile.keys()).index(trigram)
 
-            #print(idx_lang_profile, ", ", idx_text)
+            # print(idx_lang_profile, ", ", idx_text)
             dist = abs(idx_lang_profile - idx_text)
         else:
             # Arbitrary but should be larger than
@@ -147,22 +151,33 @@ class TextCat(object):
         return min(self.last_distances, key=self.last_distances.get)
         #################################################')
 
+
 def demo():
     from nltk.corpus import udhr
 
-    langs = ['Kurdish-UTF8', 'Abkhaz-UTF8', 'Farsi_Persian-UTF8',
-             'Hindi-UTF8', 'Hawaiian-UTF8', 'Russian-UTF8', 'Vietnamese-UTF8',
-             'Serbian_Srpski-UTF8','Esperanto-UTF8']
+    langs = [
+        'Kurdish-UTF8',
+        'Abkhaz-UTF8',
+        'Farsi_Persian-UTF8',
+        'Hindi-UTF8',
+        'Hawaiian-UTF8',
+        'Russian-UTF8',
+        'Vietnamese-UTF8',
+        'Serbian_Srpski-UTF8',
+        'Esperanto-UTF8',
+    ]
 
-    friendly = {'kmr':'Northern Kurdish',
-                'abk':'Abkhazian',
-                'pes':'Iranian Persian',
-                'hin':'Hindi',
-                'haw':'Hawaiian',
-                'rus':'Russian',
-                'vie':'Vietnamese',
-                'srp':'Serbian',
-                'epo':'Esperanto'}
+    friendly = {
+        'kmr': 'Northern Kurdish',
+        'abk': 'Abkhazian',
+        'pes': 'Iranian Persian',
+        'hin': 'Hindi',
+        'haw': 'Hawaiian',
+        'rus': 'Russian',
+        'vie': 'Vietnamese',
+        'srp': 'Serbian',
+        'epo': 'Esperanto',
+    }
 
     tc = TextCat()
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Stack decoder
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Tah Wei Hoon <hoon.tw@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -76,6 +76,7 @@ class StackDecoder(object):
     ['nobody', 'expects', 'the', 'spanish', 'inquisition', '!']
 
     """
+
     def __init__(self, phrase_table, language_model):
         """
         :param phrase_table: Table of translations for source language
@@ -151,8 +152,10 @@ class StackDecoder(object):
         """
         sentence = tuple(src_sentence)  # prevent accidental modification
         sentence_length = len(sentence)
-        stacks = [_Stack(self.stack_size, self.beam_threshold)
-                  for _ in range(0, sentence_length + 1)]
+        stacks = [
+            _Stack(self.stack_size, self.beam_threshold)
+            for _ in range(0, sentence_length + 1)
+        ]
         empty_hypothesis = _Hypothesis()
         stacks[0].push(empty_hypothesis)
 
@@ -160,29 +163,35 @@ class StackDecoder(object):
         future_score_table = self.compute_future_scores(sentence)
         for stack in stacks:
             for hypothesis in stack:
-                possible_expansions = StackDecoder.valid_phrases(all_phrases,
-                                                                 hypothesis)
+                possible_expansions = StackDecoder.valid_phrases(
+                    all_phrases, hypothesis
+                )
                 for src_phrase_span in possible_expansions:
-                    src_phrase = sentence[src_phrase_span[0]:src_phrase_span[1]]
-                    for translation_option in (self.phrase_table.
-                                               translations_for(src_phrase)):
+                    src_phrase = sentence[src_phrase_span[0] : src_phrase_span[1]]
+                    for translation_option in self.phrase_table.translations_for(
+                        src_phrase
+                    ):
                         raw_score = self.expansion_score(
-                            hypothesis, translation_option, src_phrase_span)
+                            hypothesis, translation_option, src_phrase_span
+                        )
                         new_hypothesis = _Hypothesis(
                             raw_score=raw_score,
                             src_phrase_span=src_phrase_span,
                             trg_phrase=translation_option.trg_phrase,
-                            previous=hypothesis
+                            previous=hypothesis,
                         )
                         new_hypothesis.future_score = self.future_score(
-                            new_hypothesis, future_score_table, sentence_length)
+                            new_hypothesis, future_score_table, sentence_length
+                        )
                         total_words = new_hypothesis.total_translated_words()
                         stacks[total_words].push(new_hypothesis)
 
         if not stacks[sentence_length]:
-            warnings.warn('Unable to translate all words. '
-                          'The source sentence contains words not in '
-                          'the phrase table')
+            warnings.warn(
+                'Unable to translate all words. '
+                'The source sentence contains words not in '
+                'the phrase table'
+            )
             # Instead of returning empty output, perhaps a partial
             # translation could be returned
             return []
@@ -235,8 +244,9 @@ class StackDecoder(object):
                 end = start + seq_length
                 phrase = src_sentence[start:end]
                 if phrase in self.phrase_table:
-                    score = self.phrase_table.translations_for(
-                        phrase)[0].log_prob  # pick best (first) translation
+                    score = self.phrase_table.translations_for(phrase)[
+                        0
+                    ].log_prob  # pick best (first) translation
                     # Warning: API of language_model is subject to change
                     score += self.language_model.probability(phrase)
                     scores[start][end] = score
@@ -244,8 +254,7 @@ class StackDecoder(object):
                 # check if a better score can be obtained by combining
                 # two child subsequences
                 for mid in range(start + 1, end):
-                    combined_score = (scores[start][mid] +
-                                      scores[mid][end])
+                    combined_score = scores[start][mid] + scores[mid][end]
                     if combined_score > scores[start][end]:
                         scores[start][end] = combined_score
         return scores
@@ -279,7 +288,8 @@ class StackDecoder(object):
         # The API of language_model is subject to change; it could accept
         # a string, a list of words, and/or some other type
         score += self.language_model.probability_change(
-            hypothesis, translation_option.trg_phrase)
+            hypothesis, translation_option.trg_phrase
+        )
         score += self.distortion_score(hypothesis, src_phrase_span)
         score -= self.word_penalty * len(translation_option.trg_phrase)
         return score
@@ -309,8 +319,7 @@ class StackDecoder(object):
             cover untranslated positions.
         :rtype: list(tuple(int, int))
         """
-        untranslated_spans = hypothesis.untranslated_spans(
-            len(all_phrases_from))
+        untranslated_spans = hypothesis.untranslated_spans(len(all_phrases_from))
         valid_phrases = []
         for available_span in untranslated_spans:
             start = available_span[0]
@@ -341,8 +350,15 @@ class _Hypothesis(object):
     ``src_phrase_span`` in the hypothesis chain. Similarly, the
     translation output can be found by traversing up the chain.
     """
-    def __init__(self, raw_score=0.0, src_phrase_span=(), trg_phrase=(),
-                 previous=None, future_score=0.0):
+
+    def __init__(
+        self,
+        raw_score=0.0,
+        src_phrase_span=(),
+        trg_phrase=(),
+        previous=None,
+        future_score=0.0,
+    ):
         """
         :param raw_score: Likelihood of hypothesis so far.
             Higher is better. Does not account for untranslated words.
@@ -415,8 +431,7 @@ class _Hypothesis(object):
         current_hypothesis = self
         while current_hypothesis.previous is not None:
             translated_span = current_hypothesis.src_phrase_span
-            translated_positions.extend(range(translated_span[0],
-                                              translated_span[1]))
+            translated_positions.extend(range(translated_span[0], translated_span[1]))
             current_hypothesis = current_hypothesis.previous
         return translated_positions
 
@@ -439,6 +454,7 @@ class _Stack(object):
     """
     Collection of _Hypothesis objects
     """
+
     def __init__(self, max_size=100, beam_threshold=0.0):
         """
         :param beam_threshold: Hypotheses that score less than this
@@ -496,4 +512,5 @@ class _Stack(object):
 
     def __bool__(self):
         return len(self.items) != 0
-    __nonzero__=__bool__
+
+    __nonzero__ = __bool__

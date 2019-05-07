@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Categorized Sentences Corpus Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -39,6 +39,7 @@ from six import string_types
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
+
 class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
     """
     A reader for corpora in which each row represents a single instance, mainly
@@ -72,8 +73,15 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
 
     CorpusView = StreamBackedCorpusView
 
-    def __init__(self, root, fileids, word_tokenizer=WhitespaceTokenizer(),
-                 sent_tokenizer=None, encoding='utf8', **kwargs):
+    def __init__(
+        self,
+        root,
+        fileids,
+        word_tokenizer=WhitespaceTokenizer(),
+        sent_tokenizer=None,
+        encoding='utf8',
+        **kwargs
+    ):
         """
         :param root: The root directory for the corpus.
         :param fileids: a list or regexp specifying the fileids in the corpus.
@@ -136,8 +144,12 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids, string_types):
             fileids = [fileids]
-        return concat([self.CorpusView(path, self._read_sent_block, encoding=enc)
-            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+        return concat(
+            [
+                self.CorpusView(path, self._read_sent_block, encoding=enc)
+                for (path, enc, fileid) in self.abspaths(fileids, True, True)
+            ]
+        )
 
     def words(self, fileids=None, categories=None):
         """
@@ -156,18 +168,26 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
             fileids = self._fileids
         elif isinstance(fileids, string_types):
             fileids = [fileids]
-        return concat([self.CorpusView(path, self._read_word_block, encoding=enc)
-            for (path, enc, fileid) in self.abspaths(fileids, True, True)])
+        return concat(
+            [
+                self.CorpusView(path, self._read_word_block, encoding=enc)
+                for (path, enc, fileid) in self.abspaths(fileids, True, True)
+            ]
+        )
 
     def _read_sent_block(self, stream):
         sents = []
-        for i in range(20): # Read 20 lines at a time.
+        for i in range(20):  # Read 20 lines at a time.
             line = stream.readline()
             if not line:
                 continue
             if self._sent_tokenizer:
-                sents.extend([self._word_tokenizer.tokenize(sent)
-                              for sent in self._sent_tokenizer.tokenize(line)])
+                sents.extend(
+                    [
+                        self._word_tokenizer.tokenize(sent)
+                        for sent in self._sent_tokenizer.tokenize(line)
+                    ]
+                )
             else:
                 sents.append(self._word_tokenizer.tokenize(line))
         return sents

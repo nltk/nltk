@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Concordance Application
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,13 +10,36 @@ import threading
 
 from six.moves import queue as q
 from six.moves.tkinter_font import Font
-from six.moves.tkinter import (Tk, Button, END, Entry, Frame, IntVar, LEFT,
-                               Label, Menu, OptionMenu, SUNKEN, Scrollbar,
-                               StringVar, Text)
+from six.moves.tkinter import (
+    Tk,
+    Button,
+    END,
+    Entry,
+    Frame,
+    IntVar,
+    LEFT,
+    Label,
+    Menu,
+    OptionMenu,
+    SUNKEN,
+    Scrollbar,
+    StringVar,
+    Text,
+)
 
 import nltk.compat
-from nltk.corpus import (cess_cat, brown, nps_chat, treebank, sinica_treebank,
-                         alpino, indian, floresta, mac_morpho, cess_esp)
+from nltk.corpus import (
+    cess_cat,
+    brown,
+    nps_chat,
+    treebank,
+    sinica_treebank,
+    alpino,
+    indian,
+    floresta,
+    mac_morpho,
+    cess_esp,
+)
 from nltk.util import in_idle
 from nltk.draw.util import ShowText
 
@@ -35,69 +58,77 @@ POLL_INTERVAL = 50
 
 _DEFAULT = 'English: Brown Corpus (Humor, simplified)'
 _CORPORA = {
-            'Catalan: CESS-CAT Corpus (simplified)':
-                lambda: cess_cat.tagged_sents(tagset='universal'),
-            'English: Brown Corpus':
-                lambda: brown.tagged_sents(),
-            'English: Brown Corpus (simplified)':
-                lambda: brown.tagged_sents(tagset='universal'),
-            'English: Brown Corpus (Press, simplified)':
-                lambda: brown.tagged_sents(categories=['news', 'editorial', 'reviews'], tagset='universal'),
-            'English: Brown Corpus (Religion, simplified)':
-                lambda: brown.tagged_sents(categories='religion', tagset='universal'),
-            'English: Brown Corpus (Learned, simplified)':
-                lambda: brown.tagged_sents(categories='learned', tagset='universal'),
-            'English: Brown Corpus (Science Fiction, simplified)':
-                lambda: brown.tagged_sents(categories='science_fiction', tagset='universal'),
-            'English: Brown Corpus (Romance, simplified)':
-                lambda: brown.tagged_sents(categories='romance', tagset='universal'),
-            'English: Brown Corpus (Humor, simplified)':
-                lambda: brown.tagged_sents(categories='humor', tagset='universal'),
-            'English: NPS Chat Corpus':
-                lambda: nps_chat.tagged_posts(),
-            'English: NPS Chat Corpus (simplified)':
-                lambda: nps_chat.tagged_posts(tagset='universal'),
-            'English: Wall Street Journal Corpus':
-                lambda: treebank.tagged_sents(),
-            'English: Wall Street Journal Corpus (simplified)':
-                lambda: treebank.tagged_sents(tagset='universal'),
-            'Chinese: Sinica Corpus':
-                lambda: sinica_treebank.tagged_sents(),
-            'Chinese: Sinica Corpus (simplified)':
-                lambda: sinica_treebank.tagged_sents(tagset='universal'),
-            'Dutch: Alpino Corpus':
-                lambda: alpino.tagged_sents(),
-            'Dutch: Alpino Corpus (simplified)':
-                lambda: alpino.tagged_sents(tagset='universal'),
-            'Hindi: Indian Languages Corpus':
-                lambda: indian.tagged_sents(files='hindi.pos'),
-            'Hindi: Indian Languages Corpus (simplified)':
-                lambda: indian.tagged_sents(files='hindi.pos', tagset='universal'),
-            'Portuguese: Floresta Corpus (Portugal)':
-                lambda: floresta.tagged_sents(),
-            'Portuguese: Floresta Corpus (Portugal, simplified)':
-                lambda: floresta.tagged_sents(tagset='universal'),
-            'Portuguese: MAC-MORPHO Corpus (Brazil)':
-                lambda: mac_morpho.tagged_sents(),
-            'Portuguese: MAC-MORPHO Corpus (Brazil, simplified)':
-                lambda: mac_morpho.tagged_sents(tagset='universal'),
-            'Spanish: CESS-ESP Corpus (simplified)':
-                lambda: cess_esp.tagged_sents(tagset='universal'),
-           }
+    'Catalan: CESS-CAT Corpus (simplified)': lambda: cess_cat.tagged_sents(
+        tagset='universal'
+    ),
+    'English: Brown Corpus': lambda: brown.tagged_sents(),
+    'English: Brown Corpus (simplified)': lambda: brown.tagged_sents(
+        tagset='universal'
+    ),
+    'English: Brown Corpus (Press, simplified)': lambda: brown.tagged_sents(
+        categories=['news', 'editorial', 'reviews'], tagset='universal'
+    ),
+    'English: Brown Corpus (Religion, simplified)': lambda: brown.tagged_sents(
+        categories='religion', tagset='universal'
+    ),
+    'English: Brown Corpus (Learned, simplified)': lambda: brown.tagged_sents(
+        categories='learned', tagset='universal'
+    ),
+    'English: Brown Corpus (Science Fiction, simplified)': lambda: brown.tagged_sents(
+        categories='science_fiction', tagset='universal'
+    ),
+    'English: Brown Corpus (Romance, simplified)': lambda: brown.tagged_sents(
+        categories='romance', tagset='universal'
+    ),
+    'English: Brown Corpus (Humor, simplified)': lambda: brown.tagged_sents(
+        categories='humor', tagset='universal'
+    ),
+    'English: NPS Chat Corpus': lambda: nps_chat.tagged_posts(),
+    'English: NPS Chat Corpus (simplified)': lambda: nps_chat.tagged_posts(
+        tagset='universal'
+    ),
+    'English: Wall Street Journal Corpus': lambda: treebank.tagged_sents(),
+    'English: Wall Street Journal Corpus (simplified)': lambda: treebank.tagged_sents(
+        tagset='universal'
+    ),
+    'Chinese: Sinica Corpus': lambda: sinica_treebank.tagged_sents(),
+    'Chinese: Sinica Corpus (simplified)': lambda: sinica_treebank.tagged_sents(
+        tagset='universal'
+    ),
+    'Dutch: Alpino Corpus': lambda: alpino.tagged_sents(),
+    'Dutch: Alpino Corpus (simplified)': lambda: alpino.tagged_sents(
+        tagset='universal'
+    ),
+    'Hindi: Indian Languages Corpus': lambda: indian.tagged_sents(files='hindi.pos'),
+    'Hindi: Indian Languages Corpus (simplified)': lambda: indian.tagged_sents(
+        files='hindi.pos', tagset='universal'
+    ),
+    'Portuguese: Floresta Corpus (Portugal)': lambda: floresta.tagged_sents(),
+    'Portuguese: Floresta Corpus (Portugal, simplified)': lambda: floresta.tagged_sents(
+        tagset='universal'
+    ),
+    'Portuguese: MAC-MORPHO Corpus (Brazil)': lambda: mac_morpho.tagged_sents(),
+    'Portuguese: MAC-MORPHO Corpus (Brazil, simplified)': lambda: mac_morpho.tagged_sents(
+        tagset='universal'
+    ),
+    'Spanish: CESS-ESP Corpus (simplified)': lambda: cess_esp.tagged_sents(
+        tagset='universal'
+    ),
+}
+
 
 class ConcordanceSearchView(object):
-    _BACKGROUND_COLOUR='#FFF' #white
+    _BACKGROUND_COLOUR = '#FFF'  # white
 
-    #Colour of highlighted results
-    _HIGHLIGHT_WORD_COLOUR='#F00' #red
-    _HIGHLIGHT_WORD_TAG='HL_WRD_TAG'
+    # Colour of highlighted results
+    _HIGHLIGHT_WORD_COLOUR = '#F00'  # red
+    _HIGHLIGHT_WORD_TAG = 'HL_WRD_TAG'
 
-    _HIGHLIGHT_LABEL_COLOUR='#C0C0C0' # dark grey
-    _HIGHLIGHT_LABEL_TAG='HL_LBL_TAG'
+    _HIGHLIGHT_LABEL_COLOUR = '#C0C0C0'  # dark grey
+    _HIGHLIGHT_LABEL_TAG = 'HL_LBL_TAG'
 
-
-    #Percentage of text left of the scrollbar position
-    _FRACTION_LEFT_TEXT=0.30
+    # Percentage of text left of the scrollbar position
+    _FRACTION_LEFT_TEXT = 0.30
 
     def __init__(self):
         self.queue = q.Queue()
@@ -114,10 +145,12 @@ class ConcordanceSearchView(object):
         top.title('NLTK Concordance Search')
         top.bind('<Control-q>', self.destroy)
         top.protocol('WM_DELETE_WINDOW', self.destroy)
-        top.minsize(950,680)
+        top.minsize(950, 680)
 
     def _init_widgets(self, parent):
-        self.main_frame = Frame(parent, dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1))
+        self.main_frame = Frame(
+            parent, dict(background=self._BACKGROUND_COLOUR, padx=1, pady=1, border=1)
+        )
         self._init_corpus_select(self.main_frame)
         self._init_query_box(self.main_frame)
         self._init_results_box(self.main_frame)
@@ -132,54 +165,85 @@ class ConcordanceSearchView(object):
         menubar = Menu(self.top)
 
         filemenu = Menu(menubar, tearoff=0, borderwidth=0)
-        filemenu.add_command(label='Exit', underline=1,
-                             command=self.destroy, accelerator='Ctrl-q')
+        filemenu.add_command(
+            label='Exit', underline=1, command=self.destroy, accelerator='Ctrl-q'
+        )
         menubar.add_cascade(label='File', underline=0, menu=filemenu)
 
         editmenu = Menu(menubar, tearoff=0)
         rescntmenu = Menu(editmenu, tearoff=0)
-        rescntmenu.add_radiobutton(label='20', variable=self._result_size,
-                                   underline=0, value=20,
-                                   command=self.set_result_size)
-        rescntmenu.add_radiobutton(label='50', variable=self._result_size,
-                                   underline=0, value=50,
-                                   command=self.set_result_size)
-        rescntmenu.add_radiobutton(label='100', variable=self._result_size,
-                                   underline=0, value=100,
-                                   command=self.set_result_size)
+        rescntmenu.add_radiobutton(
+            label='20',
+            variable=self._result_size,
+            underline=0,
+            value=20,
+            command=self.set_result_size,
+        )
+        rescntmenu.add_radiobutton(
+            label='50',
+            variable=self._result_size,
+            underline=0,
+            value=50,
+            command=self.set_result_size,
+        )
+        rescntmenu.add_radiobutton(
+            label='100',
+            variable=self._result_size,
+            underline=0,
+            value=100,
+            command=self.set_result_size,
+        )
         rescntmenu.invoke(1)
         editmenu.add_cascade(label='Result Count', underline=0, menu=rescntmenu)
 
         cntxmenu = Menu(editmenu, tearoff=0)
         cntxbfmenu = Menu(cntxmenu, tearoff=0)
-        cntxbfmenu.add_radiobutton(label='60 characters',
-                                   variable=self._cntx_bf_len,
-                                   underline=0, value=60,
-                                   command=self.set_cntx_bf_len)
-        cntxbfmenu.add_radiobutton(label='80 characters',
-                                   variable=self._cntx_bf_len,
-                                   underline=0, value=80,
-                                   command=self.set_cntx_bf_len)
-        cntxbfmenu.add_radiobutton(label='100 characters',
-                                   variable=self._cntx_bf_len,
-                                   underline=0, value=100,
-                                   command=self.set_cntx_bf_len)
+        cntxbfmenu.add_radiobutton(
+            label='60 characters',
+            variable=self._cntx_bf_len,
+            underline=0,
+            value=60,
+            command=self.set_cntx_bf_len,
+        )
+        cntxbfmenu.add_radiobutton(
+            label='80 characters',
+            variable=self._cntx_bf_len,
+            underline=0,
+            value=80,
+            command=self.set_cntx_bf_len,
+        )
+        cntxbfmenu.add_radiobutton(
+            label='100 characters',
+            variable=self._cntx_bf_len,
+            underline=0,
+            value=100,
+            command=self.set_cntx_bf_len,
+        )
         cntxbfmenu.invoke(1)
         cntxmenu.add_cascade(label='Before', underline=0, menu=cntxbfmenu)
 
         cntxafmenu = Menu(cntxmenu, tearoff=0)
-        cntxafmenu.add_radiobutton(label='70 characters',
-                                   variable=self._cntx_af_len,
-                                   underline=0, value=70,
-                                   command=self.set_cntx_af_len)
-        cntxafmenu.add_radiobutton(label='90 characters',
-                                   variable=self._cntx_af_len,
-                                   underline=0, value=90,
-                                   command=self.set_cntx_af_len)
-        cntxafmenu.add_radiobutton(label='110 characters',
-                                   variable=self._cntx_af_len,
-                                   underline=0, value=110,
-                                   command=self.set_cntx_af_len)
+        cntxafmenu.add_radiobutton(
+            label='70 characters',
+            variable=self._cntx_af_len,
+            underline=0,
+            value=70,
+            command=self.set_cntx_af_len,
+        )
+        cntxafmenu.add_radiobutton(
+            label='90 characters',
+            variable=self._cntx_af_len,
+            underline=0,
+            value=90,
+            command=self.set_cntx_af_len,
+        )
+        cntxafmenu.add_radiobutton(
+            label='110 characters',
+            variable=self._cntx_af_len,
+            underline=0,
+            value=110,
+            command=self.set_cntx_af_len,
+        )
         cntxafmenu.invoke(1)
         cntxmenu.add_cascade(label='After', underline=0, menu=cntxafmenu)
 
@@ -202,18 +266,41 @@ class ConcordanceSearchView(object):
         innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
         self.var = StringVar(innerframe)
         self.var.set(self.model.DEFAULT_CORPUS)
-        Label(innerframe, justify=LEFT, text=' Corpus: ',
-              background=self._BACKGROUND_COLOUR, padx = 2, pady = 1, border = 0).pack(side='left')
+        Label(
+            innerframe,
+            justify=LEFT,
+            text=' Corpus: ',
+            background=self._BACKGROUND_COLOUR,
+            padx=2,
+            pady=1,
+            border=0,
+        ).pack(side='left')
 
-        other_corpora = list(self.model.CORPORA.keys()).remove(self.model.DEFAULT_CORPUS)
-        om = OptionMenu(innerframe, self.var, self.model.DEFAULT_CORPUS, command=self.corpus_selected, *self.model.non_default_corpora())
+        other_corpora = list(self.model.CORPORA.keys()).remove(
+            self.model.DEFAULT_CORPUS
+        )
+        om = OptionMenu(
+            innerframe,
+            self.var,
+            self.model.DEFAULT_CORPUS,
+            command=self.corpus_selected,
+            *self.model.non_default_corpora()
+        )
         om['borderwidth'] = 0
         om['highlightthickness'] = 1
         om.pack(side='left')
         innerframe.pack(side='top', fill='x', anchor='n')
 
     def _init_status(self, parent):
-        self.status = Label(parent, justify=LEFT, relief=SUNKEN, background=self._BACKGROUND_COLOUR, border=0, padx = 1, pady = 0)
+        self.status = Label(
+            parent,
+            justify=LEFT,
+            relief=SUNKEN,
+            background=self._BACKGROUND_COLOUR,
+            border=0,
+            padx=1,
+            pady=0,
+        )
         self.status.pack(side='top', anchor='sw')
 
     def _init_query_box(self, parent):
@@ -221,7 +308,13 @@ class ConcordanceSearchView(object):
         another = Frame(innerframe, background=self._BACKGROUND_COLOUR)
         self.query_box = Entry(another, width=60)
         self.query_box.pack(side='left', fill='x', pady=25, anchor='center')
-        self.search_button = Button(another, text='Search', command=self.search, borderwidth=1, highlightthickness=1)
+        self.search_button = Button(
+            another,
+            text='Search',
+            command=self.search,
+            borderwidth=1,
+            highlightthickness=1,
+        )
         self.search_button.pack(side='left', fill='x', pady=25, anchor='center')
         self.query_box.bind('<KeyPress-Return>', self.search_enter_keypress_handler)
         another.pack()
@@ -236,29 +329,58 @@ class ConcordanceSearchView(object):
         i2 = Frame(innerframe)
         vscrollbar = Scrollbar(i1, borderwidth=1)
         hscrollbar = Scrollbar(i2, borderwidth=1, orient='horiz')
-        self.results_box = Text(i1,
-                                font=Font(family='courier', size='16'),
-                                state='disabled', borderwidth=1,
-                                                            yscrollcommand=vscrollbar.set,
-                                xscrollcommand=hscrollbar.set, wrap='none', width='40', height = '20', exportselection=1)
+        self.results_box = Text(
+            i1,
+            font=Font(family='courier', size='16'),
+            state='disabled',
+            borderwidth=1,
+            yscrollcommand=vscrollbar.set,
+            xscrollcommand=hscrollbar.set,
+            wrap='none',
+            width='40',
+            height='20',
+            exportselection=1,
+        )
         self.results_box.pack(side='left', fill='both', expand=True)
-        self.results_box.tag_config(self._HIGHLIGHT_WORD_TAG, foreground=self._HIGHLIGHT_WORD_COLOUR)
-        self.results_box.tag_config(self._HIGHLIGHT_LABEL_TAG, foreground=self._HIGHLIGHT_LABEL_COLOUR)
+        self.results_box.tag_config(
+            self._HIGHLIGHT_WORD_TAG, foreground=self._HIGHLIGHT_WORD_COLOUR
+        )
+        self.results_box.tag_config(
+            self._HIGHLIGHT_LABEL_TAG, foreground=self._HIGHLIGHT_LABEL_COLOUR
+        )
         vscrollbar.pack(side='left', fill='y', anchor='e')
         vscrollbar.config(command=self.results_box.yview)
         hscrollbar.pack(side='left', fill='x', expand=True, anchor='w')
         hscrollbar.config(command=self.results_box.xview)
-        #there is no other way of avoiding the overlap of scrollbars while using pack layout manager!!!
-        Label(i2, text='   ', background=self._BACKGROUND_COLOUR).pack(side='left', anchor='e')
+        # there is no other way of avoiding the overlap of scrollbars while using pack layout manager!!!
+        Label(i2, text='   ', background=self._BACKGROUND_COLOUR).pack(
+            side='left', anchor='e'
+        )
         i1.pack(side='top', fill='both', expand=True, anchor='n')
         i2.pack(side='bottom', fill='x', anchor='s')
         innerframe.pack(side='top', fill='both', expand=True)
 
     def _init_paging(self, parent):
         innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
-        self.prev = prev = Button(innerframe, text='Previous', command=self.previous, width='10', borderwidth=1, highlightthickness=1, state='disabled')
+        self.prev = prev = Button(
+            innerframe,
+            text='Previous',
+            command=self.previous,
+            width='10',
+            borderwidth=1,
+            highlightthickness=1,
+            state='disabled',
+        )
         prev.pack(side='left', anchor='center')
-        self.next = next = Button(innerframe, text='Next', command=self.__next__, width='10', borderwidth=1, highlightthickness=1, state='disabled')
+        self.next = next = Button(
+            innerframe,
+            text='Next',
+            command=self.__next__,
+            width='10',
+            borderwidth=1,
+            highlightthickness=1,
+            state='disabled',
+        )
         next.pack(side='right', anchor='center')
         innerframe.pack(side='top', fill='y')
         self.current_page = 0
@@ -274,10 +396,11 @@ class ConcordanceSearchView(object):
         self.model.next(self.current_page + 1)
 
     def about(self, *e):
-        ABOUT = ("NLTK Concordance Search Demo\n")
+        ABOUT = "NLTK Concordance Search Demo\n"
         TITLE = 'About: NLTK Concordance Search Demo'
         try:
             from six.moves.tkinter_messagebox import Message
+
             Message(message=ABOUT, title=TITLE, parent=self.main_frame).show()
         except:
             ShowText(self.top, TITLE, ABOUT)
@@ -317,7 +440,7 @@ class ConcordanceSearchView(object):
         self.query_box.focus_set()
 
     def handle_search_terminated(self, event):
-        #todo: refactor the model such that it is less state sensitive
+        # todo: refactor the model such that it is less state sensitive
         results = self.model.get_results()
         self.write_results(results)
         self.status['text'] = ''
@@ -347,11 +470,11 @@ class ConcordanceSearchView(object):
         self.clear_results_box()
         self.model.reset_results()
         query = self.query_box.get()
-        if (len(query.strip()) == 0): return
-        self.status['text']  = 'Searching for ' + query
+        if len(query.strip()) == 0:
+            return
+        self.status['text'] = 'Searching for ' + query
         self.freeze_editable()
-        self.model.search(query, self.current_page + 1, )
-
+        self.model.search(query, self.current_page + 1)
 
     def write_results(self, results):
         self.results_box['state'] = 'normal'
@@ -359,15 +482,25 @@ class ConcordanceSearchView(object):
         for each in results:
             sent, pos1, pos2 = each[0].strip(), each[1], each[2]
             if len(sent) != 0:
-                if (pos1 < self._char_before):
+                if pos1 < self._char_before:
                     sent, pos1, pos2 = self.pad(sent, pos1, pos2)
-                sentence = sent[pos1-self._char_before:pos1+self._char_after]
+                sentence = sent[pos1 - self._char_before : pos1 + self._char_after]
                 if not row == len(results):
                     sentence += '\n'
                 self.results_box.insert(str(row) + '.0', sentence)
                 word_markers, label_markers = self.words_and_labels(sent, pos1, pos2)
-                for marker in word_markers: self.results_box.tag_add(self._HIGHLIGHT_WORD_TAG, str(row) + '.' + str(marker[0]), str(row) + '.' + str(marker[1]))
-                for marker in label_markers: self.results_box.tag_add(self._HIGHLIGHT_LABEL_TAG, str(row) + '.' + str(marker[0]), str(row) + '.' + str(marker[1]))
+                for marker in word_markers:
+                    self.results_box.tag_add(
+                        self._HIGHLIGHT_WORD_TAG,
+                        str(row) + '.' + str(marker[0]),
+                        str(row) + '.' + str(marker[1]),
+                    )
+                for marker in label_markers:
+                    self.results_box.tag_add(
+                        self._HIGHLIGHT_LABEL_TAG,
+                        str(row) + '.' + str(marker[0]),
+                        str(row) + '.' + str(marker[1]),
+                    )
                 row += 1
         self.results_box['state'] = 'disabled'
 
@@ -381,9 +514,13 @@ class ConcordanceSearchView(object):
                 index += 1
             else:
                 word, label = each.split('/')
-                words.append((self._char_before + index, self._char_before + index + len(word)))
+                words.append(
+                    (self._char_before + index, self._char_before + index + len(word))
+                )
                 index += len(word) + 1
-                labels.append((self._char_before + index, self._char_before + index + len(label)))
+                labels.append(
+                    (self._char_before + index, self._char_before + index + len(label))
+                )
                 index += len(label)
             index += 1
         return words, labels
@@ -396,7 +533,8 @@ class ConcordanceSearchView(object):
         return sent, hstart + d, hend + d
 
     def destroy(self, *e):
-        if self.top is None: return
+        if self.top is None:
+            return
         self.top.after_cancel(self.after)
         self.top.destroy()
         self.top = None
@@ -433,12 +571,14 @@ class ConcordanceSearchView(object):
             self.next['state'] = 'disabled'
 
     def fire_event(self, event):
-        #Firing an event so that rendering of widgets happen in the mainloop thread
+        # Firing an event so that rendering of widgets happen in the mainloop thread
         self.top.event_generate(event, when='tail')
 
     def mainloop(self, *args, **kwargs):
-        if in_idle(): return
+        if in_idle():
+            return
         self.top.mainloop(*args, **kwargs)
+
 
 class ConcordanceSearchModel(object):
     def __init__(self, queue):
@@ -509,7 +649,9 @@ class ConcordanceSearchModel(object):
         def run(self):
             try:
                 ts = self.model.CORPORA[self.name]()
-                self.model.tagged_sents = [' '.join(w+'/'+t for (w,t) in sent) for sent in ts]
+                self.model.tagged_sents = [
+                    ' '.join(w + '/' + t for (w, t) in sent) for sent in ts
+                ]
                 self.model.queue.put(CORPUS_LOADED_EVENT)
             except Exception as e:
                 print(e)
@@ -523,7 +665,7 @@ class ConcordanceSearchModel(object):
         def run(self):
             q = self.processed_query()
             sent_pos, i, sent_count = [], 0, 0
-            for sent in self.model.tagged_sents[self.model.last_sent_searched:]:
+            for sent in self.model.tagged_sents[self.model.last_sent_searched :]:
                 try:
                     m = re.search(q, sent)
                 except re.error:
@@ -537,7 +679,7 @@ class ConcordanceSearchModel(object):
                         self.model.last_sent_searched += sent_count - 1
                         break
                 sent_count += 1
-            if (self.count >= len(sent_pos)):
+            if self.count >= len(sent_pos):
                 self.model.last_sent_searched += sent_count - 1
                 self.model.last_page = self.page
                 self.model.set_results(self.page, sent_pos)
@@ -557,9 +699,11 @@ class ConcordanceSearchModel(object):
                     new.append(BOUNDARY + term + '/' + WORD_OR_TAG + BOUNDARY)
             return ' '.join(new)
 
+
 def app():
     d = ConcordanceSearchView()
     d.mainloop()
+
 
 if __name__ == '__main__':
     app()

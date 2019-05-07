@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import print_function, division, unicode_literals
@@ -39,6 +39,7 @@ class FStructure(dict):
 
     def to_depgraph(self, rel=None):
         from nltk.parse.dependencygraph import DependencyGraph
+
         depgraph = DependencyGraph()
         nodes = depgraph.nodes
 
@@ -49,7 +50,7 @@ class FStructure(dict):
             for n2 in (n for n in nodes.values() if n['rel'] != 'TOP'):
                 if n2['head'] == address:
                     relation = n2['rel']
-                    node['deps'].setdefault(relation,[])
+                    node['deps'].setdefault(relation, [])
                     node['deps'][relation].append(n2['address'])
 
         depgraph.root = nodes[1]
@@ -88,7 +89,9 @@ class FStructure(dict):
                     for n in item:
                         n._to_depgraph(nodes, index, feature)
                 else:
-                    raise Exception('feature %s is not an FStruct, a list, or a tuple' % feature)
+                    raise Exception(
+                        'feature %s is not an FStruct, a list, or a tuple' % feature
+                    )
 
     @staticmethod
     def read_depgraph(depgraph):
@@ -121,7 +124,10 @@ class FStructure(dict):
 
             children = [depgraph.nodes[idx] for idx in chain(*node['deps'].values())]
             for child in children:
-                fstruct.safeappend(child['rel'], FStructure._read_depgraph(child, depgraph, label_counter, fstruct))
+                fstruct.safeappend(
+                    child['rel'],
+                    FStructure._read_depgraph(child, depgraph, label_counter, fstruct),
+                )
 
             return fstruct
 
@@ -133,8 +139,34 @@ class FStructure(dict):
         :param value: where to index into the list of characters
         :type value: int
         """
-        letter = ['f','g','h','i','j','k','l','m','n','o','p','q','r','s',
-                  't','u','v','w','x','y','z','a','b','c','d','e'][value-1]
+        letter = [
+            'f',
+            'g',
+            'h',
+            'i',
+            'j',
+            'k',
+            'l',
+            'm',
+            'n',
+            'o',
+            'p',
+            'q',
+            'r',
+            's',
+            't',
+            'u',
+            'v',
+            'w',
+            'x',
+            'y',
+            'z',
+            'a',
+            'b',
+            'c',
+            'd',
+            'e',
+        ][value - 1]
         num = int(value) // 26
         if num > 0:
             return letter + str(num)
@@ -160,21 +192,32 @@ class FStructure(dict):
         for feature in sorted(self):
             for item in self[feature]:
                 if isinstance(item, FStructure):
-                    next_indent = indent+len(feature)+3+len(self.label)
-                    accum += '\n%s%s %s' % (' '*(indent), feature, item.pretty_format(next_indent))
+                    next_indent = indent + len(feature) + 3 + len(self.label)
+                    accum += '\n%s%s %s' % (
+                        ' ' * (indent),
+                        feature,
+                        item.pretty_format(next_indent),
+                    )
                 elif isinstance(item, tuple):
-                    accum += '\n%s%s \'%s\'' % (' '*(indent), feature, item[0])
+                    accum += '\n%s%s \'%s\'' % (' ' * (indent), feature, item[0])
                 elif isinstance(item, list):
-                    accum += '\n%s%s {%s}' % (' '*(indent), feature, ('\n%s' % (' '*(indent+len(feature)+2))).join(item))
-                else: # ERROR
-                    raise Exception('feature %s is not an FStruct, a list, or a tuple' % feature)
-        return accum+']'
-
+                    accum += '\n%s%s {%s}' % (
+                        ' ' * (indent),
+                        feature,
+                        ('\n%s' % (' ' * (indent + len(feature) + 2))).join(item),
+                    )
+                else:  # ERROR
+                    raise Exception(
+                        'feature %s is not an FStruct, a list, or a tuple' % feature
+                    )
+        return accum + ']'
 
 
 def demo_read_depgraph():
     from nltk.parse.dependencygraph import DependencyGraph
-    dg1 = DependencyGraph("""\
+
+    dg1 = DependencyGraph(
+        """\
 Esso       NNP     2       SUB
 said       VBD     0       ROOT
 the        DT      5       NMOD
@@ -183,28 +226,36 @@ field      NN      6       SUB
 started    VBD     2       VMOD
 production NN      6       OBJ
 Tuesday    NNP     6       VMOD
-""")
-    dg2 = DependencyGraph("""\
+"""
+    )
+    dg2 = DependencyGraph(
+        """\
 John    NNP     2       SUB
 sees    VBP     0       ROOT
 Mary    NNP     2       OBJ
-""")
-    dg3 = DependencyGraph("""\
+"""
+    )
+    dg3 = DependencyGraph(
+        """\
 a       DT      2       SPEC
 man     NN      3       SUBJ
 walks   VB      0       ROOT
-""")
-    dg4 = DependencyGraph("""\
+"""
+    )
+    dg4 = DependencyGraph(
+        """\
 every   DT      2       SPEC
 girl    NN      3       SUBJ
 chases  VB      0       ROOT
 a       DT      5       SPEC
 dog     NN      3       OBJ
-""")
+"""
+    )
 
-    depgraphs = [dg1,dg2,dg3,dg4]
+    depgraphs = [dg1, dg2, dg3, dg4]
     for dg in depgraphs:
         print(FStructure.read_depgraph(dg))
+
 
 if __name__ == '__main__':
     demo_read_depgraph()

@@ -1,12 +1,13 @@
 # Natural Language Toolkit: Translation metrics
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 from __future__ import division
+
 
 def alignment_error_rate(reference, hypothesis, possible=None):
     """
@@ -34,7 +35,8 @@ def alignment_error_rate(reference, hypothesis, possible=None):
     if possible is None:
         possible = reference
     else:
-        assert(reference.issubset(possible)) # sanity check
+        assert reference.issubset(possible)  # sanity check
 
-    return (1.0 - (len(hypothesis & reference) + len(hypothesis & possible)) /
-            float(len(hypothesis) + len(reference)))
+    return 1.0 - (len(hypothesis & reference) + len(hypothesis & possible)) / float(
+        len(hypothesis) + len(reference)
+    )

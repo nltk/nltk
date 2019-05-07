@@ -1,6 +1,6 @@
 # Natural Language Toolkit: IEER Corpus Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
@@ -37,15 +37,15 @@ titles = {
     'NYT_19980315': 'New York Times, 15 March 1998',
     'NYT_19980403': 'New York Times, 3 April 1998',
     'NYT_19980407': 'New York Times, 7 April 1998',
-    }
+}
 
 #: A list of all documents in this corpus.
 documents = sorted(titles)
 
+
 @compat.python_2_unicode_compatible
 class IEERDocument(object):
-    def __init__(self, text, docno=None, doctype=None,
-                 date_time=None, headline=''):
+    def __init__(self, text, docno=None, doctype=None, date_time=None, headline=''):
         self.text = text
         self.docno = docno
         self.doctype = doctype
@@ -56,36 +56,49 @@ class IEERDocument(object):
         if self.headline:
             headline = ' '.join(self.headline.leaves())
         else:
-            headline = ' '.join([w for w in self.text.leaves()
-                                 if w[:1] != '<'][:12])+'...'
+            headline = (
+                ' '.join([w for w in self.text.leaves() if w[:1] != '<'][:12]) + '...'
+            )
         if self.docno is not None:
             return '<IEERDocument %s: %r>' % (self.docno, headline)
         else:
             return '<IEERDocument: %r>' % headline
 
+
 class IEERCorpusReader(CorpusReader):
     """
     """
+
     def raw(self, fileids=None):
-        if fileids is None: fileids = self._fileids
-        elif isinstance(fileids, string_types): fileids = [fileids]
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
         return concat([self.open(f).read() for f in fileids])
 
     def docs(self, fileids=None):
-        return concat([StreamBackedCorpusView(fileid, self._read_block,
-                                              encoding=enc)
-                       for (fileid, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                StreamBackedCorpusView(fileid, self._read_block, encoding=enc)
+                for (fileid, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
     def parsed_docs(self, fileids=None):
-        return concat([StreamBackedCorpusView(fileid,
-                                              self._read_parsed_block,
-                                              encoding=enc)
-                       for (fileid, enc) in self.abspaths(fileids, True)])
+        return concat(
+            [
+                StreamBackedCorpusView(fileid, self._read_parsed_block, encoding=enc)
+                for (fileid, enc) in self.abspaths(fileids, True)
+            ]
+        )
 
-    def _read_parsed_block(self,stream):
+    def _read_parsed_block(self, stream):
         # TODO: figure out while empty documents are being returned
-        return [self._parse(doc) for doc in self._read_block(stream)
-                if self._parse(doc).docno is not None]
+        return [
+            self._parse(doc)
+            for doc in self._read_block(stream)
+            if self._parse(doc).docno is not None
+        ]
 
     def _parse(self, doc):
         val = nltk.chunk.ieerstr2tree(doc, root_label="DOCUMENT")
@@ -99,14 +112,18 @@ class IEERCorpusReader(CorpusReader):
         # Skip any preamble.
         while True:
             line = stream.readline()
-            if not line: break
-            if line.strip() == '<DOC>': break
+            if not line:
+                break
+            if line.strip() == '<DOC>':
+                break
         out.append(line)
         # Read the document
         while True:
             line = stream.readline()
-            if not line: break
+            if not line:
+                break
             out.append(line)
-            if line.strip() == '</DOC>': break
+            if line.strip() == '</DOC>':
+                break
         # Return the document
         return ['\n'.join(out)]

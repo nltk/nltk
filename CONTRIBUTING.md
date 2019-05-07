@@ -52,7 +52,7 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
 - Run `cd nltk` to get to the root directory of the `nltk` code base;
 - Install the dependencies (`pip install -r pip-req.txt`);
 - Download the datasets for running tests
-  (`python -m nltk.downloader tests`);
+  (`python -m nltk.downloader all`);
 - Create a remote link from your local repository to the
   upstream `nltk/nltk` on GitHub
   (`git remote add upstream https://github.com/nltk/nltk.git`) --
@@ -173,7 +173,7 @@ The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file c
 #### To test with `tox` locally
 
 First setup a new virtual environment, see https://docs.python-guide.org/dev/virtualenvs/
-Then run `tox -e py36`.
+Then run `tox -e py37`.
 
 For example, using `pipenv`:
 
@@ -182,7 +182,7 @@ git clone https://github.com/nltk/nltk.git
 cd nltk
 pipenv install -r pip-req.txt
 pipenv install tox
-tox -e py36
+tox -e py37
 ```
  
 

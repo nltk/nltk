@@ -3,7 +3,7 @@
 # Author:     Peter Wang
 # Updated by: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
@@ -29,9 +29,17 @@ from nltk import compat
 from nltk.parse import load_parser
 
 from nltk.sem.skolemize import skolemize
-from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,
-                            ExistsExpression, IffExpression, ImpExpression,
-                            LambdaExpression, NegatedExpression, OrExpression)
+from nltk.sem.logic import (
+    AllExpression,
+    AndExpression,
+    ApplicationExpression,
+    ExistsExpression,
+    IffExpression,
+    ImpExpression,
+    LambdaExpression,
+    NegatedExpression,
+    OrExpression,
+)
 
 
 # Note that in this code there may be multiple types of trees being referred to:
@@ -41,6 +49,7 @@ from nltk.sem.logic import (AllExpression, AndExpression, ApplicationExpression,
 # 3. first-order logic formula trees
 # 4. the search space when plugging (search tree)
 #
+
 
 class Constants(object):
     ALL = 'ALL'
@@ -55,14 +64,16 @@ class Constants(object):
     HOLE = 'HOLE'
     LABEL = 'LABEL'
 
-    MAP = {ALL: lambda v, e: AllExpression(v.variable, e),
-           EXISTS: lambda v, e: ExistsExpression(v.variable, e),
-           NOT: NegatedExpression,
-           AND: AndExpression,
-           OR: OrExpression,
-           IMP: ImpExpression,
-           IFF: IffExpression,
-           PRED: ApplicationExpression}
+    MAP = {
+        ALL: lambda v, e: AllExpression(v.variable, e),
+        EXISTS: lambda v, e: ExistsExpression(v.variable, e),
+        NOT: NegatedExpression,
+        AND: AndExpression,
+        OR: OrExpression,
+        IMP: ImpExpression,
+        IFF: IffExpression,
+        PRED: ApplicationExpression,
+    }
 
 
 class HoleSemantics(object):
@@ -73,6 +84,7 @@ class HoleSemantics(object):
     then provides some operations on the semantics dealing with holes, labels
     and finding legal ways to plug holes with labels.
     """
+
     def __init__(self, usr):
         """
         Constructor.  `usr' is a ``sem.Expression`` representing an
@@ -184,7 +196,9 @@ class HoleSemantics(object):
             (node, ancestors) = queue[0]
             if node in self.holes:
                 # The node is a hole, try to plug it.
-                self._plug_hole(node, ancestors, queue[1:], potential_labels, plug_acc, record)
+                self._plug_hole(
+                    node, ancestors, queue[1:], potential_labels, plug_acc, record
+                )
             else:
                 assert node in self.labels
                 # The node is a label.  Replace it in the queue by the holes and
@@ -195,8 +209,7 @@ class HoleSemantics(object):
         else:
             raise Exception('queue empty')
 
-    def _plug_hole(self, hole, ancestors0, queue, potential_labels0,
-                   plug_acc0, record):
+    def _plug_hole(self, hole, ancestors0, queue, potential_labels0, plug_acc0, record):
         """
         Try all possible ways of plugging a single hole.
         See _plug_nodes for the meanings of the parameters.
@@ -235,7 +248,9 @@ class HoleSemantics(object):
                 # before filling level i+1.
                 # A depth-first search would work as well since the trees must
                 # be finite but the bookkeeping would be harder.
-                self._plug_nodes(queue + [(l, ancestors)], potential_labels, plug_acc, record)
+                self._plug_nodes(
+                    queue + [(l, ancestors)], potential_labels, plug_acc, record
+                )
 
     def _violates_constraints(self, label, ancestors):
         """
@@ -293,6 +308,7 @@ class Constraint(object):
     This class represents a constraint of the form (L =< N),
     where L is a label and N is a node (a label or a hole).
     """
+
     def __init__(self, lhs, rhs):
         self.lhs = lhs
         self.rhs = rhs

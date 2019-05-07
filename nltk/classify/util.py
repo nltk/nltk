@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Classifier Utility Functions
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -13,12 +13,12 @@ from __future__ import print_function, division
 
 import math
 
-#from nltk.util import Deprecated
-import nltk.classify.util # for accuracy & log_likelihood
+# from nltk.util import Deprecated
+import nltk.classify.util  # for accuracy & log_likelihood
 from nltk.util import LazyMap
 
 ######################################################################
-#{ Helper Functions
+# { Helper Functions
 ######################################################################
 
 # alternative name possibility: 'map_featurefunc()'?
@@ -61,11 +61,14 @@ def apply_features(feature_func, toks, labeled=None):
     if labeled is None:
         labeled = toks and isinstance(toks[0], (tuple, list))
     if labeled:
+
         def lazy_func(labeled_token):
             return (feature_func(labeled_token[0]), labeled_token[1])
+
         return LazyMap(lazy_func, toks)
     else:
         return LazyMap(feature_func, toks)
+
 
 def attested_labels(tokens):
     """
@@ -78,10 +81,12 @@ def attested_labels(tokens):
     """
     return tuple(set(label for (tok, label) in tokens))
 
+
 def log_likelihood(classifier, gold):
     results = classifier.prob_classify_many([fs for (fs, l) in gold])
     ll = [pdist.prob(l) for ((fs, l), pdist) in zip(gold, results)]
     return math.log(sum(ll) / len(ll))
+
 
 def accuracy(classifier, gold):
     results = classifier.classify_many([fs for (fs, l) in gold])
@@ -91,6 +96,7 @@ def accuracy(classifier, gold):
     else:
         return 0
 
+
 class CutoffChecker(object):
     """
     A helper class that implements cutoff checks based on number of
@@ -99,6 +105,7 @@ class CutoffChecker(object):
     Accuracy cutoffs are also implemented, but they're almost never
     a good idea to use.
     """
+
     def __init__(self, cutoffs):
         self.cutoffs = cutoffs.copy()
         if 'min_ll' in cutoffs:
@@ -113,7 +120,7 @@ class CutoffChecker(object):
         cutoffs = self.cutoffs
         self.iter += 1
         if 'max_iter' in cutoffs and self.iter >= cutoffs['max_iter']:
-            return True # iteration cutoff.
+            return True  # iteration cutoff.
 
         new_ll = nltk.classify.util.log_likelihood(classifier, train_toks)
         if math.isnan(new_ll):
@@ -121,27 +128,34 @@ class CutoffChecker(object):
 
         if 'min_ll' in cutoffs or 'min_lldelta' in cutoffs:
             if 'min_ll' in cutoffs and new_ll >= cutoffs['min_ll']:
-                return True # log likelihood cutoff
-            if ('min_lldelta' in cutoffs and self.ll and
-                ((new_ll - self.ll) <= abs(cutoffs['min_lldelta']))):
-                return True # log likelihood delta cutoff
+                return True  # log likelihood cutoff
+            if (
+                'min_lldelta' in cutoffs
+                and self.ll
+                and ((new_ll - self.ll) <= abs(cutoffs['min_lldelta']))
+            ):
+                return True  # log likelihood delta cutoff
             self.ll = new_ll
 
         if 'max_acc' in cutoffs or 'min_accdelta' in cutoffs:
-            new_acc = nltk.classify.util.log_likelihood(
-                classifier, train_toks)
+            new_acc = nltk.classify.util.log_likelihood(classifier, train_toks)
             if 'max_acc' in cutoffs and new_acc >= cutoffs['max_acc']:
-                return True # log likelihood cutoff
-            if ('min_accdelta' in cutoffs and self.acc and
-                ((new_acc - self.acc) <= abs(cutoffs['min_accdelta']))):
-                return True # log likelihood delta cutoff
+                return True  # log likelihood cutoff
+            if (
+                'min_accdelta' in cutoffs
+                and self.acc
+                and ((new_acc - self.acc) <= abs(cutoffs['min_accdelta']))
+            ):
+                return True  # log likelihood delta cutoff
             self.acc = new_acc
 
-            return False # no cutoff reached.
+            return False  # no cutoff reached.
+
 
 ######################################################################
-#{ Demos
+# { Demos
 ######################################################################
+
 
 def names_demo_features(name):
     features = {}
@@ -153,6 +167,7 @@ def names_demo_features(name):
         features['has(%s)' % letter] = letter in name.lower()
     return features
 
+
 def binary_names_demo_features(name):
     features = {}
     features['alwayson'] = True
@@ -161,17 +176,19 @@ def binary_names_demo_features(name):
     for letter in 'abcdefghijklmnopqrstuvwxyz':
         features['count(%s)' % letter] = name.lower().count(letter)
         features['has(%s)' % letter] = letter in name.lower()
-        features['startswith(%s)' % letter] = (letter == name[0].lower())
-        features['endswith(%s)' % letter] = (letter == name[-1].lower())
+        features['startswith(%s)' % letter] = letter == name[0].lower()
+        features['endswith(%s)' % letter] = letter == name[-1].lower()
     return features
+
 
 def names_demo(trainer, features=names_demo_features):
     from nltk.corpus import names
     import random
 
     # Construct a list of classified names, using the names corpus.
-    namelist = ([(name, 'male') for name in names.words('male.txt')] +
-                [(name, 'female') for name in names.words('female.txt')])
+    namelist = [(name, 'male') for name in names.words('male.txt')] + [
+        (name, 'female') for name in names.words('female.txt')
+    ]
 
     # Randomly split the names into a test & train set.
     random.seed(123456)
@@ -181,7 +198,7 @@ def names_demo(trainer, features=names_demo_features):
 
     # Train up a classifier.
     print('Training classifier...')
-    classifier = trainer( [(features(n), g) for (n, g) in train] )
+    classifier = trainer([(features(n), g) for (n, g) in train])
 
     # Run the classifier on the test data.
     print('Testing classifier...')
@@ -193,11 +210,10 @@ def names_demo(trainer, features=names_demo_features):
     try:
         test_featuresets = [features(n) for (n, g) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
-        ll = [pdist.logprob(gold)
-              for ((name, gold), pdist) in zip(test, pdists)]
+        ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
         print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
         print()
-        print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
+        print('Unseen Names      P(Male)  P(Female)\n' + '-' * 40)
         for ((name, gender), pdist) in list(zip(test, pdists))[:5]:
             if gender == 'male':
                 fmt = '  %-15s *%6.4f   %6.4f'
@@ -209,6 +225,7 @@ def names_demo(trainer, features=names_demo_features):
 
     # Return the classifier
     return classifier
+
 
 def partial_names_demo(trainer, features=names_demo_features):
     from nltk.corpus import names
@@ -228,8 +245,9 @@ def partial_names_demo(trainer, features=names_demo_features):
     unlabeled = map(features, male_names[2000:2500] + female_names[:500])
 
     # Create a test set with correctly-labeled male and female names
-    test = [(name, True) for name in male_names[2500:2750]] \
-        + [(name, False) for name in female_names[500:750]]
+    test = [(name, True) for name in male_names[2500:2750]] + [
+        (name, False) for name in female_names[500:750]
+    ]
 
     random.shuffle(test)
 
@@ -247,11 +265,10 @@ def partial_names_demo(trainer, features=names_demo_features):
     try:
         test_featuresets = [features(n) for (n, m) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
-        ll = [pdist.logprob(gold)
-              for ((name, gold), pdist) in zip(test, pdists)]
+        ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
         print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
         print()
-        print('Unseen Names      P(Male)  P(Female)\n'+'-'*40)
+        print('Unseen Names      P(Male)  P(Female)\n' + '-' * 40)
         for ((name, is_male), pdist) in zip(test, pdists)[:5]:
             if is_male == True:
                 fmt = '  %-15s *%6.4f   %6.4f'
@@ -264,7 +281,10 @@ def partial_names_demo(trainer, features=names_demo_features):
     # Return the classifier
     return classifier
 
+
 _inst_cache = {}
+
+
 def wsd_demo(trainer, word, features, n=1000):
     from nltk.corpus import senseval
     import random
@@ -284,8 +304,8 @@ def wsd_demo(trainer, word, features, n=1000):
     print('Splitting into test & train...')
     random.seed(123456)
     random.shuffle(instances)
-    train = instances[:int(.8*n)]
-    test = instances[int(.8*n):n]
+    train = instances[: int(0.8 * n)]
+    test = instances[int(0.8 * n) : n]
 
     # Train up a classifier.
     print('Training classifier...')
@@ -301,8 +321,7 @@ def wsd_demo(trainer, word, features, n=1000):
     try:
         test_featuresets = [features(i) for (i, n) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
-        ll = [pdist.logprob(gold)
-              for ((name, gold), pdist) in zip(test, pdists)]
+        ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
         print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
     except NotImplementedError:
         pass
@@ -311,14 +330,15 @@ def wsd_demo(trainer, word, features, n=1000):
     return classifier
 
 
-
-def check_megam_config(self):
+def check_megam_config():
     """
     Checks whether the MEGAM binary is configured.
     """
     try:
         _megam_bin
     except NameError:
-        err_msg = str("Please configure your megam binary first, e.g.\n"
-                      ">>> nltk.config_megam('/usr/bin/local/megam')")
+        err_msg = str(
+            "Please configure your megam binary first, e.g.\n"
+            ">>> nltk.config_megam('/usr/bin/local/megam')"
+        )
         raise NameError(err_msg)

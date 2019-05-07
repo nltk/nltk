@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Clusterer Utilities
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # Contributor: J Richard Snape
 # URL: <http://nltk.org/>
@@ -27,6 +27,7 @@ class VectorSpaceClusterer(ClusterI):
     Optionally performs singular value decomposition to reduce the
     dimensionality.
     """
+
     def __init__(self, normalise=False, svd_dimensions=None):
         """
         :param normalise:       should vectors be normalised to length 1
@@ -48,12 +49,12 @@ class VectorSpaceClusterer(ClusterI):
 
         # use SVD to reduce the dimensionality
         if self._svd_dimensions and self._svd_dimensions < len(vectors[0]):
-            [u, d, vt] = numpy.linalg.svd(numpy.transpose(
-                            numpy.array(vectors)))
-            S = d[:self._svd_dimensions] * \
-                numpy.identity(self._svd_dimensions, numpy.float64)
-            T = u[:, :self._svd_dimensions]
-            Dt = vt[:self._svd_dimensions, :]
+            [u, d, vt] = numpy.linalg.svd(numpy.transpose(numpy.array(vectors)))
+            S = d[: self._svd_dimensions] * numpy.identity(
+                self._svd_dimensions, numpy.float64
+            )
+            T = u[:, : self._svd_dimensions]
+            Dt = vt[: self._svd_dimensions, :]
             vectors = numpy.transpose(numpy.dot(S, Dt))
             self._Tt = numpy.transpose(T)
 
@@ -96,7 +97,7 @@ class VectorSpaceClusterer(ClusterI):
         Returns the likelihood of the vector belonging to the cluster.
         """
         predicted = self.classify_vectorspace(vector)
-        return (1.0 if cluster == predicted else 0.0)
+        return 1.0 if cluster == predicted else 0.0
 
     def vector(self, vector):
         """
@@ -129,8 +130,7 @@ def cosine_distance(u, v):
     Returns 1 minus the cosine of the angle between vectors v and u. This is
     equal to 1 - (u.v / |u||v|).
     """
-    return 1 - (numpy.dot(u, v) / (
-                sqrt(numpy.dot(u, u)) * sqrt(numpy.dot(v, v))))
+    return 1 - (numpy.dot(u, v) / (sqrt(numpy.dot(u, u)) * sqrt(numpy.dot(v, v))))
 
 
 class _DendrogramNode(object):
@@ -252,7 +252,7 @@ class Dendrogram(object):
 
         # display functions
         def format(centre, left=' ', right=' '):
-            return '%s%s%s' % (lhalf*left, centre, right*rhalf)
+            return '%s%s%s' % (lhalf * left, centre, right * rhalf)
 
         def display(str):
             stdout.write(str)
@@ -262,8 +262,7 @@ class Dendrogram(object):
         verticals = [format(' ') for leaf in leaves]
         while queue:
             priority, node = queue.pop()
-            child_left_leaf = list(map(
-                                lambda c: c.leaves(False)[0], node._children))
+            child_left_leaf = list(map(lambda c: c.leaves(False)[0], node._children))
             indices = list(map(leaves.index, child_left_leaf))
             if child_left_leaf:
                 min_idx = min(indices)

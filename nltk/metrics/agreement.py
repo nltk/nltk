@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -84,6 +84,7 @@ from nltk.metrics.distance import binary_distance
 
 log = logging.getLogger(__name__)
 
+
 @python_2_unicode_compatible
 class AnnotationTask(object):
     """Represents an annotation task, i.e. people assign labels to items.
@@ -118,9 +119,13 @@ class AnnotationTask(object):
             self.load_array(data)
 
     def __str__(self):
-        return "\r\n".join(map(lambda x:"%s\t%s\t%s" %
-                               (x['coder'], x['item'].replace('_', "\t"),
-                                ",".join(x['labels'])), self.data))
+        return "\r\n".join(
+            map(
+                lambda x: "%s\t%s\t%s"
+                % (x['coder'], x['item'].replace('_', "\t"), ",".join(x['labels'])),
+                self.data,
+            )
+        )
 
     def load_array(self, array):
         """Load an sequence of annotation results, appending to any data already loaded.
@@ -132,7 +137,7 @@ class AnnotationTask(object):
             self.C.add(coder)
             self.K.add(labels)
             self.I.add(item)
-            self.data.append({'coder':coder, 'labels':labels, 'item':item})
+            self.data.append({'coder': coder, 'labels': labels, 'item': item})
 
     def agr(self, cA, cB, i, data=None):
         """Agreement between two coders on a given item
@@ -142,17 +147,20 @@ class AnnotationTask(object):
         # cfedermann: we don't know what combination of coder/item will come
         # first in x; to avoid StopIteration problems due to assuming an order
         # cA,cB, we allow either for k1 and then look up the missing as k2.
-        k1 = next((x for x in data if x['coder'] in (cA,cB) and x['item']==i))
+        k1 = next((x for x in data if x['coder'] in (cA, cB) and x['item'] == i))
         if k1['coder'] == cA:
-            k2 = next((x for x in data if x['coder']==cB and x['item']==i))
+            k2 = next((x for x in data if x['coder'] == cB and x['item'] == i))
         else:
-            k2 = next((x for x in data if x['coder']==cA and x['item']==i))
+            k2 = next((x for x in data if x['coder'] == cA and x['item'] == i))
 
         ret = 1.0 - float(self.distance(k1['labels'], k2['labels']))
-        log.debug("Observed agreement between %s and %s on %s: %f",
-                      cA, cB, i, ret)
-        log.debug("Distance between \"%r\" and \"%r\": %f",
-                      k1['labels'], k2['labels'], 1.0 - ret)
+        log.debug("Observed agreement between %s and %s on %s: %f", cA, cB, i, ret)
+        log.debug(
+            "Distance between \"%r\" and \"%r\": %f",
+            k1['labels'],
+            k2['labels'],
+            1.0 - ret,
+        )
         return ret
 
     def Nk(self, k):
@@ -176,7 +184,9 @@ class AnnotationTask(object):
         elif k is not None and c is not None and i is None:
             ret = self.Nck(c, k)
         else:
-            raise ValueError("You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c))
+            raise ValueError(
+                "You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c)
+            )
         log.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
         return ret
 
@@ -188,8 +198,12 @@ class AnnotationTask(object):
         """Observed agreement between two coders on all items.
 
         """
-        data = self._grouped_data('item', (x for x in self.data if x['coder'] in (cA, cB)))
-        ret = sum(self.agr(cA, cB, item, item_data) for item, item_data in data) / len(self.I)
+        data = self._grouped_data(
+            'item', (x for x in self.data if x['coder'] in (cA, cB))
+        )
+        ret = sum(self.agr(cA, cB, item, item_data) for item, item_data in data) / len(
+            self.I
+        )
         log.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
         return ret
 
@@ -216,24 +230,7 @@ class AnnotationTask(object):
         log.debug("Average observed agreement: %f", ret)
         return ret
 
-    def Do_alpha(self):
-        """The observed disagreement for the alpha coefficient.
-
-        The alpha coefficient, unlike the other metrics, uses this rather than
-        observed agreement.
-        """
-        total = 0.0
-        for i, itemdata in self._grouped_data('item'):
-            label_freqs = FreqDist(x['labels'] for x in itemdata)
-
-            for j, nj in iteritems(label_freqs):
-                for l, nl in iteritems(label_freqs):
-                    total += float(nj * nl) * self.distance(l, j)
-        ret = (1.0 / (len(self.I) * len(self.C) * (len(self.C) - 1))) * total
-        log.debug("Observed disagreement: %f", ret)
-        return ret
-
-    def Do_Kw_pairwise(self,cA,cB,max_distance=1.0):
+    def Do_Kw_pairwise(self, cA, cB, max_distance=1.0):
         """The observed disagreement for the weighted kappa coefficient.
 
         """
@@ -241,8 +238,7 @@ class AnnotationTask(object):
         data = (x for x in self.data if x['coder'] in (cA, cB))
         for i, itemdata in self._grouped_data('item', data):
             # we should have two items; distance doesn't care which comes first
-            total += self.distance(next(itemdata)['labels'],
-                                   next(itemdata)['labels'])
+            total += self.distance(next(itemdata)['labels'], next(itemdata)['labels'])
 
         ret = total / (len(self.I) * max_distance)
         log.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
@@ -252,7 +248,9 @@ class AnnotationTask(object):
         """Averaged over all labelers
 
         """
-        ret = self._pairwise_average(lambda cA, cB: self.Do_Kw_pairwise(cA, cB, max_distance))
+        ret = self._pairwise_average(
+            lambda cA, cB: self.Do_Kw_pairwise(cA, cB, max_distance)
+        )
         log.debug("Observed disagreement: %f", ret)
         return ret
 
@@ -309,42 +307,56 @@ class AnnotationTask(object):
         Ae = self._pairwise_average(self.Ae_kappa)
         return (self.avg_Ao() - Ae) / (1.0 - Ae)
 
+    def Disagreement(self, label_freqs):
+        total_labels = sum(label_freqs.values())
+        pairs = 0.0
+        for j, nj in iteritems(label_freqs):
+            for l, nl in iteritems(label_freqs):
+                pairs += float(nj * nl) * self.distance(l, j)
+        return 1.0 * pairs / (total_labels * (total_labels - 1))
+
     def alpha(self):
         """Krippendorff 1980
 
         """
         # check for degenerate cases
-        if len(self.K)==0:
+        if len(self.K) == 0:
             raise ValueError("Cannot calculate alpha, no data present!")
         if len(self.K) == 1:
             log.debug("Only one annotation value, allpha returning 1.")
             return 1
-        if len(self.C)==1 and len(self.I) == 1:
+        if len(self.C) == 1 and len(self.I) == 1:
             raise ValueError("Cannot calculate alpha, only one coder and item present!")
 
-        De = 0.0
+        total_disagreement = 0.0
+        total_ratings = 0
+        all_valid_labels_freq = FreqDist([])
 
-        label_freqs = FreqDist(x['labels'] for x in self.data)
-        for j in self.K:
-            nj = label_freqs[j]
-            for l in self.K:
-                De += float(nj * label_freqs[l]) * self.distance(j, l)
-        try:
-            De = (1.0 / (len(self.I) * len(self.C) * (len(self.I) * len(self.C) - 1))) * De
-            log.debug("Expected disagreement: %f", De)
-            ret = 1.0 - (self.Do_alpha() / De)
-        except ZeroDivisionError:
-            raise ValueError("Cannot calculate alpha, expected disagreement zero, check the distance function!")
-        return ret
+        total_do = 0.0 # Total observed disagreement for all items.
+        for i, itemdata in self._grouped_data('item'):
+            label_freqs = FreqDist(x['labels'] for x in itemdata)
+            labels_count = sum(label_freqs.values())
+            if labels_count < 2:
+                # Ignore the item.
+                continue
+            all_valid_labels_freq += label_freqs
+            total_do += self.Disagreement(label_freqs) * labels_count
+
+        do = total_do / sum(all_valid_labels_freq.values())
+
+        de = self.Disagreement(all_valid_labels_freq) # Expected disagreement.
+        k_alpha = 1.0 - do / de
+
+        return k_alpha
 
     def weighted_kappa_pairwise(self, cA, cB, max_distance=1.0):
         """Cohen 1968
 
         """
         total = 0.0
-        label_freqs = ConditionalFreqDist((x['coder'], x['labels'])
-                for x in self.data
-                if x['coder'] in (cA, cB))
+        label_freqs = ConditionalFreqDist(
+            (x['coder'], x['labels']) for x in self.data if x['coder'] in (cA, cB)
+        )
         for j in self.K:
             for l in self.K:
                 total += label_freqs[cA][j] * label_freqs[cB][l] * self.distance(j, l)
@@ -358,7 +370,9 @@ class AnnotationTask(object):
         """Cohen 1968
 
         """
-        return self._pairwise_average(lambda cA, cB: self.weighted_kappa_pairwise(cA, cB, max_distance))
+        return self._pairwise_average(
+            lambda cA, cB: self.weighted_kappa_pairwise(cA, cB, max_distance)
+        )
 
 
 if __name__ == '__main__':
@@ -369,26 +383,78 @@ if __name__ == '__main__':
 
     # process command-line arguments
     parser = optparse.OptionParser()
-    parser.add_option("-d", "--distance", dest="distance", default="binary_distance",
-                      help="distance metric to use")
-    parser.add_option("-a", "--agreement", dest="agreement", default="kappa",
-                      help="agreement coefficient to calculate")
-    parser.add_option("-e", "--exclude", dest="exclude", action="append",
-                      default=[], help="coder names to exclude (may be specified multiple times)")
-    parser.add_option("-i", "--include", dest="include", action="append", default=[],
-                      help="coder names to include, same format as exclude")
-    parser.add_option("-f", "--file", dest="file",
-                      help="file to read labelings from, each line with three columns: 'labeler item labels'")
-    parser.add_option("-v", "--verbose", dest="verbose", default='0',
-                      help="how much debugging to print on stderr (0-4)")
-    parser.add_option("-c", "--columnsep", dest="columnsep", default="\t",
-                      help="char/string that separates the three columns in the file, defaults to tab")
-    parser.add_option("-l", "--labelsep", dest="labelsep", default=",",
-                      help="char/string that separates labels (if labelers can assign more than one), defaults to comma")
-    parser.add_option("-p", "--presence", dest="presence", default=None,
-                      help="convert each labeling into 1 or 0, based on presence of LABEL")
-    parser.add_option("-T", "--thorough", dest="thorough", default=False, action="store_true",
-                      help="calculate agreement for every subset of the annotators")
+    parser.add_option(
+        "-d",
+        "--distance",
+        dest="distance",
+        default="binary_distance",
+        help="distance metric to use",
+    )
+    parser.add_option(
+        "-a",
+        "--agreement",
+        dest="agreement",
+        default="kappa",
+        help="agreement coefficient to calculate",
+    )
+    parser.add_option(
+        "-e",
+        "--exclude",
+        dest="exclude",
+        action="append",
+        default=[],
+        help="coder names to exclude (may be specified multiple times)",
+    )
+    parser.add_option(
+        "-i",
+        "--include",
+        dest="include",
+        action="append",
+        default=[],
+        help="coder names to include, same format as exclude",
+    )
+    parser.add_option(
+        "-f",
+        "--file",
+        dest="file",
+        help="file to read labelings from, each line with three columns: 'labeler item labels'",
+    )
+    parser.add_option(
+        "-v",
+        "--verbose",
+        dest="verbose",
+        default='0',
+        help="how much debugging to print on stderr (0-4)",
+    )
+    parser.add_option(
+        "-c",
+        "--columnsep",
+        dest="columnsep",
+        default="\t",
+        help="char/string that separates the three columns in the file, defaults to tab",
+    )
+    parser.add_option(
+        "-l",
+        "--labelsep",
+        dest="labelsep",
+        default=",",
+        help="char/string that separates labels (if labelers can assign more than one), defaults to comma",
+    )
+    parser.add_option(
+        "-p",
+        "--presence",
+        dest="presence",
+        default=None,
+        help="convert each labeling into 1 or 0, based on presence of LABEL",
+    )
+    parser.add_option(
+        "-T",
+        "--thorough",
+        dest="thorough",
+        default=False,
+        action="store_true",
+        help="calculate agreement for every subset of the annotators",
+    )
     (options, remainder) = parser.parse_args()
 
     if not options.file:
@@ -402,14 +468,22 @@ if __name__ == '__main__':
     with open(options.file, 'r') as infile:
         for l in infile:
             toks = l.split(options.columnsep)
-            coder, object_, labels = toks[0], str(toks[1:-1]), frozenset(toks[-1].strip().split(options.labelsep))
-            if ((options.include == options.exclude) or
-                (len(options.include) > 0 and coder in options.include) or
-                (len(options.exclude) > 0 and coder not in options.exclude)):
+            coder, object_, labels = (
+                toks[0],
+                str(toks[1:-1]),
+                frozenset(toks[-1].strip().split(options.labelsep)),
+            )
+            if (
+                (options.include == options.exclude)
+                or (len(options.include) > 0 and coder in options.include)
+                or (len(options.exclude) > 0 and coder not in options.exclude)
+            ):
                 data.append((coder, object_, labels))
 
     if options.presence:
-        task = AnnotationTask(data, getattr(distance, options.distance)(options.presence))
+        task = AnnotationTask(
+            data, getattr(distance, options.distance)(options.presence)
+        )
     else:
         task = AnnotationTask(data, getattr(distance, options.distance))
 

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to Weka Classsifiers
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -25,11 +25,15 @@ from nltk.internals import java, config_java
 from nltk.classify.api import ClassifierI
 
 _weka_classpath = None
-_weka_search = ['.',
-                '/usr/share/weka',
-                '/usr/local/share/weka',
-                '/usr/lib/weka',
-                '/usr/local/lib/weka',]
+_weka_search = [
+    '.',
+    '/usr/share/weka',
+    '/usr/local/share/weka',
+    '/usr/lib/weka',
+    '/usr/local/lib/weka',
+]
+
+
 def config_weka(classpath=None):
     global _weka_classpath
 
@@ -49,17 +53,21 @@ def config_weka(classpath=None):
                 _weka_classpath = os.path.join(path, 'weka.jar')
                 version = _check_weka_version(_weka_classpath)
                 if version:
-                    print(('[Found Weka: %s (version %s)]' %
-                           (_weka_classpath, version)))
+                    print(
+                        ('[Found Weka: %s (version %s)]' % (_weka_classpath, version))
+                    )
                 else:
                     print('[Found Weka: %s]' % _weka_classpath)
                 _check_weka_version(_weka_classpath)
 
     if _weka_classpath is None:
-        raise LookupError('Unable to find weka.jar!  Use config_weka() '
-                          'or set the WEKAHOME environment variable. '
-                          'For more information about Weka, please see '
-                          'http://www.cs.waikato.ac.nz/ml/weka/')
+        raise LookupError(
+            'Unable to find weka.jar!  Use config_weka() '
+            'or set the WEKAHOME environment variable. '
+            'For more information about Weka, please see '
+            'http://www.cs.waikato.ac.nz/ml/weka/'
+        )
+
 
 def _check_weka_version(jar):
     try:
@@ -75,6 +83,7 @@ def _check_weka_version(jar):
             return None
     finally:
         zf.close()
+
 
 class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
@@ -98,21 +107,30 @@ class WekaClassifier(ClassifierI):
             self._formatter.write(test_filename, featuresets)
 
             # Call weka to classify the data.
-            cmd = ['weka.classifiers.bayes.NaiveBayes',
-                   '-l', self._model, '-T', test_filename] + options
-            (stdout, stderr) = java(cmd, classpath=_weka_classpath,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE)
+            cmd = [
+                'weka.classifiers.bayes.NaiveBayes',
+                '-l',
+                self._model,
+                '-T',
+                test_filename,
+            ] + options
+            (stdout, stderr) = java(
+                cmd,
+                classpath=_weka_classpath,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
 
             # Check if something went wrong:
             if stderr and not stdout:
                 if 'Illegal options: -distribution' in stderr:
-                    raise ValueError('The installed version of weka does '
-                                     'not support probability distribution '
-                                     'output.')
+                    raise ValueError(
+                        'The installed version of weka does '
+                        'not support probability distribution '
+                        'output.'
+                    )
                 else:
-                    raise ValueError('Weka failed to generate output:\n%s'
-                                     % stderr)
+                    raise ValueError('Weka failed to generate output:\n%s' % stderr)
 
             # Parse weka's output.
             return self.parse_weka_output(stdout.decode(stdin.encoding).split('\n'))
@@ -129,19 +147,25 @@ class WekaClassifier(ClassifierI):
 
     def parse_weka_output(self, lines):
         # Strip unwanted text from stdout
-        for i,line in enumerate(lines):
+        for i, line in enumerate(lines):
             if line.strip().startswith("inst#"):
                 lines = lines[i:]
                 break
 
-        if lines[0].split() == ['inst#', 'actual', 'predicted',
-                                'error', 'prediction']:
-            return [line.split()[2].split(':')[1]
-                    for line in lines[1:] if line.strip()]
-        elif lines[0].split() == ['inst#', 'actual', 'predicted',
-                                  'error', 'distribution']:
-            return [self.parse_weka_distribution(line.split()[-1])
-                    for line in lines[1:] if line.strip()]
+        if lines[0].split() == ['inst#', 'actual', 'predicted', 'error', 'prediction']:
+            return [line.split()[2].split(':')[1] for line in lines[1:] if line.strip()]
+        elif lines[0].split() == [
+            'inst#',
+            'actual',
+            'predicted',
+            'error',
+            'distribution',
+        ]:
+            return [
+                self.parse_weka_distribution(line.split()[-1])
+                for line in lines[1:]
+                if line.strip()
+            ]
 
         # is this safe:?
         elif re.match(r'^0 \w+ [01]\.[0-9]* \?\s*$', lines[0]):
@@ -150,10 +174,11 @@ class WekaClassifier(ClassifierI):
         else:
             for line in lines[:10]:
                 print(line)
-            raise ValueError('Unhandled output format -- your version '
-                             'of weka may not be supported.\n'
-                             '  Header: %s' % lines[0])
-
+            raise ValueError(
+                'Unhandled output format -- your version '
+                'of weka may not be supported.\n'
+                '  Header: %s' % lines[0]
+            )
 
     # [xx] full list of classifiers (some may be abstract?):
     # ADTree, AODE, BayesNet, ComplementNaiveBayes, ConjunctiveRule,
@@ -175,10 +200,17 @@ class WekaClassifier(ClassifierI):
         'svm': 'weka.classifiers.functions.SMO',
         'kstar': 'weka.classifiers.lazy.KStar',
         'ripper': 'weka.classifiers.rules.JRip',
-        }
+    }
+
     @classmethod
-    def train(cls, model_filename, featuresets,
-              classifier='naivebayes', options=[], quiet=True):
+    def train(
+        cls,
+        model_filename,
+        featuresets,
+        classifier='naivebayes',
+        options=[],
+        quiet=True,
+    ):
         # Make sure we can find java & weka.
         config_weka()
 
@@ -203,7 +235,8 @@ class WekaClassifier(ClassifierI):
             cmd += list(options)
             if quiet:
                 stdout = subprocess.PIPE
-            else: stdout = None
+            else:
+                stdout = None
             java(cmd, classpath=_weka_classpath, stdout=stdout)
 
             # Return the new classifier.
@@ -271,7 +304,7 @@ class ARFF_Formatter:
                 elif issubclass(type(fval), string_types):
                     ftype = 'STRING'
                 elif fval is None:
-                    continue # can't tell the type.
+                    continue  # can't tell the type.
                 else:
                     raise ValueError('Unsupported value type %r' % ftype)
 
@@ -285,9 +318,11 @@ class ARFF_Formatter:
     def header_section(self):
         """Returns an ARFF header as a string."""
         # Header comment.
-        s = ('% Weka ARFF file\n' +
-             '% Generated automatically by NLTK\n' +
-             '%% %s\n\n' % time.ctime())
+        s = (
+            '% Weka ARFF file\n'
+            + '% Generated automatically by NLTK\n'
+            + '%% %s\n\n' % time.ctime()
+        )
 
         # Relation name
         s += '@RELATION rel\n\n'
@@ -340,7 +375,8 @@ class ARFF_Formatter:
 
 if __name__ == '__main__':
     from nltk.classify.util import names_demo, binary_names_demo_features
+
     def make_classifier(featuresets):
-        return WekaClassifier.train('/tmp/name.model', featuresets,
-                                    'C4.5')
+        return WekaClassifier.train('/tmp/name.model', featuresets, 'C4.5')
+
     classifier = names_demo(make_classifier, binary_names_demo_features)

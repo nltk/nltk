@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Tokenizer
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <http://nltk.org/>
@@ -39,25 +39,41 @@ class StanfordTokenizer(TokenizerI):
 
     _JAR = 'stanford-postagger.jar'
 
-    def __init__(self, path_to_jar=None, encoding='utf8', options=None, verbose=False, java_options='-mx1000m'):
+    def __init__(
+        self,
+        path_to_jar=None,
+        encoding='utf8',
+        options=None,
+        verbose=False,
+        java_options='-mx1000m',
+    ):
         # Raise deprecation warning.
-        warnings.warn(str("\nThe StanfordTokenizer will "
-                          "be deprecated in version 3.2.5.\n"
-                          "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead.'"),
-                      DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            str(
+                "\nThe StanfordTokenizer will "
+                "be deprecated in version 3.2.5.\n"
+                "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead.'"
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
         self._stanford_jar = find_jar(
-            self._JAR, path_to_jar,
+            self._JAR,
+            path_to_jar,
             env_vars=('STANFORD_POSTAGGER',),
-            searchpath=(), url=_stanford_url,
-            verbose=verbose
+            searchpath=(),
+            url=_stanford_url,
+            verbose=verbose,
         )
 
         self._encoding = encoding
         self.java_options = java_options
 
         options = {} if options is None else options
-        self._options_cmd = ','.join('{0}={1}'.format(key, val) for key, val in options.items())
+        self._options_cmd = ','.join(
+            '{0}={1}'.format(key, val) for key, val in options.items()
+        )
 
     @staticmethod
     def _parse_tokenized_output(s):
@@ -67,9 +83,7 @@ class StanfordTokenizer(TokenizerI):
         """
         Use stanford tokenizer's PTBTokenizer to tokenize multiple sentences.
         """
-        cmd = [
-            'edu.stanford.nlp.process.PTBTokenizer',
-        ]
+        cmd = ['edu.stanford.nlp.process.PTBTokenizer']
         return self._parse_tokenized_output(self._execute(cmd, s))
 
     def _execute(self, cmd, input_, verbose=False):
@@ -95,8 +109,9 @@ class StanfordTokenizer(TokenizerI):
             cmd.append(input_file.name)
 
             # Run the tagger and get the output.
-            stdout, stderr = java(cmd, classpath=self._stanford_jar,
-                                  stdout=PIPE, stderr=PIPE)
+            stdout, stderr = java(
+                cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE
+            )
             stdout = stdout.decode(encoding)
 
         os.unlink(input_file.name)
@@ -114,4 +129,5 @@ def setup_module(module):
         StanfordTokenizer()
     except LookupError:
         raise SkipTest(
-            'doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist')
+            'doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist'
+        )

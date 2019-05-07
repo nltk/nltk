@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CCG Categories
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -11,7 +11,7 @@ from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 
 from nltk.internals import raise_unorderable_types
-from nltk.compat import (python_2_unicode_compatible, unicode_repr)
+from nltk.compat import python_2_unicode_compatible, unicode_repr
 
 
 @add_metaclass(ABCMeta)
@@ -60,8 +60,10 @@ class AbstractCCGCategory(object):
         pass
 
     def __eq__(self, other):
-        return (self.__class__ is other.__class__ and
-                self._comparison_key == other._comparison_key)
+        return (
+            self.__class__ is other.__class__
+            and self._comparison_key == other._comparison_key
+        )
 
     def __ne__(self, other):
         return not self == other
@@ -89,6 +91,7 @@ class CCGVar(AbstractCCGCategory):
     Used for conjunctions (and possibly type-raising, if implemented as a
     unary rule).
     '''
+
     _maxID = 0
 
     def __init__(self, prim_only=False):
@@ -155,6 +158,7 @@ class Direction(object):
     Also contains maintains information as to which combinators
     may be used with the category.
     '''
+
     def __init__(self, dir, restrictions):
         self._dir = dir
         self._restrs = restrictions
@@ -206,14 +210,16 @@ class Direction(object):
 
     # Testing permitted combinators
     def can_compose(self):
-        return (',' not in self._restrs)
+        return ',' not in self._restrs
 
     def can_cross(self):
-        return ('.' not in self._restrs)
+        return '.' not in self._restrs
 
     def __eq__(self, other):
-        return (self.__class__ is other.__class__ and
-                self._comparison_key == other._comparison_key)
+        return (
+            self.__class__ is other.__class__
+            and self._comparison_key == other._comparison_key
+        )
 
     def __ne__(self, other):
         return not self == other
@@ -254,6 +260,7 @@ class PrimitiveCategory(AbstractCCGCategory):
     Takes a string representation of the category, and a
     list of strings specifying the morphological subcategories.
     '''
+
     def __init__(self, categ, restrictions=[]):
         self._categ = categ
         self._restrs = restrictions
@@ -307,6 +314,7 @@ class FunctionalCategory(AbstractCCGCategory):
     Consists of argument and result categories, together with
     an application direction.
     '''
+
     def __init__(self, res, arg, dir):
         self._res = res
         self._arg = arg
@@ -339,8 +347,7 @@ class FunctionalCategory(AbstractCCGCategory):
             sa = self._res.can_unify(other.res())
             sd = self._dir.can_unify(other.dir())
             if sa is not None and sd is not None:
-                sb = self._arg.substitute(sa).can_unify(
-                    other.arg().substitute(sa))
+                sb = self._arg.substitute(sa).can_unify(other.arg().substitute(sa))
                 if sb is not None:
                     return sa + sb
         return None

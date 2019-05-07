@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: IBM Model Core
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Tah Wei Hoon <hoon.tw@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -62,6 +62,7 @@ class IBMModel(object):
     """
     Abstract base class for all IBM models
     """
+
     # Avoid division by zero and precision errors by imposing a minimum
     # value for probabilities. Note that this approach is theoretically
     # incorrect, since it may create probabilities that sum to more
@@ -75,23 +76,25 @@ class IBMModel(object):
 
     def reset_probabilities(self):
         self.translation_table = defaultdict(
-            lambda: defaultdict(lambda: IBMModel.MIN_PROB))
+            lambda: defaultdict(lambda: IBMModel.MIN_PROB)
+        )
         """
         dict[str][str]: float. Probability(target word | source word).
         Values accessed as ``translation_table[target_word][source_word]``.
         """
 
         self.alignment_table = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(
-                lambda: IBMModel.MIN_PROB))))
+            lambda: defaultdict(
+                lambda: defaultdict(lambda: defaultdict(lambda: IBMModel.MIN_PROB))
+            )
+        )
         """
         dict[int][int][int][int]: float. Probability(i | j,l,m).
         Values accessed as ``alignment_table[i][j][l][m]``.
         Used in model 2 and hill climbing in models 3 and above
         """
 
-        self.fertility_table = defaultdict(
-            lambda: defaultdict(lambda: self.MIN_PROB))
+        self.fertility_table = defaultdict(lambda: defaultdict(lambda: self.MIN_PROB))
         """
         dict[int][str]: float. Probability(fertility | source word).
         Values accessed as ``fertility_table[fertility][source_word]``.
@@ -169,8 +172,7 @@ class IBMModel(object):
         # with the constraint that j is aligned (pegged) to i
         for j in range(1, m + 1):
             for i in range(0, l + 1):
-                initial_alignment = self.best_model2_alignment(
-                    sentence_pair, j, i)
+                initial_alignment = self.best_model2_alignment(sentence_pair, j, i)
                 potential_alignment = self.hillclimb(initial_alignment, j)
                 neighbors = self.neighboring(potential_alignment, j)
                 sampled_alignments.update(neighbors)
@@ -218,8 +220,9 @@ class IBMModel(object):
 
                 for i in range(0, l + 1):
                     s = src_sentence[i]
-                    alignment_prob = (self.translation_table[t][s] *
-                                      self.alignment_table[i][j][l][m])
+                    alignment_prob = (
+                        self.translation_table[t][s] * self.alignment_table[i][j][l][m]
+                    )
 
                     if alignment_prob >= max_alignment_prob:
                         max_alignment_prob = alignment_prob
@@ -228,8 +231,9 @@ class IBMModel(object):
             alignment[j] = best_i
             cepts[best_i].append(j)
 
-        return AlignmentInfo(tuple(alignment), tuple(src_sentence),
-                             tuple(trg_sentence), cepts)
+        return AlignmentInfo(
+            tuple(alignment), tuple(src_sentence), tuple(trg_sentence), cepts
+        )
 
     def hillclimb(self, alignment_info, j_pegged=None):
         """
@@ -302,8 +306,11 @@ class IBMModel(object):
                     new_cepts[old_i].remove(j)
 
                     new_alignment_info = AlignmentInfo(
-                        tuple(new_alignment), alignment_info.src_sentence,
-                        alignment_info.trg_sentence, new_cepts)
+                        tuple(new_alignment),
+                        alignment_info.src_sentence,
+                        alignment_info.trg_sentence,
+                        new_cepts,
+                    )
                     neighbors.add(new_alignment_info)
 
         for j in range(1, m + 1):
@@ -327,8 +334,11 @@ class IBMModel(object):
                         insort_left(new_cepts[i], other_j)
 
                         new_alignment_info = AlignmentInfo(
-                            tuple(new_alignment), alignment_info.src_sentence,
-                            alignment_info.trg_sentence, new_cepts)
+                            tuple(new_alignment),
+                            alignment_info.src_sentence,
+                            alignment_info.trg_sentence,
+                            new_cepts,
+                        )
                         neighbors.add(new_alignment_info)
 
         return neighbors
@@ -342,8 +352,7 @@ class IBMModel(object):
     def maximize_fertility_probabilities(self, counts):
         for phi, src_words in counts.fertility.items():
             for s in src_words:
-                estimate = (counts.fertility[phi][s] /
-                            counts.fertility_for_any_phi[s])
+                estimate = counts.fertility[phi][s] / counts.fertility_for_any_phi[s]
                 self.fertility_table[phi][s] = max(estimate, IBMModel.MIN_PROB)
 
     def maximize_null_generation_probabilities(self, counts):
@@ -387,8 +396,10 @@ class AlignmentInfo(object):
 
     def __init__(self, alignment, src_sentence, trg_sentence, cepts):
         if not isinstance(alignment, tuple):
-            raise TypeError("The alignment must be a tuple because it is used "
-                            "to uniquely identify AlignmentInfo objects.")
+            raise TypeError(
+                "The alignment must be a tuple because it is used "
+                "to uniquely identify AlignmentInfo objects."
+            )
 
         self.alignment = alignment
         """
@@ -457,8 +468,10 @@ class AlignmentInfo(object):
         """
         i = self.alignment[j]
         if i == 0:
-            raise ValueError("Words aligned to NULL cannot have a previous "
-                             "cept because NULL has no position")
+            raise ValueError(
+                "Words aligned to NULL cannot have a previous "
+                "cept because NULL has no position"
+            )
         previous_cept = i - 1
         while previous_cept > 0 and self.fertility_of_i(previous_cept) == 0:
             previous_cept -= 1
@@ -507,6 +520,7 @@ class Counts(object):
     """
     Data object to store counts of various parameters during training
     """
+
     def __init__(self):
         self.t_given_s = defaultdict(lambda: defaultdict(lambda: 0.0))
         self.any_t_given_s = defaultdict(lambda: 0.0)

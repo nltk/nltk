@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Context Free Grammars
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Jason Narad <jason.narad@gmail.com>
@@ -86,6 +86,7 @@ from nltk.featstruct import FeatStruct, FeatDict, FeatStructReader, SLASH, TYPE
 #################################################################
 # Nonterminal
 #################################################################
+
 
 @total_ordering
 @python_2_unicode_compatible
@@ -242,6 +243,7 @@ def is_nonterminal(item):
 # Terminals
 #################################################################
 
+
 def is_terminal(item):
     """
     Return True if the item is a terminal, which currently is
@@ -255,6 +257,7 @@ def is_terminal(item):
 #################################################################
 # Productions
 #################################################################
+
 
 @total_ordering
 @python_2_unicode_compatible
@@ -288,8 +291,9 @@ class Production(object):
         :type rhs: sequence(Nonterminal and terminal)
         """
         if isinstance(rhs, string_types):
-            raise TypeError('production right hand side should be a list, '
-                            'not a string')
+            raise TypeError(
+                'production right hand side should be a list, ' 'not a string'
+            )
         self._lhs = lhs
         self._rhs = tuple(rhs)
         self._hash = hash((self._lhs, self._rhs))
@@ -358,9 +362,11 @@ class Production(object):
 
         :rtype: bool
         """
-        return (type(self) == type(other) and
-                self._lhs == other._lhs and
-                self._rhs == other._rhs)
+        return (
+            type(self) == type(other)
+            and self._lhs == other._lhs
+            and self._rhs == other._rhs
+        )
 
     def __ne__(self, other):
         return not self == other
@@ -425,14 +431,17 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
         Production.__init__(self, lhs, rhs)
 
     def __str__(self):
-        return Production.__unicode__(self) + \
-               (' [1.0]' if (self.prob() == 1.0) else ' [%g]' % self.prob())
+        return Production.__unicode__(self) + (
+            ' [1.0]' if (self.prob() == 1.0) else ' [%g]' % self.prob()
+        )
 
     def __eq__(self, other):
-        return (type(self) == type(other) and
-                self._lhs == other._lhs and
-                self._rhs == other._rhs and
-                self.prob() == other.prob())
+        return (
+            type(self) == type(other)
+            and self._lhs == other._lhs
+            and self._rhs == other._rhs
+            and self.prob() == other.prob()
+        )
 
     def __ne__(self, other):
         return not self == other
@@ -444,6 +453,7 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 #################################################################
 # Grammars
 #################################################################
+
 
 @python_2_unicode_compatible
 class CFG(object):
@@ -470,8 +480,10 @@ class CFG(object):
         :type calculate_leftcorners: bool
         """
         if not is_nonterminal(start):
-            raise TypeError("start should be a Nonterminal object,"
-                            " not a %s" % type(start).__name__)
+            raise TypeError(
+                "start should be a Nonterminal object,"
+                " not a %s" % type(start).__name__
+            )
 
         self._start = start
         self._productions = productions
@@ -508,8 +520,12 @@ class CFG(object):
 
     def _calculate_leftcorners(self):
         # Calculate leftcorner relations, for use in optimized parsing.
-        self._immediate_leftcorner_categories = dict((cat, set([cat])) for cat in self._categories)
-        self._immediate_leftcorner_words = dict((cat, set()) for cat in self._categories)
+        self._immediate_leftcorner_categories = dict(
+            (cat, set([cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
         for prod in self.productions():
             if len(prod) > 0:
                 cat, left = prod.lhs(), prod.rhs()[0]
@@ -522,7 +538,9 @@ class CFG(object):
         self._leftcorners = lc
         self._leftcorner_parents = invert_graph(lc)
 
-        nr_leftcorner_categories = sum(map(len, self._immediate_leftcorner_categories.values()))
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
         nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
         if nr_leftcorner_words > nr_leftcorner_categories > 10000:
             # If the grammar is big, the leftcorner-word dictionary will be too large.
@@ -544,8 +562,9 @@ class CFG(object):
 
         :param input: a grammar, either in the form of a string or as a list of strings.
         """
-        start, productions = read_grammar(input, standard_nonterm_parser,
-                                          encoding=encoding)
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
         return cls(start, productions)
 
     def start(self):
@@ -571,8 +590,9 @@ class CFG(object):
         :rtype: list(Production)
         """
         if rhs and empty:
-            raise ValueError("You cannot select empty and non-empty "
-                             "productions at the same time.")
+            raise ValueError(
+                "You cannot select empty and non-empty " "productions at the same time."
+            )
 
         # no constraints so return everything
         if not lhs and not rhs:
@@ -596,8 +616,11 @@ class CFG(object):
 
         # intersect
         else:
-            return [prod for prod in self._lhs_index.get(lhs, [])
-                    if prod in self._rhs_index.get(rhs, [])]
+            return [
+                prod
+                for prod in self._lhs_index.get(lhs, [])
+                if prod in self._rhs_index.get(rhs, [])
+            ]
 
     def leftcorners(self, cat):
         """
@@ -630,8 +653,10 @@ class CFG(object):
         elif self._leftcorner_words:
             return left in self._leftcorner_words.get(cat, set())
         else:
-            return any(left in self._immediate_leftcorner_words.get(parent, set())
-                       for parent in self.leftcorners(cat))
+            return any(
+                left in self._immediate_leftcorner_words.get(parent, set())
+                for parent in self.leftcorners(cat)
+            )
 
     def leftcorner_parents(self, cat):
         """
@@ -652,12 +677,12 @@ class CFG(object):
 
         :type tokens: list(str)
         """
-        missing = [tok for tok in tokens
-                   if not self._lexical_index.get(tok)]
+        missing = [tok for tok in tokens if not self._lexical_index.get(tok)]
         if missing:
             missing = ', '.join('%r' % (w,) for w in missing)
-            raise ValueError("Grammar does not cover some of the "
-                             "input words: %r." % missing)
+            raise ValueError(
+                "Grammar does not cover some of the " "input words: %r." % missing
+            )
 
     def _calculate_grammar_forms(self):
         """
@@ -665,12 +690,10 @@ class CFG(object):
         """
         prods = self._productions
         self._is_lexical = all(p.is_lexical() for p in prods)
-        self._is_nonlexical = all(p.is_nonlexical() for p in prods
-                                  if len(p) != 1)
+        self._is_nonlexical = all(p.is_nonlexical() for p in prods if len(p) != 1)
         self._min_len = min(len(p) for p in prods)
         self._max_len = max(len(p) for p in prods)
-        self._all_unary_are_lexical = all(p.is_lexical() for p in prods
-                                          if len(p) == 1)
+        self._all_unary_are_lexical = all(p.is_lexical() for p in prods if len(p) == 1)
 
     def is_lexical(self):
         """
@@ -728,8 +751,114 @@ class CFG(object):
         Return True if the grammar is of Chomsky Normal Form, i.e. all productions
         are of the form A -> B C, or A -> "s".
         """
-        return (self.is_flexible_chomsky_normal_form() and
-                self._all_unary_are_lexical)
+        return self.is_flexible_chomsky_normal_form() and self._all_unary_are_lexical
+
+    def chomsky_normal_form(self, new_token_padding='@$@', flexible=False):
+        """
+        Returns a new Grammer that is in chomsky normal
+        :param: new_token_padding
+            Customise new rule formation during binarisation
+        """
+        if self.is_chomsky_normal_form():
+            return
+        if self.productions(empty=True):
+            raise ValueError(('Grammar has Empty rules. '
+                              'Cannot deal with them at the moment'))
+
+        # check for mixed rules
+        for rule in self.productions():
+            if rule.is_lexical() and len(rule.rhs()) > 1:
+                raise ValueError(
+                    'Cannot handled mixed rule {} => {}'.format(rule.lhs(),
+                                                                rule.rhs()))
+
+        step1 = CFG.eliminate_start(self)
+        step2 = CFG.binarize(step1, new_token_padding)
+        if flexible:
+            return step2
+        step3 = CFG.remove_unitary_rules(step2)
+        return step3
+
+    @classmethod
+    def remove_unitary_rules(cls, grammar):
+        """
+        Remove nonlexical unitary rules and convert them to
+        lexical
+        """
+        result = []
+        unitary = []
+        for rule in grammar.productions():
+            if len(rule) == 1 and rule.is_nonlexical():
+                unitary.append(rule)
+            else:
+                result.append(rule)
+
+        while unitary:
+            rule = unitary.pop(0)
+            for item in grammar.productions(lhs=rule.rhs()[0]):
+                new_rule = Production(rule.lhs(), item.rhs())
+                if len(new_rule) != 1 or new_rule.is_lexical():
+                    result.append(new_rule)
+                else:
+                    unitary.append(new_rule)
+
+        n_grammar = CFG(grammar.start(), result)
+        return n_grammar
+
+    @classmethod
+    def binarize(cls, grammar, padding='@$@'):
+        """
+        Convert all non-binary rules into binary by introducing
+        new tokens.
+        Example::
+        Original:
+            A => B C D
+        After Conversion:
+            A => B A@$@B
+            A@$@B => C D
+        """
+        result = []
+
+        for rule in grammar.productions():
+            if len(rule.rhs()) > 2:
+                # this rule needs to be broken down
+                left_side = rule.lhs()
+                for k in range(0, len(rule.rhs()) - 2):
+                    tsym = rule.rhs()[k]
+                    new_sym = Nonterminal(
+                        left_side.symbol() + padding + tsym.symbol()
+                    )
+                    new_production = Production(left_side, (tsym, new_sym))
+                    left_side = new_sym
+                    result.append(new_production)
+                last_prd = Production(left_side, rule.rhs()[-2:])
+                result.append(last_prd)
+            else:
+                result.append(rule)
+
+        n_grammar = CFG(grammar.start(), result)
+        return n_grammar
+
+    @classmethod
+    def eliminate_start(cls, grammar):
+        """
+        Eliminate start rule in case it appears on RHS
+        Example: S -> S0 S1 and S0 -> S1 S
+        Then another rule S0_Sigma -> S is added
+        """
+        start = grammar.start()
+        result = []
+        need_to_add = None
+        for rule in grammar.productions():
+            if start in rule.rhs():
+                need_to_add = True
+            result.append(rule)
+        if need_to_add:
+            start = Nonterminal('S0_SIGMA')
+            result.append(Production(start, grammar.start()))
+            n_grammar = CFG(start, result)
+            return n_grammar
+        return grammar
 
     def __repr__(self):
         return '<Grammar with %d productions>' % len(self._productions)
@@ -799,8 +928,9 @@ class FeatureGrammar(CFG):
                     self._lexical_index.setdefault(token, set()).add(prod)
 
     @classmethod
-    def fromstring(cls, input, features=None, logic_parser=None, fstruct_reader=None,
-                   encoding=None):
+    def fromstring(
+        cls, input, features=None, logic_parser=None, fstruct_reader=None, encoding=None
+    ):
         """
         Return a feature structure based grammar.
 
@@ -816,14 +946,17 @@ class FeatureGrammar(CFG):
             features = (SLASH, TYPE)
 
         if fstruct_reader is None:
-            fstruct_reader = FeatStructReader(features, FeatStructNonterminal,
-                                              logic_parser=logic_parser)
+            fstruct_reader = FeatStructReader(
+                features, FeatStructNonterminal, logic_parser=logic_parser
+            )
         elif logic_parser is not None:
-            raise Exception('\'logic_parser\' and \'fstruct_reader\' must '
-                            'not both be set')
+            raise Exception(
+                '\'logic_parser\' and \'fstruct_reader\' must ' 'not both be set'
+            )
 
-        start, productions = read_grammar(input, fstruct_reader.read_partial,
-                                          encoding=encoding)
+        start, productions = read_grammar(
+            input, fstruct_reader.read_partial, encoding=encoding
+        )
         return cls(start, productions)
 
     def productions(self, lhs=None, rhs=None, empty=False):
@@ -838,8 +971,9 @@ class FeatureGrammar(CFG):
         :rtype: list(Production)
         """
         if rhs and empty:
-            raise ValueError("You cannot select empty and non-empty "
-                             "productions at the same time.")
+            raise ValueError(
+                "You cannot select empty and non-empty " "productions at the same time."
+            )
 
         # no constraints so return everything
         if not lhs and not rhs:
@@ -861,8 +995,11 @@ class FeatureGrammar(CFG):
 
         # intersect
         else:
-            return [prod for prod in self._lhs_index.get(self._get_type_if_possible(lhs), [])
-                    if prod in self._rhs_index.get(self._get_type_if_possible(rhs), [])]
+            return [
+                prod
+                for prod in self._lhs_index.get(self._get_type_if_possible(lhs), [])
+                if prod in self._rhs_index.get(self._get_type_if_possible(rhs), [])
+            ]
 
     def leftcorners(self, cat):
         """
@@ -942,7 +1079,8 @@ class DependencyGrammar(object):
         productions = []
         for linenum, line in enumerate(input.split('\n')):
             line = line.strip()
-            if line.startswith('#') or line == '': continue
+            if line.startswith('#') or line == '':
+                continue
             try:
                 productions += _read_dependency_production(line)
             except ValueError:
@@ -964,7 +1102,7 @@ class DependencyGrammar(object):
         """
         for production in self._productions:
             for possibleMod in production._rhs:
-                if (production._lhs == head and possibleMod == mod):
+                if production._lhs == head and possibleMod == mod:
                     return True
         return False
 
@@ -981,7 +1119,7 @@ class DependencyGrammar(object):
         """
         for production in self._productions:
             for possibleMod in production._rhs:
-                if (production._lhs == head and possibleMod == mod):
+                if production._lhs == head and possibleMod == mod:
                     return True
         return False
 
@@ -1038,7 +1176,7 @@ class ProbabilisticDependencyGrammar(object):
         """
         for production in self._productions:
             for possibleMod in production._rhs:
-                if (production._lhs == head and possibleMod == mod):
+                if production._lhs == head and possibleMod == mod:
                     return True
         return False
 
@@ -1048,7 +1186,9 @@ class ProbabilisticDependencyGrammar(object):
 
         :rtype: str
         """
-        str = 'Statistical dependency grammar with %d productions' % len(self._productions)
+        str = 'Statistical dependency grammar with %d productions' % len(
+            self._productions
+        )
         for production in self._productions:
             str += '\n  %s' % production
         str += '\nEvents:'
@@ -1063,7 +1203,9 @@ class ProbabilisticDependencyGrammar(object):
         """
         Return a concise string representation of the ``ProbabilisticDependencyGrammar``
         """
-        return 'Statistical Dependency grammar with %d productions' % len(self._productions)
+        return 'Statistical Dependency grammar with %d productions' % len(
+            self._productions
+        )
 
 
 class PCFG(CFG):
@@ -1085,6 +1227,7 @@ class PCFG(CFG):
         productions with a given left-hand side have probabilities
         that sum to 1.
     """
+
     EPSILON = 0.01
 
     def __init__(self, start, productions, calculate_leftcorners=True):
@@ -1108,11 +1251,9 @@ class PCFG(CFG):
         # Make sure that the probabilities sum to one.
         probs = {}
         for production in productions:
-            probs[production.lhs()] = (probs.get(production.lhs(), 0) +
-                                       production.prob())
+            probs[production.lhs()] = probs.get(production.lhs(), 0) + production.prob()
         for (lhs, p) in probs.items():
-            if not ((1 - PCFG.EPSILON) < p <
-                    (1 + PCFG.EPSILON)):
+            if not ((1 - PCFG.EPSILON) < p < (1 + PCFG.EPSILON)):
                 raise ValueError("Productions for %r do not sum to 1" % lhs)
 
     @classmethod
@@ -1124,8 +1265,9 @@ class PCFG(CFG):
         :param input: a grammar, either in the form of a string or else
              as a list of strings.
         """
-        start, productions = read_grammar(input, standard_nonterm_parser,
-                                          probabilistic=True, encoding=encoding)
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, probabilistic=True, encoding=encoding
+        )
         return cls(start, productions)
 
 
@@ -1134,6 +1276,7 @@ class PCFG(CFG):
 #################################################################
 
 # Contributed by Nathan Bodenstab <bodenstab@cslu.ogi.edu>
+
 
 def induce_pcfg(start, productions):
     """
@@ -1160,15 +1303,17 @@ def induce_pcfg(start, productions):
         lcount[prod.lhs()] = lcount.get(prod.lhs(), 0) + 1
         pcount[prod] = pcount.get(prod, 0) + 1
 
-    prods = [ProbabilisticProduction(p.lhs(), p.rhs(),
-                                     prob=pcount[p] / lcount[p.lhs()])
-             for p in pcount]
+    prods = [
+        ProbabilisticProduction(p.lhs(), p.rhs(), prob=pcount[p] / lcount[p.lhs()])
+        for p in pcount
+    ]
     return PCFG(start, prods)
 
 
 #################################################################
 # Helper functions for reading productions
 #################################################################
+
 
 def _read_cfg_production(input):
     """
@@ -1211,7 +1356,8 @@ def _read_production(line, nonterm_parser, probabilistic=False):
 
     # Skip over the arrow.
     m = _ARROW_RE.match(line, pos)
-    if not m: raise ValueError('Expected an arrow')
+    if not m:
+        raise ValueError('Expected an arrow')
     pos = m.end()
 
     # Parse the right hand side.
@@ -1224,14 +1370,16 @@ def _read_production(line, nonterm_parser, probabilistic=False):
             pos = m.end()
             probabilities[-1] = float(m.group(1)[1:-1])
             if probabilities[-1] > 1.0:
-                raise ValueError('Production probability %f, '
-                                 'should not be greater than 1.0' %
-                                 (probabilities[-1],))
+                raise ValueError(
+                    'Production probability %f, '
+                    'should not be greater than 1.0' % (probabilities[-1],)
+                )
 
         # String -- add terminal.
         elif line[pos] in "\'\"":
             m = _TERMINAL_RE.match(line, pos)
-            if not m: raise ValueError('Unterminated string')
+            if not m:
+                raise ValueError('Unterminated string')
             rhsides[-1].append(m.group(1)[1:-1])
             pos = m.end()
 
@@ -1248,8 +1396,10 @@ def _read_production(line, nonterm_parser, probabilistic=False):
             rhsides[-1].append(nonterm)
 
     if probabilistic:
-        return [ProbabilisticProduction(lhs, rhs, prob=probability)
-                for (rhs, probability) in zip(rhsides, probabilities)]
+        return [
+            ProbabilisticProduction(lhs, rhs, prob=probability)
+            for (rhs, probability) in zip(rhsides, probabilities)
+        ]
     else:
         return [Production(lhs, rhs) for rhs in rhsides]
 
@@ -1257,6 +1407,7 @@ def _read_production(line, nonterm_parser, probabilistic=False):
 #################################################################
 # Reading Phrase Structure Grammars
 #################################################################
+
 
 def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     """
@@ -1285,7 +1436,8 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     continue_line = ''
     for linenum, line in enumerate(lines):
         line = continue_line + line.strip()
-        if line.startswith('#') or line == '': continue
+        if line.startswith('#') or line == '':
+            continue
         if line.endswith('\\'):
             continue_line = line[:-1].rstrip() + ' '
             continue
@@ -1303,8 +1455,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
                 # expand out the disjunctions on the RHS
                 productions += _read_production(line, nonterm_parser, probabilistic)
         except ValueError as e:
-            raise ValueError('Unable to parse line %s: %s\n%s' %
-                             (linenum + 1, line, e))
+            raise ValueError('Unable to parse line %s: %s\n%s' % (linenum + 1, line, e))
 
     if not productions:
         raise ValueError('No productions found!')
@@ -1318,8 +1469,8 @@ _STANDARD_NONTERM_RE = re.compile('( [\w/][\w/^<>-]* ) \s*', re.VERBOSE)
 
 def standard_nonterm_parser(string, pos):
     m = _STANDARD_NONTERM_RE.match(string, pos)
-    if not m: raise ValueError('Expected a nonterminal, found: '
-                               + string[pos:])
+    if not m:
+        raise ValueError('Expected a nonterminal, found: ' + string[pos:])
     return (Nonterminal(m.group(1)), m.end())
 
 
@@ -1327,7 +1478,8 @@ def standard_nonterm_parser(string, pos):
 # Reading Dependency Grammars
 #################################################################
 
-_READ_DG_RE = re.compile(r'''^\s*                # leading whitespace
+_READ_DG_RE = re.compile(
+    r'''^\s*                # leading whitespace
                               ('[^']+')\s*        # single-quoted lhs
                               (?:[-=]+>)\s*        # arrow
                               (?:(                 # rhs:
@@ -1337,7 +1489,8 @@ _READ_DG_RE = re.compile(r'''^\s*                # leading whitespace
                                  )
                                  \s*)              # trailing space
                                  *$''',  # zero or more copies
-                         re.VERBOSE)
+    re.VERBOSE,
+)
 _SPLIT_DG_RE = re.compile(r'''('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)''')
 
 
@@ -1360,6 +1513,7 @@ def _read_dependency_production(s):
 # Demonstration
 #################################################################
 
+
 def cfg_demo():
     """
     A demonstration showing how ``CFGs`` can be created and used.
@@ -1379,7 +1533,8 @@ def cfg_demo():
     print(Production(S, [NP]))
 
     # Create some Grammar Productions
-    grammar = CFG.fromstring("""
+    grammar = CFG.fromstring(
+        """
       S -> NP VP
       PP -> P NP
       NP -> Det N | NP PP
@@ -1388,7 +1543,8 @@ def cfg_demo():
       N -> 'dog' | 'cat'
       V -> 'chased' | 'sat'
       P -> 'on' | 'in'
-    """)
+    """
+    )
 
     print('A Grammar:', repr(grammar))
     print('    grammar.start()       =>', repr(grammar.start()))
@@ -1398,7 +1554,8 @@ def cfg_demo():
     print()
 
 
-toy_pcfg1 = PCFG.fromstring("""
+toy_pcfg1 = PCFG.fromstring(
+    """
     S -> NP VP [1.0]
     NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
     Det -> 'the' [0.8] | 'my' [0.2]
@@ -1407,9 +1564,11 @@ toy_pcfg1 = PCFG.fromstring("""
     V -> 'ate' [0.35] | 'saw' [0.65]
     PP -> P NP [1.0]
     P -> 'with' [0.61] | 'under' [0.39]
-    """)
+    """
+)
 
-toy_pcfg2 = PCFG.fromstring("""
+toy_pcfg2 = PCFG.fromstring(
+    """
     S    -> NP VP         [1.0]
     VP   -> V NP          [.59]
     VP   -> V             [.40]
@@ -1433,7 +1592,8 @@ toy_pcfg2 = PCFG.fromstring("""
     Det  -> 'the'         [.41]
     Det  -> 'a'           [.31]
     Det  -> 'my'          [.28]
-    """)
+    """
+)
 
 
 def pcfg_demo():
@@ -1496,6 +1656,7 @@ def pcfg_demo():
 
 def fcfg_demo():
     import nltk.data
+
     g = nltk.data.load('grammars/book_grammars/feat0.fcfg')
     print(g)
     print()
@@ -1506,11 +1667,13 @@ def dg_demo():
     A demonstration showing the creation and inspection of a
     ``DependencyGrammar``.
     """
-    grammar = DependencyGrammar.fromstring("""
+    grammar = DependencyGrammar.fromstring(
+        """
     'scratch' -> 'cats' | 'walls'
     'walls' -> 'the'
     'cats' -> 'the'
-    """)
+    """
+    )
     print(grammar)
 
 
@@ -1521,7 +1684,8 @@ def sdg_demo():
     """
     from nltk.parse import DependencyGraph
 
-    dg = DependencyGraph("""
+    dg = DependencyGraph(
+        """
     1   Ze                ze                Pron  Pron  per|3|evofmv|nom                 2   su      _  _
     2   had               heb               V     V     trans|ovt|1of2of3|ev             0   ROOT    _  _
     3   met               met               Prep  Prep  voor                             8   mod     _  _
@@ -1535,7 +1699,8 @@ def sdg_demo():
     11  of                of                Conj  Conj  neven                            7   vc      _  _
     12  terrassen         terras            N     N     soort|mv|neut                    11  cnj     _  _
     13  .                 .                 Punc  Punc  punt                             12  punct   _  _
-    """)
+    """
+    )
     tree = dg.tree()
     print(tree.pprint())
 
@@ -1551,9 +1716,16 @@ def demo():
 if __name__ == '__main__':
     demo()
 
-__all__ = ['Nonterminal', 'nonterminals',
-           'CFG', 'Production',
-           'PCFG', 'ProbabilisticProduction',
-           'DependencyGrammar', 'DependencyProduction',
-           'ProbabilisticDependencyGrammar',
-           'induce_pcfg', 'read_grammar']
+__all__ = [
+    'Nonterminal',
+    'nonterminals',
+    'CFG',
+    'Production',
+    'PCFG',
+    'ProbabilisticProduction',
+    'DependencyGrammar',
+    'DependencyProduction',
+    'ProbabilisticDependencyGrammar',
+    'induce_pcfg',
+    'read_grammar',
+]

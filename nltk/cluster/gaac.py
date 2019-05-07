@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Group Average Agglomerative Clusterer
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -13,6 +13,7 @@ except ImportError:
 
 from nltk.cluster.util import VectorSpaceClusterer, Dendrogram, cosine_distance
 from nltk.compat import python_2_unicode_compatible
+
 
 @python_2_unicode_compatible
 class GAAClusterer(VectorSpaceClusterer):
@@ -37,21 +38,22 @@ class GAAClusterer(VectorSpaceClusterer):
     def cluster(self, vectors, assign_clusters=False, trace=False):
         # stores the merge order
         self._dendrogram = Dendrogram(
-            [numpy.array(vector, numpy.float64) for vector in vectors])
+            [numpy.array(vector, numpy.float64) for vector in vectors]
+        )
         return VectorSpaceClusterer.cluster(self, vectors, assign_clusters, trace)
 
     def cluster_vectorspace(self, vectors, trace=False):
         # variables describing the initial situation
         N = len(vectors)
-        cluster_len = [1]*N
+        cluster_len = [1] * N
         cluster_count = N
         index_map = numpy.arange(N)
 
         # construct the similarity matrix
         dims = (N, N)
-        dist = numpy.ones(dims, dtype=numpy.float)*numpy.inf
+        dist = numpy.ones(dims, dtype=numpy.float) * numpy.inf
         for i in range(N):
-            for j in range(i+1, N):
+            for j in range(i + 1, N):
                 dist[i, j] = cosine_distance(vectors[i], vectors[j])
 
         while cluster_count > max(self._num_clusters, 1):
@@ -67,13 +69,13 @@ class GAAClusterer(VectorSpaceClusterer):
             dist[j, :] = numpy.inf
 
             # merge the clusters
-            cluster_len[i] = cluster_len[i]+cluster_len[j]
+            cluster_len[i] = cluster_len[i] + cluster_len[j]
             self._dendrogram.merge(index_map[i], index_map[j])
             cluster_count -= 1
 
             # update the index map to reflect the indexes if we
             # had removed j
-            index_map[j+1:] -= 1
+            index_map[j + 1 :] -= 1
             index_map[j] = N
 
         self.update_clusters(self._num_clusters)
@@ -84,16 +86,18 @@ class GAAClusterer(VectorSpaceClusterer):
         # number of points in the clusters i and j
         i_weight = cluster_len[i]
         j_weight = cluster_len[j]
-        weight_sum = i_weight+j_weight
+        weight_sum = i_weight + j_weight
 
         # update for x<i
-        dist[:i, i] = dist[:i, i]*i_weight + dist[:i, j]*j_weight
+        dist[:i, i] = dist[:i, i] * i_weight + dist[:i, j] * j_weight
         dist[:i, i] /= weight_sum
         # update for i<x<j
-        dist[i, i+1:j] = dist[i, i+1:j]*i_weight + dist[i+1:j, j]*j_weight
+        dist[i, i + 1 : j] = (
+            dist[i, i + 1 : j] * i_weight + dist[i + 1 : j, j] * j_weight
+        )
         # update for i<j<x
-        dist[i, j+1:] = dist[i, j+1:]*i_weight + dist[j, j+1:]*j_weight
-        dist[i, i+1:] /= weight_sum
+        dist[i, j + 1 :] = dist[i, j + 1 :] * i_weight + dist[j, j + 1 :] * j_weight
+        dist[i, i + 1 :] /= weight_sum
 
     def update_clusters(self, num_clusters):
         clusters = self._dendrogram.groups(num_clusters)
@@ -134,6 +138,7 @@ class GAAClusterer(VectorSpaceClusterer):
 
     def __repr__(self):
         return '<GroupAverageAgglomerative Clusterer n=%d>' % self._num_clusters
+
 
 def demo():
     """

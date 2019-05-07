@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Confusion Matrices
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
@@ -8,6 +8,7 @@
 from __future__ import print_function, unicode_literals
 from nltk.probability import FreqDist
 from nltk.compat import python_2_unicode_compatible
+
 
 @python_2_unicode_compatible
 class ConfusionMatrix(object):
@@ -49,18 +50,21 @@ class ConfusionMatrix(object):
         if sort_by_count:
             ref_fdist = FreqDist(reference)
             test_fdist = FreqDist(test)
-            def key(v): return -(ref_fdist[v]+test_fdist[v])
-            values = sorted(set(reference+test), key=key)
+
+            def key(v):
+                return -(ref_fdist[v] + test_fdist[v])
+
+            values = sorted(set(reference + test), key=key)
         else:
-            values = sorted(set(reference+test))
+            values = sorted(set(reference + test))
 
         # Construct a value->index dictionary
-        indices = dict((val,i) for (i,val) in enumerate(values))
+        indices = dict((val, i) for (i, val) in enumerate(values))
 
         # Make a confusion matrix table.
         confusion = [[0 for val in values] for val in values]
-        max_conf = 0 # Maximum confusion
-        for w,g in zip(reference, test):
+        max_conf = 0  # Maximum confusion
+        for w, g in zip(reference, test):
             confusion[indices[w]][indices[g]] += 1
             max_conf = max(max_conf, confusion[indices[w]][indices[g]])
 
@@ -89,14 +93,18 @@ class ConfusionMatrix(object):
         return self._confusion[i][j]
 
     def __repr__(self):
-        return '<ConfusionMatrix: %s/%s correct>' % (self._correct,
-                                                     self._total)
+        return '<ConfusionMatrix: %s/%s correct>' % (self._correct, self._total)
 
     def __str__(self):
         return self.pretty_format()
 
-    def pretty_format(self, show_percents=False, values_in_chart=True,
-           truncate=None, sort_by_count=False):
+    def pretty_format(
+        self,
+        show_percents=False,
+        values_in_chart=True,
+        truncate=None,
+        sort_by_count=False,
+    ):
         """
         :return: A multi-line string representation of this confusion matrix.
         :type truncate: int
@@ -115,8 +123,9 @@ class ConfusionMatrix(object):
 
         values = self._values
         if sort_by_count:
-            values = sorted(values, key=lambda v:
-                            -sum(self._confusion[self._indices[v]]))
+            values = sorted(
+                values, key=lambda v: -sum(self._confusion[self._indices[v]])
+            )
 
         if truncate:
             values = values[:truncate]
@@ -124,7 +133,7 @@ class ConfusionMatrix(object):
         if values_in_chart:
             value_strings = ["%s" % val for val in values]
         else:
-            value_strings = [str(n+1) for n in range(len(values))]
+            value_strings = [str(n + 1) for n in range(len(values))]
 
         # Construct a format string for row values
         valuelen = max(len(val) for val in value_strings)
@@ -137,21 +146,21 @@ class ConfusionMatrix(object):
         else:
             entrylen = len(repr(self._max_conf))
             entry_format = '%' + repr(entrylen) + 'd'
-            zerostr = ' '*(entrylen-1) + '.'
+            zerostr = ' ' * (entrylen - 1) + '.'
 
         # Write the column values.
         s = ''
         for i in range(valuelen):
-            s += (' '*valuelen)+' |'
+            s += (' ' * valuelen) + ' |'
             for val in value_strings:
-                if i >= valuelen-len(val):
-                    s += val[i-valuelen+len(val)].rjust(entrylen+1)
+                if i >= valuelen - len(val):
+                    s += val[i - valuelen + len(val)].rjust(entrylen + 1)
                 else:
-                    s += ' '*(entrylen+1)
+                    s += ' ' * (entrylen + 1)
             s += ' |\n'
 
         # Write a dividing line
-        s += '%s-+-%s+\n' % ('-'*valuelen, '-'*((entrylen+1)*len(values)))
+        s += '%s-+-%s+\n' % ('-' * valuelen, '-' * ((entrylen + 1) * len(values)))
 
         # Write the entries.
         for val, li in zip(value_strings, values):
@@ -162,45 +171,48 @@ class ConfusionMatrix(object):
                 if confusion[i][j] == 0:
                     s += zerostr
                 elif show_percents:
-                    s += entry_format % (100.0*confusion[i][j]/self._total)
+                    s += entry_format % (100.0 * confusion[i][j] / self._total)
                 else:
                     s += entry_format % confusion[i][j]
                 if i == j:
                     prevspace = s.rfind(' ')
-                    s = s[:prevspace] + '<' + s[prevspace+1:] + '>'
-                else: s += ' '
+                    s = s[:prevspace] + '<' + s[prevspace + 1 :] + '>'
+                else:
+                    s += ' '
             s += '|\n'
 
         # Write a dividing line
-        s += '%s-+-%s+\n' % ('-'*valuelen, '-'*((entrylen+1)*len(values)))
+        s += '%s-+-%s+\n' % ('-' * valuelen, '-' * ((entrylen + 1) * len(values)))
 
         # Write a key
         s += '(row = reference; col = test)\n'
         if not values_in_chart:
             s += 'Value key:\n'
             for i, value in enumerate(values):
-                s += '%6d: %s\n' % (i+1, value)
+                s += '%6d: %s\n' % (i + 1, value)
 
         return s
 
     def key(self):
         values = self._values
         str = 'Value key:\n'
-        indexlen = len(repr(len(values)-1))
-        key_format = '  %'+repr(indexlen)+'d: %s\n'
+        indexlen = len(repr(len(values) - 1))
+        key_format = '  %' + repr(indexlen) + 'd: %s\n'
         for i in range(len(values)):
             str += key_format % (i, values[i])
 
         return str
 
+
 def demo():
     reference = 'DET NN VB DET JJ NN NN IN DET NN'.split()
-    test    = 'DET VB VB DET NN NN NN IN DET NN'.split()
+    test = 'DET VB VB DET NN NN NN IN DET NN'.split()
     print('Reference =', reference)
     print('Test    =', test)
     print('Confusion matrix:')
     print(ConfusionMatrix(reference, test))
     print(ConfusionMatrix(reference, test).pretty_format(sort_by_count=True))
+
 
 if __name__ == '__main__':
     demo()

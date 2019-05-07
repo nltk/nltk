@@ -1,3 +1,38 @@
+Version 3.4.1 2019-04-17
+
+* add chomsky_normal_form for CFGs
+* add meteor score
+* add minimum edit/Levenshtein distance based alignment function
+* allow access to collocation list via text.collocation_list()
+* support corenlp server options
+* drop support for Python 3.4
+* other minor fixes
+
+Thanks to the following contributors to 3.4.1:
+Adrian Ellis, Andrew Martin, Ayush Kaushal, BLKSerene, Bharat
+Raghunathan, Franklin Chen, KMiNT21 Kevin Brown, Liling Tan,
+Matan Rak, Nat Quayle Nelson, Osman Zubair, Purificant,
+Uday Krishna, Viresh Gupta
+	
+Version 3.4 2018-11-17
+* Support Python 3.7	
+* Language Modeling incl Kneser-Ney, Witten-Bell, Good-Turing
+* Cistem Stemmer for German
+* Support Russian National Corpus incl POS tag model
+* Decouple sentiment and twitter packages
+* Minor extensions for WordNet
+* K-alpha
+* Fix warning messages for corenlp
+* Comprehensive code cleanups
+* Many other minor fixes
+* Switch continuous integration from Jenkins to Travis
+
+Special thanks to Ilia Kurenkov (Language Model package), Liling Tan (Python 3.7, Travis-CI),
+and purificant (code cleanups). Thanks also to: Afshin Sadeghi, Ales Tamchyna, Alok Debnath,
+aquatiko, Coykto, Denis Kataev, dnc1994, Fabian Howard, Frankie Robertson, Iaroslav Tymchenko,
+Jayakrishna Sahit, LBenzahia, Leonie Weißweiler, Linghao Zhang, Rohit Kumar, sahitpj,
+Tim Gianitsos, vagrant, 53X
+
 Version 3.3 2018-05-06
 * Support Python 3.6
 * New interface to CoreNLP

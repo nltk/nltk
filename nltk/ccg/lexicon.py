@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -17,11 +17,11 @@ from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategor
 from nltk.compat import python_2_unicode_compatible
 from nltk.internals import deprecated
 
-from nltk.sem.logic import *
+from nltk.sem.logic import Expression
 
-#------------
+# ------------
 # Regular expressions used for parsing components of the lexicon
-#------------
+# ------------
 
 # Parses a primitive category and subscripts
 PRIM_RE = re.compile(r'''([A-Za-z]+)(\[[A-Za-z,]+\])?''')
@@ -45,6 +45,7 @@ SEMANTICS_RE = re.compile(r'''\{([^}]+)\}''', re.UNICODE)
 # Strips comments from a line
 COMMENTS_RE = re.compile('''([^#]*)(?:#.*)?''')
 
+
 class Token(object):
     """
     Class representing a token.
@@ -56,6 +57,7 @@ class Token(object):
     * `categ` (string)
     * `semantics` (Expression)
     """
+
     def __init__(self, token, categ, semantics=None):
         self._token = token
         self._categ = categ
@@ -74,9 +76,10 @@ class Token(object):
         return "" + str(self._categ) + semantics_str
 
     def __cmp__(self, other):
-        if not isinstance(other, Token): return -1
-        return cmp((self._categ,self._semantics),
-                    other.categ(),other.semantics())
+        if not isinstance(other, Token):
+            return -1
+        return cmp((self._categ, self._semantics), other.categ(), other.semantics())
+
 
 @python_2_unicode_compatible
 class CCGLexicon(object):
@@ -87,19 +90,18 @@ class CCGLexicon(object):
     * `families`: Families of categories
     * `entries`: A mapping of words to possible categories
     """
+
     def __init__(self, start, primitives, families, entries):
         self._start = PrimitiveCategory(start)
         self._primitives = primitives
         self._families = families
         self._entries = entries
 
-
     def categories(self, word):
         """
         Returns all the possible categories for a word
         """
         return self._entries[word]
-
 
     def start(self):
         """
@@ -128,9 +130,9 @@ class CCGLexicon(object):
         return string
 
 
-#-----------
+# -----------
 # Parsing lexicons
-#-----------
+# -----------
 
 
 def matchBrackets(string):
@@ -161,6 +163,7 @@ def nextCategory(string):
     if string.startswith('('):
         return matchBrackets(string)
     return NEXTPRIM_RE.match(string).groups()
+
 
 def parseApplication(app):
     """
@@ -203,7 +206,9 @@ def parsePrimitiveCategory(chunks, primitives, families, var):
     if catstr in primitives:
         subscrs = parseSubscripts(chunks[1])
         return (PrimitiveCategory(catstr, subscrs), var)
-    raise AssertionError('String \'' + catstr + '\' is neither a family nor primitive category.')
+    raise AssertionError(
+        'String \'' + catstr + '\' is neither a family nor primitive category.'
+    )
 
 
 def augParseCategory(line, primitives, families, var=None):
@@ -217,10 +222,10 @@ def augParseCategory(line, primitives, families, var=None):
         (res, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
 
     else:
-#        print rePrim.match(str).groups()
-        (res, var) =\
-            parsePrimitiveCategory(PRIM_RE.match(cat_string).groups(), primitives,
-                                   families, var)
+        #        print rePrim.match(str).groups()
+        (res, var) = parsePrimitiveCategory(
+            PRIM_RE.match(cat_string).groups(), primitives, families, var
+        )
 
     while rest != "":
         app = APP_RE.match(rest).groups()
@@ -231,12 +236,13 @@ def augParseCategory(line, primitives, families, var=None):
         if cat_string.startswith('('):
             (arg, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
         else:
-            (arg, var) =\
-                parsePrimitiveCategory(PRIM_RE.match(cat_string).groups(),
-                                       primitives, families, var)
+            (arg, var) = parsePrimitiveCategory(
+                PRIM_RE.match(cat_string).groups(), primitives, families, var
+            )
         res = FunctionalCategory(res, arg, direction)
 
     return (res, var)
+
 
 def fromstring(lex_str, include_semantics=False):
     """
@@ -256,7 +262,9 @@ def fromstring(lex_str, include_semantics=False):
             # A line of primitive categories.
             # The first one is the target category
             # ie, :- S, N, NP, VP
-            primitives = primitives + [prim.strip() for prim in line[2:].strip().split(',')]
+            primitives = primitives + [
+                prim.strip() for prim in line[2:].strip().split(',')
+            ]
         else:
             # Either a family definition, or a word definition
             (ident, sep, rhs) = LEX_RE.match(line).groups()
@@ -271,9 +279,14 @@ def fromstring(lex_str, include_semantics=False):
                 semantics = None
                 if include_semantics is True:
                     if semantics_str is None:
-                        raise AssertionError(line + " must contain semantics because include_semantics is set to True")
+                        raise AssertionError(
+                            line
+                            + " must contain semantics because include_semantics is set to True"
+                        )
                     else:
-                        semantics = Expression.fromstring(SEMANTICS_RE.match(semantics_str).groups()[0])
+                        semantics = Expression.fromstring(
+                            SEMANTICS_RE.match(semantics_str).groups()[0]
+                        )
                 # Word definition
                 # ie, which => (N\N)/(S/NP)
                 entries[ident].append(Token(ident, cat, semantics))
@@ -284,7 +297,9 @@ def fromstring(lex_str, include_semantics=False):
 def parseLexicon(lex_str):
     return fromstring(lex_str)
 
-openccg_tinytiny = fromstring("""
+
+openccg_tinytiny = fromstring(
+    """
     # Rather minimal lexicon based on the openccg `tinytiny' grammar.
     # Only incorporates a subset of the morphological subcategories, however.
     :- S,NP,N                    # Primitive categories
@@ -325,4 +340,5 @@ openccg_tinytiny = fromstring("""
 
     see => TransVpl
     sees => TransVsg
-    """)
+    """
+)

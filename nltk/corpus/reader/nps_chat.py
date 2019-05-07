@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NPS Chat Corpus Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -17,32 +17,48 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import *
 
-class NPSChatCorpusReader(XMLCorpusReader):
 
+class NPSChatCorpusReader(XMLCorpusReader):
     def __init__(self, root, fileids, wrap_etree=False, tagset=None):
         XMLCorpusReader.__init__(self, root, fileids, wrap_etree)
         self._tagset = tagset
 
     def xml_posts(self, fileids=None):
         if self._wrap_etree:
-            return concat([XMLCorpusView(fileid, 'Session/Posts/Post',
-                                         self._wrap_elt)
-                           for fileid in self.abspaths(fileids)])
+            return concat(
+                [
+                    XMLCorpusView(fileid, 'Session/Posts/Post', self._wrap_elt)
+                    for fileid in self.abspaths(fileids)
+                ]
+            )
         else:
-            return concat([XMLCorpusView(fileid, 'Session/Posts/Post')
-                           for fileid in self.abspaths(fileids)])
+            return concat(
+                [
+                    XMLCorpusView(fileid, 'Session/Posts/Post')
+                    for fileid in self.abspaths(fileids)
+                ]
+            )
 
     def posts(self, fileids=None):
-        return concat([XMLCorpusView(fileid, 'Session/Posts/Post/terminals',
-                                     self._elt_to_words)
-                       for fileid in self.abspaths(fileids)])
+        return concat(
+            [
+                XMLCorpusView(
+                    fileid, 'Session/Posts/Post/terminals', self._elt_to_words
+                )
+                for fileid in self.abspaths(fileids)
+            ]
+        )
 
     def tagged_posts(self, fileids=None, tagset=None):
         def reader(elt, handler):
             return self._elt_to_tagged_words(elt, handler, tagset)
-        return concat([XMLCorpusView(fileid, 'Session/Posts/Post/terminals',
-                                     reader)
-                       for fileid in self.abspaths(fileids)])
+
+        return concat(
+            [
+                XMLCorpusView(fileid, 'Session/Posts/Post/terminals', reader)
+                for fileid in self.abspaths(fileids)
+            ]
+        )
 
     def words(self, fileids=None):
         return LazyConcatenation(self.posts(fileids))
@@ -54,14 +70,17 @@ class NPSChatCorpusReader(XMLCorpusReader):
         return ElementWrapper(elt)
 
     def _elt_to_words(self, elt, handler):
-        return [self._simplify_username(t.attrib['word'])
-                for t in elt.findall('t')]
+        return [self._simplify_username(t.attrib['word']) for t in elt.findall('t')]
 
     def _elt_to_tagged_words(self, elt, handler, tagset=None):
-        tagged_post = [(self._simplify_username(t.attrib['word']),
-                        t.attrib['pos']) for t in elt.findall('t')]
+        tagged_post = [
+            (self._simplify_username(t.attrib['word']), t.attrib['pos'])
+            for t in elt.findall('t')
+        ]
         if tagset and tagset != self._tagset:
-            tagged_post = [(w, map_tag(self._tagset, tagset, t)) for (w, t) in tagged_post]
+            tagged_post = [
+                (w, map_tag(self._tagset, tagset, t)) for (w, t) in tagged_post
+            ]
         return tagged_post
 
     @staticmethod

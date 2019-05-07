@@ -6,6 +6,7 @@ http://www.phyast.pitt.edu/~micheles/python/documentation.html
 Included in NLTK for its support of a nice memoization decorator.
 """
 from __future__ import print_function
+
 __docformat__ = 'restructuredtext en'
 
 ## The basic trick is to generate the source code for the decorated function
@@ -20,14 +21,11 @@ import sys
 # Hack to keep NLTK's "tokenize" module from colliding with the "tokenize" in
 # the Python standard library.
 old_sys_path = sys.path[:]
-sys.path = [p for p in sys.path if "nltk" not in p]
+sys.path = [p for p in sys.path if p and "nltk" not in p]
 import inspect
+
 sys.path = old_sys_path
 
-try:
-    set
-except NameError:
-    from sets import Set as set
 
 def getinfo(func):
     """
@@ -66,8 +64,9 @@ def getinfo(func):
         argnames.append(varargs)
     if varkwargs:
         argnames.append(varkwargs)
-    signature = inspect.formatargspec(regargs, varargs, varkwargs, defaults,
-                                      formatvalue=lambda value: "")[1:-1]
+    signature = inspect.formatargspec(
+        regargs, varargs, varkwargs, defaults, formatvalue=lambda value: ""
+    )[1:-1]
 
     # pypy compatibility
     if hasattr(func, '__closure__'):
@@ -77,10 +76,18 @@ def getinfo(func):
         _closure = func.func_closure
         _globals = func.func_globals
 
-    return dict(name=func.__name__, argnames=argnames, signature=signature,
-                defaults = func.__defaults__, doc=func.__doc__,
-                module=func.__module__, dict=func.__dict__,
-                globals=_globals, closure=_closure)
+    return dict(
+        name=func.__name__,
+        argnames=argnames,
+        signature=signature,
+        defaults=func.__defaults__,
+        doc=func.__doc__,
+        module=func.__module__,
+        dict=func.__dict__,
+        globals=_globals,
+        closure=_closure,
+    )
+
 
 # akin to functools.update_wrapper
 def update_wrapper(wrapper, model, infodict=None):
@@ -93,6 +100,7 @@ def update_wrapper(wrapper, model, infodict=None):
     wrapper.undecorated = model
     return wrapper
 
+
 def new_wrapper(wrapper, model):
     """
     An improvement over functools.update_wrapper. The wrapper is a generic
@@ -103,17 +111,20 @@ def new_wrapper(wrapper, model):
     """
     if isinstance(model, dict):
         infodict = model
-    else: # assume model is a function
+    else:  # assume model is a function
         infodict = getinfo(model)
-    assert not '_wrapper_' in infodict["argnames"], (
-        '"_wrapper_" is a reserved argument name!')
+    assert (
+        not '_wrapper_' in infodict["argnames"]
+    ), '"_wrapper_" is a reserved argument name!'
     src = "lambda %(signature)s: _wrapper_(%(signature)s)" % infodict
     funcopy = eval(src, dict(_wrapper_=wrapper))
     return update_wrapper(funcopy, model, infodict)
 
+
 # helper used in decorator_factory
 def __call__(self, func):
-    return new_wrapper(lambda *a, **k : self.call(func, *a, **k), func)
+    return new_wrapper(lambda *a, **k: self.call(func, *a, **k), func)
+
 
 def decorator_factory(cls):
     """
@@ -124,13 +135,14 @@ def decorator_factory(cls):
     """
     attrs = set(dir(cls))
     if '__call__' in attrs:
-        raise TypeError('You cannot decorate a class with a nontrivial '
-                        '__call__ method')
+        raise TypeError(
+            'You cannot decorate a class with a nontrivial ' '__call__ method'
+        )
     if 'call' not in attrs:
-        raise TypeError('You cannot decorate a class without a '
-                        '.call method')
+        raise TypeError('You cannot decorate a class without a ' '.call method')
     cls.__call__ = __call__
     return cls
+
 
 def decorator(caller):
     """
@@ -164,16 +176,20 @@ def decorator(caller):
     """
     if inspect.isclass(caller):
         return decorator_factory(caller)
-    def _decorator(func): # the real meat is here
+
+    def _decorator(func):  # the real meat is here
         infodict = getinfo(func)
         argnames = infodict['argnames']
-        assert not ('_call_' in argnames or '_func_' in argnames), (
-            'You cannot use _call_ or _func_ as argument names!')
+        assert not (
+            '_call_' in argnames or '_func_' in argnames
+        ), 'You cannot use _call_ or _func_ as argument names!'
         src = "lambda %(signature)s: _call_(_func_, %(signature)s)" % infodict
         # import sys; print >> sys.stderr, src # for debugging purposes
         dec_func = eval(src, dict(_func_=func, _call_=caller))
         return update_wrapper(dec_func, func, infodict)
+
     return update_wrapper(_decorator, caller)
+
 
 def getattr_(obj, name, default_thunk):
     "Similar to .setdefault in dictionaries."
@@ -183,6 +199,7 @@ def getattr_(obj, name, default_thunk):
         default = default_thunk()
         setattr(obj, name, default)
         return default
+
 
 @decorator
 def memoize(func, *args):

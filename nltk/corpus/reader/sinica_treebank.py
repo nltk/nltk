@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sinica Treebank Reader
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
@@ -38,9 +38,6 @@ Chen Keh-Jiann and Yu-Ming Hsieh (2004) Chinese Treebanks and Grammar
 Extraction, Proceedings of IJCNLP-04, pp560-565.
 """
 
-import os
-import re
-
 from nltk.tree import sinica_parse
 from nltk.tag import map_tag
 
@@ -52,10 +49,12 @@ APPENDIX = re.compile(r'(?<=\))#.*$')
 TAGWORD = re.compile(r':([^:()|]+):([^:()|]+)')
 WORD = re.compile(r':[^:()|]+:([^:()|]+)')
 
+
 class SinicaTreebankCorpusReader(SyntaxCorpusReader):
     """
     Reader for the sinica treebank.
     """
+
     def _read_block(self, stream):
         sent = stream.readline()
         sent = IDENTIFIER.sub('', sent)
@@ -66,9 +65,11 @@ class SinicaTreebankCorpusReader(SyntaxCorpusReader):
         return sinica_parse(sent)
 
     def _tag(self, sent, tagset=None):
-        tagged_sent = [(w,t) for (t,w) in TAGWORD.findall(sent)]
+        tagged_sent = [(w, t) for (t, w) in TAGWORD.findall(sent)]
         if tagset and tagset != self._tagset:
-            tagged_sent = [(w, map_tag(self._tagset, tagset, t)) for (w,t) in tagged_sent]
+            tagged_sent = [
+                (w, map_tag(self._tagset, tagset, t)) for (w, t) in tagged_sent
+            ]
         return tagged_sent
 
     def _word(self, sent):

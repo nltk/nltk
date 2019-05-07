@@ -180,6 +180,7 @@
 - Chuck Wooters
 - Steven Xu
 - Beracah Yankama
+- Lei Ye (叶磊)
 - Patrick Ye
 - Geraldine Sim Wei Ying
 - Jason Yoder
@@ -235,9 +236,18 @@
 - Anlan Du
 - Pulkit Maloo <https://github.com/pulkitmaloo>
 - Brandon M. Burroughs <https://github.com/brandonmburroughs>
+- Iaroslav Tymchenko <https://github.com/myproblemchild>
 - Aleš Tamchyna
 - Tim Gianitsos <https://github.com/timgianitsos>
 - Philippe Partarrieu <https://github.com/ppartarr>
+- Andrew Owen Martin
+- Adrian Ellis <https://github.com/adrianjellis>
+- Nat Quayle Nelson <https://github.com/nqnstudios>
+- Matan Rak <https://github.com/matanrak>
+- Uday Krishna <https://github.com/udaykrishna>
+- Osman Zubair <https://github.com/okz12>
+- Viresh Gupta <https://github.com/virresh>
+- Ondřej Cífka <https://github.com/cifkao>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer

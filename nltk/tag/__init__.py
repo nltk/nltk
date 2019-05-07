@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Taggers
 #
-# Copyright (C) 2001-2018 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <http://nltk.org/>
@@ -65,27 +65,37 @@ For more information, please consult chapter 5 of the NLTK Book.
 """
 from __future__ import print_function
 
-from nltk.tag.api           import TaggerI
-from nltk.tag.util          import str2tuple, tuple2str, untag
-from nltk.tag.sequential    import (SequentialBackoffTagger, ContextTagger,
-                                    DefaultTagger, NgramTagger, UnigramTagger,
-                                    BigramTagger, TrigramTagger, AffixTagger,
-                                    RegexpTagger, ClassifierBasedTagger,
-                                    ClassifierBasedPOSTagger)
-from nltk.tag.brill         import BrillTagger
+from nltk.tag.api import TaggerI
+from nltk.tag.util import str2tuple, tuple2str, untag
+from nltk.tag.sequential import (
+    SequentialBackoffTagger,
+    ContextTagger,
+    DefaultTagger,
+    NgramTagger,
+    UnigramTagger,
+    BigramTagger,
+    TrigramTagger,
+    AffixTagger,
+    RegexpTagger,
+    ClassifierBasedTagger,
+    ClassifierBasedPOSTagger,
+)
+from nltk.tag.brill import BrillTagger
 from nltk.tag.brill_trainer import BrillTaggerTrainer
-from nltk.tag.tnt           import TnT
-from nltk.tag.hunpos        import HunposTagger
-from nltk.tag.stanford      import StanfordTagger, StanfordPOSTagger, StanfordNERTagger
-from nltk.tag.hmm           import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
-from nltk.tag.senna         import SennaTagger, SennaChunkTagger, SennaNERTagger
-from nltk.tag.mapping       import tagset_mapping, map_tag
-from nltk.tag.crf           import CRFTagger
-from nltk.tag.perceptron    import PerceptronTagger
+from nltk.tag.tnt import TnT
+from nltk.tag.hunpos import HunposTagger
+from nltk.tag.stanford import StanfordTagger, StanfordPOSTagger, StanfordNERTagger
+from nltk.tag.hmm import HiddenMarkovModelTagger, HiddenMarkovModelTrainer
+from nltk.tag.senna import SennaTagger, SennaChunkTagger, SennaNERTagger
+from nltk.tag.mapping import tagset_mapping, map_tag
+from nltk.tag.crf import CRFTagger
+from nltk.tag.perceptron import PerceptronTagger
 
 from nltk.data import load, find
 
-RUS_PICKLE = 'taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle'
+RUS_PICKLE = (
+    'taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle'
+)
 
 
 def _get_tagger(lang=None):
@@ -97,21 +107,29 @@ def _get_tagger(lang=None):
         tagger = PerceptronTagger()
     return tagger
 
+
 def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
     # Currently only supoorts English and Russian.
     if lang not in ['eng', 'rus']:
-        raise NotImplementedError("Currently, NLTK pos_tag only supports English and Russian "
-                                  "(i.e. lang='eng' or lang='rus')")
+        raise NotImplementedError(
+            "Currently, NLTK pos_tag only supports English and Russian "
+            "(i.e. lang='eng' or lang='rus')"
+        )
     else:
         tagged_tokens = tagger.tag(tokens)
-        if tagset: # Maps to the specified tagset.
+        if tagset:  # Maps to the specified tagset.
             if lang == 'eng':
-                tagged_tokens = [(token, map_tag('en-ptb', tagset, tag)) for (token, tag) in tagged_tokens]
+                tagged_tokens = [
+                    (token, map_tag('en-ptb', tagset, tag))
+                    for (token, tag) in tagged_tokens
+                ]
             elif lang == 'rus':
                 # Note that the new Russion pos tags from the model contains suffixes,
                 # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
-                tagged_tokens = [(token, map_tag('ru-rnc-new', tagset, tag.partition('=')[0]))
-                                  for (token, tag) in tagged_tokens]
+                tagged_tokens = [
+                    (token, map_tag('ru-rnc-new', tagset, tag.partition('=')[0]))
+                    for (token, tag) in tagged_tokens
+                ]
         return tagged_tokens
 
 
@@ -159,4 +177,4 @@ def pos_tag_sents(sentences, tagset=None, lang='eng'):
     :rtype: list(list(tuple(str, str)))
     """
     tagger = _get_tagger(lang)
-    return [_pos_tag(sent, tagset, tagger) for sent in sentences]
+    return [_pos_tag(sent, tagset, tagger, lang) for sent in sentences]

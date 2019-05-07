@@ -3,17 +3,17 @@ Building an NLTK distribution
 
 1. Testing
    - Ensure CI server isn't reporting any test failures
-     https://nltk.ci.cloudbees.com/job/nltk/
+     https://www.travis-ci.org/nltk/nltk
    - Optionally test demonstration code locally
      make demotest
    - Optionally test individual modules:
-     tox-3.6 -e py36 nltk.package.module
+     tox-3.7 -e py37 nltk.package.module
    - Check the data index is up-to-date:
      cd ../nltk_data; make; push
 
 2. Update Version Number and ChangeLog
    - Update version number
-     edit nltk/VERSION and web/conf.py
+     edit nltk/VERSION and web/conf.py (version and release)
    - Add a new entry to the news page in nltk/web/news.rst
    - Update the ChangeLog (for nltk, nltk_data)
      git log --since=20XX-YY-ZZ
@@ -21,7 +21,7 @@ Building an NLTK distribution
 
 3. Build Documentation
    - Check the copyright year is correct and update if necessary
-     e.g. ./tools/global_replace.py 2001-2015 2001-2018
+     e.g. ./tools/global_replace.py 2001-2018 2001-2019
    - Check that installation instructions are up-to-date
      (including the range of Python versions that are supported)
      edit web/install.rst setup.py
@@ -53,7 +53,7 @@ Building an NLTK distribution
    - Make the distributions
      make clean; make dist; ls dist/
    - Upload the distributions
-     python -m twine upload -r pypi dist/*
+     python -m twine upload dist/*
    - Check upload
      https://pypi.python.org/pypi/nltk
 
