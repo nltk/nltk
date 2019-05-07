@@ -30,7 +30,6 @@ with open(version_file) as fh:
 from setuptools import setup, find_packages
 
 # Specify groups of optional dependencies
-# Specify groups of optional dependencies
 extras_require = {
     'machine_learning': ['gensim', 'numpy', 'python-crfsuite', 'scikit-learn', 'scipy'],
     'plot': ['matplotlib'],
@@ -40,7 +39,6 @@ extras_require = {
 }
 
 # Add a group made up of all optional dependencies
-	# Add a group made up of all optional dependencies
 extras_require['all'] = set(
     package for group in extras_require.values() for package in group
 )
