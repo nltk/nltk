@@ -49,7 +49,7 @@ MODULES_TO_COMPILE = [
     'nltk.tokenize.*',
     'nltk.probability',
     'nltk.util',
-    'nltk.stem',
+    'nltk.stem.*',
 ]
 
 
