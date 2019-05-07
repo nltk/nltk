@@ -46,7 +46,8 @@ extras_require['all'] = set(
 MODULES_TO_COMPILE = [
     'nltk.grammar',
     'nltk.parse.chart',
-    'nltk.tokenize.*'
+    'nltk.tokenize.*',
+    'nltk.probability',
 ]
 
 
