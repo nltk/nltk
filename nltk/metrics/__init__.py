@@ -24,6 +24,7 @@ from nltk.metrics.scores import (
 from nltk.metrics.confusionmatrix import ConfusionMatrix
 from nltk.metrics.distance import (
     edit_distance,
+    edit_distance_align,
     binary_distance,
     jaccard_distance,
     masi_distance,

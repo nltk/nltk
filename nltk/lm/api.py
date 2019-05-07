@@ -77,7 +77,7 @@ def _random_generator(seed_or_generator):
     return random.Random(seed_or_generator)
 
 
-def _weighted_choice(population, weights, random_seed=None):
+def _weighted_choice(population, weights, random_generator=None):
     """Like random.choice, but with weights.
 
     Heavily inspired by python 3.6 `random.choices`.
@@ -88,7 +88,7 @@ def _weighted_choice(population, weights, random_seed=None):
         raise ValueError("The number of weights does not match the population")
     cum_weights = list(accumulate(weights))
     total = cum_weights[-1]
-    threshold = _random_generator(random_seed).random()
+    threshold = random_generator.random()
     return population[bisect(cum_weights, total * threshold)]
 
 
@@ -203,8 +203,8 @@ class LanguageModel(object):
 
         :param int num_words: How many words to generate. By default 1.
         :param text_seed: Generation can be conditioned on preceding context.
-        :param random_seed: If provided, makes the random sampling part of
-        generation reproducible.
+        :param random_seed: A random seed or an instance of `random.Random`. If provided,
+        makes the random sampling part of generation reproducible.
         :return: One (str) word or a list of words generated from model.
 
         Examples:
@@ -220,6 +220,7 @@ class LanguageModel(object):
 
         """
         text_seed = [] if text_seed is None else list(text_seed)
+        random_generator = _random_generator(random_seed)
         # base recursion case
         if num_words == 1:
             context = (
@@ -236,7 +237,7 @@ class LanguageModel(object):
             # - turning Mapping into Sequence which _weighted_choice expects
             samples = sorted(samples)
             return _weighted_choice(
-                samples, tuple(self.score(w, context) for w in samples), random_seed
+                samples, tuple(self.score(w, context) for w in samples), random_generator
             )
         # build up text one word at a time
         generated = []
@@ -245,7 +246,7 @@ class LanguageModel(object):
                 self.generate(
                     num_words=1,
                     text_seed=text_seed + generated,
-                    random_seed=random_seed,
+                    random_seed=random_generator,
                 )
             )
         return generated

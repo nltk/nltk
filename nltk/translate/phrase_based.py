@@ -78,7 +78,7 @@ def extract(
                 ((e_start, e_end + 1), (f_start, f_end + 1), src_phrase, trg_phrase)
             )
             fe += 1
-            if fe in f_aligned or fe == trglen:
+            if fe in f_aligned or fe >= trglen:
                 break
         fs -= 1
         if fs in f_aligned or fs < 0:

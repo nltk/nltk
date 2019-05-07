@@ -24,7 +24,7 @@ from __future__ import print_function
 from __future__ import division
 
 import warnings
-
+import operator
 
 def _edit_dist_init(len1, len2):
     lev = []
@@ -101,6 +101,76 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
                 transpositions=transpositions,
             )
     return lev[len1][len2]
+
+
+def _edit_dist_backtrace(lev):
+    i, j = len(lev) - 1, len(lev[0]) - 1
+    alignment = [(i, j)]
+
+    while (i, j) != (0, 0):
+        directions = [
+            (i - 1, j),  # skip s1
+            (i, j - 1),  # skip s2
+            (i - 1, j - 1),  # substitution
+        ]
+
+        direction_costs = (
+            (lev[i][j] if (i >= 0 and j >= 0) else float('inf'), (i, j)) for i, j in directions
+        )
+        _, (i, j) = min(direction_costs, key=operator.itemgetter(0))
+
+        alignment.append((i, j))
+    return list(reversed(alignment))
+
+
+def edit_distance_align(s1, s2, substitution_cost=1):
+    """
+    Calculate the minimum Levenshtein edit-distance based alignment
+    mapping between two strings. The alignment finds the mapping
+    from string s1 to s2 that minimizes the edit distance cost.
+    For example, mapping "rain" to "shine" would involve 2
+    substitutions, 2 matches and an insertion resulting in
+    the following mapping:
+    [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (4, 5)]
+    NB: (0, 0) is the start state without any letters associated
+    See more: https://web.stanford.edu/class/cs124/lec/med.pdf
+
+    In case of multiple valid minimum-distance alignments, the
+    backtrace has the following operation precedence:
+    1. Skip s1 character
+    2. Skip s2 character
+    3. Substitute s1 and s2 characters
+    The backtrace is carried out in reverse string order.
+
+    This function does not support transposition.
+
+    :param s1, s2: The strings to be aligned
+    :type s1: str
+    :type s2: str
+    :type substitution_cost: int
+    :rtype List[Tuple(int, int)]
+    """
+    # set up a 2-D array
+    len1 = len(s1)
+    len2 = len(s2)
+    lev = _edit_dist_init(len1 + 1, len2 + 1)
+
+    # iterate over the array
+    for i in range(len1):
+        for j in range(len2):
+            _edit_dist_step(
+                lev,
+                i + 1,
+                j + 1,
+                s1,
+                s2,
+                substitution_cost=substitution_cost,
+                transpositions=False,
+            )
+
+    # backtrace to find alignment
+    alignment = _edit_dist_backtrace(lev)
+    return alignment
 
 
 def binary_distance(label1, label2):
