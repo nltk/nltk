@@ -792,18 +792,17 @@ class Tree(list):
             subprocess.call(
                 [
                     try:
-                    find_binary(
-                        'gs',
-                        binary_names=['gswin32c.exe', 'gswin64c.exe'],
-                        env_vars=['PATH'],
-                        verbose=False,
-                    )
+                        find_binary(
+                            'gs',
+                            binary_names=['gswin32c.exe', 'gswin64c.exe'],
+                            env_vars=['PATH'],
+                            verbose=False,
+                        )
                     except LookupError:
                         pre_error_message = str("The Ghostscript executable isn't found.\n"
                                                 "See http://web.mit.edu/ghostscript/www/Install.htm\n"
                                                 "If you're using a Mac, you can try installing\n"
-                                                "https://docs.brew.sh/Installation then `brew install ghostscript`")
-                                                
+                                                "https://docs.brew.sh/Installation then `brew install ghostscript`")                
                         print(pre_error_message, file=sys.stderr)
                         raise LookupError
                 ]
