@@ -300,10 +300,10 @@ swadesh = LazyCorpusLoader(
     'swadesh', SwadeshCorpusReader, r'(?!README|\.).*', encoding='utf8'
 )
 swadesh110 = LazyCorpusLoader(
-    'panlex_swadesh', SwadeshCorpusReader, r'swadesh110/.*\.txt', encoding='utf8'
+    'panlex_swadesh', PanlexSwadeshCorpusReader, r'swadesh110/.*\.txt', encoding='utf8')
 )
 swadesh207 = LazyCorpusLoader(
-    'panlex_swadesh', SwadeshCorpusReader, r'swadesh207/.*\.txt', encoding='utf8'
+    'panlex_swadesh', PanlexSwadeshCorpusReader, swadesh207/.*\.txt', encoding='utf8'
 )
 switchboard = LazyCorpusLoader('switchboard', SwitchboardCorpusReader, tagset='wsj')
 timit = LazyCorpusLoader('timit', TimitCorpusReader)

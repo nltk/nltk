@@ -103,6 +103,7 @@ from nltk.corpus.reader.pros_cons import *
 from nltk.corpus.reader.categorized_sents import *
 from nltk.corpus.reader.comparative_sents import *
 from nltk.corpus.reader.panlex_lite import *
+from nltk.corpus.reader.panlex_swadesh import *
 
 # Make sure that nltk.corpus.reader.bracket_parse gives the module, not
 # the function bracket_parse() defined in nltk.tree:
