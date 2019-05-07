@@ -1407,7 +1407,7 @@ class WordNetCorpusReader(CorpusReader):
             for example in examples:
                 synset._examples.append(example)
 
-            synset._definition = definition
+            synset._definition = definition.strip('; ')
 
             # split the other info into fields
             _iter = iter(columns_str.split())
