@@ -1648,7 +1648,7 @@ class WordNetCorpusReader(CorpusReader):
                     continue
                 lemma.extend(self._lang_data[lang][0][i])
 
-            lemma = list(set(lemma))
+            lemma = iter(set(lemma))
             return lemma
 
     def all_synsets(self, pos=None):
