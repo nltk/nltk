@@ -179,4 +179,5 @@ __all__ = [
     'NonbreakingPrefixesCorpusReader',
     'UnicharsCorpusReader',
     'MWAPPDBCorpusReader',
+    'PanlexSwadeshCorpusReader',
 ]
