@@ -50,6 +50,7 @@ MODULES_TO_COMPILE = [
     'nltk.probability',
     'nltk.util',
     'nltk.stem.*',
+    'nltk.lm.*',
 ]
 
 
