@@ -799,11 +799,12 @@ class Tree(list):
                         verbose=False,
                     )
                     except LookupError:
-                        print("The Ghostscript executable isn't found.\n"
-                              "See http://web.mit.edu/ghostscript/www/Install.htm\n"
-                              "If you're using a Mac, you can try installing\n"
-                              "https://docs.brew.sh/Installation then `brew install ghostscript`",
-                             file=sys.stderr)
+                        pre_error_message = str("The Ghostscript executable isn't found.\n"
+                                                "See http://web.mit.edu/ghostscript/www/Install.htm\n"
+                                                "If you're using a Mac, you can try installing\n"
+                                                "https://docs.brew.sh/Installation then `brew install ghostscript`")
+                                                
+                        print(pre_error_message, file=sys.stderr)
                         raise LookupError
                 ]
                 + '-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={0:} {1:}'.format(
