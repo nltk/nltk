@@ -51,6 +51,9 @@ MODULES_TO_COMPILE = [
     'nltk.util',
     'nltk.stem.*',
     'nltk.lm.*',
+    'nltk.translate.*',
+    'nltk.tbl.*',
+    'nltk.sentiment.*',
 ]
 
 
