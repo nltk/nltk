@@ -88,7 +88,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
         standard input, standard output and standard error file
         handles, respectively.  Valid values are ``subprocess.PIPE``,
         an existing file descriptor (a positive integer), an existing
-        file object, and None.  ``subprocess.PIPE`` indicates that a
+        file object, 'pipe', 'stdout', 'devnull' and None.  ``subprocess.PIPE`` indicates that a
         new pipe to the child should be created.  With None, no
         redirection will occur; the child's file handles will be
         inherited from the parent.  Additionally, stderr can be
@@ -108,12 +108,13 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
 
     :raise OSError: If the java command returns a nonzero return code.
     """
-    if stdin == 'pipe':
-        stdin = subprocess.PIPE
-    if stdout == 'pipe':
-        stdout = subprocess.PIPE
-    if stderr == 'pipe':
-        stderr = subprocess.PIPE
+
+    subprocess_output_dict = {'pipe': subprocess.PIPE, 'stdout': subprocess.STDOUT, 'devnull': subprocess.DEVNULL}
+
+    stdin = subprocess_output_dict.get(stdin, stdin)
+    stdout = subprocess_output_dict.get(stdout, stdout)
+    stderr = subprocess_output_dict.get(stderr, stderr)
+
     if isinstance(cmd, string_types):
         raise TypeError('cmd should be a list of strings')
 

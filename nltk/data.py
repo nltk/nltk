@@ -689,6 +689,8 @@ def find(resource_name, paths=None):
     ).format(resource=resource_zipname)
     msg = textwrap_indent(msg)
 
+    msg += '\n  For more information see: https://www.nltk.org/data.html\n'
+
     msg += '\n  Attempted to load \33[93m{resource_name}\033[0m\n'.format(
         resource_name=resource_name
     )

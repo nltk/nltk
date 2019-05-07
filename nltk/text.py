@@ -398,12 +398,11 @@ class Text(object):
             )
         return self._concordance_index.find_concordance(word, width)[:lines]
 
-    def collocations(self, num=20, window_size=2):
+    def collocation_list(self, num=20, window_size=2):
         """
-        Print collocations derived from the text, ignoring stopwords.
+        Return collocations derived from the text, ignoring stopwords.
 
-        :seealso: find_collocations
-        :param num: The maximum number of collocations to print.
+        :param num: The maximum number of collocations to return.
         :type num: int
         :param window_size: The number of tokens spanned by a collocation (default=2)
         :type window_size: int
@@ -425,8 +424,21 @@ class Text(object):
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
             bigram_measures = BigramAssocMeasures()
             self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)
-        colloc_strings = [w1 + ' ' + w2 for w1, w2 in self._collocations]
-        print(tokenwrap(colloc_strings, separator="; "))
+        return [w1 + ' ' + w2 for w1, w2 in self._collocations]
+
+
+    def collocations(self, num=20, window_size=2):
+        """
+        Print collocations derived from the text, ignoring stopwords.
+
+        :param num: The maximum number of collocations to print.
+        :type num: int
+        :param window_size: The number of tokens spanned by a collocation (default=2)
+        :type window_size: int
+        """
+
+        collocation_strings = [w1 + ' ' + w2 for w1, w2 in self.collocation_list(num, window_size)]
+        print(tokenwrap(collocation_strings, separator="; "))
 
     def count(self, word):
         """
@@ -483,8 +495,8 @@ class Text(object):
         Find contexts where the specified words appear; list
         most frequent common contexts first.
 
-        :param word: The word used to seed the similarity search
-        :type word: str
+        :param words: The words used to seed the similarity search
+        :type words: str
         :param num: The number of words to generate (default=20)
         :type num: int
         :seealso: ContextIndex.common_contexts()

@@ -105,7 +105,11 @@ class CoreNLPServer(object):
         self.corenlp_options = corenlp_options
         self.java_options = java_options or ['-mx2g']
 
-    def start(self):
+    def start(self, stdout='devnull', stderr='devnull'):
+        """ Starts the CoreNLP server
+
+        :param stdout, stderr: Specifies where CoreNLP output is redirected. Valid values are 'devnull', 'stdout', 'pipe'
+        """
         import requests
 
         cmd = ['edu.stanford.nlp.pipeline.StanfordCoreNLPServer']
@@ -118,14 +122,12 @@ class CoreNLPServer(object):
         config_java(options=self.java_options, verbose=self.verbose)
 
         try:
-            # TODO: it's probably a bad idea to pipe stdout, as it will
-            #       accumulate when lots of text is being parsed.
             self.popen = java(
                 cmd,
                 classpath=self._classpath,
                 blocking=False,
-                stdout='pipe',
-                stderr='pipe',
+                stdout=stdout,
+                stderr=stderr,
             )
         finally:
             # Return java configurations to their default values.
@@ -230,7 +232,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             )
         )
 
-    def api_call(self, data, properties=None):
+    def api_call(self, data, properties=None, timeout=60):
         default_properties = {
             'outputFormat': 'json',
             'annotators': 'tokenize,pos,lemma,ssplit,{parser_annotator}'.format(
@@ -244,7 +246,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             self.url,
             params={'properties': json.dumps(default_properties)},
             data=data.encode(self.encoding),
-            timeout=60,
+            timeout=timeout,
         )
 
         response.raise_for_status()
