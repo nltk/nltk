@@ -1947,6 +1947,8 @@ class ConditionalFreqDist(defaultdict):
         ax.set_ylabel(ylabel)
         plt.show()
 
+        return ax
+
     def tabulate(self, *args, **kwargs):
         """
         Tabulate the given samples from the conditional frequency distribution.
