@@ -48,7 +48,8 @@ MODULES_TO_COMPILE = [
     'nltk.parse.chart',
     'nltk.tokenize.*',
     'nltk.probability',
-    'nltk.util'
+    'nltk.util',
+    'nltk.stem',
 ]
 
 
