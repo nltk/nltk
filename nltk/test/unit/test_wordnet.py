@@ -29,7 +29,7 @@ class WordnNetDemo(unittest.TestCase):
         self.assertEqual(move_synset.name(), "move.v.15")
         self.assertEqual(move_synset.lemma_names(), ['move', 'go'])
         self.assertEqual(
-            move_synset.definition(), "have a turn; make one's move in a game;"
+            move_synset.definition(), "have a turn; make one's move in a game"
         )
         self.assertEqual(move_synset.examples(), ['Can I go now?'])
 
@@ -213,9 +213,9 @@ class WordnNetDemo(unittest.TestCase):
         eng_lemmas = wn.all_lemma_names(lang='eng')
 
         self.assertTrue(hasattr(eng_lemmas, '__iter__'))
-        self.assertTrue(hasattr(eng_lemmas, '__next__'))
+        self.assertTrue(hasattr(eng_lemmas, '__next__') or hasattr(eng_lemmas, 'next'))
         self.assertTrue(eng_lemmas.__iter__() is eng_lemmas)
 
         self.assertTrue(hasattr(cat_lemmas, '__iter__'))
-        self.assertTrue(hasattr(cat_lemmas, '__next__'))
+        self.assertTrue(hasattr(cat_lemmas, '__next__') or hasattr(eng_lemmas, 'next'))
         self.assertTrue(cat_lemmas.__iter__() is cat_lemmas)
