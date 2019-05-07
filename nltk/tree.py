@@ -16,6 +16,7 @@ syntax trees and morphological trees.
 from __future__ import print_function, unicode_literals
 
 import re
+import sys
 from abc import ABCMeta, abstractmethod
 
 from six import string_types, add_metaclass
@@ -790,12 +791,19 @@ class Tree(list):
             _canvas_frame.destroy_widget(widget)
             subprocess.call(
                 [
+                    try:
                     find_binary(
                         'gs',
                         binary_names=['gswin32c.exe', 'gswin64c.exe'],
                         env_vars=['PATH'],
                         verbose=False,
                     )
+                    except LookupError:
+                        print("The Ghostscript executable isn't found.\n"
+                              "If you're using a Mac, you can try installing"
+                              "https://docs.brew.sh/Installation then `brew install ghostscript`",
+                             file=sys.stderr)
+                        raise LookupError
                 ]
                 + '-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={0:} {1:}'.format(
                     out_path, in_path
