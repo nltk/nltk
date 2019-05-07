@@ -1401,16 +1401,13 @@ class WordNetCorpusReader(CorpusReader):
         try:
 
             # parse out the definitions and examples from the gloss
-            columns_str, gloss = data_file_line.split('|')
-            gloss = gloss.strip()
-            definitions = []
-            for gloss_part in gloss.split(';'):
-                gloss_part = gloss_part.strip()
-                if gloss_part.startswith('"'):
-                    synset._examples.append(gloss_part.strip('"'))
-                else:
-                    definitions.append(gloss_part)
-            synset._definition = '; '.join(definitions)
+            columns_str, gloss = data_file_line.strip().split('|')
+            definition = re.sub(r"[\"].*?[\"]", "", gloss).strip()
+            examples = re.findall(r'"([^"]*)"', gloss)
+            for example in examples:
+                synset._examples.append(example)
+
+            synset._definition = definition
 
             # split the other info into fields
             _iter = iter(columns_str.split())

@@ -29,7 +29,7 @@ class WordnNetDemo(unittest.TestCase):
         self.assertEqual(move_synset.name(), "move.v.15")
         self.assertEqual(move_synset.lemma_names(), ['move', 'go'])
         self.assertEqual(
-            move_synset.definition(), "have a turn; make one's move in a game"
+            move_synset.definition(), "have a turn; make one's move in a game;"
         )
         self.assertEqual(move_synset.examples(), ['Can I go now?'])
 
