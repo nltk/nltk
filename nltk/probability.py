@@ -1904,7 +1904,7 @@ class ConditionalFreqDist(defaultdict):
         :type conditions: list
         """
         try:
-            from matplotlib import pylab
+            from matplotlib import plt
         except ImportError:
             raise ValueError(
                 'The plot function requires matplotlib to be installed.'
@@ -1935,16 +1935,17 @@ class ConditionalFreqDist(defaultdict):
                 legend_loc = 'upper right'
             # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
             kwargs['label'] = "%s" % condition
-            pylab.plot(freqs, *args, **kwargs)
+            ax.plot(freqs, *args, **kwargs)
 
-        pylab.legend(loc=legend_loc)
-        pylab.grid(True, color="silver")
-        pylab.xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
+
+        ax.legend(loc=legend_loc)
+        ax.grid(True, color="silver")
+        ax.set_xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
         if title:
-            pylab.title(title)
-        pylab.xlabel("Samples")
-        pylab.ylabel(ylabel)
-        pylab.show()
+            ax.set_title(title)
+        ax.set_xlabel("Samples")
+        ax.set_ylabel(ylabel)
+        plt.show()
 
     def tabulate(self, *args, **kwargs):
         """
