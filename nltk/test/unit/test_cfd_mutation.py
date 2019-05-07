@@ -1,6 +1,5 @@
 import unittest
 from nltk import ConditionalFreqDist
-from nose.tools import assert_raises
 
 class TestEmptyCondFreq(unittest.TestCase):
     def test_tabulate(self):
