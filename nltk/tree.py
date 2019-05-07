@@ -16,6 +16,7 @@ syntax trees and morphological trees.
 from __future__ import print_function, unicode_literals
 
 import re
+import sys
 from abc import ABCMeta, abstractmethod
 
 from six import string_types, add_metaclass
@@ -788,19 +789,28 @@ class Tree(list):
             out_path = '{0:}.png'.format(file.name)
             _canvas_frame.print_to_file(in_path)
             _canvas_frame.destroy_widget(widget)
-            subprocess.call(
-                [
-                    find_binary(
-                        'gs',
-                        binary_names=['gswin32c.exe', 'gswin64c.exe'],
-                        env_vars=['PATH'],
-                        verbose=False,
-                    )
-                ]
-                + '-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={0:} {1:}'.format(
-                    out_path, in_path
-                ).split()
-            )
+            try:
+                subprocess.call(
+                    [
+                        find_binary(
+                            'gs',
+                            binary_names=['gswin32c.exe', 'gswin64c.exe'],
+                            env_vars=['PATH'],
+                            verbose=False,
+                        )
+                    ]
+                    + '-q -dEPSCrop -sDEVICE=png16m -r90 -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dSAFER -dBATCH -dNOPAUSE -sOutputFile={0:} {1:}'.format(
+                        out_path, in_path
+                    ).split()
+                )
+            except LookupError:
+                pre_error_message = str("The Ghostscript executable isn't found.\n"
+                                        "See http://web.mit.edu/ghostscript/www/Install.htm\n"
+                                        "If you're using a Mac, you can try installing\n"
+                                        "https://docs.brew.sh/Installation then `brew install ghostscript`")                
+                print(pre_error_message, file=sys.stderr)
+                raise LookupError
+                
             with open(out_path, 'rb') as sr:
                 res = sr.read()
             os.remove(in_path)
