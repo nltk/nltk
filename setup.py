@@ -50,8 +50,10 @@ MODULES_TO_COMPILE = [
     #'nltk.classify.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529562500#L2080
     'nltk.cluster.*',
     'nltk.draw.*',
+    'nltk.inference.*',
     'nltk.lm.*',
     'nltk.metrics.*',
+    'nltk.misc.*',
     'nltk.sem.*',
     'nltk.sentiment.*',
     'nltk.stem.*',
