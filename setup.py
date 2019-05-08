@@ -57,6 +57,7 @@ MODULES_TO_COMPILE = [
     'nltk.tbl.*',
     'nltk.tokenize.*',
     'nltk.translate.*',
+    'nltk.twitter.*',
 
     'nltk.parse.chart',
 
