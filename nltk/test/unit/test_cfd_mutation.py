@@ -35,5 +35,5 @@ class TestEmptyCondFreq(unittest.TestCase):
 
         # incrementing previously unseen key is still possible
         cfd[2]['hi'] += 1
-        self.assertEqual(cfd.conditions(),[3,5,2]) # new condition added
+        self.assertEqual(set(cfd.conditions()),set([3,5,2])) # new condition added
         self.assertEqual(cfd[2]['hi'], 1) # key's frequency incremented from 0 (unseen) to 1
