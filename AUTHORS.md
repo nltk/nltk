@@ -247,6 +247,7 @@
 - Osman Zubair <https://github.com/okz12>
 - Viresh Gupta <https://github.com/virresh>
 - Ondřej Cífka <https://github.com/cifkao>
+- Iris X. Zhou <https://github.com/irisxzhou> 
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
