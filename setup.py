@@ -58,6 +58,8 @@ MODULES_TO_COMPILE = [
     'nltk.classify.*',
     'nltk.metrics.*',
     'nltk.chunk.*',
+    'nltk.sem.*',
+    
 ]
 
 
