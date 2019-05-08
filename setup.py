@@ -49,13 +49,14 @@ MODULES_TO_COMPILE = [
     'nltk.chunk.*',
     #'nltk.classify.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529562500#L2080
     'nltk.cluster.*',
+    'nltk.draw.*',
     'nltk.lm.*',
     'nltk.metrics.*',
     'nltk.sem.*',
     'nltk.sentiment.*',
     'nltk.stem.*',
     'nltk.tbl.*',
-    'nltk.test.*',
+    #'nltk.test.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529634204#L2169
     'nltk.tokenize.*',
     'nltk.translate.*',
     'nltk.twitter.*',
