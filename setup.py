@@ -44,21 +44,24 @@ extras_require['all'] = set(
 )
 
 MODULES_TO_COMPILE = [
-    'nltk.grammar',
-    'nltk.parse.chart',
+    'nltk.ccg.*',
+    'nltk.chunk.*',
+    #'nltk.classify.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529562500#L2080
+    'nltk.cluster.*',
+    'nltk.lm.*',
+    'nltk.metrics.*',
+    'nltk.sem.*',
+    'nltk.sentiment.*',
+    'nltk.stem.*',
+    'nltk.tbl.*',
     'nltk.tokenize.*',
+    'nltk.translate.*',
+
+    'nltk.parse.chart',
+
+    'nltk.grammar',
     'nltk.probability',
     'nltk.util',
-    'nltk.stem.*',
-    'nltk.lm.*',
-    'nltk.translate.*',
-    'nltk.tbl.*',
-    'nltk.sentiment.*',
-    'nltk.cluster.*',
-    #'nltk.classify.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529562500#L2080
-    'nltk.metrics.*',
-    'nltk.chunk.*',
-    'nltk.sem.*',
 ]
 
 
