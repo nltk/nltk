@@ -4,8 +4,11 @@ Unit tests for nltk.corpus.nombank
 """
 
 from __future__ import unicode_literals
+import unittest
 
 from nltk.corpus import nombank
+# Load the nombank once.
+nombank.nouns()
 
 class NombankDemo(unittest.TestCase):
     def test_numbers(self):
@@ -20,5 +23,6 @@ class NombankDemo(unittest.TestCase):
     def test_instance(self):
         self.assertEqual(nombank.instances()[0].roleset, 'perc-sign.01')
 
-    def test_framefiles_subset_of_fileids(self):
-        self.assertTrue(set(nombank._framefiles).issubset(set(nombank.fileids())))
+    def test_framefiles_fileids(self):
+        self.assertEqual(len(nombank.fileids()), 4705)
+        self.assertTrue(all(fileid.endswith('.xml') for fileid in nombank.fileids()))

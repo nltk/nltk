@@ -58,6 +58,11 @@ class NombankCorpusReader(CorpusReader):
             corresponding to this corpus.  These parse trees are
             necessary to resolve the tree pointers used by nombank.
         """
+        
+	    # If framefiles is specified as a regexp, expand it.
+        if isinstance(framefiles, string_types):
+            self._fileids = find_corpus_fileids(root, framefiles)
+        self._fileids = list(framefiles)
         # Initialze the corpus reader.
         CorpusReader.__init__(self, root, framefiles, encoding)
 
