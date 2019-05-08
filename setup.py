@@ -44,7 +44,8 @@ extras_require['all'] = set(
 )
 
 MODULES_TO_COMPILE = [
-    'nltk.ccg.*',
+    #'nltk.ccg.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529589821#L2077
+    'nltk.chat.*',
     'nltk.chunk.*',
     #'nltk.classify.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529562500#L2080
     'nltk.cluster.*',
