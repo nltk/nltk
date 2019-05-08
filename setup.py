@@ -55,11 +55,10 @@ MODULES_TO_COMPILE = [
     'nltk.tbl.*',
     'nltk.sentiment.*',
     'nltk.cluster.*',
-    'nltk.classify.*',
+    #'nltk.classify.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529562500#L2080
     'nltk.metrics.*',
     'nltk.chunk.*',
     'nltk.sem.*',
-    
 ]
 
 
