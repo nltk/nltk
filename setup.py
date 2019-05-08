@@ -55,6 +55,7 @@ MODULES_TO_COMPILE = [
     'nltk.sentiment.*',
     'nltk.stem.*',
     'nltk.tbl.*',
+    'nltk.test.*',
     'nltk.tokenize.*',
     'nltk.translate.*',
     'nltk.twitter.*',
