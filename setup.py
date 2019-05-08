@@ -56,6 +56,7 @@ MODULES_TO_COMPILE = [
     'nltk.sentiment.*',
     'nltk.cluster.*',
     'nltk.classify.*',
+    'nltk.metrics.*',
 ]
 
 
