@@ -6,6 +6,7 @@ See also nltk/test/wordnet.doctest
 
 from __future__ import unicode_literals
 
+import collections
 import os
 import unittest
 
@@ -195,3 +196,26 @@ class WordnNetDemo(unittest.TestCase):
         self.assertAlmostEqual(
             S('dog.n.01').lin_similarity(S('cat.n.01'), semcor_ic), 0.8863, places=3
         )
+
+    def test_omw_lemma_no_trailing_underscore(self):
+        expected = [
+            u'popolna_sprememba_v_mišljenju',
+            u'popoln_obrat',
+            u'preobrat',
+            u'preobrat_v_mišljenju'
+            ]
+        self.assertEqual(S('about-face.n.02').lemma_names(lang='slv'), expected)
+
+    def test_iterable_type_for_all_lemma_names(self):
+        # Duck-test for iterables.
+        # See https://stackoverflow.com/a/36230057/610569
+        cat_lemmas = wn.all_lemma_names(lang='cat')
+        eng_lemmas = wn.all_lemma_names(lang='eng')
+
+        self.assertTrue(hasattr(eng_lemmas, '__iter__'))
+        self.assertTrue(hasattr(eng_lemmas, '__next__') or hasattr(eng_lemmas, 'next'))
+        self.assertTrue(eng_lemmas.__iter__() is eng_lemmas)
+
+        self.assertTrue(hasattr(cat_lemmas, '__iter__'))
+        self.assertTrue(hasattr(cat_lemmas, '__next__') or hasattr(eng_lemmas, 'next'))
+        self.assertTrue(cat_lemmas.__iter__() is cat_lemmas)

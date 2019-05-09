@@ -1401,16 +1401,13 @@ class WordNetCorpusReader(CorpusReader):
         try:
 
             # parse out the definitions and examples from the gloss
-            columns_str, gloss = data_file_line.split('|')
-            gloss = gloss.strip()
-            definitions = []
-            for gloss_part in gloss.split(';'):
-                gloss_part = gloss_part.strip()
-                if gloss_part.startswith('"'):
-                    synset._examples.append(gloss_part.strip('"'))
-                else:
-                    definitions.append(gloss_part)
-            synset._definition = '; '.join(definitions)
+            columns_str, gloss = data_file_line.strip().split('|')
+            definition = re.sub(r"[\"].*?[\"]", "", gloss).strip()
+            examples = re.findall(r'"([^"]*)"', gloss)
+            for example in examples:
+                synset._examples.append(example)
+
+            synset._definition = definition.strip('; ')
 
             # split the other info into fields
             _iter = iter(columns_str.split())
@@ -1648,7 +1645,7 @@ class WordNetCorpusReader(CorpusReader):
                     continue
                 lemma.extend(self._lang_data[lang][0][i])
 
-            lemma = list(set(lemma))
+            lemma = iter(set(lemma))
             return lemma
 
     def all_synsets(self, pos=None):
@@ -1999,17 +1996,16 @@ class WordNetCorpusReader(CorpusReader):
         if len(lang) != 3:
             raise ValueError('lang should be a (3 character) ISO 639-3 code')
         self._lang_data[lang] = [defaultdict(list), defaultdict(list)]
-        for l in tab_file.readlines():
-            if isinstance(l, bytes):
+        for line in tab_file.readlines():
+            if isinstance(line, bytes):
                 # Support byte-stream files (e.g. as returned by Python 2's
                 # open() function) as well as text-stream ones
-                l = l.decode('utf-8')
-            l = l.replace('\n', '')
-            l = l.replace(' ', '_')
-            if l[0] != '#':
-                word = l.split('\t')
-                self._lang_data[lang][0][word[0]].append(word[2])
-                self._lang_data[lang][1][word[2].lower()].append(word[0])
+                line = line.decode('utf-8')
+            if not line.startswith('#'):
+                offset_pos, lemma_type, lemma  = line.strip().split('\t')
+                lemma = lemma.strip().replace(' ', '_')
+                self._lang_data[lang][0][offset_pos].append(lemma)
+                self._lang_data[lang][1][lemma.lower()].append(offset_pos)
         # Make sure no more entries are accidentally added subsequently
         self._lang_data[lang][0].default_factory = None
         self._lang_data[lang][1].default_factory = None
