@@ -6,6 +6,7 @@
 #         Ewan Klein <ewan@inf.ed.ac.uk> (modifications)
 #         Pierpaolo Pantone <24alsecondo@gmail.com> (modifications)
 #         George Berry <geb97@cornell.edu> (modifications)
+#         Malavika Suresh <malavika.suresh0794@gmail.com> (modifications)
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
@@ -20,9 +21,14 @@ Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for
 Sentiment Analysis of Social Media Text. Eighth International Conference on
 Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 """
-#This is a test edit
-#This is another test edit
-#This is yet another test edit
+#Updates to this version:
+#1.Added "only" (B_DECR) in the BOOSTER_DICT
+#2.Added contrastive conjunctions - however, except - in the function _but_check
+#3.Added new rule for - only if - in the function _but_check
+#4.Added new rule for - in spite of - in the function _but_check
+#Date: 2 May 2019
+#Author: Malavika Suresh <malavika.suresh0794@gmail.com>
+
 import math
 import re
 import string
@@ -123,7 +129,7 @@ NEGATE = {
     "wouldn't",
     "rarely",
     "seldom",
-    "despite",
+    "despite"
 }
 
 # booster/dampener 'intensifiers' or 'degree adverbs'
@@ -196,6 +202,7 @@ BOOSTER_DICT = {
     "sorta": B_DECR,
     "sortof": B_DECR,
     "sort-of": B_DECR,
+    "only": B_DECR
 }
 
 # check for special case idioms using a sentiment-laden keyword known to SAGE
@@ -445,12 +452,13 @@ class SentimentIntensityAnalyzer(object):
         return valence
 
     def _but_check(self, words_and_emoticons, sentiments):
-        # check for modification in sentiment due to contrastive conjunction 'but'
-        if 'but' in words_and_emoticons or 'BUT' in words_and_emoticons:
-            try:
-                bi = words_and_emoticons.index('but')
-            except ValueError:
-                bi = words_and_emoticons.index('BUT')
+        # check for modification in sentiment due to contrastive conjunctions
+        cc_list = ['but', 'however', 'except']
+        bi = 0
+        for cc in cc_list:
+            if cc in words_and_emoticons or cc.upper() in words_and_emoticons:
+                bi = words_and_emoticons.index(cc)
+        if bi > 0:
             for sentiment in sentiments:
                 si = sentiments.index(sentiment)
                 if si < bi:
@@ -459,6 +467,37 @@ class SentimentIntensityAnalyzer(object):
                 elif si > bi:
                     sentiments.pop(si)
                     sentiments.insert(si, sentiment * 1.5)
+        cc = 'only'
+        if cc in words_and_emoticons or cc.upper() in words_and_emoticons:
+            i = words_and_emoticons.index(cc)
+            if len(words_and_emoticons)>1 and 'if' == words_and_emoticons[i+1].lower():
+                for sentiment in sentiments:
+                    si = sentiments.index(sentiment)
+                    if si < i:
+                        sentiments.pop(si)
+                        sentiments.insert(si, sentiment * 0.5)
+        cc = 'in'
+        if cc in words_and_emoticons or cc.upper() in words_and_emoticons:
+            i = words_and_emoticons.index(cc)
+            if len(words_and_emoticons)>2 and 'spite' == words_and_emoticons[i+1].lower():
+                i = words_and_emoticons.index('spite')
+                if 'of' == words_and_emoticons[i+1].lower():
+                    for sentiment in sentiments:
+                        si = sentiments.index(sentiment)
+                        if si == i:
+                            sentiments.pop(si)
+                            sentiments.insert(si, 0)
+                        if si < i:
+                            sentiments.pop(si)
+                            sentiments.insert(si, sentiment * 1.5)
+                        elif si > i:
+                            sentiments.pop(si)
+                            sentiments.insert(si, sentiment * 0.5)
+                            
+        # Future work: 
+        # 1.Consider usage of though/although/even though
+        # 2.Handle conjunctions appearing in the start of the sentence
+        
         return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
