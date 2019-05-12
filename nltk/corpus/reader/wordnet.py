@@ -236,7 +236,7 @@ class Lemma(_WordNetObject):
     - synset: The synset that this lemma belongs to.
     - syntactic_marker: For adjectives, the WordNet string identifying the
       syntactic position relative modified noun. See:
-      http://wordnet.princeton.edu/man/wninput.5WN.html#sect10
+      https://wordnet.princeton.edu/documentation/wninput5wn
       For all other parts of speech, this attribute is None.
     - count: The frequency of this lemma in wordnet.
 
@@ -244,7 +244,7 @@ class Lemma(_WordNetObject):
 
     Lemmas have the following methods for retrieving related Lemmas. They
     correspond to the names for the pointer symbols defined here:
-    http://wordnet.princeton.edu/man/wninput.5WN.html#sect3
+    https://wordnet.princeton.edu/documentation/wninput5wn
     These methods all return lists of Lemmas:
 
     - antonyms
@@ -372,7 +372,7 @@ class Synset(_WordNetObject):
 
     Synsets have the following methods for retrieving related Synsets.
     They correspond to the names for the pointer symbols defined here:
-    http://wordnet.princeton.edu/man/wninput.5WN.html#sect3
+    https://wordnet.princeton.edu/documentation/wninput5wn
     These methods all return lists of Synsets.
 
     - hypernyms, instance_hypernyms
@@ -1520,7 +1520,7 @@ class WordNetCorpusReader(CorpusReader):
         Retrieves synset based on a given sense_key. Sense keys can be
         obtained from lemma.key()
 
-        From https://wordnet.princeton.edu/wordnet/man/senseidx.5WN.html:
+        From https://wordnet.princeton.edu/documentation/senseidx5wn:
         A sense_key is represented as:
             lemma % lex_sense (e.g. 'dog%1:18:01::')
         where lex_sense is encoded as:
