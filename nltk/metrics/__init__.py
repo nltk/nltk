@@ -40,6 +40,7 @@ from nltk.metrics.association import (
     NgramAssocMeasures,
     BigramAssocMeasures,
     TrigramAssocMeasures,
+    QuadgramAssocMeasures,
     ContingencyMeasures,
 )
 from nltk.metrics.spearman import (
