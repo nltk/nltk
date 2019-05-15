@@ -276,3 +276,18 @@ For trigrams, we have to provide more count information:
     True
     >>> tam.jaccard(n_w1_w2_w3, pair_counts, uni_counts2, N) > tam.jaccard(n_w1_w2_w3, pair_counts, uni_counts, N)
     True
+
+
+For fourgrams, we have to provide more count information:
+
+    >>> n_w1_w2_w3_w4 = 5
+    >>> n_w1_w2, n_w1_w3, n_w2_w3 = 35, 60, 40
+    >>> n_w1_w2_w3, n_w2_w3_w4 = 20, 10 
+    >>> pair_counts = (n_w1_w2, n_w1_w3, n_w2_w3)
+    >>> triplet_counts = (n_w1_w2_w3, n_w2_w3_w4)
+    >>> n_w1, n_w2, n_w3, n_w4 = 100, 200, 300, 400
+    >>> uni_counts = (n_w1, n_w2, n_w3, n_w4)
+    >>> N = 14307668
+    >>> qam = QuadgramAssocMeasures
+    >>> qam.raw_freq(n_w1_w2_w3_w4, pair_counts, triplet_counts, uni_counts, N) == 1. * n_w1_w2_w3_w4 / N
+    True
