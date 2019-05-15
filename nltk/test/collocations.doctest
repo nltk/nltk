@@ -101,13 +101,6 @@ A similar interface is provided for trigrams:
     >>> set(trigram for trigram, score in scored) == set(nltk.trigrams(tokens))
     True
 
-A similar interface is provided for fourgrams:
-
-    >>> finder = QuadgramCollocationFinder.from_words(tokens)
-    >>> scored = finder.score_ngrams(fourgram_measures.raw_freq)
-    >>> set(fourgram for fourgram, score in scored) == set(nltk.ngrams(tokens, n=4))
-    True
-
 We may want to select only the top n results:
 
     >>> sorted(finder.nbest(trigram_measures.raw_freq, 2))
@@ -134,6 +127,12 @@ A closer look at the finder's ngram frequencies:
      ((',', 'do', 'not'), 1), (('I', 'am', '!'), 1), (('Sam', 'I', '!'), 1),
      (('Sam', 'I', 'am'), 1)]
 
+A similar interface is provided for fourgrams:
+
+    >>> finder_4grams = QuadgramCollocationFinder.from_words(tokens)
+    >>> scored_4grams = finder4.score_ngrams(fourgram_measures.raw_freq)
+    >>> set(fourgram for fourgram, score in scored_4grams) == set(nltk.ngrams(tokens, n=4))
+    True
 
 Filtering candidates
 ~~~~~~~~~~~~~~~~~~~~
