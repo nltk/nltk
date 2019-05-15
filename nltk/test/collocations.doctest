@@ -16,6 +16,7 @@ measured using Pointwise Mutual Information.
     >>> from nltk.collocations import *
     >>> bigram_measures = nltk.collocations.BigramAssocMeasures()
     >>> trigram_measures = nltk.collocations.TrigramAssocMeasures()
+    >>> fourgram_measures = nltk.collocations.QuadgramAssocMeasures()
     >>> finder = BigramCollocationFinder.from_words(
     ...     nltk.corpus.genesis.words('english-web.txt'))
     >>> finder.nbest(bigram_measures.pmi, 10)  # doctest: +NORMALIZE_WHITESPACE
@@ -98,6 +99,13 @@ A similar interface is provided for trigrams:
     >>> finder = TrigramCollocationFinder.from_words(tokens)
     >>> scored = finder.score_ngrams(trigram_measures.raw_freq)
     >>> set(trigram for trigram, score in scored) == set(nltk.trigrams(tokens))
+    True
+
+A similar interface is provided for fourgrams:
+
+    >>> finder = QuadgramCollocationFinder.from_words(tokens)
+    >>> scored = finder.score_ngrams(fourgram_measures.raw_freq)
+    >>> set(fourgram for fourgram, score in scored) == set(nltk.ngrams(tokens, n=4))
     True
 
 We may want to select only the top n results:
