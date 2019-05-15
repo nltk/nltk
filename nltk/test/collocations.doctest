@@ -130,7 +130,7 @@ A closer look at the finder's ngram frequencies:
 A similar interface is provided for fourgrams:
 
     >>> finder_4grams = QuadgramCollocationFinder.from_words(tokens)
-    >>> scored_4grams = finder4.score_ngrams(fourgram_measures.raw_freq)
+    >>> scored_4grams = finder_4grams.score_ngrams(fourgram_measures.raw_freq)
     >>> set(fourgram for fourgram, score in scored_4grams) == set(nltk.ngrams(tokens, n=4))
     True
 
