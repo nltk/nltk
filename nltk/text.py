@@ -544,11 +544,7 @@ class Text(object):
     def generate(self, length=100, text_seed=None, random_seed=42):
         """
         Print random text, generated using a trigram language model.
-
-        See also: 
-        
-            >>> from nltk import lm
-            >>> help(lm)
+        See also `help(nltk.lm)`.
         
         :param length: The length of text to generate (default=100)
         :type length: int
