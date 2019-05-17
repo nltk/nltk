@@ -534,50 +534,52 @@ class Text(object):
         from nltk.draw import dispersion_plot
 
         dispersion_plot(self, words)
-        
-    def build_ngram_lm(self, tokenized_sents, n=3):
+
+    def _train_default_ngram_lm(self, tokenized_sents, n=3):
         train_data, padded_sents = padded_everygram_pipeline(n, tokenized_sents)
         model = MLE(order=n)
         model.fit(train_data, padded_sents)
         return model
-        
+
     def generate(self, length=100, text_seed=None, random_seed=42):
         """
         Print random text, generated using a trigram language model.
         See also `help(nltk.lm)`.
-        
+
         :param length: The length of text to generate (default=100)
         :type length: int
-        
+
         :param text_seed: Generation can be conditioned on preceding context.
         :type text_seed: list(str)
-        
+
         :param random_seed: A random seed or an instance of `random.Random`. If provided,
         makes the random sampling part of generation reproducible.
         :type random_seed: int
-        
+
         """
         # Create the model when using it the first time.
-        self.tokenized_sents = [sent.split(' ') for sent in 
+        self._tokenized_sents = [sent.split(' ') for sent in
                                 sent_tokenize(' '.join(self.tokens))]
         if not hasattr(self, 'trigram_model'):
             print("Building ngram index...", file=sys.stderr)
-            self.trigram_model = self.build_ngram_lm(self.tokenized_sents, n=3)
-            
+            self._trigram_model = self._train_default_ngram_lm(self._tokenized_sents, n=3)
+
         generated_tokens = []
-        
+
         assert length > 0, 'The `length` must be more than 0.'
         while len(generated_tokens) < length:
-            for idx, token in enumerate(self.trigram_model.generate(length, text_seed=text_seed, random_seed=random_seed)):
+            for idx, token in enumerate(self._trigram_model.generate(length, text_seed=text_seed, random_seed=random_seed)):
                 if token == '<s>':
                     continue
                 if token == '</s>':
                     break
                 generated_tokens.append(token)
             random_seed += 1
-        
+
         prefix = ' '.join(text_seed) + ' ' if text_seed else ''
-        print(prefix + tokenwrap(generated_tokens[:length]))
+        output_str = prefix + tokenwrap(generated_tokens[:length])
+        print(output_str)
+        return output_str
 
     def plot(self, *args):
         """
