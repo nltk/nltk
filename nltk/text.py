@@ -553,7 +553,7 @@ class Text(object):
         :type text_seed: list(str)
 
         :param random_seed: A random seed or an instance of `random.Random`. If provided,
-        makes the random sampling part of generation reproducible.
+        makes the random sampling part of generation reproducible. (default=42)
         :type random_seed: int
 
         """
