@@ -21,13 +21,6 @@ Hutto, C.J. & Gilbert, E.E. (2014). VADER: A Parsimonious Rule-based Model for
 Sentiment Analysis of Social Media Text. Eighth International Conference on
 Weblogs and Social Media (ICWSM-14). Ann Arbor, MI, June 2014.
 """
-#Updates to this version:
-#1.Added "only" (B_DECR) in the BOOSTER_DICT
-#2.Added contrastive conjunctions - however, except - in the function _but_check
-#3.Added new rule for - only if - in the function _but_check
-#4.Added new rule for - in spite of - in the function _but_check
-#Date: 2 May 2019
-#Author: Malavika Suresh <malavika.suresh0794@gmail.com>
 
 import math
 import re
@@ -378,6 +371,10 @@ class SentimentIntensityAnalyzer(object):
             sentiments = self.sentiment_valence(valence, sentitext, item, i, sentiments)
 
         sentiments = self._but_check(words_and_emoticons, sentiments)
+        
+        sentiments = self._only_if_check(words_and_emoticons, sentiments)
+        
+        sentiments = self._in_spite_of_check(words_and_emoticons, sentiments)
 
         return self.score_valence(sentiments, text)
 
@@ -457,47 +454,56 @@ class SentimentIntensityAnalyzer(object):
         bi = 0
         for cc in cc_list:
             if cc in words_and_emoticons or cc.upper() in words_and_emoticons:
-                bi = words_and_emoticons.index(cc)
-        if bi > 0:
-            for sentiment in sentiments:
-                si = sentiments.index(sentiment)
-                if si < bi:
-                    sentiments.pop(si)
-                    sentiments.insert(si, sentiment * 0.5)
-                elif si > bi:
-                    sentiments.pop(si)
-                    sentiments.insert(si, sentiment * 1.5)
-        cc = 'only'
-        if cc in words_and_emoticons or cc.upper() in words_and_emoticons:
-            i = words_and_emoticons.index(cc)
-            if len(words_and_emoticons)>1 and 'if' == words_and_emoticons[i+1].lower():
-                for sentiment in sentiments:
-                    si = sentiments.index(sentiment)
-                    if si < i:
+                try:
+                    bi = words_and_emoticons.index(cc)
+                except ValueError:
+                    bi = words_and_emoticons.index(cc.upper())
+                for si,sentiment in enumerate(sentiments):
+                    if si < bi:
                         sentiments.pop(si)
                         sentiments.insert(si, sentiment * 0.5)
-        cc = 'in'
-        if cc in words_and_emoticons or cc.upper() in words_and_emoticons:
-            i = words_and_emoticons.index(cc)
-            if len(words_and_emoticons)>2 and 'spite' == words_and_emoticons[i+1].lower():
-                i = words_and_emoticons.index('spite')
-                if 'of' == words_and_emoticons[i+1].lower():
-                    for sentiment in sentiments:
-                        si = sentiments.index(sentiment)
-                        if si == i:
-                            sentiments.pop(si)
-                            sentiments.insert(si, 0)
-                        if si < i:
-                            sentiments.pop(si)
-                            sentiments.insert(si, sentiment * 1.5)
-                        elif si > i:
-                            sentiments.pop(si)
-                            sentiments.insert(si, sentiment * 0.5)
+                    elif si > bi:
+                        sentiments.pop(si)
+                        sentiments.insert(si, sentiment * 1.5)
                             
         # Future work: 
         # 1.Consider usage of though/although/even though
         # 2.Handle conjunctions appearing in the start of the sentence
         
+        return sentiments
+    
+    def _only_if_check(self, words_and_emoticons, sentiments):
+        check = 'only'
+        if check in words_and_emoticons or check.upper() in words_and_emoticons:
+            try:
+                i = words_and_emoticons.index(check)
+            except ValueError:
+                i = words_and_emoticons.index(check.upper())
+            if len(words_and_emoticons)>i+1 and 'if' == words_and_emoticons[i+1].lower():
+                for si, sentiment in enumerate(sentiments):
+                    if si < i:
+                        sentiments.pop(si)
+                        sentiments.insert(si, sentiment * 0.5)
+        return sentiments
+    
+    def _in_spite_of_check(self, words_and_emoticons, sentiments):
+        check = 'in'
+        if check in words_and_emoticons or check.upper() in words_and_emoticons:
+            try:
+                i = words_and_emoticons.index(check)
+            except ValueError:
+                i = words_and_emoticons.index(check.upper())
+            if len(words_and_emoticons)>i+2 and 'spite' == words_and_emoticons[i+1].lower() and 'of' == words_and_emoticons[i+2].lower():
+                for si, sentiment in enumerate(sentiments):
+                    if si == i+1:
+                        sentiments.pop(si)
+                        sentiments.insert(si, 0)
+                    elif si < i+1:
+                        sentiments.pop(si)
+                        sentiments.insert(si, sentiment * 1.5)
+                    elif si > i+1:
+                        sentiments.pop(si)
+                        sentiments.insert(si, sentiment * 0.5)
         return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
