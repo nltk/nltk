@@ -450,14 +450,12 @@ class SentimentIntensityAnalyzer(object):
 
     def _but_check(self, words_and_emoticons, sentiments):
         # check for modification in sentiment due to contrastive conjunctions
+        words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
         cc_list = ['but', 'however', 'except']
         bi = 0
         for cc in cc_list:
-            if cc in words_and_emoticons or cc.upper() in words_and_emoticons:
-                try:
-                    bi = words_and_emoticons.index(cc)
-                except ValueError:
-                    bi = words_and_emoticons.index(cc.upper())
+            if cc in words_and_emoticons_lower:
+                bi = words_and_emoticons_lower.index(cc)
                 for si,sentiment in enumerate(sentiments):
                     if si < bi:
                         sentiments.pop(si)
@@ -468,18 +466,15 @@ class SentimentIntensityAnalyzer(object):
                             
         # Future work: 
         # 1.Consider usage of though/although/even though
-        # 2.Handle conjunctions appearing in the start of the sentence
         
         return sentiments
     
     def _only_if_check(self, words_and_emoticons, sentiments):
+        words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
         check = 'only'
-        if check in words_and_emoticons or check.upper() in words_and_emoticons:
-            try:
-                i = words_and_emoticons.index(check)
-            except ValueError:
-                i = words_and_emoticons.index(check.upper())
-            if len(words_and_emoticons)>i+1 and 'if' == words_and_emoticons[i+1].lower():
+        if check in words_and_emoticons_lower:
+            i = words_and_emoticons_lower.index(check)
+            if len(words_and_emoticons)>i+1 and 'if' == words_and_emoticons_lower[i+1]:
                 for si, sentiment in enumerate(sentiments):
                     if si < i:
                         sentiments.pop(si)
@@ -487,13 +482,11 @@ class SentimentIntensityAnalyzer(object):
         return sentiments
     
     def _in_spite_of_check(self, words_and_emoticons, sentiments):
+        words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
         check = 'in'
-        if check in words_and_emoticons or check.upper() in words_and_emoticons:
-            try:
-                i = words_and_emoticons.index(check)
-            except ValueError:
-                i = words_and_emoticons.index(check.upper())
-            if len(words_and_emoticons)>i+2 and 'spite' == words_and_emoticons[i+1].lower() and 'of' == words_and_emoticons[i+2].lower():
+        if check in words_and_emoticons_lower:
+            i = words_and_emoticons_lower.index(check)
+            if len(words_and_emoticons)>i+2 and 'spite' == words_and_emoticons_lower[i+1] and 'of' == words_and_emoticons_lower[i+2]:
                 for si, sentiment in enumerate(sentiments):
                     if si == i+1:
                         sentiments.pop(si)
