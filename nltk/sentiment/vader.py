@@ -458,11 +458,9 @@ class SentimentIntensityAnalyzer(object):
                 bi = words_and_emoticons_lower.index(cc)
                 for si,sentiment in enumerate(sentiments):
                     if si < bi:
-                        sentiments.pop(si)
-                        sentiments.insert(si, sentiment * 0.5)
+                        sentiments[si] = sentiment * 0.5
                     elif si > bi:
-                        sentiments.pop(si)
-                        sentiments.insert(si, sentiment * 1.5)
+                        sentiments[si] = sentiment * 1.5
                             
         # Future work: 
         # 1.Consider usage of though/although/even though
@@ -477,8 +475,7 @@ class SentimentIntensityAnalyzer(object):
             if len(words_and_emoticons)>i+1 and 'if' == words_and_emoticons_lower[i+1]:
                 for si, sentiment in enumerate(sentiments):
                     if si < i:
-                        sentiments.pop(si)
-                        sentiments.insert(si, sentiment * 0.5)
+                        sentiments[si] = sentiment * 0.5
         return sentiments
     
     def _in_spite_of_check(self, words_and_emoticons, sentiments):
@@ -489,14 +486,11 @@ class SentimentIntensityAnalyzer(object):
             if len(words_and_emoticons)>i+2 and 'spite' == words_and_emoticons_lower[i+1] and 'of' == words_and_emoticons_lower[i+2]:
                 for si, sentiment in enumerate(sentiments):
                     if si == i+1:
-                        sentiments.pop(si)
-                        sentiments.insert(si, 0)
+                        sentiments[si] = 0
                     elif si < i+1:
-                        sentiments.pop(si)
-                        sentiments.insert(si, sentiment * 1.5)
+                        sentiments[si] = sentiment * 1.5
                     elif si > i+1:
-                        sentiments.pop(si)
-                        sentiments.insert(si, sentiment * 0.5)
+                        sentiments[si] = sentiment * 0.5
         return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
