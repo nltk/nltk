@@ -240,6 +240,7 @@
 - Iaroslav Tymchenko <https://github.com/myproblemchild>
 - Aleš Tamchyna
 - Tim Gianitsos <https://github.com/timgianitsos>
+- Philippe Partarrieu <https://github.com/ppartarr>
 - Andrew Owen Martin
 - Adrian Ellis <https://github.com/adrianjellis>
 - Nat Quayle Nelson <https://github.com/nqnstudios>
