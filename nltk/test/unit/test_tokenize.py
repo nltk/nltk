@@ -17,6 +17,7 @@ from nltk.tokenize import (
     TweetTokenizer,
     StanfordSegmenter,
     TreebankWordTokenizer,
+    SyllableTokenizer,
 )
 
 
@@ -42,6 +43,14 @@ class TestTokenize(unittest.TestCase):
             'français',
         ]
         self.assertEqual(tokens, expected)
+        
+    def test_sonority_sequencing_syllable_tokenizer(self):
+        """
+        Test SyllableTokenizer tokenizer.
+        """
+        tokenizer = SyllableTokenizer()
+        tokens = tokenizer.tokenize('justification')
+        self.assertEqual(tokens, ['jus', 'ti', 'fi', 'ca', 'tion'])
 
     def test_stanford_segmenter_arabic(self):
         """
