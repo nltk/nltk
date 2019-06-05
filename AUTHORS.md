@@ -237,6 +237,7 @@
 - Anlan Du
 - Pulkit Maloo <https://github.com/pulkitmaloo>
 - Brandon M. Burroughs <https://github.com/brandonmburroughs>
+- John Stewart <https://github.com/free-variation>
 - Iaroslav Tymchenko <https://github.com/myproblemchild>
 - Aleš Tamchyna
 - Tim Gianitsos <https://github.com/timgianitsos>
