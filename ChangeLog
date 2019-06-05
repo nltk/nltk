@@ -1,3 +1,23 @@
+Version 3.4.2 2019-06-05
+
+* add Text.generate()
+* add QuadgramAssocMeasures
+* add SSP to tokenizers
+* return confidence of best tag from AveragedPerceptron
+* make plot methods return Axes objects
+* don't require list arguments to PositiveNaiveBayesClassifier.train
+* fix Tree classes to work with native Python copy library
+* fix inconsistency for NomBank
+* fix random seeding in LanguageModel.generate
+* fix ConditionalFreqDist mutation on tabulate/plot call
+* fix broken links in documentation
+* fix misc Wordnet issues
+* update installation instructions
+
+Thanks to the following contributors to 3.4.2:
+alvations, Bharat123rox, cifkao, drewmiller, free-variation, henchc
+irisxzhou, nick-ulle, ppartarr, simonepri, yigitsever, zhaoyanpeng
+	
 Version 3.4.1 2019-04-17
 
 * add chomsky_normal_form for CFGs
