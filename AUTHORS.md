@@ -244,6 +244,7 @@
 - Andrew Owen Martin
 - Adrian Ellis <https://github.com/adrianjellis>
 - Nat Quayle Nelson <https://github.com/nqnstudios>
+- Yanpeng Zhao <https://github.com/zhaoyanpeng>
 - Matan Rak <https://github.com/matanrak>
 - Nick Ulle <https://github.com/nick-ulle>
 - Uday Krishna <https://github.com/udaykrishna>

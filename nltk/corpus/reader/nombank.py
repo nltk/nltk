@@ -58,16 +58,16 @@ class NombankCorpusReader(CorpusReader):
             corresponding to this corpus.  These parse trees are
             necessary to resolve the tree pointers used by nombank.
         """
-        # If framefiles is specified as a regexp, expand it.
+        
+	    # If framefiles is specified as a regexp, expand it.
         if isinstance(framefiles, string_types):
-            framefiles = find_corpus_fileids(root, framefiles)
-        framefiles = list(framefiles)
+            self._fileids = find_corpus_fileids(root, framefiles)
+        self._fileids = list(framefiles)
         # Initialze the corpus reader.
-        CorpusReader.__init__(self, root, [nomfile, nounsfile] + framefiles, encoding)
+        CorpusReader.__init__(self, root, framefiles, encoding)
 
-        # Record our frame fileids & nom file.
+        # Record our nom file & nouns file.
         self._nomfile = nomfile
-        self._framefiles = framefiles
         self._nounsfile = nounsfile
         self._parse_fileid_xform = parse_fileid_xform
         self._parse_corpus = parse_corpus
@@ -117,7 +117,7 @@ class NombankCorpusReader(CorpusReader):
             '1/10', '1-slash-10'
         )
         framefile = 'frames/%s.xml' % baseform
-        if framefile not in self._framefiles:
+        if framefile not in self.fileids():
             raise ValueError('Frameset file for %s not found' % roleset_id)
 
         # n.b.: The encoding for XML fileids is specified by the file
@@ -134,11 +134,11 @@ class NombankCorpusReader(CorpusReader):
         """
         if baseform is not None:
             framefile = 'frames/%s.xml' % baseform
-            if framefile not in self._framefiles:
+            if framefile not in self.fileids():
                 raise ValueError('Frameset file for %s not found' % baseform)
             framefiles = [framefile]
         else:
-            framefiles = self._framefiles
+            framefiles = self.fileids()
 
         rsets = []
         for framefile in framefiles:
