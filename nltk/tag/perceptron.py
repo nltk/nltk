@@ -21,7 +21,10 @@ from nltk.tag.api import TaggerI
 from nltk.data import find, load
 from nltk.compat import python_2_unicode_compatible
 
-import numpy as np  
+try:
+    import numpy as np
+except ImportError:
+    pass
 
 PICKLE = "averaged_perceptron_tagger.pickle"
 
