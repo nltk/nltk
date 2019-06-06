@@ -349,7 +349,7 @@ def demo():
     classifier = names_demo(
         f, binary_names_demo_features  # DecisionTreeClassifier.train,
     )
-    print(classifier.pp(depth=7))
+    print(classifier.pretty_format(depth=7))
     print(classifier.pseudocode(depth=7))
 
 
