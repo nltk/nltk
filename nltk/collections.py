@@ -15,7 +15,6 @@ from collections import defaultdict, deque, Counter
 from six import text_type
 
 from nltk.internals import slice_bounds, raise_unorderable_types
-from nltk.compat import python_2_unicode_compatible
 
 
 ##########################################################################
@@ -120,7 +119,6 @@ class OrderedDict(dict):
 
 
 @total_ordering
-@python_2_unicode_compatible
 class AbstractLazySequence(object):
     """
     An abstract base class for read-only sequences whose values are

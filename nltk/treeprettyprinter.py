@@ -24,7 +24,6 @@ from collections import defaultdict
 from operator import itemgetter
 
 from nltk.util import OrderedDict
-from nltk.compat import python_2_unicode_compatible
 from nltk.tree import Tree
 
 ANSICOLOR = {
@@ -39,7 +38,6 @@ ANSICOLOR = {
 }
 
 
-@python_2_unicode_compatible
 class TreePrettyPrinter(object):
     """
     Pretty-print a tree in text format, either as ASCII or Unicode.

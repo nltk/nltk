@@ -48,7 +48,6 @@ from abc import ABCMeta, abstractmethod
 
 from six import itervalues, text_type, add_metaclass
 
-from nltk import compat
 from nltk.internals import raise_unorderable_types
 
 _NINF = float("-1e300")
@@ -58,7 +57,7 @@ _NINF = float("-1e300")
 ##//////////////////////////////////////////////////////
 
 
-@compat.python_2_unicode_compatible
+
 class FreqDist(Counter):
     """
     A frequency distribution for the outcomes of an experiment.  A
@@ -550,7 +549,7 @@ class ProbDistI(object):
         return random.choice(list(self.samples()))
 
 
-@compat.python_2_unicode_compatible
+
 class UniformProbDist(ProbDistI):
     """
     A probability distribution that assigns equal probability to each
@@ -589,7 +588,7 @@ class UniformProbDist(ProbDistI):
         return "<UniformProbDist with %d samples>" % len(self._sampleset)
 
 
-@compat.python_2_unicode_compatible
+
 class RandomProbDist(ProbDistI):
     """
     Generates a random probability distribution whereby each sample
@@ -642,7 +641,7 @@ class RandomProbDist(ProbDistI):
         return "<RandomUniformProbDist with %d samples>" % len(self._probs)
 
 
-@compat.python_2_unicode_compatible
+
 class DictionaryProbDist(ProbDistI):
     """
     A probability distribution whose probabilities are directly
@@ -721,7 +720,7 @@ class DictionaryProbDist(ProbDistI):
         return "<ProbDist with %d samples>" % len(self._prob_dict)
 
 
-@compat.python_2_unicode_compatible
+
 class MLEProbDist(ProbDistI):
     """
     The maximum likelihood estimate for the probability distribution
@@ -768,7 +767,7 @@ class MLEProbDist(ProbDistI):
         return "<MLEProbDist based on %d samples>" % self._freqdist.N()
 
 
-@compat.python_2_unicode_compatible
+
 class LidstoneProbDist(ProbDistI):
     """
     The Lidstone estimate for the probability distribution of the
@@ -869,7 +868,7 @@ class LidstoneProbDist(ProbDistI):
         return "<LidstoneProbDist based on %d samples>" % self._freqdist.N()
 
 
-@compat.python_2_unicode_compatible
+
 class LaplaceProbDist(LidstoneProbDist):
     """
     The Laplace estimate for the probability distribution of the
@@ -906,7 +905,7 @@ class LaplaceProbDist(LidstoneProbDist):
         return "<LaplaceProbDist based on %d samples>" % self._freqdist.N()
 
 
-@compat.python_2_unicode_compatible
+
 class ELEProbDist(LidstoneProbDist):
     """
     The expected likelihood estimate for the probability distribution
@@ -944,7 +943,7 @@ class ELEProbDist(LidstoneProbDist):
         return "<ELEProbDist based on %d samples>" % self._freqdist.N()
 
 
-@compat.python_2_unicode_compatible
+
 class HeldoutProbDist(ProbDistI):
     """
     The heldout estimate for the probability distribution of the
@@ -1109,7 +1108,7 @@ class HeldoutProbDist(ProbDistI):
         return s % (self._base_fdist.N(), self._heldout_fdist.N())
 
 
-@compat.python_2_unicode_compatible
+
 class CrossValidationProbDist(ProbDistI):
     """
     The cross-validation estimate for the probability distribution of
@@ -1180,7 +1179,7 @@ class CrossValidationProbDist(ProbDistI):
         return "<CrossValidationProbDist: %d-way>" % len(self._freqdists)
 
 
-@compat.python_2_unicode_compatible
+
 class WittenBellProbDist(ProbDistI):
     """
     The Witten-Bell estimate of a probability distribution. This distribution
@@ -1324,7 +1323,7 @@ class WittenBellProbDist(ProbDistI):
 ##//////////////////////////////////////////////////////
 
 
-@compat.python_2_unicode_compatible
+
 class SimpleGoodTuringProbDist(ProbDistI):
     """
     SimpleGoodTuring ProbDist approximates from frequency to frequency of
@@ -1660,7 +1659,7 @@ class MutableProbDist(ProbDistI):
 # where possible.
 
 
-@compat.python_2_unicode_compatible
+
 class KneserNeyProbDist(ProbDistI):
     """
     Kneser-Ney estimate of a probability distribution. This is a version of
@@ -1799,7 +1798,7 @@ def entropy(pdist):
 ##//////////////////////////////////////////////////////
 
 
-@compat.python_2_unicode_compatible
+
 class ConditionalFreqDist(defaultdict):
     """
     A collection of frequency distributions for a single experiment
@@ -2090,7 +2089,7 @@ class ConditionalFreqDist(defaultdict):
         return "<ConditionalFreqDist with %d conditions>" % len(self)
 
 
-@compat.python_2_unicode_compatible
+
 @add_metaclass(ABCMeta)
 class ConditionalProbDistI(dict):
     """

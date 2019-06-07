@@ -33,7 +33,6 @@ from six.moves.urllib.request import (
 
 from nltk.internals import slice_bounds, raise_unorderable_types
 from nltk.collections import *
-from nltk.compat import python_2_unicode_compatible
 
 
 ######################################################################

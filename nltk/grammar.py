@@ -74,7 +74,7 @@ from functools import total_ordering
 from six import string_types
 
 from nltk.util import transitive_closure, invert_graph
-from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.compat import unicode_repr
 from nltk.internals import raise_unorderable_types
 
 from nltk.probability import ImmutableProbabilisticMixIn
@@ -87,7 +87,6 @@ from nltk.featstruct import FeatStruct, FeatDict, FeatStructReader, SLASH, TYPE
 
 
 @total_ordering
-@python_2_unicode_compatible
 class Nonterminal(object):
     """
     A non-terminal symbol for a context free grammar.  ``Nonterminal``
@@ -258,7 +257,7 @@ def is_terminal(item):
 
 
 @total_ordering
-@python_2_unicode_compatible
+
 class Production(object):
     """
     A grammar production.  Each production maps a single symbol
@@ -383,7 +382,7 @@ class Production(object):
         return self._hash
 
 
-@python_2_unicode_compatible
+
 class DependencyProduction(Production):
     """
     A dependency grammar production.  Each production maps a single
@@ -402,7 +401,7 @@ class DependencyProduction(Production):
         return result
 
 
-@python_2_unicode_compatible
+
 class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
     """
     A probabilistic context free grammar production.
@@ -453,7 +452,7 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
 #################################################################
 
 
-@python_2_unicode_compatible
+
 class CFG(object):
     """
     A context-free grammar.  A grammar consists of a start state and
@@ -1024,7 +1023,7 @@ class FeatureGrammar(CFG):
 
 
 @total_ordering
-@python_2_unicode_compatible
+
 class FeatureValueType(object):
     """
     A helper class for ``FeatureGrammars``, designed to be different
@@ -1054,7 +1053,7 @@ class FeatureValueType(object):
         return self._hash
 
 
-@python_2_unicode_compatible
+
 class DependencyGrammar(object):
     """
     A dependency grammar.  A DependencyGrammar consists of a set of
@@ -1149,7 +1148,7 @@ class DependencyGrammar(object):
         return "Dependency grammar with %d productions" % len(self._productions)
 
 
-@python_2_unicode_compatible
+
 class ProbabilisticDependencyGrammar(object):
     """
 

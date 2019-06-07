@@ -905,7 +905,7 @@ def import_from_stdlib(module):
 ##########################################################################
 
 
-@compat.python_2_unicode_compatible
+
 class ElementWrapper(object):
     """
     A wrapper around ElementTree Element objects whose main purpose is

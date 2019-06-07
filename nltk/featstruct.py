@@ -103,7 +103,7 @@ from nltk.sem.logic import (
     LogicParser,
     LogicalExpressionException,
 )
-from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.compat import unicode_repr
 
 
 ######################################################################
@@ -599,7 +599,7 @@ def _check_frozen(method, indent=""):
 ######################################################################
 
 
-@python_2_unicode_compatible
+
 class FeatDict(FeatStruct, dict):
     """
     A feature structure that acts like a Python dictionary.  I.e., a
@@ -1336,7 +1336,7 @@ def _remove_variables(fstruct, fs_class, visited):
 ######################################################################
 
 
-@python_2_unicode_compatible
+
 class _UnificationFailure(object):
     def __repr__(self):
         return "nltk.featstruct.UnificationFailure"
@@ -1895,7 +1895,7 @@ class SubstituteBindingsSequence(SubstituteBindingsI):
             return bindings.get(v, v)
 
 
-@python_2_unicode_compatible
+
 class FeatureValueTuple(SubstituteBindingsSequence, tuple):
     """
     A base feature value that is a tuple of other base feature values.
@@ -1910,7 +1910,7 @@ class FeatureValueTuple(SubstituteBindingsSequence, tuple):
         return "(%s)" % ", ".join("%s" % (b,) for b in self)
 
 
-@python_2_unicode_compatible
+
 class FeatureValueSet(SubstituteBindingsSequence, frozenset):
     """
     A base feature value that is a set of other base feature values.
@@ -1929,7 +1929,7 @@ class FeatureValueSet(SubstituteBindingsSequence, frozenset):
     __str__ = __repr__
 
 
-@python_2_unicode_compatible
+
 class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
     """
     A base feature value that represents the union of two or more
@@ -1960,7 +1960,7 @@ class FeatureValueUnion(SubstituteBindingsSequence, frozenset):
         return "{%s}" % "+".join(sorted("%s" % (b,) for b in self))
 
 
-@python_2_unicode_compatible
+
 class FeatureValueConcat(SubstituteBindingsSequence, tuple):
     """
     A base feature value that represents the concatenation of two or
@@ -2009,7 +2009,7 @@ def _flatten(lst, cls):
 
 
 @total_ordering
-@python_2_unicode_compatible
+
 class Feature(object):
     """
     A feature identifier that's specialized to put additional

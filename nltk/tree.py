@@ -23,7 +23,7 @@ from six import string_types, add_metaclass
 from nltk.grammar import Production, Nonterminal
 from nltk.probability import ProbabilisticMixIn
 from nltk.util import slice_bounds
-from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.compat import unicode_repr
 from nltk.internals import raise_unorderable_types
 
 # TODO: add LabelledTree (can be used for dependency trees)
@@ -33,7 +33,7 @@ from nltk.internals import raise_unorderable_types
 ######################################################################
 
 
-@python_2_unicode_compatible
+
 class Tree(list):
     """
     A Tree represents a hierarchical grouping of leaves and subtrees.
@@ -1554,7 +1554,7 @@ class ImmutableMultiParentedTree(ImmutableTree, MultiParentedTree):
 ######################################################################
 
 
-@python_2_unicode_compatible
+
 class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def __init__(self, node, children=None, **prob_kwargs):
         Tree.__init__(self, node, children)
@@ -1607,7 +1607,7 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
             return self.__class__.__name__ < other.__class__.__name__
 
 
-@python_2_unicode_compatible
+
 class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def __init__(self, node, children=None, **prob_kwargs):
         ImmutableTree.__init__(self, node, children)

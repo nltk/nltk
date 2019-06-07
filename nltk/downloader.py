@@ -189,7 +189,6 @@ from six.moves.urllib.request import urlopen
 from six.moves.urllib.error import HTTPError, URLError
 
 import nltk
-from nltk.compat import python_2_unicode_compatible
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
@@ -198,8 +197,6 @@ from nltk.compat import python_2_unicode_compatible
 # Directory entry objects (from the data server's index file)
 ######################################################################
 
-
-@python_2_unicode_compatible
 class Package(object):
     """
     A directory entry for a downloadable package.  These entries are
@@ -293,7 +290,6 @@ class Package(object):
         return "<Package %s>" % self.id
 
 
-@python_2_unicode_compatible
 class Collection(object):
     """
     A directory entry for a collection of downloadable packages.
