@@ -9,7 +9,6 @@
 """
 Module for a resolution-based First Order theorem prover.
 """
-from __future__ import print_function, unicode_literals
 
 import operator
 from collections import defaultdict
@@ -40,7 +39,7 @@ class ProverParseError(Exception):
 
 
 class ResolutionProver(Prover):
-    ANSWER_KEY = 'ANSWER'
+    ANSWER_KEY = "ANSWER"
     _assume_false = True
 
     def _prove(self, goal=None, assumptions=None, verbose=False):
@@ -65,7 +64,7 @@ class ResolutionProver(Prover):
                 print(ResolutionProverCommand._decorate_clauses(clauses))
         except RuntimeError as e:
             if self._assume_false and str(e).startswith(
-                'maximum recursion depth exceeded'
+                "maximum recursion depth exceeded"
             ):
                 result = False
                 clauses = []
@@ -159,19 +158,19 @@ class ResolutionProverCommand(BaseProverCommand):
         """
         Decorate the proof output.
         """
-        out = ''
+        out = ""
         max_clause_len = max([len(str(clause)) for clause in clauses])
         max_seq_len = len(str(len(clauses)))
         for i in range(len(clauses)):
-            parents = 'A'
-            taut = ''
+            parents = "A"
+            taut = ""
             if clauses[i].is_tautology():
-                taut = 'Tautology'
+                taut = "Tautology"
             if clauses[i]._parents:
                 parents = str(clauses[i]._parents)
-            parents = ' ' * (max_clause_len - len(str(clauses[i])) + 1) + parents
-            seq = ' ' * (max_seq_len - len(str(i + 1))) + str(i + 1)
-            out += '[%s] %s %s %s\n' % (seq, clauses[i], parents, taut)
+            parents = " " * (max_clause_len - len(str(clauses[i])) + 1) + parents
+            seq = " " * (max_seq_len - len(str(i + 1))) + str(i + 1)
+            out += "[%s] %s %s %s\n" % (seq, clauses[i], parents, taut)
         return out
 
 
@@ -336,7 +335,7 @@ class Clause(list):
         return Clause([atom.substitute_bindings(bindings) for atom in self])
 
     def __str__(self):
-        return '{' + ', '.join("%s" % item for item in self) + '}'
+        return "{" + ", ".join("%s" % item for item in self) + "}"
 
     def __repr__(self):
         return "%s" % self
@@ -346,7 +345,7 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
     """
     This method facilitates movement through the terms of 'self'
     """
-    debug.line('unify(%s,%s) %s' % (first, second, bindings))
+    debug.line("unify(%s,%s) %s" % (first, second, bindings))
 
     if not len(first) or not len(second):  # if no more recursions can be performed
         return finalize_method(first, second, bindings, used, skipped, debug)
@@ -390,7 +389,7 @@ def _iterate_second(first, second, bindings, used, skipped, finalize_method, deb
     """
     This method facilitates movement through the terms of 'other'
     """
-    debug.line('unify(%s,%s) %s' % (first, second, bindings))
+    debug.line("unify(%s,%s) %s" % (first, second, bindings))
 
     if not len(first) or not len(second):  # if no more recursions can be performed
         return finalize_method(first, second, bindings, used, skipped, debug)
@@ -474,10 +473,10 @@ def _unify_terms(a, b, bindings=None, used=None):
 def _complete_unify_path(first, second, bindings, used, skipped, debug):
     if used[0] or used[1]:  # if bindings were made along the path
         newclause = Clause(skipped[0] + skipped[1] + first + second)
-        debug.line('  -> New Clause: %s' % newclause)
+        debug.line("  -> New Clause: %s" % newclause)
         return [newclause.substitute_bindings(bindings)]
     else:  # no bindings made means no unification occurred.  so no result
-        debug.line('  -> End')
+        debug.line("  -> End")
         return []
 
 
@@ -575,11 +574,11 @@ class BindingDict(object):
                 self.d[binding.variable] = binding2
             else:
                 raise BindingException(
-                    'Variable %s already bound to another ' 'value' % (variable)
+                    "Variable %s already bound to another " "value" % (variable)
                 )
         else:
             raise BindingException(
-                'Variable %s already bound to another ' 'value' % (variable)
+                "Variable %s already bound to another " "value" % (variable)
             )
 
     def __getitem__(self, variable):
@@ -621,8 +620,8 @@ class BindingDict(object):
         return len(self.d)
 
     def __str__(self):
-        data_str = ', '.join('%s: %s' % (v, self.d[v]) for v in sorted(self.d.keys()))
-        return '{' + data_str + '}'
+        data_str = ", ".join("%s: %s" % (v, self.d[v]) for v in sorted(self.d.keys()))
+        return "{" + data_str + "}"
 
     def __repr__(self):
         return "%s" % self
@@ -685,70 +684,70 @@ class DebugObject(object):
 
     def line(self, line):
         if self.enabled:
-            print('    ' * self.indent + line)
+            print("    " * self.indent + line)
 
 
 def testResolutionProver():
-    resolution_test(r'man(x)')
-    resolution_test(r'(man(x) -> man(x))')
-    resolution_test(r'(man(x) -> --man(x))')
-    resolution_test(r'-(man(x) and -man(x))')
-    resolution_test(r'(man(x) or -man(x))')
-    resolution_test(r'(man(x) -> man(x))')
-    resolution_test(r'-(man(x) and -man(x))')
-    resolution_test(r'(man(x) or -man(x))')
-    resolution_test(r'(man(x) -> man(x))')
-    resolution_test(r'(man(x) iff man(x))')
-    resolution_test(r'-(man(x) iff -man(x))')
-    resolution_test('all x.man(x)')
-    resolution_test('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')
-    resolution_test('some x.all y.sees(x,y)')
+    resolution_test(r"man(x)")
+    resolution_test(r"(man(x) -> man(x))")
+    resolution_test(r"(man(x) -> --man(x))")
+    resolution_test(r"-(man(x) and -man(x))")
+    resolution_test(r"(man(x) or -man(x))")
+    resolution_test(r"(man(x) -> man(x))")
+    resolution_test(r"-(man(x) and -man(x))")
+    resolution_test(r"(man(x) or -man(x))")
+    resolution_test(r"(man(x) -> man(x))")
+    resolution_test(r"(man(x) iff man(x))")
+    resolution_test(r"-(man(x) iff -man(x))")
+    resolution_test("all x.man(x)")
+    resolution_test("-all x.some y.F(x,y) & some x.all y.(-F(x,y))")
+    resolution_test("some x.all y.sees(x,y)")
 
-    p1 = Expression.fromstring(r'all x.(man(x) -> mortal(x))')
-    p2 = Expression.fromstring(r'man(Socrates)')
-    c = Expression.fromstring(r'mortal(Socrates)')
-    print('%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1, p2])))
+    p1 = Expression.fromstring(r"all x.(man(x) -> mortal(x))")
+    p2 = Expression.fromstring(r"man(Socrates)")
+    c = Expression.fromstring(r"mortal(Socrates)")
+    print("%s, %s |- %s: %s" % (p1, p2, c, ResolutionProver().prove(c, [p1, p2])))
 
-    p1 = Expression.fromstring(r'all x.(man(x) -> walks(x))')
-    p2 = Expression.fromstring(r'man(John)')
-    c = Expression.fromstring(r'some y.walks(y)')
-    print('%s, %s |- %s: %s' % (p1, p2, c, ResolutionProver().prove(c, [p1, p2])))
+    p1 = Expression.fromstring(r"all x.(man(x) -> walks(x))")
+    p2 = Expression.fromstring(r"man(John)")
+    c = Expression.fromstring(r"some y.walks(y)")
+    print("%s, %s |- %s: %s" % (p1, p2, c, ResolutionProver().prove(c, [p1, p2])))
 
-    p = Expression.fromstring(r'some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))')
-    c = Expression.fromstring(r'some e0.walk(e0,mary)')
-    print('%s |- %s: %s' % (p, c, ResolutionProver().prove(c, [p])))
+    p = Expression.fromstring(r"some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))")
+    c = Expression.fromstring(r"some e0.walk(e0,mary)")
+    print("%s |- %s: %s" % (p, c, ResolutionProver().prove(c, [p])))
 
 
 def resolution_test(e):
     f = Expression.fromstring(e)
     t = ResolutionProver().prove(f)
-    print('|- %s: %s' % (f, t))
+    print("|- %s: %s" % (f, t))
 
 
 def test_clausify():
     lexpr = Expression.fromstring
 
-    print(clausify(lexpr('P(x) | Q(x)')))
-    print(clausify(lexpr('(P(x) & Q(x)) | R(x)')))
-    print(clausify(lexpr('P(x) | (Q(x) & R(x))')))
-    print(clausify(lexpr('(P(x) & Q(x)) | (R(x) & S(x))')))
+    print(clausify(lexpr("P(x) | Q(x)")))
+    print(clausify(lexpr("(P(x) & Q(x)) | R(x)")))
+    print(clausify(lexpr("P(x) | (Q(x) & R(x))")))
+    print(clausify(lexpr("(P(x) & Q(x)) | (R(x) & S(x))")))
 
-    print(clausify(lexpr('P(x) | Q(x) | R(x)')))
-    print(clausify(lexpr('P(x) | (Q(x) & R(x)) | S(x)')))
+    print(clausify(lexpr("P(x) | Q(x) | R(x)")))
+    print(clausify(lexpr("P(x) | (Q(x) & R(x)) | S(x)")))
 
-    print(clausify(lexpr('exists x.P(x) | Q(x)')))
+    print(clausify(lexpr("exists x.P(x) | Q(x)")))
 
-    print(clausify(lexpr('-(-P(x) & Q(x))')))
-    print(clausify(lexpr('P(x) <-> Q(x)')))
-    print(clausify(lexpr('-(P(x) <-> Q(x))')))
-    print(clausify(lexpr('-(all x.P(x))')))
-    print(clausify(lexpr('-(some x.P(x))')))
+    print(clausify(lexpr("-(-P(x) & Q(x))")))
+    print(clausify(lexpr("P(x) <-> Q(x)")))
+    print(clausify(lexpr("-(P(x) <-> Q(x))")))
+    print(clausify(lexpr("-(all x.P(x))")))
+    print(clausify(lexpr("-(some x.P(x))")))
 
-    print(clausify(lexpr('some x.P(x)')))
-    print(clausify(lexpr('some x.all y.P(x,y)')))
-    print(clausify(lexpr('all y.some x.P(x,y)')))
-    print(clausify(lexpr('all z.all y.some x.P(x,y,z)')))
-    print(clausify(lexpr('all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))')))
+    print(clausify(lexpr("some x.P(x)")))
+    print(clausify(lexpr("some x.all y.P(x,y)")))
+    print(clausify(lexpr("all y.some x.P(x,y)")))
+    print(clausify(lexpr("all z.all y.some x.P(x,y,z)")))
+    print(clausify(lexpr("all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))")))
 
 
 def demo():
@@ -757,9 +756,9 @@ def demo():
     testResolutionProver()
     print()
 
-    p = Expression.fromstring('man(x)')
+    p = Expression.fromstring("man(x)")
     print(ResolutionProverCommand(p, [p]).prove())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

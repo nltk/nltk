@@ -9,7 +9,6 @@
 A word stemmer based on the Lancaster (Paice/Husk) stemming algorithm.
 Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
-from __future__ import unicode_literals
 import re
 
 from nltk.stem.api import StemmerI
@@ -270,7 +269,7 @@ class LancasterStemmer(StemmerI):
                                         word, remove_total, append_string
                                     )
                                     rule_was_applied = True
-                                    if cont_flag == '.':
+                                    if cont_flag == ".":
                                         proceed = False
                                     break
                             elif self.__isAcceptable(word, remove_total):
@@ -278,7 +277,7 @@ class LancasterStemmer(StemmerI):
                                     word, remove_total, append_string
                                 )
                                 rule_was_applied = True
-                                if cont_flag == '.':
+                                if cont_flag == ".":
                                     proceed = False
                                 break
                 # If no rules apply, the word doesn't need any more stemming
@@ -349,4 +348,4 @@ class LancasterStemmer(StemmerI):
         return word
 
     def __repr__(self):
-        return '<LancasterStemmer>'
+        return "<LancasterStemmer>"

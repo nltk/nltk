@@ -7,8 +7,6 @@
 # For license information, see LICENSE.TXT
 """Language Model Vocabulary"""
 
-from __future__ import unicode_literals
-
 import sys
 from collections import Counter, Iterable
 from itertools import chain

@@ -68,7 +68,6 @@ of EM.
 For more information, please consult the source code for this module,
 which includes extensive demonstration code.
 """
-from __future__ import print_function, unicode_literals, division
 
 import re
 import itertools
@@ -185,15 +184,15 @@ class HiddenMarkovModelTagger(TaggerI):
         )
 
         if test_sequence:
-            hmm.test(test_sequence, verbose=kwargs.get('verbose', False))
+            hmm.test(test_sequence, verbose=kwargs.get("verbose", False))
 
         if unlabeled_sequence:
-            max_iterations = kwargs.get('max_iterations', 5)
+            max_iterations = kwargs.get("max_iterations", 5)
             hmm = trainer.train_unsupervised(
                 unlabeled_sequence, model=hmm, max_iterations=max_iterations
             )
             if test_sequence:
-                hmm.test(test_sequence, verbose=kwargs.get('verbose', False))
+                hmm.test(test_sequence, verbose=kwargs.get("verbose", False))
 
         return hmm
 
@@ -524,7 +523,7 @@ class HiddenMarkovModelTagger(TaggerI):
             if cum_p <= p <= cum_p + add_p:
                 return sample
             cum_p += add_p
-        raise Exception('Invalid probability distribution - ' 'does not sum to one')
+        raise Exception("Invalid probability distribution - " "does not sum to one")
 
     def entropy(self, unlabeled_sequence):
         """
@@ -817,33 +816,33 @@ class HiddenMarkovModelTagger(TaggerI):
         if verbose:
             for test_sent, predicted_sent in zip(test_sequence, predicted_sequence):
                 print(
-                    'Test:',
-                    ' '.join('%s/%s' % (token, tag) for (token, tag) in test_sent),
+                    "Test:",
+                    " ".join("%s/%s" % (token, tag) for (token, tag) in test_sent),
                 )
                 print()
-                print('Untagged:', ' '.join("%s" % token for (token, tag) in test_sent))
+                print("Untagged:", " ".join("%s" % token for (token, tag) in test_sent))
                 print()
                 print(
-                    'HMM-tagged:',
-                    ' '.join('%s/%s' % (token, tag) for (token, tag) in predicted_sent),
+                    "HMM-tagged:",
+                    " ".join("%s/%s" % (token, tag) for (token, tag) in predicted_sent),
                 )
                 print()
                 print(
-                    'Entropy:',
+                    "Entropy:",
                     self.entropy([(token, None) for (token, tag) in predicted_sent]),
                 )
                 print()
-                print('-' * 60)
+                print("-" * 60)
 
         test_tags = flatten(map(tags, test_sequence))
         predicted_tags = flatten(map(tags, predicted_sequence))
 
         acc = accuracy(test_tags, predicted_tags)
         count = sum(len(sent) for sent in test_sequence)
-        print('accuracy over %d tokens: %.2f' % (count, acc * 100))
+        print("accuracy over %d tokens: %.2f" % (count, acc * 100))
 
     def __repr__(self):
-        return '<HiddenMarkovModelTagger %d states and %d output symbols>' % (
+        return "<HiddenMarkovModelTagger %d states and %d output symbols>" % (
             len(self._states),
             len(self._symbols),
         )
@@ -892,7 +891,7 @@ class HiddenMarkovModelTrainer(object):
             model = self.train_supervised(labeled_sequences, **kwargs)
         if unlabeled_sequences:
             if model:
-                kwargs['model'] = model
+                kwargs["model"] = model
             model = self.train_unsupervised(unlabeled_sequences, **kwargs)
         return model
 
@@ -968,7 +967,7 @@ class HiddenMarkovModelTrainer(object):
 
         # create a uniform HMM, which will be iteratively refined, unless
         # given an existing model
-        model = kwargs.get('model')
+        model = kwargs.get("model")
         if not model:
             priors = RandomProbDist(self._states)
             transitions = DictionaryConditionalProbDist(
@@ -1012,8 +1011,8 @@ class HiddenMarkovModelTrainer(object):
         converged = False
         last_logprob = None
         iteration = 0
-        max_iterations = kwargs.get('max_iterations', 1000)
-        epsilon = kwargs.get('convergence_logprob', 1e-6)
+        max_iterations = kwargs.get("max_iterations", 1000)
+        epsilon = kwargs.get("convergence_logprob", 1e-6)
 
         while not converged and iteration < max_iterations:
             A_numer = _ninf_array((N, N))
@@ -1078,7 +1077,7 @@ class HiddenMarkovModelTrainer(object):
             if iteration > 0 and abs(logprob - last_logprob) < epsilon:
                 converged = True
 
-            print('iteration', iteration, 'logprob', logprob)
+            print("iteration", iteration, "logprob", logprob)
             iteration += 1
             last_logprob = logprob
 
@@ -1193,8 +1192,8 @@ def _market_hmm_example():
     """
     Return an example HMM (described at page 381, Huang et al)
     """
-    states = ['bull', 'bear', 'static']
-    symbols = ['up', 'down', 'unchanged']
+    states = ["bull", "bear", "static"]
+    symbols = ["up", "down", "unchanged"]
     A = np.array([[0.6, 0.2, 0.2], [0.5, 0.3, 0.2], [0.4, 0.1, 0.5]], np.float64)
     B = np.array([[0.7, 0.1, 0.2], [0.1, 0.6, 0.3], [0.3, 0.3, 0.4]], np.float64)
     pi = np.array([0.5, 0.2, 0.3], np.float64)
@@ -1212,34 +1211,34 @@ def demo():
 
     model, states, symbols = _market_hmm_example()
 
-    print('Testing', model)
+    print("Testing", model)
 
     for test in [
-        ['up', 'up'],
-        ['up', 'down', 'up'],
-        ['down'] * 5,
-        ['unchanged'] * 5 + ['up'],
+        ["up", "up"],
+        ["up", "down", "up"],
+        ["down"] * 5,
+        ["unchanged"] * 5 + ["up"],
     ]:
 
         sequence = [(t, None) for t in test]
 
-        print('Testing with state sequence', test)
-        print('probability =', model.probability(sequence))
-        print('tagging =    ', model.tag([word for (word, tag) in sequence]))
-        print('p(tagged) =  ', model.probability(sequence))
-        print('H =          ', model.entropy(sequence))
-        print('H_exh =      ', model._exhaustive_entropy(sequence))
-        print('H(point) =   ', model.point_entropy(sequence))
-        print('H_exh(point)=', model._exhaustive_point_entropy(sequence))
+        print("Testing with state sequence", test)
+        print("probability =", model.probability(sequence))
+        print("tagging =    ", model.tag([word for (word, tag) in sequence]))
+        print("p(tagged) =  ", model.probability(sequence))
+        print("H =          ", model.entropy(sequence))
+        print("H_exh =      ", model._exhaustive_entropy(sequence))
+        print("H(point) =   ", model.point_entropy(sequence))
+        print("H_exh(point)=", model._exhaustive_point_entropy(sequence))
         print()
 
 
 def load_pos(num_sents):
     from nltk.corpus import brown
 
-    sentences = brown.tagged_sents(categories='news')[:num_sents]
+    sentences = brown.tagged_sents(categories="news")[:num_sents]
 
-    tag_re = re.compile(r'[*]|--|[^+*-]+')
+    tag_re = re.compile(r"[*]|--|[^+*-]+")
     tag_set = set()
     symbols = set()
 
@@ -1265,7 +1264,7 @@ def demo_pos():
     print("HMM POS tagging demo")
     print()
 
-    print('Training HMM...')
+    print("Training HMM...")
     labelled_sequences, tag_set, symbols = load_pos(20000)
     trainer = HiddenMarkovModelTrainer(tag_set, symbols)
     hmm = trainer.train_supervised(
@@ -1273,7 +1272,7 @@ def demo_pos():
         estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins),
     )
 
-    print('Testing...')
+    print("Testing...")
     hmm.test(labelled_sequences[:10], verbose=True)
 
 
@@ -1293,7 +1292,7 @@ def demo_pos_bw(
     print("Baum-Welch demo for POS tagging")
     print()
 
-    print('Training HMM (supervised, %d sentences)...' % supervised)
+    print("Training HMM (supervised, %d sentences)..." % supervised)
 
     sentences, tag_set, symbols = load_pos(test + supervised + unsupervised)
 
@@ -1310,7 +1309,7 @@ def demo_pos_bw(
 
     hmm.test(sentences[:test], verbose=verbose)
 
-    print('Training (unsupervised, %d sentences)...' % unsupervised)
+    print("Training (unsupervised, %d sentences)..." % unsupervised)
     # it's rather slow - so only use 10 samples by default
     unlabeled = _untag(sentences[test + supervised :])
     hmm = trainer.train_unsupervised(

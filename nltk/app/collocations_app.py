@@ -46,38 +46,38 @@ from nltk.util import in_idle
 from nltk.probability import FreqDist
 
 
-CORPUS_LOADED_EVENT = '<<CL_EVENT>>'
-ERROR_LOADING_CORPUS_EVENT = '<<ELC_EVENT>>'
+CORPUS_LOADED_EVENT = "<<CL_EVENT>>"
+ERROR_LOADING_CORPUS_EVENT = "<<ELC_EVENT>>"
 POLL_INTERVAL = 100
 
-_DEFAULT = 'English: Brown Corpus (Humor)'
+_DEFAULT = "English: Brown Corpus (Humor)"
 _CORPORA = {
-    'Catalan: CESS-CAT Corpus': lambda: cess_cat.words(),
-    'English: Brown Corpus': lambda: brown.words(),
-    'English: Brown Corpus (Press)': lambda: brown.words(
-        categories=['news', 'editorial', 'reviews']
+    "Catalan: CESS-CAT Corpus": lambda: cess_cat.words(),
+    "English: Brown Corpus": lambda: brown.words(),
+    "English: Brown Corpus (Press)": lambda: brown.words(
+        categories=["news", "editorial", "reviews"]
     ),
-    'English: Brown Corpus (Religion)': lambda: brown.words(categories='religion'),
-    'English: Brown Corpus (Learned)': lambda: brown.words(categories='learned'),
-    'English: Brown Corpus (Science Fiction)': lambda: brown.words(
-        categories='science_fiction'
+    "English: Brown Corpus (Religion)": lambda: brown.words(categories="religion"),
+    "English: Brown Corpus (Learned)": lambda: brown.words(categories="learned"),
+    "English: Brown Corpus (Science Fiction)": lambda: brown.words(
+        categories="science_fiction"
     ),
-    'English: Brown Corpus (Romance)': lambda: brown.words(categories='romance'),
-    'English: Brown Corpus (Humor)': lambda: brown.words(categories='humor'),
-    'English: NPS Chat Corpus': lambda: nps_chat.words(),
-    'English: Wall Street Journal Corpus': lambda: treebank.words(),
-    'Chinese: Sinica Corpus': lambda: sinica_treebank.words(),
-    'Dutch: Alpino Corpus': lambda: alpino.words(),
-    'Hindi: Indian Languages Corpus': lambda: indian.words(files='hindi.pos'),
-    'Portuguese: Floresta Corpus (Portugal)': lambda: floresta.words(),
-    'Portuguese: MAC-MORPHO Corpus (Brazil)': lambda: mac_morpho.words(),
-    'Portuguese: Machado Corpus (Brazil)': lambda: machado.words(),
-    'Spanish: CESS-ESP Corpus': lambda: cess_esp.words(),
+    "English: Brown Corpus (Romance)": lambda: brown.words(categories="romance"),
+    "English: Brown Corpus (Humor)": lambda: brown.words(categories="humor"),
+    "English: NPS Chat Corpus": lambda: nps_chat.words(),
+    "English: Wall Street Journal Corpus": lambda: treebank.words(),
+    "Chinese: Sinica Corpus": lambda: sinica_treebank.words(),
+    "Dutch: Alpino Corpus": lambda: alpino.words(),
+    "Hindi: Indian Languages Corpus": lambda: indian.words(files="hindi.pos"),
+    "Portuguese: Floresta Corpus (Portugal)": lambda: floresta.words(),
+    "Portuguese: MAC-MORPHO Corpus (Brazil)": lambda: mac_morpho.words(),
+    "Portuguese: Machado Corpus (Brazil)": lambda: machado.words(),
+    "Spanish: CESS-ESP Corpus": lambda: cess_esp.words(),
 }
 
 
 class CollocationsView:
-    _BACKGROUND_COLOUR = '#FFF'  # white
+    _BACKGROUND_COLOUR = "#FFF"  # white
 
     def __init__(self):
         self.queue = q.Queue()
@@ -90,10 +90,10 @@ class CollocationsView:
         self.after = self.top.after(POLL_INTERVAL, self._poll)
 
     def _init_top(self, top):
-        top.geometry('550x650+50+50')
-        top.title('NLTK Collocations List')
-        top.bind('<Control-q>', self.destroy)
-        top.protocol('WM_DELETE_WINDOW', self.destroy)
+        top.geometry("550x650+50+50")
+        top.title("NLTK Collocations List")
+        top.bind("<Control-q>", self.destroy)
+        top.protocol("WM_DELETE_WINDOW", self.destroy)
         top.minsize(550, 650)
 
     def _init_widgets(self, parent):
@@ -104,7 +104,7 @@ class CollocationsView:
         self._init_results_box(self.main_frame)
         self._init_paging(self.main_frame)
         self._init_status(self.main_frame)
-        self.main_frame.pack(fill='both', expand=True)
+        self.main_frame.pack(fill="both", expand=True)
 
     def _init_corpus_select(self, parent):
         innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
@@ -113,12 +113,12 @@ class CollocationsView:
         Label(
             innerframe,
             justify=LEFT,
-            text=' Corpus: ',
+            text=" Corpus: ",
             background=self._BACKGROUND_COLOUR,
             padx=2,
             pady=1,
             border=0,
-        ).pack(side='left')
+        ).pack(side="left")
 
         other_corpora = list(self.model.CORPORA.keys()).remove(
             self.model.DEFAULT_CORPUS
@@ -130,10 +130,10 @@ class CollocationsView:
             command=self.corpus_selected,
             *self.model.non_default_corpora()
         )
-        om['borderwidth'] = 0
-        om['highlightthickness'] = 1
-        om.pack(side='left')
-        innerframe.pack(side='top', fill='x', anchor='n')
+        om["borderwidth"] = 0
+        om["highlightthickness"] = 1
+        om.pack(side="left")
+        innerframe.pack(side="top", fill="x", anchor="n")
 
     def _init_status(self, parent):
         self.status = Label(
@@ -145,7 +145,7 @@ class CollocationsView:
             padx=1,
             pady=0,
         )
-        self.status.pack(side='top', anchor='sw')
+        self.status.pack(side="top", anchor="sw")
 
     def _init_menubar(self):
         self._result_size = IntVar(self.top)
@@ -153,37 +153,37 @@ class CollocationsView:
 
         filemenu = Menu(menubar, tearoff=0, borderwidth=0)
         filemenu.add_command(
-            label='Exit', underline=1, command=self.destroy, accelerator='Ctrl-q'
+            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-q"
         )
-        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+        menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
         editmenu = Menu(menubar, tearoff=0)
         rescntmenu = Menu(editmenu, tearoff=0)
         rescntmenu.add_radiobutton(
-            label='20',
+            label="20",
             variable=self._result_size,
             underline=0,
             value=20,
             command=self.set_result_size,
         )
         rescntmenu.add_radiobutton(
-            label='50',
+            label="50",
             variable=self._result_size,
             underline=0,
             value=50,
             command=self.set_result_size,
         )
         rescntmenu.add_radiobutton(
-            label='100',
+            label="100",
             variable=self._result_size,
             underline=0,
             value=100,
             command=self.set_result_size,
         )
         rescntmenu.invoke(1)
-        editmenu.add_cascade(label='Result Count', underline=0, menu=rescntmenu)
+        editmenu.add_cascade(label="Result Count", underline=0, menu=rescntmenu)
 
-        menubar.add_cascade(label='Edit', underline=0, menu=editmenu)
+        menubar.add_cascade(label="Edit", underline=0, menu=editmenu)
         self.top.config(menu=menubar)
 
     def set_result_size(self, **kwargs):
@@ -194,55 +194,55 @@ class CollocationsView:
         i1 = Frame(innerframe)
         i2 = Frame(innerframe)
         vscrollbar = Scrollbar(i1, borderwidth=1)
-        hscrollbar = Scrollbar(i2, borderwidth=1, orient='horiz')
+        hscrollbar = Scrollbar(i2, borderwidth=1, orient="horiz")
         self.results_box = Text(
             i1,
-            font=Font(family='courier', size='16'),
-            state='disabled',
+            font=Font(family="courier", size="16"),
+            state="disabled",
             borderwidth=1,
             yscrollcommand=vscrollbar.set,
             xscrollcommand=hscrollbar.set,
-            wrap='none',
-            width='40',
-            height='20',
+            wrap="none",
+            width="40",
+            height="20",
             exportselection=1,
         )
-        self.results_box.pack(side='left', fill='both', expand=True)
-        vscrollbar.pack(side='left', fill='y', anchor='e')
+        self.results_box.pack(side="left", fill="both", expand=True)
+        vscrollbar.pack(side="left", fill="y", anchor="e")
         vscrollbar.config(command=self.results_box.yview)
-        hscrollbar.pack(side='left', fill='x', expand=True, anchor='w')
+        hscrollbar.pack(side="left", fill="x", expand=True, anchor="w")
         hscrollbar.config(command=self.results_box.xview)
         # there is no other way of avoiding the overlap of scrollbars while using pack layout manager!!!
-        Label(i2, text='   ', background=self._BACKGROUND_COLOUR).pack(
-            side='left', anchor='e'
+        Label(i2, text="   ", background=self._BACKGROUND_COLOUR).pack(
+            side="left", anchor="e"
         )
-        i1.pack(side='top', fill='both', expand=True, anchor='n')
-        i2.pack(side='bottom', fill='x', anchor='s')
-        innerframe.pack(side='top', fill='both', expand=True)
+        i1.pack(side="top", fill="both", expand=True, anchor="n")
+        i2.pack(side="bottom", fill="x", anchor="s")
+        innerframe.pack(side="top", fill="both", expand=True)
 
     def _init_paging(self, parent):
         innerframe = Frame(parent, background=self._BACKGROUND_COLOUR)
         self.prev = prev = Button(
             innerframe,
-            text='Previous',
+            text="Previous",
             command=self.previous,
-            width='10',
+            width="10",
             borderwidth=1,
             highlightthickness=1,
-            state='disabled',
+            state="disabled",
         )
-        prev.pack(side='left', anchor='center')
+        prev.pack(side="left", anchor="center")
         self.next = next = Button(
             innerframe,
-            text='Next',
+            text="Next",
             command=self.__next__,
-            width='10',
+            width="10",
             borderwidth=1,
             highlightthickness=1,
-            state='disabled',
+            state="disabled",
         )
-        next.pack(side='right', anchor='center')
-        innerframe.pack(side='top', fill='y')
+        next.pack(side="right", anchor="center")
+        innerframe.pack(side="top", fill="y")
         self.reset_current_page()
 
     def reset_current_page(self):
@@ -261,14 +261,14 @@ class CollocationsView:
         self.after = self.top.after(POLL_INTERVAL, self._poll)
 
     def handle_error_loading_corpus(self, event):
-        self.status['text'] = 'Error in loading ' + self.var.get()
+        self.status["text"] = "Error in loading " + self.var.get()
         self.unfreeze_editable()
         self.clear_results_box()
         self.freeze_editable()
         self.reset_current_page()
 
     def handle_corpus_loaded(self, event):
-        self.status['text'] = self.var.get() + ' is loaded'
+        self.status["text"] = self.var.get() + " is loaded"
         self.unfreeze_editable()
         self.clear_results_box()
         self.reset_current_page()
@@ -299,22 +299,22 @@ class CollocationsView:
 
     def load_corpus(self, selection):
         if self.model.selected_corpus != selection:
-            self.status['text'] = 'Loading ' + selection + '...'
+            self.status["text"] = "Loading " + selection + "..."
             self.freeze_editable()
             self.model.load_corpus(selection)
 
     def freeze_editable(self):
-        self.prev['state'] = 'disabled'
-        self.next['state'] = 'disabled'
+        self.prev["state"] = "disabled"
+        self.next["state"] = "disabled"
 
     def clear_results_box(self):
-        self.results_box['state'] = 'normal'
+        self.results_box["state"] = "normal"
         self.results_box.delete("1.0", END)
-        self.results_box['state'] = 'disabled'
+        self.results_box["state"] = "disabled"
 
     def fire_event(self, event):
         # Firing an event so that rendering of widgets happen in the mainloop thread
-        self.top.event_generate(event, when='tail')
+        self.top.event_generate(event, when="tail")
 
     def destroy(self, *e):
         if self.top is None:
@@ -333,21 +333,21 @@ class CollocationsView:
 
     def set_paging_button_states(self):
         if self.current_page == -1 or self.current_page == 0:
-            self.prev['state'] = 'disabled'
+            self.prev["state"] = "disabled"
         else:
-            self.prev['state'] = 'normal'
+            self.prev["state"] = "normal"
         if self.model.is_last_page(self.current_page):
-            self.next['state'] = 'disabled'
+            self.next["state"] = "disabled"
         else:
-            self.next['state'] = 'normal'
+            self.next["state"] = "normal"
 
     def write_results(self, results):
-        self.results_box['state'] = 'normal'
+        self.results_box["state"] = "normal"
         row = 1
         for each in results:
-            self.results_box.insert(str(row) + '.0', each[0] + " " + each[1] + "\n")
+            self.results_box.insert(str(row) + ".0", each[0] + " " + each[1] + "\n")
             row += 1
-        self.results_box['state'] = 'disabled'
+        self.results_box["state"] = "disabled"
 
 
 class CollocationsModel:
@@ -436,7 +436,7 @@ def app():
     c.mainloop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app()
 
-__all__ = ['app']
+__all__ = ["app"]

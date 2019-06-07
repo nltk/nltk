@@ -116,7 +116,7 @@ def skolemize(expression, univ_scope=None, used_variables=None):
         elif isinstance(negated, ApplicationExpression):
             return expression
         else:
-            raise Exception('\'%s\' cannot be skolemized' % expression)
+            raise Exception("'%s' cannot be skolemized" % expression)
     elif isinstance(expression, ExistsExpression):
         term = skolemize(
             expression.term, univ_scope, used_variables | set([expression.variable])
@@ -129,7 +129,7 @@ def skolemize(expression, univ_scope=None, used_variables=None):
     elif isinstance(expression, ApplicationExpression):
         return expression
     else:
-        raise Exception('\'%s\' cannot be skolemized' % expression)
+        raise Exception("'%s' cannot be skolemized" % expression)
 
 
 def to_cnf(first, second):

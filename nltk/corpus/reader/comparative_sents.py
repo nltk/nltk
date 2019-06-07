@@ -41,13 +41,13 @@ from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
 # Regular expressions for dataset components
-STARS = re.compile(r'^\*+$')
-COMPARISON = re.compile(r'<cs-[1234]>')
-CLOSE_COMPARISON = re.compile(r'</cs-[1234]>')
-GRAD_COMPARISON = re.compile(r'<cs-[123]>')
-NON_GRAD_COMPARISON = re.compile(r'<cs-4>')
+STARS = re.compile(r"^\*+$")
+COMPARISON = re.compile(r"<cs-[1234]>")
+CLOSE_COMPARISON = re.compile(r"</cs-[1234]>")
+GRAD_COMPARISON = re.compile(r"<cs-[123]>")
+NON_GRAD_COMPARISON = re.compile(r"<cs-4>")
 ENTITIES_FEATS = re.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
-KEYWORD = re.compile(r'\((?!.*\()(.*)\)$')
+KEYWORD = re.compile(r"\((?!.*\()(.*)\)$")
 
 
 class Comparison(object):
@@ -83,8 +83,8 @@ class Comparison(object):
 
     def __repr__(self):
         return (
-            "Comparison(text=\"{}\", comp_type={}, entity_1=\"{}\", entity_2=\"{}\", "
-            "feature=\"{}\", keyword=\"{}\")"
+            'Comparison(text="{}", comp_type={}, entity_1="{}", entity_2="{}", '
+            'feature="{}", keyword="{}")'
         ).format(
             self.text,
             self.comp_type,
@@ -121,7 +121,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         fileids,
         word_tokenizer=WhitespaceTokenizer(),
         sent_tokenizer=None,
-        encoding='utf8',
+        encoding="utf8",
     ):
         """
         :param root: The root directory for this corpus.
@@ -261,7 +261,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                 if grad_comparisons:
                     # Each comparison tag has its own relations on a separate line
                     for comp in grad_comparisons:
-                        comp_type = int(re.match(r'<cs-(\d)>', comp).group(1))
+                        comp_type = int(re.match(r"<cs-(\d)>", comp).group(1))
                         comparison = Comparison(
                             text=comparison_text, comp_type=comp_type
                         )
@@ -269,11 +269,11 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                         entities_feats = ENTITIES_FEATS.findall(line)
                         if entities_feats:
                             for (code, entity_feat) in entities_feats:
-                                if code == '1':
+                                if code == "1":
                                     comparison.entity_1 = entity_feat.strip()
-                                elif code == '2':
+                                elif code == "2":
                                     comparison.entity_2 = entity_feat.strip()
-                                elif code == '3':
+                                elif code == "3":
                                     comparison.feature = entity_feat.strip()
                         keyword = KEYWORD.findall(line)
                         if keyword:
@@ -284,7 +284,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                 if non_grad_comparisons:
                     for comp in non_grad_comparisons:
                         # comp_type in this case should always be 4.
-                        comp_type = int(re.match(r'<cs-(\d)>', comp).group(1))
+                        comp_type = int(re.match(r"<cs-(\d)>", comp).group(1))
                         comparison = Comparison(
                             text=comparison_text, comp_type=comp_type
                         )

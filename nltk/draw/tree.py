@@ -77,9 +77,9 @@ class TreeSegmentWidget(CanvasWidget):
         self._ordered = False
 
         # Create canvas objects.
-        self._lines = [canvas.create_line(0, 0, 0, 0, fill='#006060') for c in subtrees]
+        self._lines = [canvas.create_line(0, 0, 0, 0, fill="#006060") for c in subtrees]
         self._polygon = canvas.create_polygon(
-            0, 0, fill='', state='hidden', outline='#006060'
+            0, 0, fill="", state="hidden", outline="#006060"
         )
 
         # Register child widgets (label + subtrees)
@@ -94,68 +94,68 @@ class TreeSegmentWidget(CanvasWidget):
 
     def __setitem__(self, attr, value):
         canvas = self.canvas()
-        if attr == 'roof':
+        if attr == "roof":
             self._roof = value
             if self._roof:
                 for l in self._lines:
-                    canvas.itemconfig(l, state='hidden')
-                canvas.itemconfig(self._polygon, state='normal')
+                    canvas.itemconfig(l, state="hidden")
+                canvas.itemconfig(self._polygon, state="normal")
             else:
                 for l in self._lines:
-                    canvas.itemconfig(l, state='normal')
-                canvas.itemconfig(self._polygon, state='hidden')
-        elif attr == 'orientation':
-            if value == 'horizontal':
+                    canvas.itemconfig(l, state="normal")
+                canvas.itemconfig(self._polygon, state="hidden")
+        elif attr == "orientation":
+            if value == "horizontal":
                 self._horizontal = 1
-            elif value == 'vertical':
+            elif value == "vertical":
                 self._horizontal = 0
             else:
-                raise ValueError('orientation must be horizontal or vertical')
-        elif attr == 'color':
+                raise ValueError("orientation must be horizontal or vertical")
+        elif attr == "color":
             for l in self._lines:
                 canvas.itemconfig(l, fill=value)
             canvas.itemconfig(self._polygon, outline=value)
-        elif isinstance(attr, tuple) and attr[0] == 'color':
+        elif isinstance(attr, tuple) and attr[0] == "color":
             # Set the color of an individual line.
             l = self._lines[int(attr[1])]
             canvas.itemconfig(l, fill=value)
-        elif attr == 'fill':
+        elif attr == "fill":
             canvas.itemconfig(self._polygon, fill=value)
-        elif attr == 'width':
+        elif attr == "width":
             canvas.itemconfig(self._polygon, {attr: value})
             for l in self._lines:
                 canvas.itemconfig(l, {attr: value})
-        elif attr in ('xspace', 'yspace'):
-            if attr == 'xspace':
+        elif attr in ("xspace", "yspace"):
+            if attr == "xspace":
                 self._xspace = value
-            elif attr == 'yspace':
+            elif attr == "yspace":
                 self._yspace = value
             self.update(self._label)
-        elif attr == 'ordered':
+        elif attr == "ordered":
             self._ordered = value
         else:
             CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr == 'roof':
+        if attr == "roof":
             return self._roof
-        elif attr == 'width':
+        elif attr == "width":
             return self.canvas().itemcget(self._polygon, attr)
-        elif attr == 'color':
-            return self.canvas().itemcget(self._polygon, 'outline')
-        elif isinstance(attr, tuple) and attr[0] == 'color':
+        elif attr == "color":
+            return self.canvas().itemcget(self._polygon, "outline")
+        elif isinstance(attr, tuple) and attr[0] == "color":
             l = self._lines[int(attr[1])]
-            return self.canvas().itemcget(l, 'fill')
-        elif attr == 'xspace':
+            return self.canvas().itemcget(l, "fill")
+        elif attr == "xspace":
             return self._xspace
-        elif attr == 'yspace':
+        elif attr == "yspace":
             return self._yspace
-        elif attr == 'orientation':
+        elif attr == "orientation":
             if self._horizontal:
-                return 'horizontal'
+                return "horizontal"
             else:
-                return 'vertical'
-        elif attr == 'ordered':
+                return "vertical"
+        elif attr == "ordered":
             return self._ordered
         else:
             return CanvasWidget.__getitem__(self, attr)
@@ -196,7 +196,7 @@ class TreeSegmentWidget(CanvasWidget):
         canvas = self.canvas()
         self._subtrees.insert(index, child)
         self._add_child_widget(child)
-        self._lines.append(canvas.create_line(0, 0, 0, 0, fill='#006060'))
+        self._lines.append(canvas.create_line(0, 0, 0, 0, fill="#006060"))
         self.update(self._label)
 
     # but.. lines???
@@ -416,7 +416,7 @@ class TreeSegmentWidget(CanvasWidget):
         self._managing = False
 
     def __repr__(self):
-        return '[TreeSeg %s: %s]' % (self._label, self._subtrees)
+        return "[TreeSeg %s: %s]" % (self._label, self._subtrees)
 
 
 def _tree_to_treeseg(
@@ -479,16 +479,16 @@ def tree_to_treesegment(
     loc_attribs = {}
 
     for (key, value) in list(attribs.items()):
-        if key[:5] == 'tree_':
+        if key[:5] == "tree_":
             tree_attribs[key[5:]] = value
-        elif key[:5] == 'node_':
+        elif key[:5] == "node_":
             node_attribs[key[5:]] = value
-        elif key[:5] == 'leaf_':
+        elif key[:5] == "leaf_":
             leaf_attribs[key[5:]] = value
-        elif key[:4] == 'loc_':
+        elif key[:4] == "loc_":
             loc_attribs[key[4:]] = value
         else:
-            raise ValueError('Bad attribute: %s' % key)
+            raise ValueError("Bad attribute: %s" % key)
     return _tree_to_treeseg(
         canvas,
         t,
@@ -558,15 +558,15 @@ class TreeWidget(CanvasWidget):
         # Attributes.
         self._nodeattribs = {}
         self._leafattribs = {}
-        self._locattribs = {'color': '#008000'}
-        self._line_color = '#008080'
+        self._locattribs = {"color": "#008000"}
+        self._line_color = "#008080"
         self._line_width = 1
-        self._roof_color = '#008080'
-        self._roof_fill = '#c0c0c0'
+        self._roof_color = "#008080"
+        self._roof_fill = "#c0c0c0"
         self._shapeable = False
         self._xspace = 10
         self._yspace = 10
-        self._orientation = 'vertical'
+        self._orientation = "vertical"
         self._ordered = False
 
         # Build trees.
@@ -712,90 +712,90 @@ class TreeWidget(CanvasWidget):
             return leaf
 
     def __setitem__(self, attr, value):
-        if attr[:5] == 'node_':
+        if attr[:5] == "node_":
             for node in self._nodes:
                 node[attr[5:]] = value
-        elif attr[:5] == 'leaf_':
+        elif attr[:5] == "leaf_":
             for leaf in self._leaves:
                 leaf[attr[5:]] = value
-        elif attr == 'line_color':
+        elif attr == "line_color":
             self._line_color = value
             for tseg in list(self._expanded_trees.values()):
-                tseg['color'] = value
-        elif attr == 'line_width':
+                tseg["color"] = value
+        elif attr == "line_width":
             self._line_width = value
             for tseg in list(self._expanded_trees.values()):
-                tseg['width'] = value
+                tseg["width"] = value
             for tseg in list(self._collapsed_trees.values()):
-                tseg['width'] = value
-        elif attr == 'roof_color':
+                tseg["width"] = value
+        elif attr == "roof_color":
             self._roof_color = value
             for tseg in list(self._collapsed_trees.values()):
-                tseg['color'] = value
-        elif attr == 'roof_fill':
+                tseg["color"] = value
+        elif attr == "roof_fill":
             self._roof_fill = value
             for tseg in list(self._collapsed_trees.values()):
-                tseg['fill'] = value
-        elif attr == 'shapeable':
+                tseg["fill"] = value
+        elif attr == "shapeable":
             self._shapeable = value
             for tseg in list(self._expanded_trees.values()):
-                tseg['draggable'] = value
+                tseg["draggable"] = value
             for tseg in list(self._collapsed_trees.values()):
-                tseg['draggable'] = value
+                tseg["draggable"] = value
             for leaf in self._leaves:
-                leaf['draggable'] = value
-        elif attr == 'xspace':
+                leaf["draggable"] = value
+        elif attr == "xspace":
             self._xspace = value
             for tseg in list(self._expanded_trees.values()):
-                tseg['xspace'] = value
+                tseg["xspace"] = value
             for tseg in list(self._collapsed_trees.values()):
-                tseg['xspace'] = value
+                tseg["xspace"] = value
             self.manage()
-        elif attr == 'yspace':
+        elif attr == "yspace":
             self._yspace = value
             for tseg in list(self._expanded_trees.values()):
-                tseg['yspace'] = value
+                tseg["yspace"] = value
             for tseg in list(self._collapsed_trees.values()):
-                tseg['yspace'] = value
+                tseg["yspace"] = value
             self.manage()
-        elif attr == 'orientation':
+        elif attr == "orientation":
             self._orientation = value
             for tseg in list(self._expanded_trees.values()):
-                tseg['orientation'] = value
+                tseg["orientation"] = value
             for tseg in list(self._collapsed_trees.values()):
-                tseg['orientation'] = value
+                tseg["orientation"] = value
             self.manage()
-        elif attr == 'ordered':
+        elif attr == "ordered":
             self._ordered = value
             for tseg in list(self._expanded_trees.values()):
-                tseg['ordered'] = value
+                tseg["ordered"] = value
             for tseg in list(self._collapsed_trees.values()):
-                tseg['ordered'] = value
+                tseg["ordered"] = value
         else:
             CanvasWidget.__setitem__(self, attr, value)
 
     def __getitem__(self, attr):
-        if attr[:5] == 'node_':
+        if attr[:5] == "node_":
             return self._nodeattribs.get(attr[5:], None)
-        elif attr[:5] == 'leaf_':
+        elif attr[:5] == "leaf_":
             return self._leafattribs.get(attr[5:], None)
-        elif attr[:4] == 'loc_':
+        elif attr[:4] == "loc_":
             return self._locattribs.get(attr[4:], None)
-        elif attr == 'line_color':
+        elif attr == "line_color":
             return self._line_color
-        elif attr == 'line_width':
+        elif attr == "line_width":
             return self._line_width
-        elif attr == 'roof_color':
+        elif attr == "roof_color":
             return self._roof_color
-        elif attr == 'roof_fill':
+        elif attr == "roof_fill":
             return self._roof_fill
-        elif attr == 'shapeable':
+        elif attr == "shapeable":
             return self._shapeable
-        elif attr == 'xspace':
+        elif attr == "xspace":
             return self._xspace
-        elif attr == 'yspace':
+        elif attr == "yspace":
             return self._yspace
-        elif attr == 'orientation':
+        elif attr == "orientation":
             return self._orientation
         else:
             return CanvasWidget.__getitem__(self, attr)
@@ -818,7 +818,7 @@ class TreeWidget(CanvasWidget):
         Collapse/expand a tree.
         """
         old_treeseg = treeseg
-        if old_treeseg['roof']:
+        if old_treeseg["roof"]:
             new_treeseg = self._expanded_trees[self._keys[old_treeseg]]
         else:
             new_treeseg = self._collapsed_trees[self._keys[old_treeseg]]
@@ -857,18 +857,18 @@ class TreeView(object):
         self._trees = trees
 
         self._top = Tk()
-        self._top.title('NLTK')
-        self._top.bind('<Control-x>', self.destroy)
-        self._top.bind('<Control-q>', self.destroy)
+        self._top.title("NLTK")
+        self._top.bind("<Control-x>", self.destroy)
+        self._top.bind("<Control-q>", self.destroy)
 
         cf = self._cframe = CanvasFrame(self._top)
-        self._top.bind('<Control-p>', self._cframe.print_to_file)
+        self._top.bind("<Control-p>", self._cframe.print_to_file)
 
         # Size is variable.
         self._size = IntVar(self._top)
         self._size.set(12)
-        bold = ('helvetica', -self._size.get(), 'bold')
-        helv = ('helvetica', -self._size.get())
+        bold = ("helvetica", -self._size.get(), "bold")
+        helv = ("helvetica", -self._size.get())
 
         # Lay the trees out in a square.
         self._width = int(ceil(sqrt(len(trees))))
@@ -878,11 +878,11 @@ class TreeView(object):
                 cf.canvas(),
                 trees[i],
                 node_font=bold,
-                leaf_color='#008040',
-                node_color='#004080',
-                roof_color='#004040',
-                roof_fill='white',
-                line_color='#004040',
+                leaf_color="#008040",
+                node_color="#004080",
+                roof_color="#004040",
+                roof_fill="white",
+                line_color="#004040",
                 draggable=1,
                 leaf_font=helv,
             )
@@ -891,7 +891,7 @@ class TreeView(object):
             cf.add_widget(widget, 0, 0)
 
         self._layout()
-        self._cframe.pack(expand=1, fill='both')
+        self._cframe.pack(expand=1, fill="both")
         self._init_menubar()
 
     def _layout(self):
@@ -912,72 +912,72 @@ class TreeView(object):
 
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(
-            label='Print to Postscript',
+            label="Print to Postscript",
             underline=0,
             command=self._cframe.print_to_file,
-            accelerator='Ctrl-p',
+            accelerator="Ctrl-p",
         )
         filemenu.add_command(
-            label='Exit', underline=1, command=self.destroy, accelerator='Ctrl-x'
+            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-x"
         )
-        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+        menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
         zoommenu = Menu(menubar, tearoff=0)
         zoommenu.add_radiobutton(
-            label='Tiny',
+            label="Tiny",
             variable=self._size,
             underline=0,
             value=10,
             command=self.resize,
         )
         zoommenu.add_radiobutton(
-            label='Small',
+            label="Small",
             variable=self._size,
             underline=0,
             value=12,
             command=self.resize,
         )
         zoommenu.add_radiobutton(
-            label='Medium',
+            label="Medium",
             variable=self._size,
             underline=0,
             value=14,
             command=self.resize,
         )
         zoommenu.add_radiobutton(
-            label='Large',
+            label="Large",
             variable=self._size,
             underline=0,
             value=28,
             command=self.resize,
         )
         zoommenu.add_radiobutton(
-            label='Huge',
+            label="Huge",
             variable=self._size,
             underline=0,
             value=50,
             command=self.resize,
         )
-        menubar.add_cascade(label='Zoom', underline=0, menu=zoommenu)
+        menubar.add_cascade(label="Zoom", underline=0, menu=zoommenu)
 
         self._top.config(menu=menubar)
 
     def resize(self, *e):
-        bold = ('helvetica', -self._size.get(), 'bold')
-        helv = ('helvetica', -self._size.get())
+        bold = ("helvetica", -self._size.get(), "bold")
+        helv = ("helvetica", -self._size.get())
         xspace = self._size.get()
         yspace = self._size.get()
         for widget in self._widgets:
-            widget['node_font'] = bold
-            widget['leaf_font'] = helv
-            widget['xspace'] = xspace
-            widget['yspace'] = yspace
+            widget["node_font"] = bold
+            widget["leaf_font"] = helv
+            widget["xspace"] = xspace
+            widget["yspace"] = yspace
             if self._size.get() < 20:
-                widget['line_width'] = 1
+                widget["line_width"] = 1
             elif self._size.get() < 30:
-                widget['line_width'] = 2
+                widget["line_width"] = 2
             else:
-                widget['line_width'] = 3
+                widget["line_width"] = 3
         self._layout()
 
     def destroy(self, *e):
@@ -1018,45 +1018,45 @@ def demo():
     import random
 
     def fill(cw):
-        cw['fill'] = '#%06d' % random.randint(0, 999999)
+        cw["fill"] = "#%06d" % random.randint(0, 999999)
 
     cf = CanvasFrame(width=550, height=450, closeenough=2)
 
     t = Tree.fromstring(
-        '''
+        """
     (S (NP the very big cat)
-       (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))'''
+       (VP (Adv sorta) (V saw) (NP (Det the) (N dog))))"""
     )
 
     tc = TreeWidget(
         cf.canvas(),
         t,
         draggable=1,
-        node_font=('helvetica', -14, 'bold'),
-        leaf_font=('helvetica', -12, 'italic'),
-        roof_fill='white',
-        roof_color='black',
-        leaf_color='green4',
-        node_color='blue2',
+        node_font=("helvetica", -14, "bold"),
+        leaf_font=("helvetica", -12, "italic"),
+        roof_fill="white",
+        roof_color="black",
+        leaf_color="green4",
+        node_color="blue2",
     )
     cf.add_widget(tc, 10, 10)
 
     def boxit(canvas, text):
-        big = ('helvetica', -16, 'bold')
-        return BoxWidget(canvas, TextWidget(canvas, text, font=big), fill='green')
+        big = ("helvetica", -16, "bold")
+        return BoxWidget(canvas, TextWidget(canvas, text, font=big), fill="green")
 
     def ovalit(canvas, text):
-        return OvalWidget(canvas, TextWidget(canvas, text), fill='cyan')
+        return OvalWidget(canvas, TextWidget(canvas, text), fill="cyan")
 
-    treetok = Tree.fromstring('(S (NP this tree) (VP (V is) (AdjP shapeable)))')
+    treetok = Tree.fromstring("(S (NP this tree) (VP (V is) (AdjP shapeable)))")
     tc2 = TreeWidget(cf.canvas(), treetok, boxit, ovalit, shapeable=1)
 
     def color(node):
-        node['color'] = '#%04d00' % random.randint(0, 9999)
+        node["color"] = "#%04d00" % random.randint(0, 9999)
 
     def color2(treeseg):
-        treeseg.label()['fill'] = '#%06d' % random.randint(0, 9999)
-        treeseg.label().child()['color'] = 'white'
+        treeseg.label()["fill"] = "#%06d" % random.randint(0, 9999)
+        treeseg.label().child()["color"] = "white"
 
     tc.bind_click_trees(tc.toggle_collapsed)
     tc2.bind_click_trees(tc2.toggle_collapsed)
@@ -1068,29 +1068,29 @@ def demo():
     cf.add_widget(paren, tc.bbox()[2] + 10, 10)
 
     tree3 = Tree.fromstring(
-        '''
+        """
     (S (NP this tree) (AUX was)
-       (VP (V built) (PP (P with) (NP (N tree_to_treesegment)))))'''
+       (VP (V built) (PP (P with) (NP (N tree_to_treesegment)))))"""
     )
     tc3 = tree_to_treesegment(
-        cf.canvas(), tree3, tree_color='green4', tree_xspace=2, tree_width=2
+        cf.canvas(), tree3, tree_color="green4", tree_xspace=2, tree_width=2
     )
-    tc3['draggable'] = 1
+    tc3["draggable"] = 1
     cf.add_widget(tc3, 10, tc.bbox()[3] + 10)
 
     def orientswitch(treewidget):
-        if treewidget['orientation'] == 'horizontal':
-            treewidget.expanded_tree(1, 1).subtrees()[0].set_text('vertical')
-            treewidget.collapsed_tree(1, 1).subtrees()[0].set_text('vertical')
-            treewidget.collapsed_tree(1).subtrees()[1].set_text('vertical')
-            treewidget.collapsed_tree().subtrees()[3].set_text('vertical')
-            treewidget['orientation'] = 'vertical'
+        if treewidget["orientation"] == "horizontal":
+            treewidget.expanded_tree(1, 1).subtrees()[0].set_text("vertical")
+            treewidget.collapsed_tree(1, 1).subtrees()[0].set_text("vertical")
+            treewidget.collapsed_tree(1).subtrees()[1].set_text("vertical")
+            treewidget.collapsed_tree().subtrees()[3].set_text("vertical")
+            treewidget["orientation"] = "vertical"
         else:
-            treewidget.expanded_tree(1, 1).subtrees()[0].set_text('horizontal')
-            treewidget.collapsed_tree(1, 1).subtrees()[0].set_text('horizontal')
-            treewidget.collapsed_tree(1).subtrees()[1].set_text('horizontal')
-            treewidget.collapsed_tree().subtrees()[3].set_text('horizontal')
-            treewidget['orientation'] = 'horizontal'
+            treewidget.expanded_tree(1, 1).subtrees()[0].set_text("horizontal")
+            treewidget.collapsed_tree(1, 1).subtrees()[0].set_text("horizontal")
+            treewidget.collapsed_tree(1).subtrees()[1].set_text("horizontal")
+            treewidget.collapsed_tree().subtrees()[3].set_text("horizontal")
+            treewidget["orientation"] = "horizontal"
 
     text = """
 Try clicking, right clicking, and dragging
@@ -1102,19 +1102,19 @@ constructors for the nodes & leaves (BoxWidget
 and OvalWidget).  The bottom-left tree is
 built from tree_to_treesegment."""
     twidget = TextWidget(cf.canvas(), text.strip())
-    textbox = BoxWidget(cf.canvas(), twidget, fill='white', draggable=1)
+    textbox = BoxWidget(cf.canvas(), twidget, fill="white", draggable=1)
     cf.add_widget(textbox, tc3.bbox()[2] + 10, tc2.bbox()[3] + 10)
 
-    tree4 = Tree.fromstring('(S (NP this tree) (VP (V is) (Adj horizontal)))')
+    tree4 = Tree.fromstring("(S (NP this tree) (VP (V is) (Adj horizontal)))")
     tc4 = TreeWidget(
         cf.canvas(),
         tree4,
         draggable=1,
-        line_color='brown2',
-        roof_color='brown2',
-        node_font=('helvetica', -12, 'bold'),
-        node_color='brown4',
-        orientation='horizontal',
+        line_color="brown2",
+        roof_color="brown2",
+        node_font=("helvetica", -12, "bold"),
+        node_color="brown4",
+        orientation="horizontal",
     )
     tc4.manage()
     cf.add_widget(tc4, tc3.bbox()[2] + 10, textbox.bbox()[3] + 10)
@@ -1125,5 +1125,5 @@ built from tree_to_treesegment."""
     cf.mainloop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

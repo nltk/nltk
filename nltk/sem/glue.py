@@ -5,7 +5,6 @@
 # Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, division, unicode_literals
 
 import os
 from itertools import chain
@@ -27,15 +26,15 @@ from nltk.sem import drt
 from nltk.sem import linearlogic
 
 SPEC_SEMTYPES = {
-    'a': 'ex_quant',
-    'an': 'ex_quant',
-    'every': 'univ_quant',
-    'the': 'def_art',
-    'no': 'no_quant',
-    'default': 'ex_quant',
+    "a": "ex_quant",
+    "an": "ex_quant",
+    "every": "univ_quant",
+    "the": "def_art",
+    "no": "no_quant",
+    "default": "ex_quant",
 }
 
-OPTIONAL_RELATIONSHIPS = ['nmod', 'vmod', 'punct']
+OPTIONAL_RELATIONSHIPS = ["nmod", "vmod", "punct"]
 
 
 @python_2_unicode_compatible
@@ -50,7 +49,7 @@ class GlueFormula(object):
             self.meaning = meaning
         else:
             raise RuntimeError(
-                'Meaning term neither string or expression: %s, %s'
+                "Meaning term neither string or expression: %s, %s"
                 % (meaning, meaning.__class__)
             )
 
@@ -60,7 +59,7 @@ class GlueFormula(object):
             self.glue = glue
         else:
             raise RuntimeError(
-                'Glue term neither string or expression: %s, %s'
+                "Glue term neither string or expression: %s, %s"
                 % (glue, glue.__class__)
             )
 
@@ -93,7 +92,7 @@ class GlueFormula(object):
                 ::-1
             ]:  # if self.glue is (A -o B), dep is in A.dependencies
                 arg_meaning_abstracted = self.make_LambdaExpression(
-                    Variable('v%s' % dep), arg_meaning_abstracted
+                    Variable("v%s" % dep), arg_meaning_abstracted
                 )
         return_meaning = self.meaning.applyto(arg_meaning_abstracted)
 
@@ -145,9 +144,9 @@ class GlueFormula(object):
 
     def __str__(self):
         assert isinstance(self.indices, set)
-        accum = '%s : %s' % (self.meaning, self.glue)
+        accum = "%s : %s" % (self.meaning, self.glue)
         if self.indices:
-            accum += ' : {' + ', '.join(str(index) for index in self.indices) + '}'
+            accum += " : {" + ", ".join(str(index) for index in self.indices) + "}"
         return accum
 
     def __repr__(self):
@@ -167,13 +166,13 @@ class GlueDict(dict):
 
         try:
             contents = nltk.data.load(
-                self.filename, format='text', encoding=self.file_encoding
+                self.filename, format="text", encoding=self.file_encoding
             )
             # TODO: the above can't handle zip files, but this should anyway be fixed in nltk.data.load()
         except LookupError as e:
             try:
                 contents = nltk.data.load(
-                    'file:' + self.filename, format='text', encoding=self.file_encoding
+                    "file:" + self.filename, format="text", encoding=self.file_encoding
                 )
             except LookupError:
                 raise e
@@ -184,11 +183,11 @@ class GlueDict(dict):
             line = line.strip()  # remove trailing newline
             if not len(line):
                 continue  # skip empty lines
-            if line[0] == '#':
+            if line[0] == "#":
                 continue  # skip commented out lines
 
             parts = line.split(
-                ' : ', 2
+                " : ", 2
             )  # ['verb', '(\\x.(<word> x), ( subj -o f ))', '[subj]']
 
             glue_formulas = []
@@ -200,11 +199,11 @@ class GlueDict(dict):
 
             if len(parts) > 1:
                 for (i, c) in enumerate(parts[1]):
-                    if c == '(':
+                    if c == "(":
                         if paren_count == 0:  # if it's the first '(' of a tuple
                             tuple_start = i + 1  # then save the index
                         paren_count += 1
-                    elif c == ')':
+                    elif c == ")":
                         paren_count -= 1
                         if paren_count == 0:  # if it's the last ')' of a tuple
                             meaning_term = parts[1][
@@ -214,33 +213,33 @@ class GlueDict(dict):
                             glue_formulas.append(
                                 [meaning_term, glue_term]
                             )  # add the GlueFormula to the list
-                    elif c == ',':
+                    elif c == ",":
                         if (
                             paren_count == 1
                         ):  # if it's a comma separating the parts of the tuple
                             tuple_comma = i  # then save the index
-                    elif c == '#':  # skip comments at the ends of lines
+                    elif c == "#":  # skip comments at the ends of lines
                         if (
                             paren_count != 0
                         ):  # if the line hasn't parsed correctly so far
                             raise RuntimeError(
-                                'Formula syntax is incorrect for entry ' + line
+                                "Formula syntax is incorrect for entry " + line
                             )
                         break  # break to the next line
 
             if len(parts) > 2:  # if there is a relationship entry at the end
-                rel_start = parts[2].index('[') + 1
-                rel_end = parts[2].index(']')
+                rel_start = parts[2].index("[") + 1
+                rel_end = parts[2].index("]")
                 if rel_start == rel_end:
                     relationships = frozenset()
                 else:
                     relationships = frozenset(
-                        r.strip() for r in parts[2][rel_start:rel_end].split(',')
+                        r.strip() for r in parts[2][rel_start:rel_end].split(",")
                     )
 
             try:
-                start_inheritance = parts[0].index('(')
-                end_inheritance = parts[0].index(')')
+                start_inheritance = parts[0].index("(")
+                end_inheritance = parts[0].index(")")
                 sem = parts[0][:start_inheritance].strip()
                 supertype = parts[0][start_inheritance + 1 : end_inheritance]
             except:
@@ -279,20 +278,20 @@ class GlueDict(dict):
                 )  # add the glue entry to the dictionary
 
     def __str__(self):
-        accum = ''
+        accum = ""
         for pos in self:
             str_pos = "%s" % pos
             for relset in self[pos]:
                 i = 1
                 for gf in self[pos][relset]:
                     if i == 1:
-                        accum += str_pos + ': '
+                        accum += str_pos + ": "
                     else:
-                        accum += ' ' * (len(str_pos) + 2)
+                        accum += " " * (len(str_pos) + 2)
                     accum += "%s" % gf
                     if relset and i == len(self[pos][relset]):
-                        accum += ' : %s' % relset
-                    accum += '\n'
+                        accum += " : %s" % relset
+                    accum += "\n"
                     i += 1
         return accum
 
@@ -300,13 +299,13 @@ class GlueDict(dict):
         if node is None:
             # TODO: should it be depgraph.root? Is this code tested?
             top = depgraph.nodes[0]
-            depList = list(chain(*top['deps'].values()))
+            depList = list(chain(*top["deps"].values()))
             root = depgraph.nodes[depList[0]]
 
             return self.to_glueformula_list(depgraph, root, Counter(), verbose)
 
         glueformulas = self.lookup(node, depgraph, counter)
-        for dep_idx in chain(*node['deps'].values()):
+        for dep_idx in chain(*node["deps"].values()):
             dep = depgraph.nodes[dep_idx]
             glueformulas.extend(
                 self.to_glueformula_list(depgraph, dep, counter, verbose)
@@ -332,29 +331,29 @@ class GlueDict(dict):
         if not len(lookup):
             raise KeyError(
                 "There is no GlueDict entry for sem type of '%s' "
-                "with tag '%s', and rel '%s'" % (node['word'], node['tag'], node['rel'])
+                "with tag '%s', and rel '%s'" % (node["word"], node["tag"], node["rel"])
             )
 
         return self.get_glueformulas_from_semtype_entry(
-            lookup, node['word'], node, depgraph, counter
+            lookup, node["word"], node, depgraph, counter
         )
 
     def add_missing_dependencies(self, node, depgraph):
-        rel = node['rel'].lower()
+        rel = node["rel"].lower()
 
-        if rel == 'main':
-            headnode = depgraph.nodes[node['head']]
-            subj = self.lookup_unique('subj', headnode, depgraph)
-            relation = subj['rel']
-            node['deps'].setdefault(relation, [])
-            node['deps'][relation].append(subj['address'])
+        if rel == "main":
+            headnode = depgraph.nodes[node["head"]]
+            subj = self.lookup_unique("subj", headnode, depgraph)
+            relation = subj["rel"]
+            node["deps"].setdefault(relation, [])
+            node["deps"][relation].append(subj["address"])
             # node['deps'].append(subj['address'])
 
     def _lookup_semtype_option(self, semtype, node, depgraph):
         relationships = frozenset(
-            depgraph.nodes[dep]['rel'].lower()
-            for dep in chain(*node['deps'].values())
-            if depgraph.nodes[dep]['rel'].lower() not in OPTIONAL_RELATIONSHIPS
+            depgraph.nodes[dep]["rel"].lower()
+            for dep in chain(*node["deps"].values())
+            if depgraph.nodes[dep]["rel"].lower() not in OPTIONAL_RELATIONSHIPS
         )
 
         try:
@@ -385,18 +384,18 @@ class GlueDict(dict):
         Based on the node, return a list of plausible semtypes in order of
         plausibility.
         """
-        rel = node['rel'].lower()
-        word = node['word'].lower()
+        rel = node["rel"].lower()
+        word = node["word"].lower()
 
-        if rel == 'spec':
+        if rel == "spec":
             if word in SPEC_SEMTYPES:
                 return [SPEC_SEMTYPES[word]]
             else:
-                return [SPEC_SEMTYPES['default']]
-        elif rel in ['nmod', 'vmod']:
-            return [node['tag'], rel]
+                return [SPEC_SEMTYPES["default"]]
+        elif rel in ["nmod", "vmod"]:
+            return [node["tag"], rel]
         else:
-            return [node['tag']]
+            return [node["tag"]]
 
     def get_glueformulas_from_semtype_entry(
         self, lookup, word, node, depgraph, counter
@@ -409,7 +408,7 @@ class GlueDict(dict):
             if not len(glueformulas):
                 gf.word = word
             else:
-                gf.word = '%s%s' % (word, len(glueformulas) + 1)
+                gf.word = "%s%s" % (word, len(glueformulas) + 1)
 
             gf.glue = self.initialize_labels(gf.glue, node, depgraph, counter.get())
 
@@ -422,8 +421,8 @@ class GlueDict(dict):
         parameter "<word>"
         :param word: The actual word to be replace "<word>"
         """
-        word = word.replace('.', '')
-        return generic.replace('<word>', word)
+        word = word.replace(".", "")
+        return generic.replace("<word>", word)
 
     def initialize_labels(self, expr, node, depgraph, unique_index):
         if isinstance(expr, linearlogic.AtomicExpression):
@@ -440,13 +439,13 @@ class GlueDict(dict):
 
     def find_label_name(self, name, node, depgraph, unique_index):
         try:
-            dot = name.index('.')
+            dot = name.index(".")
 
             before_dot = name[:dot]
             after_dot = name[dot + 1 :]
-            if before_dot == 'super':
+            if before_dot == "super":
                 return self.find_label_name(
-                    after_dot, depgraph.nodes[node['head']], depgraph, unique_index
+                    after_dot, depgraph.nodes[node["head"]], depgraph, unique_index
                 )
             else:
                 return self.find_label_name(
@@ -457,20 +456,20 @@ class GlueDict(dict):
                 )
         except ValueError:
             lbl = self.get_label(node)
-            if name == 'f':
+            if name == "f":
                 return lbl
-            elif name == 'v':
-                return '%sv' % lbl
-            elif name == 'r':
-                return '%sr' % lbl
-            elif name == 'super':
-                return self.get_label(depgraph.nodes[node['head']])
-            elif name == 'var':
-                return '%s%s' % (lbl.upper(), unique_index)
-            elif name == 'a':
-                return self.get_label(self.lookup_unique('conja', node, depgraph))
-            elif name == 'b':
-                return self.get_label(self.lookup_unique('conjb', node, depgraph))
+            elif name == "v":
+                return "%sv" % lbl
+            elif name == "r":
+                return "%sr" % lbl
+            elif name == "super":
+                return self.get_label(depgraph.nodes[node["head"]])
+            elif name == "var":
+                return "%s%s" % (lbl.upper(), unique_index)
+            elif name == "a":
+                return self.get_label(self.lookup_unique("conja", node, depgraph))
+            elif name == "b":
+                return self.get_label(self.lookup_unique("conjb", node, depgraph))
             else:
                 return self.get_label(self.lookup_unique(name, node, depgraph))
 
@@ -481,35 +480,35 @@ class GlueDict(dict):
         :param value: where to index into the list of characters
         :type value: int
         """
-        value = node['address']
+        value = node["address"]
 
         letter = [
-            'f',
-            'g',
-            'h',
-            'i',
-            'j',
-            'k',
-            'l',
-            'm',
-            'n',
-            'o',
-            'p',
-            'q',
-            'r',
-            's',
-            't',
-            'u',
-            'v',
-            'w',
-            'x',
-            'y',
-            'z',
-            'a',
-            'b',
-            'c',
-            'd',
-            'e',
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "x",
+            "y",
+            "z",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
         ][value - 1]
         num = int(value) // 26
         if num > 0:
@@ -523,15 +522,15 @@ class GlueDict(dict):
         """
         deps = [
             depgraph.nodes[dep]
-            for dep in chain(*node['deps'].values())
-            if depgraph.nodes[dep]['rel'].lower() == rel.lower()
+            for dep in chain(*node["deps"].values())
+            if depgraph.nodes[dep]["rel"].lower() == rel.lower()
         ]
 
         if len(deps) == 0:
-            raise KeyError("'%s' doesn't contain a feature '%s'" % (node['word'], rel))
+            raise KeyError("'%s' doesn't contain a feature '%s'" % (node["word"], rel))
         elif len(deps) > 1:
             raise KeyError(
-                "'%s' should only have one feature '%s'" % (node['word'], rel)
+                "'%s' should only have one feature '%s'" % (node["word"], rel)
             )
         else:
             return deps[0]
@@ -556,7 +555,7 @@ class Glue(object):
             self.semtype_file = semtype_file
         else:
             self.semtype_file = os.path.join(
-                'grammars', 'sample_grammars', 'glue.semtype'
+                "grammars", "sample_grammars", "glue.semtype"
             )
 
     def train_depparser(self, depgraphs=None):
@@ -565,7 +564,7 @@ class Glue(object):
         else:
             self.depparser.train_from_file(
                 nltk.data.find(
-                    os.path.join('grammars', 'sample_grammars', 'glue_train.conll')
+                    os.path.join("grammars", "sample_grammars", "glue_train.conll")
                 )
             )
 
@@ -655,8 +654,8 @@ class Glue(object):
                     # if there is an exception, the syntax of the formula
                     # may not be understandable by the prover, so don't
                     # throw out the reading.
-                    print('Error when checking logical equality of statements', e)
-                    
+                    print("Error when checking logical equality of statements", e)
+
         if add_reading:
             reading_list.append(glueformula.meaning)
 
@@ -695,7 +694,7 @@ class Glue(object):
             return_list.extend(gf.compile(index_counter))
 
         if self.verbose:
-            print('Compiled Glue Premises:')
+            print("Compiled Glue Premises:")
             for cgf in return_list:
                 print(cgf)
 
@@ -706,25 +705,25 @@ class Glue(object):
 
         regexp_tagger = RegexpTagger(
             [
-                (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),  # cardinal numbers
-                (r'(The|the|A|a|An|an)$', 'AT'),  # articles
-                (r'.*able$', 'JJ'),  # adjectives
-                (r'.*ness$', 'NN'),  # nouns formed from adjectives
-                (r'.*ly$', 'RB'),  # adverbs
-                (r'.*s$', 'NNS'),  # plural nouns
-                (r'.*ing$', 'VBG'),  # gerunds
-                (r'.*ed$', 'VBD'),  # past tense verbs
-                (r'.*', 'NN'),  # nouns (default)
+                (r"^-?[0-9]+(.[0-9]+)?$", "CD"),  # cardinal numbers
+                (r"(The|the|A|a|An|an)$", "AT"),  # articles
+                (r".*able$", "JJ"),  # adjectives
+                (r".*ness$", "NN"),  # nouns formed from adjectives
+                (r".*ly$", "RB"),  # adverbs
+                (r".*s$", "NNS"),  # plural nouns
+                (r".*ing$", "VBG"),  # gerunds
+                (r".*ed$", "VBD"),  # past tense verbs
+                (r".*", "NN"),  # nouns (default)
             ]
         )
-        brown_train = brown.tagged_sents(categories='news')
+        brown_train = brown.tagged_sents(categories="news")
         unigram_tagger = UnigramTagger(brown_train, backoff=regexp_tagger)
         bigram_tagger = BigramTagger(brown_train, backoff=unigram_tagger)
         trigram_tagger = TrigramTagger(brown_train, backoff=bigram_tagger)
 
         # Override particular words
         main_tagger = RegexpTagger(
-            [(r'(A|a|An|an)$', 'ex_quant'), (r'(Every|every|All|all)$', 'univ_quant')],
+            [(r"(A|a|An|an)$", "ex_quant"), (r"(Every|every|All|all)$", "univ_quant")],
             backoff=trigram_tagger,
         )
 
@@ -742,7 +741,7 @@ class DrtGlueFormula(GlueFormula):
             self.meaning = meaning
         else:
             raise RuntimeError(
-                'Meaning term neither string or expression: %s, %s'
+                "Meaning term neither string or expression: %s, %s"
                 % (meaning, meaning.__class__)
             )
 
@@ -752,7 +751,7 @@ class DrtGlueFormula(GlueFormula):
             self.glue = glue
         else:
             raise RuntimeError(
-                'Glue term neither string or expression: %s, %s'
+                "Glue term neither string or expression: %s, %s"
                 % (glue, glue.__class__)
             )
 
@@ -776,7 +775,7 @@ class DrtGlue(Glue):
     ):
         if not semtype_file:
             semtype_file = os.path.join(
-                'grammars', 'sample_grammars', 'drt_glue.semtype'
+                "grammars", "sample_grammars", "drt_glue.semtype"
             )
         Glue.__init__(self, semtype_file, remove_duplicates, depparser, verbose)
 
@@ -788,12 +787,12 @@ def demo(show_example=-1):
     from nltk.parse import MaltParser
 
     examples = [
-        'David sees Mary',
-        'David eats a sandwich',
-        'every man chases a dog',
-        'every man believes a dog sleeps',
-        'John gives David a sandwich',
-        'John chases himself',
+        "David sees Mary",
+        "David eats a sandwich",
+        "every man chases a dog",
+        "every man believes a dog sleeps",
+        "John gives David a sandwich",
+        "John chases himself",
     ]
     #                'John persuades David to order a pizza',
     #                'John tries to go',
@@ -805,21 +804,21 @@ def demo(show_example=-1):
     #                'every big gray cat leaves',
     #                'a former senator leaves',
 
-    print('============== DEMO ==============')
+    print("============== DEMO ==============")
 
     tagger = RegexpTagger(
         [
-            ('^(David|Mary|John)$', 'NNP'),
+            ("^(David|Mary|John)$", "NNP"),
             (
-                '^(sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$',
-                'VB',
+                "^(sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$",
+                "VB",
             ),
-            ('^(go|order|vanish|find|approach)$', 'VB'),
-            ('^(a)$', 'ex_quant'),
-            ('^(every)$', 'univ_quant'),
-            ('^(sandwich|man|dog|pizza|unicorn|cat|senator)$', 'NN'),
-            ('^(big|gray|former)$', 'JJ'),
-            ('^(him|himself)$', 'PRP'),
+            ("^(go|order|vanish|find|approach)$", "VB"),
+            ("^(a)$", "ex_quant"),
+            ("^(every)$", "univ_quant"),
+            ("^(sandwich|man|dog|pizza|unicorn|cat|senator)$", "NN"),
+            ("^(big|gray|former)$", "JJ"),
+            ("^(him|himself)$", "PRP"),
         ]
     )
 
@@ -828,11 +827,11 @@ def demo(show_example=-1):
 
     for (i, sentence) in enumerate(examples):
         if i == show_example or show_example == -1:
-            print('[[[Example %s]]]  %s' % (i, sentence))
+            print("[[[Example %s]]]  %s" % (i, sentence))
             for reading in glue.parse_to_meaning(sentence.split()):
                 print(reading.simplify())
-            print('')
+            print("")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

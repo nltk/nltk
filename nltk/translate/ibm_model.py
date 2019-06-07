@@ -37,7 +37,7 @@ Robert L. Mercer. 1993. The Mathematics of Statistical Machine
 Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
-from __future__ import division
+
 from bisect import insort_left
 from collections import defaultdict
 from copy import deepcopy
@@ -201,7 +201,7 @@ class IBMModel(object):
         :type i_pegged: int
         """
         src_sentence = [None] + sentence_pair.mots
-        trg_sentence = ['UNUSED'] + sentence_pair.words  # 1-indexed
+        trg_sentence = ["UNUSED"] + sentence_pair.words  # 1-indexed
 
         l = len(src_sentence) - 1  # exclude NULL
         m = len(trg_sentence) - 1

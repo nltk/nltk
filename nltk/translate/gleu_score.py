@@ -8,7 +8,7 @@
 # For license information, see LICENSE.TXT
 
 """ GLEU score implementation. """
-from __future__ import division
+
 from collections import Counter
 
 from nltk.util import ngrams, everygrams

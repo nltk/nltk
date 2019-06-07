@@ -25,11 +25,11 @@ def plot_word_freq_dist(text):
 
 
 def app():
-    t1 = Text(gutenberg.words('melville-moby_dick.txt'))
+    t1 = Text(gutenberg.words("melville-moby_dick.txt"))
     plot_word_freq_dist(t1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app()
 
-__all__ = ['app']
+__all__ = ["app"]

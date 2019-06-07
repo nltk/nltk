@@ -4,11 +4,11 @@
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, absolute_import
 
 import bisect
 from itertools import islice, chain
 from functools import total_ordering
+
 # this unused import is for python 2.7
 from collections import defaultdict, deque, Counter
 
@@ -25,8 +25,8 @@ from nltk.compat import python_2_unicode_compatible
 
 class OrderedDict(dict):
     def __init__(self, data=None, **kwargs):
-        self._keys = self.keys(data, kwargs.get('keys'))
-        self._default_factory = kwargs.get('default_factory')
+        self._keys = self.keys(data, kwargs.get("keys"))
+        self._default_factory = kwargs.get("default_factory")
         if data is None:
             dict.__init__(self)
         else:
@@ -84,7 +84,7 @@ class OrderedDict(dict):
                     return data.keys()
                 elif isinstance(data, list):
                     return [key for (key, value) in data]
-        elif '_keys' in self.__dict__:
+        elif "_keys" in self.__dict__:
             return self._keys
         else:
             return []
@@ -147,7 +147,7 @@ class AbstractLazySequence(object):
         Return the number of tokens in the corpus file underlying this
         corpus view.
         """
-        raise NotImplementedError('should be implemented by subclass')
+        raise NotImplementedError("should be implemented by subclass")
 
     def iterate_from(self, start):
         """
@@ -156,7 +156,7 @@ class AbstractLazySequence(object):
         ``start``.  If ``start>=len(self)``, then this iterator will
         generate no tokens.
         """
-        raise NotImplementedError('should be implemented by subclass')
+        raise NotImplementedError("should be implemented by subclass")
 
     def __getitem__(self, i):
         """
@@ -171,12 +171,12 @@ class AbstractLazySequence(object):
             if i < 0:
                 i += len(self)
             if i < 0:
-                raise IndexError('index out of range')
+                raise IndexError("index out of range")
             # Use iterate_from to extract it.
             try:
                 return next(self.iterate_from(i))
             except StopIteration:
-                raise IndexError('index out of range')
+                raise IndexError("index out of range")
 
     def __iter__(self):
         """Return an iterator that generates the tokens in the corpus
@@ -196,7 +196,7 @@ class AbstractLazySequence(object):
         for i, elt in enumerate(islice(self, start, stop)):
             if elt == value:
                 return i + start
-        raise ValueError('index(x): x not in list')
+        raise ValueError("index(x): x not in list")
 
     def __contains__(self, value):
         """Return true if this list contains ``value``."""
@@ -232,8 +232,8 @@ class AbstractLazySequence(object):
             pieces.append(repr(elt))
             length += len(pieces[-1]) + 2
             if length > self._MAX_REPR_SIZE and len(pieces) > 2:
-                return '[%s, ...]' % text_type(', ').join(pieces[:-1])
-        return '[%s]' % text_type(', ').join(pieces)
+                return "[%s, ...]" % text_type(", ").join(pieces[:-1])
+        return "[%s]" % text_type(", ").join(pieces)
 
     def __eq__(self, other):
         return type(self) == type(other) and list(self) == list(other)
@@ -250,7 +250,7 @@ class AbstractLazySequence(object):
         """
         :raise ValueError: Corpus view objects are unhashable.
         """
-        raise ValueError('%s objects are unhashable' % self.__class__.__name__)
+        raise ValueError("%s objects are unhashable" % self.__class__.__name__)
 
 
 class LazySubsequence(AbstractLazySequence):
@@ -331,12 +331,12 @@ class LazyConcatenation(AbstractLazySequence):
             if sublist_index == (len(self._offsets) - 1):
                 assert (
                     index + len(sublist) >= self._offsets[-1]
-                ), 'offests not monotonic increasing!'
+                ), "offests not monotonic increasing!"
                 self._offsets.append(index + len(sublist))
             else:
                 assert self._offsets[sublist_index + 1] == index + len(
                     sublist
-                ), 'inconsistent list value (num elts)'
+                ), "inconsistent list value (num elts)"
 
             for value in sublist[max(0, start_index - index) :]:
                 yield value
@@ -390,11 +390,11 @@ class LazyMap(AbstractLazySequence):
             by this lazy map.  (default=5)
         """
         if not lists:
-            raise TypeError('LazyMap requires at least two args')
+            raise TypeError("LazyMap requires at least two args")
 
         self._lists = lists
         self._func = function
-        self._cache_size = config.get('cache_size', 5)
+        self._cache_size = config.get("cache_size", 5)
         self._cache = {} if self._cache_size > 0 else None
 
         # If you just take bool() of sum() here _all_lazy will be true just
@@ -461,7 +461,7 @@ class LazyMap(AbstractLazySequence):
             if index < 0:
                 index += len(self)
             if index < 0:
-                raise IndexError('index out of range')
+                raise IndexError("index out of range")
             # Check the cache
             if self._cache is not None and index in self._cache:
                 return self._cache[index]
@@ -469,7 +469,7 @@ class LazyMap(AbstractLazySequence):
             try:
                 val = next(self.iterate_from(index))
             except StopIteration:
-                raise IndexError('index out of range')
+                raise IndexError("index out of range")
             # Update the cache
             if self._cache is not None:
                 if len(self._cache) > self._cache_size:

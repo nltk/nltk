@@ -63,7 +63,6 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from __future__ import division
 from collections import defaultdict
 from nltk.translate import AlignedSent
 from nltk.translate import Alignment
@@ -133,7 +132,7 @@ class IBMModel1(IBMModel):
             self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
-            self.translation_table = probability_tables['translation_table']
+            self.translation_table = probability_tables["translation_table"]
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)

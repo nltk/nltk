@@ -8,8 +8,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import unicode_literals, print_function
-
 import os
 import re
 import sys
@@ -57,7 +55,7 @@ class ReppTokenizer(TokenizerI):
     [(u'We', 0, 2), (u'evaluated', 3, 12), (u'our', 13, 16), (u'method', 17, 23), (u'on', 24, 26), (u'three', 27, 32), (u'languages', 33, 42), (u'and', 43, 46), (u'obtained', 47, 55), (u'error', 56, 61), (u'rates', 62, 67), (u'of', 68, 70), (u'0.27', 71, 75), (u'%', 75, 76), (u'(', 77, 78), (u'English', 78, 85), (u')', 85, 86), (u',', 86, 87), (u'0.35', 88, 92), (u'%', 92, 93), (u'(', 94, 95), (u'Dutch', 95, 100), (u')', 100, 101), (u'and', 102, 105), (u'0.76', 106, 110), (u'%', 110, 111), (u'(', 112, 113), (u'Italian', 113, 120), (u')', 120, 121), (u'for', 122, 125), (u'our', 126, 129), (u'best', 130, 134), (u'models', 135, 141), (u'.', 141, 142)]
     """
 
-    def __init__(self, repp_dir, encoding='utf8'):
+    def __init__(self, repp_dir, encoding="utf8"):
         self.repp_dir = self.find_repptokenizer(repp_dir)
         # Set a directory to store the temporary files.
         self.working_dir = tempfile.gettempdir()
@@ -85,11 +83,11 @@ class ReppTokenizer(TokenizerI):
         :rtype: iter(tuple(str))
         """
         with tempfile.NamedTemporaryFile(
-            prefix='repp_input.', dir=self.working_dir, mode='w', delete=False
+            prefix="repp_input.", dir=self.working_dir, mode="w", delete=False
         ) as input_file:
             # Write sentences to temporary input file.
             for sent in sentences:
-                input_file.write(text_type(sent) + '\n')
+                input_file.write(text_type(sent) + "\n")
             input_file.close()
             # Generate command to run REPP.
             cmd = self.generate_repp_command(input_file.name)
@@ -108,9 +106,9 @@ class ReppTokenizer(TokenizerI):
         :param inputfilename: path to the input file
         :type inputfilename: str
         """
-        cmd = [self.repp_dir + '/src/repp']
-        cmd += ['-c', self.repp_dir + '/erg/repp.set']
-        cmd += ['--format', 'triple']
+        cmd = [self.repp_dir + "/src/repp"]
+        cmd += ["-c", self.repp_dir + "/erg/repp.set"]
+        cmd += ["--format", "triple"]
         cmd += [inputfilename]
         return cmd
 
@@ -132,8 +130,8 @@ class ReppTokenizer(TokenizerI):
         :return: an iterable of the tokenized sentences as tuples of strings
         :rtype: iter(tuple)
         """
-        line_regex = re.compile('^\((\d+), (\d+), (.+)\)$', re.MULTILINE)
-        for section in repp_output.split('\n\n'):
+        line_regex = re.compile("^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
+        for section in repp_output.split("\n\n"):
             words_with_positions = [
                 (token, int(start), int(end))
                 for start, end, token in line_regex.findall(section)
@@ -148,8 +146,8 @@ class ReppTokenizer(TokenizerI):
         if os.path.exists(repp_dirname):  # If a full path is given.
             _repp_dir = repp_dirname
         else:  # Try to find path to REPP directory in environment variables.
-            _repp_dir = find_dir(repp_dirname, env_vars=('REPP_TOKENIZER',))
+            _repp_dir = find_dir(repp_dirname, env_vars=("REPP_TOKENIZER",))
         # Checks for the REPP binary and erg/repp.set config file.
-        assert os.path.exists(_repp_dir + '/src/repp')
-        assert os.path.exists(_repp_dir + '/erg/repp.set')
+        assert os.path.exists(_repp_dir + "/src/repp")
+        assert os.path.exists(_repp_dir + "/erg/repp.set")
         return _repp_dir

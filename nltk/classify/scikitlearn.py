@@ -30,7 +30,6 @@ best 1000 features:
 ...                      ('nb', MultinomialNB())])
 >>> classif = SklearnClassifier(pipeline)
 """
-from __future__ import print_function, unicode_literals
 
 from six.moves import zip
 
@@ -44,7 +43,7 @@ try:
 except ImportError:
     pass
 
-__all__ = ['SklearnClassifier']
+__all__ = ["SklearnClassifier"]
 
 
 @compat.python_2_unicode_compatible

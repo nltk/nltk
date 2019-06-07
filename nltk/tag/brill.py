@@ -8,8 +8,6 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function, division
-
 from collections import defaultdict, Counter
 
 from nltk.tag import TaggerI
@@ -28,7 +26,7 @@ class Word(Feature):
     Feature which examines the text (word) of nearby tokens.
     """
 
-    json_tag = 'nltk.tag.brill.Word'
+    json_tag = "nltk.tag.brill.Word"
 
     @staticmethod
     def extract_property(tokens, index):
@@ -42,7 +40,7 @@ class Pos(Feature):
     Feature which examines the tags of nearby tokens.
     """
 
-    json_tag = 'nltk.tag.brill.Pos'
+    json_tag = "nltk.tag.brill.Pos"
 
     @staticmethod
     def extract_property(tokens, index):
@@ -206,7 +204,7 @@ class BrillTagger(TaggerI):
     of the TaggerTrainers available.
     """
 
-    json_tag = 'nltk.tag.BrillTagger'
+    json_tag = "nltk.tag.BrillTagger"
 
     def __init__(self, initial_tagger, rules, training_stats=None):
         """
@@ -306,7 +304,7 @@ class BrillTagger(TaggerI):
         tids = [r.templateid for r in self._rules]
         train_stats = self.train_stats()
 
-        trainscores = train_stats['rulescores']
+        trainscores = train_stats["rulescores"]
         assert len(trainscores) == len(tids), (
             "corrupt statistics: "
             "{0} train scores for {1} rules".format(trainscores, tids)
@@ -351,7 +349,7 @@ class BrillTagger(TaggerI):
                 print(s)
 
         def print_testtrain_stats():
-            testscores = test_stats['rulescores']
+            testscores = test_stats["rulescores"]
             print(
                 "TEMPLATE STATISTICS (TEST AND TRAIN) ({0} templates, {1} rules)".format(
                     len(template_counts), len(tids)
@@ -429,24 +427,24 @@ class BrillTagger(TaggerI):
             return sum(t[1] != g[1] for pair in zip(xs, gold) for (t, g) in zip(*pair))
 
         testing_stats = {}
-        testing_stats['tokencount'] = sum(len(t) for t in sequences)
-        testing_stats['sequencecount'] = len(sequences)
+        testing_stats["tokencount"] = sum(len(t) for t in sequences)
+        testing_stats["sequencecount"] = len(sequences)
         tagged_tokenses = [self._initial_tagger.tag(tokens) for tokens in sequences]
-        testing_stats['initialerrors'] = counterrors(tagged_tokenses)
-        testing_stats['initialacc'] = (
-            1 - testing_stats['initialerrors'] / testing_stats['tokencount']
+        testing_stats["initialerrors"] = counterrors(tagged_tokenses)
+        testing_stats["initialacc"] = (
+            1 - testing_stats["initialerrors"] / testing_stats["tokencount"]
         )
         # Apply each rule to the entire corpus, in order
-        errors = [testing_stats['initialerrors']]
+        errors = [testing_stats["initialerrors"]]
         for rule in self._rules:
             for tagged_tokens in tagged_tokenses:
                 rule.apply(tagged_tokens)
             errors.append(counterrors(tagged_tokenses))
-        testing_stats['rulescores'] = [
+        testing_stats["rulescores"] = [
             err0 - err1 for (err0, err1) in zip(errors, errors[1:])
         ]
-        testing_stats['finalerrors'] = errors[-1]
-        testing_stats['finalacc'] = (
-            1 - testing_stats['finalerrors'] / testing_stats['tokencount']
+        testing_stats["finalerrors"] = errors[-1]
+        testing_stats["finalacc"] = (
+            1 - testing_stats["finalerrors"] / testing_stats["tokencount"]
         )
         return (tagged_tokenses, testing_stats)

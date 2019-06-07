@@ -26,8 +26,8 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
         from matplotlib import pylab
     except ImportError:
         raise ValueError(
-            'The plot function requires matplotlib to be installed.'
-            'See http://matplotlib.org/'
+            "The plot function requires matplotlib to be installed."
+            "See http://matplotlib.org/"
         )
 
     text = list(text)
@@ -58,9 +58,9 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
     pylab.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import nltk.compat
     from nltk.corpus import gutenberg
 
-    words = ['Elinor', 'Marianne', 'Edward', 'Willoughby']
-    dispersion_plot(gutenberg.words('austen-sense.txt'), words)
+    words = ["Elinor", "Marianne", "Edward", "Willoughby"]
+    dispersion_plot(gutenberg.words("austen-sense.txt"), words)

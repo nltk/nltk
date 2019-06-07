@@ -29,7 +29,6 @@ The ``BottomUpProbabilisticChartParser`` constructor has an optional
 argument beam_size.  If non-zero, this controls the size of the beam
 (aka the edge queue).  This option is most useful with InsideChartParser.
 """
-from __future__ import print_function, unicode_literals
 
 ##//////////////////////////////////////////////////////
 ##  Bottom-Up PCFG Chart Parser
@@ -154,7 +153,7 @@ class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
                     yield new_edge
 
     def __str__(self):
-        return 'Fundamental Rule'
+        return "Fundamental Rule"
 
 
 class BottomUpProbabilisticChartParser(ParserI):
@@ -239,7 +238,7 @@ class BottomUpProbabilisticChartParser(ParserI):
         for edge in bu_init.apply(chart, grammar):
             if self._trace > 1:
                 print(
-                    '  %-50s [%s]'
+                    "  %-50s [%s]"
                     % (chart.pretty_format_edge(edge, width=2), edge.prob())
                 )
             queue.append(edge)
@@ -256,7 +255,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             edge = queue.pop()
             if self._trace > 0:
                 print(
-                    '  %-50s [%s]'
+                    "  %-50s [%s]"
                     % (chart.pretty_format_edge(edge, width=2), edge.prob())
                 )
 
@@ -325,7 +324,7 @@ class BottomUpProbabilisticChartParser(ParserI):
             split = len(queue) - self.beam_size
             if self._trace > 2:
                 for edge in queue[:split]:
-                    print('  %-50s [DISCARDED]' % chart.pretty_format_edge(edge, 2))
+                    print("  %-50s [DISCARDED]" % chart.pretty_format_edge(edge, 2))
             del queue[:split]
 
 
@@ -485,23 +484,23 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     )
 
     demos = [
-        ('I saw John with my telescope', toy_pcfg1),
-        ('the boy saw Jack with Bob under the table with a telescope', toy_pcfg2),
+        ("I saw John with my telescope", toy_pcfg1),
+        ("the boy saw Jack with Bob under the table with a telescope", toy_pcfg2),
     ]
 
     if choice is None:
         # Ask the user which demo they want to use.
         print()
         for i in range(len(demos)):
-            print('%3s: %s' % (i + 1, demos[i][0]))
-            print('     %r' % demos[i][1])
+            print("%3s: %s" % (i + 1, demos[i][0]))
+            print("     %r" % demos[i][1])
             print()
-        print('Which demo (%d-%d)? ' % (1, len(demos)), end=' ')
+        print("Which demo (%d-%d)? " % (1, len(demos)), end=" ")
         choice = int(sys.stdin.readline().strip()) - 1
     try:
         sent, grammar = demos[choice]
     except:
-        print('Bad sentence number')
+        print("Bad sentence number")
         return
 
     # Tokenize the sentence.
@@ -522,7 +521,7 @@ def demo(choice=None, draw_parses=None, print_parses=None):
     num_parses = []
     all_parses = {}
     for parser in parsers:
-        print('\ns: %s\nparser: %s\ngrammar: %s' % (sent, parser, grammar))
+        print("\ns: %s\nparser: %s\ngrammar: %s" % (sent, parser, grammar))
         parser.trace(3)
         t = time.time()
         parses = list(parser.parse(tokens))
@@ -535,11 +534,11 @@ def demo(choice=None, draw_parses=None, print_parses=None):
 
     # Print some summary statistics
     print()
-    print('       Parser      Beam | Time (secs)   # Parses   Average P(parse)')
-    print('------------------------+------------------------------------------')
+    print("       Parser      Beam | Time (secs)   # Parses   Average P(parse)")
+    print("------------------------+------------------------------------------")
     for i in range(len(parsers)):
         print(
-            '%18s %4d |%11.4f%11d%19.14f'
+            "%18s %4d |%11.4f%11d%19.14f"
             % (
                 parsers[i].__class__.__name__,
                 parsers[i].beam_size,
@@ -553,29 +552,29 @@ def demo(choice=None, draw_parses=None, print_parses=None):
         p = reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses)
     else:
         p = 0
-    print('------------------------+------------------------------------------')
-    print('%18s      |%11s%11d%19.14f' % ('(All Parses)', 'n/a', len(parses), p))
+    print("------------------------+------------------------------------------")
+    print("%18s      |%11s%11d%19.14f" % ("(All Parses)", "n/a", len(parses), p))
 
     if draw_parses is None:
         # Ask the user if we should draw the parses.
         print()
-        print('Draw parses (y/n)? ', end=' ')
-        draw_parses = sys.stdin.readline().strip().lower().startswith('y')
+        print("Draw parses (y/n)? ", end=" ")
+        draw_parses = sys.stdin.readline().strip().lower().startswith("y")
     if draw_parses:
         from nltk.draw.tree import draw_trees
 
-        print('  please wait...')
+        print("  please wait...")
         draw_trees(*parses)
 
     if print_parses is None:
         # Ask the user if we should print the parses.
         print()
-        print('Print parses (y/n)? ', end=' ')
-        print_parses = sys.stdin.readline().strip().lower().startswith('y')
+        print("Print parses (y/n)? ", end=" ")
+        print_parses = sys.stdin.readline().strip().lower().startswith("y")
     if print_parses:
         for parse in parses:
             print(parse)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()
