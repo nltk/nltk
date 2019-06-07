@@ -27,7 +27,6 @@ There is also a demo function: `snowball.demo()`.
 import re
 from six.moves import input
 
-from nltk import compat
 from nltk.corpus import stopwords
 from nltk.stem import porter
 from nltk.stem.util import suffix_replace, prefix_replace
@@ -117,7 +116,6 @@ class SnowballStemmer(StemmerI):
         return self.stemmer.stem(self, token)
 
 
-@compat.python_2_unicode_compatible
 class _LanguageSpecificStemmer(StemmerI):
 
     """

@@ -12,12 +12,10 @@
 import re
 import gc
 import nltk
-from nltk.compat import python_2_unicode_compatible
 
 TRY_ZIPFILE_FIRST = False
 
 
-@python_2_unicode_compatible
 class LazyCorpusLoader(object):
     """
     To see the API documentation for this lazily loaded corpus, first

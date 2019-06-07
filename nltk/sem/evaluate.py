@@ -23,7 +23,6 @@ import sys
 from six import string_types
 
 from nltk.decorators import decorator  # this used in code that is commented out
-from nltk.compat import python_2_unicode_compatible
 
 from nltk.sem.logic import (
     AbstractVariableExpression,
@@ -118,7 +117,6 @@ def arity(rel):
     return len(list(rel)[0])
 
 
-@python_2_unicode_compatible
 class Valuation(dict):
     """
     A dictionary which represents a model-theoretic Valuation of non-logical constants.
@@ -255,7 +253,6 @@ def read_valuation(s, encoding=None):
     return Valuation(statements)
 
 
-@python_2_unicode_compatible
 class Assignment(dict):
     """
     A dictionary which represents an assignment of values to variables.
@@ -385,7 +382,6 @@ class Assignment(dict):
         return self
 
 
-@python_2_unicode_compatible
 class Model(object):
     """
     A first order model is a domain *D* of discourse and a valuation *V*.

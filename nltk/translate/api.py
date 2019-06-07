@@ -11,10 +11,7 @@
 import subprocess
 from collections import namedtuple
 
-from nltk.compat import python_2_unicode_compatible
 
-
-@python_2_unicode_compatible
 class AlignedSent(object):
     """
     Return an aligned sentence object, which encapsulates two sentences
@@ -162,7 +159,6 @@ class AlignedSent(object):
         return AlignedSent(self._mots, self._words, self._alignment.invert())
 
 
-@python_2_unicode_compatible
 class Alignment(frozenset):
     """
     A storage class for representing alignment between two sequences, s1, s2.

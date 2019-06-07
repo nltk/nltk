@@ -77,14 +77,12 @@ from six import iteritems
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
-from nltk.compat import python_2_unicode_compatible
 
 from nltk.metrics.distance import binary_distance
 
 log = logging.getLogger(__name__)
 
 
-@python_2_unicode_compatible
 class AnnotationTask(object):
     """Represents an annotation task, i.e. people assign labels to items.
 

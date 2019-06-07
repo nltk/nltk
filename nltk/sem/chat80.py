@@ -131,7 +131,6 @@ import sys
 from six import string_types
 
 import nltk.data
-from nltk.compat import python_2_unicode_compatible
 
 ###########################################################################
 # Chat-80 relation metadata bundles needed to build the valuation
@@ -246,7 +245,6 @@ not_unary = ["borders.pl", "contain.pl"]
 ###########################################################################
 
 
-@python_2_unicode_compatible
 class Concept(object):
     """
     A Concept class, loosely based on SKOS

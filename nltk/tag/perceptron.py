@@ -16,7 +16,6 @@ import logging
 
 from nltk.tag.api import TaggerI
 from nltk.data import find, load
-from nltk.compat import python_2_unicode_compatible
 
 try:
     import numpy as np
@@ -111,7 +110,6 @@ class AveragedPerceptron(object):
         self.weights = load(path)
 
 
-@python_2_unicode_compatible
 class PerceptronTagger(TaggerI):
 
     """

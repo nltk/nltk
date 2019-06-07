@@ -9,7 +9,6 @@
 from six import string_types
 
 from nltk.internals import Counter
-from nltk.compat import python_2_unicode_compatible
 from nltk.sem.logic import LogicParser, APP
 
 _counter = Counter()
@@ -74,7 +73,6 @@ class LinearLogicParser(LogicParser):
             return ConstantExpression(name)
 
 
-@python_2_unicode_compatible
 class Expression(object):
 
     _linear_logic_parser = LinearLogicParser()
@@ -93,7 +91,6 @@ class Expression(object):
         return "<%s %s>" % (self.__class__.__name__, self)
 
 
-@python_2_unicode_compatible
 class AtomicExpression(Expression):
     def __init__(self, name, dependencies=None):
         """
@@ -203,7 +200,6 @@ class VariableExpression(AtomicExpression):
             raise UnificationException(self, other, bindings)
 
 
-@python_2_unicode_compatible
 class ImpExpression(Expression):
     def __init__(self, antecedent, consequent):
         """
@@ -295,7 +291,6 @@ class ImpExpression(Expression):
         )
 
 
-@python_2_unicode_compatible
 class ApplicationExpression(Expression):
     def __init__(self, function, argument, argument_indices=None):
         """
@@ -374,7 +369,6 @@ class ApplicationExpression(Expression):
         )
 
 
-@python_2_unicode_compatible
 class BindingDict(object):
     def __init__(self, bindings=None):
         """

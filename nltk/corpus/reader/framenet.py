@@ -25,7 +25,7 @@ from six.moves import zip_longest
 from pprint import pprint
 
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
-from nltk.compat import python_2_unicode_compatible
+
 from nltk.util import LazyConcatenation, LazyMap, LazyIteratorList
 
 __docformat__ = "epytext en"
@@ -778,7 +778,6 @@ class FramenetError(Exception):
     """An exception class for framenet-related errors."""
 
 
-@python_2_unicode_compatible
 class AttrDict(dict):
 
     """A class that wraps a dict and allows accessing the keys of the
@@ -867,7 +866,7 @@ class AttrDict(dict):
             outstr = _pretty_any(self)
 
         # ensure result is unicode string prior to applying the
-        # @python_2_unicode_compatible decorator (because non-ASCII characters
+        #  decorator (because non-ASCII characters
         # could in principle occur in the data and would trigger an encoding error when
         # passed as arguments to str.format()).
         # assert isinstance(outstr, unicode) # not in Python 3.2
@@ -880,7 +879,6 @@ class AttrDict(dict):
         return self.__str__()
 
 
-@python_2_unicode_compatible
 class SpecialList(list):
     """
     A list subclass which adds a '_type' attribute for special printing
@@ -953,7 +951,6 @@ class Future(object):
         return self._data().__repr__()
 
 
-@python_2_unicode_compatible
 class PrettyDict(AttrDict):
     """
     Displays an abbreviated repr of values where possible.
@@ -978,7 +975,6 @@ class PrettyDict(AttrDict):
         return "{" + (",\n " if self._BREAK_LINES else ", ").join(parts) + "}"
 
 
-@python_2_unicode_compatible
 class PrettyList(list):
     """
     Displays an abbreviated repr of only the first several elements, not the whole list.
@@ -1011,7 +1007,6 @@ class PrettyList(list):
         return "[%s]" % text_type(",\n " if self._BREAK_LINES else ", ").join(pieces)
 
 
-@python_2_unicode_compatible
 class PrettyLazyMap(LazyMap):
     """
     Displays an abbreviated repr of only the first several elements, not the whole list.
@@ -1038,7 +1033,6 @@ class PrettyLazyMap(LazyMap):
         return "[%s]" % text_type(", ").join(pieces)
 
 
-@python_2_unicode_compatible
 class PrettyLazyIteratorList(LazyIteratorList):
     """
     Displays an abbreviated repr of only the first several elements, not the whole list.
@@ -1065,7 +1059,6 @@ class PrettyLazyIteratorList(LazyIteratorList):
         return "[%s]" % text_type(", ").join(pieces)
 
 
-@python_2_unicode_compatible
 class PrettyLazyConcatenation(LazyConcatenation):
     """
     Displays an abbreviated repr of only the first several elements, not the whole list.

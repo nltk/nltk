@@ -24,7 +24,6 @@ from functools import reduce
 
 from six import itervalues
 
-from nltk import compat
 from nltk.parse import load_parser
 
 from nltk.sem.skolemize import skolemize
@@ -301,7 +300,6 @@ class HoleSemantics(object):
             return node
 
 
-@compat.python_2_unicode_compatible
 class Constraint(object):
     """
     This class represents a constraint of the form (L =< N),

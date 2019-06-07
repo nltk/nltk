@@ -19,7 +19,6 @@ from subprocess import PIPE
 
 from six import text_type
 
-from nltk import compat
 from nltk.internals import (
     find_jar,
     find_file,

@@ -14,7 +14,6 @@ feature structures as nodes.
 
 from six.moves import range
 
-from nltk.compat import python_2_unicode_compatible
 from nltk.featstruct import FeatStruct, unify, TYPE, find_variables
 from nltk.sem import logic
 from nltk.tree import Tree
@@ -46,7 +45,6 @@ from nltk.parse.chart import (
 # ////////////////////////////////////////////////////////////
 
 
-@python_2_unicode_compatible
 class FeatureTreeEdge(TreeEdge):
     """
     A specialized tree edge that allows shared variable bindings

@@ -23,10 +23,8 @@ __docformat__ = "plaintext"
 import re
 
 from nltk.stem.api import StemmerI
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class PorterStemmer(StemmerI):
     """
     A word stemmer based on the Porter stemming algorithm.

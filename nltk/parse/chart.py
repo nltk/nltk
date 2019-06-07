@@ -47,7 +47,7 @@ from nltk.tree import Tree
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
 from nltk.util import OrderedDict
 from nltk.internals import raise_unorderable_types
-from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.compat import unicode_repr
 
 from nltk.parse.api import ParserI
 
@@ -228,7 +228,6 @@ class EdgeI(object):
             return self._hash
 
 
-@python_2_unicode_compatible
 class TreeEdge(EdgeI):
     """
     An edge that records the fact that a tree is (partially)
@@ -364,7 +363,6 @@ class TreeEdge(EdgeI):
         return "[Edge: %s]" % self
 
 
-@python_2_unicode_compatible
 class LeafEdge(EdgeI):
     """
     An edge that records the fact that a leaf value is consistent with
@@ -967,7 +965,6 @@ class ChartRuleI(object):
         raise NotImplementedError()
 
 
-@python_2_unicode_compatible
 class AbstractChartRule(ChartRuleI):
     """
     An abstract base class for chart rules.  ``AbstractChartRule``

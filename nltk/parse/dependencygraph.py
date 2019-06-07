@@ -23,15 +23,12 @@ import warnings
 from six import string_types
 
 from nltk.tree import Tree
-from nltk.compat import python_2_unicode_compatible
-
 
 #################################################################
 # DependencyGraph Class
 #################################################################
 
 
-@python_2_unicode_compatible
 class DependencyGraph(object):
     """
     A container for the nodes and labelled edges of a dependency structure.

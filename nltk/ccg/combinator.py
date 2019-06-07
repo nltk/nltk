@@ -11,7 +11,6 @@ CCG Combinators
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 
-from nltk.compat import python_2_unicode_compatible
 from nltk.ccg.api import FunctionalCategory
 
 
@@ -55,7 +54,6 @@ class DirectedBinaryCombinator(object):
         pass
 
 
-@python_2_unicode_compatible
 class ForwardCombinator(DirectedBinaryCombinator):
     """
     Class representing combinators where the primary functor is on the left.
@@ -82,7 +80,6 @@ class ForwardCombinator(DirectedBinaryCombinator):
         return ">%s%s" % (self._combinator, self._suffix)
 
 
-@python_2_unicode_compatible
 class BackwardCombinator(DirectedBinaryCombinator):
     """
     The backward equivalent of the ForwardCombinator class.
@@ -106,7 +103,6 @@ class BackwardCombinator(DirectedBinaryCombinator):
         return "<%s%s" % (self._combinator, self._suffix)
 
 
-@python_2_unicode_compatible
 class UndirectedFunctionApplication(UndirectedBinaryCombinator):
     """
     Class representing function application.
@@ -152,7 +148,6 @@ ForwardApplication = ForwardCombinator(UndirectedFunctionApplication(), forwardO
 BackwardApplication = BackwardCombinator(UndirectedFunctionApplication(), backwardOnly)
 
 
-@python_2_unicode_compatible
 class UndirectedComposition(UndirectedBinaryCombinator):
     """
     Functional composition (harmonic) combinator.
@@ -221,7 +216,6 @@ BackwardBx = BackwardCombinator(
 )
 
 
-@python_2_unicode_compatible
 class UndirectedSubstitution(UndirectedBinaryCombinator):
     """
     Substitution (permutation) combinator.
@@ -286,7 +280,6 @@ def innermostFunction(categ):
     return categ
 
 
-@python_2_unicode_compatible
 class UndirectedTypeRaise(UndirectedBinaryCombinator):
     """
     Undirected combinator for type raising.

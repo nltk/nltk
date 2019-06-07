@@ -54,8 +54,6 @@ from nltk.sem.drt import (
     DrtVariableExpression,
 )
 
-from nltk.compat import python_2_unicode_compatible
-
 
 class Boxer(object):
     """
@@ -1035,7 +1033,6 @@ class AbstractBoxerDrs(object):
         return hash("{0}".format(self))
 
 
-@python_2_unicode_compatible
 class BoxerDrs(AbstractBoxerDrs):
     def __init__(self, refs, conds, consequent=None):
         AbstractBoxerDrs.__init__(self)
@@ -1095,7 +1092,6 @@ class BoxerDrs(AbstractBoxerDrs):
     __hash__ = AbstractBoxerDrs.__hash__
 
 
-@python_2_unicode_compatible
 class BoxerNot(AbstractBoxerDrs):
     def __init__(self, drs):
         AbstractBoxerDrs.__init__(self)
@@ -1125,7 +1121,6 @@ class BoxerNot(AbstractBoxerDrs):
     __hash__ = AbstractBoxerDrs.__hash__
 
 
-@python_2_unicode_compatible
 class BoxerIndexed(AbstractBoxerDrs):
     def __init__(self, discourse_id, sent_index, word_indices):
         AbstractBoxerDrs.__init__(self)

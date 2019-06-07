@@ -11,7 +11,6 @@ import re
 from nltk.tree import Tree
 from nltk.tag.mapping import map_tag
 from nltk.tag.util import str2tuple
-from nltk.compat import python_2_unicode_compatible
 
 ##//////////////////////////////////////////////////////
 ## EVALUATION

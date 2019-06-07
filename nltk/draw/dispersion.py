@@ -59,7 +59,6 @@ def dispersion_plot(text, words, ignore_case=False, title="Lexical Dispersion Pl
 
 
 if __name__ == "__main__":
-    import nltk.compat
     from nltk.corpus import gutenberg
 
     words = ["Elinor", "Marianne", "Edward", "Willoughby"]

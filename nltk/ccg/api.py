@@ -11,7 +11,7 @@ from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 
 from nltk.internals import raise_unorderable_types
-from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.compat import unicode_repr
 
 
 @add_metaclass(ABCMeta)
@@ -84,7 +84,6 @@ class AbstractCCGCategory(object):
             return self._hash
 
 
-@python_2_unicode_compatible
 class CCGVar(AbstractCCGCategory):
     """
     Class representing a variable CCG category.
@@ -151,7 +150,6 @@ class CCGVar(AbstractCCGCategory):
 
 
 @total_ordering
-@python_2_unicode_compatible
 class Direction(object):
     """
     Class representing the direction of a function application.
@@ -253,7 +251,6 @@ class Direction(object):
             return Direction("/", self._restrs)
 
 
-@python_2_unicode_compatible
 class PrimitiveCategory(AbstractCCGCategory):
     """
     Class representing primitive categories.
@@ -307,7 +304,6 @@ class PrimitiveCategory(AbstractCCGCategory):
         return "%s%s" % (self._categ, restrictions)
 
 
-@python_2_unicode_compatible
 class FunctionalCategory(AbstractCCGCategory):
     """
     Class that represents a function application category.

@@ -9,10 +9,8 @@
 from itertools import chain
 
 from nltk.internals import Counter
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class FStructure(dict):
     def safeappend(self, key, item):
         """

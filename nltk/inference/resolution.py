@@ -31,7 +31,6 @@ from nltk.sem.logic import (
 )
 
 from nltk.inference.api import Prover, BaseProverCommand
-from nltk.compat import python_2_unicode_compatible
 
 
 class ProverParseError(Exception):
@@ -174,7 +173,6 @@ class ResolutionProverCommand(BaseProverCommand):
         return out
 
 
-@python_2_unicode_compatible
 class Clause(list):
     def __init__(self, data):
         list.__init__(self, data)
@@ -530,7 +528,6 @@ def _clausify(expression):
     raise ProverParseError()
 
 
-@python_2_unicode_compatible
 class BindingDict(object):
     def __init__(self, binding_list=None):
         """

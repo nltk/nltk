@@ -10,11 +10,9 @@ try:
 except ImportError:
     pass
 
-from nltk.compat import python_2_unicode_compatible
 from nltk.cluster.util import VectorSpaceClusterer
 
 
-@python_2_unicode_compatible
 class EMClusterer(VectorSpaceClusterer):
     """
     The Gaussian EM clusterer models the vectors as being produced by

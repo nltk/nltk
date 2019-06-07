@@ -126,7 +126,6 @@ import time
 
 from six import string_types
 
-from nltk import compat
 from nltk.tree import Tree
 from nltk.internals import import_from_stdlib
 
@@ -463,7 +462,6 @@ class TimitCorpusReader(CorpusReader):
         )
 
 
-@compat.python_2_unicode_compatible
 class SpeakerInfo(object):
     def __init__(
         self, id, sex, dr, use, recdate, birthdate, ht, race, edu, comments=None

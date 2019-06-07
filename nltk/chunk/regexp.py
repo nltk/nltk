@@ -12,14 +12,13 @@ from six import string_types
 
 from nltk.tree import Tree
 from nltk.chunk.api import ChunkParserI
-from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.compat import unicode_repr
 
 ##//////////////////////////////////////////////////////
 ##  ChunkString
 ##//////////////////////////////////////////////////////
 
 
-@python_2_unicode_compatible
 class ChunkString(object):
     """
     A string-based encoding of a particular chunking of a text.
@@ -255,7 +254,6 @@ class ChunkString(object):
 ##//////////////////////////////////////////////////////
 
 
-@python_2_unicode_compatible
 class RegexpChunkRule(object):
     """
     A rule specifying how to modify the chunking in a ``ChunkString``,
@@ -397,7 +395,6 @@ class RegexpChunkRule(object):
             raise ValueError("Illegal chunk pattern: %s" % rule)
 
 
-@python_2_unicode_compatible
 class ChunkRule(RegexpChunkRule):
     """
     A rule specifying how to add chunks to a ``ChunkString``, using a
@@ -443,7 +440,6 @@ class ChunkRule(RegexpChunkRule):
         return "<ChunkRule: " + unicode_repr(self._pattern) + ">"
 
 
-@python_2_unicode_compatible
 class ChinkRule(RegexpChunkRule):
     """
     A rule specifying how to remove chinks to a ``ChunkString``,
@@ -489,7 +485,6 @@ class ChinkRule(RegexpChunkRule):
         return "<ChinkRule: " + unicode_repr(self._pattern) + ">"
 
 
-@python_2_unicode_compatible
 class UnChunkRule(RegexpChunkRule):
     """
     A rule specifying how to remove chunks to a ``ChunkString``,
@@ -530,7 +525,6 @@ class UnChunkRule(RegexpChunkRule):
         return "<UnChunkRule: " + unicode_repr(self._pattern) + ">"
 
 
-@python_2_unicode_compatible
 class MergeRule(RegexpChunkRule):
     """
     A rule specifying how to merge chunks in a ``ChunkString``, using
@@ -601,7 +595,6 @@ class MergeRule(RegexpChunkRule):
         )
 
 
-@python_2_unicode_compatible
 class SplitRule(RegexpChunkRule):
     """
     A rule specifying how to split chunks in a ``ChunkString``, using
@@ -671,7 +664,6 @@ class SplitRule(RegexpChunkRule):
         )
 
 
-@python_2_unicode_compatible
 class ExpandLeftRule(RegexpChunkRule):
     """
     A rule specifying how to expand chunks in a ``ChunkString`` to the left,
@@ -742,7 +734,6 @@ class ExpandLeftRule(RegexpChunkRule):
         )
 
 
-@python_2_unicode_compatible
 class ExpandRightRule(RegexpChunkRule):
     """
     A rule specifying how to expand chunks in a ``ChunkString`` to the
@@ -813,7 +804,6 @@ class ExpandRightRule(RegexpChunkRule):
         )
 
 
-@python_2_unicode_compatible
 class ChunkRuleWithContext(RegexpChunkRule):
     """
     A rule specifying how to add chunks to a ``ChunkString``, using
@@ -976,7 +966,6 @@ def tag_pattern2re_pattern(tag_pattern):
 ##//////////////////////////////////////////////////////
 
 
-@python_2_unicode_compatible
 class RegexpChunkParser(ChunkParserI):
     """
     A regular expression based chunk parser.  ``RegexpChunkParser`` uses a
@@ -1143,7 +1132,6 @@ class RegexpChunkParser(ChunkParserI):
 ##//////////////////////////////////////////////////////
 
 
-@python_2_unicode_compatible
 class RegexpParser(ChunkParserI):
     """
     A grammar based chunk parser.  ``chunk.RegexpParser`` uses a set of

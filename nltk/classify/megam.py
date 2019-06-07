@@ -26,7 +26,6 @@ import subprocess
 
 from six import string_types
 
-from nltk import compat
 from nltk.internals import find_binary
 
 try:

@@ -11,8 +11,6 @@ import sys
 from collections import Counter, Iterable
 from itertools import chain
 
-from nltk import compat
-
 try:
     # Python >= 3.4
     from functools import singledispatch
@@ -52,7 +50,6 @@ def _string_lookup(word, vocab):
     return word if word in vocab else vocab.unk_label
 
 
-@compat.python_2_unicode_compatible
 class Vocabulary(object):
     """Stores language model vocabulary.
 

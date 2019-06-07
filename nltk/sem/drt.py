@@ -12,7 +12,6 @@ from itertools import chain
 
 from six import string_types
 
-from nltk.compat import python_2_unicode_compatible
 from nltk.sem.logic import (
     APP,
     AbstractVariableExpression,
@@ -300,7 +299,6 @@ class DrtExpression(object):
         DrsDrawer(self).draw()
 
 
-@python_2_unicode_compatible
 class DRS(DrtExpression, Expression):
     """A Discourse Representation Structure."""
 
@@ -610,7 +608,6 @@ class DrtConstantExpression(DrtAbstractVariableExpression, ConstantExpression):
     pass
 
 
-@python_2_unicode_compatible
 class DrtProposition(DrtExpression, Expression):
     def __init__(self, variable, drs):
         self.variable = variable
@@ -781,7 +778,6 @@ class DrtEqualityExpression(DrtBinaryExpression, EqualityExpression):
         return EqualityExpression(self.first.fol(), self.second.fol())
 
 
-@python_2_unicode_compatible
 class DrtConcatenation(DrtBooleanExpression):
     """DRS of the form '(DRS + DRS)'"""
 
@@ -979,7 +975,6 @@ def _pad_vertically(lines, max_lines):
     return lines + pad_line * (max_lines - len(lines))
 
 
-@python_2_unicode_compatible
 class PossibleAntecedents(list, DrtExpression, Expression):
     def free(self):
         """Set of free variables."""

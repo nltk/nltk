@@ -35,7 +35,6 @@ from six.moves import zip
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
-from nltk import compat
 
 try:
     from sklearn.feature_extraction import DictVectorizer
@@ -46,7 +45,6 @@ except ImportError:
 __all__ = ["SklearnClassifier"]
 
 
-@compat.python_2_unicode_compatible
 class SklearnClassifier(ClassifierI):
     """Wrapper for scikit-learn classifiers."""
 
