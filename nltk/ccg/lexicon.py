@@ -8,8 +8,6 @@
 CCG Lexicons
 """
 
-from __future__ import unicode_literals
-
 import re
 from collections import defaultdict
 

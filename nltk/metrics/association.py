@@ -11,8 +11,6 @@ generic, abstract implementation in ``NgramAssocMeasures``, and n-specific
 ``BigramAssocMeasures`` and ``TrigramAssocMeasures``.
 """
 
-from __future__ import division
-
 import math as _math
 from abc import ABCMeta, abstractmethod
 from functools import reduce

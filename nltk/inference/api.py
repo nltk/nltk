@@ -17,7 +17,6 @@ the model builder tries to build a model for the assumptions. Given a set of ass
 goal *G*, the model builder tries to find a counter-model, in the sense of a model that will satisfy
 the assumptions plus the negation of *G*.
 """
-from __future__ import print_function
 
 from abc import ABCMeta, abstractmethod
 import threading

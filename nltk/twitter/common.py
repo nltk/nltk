@@ -11,8 +11,6 @@
 Utility functions for the :module:`twitterclient` module which do not require
 the `twython` library to have been installed.
 """
-from __future__ import print_function
-
 import csv
 import gzip
 import json

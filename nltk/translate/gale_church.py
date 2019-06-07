@@ -17,7 +17,6 @@ http://aclweb.org/anthology/J93-1004.pdf
 
 """
 
-from __future__ import division
 import math
 
 try:

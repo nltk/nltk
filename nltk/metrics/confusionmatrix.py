@@ -5,7 +5,7 @@
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
+
 from nltk.probability import FreqDist
 from nltk.compat import python_2_unicode_compatible
 

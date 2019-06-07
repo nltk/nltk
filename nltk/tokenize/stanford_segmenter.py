@@ -11,8 +11,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import unicode_literals, print_function
-
 import tempfile
 import os
 import json

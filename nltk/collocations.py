@@ -23,7 +23,6 @@ these functionalities, dependent on being provided a function which scores a
 ngram given appropriate frequency counts. A number of standard association
 measures are provided in bigram_measures and trigram_measures.
 """
-from __future__ import print_function
 
 # Possible TODOs:
 # - consider the distinction between f(x,_) and f(x) and whether our

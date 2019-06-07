@@ -9,7 +9,6 @@
 """
 Utility functions and classes for classifiers.
 """
-from __future__ import print_function, division
 
 import math
 

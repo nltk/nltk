@@ -68,7 +68,6 @@ of EM.
 For more information, please consult the source code for this module,
 which includes extensive demonstration code.
 """
-from __future__ import print_function, unicode_literals, division
 
 import re
 import itertools

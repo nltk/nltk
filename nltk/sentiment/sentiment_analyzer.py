@@ -13,7 +13,6 @@ using NLTK features and classifiers, especially for teaching and demonstrative
 purposes.
 """
 
-from __future__ import print_function
 from collections import defaultdict
 
 from nltk.classify.util import apply_features, accuracy as eval_accuracy

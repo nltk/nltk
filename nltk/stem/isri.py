@@ -29,7 +29,6 @@ Additional adjustments were made to improve the algorithm:
 increases the word ambiguities and changes the original root.
 
 """
-from __future__ import unicode_literals
 import re
 
 from nltk.stem.api import StemmerI

@@ -30,7 +30,6 @@ best 1000 features:
 ...                      ('nb', MultinomialNB())])
 >>> classif = SklearnClassifier(pipeline)
 """
-from __future__ import print_function, unicode_literals
 
 from six.moves import zip
 

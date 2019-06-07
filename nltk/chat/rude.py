@@ -4,7 +4,6 @@
 # Author: Peter Spiller <pspiller@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
 
 from nltk.chat.util import Chat, reflections
 

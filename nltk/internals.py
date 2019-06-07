@@ -6,7 +6,6 @@
 #         Nitin Madnani <nmadnani@ets.org>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
 
 import subprocess
 import os

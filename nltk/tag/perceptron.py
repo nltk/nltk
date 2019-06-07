@@ -9,9 +9,6 @@
 #
 # This module is provided under the terms of the MIT License.
 
-from __future__ import absolute_import
-from __future__ import print_function, division
-
 import random
 from collections import defaultdict
 import pickle
@@ -21,7 +18,7 @@ from nltk.tag.api import TaggerI
 from nltk.data import find, load
 from nltk.compat import python_2_unicode_compatible
 
-import numpy as np  
+import numpy as np
 
 PICKLE = "averaged_perceptron_tagger.pickle"
 
@@ -176,7 +173,7 @@ class PerceptronTagger(TaggerI):
                 features = self._get_features(i, word, context, prev, prev2)
                 tag, conf = self.model.predict(features, return_conf)
             output.append((word, tag, conf) if return_conf == True else (word, tag))
-            
+
             prev2 = prev
             prev = tag
 

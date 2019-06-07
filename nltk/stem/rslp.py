@@ -30,7 +30,7 @@
 # comentário, inclusive sobre o desenvolvimento de um stemmer diferente
 # e/ou melhor para o português. Também sugiro utilizar-se a lista de discussão
 # do NLTK para o português para qualquer debate.
-from __future__ import print_function, unicode_literals
+
 from nltk.data import load
 
 from nltk.stem.api import StemmerI

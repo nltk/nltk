@@ -63,7 +63,6 @@ We evaluate a tagger on data that was not seen during training:
 
 For more information, please consult chapter 5 of the NLTK Book.
 """
-from __future__ import print_function
 
 from nltk.tag.api import TaggerI
 from nltk.tag.util import str2tuple, tuple2str, untag

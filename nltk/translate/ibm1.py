@@ -63,7 +63,6 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from __future__ import division
 from collections import defaultdict
 from nltk.translate import AlignedSent
 from nltk.translate import Alignment

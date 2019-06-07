@@ -13,7 +13,6 @@ Translated by LIONEL GILES, M.A. 1910
 Hosted by the Gutenberg Project
 http://www.gutenberg.org/
 """
-from __future__ import print_function
 
 from nltk.chat.util import Chat, reflections
 

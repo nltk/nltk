@@ -106,7 +106,6 @@ The following is a short tutorial on the available transformations.
      C   D      C   D
 
 """
-from __future__ import print_function
 
 from nltk.tree import Tree
 

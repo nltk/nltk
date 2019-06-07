@@ -14,7 +14,6 @@
     See the documentation for further information on copyrights,
     or contact the author. All Rights Reserved.
 """
-from __future__ import print_function
 
 ### Constants
 

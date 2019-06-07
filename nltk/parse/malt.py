@@ -8,8 +8,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_function, unicode_literals
-
 import os
 import sys
 import tempfile

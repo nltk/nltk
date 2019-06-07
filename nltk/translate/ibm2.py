@@ -46,8 +46,6 @@ Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
 
-from __future__ import division
-
 import warnings
 from collections import defaultdict
 

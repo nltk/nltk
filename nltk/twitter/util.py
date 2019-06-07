@@ -11,8 +11,6 @@
 Authentication utilities to accompany :module:`twitterclient`.
 """
 
-from __future__ import print_function
-
 import os
 import pprint
 from twython import Twython

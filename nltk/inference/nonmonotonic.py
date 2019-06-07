@@ -11,7 +11,6 @@ A module to perform nonmonotonic reasoning.  The ideas and demonstrations in
 this module are based on "Logical Foundations of Artificial Intelligence" by
 Michael R. Genesereth and Nils J. Nilsson.
 """
-from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
 from functools import reduce

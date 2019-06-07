@@ -6,7 +6,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import absolute_import, print_function
 import os
 import sys
 from functools import update_wrapper, wraps

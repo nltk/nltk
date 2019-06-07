@@ -9,7 +9,6 @@
 """
 Module for a resolution-based First Order theorem prover.
 """
-from __future__ import print_function, unicode_literals
 
 import operator
 from collections import defaultdict

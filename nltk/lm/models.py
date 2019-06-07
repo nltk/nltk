@@ -6,7 +6,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """Language Models"""
-from __future__ import division, unicode_literals
 
 from nltk import compat
 from nltk.lm.api import LanguageModel, Smoothing

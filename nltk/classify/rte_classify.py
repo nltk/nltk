@@ -16,7 +16,6 @@ the hypothesis is more informative than (i.e not entailed by) the text.
 TO DO: better Named Entity classification
 TO DO: add lemmatization
 """
-from __future__ import print_function
 
 from nltk.tokenize import RegexpTokenizer
 from nltk.classify.util import accuracy, check_megam_config

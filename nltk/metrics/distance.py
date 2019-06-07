@@ -20,9 +20,6 @@ As metrics, they must satisfy the following three requirements:
 3. d(a, c) <= d(a, b) + d(b, c)
 """
 
-from __future__ import print_function
-from __future__ import division
-
 import warnings
 import operator
 

@@ -38,8 +38,6 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
     ('international', 'I-NP', 'O', 'JJ'), ('business', 'I-NP', 'O', 'NN'), ('center', 'I-NP', 'O', 'NN')]
 """
 
-
-from __future__ import unicode_literals
 from os import path, sep, environ
 from subprocess import Popen, PIPE
 from platform import architecture, system

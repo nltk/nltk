@@ -35,7 +35,6 @@ defines three chart parsers:
   - ``SteppingChartParser`` is a subclass of ``ChartParser`` that can
     be used to step through the parsing process.
 """
-from __future__ import print_function, division, unicode_literals
 
 import itertools
 import re

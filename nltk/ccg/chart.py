@@ -29,7 +29,6 @@ which should print a nice representation of the derivation.
 This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
-from __future__ import print_function, division, unicode_literals
 
 import itertools
 

@@ -10,7 +10,6 @@
 Module for reading, writing and manipulating
 Toolbox databases and settings files.
 """
-from __future__ import print_function
 
 import re, codecs
 from xml.etree.ElementTree import ElementTree, TreeBuilder, Element, SubElement

@@ -9,7 +9,6 @@
 """
 Module for a tableau-based First Order theorem prover.
 """
-from __future__ import print_function, unicode_literals
 
 from nltk.internals import Counter
 

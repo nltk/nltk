@@ -7,7 +7,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import unicode_literals
 import re
 from nltk.stem.api import StemmerI
 from nltk.compat import python_2_unicode_compatible

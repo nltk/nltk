@@ -25,7 +25,6 @@ index, over-stemming index and stemming weight), and the results showed that
 ARLSTem is promising and producing high performances. This stemmer is not
 based on any dictionary and can be used on-line effectively.
 """
-from __future__ import unicode_literals
 import re
 
 from nltk.stem.api import StemmerI

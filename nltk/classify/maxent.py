@@ -51,8 +51,6 @@ For all values of ``feat_val`` and ``some_label``.  This mapping is
 performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
-from __future__ import print_function, unicode_literals
-
 try:
     import numpy
 except ImportError:

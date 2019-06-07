@@ -29,7 +29,6 @@ X - other: foreign words, typos, abbreviations
 
 """
 
-from __future__ import print_function, unicode_literals, division
 from collections import defaultdict
 from os.path import join
 

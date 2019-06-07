@@ -35,7 +35,6 @@ domains and tasks. The basic logic is this:
 
 ######################################################################
 
-from __future__ import unicode_literals
 import re
 
 from six import int2byte, unichr

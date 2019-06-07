@@ -5,7 +5,6 @@ http://www.phyast.pitt.edu/~micheles/python/documentation.html
 
 Included in NLTK for its support of a nice memoization decorator.
 """
-from __future__ import print_function
 
 __docformat__ = 'restructuredtext en'
 

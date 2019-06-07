@@ -17,7 +17,7 @@ determine a tag for the specified token, then its backoff tagger is
 consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
-from __future__ import print_function, unicode_literals
+
 from abc import abstractmethod
 
 import re

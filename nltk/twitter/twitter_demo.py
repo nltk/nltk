@@ -30,7 +30,6 @@ For documentation about the Twitter APIs, see `The Streaming APIs Overview
 For error codes see Twitter's
 `Error Codes and Responses <https://dev.twitter.com/overview/api/response-codes>`
 """
-from __future__ import print_function
 
 import datetime
 from functools import wraps

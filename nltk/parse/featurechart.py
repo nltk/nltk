@@ -11,7 +11,6 @@
 Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
-from __future__ import print_function, unicode_literals
 
 from six.moves import range
 

@@ -4,7 +4,7 @@
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import unicode_literals
+
 from functools import total_ordering
 
 from abc import ABCMeta, abstractmethod

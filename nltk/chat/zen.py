@@ -35,7 +35,6 @@ responses are very limited. Zen Chatbot will usually answer very vaguely, or
 respond to a question by asking a different question, in much the same way
 as Eliza.
 """
-from __future__ import print_function
 
 from nltk.chat.util import Chat, reflections
 

@@ -8,7 +8,6 @@
 # For license information, see LICENSE.TXT
 
 """ ChrF score implementation """
-from __future__ import division
 from collections import Counter, defaultdict
 import re
 

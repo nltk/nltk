@@ -28,9 +28,6 @@ For details about An Crubadan, see:
 http://borel.slu.edu/crubadan/index.html
 """
 
-# Ensure that literal strings default to unicode rather than str.
-from __future__ import print_function, unicode_literals
-
 from nltk.compat import PY3
 from nltk.util import trigrams
 

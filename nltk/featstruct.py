@@ -88,7 +88,6 @@ In general, if your feature structures will contain any reentrances,
 or if you plan to use them as dictionary keys, it is strongly
 recommended that you use full-fledged ``FeatStruct`` objects.
 """
-from __future__ import print_function, unicode_literals, division
 
 import re
 import copy

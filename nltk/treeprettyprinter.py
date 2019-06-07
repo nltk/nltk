@@ -18,8 +18,6 @@ Graph Algorithms and Applications, 10(2) 141--157 (2006)149.
 http://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
-from __future__ import division, print_function, unicode_literals
-
 import re
 from cgi import escape
 from collections import defaultdict

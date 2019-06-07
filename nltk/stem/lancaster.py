@@ -9,7 +9,6 @@
 A word stemmer based on the Lancaster (Paice/Husk) stemming algorithm.
 Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
-from __future__ import unicode_literals
 import re
 
 from nltk.stem.api import StemmerI

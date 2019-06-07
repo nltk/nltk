@@ -34,7 +34,7 @@ that expects a tokenizer.  For example, these tokenizers can be used
 to specify the tokenization conventions when building a `CorpusReader`.
 
 """
-from __future__ import unicode_literals
+
 from nltk.tokenize.api import TokenizerI, StringTokenizer
 from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
 

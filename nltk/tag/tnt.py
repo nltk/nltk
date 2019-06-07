@@ -12,7 +12,7 @@ by Thorsten Brants
 
 http://acl.ldc.upenn.edu/A/A00/A00-1031.pdf
 '''
-from __future__ import print_function, division
+
 from math import log
 
 from operator import itemgetter

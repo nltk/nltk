@@ -122,7 +122,6 @@ The set of rules is written to the file ``chat_pnames.cfg`` in the
 current directory.
 
 """
-from __future__ import print_function, unicode_literals
 
 import re
 import shelve

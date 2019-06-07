@@ -6,8 +6,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_function
-
 from nltk.parse.api import ParserI
 from nltk.tree import Tree
 

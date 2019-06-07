@@ -7,7 +7,6 @@
 
 # Simplified from PHP version by Robert Klein <brathna@gmail.com>
 # http://fswordfinder.sourceforge.net/
-from __future__ import print_function
 
 import random
 

@@ -5,7 +5,6 @@
 #         Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import unicode_literals
 
 from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet

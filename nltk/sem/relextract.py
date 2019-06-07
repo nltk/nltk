@@ -19,7 +19,6 @@ The two serialization outputs are "rtuple" and "clause".
 - A clause is an atom of the form ``relsym(subjsym, objsym)``,
   where the relation, subject and object have been canonicalized to single strings.
 """
-from __future__ import print_function
 
 # todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 

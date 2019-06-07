@@ -22,8 +22,6 @@ for details.
 
 .. _megam: http://www.umiacs.umd.edu/~hal/megam/index.html
 """
-from __future__ import print_function
-
 import subprocess
 
 from six import string_types

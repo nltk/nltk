@@ -13,7 +13,6 @@ Tools for reading and writing dependency trees.
 The input is assumed to be in Malt-TAB format
 (http://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
-from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
 from itertools import chain

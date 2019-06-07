@@ -68,7 +68,6 @@ Expected results from the Artstein and Poesio survey paper:
     1.0
 
 """
-from __future__ import print_function, unicode_literals, division
 
 import logging
 from itertools import groupby

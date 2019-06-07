@@ -8,7 +8,6 @@
 """
 Provide structured access to documentation.
 """
-from __future__ import print_function
 
 import re
 from textwrap import wrap

@@ -8,9 +8,6 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function
-
-
 # returns a list of errors in string format
 
 

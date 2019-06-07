@@ -6,7 +6,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
-from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
 from itertools import chain

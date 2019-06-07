@@ -7,8 +7,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import unicode_literals
-
 import re
 import json
 import time
@@ -337,7 +335,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
         Takes multiple sentences as a list where each sentence is a list of
         tokens.
-        
+
         :param sentences: Input sentences to tag
         :type sentences: list(list(str))
         :rtype: list(list(tuple(str, str))
@@ -372,7 +370,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         Tag multiple sentences.
 
         Takes multiple sentences as a list where each sentence is a string.
-        
+
         :param sentences: Input sentences to tag
         :type sentences: list(str)
         :rtype: list(list(list(tuple(str, str)))

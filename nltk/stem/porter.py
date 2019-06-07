@@ -18,8 +18,6 @@ which includes another Python implementation and other implementations
 in many languages.
 """
 
-from __future__ import print_function, unicode_literals
-
 __docformat__ = 'plaintext'
 
 import re

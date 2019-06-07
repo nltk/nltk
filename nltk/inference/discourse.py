@@ -42,7 +42,6 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 (This is not intended to scale beyond very short discourses!) The method ``readings(filter=True)`` will only show
 those threads which are consistent (taking into account any background assumptions).
 """
-from __future__ import print_function
 
 import os
 from abc import ABCMeta, abstractmethod

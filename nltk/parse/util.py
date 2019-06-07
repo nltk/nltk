@@ -10,7 +10,6 @@
 """
 Utility functions for parsers.
 """
-from __future__ import print_function
 
 from nltk.grammar import CFG, FeatureGrammar, PCFG
 from nltk.data import load

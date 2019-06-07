@@ -9,7 +9,6 @@
 """
 A theorem prover that makes use of the external 'Prover9' package.
 """
-from __future__ import print_function
 
 import os
 import subprocess

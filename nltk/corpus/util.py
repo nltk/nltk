@@ -9,7 +9,6 @@
 # { Lazy Corpus Loader
 ######################################################################
 
-from __future__ import unicode_literals
 import re
 import gc
 import nltk

@@ -15,7 +15,6 @@ typed by users, and respond with automatically generated sentences.
 These chatbots may not work using the windows command line or the
 windows IDLE GUI.
 """
-from __future__ import print_function
 
 from nltk.chat.util import Chat
 from nltk.chat.eliza import eliza_chat

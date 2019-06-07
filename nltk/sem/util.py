@@ -12,7 +12,6 @@ extraction of the semantic representation of the root node of the the
 syntax tree, followed by evaluation of the semantic representation in
 a first-order model.
 """
-from __future__ import print_function, unicode_literals
 
 import codecs
 from nltk.sem import evaluate

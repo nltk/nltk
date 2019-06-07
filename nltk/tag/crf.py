@@ -9,8 +9,7 @@
 """
 A module for POS tagging using CRFSuite
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
+
 import unicodedata
 import re
 from nltk.tag.api import TaggerI

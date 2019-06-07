@@ -10,7 +10,6 @@
 A version of first order predicate logic, built on
 top of the typed lambda calculus.
 """
-from __future__ import print_function, unicode_literals
 
 import re
 import operator

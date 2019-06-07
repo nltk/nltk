@@ -23,7 +23,6 @@ developed by Martin Porter.
 There is also a demo function: `snowball.demo()`.
 
 """
-from __future__ import unicode_literals, print_function
 
 import re
 from six.moves import input

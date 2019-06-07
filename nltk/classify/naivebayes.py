@@ -29,7 +29,6 @@ sum to one:
 |  P(label|features) = --------------------------------------------
 |                        SUM[l]( P(l) * P(f1|l) * ... * P(fn|l) )
 """
-from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
 

@@ -9,9 +9,6 @@
 Tkinter widgets for displaying multi-column listboxes and tables.
 """
 
-from __future__ import division
-
-
 import operator
 
 from six.moves.tkinter import Frame, Label, Listbox, Scrollbar, Tk

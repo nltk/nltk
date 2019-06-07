@@ -30,7 +30,6 @@ resource file, given its URL: ``load()`` loads a given resource, and
 adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
-from __future__ import print_function, unicode_literals, division
 
 import functools
 import textwrap

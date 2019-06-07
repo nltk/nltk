@@ -8,8 +8,6 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function, division
-
 from collections import defaultdict, Counter
 
 from nltk.tag import TaggerI

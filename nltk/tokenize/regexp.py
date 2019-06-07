@@ -65,7 +65,6 @@ argument.  This differs from the conventions used by Python's
 ``re`` functions, where the pattern is always the first argument.
 (This is for consistency with the other NLTK tokenizers.)
 """
-from __future__ import unicode_literals
 
 import re
 

@@ -37,7 +37,7 @@ Robert L. Mercer. 1993. The Mathematics of Statistical Machine
 Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
-from __future__ import division
+
 from bisect import insort_left
 from collections import defaultdict
 from copy import deepcopy

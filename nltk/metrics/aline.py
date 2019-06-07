@@ -38,8 +38,6 @@ Example usage
 University of Toronto.
 """
 
-from __future__ import unicode_literals
-
 try:
     import numpy as np
 except ImportError:

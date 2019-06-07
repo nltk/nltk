@@ -5,7 +5,6 @@
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, division
 
 from math import fabs
 import operator

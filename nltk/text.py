@@ -13,7 +13,6 @@ Functionality includes: concordancing, collocation discovery,
 regular expression search over tokenized strings, and
 distributional similarity.
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
 
 from math import log
 from collections import defaultdict, Counter, namedtuple

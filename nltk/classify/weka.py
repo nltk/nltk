@@ -8,7 +8,7 @@
 """
 Classifiers that make use of the external 'Weka' package.
 """
-from __future__ import print_function
+
 import time
 import tempfile
 import os

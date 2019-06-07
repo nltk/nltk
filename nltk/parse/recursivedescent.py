@@ -5,7 +5,6 @@
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
 
 from nltk.grammar import Nonterminal
 from nltk.tree import Tree, ImmutableTree

@@ -12,7 +12,6 @@
 # a translation table used to convert things you say into things the
 # computer says back, e.g. "I am" --> "you are"
 
-from __future__ import print_function
 from nltk.chat.util import Chat, reflections
 
 # a table of response pairs, where each pair consists of a

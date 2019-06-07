@@ -31,7 +31,6 @@ References:
   In HLT-NAACL. pp. 308-316.
 """
 
-from __future__ import unicode_literals
 import warnings
 
 import re

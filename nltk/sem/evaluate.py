@@ -13,7 +13,6 @@
 This module provides data structures for representing first-order
 models.
 """
-from __future__ import print_function, unicode_literals
 
 from pprint import pformat
 import inspect

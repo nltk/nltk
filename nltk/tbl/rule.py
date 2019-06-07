@@ -8,7 +8,6 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 

@@ -10,7 +10,6 @@
 """
 Utility methods for Sentiment Analysis.
 """
-from __future__ import division
 
 import codecs
 import csv

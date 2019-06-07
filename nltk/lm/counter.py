@@ -10,8 +10,6 @@ Language Model Counter
 ----------------------
 """
 
-from __future__ import unicode_literals
-
 from collections import Sequence, defaultdict
 
 from six import string_types

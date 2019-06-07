@@ -13,7 +13,6 @@
 Class for representing hierarchical language structures, such as
 syntax trees and morphological trees.
 """
-from __future__ import print_function, unicode_literals
 
 import re
 import sys
@@ -814,10 +813,10 @@ class Tree(list):
                 pre_error_message = str("The Ghostscript executable isn't found.\n"
                                         "See http://web.mit.edu/ghostscript/www/Install.htm\n"
                                         "If you're using a Mac, you can try installing\n"
-                                        "https://docs.brew.sh/Installation then `brew install ghostscript`")                
+                                        "https://docs.brew.sh/Installation then `brew install ghostscript`")
                 print(pre_error_message, file=sys.stderr)
                 raise LookupError
-                
+
             with open(out_path, 'rb') as sr:
                 res = sr.read()
             os.remove(in_path)
