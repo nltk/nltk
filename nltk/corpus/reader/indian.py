@@ -90,9 +90,9 @@ class IndianCorpusView(StreamBackedCorpusView):
 
     def read_block(self, stream):
         line = stream.readline()
-        if line.startswith('<'):
+        if line.startswith("<"):
             return []
-        sent = [str2tuple(word, sep='_') for word in line.split()]
+        sent = [str2tuple(word, sep="_") for word in line.split()]
         if self._tag_mapping_function:
             sent = [(w, self._tag_mapping_function(t)) for (w, t) in sent]
         if not self._tagged:

@@ -11,6 +11,7 @@ from nltk.stem.porter import PorterStemmer
 from nltk.corpus import wordnet
 from itertools import chain, product
 
+
 def _generate_enums(hypothesis, reference, preprocess=str.lower):
     """
     Takes in string inputs for hypothesis and reference and returns
@@ -29,6 +30,7 @@ def _generate_enums(hypothesis, reference, preprocess=str.lower):
     reference_list = list(enumerate(preprocess(reference).split()))
     return hypothesis_list, reference_list
 
+
 def exact_match(hypothesis, reference):
     """
     matches exact words in hypothesis and reference
@@ -45,6 +47,7 @@ def exact_match(hypothesis, reference):
     """
     hypothesis_list, reference_list = _generate_enums(hypothesis, reference)
     return _match_enums(hypothesis_list, reference_list)
+
 
 def _match_enums(enum_hypothesis_list, enum_reference_list):
     """
@@ -64,12 +67,17 @@ def _match_enums(enum_hypothesis_list, enum_reference_list):
     for i in range(len(enum_hypothesis_list))[::-1]:
         for j in range(len(enum_reference_list))[::-1]:
             if enum_hypothesis_list[i][1] == enum_reference_list[j][1]:
-                word_match.append((enum_hypothesis_list[i][0],enum_reference_list[j][0]))
-                (enum_hypothesis_list.pop(i)[1],enum_reference_list.pop(j)[1])
+                word_match.append(
+                    (enum_hypothesis_list[i][0], enum_reference_list[j][0])
+                )
+                (enum_hypothesis_list.pop(i)[1], enum_reference_list.pop(j)[1])
                 break
     return word_match, enum_hypothesis_list, enum_reference_list
 
-def _enum_stem_match(enum_hypothesis_list, enum_reference_list, stemmer = PorterStemmer()):
+
+def _enum_stem_match(
+    enum_hypothesis_list, enum_reference_list, stemmer=PorterStemmer()
+):
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between enum_hypothesis_list and
@@ -86,28 +94,38 @@ def _enum_stem_match(enum_hypothesis_list, enum_reference_list, stemmer = Porter
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
-    stemmed_enum_list1 = [(word_pair[0],stemmer.stem(word_pair[1])) \
-                          for word_pair in enum_hypothesis_list]
+    stemmed_enum_list1 = [
+        (word_pair[0], stemmer.stem(word_pair[1])) for word_pair in enum_hypothesis_list
+    ]
 
-    stemmed_enum_list2 = [(word_pair[0],stemmer.stem(word_pair[1])) \
-                          for word_pair in enum_reference_list]
+    stemmed_enum_list2 = [
+        (word_pair[0], stemmer.stem(word_pair[1])) for word_pair in enum_reference_list
+    ]
 
-    word_match, enum_unmat_hypo_list, enum_unmat_ref_list = \
-                    _match_enums(stemmed_enum_list1, stemmed_enum_list2)
+    word_match, enum_unmat_hypo_list, enum_unmat_ref_list = _match_enums(
+        stemmed_enum_list1, stemmed_enum_list2
+    )
 
-    enum_unmat_hypo_list = list(zip(*enum_unmat_hypo_list)) if len(enum_unmat_hypo_list)>0 else []
+    enum_unmat_hypo_list = (
+        list(zip(*enum_unmat_hypo_list)) if len(enum_unmat_hypo_list) > 0 else []
+    )
 
-    enum_unmat_ref_list = list(zip(*enum_unmat_ref_list)) if len(enum_unmat_ref_list)>0 else []
+    enum_unmat_ref_list = (
+        list(zip(*enum_unmat_ref_list)) if len(enum_unmat_ref_list) > 0 else []
+    )
 
-    enum_hypothesis_list = list(filter(lambda x:x[0] not in enum_unmat_hypo_list,
-                                       enum_hypothesis_list))
+    enum_hypothesis_list = list(
+        filter(lambda x: x[0] not in enum_unmat_hypo_list, enum_hypothesis_list)
+    )
 
-    enum_reference_list = list(filter(lambda x:x[0] not in enum_unmat_ref_list,
-                                      enum_reference_list))
+    enum_reference_list = list(
+        filter(lambda x: x[0] not in enum_unmat_ref_list, enum_reference_list)
+    )
 
     return word_match, enum_hypothesis_list, enum_reference_list
 
-def stem_match(hypothesis, reference, stemmer = PorterStemmer()):
+
+def stem_match(hypothesis, reference, stemmer=PorterStemmer()):
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between hypothesis and reference
@@ -124,9 +142,10 @@ def stem_match(hypothesis, reference, stemmer = PorterStemmer()):
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
     enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
-    return _enum_stem_match(enum_hypothesis_list, enum_reference_list, stemmer = stemmer)
+    return _enum_stem_match(enum_hypothesis_list, enum_reference_list, stemmer=stemmer)
 
-def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet = wordnet):
+
+def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet=wordnet):
     """
     Matches each word in reference to a word in hypothesis
     if any synonym of a hypothesis word is the exact match
@@ -142,20 +161,29 @@ def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet = 
     """
     word_match = []
     for i in range(len(enum_hypothesis_list))[::-1]:
-        hypothesis_syns = set(chain(*[[lemma.name() for lemma in synset.lemmas()
-                                        if lemma.name().find('_')<0]
-                                       for synset in \
-                                           wordnet.synsets(
-                                               enum_hypothesis_list[i][1])]
-                                               )).union({enum_hypothesis_list[i][1]})
+        hypothesis_syns = set(
+            chain(
+                *[
+                    [
+                        lemma.name()
+                        for lemma in synset.lemmas()
+                        if lemma.name().find("_") < 0
+                    ]
+                    for synset in wordnet.synsets(enum_hypothesis_list[i][1])
+                ]
+            )
+        ).union({enum_hypothesis_list[i][1]})
         for j in range(len(enum_reference_list))[::-1]:
             if enum_reference_list[j][1] in hypothesis_syns:
-                word_match.append((enum_hypothesis_list[i][0],enum_reference_list[j][0]))
-                enum_hypothesis_list.pop(i),enum_reference_list.pop(j)
+                word_match.append(
+                    (enum_hypothesis_list[i][0], enum_reference_list[j][0])
+                )
+                enum_hypothesis_list.pop(i), enum_reference_list.pop(j)
                 break
     return word_match, enum_hypothesis_list, enum_reference_list
 
-def wordnetsyn_match(hypothesis, reference, wordnet = wordnet):
+
+def wordnetsyn_match(hypothesis, reference, wordnet=wordnet):
     """
     Matches each word in reference to a word in hypothesis if any synonym
     of a hypothesis word is the exact match to the reference word.
@@ -168,10 +196,14 @@ def wordnetsyn_match(hypothesis, reference, wordnet = wordnet):
     :rtype: list of tuples
     """
     enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
-    return _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet = wordnet)
+    return _enum_wordnetsyn_match(
+        enum_hypothesis_list, enum_reference_list, wordnet=wordnet
+    )
 
-def _enum_allign_words(enum_hypothesis_list, enum_reference_list,
-                       stemmer=PorterStemmer(), wordnet = wordnet):
+
+def _enum_allign_words(
+    enum_hypothesis_list, enum_reference_list, stemmer=PorterStemmer(), wordnet=wordnet
+):
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -189,21 +221,28 @@ def _enum_allign_words(enum_hypothesis_list, enum_reference_list,
              unmatched reference list
     :rtype: list of tuples, list of tuples, list of tuples
     """
-    exact_matches, enum_hypothesis_list, enum_reference_list = \
-        _match_enums(enum_hypothesis_list, enum_reference_list)
+    exact_matches, enum_hypothesis_list, enum_reference_list = _match_enums(
+        enum_hypothesis_list, enum_reference_list
+    )
 
-    stem_matches, enum_hypothesis_list, enum_reference_list = \
-        _enum_stem_match(enum_hypothesis_list, enum_reference_list,
-                         stemmer = stemmer)
+    stem_matches, enum_hypothesis_list, enum_reference_list = _enum_stem_match(
+        enum_hypothesis_list, enum_reference_list, stemmer=stemmer
+    )
 
-    wns_matches, enum_hypothesis_list, enum_reference_list = \
-        _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list,
-                               wordnet = wordnet)
+    wns_matches, enum_hypothesis_list, enum_reference_list = _enum_wordnetsyn_match(
+        enum_hypothesis_list, enum_reference_list, wordnet=wordnet
+    )
 
-    return (sorted(exact_matches + stem_matches + wns_matches, key=lambda wordpair:wordpair[0]),
-            enum_hypothesis_list, enum_reference_list)
+    return (
+        sorted(
+            exact_matches + stem_matches + wns_matches, key=lambda wordpair: wordpair[0]
+        ),
+        enum_hypothesis_list,
+        enum_reference_list,
+    )
 
-def allign_words(hypothesis, reference, stemmer = PorterStemmer(), wordnet = wordnet):
+
+def allign_words(hypothesis, reference, stemmer=PorterStemmer(), wordnet=wordnet):
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -220,8 +259,10 @@ def allign_words(hypothesis, reference, stemmer = PorterStemmer(), wordnet = wor
     :rtype: list of tuples, list of tuples, list of tuples
     """
     enum_hypothesis_list, enum_reference_list = _generate_enums(hypothesis, reference)
-    return _enum_allign_words(enum_hypothesis_list, enum_reference_list, stemmer= stemmer,
-                             wordnet= wordnet)
+    return _enum_allign_words(
+        enum_hypothesis_list, enum_reference_list, stemmer=stemmer, wordnet=wordnet
+    )
+
 
 def _count_chunks(matches):
     """
@@ -233,24 +274,29 @@ def _count_chunks(matches):
     :return: Number of chunks a sentence is divided into post allignment
     :rtype: int
     """
-    i=0
+    i = 0
     chunks = 1
-    while(i<len(matches)-1):
-        if (matches[i+1][0]==matches[i][0]+1) and (matches[i+1][1]==matches[i][1]+1):
-            i+=1
+    while i < len(matches) - 1:
+        if (matches[i + 1][0] == matches[i][0] + 1) and (
+            matches[i + 1][1] == matches[i][1] + 1
+        ):
+            i += 1
             continue
-        i+=1
+        i += 1
         chunks += 1
     return chunks
 
-def single_meteor_score(reference,
-                        hypothesis,
-                        preprocess = str.lower,
-                        stemmer = PorterStemmer(),
-                        wordnet = wordnet,
-                        alpha=0.9,
-                        beta=3,
-                        gamma=0.5):
+
+def single_meteor_score(
+    reference,
+    hypothesis,
+    preprocess=str.lower,
+    stemmer=PorterStemmer(),
+    wordnet=wordnet,
+    alpha=0.9,
+    beta=3,
+    gamma=0.5,
+):
     """
     Calculates METEOR score for single hypothesis and reference as per
     "Meteor: An Automatic Metric for MT Evaluation with HighLevels of
@@ -294,32 +340,35 @@ def single_meteor_score(reference,
     :return: The sentence-level METEOR score.
     :rtype: float
     """
-    enum_hypothesis, enum_reference = _generate_enums(hypothesis,
-                                                      reference,
-                                                      preprocess = preprocess)
+    enum_hypothesis, enum_reference = _generate_enums(
+        hypothesis, reference, preprocess=preprocess
+    )
     translation_length = len(enum_hypothesis)
     reference_length = len(enum_reference)
     matches, _, _ = _enum_allign_words(enum_hypothesis, enum_reference)
     matches_count = len(matches)
     try:
-        precision = float(matches_count)/translation_length
-        recall = float(matches_count)/reference_length
-        fmean = (precision*recall)/(alpha*precision+(1-alpha)*recall)
+        precision = float(matches_count) / translation_length
+        recall = float(matches_count) / reference_length
+        fmean = (precision * recall) / (alpha * precision + (1 - alpha) * recall)
         chunk_count = float(_count_chunks(matches))
-        frag_frac = chunk_count/matches_count
+        frag_frac = chunk_count / matches_count
     except ZeroDivisionError:
         return 0.0
-    penalty = gamma*frag_frac**beta
-    return (1-penalty)*fmean
+    penalty = gamma * frag_frac ** beta
+    return (1 - penalty) * fmean
 
-def meteor_score(references,
-                hypothesis,
-                preprocess = str.lower,
-                stemmer = PorterStemmer(),
-                wordnet = wordnet,
-                alpha=0.9,
-                beta=3,
-                gamma=0.5):
+
+def meteor_score(
+    references,
+    hypothesis,
+    preprocess=str.lower,
+    stemmer=PorterStemmer(),
+    wordnet=wordnet,
+    alpha=0.9,
+    beta=3,
+    gamma=0.5,
+):
     """
     Calculates METEOR score for hypothesis with multiple references as
     described in "Meteor: An Automatic Metric for MT Evaluation with
@@ -369,10 +418,17 @@ def meteor_score(references,
     :return: The sentence-level METEOR score.
     :rtype: float
     """
-    return max([single_meteor_score(reference,
-                                    hypothesis,
-                                    stemmer = stemmer,
-                                    wordnet = wordnet,
-                                    alpha = alpha,
-                                    beta = beta,
-                                    gamma = gamma) for reference in references])
+    return max(
+        [
+            single_meteor_score(
+                reference,
+                hypothesis,
+                stemmer=stemmer,
+                wordnet=wordnet,
+                alpha=alpha,
+                beta=beta,
+                gamma=gamma,
+            )
+            for reference in references
+        ]
+    )

@@ -65,7 +65,7 @@ class RSLPStemmer(StemmerI):
         self._model.append(self.read_rule("step6.pt"))
 
     def read_rule(self, filename):
-        rules = load('nltk:stemmers/rslp/' + filename, format='raw').decode("utf8")
+        rules = load("nltk:stemmers/rslp/" + filename, format="raw").decode("utf8")
         lines = rules.split("\n")
 
         lines = [line for line in lines if line != ""]  # remove blank lines

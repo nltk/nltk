@@ -43,7 +43,7 @@ try:
 except ImportError:
     pass
 
-__all__ = ['SklearnClassifier']
+__all__ = ["SklearnClassifier"]
 
 
 @compat.python_2_unicode_compatible

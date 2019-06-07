@@ -331,7 +331,7 @@ def demo():
     draw_trees(t, collapsedTree, cnfTree, parentTree, original)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()
 
 __all__ = ["chomsky_normal_form", "un_chomsky_normal_form", "collapse_unary"]

@@ -41,7 +41,7 @@ class WordNetLemmatizer(object):
         return min(lemmas, key=len) if lemmas else word
 
     def __repr__(self):
-        return '<WordNetLemmatizer>'
+        return "<WordNetLemmatizer>"
 
 
 # unload wordnet

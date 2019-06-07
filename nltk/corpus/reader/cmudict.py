@@ -92,7 +92,7 @@ def read_cmudict_block(stream):
     entries = []
     while len(entries) < 100:  # Read 100 at a time.
         line = stream.readline()
-        if line == '':
+        if line == "":
             return entries  # end of file.
         pieces = line.split()
         entries.append((pieces[0].lower(), pieces[2:]))

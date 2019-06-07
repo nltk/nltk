@@ -56,33 +56,33 @@ class LazyCorpusLoader(object):
         self.__name = self.__name__ = name
         self.__reader_cls = reader_cls
         # If nltk_data_subdir is set explicitly
-        if 'nltk_data_subdir' in kwargs:
+        if "nltk_data_subdir" in kwargs:
             # Use the specified subdirectory path
-            self.subdir = kwargs['nltk_data_subdir']
+            self.subdir = kwargs["nltk_data_subdir"]
             # Pops the `nltk_data_subdir` argument, we don't need it anymore.
-            kwargs.pop('nltk_data_subdir', None)
+            kwargs.pop("nltk_data_subdir", None)
         else:  # Otherwise use 'nltk_data/corpora'
-            self.subdir = 'corpora'
+            self.subdir = "corpora"
         self.__args = args
         self.__kwargs = kwargs
 
     def __load(self):
         # Find the corpus root directory.
-        zip_name = re.sub(r'(([^/]+)(/.*)?)', r'\2.zip/\1/', self.__name)
+        zip_name = re.sub(r"(([^/]+)(/.*)?)", r"\2.zip/\1/", self.__name)
         if TRY_ZIPFILE_FIRST:
             try:
-                root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+                root = nltk.data.find("{}/{}".format(self.subdir, zip_name))
             except LookupError as e:
                 try:
-                    root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+                    root = nltk.data.find("{}/{}".format(self.subdir, self.__name))
                 except LookupError:
                     raise e
         else:
             try:
-                root = nltk.data.find('{}/{}'.format(self.subdir, self.__name))
+                root = nltk.data.find("{}/{}".format(self.subdir, self.__name))
             except LookupError as e:
                 try:
-                    root = nltk.data.find('{}/{}'.format(self.subdir, zip_name))
+                    root = nltk.data.find("{}/{}".format(self.subdir, zip_name))
                 except LookupError:
                     raise e
 
@@ -116,7 +116,7 @@ class LazyCorpusLoader(object):
         # (see http://bugs.python.org/issue1225107).
         # Without this fix tests may take extra 1.5GB RAM
         # because all corpora gets loaded during test collection.
-        if attr == '__bases__':
+        if attr == "__bases__":
             raise AttributeError("LazyCorpusLoader object has no attribute '__bases__'")
 
         self.__load()
@@ -125,9 +125,9 @@ class LazyCorpusLoader(object):
         return getattr(self, attr)
 
     def __repr__(self):
-        return '<%s in %r (not loaded yet)>' % (
+        return "<%s in %r (not loaded yet)>" % (
             self.__reader_cls.__name__,
-            '.../corpora/' + self.__name,
+            ".../corpora/" + self.__name,
         )
 
     def _unload(self):

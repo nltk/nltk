@@ -355,7 +355,7 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         :return: str
         """
         if self._result is None:
-            raise LookupError('You have to call build_model() first to ' 'get a model!')
+            raise LookupError("You have to call build_model() first to " "get a model!")
         else:
             return self._decorate_model(self._model, format)
 
@@ -489,7 +489,7 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
         :return: str
         """
         if self._result is None:
-            raise LookupError('You have to call build_model() first to ' 'get a model!')
+            raise LookupError("You have to call build_model() first to " "get a model!")
         else:
             return self._decorate_model(self._model, format)
 
@@ -519,20 +519,20 @@ class ParallelProverBuilder(Prover, ModelBuilder):
         self._modelbuilder = modelbuilder
 
     def _prove(self, goal=None, assumptions=None, verbose=False):
-        return self._run(goal, assumptions, verbose), ''
+        return self._run(goal, assumptions, verbose), ""
 
     def _build_model(self, goal=None, assumptions=None, verbose=False):
-        return not self._run(goal, assumptions, verbose), ''
+        return not self._run(goal, assumptions, verbose), ""
 
     def _run(self, goal, assumptions, verbose):
         # Set up two thread, Prover and ModelBuilder to run in parallel
         tp_thread = TheoremToolThread(
-            lambda: self._prover.prove(goal, assumptions, verbose), verbose, 'TP'
+            lambda: self._prover.prove(goal, assumptions, verbose), verbose, "TP"
         )
         mb_thread = TheoremToolThread(
             lambda: self._modelbuilder.build_model(goal, assumptions, verbose),
             verbose,
-            'MB',
+            "MB",
         )
 
         tp_thread.start()
@@ -574,10 +574,10 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
     def _run(self, verbose):
         # Set up two thread, Prover and ModelBuilder to run in parallel
         tp_thread = TheoremToolThread(
-            lambda: BaseProverCommand.prove(self, verbose), verbose, 'TP'
+            lambda: BaseProverCommand.prove(self, verbose), verbose, "TP"
         )
         mb_thread = TheoremToolThread(
-            lambda: BaseModelBuilderCommand.build_model(self, verbose), verbose, 'MB'
+            lambda: BaseModelBuilderCommand.build_model(self, verbose), verbose, "MB"
         )
 
         tp_thread.start()
@@ -607,12 +607,12 @@ class TheoremToolThread(threading.Thread):
             self._result = self._command()
             if self._verbose:
                 print(
-                    'Thread %s finished with result %s at %s'
+                    "Thread %s finished with result %s at %s"
                     % (self._name, self._result, time.localtime(time.time()))
                 )
         except Exception as e:
             print(e)
-            print('Thread %s completed abnormally' % (self._name))
+            print("Thread %s completed abnormally" % (self._name))
 
     @property
     def result(self):

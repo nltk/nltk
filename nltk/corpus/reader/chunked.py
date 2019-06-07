@@ -40,11 +40,11 @@ class ChunkedCorpusReader(CorpusReader):
         self,
         root,
         fileids,
-        extension='',
+        extension="",
         str2chunktree=tagstr2tree,
-        sent_tokenizer=RegexpTokenizer('\n', gaps=True),
+        sent_tokenizer=RegexpTokenizer("\n", gaps=True),
         para_block_reader=read_blankline_block,
-        encoding='utf8',
+        encoding="utf8",
         tagset=None,
     ):
         """
@@ -281,5 +281,5 @@ class ChunkedCorpusView(StreamBackedCorpusView):
             elif isinstance(child, tuple):
                 tree[i] = child[0]
             else:
-                raise ValueError('expected child to be Tree or tuple')
+                raise ValueError("expected child to be Tree or tuple")
         return tree

@@ -118,8 +118,6 @@ The 4 functions are as follows.
    timit.audiodata function.
 
 """
-from __future__ import print_function, unicode_literals
-
 import sys
 import os
 import re
@@ -154,18 +152,18 @@ class TimitCorpusReader(CorpusReader):
       - <utterance-id>.wav: utterance sound file
     """
 
-    _FILE_RE = r'(\w+-\w+/\w+\.(phn|txt|wav|wrd))|' + r'timitdic\.txt|spkrinfo\.txt'
+    _FILE_RE = r"(\w+-\w+/\w+\.(phn|txt|wav|wrd))|" + r"timitdic\.txt|spkrinfo\.txt"
     """A regexp matching fileids that are used by this corpus reader."""
-    _UTTERANCE_RE = r'\w+-\w+/\w+\.txt'
+    _UTTERANCE_RE = r"\w+-\w+/\w+\.txt"
 
-    def __init__(self, root, encoding='utf8'):
+    def __init__(self, root, encoding="utf8"):
         """
         Construct a new TIMIT corpus reader in the given directory.
         :param root: The root directory for this corpus.
         """
         # Ensure that wave files don't get treated as unicode data:
         if isinstance(encoding, string_types):
-            encoding = [('.*\.wav', None), ('.*', encoding)]
+            encoding = [(".*\.wav", None), (".*", encoding)]
 
         CorpusReader.__init__(
             self, root, find_corpus_fileids(root, self._FILE_RE), encoding=encoding
@@ -179,7 +177,7 @@ class TimitCorpusReader(CorpusReader):
 
         self._speakerinfo = None
         self._root = root
-        self.speakers = sorted(set(u.split('/')[0] for u in self._utterances))
+        self.speakers = sorted(set(u.split("/")[0] for u in self._utterances))
 
     def fileids(self, filetype=None):
         """
@@ -193,12 +191,12 @@ class TimitCorpusReader(CorpusReader):
         """
         if filetype is None:
             return CorpusReader.fileids(self)
-        elif filetype in ('txt', 'wrd', 'phn', 'wav'):
-            return ['%s.%s' % (u, filetype) for u in self._utterances]
-        elif filetype == 'metadata':
-            return ['timitdic.txt', 'spkrinfo.txt']
+        elif filetype in ("txt", "wrd", "phn", "wav"):
+            return ["%s.%s" % (u, filetype) for u in self._utterances]
+        elif filetype == "metadata":
+            return ["timitdic.txt", "spkrinfo.txt"]
         else:
-            raise ValueError('Bad value for filetype: %r' % filetype)
+            raise ValueError("Bad value for filetype: %r" % filetype)
 
     def utteranceids(
         self, dialect=None, sex=None, spkrid=None, sent_type=None, sentid=None
@@ -239,23 +237,23 @@ class TimitCorpusReader(CorpusReader):
         each word.
         """
         _transcriptions = {}
-        for line in self.open('timitdic.txt'):
-            if not line.strip() or line[0] == ';':
+        for line in self.open("timitdic.txt"):
+            if not line.strip() or line[0] == ";":
                 continue
-            m = re.match(r'\s*(\S+)\s+/(.*)/\s*$', line)
+            m = re.match(r"\s*(\S+)\s+/(.*)/\s*$", line)
             if not m:
-                raise ValueError('Bad line: %r' % line)
+                raise ValueError("Bad line: %r" % line)
             _transcriptions[m.group(1)] = m.group(2).split()
         return _transcriptions
 
     def spkrid(self, utterance):
-        return utterance.split('/')[0]
+        return utterance.split("/")[0]
 
     def sentid(self, utterance):
-        return utterance.split('/')[1]
+        return utterance.split("/")[1]
 
     def utterance(self, spkrid, sentid):
-        return '%s/%s' % (spkrid, sentid)
+        return "%s/%s" % (spkrid, sentid)
 
     def spkrutteranceids(self, speaker):
         """
@@ -265,7 +263,7 @@ class TimitCorpusReader(CorpusReader):
         return [
             utterance
             for utterance in self._utterances
-            if utterance.startswith(speaker + '/')
+            if utterance.startswith(speaker + "/")
         ]
 
     def spkrinfo(self, speaker):
@@ -277,8 +275,8 @@ class TimitCorpusReader(CorpusReader):
 
         if self._speakerinfo is None:
             self._speakerinfo = {}
-            for line in self.open('spkrinfo.txt'):
-                if not line.strip() or line[0] == ';':
+            for line in self.open("spkrinfo.txt"):
+                if not line.strip() or line[0] == ";":
                     continue
                 rec = line.strip().split(None, 9)
                 key = "dr%s-%s%s" % (rec[2], rec[1].lower(), rec[0].lower())
@@ -289,7 +287,7 @@ class TimitCorpusReader(CorpusReader):
     def phones(self, utterances=None):
         return [
             line.split()[-1]
-            for fileid in self._utterance_fileids(utterances, '.phn')
+            for fileid in self._utterance_fileids(utterances, ".phn")
             for line in self.open(fileid)
             if line.strip()
         ]
@@ -300,7 +298,7 @@ class TimitCorpusReader(CorpusReader):
         """
         return [
             (line.split()[2], int(line.split()[0]), int(line.split()[1]))
-            for fileid in self._utterance_fileids(utterances, '.phn')
+            for fileid in self._utterance_fileids(utterances, ".phn")
             for line in self.open(fileid)
             if line.strip()
         ]
@@ -308,7 +306,7 @@ class TimitCorpusReader(CorpusReader):
     def words(self, utterances=None):
         return [
             line.split()[-1]
-            for fileid in self._utterance_fileids(utterances, '.wrd')
+            for fileid in self._utterance_fileids(utterances, ".wrd")
             for line in self.open(fileid)
             if line.strip()
         ]
@@ -316,7 +314,7 @@ class TimitCorpusReader(CorpusReader):
     def word_times(self, utterances=None):
         return [
             (line.split()[2], int(line.split()[0]), int(line.split()[1]))
-            for fileid in self._utterance_fileids(utterances, '.wrd')
+            for fileid in self._utterance_fileids(utterances, ".wrd")
             for line in self.open(fileid)
             if line.strip()
         ]
@@ -324,7 +322,7 @@ class TimitCorpusReader(CorpusReader):
     def sents(self, utterances=None):
         return [
             [line.split()[-1] for line in self.open(fileid) if line.strip()]
-            for fileid in self._utterance_fileids(utterances, '.wrd')
+            for fileid in self._utterance_fileids(utterances, ".wrd")
         ]
 
     def sent_times(self, utterances=None):
@@ -334,7 +332,7 @@ class TimitCorpusReader(CorpusReader):
                 int(line.split()[0]),
                 int(line.split()[1]),
             )
-            for fileid in self._utterance_fileids(utterances, '.txt')
+            for fileid in self._utterance_fileids(utterances, ".txt")
             for line in self.open(fileid)
             if line.strip()
         ]
@@ -353,7 +351,7 @@ class TimitCorpusReader(CorpusReader):
 
             while sent_times:
                 (sent, sent_start, sent_end) = sent_times.pop(0)
-                trees.append(Tree('S', []))
+                trees.append(Tree("S", []))
                 while (
                     word_times and phone_times and phone_times[0][2] <= word_times[0][1]
                 ):
@@ -372,9 +370,9 @@ class TimitCorpusReader(CorpusReader):
     # fileids.
     def wav(self, utterance, start=0, end=None):
         # nltk.chunk conflicts with the stdlib module 'chunk'
-        wave = import_from_stdlib('wave')
+        wave = import_from_stdlib("wave")
 
-        w = wave.open(self.open(utterance + '.wav'), 'rb')
+        w = wave.open(self.open(utterance + ".wav"), "rb")
 
         if end is None:
             end = w.getnframes()
@@ -386,7 +384,7 @@ class TimitCorpusReader(CorpusReader):
         # Open a new temporary file -- the wave module requires
         # an actual file, and won't work w/ stringio. :(
         tf = tempfile.TemporaryFile()
-        out = wave.open(tf, 'w')
+        out = wave.open(tf, "w")
 
         # Write the parameters & data to the new file.
         out.setparams(w.getparams())
@@ -402,9 +400,9 @@ class TimitCorpusReader(CorpusReader):
         assert end is None or end > start
         headersize = 44
         if end is None:
-            data = self.open(utterance + '.wav').read()
+            data = self.open(utterance + ".wav").read()
         else:
-            data = self.open(utterance + '.wav').read(headersize + end * 2)
+            data = self.open(utterance + ".wav").read(headersize + end * 2)
         return data[headersize + start * 2 :]
 
     def _utterance_fileids(self, utterances, extension):
@@ -412,7 +410,7 @@ class TimitCorpusReader(CorpusReader):
             utterances = self._utterances
         if isinstance(utterances, string_types):
             utterances = [utterances]
-        return ['%s%s' % (u, extension) for u in utterances]
+        return ["%s%s" % (u, extension) for u in utterances]
 
     def play(self, utterance, start=0, end=None):
         """
@@ -425,7 +423,7 @@ class TimitCorpusReader(CorpusReader):
             import ossaudiodev
 
             try:
-                dsp = ossaudiodev.open('w')
+                dsp = ossaudiodev.open("w")
                 dsp.setfmt(ossaudiodev.AFMT_S16_LE)
                 dsp.channels(1)
                 dsp.speed(16000)
@@ -482,9 +480,9 @@ class SpeakerInfo(object):
         self.comments = comments
 
     def __repr__(self):
-        attribs = 'id sex dr use recdate birthdate ht race edu comments'
-        args = ['%s=%r' % (attr, getattr(self, attr)) for attr in attribs.split()]
-        return 'SpeakerInfo(%s)' % (', '.join(args))
+        attribs = "id sex dr use recdate birthdate ht race edu comments"
+        args = ["%s=%r" % (attr, getattr(self, attr)) for attr in attribs.split()]
+        return "SpeakerInfo(%s)" % (", ".join(args))
 
 
 def read_timit_block(stream):
@@ -495,5 +493,5 @@ def read_timit_block(stream):
     line = stream.readline()
     if not line:
         return []
-    n, sent = line.split(' ', 1)
+    n, sent = line.split(" ", 1)
     return [sent]

@@ -248,7 +248,7 @@ def postag(
             baseline_tagger = UnigramTagger(
                 baseline_data, backoff=baseline_backoff_tagger
             )
-            with open(cache_baseline_tagger, 'w') as print_rules:
+            with open(cache_baseline_tagger, "w") as print_rules:
                 pickle.dump(baseline_tagger, print_rules)
             print(
                 "Trained baseline tagger, pickled it to {0}".format(
@@ -316,17 +316,17 @@ def postag(
 
     # writing error analysis to file
     if error_output is not None:
-        with open(error_output, 'w') as f:
-            f.write('Errors for Brill Tagger %r\n\n' % serialize_output)
+        with open(error_output, "w") as f:
+            f.write("Errors for Brill Tagger %r\n\n" % serialize_output)
             f.write(
-                u'\n'.join(error_list(gold_data, taggedtest)).encode('utf-8') + '\n'
+                u"\n".join(error_list(gold_data, taggedtest)).encode("utf-8") + "\n"
             )
         print("Wrote tagger errors including context to {0}".format(error_output))
 
     # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
         taggedtest = brill_tagger.tag_sents(testing_data)
-        with open(serialize_output, 'w') as print_rules:
+        with open(serialize_output, "w") as print_rules:
             pickle.dump(brill_tagger, print_rules)
         print("Wrote pickled tagger to {0}".format(serialize_output))
         with open(serialize_output, "r") as print_rules:
@@ -380,15 +380,15 @@ def _demo_prepare_data(
 
 
 def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
-    testcurve = [teststats['initialerrors']]
-    for rulescore in teststats['rulescores']:
+    testcurve = [teststats["initialerrors"]]
+    for rulescore in teststats["rulescores"]:
         testcurve.append(testcurve[-1] - rulescore)
-    testcurve = [1 - x / teststats['tokencount'] for x in testcurve[:take]]
+    testcurve = [1 - x / teststats["tokencount"] for x in testcurve[:take]]
 
-    traincurve = [trainstats['initialerrors']]
-    for rulescore in trainstats['rulescores']:
+    traincurve = [trainstats["initialerrors"]]
+    for rulescore in trainstats["rulescores"]:
         traincurve.append(traincurve[-1] - rulescore)
-    traincurve = [1 - x / trainstats['tokencount'] for x in traincurve[:take]]
+    traincurve = [1 - x / trainstats["tokencount"] for x in traincurve[:take]]
 
     import matplotlib.pyplot as plt
 
@@ -398,19 +398,19 @@ def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
     plt.savefig(learning_curve_output)
 
 
-NN_CD_TAGGER = RegexpTagger([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
+NN_CD_TAGGER = RegexpTagger([(r"^-?[0-9]+(.[0-9]+)?$", "CD"), (r".*", "NN")])
 
 REGEXP_TAGGER = RegexpTagger(
     [
-        (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),  # cardinal numbers
-        (r'(The|the|A|a|An|an)$', 'AT'),  # articles
-        (r'.*able$', 'JJ'),  # adjectives
-        (r'.*ness$', 'NN'),  # nouns formed from adjectives
-        (r'.*ly$', 'RB'),  # adverbs
-        (r'.*s$', 'NNS'),  # plural nouns
-        (r'.*ing$', 'VBG'),  # gerunds
-        (r'.*ed$', 'VBD'),  # past tense verbs
-        (r'.*', 'NN'),  # nouns (default)
+        (r"^-?[0-9]+(.[0-9]+)?$", "CD"),  # cardinal numbers
+        (r"(The|the|A|a|An|an)$", "AT"),  # articles
+        (r".*able$", "JJ"),  # adjectives
+        (r".*ness$", "NN"),  # nouns formed from adjectives
+        (r".*ly$", "RB"),  # adverbs
+        (r".*s$", "NNS"),  # plural nouns
+        (r".*ing$", "VBG"),  # gerunds
+        (r".*ed$", "VBD"),  # past tense verbs
+        (r".*", "NN"),  # nouns (default)
     ]
 )
 
@@ -419,5 +419,5 @@ def corpus_size(seqs):
     return (len(seqs), sum(len(x) for x in seqs))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo_learning_curve()

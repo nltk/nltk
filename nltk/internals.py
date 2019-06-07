@@ -54,11 +54,11 @@ def config_java(bin=None, options=None, verbose=False):
     """
     global _java_bin, _java_options
     _java_bin = find_binary(
-        'java',
+        "java",
         bin,
-        env_vars=['JAVAHOME', 'JAVA_HOME'],
+        env_vars=["JAVAHOME", "JAVA_HOME"],
         verbose=verbose,
-        binary_names=['java.exe'],
+        binary_names=["java.exe"],
     )
 
     if options is not None:
@@ -108,14 +108,18 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     :raise OSError: If the java command returns a nonzero return code.
     """
 
-    subprocess_output_dict = {'pipe': subprocess.PIPE, 'stdout': subprocess.STDOUT, 'devnull': subprocess.DEVNULL}
+    subprocess_output_dict = {
+        "pipe": subprocess.PIPE,
+        "stdout": subprocess.STDOUT,
+        "devnull": subprocess.DEVNULL,
+    }
 
     stdin = subprocess_output_dict.get(stdin, stdin)
     stdout = subprocess_output_dict.get(stdout, stdout)
     stderr = subprocess_output_dict.get(stderr, stderr)
 
     if isinstance(cmd, string_types):
-        raise TypeError('cmd should be a list of strings')
+        raise TypeError("cmd should be a list of strings")
 
     # Make sure we know where a java binary is.
     if _java_bin is None:
@@ -130,7 +134,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
 
     # Construct the full command string.
     cmd = list(cmd)
-    cmd = ['-cp', classpath] + cmd
+    cmd = ["-cp", classpath] + cmd
     cmd = [_java_bin] + _java_options + cmd
 
     # Call java via a subprocess
@@ -142,7 +146,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     # Check the return code.
     if p.returncode != 0:
         print(_decode_stdoutdata(stderr))
-        raise OSError('Java command failed : ' + str(cmd))
+        raise OSError("Java command failed : " + str(cmd))
 
     return (stdout, stderr)
 
@@ -156,15 +160,15 @@ if 0:
     # Read:
     (a, b) = java(
         [
-            'weka.classifiers.bayes.NaiveBayes',
-            '-l',
-            '/tmp/names.model',
-            '-T',
-            '/tmp/test.arff',
-            '-p',
-            '0',
+            "weka.classifiers.bayes.NaiveBayes",
+            "-l",
+            "/tmp/names.model",
+            "-T",
+            "/tmp/test.arff",
+            "-p",
+            "0",
         ],  # , '-distribution'],
-        classpath='/Users/edloper/Desktop/weka/weka.jar',
+        classpath="/Users/edloper/Desktop/weka/weka.jar",
     )
 
 
@@ -186,7 +190,7 @@ class ReadError(ValueError):
         self.position = position
 
     def __str__(self):
-        return 'Expected %s at %s' % (self.expected, self.position)
+        return "Expected %s at %s" % (self.expected, self.position)
 
 
 _STRING_START_RE = re.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
@@ -227,17 +231,17 @@ def read_str(s, start_position):
     # Read the open quote, and any modifiers.
     m = _STRING_START_RE.match(s, start_position)
     if not m:
-        raise ReadError('open quote', start_position)
+        raise ReadError("open quote", start_position)
     quotemark = m.group(1)
 
     # Find the close quote.
-    _STRING_END_RE = re.compile(r'\\|%s' % quotemark)
+    _STRING_END_RE = re.compile(r"\\|%s" % quotemark)
     position = m.end()
     while True:
         match = _STRING_END_RE.search(s, position)
         if not match:
-            raise ReadError('close quote', position)
-        if match.group(0) == '\\':
+            raise ReadError("close quote", position)
+        if match.group(0) == "\\":
             position = match.end() + 1
         else:
             break
@@ -247,10 +251,10 @@ def read_str(s, start_position):
     try:
         return eval(s[start_position : match.end()]), match.end()
     except ValueError as e:
-        raise ReadError('invalid string (%s)' % e)
+        raise ReadError("invalid string (%s)" % e)
 
 
-_READ_INT_RE = re.compile(r'-?\d+')
+_READ_INT_RE = re.compile(r"-?\d+")
 
 
 def read_int(s, start_position):
@@ -283,11 +287,11 @@ def read_int(s, start_position):
     """
     m = _READ_INT_RE.match(s, start_position)
     if not m:
-        raise ReadError('integer', start_position)
+        raise ReadError("integer", start_position)
     return int(m.group()), m.end()
 
 
-_READ_NUMBER_VALUE = re.compile(r'-?(\d*)([.]?\d*)?')
+_READ_NUMBER_VALUE = re.compile(r"-?(\d*)([.]?\d*)?")
 
 
 def read_number(s, start_position):
@@ -320,7 +324,7 @@ def read_number(s, start_position):
     """
     m = _READ_NUMBER_VALUE.match(s, start_position)
     if not m or not (m.group(1) or m.group(2)):
-        raise ReadError('number', start_position)
+        raise ReadError("number", start_position)
     if m.group(2):
         return float(m.group()), m.end()
     else:
@@ -361,7 +365,7 @@ def overridden(method):
         ]
         return len(funcs) > 1
     else:
-        raise TypeError('Expected an instance method.')
+        raise TypeError("Expected an instance method.")
 
 
 def _mro(cls):
@@ -389,22 +393,22 @@ def _mro(cls):
 
 def _add_epytext_field(obj, field, message):
     """Add an epytext @field to a given object's docstring."""
-    indent = ''
+    indent = ""
     # If we already have a docstring, then add a blank line to separate
     # it from the new field, and check its indentation.
     if obj.__doc__:
-        obj.__doc__ = obj.__doc__.rstrip() + '\n\n'
-        indents = re.findall(r'(?<=\n)[ ]+(?!\s)', obj.__doc__.expandtabs())
+        obj.__doc__ = obj.__doc__.rstrip() + "\n\n"
+        indents = re.findall(r"(?<=\n)[ ]+(?!\s)", obj.__doc__.expandtabs())
         if indents:
             indent = min(indents)
     # If we don't have a docstring, add an empty one.
     else:
-        obj.__doc__ = ''
+        obj.__doc__ = ""
 
     obj.__doc__ += textwrap.fill(
-        '@%s: %s' % (field, message),
+        "@%s: %s" % (field, message),
         initial_indent=indent,
-        subsequent_indent=indent + '    ',
+        subsequent_indent=indent + "    ",
     )
 
 
@@ -422,7 +426,7 @@ def deprecated(message):
 
     def decorator(func):
         msg = "Function %s() has been deprecated.  %s" % (func.__name__, message)
-        msg = '\n' + textwrap.fill(msg, initial_indent='  ', subsequent_indent='  ')
+        msg = "\n" + textwrap.fill(msg, initial_indent="  ", subsequent_indent="  ")
 
         def newFunc(*args, **kwargs):
             warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
@@ -434,7 +438,7 @@ def deprecated(message):
         newFunc.__doc__ = func.__doc__
         newFunc.__deprecated__ = True
         # Add a @deprecated field to the docstring.
-        _add_epytext_field(newFunc, 'deprecated', message)
+        _add_epytext_field(newFunc, "deprecated", message)
         return newFunc
 
     return decorator
@@ -463,22 +467,22 @@ class Deprecated(object):
             if Deprecated in base.__bases__:
                 dep_cls = base
                 break
-        assert dep_cls, 'Unable to determine which base is deprecated.'
+        assert dep_cls, "Unable to determine which base is deprecated."
 
         # Construct an appropriate warning.
-        doc = dep_cls.__doc__ or ''.strip()
+        doc = dep_cls.__doc__ or "".strip()
         # If there's a @deprecated field, strip off the field marker.
-        doc = re.sub(r'\A\s*@deprecated:', r'', doc)
+        doc = re.sub(r"\A\s*@deprecated:", r"", doc)
         # Strip off any indentation.
-        doc = re.sub(r'(?m)^\s*', '', doc)
+        doc = re.sub(r"(?m)^\s*", "", doc)
         # Construct a 'name' string.
-        name = 'Class %s' % dep_cls.__name__
+        name = "Class %s" % dep_cls.__name__
         if cls != dep_cls:
-            name += ' (base class for %s)' % cls.__name__
+            name += " (base class for %s)" % cls.__name__
         # Put it all together.
-        msg = '%s has been deprecated.  %s' % (name, doc)
+        msg = "%s has been deprecated.  %s" % (name, doc)
         # Wrap it.
-        msg = '\n' + textwrap.fill(msg, initial_indent='    ', subsequent_indent='    ')
+        msg = "\n" + textwrap.fill(msg, initial_indent="    ", subsequent_indent="    ")
         warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
         # Do the actual work of __new__.
         return object.__new__(cls)
@@ -539,20 +543,20 @@ def find_file_iter(
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
             if verbose:
-                print('[Found %s: %s]' % (filename, path_to_file))
+                print("[Found %s: %s]" % (filename, path_to_file))
             yielded = True
             yield path_to_file
         # Check the bare alternatives
         if os.path.isfile(alternative):
             if verbose:
-                print('[Found %s: %s]' % (filename, alternative))
+                print("[Found %s: %s]" % (filename, alternative))
             yielded = True
             yield alternative
         # Check if the alternative is inside a 'file' directory
-        path_to_file = os.path.join(filename, 'file', alternative)
+        path_to_file = os.path.join(filename, "file", alternative)
         if os.path.isfile(path_to_file):
             if verbose:
-                print('[Found %s: %s]' % (filename, path_to_file))
+                print("[Found %s: %s]" % (filename, path_to_file))
             yielded = True
             yield path_to_file
 
@@ -567,7 +571,7 @@ def find_file_iter(
                 # Check if the environment variable contains a direct path to the bin
                 if os.path.isfile(env_dir):
                     if verbose:
-                        print('[Found %s: %s]' % (filename, env_dir))
+                        print("[Found %s: %s]" % (filename, env_dir))
                     yielded = True
                     yield env_dir
                 # Check if the possible bin names exist inside the environment variable directories
@@ -575,18 +579,18 @@ def find_file_iter(
                     path_to_file = os.path.join(env_dir, alternative)
                     if os.path.isfile(path_to_file):
                         if verbose:
-                            print('[Found %s: %s]' % (filename, path_to_file))
+                            print("[Found %s: %s]" % (filename, path_to_file))
                         yielded = True
                         yield path_to_file
                     # Check if the alternative is inside a 'file' directory
                     # path_to_file = os.path.join(env_dir, 'file', alternative)
 
                     # Check if the alternative is inside a 'bin' directory
-                    path_to_file = os.path.join(env_dir, 'bin', alternative)
+                    path_to_file = os.path.join(env_dir, "bin", alternative)
 
                     if os.path.isfile(path_to_file):
                         if verbose:
-                            print('[Found %s: %s]' % (filename, path_to_file))
+                            print("[Found %s: %s]" % (filename, path_to_file))
                         yielded = True
                         yield path_to_file
 
@@ -600,11 +604,11 @@ def find_file_iter(
 
     # If we're on a POSIX system, then try using the 'which' command
     # to find the file.
-    if os.name == 'posix':
+    if os.name == "posix":
         for alternative in file_names:
             try:
                 p = subprocess.Popen(
-                    ['which', alternative],
+                    ["which", alternative],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
@@ -612,7 +616,7 @@ def find_file_iter(
                 path = _decode_stdoutdata(stdout).strip()
                 if path.endswith(alternative) and os.path.exists(path):
                     if verbose:
-                        print('[Found %s: %s]' % (filename, path))
+                        print("[Found %s: %s]" % (filename, path))
                     yielded = True
                     yield path
             except (KeyboardInterrupt, SystemExit, OSError):
@@ -627,15 +631,15 @@ def find_file_iter(
             "configuration paramaters" % filename
         )
         if env_vars:
-            msg += ' or set the %s environment variable' % env_vars[0]
-        msg += '.'
+            msg += " or set the %s environment variable" % env_vars[0]
+        msg += "."
         if searchpath:
-            msg += '\n\n  Searched in:'
-            msg += ''.join('\n    - %s' % d for d in searchpath)
+            msg += "\n\n  Searched in:"
+            msg += "".join("\n    - %s" % d for d in searchpath)
         if url:
-            msg += '\n\n  For more information on %s, see:\n    <%s>' % (filename, url)
-        div = '=' * 75
-        raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+            msg += "\n\n  For more information on %s, see:\n    <%s>" % (filename, url)
+        div = "=" * 75
+        raise LookupError("\n\n%s\n%s\n%s" % (div, msg, div))
 
 
 def find_file(
@@ -726,7 +730,7 @@ def find_jar_iter(
     yielded = False
 
     # Make sure we check the CLASSPATH first
-    env_vars = ['CLASSPATH'] + list(env_vars)
+    env_vars = ["CLASSPATH"] + list(env_vars)
 
     # If an explicit location was given, then check it, and yield it if
     # it's present; otherwise, complain.
@@ -736,14 +740,14 @@ def find_jar_iter(
             yield path_to_jar
         else:
             raise LookupError(
-                'Could not find %s jar file at %s' % (name_pattern, path_to_jar)
+                "Could not find %s jar file at %s" % (name_pattern, path_to_jar)
             )
 
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
-            if env_var == 'CLASSPATH':
-                classpath = os.environ['CLASSPATH']
+            if env_var == "CLASSPATH":
+                classpath = os.environ["CLASSPATH"]
                 for cp in classpath.split(os.path.pathsep):
                     if os.path.isfile(cp):
                         filename = os.path.basename(cp)
@@ -753,7 +757,7 @@ def find_jar_iter(
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
-                                print('[Found %s: %s]' % (name_pattern, cp))
+                                print("[Found %s: %s]" % (name_pattern, cp))
                             yielded = True
                             yield cp
                     # The case where user put directory containing the jar file in the classpath
@@ -761,7 +765,7 @@ def find_jar_iter(
                         if not is_regex:
                             if os.path.isfile(os.path.join(cp, name_pattern)):
                                 if verbose:
-                                    print('[Found %s: %s]' % (name_pattern, cp))
+                                    print("[Found %s: %s]" % (name_pattern, cp))
                                 yielded = True
                                 yield os.path.join(cp, name_pattern)
                         else:
@@ -770,7 +774,7 @@ def find_jar_iter(
                                 if re.match(name_pattern, file_name):
                                     if verbose:
                                         print(
-                                            '[Found %s: %s]'
+                                            "[Found %s: %s]"
                                             % (
                                                 name_pattern,
                                                 os.path.join(cp, file_name),
@@ -798,7 +802,7 @@ def find_jar_iter(
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
-                                print('[Found %s: %s]' % (name_pattern, path_to_jar))
+                                print("[Found %s: %s]" % (name_pattern, path_to_jar))
                             yielded = True
                             yield path_to_jar
 
@@ -810,14 +814,14 @@ def find_jar_iter(
                 if os.path.isfile(path_to_jar):
                     if re.match(name_pattern, filename):
                         if verbose:
-                            print('[Found %s: %s]' % (filename, path_to_jar))
+                            print("[Found %s: %s]" % (filename, path_to_jar))
                 yielded = True
                 yield path_to_jar
         else:
             path_to_jar = os.path.join(directory, name_pattern)
             if os.path.isfile(path_to_jar):
                 if verbose:
-                    print('[Found %s: %s]' % (name_pattern, path_to_jar))
+                    print("[Found %s: %s]" % (name_pattern, path_to_jar))
                 yielded = True
                 yield path_to_jar
 
@@ -825,18 +829,18 @@ def find_jar_iter(
         # If nothing was found, raise an error
         msg = "NLTK was unable to find %s!" % name_pattern
         if env_vars:
-            msg += ' Set the %s environment variable' % env_vars[0]
-        msg = textwrap.fill(msg + '.', initial_indent='  ', subsequent_indent='  ')
+            msg += " Set the %s environment variable" % env_vars[0]
+        msg = textwrap.fill(msg + ".", initial_indent="  ", subsequent_indent="  ")
         if searchpath:
-            msg += '\n\n  Searched in:'
-            msg += ''.join('\n    - %s' % d for d in searchpath)
+            msg += "\n\n  Searched in:"
+            msg += "".join("\n    - %s" % d for d in searchpath)
         if url:
-            msg += '\n\n  For more information, on %s, see:\n    <%s>' % (
+            msg += "\n\n  For more information, on %s, see:\n    <%s>" % (
                 name_pattern,
                 url,
             )
-        div = '=' * 75
-        raise LookupError('\n\n%s\n%s\n%s' % (div, msg, div))
+        div = "=" * 75
+        raise LookupError("\n\n%s\n%s\n%s" % (div, msg, div))
 
 
 def find_jar(
@@ -859,7 +863,7 @@ def find_jars_within_path(path_to_jars):
     return [
         os.path.join(root, filename)
         for root, dirnames, filenames in os.walk(path_to_jars)
-        for filename in fnmatch.filter(filenames, '*.jar')
+        for filename in fnmatch.filter(filenames, "*.jar")
     ]
 
 
@@ -890,7 +894,7 @@ def import_from_stdlib(module):
     instead (causing the import to fail).
     """
     old_path = sys.path
-    sys.path = [d for d in sys.path if d not in ('', '.')]
+    sys.path = [d for d in sys.path if d not in ("", ".")]
     m = __import__(module)
     sys.path = old_path
     return m
@@ -939,7 +943,7 @@ class ElementWrapper(object):
         """
         if isinstance(etree, string_types):
             etree = ElementTree.fromstring(etree)
-        self.__dict__['_etree'] = etree
+        self.__dict__["_etree"] = etree
 
     def unwrap(self):
         """
@@ -952,13 +956,13 @@ class ElementWrapper(object):
     ##////////////////////////////////////////////////////////////
 
     def __repr__(self):
-        s = ElementTree.tostring(self._etree, encoding='utf8').decode('utf8')
+        s = ElementTree.tostring(self._etree, encoding="utf8").decode("utf8")
         if len(s) > 60:
-            e = s.rfind('<')
+            e = s.rfind("<")
             if (len(s) - e) > 30:
                 e = -20
-            s = '%s...%s' % (s[:30], s[e:])
-        return '<Element %r>' % s
+            s = "%s...%s" % (s[:30], s[e:])
+        return "<Element %r>" % s
 
     def __str__(self):
         """
@@ -966,7 +970,7 @@ class ElementWrapper(object):
         the wrapped Element object.
         """
         return (
-            ElementTree.tostring(self._etree, encoding='utf8').decode('utf8').rstrip()
+            ElementTree.tostring(self._etree, encoding="utf8").decode("utf8").rstrip()
         )
 
     ##////////////////////////////////////////////////////////////
@@ -1067,7 +1071,7 @@ def slice_bounds(sequence, slice_obj, allow_step=False):
     # Otherwise, make sure that no non-default step value is used.
     elif slice_obj.step not in (None, 1):
         raise ValueError(
-            'slices with steps are not supported by %s' % sequence.__class__.__name__
+            "slices with steps are not supported by %s" % sequence.__class__.__name__
         )
 
     # Supply default offsets.
@@ -1109,7 +1113,7 @@ def is_writable(path):
         return False
 
     # If we're on a posix system, check its permissions.
-    if hasattr(os, 'getuid'):
+    if hasattr(os, "getuid"):
         statdata = os.stat(path)
         perm = stat.S_IMODE(statdata.st_mode)
         # is it world-writable?

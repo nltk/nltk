@@ -48,7 +48,7 @@ def check(word, dir, x, y, grid, rows, cols):
         return step(word, x, lambda i: x, y, lambda i: y - i, grid)
 
 
-def wordfinder(words, rows=20, cols=20, attempts=50, alph='ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+def wordfinder(words, rows=20, cols=20, attempts=50, alph="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
     """
     Attempt to arrange words into a letter-grid with the specified
     number of rows and columns.  Try each word in several positions
@@ -109,7 +109,7 @@ def wordfinder(words, rows=20, cols=20, attempts=50, alph='ABCDEFGHIJKLMNOPQRSTU
     # Fill up the remaining spaces
     for i in range(rows):
         for j in range(cols):
-            if grid[i][j] == '':
+            if grid[i][j] == "":
                 grid[i][j] = random.choice(alph)
 
     return grid, used
@@ -127,7 +127,7 @@ def word_finder():
     print("Word Finder\n")
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            print(grid[i][j], end=' ')
+            print(grid[i][j], end=" ")
         print()
     print()
 
@@ -135,5 +135,5 @@ def word_finder():
         print("%d:" % (i + 1), used[i])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     word_finder()

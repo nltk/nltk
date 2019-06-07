@@ -64,7 +64,7 @@ class ForwardCombinator(DirectedBinaryCombinator):
     restricting the cases in which it may apply.
     """
 
-    def __init__(self, combinator, predicate, suffix=''):
+    def __init__(self, combinator, predicate, suffix=""):
         self._combinator = combinator
         self._predicate = predicate
         self._suffix = suffix
@@ -88,7 +88,7 @@ class BackwardCombinator(DirectedBinaryCombinator):
     The backward equivalent of the ForwardCombinator class.
     """
 
-    def __init__(self, combinator, predicate, suffix=''):
+    def __init__(self, combinator, predicate, suffix=""):
         self._combinator = combinator
         self._predicate = predicate
         self._suffix = suffix
@@ -132,7 +132,7 @@ class UndirectedFunctionApplication(UndirectedBinaryCombinator):
         yield function.res().substitute(subs)
 
     def __str__(self):
-        return ''
+        return ""
 
 
 # Predicates for function application.
@@ -183,7 +183,7 @@ class UndirectedComposition(UndirectedBinaryCombinator):
                 )
 
     def __str__(self):
-        return 'B'
+        return "B"
 
 
 # Predicates for restricting application of straight composition.
@@ -217,7 +217,7 @@ BackwardComposition = BackwardCombinator(UndirectedComposition(), backwardOnly)
 
 # Backward crossed composition
 BackwardBx = BackwardCombinator(
-    UndirectedComposition(), backwardBxConstraint, suffix='x'
+    UndirectedComposition(), backwardBxConstraint, suffix="x"
 )
 
 
@@ -254,7 +254,7 @@ class UndirectedSubstitution(UndirectedBinaryCombinator):
             )
 
     def __str__(self):
-        return 'S'
+        return "S"
 
 
 # Predicate for forward substitution
@@ -275,7 +275,7 @@ def backwardSxConstraint(left, right):
 
 # Instances of substitution combinators
 ForwardSubstitution = ForwardCombinator(UndirectedSubstitution(), forwardSConstraint)
-BackwardSx = BackwardCombinator(UndirectedSubstitution(), backwardSxConstraint, 'x')
+BackwardSx = BackwardCombinator(UndirectedSubstitution(), backwardSxConstraint, "x")
 
 
 # Retrieves the left-most functional category.
@@ -328,7 +328,7 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
             )
 
     def __str__(self):
-        return 'T'
+        return "T"
 
 
 # Predicates for type-raising

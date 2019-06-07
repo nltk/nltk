@@ -71,7 +71,7 @@ except ImportError:
         try:
             return math.log(1 - norm_cdf(x))
         except ValueError:
-            return float('-inf')
+            return float("-inf")
 
 
 LOG2 = math.log(2)
@@ -146,7 +146,7 @@ def align_log_prob(i, j, source_sents, target_sents, alignment, params):
             m * params.VARIANCE_CHARACTERS
         )
     except ZeroDivisionError:
-        return float('-inf')
+        return float("-inf")
 
     return -(LOG2 + norm_logsf(abs(delta)) + math.log(params.PRIORS[alignment]))
 
@@ -178,7 +178,7 @@ def align_blocks(source_sents_lens, target_sents_lens, params=LanguageIndependen
 
     for i in range(len(source_sents_lens) + 1):
         for j in range(len(target_sents_lens) + 1):
-            min_dist = float('inf')
+            min_dist = float("inf")
             min_align = None
             for a in alignment_types:
                 prev_i = -1 - a[0]
@@ -192,7 +192,7 @@ def align_blocks(source_sents_lens, target_sents_lens, params=LanguageIndependen
                     min_dist = p
                     min_align = a
 
-            if min_dist == float('inf'):
+            if min_dist == float("inf"):
                 min_dist = 0
 
             backlinks[(i, j)] = min_align

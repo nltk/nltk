@@ -50,7 +50,7 @@ class SpaceTokenizer(StringTokenizer):
         'Please', 'buy', 'me\ntwo', 'of', 'them.\n\nThanks.']
     """
 
-    _string = ' '
+    _string = " "
 
 
 class TabTokenizer(StringTokenizer):
@@ -62,7 +62,7 @@ class TabTokenizer(StringTokenizer):
         ['a', 'b c\n', ' d']
     """
 
-    _string = '\t'
+    _string = "\t"
 
 
 class CharTokenizer(StringTokenizer):
@@ -101,11 +101,11 @@ class LineTokenizer(TokenizerI):
            a corresponding token ``''`` after that newline.
     """
 
-    def __init__(self, blanklines='discard'):
-        valid_blanklines = ('discard', 'keep', 'discard-eof')
+    def __init__(self, blanklines="discard"):
+        valid_blanklines = ("discard", "keep", "discard-eof")
         if blanklines not in valid_blanklines:
             raise ValueError(
-                'Blank lines must be one of: %s' % ' '.join(valid_blanklines)
+                "Blank lines must be one of: %s" % " ".join(valid_blanklines)
             )
 
         self._blanklines = blanklines
@@ -113,20 +113,20 @@ class LineTokenizer(TokenizerI):
     def tokenize(self, s):
         lines = s.splitlines()
         # If requested, strip off blank lines.
-        if self._blanklines == 'discard':
+        if self._blanklines == "discard":
             lines = [l for l in lines if l.rstrip()]
-        elif self._blanklines == 'discard-eof':
+        elif self._blanklines == "discard-eof":
             if lines and not lines[-1].strip():
                 lines.pop()
         return lines
 
     # discard-eof not implemented
     def span_tokenize(self, s):
-        if self._blanklines == 'keep':
-            for span in string_span_tokenize(s, r'\n'):
+        if self._blanklines == "keep":
+            for span in string_span_tokenize(s, r"\n"):
                 yield span
         else:
-            for span in regexp_span_tokenize(s, r'\n(\s+\n)*'):
+            for span in regexp_span_tokenize(s, r"\n(\s+\n)*"):
                 yield span
 
 
@@ -136,5 +136,5 @@ class LineTokenizer(TokenizerI):
 # XXX: it is stated in module docs that there is no function versions
 
 
-def line_tokenize(text, blanklines='discard'):
+def line_tokenize(text, blanklines="discard"):
     return LineTokenizer(blanklines).tokenize(text)

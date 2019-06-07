@@ -6,7 +6,7 @@ http://www.phyast.pitt.edu/~micheles/python/documentation.html
 Included in NLTK for its support of a nice memoization decorator.
 """
 
-__docformat__ = 'restructuredtext en'
+__docformat__ = "restructuredtext en"
 
 ## The basic trick is to generate the source code for the decorated function
 ## with the right signature and to evaluate it.
@@ -68,7 +68,7 @@ def getinfo(func):
     )[1:-1]
 
     # pypy compatibility
-    if hasattr(func, '__closure__'):
+    if hasattr(func, "__closure__"):
         _closure = func.__closure__
         _globals = func.__globals__
     else:
@@ -91,11 +91,11 @@ def getinfo(func):
 # akin to functools.update_wrapper
 def update_wrapper(wrapper, model, infodict=None):
     infodict = infodict or getinfo(model)
-    wrapper.__name__ = infodict['name']
-    wrapper.__doc__ = infodict['doc']
-    wrapper.__module__ = infodict['module']
-    wrapper.__dict__.update(infodict['dict'])
-    wrapper.__defaults__ = infodict['defaults']
+    wrapper.__name__ = infodict["name"]
+    wrapper.__doc__ = infodict["doc"]
+    wrapper.__module__ = infodict["module"]
+    wrapper.__dict__.update(infodict["dict"])
+    wrapper.__defaults__ = infodict["defaults"]
     wrapper.undecorated = model
     return wrapper
 
@@ -113,7 +113,7 @@ def new_wrapper(wrapper, model):
     else:  # assume model is a function
         infodict = getinfo(model)
     assert (
-        not '_wrapper_' in infodict["argnames"]
+        not "_wrapper_" in infodict["argnames"]
     ), '"_wrapper_" is a reserved argument name!'
     src = "lambda %(signature)s: _wrapper_(%(signature)s)" % infodict
     funcopy = eval(src, dict(_wrapper_=wrapper))
@@ -133,12 +133,12 @@ def decorator_factory(cls):
     method.
     """
     attrs = set(dir(cls))
-    if '__call__' in attrs:
+    if "__call__" in attrs:
         raise TypeError(
-            'You cannot decorate a class with a nontrivial ' '__call__ method'
+            "You cannot decorate a class with a nontrivial " "__call__ method"
         )
-    if 'call' not in attrs:
-        raise TypeError('You cannot decorate a class without a ' '.call method')
+    if "call" not in attrs:
+        raise TypeError("You cannot decorate a class without a " ".call method")
     cls.__call__ = __call__
     return cls
 
@@ -178,10 +178,10 @@ def decorator(caller):
 
     def _decorator(func):  # the real meat is here
         infodict = getinfo(func)
-        argnames = infodict['argnames']
+        argnames = infodict["argnames"]
         assert not (
-            '_call_' in argnames or '_func_' in argnames
-        ), 'You cannot use _call_ or _func_ as argument names!'
+            "_call_" in argnames or "_func_" in argnames
+        ), "You cannot use _call_ or _func_ as argument names!"
         src = "lambda %(signature)s: _call_(_func_, %(signature)s)" % infodict
         # import sys; print >> sys.stderr, src # for debugging purposes
         dec_func = eval(src, dict(_func_=func, _call_=caller))

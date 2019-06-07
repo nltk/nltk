@@ -41,17 +41,17 @@ from nltk.compat import python_2_unicode_compatible
 ######################################################################
 
 
-def usage(obj, selfname='self'):
+def usage(obj, selfname="self"):
     str(obj)  # In case it's lazy, this will load it.
 
     if not isinstance(obj, class_types):
         obj = obj.__class__
 
-    print('%s supports the following operations:' % obj.__name__)
+    print("%s supports the following operations:" % obj.__name__)
     for (name, method) in sorted(pydoc.allmethods(obj).items()):
-        if name.startswith('_'):
+        if name.startswith("_"):
             continue
-        if getattr(method, '__deprecated__', False):
+        if getattr(method, "__deprecated__", False):
             continue
 
         if sys.version_info[0] >= 3:
@@ -61,17 +61,17 @@ def usage(obj, selfname='self'):
         args, varargs, varkw, defaults = getargspec(method)[:4]
         if (
             args
-            and args[0] == 'self'
+            and args[0] == "self"
             and (defaults is None or len(args) > len(defaults))
         ):
             args = args[1:]
-            name = '%s.%s' % (selfname, name)
+            name = "%s.%s" % (selfname, name)
         argspec = inspect.formatargspec(args, varargs, varkw, defaults)
         print(
             textwrap.fill(
-                '%s%s' % (name, argspec),
-                initial_indent='  - ',
-                subsequent_indent=' ' * (len(name) + 5),
+                "%s%s" % (name, argspec),
+                initial_indent="  - ",
+                subsequent_indent=" " * (len(name) + 5),
             )
         )
 
@@ -94,7 +94,7 @@ def in_idle():
     """
     import sys
 
-    return sys.stdin.__class__.__name__ in ('PyShell', 'RPCProxy')
+    return sys.stdin.__class__.__name__ in ("PyShell", "RPCProxy")
 
 
 ##########################################################################
@@ -125,7 +125,7 @@ def print_string(s, width=70):
     :param width: the display width
     :type width: int
     """
-    print('\n'.join(textwrap.wrap(s, width=width)))
+    print("\n".join(textwrap.wrap(s, width=width)))
 
 
 def tokenwrap(tokens, separator=" ", width=70):
@@ -139,7 +139,7 @@ def tokenwrap(tokens, separator=" ", width=70):
     :param width: the display width (default=70)
     :type width: int
     """
-    return '\n'.join(textwrap.wrap(separator.join(tokens), width=width))
+    return "\n".join(textwrap.wrap(separator.join(tokens), width=width))
 
 
 ##########################################################################
@@ -201,10 +201,10 @@ def re_show(regexp, string, left="{", right="}"):
 
 # recipe from David Mertz
 def filestring(f):
-    if hasattr(f, 'read'):
+    if hasattr(f, "read"):
         return f.read()
     elif isinstance(f, string_types):
-        with open(f, 'r') as infile:
+        with open(f, "r") as infile:
             return infile.read()
     else:
         raise ValueError("Must be called with a filename or file-like object")
@@ -258,7 +258,7 @@ def guess_encoding(data):
     """
     successful_encoding = None
     # we make 'utf-8' the first encoding
-    encodings = ['utf-8']
+    encodings = ["utf-8"]
     #
     # next we add anything we can learn from the locale
     try:
@@ -275,7 +275,7 @@ def guess_encoding(data):
         pass
     #
     # we try 'latin-1' last
-    encodings.append('latin-1')
+    encodings.append("latin-1")
     for enc in encodings:
         # some of the locale calls
         # may have returned None
@@ -291,9 +291,9 @@ def guess_encoding(data):
             break
     if not successful_encoding:
         raise UnicodeError(
-            'Unable to decode input data. '
-            'Tried the following encodings: %s.'
-            % ', '.join([repr(enc) for enc in encodings if enc])
+            "Unable to decode input data. "
+            "Tried the following encodings: %s."
+            % ", ".join([repr(enc) for enc in encodings if enc])
         )
     else:
         return (decoded, successful_encoding)
@@ -318,7 +318,7 @@ def unique_list(xs):
 def invert_dict(d):
     inverted_dict = defaultdict(list)
     for key in d:
-        if hasattr(d[key], '__iter__'):
+        if hasattr(d[key], "__iter__"):
             for term in d[key]:
                 inverted_dict[term].append(key)
         else:
@@ -627,7 +627,7 @@ def skipgrams(sequence, n, k, **kwargs):
     """
 
     # Pads the sequence as desired by **kwargs.
-    if 'pad_left' in kwargs or 'pad_right' in kwargs:
+    if "pad_left" in kwargs or "pad_right" in kwargs:
         sequence = pad_sequence(sequence, n, **kwargs)
 
     # Note when iterating through the ngrams, the pad_right here is not
@@ -659,12 +659,12 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
     :param key: the identifier we are searching for.
     """
 
-    key = key + ' '
+    key = key + " "
     keylen = len(key)
     start = 0
     currentDepth = 0
 
-    if hasattr(file, 'name'):
+    if hasattr(file, "name"):
         end = os.stat(file.name).st_size - 1
     else:
         file.seek(0, 2)
@@ -722,7 +722,7 @@ def binary_search_file(file, key, cache={}, cacheDepth=-1):
 ######################################################################
 
 
-def set_proxy(proxy, user=None, password=''):
+def set_proxy(proxy, user=None, password=""):
     """
     Set the HTTP proxy for Python to download through.
 
@@ -740,12 +740,12 @@ def set_proxy(proxy, user=None, password=''):
     if proxy is None:
         # Try and find the system proxy settings
         try:
-            proxy = getproxies()['http']
+            proxy = getproxies()["http"]
         except KeyError:
-            raise ValueError('Could not detect default proxy settings')
+            raise ValueError("Could not detect default proxy settings")
 
     # Set up the proxy handler
-    proxy_handler = ProxyHandler({'https': proxy, 'http': proxy})
+    proxy_handler = ProxyHandler({"https": proxy, "http": proxy})
     opener = build_opener(proxy_handler)
 
     if user is not None:

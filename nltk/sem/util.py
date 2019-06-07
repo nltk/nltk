@@ -49,7 +49,7 @@ def parse_sents(inputs, grammar, trace=0):
     return parses
 
 
-def root_semrep(syntree, semkey='SEM'):
+def root_semrep(syntree, semkey="SEM"):
     """
     Find the semantic representation at the root of a tree.
 
@@ -65,12 +65,12 @@ def root_semrep(syntree, semkey='SEM'):
     try:
         return node[semkey]
     except KeyError:
-        print(node, end=' ')
+        print(node, end=" ")
         print("has no specification for the feature %s" % semkey)
     raise
 
 
-def interpret_sents(inputs, grammar, semkey='SEM', trace=0):
+def interpret_sents(inputs, grammar, semkey="SEM", trace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
@@ -113,24 +113,24 @@ def demo_model0():
     global m0, g0
     # Initialize a valuation of non-logical constants."""
     v = [
-        ('john', 'b1'),
-        ('mary', 'g1'),
-        ('suzie', 'g2'),
-        ('fido', 'd1'),
-        ('tess', 'd2'),
-        ('noosa', 'n'),
-        ('girl', set(['g1', 'g2'])),
-        ('boy', set(['b1', 'b2'])),
-        ('dog', set(['d1', 'd2'])),
-        ('bark', set(['d1', 'd2'])),
-        ('walk', set(['b1', 'g2', 'd1'])),
-        ('chase', set([('b1', 'g1'), ('b2', 'g1'), ('g1', 'd1'), ('g2', 'd2')])),
+        ("john", "b1"),
+        ("mary", "g1"),
+        ("suzie", "g2"),
+        ("fido", "d1"),
+        ("tess", "d2"),
+        ("noosa", "n"),
+        ("girl", set(["g1", "g2"])),
+        ("boy", set(["b1", "b2"])),
+        ("dog", set(["d1", "d2"])),
+        ("bark", set(["d1", "d2"])),
+        ("walk", set(["b1", "g2", "d1"])),
+        ("chase", set([("b1", "g1"), ("b2", "g1"), ("g1", "d1"), ("g2", "d2")])),
         (
-            'see',
-            set([('b1', 'g1'), ('b2', 'd2'), ('g1', 'b1'), ('d2', 'b1'), ('g2', 'n')]),
+            "see",
+            set([("b1", "g1"), ("b2", "d2"), ("g1", "b1"), ("d2", "b1"), ("g2", "n")]),
         ),
-        ('in', set([('b1', 'n'), ('b2', 'n'), ('d2', 'n')])),
-        ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')])),
+        ("in", set([("b1", "n"), ("b2", "n"), ("d2", "n")])),
+        ("with", set([("b1", "g1"), ("g1", "b1"), ("d1", "b1"), ("b1", "d1")])),
     ]
     # Read in the data from ``v``
     val = evaluate.Valuation(v)
@@ -142,13 +142,13 @@ def demo_model0():
     g0 = evaluate.Assignment(dom)
 
 
-def read_sents(filename, encoding='utf8'):
-    with codecs.open(filename, 'r', encoding) as fp:
+def read_sents(filename, encoding="utf8"):
+    with codecs.open(filename, "r", encoding) as fp:
         sents = [l.rstrip() for l in fp]
 
     # get rid of blank lines
     sents = [l for l in sents if len(l) > 0]
-    sents = [l for l in sents if not l[0] == '#']
+    sents = [l for l in sents if not l[0] == "#"]
     return sents
 
 
@@ -170,7 +170,7 @@ def demo_legacy_grammar():
     )
     print("Reading grammar: %s" % g)
     print("*" * 20)
-    for reading in interpret_sents(['hello'], g, semkey='sem'):
+    for reading in interpret_sents(["hello"], g, semkey="sem"):
         syn, sem = reading[0]
         print()
         print("output: ", sem)
@@ -191,9 +191,9 @@ def demo():
         beta=True,
         syntrace=0,
         semtrace=0,
-        demo='default',
-        grammar='',
-        sentences='',
+        demo="default",
+        grammar="",
+        sentences="",
     )
 
     opts.add_option(
@@ -251,20 +251,20 @@ def demo():
 
     (options, args) = opts.parse_args()
 
-    SPACER = '-' * 30
+    SPACER = "-" * 30
 
     demo_model0()
 
     sents = [
-        'Fido sees a boy with Mary',
-        'John sees Mary',
-        'every girl chases a dog',
-        'every boy chases a girl',
-        'John walks with a girl in Noosa',
-        'who walks',
+        "Fido sees a boy with Mary",
+        "John sees Mary",
+        "every girl chases a dog",
+        "every boy chases a girl",
+        "John walks with a girl in Noosa",
+        "who walks",
     ]
 
-    gramfile = 'grammars/sample_grammars/sem2.fcfg'
+    gramfile = "grammars/sample_grammars/sem2.fcfg"
 
     if options.sentences:
         sentsfile = options.sentences
@@ -287,20 +287,20 @@ def demo():
 
     for i, sent in enumerate(sents):
         n = 1
-        print('\nSentence: %s' % sent)
+        print("\nSentence: %s" % sent)
         print(SPACER)
         if options.evaluate:
 
             for (syntree, semrep, value) in evaluations[i]:
                 if isinstance(value, dict):
                     value = set(value.keys())
-                print('%d:  %s' % (n, semrep))
+                print("%d:  %s" % (n, semrep))
                 print(value)
                 n += 1
         else:
 
             for (syntree, semrep) in semreps[i]:
-                print('%d:  %s' % (n, semrep))
+                print("%d:  %s" % (n, semrep))
                 n += 1
 
 

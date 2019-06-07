@@ -41,7 +41,7 @@ C_INCR = 0.733
 N_SCALAR = -0.74
 
 # for removing punctuation
-REGEX_REMOVE_PUNCTUATION = re.compile('[{0}]'.format(re.escape(string.punctuation)))
+REGEX_REMOVE_PUNCTUATION = re.compile("[{0}]".format(re.escape(string.punctuation)))
 
 PUNC_LIST = [
     ".",
@@ -52,7 +52,7 @@ PUNC_LIST = [
     ":",
     "-",
     "'",
-    "\"",
+    '"',
     "!!",
     "!!!",
     "??",
@@ -222,7 +222,7 @@ def negated(input_words, include_nt=True):
         if any("n't" in word.lower() for word in input_words):
             return True
     for first, second in pairwise(input_words):
-        if second.lower() == "least" and first.lower() != 'at':
+        if second.lower() == "least" and first.lower() != "at":
             return True
     return False
 
@@ -281,7 +281,7 @@ class SentiText(object):
 
     def __init__(self, text):
         if not isinstance(text, str):
-            text = str(text.encode('utf-8'))
+            text = str(text.encode("utf-8"))
         self.text = text
         self.words_and_emoticons = self._words_and_emoticons()
         # doesn't separate words from\
@@ -296,14 +296,14 @@ class SentiText(object):
             ',cat': 'cat',
         }
         """
-        no_punc_text = REGEX_REMOVE_PUNCTUATION.sub('', self.text)
+        no_punc_text = REGEX_REMOVE_PUNCTUATION.sub("", self.text)
         # removes punctuation (but loses emoticons & contractions)
         words_only = no_punc_text.split()
         # remove singletons
         words_only = set(w for w in words_only if len(w) > 1)
         # the product gives ('cat', ',') and (',', 'cat')
-        punc_before = {''.join(p): p[1] for p in product(PUNC_LIST, words_only)}
-        punc_after = {''.join(p): p[0] for p in product(words_only, PUNC_LIST)}
+        punc_before = {"".join(p): p[1] for p in product(PUNC_LIST, words_only)}
+        punc_after = {"".join(p): p[0] for p in product(words_only, PUNC_LIST)}
         words_punc_dict = punc_before
         words_punc_dict.update(punc_after)
         return words_punc_dict
@@ -339,8 +339,8 @@ class SentimentIntensityAnalyzer(object):
         Convert lexicon file to a dictionary
         """
         lex_dict = {}
-        for line in self.lexicon_file.split('\n'):
-            (word, measure) = line.strip().split('\t')[0:2]
+        for line in self.lexicon_file.split("\n"):
+            (word, measure) = line.strip().split("\t")[0:2]
             lex_dict[word] = float(measure)
         return lex_dict
 
@@ -444,11 +444,11 @@ class SentimentIntensityAnalyzer(object):
 
     def _but_check(self, words_and_emoticons, sentiments):
         # check for modification in sentiment due to contrastive conjunction 'but'
-        if 'but' in words_and_emoticons or 'BUT' in words_and_emoticons:
+        if "but" in words_and_emoticons or "BUT" in words_and_emoticons:
             try:
-                bi = words_and_emoticons.index('but')
+                bi = words_and_emoticons.index("but")
             except ValueError:
-                bi = words_and_emoticons.index('BUT')
+                bi = words_and_emoticons.index("BUT")
             for sentiment in sentiments:
                 si = sentiments.index(sentiment)
                 if si < bi:

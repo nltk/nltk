@@ -28,14 +28,14 @@ from nltk.compat import python_2_unicode_compatible
 from nltk.tree import Tree
 
 ANSICOLOR = {
-    'black': 30,
-    'red': 31,
-    'green': 32,
-    'yellow': 33,
-    'blue': 34,
-    'magenta': 35,
-    'cyan': 36,
-    'white': 37,
+    "black": 30,
+    "red": 31,
+    "green": 32,
+    "yellow": 33,
+    "blue": 34,
+    "magenta": 35,
+    "cyan": 36,
+    "white": 37,
 }
 
 
@@ -91,8 +91,8 @@ class TreePrettyPrinter(object):
                             if not isinstance(b, Tree):
                                 a[n] = len(sentence)
                                 if type(b) == tuple:
-                                    b = '/'.join(b)
-                                sentence.append('%s' % b)
+                                    b = "/".join(b)
+                                sentence.append("%s" % b)
         self.nodes, self.coords, self.edges, self.highlight = self.nodecoords(
             tree, sentence, highlight
         )
@@ -101,7 +101,7 @@ class TreePrettyPrinter(object):
         return self.text()
 
     def __repr__(self):
-        return '<TreePrettyPrinter with %d nodes>' % len(self.nodes)
+        return "<TreePrettyPrinter with %d nodes>" % len(self.nodes)
 
     @staticmethod
     def nodecoords(tree, sentence, highlight):
@@ -189,27 +189,27 @@ class TreePrettyPrinter(object):
                             i += scale
                             j -= scale
             raise ValueError(
-                'could not find a free cell for:\n%s\n%s'
-                'min=%d; max=%d' % (tree[m], minidx, maxidx, dumpmatrix())
+                "could not find a free cell for:\n%s\n%s"
+                "min=%d; max=%d" % (tree[m], minidx, maxidx, dumpmatrix())
             )
 
         def dumpmatrix():
             """Dump matrix contents for debugging purposes."""
-            return '\n'.join(
-                '%2d: %s' % (n, ' '.join(('%2r' % i)[:2] for i in row))
+            return "\n".join(
+                "%2d: %s" % (n, " ".join(("%2r" % i)[:2] for i in row))
                 for n, row in enumerate(matrix)
             )
 
         leaves = tree.leaves()
         if not all(isinstance(n, int) for n in leaves):
-            raise ValueError('All leaves must be integer indices.')
+            raise ValueError("All leaves must be integer indices.")
         if len(leaves) != len(set(leaves)):
-            raise ValueError('Indices must occur at most once.')
+            raise ValueError("Indices must occur at most once.")
         if not all(0 <= n < len(sentence) for n in leaves):
             raise ValueError(
-                'All leaves must be in the interval 0..n '
-                'with n=len(sentence)\ntokens: %d indices: '
-                '%r\nsentence: %s' % (len(sentence), tree.leaves(), sentence)
+                "All leaves must be in the interval 0..n "
+                "with n=len(sentence)\ntokens: %d indices: "
+                "%r\nsentence: %s" % (len(sentence), tree.leaves(), sentence)
             )
         vertline, corner = -1, -2  # constants
         tree = tree.copy(True)
@@ -247,7 +247,7 @@ class TreePrettyPrinter(object):
             matrix[0][i] = ids[m]
             nodes[ids[m]] = sentence[tree[m]]
             if nodes[ids[m]] is None:
-                nodes[ids[m]] = '...'
+                nodes[ids[m]] = "..."
                 highlighted_nodes.discard(ids[m])
             positions.remove(m)
             childcols[m[:-1]].add((0, i))
@@ -333,9 +333,9 @@ class TreePrettyPrinter(object):
         unicodelines=False,
         html=False,
         ansi=False,
-        nodecolor='blue',
-        leafcolor='red',
-        funccolor='green',
+        nodecolor="blue",
+        leafcolor="red",
+        funccolor="green",
         abbreviate=None,
         maxwidth=16,
     ):
@@ -357,28 +357,28 @@ class TreePrettyPrinter(object):
         if abbreviate == True:
             abbreviate = 5
         if unicodelines:
-            horzline = '\u2500'
-            leftcorner = '\u250c'
-            rightcorner = '\u2510'
-            vertline = ' \u2502 '
-            tee = horzline + '\u252C' + horzline
-            bottom = horzline + '\u2534' + horzline
-            cross = horzline + '\u253c' + horzline
-            ellipsis = '\u2026'
+            horzline = "\u2500"
+            leftcorner = "\u250c"
+            rightcorner = "\u2510"
+            vertline = " \u2502 "
+            tee = horzline + "\u252C" + horzline
+            bottom = horzline + "\u2534" + horzline
+            cross = horzline + "\u253c" + horzline
+            ellipsis = "\u2026"
         else:
-            horzline = '_'
-            leftcorner = rightcorner = ' '
-            vertline = ' | '
+            horzline = "_"
+            leftcorner = rightcorner = " "
+            vertline = " | "
             tee = 3 * horzline
-            cross = bottom = '_|_'
-            ellipsis = '.'
+            cross = bottom = "_|_"
+            ellipsis = "."
 
         def crosscell(cur, x=vertline):
             """Overwrite center of this cell with a vertical branch."""
             splitl = len(cur) - len(cur) // 2 - len(x) // 2 - 1
             lst = list(cur)
             lst[splitl : splitl + len(x)] = list(x)
-            return ''.join(lst)
+            return "".join(lst)
 
         result = []
         matrix = defaultdict(dict)
@@ -390,7 +390,7 @@ class TreePrettyPrinter(object):
         childcols = defaultdict(set)
         labels = {}
         wrapre = re.compile(
-            '(.{%d,%d}\\b\\W*|.{%d})' % (maxwidth - 4, maxwidth, maxwidth)
+            "(.{%d,%d}\\b\\W*|.{%d})" % (maxwidth - 4, maxwidth, maxwidth)
         )
         # collect labels and coordinates
         for a in self.nodes:
@@ -405,8 +405,8 @@ class TreePrettyPrinter(object):
             if abbreviate and len(label) > abbreviate:
                 label = label[:abbreviate] + ellipsis
             if maxwidth and len(label) > maxwidth:
-                label = wrapre.sub(r'\1\n', label).strip()
-            label = label.split('\n')
+                label = wrapre.sub(r"\1\n", label).strip()
+            label = label.split("\n")
             maxnodeheight[row] = max(maxnodeheight[row], len(label))
             maxnodewith[column] = max(maxnodewith[column], max(map(len, label)))
             labels[a] = label
@@ -419,10 +419,10 @@ class TreePrettyPrinter(object):
         # bottom up level order traversal
         for row in sorted(matrix, reverse=True):
             noderows = [
-                [''.center(maxnodewith[col]) for col in range(maxcol + 1)]
+                ["".center(maxnodewith[col]) for col in range(maxcol + 1)]
                 for _ in range(maxnodeheight[row])
             ]
-            branchrow = [''.center(maxnodewith[col]) for col in range(maxcol + 1)]
+            branchrow = ["".center(maxnodewith[col]) for col in range(maxcol + 1)]
             for col in matrix[row]:
                 n = matrix[row][col]
                 node = self.nodes[n]
@@ -432,10 +432,10 @@ class TreePrettyPrinter(object):
                     if n in minchildcol and minchildcol[n] < maxchildcol[n]:
                         i, j = minchildcol[n], maxchildcol[n]
                         a, b = (maxnodewith[i] + 1) // 2 - 1, maxnodewith[j] // 2
-                        branchrow[i] = ((' ' * a) + leftcorner).ljust(
+                        branchrow[i] = ((" " * a) + leftcorner).ljust(
                             maxnodewith[i], horzline
                         )
-                        branchrow[j] = (rightcorner + (' ' * b)).rjust(
+                        branchrow[j] = (rightcorner + (" " * b)).rjust(
                             maxnodewith[j], horzline
                         )
                         for i in range(minchildcol[n] + 1, maxchildcol[n]):
@@ -452,22 +452,22 @@ class TreePrettyPrinter(object):
                         branchrow[col] = crosscell(branchrow[col])
                 text = [a.center(maxnodewith[col]) for a in text]
                 color = nodecolor if isinstance(node, Tree) else leafcolor
-                if isinstance(node, Tree) and node.label().startswith('-'):
+                if isinstance(node, Tree) and node.label().startswith("-"):
                     color = funccolor
                 if html:
                     text = [escape(a) for a in text]
                     if n in self.highlight:
-                        text = ['<font color=%s>%s</font>' % (color, a) for a in text]
+                        text = ["<font color=%s>%s</font>" % (color, a) for a in text]
                 elif ansi and n in self.highlight:
-                    text = ['\x1b[%d;1m%s\x1b[0m' % (ANSICOLOR[color], a) for a in text]
+                    text = ["\x1b[%d;1m%s\x1b[0m" % (ANSICOLOR[color], a) for a in text]
                 for x in range(maxnodeheight[row]):
                     # draw vertical lines in partially filled multiline node
                     # labels, but only if it's not a frontier node.
                     noderows[x][col] = (
                         text[x]
                         if x < len(text)
-                        else (vertline if childcols[n] else ' ').center(
-                            maxnodewith[col], ' '
+                        else (vertline if childcols[n] else " ").center(
+                            maxnodewith[col], " "
                         )
                     )
             # for each column, if there is a node below us which has a parent
@@ -480,16 +480,16 @@ class TreePrettyPrinter(object):
                             for noderow in noderows:
                                 noderow[col] = crosscell(noderow[col])
                 branchrow = [
-                    a + ((a[-1] if a[-1] != ' ' else b[0]) * nodedist)
-                    for a, b in zip(branchrow, branchrow[1:] + [' '])
+                    a + ((a[-1] if a[-1] != " " else b[0]) * nodedist)
+                    for a, b in zip(branchrow, branchrow[1:] + [" "])
                 ]
-                result.append(''.join(branchrow))
+                result.append("".join(branchrow))
             result.extend(
-                (' ' * nodedist).join(noderow) for noderow in reversed(noderows)
+                (" " * nodedist).join(noderow) for noderow in reversed(noderows)
             )
-        return '\n'.join(reversed(result)) + '\n'
+        return "\n".join(reversed(result)) + "\n"
 
-    def svg(self, nodecolor='blue', leafcolor='red', funccolor='green'):
+    def svg(self, nodecolor="blue", leafcolor="red", funccolor="green"):
         """
         :return: SVG representation of a tree.
         """
@@ -562,10 +562,10 @@ class TreePrettyPrinter(object):
             y = row * vscale + vstart
             if n in self.highlight:
                 color = nodecolor if isinstance(node, Tree) else leafcolor
-                if isinstance(node, Tree) and node.label().startswith('-'):
+                if isinstance(node, Tree) and node.label().startswith("-"):
                     color = funccolor
             else:
-                color = 'black'
+                color = "black"
             result += [
                 '\t<text style="text-anchor: middle; fill: %s; '
                 'font-size: %dpx;" x="%g" y="%g">%s</text>'
@@ -578,8 +578,8 @@ class TreePrettyPrinter(object):
                 )
             ]
 
-        result += ['</svg>']
-        return '\n'.join(result)
+        result += ["</svg>"]
+        return "\n".join(result)
 
 
 def test():
@@ -587,7 +587,7 @@ def test():
 
     def print_tree(n, tree, sentence=None, ansi=True, **xargs):
         print()
-        print('{0}: "{1}"'.format(n, ' '.join(sentence or tree.leaves())))
+        print('{0}: "{1}"'.format(n, " ".join(sentence or tree.leaves())))
         print(tree)
         print()
         drawtree = TreePrettyPrinter(tree, sentence)
@@ -602,23 +602,23 @@ def test():
         tree = treebank.parsed_sents()[n]
         print_tree(n, tree, nodedist=2, maxwidth=8)
     print()
-    print('ASCII version:')
+    print("ASCII version:")
     print(TreePrettyPrinter(tree).text(nodedist=2))
 
     tree = Tree.fromstring(
-        '(top (punct 8) (smain (noun 0) (verb 1) (inf (verb 5) (inf (verb 6) '
-        '(conj (inf (pp (prep 2) (np (det 3) (noun 4))) (verb 7)) (inf (verb 9)) '
-        '(vg 10) (inf (verb 11)))))) (punct 12))',
+        "(top (punct 8) (smain (noun 0) (verb 1) (inf (verb 5) (inf (verb 6) "
+        "(conj (inf (pp (prep 2) (np (det 3) (noun 4))) (verb 7)) (inf (verb 9)) "
+        "(vg 10) (inf (verb 11)))))) (punct 12))",
         read_leaf=int,
     )
     sentence = (
-        'Ze had met haar moeder kunnen gaan winkelen ,'
-        ' zwemmen of terrassen .'.split()
+        "Ze had met haar moeder kunnen gaan winkelen ,"
+        " zwemmen of terrassen .".split()
     )
-    print_tree('Discontinuous tree', tree, sentence, nodedist=2)
+    print_tree("Discontinuous tree", tree, sentence, nodedist=2)
 
 
-__all__ = ['TreePrettyPrinter']
+__all__ = ["TreePrettyPrinter"]
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test()

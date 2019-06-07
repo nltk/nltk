@@ -77,7 +77,7 @@ else:
         """
 
         def __init__(
-            self, f, dialect=csv.excel, encoding="utf-8", errors='replace', **kwds
+            self, f, dialect=csv.excel, encoding="utf-8", errors="replace", **kwds
         ):
             # Redirect output to a queue
             self.queue = cStringIO.StringIO()
@@ -98,7 +98,7 @@ else:
             data = self.queue.getvalue()
             data = data.decode("utf-8")
             # ... and reencode it into the target encoding
-            data = self.encoder.encode(data, 'replace')
+            data = self.encoder.encode(data, "replace")
             # write to the target stream
             self.stream.write(data)
             # empty queue
@@ -233,11 +233,11 @@ def py3_data(init_func):
 def remove_accents(text):
 
     if isinstance(text, bytes):
-        text = text.decode('ascii')
+        text = text.decode("ascii")
 
     category = unicodedata.category  # this gives a small (~10%) speedup
-    return ''.join(
-        c for c in unicodedata.normalize('NFKD', text) if category(c) != 'Mn'
+    return "".join(
+        c for c in unicodedata.normalize("NFKD", text) if category(c) != "Mn"
     )
 
 
@@ -306,7 +306,7 @@ def unicode_repr(obj):
         return repr(obj)
 
     # Python 2.x
-    if hasattr(obj, 'unicode_repr'):
+    if hasattr(obj, "unicode_repr"):
         return obj.unicode_repr()
 
     if isinstance(obj, text_type):
@@ -329,7 +329,7 @@ def _transliterated(method):
 
 def _7bit(method):
     def wrapper(self):
-        return method(self).encode('ascii', 'backslashreplace')
+        return method(self).encode("ascii", "backslashreplace")
 
     update_wrapper(wrapper, method, ["__name__", "__doc__"])
 

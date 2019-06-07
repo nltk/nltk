@@ -37,28 +37,28 @@ class RTEFeatureExtractor(object):
         self.stop = stop
         self.stopwords = set(
             [
-                'a',
-                'the',
-                'it',
-                'they',
-                'of',
-                'in',
-                'to',
-                'is',
-                'have',
-                'are',
-                'were',
-                'and',
-                'very',
-                '.',
-                ',',
+                "a",
+                "the",
+                "it",
+                "they",
+                "of",
+                "in",
+                "to",
+                "is",
+                "have",
+                "are",
+                "were",
+                "and",
+                "very",
+                ".",
+                ",",
             ]
         )
 
-        self.negwords = set(['no', 'not', 'never', 'failed', 'rejected', 'denied'])
+        self.negwords = set(["no", "not", "never", "failed", "rejected", "denied"])
         # Try to tokenize so that abbreviations, monetary amounts, email
         # addresses, URLs are single tokens.
-        tokenizer = RegexpTokenizer('[\w.@:/]+|\w+|\$[\d.]+')
+        tokenizer = RegexpTokenizer("[\w.@:/]+|\w+|\$[\d.]+")
 
         # Get the set of word types for text and hypothesis
         self.text_tokens = tokenizer.tokenize(rtepair.text)
@@ -86,11 +86,11 @@ class RTEFeatureExtractor(object):
         :type toktype: 'ne' or 'word'
         """
         ne_overlap = set(token for token in self._overlap if self._ne(token))
-        if toktype == 'ne':
+        if toktype == "ne":
             if debug:
                 print("ne overlap", ne_overlap)
             return ne_overlap
-        elif toktype == 'word':
+        elif toktype == "word":
             if debug:
                 print("word overlap", self._overlap - ne_overlap)
             return self._overlap - ne_overlap
@@ -105,9 +105,9 @@ class RTEFeatureExtractor(object):
         :type toktype: 'ne' or 'word'
         """
         ne_extra = set(token for token in self._hyp_extra if self._ne(token))
-        if toktype == 'ne':
+        if toktype == "ne":
             return ne_extra
-        elif toktype == 'word':
+        elif toktype == "word":
             return self._hyp_extra - ne_extra
         else:
             raise ValueError("Type not recognized: '%s'" % toktype)
@@ -138,13 +138,13 @@ class RTEFeatureExtractor(object):
 def rte_features(rtepair):
     extractor = RTEFeatureExtractor(rtepair)
     features = {}
-    features['alwayson'] = True
-    features['word_overlap'] = len(extractor.overlap('word'))
-    features['word_hyp_extra'] = len(extractor.hyp_extra('word'))
-    features['ne_overlap'] = len(extractor.overlap('ne'))
-    features['ne_hyp_extra'] = len(extractor.hyp_extra('ne'))
-    features['neg_txt'] = len(extractor.negwords & extractor.text_words)
-    features['neg_hyp'] = len(extractor.negwords & extractor.hyp_words)
+    features["alwayson"] = True
+    features["word_overlap"] = len(extractor.overlap("word"))
+    features["word_hyp_extra"] = len(extractor.hyp_extra("word"))
+    features["ne_overlap"] = len(extractor.overlap("ne"))
+    features["ne_hyp_extra"] = len(extractor.hyp_extra("ne"))
+    features["neg_txt"] = len(extractor.negwords & extractor.text_words)
+    features["neg_hyp"] = len(extractor.negwords & extractor.hyp_words)
     return features
 
 
@@ -155,17 +155,17 @@ def rte_featurize(rte_pairs):
 def rte_classifier(algorithm):
     from nltk.corpus import rte as rte_corpus
 
-    train_set = rte_corpus.pairs(['rte1_dev.xml', 'rte2_dev.xml', 'rte3_dev.xml'])
-    test_set = rte_corpus.pairs(['rte1_test.xml', 'rte2_test.xml', 'rte3_test.xml'])
+    train_set = rte_corpus.pairs(["rte1_dev.xml", "rte2_dev.xml", "rte3_dev.xml"])
+    test_set = rte_corpus.pairs(["rte1_test.xml", "rte2_test.xml", "rte3_test.xml"])
     featurized_train_set = rte_featurize(train_set)
     featurized_test_set = rte_featurize(test_set)
     # Train the classifier
-    print('Training classifier...')
-    if algorithm in ['megam', 'BFGS']:  # MEGAM based algorithms.
+    print("Training classifier...")
+    if algorithm in ["megam", "BFGS"]:  # MEGAM based algorithms.
         # Ensure that MEGAM is configured first.
         check_megam_config()
         clf = lambda x: MaxentClassifier.train(featurized_train_set, algorithm)
-    elif algorithm in ['GIS', 'IIS']:  # Use default GIS/IIS MaxEnt algorithm
+    elif algorithm in ["GIS", "IIS"]:  # Use default GIS/IIS MaxEnt algorithm
         clf = MaxentClassifier.train(featurized_train_set, algorithm)
     else:
         err_msg = str(
@@ -173,7 +173,7 @@ def rte_classifier(algorithm):
             "'megam', 'BFGS', 'GIS', 'IIS'.\n"
         )
         raise Exception(err_msg)
-    print('Testing classifier...')
+    print("Testing classifier...")
     acc = accuracy(clf, featurized_test_set)
-    print('Accuracy: %6.4f' % acc)
+    print("Accuracy: %6.4f" % acc)
     return clf

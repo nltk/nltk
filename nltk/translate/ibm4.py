@@ -220,13 +220,13 @@ class IBMModel4(IBMModel):
             self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
-            self.translation_table = probability_tables['translation_table']
-            self.alignment_table = probability_tables['alignment_table']
-            self.fertility_table = probability_tables['fertility_table']
-            self.p1 = probability_tables['p1']
-            self.head_distortion_table = probability_tables['head_distortion_table']
+            self.translation_table = probability_tables["translation_table"]
+            self.alignment_table = probability_tables["alignment_table"]
+            self.fertility_table = probability_tables["fertility_table"]
+            self.p1 = probability_tables["p1"]
+            self.head_distortion_table = probability_tables["head_distortion_table"]
             self.non_head_distortion_table = probability_tables[
-                'non_head_distortion_table'
+                "non_head_distortion_table"
             ]
 
         for n in range(0, iterations):

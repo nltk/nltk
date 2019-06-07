@@ -22,7 +22,7 @@ from nltk.tree import Tree
 
 from unittest import skip
 
-_stanford_url = 'http://stanfordnlp.github.io/CoreNLP/'
+_stanford_url = "http://stanfordnlp.github.io/CoreNLP/"
 
 
 class CoreNLPServerError(EnvironmentError):
@@ -31,7 +31,7 @@ class CoreNLPServerError(EnvironmentError):
 
 def try_port(port=0):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(('', port))
+    sock.bind(("", port))
 
     p = sock.getsockname()[1]
     sock.close()
@@ -41,8 +41,8 @@ def try_port(port=0):
 
 class CoreNLPServer(object):
 
-    _MODEL_JAR_PATTERN = r'stanford-corenlp-(\d+)\.(\d+)\.(\d+)-models\.jar'
-    _JAR = r'stanford-corenlp-(\d+)\.(\d+)\.(\d+)\.jar'
+    _MODEL_JAR_PATTERN = r"stanford-corenlp-(\d+)\.(\d+)\.(\d+)-models\.jar"
+    _JAR = r"stanford-corenlp-(\d+)\.(\d+)\.(\d+)\.jar"
 
     def __init__(
         self,
@@ -55,13 +55,13 @@ class CoreNLPServer(object):
     ):
 
         if corenlp_options is None:
-            corenlp_options = ['-preload', 'tokenize,ssplit,pos,lemma,parse,depparse']
+            corenlp_options = ["-preload", "tokenize,ssplit,pos,lemma,parse,depparse"]
 
         jars = list(
             find_jar_iter(
                 self._JAR,
                 path_to_jar,
-                env_vars=('CORENLP',),
+                env_vars=("CORENLP",),
                 searchpath=(),
                 url=_stanford_url,
                 verbose=verbose,
@@ -81,13 +81,13 @@ class CoreNLPServer(object):
         else:
             try_port(port)
 
-        self.url = 'http://localhost:{}'.format(port)
+        self.url = "http://localhost:{}".format(port)
 
         model_jar = max(
             find_jar_iter(
                 self._MODEL_JAR_PATTERN,
                 path_to_models_jar,
-                env_vars=('CORENLP_MODELS',),
+                env_vars=("CORENLP_MODELS",),
                 searchpath=(),
                 url=_stanford_url,
                 verbose=verbose,
@@ -101,22 +101,22 @@ class CoreNLPServer(object):
         self._classpath = stanford_jar, model_jar
 
         self.corenlp_options = corenlp_options
-        self.java_options = java_options or ['-mx2g']
+        self.java_options = java_options or ["-mx2g"]
 
-    def start(self, stdout='devnull', stderr='devnull'):
+    def start(self, stdout="devnull", stderr="devnull"):
         """ Starts the CoreNLP server
 
         :param stdout, stderr: Specifies where CoreNLP output is redirected. Valid values are 'devnull', 'stdout', 'pipe'
         """
         import requests
 
-        cmd = ['edu.stanford.nlp.pipeline.StanfordCoreNLPServer']
+        cmd = ["edu.stanford.nlp.pipeline.StanfordCoreNLPServer"]
 
         if self.corenlp_options:
             cmd.extend(self.corenlp_options)
 
         # Configure java.
-        default_options = ' '.join(_java_options)
+        default_options = " ".join(_java_options)
         config_java(options=self.java_options, verbose=self.verbose)
 
         try:
@@ -137,31 +137,31 @@ class CoreNLPServer(object):
             _, stderrdata = self.popen.communicate()
             raise CoreNLPServerError(
                 returncode,
-                'Could not start the server. '
-                'The error was: {}'.format(stderrdata.decode('ascii')),
+                "Could not start the server. "
+                "The error was: {}".format(stderrdata.decode("ascii")),
             )
 
         for i in range(30):
             try:
-                response = requests.get(requests.compat.urljoin(self.url, 'live'))
+                response = requests.get(requests.compat.urljoin(self.url, "live"))
             except requests.exceptions.ConnectionError:
                 time.sleep(1)
             else:
                 if response.ok:
                     break
         else:
-            raise CoreNLPServerError('Could not connect to the server.')
+            raise CoreNLPServerError("Could not connect to the server.")
 
         for i in range(60):
             try:
-                response = requests.get(requests.compat.urljoin(self.url, 'ready'))
+                response = requests.get(requests.compat.urljoin(self.url, "ready"))
             except requests.exceptions.ConnectionError:
                 time.sleep(1)
             else:
                 if response.ok:
                     break
         else:
-            raise CoreNLPServerError('The server is not ready.')
+            raise CoreNLPServerError("The server is not ready.")
 
     def stop(self):
         self.popen.terminate()
@@ -180,13 +180,13 @@ class CoreNLPServer(object):
 class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
     """Interface to the CoreNLP Parser."""
 
-    def __init__(self, url='http://localhost:9000', encoding='utf8', tagtype=None):
+    def __init__(self, url="http://localhost:9000", encoding="utf8", tagtype=None):
         import requests
 
         self.url = url
         self.encoding = encoding
 
-        if tagtype not in ['pos', 'ner', None]:
+        if tagtype not in ["pos", "ner", None]:
             raise ValueError("tagtype must be either 'pos', 'ner' or None")
 
         self.tagtype = tagtype
@@ -208,7 +208,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         :rtype: iter(iter(Tree))
         """
         # Converting list(list(str)) -> list(str)
-        sentences = (' '.join(words) for words in sentences)
+        sentences = (" ".join(words) for words in sentences)
         return self.raw_parse_sents(sentences, *args, **kwargs)
 
     def raw_parse(self, sentence, properties=None, *args, **kwargs):
@@ -221,7 +221,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         :type sentence: str
         :rtype: iter(Tree)
         """
-        default_properties = {'tokenize.whitespace': 'false'}
+        default_properties = {"tokenize.whitespace": "false"}
         default_properties.update(properties or {})
 
         return next(
@@ -232,8 +232,8 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
     def api_call(self, data, properties=None, timeout=60):
         default_properties = {
-            'outputFormat': 'json',
-            'annotators': 'tokenize,pos,lemma,ssplit,{parser_annotator}'.format(
+            "outputFormat": "json",
+            "annotators": "tokenize,pos,lemma,ssplit,{parser_annotator}".format(
                 parser_annotator=self.parser_annotator
             ),
         }
@@ -242,7 +242,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
         response = self.session.post(
             self.url,
-            params={'properties': json.dumps(default_properties)},
+            params={"properties": json.dumps(default_properties)},
             data=data.encode(self.encoding),
             timeout=timeout,
         )
@@ -266,7 +266,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         """
         default_properties = {
             # Only splits on '\n', never inside the sentence.
-            'ssplit.eolonly': 'true'
+            "ssplit.eolonly": "true"
         }
 
         default_properties.update(properties or {})
@@ -281,8 +281,8 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
                 tree = self.make_tree(parse)
                 yield iter([tree])
         """
-        parsed_data = self.api_call('\n'.join(sentences), properties=default_properties)
-        for parsed_sent in parsed_data['sentences']:
+        parsed_data = self.api_call("\n".join(sentences), properties=default_properties)
+        for parsed_sent in parsed_data["sentences"]:
             tree = self.make_tree(parsed_sent)
             yield iter([tree])
 
@@ -297,7 +297,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         """
         parsed_data = self.api_call(text, *args, **kwargs)
 
-        for parse in parsed_data['sentences']:
+        for parse in parsed_data["sentences"]:
             yield self.make_tree(parse)
 
     def tokenize(self, text, properties=None):
@@ -319,15 +319,15 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
 
         """
-        default_properties = {'annotators': 'tokenize,ssplit'}
+        default_properties = {"annotators": "tokenize,ssplit"}
 
         default_properties.update(properties or {})
 
         result = self.api_call(text, properties=default_properties)
 
-        for sentence in result['sentences']:
-            for token in sentence['tokens']:
-                yield token['originalText'] or token['word']
+        for sentence in result["sentences"]:
+            for token in sentence["tokens"]:
+                yield token["originalText"] or token["word"]
 
     def tag_sents(self, sentences):
         """
@@ -341,7 +341,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         :rtype: list(list(tuple(str, str))
         """
         # Converting list(list(str)) -> list(str)
-        sentences = (' '.join(words) for words in sentences)
+        sentences = (" ".join(words) for words in sentences)
         return [sentences[0] for sentences in self.raw_tag_sents(sentences)]
 
     def tag(self, sentence):
@@ -376,21 +376,21 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
         :rtype: list(list(list(tuple(str, str)))
         """
         default_properties = {
-            'ssplit.isOneSentence': 'true',
-            'annotators': 'tokenize,ssplit,',
+            "ssplit.isOneSentence": "true",
+            "annotators": "tokenize,ssplit,",
         }
 
         # Supports only 'pos' or 'ner' tags.
-        assert self.tagtype in ['pos', 'ner']
-        default_properties['annotators'] += self.tagtype
+        assert self.tagtype in ["pos", "ner"]
+        default_properties["annotators"] += self.tagtype
         for sentence in sentences:
             tagged_data = self.api_call(sentence, properties=default_properties)
             yield [
                 [
-                    (token['word'], token[self.tagtype])
-                    for token in tagged_sentence['tokens']
+                    (token["word"], token[self.tagtype])
+                    for token in tagged_sentence["tokens"]
                 ]
-                for tagged_sentence in tagged_data['sentences']
+                for tagged_sentence in tagged_data["sentences"]
             ]
 
 
@@ -539,11 +539,11 @@ class CoreNLPParser(GenericCoreNLPParser):
 
     """
 
-    _OUTPUT_FORMAT = 'penn'
-    parser_annotator = 'parse'
+    _OUTPUT_FORMAT = "penn"
+    parser_annotator = "parse"
 
     def make_tree(self, result):
-        return Tree.fromstring(result['parse'])
+        return Tree.fromstring(result["parse"])
 
 
 class CoreNLPDependencyParser(GenericCoreNLPParser):
@@ -710,44 +710,44 @@ class CoreNLPDependencyParser(GenericCoreNLPParser):
 
     """
 
-    _OUTPUT_FORMAT = 'conll2007'
-    parser_annotator = 'depparse'
+    _OUTPUT_FORMAT = "conll2007"
+    parser_annotator = "depparse"
 
     def make_tree(self, result):
 
         return DependencyGraph(
             (
-                ' '.join(n_items[1:])  # NLTK expects an iterable of strings...
+                " ".join(n_items[1:])  # NLTK expects an iterable of strings...
                 for n_items in sorted(transform(result))
             ),
-            cell_separator=' ',  # To make sure that a non-breaking space is kept inside of a token.
+            cell_separator=" ",  # To make sure that a non-breaking space is kept inside of a token.
         )
 
 
 def transform(sentence):
-    for dependency in sentence['basicDependencies']:
+    for dependency in sentence["basicDependencies"]:
 
-        dependent_index = dependency['dependent']
-        token = sentence['tokens'][dependent_index - 1]
+        dependent_index = dependency["dependent"]
+        token = sentence["tokens"][dependent_index - 1]
 
         # Return values that we don't know as '_'. Also, consider tag and ctag
         # to be equal.
         yield (
             dependent_index,
-            '_',
-            token['word'],
-            token['lemma'],
-            token['pos'],
-            token['pos'],
-            '_',
-            str(dependency['governor']),
-            dependency['dep'],
-            '_',
-            '_',
+            "_",
+            token["word"],
+            token["lemma"],
+            token["pos"],
+            token["pos"],
+            "_",
+            str(dependency["governor"]),
+            dependency["dep"],
+            "_",
+            "_",
         )
 
 
-@skip('Skipping all CoreNLP tests.')
+@skip("Skipping all CoreNLP tests.")
 def setup_module(module):
     from nose import SkipTest
 
@@ -756,18 +756,18 @@ def setup_module(module):
     try:
         server = CoreNLPServer(port=9000)
     except LookupError as e:
-        raise SkipTest('Could not instantiate CoreNLPServer.')
+        raise SkipTest("Could not instantiate CoreNLPServer.")
 
     try:
         server.start()
     except CoreNLPServerError as e:
         raise SkipTest(
-            'Skipping CoreNLP tests because the server could not be started. '
-            'Make sure that the 9000 port is free. '
-            '{}'.format(e.strerror)
+            "Skipping CoreNLP tests because the server could not be started. "
+            "Make sure that the 9000 port is free. "
+            "{}".format(e.strerror)
         )
 
 
-@skip('Skipping all CoreNLP tests.')
+@skip("Skipping all CoreNLP tests.")
 def teardown_module(module):
     server.stop()

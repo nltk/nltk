@@ -236,7 +236,9 @@ class LanguageModel(object):
             # - turning Mapping into Sequence which _weighted_choice expects
             samples = sorted(samples)
             return _weighted_choice(
-                samples, tuple(self.score(w, context) for w in samples), random_generator
+                samples,
+                tuple(self.score(w, context) for w in samples),
+                random_generator,
             )
         # build up text one word at a time
         generated = []

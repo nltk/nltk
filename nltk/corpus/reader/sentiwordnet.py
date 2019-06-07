@@ -43,14 +43,14 @@ from nltk.corpus.reader import CorpusReader
 
 @python_2_unicode_compatible
 class SentiWordNetCorpusReader(CorpusReader):
-    def __init__(self, root, fileids, encoding='utf-8'):
+    def __init__(self, root, fileids, encoding="utf-8"):
         """
         Construct a new SentiWordNet Corpus Reader, using data from
    	the specified file.
         """
         super(SentiWordNetCorpusReader, self).__init__(root, fileids, encoding=encoding)
         if len(self._fileids) != 1:
-            raise ValueError('Exactly one file must be specified')
+            raise ValueError("Exactly one file must be specified")
         self._db = {}
         self._parse_src_file()
 
@@ -62,7 +62,7 @@ class SentiWordNetCorpusReader(CorpusReader):
             try:
                 pos, offset, pos_score, neg_score, synset_terms, gloss = fields
             except:
-                raise ValueError('Line %s formatted incorrectly: %s\n' % (i, line))
+                raise ValueError("Line %s formatted incorrectly: %s\n" % (i, line))
             if pos and offset:
                 offset = int(offset)
                 self._db[(pos, offset)] = (float(pos_score), float(neg_score))
@@ -73,15 +73,15 @@ class SentiWordNetCorpusReader(CorpusReader):
         if tuple(vals) in self._db:
             pos_score, neg_score = self._db[tuple(vals)]
             pos, offset = vals
-            if pos == 's':
-                pos = 'a'
+            if pos == "s":
+                pos = "a"
             synset = wn.synset_from_pos_and_offset(pos, offset)
             return SentiSynset(pos_score, neg_score, synset)
         else:
             synset = wn.synset(vals[0])
             pos = synset.pos()
-            if pos == 's':
-                pos = 'a'
+            if pos == "s":
+                pos = "a"
             offset = synset.offset()
             if (pos, offset) in self._db:
                 pos_score, neg_score = self._db[(pos, offset)]

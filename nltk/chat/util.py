@@ -76,7 +76,7 @@ class Chat(object):
         )
 
     def _wildcards(self, response, match):
-        pos = response.find('%')
+        pos = response.find("%")
         while pos >= 0:
             num = int(response[pos + 1 : pos + 2])
             response = (
@@ -84,7 +84,7 @@ class Chat(object):
                 + self._substitute(match.group(num))
                 + response[pos + 2 :]
             )
-            pos = response.find('%')
+            pos = response.find("%")
         return response
 
     def respond(self, str):
@@ -106,10 +106,10 @@ class Chat(object):
                 resp = self._wildcards(resp, match)  # process wildcards
 
                 # fix munged punctuation at the end
-                if resp[-2:] == '?.':
-                    resp = resp[:-2] + '.'
-                if resp[-2:] == '??':
-                    resp = resp[:-2] + '?'
+                if resp[-2:] == "?.":
+                    resp = resp[:-2] + "."
+                if resp[-2:] == "??":
+                    resp = resp[:-2] + "?"
                 return resp
 
     # Hold a conversation with a chatbot

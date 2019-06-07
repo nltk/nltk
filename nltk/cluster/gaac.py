@@ -136,7 +136,7 @@ class GAAClusterer(VectorSpaceClusterer):
         return self._num_clusters
 
     def __repr__(self):
-        return '<GroupAverageAgglomerative Clusterer n=%d>' % self._num_clusters
+        return "<GroupAverageAgglomerative Clusterer n=%d>" % self._num_clusters
 
 
 def demo():
@@ -153,9 +153,9 @@ def demo():
     clusterer = GAAClusterer(4)
     clusters = clusterer.cluster(vectors, True)
 
-    print('Clusterer:', clusterer)
-    print('Clustered:', vectors)
-    print('As:', clusters)
+    print("Clusterer:", clusterer)
+    print("Clustered:", vectors)
+    print("As:", clusters)
     print()
 
     # show the dendrogram
@@ -163,10 +163,10 @@ def demo():
 
     # classify a new vector
     vector = numpy.array([3, 3])
-    print('classify(%s):' % vector, end=' ')
+    print("classify(%s):" % vector, end=" ")
     print(clusterer.classify(vector))
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

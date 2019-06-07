@@ -32,7 +32,7 @@ class Feature(object):
 
     """
 
-    json_tag = 'nltk.tbl.Feature'
+    json_tag = "nltk.tbl.Feature"
     PROPERTY_NAME = None
 
     def __init__(self, positions, end=None):

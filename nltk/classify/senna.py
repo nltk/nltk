@@ -47,15 +47,15 @@ from six import text_type
 from nltk.tag.api import TaggerI
 from nltk.compat import python_2_unicode_compatible
 
-_senna_url = 'http://ml.nec-labs.com/senna/'
+_senna_url = "http://ml.nec-labs.com/senna/"
 
 
 @python_2_unicode_compatible
 class Senna(TaggerI):
 
-    SUPPORTED_OPERATIONS = ['pos', 'chk', 'ner']
+    SUPPORTED_OPERATIONS = ["pos", "chk", "ner"]
 
-    def __init__(self, senna_path, operations, encoding='utf-8'):
+    def __init__(self, senna_path, operations, encoding="utf-8"):
         self._encoding = encoding
         self._path = path.normpath(senna_path) + sep
 
@@ -64,9 +64,9 @@ class Senna(TaggerI):
         exe_file_1 = self.executable(self._path)
         if not path.isfile(exe_file_1):
             # Check for the system environment
-            if 'SENNA' in environ:
+            if "SENNA" in environ:
                 # self._path = path.join(environ['SENNA'],'')
-                self._path = path.normpath(environ['SENNA']) + sep
+                self._path = path.normpath(environ["SENNA"]) + sep
                 exe_file_2 = self.executable(self._path)
                 if not path.isfile(exe_file_2):
                     raise OSError(
@@ -83,16 +83,16 @@ class Senna(TaggerI):
         be used.
         """
         os_name = system()
-        if os_name == 'Linux':
+        if os_name == "Linux":
             bits = architecture()[0]
-            if bits == '64bit':
-                return path.join(base_path, 'senna-linux64')
-            return path.join(base_path, 'senna-linux32')
-        if os_name == 'Windows':
-            return path.join(base_path, 'senna-win32.exe')
-        if os_name == 'Darwin':
-            return path.join(base_path, 'senna-osx')
-        return path.join(base_path, 'senna')
+            if bits == "64bit":
+                return path.join(base_path, "senna-linux64")
+            return path.join(base_path, "senna-linux32")
+        if os_name == "Windows":
+            return path.join(base_path, "senna-win32.exe")
+        if os_name == "Darwin":
+            return path.join(base_path, "senna-osx")
+        return path.join(base_path, "senna")
 
     def _map(self):
         """
@@ -130,15 +130,15 @@ class Senna(TaggerI):
         # Build the senna command to run the tagger
         _senna_cmd = [
             self.executable(self._path),
-            '-path',
+            "-path",
             self._path,
-            '-usrtokens',
-            '-iobtags',
+            "-usrtokens",
+            "-iobtags",
         ]
-        _senna_cmd.extend(['-' + op for op in self.operations])
+        _senna_cmd.extend(["-" + op for op in self.operations])
 
         # Serialize the actual sentences to a temporary string
-        _input = '\n'.join((' '.join(x) for x in sentences)) + '\n'
+        _input = "\n".join((" ".join(x) for x in sentences)) + "\n"
         if isinstance(_input, text_type) and encoding:
             _input = _input.encode(encoding)
 
@@ -149,7 +149,7 @@ class Senna(TaggerI):
 
         # Check the return code.
         if p.returncode != 0:
-            raise RuntimeError('Senna command failed! Details: %s' % stderr)
+            raise RuntimeError("Senna command failed! Details: %s" % stderr)
 
         if encoding:
             senna_output = stdout.decode(encoding)
@@ -165,12 +165,12 @@ class Senna(TaggerI):
                 sentence_index += 1
                 token_index = 0
                 continue
-            tags = tagged_word.split('\t')
+            tags = tagged_word.split("\t")
             result = {}
             for tag in map_:
                 result[tag] = tags[map_[tag]].strip()
             try:
-                result['word'] = sentences[sentence_index][token_index]
+                result["word"] = sentences[sentence_index][token_index]
             except IndexError:
                 raise IndexError(
                     "Misalignment error occurred at sentence number %d. Possible reason"
@@ -188,6 +188,6 @@ def setup_module(module):
     from nose import SkipTest
 
     try:
-        tagger = Senna('/usr/share/senna-v3.0', ['pos', 'chk', 'ner'])
+        tagger = Senna("/usr/share/senna-v3.0", ["pos", "chk", "ner"])
     except OSError:
         raise SkipTest("Senna executable not found")

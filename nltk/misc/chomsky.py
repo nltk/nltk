@@ -131,5 +131,5 @@ def generate_chomsky(times=5, line_length=72):
     print(textwrap.fill(" ".join(output), line_length))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     generate_chomsky()

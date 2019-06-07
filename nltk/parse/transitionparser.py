@@ -52,11 +52,11 @@ class Configuration(object):
 
     def __str__(self):
         return (
-            'Stack : '
+            "Stack : "
             + str(self.stack)
-            + '  Buffer : '
+            + "  Buffer : "
             + str(self.buffer)
-            + '   Arcs : '
+            + "   Arcs : "
             + str(self.arcs)
         )
 
@@ -67,10 +67,10 @@ class Configuration(object):
         """
         if feat is None:
             return False
-        if feat == '':
+        if feat == "":
             return False
         if flag is False:
-            if feat == '_':
+            if feat == "_":
                 return False
         return True
 
@@ -88,28 +88,28 @@ class Configuration(object):
             # Stack 0
             stack_idx0 = self.stack[len(self.stack) - 1]
             token = self._tokens[stack_idx0]
-            if self._check_informative(token['word'], True):
-                result.append('STK_0_FORM_' + token['word'])
-            if 'lemma' in token and self._check_informative(token['lemma']):
-                result.append('STK_0_LEMMA_' + token['lemma'])
-            if self._check_informative(token['tag']):
-                result.append('STK_0_POS_' + token['tag'])
-            if 'feats' in token and self._check_informative(token['feats']):
-                feats = token['feats'].split("|")
+            if self._check_informative(token["word"], True):
+                result.append("STK_0_FORM_" + token["word"])
+            if "lemma" in token and self._check_informative(token["lemma"]):
+                result.append("STK_0_LEMMA_" + token["lemma"])
+            if self._check_informative(token["tag"]):
+                result.append("STK_0_POS_" + token["tag"])
+            if "feats" in token and self._check_informative(token["feats"]):
+                feats = token["feats"].split("|")
                 for feat in feats:
-                    result.append('STK_0_FEATS_' + feat)
+                    result.append("STK_0_FEATS_" + feat)
             # Stack 1
             if len(self.stack) > 1:
                 stack_idx1 = self.stack[len(self.stack) - 2]
                 token = self._tokens[stack_idx1]
-                if self._check_informative(token['tag']):
-                    result.append('STK_1_POS_' + token['tag'])
+                if self._check_informative(token["tag"]):
+                    result.append("STK_1_POS_" + token["tag"])
 
             # Left most, right most dependency of stack[0]
             left_most = 1000000
             right_most = -1
-            dep_left_most = ''
-            dep_right_most = ''
+            dep_left_most = ""
+            dep_right_most = ""
             for (wi, r, wj) in self.arcs:
                 if wi == stack_idx0:
                     if (wj > wi) and (wj > right_most):
@@ -119,48 +119,48 @@ class Configuration(object):
                         left_most = wj
                         dep_left_most = r
             if self._check_informative(dep_left_most):
-                result.append('STK_0_LDEP_' + dep_left_most)
+                result.append("STK_0_LDEP_" + dep_left_most)
             if self._check_informative(dep_right_most):
-                result.append('STK_0_RDEP_' + dep_right_most)
+                result.append("STK_0_RDEP_" + dep_right_most)
 
         # Check Buffered 0
         if len(self.buffer) > 0:
             # Buffer 0
             buffer_idx0 = self.buffer[0]
             token = self._tokens[buffer_idx0]
-            if self._check_informative(token['word'], True):
-                result.append('BUF_0_FORM_' + token['word'])
-            if 'lemma' in token and self._check_informative(token['lemma']):
-                result.append('BUF_0_LEMMA_' + token['lemma'])
-            if self._check_informative(token['tag']):
-                result.append('BUF_0_POS_' + token['tag'])
-            if 'feats' in token and self._check_informative(token['feats']):
-                feats = token['feats'].split("|")
+            if self._check_informative(token["word"], True):
+                result.append("BUF_0_FORM_" + token["word"])
+            if "lemma" in token and self._check_informative(token["lemma"]):
+                result.append("BUF_0_LEMMA_" + token["lemma"])
+            if self._check_informative(token["tag"]):
+                result.append("BUF_0_POS_" + token["tag"])
+            if "feats" in token and self._check_informative(token["feats"]):
+                feats = token["feats"].split("|")
                 for feat in feats:
-                    result.append('BUF_0_FEATS_' + feat)
+                    result.append("BUF_0_FEATS_" + feat)
             # Buffer 1
             if len(self.buffer) > 1:
                 buffer_idx1 = self.buffer[1]
                 token = self._tokens[buffer_idx1]
-                if self._check_informative(token['word'], True):
-                    result.append('BUF_1_FORM_' + token['word'])
-                if self._check_informative(token['tag']):
-                    result.append('BUF_1_POS_' + token['tag'])
+                if self._check_informative(token["word"], True):
+                    result.append("BUF_1_FORM_" + token["word"])
+                if self._check_informative(token["tag"]):
+                    result.append("BUF_1_POS_" + token["tag"])
             if len(self.buffer) > 2:
                 buffer_idx2 = self.buffer[2]
                 token = self._tokens[buffer_idx2]
-                if self._check_informative(token['tag']):
-                    result.append('BUF_2_POS_' + token['tag'])
+                if self._check_informative(token["tag"]):
+                    result.append("BUF_2_POS_" + token["tag"])
             if len(self.buffer) > 3:
                 buffer_idx3 = self.buffer[3]
                 token = self._tokens[buffer_idx3]
-                if self._check_informative(token['tag']):
-                    result.append('BUF_3_POS_' + token['tag'])
+                if self._check_informative(token["tag"]):
+                    result.append("BUF_3_POS_" + token["tag"])
                     # Left most, right most dependency of stack[0]
             left_most = 1000000
             right_most = -1
-            dep_left_most = ''
-            dep_right_most = ''
+            dep_left_most = ""
+            dep_right_most = ""
             for (wi, r, wj) in self.arcs:
                 if wi == buffer_idx0:
                     if (wj > wi) and (wj > right_most):
@@ -170,9 +170,9 @@ class Configuration(object):
                         left_most = wj
                         dep_left_most = r
             if self._check_informative(dep_left_most):
-                result.append('BUF_0_LDEP_' + dep_left_most)
+                result.append("BUF_0_LDEP_" + dep_left_most)
             if self._check_informative(dep_right_most):
-                result.append('BUF_0_RDEP_' + dep_right_most)
+                result.append("BUF_0_RDEP_" + dep_right_most)
 
         return result
 
@@ -184,10 +184,10 @@ class Transition(object):
     """
 
     # Define set of transitions
-    LEFT_ARC = 'LEFTARC'
-    RIGHT_ARC = 'RIGHTARC'
-    SHIFT = 'SHIFT'
-    REDUCE = 'REDUCE'
+    LEFT_ARC = "LEFTARC"
+    RIGHT_ARC = "RIGHTARC"
+    SHIFT = "SHIFT"
+    REDUCE = "REDUCE"
 
     def __init__(self, alg_option):
         """
@@ -290,8 +290,8 @@ class TransitionParser(ParserI):
     Class for transition based parser. Implement 2 algorithms which are "arc-standard" and "arc-eager"
     """
 
-    ARC_STANDARD = 'arc-standard'
-    ARC_EAGER = 'arc-eager'
+    ARC_STANDARD = "arc-standard"
+    ARC_EAGER = "arc-eager"
 
     def __init__(self, algorithm):
         """
@@ -313,11 +313,11 @@ class TransitionParser(ParserI):
         p_node = depgraph.nodes[idx_parent]
         c_node = depgraph.nodes[idx_child]
 
-        if c_node['word'] is None:
+        if c_node["word"] is None:
             return None  # Root word
 
-        if c_node['head'] == p_node['address']:
-            return c_node['rel']
+        if c_node["head"] == p_node["address"]:
+            return c_node["rel"]
         else:
             return None
 
@@ -333,8 +333,8 @@ class TransitionParser(ParserI):
             unsorted_result.append(self._dictionary[feature])
 
         # Default value of each feature is 1.0
-        return ' '.join(
-            str(featureID) + ':1.0' for featureID in sorted(unsorted_result)
+        return " ".join(
+            str(featureID) + ":1.0" for featureID in sorted(unsorted_result)
         )
 
     def _is_projective(self, depgraph):
@@ -342,9 +342,9 @@ class TransitionParser(ParserI):
         for key in depgraph.nodes:
             node = depgraph.nodes[key]
 
-            if 'head' in node:
-                childIdx = node['address']
-                parentIdx = node['head']
+            if "head" in node:
+                childIdx = node["address"]
+                parentIdx = node["head"]
                 if parentIdx is not None:
                     arc_list.append((parentIdx, childIdx))
 
@@ -370,8 +370,8 @@ class TransitionParser(ParserI):
         self._transition.setdefault(key, len(self._transition) + 1)
         self._match_transition[self._transition[key]] = key
 
-        input_str = str(self._transition[key]) + ' ' + binary_features + '\n'
-        input_file.write(input_str.encode('utf-8'))
+        input_str = str(self._transition[key]) + " " + binary_features + "\n"
+        input_file.write(input_str.encode("utf-8"))
 
     def _create_training_examples_arc_std(self, depgraphs, input_file):
         """
@@ -398,7 +398,7 @@ class TransitionParser(ParserI):
                     # Left-arc operation
                     rel = self._get_dep_relation(b0, s0, depgraph)
                     if rel is not None:
-                        key = Transition.LEFT_ARC + ':' + rel
+                        key = Transition.LEFT_ARC + ":" + rel
                         self._write_to_file(key, binary_features, input_file)
                         operation.left_arc(conf, rel)
                         training_seq.append(key)
@@ -419,7 +419,7 @@ class TransitionParser(ParserI):
                                         precondition = False
 
                         if precondition:
-                            key = Transition.RIGHT_ARC + ':' + rel
+                            key = Transition.RIGHT_ARC + ":" + rel
                             self._write_to_file(key, binary_features, input_file)
                             operation.right_arc(conf, rel)
                             training_seq.append(key)
@@ -460,7 +460,7 @@ class TransitionParser(ParserI):
                     # Left-arc operation
                     rel = self._get_dep_relation(b0, s0, depgraph)
                     if rel is not None:
-                        key = Transition.LEFT_ARC + ':' + rel
+                        key = Transition.LEFT_ARC + ":" + rel
                         self._write_to_file(key, binary_features, input_file)
                         operation.left_arc(conf, rel)
                         training_seq.append(key)
@@ -469,7 +469,7 @@ class TransitionParser(ParserI):
                     # Right-arc operation
                     rel = self._get_dep_relation(s0, b0, depgraph)
                     if rel is not None:
-                        key = Transition.RIGHT_ARC + ':' + rel
+                        key = Transition.RIGHT_ARC + ":" + rel
                         self._write_to_file(key, binary_features, input_file)
                         operation.right_arc(conf, rel)
                         training_seq.append(key)
@@ -509,7 +509,7 @@ class TransitionParser(ParserI):
 
         try:
             input_file = tempfile.NamedTemporaryFile(
-                prefix='transition_parse.train', dir=tempfile.gettempdir(), delete=False
+                prefix="transition_parse.train", dir=tempfile.gettempdir(), delete=False
             )
 
             if self._algorithm == self.ARC_STANDARD:
@@ -525,7 +525,7 @@ class TransitionParser(ParserI):
             # Todo : because of probability = True => very slow due to
             # cross-validation. Need to improve the speed here
             model = svm.SVC(
-                kernel='poly',
+                kernel="poly",
                 degree=2,
                 coef0=0,
                 gamma=0.2,
@@ -536,7 +536,7 @@ class TransitionParser(ParserI):
 
             model.fit(x_train, y_train)
             # Save the model to file name (as pickle)
-            pickle.dump(model, open(modelfile, 'wb'))
+            pickle.dump(model, open(modelfile, "wb"))
         finally:
             remove(input_file.name)
 
@@ -550,7 +550,7 @@ class TransitionParser(ParserI):
         """
         result = []
         # First load the model
-        model = pickle.load(open(modelFile, 'rb'))
+        model = pickle.load(open(modelFile, "rb"))
         operation = Transition(self._algorithm)
 
         for depgraph in depgraphs:
@@ -635,13 +635,13 @@ class TransitionParser(ParserI):
             new_depgraph = deepcopy(depgraph)
             for key in new_depgraph.nodes:
                 node = new_depgraph.nodes[key]
-                node['rel'] = ''
+                node["rel"] = ""
                 # With the default, all the token depend on the Root
-                node['head'] = 0
+                node["head"] = 0
             for (head, rel, child) in conf.arcs:
                 c_node = new_depgraph.nodes[child]
-                c_node['head'] = head
-                c_node['rel'] = rel
+                c_node["head"] = head
+                c_node["rel"] = rel
             result.append(new_depgraph)
 
         return result

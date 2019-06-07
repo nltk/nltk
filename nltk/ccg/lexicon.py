@@ -22,26 +22,26 @@ from nltk.sem.logic import Expression
 # ------------
 
 # Parses a primitive category and subscripts
-PRIM_RE = re.compile(r'''([A-Za-z]+)(\[[A-Za-z,]+\])?''')
+PRIM_RE = re.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
 
 # Separates the next primitive category from the remainder of the
 # string
-NEXTPRIM_RE = re.compile(r'''([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)''')
+NEXTPRIM_RE = re.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
 
 # Separates the next application operator from the remainder
-APP_RE = re.compile(r'''([\\/])([.,]?)([.,]?)(.*)''')
+APP_RE = re.compile(r"""([\\/])([.,]?)([.,]?)(.*)""")
 
 # Parses the definition of the right-hand side (rhs) of either a word or a family
-LEX_RE = re.compile(r'''([\S_]+)\s*(::|[-=]+>)\s*(.+)''', re.UNICODE)
+LEX_RE = re.compile(r"""([\S_]+)\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)
 
 # Parses the right hand side that contains category and maybe semantic predicate
-RHS_RE = re.compile(r'''([^{}]*[^ {}])\s*(\{[^}]+\})?''', re.UNICODE)
+RHS_RE = re.compile(r"""([^{}]*[^ {}])\s*(\{[^}]+\})?""", re.UNICODE)
 
 # Parses the semantic predicate
-SEMANTICS_RE = re.compile(r'''\{([^}]+)\}''', re.UNICODE)
+SEMANTICS_RE = re.compile(r"""\{([^}]+)\}""", re.UNICODE)
 
 # Strips comments from a line
-COMMENTS_RE = re.compile('''([^#]*)(?:#.*)?''')
+COMMENTS_RE = re.compile("""([^#]*)(?:#.*)?""")
 
 
 class Token(object):
@@ -141,16 +141,16 @@ def matchBrackets(string):
     rest = string[1:]
     inside = "("
 
-    while rest != "" and not rest.startswith(')'):
-        if rest.startswith('('):
+    while rest != "" and not rest.startswith(")"):
+        if rest.startswith("("):
             (part, rest) = matchBrackets(rest)
             inside = inside + part
         else:
             inside = inside + rest[0]
             rest = rest[1:]
-    if rest.startswith(')'):
-        return (inside + ')', rest[1:])
-    raise AssertionError('Unmatched bracket in string \'' + string + '\'')
+    if rest.startswith(")"):
+        return (inside + ")", rest[1:])
+    raise AssertionError("Unmatched bracket in string '" + string + "'")
 
 
 def nextCategory(string):
@@ -158,7 +158,7 @@ def nextCategory(string):
     Separate the string for the next portion of the category from the rest
     of the string
     """
-    if string.startswith('('):
+    if string.startswith("("):
         return matchBrackets(string)
     return NEXTPRIM_RE.match(string).groups()
 
@@ -175,7 +175,7 @@ def parseSubscripts(subscr):
     Parse the subscripts for a primitive category
     """
     if subscr:
-        return subscr[1:-1].split(',')
+        return subscr[1:-1].split(",")
     return []
 
 
@@ -205,7 +205,7 @@ def parsePrimitiveCategory(chunks, primitives, families, var):
         subscrs = parseSubscripts(chunks[1])
         return (PrimitiveCategory(catstr, subscrs), var)
     raise AssertionError(
-        'String \'' + catstr + '\' is neither a family nor primitive category.'
+        "String '" + catstr + "' is neither a family nor primitive category."
     )
 
 
@@ -216,7 +216,7 @@ def augParseCategory(line, primitives, families, var=None):
     """
     (cat_string, rest) = nextCategory(line)
 
-    if cat_string.startswith('('):
+    if cat_string.startswith("("):
         (res, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
 
     else:
@@ -231,7 +231,7 @@ def augParseCategory(line, primitives, families, var=None):
         rest = app[3]
 
         (cat_string, rest) = nextCategory(rest)
-        if cat_string.startswith('('):
+        if cat_string.startswith("("):
             (arg, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
         else:
             (arg, var) = parsePrimitiveCategory(
@@ -256,12 +256,12 @@ def fromstring(lex_str, include_semantics=False):
         if line == "":
             continue
 
-        if line.startswith(':-'):
+        if line.startswith(":-"):
             # A line of primitive categories.
             # The first one is the target category
             # ie, :- S, N, NP, VP
             primitives = primitives + [
-                prim.strip() for prim in line[2:].strip().split(',')
+                prim.strip() for prim in line[2:].strip().split(",")
             ]
         else:
             # Either a family definition, or a word definition
@@ -269,7 +269,7 @@ def fromstring(lex_str, include_semantics=False):
             (catstr, semantics_str) = RHS_RE.match(rhs).groups()
             (cat, var) = augParseCategory(catstr, primitives, families)
 
-            if sep == '::':
+            if sep == "::":
                 # Family definition
                 # ie, Det :: NP/N
                 families[ident] = (cat, var)
@@ -291,7 +291,7 @@ def fromstring(lex_str, include_semantics=False):
     return CCGLexicon(primitives[0], primitives, families, entries)
 
 
-@deprecated('Use fromstring() instead.')
+@deprecated("Use fromstring() instead.")
 def parseLexicon(lex_str):
     return fromstring(lex_str)
 

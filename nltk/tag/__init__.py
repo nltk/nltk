@@ -93,14 +93,14 @@ from nltk.tag.perceptron import PerceptronTagger
 from nltk.data import load, find
 
 RUS_PICKLE = (
-    'taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle'
+    "taggers/averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle"
 )
 
 
 def _get_tagger(lang=None):
-    if lang == 'rus':
+    if lang == "rus":
         tagger = PerceptronTagger(False)
-        ap_russian_model_loc = 'file:' + str(find(RUS_PICKLE))
+        ap_russian_model_loc = "file:" + str(find(RUS_PICKLE))
         tagger.load(ap_russian_model_loc)
     else:
         tagger = PerceptronTagger()
@@ -109,7 +109,7 @@ def _get_tagger(lang=None):
 
 def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
     # Currently only supoorts English and Russian.
-    if lang not in ['eng', 'rus']:
+    if lang not in ["eng", "rus"]:
         raise NotImplementedError(
             "Currently, NLTK pos_tag only supports English and Russian "
             "(i.e. lang='eng' or lang='rus')"
@@ -117,22 +117,22 @@ def _pos_tag(tokens, tagset=None, tagger=None, lang=None):
     else:
         tagged_tokens = tagger.tag(tokens)
         if tagset:  # Maps to the specified tagset.
-            if lang == 'eng':
+            if lang == "eng":
                 tagged_tokens = [
-                    (token, map_tag('en-ptb', tagset, tag))
+                    (token, map_tag("en-ptb", tagset, tag))
                     for (token, tag) in tagged_tokens
                 ]
-            elif lang == 'rus':
+            elif lang == "rus":
                 # Note that the new Russion pos tags from the model contains suffixes,
                 # see https://github.com/nltk/nltk/issues/2151#issuecomment-430709018
                 tagged_tokens = [
-                    (token, map_tag('ru-rnc-new', tagset, tag.partition('=')[0]))
+                    (token, map_tag("ru-rnc-new", tagset, tag.partition("=")[0]))
                     for (token, tag) in tagged_tokens
                 ]
         return tagged_tokens
 
 
-def pos_tag(tokens, tagset=None, lang='eng'):
+def pos_tag(tokens, tagset=None, lang="eng"):
     """
     Use NLTK's currently recommended part of speech tagger to
     tag the given list of tokens.
@@ -161,7 +161,7 @@ def pos_tag(tokens, tagset=None, lang='eng'):
     return _pos_tag(tokens, tagset, tagger, lang)
 
 
-def pos_tag_sents(sentences, tagset=None, lang='eng'):
+def pos_tag_sents(sentences, tagset=None, lang="eng"):
     """
     Use NLTK's currently recommended part of speech tagger to tag the
     given list of sentences, each consisting of a list of tokens.

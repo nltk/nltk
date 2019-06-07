@@ -100,7 +100,7 @@ class IncrementalChart(Chart):
         # Make sure it's a valid index.
         for key in restr_keys:
             if not hasattr(EdgeI, key):
-                raise ValueError('Bad restriction: %s' % key)
+                raise ValueError("Bad restriction: %s" % key)
 
         # Create the index.
         index = self._indexes[restr_keys] = tuple({} for x in self._positions())
@@ -150,7 +150,7 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
         # Make sure it's a valid index.
         for key in restr_keys:
             if not hasattr(EdgeI, key):
-                raise ValueError('Bad restriction: %s' % key)
+                raise ValueError("Bad restriction: %s" % key)
 
         # Create the index.
         index = self._indexes[restr_keys] = tuple({} for x in self._positions())
@@ -511,7 +511,7 @@ def demo(
     print_grammar=False,
     print_trees=True,
     trace=2,
-    sent='I saw John with a dog with my cookie',
+    sent="I saw John with a dog with my cookie",
     numparses=5,
 ):
     """
@@ -542,7 +542,7 @@ def demo(
 
     # Print results.
     if numparses:
-        assert len(parses) == numparses, 'Not all parses found'
+        assert len(parses) == numparses, "Not all parses found"
     if print_trees:
         for tree in parses:
             print(tree)
@@ -552,5 +552,5 @@ def demo(
         print("Time:", t)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

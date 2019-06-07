@@ -150,10 +150,10 @@ class FeatureTreeEdge(TreeEdge):
         if self.is_complete():
             return TreeEdge.__unicode__(self)
         else:
-            bindings = '{%s}' % ', '.join(
-                '%s: %r' % item for item in sorted(self._bindings.items())
+            bindings = "{%s}" % ", ".join(
+                "%s: %r" % item for item in sorted(self._bindings.items())
             )
-            return '%s %s' % (TreeEdge.__unicode__(self), bindings)
+            return "%s %s" % (TreeEdge.__unicode__(self), bindings)
 
 
 # ////////////////////////////////////////////////////////////
@@ -200,7 +200,7 @@ class FeatureChart(Chart):
         # Make sure it's a valid index.
         for key in restr_keys:
             if not hasattr(EdgeI, key):
-                raise ValueError('Bad restriction: %s' % key)
+                raise ValueError("Bad restriction: %s" % key)
 
         # Create the index.
         index = self._indexes[restr_keys] = {}
@@ -586,7 +586,7 @@ class InstantiateVarsChart(FeatureChart):
         return dict(
             (var, logic.unique_variable())
             for var in edge.lhs().variables()
-            if var.name.startswith('@')
+            if var.name.startswith("@")
         )
 
 
@@ -629,7 +629,7 @@ def demo(
     print_sentence=True,
     trace=1,
     parser=FeatureChartParser,
-    sent='I saw John with a dog with my cookie',
+    sent="I saw John with a dog with my cookie",
 ):
     import sys, time
 
@@ -658,22 +658,22 @@ def demo(
 def run_profile():
     import profile
 
-    profile.run('for i in range(1): demo()', '/tmp/profile.out')
+    profile.run("for i in range(1): demo()", "/tmp/profile.out")
     import pstats
 
-    p = pstats.Stats('/tmp/profile.out')
-    p.strip_dirs().sort_stats('time', 'cum').print_stats(60)
-    p.strip_dirs().sort_stats('cum', 'time').print_stats(60)
+    p = pstats.Stats("/tmp/profile.out")
+    p.strip_dirs().sort_stats("time", "cum").print_stats(60)
+    p.strip_dirs().sort_stats("cum", "time").print_stats(60)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from nltk.data import load
 
     demo()
     print()
-    grammar = load('grammars/book_grammars/feat0.fcfg')
+    grammar = load("grammars/book_grammars/feat0.fcfg")
     cp = FeatureChartParser(grammar, trace=2)
-    sent = 'Kim likes children'
+    sent = "Kim likes children"
     tokens = sent.split()
     trees = cp.parse(tokens)
     for tree in trees:

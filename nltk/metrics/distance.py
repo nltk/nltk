@@ -23,6 +23,7 @@ As metrics, they must satisfy the following three requirements:
 import warnings
 import operator
 
+
 def _edit_dist_init(len1, len2):
     lev = []
     for i in range(len1):
@@ -112,7 +113,8 @@ def _edit_dist_backtrace(lev):
         ]
 
         direction_costs = (
-            (lev[i][j] if (i >= 0 and j >= 0) else float('inf'), (i, j)) for i, j in directions
+            (lev[i][j] if (i >= 0 and j >= 0) else float("inf"), (i, j))
+            for i, j in directions
         )
         _, (i, j) = min(direction_costs, key=operator.itemgetter(0))
 
@@ -259,7 +261,7 @@ def fractional_presence(label):
 
 def custom_distance(file):
     data = {}
-    with open(file, 'r') as infile:
+    with open(file, "r") as infile:
         for l in infile:
             labelA, labelB, dist = l.strip().split("\t")
             labelA = frozenset([labelA])
@@ -480,5 +482,5 @@ def demo():
     print("MASI distance:", masi_distance(s1, s2))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

@@ -201,7 +201,7 @@ class IBMModel(object):
         :type i_pegged: int
         """
         src_sentence = [None] + sentence_pair.mots
-        trg_sentence = ['UNUSED'] + sentence_pair.words  # 1-indexed
+        trg_sentence = ["UNUSED"] + sentence_pair.words  # 1-indexed
 
         l = len(src_sentence) - 1  # exclude NULL
         m = len(trg_sentence) - 1
