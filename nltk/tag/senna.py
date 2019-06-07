@@ -42,7 +42,7 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
 from nltk.classify import Senna
 
 
-@python_2_unicode_compatible
+
 class SennaTagger(Senna):
     def __init__(self, path, encoding="utf-8"):
         super(SennaTagger, self).__init__(path, ["pos"], encoding)
@@ -60,7 +60,7 @@ class SennaTagger(Senna):
         return tagged_sents
 
 
-@python_2_unicode_compatible
+
 class SennaChunkTagger(Senna):
     def __init__(self, path, encoding="utf-8"):
         super(SennaChunkTagger, self).__init__(path, ["chk"], encoding)
@@ -119,7 +119,7 @@ class SennaChunkTagger(Senna):
             yield " ".join(current_chunk), "-".join(map(str, current_chunk_position))
 
 
-@python_2_unicode_compatible
+
 class SennaNERTagger(Senna):
     def __init__(self, path, encoding="utf-8"):
         super(SennaNERTagger, self).__init__(path, ["ner"], encoding)

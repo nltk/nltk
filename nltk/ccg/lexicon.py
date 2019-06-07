@@ -78,7 +78,6 @@ class Token(object):
         return cmp((self._categ, self._semantics), other.categ(), other.semantics())
 
 
-@python_2_unicode_compatible
 class CCGLexicon(object):
     """
     Class representing a lexicon for CCG grammars.
