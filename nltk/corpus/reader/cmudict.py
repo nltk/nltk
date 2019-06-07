@@ -45,7 +45,6 @@ Y       yield   Y IY L D       Z       zee     Z IY
 ZH      seizure S IY ZH ER
 """
 
-from nltk import compat
 from nltk.util import Index
 
 from nltk.corpus.reader.util import *

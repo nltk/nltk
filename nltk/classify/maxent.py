@@ -62,7 +62,6 @@ from collections import defaultdict
 
 from six import integer_types
 
-from nltk import compat
 from nltk.data import gzip_open_unicode
 from nltk.util import OrderedDict
 from nltk.probability import DictionaryProbDist
@@ -79,7 +78,6 @@ __docformat__ = "epytext en"
 ######################################################################
 
 
-@compat.python_2_unicode_compatible
 class MaxentClassifier(ClassifierI):
     """
     A maximum entropy classifier (also known as a "conditional

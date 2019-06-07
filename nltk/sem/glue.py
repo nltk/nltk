@@ -21,7 +21,6 @@ from nltk.sem.logic import (
     LambdaExpression,
     AbstractVariableExpression,
 )
-from nltk.compat import python_2_unicode_compatible
 from nltk.sem import drt
 from nltk.sem import linearlogic
 
@@ -37,7 +36,6 @@ SPEC_SEMTYPES = {
 OPTIONAL_RELATIONSHIPS = ["nmod", "vmod", "punct"]
 
 
-@python_2_unicode_compatible
 class GlueFormula(object):
     def __init__(self, meaning, glue, indices=None):
         if not indices:
@@ -153,7 +151,6 @@ class GlueFormula(object):
         return "%s" % self
 
 
-@python_2_unicode_compatible
 class GlueDict(dict):
     def __init__(self, filename, encoding=None):
         self.filename = filename

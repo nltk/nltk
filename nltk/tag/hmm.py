@@ -92,7 +92,6 @@ from nltk.probability import (
 )
 from nltk.metrics import accuracy
 from nltk.util import LazyMap, unique_list
-from nltk.compat import python_2_unicode_compatible
 from nltk.tag.api import TaggerI
 
 
@@ -104,7 +103,6 @@ def _identity(labeled_symbols):
     return labeled_symbols
 
 
-@python_2_unicode_compatible
 class HiddenMarkovModelTagger(TaggerI):
     """
     Hidden Markov model class, a generative model for labelling sequence data.

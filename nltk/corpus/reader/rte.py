@@ -34,7 +34,6 @@ challenge number and 'n' is the pair ID.
 """
 from six import string_types
 
-from nltk import compat
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import *
@@ -54,7 +53,6 @@ def norm(value_string):
     return valdict[value_string.upper()]
 
 
-@compat.python_2_unicode_compatible
 class RTEPair(object):
     """
     Container for RTE text-hypothesis pairs.

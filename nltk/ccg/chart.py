@@ -50,7 +50,7 @@ from nltk.ccg.combinator import (
     BackwardBx,
     BackwardSx,
 )
-from nltk.compat import python_2_unicode_compatible
+
 from nltk.ccg.combinator import *
 from nltk.ccg.logic import *
 from nltk.sem.logic import *
@@ -155,7 +155,6 @@ class CCGLeafEdge(EdgeI):
         return self._leaf
 
 
-@python_2_unicode_compatible
 class BinaryCombinatorRule(AbstractChartRule):
     """
     Class implementing application of a binary combinator to a chart.
@@ -192,7 +191,8 @@ class BinaryCombinatorRule(AbstractChartRule):
 
 # Type-raising must be handled slightly differently to the other rules, as the
 # resulting rules only span a single edge, rather than both edges.
-@python_2_unicode_compatible
+
+
 class ForwardTypeRaiseRule(AbstractChartRule):
     """
     Class for applying forward type raising
@@ -216,7 +216,6 @@ class ForwardTypeRaiseRule(AbstractChartRule):
         return "%s" % self._combinator
 
 
-@python_2_unicode_compatible
 class BackwardTypeRaiseRule(AbstractChartRule):
     """
     Class for applying backward type raising.

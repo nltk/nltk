@@ -16,10 +16,8 @@ except ImportError:
 
 
 from nltk.cluster.util import VectorSpaceClusterer
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class KMeansClusterer(VectorSpaceClusterer):
     """
     The K-means clusterer starts with k arbitrary chosen means then allocates

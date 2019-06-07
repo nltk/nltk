@@ -11,7 +11,7 @@
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 
-from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.compat import unicode_repr
 from nltk import jsontags
 
 
@@ -95,7 +95,6 @@ class TagRule(object):
         raise TypeError("Rules must implement __hash__()")
 
 
-@python_2_unicode_compatible
 @jsontags.register_tag
 class Rule(TagRule):
     """

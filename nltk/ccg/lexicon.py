@@ -12,7 +12,6 @@ import re
 from collections import defaultdict
 
 from nltk.ccg.api import PrimitiveCategory, Direction, CCGVar, FunctionalCategory
-from nltk.compat import python_2_unicode_compatible
 from nltk.internals import deprecated
 
 from nltk.sem.logic import Expression

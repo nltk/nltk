@@ -7,13 +7,11 @@
 import re
 
 from nltk.tag import str2tuple, map_tag
-from nltk import compat
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 
-@compat.python_2_unicode_compatible
 class SwitchboardTurn(list):
     """
     A specialized list object used to encode switchboard utterances.

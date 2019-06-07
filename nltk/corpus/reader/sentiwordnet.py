@@ -37,11 +37,10 @@ http://sentiwordnet.isti.cnr.it/
 """
 
 import re
-from nltk.compat import python_2_unicode_compatible
+
 from nltk.corpus.reader import CorpusReader
 
 
-@python_2_unicode_compatible
 class SentiWordNetCorpusReader(CorpusReader):
     def __init__(self, root, fileids, encoding="utf-8"):
         """
@@ -109,7 +108,6 @@ class SentiWordNetCorpusReader(CorpusReader):
             yield SentiSynset(pos_score, neg_score, synset)
 
 
-@python_2_unicode_compatible
 class SentiSynset(object):
     def __init__(self, pos_score, neg_score, synset):
         self._pos_score = pos_score

@@ -11,10 +11,8 @@ except ImportError:
     pass
 
 from nltk.cluster.util import VectorSpaceClusterer, Dendrogram, cosine_distance
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class GAAClusterer(VectorSpaceClusterer):
     """
     The Group Average Agglomerative starts with each of the N vectors as singleton

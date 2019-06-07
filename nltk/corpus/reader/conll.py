@@ -12,7 +12,6 @@ Read CoNLL-style chunk fileids.
 
 import textwrap
 
-from nltk import compat
 from nltk.tree import Tree
 from nltk.util import LazyMap, LazyConcatenation
 from nltk.tag import map_tag
@@ -419,7 +418,6 @@ class ConllCorpusReader(CorpusReader):
         return [grid[i][column_index] for i in range(len(grid))]
 
 
-@compat.python_2_unicode_compatible
 class ConllSRLInstance(object):
     """
     An SRL instance from a CoNLL corpus, which identifies and
@@ -498,7 +496,6 @@ class ConllSRLInstance(object):
         )
 
 
-@compat.python_2_unicode_compatible
 class ConllSRLInstanceList(list):
     """
     Set of instances for a single sentence

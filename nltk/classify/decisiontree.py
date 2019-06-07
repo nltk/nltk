@@ -15,10 +15,8 @@ from collections import defaultdict
 
 from nltk.probability import FreqDist, MLEProbDist, entropy
 from nltk.classify.api import ClassifierI
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class DecisionTreeClassifier(ClassifierI):
     def __init__(self, label, feature_name=None, decisions=None, default=None):
         """

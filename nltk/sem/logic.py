@@ -20,7 +20,6 @@ from six import string_types
 
 from nltk.util import Trie
 from nltk.internals import Counter
-from nltk.compat import python_2_unicode_compatible
 
 APP = "APP"
 
@@ -97,7 +96,6 @@ def binding_ops():
         print("%-15s\t%s" % pair)
 
 
-@python_2_unicode_compatible
 class LogicParser(object):
     """A lambda calculus expression parser."""
 
@@ -618,7 +616,6 @@ def read_logic(s, logic_parser=None, encoding=None):
 
 
 @total_ordering
-@python_2_unicode_compatible
 class Variable(object):
     def __init__(self, name):
         """
@@ -691,7 +688,6 @@ def skolem_function(univ_scope=None):
     return skolem
 
 
-@python_2_unicode_compatible
 class Type(object):
     def __repr__(self):
         return "%s" % self
@@ -704,7 +700,6 @@ class Type(object):
         return read_type(s)
 
 
-@python_2_unicode_compatible
 class ComplexType(Type):
     def __init__(self, first, second):
         assert isinstance(first, Type), "%s is not a Type" % first
@@ -777,7 +772,6 @@ class BasicType(Type):
             return None
 
 
-@python_2_unicode_compatible
 class EntityType(BasicType):
     def __str__(self):
         return "e"
@@ -786,7 +780,6 @@ class EntityType(BasicType):
         return "IND"
 
 
-@python_2_unicode_compatible
 class TruthValueType(BasicType):
     def __str__(self):
         return "t"
@@ -795,7 +788,6 @@ class TruthValueType(BasicType):
         return "BOOL"
 
 
-@python_2_unicode_compatible
 class EventType(BasicType):
     def __str__(self):
         return "v"
@@ -804,7 +796,6 @@ class EventType(BasicType):
         return "EVENT"
 
 
-@python_2_unicode_compatible
 class AnyType(BasicType, ComplexType):
     def __init__(self):
         pass
@@ -949,7 +940,6 @@ class SubstituteBindingsI(object):
         raise NotImplementedError()
 
 
-@python_2_unicode_compatible
 class Expression(SubstituteBindingsI):
     """This is the base abstract object for all logical expressions"""
 
@@ -1217,7 +1207,6 @@ class Expression(SubstituteBindingsI):
         return VariableExpression(variable)
 
 
-@python_2_unicode_compatible
 class ApplicationExpression(Expression):
     r"""
     This class is used to represent two related types of logical expressions.
@@ -1421,7 +1410,6 @@ class ApplicationExpression(Expression):
 
 
 @total_ordering
-@python_2_unicode_compatible
 class AbstractVariableExpression(Expression):
     """This class represents a variable to be used as a predicate or entity"""
 
@@ -1697,7 +1685,6 @@ class VariableBinderExpression(Expression):
     __hash__ = Expression.__hash__
 
 
-@python_2_unicode_compatible
 class LambdaExpression(VariableBinderExpression):
     @property
     def type(self):
@@ -1728,7 +1715,6 @@ class LambdaExpression(VariableBinderExpression):
         )
 
 
-@python_2_unicode_compatible
 class QuantifiedExpression(VariableBinderExpression):
     @property
     def type(self):
@@ -1770,7 +1756,6 @@ class AllExpression(QuantifiedExpression):
         return Tokens.ALL
 
 
-@python_2_unicode_compatible
 class NegatedExpression(Expression):
     def __init__(self, term):
         assert isinstance(term, Expression), "%s is not an Expression" % term
@@ -1815,7 +1800,6 @@ class NegatedExpression(Expression):
         return Tokens.NOT + "%s" % self.term
 
 
-@python_2_unicode_compatible
 class BinaryExpression(Expression):
     def __init__(self, first, second):
         assert isinstance(first, Expression), "%s is not an Expression" % first

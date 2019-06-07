@@ -17,7 +17,6 @@ except ImportError:
     pass
 
 from nltk.cluster.api import ClusterI
-from nltk.compat import python_2_unicode_compatible
 
 
 class VectorSpaceClusterer(ClusterI):
@@ -175,7 +174,6 @@ class _DendrogramNode(object):
         return cosine_distance(self._value, comparator._value) < 0
 
 
-@python_2_unicode_compatible
 class Dendrogram(object):
     """
     Represents a dendrogram, a tree with a specified branching order.  This

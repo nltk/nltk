@@ -42,7 +42,6 @@ from six.moves import range
 from nltk.corpus.reader import CorpusReader
 from nltk.util import binary_search_file as _binary_search_file
 from nltk.probability import FreqDist
-from nltk.compat import python_2_unicode_compatible
 from nltk.internals import deprecated
 
 ######################################################################
@@ -212,7 +211,6 @@ class _WordNetObject(object):
         return self._name < other._name
 
 
-@python_2_unicode_compatible
 class Lemma(_WordNetObject):
     """
     The lexical entry for a single morphological form of a
@@ -345,7 +343,6 @@ class Lemma(_WordNetObject):
         return self._related("\\")
 
 
-@python_2_unicode_compatible
 class Synset(_WordNetObject):
     """Create a Synset from a "<lemma>.<pos>.<number>" string where:
     <lemma> is the word's morphological stem

@@ -7,10 +7,8 @@
 # For license information, see LICENSE.TXT
 
 from nltk.probability import FreqDist
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class ConfusionMatrix(object):
     """
     The confusion matrix between a list of reference values and a

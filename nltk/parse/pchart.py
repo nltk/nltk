@@ -44,7 +44,6 @@ from nltk.grammar import Nonterminal, PCFG
 
 from nltk.parse.api import ParserI
 from nltk.parse.chart import Chart, LeafEdge, TreeEdge, AbstractChartRule
-from nltk.compat import python_2_unicode_compatible
 
 # Probabilistic edges
 class ProbabilisticLeafEdge(LeafEdge):
@@ -129,7 +128,6 @@ class ProbabilisticFundamentalRule(AbstractChartRule):
             yield new_edge
 
 
-@python_2_unicode_compatible
 class SingleEdgeProbabilisticFundamentalRule(AbstractChartRule):
     NUM_EDGES = 1
 

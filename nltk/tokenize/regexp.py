@@ -70,10 +70,8 @@ import re
 
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class RegexpTokenizer(TokenizerI):
     """
     A tokenizer that splits a string using a regular expression, which

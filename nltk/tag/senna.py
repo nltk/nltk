@@ -39,7 +39,6 @@ Note: Unit tests for this module can be found in test/unit/test_senna.py
     ('NY', 'B-LOC'), (',', 'O'), ('USA', 'B-LOC'), ('.', 'O')]
 """
 
-from nltk.compat import python_2_unicode_compatible
 from nltk.classify import Senna
 
 

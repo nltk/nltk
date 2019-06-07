@@ -110,7 +110,7 @@ from collections import defaultdict
 
 from six import string_types
 
-from nltk.compat import unicode_repr, python_2_unicode_compatible
+from nltk.compat import unicode_repr
 from nltk.probability import FreqDist
 from nltk.tokenize.api import TokenizerI
 
@@ -387,7 +387,6 @@ class PunktParameters(object):
 ######################################################################
 
 
-@python_2_unicode_compatible
 class PunktToken(object):
     """Stores a token of text with annotations produced during
     sentence boundary detection."""

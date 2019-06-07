@@ -34,7 +34,6 @@ from nltk.sem.logic import (
 )
 
 from nltk.inference.api import Prover, ProverCommandDecorator
-from nltk.compat import python_2_unicode_compatible
 
 
 class ProverParseError(Exception):
@@ -300,7 +299,6 @@ class ClosedWorldProver(ProverCommandDecorator):
                         predDict[func1].validate_sig_len(sig)
 
 
-@python_2_unicode_compatible
 class PredHolder(object):
     """
     This class will be used by a dictionary that will store information

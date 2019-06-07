@@ -13,7 +13,6 @@ from six import string_types
 
 from nltk.tree import Tree
 from nltk.internals import raise_unorderable_types
-from nltk.compat import python_2_unicode_compatible
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
@@ -179,7 +178,6 @@ class NombankCorpusReader(CorpusReader):
 ######################################################################
 
 
-@python_2_unicode_compatible
 class NombankInstance(object):
     def __init__(
         self,
@@ -341,7 +339,6 @@ class NombankPointer(object):
             raise NotImplementedError()
 
 
-@python_2_unicode_compatible
 class NombankChainTreePointer(NombankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -361,7 +358,6 @@ class NombankChainTreePointer(NombankPointer):
         return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
 
 
-@python_2_unicode_compatible
 class NombankSplitTreePointer(NombankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -381,7 +377,6 @@ class NombankSplitTreePointer(NombankPointer):
 
 
 @total_ordering
-@python_2_unicode_compatible
 class NombankTreePointer(NombankPointer):
     """
     wordnum:height*wordnum:height*...

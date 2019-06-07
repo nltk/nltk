@@ -17,13 +17,11 @@ from itertools import chain
 
 from six import string_types
 
-from nltk import compat
 from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 
 from nltk.corpus.reader.util import *
 
 
-@compat.python_2_unicode_compatible
 class CorpusReader(object):
     """
     A base class for "corpus reader" classes, each of which can be

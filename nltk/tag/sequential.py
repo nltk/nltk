@@ -24,7 +24,6 @@ import re
 
 from nltk.probability import ConditionalFreqDist
 from nltk.classify import NaiveBayesClassifier
-from nltk.compat import python_2_unicode_compatible
 
 from nltk.tag.api import TaggerI, FeaturesetTaggerI
 
@@ -106,7 +105,6 @@ class SequentialBackoffTagger(TaggerI):
         """
 
 
-@python_2_unicode_compatible
 class ContextTagger(SequentialBackoffTagger):
     """
     An abstract base class for sequential backoff taggers that choose
@@ -216,7 +214,8 @@ class ContextTagger(SequentialBackoffTagger):
 ######################################################################
 # Tagger Classes
 ######################################################################
-@python_2_unicode_compatible
+
+
 @jsontags.register_tag
 class DefaultTagger(SequentialBackoffTagger):
     """
@@ -496,7 +495,6 @@ class AffixTagger(ContextTagger):
             return token[self._affix_length :]
 
 
-@python_2_unicode_compatible
 @jsontags.register_tag
 class RegexpTagger(SequentialBackoffTagger):
     """
@@ -569,7 +567,6 @@ class RegexpTagger(SequentialBackoffTagger):
         return "<Regexp Tagger: size=%d>" % len(self._regexs)
 
 
-@python_2_unicode_compatible
 class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     """
     A sequential tagger that uses a classifier to choose the tag for

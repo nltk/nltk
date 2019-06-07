@@ -27,14 +27,12 @@ from xml.etree import ElementTree
 
 from six import string_types
 
-from nltk import compat
 from nltk.tokenize import *
 
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 
-@compat.python_2_unicode_compatible
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
         self.word = word

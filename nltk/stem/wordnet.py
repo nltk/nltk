@@ -8,10 +8,8 @@
 
 from nltk.corpus.reader.wordnet import NOUN
 from nltk.corpus import wordnet
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class WordNetLemmatizer(object):
     """
     WordNet Lemmatizer

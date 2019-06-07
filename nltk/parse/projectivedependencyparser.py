@@ -18,7 +18,7 @@ from nltk.grammar import (
 )
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.internals import raise_unorderable_types
-from nltk.compat import python_2_unicode_compatible
+
 
 #################################################################
 # Dependency Span
@@ -26,7 +26,6 @@ from nltk.compat import python_2_unicode_compatible
 
 
 @total_ordering
-@python_2_unicode_compatible
 class DependencySpan(object):
     """
     A contiguous span over some part of the input string representing
@@ -105,7 +104,6 @@ class DependencySpan(object):
 #################################################################
 
 
-@python_2_unicode_compatible
 class ChartCell(object):
     """
     A cell from the parse chart formed when performing the CYK algorithm.
