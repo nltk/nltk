@@ -174,7 +174,7 @@ class PropbankCorpusReader(CorpusReader):
 ######################################################################
 
 
-@compat.python_2_unicode_compatible
+
 class PropbankInstance(object):
     def __init__(
         self,
@@ -347,7 +347,7 @@ class PropbankPointer(object):
             raise NotImplementedError()
 
 
-@compat.python_2_unicode_compatible
+
 class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -367,7 +367,7 @@ class PropbankChainTreePointer(PropbankPointer):
         return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
 
 
-@compat.python_2_unicode_compatible
+
 class PropbankSplitTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -387,7 +387,7 @@ class PropbankSplitTreePointer(PropbankPointer):
 
 
 @total_ordering
-@compat.python_2_unicode_compatible
+
 class PropbankTreePointer(PropbankPointer):
     """
     wordnum:height*wordnum:height*...
@@ -490,7 +490,7 @@ class PropbankTreePointer(PropbankPointer):
                     stack.pop()
 
 
-@compat.python_2_unicode_compatible
+
 class PropbankInflection(object):
     # { Inflection Form
     INFINITIVE = "i"
