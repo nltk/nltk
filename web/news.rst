@@ -4,6 +4,15 @@ NLTK News
 2019
 ----
 
+NLTK 3.4.2 release: June 2019
+
+  Add Text.generate(), QuadgramAssocMeasures
+  Add SSP to tokenizers
+  Return confidence of best tag from AveragedPerceptron
+  Make plot methods return Axes objects
+  Minor bug fixes
+  Update installation instructions
+
 NLTK 3.4.1 release: April 2019
   Add chomsky_normal_form for CFGs
   Add meteor score

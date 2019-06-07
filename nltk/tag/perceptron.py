@@ -23,7 +23,6 @@ try:
 except ImportError:
     pass
 
-
 PICKLE = "averaged_perceptron_tagger.pickle"
 
 
