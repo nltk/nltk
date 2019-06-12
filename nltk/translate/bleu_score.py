@@ -634,10 +634,8 @@ class SmoothingFunction:
 
     def method7(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
-        Smoothing method 6:
-        Interpolates the maximum likelihood estimate of the precision *p_n* with
-        a prior estimate *pi0*. The prior is estimated by assuming that the ratio
-        between pn and pn−1 will be the same as that between pn−1 and pn−2.
+        Smoothing method 7:
+        Interpolates methods 5 and 6.
         """
         p_n = self.method4(p_n, references, hypothesis, hyp_len)
         p_n = self.method5(p_n, references, hypothesis, hyp_len)
