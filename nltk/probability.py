@@ -1904,7 +1904,7 @@ class ConditionalFreqDist(defaultdict):
         :type conditions: list
         """
         try:
-            from matplotlib import plt
+            from matplotlib.pyplot import plt
         except ImportError:
             raise ValueError(
                 'The plot function requires matplotlib to be installed.'
