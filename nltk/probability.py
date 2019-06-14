@@ -1917,6 +1917,7 @@ class ConditionalFreqDist(defaultdict):
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(
             kwargs, 'samples', sorted(set(v for c in conditions
+                                          if c in self
                                           for v in self[c]))
         )  # this computation could be wasted
         if "linewidth" not in kwargs:
