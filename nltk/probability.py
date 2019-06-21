@@ -1894,7 +1894,7 @@ class ConditionalFreqDist(defaultdict):
         """
         Plot the given samples from the conditional frequency distribution.
         For a cumulative plot, specify cumulative=True.
-        (Requires Matplotlib to be installed.)
+        (Requires matplotlib to be installed.)
 
         :param samples: The samples to plot
         :type samples: list
@@ -1904,25 +1904,24 @@ class ConditionalFreqDist(defaultdict):
         :type conditions: list
         """
         try:
-            from matplotlib import plt
+            import matplotlib.pyplot as plt
         except ImportError:
             raise ValueError(
                 'The plot function requires matplotlib to be installed.'
                 'See http://matplotlib.org/'
             )
-
         cumulative = _get_kwarg(kwargs, 'cumulative', False)
         percents = _get_kwarg(kwargs, 'percents', False)
         conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(
             kwargs, 'samples', sorted(set(v for c in conditions
-                                          if v in self
-                                          for v in self[c]))
-        )  # this computation could be wasted
+                                            for v in self[c]))
+                ) # this computation could be wasted
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
 
+        ax = plt.gca()
         for condition in conditions:
             if cumulative:
                 freqs = list(self[condition]._cumulative_frequencies(samples))
@@ -1942,9 +1941,9 @@ class ConditionalFreqDist(defaultdict):
 
         ax.legend(loc=legend_loc)
         ax.grid(True, color="silver")
-        ax.set_xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
+        ax.set_xticks(range(len(samples)), [text_type(s) for s in samples])
         if title:
-            ax.set_title(title)
+            ax.title(title)
         ax.set_xlabel("Samples")
         ax.set_ylabel(ylabel)
         plt.show()
