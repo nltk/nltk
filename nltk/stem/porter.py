@@ -75,7 +75,7 @@ class PorterStemmer(StemmerI):
     For the best stemming, you should use the default NLTK_EXTENSIONS
     version. However, if you need to get the same results as either the
     original algorithm or one of Martin Porter's hosted versions for
-    compability with an existing implementation or dataset, you can use
+    compatibility with an existing implementation or dataset, you can use
     one of the other modes instead.
     """
 
