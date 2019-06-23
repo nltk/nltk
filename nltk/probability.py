@@ -1904,7 +1904,7 @@ class ConditionalFreqDist(defaultdict):
         :type conditions: list
         """
         try:
-            from matplotlib import plt
+            import matplotlib.pyplot as plt
         except ImportError:
             raise ValueError(
                 'The plot function requires matplotlib to be installed.'
@@ -1917,12 +1917,12 @@ class ConditionalFreqDist(defaultdict):
         title = _get_kwarg(kwargs, 'title', '')
         samples = _get_kwarg(
             kwargs, 'samples', sorted(set(v for c in conditions
-                                          if v in self
-                                          for v in self[c]))
+                                          for v in self[c]
+                                          if v in self))
         )  # this computation could be wasted
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
-
+        ax = plt.gca()
         for condition in conditions:
             if cumulative:
                 freqs = list(self[condition]._cumulative_frequencies(samples))
@@ -1942,7 +1942,7 @@ class ConditionalFreqDist(defaultdict):
 
         ax.legend(loc=legend_loc)
         ax.grid(True, color="silver")
-        ax.set_xticks(range(len(samples)), [text_type(s) for s in samples], rotation=90)
+        ax.set_xticklabels([text_type(s) for s in samples])
         if title:
             ax.set_title(title)
         ax.set_xlabel("Samples")
