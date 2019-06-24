@@ -1941,7 +1941,7 @@ class ConditionalFreqDist(defaultdict):
 
         ax.legend(loc=legend_loc)
         ax.grid(True, color="silver")
-        ax.set_xticks(range(len(samples)), [text_type(s) for s in samples])
+        plt.xticks(range(len(samples)), [text_type(s) for s in samples])
         if title:
             ax.title(title)
         ax.set_xlabel("Samples")
