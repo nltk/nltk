@@ -18,7 +18,7 @@ n-gram frequencies to profile languages and text-yet to
 be identified-then compares using a distance measure.
 
 Language n-grams are provided by the "An Crubadan"
-project. A corpus reader was created seperately to read
+project. A corpus reader was created separately to read
 those files.
 
 For details regarding the algorithm, see:
