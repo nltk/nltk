@@ -4,8 +4,11 @@ NLTK News
 2019
 ----
 
-NLTK 3.4.2 release: June 2019
+NLTK 3.4.4 release: July 2019
+  Fix bug in plot function (probability.py)
+  Add improved PanLex Swadesh corpus reader  
 
+NLTK 3.4.3 release: June 2019
   Add Text.generate(), QuadgramAssocMeasures
   Add SSP to tokenizers
   Return confidence of best tag from AveragedPerceptron
