@@ -328,72 +328,74 @@ class MaltParser(ParserI):
 
 
 if __name__ == '__main__':
-    '''
+    """
     A demonstration function to show how NLTK users can use the malt parser API.
 
-    >>> from nltk import pos_tag
-    >>> assert 'MALT_PARSER' in os.environ, str(
-    ... "Please set MALT_PARSER in your global environment, e.g.:\n"
-    ... "$ export MALT_PARSER='/home/user/maltparser-1.7.2/'")
-    >>>
-    >>> assert 'MALT_MODEL' in os.environ, str(
-    ... "Please set MALT_MODEL in your global environment, e.g.:\n"
-    ... "$ export MALT_MODEL='/home/user/engmalt.linear-1.7.mco'")
-    >>>
-    >>> _dg1_str = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
-    ...             "2    sees    _    VB    _    _    0    ROOT    _    _\n"
-    ...             "3    a       _    DT    _    _    4    SPEC    _    _\n"
-    ...             "4    dog     _    NN    _    _    2    OBJ     _    _\n"
-    ...             "5    .     _    .    _    _    2    PUNCT     _    _\n")
-    >>>
-    >>>
-    >>> _dg2_str  = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
-    ...             "2    walks   _    VB    _    _    0    ROOT    _    _\n"
-    ...             "3    .     _    .    _    _    2    PUNCT     _    _\n")
-    >>> dg1 = DependencyGraph(_dg1_str)
-    >>> dg2 = DependencyGraph(_dg2_str)
-    >>> # Initialize a MaltParser object
-    >>> parser_dirname = 'maltparser-1.7.2'
-    >>> mp = MaltParser(parser_dirname=parser_dirname)
-    >>>
-    >>> # Trains a model.
-    >>> mp.train([dg1,dg2], verbose=False)
-    >>> sent1 = ['John','sees','Mary', '.']
-    >>> sent2 = ['John', 'walks', 'a', 'dog', '.']
-    >>>
-    >>> # Parse a single sentence.
-    >>> parsed_sent1 = mp.parse_one(sent1)
-    >>> parsed_sent2 = mp.parse_one(sent2)
-    >>> print (parsed_sent1.tree())
-    (sees John Mary .)
-    >>> print (parsed_sent2.tree())
-    (walks John (dog a) .)
-    >>>
-    >>> # Parsing multiple sentences.
-    >>> sentences = [sent1,sent2]
-    >>> parsed_sents = mp.parse_sents(sentences)
-    >>> print(next(next(parsed_sents)).tree())
-    (sees John Mary .)
-    >>> print(next(next(parsed_sents)).tree())
-    (walks John (dog a) .)
-    >>>
-    >>> # Initialize a MaltParser object with an English pre-trained model.
-    >>> parser_dirname = 'maltparser-1.7.2'
-    >>> model_name = 'engmalt.linear-1.7.mco'
-    >>> mp = MaltParser(parser_dirname=parser_dirname, model_filename=model_name, tagger=pos_tag)
-    >>> sent1 = 'I shot an elephant in my pajamas .'.split()
-    >>> sent2 = 'Time flies like banana .'.split()
-    >>> # Parse a single sentence.
-    >>> print(mp.parse_one(sent1).tree())
-    (shot I (elephant an) (in (pajamas my)) .)
-    # Parsing multiple sentences
-    >>> sentences = [sent1,sent2]
-    >>> parsed_sents = mp.parse_sents(sentences)
-    >>> print(next(next(parsed_sents)).tree())
-    (shot I (elephant an) (in (pajamas my)) .)
-    >>> print(next(next(parsed_sents)).tree())
-    (flies Time (like banana) .)
-    '''
+        >>> from nltk import pos_tag
+        >>> assert 'MALT_PARSER' in os.environ, str(
+        ... "Please set MALT_PARSER in your global environment, e.g.:\n"
+        ... "$ export MALT_PARSER='/home/user/maltparser-1.7.2/'")
+        >>>
+        >>> assert 'MALT_MODEL' in os.environ, str(
+        ... "Please set MALT_MODEL in your global environment, e.g.:\n"
+        ... "$ export MALT_MODEL='/home/user/engmalt.linear-1.7.mco'")
+        >>>
+        >>> _dg1_str = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
+        ...             "2    sees    _    VB    _    _    0    ROOT    _    _\n"
+        ...             "3    a       _    DT    _    _    4    SPEC    _    _\n"
+        ...             "4    dog     _    NN    _    _    2    OBJ     _    _\n"
+        ...             "5    .     _    .    _    _    2    PUNCT     _    _\n")
+        >>>
+        >>>
+        >>> _dg2_str  = str("1    John    _    NNP   _    _    2    SUBJ    _    _\n"
+        ...             "2    walks   _    VB    _    _    0    ROOT    _    _\n"
+        ...             "3    .     _    .    _    _    2    PUNCT     _    _\n")
+        >>> dg1 = DependencyGraph(_dg1_str)
+        >>> dg2 = DependencyGraph(_dg2_str)
+        >>> # Initialize a MaltParser object
+        >>> parser_dirname = 'maltparser-1.7.2'
+        >>> mp = MaltParser(parser_dirname=parser_dirname)
+        >>>
+        >>> # Trains a model.
+        >>> mp.train([dg1,dg2], verbose=False)
+        >>> sent1 = ['John','sees','Mary', '.']
+        >>> sent2 = ['John', 'walks', 'a', 'dog', '.']
+        >>>
+        >>> # Parse a single sentence.
+        >>> parsed_sent1 = mp.parse_one(sent1)
+        >>> parsed_sent2 = mp.parse_one(sent2)
+        >>> print (parsed_sent1.tree())
+        (sees John Mary .)
+        >>> print (parsed_sent2.tree())
+        (walks John (dog a) .)
+        >>>
+        >>> # Parsing multiple sentences.
+        >>> sentences = [sent1,sent2]
+        >>> parsed_sents = mp.parse_sents(sentences)
+        >>> print(next(next(parsed_sents)).tree())
+        (sees John Mary .)
+        >>> print(next(next(parsed_sents)).tree())
+        (walks John (dog a) .)
+        >>>
+        >>> # Initialize a MaltParser object with an English pre-trained model.
+        >>> parser_dirname = 'maltparser-1.7.2'
+        >>> model_name = 'engmalt.linear-1.7.mco'
+        >>> mp = MaltParser(parser_dirname=parser_dirname, model_filename=model_name, tagger=pos_tag)
+        >>> sent1 = 'I shot an elephant in my pajamas .'.split()
+        >>> sent2 = 'Time flies like banana .'.split()
+        >>>
+        >>> # Parse a single sentence.
+        >>> print(mp.parse_one(sent1).tree())
+        (shot I (elephant an) (in (pajamas my)) .)
+        >>>
+        # Parsing multiple sentences
+        >>> sentences = [sent1,sent2]
+        >>> parsed_sents = mp.parse_sents(sentences)
+        >>> print(next(next(parsed_sents)).tree())
+        (shot I (elephant an) (in (pajamas my)) .)
+        >>> print(next(next(parsed_sents)).tree())
+        (flies Time (like banana) .)
+    """
+    
     import doctest
-
     doctest.testmod()

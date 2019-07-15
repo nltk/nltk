@@ -94,7 +94,7 @@ If the reader methods are called without any arguments, they will
 typically load all documents in the corpus.
 
     >>> len(inaugural.words())
-    145735
+    149797
 
 If a corpus contains a README file, it can be accessed with a ``readme()`` method:
 
@@ -387,8 +387,8 @@ examples illustrate the use of the wordlist corpora:
 
     >>> stopwords.fileids() # doctest: +ELLIPSIS
     ['arabic', 'azerbaijani', 'danish', 'dutch', 'english', 'finnish', 'french', ...]
-    >>> stopwords.words('portuguese') # doctest: +ELLIPSIS
-    ['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', ...]
+    >>> sorted(stopwords.words('portuguese')) # doctest: +ELLIPSIS
+    ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', ...]
     >>> names.fileids()
     ['female.txt', 'male.txt']
     >>> names.words('male.txt') # doctest: +ELLIPSIS
