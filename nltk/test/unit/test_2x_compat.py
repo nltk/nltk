@@ -6,6 +6,8 @@ See also nltk/test/compat.doctest.
 from __future__ import absolute_import, unicode_literals
 import unittest
 
+from six import text_type
+
 from nltk.text import Text
 from nltk.compat import PY3, python_2_unicode_compatible
 
@@ -21,10 +23,10 @@ class TestTextTransliteration(unittest.TestCase):
     txt = Text(["São", "Tomé", "and", "Príncipe"])
 
     def test_repr(self):
-        self.assertEqual(repr(self.txt), br"<Text: S\xe3o Tom\xe9 and Pr\xedncipe...>")
+        self.assertEqual(repr(self.txt), text_type("<Text: S\xe3o Tom\xe9 and Pr\xedncipe...>"))
 
     def test_str(self):
-        self.assertEqual(str(self.txt), b"<Text: Sao Tome and Principe...>")
+        self.assertEqual(str(self.txt), text_type("<Text: Sao Tome and Principe...>"))
 
 
 class TestFraction(unittest.TestCase):
