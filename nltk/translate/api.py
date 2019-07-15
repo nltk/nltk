@@ -8,14 +8,10 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_function, unicode_literals
 import subprocess
 from collections import namedtuple
 
-from nltk.compat import python_2_unicode_compatible
 
-
-@python_2_unicode_compatible
 class AlignedSent(object):
     """
     Return an aligned sentence object, which encapsulates two sentences
@@ -89,8 +85,8 @@ class AlignedSent(object):
         """
         Dot representation of the aligned sentence
         """
-        s = 'graph align {\n'
-        s += 'node[shape=plaintext]\n'
+        s = "graph align {\n"
+        s += "node[shape=plaintext]\n"
 
         # Declare node
         for w in self._words:
@@ -118,10 +114,10 @@ class AlignedSent(object):
             )
 
         # Put it in the same rank
-        s += '{rank = same; %s}\n' % (' '.join('"%s_source"' % w for w in self._words))
-        s += '{rank = same; %s}\n' % (' '.join('"%s_target"' % w for w in self._mots))
+        s += "{rank = same; %s}\n" % (" ".join('"%s_source"' % w for w in self._words))
+        s += "{rank = same; %s}\n" % (" ".join('"%s_target"' % w for w in self._mots))
 
-        s += '}'
+        s += "}"
 
         return s
 
@@ -129,20 +125,20 @@ class AlignedSent(object):
         """
         Ipython magic : show SVG representation of this ``AlignedSent``.
         """
-        dot_string = self._to_dot().encode('utf8')
-        output_format = 'svg'
+        dot_string = self._to_dot().encode("utf8")
+        output_format = "svg"
         try:
             process = subprocess.Popen(
-                ['dot', '-T%s' % output_format],
+                ["dot", "-T%s" % output_format],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
         except OSError:
-            raise Exception('Cannot find the dot binary from Graphviz package')
+            raise Exception("Cannot find the dot binary from Graphviz package")
         out, err = process.communicate(dot_string)
 
-        return out.decode('utf8')
+        return out.decode("utf8")
 
     def __str__(self):
         """
@@ -163,7 +159,6 @@ class AlignedSent(object):
         return AlignedSent(self._mots, self._words, self._alignment.invert())
 
 
-@python_2_unicode_compatible
 class Alignment(frozenset):
     """
     A storage class for representing alignment between two sequences, s1, s2.
@@ -293,7 +288,7 @@ def _check_alignment(num_words, num_mots, alignment):
         raise IndexError("Alignment is outside boundary of mots")
 
 
-PhraseTableEntry = namedtuple('PhraseTableEntry', ['trg_phrase', 'log_prob'])
+PhraseTableEntry = namedtuple("PhraseTableEntry", ["trg_phrase", "log_prob"])
 
 
 class PhraseTable(object):

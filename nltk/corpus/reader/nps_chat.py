@@ -4,7 +4,6 @@
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import unicode_literals
 
 import re
 import textwrap
@@ -27,14 +26,14 @@ class NPSChatCorpusReader(XMLCorpusReader):
         if self._wrap_etree:
             return concat(
                 [
-                    XMLCorpusView(fileid, 'Session/Posts/Post', self._wrap_elt)
+                    XMLCorpusView(fileid, "Session/Posts/Post", self._wrap_elt)
                     for fileid in self.abspaths(fileids)
                 ]
             )
         else:
             return concat(
                 [
-                    XMLCorpusView(fileid, 'Session/Posts/Post')
+                    XMLCorpusView(fileid, "Session/Posts/Post")
                     for fileid in self.abspaths(fileids)
                 ]
             )
@@ -43,7 +42,7 @@ class NPSChatCorpusReader(XMLCorpusReader):
         return concat(
             [
                 XMLCorpusView(
-                    fileid, 'Session/Posts/Post/terminals', self._elt_to_words
+                    fileid, "Session/Posts/Post/terminals", self._elt_to_words
                 )
                 for fileid in self.abspaths(fileids)
             ]
@@ -55,7 +54,7 @@ class NPSChatCorpusReader(XMLCorpusReader):
 
         return concat(
             [
-                XMLCorpusView(fileid, 'Session/Posts/Post/terminals', reader)
+                XMLCorpusView(fileid, "Session/Posts/Post/terminals", reader)
                 for fileid in self.abspaths(fileids)
             ]
         )
@@ -70,12 +69,12 @@ class NPSChatCorpusReader(XMLCorpusReader):
         return ElementWrapper(elt)
 
     def _elt_to_words(self, elt, handler):
-        return [self._simplify_username(t.attrib['word']) for t in elt.findall('t')]
+        return [self._simplify_username(t.attrib["word"]) for t in elt.findall("t")]
 
     def _elt_to_tagged_words(self, elt, handler, tagset=None):
         tagged_post = [
-            (self._simplify_username(t.attrib['word']), t.attrib['pos'])
-            for t in elt.findall('t')
+            (self._simplify_username(t.attrib["word"]), t.attrib["pos"])
+            for t in elt.findall("t")
         ]
         if tagset and tagset != self._tagset:
             tagged_post = [
@@ -85,8 +84,8 @@ class NPSChatCorpusReader(XMLCorpusReader):
 
     @staticmethod
     def _simplify_username(word):
-        if 'User' in word:
-            word = 'U' + word.split('User', 1)[1]
+        if "User" in word:
+            word = "U" + word.split("User", 1)[1]
         elif isinstance(word, bytes):
-            word = word.decode('ascii')
+            word = word.decode("ascii")
         return word

@@ -38,7 +38,7 @@ class MWETokenizer(TokenizerI):
     into single tokens.
     """
 
-    def __init__(self, mwes=None, separator='_'):
+    def __init__(self, mwes=None, separator="_"):
         """Initialize the multi-word tokenizer with a list of expressions and a
         separator
 

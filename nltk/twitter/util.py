@@ -11,8 +11,6 @@
 Authentication utilities to accompany :module:`twitterclient`.
 """
 
-from __future__ import print_function
-
 import os
 import pprint
 from twython import Twython
@@ -33,12 +31,12 @@ class Authenticate(object):
     """
 
     def __init__(self):
-        self.creds_file = 'credentials.txt'
+        self.creds_file = "credentials.txt"
         self.creds_fullpath = None
 
         self.oauth = {}
         try:
-            self.twitter_dir = os.environ['TWITTER']
+            self.twitter_dir = os.environ["TWITTER"]
             self.creds_subdir = self.twitter_dir
         except KeyError:
             self.twitter_dir = None
@@ -86,15 +84,15 @@ class Authenticate(object):
         )
 
         if not os.path.isfile(self.creds_fullpath):
-            raise OSError('Cannot find file {}'.format(self.creds_fullpath))
+            raise OSError("Cannot find file {}".format(self.creds_fullpath))
 
         with open(self.creds_fullpath) as infile:
             if verbose:
-                print('Reading credentials file {}'.format(self.creds_fullpath))
+                print("Reading credentials file {}".format(self.creds_fullpath))
 
             for line in infile:
-                if '=' in line:
-                    name, value = line.split('=', 1)
+                if "=" in line:
+                    name, value = line.split("=", 1)
                     self.oauth[name.strip()] = value.strip()
 
         self._validate_creds_file(verbose=verbose)
@@ -104,16 +102,16 @@ class Authenticate(object):
     def _validate_creds_file(self, verbose=False):
         """Check validity of a credentials file."""
         oauth1 = False
-        oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
+        oauth1_keys = ["app_key", "app_secret", "oauth_token", "oauth_token_secret"]
         oauth2 = False
-        oauth2_keys = ['app_key', 'app_secret', 'access_token']
+        oauth2_keys = ["app_key", "app_secret", "access_token"]
         if all(k in self.oauth for k in oauth1_keys):
             oauth1 = True
         elif all(k in self.oauth for k in oauth2_keys):
             oauth2 = True
 
         if not (oauth1 or oauth2):
-            msg = 'Missing or incorrect entries in {}\n'.format(self.creds_file)
+            msg = "Missing or incorrect entries in {}\n".format(self.creds_file)
             msg += pprint.pformat(self.oauth)
             raise ValueError(msg)
         elif verbose:
@@ -127,15 +125,15 @@ def add_access_token(creds_file=None):
     """
     if creds_file is None:
         path = os.path.dirname(__file__)
-        creds_file = os.path.join(path, 'credentials2.txt')
+        creds_file = os.path.join(path, "credentials2.txt")
     oauth2 = credsfromfile(creds_file=creds_file)
-    app_key = oauth2['app_key']
-    app_secret = oauth2['app_secret']
+    app_key = oauth2["app_key"]
+    app_secret = oauth2["app_secret"]
 
     twitter = Twython(app_key, app_secret, oauth_version=2)
     access_token = twitter.obtain_access_token()
-    tok = 'access_token={}\n'.format(access_token)
-    with open(creds_file, 'a') as infile:
+    tok = "access_token={}\n".format(access_token)
+    with open(creds_file, "a") as infile:
         print(tok, file=infile)
 
 

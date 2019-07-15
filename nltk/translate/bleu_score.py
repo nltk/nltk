@@ -8,7 +8,6 @@
 # For license information, see LICENSE.TXT
 
 """BLEU score implementation."""
-from __future__ import division
 
 import math
 import sys

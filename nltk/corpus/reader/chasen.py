@@ -5,7 +5,6 @@
 # For license information, see LICENSE.TXT
 
 # For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
-from __future__ import print_function
 
 import sys
 
@@ -18,7 +17,7 @@ from nltk.corpus.reader.api import *
 
 
 class ChasenCorpusReader(CorpusReader):
-    def __init__(self, root, fileids, encoding='utf8', sent_splitter=None):
+    def __init__(self, root, fileids, encoding="utf8", sent_splitter=None):
         self._sent_splitter = sent_splitter
         CorpusReader.__init__(self, root, fileids, encoding)
 
@@ -109,9 +108,9 @@ class ChasenCorpusView(StreamBackedCorpusView):
             sent = []
             for line in para_str.splitlines():
 
-                _eos = line.strip() == 'EOS'
-                _cells = line.split('\t')
-                w = (_cells[0], '\t'.join(_cells[1:]))
+                _eos = line.strip() == "EOS"
+                _cells = line.split("\t")
+                w = (_cells[0], "\t".join(_cells[1:]))
                 if not _eos:
                     sent.append(w)
 
@@ -146,12 +145,12 @@ def demo():
     import nltk
     from nltk.corpus.util import LazyCorpusLoader
 
-    jeita = LazyCorpusLoader('jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
-    print('/'.join(jeita.words()[22100:22140]))
+    jeita = LazyCorpusLoader("jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8")
+    print("/".join(jeita.words()[22100:22140]))
 
     print(
-        '\nEOS\n'.join(
-            '\n'.join("%s/%s" % (w[0], w[1].split('\t')[2]) for w in sent)
+        "\nEOS\n".join(
+            "\n".join("%s/%s" % (w[0], w[1].split("\t")[2]) for w in sent)
             for sent in jeita.tagged_sents()[2170:2173]
         )
     )
@@ -161,11 +160,11 @@ def test():
 
     from nltk.corpus.util import LazyCorpusLoader
 
-    jeita = LazyCorpusLoader('jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
+    jeita = LazyCorpusLoader("jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8")
 
     assert isinstance(jeita.tagged_words()[0][1], string_types)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()
     test()

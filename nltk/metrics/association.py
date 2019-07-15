@@ -11,8 +11,6 @@ generic, abstract implementation in ``NgramAssocMeasures``, and n-specific
 ``BigramAssocMeasures`` and ``TrigramAssocMeasures``.
 """
 
-from __future__ import division
-
 import math as _math
 from abc import ABCMeta, abstractmethod
 from functools import reduce
@@ -131,7 +129,7 @@ class NgramAssocMeasures(object):
         argument power sets an exponent (default 3) for the numerator. No
         logarithm of the result is calculated.
         """
-        return marginals[NGRAM] ** kwargs.get('power', 3) / _product(
+        return marginals[NGRAM] ** kwargs.get("power", 3) / _product(
             marginals[UNIGRAMS]
         )
 
@@ -246,7 +244,7 @@ class BigramAssocMeasures(NgramAssocMeasures):
 
         n_ii, n_io, n_oi, n_oo = cls._contingency(*marginals)
 
-        (odds, pvalue) = fisher_exact([[n_ii, n_io], [n_oi, n_oo]], alternative='less')
+        (odds, pvalue) = fisher_exact([[n_ii, n_io], [n_oi, n_oo]], alternative="less")
         return pvalue
 
     @staticmethod
@@ -442,12 +440,12 @@ class ContingencyMeasures(object):
 
     def __init__(self, measures):
         """Constructs a ContingencyMeasures given a NgramAssocMeasures class"""
-        self.__class__.__name__ = 'Contingency' + measures.__class__.__name__
+        self.__class__.__name__ = "Contingency" + measures.__class__.__name__
         for k in dir(measures):
-            if k.startswith('__'):
+            if k.startswith("__"):
                 continue
             v = getattr(measures, k)
-            if not k.startswith('_'):
+            if not k.startswith("_"):
                 v = self._make_contingency_fn(measures, v)
             setattr(self, k, v)
 

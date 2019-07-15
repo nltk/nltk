@@ -58,4 +58,3 @@ class KneserNey(Smoothing):
 
     def gamma(self, prefix_counts):
         return self.discount * _count_non_zero_vals(prefix_counts) / prefix_counts.N()
-

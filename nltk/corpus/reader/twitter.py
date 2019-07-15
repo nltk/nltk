@@ -59,7 +59,7 @@ class TwitterCorpusReader(CorpusReader):
     """
 
     def __init__(
-        self, root, fileids=None, word_tokenizer=TweetTokenizer(), encoding='utf8'
+        self, root, fileids=None, word_tokenizer=TweetTokenizer(), encoding="utf8"
     ):
         """
 
@@ -110,7 +110,7 @@ class TwitterCorpusReader(CorpusReader):
         tweets = []
         for jsono in fulltweets:
             try:
-                text = jsono['text']
+                text = jsono["text"]
                 if isinstance(text, bytes):
                     text = text.decode(self.encoding)
                 tweets.append(text)

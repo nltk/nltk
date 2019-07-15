@@ -12,7 +12,6 @@ To generate n sentences of linguistic wisdom, type
     (CHOMSKY n)  -- for example
     (CHOMSKY 5) generates half a screen of linguistic truth.
 """
-from __future__ import print_function
 
 leadins = """To characterize a linguistic level L,
     On the other hand,
@@ -132,5 +131,5 @@ def generate_chomsky(times=5, line_length=72):
     print(textwrap.fill(" ".join(output), line_length))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     generate_chomsky()

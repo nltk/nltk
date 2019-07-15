@@ -7,12 +7,10 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import unicode_literals
 import re
 from nltk.stem.api import StemmerI
-from nltk.compat import python_2_unicode_compatible
 
-@python_2_unicode_compatible
+
 class Cistem(StemmerI):
     """
     CISTEM Stemmer for German
@@ -41,6 +39,7 @@ class Cistem(StemmerI):
     :param case_insensitive: if True, the stemming is case insensitive. False by default.
     :type case_insensitive: bool
     """
+
     strip_ge = re.compile(r"^ge(.{4,})")
     repl_xx = re.compile(r"(.)\1")
     strip_emr = re.compile(r"e[mr]$")
@@ -136,7 +135,6 @@ class Cistem(StemmerI):
         word = Cistem.replace_back(word)
 
         return word
-
 
     def segment(self, word):
         """

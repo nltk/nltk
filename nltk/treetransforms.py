@@ -106,7 +106,6 @@ The following is a short tutorial on the available transformations.
      C   D      C   D
 
 """
-from __future__ import print_function
 
 from nltk.tree import Tree
 
@@ -332,7 +331,7 @@ def demo():
     draw_trees(t, collapsedTree, cnfTree, parentTree, original)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()
 
 __all__ = ["chomsky_normal_form", "un_chomsky_normal_form", "collapse_unary"]

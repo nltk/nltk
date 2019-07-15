@@ -20,9 +20,9 @@ from six import text_type
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI
 
-_hunpos_url = 'http://code.google.com/p/hunpos/'
+_hunpos_url = "http://code.google.com/p/hunpos/"
 
-_hunpos_charset = 'ISO-8859-1'
+_hunpos_charset = "ISO-8859-1"
 """The default encoding used by hunpos: ISO-8859-1."""
 
 
@@ -70,27 +70,27 @@ class HunposTagger(TaggerI):
         """
         self._closed = True
         hunpos_paths = [
-            '.',
-            '/usr/bin',
-            '/usr/local/bin',
-            '/opt/local/bin',
-            '/Applications/bin',
-            '~/bin',
-            '~/Applications/bin',
+            ".",
+            "/usr/bin",
+            "/usr/local/bin",
+            "/opt/local/bin",
+            "/Applications/bin",
+            "~/bin",
+            "~/Applications/bin",
         ]
         hunpos_paths = list(map(os.path.expanduser, hunpos_paths))
 
         self._hunpos_bin = find_binary(
-            'hunpos-tag',
+            "hunpos-tag",
             path_to_bin,
-            env_vars=('HUNPOS_TAGGER',),
+            env_vars=("HUNPOS_TAGGER",),
             searchpath=hunpos_paths,
             url=_hunpos_url,
             verbose=verbose,
         )
 
         self._hunpos_model = find_file(
-            path_to_model, env_vars=('HUNPOS_TAGGER',), verbose=verbose
+            path_to_model, env_vars=("HUNPOS_TAGGER",), verbose=verbose
         )
         self._encoding = encoding
         self._hunpos = Popen(
@@ -146,6 +146,6 @@ def setup_module(module):
     from nose import SkipTest
 
     try:
-        HunposTagger('en_wsj.model')
+        HunposTagger("en_wsj.model")
     except LookupError:
         raise SkipTest("HunposTagger is not available")

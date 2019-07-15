@@ -13,7 +13,6 @@ Functionality includes: concordancing, collocation discovery,
 regular expression search over tokenized strings, and
 distributional similarity.
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
 
 from math import log
 from collections import defaultdict, Counter, namedtuple
@@ -30,7 +29,6 @@ from nltk.probability import ConditionalFreqDist as CFD
 from nltk.util import tokenwrap, LazyConcatenation
 from nltk.metrics import f_measure, BigramAssocMeasures
 from nltk.collocations import BigramCollocationFinder
-from nltk.compat import python_2_unicode_compatible
 from nltk.tokenize import sent_tokenize
 
 ConcordanceLine = namedtuple(
@@ -130,7 +128,7 @@ class ContextIndex(object):
             return fd
 
 
-@python_2_unicode_compatible
+
 class ConcordanceIndex(object):
     """
     An index that can be used to look up the offset locations at which
@@ -301,7 +299,7 @@ class TokenSearcher(object):
         return hits
 
 
-@python_2_unicode_compatible
+
 class Text(object):
     """
     A wrapper around a sequence of simple (string) tokens, which is

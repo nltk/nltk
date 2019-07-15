@@ -188,9 +188,9 @@ class StackDecoder(object):
 
         if not stacks[sentence_length]:
             warnings.warn(
-                'Unable to translate all words. '
-                'The source sentence contains words not in '
-                'the phrase table'
+                "Unable to translate all words. "
+                "The source sentence contains words not in "
+                "the phrase table"
             )
             # Instead of returning empty output, perhaps a partial
             # translation could be returned
@@ -238,7 +238,7 @@ class StackDecoder(object):
         subsequence covering positions 2, 3, and 4.
         :rtype: dict(int: (dict(int): float))
         """
-        scores = defaultdict(lambda: defaultdict(lambda: float('-inf')))
+        scores = defaultdict(lambda: defaultdict(lambda: float("-inf")))
         for seq_length in range(1, len(src_sentence) + 1):
             for start in range(0, len(src_sentence) - seq_length + 1):
                 end = start + seq_length
@@ -466,7 +466,7 @@ class _Stack(object):
         self.items = []
 
         if beam_threshold == 0.0:
-            self.__log_beam_threshold = float('-inf')
+            self.__log_beam_threshold = float("-inf")
         else:
             self.__log_beam_threshold = log(beam_threshold)
 

@@ -65,16 +65,13 @@ argument.  This differs from the conventions used by Python's
 ``re`` functions, where the pattern is always the first argument.
 (This is for consistency with the other NLTK tokenizers.)
 """
-from __future__ import unicode_literals
 
 import re
 
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class RegexpTokenizer(TokenizerI):
     """
     A tokenizer that splits a string using a regular expression, which
@@ -110,7 +107,7 @@ class RegexpTokenizer(TokenizerI):
         flags=re.UNICODE | re.MULTILINE | re.DOTALL,
     ):
         # If they gave us a regexp object, extract the pattern.
-        pattern = getattr(pattern, 'pattern', pattern)
+        pattern = getattr(pattern, "pattern", pattern)
 
         self._pattern = pattern
         self._gaps = gaps
@@ -147,7 +144,7 @@ class RegexpTokenizer(TokenizerI):
                 yield m.span()
 
     def __repr__(self):
-        return '%s(pattern=%r, gaps=%r, discard_empty=%r, flags=%r)' % (
+        return "%s(pattern=%r, gaps=%r, discard_empty=%r, flags=%r)" % (
             self.__class__.__name__,
             self._pattern,
             self._gaps,
@@ -169,7 +166,7 @@ class WhitespaceTokenizer(RegexpTokenizer):
     """
 
     def __init__(self):
-        RegexpTokenizer.__init__(self, r'\s+', gaps=True)
+        RegexpTokenizer.__init__(self, r"\s+", gaps=True)
 
 
 class BlanklineTokenizer(RegexpTokenizer):
@@ -180,7 +177,7 @@ class BlanklineTokenizer(RegexpTokenizer):
     """
 
     def __init__(self):
-        RegexpTokenizer.__init__(self, r'\s*\n\s*\n\s*', gaps=True)
+        RegexpTokenizer.__init__(self, r"\s*\n\s*\n\s*", gaps=True)
 
 
 class WordPunctTokenizer(RegexpTokenizer):
@@ -196,7 +193,7 @@ class WordPunctTokenizer(RegexpTokenizer):
     """
 
     def __init__(self):
-        RegexpTokenizer.__init__(self, r'\w+|[^\w\s]+')
+        RegexpTokenizer.__init__(self, r"\w+|[^\w\s]+")
 
 
 ######################################################################
