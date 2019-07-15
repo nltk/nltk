@@ -392,6 +392,6 @@ if __name__ == '__main__':
     >>> print(next(next(parsed_sents)).tree())
     (flies Time (like banana) .)
     """
-    import doctest
 
+    import doctest
     doctest.testmod()
