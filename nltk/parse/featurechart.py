@@ -146,12 +146,12 @@ class FeatureTreeEdge(TreeEdge):
 
     def __str__(self):
         if self.is_complete():
-            return str(TreeEdge)
+            return super().__str__()
         else:
             bindings = "{%s}" % ", ".join(
                 "%s: %r" % item for item in sorted(self._bindings.items())
             )
-            return "%s %s" % (str(TreeEdge), bindings)
+            return "%s %s" % (super().__str__(), bindings)
 
 
 # ////////////////////////////////////////////////////////////

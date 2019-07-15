@@ -428,7 +428,7 @@ class ProbabilisticProduction(Production, ImmutableProbabilisticMixIn):
         Production.__init__(self, lhs, rhs)
 
     def __str__(self):
-        return Production.__unicode__(self) + (
+        return super().__str__() + (
             " [1.0]" if (self.prob() == 1.0) else " [%g]" % self.prob()
         )
 
