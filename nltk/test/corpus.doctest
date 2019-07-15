@@ -1216,7 +1216,7 @@ definitions of these data access methods wherever possible.
 
 At a high level, corpora can be divided into three basic types:
 
-- A *token corpus* contains information about specific occurences of
+- A *token corpus* contains information about specific occurrences of
   language use (or linguistic tokens), such as dialogues or written
   texts.  Examples of token corpora are collections of written text
   and collections of speech.

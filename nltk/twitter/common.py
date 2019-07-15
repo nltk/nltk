@@ -113,7 +113,7 @@ def json2csv(
     are 'id_str' for the tweetID and 'text' for the text of the tweet. See\
     <https://dev.twitter.com/overview/api/tweets> for a full list of fields.\
     e. g.: ['id_str'], ['id', 'text', 'favorite_count', 'retweet_count']\
-    Additonally, it allows IDs from other Twitter objects, e. g.,\
+    Additionally, it allows IDs from other Twitter objects, e. g.,\
     ['id', 'text', 'user.id', 'user.followers_count', 'user.friends_count']
 
     :param error: Behaviour for encoding errors, see\

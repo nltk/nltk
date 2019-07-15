@@ -31,7 +31,7 @@ class Cistem(StemmerI):
     is thrice as fast as the Snowball stemmer for German while being about as fast
     as most other stemmers.
 
-    case_insensitive is a a boolean specifiying if case-insensitive stemming
+    case_insensitive is a a boolean specifying if case-insensitive stemming
     should be used. Case insensitivity improves performance only if words in the
     text may be incorrectly upper case. For all-lowercase and correctly cased
     text, best performance is achieved by setting case_insensitive for false.

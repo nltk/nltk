@@ -817,9 +817,7 @@ def load(
     :type cache: bool
     :param cache: If true, add this resource to a cache.  If load()
         finds a resource in its cache, then it will return it from the
-        cache rather than loading it.  The cache uses weak references,
-        so a resource wil automatically be expunged from the cache
-        when no more objects are using it.
+        cache rather than loading it.
     :type verbose: bool
     :param verbose: If true, print a message when loading a resource.
         Messages are not displayed when a resource is retrieved from

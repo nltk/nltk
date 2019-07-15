@@ -199,7 +199,7 @@ class Query(Twython):
         Call the REST API ``'search/tweets'`` endpoint with some plausible
         defaults. See `the Twitter search documentation
         <https://dev.twitter.com/rest/public/search>`_ for more information
-        about admissable search parameters.
+        about admissible search parameters.
 
         :param str keywords: A list of query terms to search for, written as\
         a comma-separated string
