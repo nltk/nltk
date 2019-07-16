@@ -17,14 +17,19 @@ from nltk.util import parallelize_preprocess
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
+
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option()
 def cli():
     pass
 
+
 @cli.command("tokenize")
 @click.option(
-    "--language", "-l", default="en", help="The language for the Punkt sentence tokenization."
+    "--language",
+    "-l",
+    default="en",
+    help="The language for the Punkt sentence tokenization.",
 )
 @click.option(
     "--preserve-line",
@@ -35,14 +40,10 @@ def cli():
 )
 @click.option("--processes", "-j", default=1, help="No. of processes.")
 @click.option("--encoding", "-e", default="utf8", help="Specify encoding of file.")
-@click.option("--delimiter", "-d", default=" ", help="Specify delimiter to join the tokens.")
-def tokenize_file(
-    language,
-    preserve_line,
-    processes,
-    encoding,
-    delimiter
-):
+@click.option(
+    "--delimiter", "-d", default=" ", help="Specify delimiter to join the tokens."
+)
+def tokenize_file(language, preserve_line, processes, encoding, delimiter):
     """ This command tokenizes text stream using nltk.word_tokenize """
     with click.get_text_stream("stdin", encoding=encoding) as fin:
         with click.get_text_stream("stdout", encoding=encoding) as fout:
