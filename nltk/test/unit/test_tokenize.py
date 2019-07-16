@@ -109,6 +109,16 @@ class TestTokenize(unittest.TestCase):
         expected = ['(', '393', ')', "928 -3010"]
         result = tokenizer.tokenize(test2)
         self.assertEqual(result, expected)
+        
+    def test_pad_asterisk(self):
+        """
+        Test padding of asterisk for word tokenization.
+        """
+        text = "This is a, *weird sentence with *asterisks in it."
+        expected = ['This', 'is', 'a', ',', '*', 'weird', 'sentence', 
+                    'with', '*', 'asterisks', 'in', 'it', '.']
+        result = word_tokenize(expected)
+        self.assertEqual(result, expected)
 
     def test_remove_handle(self):
         """
