@@ -77,7 +77,7 @@ class TreebankWordTokenizer(TokenizerI):
         (re.compile(r"([:,])([^\d])"), r" \1 \2"),
         (re.compile(r"([:,])$"), r" \1 "),
         (re.compile(r"\.\.\."), r" ... "),
-        (re.compile(r"[;@#$%&*]"), r" \g<0> "),
+        (re.compile(r"[;@#$%&]"), r" \g<0> "),
         (
             re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
             r"\1 \2\3 ",
