@@ -44,6 +44,12 @@ extras_require['all'] = set(
     package for group in extras_require.values() for package in group
 )
 
+# Adds CLI commands
+console_scripts = """
+[console_scripts]
+nltk=nltk.cli:cli
+"""
+
 setup(
     name="nltk",
     description="Natural Language Toolkit",
@@ -96,9 +102,12 @@ natural language processing.  NLTK requires Python 2.7, 3.5, 3.6, or 3.7.""",
     package_data={'nltk': ['test/*.doctest', 'VERSION']},
     install_requires=[
         'six',
-        'singledispatch; python_version < "3.4"'
+        'singledispatch; python_version < "3.4"',
+        'click',
+        'joblib'
     ],
     extras_require=extras_require,
     packages=find_packages(),
     zip_safe=False,  # since normal files will be present too?
+    entry_points=console_scripts,
 )
