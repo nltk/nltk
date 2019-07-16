@@ -35,7 +35,7 @@ def cli():
 )
 @click.option("--processes", "-j", default=1, help="No. of processes.")
 @click.option("--encoding", "-e", default="utf8", help="Specify encoding of file.")
-@click.option("--delimiter", "-d", default=" ", help="Specify encoding of file.")
+@click.option("--delimiter", "-d", default=" ", help="Specify delimiter to join the tokens.")
 def tokenize_file(
     language,
     preserve_line,
@@ -43,6 +43,7 @@ def tokenize_file(
     encoding,
     delimiter
 ):
+    """ This command tokenizes text stream using nltk.word_tokenize """
     with click.get_text_stream("stdin", encoding=encoding) as fin:
         with click.get_text_stream("stdout", encoding=encoding) as fout:
             # If it's single process, joblib parallization is slower,
