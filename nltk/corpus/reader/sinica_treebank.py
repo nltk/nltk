@@ -44,10 +44,10 @@ from nltk.tag import map_tag
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
-IDENTIFIER = re.compile(r'^#\S+\s')
-APPENDIX = re.compile(r'(?<=\))#.*$')
-TAGWORD = re.compile(r':([^:()|]+):([^:()|]+)')
-WORD = re.compile(r':[^:()|]+:([^:()|]+)')
+IDENTIFIER = re.compile(r"^#\S+\s")
+APPENDIX = re.compile(r"(?<=\))#.*$")
+TAGWORD = re.compile(r":([^:()|]+):([^:()|]+)")
+WORD = re.compile(r":[^:()|]+:([^:()|]+)")
 
 
 class SinicaTreebankCorpusReader(SyntaxCorpusReader):
@@ -57,8 +57,8 @@ class SinicaTreebankCorpusReader(SyntaxCorpusReader):
 
     def _read_block(self, stream):
         sent = stream.readline()
-        sent = IDENTIFIER.sub('', sent)
-        sent = APPENDIX.sub('', sent)
+        sent = IDENTIFIER.sub("", sent)
+        sent = APPENDIX.sub("", sent)
         return [sent]
 
     def _parse(self, sent):

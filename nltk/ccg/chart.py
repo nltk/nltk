@@ -29,7 +29,6 @@ which should print a nice representation of the derivation.
 This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
-from __future__ import print_function, division, unicode_literals
 
 import itertools
 
@@ -51,7 +50,7 @@ from nltk.ccg.combinator import (
     BackwardBx,
     BackwardSx,
 )
-from nltk.compat import python_2_unicode_compatible
+
 from nltk.ccg.combinator import *
 from nltk.ccg.logic import *
 from nltk.sem.logic import *
@@ -105,9 +104,9 @@ class CCGEdge(EdgeI):
 
 
 class CCGLeafEdge(EdgeI):
-    '''
+    """
     Class representing leaf edges in a CCG derivation.
-    '''
+    """
 
     def __init__(self, pos, token, leaf):
         self._pos = pos
@@ -156,12 +155,11 @@ class CCGLeafEdge(EdgeI):
         return self._leaf
 
 
-@python_2_unicode_compatible
 class BinaryCombinatorRule(AbstractChartRule):
-    '''
+    """
     Class implementing application of a binary combinator to a chart.
     Takes the directed combinator to apply.
-    '''
+    """
 
     NUMEDGES = 2
 
@@ -193,11 +191,12 @@ class BinaryCombinatorRule(AbstractChartRule):
 
 # Type-raising must be handled slightly differently to the other rules, as the
 # resulting rules only span a single edge, rather than both edges.
-@python_2_unicode_compatible
+
+
 class ForwardTypeRaiseRule(AbstractChartRule):
-    '''
+    """
     Class for applying forward type raising
-    '''
+    """
 
     NUMEDGES = 2
 
@@ -217,11 +216,10 @@ class ForwardTypeRaiseRule(AbstractChartRule):
         return "%s" % self._combinator
 
 
-@python_2_unicode_compatible
 class BackwardTypeRaiseRule(AbstractChartRule):
-    '''
+    """
     Class for applying backward type raising.
-    '''
+    """
 
     NUMEDGES = 2
 
@@ -264,10 +262,10 @@ DefaultRuleSet = (
 
 
 class CCGChartParser(ParserI):
-    '''
+    """
     Chart parser for CCGs.
     Based largely on the ChartParser class from NLTK.
-    '''
+    """
 
     def __init__(self, lexicon, rules, trace=0):
         self._lexicon = lexicon
@@ -369,7 +367,7 @@ def compute_semantics(children, edge):
         elif isinstance(combinator, UndirectedSubstitution):
             return compute_substitution_semantics(function, argument)
         else:
-            raise AssertionError('Unsupported combinator \'' + combinator + '\'')
+            raise AssertionError("Unsupported combinator '" + combinator + "'")
     else:
         return compute_type_raised_semantics(children[0].label()[0].semantics())
 
@@ -380,8 +378,8 @@ def compute_semantics(children, edge):
 def printCCGDerivation(tree):
     # Get the leaves and initial categories
     leafcats = tree.pos()
-    leafstr = ''
-    catstr = ''
+    leafstr = ""
+    catstr = ""
 
     # Construct a string with both the leaf word and corresponding
     # category aligned.
@@ -390,10 +388,10 @@ def printCCGDerivation(tree):
         nextlen = 2 + max(len(leaf), len(str_cat))
         lcatlen = (nextlen - len(str_cat)) // 2
         rcatlen = lcatlen + (nextlen - len(str_cat)) % 2
-        catstr += ' ' * lcatlen + str_cat + ' ' * rcatlen
+        catstr += " " * lcatlen + str_cat + " " * rcatlen
         lleaflen = (nextlen - len(leaf)) // 2
         rleaflen = lleaflen + (nextlen - len(leaf)) % 2
-        leafstr += ' ' * lleaflen + leaf + ' ' * rleaflen
+        leafstr += " " * lleaflen + leaf + " " * rleaflen
     print(leafstr.rstrip())
     print(catstr.rstrip())
 
@@ -423,18 +421,18 @@ def printCCGTree(lwidth, tree):
 
     (token, op) = tree.label()
 
-    if op == 'Leaf':
+    if op == "Leaf":
         return rwidth
 
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
-    print(lwidth * ' ' + (rwidth - lwidth) * '-' + "%s" % op)
+    print(lwidth * " " + (rwidth - lwidth) * "-" + "%s" % op)
     # Print the resulting category on a new line.
     str_res = "%s" % (token.categ())
     if token.semantics() is not None:
         str_res += " {" + str(token.semantics()) + "}"
     respadlen = (rwidth - lwidth - len(str_res)) // 2 + lwidth
-    print(respadlen * ' ' + str_res)
+    print(respadlen * " " + str_res)
     return rwidth
 
 
@@ -442,7 +440,7 @@ def printCCGTree(lwidth, tree):
 
 # Construct the lexicon
 lex = fromstring(
-    '''
+    """
     :- S, NP, N, VP    # Primitive categories, S is the target primitive
 
     Det :: NP/N         # Family of words
@@ -471,7 +469,7 @@ lex = fromstring(
     mushrooms => N
     parsnips => N
     bacon => N
-    '''
+    """
 )
 
 
@@ -481,5 +479,5 @@ def demo():
         printCCGDerivation(parse)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

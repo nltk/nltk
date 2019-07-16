@@ -28,11 +28,11 @@ class AlignedCorpusReader(CorpusReader):
         self,
         root,
         fileids,
-        sep='/',
+        sep="/",
         word_tokenizer=WhitespaceTokenizer(),
-        sent_tokenizer=RegexpTokenizer('\n', gaps=True),
+        sent_tokenizer=RegexpTokenizer("\n", gaps=True),
         alignedsent_block_reader=read_alignedsent_block,
-        encoding='latin1',
+        encoding="latin1",
     ):
         """
         Construct a new Aligned Corpus reader for a set of documents

@@ -37,16 +37,13 @@ Conference.  [http://www.cis.upenn.edu/~adwait/papers/hlt94.ps]
 The PP Attachment Corpus is distributed with NLTK with the permission
 of the author.
 """
-from __future__ import unicode_literals
 
 from six import string_types
 
-from nltk import compat
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 
-@compat.python_2_unicode_compatible
 class PPAttachment(object):
     def __init__(self, sent, verb, noun1, prep, noun2, attachment):
         self.sent = sent
@@ -58,8 +55,8 @@ class PPAttachment(object):
 
     def __repr__(self):
         return (
-            'PPAttachment(sent=%r, verb=%r, noun1=%r, prep=%r, '
-            'noun2=%r, attachment=%r)'
+            "PPAttachment(sent=%r, verb=%r, noun1=%r, prep=%r, "
+            "noun2=%r, attachment=%r)"
             % (self.sent, self.verb, self.noun1, self.prep, self.noun2, self.attachment)
         )
 

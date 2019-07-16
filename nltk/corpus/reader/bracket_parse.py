@@ -18,10 +18,10 @@ from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
-SORTTAGWRD = re.compile(r'\((\d+) ([^\s()]+) ([^\s()]+)\)')
-TAGWORD = re.compile(r'\(([^\s()]+) ([^\s()]+)\)')
-WORD = re.compile(r'\([^\s()]+ ([^\s()]+)\)')
-EMPTY_BRACKETS = re.compile(r'\s*\(\s*\(')
+SORTTAGWRD = re.compile(r"\((\d+) ([^\s()]+) ([^\s()]+)\)")
+TAGWORD = re.compile(r"\(([^\s()]+) ([^\s()]+)\)")
+WORD = re.compile(r"\([^\s()]+ ([^\s()]+)\)")
+EMPTY_BRACKETS = re.compile(r"\s*\(\s*\(")
 
 
 class BracketParseCorpusReader(SyntaxCorpusReader):
@@ -37,8 +37,8 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         root,
         fileids,
         comment_char=None,
-        detect_blocks='unindented_paren',
-        encoding='utf8',
+        detect_blocks="unindented_paren",
+        encoding="utf8",
         tagset=None,
     ):
         """
@@ -62,22 +62,22 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         self._tagset = tagset
 
     def _read_block(self, stream):
-        if self._detect_blocks == 'sexpr':
+        if self._detect_blocks == "sexpr":
             return read_sexpr_block(stream, comment_char=self._comment_char)
-        elif self._detect_blocks == 'blankline':
+        elif self._detect_blocks == "blankline":
             return read_blankline_block(stream)
-        elif self._detect_blocks == 'unindented_paren':
+        elif self._detect_blocks == "unindented_paren":
             # Tokens start with unindented left parens.
-            toks = read_regexp_block(stream, start_re=r'^\(')
+            toks = read_regexp_block(stream, start_re=r"^\(")
             # Strip any comments out of the tokens.
             if self._comment_char:
                 toks = [
-                    re.sub('(?m)^%s.*' % re.escape(self._comment_char), '', tok)
+                    re.sub("(?m)^%s.*" % re.escape(self._comment_char), "", tok)
                     for tok in toks
                 ]
             return toks
         else:
-            assert 0, 'bad block type'
+            assert 0, "bad block type"
 
     def _normalize(self, t):
         # If there's an empty set of brackets surrounding the actual
@@ -97,10 +97,10 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         except ValueError as e:
             sys.stderr.write("Bad tree detected; trying to recover...\n")
             # Try to recover, if we can:
-            if e.args == ('mismatched parens',):
+            if e.args == ("mismatched parens",):
                 for n in range(1, 5):
                     try:
-                        v = Tree(self._normalize(t + ')' * n))
+                        v = Tree(self._normalize(t + ")" * n))
                         sys.stderr.write(
                             "  Recovered by adding %d close " "paren(s)\n" % n
                         )
@@ -110,7 +110,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             # Try something else:
             sys.stderr.write("  Recovered by returning a flat parse.\n")
             # sys.stderr.write(' '.join(t.split())+'\n')
-            return Tree('S', self._tag(t))
+            return Tree("S", self._tag(t))
 
     def _tag(self, t, tagset=None):
         tagged_sent = [(w, p) for (p, w) in TAGWORD.findall(self._normalize(t))]
@@ -147,7 +147,7 @@ class CategorizedBracketParseCorpusReader(
 
     def _resolve(self, fileids, categories):
         if fileids is not None and categories is not None:
-            raise ValueError('Specify fileids or categories, not both')
+            raise ValueError("Specify fileids or categories, not both")
         if categories is not None:
             return self.fileids(categories)
         else:
@@ -207,12 +207,12 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     untouched.
     """
 
-    def __init__(self, root, encoding='ISO-8859-1', tagset=None):
+    def __init__(self, root, encoding="ISO-8859-1", tagset=None):
         BracketParseCorpusReader.__init__(
             self,
             root,
-            'alpino\.xml',
-            detect_blocks='blankline',
+            "alpino\.xml",
+            detect_blocks="blankline",
             encoding=encoding,
             tagset=tagset,
         )

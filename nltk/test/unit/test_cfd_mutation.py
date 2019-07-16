@@ -16,7 +16,7 @@ class TestEmptyCondFreq(unittest.TestCase):
         empty = ConditionalFreqDist()
         self.assertEqual(empty.conditions(),[])
         try:
-            empty.plot(conditions="BUG") # nonexistent keys shouldn't be added
+            empty.plot(conditions=["BUG"]) # nonexistent keys shouldn't be added
         except:
             pass
         self.assertEqual(empty.conditions(),[])

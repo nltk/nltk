@@ -7,7 +7,7 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """ RIBES score implementation """
-from __future__ import division
+
 from itertools import islice
 import math
 

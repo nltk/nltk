@@ -6,14 +6,11 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 """Language Models"""
-from __future__ import division, unicode_literals
 
-from nltk import compat
 from nltk.lm.api import LanguageModel, Smoothing
 from nltk.lm.smoothing import KneserNey, WittenBell
 
 
-@compat.python_2_unicode_compatible
 class MLE(LanguageModel):
     """Class for providing MLE ngram model scores.
 
@@ -30,7 +27,6 @@ class MLE(LanguageModel):
         return self.context_counts(context).freq(word)
 
 
-@compat.python_2_unicode_compatible
 class Lidstone(LanguageModel):
     """Provides Lidstone-smoothed scores.
 
@@ -54,7 +50,6 @@ class Lidstone(LanguageModel):
         return (word_count + self.gamma) / (norm_count + len(self.vocab) * self.gamma)
 
 
-@compat.python_2_unicode_compatible
 class Laplace(Lidstone):
     """Implements Laplace (add one) smoothing.
 

@@ -36,7 +36,7 @@ class DrtGlueDemo(object):
     def __init__(self, examples):
         # Set up the main window.
         self._top = Tk()
-        self._top.title('DRT Glue Demo')
+        self._top.title("DRT Glue Demo")
 
         # Set up key bindings.
         self._init_bindings()
@@ -68,7 +68,7 @@ class DrtGlueDemo(object):
         self._init_canvas(self._top)
 
         # Resize callback
-        self._canvas.bind('<Configure>', self._configure)
+        self._canvas.bind("<Configure>", self._configure)
 
     #########################################
     ##  Initialization Helpers
@@ -77,17 +77,17 @@ class DrtGlueDemo(object):
     def _init_glue(self):
         tagger = RegexpTagger(
             [
-                ('^(David|Mary|John)$', 'NNP'),
+                ("^(David|Mary|John)$", "NNP"),
                 (
-                    '^(walks|sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$',
-                    'VB',
+                    "^(walks|sees|eats|chases|believes|gives|sleeps|chases|persuades|tries|seems|leaves)$",
+                    "VB",
                 ),
-                ('^(go|order|vanish|find|approach)$', 'VB'),
-                ('^(a)$', 'ex_quant'),
-                ('^(every)$', 'univ_quant'),
-                ('^(sandwich|man|dog|pizza|unicorn|cat|senator)$', 'NN'),
-                ('^(big|gray|former)$', 'JJ'),
-                ('^(him|himself)$', 'PRP'),
+                ("^(go|order|vanish|find|approach)$", "VB"),
+                ("^(a)$", "ex_quant"),
+                ("^(every)$", "univ_quant"),
+                ("^(sandwich|man|dog|pizza|unicorn|cat|senator)$", "NN"),
+                ("^(big|gray|former)$", "JJ"),
+                ("^(him|himself)$", "PRP"),
             ]
         )
 
@@ -101,134 +101,134 @@ class DrtGlueDemo(object):
 
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(root)
-        self._size.set(self._sysfont.cget('size'))
+        self._size.set(self._sysfont.cget("size"))
 
-        self._boldfont = Font(family='helvetica', weight='bold', size=self._size.get())
-        self._font = Font(family='helvetica', size=self._size.get())
+        self._boldfont = Font(family="helvetica", weight="bold", size=self._size.get())
+        self._font = Font(family="helvetica", size=self._size.get())
         if self._size.get() < 0:
             big = self._size.get() - 2
         else:
             big = self._size.get() + 2
-        self._bigfont = Font(family='helvetica', weight='bold', size=big)
+        self._bigfont = Font(family="helvetica", weight="bold", size=big)
 
     def _init_exampleListbox(self, parent):
         self._exampleFrame = listframe = Frame(parent)
-        self._exampleFrame.pack(fill='both', side='left', padx=2)
+        self._exampleFrame.pack(fill="both", side="left", padx=2)
         self._exampleList_label = Label(
-            self._exampleFrame, font=self._boldfont, text='Examples'
+            self._exampleFrame, font=self._boldfont, text="Examples"
         )
         self._exampleList_label.pack()
         self._exampleList = Listbox(
             self._exampleFrame,
-            selectmode='single',
-            relief='groove',
-            background='white',
-            foreground='#909090',
+            selectmode="single",
+            relief="groove",
+            background="white",
+            foreground="#909090",
             font=self._font,
-            selectforeground='#004040',
-            selectbackground='#c0f0c0',
+            selectforeground="#004040",
+            selectbackground="#c0f0c0",
         )
 
-        self._exampleList.pack(side='right', fill='both', expand=1)
+        self._exampleList.pack(side="right", fill="both", expand=1)
 
         for example in self._examples:
-            self._exampleList.insert('end', ('  %s' % example))
+            self._exampleList.insert("end", ("  %s" % example))
         self._exampleList.config(height=min(len(self._examples), 25), width=40)
 
         # Add a scrollbar if there are more than 25 examples.
         if len(self._examples) > 25:
-            listscroll = Scrollbar(self._exampleFrame, orient='vertical')
+            listscroll = Scrollbar(self._exampleFrame, orient="vertical")
             self._exampleList.config(yscrollcommand=listscroll.set)
             listscroll.config(command=self._exampleList.yview)
-            listscroll.pack(side='left', fill='y')
+            listscroll.pack(side="left", fill="y")
 
         # If they select a example, apply it.
-        self._exampleList.bind('<<ListboxSelect>>', self._exampleList_select)
+        self._exampleList.bind("<<ListboxSelect>>", self._exampleList_select)
 
     def _init_readingListbox(self, parent):
         self._readingFrame = listframe = Frame(parent)
-        self._readingFrame.pack(fill='both', side='left', padx=2)
+        self._readingFrame.pack(fill="both", side="left", padx=2)
         self._readingList_label = Label(
-            self._readingFrame, font=self._boldfont, text='Readings'
+            self._readingFrame, font=self._boldfont, text="Readings"
         )
         self._readingList_label.pack()
         self._readingList = Listbox(
             self._readingFrame,
-            selectmode='single',
-            relief='groove',
-            background='white',
-            foreground='#909090',
+            selectmode="single",
+            relief="groove",
+            background="white",
+            foreground="#909090",
             font=self._font,
-            selectforeground='#004040',
-            selectbackground='#c0f0c0',
+            selectforeground="#004040",
+            selectbackground="#c0f0c0",
         )
 
-        self._readingList.pack(side='right', fill='both', expand=1)
+        self._readingList.pack(side="right", fill="both", expand=1)
 
         # Add a scrollbar if there are more than 25 examples.
-        listscroll = Scrollbar(self._readingFrame, orient='vertical')
+        listscroll = Scrollbar(self._readingFrame, orient="vertical")
         self._readingList.config(yscrollcommand=listscroll.set)
         listscroll.config(command=self._readingList.yview)
-        listscroll.pack(side='right', fill='y')
+        listscroll.pack(side="right", fill="y")
 
         self._populate_readingListbox()
 
     def _populate_readingListbox(self):
         # Populate the listbox with integers
-        self._readingList.delete(0, 'end')
+        self._readingList.delete(0, "end")
         for i in range(len(self._readings)):
-            self._readingList.insert('end', ('  %s' % (i + 1)))
+            self._readingList.insert("end", ("  %s" % (i + 1)))
         self._readingList.config(height=min(len(self._readings), 25), width=5)
 
         # If they select a example, apply it.
-        self._readingList.bind('<<ListboxSelect>>', self._readingList_select)
+        self._readingList.bind("<<ListboxSelect>>", self._readingList_select)
 
     def _init_bindings(self):
         # Key bindings are a good thing.
-        self._top.bind('<Control-q>', self.destroy)
-        self._top.bind('<Control-x>', self.destroy)
-        self._top.bind('<Escape>', self.destroy)
-        self._top.bind('n', self.next)
-        self._top.bind('<space>', self.next)
-        self._top.bind('p', self.prev)
-        self._top.bind('<BackSpace>', self.prev)
+        self._top.bind("<Control-q>", self.destroy)
+        self._top.bind("<Control-x>", self.destroy)
+        self._top.bind("<Escape>", self.destroy)
+        self._top.bind("n", self.next)
+        self._top.bind("<space>", self.next)
+        self._top.bind("p", self.prev)
+        self._top.bind("<BackSpace>", self.prev)
 
     def _init_buttons(self, parent):
         # Set up the frames.
         self._buttonframe = buttonframe = Frame(parent)
-        buttonframe.pack(fill='none', side='bottom', padx=3, pady=2)
+        buttonframe.pack(fill="none", side="bottom", padx=3, pady=2)
         Button(
             buttonframe,
-            text='Prev',
-            background='#90c0d0',
-            foreground='black',
+            text="Prev",
+            background="#90c0d0",
+            foreground="black",
             command=self.prev,
-        ).pack(side='left')
+        ).pack(side="left")
         Button(
             buttonframe,
-            text='Next',
-            background='#90c0d0',
-            foreground='black',
+            text="Next",
+            background="#90c0d0",
+            foreground="black",
             command=self.next,
-        ).pack(side='left')
+        ).pack(side="left")
 
     def _configure(self, event):
         self._autostep = 0
         (x1, y1, x2, y2) = self._cframe.scrollregion()
         y2 = event.height - 6
-        self._canvas['scrollregion'] = '%d %d %d %d' % (x1, y1, x2, y2)
+        self._canvas["scrollregion"] = "%d %d %d %d" % (x1, y1, x2, y2)
         self._redraw()
 
     def _init_canvas(self, parent):
         self._cframe = CanvasFrame(
             parent,
-            background='white',
+            background="white",
             # width=525, height=250,
             closeenough=10,
             border=2,
-            relief='sunken',
+            relief="sunken",
         )
-        self._cframe.pack(expand=1, fill='both', side='top', pady=2)
+        self._cframe.pack(expand=1, fill="both", side="top", pady=2)
         canvas = self._canvas = self._cframe.canvas()
 
         # Initially, there's no tree or text
@@ -241,70 +241,70 @@ class DrtGlueDemo(object):
 
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(
-            label='Exit', underline=1, command=self.destroy, accelerator='q'
+            label="Exit", underline=1, command=self.destroy, accelerator="q"
         )
-        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+        menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
         actionmenu = Menu(menubar, tearoff=0)
         actionmenu.add_command(
-            label='Next', underline=0, command=self.next, accelerator='n, Space'
+            label="Next", underline=0, command=self.next, accelerator="n, Space"
         )
         actionmenu.add_command(
-            label='Previous', underline=0, command=self.prev, accelerator='p, Backspace'
+            label="Previous", underline=0, command=self.prev, accelerator="p, Backspace"
         )
-        menubar.add_cascade(label='Action', underline=0, menu=actionmenu)
+        menubar.add_cascade(label="Action", underline=0, menu=actionmenu)
 
         optionmenu = Menu(menubar, tearoff=0)
         optionmenu.add_checkbutton(
-            label='Remove Duplicates',
+            label="Remove Duplicates",
             underline=0,
             variable=self._glue.remove_duplicates,
             command=self._toggle_remove_duplicates,
-            accelerator='r',
+            accelerator="r",
         )
-        menubar.add_cascade(label='Options', underline=0, menu=optionmenu)
+        menubar.add_cascade(label="Options", underline=0, menu=optionmenu)
 
         viewmenu = Menu(menubar, tearoff=0)
         viewmenu.add_radiobutton(
-            label='Tiny',
+            label="Tiny",
             variable=self._size,
             underline=0,
             value=10,
             command=self.resize,
         )
         viewmenu.add_radiobutton(
-            label='Small',
+            label="Small",
             variable=self._size,
             underline=0,
             value=12,
             command=self.resize,
         )
         viewmenu.add_radiobutton(
-            label='Medium',
+            label="Medium",
             variable=self._size,
             underline=0,
             value=14,
             command=self.resize,
         )
         viewmenu.add_radiobutton(
-            label='Large',
+            label="Large",
             variable=self._size,
             underline=0,
             value=18,
             command=self.resize,
         )
         viewmenu.add_radiobutton(
-            label='Huge',
+            label="Huge",
             variable=self._size,
             underline=0,
             value=24,
             command=self.resize,
         )
-        menubar.add_cascade(label='View', underline=0, menu=viewmenu)
+        menubar.add_cascade(label="View", underline=0, menu=viewmenu)
 
         helpmenu = Menu(menubar, tearoff=0)
-        helpmenu.add_command(label='About', underline=0, command=self.about)
-        menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
+        helpmenu.add_command(label="About", underline=0, command=self.about)
+        menubar.add_cascade(label="Help", underline=0, menu=helpmenu)
 
         parent.config(menu=menubar)
 
@@ -405,7 +405,7 @@ class DrtGlueDemo(object):
             "NLTK Discourse Representation Theory (DRT) Glue Semantics Demo\n"
             + "Written by Daniel H. Garrette"
         )
-        TITLE = 'About: NLTK DRT Glue Demo'
+        TITLE = "About: NLTK DRT Glue Demo"
         try:
             from six.moves.tkinter_messagebox import Message
 
@@ -441,7 +441,7 @@ class DrtGlueDemo(object):
     def _toggle_remove_duplicates(self):
         self._glue.remove_duplicates = not self._glue.remove_duplicates
 
-        self._exampleList.selection_clear(0, 'end')
+        self._exampleList.selection_clear(0, "end")
         self._readings = []
         self._populate_readingListbox()
         self._readingCache = [None for ex in self._examples]
@@ -461,7 +461,7 @@ class DrtGlueDemo(object):
         self._curExample = index
         example = self._examples[index]
 
-        self._exampleList.selection_clear(0, 'end')
+        self._exampleList.selection_clear(0, "end")
         if example:
             cache = self._readingCache[index]
             if cache:
@@ -478,12 +478,12 @@ class DrtGlueDemo(object):
                     self._readingCache[index] = self._readings
                 except Exception as e:
                     self._readings = []
-                    self._error = DrtVariableExpression(Variable('Error: ' + str(e)))
+                    self._error = DrtVariableExpression(Variable("Error: " + str(e)))
                     self._readingCache[index] = self._error
 
                     # add a star to the end of the example
                     self._exampleList.delete(index)
-                    self._exampleList.insert(index, ('  %s *' % example))
+                    self._exampleList.insert(index, ("  %s *" % example))
                     self._exampleList.config(
                         height=min(len(self._examples), 25), width=40
                     )
@@ -504,7 +504,7 @@ class DrtGlueDemo(object):
     def _readingList_store_selection(self, index):
         reading = self._readings[index]
 
-        self._readingList.selection_clear(0, 'end')
+        self._readingList.selection_clear(0, "end")
         if reading:
             self._readingList.selection_set(index)
 
@@ -518,7 +518,7 @@ class DrsWidget(object):
         self._drs = drs
         self._canvas = canvas
         canvas.font = Font(
-            font=canvas.itemcget(canvas.create_text(0, 0, text=''), 'font')
+            font=canvas.itemcget(canvas.create_text(0, 0, text=""), "font")
         )
         canvas._BUFFER = 3
         self.bbox = (0, 0, 0, 0)
@@ -533,13 +533,13 @@ class DrsWidget(object):
 
 def demo():
     examples = [
-        'John walks',
-        'David sees Mary',
-        'David eats a sandwich',
-        'every man chases a dog',
+        "John walks",
+        "David sees Mary",
+        "David eats a sandwich",
+        "every man chases a dog",
         #                'every man believes a dog yawns',
         #                'John gives David a sandwich',
-        'John chases himself',
+        "John chases himself",
         #                'John persuades David to order a pizza',
         #                'John tries to go',
         #                'John tries to find a unicorn',
@@ -557,5 +557,5 @@ def demo():
     DrtGlueDemo(examples).mainloop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

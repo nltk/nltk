@@ -40,11 +40,11 @@ class MTEFileReader:
     """
 
     ns = {
-        'tei': 'http://www.tei-c.org/ns/1.0',
-        'xml': 'http://www.w3.org/XML/1998/namespace',
+        "tei": "http://www.tei-c.org/ns/1.0",
+        "xml": "http://www.w3.org/XML/1998/namespace",
     }
-    tag_ns = '{http://www.tei-c.org/ns/1.0}'
-    xml_ns = '{http://www.w3.org/XML/1998/namespace}'
+    tag_ns = "{http://www.tei-c.org/ns/1.0}"
+    xml_ns = "{http://www.w3.org/XML/1998/namespace}"
     word_path = "TEI/text/body/div/div/p/s/(w|c)"
     sent_path = "TEI/text/body/div/div/p/s"
     para_path = "TEI/text/body/div/div/p"
@@ -58,30 +58,30 @@ class MTEFileReader:
 
     @classmethod
     def _sent_elt(cls, elt, context):
-        return [cls._word_elt(w, None) for w in xpath(elt, '*', cls.ns)]
+        return [cls._word_elt(w, None) for w in xpath(elt, "*", cls.ns)]
 
     @classmethod
     def _para_elt(cls, elt, context):
-        return [cls._sent_elt(s, None) for s in xpath(elt, '*', cls.ns)]
+        return [cls._sent_elt(s, None) for s in xpath(elt, "*", cls.ns)]
 
     @classmethod
     def _tagged_word_elt(cls, elt, context):
-        if 'ana' not in elt.attrib:
-            return (elt.text, '')
+        if "ana" not in elt.attrib:
+            return (elt.text, "")
 
         if cls.__tags == "" and cls.__tagset == "msd":
-            return (elt.text, elt.attrib['ana'])
+            return (elt.text, elt.attrib["ana"])
         elif cls.__tags == "" and cls.__tagset == "universal":
-            return (elt.text, MTETagConverter.msd_to_universal(elt.attrib['ana']))
+            return (elt.text, MTETagConverter.msd_to_universal(elt.attrib["ana"]))
         else:
-            tags = re.compile('^' + re.sub("-", ".", cls.__tags) + '.*$')
-            if tags.match(elt.attrib['ana']):
+            tags = re.compile("^" + re.sub("-", ".", cls.__tags) + ".*$")
+            if tags.match(elt.attrib["ana"]):
                 if cls.__tagset == "msd":
-                    return (elt.text, elt.attrib['ana'])
+                    return (elt.text, elt.attrib["ana"])
                 else:
                     return (
                         elt.text,
-                        MTETagConverter.msd_to_universal(elt.attrib['ana']),
+                        MTETagConverter.msd_to_universal(elt.attrib["ana"]),
                     )
             else:
                 return None
@@ -91,7 +91,7 @@ class MTEFileReader:
         return list(
             filter(
                 lambda x: x is not None,
-                [cls._tagged_word_elt(w, None) for w in xpath(elt, '*', cls.ns)],
+                [cls._tagged_word_elt(w, None) for w in xpath(elt, "*", cls.ns)],
             )
         )
 
@@ -100,24 +100,24 @@ class MTEFileReader:
         return list(
             filter(
                 lambda x: x is not None,
-                [cls._tagged_sent_elt(s, None) for s in xpath(elt, '*', cls.ns)],
+                [cls._tagged_sent_elt(s, None) for s in xpath(elt, "*", cls.ns)],
             )
         )
 
     @classmethod
     def _lemma_word_elt(cls, elt, context):
-        if 'lemma' not in elt.attrib:
-            return (elt.text, '')
+        if "lemma" not in elt.attrib:
+            return (elt.text, "")
         else:
-            return (elt.text, elt.attrib['lemma'])
+            return (elt.text, elt.attrib["lemma"])
 
     @classmethod
     def _lemma_sent_elt(cls, elt, context):
-        return [cls._lemma_word_elt(w, None) for w in xpath(elt, '*', cls.ns)]
+        return [cls._lemma_word_elt(w, None) for w in xpath(elt, "*", cls.ns)]
 
     @classmethod
     def _lemma_para_elt(cls, elt, context):
-        return [cls._lemma_sent_elt(s, None) for s in xpath(elt, '*', cls.ns)]
+        return [cls._lemma_sent_elt(s, None) for s in xpath(elt, "*", cls.ns)]
 
     def words(self):
         return MTECorpusView(
@@ -178,18 +178,18 @@ class MTETagConverter:
     """
 
     mapping_msd_universal = {
-        'A': 'ADJ',
-        'S': 'ADP',
-        'R': 'ADV',
-        'C': 'CONJ',
-        'D': 'DET',
-        'N': 'NOUN',
-        'M': 'NUM',
-        'Q': 'PRT',
-        'P': 'PRON',
-        'V': 'VERB',
-        '.': '.',
-        '-': 'X',
+        "A": "ADJ",
+        "S": "ADP",
+        "R": "ADV",
+        "C": "CONJ",
+        "D": "DET",
+        "N": "NOUN",
+        "M": "NUM",
+        "Q": "PRT",
+        "P": "PRON",
+        "V": "VERB",
+        ".": ".",
+        "-": "X",
     }
 
     @staticmethod
@@ -203,7 +203,7 @@ class MTETagConverter:
         indicator = tag[0] if not tag[0] == "#" else tag[1]
 
         if not indicator in MTETagConverter.mapping_msd_universal:
-            indicator = '-'
+            indicator = "-"
 
         return MTETagConverter.mapping_msd_universal[indicator]
 
@@ -215,7 +215,7 @@ class MTECorpusReader(TaggedCorpusReader):
     scheme. These tags can be converted to the Universal tagset
     """
 
-    def __init__(self, root=None, fileids=None, encoding='utf8'):
+    def __init__(self, root=None, fileids=None, encoding="utf8"):
         """
         Construct a new MTECorpusreader for a set of documents
         located at the given root directory.  Example usage:

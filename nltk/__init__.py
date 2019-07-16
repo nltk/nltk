@@ -15,7 +15,6 @@ Steven Bird, Ewan Klein, and Edward Loper (2009).
 Natural Language Processing with Python.  O'Reilly Media Inc.
 http://nltk.org/book
 """
-from __future__ import print_function, absolute_import
 
 import os
 
@@ -27,16 +26,16 @@ import os
 # in the file VERSION.
 try:
     # If a VERSION file exists, use it!
-    version_file = os.path.join(os.path.dirname(__file__), 'VERSION')
-    with open(version_file, 'r') as infile:
+    version_file = os.path.join(os.path.dirname(__file__), "VERSION")
+    with open(version_file, "r") as infile:
         __version__ = infile.read().strip()
 except NameError:
-    __version__ = 'unknown (running code interactively?)'
+    __version__ = "unknown (running code interactively?)"
 except IOError as ex:
     __version__ = "unknown (%s)" % ex
 
 if __doc__ is not None:  # fix for the ``python -OO``
-    __doc__ += '\n@version: ' + __version__
+    __doc__ += "\n@version: " + __version__
 
 
 # Copyright notice
@@ -53,18 +52,18 @@ __longdescr__ = """\
 The Natural Language Toolkit (NLTK) is a Python package for
 natural language processing.  NLTK requires Python 2.6 or higher."""
 __keywords__ = [
-    'NLP',
-    'CL',
-    'natural language processing',
-    'computational linguistics',
-    'parsing',
-    'tagging',
-    'tokenizing',
-    'syntax',
-    'linguistics',
-    'language',
-    'natural language',
-    'text analytics',
+    "NLP",
+    "CL",
+    "natural language processing",
+    "computational linguistics",
+    "parsing",
+    "tagging",
+    "tokenizing",
+    "syntax",
+    "linguistics",
+    "language",
+    "natural language",
+    "text analytics",
 ]
 __url__ = "http://nltk.org/"
 
@@ -76,24 +75,24 @@ __author_email__ = __maintainer_email__
 
 # "Trove" classifiers for Python Package Index.
 __classifiers__ = [
-    'Development Status :: 5 - Production/Stable',
-    'Intended Audience :: Developers',
-    'Intended Audience :: Education',
-    'Intended Audience :: Information Technology',
-    'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: Apache Software License',
-    'Operating System :: OS Independent',
-    'Programming Language :: Python :: 2.6',
-    'Programming Language :: Python :: 2.7',
-    'Topic :: Scientific/Engineering',
-    'Topic :: Scientific/Engineering :: Artificial Intelligence',
-    'Topic :: Scientific/Engineering :: Human Machine Interfaces',
-    'Topic :: Scientific/Engineering :: Information Analysis',
-    'Topic :: Text Processing',
-    'Topic :: Text Processing :: Filters',
-    'Topic :: Text Processing :: General',
-    'Topic :: Text Processing :: Indexing',
-    'Topic :: Text Processing :: Linguistic',
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 2.6",
+    "Programming Language :: Python :: 2.7",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: Filters",
+    "Topic :: Text Processing :: General",
+    "Topic :: Text Processing :: Indexing",
+    "Topic :: Text Processing :: Linguistic",
 ]
 
 from nltk.internals import config_java
@@ -107,16 +106,16 @@ except ImportError:
 # Override missing methods on environments where it cannot be used like GAE.
 import subprocess
 
-if not hasattr(subprocess, 'PIPE'):
+if not hasattr(subprocess, "PIPE"):
 
     def _fake_PIPE(*args, **kwargs):
-        raise NotImplementedError('subprocess.PIPE is not supported.')
+        raise NotImplementedError("subprocess.PIPE is not supported.")
 
     subprocess.PIPE = _fake_PIPE
-if not hasattr(subprocess, 'Popen'):
+if not hasattr(subprocess, "Popen"):
 
     def _fake_Popen(*args, **kwargs):
-        raise NotImplementedError('subprocess.Popen is not supported.')
+        raise NotImplementedError("subprocess.Popen is not supported.")
 
     subprocess.Popen = _fake_Popen
 
@@ -158,11 +157,11 @@ from nltk.stem import *
 
 from nltk import lazyimport
 
-app = lazyimport.LazyModule('nltk.app', locals(), globals())
-chat = lazyimport.LazyModule('nltk.chat', locals(), globals())
-corpus = lazyimport.LazyModule('nltk.corpus', locals(), globals())
-draw = lazyimport.LazyModule('nltk.draw', locals(), globals())
-toolbox = lazyimport.LazyModule('nltk.toolbox', locals(), globals())
+app = lazyimport.LazyModule("nltk.app", locals(), globals())
+chat = lazyimport.LazyModule("nltk.chat", locals(), globals())
+corpus = lazyimport.LazyModule("nltk.corpus", locals(), globals())
+draw = lazyimport.LazyModule("nltk.draw", locals(), globals())
+toolbox = lazyimport.LazyModule("nltk.toolbox", locals(), globals())
 
 # Optional loading
 

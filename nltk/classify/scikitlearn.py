@@ -30,13 +30,11 @@ best 1000 features:
 ...                      ('nb', MultinomialNB())])
 >>> classif = SklearnClassifier(pipeline)
 """
-from __future__ import print_function, unicode_literals
 
 from six.moves import zip
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
-from nltk import compat
 
 try:
     from sklearn.feature_extraction import DictVectorizer
@@ -44,10 +42,9 @@ try:
 except ImportError:
     pass
 
-__all__ = ['SklearnClassifier']
+__all__ = ["SklearnClassifier"]
 
 
-@compat.python_2_unicode_compatible
 class SklearnClassifier(ClassifierI):
     """Wrapper for scikit-learn classifiers."""
 

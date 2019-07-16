@@ -7,13 +7,9 @@
 # For license information, see LICENSE.TXT
 """Language Model Vocabulary"""
 
-from __future__ import unicode_literals
-
 import sys
 from collections import Counter, Iterable
 from itertools import chain
-
-from nltk import compat
 
 try:
     # Python >= 3.4
@@ -54,7 +50,6 @@ def _string_lookup(word, vocab):
     return word if word in vocab else vocab.unk_label
 
 
-@compat.python_2_unicode_compatible
 class Vocabulary(object):
     """Stores language model vocabulary.
 

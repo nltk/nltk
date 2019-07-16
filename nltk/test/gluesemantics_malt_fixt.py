@@ -7,6 +7,6 @@ def setup_module(module):
     from nltk.parse.malt import MaltParser
 
     try:
-        depparser = MaltParser('maltparser-1.7.2')
+        depparser = MaltParser("maltparser-1.7.2")
     except LookupError:
         raise SkipTest("MaltParser is not available")

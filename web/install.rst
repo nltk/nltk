@@ -1,7 +1,7 @@
 Installing NLTK
 ===============
 
-NLTK requires Python versions 2.7, 3.5, 3.6, or 3.7
+NLTK requires Python versions 3.5, 3.6, or 3.7
 
 For Windows users, it is strongly recommended that you go through this guide to install Python 3 successfully https://docs.python-guide.org/starting/install3/win/#install3-windows
 

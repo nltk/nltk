@@ -76,14 +76,14 @@ class SExprTokenizer(TokenizerI):
     :param strict: If true, then raise an exception when tokenizing an ill-formed sexpr.
     """
 
-    def __init__(self, parens='()', strict=True):
+    def __init__(self, parens="()", strict=True):
         if len(parens) != 2:
-            raise ValueError('parens must contain exactly two strings')
+            raise ValueError("parens must contain exactly two strings")
         self._strict = strict
         self._open_paren = parens[0]
         self._close_paren = parens[1]
         self._paren_regexp = re.compile(
-            '%s|%s' % (re.escape(parens[0]), re.escape(parens[1]))
+            "%s|%s" % (re.escape(parens[0]), re.escape(parens[1]))
         )
 
     def tokenize(self, text):
@@ -125,13 +125,13 @@ class SExprTokenizer(TokenizerI):
                 depth += 1
             if paren == self._close_paren:
                 if self._strict and depth == 0:
-                    raise ValueError('Un-matched close paren at char %d' % m.start())
+                    raise ValueError("Un-matched close paren at char %d" % m.start())
                 depth = max(0, depth - 1)
                 if depth == 0:
                     result.append(text[pos : m.end()])
                     pos = m.end()
         if self._strict and depth > 0:
-            raise ValueError('Un-matched open paren at char %d' % pos)
+            raise ValueError("Un-matched open paren at char %d" % pos)
         if pos < len(text):
             result.append(text[pos:])
         return result

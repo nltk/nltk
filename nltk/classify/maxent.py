@@ -51,8 +51,6 @@ For all values of ``feat_val`` and ``some_label``.  This mapping is
 performed by classes that implement the ``MaxentFeatureEncodingI``
 interface.
 """
-from __future__ import print_function, unicode_literals
-
 try:
     import numpy
 except ImportError:
@@ -64,7 +62,6 @@ from collections import defaultdict
 
 from six import integer_types
 
-from nltk import compat
 from nltk.data import gzip_open_unicode
 from nltk.util import OrderedDict
 from nltk.probability import DictionaryProbDist
@@ -74,14 +71,13 @@ from nltk.classify.util import CutoffChecker, accuracy, log_likelihood
 from nltk.classify.megam import call_megam, write_megam_file, parse_megam_weights
 from nltk.classify.tadm import call_tadm, write_tadm_file, parse_tadm_weights
 
-__docformat__ = 'epytext en'
+__docformat__ = "epytext en"
 
 ######################################################################
 # { Classifier Model
 ######################################################################
 
 
-@compat.python_2_unicode_compatible
 class MaxentClassifier(ClassifierI):
     """
     A maximum entropy classifier (also known as a "conditional
@@ -173,16 +169,16 @@ class MaxentClassifier(ClassifierI):
         probabilities of each label for that featureset.
         """
         descr_width = 50
-        TEMPLATE = '  %-' + str(descr_width - 2) + 's%s%8.3f'
+        TEMPLATE = "  %-" + str(descr_width - 2) + "s%s%8.3f"
 
         pdist = self.prob_classify(featureset)
         labels = sorted(pdist.samples(), key=pdist.prob, reverse=True)
         labels = labels[:columns]
         print(
-            '  Feature'.ljust(descr_width)
-            + ''.join('%8s' % (("%s" % l)[:7]) for l in labels)
+            "  Feature".ljust(descr_width)
+            + "".join("%8s" % (("%s" % l)[:7]) for l in labels)
         )
-        print('  ' + '-' * (descr_width - 2 + 8 * len(labels)))
+        print("  " + "-" * (descr_width - 2 + 8 * len(labels)))
         sums = defaultdict(int)
         for i, label in enumerate(labels):
             feature_vector = self._encoding.encode(featureset, label)
@@ -195,26 +191,26 @@ class MaxentClassifier(ClassifierI):
                 else:
                     score = self._weights[f_id] ** f_val
                 descr = self._encoding.describe(f_id)
-                descr = descr.split(' and label is ')[0]  # hack
-                descr += ' (%s)' % f_val  # hack
+                descr = descr.split(" and label is ")[0]  # hack
+                descr += " (%s)" % f_val  # hack
                 if len(descr) > 47:
-                    descr = descr[:44] + '...'
-                print(TEMPLATE % (descr, i * 8 * ' ', score))
+                    descr = descr[:44] + "..."
+                print(TEMPLATE % (descr, i * 8 * " ", score))
                 sums[label] += score
-        print('  ' + '-' * (descr_width - 1 + 8 * len(labels)))
+        print("  " + "-" * (descr_width - 1 + 8 * len(labels)))
         print(
-            '  TOTAL:'.ljust(descr_width) + ''.join('%8.3f' % sums[l] for l in labels)
+            "  TOTAL:".ljust(descr_width) + "".join("%8.3f" % sums[l] for l in labels)
         )
         print(
-            '  PROBS:'.ljust(descr_width)
-            + ''.join('%8.3f' % pdist.prob(l) for l in labels)
+            "  PROBS:".ljust(descr_width)
+            + "".join("%8.3f" % pdist.prob(l) for l in labels)
         )
 
     def most_informative_features(self, n=10):
         """
         Generates the ranked list of informative features from most to least.
         """
-        if hasattr(self, '_most_informative_features'):
+        if hasattr(self, "_most_informative_features"):
             return self._most_informative_features[:n]
         else:
             self._most_informative_features = sorted(
@@ -224,7 +220,7 @@ class MaxentClassifier(ClassifierI):
             )
             return self._most_informative_features[:n]
 
-    def show_most_informative_features(self, n=10, show='all'):
+    def show_most_informative_features(self, n=10, show="all"):
         """
         :param show: all, neg, or pos (for negative-only or positive-only)
         :type show: str
@@ -233,22 +229,22 @@ class MaxentClassifier(ClassifierI):
         """
         # Use None the full list of ranked features.
         fids = self.most_informative_features(None)
-        if show == 'pos':
+        if show == "pos":
             fids = [fid for fid in fids if self._weights[fid] > 0]
-        elif show == 'neg':
+        elif show == "neg":
             fids = [fid for fid in fids if self._weights[fid] < 0]
         for fid in fids[:n]:
-            print('%8.3f %s' % (self._weights[fid], self._encoding.describe(fid)))
+            print("%8.3f %s" % (self._weights[fid], self._encoding.describe(fid)))
 
     def __repr__(self):
-        return '<ConditionalExponentialClassifier: %d labels, %d features>' % (
+        return "<ConditionalExponentialClassifier: %d labels, %d features>" % (
             len(self._encoding.labels()),
             self._encoding.length(),
         )
 
     #: A list of the algorithm names that are accepted for the
     #: ``train()`` method's ``algorithm`` parameter.
-    ALGORITHMS = ['GIS', 'IIS', 'MEGAM', 'TADM']
+    ALGORITHMS = ["GIS", "IIS", "MEGAM", "TADM"]
 
     @classmethod
     def train(
@@ -313,42 +309,42 @@ class MaxentClassifier(ClassifierI):
               log likelihood by less than ``v``.
         """
         if algorithm is None:
-            algorithm = 'iis'
+            algorithm = "iis"
         for key in cutoffs:
             if key not in (
-                'max_iter',
-                'min_ll',
-                'min_lldelta',
-                'max_acc',
-                'min_accdelta',
-                'count_cutoff',
-                'norm',
-                'explicit',
-                'bernoulli',
+                "max_iter",
+                "min_ll",
+                "min_lldelta",
+                "max_acc",
+                "min_accdelta",
+                "count_cutoff",
+                "norm",
+                "explicit",
+                "bernoulli",
             ):
-                raise TypeError('Unexpected keyword arg %r' % key)
+                raise TypeError("Unexpected keyword arg %r" % key)
         algorithm = algorithm.lower()
-        if algorithm == 'iis':
+        if algorithm == "iis":
             return train_maxent_classifier_with_iis(
                 train_toks, trace, encoding, labels, **cutoffs
             )
-        elif algorithm == 'gis':
+        elif algorithm == "gis":
             return train_maxent_classifier_with_gis(
                 train_toks, trace, encoding, labels, **cutoffs
             )
-        elif algorithm == 'megam':
+        elif algorithm == "megam":
             return train_maxent_classifier_with_megam(
                 train_toks, trace, encoding, labels, gaussian_prior_sigma, **cutoffs
             )
-        elif algorithm == 'tadm':
+        elif algorithm == "tadm":
             kwargs = cutoffs
-            kwargs['trace'] = trace
-            kwargs['encoding'] = encoding
-            kwargs['labels'] = labels
-            kwargs['gaussian_prior_sigma'] = gaussian_prior_sigma
+            kwargs["trace"] = trace
+            kwargs["encoding"] = encoding
+            kwargs["labels"] = labels
+            kwargs["gaussian_prior_sigma"] = gaussian_prior_sigma
             return TadmMaxentClassifier.train(train_toks, **kwargs)
         else:
-            raise ValueError('Unknown algorithm %s' % algorithm)
+            raise ValueError("Unknown algorithm %s" % algorithm)
 
 
 #: Alias for MaxentClassifier.
@@ -477,7 +473,7 @@ class FunctionBackedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         return self._labels
 
     def describe(self, fid):
-        return 'no description available'
+        return "no description available"
 
 
 class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
@@ -540,8 +536,8 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """
         if set(mapping.values()) != set(range(len(mapping))):
             raise ValueError(
-                'Mapping values must be exactly the '
-                'set of integers from 0...len(mapping)'
+                "Mapping values must be exactly the "
+                "set of integers from 0...len(mapping)"
             )
 
         self._labels = list(labels)
@@ -602,7 +598,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
     def describe(self, f_id):
         # Inherit docs.
         if not isinstance(f_id, integer_types):
-            raise TypeError('describe() expected an int')
+            raise TypeError("describe() expected an int")
         try:
             self._inv_mapping
         except AttributeError:
@@ -612,17 +608,17 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         if f_id < len(self._mapping):
             (fname, fval, label) = self._inv_mapping[f_id]
-            return '%s==%r and label is %r' % (fname, fval, label)
+            return "%s==%r and label is %r" % (fname, fval, label)
         elif self._alwayson and f_id in self._alwayson.values():
             for (label, f_id2) in self._alwayson.items():
                 if f_id == f_id2:
-                    return 'label is %r' % label
+                    return "label is %r" % label
         elif self._unseen and f_id in self._unseen.values():
             for (fname, f_id2) in self._unseen.items():
                 if f_id == f_id2:
-                    return '%s is unseen' % fname
+                    return "%s is unseen" % fname
         else:
-            raise ValueError('Bad feature id')
+            raise ValueError("Bad feature id")
 
     def labels(self):
         # Inherit docs.
@@ -666,7 +662,7 @@ class BinaryMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         for (tok, label) in train_toks:
             if labels and label not in labels:
-                raise ValueError('Unexpected label %s' % label)
+                raise ValueError("Unexpected label %s" % label)
             seen_labels.add(label)
 
             # Record each of the features.
@@ -730,7 +726,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
         # Add a correction feature.
         total = sum(v for (f, v) in encoding)
         if total >= self._C:
-            raise ValueError('Correction feature is not high enough!')
+            raise ValueError("Correction feature is not high enough!")
         encoding.append((base_length, self._C - total))
 
         # Return the result
@@ -741,7 +737,7 @@ class GISEncoding(BinaryMaxentFeatureEncoding):
 
     def describe(self, f_id):
         if f_id == BinaryMaxentFeatureEncoding.length(self):
-            return 'Correction feature (%s)' % self._C
+            return "Correction feature (%s)" % self._C
         else:
             return BinaryMaxentFeatureEncoding.describe(self, f_id)
 
@@ -878,8 +874,8 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
         """
         if set(mapping.values()) != set(range(len(mapping))):
             raise ValueError(
-                'Mapping values must be exactly the '
-                'set of integers from 0...len(mapping)'
+                "Mapping values must be exactly the "
+                "set of integers from 0...len(mapping)"
             )
 
         self._labels = list(labels)
@@ -945,7 +941,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
     def describe(self, f_id):
         # Inherit docs.
         if not isinstance(f_id, integer_types):
-            raise TypeError('describe() expected an int')
+            raise TypeError("describe() expected an int")
         try:
             self._inv_mapping
         except AttributeError:
@@ -955,17 +951,17 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         if f_id < len(self._mapping):
             (fname, fval, label) = self._inv_mapping[f_id]
-            return '%s==%r and label is %r' % (fname, fval, label)
+            return "%s==%r and label is %r" % (fname, fval, label)
         elif self._alwayson and f_id in self._alwayson.values():
             for (label, f_id2) in self._alwayson.items():
                 if f_id == f_id2:
-                    return 'label is %r' % label
+                    return "label is %r" % label
         elif self._unseen and f_id in self._unseen.values():
             for (fname, f_id2) in self._unseen.items():
                 if f_id == f_id2:
-                    return '%s is unseen' % fname
+                    return "%s is unseen" % fname
         else:
-            raise ValueError('Bad feature id')
+            raise ValueError("Bad feature id")
 
     def labels(self):
         # Inherit docs.
@@ -1012,7 +1008,7 @@ class TypedMaxentFeatureEncoding(MaxentFeatureEncodingI):
 
         for (tok, label) in train_toks:
             if labels and label not in labels:
-                raise ValueError('Unexpected label %s' % label)
+                raise ValueError("Unexpected label %s" % label)
             seen_labels.add(label)
 
             # Record each of the features.
@@ -1049,17 +1045,17 @@ def train_maxent_classifier_with_gis(
 
     :see: ``train_maxent_classifier()`` for parameter descriptions.
     """
-    cutoffs.setdefault('max_iter', 100)
+    cutoffs.setdefault("max_iter", 100)
     cutoffchecker = CutoffChecker(cutoffs)
 
     # Construct an encoding from the training data.
     if encoding is None:
         encoding = GISEncoding.train(train_toks, labels=labels)
 
-    if not hasattr(encoding, 'C'):
+    if not hasattr(encoding, "C"):
         raise TypeError(
-            'The GIS algorithm requires an encoding that '
-            'defines C (e.g., GISEncoding).'
+            "The GIS algorithm requires an encoding that "
+            "defines C (e.g., GISEncoding)."
         )
 
     # Cinv is the inverse of the sum of each joint feature vector.
@@ -1075,7 +1071,7 @@ def train_maxent_classifier_with_gis(
 
     # Build the classifier.  Start with weight=0 for each attested
     # feature, and weight=-infinity for each unattested feature.
-    weights = numpy.zeros(len(empirical_fcount), 'd')
+    weights = numpy.zeros(len(empirical_fcount), "d")
     for fid in unattested:
         weights[fid] = numpy.NINF
     classifier = ConditionalExponentialClassifier(encoding, weights)
@@ -1085,11 +1081,11 @@ def train_maxent_classifier_with_gis(
     del empirical_fcount
 
     if trace > 0:
-        print('  ==> Training (%d iterations)' % cutoffs['max_iter'])
+        print("  ==> Training (%d iterations)" % cutoffs["max_iter"])
     if trace > 2:
         print()
-        print('      Iteration    Log Likelihood    Accuracy')
-        print('      ---------------------------------------')
+        print("      Iteration    Log Likelihood    Accuracy")
+        print("      ---------------------------------------")
 
     # Train the classifier.
     try:
@@ -1098,7 +1094,7 @@ def train_maxent_classifier_with_gis(
                 ll = cutoffchecker.ll or log_likelihood(classifier, train_toks)
                 acc = cutoffchecker.acc or accuracy(classifier, train_toks)
                 iternum = cutoffchecker.iter
-                print('     %9d    %14.5f    %9.3f' % (iternum, ll, acc))
+                print("     %9d    %14.5f    %9.3f" % (iternum, ll, acc))
 
             # Use the model to estimate the number of times each
             # feature should occur in the training data.
@@ -1122,21 +1118,21 @@ def train_maxent_classifier_with_gis(
                 break
 
     except KeyboardInterrupt:
-        print('      Training stopped: keyboard interrupt')
+        print("      Training stopped: keyboard interrupt")
     except:
         raise
 
     if trace > 2:
         ll = log_likelihood(classifier, train_toks)
         acc = accuracy(classifier, train_toks)
-        print('         Final    %14.5f    %9.3f' % (ll, acc))
+        print("         Final    %14.5f    %9.3f" % (ll, acc))
 
     # Return the classifier.
     return classifier
 
 
 def calculate_empirical_fcount(train_toks, encoding):
-    fcount = numpy.zeros(encoding.length(), 'd')
+    fcount = numpy.zeros(encoding.length(), "d")
 
     for tok, label in train_toks:
         for (index, val) in encoding.encode(tok, label):
@@ -1146,7 +1142,7 @@ def calculate_empirical_fcount(train_toks, encoding):
 
 
 def calculate_estimated_fcount(classifier, train_toks, encoding):
-    fcount = numpy.zeros(encoding.length(), 'd')
+    fcount = numpy.zeros(encoding.length(), "d")
 
     for tok, label in train_toks:
         pdist = classifier.prob_classify(tok)
@@ -1175,7 +1171,7 @@ def train_maxent_classifier_with_iis(
 
     :see: ``train_maxent_classifier()`` for parameter descriptions.
     """
-    cutoffs.setdefault('max_iter', 100)
+    cutoffs.setdefault("max_iter", 100)
     cutoffchecker = CutoffChecker(cutoffs)
 
     # Construct an encoding from the training data.
@@ -1191,7 +1187,7 @@ def train_maxent_classifier_with_iis(
     # nfarray performs the reverse operation.  nfident is
     # nfarray multiplied by an identity matrix.
     nfmap = calculate_nfmap(train_toks, encoding)
-    nfarray = numpy.array(sorted(nfmap, key=nfmap.__getitem__), 'd')
+    nfarray = numpy.array(sorted(nfmap, key=nfmap.__getitem__), "d")
     nftranspose = numpy.reshape(nfarray, (len(nfarray), 1))
 
     # Check for any features that are not attested in train_toks.
@@ -1199,17 +1195,17 @@ def train_maxent_classifier_with_iis(
 
     # Build the classifier.  Start with weight=0 for each attested
     # feature, and weight=-infinity for each unattested feature.
-    weights = numpy.zeros(len(empirical_ffreq), 'd')
+    weights = numpy.zeros(len(empirical_ffreq), "d")
     for fid in unattested:
         weights[fid] = numpy.NINF
     classifier = ConditionalExponentialClassifier(encoding, weights)
 
     if trace > 0:
-        print('  ==> Training (%d iterations)' % cutoffs['max_iter'])
+        print("  ==> Training (%d iterations)" % cutoffs["max_iter"])
     if trace > 2:
         print()
-        print('      Iteration    Log Likelihood    Accuracy')
-        print('      ---------------------------------------')
+        print("      Iteration    Log Likelihood    Accuracy")
+        print("      ---------------------------------------")
 
     # Train the classifier.
     try:
@@ -1218,7 +1214,7 @@ def train_maxent_classifier_with_iis(
                 ll = cutoffchecker.ll or log_likelihood(classifier, train_toks)
                 acc = cutoffchecker.acc or accuracy(classifier, train_toks)
                 iternum = cutoffchecker.iter
-                print('     %9d    %14.5f    %9.3f' % (iternum, ll, acc))
+                print("     %9d    %14.5f    %9.3f" % (iternum, ll, acc))
 
             # Calculate the deltas for this iteration, using Newton's method.
             deltas = calculate_deltas(
@@ -1242,14 +1238,14 @@ def train_maxent_classifier_with_iis(
                 break
 
     except KeyboardInterrupt:
-        print('      Training stopped: keyboard interrupt')
+        print("      Training stopped: keyboard interrupt")
     except:
         raise
 
     if trace > 2:
         ll = log_likelihood(classifier, train_toks)
         acc = accuracy(classifier, train_toks)
-        print('         Final    %14.5f    %9.3f' % (ll, acc))
+        print("         Final    %14.5f    %9.3f" % (ll, acc))
 
     # Return the classifier.
     return classifier
@@ -1359,12 +1355,12 @@ def calculate_deltas(
     NEWTON_CONVERGE = 1e-12
     MAX_NEWTON = 300
 
-    deltas = numpy.ones(encoding.length(), 'd')
+    deltas = numpy.ones(encoding.length(), "d")
 
     # Precompute the A matrix:
     # A[nf][id] = sum ( p(fs) * p(label|fs) * f(fs,label) )
     # over all label,fs s.t. num_features[label,fs]=nf
-    A = numpy.zeros((len(nfmap), encoding.length()), 'd')
+    A = numpy.zeros((len(nfmap), encoding.length()), "d")
 
     for tok, label in train_toks:
         dist = classifier.prob_classify(tok)
@@ -1433,40 +1429,40 @@ def train_maxent_classifier_with_megam(
 
     explicit = True
     bernoulli = True
-    if 'explicit' in kwargs:
-        explicit = kwargs['explicit']
-    if 'bernoulli' in kwargs:
-        bernoulli = kwargs['bernoulli']
+    if "explicit" in kwargs:
+        explicit = kwargs["explicit"]
+    if "bernoulli" in kwargs:
+        bernoulli = kwargs["bernoulli"]
 
     # Construct an encoding from the training data.
     if encoding is None:
         # Count cutoff can also be controlled by megam with the -minfc
         # option. Not sure where the best place for it is.
-        count_cutoff = kwargs.get('count_cutoff', 0)
+        count_cutoff = kwargs.get("count_cutoff", 0)
         encoding = BinaryMaxentFeatureEncoding.train(
             train_toks, count_cutoff, labels=labels, alwayson_features=True
         )
     elif labels is not None:
-        raise ValueError('Specify encoding or labels, not both')
+        raise ValueError("Specify encoding or labels, not both")
 
     # Write a training file for megam.
     try:
-        fd, trainfile_name = tempfile.mkstemp(prefix='nltk-')
-        with open(trainfile_name, 'w') as trainfile:
+        fd, trainfile_name = tempfile.mkstemp(prefix="nltk-")
+        with open(trainfile_name, "w") as trainfile:
             write_megam_file(
                 train_toks, encoding, trainfile, explicit=explicit, bernoulli=bernoulli
             )
         os.close(fd)
     except (OSError, IOError, ValueError) as e:
-        raise ValueError('Error while creating megam training file: %s' % e)
+        raise ValueError("Error while creating megam training file: %s" % e)
 
     # Run megam on the training file.
     options = []
-    options += ['-nobias', '-repeat', '10']
+    options += ["-nobias", "-repeat", "10"]
     if explicit:
-        options += ['-explicit']
+        options += ["-explicit"]
     if not bernoulli:
-        options += ['-fvals']
+        options += ["-fvals"]
     if gaussian_prior_sigma:
         # Lambda is just the precision of the Gaussian prior, i.e. it's the
         # inverse variance, so the parameter conversion is 1.0/sigma**2.
@@ -1474,25 +1470,25 @@ def train_maxent_classifier_with_megam(
         inv_variance = 1.0 / gaussian_prior_sigma ** 2
     else:
         inv_variance = 0
-    options += ['-lambda', '%.2f' % inv_variance, '-tune']
+    options += ["-lambda", "%.2f" % inv_variance, "-tune"]
     if trace < 3:
-        options += ['-quiet']
-    if 'max_iter' in kwargs:
-        options += ['-maxi', '%s' % kwargs['max_iter']]
-    if 'll_delta' in kwargs:
+        options += ["-quiet"]
+    if "max_iter" in kwargs:
+        options += ["-maxi", "%s" % kwargs["max_iter"]]
+    if "ll_delta" in kwargs:
         # [xx] this is actually a perplexity delta, not a log
         # likelihood delta
-        options += ['-dpp', '%s' % abs(kwargs['ll_delta'])]
-    if hasattr(encoding, 'cost'):
-        options += ['-multilabel']  # each possible la
-    options += ['multiclass', trainfile_name]
+        options += ["-dpp", "%s" % abs(kwargs["ll_delta"])]
+    if hasattr(encoding, "cost"):
+        options += ["-multilabel"]  # each possible la
+    options += ["multiclass", trainfile_name]
     stdout = call_megam(options)
     # print './megam_i686.opt ', ' '.join(options)
     # Delete the training file
     try:
         os.remove(trainfile_name)
     except (OSError, IOError) as e:
-        print('Warning: unable to delete %s: %s' % (trainfile_name, e))
+        print("Warning: unable to delete %s: %s" % (trainfile_name, e))
 
     # Parse the generated weight vector.
     weights = parse_megam_weights(stdout, encoding.length(), explicit)
@@ -1512,14 +1508,14 @@ def train_maxent_classifier_with_megam(
 class TadmMaxentClassifier(MaxentClassifier):
     @classmethod
     def train(cls, train_toks, **kwargs):
-        algorithm = kwargs.get('algorithm', 'tao_lmvm')
-        trace = kwargs.get('trace', 3)
-        encoding = kwargs.get('encoding', None)
-        labels = kwargs.get('labels', None)
-        sigma = kwargs.get('gaussian_prior_sigma', 0)
-        count_cutoff = kwargs.get('count_cutoff', 0)
-        max_iter = kwargs.get('max_iter')
-        ll_delta = kwargs.get('min_lldelta')
+        algorithm = kwargs.get("algorithm", "tao_lmvm")
+        trace = kwargs.get("trace", 3)
+        encoding = kwargs.get("encoding", None)
+        labels = kwargs.get("labels", None)
+        sigma = kwargs.get("gaussian_prior_sigma", 0)
+        count_cutoff = kwargs.get("count_cutoff", 0)
+        max_iter = kwargs.get("max_iter")
+        ll_delta = kwargs.get("min_lldelta")
 
         # Construct an encoding from the training data.
         if not encoding:
@@ -1528,33 +1524,33 @@ class TadmMaxentClassifier(MaxentClassifier):
             )
 
         trainfile_fd, trainfile_name = tempfile.mkstemp(
-            prefix='nltk-tadm-events-', suffix='.gz'
+            prefix="nltk-tadm-events-", suffix=".gz"
         )
-        weightfile_fd, weightfile_name = tempfile.mkstemp(prefix='nltk-tadm-weights-')
+        weightfile_fd, weightfile_name = tempfile.mkstemp(prefix="nltk-tadm-weights-")
 
-        trainfile = gzip_open_unicode(trainfile_name, 'w')
+        trainfile = gzip_open_unicode(trainfile_name, "w")
         write_tadm_file(train_toks, encoding, trainfile)
         trainfile.close()
 
         options = []
-        options.extend(['-monitor'])
-        options.extend(['-method', algorithm])
+        options.extend(["-monitor"])
+        options.extend(["-method", algorithm])
         if sigma:
-            options.extend(['-l2', '%.6f' % sigma ** 2])
+            options.extend(["-l2", "%.6f" % sigma ** 2])
         if max_iter:
-            options.extend(['-max_it', '%d' % max_iter])
+            options.extend(["-max_it", "%d" % max_iter])
         if ll_delta:
-            options.extend(['-fatol', '%.6f' % abs(ll_delta)])
-        options.extend(['-events_in', trainfile_name])
-        options.extend(['-params_out', weightfile_name])
+            options.extend(["-fatol", "%.6f" % abs(ll_delta)])
+        options.extend(["-events_in", trainfile_name])
+        options.extend(["-params_out", weightfile_name])
         if trace < 3:
-            options.extend(['2>&1'])
+            options.extend(["2>&1"])
         else:
-            options.extend(['-summary'])
+            options.extend(["-summary"])
 
         call_tadm(options)
 
-        with open(weightfile_name, 'r') as weightfile:
+        with open(weightfile_name, "r") as weightfile:
             weights = parse_tadm_weights(weightfile)
 
         os.remove(trainfile_name)
@@ -1576,5 +1572,5 @@ def demo():
     classifier = names_demo(MaxentClassifier.train)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

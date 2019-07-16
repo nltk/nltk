@@ -10,16 +10,12 @@ Language Model Counter
 ----------------------
 """
 
-from __future__ import unicode_literals
-
 from collections import Sequence, defaultdict
 
 from six import string_types
-from nltk import compat
 from nltk.probability import ConditionalFreqDist, FreqDist
 
 
-@compat.python_2_unicode_compatible
 class NgramCounter(object):
     """Class for counting ngrams.
 

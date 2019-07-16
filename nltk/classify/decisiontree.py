@@ -10,16 +10,13 @@ A classifier model that decides which label to assign to a token on
 the basis of a tree structure, where branches correspond to conditions
 on feature values, and leaves correspond to label assignments.
 """
-from __future__ import print_function, unicode_literals, division
 
 from collections import defaultdict
 
 from nltk.probability import FreqDist, MLEProbDist, entropy
 from nltk.classify.api import ClassifierI
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class DecisionTreeClassifier(ClassifierI):
     def __init__(self, label, feature_name=None, decisions=None, default=None):
         """
@@ -72,7 +69,7 @@ class DecisionTreeClassifier(ClassifierI):
                 errors += 1
         return errors / len(labeled_featuresets)
 
-    def pretty_format(self, width=70, prefix='', depth=4):
+    def pretty_format(self, width=70, prefix="", depth=4):
         """
         Return a string containing a pretty-printed version of this
         decision tree.  Each line in this string corresponds to a
@@ -82,22 +79,22 @@ class DecisionTreeClassifier(ClassifierI):
         # [xx] display default!!
         if self._fname is None:
             n = width - len(prefix) - 15
-            return '{0}{1} {2}\n'.format(prefix, '.' * n, self._label)
-        s = ''
+            return "{0}{1} {2}\n".format(prefix, "." * n, self._label)
+        s = ""
         for i, (fval, result) in enumerate(sorted(self._decisions.items())):
-            hdr = '{0}{1}={2}? '.format(prefix, self._fname, fval)
+            hdr = "{0}{1}={2}? ".format(prefix, self._fname, fval)
             n = width - 15 - len(hdr)
-            s += '{0}{1} {2}\n'.format(hdr, '.' * (n), result._label)
+            s += "{0}{1} {2}\n".format(hdr, "." * (n), result._label)
             if result._fname is not None and depth > 1:
-                s += result.pretty_format(width, prefix + '  ', depth - 1)
+                s += result.pretty_format(width, prefix + "  ", depth - 1)
         if self._default is not None:
             n = width - len(prefix) - 21
-            s += '{0}else: {1} {2}\n'.format(prefix, '.' * n, self._default._label)
+            s += "{0}else: {1} {2}\n".format(prefix, "." * n, self._default._label)
             if self._default._fname is not None and depth > 1:
-                s += self._default.pretty_format(width, prefix + '  ', depth - 1)
+                s += self._default.pretty_format(width, prefix + "  ", depth - 1)
         return s
 
-    def pseudocode(self, prefix='', depth=4):
+    def pseudocode(self, prefix="", depth=4):
         """
         Return a string representation of this decision tree that
         expresses the decisions it makes as a nested set of pseudocode
@@ -105,24 +102,24 @@ class DecisionTreeClassifier(ClassifierI):
         """
         if self._fname is None:
             return "{0}return {1!r}\n".format(prefix, self._label)
-        s = ''
+        s = ""
         for (fval, result) in sorted(self._decisions.items()):
-            s += '{0}if {1} == {2!r}: '.format(prefix, self._fname, fval)
+            s += "{0}if {1} == {2!r}: ".format(prefix, self._fname, fval)
             if result._fname is not None and depth > 1:
-                s += '\n' + result.pseudocode(prefix + '  ', depth - 1)
+                s += "\n" + result.pseudocode(prefix + "  ", depth - 1)
             else:
-                s += 'return {0!r}\n'.format(result._label)
+                s += "return {0!r}\n".format(result._label)
         if self._default is not None:
             if len(self._decisions) == 1:
-                s += '{0}if {1} != {2!r}: '.format(
+                s += "{0}if {1} != {2!r}: ".format(
                     prefix, self._fname, list(self._decisions.keys())[0]
                 )
             else:
-                s += '{0}else: '.format(prefix)
+                s += "{0}else: ".format(prefix)
             if self._default._fname is not None and depth > 1:
-                s += '\n' + self._default.pseudocode(prefix + '  ', depth - 1)
+                s += "\n" + self._default.pseudocode(prefix + "  ", depth - 1)
             else:
-                s += 'return {0!r}\n'.format(self._default._label)
+                s += "return {0!r}\n".format(self._default._label)
         return s
 
     def __str__(self):
@@ -265,7 +262,7 @@ class DecisionTreeClassifier(ClassifierI):
         if verbose:
             print(
                 (
-                    'best stump for {:6d} toks uses {:20} err={:6.4f}'.format(
+                    "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
                         len(labeled_featuresets), best_stump._fname, best_error
                     )
                 )
@@ -312,14 +309,14 @@ class DecisionTreeClassifier(ClassifierI):
                     best_stump = stump
         if verbose:
             if best_stump._decisions:
-                descr = '{0}={1}'.format(
+                descr = "{0}={1}".format(
                     best_stump._fname, list(best_stump._decisions.keys())[0]
                 )
             else:
-                descr = '(default)'
+                descr = "(default)"
             print(
                 (
-                    'best stump for {:6d} toks uses {:20} err={:6.4f}'.format(
+                    "best stump for {:6d} toks uses {:20} err={:6.4f}".format(
                         len(labeled_featuresets), descr, best_error
                     )
                 )
@@ -346,5 +343,5 @@ def demo():
     print(classifier.pseudocode(depth=7))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()
