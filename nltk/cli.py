@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Natural Language Toolkit: BLEU Score
+# Natural Language Toolkit: NLTK Command-Line Interface
 #
 # Copyright (C) 2001-2019 NLTK Project
 # URL: <http://nltk.org/>
