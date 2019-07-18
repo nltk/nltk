@@ -8,8 +8,6 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import print_function, unicode_literals
-
 import os
 import sys
 import tempfile
@@ -31,34 +29,34 @@ def malt_regex_tagger():
 
     _tagger = RegexpTagger(
         [
-            (r'\.$', '.'),
-            (r'\,$', ','),
-            (r'\?$', '?'),  # fullstop, comma, Qmark
-            (r'\($', '('),
-            (r'\)$', ')'),  # round brackets
-            (r'\[$', '['),
-            (r'\]$', ']'),  # square brackets
-            (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),  # cardinal numbers
-            (r'(The|the|A|a|An|an)$', 'DT'),  # articles
-            (r'(He|he|She|she|It|it|I|me|Me|You|you)$', 'PRP'),  # pronouns
-            (r'(His|his|Her|her|Its|its)$', 'PRP$'),  # possesive
-            (r'(my|Your|your|Yours|yours)$', 'PRP$'),  # possesive
-            (r'(on|On|in|In|at|At|since|Since)$', 'IN'),  # time prepopsitions
-            (r'(for|For|ago|Ago|before|Before)$', 'IN'),  # time prepopsitions
-            (r'(till|Till|until|Until)$', 'IN'),  # time prepopsitions
-            (r'(by|By|beside|Beside)$', 'IN'),  # space prepopsitions
-            (r'(under|Under|below|Below)$', 'IN'),  # space prepopsitions
-            (r'(over|Over|above|Above)$', 'IN'),  # space prepopsitions
-            (r'(across|Across|through|Through)$', 'IN'),  # space prepopsitions
-            (r'(into|Into|towards|Towards)$', 'IN'),  # space prepopsitions
-            (r'(onto|Onto|from|From)$', 'IN'),  # space prepopsitions
-            (r'.*able$', 'JJ'),  # adjectives
-            (r'.*ness$', 'NN'),  # nouns formed from adjectives
-            (r'.*ly$', 'RB'),  # adverbs
-            (r'.*s$', 'NNS'),  # plural nouns
-            (r'.*ing$', 'VBG'),  # gerunds
-            (r'.*ed$', 'VBD'),  # past tense verbs
-            (r'.*', 'NN'),  # nouns (default)
+            (r"\.$", "."),
+            (r"\,$", ","),
+            (r"\?$", "?"),  # fullstop, comma, Qmark
+            (r"\($", "("),
+            (r"\)$", ")"),  # round brackets
+            (r"\[$", "["),
+            (r"\]$", "]"),  # square brackets
+            (r"^-?[0-9]+(.[0-9]+)?$", "CD"),  # cardinal numbers
+            (r"(The|the|A|a|An|an)$", "DT"),  # articles
+            (r"(He|he|She|she|It|it|I|me|Me|You|you)$", "PRP"),  # pronouns
+            (r"(His|his|Her|her|Its|its)$", "PRP$"),  # possesive
+            (r"(my|Your|your|Yours|yours)$", "PRP$"),  # possesive
+            (r"(on|On|in|In|at|At|since|Since)$", "IN"),  # time prepopsitions
+            (r"(for|For|ago|Ago|before|Before)$", "IN"),  # time prepopsitions
+            (r"(till|Till|until|Until)$", "IN"),  # time prepopsitions
+            (r"(by|By|beside|Beside)$", "IN"),  # space prepopsitions
+            (r"(under|Under|below|Below)$", "IN"),  # space prepopsitions
+            (r"(over|Over|above|Above)$", "IN"),  # space prepopsitions
+            (r"(across|Across|through|Through)$", "IN"),  # space prepopsitions
+            (r"(into|Into|towards|Towards)$", "IN"),  # space prepopsitions
+            (r"(onto|Onto|from|From)$", "IN"),  # space prepopsitions
+            (r".*able$", "JJ"),  # adjectives
+            (r".*ness$", "NN"),  # nouns formed from adjectives
+            (r".*ly$", "RB"),  # adverbs
+            (r".*s$", "NNS"),  # plural nouns
+            (r".*ing$", "VBG"),  # gerunds
+            (r".*ed$", "VBD"),  # past tense verbs
+            (r".*", "NN"),  # nouns (default)
         ]
     )
     return _tagger.tag
@@ -71,16 +69,16 @@ def find_maltparser(parser_dirname):
     if os.path.exists(parser_dirname):  # If a full path is given.
         _malt_dir = parser_dirname
     else:  # Try to find path to maltparser directory in environment variables.
-        _malt_dir = find_dir(parser_dirname, env_vars=('MALT_PARSER',))
+        _malt_dir = find_dir(parser_dirname, env_vars=("MALT_PARSER",))
     # Checks that that the found directory contains all the necessary .jar
-    malt_dependencies = ['', '', '']
+    malt_dependencies = ["", "", ""]
     _malt_jars = set(find_jars_within_path(_malt_dir))
     _jars = set(os.path.split(jar)[1] for jar in _malt_jars)
-    malt_dependencies = set(['log4j.jar', 'libsvm.jar', 'liblinear-1.8.jar'])
+    malt_dependencies = set(["log4j.jar", "libsvm.jar", "liblinear-1.8.jar"])
 
     assert malt_dependencies.issubset(_jars)
     assert any(
-        filter(lambda i: i.startswith('maltparser-') and i.endswith('.jar'), _jars)
+        filter(lambda i: i.startswith("maltparser-") and i.endswith(".jar"), _jars)
     )
     return list(_malt_jars)
 
@@ -90,11 +88,11 @@ def find_malt_model(model_filename):
     A module to find pre-trained MaltParser model.
     """
     if model_filename is None:
-        return 'malt_temp.mco'
+        return "malt_temp.mco"
     elif os.path.exists(model_filename):  # If a full path is given.
         return model_filename
     else:  # Try to find path to malt model in environment variables.
-        return find_file(model_filename, env_vars=('MALT_MODEL',), verbose=False)
+        return find_file(model_filename, env_vars=("MALT_MODEL",), verbose=False)
 
 
 class MaltParser(ParserI):
@@ -153,13 +151,13 @@ class MaltParser(ParserI):
         )
         # Initialize model.
         self.model = find_malt_model(model_filename)
-        self._trained = self.model != 'malt_temp.mco'
+        self._trained = self.model != "malt_temp.mco"
         # Set the working_dir parameters i.e. `-w` from MaltParser's option.
         self.working_dir = tempfile.gettempdir()
         # Initialize POS tagger.
         self.tagger = tagger if tagger is not None else malt_regex_tagger()
 
-    def parse_tagged_sents(self, sentences, verbose=False, top_relation_label='null'):
+    def parse_tagged_sents(self, sentences, verbose=False, top_relation_label="null"):
         """
         Use MaltParser to parse multiple POS tagged sentences. Takes multiple
         sentences where each sentence is a list of (word, tag) tuples.
@@ -174,12 +172,12 @@ class MaltParser(ParserI):
             raise Exception("Parser has not been trained. Call train() first.")
 
         with tempfile.NamedTemporaryFile(
-            prefix='malt_input.conll.', dir=self.working_dir, mode='w', delete=False
+            prefix="malt_input.conll.", dir=self.working_dir, mode="w", delete=False
         ) as input_file:
             with tempfile.NamedTemporaryFile(
-                prefix='malt_output.conll.',
+                prefix="malt_output.conll.",
                 dir=self.working_dir,
-                mode='w',
+                mode="w",
                 delete=False,
             ) as output_file:
                 # Convert list of sentences to CONLL format.
@@ -206,12 +204,12 @@ class MaltParser(ParserI):
                 if ret is not 0:
                     raise Exception(
                         "MaltParser parsing (%s) failed with exit "
-                        "code %d" % (' '.join(cmd), ret)
+                        "code %d" % (" ".join(cmd), ret)
                     )
 
                 # Must return iter(iter(Tree))
                 with open(output_file.name) as infile:
-                    for tree_str in infile.read().split('\n\n'):
+                    for tree_str in infile.read().split("\n\n"):
                         yield (
                             iter(
                                 [
@@ -225,7 +223,7 @@ class MaltParser(ParserI):
         os.remove(input_file.name)
         os.remove(output_file.name)
 
-    def parse_sents(self, sentences, verbose=False, top_relation_label='null'):
+    def parse_sents(self, sentences, verbose=False, top_relation_label="null"):
         """
         Use MaltParser to parse multiple sentences.
         Takes a list of sentences, where each sentence is a list of words.
@@ -251,26 +249,26 @@ class MaltParser(ParserI):
         :type outputfilename: str
         """
 
-        cmd = ['java']
+        cmd = ["java"]
         cmd += self.additional_java_args  # Adds additional java arguments
         # Joins classpaths with ";" if on Windows and on Linux/Mac use ":"
-        classpaths_separator = ';' if sys.platform.startswith('win') else ':'
+        classpaths_separator = ";" if sys.platform.startswith("win") else ":"
         cmd += [
-            '-cp',
+            "-cp",
             classpaths_separator.join(self.malt_jars),
         ]  # Adds classpaths for jars
-        cmd += ['org.maltparser.Malt']  # Adds the main function.
+        cmd += ["org.maltparser.Malt"]  # Adds the main function.
 
         # Adds the model file.
         if os.path.exists(self.model):  # when parsing
-            cmd += ['-c', os.path.split(self.model)[-1]]
+            cmd += ["-c", os.path.split(self.model)[-1]]
         else:  # when learning
-            cmd += ['-c', self.model]
+            cmd += ["-c", self.model]
 
-        cmd += ['-i', inputfilename]
-        if mode == 'parse':
-            cmd += ['-o', outputfilename]
-        cmd += ['-m', mode]  # mode use to generate parses.
+        cmd += ["-i", inputfilename]
+        if mode == "parse":
+            cmd += ["-o", outputfilename]
+        cmd += ["-m", mode]  # mode use to generate parses.
         return cmd
 
     @staticmethod
@@ -289,9 +287,9 @@ class MaltParser(ParserI):
 
         # Write the conll_str to malt_train.conll file in /tmp/
         with tempfile.NamedTemporaryFile(
-            prefix='malt_train.conll.', dir=self.working_dir, mode='w', delete=False
+            prefix="malt_train.conll.", dir=self.working_dir, mode="w", delete=False
         ) as input_file:
-            input_str = '\n'.join(dg.to_conll(10) for dg in depgraphs)
+            input_str = "\n".join(dg.to_conll(10) for dg in depgraphs)
             input_file.write(text_type(input_str))
         # Trains the model with the malt_train.conll
         self.train_from_file(input_file.name, verbose=verbose)
@@ -309,7 +307,7 @@ class MaltParser(ParserI):
         # then we need to do some extra massaging
         if isinstance(conll_file, ZipFilePathPointer):
             with tempfile.NamedTemporaryFile(
-                prefix='malt_train.conll.', dir=self.working_dir, mode='w', delete=False
+                prefix="malt_train.conll.", dir=self.working_dir, mode="w", delete=False
             ) as input_file:
                 with conll_file.open() as conll_input_file:
                     conll_str = conll_input_file.read()
@@ -322,14 +320,14 @@ class MaltParser(ParserI):
         if ret != 0:
             raise Exception(
                 "MaltParser training (%s) failed with exit "
-                "code %d" % (' '.join(cmd), ret)
+                "code %d" % (" ".join(cmd), ret)
             )
         self._trained = True
 
 
 if __name__ == '__main__':
-    '''
-    A demostration function to show how NLTK users can use the malt parser API.
+    """
+    A demonstration function to show how NLTK users can use the malt parser API.
 
     >>> from nltk import pos_tag
     >>> assert 'MALT_PARSER' in os.environ, str(
@@ -393,7 +391,7 @@ if __name__ == '__main__':
     (shot I (elephant an) (in (pajamas my)) .)
     >>> print(next(next(parsed_sents)).tree())
     (flies Time (like banana) .)
-    '''
-    import doctest
+    """
 
+    import doctest
     doctest.testmod()

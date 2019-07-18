@@ -59,8 +59,6 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
     consideration.
 """
 
-from __future__ import division
-
 import re
 
 from six import string_types
@@ -68,15 +66,14 @@ from six import string_types
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
-TITLE = re.compile(r'^\[t\](.*)$')  # [t] Title
+TITLE = re.compile(r"^\[t\](.*)$")  # [t] Title
 FEATURES = re.compile(
-    r'((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]'
+    r"((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]"
 )  # find 'feature' in feature[+3]
-NOTES = re.compile(r'\[(?!t)(p|u|s|cc|cs)\]')  # find 'p' in camera[+2][p]
-SENT = re.compile(r'##(.*)$')  # find tokenized sentence
+NOTES = re.compile(r"\[(?!t)(p|u|s|cc|cs)\]")  # find 'p' in camera[+2][p]
+SENT = re.compile(r"##(.*)$")  # find tokenized sentence
 
 
-@compat.python_2_unicode_compatible
 class Review(object):
     """
     A Review is the main block of a ReviewsCorpusReader.
@@ -125,12 +122,11 @@ class Review(object):
         return [review_line.sent for review_line in self.review_lines]
 
     def __repr__(self):
-        return 'Review(title=\"{}\", review_lines={})'.format(
+        return 'Review(title="{}", review_lines={})'.format(
             self.title, self.review_lines
         )
 
 
-@compat.python_2_unicode_compatible
 class ReviewLine(object):
     """
     A ReviewLine represents a sentence of the review, together with (optional)
@@ -150,7 +146,7 @@ class ReviewLine(object):
             self.notes = notes
 
     def __repr__(self):
-        return 'ReviewLine(features={}, notes={}, sent={})'.format(
+        return "ReviewLine(features={}, notes={}, sent={})".format(
             self.features, self.notes, self.sent
         )
 
@@ -192,7 +188,7 @@ class ReviewsCorpusReader(CorpusReader):
     CorpusView = StreamBackedCorpusView
 
     def __init__(
-        self, root, fileids, word_tokenizer=WordPunctTokenizer(), encoding='utf8'
+        self, root, fileids, word_tokenizer=WordPunctTokenizer(), encoding="utf8"
     ):
         """
         :param root: The root directory for the corpus.

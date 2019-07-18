@@ -9,9 +9,6 @@
 Tkinter widgets for displaying multi-column listboxes and tables.
 """
 
-from __future__ import division
-
-
 import operator
 
 from six.moves.tkinter import Frame, Label, Listbox, Scrollbar, Tk
@@ -38,15 +35,15 @@ class MultiListbox(Frame):
     # /////////////////////////////////////////////////////////////////
 
     #: Default configuration values for the frame.
-    FRAME_CONFIG = dict(background='#888', takefocus=True, highlightthickness=1)
+    FRAME_CONFIG = dict(background="#888", takefocus=True, highlightthickness=1)
 
     #: Default configurations for the column labels.
     LABEL_CONFIG = dict(
         borderwidth=1,
-        relief='raised',
-        font='helvetica -16 bold',
-        background='#444',
-        foreground='white',
+        relief="raised",
+        font="helvetica -16 bold",
+        background="#444",
+        foreground="white",
     )
 
     #: Default configuration for the column listboxes.
@@ -55,8 +52,8 @@ class MultiListbox(Frame):
         selectborderwidth=0,
         highlightthickness=0,
         exportselection=False,
-        selectbackground='#888',
-        activestyle='none',
+        selectbackground="#888",
+        activestyle="none",
         takefocus=False,
     )
 
@@ -103,7 +100,7 @@ class MultiListbox(Frame):
         if column_weights is None:
             column_weights = [1] * len(columns)
         elif len(column_weights) != len(columns):
-            raise ValueError('Expected one column_weight for each column')
+            raise ValueError("Expected one column_weight for each column")
         self._column_weights = column_weights
 
         # Configure our widgets.
@@ -116,40 +113,40 @@ class MultiListbox(Frame):
             if include_labels:
                 l = Label(self, text=label, **self.LABEL_CONFIG)
                 self._labels.append(l)
-                l.grid(column=i, row=0, sticky='news', padx=0, pady=0)
+                l.grid(column=i, row=0, sticky="news", padx=0, pady=0)
                 l.column_index = i
 
             # Create a listbox for the column
             lb = Listbox(self, **self.LISTBOX_CONFIG)
             self._listboxes.append(lb)
-            lb.grid(column=i, row=1, sticky='news', padx=0, pady=0)
+            lb.grid(column=i, row=1, sticky="news", padx=0, pady=0)
             lb.column_index = i
 
             # Clicking or dragging selects:
-            lb.bind('<Button-1>', self._select)
-            lb.bind('<B1-Motion>', self._select)
+            lb.bind("<Button-1>", self._select)
+            lb.bind("<B1-Motion>", self._select)
             # Scroll whell scrolls:
-            lb.bind('<Button-4>', lambda e: self._scroll(-1))
-            lb.bind('<Button-5>', lambda e: self._scroll(+1))
-            lb.bind('<MouseWheel>', lambda e: self._scroll(e.delta))
+            lb.bind("<Button-4>", lambda e: self._scroll(-1))
+            lb.bind("<Button-5>", lambda e: self._scroll(+1))
+            lb.bind("<MouseWheel>", lambda e: self._scroll(e.delta))
             # Button 2 can be used to scan:
-            lb.bind('<Button-2>', lambda e: self.scan_mark(e.x, e.y))
-            lb.bind('<B2-Motion>', lambda e: self.scan_dragto(e.x, e.y))
+            lb.bind("<Button-2>", lambda e: self.scan_mark(e.x, e.y))
+            lb.bind("<B2-Motion>", lambda e: self.scan_dragto(e.x, e.y))
             # Dragging outside the window has no effect (diable
             # the default listbox behavior, which scrolls):
-            lb.bind('<B1-Leave>', lambda e: 'break')
+            lb.bind("<B1-Leave>", lambda e: "break")
             # Columns can be resized by dragging them:
-            l.bind('<Button-1>', self._resize_column)
+            l.bind("<Button-1>", self._resize_column)
 
         # Columns can be resized by dragging them.  (This binding is
         # used if they click on the grid between columns:)
-        self.bind('<Button-1>', self._resize_column)
+        self.bind("<Button-1>", self._resize_column)
 
         # Set up key bindings for the widget:
-        self.bind('<Up>', lambda e: self.select(delta=-1))
-        self.bind('<Down>', lambda e: self.select(delta=1))
-        self.bind('<Prior>', lambda e: self.select(delta=-self._pagesize()))
-        self.bind('<Next>', lambda e: self.select(delta=self._pagesize()))
+        self.bind("<Up>", lambda e: self.select(delta=-1))
+        self.bind("<Down>", lambda e: self.select(delta=1))
+        self.bind("<Prior>", lambda e: self.select(delta=-self._pagesize()))
+        self.bind("<Next>", lambda e: self.select(delta=self._pagesize()))
 
         # Configuration customizations
         self.configure(cnf, **kw)
@@ -167,7 +164,7 @@ class MultiListbox(Frame):
         """
         # If we're already waiting for a button release, then ignore
         # the new button press.
-        if event.widget.bind('<ButtonRelease>'):
+        if event.widget.bind("<ButtonRelease>"):
             return False
 
         # Decide which column (if any) to resize.
@@ -183,9 +180,9 @@ class MultiListbox(Frame):
 
         # Bind callbacks that are used to resize it.
         if self._resize_column_index is not None:
-            event.widget.bind('<Motion>', self._resize_column_motion_cb)
+            event.widget.bind("<Motion>", self._resize_column_motion_cb)
             event.widget.bind(
-                '<ButtonRelease-%d>' % event.num, self._resize_column_buttonrelease_cb
+                "<ButtonRelease-%d>" % event.num, self._resize_column_buttonrelease_cb
             )
             return True
         else:
@@ -193,16 +190,16 @@ class MultiListbox(Frame):
 
     def _resize_column_motion_cb(self, event):
         lb = self._listboxes[self._resize_column_index]
-        charwidth = lb.winfo_width() / lb['width']
+        charwidth = lb.winfo_width() / lb["width"]
 
         x1 = event.x + event.widget.winfo_x()
         x2 = lb.winfo_x() + lb.winfo_width()
 
-        lb['width'] = max(3, lb['width'] + (x1 - x2) // charwidth)
+        lb["width"] = max(3, lb["width"] + (x1 - x2) // charwidth)
 
     def _resize_column_buttonrelease_cb(self, event):
-        event.widget.unbind('<ButtonRelease-%d>' % event.num)
-        event.widget.unbind('<Motion>')
+        event.widget.unbind("<ButtonRelease-%d>" % event.num)
+        event.widget.unbind("<Motion>")
 
     # /////////////////////////////////////////////////////////////////
     # Properties
@@ -246,19 +243,19 @@ class MultiListbox(Frame):
 
     def _select(self, e):
         i = e.widget.nearest(e.y)
-        self.selection_clear(0, 'end')
+        self.selection_clear(0, "end")
         self.selection_set(i)
         self.activate(i)
         self.focus()
 
     def _scroll(self, delta):
         for lb in self._listboxes:
-            lb.yview_scroll(delta, 'unit')
-        return 'break'
+            lb.yview_scroll(delta, "unit")
+        return "break"
 
     def _pagesize(self):
         """:return: The number of rows that makes up one page"""
-        return int(self.index('@0,1000000')) - int(self.index('@0,0'))
+        return int(self.index("@0,1000000")) - int(self.index("@0,0"))
 
     # /////////////////////////////////////////////////////////////////
     # Row selection
@@ -276,7 +273,7 @@ class MultiListbox(Frame):
             selected index, to ensure that it is visible.
         """
         if (index is not None) and (delta is not None):
-            raise ValueError('specify index or delta, but not both')
+            raise ValueError("specify index or delta, but not both")
 
         # If delta was given, then calculate index.
         if delta is not None:
@@ -286,7 +283,7 @@ class MultiListbox(Frame):
                 index = int(self.curselection()[0]) + delta
 
         # Clear all selected rows.
-        self.selection_clear(0, 'end')
+        self.selection_clear(0, "end")
 
         # Select the specified index
         if index is not None:
@@ -311,10 +308,10 @@ class MultiListbox(Frame):
         """
         cnf = dict(list(cnf.items()) + list(kw.items()))
         for (key, val) in list(cnf.items()):
-            if key.startswith('label_') or key.startswith('label-'):
+            if key.startswith("label_") or key.startswith("label-"):
                 for label in self._labels:
                     label.configure({key[6:]: val})
-            elif key.startswith('listbox_') or key.startswith('listbox-'):
+            elif key.startswith("listbox_") or key.startswith("listbox-"):
                 for listbox in self._listboxes:
                     listbox.configure({key[8:]: val})
             else:
@@ -347,12 +344,12 @@ class MultiListbox(Frame):
         cnf = dict(list(cnf.items()) + list(kw.items()))
         for (key, val) in list(cnf.items()):
             if key in (
-                'background',
-                'bg',
-                'foreground',
-                'fg',
-                'selectbackground',
-                'selectforeground',
+                "background",
+                "bg",
+                "foreground",
+                "fg",
+                "selectbackground",
+                "selectforeground",
             ):
                 for i in range(lb.size()):
                     lb.itemconfigure(i, {key: val})
@@ -383,8 +380,8 @@ class MultiListbox(Frame):
         for elt in rows:
             if len(elt) != len(self._column_names):
                 raise ValueError(
-                    'rows should be tuples whose length '
-                    'is equal to the number of columns'
+                    "rows should be tuples whose length "
+                    "is equal to the number of columns"
                 )
         for (lb, elts) in zip(self._listboxes, list(zip(*rows))):
             lb.insert(index, *elts)
@@ -438,10 +435,10 @@ class MultiListbox(Frame):
         weight = self._column_weights[col_index]
         if self._labels:
             self._labels[col_index].grid(
-                column=col_index, row=0, sticky='news', padx=0, pady=0
+                column=col_index, row=0, sticky="news", padx=0, pady=0
             )
         self._listboxes[col_index].grid(
-            column=col_index, row=1, sticky='news', padx=0, pady=0
+            column=col_index, row=1, sticky="news", padx=0, pady=0
         )
         self.grid_columnconfigure(col_index, weight=weight)
 
@@ -680,22 +677,22 @@ class Table(object):
 
         # Create our multi-list box.
         self._mlb = MultiListbox(self._frame, column_names, column_weights, cnf, **kw)
-        self._mlb.pack(side='left', expand=True, fill='both')
+        self._mlb.pack(side="left", expand=True, fill="both")
 
         # Optional scrollbar
         if scrollbar:
-            sb = Scrollbar(self._frame, orient='vertical', command=self._mlb.yview)
-            self._mlb.listboxes[0]['yscrollcommand'] = sb.set
+            sb = Scrollbar(self._frame, orient="vertical", command=self._mlb.yview)
+            self._mlb.listboxes[0]["yscrollcommand"] = sb.set
             # for listbox in self._mlb.listboxes:
             #    listbox['yscrollcommand'] = sb.set
-            sb.pack(side='right', fill='y')
+            sb.pack(side="right", fill="y")
             self._scrollbar = sb
 
         # Set up sorting
         self._sortkey = None
         if click_to_sort:
             for i, l in enumerate(self._mlb.column_labels):
-                l.bind('<Button-1>', self._sort)
+                l.bind("<Button-1>", self._sort)
 
         # Fill in our multi-list box.
         self._fill_table()
@@ -807,7 +804,7 @@ class Table(object):
         Delete all rows in this table.
         """
         self._rows = []
-        self._mlb.delete(0, 'end')
+        self._mlb.delete(0, "end")
         if self._DEBUG:
             self._check_table_vs_mlb()
 
@@ -821,7 +818,7 @@ class Table(object):
         ``i``th row and the ``j``th column.
         """
         if isinstance(index, slice):
-            raise ValueError('Slicing not supported')
+            raise ValueError("Slicing not supported")
         elif isinstance(index, tuple) and len(index) == 2:
             return self._rows[index[0]][self.column_index(index[1])]
         else:
@@ -842,7 +839,7 @@ class Table(object):
         ``val``.
         """
         if isinstance(index, slice):
-            raise ValueError('Slicing not supported')
+            raise ValueError("Slicing not supported")
 
         # table[i,j] = val
         elif isinstance(index, tuple) and len(index) == 2:
@@ -871,9 +868,9 @@ class Table(object):
         Delete the ``row_index``th row from this table.
         """
         if isinstance(row_index, slice):
-            raise ValueError('Slicing not supported')
+            raise ValueError("Slicing not supported")
         if isinstance(row_index, tuple) and len(row_index) == 2:
-            raise ValueError('Cannot delete a single cell!')
+            raise ValueError("Cannot delete a single cell!")
         del self._rows[row_index]
         self._mlb.delete(row_index)
         if self._DEBUG:
@@ -892,7 +889,7 @@ class Table(object):
         """
         if len(rowvalue) != self._num_columns:
             raise ValueError(
-                'Row %r has %d columns; expected %d'
+                "Row %r has %d columns; expected %d"
                 % (rowvalue, len(rowvalue), self._num_columns)
             )
 
@@ -950,7 +947,7 @@ class Table(object):
     # Sorting
     # /////////////////////////////////////////////////////////////////
 
-    def sort_by(self, column_index, order='toggle'):
+    def sort_by(self, column_index, order="toggle"):
         """
         Sort the rows in this table, using the specified column's
         values as a sort key.
@@ -969,7 +966,7 @@ class Table(object):
                 then reverse the rows; otherwise sort in ascending
                 order.
         """
-        if order not in ('ascending', 'descending', 'toggle'):
+        if order not in ("ascending", "descending", "toggle"):
             raise ValueError(
                 'sort_by(): order should be "ascending", ' '"descending", or "toggle".'
             )
@@ -977,11 +974,11 @@ class Table(object):
         config_cookie = self._save_config_info(index_by_id=True)
 
         # Sort the rows.
-        if order == 'toggle' and column_index == self._sortkey:
+        if order == "toggle" and column_index == self._sortkey:
             self._rows.reverse()
         else:
             self._rows.sort(
-                key=operator.itemgetter(column_index), reverse=(order == 'descending')
+                key=operator.itemgetter(column_index), reverse=(order == "descending")
             )
             self._sortkey = column_index
 
@@ -999,12 +996,12 @@ class Table(object):
         # If they click on the far-left of far-right of a column's
         # label, then resize rather than sorting.
         if self._mlb._resize_column(event):
-            return 'continue'
+            return "continue"
 
         # Otherwise, sort.
         else:
             self.sort_by(column_index)
-            return 'continue'
+            return "continue"
 
     # /////////////////////////////////////////////////////////////////
     # { Table Drawing Helpers
@@ -1019,20 +1016,20 @@ class Table(object):
         selection will also be lost -- i.e., no row will be selected
         after this call completes.
         """
-        self._mlb.delete(0, 'end')
+        self._mlb.delete(0, "end")
         for i, row in enumerate(self._rows):
             if self._reprfunc is not None:
                 row = [self._reprfunc(i, j, v) for (j, v) in enumerate(row)]
-            self._mlb.insert('end', row)
+            self._mlb.insert("end", row)
 
     def _get_itemconfig(self, r, c):
         return dict(
             (k, self._mlb.itemconfig(r, c, k)[-1])
             for k in (
-                'foreground',
-                'selectforeground',
-                'background',
-                'selectbackground',
+                "foreground",
+                "selectforeground",
+                "background",
+                "selectbackground",
             )
         )
 
@@ -1086,7 +1083,7 @@ class Table(object):
 
         # Clear the selection.
         if selection is None:
-            self._mlb.selection_clear(0, 'end')
+            self._mlb.selection_clear(0, "end")
 
         # Restore selection & color config
         if index_by_id:
@@ -1138,46 +1135,46 @@ class Table(object):
 # update this to use new WordNet API
 def demo():
     root = Tk()
-    root.bind('<Control-q>', lambda e: root.destroy())
+    root.bind("<Control-q>", lambda e: root.destroy())
 
     table = Table(
         root,
-        'Word Synset Hypernym Hyponym'.split(),
+        "Word Synset Hypernym Hyponym".split(),
         column_weights=[0, 1, 1, 1],
-        reprfunc=(lambda i, j, s: '  %s' % s),
+        reprfunc=(lambda i, j, s: "  %s" % s),
     )
-    table.pack(expand=True, fill='both')
+    table.pack(expand=True, fill="both")
 
     from nltk.corpus import wordnet
     from nltk.corpus import brown
 
     for word, pos in sorted(set(brown.tagged_words()[:500])):
-        if pos[0] != 'N':
+        if pos[0] != "N":
             continue
         word = word.lower()
         for synset in wordnet.synsets(word):
             try:
                 hyper_def = synset.hypernyms()[0].definition()
             except:
-                hyper_def = '*none*'
+                hyper_def = "*none*"
             try:
                 hypo_def = synset.hypernyms()[0].definition()
             except:
-                hypo_def = '*none*'
+                hypo_def = "*none*"
             table.append([word, synset.definition(), hyper_def, hypo_def])
 
-    table.columnconfig('Word', background='#afa')
-    table.columnconfig('Synset', background='#efe')
-    table.columnconfig('Hypernym', background='#fee')
-    table.columnconfig('Hyponym', background='#ffe')
+    table.columnconfig("Word", background="#afa")
+    table.columnconfig("Synset", background="#efe")
+    table.columnconfig("Hypernym", background="#fee")
+    table.columnconfig("Hyponym", background="#ffe")
     for row in range(len(table)):
-        for column in ('Hypernym', 'Hyponym'):
-            if table[row, column] == '*none*':
+        for column in ("Hypernym", "Hyponym"):
+            if table[row, column] == "*none*":
                 table.itemconfig(
-                    row, column, foreground='#666', selectforeground='#666'
+                    row, column, foreground="#666", selectforeground="#666"
                 )
     root.mainloop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

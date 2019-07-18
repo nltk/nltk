@@ -67,8 +67,8 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
     """
 
     # Converts pharaoh text format into list of tuples.
-    e2f = [tuple(map(int, a.split('-'))) for a in e2f.split()]
-    f2e = [tuple(map(int, a.split('-'))) for a in f2e.split()]
+    e2f = [tuple(map(int, a.split("-"))) for a in e2f.split()]
+    f2e = [tuple(map(int, a.split("-"))) for a in f2e.split()]
 
     neighbors = [(-1, 0), (0, -1), (1, 0), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
     alignment = set(e2f).intersection(set(f2e))  # Find the intersection.
@@ -77,8 +77,8 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
     # *aligned* is used to check if neighbors are aligned in grow_diag()
     aligned = defaultdict(set)
     for i, j in alignment:
-        aligned['e'].add(i)
-        aligned['f'].add(j)
+        aligned["e"].add(i)
+        aligned["f"].add(j)
 
     def grow_diag():
         """
@@ -105,8 +105,8 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
                                 e_new not in aligned and f_new not in aligned
                             ) and neighbor in union:
                                 alignment.add(neighbor)
-                                aligned['e'].add(e_new)
-                                aligned['f'].add(f_new)
+                                aligned["e"].add(e_new)
+                                aligned["f"].add(f_new)
                                 prev_len += 1
                                 no_new_points = False
             # iterate until no new points added
@@ -130,8 +130,8 @@ def grow_diag_final_and(srclen, trglen, e2f, f2e):
                     and (e_new, f_new) in union
                 ):
                     alignment.add((e_new, f_new))
-                    aligned['e'].add(e_new)
-                    aligned['f'].add(f_new)
+                    aligned["e"].add(e_new)
+                    aligned["f"].add(f_new)
 
     grow_diag()
     final_and(e2f)

@@ -10,7 +10,6 @@
 """
 Utility functions for parsers.
 """
-from __future__ import print_function
 
 from nltk.grammar import CFG, FeatureGrammar, PCFG
 from nltk.data import load
@@ -98,7 +97,7 @@ def taggedsent_to_conll(sentence):
     :return: a generator yielding a single sentence in CONLL format.
     """
     for (i, (word, tag)) in enumerate(sentence, start=1):
-        input_str = [str(i), word, '_', tag, tag, '_', '0', 'a', '_', '_']
+        input_str = [str(i), word, "_", tag, tag, "_", "0", "a", "_", "_"]
         input_str = "\t".join(input_str) + "\n"
         yield input_str
 
@@ -139,7 +138,7 @@ def taggedsents_to_conll(sentences):
     for sentence in sentences:
         for input_str in taggedsent_to_conll(sentence):
             yield input_str
-        yield '\n\n'
+        yield "\n\n"
 
 
 ######################################################################
@@ -170,8 +169,8 @@ class TestGrammar(object):
         according to the grammar, then the value of ``trees`` will be None.
         """
         for test in self.suite:
-            print(test['doc'] + ":", end=' ')
-            for key in ['accept', 'reject']:
+            print(test["doc"] + ":", end=" ")
+            for key in ["accept", "reject"]:
                 for sent in test[key]:
                     tokens = sent.split()
                     trees = list(self.cp.parse(tokens))
@@ -180,7 +179,7 @@ class TestGrammar(object):
                         print(sent)
                         for tree in trees:
                             print(tree)
-                    if key == 'accept':
+                    if key == "accept":
                         if trees == []:
                             raise ValueError("Sentence '%s' failed to parse'" % sent)
                         else:
@@ -213,14 +212,14 @@ def extract_test_sentences(string, comment_chars="#%;", encoding=None):
     if encoding is not None:
         string = string.decode(encoding)
     sentences = []
-    for sentence in string.split('\n'):
-        if sentence == '' or sentence[0] in comment_chars:
+    for sentence in string.split("\n"):
+        if sentence == "" or sentence[0] in comment_chars:
             continue
-        split_info = sentence.split(':', 1)
+        split_info = sentence.split(":", 1)
         result = None
         if len(split_info) == 2:
-            if split_info[0] in ['True', 'true', 'False', 'false']:
-                result = split_info[0] in ['True', 'true']
+            if split_info[0] in ["True", "true", "False", "false"]:
+                result = split_info[0] in ["True", "true"]
                 sentence = split_info[1]
             else:
                 result = int(split_info[0])

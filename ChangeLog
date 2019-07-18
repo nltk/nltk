@@ -1,4 +1,11 @@
-Version 3.4.2 2019-06-05
+Version 3.4.4 2019-07-04
+* fix bug in plot function (probability.py)
+* add improved PanLex Swadesh corpus reader
+
+Thanks to the following contributors to 3.4.4:
+Devashish Lal, Liling Tan
+
+Version 3.4.3 2019-06-07
 
 * add Text.generate()
 * add QuadgramAssocMeasures
@@ -14,7 +21,7 @@ Version 3.4.2 2019-06-05
 * fix misc Wordnet issues
 * update installation instructions
 
-Thanks to the following contributors to 3.4.2:
+Thanks to the following contributors to 3.4.3:
 alvations, Bharat123rox, cifkao, drewmiller, free-variation, henchc
 irisxzhou, nick-ulle, ppartarr, simonepri, yigitsever, zhaoyanpeng
 	

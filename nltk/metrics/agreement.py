@@ -68,7 +68,6 @@ Expected results from the Artstein and Poesio survey paper:
     1.0
 
 """
-from __future__ import print_function, unicode_literals, division
 
 import logging
 from itertools import groupby
@@ -78,14 +77,12 @@ from six import iteritems
 
 from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
-from nltk.compat import python_2_unicode_compatible
 
 from nltk.metrics.distance import binary_distance
 
 log = logging.getLogger(__name__)
 
 
-@python_2_unicode_compatible
 class AnnotationTask(object):
     """Represents an annotation task, i.e. people assign labels to items.
 
@@ -122,7 +119,7 @@ class AnnotationTask(object):
         return "\r\n".join(
             map(
                 lambda x: "%s\t%s\t%s"
-                % (x['coder'], x['item'].replace('_', "\t"), ",".join(x['labels'])),
+                % (x["coder"], x["item"].replace("_", "\t"), ",".join(x["labels"])),
                 self.data,
             )
         )
@@ -137,7 +134,7 @@ class AnnotationTask(object):
             self.C.add(coder)
             self.K.add(labels)
             self.I.add(item)
-            self.data.append({'coder': coder, 'labels': labels, 'item': item})
+            self.data.append({"coder": coder, "labels": labels, "item": item})
 
     def agr(self, cA, cB, i, data=None):
         """Agreement between two coders on a given item
@@ -147,32 +144,29 @@ class AnnotationTask(object):
         # cfedermann: we don't know what combination of coder/item will come
         # first in x; to avoid StopIteration problems due to assuming an order
         # cA,cB, we allow either for k1 and then look up the missing as k2.
-        k1 = next((x for x in data if x['coder'] in (cA, cB) and x['item'] == i))
-        if k1['coder'] == cA:
-            k2 = next((x for x in data if x['coder'] == cB and x['item'] == i))
+        k1 = next((x for x in data if x["coder"] in (cA, cB) and x["item"] == i))
+        if k1["coder"] == cA:
+            k2 = next((x for x in data if x["coder"] == cB and x["item"] == i))
         else:
-            k2 = next((x for x in data if x['coder'] == cA and x['item'] == i))
+            k2 = next((x for x in data if x["coder"] == cA and x["item"] == i))
 
-        ret = 1.0 - float(self.distance(k1['labels'], k2['labels']))
+        ret = 1.0 - float(self.distance(k1["labels"], k2["labels"]))
         log.debug("Observed agreement between %s and %s on %s: %f", cA, cB, i, ret)
         log.debug(
-            "Distance between \"%r\" and \"%r\": %f",
-            k1['labels'],
-            k2['labels'],
-            1.0 - ret,
+            'Distance between "%r" and "%r": %f', k1["labels"], k2["labels"], 1.0 - ret
         )
         return ret
 
     def Nk(self, k):
-        return float(sum(1 for x in self.data if x['labels'] == k))
+        return float(sum(1 for x in self.data if x["labels"] == k))
 
     def Nik(self, i, k):
-        return float(sum(1 for x in self.data if x['item'] == i and x['labels'] == k))
+        return float(sum(1 for x in self.data if x["item"] == i and x["labels"] == k))
 
     def Nck(self, c, k):
-        return float(sum(1 for x in self.data if x['coder'] == c and x['labels'] == k))
+        return float(sum(1 for x in self.data if x["coder"] == c and x["labels"] == k))
 
-    @deprecated('Use Nk, Nik or Nck instead')
+    @deprecated("Use Nk, Nik or Nck instead")
     def N(self, k=None, i=None, c=None):
         """Implements the "n-notation" used in Artstein and Poesio (2007)
 
@@ -199,7 +193,7 @@ class AnnotationTask(object):
 
         """
         data = self._grouped_data(
-            'item', (x for x in self.data if x['coder'] in (cA, cB))
+            "item", (x for x in self.data if x["coder"] in (cA, cB))
         )
         ret = sum(self.agr(cA, cB, item, item_data) for item, item_data in data) / len(
             self.I
@@ -235,10 +229,10 @@ class AnnotationTask(object):
 
         """
         total = 0.0
-        data = (x for x in self.data if x['coder'] in (cA, cB))
-        for i, itemdata in self._grouped_data('item', data):
+        data = (x for x in self.data if x["coder"] in (cA, cB))
+        for i, itemdata in self._grouped_data("item", data):
             # we should have two items; distance doesn't care which comes first
-            total += self.distance(next(itemdata)['labels'], next(itemdata)['labels'])
+            total += self.distance(next(itemdata)["labels"], next(itemdata)["labels"])
 
         ret = total / (len(self.I) * max_distance)
         log.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
@@ -269,7 +263,7 @@ class AnnotationTask(object):
 
         """
         total = 0.0
-        label_freqs = FreqDist(x['labels'] for x in self.data)
+        label_freqs = FreqDist(x["labels"] for x in self.data)
         for k, f in iteritems(label_freqs):
             total += f ** 2
         Ae = total / ((len(self.I) * len(self.C)) ** 2)
@@ -278,7 +272,7 @@ class AnnotationTask(object):
     def Ae_kappa(self, cA, cB):
         Ae = 0.0
         nitems = float(len(self.I))
-        label_freqs = ConditionalFreqDist((x['labels'], x['coder']) for x in self.data)
+        label_freqs = ConditionalFreqDist((x["labels"], x["coder"]) for x in self.data)
         for k in label_freqs.conditions():
             Ae += (label_freqs[k][cA] / nitems) * (label_freqs[k][cB] / nitems)
         return Ae
@@ -332,9 +326,9 @@ class AnnotationTask(object):
         total_ratings = 0
         all_valid_labels_freq = FreqDist([])
 
-        total_do = 0.0 # Total observed disagreement for all items.
-        for i, itemdata in self._grouped_data('item'):
-            label_freqs = FreqDist(x['labels'] for x in itemdata)
+        total_do = 0.0  # Total observed disagreement for all items.
+        for i, itemdata in self._grouped_data("item"):
+            label_freqs = FreqDist(x["labels"] for x in itemdata)
             labels_count = sum(label_freqs.values())
             if labels_count < 2:
                 # Ignore the item.
@@ -344,7 +338,7 @@ class AnnotationTask(object):
 
         do = total_do / sum(all_valid_labels_freq.values())
 
-        de = self.Disagreement(all_valid_labels_freq) # Expected disagreement.
+        de = self.Disagreement(all_valid_labels_freq)  # Expected disagreement.
         k_alpha = 1.0 - do / de
 
         return k_alpha
@@ -355,7 +349,7 @@ class AnnotationTask(object):
         """
         total = 0.0
         label_freqs = ConditionalFreqDist(
-            (x['coder'], x['labels']) for x in self.data if x['coder'] in (cA, cB)
+            (x["coder"], x["labels"]) for x in self.data if x["coder"] in (cA, cB)
         )
         for j in self.K:
             for l in self.K:
@@ -375,7 +369,7 @@ class AnnotationTask(object):
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     import re
     import optparse
@@ -423,7 +417,7 @@ if __name__ == '__main__':
         "-v",
         "--verbose",
         dest="verbose",
-        default='0',
+        default="0",
         help="how much debugging to print on stderr (0-4)",
     )
     parser.add_option(
@@ -465,7 +459,7 @@ if __name__ == '__main__':
 
     # read in data from the specified file
     data = []
-    with open(options.file, 'r') as infile:
+    with open(options.file, "r") as infile:
         for l in infile:
             toks = l.split(options.columnsep)
             coder, object_, labels = (

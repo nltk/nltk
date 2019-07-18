@@ -8,7 +8,6 @@
 # For license information, see LICENSE.TXT
 
 """NIST score implementation."""
-from __future__ import division
 
 import math
 import fractions

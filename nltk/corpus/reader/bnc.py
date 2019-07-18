@@ -57,7 +57,7 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        tag = 'c5' if c5 else 'pos'
+        tag = "c5" if c5 else "pos"
         return self._views(fileids, False, tag, strip_space, stem)
 
     def sents(self, fileids=None, strip_space=True, stem=False):
@@ -85,7 +85,7 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        tag = 'c5' if c5 else 'pos'
+        tag = "c5" if c5 else "pos"
         return self._views(
             fileids, sent=True, tag=tag, strip_space=strip_space, stem=stem
         )
@@ -114,7 +114,7 @@ class BNCCorpusReader(XMLCorpusReader):
         result = []
 
         xmldoc = ElementTree.parse(fileid).getroot()
-        for xmlsent in xmldoc.findall('.//s'):
+        for xmlsent in xmldoc.findall(".//s"):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):
                 word = xmlword.text
@@ -123,14 +123,14 @@ class BNCCorpusReader(XMLCorpusReader):
                 if strip_space or stem:
                     word = word.strip()
                 if stem:
-                    word = xmlword.get('hw', word)
-                if tag == 'c5':
-                    word = (word, xmlword.get('c5'))
-                elif tag == 'pos':
-                    word = (word, xmlword.get('pos', xmlword.get('c5')))
+                    word = xmlword.get("hw", word)
+                if tag == "c5":
+                    word = (word, xmlword.get("c5"))
+                elif tag == "pos":
+                    word = (word, xmlword.get("pos", xmlword.get("c5")))
                 sent.append(word)
             if bracket_sent:
-                result.append(BNCSentence(xmlsent.attrib['n'], sent))
+                result.append(BNCSentence(xmlsent.attrib["n"], sent))
             else:
                 result.extend(sent)
 
@@ -142,7 +142,7 @@ def _all_xmlwords_in(elt, result=None):
     if result is None:
         result = []
     for child in elt:
-        if child.tag in ('c', 'w'):
+        if child.tag in ("c", "w"):
             result.append(child)
         else:
             _all_xmlwords_in(child, result)
@@ -166,7 +166,7 @@ class BNCWordView(XMLCorpusView):
     """
 
     tags_to_ignore = set(
-        ['pb', 'gap', 'vocal', 'event', 'unclear', 'shift', 'pause', 'align']
+        ["pb", "gap", "vocal", "event", "unclear", "shift", "pause", "align"]
     )
     """These tags are ignored. For their description refer to the
     technical documentation, for example,
@@ -183,9 +183,9 @@ class BNCWordView(XMLCorpusView):
         :param stem: If true, then substitute stems for words.
         """
         if sent:
-            tagspec = '.*/s'
+            tagspec = ".*/s"
         else:
-            tagspec = '.*/s/(.*/)?(c|w)'
+            tagspec = ".*/s/(.*/)?(c|w)"
         self._sent = sent
         self._tag = tag
         self._strip_space = strip_space
@@ -200,7 +200,7 @@ class BNCWordView(XMLCorpusView):
 
         # Read in a tasty header.
         self._open()
-        self.read_block(self._stream, '.*/teiHeader$', self.handle_header)
+        self.read_block(self._stream, ".*/teiHeader$", self.handle_header)
         self.close()
 
         # Reset tag context.
@@ -208,22 +208,22 @@ class BNCWordView(XMLCorpusView):
 
     def handle_header(self, elt, context):
         # Set up some metadata!
-        titles = elt.findall('titleStmt/title')
+        titles = elt.findall("titleStmt/title")
         if titles:
-            self.title = '\n'.join(title.text.strip() for title in titles)
+            self.title = "\n".join(title.text.strip() for title in titles)
 
-        authors = elt.findall('titleStmt/author')
+        authors = elt.findall("titleStmt/author")
         if authors:
-            self.author = '\n'.join(author.text.strip() for author in authors)
+            self.author = "\n".join(author.text.strip() for author in authors)
 
-        editors = elt.findall('titleStmt/editor')
+        editors = elt.findall("titleStmt/editor")
         if editors:
-            self.editor = '\n'.join(editor.text.strip() for editor in editors)
+            self.editor = "\n".join(editor.text.strip() for editor in editors)
 
-        resps = elt.findall('titleStmt/respStmt')
+        resps = elt.findall("titleStmt/respStmt")
         if resps:
-            self.resps = '\n\n'.join(
-                '\n'.join(resp_elt.text.strip() for resp_elt in resp) for resp in resps
+            self.resps = "\n\n".join(
+                "\n".join(resp_elt.text.strip() for resp_elt in resp) for resp in resps
             )
 
     def handle_elt(self, elt, context):
@@ -239,20 +239,20 @@ class BNCWordView(XMLCorpusView):
         if self._strip_space or self._stem:
             word = word.strip()
         if self._stem:
-            word = elt.get('hw', word)
-        if self._tag == 'c5':
-            word = (word, elt.get('c5'))
-        elif self._tag == 'pos':
-            word = (word, elt.get('pos', elt.get('c5')))
+            word = elt.get("hw", word)
+        if self._tag == "c5":
+            word = (word, elt.get("c5"))
+        elif self._tag == "pos":
+            word = (word, elt.get("pos", elt.get("c5")))
         return word
 
     def handle_sent(self, elt):
         sent = []
         for child in elt:
-            if child.tag in ('mw', 'hi', 'corr', 'trunc'):
+            if child.tag in ("mw", "hi", "corr", "trunc"):
                 sent += [self.handle_word(w) for w in child]
-            elif child.tag in ('w', 'c'):
+            elif child.tag in ("w", "c"):
                 sent.append(self.handle_word(child))
             elif child.tag not in self.tags_to_ignore:
-                raise ValueError('Unexpected element %s' % child.tag)
-        return BNCSentence(elt.attrib['n'], sent)
+                raise ValueError("Unexpected element %s" % child.tag)
+        return BNCSentence(elt.attrib["n"], sent)

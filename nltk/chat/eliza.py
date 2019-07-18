@@ -12,7 +12,6 @@
 # a translation table used to convert things you say into things the
 # computer says back, e.g. "I am" --> "you are"
 
-from __future__ import print_function
 from nltk.chat.util import Chat, reflections
 
 # a table of response pairs, where each pair consists of a
@@ -21,7 +20,7 @@ from nltk.chat.util import Chat, reflections
 
 pairs = (
     (
-        r'I need (.*)',
+        r"I need (.*)",
         (
             "Why do you need %1?",
             "Would it really help you to get %1?",
@@ -29,7 +28,7 @@ pairs = (
         ),
     ),
     (
-        r'Why don\'t you (.*)',
+        r"Why don\'t you (.*)",
         (
             "Do you really think I don't %1?",
             "Perhaps eventually I will %1.",
@@ -37,7 +36,7 @@ pairs = (
         ),
     ),
     (
-        r'Why can\'t I (.*)',
+        r"Why can\'t I (.*)",
         (
             "Do you think you should be able to %1?",
             "If you could %1, what would you do?",
@@ -46,7 +45,7 @@ pairs = (
         ),
     ),
     (
-        r'I can\'t (.*)',
+        r"I can\'t (.*)",
         (
             "How do you know you can't %1?",
             "Perhaps you could %1 if you tried.",
@@ -54,7 +53,7 @@ pairs = (
         ),
     ),
     (
-        r'I am (.*)',
+        r"I am (.*)",
         (
             "Did you come to me because you are %1?",
             "How long have you been %1?",
@@ -62,7 +61,7 @@ pairs = (
         ),
     ),
     (
-        r'I\'m (.*)',
+        r"I\'m (.*)",
         (
             "How does being %1 make you feel?",
             "Do you enjoy being %1?",
@@ -71,7 +70,7 @@ pairs = (
         ),
     ),
     (
-        r'Are you (.*)',
+        r"Are you (.*)",
         (
             "Why does it matter whether I am %1?",
             "Would you prefer it if I were not %1?",
@@ -80,7 +79,7 @@ pairs = (
         ),
     ),
     (
-        r'What (.*)',
+        r"What (.*)",
         (
             "Why do you ask?",
             "How would an answer to that help you?",
@@ -88,7 +87,7 @@ pairs = (
         ),
     ),
     (
-        r'How (.*)',
+        r"How (.*)",
         (
             "How do you suppose?",
             "Perhaps you can answer your own question.",
@@ -96,7 +95,7 @@ pairs = (
         ),
     ),
     (
-        r'Because (.*)',
+        r"Because (.*)",
         (
             "Is that the real reason?",
             "What other reasons come to mind?",
@@ -105,14 +104,14 @@ pairs = (
         ),
     ),
     (
-        r'(.*) sorry (.*)',
+        r"(.*) sorry (.*)",
         (
             "There are many times when no apology is needed.",
             "What feelings do you have when you apologize?",
         ),
     ),
     (
-        r'Hello(.*)',
+        r"Hello(.*)",
         (
             "Hello... I'm glad you could drop by today.",
             "Hi there... how are you today?",
@@ -120,20 +119,20 @@ pairs = (
         ),
     ),
     (
-        r'I think (.*)',
+        r"I think (.*)",
         ("Do you doubt %1?", "Do you really think so?", "But you're not sure %1?"),
     ),
     (
-        r'(.*) friend (.*)',
+        r"(.*) friend (.*)",
         (
             "Tell me more about your friends.",
             "When you think of a friend, what comes to mind?",
             "Why don't you tell me about a childhood friend?",
         ),
     ),
-    (r'Yes', ("You seem quite sure.", "OK, but can you elaborate a bit?")),
+    (r"Yes", ("You seem quite sure.", "OK, but can you elaborate a bit?")),
     (
-        r'(.*) computer(.*)',
+        r"(.*) computer(.*)",
         (
             "Are you really talking about me?",
             "Does it seem strange to talk to a computer?",
@@ -142,7 +141,7 @@ pairs = (
         ),
     ),
     (
-        r'Is it (.*)',
+        r"Is it (.*)",
         (
             "Do you think it is %1?",
             "Perhaps it's %1 -- what do you think?",
@@ -151,14 +150,14 @@ pairs = (
         ),
     ),
     (
-        r'It is (.*)',
+        r"It is (.*)",
         (
             "You seem very certain.",
             "If I told you that it probably isn't %1, what would you feel?",
         ),
     ),
     (
-        r'Can you (.*)',
+        r"Can you (.*)",
         (
             "What makes you think I can't %1?",
             "If I could %1, then what?",
@@ -166,7 +165,7 @@ pairs = (
         ),
     ),
     (
-        r'Can I (.*)',
+        r"Can I (.*)",
         (
             "Perhaps you don't want to %1.",
             "Do you want to be able to %1?",
@@ -174,7 +173,7 @@ pairs = (
         ),
     ),
     (
-        r'You are (.*)',
+        r"You are (.*)",
         (
             "Why do you think I am %1?",
             "Does it please you to think that I'm %1?",
@@ -183,7 +182,7 @@ pairs = (
         ),
     ),
     (
-        r'You\'re (.*)',
+        r"You\'re (.*)",
         (
             "Why do you say I am %1?",
             "Why do you think I am %1?",
@@ -191,11 +190,11 @@ pairs = (
         ),
     ),
     (
-        r'I don\'t (.*)',
+        r"I don\'t (.*)",
         ("Don't you really %1?", "Why don't you %1?", "Do you want to %1?"),
     ),
     (
-        r'I feel (.*)',
+        r"I feel (.*)",
         (
             "Good, tell me more about these feelings.",
             "Do you often feel %1?",
@@ -204,7 +203,7 @@ pairs = (
         ),
     ),
     (
-        r'I have (.*)',
+        r"I have (.*)",
         (
             "Why do you tell me that you've %1?",
             "Have you really %1?",
@@ -212,7 +211,7 @@ pairs = (
         ),
     ),
     (
-        r'I would (.*)',
+        r"I would (.*)",
         (
             "Could you explain why you would %1?",
             "Why would you %1?",
@@ -220,7 +219,7 @@ pairs = (
         ),
     ),
     (
-        r'Is there (.*)',
+        r"Is there (.*)",
         (
             "Do you think there is %1?",
             "It's likely that there is %1.",
@@ -228,7 +227,7 @@ pairs = (
         ),
     ),
     (
-        r'My (.*)',
+        r"My (.*)",
         (
             "I see, your %1.",
             "Why do you say that your %1?",
@@ -236,16 +235,16 @@ pairs = (
         ),
     ),
     (
-        r'You (.*)',
+        r"You (.*)",
         (
             "We should be discussing you, not me.",
             "Why do you say that about me?",
             "Why do you care whether I %1?",
         ),
     ),
-    (r'Why (.*)', ("Why don't you tell me the reason why %1?", "Why do you think %1?")),
+    (r"Why (.*)", ("Why don't you tell me the reason why %1?", "Why do you think %1?")),
     (
-        r'I want (.*)',
+        r"I want (.*)",
         (
             "What would it mean to you if you got %1?",
             "Why do you want %1?",
@@ -254,7 +253,7 @@ pairs = (
         ),
     ),
     (
-        r'(.*) mother(.*)',
+        r"(.*) mother(.*)",
         (
             "Tell me more about your mother.",
             "What was your relationship with your mother like?",
@@ -264,7 +263,7 @@ pairs = (
         ),
     ),
     (
-        r'(.*) father(.*)',
+        r"(.*) father(.*)",
         (
             "Tell me more about your father.",
             "How did your father make you feel?",
@@ -274,7 +273,7 @@ pairs = (
         ),
     ),
     (
-        r'(.*) child(.*)',
+        r"(.*) child(.*)",
         (
             "Did you have close friends as a child?",
             "What is your favorite childhood memory?",
@@ -284,7 +283,7 @@ pairs = (
         ),
     ),
     (
-        r'(.*)\?',
+        r"(.*)\?",
         (
             "Why do you ask that?",
             "Please consider whether you can answer your own question.",
@@ -293,7 +292,7 @@ pairs = (
         ),
     ),
     (
-        r'quit',
+        r"quit",
         (
             "Thank you for talking with me.",
             "Good-bye.",
@@ -301,7 +300,7 @@ pairs = (
         ),
     ),
     (
-        r'(.*)',
+        r"(.*)",
         (
             "Please tell me more.",
             "Let's change focus a bit... Tell me about your family.",
@@ -324,7 +323,7 @@ def eliza_chat():
     print("Therapist\n---------")
     print("Talk to the program by typing in plain English, using normal upper-")
     print('and lower-case letters and punctuation.  Enter "quit" when done.')
-    print('=' * 72)
+    print("=" * 72)
     print("Hello.  How are you feeling today?")
 
     eliza_chatbot.converse()

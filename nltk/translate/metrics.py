@@ -6,7 +6,6 @@
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import division
 
 
 def alignment_error_rate(reference, hypothesis, possible=None):

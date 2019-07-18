@@ -14,7 +14,6 @@
     See the documentation for further information on copyrights,
     or contact the author. All Rights Reserved.
 """
-from __future__ import print_function
 
 ### Constants
 
@@ -50,7 +49,7 @@ class LazyModule:
     __lazymodule_init = 0
 
     # Name of the module to load
-    __lazymodule_name = ''
+    __lazymodule_name = ""
 
     # Flag which indicates whether the module was loaded or not
     __lazymodule_loaded = 0
@@ -75,9 +74,9 @@ class LazyModule:
         if globals is None:
             globals = locals
         self.__lazymodule_globals = globals
-        mainname = globals.get('__name__', '')
+        mainname = globals.get("__name__", "")
         if mainname:
-            self.__name__ = mainname + '.' + name
+            self.__name__ = mainname + "." + name
             self.__lazymodule_name = name
         else:
             self.__name__ = self.__lazymodule_name = name
@@ -92,9 +91,9 @@ class LazyModule:
         if self.__lazymodule_loaded:
             return self.__lazymodule_locals[name]
         if _debug:
-            print('LazyModule: Loading module %r' % name)
+            print("LazyModule: Loading module %r" % name)
         self.__lazymodule_locals[name] = module = __import__(
-            name, self.__lazymodule_locals, self.__lazymodule_globals, '*'
+            name, self.__lazymodule_locals, self.__lazymodule_globals, "*"
         )
 
         # Fill namespace with all symbols from original module to
@@ -102,10 +101,10 @@ class LazyModule:
         self.__dict__.update(module.__dict__)
 
         # Set import flag
-        self.__dict__['__lazymodule_loaded'] = 1
+        self.__dict__["__lazymodule_loaded"] = 1
 
         if _debug:
-            print('LazyModule: Module %r loaded' % name)
+            print("LazyModule: Module %r loaded" % name)
         return module
 
     def __getattr__(self, name):
@@ -116,8 +115,8 @@ class LazyModule:
             raise AttributeError(name)
         if _debug:
             print(
-                'LazyModule: '
-                'Module load triggered by attribute %r read access' % name
+                "LazyModule: "
+                "Module load triggered by attribute %r read access" % name
             )
         module = self.__lazymodule_import()
         return getattr(module, name)
@@ -135,8 +134,8 @@ class LazyModule:
             return
         if _debug:
             print(
-                'LazyModule: '
-                'Module load triggered by attribute %r write access' % name
+                "LazyModule: "
+                "Module load triggered by attribute %r write access" % name
             )
         module = self.__lazymodule_import()
         setattr(module, name, value)

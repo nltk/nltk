@@ -17,14 +17,13 @@ determine a tag for the specified token, then its backoff tagger is
 consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
-from __future__ import print_function, unicode_literals
+
 from abc import abstractmethod
 
 import re
 
 from nltk.probability import ConditionalFreqDist
 from nltk.classify import NaiveBayesClassifier
-from nltk.compat import python_2_unicode_compatible
 
 from nltk.tag.api import TaggerI, FeaturesetTaggerI
 
@@ -106,7 +105,6 @@ class SequentialBackoffTagger(TaggerI):
         """
 
 
-@python_2_unicode_compatible
 class ContextTagger(SequentialBackoffTagger):
     """
     An abstract base class for sequential backoff taggers that choose
@@ -151,7 +149,7 @@ class ContextTagger(SequentialBackoffTagger):
         return len(self._context_to_tag)
 
     def __repr__(self):
-        return '<%s: size=%d>' % (self.__class__.__name__, self.size())
+        return "<%s: size=%d>" % (self.__class__.__name__, self.size())
 
     def _train(self, tagged_corpus, cutoff=0, verbose=False):
         """
@@ -209,14 +207,15 @@ class ContextTagger(SequentialBackoffTagger):
             size = len(self._context_to_tag)
             backoff = 100 - (hit_count * 100.0) / token_count
             pruning = 100 - (size * 100.0) / len(fd.conditions())
-            print("[Trained Unigram tagger:", end=' ')
+            print("[Trained Unigram tagger:", end=" ")
             print("size=%d, backoff=%.2f%%, pruning=%.2f%%]" % (size, backoff, pruning))
 
 
 ######################################################################
 # Tagger Classes
 ######################################################################
-@python_2_unicode_compatible
+
+
 @jsontags.register_tag
 class DefaultTagger(SequentialBackoffTagger):
     """
@@ -235,7 +234,7 @@ class DefaultTagger(SequentialBackoffTagger):
     :type tag: str
     """
 
-    json_tag = 'nltk.tag.sequential.DefaultTagger'
+    json_tag = "nltk.tag.sequential.DefaultTagger"
 
     def __init__(self, tag):
         self._tag = tag
@@ -253,7 +252,7 @@ class DefaultTagger(SequentialBackoffTagger):
         return self._tag  # ignore token and history
 
     def __repr__(self):
-        return '<DefaultTagger: tag=%s>' % self._tag
+        return "<DefaultTagger: tag=%s>" % self._tag
 
 
 @jsontags.register_tag
@@ -281,7 +280,7 @@ class NgramTagger(ContextTagger):
         context-to-tag table for the new tagger.
     """
 
-    json_tag = 'nltk.tag.sequential.NgramTagger'
+    json_tag = "nltk.tag.sequential.NgramTagger"
 
     def __init__(
         self, n, train=None, model=None, backoff=None, cutoff=0, verbose=False
@@ -340,7 +339,7 @@ class UnigramTagger(NgramTagger):
     :type cutoff: int
     """
 
-    json_tag = 'nltk.tag.sequential.UnigramTagger'
+    json_tag = "nltk.tag.sequential.UnigramTagger"
 
     def __init__(self, train=None, model=None, backoff=None, cutoff=0, verbose=False):
         NgramTagger.__init__(self, 1, train, model, backoff, cutoff, verbose)
@@ -377,7 +376,7 @@ class BigramTagger(NgramTagger):
     :type cutoff: int
     """
 
-    json_tag = 'nltk.tag.sequential.BigramTagger'
+    json_tag = "nltk.tag.sequential.BigramTagger"
 
     def __init__(self, train=None, model=None, backoff=None, cutoff=0, verbose=False):
         NgramTagger.__init__(self, 2, train, model, backoff, cutoff, verbose)
@@ -411,7 +410,7 @@ class TrigramTagger(NgramTagger):
     :type cutoff: int
     """
 
-    json_tag = 'nltk.tag.sequential.TrigramTagger'
+    json_tag = "nltk.tag.sequential.TrigramTagger"
 
     def __init__(self, train=None, model=None, backoff=None, cutoff=0, verbose=False):
         NgramTagger.__init__(self, 3, train, model, backoff, cutoff, verbose)
@@ -445,7 +444,7 @@ class AffixTagger(ContextTagger):
         tag of None by this tagger.
     """
 
-    json_tag = 'nltk.tag.sequential.AffixTagger'
+    json_tag = "nltk.tag.sequential.AffixTagger"
 
     def __init__(
         self,
@@ -496,7 +495,6 @@ class AffixTagger(ContextTagger):
             return token[self._affix_length :]
 
 
-@python_2_unicode_compatible
 @jsontags.register_tag
 class RegexpTagger(SequentialBackoffTagger):
     """
@@ -540,7 +538,7 @@ class RegexpTagger(SequentialBackoffTagger):
         assigned the tag None.
     """
 
-    json_tag = 'nltk.tag.sequential.RegexpTagger'
+    json_tag = "nltk.tag.sequential.RegexpTagger"
 
     def __init__(self, regexps, backoff=None):
         """
@@ -566,10 +564,9 @@ class RegexpTagger(SequentialBackoffTagger):
         return None
 
     def __repr__(self):
-        return '<Regexp Tagger: size=%d>' % len(self._regexs)
+        return "<Regexp Tagger: size=%d>" % len(self._regexs)
 
 
-@python_2_unicode_compatible
 class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
     """
     A sequential tagger that uses a classifier to choose the tag for
@@ -629,7 +626,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         if (train and classifier) or (not train and not classifier):
             raise ValueError(
-                'Must specify either training data or ' 'trained classifier.'
+                "Must specify either training data or " "trained classifier."
             )
 
         if feature_detector is not None:
@@ -669,7 +666,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         classifier_corpus = []
         if verbose:
-            print('Constructing training corpus for classifier.')
+            print("Constructing training corpus for classifier.")
 
         for sentence in tagged_corpus:
             history = []
@@ -680,11 +677,11 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
                 history.append(tags[index])
 
         if verbose:
-            print('Training classifier (%d instances)' % len(classifier_corpus))
+            print("Training classifier (%d instances)" % len(classifier_corpus))
         self._classifier = classifier_builder(classifier_corpus)
 
     def __repr__(self):
-        return '<ClassifierBasedTagger: %r>' % self._classifier
+        return "<ClassifierBasedTagger: %r>" % self._classifier
 
     def feature_detector(self, tokens, index, history):
         """
@@ -729,32 +726,32 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
             prevtag = history[index - 1]
             prevprevtag = history[index - 2]
 
-        if re.match('[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$', word):
-            shape = 'number'
-        elif re.match('\W+$', word):
-            shape = 'punct'
-        elif re.match('[A-Z][a-z]+$', word):
-            shape = 'upcase'
-        elif re.match('[a-z]+$', word):
-            shape = 'downcase'
-        elif re.match('\w+$', word):
-            shape = 'mixedcase'
+        if re.match("[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word):
+            shape = "number"
+        elif re.match("\W+$", word):
+            shape = "punct"
+        elif re.match("[A-Z][a-z]+$", word):
+            shape = "upcase"
+        elif re.match("[a-z]+$", word):
+            shape = "downcase"
+        elif re.match("\w+$", word):
+            shape = "mixedcase"
         else:
-            shape = 'other'
+            shape = "other"
 
         features = {
-            'prevtag': prevtag,
-            'prevprevtag': prevprevtag,
-            'word': word,
-            'word.lower': word.lower(),
-            'suffix3': word.lower()[-3:],
-            'suffix2': word.lower()[-2:],
-            'suffix1': word.lower()[-1:],
-            'prevprevword': prevprevword,
-            'prevword': prevword,
-            'prevtag+word': '%s+%s' % (prevtag, word.lower()),
-            'prevprevtag+word': '%s+%s' % (prevprevtag, word.lower()),
-            'prevword+word': '%s+%s' % (prevword, word.lower()),
-            'shape': shape,
+            "prevtag": prevtag,
+            "prevprevtag": prevprevtag,
+            "word": word,
+            "word.lower": word.lower(),
+            "suffix3": word.lower()[-3:],
+            "suffix2": word.lower()[-2:],
+            "suffix1": word.lower()[-1:],
+            "prevprevword": prevprevword,
+            "prevword": prevword,
+            "prevtag+word": "%s+%s" % (prevtag, word.lower()),
+            "prevprevtag+word": "%s+%s" % (prevprevtag, word.lower()),
+            "prevword+word": "%s+%s" % (prevword, word.lower()),
+            "shape": shape,
         }
         return features
