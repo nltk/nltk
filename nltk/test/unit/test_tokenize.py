@@ -118,6 +118,16 @@ class TestTokenize(unittest.TestCase):
         expected = ['This', 'is', 'a', ',', '*', 'weird', 'sentence', 
                     'with', '*', 'asterisks', 'in', 'it', '.']
         self.assertEqual(word_tokenize(text), expected)
+        
+    def test_pad_dotdot(self):
+        """
+        Test padding of asterisk for word tokenization.
+        """
+        text = "Why did dotdot.. not get tokenized but dotdotdot... did? How about manydots......."
+        expected = ['Why', 'did', 'dotdot', '..', 'not', 'get', 
+                    'tokenized', 'but', 'dotdotdot', '...', 'did', '?', 
+                    'How', 'about', 'manydots', '.....']
+        self.assertEqual(word_tokenize(text), expected)
 
     def test_remove_handle(self):
         """
