@@ -123,7 +123,7 @@ class TestTokenize(unittest.TestCase):
         """
         Test padding of asterisk for word tokenization.
         """
-        text = "Why did dotdot.. not get tokenized but dotdotdot... did? How about manydots......."
+        text = "Why did dotdot.. not get tokenized but dotdotdot... did? How about manydots....."
         expected = ['Why', 'did', 'dotdot', '..', 'not', 'get', 
                     'tokenized', 'but', 'dotdotdot', '...', 'did', '?', 
                     'How', 'about', 'manydots', '.....']
