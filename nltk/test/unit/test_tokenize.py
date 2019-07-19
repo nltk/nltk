@@ -121,7 +121,7 @@ class TestTokenize(unittest.TestCase):
         
     def test_pad_dotdot(self):
         """
-        Test padding of asterisk for word tokenization.
+        Test padding of dotdot* for word tokenization.
         """
         text = "Why did dotdot.. not get tokenized but dotdotdot... did? How about manydots....."
         expected = ['Why', 'did', 'dotdot', '..', 'not', 'get', 
