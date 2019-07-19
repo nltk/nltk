@@ -117,8 +117,7 @@ class TestTokenize(unittest.TestCase):
         text = "This is a, *weird sentence with *asterisks in it."
         expected = ['This', 'is', 'a', ',', '*', 'weird', 'sentence', 
                     'with', '*', 'asterisks', 'in', 'it', '.']
-        result = word_tokenize(expected)
-        self.assertEqual(result, expected)
+        self.assertEqual(word_tokenize(text), expected)
 
     def test_remove_handle(self):
         """
