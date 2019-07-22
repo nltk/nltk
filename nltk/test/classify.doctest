@@ -105,7 +105,7 @@ Test the Decision Tree classifier (without None):
 Test the Decision Tree classifier (with None):
 
     >>> classifier = nltk.classify.DecisionTreeClassifier.train(
-    ...     train[:-1], entropy_cutoff=0,
+    ...     train, entropy_cutoff=0,
     ...     support_cutoff=0)
     >>> sorted(classifier.labels())
     ['x', 'y']
