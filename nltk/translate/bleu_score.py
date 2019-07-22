@@ -573,7 +573,7 @@ class SmoothingFunction:
                 incvnt += 1
         return p_n
 
-    def method4(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
+    def method4(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
         """
         Smoothing method 4:
         Shorter translations may have inflated precision values due to having
@@ -581,21 +581,23 @@ class SmoothingFunction:
         smaller smoothed counts. Instead of scaling to 1/(2^k), Chen and Cherry
         suggests dividing by 1/ln(len(T)), where T is the length of the translation.
         """
+        hyp_len = hyp_len if hyp_len else len(hypothesis)
         for i, p_i in enumerate(p_n):
             if p_i.numerator == 0 and hyp_len != 0:
                 incvnt = i + 1 * self.k / math.log(
                     hyp_len
                 )  # Note that this K is different from the K from NIST.
-                p_n[i] = 1 / incvnt
+                p_n[i] = incvnt / p_i.denominator
         return p_n
 
-    def method5(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
+    def method5(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
         """
         Smoothing method 5:
         The matched counts for similar values of n should be similar. To a
         calculate the n-gram matched count, it averages the n−1, n and n+1 gram
         matched counts.
         """
+        hyp_len = hyp_len if hyp_len else len(hypothesis)
         m = {}
         # Requires an precision value for an addition ngram order.
         p_n_plus1 = p_n + [modified_precision(references, hypothesis, 5)]
@@ -605,7 +607,7 @@ class SmoothingFunction:
             m[i] = p_n[i]
         return p_n
 
-    def method6(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
+    def method6(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
         """
         Smoothing method 6:
         Interpolates the maximum likelihood estimate of the precision *p_n* with
@@ -614,6 +616,7 @@ class SmoothingFunction:
         Gao and He (2013) Training MRF-Based Phrase Translation Models using
         Gradient Ascent. In NAACL.
         """
+        hyp_len = hyp_len if hyp_len else len(hypothesis)
         # This smoothing only works when p_1 and p_2 is non-zero.
         # Raise an error with an appropriate message when the input is too short
         # to use this smoothing technique.
@@ -631,11 +634,12 @@ class SmoothingFunction:
                 p_n[i] = (m + self.alpha * pi0) / (l + self.alpha)
         return p_n
 
-    def method7(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
+    def method7(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
         """
         Smoothing method 7:
         Interpolates methods 5 and 6.
         """
+        hyp_len = hyp_len if hyp_len else len(hypothesis)
         p_n = self.method4(p_n, references, hypothesis, hyp_len)
         p_n = self.method5(p_n, references, hypothesis, hyp_len)
         return p_n
