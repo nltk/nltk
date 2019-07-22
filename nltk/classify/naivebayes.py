@@ -185,7 +185,8 @@ class NaiveBayesClassifier(ClassifierI):
             # Convert features to a list, & sort it by how informative
             # features are.
             self._most_informative_features = sorted(
-                features, key=lambda feature_: (minprob[feature_] / maxprob[feature_], feature_[0])
+                features, key=lambda feature_: (minprob[feature_] / maxprob[feature_], feature_[0],
+                                                feature_[1] in [None, False, True], str(feature_[1]).lower())
             )
         return self._most_informative_features[:n]
 
