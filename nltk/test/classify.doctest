@@ -80,7 +80,29 @@ Test the Naive Bayes classifier:
                            b = 0                   x : y      =      1.0 : 1.0
                            b = 1                   x : y      =      1.0 : 1.0
 
-Test the Decision Tree classifier:
+Test the Decision Tree classifier (without None):
+
+    >>> classifier = nltk.classify.DecisionTreeClassifier.train(
+    ...     train[:-1], entropy_cutoff=0,
+    ...     support_cutoff=0)
+    >>> sorted(classifier.labels())
+    ['x', 'y']
+    >>> print(classifier)
+    c=0? .................................................. x
+      a=0? ................................................ x
+      a=1? ................................................ y
+    c=1? .................................................. y
+    <BLANKLINE>
+    >>> classifier.classify_many(test)
+    ['y', 'y', 'y', 'x']
+    >>> for pdist in classifier.prob_classify_many(test):
+    ...     print('%.4f %.4f' % (pdist.prob('x'), pdist.prob('y')))
+    Traceback (most recent call last):
+      . . .
+    NotImplementedError
+    
+    
+Test the Decision Tree classifier (with None):
 
     >>> classifier = nltk.classify.DecisionTreeClassifier.train(
     ...     train, entropy_cutoff=0,
@@ -94,13 +116,7 @@ Test the Decision Tree classifier:
       a=None? ............................................. x
     c=1? .................................................. y
     <BLANKLINE>
-    >>> classifier.classify_many(test)
-    ['y', 'y', 'y', 'x']
-    >>> for pdist in classifier.prob_classify_many(test):
-    ...     print('%.4f %.4f' % (pdist.prob('x'), pdist.prob('y')))
-    Traceback (most recent call last):
-      . . .
-    NotImplementedError
+
 
 Test SklearnClassifier, which requires the scikit-learn package.
 
