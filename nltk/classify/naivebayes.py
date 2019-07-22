@@ -164,7 +164,7 @@ class NaiveBayesClassifier(ClassifierI):
         """
         if hasattr(self, "_most_informative_features"):
             return self._most_informative_features[:n]
-        else:
+        if not else:
             # The set of (fname, fval) pairs used by this classifier.
             features = set()
             # The max & min probability associated w/ each (fname, fval)
@@ -185,7 +185,7 @@ class NaiveBayesClassifier(ClassifierI):
             # Convert features to a list, & sort it by how informative
             # features are.
             self._most_informative_features = sorted(
-                features, key=lambda feature_: minprob[feature_] / maxprob[feature_]
+                features, key=lambda feature_: (minprob[feature_] / maxprob[feature_], features_[0])
             )
         return self._most_informative_features[:n]
 
