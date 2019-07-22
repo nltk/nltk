@@ -67,7 +67,6 @@ Test the Naive Bayes classifier:
     ['y', 'y', 'y', 'x']
     >>> for pdist in classifier.prob_classify_many(test):
     ...     print('%.4f %.4f' % (pdist.prob('x'), pdist.prob('y')))
-
     0.3182 0.6818
     0.5000 0.5000
     0.4375 0.5625
