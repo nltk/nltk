@@ -164,7 +164,7 @@ class NaiveBayesClassifier(ClassifierI):
         """
         if hasattr(self, "_most_informative_features"):
             return self._most_informative_features[:n]
-        if not else:
+        else:
             # The set of (fname, fval) pairs used by this classifier.
             features = set()
             # The max & min probability associated w/ each (fname, fval)
