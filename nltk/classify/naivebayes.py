@@ -133,7 +133,8 @@ class NaiveBayesClassifier(ClassifierI):
 
             labels = sorted(
                 [l for l in self._labels if fval in cpdist[l, fname].samples()],
-                key=labelprob,
+                key=lambda element: (-labelprob(element), element),
+                reverse=True
             )
             if len(labels) == 1:
                 continue
