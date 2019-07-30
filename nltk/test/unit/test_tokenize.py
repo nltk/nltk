@@ -109,6 +109,25 @@ class TestTokenize(unittest.TestCase):
         expected = ['(', '393', ')', "928 -3010"]
         result = tokenizer.tokenize(test2)
         self.assertEqual(result, expected)
+        
+    def test_pad_asterisk(self):
+        """
+        Test padding of asterisk for word tokenization.
+        """
+        text = "This is a, *weird sentence with *asterisks in it."
+        expected = ['This', 'is', 'a', ',', '*', 'weird', 'sentence', 
+                    'with', '*', 'asterisks', 'in', 'it', '.']
+        self.assertEqual(word_tokenize(text), expected)
+        
+    def test_pad_dotdot(self):
+        """
+        Test padding of dotdot* for word tokenization.
+        """
+        text = "Why did dotdot.. not get tokenized but dotdotdot... did? How about manydots....."
+        expected = ['Why', 'did', 'dotdot', '..', 'not', 'get', 
+                    'tokenized', 'but', 'dotdotdot', '...', 'did', '?', 
+                    'How', 'about', 'manydots', '.....']
+        self.assertEqual(word_tokenize(text), expected)
 
     def test_remove_handle(self):
         """
