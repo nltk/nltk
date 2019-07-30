@@ -254,6 +254,7 @@
 - Ondřej Cífka <https://github.com/cifkao>
 - Iris X. Zhou <https://github.com/irisxzhou>
 - Devashish Lal <https://github.com/BLaZeKiLL>
+- Gerhard Kremer <https://github.com/GerhardKa>
 - Nicolas Darr <https://github.com/ndarr>
 
 

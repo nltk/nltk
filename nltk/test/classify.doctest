@@ -49,6 +49,7 @@ haven't done this yet for all tests).
     ...     (dict(a=0,b=1,c=0), 'x'),
     ...     (dict(a=0,b=0,c=0), 'x'),
     ...     (dict(a=0,b=1,c=1), 'y'),
+    ...     (dict(a=None,b=1,c=0), 'x'),
     ...     ]
     >>> test = [
     ...     (dict(a=1,b=0,c=1)), # unseen
@@ -66,24 +67,24 @@ Test the Naive Bayes classifier:
     ['y', 'x', 'y', 'x']
     >>> for pdist in classifier.prob_classify_many(test):
     ...     print('%.4f %.4f' % (pdist.prob('x'), pdist.prob('y')))
-    0.3203 0.6797
-    0.5857 0.4143
-    0.3792 0.6208
-    0.6470 0.3530
+    0.2500 0.7500
+    0.5833 0.4167
+    0.3571 0.6429
+    0.7000 0.3000
     >>> classifier.show_most_informative_features()
     Most Informative Features
-                           c = 0                   x : y      =      2.0 : 1.0
-                           c = 1                   y : x      =      1.5 : 1.0
-                           a = 1                   y : x      =      1.4 : 1.0
-                           b = 0                   x : y      =      1.2 : 1.0
-                           a = 0                   x : y      =      1.2 : 1.0
-                           b = 1                   y : x      =      1.1 : 1.0
+                           c = 0                   x : y      =      2.3 : 1.0
+                           c = 1                   y : x      =      1.8 : 1.0
+                           a = 1                   y : x      =      1.7 : 1.0
+                           a = 0                   x : y      =      1.0 : 1.0
+                           b = 0                   x : y      =      1.0 : 1.0
+                           b = 1                   x : y      =      1.0 : 1.0
 
-Test the Decision Tree classifier:
+Test the Decision Tree classifier (without None):
 
     >>> classifier = nltk.classify.DecisionTreeClassifier.train(
-    ...     train, entropy_cutoff=0,
-    ...                                                support_cutoff=0)
+    ...     train[:-1], entropy_cutoff=0,
+    ...     support_cutoff=0)
     >>> sorted(classifier.labels())
     ['x', 'y']
     >>> print(classifier)
@@ -99,6 +100,23 @@ Test the Decision Tree classifier:
     Traceback (most recent call last):
       . . .
     NotImplementedError
+    
+    
+Test the Decision Tree classifier (with None):
+
+    >>> classifier = nltk.classify.DecisionTreeClassifier.train(
+    ...     train, entropy_cutoff=0,
+    ...     support_cutoff=0)
+    >>> sorted(classifier.labels())
+    ['x', 'y']
+    >>> print(classifier)
+    c=0? .................................................. x
+      a=0? ................................................ x
+      a=1? ................................................ y
+      a=None? ............................................. x
+    c=1? .................................................. y
+    <BLANKLINE>
+
 
 Test SklearnClassifier, which requires the scikit-learn package.
 
