@@ -255,6 +255,7 @@
 - Iris X. Zhou <https://github.com/irisxzhou>
 - Devashish Lal <https://github.com/BLaZeKiLL>
 - Gerhard Kremer <https://github.com/GerhardKa>
+- Nicolas Darr <https://github.com/ndarr>
 
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:

@@ -345,7 +345,7 @@ def single_meteor_score(
     )
     translation_length = len(enum_hypothesis)
     reference_length = len(enum_reference)
-    matches, _, _ = _enum_allign_words(enum_hypothesis, enum_reference)
+    matches, _, _ = _enum_allign_words(enum_hypothesis, enum_reference, stemmer=stemmer)
     matches_count = len(matches)
     try:
         precision = float(matches_count) / translation_length

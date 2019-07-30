@@ -129,6 +129,12 @@ _treebank_word_tokenizer.STARTING_QUOTES.append(
 _treebank_word_tokenizer.ENDING_QUOTES.insert(0, (improved_close_quote_regex, r" \1 "))
 _treebank_word_tokenizer.PUNCTUATION.insert(0, (improved_punct_regex, r"\1 \2 \3 "))
 
+# See https://github.com/nltk/nltk/pull/2322
+addition_punct_regex = re.compile(r"[*]", re.U)
+_treebank_word_tokenizer.PUNCTUATION.append((addition_punct_regex, r" \g<0> "))
+replacement_dotdotdot_regex = re.compile(r"\.{2,}", re.U)
+_treebank_word_tokenizer.PUNCTUATION[3] = (replacement_dotdotdot_regex, r" \g<0> ")
+
 
 def word_tokenize(text, language="english", preserve_line=False):
     """
