@@ -57,7 +57,7 @@ to the classifier:
     >>> from nltk.corpus import gutenberg
     >>> for fileid in gutenberg.fileids(): # doctest: +SKIP
     ...     doc = gutenberg.words(fileid) # doctest: +SKIP
-    ...     print fileid, classifier.classify(document_features(doc)) # doctest: +SKIP
+    ...     print (fileid, classifier.classify(document_features(doc))) # doctest: +SKIP
 
 The parameters that a feature detector expects will vary, depending on
 the task and the needs of the feature detector.  For example, a
