@@ -4,6 +4,9 @@ NLTK News
 2019
 ----
 
+NLTK 3.5 release: August 2019
+  Drop support for Python 2
+
 NLTK 3.4.4 release: July 2019
   Fix bug in plot function (probability.py)
   Add improved PanLex Swadesh corpus reader  

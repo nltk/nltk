@@ -1,3 +1,10 @@
+Version 3.5 2019-08-07
+* drop support for Python 2
+* minor bug fixes and clean ups
+
+Thanks to the following contributors to 3.5:
+Nicolas Darr, Gerhard Kremer, Liling Tan
+
 Version 3.4.4 2019-07-04
 * fix bug in plot function (probability.py)
 * add improved PanLex Swadesh corpus reader
