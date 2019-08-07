@@ -477,7 +477,7 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
         # Note: In >= Python3.5, GzipFile is already using a
         # buffered reader in the backend which has a variable self._buffer
         # See https://github.com/nltk/nltk/issues/1308
-        if sys.version.startswith("2.7") or sys.version.startswith("3.4"):
+        if sys.version.startswith("3.4"):
             stream = BufferedGzipFile(self._path, "rb")
         else:
             stream = GzipFile(self._path, "rb")
@@ -552,7 +552,7 @@ class ZipFilePathPointer(PathPointer):
             # Note: In >= Python3.5, GzipFile is already using a
             # buffered reader in the backend which has a variable self._buffer
             # See https://github.com/nltk/nltk/issues/1308
-            if sys.version.startswith("2.7") or sys.version.startswith("3.4"):
+            if sys.version.startswith("3.4"):
                 stream = BufferedGzipFile(self._entry, fileobj=stream)
             else:
                 stream = GzipFile(self._entry, fileobj=stream)
