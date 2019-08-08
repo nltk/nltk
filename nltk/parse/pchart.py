@@ -380,7 +380,7 @@ class InsideChartParser(BottomUpProbabilisticChartParser):
 #                                      bestp.get(elt,0))
 #
 #         self._bestp = bestp
-#         for (k,v) in self._bestp.items(): print k,v
+#         for (k,v) in self._bestp.items(): print(k,v)
 #
 #     def _sortkey(self, edge):
 #         return edge.structure()[PROB] * self._bestp[edge.lhs()]

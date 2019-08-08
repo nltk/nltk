@@ -214,41 +214,5 @@ def demo():
     for sample in pdist.samples():
         print("%s => %.0f%%" % (sample, pdist.prob(sample) * 100))
 
-
-#
-#     The following demo code is broken.
-#
-#     # use a set of tokens with 2D indices
-#     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
-
-#     # test the EM clusterer with means given by k-means (2) and
-#     # dimensionality reduction
-#     clusterer = cluster.KMeans(2, euclidean_distance, svd_dimensions=1)
-#     print 'Clusterer:', clusterer
-#     clusters = clusterer.cluster(vectors)
-#     means = clusterer.means()
-#     print 'Means:', clusterer.means()
-#     print
-
-#     clusterer = cluster.EMClusterer(means, svd_dimensions=1)
-#     clusters = clusterer.cluster(vectors, True)
-#     print 'Clusterer:', clusterer
-#     print 'Clustered:', str(vectors)[:60], '...'
-#     print 'As:', str(clusters)[:60], '...'
-#     print
-
-#     # classify a new vector
-#     vector = numpy.array([3, 3])
-#     print 'classify(%s):' % vector,
-#     print clusterer.classify(vector)
-#     print
-
-#     # show the classification probabilities
-#     vector = numpy.array([2.2, 2])
-#     print 'classification_probdist(%s)' % vector
-#     pdist = clusterer.classification_probdist(vector)
-#     for sample in pdist:
-#         print '%s => %.0f%%' % (sample, pdist.prob(sample) *100)
-
 if __name__ == "__main__":
     demo()

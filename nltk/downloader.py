@@ -711,7 +711,6 @@ class Downloader(object):
         try:
             infile = urlopen(info.url)
             with open(filepath, "wb") as outfile:
-                # print info.size
                 num_blocks = max(1, info.size / (1024 * 16))
                 for block in itertools.count():
                     s = infile.read(1024 * 16)  # 16k blocks.
@@ -1130,9 +1129,6 @@ class DownloaderShell(object):
         print("-" * 75)
         spc = (68 - sum(len(o) for o in options)) // (len(options) - 1) * " "
         print("    " + spc.join(options))
-        # w = 76/len(options)
-        # fmt = '  ' + ('%-'+str(w)+'s')*(len(options)-1) + '%s'
-        # print fmt % options
         print("-" * 75)
 
     def run(self):

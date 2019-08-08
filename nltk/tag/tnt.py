@@ -173,10 +173,6 @@ class TnT(TaggerI):
         # compute lambda values from the trained frequency distributions
         self._compute_lambda()
 
-        # (debugging -- ignore or delete me)
-        # print "lambdas"
-        # print i, self._l1, i, self._l2, i, self._l3
-
     def _compute_lambda(self):
         """
         creates lambda values based upon training data
@@ -250,7 +246,6 @@ class TnT(TaggerI):
                 # otherwise there might be a problem
                 # eg: all values = 0
                 else:
-                    # print "Problem", c1, c2 ,c3
                     pass
 
         # Lambda normalisation:
@@ -474,14 +469,11 @@ def demo():
     sents = list(brown.tagged_sents())
     test = list(brown.sents())
 
-    # create and train the tagger
     tagger = TnT()
     tagger.train(sents[200:1000])
 
-    # tag some data
     tagged_data = tagger.tagdata(test[100:120])
 
-    # print results
     for j in range(len(tagged_data)):
         s = tagged_data[j]
         t = sents[j + 100]
@@ -578,7 +570,7 @@ def demo3():
         tallacc += tacc
         sallacc += sacc
 
-        # print i+1, (tacc / tp_kn), i+1, (sacc / tp_kn), i+1, tacc, i+1, sacc
+        # print(i+1, (tacc / tp_kn), i+1, (sacc / tp_kn), i+1, tacc, i+1, sacc)
 
     print("brown: acc over words known:", 10 * tknacc)
     print("     : overall accuracy:", 10 * tallacc)

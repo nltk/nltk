@@ -1483,7 +1483,7 @@ def train_maxent_classifier_with_megam(
         options += ["-multilabel"]  # each possible la
     options += ["multiclass", trainfile_name]
     stdout = call_megam(options)
-    # print './megam_i686.opt ', ' '.join(options)
+    # print('./megam_i686.opt ', ' '.join(options))
     # Delete the training file
     try:
         os.remove(trainfile_name)

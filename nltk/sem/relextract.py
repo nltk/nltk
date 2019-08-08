@@ -109,12 +109,6 @@ def descape_entity(m, defs=html_entities.entitydefs):
 
 
     """
-    # s = 'mcglashan_&amp;_sarrail'
-    # l = ['mcglashan', '&amp;', 'sarrail']
-    # pattern = re.compile("&(\w+?);")
-    # new = list2sym(l)
-    # s = pattern.sub(descape_entity, s)
-    # print s, new
     try:
         return defs[m.group(1)]
 

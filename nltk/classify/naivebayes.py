@@ -98,7 +98,7 @@ class NaiveBayesClassifier(ClassifierI):
                 if (label, fname) in self._feature_probdist:
                     break
             else:
-                # print 'Ignoring unseen feature %s' % fname
+                # print('Ignoring unseen feature %s' % fname)
                 del featureset[fname]
 
         # Find the log probabilty of each label, given the features.

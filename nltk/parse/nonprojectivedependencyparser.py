@@ -406,7 +406,6 @@ class ProbabilisticNonprojectiveParser(object):
         max_score = None
         for row_index in range(len(self.scores)):
             for col_index in range(len(self.scores[row_index])):
-                # print self.scores[row_index][col_index]
                 if col_index in originals and (
                     max_score is None or self.scores[row_index][col_index] > max_score
                 ):
@@ -461,7 +460,6 @@ class ProbabilisticNonprojectiveParser(object):
             g_graph.nodes[index + 1].update(
                 {"word": token, "tag": tags[index], "rel": "NTOP", "address": index + 1}
             )
-        # print (g_graph.nodes)
 
         # Fully connect non-root nodes in g_graph
         g_graph.connect_graph()

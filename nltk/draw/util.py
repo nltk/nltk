@@ -657,7 +657,7 @@ class CanvasWidget(object):
             # try:
             cb(self)
             # except:
-            #    print 'Error in click callback for %r' % self
+            #    print('Error in click callback for %r' % self)
             #    raise
         elif self.__parent is not None:
             self.__parent.__click(button)

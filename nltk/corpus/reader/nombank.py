@@ -454,8 +454,6 @@ class NombankTreePointer(NombankPointer):
 
         wordnum = 0
         while True:
-            # print treepos
-            # print stack[-1]
             # tree node:
             if isinstance(stack[-1], Tree):
                 # Select the next child.

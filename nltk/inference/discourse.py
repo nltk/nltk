@@ -538,12 +538,6 @@ class DiscourseTester(object):
         return result
 
 
-# multiply = DiscourseTester.multiply
-# L1 = [['A'], ['B']]
-# L2 = ['a', 'b', 'c']
-# print multiply(L1,L2)
-
-
 def load_fol(s):
     """
     Temporarily duplicated from ``nltk.sem.util``.

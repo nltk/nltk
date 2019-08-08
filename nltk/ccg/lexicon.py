@@ -218,7 +218,6 @@ def augParseCategory(line, primitives, families, var=None):
         (res, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
 
     else:
-        #        print rePrim.match(str).groups()
         (res, var) = parsePrimitiveCategory(
             PRIM_RE.match(cat_string).groups(), primitives, families, var
         )

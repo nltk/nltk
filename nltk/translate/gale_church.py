@@ -264,11 +264,3 @@ def parse_token_stream(stream, soft_delimiter, hard_delimiter):
         for block_it in split_at(stream, hard_delimiter)
     ]
 
-
-#    Code for test files in nltk_contrib/align/data/*.tok
-#    import sys
-#    from contextlib import nested
-#    with nested(open(sys.argv[1], "r"), open(sys.argv[2], "r")) as (s, t):
-#        source = parse_token_stream((l.strip() for l in s), ".EOS", ".EOP")
-#        target = parse_token_stream((l.strip() for l in t), ".EOS", ".EOP")
-#        print align_texts(source, target)

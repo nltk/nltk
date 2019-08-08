@@ -362,9 +362,9 @@ if __name__ == '__main__':
     >>> # Parse a single sentence.
     >>> parsed_sent1 = mp.parse_one(sent1)
     >>> parsed_sent2 = mp.parse_one(sent2)
-    >>> print (parsed_sent1.tree())
+    >>> print(parsed_sent1.tree())
     (sees John Mary .)
-    >>> print (parsed_sent2.tree())
+    >>> print(parsed_sent2.tree())
     (walks John (dog a) .)
     >>>
     >>> # Parsing multiple sentences.

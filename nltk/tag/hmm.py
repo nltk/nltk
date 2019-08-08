@@ -566,7 +566,7 @@ class HiddenMarkovModelTagger(TaggerI):
         for i, state in enumerate(self._states):
             p = 2 ** (alpha[0, i] + beta[0, i] - normalisation)
             entropy -= p * self._priors.logprob(state)
-            # print 'p(s_0 = %s) =' % state, p
+            # print('p(s_0 = %s) =' % state, p)
 
         # state transitions
         for t0 in range(T - 1):
@@ -581,7 +581,7 @@ class HiddenMarkovModelTagger(TaggerI):
                         - normalisation
                     )
                     entropy -= p * self._transitions[s0].logprob(s1)
-                    # print 'p(s_%d = %s, s_%d = %s) =' % (t0, s0, t1, s1), p
+                    # print('p(s_%d = %s, s_%d = %s) =' % (t0, s0, t1, s1), p)
 
         # symbol emissions
         for t in range(T):
@@ -590,7 +590,7 @@ class HiddenMarkovModelTagger(TaggerI):
                 entropy -= p * self._outputs[state].logprob(
                     unlabeled_sequence[t][_TEXT]
                 )
-                # print 'p(s_%d = %s) =' % (t, state), p
+                # print('p(s_%d = %s) =' % (t, state), p)
 
         return entropy
 
@@ -641,15 +641,6 @@ class HiddenMarkovModelTagger(TaggerI):
             lp = self.log_probability(labeled_sequence)
             log_probs.append(lp)
         normalisation = _log_add(*log_probs)
-
-        # ps = zeros((T, N), float64)
-        # for labelling, lp in zip(labellings, log_probs):
-        # for t in range(T):
-        # ps[t, self._states.index(labelling[t])] += \
-        #    2**(lp - normalisation)
-
-        # for t in range(T):
-        # print 'prob[%d] =' % t, ps[t]
 
         entropy = 0
         for lp in log_probs:

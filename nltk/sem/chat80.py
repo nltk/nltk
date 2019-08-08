@@ -359,7 +359,6 @@ class Concept(object):
             all = self._make_graph(self._extension)
             closed = self._transclose(all)
             trans = self._make_pairs(closed)
-            # print sorted(trans)
             self._extension = self._extension.union(trans)
         self.extension = sorted(list(self._extension))
 

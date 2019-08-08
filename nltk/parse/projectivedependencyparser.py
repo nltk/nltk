@@ -250,7 +250,7 @@ class ProjectiveDependencyParser(object):
         if self._grammar.contains(
             self._tokens[span1._head_index], self._tokens[span2._head_index]
         ):
-            #           print 'Performing rightward cover %d to %d' % (span1._head_index, span2._head_index)
+            #           print('Performing rightward cover %d to %d' % (span1._head_index, span2._head_index))
             new_arcs[span2._head_index - span1._start_index] = span1._head_index
             spans.append(
                 DependencySpan(
@@ -266,7 +266,7 @@ class ProjectiveDependencyParser(object):
         if self._grammar.contains(
             self._tokens[span2._head_index], self._tokens[span1._head_index]
         ):
-            #           print 'performing leftward cover %d to %d' % (span2._head_index, span1._head_index)
+            #           print('performing leftward cover %d to %d' % (span2._head_index, span1._head_index))
             new_arcs[span1._head_index - span1._start_index] = span2._head_index
             spans.append(
                 DependencySpan(
