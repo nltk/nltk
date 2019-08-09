@@ -10,7 +10,14 @@ Language Model Counter
 ----------------------
 """
 
-from collections import Sequence, defaultdict
+from collections import defaultdict
+
+try:
+    # Python >= 3.3
+    from collections.abc import Sequence
+except ImportError:
+    # Python < 3.3
+    from collections import Sequence
 
 from six import string_types
 from nltk.probability import ConditionalFreqDist, FreqDist

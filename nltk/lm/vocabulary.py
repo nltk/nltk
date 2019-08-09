@@ -8,7 +8,15 @@
 """Language Model Vocabulary"""
 
 import sys
-from collections import Counter, Iterable
+from collections import Counter
+
+try:
+    # Python >= 3.3
+    from collections.abc import Iterable
+except ImportError:
+    # Python < 3.3
+    from collections import Iterable
+
 from itertools import chain
 
 try:
