@@ -21,7 +21,7 @@ def _count_non_zero_vals(dictionary):
 class WittenBell(Smoothing):
     """Witten-Bell smoothing."""
 
-    def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
+    def __init__(self, vocabulary, counter, **kwargs):
         super(WittenBell, self).__init__(vocabulary, counter, *kwargs)
 
     def alpha_gamma(self, word, context):
