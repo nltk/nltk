@@ -90,7 +90,7 @@ class ParametrizeTestsMeta(type):
 
 @add_metaclass(ParametrizeTestsMeta)
 class MleBigramTests(unittest.TestCase):
-    """unit tests for MLENgramModel class"""
+    """Unit tests for MLE ngram model."""
 
     score_tests = [
         ("d", ["c"], 1),
@@ -195,7 +195,7 @@ class MleTrigramTests(unittest.TestCase):
 
 @add_metaclass(ParametrizeTestsMeta)
 class LidstoneBigramTests(unittest.TestCase):
-    """unit tests for Lidstone class"""
+    """Unit tests for Lidstone class"""
 
     score_tests = [
         # count(d | c) = 1
@@ -272,7 +272,7 @@ class LidstoneTrigramTests(unittest.TestCase):
 
 @add_metaclass(ParametrizeTestsMeta)
 class LaplaceBigramTests(unittest.TestCase):
-    """unit tests for Laplace class"""
+    """Unit tests for Laplace class"""
 
     score_tests = [
         # basic sanity-check:
@@ -390,7 +390,7 @@ class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
 
 
 class NgramModelTextGenerationTests(unittest.TestCase):
-    """Using MLE estimator, generate some text."""
+    """Using MLE model, generate some text."""
 
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)

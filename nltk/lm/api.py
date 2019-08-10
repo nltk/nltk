@@ -42,7 +42,7 @@ class Smoothing(object):
     """Ngram Smoothing Interface
 
     Implements Chen & Goodman 1995's idea that all smoothing algorithms have
-    certain features in common. This should ideally allow smoothing algoritms to
+    certain features in common. This should ideally allow smoothing algorithms to
     work both with Backoff and Interpolation.
     """
 
@@ -127,7 +127,7 @@ class LanguageModel(object):
         if not self.vocab:
             if vocabulary_text is None:
                 raise ValueError(
-                    "Cannot fit without a vocabulary or text to " "create it from."
+                    "Cannot fit without a vocabulary or text to create it from."
                 )
             self.vocab.update(vocabulary_text)
         self.counts.update(self.vocab.lookup(sent) for sent in text)
@@ -220,7 +220,7 @@ class LanguageModel(object):
         """
         text_seed = [] if text_seed is None else list(text_seed)
         random_generator = _random_generator(random_seed)
-        # base recursion case
+        # This is the base recursion case.
         if num_words == 1:
             context = (
                 text_seed[-self.order + 1 :]
@@ -231,16 +231,16 @@ class LanguageModel(object):
             while context and not samples:
                 context = context[1:] if len(context) > 1 else []
                 samples = self.context_counts(self.vocab.lookup(context))
-            # sorting achieves two things:
+            # Sorting samples achieves two things:
             # - reproducible randomness when sampling
-            # - turning Mapping into Sequence which _weighted_choice expects
+            # - turns Mapping into Sequence which `_weighted_choice` expects
             samples = sorted(samples)
             return _weighted_choice(
                 samples,
                 tuple(self.score(w, context) for w in samples),
                 random_generator,
             )
-        # build up text one word at a time
+        # We build up text one word at a time using the preceding context.
         generated = []
         for _ in range(num_words):
             generated.append(

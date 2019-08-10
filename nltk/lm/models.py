@@ -64,6 +64,7 @@ class InterpolatedLanguageModel(LanguageModel):
     """Logic common to all interpolated language models.
 
     The idea to abstract this comes from Chen & Goodman 1995.
+    Do not instantiate this class directly!
     """
 
     def __init__(self, smoothing_cls, order, **kwargs):

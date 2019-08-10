@@ -130,7 +130,7 @@ class Vocabulary(object):
     ('<UNK>', 'a', '<UNK>', 'd', '<UNK>', 'c')
 
     It's possible to update the counts after the vocabulary has been created.
-    The interface follows that of `collections.Counter`.
+    In general, the interface is the same as that of `collections.Counter`.
 
     >>> vocab['b']
     1
