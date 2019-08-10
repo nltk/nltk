@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
 # Copyright (C) 2001-2019 NLTK Project

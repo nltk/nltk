@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -22,7 +21,7 @@ class WittenBell(Smoothing):
     """Witten-Bell smoothing."""
 
     def __init__(self, vocabulary, counter, **kwargs):
-        super(WittenBell, self).__init__(vocabulary, counter, *kwargs)
+        super().__init__(vocabulary, counter, *kwargs)
 
     def alpha_gamma(self, word, context):
         gamma = self.gamma(context)
@@ -43,7 +42,7 @@ class KneserNey(Smoothing):
     """Kneser-Ney Smoothing."""
 
     def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
-        super(KneserNey, self).__init__(vocabulary, counter, *kwargs)
+        super().__init__(vocabulary, counter, *kwargs)
         self.discount = discount
 
     def unigram_score(self, word):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -9,7 +8,6 @@
 from __future__ import division
 
 import math
-import sys
 import unittest
 
 from six import add_metaclass
@@ -57,19 +55,11 @@ class ParametrizeTestsMeta(type):
             dct["test_score_{0}".format(i)] = cls.add_score_test(
                 word, context, expected_score
             )
-        return super(ParametrizeTestsMeta, cls).__new__(cls, name, bases, dct)
+        return super().__new__(cls, name, bases, dct)
 
     @classmethod
     def add_score_test(cls, word, context, expected_score):
-        if sys.version_info > (3, 5):
-            message = "word='{word}', context={context}"
-        else:
-            # Python 2 doesn't report the mismatched values if we pass a custom
-            # message, so we have to report them manually.
-            message = (
-                "{score} != {expected_score} within 4 places, "
-                "word='{word}', context={context}"
-            )
+        message = "word='{word}', context={context}"
 
         def test_method(self):
             score = self.model.score(word, context)

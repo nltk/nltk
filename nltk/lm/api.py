@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Models
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -17,28 +16,11 @@ from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
 
-try:
-    from itertools import accumulate
-except ImportError:
-    import operator
-
-    def accumulate(iterable, func=operator.add):
-        """Return running totals"""
-        # accumulate([1,2,3,4,5]) --> 1 3 6 10 15
-        # accumulate([1,2,3,4,5], operator.mul) --> 1 2 6 24 120
-        it = iter(iterable)
-        try:
-            total = next(it)
-        except StopIteration:
-            return
-        yield total
-        for element in it:
-            total = func(total, element)
-            yield total
+from itertools import accumulate
 
 
 @add_metaclass(ABCMeta)
-class Smoothing(object):
+class Smoothing:
     """Ngram Smoothing Interface
 
     Implements Chen & Goodman 1995's idea that all smoothing algorithms have
@@ -92,7 +74,7 @@ def _weighted_choice(population, weights, random_generator=None):
 
 
 @add_metaclass(ABCMeta)
-class LanguageModel(object):
+class LanguageModel:
     """ABC for Language Models.
 
     Cannot be directly instantiated itself.

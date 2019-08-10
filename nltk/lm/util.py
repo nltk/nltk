@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit
 #
 # Copyright (C) 2001-2019 NLTK Project

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -10,13 +9,14 @@ Language Model Counter
 ----------------------
 """
 
-from collections import Sequence, defaultdict
+from collections import defaultdict
+from collections.abc import Sequence
 
 from six import string_types
 from nltk.probability import ConditionalFreqDist, FreqDist
 
 
-class NgramCounter(object):
+class NgramCounter:
     """Class for counting ngrams.
 
     Will count any ngram sequence you give it ;)

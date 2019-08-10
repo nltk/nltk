@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Models
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -35,7 +34,7 @@ class Lidstone(LanguageModel):
     """
 
     def __init__(self, gamma, *args, **kwargs):
-        super(Lidstone, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.gamma = gamma
 
     def unmasked_score(self, word, context=None):
@@ -57,7 +56,7 @@ class Laplace(Lidstone):
     """
 
     def __init__(self, *args, **kwargs):
-        super(Laplace, self).__init__(1, *args, **kwargs)
+        super().__init__(1, *args, **kwargs)
 
 
 class InterpolatedLanguageModel(LanguageModel):
@@ -70,7 +69,7 @@ class InterpolatedLanguageModel(LanguageModel):
     def __init__(self, smoothing_cls, order, **kwargs):
         assert issubclass(smoothing_cls, Smoothing)
         params = kwargs.pop("params", {})
-        super(InterpolatedLanguageModel, self).__init__(order, **kwargs)
+        super().__init__(order, **kwargs)
         self.estimator = smoothing_cls(self.vocab, self.counts, **params)
 
     def unmasked_score(self, word, context=None):
@@ -84,13 +83,11 @@ class WittenBellInterpolated(InterpolatedLanguageModel):
     """Interpolated version of Witten-Bell smoothing."""
 
     def __init__(self, order, **kwargs):
-        super(WittenBellInterpolated, self).__init__(WittenBell, order, **kwargs)
+        super().__init__(WittenBell, order, **kwargs)
 
 
 class KneserNeyInterpolated(InterpolatedLanguageModel):
     """Interpolated version of Kneser-Ney smoothing."""
 
     def __init__(self, order, discount=0.1, **kwargs):
-        super(KneserNeyInterpolated, self).__init__(
-            KneserNey, order, params={"discount": discount}, **kwargs
-        )
+        super().__init__(KneserNey, order, params={"discount": discount}, **kwargs)
