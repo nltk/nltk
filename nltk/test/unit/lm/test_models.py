@@ -347,6 +347,9 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase):
         # gamma(['a', 'b']) = 0.0667
         # mle("c", ["a", "b"]) = 1
         ("c", ["a", "b"], (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+        # The ngram 'z b c' was not seen, so we should simply revert to
+        # the score of the ngram 'b c'. See issue #2332.
+        ("c", ["z", "b"], ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
     ]
 
 
@@ -376,6 +379,9 @@ class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
         # gamma(['a', 'b']) = 0.1 * 1
         # normalizer = total number of trigrams with prefix "ab" = 1 => we can ignore it!
         ("c", ["a", "b"], 0.9 + 0.1 * ((0.9 + 0.2 * (1 / 8)) / 2)),
+        # The ngram 'z b c' was not seen, so we should simply revert to
+        # the score of the ngram 'b c'. See issue #2332.
+        ("c", ["z", "b"], ((0.9 + 0.2 * (1 / 8)) / 2)),
     ]
 
 
