@@ -70,10 +70,7 @@ def getinfo(func):
     <Signature (self, x=1, y=2, *args, **kw)>
     """
     assert inspect.ismethod(func) or inspect.isfunction(func)
-    if sys.version_info[0] >= 3:
-        argspec = inspect.getfullargspec(func)
-    else:
-        argspec = inspect.getargspec(func)
+    argspec = inspect.getfullargspec(func)
     regargs, varargs, varkwargs = argspec[:3]
     argnames = list(regargs)
     if varargs:
