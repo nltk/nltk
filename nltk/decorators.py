@@ -19,11 +19,11 @@ import sys
 
 # Hack to keep NLTK's "tokenize" module from colliding with the "tokenize" in
 # the Python standard library.
-old_sys_path = sys.path[:]
+OLD_SYS_PATH = sys.path[:]
 sys.path = [p for p in sys.path if p and "nltk" not in p]
 import inspect
 
-sys.path = old_sys_path
+sys.path = OLD_SYS_PATH
 
 def __cleansignatureparam(signature):
     """
@@ -104,8 +104,8 @@ def getinfo(func):
     )
 
 
-# akin to functools.update_wrapper
 def update_wrapper(wrapper, model, infodict=None):
+    " akin to functools.update_wrapper "
     infodict = infodict or getinfo(model)
     wrapper.__name__ = infodict["name"]
     wrapper.__doc__ = infodict["doc"]
@@ -222,10 +222,9 @@ def memoize(func, *args):
     # memoize_dic is created at the first call
     if args in dic:
         return dic[args]
-    else:
-        result = func(*args)
-        dic[args] = result
-        return result
+    result = func(*args)
+    dic[args] = result
+    return result
 
 
 ##########################     LEGALESE    ###############################
