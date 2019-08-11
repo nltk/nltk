@@ -21,7 +21,7 @@ class WittenBell(Smoothing):
     """Witten-Bell smoothing."""
 
     def __init__(self, vocabulary, counter, **kwargs):
-        super().__init__(vocabulary, counter, *kwargs)
+        super().__init__(vocabulary, counter, **kwargs)
 
     def alpha_gamma(self, word, context):
         alpha = self.counts[context].freq(word)
@@ -40,7 +40,7 @@ class KneserNey(Smoothing):
     """Kneser-Ney Smoothing."""
 
     def __init__(self, vocabulary, counter, discount=0.1, **kwargs):
-        super().__init__(vocabulary, counter, *kwargs)
+        super().__init__(vocabulary, counter, **kwargs)
         self.discount = discount
 
     def unigram_score(self, word):
