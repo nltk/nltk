@@ -124,8 +124,7 @@ class NgramModelVocabularyTests(unittest.TestCase):
 
     def test_str(self):
         self.assertEqual(
-            str(self.vocab),
-            ("<Vocabulary with cutoff=2 " "unk_label='<UNK>' and 5 items>"),
+            str(self.vocab), "<Vocabulary with cutoff=2 unk_label='<UNK>' and 5 items>"
         )
 
     def test_creation_with_counter(self):
