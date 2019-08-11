@@ -25,6 +25,19 @@ import inspect
 
 sys.path = old_sys_path
 
+def __cleansignatureparam(signature):
+    """
+    Removes the default definition in a Signature parameter
+    passed as string.
+    """
+    listsignature = str(signature)[1:-1].split(",")
+    for counter, param in enumerate(listsignature):
+        if param.count("=") > 0:
+            listsignature[counter] = param[0:param.index("=")].strip()
+        else:
+            listsignature[counter] = param.strip()
+    return ", ".join(listsignature)
+
 
 def getinfo(func):
     """
@@ -33,6 +46,7 @@ def getinfo(func):
     - argnames (the names of the arguments : list)
     - defaults (the values of the default arguments : tuple)
     - signature (the signature : str)
+    - fullsignature (the full signature : Signature)
     - doc (the docstring : str)
     - module (the module name : str)
     - dict (the function __dict__ : str)
@@ -51,21 +65,25 @@ def getinfo(func):
 
     >>> info["signature"]
     'self, x, y, *args, **kw'
+
+    >>> info["fullsignature"]
+    <Signature (self, x=1, y=2, *args, **kw)>
     """
     assert inspect.ismethod(func) or inspect.isfunction(func)
     if sys.version_info[0] >= 3:
         argspec = inspect.getfullargspec(func)
     else:
         argspec = inspect.getargspec(func)
-    regargs, varargs, varkwargs, defaults = argspec[:4]
+    regargs, varargs, varkwargs = argspec[:3]
     argnames = list(regargs)
     if varargs:
         argnames.append(varargs)
     if varkwargs:
         argnames.append(varkwargs)
-    signature = inspect.formatargspec(
-        regargs, varargs, varkwargs, defaults, formatvalue=lambda value: ""
-    )[1:-1]
+    fullsignature = inspect.signature(func)
+    # Convert Signature to str
+    signature = __cleansignatureparam(fullsignature)
+
 
     # pypy compatibility
     if hasattr(func, "__closure__"):
@@ -79,6 +97,7 @@ def getinfo(func):
         name=func.__name__,
         argnames=argnames,
         signature=signature,
+        fullsignature=fullsignature,
         defaults=func.__defaults__,
         doc=func.__doc__,
         module=func.__module__,
