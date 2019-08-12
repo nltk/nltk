@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Models
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -17,32 +16,15 @@ from nltk.lm.counter import NgramCounter
 from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
 
-try:
-    from itertools import accumulate
-except ImportError:
-    import operator
-
-    def accumulate(iterable, func=operator.add):
-        """Return running totals"""
-        # accumulate([1,2,3,4,5]) --> 1 3 6 10 15
-        # accumulate([1,2,3,4,5], operator.mul) --> 1 2 6 24 120
-        it = iter(iterable)
-        try:
-            total = next(it)
-        except StopIteration:
-            return
-        yield total
-        for element in it:
-            total = func(total, element)
-            yield total
+from itertools import accumulate
 
 
 @add_metaclass(ABCMeta)
-class Smoothing(object):
+class Smoothing:
     """Ngram Smoothing Interface
 
     Implements Chen & Goodman 1995's idea that all smoothing algorithms have
-    certain features in common. This should ideally allow smoothing algoritms to
+    certain features in common. This should ideally allow smoothing algorithms to
     work both with Backoff and Interpolation.
     """
 
@@ -92,7 +74,7 @@ def _weighted_choice(population, weights, random_generator=None):
 
 
 @add_metaclass(ABCMeta)
-class LanguageModel(object):
+class LanguageModel:
     """ABC for Language Models.
 
     Cannot be directly instantiated itself.
@@ -127,7 +109,7 @@ class LanguageModel(object):
         if not self.vocab:
             if vocabulary_text is None:
                 raise ValueError(
-                    "Cannot fit without a vocabulary or text to " "create it from."
+                    "Cannot fit without a vocabulary or text to create it from."
                 )
             self.vocab.update(vocabulary_text)
         self.counts.update(self.vocab.lookup(sent) for sent in text)
@@ -220,7 +202,7 @@ class LanguageModel(object):
         """
         text_seed = [] if text_seed is None else list(text_seed)
         random_generator = _random_generator(random_seed)
-        # base recursion case
+        # This is the base recursion case.
         if num_words == 1:
             context = (
                 text_seed[-self.order + 1 :]
@@ -231,16 +213,16 @@ class LanguageModel(object):
             while context and not samples:
                 context = context[1:] if len(context) > 1 else []
                 samples = self.context_counts(self.vocab.lookup(context))
-            # sorting achieves two things:
+            # Sorting samples achieves two things:
             # - reproducible randomness when sampling
-            # - turning Mapping into Sequence which _weighted_choice expects
+            # - turns Mapping into Sequence which `_weighted_choice` expects
             samples = sorted(samples)
             return _weighted_choice(
                 samples,
                 tuple(self.score(w, context) for w in samples),
                 random_generator,
             )
-        # build up text one word at a time
+        # We build up text one word at a time using the preceding context.
         generated = []
         for _ in range(num_words):
             generated.append(

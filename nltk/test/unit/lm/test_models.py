@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Model Unit Tests
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -9,7 +8,6 @@
 from __future__ import division
 
 import math
-import sys
 import unittest
 
 from six import add_metaclass
@@ -57,19 +55,11 @@ class ParametrizeTestsMeta(type):
             dct["test_score_{0}".format(i)] = cls.add_score_test(
                 word, context, expected_score
             )
-        return super(ParametrizeTestsMeta, cls).__new__(cls, name, bases, dct)
+        return super().__new__(cls, name, bases, dct)
 
     @classmethod
     def add_score_test(cls, word, context, expected_score):
-        if sys.version_info > (3, 5):
-            message = "word='{word}', context={context}"
-        else:
-            # Python 2 doesn't report the mismatched values if we pass a custom
-            # message, so we have to report them manually.
-            message = (
-                "{score} != {expected_score} within 4 places, "
-                "word='{word}', context={context}"
-            )
+        message = "word='{word}', context={context}"
 
         def test_method(self):
             score = self.model.score(word, context)
@@ -90,7 +80,7 @@ class ParametrizeTestsMeta(type):
 
 @add_metaclass(ParametrizeTestsMeta)
 class MleBigramTests(unittest.TestCase):
-    """unit tests for MLENgramModel class"""
+    """Unit tests for MLE ngram model."""
 
     score_tests = [
         ("d", ["c"], 1),
@@ -195,7 +185,7 @@ class MleTrigramTests(unittest.TestCase):
 
 @add_metaclass(ParametrizeTestsMeta)
 class LidstoneBigramTests(unittest.TestCase):
-    """unit tests for Lidstone class"""
+    """Unit tests for Lidstone class"""
 
     score_tests = [
         # count(d | c) = 1
@@ -272,7 +262,7 @@ class LidstoneTrigramTests(unittest.TestCase):
 
 @add_metaclass(ParametrizeTestsMeta)
 class LaplaceBigramTests(unittest.TestCase):
-    """unit tests for Laplace class"""
+    """Unit tests for Laplace class"""
 
     score_tests = [
         # basic sanity-check:
@@ -357,6 +347,9 @@ class WittenBellInterpolatedTrigramTests(unittest.TestCase):
         # gamma(['a', 'b']) = 0.0667
         # mle("c", ["a", "b"]) = 1
         ("c", ["a", "b"], (1 - 0.0667) + 0.0667 * ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
+        # The ngram 'z b c' was not seen, so we should simply revert to
+        # the score of the ngram 'b c'. See issue #2332.
+        ("c", ["z", "b"], ((1 - 0.1111) * 0.5 + 0.1111 / 18)),
     ]
 
 
@@ -386,11 +379,14 @@ class KneserNeyInterpolatedTrigramTests(unittest.TestCase):
         # gamma(['a', 'b']) = 0.1 * 1
         # normalizer = total number of trigrams with prefix "ab" = 1 => we can ignore it!
         ("c", ["a", "b"], 0.9 + 0.1 * ((0.9 + 0.2 * (1 / 8)) / 2)),
+        # The ngram 'z b c' was not seen, so we should simply revert to
+        # the score of the ngram 'b c'. See issue #2332.
+        ("c", ["z", "b"], ((0.9 + 0.2 * (1 / 8)) / 2)),
     ]
 
 
 class NgramModelTextGenerationTests(unittest.TestCase):
-    """Using MLE estimator, generate some text."""
+    """Using MLE model, generate some text."""
 
     def setUp(self):
         vocab, training_text = _prepare_test_data(3)
