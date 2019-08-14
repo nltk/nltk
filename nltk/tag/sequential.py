@@ -551,7 +551,7 @@ class RegexpTagger(SequentialBackoffTagger):
                 'Invalid RegexpTagger regexp:', str(e), 'regexp:', regexp, 'tag:', tag)
 
     def encode_json_obj(self):
-        return [(regexp.patten, tag) for regexp, tag in self._regexs], self.backoff
+        return [(regexp.pattern, tag) for regexp, tag in self._regexs], self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
