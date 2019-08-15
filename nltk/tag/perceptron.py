@@ -17,6 +17,8 @@ import logging
 from nltk.tag.api import TaggerI
 from nltk.data import find, load
 
+from nltk import jsontags
+
 try:
     import numpy as np
 except ImportError:
@@ -24,7 +26,7 @@ except ImportError:
 
 PICKLE = "averaged_perceptron_tagger.pickle"
 
-
+@jsontags.register_tag
 class AveragedPerceptron(object):
 
     """An averaged perceptron, as implemented by Matthew Honnibal.
@@ -33,9 +35,11 @@ class AveragedPerceptron(object):
         https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
     """
 
-    def __init__(self):
+    json_tag = "nltk.tag.perceptron.AveragedPerceptron"
+
+    def __init__(self, weights=None):
         # Each feature gets its own weight vector, so weights is a dict-of-dicts
-        self.weights = {}
+        self.weights = weights if weights else {}
         self.classes = set()
         # The accumulated values, for the averaging. These will be keyed by
         # feature/clas tuples
@@ -108,7 +112,15 @@ class AveragedPerceptron(object):
         """Load the pickled model weights."""
         self.weights = load(path)
 
+    def encode_json_obj(self):
+        return self.weights
 
+    @classmethod
+    def decode_json_obj(cls, obj):
+        return cls(obj)
+
+
+@jsontags.register_tag
 class PerceptronTagger(TaggerI):
 
     """
@@ -138,6 +150,8 @@ class PerceptronTagger(TaggerI):
     >>> pretrain.tag("The red cat".split())
     [('The', 'DT'), ('red', 'JJ'), ('cat', 'NN')]
     """
+
+    json_tag = "nltk.tag.sequential.PerceptronTagger" 
 
     START = ["-START-", "-START2-"]
     END = ["-END-", "-END2-"]
@@ -238,6 +252,17 @@ class PerceptronTagger(TaggerI):
 
         self.model.weights, self.tagdict, self.classes = load(loc)
         self.model.classes = self.classes
+
+    def encode_json_obj(self):
+        return self.model.weights, self.tagdict, list(self.classes)
+
+    @classmethod
+    def decode_json_obj(cls, obj):
+        tagger = cls(load=False)
+        tagger.model.weights, tagger.tagdict, tagger.classes = obj
+        tagger.classes = set(tagger.classes)
+        tagger.model.classes = tagger.classes
+        return tagger
 
     def normalize(self, word):
         """
