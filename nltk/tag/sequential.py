@@ -17,7 +17,7 @@ determine a tag for the specified token, then its backoff tagger is
 consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
-
+import ast
 from abc import abstractmethod
 
 import re
@@ -294,12 +294,28 @@ class NgramTagger(ContextTagger):
             self._train(train, cutoff, verbose)
 
     def encode_json_obj(self):
-        return self._n, self._context_to_tag, self.backoff
+        _context_to_tag = {repr(k): v for k, v in self._context_to_tag.items()}
+        if "NgramTagger" in self.__class__.__name__:
+            return self._n, _context_to_tag, self.backoff
+        else:
+            return _context_to_tag, self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
-        _n, _context_to_tag, backoff = obj
-        return cls(_n, model=_context_to_tag, backoff=backoff)
+        try:
+            _n, _context_to_tag, backoff = obj
+        except ValueError:
+            _context_to_tag, backoff = obj
+
+        if not _context_to_tag:
+            return backoff
+
+        _context_to_tag = {ast.literal_eval(k): v for k, v in _context_to_tag.items()}
+
+        if "NgramTagger" in cls.__name__:
+            return cls(_n, model=_context_to_tag, backoff=backoff)
+        else:
+            return cls(model=_context_to_tag, backoff=backoff)
 
     def context(self, tokens, index, history):
         tag_context = tuple(history[max(0, index - self._n + 1) : index])
@@ -344,14 +360,6 @@ class UnigramTagger(NgramTagger):
     def __init__(self, train=None, model=None, backoff=None, cutoff=0, verbose=False):
         NgramTagger.__init__(self, 1, train, model, backoff, cutoff, verbose)
 
-    def encode_json_obj(self):
-        return self._context_to_tag, self.backoff
-
-    @classmethod
-    def decode_json_obj(cls, obj):
-        _context_to_tag, backoff = obj
-        return cls(model=_context_to_tag, backoff=backoff)
-
     def context(self, tokens, index, history):
         return tokens[index]
 
@@ -381,14 +389,6 @@ class BigramTagger(NgramTagger):
     def __init__(self, train=None, model=None, backoff=None, cutoff=0, verbose=False):
         NgramTagger.__init__(self, 2, train, model, backoff, cutoff, verbose)
 
-    def encode_json_obj(self):
-        return self._context_to_tag, self.backoff
-
-    @classmethod
-    def decode_json_obj(cls, obj):
-        _context_to_tag, backoff = obj
-        return cls(model=_context_to_tag, backoff=backoff)
-
 
 @jsontags.register_tag
 class TrigramTagger(NgramTagger):
@@ -414,14 +414,6 @@ class TrigramTagger(NgramTagger):
 
     def __init__(self, train=None, model=None, backoff=None, cutoff=0, verbose=False):
         NgramTagger.__init__(self, 3, train, model, backoff, cutoff, verbose)
-
-    def encode_json_obj(self):
-        return self._context_to_tag, self.backoff
-
-    @classmethod
-    def decode_json_obj(cls, obj):
-        _context_to_tag, backoff = obj
-        return cls(model=_context_to_tag, backoff=backoff)
 
 
 @jsontags.register_tag
