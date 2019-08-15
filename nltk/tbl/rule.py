@@ -149,7 +149,10 @@ class Rule(TagRule):
     @classmethod
     def decode_json_obj(cls, obj):
         return cls(
-            obj["templateid"], obj["original"], obj["replacement"], obj["conditions"]
+            obj["templateid"],
+            obj["original"],
+            obj["replacement"],
+            tuple(tuple(feat) for feat in obj["conditions"])
         )
 
     def applies(self, tokens, index):
