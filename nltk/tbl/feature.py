@@ -13,7 +13,7 @@ from six import add_metaclass
 
 
 @add_metaclass(ABCMeta)
-class Feature(object):
+class Feature:
     """
     An abstract base class for Features. A Feature is a combination of
     a specific property-computing method and a list of relative positions
