@@ -256,6 +256,7 @@
 - Devashish Lal <https://github.com/BLaZeKiLL>
 - Gerhard Kremer <https://github.com/GerhardKa>
 - Nicolas Darr <https://github.com/ndarr>
+- Hervé Nicol <https://github.com/hervenicol>
 
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
