@@ -72,7 +72,8 @@ def getinfo(func):
     """
     assert inspect.ismethod(func) or inspect.isfunction(func)
     argspec = inspect.getfullargspec(func)
-    regargs, varargs, varkwargs = argspec[:3]
+    #regargs, varargs, varkwargs = argspec[:3]
+    regargs, varargs, varkwargs, defaults = argspec[:4]
     argnames = list(regargs)
     if varargs:
         argnames.append(varargs)
@@ -81,6 +82,7 @@ def getinfo(func):
     fullsignature = inspect.signature(func)
     # Convert Signature to str
     signature = __legacysignature(fullsignature)
+    signautre = inspect.formatargspec(regargs, varargs, varkwargs, defaults, formatvalue=lambda value: "" )[1:-1]
 
 
     # pypy compatibility
