@@ -79,9 +79,9 @@ def getinfo(func):
         argnames.append(varargs)
     if varkwargs:
         argnames.append(varkwargs)
-    fullsignature = inspect.signature(func)
+    ##fullsignature = inspect.signature(func)
     # Convert Signature to str
-    signature = __legacysignature(fullsignature)
+    ##signature = __legacysignature(fullsignature)
     signautre = inspect.formatargspec(regargs, varargs, varkwargs, defaults, formatvalue=lambda value: "" )[1:-1]
 
 
