@@ -97,7 +97,6 @@ def getinfo(func):
         name=func.__name__,
         argnames=argnames,
         signature=signature,
-        fullsignature=fullsignature,
         defaults=func.__defaults__,
         doc=func.__doc__,
         module=func.__module__,
