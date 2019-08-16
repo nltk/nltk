@@ -47,7 +47,6 @@ def getinfo(func):
     - argnames (the names of the arguments : list)
     - defaults (the values of the default arguments : tuple)
     - signature (the signature : str)
-    - fullsignature (the full signature : Signature)
     - doc (the docstring : str)
     - module (the module name : str)
     - dict (the function __dict__ : str)
@@ -67,8 +66,6 @@ def getinfo(func):
     >>> info["signature"]
     'self, x, y, *args, **kw'
 
-    >>> info["fullsignature"]
-    <Signature (self, x=1, y=2, *args, **kw)>
     """
     assert inspect.ismethod(func) or inspect.isfunction(func)
     argspec = inspect.getfullargspec(func)
