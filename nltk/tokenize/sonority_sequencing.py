@@ -44,6 +44,7 @@ class SyllableTokenizer(TokenizerI):
     """
     Syllabifies words based on the Sonority Sequencing Principle (SSP).
 
+        >>> from nltk.tokenize import SyllableTokenizer
         >>> from nltk import word_tokenize
         >>> SSP = SyllableTokenizer()
         >>> SSP.tokenize('justification')
