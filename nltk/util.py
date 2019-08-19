@@ -30,8 +30,6 @@ from six.moves.urllib.request import (
     ProxyDigestAuthHandler,
     HTTPPasswordMgrWithDefaultRealm,
 )
-from tqdm import tqdm
-from joblib import Parallel, delayed
 
 from nltk.internals import slice_bounds, raise_unorderable_types
 from nltk.collections import *
@@ -833,6 +831,9 @@ def choose(n, k):
 
 
 def parallelize_preprocess(func, iterator, processes, progress_bar=False):
+    from tqdm import tqdm
+    from joblib import Parallel, delayed
+
     iterator = tqdm(iterator) if progress_bar else iterator
     if processes <= 1:
         return map(func, iterator)
