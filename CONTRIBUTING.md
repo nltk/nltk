@@ -118,8 +118,6 @@ Summary of our git branching model:
   [GitHub issue system](https://github.com/nltk/nltk/issues));
 - Run all tests before pushing (just execute `tox`) so you will know if your
   changes broke something;
-- Try to write both Python 2 and Python3-friendly code so won't be a pain for
-  us to support both versions.
 
 See also our [developer's
 guide](https://github.com/nltk/nltk/wiki/Developers-Guide).

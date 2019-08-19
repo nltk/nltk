@@ -257,7 +257,7 @@
 - Gerhard Kremer <https://github.com/GerhardKa>
 - Nicolas Darr <https://github.com/ndarr>
 - Hervé Nicol <https://github.com/hervenicol>
-
+- Alexandre H. T. Dias <https://github.com/alexandredias3d>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 ### Contributors to the Porter Stemmer
