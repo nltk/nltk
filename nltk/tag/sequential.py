@@ -537,13 +537,13 @@ class RegexpTagger(SequentialBackoffTagger):
         """
         SequentialBackoffTagger.__init__(self, backoff)
         try:
-            self._regexs = [(re.compile(regexp), tag,) for regexp, tag in regexps]
+            self._regexps = [(re.compile(regexp), tag,) for regexp, tag in regexps]
         except Exception as e:
             raise Exception(
                 'Invalid RegexpTagger regexp:', str(e), 'regexp:', regexp, 'tag:', tag)
 
     def encode_json_obj(self):
-        return [(regexp.pattern, tag) for regexp, tag in self._regexs], self.backoff
+        return [(regexp.pattern, tag) for regexp, tag in self._regexps], self.backoff
 
     @classmethod
     def decode_json_obj(cls, obj):
@@ -551,13 +551,13 @@ class RegexpTagger(SequentialBackoffTagger):
         return cls(regexps, backoff)
 
     def choose_tag(self, tokens, index, history):
-        for regexp, tag in self._regexs:
+        for regexp, tag in self._regexps:
             if re.match(regexp, tokens[index]):
                 return tag
         return None
 
     def __repr__(self):
-        return "<Regexp Tagger: size=%d>" % len(self._regexs)
+        return "<Regexp Tagger: size=%d>" % len(self._regexps)
 
 
 class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
