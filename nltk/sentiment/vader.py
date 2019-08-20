@@ -26,8 +26,9 @@ import math
 import re
 import string
 from itertools import product
+
 import nltk.data
-from .util import pairwise
+from nltk.util import pairwise
 
 ##Constants##
 
@@ -122,7 +123,6 @@ NEGATE = {
     "wouldn't",
     "rarely",
     "seldom",
-    "despite"
 }
 
 # booster/dampener 'intensifiers' or 'degree adverbs'
@@ -281,7 +281,7 @@ class SentiText(object):
     Identify sentiment-relevant string-level properties of input text.
     """
 
-    def __init__(self, text):
+    def __init__(self, text, extended=False):
         if not isinstance(text, str):
             text = str(text.encode('utf-8'))
         self.text = text
@@ -371,9 +371,9 @@ class SentimentIntensityAnalyzer(object):
             sentiments = self.sentiment_valence(valence, sentitext, item, i, sentiments)
 
         sentiments = self._but_check(words_and_emoticons, sentiments)
-        
+
         sentiments = self._only_if_check(words_and_emoticons, sentiments)
-        
+
         sentiments = self._in_spite_of_check(words_and_emoticons, sentiments)
 
         return self.score_valence(sentiments, text)
@@ -461,12 +461,12 @@ class SentimentIntensityAnalyzer(object):
                         sentiments[si] = sentiment * 0.5
                     elif si > bi:
                         sentiments[si] = sentiment * 1.5
-                            
-        # Future work: 
+
+        # Future work:
         # 1.Consider usage of though/although/even though
-        
+
         return sentiments
-    
+
     def _only_if_check(self, words_and_emoticons, sentiments):
         words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
         check = 'only'
@@ -477,7 +477,7 @@ class SentimentIntensityAnalyzer(object):
                     if si < i:
                         sentiments[si] = sentiment * 0.5
         return sentiments
-    
+
     def _in_spite_of_check(self, words_and_emoticons, sentiments):
         words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
         check = 'in'

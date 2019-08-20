@@ -825,3 +825,14 @@ def choose(n, k):
         return ntok // ktok
     else:
         return 0
+
+######################################################################
+# Iteration utilities
+######################################################################
+
+
+def pairwise(iterable):
+    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
