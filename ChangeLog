@@ -1,3 +1,11 @@
+Version 3.4.5 2019-08-20
+* Fixed security bug in downloader: Zip slip vulnerability - for the unlikely
+  situation where a user configures their downloader to use a compromised server
+  https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-14751)
+	
+Thanks to the following contributors to 3.4.5:
+Mike Salvatore
+	
 Version 3.4.4 2019-07-04
 * fix bug in plot function (probability.py)
 * add improved PanLex Swadesh corpus reader
