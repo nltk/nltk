@@ -191,6 +191,29 @@ class VaderConstants:
         "hand to mouth": -2,
     }
 
+    # for removing punctuation
+    REGEX_REMOVE_PUNCTUATION = re.compile("[{0}]".format(re.escape(string.punctuation)))
+
+    PUNC_LIST = [
+        ".",
+        "!",
+        "?",
+        ",",
+        ";",
+        ":",
+        "-",
+        "'",
+        '"',
+        "!!",
+        "!!!",
+        "??",
+        "???",
+        "?!?",
+        "!?!",
+        "?!?!",
+        "!?!?",
+    ]
+
     def __init__(self, extended=False):
         pass
 
@@ -243,33 +266,12 @@ class SentiText(object):
     Identify sentiment-relevant string-level properties of input text.
     """
 
-    # for removing punctuation
-    REGEX_REMOVE_PUNCTUATION = re.compile("[{0}]".format(re.escape(string.punctuation)))
-
-    PUNC_LIST = [
-        ".",
-        "!",
-        "?",
-        ",",
-        ";",
-        ":",
-        "-",
-        "'",
-        '"',
-        "!!",
-        "!!!",
-        "??",
-        "???",
-        "?!?",
-        "!?!",
-        "?!?!",
-        "!?!?",
-    ]
-
-    def __init__(self, text):
+    def __init__(self, text, punc_list, regex_remove_punctuation):
         if not isinstance(text, str):
             text = str(text.encode("utf-8"))
         self.text = text
+        self.PUNC_LIST = punc_list
+        self.REGEX_REMOVE_PUNCTUATION = regex_remove_punctuation
         self.words_and_emoticons = self._words_and_emoticons()
         # doesn't separate words from
         # adjacent punctuation (keeps emoticons & contractions)
@@ -360,7 +362,8 @@ class SentimentIntensityAnalyzer(object):
         valence.
         """
         # text, words_and_emoticons, is_cap_diff = self.preprocess(text)
-        sentitext = SentiText(text)
+        sentitext = SentiText(text, self.constants.PUNC_LIST,
+                              self.constants.REGEX_REMOVE_PUNCTUATION)
         sentiments = []
         words_and_emoticons = sentitext.words_and_emoticons
         for item in words_and_emoticons:
