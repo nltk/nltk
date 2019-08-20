@@ -21,9 +21,9 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         self,
         root,
         fileids,
-        encoding='utf8',
+        encoding="utf8",
         word_tokenizer=TabTokenizer(),
-        sent_tokenizer=RegexpTokenizer('\n', gaps=True),
+        sent_tokenizer=RegexpTokenizer("\n", gaps=True),
         para_block_reader=read_blankline_block,
     ):
         # FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
@@ -89,7 +89,7 @@ class DependencyCorpusReader(SyntaxCorpusReader):
 
 
 class DependencyCorpusView(StreamBackedCorpusView):
-    _DOCSTART = '-DOCSTART- -DOCSTART- O\n'  # dokumentu hasiera definitzen da
+    _DOCSTART = "-DOCSTART- -DOCSTART- O\n"  # dokumentu hasiera definitzen da
 
     def __init__(
         self,
@@ -98,7 +98,7 @@ class DependencyCorpusView(StreamBackedCorpusView):
         group_by_sent,
         dependencies,
         chunk_types=None,
-        encoding='utf8',
+        encoding="utf8",
     ):
         self._tagged = tagged
         self._dependencies = dependencies
@@ -115,13 +115,13 @@ class DependencyCorpusView(StreamBackedCorpusView):
 
         # extract word and tag from any of the formats
         if not self._dependencies:
-            lines = [line.split('\t') for line in sent.split('\n')]
+            lines = [line.split("\t") for line in sent.split("\n")]
             if len(lines[0]) == 3 or len(lines[0]) == 4:
                 sent = [(line[0], line[1]) for line in lines]
             elif len(lines[0]) == 10:
                 sent = [(line[1], line[4]) for line in lines]
             else:
-                raise ValueError('Unexpected number of fields in dependency tree file')
+                raise ValueError("Unexpected number of fields in dependency tree file")
 
             # discard tags if they weren't requested
             if not self._tagged:

@@ -148,7 +148,7 @@ NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration.
 The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file configures the server:
 
  - `matrix: include:` section 
-   - tests against supported Python versions (2.7, 3.5 and 3.6) 
+   - tests against supported Python versions (3.5, 3.6, 3.7)
      - all python versions run the `py-travis` tox test environment in the [`tox.ini`](https://github.com/nltk/nltk/blob/travis/tox.ini#L105) file
    - tests against Python 3.6 for third-party tools APIs
 

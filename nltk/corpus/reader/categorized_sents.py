@@ -79,7 +79,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids,
         word_tokenizer=WhitespaceTokenizer(),
         sent_tokenizer=None,
-        encoding='utf8',
+        encoding="utf8",
         **kwargs
     ):
         """
@@ -99,7 +99,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
 
     def _resolve(self, fileids, categories):
         if fileids is not None and categories is not None:
-            raise ValueError('Specify fileids or categories, not both')
+            raise ValueError("Specify fileids or categories, not both")
         if categories is not None:
             return self.fileids(categories)
         else:

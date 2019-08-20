@@ -37,7 +37,7 @@ class NKJPCorpusReader(XMLCorpusReader):
     HEADER_MODE = 2
     RAW_MODE = 3
 
-    def __init__(self, root, fileids='.*'):
+    def __init__(self, root, fileids=".*"):
         """
         Corpus reader designed to work with National Corpus of Polish.
         See http://nkjp.pl/ for more details about NKJP.
@@ -56,10 +56,10 @@ class NKJPCorpusReader(XMLCorpusReader):
         x.tagged_words(fileids=['WilkDom', '/home/USER/nltk_data/corpora/nkjp/WilkWilczy'], tags=['subst', 'comp'])
         """
         if isinstance(fileids, string_types):
-            XMLCorpusReader.__init__(self, root, fileids + '.*/header.xml')
+            XMLCorpusReader.__init__(self, root, fileids + ".*/header.xml")
         else:
             XMLCorpusReader.__init__(
-                self, root, [fileid + '/header.xml' for fileid in fileids]
+                self, root, [fileid + "/header.xml" for fileid in fileids]
             )
         self._paths = self.get_paths()
 
@@ -80,7 +80,7 @@ class NKJPCorpusReader(XMLCorpusReader):
         """
         Returns a view specialised for use with particular corpus file.
         """
-        mode = kwargs.pop('mode', NKJPCorpusReader.WORDS_MODE)
+        mode = kwargs.pop("mode", NKJPCorpusReader.WORDS_MODE)
         if mode is NKJPCorpusReader.WORDS_MODE:
             return NKJPCorpus_Morph_View(filename, tags=tags)
         elif mode is NKJPCorpusReader.SENTS_MODE:
@@ -93,7 +93,7 @@ class NKJPCorpusReader(XMLCorpusReader):
             )
 
         else:
-            raise NameError('No such mode!')
+            raise NameError("No such mode!")
 
     def add_root(self, fileid):
         """
@@ -152,7 +152,7 @@ class NKJPCorpusReader(XMLCorpusReader):
         Call with specified tags as a list, e.g. tags=['subst', 'comp'].
         Returns tagged words in specified fileids.
         """
-        tags = kwargs.pop('tags', [])
+        tags = kwargs.pop("tags", [])
         return concat(
             [
                 self._view(
@@ -188,7 +188,7 @@ class NKJPCorpus_Header_View(XMLCorpusView):
         header.xml files in NKJP corpus.
         """
         self.tagspec = ".*/sourceDesc$"
-        XMLCorpusView.__init__(self, filename + 'header.xml', self.tagspec)
+        XMLCorpusView.__init__(self, filename + "header.xml", self.tagspec)
 
     def handle_query(self):
         self._open()
@@ -202,43 +202,43 @@ class NKJPCorpus_Header_View(XMLCorpusView):
         return header
 
     def handle_elt(self, elt, context):
-        titles = elt.findall('bibl/title')
+        titles = elt.findall("bibl/title")
         title = []
         if titles:
-            title = '\n'.join(title.text.strip() for title in titles)
+            title = "\n".join(title.text.strip() for title in titles)
 
-        authors = elt.findall('bibl/author')
+        authors = elt.findall("bibl/author")
         author = []
         if authors:
-            author = '\n'.join(author.text.strip() for author in authors)
+            author = "\n".join(author.text.strip() for author in authors)
 
-        dates = elt.findall('bibl/date')
+        dates = elt.findall("bibl/date")
         date = []
         if dates:
-            date = '\n'.join(date.text.strip() for date in dates)
+            date = "\n".join(date.text.strip() for date in dates)
 
-        publishers = elt.findall('bibl/publisher')
+        publishers = elt.findall("bibl/publisher")
         publisher = []
         if publishers:
-            publisher = '\n'.join(publisher.text.strip() for publisher in publishers)
+            publisher = "\n".join(publisher.text.strip() for publisher in publishers)
 
-        idnos = elt.findall('bibl/idno')
+        idnos = elt.findall("bibl/idno")
         idno = []
         if idnos:
-            idno = '\n'.join(idno.text.strip() for idno in idnos)
+            idno = "\n".join(idno.text.strip() for idno in idnos)
 
-        notes = elt.findall('bibl/note')
+        notes = elt.findall("bibl/note")
         note = []
         if notes:
-            note = '\n'.join(note.text.strip() for note in notes)
+            note = "\n".join(note.text.strip() for note in notes)
 
         return {
-            'title': title,
-            'author': author,
-            'date': date,
-            'publisher': publisher,
-            'idno': idno,
-            'note': note,
+            "title": title,
+            "author": author,
+            "date": date,
+            "publisher": publisher,
+            "idno": idno,
+            "note": note,
         }
 
 
@@ -255,21 +255,21 @@ class XML_Tool:
 
     def build_preprocessed_file(self):
         try:
-            fr = open(self.read_file, 'r')
+            fr = open(self.read_file, "r")
             fw = self.write_file
-            line = ' '
+            line = " "
             while len(line):
                 line = fr.readline()
-                x = re.split(r'nkjp:[^ ]* ', line)  # in all files
-                ret = ' '.join(x)
-                x = re.split('<nkjp:paren>', ret)  # in ann_segmentation.xml
-                ret = ' '.join(x)
-                x = re.split('</nkjp:paren>', ret)  # in ann_segmentation.xml
-                ret = ' '.join(x)
-                x = re.split('<choice>', ret)  # in ann_segmentation.xml
-                ret = ' '.join(x)
-                x = re.split('</choice>', ret)  # in ann_segmentation.xml
-                ret = ' '.join(x)
+                x = re.split(r"nkjp:[^ ]* ", line)  # in all files
+                ret = " ".join(x)
+                x = re.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
+                ret = " ".join(x)
+                x = re.split("</nkjp:paren>", ret)  # in ann_segmentation.xml
+                ret = " ".join(x)
+                x = re.split("<choice>", ret)  # in ann_segmentation.xml
+                ret = " ".join(x)
+                x = re.split("</choice>", ret)  # in ann_segmentation.xml
+                ret = " ".join(x)
                 fw.write(ret)
             fr.close()
             fw.close()
@@ -289,29 +289,29 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
     """
 
     def __init__(self, filename, **kwargs):
-        self.tagspec = '.*p/.*s'
+        self.tagspec = ".*p/.*s"
         # intersperse NKJPCorpus_Text_View
         self.text_view = NKJPCorpus_Text_View(
             filename, mode=NKJPCorpus_Text_View.SENTS_MODE
         )
         self.text_view.handle_query()
         # xml preprocessing
-        self.xml_tool = XML_Tool(filename, 'ann_segmentation.xml')
+        self.xml_tool = XML_Tool(filename, "ann_segmentation.xml")
         # base class init
         XMLCorpusView.__init__(
             self, self.xml_tool.build_preprocessed_file(), self.tagspec
         )
 
     def get_segm_id(self, example_word):
-        return example_word.split('(')[1].split(',')[0]
+        return example_word.split("(")[1].split(",")[0]
 
     def get_sent_beg(self, beg_word):
         # returns index of beginning letter in sentence
-        return int(beg_word.split(',')[1])
+        return int(beg_word.split(",")[1])
 
     def get_sent_end(self, end_word):
         # returns index of end letter in sentence
-        splitted = end_word.split(')')[0].split(',')
+        splitted = end_word.split(")")[0].split(",")
         return int(splitted[1]) + int(splitted[2])
 
     def get_sentences(self, sent_segm):
@@ -357,7 +357,7 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
     def handle_elt(self, elt, context):
         ret = []
         for seg in elt:
-            ret.append(seg.get('corresp'))
+            ret.append(seg.get("corresp"))
         return ret
 
 
@@ -371,11 +371,11 @@ class NKJPCorpus_Text_View(XMLCorpusView):
     RAW_MODE = 1
 
     def __init__(self, filename, **kwargs):
-        self.mode = kwargs.pop('mode', 0)
-        self.tagspec = '.*/div/ab'
+        self.mode = kwargs.pop("mode", 0)
+        self.tagspec = ".*/div/ab"
         self.segm_dict = dict()
         # xml preprocessing
-        self.xml_tool = XML_Tool(filename, 'text.xml')
+        self.xml_tool = XML_Tool(filename, "text.xml")
         # base class init
         XMLCorpusView.__init__(
             self, self.xml_tool.build_preprocessed_file(), self.tagspec
@@ -404,11 +404,11 @@ class NKJPCorpus_Text_View(XMLCorpusView):
             for part in segm:
                 txt.append(part)
 
-        return [' '.join([segm for segm in txt])]
+        return [" ".join([segm for segm in txt])]
 
     def get_segm_id(self, elt):
         for attr in elt.attrib:
-            if attr.endswith('id'):
+            if attr.endswith("id"):
                 return elt.get(attr)
 
     def handle_elt(self, elt, context):
@@ -425,9 +425,9 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
     """
 
     def __init__(self, filename, **kwargs):
-        self.tags = kwargs.pop('tags', None)
-        self.tagspec = '.*/seg/fs'
-        self.xml_tool = XML_Tool(filename, 'ann_morphosyntax.xml')
+        self.tags = kwargs.pop("tags", None)
+        self.tagspec = ".*/seg/fs"
+        self.xml_tool = XML_Tool(filename, "ann_morphosyntax.xml")
         XMLCorpusView.__init__(
             self, self.xml_tool.build_preprocessed_file(), self.tagspec
         )
@@ -451,7 +451,7 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
             raise Exception
 
     def handle_elt(self, elt, context):
-        word = ''
+        word = ""
         flag = False
         is_not_interp = True
         # if tags not specified, then always return word
@@ -461,28 +461,28 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
         for child in elt:
 
             # get word
-            if 'name' in child.keys() and child.attrib['name'] == 'orth':
+            if "name" in child.keys() and child.attrib["name"] == "orth":
                 for symbol in child:
-                    if symbol.tag == 'string':
+                    if symbol.tag == "string":
                         word = symbol.text
-            elif 'name' in child.keys() and child.attrib['name'] == 'interps':
+            elif "name" in child.keys() and child.attrib["name"] == "interps":
                 for symbol in child:
-                    if 'type' in symbol.keys() and symbol.attrib['type'] == 'lex':
+                    if "type" in symbol.keys() and symbol.attrib["type"] == "lex":
                         for symbol2 in symbol:
                             if (
-                                'name' in symbol2.keys()
-                                and symbol2.attrib['name'] == 'ctag'
+                                "name" in symbol2.keys()
+                                and symbol2.attrib["name"] == "ctag"
                             ):
                                 for symbol3 in symbol2:
                                     if (
-                                        'value' in symbol3.keys()
+                                        "value" in symbol3.keys()
                                         and self.tags is not None
-                                        and symbol3.attrib['value'] in self.tags
+                                        and symbol3.attrib["value"] in self.tags
                                     ):
                                         flag = True
                                     elif (
-                                        'value' in symbol3.keys()
-                                        and symbol3.attrib['value'] == 'interp'
+                                        "value" in symbol3.keys()
+                                        and symbol3.attrib["value"] == "interp"
                                     ):
                                         is_not_interp = False
         if flag and is_not_interp:

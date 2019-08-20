@@ -6,14 +6,11 @@
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import unicode_literals
 import re
 
 from nltk.stem.api import StemmerI
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class RegexpStemmer(StemmerI):
     """
     A stemmer that uses regular expressions to identify morphological
@@ -44,7 +41,7 @@ class RegexpStemmer(StemmerI):
 
     def __init__(self, regexp, min=0):
 
-        if not hasattr(regexp, 'pattern'):
+        if not hasattr(regexp, "pattern"):
             regexp = re.compile(regexp)
         self._regexp = regexp
         self._min = min
@@ -53,7 +50,7 @@ class RegexpStemmer(StemmerI):
         if len(word) < self._min:
             return word
         else:
-            return self._regexp.sub('', word)
+            return self._regexp.sub("", word)
 
     def __repr__(self):
-        return '<RegexpStemmer: {!r}>'.format(self._regexp.pattern)
+        return "<RegexpStemmer: {!r}>".format(self._regexp.pattern)

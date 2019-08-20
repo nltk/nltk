@@ -10,8 +10,6 @@ This module provides a variety of list sorting algorithms, to
 illustrate the many different algorithms (recipes) for solving a
 problem, and how to analyze algorithms experimentally.
 """
-from __future__ import print_function, division
-
 # These algorithms are taken from:
 # Levitin (2004) The Design and Analysis of Algorithms
 
@@ -176,5 +174,5 @@ def demo():
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

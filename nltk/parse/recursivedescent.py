@@ -5,7 +5,6 @@
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
 
 from nltk.grammar import Nonterminal
 from nltk.tree import Tree, ImmutableTree
@@ -280,17 +279,17 @@ class RecursiveDescentParser(ParserI):
         """
 
         if treeloc == ():
-            print("*", end=' ')
+            print("*", end=" ")
         if isinstance(tree, Tree):
             if len(tree) == 0:
-                print(unicode_repr(Nonterminal(tree.label())), end=' ')
+                print(unicode_repr(Nonterminal(tree.label())), end=" ")
             for i in range(len(tree)):
                 if treeloc is not None and i == treeloc[0]:
                     self._trace_fringe(tree[i], treeloc[1:])
                 else:
                     self._trace_fringe(tree[i])
         else:
-            print(unicode_repr(tree), end=' ')
+            print(unicode_repr(tree), end=" ")
 
     def _trace_tree(self, tree, frontier, operation):
         """
@@ -301,48 +300,48 @@ class RecursiveDescentParser(ParserI):
         :rtype: None
         """
         if self._trace == 2:
-            print('  %c [' % operation, end=' ')
+            print("  %c [" % operation, end=" ")
         else:
-            print('    [', end=' ')
+            print("    [", end=" ")
         if len(frontier) > 0:
             self._trace_fringe(tree, frontier[0])
         else:
             self._trace_fringe(tree)
-        print(']')
+        print("]")
 
     def _trace_start(self, tree, frontier, text):
-        print('Parsing %r' % " ".join(text))
+        print("Parsing %r" % " ".join(text))
         if self._trace > 2:
-            print('Start:')
+            print("Start:")
         if self._trace > 1:
-            self._trace_tree(tree, frontier, ' ')
+            self._trace_tree(tree, frontier, " ")
 
     def _trace_expand(self, tree, frontier, production):
         if self._trace > 2:
-            print('Expand: %s' % production)
+            print("Expand: %s" % production)
         if self._trace > 1:
-            self._trace_tree(tree, frontier, 'E')
+            self._trace_tree(tree, frontier, "E")
 
     def _trace_match(self, tree, frontier, tok):
         if self._trace > 2:
-            print('Match: %r' % tok)
+            print("Match: %r" % tok)
         if self._trace > 1:
-            self._trace_tree(tree, frontier, 'M')
+            self._trace_tree(tree, frontier, "M")
 
     def _trace_succeed(self, tree, frontier):
         if self._trace > 2:
-            print('GOOD PARSE:')
+            print("GOOD PARSE:")
         if self._trace == 1:
-            print('Found a parse:\n%s' % tree)
+            print("Found a parse:\n%s" % tree)
         if self._trace > 1:
-            self._trace_tree(tree, frontier, '+')
+            self._trace_tree(tree, frontier, "+")
 
     def _trace_backtrack(self, tree, frontier, toks=None):
         if self._trace > 2:
             if toks:
-                print('Backtrack: %r match failed' % toks[0])
+                print("Backtrack: %r match failed" % toks[0])
             else:
-                print('Backtrack')
+                print("Backtrack")
 
 
 ##//////////////////////////////////////////////////////
@@ -680,11 +679,11 @@ def demo():
     for prod in grammar.productions():
         print(prod)
 
-    sent = 'I saw a man in the park'.split()
+    sent = "I saw a man in the park".split()
     parser = parse.RecursiveDescentParser(grammar, trace=2)
     for p in parser.parse(sent):
         print(p)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

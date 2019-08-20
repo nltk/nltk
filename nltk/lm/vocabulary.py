@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -7,20 +6,11 @@
 # For license information, see LICENSE.TXT
 """Language Model Vocabulary"""
 
-from __future__ import unicode_literals
-
 import sys
-from collections import Counter, Iterable
+from collections import Counter
+from collections.abc import Iterable
 from itertools import chain
-
-from nltk import compat
-
-try:
-    # Python >= 3.4
-    from functools import singledispatch
-except ImportError:
-    # Python < 3.4
-    from singledispatch import singledispatch
+from functools import singledispatch
 
 
 @singledispatch
@@ -40,22 +30,13 @@ def _(words, vocab):
     return tuple(_dispatched_lookup(w, vocab) for w in words)
 
 
-try:
-    # Python 2 unicode + str type
-    basestring
-except NameError:
-    # Python 3 unicode + str type
-    basestring = str
-
-
-@_dispatched_lookup.register(basestring)
+@_dispatched_lookup.register(str)
 def _string_lookup(word, vocab):
     """Looks up one word in the vocabulary."""
     return word if word in vocab else vocab.unk_label
 
 
-@compat.python_2_unicode_compatible
-class Vocabulary(object):
+class Vocabulary:
     """Stores language model vocabulary.
 
     Satisfies two common language modeling requirements for a vocabulary:
@@ -135,7 +116,7 @@ class Vocabulary(object):
     ('<UNK>', 'a', '<UNK>', 'd', '<UNK>', 'c')
 
     It's possible to update the counts after the vocabulary has been created.
-    The interface follows that of `collections.Counter`.
+    In general, the interface is the same as that of `collections.Counter`.
 
     >>> vocab['b']
     1

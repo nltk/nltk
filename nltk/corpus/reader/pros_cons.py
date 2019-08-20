@@ -53,7 +53,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         root,
         fileids,
         word_tokenizer=WordPunctTokenizer(),
-        encoding='utf8',
+        encoding="utf8",
         **kwargs
     ):
         """
@@ -136,7 +136,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
 
     def _resolve(self, fileids, categories):
         if fileids is not None and categories is not None:
-            raise ValueError('Specify fileids or categories, not both')
+            raise ValueError("Specify fileids or categories, not both")
         if categories is not None:
             return self.fileids(categories)
         else:

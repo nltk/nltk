@@ -31,8 +31,8 @@ class ToolboxCorpusReader(CorpusReader):
         fileids,
         strip=True,
         unwrap=True,
-        encoding='utf8',
-        errors='strict',
+        encoding="utf8",
+        errors="strict",
         unicode_fields=None,
     ):
         return concat(
@@ -48,11 +48,11 @@ class ToolboxCorpusReader(CorpusReader):
 
     # should probably be done lazily:
     def entries(self, fileids, **kwargs):
-        if 'key' in kwargs:
-            key = kwargs['key']
-            del kwargs['key']
+        if "key" in kwargs:
+            key = kwargs["key"]
+            del kwargs["key"]
         else:
-            key = 'lx'  # the default key in MDF
+            key = "lx"  # the default key in MDF
         entries = []
         for marker, contents in self.fields(fileids, **kwargs):
             if marker == key:
@@ -64,7 +64,7 @@ class ToolboxCorpusReader(CorpusReader):
                     pass
         return entries
 
-    def words(self, fileids, key='lx'):
+    def words(self, fileids, key="lx"):
         return [contents for marker, contents in self.fields(fileids) if marker == key]
 
     def raw(self, fileids):
@@ -79,5 +79,5 @@ def demo():
     pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

@@ -62,8 +62,8 @@ class Zone:
     def __init__(self, image, initialField, initialText):
         frm = Frame(root)
         frm.config(background="white")
-        self.image = PhotoImage(format='gif', data=images[image.upper()])
-        self.imageDimmed = PhotoImage(format='gif', data=images[image])
+        self.image = PhotoImage(format="gif", data=images[image.upper()])
+        self.imageDimmed = PhotoImage(format="gif", data=images[image])
         self.img = Label(frm)
         self.img.config(borderwidth=0)
         self.img.pack(side="left")
@@ -168,7 +168,7 @@ def app():
     root.mainloop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app()
 
-__all__ = ['app']
+__all__ = ["app"]

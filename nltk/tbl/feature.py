@@ -8,7 +8,6 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import division, print_function, unicode_literals
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 
@@ -33,7 +32,7 @@ class Feature(object):
 
     """
 
-    json_tag = 'nltk.tbl.Feature'
+    json_tag = "nltk.tbl.Feature"
     PROPERTY_NAME = None
 
     def __init__(self, positions, end=None):

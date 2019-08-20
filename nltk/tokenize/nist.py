@@ -74,17 +74,17 @@ class NISTTokenizer(TokenizerI):
     """
 
     # Strip "skipped" tags
-    STRIP_SKIP = re.compile('<skipped>'), ''
+    STRIP_SKIP = re.compile("<skipped>"), ""
     #  Strip end-of-line hyphenation and join lines
-    STRIP_EOL_HYPHEN = re.compile(u'\u2028'), ' '
+    STRIP_EOL_HYPHEN = re.compile("\u2028"), " "
     # Tokenize punctuation.
-    PUNCT = re.compile('([\{-\~\[-\` -\&\(-\+\:-\@\/])'), ' \\1 '
+    PUNCT = re.compile("([\{-\~\[-\` -\&\(-\+\:-\@\/])"), " \\1 "
     # Tokenize period and comma unless preceded by a digit.
-    PERIOD_COMMA_PRECEED = re.compile('([^0-9])([\.,])'), '\\1 \\2 '
+    PERIOD_COMMA_PRECEED = re.compile("([^0-9])([\.,])"), "\\1 \\2 "
     # Tokenize period and comma unless followed by a digit.
-    PERIOD_COMMA_FOLLOW = re.compile('([\.,])([^0-9])'), ' \\1 \\2'
+    PERIOD_COMMA_FOLLOW = re.compile("([\.,])([^0-9])"), " \\1 \\2"
     # Tokenize dash when preceded by a digit
-    DASH_PRECEED_DIGIT = re.compile('([0-9])(-)'), '\\1 \\2 '
+    DASH_PRECEED_DIGIT = re.compile("([0-9])(-)"), "\\1 \\2 "
 
     LANG_DEPENDENT_REGEXES = [
         PUNCT,
@@ -94,15 +94,15 @@ class NISTTokenizer(TokenizerI):
     ]
 
     # Perluniprops characters used in NIST tokenizer.
-    pup_number = text_type(''.join(set(perluniprops.chars('Number'))))  # i.e. \p{N}
-    pup_punct = text_type(''.join(set(perluniprops.chars('Punctuation'))))  # i.e. \p{P}
-    pup_symbol = text_type(''.join(set(perluniprops.chars('Symbol'))))  # i.e. \p{S}
+    pup_number = text_type("".join(set(perluniprops.chars("Number"))))  # i.e. \p{N}
+    pup_punct = text_type("".join(set(perluniprops.chars("Punctuation"))))  # i.e. \p{P}
+    pup_symbol = text_type("".join(set(perluniprops.chars("Symbol"))))  # i.e. \p{S}
 
     # Python regexes needs to escape some special symbols, see
     # see https://stackoverflow.com/q/45670950/610569
-    number_regex = re.sub(r'[]^\\-]', r'\\\g<0>', pup_number)
-    punct_regex = re.sub(r'[]^\\-]', r'\\\g<0>', pup_punct)
-    symbol_regex = re.sub(r'[]^\\-]', r'\\\g<0>', pup_symbol)
+    number_regex = re.sub(r"[]^\\-]", r"\\\g<0>", pup_number)
+    punct_regex = re.sub(r"[]^\\-]", r"\\\g<0>", pup_punct)
+    symbol_regex = re.sub(r"[]^\\-]", r"\\\g<0>", pup_symbol)
 
     # Note: In the original perl implementation, \p{Z} and \p{Zl} were used to
     #       (i) strip trailing and heading spaces  and
@@ -113,18 +113,18 @@ class NISTTokenizer(TokenizerI):
     # Separator = text_type(''.join(perluniprops.chars('Separator'))) # i.e. \p{Z}
 
     # Pads non-ascii strings with space.
-    NONASCII = re.compile('([\x00-\x7f]+)'), r' \1 '
+    NONASCII = re.compile("([\x00-\x7f]+)"), r" \1 "
     #  Tokenize any punctuation unless followed AND preceded by a digit.
     PUNCT_1 = (
-        re.compile(u"([{n}])([{p}])".format(n=number_regex, p=punct_regex)),
-        '\\1 \\2 ',
+        re.compile("([{n}])([{p}])".format(n=number_regex, p=punct_regex)),
+        "\\1 \\2 ",
     )
     PUNCT_2 = (
-        re.compile(u"([{p}])([{n}])".format(n=number_regex, p=punct_regex)),
-        ' \\1 \\2',
+        re.compile("([{p}])([{n}])".format(n=number_regex, p=punct_regex)),
+        " \\1 \\2",
     )
     # Tokenize symbols
-    SYMBOLS = re.compile(u"([{s}])".format(s=symbol_regex)), ' \\1 '
+    SYMBOLS = re.compile("([{s}])".format(s=symbol_regex)), " \\1 "
 
     INTERNATIONAL_REGEXES = [NONASCII, PUNCT_1, PUNCT_2, SYMBOLS]
 
@@ -147,13 +147,13 @@ class NISTTokenizer(TokenizerI):
         # Language dependent regex.
         if western_lang:
             # Pad string with whitespace.
-            text = ' ' + text + ' '
+            text = " " + text + " "
             if lowercase:
                 text = text.lower()
             for regexp, substitution in self.LANG_DEPENDENT_REGEXES:
                 text = regexp.sub(substitution, text)
         # Remove contiguous whitespaces.
-        text = ' '.join(text.split())
+        text = " ".join(text.split())
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
         text = text_type(text.strip())
@@ -179,5 +179,5 @@ class NISTTokenizer(TokenizerI):
 
         # Make sure that there's only one space only between words.
         # Strip leading and trailing spaces.
-        text = ' '.join(text.strip().split())
+        text = " ".join(text.strip().split())
         return text if return_str else text.split()

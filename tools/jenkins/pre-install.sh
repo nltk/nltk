@@ -7,7 +7,6 @@ set -x # Print all executed commands to the terminal.
 
 # The following are from Jenkins "Build Environment > Properties Content":
 # https://nltk.ci.cloudbees.com/job/pull_request_tests/configure
-PATH=$PATH:/scratch/jenkins/python/python-2.7.14-x86_64/bin
 PATH=$PATH:/scratch/jenkins/python/python-3.5.4-x86_64/bin
 PATH=$PATH:/scratch/jenkins/python/python-3.6.4-x86_64/bin
 

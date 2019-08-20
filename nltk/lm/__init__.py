@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Language Models
 #
 # Copyright (C) 2001-2019 NLTK Project
@@ -202,7 +201,7 @@ One cool feature of ngram models is that they can be used to generate text.
     >>> lm.generate(1, random_seed=3)
     '<s>'
     >>> lm.generate(5, random_seed=3)
-    ['<s>', 'a', 'b', 'c', '</s>']
+    ['<s>', 'a', 'b', 'c', 'd']
 
 Provide `random_seed` if you want to consistently reproduce the same text all
 other things being equal. Here we are using it to test the examples.
@@ -211,7 +210,7 @@ You can also condition your generation on some preceding text with the `context`
 argument.
 
     >>> lm.generate(5, text_seed=['c'], random_seed=3)
-    ['</s>', '<s>', 'a', 'b', 'c']
+    ['</s>', 'c', 'd', 'c', 'd']
 
 Note that an ngram model is restricted in how much preceding context it can
 take into account. For example, a trigram model can only condition its output

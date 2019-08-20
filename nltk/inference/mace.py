@@ -9,7 +9,6 @@
 """
 A model builder that makes use of the external 'Mace4' package.
 """
-from __future__ import print_function
 
 import os
 import tempfile
@@ -50,7 +49,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
 
     @property
     def valuation(mbc):
-        return mbc.model('valuation')
+        return mbc.model("valuation")
 
     def _convert2val(self, valuation_str):
         """
@@ -59,40 +58,40 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         :return: A model if one is generated; None otherwise.
         :rtype: sem.Valuation
         """
-        valuation_standard_format = self._transform_output(valuation_str, 'standard')
+        valuation_standard_format = self._transform_output(valuation_str, "standard")
 
         val = []
         for line in valuation_standard_format.splitlines(False):
             l = line.strip()
 
-            if l.startswith('interpretation'):
+            if l.startswith("interpretation"):
                 # find the number of entities in the model
-                num_entities = int(l[l.index('(') + 1 : l.index(',')].strip())
+                num_entities = int(l[l.index("(") + 1 : l.index(",")].strip())
 
-            elif l.startswith('function') and l.find('_') == -1:
+            elif l.startswith("function") and l.find("_") == -1:
                 # replace the integer identifier with a corresponding alphabetic character
-                name = l[l.index('(') + 1 : l.index(',')].strip()
+                name = l[l.index("(") + 1 : l.index(",")].strip()
                 if is_indvar(name):
                     name = name.upper()
-                value = int(l[l.index('[') + 1 : l.index(']')].strip())
+                value = int(l[l.index("[") + 1 : l.index("]")].strip())
                 val.append((name, MaceCommand._make_model_var(value)))
 
-            elif l.startswith('relation'):
-                l = l[l.index('(') + 1 :]
-                if '(' in l:
+            elif l.startswith("relation"):
+                l = l[l.index("(") + 1 :]
+                if "(" in l:
                     # relation is not nullary
-                    name = l[: l.index('(')].strip()
+                    name = l[: l.index("(")].strip()
                     values = [
                         int(v.strip())
-                        for v in l[l.index('[') + 1 : l.index(']')].split(',')
+                        for v in l[l.index("[") + 1 : l.index("]")].split(",")
                     ]
                     val.append(
                         (name, MaceCommand._make_relation_set(num_entities, values))
                     )
                 else:
                     # relation is nullary
-                    name = l[: l.index(',')].strip()
-                    value = int(l[l.index('[') + 1 : l.index(']')].strip())
+                    name = l[: l.index(",")].strip()
+                    value = int(l[l.index("[") + 1 : l.index("]")].strip())
                     val.append((name, value == 1))
 
         return Valuation(val)
@@ -141,32 +140,32 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         :type value: int
         """
         letter = [
-            'a',
-            'b',
-            'c',
-            'd',
-            'e',
-            'f',
-            'g',
-            'h',
-            'i',
-            'j',
-            'k',
-            'l',
-            'm',
-            'n',
-            'o',
-            'p',
-            'q',
-            'r',
-            's',
-            't',
-            'u',
-            'v',
-            'w',
-            'x',
-            'y',
-            'z',
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "x",
+            "y",
+            "z",
         ][value]
         num = value // 26
         return letter + str(num) if num > 0 else letter
@@ -183,7 +182,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         if not format:
             return valuation_str
-        elif format == 'valuation':
+        elif format == "valuation":
             return self._convert2val(valuation_str)
         else:
             return self._transform_output(valuation_str, format)
@@ -196,14 +195,14 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         :type format: str
         """
         if format in [
-            'standard',
-            'standard2',
-            'portable',
-            'tabular',
-            'raw',
-            'cooked',
-            'xml',
-            'tex',
+            "standard",
+            "standard2",
+            "portable",
+            "tabular",
+            "raw",
+            "cooked",
+            "xml",
+            "tex",
         ]:
             return self._call_interpformat(valuation_str, [format])[0]
         else:
@@ -220,7 +219,7 @@ class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
         """
         if self._interpformat_bin is None:
             self._interpformat_bin = self._modelbuilder._find_binary(
-                'interpformat', verbose
+                "interpformat", verbose
             )
 
         return self._modelbuilder._call(
@@ -261,18 +260,18 @@ class Mace(Prover9Parent, ModelBuilder):
         :see: ``config_prover9``
         """
         if self._mace4_bin is None:
-            self._mace4_bin = self._find_binary('mace4', verbose)
+            self._mace4_bin = self._find_binary("mace4", verbose)
 
-        updated_input_str = ''
+        updated_input_str = ""
         if self._end_size > 0:
-            updated_input_str += 'assign(end_size, %d).\n\n' % self._end_size
+            updated_input_str += "assign(end_size, %d).\n\n" % self._end_size
         updated_input_str += input_str
 
         return self._call(updated_input_str, self._mace4_bin, args, verbose)
 
 
 def spacer(num=30):
-    print('-' * num)
+    print("-" * num)
 
 
 def decode_result(found):
@@ -282,7 +281,7 @@ def decode_result(found):
     :param found: The output of model_found()
     :type found: bool
     """
-    return {True: 'Countermodel found', False: 'No countermodel found', None: 'None'}[
+    return {True: "Countermodel found", False: "No countermodel found", None: "None"}[
         found
     ]
 
@@ -297,24 +296,24 @@ def test_model_found(arguments):
         m = MaceCommand(g, assumptions=alist, max_models=50)
         found = m.build_model()
         for a in alist:
-            print('   %s' % a)
-        print('|- %s: %s\n' % (g, decode_result(found)))
+            print("   %s" % a)
+        print("|- %s: %s\n" % (g, decode_result(found)))
 
 
 def test_build_model(arguments):
     """
     Try to build a ``nltk.sem.Valuation``.
     """
-    g = Expression.fromstring('all x.man(x)')
+    g = Expression.fromstring("all x.man(x)")
     alist = [
         Expression.fromstring(a)
         for a in [
-            'man(John)',
-            'man(Socrates)',
-            'man(Bill)',
-            'some x.(-(x = John) & man(x) & sees(John,x))',
-            'some x.(-(x = Bill) & man(x))',
-            'all x.some y.(man(x) -> gives(Socrates,x,y))',
+            "man(John)",
+            "man(Socrates)",
+            "man(Bill)",
+            "some x.(-(x = John) & man(x) & sees(John,x))",
+            "some x.(-(x = Bill) & man(x))",
+            "all x.some y.(man(x) -> gives(Socrates,x,y))",
         ]
     ]
 
@@ -324,14 +323,14 @@ def test_build_model(arguments):
     print("Assumptions and Goal")
     spacer()
     for a in alist:
-        print('   %s' % a)
-    print('|- %s: %s\n' % (g, decode_result(m.build_model())))
+        print("   %s" % a)
+    print("|- %s: %s\n" % (g, decode_result(m.build_model())))
     spacer()
-    # print m.model('standard')
-    # print m.model('cooked')
+    # print(m.model('standard'))
+    # print(m.model('cooked'))
     print("Valuation")
     spacer()
-    print(m.valuation, '\n')
+    print(m.valuation, "\n")
 
 
 def test_transform_output(argument_pair):
@@ -343,9 +342,9 @@ def test_transform_output(argument_pair):
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
     for a in alist:
-        print('   %s' % a)
-    print('|- %s: %s\n' % (g, m.build_model()))
-    for format in ['standard', 'portable', 'xml', 'cooked']:
+        print("   %s" % a)
+    print("|- %s: %s\n" % (g, m.build_model()))
+    for format in ["standard", "portable", "xml", "cooked"]:
         spacer()
         print("Using '%s' format" % format)
         spacer()
@@ -355,23 +354,23 @@ def test_transform_output(argument_pair):
 def test_make_relation_set():
     print(
         MaceCommand._make_relation_set(num_entities=3, values=[1, 0, 1])
-        == set([('c',), ('a',)])
+        == set([("c",), ("a",)])
     )
     print(
         MaceCommand._make_relation_set(
             num_entities=3, values=[0, 0, 0, 0, 0, 0, 1, 0, 0]
         )
-        == set([('c', 'a')])
+        == set([("c", "a")])
     )
     print(
         MaceCommand._make_relation_set(num_entities=2, values=[0, 0, 1, 0, 0, 0, 1, 0])
-        == set([('a', 'b', 'a'), ('b', 'b', 'a')])
+        == set([("a", "b", "a"), ("b", "b", "a")])
     )
 
 
 arguments = [
-    ('mortal(Socrates)', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),
-    ('(not mortal(Socrates))', ['all x.(man(x) -> mortal(x))', 'man(Socrates)']),
+    ("mortal(Socrates)", ["all x.(man(x) -> mortal(x))", "man(Socrates)"]),
+    ("(not mortal(Socrates))", ["all x.(man(x) -> mortal(x))", "man(Socrates)"]),
 ]
 
 
@@ -381,5 +380,5 @@ def demo():
     test_transform_output(arguments[1])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()
