@@ -280,7 +280,7 @@ class BrillTaggerTrainer(object):
             print("Finding initial useful rules...")
         self._init_mappings(test_sents, train_sents)
         if self._trace:
-            print(("    Found %d useful rules." % len(self._rule_scores)))
+            print(("    Found {} useful rules.".format(len(self._rule_scores))))
 
         # Let the user know what we're up to.
         if self._trace > 2:
@@ -318,7 +318,7 @@ class BrillTaggerTrainer(object):
 
         # The user can cancel training manually:
         except KeyboardInterrupt:
-            print("Training stopped manually -- %d rules found" % len(rules))
+            print("Training stopped manually -- {} rules found".format(len(rules)))
 
         # Discard our tag position mapping & rule mappings.
         self._clean()
@@ -600,7 +600,7 @@ class BrillTaggerTrainer(object):
         rulestr = rule.format(self._ruleformat)
         if self._trace > 2:
             print(
-                "%4d%4d%4d%4d  |" % (score, num_fixed, num_broken, num_other), end=" "
+                "{:4d}{:4d}{:4d}{:4d}  |".format(score, num_fixed, num_broken, num_other), end=" "
             )
             print(
                 textwrap.fill(
@@ -616,14 +616,14 @@ class BrillTaggerTrainer(object):
     def _trace_apply(self, num_updates):
         prefix = " " * 18 + "|"
         print(prefix)
-        print(prefix, "Applying rule to %d positions." % num_updates)
+        print(prefix, "Applying rule to {} positions.".format(num_updates))
 
     def _trace_update_rules(self, num_obsolete, num_new, num_unseen):
         prefix = " " * 18 + "|"
         print(prefix, "Updated rule tables:")
-        print(prefix, ("  - %d rule applications removed" % num_obsolete))
+        print(prefix, ("  - {} rule applications removed".format(num_obsolete)))
         print(
             prefix,
-            ("  - %d rule applications added (%d novel)" % (num_new, num_unseen)),
+            ("  - {} rule applications added ({} novel)".format(num_new, num_unseen)),
         )
         print(prefix)

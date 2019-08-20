@@ -27,7 +27,7 @@ except ImportError:
 PICKLE = "averaged_perceptron_tagger.pickle"
 
 @jsontags.register_tag
-class AveragedPerceptron(object):
+class AveragedPerceptron:
 
     """An averaged perceptron, as implemented by Matthew Honnibal.
 
