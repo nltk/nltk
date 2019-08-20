@@ -265,8 +265,8 @@ class SentiText(object):
     # for removing punctuation
     REGEX_REMOVE_PUNCTUATION = re.compile("[{0}]".format(re.escape(string.punctuation)))
 
-    def __init__(self, text):
-        if not isinstance(text, str):
+    def __init__(self, text=None):
+        if text and not isinstance(text, str):
             text = str(text.encode("utf-8"))
         self.text = text
         self.words_and_emoticons = self._words_and_emoticons()
@@ -337,7 +337,7 @@ class SentimentIntensityAnalyzer(object):
     ):
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.make_lex_dict()
-        self.sentitext = SentiText(text)
+        self.sentitext = SentiText()
         # Extended Vader constants from
         # https://medium.com/@malavika.suresh0794/vader-customizing-the-library-71d9e8ed6eda
         self.extended = extended
