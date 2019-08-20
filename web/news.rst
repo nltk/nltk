@@ -4,6 +4,11 @@ NLTK News
 2019
 ----
 
+NLTK 3.4.5 release: August 2019
+  Fixed security bug in downloader: Zip slip vulnerability - for the unlikely
+  situation where a user configures their downloader to use a compromised server
+  https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-14751)
+
 NLTK 3.4.4 release: July 2019
   Fix bug in plot function (probability.py)
   Add improved PanLex Swadesh corpus reader  
