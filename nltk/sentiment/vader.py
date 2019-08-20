@@ -209,8 +209,9 @@ class VaderConstants:
         "hand to mouth": -2,
     }
 
-    def __init__(self):
-        pass
+    def __init__(self, extended=False):
+        if extended:
+            self.NEGATE.add('despite')
 
     def negated(self, input_words, include_nt=True):
         """
@@ -264,12 +265,12 @@ class SentiText(object):
     # for removing punctuation
     REGEX_REMOVE_PUNCTUATION = re.compile("[{0}]".format(re.escape(string.punctuation)))
 
-    def __init__(self, text, extended=False):
+    def __init__(self, text):
         if not isinstance(text, str):
             text = str(text.encode("utf-8"))
         self.text = text
         self.words_and_emoticons = self._words_and_emoticons()
-        # doesn't separate words from\
+        # doesn't separate words from
         # adjacent punctuation (keeps emoticons & contractions)
         self.is_cap_diff = allcap_differential(self.words_and_emoticons)
 
@@ -331,12 +332,16 @@ class SentimentIntensityAnalyzer(object):
     """
 
     def __init__(
-        self, lexicon_file="sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt"
+        self, lexicon_file="sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt",
+        extended=False
     ):
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.make_lex_dict()
-        self.constants = VaderConstants()
         self.sentitext = SentiText(text)
+        # Extended Vader constants from
+        # https://medium.com/@malavika.suresh0794/vader-customizing-the-library-71d9e8ed6eda
+        self.extended = extended
+        self.constants = VaderConstants(extended)
 
     def make_lex_dict(self):
         """
@@ -373,9 +378,9 @@ class SentimentIntensityAnalyzer(object):
 
         sentiments = self._but_check(words_and_emoticons, sentiments)
 
-        sentiments = self._only_if_check(words_and_emoticons, sentiments)
-
-        sentiments = self._in_spite_of_check(words_and_emoticons, sentiments)
+        if self.extended:
+            sentiments = self._only_if_check(words_and_emoticons, sentiments)
+            sentiments = self._in_spite_of_check(words_and_emoticons, sentiments)
 
         return self.score_valence(sentiments, text)
 

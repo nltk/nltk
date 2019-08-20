@@ -287,16 +287,6 @@ def output_markdown(filename, **kwargs):
         outfile.write(text)
 
 
-def save_file(content, filename):
-    """
-    Store `content` in `filename`. Can be used to store a SentimentAnalyzer.
-    """
-    print("Saving", filename)
-    with codecs.open(filename, "wb") as storage_file:
-        # The protocol=2 parameter is for python2 compatibility
-        pickle.dump(content, storage_file, protocol=2)
-
-
 def split_train_test(all_instances, n=None):
     """
     Randomly split `n` instances of the dataset into train and test sets.
