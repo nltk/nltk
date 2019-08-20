@@ -45,25 +45,6 @@ class VaderConstants:
 
     N_SCALAR = -0.74
 
-    PUNC_LIST = [
-        ".",
-        "!",
-        "?",
-        ",",
-        ";",
-        ":",
-        "-",
-        "'",
-        '"',
-        "!!",
-        "!!!",
-        "??",
-        "???",
-        "?!?",
-        "!?!",
-        "?!?!",
-        "!?!?",
-    ]
     NEGATE = {
         "aint",
         "arent",
@@ -123,6 +104,7 @@ class VaderConstants:
         "wouldn't",
         "rarely",
         "seldom",
+        "despite",
     }
 
     # booster/dampener 'intensifiers' or 'degree adverbs'
@@ -210,8 +192,7 @@ class VaderConstants:
     }
 
     def __init__(self, extended=False):
-        if extended:
-            self.NEGATE.add('despite')
+        pass
 
     def negated(self, input_words, include_nt=True):
         """
@@ -265,14 +246,34 @@ class SentiText(object):
     # for removing punctuation
     REGEX_REMOVE_PUNCTUATION = re.compile("[{0}]".format(re.escape(string.punctuation)))
 
-    def __init__(self, text=None):
-        if text and not isinstance(text, str):
+    PUNC_LIST = [
+        ".",
+        "!",
+        "?",
+        ",",
+        ";",
+        ":",
+        "-",
+        "'",
+        '"',
+        "!!",
+        "!!!",
+        "??",
+        "???",
+        "?!?",
+        "!?!",
+        "?!?!",
+        "!?!?",
+    ]
+
+    def __init__(self, text):
+        if not isinstance(text, str):
             text = str(text.encode("utf-8"))
         self.text = text
         self.words_and_emoticons = self._words_and_emoticons()
         # doesn't separate words from
         # adjacent punctuation (keeps emoticons & contractions)
-        self.is_cap_diff = allcap_differential(self.words_and_emoticons)
+        self.is_cap_diff = self.allcap_differential(self.words_and_emoticons)
 
     def _words_plus_punc(self):
         """
@@ -288,8 +289,8 @@ class SentiText(object):
         # remove singletons
         words_only = set(w for w in words_only if len(w) > 1)
         # the product gives ('cat', ',') and (',', 'cat')
-        punc_before = {"".join(p): p[1] for p in product(PUNC_LIST, words_only)}
-        punc_after = {"".join(p): p[0] for p in product(words_only, PUNC_LIST)}
+        punc_before = {"".join(p): p[1] for p in product(self.PUNC_LIST, words_only)}
+        punc_after = {"".join(p): p[0] for p in product(words_only, self.PUNC_LIST)}
         words_punc_dict = punc_before
         words_punc_dict.update(punc_after)
         return words_punc_dict
@@ -337,7 +338,6 @@ class SentimentIntensityAnalyzer(object):
     ):
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.make_lex_dict()
-        self.sentitext = SentiText()
         # Extended Vader constants from
         # https://medium.com/@malavika.suresh0794/vader-customizing-the-library-71d9e8ed6eda
         self.extended = extended
@@ -360,7 +360,7 @@ class SentimentIntensityAnalyzer(object):
         valence.
         """
         # text, words_and_emoticons, is_cap_diff = self.preprocess(text)
-
+        sentitext = SentiText(text)
         sentiments = []
         words_and_emoticons = sentitext.words_and_emoticons
         for item in words_and_emoticons:
@@ -376,7 +376,7 @@ class SentimentIntensityAnalyzer(object):
 
             sentiments = self.sentiment_valence(valence, sentitext, item, i, sentiments)
 
-        sentiments = self._but_check(words_and_emoticons, sentiments)
+        sentiments = self._but_check(words_and_emoticons, sentiments, self.extended)
 
         if self.extended:
             sentiments = self._only_if_check(words_and_emoticons, sentiments)
@@ -395,9 +395,9 @@ class SentimentIntensityAnalyzer(object):
             # check if sentiment laden word is in ALL CAPS (while others aren't)
             if item.isupper() and is_cap_diff:
                 if valence > 0:
-                    valence += C_INCR
+                    valence += self.constants.C_INCR
                 else:
-                    valence -= C_INCR
+                    valence -= self.constants.C_INCR
 
             for start_i in range(0, 3):
                 if (
@@ -445,51 +445,51 @@ class SentimentIntensityAnalyzer(object):
                 words_and_emoticons[i - 2].lower() != "at"
                 and words_and_emoticons[i - 2].lower() != "very"
             ):
-                valence = valence * N_SCALAR
+                valence = valence * self.constants.N_SCALAR
         elif (
             i > 0
             and words_and_emoticons[i - 1].lower() not in self.lexicon
             and words_and_emoticons[i - 1].lower() == "least"
         ):
-            valence = valence * N_SCALAR
+            valence = valence * self.constants.N_SCALAR
         return valence
 
-    def _but_check(self, words_and_emoticons, sentiments):
-        """
-        # old _but_check()
-        # check for modification in sentiment due to contrastive conjunction 'but'
-        if "but" in words_and_emoticons or "BUT" in words_and_emoticons:
-            try:
-                bi = words_and_emoticons.index("but")
-            except ValueError:
-                bi = words_and_emoticons.index("BUT")
-            for sentiment in sentiments:
-                si = sentiments.index(sentiment)
-                if si < bi:
-                    sentiments.pop(si)
-                    sentiments.insert(si, sentiment * 0.5)
-                elif si > bi:
-                    sentiments.pop(si)
-                    sentiments.insert(si, sentiment * 1.5)
-
-        return sentiments
-        """
-        # check for modification in sentiment due to contrastive conjunctions
-        words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
-        cc_list = ['but', 'however', 'except']
-        bi = 0
-        for cc in cc_list:
-            if cc in words_and_emoticons_lower:
-                bi = words_and_emoticons_lower.index(cc)
-                for si,sentiment in enumerate(sentiments):
+    def _but_check(self, words_and_emoticons, sentiments, extended=False):
+        if extended:
+            # Extended version from
+            # https://medium.com/@malavika.suresh0794/vader-customizing-the-library-71d9e8ed6eda
+            # check for modification in sentiment due to contrastive conjunctions
+            words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
+            cc_list = ['but', 'however', 'except']
+            bi = 0
+            for cc in cc_list:
+                if cc in words_and_emoticons_lower:
+                    bi = words_and_emoticons_lower.index(cc)
+                    for si,sentiment in enumerate(sentiments):
+                        if si < bi:
+                            sentiments[si] = sentiment * 0.5
+                        elif si > bi:
+                            sentiments[si] = sentiment * 1.5
+            # Future work:
+            # 1.Consider usage of though/although/even though
+            return sentiments
+        else:
+            # Original Vader code.
+            # check for modification in sentiment due to contrastive conjunction 'but'
+            if "but" in words_and_emoticons or "BUT" in words_and_emoticons:
+                try:
+                    bi = words_and_emoticons.index("but")
+                except ValueError:
+                    bi = words_and_emoticons.index("BUT")
+                for sentiment in sentiments:
+                    si = sentiments.index(sentiment)
                     if si < bi:
-                        sentiments[si] = sentiment * 0.5
+                        sentiments.pop(si)
+                        sentiments.insert(si, sentiment * 0.5)
                     elif si > bi:
-                        sentiments[si] = sentiment * 1.5
-
-        # Future work:
-        # 1.Consider usage of though/although/even though
-        return sentiments
+                        sentiments.pop(si)
+                        sentiments.insert(si, sentiment * 1.5)
+            return sentiments
 
     def _only_if_check(self, words_and_emoticons, sentiments):
         words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
@@ -515,6 +515,7 @@ class SentimentIntensityAnalyzer(object):
                         sentiments[si] = sentiment * 1.5
                     elif si > i+1:
                         sentiments[si] = sentiment * 0.5
+        return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
         onezero = "{0} {1}".format(words_and_emoticons[i - 1], words_and_emoticons[i])
@@ -563,13 +564,13 @@ class SentimentIntensityAnalyzer(object):
 
         # check for booster/dampener bi-grams such as 'sort of' or 'kind of'
         if threetwo in self.constants.BOOSTER_DICT or twoone in self.constants.BOOSTER_DICT:
-            valence = valence + B_DECR
+            valence = valence + self.constants.B_DECR
         return valence
 
     def _never_check(self, valence, words_and_emoticons, start_i, i):
         if start_i == 0:
             if self.constants.negated([words_and_emoticons[i - 1]]):
-                valence = valence * N_SCALAR
+                valence = valence * self.constants.N_SCALAR
         if start_i == 1:
             if words_and_emoticons[i - 2] == "never" and (
                 words_and_emoticons[i - 1] == "so"
@@ -577,7 +578,7 @@ class SentimentIntensityAnalyzer(object):
             ):
                 valence = valence * 1.5
             elif self.constants.negated([words_and_emoticons[i - (start_i + 1)]]):
-                valence = valence * N_SCALAR
+                valence = valence * self.constants.N_SCALAR
         if start_i == 2:
             if (
                 words_and_emoticons[i - 3] == "never"
@@ -592,7 +593,7 @@ class SentimentIntensityAnalyzer(object):
             ):
                 valence = valence * 1.25
             elif self.constants.negated([words_and_emoticons[i - (start_i + 1)]]):
-                valence = valence * N_SCALAR
+                valence = valence * self.constants.N_SCALAR
         return valence
 
     def _punctuation_emphasis(self, sum_s, text):

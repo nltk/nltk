@@ -15,7 +15,7 @@ import pydoc
 import bisect
 import os
 
-from itertools import islice, chain, combinations
+from itertools import islice, chain, combinations, tee
 from pprint import pprint
 from collections import defaultdict, deque
 from sys import version_info

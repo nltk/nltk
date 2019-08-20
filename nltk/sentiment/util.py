@@ -20,7 +20,6 @@ import re
 import sys
 import time
 from copy import deepcopy
-from itertools import tee
 
 import nltk
 from nltk.corpus import CategorizedPlaintextCorpusReader
