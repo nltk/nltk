@@ -16,7 +16,7 @@ from nltk.tbl.rule import Rule
 
 
 @add_metaclass(ABCMeta)
-class BrillTemplateI(object):
+class BrillTemplateI:
     """
     An interface for generating lists of transformational rules that
     apply at given sentence positions.  ``BrillTemplateI`` is used by

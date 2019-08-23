@@ -19,7 +19,7 @@ from nltk import jsontags
 # Tag Rules
 ######################################################################
 @add_metaclass(ABCMeta)
-class TagRule(object):
+class TagRule:
     """
     An interface for tag transformations on a tagged corpus, as
     performed by tbl taggers.  Each transformation finds all tokens
@@ -149,7 +149,10 @@ class Rule(TagRule):
     @classmethod
     def decode_json_obj(cls, obj):
         return cls(
-            obj["templateid"], obj["original"], obj["replacement"], obj["conditions"]
+            obj["templateid"],
+            obj["original"],
+            obj["replacement"],
+            tuple(tuple(feat) for feat in obj["conditions"])
         )
 
     def applies(self, tokens, index):
