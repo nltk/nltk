@@ -12,7 +12,6 @@
 # Work around mbcs bug in distutils.
 # http://bugs.python.org/issue10945
 import codecs
-
 try:
     codecs.lookup("mbcs")
 except LookupError:
@@ -49,6 +48,50 @@ console_scripts = """
 [console_scripts]
 nltk=nltk.cli:cli
 """
+
+MODULES_TO_COMPILE = [
+    #'nltk.ccg.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529589821#L2077
+    'nltk.chat.*',
+    'nltk.chunk.*',
+    #'nltk.classify.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529562500#L2080
+    'nltk.cluster.*',
+    'nltk.draw.*',
+    #'nltk.inference.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529679443#L2114
+    'nltk.lm.*',
+    'nltk.metrics.*',
+    'nltk.misc.*',
+    'nltk.sem.*',
+    'nltk.sentiment.*',
+    'nltk.stem.*',
+    'nltk.tbl.*',
+    #'nltk.test.*', # Fails on https://travis-ci.org/nltk/nltk/jobs/529634204#L2169
+    'nltk.tokenize.*',
+    'nltk.translate.*',
+    'nltk.twitter.*',
+
+    'nltk.parse.chart',
+
+    'nltk.grammar',
+    'nltk.probability',
+    'nltk.util',
+]
+
+
+def compile_modules(modules):
+    """
+    Compile the named modules using Cython, using the clearer Python 3 semantics.
+    """
+    import Cython
+    from Cython.Build import cythonize
+    files = [name.replace('.', os.path.sep) + '.py' for name in modules]
+    print("Compiling %d modules using Cython %s" % (len(modules), Cython.__version__))
+    return cythonize(files, language_level=3)
+
+
+if os.getenv('CYTHONIZE_NLTK') == 'true':
+    ext_modules = compile_modules(MODULES_TO_COMPILE)
+else:
+    ext_modules = None
 
 setup(
     name="nltk",
@@ -108,6 +151,7 @@ natural language processing.  NLTK requires Python 3.5, 3.6, or 3.7.""",
     ],
     extras_require=extras_require,
     packages=find_packages(),
+    ext_modules=ext_modules,
     zip_safe=False,  # since normal files will be present too?
     entry_points=console_scripts,
 )
