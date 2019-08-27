@@ -108,7 +108,7 @@ def sent_tokenize(text, language="english"):
 
 
 # Standard word tokenizer.
-_treebank_word_tokenizer = NLTKDestructiveWordTokenizer()
+_treebank_word_tokenizer = NLTKWordTokenizer()
 
 
 def word_tokenize(text, language="english", preserve_line=False):
