@@ -65,7 +65,7 @@ import re
 from nltk.data import load
 from nltk.tokenize.casual import TweetTokenizer, casual_tokenize
 from nltk.tokenize.mwe import MWETokenizer
-from nltk.tokenize.nltk_tokenize import NLTKDestructiveWordTokenizer
+from nltk.tokenize.destructive import NLTKWordTokenizer
 from nltk.tokenize.punkt import PunktSentenceTokenizer
 from nltk.tokenize.regexp import (
     RegexpTokenizer,
