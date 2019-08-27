@@ -8,7 +8,6 @@
 # For license information, see LICENSE.TXT
 
 """ ChrF score implementation """
-from __future__ import division
 from collections import Counter, defaultdict
 import re
 
@@ -103,10 +102,10 @@ def sentence_chrf(
 def _preprocess(sent, ignore_whitespace):
     if type(sent) != str:
         # turn list of tokens into a string
-        sent = ' '.join(sent)
+        sent = " ".join(sent)
 
     if ignore_whitespace:
-        sent = re.sub(r'\s+', '', sent)
+        sent = re.sub(r"\s+", "", sent)
     return sent
 
 

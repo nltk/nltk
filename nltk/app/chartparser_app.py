@@ -91,29 +91,29 @@ from nltk.draw import CFGEditor, tree_to_treesegment, TreeSegmentWidget
 
 
 class EdgeList(ColorizedList):
-    ARROW = SymbolWidget.SYMBOLS['rightarrow']
+    ARROW = SymbolWidget.SYMBOLS["rightarrow"]
 
     def _init_colortags(self, textwidget, options):
-        textwidget.tag_config('terminal', foreground='#006000')
-        textwidget.tag_config('arrow', font='symbol', underline='0')
-        textwidget.tag_config('dot', foreground='#000000')
+        textwidget.tag_config("terminal", foreground="#006000")
+        textwidget.tag_config("arrow", font="symbol", underline="0")
+        textwidget.tag_config("dot", foreground="#000000")
         textwidget.tag_config(
-            'nonterminal', foreground='blue', font=('helvetica', -12, 'bold')
+            "nonterminal", foreground="blue", font=("helvetica", -12, "bold")
         )
 
     def _item_repr(self, item):
         contents = []
-        contents.append(('%s\t' % item.lhs(), 'nonterminal'))
-        contents.append((self.ARROW, 'arrow'))
+        contents.append(("%s\t" % item.lhs(), "nonterminal"))
+        contents.append((self.ARROW, "arrow"))
         for i, elt in enumerate(item.rhs()):
             if i == item.dot():
-                contents.append((' *', 'dot'))
+                contents.append((" *", "dot"))
             if isinstance(elt, Nonterminal):
-                contents.append((' %s' % elt.symbol(), 'nonterminal'))
+                contents.append((" %s" % elt.symbol(), "nonterminal"))
             else:
-                contents.append((' %r' % elt, 'terminal'))
+                contents.append((" %r" % elt, "terminal"))
         if item.is_complete():
-            contents.append((' *', 'dot'))
+            contents.append((" *", "dot"))
         return contents
 
 
@@ -128,7 +128,7 @@ class ChartMatrixView(object):
     """
 
     def __init__(
-        self, parent, chart, toplevel=True, title='Chart Matrix', show_numedges=False
+        self, parent, chart, toplevel=True, title="Chart Matrix", show_numedges=False
     ):
         self._chart = chart
         self._cells = []
@@ -139,7 +139,7 @@ class ChartMatrixView(object):
         if toplevel:
             self._root = Toplevel(parent)
             self._root.title(title)
-            self._root.bind('<Control-q>', self.destroy)
+            self._root.bind("<Control-q>", self.destroy)
             self._init_quit(self._root)
         else:
             self._root = Frame(parent)
@@ -158,27 +158,27 @@ class ChartMatrixView(object):
         self.draw()
 
     def _init_quit(self, root):
-        quit = Button(root, text='Quit', command=self.destroy)
-        quit.pack(side='bottom', expand=0, fill='none')
+        quit = Button(root, text="Quit", command=self.destroy)
+        quit.pack(side="bottom", expand=0, fill="none")
 
     def _init_matrix(self, root):
-        cframe = Frame(root, border=2, relief='sunken')
-        cframe.pack(expand=0, fill='none', padx=1, pady=3, side='top')
-        self._canvas = Canvas(cframe, width=200, height=200, background='white')
-        self._canvas.pack(expand=0, fill='none')
+        cframe = Frame(root, border=2, relief="sunken")
+        cframe.pack(expand=0, fill="none", padx=1, pady=3, side="top")
+        self._canvas = Canvas(cframe, width=200, height=200, background="white")
+        self._canvas.pack(expand=0, fill="none")
 
     def _init_numedges(self, root):
-        self._numedges_label = Label(root, text='0 edges')
-        self._numedges_label.pack(expand=0, fill='none', side='top')
+        self._numedges_label = Label(root, text="0 edges")
+        self._numedges_label.pack(expand=0, fill="none", side="top")
 
     def _init_list(self, root):
         self._list = EdgeList(root, [], width=20, height=5)
-        self._list.pack(side='top', expand=1, fill='both', pady=3)
+        self._list.pack(side="top", expand=1, fill="both", pady=3)
 
         def cb(edge, self=self):
-            self._fire_callbacks('select', edge)
+            self._fire_callbacks("select", edge)
 
-        self._list.add_callback('select', cb)
+        self._list.add_callback("select", cb)
         self._list.focus()
 
     def destroy(self, *e):
@@ -210,19 +210,19 @@ class ChartMatrixView(object):
         for i in range(N):
             for j in range(i, N):
                 if cell_edges[i][j] == 0:
-                    color = 'gray20'
+                    color = "gray20"
                 else:
-                    color = '#00%02x%02x' % (
+                    color = "#00%02x%02x" % (
                         min(255, 50 + 128 * cell_edges[i][j] / 10),
                         max(0, 128 - 128 * cell_edges[i][j] / 10),
                     )
                 cell_tag = self._cells[i][j]
                 self._canvas.itemconfig(cell_tag, fill=color)
                 if (i, j) == self._selected_cell:
-                    self._canvas.itemconfig(cell_tag, outline='#00ffff', width=3)
+                    self._canvas.itemconfig(cell_tag, outline="#00ffff", width=3)
                     self._canvas.tag_raise(cell_tag)
                 else:
-                    self._canvas.itemconfig(cell_tag, outline='black', width=1)
+                    self._canvas.itemconfig(cell_tag, outline="black", width=1)
 
         # Update the edge list.
         edges = list(self._chart.select(span=self._selected_cell))
@@ -231,14 +231,14 @@ class ChartMatrixView(object):
         # Update our edge count.
         self._num_edges = self._chart.num_edges()
         if self._numedges_label is not None:
-            self._numedges_label['text'] = '%d edges' % self._num_edges
+            self._numedges_label["text"] = "%d edges" % self._num_edges
 
     def activate(self):
-        self._canvas.itemconfig('inactivebox', state='hidden')
+        self._canvas.itemconfig("inactivebox", state="hidden")
         self.update()
 
     def inactivate(self):
-        self._canvas.itemconfig('inactivebox', state='normal')
+        self._canvas.itemconfig("inactivebox", state="normal")
         self.update()
 
     def add_callback(self, event, func):
@@ -272,7 +272,7 @@ class ChartMatrixView(object):
         self.update()
 
         # Fire the callback.
-        self._fire_callbacks('select_cell', i, j)
+        self._fire_callbacks("select_cell", i, j)
 
     def deselect_cell(self):
         if self._root is None:
@@ -314,37 +314,37 @@ class ChartMatrixView(object):
         LEFT_MARGIN = BOT_MARGIN = 15
         TOP_MARGIN = 5
         c = self._canvas
-        c.delete('all')
+        c.delete("all")
         N = self._chart.num_leaves() + 1
-        dx = (int(c['width']) - LEFT_MARGIN) / N
-        dy = (int(c['height']) - TOP_MARGIN - BOT_MARGIN) / N
+        dx = (int(c["width"]) - LEFT_MARGIN) / N
+        dy = (int(c["height"]) - TOP_MARGIN - BOT_MARGIN) / N
 
-        c.delete('all')
+        c.delete("all")
 
         # Labels and dotted lines
         for i in range(N):
             c.create_text(
-                LEFT_MARGIN - 2, i * dy + dy / 2 + TOP_MARGIN, text=repr(i), anchor='e'
+                LEFT_MARGIN - 2, i * dy + dy / 2 + TOP_MARGIN, text=repr(i), anchor="e"
             )
             c.create_text(
                 i * dx + dx / 2 + LEFT_MARGIN,
                 N * dy + TOP_MARGIN + 1,
                 text=repr(i),
-                anchor='n',
+                anchor="n",
             )
             c.create_line(
                 LEFT_MARGIN,
                 dy * (i + 1) + TOP_MARGIN,
                 dx * N + LEFT_MARGIN,
                 dy * (i + 1) + TOP_MARGIN,
-                dash='.',
+                dash=".",
             )
             c.create_line(
                 dx * i + LEFT_MARGIN,
                 TOP_MARGIN,
                 dx * i + LEFT_MARGIN,
                 dy * N + TOP_MARGIN,
-                dash='.',
+                dash=".",
             )
 
         # A box around the whole thing
@@ -361,25 +361,25 @@ class ChartMatrixView(object):
                     i * dy + TOP_MARGIN,
                     (j + 1) * dx + LEFT_MARGIN,
                     (i + 1) * dy + TOP_MARGIN,
-                    fill='gray20',
+                    fill="gray20",
                 )
                 self._cells[i][j] = t
 
                 def cb(event, self=self, i=i, j=j):
                     self._click_cell(i, j)
 
-                c.tag_bind(t, '<Button-1>', cb)
+                c.tag_bind(t, "<Button-1>", cb)
 
         # Inactive box
-        xmax, ymax = int(c['width']), int(c['height'])
+        xmax, ymax = int(c["width"]), int(c["height"])
         t = c.create_rectangle(
             -100,
             -100,
             xmax + 100,
             ymax + 100,
-            fill='gray50',
-            state='hidden',
-            tag='inactivebox',
+            fill="gray50",
+            state="hidden",
+            tag="inactivebox",
         )
         c.tag_lower(t)
 
@@ -407,24 +407,24 @@ class ChartResultsView(object):
 
         if toplevel:
             self._root = Toplevel(parent)
-            self._root.title('Chart Parser Application: Results')
-            self._root.bind('<Control-q>', self.destroy)
+            self._root.title("Chart Parser Application: Results")
+            self._root.bind("<Control-q>", self.destroy)
         else:
             self._root = Frame(parent)
 
         # Buttons
         if toplevel:
             buttons = Frame(self._root)
-            buttons.pack(side='bottom', expand=0, fill='x')
-            Button(buttons, text='Quit', command=self.destroy).pack(side='right')
-            Button(buttons, text='Print All', command=self.print_all).pack(side='left')
-            Button(buttons, text='Print Selection', command=self.print_selection).pack(
-                side='left'
+            buttons.pack(side="bottom", expand=0, fill="x")
+            Button(buttons, text="Quit", command=self.destroy).pack(side="right")
+            Button(buttons, text="Print All", command=self.print_all).pack(side="left")
+            Button(buttons, text="Print Selection", command=self.print_selection).pack(
+                side="left"
             )
 
         # Canvas frame.
         self._cframe = CanvasFrame(self._root, closeenough=20)
-        self._cframe.pack(side='top', expand=1, fill='both')
+        self._cframe.pack(side="top", expand=1, fill="both")
 
         # Initial update
         self.update()
@@ -467,15 +467,15 @@ class ChartResultsView(object):
             c.delete(self._selectbox)
         self._selection = widget
         (x1, y1, x2, y2) = widget.bbox()
-        self._selectbox = c.create_rectangle(x1, y1, x2, y2, width=2, outline='#088')
+        self._selectbox = c.create_rectangle(x1, y1, x2, y2, width=2, outline="#088")
 
     def _color(self, treewidget, color):
-        treewidget.label()['color'] = color
+        treewidget.label()["color"] = color
         for child in treewidget.subtrees():
             if isinstance(child, TreeSegmentWidget):
                 self._color(child, color)
             else:
-                child['color'] = color
+                child["color"] = color
 
     def print_all(self, *e):
         if self._root is None:
@@ -486,7 +486,7 @@ class ChartResultsView(object):
         if self._root is None:
             return
         if self._selection is None:
-            showerror('Print Error', 'No tree selected')
+            showerror("Print Error", "No tree selected")
         else:
             c = self._cframe.canvas()
             for widget in self._treewidgets:
@@ -495,7 +495,7 @@ class ChartResultsView(object):
             c.delete(self._selectbox)
             (x1, y1, x2, y2) = self._selection.bbox()
             self._selection.move(10 - x1, 10 - y1)
-            c['scrollregion'] = '0 0 %s %s' % (x2 - x1 + 20, y2 - y1 + 20)
+            c["scrollregion"] = "0 0 %s %s" % (x2 - x1 + 20, y2 - y1 + 20)
             self._cframe.print_to_file()
 
             # Restore our state.
@@ -572,25 +572,25 @@ class ChartComparer(object):
     """
 
     _OPSYMBOL = {
-        '-': '-',
-        'and': SymbolWidget.SYMBOLS['intersection'],
-        'or': SymbolWidget.SYMBOLS['union'],
+        "-": "-",
+        "and": SymbolWidget.SYMBOLS["intersection"],
+        "or": SymbolWidget.SYMBOLS["union"],
     }
 
     def __init__(self, *chart_filenames):
         # This chart is displayed when we don't have a value (eg
         # before any chart is loaded).
-        faketok = [''] * 8
+        faketok = [""] * 8
         self._emptychart = Chart(faketok)
 
         # The left & right charts start out empty.
-        self._left_name = 'None'
-        self._right_name = 'None'
+        self._left_name = "None"
+        self._right_name = "None"
         self._left_chart = self._emptychart
         self._right_chart = self._emptychart
 
         # The charts that have been loaded.
-        self._charts = {'None': self._emptychart}
+        self._charts = {"None": self._emptychart}
 
         # The output chart.
         self._out_chart = self._emptychart
@@ -600,9 +600,9 @@ class ChartComparer(object):
 
         # Set up the root window.
         self._root = Tk()
-        self._root.title('Chart Comparison')
-        self._root.bind('<Control-q>', self.destroy)
-        self._root.bind('<Control-x>', self.destroy)
+        self._root.title("Chart Comparison")
+        self._root.bind("<Control-q>", self.destroy)
+        self._root.bind("<Control-x>", self.destroy)
 
         # Initialize all widgets, etc.
         self._init_menubar(self._root)
@@ -638,122 +638,122 @@ class ChartComparer(object):
         # File menu
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(
-            label='Load Chart',
-            accelerator='Ctrl-o',
+            label="Load Chart",
+            accelerator="Ctrl-o",
             underline=0,
             command=self.load_chart_dialog,
         )
         filemenu.add_command(
-            label='Save Output',
-            accelerator='Ctrl-s',
+            label="Save Output",
+            accelerator="Ctrl-s",
             underline=0,
             command=self.save_chart_dialog,
         )
         filemenu.add_separator()
         filemenu.add_command(
-            label='Exit', underline=1, command=self.destroy, accelerator='Ctrl-x'
+            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-x"
         )
-        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+        menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
         # Compare menu
         opmenu = Menu(menubar, tearoff=0)
         opmenu.add_command(
-            label='Intersection', command=self._intersection, accelerator='+'
+            label="Intersection", command=self._intersection, accelerator="+"
         )
-        opmenu.add_command(label='Union', command=self._union, accelerator='*')
+        opmenu.add_command(label="Union", command=self._union, accelerator="*")
         opmenu.add_command(
-            label='Difference', command=self._difference, accelerator='-'
+            label="Difference", command=self._difference, accelerator="-"
         )
         opmenu.add_separator()
-        opmenu.add_command(label='Swap Charts', command=self._swapcharts)
-        menubar.add_cascade(label='Compare', underline=0, menu=opmenu)
+        opmenu.add_command(label="Swap Charts", command=self._swapcharts)
+        menubar.add_cascade(label="Compare", underline=0, menu=opmenu)
 
         # Add the menu
         self._root.config(menu=menubar)
 
     def _init_divider(self, root):
-        divider = Frame(root, border=2, relief='sunken')
-        divider.pack(side='top', fill='x', ipady=2)
+        divider = Frame(root, border=2, relief="sunken")
+        divider.pack(side="top", fill="x", ipady=2)
 
     def _init_chartviews(self, root):
-        opfont = ('symbol', -36)  # Font for operator.
-        eqfont = ('helvetica', -36)  # Font for equals sign.
+        opfont = ("symbol", -36)  # Font for operator.
+        eqfont = ("helvetica", -36)  # Font for equals sign.
 
-        frame = Frame(root, background='#c0c0c0')
-        frame.pack(side='top', expand=1, fill='both')
+        frame = Frame(root, background="#c0c0c0")
+        frame.pack(side="top", expand=1, fill="both")
 
         # The left matrix.
-        cv1_frame = Frame(frame, border=3, relief='groove')
-        cv1_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
+        cv1_frame = Frame(frame, border=3, relief="groove")
+        cv1_frame.pack(side="left", padx=8, pady=7, expand=1, fill="both")
         self._left_selector = MutableOptionMenu(
             cv1_frame, list(self._charts.keys()), command=self._select_left
         )
-        self._left_selector.pack(side='top', pady=5, fill='x')
+        self._left_selector.pack(side="top", pady=5, fill="x")
         self._left_matrix = ChartMatrixView(
             cv1_frame, self._emptychart, toplevel=False, show_numedges=True
         )
-        self._left_matrix.pack(side='bottom', padx=5, pady=5, expand=1, fill='both')
-        self._left_matrix.add_callback('select', self.select_edge)
-        self._left_matrix.add_callback('select_cell', self.select_cell)
+        self._left_matrix.pack(side="bottom", padx=5, pady=5, expand=1, fill="both")
+        self._left_matrix.add_callback("select", self.select_edge)
+        self._left_matrix.add_callback("select_cell", self.select_cell)
         self._left_matrix.inactivate()
 
         # The operator.
         self._op_label = Label(
-            frame, text=' ', width=3, background='#c0c0c0', font=opfont
+            frame, text=" ", width=3, background="#c0c0c0", font=opfont
         )
-        self._op_label.pack(side='left', padx=5, pady=5)
+        self._op_label.pack(side="left", padx=5, pady=5)
 
         # The right matrix.
-        cv2_frame = Frame(frame, border=3, relief='groove')
-        cv2_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
+        cv2_frame = Frame(frame, border=3, relief="groove")
+        cv2_frame.pack(side="left", padx=8, pady=7, expand=1, fill="both")
         self._right_selector = MutableOptionMenu(
             cv2_frame, list(self._charts.keys()), command=self._select_right
         )
-        self._right_selector.pack(side='top', pady=5, fill='x')
+        self._right_selector.pack(side="top", pady=5, fill="x")
         self._right_matrix = ChartMatrixView(
             cv2_frame, self._emptychart, toplevel=False, show_numedges=True
         )
-        self._right_matrix.pack(side='bottom', padx=5, pady=5, expand=1, fill='both')
-        self._right_matrix.add_callback('select', self.select_edge)
-        self._right_matrix.add_callback('select_cell', self.select_cell)
+        self._right_matrix.pack(side="bottom", padx=5, pady=5, expand=1, fill="both")
+        self._right_matrix.add_callback("select", self.select_edge)
+        self._right_matrix.add_callback("select_cell", self.select_cell)
         self._right_matrix.inactivate()
 
         # The equals sign
-        Label(frame, text='=', width=3, background='#c0c0c0', font=eqfont).pack(
-            side='left', padx=5, pady=5
+        Label(frame, text="=", width=3, background="#c0c0c0", font=eqfont).pack(
+            side="left", padx=5, pady=5
         )
 
         # The output matrix.
-        out_frame = Frame(frame, border=3, relief='groove')
-        out_frame.pack(side='left', padx=8, pady=7, expand=1, fill='both')
-        self._out_label = Label(out_frame, text='Output')
-        self._out_label.pack(side='top', pady=9)
+        out_frame = Frame(frame, border=3, relief="groove")
+        out_frame.pack(side="left", padx=8, pady=7, expand=1, fill="both")
+        self._out_label = Label(out_frame, text="Output")
+        self._out_label.pack(side="top", pady=9)
         self._out_matrix = ChartMatrixView(
             out_frame, self._emptychart, toplevel=False, show_numedges=True
         )
-        self._out_matrix.pack(side='bottom', padx=5, pady=5, expand=1, fill='both')
-        self._out_matrix.add_callback('select', self.select_edge)
-        self._out_matrix.add_callback('select_cell', self.select_cell)
+        self._out_matrix.pack(side="bottom", padx=5, pady=5, expand=1, fill="both")
+        self._out_matrix.add_callback("select", self.select_edge)
+        self._out_matrix.add_callback("select_cell", self.select_cell)
         self._out_matrix.inactivate()
 
     def _init_buttons(self, root):
         buttons = Frame(root)
-        buttons.pack(side='bottom', pady=5, fill='x', expand=0)
-        Button(buttons, text='Intersection', command=self._intersection).pack(
-            side='left'
+        buttons.pack(side="bottom", pady=5, fill="x", expand=0)
+        Button(buttons, text="Intersection", command=self._intersection).pack(
+            side="left"
         )
-        Button(buttons, text='Union', command=self._union).pack(side='left')
-        Button(buttons, text='Difference', command=self._difference).pack(side='left')
-        Frame(buttons, width=20).pack(side='left')
-        Button(buttons, text='Swap Charts', command=self._swapcharts).pack(side='left')
+        Button(buttons, text="Union", command=self._union).pack(side="left")
+        Button(buttons, text="Difference", command=self._difference).pack(side="left")
+        Frame(buttons, width=20).pack(side="left")
+        Button(buttons, text="Swap Charts", command=self._swapcharts).pack(side="left")
 
-        Button(buttons, text='Detatch Output', command=self._detatch_out).pack(
-            side='right'
+        Button(buttons, text="Detatch Output", command=self._detatch_out).pack(
+            side="right"
         )
 
     def _init_bindings(self, root):
         # root.bind('<Control-s>', self.save_chart)
-        root.bind('<Control-o>', self.load_chart_dialog)
+        root.bind("<Control-o>", self.load_chart_dialog)
         # root.bind('<Control-r>', self.reset)
 
     # ////////////////////////////////////////////////////////////
@@ -764,7 +764,7 @@ class ChartComparer(object):
         self._left_name = name
         self._left_chart = self._charts[name]
         self._left_matrix.set_chart(self._left_chart)
-        if name == 'None':
+        if name == "None":
             self._left_matrix.inactivate()
         self._apply_op()
 
@@ -772,40 +772,40 @@ class ChartComparer(object):
         self._right_name = name
         self._right_chart = self._charts[name]
         self._right_matrix.set_chart(self._right_chart)
-        if name == 'None':
+        if name == "None":
             self._right_matrix.inactivate()
         self._apply_op()
 
     def _apply_op(self):
-        if self._operator == '-':
+        if self._operator == "-":
             self._difference()
-        elif self._operator == 'or':
+        elif self._operator == "or":
             self._union()
-        elif self._operator == 'and':
+        elif self._operator == "and":
             self._intersection()
 
     # ////////////////////////////////////////////////////////////
     # File
     # ////////////////////////////////////////////////////////////
-    CHART_FILE_TYPES = [('Pickle file', '.pickle'), ('All files', '*')]
+    CHART_FILE_TYPES = [("Pickle file", ".pickle"), ("All files", "*")]
 
     def save_chart_dialog(self, *args):
         filename = asksaveasfilename(
-            filetypes=self.CHART_FILE_TYPES, defaultextension='.pickle'
+            filetypes=self.CHART_FILE_TYPES, defaultextension=".pickle"
         )
         if not filename:
             return
         try:
-            with open(filename, 'wb') as outfile:
+            with open(filename, "wb") as outfile:
                 pickle.dump(self._out_chart, outfile)
         except Exception as e:
             showerror(
-                'Error Saving Chart', 'Unable to open file: %r\n%s' % (filename, e)
+                "Error Saving Chart", "Unable to open file: %r\n%s" % (filename, e)
             )
 
     def load_chart_dialog(self, *args):
         filename = askopenfilename(
-            filetypes=self.CHART_FILE_TYPES, defaultextension='.pickle'
+            filetypes=self.CHART_FILE_TYPES, defaultextension=".pickle"
         )
         if not filename:
             return
@@ -813,16 +813,16 @@ class ChartComparer(object):
             self.load_chart(filename)
         except Exception as e:
             showerror(
-                'Error Loading Chart', 'Unable to open file: %r\n%s' % (filename, e)
+                "Error Loading Chart", "Unable to open file: %r\n%s" % (filename, e)
             )
 
     def load_chart(self, filename):
-        with open(filename, 'rb') as infile:
+        with open(filename, "rb") as infile:
             chart = pickle.load(infile)
         name = os.path.basename(filename)
-        if name.endswith('.pickle'):
+        if name.endswith(".pickle"):
             name = name[:-7]
-        if name.endswith('.chart'):
+        if name.endswith(".chart"):
             name = name[:-6]
         self._charts[name] = chart
         self._left_selector.add(name)
@@ -876,7 +876,7 @@ class ChartComparer(object):
             if edge not in self._right_chart:
                 out_chart.insert(edge, [])
 
-        self._update('-', out_chart)
+        self._update("-", out_chart)
 
     def _intersection(self):
         if not self._checkcompat():
@@ -887,7 +887,7 @@ class ChartComparer(object):
             if edge in self._right_chart:
                 out_chart.insert(edge, [])
 
-        self._update('and', out_chart)
+        self._update("and", out_chart)
 
     def _union(self):
         if not self._checkcompat():
@@ -899,7 +899,7 @@ class ChartComparer(object):
         for edge in self._right_chart:
             out_chart.insert(edge, [])
 
-        self._update('or', out_chart)
+        self._update("or", out_chart)
 
     def _swapcharts(self):
         left, right = self._left_name, self._right_name
@@ -917,7 +917,7 @@ class ChartComparer(object):
             self._out_chart = self._emptychart
             self._out_matrix.set_chart(self._out_chart)
             self._out_matrix.inactivate()
-            self._out_label['text'] = 'Output'
+            self._out_label["text"] = "Output"
             # Issue some other warning?
             return False
         else:
@@ -925,10 +925,10 @@ class ChartComparer(object):
 
     def _update(self, operator, out_chart):
         self._operator = operator
-        self._op_label['text'] = self._OPSYMBOL[operator]
+        self._op_label["text"] = self._OPSYMBOL[operator]
         self._out_chart = out_chart
         self._out_matrix.set_chart(out_chart)
-        self._out_label['text'] = '%s %s %s' % (
+        self._out_label["text"] = "%s %s %s" % (
             self._left_name,
             self._operator,
             self._right_name,
@@ -937,11 +937,11 @@ class ChartComparer(object):
     def _clear_out_chart(self):
         self._out_chart = self._emptychart
         self._out_matrix.set_chart(self._out_chart)
-        self._op_label['text'] = ' '
+        self._op_label["text"] = " "
         self._out_matrix.inactivate()
 
     def _detatch_out(self):
-        ChartMatrixView(self._root, self._out_chart, title=self._out_label['text'])
+        ChartMatrixView(self._root, self._out_chart, title=self._out_label["text"])
 
 
 #######################################################################
@@ -1006,9 +1006,9 @@ class ChartView(object):
         Construct a new ``Chart`` display.
         """
         # Process keyword args.
-        draw_tree = kw.get('draw_tree', 0)
-        draw_sentence = kw.get('draw_sentence', 1)
-        self._fontsize = kw.get('fontsize', -12)
+        draw_tree = kw.get("draw_tree", 0)
+        draw_sentence = kw.get("draw_sentence", 1)
+        self._fontsize = kw.get("fontsize", -12)
 
         # The chart!
         self._chart = chart
@@ -1038,7 +1038,7 @@ class ChartView(object):
         # If they didn't provide a main window, then set one up.
         if root is None:
             top = Tk()
-            top.title('Chart View')
+            top.title("Chart View")
 
             def destroy1(e, top=top):
                 top.destroy()
@@ -1046,9 +1046,9 @@ class ChartView(object):
             def destroy2(top=top):
                 top.destroy()
 
-            top.bind('q', destroy1)
-            b = Button(top, text='Done', command=destroy2)
-            b.pack(side='bottom')
+            top.bind("q", destroy1)
+            b = Button(top, text="Done", command=destroy2)
+            b.pack(side="bottom")
             self._root = top
         else:
             self._root = root
@@ -1058,25 +1058,25 @@ class ChartView(object):
 
         # Create the chart canvas.
         (self._chart_sb, self._chart_canvas) = self._sb_canvas(self._root)
-        self._chart_canvas['height'] = 300
-        self._chart_canvas['closeenough'] = 15
+        self._chart_canvas["height"] = 300
+        self._chart_canvas["closeenough"] = 15
 
         # Create the sentence canvas.
         if draw_sentence:
-            cframe = Frame(self._root, relief='sunk', border=2)
-            cframe.pack(fill='both', side='bottom')
+            cframe = Frame(self._root, relief="sunk", border=2)
+            cframe.pack(fill="both", side="bottom")
             self._sentence_canvas = Canvas(cframe, height=50)
-            self._sentence_canvas['background'] = '#e0e0e0'
-            self._sentence_canvas.pack(fill='both')
+            self._sentence_canvas["background"] = "#e0e0e0"
+            self._sentence_canvas.pack(fill="both")
             # self._sentence_canvas['height'] = self._sentence_height
         else:
             self._sentence_canvas = None
 
         # Create the tree canvas.
         if draw_tree:
-            (sb, canvas) = self._sb_canvas(self._root, 'n', 'x')
+            (sb, canvas) = self._sb_canvas(self._root, "n", "x")
             (self._tree_sb, self._tree_canvas) = (sb, canvas)
-            self._tree_canvas['height'] = 200
+            self._tree_canvas["height"] = 200
         else:
             self._tree_canvas = None
 
@@ -1088,45 +1088,45 @@ class ChartView(object):
 
         # Set up the configure callback, which will be called whenever
         # the window is resized.
-        self._chart_canvas.bind('<Configure>', self._configure)
+        self._chart_canvas.bind("<Configure>", self._configure)
 
     def _init_fonts(self, root):
-        self._boldfont = Font(family='helvetica', weight='bold', size=self._fontsize)
-        self._font = Font(family='helvetica', size=self._fontsize)
+        self._boldfont = Font(family="helvetica", weight="bold", size=self._fontsize)
+        self._font = Font(family="helvetica", size=self._fontsize)
         # See: <http://www.astro.washington.edu/owen/ROTKFolklore.html>
         self._sysfont = Font(font=Button()["font"])
         root.option_add("*Font", self._sysfont)
 
-    def _sb_canvas(self, root, expand='y', fill='both', side='bottom'):
+    def _sb_canvas(self, root, expand="y", fill="both", side="bottom"):
         """
         Helper for __init__: construct a canvas with a scrollbar.
         """
-        cframe = Frame(root, relief='sunk', border=2)
+        cframe = Frame(root, relief="sunk", border=2)
         cframe.pack(fill=fill, expand=expand, side=side)
-        canvas = Canvas(cframe, background='#e0e0e0')
+        canvas = Canvas(cframe, background="#e0e0e0")
 
         # Give the canvas a scrollbar.
-        sb = Scrollbar(cframe, orient='vertical')
-        sb.pack(side='right', fill='y')
-        canvas.pack(side='left', fill=fill, expand='yes')
+        sb = Scrollbar(cframe, orient="vertical")
+        sb.pack(side="right", fill="y")
+        canvas.pack(side="left", fill=fill, expand="yes")
 
         # Connect the scrollbars to the canvas.
-        sb['command'] = canvas.yview
-        canvas['yscrollcommand'] = sb.set
+        sb["command"] = canvas.yview
+        canvas["yscrollcommand"] = sb.set
 
         return (sb, canvas)
 
     def scroll_up(self, *e):
-        self._chart_canvas.yview('scroll', -1, 'units')
+        self._chart_canvas.yview("scroll", -1, "units")
 
     def scroll_down(self, *e):
-        self._chart_canvas.yview('scroll', 1, 'units')
+        self._chart_canvas.yview("scroll", 1, "units")
 
     def page_up(self, *e):
-        self._chart_canvas.yview('scroll', -1, 'pages')
+        self._chart_canvas.yview("scroll", -1, "pages")
 
     def page_down(self, *e):
-        self._chart_canvas.yview('scroll', 1, 'pages')
+        self._chart_canvas.yview("scroll", 1, "pages")
 
     def _grow(self):
         """
@@ -1135,19 +1135,19 @@ class ChartView(object):
         # Grow, if need-be
         N = self._chart.num_leaves()
         width = max(
-            int(self._chart_canvas['width']), N * self._unitsize + ChartView._MARGIN * 2
+            int(self._chart_canvas["width"]), N * self._unitsize + ChartView._MARGIN * 2
         )
 
         # It won't resize without the second (height) line, but I
         # don't understand why not.
         self._chart_canvas.configure(width=width)
-        self._chart_canvas.configure(height=self._chart_canvas['height'])
+        self._chart_canvas.configure(height=self._chart_canvas["height"])
 
         self._unitsize = (width - 2 * ChartView._MARGIN) / N
 
         # Reset the height for the sentence window.
         if self._sentence_canvas is not None:
-            self._sentence_canvas['height'] = self._sentence_height
+            self._sentence_canvas["height"] = self._sentence_height
 
     def set_font_size(self, size):
         self._font.configure(size=-abs(size))
@@ -1230,11 +1230,11 @@ class ChartView(object):
             rhs = " ".join(rhselts)
         else:
             lhs = edge.lhs()
-            rhs = ''
+            rhs = ""
 
         for s in (lhs, rhs):
             tag = c.create_text(
-                0, 0, text=s, font=self._boldfont, anchor='nw', justify='left'
+                0, 0, text=s, font=self._boldfont, anchor="nw", justify="left"
             )
             bbox = c.bbox(tag)
             c.delete(tag)
@@ -1297,9 +1297,9 @@ class ChartView(object):
         # Try to view the new edge..
         y = (level + 1) * self._chart_level_size
         dy = self._text_height + 10
-        self._chart_canvas.yview('moveto', 1.0)
+        self._chart_canvas.yview("moveto", 1.0)
         if self._chart_height != 0:
-            self._chart_canvas.yview('moveto', (y - dy) / self._chart_height)
+            self._chart_canvas.yview("moveto", (y - dy) / self._chart_height)
 
     def _draw_edge(self, edge, lvl):
         """
@@ -1313,7 +1313,7 @@ class ChartView(object):
         if x2 == x1:
             x2 += max(4, self._unitsize / 5)
         y = (lvl + 1) * self._chart_level_size
-        linetag = c.create_line(x1, y, x2, y, arrow='last', width=3)
+        linetag = c.create_line(x1, y, x2, y, arrow="last", width=3)
 
         # Draw a label for the edge.
         if isinstance(edge, TreeEdge):
@@ -1330,13 +1330,13 @@ class ChartView(object):
 
         rhs1 = " ".join(rhs[:pos])
         rhs2 = " ".join(rhs[pos:])
-        rhstag1 = c.create_text(x1 + 3, y, text=rhs1, font=self._font, anchor='nw')
+        rhstag1 = c.create_text(x1 + 3, y, text=rhs1, font=self._font, anchor="nw")
         dotx = c.bbox(rhstag1)[2] + 6
         doty = (c.bbox(rhstag1)[1] + c.bbox(rhstag1)[3]) / 2
         dottag = c.create_oval(dotx - 2, doty - 2, dotx + 2, doty + 2)
-        rhstag2 = c.create_text(dotx + 6, y, text=rhs2, font=self._font, anchor='nw')
+        rhstag2 = c.create_text(dotx + 6, y, text=rhs2, font=self._font, anchor="nw")
         lhstag = c.create_text(
-            (x1 + x2) / 2, y, text=str(edge.lhs()), anchor='s', font=self._boldfont
+            (x1 + x2) / 2, y, text=str(edge.lhs()), anchor="s", font=self._boldfont
         )
 
         # Keep track of the edge's tags.
@@ -1344,13 +1344,13 @@ class ChartView(object):
 
         # Register a callback for clicking on the edge.
         def cb(event, self=self, edge=edge):
-            self._fire_callbacks('select', edge)
+            self._fire_callbacks("select", edge)
 
-        c.tag_bind(rhstag1, '<Button-1>', cb)
-        c.tag_bind(rhstag2, '<Button-1>', cb)
-        c.tag_bind(linetag, '<Button-1>', cb)
-        c.tag_bind(dottag, '<Button-1>', cb)
-        c.tag_bind(lhstag, '<Button-1>', cb)
+        c.tag_bind(rhstag1, "<Button-1>", cb)
+        c.tag_bind(rhstag2, "<Button-1>", cb)
+        c.tag_bind(linetag, "<Button-1>", cb)
+        c.tag_bind(dottag, "<Button-1>", cb)
+        c.tag_bind(lhstag, "<Button-1>", cb)
 
         self._color_edge(edge)
 
@@ -1379,13 +1379,13 @@ class ChartView(object):
             if edge in self._marks:
                 self._color_edge(self._marks[edge])
             if edge.is_complete() and edge.span() == (0, N):
-                self._color_edge(edge, '#084', '#042')
+                self._color_edge(edge, "#084", "#042")
             elif isinstance(edge, LeafEdge):
-                self._color_edge(edge, '#48c', '#246')
+                self._color_edge(edge, "#48c", "#246")
             else:
-                self._color_edge(edge, '#00f', '#008')
+                self._color_edge(edge, "#00f", "#008")
 
-    def mark_edge(self, edge, mark='#0df'):
+    def mark_edge(self, edge, mark="#0df"):
         """
         Mark an edge
         """
@@ -1405,7 +1405,7 @@ class ChartView(object):
             del self._marks[edge]
             self._color_edge(edge)
 
-    def markonly_edge(self, edge, mark='#0df'):
+    def markonly_edge(self, edge, mark="#0df"):
         self.unmark_edge()
         self.mark_edge(edge, mark)
 
@@ -1422,7 +1422,7 @@ class ChartView(object):
         # Check against all tokens
         for leaf in self._chart.leaves():
             tag = c.create_text(
-                0, 0, text=repr(leaf), font=self._font, anchor='nw', justify='left'
+                0, 0, text=repr(leaf), font=self._font, anchor="nw", justify="left"
             )
             bbox = c.bbox(tag)
             c.delete(tag)
@@ -1461,11 +1461,11 @@ class ChartView(object):
 
         levels = len(self._edgelevels)
         self._chart_height = (levels + 2) * self._chart_level_size
-        c['scrollregion'] = (0, 0, width, self._chart_height)
+        c["scrollregion"] = (0, 0, width, self._chart_height)
 
         # Reset the tree scroll region
         if self._tree_canvas:
-            self._tree_canvas['scrollregion'] = (0, 0, width, self._tree_height)
+            self._tree_canvas["scrollregion"] = (0, 0, width, self._tree_height)
 
     def _draw_loclines(self):
         """
@@ -1489,7 +1489,7 @@ class ChartView(object):
                 c2.tag_lower(t2)
             t3 = c3.create_line(x, 0, x, BOTTOM)
             c3.tag_lower(t3)
-            t4 = c3.create_text(x + 2, 0, text=repr(i), anchor='nw', font=self._font)
+            t4 = c3.create_text(x + 2, 0, text=repr(i), anchor="nw", font=self._font)
             c3.tag_lower(t4)
             # if i % 4 == 0:
             #    if c1: c1.itemconfig(t1, width=2, fill='gray60')
@@ -1497,16 +1497,16 @@ class ChartView(object):
             #    c3.itemconfig(t3, width=2, fill='gray60')
             if i % 2 == 0:
                 if c1:
-                    c1.itemconfig(t1, fill='gray60')
+                    c1.itemconfig(t1, fill="gray60")
                 if c2:
-                    c2.itemconfig(t2, fill='gray60')
-                c3.itemconfig(t3, fill='gray60')
+                    c2.itemconfig(t2, fill="gray60")
+                c3.itemconfig(t3, fill="gray60")
             else:
                 if c1:
-                    c1.itemconfig(t1, fill='gray80')
+                    c1.itemconfig(t1, fill="gray80")
                 if c2:
-                    c2.itemconfig(t2, fill='gray80')
-                c3.itemconfig(t3, fill='gray80')
+                    c2.itemconfig(t2, fill="gray80")
+                c3.itemconfig(t3, fill="gray80")
 
     def _draw_sentence(self):
         """Draw the sentence string."""
@@ -1521,7 +1521,7 @@ class ChartView(object):
             x2 = x1 + self._unitsize
             x = (x1 + x2) / 2
             tag = c.create_text(
-                x, y, text=repr(leaf), font=self._font, anchor='n', justify='left'
+                x, y, text=repr(leaf), font=self._font, anchor="n", justify="left"
             )
             bbox = c.bbox(tag)
             rt = c.create_rectangle(
@@ -1529,8 +1529,8 @@ class ChartView(object):
                 bbox[1] - (ChartView._LEAF_SPACING / 2),
                 x2 - 2,
                 bbox[3] + (ChartView._LEAF_SPACING / 2),
-                fill='#f0f0f0',
-                outline='#f0f0f0',
+                fill="#f0f0f0",
+                outline="#f0f0f0",
             )
             c.tag_lower(rt)
 
@@ -1571,7 +1571,7 @@ class ChartView(object):
         # Update the scroll region.
         w = self._chart.num_leaves() * self._unitsize + 2 * ChartView._MARGIN
         h = tree.height() * (ChartView._TREE_LEVEL_SIZE + self._text_height)
-        self._tree_canvas['scrollregion'] = (0, 0, w, h)
+        self._tree_canvas["scrollregion"] = (0, 0, w, h)
 
     def cycle_tree(self):
         self._treetoks_index = (self._treetoks_index + 1) % len(self._treetoks)
@@ -1582,11 +1582,11 @@ class ChartView(object):
             return
 
         # Draw the label.
-        label = '%d Trees' % len(self._treetoks)
+        label = "%d Trees" % len(self._treetoks)
         c = self._tree_canvas
         margin = ChartView._MARGIN
         right = self._chart.num_leaves() * self._unitsize + margin - 2
-        tag = c.create_text(right, 2, anchor='ne', text=label, font=self._boldfont)
+        tag = c.create_text(right, 2, anchor="ne", text=label, font=self._boldfont)
         self._tree_tags.append(tag)
         _, _, _, y = c.bbox(tag)
 
@@ -1594,11 +1594,11 @@ class ChartView(object):
         for i in range(len(self._treetoks)):
             x = right - 20 * (len(self._treetoks) - i - 1)
             if i == self._treetoks_index:
-                fill = '#084'
+                fill = "#084"
             else:
-                fill = '#fff'
+                fill = "#fff"
             tag = c.create_polygon(
-                x, y + 10, x - 5, y, x - 10, y + 10, fill=fill, outline='black'
+                x, y + 10, x - 5, y, x - 10, y + 10, fill=fill, outline="black"
             )
             self._tree_tags.append(tag)
 
@@ -1608,7 +1608,7 @@ class ChartView(object):
                 self._treetoks_index = i
                 self.draw_tree()
 
-            c.tag_bind(tag, '<Button-1>', cb)
+            c.tag_bind(tag, "<Button-1>", cb)
 
     def _draw_treetok(self, treetok, index, depth=0):
         """
@@ -1642,10 +1642,10 @@ class ChartView(object):
         tag = c.create_text(
             nodex,
             nodey,
-            anchor='n',
-            justify='center',
+            anchor="n",
+            justify="center",
             text=str(treetok.label()),
-            fill='#042',
+            fill="#042",
             font=self._boldfont,
         )
         self._tree_tags.append(tag)
@@ -1661,7 +1661,7 @@ class ChartView(object):
                     childx,
                     childy,
                     width=2,
-                    fill='#084',
+                    fill="#084",
                 )
                 self._tree_tags.append(tag)
             if isinstance(child, Tree) and not child:
@@ -1672,8 +1672,8 @@ class ChartView(object):
                     childx,
                     childy,
                     width=2,
-                    fill='#048',
-                    dash='2 3',
+                    fill="#048",
+                    dash="2 3",
                 )
                 self._tree_tags.append(tag)
             if not isinstance(child, Tree):
@@ -1684,7 +1684,7 @@ class ChartView(object):
                     childx,
                     10000,
                     width=2,
-                    fill='#084',
+                    fill="#084",
                 )
                 self._tree_tags.append(tag)
 
@@ -1695,14 +1695,14 @@ class ChartView(object):
         Draw everything (from scratch).
         """
         if self._tree_canvas:
-            self._tree_canvas.delete('all')
+            self._tree_canvas.delete("all")
             self.draw_tree()
 
         if self._sentence_canvas:
-            self._sentence_canvas.delete('all')
+            self._sentence_canvas.delete("all")
             self._draw_sentence()
 
-        self._chart_canvas.delete('all')
+        self._chart_canvas.delete("all")
         self._edgetags = {}
 
         # Redraw any edges we erased.
@@ -1786,7 +1786,7 @@ class FundamentalEdgeRule(EdgeRule, SingleEdgeFundamentalRule):
 
 
 class ChartParserApp(object):
-    def __init__(self, grammar, tokens, title='Chart Parser Application'):
+    def __init__(self, grammar, tokens, title="Chart Parser Application"):
         # Initialize the parser
         self._init_parser(grammar, tokens)
 
@@ -1795,15 +1795,15 @@ class ChartParserApp(object):
             # Create the root window.
             self._root = Tk()
             self._root.title(title)
-            self._root.bind('<Control-q>', self.destroy)
+            self._root.bind("<Control-q>", self.destroy)
 
             # Set up some frames.
             frame3 = Frame(self._root)
             frame2 = Frame(self._root)
             frame1 = Frame(self._root)
-            frame3.pack(side='bottom', fill='none')
-            frame2.pack(side='bottom', fill='x')
-            frame1.pack(side='bottom', fill='both', expand=1)
+            frame3.pack(side="bottom", fill="none")
+            frame2.pack(side="bottom", fill="x")
+            frame1.pack(side="bottom", fill="both", expand=1)
 
             self._init_fonts(self._root)
             self._init_animation()
@@ -1819,7 +1819,7 @@ class ChartParserApp(object):
             self._init_bindings()
 
         except:
-            print('Error creating Tree View')
+            print("Error creating Tree View")
             self.destroy()
             raise
 
@@ -1871,10 +1871,10 @@ class ChartParserApp(object):
 
         # TWhat's our font size (default=same as sysfont)
         self._size = IntVar(root)
-        self._size.set(self._sysfont.cget('size'))
+        self._size.set(self._sysfont.cget("size"))
 
-        self._boldfont = Font(family='helvetica', weight='bold', size=self._size.get())
-        self._font = Font(family='helvetica', size=self._size.get())
+        self._boldfont = Font(family="helvetica", weight="bold", size=self._size.get())
+        self._font = Font(family="helvetica", size=self._size.get())
 
     def _init_animation(self):
         # Are we stepping? (default=yes)
@@ -1890,214 +1890,214 @@ class ChartParserApp(object):
 
     def _init_chartview(self, parent):
         self._cv = ChartView(self._chart, parent, draw_tree=1, draw_sentence=1)
-        self._cv.add_callback('select', self._click_cv_edge)
+        self._cv.add_callback("select", self._click_cv_edge)
 
     def _init_rulelabel(self, parent):
-        ruletxt = 'Last edge generated by:'
+        ruletxt = "Last edge generated by:"
 
         self._rulelabel1 = Label(parent, text=ruletxt, font=self._boldfont)
         self._rulelabel2 = Label(
-            parent, width=40, relief='groove', anchor='w', font=self._boldfont
+            parent, width=40, relief="groove", anchor="w", font=self._boldfont
         )
-        self._rulelabel1.pack(side='left')
-        self._rulelabel2.pack(side='left')
-        step = Checkbutton(parent, variable=self._step, text='Step')
-        step.pack(side='right')
+        self._rulelabel1.pack(side="left")
+        self._rulelabel2.pack(side="left")
+        step = Checkbutton(parent, variable=self._step, text="Step")
+        step.pack(side="right")
 
     def _init_buttons(self, parent):
         frame1 = Frame(parent)
         frame2 = Frame(parent)
-        frame1.pack(side='bottom', fill='x')
-        frame2.pack(side='top', fill='none')
+        frame1.pack(side="bottom", fill="x")
+        frame2.pack(side="top", fill="none")
 
         Button(
             frame1,
-            text='Reset\nParser',
-            background='#90c0d0',
-            foreground='black',
+            text="Reset\nParser",
+            background="#90c0d0",
+            foreground="black",
             command=self.reset,
-        ).pack(side='right')
+        ).pack(side="right")
         # Button(frame1, text='Pause',
         #               background='#90c0d0', foreground='black',
         #               command=self.pause).pack(side='left')
 
         Button(
             frame1,
-            text='Top Down\nStrategy',
-            background='#90c0d0',
-            foreground='black',
+            text="Top Down\nStrategy",
+            background="#90c0d0",
+            foreground="black",
             command=self.top_down_strategy,
-        ).pack(side='left')
+        ).pack(side="left")
         Button(
             frame1,
-            text='Bottom Up\nStrategy',
-            background='#90c0d0',
-            foreground='black',
+            text="Bottom Up\nStrategy",
+            background="#90c0d0",
+            foreground="black",
             command=self.bottom_up_strategy,
-        ).pack(side='left')
+        ).pack(side="left")
         Button(
             frame1,
-            text='Bottom Up\nLeft-Corner Strategy',
-            background='#90c0d0',
-            foreground='black',
+            text="Bottom Up\nLeft-Corner Strategy",
+            background="#90c0d0",
+            foreground="black",
             command=self.bottom_up_leftcorner_strategy,
-        ).pack(side='left')
+        ).pack(side="left")
 
         Button(
             frame2,
-            text='Top Down Init\nRule',
-            background='#90f090',
-            foreground='black',
+            text="Top Down Init\nRule",
+            background="#90f090",
+            foreground="black",
             command=self.top_down_init,
-        ).pack(side='left')
+        ).pack(side="left")
         Button(
             frame2,
-            text='Top Down Predict\nRule',
-            background='#90f090',
-            foreground='black',
+            text="Top Down Predict\nRule",
+            background="#90f090",
+            foreground="black",
             command=self.top_down_predict,
-        ).pack(side='left')
-        Frame(frame2, width=20).pack(side='left')
+        ).pack(side="left")
+        Frame(frame2, width=20).pack(side="left")
 
         Button(
             frame2,
-            text='Bottom Up Predict\nRule',
-            background='#90f090',
-            foreground='black',
+            text="Bottom Up Predict\nRule",
+            background="#90f090",
+            foreground="black",
             command=self.bottom_up,
-        ).pack(side='left')
-        Frame(frame2, width=20).pack(side='left')
+        ).pack(side="left")
+        Frame(frame2, width=20).pack(side="left")
 
         Button(
             frame2,
-            text='Bottom Up Left-Corner\nPredict Rule',
-            background='#90f090',
-            foreground='black',
+            text="Bottom Up Left-Corner\nPredict Rule",
+            background="#90f090",
+            foreground="black",
             command=self.bottom_up_leftcorner,
-        ).pack(side='left')
-        Frame(frame2, width=20).pack(side='left')
+        ).pack(side="left")
+        Frame(frame2, width=20).pack(side="left")
 
         Button(
             frame2,
-            text='Fundamental\nRule',
-            background='#90f090',
-            foreground='black',
+            text="Fundamental\nRule",
+            background="#90f090",
+            foreground="black",
             command=self.fundamental,
-        ).pack(side='left')
+        ).pack(side="left")
 
     def _init_bindings(self):
-        self._root.bind('<Up>', self._cv.scroll_up)
-        self._root.bind('<Down>', self._cv.scroll_down)
-        self._root.bind('<Prior>', self._cv.page_up)
-        self._root.bind('<Next>', self._cv.page_down)
-        self._root.bind('<Control-q>', self.destroy)
-        self._root.bind('<Control-x>', self.destroy)
-        self._root.bind('<F1>', self.help)
+        self._root.bind("<Up>", self._cv.scroll_up)
+        self._root.bind("<Down>", self._cv.scroll_down)
+        self._root.bind("<Prior>", self._cv.page_up)
+        self._root.bind("<Next>", self._cv.page_down)
+        self._root.bind("<Control-q>", self.destroy)
+        self._root.bind("<Control-x>", self.destroy)
+        self._root.bind("<F1>", self.help)
 
-        self._root.bind('<Control-s>', self.save_chart)
-        self._root.bind('<Control-o>', self.load_chart)
-        self._root.bind('<Control-r>', self.reset)
+        self._root.bind("<Control-s>", self.save_chart)
+        self._root.bind("<Control-o>", self.load_chart)
+        self._root.bind("<Control-r>", self.reset)
 
-        self._root.bind('t', self.top_down_strategy)
-        self._root.bind('b', self.bottom_up_strategy)
-        self._root.bind('c', self.bottom_up_leftcorner_strategy)
-        self._root.bind('<space>', self._stop_animation)
+        self._root.bind("t", self.top_down_strategy)
+        self._root.bind("b", self.bottom_up_strategy)
+        self._root.bind("c", self.bottom_up_leftcorner_strategy)
+        self._root.bind("<space>", self._stop_animation)
 
-        self._root.bind('<Control-g>', self.edit_grammar)
-        self._root.bind('<Control-t>', self.edit_sentence)
+        self._root.bind("<Control-g>", self.edit_grammar)
+        self._root.bind("<Control-t>", self.edit_sentence)
 
         # Animation speed control
-        self._root.bind('-', lambda e, a=self._animate: a.set(1))
-        self._root.bind('=', lambda e, a=self._animate: a.set(2))
-        self._root.bind('+', lambda e, a=self._animate: a.set(3))
+        self._root.bind("-", lambda e, a=self._animate: a.set(1))
+        self._root.bind("=", lambda e, a=self._animate: a.set(2))
+        self._root.bind("+", lambda e, a=self._animate: a.set(3))
 
         # Step control
-        self._root.bind('s', lambda e, s=self._step: s.set(not s.get()))
+        self._root.bind("s", lambda e, s=self._step: s.set(not s.get()))
 
     def _init_menubar(self):
         menubar = Menu(self._root)
 
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(
-            label='Save Chart',
+            label="Save Chart",
             underline=0,
             command=self.save_chart,
-            accelerator='Ctrl-s',
+            accelerator="Ctrl-s",
         )
         filemenu.add_command(
-            label='Load Chart',
+            label="Load Chart",
             underline=0,
             command=self.load_chart,
-            accelerator='Ctrl-o',
+            accelerator="Ctrl-o",
         )
         filemenu.add_command(
-            label='Reset Chart', underline=0, command=self.reset, accelerator='Ctrl-r'
+            label="Reset Chart", underline=0, command=self.reset, accelerator="Ctrl-r"
         )
         filemenu.add_separator()
-        filemenu.add_command(label='Save Grammar', command=self.save_grammar)
-        filemenu.add_command(label='Load Grammar', command=self.load_grammar)
+        filemenu.add_command(label="Save Grammar", command=self.save_grammar)
+        filemenu.add_command(label="Load Grammar", command=self.load_grammar)
         filemenu.add_separator()
         filemenu.add_command(
-            label='Exit', underline=1, command=self.destroy, accelerator='Ctrl-x'
+            label="Exit", underline=1, command=self.destroy, accelerator="Ctrl-x"
         )
-        menubar.add_cascade(label='File', underline=0, menu=filemenu)
+        menubar.add_cascade(label="File", underline=0, menu=filemenu)
 
         editmenu = Menu(menubar, tearoff=0)
         editmenu.add_command(
-            label='Edit Grammar',
+            label="Edit Grammar",
             underline=5,
             command=self.edit_grammar,
-            accelerator='Ctrl-g',
+            accelerator="Ctrl-g",
         )
         editmenu.add_command(
-            label='Edit Text',
+            label="Edit Text",
             underline=5,
             command=self.edit_sentence,
-            accelerator='Ctrl-t',
+            accelerator="Ctrl-t",
         )
-        menubar.add_cascade(label='Edit', underline=0, menu=editmenu)
+        menubar.add_cascade(label="Edit", underline=0, menu=editmenu)
 
         viewmenu = Menu(menubar, tearoff=0)
         viewmenu.add_command(
-            label='Chart Matrix', underline=6, command=self.view_matrix
+            label="Chart Matrix", underline=6, command=self.view_matrix
         )
-        viewmenu.add_command(label='Results', underline=0, command=self.view_results)
-        menubar.add_cascade(label='View', underline=0, menu=viewmenu)
+        viewmenu.add_command(label="Results", underline=0, command=self.view_results)
+        menubar.add_cascade(label="View", underline=0, menu=viewmenu)
 
         rulemenu = Menu(menubar, tearoff=0)
         rulemenu.add_command(
-            label='Top Down Strategy',
+            label="Top Down Strategy",
             underline=0,
             command=self.top_down_strategy,
-            accelerator='t',
+            accelerator="t",
         )
         rulemenu.add_command(
-            label='Bottom Up Strategy',
+            label="Bottom Up Strategy",
             underline=0,
             command=self.bottom_up_strategy,
-            accelerator='b',
+            accelerator="b",
         )
         rulemenu.add_command(
-            label='Bottom Up Left-Corner Strategy',
+            label="Bottom Up Left-Corner Strategy",
             underline=0,
             command=self.bottom_up_leftcorner_strategy,
-            accelerator='c',
+            accelerator="c",
         )
         rulemenu.add_separator()
-        rulemenu.add_command(label='Bottom Up Rule', command=self.bottom_up)
+        rulemenu.add_command(label="Bottom Up Rule", command=self.bottom_up)
         rulemenu.add_command(
-            label='Bottom Up Left-Corner Rule', command=self.bottom_up_leftcorner
+            label="Bottom Up Left-Corner Rule", command=self.bottom_up_leftcorner
         )
-        rulemenu.add_command(label='Top Down Init Rule', command=self.top_down_init)
+        rulemenu.add_command(label="Top Down Init Rule", command=self.top_down_init)
         rulemenu.add_command(
-            label='Top Down Predict Rule', command=self.top_down_predict
+            label="Top Down Predict Rule", command=self.top_down_predict
         )
-        rulemenu.add_command(label='Fundamental Rule', command=self.fundamental)
-        menubar.add_cascade(label='Apply', underline=0, menu=rulemenu)
+        rulemenu.add_command(label="Fundamental Rule", command=self.fundamental)
+        menubar.add_cascade(label="Apply", underline=0, menu=rulemenu)
 
         animatemenu = Menu(menubar, tearoff=0)
         animatemenu.add_checkbutton(
-            label="Step", underline=0, variable=self._step, accelerator='s'
+            label="Step", underline=0, variable=self._step, accelerator="s"
         )
         animatemenu.add_separator()
         animatemenu.add_radiobutton(
@@ -2108,68 +2108,68 @@ class ChartParserApp(object):
             underline=0,
             variable=self._animate,
             value=1,
-            accelerator='-',
+            accelerator="-",
         )
         animatemenu.add_radiobutton(
             label="Normal Animation",
             underline=0,
             variable=self._animate,
             value=2,
-            accelerator='=',
+            accelerator="=",
         )
         animatemenu.add_radiobutton(
             label="Fast Animation",
             underline=0,
             variable=self._animate,
             value=3,
-            accelerator='+',
+            accelerator="+",
         )
         menubar.add_cascade(label="Animate", underline=1, menu=animatemenu)
 
         zoommenu = Menu(menubar, tearoff=0)
         zoommenu.add_radiobutton(
-            label='Tiny',
+            label="Tiny",
             variable=self._size,
             underline=0,
             value=10,
             command=self.resize,
         )
         zoommenu.add_radiobutton(
-            label='Small',
+            label="Small",
             variable=self._size,
             underline=0,
             value=12,
             command=self.resize,
         )
         zoommenu.add_radiobutton(
-            label='Medium',
+            label="Medium",
             variable=self._size,
             underline=0,
             value=14,
             command=self.resize,
         )
         zoommenu.add_radiobutton(
-            label='Large',
+            label="Large",
             variable=self._size,
             underline=0,
             value=18,
             command=self.resize,
         )
         zoommenu.add_radiobutton(
-            label='Huge',
+            label="Huge",
             variable=self._size,
             underline=0,
             value=24,
             command=self.resize,
         )
-        menubar.add_cascade(label='Zoom', underline=0, menu=zoommenu)
+        menubar.add_cascade(label="Zoom", underline=0, menu=zoommenu)
 
         helpmenu = Menu(menubar, tearoff=0)
-        helpmenu.add_command(label='About', underline=0, command=self.about)
+        helpmenu.add_command(label="About", underline=0, command=self.about)
         helpmenu.add_command(
-            label='Instructions', underline=0, command=self.help, accelerator='F1'
+            label="Instructions", underline=0, command=self.help, accelerator="F1"
         )
-        menubar.add_cascade(label='Help', underline=0, menu=helpmenu)
+        menubar.add_cascade(label="Help", underline=0, menu=helpmenu)
 
         self._root.config(menu=menubar)
 
@@ -2194,7 +2194,7 @@ class ChartParserApp(object):
     def _select_edge(self, edge):
         self._selection = edge
         # Update the chart view.
-        self._cv.markonly_edge(edge, '#f00')
+        self._cv.markonly_edge(edge, "#f00")
         self._cv.draw_tree(edge)
         # Update the matrix view.
         if self._matrix:
@@ -2216,7 +2216,7 @@ class ChartParserApp(object):
         # Update the chart view.
         self._cv.update()
         self._cv.draw_tree(edge)
-        self._cv.markonly_edge(edge, '#0df')
+        self._cv.markonly_edge(edge, "#0df")
         self._cv.view_edge(edge)
         # Update the matrix view.
         if self._matrix:
@@ -2239,43 +2239,43 @@ class ChartParserApp(object):
         try:
             ShowText(
                 self._root,
-                'Help: Chart Parser Application',
-                (__doc__ or '').strip(),
+                "Help: Chart Parser Application",
+                (__doc__ or "").strip(),
                 width=75,
-                font='fixed',
+                font="fixed",
             )
         except:
             ShowText(
                 self._root,
-                'Help: Chart Parser Application',
-                (__doc__ or '').strip(),
+                "Help: Chart Parser Application",
+                (__doc__ or "").strip(),
                 width=75,
             )
 
     def about(self, *e):
         ABOUT = "NLTK Chart Parser Application\n" + "Written by Edward Loper"
-        showinfo('About: Chart Parser Application', ABOUT)
+        showinfo("About: Chart Parser Application", ABOUT)
 
     # ////////////////////////////////////////////////////////////
     # File Menu
     # ////////////////////////////////////////////////////////////
 
-    CHART_FILE_TYPES = [('Pickle file', '.pickle'), ('All files', '*')]
+    CHART_FILE_TYPES = [("Pickle file", ".pickle"), ("All files", "*")]
     GRAMMAR_FILE_TYPES = [
-        ('Plaintext grammar file', '.cfg'),
-        ('Pickle file', '.pickle'),
-        ('All files', '*'),
+        ("Plaintext grammar file", ".cfg"),
+        ("Pickle file", ".pickle"),
+        ("All files", "*"),
     ]
 
     def load_chart(self, *args):
         "Load a chart from a pickle file"
         filename = askopenfilename(
-            filetypes=self.CHART_FILE_TYPES, defaultextension='.pickle'
+            filetypes=self.CHART_FILE_TYPES, defaultextension=".pickle"
         )
         if not filename:
             return
         try:
-            with open(filename, 'rb') as infile:
+            with open(filename, "rb") as infile:
                 chart = pickle.load(infile)
             self._chart = chart
             self._cv.update(chart)
@@ -2288,61 +2288,61 @@ class ChartParserApp(object):
             self._cp.set_chart(chart)
         except Exception as e:
             raise
-            showerror('Error Loading Chart', 'Unable to open file: %r' % filename)
+            showerror("Error Loading Chart", "Unable to open file: %r" % filename)
 
     def save_chart(self, *args):
         "Save a chart to a pickle file"
         filename = asksaveasfilename(
-            filetypes=self.CHART_FILE_TYPES, defaultextension='.pickle'
+            filetypes=self.CHART_FILE_TYPES, defaultextension=".pickle"
         )
         if not filename:
             return
         try:
-            with open(filename, 'wb') as outfile:
+            with open(filename, "wb") as outfile:
                 pickle.dump(self._chart, outfile)
         except Exception as e:
             raise
-            showerror('Error Saving Chart', 'Unable to open file: %r' % filename)
+            showerror("Error Saving Chart", "Unable to open file: %r" % filename)
 
     def load_grammar(self, *args):
         "Load a grammar from a pickle file"
         filename = askopenfilename(
-            filetypes=self.GRAMMAR_FILE_TYPES, defaultextension='.cfg'
+            filetypes=self.GRAMMAR_FILE_TYPES, defaultextension=".cfg"
         )
         if not filename:
             return
         try:
-            if filename.endswith('.pickle'):
-                with open(filename, 'rb') as infile:
+            if filename.endswith(".pickle"):
+                with open(filename, "rb") as infile:
                     grammar = pickle.load(infile)
             else:
-                with open(filename, 'r') as infile:
+                with open(filename, "r") as infile:
                     grammar = CFG.fromstring(infile.read())
             self.set_grammar(grammar)
         except Exception as e:
-            showerror('Error Loading Grammar', 'Unable to open file: %r' % filename)
+            showerror("Error Loading Grammar", "Unable to open file: %r" % filename)
 
     def save_grammar(self, *args):
         filename = asksaveasfilename(
-            filetypes=self.GRAMMAR_FILE_TYPES, defaultextension='.cfg'
+            filetypes=self.GRAMMAR_FILE_TYPES, defaultextension=".cfg"
         )
         if not filename:
             return
         try:
-            if filename.endswith('.pickle'):
-                with open(filename, 'wb') as outfile:
+            if filename.endswith(".pickle"):
+                with open(filename, "wb") as outfile:
                     pickle.dump((self._chart, self._tokens), outfile)
             else:
-                with open(filename, 'w') as outfile:
+                with open(filename, "w") as outfile:
                     prods = self._grammar.productions()
                     start = [p for p in prods if p.lhs() == self._grammar.start()]
                     rest = [p for p in prods if p.lhs() != self._grammar.start()]
                     for prod in start:
-                        outfile.write('%s\n' % prod)
+                        outfile.write("%s\n" % prod)
                     for prod in rest:
-                        outfile.write('%s\n' % prod)
+                        outfile.write("%s\n" % prod)
         except Exception as e:
-            showerror('Error Saving Grammar', 'Unable to open file: %r' % filename)
+            showerror("Error Saving Grammar", "Unable to open file: %r" % filename)
 
     def reset(self, *args):
         self._animating = 0
@@ -2370,8 +2370,8 @@ class ChartParserApp(object):
 
     def edit_sentence(self, *e):
         sentence = " ".join(self._tokens)
-        title = 'Edit Text'
-        instr = 'Enter a new sentence to parse.'
+        title = "Edit Text"
+        instr = "Enter a new sentence to parse."
         EntryDialog(self._root, sentence, instr, self.set_sentence, title)
 
     def set_sentence(self, sentence):
@@ -2386,7 +2386,7 @@ class ChartParserApp(object):
         if self._matrix is not None:
             self._matrix.destroy()
         self._matrix = ChartMatrixView(self._root, self._chart)
-        self._matrix.add_callback('select', self._select_matrix_edge)
+        self._matrix.add_callback("select", self._select_matrix_edge)
 
     def view_results(self, *e):
         if self._results is not None:
@@ -2479,10 +2479,10 @@ class ChartParserApp(object):
 
     def _display_rule(self, rule):
         if rule is None:
-            self._rulelabel2['text'] = ''
+            self._rulelabel2["text"] = ""
         else:
             name = str(rule)
-            self._rulelabel2['text'] = name
+            self._rulelabel2["text"] = name
             size = self._cv.get_font_size()
 
     # ////////////////////////////////////////////////////////////
@@ -2544,20 +2544,20 @@ def app():
     """
     )
 
-    sent = 'John ate the cake on the table with a fork'
-    sent = 'John ate the cake on the table'
+    sent = "John ate the cake on the table with a fork"
+    sent = "John ate the cake on the table"
     tokens = list(sent.split())
 
-    print('grammar= (')
+    print("grammar= (")
     for rule in grammar.productions():
-        print(('    ', repr(rule) + ','))
-    print(')')
-    print(('tokens = %r' % tokens))
+        print(("    ", repr(rule) + ","))
+    print(")")
+    print(("tokens = %r" % tokens))
     print('Calling "ChartParserApp(grammar, tokens)"...')
     ChartParserApp(grammar, tokens).mainloop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app()
 
     # Chart comparer:
@@ -2573,4 +2573,4 @@ if __name__ == '__main__':
     # p.strip_dirs().sort_stats('time', 'cum').print_stats(60)
     # p.strip_dirs().sort_stats('cum', 'time').print_stats(60)
 
-__all__ = ['app']
+__all__ = ["app"]

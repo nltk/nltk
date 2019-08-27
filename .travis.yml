@@ -23,8 +23,8 @@ matrix:
 #    - python: '2.7'
 #      env: TOXENV="flake8"
 
-    - python: '2.7'
-      env: TOXENV="py-travis"
+#    - python: '2.7'
+#      env: TOXENV="py-travis"
 
     - python: '3.5'
       env: TOXENV="py-travis"

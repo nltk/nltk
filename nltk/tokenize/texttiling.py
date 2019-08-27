@@ -77,9 +77,9 @@ class TextTilingTokenizer(TokenizerI):
         if stopwords is None:
             from nltk.corpus import stopwords
 
-            stopwords = stopwords.words('english')
+            stopwords = stopwords.words("english")
         self.__dict__.update(locals())
-        del self.__dict__['self']
+        del self.__dict__["self"]
 
     def tokenize(self, text):
         """Return a tokenized copy of *text*, where each "token" represents
@@ -92,8 +92,8 @@ class TextTilingTokenizer(TokenizerI):
         # Tokenization step starts here
 
         # Remove punctuation
-        nopunct_text = ''.join(
-            c for c in lowercase_text if re.match("[a-z\-\' \n\t]", c)
+        nopunct_text = "".join(
+            c for c in lowercase_text if re.match("[a-z\-' \n\t]", c)
         )
         nopunct_par_breaks = self._mark_paragraph_breaks(nopunct_text)
 
@@ -392,7 +392,7 @@ class TokenTableField(object):
         last_tok_seq=None,
     ):
         self.__dict__.update(locals())
-        del self.__dict__['self']
+        del self.__dict__["self"]
 
 
 class TokenSequence(object):
@@ -401,11 +401,11 @@ class TokenSequence(object):
     def __init__(self, index, wrdindex_list, original_length=None):
         original_length = original_length or len(wrdindex_list)
         self.__dict__.update(locals())
-        del self.__dict__['self']
+        del self.__dict__["self"]
 
 
 # Pasted from the SciPy cookbook: http://www.scipy.org/Cookbook/SignalSmooth
-def smooth(x, window_len=11, window='flat'):
+def smooth(x, window_len=11, window="flat"):
     """smooth the data using a window with requested size.
 
     This method is based on the convolution of a scaled window with the signal.
@@ -441,7 +441,7 @@ def smooth(x, window_len=11, window='flat'):
     if window_len < 3:
         return x
 
-    if window not in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
+    if window not in ["flat", "hanning", "hamming", "bartlett", "blackman"]:
         raise ValueError(
             "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
         )
@@ -449,12 +449,12 @@ def smooth(x, window_len=11, window='flat'):
     s = numpy.r_[2 * x[0] - x[window_len:1:-1], x, 2 * x[-1] - x[-1:-window_len:-1]]
 
     # print(len(s))
-    if window == 'flat':  # moving average
-        w = numpy.ones(window_len, 'd')
+    if window == "flat":  # moving average
+        w = numpy.ones(window_len, "d")
     else:
-        w = eval('numpy.' + window + '(window_len)')
+        w = eval("numpy." + window + "(window_len)")
 
-    y = numpy.convolve(w / w.sum(), s, mode='same')
+    y = numpy.convolve(w / w.sum(), s, mode="same")
 
     return y[window_len - 1 : -window_len + 1]
 

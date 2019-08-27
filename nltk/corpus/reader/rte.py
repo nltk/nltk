@@ -32,11 +32,8 @@ In order to provide globally unique IDs for each pair, a new attribute
 file, taking values 1, 2 or 3. The GID is formatted 'm-n', where 'm' is the
 challenge number and 'n' is the pair ID.
 """
-from __future__ import unicode_literals
-
 from six import string_types
 
-from nltk import compat
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import *
@@ -56,7 +53,6 @@ def norm(value_string):
     return valdict[value_string.upper()]
 
 
-@compat.python_2_unicode_compatible
 class RTEPair(object):
     """
     Container for RTE text-hypothesis pairs.
@@ -109,9 +105,9 @@ class RTEPair(object):
 
     def __repr__(self):
         if self.challenge:
-            return '<RTEPair: gid=%s-%s>' % (self.challenge, self.id)
+            return "<RTEPair: gid=%s-%s>" % (self.challenge, self.id)
         else:
-            return '<RTEPair: id=%s>' % self.id
+            return "<RTEPair: id=%s>" % self.id
 
 
 class RTECorpusReader(XMLCorpusReader):
@@ -133,7 +129,7 @@ class RTECorpusReader(XMLCorpusReader):
         :rtype: list(RTEPair)
         """
         try:
-            challenge = doc.attrib['challenge']
+            challenge = doc.attrib["challenge"]
         except KeyError:
             challenge = None
         return [RTEPair(pair, challenge=challenge) for pair in doc.getiterator("pair")]

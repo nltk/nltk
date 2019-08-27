@@ -5,7 +5,6 @@
 # Contributor: J Richard Snape
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals, division
 from abc import abstractmethod
 
 import copy
@@ -18,7 +17,6 @@ except ImportError:
     pass
 
 from nltk.cluster.api import ClusterI
-from nltk.compat import python_2_unicode_compatible
 
 
 class VectorSpaceClusterer(ClusterI):
@@ -176,7 +174,6 @@ class _DendrogramNode(object):
         return cosine_distance(self._value, comparator._value) < 0
 
 
-@python_2_unicode_compatible
 class Dendrogram(object):
     """
     Represents a dendrogram, a tree with a specified branching order.  This
@@ -231,7 +228,7 @@ class Dendrogram(object):
         """
 
         # ASCII rendering characters
-        JOIN, HLINK, VLINK = '+', '-', '|'
+        JOIN, HLINK, VLINK = "+", "-", "|"
 
         # find the root (or create one)
         if len(self._items) > 1:
@@ -251,15 +248,15 @@ class Dendrogram(object):
         rhalf = int(width - lhalf - 1)
 
         # display functions
-        def format(centre, left=' ', right=' '):
-            return '%s%s%s' % (lhalf * left, centre, right * rhalf)
+        def format(centre, left=" ", right=" "):
+            return "%s%s%s" % (lhalf * left, centre, right * rhalf)
 
         def display(str):
             stdout.write(str)
 
         # for each merge, top down
         queue = [(root._value, root)]
-        verticals = [format(' ') for leaf in leaves]
+        verticals = [format(" ") for leaf in leaves]
         while queue:
             priority, node = queue.pop()
             child_left_leaf = list(map(lambda c: c.leaves(False)[0], node._children))
@@ -270,9 +267,9 @@ class Dendrogram(object):
             for i in range(len(leaves)):
                 if leaves[i] in child_left_leaf:
                     if i == min_idx:
-                        display(format(JOIN, ' ', HLINK))
+                        display(format(JOIN, " ", HLINK))
                     elif i == max_idx:
-                        display(format(JOIN, HLINK, ' '))
+                        display(format(JOIN, HLINK, " "))
                     else:
                         display(format(JOIN, HLINK, HLINK))
                     verticals[i] = format(VLINK)
@@ -280,7 +277,7 @@ class Dendrogram(object):
                     display(format(HLINK, HLINK, HLINK))
                 else:
                     display(verticals[i])
-            display('\n')
+            display("\n")
             for child in node._children:
                 if child._children:
                     queue.append((child._value, child))
@@ -288,11 +285,11 @@ class Dendrogram(object):
 
             for vertical in verticals:
                 display(vertical)
-            display('\n')
+            display("\n")
 
         # finally, display the last line
-        display(''.join(item.center(width) for item in last_row))
-        display('\n')
+        display("".join(item.center(width) for item in last_row))
+        display("\n")
 
     def __repr__(self):
         if len(self._items) > 1:
@@ -300,4 +297,4 @@ class Dendrogram(object):
         else:
             root = self._items[0]
         leaves = root.leaves(False)
-        return '<Dendrogram with %d leaves>' % len(leaves)
+        return "<Dendrogram with %d leaves>" % len(leaves)

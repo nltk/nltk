@@ -10,14 +10,14 @@ from nose.plugins.base import Plugin
 from nose.suite import ContextList
 from nose.plugins.doctests import Doctest, log, DocFileCase
 
-ALLOW_UNICODE = doctest.register_optionflag('ALLOW_UNICODE')
+ALLOW_UNICODE = doctest.register_optionflag("ALLOW_UNICODE")
 
 
 class _UnicodeOutputChecker(doctest.OutputChecker):
     _literal_re = re.compile(r"(\W|^)[uU]([rR]?[\'\"])", re.UNICODE)
 
     def _remove_u_prefixes(self, txt):
-        return re.sub(self._literal_re, r'\1\2', txt)
+        return re.sub(self._literal_re, r"\1\2", txt)
 
     def check_output(self, want, got, optionflags):
         res = doctest.OutputChecker.check_output(self, want, got, optionflags)
@@ -50,19 +50,19 @@ class DoctestPluginHelper(object):
         changes the encoding of doctest files
     """
 
-    OPTION_BY_NAME = ('doctestencoding',)
+    OPTION_BY_NAME = ("doctestencoding",)
 
     def loadTestsFromFileUnicode(self, filename):
         if self.extension and anyp(filename.endswith, self.extension):
             name = os.path.basename(filename)
-            dh = codecs.open(filename, 'r', self.options.get('doctestencoding'))
+            dh = codecs.open(filename, "r", self.options.get("doctestencoding"))
             try:
                 doc = dh.read()
             finally:
                 dh.close()
 
             fixture_context = None
-            globs = {'__file__': filename}
+            globs = {"__file__": filename}
             if self.fixtures:
                 base, ext = os.path.splitext(name)
                 dirname = os.path.dirname(filename)
@@ -73,7 +73,7 @@ class DoctestPluginHelper(object):
                 except ImportError as e:
                     log.debug("Could not import %s: %s (%s)", fixt_mod, e, sys.path)
                 log.debug("Fixture module %s resolved to %s", fixt_mod, fixture_context)
-                if hasattr(fixture_context, 'globs'):
+                if hasattr(fixture_context, "globs"):
                     globs = fixture_context.globs(globs)
             parser = doctest.DocTestParser()
             test = parser.get_doctest(
@@ -83,8 +83,8 @@ class DoctestPluginHelper(object):
                 case = DocFileCase(
                     test,
                     optionflags=self.optionflags,
-                    setUp=getattr(fixture_context, 'setup_test', None),
-                    tearDown=getattr(fixture_context, 'teardown_test', None),
+                    setUp=getattr(fixture_context, "setup_test", None),
+                    tearDown=getattr(fixture_context, "teardown_test", None),
                     result_var=self.doctest_result_var,
                 )
                 if fixture_context:
@@ -113,7 +113,7 @@ class DoctestPluginHelper(object):
 
     def _patchTestCase(self, case):
         if case:
-            case._dt_test.globs['print_function'] = print_function
+            case._dt_test.globs["print_function"] = print_function
             case._dt_checker = _checker
         return case
 
@@ -132,17 +132,17 @@ class DoctestPluginHelper(object):
         self.options = {}
 
         if options.doctestOptions:
-            stroptions = ",".join(options.doctestOptions).split(',')
+            stroptions = ",".join(options.doctestOptions).split(",")
             for stroption in stroptions:
                 try:
-                    if stroption.startswith('+'):
+                    if stroption.startswith("+"):
                         self.optionflags |= doctest.OPTIONFLAGS_BY_NAME[stroption[1:]]
                         continue
-                    elif stroption.startswith('-'):
+                    elif stroption.startswith("-"):
                         self.optionflags &= ~doctest.OPTIONFLAGS_BY_NAME[stroption[1:]]
                         continue
                     try:
-                        key, value = stroption.split('=')
+                        key, value = stroption.split("=")
                     except ValueError:
                         pass
                     else:

@@ -40,9 +40,9 @@ class PlaintextCorpusReader(CorpusReader):
         root,
         fileids,
         word_tokenizer=WordPunctTokenizer(),
-        sent_tokenizer=nltk.data.LazyLoader('tokenizers/punkt/english.pickle'),
+        sent_tokenizer=nltk.data.LazyLoader("tokenizers/punkt/english.pickle"),
         para_block_reader=read_blankline_block,
-        encoding='utf8',
+        encoding="utf8",
     ):
         """
         Construct a new plaintext corpus reader for a set of documents
@@ -102,7 +102,7 @@ class PlaintextCorpusReader(CorpusReader):
         :rtype: list(list(str))
         """
         if self._sent_tokenizer is None:
-            raise ValueError('No sentence tokenizer for this corpus')
+            raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(
             [
@@ -119,7 +119,7 @@ class PlaintextCorpusReader(CorpusReader):
         :rtype: list(list(list(str)))
         """
         if self._sent_tokenizer is None:
-            raise ValueError('No sentence tokenizer for this corpus')
+            raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(
             [
@@ -175,7 +175,7 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
 
     def _resolve(self, fileids, categories):
         if fileids is not None and categories is not None:
-            raise ValueError('Specify fileids or categories, not both')
+            raise ValueError("Specify fileids or categories, not both")
         if categories is not None:
             return self.fileids(categories)
         else:
@@ -200,8 +200,8 @@ class CategorizedPlaintextCorpusReader(CategorizedCorpusReader, PlaintextCorpusR
 class PortugueseCategorizedPlaintextCorpusReader(CategorizedPlaintextCorpusReader):
     def __init__(self, *args, **kwargs):
         CategorizedCorpusReader.__init__(self, kwargs)
-        kwargs['sent_tokenizer'] = nltk.data.LazyLoader(
-            'tokenizers/punkt/portuguese.pickle'
+        kwargs["sent_tokenizer"] = nltk.data.LazyLoader(
+            "tokenizers/punkt/portuguese.pickle"
         )
         PlaintextCorpusReader.__init__(self, *args, **kwargs)
 
@@ -259,5 +259,5 @@ class EuroparlCorpusReader(PlaintextCorpusReader):
 
     def paras(self, fileids=None):
         raise NotImplementedError(
-            'The Europarl corpus reader does not support paragraphs. Please use chapters() instead.'
+            "The Europarl corpus reader does not support paragraphs. Please use chapters() instead."
         )

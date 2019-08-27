@@ -12,10 +12,10 @@ import os.path
 
 
 def additional_tests():
-    # print "here-000000000000000"
-    # print "-----", glob(os.path.join(os.path.dirname(__file__), '*.doctest'))
+    # print("here-000000000000000")
+    # print("-----", glob(os.path.join(os.path.dirname(__file__), '*.doctest')))
     dir = os.path.dirname(__file__)
-    paths = glob(os.path.join(dir, '*.doctest'))
+    paths = glob(os.path.join(dir, "*.doctest"))
     files = [os.path.basename(path) for path in paths]
     return unittest.TestSuite([doctest.DocFileSuite(file) for file in files])
 

@@ -67,44 +67,44 @@ class TreebankWordTokenizer(TokenizerI):
 
     # starting quotes
     STARTING_QUOTES = [
-        (re.compile(r'^\"'), r'``'),
-        (re.compile(r'(``)'), r' \1 '),
-        (re.compile(r"([ \(\[{<])(\"|\'{2})"), r'\1 `` '),
+        (re.compile(r"^\""), r"``"),
+        (re.compile(r"(``)"), r" \1 "),
+        (re.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
     ]
 
     # punctuation
     PUNCTUATION = [
-        (re.compile(r'([:,])([^\d])'), r' \1 \2'),
-        (re.compile(r'([:,])$'), r' \1 '),
-        (re.compile(r'\.\.\.'), r' ... '),
-        (re.compile(r'[;@#$%&]'), r' \g<0> '),
+        (re.compile(r"([:,])([^\d])"), r" \1 \2"),
+        (re.compile(r"([:,])$"), r" \1 "),
+        (re.compile(r"\.\.\."), r" ... "),
+        (re.compile(r"[;@#$%&]"), r" \g<0> "),
         (
             re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
-            r'\1 \2\3 ',
+            r"\1 \2\3 ",
         ),  # Handles the final period.
-        (re.compile(r'[?!]'), r' \g<0> '),
+        (re.compile(r"[?!]"), r" \g<0> "),
         (re.compile(r"([^'])' "), r"\1 ' "),
     ]
 
     # Pads parentheses
-    PARENS_BRACKETS = (re.compile(r'[\]\[\(\)\{\}\<\>]'), r' \g<0> ')
+    PARENS_BRACKETS = (re.compile(r"[\]\[\(\)\{\}\<\>]"), r" \g<0> ")
 
     # Optionally: Convert parentheses, brackets and converts them to PTB symbols.
     CONVERT_PARENTHESES = [
-        (re.compile(r'\('), '-LRB-'),
-        (re.compile(r'\)'), '-RRB-'),
-        (re.compile(r'\['), '-LSB-'),
-        (re.compile(r'\]'), '-RSB-'),
-        (re.compile(r'\{'), '-LCB-'),
-        (re.compile(r'\}'), '-RCB-'),
+        (re.compile(r"\("), "-LRB-"),
+        (re.compile(r"\)"), "-RRB-"),
+        (re.compile(r"\["), "-LSB-"),
+        (re.compile(r"\]"), "-RSB-"),
+        (re.compile(r"\{"), "-LCB-"),
+        (re.compile(r"\}"), "-RCB-"),
     ]
 
-    DOUBLE_DASHES = (re.compile(r'--'), r' -- ')
+    DOUBLE_DASHES = (re.compile(r"--"), r" -- ")
 
     # ending quotes
     ENDING_QUOTES = [
         (re.compile(r'"'), " '' "),
-        (re.compile(r'(\S)(\'\')'), r'\1 \2 '),
+        (re.compile(r"(\S)(\'\')"), r"\1 \2 "),
         (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
         (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]
@@ -140,9 +140,9 @@ class TreebankWordTokenizer(TokenizerI):
             text = regexp.sub(substitution, text)
 
         for regexp in self.CONTRACTIONS2:
-            text = regexp.sub(r' \1 \2 ', text)
+            text = regexp.sub(r" \1 \2 ", text)
         for regexp in self.CONTRACTIONS3:
-            text = regexp.sub(r' \1 \2 ', text)
+            text = regexp.sub(r" \1 \2 ", text)
 
         # We are not using CONTRACTIONS4 since
         # they are also commented out in the SED scripts
@@ -270,11 +270,11 @@ class TreebankWordDetokenizer(TokenizerI):
 
     _contractions = MacIntyreContractions()
     CONTRACTIONS2 = [
-        re.compile(pattern.replace('(?#X)', '\s'))
+        re.compile(pattern.replace("(?#X)", "\s"))
         for pattern in _contractions.CONTRACTIONS2
     ]
     CONTRACTIONS3 = [
-        re.compile(pattern.replace('(?#X)', '\s'))
+        re.compile(pattern.replace("(?#X)", "\s"))
         for pattern in _contractions.CONTRACTIONS3
     ]
 
@@ -282,57 +282,57 @@ class TreebankWordDetokenizer(TokenizerI):
     ENDING_QUOTES = [
         (re.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
         (re.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
-        (re.compile(r'(\S)(\'\')'), r'\1\2 '),
+        (re.compile(r"(\S)(\'\')"), r"\1\2 "),
         (re.compile(r" '' "), '"'),
     ]
 
     # Handles double dashes
-    DOUBLE_DASHES = (re.compile(r' -- '), r'--')
+    DOUBLE_DASHES = (re.compile(r" -- "), r"--")
 
     # Optionally: Convert parentheses, brackets and converts them from PTB symbols.
     CONVERT_PARENTHESES = [
-        (re.compile('-LRB-'), '('),
-        (re.compile('-RRB-'), ')'),
-        (re.compile('-LSB-'), '['),
-        (re.compile('-RSB-'), ']'),
-        (re.compile('-LCB-'), '{'),
-        (re.compile('-RCB-'), '}'),
+        (re.compile("-LRB-"), "("),
+        (re.compile("-RRB-"), ")"),
+        (re.compile("-LSB-"), "["),
+        (re.compile("-RSB-"), "]"),
+        (re.compile("-LCB-"), "{"),
+        (re.compile("-RCB-"), "}"),
     ]
 
     # Undo padding on parentheses.
     PARENS_BRACKETS = [
-        (re.compile(r'\s([\[\(\{\<])\s'), r' \g<1>'),
-        (re.compile(r'\s([\]\)\}\>])\s'), r'\g<1> '),
-        (re.compile(r'([\]\)\}\>])\s([:;,.])'), r'\1\2'),
+        (re.compile(r"\s([\[\(\{\<])\s"), r" \g<1>"),
+        (re.compile(r"\s([\]\)\}\>])\s"), r"\g<1> "),
+        (re.compile(r"([\]\)\}\>])\s([:;,.])"), r"\1\2"),
     ]
 
     # punctuation
     PUNCTUATION = [
         (re.compile(r"([^'])\s'\s"), r"\1' "),
-        (re.compile(r'\s([?!])'), r'\g<1>'),  # Strip left pad for [?!]
+        (re.compile(r"\s([?!])"), r"\g<1>"),  # Strip left pad for [?!]
         # (re.compile(r'\s([?!])\s'), r'\g<1>'),
-        (re.compile(r'([^\.])\s(\.)([\]\)}>"\']*)\s*$'), r'\1\2\3'),
+        (re.compile(r'([^\.])\s(\.)([\]\)}>"\']*)\s*$'), r"\1\2\3"),
         # When tokenizing, [;@#$%&] are padded with whitespace regardless of
         # whether there are spaces before or after them.
         # But during detokenization, we need to distinguish between left/right
         # pad, so we split this up.
-        (re.compile(r'\s([#$])\s'), r' \g<1>'),  # Left pad.
-        (re.compile(r'\s([;%])\s'), r'\g<1> '),  # Right pad.
-        (re.compile(r'\s([&])\s'), r' \g<1> '),  # Unknown pad.
-        (re.compile(r'\s\.\.\.\s'), r'...'),
-        (re.compile(r'\s([:,])\s$'), r'\1'),
+        (re.compile(r"\s([#$])\s"), r" \g<1>"),  # Left pad.
+        (re.compile(r"\s([;%])\s"), r"\g<1> "),  # Right pad.
+        (re.compile(r"\s([&*])\s"), r" \g<1> "),  # Unknown pad.
+        (re.compile(r"\s\.\.\.\s"), r"..."),
+        (re.compile(r"\s([:,])\s$"), r"\1"),
         (
-            re.compile(r'\s([:,])\s([^\d])'),
-            r'\1 \2',
+            re.compile(r"\s([:,])\s([^\d])"),
+            r"\1 \2",
         )  # Keep right pad after comma/colon before non-digits.
         # (re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
     ]
 
     # starting quotes
     STARTING_QUOTES = [
-        (re.compile(r'([ (\[{<])\s``'), r'\1"'),
-        (re.compile(r'\s(``)\s'), r'\1'),
-        (re.compile(r'^``'), r'\"'),
+        (re.compile(r"([ (\[{<])\s``"), r'\1"'),
+        (re.compile(r"\s(``)\s"), r"\1"),
+        (re.compile(r"^``"), r"\""),
     ]
 
     def tokenize(self, tokens, convert_parentheses=False):
@@ -344,13 +344,13 @@ class TreebankWordDetokenizer(TokenizerI):
         :type tokens: list(str)
         :return: str
         """
-        text = ' '.join(tokens)
+        text = " ".join(tokens)
         # Reverse the contractions regexes.
         # Note: CONTRACTIONS4 are not used in tokenization.
         for regexp in self.CONTRACTIONS3:
-            text = regexp.sub(r'\1\2', text)
+            text = regexp.sub(r"\1\2", text)
         for regexp in self.CONTRACTIONS2:
-            text = regexp.sub(r'\1\2', text)
+            text = regexp.sub(r"\1\2", text)
 
         # Reverse the regexes applied for ending quotes.
         for regexp, substitution in self.ENDING_QUOTES:

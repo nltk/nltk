@@ -88,10 +88,11 @@ from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.tokenize.treebank import TreebankWordTokenizer
 from nltk.tokenize.util import string_span_tokenize, regexp_span_tokenize
 from nltk.tokenize.stanford_segmenter import StanfordSegmenter
+from nltk.tokenize.sonority_sequencing import SyllableTokenizer
 
 
 # Standard sentence tokenizer.
-def sent_tokenize(text, language='english'):
+def sent_tokenize(text, language="english"):
     """
     Return a sentence-tokenized copy of *text*,
     using NLTK's recommended sentence tokenizer
@@ -101,7 +102,7 @@ def sent_tokenize(text, language='english'):
     :param text: text to split into sentences
     :param language: the model name in the Punkt corpus
     """
-    tokenizer = load('tokenizers/punkt/{0}.pickle'.format(language))
+    tokenizer = load("tokenizers/punkt/{0}.pickle".format(language))
     return tokenizer.tokenize(text)
 
 
@@ -115,17 +116,27 @@ _treebank_word_tokenizer = TreebankWordTokenizer()
 # See https://github.com/nltk/nltk/issues/1995#issuecomment-376741608
 # Also, behavior of splitting on clitics now follows Stanford CoreNLP
 # - clitics covered (?!re|ve|ll|m|t|s|d)(\w)\b
-improved_open_quote_regex = re.compile(u'([«“‘„]|[`]+)', re.U)
-improved_open_single_quote_regex = re.compile(r"(?i)(\')(?!re|ve|ll|m|t|s|d)(\w)\b", re.U)
-improved_close_quote_regex = re.compile(u'([»”’])', re.U)
-improved_punct_regex = re.compile(r'([^\.])(\.)([\]\)}>"\'' u'»”’ ' r']*)\s*$', re.U)
-_treebank_word_tokenizer.STARTING_QUOTES.insert(0, (improved_open_quote_regex, r' \1 '))
-_treebank_word_tokenizer.STARTING_QUOTES.append((improved_open_single_quote_regex, r'\1 \2'))
-_treebank_word_tokenizer.ENDING_QUOTES.insert(0, (improved_close_quote_regex, r' \1 '))
-_treebank_word_tokenizer.PUNCTUATION.insert(0, (improved_punct_regex, r'\1 \2 \3 '))
+improved_open_quote_regex = re.compile(u"([«“‘„]|[`]+)", re.U)
+improved_open_single_quote_regex = re.compile(
+    r"(?i)(\')(?!re|ve|ll|m|t|s|d)(\w)\b", re.U
+)
+improved_close_quote_regex = re.compile(u"([»”’])", re.U)
+improved_punct_regex = re.compile(r'([^\.])(\.)([\]\)}>"\'' u"»”’ " r"]*)\s*$", re.U)
+_treebank_word_tokenizer.STARTING_QUOTES.insert(0, (improved_open_quote_regex, r" \1 "))
+_treebank_word_tokenizer.STARTING_QUOTES.append(
+    (improved_open_single_quote_regex, r"\1 \2")
+)
+_treebank_word_tokenizer.ENDING_QUOTES.insert(0, (improved_close_quote_regex, r" \1 "))
+_treebank_word_tokenizer.PUNCTUATION.insert(0, (improved_punct_regex, r"\1 \2 \3 "))
+
+# See https://github.com/nltk/nltk/pull/2322
+addition_punct_regex = re.compile(r"[*]", re.U)
+_treebank_word_tokenizer.PUNCTUATION.append((addition_punct_regex, r" \g<0> "))
+replacement_dotdotdot_regex = re.compile(r"\.{2,}", re.U)
+_treebank_word_tokenizer.PUNCTUATION[3] = (replacement_dotdotdot_regex, r" \g<0> ")
 
 
-def word_tokenize(text, language='english', preserve_line=False):
+def word_tokenize(text, language="english", preserve_line=False):
     """
     Return a tokenized copy of *text*,
     using NLTK's recommended word tokenizer

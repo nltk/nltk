@@ -8,11 +8,10 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 
-from nltk.compat import python_2_unicode_compatible, unicode_repr
+from nltk.compat import unicode_repr
 from nltk import jsontags
 
 
@@ -20,7 +19,7 @@ from nltk import jsontags
 # Tag Rules
 ######################################################################
 @add_metaclass(ABCMeta)
-class TagRule(object):
+class TagRule:
     """
     An interface for tag transformations on a tagged corpus, as
     performed by tbl taggers.  Each transformation finds all tokens
@@ -96,7 +95,6 @@ class TagRule(object):
         raise TypeError("Rules must implement __hash__()")
 
 
-@python_2_unicode_compatible
 @jsontags.register_tag
 class Rule(TagRule):
     """
@@ -117,7 +115,7 @@ class Rule(TagRule):
 
     """
 
-    json_tag = 'nltk.tbl.Rule'
+    json_tag = "nltk.tbl.Rule"
 
     def __init__(self, templateid, original_tag, replacement_tag, conditions):
         """
@@ -142,16 +140,19 @@ class Rule(TagRule):
 
     def encode_json_obj(self):
         return {
-            'templateid': self.templateid,
-            'original': self.original_tag,
-            'replacement': self.replacement_tag,
-            'conditions': self._conditions,
+            "templateid": self.templateid,
+            "original": self.original_tag,
+            "replacement": self.replacement_tag,
+            "conditions": self._conditions,
         }
 
     @classmethod
     def decode_json_obj(cls, obj):
         return cls(
-            obj['templateid'], obj['original'], obj['replacement'], obj['conditions']
+            obj["templateid"],
+            obj["original"],
+            obj["replacement"],
+            tuple(tuple(feat) for feat in obj["conditions"])
         )
 
     def applies(self, tokens, index):
@@ -211,7 +212,7 @@ class Rule(TagRule):
                 unicode_repr(self.replacement_tag),
                 # list(self._conditions) would be simpler but will not generate
                 # the same Rule.__repr__ in python 2 and 3 and thus break some tests
-                ', '.join(
+                ", ".join(
                     "({0},{1})".format(f, unicode_repr(v))
                     for (f, v) in self._conditions
                 ),
@@ -225,16 +226,16 @@ class Rule(TagRule):
             Return a compact, predicate-logic styled string representation
             of the given condition.
             """
-            return '{0}:{1}@[{2}]'.format(
+            return "{0}:{1}@[{2}]".format(
                 feature.PROPERTY_NAME,
                 value,
                 ",".join(str(w) for w in feature.positions),
             )
 
-        conditions = ' & '.join(
+        conditions = " & ".join(
             [_condition_to_logic(f, v) for (f, v) in self._conditions]
         )
-        s = '{0}->{1} if {2}'.format(
+        s = "{0}->{1} if {2}".format(
             self.original_tag, self.replacement_tag, conditions
         )
 
@@ -303,26 +304,26 @@ class Rule(TagRule):
             if len(positions) == 1:
                 p = positions[0]
                 if p == 0:
-                    return 'this word'
+                    return "this word"
                 if p == -1:
-                    return 'the preceding word'
+                    return "the preceding word"
                 elif p == 1:
-                    return 'the following word'
+                    return "the following word"
                 elif p < 0:
-                    return 'word i-%d' % -p
+                    return "word i-%d" % -p
                 elif p > 0:
-                    return 'word i+%d' % p
+                    return "word i+%d" % p
             else:
                 # for complete compatibility with the wordy format of nltk2
                 mx = max(positions)
                 mn = min(positions)
                 if mx - mn == len(positions) - 1:
-                    return 'words i%+d...i%+d' % (mn, mx)
+                    return "words i%+d...i%+d" % (mn, mx)
                 else:
-                    return 'words {%s}' % (",".join("i%+d" % d for d in positions),)
+                    return "words {%s}" % (",".join("i%+d" % d for d in positions),)
 
-        replacement = '%s -> %s' % (self.original_tag, self.replacement_tag)
-        conditions = (' if ' if self._conditions else "") + ', and '.join(
+        replacement = "%s -> %s" % (self.original_tag, self.replacement_tag)
+        conditions = (" if " if self._conditions else "") + ", and ".join(
             condition_to_str(f, v) for (f, v) in self._conditions
         )
         return replacement + conditions

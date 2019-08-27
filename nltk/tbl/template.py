@@ -8,7 +8,6 @@
 # URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
-from __future__ import print_function
 from abc import ABCMeta, abstractmethod
 from six import add_metaclass
 import itertools as it
@@ -17,7 +16,7 @@ from nltk.tbl.rule import Rule
 
 
 @add_metaclass(ABCMeta)
-class BrillTemplateI(object):
+class BrillTemplateI:
     """
     An interface for generating lists of transformational rules that
     apply at given sentence positions.  ``BrillTemplateI`` is used by

@@ -4,6 +4,26 @@ NLTK News
 2019
 ----
 
+NLTK 3.5 release: August 2019
+  Drop support for Python 2
+
+NLTK 3.4.5 release: August 2019
+  Fixed security bug in downloader: Zip slip vulnerability - for the unlikely
+  situation where a user configures their downloader to use a compromised server
+  https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-14751)
+
+NLTK 3.4.4 release: July 2019
+  Fix bug in plot function (probability.py)
+  Add improved PanLex Swadesh corpus reader  
+
+NLTK 3.4.3 release: June 2019
+  Add Text.generate(), QuadgramAssocMeasures
+  Add SSP to tokenizers
+  Return confidence of best tag from AveragedPerceptron
+  Make plot methods return Axes objects
+  Minor bug fixes
+  Update installation instructions
+
 NLTK 3.4.1 release: April 2019
   Add chomsky_normal_form for CFGs
   Add meteor score

@@ -4,7 +4,6 @@
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
 
 from nltk.sem.logic import LambdaExpression, ApplicationExpression, Variable
 from nltk.parse import load_parser
@@ -26,8 +25,8 @@ class CooperStore(object):
         self.featstruct = featstruct
         self.readings = []
         try:
-            self.core = featstruct['CORE']
-            self.store = featstruct['STORE']
+            self.core = featstruct["CORE"]
+            self.store = featstruct["STORE"]
         except KeyError:
             print("%s is not a Cooper storage structure" % featstruct)
 
@@ -83,7 +82,7 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
     Use a grammar with Binding Operators to parse a sentence.
     """
     if not grammar:
-        grammar = 'grammars/book_grammars/storage.fcfg'
+        grammar = "grammars/book_grammars/storage.fcfg"
     parser = load_parser(grammar, trace=trace, chart_class=InstantiateVarsChart)
     # Parse the sentence.
     tokens = sentence.split()
@@ -100,7 +99,7 @@ def demo():
     print("=" * 50)
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
-        semrep = cs.CooperStore(tree.label()['SEM'])
+        semrep = cs.CooperStore(tree.label()["SEM"])
         print()
         print("Binding operators:")
         print("-" * 15)
@@ -121,5 +120,5 @@ def demo():
             print("%s: %s" % (i + 1, reading))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

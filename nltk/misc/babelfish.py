@@ -4,7 +4,6 @@ translation service; this service is no longer available; this
 module is kept in NLTK source code in order to provide better error
 messages for people following the NLTK Book 2.0.
 """
-from __future__ import print_function
 
 
 def babelize_shell():

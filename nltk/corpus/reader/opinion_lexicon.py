@@ -102,7 +102,7 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         :return: a list of positive words.
         :rtype: list(str)
         """
-        return self.words('positive-words.txt')
+        return self.words("positive-words.txt")
 
     def negative(self):
         """
@@ -111,7 +111,7 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         :return: a list of negative words.
         :rtype: list(str)
         """
-        return self.words('negative-words.txt')
+        return self.words("negative-words.txt")
 
     def _read_word_block(self, stream):
         words = []

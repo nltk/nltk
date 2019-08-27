@@ -118,8 +118,6 @@ Summary of our git branching model:
   [GitHub issue system](https://github.com/nltk/nltk/issues));
 - Run all tests before pushing (just execute `tox`) so you will know if your
   changes broke something;
-- Try to write both Python 2 and Python3-friendly code so won't be a pain for
-  us to support both versions.
 
 See also our [developer's
 guide](https://github.com/nltk/nltk/wiki/Developers-Guide).
@@ -148,7 +146,7 @@ NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration.
 The [`.travis.yml`](https://github.com/nltk/nltk/blob/travis/.travis.yml) file configures the server:
 
  - `matrix: include:` section 
-   - tests against supported Python versions (2.7, 3.5 and 3.6) 
+   - tests against supported Python versions (3.5, 3.6, 3.7)
      - all python versions run the `py-travis` tox test environment in the [`tox.ini`](https://github.com/nltk/nltk/blob/travis/tox.ini#L105) file
    - tests against Python 3.6 for third-party tools APIs
 

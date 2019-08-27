@@ -20,7 +20,6 @@ NUM:date When did Hawaii become a state ?
 # based on PPAttachmentCorpusReader
 from six import string_types
 
-from nltk import compat
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
@@ -28,7 +27,7 @@ from nltk.corpus.reader.api import *
 # in nltk, we use the form (data, tag) -- e.g., tagged words and
 # labeled texts for classifiers.
 class StringCategoryCorpusReader(CorpusReader):
-    def __init__(self, root, fileids, delimiter=' ', encoding='utf8'):
+    def __init__(self, root, fileids, delimiter=" ", encoding="utf8"):
         """
         :param root: The root directory for this corpus.
         :param fileids: A list or regexp specifying the fileids in this corpus.

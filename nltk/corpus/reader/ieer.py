@@ -20,7 +20,6 @@ and filenames were shortened.
 The corpus contains the following files: APW_19980314, APW_19980424,
 APW_19980429, NYT_19980315, NYT_19980403, and NYT_19980407.
 """
-from __future__ import unicode_literals
 
 from six import string_types
 
@@ -31,21 +30,21 @@ from nltk.corpus.reader.api import *
 #: A dictionary whose keys are the names of documents in this corpus;
 #: and whose values are descriptions of those documents' contents.
 titles = {
-    'APW_19980314': 'Associated Press Weekly, 14 March 1998',
-    'APW_19980424': 'Associated Press Weekly, 24 April 1998',
-    'APW_19980429': 'Associated Press Weekly, 29 April 1998',
-    'NYT_19980315': 'New York Times, 15 March 1998',
-    'NYT_19980403': 'New York Times, 3 April 1998',
-    'NYT_19980407': 'New York Times, 7 April 1998',
+    "APW_19980314": "Associated Press Weekly, 14 March 1998",
+    "APW_19980424": "Associated Press Weekly, 24 April 1998",
+    "APW_19980429": "Associated Press Weekly, 29 April 1998",
+    "NYT_19980315": "New York Times, 15 March 1998",
+    "NYT_19980403": "New York Times, 3 April 1998",
+    "NYT_19980407": "New York Times, 7 April 1998",
 }
 
 #: A list of all documents in this corpus.
 documents = sorted(titles)
 
 
-@compat.python_2_unicode_compatible
+
 class IEERDocument(object):
-    def __init__(self, text, docno=None, doctype=None, date_time=None, headline=''):
+    def __init__(self, text, docno=None, doctype=None, date_time=None, headline=""):
         self.text = text
         self.docno = docno
         self.doctype = doctype
@@ -54,15 +53,15 @@ class IEERDocument(object):
 
     def __repr__(self):
         if self.headline:
-            headline = ' '.join(self.headline.leaves())
+            headline = " ".join(self.headline.leaves())
         else:
             headline = (
-                ' '.join([w for w in self.text.leaves() if w[:1] != '<'][:12]) + '...'
+                " ".join([w for w in self.text.leaves() if w[:1] != "<"][:12]) + "..."
             )
         if self.docno is not None:
-            return '<IEERDocument %s: %r>' % (self.docno, headline)
+            return "<IEERDocument %s: %r>" % (self.docno, headline)
         else:
-            return '<IEERDocument: %r>' % headline
+            return "<IEERDocument: %r>" % headline
 
 
 class IEERCorpusReader(CorpusReader):
@@ -114,7 +113,7 @@ class IEERCorpusReader(CorpusReader):
             line = stream.readline()
             if not line:
                 break
-            if line.strip() == '<DOC>':
+            if line.strip() == "<DOC>":
                 break
         out.append(line)
         # Read the document
@@ -123,7 +122,7 @@ class IEERCorpusReader(CorpusReader):
             if not line:
                 break
             out.append(line)
-            if line.strip() == '</DOC>':
+            if line.strip() == "</DOC>":
                 break
         # Return the document
-        return ['\n'.join(out)]
+        return ["\n".join(out)]

@@ -5,7 +5,6 @@
 #
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
 
 from nltk.corpus import (
     gutenberg,
@@ -25,13 +24,13 @@ print("Loading text1, ..., text9 and sent1, ..., sent9")
 print("Type the name of the text or sentence to view it.")
 print("Type: 'texts()' or 'sents()' to list the materials.")
 
-text1 = Text(gutenberg.words('melville-moby_dick.txt'))
+text1 = Text(gutenberg.words("melville-moby_dick.txt"))
 print("text1:", text1.name)
 
-text2 = Text(gutenberg.words('austen-sense.txt'))
+text2 = Text(gutenberg.words("austen-sense.txt"))
 print("text2:", text2.name)
 
-text3 = Text(genesis.words('english-kjv.txt'), name="The Book of Genesis")
+text3 = Text(genesis.words("english-kjv.txt"), name="The Book of Genesis")
 print("text3:", text3.name)
 
 text4 = Text(inaugural.words(), name="Inaugural Address Corpus")
@@ -40,16 +39,16 @@ print("text4:", text4.name)
 text5 = Text(nps_chat.words(), name="Chat Corpus")
 print("text5:", text5.name)
 
-text6 = Text(webtext.words('grail.txt'), name="Monty Python and the Holy Grail")
+text6 = Text(webtext.words("grail.txt"), name="Monty Python and the Holy Grail")
 print("text6:", text6.name)
 
 text7 = Text(treebank.words(), name="Wall Street Journal")
 print("text7:", text7.name)
 
-text8 = Text(webtext.words('singles.txt'), name="Personals Corpus")
+text8 = Text(webtext.words("singles.txt"), name="Personals Corpus")
 print("text8:", text8.name)
 
-text9 = Text(gutenberg.words('chesterton-thursday.txt'))
+text9 = Text(gutenberg.words("chesterton-thursday.txt"))
 print("text9:", text9.name)
 
 
@@ -121,23 +120,23 @@ sent5 = [
     "JOIN",
 ]
 sent6 = [
-    'SCENE',
-    '1',
-    ':',
-    '[',
-    'wind',
-    ']',
-    '[',
-    'clop',
-    'clop',
-    'clop',
-    ']',
-    'KING',
-    'ARTHUR',
-    ':',
-    'Whoa',
-    'there',
-    '!',
+    "SCENE",
+    "1",
+    ":",
+    "[",
+    "wind",
+    "]",
+    "[",
+    "clop",
+    "clop",
+    "clop",
+    "]",
+    "KING",
+    "ARTHUR",
+    ":",
+    "Whoa",
+    "there",
+    "!",
 ]
 sent7 = [
     "Pierre",
@@ -160,20 +159,20 @@ sent7 = [
     ".",
 ]
 sent8 = [
-    '25',
-    'SEXY',
-    'MALE',
-    ',',
-    'seeks',
-    'attrac',
-    'older',
-    'single',
-    'lady',
-    ',',
-    'for',
-    'discreet',
-    'encounters',
-    '.',
+    "25",
+    "SEXY",
+    "MALE",
+    ",",
+    "seeks",
+    "attrac",
+    "older",
+    "single",
+    "lady",
+    ",",
+    "for",
+    "discreet",
+    "encounters",
+    ".",
 ]
 sent9 = [
     "THE",
