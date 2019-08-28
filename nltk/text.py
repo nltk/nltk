@@ -436,6 +436,10 @@ class Text(object):
     def collocations(self, num=20, window_size=2):
         """
         Print collocations derived from the text, ignoring stopwords.
+        
+            >>> from nltk.book import text4
+            >>> text4.collocations()[:2]
+            ['United States', 'fellow citizens']
 
         :param num: The maximum number of collocations to print.
         :type num: int
