@@ -439,7 +439,7 @@ class Text(object):
         
             >>> from nltk.book import text4
             >>> text4.collocations() # doctest: +ELLIPSIS
-            ['United States', 'fellow citizens', ...]
+            United States; fellow citizens; four years; ...
 
         :param num: The maximum number of collocations to print.
         :type num: int
