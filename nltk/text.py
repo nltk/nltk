@@ -408,6 +408,7 @@ class Text(object):
         :type num: int
         :param window_size: The number of tokens spanned by a collocation (default=2)
         :type window_size: int
+        :rtype: list(tuple(str, str))
         """
         if not (
             "_collocations" in self.__dict__
@@ -425,8 +426,8 @@ class Text(object):
             finder.apply_freq_filter(2)
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
             bigram_measures = BigramAssocMeasures()
-            self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)
-        return [w1 + " " + w2 for w1, w2 in self._collocations]
+            self._collocations = list(finder.nbest(bigram_measures.likelihood_ratio, num))
+        return self._collocations
 
     def collocations(self, num=20, window_size=2):
         """
