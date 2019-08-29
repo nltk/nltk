@@ -39,7 +39,9 @@ matrix:
       env: TOXENV="py-travis-third-party"
 
     - python: '3.7' # Only runs checks on Cythonization for latest Python distribution.
-      env: TOXENV="py-cythonized"
+      env:
+        - TOXENV="py-cythonized"
+        - CYTHONIZE_NLTK="true"
 
 before_install:
   - source tools/travis/pre-install.sh # Checks Java and Python versions.
