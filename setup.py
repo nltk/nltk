@@ -87,7 +87,8 @@ def compile_modules(modules):
     print("Compiling %d modules using Cython %s" % (len(modules), Cython.__version__))
     return cythonize(files, language_level=3)
 
-
+print("########################")
+print(os.getenv('CYTHONIZE_NLTK'))
 if os.getenv('CYTHONIZE_NLTK') == 'true':
     ext_modules = compile_modules(MODULES_TO_COMPILE)
 else:
