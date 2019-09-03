@@ -341,15 +341,7 @@ class SentimentIntensityAnalyzer(object):
     ):
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.make_lex_dict()
-        # Possible extension from https://github.com/nltk/nltk/pull/2307 and
-        # https://medium.com/@malavika.suresh0794/vader-customizing-the-library-71d9e8ed6eda
-        self.extended = extended
         self.constants = VaderConstants(extended)
-
-        if self.extended:
-            # Possible extension from https://github.com/nltk/nltk/pull/2307
-            # adds "only" to the BOOSTER_DICT. 
-            self.constants.BOOSTER_DICT["only"] = self.constants.B_DECR
 
     def make_lex_dict(self):
         """
@@ -386,13 +378,6 @@ class SentimentIntensityAnalyzer(object):
             sentiments = self.sentiment_valence(valence, sentitext, item, i, sentiments)
 
         sentiments = self._but_check(words_and_emoticons, sentiments, self.extended)
-
-        if self.extended:
-            pass
-            # Possible extension from https://github.com/nltk/nltk/pull/2307
-            ##words_and_emoticons_lowered = list(map(str.lower, words_and_emoticons))
-            ##sentiments = self._only_if_check(words_and_emoticons_lowered, sentiments)
-            ##sentiments = self._in_spite_of_check(words_and_emoticons_lowered, sentiments)
 
         return self.score_valence(sentiments, text)
 
@@ -475,34 +460,6 @@ class SentimentIntensityAnalyzer(object):
                     sentiments[idx] = sentiment * 0.5
                 elif sidx > bi:
                     sentiments[idx] = sentiment * 1.5
-        return sentiments
-
-    def _only_if_check(self, words_and_emoticons, sentiments):
-        """
-        Not used in default VADER algorithm.
-        Extension from https://github.com/nltk/nltk/pull/2307
-        """
-        for idx, ng in enumerate(ngrams(words_and_emoticons, 2)):
-            if ng == ("only", "if"):
-                for sidx, sentiment in enumerate(sentiments):
-                    if idx < sidx:
-                        sentiments[sidx] = sentiment * 0.5
-        return sentiments
-
-    def _in_spite_of_check(self, words_and_emoticons, sentiments):
-        """
-        Not used in default VADER algorithm.
-        Extension from https://github.com/nltk/nltk/pull/2307
-        """
-        for idx, ng in enumerate(ngrams(words_and_emoticons, 3)):
-            if ng == ("in", "spite", "of"):
-                for sidx, sentiment in enumerate(sentiments):
-                    if sidx == idx+1:
-                        sentiments[sidx] = 0
-                    elif sidx < idx+1:
-                        sentiments[sidx] = sentiment * 1.5
-                    elif sidx > idx+1:
-                        sentiments[sidx] = sentiment * 0.5
         return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
