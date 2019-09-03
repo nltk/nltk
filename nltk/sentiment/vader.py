@@ -177,7 +177,6 @@ class VaderConstants:
         "sorta": B_DECR,
         "sortof": B_DECR,
         "sort-of": B_DECR,
-        ##"only": B_DECR # Could be added when using extended https://github.com/nltk/nltk/pull/2307
     }
 
     # check for special case idioms using a sentiment-laden keyword known to SAGE
@@ -214,7 +213,7 @@ class VaderConstants:
         "!?!?",
     ]
 
-    def __init__(self, extended=False):
+    def __init__(self):
         pass
 
     def negated(self, input_words, include_nt=True):
@@ -336,11 +335,10 @@ class SentimentIntensityAnalyzer:
 
     def __init__(
         self, lexicon_file="sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt",
-        extended=False
     ):
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.make_lex_dict()
-        self.constants = VaderConstants(extended)
+        self.constants = VaderConstants()
 
     def make_lex_dict(self):
         """
@@ -376,7 +374,7 @@ class SentimentIntensityAnalyzer:
 
             sentiments = self.sentiment_valence(valence, sentitext, item, i, sentiments)
 
-        sentiments = self._but_check(words_and_emoticons, sentiments, self.extended)
+        sentiments = self._but_check(words_and_emoticons, sentiments)
 
         return self.score_valence(sentiments, text)
 
