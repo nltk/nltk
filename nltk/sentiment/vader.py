@@ -454,9 +454,9 @@ class SentimentIntensityAnalyzer:
             bi = words_and_emoticons.index(next(iter(but)))
             for sidx, sentiment in enumerate(sentiments):
                 if sidx < bi:
-                    sentiments[idx] = sentiment * 0.5
+                    sentiments[sidx] = sentiment * 0.5
                 elif sidx > bi:
-                    sentiments[idx] = sentiment * 1.5
+                    sentiments[sidx] = sentiment * 1.5
         return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
