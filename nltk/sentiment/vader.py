@@ -341,10 +341,15 @@ class SentimentIntensityAnalyzer(object):
     ):
         self.lexicon_file = nltk.data.load(lexicon_file)
         self.lexicon = self.make_lex_dict()
-        # Extended Vader constants from
+        # Possible extension from https://github.com/nltk/nltk/pull/2307 and
         # https://medium.com/@malavika.suresh0794/vader-customizing-the-library-71d9e8ed6eda
         self.extended = extended
         self.constants = VaderConstants(extended)
+
+        if self.extended:
+            # Possible extension from https://github.com/nltk/nltk/pull/2307
+            # adds "only" to the BOOSTER_DICT. 
+            self.constants.BOOSTER_DICT["only"] = self.constants.B_DECR
 
     def make_lex_dict(self):
         """
