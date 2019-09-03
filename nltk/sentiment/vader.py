@@ -178,7 +178,7 @@ class VaderConstants:
         "sorta": B_DECR,
         "sortof": B_DECR,
         "sort-of": B_DECR,
-        ##"only": B_DECR # Could be added when using extension https://github.com/nltk/nltk/pull/2307
+        ##"only": B_DECR # Could be added when using extended https://github.com/nltk/nltk/pull/2307
     }
 
     # check for special case idioms using a sentiment-laden keyword known to SAGE
