@@ -28,6 +28,7 @@ import string
 from itertools import product
 
 import nltk.data
+from nltk.util import ngrams
 from nltk.util import pairwise
 
 class VaderConstants:
@@ -177,7 +178,7 @@ class VaderConstants:
         "sorta": B_DECR,
         "sortof": B_DECR,
         "sort-of": B_DECR,
-        "only": B_DECR
+        ##"only": B_DECR # Could be added when using extension https://github.com/nltk/nltk/pull/2307
     }
 
     # check for special case idioms using a sentiment-laden keyword known to SAGE
@@ -382,8 +383,11 @@ class SentimentIntensityAnalyzer(object):
         sentiments = self._but_check(words_and_emoticons, sentiments, self.extended)
 
         if self.extended:
-            sentiments = self._only_if_check(words_and_emoticons, sentiments)
-            sentiments = self._in_spite_of_check(words_and_emoticons, sentiments)
+            pass
+            # Possible extension from https://github.com/nltk/nltk/pull/2307
+            ##words_and_emoticons_lowered = list(map(str.lower, words_and_emoticons))
+            ##sentiments = self._only_if_check(words_and_emoticons_lowered, sentiments)
+            ##sentiments = self._in_spite_of_check(words_and_emoticons_lowered, sentiments)
 
         return self.score_valence(sentiments, text)
 
@@ -457,67 +461,43 @@ class SentimentIntensityAnalyzer(object):
             valence = valence * self.constants.N_SCALAR
         return valence
 
-    def _but_check(self, words_and_emoticons, sentiments, extended=False):
-        if extended:
-            # Extended version from
-            # https://medium.com/@malavika.suresh0794/vader-customizing-the-library-71d9e8ed6eda
-            # check for modification in sentiment due to contrastive conjunctions
-            words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
-            cc_list = ['but', 'however', 'except']
-            bi = 0
-            for cc in cc_list:
-                if cc in words_and_emoticons_lower:
-                    bi = words_and_emoticons_lower.index(cc)
-                    for si,sentiment in enumerate(sentiments):
-                        if si < bi:
-                            sentiments[si] = sentiment * 0.5
-                        elif si > bi:
-                            sentiments[si] = sentiment * 1.5
-            # Future work:
-            # 1.Consider usage of though/although/even though
-            return sentiments
-        else:
-            # Original Vader code.
-            # check for modification in sentiment due to contrastive conjunction 'but'
-            if "but" in words_and_emoticons or "BUT" in words_and_emoticons:
-                try:
-                    bi = words_and_emoticons.index("but")
-                except ValueError:
-                    bi = words_and_emoticons.index("BUT")
-                for sentiment in sentiments:
-                    si = sentiments.index(sentiment)
-                    if si < bi:
-                        sentiments.pop(si)
-                        sentiments.insert(si, sentiment * 0.5)
-                    elif si > bi:
-                        sentiments.pop(si)
-                        sentiments.insert(si, sentiment * 1.5)
-            return sentiments
+    def _but_check(self, words_and_emoticons, sentiments):
+        but = {"but", "BUT"} & set(words_and_emoticons)
+        if but:
+            bi = words_and_emoticons.index(next(iter(but)))
+            for sidx, sentiment in enumerate(sentiments):
+                if sidx < bi:
+                    sentiments[idx] = sentiment * 0.5
+                elif sidx > bi:
+                    sentiments[idx] = sentiment * 1.5
+        return sentiments
 
     def _only_if_check(self, words_and_emoticons, sentiments):
-        words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
-        check = 'only'
-        if check in words_and_emoticons_lower:
-            i = words_and_emoticons_lower.index(check)
-            if len(words_and_emoticons)>i+1 and 'if' == words_and_emoticons_lower[i+1]:
-                for si, sentiment in enumerate(sentiments):
-                    if si < i:
-                        sentiments[si] = sentiment * 0.5
+        """
+        Not used in default VADER algorithm.
+        Extension from https://github.com/nltk/nltk/pull/2307
+        """
+        for idx, ng in enumerate(ngrams(words_and_emoticons, 2)):
+            if ng == ("only", "if"):
+                for sidx, sentiment in enumerate(sentiments):
+                    if idx < sidx:
+                        sentiments[sidx] = sentiment * 0.5
         return sentiments
 
     def _in_spite_of_check(self, words_and_emoticons, sentiments):
-        words_and_emoticons_lower = [str(w).lower() for w in words_and_emoticons]
-        check = 'in'
-        if check in words_and_emoticons_lower:
-            i = words_and_emoticons_lower.index(check)
-            if len(words_and_emoticons)>i+2 and 'spite' == words_and_emoticons_lower[i+1] and 'of' == words_and_emoticons_lower[i+2]:
-                for si, sentiment in enumerate(sentiments):
-                    if si == i+1:
-                        sentiments[si] = 0
-                    elif si < i+1:
-                        sentiments[si] = sentiment * 1.5
-                    elif si > i+1:
-                        sentiments[si] = sentiment * 0.5
+        """
+        Not used in default VADER algorithm.
+        Extension from https://github.com/nltk/nltk/pull/2307
+        """
+        for idx, ng in enumerate(ngrams(words_and_emoticons, 3)):
+            if ng == ("in", "spite", "of"):
+                for sidx, sentiment in enumerate(sentiments):
+                    if sidx == idx+1:
+                        sentiments[sidx] = 0
+                    elif sidx < idx+1:
+                        sentiments[sidx] = sentiment * 1.5
+                    elif sidx > idx+1:
+                        sentiments[sidx] = sentiment * 0.5
         return sentiments
 
     def _idioms_check(self, valence, words_and_emoticons, i):
