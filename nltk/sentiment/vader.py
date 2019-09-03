@@ -28,7 +28,6 @@ import string
 from itertools import product
 
 import nltk.data
-from nltk.util import ngrams
 from nltk.util import pairwise
 
 class VaderConstants:
@@ -262,7 +261,7 @@ class VaderConstants:
         return scalar
 
 
-class SentiText(object):
+class SentiText:
     """
     Identify sentiment-relevant string-level properties of input text.
     """
@@ -330,7 +329,7 @@ class SentiText(object):
         return is_different
 
 
-class SentimentIntensityAnalyzer(object):
+class SentimentIntensityAnalyzer:
     """
     Give a sentiment intensity score to sentences.
     """
