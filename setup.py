@@ -37,6 +37,7 @@ extras_require = {
     "tgrep": ["pyparsing"],
     "twitter": ["twython"],
     "corenlp": ["requests"],
+    "spacy": ["spacy", "en_core_web_sm"],
 }
 
 # Add a group made up of all optional dependencies
