@@ -85,21 +85,10 @@ MODULES_TO_COMPILE = [
     'nltk.util',
 ]
 
+
 class build_cythonized(build_orig):
-    def __init__(self, *args, **kwargs) -> None:
-        super(build_cythonized, self).__init__(*args, **kwargs)
-        self.stored_options = {}
-        self.should_cythonize = os.getenv('CYTHONIZE_NLTK') == 'true'
-
     def finalize_options(self):
-        if self.should_cythonize:
-            # store teh original options we will modify
-            # we will restore them when this command is done
-            self.stored_options.update({
-                'cmdclass': self.distribution.cmdclass.copy() if self.distribution.cmdclass else None,
-                'ext_modules': self.distribution.ext_modules.copy() if self.distribution.ext_modules else None,
-            })
-
+        if os.getenv('CYTHONIZE_NLTK') == 'true':
             # translate python sources into c code
             import Cython
             from Cython.Build import cythonize
@@ -107,14 +96,6 @@ class build_cythonized(build_orig):
             self.announce("Compiling %d modules using Cython %s" % (len(files), Cython.__version__), level=INFO)
             self.distribution.ext_modules = cythonize(files, language_level=3, exclude=['**/__init__.py'])
         super(build_cythonized, self).finalize_options()
-
-    def run(self):
-        super(build_cythonized, self).run()
-        if self.should_cythonize:
-            # restore original options so we don't break next
-            # commands in chain probably calling build_ext
-            self.distribution.cmdclass = self.stored_options['cmdclass']
-            self.distribution.ext_modules = self.stored_options['ext_modules']
 
 
 setup(
